@@ -40,6 +40,7 @@
 
 
 #define SCHEME "scgi"
+#define PROXY_FUNCTION "SCGI"
 #define SCGI_MAGIC "SCGI"
 #define SCGI_PROTOCOL_VERSION "1"
 #define SCGI_DEFAULT_PORT (4000)
@@ -511,7 +512,7 @@ static int scgi_handler(request_rec *r, proxy_worker *worker,
     }
 
     /* Create space for state information */
-    status = ap_proxy_acquire_connection(__FUNCTION__, &backend, worker,
+    status = ap_proxy_acquire_connection(PROXY_FUNCTION, &backend, worker,
                                          r->server);
     if (status != OK) {
         goto cleanup;
@@ -527,7 +528,7 @@ static int scgi_handler(request_rec *r, proxy_worker *worker,
     }
 
     /* Step Two: Make the Connection */
-    if (ap_proxy_connect_backend(__FUNCTION__, backend, worker, r->server)) {
+    if (ap_proxy_connect_backend(PROXY_FUNCTION, backend, worker, r->server)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00866)
                       "failed to make connection to backend: %s:%u",
                       backend->hostname, backend->port);
@@ -546,7 +547,7 @@ static int scgi_handler(request_rec *r, proxy_worker *worker,
 cleanup:
     if (backend) {
         backend->close = 1; /* always close the socket */
-        ap_proxy_release_connection(__FUNCTION__, backend, r->server);
+        ap_proxy_release_connection(PROXY_FUNCTION, backend, r->server);
     }
     return status;
 }
