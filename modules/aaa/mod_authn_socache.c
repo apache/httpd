@@ -95,7 +95,8 @@ static int authn_cache_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     if (socache_provider == NULL) {
         ap_log_perror(APLOG_MARK, APLOG_CRIT, 0, plog, APLOGNO(01674)
                       "Please select a socache provider with AuthnCacheSOCache "
-                      "(no default found on this platform)");
+                      "(no default found on this platform). Maybe you need to "
+                      "load mod_socache_shmcb or another socache module first");
         return 500; /* An HTTP status would be a misnomer! */
     }
 
@@ -143,10 +144,15 @@ static const char *authn_cache_socache(cmd_parms *cmd, void *CFG,
                                        const char *arg)
 {
     const char *errmsg = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (errmsg)
+        return errmsg;
     socache_provider = ap_lookup_provider(AP_SOCACHE_PROVIDER_GROUP, arg,
                                           AP_SOCACHE_PROVIDER_VERSION);
     if (socache_provider == NULL) {
-        errmsg = "Unknown socache provider";
+        errmsg = apr_psprintf(cmd->pool,
+                              "Unknown socache provider '%s'. Maybe you need "
+                              "to load the appropriate socache module "
+                              "(mod_socache_%s?)", arg, arg);
     }
     return errmsg;
 }
