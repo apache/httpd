@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision : 1205075 -->
+<!-- English Revision : 1208753 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -250,7 +250,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 	(voir la directive <directive
 	module="core">ErrorLogFormat</directive>)</td></tr>
     <tr><td><code>CONN_REMOTE_ADDR</code></td>
-        <td>L'adresse IP r&eacute;elle de l'h&ocirc;te distant (voir le module
+        <td>L'adresse IP du correspondant pour la connexion (voir le module
 	<module>mod_remoteip</module>)</td></tr>
 
     </table>
