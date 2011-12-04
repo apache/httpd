@@ -21,3 +21,6 @@
 #define PROXY_DECLARE_DATA
 
 #define AP_DECLARE_MODULE(foo)  module foo##_module
+
+#define BOOL                     int
+#define STACK_OF(x)              x
