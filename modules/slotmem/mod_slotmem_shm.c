@@ -119,29 +119,24 @@ static apr_status_t unixd_set_shm_perms(const char *fname)
  * Persist the slotmem in a file
  * slotmem name and file name.
  * none      : no persistent data
- * anonymous : $server_root/logs/anonymous.slotmem
- * :rel_name : $server_root/logs/rel_name.slotmem
- * abs_name  : $abs_name.slotmem
+ * rel_name  : $server_root/rel_name
+ * /abs_name : $abs_name
  *
  */
 static const char *store_filename(apr_pool_t *pool, const char *slotmemname)
 {
     const char *storename;
     const char *fname;
-    if (strcasecmp(slotmemname, "none") == 0)
+    if (strcasecmp(slotmemname, "none") == 0) {
         return NULL;
-    else if (strcasecmp(slotmemname, "anonymous") == 0)
-        fname = ap_server_root_relative(pool, "logs/anonymous");
-    else if (slotmemname[0] == ':') {
-        const char *tmpname;
-        tmpname = apr_pstrcat(pool, "logs/", &slotmemname[1], NULL);
-        fname = ap_server_root_relative(pool, tmpname);
+    }
+    else if (slotmemname[0] != '/') {
+        fname = ap_server_root_relative(pool, slotmemname);
     }
     else {
         fname = slotmemname;
     }
-    storename = apr_pstrcat(pool, fname, ".slotmem", NULL);
-    return storename;
+    return fname;
 }
 
 static void store_slotmem(ap_slotmem_instance_t *slotmem)
@@ -269,14 +264,15 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
                       (item_num * sizeof(char)) + basesize;
     apr_status_t rv;
 
-    if (gpool == NULL)
+    if (gpool == NULL) {
         return APR_ENOSHMAVAIL;
+    }
     if (name) {
-        if (name[0] == ':') {
-            fname = name;
+        if (name[0] != '/') {
+            fname = ap_server_root_relative(pool, name);
         }
         else {
-            fname = ap_server_root_relative(pool, name);
+            fname = name;
         }
 
         /* first try to attach to existing slotmem */
@@ -295,11 +291,11 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
         }
     }
     else {
-        fname = "anonymous";
+        fname = "none";
     }
 
     /* first try to attach to existing shared memory */
-    fbased = (name && name[0] != ':');
+    fbased = (name != NULL);
     if (fbased) {
         rv = apr_shm_attach(&shm, fname, gpool);
     }
