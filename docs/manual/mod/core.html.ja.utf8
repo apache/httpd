@@ -211,7 +211,9 @@
     受け付けるか拒否するかの選択を上書きできるようにすることです。
     例えば、これは例えば <a href="mod_include.html">INCLUDES</a> のような
     <a href="../filter.html">フィルタ</a>を使って <code>PATH_INFO</code> に
-    基づいてコンテンツを生成しているときに必要になります。</p>
+    基づいてコンテンツを生成しているときに必要になります。
+    コアハンドラでは通常拒否されるので、そういったスクリプトを動作させるには
+    次のような設定を使います。</p>
 
     <div class="example"><p><code>
       &lt;Files "mypaths.shtml"&gt;<br />
@@ -875,7 +877,7 @@ for a complete reference and more examples.</li>
     Apache は OS がサポートしていればファイルをメモリにマップします。</p>
 
     <p>
-    このメモリマップは性能の向上を持たらすことがあります。
+    このメモリマップは性能の向上をもたらすことがあります。
     しかし、環境によっては運用上の問題を防ぐためにメモリマッピングを
     使用しないようにした方が良い場合もあります:</p>
 
@@ -2023,7 +2025,7 @@ request</td></tr>
 
     <p><code class="directive">&lt;Location&gt;</code> セクションは
     完全にファイルシステムと関連せずに動作します。このことから導かれる
-    結果にはいつくか注意する点があります。最も重要なものは、
+    結果にはいくつか注意する点があります。最も重要なものは、
     ファイルシステムの位置へのアクセス制御に <code class="directive">&lt;Location&gt;</code> ディレクティブを使うべきではない
     ということです。複数の URL がファイルシステムの同じ位置にマップされる
     可能がありますので、そのようなアクセス制御は回避されてしまう可能性が
@@ -2085,12 +2087,12 @@ request</td></tr>
     ファイルシステムにおいて利用する場合には複数のスラッシュでも一つの
     スラッシュとして扱われることが多いですが、
     (<em>すなわち</em>、<code>/home///foo</code> は
-    <code>/home/foo</code> と同じいったように)
+    <code>/home/foo</code> と同じといったように)
     URL においては必ずしもそうなるわけではありません。
     <code class="directive"><a href="#locationmatch">&lt;LocationMatch&gt;</a></code>
     ディレクティブや正規表現を利用した
     <code class="directive">&lt;Location&gt;</code> ディレクティブで、
-    複数のスラッシュにマッチさせたいときには、、明示的に記述する
+    複数のスラッシュにマッチさせたいときには、明示的に記述する
     必要があります。</p>
 
     <p>例えば、<code>&lt;LocationMatch ^/abc&gt;</code> は、
@@ -2276,7 +2278,7 @@ request</td></tr>
     <code class="directive"><a href="#keepalive">KeepAlive</a></code> が有効な場合に、
     一回の接続で受け付け可能なリクエストの数を制限します。
     <code>0</code> に設定していれば、受け付けるリクエストは無制限になります。
-    この設定は、サーバ性能を向上させるために、大きな数値を指定すること勧めます。
+    この設定は、サーバ性能を向上させるために、大きな数値を指定することを勧めます。
     </p>
 
     <p>例:</p>
@@ -2877,7 +2879,7 @@ of a request or the last 63, assuming the request itself is greater than
     <code class="directive">ServerName</code> はこのバーチャルホストにマッチするために
     何がリクエストの Host: ヘッダに現れる必要があるのかを指定します。</p>
 
-    <p>SSL を処理するデバイス、例えばリーバスプロクシやロードバランサや
+    <p>SSL を処理するデバイス、例えばリバースプロクシやロードバランサや
     SSL 処理軽減アプライアンスの裏側でサーバが稼動する場合もあるでしょう。
     そういった場合では、クライアントが接続するときに使う
     <code>https://</code> スキームとポート番号を <code class="directive">ServerName</code>
@@ -2975,8 +2977,8 @@ of a request or the last 63, assuming the request itself is greater than
     稼動中のバーチャルホストの <a href="#servername">ServerName</a> の書かれた行を追加し、
     <code>EMail</code> にした場合はさらに参照されたドキュメントに対する <a href="#serveradmin">ServerAdmin</a> を指す "mailto:" が追加されます。</p>
 
-    <p>バージョン 2.0.44 以降ではこのディレクティブは <code class="directive"><a href="#serversignature">ServerSignature</a></code>
-    ディレクティブにより表示される情報も制御します。</p>
+    <p>バージョン 2.0.44 以降では、表示されるサーバーのバージョン番号の詳細は<code class="directive"><a href="#servertokens">ServerTokens</a></code>
+    ディレクティブにより制御されます。</p>
 
 <h3>参照</h3>
 <ul>
@@ -3205,7 +3207,7 @@ of a request or the last 63, assuming the request itself is greater than
     の挙動をオーバーライドします。デフォルトの <code>TraceEnable on</code>
     は、リクエストボディを受け入れないような、RFC2616 に準拠した
     <code>TRACE</code> リクエストを受け付けます。
-    <code>TraceEnale off</code> と設定すると、コアサーバと
+    <code>TraceEnable off</code> と設定すると、コアサーバと
     <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> は <code>405</code> (メソッド不許可)
     エラーをクライアントに返します。</p>
 
@@ -3406,7 +3408,7 @@ of a request or the last 63, assuming the request itself is greater than
     もしくはホスト名に対応する必要があり、
     1 番目の場合には複数のアドレスで IP パケットを受信できるように
     サーバマシンを設定しなければなりません。
-    (もし、マシンが複数のネットワークインターフェースと持たない場合は、
+    (もし、マシンが複数のネットワークインターフェースを持たない場合は、
     (OSがサポートしていれば) <code>ifconfig alias</code> コマンドにより
     達成できます)。</p>
 

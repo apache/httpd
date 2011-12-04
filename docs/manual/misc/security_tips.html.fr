@@ -135,13 +135,13 @@
 
       <li>L'utilisation d'un <a href="../mpm.html">module mpm</a> threadé
       vous permet de traiter d'avantage de connexions simultanées, ce qui
-      minimise l'effet des attaques DoS. Dans le futur, le module mpm expérimental
+      minimise l'effet des attaques DoS. Dans le futur, le module mpm
       <code class="module"><a href="../mod/event.html">event</a></code> utilisera un traitement asynchrone afin de ne pas
-      dédier un thread à chaque connexion. Il est en cours d'étude à
-      l'heure actuelle et n'est pas encore entièrement implémenté. En
-      particulier, le mpm <code class="module"><a href="../mod/event.html">event</a></code> est actuellement incompatible
+      dédier un thread à chaque connexion. De par la
+      nature de la bibliothèque OpenSSL, le module mpm <code class="module"><a href="../mod/event.html">event</a></code> est actuellement incompatible
       avec le module <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> ainsi que d'autres filtres
-      en entrée.</li>
+      en entrée. Dans ces cas, son comportement se ramène à celui
+      du module mpm <code class="module"><a href="../mod/worker.html">worker</a></code>.</li>
 
       <li>Il existe de nombreux modules tiers disponibles à <a href="http://modules.apache.org/">http://modules.apache.org/</a> qui
       peuvent retreindre les comportements de certains clients et ainsi

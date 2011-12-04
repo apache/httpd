@@ -1506,58 +1506,62 @@ personnalisation des réponses</a></li>
 <tr><td><code>%%</code></td>
         <td>Le signe pourcentage</td></tr>
 <tr class="odd"><td><code>%a</code></td>
-        <td>Adresse IP et port distants</td></tr>
-<tr><td><code>%A</code></td>
+        <td>Adresse IP et port clients</td></tr>
+<tr><td><code>%{c}a</code></td>
+        <td>Port et adresse IP sous-jacents du correspondant pour la
+	connexion (voir le module
+	<code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code>)</td></tr>
+<tr class="odd"><td><code>%A</code></td>
         <td>Adresse IP et port locaux</td></tr>
-<tr class="odd"><td><code>%{<em>name</em>}e</code></td>
+<tr><td><code>%{<em>name</em>}e</code></td>
         <td>Variable d'environnement de requête <em>name</em></td></tr>
-<tr><td><code>%E</code></td>
+<tr class="odd"><td><code>%E</code></td>
         <td>Etat d'erreur APR/OS et chaîne</td></tr>
-<tr class="odd"><td><code>%F</code></td>
+<tr><td><code>%F</code></td>
         <td>Nom du fichier source et numéro de ligne de l'appel du
 	journal</td></tr>
-<tr><td><code>%{<em>name</em>}i</code></td>
+<tr class="odd"><td><code>%{<em>name</em>}i</code></td>
         <td>En-tête de requête <em>name</em></td></tr>
-<tr class="odd"><td><code>%k</code></td>
+<tr><td><code>%k</code></td>
         <td>Nombre de requêtes persistantes pour cette connexion</td></tr>
-<tr><td><code>%l</code></td>
+<tr class="odd"><td><code>%l</code></td>
         <td>Sévérité du message</td></tr>
-<tr class="odd"><td><code>%L</code></td>
+<tr><td><code>%L</code></td>
         <td>Identifiant journal de la requête</td></tr>
-<tr><td><code>%{c}L</code></td>
+<tr class="odd"><td><code>%{c}L</code></td>
         <td>Identifiant journal de la connexion</td></tr>
-<tr class="odd"><td><code>%{C}L</code></td>
+<tr><td><code>%{C}L</code></td>
         <td>Identifiant journal de la connexion si utilisé dans la
 	portée de la connexion, vide sinon</td></tr>
-<tr><td><code>%m</code></td>
+<tr class="odd"><td><code>%m</code></td>
         <td>Nom du module qui effectue la journalisation du message</td></tr>
-<tr class="odd"><td><code>%M</code></td>
+<tr><td><code>%M</code></td>
         <td>Le message effectif</td></tr>
-<tr><td><code>%{<em>name</em>}n</code></td>
+<tr class="odd"><td><code>%{<em>name</em>}n</code></td>
         <td>Note de requête <em>name</em></td></tr>
-<tr class="odd"><td><code>%P</code></td>
+<tr><td><code>%P</code></td>
         <td>Identifiant du processus courant</td></tr>
-<tr><td><code>%T</code></td>
+<tr class="odd"><td><code>%T</code></td>
         <td>Identifiant du thread courant</td></tr>
-<tr class="odd"><td><code>%{g}T</code></td>
+<tr><td><code>%{g}T</code></td>
         <td>Identifiant unique de thread système du thread courant
 	(l'identifiant affiché par la commande <code>top</code> par
 	exemple ; seulement sous Linux pour l'instant)</td></tr>
-<tr><td><code>%t</code></td>
+<tr class="odd"><td><code>%t</code></td>
         <td>L'heure courante</td></tr>
-<tr class="odd"><td><code>%{u}t</code></td>
+<tr><td><code>%{u}t</code></td>
         <td>L'heure courante avec les microsecondes</td></tr>
-<tr><td><code>%{cu}t</code></td>
+<tr class="odd"><td><code>%{cu}t</code></td>
         <td>L'heure courante au format compact ISO 8601, avec les
 	microsecondes</td></tr>
-<tr class="odd"><td><code>%v</code></td>
+<tr><td><code>%v</code></td>
         <td>Le nom de serveur canonique <code class="directive"><a href="#servername">ServerName</a></code> du serveur courant.</td></tr>
-<tr><td><code>%V</code></td>
+<tr class="odd"><td><code>%V</code></td>
         <td>Le nom de serveur du serveur qui sert la requête en accord
 	avec la définition de la directive <code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code>.</td></tr>
-<tr class="odd"><td><code>\&nbsp;</code> (anti-slash espace)</td>
+<tr><td><code>\&nbsp;</code> (anti-slash espace)</td>
         <td>Espace non délimiteur</td></tr>
-<tr><td><code>%&nbsp;</code> (pourcentage espace)</td>
+<tr class="odd"><td><code>%&nbsp;</code> (pourcentage espace)</td>
         <td>Délimiteur de champ (aucune sortie)</td></tr>
 </table>
 
