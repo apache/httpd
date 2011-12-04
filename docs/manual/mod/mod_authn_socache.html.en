@@ -185,7 +185,7 @@ the load on backends</td></tr>
 </table>
     <p>This is a server-wide setting to select a provider for the
     <a href="../socache.html">shared object cache</a>.
-    Values are "dbm", "dc", "mc", or "shmcb", each subject to the
+    Values are "dbm", "dc", "memcache", or "shmcb", each subject to the
     appropriate module being loaded.  If not set, your platform's
        default will be used.</p>
 

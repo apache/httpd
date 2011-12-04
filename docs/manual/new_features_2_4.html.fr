@@ -71,6 +71,17 @@ serveur HTTP Apache</h1>
       permettent de définir une configuration en fonction de critères
       liés à la requête.</dd>
 
+      <dt>Interpréteur d'expressions à usage général</dt>
+      <dd>Un nouvel interpréteur d'expressions permet de spécifier des
+      <a href="expr.html">conditions complexes</a> via des directives à
+      syntaxe commune comme <code class="directive"><a href="./mod/mod_setenvif.html#setenvifexpr">SetEnvIfExpr</a></code>, <code class="directive"><a href="./mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>, <code class="directive"><a href="./mod/mod_headers.html#header">Header</a></code>, <code class="directive"><a href="./mod/mod_headers.html#if">&lt;If&gt;</a></code>, etc...
+      </dd>
+
+      <dt>Utilisation de la mémoire en baisse</dt>
+      <dd>Malgré l'ajout de nombreuses nouvelles fonctionnalités, la
+      version 2.4.x tend à utiliser moins de mémoire que la version
+      2.2.x.</dd>
+
       <dt>NameVirtualHost directive</dt>
       <dd>Cette directive obsolète n'est plus utile.</dd>
 
@@ -307,12 +318,6 @@ serveur HTTP Apache</h1>
       <dd>Nous disposons à présent d'un analyseur générique d'expressions, dont l'API
       est décrite dans <var>ap_expr.h</var>. Il s'agit d'une adaptation de
       l'analyseur qu'on trouvait auparavant dans <code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>.</dd>
-
-      <dd>L'analyseur d'expressions permet de spécifier des <a href="expr.html">conditions complexes</a> dans des directives
-      comme <code class="directive"><a href="./mod/mod_setenvif.html#setenvifexpr">SetEnvIfExpr</a></code>,
-      <code class="directive"><a href="./mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> et
-      <code class="directive"><a href="./mod/mod_headers.html#header">Header</a></code>.
-      </dd>
 
       <dt>Conteneurs de logique d'autorisation</dt>
 

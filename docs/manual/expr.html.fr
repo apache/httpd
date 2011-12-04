@@ -225,6 +225,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 <tr class="odd"><td><code>CONN_LOG_ID</code></td>
         <td>L'identifiant du message d'erreur associé à la connexion
 	(voir la directive <code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code>)</td></tr>
+<tr><td><code>CONN_REMOTE_ADDR</code></td>
+        <td>L'adresse IP du correspondant pour la connexion (voir le module
+	<code class="module"><a href="./mod/mod_remoteip.html">mod_remoteip</a></code>)</td></tr>
 </table>
 
     <p>Variables diverses</p>
