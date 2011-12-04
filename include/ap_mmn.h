@@ -371,10 +371,10 @@
  *                         add pool to ap_errorlog_info.
  * 20111130.0 (2.4.0-dev)  c->remote_ip becomes c->peer_ip and r->client_ip,
  *                         c->remote_addr becomes c->peer_addr and r->client_addr
- * 20111201.0 (2.5.0-dev)  Add invalidate_entity() to the cache provider.
- * 20111202.0 (2.5.0-dev)  Use apr_status_t across mod_session API.
- * 20111202.1 (2.5.0-dev)  add APLOGNO()
- * 20111303.0 (2.5.0-dev)  Optional ap_proxy_retry_worker(), remove
+ * 20111201.0 (2.4.0-dev)  Add invalidate_entity() to the cache provider.
+ * 20111202.0 (2.4.0-dev)  Use apr_status_t across mod_session API.
+ * 20111202.1 (2.4.0-dev)  add APLOGNO()
+ * 20111303.0 (2.4.0-dev)  Optional ap_proxy_retry_worker(), remove
  *                         ap_proxy_string_read(), ap_cache_liststr(),
  *                         ap_proxy_buckets_lifetime_transform(),
  *                         ap_proxy_date_canon(), ap_proxy_is_ipaddr(),
