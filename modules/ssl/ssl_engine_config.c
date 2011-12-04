@@ -1150,7 +1150,9 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd,
             all_names = apr_array_pstrcat(cmd->pool, name_list, ',');
 
             err = apr_psprintf(cmd->pool, "'%s' session cache not supported "
-                               "(known names: %s)", name, all_names);
+                               "(known names: %s). Maybe you need to load the "
+                               "appropriate socache module (mod_socache_%s?).",
+                               name, all_names, name);
         }
     }
 
