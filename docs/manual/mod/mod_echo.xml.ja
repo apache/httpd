@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 421100:654517 (outdated) -->
+<!-- English Revision: 654517 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -41,9 +41,10 @@
 <name>ProtocolEcho</name>
 <description>エコーサーバの有効無効を設定します。</description>
 <syntax>ProtocolEcho On|Off</syntax>
+<default>ProtocolEcho Off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Apache 2.0 以降</compatibility>
+<compatibility>Apache 2.0 以降で使用可能</compatibility>
 
 <usage>
     <p><directive>ProtocolEcho</directive> ディレクティブで
