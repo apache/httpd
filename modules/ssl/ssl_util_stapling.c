@@ -109,13 +109,13 @@ int ssl_stapling_init_cert(server_rec *s, modssl_ctx_t *mctx, X509 *x)
         return 0;
     cinf  = X509_get_ex_data(x, stapling_ex_idx);
     if (cinf) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02215)
                      "ssl_stapling_init_cert: certificate already initialized!");
         return 0;
     }
     cinf = OPENSSL_malloc(sizeof(certinfo));
     if (!cinf) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02216)
                      "ssl_stapling_init_cert: error allocating memory!");
         return 0;
     }
@@ -126,7 +126,7 @@ int ssl_stapling_init_cert(server_rec *s, modssl_ctx_t *mctx, X509 *x)
     issuer = stapling_get_issuer(mctx, x);
 
     if (issuer == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02217)
                      "ssl_stapling_init_cert: Can't retrieve issuer certificate!");
         return 0;
     }
@@ -141,7 +141,7 @@ int ssl_stapling_init_cert(server_rec *s, modssl_ctx_t *mctx, X509 *x)
     if (aia)
         cinf->uri = sk_OPENSSL_STRING_pop(aia);
     if (!cinf->uri && !mctx->stapling_force_url) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02218)
                      "ssl_stapling_init_cert: no responder URL");
     }
     if (aia)

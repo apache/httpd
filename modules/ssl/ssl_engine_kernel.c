@@ -330,7 +330,7 @@ int ssl_hook_Access(request_rec *r)
             return HTTP_UPGRADE_REQUIRED;
         }
 
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02219)
                       "access to %s failed, reason: %s",
                       r->filename, "SSL connection required");
 
@@ -482,7 +482,7 @@ int ssl_hook_Access(request_rec *r)
             }
 #endif
             /* tracing */
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02220)
                          "Reconfigured cipher suite will force renegotiation");
         }
     }
@@ -673,7 +673,7 @@ int ssl_hook_Access(request_rec *r)
          * here because it resets too much of the connection.  So we set the
          * state explicitly and continue the handshake manually.
          */
-        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02221)
                       "Requesting connection re-negotiation");
 
         if (renegotiate_quick) {
@@ -699,7 +699,7 @@ int ssl_hook_Access(request_rec *r)
             }
 
             if (!cert_stack || (sk_X509_num(cert_stack) == 0)) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02222)
                               "Cannot find peer certificate chain");
 
                 return HTTP_FORBIDDEN;
@@ -708,7 +708,7 @@ int ssl_hook_Access(request_rec *r)
             if (!(cert_store ||
                   (cert_store = SSL_CTX_get_cert_store(ctx))))
             {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02223)
                               "Cannot find certificate storage");
 
                 return HTTP_FORBIDDEN;
@@ -730,7 +730,7 @@ int ssl_hook_Access(request_rec *r)
                                        (char *)ssl);
 
             if (!X509_verify_cert(&cert_store_ctx)) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02224)
                               "Re-negotiation verification step failed");
                 ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, r->server);
             }
@@ -787,7 +787,7 @@ int ssl_hook_Access(request_rec *r)
             SSL_do_handshake(ssl);
 
             if (SSL_get_state(ssl) != SSL_ST_OK) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02225)
                               "Re-negotiation request failed");
                 ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, r->server);
 
@@ -795,7 +795,7 @@ int ssl_hook_Access(request_rec *r)
                 return HTTP_FORBIDDEN;
             }
 
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02226)
                           "Awaiting re-negotiation handshake");
 
             /* XXX: Should replace setting ssl->state with SSL_renegotiate(ssl);
@@ -886,7 +886,7 @@ int ssl_hook_Access(request_rec *r)
         if (val && val[0])
             r->user = val;
         else
-            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(02227)
                           "Failed to set r->user to '%s'", dc->szUserName);
     }
 
@@ -919,10 +919,10 @@ int ssl_hook_Access(request_rec *r)
                           "(requirement expression not fulfilled)",
                           r->filename, r->client_ip);
 
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02228)
                           "Failed expression: %s", req->cpExpr);
 
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02229)
                           "access to %s failed, reason: %s",
                           r->filename,
                           "SSL requirement expression not fulfilled");
