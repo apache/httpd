@@ -52,7 +52,7 @@
     <dt>"dc" (mod_socache_dc)</dt>
     <dd>This makes use of the <a href="http://www.distcache.org/">distcache</a>
     distributed session caching libraries.</dd>
-    <dt>"mc" (mod_socache_memcache)</dt>
+    <dt>"memcache" (mod_socache_memcache)</dt>
     <dd>This makes use of the <a href="http://memcached.org/">memcached</a>
     high-performance, distributed memory object caching system.</dd>
     <dt>"shmcb" (mod_socache_shmcb)</dt>
