@@ -192,7 +192,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
          */
         if (sc->server->pks->cert_files[0] == NULL
             && sc->server->pkcs7 == NULL) {
-            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, pServ,
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, pServ, APLOGNO(02240)
                          "Server should be SSL-aware but has no certificate "
                          "configured [Hint: SSLCertificateFile] (%s:%d)",
                          pServ->defn_name, pServ->defn_line_number);
@@ -228,7 +228,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                     ssl_die();
                 }
                 if ((pX509Cert = SSL_read_X509(szPath, NULL, NULL)) == NULL) {
-                    ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
+                    ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02241)
                                  "Init: Unable to read server certificate from"
                                  " file %s", szPath);
                     ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
@@ -245,7 +245,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
             at = ssl_util_algotypeof(pX509Cert, NULL);
             an = ssl_util_algotypestr(at);
             if (algoCert & at) {
-                ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
+                ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02242)
                              "Init: Multiple %s server certificates not "
                              "allowed", an);
                 ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
@@ -325,7 +325,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                  */
                 if ((rv = exists_and_readable(szPath, p,
                                               &pkey_mtime)) != APR_SUCCESS ) {
-                     ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
+                     ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(02243)
                                   "Init: Can't open server private key file "
                                   "%s",szPath);
                      ssl_die();
@@ -357,7 +357,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
 
                     if (asn1 && (asn1->source_mtime == pkey_mtime)) {
                         ap_log_error(APLOG_MARK, APLOG_INFO,
-                                     0, pServ,
+                                     0, pServ, APLOGNO(02244)
                                      "%s reusing existing "
                                      "%s private key on restart",
                                      cpVHostID, ssl_asn1_keystr(i));
@@ -421,7 +421,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                 }
 #ifdef WIN32
                 if (sc->server->pphrase_dialog_type == SSL_PPTYPE_BUILTIN) {
-                    ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
+                    ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02245)
                                  "Init: SSLPassPhraseDialog builtin is not "
                                  "supported on Win32 (key file "
                                  "%s)", szPath);
@@ -437,7 +437,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                         !isatty(fileno(stdout))) /* XXX: apr_isatty() */
                     {
                         ap_log_error(APLOG_MARK, APLOG_ERR, 0,
-                                     pServ,
+                                     pServ, APLOGNO(02246)
                                      "Init: Unable to read pass phrase "
                                      "[Hint: key introduced or changed "
                                      "before restart?]");
@@ -474,7 +474,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                 continue;
 
             if (pPrivateKey == NULL) {
-                ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
+                ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02247)
                             "Init: Unable to read server private key from "
                             "file %s [Hint: Perhaps it is in a separate file? "
                             "  See SSLCertificateKeyFile]", szPath);
@@ -489,7 +489,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
             at = ssl_util_algotypeof(NULL, pPrivateKey);
             an = ssl_util_algotypestr(at);
             if (algoKey & at) {
-                ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
+                ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02248)
                              "Init: Multiple %s server private keys not "
                              "allowed", an);
                 ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
@@ -501,20 +501,20 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
              * Log the type of reading
              */
             if (nPassPhraseDialogCur == 0) {
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, pServ,
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, pServ, APLOGNO(02249)
                              "unencrypted %s private key - pass phrase not "
                              "required", an);
             }
             else {
                 if (cpPassPhraseCur != NULL) {
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0,
-                                 pServ,
+                                 pServ, APLOGNO(02250)
                                  "encrypted %s private key - pass phrase "
                                  "requested", an);
                 }
                 else {
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0,
-                                 pServ,
+                                 pServ, APLOGNO(02251)
                                  "encrypted %s private key - pass phrase"
                                  " reused", an);
                 }

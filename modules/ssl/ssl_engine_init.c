@@ -493,7 +493,7 @@ static void ssl_init_ctx_protocol(server_rec *s,
      *  Create the new per-server SSL context
      */
     if (protocol == SSL_PROTOCOL_NONE) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02231)
                 "No SSL protocols available [hint: SSLProtocol]");
         ssl_die();
     }
@@ -881,19 +881,19 @@ static int ssl_server_import_cert(server_rec *s,
         return FALSE;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02232)
                  "Configuring %s server certificate", type);
 
     ptr = asn1->cpData;
     if (!(cert = d2i_X509(NULL, &ptr, asn1->nData))) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02233)
                 "Unable to import %s server certificate", type);
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
         ssl_die();
     }
 
     if (SSL_CTX_use_certificate(mctx->ssl_ctx, cert) <= 0) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02234)
                 "Unable to configure %s server certificate", type);
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
         ssl_die();
@@ -902,7 +902,7 @@ static int ssl_server_import_cert(server_rec *s,
 #ifdef HAVE_OCSP_STAPLING
     if ((mctx->pkp == FALSE) && (mctx->stapling_enabled == TRUE)) {
         if (!ssl_stapling_init_cert(s, mctx, cert)) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02235)
                          "Unable to configure server certificate for stapling");
         }
     }
@@ -936,20 +936,20 @@ static int ssl_server_import_key(server_rec *s,
         return FALSE;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02236)
                  "Configuring %s server private key", type);
 
     ptr = asn1->cpData;
     if (!(pkey = d2i_PrivateKey(pkey_type, NULL, &ptr, asn1->nData)))
     {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02237)
                 "Unable to import %s server private key", type);
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
         ssl_die();
     }
 
     if (SSL_CTX_use_PrivateKey(mctx->ssl_ctx, pkey) <= 0) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02238)
                 "Unable to configure %s server private key", type);
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
         ssl_die();
@@ -964,7 +964,7 @@ static int ssl_server_import_key(server_rec *s,
 
         if (pubkey && EVP_PKEY_missing_parameters(pubkey)) {
             EVP_PKEY_copy_parameters(pubkey, pkey);
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02239)
                     "Copying DSA parameters from private key to certificate");
             ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
             EVP_PKEY_free(pubkey);
@@ -1216,7 +1216,7 @@ static void ssl_init_proxy_certs(server_rec *s,
 
         if (!inf->x509 || !inf->x_pkey) {
             sk_X509_INFO_free(sk);
-            ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, s, APLOGNO(02252)
                          "incomplete client cert configured for SSL proxy "
                          "(missing or encrypted private key?)");
             ssl_die();
