@@ -313,7 +313,7 @@ static const ap_socache_provider_t socache_mc = {
 static void register_hooks(apr_pool_t *p)
 {
 #ifdef HAVE_APU_MEMCACHE
-    ap_register_provider(p, AP_SOCACHE_PROVIDER_GROUP, "mc",
+    ap_register_provider(p, AP_SOCACHE_PROVIDER_GROUP, "memcache",
                          AP_SOCACHE_PROVIDER_VERSION,
                          &socache_mc);
 #endif
