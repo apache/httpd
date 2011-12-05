@@ -447,19 +447,6 @@ static int wd_post_config_hook(apr_pool_t *pconf, apr_pool_t *plog,
         /* First time config phase -- skip. */
         return OK;
 
-#if defined(WIN32)
-    {
-        const char *ppid = getenv("AP_PARENT_PID");
-        if (ppid && *ppid) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01570)
-                "[%" APR_PID_T_FMT " - %s] "
-                "child second stage post config hook",
-                getpid(), ppid);
-            return OK;
-        }
-    }
-#endif
-
     apr_pool_userdata_get((void *)&wd_server_conf, pk, pproc);
     if (!wd_server_conf) {
         if (!(wd_server_conf = apr_pcalloc(pproc, sizeof(wd_server_conf_t))))
