@@ -1,6 +1,15 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.0
 
+  *) core, all modules: Add unique tag to most error log messages. [Stefan
+     Fritsch]
+
+  *) mod_socache_memcache: Change provider name from "mc" to "memcache" to
+     match module name. [Stefan Fritsch]
+
+  *) mod_slotmem_shm: Change provider name from "shared" to "shm" to match
+     module name. [Stefan Fritsch]
+
   *) mod_ldap: Fix segfault with Solaris LDAP when enabling ldaps. This
      requires an apr-util fix in which is available in apr-util >= 1.4.0.
      PR 42682. [Stefan Fritsch]
