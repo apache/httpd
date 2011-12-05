@@ -18,10 +18,6 @@
  */
 
 #include "apr.h"
-#if APR_HAVE_PROCESS_H
-#include <process.h>        /* for getpid() on Win32 */
-#endif
-
 #include "mod_watchdog.h"
 #include "ap_provider.h"
 #include "ap_mpm.h"
@@ -446,19 +442,6 @@ static int wd_post_config_hook(apr_pool_t *pconf, apr_pool_t *plog,
     if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG)
         /* First time config phase -- skip. */
         return OK;
-
-#if defined(WIN32)
-    {
-        const char *ppid = getenv("AP_PARENT_PID");
-        if (ppid && *ppid) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01570)
-                "[%" APR_PID_T_FMT " - %s] "
-                "child second stage post config hook",
-                getpid(), ppid);
-            return OK;
-        }
-    }
-#endif
 
     apr_pool_userdata_get((void *)&wd_server_conf, pk, pproc);
     if (!wd_server_conf) {
