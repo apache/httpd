@@ -47,9 +47,10 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(int, expr_lookup, (ap_expr_lookup_parms *parms),
 static const char *ap_expr_eval_string_func(ap_expr_eval_ctx_t *ctx,
                                             const ap_expr_t *info,
                                             const ap_expr_t *args);
-static const char *ap_expr_eval_re_backref(ap_expr_eval_ctx_t *ctx, int n);
+static const char *ap_expr_eval_re_backref(ap_expr_eval_ctx_t *ctx,
+                                           unsigned int n);
 static const char *ap_expr_eval_var(ap_expr_eval_ctx_t *ctx,
-                                    const ap_expr_var_func_t *func,
+                                    ap_expr_var_func_t *func,
                                     const void *data);
 
 /* define AP_EXPR_DEBUG to log the parse tree when parsing an expression */
@@ -132,7 +133,7 @@ static const char *ap_expr_eval_word(ap_expr_eval_ctx_t *ctx,
         break;
     }
     case op_RegexBackref: {
-        const int *np = node->node_arg1;
+        const unsigned int *np = node->node_arg1;
         result = ap_expr_eval_re_backref(ctx, *np);
         break;
     }
@@ -147,7 +148,7 @@ static const char *ap_expr_eval_word(ap_expr_eval_ctx_t *ctx,
 }
 
 static const char *ap_expr_eval_var(ap_expr_eval_ctx_t *ctx,
-                                    const ap_expr_var_func_t *func,
+                                    ap_expr_var_func_t *func,
                                     const void *data)
 {
     AP_DEBUG_ASSERT(func != NULL);
@@ -155,7 +156,7 @@ static const char *ap_expr_eval_var(ap_expr_eval_ctx_t *ctx,
     return (*func)(ctx, data);
 }
 
-static const char *ap_expr_eval_re_backref(ap_expr_eval_ctx_t *ctx, int n)
+static const char *ap_expr_eval_re_backref(ap_expr_eval_ctx_t *ctx, unsigned int n)
 {
     int len;
 
@@ -673,7 +674,7 @@ static void expr_dump_tree(const ap_expr_t *e, const server_rec *s,
 static int ap_expr_eval_unary_op(ap_expr_eval_ctx_t *ctx, const ap_expr_t *info,
                                  const ap_expr_t *arg)
 {
-    const ap_expr_op_unary_t *op_func = info->node_arg1;
+    ap_expr_op_unary_t *op_func = info->node_arg1;
     const void *data = info->node_arg2;
 
     AP_DEBUG_ASSERT(info->node_op == op_UnaryOpInfo);
@@ -686,7 +687,7 @@ static int ap_expr_eval_binary_op(ap_expr_eval_ctx_t *ctx,
                                   const ap_expr_t *info,
                                   const ap_expr_t *args)
 {
-    const ap_expr_op_binary_t *op_func = info->node_arg1;
+    ap_expr_op_binary_t *op_func = info->node_arg1;
     const void *data = info->node_arg2;
     const ap_expr_t *a1 = args->node_arg1;
     const ap_expr_t *a2 = args->node_arg2;
