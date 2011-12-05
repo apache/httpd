@@ -18,10 +18,6 @@
  */
 
 #include "apr.h"
-#if APR_HAVE_PROCESS_H
-#include <process.h>        /* for getpid() on Win32 */
-#endif
-
 #include "mod_watchdog.h"
 #include "ap_provider.h"
 #include "ap_mpm.h"
