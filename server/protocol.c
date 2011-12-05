@@ -666,7 +666,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
         && !r->parsed_uri.scheme 
         && uri[0] != '/'
         && !(uri[0] == '*' && uri[1] == '\0')) {
-        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00559)
                       "invalid request-URI %s", uri);
         r->args = NULL;
         r->hostname = NULL;
@@ -719,8 +719,8 @@ static int table_do_fn_check_lengths(void *r_, const char *key,
                                "\n<pre>\n",
                                ap_escape_html(r->pool, key),
                                "</pre>\n", NULL));
-    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, "Request header exceeds "
-                  "LimitRequestFieldSize after merging: %s", key);
+    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00560) "Request header "
+                  "exceeds LimitRequestFieldSize after merging: %s", key);
     return 0;
 }
 
@@ -779,7 +779,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                                            "<pre>\n",
                                            ap_escape_html(r->pool, field),
                                            "</pre>\n", NULL));
-                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00561)
                               "Request header exceeds LimitRequestFieldSize: "
                               "%.*s", field_name_len(field), field);
             }
@@ -809,7 +809,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                                                "<pre>\n",
                                                ap_escape_html(r->pool, last_field),
                                                "</pre>\n", NULL));
-                    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00562)
                                   "Request header exceeds LimitRequestFieldSize "
                                   "after folding: %.*s",
                                   field_name_len(last_field), last_field);
@@ -838,7 +838,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                     apr_table_setn(r->notes, "error-notes",
                                    "The number of request header fields "
                                    "exceeds this server's limit.");
-                    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00563)
                                   "Number of request headers exceeds "
                                   "LimitRequestFields");
                     return;
@@ -854,7 +854,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                                                ap_escape_html(r->pool,
                                                               last_field),
                                                "</pre>\n", NULL));
-                    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00564)
                                   "Request header field is missing ':' "
                                   "separator: %.*s", (int)LOG_NAME_MAX_LEN,
                                   last_field);
@@ -991,12 +991,12 @@ request_rec *ap_read_request(conn_rec *conn)
         if (r->status == HTTP_REQUEST_URI_TOO_LARGE
             || r->status == HTTP_BAD_REQUEST) {
             if (r->status == HTTP_REQUEST_URI_TOO_LARGE) {
-                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00565)
                               "request failed: URI too long (longer than %d)",
                               r->server->limit_req_line);
             }
             else if (r->method == NULL) {
-                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00566)
                               "request failed: invalid characters in URI");
             }
             ap_send_error_response(r, 0);
@@ -1033,7 +1033,7 @@ request_rec *ap_read_request(conn_rec *conn)
     if (!r->assbackwards) {
         ap_get_mime_headers_core(r, tmp_bb);
         if (r->status != HTTP_OK) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00567)
                           "request failed: error reading the headers");
             ap_send_error_response(r, 0);
             ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
@@ -1058,7 +1058,7 @@ request_rec *ap_read_request(conn_rec *conn)
              * headers! Have to dink things just to make sure the error message
              * comes through...
              */
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00568)
                           "client sent invalid HTTP/0.9 request: HEAD %s",
                           r->uri);
             r->header_only = 0;
@@ -1100,7 +1100,7 @@ request_rec *ap_read_request(conn_rec *conn)
          * a Host: header, and the server MUST respond with 400 if it doesn't.
          */
         r->status = HTTP_BAD_REQUEST;
-        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00569)
                       "client sent HTTP/1.1 request without hostname "
                       "(see RFC2616 section 14.23): %s", r->uri);
     }
@@ -1143,7 +1143,7 @@ request_rec *ap_read_request(conn_rec *conn)
         }
         else {
             r->status = HTTP_EXPECTATION_FAILED;
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00570)
                           "client sent an unrecognized expectation value of "
                           "Expect: %s", expect);
             ap_send_error_response(r, 0);
@@ -1267,7 +1267,7 @@ AP_DECLARE(void) ap_note_auth_failure(request_rec *r)
     }
     else {
         ap_log_rerror(APLOG_MARK, APLOG_ERR,
-                      0, r, "need AuthType to note auth failure: %s", r->uri);
+                      0, r, APLOGNO(00571) "need AuthType to note auth failure: %s", r->uri);
     }
 }
 
@@ -1294,7 +1294,7 @@ AP_DECLARE(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
 
     if (!ap_auth_name(r)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR,
-                      0, r, "need AuthName: %s", r->uri);
+                      0, r, APLOGNO(00572) "need AuthName: %s", r->uri);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
@@ -1305,7 +1305,7 @@ AP_DECLARE(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
 
     if (strcasecmp(ap_getword(r->pool, &auth_line, ' '), "Basic")) {
         /* Client tried to authenticate using wrong auth scheme */
-        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00573)
                       "client used wrong authentication scheme: %s", r->uri);
         ap_note_auth_failure(r);
         return HTTP_UNAUTHORIZED;
@@ -1399,7 +1399,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(
                 continue;
             }
             else {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(00574)
                               "ap_content_length_filter: "
                               "apr_bucket_read() failed");
                 return rv;
@@ -1754,7 +1754,7 @@ AP_DECLARE(void) ap_send_interim_response(request_rec *r, int send_headers)
         return;
     }
     if (!ap_is_HTTP_INFO(r->status)) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00575)
                       "Status is %d - not sending interim response", r->status);
         return;
     }

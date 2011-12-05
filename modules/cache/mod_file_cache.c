@@ -133,24 +133,24 @@ static void cache_the_file(cmd_parms *cmd, const char *filename, int mmap)
 
     fspec = ap_server_root_relative(cmd->pool, filename);
     if (!fspec) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, APR_EBADPATH, cmd->server,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, APR_EBADPATH, cmd->server, APLOGNO(00794)
                      "invalid file path "
                      "%s, skipping", filename);
         return;
     }
     if ((rc = apr_stat(&tmp.finfo, fspec, APR_FINFO_MIN,
                                  cmd->temp_pool)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server, APLOGNO(00795)
                      "unable to stat(%s), skipping", fspec);
         return;
     }
     if (tmp.finfo.filetype != APR_REG) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(00796)
                      "%s isn't a regular file, skipping", fspec);
         return;
     }
     if (tmp.finfo.size > AP_MAX_SENDFILE) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(00797)
                      "%s is too large to cache, skipping", fspec);
         return;
     }
@@ -158,7 +158,7 @@ static void cache_the_file(cmd_parms *cmd, const char *filename, int mmap)
     rc = apr_file_open(&fd, fspec, APR_READ | APR_BINARY | APR_XTHREAD,
                        APR_OS_DEFAULT, cmd->pool);
     if (rc != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server, APLOGNO(00798)
                      "unable to open(%s, O_RDONLY), skipping", fspec);
         return;
     }
@@ -178,7 +178,7 @@ static void cache_the_file(cmd_parms *cmd, const char *filename, int mmap)
                                   (apr_size_t)new_file->finfo.size,
                                   APR_MMAP_READ, cmd->pool)) != APR_SUCCESS) {
             apr_file_close(fd);
-            ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server,
+            ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server, APLOGNO(00799)
                          "unable to mmap %s, skipping", filename);
             return;
         }
@@ -209,7 +209,7 @@ static const char *cachefilehandle(cmd_parms *cmd, void *dummy, const char *file
     cache_the_file(cmd, filename, 0);
 #else
     /* Sendfile not supported by this OS */
-    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(00800)
                  "unable to cache file: %s. Sendfile is not supported on this OS", filename);
 #endif
     return NULL;
@@ -220,7 +220,7 @@ static const char *cachefilemmap(cmd_parms *cmd, void *dummy, const char *filena
     cache_the_file(cmd, filename, 1);
 #else
     /* MMAP not supported by this OS */
-    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(00801)
                  "unable to cache file: %s. MMAP is not supported by this OS", filename);
 #endif
     return NULL;

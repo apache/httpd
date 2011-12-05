@@ -1118,7 +1118,7 @@ static char *select_random_value_part(request_rec *r, char *value)
 static void rewrite_child_errfn(apr_pool_t *p, apr_status_t err,
                                 const char *desc)
 {
-    ap_log_error(APLOG_MARK, APLOG_ERR, err, NULL, "%s", desc);
+    ap_log_error(APLOG_MARK, APLOG_ERR, err, NULL, APLOGNO(00653) "%s", desc);
 }
 
 static apr_status_t rewritemap_program_child(apr_pool_t *p,
@@ -1194,7 +1194,7 @@ static apr_status_t run_rewritemap_programs(server_rec *s, apr_pool_t *p)
         rc = rewritemap_program_child(p, map->argv[0], map->argv,
                                       &fpout, &fpin);
         if (rc != APR_SUCCESS || fpin == NULL || fpout == NULL) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rc, s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, rc, s, APLOGNO(00654)
                          "mod_rewrite: could not start RewriteMap "
                          "program %s", map->checkfile);
             return rc;
@@ -1225,7 +1225,7 @@ static char *lookup_map_txtfile(request_rec *r, const char *file, char *key)
     if ((rv = apr_file_open(&fp, file, APR_READ|APR_BUFFERED, APR_OS_DEFAULT,
                             r->pool)) != APR_SUCCESS)
     {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(00655)
                       "mod_rewrite: can't open text RewriteMap file %s", file);
         return NULL;
     }
@@ -1287,7 +1287,7 @@ static char *lookup_map_dbmfile(request_rec *r, const char *file,
     if ((rv = apr_dbm_open_ex(&dbmfp, dbmtype, file, APR_DBM_READONLY,
                               APR_OS_DEFAULT, r->pool)) != APR_SUCCESS)
     {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(00656)
                       "mod_rewrite: can't open DBM RewriteMap %s", file);
         return NULL;
     }
@@ -1323,7 +1323,7 @@ static char *lookup_map_dbd(request_rec *r, char *key, const char *label)
                           stmt, 0, key, NULL);
     if (rv != 0) {
         errmsg = apr_dbd_error(db->driver, db->handle, rv);
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00657)
                       "rewritemap: error %s querying for %s", errmsg, key);
         return NULL;
     }
@@ -1341,7 +1341,7 @@ static char *lookup_map_dbd(request_rec *r, char *key, const char *label)
     }
     if (rv != -1) {
         errmsg = apr_dbd_error(db->driver, db->handle, rv);
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00658)
                       "rewritemap: error %s looking up %s", errmsg, key);
     }
     switch (n) {
@@ -1391,7 +1391,7 @@ static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
     if (rewrite_mapr_lock_acquire) {
         rv = apr_global_mutex_lock(rewrite_mapr_lock_acquire);
         if (rv != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(00659)
                           "apr_global_mutex_lock(rewrite_mapr_lock_acquire) "
                           "failed");
             return NULL; /* Maybe this should be fatal? */
@@ -1503,7 +1503,7 @@ static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
     if (rewrite_mapr_lock_acquire) {
         rv = apr_global_mutex_unlock(rewrite_mapr_lock_acquire);
         if (rv != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(00660)
                           "apr_global_mutex_unlock(rewrite_mapr_lock_acquire) "
                           "failed");
             return NULL; /* Maybe this should be fatal? */
@@ -1546,7 +1546,7 @@ static char *lookup_map(request_rec *r, char *name, char *key)
     case MAPTYPE_TXT:
         rv = apr_stat(&st, s->checkfile, APR_FINFO_MIN, r->pool);
         if (rv != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(00661)
                           "mod_rewrite: can't access text RewriteMap file %s",
                           s->checkfile);
             return NULL;
@@ -1587,7 +1587,7 @@ static char *lookup_map(request_rec *r, char *name, char *key)
     case MAPTYPE_DBM:
         rv = apr_stat(&st, s->checkfile, APR_FINFO_MIN, r->pool);
         if (rv != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(00662)
                           "mod_rewrite: can't access DBM RewriteMap file %s",
                           s->checkfile);
         }
@@ -1596,7 +1596,7 @@ static char *lookup_map(request_rec *r, char *name, char *key)
 
             rv = apr_stat(&st2, s->checkfile2, APR_FINFO_MIN, r->pool);
             if (rv != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(00663)
                               "mod_rewrite: can't access DBM RewriteMap "
                               "file %s", s->checkfile2);
             }
@@ -2887,7 +2887,7 @@ static const char *cmd_rewriteoptions(cmd_parms *cmd,
             options |= OPTION_NOSLASH;
         }
         else if (!strncasecmp(w, "MaxRedirects=", 13)) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(00664)
                          "RewriteOptions: MaxRedirects option has been "
                          "removed in favor of the global "
                          "LimitInternalRecursion directive and will be "
@@ -3302,7 +3302,7 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
     if ((newcond->ptype != CONDPAT_REGEX) &&
         (newcond->ptype < CONDPAT_STR_LT || newcond->ptype > CONDPAT_STR_GE) &&
         (newcond->flags & CONDFLAG_NOCASE)) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(00665)
                      "RewriteCond: NoCase option for non-regex pattern '%s' "
                      "is not supported and will be ignored. (%s:%d)", a2,
                      cmd->directive->filename, cmd->directive->line_num);
@@ -4345,7 +4345,7 @@ static void init_child(apr_pool_t *p, server_rec *s)
         rv = apr_global_mutex_child_init(&rewrite_mapr_lock_acquire,
                  apr_global_mutex_lockfile(rewrite_mapr_lock_acquire), p);
         if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(00666)
                          "mod_rewrite: could not init rewrite_mapr_lock_acquire"
                          " in child");
         }
@@ -4353,7 +4353,7 @@ static void init_child(apr_pool_t *p, server_rec *s)
 
     /* create the lookup cache */
     if (!init_cache(p)) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(00667)
                      "mod_rewrite: could not init map cache in child");
     }
 }
@@ -4426,7 +4426,7 @@ static int hook_uri2file(request_rec *r)
 
     /* Check that the URI is valid. */
     if (!r->uri || r->uri[0] != '/') {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00668)
                      "Invalid URI in request %s", r->the_request);
         return HTTP_BAD_REQUEST;
     }
@@ -4517,7 +4517,7 @@ static int hook_uri2file(request_rec *r)
              * we can actually use it!
              */
             if (!proxy_available) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00669)
                               "attempt to make remote request from mod_rewrite "
                               "without proxy enabled: %s", r->filename);
                 return HTTP_FORBIDDEN;
@@ -4739,7 +4739,7 @@ static int hook_fixup(request_rec *r)
      */
     if (!(ap_allow_options(r) & (OPT_SYM_LINKS | OPT_SYM_OWNER))) {
         /* FollowSymLinks is mandatory! */
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00670)
                      "Options FollowSymLinks and SymLinksIfOwnerMatch are both off, "
                      "so the RewriteRule directive is also forbidden "
                      "due to its similar ability to circumvent directory restrictions : "

@@ -164,7 +164,7 @@ static int proxy_connect_transfer(request_rec *r, conn_rec *c_i, conn_rec *c_o,
 #ifdef DEBUGGING
             len = -1;
             apr_brigade_length(bb, 0, &len);
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01016)
                           "read %" APR_OFF_T_FMT
                           " bytes from %s", len, name);
 #endif
@@ -173,12 +173,12 @@ static int proxy_connect_transfer(request_rec *r, conn_rec *c_i, conn_rec *c_o,
                 ap_fflush(c_o->output_filters, bb);
             }
             else {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01017)
                               "error on %s - ap_pass_brigade",
                               name);
             }
         } else if (!APR_STATUS_IS_EAGAIN(rv)) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO(01018)
                           "error on %s - ap_get_brigade",
                           name);
         }
@@ -243,7 +243,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
                                          NULL));
     }
 
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01019)
                   "connecting %s to %s:%d", url, uri.hostname, uri.port);
 
     /* do a DNS lookup for the destination host */
@@ -326,7 +326,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
 
     if ((rv = apr_pollset_create(&pollset, 2, r->pool, 0)) != APR_SUCCESS) {
         apr_socket_close(sock);
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01020)
                       "error apr_pollset_create()");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -353,7 +353,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
                                         c->id, c->sbh, c->bucket_alloc);
     if (!backconn) {
         /* peer reset */
-        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01021)
                       "an error occurred creating a new connection "
                       "to %pI (%s)", connect_addr, connectname);
         apr_socket_close(sock);
@@ -363,7 +363,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
     rc = ap_run_pre_connection(backconn, sock);
     if (rc != OK && rc != DONE) {
         backconn->aborted = 1;
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01022)
                       "pre_connection setup failed (%d)", rc);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -435,11 +435,11 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
                 continue;
             }
             apr_socket_close(sock);
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "error apr_poll()");
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01023) "error apr_poll()");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
 #ifdef DEBUGGING
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01024)
                       "woke from poll(), i=%d", pollcnt);
 #endif
 
@@ -450,7 +450,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
                 pollevent = cur->rtnevents;
                 if (pollevent & APR_POLLIN) {
 #ifdef DEBUGGING
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01025)
                                   "sock was readable");
 #endif
                     rv = proxy_connect_transfer(r, backconn, c, bb, "sock");
@@ -458,7 +458,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
                 else if ((pollevent & APR_POLLERR)
                          || (pollevent & APR_POLLHUP)) {
                          rv = APR_EPIPE;
-                         ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r,
+                         ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO(01026)
                                        "err/hup on backconn");
                 }
                 if (rv != APR_SUCCESS)
@@ -468,7 +468,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
                 pollevent = cur->rtnevents;
                 if (pollevent & APR_POLLIN) {
 #ifdef DEBUGGING
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01027)
                                   "client was readable");
 #endif
                     rv = proxy_connect_transfer(r, c, backconn, bb, "client");
@@ -476,7 +476,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
             }
             else {
                 rv = APR_EBADF;
-                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01028)
                               "unknown socket in pollset");
             }
 

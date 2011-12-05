@@ -439,12 +439,12 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
          */
         if ((rv = apr_file_open(&fh, *cmd, APR_READ | APR_BUFFERED,
                                  APR_OS_DEFAULT, r->pool)) != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(02100)
                           "Failed to open cgi file %s for testing", *cmd);
             return rv;
         }
         if ((rv = apr_file_read(fh, buffer, &bytes)) != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(02101)
                           "Failed to read cgi file %s for testing", *cmd);
             return rv;
         }
@@ -505,7 +505,7 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
         }
     }
     if (!interpreter) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02102)
                       "%s is not executable; ensure interpreted scripts have "
                       "\"#!\" or \"'!\" first line", *cmd);
         return APR_EBADF;

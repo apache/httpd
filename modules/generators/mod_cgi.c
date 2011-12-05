@@ -210,7 +210,7 @@ static apr_status_t log_script_err(request_rec *r, apr_file_t *script_err)
         if (newline) {
             *newline = '\0';
         }
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01215)
                       "%s", argsbuffer);
     }
 
@@ -449,7 +449,7 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
                                         e_info->addrspace)) != APR_SUCCESS) ||
         ((rc = apr_procattr_child_errfn_set(procattr, cgi_child_errfn)) != APR_SUCCESS)) {
         /* Something bad happened, tell the world. */
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r, APLOGNO(01216)
                       "couldn't set child process attributes: %s", r->filename);
     }
     else {
@@ -587,7 +587,7 @@ static apr_bucket *cgi_bucket_create(request_rec *r,
     /* Create the pollset */
     rv = apr_pollset_create(&data->pollset, 2, r->pool, 0);
     if (rv != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01217)
                      "apr_pollset_create(); check system or user limits");
         return NULL;
     }
@@ -599,7 +599,7 @@ static apr_bucket *cgi_bucket_create(request_rec *r,
     fd.client_data = (void *)1;
     rv = apr_pollset_add(data->pollset, &fd);
     if (rv != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01218)
                      "apr_pollset_add(); check system or user limits");
         return NULL;
     }
@@ -608,7 +608,7 @@ static apr_bucket *cgi_bucket_create(request_rec *r,
     fd.client_data = (void *)2;
     rv = apr_pollset_add(data->pollset, &fd);
     if (rv != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01219)
                      "apr_pollset_add(); check system or user limits");
         return NULL;
     }
@@ -690,7 +690,7 @@ static apr_status_t cgi_bucket_read(apr_bucket *b, const char **str,
         rv = apr_pollset_poll(data->pollset, timeout, &num, &results);
         if (APR_STATUS_IS_TIMEUP(rv)) {
             if (timeout) {
-                ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, data->r,
+                ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, data->r, APLOGNO(01220)
                               "Timeout waiting for output from CGI script %s",
                               data->r->filename);
                 return rv;
@@ -703,7 +703,7 @@ static apr_status_t cgi_bucket_read(apr_bucket *b, const char **str,
             continue;
         }
         else if (rv != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, data->r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, data->r, APLOGNO(01221)
                           "poll failed waiting for CGI child");
             return rv;
         }
@@ -820,7 +820,7 @@ static int cgi_handler(request_rec *r)
 
     /* build the command line */
     if ((rv = cgi_build_command(&command, &argv, r, p, &e_info)) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01222)
                       "don't know how to spawn child process: %s",
                       r->filename);
         return HTTP_INTERNAL_SERVER_ERROR;
@@ -829,7 +829,7 @@ static int cgi_handler(request_rec *r)
     /* run the script in its own process */
     if ((rv = run_cgi_child(&script_out, &script_in, &script_err,
                             command, argv, r, p, &e_info)) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01223)
                       "couldn't spawn child process: %s", r->filename);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -852,11 +852,11 @@ static int cgi_handler(request_rec *r)
 
         if (rv != APR_SUCCESS) {
             if (APR_STATUS_IS_TIMEUP(rv)) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01224)
                               "Timeout during reading request entity data");
                 return HTTP_REQUEST_TIME_OUT;
             }
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01225)
                           "Error reading request entity data");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
@@ -1130,7 +1130,7 @@ static apr_status_t include_cmd(include_ctx_t *ctx, ap_filter_t *f,
 
     if ((rv = cgi_build_command(&command, &argv, r, r->pool,
                                 &e_info)) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01226)
                       "don't know how to spawn cmd child process: %s",
                       r->filename);
         return rv;
@@ -1140,7 +1140,7 @@ static apr_status_t include_cmd(include_ctx_t *ctx, ap_filter_t *f,
     if ((rv = run_cgi_child(&script_out, &script_in, &script_err,
                             command, argv, r, r->pool,
                             &e_info)) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01227)
                       "couldn't spawn child process: %s", r->filename);
         return rv;
     }
@@ -1183,7 +1183,7 @@ static apr_status_t handle_exec(include_ctx_t *ctx, ap_filter_t *f,
     }
 
     if (ctx->flags & SSI_FLAG_NO_EXEC) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "exec used but not allowed "
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01228) "exec used but not allowed "
                       "in %s", r->filename);
         SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
         return APR_SUCCESS;
@@ -1203,7 +1203,7 @@ static apr_status_t handle_exec(include_ctx_t *ctx, ap_filter_t *f,
 
             rv = include_cmd(ctx, f, bb, parsed_string);
             if (rv != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "execution failure "
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01229) "execution failure "
                               "for parameter \"%s\" to tag exec in file %s",
                               tag, r->filename);
                 SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
@@ -1218,14 +1218,14 @@ static apr_status_t handle_exec(include_ctx_t *ctx, ap_filter_t *f,
 
             rv = include_cgi(ctx, f, bb, parsed_string);
             if (rv != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "invalid CGI ref "
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01230) "invalid CGI ref "
                               "\"%s\" in %s", tag_val, file);
                 SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
                 break;
             }
         }
         else {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "unknown parameter "
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01231) "unknown parameter "
                           "\"%s\" to tag exec in %s", tag, file);
             SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
             break;

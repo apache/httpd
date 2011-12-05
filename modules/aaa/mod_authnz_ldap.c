@@ -492,24 +492,24 @@ static authn_status authn_ldap_check_password(request_rec *r, const char *user,
                                        sec->deref, sec->secure);
     }
     else {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01690)
                       "auth_ldap authenticate: no sec->host - weird...?");
         return AUTH_GENERAL_ERROR;
     }
 
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01691)
                   "auth_ldap authenticate: using URL %s", sec->url);
 
     /* Get the password that the client sent */
     if (password == NULL) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01692)
                       "auth_ldap authenticate: no password specified");
         util_ldap_connection_close(ldc);
         return AUTH_GENERAL_ERROR;
     }
 
     if (user == NULL) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01693)
                       "auth_ldap authenticate: no user specified");
         util_ldap_connection_close(ldc);
         return AUTH_GENERAL_ERROR;
@@ -533,14 +533,14 @@ static authn_status authn_ldap_check_password(request_rec *r, const char *user,
     /* handle bind failure */
     if (result != LDAP_SUCCESS) {
         if (!sec->bind_authoritative) {
-           ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+           ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01694)
                       "auth_ldap authenticate: user %s authentication failed; "
                       "URI %s [%s][%s] (not authoritative)",
                       user, r->uri, ldc->reason, ldap_err2string(result));
            return AUTH_USER_NOT_FOUND;
         }
 
-        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01695)
                       "auth_ldap authenticate: "
                       "user %s authentication failed; URI %s [%s][%s]",
                       user, r->uri, ldc->reason, ldap_err2string(result));
@@ -580,7 +580,7 @@ static authn_status authn_ldap_check_password(request_rec *r, const char *user,
 
     /* sanity check */
     if (sec->remote_user_attribute && !remote_user_attribute_set) {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01696)
                   "auth_ldap authenticate: "
                   "REMOTE_USER was to be set with attribute '%s', "
                   "but this attribute was not requested for in the "
@@ -589,7 +589,7 @@ static authn_status authn_ldap_check_password(request_rec *r, const char *user,
                   sec->remote_user_attribute);
     }
 
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01697)
                   "auth_ldap authenticate: accepting %s", user);
 
     return AUTH_GRANTED;
@@ -628,7 +628,7 @@ static authz_status ldapuser_check_authorization(request_rec *r,
                                   apr_pool_cleanup_null);
     }
     else {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01698)
                       "auth_ldap authorize: no sec->host - weird...?");
         return AUTHZ_DENIED;
     }
@@ -641,13 +641,13 @@ static authz_status ldapuser_check_authorization(request_rec *r,
 
 
     if (!strlen(r->user)) {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01699)
             "ldap authorize: Userid is blank, AuthType=%s",
             r->ap_auth_type);
     }
 
     if(!req) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01700)
             "ldap authorize: Creating LDAP req structure");
 
         req = (authn_ldap_request_t *)apr_pcalloc(r->pool,
@@ -662,7 +662,7 @@ static authz_status ldapuser_check_authorization(request_rec *r,
 
         /* Search failed, log error and return failure */
         if(result != LDAP_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01701)
                 "auth_ldap authorise: User DN not found, %s", ldc->reason);
             return AUTHZ_DENIED;
         }
@@ -674,7 +674,7 @@ static authz_status ldapuser_check_authorization(request_rec *r,
     }
 
     if (req->dn == NULL || strlen(req->dn) == 0) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01702)
                       "auth_ldap authorize: require user: user's DN has not "
                       "been defined; failing authorization");
         return AUTHZ_DENIED;
@@ -687,14 +687,14 @@ static authz_status ldapuser_check_authorization(request_rec *r,
     result = util_ldap_cache_compare(r, ldc, sec->url, req->dn, sec->attribute, require_args);
     switch(result) {
         case LDAP_COMPARE_TRUE: {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01703)
                           "auth_ldap authorize: require user: authorization "
                           "successful");
             set_request_vars(r, LDAP_AUTHZ);
             return AUTHZ_GRANTED;
         }
         default: {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01704)
                           "auth_ldap authorize: require user: "
                           "authorization failed [%s][%s]",
                           ldc->reason, ldap_err2string(result));
@@ -709,14 +709,14 @@ static authz_status ldapuser_check_authorization(request_rec *r,
         result = util_ldap_cache_compare(r, ldc, sec->url, req->dn, sec->attribute, w);
         switch(result) {
             case LDAP_COMPARE_TRUE: {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01705)
                               "auth_ldap authorize: "
                               "require user: authorization successful");
                 set_request_vars(r, LDAP_AUTHZ);
                 return AUTHZ_GRANTED;
             }
             default: {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01706)
                               "auth_ldap authorize: "
                               "require user: authorization failed [%s][%s]",
                               ldc->reason, ldap_err2string(result));
@@ -724,7 +724,7 @@ static authz_status ldapuser_check_authorization(request_rec *r,
         }
     }
 
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01707)
                   "auth_ldap authorize user: authorization denied for "
                   "user %s to %s",
                   r->user, r->uri);
@@ -766,7 +766,7 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
                                   apr_pool_cleanup_null);
     }
     else {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01708)
                       "auth_ldap authorize: no sec->host - weird...?");
         return AUTHZ_DENIED;
     }
@@ -814,13 +814,13 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
      */
 
     if (!strlen(r->user)) {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01709)
             "ldap authorize: Userid is blank, AuthType=%s",
             r->ap_auth_type);
     }
 
     if(!req) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01710)
             "ldap authorize: Creating LDAP req structure");
 
         req = (authn_ldap_request_t *)apr_pcalloc(r->pool,
@@ -834,7 +834,7 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
 
         /* Search failed, log error and return failure */
         if(result != LDAP_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01711)
                 "auth_ldap authorise: User DN not found, %s", ldc->reason);
             return AUTHZ_DENIED;
         }
@@ -848,7 +848,7 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
 
     if (sec->group_attrib_is_dn) {
         if (req->dn == NULL || strlen(req->dn) == 0) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01712)
                           "auth_ldap authorize: require group: user's DN has "
                           "not been defined; failing authorization for user %s",
                           r->user);
@@ -865,13 +865,13 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
 
     t = require_args;
 
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01713)
                   "auth_ldap authorize: require group: testing for group "
                   "membership in \"%s\"",
                   t);
 
     for (i = 0; i < sec->groupattr->nelts; i++) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01714)
                       "auth_ldap authorize: require group: testing for %s: "
                       "%s (%s)",
                       ent[i].name,
@@ -881,7 +881,7 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
                              sec->group_attrib_is_dn ? req->dn : req->user);
         switch(result) {
             case LDAP_COMPARE_TRUE: {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01715)
                               "auth_ldap authorize: require group: "
                               "authorization successful (attribute %s) "
                               "[%s][%d - %s]",
@@ -901,7 +901,7 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
                                           authnz_ldap_cleanup_connection_close,
                                           apr_pool_cleanup_null);
 
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01716)
                                "auth_ldap authorise: require group \"%s\": "
                                "failed [%s][%d - %s], checking sub-groups",
                                t, ldc->reason, result, ldap_err2string(result));
@@ -912,7 +912,7 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
                                                          sec->subgroupclasses,
                                                          0, sec->maxNestingDepth);
                 if(result == LDAP_COMPARE_TRUE) {
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01717)
                                   "auth_ldap authorise: require group "
                                   "(sub-group): authorisation successful "
                                   "(attribute %s) [%s][%d - %s]",
@@ -922,7 +922,7 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
                     return AUTHZ_GRANTED;
                 }
                 else {
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01718)
                                   "auth_ldap authorise: require group "
                                   "(sub-group) \"%s\": authorisation failed "
                                   "[%s][%d - %s]",
@@ -932,7 +932,7 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
                 break;
             }
             default: {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01719)
                               "auth_ldap authorize: require group \"%s\": "
                               "authorization failed [%s][%d - %s]",
                               t, ldc->reason, result, ldap_err2string(result));
@@ -940,7 +940,7 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
         }
     }
 
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01720)
                   "auth_ldap authorize group: authorization denied for "
                   "user %s to %s",
                   r->user, r->uri);
@@ -980,7 +980,7 @@ static authz_status ldapdn_check_authorization(request_rec *r,
                                   apr_pool_cleanup_null);
     }
     else {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01721)
                       "auth_ldap authorize: no sec->host - weird...?");
         return AUTHZ_DENIED;
     }
@@ -992,13 +992,13 @@ static authz_status ldapdn_check_authorization(request_rec *r,
      */
 
     if (!strlen(r->user)) {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01722)
             "ldap authorize: Userid is blank, AuthType=%s",
             r->ap_auth_type);
     }
 
     if(!req) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01723)
             "ldap authorize: Creating LDAP req structure");
 
         req = (authn_ldap_request_t *)apr_pcalloc(r->pool,
@@ -1012,7 +1012,7 @@ static authz_status ldapdn_check_authorization(request_rec *r,
 
         /* Search failed, log error and return failure */
         if(result != LDAP_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01724)
                 "auth_ldap authorise: User DN not found with filter %s: %s", filtbuf, ldc->reason);
             return AUTHZ_DENIED;
         }
@@ -1025,7 +1025,7 @@ static authz_status ldapdn_check_authorization(request_rec *r,
     t = require_args;
 
     if (req->dn == NULL || strlen(req->dn) == 0) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01725)
                       "auth_ldap authorize: require dn: user's DN has not "
                       "been defined; failing authorization");
         return AUTHZ_DENIED;
@@ -1034,14 +1034,14 @@ static authz_status ldapdn_check_authorization(request_rec *r,
     result = util_ldap_cache_comparedn(r, ldc, sec->url, req->dn, t, sec->compare_dn_on_server);
     switch(result) {
         case LDAP_COMPARE_TRUE: {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01726)
                           "auth_ldap authorize: "
                           "require dn: authorization successful");
             set_request_vars(r, LDAP_AUTHZ);
             return AUTHZ_GRANTED;
         }
         default: {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01727)
                           "auth_ldap authorize: "
                           "require dn \"%s\": LDAP error [%s][%s]",
                           t, ldc->reason, ldap_err2string(result));
@@ -1049,7 +1049,7 @@ static authz_status ldapdn_check_authorization(request_rec *r,
     }
 
 
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01728)
                   "auth_ldap authorize dn: authorization denied for "
                   "user %s to %s",
                   r->user, r->uri);
@@ -1090,7 +1090,7 @@ static authz_status ldapattribute_check_authorization(request_rec *r,
                                   apr_pool_cleanup_null);
     }
     else {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01729)
                       "auth_ldap authorize: no sec->host - weird...?");
         return AUTHZ_DENIED;
     }
@@ -1102,13 +1102,13 @@ static authz_status ldapattribute_check_authorization(request_rec *r,
      */
 
     if (!strlen(r->user)) {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01730)
             "ldap authorize: Userid is blank, AuthType=%s",
             r->ap_auth_type);
     }
 
     if(!req) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01731)
             "ldap authorize: Creating LDAP req structure");
 
         req = (authn_ldap_request_t *)apr_pcalloc(r->pool,
@@ -1122,7 +1122,7 @@ static authz_status ldapattribute_check_authorization(request_rec *r,
 
         /* Search failed, log error and return failure */
         if(result != LDAP_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01732)
                 "auth_ldap authorise: User DN not found with filter %s: %s", filtbuf, ldc->reason);
             return AUTHZ_DENIED;
         }
@@ -1133,7 +1133,7 @@ static authz_status ldapattribute_check_authorization(request_rec *r,
     }
 
     if (req->dn == NULL || strlen(req->dn) == 0) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01733)
                       "auth_ldap authorize: require ldap-attribute: user's DN "
                       "has not been defined; failing authorization");
         return AUTHZ_DENIED;
@@ -1144,20 +1144,20 @@ static authz_status ldapattribute_check_authorization(request_rec *r,
         w = ap_getword(r->pool, &t, '=');
         value = ap_getword_conf(r->pool, &t);
 
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01734)
                       "auth_ldap authorize: checking attribute %s has value %s",
                       w, value);
         result = util_ldap_cache_compare(r, ldc, sec->url, req->dn, w, value);
         switch(result) {
             case LDAP_COMPARE_TRUE: {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01735)
                               "auth_ldap authorize: "
                               "require attribute: authorization successful");
                 set_request_vars(r, LDAP_AUTHZ);
                 return AUTHZ_GRANTED;
             }
             default: {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01736)
                               "auth_ldap authorize: require attribute: "
                               "authorization failed [%s][%s]",
                               ldc->reason, ldap_err2string(result));
@@ -1165,7 +1165,7 @@ static authz_status ldapattribute_check_authorization(request_rec *r,
         }
     }
 
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01737)
                   "auth_ldap authorize attribute: authorization denied for "
                   "user %s to %s",
                   r->user, r->uri);
@@ -1204,7 +1204,7 @@ static authz_status ldapfilter_check_authorization(request_rec *r,
                                   apr_pool_cleanup_null);
     }
     else {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01738)
                       "auth_ldap authorize: no sec->host - weird...?");
         return AUTHZ_DENIED;
     }
@@ -1216,13 +1216,13 @@ static authz_status ldapfilter_check_authorization(request_rec *r,
      */
 
     if (!strlen(r->user)) {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01739)
             "ldap authorize: Userid is blank, AuthType=%s",
             r->ap_auth_type);
     }
 
     if(!req) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01740)
             "ldap authorize: Creating LDAP req structure");
 
         req = (authn_ldap_request_t *)apr_pcalloc(r->pool,
@@ -1236,7 +1236,7 @@ static authz_status ldapfilter_check_authorization(request_rec *r,
 
         /* Search failed, log error and return failure */
         if(result != LDAP_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01741)
                 "auth_ldap authorise: User DN not found with filter %s: %s", filtbuf, ldc->reason);
             return AUTHZ_DENIED;
         }
@@ -1247,7 +1247,7 @@ static authz_status ldapfilter_check_authorization(request_rec *r,
     }
 
     if (req->dn == NULL || strlen(req->dn) == 0) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01742)
                       "auth_ldap authorize: require ldap-filter: user's DN "
                       "has not been defined; failing authorization");
         return AUTHZ_DENIED;
@@ -1256,7 +1256,7 @@ static authz_status ldapfilter_check_authorization(request_rec *r,
     t = require_args;
 
     if (t[0]) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01743)
                       "auth_ldap authorize: checking filter %s", t);
 
         /* Build the username filter */
@@ -1268,7 +1268,7 @@ static authz_status ldapfilter_check_authorization(request_rec *r,
 
         /* Make sure that the filtered search returned the correct user dn */
         if (result == LDAP_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01744)
                           "auth_ldap authorize: checking dn match %s", dn);
             if (sec->compare_as_user) {
                 /* ldap-filter is the only authz that requires a search and a compare */
@@ -1282,21 +1282,21 @@ static authz_status ldapfilter_check_authorization(request_rec *r,
 
         switch(result) {
             case LDAP_COMPARE_TRUE: {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01745)
                               "auth_ldap authorize: require ldap-filter: "
                               "authorization successful");
                 set_request_vars(r, LDAP_AUTHZ);
                 return AUTHZ_GRANTED;
             }
             case LDAP_FILTER_ERROR: {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01746)
                               "auth_ldap authorize: require ldap-filter: "
                               "%s authorization failed [%s][%s]",
                               filtbuf, ldc->reason, ldap_err2string(result));
                 break;
             }
             default: {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01747)
                               "auth_ldap authorize: require ldap-filter: "
                               "authorization failed [%s][%s]",
                               ldc->reason, ldap_err2string(result));
@@ -1304,7 +1304,7 @@ static authz_status ldapfilter_check_authorization(request_rec *r,
         }
     }
 
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01748)
                   "auth_ldap authorize filter: authorization denied for "
                   "user %s to %s",
                   r->user, r->uri);
@@ -1669,7 +1669,7 @@ static int authnz_ldap_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *
 
     /* make sure that mod_ldap (util_ldap) is loaded */
     if (ap_find_linked_module("util_ldap.c") == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01749)
                      "Module mod_ldap missing. Mod_ldap (aka. util_ldap) "
                      "must be loaded in order for mod_authnz_ldap to function properly");
         return HTTP_INTERNAL_SERVER_ERROR;
@@ -1682,7 +1682,7 @@ static int authnz_ldap_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *
 
     charset_confname = ap_server_root_relative(p, charset_confname);
     if (!charset_confname) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, APR_EBADPATH, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, APR_EBADPATH, s, APLOGNO(01750)
                      "Invalid charset conversion config path %s",
                      (const char *)ap_get_module_config(s->module_config,
                                                         &authnz_ldap_module));
@@ -1690,7 +1690,7 @@ static int authnz_ldap_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *
     }
     if ((status = ap_pcfg_openfile(&f, ptemp, charset_confname))
                 != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, status, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, status, s, APLOGNO(01751)
                      "could not open charset conversion config file %s.",
                      charset_confname);
         return HTTP_INTERNAL_SERVER_ERROR;
@@ -1717,7 +1717,7 @@ static int authnz_ldap_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *
 
     to_charset = derive_codepage_from_lang (p, "utf-8");
     if (to_charset == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, status, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, status, s, APLOGNO(01752)
                      "could not find the UTF-8 charset in the file %s.",
                      charset_confname);
         return HTTP_INTERNAL_SERVER_ERROR;

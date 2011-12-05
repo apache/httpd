@@ -141,7 +141,7 @@ static int exipc_post_config(apr_pool_t *pconf, apr_pool_t *plog,
      */
     rs = apr_temp_dir_get(&tempdir, pconf);
     if (APR_SUCCESS != rs) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rs, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, rs, s, APLOGNO(02063)
                      "Failed to find temporary directory");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -159,7 +159,7 @@ static int exipc_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     rs = apr_shm_create(&exipc_shm, sizeof(exipc_data),
                         (const char *) shmfilename, pconf);
     if (APR_SUCCESS != rs) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rs, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, rs, s, APLOGNO(02064)
                      "Failed to create shared memory segment on file %s",
                      shmfilename);
         return HTTP_INTERNAL_SERVER_ERROR;
@@ -204,7 +204,7 @@ static void exipc_child_init(apr_pool_t *p, server_rec *s)
                                      apr_global_mutex_lockfile(exipc_mutex),
                                      p);
     if (APR_SUCCESS != rs) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rs, s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rs, s, APLOGNO(02065)
                      "Failed to reopen mutex %s in child",
                      exipc_mutex_type);
         /* There's really nothing else we can do here, since This
@@ -261,14 +261,14 @@ static int exipc_handler(request_rec *r)
                 break; /* Out of the loop */
             } else {
                 /* Some error, log and bail */
-                ap_log_error(APLOG_MARK, APLOG_ERR, rs, r->server,
+                ap_log_error(APLOG_MARK, APLOG_ERR, rs, r->server, APLOGNO(02066)
                              "Child %ld failed to acquire lock",
                              (long int)getpid());
                 break; /* Out of the loop without having the lock */
             }
         } else {
             /* Some other error, log and bail */
-            ap_log_error(APLOG_MARK, APLOG_ERR, rs, r->server,
+            ap_log_error(APLOG_MARK, APLOG_ERR, rs, r->server, APLOGNO(02067)
                          "Child %ld failed to try and acquire lock",
                          (long int)getpid());
             break; /* Out of the loop without having the lock */

@@ -137,7 +137,7 @@ static int reclaim_one_pid(pid_t pid, action_t action)
     case SEND_SIGTERM:
         /* ok, now it's being annoying */
         ap_log_error(APLOG_MARK, APLOG_WARNING,
-                     0, ap_server_conf,
+                     0, ap_server_conf, APLOGNO(00045)
                      "child process %" APR_PID_T_FMT
                      " still did not exit, "
                      "sending a SIGTERM",
@@ -147,7 +147,7 @@ static int reclaim_one_pid(pid_t pid, action_t action)
 
     case SEND_SIGKILL:
         ap_log_error(APLOG_MARK, APLOG_ERR,
-                     0, ap_server_conf,
+                     0, ap_server_conf, APLOGNO(00046)
                      "child process %" APR_PID_T_FMT
                      " still did not exit, "
                      "sending a SIGKILL",
@@ -162,7 +162,7 @@ static int reclaim_one_pid(pid_t pid, action_t action)
          * after the restart.
          */
         ap_log_error(APLOG_MARK, APLOG_ERR,
-                     0, ap_server_conf,
+                     0, ap_server_conf, APLOGNO(00047)
                      "could not make child process %" APR_PID_T_FMT
                      " exit, "
                      "attempting to continue anyway",
@@ -337,7 +337,7 @@ apr_status_t ap_mpm_safe_kill(pid_t pid, int sig)
     else if (rv != APR_CHILD_NOTDONE) {
         /* The child is already dead and reaped, or was a bogus pid -
          * log this either way. */
-        ap_log_error(APLOG_MARK, APLOG_NOTICE, rv, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, rv, ap_server_conf, APLOGNO(00048)
                      "cannot send signal %d to pid %ld (non-child or "
                      "already dead)", sig, (long)pid);
         return APR_EINVAL;
@@ -357,7 +357,7 @@ apr_status_t ap_mpm_safe_kill(pid_t pid, int sig)
     }
 
     if (pg != getpgrp()) {
-        ap_log_error(APLOG_MARK, APLOG_ALERT, 0, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_ALERT, 0, ap_server_conf, APLOGNO(00049)
                      "refusing to send signal %d to pid %ld outside "
                      "process group", sig, (long)pid);
         return APR_EINVAL;
@@ -388,7 +388,7 @@ int ap_process_child_status(apr_proc_t *pid, apr_exit_why_e why, int status)
 
         if (status == APEXIT_CHILDFATAL) {
             ap_log_error(APLOG_MARK, APLOG_ALERT,
-                         0, ap_server_conf,
+                         0, ap_server_conf, APLOGNO(00050)
                          "Child %" APR_PID_T_FMT
                          " returned a Fatal error... Apache is exiting!",
                          pid->pid);
@@ -411,7 +411,7 @@ int ap_process_child_status(apr_proc_t *pid, apr_exit_why_e why, int status)
         default:
             if (APR_PROC_CHECK_CORE_DUMP(why)) {
                 ap_log_error(APLOG_MARK, APLOG_NOTICE,
-                             0, ap_server_conf,
+                             0, ap_server_conf, APLOGNO(00051)
                              "child pid %ld exit signal %s (%d), "
                              "possible coredump in %s",
                              (long)pid->pid, sigdesc, signum,
@@ -419,7 +419,7 @@ int ap_process_child_status(apr_proc_t *pid, apr_exit_why_e why, int status)
             }
             else {
                 ap_log_error(APLOG_MARK, APLOG_NOTICE,
-                             0, ap_server_conf,
+                             0, ap_server_conf, APLOGNO(00052)
                              "child pid %ld exit signal %s (%d)",
                              (long)pid->pid, sigdesc, signum);
             }
@@ -493,7 +493,7 @@ static apr_status_t pod_signal_internal(ap_pod_t *pod)
 
     rv = apr_file_write(pod->pod_out, &char_of_death, &one);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf, APLOGNO(00053)
                      "write pipe_of_death");
     }
 
@@ -534,7 +534,7 @@ static apr_status_t dummy_connection(ap_pod_t *pod)
 
     rv = apr_socket_create(&sock, lp->bind_addr->family, SOCK_STREAM, 0, p);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf, APLOGNO(00054)
                      "get socket to connect to listener");
         apr_pool_destroy(p);
         return rv;
@@ -548,7 +548,7 @@ static apr_status_t dummy_connection(ap_pod_t *pod)
      */
     rv = apr_socket_timeout_set(sock, apr_time_from_sec(3));
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf, APLOGNO(00055)
                      "set timeout on socket to connect to listener");
         apr_socket_close(sock);
         apr_pool_destroy(p);
@@ -567,7 +567,7 @@ static apr_status_t dummy_connection(ap_pod_t *pod)
             log_level = APLOG_DEBUG;
         }
 
-        ap_log_error(APLOG_MARK, log_level, rv, ap_server_conf,
+        ap_log_error(APLOG_MARK, log_level, rv, ap_server_conf, APLOGNO(00056)
                      "connect to listener on %pI", lp->bind_addr);
     }
 
@@ -636,7 +636,7 @@ static const char *dash_k_arg_noarg = "noarg";
 static int send_signal(pid_t pid, int sig)
 {
     if (kill(pid, sig) < 0) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP, errno, NULL,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, errno, NULL, APLOGNO(00057)
                      "sending signal to server");
         return 1;
     }
@@ -655,9 +655,9 @@ int ap_signal_server(int *exit_status, apr_pool_t *pconf)
     rv = ap_read_pid(pconf, ap_pid_fname, &otherpid);
     if (rv != APR_SUCCESS) {
         if (!APR_STATUS_IS_ENOENT(rv)) {
-            ap_log_error(APLOG_MARK, APLOG_STARTUP, rv, NULL,
+            ap_log_error(APLOG_MARK, APLOG_STARTUP, rv, NULL, APLOGNO(00058)
                          "Error retrieving pid file %s", ap_pid_fname);
-            ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, APLOGNO(00059)
                          "Remove it before continuing if it is corrupted.");
             *exit_status = 1;
             return 1;
@@ -848,7 +848,7 @@ static void sig_coredump(int sig)
      */
     if (getpid() == parent_pid) {
         ap_log_error(APLOG_MARK, APLOG_NOTICE,
-                     0, ap_server_conf,
+                     0, ap_server_conf, APLOGNO(00060)
                      "seg fault or similar nasty error detected "
                      "in the parent process");
         /* XXX we can probably add some rudimentary cleanup code here,
@@ -890,26 +890,26 @@ apr_status_t ap_fatal_signal_setup(server_rec *s, apr_pool_t *in_pconf)
 
     sa.sa_handler = sig_coredump;
     if (sigaction(SIGSEGV, &sa, NULL) < 0)
-        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, s, "sigaction(SIGSEGV)");
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, s, APLOGNO(00061) "sigaction(SIGSEGV)");
 #ifdef SIGBUS
     if (sigaction(SIGBUS, &sa, NULL) < 0)
-        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, s, "sigaction(SIGBUS)");
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, s, APLOGNO(00062) "sigaction(SIGBUS)");
 #endif
 #ifdef SIGABORT
     if (sigaction(SIGABORT, &sa, NULL) < 0)
-        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, s, "sigaction(SIGABORT)");
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, s, APLOGNO(00063) "sigaction(SIGABORT)");
 #endif
 #ifdef SIGABRT
     if (sigaction(SIGABRT, &sa, NULL) < 0)
-        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, s, "sigaction(SIGABRT)");
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, s, APLOGNO(00064) "sigaction(SIGABRT)");
 #endif
 #ifdef SIGILL
     if (sigaction(SIGILL, &sa, NULL) < 0)
-        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, s, "sigaction(SIGILL)");
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, s, APLOGNO(00065) "sigaction(SIGILL)");
 #endif
 #ifdef SIGFPE
     if (sigaction(SIGFPE, &sa, NULL) < 0)
-        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, s, "sigaction(SIGFPE)");
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, s, APLOGNO(00066) "sigaction(SIGFPE)");
 #endif
 
 #else /* NO_USE_SIGACTION */

@@ -184,7 +184,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
         modi = &modie[i];
         if (modi->name != NULL && strcmp(modi->name, modname) == 0) {
             ap_log_perror(APLOG_MARK, APLOG_WARNING, 0,
-                          cmd->pool, "module %s is already loaded, skipping",
+                          cmd->pool, APLOGNO(01574) "module %s is already loaded, skipping",
                           modname);
             return NULL;
         }
@@ -242,7 +242,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
                           apr_dso_error(modhandle, my_error, sizeof(my_error)),
                           NULL);
     }
-    ap_log_perror(APLOG_MARK, APLOG_DEBUG, 0, cmd->pool,
+    ap_log_perror(APLOG_MARK, APLOG_DEBUG, 0, cmd->pool, APLOGNO(01575)
                  "loaded module %s", modname);
 
     /*
@@ -324,7 +324,7 @@ static const char *load_file(cmd_parms *cmd, void *dummy, const char *filename)
                           NULL);
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL, APLOGNO(01576)
                  "loaded file %s", filename);
 
     return NULL;
@@ -391,7 +391,7 @@ static void dump_loaded_modules(apr_pool_t *p, server_rec *s)
 
 static const char *load_file(cmd_parms *cmd, void *dummy, const char *filename)
 {
-    ap_log_perror(APLOG_MARK, APLOG_STARTUP, 0, cmd->pool,
+    ap_log_perror(APLOG_MARK, APLOG_STARTUP, 0, cmd->pool, APLOGNO(01577)
                  "WARNING: LoadFile not supported on this platform");
     return NULL;
 }
@@ -399,7 +399,7 @@ static const char *load_file(cmd_parms *cmd, void *dummy, const char *filename)
 static const char *load_module(cmd_parms *cmd, void *dummy,
                                const char *modname, const char *filename)
 {
-    ap_log_perror(APLOG_MARK, APLOG_STARTUP, 0, cmd->pool,
+    ap_log_perror(APLOG_MARK, APLOG_STARTUP, 0, cmd->pool, APLOGNO(01578)
                  "WARNING: LoadModule not supported on this platform");
     return NULL;
 }

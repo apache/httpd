@@ -1088,7 +1088,7 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
         const char *err;
         int rc = ap_expr_exec(r, cls->condition_expr, &err);
         if (rc < 0)
-            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(00644)
                            "Error evaluating log condition: %s", err);
         if (rc <= 0)
             return DECLINED;
@@ -1116,13 +1116,13 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
         len += strl[i] = strlen(strs[i]);
     }
     if (!log_writer) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00645)
                 "log writer isn't correctly setup");
          return HTTP_INTERNAL_SERVER_ERROR;
     }
     rv = log_writer(r, cls->log_writer, strs, strl, format->nelts, len);
     if (rv != APR_SUCCESS)
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r, "Error writing to %s",
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r, APLOGNO(00646) "Error writing to %s",
                       cls->fname);
     return OK;
 }
@@ -1474,7 +1474,7 @@ static void init_child(apr_pool_t *p, server_rec *s)
                                              APR_THREAD_MUTEX_DEFAULT,
                                              p);
                 if (rv != APR_SUCCESS) {
-                    ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
+                    ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(00647)
                                  "could not initialize buffered log mutex, "
                                  "transfer log may become corrupted");
                     this->mutex.type = apr_anylock_none;
@@ -1556,13 +1556,13 @@ static void *ap_default_log_writer_init(apr_pool_t *p, server_rec *s,
         apr_status_t rv;
 
         if (!fname) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, APR_EBADPATH, s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, APR_EBADPATH, s, APLOGNO(00648)
                             "invalid transfer log path %s.", name);
             return NULL;
         }
         rv = apr_file_open(&fd, fname, xfer_flags, xfer_perms, p);
         if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(00649)
                             "could not open transfer log file %s.", fname);
             return NULL;
         }

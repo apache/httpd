@@ -360,7 +360,7 @@ int ssl_proxy_enable(conn_rec *c)
     sc = mySrvConfig(sslconn->server);
 
     if (!sc->proxy_enabled) {
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(01961)
                       "SSL Proxy requested for %s but not enabled "
                       "[Hint: SSLProxyEngine]", sc->vhost_id);
 
@@ -424,7 +424,7 @@ int ssl_init_ssl_connection(conn_rec *c, request_rec *r)
      * so we can detach later.
      */
     if (!(ssl = SSL_new(mctx->ssl_ctx))) {
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(01962)
                       "Unable to create a new SSL connection from the SSL "
                       "context");
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, server);
@@ -440,7 +440,7 @@ int ssl_init_ssl_connection(conn_rec *c, request_rec *r)
     if (!SSL_set_session_id_context(ssl, (unsigned char *)vhost_md5,
                                     APR_MD5_DIGESTSIZE*2))
     {
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(01963)
                       "Unable to set session id context to '%s'", vhost_md5);
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, server);
 
@@ -528,7 +528,7 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
      * later access inside callback functions
      */
 
-    ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c,
+    ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c, APLOGNO(01964)
                   "Connection to child %ld established "
                   "(server %s)", c->id, sc->vhost_id);
 

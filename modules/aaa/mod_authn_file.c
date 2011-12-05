@@ -76,7 +76,7 @@ static authn_status check_password(request_rec *r, const char *user,
     char *file_password = NULL;
 
     if (!conf->pwfile) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01619)
                       "AuthUserFile not specified in the configuration");
         return AUTH_GENERAL_ERROR;
     }
@@ -84,7 +84,7 @@ static authn_status check_password(request_rec *r, const char *user,
     status = ap_pcfg_openfile(&f, r->pool, conf->pwfile);
 
     if (status != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(01620)
                       "Could not open password file: %s", conf->pwfile);
         return AUTH_GENERAL_ERROR;
     }
@@ -131,7 +131,7 @@ static authn_status get_realm_hash(request_rec *r, const char *user,
     char *file_hash = NULL;
 
     if (!conf->pwfile) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01621)
                       "AuthUserFile not specified in the configuration");
         return AUTH_GENERAL_ERROR;
     }
@@ -139,7 +139,7 @@ static authn_status get_realm_hash(request_rec *r, const char *user,
     status = ap_pcfg_openfile(&f, r->pool, conf->pwfile);
 
     if (status != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(01622)
                       "Could not open password file: %s", conf->pwfile);
         return AUTH_GENERAL_ERROR;
     }

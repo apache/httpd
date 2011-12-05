@@ -173,7 +173,7 @@ static apr_status_t file_cache_el_final(disk_cache_conf *conf, disk_cache_file_t
 
         rv = safe_file_rename(conf, file->tempfile, file->file, file->pool);
         if (rv != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r, APLOGNO(00699)
                     "rename tempfile to file failed:"
                     " %s -> %s", file->tempfile, file->file);
             apr_file_remove(file->tempfile, file->pool);
@@ -350,7 +350,7 @@ static int create_entity(cache_handle_t *h, request_rec *r, const char *key, apr
 
     /* we don't support caching of range requests (yet) */
     if (r->status == HTTP_PARTIAL_CONTENT) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00700)
                 "URL %s partial content response not cached",
                 key);
         return DECLINED;
@@ -358,14 +358,14 @@ static int create_entity(cache_handle_t *h, request_rec *r, const char *key, apr
 
     /* Note, len is -1 if unknown so don't trust it too hard */
     if (len > dconf->maxfs) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00701)
                 "URL %s failed the size check "
                 "(%" APR_OFF_T_FMT " > %" APR_OFF_T_FMT ")",
                 key, len, dconf->maxfs);
         return DECLINED;
     }
     if (len >= 0 && len < dconf->minfs) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00702)
                 "URL %s failed the size check "
                 "(%" APR_OFF_T_FMT " < %" APR_OFF_T_FMT ")",
                 key, len, dconf->minfs);
@@ -424,7 +424,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
     if (conf->cache_root == NULL) {
         if (!error_logged) {
             error_logged = 1;
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00703)
                     "Cannot cache files to disk without a CacheRoot specified.");
         }
         return DECLINED;
@@ -464,7 +464,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
         varray = apr_array_make(r->pool, 5, sizeof(char*));
         rc = read_array(r, varray, dobj->vary.fd);
         if (rc != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r, APLOGNO(00704)
                     "Cannot parse vary header file: %s",
                     dobj->vary.file);
             apr_file_close(dobj->vary.fd);
@@ -485,7 +485,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
         }
     }
     else if (format != DISK_FORMAT_VERSION) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00705)
                 "File '%s' has a version mismatch. File had version: %d.",
                 dobj->vary.file, format);
         apr_file_close(dobj->vary.fd);
@@ -521,7 +521,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
     /* Read the bytes to setup the cache_info fields */
     rc = file_cache_recall_mydata(dobj->hdrs.fd, info, dobj, r);
     if (rc != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r, APLOGNO(00706)
                 "Cannot read header file %s", dobj->hdrs.file);
         apr_file_close(dobj->hdrs.fd);
         return DECLINED;
@@ -531,7 +531,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
 
     /* Is this a cached HEAD request? */
     if (dobj->disk_info.header_only && !r->header_only) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO(00707)
                 "HEAD request cached, non-HEAD requested, ignoring: %s",
                 dobj->hdrs.file);
         return DECLINED;
@@ -549,7 +549,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
 #endif
         rc = apr_file_open(&dobj->data.fd, dobj->data.file, flags, 0, r->pool);
         if (rc != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r, APLOGNO(00708)
                     "Cannot open data file %s", dobj->data.file);
             apr_file_close(dobj->hdrs.fd);
             return DECLINED;
@@ -566,7 +566,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
                 dobj->disk_info.device == finfo.device) {
 
             /* Initialize the cache_handle callback functions */
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00709)
                     "Recalled cached URL info header %s", dobj->name);
 
             /* make the configuration stick */
@@ -587,7 +587,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
     }
 
     /* Oh dear, no luck matching header to the body */
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00710)
             "Cached URL info header '%s' didn't match body, ignoring this entry",
             dobj->name);
 
@@ -614,7 +614,7 @@ static int remove_url(cache_handle_t *h, request_rec *r)
 
     /* Delete headers file */
     if (dobj->hdrs.file) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00711)
                 "Deleting %s from cache.", dobj->hdrs.file);
 
         rc = apr_file_remove(dobj->hdrs.file, r->pool);
@@ -622,7 +622,7 @@ static int remove_url(cache_handle_t *h, request_rec *r)
             /* Will only result in an output if httpd is started with -e debug.
              * For reason see log_error_core for the case s == NULL.
              */
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rc, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rc, r, APLOGNO(00712)
                     "Failed to delete headers file %s from cache.",
                     dobj->hdrs.file);
             return DECLINED;
@@ -631,7 +631,7 @@ static int remove_url(cache_handle_t *h, request_rec *r)
 
     /* Delete data file */
     if (dobj->data.file) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00713)
                 "Deleting %s from cache.", dobj->data.file);
 
         rc = apr_file_remove(dobj->data.file, r->pool);
@@ -639,7 +639,7 @@ static int remove_url(cache_handle_t *h, request_rec *r)
             /* Will only result in an output if httpd is started with -e debug.
              * For reason see log_error_core for the case s == NULL.
              */
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rc, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rc, r, APLOGNO(00714)
                     "Failed to delete data file %s from cache.",
                     dobj->data.file);
             return DECLINED;
@@ -671,7 +671,7 @@ static int remove_url(cache_handle_t *h, request_rec *r)
              * we won't either delete or go above our cache root.
              */
             for (q = dir + dobj->root_len; *q ; ) {
-                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00715)
                         "Deleting directory %s from cache", dir);
 
                  rc = apr_dir_remove(dir, r->pool);
@@ -697,7 +697,7 @@ static apr_status_t read_array(request_rec *r, apr_array_header_t* arr,
     while (1) {
         rv = apr_file_gets(w, MAX_STRING_LEN - 1, file);
         if (rv != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00716)
                           "Premature end of vary array.");
             return rv;
         }
@@ -766,7 +766,7 @@ static apr_status_t read_table(cache_handle_t *handle, request_rec *r,
         /* ### What about APR_EOF? */
         rv = apr_file_gets(w, MAX_STRING_LEN - 1, file);
         if (rv != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00717)
                           "Premature end of cache headers.");
             return rv;
         }
@@ -809,7 +809,7 @@ static apr_status_t read_table(cache_handle_t *handle, request_rec *r,
                     ++maybeASCII;
             }
             if (maybeASCII > maybeEBCDIC) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00718)
                         "CGI Interface Error: Script headers apparently ASCII: (CGI = %s)",
                         r->filename);
                 inbytes_left = outbytes_left = cp - w;
@@ -848,7 +848,7 @@ static apr_status_t recall_headers(cache_handle_t *h, request_rec *r)
 
     /* This case should not happen... */
     if (!dobj->hdrs.fd) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00719)
                 "recalling headers; but no header fd for %s", dobj->name);
         return APR_NOTFOUND;
     }
@@ -862,7 +862,7 @@ static apr_status_t recall_headers(cache_handle_t *h, request_rec *r)
 
     apr_file_close(dobj->hdrs.fd);
 
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00720)
             "Recalled headers for URL %s", dobj->name);
     return APR_SUCCESS;
 }
@@ -967,7 +967,7 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r)
                                  dobj->vary.pool);
 
             if (rv != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r,
+                ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r, APLOGNO(00721)
                         "could not create vary file %s",
                         dobj->vary.tempfile);
                 return rv;
@@ -976,7 +976,7 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r)
             amt = sizeof(format);
             rv = apr_file_write(dobj->vary.tempfd, &format, &amt);
             if (rv != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r,
+                ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r, APLOGNO(00722)
                         "could not write to vary file %s",
                         dobj->vary.tempfile);
                 apr_file_close(dobj->vary.tempfd);
@@ -988,7 +988,7 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r)
             rv = apr_file_write(dobj->vary.tempfd, &h->cache_obj->info.expire,
                     &amt);
             if (rv != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r,
+                ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r, APLOGNO(00723)
                         "could not write to vary file %s",
                         dobj->vary.tempfile);
                 apr_file_close(dobj->vary.tempfd);
@@ -1003,7 +1003,7 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r)
 
             rv = apr_file_close(dobj->vary.tempfd);
             if (rv != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r,
+                ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r, APLOGNO(00724)
                         "could not close vary file %s",
                         dobj->vary.tempfile);
                 apr_pool_destroy(dobj->vary.pool);
@@ -1024,7 +1024,7 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r)
                          APR_BUFFERED | APR_EXCL, dobj->hdrs.pool);
 
     if (rv != APR_SUCCESS) {
-       ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r,
+       ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r, APLOGNO(00725)
                 "could not create header file %s",
                 dobj->hdrs.tempfile);
         return rv;
@@ -1053,7 +1053,7 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r)
 
     rv = apr_file_writev(dobj->hdrs.tempfd, (const struct iovec *) &iov, 2, &amt);
     if (rv != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r, APLOGNO(00726)
                 "could not write info to header file %s",
                 dobj->hdrs.tempfile);
         apr_file_close(dobj->hdrs.tempfd);
@@ -1064,7 +1064,7 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r)
     if (dobj->headers_out) {
         rv = store_table(dobj->hdrs.tempfd, dobj->headers_out);
         if (rv != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r, APLOGNO(00727)
                     "could not write out-headers to header file %s",
                     dobj->hdrs.tempfile);
             apr_file_close(dobj->hdrs.tempfd);
@@ -1078,7 +1078,7 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r)
     if (dobj->headers_in) {
         rv = store_table(dobj->hdrs.tempfd, dobj->headers_in);
         if (rv != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r, APLOGNO(00728)
                     "could not write in-headers to header file %s",
                     dobj->hdrs.tempfile);
             apr_file_close(dobj->hdrs.tempfd);
@@ -1089,7 +1089,7 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r)
 
     rv = apr_file_close(dobj->hdrs.tempfd); /* flush and close */
     if (rv != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r, APLOGNO(00729)
                 "could not close header file %s",
                 dobj->hdrs.tempfile);
         apr_pool_destroy(dobj->hdrs.pool);
@@ -1160,7 +1160,7 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
         APR_BUCKET_REMOVE(e);
         APR_BRIGADE_INSERT_TAIL(out, e);
         if (rv != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00730)
                     "Error when reading bucket for URL %s",
                     h->cache_obj->key);
             /* Remove the intermediate cache file and return non-APR_SUCCESS */
@@ -1200,7 +1200,7 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
         /* write to the cache, leave if we fail */
         rv = apr_file_write_full(dobj->data.tempfd, str, length, &written);
         if (rv != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00731)
                     "Error when writing cache file for URL %s",
                     h->cache_obj->key);
             /* Remove the intermediate cache file and return non-APR_SUCCESS */
@@ -1209,7 +1209,7 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
         }
         dobj->file_size += written;
         if (dobj->file_size > dconf->maxfs) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00732)
                     "URL %s failed the size check "
                     "(%" APR_OFF_T_FMT ">%" APR_OFF_T_FMT ")",
                     h->cache_obj->key, dobj->file_size, dconf->maxfs);
@@ -1251,7 +1251,7 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
         }
 
         if (r->connection->aborted || r->no_cache) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00733)
                     "Discarding body for URL %s "
                     "because connection has been aborted.",
                     h->cache_obj->key);
@@ -1260,7 +1260,7 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
             return APR_EGENERAL;
         }
         if (dobj->file_size < dconf->minfs) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00734)
                     "URL %s failed the size check "
                     "(%" APR_OFF_T_FMT "<%" APR_OFF_T_FMT ")",
                     h->cache_obj->key, dobj->file_size, dconf->minfs);
@@ -1271,7 +1271,7 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
         if (cl_header) {
             apr_int64_t cl = apr_atoi64(cl_header);
             if ((errno == 0) && (dobj->file_size != cl)) {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00735)
                         "URL %s didn't receive complete response, not caching",
                         h->cache_obj->key);
                 /* Remove the intermediate cache file and return non-APR_SUCCESS */
@@ -1310,12 +1310,12 @@ static apr_status_t commit_entity(cache_handle_t *h, request_rec *r)
     /* remove the cached items completely on any failure */
     if (APR_SUCCESS != rv) {
         remove_url(h, r);
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00736)
                 "commit_entity: URL '%s' not cached due to earlier disk error.",
                 dobj->name);
     }
     else {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00737)
                 "commit_entity: Headers and body for URL %s cached.",
                 dobj->name);
     }

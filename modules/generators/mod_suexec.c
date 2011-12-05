@@ -97,7 +97,7 @@ static int suexec_post_config(apr_pool_t *p, apr_pool_t *plog,
                           s->process->pool);
 
     if ((reported == NULL) && ap_unixd_config.suexec_enabled) {
-        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, APLOGNO(01232)
                      "suEXEC mechanism enabled (wrapper: %s)", SUEXEC_BIN);
 
         apr_pool_userdata_set((void *)1, SUEXEC_POST_CONFIG_USERDATA,

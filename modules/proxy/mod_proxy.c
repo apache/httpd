@@ -579,7 +579,7 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
             found = ap_pregsub(r->pool, real, use_uri, AP_MAX_REG_MATCH,
                     (use_uri == r->uri) ? regm : reg1);
             if (!found) {
-                ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(01135)
                               "Substitution in regular expression failed. "
                               "Replacement too long?");
                 return HTTP_INTERNAL_SERVER_ERROR;
@@ -624,7 +624,7 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
         /* We made a reducing transformation, so we can't safely use
          * unparsed_uri.  Safe fallback is to ignore nocanon.
          */
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01136)
                 "Unescaped URL path matched ProxyPass; ignoring unsafe nocanon");
     }
 
@@ -663,7 +663,7 @@ static int proxy_trans(request_rec *r)
 
     /* Check that the URI is valid. */
     if (!r->uri || r->uri[0] != '/') {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01137)
                      "Invalid URI in request %s", r->the_request);
         return HTTP_BAD_REQUEST;
     }
@@ -831,7 +831,7 @@ static int proxy_needsdomain(request_rec *r, const char *url, const char *domain
                            APR_URI_UNP_REVEALPASSWORD);
 
     apr_table_setn(r->headers_out, "Location", nuri);
-    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01138)
                   "Domain missing: %s sent to %s%s%s", r->uri,
                   apr_uri_unparse(r->pool, &r->parsed_uri,
                                   APR_URI_UNP_OMITUSERINFO),
@@ -917,7 +917,7 @@ static int proxy_handler(request_rec *r)
             apr_table_setn(r->notes, "error-notes",
                            "TRACE forbidden by server configuration");
             apr_table_setn(r->notes, "verbose-error-to", "*");
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01139)
                           "TRACE forbidden by server configuration");
             return HTTP_METHOD_NOT_ALLOWED;
         }
@@ -935,7 +935,7 @@ static int proxy_handler(request_rec *r)
             apr_table_setn(r->notes, "error-notes",
                            "TRACE with request body is not allowed");
             apr_table_setn(r->notes, "verbose-error-to", "*");
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01140)
                           "TRACE with request body is not allowed");
             return HTTP_REQUEST_ENTITY_TOO_LARGE;
         }
@@ -944,7 +944,7 @@ static int proxy_handler(request_rec *r)
     uri = r->filename + 6;
     p = strchr(uri, ':');
     if (p == NULL) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01141)
                       "proxy_handler no URL in %s", r->filename);
         return HTTP_BAD_REQUEST;
     }
@@ -1010,7 +1010,7 @@ static int proxy_handler(request_rec *r)
                                 strlen(ents[i].scheme)) == 0)) {
 
                     /* handle the scheme */
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01142)
                                   "Trying to run scheme_handler against proxy");
                     access_status = proxy_run_scheme_handler(r, worker,
                                                              conf, url,
@@ -1062,7 +1062,7 @@ static int proxy_handler(request_rec *r)
         */
 
         /* handle the scheme */
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01143)
                       "Running scheme %s handler (attempt %d)",
                       scheme, attempts);
         AP_PROXY_RUN(r, worker, conf, url, attempts);
@@ -1104,7 +1104,7 @@ static int proxy_handler(request_rec *r)
              max_attempts > attempts++);
 
     if (DECLINED == access_status) {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01144)
                       "No protocol handler was valid for the URL %s. "
                       "If you are using a DSO version of mod_proxy, make sure "
                       "the proxy submodules are included in the configuration "
@@ -1490,14 +1490,14 @@ static const char *
             PROXY_COPY_CONF_PARAMS(worker, conf);
         } else {
             reuse = 1;
-            ap_log_error(APLOG_MARK, APLOG_INFO, 0, cmd->server,
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, cmd->server, APLOGNO(01145)
                          "Sharing worker '%s' instead of creating new worker '%s'",
                          worker->s->name, new->real);
         }
 
         for (i = 0; i < arr->nelts; i++) {
             if (reuse) {
-                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(01146)
                              "Ignoring parameter '%s=%s' for worker '%s' because of worker sharing",
                              elts[i].key, elts[i].val, worker->s->name);
             } else {
@@ -1929,18 +1929,18 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     /* Try to find existing worker */
     worker = ap_proxy_get_worker(cmd->temp_pool, balancer, conf, name);
     if (!worker) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, APLOGNO(01147)
                      "Defining worker '%s' for balancer '%s'",
                      name, balancer->s->name);
         if ((err = ap_proxy_define_worker(cmd->pool, &worker, balancer, conf, name, 0)) != NULL)
             return apr_pstrcat(cmd->temp_pool, "BalancerMember ", err, NULL);
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, APLOGNO(01148)
                      "Defined worker '%s' for balancer '%s'",
                      worker->s->name, balancer->s->name);
         PROXY_COPY_CONF_PARAMS(worker, conf);
     } else {
         reuse = 1;
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, cmd->server,
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, cmd->server, APLOGNO(01149)
                      "Sharing worker '%s' instead of creating new worker '%s'",
                      worker->s->name, name);
     }
@@ -1949,7 +1949,7 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     elts = (const apr_table_entry_t *)arr->elts;
     for (i = 0; i < arr->nelts; i++) {
         if (reuse) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(01150)
                          "Ignoring parameter '%s=%s' for worker '%s' because of worker sharing",
                          elts[i].key, elts[i].val, worker->s->name);
         } else {

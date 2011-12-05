@@ -92,7 +92,7 @@ static proxy_worker *find_best_byrequests(proxy_balancer *balancer,
         }
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, APLOGNO(01207)
                  "proxy: Entering byrequests for BALANCER (%s)",
                  balancer->s->name);
 
@@ -139,7 +139,7 @@ static proxy_worker *find_best_byrequests(proxy_balancer *balancer,
 
     if (mycandidate) {
         mycandidate->s->lbstatus -= total_factor;
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, APLOGNO(01208)
                      "proxy: byrequests selected worker \"%s\" : busy %" APR_SIZE_T_FMT " : lbstatus %d",
                      mycandidate->s->name, mycandidate->s->busy, mycandidate->s->lbstatus);
 

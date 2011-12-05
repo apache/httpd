@@ -819,7 +819,7 @@ AP_DECLARE(char *) ap_getword_conf(apr_pool_t *p, const char **line)
 AP_DECLARE(int) ap_cfg_closefile(ap_configfile_t *cfp)
 {
 #ifdef DEBUG
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL, APLOGNO(00551)
         "Done with config file %s", cfp->name);
 #endif
     return (cfp->close == NULL) ? 0 : cfp->close(cfp->param);
@@ -854,7 +854,7 @@ AP_DECLARE(apr_status_t) ap_pcfg_openfile(ap_configfile_t **ret_cfg,
 #endif
 
     if (name == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL, APLOGNO(00552)
                "Internal error: pcfg_openfile() called with NULL filename");
         return APR_EBADF;
     }
@@ -862,7 +862,7 @@ AP_DECLARE(apr_status_t) ap_pcfg_openfile(ap_configfile_t **ret_cfg,
     status = apr_file_open(&file, name, APR_READ | APR_BUFFERED,
                            APR_OS_DEFAULT, p);
 #ifdef DEBUG
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL, APLOGNO(00553)
                 "Opening config file %s (%s)",
                 name, (status != APR_SUCCESS) ?
                 apr_strerror(status, buf, sizeof(buf)) : "successful");
@@ -880,7 +880,7 @@ AP_DECLARE(apr_status_t) ap_pcfg_openfile(ap_configfile_t **ret_cfg,
 #else
         strcmp(name, "/dev/null") != 0) {
 #endif /* WIN32 || OS2 */
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL, APLOGNO(00554)
                      "Access to file %s denied by server: not a regular file",
                      name);
         apr_file_close(file);
@@ -1074,7 +1074,7 @@ static int cfg_trim_line(char *buf)
     if (start != buf)
         memmove(buf, start, end - start + 2);
 #ifdef DEBUG_CFG_LINES
-    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, NULL, "Read config: '%s'", buf);
+    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, NULL, APLOGNO(00555) "Read config: '%s'", buf);
 #endif
     return end - start + 1;
 }
@@ -2053,7 +2053,7 @@ char *ap_get_local_host(apr_pool_t *a)
     char *hostname;
 
     if (apr_gethostname(str, sizeof(str) - 1, a) != APR_SUCCESS) {
-        ap_log_perror(APLOG_MARK, APLOG_STARTUP | APLOG_WARNING, 0, a,
+        ap_log_perror(APLOG_MARK, APLOG_STARTUP | APLOG_WARNING, 0, a, APLOGNO(00556)
                      "%s: apr_gethostname() failed to determine ServerName",
                      ap_server_argv0);
     } else {
@@ -2070,7 +2070,7 @@ char *ap_get_local_host(apr_pool_t *a)
                 server_hostname = apr_pstrdup(a, hostname);
             }
         } else {
-            ap_log_perror(APLOG_MARK, APLOG_STARTUP | APLOG_WARNING, 0, a,
+            ap_log_perror(APLOG_MARK, APLOG_STARTUP | APLOG_WARNING, 0, a, APLOGNO(00557)
                          "%s: apr_sockaddr_info_get() failed for %s",
                          ap_server_argv0, str);
         }
@@ -2079,7 +2079,7 @@ char *ap_get_local_host(apr_pool_t *a)
     if (!server_hostname)
         server_hostname = apr_pstrdup(a, "127.0.0.1");
 
-    ap_log_perror(APLOG_MARK, APLOG_ALERT|APLOG_STARTUP, 0, a,
+    ap_log_perror(APLOG_MARK, APLOG_ALERT|APLOG_STARTUP, 0, a, APLOGNO(00558)
                  "%s: Could not reliably determine the server's fully qualified "
                  "domain name, using %s. Set the 'ServerName' directive globally "
                  "to suppress this message",

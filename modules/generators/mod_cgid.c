@@ -290,11 +290,11 @@ static void cgid_maint(int reason, void *data, apr_wait_t status)
             }
             if (!stopping) {
                 if (status == DAEMON_STARTUP_ERROR) {
-                    ap_log_error(APLOG_MARK, APLOG_CRIT, 0, ap_server_conf,
+                    ap_log_error(APLOG_MARK, APLOG_CRIT, 0, ap_server_conf, APLOGNO(01238)
                                  "cgid daemon failed to initialize");
                 }
                 else {
-                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf,
+                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(01239)
                                  "cgid daemon process died, restarting");
                     cgid_start(root_pool, root_server, proc);
                 }
@@ -319,7 +319,7 @@ static void cgid_maint(int reason, void *data, apr_wait_t status)
              * guarantee the same permissions as when the socket was created.
              */
             if (unlink(sockname) < 0 && errno != ENOENT) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, errno, ap_server_conf,
+                ap_log_error(APLOG_MARK, APLOG_ERR, errno, ap_server_conf, APLOGNO(01240)
                              "Couldn't unlink unix domain socket %s",
                              sockname);
             }
@@ -588,7 +588,7 @@ static void cgid_child_errfn(apr_pool_t *pool, apr_status_t err,
      * have r->headers_in and possibly other storage referenced by
      * ap_log_rerror()
      */
-    ap_log_error(APLOG_MARK, APLOG_ERR, err, r->server, "%s", description);
+    ap_log_error(APLOG_MARK, APLOG_ERR, err, r->server, APLOGNO(01241) "%s", description);
 }
 
 static int cgid_server(void *data)
@@ -614,7 +614,7 @@ static int cgid_server(void *data)
     apr_hook_sort_all();
 
     if ((sd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server,
+        ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server, APLOGNO(01242)
                      "Couldn't create unix domain socket");
         return errno;
     }
@@ -623,7 +623,7 @@ static int cgid_server(void *data)
     rc = bind(sd, (struct sockaddr *)server_addr, server_addr_len);
     umask(omask); /* can't fail, so can't clobber errno */
     if (rc < 0) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server,
+        ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server, APLOGNO(01243)
                      "Couldn't bind unix domain socket %s",
                      sockname);
         return errno;
@@ -632,21 +632,21 @@ static int cgid_server(void *data)
     /* Not all flavors of unix use the current umask for AF_UNIX perms */
     rv = apr_file_perms_set(sockname, APR_FPROT_UREAD|APR_FPROT_UWRITE|APR_FPROT_UEXECUTE);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, main_server,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, main_server, APLOGNO(01244)
                      "Couldn't set permissions on unix domain socket %s",
                      sockname);
         return rv;
     }
 
     if (listen(sd, DEFAULT_CGID_LISTENBACKLOG) < 0) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server,
+        ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server, APLOGNO(01245)
                      "Couldn't listen on unix domain socket");
         return errno;
     }
 
     if (!geteuid()) {
         if (chown(sockname, ap_unixd_config.user_id, -1) < 0) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server,
+            ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server, APLOGNO(01246)
                          "Couldn't change owner of unix domain socket %s",
                          sockname);
             return errno;
@@ -693,7 +693,7 @@ static int cgid_server(void *data)
 #endif
             if (errno != EINTR) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, errno,
-                             (server_rec *)data,
+                             (server_rec *)data, APLOGNO(01247)
                              "Error accepting on cgid socket");
             }
             continue;
@@ -705,14 +705,14 @@ static int cgid_server(void *data)
         stat = get_req(sd2, r, &argv0, &env, &cgid_req);
         if (stat != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, stat,
-                         main_server,
+                         main_server, APLOGNO(01248)
                          "Error reading request on cgid socket");
             close(sd2);
             continue;
         }
 
         if (cgid_req.ppid != parent_pid) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, 0, main_server,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, 0, main_server, APLOGNO(01249)
                          "CGI request received from wrong server instance; "
                          "see ScriptSock directive");
             close(sd2);
@@ -727,7 +727,7 @@ static int cgid_server(void *data)
             rv = sock_write(sd2, &pid, sizeof(pid));
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv,
-                             main_server,
+                             main_server, APLOGNO(01250)
                              "Error writing pid %" APR_PID_T_FMT " to handler", pid);
             }
             close(sd2);
@@ -786,7 +786,7 @@ static int cgid_server(void *data)
              * ap_log_rerror() won't work because the header table used by
              * ap_log_rerror() hasn't been replicated in the phony r
              */
-            ap_log_error(APLOG_MARK, APLOG_ERR, rc, r->server,
+            ap_log_error(APLOG_MARK, APLOG_ERR, rc, r->server, APLOGNO(01251)
                          "couldn't set child process attributes: %s", r->filename);
 
             procnew->pid = 0; /* no process to clean up */
@@ -824,7 +824,7 @@ static int cgid_server(void *data)
                  * ap_log_rerror() won't work because the header table used by
                  * ap_log_rerror() hasn't been replicated in the phony r
                  */
-                ap_log_error(APLOG_MARK, APLOG_ERR, rc, r->server,
+                ap_log_error(APLOG_MARK, APLOG_ERR, rc, r->server, APLOGNO(01252)
                              "couldn't create child process: %d: %s", rc,
                              apr_filepath_name_get(r->filename));
 
@@ -865,7 +865,7 @@ static int cgid_start(apr_pool_t *p, server_rec *main_server,
 
     daemon_should_exit = 0; /* clear setting from previous generation */
     if ((daemon_pid = fork()) < 0) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server,
+        ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server, APLOGNO(01253)
                      "mod_cgid: Couldn't spawn cgid daemon process");
         return DECLINED;
     }
@@ -925,7 +925,7 @@ static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
         tmp_sockname = ap_server_root_relative(p, sockname);
         if (strlen(tmp_sockname) > sizeof(server_addr->sun_path) - 1) {
             tmp_sockname[sizeof(server_addr->sun_path)] = '\0';
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, main_server,
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, main_server, APLOGNO(01254)
                         "The length of the ScriptSock path exceeds maximum, "
                         "truncating to %s", tmp_sockname);
         }
@@ -1191,11 +1191,11 @@ static int connect_to_daemon(int *sdptr, request_rec *r,
         ++connect_tries;
         if ((sd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
             return log_scripterror(r, conf, HTTP_INTERNAL_SERVER_ERROR, errno,
-                                   "unable to create socket to cgi daemon");
+                                   APLOGNO(01255) "unable to create socket to cgi daemon");
         }
         if (connect(sd, (struct sockaddr *)server_addr, server_addr_len) < 0) {
             if (errno == ECONNREFUSED && connect_tries < DEFAULT_CONNECT_ATTEMPTS) {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, errno, r,
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, errno, r, APLOGNO(01256)
                               "connect #%d to cgi daemon failed, sleeping before retry",
                               connect_tries);
                 close(sd);
@@ -1206,7 +1206,7 @@ static int connect_to_daemon(int *sdptr, request_rec *r,
             }
             else {
                 close(sd);
-                return log_scripterror(r, conf, HTTP_SERVICE_UNAVAILABLE, errno,
+                return log_scripterror(r, conf, HTTP_SERVICE_UNAVAILABLE, errno, APLOGNO(01257)
                                        "unable to connect to cgi daemon after multiple tries");
             }
         }
@@ -1217,7 +1217,7 @@ static int connect_to_daemon(int *sdptr, request_rec *r,
         }
         /* gotta try again, but make sure the cgid daemon is still around */
         if (kill(daemon_pid, 0) != 0) {
-            return log_scripterror(r, conf, HTTP_SERVICE_UNAVAILABLE, errno,
+            return log_scripterror(r, conf, HTTP_SERVICE_UNAVAILABLE, errno, APLOGNO(01258)
                                    "cgid daemon is gone; is Apache terminating?");
         }
     }
@@ -1291,14 +1291,14 @@ static apr_status_t cleanup_nonchild_process(request_rec *r, pid_t pid)
     if (dead_yet(pid, apr_time_from_sec(3)) == APR_SUCCESS) {
         return APR_SUCCESS;
     }
-    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01259)
                   "CGI process %" APR_PID_T_FMT " didn't exit, sending SIGKILL",
                   pid);
     kill(pid, SIGKILL);
     if (dead_yet(pid, apr_time_from_sec(3)) == APR_SUCCESS) {
         return APR_SUCCESS;
     }
-    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01260)
                   "CGI process %" APR_PID_T_FMT " didn't exit, sending SIGKILL again",
                   pid);
     kill(pid, SIGKILL);
@@ -1338,7 +1338,7 @@ static apr_status_t cleanup_script(void *vptr)
     }
 
     if (pid == 0) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, info->r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, info->r, APLOGNO(01261)
                       "daemon couldn't find CGI process for connection %lu",
                       info->conn_id);
         return APR_EGENERAL;
@@ -1380,12 +1380,12 @@ static int cgid_handler(request_rec *r)
     argv0 = r->filename;
 
     if (!(ap_allow_options(r) & OPT_EXECCGI) && !is_scriptaliased(r)) {
-        return log_scripterror(r, conf, HTTP_FORBIDDEN, 0,
+        return log_scripterror(r, conf, HTTP_FORBIDDEN, 0, APLOGNO(01262)
                 "Options ExecCGI is off in this directory");
     }
 
     if (nph && is_included) {
-        return log_scripterror(r, conf, HTTP_FORBIDDEN, 0,
+        return log_scripterror(r, conf, HTTP_FORBIDDEN, 0, APLOGNO(01263)
                 "attempt to include NPH CGI script");
     }
 
@@ -1394,12 +1394,12 @@ static int cgid_handler(request_rec *r)
 #error at mod_cgi.c for required code in this path.
 #else
     if (r->finfo.filetype == APR_NOFILE) {
-        return log_scripterror(r, conf, HTTP_NOT_FOUND, 0,
+        return log_scripterror(r, conf, HTTP_NOT_FOUND, 0, APLOGNO(01264)
                 "script not found or unable to stat");
     }
 #endif
     if (r->finfo.filetype == APR_DIR) {
-        return log_scripterror(r, conf, HTTP_FORBIDDEN, 0,
+        return log_scripterror(r, conf, HTTP_FORBIDDEN, 0, APLOGNO(01265)
                 "attempt to invoke directory as script");
     }
 
@@ -1407,13 +1407,13 @@ static int cgid_handler(request_rec *r)
         r->path_info && *r->path_info)
     {
         /* default to accept */
-        return log_scripterror(r, conf, HTTP_NOT_FOUND, 0,
+        return log_scripterror(r, conf, HTTP_NOT_FOUND, 0, APLOGNO(01266)
                                "AcceptPathInfo off disallows user's path");
     }
 /*
     if (!ap_suexec_enabled) {
         if (!ap_can_exec(&r->finfo))
-            return log_scripterror(r, conf, HTTP_FORBIDDEN, 0,
+            return log_scripterror(r, conf, HTTP_FORBIDDEN, 0, APLOGNO(01267)
                                    "file permissions deny server execution");
     }
 */
@@ -1427,7 +1427,7 @@ static int cgid_handler(request_rec *r)
 
     rv = send_req(sd, r, argv0, env, CGI_REQ);
     if (rv != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01268)
                      "write to cgi daemon process");
     }
 
@@ -1466,11 +1466,11 @@ static int cgid_handler(request_rec *r)
 
         if (rv != APR_SUCCESS) {
             if (APR_STATUS_IS_TIMEUP(rv)) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01269)
                               "Timeout during reading request entity data");
                 return HTTP_REQUEST_TIME_OUT;
             }
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01270)
                           "Error reading request entity data");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
@@ -1810,7 +1810,7 @@ static apr_status_t handle_exec(include_ctx_t *ctx, ap_filter_t *f,
     }
 
     if (ctx->flags & SSI_FLAG_NO_EXEC) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "exec used but not allowed "
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01271) "exec used but not allowed "
                       "in %s", r->filename);
         SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
         return APR_SUCCESS;
@@ -1830,7 +1830,7 @@ static apr_status_t handle_exec(include_ctx_t *ctx, ap_filter_t *f,
 
             rv = include_cmd(ctx, f, bb, parsed_string);
             if (rv != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01272)
                               "execution failure for parameter \"%s\" "
                               "to tag exec in file %s", tag, r->filename);
                 SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
@@ -1845,14 +1845,14 @@ static apr_status_t handle_exec(include_ctx_t *ctx, ap_filter_t *f,
 
             rv = include_cgi(ctx, f, bb, parsed_string);
             if (rv != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "invalid CGI ref "
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01273) "invalid CGI ref "
                               "\"%s\" in %s", tag_val, file);
                 SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
                 break;
             }
         }
         else {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "unknown parameter "
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01274) "unknown parameter "
                           "\"%s\" to tag exec in %s", tag, file);
             SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
             break;

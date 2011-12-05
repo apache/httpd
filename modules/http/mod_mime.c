@@ -440,7 +440,7 @@ static int mime_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
 
     types_confname = ap_server_root_relative(p, types_confname);
     if (!types_confname) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, APR_EBADPATH, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, APR_EBADPATH, s, APLOGNO(01596)
                      "Invalid mime types config path %s",
                      (const char *)ap_get_module_config(s->module_config,
                                                         &mime_module));
@@ -448,7 +448,7 @@ static int mime_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
     }
     if ((status = ap_pcfg_openfile(&f, ptemp, types_confname))
                 != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, status, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, status, s, APLOGNO(01597)
                      "could not open mime types config file %s.",
                      types_confname);
         return HTTP_INTERNAL_SERVER_ERROR;
@@ -562,7 +562,7 @@ static content_type *analyze_ct(request_rec *r, const char *s)
         cp++;
     }
     if (!*cp) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss, APLOGNO(01598)
                      "mod_mime: analyze_ct: cannot get media type from '%s'",
                      (const char *) mp);
         return (NULL);
@@ -572,7 +572,7 @@ static content_type *analyze_ct(request_rec *r, const char *s)
         cp++;
     } while (*cp && (*cp != '/') && !apr_isspace(*cp) && (*cp != ';'));
     if (!*cp || (*cp == ';')) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss, APLOGNO(01599)
                      "Cannot get media type from '%s'",
                      (const char *) mp);
         return (NULL);
@@ -581,7 +581,7 @@ static content_type *analyze_ct(request_rec *r, const char *s)
         cp++;
     }
     if (*cp != '/') {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss, APLOGNO(01600)
                      "mod_mime: analyze_ct: cannot get media type from '%s'",
                      (const char *) mp);
         return (NULL);
@@ -595,7 +595,7 @@ static content_type *analyze_ct(request_rec *r, const char *s)
         cp++;
     }
     if (!*cp) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss, APLOGNO(01601)
                      "Cannot get media subtype.");
         return (NULL);
     }
@@ -616,7 +616,7 @@ static content_type *analyze_ct(request_rec *r, const char *s)
     cp++; /* skip the ';' */
     cp = zap_sp(cp);
     if (cp == NULL || *cp == '\0') {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss, APLOGNO(01602)
                      "Cannot get media parameter.");
         return (NULL);
     }
@@ -637,14 +637,14 @@ static content_type *analyze_ct(request_rec *r, const char *s)
             else if (*cp == '=') {
                 attribute = zap_sp_and_dup(p, mp, cp, NULL);
                 if (attribute == NULL || *attribute == '\0') {
-                    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
+                    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss, APLOGNO(01603)
                                  "Cannot get media parameter.");
                     return (NULL);
                 }
                 cp++;
                 cp = zap_sp(cp);
                 if (cp == NULL || *cp == '\0') {
-                    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
+                    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss, APLOGNO(01604)
                                  "Cannot get media parameter.");
                     return (NULL);
                 }
@@ -652,7 +652,7 @@ static content_type *analyze_ct(request_rec *r, const char *s)
                 continue;
             }
             else {
-                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
+                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss, APLOGNO(01605)
                              "Cannot get media parameter.");
                 return (NULL);
             }
@@ -681,14 +681,14 @@ static content_type *analyze_ct(request_rec *r, const char *s)
                             cp++;
                         }
                         if (*cp != ';' && *cp != '\0') {
-                            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
+                            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss, APLOGNO(01606)
                                          "Cannot get media parameter.");
                             return(NULL);
                         }
                         quoted = 0;
                     }
                     else {
-                        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
+                        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss, APLOGNO(01607)
                                      "Cannot get media parameter.");
                         return (NULL);
                     }
@@ -703,7 +703,7 @@ static content_type *analyze_ct(request_rec *r, const char *s)
                         break;
                     }
                     else {
-                        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
+                        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss, APLOGNO(01608)
                                      "Cannot get media parameter.");
                         return (NULL);
                     }
@@ -711,7 +711,7 @@ static content_type *analyze_ct(request_rec *r, const char *s)
             }
             value = zap_sp_and_dup(p, mp, cp, NULL);
             if (value == NULL || *value == '\0') {
-                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
+                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss, APLOGNO(01609)
                              "Cannot get media parameter.");
                 return (NULL);
             }

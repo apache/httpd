@@ -44,14 +44,14 @@ static int asis_handler(request_rec *r)
     }
 
     if (r->finfo.filetype == APR_NOFILE) {
-        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01233)
                     "File does not exist: %s", r->filename);
         return HTTP_NOT_FOUND;
     }
 
     if ((rv = apr_file_open(&f, r->filename, APR_READ,
                 APR_OS_DEFAULT, r->pool)) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01234)
                     "file permissions deny server access: %s", r->filename);
         return HTTP_FORBIDDEN;
     }
@@ -85,7 +85,7 @@ static int asis_handler(request_rec *r)
 
         rv = apr_file_seek(f, APR_CUR, &pos);
         if (rv != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01235)
                           "mod_asis: failed to find end-of-headers position "
                           "for %s", r->filename);
             apr_file_close(f);
@@ -99,7 +99,7 @@ static int asis_handler(request_rec *r)
         APR_BRIGADE_INSERT_TAIL(bb, b);
         rv = ap_pass_brigade(r->output_filters, bb);
         if (rv != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01236)
                           "mod_asis: ap_pass_brigade failed for file %s", r->filename);
             return HTTP_INTERNAL_SERVER_ERROR;
         }
