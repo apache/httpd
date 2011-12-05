@@ -685,7 +685,7 @@ static void parse_negotiate_header(request_rec *r, negotiation_state *neg)
     }
 
 #ifdef NEG_DEBUG
-    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, APLOGNO(00680)
             "dont_fiddle_headers=%d use_rvsa=%d ua_supports_trans=%d "
             "send_alternates=%d, may_choose=%d",
             neg->dont_fiddle_headers, neg->use_rvsa,
@@ -916,7 +916,7 @@ static char *lcase_header_name_return_body(char *header, request_rec *r)
     }
 
     if (!*cp) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00681)
                       "Syntax error in type map, no ':' in %s for header %s",
                       r->filename, header);
         return NULL;
@@ -927,7 +927,7 @@ static char *lcase_header_name_return_body(char *header, request_rec *r)
     } while (*cp && apr_isspace(*cp));
 
     if (!*cp) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00682)
                       "Syntax error in type map --- no header body: %s for %s",
                       r->filename, header);
         return NULL;
@@ -955,7 +955,7 @@ static int read_type_map(apr_file_t **map, negotiation_state *neg,
 
     if ((status = apr_file_open(map, rr->filename, APR_READ | APR_BUFFERED,
                 APR_OS_DEFAULT, neg->pool)) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(00683)
                       "cannot access type map file: %s", rr->filename);
         if (APR_STATUS_IS_ENOTDIR(status) || APR_STATUS_IS_ENOENT(status)) {
             return HTTP_NOT_FOUND;
@@ -999,7 +999,7 @@ static int read_type_map(apr_file_t **map, negotiation_state *neg,
                 body1 = ap_get_token(neg->pool, &body, 0);
                 if (apr_strtoff(&number, body1, &errp, 10) != APR_SUCCESS
                     || *errp || number < 0) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00684)
                                   "Parse error in type map, Content-Length: "
                                   "'%s' in %s is invalid.",
                                   body1, r->filename);
@@ -1034,7 +1034,7 @@ static int read_type_map(apr_file_t **map, negotiation_state *neg,
                 while (--eol >= tag && apr_isspace(*eol))
                     *eol = '\0';
                 if ((mime_info.body = get_body(buffer, &len, tag, *map)) < 0) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00685)
                                   "Syntax error in type map, no end tag '%s'"
                                   "found in %s for Body: content.",
                                   tag, r->filename);
@@ -1119,7 +1119,7 @@ static int read_types_multi(negotiation_state *neg)
 
     if ((status = apr_dir_open(&dirp, neg->dir_name,
                                neg->pool)) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(00686)
                     "cannot read directory for multi: %s", neg->dir_name);
         return HTTP_FORBIDDEN;
     }
@@ -1291,7 +1291,7 @@ static int read_types_multi(negotiation_state *neg)
      * request must die.
      */
     if (anymatch && !neg->avail_vars->nelts) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00687)
                       "Negotiation: discovered file(s) matching request: %s"
                       " (None could be negotiated).",
                       r->filename);
@@ -2063,7 +2063,7 @@ static int is_variant_better_rvsa(negotiation_state *neg, var_rec *variant,
     */
 
 #ifdef NEG_DEBUG
-    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, APLOGNO(00688)
            "Variant: file=%s type=%s lang=%s sourceq=%1.3f "
            "mimeq=%1.3f langq=%1.3f charq=%1.3f encq=%1.3f "
            "q=%1.5f definite=%d",
@@ -2134,7 +2134,7 @@ static int is_variant_better(negotiation_state *neg, var_rec *variant,
      */
 
 #ifdef NEG_DEBUG
-    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, APLOGNO(00689)
            "Variant: file=%s type=%s lang=%s sourceq=%1.3f "
            "mimeq=%1.3f langq=%1.3f langidx=%d charq=%1.3f encq=%1.3f ",
             (variant->file_name ? variant->file_name : ""),
@@ -2903,7 +2903,7 @@ static int do_negotiation(request_rec *r, negotiation_state *neg,
         }
 
         if (!*bestp) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00690)
                           "no acceptable variant: %s", r->filename);
             return HTTP_NOT_ACCEPTABLE;
         }

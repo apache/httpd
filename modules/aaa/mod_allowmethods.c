@@ -67,7 +67,7 @@ static int am_check_access(request_rec *r)
     return DECLINED;
   }
 
-  ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+  ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01623)
                   "client method denied by server configuration: '%s' to %s%s",
                   r->method,
                   r->filename ? "" : "uri ",

@@ -98,7 +98,7 @@ static apr_status_t keep_body_filter(ap_filter_t *f, apr_bucket_brigade *b,
             if (apr_strtoff(&ctx->remaining, lenp, &endstr, 10)
                 || endstr == lenp || *endstr || ctx->remaining < 0) {
 
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r, APLOGNO(01411)
                               "Invalid Content-Length");
 
                 ap_remove_input_filter(f);
@@ -109,7 +109,7 @@ static apr_status_t keep_body_filter(ap_filter_t *f, apr_bucket_brigade *b,
              * time, stop it here if it is invalid.
              */
             if (dconf->keep_body < ctx->remaining) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r, APLOGNO(01412)
                           "Requested content-length of %" APR_OFF_T_FMT
                           " is larger than the configured limit"
                           " of %" APR_OFF_T_FMT, ctx->remaining, dconf->keep_body);
@@ -136,7 +136,7 @@ static apr_status_t keep_body_filter(ap_filter_t *f, apr_bucket_brigade *b,
             apr_brigade_cleanup(f->r->kept_body);
             f->r->kept_body = NULL;
         }
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r, APLOGNO(01413)
                       "Requested content-length of %" APR_OFF_T_FMT
                       " is larger than the configured limit"
                       " of %" APR_OFF_T_FMT, len, ctx->keep_body);
@@ -233,12 +233,12 @@ static apr_status_t kept_body_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
     /* send part of the kept_body */
     if ((rv = apr_brigade_partition(kept_body, ctx->offset, &ec)) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01414)
                       "apr_brigade_partition() failed on kept_body at %" APR_OFF_T_FMT, ctx->offset);
         return rv;
     }
     if ((rv = apr_brigade_partition(kept_body, ctx->offset + readbytes, &e2)) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01415)
                       "apr_brigade_partition() failed on kept_body at %" APR_OFF_T_FMT, ctx->offset + readbytes);
         return rv;
     }

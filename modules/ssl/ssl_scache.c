@@ -61,7 +61,7 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
         rv = mc->stapling_cache->init(mc->stapling_cache_context,
                                      "mod_ssl-stapling", &hints, s, p);
         if (rv) {
-            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01872)
                          "Could not initialize stapling cache. Exiting.");
             ssl_die();
         }
@@ -73,7 +73,7 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
      * But we can operate without it, of course.
      */
     if (mc->sesscache == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(01873)
                      "Init: Session Cache is not configured "
                      "[hint: SSLSessionCache]");
         return;
@@ -86,7 +86,7 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
 
     rv = mc->sesscache->init(mc->sesscache_context, "mod_ssl-session", &hints, s, p);
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01874)
                      "Could not initialize session cache. Exiting.");
         ssl_die();
     }
@@ -120,7 +120,7 @@ BOOL ssl_scache_store(server_rec *s, UCHAR *id, int idlen,
     /* Serialise the session. */
     len = i2d_SSL_SESSION(sess, NULL);
     if (len > sizeof encoded) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01875)
                      "session is too big (%u bytes)", len);
         return FALSE;
     }

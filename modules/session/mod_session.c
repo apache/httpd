@@ -104,7 +104,7 @@ static apr_status_t ap_session_load(request_rec * r, session_rec ** z)
 
     /* should the session be loaded at all? */
     if (!session_included(r, dconf)) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01814)
                       "excluded by configuration for: %s", r->uri);
         return APR_SUCCESS;
     }
@@ -112,13 +112,13 @@ static apr_status_t ap_session_load(request_rec * r, session_rec ** z)
     /* load the session from the session hook */
     rv = ap_run_session_load(r, &zz);
     if (DECLINED == rv) {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01815)
                       "session is enabled but no session modules have been configured, "
                       "session not loaded: %s", r->uri);
         return APR_EGENERAL;
     }
     else if (OK != rv) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01816)
                       "error while loading the session, "
                       "session not loaded: %s", r->uri);
         return rv;
@@ -139,7 +139,7 @@ static apr_status_t ap_session_load(request_rec * r, session_rec ** z)
     else {
         rv = ap_run_session_decode(r, zz);
         if (OK != rv) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01817)
                           "error while decoding the session, "
                           "session not loaded: %s", r->uri);
             return rv;
@@ -178,13 +178,13 @@ static apr_status_t ap_session_save(request_rec * r, session_rec * z)
 
         /* sanity checks, should we try save at all? */
         if (z->written) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01818)
                           "attempt made to save the session twice, "
                           "session not saved: %s", r->uri);
             return APR_EGENERAL;
         }
         if (z->expiry && z->expiry < now) {
-            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01819)
                           "attempt made to save a session when the session had already expired, "
                           "session not saved: %s", r->uri);
             return APR_EGENERAL;
@@ -199,7 +199,7 @@ static apr_status_t ap_session_save(request_rec * r, session_rec * z)
         /* encode the session */
         rv = ap_run_session_encode(r, z);
         if (OK != rv) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01820)
                           "error while encoding the session, "
                           "session not saved: %s", r->uri);
             return rv;
@@ -208,13 +208,13 @@ static apr_status_t ap_session_save(request_rec * r, session_rec * z)
         /* try the save */
         rv = ap_run_session_save(r, z);
         if (DECLINED == rv) {
-            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01821)
                           "session is enabled but no session modules have been configured, "
                           "session not saved: %s", r->uri);
             return APR_EGENERAL;
         }
         else if (OK != rv) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01822)
                           "error while saving the session, "
                           "session not saved: %s", r->uri);
             return rv;

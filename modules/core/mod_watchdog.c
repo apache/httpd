@@ -451,7 +451,7 @@ static int wd_post_config_hook(apr_pool_t *pconf, apr_pool_t *plog,
     {
         const char *ppid = getenv("AP_PARENT_PID");
         if (ppid && *ppid) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01570)
                 "[%" APR_PID_T_FMT " - %s] "
                 "child second stage post config hook",
                 getpid(), ppid);
@@ -494,7 +494,7 @@ static int wd_post_config_hook(apr_pool_t *pconf, apr_pool_t *plog,
                      * Create the watchdog thread
                      */
                     if ((rv = wd_startup(w, wd_server_conf->pool)) != APR_SUCCESS) {
-                        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
+                        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(01571)
                                 "Watchdog: Failed to create parent worker thread.");
                         return rv;
                     }
@@ -504,7 +504,7 @@ static int wd_post_config_hook(apr_pool_t *pconf, apr_pool_t *plog,
         }
     }
     if (wd_server_conf->parent_workers) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01572)
                      "Spawned %d parent worker threads.",
                      wd_server_conf->parent_workers);
     }
@@ -579,7 +579,7 @@ static void wd_child_init_hook(apr_pool_t *p, server_rec *s)
                  * Kick of the watchdog
                  */
                 if ((rv = wd_startup(w, wd_server_conf->pool)) != APR_SUCCESS) {
-                    ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
+                    ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(01573)
                                  "Watchdog: Failed to create worker thread.");
                     /* No point to continue */
                     return;

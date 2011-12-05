@@ -50,7 +50,7 @@ static int proxy_ajp_canon(request_rec *r, char *url)
      */
     err = ap_proxy_canon_netloc(r->pool, &url, NULL, NULL, &host, &port);
     if (err) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "error parsing URL %s: %s",
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00867) "error parsing URL %s: %s",
                       url, err);
         return HTTP_BAD_REQUEST;
     }
@@ -208,7 +208,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     status = ajp_send_header(conn->sock, r, maxsize, uri);
     if (status != APR_SUCCESS) {
         conn->close++;
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(00868)
                       "request failed to %pI (%s)",
                       conn->worker->cp->addr,
                       conn->worker->s->hostname);
@@ -235,7 +235,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     if (status != APR_SUCCESS) {
         /* We had a failure: Close connection to backend */
         conn->close++;
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00869)
                       "ajp_alloc_data_msg failed");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -245,7 +245,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     tenc = apr_table_get(r->headers_in, "Transfer-Encoding");
     if (tenc && (strcasecmp(tenc, "chunked") == 0)) {
         /* The AJP protocol does not want body data yet */
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "request is chunked");
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00870) "request is chunked");
     } else {
         /* Get client provided Content-Length header */
         content_length = get_content_length(r);
@@ -256,7 +256,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         if (status != APR_SUCCESS) {
             /* We had a failure: Close connection to backend */
             conn->close++;
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00871)
                           "ap_get_brigade failed");
             apr_brigade_destroy(input_brigade);
             return HTTP_BAD_REQUEST;
@@ -264,11 +264,11 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
 
         /* have something */
         if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "APR_BUCKET_IS_EOS");
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00872) "APR_BUCKET_IS_EOS");
         }
 
         /* Try to send something */
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00873)
                       "data to read (max %" APR_SIZE_T_FMT
                       " at %" APR_SIZE_T_FMT ")", bufsiz, msg->pos);
 
@@ -277,13 +277,13 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
             /* We had a failure: Close connection to backend */
             conn->close++;
             apr_brigade_destroy(input_brigade);
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(00874)
                           "apr_brigade_flatten");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
         apr_brigade_cleanup(input_brigade);
 
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00875)
                       "got %" APR_SIZE_T_FMT " bytes of data", bufsiz);
         if (bufsiz > 0) {
             status = ajp_send_data_msg(conn->sock, msg, bufsiz);
@@ -292,7 +292,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                 /* We had a failure: Close connection to backend */
                 conn->close++;
                 apr_brigade_destroy(input_brigade);
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(00876)
                               "send failed to %pI (%s)",
                               conn->worker->cp->addr,
                               conn->worker->s->hostname);
@@ -306,7 +306,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
             send_body = 1;
         }
         else if (content_length > 0) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(00877)
                           "read zero bytes, expecting"
                           " %" APR_OFF_T_FMT " bytes",
                           content_length);
@@ -332,7 +332,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         /* We had a failure: Close connection to backend */
         conn->close++;
         apr_brigade_destroy(input_brigade);
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(00878)
                       "read response failed from %pI (%s)",
                       conn->worker->cp->addr,
                       conn->worker->s->hostname);
@@ -379,7 +379,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                         /* This is the end */
                         bufsiz = 0;
                         havebody = 0;
-                        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r,
+                        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, APLOGNO(00879)
                                       "APR_BUCKET_IS_EOS");
                     } else {
                         status = ap_get_brigade(r->input_filters, input_brigade,
@@ -387,7 +387,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                                                 APR_BLOCK_READ,
                                                 maxsize - AJP_HEADER_SZ);
                         if (status != APR_SUCCESS) {
-                            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r,
+                            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, APLOGNO(00880)
                                           "ap_get_brigade failed");
                             output_failed = 1;
                             break;
@@ -397,7 +397,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                                                      &bufsiz);
                         apr_brigade_cleanup(input_brigade);
                         if (status != APR_SUCCESS) {
-                            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r,
+                            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, APLOGNO(00881)
                                          "apr_brigade_flatten failed");
                             output_failed = 1;
                             break;
@@ -409,7 +409,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                     status = ajp_send_data_msg(conn->sock, msg, bufsiz);
                     ajp_msg_log(r, msg, "ajp_send_data_msg after CMD_AJP13_GET_BODY_CHUNK: ajp_ilink_send packet dump");
                     if (status != APR_SUCCESS) {
-                        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r,
+                        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, APLOGNO(00882)
                                       "ajp_send_data_msg failed");
                         backend_failed = 1;
                         break;
@@ -420,7 +420,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                      * something is wrong TC asks for more body but we are
                      * already at the end of the body data
                      */
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00883)
                                   "ap_proxy_ajp_request error read after end");
                     backend_failed = 1;
                 }
@@ -431,7 +431,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                      * Backend already send us the headers.
                      */
                     backend_failed = 1;
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00884)
                                   "Backend sent headers twice.");
                     break;
                 }
@@ -446,7 +446,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                     if ((buf = apr_table_get(r->headers_out, wa))) {
                         apr_table_set(r->err_headers_out, wa, buf);
                     } else {
-                        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00885)
                                       "ap_proxy_ajp_request: origin server "
                                       "sent 401 without WWW-Authenticate header");
                     }
@@ -470,7 +470,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                                 APR_BRIGADE_INSERT_TAIL(output_brigade, e);
                             }
                             else {
-                                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00886)
                                               "Ignoring flush message "
                                               "received before headers");
                             }
@@ -509,7 +509,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                         if (headers_sent) {
                             if (ap_pass_brigade(r->output_filters,
                                                 output_brigade) != APR_SUCCESS) {
-                                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00887)
                                               "error processing body.%s",
                                               r->connection->aborted ?
                                               " Client aborted connection." : "");
@@ -538,7 +538,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                     APR_BRIGADE_INSERT_TAIL(output_brigade, e);
                     if (ap_pass_brigade(r->output_filters,
                                         output_brigade) != APR_SUCCESS) {
-                        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00888)
                                       "error processing end");
                         output_failed = 1;
                     }
@@ -578,7 +578,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                                  (ajp_msg_t **)&(conn->data));
         if (status != APR_SUCCESS) {
             backend_failed = 1;
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, APLOGNO(00889)
                           "ajp_read_header failed");
             break;
         }
@@ -593,7 +593,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     apr_brigade_cleanup(output_brigade);
 
     if (backend_failed || output_failed) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00890)
                       "Processing of request failed backend: %i, "
                       "output: %i", backend_failed, output_failed);
         /* We had a failure: Close connection to backend */
@@ -604,7 +604,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         }
     }
     else if (!request_ended) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00891)
                       "Processing of request didn't terminate cleanly");
         /* We had a failure: Close connection to backend */
         conn->close++;
@@ -619,7 +619,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         conn->close++;
     }
     else {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00892)
                       "got response from %pI (%s)",
                       conn->worker->cp->addr,
                       conn->worker->s->hostname);
@@ -638,7 +638,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     }
 
     if (backend_failed) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(00893)
                       "dialog to %pI (%s) failed",
                       conn->worker->cp->addr,
                       conn->worker->s->hostname);
@@ -721,10 +721,10 @@ static int proxy_ajp_handler(request_rec *r, proxy_worker *worker,
 
 
     if (strncasecmp(url, "ajp:", 4) != 0) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "declining URL %s", url);
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00894) "declining URL %s", url);
         return DECLINED;
     }
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "serving URL %s", url);
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00895) "serving URL %s", url);
 
     /* create space for state information */
     status = ap_proxy_acquire_connection(scheme, &backend, worker,
@@ -754,7 +754,7 @@ static int proxy_ajp_handler(request_rec *r, proxy_worker *worker,
 
         /* Step Two: Make the Connection */
         if (ap_proxy_connect_backend(scheme, backend, worker, r->server)) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00896)
                           "failed to make connection to backend: %s",
                           backend->hostname);
             status = HTTP_SERVICE_UNAVAILABLE;
@@ -773,7 +773,7 @@ static int proxy_ajp_handler(request_rec *r, proxy_worker *worker,
              */
             if (status != APR_SUCCESS) {
                 backend->close++;
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(00897)
                               "cping/cpong failed to %pI (%s)",
                               worker->cp->addr, worker->s->hostname);
                 status = HTTP_SERVICE_UNAVAILABLE;

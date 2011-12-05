@@ -99,7 +99,7 @@ static int auth_internal_per_conf_providers = 0;
 static int decl_die(int status, const char *phase, request_rec *r)
 {
     if (status == DECLINED) {
-        ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(00025)
                       "configuration error:  couldn't %s: %s", phase, r->uri);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -134,7 +134,7 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
         if (access_status) {
             if (access_status == HTTP_NOT_FOUND) {
                 if (! d->allow_encoded_slashes) {
-                    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00026)
                                   "found %%2f (encoded '/') in URI "
                                   "(decoded='%s'), returning 404",
                                   r->parsed_uri.path);
@@ -235,7 +235,7 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
                 }
                 if (r->user == NULL) {
                     /* don't let buggy authn module crash us in authz */
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00027)
                                   "Buggy authn provider failed to set user for %s",
                                   r->uri);
                     access_status = HTTP_INTERNAL_SERVER_ERROR;
@@ -270,7 +270,7 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
                 }
                 if (r->user == NULL) {
                     /* don't let buggy authn module crash us in authz */
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00028)
                                   "Buggy authn provider failed to set user for %s",
                                   r->uri);
                     access_status = HTTP_INTERNAL_SERVER_ERROR;
@@ -558,7 +558,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
      * handler.  Leave INFO notes here for module debugging.
      */
     if (r->filename == NULL) {
-        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00029)
                       "Module bug?  Request filename is missing for URI %s",
                       r->uri);
        return OK;
@@ -571,7 +571,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
     if ((rv = apr_filepath_merge(&entry_dir, NULL, r->filename,
                                  APR_FILEPATH_NOTRELATIVE, r->pool))
                   != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00030)
                       "Module bug?  Request filename path %s is invalid or "
                       "or not absolute for uri %s",
                       r->filename, r->uri);
@@ -683,7 +683,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                      * with a HTTP_FORBIDDEN in case we hit a race condition
                      * here.
                      */
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(00031)
                                   "access to %s failed; stat of '%s' failed.",
                                   r->uri, r->filename);
                     return r->status = HTTP_FORBIDDEN;
@@ -692,7 +692,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                     /* Is this a possibly acceptable symlink? */
                     if ((res = resolve_symlink(r->filename, &thisinfo,
                                                opts, r->pool)) != OK) {
-                        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00032)
                                       "Symbolic link not allowed "
                                       "or link target not accessible: %s",
                                       r->filename);
@@ -762,7 +762,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                                          r->path_info,
                                          APR_FILEPATH_NOTABOVEROOT, r->pool))
                 != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(00033)
                               "dir_walk error, path_info %s is not relative "
                               "to the filename path %s for uri %s",
                               r->path_info, r->filename, r->uri);
@@ -829,7 +829,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
 #endif
 
         if (rv != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(00034)
                           "dir_walk error, could not determine the root "
                           "path of filename %s%s for uri %s",
                           r->filename, r->path_info, r->uri);
@@ -1093,7 +1093,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                 break;
             }
             else if (APR_STATUS_IS_EACCES(rv)) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(00035)
                               "access to %s denied because search "
                               "permissions are missing on a component "
                               "of the path", r->uri);
@@ -1104,7 +1104,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                 /* If we hit ENOTDIR, we must have over-optimized, deny
                  * rather than assume not found.
                  */
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(00036)
                               "access to %s failed", r->uri);
                 return r->status = HTTP_FORBIDDEN;
             }
@@ -1126,7 +1126,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                  */
                 if ((res = resolve_symlink(r->filename, &thisinfo,
                                            opts.opts, r->pool)) != OK) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00037)
                                   "Symbolic link not allowed "
                                   "or link target not accessible: %s",
                                   r->filename);
@@ -1143,7 +1143,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                 break;
             }
             else if (thisinfo.filetype != APR_DIR) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00038)
                               "Forbidden: %s doesn't point to "
                               "a file or directory",
                               r->filename);
@@ -1679,7 +1679,7 @@ AP_DECLARE(int) ap_if_walk(request_rec *r)
             rc = ap_expr_exec(r, entry_core->condition, &err);
             if (rc <= 0) {
                 if (rc < 0)
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00039)
                                   "Failed to evaluate <If > condition: %s",
                                   err);
                 prev_result = 0;

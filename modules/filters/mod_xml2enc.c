@@ -101,7 +101,7 @@ static apr_status_t xml2enc_filter(request_rec* r, const char* enc,
     }
     else {
         rv = APR_EGENERAL;
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01426)
                       "xml2enc: bad mode %x", mode);
     }
     if (rv == APR_SUCCESS) {
@@ -115,7 +115,7 @@ static apr_status_t xml2enc_filter(request_rec* r, const char* enc,
         ap_add_output_filter("xml2enc", ctx, r, r->connection);
     }
     else {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01427)
                       "xml2enc: Charset %s not supported.", enc) ;
     }
     return rv;
@@ -148,7 +148,7 @@ static void fix_skipto(request_rec* r, xml2ctx* ctx)
                     ctx->bytes -= (p-ctx->buf);
                     ctx->buf = p ;
                     found = 1;
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01428)
                                   "Skipped to first <%s> element",
                                   starts[i].val) ;
                     break;
@@ -157,7 +157,7 @@ static void fix_skipto(request_rec* r, xml2ctx* ctx)
             p = ap_strchr(p+1, '<');
         }
         if (p == NULL) {
-            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01429)
                           "Failed to find start of recognised HTML!");
         }
     }
@@ -174,7 +174,7 @@ static void sniff_encoding(request_rec* r, xml2ctx* ctx)
     const char* ctype = r->content_type;
 
     if (ctype) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01430)
                       "Content-Type is %s", ctype) ;
 
         /* If we've got it in the HTTP headers, there's nothing to do */
@@ -182,7 +182,7 @@ static void sniff_encoding(request_rec* r, xml2ctx* ctx)
             p += 8 ;
             if (ctx->encoding = apr_pstrndup(r->pool, p, strcspn(p, " ;") ),
                 ctx->encoding) {
-                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01431)
                               "Got charset %s from HTTP headers", ctx->encoding) ;
                 ctx->xml2enc = xmlParseCharEncoding(ctx->encoding);
             }
@@ -194,7 +194,7 @@ static void sniff_encoding(request_rec* r, xml2ctx* ctx)
         ctx->xml2enc = xmlDetectCharEncoding((const xmlChar*)ctx->buf,
                                              ctx->bytes); 
         if (HAVE_ENCODING(ctx->xml2enc)) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01432)
                           "Got charset from XML rules.") ;
             ctx->encoding = xmlGetCharEncodingName(ctx->xml2enc);
         }
@@ -219,7 +219,7 @@ static void sniff_encoding(request_rec* r, xml2ctx* ctx)
                     ctx->encoding) {
                     ctx->xml2enc = xmlParseCharEncoding(ctx->encoding);
                     if (HAVE_ENCODING(ctx->xml2enc))
-                        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+                        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01433)
                                       "Got charset %s from HTML META", ctx->encoding) ;
                 }
             }
@@ -249,14 +249,14 @@ static void sniff_encoding(request_rec* r, xml2ctx* ctx)
             ctx->encoding = cfg->default_charset?cfg->default_charset:"ISO-8859-1";
         }
         /* Unsupported charset. Can we get (iconv) support through apr_xlate? */
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01434)
                       "Charset %s not supported by libxml2; trying apr_xlate",
                       ctx->encoding);
         if (apr_xlate_open(&ctx->convset, "UTF-8", ctx->encoding, r->pool)
             == APR_SUCCESS) {
             ctx->xml2enc = XML_CHAR_ENCODING_UTF8 ;
         } else {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01435)
                           "Charset %s not supported.  Consider aliasing it?",
                           ctx->encoding) ;
         }
@@ -264,7 +264,7 @@ static void sniff_encoding(request_rec* r, xml2ctx* ctx)
 
     if (!HAVE_ENCODING(ctx->xml2enc)) {
         /* Use configuration default as a last resort */
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01436)
                   "No usable charset information; using configuration default");
         ctx->xml2enc = (cfg->default_encoding == XML_CHAR_ENCODING_NONE)
                         ? XML_CHAR_ENCODING_8859_1 : cfg->default_encoding ;
@@ -417,7 +417,7 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
                      * Save remaining data for next time round
                      */
           
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r,
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r, APLOGNO(01437)
                                   "xml2enc: Setting aside %" APR_SIZE_T_FMT
                                   " unconverted bytes", bytes);
                     rv = ap_fflush(f->next, ctx->bbnext);
@@ -434,7 +434,7 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
                     APR_BUCKET_REMOVE(b);
                     apr_bucket_destroy(b);
                 }
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r,
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r, APLOGNO(01438)
                               "xml2enc: consuming %" APR_SIZE_T_FMT
                               " bytes flattened", bytes);
             }
@@ -443,7 +443,7 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
                                      APR_BLOCK_READ);
                 APR_BUCKET_REMOVE(b);
                 bdestroy = b;  /* can't destroy until finished with the data */
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r,
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r, APLOGNO(01439)
                               "xml2enc: consuming %" APR_SIZE_T_FMT
                               " bytes from bucket", bytes);
             }
@@ -461,7 +461,7 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
                         b = apr_bucket_transient_create(buf+(bytes - insz), insz,
                                                         bb->bucket_alloc);
                         APR_BRIGADE_INSERT_HEAD(bb, b);
-                        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r,
+                        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r, APLOGNO(01440)
                                       "xml2enc: reinserting %" APR_SIZE_T_FMT
                                       " unconsumed bytes from bucket", insz);
                         break;
@@ -469,7 +469,7 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
                     ctx->bytes = (apr_size_t)ctx->bblen;
                     rv = apr_xlate_conv_buffer(ctx->convset, buf+(bytes - insz),
                                                &insz, ctx->buf, &ctx->bytes);
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, f->r,
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, f->r, APLOGNO(01441)
                                   "xml2enc: converted %" APR_SIZE_T_FMT
                                   "/%" APR_OFF_T_FMT " bytes", consumed - insz,
                                   ctx->bblen - ctx->bytes);
@@ -477,7 +477,7 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
                     rv2 = ap_fwrite(f->next, ctx->bbnext, ctx->buf,
                                     (apr_size_t)ctx->bblen - ctx->bytes);
                     if (rv2 != APR_SUCCESS) {
-                        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv2, f->r,
+                        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv2, f->r, APLOGNO(01442)
                                       "ap_fwrite failed");
                         return rv2;
                     }
@@ -485,14 +485,14 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
                     case APR_SUCCESS:
                         continue;
                     case APR_EINCOMPLETE:
-                        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r,
+                        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r, APLOGNO(01443)
                                       "INCOMPLETE");
                         continue;     /* If outbuf too small, go round again.
                                        * If it was inbuf, we'll break out when
                                        * we test ctx->bytes == ctx->bblen
                                        */
                     case APR_EINVAL: /* try skipping one bad byte */
-                        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r,
+                        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r, APLOGNO(01444)
                                    "Skipping invalid byte(s) in input stream!");
                         --insz;
                         continue;
@@ -500,19 +500,19 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
                         /* Erk!  What's this?
                          * Bail out, flush, and hope to eat the buf raw
                          */
-                        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r,
+                        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r, APLOGNO(01445)
                                       "Failed to convert input; trying it raw") ;
                         ctx->convset = NULL;
                         rv = ap_fflush(f->next, ctx->bbnext);
                         if (rv != APR_SUCCESS)
-                            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, f->r,
+                            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, f->r, APLOGNO(01446)
                                           "ap_fflush failed");
                         else
                             rv = ap_pass_brigade(f->next, ctx->bbnext);
                     }
                 }
             } else {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r, APLOGNO(01447)
                               "xml2enc: error reading data") ;
             }
             if (bdestroy)

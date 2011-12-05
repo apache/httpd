@@ -102,7 +102,7 @@ static apr_status_t socache_mc_init(ap_socache_instance_t *ctx,
 
     rv = apr_memcache_create(p, nservers, 0, &ctx->mc);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(00785)
                      "Failed to create Memcache Object of '%d' size.",
                      nservers);
         return rv;
@@ -119,13 +119,13 @@ static apr_status_t socache_mc_init(ap_socache_instance_t *ctx,
 
         rv = apr_parse_addr_port(&host_str, &scope_id, &port, split, p);
         if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(00786)
                          "Failed to Parse memcache Server: '%s'", split);
             return rv;
         }
 
         if (host_str == NULL) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(00787)
                          "Failed to Parse Server, "
                          "no hostname specified: '%s'", split);
             return APR_EINVAL;
@@ -143,7 +143,7 @@ static apr_status_t socache_mc_init(ap_socache_instance_t *ctx,
                                         MC_DEFAULT_SERVER_TTL,
                                         &st);
         if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(00788)
                          "Failed to Create memcache Server: %s:%d",
                          host_str, port);
             return rv;
@@ -151,7 +151,7 @@ static apr_status_t socache_mc_init(ap_socache_instance_t *ctx,
 
         rv = apr_memcache_add_server(ctx->mc, st);
         if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(00789)
                          "Failed to Add memcache Server: %s:%d",
                          host_str, port);
             return rv;
@@ -215,7 +215,7 @@ static apr_status_t socache_mc_store(ap_socache_instance_t *ctx, server_rec *s,
     rv = apr_memcache_set(ctx->mc, buf, (char*)ucaData, nData, 0, 0);
 
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(00790)
                      "scache_mc: error setting key '%s' "
                      "with %d bytes of data", buf, nData);
         return rv;
@@ -243,13 +243,13 @@ static apr_status_t socache_mc_retrieve(ap_socache_instance_t *ctx, server_rec *
     rv = apr_memcache_getp(ctx->mc, p, buf, &data, &data_len, NULL);
     if (rv) {
         if (rv != APR_NOTFOUND) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(00791)
                          "scache_mc: 'retrieve' FAIL");
         }
         return rv;
     }
     else if (data_len > *destlen) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(00792)
                      "scache_mc: 'retrieve' OVERFLOW");
         return APR_ENOMEM;
     }
@@ -274,7 +274,7 @@ static apr_status_t socache_mc_remove(ap_socache_instance_t *ctx, server_rec *s,
     rv = apr_memcache_delete(ctx->mc, buf, 0);
 
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(00793)
                      "scache_mc: error deleting key '%s' ",
                      buf);
     }

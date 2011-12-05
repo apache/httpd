@@ -660,7 +660,7 @@ static int do_headers_fixup(request_rec *r, apr_table_t *headers,
             const char *err = NULL;
             int eval = ap_expr_exec(r, hdr->expr, &err);
             if (err) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01501)
                               "Failed to evaluate expression (%s) - ignoring",
                               err);
             }
@@ -797,7 +797,7 @@ static apr_status_t ap_headers_output_filter(ap_filter_t *f,
     headers_conf *dirconf = ap_get_module_config(f->r->per_dir_config,
                                                  &headers_module);
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, f->r->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, f->r->server, APLOGNO(01502)
                  "headers: ap_headers_output_filter()");
 
     /* do the fixup */
@@ -822,7 +822,7 @@ static apr_status_t ap_headers_error_filter(ap_filter_t *f,
 
     dirconf = ap_get_module_config(f->r->per_dir_config,
                                     &headers_module);
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, f->r->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, f->r->server, APLOGNO(01503)
                  "headers: ap_headers_error_filter()");
 
     /*
@@ -876,7 +876,7 @@ static apr_status_t ap_headers_early(request_rec *r)
 
     return DECLINED;
 err:
-    ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(01504)
                   "Regular expression replacement failed (replacement too long?)");
     return HTTP_INTERNAL_SERVER_ERROR;
 }

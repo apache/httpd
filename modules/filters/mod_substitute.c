@@ -531,7 +531,7 @@ static apr_status_t substitute_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     return APR_SUCCESS;
 err:
     if (rv == APR_ENOMEM)
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r, "Line too long, URI %s",
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r, APLOGNO(01328) "Line too long, URI %s",
                       f->r->uri);
     apr_pool_clear(ctx->tpool);
     return rv;

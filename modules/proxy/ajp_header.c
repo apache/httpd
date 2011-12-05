@@ -226,7 +226,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
     ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, r, "Into ajp_marshal_into_msgb");
 
     if ((method = sc_for_req_method_by_id(r)) == UNKNOWN_METHOD) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00967)
                "ajp_marshal_into_msgb - No such method %s",
                r->method);
         return AJP_EBAD_METHOD;
@@ -254,7 +254,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
         ajp_msg_append_uint8(msg, is_ssl)                        ||
         ajp_msg_append_uint16(msg, (apr_uint16_t) num_headers)) {
 
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00968)
                "ajp_marshal_into_msgb: "
                "Error appending the message begining");
         return APR_EGENERAL;
@@ -267,7 +267,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
 
         if ((sc = sc_for_req_header(elts[i].key)) != UNKNOWN_METHOD) {
             if (ajp_msg_append_uint16(msg, (apr_uint16_t)sc)) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00969)
                        "ajp_marshal_into_msgb: "
                        "Error appending the header name");
                 return AJP_EOVERFLOW;
@@ -275,7 +275,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
         }
         else {
             if (ajp_msg_append_string(msg, elts[i].key)) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00970)
                        "ajp_marshal_into_msgb: "
                        "Error appending the header name");
                 return AJP_EOVERFLOW;
@@ -283,7 +283,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
         }
 
         if (ajp_msg_append_string(msg, elts[i].val)) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00971)
                    "ajp_marshal_into_msgb: "
                    "Error appending the header value");
             return AJP_EOVERFLOW;
@@ -308,7 +308,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
     if (r->user) {
         if (ajp_msg_append_uint8(msg, SC_A_REMOTE_USER) ||
             ajp_msg_append_string(msg, r->user)) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00972)
                    "ajp_marshal_into_msgb: "
                    "Error appending the remote user");
             return AJP_EOVERFLOW;
@@ -317,7 +317,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
     if (r->ap_auth_type) {
         if (ajp_msg_append_uint8(msg, SC_A_AUTH_TYPE) ||
             ajp_msg_append_string(msg, r->ap_auth_type)) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00973)
                    "ajp_marshal_into_msgb: "
                    "Error appending the auth type");
             return AJP_EOVERFLOW;
@@ -327,7 +327,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
     if (uri->query) {
         if (ajp_msg_append_uint8(msg, SC_A_QUERY_STRING) ||
             ajp_msg_append_string(msg, uri->query)) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00974)
                    "ajp_marshal_into_msgb: "
                    "Error appending the query string");
             return AJP_EOVERFLOW;
@@ -336,7 +336,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
     if ((session_route = apr_table_get(r->notes, "session-route"))) {
         if (ajp_msg_append_uint8(msg, SC_A_JVM_ROUTE) ||
             ajp_msg_append_string(msg, session_route)) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00975)
                    "ajp_marshal_into_msgb: "
                    "Error appending the jvm route");
             return AJP_EOVERFLOW;
@@ -359,7 +359,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
             && envvar[0]) {
             if (ajp_msg_append_uint8(msg, SC_A_SSL_CERT)
                 || ajp_msg_append_string(msg, envvar)) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00976)
                               "ajp_marshal_into_msgb: "
                               "Error appending the SSL certificates");
                 return AJP_EOVERFLOW;
@@ -371,7 +371,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
             && envvar[0]) {
             if (ajp_msg_append_uint8(msg, SC_A_SSL_CIPHER)
                 || ajp_msg_append_string(msg, envvar)) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00977)
                               "ajp_marshal_into_msgb: "
                               "Error appending the SSL ciphers");
                 return AJP_EOVERFLOW;
@@ -383,7 +383,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
             && envvar[0]) {
             if (ajp_msg_append_uint8(msg, SC_A_SSL_SESSION)
                 || ajp_msg_append_string(msg, envvar)) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00978)
                               "ajp_marshal_into_msgb: "
                               "Error appending the SSL session");
                 return AJP_EOVERFLOW;
@@ -397,7 +397,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
 
             if (ajp_msg_append_uint8(msg, SC_A_SSL_KEY_SIZE)
                 || ajp_msg_append_uint16(msg, (unsigned short) atoi(envvar))) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00979)
                               "ajp_marshal_into_msgb: "
                               "Error appending the SSL key size");
                 return APR_EGENERAL;
@@ -417,7 +417,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
         if (ajp_msg_append_uint8(msg, SC_A_REQ_ATTRIBUTE) ||
             ajp_msg_append_string(msg, key)   ||
             ajp_msg_append_string(msg, val)) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00980)
                     "ajp_marshal_into_msgb: "
                     "Error appending attribute %s=%s",
                     key, val);
@@ -432,7 +432,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
             if (ajp_msg_append_uint8(msg, SC_A_REQ_ATTRIBUTE) ||
                 ajp_msg_append_string(msg, elts[i].key + 4)   ||
                 ajp_msg_append_string(msg, elts[i].val)) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00981)
                         "ajp_marshal_into_msgb: "
                         "Error appending attribute %s=%s",
                         elts[i].key, elts[i].val);
@@ -442,7 +442,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
     }
 
     if (ajp_msg_append_uint8(msg, SC_A_ARE_DONE)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00982)
                "ajp_marshal_into_msgb: "
                "Error appending the message end");
         return AJP_EOVERFLOW;
@@ -497,7 +497,7 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t *msg,
     rc = ajp_msg_get_uint16(msg, &status);
 
     if (rc != APR_SUCCESS) {
-         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00983)
                 "ajp_unmarshal_response: Null status");
         return rc;
     }
@@ -552,7 +552,7 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t *msg,
             ajp_msg_get_uint16(msg, &name);
             stringname = long_res_header_for_sc(name);
             if (stringname == NULL) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00984)
                        "ajp_unmarshal_response: "
                        "No such sc (%08x)",
                        name);
@@ -562,7 +562,7 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t *msg,
             name = 0;
             rc = ajp_msg_get_string(msg, &stringname);
             if (rc != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00985)
                        "ajp_unmarshal_response: "
                        "Null header name");
                 return rc;
@@ -572,7 +572,7 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t *msg,
 
         rc = ajp_msg_get_string(msg, &value);
         if (rc != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00986)
                    "ajp_unmarshal_response: "
                    "Null header value");
             return rc;
@@ -624,14 +624,14 @@ apr_status_t ajp_send_header(apr_socket_t *sock,
 
     rc = ajp_msg_create(r->pool, buffsize, &msg);
     if (rc != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00987)
                "ajp_send_header: ajp_msg_create failed");
         return rc;
     }
 
     rc = ajp_marshal_into_msgb(msg, r, uri);
     if (rc != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00988)
                "ajp_send_header: ajp_marshal_into_msgb failed");
         return rc;
     }
@@ -639,7 +639,7 @@ apr_status_t ajp_send_header(apr_socket_t *sock,
     rc = ajp_ilink_send(sock, msg);
     ajp_msg_log(r, msg, "ajp_send_header: ajp_ilink_send packet dump");
     if (rc != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00989)
                "ajp_send_header: ajp_ilink_send failed");
         return rc;
     }
@@ -661,7 +661,7 @@ apr_status_t ajp_read_header(apr_socket_t *sock,
     if (*msg) {
         rc = ajp_msg_reuse(*msg);
         if (rc != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00990)
                    "ajp_read_header: ajp_msg_reuse failed");
             return rc;
         }
@@ -669,7 +669,7 @@ apr_status_t ajp_read_header(apr_socket_t *sock,
     else {
         rc = ajp_msg_create(r->pool, buffsize, msg);
         if (rc != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00991)
                    "ajp_read_header: ajp_msg_create failed");
             return rc;
         }
@@ -677,14 +677,14 @@ apr_status_t ajp_read_header(apr_socket_t *sock,
     ajp_msg_reset(*msg);
     rc = ajp_ilink_receive(sock, *msg);
     if (rc != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00992)
                "ajp_read_header: ajp_ilink_receive failed");
         return rc;
     }
     ajp_msg_log(r, *msg, "ajp_read_header: ajp_ilink_receive packet dump");
     rc = ajp_msg_peek_uint8(*msg, &result);
     if (rc != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00993)
                       "ajp_read_header: ajp_msg_peek_uint8 failed");
         return rc;
     }
@@ -714,12 +714,12 @@ apr_status_t ajp_parse_header(request_rec  *r, proxy_dir_conf *conf,
 
     rc = ajp_msg_get_uint8(msg, &result);
     if (rc != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00994)
                "ajp_parse_headers: ajp_msg_get_byte failed");
         return rc;
     }
     if (result != CMD_AJP13_SEND_HEADERS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00995)
                "ajp_parse_headers: wrong type %s (0x%02x) expecting %s (0x%02x)",
                ajp_type_str(result), result,
                ajp_type_str(CMD_AJP13_SEND_HEADERS), CMD_AJP13_SEND_HEADERS);
@@ -738,12 +738,12 @@ apr_status_t  ajp_parse_data(request_rec  *r, ajp_msg_t *msg,
 
     rc = ajp_msg_get_uint8(msg, &result);
     if (rc != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00996)
                "ajp_parse_data: ajp_msg_get_byte failed");
         return rc;
     }
     if (result != CMD_AJP13_SEND_BODY_CHUNK) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00997)
                "ajp_parse_data: wrong type %s (0x%02x) expecting %s (0x%02x)",
                ajp_type_str(result), result,
                ajp_type_str(CMD_AJP13_SEND_BODY_CHUNK), CMD_AJP13_SEND_BODY_CHUNK);
@@ -765,7 +765,7 @@ apr_status_t  ajp_parse_data(request_rec  *r, ajp_msg_t *msg,
      */
     expected_len = msg->len - (AJP_HEADER_LEN + AJP_HEADER_SZ_LEN + 1 + 1);
     if (*len != expected_len) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00998)
                "ajp_parse_data: Wrong chunk length. Length of chunk is %i,"
                " expected length is %i.", *len, expected_len);
         return AJP_EBAD_HEADER;
@@ -783,12 +783,12 @@ apr_status_t ajp_parse_reuse(request_rec *r, ajp_msg_t *msg,
 
     rc = ajp_msg_get_uint8(msg, &result);
     if (rc != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00999)
                "ajp_parse_reuse: ajp_msg_get_byte failed");
         return rc;
     }
     if (result != CMD_AJP13_END_RESPONSE) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01000)
                "ajp_parse_reuse: wrong type %s (0x%02x) expecting %s (0x%02x)",
                ajp_type_str(result), result,
                ajp_type_str(CMD_AJP13_END_RESPONSE), CMD_AJP13_END_RESPONSE);

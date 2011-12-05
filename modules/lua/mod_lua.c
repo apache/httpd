@@ -60,7 +60,7 @@ static void report_lua_error(lua_State *L, request_rec *r)
     ap_rputs(lua_response, r);
     ap_rputs("</p>\n", r);
 
-    ap_log_perror(APLOG_MARK, APLOG_WARNING, 0, r->pool, "Lua error: %s",
+    ap_log_perror(APLOG_MARK, APLOG_WARNING, 0, r->pool, APLOGNO(01471) "Lua error: %s",
                   lua_response);
 }
 
@@ -90,7 +90,7 @@ static int lua_handler(request_rec *r)
         return DECLINED;
     }
   
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "handling [%s] in mod_lua",
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01472) "handling [%s] in mod_lua",
                   r->filename);
     dcfg = ap_get_module_config(r->per_dir_config, &lua_module);
 
@@ -109,7 +109,7 @@ static int lua_handler(request_rec *r)
         spec->cb = &lua_open_callback;
         spec->cb_arg = NULL;
       
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01473)
                       "request details scope:%u, filename:%s, function:%s",
                       spec->scope,
                       spec->file,
@@ -142,10 +142,10 @@ static int lua_handler(request_rec *r)
             ap_rputs("Unable to compile VM, see logs", r);
             return HTTP_INTERNAL_SERVER_ERROR;
         }
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "got a vm!");
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01474) "got a vm!");
         lua_getglobal(L, "handle");
         if (!lua_isfunction(L, -1)) {
-            ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(01475)
                           "lua: Unable to find function %s in %s",
                           "handle",
                           spec->file);
@@ -203,7 +203,7 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name, int ap
             apr_filepath_merge(&spec->file, server_cfg->root_path,
                                spec->file, APR_FILEPATH_NOTRELATIVE, r->pool);
 
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01476)
                           "request details scope:%u, filename:%s, function:%s",
                           spec->scope,
                           spec->file,
@@ -230,7 +230,7 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name, int ap
             L = ap_lua_get_lua_state(pool, spec);
 
             if (!L) {
-                ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(01477)
                               "lua: Failed to obtain lua interpreter for %s %s",
                               hook_spec->function_name, hook_spec->file_name);
                 return HTTP_INTERNAL_SERVER_ERROR;
@@ -239,7 +239,7 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name, int ap
             if (hook_spec->function_name != NULL) {
                 lua_getglobal(L, hook_spec->function_name);
                 if (!lua_isfunction(L, -1)) {
-                    ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(01478)
                                   "lua: Unable to find function %s in %s",
                                   hook_spec->function_name,
                                   hook_spec->file_name);

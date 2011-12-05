@@ -895,7 +895,7 @@ apr_array_header_t *ssl_ext_list(apr_pool_t *p, conn_rec *c, int peer,
      */
     oid = OBJ_txt2obj(extension, 0);
     if (!oid) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(01970)
                       "could not parse OID '%s'", extension);
         ERR_clear_error();
         return NULL;
@@ -931,7 +931,7 @@ apr_array_header_t *ssl_ext_list(apr_pool_t *p, conn_rec *c, int peer,
                 BIO_get_mem_ptr(bio, &buf);
                 *ptr = apr_pstrmemdup(p, buf->data, buf->length);
             } else {
-                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(01971)
                               "Found an extension '%s', but failed to "
                               "create a string from it", extension);
             }

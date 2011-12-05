@@ -179,7 +179,7 @@ static authn_status check_anonymous(request_rec *r, const char *user,
             || (ap_strchr_c(sent_pw, '@') && ap_strchr_c(sent_pw, '.'))))
     {
         if (conf->logemail && ap_is_initial_req(r)) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, APR_SUCCESS, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, APR_SUCCESS, r, APLOGNO(01672)
                           "Anonymous: Passwd <%s> Accepted",
                           sent_pw ? sent_pw : "\'none\'");
         }

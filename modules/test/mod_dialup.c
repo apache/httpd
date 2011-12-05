@@ -86,7 +86,7 @@ dialup_send_pulse(dialup_baton_t *db)
         apr_brigade_cleanup(db->tmpbb);
 
         if (status != OK) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, db->r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, db->r, APLOGNO(01867)
                           "dialup: pulse: ap_pass_brigade failed:");
             return status;
         }
@@ -120,7 +120,7 @@ dialup_callback(void *baton)
         return;
     }
     else {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, db->r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, db->r, APLOGNO(01868)
                       "dialup: pulse returned: %d", status);
         db->r->status = HTTP_OK;
         ap_die(status, db->r);
@@ -177,7 +177,7 @@ dialup_handler(request_rec *r)
 
     status = ap_meets_conditions(r);
     if (status != OK) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01869)
                       "dialup: declined, meets conditions, good luck core handler");
         return DECLINED;
     }
@@ -206,7 +206,7 @@ dialup_handler(request_rec *r)
 
     status = dialup_send_pulse(db);
     if (status != SUSPENDED && status != DONE) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01870)
                       "dialup: failed, send pulse");
         return status;
     }

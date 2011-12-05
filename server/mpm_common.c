@@ -211,7 +211,7 @@ void ap_sock_disable_nagle(apr_socket_t *s)
     apr_status_t status = apr_socket_opt_set(s, APR_TCP_NODELAY, 1);
 
     if (status != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, status, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, status, ap_server_conf, APLOGNO(00542)
                      "apr_socket_opt_set: (TCP_NODELAY)");
     }
 }
@@ -226,7 +226,7 @@ AP_DECLARE(uid_t) ap_uname2id(const char *name)
         return (atoi(&name[1]));
 
     if (!(ent = getpwnam(name))) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, APLOGNO(00543)
                      "%s: bad user name %s", ap_server_argv0, name);
         exit(1);
     }
@@ -244,7 +244,7 @@ AP_DECLARE(gid_t) ap_gname2id(const char *name)
         return (atoi(&name[1]));
 
     if (!(ent = getgrnam(name))) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, APLOGNO(00544)
                      "%s: bad group name %s", ap_server_argv0, name);
         exit(1);
     }
@@ -318,7 +318,7 @@ const char *ap_mpm_set_max_requests(cmd_parms *cmd, void *dummy,
     }
 
     if (!strcasecmp(cmd->cmd->name, "MaxRequestsPerChild")) {
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, NULL, APLOGNO(00545)
                      "MaxRequestsPerChild is deprecated, use "
                      "MaxConnectionsPerChild instead.");
     }
@@ -505,7 +505,7 @@ void ap_core_child_status(server_rec *s, pid_t pid,
     case MPM_CHILD_EXITED:
         status_msg = "exited";
         if (cur == APR_RING_SENTINEL(geninfo, mpm_gen_info_t, link)) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00546)
                          "no record of generation %d of exiting child %" APR_PID_T_FMT,
                          gen, pid);
         }

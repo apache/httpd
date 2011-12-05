@@ -152,7 +152,7 @@ static int process_echo_connection(conn_rec *c)
                                   APR_BLOCK_READ, 0)) != APR_SUCCESS)) {
             apr_brigade_cleanup(bb);
             if (!APR_STATUS_IS_EOF(rv) && ! APR_STATUS_IS_TIMEUP(rv))
-                ap_log_error(APLOG_MARK, APLOG_INFO, rv, c->base_server,
+                ap_log_error(APLOG_MARK, APLOG_INFO, rv, c->base_server, APLOGNO(01611)
                              "ProtocolEcho: Failure reading from %s",
                              c->peer_ip);
             break;
@@ -161,7 +161,7 @@ static int process_echo_connection(conn_rec *c)
         /* Something horribly wrong happened.  Someone didn't block! */
         if (APR_BRIGADE_EMPTY(bb)) {
             apr_brigade_cleanup(bb);
-            ap_log_error(APLOG_MARK, APLOG_INFO, rv, c->base_server,
+            ap_log_error(APLOG_MARK, APLOG_INFO, rv, c->base_server, APLOGNO(01612)
                          "ProtocolEcho: Error - read empty brigade from %s!",
                          c->peer_ip);
             break;
@@ -179,7 +179,7 @@ static int process_echo_connection(conn_rec *c)
         APR_BRIGADE_INSERT_TAIL(bb, b);
         rv = ap_pass_brigade(c->output_filters, bb);
         if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_INFO, rv, c->base_server,
+            ap_log_error(APLOG_MARK, APLOG_INFO, rv, c->base_server, APLOGNO(01613)
                          "ProtocolEcho: Failure writing to %s",
                          c->peer_ip);
             break;

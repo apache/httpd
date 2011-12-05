@@ -149,7 +149,7 @@ static authz_status dbmgroup_check_authorization(request_rec *r,
     }
 
     if (!conf->grpfile) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01798)
                         "No group file was specified in the configuration");
         return AUTHZ_DENIED;
     }
@@ -162,7 +162,7 @@ static authz_status dbmgroup_check_authorization(request_rec *r,
                              user, conf->grpfile, conf->dbmtype, &groups);
 
         if (status != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(01799)
                           "could not open dbm (type %s) group access "
                           "file: %s", conf->dbmtype, conf->grpfile);
             return AUTHZ_GENERAL_ERROR;
@@ -170,7 +170,7 @@ static authz_status dbmgroup_check_authorization(request_rec *r,
 
         if (groups == NULL) {
             /* no groups available, so exit immediately */
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01800)
                           "Authorization of user %s to access %s failed, reason: "
                           "user doesn't appear in DBM group file (%s).",
                           r->user, r->uri, conf->grpfile);
@@ -191,7 +191,7 @@ static authz_status dbmgroup_check_authorization(request_rec *r,
         }
     }
 
-    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01801)
                   "Authorization of user %s to access %s failed, reason: "
                   "user is not part of the 'require'ed group(s).",
                   r->user, r->uri);
@@ -220,7 +220,7 @@ static authz_status dbmfilegroup_check_authorization(request_rec *r,
     }
 
     if (!conf->grpfile) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01802)
                         "No group file was specified in the configuration");
         return AUTHZ_DENIED;
     }
@@ -230,7 +230,7 @@ static authz_status dbmfilegroup_check_authorization(request_rec *r,
                          user, conf->grpfile, conf->dbmtype, &groups);
 
     if (status != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(01803)
                       "could not open dbm (type %s) group access "
                       "file: %s", conf->dbmtype, conf->grpfile);
         return AUTHZ_DENIED;
@@ -238,7 +238,7 @@ static authz_status dbmfilegroup_check_authorization(request_rec *r,
 
     if (groups == NULL) {
         /* no groups available, so exit immediately */
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01804)
                       "Authorization of user %s to access %s failed, reason: "
                       "user doesn't appear in DBM group file (%s).",
                       r->user, r->uri, conf->grpfile);
@@ -259,7 +259,7 @@ static authz_status dbmfilegroup_check_authorization(request_rec *r,
         }
     }
 
-    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01805)
                   "Authorization of user %s to access %s failed, reason: "
                   "user is not part of the 'require'ed group(s).",
                   r->user, r->uri);

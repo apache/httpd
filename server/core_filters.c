@@ -798,7 +798,7 @@ static apr_status_t sendfile_nonblocking(apr_socket_t *s,
     apr_size_t bytes_written = 0;
 
     if (!APR_BUCKET_IS_FILE(bucket)) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, c->base_server,
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, c->base_server, APLOGNO(00006)
                      "core_filter: sendfile_nonblocking: "
                      "this should never happen");
         return APR_EGENERAL;

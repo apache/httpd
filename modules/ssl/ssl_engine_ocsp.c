@@ -73,7 +73,7 @@ static apr_uri_t *determine_responder_uri(SSLSrvConfigRec *sc, X509 *cert,
     }
 
     if (s == NULL) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(01918)
                       "no OCSP responder specified in certificate and "
                       "no default configured");
         return NULL;
@@ -81,13 +81,13 @@ static apr_uri_t *determine_responder_uri(SSLSrvConfigRec *sc, X509 *cert,
 
     rv = apr_uri_parse(p, s, u);
     if (rv || !u->hostname) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c,
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c, APLOGNO(01919)
                       "failed to parse OCSP responder URI '%s'", s);
         return NULL;
     }
 
     if (strcasecmp(u->scheme, "http") != 0) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c,
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c, APLOGNO(01920)
                       "cannot handle OCSP responder URI '%s'", s);
         return NULL;
     }
@@ -111,7 +111,7 @@ static OCSP_REQUEST *create_request(X509_STORE_CTX *ctx, X509 *cert,
     *certid = OCSP_cert_to_id(NULL, cert, ctx->current_issuer);
     if (!*certid || !OCSP_request_add0_id(req, *certid)) {
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01921)
                      "could not retrieve certificate id");
         return NULL;
     }
@@ -155,7 +155,7 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
         int r = OCSP_response_status(response);
 
         if (r != OCSP_RESPONSE_STATUS_SUCCESSFUL) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01922)
                          "OCSP response not successful: %d", rc);
             rc = V_OCSP_CERTSTATUS_UNKNOWN;
         }
@@ -165,7 +165,7 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
         basicResponse = OCSP_response_get1_basic(response);
         if (!basicResponse) {
             ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
-            ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
+            ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(01923)
                           "could not retrieve OCSP basic response");
             rc = V_OCSP_CERTSTATUS_UNKNOWN;
         }
@@ -173,7 +173,7 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
 
     if (rc == V_OCSP_CERTSTATUS_GOOD) {
         if (OCSP_check_nonce(request, basicResponse) != 1) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01924)
                         "Bad OCSP responder answer (bad nonce)");
             rc = V_OCSP_CERTSTATUS_UNKNOWN;
         }
@@ -183,7 +183,7 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
         /* TODO: allow flags configuration. */
         if (OCSP_basic_verify(basicResponse, NULL, ctx->ctx, 0) != 1) {
             ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01925)
                         "failed to verify the OCSP response");
             rc = V_OCSP_CERTSTATUS_UNKNOWN;
         }

@@ -308,7 +308,7 @@ static int loadjitmodule(lua_State *L, apr_pool_t *lifecycle_pool) {
     lua_concat(L, 2);
     if (lua_pcall(L, 1, 1, 0)) {
         const char *msg = lua_tostring(L, -1);
-        ap_log_perror(APLOG_MARK, APLOG_DEBUG, 0, lifecycle_pool,
+        ap_log_perror(APLOG_MARK, APLOG_DEBUG, 0, lifecycle_pool, APLOGNO(01480)
                       "Failed to init LuaJIT: %s", msg);
         return 1;
     }
@@ -353,7 +353,7 @@ static apr_status_t vm_construct(void **vm, void *params, apr_pool_t *lifecycle_
     }
     else {
         int rc;
-        ap_log_perror(APLOG_MARK, APLOG_DEBUG, 0, lifecycle_pool,
+        ap_log_perror(APLOG_MARK, APLOG_DEBUG, 0, lifecycle_pool, APLOGNO(01481)
             "loading lua file %s", spec->file);
         rc = luaL_loadfile(L, spec->file);
         if (rc != 0) {
@@ -372,7 +372,7 @@ static apr_status_t vm_construct(void **vm, void *params, apr_pool_t *lifecycle_
                     err = "unknown error";
                     break;
             }
-            ap_log_perror(APLOG_MARK, APLOG_ERR, 0, lifecycle_pool,
+            ap_log_perror(APLOG_MARK, APLOG_ERR, 0, lifecycle_pool, APLOGNO(01482)
                 "Loading lua file %s: %s",
                 spec->file, err);
             return APR_EBADF;
@@ -403,7 +403,7 @@ AP_LUA_DECLARE(lua_State*)ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
                               lifecycle_pool) == APR_SUCCESS) {
       
       if(L==NULL) {
-        ap_log_perror(APLOG_MARK, APLOG_DEBUG, 0, lifecycle_pool,
+        ap_log_perror(APLOG_MARK, APLOG_DEBUG, 0, lifecycle_pool, APLOGNO(01483)
                       "creating lua_State with file %s", spec->file);
         /* not available, so create */
         

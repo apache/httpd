@@ -298,7 +298,7 @@ static int remoteip_modify_request(request_rec *r)
                                    APR_UNSPEC, temp_sa->port,
                                    APR_IPV4_ADDR_OK, r->pool);
         if (rv != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG,  rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG,  rv, r, APLOGNO(01568)
                           "RemoteIP: Header %s value of %s cannot be parsed "
                           "as a client IP",
                           config->header_name, parse_remote);
@@ -337,7 +337,7 @@ static int remoteip_modify_request(request_rec *r)
                       && ((temp_sa->sa.sin6.sin6_addr.s6_addr[0] & 0xe0) != 0x20))
 #endif
         )) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG,  rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG,  rv, r, APLOGNO(01569)
                           "RemoteIP: Header %s value of %s appears to be "
                           "a private IP or nonsensical.  Ignored",
                           config->header_name, parse_remote);

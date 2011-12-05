@@ -289,7 +289,7 @@ static proxy_worker *find_best_hb(proxy_balancer *balancer,
     rv = read_heartbeats(ctx->path, servers, tpool);
 
     if (rv) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01213)
                       "lb_heartbeat: Unable to read heartbeats at '%s'",
                       ctx->path);
         apr_pool_destroy(tpool);
@@ -303,7 +303,7 @@ static proxy_worker *find_best_hb(proxy_balancer *balancer,
         server = apr_hash_get(servers, (*worker)->s->hostname, APR_HASH_KEY_STRING);
 
         if (!server) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO(01214)
                       "lb_heartbeat: No server for worker %s", (*worker)->s->name);
             continue;
         }
