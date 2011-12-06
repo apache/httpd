@@ -23,11 +23,15 @@ FILES_prebuild_headers = \
 	$(PCRE)/pcre.h \
 	$(EOLIST) 
     
-nlms :: libs $(NWOS)/httpd.imp $(DAV)/main/dav.imp
+nlms :: libs $(NWOS)/httpd.imp $(DAV)/main/dav.imp $(STDMOD)/cache/mod_cache.imp
 
 libs :: chkapr $(NWOS)/chartables.c
 
 $(DAV)/main/dav.imp : make_nw_export.awk $(DAV)/main/mod_dav.h
+	@echo $(DL)GEN  $@$(DL)
+	$(AWK) -v EXPPREFIX=AP$(VERSION_MAJMIN) -f $^ >$@
+
+$(STDMOD)/cache/mod_cache.imp: make_nw_export.awk $(STDMOD)/cache/mod_cache.h $(STDMOD)/cache/cache_util.h
 	@echo $(DL)GEN  $@$(DL)
 	$(AWK) -v EXPPREFIX=AP$(VERSION_MAJMIN) -f $^ >$@
 
@@ -114,6 +118,7 @@ clean ::
 	$(call DEL,$(SRC)/include/ap_config_layout.h)
 	$(call DEL,$(PCRE)/config.h)
 	$(call DEL,$(PCRE)/pcre.h)
+	$(call DEL,$(STDMOD)/cache/mod_cache.imp)
 	$(call DEL,$(DAV)/main/dav.imp)
 	$(call DEL,$(NWOS)/httpd.imp)
 	$(call DEL,nw_export.i)
