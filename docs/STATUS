@@ -62,9 +62,6 @@ To Do List
         - mod_heartbeat
         - mod_heartmonitor
         - mod_lbmethod_heartbeat
-        - mod_socache_dbm
-        - mod_socache_memcache
-        - mod_socache_shmcb
         - mpm_simple
       the list may be incomplete
       maybe some of the modules will not be included in 2.4
