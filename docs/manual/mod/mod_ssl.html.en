@@ -1931,7 +1931,7 @@ The following five storage <em>type</em>s are currently supported:</p>
     processes.  This session cache may suffer reliability issues under
     high load.</p></li>
 
-<li><code>shm:/path/to/datafile</code>[<code>(</code><em>size</em><code>)</code>]
+<li><code>shmcb:/path/to/datafile</code>[<code>(</code><em>size</em><code>)</code>]
 
     <p>This makes use of a high-performance cyclic buffer
     (approx. <em>size</em> bytes in size) inside a shared memory
@@ -1953,7 +1953,7 @@ The following five storage <em>type</em>s are currently supported:</p>
 
 <div class="example"><h3>Examples</h3><p><code>
 SSLSessionCache dbm:/usr/local/apache/logs/ssl_gcache_data<br />
-SSLSessionCache shm:/usr/local/apache/logs/ssl_gcache_data(512000)
+SSLSessionCache shmcb:/usr/local/apache/logs/ssl_gcache_data(512000)
 </code></p></div>
 
 <p>The <code>ssl-cache</code> mutex is used to serialize access to

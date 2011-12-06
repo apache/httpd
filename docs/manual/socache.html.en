@@ -42,20 +42,71 @@
     <code class="directive"><a href="./mod/ssl.html#sslstaplingcache">SSLStaplingCache</a></code>.</p>
     <p>Currently available providers are:</p>
     <dl>
-    <dt>"dbm" (mod_socache_dbm)</dt>
+    <dt>"dbm" (<code class="module"><a href="./mod/mod_socache_dbm.html">mod_socache_dbm</a></code>)</dt>
     <dd>This makes use of a DBM hash file.
      The choice of underlying DBM used may be configurable
      if the installed APR version supports multiple DBM implementations.</dd>
-    <dt>"dc" (mod_socache_dc)</dt>
+    <dt>"dc" (<code class="module"><a href="./mod/mod_socache_dc.html">mod_socache_dc</a></code>)</dt>
     <dd>This makes use of the <a href="http://www.distcache.org/">distcache</a>
     distributed session caching libraries.</dd>
-    <dt>"memcache" (mod_socache_memcache)</dt>
+    <dt>"memcache" (<code class="module"><a href="./mod/mod_socache_memcache.html">mod_socache_memcache</a></code>)</dt>
     <dd>This makes use of the <a href="http://memcached.org/">memcached</a>
     high-performance, distributed memory object caching system.</dd>
-    <dt>"shmcb" (mod_socache_shmcb)</dt>
+    <dt>"shmcb" (<code class="module"><a href="./mod/mod_socache_shmcb.html">mod_socache_shmcb</a></code>)</dt>
     <dd>This makes use of a high-performance cyclic buffer inside a
      shared memory segment.</dd>
     </dl>
+
+    <p>The API provides the following functions:</p>
+
+    <dl>
+      <dt>const char *create(ap_socache_instance_t **instance, const char *arg,
+                          apr_pool_t *tmp, apr_pool_t *p);</dt>
+      <dd>Create a session cache based on the given configuration string.
+      The instance pointer returned in the instance paramater will be
+      passed as the first argument to subsequent invocations.</dd>
+
+      <dt>apr_status_t init(ap_socache_instance_t *instance, const char *cname,
+                         const struct ap_socache_hints *hints,
+                         server_rec *s, apr_pool_t *pool)</dt>
+      <dd>Initialize the cache.  The cname must be of maximum length 16
+      characters, and uniquely identifies the consumer of the cache
+      within the server; using the module name is recommended, e.g.
+      "mod_ssl-sess".  This string may be used within a filesystem
+      path so use of only alphanumeric [a-z0-9_-] characters is
+      recommended.  If hints is non-NULL, it gives a set of hints for
+      the provider.  Return APR error code.</dd>
+
+      <dt>void destroy(ap_socache_instance_t *instance, server_rec *s)</dt>
+      <dd>Destroy a given cache instance object.</dd>
+
+      <dt>apr_status_t store(ap_socache_instance_t *instance, server_rec *s,
+                          const unsigned char *id, unsigned int idlen,
+                          apr_time_t expiry,
+                          unsigned char *data, unsigned int datalen,
+                          apr_pool_t *pool)</dt>
+      <dd>Store an object in a cache instance.</dd>
+
+      <dt>apr_status_t retrieve(ap_socache_instance_t *instance, server_rec *s,
+                             const unsigned char *id, unsigned int idlen,
+                             unsigned char *data, unsigned int *datalen,
+                             apr_pool_t *pool)</dt>
+      <dd>Retrieve a cached object.</dd>
+
+      <dt>apr_status_t remove(ap_socache_instance_t *instance, server_rec *s,
+                           const unsigned char *id, unsigned int idlen,
+                           apr_pool_t *pool)</dt>
+      <dd>Remove an object from the cache.</dd>
+
+      <dt>void status(ap_socache_instance_t *instance, request_rec *r, int flags)</dt>
+      <dd>Dump the status of a cache instance for mod_status.</dd>
+
+      <dt>apr_status_t iterate(ap_socache_instance_t *instance, server_rec *s,
+                            void *userctx, ap_socache_iterator_t *iterator,
+                            apr_pool_t *pool)</dt>
+      <dd>Dump all cached objects through an iterator callback.</dd>
+    </dl>
+
   </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="./en/socache.html" title="English">&nbsp;en&nbsp;</a></p>

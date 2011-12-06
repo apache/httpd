@@ -98,6 +98,10 @@
   <modulefile>mod_slotmem_plain.xml</modulefile>
   <modulefile>mod_slotmem_shm.xml</modulefile>
   <modulefile>mod_so.xml</modulefile>
+  <modulefile>mod_socache_dbm.xml</modulefile>
+  <modulefile>mod_socache_dc.xml</modulefile>
+  <modulefile>mod_socache_memcache.xml</modulefile>
+  <modulefile>mod_socache_shmcb.xml</modulefile>
   <modulefile>mod_speling.xml</modulefile>
   <modulefile>mod_ssl.xml</modulefile>
   <modulefile>mod_status.xml</modulefile>
