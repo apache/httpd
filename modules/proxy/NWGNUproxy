@@ -273,7 +273,6 @@ $(OBJDIR)/mod_proxy.imp:
 	@echo $(DL) proxy_run_scheme_handler,$(DL)>> $@
 	@echo $(DL) ap_proxy_acquire_connection,$(DL)>> $@
 	@echo $(DL) ap_proxy_backend_broke,$(DL)>> $@
-	@echo $(DL) ap_proxy_buckets_lifetime_transform,$(DL)>> $@
 	@echo $(DL) ap_proxy_c2hex,$(DL)>> $@
 	@echo $(DL) ap_proxy_canon_netloc,$(DL)>> $@
 	@echo $(DL) ap_proxy_canonenc,$(DL)>> $@
@@ -283,7 +282,6 @@ $(OBJDIR)/mod_proxy.imp:
 	@echo $(DL) ap_proxy_connect_to_backend,$(DL)>> $@
 	@echo $(DL) ap_proxy_connection_create,$(DL)>> $@
 	@echo $(DL) ap_proxy_cookie_reverse_map,$(DL)>> $@
-	@echo $(DL) ap_proxy_date_canon,$(DL)>> $@
 	@echo $(DL) ap_proxy_define_balancer,$(DL)>> $@
 	@echo $(DL) ap_proxy_define_worker,$(DL)>> $@
 	@echo $(DL) ap_proxy_determine_connection,$(DL)>> $@
@@ -291,23 +289,18 @@ $(OBJDIR)/mod_proxy.imp:
 	@echo $(DL) ap_proxy_get_worker,$(DL)>> $@
 	@echo $(DL) ap_proxy_hashfunc,$(DL)>> $@
 	@echo $(DL) ap_proxy_hex2c,$(DL)>> $@
-	@echo $(DL) ap_proxy_hex2sec,$(DL)>> $@
 	@echo $(DL) ap_proxy_initialize_balancer,$(DL)>> $@
 	@echo $(DL) ap_proxy_initialize_worker,$(DL)>> $@
 	@echo $(DL) ap_proxy_is_domainname,$(DL)>> $@
 	@echo $(DL) ap_proxy_is_hostname,$(DL)>> $@
 	@echo $(DL) ap_proxy_is_ipaddr,$(DL)>> $@
 	@echo $(DL) ap_proxy_is_word,$(DL)>> $@
-	@echo $(DL) ap_proxy_liststr,$(DL)>> $@
 	@echo $(DL) ap_proxy_location_reverse_map,$(DL)>> $@
-	@echo $(DL) ap_proxy_make_fake_req,$(DL)>> $@
 	@echo $(DL) ap_proxy_parse_wstatus,$(DL)>> $@
 	@echo $(DL) ap_proxy_post_request,$(DL)>> $@
 	@echo $(DL) ap_proxy_pre_http_request,$(DL)>> $@
 	@echo $(DL) ap_proxy_pre_request,$(DL)>> $@
 	@echo $(DL) ap_proxy_release_connection,$(DL)>> $@
-	@echo $(DL) ap_proxy_retry_worker,$(DL)>> $@
-	@echo $(DL) ap_proxy_sec2hex,$(DL)>> $@
 	@echo $(DL) ap_proxy_set_wstatus,$(DL)>> $@
 	@echo $(DL) ap_proxy_share_balancer,$(DL)>> $@
 	@echo $(DL) ap_proxy_share_worker,$(DL)>> $@
@@ -315,10 +308,8 @@ $(OBJDIR)/mod_proxy.imp:
 	@echo $(DL) ap_proxy_ssl_disable,$(DL)>> $@
 	@echo $(DL) ap_proxy_ssl_enable,$(DL)>> $@
 	@echo $(DL) ap_proxy_ssl_val,$(DL)>> $@
-	@echo $(DL) ap_proxy_string_read,$(DL)>> $@
 	@echo $(DL) ap_proxy_strncpy,$(DL)>> $@
 	@echo $(DL) ap_proxy_sync_balancer,$(DL)>> $@
-	@echo $(DL) ap_proxy_table_unmerge,$(DL)>> $@
 	@echo $(DL) ap_proxy_trans_match,$(DL)>> $@
 	@echo $(DL) ap_proxy_valid_balancer_name,$(DL)>> $@
 	@echo $(DL) ap_proxyerror$(DL)>> $@
