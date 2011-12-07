@@ -374,7 +374,7 @@ static int lb_hb_init(apr_pool_t *p, apr_pool_t *plog,
     storage = ap_lookup_provider(AP_SLOTMEM_PROVIDER_GROUP, "shm",
                                  AP_SLOTMEM_PROVIDER_VERSION);
     if (!storage) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s,
                      "Failed to lookup provider 'shm' for '%s'. Maybe you "
                      "need to load mod_slotmem_shm?",
                      AP_SLOTMEM_PROVIDER_GROUP);
@@ -383,10 +383,12 @@ static int lb_hb_init(apr_pool_t *p, apr_pool_t *plog,
 
     /* Try to use a slotmem created by mod_heartmonitor */
     storage->attach(&hm_serversmem, "mod_heartmonitor", &size, &num, p);
-    if (!hm_serversmem) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, s, "No slotmem from mod_heartmonitor");
-    } else
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, s, "Using slotmem from mod_heartmonitor");
+    if (!hm_serversmem)
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s,
+                     "No slotmem from mod_heartmonitor");
+    else
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s,
+                     "Using slotmem from mod_heartmonitor");
 
     if (hm_serversmem)
         ctx->path = "(slotmem)";

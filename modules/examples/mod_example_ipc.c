@@ -279,8 +279,8 @@ static int exipc_handler(request_rec *r)
          * and returned BUSY. So, bump the time and try again
          */
         timecamped += CAMPOUT;
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_NOTICE,
-                     0, r->server, "Child %ld camping out on mutex for %" APR_INT64_T_FMT
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, r->server,
+                     "Child %ld camping out on mutex for %" APR_INT64_T_FMT
                      " microseconds",
                      (long int) getpid(), timecamped);
     } /* Lock acquisition loop */
