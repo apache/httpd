@@ -29,7 +29,7 @@
 
 /**
  * @defgroup mod_apreq2 Apache 2.X Filter Module
- * @ingroup apreq_module
+ * @ingroup APACHE_MODS
  * @brief mod_apreq2 - DSO that ties libapreq2 to Apache HTTPD 2.X.
  *
  * mod_apreq2 provides the "APREQ2" input filter for using libapreq2
