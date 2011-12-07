@@ -18,7 +18,8 @@
  * @file  netware/mpm_default.h
  * @brief Defaults for Netware MPM
  *
- * @addtogroup APACHE_MPM_NETWARE
+ * @defgroup APACHE_MPM_NETWARE Netware MPM
+ * @ingroup APACHE_INTERNAL
  * @{
  */
 #ifndef APACHE_MPM_DEFAULT_H

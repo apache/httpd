@@ -18,7 +18,8 @@
  * @file  winnt/mpm_default.h
  * @brief win32 MPM defaults
  *
- * @addtogroup APACHE_MPM_WINNT
+ * @defgroup APACHE_MPM_WINNT WinNT MPM
+ * @ingroup APACHE_INTERNAL
  * @{
  */
 
