@@ -1,0 +1,143 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 669475 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_proxy_ftp.xml.meta">
+
+<name>mod_proxy_ftp</name>
+<description><module>mod_proxy</module> のための FTP サポートモジュール</description>
+<status>Extension</status>
+<sourcefile>mod_proxy_ftp.c</sourcefile>
+<identifier>proxy_ftp_module</identifier>
+
+<summary>
+    <p>本モジュールには <module>mod_proxy</module> が<em>必要です</em>。
+    本モジュールは FTP サイトへのプロキシ機能を提供します。
+    現状、 FTP サポートは GET メソッドに限定されていることに注意してください。</p>
+
+    <p>FTP プロキシリクエストを扱うためには、<module>mod_proxy</module> 
+    と <module>mod_proxy_ftp</module>が サーバに組み込まれて
+    いなければいけません。</p>
+
+    <note type="warning"><title>警告</title>
+      <p><a href="mod_proxy.html#access">
+      安全なサーバにする</a>までプロキシ機能は有効にしないでください。
+      オープンプロキシサーバはあなた自身のネットワークにとっても、
+      インターネット全体にとっても危険です。</p>
+    </note>
+</summary>
+<seealso><module>mod_proxy</module></seealso>
+
+    <section id="mimetypes"><title>なぜファイルタイプ <var>xxx</var>
+    は FTP ダウンロードできないのでしょう?</title>
+      <p>おそらく、プロキシの mime.types 設定ファイルでそのファイルタイプを
+      <code>application/octet-stream</code> として定義していないのでしょう。
+      以下の行が便利でしょう。</p>
+
+      <example>
+<pre>application/octet-stream   bin dms lha lzh exe class tgz taz</pre>
+      </example>
+	<p>デフォルトで全てをバイナリにするのもいいかもしれません:</p>
+      <example>
+<pre>DefaultType application/octet-stream</pre>
+      </example>
+    </section> <!-- /mimetypes -->
+
+    <section id="type"><title>ファイル <var>xxx</var> を ASCII モードで
+    FTP ダウンロードさせるにはどうすればいいのでしょう?</title>
+      <p>稀に、特定のファイルを FTP の <code>ASCII</code> 転送モードでダウンロードしなければ
+      ならない場合があります (なお、デフォルトの転送モードは <code>binary</code> です)。
+      この場合、リクエストの末尾に <code>;type=a</code> を加えることで
+      <module>mod_proxy</module> のデフォルト動作を変更して、 ASCII 転送モードにできます。
+      (一方、 FTP のディレクトリ一覧は常に ASCII モードです。)</p>
+    </section> <!-- /type -->
+
+    <section id="ftpnonget"><title>FTP アップロードはできますか?</title>
+	<p>現状、 mod_proxy は FTP の GET のみサポートしています。
+        もちろん、 Apache プロキシで HTTP アップロード (POST または PUT)
+        はできます。</p>
+    </section>
+
+    <section id="percent2fhck"><title>ホームディレクトリ外のファイルに FTP
+    アクセスするにはどうすればよいでしょうか?</title>
+      <p>FTP の URI はログイン中のユーザのホームディレクトリの相対パスとして
+      解釈されます。より上位のディレクトリに行くために /../ を使っても無駄です。
+      と言うのも、ドットふたつはブラウザが解釈するだけで、実際に FTP サーバには
+      送られないからです。この問題に対して、 Apache の FTP プロキシは
+      いわゆる <dfn>Squid %2f hack</dfn> を実装しています;
+      <a href="http://www.squid-cache.org/">Squid Proxy Cache</a> などの
+      他の有名なプロキシサーバも採用している解決方法です。
+      リクエストのパスの先頭に <code>/%2f</code> をつけると、これらのプロキシ
+      は FTP のディレクトリを <code>/</code> 開始にします (ホームディレクトリではなく)。
+      例えば、<code>/etc/motd</code> ファイルを取得するには、次の URL を
+      使えばよいでしょう:</p>
+
+      <example>
+        ftp://<var>user</var>@<var>host</var>/%2f/etc/motd
+      </example>
+    </section> <!-- /percent2fhck -->
+
+    <section id="ftppass"><title>ブラウザの URL 欄に FTP のパスワードがそのまま
+    載らないようにするにはどうすればよいでしょうか?</title>
+      <p>FTP サーバにユーザ名とパスワードを使ってログインするために、 Apache 
+      は異なる戦略を使います。 URL にユーザ名もパスワードも無ければ、 Apache 
+      は FTP サーバに匿名 (anonymous) ログインしようとします。
+      <em>例</em></p>
+
+      <example>
+        user: anonymous<br />
+        password: apache_proxy@
+      </example>
+
+      <p>匿名アクセスを設定したすべての有名な FTP サーバでこれは動作します。</p>
+
+      <p>特定のユーザ名でログインするために、 URL に次のようにユーザ名を埋め込めます:</p>
+
+      <example>
+        ftp://<var>username</var>@<var>host</var>/myfile
+      </example>
+
+      <p>FTP サーバがこのユーザ名に対してパスワードを求めると (そうあるべきです) 、
+      Apache は <code>401</code> (Authorization required) レスポンスを返します。
+      これによりブラウザはユーザ名とパスワードを求めるダイアログ画面をポップアップします。
+      パスワードを入力すると、もう一度接続しなおし、認証が成功すると、
+      要求していたリソースが現れます。このやりとりの利点は、ブラウザがパスワードを
+      そのまま表示しないことです。もし最初に次の URL を使っていると</p>
+
+      <example>
+        ftp://<var>username</var>:<var>password</var>@<var>host</var>/myfile
+      </example>
+
+      <p>パスワードがそのまま見えてしまいます。</p>
+
+      <note><title>注意</title>
+        <p>このように送信するパスワードはネットワーク上は暗号化されません。
+        ブラウザと Apache プロキシサーバの間は base64 エンコードした生パスワードで、
+        Apache プロキシサーバと FTP サーバの間はプレインテキストです。
+        このため、 HTTP 経由で FTP サーバにアクセスする時 (とにかく FTP で個人的な
+        ファイルにアクセスする時 ) 、倍の慎重さが求められます。
+        安全でないネットワークを使っている場合、経路上でパスワードを盗み取られる
+        可能性があります。</p>
+      </note>
+    </section> <!-- /ftppass -->
+
+
+</modulesynopsis>
