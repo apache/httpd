@@ -450,8 +450,9 @@ The following five storage <em>type</em>s are currently supported:</p>
 
     <p>This makes use of a DBM hashfile on the local disk to
     synchronize the local OpenSSL memory caches of the server
-    processes.  This session cache may suffer reliability issues under
-    high load.</p></li>
+    processes. This session cache may suffer reliability issues under
+    high load. To use this, ensure that
+    <module>mod_socache_dbm</module> is loaded.</p></li>
 
 <li><code>shmcb:/path/to/datafile</code>[<code>(</code><em>size</em><code>)</code>]
 
@@ -459,7 +460,8 @@ The following five storage <em>type</em>s are currently supported:</p>
     (approx. <em>size</em> bytes in size) inside a shared memory
     segment in RAM (established via <code>/path/to/datafile</code>) to
     synchronize the local OpenSSL memory caches of the server
-    processes.  This is the recommended session cache.</p></li>
+    processes.  This is the recommended session cache. To use this,
+    ensure that <module>mod_socache_shmcb</module> is loaded.</p></li>
 
 <li><code>dc:UNIX:/path/to/socket</code>
 
@@ -470,7 +472,8 @@ The following five storage <em>type</em>s are currently supported:</p>
     for example, <code>UNIX:/path/to/socket</code> specifies a UNIX
     domain socket (typically a local dc_client proxy);
     <code>IP:server.example.com:9001</code> specifies an IP
-    address.</p></li>
+    address. To use this, ensure that
+    <module>mod_socache_dc</module> is loaded.</p></li>
 
 </ul>
 
