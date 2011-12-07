@@ -1429,7 +1429,7 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
      * Log verification information
      */
     ssl_log_cxerror(SSLLOG_MARK, APLOG_DEBUG, 0, conn,
-                    X509_STORE_CTX_get_current_cert(ctx),
+                    X509_STORE_CTX_get_current_cert(ctx), APLOGNO(02275)
                     "Certificate Verification, depth %d, "
                     "CRL checking mode: %s", errdepth,
                     mctx->crl_check_mode == SSL_CRLCHECK_CHAIN ?
@@ -1514,7 +1514,7 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     if (!ok) {
         if (APLOGcinfo(conn)) {
             ssl_log_cxerror(SSLLOG_MARK, APLOG_INFO, 0, conn,
-                            X509_STORE_CTX_get_current_cert(ctx),
+                            X509_STORE_CTX_get_current_cert(ctx), APLOGNO(02276)
                             "Certificate Verification: Error (%d): %s",
                             errnum, X509_verify_cert_error_string(errnum));
         } else {
@@ -1567,7 +1567,7 @@ static void modssl_proxy_info_log(conn_rec *c,
                                   X509_INFO *info,
                                   const char *msg)
 {
-    ssl_log_cxerror(SSLLOG_MARK, APLOG_DEBUG, 0, c, info->x509,
+    ssl_log_cxerror(SSLLOG_MARK, APLOG_DEBUG, 0, c, info->x509, APLOGNO(02277)
                     SSLPROXY_CERT_CB_LOG_FMT "%s, sending",
                     (mySrvConfigFromConn(c))->vhost_id, msg);
 }
@@ -1618,7 +1618,7 @@ int ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey)
          */
         info = sk_X509_INFO_value(certs, 0);
 
-        modssl_proxy_info_log(c, info, "no acceptable CA list");
+        modssl_proxy_info_log(c, info, APLOGNO(02278) "no acceptable CA list");
 
         modssl_set_cert_info(info, x509, pkey);
 
@@ -1635,7 +1635,8 @@ int ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey)
 
             /* Search certs (by issuer name) one by one*/
             if (X509_NAME_cmp(issuer, ca_name) == 0) {
-                modssl_proxy_info_log(c, info, "found acceptable cert");
+                modssl_proxy_info_log(c, info, APLOGNO(02279)
+                                      "found acceptable cert");
 
                 modssl_set_cert_info(info, x509, pkey);
 
@@ -1653,7 +1654,8 @@ int ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey)
                     ca_issuer = X509_get_issuer_name(ca_cert);
 
                     if(X509_NAME_cmp(ca_issuer, ca_name) == 0 ) {
-                        modssl_proxy_info_log(c, info, "found acceptable cert by intermediate CA");
+                        modssl_proxy_info_log(c, info, APLOGNO(02280)
+                                              "found acceptable cert by intermediate CA");
 
                         modssl_set_cert_info(info, x509, pkey);
 
