@@ -18,15 +18,15 @@
  * @file httpd.h
  * @brief HTTP Daemon routines
  *
- * @defgroup APACHE Apache
+ * @defgroup APACHE Apache HTTP Server
  *
  * Top level group of which all other groups are a member
  * @{
  *
- * @defgroup APACHE_MODS Apache Modules
- *           Top level group for Apache Modules
+ * @defgroup APACHE_MODS Loadable modules
+ *           Top level group for modules
  * @defgroup APACHE_OS Operating System Specific
- * @defgroup APACHE_CORE Apache Core
+ * @defgroup APACHE_CORE Core routines
  * @{
  * @defgroup APACHE_CORE_DAEMON HTTP Daemon Routine
  * @{
