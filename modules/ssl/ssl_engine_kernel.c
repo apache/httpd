@@ -29,6 +29,7 @@
                                   time I was too famous.''
                                             -- Unknown                */
 #include "ssl_private.h"
+#include "util_md5.h"
 
 static void ssl_configure_env(request_rec *r, SSLConnRec *sslconn);
 #ifndef OPENSSL_NO_TLSEXT
@@ -2041,6 +2042,23 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
             */
             SSL_set_verify(ssl, SSL_CTX_get_verify_mode(ssl->ctx),
                            SSL_CTX_get_verify_callback(ssl->ctx));
+        }
+
+        /*
+         * Adjust the session id context. ssl_init_ssl_connection()
+         * always picks the configuration of the first vhost when
+         * calling SSL_new(), but we want to tie the session to the
+         * vhost we have just switched to. Again, we have to make sure
+         * that we're not overwriting a session id context which was
+         * possibly set in ssl_hook_Access(), before triggering
+         * a renegotation.
+         */
+        if (SSL_num_renegotiations(ssl) == 0) {
+            unsigned char *sid_ctx =
+                (unsigned char *)ap_md5_binary(c->pool,
+                                               (unsigned char *)sc->vhost_id,
+                                               sc->vhost_id_len);
+            SSL_set_session_id_context(ssl, sid_ctx, APR_MD5_DIGESTSIZE*2);
         }
 
         /*
