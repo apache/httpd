@@ -18,7 +18,8 @@
  * @file  worker/mpm_default.h
  * @brief Worker MPM defaults
  *
- * @addtogroup APACHE_MPM_WORKER
+ * @defgroup APACHE_MPM_WORKER Worker MPM
+ * @ingroup APACHE_INTERNAL
  * @{
  */
 

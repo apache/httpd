@@ -18,7 +18,8 @@
  * @file  mpmt_os2/mpm_default.h
  * @brief os2 MPM defaults
  *
- * @addtogroup APACHE_MPM_OS2
+ * @defgroup APACHE_MPM_OS2 OS/2 MPM
+ * @ingroup APACHE_INTERNAL
  * @{
  */
 
