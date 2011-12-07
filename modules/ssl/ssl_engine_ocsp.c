@@ -197,7 +197,7 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
                                    &reason, NULL, &thisup, &nextup);
         if (rc != 1) {
             ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
-            ssl_log_cxerror(SSLLOG_MARK, APLOG_ERR, 0, c, cert,
+            ssl_log_cxerror(SSLLOG_MARK, APLOG_ERR, 0, c, cert, APLOGNO(02272)
                             "failed to retrieve OCSP response status");
             rc = V_OCSP_CERTSTATUS_UNKNOWN;
         }
@@ -217,7 +217,7 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
                                            sc->server->ocsp_resp_maxage);
             if (vrc != 1) {
                 ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
-                ssl_log_cxerror(SSLLOG_MARK, APLOG_ERR, 0, c, cert,
+                ssl_log_cxerror(SSLLOG_MARK, APLOG_ERR, 0, c, cert, APLOGNO(02273)
                                 "OCSP response outside validity period");
                 rc = V_OCSP_CERTSTATUS_UNKNOWN;
             }

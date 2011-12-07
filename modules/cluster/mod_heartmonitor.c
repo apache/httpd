@@ -684,7 +684,7 @@ static int hm_post_config(apr_pool_t *p, apr_pool_t *plog,
             storage = ap_lookup_provider(AP_SLOTMEM_PROVIDER_GROUP, "shm",
                                          AP_SLOTMEM_PROVIDER_VERSION);
             if (!storage) {
-                ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
+                ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02284)
                              "failed to lookup provider 'shm' for '%s', "
                              "maybe you need to load mod_slotmem_shm?",
                              AP_SLOTMEM_PROVIDER_GROUP);
@@ -692,7 +692,8 @@ static int hm_post_config(apr_pool_t *p, apr_pool_t *plog,
             }
             storage->create(&slotmem, "mod_heartmonitor", sizeof(hm_slot_server_t), maxworkers, AP_SLOTMEM_TYPE_PREGRAB, p);
             if (!slotmem) {
-                ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, "slotmem_create for status failed");
+                ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02285)
+                             "slotmem_create for status failed");
                 return !OK;
             }
         }

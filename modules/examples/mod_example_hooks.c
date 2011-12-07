@@ -328,8 +328,7 @@ static x_cfg *our_cconfig(const conn_rec *c)
 static void example_log_each(apr_pool_t *p, server_rec *s, const char *note)
 {
     if (s != NULL) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02062) "mod_example: %s",
-                     note);
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "mod_example: %s", note);
     } else {
         apr_file_t *out = NULL;
         apr_file_open_stderr(&out, p);

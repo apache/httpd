@@ -1257,8 +1257,9 @@ static void ssl_init_proxy_certs(server_rec *s,
         if (X509_verify_cert(sctx) != 1) {
             int err = X509_STORE_CTX_get_error(sctx);
             ssl_log_xerror(SSLLOG_MARK, APLOG_WARNING, 0, ptemp, s, inf->x509,
-                         "SSL proxy client cert chain verification failed: %s :",
-                          X509_verify_cert_error_string(err));
+                           APLOGNO(02270) "SSL proxy client cert chain "
+                           "verification failed: %s :",
+                           X509_verify_cert_error_string(err));
         }
 
         /* Clear X509_verify_cert errors */
@@ -1282,8 +1283,9 @@ static void ssl_init_proxy_certs(server_rec *s,
             }
 
             ssl_log_xerror(SSLLOG_MARK, APLOG_DEBUG, 0, ptemp, s, inf->x509,
-                         "loaded %i intermediate CA%s for cert %i: ",
-                         i, i == 1 ? "" : "s", n);
+                           APLOGNO(02271)
+                           "loaded %i intermediate CA%s for cert %i: ",
+                           i, i == 1 ? "" : "s", n);
             if (i > 0) {
                 int j;
                 for (j = 0; j < i; j++) {
