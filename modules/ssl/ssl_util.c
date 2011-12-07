@@ -292,7 +292,7 @@ STACK_OF(X509) *ssl_read_pkcs7(server_rec *s, const char *pkcs7)
 
     p7 = PEM_read_PKCS7(f, NULL, NULL, NULL);
     if (!p7) {
-        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "Can't read PKCS7 object %s", pkcs7);
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_CRIT, s);
         exit(1);
