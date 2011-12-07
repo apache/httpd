@@ -397,7 +397,7 @@ static int remoteip_modify_request(request_rec *r)
     r->client_addr = req->client_addr;
     r->client_ip = req->client_ip;
 
-    ap_log_rerror(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
                   req->proxy_ips
                       ? "Using %s as client's IP by proxies %s"
                       : "Using %s as client's IP by internal proxies",
