@@ -1127,7 +1127,7 @@ through</td></tr>
         <td>Redirection Route of the worker. This value is usually
         set dynamically to enable safe removal of the node from
         the cluster. If set all requests without session id will be
-        redirected to the BalancerMember that has route parametar
+        redirected to the BalancerMember that has route parameter
         equal as this value.
     </td></tr>
     <tr><td>retry</td>
