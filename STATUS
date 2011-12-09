@@ -92,6 +92,20 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * mod_proxy_ajp: try to prevent a single long request marking a worker in error.
+    Trunk version of patch:
+                         http://svn.apache.org/viewvc?view=revision&revision=r1092076
+                         http://svn.apache.org/viewvc?view=revision&revision=r1100513
+    http://people.apache.org/~jfclere/patches/ajp_timeout.patch
+    +1: jfclere, rjung, rpluem
+
+  * mod_ssl: Update default config (SSLProtocol, SSLCipherSuite, MSIE pattern)
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1132793
+                 http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/extra/httpd-ssl.conf.in?rev=1203752&r1=1203751&r2=1203752&view=diff
+    2.2.x patch: http://people.apache.org/~kbrand/mod_ssl_config_defaults-2.2.x.patch
+    (disabling SSLv2 in SSLProtocol is only required for 2.2.x, since trunk
+     and 2.4.x no longer support this version, see r1203491 and r1203495)
+    +1: kbrand (non-binding), rjung, jorton
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -134,21 +148,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://people.apache.org/~rjung/patches/mod_cache_partial_content-2.2.x.patch
       +1: rjung
 
-  * mod_proxy_ajp: try to prevent a single long request marking a worker in error.
-    Trunk version of patch:
-                         http://svn.apache.org/viewvc?view=revision&revision=r1092076
-                         http://svn.apache.org/viewvc?view=revision&revision=r1100513
-    http://people.apache.org/~jfclere/patches/ajp_timeout.patch
-    +1: jfclere, rjung, rpluem
-
-  * mod_ssl: Update default config (SSLProtocol, SSLCipherSuite, MSIE pattern)
-    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1132793
-                 http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/extra/httpd-ssl.conf.in?rev=1203752&r1=1203751&r2=1203752&view=diff
-    2.2.x patch: http://people.apache.org/~kbrand/mod_ssl_config_defaults-2.2.x.patch
-    (disabling SSLv2 in SSLProtocol is only required for 2.2.x, since trunk
-     and 2.4.x no longer support this version, see r1203491 and r1203495)
-    +1: kbrand (non-binding), rjung, jorton
-
   * mod_proxy_ajp: Missing support for ErrorOverride
     Trunk patch: http://svn.apache.org/viewvc?rev=1087864&view=rev
 	2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=27976
@@ -158,6 +157,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Trunk patch: http://svn.apache.org/viewvc?rev=1209432&view=rev
       2.2.x patch: trunk patch works
     +1: jorton
+
+  * core: Fix segfault in ap_send_interim_response(). PR 52315
+      Trunk patch: http://svn.apache.org/viewvc?rev=895483&view=rev
+      2.2.x patch: trunk patch works
+    +1: sf
 
 PATCHES/ISSUES THAT ARE STALLED
 
