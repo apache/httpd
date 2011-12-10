@@ -374,6 +374,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>-f</code></td>
         <td>The argument is treated as a filename.
             True if the file exists and is regular file</td><td>yes</td></tr>
+    <tr><td><code>-s</code></td>
+        <td>The argument is treated as a filename.
+            True if the file exists and is not empty</td><td>yes</td></tr>
     <tr><td><code>-L</code></td>
         <td>The argument is treated as a filename.
             True if the file exists and is symlink</td><td>yes</td></tr>

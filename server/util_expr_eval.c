@@ -1636,7 +1636,12 @@ static int core_expr_lookup(ap_expr_lookup_parms *parms)
                 ap_assert(0);
             }
             while (prov->func) {
-                if (strcasecmp(prov->name, parms->name) == 0) {
+                int match;
+                if (parms->type == AP_EXPR_FUNC_OP_UNARY)
+                    match = !strcmp(prov->name, parms->name);
+                else
+                    match = !strcasecmp(prov->name, parms->name);
+                if (match) {
                     if ((parms->flags & AP_EXPR_FLAG_RESTRICTED)
                         && prov->restricted) {
                         *parms->err =
@@ -1668,6 +1673,7 @@ static int core_expr_lookup(ap_expr_lookup_parms *parms)
 static int expr_lookup_not_found(ap_expr_lookup_parms *parms)
 {
     const char *type;
+    const char *prefix = "";
 
     switch (parms->type) {
     case AP_EXPR_FUNC_VAR:
@@ -1689,8 +1695,12 @@ static int expr_lookup_not_found(ap_expr_lookup_parms *parms)
         *parms->err = "Inavalid expression type in expr_lookup";
         return !OK;
     }
-    *parms->err = apr_psprintf(parms->ptemp, "%s '%s' does not exist", type,
-                               parms->name);
+    if (   parms->type == AP_EXPR_FUNC_OP_UNARY
+        || parms->type == AP_EXPR_FUNC_OP_BINARY) {
+        prefix = "-";
+    }
+    *parms->err = apr_psprintf(parms->ptemp, "%s '%s%s' does not exist", type,
+                               prefix, parms->name);
     return !OK;
 }
 
