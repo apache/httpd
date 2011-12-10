@@ -40,9 +40,9 @@
     <p>The only configuration required is to select which cache provider
     to use.  This is the responsibility of modules using the cache, and
     they enable selection using directives such as
-    <directive module="authn_socache">AuthnCacheSOCache</directive>,
-    <directive module="ssl">SSLSessionCache</directive>, and
-    <directive module="ssl">SSLStaplingCache</directive>.</p>
+    <directive module="mod_authn_socache">AuthnCacheSOCache</directive>,
+    <directive module="mod_ssl">SSLSessionCache</directive>, and
+    <directive module="mod_ssl">SSLStaplingCache</directive>.</p>
     <p>Currently available providers are:</p>
     <dl>
     <dt>"dbm" (<module>mod_socache_dbm</module>)</dt>
