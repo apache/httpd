@@ -125,7 +125,6 @@ static apr_status_t unixd_set_shm_perms(const char *fname)
  */
 static const char *store_filename(apr_pool_t *pool, const char *slotmemname)
 {
-    const char *storename;
     const char *fname;
     if (strcasecmp(slotmemname, "none") == 0) {
         return NULL;
