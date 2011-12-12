@@ -445,6 +445,7 @@ sessioncookieremove	mod/mod_session_cookie.html#sessioncookieremove
 sessioncryptocipher	mod/mod_session_crypto.html#sessioncryptocipher
 sessioncryptodriver	mod/mod_session_crypto.html#sessioncryptodriver
 sessioncryptopassphrase	mod/mod_session_crypto.html#sessioncryptopassphrase
+sessioncryptopassphrasefile	mod/mod_session_crypto.html#sessioncryptopassphrasefile
 sessiondbdcookiename	mod/mod_session_dbd.html#sessiondbdcookiename
 sessiondbdcookiename2	mod/mod_session_dbd.html#sessiondbdcookiename2
 sessiondbdcookieremove	mod/mod_session_dbd.html#sessiondbdcookieremove
@@ -465,7 +466,6 @@ setenvifnocase	mod/mod_setenvif.html#setenvifnocase
 sethandler	mod/core.html#sethandler
 setinputfilter	mod/core.html#setinputfilter
 setoutputfilter	mod/core.html#setoutputfilter
-ssiaccessenable	mod/mod_include.html#ssiaccessenable
 ssiendtag	mod/mod_include.html#ssiendtag
 ssierrormsg	mod/mod_include.html#ssierrormsg
 ssietag	mod/mod_include.html#ssietag
@@ -520,6 +520,7 @@ sslrequire	mod/mod_ssl.html#sslrequire
 sslrequiressl	mod/mod_ssl.html#sslrequiressl
 sslsessioncache	mod/mod_ssl.html#sslsessioncache
 sslsessioncachetimeout	mod/mod_ssl.html#sslsessioncachetimeout
+sslsessionticketkeyfile	mod/mod_ssl.html#sslsessionticketkeyfile
 sslstaplingcache	mod/mod_ssl.html#sslstaplingcache
 sslstaplingerrorcachetimeout	mod/mod_ssl.html#sslstaplingerrorcachetimeout
 sslstaplingfaketrylater	mod/mod_ssl.html#sslstaplingfaketrylater
