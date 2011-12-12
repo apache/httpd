@@ -109,6 +109,10 @@ static void modssl_ctx_init(modssl_ctx_t *mctx)
     mctx->pks                 = NULL;
     mctx->pkp                 = NULL;
 
+#ifdef HAVE_TLS_SESSION_TICKETS
+    mctx->ticket_key          = NULL;
+#endif
+
     mctx->protocol            = SSL_PROTOCOL_ALL;
 
     mctx->pphrase_dialog_type = SSL_PPTYPE_UNSET;
@@ -177,6 +181,10 @@ static void modssl_ctx_init_server(SSLSrvConfigRec *sc,
     mctx->pks = apr_pcalloc(p, sizeof(*mctx->pks));
 
     /* mctx->pks->... certs/keys are set during module init */
+
+#ifdef HAVE_TLS_SESSION_TICKETS
+    mctx->ticket_key = apr_pcalloc(p, sizeof(*mctx->ticket_key));
+#endif
 }
 
 static SSLSrvConfigRec *ssl_config_server_new(apr_pool_t *p)
@@ -198,12 +206,6 @@ static SSLSrvConfigRec *ssl_config_server_new(apr_pool_t *p)
 #endif
 #ifdef HAVE_FIPS
     sc->fips                   = UNSET;
-#endif
-
-#ifdef HAVE_TLSEXT_TICKETS
-    sc->default_ticket_name = NULL;
-    sc->default_ticket = NULL;
-    sc->tickets = apr_array_make(p, 4, sizeof(modssl_ticket_t*));
 #endif
 
     modssl_ctx_init_proxy(sc, p);
@@ -297,6 +299,10 @@ static void modssl_ctx_cfg_merge_server(modssl_ctx_t *base,
 
     cfgMergeString(pks->ca_name_path);
     cfgMergeString(pks->ca_name_file);
+
+#ifdef HAVE_TLS_SESSION_TICKETS
+    cfgMergeString(ticket_key->file_path);
+#endif
 }
 
 /*
@@ -310,11 +316,6 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
 
     cfgMerge(mc, NULL);
     cfgMerge(enabled, SSL_ENABLED_UNSET);
-#ifdef HAVE_TLSEXT_TICKETS
-    cfgMergeString(default_ticket_name);
-    apr_array_cat(mrg->tickets, base->tickets);
-    apr_array_cat(mrg->tickets, add->tickets);
-#endif
     cfgMergeBool(proxy_enabled);
     cfgMergeInt(session_cache_timeout);
     cfgMergeBool(cipher_server_pref);
@@ -595,64 +596,6 @@ const char *ssl_cmd_SSLEngine(cmd_parms *cmd, void *dcfg, const char *arg)
     return "Argument must be On, Off, or Optional";
 }
 
-const char *ssl_cmd_SSLTicketKeyDefault(cmd_parms *cmd, void *dcfg, const char *name)
-{
-#ifdef HAVE_TLSEXT_TICKETS
-    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-
-    sc->default_ticket_name = name;
-
-    return NULL;
-#else
-    return "TLS Ticket keys are not supported.";
-#endif
-}
-
-const char *ssl_cmd_SSLTicketKeyFile(cmd_parms *cmd, void *dcfg, const char *name, const char *path)
-{
-#ifdef HAVE_TLSEXT_TICKETS
-    apr_status_t rv;
-    apr_file_t *fp;
-    apr_size_t len;
-    char buf[TLSEXT_TICKET_KEYLEN];
-    modssl_ticket_t* ticket = NULL;
-    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-
-    path = ap_server_root_relative(cmd->pool, path);
-
-    rv = apr_file_open(&fp, path, APR_READ|APR_BINARY,
-                       APR_OS_DEFAULT, cmd->temp_pool);
-
-    if (rv != APR_SUCCESS) {
-        return apr_psprintf(cmd->pool,
-                            "Failed to open %s: (%d) %pm",
-                            path, rv, &rv);
-    }
-
-    rv = apr_file_read_full(fp, &buf[0], TLSEXT_TICKET_KEYLEN, &len);
-
-    if (rv != APR_SUCCESS) {
-        return apr_psprintf(cmd->pool,
-                            "Failed to read at least 48 bytes from %s: (%d) %pm",
-                            path, rv, &rv);
-    }
-
-    ticket = apr_palloc(cmd->pool, sizeof(modssl_ticket_t));
-
-    ticket->conf_name = name;
-
-    memcpy(ticket->key_name, buf, 16);
-    memcpy(ticket->hmac_secret, buf + 16, 16);
-    memcpy(ticket->aes_key, buf + 32, 16);
-
-    APR_ARRAY_PUSH(sc->tickets, modssl_ticket_t*) = ticket;
-
-    return NULL;
-#else
-    return "TLS Ticket keys are not supported.";
-#endif
-}
-
 const char *ssl_cmd_SSLFIPS(cmd_parms *cmd, void *dcfg, int flag)
 {
 #ifdef HAVE_FIPS
@@ -862,6 +805,24 @@ const char *ssl_cmd_SSLPKCS7CertificateFile(cmd_parms *cmd,
 
     return NULL;
 }
+
+#ifdef HAVE_TLS_SESSION_TICKETS
+const char *ssl_cmd_SSLSessionTicketKeyFile(cmd_parms *cmd,
+                                            void *dcfg,
+                                            const char *arg)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    const char *err;
+
+    if ((err = ssl_cmd_check_file(cmd, &arg))) {
+        return err;
+    }
+
+    sc->server->ticket_key->file_path = arg;
+
+    return NULL;
+}
+#endif
 
 #define NO_PER_DIR_SSL_CA \
     "Your SSL library does not have support for per-directory CA"
