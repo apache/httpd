@@ -818,6 +818,8 @@ AP_DECLARE(const char *) ap_pcfg_strerror(apr_pool_t *p, ap_configfile_t *cfp,
  * @param cmd The cmd_parms to pass to the directives inside the container
  * @param directive The directive name to read until
  * @return Error string on failure, NULL on success
+ * @note If cmd->pool == cmd->temp_pool, ap_soak_end_container() will assume
+ *       .htaccess context and use a lower maximum line length.
  */
 AP_DECLARE(const char *) ap_soak_end_container(cmd_parms *cmd, char *directive);
 
@@ -831,6 +833,8 @@ AP_DECLARE(const char *) ap_soak_end_container(cmd_parms *cmd, char *directive);
  * @param curr_parent The current parent node
  * @param orig_directive The directive to read until hit.
  * @return Error string on failure, NULL on success
+ * @note If p == temp_pool, ap_build_cont_config() will assume .htaccess
+ *       context and use a lower maximum line length.
 */
 AP_DECLARE(const char *) ap_build_cont_config(apr_pool_t *p,
                                               apr_pool_t *temp_pool,
@@ -846,6 +850,8 @@ AP_DECLARE(const char *) ap_build_cont_config(apr_pool_t *p,
  * @param temp_pool The temporary pool
  * @param conftree Place to store the root node of the config tree
  * @return Error string on erro, NULL otherwise
+ * @note If conf_pool == temp_pool, ap_build_config() will assume .htaccess
+ *       context and use a lower maximum line length.
  */
 AP_DECLARE(const char *) ap_build_config(cmd_parms *parms,
                                          apr_pool_t *conf_pool,

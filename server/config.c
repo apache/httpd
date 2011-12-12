@@ -1202,11 +1202,14 @@ AP_DECLARE(const char *) ap_build_cont_config(apr_pool_t *p,
     ap_directive_t *sub_tree = NULL;
     apr_status_t rc;
     struct ap_varbuf vb;
+    apr_size_t max_len = VARBUF_MAX_LEN;
+    if (p == temp_pool)
+        max_len = HUGE_STRING_LEN; /* lower limit for .htaccess */
 
     bracket = apr_pstrcat(temp_pool, orig_directive + 1, ">", NULL);
     ap_varbuf_init(temp_pool, &vb, VARBUF_INIT_LEN);
 
-    while ((rc = ap_varbuf_cfg_getline(&vb, parms->config_file, VARBUF_MAX_LEN))
+    while ((rc = ap_varbuf_cfg_getline(&vb, parms->config_file, max_len))
            == APR_SUCCESS) {
         if (!memcmp(vb.buf, "</", 2)
             && (strcasecmp(vb.buf + 2, bracket) == 0)
@@ -1324,6 +1327,9 @@ AP_DECLARE(const char *) ap_build_config(cmd_parms *parms,
     ap_directive_t **last_ptr = NULL;
     apr_status_t rc;
     struct ap_varbuf vb;
+    apr_size_t max_len = VARBUF_MAX_LEN;
+    if (p == temp_pool)
+        max_len = HUGE_STRING_LEN; /* lower limit for .htaccess */
 
     ap_varbuf_init(temp_pool, &vb, VARBUF_INIT_LEN);
 
@@ -1349,7 +1355,7 @@ AP_DECLARE(const char *) ap_build_config(cmd_parms *parms,
         }
     }
 
-    while ((rc = ap_varbuf_cfg_getline(&vb, parms->config_file, VARBUF_MAX_LEN))
+    while ((rc = ap_varbuf_cfg_getline(&vb, parms->config_file, max_len))
            == APR_SUCCESS) {
         errmsg = ap_build_config_sub(p, temp_pool, vb.buf, parms,
                                      &current, &curr_parent, conftree);
@@ -1540,10 +1546,13 @@ AP_DECLARE(const char *) ap_soak_end_container(cmd_parms *cmd, char *directive)
     const char *args;
     char *cmd_name;
     apr_status_t rc;
+    apr_size_t max_len = VARBUF_MAX_LEN;
+    if (cmd->pool == cmd->temp_pool)
+        max_len = HUGE_STRING_LEN; /* lower limit for .htaccess */
 
     ap_varbuf_init(cmd->temp_pool, &vb, VARBUF_INIT_LEN);
 
-    while((rc = ap_varbuf_cfg_getline(&vb, cmd->config_file, VARBUF_MAX_LEN))
+    while((rc = ap_varbuf_cfg_getline(&vb, cmd->config_file, max_len))
           == APR_SUCCESS) {
 #if RESOLVE_ENV_PER_TOKEN
         args = vb.buf;
