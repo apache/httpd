@@ -88,8 +88,9 @@ Changes with Apache 2.4.0
   *) end-generation hook: Fix false notification of end-of-generation for
      temporary intervals with no active MPM children.  [Jeff Trawick]
 
-  *) mod_ssl: Add support for RFC 5077 TLS Session tickets.
-     [Paul Querna]
+  *) mod_ssl: Add support for configuring persistent TLS session ticket
+     encryption/decryption keys (useful for clustered environments).
+     [Paul Querna, Kaspar Brand]
 
   *) mod_usertrack: Use random value instead of remote IP address.
      [Stefan Fritsch]

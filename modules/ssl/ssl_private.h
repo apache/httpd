@@ -158,8 +158,16 @@
 #endif
 
 #ifndef OPENSSL_NO_TLSEXT
-#ifdef SSL_CTX_set_tlsext_ticket_key_cb
-#define HAVE_TLSEXT_TICKETS
+#ifdef SSL_CTRL_SET_TLSEXT_TICKET_KEY_CB
+#define HAVE_TLS_SESSION_TICKETS
+#define TLSEXT_TICKET_KEY_LEN 48
+#ifndef tlsext_tick_md
+#ifdef OPENSSL_NO_SHA256
+#define tlsext_tick_md EVP_sha1
+#else
+#define tlsext_tick_md EVP_sha256
+#endif
+#endif
 #endif
 #endif
 
@@ -559,19 +567,13 @@ typedef struct {
     ssl_verify_t verify_mode;
 } modssl_auth_ctx_t;
 
-
-#ifdef HAVE_TLSEXT_TICKETS
-
-/* 48 bytes: 16 for keyname, 16 for HMAC secret, 16 for AES private key */
-#define TLSEXT_TICKET_KEYLEN (48)
-
+#ifdef HAVE_TLS_SESSION_TICKETS
 typedef struct {
-    /* Human readable name, used in the configuration */
-    const char *conf_name;
-    char key_name[16];
+    const char *file_path;
+    unsigned char key_name[16];
     unsigned char hmac_secret[16];
     unsigned char aes_key[16];
-} modssl_ticket_t;
+} modssl_ticket_key_t;
 #endif
 
 typedef struct SSLSrvConfigRec SSLSrvConfigRec;
@@ -583,6 +585,10 @@ typedef struct {
     /** we are one or the other */
     modssl_pk_server_t *pks;
     modssl_pk_proxy_t  *pkp;
+
+#ifdef HAVE_TLS_SESSION_TICKETS
+    modssl_ticket_key_t *ticket_key;
+#endif
 
     ssl_proto_t  protocol;
 
@@ -641,11 +647,6 @@ struct SSLSrvConfigRec {
 #endif
 #ifdef HAVE_FIPS
     BOOL             fips;
-#endif
-#ifdef HAVE_TLSEXT_TICKETS
-    const char *default_ticket_name;
-    modssl_ticket_t* default_ticket;
-    apr_array_header_t* tickets;
 #endif
 };
 
@@ -727,6 +728,9 @@ const char  *ssl_cmd_SSLProxyCARevocationCheck(cmd_parms *, void *, const char *
 const char  *ssl_cmd_SSLProxyMachineCertificatePath(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyMachineCertificateFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyMachineCertificateChainFile(cmd_parms *, void *, const char *);
+#ifdef HAVE_TLS_SESSION_TICKETS
+const char *ssl_cmd_SSLSessionTicketKeyFile(cmd_parms *cmd, void *dcfg, const char *arg);
+#endif
 const char  *ssl_cmd_SSLProxyCheckPeerExpire(cmd_parms *cmd, void *dcfg, int flag);
 const char  *ssl_cmd_SSLProxyCheckPeerCN(cmd_parms *cmd, void *dcfg, int flag);
 
@@ -738,8 +742,6 @@ const char *ssl_cmd_SSLOCSPResponderTimeout(cmd_parms *cmd, void *dcfg, const ch
 const char *ssl_cmd_SSLOCSPEnable(cmd_parms *cmd, void *dcfg, int flag);
 
 const char *ssl_cmd_SSLFIPS(cmd_parms *cmd, void *dcfg, int flag);
-const char *ssl_cmd_SSLTicketKeyDefault(cmd_parms *cmd, void *dcfg, const char *name);
-const char *ssl_cmd_SSLTicketKeyFile(cmd_parms *cmd, void *dcfg, const char *name, const char *path);
 
 /**  module initialization  */
 int          ssl_init_Module(apr_pool_t *, apr_pool_t *, apr_pool_t *, server_rec *);
@@ -780,14 +782,9 @@ void         ssl_callback_Info(const SSL *, int, int);
 #ifndef OPENSSL_NO_TLSEXT
 int          ssl_callback_ServerNameIndication(SSL *, int *, modssl_ctx_t *);
 #endif
-
-#ifdef HAVE_TLSEXT_TICKETS
-int         ssl_callback_tlsext_tickets(SSL *ssl,
-                                        unsigned char *keyname,
-                                        unsigned char *iv,
-                                        EVP_CIPHER_CTX *cipher_ctx,
-                                        HMAC_CTX *hctx,
-                                        int mode);
+#ifdef HAVE_TLS_SESSION_TICKETS
+int         ssl_callback_SessionTicket(SSL *, unsigned char *, unsigned char *,
+                                       EVP_CIPHER_CTX *, HMAC_CTX *, int);
 #endif
 
 /**  Session Cache Support  */
