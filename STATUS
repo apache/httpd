@@ -162,6 +162,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Trunk patch: http://svn.apache.org/viewvc?rev=1209432&view=rev
       2.2.x patch: trunk patch works
     +1: jorton
+    trawick: http://mail-archives.apache.org/mod_mbox/httpd-dev/201112.mbox/%3CCAKUrXK4uwT%3DP1KtEziNqFdxXs%2BtyWvggzpL8x2u-Bbq8tZ-Zsw%40mail.gmail.com%3E
 
 PATCHES/ISSUES THAT ARE STALLED
 
