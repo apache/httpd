@@ -2088,91 +2088,72 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
 }
 #endif
 
-#ifdef HAVE_TLSEXT_TICKETS
-
-#ifndef tlsext_tick_md
-#ifdef OPENSSL_NO_SHA256
-#define tlsext_tick_md	EVP_sha1
-#else
-#define tlsext_tick_md	EVP_sha256
-#endif
-#endif
-
-int ssl_callback_tlsext_tickets(SSL *ssl,
-                                unsigned char *keyname,
-                                unsigned char *iv,
-                                EVP_CIPHER_CTX *cipher_ctx,
-                                HMAC_CTX *hctx,
-                                int mode)
+#ifdef HAVE_TLS_SESSION_TICKETS
+/*
+ * This callback function is executed when OpenSSL needs a key for encrypting/
+ * decrypting a TLS session ticket (RFC 5077) and a ticket key file has been
+ * configured through SSLSessionTicketKeyFile.
+ */
+int ssl_callback_SessionTicket(SSL *ssl,
+                               unsigned char *keyname,
+                               unsigned char *iv,
+                               EVP_CIPHER_CTX *cipher_ctx,
+                               HMAC_CTX *hctx,
+                               int mode)
 {
-    conn_rec *conn      = (conn_rec *)SSL_get_app_data(ssl);
-    server_rec *s       = mySrvFromConn(conn);
+    conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
+    server_rec *s = mySrvFromConn(c);
     SSLSrvConfigRec *sc = mySrvConfig(s);
+    SSLConnRec *sslconn = myConnConfig(c);
+    modssl_ctx_t *mctx = myCtxConfig(sslconn, sc);
+    modssl_ticket_key_t *ticket_key = mctx->ticket_key;
 
     if (mode == 1) {
-        modssl_ticket_t* ticket = sc->default_ticket;
-
-        /* Setting up the stuff for encrypting:
-         *  - keyname contains at least 16 bytes we can write to.
-         *  - iv contains at least EVP_MAX_IV_LENGTH (16) bytes we can write to.
-         *  - hctx is already allocated, we just need to set the
-         *    secret key via HMAC_Init_ex.
-         *  - cipher_ctx is also allocated, and we need to configure
-         *    the cipher and private key.
+        /* 
+         * OpenSSL is asking for a key for encrypting a ticket,
+         * see s3_srvr.c:ssl3_send_newsession_ticket()
          */
 
-        if (ticket == NULL) {
-            /* this should not happen, we always set the default
-             * ticket.
-             */
+        if (ticket_key == NULL) {
+            /* should never happen, but better safe than sorry */
             return -1;
         }
 
-        memcpy(keyname, ticket->key_name, 16);
-
+        memcpy(keyname, ticket_key->key_name, 16);
         RAND_pseudo_bytes(iv, EVP_MAX_IV_LENGTH);
-
         EVP_EncryptInit_ex(cipher_ctx, EVP_aes_128_cbc(), NULL,
-                           ticket->aes_key, iv);
+                           ticket_key->aes_key, iv);
+        HMAC_Init_ex(hctx, ticket_key->hmac_secret, 16, tlsext_tick_md(), NULL);
 
-        HMAC_Init_ex(hctx, ticket->hmac_secret, 16, tlsext_tick_md(), NULL);
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(02289)
+                      "TLS session ticket key for %s successfully set, "
+                      "creating new session ticket", sc->vhost_id);
 
         return 0;
     }
     else if (mode == 0) {
-        /* Setup contextes for decryption, based on the keyname input */
-        int i;
-        modssl_ticket_t* ticket = NULL;
+        /* 
+         * OpenSSL is asking for the decryption key,
+         * see t1_lib.c:tls_decrypt_ticket()
+         */
 
-        for (i = 0; i < sc->tickets->nelts; i++) {
-            modssl_ticket_t* itticket = APR_ARRAY_IDX(sc->tickets, i, modssl_ticket_t*);
-            if (memcmp(keyname, itticket->key_name, 16) == 0) {
-                ticket = itticket;
-                break;
-            }
-        }
-
-        if (ticket == NULL) {
-            /* Ticket key not found, but no error */
+        /* check key name */
+        if (ticket_key == NULL || memcmp(keyname, ticket_key->key_name, 16)) {
             return 0;
         }
 
-        EVP_DecryptInit_ex(cipher_ctx, EVP_aes_128_cbc(), NULL, ticket->aes_key, iv);
+        EVP_DecryptInit_ex(cipher_ctx, EVP_aes_128_cbc(), NULL,
+                           ticket_key->aes_key, iv);
+        HMAC_Init_ex(hctx, ticket_key->hmac_secret, 16, tlsext_tick_md(), NULL);
 
-        HMAC_Init_ex(hctx, ticket->hmac_secret, 16, tlsext_tick_md(), NULL);
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(02290)
+                      "TLS session ticket key for %s successfully set, "
+                      "decrypting existing session ticket", sc->vhost_id);
 
-        if (ticket != sc->default_ticket) {
-            /* Ticket key found, we did our stuff, but didn't use the default,
-             * re-issue a ticket with the default ticket */
-            return 2;
-        }
-        else {
-            return 1;
-        }
+        return 1;
     }
 
-    /* TODO: log invalid use */
+    /* OpenSSL is not expected to call us with modes other than 1 or 0 */
     return -1;
 }
-
 #endif
