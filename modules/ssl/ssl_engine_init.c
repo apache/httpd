@@ -1360,7 +1360,7 @@ void ssl_init_ConfigureServer(server_rec *s,
      */
     if ((sc->enabled == SSL_ENABLED_TRUE) || (sc->enabled == SSL_ENABLED_OPTIONAL)) {
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(01914)
-                     "Configuring server for SSL protocol");
+                     "Configuring server %s for SSL protocol", sc->vhost_id);
         ssl_init_server_ctx(s, p, ptemp, sc);
     }
 
