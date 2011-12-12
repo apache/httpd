@@ -262,9 +262,9 @@ static OCSP_RESPONSE *read_response(apr_socket_t *sd, BIO *bio, conn_rec *c,
      * bio. */
     response = d2i_OCSP_RESPONSE_bio(bio, NULL);
     if (response == NULL) {
-        ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, mySrvFromConn(c));
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(01988)
                       "failed to decode OCSP response data");
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, mySrvFromConn(c));
     }
 
     return response;
@@ -281,9 +281,9 @@ OCSP_RESPONSE *modssl_dispatch_ocsp_request(const apr_uri_t *uri,
 
     bio = serialize_request(request, uri);
     if (bio == NULL) {
-        ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, mySrvFromConn(c));
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(01989)
                       "could not serialize OCSP request");
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, mySrvFromConn(c));
         return NULL;
     }
 
