@@ -96,6 +96,11 @@ Server.</p>
     module="mod_env">SetEnv</directive>, take effect too late to be used for
     expansions in the configuration file.</p>
 
+    <p>The maximum length of a line in normal configuration files, after
+    variable substitution and joining any continued lines, is approximately
+    16 MiB. In <a href="configuring.xml#htaccess">.htaccess files</a>, the
+    maximum length is 8190 characters.</p>
+
     <p>You can check your configuration files for syntax errors
     without starting the server by using <code>apachectl
     configtest</code> or the <code>-t</code> command line
