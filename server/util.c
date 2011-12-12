@@ -1112,6 +1112,8 @@ AP_DECLARE(apr_status_t) ap_varbuf_cfg_getline(struct ap_varbuf *vb,
         ap_varbuf_grow(vb, new_len);
         --cfp->line_number;
     }
+    if (vb->strlen > max_len)
+        return APR_ENOSPC;
     if (rc == APR_SUCCESS)
         vb->strlen = cfg_trim_line(vb->buf);
     return rc;

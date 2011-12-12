@@ -151,10 +151,8 @@ AP_DECLARE(apr_status_t) ap_varbuf_regsub(struct ap_varbuf *vb,
 /** Read a line from an ap_configfile_t into an ap_varbuf.
  * @param vb pointer to the ap_varbuf struct
  * @param cfg pointer to the ap_configfile_t
- * @param max_len (soft) limit for the size of the buffer
+ * @param max_len maximum line length, including leading/trailing whitespace
  * @return see ap_cfg_getline()
- * @note The buffer will not be grown once it has reached at least max_len
- *       bytes. This means that the returned line can be longer than max_len.
  * @note vb->strlen will be set to the length of the line
  */
 AP_DECLARE(apr_status_t) ap_varbuf_cfg_getline(struct ap_varbuf *vb,
