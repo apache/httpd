@@ -27,7 +27,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Apache HTTP Sunucusunda daima mevcut olan çekirdek
  özellikler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr></table>
@@ -1948,8 +1947,8 @@ sınırlar.</td></tr>
       belirler.</p>
 
     <p><code class="directive">LimitRequestFieldSize</code> yönergesi, sunucu
-      yöneticilerine  HTTP istek başlık alanının azami uzunluğunu arttırıp
-      azaltma imkanı verir. Sunucu bu değerin, normal bir istemci isteğinin
+      yöneticilerine  HTTP istek başlık alanının azami uzunluğunu
+      belirtme imkanı verir. Sunucu bu değerin, normal bir istemci isteğinin
       içerebileceği herhangi bir başlık alanını tutabilecek kadar büyük
       olmasını gerektirir. Normal bir istek başlık alanı uzunluğu kullanıcının
       tarayıcısını ayrıntılı içerik müzakeresini desteklemek için nasıl
@@ -1966,7 +1965,9 @@ sınırlar.</td></tr>
       LimitRequestFieldSize 4094
     </code></p></div>
 
-    <div class="note">Normal şartlar altında öntanımlı değer değiştirilmemelidir.</div>
+    <div class="note">Normal şartlar altında öntanımlı değer değiştirilmemelidir. Ayrıca,
+      kaynak kodda değişiklik yapıp, yeniden derlemedikçe bu değerin azamisi
+      8190 olarak kalacaktır.</div>
 
     <div class="warning"><h3>Uyarı</h3>
       <p>İsme dayalı sanal konaklar kullanılıyorsa bu yönergenin değeri,
@@ -1991,7 +1992,7 @@ sınırlar.</td></tr>
       belirler.</p>
 
     <p><code class="directive">LimitRequestLine</code> yönergesi, sunucu yöneticilerine
-      bir istemcinin HTTP istek satırının azami uzunluğunu arttırıp azaltma
+      bir istemcinin HTTP istek satırının azami uzunluğunu belirleme
       imkanı verir. İstek satırının içeriği HTTP yöntemi, URI ve protokol
       sürümünden oluştuğundan <code class="directive">LimitRequestLine</code>
       yönergesi, sunucudan bir istek için kullanılan istek adresinin uzunluğunu
@@ -2009,7 +2010,9 @@ sınırlar.</td></tr>
       LimitRequestLine 4094
     </code></p></div>
 
-    <div class="note">Normal şartlar altında öntanımlı değer değiştirilmemelidir.</div>
+    <div class="note">Normal şartlar altında öntanımlı değer değiştirilmemelidir. Ayrıca,
+      kaynak kodda değişiklik yapıp, yeniden derlemedikçe bu değerin azamisi
+      8190 olarak kalacaktır.</div>
 
     <div class="warning"><h3>Uyarı</h3>
       <p>İsme dayalı sanal konaklar kullanılıyorsa bu yönergenin değeri,
