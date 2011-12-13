@@ -89,7 +89,8 @@ static const char *ap_expr_eval_word(ap_expr_eval_ctx_t *ctx,
         result = node->node_arg1;
         break;
     case op_Var:
-        result = ap_expr_eval_var(ctx, node->node_arg1, node->node_arg2);
+        result = ap_expr_eval_var(ctx, (ap_expr_var_func_t *)node->node_arg1,
+                                  node->node_arg2);
         break;
     case op_Concat:
         if (((ap_expr_t *)node->node_arg2)->node_op != op_Concat) {
@@ -674,7 +675,7 @@ static void expr_dump_tree(const ap_expr_t *e, const server_rec *s,
 static int ap_expr_eval_unary_op(ap_expr_eval_ctx_t *ctx, const ap_expr_t *info,
                                  const ap_expr_t *arg)
 {
-    ap_expr_op_unary_t *op_func = info->node_arg1;
+    ap_expr_op_unary_t *op_func = (ap_expr_op_unary_t *)info->node_arg1;
     const void *data = info->node_arg2;
 
     AP_DEBUG_ASSERT(info->node_op == op_UnaryOpInfo);
@@ -687,7 +688,7 @@ static int ap_expr_eval_binary_op(ap_expr_eval_ctx_t *ctx,
                                   const ap_expr_t *info,
                                   const ap_expr_t *args)
 {
-    ap_expr_op_binary_t *op_func = info->node_arg1;
+    ap_expr_op_binary_t *op_func = (ap_expr_op_binary_t *)info->node_arg1;
     const void *data = info->node_arg2;
     const ap_expr_t *a1 = args->node_arg1;
     const ap_expr_t *a2 = args->node_arg2;
