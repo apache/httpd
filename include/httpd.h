@@ -1008,8 +1008,8 @@ struct request_rec {
     /** remote address information from conn_rec, can be overridden if
      * necessary by a module.
      */
-    apr_sockaddr_t *client_addr;
-    char *client_ip;
+    apr_sockaddr_t *useragent_addr;
+    char *useragent_ip;
 };
 
 /**

@@ -908,7 +908,7 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
             * determine, where the original request came from.
             */
            apr_table_mergen(r->headers_in, "X-Forwarded-For",
-                            r->client_ip);
+                            r->useragent_ip);
 
            /* Add X-Forwarded-Host: so that upstream knows what the
             * original request hostname was.
@@ -1295,8 +1295,8 @@ static request_rec *make_fake_req(conn_rec *c, request_rec *r)
     rp->input_filters   = c->input_filters;
     rp->proto_output_filters  = c->output_filters;
     rp->proto_input_filters   = c->input_filters;
-    rp->client_ip = c->peer_ip;
-    rp->client_addr = c->peer_addr;
+    rp->useragent_ip = c->peer_ip;
+    rp->useragent_addr = c->peer_addr;
 
     rp->request_config  = ap_create_request_config(pool);
     proxy_run_create_req(r, rp);
