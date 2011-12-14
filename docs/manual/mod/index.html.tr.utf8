@@ -182,8 +182,8 @@ from Clients' networks in a proxy context.</dd>
 <dt><a href="mod_proxy_scgi.html">mod_proxy_scgi</a></dt><dd>SCGI gateway module for <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_ratelimit.html" id="R" name="R">mod_ratelimit</a></dt><dd>Bandwidth Rate Limiting for Clients</dd>
 <dt><a href="mod_reflector.html">mod_reflector</a></dt><dd>Reflect a request body as a response via the output filter stack.</dd>
-<dt><a href="mod_remoteip.html">mod_remoteip</a></dt><dd>Replaces the original peer IP address for the connection
-with the client IP address list presented by a proxies or a load balancer
+<dt><a href="mod_remoteip.html">mod_remoteip</a></dt><dd>Replaces the original client IP address for the connection
+with the useragent IP address list presented by a proxies or a load balancer
 via the request headers.
 </dd>
 <dt><a href="mod_reqtimeout.html">mod_reqtimeout</a></dt><dd>Set timeout and minimum data rate for receiving requests
@@ -201,6 +201,10 @@ URLs on the fly</dd>
 <dt><a href="mod_slotmem_shm.html">mod_slotmem_shm</a></dt><dd>Slot-based shared memory provider.</dd>
 <dt><a href="mod_so.html">mod_so</a></dt><dd>Modüllerin ve çalıştırılabilir kodun sunucunun başlatılması veya
 yeniden başlatılması sırasında yüklenmesini sağlar.</dd>
+<dt><a href="mod_socache_dbm.html">mod_socache_dbm</a></dt><dd>DBM based shared object cache provider.</dd>
+<dt><a href="mod_socache_dc.html">mod_socache_dc</a></dt><dd>Distcache based shared object cache provider.</dd>
+<dt><a href="mod_socache_memcache.html">mod_socache_memcache</a></dt><dd>Memcache based shared object cache provider.</dd>
+<dt><a href="mod_socache_shmcb.html">mod_socache_shmcb</a></dt><dd>shmcb based shared object cache provider.</dd>
 <dt><a href="mod_speling.html">mod_speling</a></dt><dd>Attempts to correct mistaken URLs by ignoring
 capitalization, or attempting to correct various minor
 misspellings.</dd>

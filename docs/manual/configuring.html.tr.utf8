@@ -25,7 +25,6 @@
 <a href="./ko/configuring.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/configuring.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
 <p>Bu belgede Apache HTTP Sunucusunu yapılandırmakta kullanılan dosyalar
 açıklanmıştır.</p>
@@ -97,12 +96,19 @@ açıklanmıştır.</p>
     dosyasındaki işlemlerde çok daha sonra yer alır.</p>
 
     <p>Yapılandırma dosyasındaki bir satırın uzunluğu, değişken ikamesi
-    yapıldıkta, devam satırları eklenip satır başındaki ve sonundaki boşluk
-    karakterleri atıldıktan sonra en fazla 8192 karakter olabilir.</p>
+    yapıldıkta, devam satırları eklenditen sonra en fazla 16MiB olabilir. <a href="configuring.xml#htaccess">.htaccess dosyalarında</a> azami uzunluk
+    8190 karakterdir.</p>
 
     <p>Sunucuyu başlatmadan önce <code>apachectl configtest</code> ile veya
     <code>-t</code> komut satırı seçeneği ile yapılandırma dosyalarınızı
     sözdizimi hatalarına karşı sınayabilirsiniz.</p>
+
+    <p>Eşleşmeyen <code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code>
+    ve <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code> bölümleri
+    kaldırılmış, tüm açıklamalar, çözümlenmiş ortam değişkenleri ve içerilmiş
+    tüm dosyalar dahil yapılandırmanın bir dökümünü almak için
+    <code class="module"><a href="./mod/mod_info.html">mod_info</a></code>'nun <code>-DDUMP_CONFIG</code> seçeneğini
+    kullanabilirsiniz.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="modules" id="modules">Modüller</a></h2>
