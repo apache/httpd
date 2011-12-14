@@ -532,7 +532,7 @@ static int stream_reqbody_cl(apr_pool_t *p,
     if (bytes_streamed != cl_val) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01087)
                       "client %s given Content-Length did not match"
-                      " number of body bytes read", r->connection->peer_ip);
+                      " number of body bytes read", r->connection->client_ip);
         return HTTP_BAD_REQUEST;
     }
 
@@ -1052,7 +1052,7 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01094)
                       "client %s (%s) requested Transfer-Encoding "
                       "chunked body with Content-Length (C-L ignored)",
-                      c->peer_ip, c->remote_host ? c->remote_host: "");
+                      c->client_ip, c->remote_host ? c->remote_host: "");
         apr_table_unset(r->headers_in, "Content-Length");
         old_cl_val = NULL;
         origin->keepalive = AP_CONN_CLOSE;
@@ -1077,7 +1077,7 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
                           "prefetch request body failed to %pI (%s)"
                           " from %s (%s)",
                           p_conn->addr, p_conn->hostname ? p_conn->hostname: "",
-                          c->peer_ip, c->remote_host ? c->remote_host: "");
+                          c->client_ip, c->remote_host ? c->remote_host: "");
             return HTTP_BAD_REQUEST;
         }
 
@@ -1099,7 +1099,7 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
                           "processing prefetched request body failed"
                           " to %pI (%s) from %s (%s)",
                           p_conn->addr, p_conn->hostname ? p_conn->hostname: "",
-                          c->peer_ip, c->remote_host ? c->remote_host: "");
+                          c->client_ip, c->remote_host ? c->remote_host: "");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
 
@@ -1238,7 +1238,7 @@ skip_body:
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01097)
                       "pass request body failed to %pI (%s) from %s (%s)",
                       p_conn->addr, p_conn->hostname ? p_conn->hostname: "",
-                      c->peer_ip, c->remote_host ? c->remote_host: "");
+                      c->client_ip, c->remote_host ? c->remote_host: "");
         return rv;
     }
 
@@ -1295,8 +1295,8 @@ static request_rec *make_fake_req(conn_rec *c, request_rec *r)
     rp->input_filters   = c->input_filters;
     rp->proto_output_filters  = c->output_filters;
     rp->proto_input_filters   = c->input_filters;
-    rp->useragent_ip = c->peer_ip;
-    rp->useragent_addr = c->peer_addr;
+    rp->useragent_ip = c->client_ip;
+    rp->useragent_addr = c->client_addr;
 
     rp->request_config  = ap_create_request_config(pool);
     proxy_run_create_req(r, rp);

@@ -1053,10 +1053,10 @@ struct conn_rec {
     /** local address */
     apr_sockaddr_t *local_addr;
     /** remote address */
-    apr_sockaddr_t *peer_addr;
+    apr_sockaddr_t *client_addr;
 
     /** Client's IP address */
-    char *peer_ip;
+    char *client_ip;
     /** Client's DNS name, if known.  NULL if DNS hasn't been checked,
      *  "" if it has and no address was found.  N.B. Only access this though
      * get_remote_host() */
