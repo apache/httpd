@@ -24,7 +24,6 @@
 <a href="./ko/content-negotiation.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/content-negotiation.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
 
     <p>Apache HTTPD, içerik uzlaşımını HTTP/1.1 belirtiminde bahsedildiği şekliyle
@@ -127,15 +126,22 @@
     <div class="example"><p><code>AddHandler type-map .var</code></p></div>
 
     <p>Türeşlem dosyaları kendilerini tanımlayan özkaynak ile aynı isimde
-      olmalı ve her gösterim çeşidi için bir girdi içermelidir; bu girdiler
+      olmalı ve isim bir <code>.var</code> uzantısı içermelidir. Aşağıdaki
+      örneklerde özkaynak ismi <code>foo</code> olduğundan türeşlem dosyasının
+      ismi <code>foo.var</code>'dır.</p>
+
+    <p>Bu dosya her gösterim çeşidi için bir girdi içermelidir; bu girdiler
       ardarda belirtilen HTTP biçem başlık satırlarından oluşur. Farklı
       gösterimlerin girdileri bir boş satırla diğerlerinden ayrılır. Aynı
       girdi içinde boş satır kullanılamaz. Bir eşlem dosyasını bir birleşik
       öğenin tamamı için bir girdi ile başlatmak adet olmuştur (ise de, bu
       gerekli değildir, hele yoksayılacaksa hiç gerekli değildir). Eşlem
-      dosyası için aşağıda bir örnek verilmiştir. Dosya <code>misal</code>
-      isimli bir özkaynak hakkında olduğundan dosyaya <code>misal.var</code>
-      ismi verilebilir.</p>
+      dosyası için aşağıda bir örnek verilmiştir.</p>
+
+   <p>Bu dosyadaki URI'ler türeşlem dosyasının yerine görelidir. Dolayısıyla,
+     bu dosyaların aynı dizinde bulunması beklenirse de bu gerekli değildir.
+     Aynı sunucuda bulunan tüm dosyalar için türeşlem dosyasındaki gibi mutlak
+     veya göreli URI'ler belirtebilirsiniz.</p>
 
     <div class="example"><p><code>
       URI: misal<br />

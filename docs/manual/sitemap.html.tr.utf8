@@ -260,6 +260,10 @@ Windows ile Apache Kullanımı</a></li>
 <li><a href="mod/mod_slotmem_plain.html">Apache Modülü mod_slotmem_plain</a></li>
 <li><a href="mod/mod_slotmem_shm.html">Apache Modülü mod_slotmem_shm</a></li>
 <li><a href="mod/mod_so.html">Apache Modülü mod_so</a></li>
+<li><a href="mod/mod_socache_dbm.html">Apache Modülü mod_socache_dbm</a></li>
+<li><a href="mod/mod_socache_dc.html">Apache Modülü mod_socache_dc</a></li>
+<li><a href="mod/mod_socache_memcache.html">Apache Modülü mod_socache_memcache</a></li>
+<li><a href="mod/mod_socache_shmcb.html">Apache Modülü mod_socache_shmcb</a></li>
 <li><a href="mod/mod_speling.html">Apache Modülü mod_speling</a></li>
 <li><a href="mod/mod_ssl.html">Apache Modülü mod_ssl</a></li>
 <li><a href="mod/mod_status.html">Apache Modülü mod_status</a></li>

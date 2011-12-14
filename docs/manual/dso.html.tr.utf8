@@ -24,7 +24,6 @@
 <a href="./ko/dso.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/dso.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Apache HTTP Sunucusu modüler bir program olup, yönetici sadece bir
       grup modül seçerek sunucuya işlevsellik ekleyebilir. Modüller, Devingen
@@ -94,14 +93,29 @@
 </code></p></div>
       </li>
 
-      <li><p>Apache HTTP Sunucusunu tüm modüller etkin ve paylaşımlı nesneler
-        yüklü olarak derleyebilir. Daha sonra <code>httpd.conf</code> içindeki
-        <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> yönergelerinden
-        istemediklerinizi açıklama satırları haline getirerek bunları iptal
-        edebilirsiniz.</p>
+      <li><p>Apache HTTP Sunucusunu tüm modüller etkin olarak
+        derleyebilirsiniz. Fakat sunucunun başlatılması sırasında sadece temel
+        modüller yüklenir.  Daha sonra <code>httpd.conf</code> içindeki
+        <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> yönergelerini etkin
+        veya etkisiz hale getirerek yüklenecek modülleri
+        değiştirebilirsiniz.</p>
 
 <div class="example"><p><code>
 $ ./configure --enable-mods-shared=all<br />
+$ make install
+</code></p></div>
+      </li>
+
+      <li><p>Bazı modüller sadece geliştiriciler içindir ve bunlar tüm
+        modüllerin derlenmesini (<em>all</em>) seçseniz bile derlenmeyecektir.
+        Geliştirici modülleri dehil tüm modülleri derlemek isterseniz
+        <em>reallyall</em> kullanınız. Ek olarak, derlenmiş modüller için
+        kullanılan <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code>
+        yönergelerinin tamamını <code>--enable-load-all-modules</code> derleme
+        seçeneği ile etkin kılabilirsiniz.</p>
+
+<div class="example"><p><code>
+$ ./configure --enable-mods-shared=reallyall --enable-load-all-modules<br />
 $ make install
 </code></p></div>
       </li>
