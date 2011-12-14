@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1029134:1174747 (outdated) -->
+<!-- English Revision: 1174747 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -121,15 +121,22 @@
     <example>AddHandler type-map .var</example>
 
     <p>Türeşlem dosyaları kendilerini tanımlayan özkaynak ile aynı isimde
-      olmalı ve her gösterim çeşidi için bir girdi içermelidir; bu girdiler
+      olmalı ve isim bir <code>.var</code> uzantısı içermelidir. Aşağıdaki
+      örneklerde özkaynak ismi <code>foo</code> olduğundan türeşlem dosyasının
+      ismi <code>foo.var</code>'dır.</p>
+
+    <p>Bu dosya her gösterim çeşidi için bir girdi içermelidir; bu girdiler
       ardarda belirtilen HTTP biçem başlık satırlarından oluşur. Farklı
       gösterimlerin girdileri bir boş satırla diğerlerinden ayrılır. Aynı
       girdi içinde boş satır kullanılamaz. Bir eşlem dosyasını bir birleşik
       öğenin tamamı için bir girdi ile başlatmak adet olmuştur (ise de, bu
       gerekli değildir, hele yoksayılacaksa hiç gerekli değildir). Eşlem
-      dosyası için aşağıda bir örnek verilmiştir. Dosya <code>misal</code>
-      isimli bir özkaynak hakkında olduğundan dosyaya <code>misal.var</code>
-      ismi verilebilir.</p>
+      dosyası için aşağıda bir örnek verilmiştir.</p>
+
+   <p>Bu dosyadaki URI'ler türeşlem dosyasının yerine görelidir. Dolayısıyla,
+     bu dosyaların aynı dizinde bulunması beklenirse de bu gerekli değildir.
+     Aynı sunucuda bulunan tüm dosyalar için türeşlem dosyasındaki gibi mutlak
+     veya göreli URI'ler belirtebilirsiniz.</p>
 
     <example>
       URI: misal<br />

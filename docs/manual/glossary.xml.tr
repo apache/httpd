@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 830307:1174747 (outdated) -->
+<!-- English Revision: 1174747 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -128,8 +128,17 @@
       toplamak için esnek bir yol sağlamasından ötürü oldukça yararlıdır.
       Örneğin, “resimler” dizini altındaki dosyalardan .gif ve .jpg uzantılı
       olanları toplamak için “<code>/resimler/.*(jpg|gif)$</code>” düzenli
-      ifadesi yazılabilir. Apache, <a href="http://www.pcre.org/">PCRE</a>
-      kütüphanesi ile sağlanan Perl uyumlu düzenli ifadeleri kullanır.
+      ifadesi yazılabilir. Dizgileri değiştirmek için düzenli ifadelerin
+      kullanıldığı yerlerde, eşleşen (parantezlerin içinde) gruplanmış
+      parçalara başvurmak için $1 ... $9 özel değişkenleri kullanılır. $0 özel
+      değişkeni eşleşen ifadenin tamamına karşılık gelir. Bir dizgi içinde $
+      işaretini kendisi olarak kullanmak isterseniz önüne bir \ imi
+      koymalısınız. Geçmişe uyumluluk adına bazı yerlerde $0 yerine &amp;
+      değişkeni kullanılabilir. Ancak 2.3.6 sürümünden beri bu artık mümkün
+      değildir. Apache, <a href="http://www.pcre.org/">PCRE</a> kütüphanesi ile
+      sağlanan Perl uyumlu düzenli ifadeleri kullanır. PCRE düzenli
+      ifadelerinin sözdizimi ile ilgili ayrıntılı bilgiyi <a
+      href="http://en.wikipedia.org/wiki/PCRE">Wikipedia</a>'da bulabilirsiniz.
     </dd>
 
     <dt><a name="accesscontrol" id="accesscontrol">Erişim Denetimi</a></dt>
@@ -291,10 +300,9 @@
     <dd>İngilizcesi: Common Gateway Interface (CGI)</dd>
     <dd>Bir HTTP sunucusunun bir harici programa hizmet istekleri yapmasını
       mümkün kılan, sunucu ile bir harici program arasındaki bir arayüz
-      standardı. Özgün arayüz <a
-      href="http://hoohoo.ncsa.uiuc.edu/cgi/overview.html">NCSA</a> tarafından
-      tanımlanmış olmakla birlikte ayrıca bir <a
-      href="http://www.ietf.org/rfc/rfc3875">CGI RFC’si</a> de vardır.<br />
+      standardı. Özellikleri kapsayan bir
+      <a href="http://www.ietf.org/rfc/rfc3875">Bilgilendirici RFC </a>
+      vardır.<br />
       Bakınız: <a href="howto/cgi.html">CGI ile Devingen İçerik</a>
     </dd>
 

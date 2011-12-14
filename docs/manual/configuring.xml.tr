@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1061758:1213338 (outdated) -->
+<!-- English Revision: 1213338 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -99,12 +99,20 @@ açıklanmıştır.</p>
     dosyasındaki işlemlerde çok daha sonra yer alır.</p>
 
     <p>Yapılandırma dosyasındaki bir satırın uzunluğu, değişken ikamesi
-    yapıldıkta, devam satırları eklenip satır başındaki ve sonundaki boşluk
-    karakterleri atıldıktan sonra en fazla 8192 karakter olabilir.</p>
+    yapıldıkta, devam satırları eklenditen sonra en fazla 16MiB olabilir. <a
+    href="configuring.xml#htaccess">.htaccess dosyalarında</a> azami uzunluk
+    8190 karakterdir.</p>
 
     <p>Sunucuyu başlatmadan önce <code>apachectl configtest</code> ile veya
     <code>-t</code> komut satırı seçeneği ile yapılandırma dosyalarınızı
     sözdizimi hatalarına karşı sınayabilirsiniz.</p>
+
+    <p>Eşleşmeyen <directive module="core" type="section">IfDefine</directive>
+    ve <directive module="core" type="section">IfModule</directive> bölümleri
+    kaldırılmış, tüm açıklamalar, çözümlenmiş ortam değişkenleri ve içerilmiş
+    tüm dosyalar dahil yapılandırmanın bir dökümünü almak için
+    <module>mod_info</module>'nun <code>-DDUMP_CONFIG</code> seçeneğini
+    kullanabilirsiniz.</p>
   </section>
 
   <section id="modules">

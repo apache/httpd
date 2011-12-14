@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 804977:1174747 (outdated) -->
+<!-- English Revision: 1174747 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -32,13 +32,14 @@
 
     <p>Bu belge Apache HTTP Sunucusunun sadece Unix ve Unix benzeri
       sistemlerde derlenmesini ve kurulmasını kapsar. Windows üzerinde
-      derleme ve kurulum için <a href="platform/windows.html">Apache HTTPd’nin
-      Microsoft Windows ile kullanımı</a> bölümüne bakınız. Diğer platformlar
-      için ise <a href="platform/">platform</a> belgelerine bakınız.</p>
+      derleme ve kurulum için <a href="platform/windows.html">Apache HTTP
+      Sunucusunun Microsoft Windows ile kullanımı</a> bölümüne bakınız. Diğer
+      platformlar için ise <a href="platform/">platform</a> belgelerine
+      bakınız.</p>
 
-    <p>Apache HTTPd, derleme ortamını oluşturmak için çoğu Açık Kaynak Kodlu
-      projenin yaptığı gibi <code>libtool</code> ve <code>autoconf</code>
-      kullanır.</p>
+    <p>Apache HTTP Sunucusunun, derleme ortamını oluşturmak için çoğu Açık
+      Kaynak Kodlu projenin yaptığı gibi <code>libtool</code> ve
+      <code>autoconf</code> kullanır.</p>
 
     <p>Eğer sadece sürüm yükseltiyorsanız (2.2.50’den 2.2.51’e yükseltmek
       gibi) lütfen doğrudan <a href="#upgrading">Yükseltme</a> bölümüne
@@ -47,7 +48,7 @@
 </summary>
 
 <seealso><a href="programs/configure.html">Kaynak ağacının yapılandırılması</a></seealso>
-<seealso><a href="invoking.html">Apache HTTPd’nin başlatılması</a></seealso>
+<seealso><a href="invoking.html">Apache httpd’nin başlatılması</a></seealso>
 <seealso><a href="stopping.html">Durdurma ve yeniden başlatma</a></seealso>
 
 <section id="overview"><title>Tez canlılar için genel bir bakış</title>
@@ -114,14 +115,15 @@
 
 <section id="requirements"><title>Gereksinimler</title>
 
-    <p>Apache HTTPd’yi derleyebilmek için şunlar mevcut olmalıdır:</p>
+    <p>Apache httpd’yi derleyebilmek için şunlar mevcut olmalıdır:</p>
 
     <dl>
       <dt>Disk Alanı</dt>
       <dd>Geçici olarak en azından 50 MB boş disk alanınız olduğundan emin
-        olunuz. Kurulumdan sonra Apache yaklaşık 10 MB disk alanı kaplıyor
+        olunuz. Kurulumdan sonra sunucu yaklaşık 10 MB disk alanı kaplıyor
         olacaktır. Asıl disk alanı gereksinimi seçtiğiniz yapılandırma
-        seçenekleri ve üçüncü parti modüllere göre değişiklik
+        seçeneklerine, üçüncü parti modüllere ve şüphesiz sitenizin veya sunucu
+        üzerindeki sitelerin boyutlarına göre değişiklik
         gösterecektir.</dd>
 
       <dt>ANSI-C Derleyici ve Derleme Sistemi</dt>
@@ -184,7 +186,7 @@
 
 <section id="extract"><title>Paketi açma</title>
 
-    <p>Apache HTTPd tar paketinden sıkıştırmayı kaldırdıktan sonra tar
+    <p>Apache HTTP Sunucusu tar paketinden sıkıştırmayı kaldırdıktan sonra tar
       arşivinden dosyaları çıkarmak basit bir işlemdir:</p>
 
     <example>
@@ -222,16 +224,16 @@
 
     <p>Bu noktada ayrıca, Apache HTTPd’de hangi özelliklerin bulunmasını
       istediğinizi <a href="mod/">modülleri</a> etkin kılarak veya iptal
-      ederek belirtebilirsiniz. Apache, öntanımlı olarak içerilmiş <a
-      href="mod/module-dict.html#Status">temel</a> modüllerle gelir. Diğer
-      modüller <code>--enable-<var>modül</var></code> seçenekleri
-      kullanılarak etkinleştirilir. Buradaki <code><var>modül</var></code>,
-      önünden <code>mod_</code> dizgesi kaldırılmış ve içindeki altçizgi
-      imleri tire imleri ile değiştirilmiş modül ismidir. Ayrıca,
-      <code>--enable-<var>modül</var>=shared</code> seçeneklerini kullanarak
-      modülleri çalışma anında gerektiğinde yüklemek veya kaldırmak üzere <a
-      href="dso.html">paylaşımlı nesneler (DSO’lar)</a> olarak derlemeniz de
-      mümkündür. Temel modülleri de benzer şekilde
+      ederek belirtebilirsiniz. Apache, öntanımlı olarak içerilmiş pek çok
+      modülle gelir. Bunlar çalışma anında devereye sokulup çıkarılabilen <a
+      href="dso.html">paylaşımlaı nesneler (DSO'lar)</a> olarak derlenebilir.
+      Ayrıca, istediğiniz modülleri derleme sırasında
+      <code>--enable-<var>module</var>=static</code> seçeneğini kullanarak
+      durağan olarak derleyebilirsiniz. Ek modüller <code>--enable-
+      <var>modül</var></code> seçenekleri kullanılarak etkinleştirilir.
+      Buradaki <code><var>modül</var></code>, önünden <code>mod_</code> dizgesi
+      kaldırılmış ve içindeki altçizgi imleri tire imleri ile değiştirilmiş
+      modül ismidir. Temel modülleri de benzer şekilde
       <code>--disable-<var>modül</var></code> seçenekleriyle iptal
       edebilirsiniz. <program>configure</program> betiği mevcut olmayan
       modüller için sizi uyarmayıp, seçeneği yok saymakla yetineceğinden, bu
@@ -248,15 +250,15 @@
       izlenim edinmeniz için aşağıda tipik bir örneğe yer verilmiştir. Bu
       örnekte, Apache’nin <code>/sw/pkg/apache</code> önekiyle başlayan
       dizinlere kurulması, belli bir derleyici ve derleyici seçenekleriyle
-      derlenmesi ve <module>mod_rewrite</module> ve
-      <module>mod_speling</module> modüllerinin de DSO mekanizması üzerinden
+      derlenmesi ve <module>mod_ldap</module> ve
+      <module>mod_lua</module>modüllerinin de DSO mekanizması üzerinden
       daha sonra yüklenmek üzere derlenmesi istenmektedir:</p>
 
     <example>
       $ CC="pgcc" CFLAGS="-O2" \<br />
        ./configure --prefix=/sw/pkg/apache \<br />
-       --enable-rewrite=shared \<br />
-       --enable-speling=shared
+       --enable-ldap=shared \<br />
+       --enable-lua=shared
     </example>
 
     <p><program>configure</program> betiği başlatıldığında sisteminizde
@@ -335,7 +337,7 @@
     <p>Sürüm yükseltme işleminin ilk adımı, sitenizi etkileyen değişiklikleri
       öğrenmek için dağıtım duyurusunu ve kaynak paketindeki
       <code>CHANGES</code> dosyasını okumaktır. Ana sürümlerden yükseltme
-      yapıyorsanız (1.3’ten 2.0’a veya 2.0’dan 2.2’ye gibi), derleme anı ve
+      yapıyorsanız (2.0’ten 2.2’ye veya 2.2’daen 2.3’e gibi), derleme anı ve
       çalışma anı yapılandırmalarındaki ana farklılıklar elle ayarlamalar
       yapmanızı gerektirecektir. Ayrıca, tüm modüllerin de modül API’sindeki
       değişikliklere uyum sağlaması için yükseltilmesi gerekecektir.</p>
@@ -382,4 +384,27 @@
     $ ./config.nice --prefix=/home/dnm/apache --with-port=90
     </example>
 </section>
+
+<section id="thirdp"><title>Üçüncü parti paketler</title>
+
+    <p>Üçüncü partilerin çoğunun, Apache HTTP Sunucusunun belli bir platforma
+      kurulumu için paketlenmiş kendi dağıtımları vardır. Çeşitli Linux
+      dağıtımları, üçüncü parti Windows paketleri, Mac OS X, Solaris ve daha
+      pek çokları bunlar arasında sayılabilir.r</p>
+
+    <p>Yazılım lisansımız bu çeşit yeniden dağıtımlara izin verdiği gibi
+      bunları cesaretlendirir de. Ancak, sunucunun kurulum ve yapılandırmasının
+      belgelerimizde belittiğimizden farklı olması gibi bir durum ortaya
+      çıkabilir. Ne yazık ki, bu durum yakın zamanda değişecekmiş gibi
+      görünmüyor.</p>
+
+    <p>Bu <a
+      href="http://wiki.apache.org/httpd/DistrosDefaultLayout">üçüncü parti
+      dağıtımlarla ilgili bir açıklamaya</a> HTTP
+      Sunucu wikisinde yer verilmiş olup bunların şu anki durumunu
+      yansıtmaktadır. Ancak, yine de, dağıtımınızın belli platformlarla ilgili
+      paket yönetimi ve kurulum işlemleri hakkında bilgi sahibi olmanız
+      gerekmektir.</p>
+</section>
+
 </manualpage>

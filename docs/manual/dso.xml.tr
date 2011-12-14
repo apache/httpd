@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1058587:1199481 (outdated) -->
+<!-- English Revision: 1199481 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Yücel Haluk Bugüner <haluk buguner.name.tr>
+   Reviewed by: Yücel Haluk Bugüner <haluk belgeler.org>
 ========================================================== -->
 
 <!--
@@ -100,14 +100,29 @@
 </example>
       </li>
 
-      <li><p>Apache HTTP Sunucusunu tüm modüller etkin ve paylaşımlı nesneler
-        yüklü olarak derleyebilir. Daha sonra <code>httpd.conf</code> içindeki
-        <directive module="mod_so">LoadModule</directive> yönergelerinden
-        istemediklerinizi açıklama satırları haline getirerek bunları iptal
-        edebilirsiniz.</p>
+      <li><p>Apache HTTP Sunucusunu tüm modüller etkin olarak
+        derleyebilirsiniz. Fakat sunucunun başlatılması sırasında sadece temel
+        modüller yüklenir.  Daha sonra <code>httpd.conf</code> içindeki
+        <directive module="mod_so">LoadModule</directive> yönergelerini etkin
+        veya etkisiz hale getirerek yüklenecek modülleri
+        değiştirebilirsiniz.</p>
 
 <example>
 $ ./configure --enable-mods-shared=all<br />
+$ make install
+</example>
+      </li>
+
+      <li><p>Bazı modüller sadece geliştiriciler içindir ve bunlar tüm
+        modüllerin derlenmesini (<em>all</em>) seçseniz bile derlenmeyecektir.
+        Geliştirici modülleri dehil tüm modülleri derlemek isterseniz
+        <em>reallyall</em> kullanınız. Ek olarak, derlenmiş modüller için
+        kullanılan <directive module="mod_so">LoadModule</directive>
+        yönergelerinin tamamını <code>--enable-load-all-modules</code> derleme
+        seçeneği ile etkin kılabilirsiniz.</p>
+
+<example>
+$ ./configure --enable-mods-shared=reallyall --enable-load-all-modules<br />
 $ make install
 </example>
       </li>
