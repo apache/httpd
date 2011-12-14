@@ -466,11 +466,11 @@
       variables, they need to be replaced with one of the following two
       options as appropriate for the module:
       <ul>
-        <li>When you require the IP address of the client, which might
-        be connected directly to the server, or might optionally be
+        <li>When you require the IP address of the user agent, which
+        might be connected directly to the server, or might optionally be
         separated from the server by a transparent load balancer or
-        proxy, use request_rec->client_ip and
-        request_rec->client_addr.</li>
+        proxy, use request_rec->useragent_ip and
+        request_rec->useragent_addr.</li>
         <li>When you require the IP address of the peer that is
         connected directly to the server, which might be the client or
         might be the load balancer or proxy itself, use

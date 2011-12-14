@@ -918,7 +918,7 @@ int ssl_hook_Access(request_rec *r)
             ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02266)
                           "Access to %s denied for %s "
                           "(requirement expression not fulfilled)",
-                          r->filename, r->client_ip);
+                          r->filename, r->useragent_ip);
 
             ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02228)
                           "Failed expression: %s", req->cpExpr);

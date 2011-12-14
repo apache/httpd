@@ -439,8 +439,8 @@ static request_rec *internal_internal_redirect(const char *new_uri,
     new->prev = r;
     r->next   = new;
 
-    new->client_addr = r->client_addr;
-    new->client_ip = r->client_ip;
+    new->useragent_addr = r->useragent_addr;
+    new->useragent_ip = r->useragent_ip;
 
     /* Must have prev and next pointers set before calling create_request
      * hook.
