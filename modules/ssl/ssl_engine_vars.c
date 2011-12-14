@@ -188,7 +188,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
             else if (strcEQ(var, "REQUEST_FILENAME"))
                 result = r->filename;
             else if (strcEQ(var, "REMOTE_ADDR"))
-                result = r->client_ip;
+                result = r->useragent_ip;
             else if (strcEQ(var, "REMOTE_HOST"))
                 result = ap_get_remote_host(r->connection, r->per_dir_config,
                                             REMOTE_NAME, NULL);

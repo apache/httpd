@@ -153,7 +153,7 @@ static authz_status ip_check_authorization(request_rec *r,
     apr_ipsubnet_t **ip = (apr_ipsubnet_t **)parsed_require_line;
 
     while (*ip) {
-        if (apr_ipsubnet_test(*ip, r->client_addr))
+        if (apr_ipsubnet_test(*ip, r->useragent_addr))
             return AUTHZ_GRANTED;
         ip++;
     }
@@ -201,10 +201,10 @@ static authz_status local_check_authorization(request_rec *r,
                                               const void *parsed_require_line)
 {
      if (   apr_sockaddr_equal(r->connection->local_addr,
-                               r->client_addr)
-         || apr_ipsubnet_test(localhost_v4, r->client_addr)
+                               r->useragent_addr)
+         || apr_ipsubnet_test(localhost_v4, r->useragent_addr)
 #if APR_HAVE_IPV6
-         || apr_ipsubnet_test(localhost_v6, r->client_addr)
+         || apr_ipsubnet_test(localhost_v6, r->useragent_addr)
 #endif
         )
      {
