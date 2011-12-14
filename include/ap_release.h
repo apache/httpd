@@ -47,12 +47,12 @@
 #define AP_SERVER_MINORVERSION_NUMBER 5
 #define AP_SERVER_PATCHLEVEL_NUMBER   0
 #define AP_SERVER_DEVBUILD_BOOLEAN    1
+#define AP_SERVER_ADD_STRING          "-dev"
 
 /* Synchronize the above with docs/manual/style/version.ent */
 
-#if AP_SERVER_DEVBUILD_BOOLEAN
-#define AP_SERVER_ADD_STRING          "-dev"
-#else
+#if !AP_SERVER_DEVBUILD_BOOLEAN
+#undef AP_SERVER_ADD_STRING
 #define AP_SERVER_ADD_STRING          ""
 #endif
 
