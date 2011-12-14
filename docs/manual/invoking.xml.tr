@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 567441:1044380 (outdated) -->
+<!-- English Revision: 1044380 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -109,7 +109,7 @@
     </ul>
 
     <p>Bu ve diğer sorun çözme talimatları için Apache <a
-      href="faq/">SSS</a>’sini inceleyiniz.</p>
+      href="http://wiki.apache.org/httpd/FAQ">SSS</a>’sini inceleyiniz.</p>
 </section>
 
 <section id="boot"><title>Sistem Açılışında Başlatma</title>
