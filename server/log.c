@@ -565,8 +565,8 @@ static int log_remote_address(const ap_errorlog_info *info, const char *arg,
         return apr_snprintf(buf, buflen, "%s:%d", info->r->useragent_ip,
                             info->r->useragent_addr->port);
     else if (info->c)
-        return apr_snprintf(buf, buflen, "%s:%d", info->c->peer_ip,
-                            info->c->peer_addr->port);
+        return apr_snprintf(buf, buflen, "%s:%d", info->c->client_ip,
+                            info->c->client_addr->port);
     else
         return 0;
 }
@@ -962,7 +962,7 @@ static int do_errorlog_default(const ap_errorlog_info *info, char *buf,
     }
 
     /*
-     * useragent_ip/peer_ip can be client or backend server. If we have
+     * useragent_ip/client_ip can be client or backend server. If we have
      * a scoreboard handle, it is likely a client.
      */
     if (info->r) {
@@ -973,7 +973,7 @@ static int do_errorlog_default(const ap_errorlog_info *info, char *buf,
     else if (info->c) {
         len += apr_snprintf(buf + len, buflen - len,
                             info->c->sbh ? "[client %s:%d] " : "[remote %s:%d] ",
-                            info->c->peer_ip, info->c->peer_addr->port);
+                            info->c->client_ip, info->c->client_addr->port);
     }
 
     /* the actual error message */

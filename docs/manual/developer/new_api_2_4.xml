@@ -153,9 +153,9 @@
       <li>Modules that load other modules later than the EXEC_ON_READ config
           reading stage need to call ap_reserve_module_slots() or
           ap_reserve_module_slots_directive() in their pre_config hook.</li>
-      <li>The client IP address per request can now be specified independently
-          of the peer IP address of the connection for the benefit of load
-          balancers</li>
+      <li>The useragent IP address per request can now be specified
+          independently of the client IP address of the connection for
+          the benefit of load balancers</li>
     </ul>
   </section>
 
@@ -459,8 +459,8 @@
       <dd>This has been renamed to ap_unixd_config.</dd>
 
       <dt><code>conn_rec->remote_ip and conn_rec->remote_addr</code></dt>
-      <dd>In order to distinguish between the peer IP address of the
-      connection, and the client IP address of the request potentially
+      <dd>In order to distinguish between the client IP address of the
+      connection, and the useragent IP address of the request potentially
       overridden by a load balancer or proxy, the above variables have
       been renamed. If a module makes reference to either of the above
       variables, they need to be replaced with one of the following two
@@ -471,10 +471,10 @@
         separated from the server by a transparent load balancer or
         proxy, use request_rec->useragent_ip and
         request_rec->useragent_addr.</li>
-        <li>When you require the IP address of the peer that is
-        connected directly to the server, which might be the client or
+        <li>When you require the IP address of the client that is
+        connected directly to the server, which might be the useragent or
         might be the load balancer or proxy itself, use
-        conn_rec->peer_ip and conn_rec->peer_addr.</li>
+        conn_rec->client_ip and conn_rec->client_addr.</li>
       </ul>
       </dd>
     </dl>

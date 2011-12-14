@@ -311,7 +311,7 @@ static const char *log_remote_host(request_rec *r, char *a)
 static const char *log_remote_address(request_rec *r, char *a)
 {
     if (a && !strcmp(a, "c")) {
-        return r->connection->peer_ip;
+        return r->connection->client_ip;
     }
     else {
         return r->useragent_ip;
