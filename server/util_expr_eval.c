@@ -1344,7 +1344,7 @@ static const char *request_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
     case 27:
         return r->status ? apr_psprintf(ctx->p, "%d", r->status) : "";
     case 28:
-        return r->client_ip;
+        return r->useragent_ip;
     default:
         ap_assert(0);
         return NULL;
@@ -1493,7 +1493,7 @@ static int op_R(ap_expr_eval_ctx_t *ctx, const void *data, const char *arg1)
     if (!ctx->r)
         return FALSE;
 
-    return apr_ipsubnet_test(subnet, ctx->r->client_addr);
+    return apr_ipsubnet_test(subnet, ctx->r->useragent_addr);
 }
 
 static int op_T(ap_expr_eval_ctx_t *ctx, const void *data, const char *arg)
