@@ -24,8 +24,8 @@
 <p><span>Available Languages: </span><a href="../en/mod/mod_remoteip.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_remoteip.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Replaces the original peer IP address for the connection
-with the client IP address list presented by a proxies or a load balancer
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Replaces the original client IP address for the connection
+with the useragent IP address list presented by a proxies or a load balancer
 via the request headers.
 </td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
@@ -33,26 +33,27 @@ via the request headers.
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_remoteip.c</td></tr></table>
 <h3>Summary</h3>
 
-    <p>This module is used to treat the client which initiated the
-    request as the originating client as identified by httpd for the
-    purposes of authorization and logging, even where that client is
+    <p>This module is used to treat the useragent which initiated the
+    request as the originating useragent as identified by httpd for the
+    purposes of authorization and logging, even where that useragent is
     behind a load balancer, front end server, or proxy server.</p>
 
-    <p>The module overrides the peer IP address for the connection
-    with the client IP address reported in the request header configured
+    <p>The module overrides the client IP address for the connection
+    with the useragent IP address reported in the request header configured
     with the <code class="directive">RemoteIPHeader</code> directive.</p>
 
-    <p>Once replaced as instructed, this overridden client IP address is
+    <p>Once replaced as instructed, this overridden useragent IP address is
     then used for the <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>
     <code class="directive"><a href="../mod/mod_authz_host.html#require ip">&lt;Require ip&gt;</a></code>
     feature, is reported by <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>, and is recorded by
     <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> <code>%a</code> and <code class="module"><a href="../mod/core.html">core</a></code>
-    <code>%a</code> format strings. The underlying peer IP of the connection
+    <code>%a</code> format strings. The underlying client IP of the connection
     is available in the <code>%{c}a</code> format string.</p>
 
     <div class="warning">It is critical to only enable this behavior from
     intermediate hosts (proxies, etc) which are trusted by this server, since
-    it is trivial for the remote client to impersonate another client.</div>
+    it is trivial for the remote useragent to impersonate another
+    useragent.</div>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -76,22 +77,22 @@ via the request headers.
 <div class="section">
 <h2><a name="processing" id="processing">Remote IP Processing</a></h2>
 
-    <p>Apache by default identifies the client with the connection's
-    peer_ip value, and the connection remote_host and remote_logname are
+    <p>Apache by default identifies the useragent with the connection's
+    client_ip value, and the connection remote_host and remote_logname are
     derived from this value. These fields play a role in authentication,
     authorization and logging and other purposes by other loadable
     modules.</p>
 
-    <p>mod_remoteip overrides the peer IP of the connection with the
-    advertised client IP as provided by a proxy or load balancer, for
+    <p>mod_remoteip overrides the client IP of the connection with the
+    advertised useragent IP as provided by a proxy or load balancer, for
     the duration of the request. A load balancer might establish a long
     lived keepalive connection with the server, and each request will
-    have the correct client IP, even though the underlying peer IP
+    have the correct useragent IP, even though the underlying client IP
     address of the load balancer remains unchanged.</p>
 
-    <p>When multiple, comma delimited client IP addresses are listed in the
+    <p>When multiple, comma delimited useragent IP addresses are listed in the
     header value, they are processed in Right-to-Left order.  Processing
-    halts when a given client IP address is not trusted to present the
+    halts when a given useragent IP address is not trusted to present the
     preceding IP address.  The header field is updated to this remaining
     list of unconfirmed IP addresses, or if all IP addresses were trusted,
     this header is removed from the request altogether.</p>
@@ -117,7 +118,7 @@ via the request headers.
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="RemoteIPHeader" id="RemoteIPHeader">RemoteIPHeader</a> <a name="remoteipheader" id="remoteipheader">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Declare the header field which should be parsed for client IP addresses</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Declare the header field which should be parsed for useragent IP addresses</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RemoteIPHeader <var>header-field</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
@@ -125,8 +126,8 @@ via the request headers.
 </table>
     <p>The <code class="directive">RemoteIPHeader</code> directive triggers
     <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> to treat the value of the specified
-    <var>header-field</var> header as the client IP address, or list
-    of intermediate client IP addresses, subject to further configuration
+    <var>header-field</var> header as the useragent IP address, or list
+    of intermediate useragent IP addresses, subject to further configuration
     of the <code class="directive">RemoteIPInternalProxy</code> and
     <code class="directive">RemoteIPTrustedProxy</code> directives.  Unless these
     other directives are used, <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> will trust all
@@ -152,7 +153,7 @@ via the request headers.
 </table>
     <p>The <code class="directive">RemoteIPInternalProxy</code> directive adds one
     or more addresses (or address blocks) to trust as presenting a valid
-    RemoteIPHeader value of the client IP.  Unlike the
+    RemoteIPHeader value of the useragent IP.  Unlike the
     <code class="directive">RemoteIPTrustedProxy</code> directive, any IP address
     presented in this header, including private intranet addresses, are
     trusted when passed from these proxies.</p>
@@ -175,7 +176,7 @@ via the request headers.
 </table>
     <p>The <code class="directive">RemoteIPInternalProxyList</code> directive specifies
     a file parsed at startup, and builds a list of addresses (or address blocks)
-    to trust as presenting a valid RemoteIPHeader value of the client IP.</p>
+    to trust as presenting a valid RemoteIPHeader value of the useragent IP.</p>
 
     <p>The '<code>#</code>' hash character designates a comment line, otherwise
     each whitespace or newline separated entry is processed identically to
@@ -204,7 +205,7 @@ via the request headers.
 </table>
     <p>The <code class="directive">RemoteIPProxiesHeader</code> directive specifies
     a header into which <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> will collect a list of
-    all of the intermediate client IP addresses trusted to resolve the client
+    all of the intermediate client IP addresses trusted to resolve the useragent
     IP of the request. Note that intermediate
     <code class="directive">RemoteIPTrustedProxy</code> addresses are recorded in
     this header, while any intermediate
@@ -227,11 +228,11 @@ via the request headers.
 </table>
     <p>The <code class="directive">RemoteIPTrustedProxy</code> directive adds one
     or more addresses (or address blocks) to trust as presenting a valid
-    RemoteIPHeader value of the client IP.  Unlike the
+    RemoteIPHeader value of the useragent IP.  Unlike the
     <code class="directive">RemoteIPInternalProxy</code> directive, any intranet
     or private IP address reported by such proxies, including the 10/8, 172.16/12,
     192.168/16, 169.254/16 and 127/8 blocks (or outside of the IPv6 public
-    2000::/3 block) are not trusted as the client IP, and are left in the
+    2000::/3 block) are not trusted as the useragent IP, and are left in the
     <code class="directive">RemoteIPHeader</code> header's value.</p>
 
     <div class="example"><h3>Trusted (Load Balancer) Example</h3><p><code>
@@ -252,7 +253,7 @@ via the request headers.
 </table>
     <p>The <code class="directive">RemoteIPTrustedProxyList</code> directive specifies
     a file parsed at startup, and builds a list of addresses (or address blocks)
-    to trust as presenting a valid RemoteIPHeader value of the client IP.</p>
+    to trust as presenting a valid RemoteIPHeader value of the useragent IP.</p>
 
     <p>The '<code>#</code>' hash character designates a comment line, otherwise
     each whitespace or newline seperated entry is processed identically to
