@@ -1,4 +1,7 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.4.0
+
+
 Changes with Apache 2.3.16
 
   *) core: Limit line length in .htaccess to 8K like in 2.2.x, to avoid
