@@ -188,6 +188,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Backport: http://people.apache.org/~rjung/patches/sslhonorcipher-2.0.patch
     +1: rjung
 
+  * mpm_common.h: Add prototype for initgroups().
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1082250
+    2.2.x patch: http://svn.apache.org/viewvc/httpd/httpd/branches/2.2.x/include/mpm_common.h?r1=556936&r2=1092275  
+    2.0.x patch: http://people.apache.org/~fuankg/diffs/2.0.x-mpm_common.diff
+    +1 fuankg
+
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
