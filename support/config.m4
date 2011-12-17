@@ -8,6 +8,7 @@ checkgid_LTFLAGS=""
 htcacheclean_LTFLAGS=""
 httxt2dbm_LTFLAGS=""
 fcgistarter_LTFLAGS=""
+firehose_LTFLAGS=""
 
 AC_ARG_ENABLE(static-support,APACHE_HELP_STRING(--enable-static-support,Build a statically linked version of the support binaries),[
 if test "$enableval" = "yes" ; then
@@ -21,6 +22,7 @@ if test "$enableval" = "yes" ; then
   APR_ADDTO(htcacheclean_LTFLAGS, [-static])
   APR_ADDTO(httxt2dbm_LTFLAGS, [-static])
   APR_ADDTO(fcgistarter_LTFLAGS, [-static])
+  APR_ADDTO(firehose_LTFLAGS, [-static])
 fi
 ])
 
@@ -113,6 +115,15 @@ else
 fi
 ])
 APACHE_SUBST(fcgistarter_LTFLAGS)
+
+AC_ARG_ENABLE(static-firehose,APACHE_HELP_STRING(--enable-static-firehose,Build a statically linked version of firehose),[
+if test "$enableval" = "yes" ; then
+  APR_ADDTO(firehose_LTFLAGS, [-static])
+else
+  APR_REMOVEFROM(firehose, [-static])
+fi
+])
+APACHE_SUBST(firehose_LTFLAGS)
 
 # Configure or check which of the non-portable support programs can be enabled.
 

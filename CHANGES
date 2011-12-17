@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_firehose: Add a new debugging module able to record traffic
+     passing through the server in such a way that connections and/or
+     requests be reconstructed and replayed. [Graham Leggett]
+
   *) ap_pass_brigade_fchk() added. [Jim Jagielski]
 
   *) error log hook: Pass ap_errorlog_info struct.  [Stefan Fritsch]
