@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 636028:1174747 (outdated) -->
+<!-- English Revision: 1174747 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -44,12 +44,13 @@ Belgeleri</title>
     <page href="mpm.html">Çok Süreçlilik Modülleri (MPM’ler)</page>
     <page href="filter.html">Süzgeçler</page>
     <page href="handler.html">Eylemciler</page>
+    <page href="expr.html">İfade Çözümleyici</page>
     <page href="programs/">Sunucu ve Desteklenen Programlar</page>
     <page href="glossary.html">Terimler</page>
 </category>
 
 <category id="usersguide"><title>Kullanıcı Kılavuzu</title>
-    <page href="bind.html">Dinleme</page>
+    <page href="bind.html">Adres ve Portları Dinleme</page>
     <page href="configuring.html">Yapılandırma Dosyaları</page>
     <page href="sections.html">Yapılandırma Bölümleri</page>
     <page href="caching.html">İçerik Bellekleme</page>
@@ -63,12 +64,13 @@ Belgeleri</title>
     <page href="server-wide.html">Sunucu Genelinde Yapılandırma</page>
     <page href="ssl/">SSL/TLS Şifrelemesi</page>
     <page href="suexec.html">CGI için Suexec Desteği</page>
-    <page href="rewrite/">URL Yeniden Yazma Rehberi</page>
+    <page href="rewrite/">mod_rewrite ile URL Yeniden Yazma Rehberi</page>
     <page href="vhosts/">Sanal Konaklar</page>
 </category>
 
 <category id="howto"><title>Nasıllar ve Öğreticiler</title>
-    <page href="howto/auth.html">Kimlik Doğrulama, Yetkilendirme ve Erişim Denetimi</page>
+    <page href="howto/auth.html">Kimlik Doğrulama ve Yetkilendirme</page>
+    <page href="howto/access.html">Erişim Denetimi</page>
     <page href="howto/cgi.html">CGI: Devingen İçerik</page>
     <page href="howto/htaccess.html">.htaccess dosyaları</page>
     <page href="howto/ssi.html">Sunucu Taraflı İçerik Yerleştirme (SSI)</page>
@@ -82,7 +84,7 @@ Belgeleri</title>
 </category>
 
 <category id="other"><title>Diğer Konular</title>
-    <page href="faq/">Sıkça Sorulan Sorular</page>
+    <page href="http://wiki.apache.org/httpd/FAQ">Sıkça Sorulan Sorular</page>
     <page href="sitemap.html">Site Haritası</page>
     <page href="developer/">Geliştiriciler için Belgeler</page>
     <page href="misc/">Diğer Bilgiler</page>
