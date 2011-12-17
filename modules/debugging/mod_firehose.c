@@ -342,7 +342,6 @@ static int firehose_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
  */
 static int firehose_create_request(request_rec *r)
 {
-    firehose_conf_t *conf;
     firehose_ctx_t *ctx;
     apr_uuid_t uuid;
     int set = 0;
@@ -351,9 +350,6 @@ static int firehose_create_request(request_rec *r)
     if (r->main) {
         return DECLINED;
     }
-
-    conf = ap_get_module_config(r->connection->base_server->module_config,
-            &firehose_module);
 
     f = r->connection->input_filters;
     while (f) {
