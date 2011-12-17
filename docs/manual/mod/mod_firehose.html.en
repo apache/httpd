@@ -62,6 +62,9 @@
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#enable">Enabling a Firehose</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#format">Stream Format</a></li>
+</ul><h3>See also</h3>
+<ul class="seealso">
+<li><code class="program"><a href="../programs/firehose.html">firehose</a></code></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
