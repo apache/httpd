@@ -353,6 +353,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/httpd/modules/mod_ext_filter.so
 %{_libdir}/httpd/modules/mod_file_cache.so
 %{_libdir}/httpd/modules/mod_filter.so
+%{_libdir}/httpd/modules/mod_firehose.so
 %{_libdir}/httpd/modules/mod_headers.so
 %{_libdir}/httpd/modules/mod_heartbeat.so
 %{_libdir}/httpd/modules/mod_heartmonitor.so
@@ -451,6 +452,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/httxt2dbm
 %{_sbindir}/rotatelogs
 %{_mandir}/man1/dbmmanage.1*
+%{_mandir}/man1/firehose.1*
 %{_mandir}/man1/htdbm.1*
 %{_mandir}/man1/htdigest.1*
 %{_mandir}/man1/htpasswd.1*
