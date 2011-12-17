@@ -1,0 +1,63 @@
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.\" DO NOT EDIT! Generated from XML source.
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.de Sh \" Subsection
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp \" Vertical space (when we can't use .PP)
+.if t .sp .5v
+.if n .sp
+..
+.de Ip \" List item
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.TH "FIREHOSE" 1 "2011-12-17" "Apache HTTP Server" "firehose"
+
+.SH NAME
+firehose \- Demultiplex a firehose stream
+
+.SH "SYNOPSIS"
+ 
+.PP
+\fBfirehose\fR [ -\fBf\fR \fIinput\fR ] [ -\fBo\fR \fIoutput-directory\fR ] [ -\fBu\fR \fIuuid\fR ] [ -\fBh\fR ] [ --\fBversion\fR ] [\fIprefix1\fR [\&.\&.\&.]]
+ 
+
+.SH "SUMMARY"
+ 
+.PP
+firehose demultiplexes the given stream of multiplexed connections, and writes each connection to an individual file\&.
+ 
+.PP
+When writing to files, each connection is placed into a dedicated file named after the UUID of the connection within the stream\&. Separate files will be created if requests and responses are found in the stream\&.
+ 
+.PP
+If an optional prefix is specified as a parameter, connections that start with the given prefix will be included\&. The prefix needs to fit completely within the first fragment for a successful match to occur\&.
+ 
+
+.SH "OPTIONS"
+ 
+ 
+.TP
+--file, -f \fIfilename\fR
+File to read the firehose from\&. Defaults to stdin\&.  
+.TP
+--output-directory, -o \fIoutput-directory\fR
+Directory to write demultiplexed connections to\&.  
+.TP
+--uuid, -u \fIuuid\fR
+The UUID of the connection to demultiplex\&. Can be specified more than once\&. If not specified, all UUIDs will be demultiplexed\&.  
+.TP
+--help, -h
+This help text\&.  
+.TP
+--version
+Display the version of the program\&.  
+ 
