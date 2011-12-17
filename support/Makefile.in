@@ -3,7 +3,7 @@ DISTCLEAN_TARGETS = apxs apachectl dbmmanage log_server_status \
 
 CLEAN_TARGETS = suexec
 
-PROGRAMS = htpasswd htdigest rotatelogs logresolve ab htdbm htcacheclean httxt2dbm $(NONPORTABLE_SUPPORT)
+PROGRAMS = htpasswd htdigest rotatelogs logresolve ab htdbm htcacheclean httxt2dbm firehose $(NONPORTABLE_SUPPORT)
 TARGETS  = $(PROGRAMS)
 
 PROGRAM_LDADD        = $(UTIL_LDFLAGS) $(PROGRAM_DEPENDENCIES) $(EXTRA_LIBS) $(AP_LIBS)
@@ -73,3 +73,8 @@ httxt2dbm: $(httxt2dbm_OBJECTS)
 fcgistarter_OBJECTS = fcgistarter.lo
 fcgistarter: $(fcgistarter_OBJECTS)
 	$(LINK) $(fcgistarter_LTFLAGS) $(fcgistarter_OBJECTS) $(PROGRAM_LDADD)
+
+firehose_OBJECTS = firehose.lo
+firehose: $(firehose_OBJECTS)
+	$(LINK) $(firehose_LTFLAGS) $(firehose_OBJECTS) $(PROGRAM_LDADD)
+
