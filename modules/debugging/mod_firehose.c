@@ -40,10 +40,10 @@
 #include "apr_uuid.h"
 #include "mod_proxy.h"
 
-#ifdef APR_HAVE_SYS_SYSLIMITS_H
+#if APR_HAVE_SYS_SYSLIMITS_H
 #include <sys/syslimits.h>
 #endif
-#ifdef APR_HAVE_LINUX_LIMITS_H
+#if APR_HAVE_LINUX_LIMITS_H
 #include <linux/limits.h>
 #endif
 #if APR_HAVE_FCNTL_H
