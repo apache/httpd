@@ -62,6 +62,10 @@
 
       <dd>Start a FastCGI program</dd>
 
+      <dt><code class="program"><a href="../programs/firehose.html">firehose</a></code></dt>
+
+      <dd>Demultiplex a firehose from <code class="module"><a href="../mod/mod_firehose.html">mod_firehose</a></code></dd>
+
       <dt><code class="program"><a href="../programs/htcacheclean.html">htcacheclean</a></code></dt>
 
       <dd>Clean up the disk cache</dd>

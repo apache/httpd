@@ -253,6 +253,12 @@
 <li><a href="mod_filter.html#filterprotocol">FilterProtocol</a></li>
 <li><a href="mod_filter.html#filterprovider">FilterProvider</a></li>
 <li><a href="mod_filter.html#filtertrace">FilterTrace</a></li>
+<li><a href="mod_firehose.html#firehoseconnectioninput">FirehoseConnectionInput</a></li>
+<li><a href="mod_firehose.html#firehoseconnectionoutput">FirehoseConnectionOutput</a></li>
+<li><a href="mod_firehose.html#firehoseproxyconnectioninput">FirehoseProxyConnectionInput</a></li>
+<li><a href="mod_firehose.html#firehoseproxyconnectionoutput">FirehoseProxyConnectionOutput</a></li>
+<li><a href="mod_firehose.html#firehoserequestinput">FirehoseRequestInput</a></li>
+<li><a href="mod_firehose.html#firehoserequestoutput">FirehoseRequestOutput</a></li>
 <li><a href="mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority</a></li>
 <li><a href="core.html#forcetype">ForceType</a></li>
 <li><a href="mod_log_forensic.html#forensiclog">ForensicLog</a></li>
