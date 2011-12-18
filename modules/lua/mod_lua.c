@@ -1106,11 +1106,7 @@ static void *overlay_hook_specs(apr_pool_t *p,
 {
     const apr_array_header_t *overlay_info = (const apr_array_header_t*)overlay_val;
     const apr_array_header_t *base_info = (const apr_array_header_t*)base_val;
-    apr_array_header_t *newspecs  = apr_array_make(p, 2, 
-                                        sizeof(ap_lua_mapped_handler_spec *));
-
-    newspecs = apr_array_append(p, base_info, overlay_info);
-    return newspecs;
+    return apr_array_append(p, base_info, overlay_info);
 }
 
 static void *merge_dir_config(apr_pool_t *p, void *basev, void *overridesv)
@@ -1141,7 +1137,6 @@ static void *merge_dir_config(apr_pool_t *p, void *basev, void *overridesv)
     }
     else { 
         a->package_paths = overrides->package_paths;
-        a->package_cpaths = overrides->package_cpaths;
         a->package_cpaths = overrides->package_cpaths;
         a->mapped_handlers= overrides->mapped_handlers;
         a->hooks= overrides->hooks;
