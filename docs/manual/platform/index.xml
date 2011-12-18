@@ -32,7 +32,7 @@
     <dl>
       <dt>Using Apache</dt>
       <dd>
-        <p>This document explains how to install, configure and run Apache 2.0
+        <p>This document explains how to install, configure and run Apache 2.4
         under Microsoft Windows.</p>
 
         <p>See: <a href="windows.html">Using Apache with Microsoft Windows</a></p>
@@ -52,6 +52,22 @@
 
   </section>
 
+  <section id="unix">
+
+    <title>Unix Systems</title>
+
+    <dl>
+      <dt>RPM Based Systems (Redhat / CentOS / Fedora)</dt>
+      <dd>
+        <p>This document explains how to build, install, and run Apache 2.4
+        on systems supporting the RPM packaging format.</p>
+
+        <p>See: <a href="rpm.html">Using Apache With RPM Based Systems</a></p>
+      </dd>
+    </dl>
+
+  </section>
+
   <section id="other">
 
     <title>Other Platforms</title>
@@ -59,7 +75,7 @@
     <dl>
       <dt>Novell NetWare</dt>
       <dd>
-        <p>This document explains how to install, configure and run Apache 2.0
+        <p>This document explains how to install, configure and run Apache 2.4
         under Novell NetWare 5.1 and above.</p>
 
         <p>See: <a href="netware.html">Using Apache With Novell NetWare</a></p>
@@ -75,7 +91,7 @@
 
         <note type="warning"><strong>Warning:</strong> This document
         has not been updated to take into account changes made in
-        the 2.0 version of the Apache HTTP Server. Some of the
+        the 2.4 version of the Apache HTTP Server. Some of the
         information may still be relevant, but please use it
         with care.</note>
 
