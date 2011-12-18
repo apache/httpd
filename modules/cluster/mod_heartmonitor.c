@@ -251,7 +251,7 @@ static apr_status_t hm_file_update_stat(hm_ctx_t *ctx, hm_server_t *s, apr_pool_
     if (rv == APR_SUCCESS) {
         char *t;
         apr_table_t *hbt = apr_table_make(pool, 10);
-        apr_bucket_alloc_t *ba = apr_bucket_alloc_create(pool);
+        apr_bucket_alloc_t *ba;
         apr_bucket_brigade *bb;
         apr_bucket_brigade *tmpbb;
 
