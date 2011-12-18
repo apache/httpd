@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!-- GENERATED FROM XML: DO NOT EDIT -->
 
-<metafile reference="index.xml">
-  <basename>index</basename>
+<metafile reference="rpm.xml">
+  <basename>rpm</basename>
   <path>/platform/</path>
   <relpath>..</relpath>
 
   <variants>
     <variant>en</variant>
-    <variant outdated="yes">ko</variant>
-    <variant>zh-cn</variant>
   </variants>
 </metafile>
