@@ -104,21 +104,21 @@ typedef struct firehose_ctx_t
 #define BODY_LEN (PIPE_BUF - HEADER_LEN - 2)
 #define HEADER_FMT "%" APR_UINT64_T_HEX_FMT " %" APR_UINT64_T_HEX_FMT " %c %s %" APR_UINT64_T_HEX_FMT CRLF
 
-apr_status_t logs_cleanup(void *dummy)
+static apr_status_t logs_cleanup(void *dummy)
 {
     apr_file_t *file = (apr_file_t *) dummy;
     apr_file_close(file);
     return APR_SUCCESS;
 }
 
-apr_status_t filter_output_cleanup(void *dummy)
+static apr_status_t filter_output_cleanup(void *dummy)
 {
     ap_filter_t *f = (ap_filter_t *) dummy;
     ap_remove_output_filter(f);
     return APR_SUCCESS;
 }
 
-apr_status_t filter_input_cleanup(void *dummy)
+static apr_status_t filter_input_cleanup(void *dummy)
 {
     ap_filter_t *f = (ap_filter_t *) dummy;
     ap_remove_input_filter(f);
@@ -128,7 +128,7 @@ apr_status_t filter_input_cleanup(void *dummy)
 /**
  * Add the terminating empty fragment to indicate end-of-connection.
  */
-apr_status_t pumpit_cleanup(void *dummy)
+static apr_status_t pumpit_cleanup(void *dummy)
 {
     firehose_ctx_t *ctx = (firehose_ctx_t *) dummy;
     apr_status_t rv;

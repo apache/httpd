@@ -631,7 +631,7 @@ static long get_chunk_size(char *b)
         chunkbits -= 4;
         ++b;
     }
-    if (apr_isxdigit(*b) && (chunkbits <= 0)) {
+    if (apr_isxdigit(*b)) {
         /* overflow */
         return -1;
     }

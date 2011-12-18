@@ -1327,7 +1327,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
             break;
         *strp = '\0';
 
-        len = decodeenc(path); /* Note! This decodes a %2f -> "/" */
+        decodeenc(path); /* Note! This decodes a %2f -> "/" */
 
         if (strchr(path, '/')) { /* are there now any '/' characters? */
             return ftp_proxyerror(r, backend, HTTP_BAD_REQUEST,
@@ -2050,7 +2050,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
     }
 
     /* Retrieve the final response for the RETR or LIST commands */
-    rc = proxy_ftp_command(NULL, r, origin, bb, &ftpmessage);
+    proxy_ftp_command(NULL, r, origin, bb, &ftpmessage);
     apr_brigade_cleanup(bb);
 
     /*
@@ -2061,8 +2061,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
      */
 
     /* finish */
-    rc = proxy_ftp_command("QUIT" CRLF,
-                           r, origin, bb, &ftpmessage);
+    proxy_ftp_command("QUIT" CRLF, r, origin, bb, &ftpmessage);
     /* responses: 221, 500 */
     /* 221 Service closing control connection. */
     /* 500 Syntax error, command unrecognized. */
