@@ -72,10 +72,12 @@
     silently stand down and not record anything, and the server will
     keep running as normal.</p>
 
-    <p>All file writes are non blocking, and buffer overflows will cause
-    debugging data to be lost. The module makes the call that the
-    reliable running of the server takes precedence over the recording
-    of firehose data.</p>
+    <p>By default, all attempts to write will block the server. If the
+    webserver has been built against APR v2.0 or later, and an optional
+    "nonblock" parameter is specified all file writes will be non
+    blocking, and buffer overflows will cause debugging data to be lost.
+    In this case it is possible to prioritise the running of the server
+    over the recording of firehose data.</p>
 
 </section>
 
@@ -144,7 +146,7 @@
 
 <name>FirehoseConnectionInput</name>
 <description>Capture traffic coming into the server on each connection</description>
-<syntax>FirehoseConnectionInput <var>filename</var></syntax>
+<syntax>FirehoseConnectionInput <var>[ block | nonblock ]</var> <var>filename</var></syntax>
 <default>none</default>
 <contextlist><context>server config</context></contextlist>
 <compatibility>FirehoseConnectionInput is only available in Apache 2.5.0 and
@@ -166,7 +168,7 @@ later.</compatibility>
 
 <name>FirehoseConnectionOutput</name>
 <description>Capture traffic going out of the server on each connection</description>
-<syntax>FirehoseConnectionOutput <var>filename</var></syntax>
+<syntax>FirehoseConnectionOutput <var>[ block | nonblock ]</var> <var>filename</var></syntax>
 <default>none</default>
 <contextlist><context>server config</context></contextlist>
 <compatibility>FirehoseConnectionOutput is only available in Apache 2.5.0 and
@@ -188,7 +190,7 @@ later.</compatibility>
 
 <name>FirehoseRequestInput</name>
 <description>Capture traffic coming into the server on each request</description>
-<syntax>FirehoseRequestInput <var>filename</var></syntax>
+<syntax>FirehoseRequestInput <var>[ block | nonblock ]</var> <var>filename</var></syntax>
 <default>none</default>
 <contextlist><context>server config</context></contextlist>
 <compatibility>FirehoseRequestInput is only available in Apache 2.5.0 and
@@ -209,7 +211,7 @@ later.</compatibility>
 
 <name>FirehoseRequestOutput</name>
 <description>Capture traffic going out of the server on each request</description>
-<syntax>FirehoseRequestOutput <var>filename</var></syntax>
+<syntax>FirehoseRequestOutput <var>[ block | nonblock ]</var> <var>filename</var></syntax>
 <default>none</default>
 <contextlist><context>server config</context></contextlist>
 <compatibility>FirehoseRequestOutput is only available in Apache 2.5.0 and
@@ -230,7 +232,7 @@ later.</compatibility>
 
 <name>FirehoseProxyConnectionInput</name>
 <description>Capture traffic coming into the back of mod_proxy</description>
-<syntax>FirehoseProxyConnectionInput <var>filename</var></syntax>
+<syntax>FirehoseProxyConnectionInput <var>[ block | nonblock ]</var> <var>filename</var></syntax>
 <default>none</default>
 <contextlist><context>server config</context></contextlist>
 <compatibility>FirehoseProxyConnectionInput is only available in Apache 2.5.0 and
@@ -250,7 +252,7 @@ later.</compatibility>
 
 <name>FirehoseProxyConnectionOutput</name>
 <description>Capture traffic sent out from the back of mod_proxy</description>
-<syntax>FirehoseProxyConnectionOutput <var>filename</var></syntax>
+<syntax>FirehoseProxyConnectionOutput <var>[ block | nonblock ]</var> <var>filename</var></syntax>
 <default>none</default>
 <contextlist><context>server config</context></contextlist>
 <compatibility>FirehoseProxyConnectionOutput is only available in Apache 2.5.0 and
