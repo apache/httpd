@@ -24,6 +24,7 @@
 </div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#win">Microsoft Windows</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#unix">Unix Systems</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#other">Other Platforms</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -35,7 +36,7 @@
     <dl>
       <dt>Using Apache</dt>
       <dd>
-        <p>This document explains how to install, configure and run Apache 2.0
+        <p>This document explains how to install, configure and run Apache 2.4
         under Microsoft Windows.</p>
 
         <p>See: <a href="windows.html">Using Apache with Microsoft Windows</a></p>
@@ -54,6 +55,22 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
+<h2><a name="unix" id="unix">Unix Systems</a></h2>
+
+    
+
+    <dl>
+      <dt>RPM Based Systems (Redhat / CentOS / Fedora)</dt>
+      <dd>
+        <p>This document explains how to build, install, and run Apache 2.4
+        on systems supporting the RPM packaging format.</p>
+
+        <p>See: <a href="rpm.html">Using Apache With RPM Based Systems</a></p>
+      </dd>
+    </dl>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
 <h2><a name="other" id="other">Other Platforms</a></h2>
 
     
@@ -61,7 +78,7 @@
     <dl>
       <dt>Novell NetWare</dt>
       <dd>
-        <p>This document explains how to install, configure and run Apache 2.0
+        <p>This document explains how to install, configure and run Apache 2.4
         under Novell NetWare 5.1 and above.</p>
 
         <p>See: <a href="netware.html">Using Apache With Novell NetWare</a></p>
@@ -77,7 +94,7 @@
 
         <div class="warning"><strong>Warning:</strong> This document
         has not been updated to take into account changes made in
-        the 2.0 version of the Apache HTTP Server. Some of the
+        the 2.4 version of the Apache HTTP Server. Some of the
         information may still be relevant, but please use it
         with care.</div>
 
