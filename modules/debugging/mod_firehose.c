@@ -78,6 +78,7 @@ typedef struct firehose_conn_t
     direction_enum direction;
     request_enum request;
     int suppress;
+    apr_int32_t nonblock;
 } firehose_conn_t;
 
 typedef struct firehose_conf_t
@@ -483,35 +484,15 @@ static int firehose_open_logs(apr_pool_t *p, apr_pool_t *plog,
 
         conn = (firehose_conn_t *) conf->firehoses->elts;
         for (i = 0; i < conf->firehoses->nelts; i++) {
-            /* TODO: make this non blocking behaviour optional, as APR doesn't yet
-             * support non blocking opening of files.
-             * TODO: make this properly portable.
-             */
-            apr_os_file_t file = open(conn->filename, O_WRONLY
-                    | O_CREAT | O_APPEND | O_NONBLOCK, 0777);
-            if (file < 0) {
-                rv = APR_FROM_OS_ERROR(apr_get_os_error());
+            if (APR_SUCCESS != (rv = apr_file_open(&conn->file, conn->filename,
+                    APR_FOPEN_WRITE | APR_FOPEN_CREATE | APR_FOPEN_APPEND
+                            | conn->nonblock, APR_OS_DEFAULT, plog))) {
                 ap_log_error(APLOG_MARK,
                         APLOG_WARNING,
                         rv, s, "mod_firehose: could not open '%s' for write, disabling firehose %s%s %s filter",
                         conn->filename, conn->proxy == FIREHOSE_PROXY ? "proxy " : "",
                         conn->request == FIREHOSE_REQUEST ? " request" : "connection",
                         conn->direction == FIREHOSE_IN ? "input" : "output");
-            }
-            else if (APR_SUCCESS != (rv = apr_os_file_put(
-                    &conn->file, &file, APR_FOPEN_WRITE
-                            | APR_FOPEN_CREATE | APR_FOPEN_APPEND, plog))) {
-                close(file);
-                ap_log_error(APLOG_MARK,
-                        APLOG_WARNING,
-                        rv, s, "mod_firehose: could not open '%s' for write, disabling firehose %s%s %s filter",
-                        conn->filename, conn->proxy == FIREHOSE_PROXY ? "proxy " : "",
-                        conn->request == FIREHOSE_REQUEST ? " request" : "connection",
-                        conn->direction == FIREHOSE_IN ? "input" : "output");
-            }
-            else {
-                apr_pool_cleanup_register(plog, conn->file,
-                        logs_cleanup, logs_cleanup);
             }
             conn++;
         }
@@ -561,9 +542,11 @@ static void *firehose_merge_sconfig(apr_pool_t *p, void *basev,
     return cconf;
 }
 
-static void firehose_enable_connection(cmd_parms *cmd, const char *name,
-        proxy_enum proxy, direction_enum direction, request_enum request)
+static const char *firehose_enable_connection(cmd_parms *cmd, const char *arg1,
+        const char *arg2, proxy_enum proxy, direction_enum direction,
+        request_enum request)
 {
+    const char *name = arg2 ? arg2 : arg1;
 
     firehose_conn_t *firehose;
     firehose_conf_t
@@ -578,10 +561,31 @@ static void firehose_enable_connection(cmd_parms *cmd, const char *name,
     firehose->direction = direction;
     firehose->request = request;
 
+    if (arg2) {
+        if (!strcmp(arg1, "nonblock")) {
+#ifdef APR_FOPEN_NONBLOCK
+            firehose->nonblock = APR_FOPEN_NONBLOCK;
+#else
+            return "The parameter 'nonblock' is not supported by APR on this platform";
+#endif
+        }
+        else if (!strcmp(arg1, "block")) {
+            firehose->nonblock = 0;
+        }
+        else {
+            return apr_psprintf(cmd->pool,
+                    "The parameter '%s' should be 'block' or 'nonblock'", arg1);
+        }
+    }
+    else {
+        firehose->nonblock = 0;
+    }
+
+    return NULL;
 }
 
 static const char *firehose_enable_connection_input(cmd_parms *cmd,
-        void *dummy, const char *name)
+        void *dummy, const char *arg1, const char *arg2)
 {
 
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE
@@ -590,14 +594,13 @@ static const char *firehose_enable_connection_input(cmd_parms *cmd,
         return err;
     }
 
-    firehose_enable_connection(cmd, name, FIREHOSE_NORMAL, FIREHOSE_IN,
-            FIREHOSE_CONNECTION);
+    return firehose_enable_connection(cmd, arg1, arg2, FIREHOSE_NORMAL,
+            FIREHOSE_IN, FIREHOSE_CONNECTION);
 
-    return NULL;
 }
 
 static const char *firehose_enable_connection_output(cmd_parms *cmd,
-        void *dummy, const char *name)
+        void *dummy, const char *arg1, const char *arg2)
 {
 
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE
@@ -606,14 +609,13 @@ static const char *firehose_enable_connection_output(cmd_parms *cmd,
         return err;
     }
 
-    firehose_enable_connection(cmd, name, FIREHOSE_NORMAL, FIREHOSE_OUT,
-            FIREHOSE_CONNECTION);
+    return firehose_enable_connection(cmd, arg1, arg2, FIREHOSE_NORMAL,
+            FIREHOSE_OUT, FIREHOSE_CONNECTION);
 
-    return NULL;
 }
 
 static const char *firehose_enable_request_input(cmd_parms *cmd, void *dummy,
-        const char *name)
+        const char *arg1, const char *arg2)
 {
 
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE
@@ -622,14 +624,13 @@ static const char *firehose_enable_request_input(cmd_parms *cmd, void *dummy,
         return err;
     }
 
-    firehose_enable_connection(cmd, name, FIREHOSE_NORMAL, FIREHOSE_IN,
-            FIREHOSE_REQUEST);
+    return firehose_enable_connection(cmd, arg1, arg2, FIREHOSE_NORMAL,
+            FIREHOSE_IN, FIREHOSE_REQUEST);
 
-    return NULL;
 }
 
 static const char *firehose_enable_request_output(cmd_parms *cmd, void *dummy,
-        const char *name)
+        const char *arg1, const char *arg2)
 {
 
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE
@@ -638,14 +639,13 @@ static const char *firehose_enable_request_output(cmd_parms *cmd, void *dummy,
         return err;
     }
 
-    firehose_enable_connection(cmd, name, FIREHOSE_NORMAL, FIREHOSE_OUT,
-            FIREHOSE_REQUEST);
+    return firehose_enable_connection(cmd, arg1, arg2, FIREHOSE_NORMAL,
+            FIREHOSE_OUT, FIREHOSE_REQUEST);
 
-    return NULL;
 }
 
 static const char *firehose_enable_proxy_connection_input(cmd_parms *cmd,
-        void *dummy, const char *name)
+        void *dummy, const char *arg1, const char *arg2)
 {
 
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE
@@ -654,14 +654,13 @@ static const char *firehose_enable_proxy_connection_input(cmd_parms *cmd,
         return err;
     }
 
-    firehose_enable_connection(cmd, name, FIREHOSE_PROXY, FIREHOSE_IN,
-            FIREHOSE_CONNECTION);
+    return firehose_enable_connection(cmd, arg1, arg2, FIREHOSE_PROXY,
+            FIREHOSE_IN, FIREHOSE_CONNECTION);
 
-    return NULL;
 }
 
 static const char *firehose_enable_proxy_connection_output(cmd_parms *cmd,
-        void *dummy, const char *name)
+        void *dummy, const char *arg1, const char *arg2)
 {
 
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE
@@ -670,25 +669,24 @@ static const char *firehose_enable_proxy_connection_output(cmd_parms *cmd,
         return err;
     }
 
-    firehose_enable_connection(cmd, name, FIREHOSE_PROXY, FIREHOSE_OUT,
-            FIREHOSE_CONNECTION);
+    return firehose_enable_connection(cmd, arg1, arg2, FIREHOSE_PROXY,
+            FIREHOSE_OUT, FIREHOSE_CONNECTION);
 
-    return NULL;
 }
 
 static const command_rec firehose_cmds[] =
 {
-        AP_INIT_TAKE1("FirehoseConnectionInput", firehose_enable_connection_input, NULL,
+        AP_INIT_TAKE12("FirehoseConnectionInput", firehose_enable_connection_input, NULL,
                 RSRC_CONF, "Enable firehose on connection input data written to the given file/pipe"),
-        AP_INIT_TAKE1("FirehoseConnectionOutput", firehose_enable_connection_output, NULL,
+        AP_INIT_TAKE12("FirehoseConnectionOutput", firehose_enable_connection_output, NULL,
                 RSRC_CONF, "Enable firehose on connection output data written to the given file/pipe"),
-        AP_INIT_TAKE1("FirehoseRequestInput", firehose_enable_request_input, NULL,
+        AP_INIT_TAKE12("FirehoseRequestInput", firehose_enable_request_input, NULL,
                 RSRC_CONF, "Enable firehose on request input data written to the given file/pipe"),
-        AP_INIT_TAKE1("FirehoseRequestOutput", firehose_enable_request_output, NULL,
+        AP_INIT_TAKE12("FirehoseRequestOutput", firehose_enable_request_output, NULL,
                 RSRC_CONF, "Enable firehose on request output data written to the given file/pipe"),
-        AP_INIT_TAKE1("FirehoseProxyConnectionInput", firehose_enable_proxy_connection_input, NULL,
+        AP_INIT_TAKE12("FirehoseProxyConnectionInput", firehose_enable_proxy_connection_input, NULL,
                 RSRC_CONF, "Enable firehose on proxied connection input data written to the given file/pipe"),
-        AP_INIT_TAKE1("FirehoseProxyConnectionOutput", firehose_enable_proxy_connection_output, NULL,
+        AP_INIT_TAKE12("FirehoseProxyConnectionOutput", firehose_enable_proxy_connection_output, NULL,
                 RSRC_CONF, "Enable firehose on proxied connection output data written to the given file/pipe"),
         { NULL }
 };
