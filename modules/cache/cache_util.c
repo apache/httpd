@@ -72,8 +72,10 @@ static int uri_meets_conditions(const apr_uri_t *filter, const int pathlen,
                 const size_t fhostlen = strlen(filter->hostname);
                 const size_t uhostlen = url->hostname ? strlen(url->hostname) : 0;
 
-                if (fhostlen > uhostlen || strcasecmp(filter->hostname,
-                        url->hostname + uhostlen - fhostlen)) {
+                if (fhostlen > uhostlen
+                    || (url->hostname
+                        && strcasecmp(filter->hostname,
+                                      url->hostname + uhostlen - fhostlen))) {
                     return 0;
                 }
             }
@@ -81,8 +83,10 @@ static int uri_meets_conditions(const apr_uri_t *filter, const int pathlen,
                 const size_t fhostlen = strlen(filter->hostname + 1);
                 const size_t uhostlen = url->hostname ? strlen(url->hostname) : 0;
 
-                if (fhostlen > uhostlen || strcasecmp(filter->hostname + 1,
-                        url->hostname + uhostlen - fhostlen)) {
+                if (fhostlen > uhostlen
+                    || (url->hostname
+                        && strcasecmp(filter->hostname + 1,
+                                      url->hostname + uhostlen - fhostlen))) {
                     return 0;
                 }
             }
