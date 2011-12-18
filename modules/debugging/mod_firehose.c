@@ -387,7 +387,7 @@ static int firehose_create_request(request_rec *r)
     return OK;
 }
 
-/* TODO: Make sure the connection directives are enforced global only.
+/* Ideas for extension:
  *
  * TODO: An idea for configuration. Let the filename directives be per-directory,
  * with a global hashtable of filename to filehandle mappings. As each directive
@@ -588,7 +588,7 @@ static const char *firehose_enable_connection_input(cmd_parms *cmd,
         void *dummy, const char *arg1, const char *arg2)
 {
 
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY
             | NOT_IN_LIMIT);
     if (err != NULL) {
         return err;
@@ -603,7 +603,7 @@ static const char *firehose_enable_connection_output(cmd_parms *cmd,
         void *dummy, const char *arg1, const char *arg2)
 {
 
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY
             | NOT_IN_LIMIT);
     if (err != NULL) {
         return err;
@@ -618,7 +618,7 @@ static const char *firehose_enable_request_input(cmd_parms *cmd, void *dummy,
         const char *arg1, const char *arg2)
 {
 
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY
             | NOT_IN_LIMIT);
     if (err != NULL) {
         return err;
@@ -633,7 +633,7 @@ static const char *firehose_enable_request_output(cmd_parms *cmd, void *dummy,
         const char *arg1, const char *arg2)
 {
 
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY
             | NOT_IN_LIMIT);
     if (err != NULL) {
         return err;
@@ -648,7 +648,7 @@ static const char *firehose_enable_proxy_connection_input(cmd_parms *cmd,
         void *dummy, const char *arg1, const char *arg2)
 {
 
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY
             | NOT_IN_LIMIT);
     if (err != NULL) {
         return err;
@@ -663,7 +663,7 @@ static const char *firehose_enable_proxy_connection_output(cmd_parms *cmd,
         void *dummy, const char *arg1, const char *arg2)
 {
 
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY
             | NOT_IN_LIMIT);
     if (err != NULL) {
         return err;
