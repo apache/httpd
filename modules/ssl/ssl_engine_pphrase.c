@@ -556,7 +556,6 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
      * Let the user know when we're successful.
      */
     if (nPassPhraseDialog > 0) {
-        sc = mySrvConfig(s);
         if (writetty) {
             apr_file_printf(writetty, "\n"
                             "OK: Pass Phrase Dialog successful.\n");

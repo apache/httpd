@@ -922,6 +922,8 @@ AP_DECLARE(const char *) ap_expr_str_exec_re(request_rec *r,
         return NULL;
     else
         ap_assert(0);
+    /* Not reached */
+    return NULL;
 }
 
 AP_DECLARE(const char *) ap_expr_str_exec(request_rec *r,
@@ -1117,8 +1119,8 @@ static int op_file_min(ap_expr_eval_ctx_t *ctx, const void *data, const char *ar
 
 static int op_file_link(ap_expr_eval_ctx_t *ctx, const void *data, const char *arg)
 {
-    apr_finfo_t sb;
 #if !defined(OS2)
+    apr_finfo_t sb;
     if (apr_stat(&sb, arg, APR_FINFO_MIN | APR_FINFO_LINK, ctx->p) == APR_SUCCESS
         && sb.filetype == APR_LNK) {
         return TRUE;
