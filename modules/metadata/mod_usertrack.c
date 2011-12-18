@@ -326,7 +326,6 @@ static const char *set_cookie_exp(cmd_parms *parms, void *dummy,
         if (!word[0])
             return "bad expires code, missing <type>";
 
-        factor = 0;
         if (!strncasecmp(word, "years", 1))
             factor = 60 * 60 * 24 * 365;
         else if (!strncasecmp(word, "months", 2))

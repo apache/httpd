@@ -3809,7 +3809,6 @@ static int includes_setup(ap_filter_t *f)
 static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
 {
     request_rec *r = f->r;
-    include_ctx_t *ctx = f->ctx;
     request_rec *parent;
     include_dir_config *conf = ap_get_module_config(r->per_dir_config,
                                                     &include_module);
@@ -3827,6 +3826,7 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
 
     if (!f->ctx) {
         struct ssi_internal_ctx *intern;
+        include_ctx_t *ctx;
 
         /* create context for this filter */
         f->ctx = ctx = apr_palloc(r->pool, sizeof(*ctx));

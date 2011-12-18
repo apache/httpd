@@ -131,6 +131,8 @@ static int lua_handler(request_rec *r)
           pool = apr_thread_pool_get(r->connection->current_thread);
           break;
           #endif
+        default:
+          ap_assert(0);
         }
 
         L = ap_lua_get_lua_state(pool,
@@ -225,6 +227,8 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name, int ap
               pool = apr_thread_pool_get(r->connection->current_thread);
               break;
               #endif
+            default:
+              ap_assert(0);
             }
 
             L = ap_lua_get_lua_state(pool, spec);

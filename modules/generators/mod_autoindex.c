@@ -1209,7 +1209,7 @@ static char *find_title(request_rec *r)
         }
         n = sizeof(char) * (MAX_STRING_LEN - 1);
         apr_file_read(thefile, titlebuf, &n);
-        if (n <= 0) {
+        if (n == 0) {
             apr_file_close(thefile);
             return NULL;
         }
