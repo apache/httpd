@@ -89,10 +89,12 @@
     silently stand down and not record anything, and the server will
     keep running as normal.</p>
 
-    <p>All file writes are non blocking, and buffer overflows will cause
-    debugging data to be lost. The module makes the call that the
-    reliable running of the server takes precedence over the recording
-    of firehose data.</p>
+    <p>By default, all attempts to write will block the server. If the
+    webserver has been built against APR v2.0 or later, and an optional
+    "nonblock" parameter is specified all file writes will be non
+    blocking, and buffer overflows will cause debugging data to be lost.
+    In this case it is possible to prioritise the running of the server
+    over the recording of firehose data.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -160,7 +162,7 @@
 <div class="directive-section"><h2><a name="FirehoseConnectionInput" id="FirehoseConnectionInput">FirehoseConnectionInput</a> <a name="firehoseconnectioninput" id="firehoseconnectioninput">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Capture traffic coming into the server on each connection</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FirehoseConnectionInput <var>filename</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FirehoseConnectionInput <var>[ block | nonblock ]</var> <var>filename</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -181,7 +183,7 @@ later.</td></tr>
 <div class="directive-section"><h2><a name="FirehoseConnectionOutput" id="FirehoseConnectionOutput">FirehoseConnectionOutput</a> <a name="firehoseconnectionoutput" id="firehoseconnectionoutput">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Capture traffic going out of the server on each connection</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FirehoseConnectionOutput <var>filename</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FirehoseConnectionOutput <var>[ block | nonblock ]</var> <var>filename</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -202,7 +204,7 @@ later.</td></tr>
 <div class="directive-section"><h2><a name="FirehoseProxyConnectionInput" id="FirehoseProxyConnectionInput">FirehoseProxyConnectionInput</a> <a name="firehoseproxyconnectioninput" id="firehoseproxyconnectioninput">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Capture traffic coming into the back of mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FirehoseProxyConnectionInput <var>filename</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FirehoseProxyConnectionInput <var>[ block | nonblock ]</var> <var>filename</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -221,7 +223,7 @@ later.</td></tr>
 <div class="directive-section"><h2><a name="FirehoseProxyConnectionOutput" id="FirehoseProxyConnectionOutput">FirehoseProxyConnectionOutput</a> <a name="firehoseproxyconnectionoutput" id="firehoseproxyconnectionoutput">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Capture traffic sent out from the back of mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FirehoseProxyConnectionOutput <var>filename</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FirehoseProxyConnectionOutput <var>[ block | nonblock ]</var> <var>filename</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -240,7 +242,7 @@ later.</td></tr>
 <div class="directive-section"><h2><a name="FirehoseRequestInput" id="FirehoseRequestInput">FirehoseRequestInput</a> <a name="firehoserequestinput" id="firehoserequestinput">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Capture traffic coming into the server on each request</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FirehoseRequestInput <var>filename</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FirehoseRequestInput <var>[ block | nonblock ]</var> <var>filename</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -260,7 +262,7 @@ later.</td></tr>
 <div class="directive-section"><h2><a name="FirehoseRequestOutput" id="FirehoseRequestOutput">FirehoseRequestOutput</a> <a name="firehoserequestoutput" id="firehoserequestoutput">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Capture traffic going out of the server on each request</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FirehoseRequestOutput <var>filename</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FirehoseRequestOutput <var>[ block | nonblock ]</var> <var>filename</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
