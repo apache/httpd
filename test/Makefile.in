@@ -3,7 +3,7 @@
 # test programs, then "make test"
 TARGETS =
 
-PROGRAMS =
+bin_PROGRAMS =
 
 PROGRAM_LDADD        = $(EXTRA_LDFLAGS) $(PROGRAM_DEPENDENCIES) $(EXTRA_LIBS)
 PROGRAM_DEPENDENCIES =  \
@@ -12,7 +12,7 @@ PROGRAM_DEPENDENCIES =  \
 
 include $(top_builddir)/build/rules.mk
 
-test: $(PROGRAMS)
+test: $(bin_PROGRAMS)
 
 # example for building a test proggie
 # dbu_OBJECTS = dbu.lo
