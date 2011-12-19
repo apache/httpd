@@ -137,10 +137,6 @@ fi
 # forcibly prevent use of bundled apr, apr-util, pcre
 rm -rf srclib/{apr,apr-util,pcre}
 
-# Before configure; fix location of build dir in generated apxs
-%{__perl} -pi -e "s:\@exp_installbuilddir\@:%{_libdir}/httpd/build:g" \
-	support/apxs.in
-
 %configure \
 	--enable-layout=RPM \
 	--libdir=%{_libdir} \
