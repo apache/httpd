@@ -760,8 +760,14 @@ static int start_lingering_close(event_conn_state_t *cs)
         apr_socket_t *csd = ap_get_conn_socket(cs->c);
         struct timeout_queue *q;
 
-        rv = apr_socket_timeout_set(csd, 0);
-        AP_DEBUG_ASSERT(rv == APR_SUCCESS);
+#ifdef AP_DEBUG
+        {
+            rv = apr_socket_timeout_set(csd, 0);
+            AP_DEBUG_ASSERT(rv == APR_SUCCESS);
+        }
+#else
+        apr_socket_timeout_set(csd, 0);
+#endif
         /*
          * If some module requested a shortened waiting period, only wait for
          * 2s (SECONDS_TO_LINGER). This is useful for mitigating certain
