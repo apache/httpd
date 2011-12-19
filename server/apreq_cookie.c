@@ -327,7 +327,7 @@ APREQ_DECLARE(apr_status_t)apreq_parse_cookie_header(apr_pool_t *p,
     for (;;) {
         apr_status_t status;
         const char *name, *value;
-        apr_size_t nlen, vlen;
+        apr_size_t nlen = 0, vlen;
 
         while (*hdr == ';' || apr_isspace(*hdr))
             ++hdr;
