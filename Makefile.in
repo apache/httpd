@@ -12,8 +12,8 @@ PROGRAM_DEPENDENCIES = \
   $(MPM_LIB) \
   os/$(OS_DIR)/libos.la
 
-PROGRAMS        = $(PROGRAM_NAME)
-TARGETS         = $(PROGRAMS) $(shared_build) $(other_targets)
+sbin_PROGRAMS   = $(PROGRAM_NAME)
+TARGETS         = $(sbin_PROGRAMS) $(shared_build) $(other_targets)
 INSTALL_TARGETS = install-conf install-htdocs install-error install-icons \
 	install-other install-cgi install-include install-suexec install-build \
 	install-man

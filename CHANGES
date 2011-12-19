@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.0
 
+  *) Distinguish properly between the bindir and sbindir directories when
+     installing binaries. Previously all binaries were silently installed to
+     sbindir, whether they were system administration commands or not.
+     [Graham Leggett]
 
 Changes with Apache 2.3.16
 
