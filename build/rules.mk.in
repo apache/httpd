@@ -166,9 +166,15 @@ local-extraclean: local-distclean x-local-extraclean
 	fi
 
 program-install: $(TARGETS) $(SHARED_TARGETS)
-	@if test -n '$(PROGRAMS)'; then \
+	@if test -n '$(bin_PROGRAMS)'; then \
+	    test -d $(DESTDIR)$(bindir) || $(MKINSTALLDIRS) $(DESTDIR)$(bindir); \
+	    list='$(bin_PROGRAMS)'; for i in $$list; do \
+	        $(INSTALL_PROGRAM) $$i $(DESTDIR)$(bindir); \
+	    done; \
+	fi
+	@if test -n '$(sbin_PROGRAMS)'; then \
 	    test -d $(DESTDIR)$(sbindir) || $(MKINSTALLDIRS) $(DESTDIR)$(sbindir); \
-	    list='$(PROGRAMS)'; for i in $$list; do \
+	    list='$(sbin_PROGRAMS)'; for i in $$list; do \
 	        $(INSTALL_PROGRAM) $$i $(DESTDIR)$(sbindir); \
 	    done; \
 	fi
