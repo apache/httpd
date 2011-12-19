@@ -22,8 +22,17 @@
 </div>
 
 
+    <p>While many distributions make Apache httpd available as operating system
+    supported packages, it can sometimes be desirable to install and use the
+    canonical version of Apache httpd on these systems, replacing the natively
+    provided versions of the packages.</p>
+
+    <p>While the Apache httpd project does not currently create binary RPMs
+    for the various distributions out there, it is easy to build your own
+    binary RPMs from the native Apache httpd tarball.</p>
+
     <p>This document explains how to build, install, configure and run
-    Apache 2.4 under Unix systems supporting the RPM packaging format.</p>
+    Apache httpd 2.4 under Unix systems supporting the RPM packaging format.</p>
 
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#creating">Creating a Source RPM</a></li>
@@ -55,6 +64,12 @@
     <div class="example"><p><code>
       rpmbuild -tb httpd-2.4.x.tar.bz2
     </code></p></div>
+
+    <p>Corresponding "-devel" packages will be required to be installed on your
+    build system prior to building the RPMs, the <code>rpmbuild</code> command
+    will automatically calculate what RPMs are required and will list any
+    dependencies that are missing on your system. These "-devel" packages will
+    not be required after the build is completed, and can be safely removed.</p>
 
     <p>If successful, the following RPMs will be created:</p>
 
