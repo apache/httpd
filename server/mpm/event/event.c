@@ -810,7 +810,6 @@ static void process_pollop(pollset_op_t *op)
  */
 static int start_lingering_close(event_conn_state_t *cs, ap_equeue_t *eq)
 {
-    apr_status_t rv;
 
     cs->c->sbh = NULL;  /* prevent scoreboard updates from the listener 
                          * worker will loop around soon and set SERVER_READY
@@ -833,8 +832,15 @@ static int start_lingering_close(event_conn_state_t *cs, ap_equeue_t *eq)
             v = &localv;
         }
 
-        rv = apr_socket_timeout_set(csd, 0);
-        AP_DEBUG_ASSERT(rv == APR_SUCCESS);
+#ifdef AP_DEBUG
+        {
+            apr_status_t rv;
+            rv = apr_socket_timeout_set(csd, 0);
+            AP_DEBUG_ASSERT(rv == APR_SUCCESS);
+        }
+#else
+        apr_socket_timeout_set(csd, 0);
+#endif
         /*
          * If some module requested a shortened waiting period, only wait for
          * 2s (SECONDS_TO_LINGER). This is useful for mitigating certain
