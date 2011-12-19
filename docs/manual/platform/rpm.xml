@@ -34,7 +34,7 @@
 
     <p>While the Apache httpd project does not currently create binary RPMs
     for the various distributions out there, it is easy to build your own
-    binary RPMs from the native Apache httpd tarball.</p>
+    binary RPMs from the canonical Apache httpd tarball.</p>
 
     <p>This document explains how to build, install, configure and run
     Apache httpd 2.4 under Unix systems supporting the RPM packaging format.</p>
