@@ -441,13 +441,13 @@ rm -rf $RPM_BUILD_ROOT
 %files tools
 %defattr(-,root,root)
 %{_sbindir}/ab
-%{_sbindir}/htdbm
-%{_sbindir}/htdigest
-%{_sbindir}/htpasswd
+%{_bindir}/firehose
+%{_bindir}/htdbm
+%{_bindir}/htdigest
+%{_bindir}/htpasswd
 %{_sbindir}/logresolve
 %{_sbindir}/httxt2dbm
 %{_sbindir}/rotatelogs
-%{_mandir}/man1/dbmmanage.1*
 %{_mandir}/man1/firehose.1*
 %{_mandir}/man1/htdbm.1*
 %{_mandir}/man1/htdigest.1*
@@ -490,8 +490,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/httpd
 %{_sbindir}/apxs
 %{_sbindir}/checkgid
-%{_sbindir}/dbmmanage
+%{_bindir}/dbmmanage
 %{_sbindir}/envvars*
+%{_mandir}/man1/dbmmanage.1*
 %{_mandir}/man8/apxs.8*
 %dir %{_libdir}/httpd/build
 %{_libdir}/httpd/build/*.mk
