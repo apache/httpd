@@ -22,6 +22,11 @@ TARGET_nlm = \
 	$(OBJDIR)/rotlogs.nlm \
 	$(EOLIST)
 
+# Allow the debugging modules to be built if WITH_DEBUGGING is defined
+ifeq "$(WITH_DEBUGGING)" "1"
+TARGET_nlm += $(OBJDIR)/firehose.nlm
+endif
+
 #
 # implement targets and dependancies (leave this section alone)
 #
