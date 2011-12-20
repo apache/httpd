@@ -427,7 +427,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0700,apache,apache) %dir %{_localstatedir}/cache/httpd/cache-root
 
 %{_mandir}/man1/*
-%{_mandir}/man8/ab*
 %{_mandir}/man8/suexec*
 %{_mandir}/man8/apachectl.8*
 %{_mandir}/man8/httpd.8*
@@ -440,20 +439,20 @@ rm -rf $RPM_BUILD_ROOT
 
 %files tools
 %defattr(-,root,root)
-%{_sbindir}/ab
+%{_bindir}/ab
 %{_bindir}/firehose
 %{_bindir}/htdbm
 %{_bindir}/htdigest
 %{_bindir}/htpasswd
-%{_sbindir}/logresolve
-%{_sbindir}/httxt2dbm
+%{_bindir}/logresolve
+%{_bindir}/httxt2dbm
 %{_sbindir}/rotatelogs
 %{_mandir}/man1/firehose.1*
 %{_mandir}/man1/htdbm.1*
 %{_mandir}/man1/htdigest.1*
 %{_mandir}/man1/htpasswd.1*
-%{_mandir}/man8/ab.8*
-%{_mandir}/man8/logresolve.8*
+%{_mandir}/man1/ab.1*
+%{_mandir}/man1/logresolve.1*
 %{_mandir}/man8/rotatelogs.8*
 %doc LICENSE NOTICE
 
@@ -488,12 +487,12 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(-,root,root)
 %{_includedir}/httpd
-%{_sbindir}/apxs
+%{_bindir}/apxs
 %{_sbindir}/checkgid
 %{_bindir}/dbmmanage
 %{_sbindir}/envvars*
 %{_mandir}/man1/dbmmanage.1*
-%{_mandir}/man8/apxs.8*
+%{_mandir}/man1/apxs.1*
 %dir %{_libdir}/httpd/build
 %{_libdir}/httpd/build/*.mk
 %{_libdir}/httpd/build/instdso.sh
