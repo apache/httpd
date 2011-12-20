@@ -44,6 +44,7 @@ XCFLAGS		+= \
 # These defines will come after DEFINES
 #
 XDEFINES	+= \
+			-DLUA_COMPAT_ALL \
 			$(EOLIST)
 
 #
