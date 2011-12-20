@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 732819:1041851 (outdated) -->
+<!-- English Revision: 1041851 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -30,19 +30,23 @@
 
   <summary>
     <p>Bu belgede, bir istekte belirtilen URL’nin sunulacak dosyanın dosya
-      sistemindeki yerini bulmak için Apache tarafından nasıl kullanıldığı
-      açıklanmaktadır.</p>
+      sistemindeki yerini bulmak için Apache HTTP Sunucusu tarafından nasıl
+      kullanıldığı açıklanmaktadır.</p>
   </summary>
 
 <section id="related"><title>İlgili Modüller ve Yönergeler</title>
 
 <related>
 <modulelist>
+<module>mod_actions</module>
 <module>mod_alias</module>
+<module>mod_dir</module>
+<module>mod_imagemap</module>
+<module>mod_negotiation</module>
 <module>mod_proxy</module>
 <module>mod_rewrite</module>
-<module>mod_userdir</module>
 <module>mod_speling</module>
+<module>mod_userdir</module>
 <module>mod_vhost_alias</module>
 </modulelist>
 <directivelist>
@@ -70,7 +74,7 @@
 <section id="documentroot"><title><code>DocumentRoot</code></title>
 
     <p>Yapılan bir isteğe hangi dosyanın sunulacağına karar verirken
-      Apache’nin öntanımlı davranışı istek için URL yolunu (URL’den konak ismi
+      httpd’nin öntanımlı davranışı istek için URL yolunu (URL’den konak ismi
       ve port ayrıldıktan sonra kalan kısım) alıp bunu yapılandırma dosyasında
       <directive module="core">DocumentRoot</directive> yönergesi ile
       belirtilen dizinin sonuna eklemektir. Bu nedenle, <directive
@@ -83,7 +87,7 @@
       istek için istemciye <code>/var/http/html/balıklar/zargana.html</code>
       dosyası sunulur.</p>
 
-    <p>Apache ayrıca, sunucunun birden fazla konak için istek kabul etmesini
+    <p>httpd ayrıca, sunucunun birden fazla konak için istek kabul etmesini
       sağlayan <a href="vhosts/">sanal barındırmaya</a> da muktedirdir. Bu
       durumda her sanal konak için ayrı bir <directive module="core"
       >DocumentRoot</directive> belirtilebileceği gibi sunulacak içeriğin
@@ -101,13 +105,13 @@
 
     <p>Bazen dosya sisteminde doğrudan <directive module="core"
       >DocumentRoot</directive> altında bulunmayan dosyalara da erişim izni
-      vermek gerekir. Apache’de bunu sağlamanın çeşitli yolları vardır. Unix
+      vermek gerekir. httpd’de bunu sağlamanın çeşitli yolları vardır. Unix
       sistemlerinde sembolik bağlar sayesinde dosya sisteminin farklı
       yerlerindeki dosyaları ve dizinleri <directive module="core"
       >DocumentRoot</directive> altındaymış gibi göstermek mümkündür.
       <directive module="core">Options</directive> yönergesine değer olarak
       <code>FollowSymLinks</code> veya <code>SymLinksIfOwnerMatch</code>
-      atanmadıkça Apache olası güvenlik açıklarına karşı öntanımlı olarak
+      atanmadıkça httpd olası güvenlik açıklarına karşı öntanımlı olarak
       sembolik bağları izlemez.</p>
 
     <p>Bundan başka, dosya sisteminin farklı parçalarını belge kök dizini
@@ -174,13 +178,13 @@
       eşlemek için <code>AliasMatch</code> yönergesi şöyle
       kullanılabilirdi:</p>
 
-    <example>AliasMatch ^/sayfalar/([a-zA-Z0-9]+)/?(.*)
-          /home/$1/public_html/$2</example>
+    <example>AliasMatch ^/sayfalar/([a-zA-Z0-9]+)(/(.*))?$
+          /home/$1/public_html/$3</example>
 </section>
 
 <section id="redirect"><title>URL Yönlendirme</title>
 
-    <p>Yukarıdaki bölümlerde açıklanan yapılandırma yönergeleri Apache’ye
+    <p>Yukarıdaki bölümlerde açıklanan yapılandırma yönergeleri httpd’ye
       içeriği dosya sisteminin belli bir yerinden alıp istemciye göndermesini
       söyler. Bazen istemciye, istediği içeriğe farklı bir URL ile
       erişebileceğini ve bu URL için ayrı bir istek yapması gerektiğini
@@ -200,7 +204,7 @@
       zorunda değilsiniz, bu yönerge ile başka bir sunucuya da yönlendirme
       yapabilirsiniz.</p>
 
-    <p>Apache ayrıca, yeniden yazma ile ilgili daha karmaşık sorunlara çözüm
+    <p>httpd ayrıca, yeniden yazma ile ilgili daha karmaşık sorunlara çözüm
       olarak <directive module="mod_alias">RedirectMatch</directive> diye bir
       yönerge daha sağlar. Örneğin bir sitenin baş sayfasını diğer isteklerden
       ayrı olarak farklı bir siteye yönlendirmek için yönergeyi şöyle
@@ -218,7 +222,7 @@
 
 <section id="proxy"><title>Karşı Vekil</title>
 
-    <p>Apache ayrıca, uzak sunuculardaki belgelerin yerel sunucunun URL
+    <p>httpd ayrıca, uzak sunuculardaki belgelerin yerel sunucunun URL
       alanına getirilmesini de mümkün kılar. Bu tekniğe HTTP sunucunun
       belgeleri uzak bir sunucudan alıp istemciye sunmasını sağlayarak bir
       vekil sunucu gibi davranması nedeniyle <em>ters vekalet</em> adı
@@ -251,10 +255,18 @@
       dikkat ediniz. Dolayısıyla, belge içinde
       <code>dahili.mesela.dom</code>’u ismiyle hedef alan mutlak hiperbağlar
       varsa bunlar istemci tarafından vekil sunucudan değil doğrudan
-      <code>dahili.mesela.dom</code>’dan istenecektir. Üçüncü parti modüller
+      <code>dahili.mesela.dom</code>’dan istenecektir. Bir sayfanın içindeki bu
+      bağları (ve diğer içeriği) <module>mod_substitute</module> modülü
+      kullanılarak istemciye sunuluyormuşçasına değiştirebilirsiniz.</p>
+
+    <example>
+      Substitute s/dahili\.mesela\.dom/harici.mesela.dom/i
+    </example>
+
+     <p>Ayrıca, Üçüncü parti modüller
       arasında HTML ve XHTML’de hiperbağları yeniden yazabilen <a
       href="http://apache.webthing.com/mod_proxy_html/" >mod_proxy_html</a>
-      adında bir modül vardır.</p>
+      adında bir modül de vardır.</p>
 </section>
 
 <section id="rewrite"><title>Yeniden Yazma Motoru</title>
@@ -286,8 +298,8 @@
     <p>"Dosya orada yok" ("File Not Found") hatalarının diğer bir bildik
       sebebi de URL’lerin hiperbağlarda veya doğrudan tarayıcıda kasıtlı ya da
       kasıtsız, yanlış yazılmasıdır. Bu tür sorunlarda yardımcı olması için
-      Apache <module>mod_speling</module> (sic) adında bir modülle gelir. Bu
-      modül etkin kılındığında Apache, "Dosya orada yok" ("File Not Found")
+      httpd <module>mod_speling</module> (sic) adında bir modülle gelir. Bu
+      modül etkin kılındığında htpd, "Dosya orada yok" ("File Not Found")
       hatalarının önünü kesip başka bir yerde benzer isimde bir dosya var mı
       diye bakar. Böyle bir dosya varsa, <module>mod_speling</module>
       istemciye dosyanın doğru yerini bildiren bir HTTP yönlendirmesi yollar.
@@ -303,6 +315,12 @@
       yönlendirmesine konu olmasına sebep olarak sunucunun yükünü
       arttırabilir.</p>
 
+    <p><module>mod_dir</module> modülü sanal URI'leri, onları sunan gerçek
+      kaynağa eşlemekte kullanılan <directive module="mod_dir"
+      >FallbackResource</directive> yönergesini içerir. Bir 'ön denetleyici'
+      gerçeklerken <module>mod_rewrite</module> modülünün kullanılmasını
+      sağlamak için çok kullanışlıdır.</p>
+
     <p>Yerinde bulunmayan içeriğin bulunması çabalarının tümü Apache’nin 404
       (Dosya orada yok) HTTP durum kodlu bir hata sayfası döndürmesine yol
       açar. Bu sayfanın içeriği <directive module="core"
@@ -310,6 +328,29 @@
       href="custom-error.html" >Hata Yanıtlarının Kişiselleştirilmesi</a>
       bölümünde anlatıldığı gibi oldukça esnek bir şekilde
       kişiselleştirilebilir.</p>
+</section>
+
+<section id="other"><title>Diğer URL Eşleme Modülleri</title>
+
+<!-- TODO Flesh out each of the items in the list below. -->
+
+    <p>URL eşlemede kullanılabilecek diğer modüller:</p>
+
+    <ul>
+    <li><module>mod_actions</module> - Bir isteği, özkaynağın MIME türüne veya
+      istek yöntemine bakarak bir CGI betiğine eşler.</li>
+
+    <li><module>mod_dir</module> - URL'yi sonlandıran bölü çizgisini
+      <code>index.html</code> bir dosyaya eşler.</li>
+
+    <li><module>mod_imagemap</module> - Bir isteği, bir HTML belge içindeki
+      bir resme yapılan kullanıcı tıklamalarına dayanarak bir URL'ye
+      eşler.</li>
+
+    <li><module>mod_negotiation</module> - Dil veya içerik sıkıştırması gibi
+      kullanıcı tercihlerine dayanarak uygun bir belgeyi seçer.</li>
+    </ul>
+
 </section>
 
 </manualpage>

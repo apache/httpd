@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 655319:1174747 (outdated) -->
+<!-- English Revision: 1174747 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -26,16 +26,16 @@
 
 <manualpage metafile="stopping.xml.meta">
 
-  <title>Durdurma ve Yeniden Başlatma</title>
+  <title>Apache HTTP Sunucusunun Durdurulması ve Yeniden Başlatılması</title>
 
 <summary>
-    <p>Bu belge Apache HTTPd’nin Unix benzeri sistemlerde durdurulması ve
-      yeniden başlatılması konularını kapsar. Windows NT, 2000 ve XP
+    <p>Bu belge Apache HTTP Sunucusunun Unix benzeri sistemlerde durdurulması
+      ve yeniden başlatılması konularını kapsar. Windows NT, 2000 ve XP
       kullanıcıları Apache HTTPd’yi bu platformlarda nasıl denetimlerine
-      alacaklarını öğrenmek için <a href="platform/windows.html#winsvc">Apache
-      HTTPd’nin Bir Hizmet Olarak Çalıştırılması</a> sayfasına, Windows 9x ve
-      ME kullanıcıları ise <a href="platform/windows.html#wincons">Apache
-      HTTPd’nin Bir Konsol Uygulaması Olarak Çalıştırılması</a> sayfasına
+      alacaklarını öğrenmek için <a href="platform/windows.html#winsvc"
+      >httpd’nin Bir Hizmet Olarak Çalıştırılması</a> sayfasına, Windows 9x ve
+      ME kullanıcıları ise <a href="platform/windows.html#wincons">httpd’nin
+      Bir Konsol Uygulaması Olarak Çalıştırılması</a> sayfasına
       bakabilirler.</p>
 </summary>
 
@@ -45,7 +45,7 @@
 
 <section id="introduction"><title>Giriş</title>
 
-    <p>Apache HTTPd’yi durdurmak ve yeniden başlatmak için çalışan
+    <p>Apache HTTP Sunucusunu durdurmak ve yeniden başlatmak için çalışan
       <program>httpd</program> süreçlerine bir sinyal göndermeniz gerekir.
       Sinyal göndermek için iki yol vardır. İlki, süreçlere doğrudan sinyal
       göndermek için unix <code>kill</code> komutunun kullanımıdır. Bu
@@ -223,15 +223,15 @@
       haline gelmekteyse de, bazı yapılandırmalarda yarış koşullarının
       oluşmasına ve kısır çekişmelere (deadlock) sebep olabilir.</p>
 
-    <p>Sunucunun süreç kimliğini içeren <directive
-      module="core">Lockfile</directive> ve <directive
-      module="mod_cgid">ScriptSock</directive> gibi dosyaların disk üzerindeki
-      mevcudiyetlerinin sorunsuz olarak devam ettiğinden emin olunmaya
-      çalışılmalıdır.  Ayrıca, bir yapılandırma yönergesi, üçüncü parti bir
-      modül veya kalıcı CGI uygulamalarına ait disk kilit veya durum dosyaları
-      olabilir; <program>httpd</program>’nin birden fazla kopyasının çalışması
-      nedeniyle bu dosyaların da üzerine yazılmadığından emin olunmaya
-      çalışılmalıdır.</p>
+    <p>Sunucunun süreç kimliğini içeren kilit dosyaları (<directive
+      module="core">Mutex</directive>) ve Unix soket dosyaları
+      (<directive module="mod_cgid">ScriptSock</directive>) gibi dosyaların
+      disk üzerindeki mevcudiyetlerinin sorunsuz olarak devam ettiğinden emin
+      olunmaya çalışılmalıdır.  Ayrıca, bir yapılandırma yönergesi, üçüncü
+      parti bir modül veya kalıcı CGI uygulamalarına ait disk kilit veya durum
+      dosyaları olabilir; <program>httpd</program>’nin birden fazla kopyasının
+      çalışması nedeniyle bu dosyaların da üzerine yazılmadığından emin
+      olunmaya çalışılmalıdır.</p>
 
     <p><program>rotatelogs</program> tarzı borulu günlükleme kullanımı gibi
       durumlarda yarış koşullarının oluşması olasılığına karşı uyanık
