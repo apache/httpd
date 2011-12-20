@@ -97,7 +97,7 @@ NLM_NAME	= modbucketeer
 # This is used by the link '-desc ' directive. 
 # If left blank, NLM_NAME will be used.
 #
-NLM_DESCRIPTION	= Apache $(VERSION_STR) Debugging IO Module
+NLM_DESCRIPTION	= Apache $(VERSION_STR) Bucketeer Module
 
 #
 # This is used by the '-threadname' directive.  If left blank,
@@ -148,7 +148,7 @@ XDCDATA		=
 # If there is an NLM target, put it here
 #
 TARGET_nlm = \
-	$(OBJDIR)/modbucketeer.nlm \
+	$(OBJDIR)/$(NLM_NAME).nlm \
 	$(EOLIST)
 
 #
