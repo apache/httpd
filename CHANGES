@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.0
 
+  *) Move ab, logresolve, httxt2dbm and apxs to bin from sbin, along with
+     corresponding man pages. [Graham Leggett]
+
   *) Distinguish properly between the bindir and sbindir directories when
      installing binaries. Previously all binaries were silently installed to
      sbindir, whether they were system administration commands or not.
