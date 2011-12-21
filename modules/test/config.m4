@@ -8,6 +8,8 @@ APACHE_MODULE(optional_fn_export, example optional function exporter, , , no)
 
 APACHE_MODULE(dialup, rate limits static files to dialup modem speeds, , , )
 
+APACHE_MODULE(policy, HTTP protocol compliance filters, , , no)
+
 APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
 
 APACHE_MODPATH_FINISH
