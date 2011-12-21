@@ -64,6 +64,7 @@ Documentation</h1>
 <li><a href="dso.html">Dynamic Shared Objects (DSO)</a></li>
 <li><a href="env.html">Environment Variables</a></li>
 <li><a href="logs.html">Log Files</a></li>
+<li><a href="compliance.html">HTTP Protocol Compliance</a></li>
 <li><a href="urlmapping.html">Mapping URLs to the Filesystem</a></li>
 <li><a href="misc/perf-tuning.html">Performance Tuning</a></li>
 <li><a href="misc/security_tips.html">Security Tips</a></li>
