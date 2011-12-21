@@ -157,6 +157,7 @@ rm -rf srclib/{apr,apr-util,pcre}
         --with-pcre \
         --enable-mods-shared=all \
         --enable-ssl --with-ssl --enable-socache-dc \
+        --enable-policy \
         --disable-imagemap
 
 make %{?_smp_mflags}
@@ -278,6 +279,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/httpd/conf/extra/httpd-manual.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/extra/httpd-mpm.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/extra/httpd-multilang-errordoc.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf/extra/httpd-policy.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/extra/httpd-userdir.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/extra/httpd-vhosts.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/extra/proxy-html.conf
@@ -289,6 +291,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-manual.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-mpm.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-multilang-errordoc.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-policy.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-userdir.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-vhosts.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/proxy-html.conf
@@ -370,6 +373,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/httpd/modules/mod_mpm_simple.so
 %{_libdir}/httpd/modules/mod_mpm_worker.so
 %{_libdir}/httpd/modules/mod_negotiation.so
+%{_libdir}/httpd/modules/mod_policy.so
 %{_libdir}/httpd/modules/mod_proxy_ajp.so
 %{_libdir}/httpd/modules/mod_proxy_balancer.so
 %{_libdir}/httpd/modules/mod_proxy_connect.so
