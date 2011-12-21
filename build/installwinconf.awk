@@ -63,6 +63,7 @@ BEGIN {
     filelist["httpd-manual.conf"] = "httpd-manual.conf.in";
     filelist["httpd-mpm.conf"] = "httpd-mpm.conf.in";
     filelist["httpd-multilang-errordoc.conf"] = "httpd-multilang-errordoc.conf.in";
+    filelist["httpd-policy.conf"] = "httpd-policy.conf.in";
     filelist["httpd-ssl.conf"] = "httpd-ssl.conf.in";
     filelist["httpd-userdir.conf"] = "httpd-userdir.conf.in";
     filelist["httpd-vhosts.conf"] = "httpd-vhosts.conf.in";

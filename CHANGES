@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_policy: Add a new testing module to help server administrators
+     enforce a configurable level of protocol compliance on their
+     servers and application servers behind theirs. [Graham Leggett]
+
   *) mod_firehose: Add a new debugging module able to record traffic
      passing through the server in such a way that connections and/or
      requests be reconstructed and replayed. [Graham Leggett]
