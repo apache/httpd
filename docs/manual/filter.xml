@@ -47,6 +47,7 @@
         <module>mod_substitute</module>
         <module>mod_xml2enc</module>
         <module>mod_proxy_html</module>
+        <module>mod_policy</module>
       </modulelist>
       <directivelist>
         <directive module="mod_filter">FilterChain</directive>
