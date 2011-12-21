@@ -239,6 +239,7 @@ Server on HPUX</a></li>
 <li><a href="mod/mod_mime_magic.html">Apache Module mod_mime_magic</a></li>
 <li><a href="mod/mod_negotiation.html">Apache Module mod_negotiation</a></li>
 <li><a href="mod/mod_nw_ssl.html">Apache Module mod_nw_ssl</a></li>
+<li><a href="mod/mod_policy.html">Apache Module mod_policy</a></li>
 <li><a href="mod/mod_privileges.html">Apache Module mod_privileges</a></li>
 <li><a href="mod/mod_proxy.html">Apache Module mod_proxy</a></li>
 <li><a href="mod/mod_proxy_ajp.html">Apache Module mod_proxy_ajp</a></li>

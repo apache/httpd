@@ -72,6 +72,7 @@
   <modulefile>mod_mime_magic.xml</modulefile>
   <modulefile>mod_negotiation.xml</modulefile>
   <modulefile>mod_nw_ssl.xml</modulefile>
+  <modulefile>mod_policy.xml</modulefile>
   <modulefile>mod_privileges.xml</modulefile>
   <modulefile>mod_proxy.xml</modulefile>
   <modulefile>mod_proxy_ajp.xml</modulefile>

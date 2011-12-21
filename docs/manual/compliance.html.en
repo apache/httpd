@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>HTTP Protocol Compliance - Apache HTTP Server</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.5</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>HTTP Protocol Compliance</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="./en/compliance.html" title="English">&nbsp;en&nbsp;</a></p>
+</div>
+
+    <p>This document describes the mechanism to set a policy for HTTP
+    protocol compliance for a given URL space by the origin servers or
+    applications behind that URL space.</p>
+
+    <p>For those who may have received an error message from a rejected
+    policy, and need to know what the policy rejection means and what
+    they might do to fix the error, each policy is described below.</p>
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#intro">Enforcing HTTP Protocol Compliance in Apache 2</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#policyconditional">Conditional Request Policy</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#policylength">Content-Length Policy</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#policytype">Content-Type Policy</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#policykeepalive">Keepalive Policy</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#policymaxage">Freshness Lifetime / Maxage Policy</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#policynocache">No Cache Policy</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#policyvalidation">Validation Policy</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#policyvary">Vary Header Policy</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#policyversion">Protocol Version Policy</a></li>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="filter.html">Filters</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="intro" id="intro">Enforcing HTTP Protocol Compliance in Apache 2</a></h2>
+    
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policyconditional">PolicyConditional</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policylength">PolicyLength</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policykeepalive">PolicyKeepalive</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policytype">PolicyType</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policyvary">PolicyVary</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policyvalidation">PolicyValidation</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policynocache">PolicyNocache</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policymaxage">PolicyMaxage</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policyversion">PolicyVersion</a></code></li></ul></td></tr></table>
+
+    <p>The HTTP protocol follows the <strong>robustness principle</strong>
+    as described in <a href="http://tools.ietf.org/html/rfc1122">RFC1122</a>,
+    which states <strong>"Be liberal in what you accept, and conservative in
+    what you send"</strong>. As a result of this principle, HTTP clients will
+    compensate for and recover from incorrect or misconfigured responses, or
+    responses that are uncacheable.</p>
+
+    <p>As a website is scaled up to face greater and greater traffic loads,
+    suboptimal or misconfigured applications or server configurations can
+    threaten both the stability and scalability of the website, as well as
+    the hosting costs associated with it. A website can also scale up to face
+    greater configuration complexity, and it can be increasingly difficult to
+    detect and keep track of suboptimally configured URL spaces on a given
+    server.</p>
+
+    <p>Eventually a point is reached where the principle "conservative in
+    what you send" needs to be enforced by the server administrator.</p>
+
+    <p>The <code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code> module provides a set of filters
+    which can be applied to a server, allowing key features of the HTTP
+    protocol to be explicitly tested, and non compliant responses logged as
+    warnings, or rejected outright as an error. Each filter can be applied
+    separately, allowing the administrator to pick and choose which policies
+    should be enforced depending on the circumstances of their environment.
+    </p>
+
+    <p>The filters might be placed in testing and staging environments for
+    the benefit of application and website developers, or may be applied
+    to production servers to protect infrastructure from systems outside
+    the administrator's direct control.</p>
+
+    <p class="figure">
+    <img src="images/compliance-reverse-proxy.png" width="666" height="239" alt="Enforcing HTTP protocol compliance for an application server" />
+    </p>
+
+    <p>In the above example, an Apache httpd server has been placed between
+    the application server and the internet at large, and configured to cache
+    responses from the application server. The <code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code>
+    filters have been added to enforce support for cacheable content and
+    conditional requests, ensuring that both <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> and
+    public caches on the internet are fully able to cache content created
+    by the restful application server efficiently.</p>
+
+    <p class="figure">
+    <img src="images/compliance-static.png" width="469" height="239" alt="Enforcing HTTP protocol compliance in a static server" />
+    </p>
+
+    <p>In the above simpler example, a static server serving highly cacheable
+    content has a set of policies applied to ensure that the server configuration
+    conforms to a minimum level of compliance.</p>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="policyconditional" id="policyconditional">Conditional Request Policy</a></h2>
+    
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policyconditional">PolicyConditional</a></code></li></ul></td></tr></table>
+
+    <p>This policy will be rejected if the server does not correctly respond
+    to a conditional request with the appropriate status code.</p>
+
+    <p>Conditional requests form the mechanism by which an HTTP cache makes
+    stale content fresh again, and particularly for content with short freshness
+    lifetimes, lack of support for conditional requests can add avoidable load
+    to the server.</p>
+
+    <p>Most specifically, the existence of any of following headers in the
+    request makes the request conditional:</p>
+
+    <dl>
+    <dt><code>If-Match</code></dt>
+    <dd>If the provided ETag in the <code>If-Match</code> header does not match
+    the ETag of the response, the server should return
+    <code>412 Precondition Failed</code>. Full details of how to handle an
+    <code>If-Match</code> header can be found in
+    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.24">
+    RFC2616 section 14.24</a>.</dd>
+
+    <dt><code>If-None-Match</code></dt>
+    <dd>If the provided ETag in the <code>If-None-Match</code> header matches
+    the ETag of the response, the server should return either
+    <code>304 Not Modified</code> for GET/HEAD requests, or
+    <code>412 Precondition Failed</code> for other methods. Full details of how
+    to handle an <code>If-None-Match</code> header can be found in
+    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.26">
+    RFC2616 section 14.26</a>.</dd>
+
+    <dt><code>If-Modified-Since</code></dt>
+    <dd>If the provided date in the <code>If-Modified-Since</code> header is
+    older than the <code>Last-Modified</code> header of the response, the server
+    should return <code>304 Not Modified</code>. Full details of how to handle an
+    <code>If-Modified-Since</code> header can be found in
+    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.25">
+    RFC2616 section 14.25</a>.</dd>
+
+    <dt><code>If-Unmodified-Since</code></dt>
+    <dd>If the provided date in the <code>If-Modified-Since</code> header is
+    newer than the <code>Last-Modified</code> header of the response, the server
+    should return <code>412 Precondition Failed</code>. Full details of how to
+    handle an <code>If-Unmodified-Since</code> header can be found in
+    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.28">
+    RFC2616 section 14.28</a>.</dd>
+
+    <dt><code>If-Range</code></dt>
+    <dd>If the provided ETag or date in the <code>If-Range</code> header matches
+    the ETag or Last-Modified of the response, and a valid <code>Range</code>
+    is present, the server should return
+    <code>206 Partial Response</code>. Full details of how to handle an
+    <code>If-Range</code> header can be found in
+    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.27">
+    RFC2616 section 14.27</a>.</dd>
+
+    </dl>
+
+    <p>If the response is detected to have been successful (a 2xx response),
+    but was conditional and one of the responses above was expected instead,
+    this policy will be rejected. Responses that indicate a redirect or a
+    failure of some kind (3xx, 4xx, 5xx) will be ignored by this policy.</p>
+
+    <p>This policy is implemented by the <strong>POLICY_CONDITIONAL</strong>
+    filter.</p>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="policylength" id="policylength">Content-Length Policy</a></h2>
+    
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policylength">PolicyLength</a></code></li></ul></td></tr></table>
+
+    <p>This policy will be rejected if the server response does not contain
+    an explicit <code>Content-Length</code> header.</p>
+    
+    <p>There are a number of ways of determining the length of a response
+    body, described in full in
+    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec4.4">
+    RFC2616 section 4.4 Message Length</a>.</p>
+    
+    <p>When the <code>Content-Length</code> header is present, the size of
+    the body is declared at the start of the response. If this information
+    is missing, an HTTP cache might choose to ignore the response, as it
+    does not know in advance whether the response will fit within the
+    cache's defined limits.</p>
+
+    <p>HTTP/1.1 defines the <code>Transfer-Encoding</code> header as an
+    alternative to <code>Content-Length</code>, allowing the end of the
+    response to be indicated to the client without the client having to
+    know the length beforehand. However, when HTTP/1.0 requests are
+    processed, and no <code>Content-Length</code> is specified, the only
+    mechanism available to the server to indicate the end of the request
+    is to drop the connection. In an environment containing load
+    balancers, this can cause the keepalive mechanism to be bypassed.
+    </p>
+
+    <p>If the response is detected to have been successful (a 2xx response),
+    and has a response body (this excludes <code>204 No Content</code>), and
+    the <code>Content-Length</code> header is missing, this policy will be
+    rejected. Responses that indicate a redirect or a failure of some kind
+    (3xx, 4xx, 5xx) will be ignored by this policy.</p>
+
+    <div class="warning">It should be noted that some modules, such as
+    <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>, add their own <code>Content-Length</code>
+    header should the response be small enough for it to have been possible
+    to read the response lacking such a header in one go. This may cause
+    small responses to pass this policy, while larger responses may
+    fail for the same URL.</div>
+
+    <p>This policy is implemented by the <strong>POLICY_LENGTH</strong>
+    filter.</p>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="policytype" id="policytype">Content-Type Policy</a></h2>
+    
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policytype">PolicyType</a></code></li></ul></td></tr></table>
+
+    <p>This policy will be rejected if the server response does not contain
+    an explicit and syntactically correct <code>Content-Type</code> header
+    that matches the server defined pattern.</p>
+
+    <p>The media type of the body is placed in the <code>Content-Type</code>
+    header, and the format of the header is described in full in
+    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec3.7">
+    RFC2616 section 3.7 Media Types</a>.</p>
+    
+    <p>A syntactically valid content type might look as follows:</p>
+    
+    <div class="example"><p><code>
+      Content-Type: text/html; charset=iso-8859-1
+    </code></p></div>
+
+    <p>Invalid content types might include:</p>
+
+    <div class="example"><p><code>
+      # invalid<br />
+      Content-Type: foo<br />
+      # blank<br />
+      Content-Type: 
+    </code></p></div>
+
+    <p>The server administrator has the option to restrict the policy to one
+    or more specific types, or could specify a general wildcard type such as
+    <code>*/*</code>.</p>
+
+    <p>This policy is implemented by the <strong>POLICY_TYPE</strong>
+    filter.</p>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="policykeepalive" id="policykeepalive">Keepalive Policy</a></h2>
+    
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policykeepalive">PolicyKeepalive</a></code></li></ul></td></tr></table>
+
+    <p>This policy will be rejected if the server response does not contain
+    an explicit <code>Content-Length</code> header, or a
+    <code>Transfer-Encoding</code> of chunked.</p>
+    
+    <p>There are a number of ways of determining the length of a response
+    body, described in full in
+    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec4.4">
+    RFC2616 section 4.4 Message Length</a>.</p>
+    
+    <p>When the <code>Content-Length</code> header is present, the size of
+    the body is declared at the start of the response. HTTP/1.1 defines the
+    <code>Transfer-Encoding</code> header as an alternative to
+    <code>Content-Length</code>, allowing the end of the response to be
+    indicated to the client without the client having to know the length
+    beforehand. In the absence of these two mechanisms, the only way for
+    a server to indicate the end of the request is to drop the connection.
+    In an environment containing load balancers, this can cause the keepalive
+    mechanism to be bypassed.
+    </p>
+
+    <p>Most specifically, we follow these rules:</p>
+    
+    <dl>
+    <dt>IF</dt>
+    <dd>we have not marked this connection as errored;</dd>
+    
+    <dt>and</dt>
+    <dd>the client isn't expecting 100-continue</dd>
+    
+    <dt>and</dt>
+    <dd>the response status does not require a close;</dd>
+    
+    <dt>and</dt>
+    <dd>the response body has a defined length due to the status code
+    being 304 or 204, the request method being HEAD, already having defined
+    Content-Length or Transfer-Encoding: chunked, or the request version
+    being HTTP/1.1 and thus capable of being set as chunked</dd>
+    
+    <dt>THEN</dt>
+    <dd>we support keepalive.</dd>
+    </dl>
+   
+    <div class="warning">The server may choose to turn off keepalive for
+    various reasons, such as an imminent shutdown, or a Connection: close from
+    the client, or an HTTP/1.0 client request with a response with no
+    <code>Content-Length</code>, but for our purposes we only care that
+    keepalive was possible from the application, not that keepalive actually
+    took place.</div> 
+
+    <p>It should also be noted that the Apache httpd server includes a filter
+    that adds chunked encoding to responses without an explicit content
+    length. This policy catches those cases where this filter is bypassed or
+    not in effect.</p>
+
+    <p>This policy is implemented by the <strong>POLICY_KEEPALIVE</strong>
+    filter.</p>
+    
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="policymaxage" id="policymaxage">Freshness Lifetime / Maxage Policy</a></h2>
+    
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policymaxage">PolicyMaxage</a></code></li></ul></td></tr></table>
+
+    <p>This policy will be rejected if the server response does not have
+    an explicit <strong>freshness lifetime</strong> at least as long
+    as the server defined limit, or if the freshness lifetime is
+    calculated based on a heuristic.</p>
+
+    <p>Full details of how a freshness lifetime is calculated is described in
+    full in
+    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec13.2">
+    RFC2616 section 13.2 Expiration Model</a>.</p>
+
+    <p>During the freshness lifetime, a cache does not need to contact the
+    origin server at all, it can simply pass the cached content as is back
+    to the client.</p>
+
+    <p>When the freshness lifetime is reached, the cache should contact the
+    origin server in an effort to check whether the content is still fresh,
+    and if not, replace the content.</p>
+
+    <p>When the freshness lifetime is too short, it can result in excessive
+    load on the server. In addition, should an outage occur that is as long
+    or longer than the freshness lifetime, all cached content will become
+    stale, which could cause a thundering herd of traffic when the
+    server or network returns.</p>
+
+    <p>This policy is implemented by the <strong>POLICY_MAXAGE</strong>
+    filter.</p>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="policynocache" id="policynocache">No Cache Policy</a></h2>
+    
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policynocache">PolicyNocache</a></code></li></ul></td></tr></table>
+
+    <p>This policy will be rejected if the server response declares itself
+    uncacheable using either the <code>Cache-Control</code> or
+    <code>Pragma</code> headers.</p>
+
+    <p>Full details of how content may be declared uncacheable is described in
+    full in
+    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.1">
+    RFC2616 section 14.9.1 What is Cacheable</a>, and within the definition
+    for the <code>Pragma</code> header in
+    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.32">
+    RFC2616 section 14.32 Pragma</a>.</p>
+
+    <p>Most specifically, should any of the following header combinations
+    exist in the response headers, the response will be rejected:</p>
+
+    <ul>
+    <li><code>Cache-Control: no-cache</code></li>
+    <li><code>Cache-Control: no-store</code></li>
+    <li><code>Cache-Control: private</code></li>
+    <li><code>Pragma: no-cache</code></li>
+    </ul>
+
+    <p>When unexpected, uncacheable content may produce unacceptable levels
+    of server load, or may incur significant cost. When this policy is enabled,
+    all server defined uncacheable content will be rejected.</p>
+
+    <p>This policy is implemented by the <strong>POLICY_NOCACHE</strong>
+    filter.</p>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="policyvalidation" id="policyvalidation">Validation Policy</a></h2>
+    
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policyvalidation">PolicyValidation</a></code></li></ul></td></tr></table>
+
+    <p>This policy will be rejected if the server response does not contain
+    either a syntactically correct <code>ETag</code> or
+    <code>Last-Modified</code> header.</p>
+
+    <p>The <code>ETag</code> header is described in full in
+    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.19">
+    RFC2616 section 14.19 Etag</a>, and the <code>Last-Modified</code> header
+    is described in full in
+    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.29">
+    RFC2616 section 14.29 Last-Modified</a>.</p>
+
+    <p>In addition to being checked present, the headers are checked for
+    syntax.</p>
+
+    <p>An <code>ETag</code> that is not surrounded with quotes, or is not
+    declared "weak" by prefixing it with a "W/" will cause the policy to be
+    rejected. A <code>Last-Modified</code> that is not parsed as a valid date
+    will cause the policy to be rejected.</p>
+
+    <p>This policy is implemented by the <strong>POLICY_VALIDATION</strong>
+    filter.</p>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="policyvary" id="policyvary">Vary Header Policy</a></h2>
+    
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policyvary">PolicyVary</a></code></li></ul></td></tr></table>
+    
+    <p>This policy will be rejected if the server response contains a
+    <code>Vary</code> header, and that header in turn contains a header
+    blacklisted by the administrator.</p>
+
+    <p>The <code>Vary</code> header is described in full in
+    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.44">
+    RFC2616 section 14.44 Vary</a>.</p>
+    
+    <p>Some client provided headers, such as <code>User-Agent</code>,
+    can contain thousands or millions of combinations of values over a period
+    of time, and if the response is declared cacheable, a cache might attempt
+    to cache each of these responses separately, filling up the cache and
+    crowding out other entries in the cache. In this scenario, if so
+    configured, the policy will reject the response.</p>
+
+    <p>This policy is implemented by the <strong>POLICY_VARY</strong>
+    filter.</p>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="policyversion" id="policyversion">Protocol Version Policy</a></h2>
+    
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policyversion">PolicyVersion</a></code></li></ul></td></tr></table>
+
+    <p>This policy will be rejected if the client request was made with a
+    version number lower than the version of HTTP specified.</p>
+
+    <p>This policy is typically used with restful applications where
+    control over the type of client is desired. This policy can be used
+    alongside the <code>POLICY_KEEPALIVE</code> filter to ensure that
+    HTTP/1.0 clients don't cause keepalive connections to be dropped.</p>
+
+    <p>Possible minimum versions that could be specified are:</p>
+
+    <ul><li><code>HTTP/1.1</code></li>
+    <li><code>HTTP/1.0</code></li>
+    <li><code>HTTP/0.9</code></li>
+    </ul>
+
+    <p>This policy is implemented by the <strong>POLICY_VERSON</strong>
+    filter.</p>
+
+  </div></div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="./en/compliance.html" title="English">&nbsp;en&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2011 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div>
+</body></html>
