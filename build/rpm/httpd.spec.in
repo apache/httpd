@@ -455,6 +455,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/htdbm.1*
 %{_mandir}/man1/htdigest.1*
 %{_mandir}/man1/htpasswd.1*
+%{_mandir}/man1/httxt2dbm.1*
 %{_mandir}/man1/ab.1*
 %{_mandir}/man1/logresolve.1*
 %{_mandir}/man8/rotatelogs.8*
