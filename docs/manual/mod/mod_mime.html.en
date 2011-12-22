@@ -513,6 +513,41 @@ later.</td></tr>
     <var>extension</var> argument will be compared against each of
     them.</p>
 
+    <p>Note that when defining a set of filters using the
+    <code class="directive"><a href="#addouputfilter">AddOuputFilter</a></code> directive,
+    any definition made will replace any previous definition made by
+    the <code class="directive"><a href="#addouputfilter">AddOuputFilter</a></code>
+    directive.</p>
+
+    <div class="example"><p><code>
+    # Effective filter "DEFLATE"<br />
+    AddOutputFilter DEFLATE shtml<br />
+    &lt;Location /foo&gt;<br />
+      <span class="indent">
+      # Effective filter "INCLUDES", replacing "DEFLATE"<br />
+      AddOutputFilter INCLUDES shtml<br />
+      </span>
+    &lt;/Location&gt;<br />
+    &lt;Location /bar&gt;<br />
+      <span class="indent">
+      # Effective filter "INCLUDES;DEFLATE", replacing "DEFLATE"<br />
+      AddOutputFilter INCLUDES;DEFLATE shtml<br />
+      </span>
+    &lt;/Location&gt;<br />
+    &lt;Location /bar/baz&gt;<br />
+      <span class="indent">
+      # Effective filter "BUFFER", replacing "INCLUDES;DEFLATE"<br />
+      AddOutputFilter BUFFER shtml<br />
+      </span>
+    &lt;/Location&gt;<br />
+    &lt;Location /bar/baz/buz&gt;<br />
+      <span class="indent">
+      # No effective filter, replacing "BUFFER"<br />
+      RemoveOutputFilter shtml<br />
+      </span>
+    &lt;/Location&gt;
+    </code></p></div>
+
 <h3>See also</h3>
 <ul>
 <li><code class="directive"><a href="#removeoutputfilter">RemoveOutputFilter</a></code></li>
