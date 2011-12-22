@@ -49,18 +49,17 @@
 
     <dt><code>-f <var>DBM_TYPE</var></code></dt>
     <dd>Specify the DBM type to be used for the output. If not specified, will
-    use the <a class="glossarylink" href="../glossary.html#apr" title="see glossary">APR</a> Default. Available types are:<br />
-    <code>GDBM</code> for GDBM files<br />
-    <code>SDBM</code> for SDBM files<br />
-    <code>DB</code> for berkeley DB files<br />
-    <code>NDBM</code> for NDBM files<br />
-    <code>default</code> for the default DBM type
+    use the <code>APR</code> Default. Available types are:
+    <code>GDBM</code> for GDBM files,
+    <code>SDBM</code> for SDBM files,
+    <code>DB</code> for berkeley DB files,
+    <code>NDBM</code> for NDBM files,
+    <code>default</code> for the default DBM type.
     </dd>
 
     <dt><code>-i <var>SOURCE_TXT</var></code></dt>
     <dd>Input file from which the dbm is to be created. The file should be formated
-    with one record per line, of the form:<br />
-    <code>key value</code><br />
+    with one record per line, of the form: <code>key value</code>.
     See the documentation for <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> for
     further details of this file's format and meaning.
     </dd>
