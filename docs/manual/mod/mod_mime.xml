@@ -507,6 +507,41 @@ later.</compatibility>
     href="#multipleext">multiple extensions</a> and the
     <var>extension</var> argument will be compared against each of
     them.</p>
+
+    <p>Note that when defining a set of filters using the
+    <directive module="mod_mime">AddOuputFilter</directive> directive,
+    any definition made will replace any previous definition made by
+    the <directive module="mod_mime">AddOuputFilter</directive>
+    directive.</p>
+
+    <example>
+    # Effective filter "DEFLATE"<br />
+    AddOutputFilter DEFLATE shtml<br />
+    &lt;Location /foo&gt;<br />
+      <indent>
+      # Effective filter "INCLUDES", replacing "DEFLATE"<br />
+      AddOutputFilter INCLUDES shtml<br />
+      </indent>
+    &lt;/Location&gt;<br />
+    &lt;Location /bar&gt;<br />
+      <indent>
+      # Effective filter "INCLUDES;DEFLATE", replacing "DEFLATE"<br />
+      AddOutputFilter INCLUDES;DEFLATE shtml<br />
+      </indent>
+    &lt;/Location&gt;<br />
+    &lt;Location /bar/baz&gt;<br />
+      <indent>
+      # Effective filter "BUFFER", replacing "INCLUDES;DEFLATE"<br />
+      AddOutputFilter BUFFER shtml<br />
+      </indent>
+    &lt;/Location&gt;<br />
+    &lt;Location /bar/baz/buz&gt;<br />
+      <indent>
+      # No effective filter, replacing "BUFFER"<br />
+      RemoveOutputFilter shtml<br />
+      </indent>
+    &lt;/Location&gt;
+    </example>
 </usage>
 <seealso><directive module="mod_mime">RemoveOutputFilter</directive></seealso>
 <seealso><directive module="core">SetOutputFilter</directive></seealso>
