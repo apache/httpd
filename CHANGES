@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.0
 
+  *) mod_mime: Don't arbitrarily bypass AddOutputFilter during a ProxyPass,
+     but then allow AddOutputFilter during a RewriteRule [P]. Make mod_mime
+     behave identically in both cases. PR52342. [Graham Leggett]
+
   *) Move ab, logresolve, httxt2dbm and apxs to bin from sbin, along with
      corresponding man pages. [Graham Leggett]
 
