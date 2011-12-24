@@ -131,7 +131,7 @@ compatibility variables.</p>
  <th>Description:</th>
 </tr>
 <tr><td><code>HTTPS</code></td>                         <td>flag</td>      <td>HTTPS is being used.</td></tr>
-<tr><td><code>SSL_PROTOCOL</code></td>                  <td>string</td>    <td>The SSL protocol version (SSLv3, TLSv1)</td></tr>
+<tr><td><code>SSL_PROTOCOL</code></td>                  <td>string</td>    <td>The SSL protocol version (SSLv3, TLSv1, TLSv1.1, TLSv1.2)</td></tr>
 <tr><td><code>SSL_SESSION_ID</code></td>                <td>string</td>    <td>The hex-encoded SSL session id</td></tr>
 <tr><td><code>SSL_SESSION_RESUMED</code></td>           <td>string</td>    <td>Initial or Resumed SSL Session.  Note: multiple requests may be served over the same (Initial or Resumed) SSL session if HTTP KeepAlive is in use</td></tr>
 <tr><td><code>SSL_SECURE_RENEG</code></td>              <td>string</td>    <td><code>true</code> if secure renegotiation is supported, else <code>false</code></td></tr>
@@ -1207,15 +1207,25 @@ The available (case-insensitive) <em>protocol</em>s are:</p>
 
 <li><code>TLSv1</code>
     <p>
-    This is the Transport Layer Security (TLS) protocol, version 1.0. It is the
-    successor to SSLv3 and was originally defined in <a href="http://www.ietf.org/rfc/rfc2246.txt">RFC 2246</a>
-    (obsoleted by <a href="http://www.ietf.org/rfc/rfc4346.txt">RFC 4346</a>
-    and <a href="http://www.ietf.org/rfc/rfc5246.txt">RFC 5246</a> in
-    the meantime).</p></li>
+    This is the Transport Layer Security (TLS) protocol, version 1.0.
+    It is the successor to SSLv3 and is defined in
+    <a href="http://www.ietf.org/rfc/rfc2246.txt">RFC 2246</a>.</p></li>
+
+<li><code>TLSv1.1</code> (when using OpenSSL 1.0.1 and later)
+    <p>
+    A revision of the TLS 1.0 protocol, as defined in
+    <a href="http://www.ietf.org/rfc/rfc4346.txt">RFC 4346</a>.</p></li>
+
+<li><code>TLSv1.2</code> (when using OpenSSL 1.0.1 and later)
+    <p>
+    A revision of the TLS 1.1 protocol, as defined in
+    <a href="http://www.ietf.org/rfc/rfc5246.txt">RFC 5246</a>.</p></li>
 
 <li><code>all</code>
     <p>
-    This is a shortcut for ``<code>+SSLv3 +TLSv1</code>''.</p></li>
+    This is a shortcut for ``<code>+SSLv3 +TLSv1</code>'' or
+    - when using OpenSSL 1.0.1 and later -
+    ``<code>+SSLv3 +TLSv1 +TLSv1.1 +TLSv1.2</code>, respectively.</p></li>
 </ul>
 <div class="example"><h3>Example</h3><p><code>
 SSLProtocol TLSv1
