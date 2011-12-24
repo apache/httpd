@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.0
 
+  *) mod_ssl: when compiled against OpenSSL 1.0.1 or later, allow explicit
+     control of TLSv1.1 and TLSv1.2 through the SSLProtocol directive.
+     [Kaspar Brand]
+
   *) mod_ssl: set OPENSSL_NO_SSL_INTERN when compiling against OpenSSL 1.0.1
      or later, to improve binary compatibility with future OpenSSL releases.
      [Kaspar Brand]
