@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.0
 
+  *) mod_ssl: set OPENSSL_NO_SSL_INTERN when compiling against OpenSSL 1.0.1
+     or later, to improve binary compatibility with future OpenSSL releases.
+     [Kaspar Brand]
+
   *) mod_mime: Don't arbitrarily bypass AddOutputFilter during a ProxyPass,
      but then allow AddOutputFilter during a RewriteRule [P]. Make mod_mime
      behave identically in both cases. PR52342. [Graham Leggett]

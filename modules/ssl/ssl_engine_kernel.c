@@ -799,11 +799,15 @@ int ssl_hook_Access(request_rec *r)
             ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02226)
                           "Awaiting re-negotiation handshake");
 
-            /* XXX: Should replace setting ssl->state with SSL_renegotiate(ssl);
+            /* XXX: Should replace setting state with SSL_renegotiate(ssl);
              * However, this causes failures in perl-framework currently,
              * perhaps pre-test if we have already negotiated?
              */
+#ifdef OPENSSL_NO_SSL_INTERN
+            SSL_set_state(ssl, SSL_ST_ACCEPT);
+#else
             ssl->state = SSL_ST_ACCEPT;
+#endif
             SSL_do_handshake(ssl);
 
             sslconn->reneg_state = RENEG_REJECT;
@@ -1728,8 +1732,12 @@ int ssl_callback_NewSessionCacheEntry(SSL *ssl, SSL_SESSION *session)
      * Store the SSL_SESSION in the inter-process cache with the
      * same expire time, so it expires automatically there, too.
      */
+#ifdef OPENSSL_NO_SSL_INTERN
+    id = (unsigned char *)SSL_SESSION_get_id(session, &idlen);
+#else
     id = session->session_id;
     idlen = session->session_id_length;
+#endif
 
     rc = ssl_scache_store(s, id, idlen,
                           apr_time_from_sec(SSL_SESSION_get_time(session)
@@ -1809,8 +1817,12 @@ void ssl_callback_DelSessionCacheEntry(SSL_CTX *ctx,
     /*
      * Remove the SSL_SESSION from the inter-process cache
      */
+#ifdef OPENSSL_NO_SSL_INTERN
+    id = (unsigned char *)SSL_SESSION_get_id(session, &idlen);
+#else
     id = session->session_id;
     idlen = session->session_id_length;
+#endif
 
     /* TODO: Do we need a temp pool here, or are we always shutting down? */
     ssl_scache_remove(s, id, idlen, sc->mc->pPool);
@@ -2024,13 +2036,14 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
     sslcon = myConnConfig(c);
     if (found && (ssl = sslcon->ssl) &&
         (sc = mySrvConfig(s))) {
+        SSL_CTX *ctx = SSL_get_SSL_CTX(ssl);
         SSL_set_SSL_CTX(ssl, sc->server->ssl_ctx);
         /*
          * SSL_set_SSL_CTX() only deals with the server cert,
          * so we need to duplicate a few additional settings
          * from the ctx by hand
          */
-        SSL_set_options(ssl, SSL_CTX_get_options(ssl->ctx));
+        SSL_set_options(ssl, SSL_CTX_get_options(ctx));
         if ((SSL_get_verify_mode(ssl) == SSL_VERIFY_NONE) ||
             (SSL_num_renegotiations(ssl) == 0)) {
            /*
@@ -2040,8 +2053,8 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
             * Otherwise, we would possibly reset a per-directory
             * configuration which was put into effect by ssl_hook_Access.
             */
-            SSL_set_verify(ssl, SSL_CTX_get_verify_mode(ssl->ctx),
-                           SSL_CTX_get_verify_callback(ssl->ctx));
+            SSL_set_verify(ssl, SSL_CTX_get_verify_mode(ctx),
+                           SSL_CTX_get_verify_callback(ctx));
         }
 
         /*
