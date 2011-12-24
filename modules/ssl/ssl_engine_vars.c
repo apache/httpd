@@ -335,10 +335,18 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, request_rec *r,
         char buf[SSL_SESSION_ID_STRING_LEN];
         SSL_SESSION *pSession = SSL_get_session(ssl);
         if (pSession) {
-            result = apr_pstrdup(p, SSL_SESSION_id2sz(
-                                     pSession->session_id,
-                                     pSession->session_id_length,
-                                     buf, sizeof(buf)));
+            unsigned char *id;
+            unsigned int idlen;
+
+#ifdef OPENSSL_NO_SSL_INTERN
+            id = (unsigned char *)SSL_SESSION_get_id(pSession, &idlen);
+#else
+            id = pSession->session_id;
+            idlen = pSession->session_id_length;
+#endif
+
+            result = apr_pstrdup(p, SSL_SESSION_id2sz(id, idlen,
+                                                      buf, sizeof(buf)));
         }
     }
     else if(ssl != NULL && strcEQ(var, "SESSION_RESUMED")) {
@@ -955,11 +963,15 @@ apr_array_header_t *ssl_ext_list(apr_pool_t *p, conn_rec *c, int peer,
 static char *ssl_var_lookup_ssl_compress_meth(SSL *ssl)
 {
     char *result = "NULL";
-#if (OPENSSL_VERSION_NUMBER >= 0x00908000)
+#if (OPENSSL_VERSION_NUMBER >= 0x00908000) && !defined(OPENSSL_NO_COMP)
     SSL_SESSION *pSession = SSL_get_session(ssl);
 
     if (pSession) {
+#ifdef OPENSSL_NO_SSL_INTERN
+        switch (SSL_SESSION_get_compress_id(pSession)) {
+#else
         switch (pSession->compress_meth) {
+#endif
         case 0:
             /* default "NULL" already set */
             break;
