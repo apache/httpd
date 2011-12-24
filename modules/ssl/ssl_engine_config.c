@@ -1283,6 +1283,12 @@ static const char *ssl_cmd_protocol_parse(cmd_parms *parms,
         else if (strcEQ(w, "TLSv1")) {
             thisopt = SSL_PROTOCOL_TLSV1;
         }
+        else if (strcEQ(w, "TLSv1.1")) {
+            thisopt = SSL_PROTOCOL_TLSV1_1;
+        }
+        else if (strcEQ(w, "TLSv1.2")) {
+            thisopt = SSL_PROTOCOL_TLSV1_2;
+        }
         else if (strcEQ(w, "all")) {
             thisopt = SSL_PROTOCOL_ALL;
         }
