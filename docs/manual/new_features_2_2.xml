@@ -73,7 +73,7 @@
           load balancing services for <module>mod_proxy</module>.
           The new <module>mod_proxy_ajp</module> module adds support for the
           <code>Apache JServ Protocol version 1.3</code> used by
-          <a href="http://jakarta.apache.org/tomcat/">Apache Tomcat</a>.</dd>
+          <a href="http://tomcat.apache.org/">Apache Tomcat</a>.</dd>
 
       <dt>Regular Expression Library Updated</dt>
       <dd>Version 5.0 of the
