@@ -45,7 +45,7 @@
       <dd>새로운 <module>mod_proxy_balancer</module> 모듈이
       <module>mod_proxy</module>를 위한 부하분산 서비스를 제공한다.
       새로운 <module>mod_proxy_ajp</module> 모듈은 <a
-      href="http://jakarta.apache.org/tomcat/">아파치 톰캣</a>이
+      href="http://tomcat.apache.org/">아파치 톰캣</a>이
       사용하는 <code>Apache JServ Protocol 1.3 버전</code>을
       지원한다.</dd>
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English revision : 1037244 -->
+<!-- English revision : 1223048 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -86,7 +86,7 @@
           Le nouveau module <module>mod_proxy_ajp</module> ajoute le
 	  support pour le
           <code>Protocole JServ de Apache version 1.3</code> qu'utilise
-          <a href="http://jakarta.apache.org/tomcat/">Apache Tomcat</a>.</dd>
+          <a href="http://tomcat.apache.org/">Apache Tomcat</a>.</dd>
 
       <dt>Mise &agrave; jour de la biblioth&egrave;que des expressions rationnelles</dt>
       <dd>La version 5.0 de la
