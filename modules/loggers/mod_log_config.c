@@ -541,19 +541,21 @@ static const char *log_cookie(request_rec *r, char *a)
 
         while ((cookie = apr_strtok(cookies, ";", &last1))) {
             char *name = apr_strtok(cookie, "=", &last2);
-            char *value;
-            apr_collapse_spaces(name, name);
+            if (name) {
+                char *value;
+                apr_collapse_spaces(name, name);
 
-            if (!strcasecmp(name, a) && (value = apr_strtok(NULL, "=", &last2))) {
-                char *last;
-                value += strspn(value, " \t");  /* Move past leading WS */
-                last = value + strlen(value) - 1;
-                while (last >= value && apr_isspace(*last)) {
-                   *last = '\0';
-                   --last;
+                if (!strcasecmp(name, a) && (value = apr_strtok(NULL, "=", &last2))) {
+                    char *last;
+                    value += strspn(value, " \t");  /* Move past leading WS */
+                    last = value + strlen(value) - 1;
+                    while (last >= value && apr_isspace(*last)) {
+                       *last = '\0';
+                       --last;
+                    }
+
+                    return ap_escape_logitem(r->pool, value);
                 }
-
-                return ap_escape_logitem(r->pool, value);
             }
             cookies = NULL;
         }
