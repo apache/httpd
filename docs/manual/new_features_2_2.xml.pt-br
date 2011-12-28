@@ -48,7 +48,7 @@
           >mod_proxy</module>. O novo m&#243;dulo <module>mod_proxy_ajp</module
           > oferece suporte para o <code>Protocolo Apache JServ
           vers&#227;o 1.3</code>, usado pelo <a
-          href="http://jakarta.apache.org/tomcat/">Apache Tomcat</a>.</dd>
+          href="http://tomcat.apache.org/">Apache Tomcat</a>.</dd>
 
       <dt>Filtragem Inteligente (Smart Filtering)</dt>
       <dd>O <module>mod_filter</module> introduz configura&#231;&#227;o din&#226;mica para
