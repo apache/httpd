@@ -4342,6 +4342,44 @@ AP_DECLARE(int) ap_sys_privileges_handlers(int inc)
     return sys_privileges;
 }
 
+static int check_errorlog_dir(apr_pool_t *p, server_rec *s)
+{
+    if (s->error_fname[0] == '|' && strcmp(s->error_fname, "syslog") == 0) {
+        return APR_SUCCESS;
+    }
+    else {
+        char *abs = ap_server_root_relative(p, s->error_fname);
+        char *dir = ap_make_dirstr_parent(p, abs);
+        apr_finfo_t finfo;
+        apr_status_t rv = apr_stat(&finfo, dir, APR_FINFO_TYPE, p);
+        if (rv == APR_SUCCESS && finfo.filetype != APR_DIR)
+            rv = APR_ENOTDIR;
+        if (rv != APR_SUCCESS) {
+            const char *desc = "main error log";
+            if (s->defn_name)
+                desc = apr_psprintf(p, "error log of vhost defined at %s:%d",
+                                    s->defn_name, s->defn_line_number);
+            ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_EMERG, rv,
+                          ap_server_conf, APLOGNO(02291)
+                         "Cannot access directory '%s' for %s", dir, desc);
+            return !OK;
+        }
+    }
+    return OK;
+}
+
+static int core_check_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
+{
+    int rv = OK;
+    while (s) {
+        if (check_errorlog_dir(ptemp, s) != OK)
+            rv = !OK;
+        s = s->next;
+    }
+    return rv;
+}
+
+
 static int core_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     ap_mutex_init(pconf);
@@ -4737,6 +4775,7 @@ static void register_hooks(apr_pool_t *p)
 
     ap_hook_pre_config(core_pre_config, NULL, NULL, APR_HOOK_REALLY_FIRST);
     ap_hook_post_config(core_post_config,NULL,NULL,APR_HOOK_REALLY_FIRST);
+    ap_hook_check_config(core_check_config,NULL,NULL,APR_HOOK_FIRST);
     ap_hook_test_config(core_dump_config,NULL,NULL,APR_HOOK_FIRST);
     ap_hook_translate_name(ap_core_translate,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_map_to_storage(core_map_to_storage,NULL,NULL,APR_HOOK_REALLY_LAST);
