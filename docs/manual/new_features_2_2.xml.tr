@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1037244 -->
+<!-- English Revision: 1223048 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -80,7 +80,7 @@
       <dd>Yeni <module>mod_proxy_balancer</module> modülü ile
         <module>mod_proxy</module> için yük dengeleme hizmetleri sağlanmış,
         yeni <module>mod_proxy_ajp</module> modülü ile <a
-        href="http://jakarta.apache.org/tomcat/">Apache Tomcat</a> tarafından
+        href="http://tomcat.apache.org/">Apache Tomcat</a> tarafından
         kullanılan <em>Apache JServ Protokolünün 1.3 sürümü</em> için destek
         eklenmiştir.</dd>
 
