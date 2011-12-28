@@ -164,6 +164,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: jorton
     trawick: http://mail-archives.apache.org/mod_mbox/httpd-dev/201112.mbox/%3CCAKUrXK4uwT%3DP1KtEziNqFdxXs%2BtyWvggzpL8x2u-Bbq8tZ-Zsw%40mail.gmail.com%3E
 
+  * mod_log_config: Fix segfault when logging Nameless, Valueless cookie. PR 52256
+      Trunk patch: http://svn.apache.org/viewvc?rev=1225380&view=rev
+      2.2.x patch: trunk patch works
+    +1: sf
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
