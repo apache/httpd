@@ -4344,7 +4344,8 @@ AP_DECLARE(int) ap_sys_privileges_handlers(int inc)
 
 static int check_errorlog_dir(apr_pool_t *p, server_rec *s)
 {
-    if (s->error_fname[0] == '|' && strcmp(s->error_fname, "syslog") == 0) {
+    if (!s->error_fname || s->error_fname[0] == '|'
+        || strcmp(s->error_fname, "syslog") == 0) {
         return APR_SUCCESS;
     }
     else {
