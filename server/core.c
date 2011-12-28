@@ -4683,7 +4683,7 @@ static void core_dump_config(apr_pool_t *p, server_rec *s)
 {
     core_server_config *sconf = ap_get_core_module_config(s->module_config);
     apr_file_t *out = NULL;
-    char *tmp;
+    const char *tmp;
     const char **defines;
     int i;
     if (!ap_exists_config_define("DUMP_RUN_CFG"))
@@ -4693,7 +4693,10 @@ static void core_dump_config(apr_pool_t *p, server_rec *s)
     apr_file_printf(out, "ServerRoot: \"%s\"\n", ap_server_root);
     tmp = ap_server_root_relative(p, sconf->ap_document_root);
     apr_file_printf(out, "Main DocumentRoot: \"%s\"\n", tmp);
-    tmp = ap_server_root_relative(p, s->error_fname);
+    if (s->error_fname[0] != '|' && strcmp(s->error_fname, "syslog") != 0)
+        tmp = ap_server_root_relative(p, s->error_fname);
+    else
+        tmp = s->error_fname;
     apr_file_printf(out, "Main ErrorLog: \"%s\"\n", tmp);
     if (ap_scoreboard_fname) {
         tmp = ap_server_root_relative(p, ap_scoreboard_fname);
@@ -4713,7 +4716,6 @@ static void core_dump_config(apr_pool_t *p, server_rec *s)
         else
             apr_file_printf(out, "Define: %s\n", name);
     }
-
 }
 
 static void register_hooks(apr_pool_t *p)
