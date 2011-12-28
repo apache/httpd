@@ -1,0 +1,276 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
+<!-- English Revision : 1223051 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="new_features_2_2.xml.meta">
+
+<title>Apache 2.2 の新機能の概要</title>
+
+<summary>
+  <p>この文書では、Apache HTTP サーババージョン 2.0 と 2.2 の主な違いについて
+     記述しています。 バージョン 1.3 からの新機能 については
+     <a href="new_features_2_0.html">2.0 の新機能</a> の文書をご覧下さい。</p>
+</summary>
+
+  <section id="core">
+    <title>コア機能の拡張</title>
+    <dl>
+
+      <dt>Authn/Authz</dt>
+      <dd>認証と認可のモジュールは再構成されました。
+          新しい <module>mod_authn_alias</module> モジュールは認証の設定を
+          非常に簡単化してくれます。 <a href="#module">モジュール名の変更</a>
+          と <a href="#developer">開発者向けの変更</a> を見てください。 そこには、
+          これらの変更がどのようにユーザとモジュール開発者に影響するかが
+          書いてあります。</dd>
+
+      <dt>キャッシュ</dt>
+      <dd><module>mod_cache</module> と
+          <module>mod_disk_cache</module> そして、
+          <module>mod_mem_cache</module> はとても多くの変更を受けていて、
+          製品としての品質があると考えられます。
+          <program>htcacheclean</program> が導入され、
+          <module>mod_disk_cache</module> の設定がシンプルになりました。</dd>
+
+      <dt>設定</dt>
+      <dd>デフォルトの設定レイアウトは簡単化されモジュラー化されました。
+          共通して使用される機能に使われる設定の断片は、今や Apache に
+          組み込まれていて、メインのサーバ設定に容易に追加することが
+          できます。</dd>
+
+      <dt>緩やかな停止</dt>
+      <dd>最新の <module>prefork</module> と、<module>worker</module>
+          そして <module>event</module> MPM は <program>httpd</program>
+          を、<a href="stopping.html#gracefulstop">
+          <code>graceful-stop</code></a>
+          のシグナル経由で、緩やかにシャットダウンさせます。
+          <directive module="mpm_common">GracefulShutdownTimeout</directive>
+          のディレクティブがオプションのタイムアウトとして追加され、これに
+          よって<program>httpd</program> は、サービス中リクエストの
+          状態如何に関わらず強制終了します。</dd>
+
+      <dt>プロキシ</dt>
+      <dd>新しいモジュール <module>mod_proxy_balancer</module> は、
+          負荷分散サービスを <module>mod_proxy</module> に提供します。
+          新しいモジュール <module>mod_proxy_ajp</module> は、
+          <a href="http://tomcat.apache.org/">Apache Tomcat</a>
+          で使われる、 <code>Apache JServ Protocol version 1.3</code> の
+          サポートを提供します。</dd>
+
+      <dt>正規表現ライブラリの更新</dt>
+      <dd><a href="http://www.pcre.org/">Perl Compatible Regular Expression
+          Library </a> (PCRE: Perl 互換正規表現ライブラリ) の バージョン
+          5.0 を入れました。
+          <program>httpd</program> の configure 時に
+          <code>--with-pcre</code> のフラグを渡すことで、システムが
+          インストールしている PCRE を利用するように設定できます。</dd>
+
+      <dt>高機能フィルター</dt>
+      <dd><module>mod_filter</module> は、出力フィルターの連鎖に動的な
+          設定を導入しています。
+          これは、2.0 アーキテクチャにある、ややこしい依存と順序問題を
+          回避するために、リクエスト又はレスポンスヘッダや環境変数に
+          基づいて、フィルターを条件付きで挿入できるようにしています。</dd>
+
+      <dt>大ファイルサポート</dt>
+
+      <dd><program>httpd</program> は、最新の 32-bit Unix システムでの 2GB 
+          より大きなファイルのサポートを取り入れてビルドされます。
+          &gt;2GB であるリクエストボディの扱いも追加されています。</dd>
+
+      <dt>Event MPM</dt>
+      <dd><module>event</module> MPM は、 Keep Alive のリクエストを受け付けて
+          処理するのに、別個のスレッドを使います。伝統的には Keep Alive の
+          リクエストを扱うのに、ワーカを使用する必要がありました。
+          Keep Alive のタイムアウトが来るまでは、そのワーカを再利用
+          できませんでした。</dd>
+
+      <dt>SQL データベースのサポート</dt>
+      <dd><p><module>mod_dbd</module>と、 <code>apr_dbd</code> の枠組みを
+          併用することで、SQL を必要とするモジュールを直接サポートします。
+          スレッド MPM でコネクションプールをサポートします。</p>
+          </dd>
+
+    </dl>
+  </section>
+
+  <section id="module">
+    <title>モジュールの拡張</title>
+    <dl>
+      <dt>Authn/Authz</dt>
+      <dd>aaa ディレクトリのモジュールは名前を変えられ、ダイジェスト認証を
+          よりよくサポートするようになっています。
+          例えば、 <code>mod_auth</code> は
+          <module>mod_auth_basic</module> と
+          <module>mod_authn_file</module> に分けられ、
+          <code>mod_auth_dbm</code> は
+          <module>mod_authn_dbm</module> と名前を変更し、
+          <code>mod_access</code> は、 
+          <module>mod_authz_host</module>と名前を変えられています。
+          また、新しいモジュール <module>mod_authn_alias</module> ができて、
+          ある種の認証設定を簡単化します。
+      </dd>
+
+      <dt><module>mod_authnz_ldap</module></dt>
+      <dd>このモジュールは 2.0 モジュール<code>mod_auth_ldap</code> の 
+          2.2 <code>Authn/Authz</code> 枠組みへの取り込みです。
+          LDAP の属性値と複雑な検索フィルターを使って
+          <directive module="core">Require</directive> ディレクティブに
+          取り込むことを新機能として含んでいます。</dd>
+
+      <dt><module>mod_authz_owner</module></dt>
+      <dd>ファイルシステムの所有者に基づいてファイルへのアクセスを認可する
+          新しいモジュールです。</dd>
+
+      <dt><module>mod_version</module></dt>
+      <dd>稼働するサーバのバージョン数に基づいて設定ブロックを有効にする、
+          新しいモジュールです。</dd>
+
+      <dt><module>mod_info</module></dt>
+      <dd>新しく、 <code>?config</code> 引数を追加しました。
+          これは、Apache によって解析される設定ディレクティブを、ファイル名と
+          行数を付けて表示します。
+          また、モジュールは <code>httpd -V</code> と同様の、リクエストフックの
+          順序と追加のビルド情報を表示します。</dd>
+
+      <dt><module>mod_ssl</module></dt>
+      <!-- Need Info on SSLEngine Support? -->
+      <dd><a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>
+          に従って、非暗号クリアテキストから TLS 暗号へのコネクション
+          グレードアップを追加しました。</dd>
+
+      <dt><module>mod_imagemap</module></dt>
+      <dd><code>mod_imap</code> は、ユーザの混同を避けるため、
+          <module>mod_imagemap</module> へと名前の変更を行いました。</dd>
+    </dl>
+
+  </section>
+
+  <section id="programs">
+    <title>プログラムの拡張</title>
+    <dl>
+      <dt><program>httpd</program></dt>
+      <dd>新しくコマンドラインのオプションとして <code>-M</code>
+          が追加されました。このオプションでは現在の設定で読み込まれる
+          全てのモジュールがリストされます。
+          <code>-l</code> オプションとは違って、このリストには
+          <module>mod_so</module> で読み込まれる DSO を含んでいます。</dd>
+
+      <dt><program>httxt2dbm</program></dt>
+      <dd>テキストの入力から dbm ファイルを生成するのに使われる、新しい
+          プログラムです。
+          <directive module="mod_rewrite">RewriteMap</directive>
+          で使われる <code>dbm</code> のマップタイプに使用されます。</dd>
+    </dl>
+  </section>
+
+  <section id="developer">
+    <title>モジュール開発者向けの変更</title>
+    <dl>
+      <dt><glossary>APR</glossary> 1.0 API</dt>
+
+      <dd>Apache 2.2 は APR 1.0 API　を使用します。
+          使われなくなった関数とシンボルは <code>APR</code> と 
+          <code>APR-Util</code>から削除されました。
+          詳細については<a href="http://apr.apache.org/">
+          APR Webサイト</a>を見てください。</dd>
+
+      <dt>Authn/Authz</dt>
+      <dd>付属の認証と認可のモジュールは次のように名前を変更しました：
+          <ul>
+          <li><code>mod_auth_*</code> -> HTTP 認証メカニズムを実装する
+          モジュール</li>
+          <li><code>mod_authn_*</code> -> 認証バックエンドを提供する
+          モジュール</li>
+          <li><code>mod_authz_*</code> -> 認可（又はアクセスの制御）を
+          実装するモジュール</li>
+          <li><code>mod_authnz_*</code> -> 認証と認可の両方を実装する
+          モジュール</li>
+          </ul>
+          新しい認証バックエンド提供のスキームがあって、新しいバックエンドの
+          構築を非常にやさしくしてくれます。</dd>
+
+      <dt>接続エラーのログ</dt>
+
+      <dd>新しい関数 <code>ap_log_cerror</code> が、クライアントの接続の
+          際のエラーを記録するために追加されました。ログの出力メッセージには
+          クライアントの IP アドレスが含まれます。</dd>
+
+      <dt>設定テストのフックを追加</dt>
+
+      <dd>あたらしいフックである <code>test_config</code> が追加されました。
+          これにより、ユーザが <code>-t</code> を <program>httpd</program> の
+          起動時に与えた時だけに実行される、特別なコードを入れることが
+          できます。</dd>
+
+      <dt>スレッド MPM's のスタックサイズ設定</dt>
+
+      <dd>新しいディレクティブである、 <directive module="mpm_common"
+          >ThreadStackSize</directive> が全てのスレッド MPM のスタックサイズの
+          設定に追加されました。これはサードパーティのモジュールで、
+          デフォルトのスタックサイズが小さいことがあるために、必要と
+          なりました。</dd>
+
+      <dt>出力フィルターのプロトコルハンドリング</dt>
+
+      <dd>過去においては、個々のフィルターは、それぞれが影響をおよぼす
+          ところでは、応答ヘッダを正しく生成する責任がありました。
+          フィルターは、今は、共通するプロトコル管理を
+          <code>ap_register_output_filter_protocol</code> 又は
+          <code>ap_filter_protocol</code> を呼び出して
+          <module>mod_filter</module> に 委任することができます。</dd>
+
+      <dt>モニターフックを追加</dt>
+      <dd>モニターフックを使って、モジュールを親 (root) のプロセスで
+          レギュラー又はスケジュールのジョブを実行することが
+          できます。</dd>
+
+      <dt>正規表現の API を変更</dt>
+
+      <dd><code>pcreposix.h</code> ヘッダは既に削除されました;
+          新しい <code>ap_regex.h</code> によって置き換えました。 
+          古いヘッダである POSIX.2 <code>regex.h</code> によって
+          公開されている実装は、今は、<code>ap_regex.h</code> の
+          <code>ap_</code> 名前空間の下に存在します。 
+          <code>regcomp</code> と、 <code>regexec</code> 等々への呼び出しは
+          <code>ap_regcomp</code>, <code>ap_regexec</code> などに置き換え
+          られます。</dd>
+
+      <dt>DBD フレームワーク (SQL データベース API)</dt>
+
+      <dd><p>Apache 1.x と 2.0 では、SQL バックエンドを必要とするモジュールは
+          それを自分で管理する責任がありました。車輪の再発明の問題を除いても、
+          これはとても非効率的なことです。例えばそれぞれのモジュールが自分
+          で接続を維持しなければなりません。</p>
+
+      <p>Apache 2.1 とその後は、 <code>ap_dbd</code> API が提供されており、
+         これを使ってデータベースの接続（スレッド化された又はスレッドでない
+         MPM に最適化した戦略を含んで）を管理することができます。
+         一方、APR 1.2 および以降では <code>apr_dbd</code> API でデータ
+         ベースとのやりとりを提供しています。</p>
+
+      <p>新しいモジュールはこれらを全ての SQL データベースの運用に利用する
+         べきです。現存のアプリケーションは、実現可能であればどこでもこれらを
+         使うように更新され、透過的にあるいは推奨オプションとして
+         ユーザに提供されるべきです。</p></dd>
+    </dl>
+  </section>
+</manualpage>
