@@ -745,6 +745,7 @@ int ssl_hook_Access(request_rec *r)
             }
         }
         else {
+            const char *reneg_support;
             request_rec *id = r->main ? r->main : r;
 
             /* Additional mitigation for CVE-2009-3555: At this point,
@@ -764,17 +765,17 @@ int ssl_hook_Access(request_rec *r)
                 r->connection->keepalive = AP_CONN_CLOSE;
             }
 
+#if defined(SSL_get_secure_renegotiation_support)
+            reneg_support = SSL_get_secure_renegotiation_support(ssl) ?
+                            "client does" : "client does not";
+#else
+            reneg_support = "server does not";
+#endif
             /* Perform a full renegotiation. */
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02260)
                           "Performing full renegotiation: complete handshake "
                           "protocol (%s support secure renegotiation)",
-#if defined(SSL_get_secure_renegotiation_support)
-                          SSL_get_secure_renegotiation_support(ssl) ?
-                          "client does" : "client does not"
-#else
-                          "server does not"
-#endif
-                );
+                          reneg_support);
 
             SSL_set_session_id_context(ssl,
                                        (unsigned char *)&id,
