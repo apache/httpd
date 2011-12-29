@@ -35,6 +35,11 @@
 **  _________________________________________________________________
 */
 
+#ifndef OPENSSL_NO_EC
+#define KEYTYPES "RSA, DSA or ECC"
+#else 
+#define KEYTYPES "RSA or DSA"
+#endif
 
 static void ssl_add_version_components(apr_pool_t *p,
                                        server_rec *s)
@@ -1135,11 +1140,7 @@ static void ssl_init_server_certs(server_rec *s,
 #endif
 )) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01910)
-#ifndef OPENSSL_NO_EC
-                "Oops, no RSA, DSA or ECC server certificate found "
-#else
-                "Oops, no RSA or DSA server certificate found "
-#endif
+                "Oops, no " KEYTYPES " server certificate found "
                 "for '%s:%d'?!", s->server_hostname, s->port);
         ssl_die();
     }
@@ -1160,11 +1161,7 @@ static void ssl_init_server_certs(server_rec *s,
 #endif
           )) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01911)
-#ifndef OPENSSL_NO_EC
-                "Oops, no RSA, DSA or ECC server private key found?!");
-#else
-                "Oops, no RSA or DSA server private key found?!");
-#endif
+                "Oops, no " KEYTYPES " server private key found?!");
         ssl_die();
     }
 }
@@ -1460,21 +1457,17 @@ void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
         klen = strlen(key);
 
         if ((ps = (server_rec *)apr_hash_get(table, key, klen))) {
-            ap_log_error(APLOG_MARK,
 #ifdef OPENSSL_NO_TLSEXT
-                         APLOG_WARNING,
+            int level = APLOG_WARNING;
+            const char *problem = "conflict";
 #else
-                         APLOG_DEBUG,
+            int level = APLOG_DEBUG;
+            const char *problem = "overlap";
 #endif
-                         0,
-                         base_server,
-#ifdef OPENSSL_NO_TLSEXT
-                         "Init: SSL server IP/port conflict: "
-#else
-                         "Init: SSL server IP/port overlap: "
-#endif
+            ap_log_error(APLOG_MARK, level, 0, base_server,
+                         "Init: SSL server IP/port %s: "
                          "%s (%s:%d) vs. %s (%s:%d)",
-                         ssl_util_vhostid(p, s),
+                         problem, ssl_util_vhostid(p, s),
                          (s->defn_name ? s->defn_name : "unknown"),
                          s->defn_line_number,
                          ssl_util_vhostid(p, ps),
@@ -1488,11 +1481,12 @@ void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
     }
 
     if (conflict) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, base_server, APLOGNO(01917)
 #ifdef OPENSSL_NO_TLSEXT
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, base_server, APLOGNO(01917)
                      "Init: You should not use name-based "
                      "virtual hosts in conjunction with SSL!!");
 #else
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, base_server, APLOGNO(02292)
                      "Init: Name-based SSL virtual hosts only "
                      "work for clients with TLS server name indication "
                      "support (RFC 4366)");
