@@ -164,8 +164,9 @@
     <ul>
       <li>Introduce per-directory, per-module loglevel</li>
       <li>New loglevels APLOG_TRACEn</li>
-      <li>ap_log_*error become macro wrappers (fully back-compatible if
-          APLOG_MARK macro is used)</li>
+      <li>ap_log_*error become macro wrappers (back-compatible if
+          APLOG_MARK macro is used, except that is no longer possible to
+          use #ifdef inside the argument list)</li>
       <li>piped logging revamped</li>
       <li>module_index added to error_log hook</li>
       <li>new function: ap_log_command_line</li>
@@ -335,6 +336,11 @@
        ap_log_perror(file, line, APLOG_MODULE_INDEX, APLOG_ERR, 0, p, "Failed to allocate dynamic lock structure");<br />
        <br />
     </example>
+
+    <p><code>ap_log_*error</code> are now implemented as macros. This means
+       that it is no longer possible to use <code>#ifdef</code> inside the
+       argument list of <code>ap_log_*error</code>, as this would cause
+       undefined behavor according to C99.</p>
 
     <p>A <code>server_rec</code> pointer must be passed to
        <code>ap_log_error()</code> when called after startup.  This
