@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.0
 
+  *) mod_ssl: Fix compilation with xlc on AIX. PR 52394. [Stefan Fritsch]
+
   *) mod_log_config: Fix segfault when trying to log a nameless, valueless
      cookie. PR 52256. [Rainer Canavan <rainer-apache 7val com>]
 
