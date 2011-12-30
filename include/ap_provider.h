@@ -36,6 +36,10 @@ typedef struct {
     const char *provider_name;
 } ap_list_provider_names_t;
 
+typedef struct {
+    const char *provider_group;
+    const char *provider_version;
+} ap_list_provider_groups_t;
 
 /**
  * This function is used to register a provider with the global
@@ -77,6 +81,16 @@ AP_DECLARE(void *) ap_lookup_provider(const char *provider_group,
 AP_DECLARE(apr_array_header_t *) ap_list_provider_names(apr_pool_t *pool,
                                               const char *provider_group,
                                               const char *provider_version);
+
+/**
+ * This function is used to retrieve a list (array) of provider groups and versions
+ * @param pool The pool to create any storage from
+ * @return pointer to array of ap_list_provider_groups_t of provider groups
+ *         and versions (could be empty)
+ */
+
+AP_DECLARE(apr_array_header_t *) ap_list_provider_groups(apr_pool_t *pool);
+
 
 #ifdef __cplusplus
 }
