@@ -63,6 +63,7 @@
 #include "ap_mpm.h"
 #include "mpm_common.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 typedef struct
 {
@@ -687,11 +688,32 @@ static int show_active_hooks(request_rec * r)
     return 0;
 }
 
+static int cmp_module_name(const void *a_, const void *b_)
+{
+    const module * const *a = a_;
+    const module * const *b = b_;
+    return strcmp((*a)->name, (*b)->name);
+}
+
+static apr_array_header_t *get_sorted_modules(apr_pool_t *p)
+{
+    apr_array_header_t *arr = apr_array_make(p, 64, sizeof(module *));
+    module *modp, **entry;
+    for (modp = ap_top_module; modp; modp = modp->next) {
+        entry = &APR_ARRAY_PUSH(arr, module *);
+        *entry = modp;
+    }
+    qsort(arr->elts, arr->nelts, sizeof(module *), cmp_module_name);
+    return arr;
+}
+
 static int display_info(request_rec * r)
 {
-    module *modp;
+    module *modp = NULL;
     const char *more_info;
     const command_rec *cmd;
+    apr_array_header_t *modules = NULL;
+    int i;
 
     if (strcmp(r->handler, "server-info")) {
         return DECLINED;
@@ -730,11 +752,12 @@ static int display_info(request_rec * r)
             ap_rputs("<h2><a name=\"modules\">Loaded Modules</a></h2>"
                     "<dl><dt><tt>", r);
 
-            /* TODO: Sort by Alpha */
-            for (modp = ap_top_module; modp; modp = modp->next) {
+            modules = get_sorted_modules(r->pool);
+            for (i = 0; i < modules->nelts; i++) {
+                modp = APR_ARRAY_IDX(modules, i, module *);
                 ap_rprintf(r, "<a href=\"#%s\">%s</a>", modp->name,
                            modp->name);
-                if (modp->next) {
+                if (i < modules->nelts) {
                     ap_rputs(", ", r);
                 }
             }
@@ -756,7 +779,10 @@ static int display_info(request_rec * r)
         }
         else {
             int comma = 0;
-            for (modp = ap_top_module; modp; modp = modp->next) {
+            if (!modules)
+                 modules = get_sorted_modules(r->pool);
+            for (i = 0; i < modules->nelts; i++) {
+                modp = APR_ARRAY_IDX(modules, i, module *);
                 if (!r->args || !strcasecmp(modp->name, r->args)) {
                     ap_rprintf(r,
                                "<dl><dt><a name=\"%s\"><strong>Module Name:</strong></a> "
@@ -862,7 +888,9 @@ static int display_info(request_rec * r)
     }
     else {
         ap_rputs("<dl><dt>Server Module List</dt>", r);
-        for (modp = ap_top_module; modp; modp = modp->next) {
+        modules = get_sorted_modules(r->pool);
+        for (i = 0; i < modules->nelts; i++) {
+            modp = APR_ARRAY_IDX(modules, i, module *);
             ap_rputs("<dd>", r);
             ap_rputs(modp->name, r);
             ap_rputs("</dd>", r);
