@@ -61,6 +61,7 @@
 #include "http_request.h"
 #include "util_script.h"
 #include "ap_mpm.h"
+#include "mpm_common.h"
 #include <stdio.h>
 
 typedef struct
@@ -300,6 +301,10 @@ static hook_lookup_t startup_hooks[] = {
     {"Test Configuration", ap_hook_get_test_config},
     {"Post Configuration", ap_hook_get_post_config},
     {"Open Logs", ap_hook_get_open_logs},
+    {"Pre-MPM", ap_hook_get_pre_mpm},
+    {"MPM", ap_hook_get_mpm},
+    {"Drop Privileges", ap_hook_get_drop_privileges},
+    {"Retrieve Optional Functions", ap_hook_get_optional_fn_retrieve},
     {"Child Init", ap_hook_get_child_init},
     {NULL},
 };
@@ -309,6 +314,7 @@ static hook_lookup_t request_hooks[] = {
     {"Create Connection", ap_hook_get_create_connection},
     {"Process Connection", ap_hook_get_process_connection},
     {"Create Request", ap_hook_get_create_request},
+    {"Pre-Read Request", ap_hook_get_pre_read_request},
     {"Post-Read Request", ap_hook_get_post_read_request},
     {"Header Parse", ap_hook_get_header_parser},
     {"HTTP Scheme", ap_hook_get_http_scheme},
@@ -316,15 +322,34 @@ static hook_lookup_t request_hooks[] = {
     {"Quick Handler", ap_hook_get_quick_handler},
     {"Translate Name", ap_hook_get_translate_name},
     {"Map to Storage", ap_hook_get_map_to_storage},
-    {"Check Access", ap_hook_get_access_checker},
+    {"Check Access", ap_hook_get_access_checker_ex},
+    {"Check Access (legacy)", ap_hook_get_access_checker},
     {"Verify User ID", ap_hook_get_check_user_id},
+    {"Note Authentication Failure", ap_hook_get_note_auth_failure},
     {"Verify User Access", ap_hook_get_auth_checker},
     {"Check Type", ap_hook_get_type_checker},
     {"Fixups", ap_hook_get_fixups},
     {"Insert Filters", ap_hook_get_insert_filter},
     {"Content Handlers", ap_hook_get_handler},
-    {"Logging", ap_hook_get_log_transaction},
+    {"Transaction Logging", ap_hook_get_log_transaction},
     {"Insert Errors", ap_hook_get_insert_error_filter},
+    {"Generate Log ID", ap_hook_get_generate_log_id},
+    {NULL},
+};
+
+static hook_lookup_t other_hooks[] = {
+    {"Monitor", ap_hook_get_monitor},
+    {"Child Status", ap_hook_get_child_status},
+    {"End Generation", ap_hook_get_end_generation},
+    {"Error Logging", ap_hook_get_error_log},
+    {"Query MPM Attributes", ap_hook_get_mpm_query},
+    {"Query MPM Name", ap_hook_get_mpm_get_name},
+    {"Register Timed Callback", ap_hook_get_mpm_register_timed_callback},
+    {"Extend Expression Parser", ap_hook_get_expr_lookup},
+    {"Set Management Items", ap_hook_get_get_mgmt_items},
+#if AP_ENABLE_EXCEPTION_HOOK
+    {"Handle Fatal Exceptions", ap_hook_get_fatal_exception},
+#endif
     {NULL},
 };
 
@@ -646,6 +671,17 @@ static int show_active_hooks(request_rec * r)
         ap_rputs("\n  </tt>\n</dt>\n", r);
     }
 
+    ap_rputs
+        ("</dl>\n<hr />\n<h2><a name=\"other_hooks\">Other Hooks</a></h2>\n<dl>",
+         r);
+
+    for (i = 0; other_hooks[i].name; i++) {
+        ap_rprintf(r, "<dt><strong>%s:</strong>\n <br /><tt>\n",
+                   other_hooks[i].name);
+        dump_a_hook(r, other_hooks[i].get);
+        ap_rputs("\n  </tt>\n</dt>\n", r);
+    }
+
     ap_rputs("</dl>\n<hr />\n", r);
 
     return 0;
@@ -687,7 +723,8 @@ static int display_info(request_rec * r)
             ap_rputs("<a href=\"#modules\">Loaded Modules</a>, "
                      "<a href=\"#server\">Server Settings</a>, "
                      "<a href=\"#startup_hooks\">Startup Hooks</a>, "
-                     "<a href=\"#request_hooks\">Request Hooks</a>", r);
+                     "<a href=\"#request_hooks\">Request Hooks</a>, "
+                     "<a href=\"#other_hooks\">Other Hooks</a>", r);
             ap_rputs("</tt></dt></dl><hr />", r);
 
             ap_rputs("<h2><a name=\"modules\">Loaded Modules</a></h2>"
