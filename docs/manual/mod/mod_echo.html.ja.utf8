@@ -21,12 +21,10 @@
 <div id="page-content">
 <div id="preamble"><h1>Apache モジュール mod_echo</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_echo.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>翻訳済み言語: </span><a href="../en/mod/mod_echo.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_echo.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_echo.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>プロトコルモジュールの概要を示すための単純なエコーサーバ
 </td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Experimental</td></tr>
@@ -50,10 +48,11 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>エコーサーバの有効無効を設定します。</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ProtocolEcho On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>ProtocolEcho Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_echo</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Apache 2.0 以降</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Apache 2.0 以降で使用可能</td></tr>
 </table>
     <p><code class="directive">ProtocolEcho</code> ディレクティブで
     エコーサーバの有効無効を設定します。</p>
@@ -65,10 +64,10 @@
 </div>
 </div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_echo.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>翻訳済み言語: </span><a href="../en/mod/mod_echo.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_echo.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_echo.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2011 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2012 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
 </body></html>

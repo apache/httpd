@@ -305,7 +305,7 @@ fichier en fonction de son type MIME</td></tr>
     (<code>"</code>).</p>
 
     <div class="example"><h3>Exemple</h3><p><code>
-      AddDescription "La planète Mars" /web/pics/mars.gif
+      AddDescription "La planète Mars" mars.gif
     </code></p></div>
 
     <p>La taille par défaut, habituelle du champ de description est de
@@ -328,6 +328,15 @@ fichier en fonction de son type MIME</td></tr>
       exemple couper la fin d'une phrase en caractères gras), le
       résultat pourrait en affecter toute la suite du listing du
       répertoire.</p>
+    </div>
+
+    <div class="note"><h3>Arguments avec chemins</h3>
+      <p>Les chemins absolus ne sont actuellement pas supportés et ne
+      peuvent correspondre à aucun chemin réel à l'exécution. Les
+      arguments contenant des chemins relatifs, qui ne devraient être
+      normalement utilisés que dans les fichiers htaccess, sont
+      implicitement préfixés par '*/' afin d'éviter toute association
+      avec des noms de répertoires partiels.</p>
     </div>
 
 </div>
@@ -562,6 +571,12 @@ de l'index d'un répertoire</td></tr>
     <div class="example"><p><code>
       IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
     </code></p></div>
+
+    <div class="note"><h3>Expressions rationnelles</h3>
+      <p>Cette directive est actuellement incompatible avec les sections
+      de configuration qui comportent des arguments avec expressions
+      rationnelles comme  <code class="directive"><a href="../mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code></p>
+    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1025,6 +1040,6 @@ l'index</td></tr>
 <a href="../ko/mod/mod_autoindex.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_autoindex.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2011 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2012 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div>
 </body></html>

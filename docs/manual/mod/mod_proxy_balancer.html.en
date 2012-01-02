@@ -475,7 +475,7 @@ candidate lbstatus -= total factor</code></pre></div>
     a path info appended to the URL using a semicolon (<code>;</code>)
     as the separator and add the session id behind. As in the cookie case,
     Apache Tomcat can include the configured <code>jvmRoute</code> in this path
-    info. To let Apache find this sort of path info, you neet to set
+    info. To let Apache find this sort of path info, you need to set
     <code>scolonpathdelim</code> to <code>On</code> in
     <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> or
     <code class="directive"><a href="../mod/mod_proxy.html#proxyset">ProxySet</a></code>.</p>
@@ -540,6 +540,6 @@ candidate lbstatus -= total factor</code></pre></div>
 <p><span>Available Languages: </span><a href="../en/mod/mod_proxy_balancer.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_proxy_balancer.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2011 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2012 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
 </body></html>
