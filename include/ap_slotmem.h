@@ -70,7 +70,7 @@ typedef unsigned int ap_slotmem_type_t;
 typedef struct ap_slotmem_instance_t ap_slotmem_instance_t;
 
 /**
- * callback function used for slotmem.
+ * callback function used for slotmem doall.
  * @param mem is the memory associated with a worker.
  * @param data is what is passed to slotmem.
  * @param pool is pool used
@@ -95,24 +95,26 @@ struct ap_slotmem_provider_t {
     /**
      * create a new slotmem with each item size is item_size.
      * This would create shared memory, basically.
-     * @param name is a key used for debugging and in mod_status output or allow another process to share this space.
+     * @param inst where to store pointer to slotmem
+     * @param name a key used for debugging and in mod_status output or allow another process to share this space.
      * @param item_size size of each item
      * @param item_num number of item to create.
      * @param type type of slotmem.
      * @param pool is pool used
      * @return APR_SUCCESS if all went well
      */
-    apr_status_t (* create)(ap_slotmem_instance_t **new, const char *name, apr_size_t item_size, unsigned int item_num, ap_slotmem_type_t type, apr_pool_t *pool);
+    apr_status_t (* create)(ap_slotmem_instance_t **inst, const char *name, apr_size_t item_size, unsigned int item_num, ap_slotmem_type_t type, apr_pool_t *pool);
     /**
      * attach to an existing slotmem.
      * This would attach to  shared memory, basically.
-     * @param name is a key used for debugging and in mod_status output or allow another process to share this space.
+     * @param inst where to store pointer to slotmem
+     * @param name a key used for debugging and in mod_status output or allow another process to share this space.
      * @param item_size size of each item
      * @param item_num max number of item.
      * @param pool is pool to memory allocate.
      * @return APR_SUCCESS if all went well
      */
-    apr_status_t (* attach)(ap_slotmem_instance_t **new, const char *name, apr_size_t *item_size, unsigned int *item_num, apr_pool_t *pool);
+    apr_status_t (* attach)(ap_slotmem_instance_t **inst, const char *name, apr_size_t *item_size, unsigned int *item_num, apr_pool_t *pool);
     /**
      * get the memory ptr associated with this worker slot.
      * @param s ap_slotmem_instance_t to use.
