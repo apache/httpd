@@ -24,6 +24,7 @@
 #include  "ap_slotmem.h"
 
 #include "httpd.h"
+#include "http_main.h"
 #ifdef AP_NEED_SET_MUTEX_PERMS
 #include "unixd.h"
 #endif
@@ -571,6 +572,10 @@ static apr_status_t slotmem_grab(ap_slotmem_instance_t *slot, unsigned int *id)
         }
     }
     if (i >= slot->desc.num) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02293)
+                     "slotmem(%s) grab failed. Num %u/num_free %u",
+                     slot->name, slotmem_num_slots(slot),
+                     slotmem_num_free_slots(slot));
         return APR_EINVAL;
     }
     *inuse = 1;
@@ -591,6 +596,10 @@ static apr_status_t slotmem_release(ap_slotmem_instance_t *slot,
     inuse = slot->inuse;
 
     if (id >= slot->desc.num || !inuse[id] ) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02294)
+                     "slotmem(%s) release failed. Num %u/inuse[%u] %d",
+                     slot->name, slotmem_num_slots(slot),
+                     id, (int)inuse[id]);
         return APR_NOTFOUND;
     }
     inuse[id] = 0;
