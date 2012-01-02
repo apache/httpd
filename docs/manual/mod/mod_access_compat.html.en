@@ -67,6 +67,13 @@ have been deprecated by the new authz refactoring.  Please see
     cases. However, it is possible to restrict some methods, while
     leaving other methods unrestricted, by enclosing the directives
     in a <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code> section.</p>
+
+    <div class="note"> <h3>Merging of configuration sections</h3>
+      <p>When any directive provided by this module is used in a new 
+      configuration section, no directives provided by this module are
+      inherited from previous configuration sections.</p>
+    </div>
+
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -208,6 +215,13 @@ server</td></tr>
     <p>In this case, browsers with a user-agent string beginning
     with <code>KnockKnock/2.0</code> will be allowed access, and all
     others will be denied.</p>
+
+    <div class="note"> <h3>Merging of configuration sections</h3>
+      <p>When any directive provided by this module is used in a new 
+      configuration section, no directives provided by this module are
+      inherited from previous configuration sections.</p>
+    </div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -377,6 +391,13 @@ evaluated.</td></tr>
     of configuration sections, see the documentation on <a href="../sections.html">How Directory, Location and Files sections
     work</a>.</p>
 
+    <div class="note"> <h3>Merging of configuration sections</h3>
+      <p>When any directive provided by this module is used in a new 
+      configuration section, no directives provided by this module are
+      inherited from previous configuration sections.</p>
+    </div>
+
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Satisfy" id="Satisfy">Satisfy</a> <a name="satisfy" id="satisfy">Directive</a></h2>
@@ -437,6 +458,13 @@ later</td></tr>
 
     <p>Since version 2.0.51 <code class="directive">Satisfy</code> directives can
     be restricted to particular methods by <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code> and <code class="directive"><a href="../mod/core.html#limitexcept">&lt;LimitExcept&gt;</a></code> sections.</p>
+
+    <div class="note"> <h3>Merging of configuration sections</h3>
+      <p>When any directive provided by this module is used in a new 
+      configuration section, no directives provided by this module are
+      inherited from previous configuration sections.</p>
+    </div>
+
 
 <h3>See also</h3>
 <ul>
