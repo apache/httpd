@@ -21,17 +21,15 @@
 <div id="page-content">
 <div id="preamble"><h1>Apache モジュール mod_version</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_version.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>翻訳済み言語: </span><a href="../en/mod/mod_version.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_version.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_version.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>バージョン依存の設定</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>version_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_version.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">互換性:</a></th><td>バージョン 2.1 以降</td></tr></table>
+<tr><th><a href="module-dict.html#Compatibility">互換性:</a></th><td>Apache 2.0.56 以降で使用可能</td></tr></table>
 <h3>概要</h3>
 
     <p>様々なバージョンの httpd の異なる設定を扱うことになる、
@@ -104,7 +102,8 @@
       &lt;/IfVersion&gt;
     </code></p></div>
 
-    <p>数値比較に加えて、http のバージョン番号に対して正規表現による
+    <p>数値比較に加えて、http のバージョン番号に対して
+    <a class="glossarylink" href="../glossary.html#regex" title="用語集を参照">正規表現</a> による
     マッチングができます。二種類の書き方があります:</p>
 
     <table class="bordered"><tr class="header"><th><var>operator</var></th><th>説明</th></tr>
@@ -141,10 +140,10 @@
 </div>
 </div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_version.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>翻訳済み言語: </span><a href="../en/mod/mod_version.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_version.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_version.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2011 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2012 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
 </body></html>

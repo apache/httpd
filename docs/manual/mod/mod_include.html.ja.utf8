@@ -21,11 +21,13 @@
 <div id="page-content">
 <div id="preamble"><h1>Apache モジュール mod_include</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_include.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>翻訳済み言語: </span><a href="../en/mod/mod_include.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_include.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
+<div class="outofdate">この日本語訳はすでに古くなっている
+            可能性があります。
+            最近更新された内容を見るには英語版をご覧下さい。
+        </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>サーバがパースする html ドキュメント (Server Side Includes)</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>include_module</td></tr>
@@ -614,9 +616,9 @@
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_include</td></tr>
-</table><p>The documentation for this directive has
-            not been translated yet. Please have a look at the English
-            version.</p></div>
+</table><p>このディレクティブの解説文書は
+            まだ翻訳されていません。英語版をご覧ください。
+            </p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSIEndTag" id="SSIEndTag">SSIEndTag</a> <a name="ssiendtag" id="ssiendtag">ディレクティブ</a></h2>
 <table class="directive">
@@ -678,9 +680,9 @@ directive]"</code></td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_include</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Available in version 2.2.15 and later.</td></tr>
-</table><p>The documentation for this directive has
-            not been translated yet. Please have a look at the English
-            version.</p></div>
+</table><p>このディレクティブの解説文書は
+            まだ翻訳されていません。英語版をご覧ください。
+            </p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSILastModified" id="SSILastModified">SSILastModified</a> <a name="ssilastmodified" id="ssilastmodified">ディレクティブ</a></h2>
 <table class="directive">
@@ -692,9 +694,9 @@ server.</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_include</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Available in version 2.2.15 and later.</td></tr>
-</table><p>The documentation for this directive has
-            not been translated yet. Please have a look at the English
-            version.</p></div>
+</table><p>このディレクティブの解説文書は
+            まだ翻訳されていません。英語版をご覧ください。
+            </p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSIStartTag" id="SSIStartTag">SSIStartTag</a> <a name="ssistarttag" id="ssistarttag">ディレクティブ</a></h2>
 <table class="directive">
@@ -825,9 +827,9 @@ server.</td></tr>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_include.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>翻訳済み言語: </span><a href="../en/mod/mod_include.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_include.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2011 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2012 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
 </body></html>

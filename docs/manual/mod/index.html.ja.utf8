@@ -18,7 +18,7 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.2</a></div><div id="page-content"><div id="preamble"><h1>モジュール一覧</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../de/mod/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>翻訳済み言語: </span><a href="../de/mod/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/mod/" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../ja/mod/" title="Japanese">&nbsp;ja&nbsp;</a> |
@@ -142,11 +142,10 @@ by other LDAP modules</dd>
 <dt><a href="mod_proxy_balancer.html">mod_proxy_balancer</a></dt><dd>負荷分散のための <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> 拡張</dd>
 <dt><a href="mod_proxy_connect.html">mod_proxy_connect</a></dt><dd><code>CONNECT</code> リクエストを扱う
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> 用の拡張</dd>
-<dt><a href="mod_proxy_ftp.html">mod_proxy_ftp</a></dt><dd>FTP support module for
-<code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
+<dt><a href="mod_proxy_ftp.html">mod_proxy_ftp</a></dt><dd><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> のための FTP サポートモジュール</dd>
 <dt><a href="mod_proxy_http.html">mod_proxy_http</a></dt><dd>HTTP support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
-<dt><a href="mod_proxy_scgi.html">mod_proxy_scgi</a></dt><dd>SCGI gateway module for <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
+<dt><a href="mod_proxy_scgi.html">mod_proxy_scgi</a></dt><dd><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> のための SCGI ゲートウェイモジュール</dd>
 <dt><a href="mod_reqtimeout.html" id="R" name="R">mod_reqtimeout</a></dt><dd>Set timeout and minimum data rate for receiving requests
 </dd>
 <dt><a href="mod_rewrite.html">mod_rewrite</a></dt><dd>Provides a rule-based rewriting engine to rewrite requested
@@ -174,7 +173,7 @@ Layer (SSL) and Transport Layer Security (TLS) protocols</dd>
 hosting</dd>
 </dl></div></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../de/mod/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>翻訳済み言語: </span><a href="../de/mod/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/mod/" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../ja/mod/" title="Japanese">&nbsp;ja&nbsp;</a> |
@@ -182,6 +181,6 @@ hosting</dd>
 <a href="../tr/mod/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2011 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2012 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
 </body></html>
