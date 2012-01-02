@@ -212,6 +212,7 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_ext_filter.html">Módulo Apache mod_ext_filter</a></li>
 <li><a href="mod/mod_file_cache.html">Módulo Apache mod_file_cache</a></li>
 <li><a href="mod/mod_filter.html">Módulo Apache mod_filter</a></li>
+<li><a href="mod/mod_firehose.html">Módulo Apache mod_firehose</a></li>
 <li><a href="mod/mod_headers.html">Módulo Apache mod_headers</a></li>
 <li><a href="mod/mod_heartbeat.html">Módulo Apache mod_heartbeat</a></li>
 <li><a href="mod/mod_heartmonitor.html">Módulo Apache mod_heartmonitor</a></li>
@@ -234,6 +235,7 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_mime_magic.html">Módulo Apache mod_mime_magic</a></li>
 <li><a href="mod/mod_negotiation.html">Módulo Apache mod_negotiation</a></li>
 <li><a href="mod/mod_nw_ssl.html">Módulo Apache mod_nw_ssl</a></li>
+<li><a href="mod/mod_policy.html">Módulo Apache mod_policy</a></li>
 <li><a href="mod/mod_privileges.html">Módulo Apache mod_privileges</a></li>
 <li><a href="mod/mod_proxy.html">Módulo Apache mod_proxy</a></li>
 <li><a href="mod/mod_proxy_ajp.html">Módulo Apache mod_proxy_ajp</a></li>
@@ -261,6 +263,10 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_slotmem_plain.html">Módulo Apache mod_slotmem_plain</a></li>
 <li><a href="mod/mod_slotmem_shm.html">Módulo Apache mod_slotmem_shm</a></li>
 <li><a href="mod/mod_so.html">Módulo Apache mod_so</a></li>
+<li><a href="mod/mod_socache_dbm.html">Módulo Apache mod_socache_dbm</a></li>
+<li><a href="mod/mod_socache_dc.html">Módulo Apache mod_socache_dc</a></li>
+<li><a href="mod/mod_socache_memcache.html">Módulo Apache mod_socache_memcache</a></li>
+<li><a href="mod/mod_socache_shmcb.html">Módulo Apache mod_socache_shmcb</a></li>
 <li><a href="mod/mod_speling.html">Módulo Apache mod_speling</a></li>
 <li><a href="mod/mod_ssl.html">Módulo Apache mod_ssl</a></li>
 <li><a href="mod/mod_status.html">Módulo Apache mod_status</a></li>
@@ -304,6 +310,6 @@ Referencia de Directivas</a></li>
 <a href="./tr/sitemap.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/sitemap.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2011 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2012 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/directives.html">Directivas</a> | <a href="./faq/">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa de este sitio web</a></p></div>
 </body></html>
