@@ -22,6 +22,8 @@
 <a href="../ko/platform/" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../zh-cn/platform/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
+<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
+            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#win">Microsoft Windows</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#other">기타 플래폼</a></li>
@@ -91,6 +93,6 @@
 <a href="../ko/platform/" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../zh-cn/platform/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2011 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2012 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/directives.html">지시어들</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p></div>
 </body></html>
