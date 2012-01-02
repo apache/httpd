@@ -418,6 +418,12 @@ request</td></tr>
  <var>expression</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Register a content filter</td></tr>
 <tr class="odd"><td><a href="mod_filter.html#filtertrace">FilterTrace <var>filter-name</var> <var>level</var></a></td><td></td><td>skd</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Get debug/diagnostic information from
     <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code></td></tr>
+<tr><td><a href="mod_firehose.html#firehoseconnectioninput">FirehoseConnectionInput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Capture traffic coming into the server on each connection</td></tr>
+<tr class="odd"><td><a href="mod_firehose.html#firehoseconnectionoutput">FirehoseConnectionOutput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Capture traffic going out of the server on each connection</td></tr>
+<tr><td><a href="mod_firehose.html#firehoseproxyconnectioninput">FirehoseProxyConnectionInput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Capture traffic coming into the back of mod_proxy</td></tr>
+<tr class="odd"><td><a href="mod_firehose.html#firehoseproxyconnectionoutput">FirehoseProxyConnectionOutput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Capture traffic sent out from the back of mod_proxy</td></tr>
+<tr><td><a href="mod_firehose.html#firehoserequestinput">FirehoseRequestInput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Capture traffic coming into the server on each request</td></tr>
+<tr class="odd"><td><a href="mod_firehose.html#firehoserequestoutput">FirehoseRequestOutput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Capture traffic going out of the server on each request</td></tr>
 <tr><td><a href="mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</a></td><td> Prefer </td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Action to take if a single acceptable document is not
 found</td></tr>
 <tr class="odd"><td><a href="core.html#forcetype">ForceType <var>ortam-türü</var>|None</a></td><td></td><td>dh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bütün dosyaların belirtilen ortam türüyle sunulmasına
@@ -617,6 +623,26 @@ evaluated.</td></tr>
 <tr class="odd"><td><a href="mod_env.html#passenv" id="P" name="P">PassEnv <var>ortam-değişkeni</var> [<var>ortam-değişkeni</var>]
 ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Ortam değişkenlerini kabuktan aktarır.</td></tr>
 <tr><td><a href="mpm_common.html#pidfile">PidFile <var>dosya</var></a></td><td> logs/httpd.pid </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Ana sürecin süreç kimliğinin (PID) kaydedileceği dosyayı belirler.</td></tr>
+<tr class="odd"><td><a href="mod_policy.html#policyconditional">PolicyConditional <var>ignore|log|enforce</var></a></td><td></td><td>skd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable the conditional request policy.</td></tr>
+<tr><td><a href="mod_policy.html#policyconditionalurl">PolicyConditionalURL <var>url</var></a></td><td></td><td>skd</td><td>E</td></tr><tr><td class="descr" colspan="4">URL describing the conditional request policy.</td></tr>
+<tr class="odd"><td><a href="mod_policy.html#policyenvironment">PolicyEnvironment <var>variable</var> <var>log-value</var> <var>ignore-value</var></a></td><td></td><td>skd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Override policies based on an environment variable.</td></tr>
+<tr><td><a href="mod_policy.html#policyfilter">PolicyFilter <var>on|off</var></a></td><td></td><td>skd</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable or disable policies for the given URL space.</td></tr>
+<tr class="odd"><td><a href="mod_policy.html#policykeepalive">PolicyKeepalive <var>ignore|log|enforce</var></a></td><td></td><td>skd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable the keepalive policy.</td></tr>
+<tr><td><a href="mod_policy.html#policykeepaliveurl">PolicyKeepaliveURL <var>url</var></a></td><td></td><td>skd</td><td>E</td></tr><tr><td class="descr" colspan="4">URL describing the keepalive policy.</td></tr>
+<tr class="odd"><td><a href="mod_policy.html#policylength">PolicyLength <var>ignore|log|enforce</var></a></td><td></td><td>skd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable the content length policy.</td></tr>
+<tr><td><a href="mod_policy.html#policylengthurl">PolicyLengthURL <var>url</var></a></td><td></td><td>skd</td><td>E</td></tr><tr><td class="descr" colspan="4">URL describing the content length policy.</td></tr>
+<tr class="odd"><td><a href="mod_policy.html#policymaxage">PolicyMaxage <var>ignore|log|enforce</var> <var>age</var></a></td><td></td><td>skd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable the caching minimum max-age policy.</td></tr>
+<tr><td><a href="mod_policy.html#policymaxageurl">PolicyMaxageURL <var>url</var></a></td><td></td><td>skd</td><td>E</td></tr><tr><td class="descr" colspan="4">URL describing the caching minimum freshness lifetime policy.</td></tr>
+<tr class="odd"><td><a href="mod_policy.html#policynocache">PolicyNocache <var>ignore|log|enforce</var></a></td><td></td><td>skd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable the caching no-cache policy.</td></tr>
+<tr><td><a href="mod_policy.html#policynocacheurl">PolicyNocacheURL <var>url</var></a></td><td></td><td>skd</td><td>E</td></tr><tr><td class="descr" colspan="4">URL describing the caching no-cache policy.</td></tr>
+<tr class="odd"><td><a href="mod_policy.html#policytype">PolicyType <var>ignore|log|enforce</var> <var>type</var> [ <var>type</var> [ ... ]]</a></td><td></td><td>skd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable the content type policy.</td></tr>
+<tr><td><a href="mod_policy.html#policytypeurl">PolicyTypeURL <var>url</var></a></td><td></td><td>skd</td><td>E</td></tr><tr><td class="descr" colspan="4">URL describing the content type policy.</td></tr>
+<tr class="odd"><td><a href="mod_policy.html#policyvalidation">PolicyValidation <var>ignore|log|enforce</var></a></td><td></td><td>skd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable the validation policy.</td></tr>
+<tr><td><a href="mod_policy.html#policyvalidationurl">PolicyValidationURL <var>url</var></a></td><td></td><td>skd</td><td>E</td></tr><tr><td class="descr" colspan="4">URL describing the content type policy.</td></tr>
+<tr class="odd"><td><a href="mod_policy.html#policyvary">PolicyVary <var>ignore|log|enforce</var> <var>header</var> [ <var>header</var> [ ... ]]</a></td><td></td><td>skd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable the Vary policy.</td></tr>
+<tr><td><a href="mod_policy.html#policyvaryurl">PolicyVaryURL <var>url</var></a></td><td></td><td>skd</td><td>E</td></tr><tr><td class="descr" colspan="4">URL describing the content type policy.</td></tr>
+<tr class="odd"><td><a href="mod_policy.html#policyversion">PolicyVersion <var>ignore|log|enforce</var> <var>HTTP/0.9|HTTP/1.0|HTTP/1.1</var></a></td><td></td><td>skd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable the version policy.</td></tr>
+<tr><td><a href="mod_policy.html#policyversionurl">PolicyVersionURL <var>url</var></a></td><td></td><td>skd</td><td>E</td></tr><tr><td class="descr" colspan="4">URL describing the minimum request HTTP version policy.</td></tr>
 <tr class="odd"><td><a href="mod_privileges.html#privilegesmode">PrivilegesMode FAST|SECURE|SELECTIVE</a></td><td></td><td>skd</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Trade off processing speed and efficiency vs security against
 malicious privileges-aware code.</td></tr>
 <tr><td><a href="core.html#protocol">Protocol <var>protocol</var></a></td><td></td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Protocol for a listening socket</td></tr>
@@ -1002,6 +1028,6 @@ can be <a href="#sniffing">automatically detected</a></td></tr>
 <a href="../tr/mod/quickreference.html" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/quickreference.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2011 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="apache">Copyright 2012 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
 <p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div>
 </body></html>

@@ -221,6 +221,7 @@ HPUX betreiben</a></li>
 <li><a href="mod/mod_ext_filter.html">Apache-Modul mod_ext_filter</a></li>
 <li><a href="mod/mod_file_cache.html">Apache-Modul mod_file_cache</a></li>
 <li><a href="mod/mod_filter.html">Apache-Modul mod_filter</a></li>
+<li><a href="mod/mod_firehose.html">Apache-Modul mod_firehose</a></li>
 <li><a href="mod/mod_headers.html">Apache-Modul mod_headers</a></li>
 <li><a href="mod/mod_heartbeat.html">Apache-Modul mod_heartbeat</a></li>
 <li><a href="mod/mod_heartmonitor.html">Apache-Modul mod_heartmonitor</a></li>
@@ -243,6 +244,7 @@ HPUX betreiben</a></li>
 <li><a href="mod/mod_mime_magic.html">Apache-Modul mod_mime_magic</a></li>
 <li><a href="mod/mod_negotiation.html">Apache-Modul mod_negotiation</a></li>
 <li><a href="mod/mod_nw_ssl.html">Apache-Modul mod_nw_ssl</a></li>
+<li><a href="mod/mod_policy.html">Apache-Modul mod_policy</a></li>
 <li><a href="mod/mod_privileges.html">Apache-Modul mod_privileges</a></li>
 <li><a href="mod/mod_proxy.html">Apache-Modul mod_proxy</a></li>
 <li><a href="mod/mod_proxy_ajp.html">Apache-Modul mod_proxy_ajp</a></li>
@@ -270,6 +272,10 @@ HPUX betreiben</a></li>
 <li><a href="mod/mod_slotmem_plain.html">Apache-Modul mod_slotmem_plain</a></li>
 <li><a href="mod/mod_slotmem_shm.html">Apache-Modul mod_slotmem_shm</a></li>
 <li><a href="mod/mod_so.html">Apache-Modul mod_so</a></li>
+<li><a href="mod/mod_socache_dbm.html">Apache-Modul mod_socache_dbm</a></li>
+<li><a href="mod/mod_socache_dc.html">Apache-Modul mod_socache_dc</a></li>
+<li><a href="mod/mod_socache_memcache.html">Apache-Modul mod_socache_memcache</a></li>
+<li><a href="mod/mod_socache_shmcb.html">Apache-Modul mod_socache_shmcb</a></li>
 <li><a href="mod/mod_speling.html">Apache-Modul mod_speling</a></li>
 <li><a href="mod/mod_ssl.html">Apache-Modul mod_ssl</a></li>
 <li><a href="mod/mod_status.html">Apache-Modul mod_status</a></li>
@@ -317,6 +323,6 @@ konvertieren</a></li>
 <a href="./tr/sitemap.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/sitemap.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2011 The Apache Software Foundation.<br />Lizenziert unter der <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2012 The Apache Software Foundation.<br />Lizenziert unter der <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Module</a> | <a href="./mod/directives.html">Direktiven</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a></p></div>
 </body></html>

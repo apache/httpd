@@ -123,6 +123,7 @@ index 파일을 서비스한다</dd>
 보낸다</dd>
 <dt><a href="mod_file_cache.html" id="F" name="F">mod_file_cache</a></dt><dd>메모리에 정적 파일들을 캐쉬</dd>
 <dt><a href="mod_filter.html">mod_filter</a></dt><dd>Context-sensitive smart filter configuration module</dd>
+<dt><a href="mod_firehose.html">mod_firehose</a></dt><dd>Multiplexes all I/O to a given file or pipe.</dd>
 <dt><a href="mod_headers.html" id="H" name="H">mod_headers</a></dt><dd>HTTP 요청 헤더와 응답 헤더 수정</dd>
 <dt><a href="mod_heartbeat.html">mod_heartbeat</a></dt><dd />
 <dt><a href="mod_heartmonitor.html">mod_heartmonitor</a></dt><dd />
@@ -151,7 +152,8 @@ request processing</dd>
     by looking at a few bytes of its contents</dd>
 <dt><a href="mod_negotiation.html" id="N" name="N">mod_negotiation</a></dt><dd>Provides for <a href="../content-negotiation.html">content negotiation</a></dd>
 <dt><a href="mod_nw_ssl.html">mod_nw_ssl</a></dt><dd>Enable SSL encryption for NetWare</dd>
-<dt><a href="mod_privileges.html" id="P" name="P">mod_privileges</a></dt><dd>Support for Solaris privileges and for running virtual hosts
+<dt><a href="mod_policy.html" id="P" name="P">mod_policy</a></dt><dd>HTTP protocol compliance enforcement.</dd>
+<dt><a href="mod_privileges.html">mod_privileges</a></dt><dd>Support for Solaris privileges and for running virtual hosts
 under different user IDs.</dd>
 <dt><a href="mod_proxy.html">mod_proxy</a></dt><dd>Multi-protocol proxy/gateway server</dd>
 <dt><a href="mod_proxy_ajp.html">mod_proxy_ajp</a></dt><dd>AJP support module for
@@ -174,8 +176,8 @@ from Clients' networks in a proxy context.</dd>
 <dt><a href="mod_proxy_scgi.html">mod_proxy_scgi</a></dt><dd>SCGI gateway module for <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_ratelimit.html" id="R" name="R">mod_ratelimit</a></dt><dd>Bandwidth Rate Limiting for Clients</dd>
 <dt><a href="mod_reflector.html">mod_reflector</a></dt><dd>Reflect a request body as a response via the output filter stack.</dd>
-<dt><a href="mod_remoteip.html">mod_remoteip</a></dt><dd>Replaces the original peer IP address for the connection
-with the client IP address list presented by a proxies or a load balancer
+<dt><a href="mod_remoteip.html">mod_remoteip</a></dt><dd>Replaces the original client IP address for the connection
+with the useragent IP address list presented by a proxies or a load balancer
 via the request headers.
 </dd>
 <dt><a href="mod_reqtimeout.html">mod_reqtimeout</a></dt><dd>Set timeout and minimum data rate for receiving requests
@@ -193,6 +195,10 @@ URLs on the fly</dd>
 <dt><a href="mod_slotmem_shm.html">mod_slotmem_shm</a></dt><dd>Slot-based shared memory provider.</dd>
 <dt><a href="mod_so.html">mod_so</a></dt><dd>시작할때 혹은 재시작할때 실행가능한 코드와 모듈을
 서버로 읽어들인다</dd>
+<dt><a href="mod_socache_dbm.html">mod_socache_dbm</a></dt><dd>DBM based shared object cache provider.</dd>
+<dt><a href="mod_socache_dc.html">mod_socache_dc</a></dt><dd>Distcache based shared object cache provider.</dd>
+<dt><a href="mod_socache_memcache.html">mod_socache_memcache</a></dt><dd>Memcache based shared object cache provider.</dd>
+<dt><a href="mod_socache_shmcb.html">mod_socache_shmcb</a></dt><dd>shmcb based shared object cache provider.</dd>
 <dt><a href="mod_speling.html">mod_speling</a></dt><dd>사용자가 대소문자를 잘못 사용하거나 맞춤법이 틀리는
 것을 한번까지 허용하여 잘못된 URL을 고치려고 시도한다</dd>
 <dt><a href="mod_ssl.html">mod_ssl</a></dt><dd>Strong cryptography using the Secure Sockets
@@ -223,6 +229,6 @@ filter modules</dd>
 <a href="../tr/mod/" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2011 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2012 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/directives.html">지시어들</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p></div>
 </body></html>
