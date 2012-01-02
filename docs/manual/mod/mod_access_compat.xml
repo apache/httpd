@@ -69,6 +69,13 @@ have been deprecated by the new authz refactoring.  Please see
     cases. However, it is possible to restrict some methods, while
     leaving other methods unrestricted, by enclosing the directives
     in a <directive module="core" type="section">Limit</directive> section.</p>
+
+    <note> <title>Merging of configuration sections</title>
+      <p>When any directive provided by this module is used in a new 
+      configuration section, no directives provided by this module are
+      inherited from previous configuration sections.</p>
+    </note>
+
 </summary>
 
 <seealso><directive module="mod_authz_core">Require</directive></seealso>
@@ -203,6 +210,13 @@ server</description>
     <p>In this case, browsers with a user-agent string beginning
     with <code>KnockKnock/2.0</code> will be allowed access, and all
     others will be denied.</p>
+
+    <note> <title>Merging of configuration sections</title>
+      <p>When any directive provided by this module is used in a new 
+      configuration section, no directives provided by this module are
+      inherited from previous configuration sections.</p>
+    </note>
+
 </usage>
 </directivesynopsis>
 
@@ -390,6 +404,13 @@ evaluated.</description>
     of configuration sections, see the documentation on <a
     href="../sections.html">How Directory, Location and Files sections
     work</a>.</p>
+
+    <note> <title>Merging of configuration sections</title>
+      <p>When any directive provided by this module is used in a new 
+      configuration section, no directives provided by this module are
+      inherited from previous configuration sections.</p>
+    </note>
+
 </usage>
 </directivesynopsis>
 
@@ -457,6 +478,13 @@ later</compatibility>
     be restricted to particular methods by <directive module="core"
     type="section">Limit</directive> and <directive module="core" type="section"
     >LimitExcept</directive> sections.</p>
+
+    <note> <title>Merging of configuration sections</title>
+      <p>When any directive provided by this module is used in a new 
+      configuration section, no directives provided by this module are
+      inherited from previous configuration sections.</p>
+    </note>
+
 </usage>
    <seealso><directive module="mod_access_compat">Allow</directive></seealso>
    <seealso><directive module="mod_authz_core">Require</directive></seealso>

@@ -460,7 +460,12 @@ are interpreted, it is important to understand how this works.</p>
     container takes the place of the <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> container in the processing
     order.</p>
 
-    <p>Later sections override earlier ones.</p>
+    <p>Later sections override earlier ones, however each module is responsible
+    for interpeting what form this override takes.  A later configuration section 
+    with directives from a given module might cause a conceptual "merge" of some
+    directives, all directives, or a complete replacement of the modules 
+    configuration with the module defaults and directives explicitly listed in 
+    the later context.</p>
 
 <div class="note"><h3>Technical Note</h3>
       There is actually a
