@@ -23,15 +23,24 @@
 <modulesynopsis metafile="mod_lbmethod_heartbeat.xml.meta">
 
 <name>mod_lbmethod_heartbeat</name>
-<description><!-- FIXME: --> This document is still under development.</description>
-<status>Extension</status>
+<description>Heartbeat Traffic Counting load balancer scheduler algorithm for <module
+>mod_proxy_balancer</module></description>
+<status>Experimental</status>
 <sourcefile>mod_lbmethod_heartbeat.c</sourcefile>
 <identifier>lbmethod_heartbeat_module</identifier>
 <compatibility>Available in version 2.3 and later</compatibility>
 
 <summary>
-    <note><!-- FIXME: --> This document is still under development.</note>
+<p>lbmethod=heartbeat uses the services of <module
+>mod_heartmonitor</module> to balance between origin servers that are providing
+heartbeat info via the <module>mod_heartbeat module</module>.</p>
+
+<p> This modules load balancing algorithm favors servers with more ready (idle)
+capacity over time, but does not select the server with the most ready capacity 
+every time.  Servers that have 0 active clients are penalized, with the 
+assumption that they are not fully initialized.</p>
 </summary>
+
 <seealso><module>mod_proxy</module></seealso>
 <seealso><module>mod_proxy_balancer</module></seealso>
 <seealso><module>mod_heartbeat</module></seealso>
@@ -45,8 +54,9 @@
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <note><!-- FIXME: -->This document is still under development.</note>
+    <p>The <directive>HeartbeatStorage</directive> directive specifies the
+    path to read heartbeat data.  This flat-file is used only when
+    <module>mod_slotmem_shm</module> is not loaded.</p>
 </usage>
 </directivesynopsis>
-
 </modulesynopsis>

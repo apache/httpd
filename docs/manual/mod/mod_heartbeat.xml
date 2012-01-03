@@ -23,24 +23,33 @@
 <modulesynopsis metafile="mod_heartbeat.xml.meta">
 
 <name>mod_heartbeat</name>
-<description></description>
-<status>Extension</status>
-<sourcefile>mod_heartbeat.c</sourcefile>
+<description>sends messages with server status to frontend proxy</description>
+<status>Experimental</status>
+<sourcefile>mod_heartbeat</sourcefile>
 <identifier>heartbeat_module</identifier>
-<compatibility>Available in 2.3 and later</compatibility>
+<compatibility>Available in Apache 2.3 and later</compatibility>
 
 <summary>
-    <note><!-- FIXME: -->This document is still under development.</note>
+<p> <module>mod_heartbeat</module> sends multicast messages to a <module>mod_heartmonitor</module> listener 
+that advertises the servers current connection count.  Usually, <module>mod_heartmonitor</module>
+will be running on a proxy server with <module>mod_lbmethod_heartbeat</module> loaded, which allows
+<directive module="mod_proxy">ProxyPass</directive> to use the "heartbeat" <em>lbmethod</em> inside
+of <directive module="mod_proxy">ProxyPass</directive>.</p>
 </summary>
 
 <directivesynopsis>
 <name>HeartbeatAddress</name>
 <description>Address to send heartbeat requests</description>
-<syntax></syntax>
+<syntax>HeartbeatAddress <var>addr:port</var></syntax>
+<default>disabled</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <note><!-- FIXME: -->This document is still under development.</note>
+    <p>The <directive>HeartbeatAddress</directive> directive specifies the 
+    address <module>mod_heartbeat</module> will send status information to. This
+    address will usually corrspond to a configured  <directive
+    module="mod_heartmonitor">HeartbeatListen</directive> on a frontend
+    proxy system.  </p>
 </usage>
 </directivesynopsis>
 
