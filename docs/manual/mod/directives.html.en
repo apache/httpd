@@ -268,8 +268,6 @@
 <li><a href="mod_headers.html#header" id="H" name="H">Header</a></li>
 <li><a href="mod_autoindex.html#headername">HeaderName</a></li>
 <li><a href="mod_heartbeat.html#heartbeataddress">HeartbeatAddress</a></li>
-<li><a href="mod_heartmonitor.html#heartbeatlisten">HeartbeatListen</a></li>
-<li><a href="mod_heartmonitor.html#heartbeatstorage">HeartbeatStorage</a></li>
 <li><a href="mod_lbmethod_heartbeat.html#heartbeatstorage">HeartbeatStorage</a></li>
 <li><a href="core.html#hostnamelookups">HostnameLookups</a></li>
 <li><a href="mod_ident.html#identitycheck" id="I" name="I">IdentityCheck</a></li>
