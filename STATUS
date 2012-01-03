@@ -167,7 +167,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * core: Fix integer overflow in ap_pregsub. CVE-2011-3607
       Trunk patch: http://svn.apache.org/viewvc?rev=1198940&view=rev
       2.2.x patch: http://people.apache.org/~sf/CVE-2011-3607.diff
-    +1: sf
+    +1: sf, gregames
 
 PATCHES/ISSUES THAT ARE STALLED
 
