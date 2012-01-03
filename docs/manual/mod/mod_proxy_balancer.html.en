@@ -38,8 +38,9 @@
     <p>Load balancing scheduler algorithm is provided by not this
     module but other modules such as:
     <code class="module"><a href="../mod/mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></code>,
-    <code class="module"><a href="../mod/mod_lbmethod_bytraffic.html">mod_lbmethod_bytraffic</a></code> and
-    <code class="module"><a href="../mod/mod_lbmethod_bybusyness.html">mod_lbmethod_bybusyness</a></code>.
+    <code class="module"><a href="../mod/mod_lbmethod_bytraffic.html">mod_lbmethod_bytraffic</a></code>,
+    <code class="module"><a href="../mod/mod_lbmethod_bybusyness.html">mod_lbmethod_bybusyness</a></code> and
+    <code class="module"><a href="../mod/mod_lbmethod_heartbeat.html">mod_lbmethod_heartbeat</a></code>.
     </p>
 
     <p>Thus, in order to get the ability of load balancing,
