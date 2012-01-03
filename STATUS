@@ -162,7 +162,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_log_config: Fix segfault when logging Nameless, Valueless cookie. PR 52256
       Trunk patch: http://svn.apache.org/viewvc?rev=1225380&view=rev
       2.2.x patch: trunk patch works
-    +1: sf
+    +1: sf, gregames
 
   * core: Fix integer overflow in ap_pregsub. CVE-2011-3607
       Trunk patch: http://svn.apache.org/viewvc?rev=1198940&view=rev
