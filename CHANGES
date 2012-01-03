@@ -6,6 +6,9 @@ Changes with Apache 2.2.22
      specification, preventing unexpected expansion of target URLs in
      some reverse proxy configurations.  [Joe Orton]
 
+  *) core: Fix segfault in ap_send_interim_response(). PR 52315.
+     [Stefan Fritsch]
+
   *) mod_log_config: Prevent segfault. PR 50861. [Torsten Förtsch
      <torsten.foertsch gmx.net>]
 
