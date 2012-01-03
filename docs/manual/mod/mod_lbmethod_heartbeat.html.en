@@ -23,14 +23,20 @@
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_lbmethod_heartbeat.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td> This document is still under development.</td></tr>
-<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Heartbeat Traffic Counting load balancer scheduler algorithm for <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>lbmethod_heartbeat_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_lbmethod_heartbeat.c</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.3 and later</td></tr></table>
 <h3>Summary</h3>
 
-    <div class="note"> This document is still under development.</div>
+<p>lbmethod=heartbeat uses the services of <code class="module"><a href="../mod/mod_heartmonitor.html">mod_heartmonitor</a></code> to balance between origin servers that are providing
+heartbeat info via the <code class="module"><a href="../mod/mod_heartbeat module.html">mod_heartbeat module</a></code>.</p>
+
+<p> This modules load balancing algorithm favors servers with more ready (idle)
+capacity over time, but does not select the server with the most ready capacity 
+every time.  Servers that have 0 active clients are penalized, with the 
+assumption that they are not fully initialized.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -51,10 +57,12 @@
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>HeartbeatStorage <var>file-path</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>HeartbeatStorage logs/hb.dat</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lbmethod_heartbeat</td></tr>
 </table>
-    <div class="note">This document is still under development.</div>
+    <p>The <code class="directive">HeartbeatStorage</code> directive specifies the
+    path to read heartbeat data.  This flat-file is used only when
+    <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code> is not loaded.</p>
 
 </div>
 </div>

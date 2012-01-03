@@ -23,14 +23,18 @@
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_heartbeat.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td /></tr>
-<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>sends messages with server status to frontend proxy</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>heartbeat_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_heartbeat.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in 2.3 and later</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_heartbeat</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3 and later</td></tr></table>
 <h3>Summary</h3>
 
-    <div class="note">This document is still under development.</div>
+<p> <code class="module"><a href="../mod/mod_heartbeat.html">mod_heartbeat</a></code> sends multicast messages to a <code class="module"><a href="../mod/mod_heartmonitor.html">mod_heartmonitor</a></code> listener 
+that advertises the servers current connection count.  Usually, <code class="module"><a href="../mod/mod_heartmonitor.html">mod_heartmonitor</a></code>
+will be running on a proxy server with <code class="module"><a href="../mod/mod_lbmethod_heartbeat.html">mod_lbmethod_heartbeat</a></code> loaded, which allows
+<code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> to use the "heartbeat" <em>lbmethod</em> inside
+of <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -42,12 +46,16 @@
 <div class="directive-section"><h2><a name="HeartbeatAddress" id="HeartbeatAddress">HeartbeatAddress</a> <a name="heartbeataddress" id="heartbeataddress">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Address to send heartbeat requests</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>HeartbeatAddress <var>addr:port</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>disabled</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_heartbeat</td></tr>
 </table>
-    <div class="note">This document is still under development.</div>
+    <p>The <code class="directive">HeartbeatAddress</code> directive specifies the 
+    address <code class="module"><a href="../mod/mod_heartbeat.html">mod_heartbeat</a></code> will send status information to. This
+    address will usually corrspond to a configured  <code class="directive"><a href="../mod/mod_heartmonitor.html#heartbeatlisten">HeartbeatListen</a></code> on a frontend
+    proxy system.  </p>
 
 </div>
 </div>
