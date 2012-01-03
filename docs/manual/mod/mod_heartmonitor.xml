@@ -20,27 +20,45 @@
  limitations under the License.
 -->
 
-<modulesynopsis metafile="mod_heartmonitor.xml.meta">
+<modulesynopsis metafile="mod_heartbeat.xml.meta">
 
 <name>mod_heartmonitor</name>
-<description></description>
-<status>Extension</status>
-<sourcefile>mod_heartmonitor.c</sourcefile>
+<description>centralized monitor for mod_heartbeat origin servers</description>
+<status>Experimental</status>
+<sourcefile>mod_heartmonitor</sourcefile>
 <identifier>heartmonitor_module</identifier>
-<compatibility>Available in 2.3 and later</compatibility>
+<compatibility>Available in Apache 2.3 and later</compatibility>
 
 <summary>
-    <note><!-- FIXME: -->This document is still under development.</note>
+<p>
+<module>mod_heartmonitor</module> listens for server status messages generated 
+by <module>mod_heartbeat</module> enabled servers and makes their status 
+available to <module>mod_lbmethod_heartbeat</module>. This allows 
+<directive module="mod_proxy">ProxyPass</directive> to use the "heartbeat" 
+<em>lbmethod</em> inside of <directive module="mod_proxy">ProxyPass</directive>.
+</p>
+
+<p>This module uses the services of <module>mod_slotmem_shm</module> when
+available instead of flat-file storage.  No configuration is required to
+use <module>mod_slotmem_shm</module>.</p>
 </summary>
 
 <directivesynopsis>
 <name>HeartbeatListen</name>
-<description>Address to listen for heartbeat requests</description>
-<syntax></syntax>
+<description>address to listen for incoming heartbeat requests </description>
+<syntax>HeartbeatListen<var>addr:port</var></syntax>
+<default>disabled</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <note><!-- FIXME: -->This document is still under development.</note>
+    <p>The <directive>HeartbeatListen</directive> directive specifies the
+    address the server will listen on for status information from 
+    <module>mod_heartbeat</module>-enabled servers.  This
+    address will usually corrspond to a configured  <directive
+    module="mod_heartbeat">HeartbeatAddress</directive> on an origin server.
+    </p>
+
+    <p> This module is inactive until this directive is used.</p>
 </usage>
 </directivesynopsis>
 
@@ -52,8 +70,25 @@
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <note><!-- FIXME: -->This document is still under development.</note>
+    <p>The <directive>HeartbeatStorage</directive> directive specifies the
+    path to store heartbeat data.  This flat-file is used only when
+    <module>mod_slotmem_shm</module> is not loaded.</p>
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>HeartbeatMaxServers</name>
+<description>Specifies the maximum number of servers that will be sending 
+heartbeat requests to this server</description>
+<syntax>HeartbeatMaxServers <var>number-of-servers</var></syntax>
+<default>HeartbeatMaxServers 10</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>The <directive>HeartbeatMaxServers</directive> directive specifies the
+    maximum number of servers that will be sending requests to this monitor
+    server.  It is used to control the size of the shared memory allocated
+    to store the heartbeat info.</p>
+</usage>
+</directivesynopsis>
 </modulesynopsis>
