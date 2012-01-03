@@ -107,6 +107,16 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      and 2.4.x no longer support this version, see r1203491 and r1203495)
     +1: kbrand (non-binding), rjung, jorton
 
+  * mod_log_config: Fix segfault when logging Nameless, Valueless cookie. PR 52256
+      Trunk patch: http://svn.apache.org/viewvc?rev=1225380&view=rev
+      2.2.x patch: trunk patch works
+    +1: sf, gregames, covener
+
+  * core: Fix integer overflow in ap_pregsub. CVE-2011-3607
+      Trunk patch: http://svn.apache.org/viewvc?rev=1198940&view=rev
+      2.2.x patch: http://people.apache.org/~sf/CVE-2011-3607.diff
+    +1: sf, gregames, covener
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -158,16 +168,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.2.x patch: trunk patch works
     +1: jorton
     trawick: http://mail-archives.apache.org/mod_mbox/httpd-dev/201112.mbox/%3CCAKUrXK4uwT%3DP1KtEziNqFdxXs%2BtyWvggzpL8x2u-Bbq8tZ-Zsw%40mail.gmail.com%3E
-
-  * mod_log_config: Fix segfault when logging Nameless, Valueless cookie. PR 52256
-      Trunk patch: http://svn.apache.org/viewvc?rev=1225380&view=rev
-      2.2.x patch: trunk patch works
-    +1: sf, gregames
-
-  * core: Fix integer overflow in ap_pregsub. CVE-2011-3607
-      Trunk patch: http://svn.apache.org/viewvc?rev=1198940&view=rev
-      2.2.x patch: http://people.apache.org/~sf/CVE-2011-3607.diff
-    +1: sf, gregames
 
 PATCHES/ISSUES THAT ARE STALLED
 
