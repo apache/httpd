@@ -95,7 +95,7 @@ apr_status_t ajp_ilink_receive(apr_socket_t *sock, ajp_msg_t *msg)
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, status, NULL,
                      "ajp_ilink_receive() can't receive header");
-        return AJP_ENO_HEADER;
+        return (APR_STATUS_IS_TIMEUP(status) ? APR_TIMEUP : AJP_ENO_HEADER);
     }
 
     status = ajp_msg_check_header(msg, &blen);
