@@ -11,6 +11,9 @@ Changes with Apache 2.2.22
      is enabled, could allow local users to gain privileges via a .htaccess
      file. [Stefan Fritsch, Greg Ames]
 
+  *) mod_log_config: Fix segfault when logging nameless, valueless cookie.
+     PR 52256. [Stefan Fritsch]
+
   *) core: Fix segfault in ap_send_interim_response(). PR 52315.
      [Stefan Fritsch]
 
