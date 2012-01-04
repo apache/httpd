@@ -82,6 +82,8 @@
 #define IS_SLASH(s) (s == '/')
 #endif
 
+/* same as APR_SIZE_MAX which doesn't appear until APR 1.3 */
+#define UTIL_SIZE_MAX (~((apr_size_t)0))
 
 /*
  * Examine a field value (such as a media-/content-type) string and return
@@ -366,7 +368,7 @@ AP_DECLARE(char *) ap_pregsub(apr_pool_t *p, const char *input,
     char *dest, *dst;
     char c;
     size_t no;
-    int len;
+    apr_size_t len;
 
     if (!source)
         return NULL;
@@ -391,6 +393,11 @@ AP_DECLARE(char *) ap_pregsub(apr_pool_t *p, const char *input,
             len++;
         }
         else if (no < nmatch && pmatch[no].rm_so < pmatch[no].rm_eo) {
+            if (UTIL_SIZE_MAX - len <= pmatch[no].rm_eo - pmatch[no].rm_so) {
+                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, NULL,
+                             "integer overflow or out of memory condition." );
+                return NULL;
+            }
             len += pmatch[no].rm_eo - pmatch[no].rm_so;
         }
 
