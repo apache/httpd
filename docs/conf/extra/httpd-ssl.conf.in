@@ -84,11 +84,29 @@ TransferLog "@exp_logfiledir@/access_log"
 #   Enable/Disable SSL for this virtual host.
 SSLEngine on
 
+#   SSL Protocol support:
+#   List the protocol versions which clients are allowed to
+#   connect with. Disable SSLv2 by default (cf. RFC 6176).
+SSLProtocol all -SSLv2
+
 #   SSL Cipher Suite:
 #   List the ciphers that the client is permitted to negotiate.
 #   See the mod_ssl documentation for a complete list.
-SSLCipherSuite ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL
+SSLCipherSuite HIGH:MEDIUM:!aNULL:!MD5
 
+#   Speed-optimized SSL Cipher configuration:
+#   If speed is your main concern (on busy HTTPS servers e.g.),
+#   you might want to force clients to specific, performance
+#   optimized ciphers. In this case, prepend those ciphers
+#   to the SSLCipherSuite list, and enable SSLHonorCipherOrder.
+#   Caveat: by giving precedence to RC4-SHA and AES128-SHA
+#   (as in the example below), most connections will no longer
+#   have perfect forward secrecy - if the server's key is
+#   compromised, captures of past or future traffic must be
+#   considered compromised, too.
+#SSLCipherSuite RC4-SHA:AES128-SHA:HIGH:MEDIUM:!aNULL:!MD5
+#SSLHonorCipherOrder on 
+ 
 #   Server Certificate:
 #   Point SSLCertificateFile at a PEM encoded certificate.  If
 #   the certificate is encrypted, then you will be prompted for a
@@ -218,7 +236,7 @@ SSLCertificateKeyFile "@exp_sysconfdir@/server.key"
 #   Similarly, one has to force some clients to use HTTP/1.0 to workaround
 #   their broken HTTP/1.1 implementation. Use variables "downgrade-1.0" and
 #   "force-response-1.0" for this.
-BrowserMatch ".*MSIE.*" \
+BrowserMatch "MSIE [2-5]" \
          nokeepalive ssl-unclean-shutdown \
          downgrade-1.0 force-response-1.0
 

@@ -99,14 +99,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     http://people.apache.org/~jfclere/patches/ajp_timeout.patch
     +1: jfclere, rjung, rpluem
 
-  * mod_ssl: Update default config (SSLProtocol, SSLCipherSuite, MSIE pattern)
-    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1132793
-                 http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/extra/httpd-ssl.conf.in?rev=1203752&r1=1203751&r2=1203752&view=diff
-    2.2.x patch: http://people.apache.org/~kbrand/mod_ssl_config_defaults-2.2.x.patch
-    (disabling SSLv2 in SSLProtocol is only required for 2.2.x, since trunk
-     and 2.4.x no longer support this version, see r1203491 and r1203495)
-    +1: kbrand (non-binding), rjung, jorton
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
