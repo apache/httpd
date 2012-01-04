@@ -92,13 +92,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_proxy_ajp: try to prevent a single long request marking a worker in error.
-    Trunk version of patch:
-                         http://svn.apache.org/viewvc?view=revision&revision=r1092076
-                         http://svn.apache.org/viewvc?view=revision&revision=r1100513
-    http://people.apache.org/~jfclere/patches/ajp_timeout.patch
-    +1: jfclere, rjung, rpluem
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 

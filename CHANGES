@@ -14,6 +14,9 @@ Changes with Apache 2.2.22
   *) mod_log_config: Fix segfault when logging nameless, valueless cookie.
      PR 52256. [Stefan Fritsch]
 
+  *) mod_proxy_ajp: Try to prevent a single long request from marking a worker
+     in error. [Jean-Frederic Clere]
+
   *) config: Update the default mod_ssl configuration: Disable SSLv2, only
      allow >= 128bit ciphers, add commented example for speed optimized cipher
      list, limit MSIE workaround to MSIE <= 5. [Kaspar Brand]
