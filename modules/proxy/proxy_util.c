@@ -2020,19 +2020,17 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                            uri->fragment ? uri->fragment : "", NULL);
     }
     /*
-     * Make sure that we pick the the correct and valid worker.
-     * If a single keepalive connection triggers different workers,
-     * then we have a problem (we don't select the correct one).
-     * Do an expensive check in this case, where we compare the
-     * the hostnames associated between the two.
+     * Figure out if our passed in proxy_conn_rec has a usable
+     * address cached.
      *
-     * TODO: Handle this much better...
+     * TODO: Handle this much better... 
+     *
+     * XXX: If generic workers are ever address-reusable, we need 
+     *      to check host and port on the conn and be careful about
+     *      spilling the cached addr from the worker.
      */
     if (!conn->hostname || !worker->s->is_address_reusable ||
-         worker->s->disablereuse ||
-         (r->connection->keepalives &&
-         (r->proxyreq == PROXYREQ_PROXY || r->proxyreq == PROXYREQ_REVERSE) &&
-         (strcasecmp(conn->hostname, uri->hostname) != 0) ) ) {
+        worker->s->disablereuse) {
         if (proxyname) {
             conn->hostname = apr_pstrdup(conn->pool, proxyname);
             conn->port = proxyport;
