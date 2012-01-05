@@ -78,13 +78,15 @@ APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, create_req,
                                    (request_rec *r, request_rec *pr), (r, pr),
                                    OK, DECLINED)
 
-PROXY_DECLARE(apr_status_t) ap_proxy_strncpy(char *dst, const char *src, size_t dlen)
+PROXY_DECLARE(apr_status_t) ap_proxy_strncpy(char *dst, const char *src,
+                                             apr_size_t dlen)
 {
     if ((strlen(src)+1) > dlen) {
-        /* APR_ENOSPACE would be better */
+        /* XXX: APR_ENOSPACE would be better */
         return APR_EGENERAL;
     }
     else {
+        /* XXX: Once slen and dlen are known, no excuse not to memcpy */
         apr_cpystrn(dst, src, dlen);
     }
     return APR_SUCCESS;
@@ -921,14 +923,14 @@ PROXY_DECLARE(const char *) ap_proxy_cookie_reverse_map(request_rec *r,
     proxy_req_conf *rconf = ap_get_module_config(r->request_config,
                                                  &proxy_module);
     struct proxy_alias *ent;
-    size_t len = strlen(str);
+    apr_size_t len = strlen(str);
     const char *newpath = NULL;
     const char *newdomain = NULL;
     const char *pathp;
     const char *domainp;
     const char *pathe = NULL;
     const char *domaine = NULL;
-    size_t l1, l2, poffs = 0, doffs = 0;
+    apr_size_t l1, l2, poffs = 0, doffs = 0;
     int i;
     int ddiff = 0;
     int pdiff = 0;
