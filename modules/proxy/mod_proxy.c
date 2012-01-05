@@ -2447,9 +2447,9 @@ static void child_init(apr_pool_t *p, server_rec *s)
                 ap_proxy_hashfunc(conf->forward->s->name, PROXY_HASHFUNC_FNV);
             /* Do not disable worker in case of errors */
             conf->forward->s->status |= PROXY_WORKER_IGNORE_ERRORS;
+            ap_proxy_initialize_worker(conf->forward, s, conf->pool);
             /* Disable address cache for generic forward worker */
             conf->forward->s->is_address_reusable = 0;
-            ap_proxy_initialize_worker(conf->forward, s, conf->pool);
         }
         if (!reverse) {
             ap_proxy_define_worker(p, &reverse, NULL, NULL, "http://www.apache.org", 0);
@@ -2462,11 +2462,11 @@ static void child_init(apr_pool_t *p, server_rec *s)
                 ap_proxy_hashfunc(reverse->s->name, PROXY_HASHFUNC_FNV);
             /* Do not disable worker in case of errors */
             reverse->s->status |= PROXY_WORKER_IGNORE_ERRORS;
+            conf->reverse = reverse;
+            ap_proxy_initialize_worker(conf->reverse, s, conf->pool);
             /* Disable address cache for generic reverse worker */
             reverse->s->is_address_reusable = 0;
         }
-        conf->reverse = reverse;
-        ap_proxy_initialize_worker(conf->reverse, s, conf->pool);
         s = s->next;
     }
 }
