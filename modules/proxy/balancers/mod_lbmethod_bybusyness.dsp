@@ -43,17 +43,17 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MD /W3 /O2 /Oy- /Zi /I ".." /I "../../../include" /I "../../../srclib/apr/include" /I "../../../srclib/apr-util/include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Release\mod_lbmethod_bybusyness_src" /FD /c
+# ADD CPP /nologo /MD /W3 /Zi /O2 /Oy- /I ".." /I "../../../include" /I "../../../srclib/apr/include" /I "../../../srclib/apr-util/include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /FR /Fd"Release\mod_lbmethod_bybusyness_src" /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
 # ADD RSC /l 0x409 /fo"Release/mod_lbmethod_bybusyness.res" /i "../../../include" /i "../../../srclib/apr/include" /d "NDEBUG" /d BIN_NAME="mod_lbmethod_bybusyness.so" /d LONG_NAME="lbmethod_bybusyness_module for Apache"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
-# ADD BSC32 /nologo
+# ADD BSC32 /nologo /o"C:\local0\asf\build\httpd-2.x\Apache.bsc"
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /out:".\Release\mod_lbmethod_bybusyness.so" /base:@..\..\..\os\win32\BaseAddr.ref,mod_lbmethod_bybusyness.so
-# ADD LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Release\mod_lbmethod_bybusyness.so" /base:@..\..\..\os\win32\BaseAddr.ref,mod_lbmethod_bybusyness.so /opt:ref
+# ADD BASE LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /machine:IX86 /out:".\Release\mod_lbmethod_bybusyness.so" /base:@..\..\..\os\win32\BaseAddr.ref,mod_lbmethod_bybusyness.so
+# ADD LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /debug /machine:IX86 /out:".\Release\mod_lbmethod_bybusyness.so" /base:@..\..\..\os\win32\BaseAddr.ref,mod_lbmethod_bybusyness.so /opt:ref
 # Begin Special Build Tool
 TargetPath=.\Release\mod_lbmethod_bybusyness.so
 SOURCE="$(InputPath)"
@@ -74,8 +74,8 @@ PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).ma
 # PROP Intermediate_Dir "Debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MDd /W3 /EHsc /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MDd /W3 /EHsc /Zi /Od /I ".." /I "../../../include" /I "../../../srclib/apr/include" /I "../../../srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Debug\mod_lbmethod_bybusyness_src" /FD /c
+# ADD BASE CPP /nologo /MDd /W3 /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /EHsc /c
+# ADD CPP /nologo /MDd /W3 /Zi /Od /I ".." /I "../../../include" /I "../../../srclib/apr/include" /I "../../../srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Debug\mod_lbmethod_bybusyness_src" /FD /EHsc /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
@@ -84,8 +84,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Debug\mod_lbmethod_bybusyness.so" /base:@..\..\..\os\win32\BaseAddr.ref,mod_lbmethod_bybusyness.so
-# ADD LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Debug\mod_lbmethod_bybusyness.so" /base:@..\..\..\os\win32\BaseAddr.ref,mod_lbmethod_bybusyness.so
+# ADD BASE LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:IX86 /out:".\Debug\mod_lbmethod_bybusyness.so" /base:@..\..\..\os\win32\BaseAddr.ref,mod_lbmethod_bybusyness.so
+# ADD LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:IX86 /out:".\Debug\mod_lbmethod_bybusyness.so" /base:@..\..\..\os\win32\BaseAddr.ref,mod_lbmethod_bybusyness.so
 # Begin Special Build Tool
 TargetPath=.\Debug\mod_lbmethod_bybusyness.so
 SOURCE="$(InputPath)"
