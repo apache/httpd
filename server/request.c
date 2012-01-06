@@ -1033,7 +1033,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
             seg_name = r->filename + filename_len;
             delim = strchr(r->path_info + (*r->path_info == '/' ? 1 : 0), '/');
             if (delim) {
-                size_t path_info_len = delim - r->path_info;
+                apr_size_t path_info_len = delim - r->path_info;
                 *delim = '\0';
                 memcpy(seg_name, r->path_info, path_info_len + 1);
                 filename_len += path_info_len;
@@ -1041,7 +1041,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                 *delim = '/';
             }
             else {
-                size_t path_info_len = strlen(r->path_info);
+                apr_size_t path_info_len = strlen(r->path_info);
                 memcpy(seg_name, r->path_info, path_info_len + 1);
                 filename_len += path_info_len;
                 r->path_info += path_info_len;

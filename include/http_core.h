@@ -239,7 +239,7 @@ AP_DECLARE(apr_off_t) ap_get_limit_req_body(const request_rec *r);
  * @param r The current request
  * @return the maximum number of bytes in XML request msg body
  */
-AP_DECLARE(size_t) ap_get_limit_xml_body(const request_rec *r);
+AP_DECLARE(apr_size_t) ap_get_limit_xml_body(const request_rec *r);
 
 /**
  * Install a custom response handler for a given status
