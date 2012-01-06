@@ -209,8 +209,10 @@ AP_DECLARE(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t of
  * @param length The amount of data to send
  * @return The number of bytes sent
  */
-AP_DECLARE(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
-                             size_t length);
+AP_DECLARE(apr_size_t) ap_send_mmap(apr_mmap_t *mm,
+                                    request_rec *r,
+                                    apr_size_t offset,
+                                    apr_size_t length);
 #endif
 
 
