@@ -260,7 +260,7 @@ struct ap_configfile_t {
     /**< an apr_file_getc()-like function */
     apr_status_t (*getch) (char *ch, void *param);
     /**< an apr_file_gets()-like function */
-    apr_status_t (*getstr) (void *buf, size_t bufsiz, void *param);
+    apr_status_t (*getstr) (void *buf, apr_size_t bufsiz, void *param);
     /**< a close handler function */
     apr_status_t (*close) (void *param);
     /**< the argument passed to getch/getstr/close */
@@ -773,7 +773,7 @@ AP_DECLARE(ap_configfile_t *) ap_pcfg_open_custom(apr_pool_t *p,
     const char *descr,
     void *param,
     apr_status_t (*getc_func) (char *ch, void *param),
-    apr_status_t (*gets_func) (void *buf, size_t bufsiz, void *param),
+    apr_status_t (*gets_func) (void *buf, apr_size_t bufsiz, void *param),
     apr_status_t (*close_func) (void *param));
 
 /**
@@ -784,7 +784,7 @@ AP_DECLARE(ap_configfile_t *) ap_pcfg_open_custom(apr_pool_t *p,
  * @param cfp File to read from
  * @return error status, APR_ENOSPC if bufsize is too small for the line
  */
-AP_DECLARE(apr_status_t) ap_cfg_getline(char *buf, size_t bufsize, ap_configfile_t *cfp);
+AP_DECLARE(apr_status_t) ap_cfg_getline(char *buf, apr_size_t bufsize, ap_configfile_t *cfp);
 
 /**
  * Read one char from open configfile_t, increase line number upon LF
