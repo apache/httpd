@@ -64,7 +64,7 @@
 
 /* LimitXMLRequestBody handling */
 #define AP_LIMIT_UNSET                  ((long) -1)
-#define AP_DEFAULT_LIMIT_XML_BODY       ((size_t)1000000)
+#define AP_DEFAULT_LIMIT_XML_BODY       ((apr_size_t)1000000)
 
 #define AP_MIN_SENDFILE_BYTES           (256)
 
@@ -3347,7 +3347,7 @@ static const char *set_max_reversals(cmd_parms *cmd, void *conf_, const char *ar
     return NULL;
 }
 
-AP_DECLARE(size_t) ap_get_limit_xml_body(const request_rec *r)
+AP_DECLARE(apr_size_t) ap_get_limit_xml_body(const request_rec *r)
 {
     core_dir_config *conf;
 
@@ -3355,7 +3355,7 @@ AP_DECLARE(size_t) ap_get_limit_xml_body(const request_rec *r)
     if (conf->limit_xml_body == AP_LIMIT_UNSET)
         return AP_DEFAULT_LIMIT_XML_BODY;
 
-    return (size_t)conf->limit_xml_body;
+    return (apr_size_t)conf->limit_xml_body;
 }
 
 #if !defined (RLIMIT_CPU) || !(defined (RLIMIT_DATA) || defined (RLIMIT_VMEM) || defined(RLIMIT_AS)) || !defined (RLIMIT_NPROC)

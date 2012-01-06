@@ -179,7 +179,7 @@ static int extract_cookie_line(ap_cookie_do * v, const char *key, const char *va
     char *last1, *last2;
     char *cookie = apr_pstrdup(v->r->pool, val);
     const char *name = apr_pstrcat(v->r->pool, v->name ? v->name : "", "=", NULL);
-    size_t len = strlen(name);
+    apr_size_t len = strlen(name);
     const char *new_cookie = "";
     const char *comma = ",";
     char *next1;

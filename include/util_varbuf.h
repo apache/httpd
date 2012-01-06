@@ -144,7 +144,8 @@ AP_DECLARE(char *) ap_varbuf_pdup(apr_pool_t *p, struct ap_varbuf *vb,
  */
 AP_DECLARE(apr_status_t) ap_varbuf_regsub(struct ap_varbuf *vb,
                                           const char *input,
-                                          const char *source, size_t nmatch,
+                                          const char *source,
+                                          apr_size_t nmatch,
                                           ap_regmatch_t pmatch[],
                                           apr_size_t maxlen);
 

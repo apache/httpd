@@ -1462,8 +1462,10 @@ AP_DECLARE(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r,
 
 #if APR_HAS_MMAP
 /* send data from an in-memory buffer */
-AP_DECLARE(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
-                                size_t length)
+AP_DECLARE(apr_size_t) ap_send_mmap(apr_mmap_t *mm,
+                                    request_rec *r,
+                                    apr_size_t offset,
+                                    apr_size_t length)
 {
     conn_rec *c = r->connection;
     apr_bucket_brigade *bb = NULL;

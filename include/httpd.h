@@ -1803,8 +1803,9 @@ AP_DECLARE(void) ap_pregfree(apr_pool_t *p, ap_regex_t *reg);
  * @param pmatch the pmatch array returned from ap_pregex
  * @return The substituted string, or NULL on error
  */
-AP_DECLARE(char *) ap_pregsub(apr_pool_t *p, const char *input, const char *source,
-                              size_t nmatch, ap_regmatch_t pmatch[]);
+AP_DECLARE(char *) ap_pregsub(apr_pool_t *p, const char *input,
+                              const char *source, apr_size_t nmatch,
+                              ap_regmatch_t pmatch[]);
 
 /**
  * After performing a successful regex match, you may use this function to
@@ -1822,7 +1823,8 @@ AP_DECLARE(char *) ap_pregsub(apr_pool_t *p, const char *input, const char *sour
  */
 AP_DECLARE(apr_status_t) ap_pregsub_ex(apr_pool_t *p, char **result,
                                        const char *input, const char *source,
-                                       size_t nmatch, ap_regmatch_t pmatch[],
+                                       apr_size_t nmatch,
+                                       ap_regmatch_t pmatch[],
                                        apr_size_t maxlen);
 
 /**
