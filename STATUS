@@ -125,13 +125,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs.cgi?rev=933919&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem, wrowe
+      +1: rpluem
       minfrin: The r933919 patch is obsolete, as this trunk code no longer
                exists. The fix you're after is r951222, backported to both
                mod_disk_cache.c and mod_mem_cache.c.
       rjung: I combined backports of r933919 and r951222:
       http://people.apache.org/~rjung/patches/mod_cache_partial_content-2.2.x.patch
-      +1: rjung
+      +1: rjung, wrowe
 
   * mod_proxy_ajp: Missing support for ErrorOverride
     Trunk patch: http://svn.apache.org/viewvc?rev=1087864&view=rev
@@ -143,6 +143,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.2.x patch: trunk patch works
     +1: jorton
     trawick: http://mail-archives.apache.org/mod_mbox/httpd-dev/201112.mbox/%3CCAKUrXK4uwT%3DP1KtEziNqFdxXs%2BtyWvggzpL8x2u-Bbq8tZ-Zsw%40mail.gmail.com%3E
+    wrowe: Prefer Jeff's premise (a) to reject all non-resource URIs from httpd
+           rather than a module-by-module test.  In particular, '*' should just
+           work and bypass most hook phases.  In any case, in the revised
+           patch of 12/16, (r->unparsed_uri[0] == '*' && !r->unparsed_uri[1])
+           should be much faster than a callout to strcmp.
+    wrowe: Shouldn't this all simply be handled with an error result from
+           apr_uri_parse?
+
+  * mod_proxy: cure size_t abuse part 1, backport relevant bits of r1227856,
+    Specifically normalizes ap_proxy_string_read so that the prototype
+    agrees with the actual implementation, which I believe is a bug fix
+    as opposed to an actual API change, ergo no MMN bump necessary(?).
+    Branch patch:
+      http://svn.apache.org/viewvc?rev=1227860&view=rev
+    +1: wrowe
 
 PATCHES/ISSUES THAT ARE STALLED
 
