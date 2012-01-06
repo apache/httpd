@@ -1648,7 +1648,7 @@ typedef struct {
 
 
 /* arr_elts_getstr() returns the next line from the string array. */
-static apr_status_t arr_elts_getstr(void *buf, size_t bufsiz, void *param)
+static apr_status_t arr_elts_getstr(void *buf, apr_size_t bufsiz, void *param)
 {
     arr_elts_param_t *arr_param = (arr_elts_param_t *)param;
     char *elt;

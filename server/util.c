@@ -372,13 +372,13 @@ AP_DECLARE(const char *) ap_stripprefix(const char *bigstring,
 
 static apr_status_t regsub_core(apr_pool_t *p, char **result,
                                 struct ap_varbuf *vb, const char *input,
-                                const char *source, size_t nmatch,
+                                const char *source, apr_size_t nmatch,
                                 ap_regmatch_t pmatch[], apr_size_t maxlen)
 {
     const char *src = input;
     char *dst;
     char c;
-    size_t no;
+    apr_size_t no;
     apr_size_t len = 0;
 
     AP_DEBUG_ASSERT((result && p && !vb) || (vb && !p && !result));
@@ -465,7 +465,7 @@ static apr_status_t regsub_core(apr_pool_t *p, char **result,
 #define AP_PREGSUB_MAXLEN   (HUGE_STRING_LEN * 8)
 #endif
 AP_DECLARE(char *) ap_pregsub(apr_pool_t *p, const char *input,
-                              const char *source, size_t nmatch,
+                              const char *source, apr_size_t nmatch,
                               ap_regmatch_t pmatch[])
 {
     char *result;
@@ -478,7 +478,7 @@ AP_DECLARE(char *) ap_pregsub(apr_pool_t *p, const char *input,
 
 AP_DECLARE(apr_status_t) ap_pregsub_ex(apr_pool_t *p, char **result,
                                        const char *input, const char *source,
-                                       size_t nmatch, ap_regmatch_t pmatch[],
+                                       apr_size_t nmatch, ap_regmatch_t pmatch[],
                                        apr_size_t maxlen)
 {
     apr_status_t rc = regsub_core(p, result, NULL, input, source, nmatch,
@@ -725,7 +725,7 @@ AP_DECLARE(char *) ap_getword_nulls(apr_pool_t *atrans, const char **line,
     char *res;
 
     if (!pos) {
-        size_t len = strlen(*line);
+        apr_size_t len = strlen(*line);
         res = apr_pstrmemdup(atrans, *line, len);
         *line += len;
         return res;
@@ -836,7 +836,7 @@ static apr_status_t cfg_getch(char *ch, void *param)
     return apr_file_getc(ch, param);
 }
 
-static apr_status_t cfg_getstr(void *buf, size_t bufsiz, void *param)
+static apr_status_t cfg_getstr(void *buf, apr_size_t bufsiz, void *param)
 {
     return apr_file_gets(buf, bufsiz, param);
 }
@@ -926,7 +926,7 @@ AP_DECLARE(apr_status_t) ap_pcfg_openfile(ap_configfile_t **ret_cfg,
 AP_DECLARE(ap_configfile_t *) ap_pcfg_open_custom(
             apr_pool_t *p, const char *descr, void *param,
             apr_status_t (*getc_func) (char *ch, void *param),
-            apr_status_t (*gets_func) (void *buf, size_t bufsize, void *param),
+            apr_status_t (*gets_func) (void *buf, apr_size_t bufsize, void *param),
             apr_status_t (*close_func) (void *param))
 {
     ap_configfile_t *new_cfg = apr_palloc(p, sizeof(*new_cfg));
@@ -962,7 +962,7 @@ AP_DECLARE(const char *) ap_pcfg_strerror(apr_pool_t *p, ap_configfile_t *cfp,
 
 /* Read one line from open ap_configfile_t, strip LF, increase line number */
 /* If custom handler does not define a getstr() function, read char by char */
-static apr_status_t ap_cfg_getline_core(char *buf, size_t bufsize,
+static apr_status_t ap_cfg_getline_core(char *buf, apr_size_t bufsize,
                                         ap_configfile_t *cfp)
 {
     apr_status_t rc;
@@ -970,7 +970,7 @@ static apr_status_t ap_cfg_getline_core(char *buf, size_t bufsize,
     if (cfp->getstr != NULL) {
         char *cp;
         char *cbuf = buf;
-        size_t cbufsize = bufsize;
+        apr_size_t cbufsize = bufsize;
 
         while (1) {
             ++cfp->line_number;
@@ -1016,7 +1016,7 @@ static apr_status_t ap_cfg_getline_core(char *buf, size_t bufsize,
         }
     } else {
         /* No "get string" function defined; read character by character */
-        size_t i = 0;
+        apr_size_t i = 0;
 
         if (bufsize < 2) {
             /* too small, assume caller is crazy */
@@ -1081,7 +1081,8 @@ static int cfg_trim_line(char *buf)
 
 /* Read one line from open ap_configfile_t, strip LF, increase line number */
 /* If custom handler does not define a getstr() function, read char by char */
-AP_DECLARE(apr_status_t) ap_cfg_getline(char *buf, size_t bufsize, ap_configfile_t *cfp)
+AP_DECLARE(apr_status_t) ap_cfg_getline(char *buf, apr_size_t bufsize,
+                                        ap_configfile_t *cfp)
 {
     apr_status_t rc = ap_cfg_getline_core(buf, bufsize, cfp);
     if (rc == APR_SUCCESS)
@@ -2723,7 +2724,8 @@ AP_DECLARE(char *) ap_varbuf_pdup(apr_pool_t *p, struct ap_varbuf *buf,
 
 AP_DECLARE(apr_status_t) ap_varbuf_regsub(struct ap_varbuf *vb,
                                           const char *input,
-                                          const char *source, size_t nmatch,
+                                          const char *source,
+                                          apr_size_t nmatch,
                                           ap_regmatch_t pmatch[],
                                           apr_size_t maxlen)
 {
