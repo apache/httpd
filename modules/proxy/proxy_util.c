@@ -1149,14 +1149,14 @@ PROXY_DECLARE(const char *) ap_proxy_cookie_reverse_map(request_rec *r,
     proxy_req_conf *rconf = ap_get_module_config(r->request_config,
                                                  &proxy_module);
     struct proxy_alias *ent;
-    apr_size_t len = strlen(str);
+    size_t len = strlen(str);
     const char *newpath = NULL;
     const char *newdomain = NULL;
     const char *pathp;
     const char *domainp;
     const char *pathe = NULL;
     const char *domaine = NULL;
-    apr_size_t l1, l2, poffs = 0, doffs = 0;
+    size_t l1, l2, poffs = 0, doffs = 0;
     int i;
     int ddiff = 0;
     int pdiff = 0;
