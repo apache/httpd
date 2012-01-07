@@ -35,21 +35,66 @@ that advertises the servers current connection count.  Usually, <module>mod_hear
 will be running on a proxy server with <module>mod_lbmethod_heartbeat</module> loaded, which allows
 <directive module="mod_proxy">ProxyPass</directive> to use the "heartbeat" <em>lbmethod</em> inside
 of <directive module="mod_proxy">ProxyPass</directive>.</p>
+<p>
+    <module>mod_heartbeat</module> itself is loaded on the origin server(s) that serve requests 
+    through the proxy server(s).  
+</p>
+
+    <note type="warning">
+        To use <module>mod_heartbeat</module>,
+        <module>mod_status</module> and <module>mod_watchdog</module>
+        must be either a static modules or, if a dynamic module, it must
+        be loaded before <module>mod_heartbeat</module>.
+    </note>
+
 </summary>
+
+<section id="consuming">
+    <title>Consuming mod_heartbeat Output</title>
+  <p>
+      Every 1 second, this module generates a single multicast UDP
+      packet, containing the number of busy and idle workers.  The
+      packet is a simple ASCII format, similiar to GET query parameters
+      in HTTP.
+  </p>
+  
+<example><title>An Example Packet</title>
+v=1&amp;ready=75&amp;busy=0
+</example>
+
+  <p>
+    Consumers should handle new variables besides busy and ready,
+    separated by '&amp;', being added in the future.
+  </p>
+
+</section>
+
+<section id="miscellaneous">
+<title>Miscellaneous</title>
+<p>The interval of 1 seconds is controlled by the HEARTBEAT_INTERVAL
+compile time define.  This is not currently tunable at run time. To make
+this module send the status packet more often, you must add to the
+CFLAGS used to compile the module to include:</p>
+<example>-DHEARTBEAT_INTERVAL=3</example>
+<p>Would cause the broadcasts to be sent every 3 seconds.</p>
+</section>    
 
 <directivesynopsis>
 <name>HeartbeatAddress</name>
-<description>Address to send heartbeat requests</description>
+<description>Multicast address for heartbeat packets</description>
 <syntax>HeartbeatAddress <var>addr:port</var></syntax>
 <default>disabled</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>The <directive>HeartbeatAddress</directive> directive specifies the 
-    address <module>mod_heartbeat</module> will send status information to. This
-    address will usually corrspond to a configured  <directive
-    module="mod_heartmonitor">HeartbeatListen</directive> on a frontend
-    proxy system.  </p>
+<p>The <directive>HeartbeatAddress</directive> directive specifies the
+multicast address to which <module>mod_heartbeat</module> will send
+status information. This address will usually correspond to a configured
+ <directive module="mod_heartmonitor">HeartbeatListen</directive> on a
+frontend proxy system.</p>
+<example>
+HeartbeatAddress 239.0.0.1:27999
+</example>    
 </usage>
 </directivesynopsis>
 

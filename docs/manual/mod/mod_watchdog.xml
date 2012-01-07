@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_watchdog.xml.meta">
+<name>mod_watchdog</name>
+<description>provides infrastructure for other modules to periodically run 
+    tasks</description>
+<status>Base</status>
+<sourcefile>mod_watchdog.c</sourcefile>
+<identifier>watchdog_module</identifier>
+<compatibility>Available in Apache 2.3 and later</compatibility>
+
+<summary>
+<p><module>mod_watchdog</module> defines programmatic hooks for other modules to 
+periodically run tasks.  These modules can register handlers for 
+<module>mod_watchdog</module> hooks.  Currently, the following modules in the 
+Apache distribution use this functionality:</p> 
+<ul>
+<li><module>mod_heartbeat</module></li>
+<li><module>mod_heartmonitor</module></li>
+</ul>
+<note type="warning">
+To allow a module to use <module>mod_watchdog</module> functionality, 
+<module>mod_watchdog</module> itself must be statically linked to the server 
+core or, if a dynamic module, be loaded before the calling module. 
+</note>
+</summary>
+
+<directivesynopsis>
+<name>WatchdogInterval</name>
+<description>Watchdog interval in seconds</description>
+<syntax>WatchdogInterval <var>number-of-seconds</var></syntax>
+<default>WatchdogInterval 1</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+Sets the interval at which the watchdog_step hook runs.  Default is to run every 
+second.
+</usage>
+</directivesynopsis>
+</modulesynopsis>
+
