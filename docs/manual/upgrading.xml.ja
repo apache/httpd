@@ -1,0 +1,158 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
+<!-- English Revision: 586771  -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="upgrading.xml.meta">
+
+<title>2.0 から 2.2 へのアップグレード</title>
+
+<summary>
+  <p>アップグレードを簡単にするために、既存の Apache ユーザに
+  非常に重要な情報をこの文書にまとめています。これは短い
+  注意書きとして書かれています。より詳しい情報は <a 
+  href="new_features_2_2.html">新機能</a>の文書や
+  <code>src/CHANGES</code> ファイルで見つけられると思います。</p>
+
+  <p>この文書は 2.0 から 2.2 への変更点だけを説明します。
+  もし 1.3 からのアップグレードをするのであれば、<a
+  href="http://httpd.apache.org/docs/2.0/upgrading.html">1.3 から 2.0
+  へのアップグレードの文書</a> も参考にしてください。 </p>
+
+</summary>
+<seealso><a href="new_features_2_2.html">Apache 2.2 の新機能
+  の概要</a></seealso>
+
+  <section id="compile-time">
+    <title>コンパイル時の設定の変更</title>
+
+    <p>コンパイルの過程はバージョン 2.0 で使われているものと非常に
+    よく似ています。古い <code>configure</code> コマンドライン 
+    (インストールしたサーバのディレクトリにある
+    <code>build/config.nice</code>)
+    が、ときには使えるでしょう。最も大きな変更点はモジュールの名前の
+    変更を入れるために必要とされるもので、特に認証と認可のモジュール
+    の変更点です。
+    変更の詳細の一部は:</p>
+
+    <ul>
+      <li>mod_imap は <module>mod_imagemap</module> に名前を
+          変更しました</li>
+      <li>mod_auth は <module>mod_auth_basic</module> と、
+          <module>mod_authn_file</module>, <module>mod_authz_user</module>
+          そして、<module>mod_authz_groupfile</module> に分かれ
+          ました。</li>
+      <li>mod_access は <module>mod_authz_host</module> に名前を
+          変更しました。</li>
+      <li>mod_auth_ldap は <module>mod_authnz_ldap</module> に
+          名前を変更しました。</li>
+      <li>APR 1.0 API を必要とするようにアップグレードされました。</li>
+      <li>バンドルされている PCRE は、 5.0 にアップデートされています。</li>
+    </ul>
+
+  </section>
+
+  <section id="run-time">
+    <title>実行時の設定の変更</title>
+
+    <p>あなたが使っているバージョン 2.0 用の設定ファイルとスタート
+       アップスクリプトは通常バージョン 2.2 でも変更せずに使えます。
+       特定の設定については 以下に議論するようにいくらか小さな
+       調整が必要となるかもしれません。 さらに、 
+       <directive module="mod_so">LoadModule</directive> 
+       ディレクティブを使って動的にモジュールを読み込んで使って
+       いる場合には、上に挙げたモジュール名の変更を考慮する必要が
+       あるでしょう。</p>
+
+    <p>もし、あなたがバージョン 2.2 のデフォルトの実行時設定を使う
+       ことを選ぶなら 最も基本的な設定以外は除外されていて 非常に
+       簡単化されていることに気付くでしょう。
+       より高度な機能に関する実行時の設定の例が、インストールした
+       サーバの <code>conf/extra/</code> のディレクトリに入ります。
+       デフォルトの設定ファイルは <code>conf/original</code>
+       にインストールされます。</p>
+
+    <p>実行時の設定の主な変更点を挙げると:</p>
+
+    <ul>
+      <li><program>apachectl</program> のオプションであった
+      <code>startssl</code> は無くなりました。
+      SSL サポートを有効にするには <code>httpd.conf</code> を
+      編集して関連する <module>mod_ssl</module> ディレクティブを
+      入れるようにし、それから <code>apachectl start</code> で
+      サーバをスタートしてください。
+      <module>mod_ssl</module> を有効にする設定ファイルの例が
+      <code>conf/extra/httpd-ssl.conf</code>
+      にあります。</li>
+
+      <li>デフォルトの設定としての <directive
+      module="core">UseCanonicalName</directive> は
+      <code>Off</code> となりました。もし、このディレクティブを
+      実行時設定ファイルに書いていなかったら、旧バージョンでの
+      ふるまいを維持したい場合には <code>UseCanonicalName On</code> を
+      加えておくことができます。</li>
+
+      <li><module>mod_userdir</module> モジュールは、
+      ディレクトリ名を指定した<directive
+      module="mod_userdir">UserDir</directive> ディレクティブが
+      設定ファイルに書かれていなければ
+      リクエスト時に動作しないようになりました。 古いデフォルト
+      動作を復元させたい場合には、設定ファイルに <code>UserDir
+      public_html</code> を入れておいてください。</li>
+
+      <li><module>mod_auth_digest</module> にあった
+      <directive>AuthDigestFile</directive> ディレクティブは、
+      <directive module="mod_authn_file">AuthUserFile</directive>
+      に吸収され、 <module>mod_authn_file</module> の一部となりました。</li>
+    </ul>
+  </section>
+
+  <section id="misc">
+    <title>その他の変更</title>
+
+    <ul>
+      <li>Apache 2.0 で実験的なモジュールだった
+      <module>mod_cache</module> は標準モジュールになりました。</li>
+
+      <li>Apache 2.0 で実験的なモジュールだった
+      <module>mod_disk_cache</module> は標準モジュールになりました。</li>
+
+      <li>Apache 2.0 で実験的なモジュールだった
+      <module>mod_mem_cache</module> は標準モジュールになりました。</li>
+
+      <li>Apache 2.0 で実験的なモジュールだった
+      <module>mod_charset_lite</module> は標準モジュールになりました。</li>
+
+      <li>Apache 2.0 で実験的なモジュールだった
+      <module>mod_dumpio</module> は標準モジュールになりました。</li>
+
+    </ul>
+  </section>
+
+  <section id="third-party">
+    <title>サードパーティモジュール</title>
+
+   <p>バージョン 2.0 のために設計された多くのサードパーティ
+   モジュールは Apache HTTP サーバ・バージョン 2.2 で、変更無しで
+   動作するでしょう。しかし、全てのモジュールはロードの前に再コンパイル
+   する必要があります。</p>
+
+  </section>
+</manualpage>

@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- English Revision: 421100 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="index.xml.meta">
+<parentdocument href="../"/>
+
+  <title>サーバーと補助プログラム</title>
+
+<summary>
+    <p>このページでは Apache HTTP サーバー に含まれる全ての
+    実行可能プログラムについて説明します。
+    </p>
+</summary>
+
+<section id="index"><title>Index</title>
+
+    <dl>
+      <dt><program>httpd</program></dt>
+
+      <dd>Apache ハイパーテキスト転送プロトコルサーバー</dd>
+
+      <dt><program>apachectl</program></dt>
+
+      <dd>Apache HTTP サーバー制御インタフェース</dd>
+
+      <dt><program>ab</program></dt>
+
+      <dd>Apache HTTP サーバー・ベンチマークツール</dd>
+
+      <dt><program>apxs</program></dt>
+
+      <dd>Apache 拡張 (APache eXtenSion) ツール</dd>
+
+      <dt><program>configure</program></dt>
+
+      <dd>ソースツリーの設定</dd>
+
+      <dt><program>dbmmanage</program></dt>
+
+      <dd>Basic 認証用 ユーザ認証ファイルを DBM 形式で作成・更新するプログラム
+      </dd>
+
+      <dt><program>htcacheclean</program></dt>
+      <dd>ディスクキャッシュのクリーンアップ</dd>
+
+      <dt><program>htdigest</program></dt>
+
+      <dd>Digest 認証用のユーザ認証ファイルの作成と更新</dd>
+
+      <dt><program>htdbm</program></dt>
+
+      <dd>DBM パスワードデータベースの操作</dd>
+
+      <dt><program>htpasswd</program></dt>
+
+      <dd>Basic 認証用のユーザ認証ファイルの作成と更新</dd>
+
+      <dt><program>httxt2dbm</program></dt>
+
+      <dd>RewriteMap 用に dbm ファイルを作成する</dd>
+
+      <dt><program>logresolve</program></dt>
+
+      <dd>Apache のログファイルの IP アドレスをホスト名に解決する</dd>
+
+      <dt><program>rotatelogs</program></dt>
+
+      <dd>サーバを停止せずに Apache ログファイルのローテーションを行う</dd>
+
+      <dt><program>suexec</program></dt>
+
+      <dd>Exec (CGI) のためにユーザを変更する</dd>
+
+      <dt><a href="other.html">その他のプログラム</a></dt>
+      <dd>マニュアルページの無いサポートツール</dd>
+    </dl>
+</section>
+
+</manualpage>
