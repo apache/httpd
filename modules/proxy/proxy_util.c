@@ -81,15 +81,18 @@ APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, create_req,
 PROXY_DECLARE(apr_status_t) ap_proxy_strncpy(char *dst, const char *src,
                                              apr_size_t dlen)
 {
-    if ((strlen(src)+1) > dlen) {
-        /* XXX: APR_ENOSPACE would be better */
-        return APR_EGENERAL;
+    char *thenil;
+    apr_size_t thelen;
+
+    thenil = apr_cpystrn(dst, src, dlen);
+    thelen = thenil - dst;
+    /* Assume the typical case is smaller copying into bigger
+       so we have a fast return */
+    if ((thelen < dlen-1) || ((strlen(src)) == thelen)) {
+        return APR_SUCCESS;
     }
-    else {
-        /* XXX: Once slen and dlen are known, no excuse not to memcpy */
-        apr_cpystrn(dst, src, dlen);
-    }
-    return APR_SUCCESS;
+    /* XXX: APR_ENOSPACE would be better */
+    return APR_EGENERAL;
 }
 
 /* already called in the knowledge that the characters are hex digits */
