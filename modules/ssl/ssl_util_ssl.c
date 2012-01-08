@@ -260,7 +260,7 @@ char *SSL_X509_NAME_ENTRY_to_string(apr_pool_t *p, X509_NAME_ENTRY *xsne)
  * convert an X509_NAME to an RFC 2253 formatted string, optionally truncated
  * to maxlen characters (specify a maxlen of 0 for no length limit)
  */
-char *SSL_X509_NAME_to_string(apr_pool_t *p, X509_NAME *dn, unsigned int maxlen)
+char *SSL_X509_NAME_to_string(apr_pool_t *p, X509_NAME *dn, int maxlen)
 {
     char *result = NULL;
     BIO *bio;
@@ -271,8 +271,8 @@ char *SSL_X509_NAME_to_string(apr_pool_t *p, X509_NAME *dn, unsigned int maxlen)
     X509_NAME_print_ex(bio, dn, 0, XN_FLAG_RFC2253);
     len = BIO_pending(bio);
     if (len > 0) {
-        result = apr_palloc(p, maxlen ? maxlen+1 : len+1);
-        if (maxlen && maxlen < len) {
+        result = apr_palloc(p, (maxlen > 0) ? maxlen+1 : len+1);
+        if (maxlen > 0 && maxlen < len) {
             len = BIO_read(bio, result, maxlen);
             if (maxlen > 2) {
                 /* insert trailing ellipsis if there's enough space */
