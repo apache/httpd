@@ -111,7 +111,7 @@
         <message id="apachehttpserver">Apache HTTP サーバ
             バージョン &httpd.major;.&httpd.minor;</message>
         <message id="apachedocalt">[APACHE DOCUMENTATION]</message>
-        <message id="search">Google Search</message> <!-- search button -->
+        <message id="search">Google 検索</message> <!-- search button -->
         <message id="index">索引</message> <!-- deprecated -->
         <message id="home">ホーム</message> <!-- deprecated -->
 
