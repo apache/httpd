@@ -21,6 +21,8 @@
 <p><span>Langues Disponibles: </span><a href="../en/ssl/ssl_compat.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/ssl/ssl_compat.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
 <blockquote>
 <p>Tous les PCs sont compatibles. Mais certains sont plus compatibles que

@@ -35,27 +35,66 @@ that advertises the servers current connection count.  Usually, <code class="mod
 will be running on a proxy server with <code class="module"><a href="../mod/mod_lbmethod_heartbeat.html">mod_lbmethod_heartbeat</a></code> loaded, which allows
 <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> to use the "heartbeat" <em>lbmethod</em> inside
 of <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>.</p>
+<p>
+    <code class="module"><a href="../mod/mod_heartbeat.html">mod_heartbeat</a></code> itself is loaded on the origin server(s) that serve requests 
+    through the proxy server(s).  
+</p>
+
+    <div class="warning">
+        To use <code class="module"><a href="../mod/mod_heartbeat.html">mod_heartbeat</a></code>,
+        <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> and <code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code>
+        must be either a static modules or, if a dynamic module, must
+        be loaded before <code class="module"><a href="../mod/mod_heartbeat.html">mod_heartbeat</a></code>.
+    </div>
+
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#heartbeataddress">HeartbeatAddress</a></li>
 </ul>
-</div>
+<h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#consuming">Consuming mod_heartbeat Output</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="consuming" id="consuming">Consuming mod_heartbeat Output</a></h2>
+    
+  <p>
+      Every 1 second, this module generates a single multicast UDP
+      packet, containing the number of busy and idle workers.  The
+      packet is a simple ASCII format, similiar to GET query parameters
+      in HTTP.
+  </p>
+  
+<div class="example"><h3>An Example Packet</h3><p><code>
+v=1&amp;ready=75&amp;busy=0
+</code></p></div>
 
+  <p>
+    Consumers should handle new variables besides busy and ready,
+    separated by '&amp;', being added in the future.
+  </p>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="HeartbeatAddress" id="HeartbeatAddress">HeartbeatAddress</a> <a name="heartbeataddress" id="heartbeataddress">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Address to send heartbeat requests</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Multicast address for heartbeat packets</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>HeartbeatAddress <var>addr:port</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>disabled</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_heartbeat</td></tr>
 </table>
-    <p>The <code class="directive">HeartbeatAddress</code> directive specifies the 
-    address <code class="module"><a href="../mod/mod_heartbeat.html">mod_heartbeat</a></code> will send status information to. This
-    address will usually corrspond to a configured  <code class="directive"><a href="../mod/mod_heartmonitor.html#heartbeatlisten">HeartbeatListen</a></code> on a frontend
-    proxy system.  </p>
+<p>The <code class="directive">HeartbeatAddress</code> directive specifies the
+multicast address to which <code class="module"><a href="../mod/mod_heartbeat.html">mod_heartbeat</a></code> will send
+status information. This address will usually correspond to a configured
+ <code class="directive"><a href="../mod/mod_heartmonitor.html#heartbeatlisten">HeartbeatListen</a></code> on a
+frontend proxy system.</p>
+<div class="example"><p><code>
+HeartbeatAddress 239.0.0.1:27999
+</code></p></div>    
 
 </div>
 </div>
