@@ -155,7 +155,7 @@ AP_DECLARE_NONSTD(int) ap_scan_script_header_err_strs(request_rec *r,
                                                       char *buffer,
                                                       const char **termch,
                                                       int *termarg, ...)
-                       ap_func_attr_sentinel;
+                       AP_FN_ATTR_SENTINEL;
 
 /**
  * Read headers strings from a script, ensuring that the output is valid.  If
@@ -178,7 +178,7 @@ AP_DECLARE_NONSTD(int) ap_scan_script_header_err_strs_ex(request_rec *r,
                                                          int module_index,
                                                          const char **termch,
                                                          int *termarg, ...)
-                       ap_func_attr_sentinel;
+                       AP_FN_ATTR_SENTINEL;
 
 
 /**

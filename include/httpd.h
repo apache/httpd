@@ -2137,7 +2137,9 @@ AP_DECLARE(void) ap_abort_on_oom(void) __attribute__((noreturn));
  * @return pointer to the allocated memory
  * @note ap_malloc may be implemented as a macro
  */
-AP_DECLARE(void *) ap_malloc(size_t size) __attribute__((malloc));
+AP_DECLARE(void *) ap_malloc(size_t size)
+                    __attribute__((malloc))
+                    AP_FN_ATTR_ALLOC_SIZE(1);
 
 /**
  * Wrapper for calloc() that calls ap_abort_on_oom() if out of memory
@@ -2146,7 +2148,9 @@ AP_DECLARE(void *) ap_malloc(size_t size) __attribute__((malloc));
  * @return pointer to the allocated memory
  * @note ap_calloc may be implemented as a macro
  */
-AP_DECLARE(void *) ap_calloc(size_t nelem, size_t size) __attribute__((malloc));
+AP_DECLARE(void *) ap_calloc(size_t nelem, size_t size)
+                   __attribute__((malloc))
+                   AP_FN_ATTR_ALLOC_SIZE2(1,2);
 
 /**
  * Wrapper for realloc() that calls ap_abort_on_oom() if out of memory
@@ -2156,7 +2160,8 @@ AP_DECLARE(void *) ap_calloc(size_t nelem, size_t size) __attribute__((malloc));
  * @note ap_realloc may be implemented as a macro
  */
 AP_DECLARE(void *) ap_realloc(void *ptr, size_t size)
-                   ap_func_attr_warn_unused_result;
+                   AP_FN_ATTR_WARN_UNUSED_RESULT
+                   AP_FN_ATTR_ALLOC_SIZE2(1,2);
 
 
 #define AP_NORESTART APR_OS_START_USEERR + 1
