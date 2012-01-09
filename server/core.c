@@ -1619,6 +1619,17 @@ static const char *set_override(cmd_parms *cmd, void *d_, const char *l)
         else if (!strcasecmp(w, "Indexes")) {
             d->override |= OR_INDEXES;
         }
+        else if (!strcasecmp(w, "Nonfatal")) {
+            if (!strcasecmp(v, "Override")) {
+                d->override |= NONFATAL_OVERRIDE;
+            }
+            else if (!strcasecmp(v, "Unknown")) {
+                d->override |= NONFATAL_UNKNOWN;
+            }
+            else if (!strcasecmp(v, "All")) {
+                d->override |= NONFATAL_ALL;
+            }
+        }
         else if (!strcasecmp(w, "None")) {
             d->override = OR_NONE;
         }

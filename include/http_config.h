@@ -242,6 +242,13 @@ struct command_struct {
 #define EXEC_ON_READ 256     /**< force directive to execute a command
                 which would modify the configuration (like including another
                 file, or IFModule */
+/* Flags to determine whether syntax errors in .htaccess should be
+ * treated as nonfatal (log and ignore errors)
+ */
+#define NONFATAL_OVERRIDE 512    /* Violation of AllowOverride rule */
+#define NONFATAL_UNKNOWN 1024    /* Unrecognised directive */
+#define NONFATAL_ALL (NONFATAL_OVERRIDE|NONFATAL_UNKNOWN)
+
 /** this directive can be placed anywhere */
 #define OR_ALL (OR_LIMIT|OR_OPTIONS|OR_FILEINFO|OR_AUTHCFG|OR_INDEXES)
 
