@@ -50,7 +50,7 @@
 
     <dt><code>-f <var>DBM_TYPE</var></code></dt>
     <dd>Specify the DBM type to be used for the output. If not specified, will
-    use the <code>APR</code> Default. Available types are:
+    use the <glossary>APR</glossary> Default. Available types are:
     <code>GDBM</code> for GDBM files,
     <code>SDBM</code> for SDBM files,
     <code>DB</code> for berkeley DB files,
