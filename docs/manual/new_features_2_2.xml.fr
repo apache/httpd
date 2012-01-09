@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- LastChangedRevision English document : 682363 -->
+<!-- English Revision: 682363 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- $LastChangedRevision: 2007101301 $ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
