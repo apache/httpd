@@ -27,6 +27,7 @@
 <a href="./tr/mpm.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/mpm.html" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
+<div class="outofdate">此翻译可能过期。要了解最近的更改，请阅读英文版。</div>
 
 <p>本文档介绍了什么是多处理模块，以及 Apache HTTP 服务器如何使用它们。</p>
 </div>

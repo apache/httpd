@@ -997,7 +997,10 @@ cannot use <code>$N</code> in the substitution string!
         <dt>file-system path</dt>
 
         <dd>Designates the location on the file-system of the resource
-        to be delivered to the client.</dd>
+        to be delivered to the client.  Substitutions are only
+        treated as a file-system path when the rule is configured in 
+        server (virtualhost) context and the first component of the
+        path in the substitution is exists in the file-system</dd>
 
         <dt>URL-path</dt>
 

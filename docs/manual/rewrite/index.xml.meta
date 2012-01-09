@@ -10,6 +10,6 @@
     <variant>en</variant>
     <variant>fr</variant>
     <variant outdated="yes">tr</variant>
-    <variant>zh-cn</variant>
+    <variant outdated="yes">zh-cn</variant>
   </variants>
 </metafile>

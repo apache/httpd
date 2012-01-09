@@ -226,6 +226,7 @@ header	mod/mod_headers.html#header
 headername	mod/mod_autoindex.html#headername
 heartbeataddress	mod/mod_heartbeat.html#heartbeataddress
 heartbeatlisten	mod/mod_heartmonitor.html#heartbeatlisten
+heartbeatmaxservers	mod/mod_heartmonitor.html#heartbeatmaxservers
 heartbeatstorage	mod/mod_lbmethod_heartbeat.html#heartbeatstorage
 heartbeatstorage	mod/mod_heartmonitor.html#heartbeatstorage
 hostnamelookups	mod/core.html#hostnamelookups
@@ -564,6 +565,7 @@ virtualdocumentrootip	mod/mod_vhost_alias.html#virtualdocumentrootip
 virtualhost	mod/core.html#virtualhost
 virtualscriptalias	mod/mod_vhost_alias.html#virtualscriptalias
 virtualscriptaliasip	mod/mod_vhost_alias.html#virtualscriptaliasip
+watchdoginterval	mod/mod_watchdog.html#watchdoginterval
 xbithack	mod/mod_include.html#xbithack
 xml2encalias	mod/mod_xml2enc.html#xml2encalias
 xml2encdefault	mod/mod_xml2enc.html#xml2encdefault

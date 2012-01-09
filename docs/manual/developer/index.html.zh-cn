@@ -21,6 +21,7 @@
 <p><span>可用语言: </span><a href="../en/developer/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../zh-cn/developer/" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
+<div class="outofdate">此翻译可能过期。要了解最近的更改，请阅读英文版。</div>
 
     <p>开发者页面的许多文档都来自于 Apache 1.3。当更新到 Apache 2
     时，它们可能位于不同的阶段。请耐心等待，或者直接向

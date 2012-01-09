@@ -25,6 +25,8 @@
 <a href="../fr/mod/mod_access_compat.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_access_compat.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Autorisations de groupe à base de nom d'hôte (nom ou
 adresse IP)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>

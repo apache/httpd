@@ -21,6 +21,8 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/tech.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/tech.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
 <p>Ce document passe en revue certains détails techniques à propos du
 module mod_rewrite et de la mise en correspondance des URLs</p>
