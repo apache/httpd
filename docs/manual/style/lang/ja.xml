@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE language SYSTEM "../lang.dtd">
-<!-- English revision: 636495 -->
+<!-- English revision: 1044715 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -120,8 +120,7 @@
         <message id="apache">Apache</message>
         <message id="http-server">HTTP サーバ</message>
         <message id="documentation">ドキュメンテーション</message>
-        <message id="version">バージョン
-            &httpd.major;.&httpd.minor;</message>
+        <message id="version">バージョン &httpd.major;.&httpd.minor;</message>
 
         <!-- super menu -->
         <message id="modules">モジュール</message>
@@ -130,16 +129,18 @@
         <message id="sitemap">サイトマップ</message>
 
         <!-- footer line -->
-        <message id="before-license">Licensed under the</message>
-        <message id="after-license"></message>
-        <message id="langavail">言語</message>
+        <message id="before-license">この文書は</message>
+        <message id="after-license">のライセンスで提供されています。</message>
+        <message id="langavail">翻訳済み言語</message>
 
         <!-- not up to date -->
-        <message id="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</message>
+        <message id="outofdate">この日本語訳はすでに古くなっている
+            可能性があります。
+            最近更新された内容を見るには英語版をご覧下さい。
+        </message>
         <!-- directive not translated yet -->
-        <message id="nottranslated">The documentation for this directive has
-            not been translated yet. Please have a look at the English
-            version.</message>
+        <message id="nottranslated">このディレクティブの解説文書は
+            まだ翻訳されていません。英語版をご覧ください。
+            </message>
     </messages>
 </language>
