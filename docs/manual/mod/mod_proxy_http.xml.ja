@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- English Revision: 910322 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_proxy_http.xml.meta">
+
+<name>mod_proxy_http</name>
+<description><module>mod_proxy</module> のための HTTP サポートモジュール</description>
+<status>Extension</status>
+<sourcefile>mod_proxy_http.c</sourcefile>
+<identifier>proxy_http_module</identifier>
+
+<summary>
+    <p>本モジュールには <module>mod_proxy</module> が <em>必要です</em>。
+    本モジュールは HTTP および HTTPS リクエストのプロキシに使う機能を提供します。
+    <module>mod_proxy_http</module> は、 HTTP/0.9 と HTTP/1.0 と HTTP/1.1
+    をサポートします。キャッシュ機能は <em>持ちません。</em>
+    キャッシュ機能を持つプロキシを設定したい場合、<module>mod_cache</module>
+    と組み合わせるのがよいでしょう。</p>
+
+    <p>HTTP リクエストのプロキシを有効にするには、<module>mod_proxy</module>
+    と <module>mod_proxy_http</module> がサーバに組み込まれて
+    いなければいけません。</p>
+
+    <note type="warning"><title>警告</title>
+      <p><a href="mod_proxy.html#access">
+      安全なサーバにする</a>までプロキシ機能は有効にしないでください。
+      オープンプロキシサーバはあなた自身のネットワークにとっても、
+      インターネット全体にとっても危険です。</p>
+    </note>
+</summary>
+<seealso><module>mod_proxy</module></seealso>
+<seealso><module>mod_proxy_connect</module></seealso>
+
+<section id="env"><title>環境変数</title>
+    <p><module>mod_proxy</module> の動作を制御する設定ディレクティブ
+    に加えて、HTTP 動作を制御する多くの <dfn>環境変数</dfn> があります:</p>
+    <dl>
+        <dt>proxy-sendextracrlf</dt>
+        <dd>プロキシが、リクエストの最後に追加の CR-LF 改行コードを送るように
+        します。これはいくつかのブラウザにあるバグの回避用です。</dd>
+        <dt>force-proxy-request-1.0</dt>
+        <dd>プロキシがバックエンドに HTTP/1.0 でリクエストを送るようにし、
+        HTTP/1.1 の機能を無効にします。</dd>
+        <dt>proxy-nokeepalive</dt>
+        <dd>プロキシがリクエスト終了後にバックエンドとの接続を切るようにします。</dd>
+        <dt>proxy-chain-auth</dt>
+        <dd>プロキシが認証を要求する場合、プロキシはクライアントから送られるユーザ情報で
+        認証しますが、ユーザ情報はその先に転送しません。
+        <var>proxy-chain-auth</var> を有効にすると、プロキシはユーザ認証情報を
+        次のプロキシにも転送します。ユーザ認証を共有しているプロキシを連結している時、
+        この動作が必要でしょう。<strong>セキュリティ上の警告:</strong>
+        必要性が分からない限り、この動作を有効にしてはいけません。
+        と言うのも、大事な情報を転送してしまうからです。</dd>
+        <dt>proxy-sendcl</dt>
+        <dd>HTTP/1.0 では、ボディのあるリクエスト (例えば POST リクエスト)
+        はすべて <var>Content-Length</var> ヘッダを持つ必要があります。
+        この環境変数で、クライアントがプロキシに送ったのが何であるかに関わらず、
+        Apache のプロキシがバックエンドサーバにこのヘッダを送るように強制します。
+        これにより、HTTP/1.0 もしくはバージョン不明のバックエンドに転送する時の
+        互換性を保証します。しかし、この動作のためにプロキシはリクエストすべてをバッファリング
+        する必要があるかもしれません。このため、大きなサイズのリクエストで
+        非常に非効率になります。</dd>
+        <dt>proxy-sendchunks or proxy-sendchunked</dt>
+        <dd>これは <var>proxy-sendcl</var> の逆です。
+        リクエストのボディを chunked 転送エンコーディングでバックエンドに
+        送れるようにします。効率的なストリーム転送ができますが、
+        バックエンドサーバが HTTP/1.1 をサポートしている必要があります。</dd>
+        <dt>proxy-interim-response</dt>
+        <dd>この環境変数の値は <code>RFC</code> か <code>Suppress</code> です。
+        httpd の初期のバージョンはバックエンドからの HTTP interim レスポンス (1xx)
+        を捨てることがありました。これは技術的には HTTP のプロトコル違反です。
+        実際には、バックエンドが interim レスポンスを返すとしたら、
+        そのバックエンドはプロトコルを我々の預かり知らない方法で独自拡張しているか、
+        単におかしいかどちらかでしょう。
+        なので、 interim に対する動作を設定で変更可能にしています。
+        <code>proxy-interim-response RFC</code> と設定すると、
+        プロトコル準拠の動作になります。<code>proxy-interim-response Suppress</code>
+        と設定すると、 interim レスポンスをプロキシしません。</dd>
+        <dt>proxy-initial-not-pooled</dt>
+        <dd>この環境変数をセットすると、クライアントの最初の接続にはプールした
+        接続を使わなくなります。これは競合状態を原因とする
+        "proxy: error reading status line from remote server" エラーメッセージを
+        回避します。競合状態は、プロキシがプールした接続をチェックした後、
+        プロキシの送ったデータがバックエンドに到達する前にバックエンドが接続を閉じると発生します。
+        この変数をセットすることでパフォーマンスが劣化することを知っておくべきです。
+        特に HTTP/1.0 のクライアントに影響します。
+        </dd>
+    </dl>
+</section>
+
+</modulesynopsis>
