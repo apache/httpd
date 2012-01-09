@@ -22,6 +22,8 @@
 <a href="../fr/ssl/ssl_intro.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/ssl/ssl_intro.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
 <blockquote>
 <p>Ce qui est agréable avec les standards est d'avoir l'embarras du choix. Et

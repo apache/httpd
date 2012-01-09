@@ -28,6 +28,10 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Esta traducción podría estar
+            obsoleta. Consulte la versión en inglés de la
+            documentación para comprobar si se han producido cambios
+            recientemente.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Descripción:</a></th><td>Funcionalides básicas del Servidor HTTP Apache que siempre están presentes.</td></tr>
 <tr><th><a href="module-dict.html#Status">Estado:</a></th><td>Core</td></tr></table>
 </div>

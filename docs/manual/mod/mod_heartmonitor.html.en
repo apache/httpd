@@ -21,18 +21,18 @@
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_heartmonitor</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_heartbeat.html" title="English">&nbsp;en&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/mod/mod_heartmonitor.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>centralized monitor for mod_heartbeat origin servers</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>heartmonitor_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_heartmonitor</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_heartmonitor.c</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3 and later</td></tr></table>
 <h3>Summary</h3>
 
 <p>
 <code class="module"><a href="../mod/mod_heartmonitor.html">mod_heartmonitor</a></code> listens for server status messages generated 
-by <code class="module"><a href="../mod/mod_heartbeat.html">mod_heartbeat</a></code> enabled servers and makes their status 
+by <code class="module"><a href="../mod/mod_heartbeat.html">mod_heartbeat</a></code> enabled origin servers and makes their status 
 available to <code class="module"><a href="../mod/mod_lbmethod_heartbeat.html">mod_lbmethod_heartbeat</a></code>. This allows 
 <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> to use the "heartbeat" 
 <em>lbmethod</em> inside of <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>.
@@ -41,28 +41,81 @@ available to <code class="module"><a href="../mod/mod_lbmethod_heartbeat.html">m
 <p>This module uses the services of <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code> when
 available instead of flat-file storage.  No configuration is required to
 use <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code>.</p>
+
+    <div class="warning">
+        To use <code class="module"><a href="../mod/mod_heartmonitor.html">mod_heartmonitor</a></code>,
+        <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> and <code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code>
+        must be either a static modules or, if a dynamic module, it must
+        be loaded before <code class="module"><a href="../mod/mod_heartmonitor.html">mod_heartmonitor</a></code>.
+    </div>
+
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#heartbeataddress">HeartbeatAddress</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#heartbeatlisten">HeartbeatListen</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#heartbeatmaxservers">HeartbeatMaxServers</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#heartbeatstorage">HeartbeatStorage</a></li>
 </ul>
 </div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="HeartbeatAddress" id="HeartbeatAddress">HeartbeatAddress</a> <a name="heartbeataddress" id="heartbeataddress">Directive</a></h2>
+<div class="directive-section"><h2><a name="HeartbeatListen" id="HeartbeatListen">HeartbeatListen</a> <a name="heartbeatlisten" id="heartbeatlisten">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Address to send heartbeat requests</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>HeartbeatAddress <var>addr:port</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>multicast address to listen for incoming heartbeat requests </td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>HeartbeatListen<var>addr:port</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>disabled</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_heartbeat</td></tr>
-</table><p>The documentation for this directive has
-            not been translated yet. Please have a look at the English
-            version.</p></div>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_heartmonitor</td></tr>
+</table>
+    <p>The <code class="directive">HeartbeatListen</code> directive specifies the
+    multicast address on which the server will listen for status information from 
+    <code class="module"><a href="../mod/mod_heartbeat.html">mod_heartbeat</a></code>-enabled servers.  This
+    address will usually correspond to a configured  <code class="directive"><a href="../mod/mod_heartbeat.html#heartbeataddress">HeartbeatAddress</a></code> on an origin server.
+    </p>
+    
+    <div class="example"><p><code>
+    HeartbeatListen 239.0.0.1:27999
+    </code></p></div>
+
+    <p> This module is inactive until this directive is used.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="HeartbeatMaxServers" id="HeartbeatMaxServers">HeartbeatMaxServers</a> <a name="heartbeatmaxservers" id="heartbeatmaxservers">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specifies the maximum number of servers that will be sending 
+heartbeat requests to this server</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>HeartbeatMaxServers <var>number-of-servers</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>HeartbeatMaxServers 10</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_heartmonitor</td></tr>
+</table>
+    <p>The <code class="directive">HeartbeatMaxServers</code> directive specifies the
+    maximum number of servers that will be sending requests to this monitor
+    server.  It is used to control the size of the shared memory allocated
+    to store the heartbeat info when <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code> is in use.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="HeartbeatStorage" id="HeartbeatStorage">HeartbeatStorage</a> <a name="heartbeatstorage" id="heartbeatstorage">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Path to store heartbeat data</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>HeartbeatStorage <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>HeartbeatStorage logs/hb.dat</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_heartmonitor</td></tr>
+</table>
+    <p>The <code class="directive">HeartbeatStorage</code> directive specifies the
+    path to store heartbeat data.  This flat-file is used only when
+    <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code> is not loaded.</p>
+
+</div>
 </div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_heartbeat.html" title="English">&nbsp;en&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/mod/mod_heartmonitor.html" title="English">&nbsp;en&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2012 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
