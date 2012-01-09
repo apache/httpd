@@ -26,6 +26,8 @@
 <a href="./ko/stopping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/stopping.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
     <p>Ce document couvre l'arrêt et le redémarrage d'Apache sur
     les systèmes Unix et similaires. Les utilisateurs de Windows NT, 2000

@@ -13,6 +13,6 @@
     <variant outdated="yes">ja</variant>
     <variant outdated="yes">ko</variant>
     <variant>tr</variant>
-    <variant>zh-cn</variant>
+    <variant outdated="yes">zh-cn</variant>
   </variants>
 </metafile>

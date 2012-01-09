@@ -20,7 +20,8 @@
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="./de/upgrading.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/upgrading.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="./fr/upgrading.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./ja/upgrading.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
 
   <p>Afin d'assister les utilisateurs lors de leurs opérations de mise à
@@ -160,7 +161,8 @@ fonctionnalités de Apache 2.2</a></li></ul></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="./de/upgrading.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/upgrading.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="./fr/upgrading.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./ja/upgrading.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2012 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div>

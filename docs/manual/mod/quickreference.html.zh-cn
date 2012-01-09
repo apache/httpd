@@ -29,6 +29,7 @@
 <a href="../tr/mod/quickreference.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/quickreference.html" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
+<div class="outofdate">此翻译可能过期。要了解最近的更改，请阅读英文版。</div>
 
     <p>指令快速索引显示指令的用法，默认值，状态和上下文。要获得更多信息，请参见 <a href="directive-dict.html">描述指令的术语</a>。</p>
 

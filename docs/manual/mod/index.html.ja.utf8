@@ -143,8 +143,7 @@ by other LDAP modules</dd>
 <dt><a href="mod_proxy_connect.html">mod_proxy_connect</a></dt><dd><code>CONNECT</code> リクエストを扱う
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> 用の拡張</dd>
 <dt><a href="mod_proxy_ftp.html">mod_proxy_ftp</a></dt><dd><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> のための FTP サポートモジュール</dd>
-<dt><a href="mod_proxy_http.html">mod_proxy_http</a></dt><dd>HTTP support module for
-<code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
+<dt><a href="mod_proxy_http.html">mod_proxy_http</a></dt><dd><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> のための HTTP サポートモジュール</dd>
 <dt><a href="mod_proxy_scgi.html">mod_proxy_scgi</a></dt><dd><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> のための SCGI ゲートウェイモジュール</dd>
 <dt><a href="mod_reqtimeout.html" id="R" name="R">mod_reqtimeout</a></dt><dd>Set timeout and minimum data rate for receiving requests
 </dd>
