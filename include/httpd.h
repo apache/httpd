@@ -2161,7 +2161,7 @@ AP_DECLARE(void *) ap_calloc(size_t nelem, size_t size)
  */
 AP_DECLARE(void *) ap_realloc(void *ptr, size_t size)
                    AP_FN_ATTR_WARN_UNUSED_RESULT
-                   AP_FN_ATTR_ALLOC_SIZE2(1,2);
+                   AP_FN_ATTR_ALLOC_SIZE(2);
 
 
 #define AP_NORESTART APR_OS_START_USEERR + 1
