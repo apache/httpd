@@ -43,7 +43,7 @@ of <directive module="mod_proxy">ProxyPass</directive>.</p>
     <note type="warning">
         To use <module>mod_heartbeat</module>,
         <module>mod_status</module> and <module>mod_watchdog</module>
-        must be either a static modules or, if a dynamic module, it must
+        must be either a static modules or, if a dynamic module, must
         be loaded before <module>mod_heartbeat</module>.
     </note>
 
@@ -68,16 +68,6 @@ v=1&amp;ready=75&amp;busy=0
   </p>
 
 </section>
-
-<section id="miscellaneous">
-<title>Miscellaneous</title>
-<p>The interval of 1 seconds is controlled by the HEARTBEAT_INTERVAL
-compile time define.  This is not currently tunable at run time. To make
-this module send the status packet more often, you must add to the
-CFLAGS used to compile the module to include:</p>
-<example>-DHEARTBEAT_INTERVAL=3</example>
-<p>Would cause the broadcasts to be sent every 3 seconds.</p>
-</section>    
 
 <directivesynopsis>
 <name>HeartbeatAddress</name>
