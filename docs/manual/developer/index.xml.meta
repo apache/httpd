@@ -8,6 +8,6 @@
 
   <variants>
     <variant>en</variant>
-    <variant>zh-cn</variant>
+    <variant outdated="yes">zh-cn</variant>
   </variants>
 </metafile>

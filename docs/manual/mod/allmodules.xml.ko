@@ -115,6 +115,7 @@
   <modulefile>mod_usertrack.xml</modulefile>
   <modulefile>mod_version.xml.ko</modulefile>
   <modulefile>mod_vhost_alias.xml</modulefile>
+  <modulefile>mod_watchdog.xml</modulefile>
   <modulefile>mod_xml2enc.xml</modulefile>
   <modulefile>mpm_common.xml</modulefile>
   <modulefile>event.xml</modulefile>

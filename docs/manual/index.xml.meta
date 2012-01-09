@@ -11,11 +11,11 @@
     <variant outdated="yes">de</variant>
     <variant>en</variant>
     <variant outdated="yes">es</variant>
-    <variant>fr</variant>
+    <variant outdated="yes">fr</variant>
     <variant outdated="yes">ja</variant>
     <variant outdated="yes">ko</variant>
     <variant outdated="yes">pt-br</variant>
     <variant outdated="yes">tr</variant>
-    <variant>zh-cn</variant>
+    <variant outdated="yes">zh-cn</variant>
   </variants>
 </metafile>

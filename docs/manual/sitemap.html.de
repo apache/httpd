@@ -287,6 +287,7 @@ HPUX betreiben</a></li>
 <li><a href="mod/mod_usertrack.html">Apache-Modul mod_usertrack</a></li>
 <li><a href="mod/mod_version.html">Apache-Modul mod_version</a></li>
 <li><a href="mod/mod_vhost_alias.html">Apache-Modul mod_vhost_alias</a></li>
+<li><a href="mod/mod_watchdog.html">Apache-Modul mod_watchdog</a></li>
 <li><a href="mod/mod_xml2enc.html">Apache-Modul mod_xml2enc</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>

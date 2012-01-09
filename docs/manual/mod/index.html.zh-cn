@@ -60,7 +60,7 @@ NT.</dd>
 </dl></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section"><h2><a id="other" name="other">其它模块</a></h2>
-<p class="letters"><a href="#A">&nbsp;A&nbsp;</a> | <a href="#B">&nbsp;B&nbsp;</a> | <a href="#C">&nbsp;C&nbsp;</a> | <a href="#D">&nbsp;D&nbsp;</a> | <a href="#E">&nbsp;E&nbsp;</a> | <a href="#F">&nbsp;F&nbsp;</a> | <a href="#H">&nbsp;H&nbsp;</a> | <a href="#I">&nbsp;I&nbsp;</a> | <a href="#L">&nbsp;L&nbsp;</a> | <a href="#M">&nbsp;M&nbsp;</a> | <a href="#N">&nbsp;N&nbsp;</a> | <a href="#P">&nbsp;P&nbsp;</a> | <a href="#R">&nbsp;R&nbsp;</a> | <a href="#S">&nbsp;S&nbsp;</a> | <a href="#U">&nbsp;U&nbsp;</a> | <a href="#V">&nbsp;V&nbsp;</a> | <a href="#X">&nbsp;X&nbsp;</a></p>
+<p class="letters"><a href="#A">&nbsp;A&nbsp;</a> | <a href="#B">&nbsp;B&nbsp;</a> | <a href="#C">&nbsp;C&nbsp;</a> | <a href="#D">&nbsp;D&nbsp;</a> | <a href="#E">&nbsp;E&nbsp;</a> | <a href="#F">&nbsp;F&nbsp;</a> | <a href="#H">&nbsp;H&nbsp;</a> | <a href="#I">&nbsp;I&nbsp;</a> | <a href="#L">&nbsp;L&nbsp;</a> | <a href="#M">&nbsp;M&nbsp;</a> | <a href="#N">&nbsp;N&nbsp;</a> | <a href="#P">&nbsp;P&nbsp;</a> | <a href="#R">&nbsp;R&nbsp;</a> | <a href="#S">&nbsp;S&nbsp;</a> | <a href="#U">&nbsp;U&nbsp;</a> | <a href="#V">&nbsp;V&nbsp;</a> | <a href="#W">&nbsp;W&nbsp;</a> | <a href="#X">&nbsp;X&nbsp;</a></p>
 <dl><dt><a href="mod_access_compat.html" id="A" name="A">mod_access_compat</a></dt><dd>Group authorizations based on host (name or IP
 address)</dd>
 <dt><a href="mod_actions.html">mod_actions</a></dt><dd>This module provides for executing CGI scripts based on
@@ -130,8 +130,8 @@ delivery to the client</dd>
 <dt><a href="mod_firehose.html">mod_firehose</a></dt><dd>Multiplexes all I/O to a given file or pipe.</dd>
 <dt><a href="mod_headers.html" id="H" name="H">mod_headers</a></dt><dd>Customization of HTTP request and response
 headers</dd>
-<dt><a href="mod_heartbeat.html">mod_heartbeat</a></dt><dd />
-<dt><a href="mod_heartmonitor.html">mod_heartmonitor</a></dt><dd />
+<dt><a href="mod_heartbeat.html">mod_heartbeat</a></dt><dd>sends messages with server status to frontend proxy</dd>
+<dt><a href="mod_heartmonitor.html">mod_heartmonitor</a></dt><dd>centralized monitor for mod_heartbeat origin servers</dd>
 <dt><a href="mod_ident.html" id="I" name="I">mod_ident</a></dt><dd>RFC 1413 ident lookups</dd>
 <dt><a href="mod_imagemap.html">mod_imagemap</a></dt><dd>Server-side imagemap processing</dd>
 <dt><a href="mod_include.html">mod_include</a></dt><dd>Server-parsed html documents (Server Side Includes)</dd>
@@ -141,7 +141,7 @@ configuration</dd>
 <dt><a href="mod_lbmethod_bybusyness.html" id="L" name="L">mod_lbmethod_bybusyness</a></dt><dd>Pending Request Counting load balancer scheduler algorithm for <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></dd>
 <dt><a href="mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></dt><dd>Request Counting load balancer scheduler algorithm for <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></dd>
 <dt><a href="mod_lbmethod_bytraffic.html">mod_lbmethod_bytraffic</a></dt><dd>Weighted Traffic Counting load balancer scheduler algorithm for <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></dd>
-<dt><a href="mod_lbmethod_heartbeat.html">mod_lbmethod_heartbeat</a></dt><dd> This document is still under development.</dd>
+<dt><a href="mod_lbmethod_heartbeat.html">mod_lbmethod_heartbeat</a></dt><dd>Heartbeat Traffic Counting load balancer scheduler algorithm for <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></dd>
 <dt><a href="mod_ldap.html">mod_ldap</a></dt><dd>LDAP connection pooling and result caching services for use
 by other LDAP modules</dd>
 <dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>Logging of the requests made to the server</dd>
@@ -226,6 +226,8 @@ identifier for each request</dd>
 <dt><a href="mod_version.html" id="V" name="V">mod_version</a></dt><dd>Version dependent configuration</dd>
 <dt><a href="mod_vhost_alias.html">mod_vhost_alias</a></dt><dd>Provides for dynamically configured mass virtual
 hosting</dd>
+<dt><a href="mod_watchdog.html" id="W" name="W">mod_watchdog</a></dt><dd>provides infrastructure for other modules to periodically run 
+    tasks</dd>
 <dt><a href="mod_xml2enc.html" id="X" name="X">mod_xml2enc</a></dt><dd>Enhanced charset/internationalisation support for libxml2-based
 filter modules</dd>
 </dl></div></div>
