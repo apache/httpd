@@ -20,6 +20,7 @@
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="../en/programs/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/programs/" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../ja/programs/" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/programs/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../ru/programs/" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a> |
 <a href="../tr/programs/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
@@ -96,6 +97,7 @@
 <div class="bottomlang">
 <p><span>Idiomas disponibles: </span><a href="../en/programs/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/programs/" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../ja/programs/" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/programs/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../ru/programs/" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a> |
 <a href="../tr/programs/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |

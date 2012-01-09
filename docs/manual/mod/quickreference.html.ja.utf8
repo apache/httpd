@@ -195,7 +195,7 @@ store list of user groups</td></tr>
 authenticating the user if this one fails</td></tr>
 <tr><td><a href="mod_authz_owner.html#authzownerauthoritative">AuthzOwnerAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">承認が下位承認モジュールに渡されるかどうかを設定する</td></tr>
 <tr class="odd"><td><a href="mod_authz_user.html#authzuserauthoritative">AuthzUserAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">承認が下位のモジュールに渡されるかどうかを設定する</td></tr>
-<tr><td><a href="mod_proxy.html#balancermember" id="B" name="B">BalancerMember [<var>balancerurl</var>] <var>url</var> [<var>key=value [key=value ...]]</var></a></td><td></td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">Add a member to a load balancing group</td></tr>
+<tr><td><a href="mod_proxy.html#balancermember" id="B" name="B">BalancerMember [<var>balancerurl</var>] <var>url</var> [<var>key=value [key=value ...]]</var></a></td><td></td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">ロードバランサのグループにメンバーを追加</td></tr>
 <tr class="odd"><td><a href="mod_setenvif.html#browsermatch">BrowserMatch <em>regex [!]env-variable</em>[=<em>value</em>]
 [[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">HTTP User-Agent に基づいて環境変数を設定する
 </td></tr>
@@ -481,19 +481,23 @@ using the specified magic file</td></tr>
 [<var>word</var>|<var>host</var>|<var>domain</var>] ...</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">プロキシ接続を禁止する語句、ホスト名、ドメインを指定する</td></tr>
 <tr><td><a href="mod_proxy.html#proxydomain">ProxyDomain <var>Domain</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">プロキシされたリクエストのデフォルトのドメイン名</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxyerroroverride">ProxyErrorOverride On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">プロキシされたコンテンツのエラーページを上書きする</td></tr>
-<tr><td><a href="mod_proxy.html#proxyftpdircharset">ProxyFtpDirCharset <var>character set</var></a></td><td> ISO-8859-1 </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Define the character set for proxied FTP listings</td></tr>
+<tr><td><a href="mod_proxy.html#proxyftpdircharset">ProxyFtpDirCharset <var>character set</var></a></td><td> ISO-8859-1 </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">プロキシされた FTP (の一覧表示) のキャラクタセットを定義</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxyiobuffersize">ProxyIOBufferSize <var>bytes</var></a></td><td> 8192 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">内部データスループットバッファのサイズを決定する</td></tr>
 <tr><td><a href="mod_proxy.html#proxymatch">&lt;ProxyMatch <var>regex</var>&gt; ...&lt;/ProxyMatch&gt;</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">正規表現でのマッチによるプロキシリソース用のディレクティブコンテナ</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxymaxforwards">ProxyMaxForwards <var>number</var></a></td><td> 10 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">リクエストがフォワードされるプロキシの最大数</td></tr>
-<tr><td><a href="mod_proxy.html#proxypass">ProxyPass [<var>path</var>] !|<var>url</var> [<var>key=value</var> <var>key=value</var> ...]]</a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">リモートサーバをローカルサーバの URL 空間にマップする</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxypassinterpolateenv">ProxyPassInterpolateEnv On|Off</a></td><td> Off </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable Environment Variable interpolation in Reverse Proxy configurations</td></tr>
+<tr class="odd"><td><a href="mod_proxy.html#proxymaxforwards">ProxyMaxForwards <var>number</var></a></td><td> -1 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">リクエストがフォワードされるプロキシの最大数</td></tr>
+<tr><td><a href="mod_proxy.html#proxypass">ProxyPass [<var>path</var>] !|<var>url</var> [<var>key=value</var>
+<var>key=value</var> ...]] [nocanon] [interpolate]</a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">リモートサーバをローカルサーバの URL 空間にマップする</td></tr>
+<tr class="odd"><td><a href="mod_proxy.html#proxypassinterpolateenv">ProxyPassInterpolateEnv On|Off</a></td><td> Off </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">リバースプロキシ設定内での環境変数の使用を有効にする</td></tr>
 <tr><td><a href="mod_proxy.html#proxypassmatch">ProxyPassMatch [<var>regex</var>] !|<var>url</var> [<var>key=value</var>
-	<var>[key=value</var> ...]]</a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Maps remote servers into the local server URL-space using regular expressions</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxypassreverse">ProxyPassReverse [<var>path</var>] <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">リバースプロキシされたサーバから送られた HTTP 応答ヘッダの
+	<var>[key=value</var> ...]]</a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">正規表現を使ってリモートサーバをローカルサーバの URL 空間にマップする</td></tr>
+<tr class="odd"><td><a href="mod_proxy.html#proxypassreverse">ProxyPassReverse [<var>path</var>] <var>url</var>
+[<var>interpolate</var>]</a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">リバースプロキシされたサーバから送られた HTTP レスポンスヘッダの
 URL を調整する</td></tr>
-<tr><td><a href="mod_proxy.html#proxypassreversecookiedomain">ProxyPassReverseCookieDomain <var>internal-domain</var> <var>public-domain</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">リバースプロキシサーバからの Set-Cookie ヘッダの Domain 文字列を
+<tr><td><a href="mod_proxy.html#proxypassreversecookiedomain">ProxyPassReverseCookieDomain <var>internal-domain</var>
+<var>public-domain</var> [<var>interpolate</var>]</a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">リバースプロキシサーバからの Set-Cookie ヘッダの Domain 文字列を
 調整する</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxypassreversecookiepath">ProxyPassReverseCookiePath <var>internal-path</var> <var>public-path</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Reverse プロキシサーバからの Set-Cookie ヘッダの Path 文字列を
+<tr class="odd"><td><a href="mod_proxy.html#proxypassreversecookiepath">ProxyPassReverseCookiePath <var>internal-path</var>
+<var>public-path</var> [<var>interpolate</var>]</a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">リバースプロキシサーバからの Set-Cookie ヘッダの Path 文字列を
 調整する</td></tr>
 <tr><td><a href="mod_proxy.html#proxypreservehost">ProxyPreserveHost On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">プロキシリクエストに、受け付けた Host HTTP ヘッダを使う</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxyreceivebuffersize">ProxyReceiveBufferSize <var>bytes</var></a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">プロキシされる HTTP と FTP 接続のためのネットワークバッファサイズ</td></tr>
@@ -502,10 +506,10 @@ URL を調整する</td></tr>
 <tr><td><a href="mod_proxy.html#proxyrequests">ProxyRequests On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">フォワード (標準の) プロキシリクエストを有効にする</td></tr>
 <tr class="odd"><td><a href="mod_proxy_scgi.html#proxyscgiinternalredirect">ProxySCGIInternalRedirect On|Off</a></td><td> On </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">バックエンドからの内部的なリダイレクトレスポンスを有効あるいは無効にする</td></tr>
 <tr><td><a href="mod_proxy_scgi.html#proxyscgisendfile">ProxySCGISendfile On|Off|<var>Headername</var></a></td><td> Off </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4"><var>X-Sendfile</var> 疑似レスポンスヘッダの評価を有効にする</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxyset">ProxySet <var>url</var> <var>key=value [key=value ...]</var></a></td><td></td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Set various Proxy balancer or member parameters</td></tr>
-<tr><td><a href="mod_proxy.html#proxystatus">ProxyStatus Off|On|Full</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Show Proxy LoadBalancer status in mod_status</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxytimeout">ProxyTimeout <var>seconds</var></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">プロキシされたリクエストのネットワークタイムアウト</td></tr>
-<tr><td><a href="mod_proxy.html#proxyvia">ProxyVia On|Off|Full|Block</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">プロキシされたリクエストの <code>Via</code> HTTP 応答ヘッダ
+<tr class="odd"><td><a href="mod_proxy.html#proxyset">ProxySet <var>url</var> <var>key=value [key=value ...]</var></a></td><td></td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">プロキシのバランサやメンバのパラメータをセット</td></tr>
+<tr><td><a href="mod_proxy.html#proxystatus">ProxyStatus Off|On|Full</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">mod_status でプロキシのロードバランサの状態を表示</td></tr>
+<tr class="odd"><td><a href="mod_proxy.html#proxytimeout">ProxyTimeout <var>seconds</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">プロキシされたリクエストのネットワークタイムアウト</td></tr>
+<tr><td><a href="mod_proxy.html#proxyvia">ProxyVia On|Off|Full|Block</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">プロキシされたリクエストの <code>Via</code> HTTP レスポンスヘッダ
 により提供される情報</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#readmename" id="R" name="R">ReadmeName <var>filename</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">インデックス一覧の最後に挿入されるファイルの名前</td></tr>
 <tr><td><a href="mpm_common.html#receivebuffersize">ReceiveBufferSize <var>bytes</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">TCP 受信バッファサイズ</td></tr>
