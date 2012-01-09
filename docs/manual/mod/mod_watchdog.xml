@@ -52,8 +52,8 @@ core or, if a dynamic module, be loaded before the calling module.
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-Sets the interval at which the watchdog_step hook runs.  Default is to run every 
-second.
+<p>Sets the interval at which the watchdog_step hook runs.  Default is to run every 
+second.</p>
 </usage>
 </directivesynopsis>
 </modulesynopsis>
