@@ -568,7 +568,7 @@ AP_DECLARE(apr_status_t) ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb);
 AP_DECLARE_NONSTD(apr_status_t) ap_fputstrs(ap_filter_t *f,
                                             apr_bucket_brigade *bb,
                                             ...)
-                                ap_func_attr_sentinel;
+                                AP_FN_ATTR_SENTINEL;
 
 /**
  * Output data to the filter in printf format

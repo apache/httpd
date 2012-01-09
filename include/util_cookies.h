@@ -68,7 +68,7 @@ typedef struct {
 AP_DECLARE(apr_status_t) ap_cookie_write(request_rec * r, const char *name,
                                          const char *val, const char *attrs,
                                          long maxage, ...)
-                         ap_func_attr_sentinel;
+                         AP_FN_ATTR_SENTINEL;
 
 /**
  * Write an RFC2965 compliant cookie.
@@ -85,7 +85,7 @@ AP_DECLARE(apr_status_t) ap_cookie_write(request_rec * r, const char *name,
 AP_DECLARE(apr_status_t) ap_cookie_write2(request_rec * r, const char *name2,
                                           const char *val, const char *attrs2,
                                           long maxage, ...)
-                         ap_func_attr_sentinel;
+                         AP_FN_ATTR_SENTINEL;
 
 /**
  * Remove an RFC2109 compliant cookie.
@@ -99,7 +99,7 @@ AP_DECLARE(apr_status_t) ap_cookie_write2(request_rec * r, const char *name2,
  */
 AP_DECLARE(apr_status_t) ap_cookie_remove(request_rec * r, const char *name,
                                           const char *attrs, ...)
-                         ap_func_attr_sentinel;
+                         AP_FN_ATTR_SENTINEL;
 
 /**
  * Remove an RFC2965 compliant cookie.
@@ -113,7 +113,7 @@ AP_DECLARE(apr_status_t) ap_cookie_remove(request_rec * r, const char *name,
  */
 AP_DECLARE(apr_status_t) ap_cookie_remove2(request_rec * r, const char *name2,
                                            const char *attrs2, ...)
-                         ap_func_attr_sentinel;
+                         AP_FN_ATTR_SENTINEL;
 
 /**
  * Read a cookie called name, placing its value in val.
