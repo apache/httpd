@@ -223,17 +223,27 @@
 #define __has_attribute(x) 0
 #endif
 #if (defined(__GNUC__) && __GNUC__ >= 4) || __has_attribute(sentinel)
-#define ap_func_attr_sentinel __attribute__((sentinel))
+#define AP_FN_ATTR_SENTINEL __attribute__((sentinel))
 #else
-#define ap_func_attr_sentinel
+#define AP_FN_ATTR_SENTINEL
 #endif
 
 #if ( defined(__GNUC__) &&                                        \
       (__GNUC__ >= 4 || ( __GNUC__ == 3 && __GNUC_MINOR__ >= 4))) \
     || __has_attribute(warn_unused_result)
-#define ap_func_attr_warn_unused_result   __attribute__((warn_unused_result))
+#define AP_FN_ATTR_WARN_UNUSED_RESULT   __attribute__((warn_unused_result))
 #else
-#define ap_func_attr_warn_unused_result
+#define AP_FN_ATTR_WARN_UNUSED_RESULT
+#endif
+
+#if ( defined(__GNUC__) &&                                        \
+      (__GNUC__ >= 4 && __GNUC_MINOR__ >= 3))                     \
+    || __has_attribute(alloc_size)
+#define AP_FN_ATTR_ALLOC_SIZE(x)     __attribute__((alloc_size(x)))
+#define AP_FN_ATTR_ALLOC_SIZE2(x,y)  __attribute__((alloc_size(x,y)))
+#else
+#define AP_FN_ATTR_ALLOC_SIZE(x)
+#define AP_FN_ATTR_ALLOC_SIZE2(x,y)
 #endif
 
 #endif /* AP_CONFIG_H */
