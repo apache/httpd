@@ -62,7 +62,7 @@ use <module>mod_slotmem_shm</module>.</p>
     <p>The <directive>HeartbeatListen</directive> directive specifies the
     multicast address on which the server will listen for status information from 
     <module>mod_heartbeat</module>-enabled servers.  This
-    address will usually corrspond to a configured  <directive
+    address will usually correspond to a configured  <directive
     module="mod_heartbeat">HeartbeatAddress</directive> on an origin server.
     </p>
     
