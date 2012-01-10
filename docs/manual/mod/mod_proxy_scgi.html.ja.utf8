@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_proxy_scgi - Apache HTTP サーバ</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.2</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.2</a> &gt; <a href="./">モジュール</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache モジュール mod_proxy_scgi</h1>
+<div class="toplang">
+<p><span>翻訳済み言語: </span><a href="../en/mod/mod_proxy_scgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_proxy_scgi.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> のための SCGI ゲートウェイモジュール</td></tr>
+<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>proxy_scgi_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_proxy_scgi.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">互換性:</a></th><td>Apache 2.2.14 以降で使用可能</td></tr></table>
+<h3>概要</h3>
+
+    <p>本モジュールには <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> が<em>必要です</em>。
+    本モジュールは <a href="http://python.ca/scgi/protocol.txt">SCGI protocol, 
+    version 1</a> をサポートします。</p>
+
+    <p>SCGI プロトコルを扱うためには、<code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> 
+    と <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code>が サーバに組み込まれて
+    いなければいけません。</p>
+
+    <div class="warning"><h3>警告</h3>
+      <p><a href="mod_proxy.html#access">
+      安全なサーバにする</a>までプロキシ機能は有効にしないでください。
+      オープンプロキシサーバはあなた自身のネットワークにとっても、
+      インターネット全体にとっても危険です。</p>
+    </div>
+</div>
+<div id="quickview"><h3 class="directives">ディレクティブ</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#proxyscgiinternalredirect">ProxySCGIInternalRedirect</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxyscgisendfile">ProxySCGISendfile</a></li>
+</ul>
+<h3>トピック</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#examples">例</a></li>
+</ul><h3>参照</h3>
+<ul class="seealso">
+<li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
+<li><code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="examples" id="examples">例</a></h2>
+    <p>以下の例を動かすには、<code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> と <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code>
+    を有効にしなければいけないことを忘れないでください。</p>
+
+    <div class="example"><h3>簡単なゲートウェイ</h3><p><code>
+      ProxyPass /scgi-bin/ scgi://localhost:4000/
+    </code></p></div>
+
+    <p>ロードバランスするゲートウェイには、既に言及したプロキシモジュール
+    に加えて <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> が必要です。</p>
+
+    <div class="example"><h3>ロードバランスするゲートウェイ</h3><p><code>
+    ProxyPass /scgi-bin/ balancer://somecluster/<br />
+    &lt;Proxy balancer://somecluster/&gt;<br />
+    <span class="indent">
+        BalancerMember scgi://localhost:4000/<br />
+        BalancerMember scgi://localhost:4001/<br />
+    </span>
+    &lt;/Proxy&gt;
+    </code></p></div>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ProxySCGIInternalRedirect" id="ProxySCGIInternalRedirect">ProxySCGIInternalRedirect</a> <a name="proxyscgiinternalredirect" id="proxyscgiinternalredirect">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>バックエンドからの内部的なリダイレクトレスポンスを有効あるいは無効にする</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ProxySCGIInternalRedirect On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>ProxySCGIInternalRedirect On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_proxy_scgi</td></tr>
+</table>
+    <p><code class="directive">ProxySCGIInternalRedirect</code> で、
+    バックエンドが内部的にゲートウェイを別の URL にリダイレクトできるようにします。
+    この機能は <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> 起源で、レスポンスステータスが
+    <code>OK</code> (<code>200</code>) で、かつレスポンスが <code>Location</code>
+    ヘッダを持ち、かつヘッダ値の先頭がスラッシュ (<code>/</code>) であれば、
+    内部的にリダイレクトします。このヘッダ値が内部的なリダイレクト先の
+    新しい URL として解釈されます。</p>
+
+    <p>機能を無効にしない限り、<code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> は 
+    上記の点で <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> と同じ動作をします。</p>
+
+    <div class="example"><h3>例</h3><p><code>
+    ProxySCGIInternalRedirect Off
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ProxySCGISendfile" id="ProxySCGISendfile">ProxySCGISendfile</a> <a name="proxyscgisendfile" id="proxyscgisendfile">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td><var>X-Sendfile</var> 疑似レスポンスヘッダの評価を有効にする</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ProxySCGISendfile On|Off|<var>Headername</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>ProxySCGISendfile Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_proxy_scgi</td></tr>
+</table>
+    <p><code class="directive">ProxySCGISendfile</code> ディレクティブを設定すると、
+    SCGI バックエンドの代わりにゲートウェイが直接ファイルを転送できるようにします。
+    これはパフォーマンス向上のために使えます。 httpd は <code>sendfile</code>
+    などの最適化を行うことができます。これはバックエンドからソケット経由でファイルを
+    受けた時にはできない最適化です。</p>
+    <p><code class="directive">ProxySCGISendfile</code> の引数でゲートウェイの動作
+    を制御します:</p>
+    <dl>
+    <dt><code>Off</code></dt>
+    <dd>特別な動作をしません。</dd>
+
+    <dt><code>On</code></dt>
+    <dd>ゲートウェイはバックエンドのレスポンスヘッダから <code>X-Sendfile</code> と
+    呼ばれるヘッダを探し、その値を転送対象のファイル名と見なします。
+    ヘッダは最終的なレスポンスヘッダからは除かれます。
+    次の設定と等価です。
+    <code>ProxySCGISendfile X-Sendfile</code>.</dd>
+
+    <dt>その他</dt>
+    <dd><code>On</code> にした場合に似ていますが、ハードコードしたヘッダ名の
+    代わりに、引数がヘッダ名として使われます。</dd>
+    </dl>
+
+    <div class="example"><h3>Example</h3><p><code>
+    # Use the default header (X-Sendfile)<br />
+    ProxySCGISendfile On<br />
+    <br />
+    # Use a different header<br />
+    ProxySCGISendfile X-Send-Static
+    </code></p></div>
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>翻訳済み言語: </span><a href="../en/mod/mod_proxy_scgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_proxy_scgi.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2012 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
+</body></html>

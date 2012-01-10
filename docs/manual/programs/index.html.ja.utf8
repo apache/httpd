@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>サーバーと補助プログラム - Apache HTTP サーバ</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page" class="no-sidebar"><div id="page-header">
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.2</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="../"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.2</a></div><div id="page-content"><div id="preamble"><h1>サーバーと補助プログラム</h1>
+<div class="toplang">
+<p><span>翻訳済み言語: </span><a href="../en/programs/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/programs/" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../ja/programs/" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/programs/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../ru/programs/" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a> |
+<a href="../tr/programs/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/programs/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div>
+
+    <p>このページでは Apache HTTP サーバー に含まれる全ての
+    実行可能プログラムについて説明します。
+    </p>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="index" id="index">Index</a></h2>
+
+    <dl>
+      <dt><code class="program"><a href="../programs/httpd.html">httpd</a></code></dt>
+
+      <dd>Apache ハイパーテキスト転送プロトコルサーバー</dd>
+
+      <dt><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></dt>
+
+      <dd>Apache HTTP サーバー制御インタフェース</dd>
+
+      <dt><code class="program"><a href="../programs/ab.html">ab</a></code></dt>
+
+      <dd>Apache HTTP サーバー・ベンチマークツール</dd>
+
+      <dt><code class="program"><a href="../programs/apxs.html">apxs</a></code></dt>
+
+      <dd>Apache 拡張 (APache eXtenSion) ツール</dd>
+
+      <dt><code class="program"><a href="../programs/configure.html">configure</a></code></dt>
+
+      <dd>ソースツリーの設定</dd>
+
+      <dt><code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code></dt>
+
+      <dd>Basic 認証用 ユーザ認証ファイルを DBM 形式で作成・更新するプログラム
+      </dd>
+
+      <dt><code class="program"><a href="../programs/htcacheclean.html">htcacheclean</a></code></dt>
+      <dd>ディスクキャッシュのクリーンアップ</dd>
+
+      <dt><code class="program"><a href="../programs/htdigest.html">htdigest</a></code></dt>
+
+      <dd>Digest 認証用のユーザ認証ファイルの作成と更新</dd>
+
+      <dt><code class="program"><a href="../programs/htdbm.html">htdbm</a></code></dt>
+
+      <dd>DBM パスワードデータベースの操作</dd>
+
+      <dt><code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code></dt>
+
+      <dd>Basic 認証用のユーザ認証ファイルの作成と更新</dd>
+
+      <dt><code class="program"><a href="../programs/httxt2dbm.html">httxt2dbm</a></code></dt>
+
+      <dd>RewriteMap 用に dbm ファイルを作成する</dd>
+
+      <dt><code class="program"><a href="../programs/logresolve.html">logresolve</a></code></dt>
+
+      <dd>Apache のログファイルの IP アドレスをホスト名に解決する</dd>
+
+      <dt><code class="program"><a href="../programs/rotatelogs.html">rotatelogs</a></code></dt>
+
+      <dd>サーバを停止せずに Apache ログファイルのローテーションを行う</dd>
+
+      <dt><code class="program"><a href="../programs/suexec.html">suexec</a></code></dt>
+
+      <dd>Exec (CGI) のためにユーザを変更する</dd>
+
+      <dt><a href="other.html">その他のプログラム</a></dt>
+      <dd>マニュアルページの無いサポートツール</dd>
+    </dl>
+</div></div>
+<div class="bottomlang">
+<p><span>翻訳済み言語: </span><a href="../en/programs/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/programs/" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../ja/programs/" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/programs/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../ru/programs/" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a> |
+<a href="../tr/programs/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/programs/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2012 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
+</body></html>
