@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>2.0 から 2.2 へのアップグレード - Apache HTTP サーバ</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.2</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.2</a></div><div id="page-content"><div id="preamble"><h1>2.0 から 2.2 へのアップグレード</h1>
+<div class="toplang">
+<p><span>翻訳済み言語: </span><a href="./de/upgrading.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/upgrading.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./ja/upgrading.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
+</div>
+
+  <p>アップグレードを簡単にするために、既存の Apache ユーザに
+  非常に重要な情報をこの文書にまとめています。これは短い
+  注意書きとして書かれています。より詳しい情報は <a href="new_features_2_2.html">新機能</a>の文書や
+  <code>src/CHANGES</code> ファイルで見つけられると思います。</p>
+
+  <p>この文書は 2.0 から 2.2 への変更点だけを説明します。
+  もし 1.3 からのアップグレードをするのであれば、<a href="http://httpd.apache.org/docs/2.0/upgrading.html">1.3 から 2.0
+  へのアップグレードの文書</a> も参考にしてください。 </p>
+
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#compile-time">コンパイル時の設定の変更</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#run-time">実行時の設定の変更</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#misc">その他の変更</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#third-party">サードパーティモジュール</a></li>
+</ul><h3>参照</h3><ul class="seealso"><li><a href="new_features_2_2.html">Apache 2.2 の新機能
+  の概要</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="compile-time" id="compile-time">コンパイル時の設定の変更</a></h2>
+    
+
+    <p>コンパイルの過程はバージョン 2.0 で使われているものと非常に
+    よく似ています。古い <code>configure</code> コマンドライン 
+    (インストールしたサーバのディレクトリにある
+    <code>build/config.nice</code>)
+    が、ときには使えるでしょう。最も大きな変更点はモジュールの名前の
+    変更を入れるために必要とされるもので、特に認証と認可のモジュール
+    の変更点です。
+    変更の詳細の一部は:</p>
+
+    <ul>
+      <li>mod_imap は <code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code> に名前を
+          変更しました</li>
+      <li>mod_auth は <code class="module"><a href="./mod/mod_auth_basic.html">mod_auth_basic</a></code> と、
+          <code class="module"><a href="./mod/mod_authn_file.html">mod_authn_file</a></code>, <code class="module"><a href="./mod/mod_authz_user.html">mod_authz_user</a></code>
+          そして、<code class="module"><a href="./mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code> に分かれ
+          ました。</li>
+      <li>mod_access は <code class="module"><a href="./mod/mod_authz_host.html">mod_authz_host</a></code> に名前を
+          変更しました。</li>
+      <li>mod_auth_ldap は <code class="module"><a href="./mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> に
+          名前を変更しました。</li>
+      <li>APR 1.0 API を必要とするようにアップグレードされました。</li>
+      <li>バンドルされている PCRE は、 5.0 にアップデートされています。</li>
+    </ul>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="run-time" id="run-time">実行時の設定の変更</a></h2>
+    
+
+    <p>あなたが使っているバージョン 2.0 用の設定ファイルとスタート
+       アップスクリプトは通常バージョン 2.2 でも変更せずに使えます。
+       特定の設定については 以下に議論するようにいくらか小さな
+       調整が必要となるかもしれません。 さらに、 
+       <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> 
+       ディレクティブを使って動的にモジュールを読み込んで使って
+       いる場合には、上に挙げたモジュール名の変更を考慮する必要が
+       あるでしょう。</p>
+
+    <p>もし、あなたがバージョン 2.2 のデフォルトの実行時設定を使う
+       ことを選ぶなら 最も基本的な設定以外は除外されていて 非常に
+       簡単化されていることに気付くでしょう。
+       より高度な機能に関する実行時の設定の例が、インストールした
+       サーバの <code>conf/extra/</code> のディレクトリに入ります。
+       デフォルトの設定ファイルは <code>conf/original</code>
+       にインストールされます。</p>
+
+    <p>実行時の設定の主な変更点を挙げると:</p>
+
+    <ul>
+      <li><code class="program"><a href="./programs/apachectl.html">apachectl</a></code> のオプションであった
+      <code>startssl</code> は無くなりました。
+      SSL サポートを有効にするには <code>httpd.conf</code> を
+      編集して関連する <code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code> ディレクティブを
+      入れるようにし、それから <code>apachectl start</code> で
+      サーバをスタートしてください。
+      <code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code> を有効にする設定ファイルの例が
+      <code>conf/extra/httpd-ssl.conf</code>
+      にあります。</li>
+
+      <li>デフォルトの設定としての <code class="directive"><a href="./mod/core.html#usecanonicalname">UseCanonicalName</a></code> は
+      <code>Off</code> となりました。もし、このディレクティブを
+      実行時設定ファイルに書いていなかったら、旧バージョンでの
+      ふるまいを維持したい場合には <code>UseCanonicalName On</code> を
+      加えておくことができます。</li>
+
+      <li><code class="module"><a href="./mod/mod_userdir.html">mod_userdir</a></code> モジュールは、
+      ディレクトリ名を指定した<code class="directive"><a href="./mod/mod_userdir.html#userdir">UserDir</a></code> ディレクティブが
+      設定ファイルに書かれていなければ
+      リクエスト時に動作しないようになりました。 古いデフォルト
+      動作を復元させたい場合には、設定ファイルに <code>UserDir
+      public_html</code> を入れておいてください。</li>
+
+      <li><code class="module"><a href="./mod/mod_auth_digest.html">mod_auth_digest</a></code> にあった
+      <code class="directive">AuthDigestFile</code> ディレクティブは、
+      <code class="directive"><a href="./mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>
+      に吸収され、 <code class="module"><a href="./mod/mod_authn_file.html">mod_authn_file</a></code> の一部となりました。</li>
+    </ul>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="misc" id="misc">その他の変更</a></h2>
+    
+
+    <ul>
+      <li>Apache 2.0 で実験的なモジュールだった
+      <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> は標準モジュールになりました。</li>
+
+      <li>Apache 2.0 で実験的なモジュールだった
+      <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code> は標準モジュールになりました。</li>
+
+      <li>Apache 2.0 で実験的なモジュールだった
+      <code class="module"><a href="./mod/mod_mem_cache.html">mod_mem_cache</a></code> は標準モジュールになりました。</li>
+
+      <li>Apache 2.0 で実験的なモジュールだった
+      <code class="module"><a href="./mod/mod_charset_lite.html">mod_charset_lite</a></code> は標準モジュールになりました。</li>
+
+      <li>Apache 2.0 で実験的なモジュールだった
+      <code class="module"><a href="./mod/mod_dumpio.html">mod_dumpio</a></code> は標準モジュールになりました。</li>
+
+    </ul>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="third-party" id="third-party">サードパーティモジュール</a></h2>
+    
+
+   <p>バージョン 2.0 のために設計された多くのサードパーティ
+   モジュールは Apache HTTP サーバ・バージョン 2.2 で、変更無しで
+   動作するでしょう。しかし、全てのモジュールはロードの前に再コンパイル
+   する必要があります。</p>
+
+  </div></div>
+<div class="bottomlang">
+<p><span>翻訳済み言語: </span><a href="./de/upgrading.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/upgrading.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./ja/upgrading.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2012 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div>
+</body></html>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_proxy_http - Apache HTTP サーバ</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.2</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.2</a> &gt; <a href="./">モジュール</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache モジュール mod_proxy_http</h1>
+<div class="toplang">
+<p><span>翻訳済み言語: </span><a href="../en/mod/mod_proxy_http.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_proxy_http.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/mod/mod_proxy_http.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> のための HTTP サポートモジュール</td></tr>
+<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>proxy_http_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_proxy_http.c</td></tr></table>
+<h3>概要</h3>
+
+    <p>本モジュールには <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> が <em>必要です</em>。
+    本モジュールは HTTP および HTTPS リクエストのプロキシに使う機能を提供します。
+    <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> は、 HTTP/0.9 と HTTP/1.0 と HTTP/1.1
+    をサポートします。キャッシュ機能は <em>持ちません。</em>
+    キャッシュ機能を持つプロキシを設定したい場合、<code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>
+    と組み合わせるのがよいでしょう。</p>
+
+    <p>HTTP リクエストのプロキシを有効にするには、<code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>
+    と <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> がサーバに組み込まれて
+    いなければいけません。</p>
+
+    <div class="warning"><h3>警告</h3>
+      <p><a href="mod_proxy.html#access">
+      安全なサーバにする</a>までプロキシ機能は有効にしないでください。
+      オープンプロキシサーバはあなた自身のネットワークにとっても、
+      インターネット全体にとっても危険です。</p>
+    </div>
+</div>
+<div id="quickview"><h3 class="directives">ディレクティブ</h3>
+<p>このモジュールにディレクティブはありません。</p>
+<h3>トピック</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#env">環境変数</a></li>
+</ul><h3>参照</h3>
+<ul class="seealso">
+<li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
+<li><code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="env" id="env">環境変数</a></h2>
+    <p><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> の動作を制御する設定ディレクティブ
+    に加えて、HTTP 動作を制御する多くの <dfn>環境変数</dfn> があります:</p>
+    <dl>
+        <dt>proxy-sendextracrlf</dt>
+        <dd>プロキシが、リクエストの最後に追加の CR-LF 改行コードを送るように
+        します。これはいくつかのブラウザにあるバグの回避用です。</dd>
+        <dt>force-proxy-request-1.0</dt>
+        <dd>プロキシがバックエンドに HTTP/1.0 でリクエストを送るようにし、
+        HTTP/1.1 の機能を無効にします。</dd>
+        <dt>proxy-nokeepalive</dt>
+        <dd>プロキシがリクエスト終了後にバックエンドとの接続を切るようにします。</dd>
+        <dt>proxy-chain-auth</dt>
+        <dd>プロキシが認証を要求する場合、プロキシはクライアントから送られるユーザ情報で
+        認証しますが、ユーザ情報はその先に転送しません。
+        <var>proxy-chain-auth</var> を有効にすると、プロキシはユーザ認証情報を
+        次のプロキシにも転送します。ユーザ認証を共有しているプロキシを連結している時、
+        この動作が必要でしょう。<strong>セキュリティ上の警告:</strong>
+        必要性が分からない限り、この動作を有効にしてはいけません。
+        と言うのも、大事な情報を転送してしまうからです。</dd>
+        <dt>proxy-sendcl</dt>
+        <dd>HTTP/1.0 では、ボディのあるリクエスト (例えば POST リクエスト)
+        はすべて <var>Content-Length</var> ヘッダを持つ必要があります。
+        この環境変数で、クライアントがプロキシに送ったのが何であるかに関わらず、
+        Apache のプロキシがバックエンドサーバにこのヘッダを送るように強制します。
+        これにより、HTTP/1.0 もしくはバージョン不明のバックエンドに転送する時の
+        互換性を保証します。しかし、この動作のためにプロキシはリクエストすべてをバッファリング
+        する必要があるかもしれません。このため、大きなサイズのリクエストで
+        非常に非効率になります。</dd>
+        <dt>proxy-sendchunks or proxy-sendchunked</dt>
+        <dd>これは <var>proxy-sendcl</var> の逆です。
+        リクエストのボディを chunked 転送エンコーディングでバックエンドに
+        送れるようにします。効率的なストリーム転送ができますが、
+        バックエンドサーバが HTTP/1.1 をサポートしている必要があります。</dd>
+        <dt>proxy-interim-response</dt>
+        <dd>この環境変数の値は <code>RFC</code> か <code>Suppress</code> です。
+        httpd の初期のバージョンはバックエンドからの HTTP interim レスポンス (1xx)
+        を捨てることがありました。これは技術的には HTTP のプロトコル違反です。
+        実際には、バックエンドが interim レスポンスを返すとしたら、
+        そのバックエンドはプロトコルを我々の預かり知らない方法で独自拡張しているか、
+        単におかしいかどちらかでしょう。
+        なので、 interim に対する動作を設定で変更可能にしています。
+        <code>proxy-interim-response RFC</code> と設定すると、
+        プロトコル準拠の動作になります。<code>proxy-interim-response Suppress</code>
+        と設定すると、 interim レスポンスをプロキシしません。</dd>
+        <dt>proxy-initial-not-pooled</dt>
+        <dd>この環境変数をセットすると、クライアントの最初の接続にはプールした
+        接続を使わなくなります。これは競合状態を原因とする
+        "proxy: error reading status line from remote server" エラーメッセージを
+        回避します。競合状態は、プロキシがプールした接続をチェックした後、
+        プロキシの送ったデータがバックエンドに到達する前にバックエンドが接続を閉じると発生します。
+        この変数をセットすることでパフォーマンスが劣化することを知っておくべきです。
+        特に HTTP/1.0 のクライアントに影響します。
+        </dd>
+    </dl>
+</div>
+</div>
+<div class="bottomlang">
+<p><span>翻訳済み言語: </span><a href="../en/mod/mod_proxy_http.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_proxy_http.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/mod/mod_proxy_http.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2012 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
+</body></html>

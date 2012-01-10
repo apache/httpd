@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_proxy_ftp - Apache HTTP サーバ</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.2</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.2</a> &gt; <a href="./">モジュール</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache モジュール mod_proxy_ftp</h1>
+<div class="toplang">
+<p><span>翻訳済み言語: </span><a href="../en/mod/mod_proxy_ftp.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_proxy_ftp.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> のための FTP サポートモジュール</td></tr>
+<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>proxy_ftp_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_proxy_ftp.c</td></tr></table>
+<h3>概要</h3>
+
+    <p>本モジュールには <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> が<em>必要です</em>。
+    本モジュールは FTP サイトへのプロキシ機能を提供します。
+    現状、 FTP サポートは GET メソッドに限定されていることに注意してください。</p>
+
+    <p>FTP プロキシリクエストを扱うためには、<code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> 
+    と <code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code>が サーバに組み込まれて
+    いなければいけません。</p>
+
+    <div class="warning"><h3>警告</h3>
+      <p><a href="mod_proxy.html#access">
+      安全なサーバにする</a>までプロキシ機能は有効にしないでください。
+      オープンプロキシサーバはあなた自身のネットワークにとっても、
+      インターネット全体にとっても危険です。</p>
+    </div>
+</div>
+<div id="quickview"><h3 class="directives">ディレクティブ</h3>
+<p>このモジュールにディレクティブはありません。</p>
+<h3>トピック</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#mimetypes">なぜファイルタイプ <var>xxx</var>
+    は FTP ダウンロードできないのでしょう?</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#type">ファイル <var>xxx</var> を ASCII モードで
+    FTP ダウンロードさせるにはどうすればいいのでしょう?</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ftpnonget">FTP アップロードはできますか?</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#percent2fhck">ホームディレクトリ外のファイルに FTP
+    アクセスするにはどうすればよいでしょうか?</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ftppass">ブラウザの URL 欄に FTP のパスワードがそのまま
+    載らないようにするにはどうすればよいでしょうか?</a></li>
+</ul><h3>参照</h3>
+<ul class="seealso">
+<li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="mimetypes" id="mimetypes">なぜファイルタイプ <var>xxx</var>
+    は FTP ダウンロードできないのでしょう?</a></h2>
+      <p>おそらく、プロキシの mime.types 設定ファイルでそのファイルタイプを
+      <code>application/octet-stream</code> として定義していないのでしょう。
+      以下の行が便利でしょう。</p>
+
+      <div class="example"><pre>application/octet-stream   bin dms lha lzh exe class tgz taz</pre></div>
+	<p>デフォルトで全てをバイナリにするのもいいかもしれません:</p>
+      <div class="example"><pre>DefaultType application/octet-stream</pre></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="type" id="type">ファイル <var>xxx</var> を ASCII モードで
+    FTP ダウンロードさせるにはどうすればいいのでしょう?</a></h2>
+      <p>稀に、特定のファイルを FTP の <code>ASCII</code> 転送モードでダウンロードしなければ
+      ならない場合があります (なお、デフォルトの転送モードは <code>binary</code> です)。
+      この場合、リクエストの末尾に <code>;type=a</code> を加えることで
+      <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> のデフォルト動作を変更して、 ASCII 転送モードにできます。
+      (一方、 FTP のディレクトリ一覧は常に ASCII モードです。)</p>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="ftpnonget" id="ftpnonget">FTP アップロードはできますか?</a></h2>
+	<p>現状、 mod_proxy は FTP の GET のみサポートしています。
+        もちろん、 Apache プロキシで HTTP アップロード (POST または PUT)
+        はできます。</p>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="percent2fhck" id="percent2fhck">ホームディレクトリ外のファイルに FTP
+    アクセスするにはどうすればよいでしょうか?</a></h2>
+      <p>FTP の URI はログイン中のユーザのホームディレクトリの相対パスとして
+      解釈されます。より上位のディレクトリに行くために /../ を使っても無駄です。
+      と言うのも、ドットふたつはブラウザが解釈するだけで、実際に FTP サーバには
+      送られないからです。この問題に対して、 Apache の FTP プロキシは
+      いわゆる <dfn>Squid %2f hack</dfn> を実装しています;
+      <a href="http://www.squid-cache.org/">Squid Proxy Cache</a> などの
+      他の有名なプロキシサーバも採用している解決方法です。
+      リクエストのパスの先頭に <code>/%2f</code> をつけると、これらのプロキシ
+      は FTP のディレクトリを <code>/</code> 開始にします (ホームディレクトリではなく)。
+      例えば、<code>/etc/motd</code> ファイルを取得するには、次の URL を
+      使えばよいでしょう:</p>
+
+      <div class="example"><p><code>
+        ftp://<var>user</var>@<var>host</var>/%2f/etc/motd
+      </code></p></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="ftppass" id="ftppass">ブラウザの URL 欄に FTP のパスワードがそのまま
+    載らないようにするにはどうすればよいでしょうか?</a></h2>
+      <p>FTP サーバにユーザ名とパスワードを使ってログインするために、 Apache 
+      は異なる戦略を使います。 URL にユーザ名もパスワードも無ければ、 Apache 
+      は FTP サーバに匿名 (anonymous) ログインしようとします。
+      <em>例</em></p>
+
+      <div class="example"><p><code>
+        user: anonymous<br />
+        password: apache_proxy@
+      </code></p></div>
+
+      <p>匿名アクセスを設定したすべての有名な FTP サーバでこれは動作します。</p>
+
+      <p>特定のユーザ名でログインするために、 URL に次のようにユーザ名を埋め込めます:</p>
+
+      <div class="example"><p><code>
+        ftp://<var>username</var>@<var>host</var>/myfile
+      </code></p></div>
+
+      <p>FTP サーバがこのユーザ名に対してパスワードを求めると (そうあるべきです) 、
+      Apache は <code>401</code> (Authorization required) レスポンスを返します。
+      これによりブラウザはユーザ名とパスワードを求めるダイアログ画面をポップアップします。
+      パスワードを入力すると、もう一度接続しなおし、認証が成功すると、
+      要求していたリソースが現れます。このやりとりの利点は、ブラウザがパスワードを
+      そのまま表示しないことです。もし最初に次の URL を使っていると</p>
+
+      <div class="example"><p><code>
+        ftp://<var>username</var>:<var>password</var>@<var>host</var>/myfile
+      </code></p></div>
+
+      <p>パスワードがそのまま見えてしまいます。</p>
+
+      <div class="note"><h3>注意</h3>
+        <p>このように送信するパスワードはネットワーク上は暗号化されません。
+        ブラウザと Apache プロキシサーバの間は base64 エンコードした生パスワードで、
+        Apache プロキシサーバと FTP サーバの間はプレインテキストです。
+        このため、 HTTP 経由で FTP サーバにアクセスする時 (とにかく FTP で個人的な
+        ファイルにアクセスする時 ) 、倍の慎重さが求められます。
+        安全でないネットワークを使っている場合、経路上でパスワードを盗み取られる
+        可能性があります。</p>
+      </div>
+    </div>
+</div>
+<div class="bottomlang">
+<p><span>翻訳済み言語: </span><a href="../en/mod/mod_proxy_ftp.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_proxy_ftp.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2012 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
+</body></html>
