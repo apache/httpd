@@ -115,7 +115,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/viewvc?view=revision&revision=1172010
                  http://svn.apache.org/viewvc?view=revision&revision=1175946
     2.2.x patch: http://people.apache.org/~druggeri/patches/httpd-2.2-SSLProxyMachineCertificateChainFile.patch
-    +0 covener: needs r1162103 && needs druggeri's vote?
     +1: druggeri, kbrand (non-binding)
 
   * mod_cache: * Do not cache 206 responses in any case since we currently do not provide any
