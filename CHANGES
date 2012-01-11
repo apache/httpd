@@ -1637,7 +1637,8 @@ Changes with Apache 2.3.3
 
   *) mod_cache: Introduce the option to run the cache from within the
      normal request handler, and to allow fine grained control over
-     where in the filter chain content is cached. [Graham Leggett]
+     where in the filter chain content is cached. Adds CacheQuickHandler
+     directive.  [Graham Leggett]
 
   *) core: Treat timeout reading request as 408 error, not 400.
      Log 408 errors in access log as was done in Apache 1.3.x.
