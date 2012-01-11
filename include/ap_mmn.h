@@ -384,12 +384,13 @@
  *                         ap_proxy_table_unmerge(), proxy_lb_workers.
  * 20111203.1 (2.5.0-dev)  Add ap_list_provider_groups()
  * 20120109.0 (2.5.0-dev)  Changes sizeof(overrides_t) in core config.
+ * 20120111.0 (2.5.0-dev)  Remove sb_type from global_score.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20120109
+#define MODULE_MAGIC_NUMBER_MAJOR 20120111
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                   /* 0...n */
 

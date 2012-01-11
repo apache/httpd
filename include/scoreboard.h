@@ -120,7 +120,6 @@ struct worker_score {
 typedef struct {
     int             server_limit;
     int             thread_limit;
-    ap_scoreboard_e sb_type;
     ap_generation_t running_generation; /* the generation of children which
                                          * should still be serving requests.
                                          */
