@@ -916,6 +916,7 @@ LastModified date.</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Apache HTTP Server 2.3.3 and later</td></tr>
 </table>
     <p>The <code class="directive"><a href="#cachequickhandler">CacheQuickHandler</a></code> directive
     controls the phase in which the cache is handled.</p>
