@@ -887,6 +887,7 @@ LastModified date.</description>
   <default>CacheQuickHandler on</default>
   <contextlist><context>server config</context><context>virtual host</context>
   </contextlist>
+  <compatibility>Apache HTTP Server 2.3.3 and later</compatibility>
 
   <usage>
     <p>The <directive module="mod_cache">CacheQuickHandler</directive> directive
