@@ -92,6 +92,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * Fix CVE-2012-0031, scoreboard issue.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1230065
+     2.2.x patch: use patch in 2.4.x which avoids MMN bump, 
+           http://svn.apache.org/viewvc?view=revision&revision=1230069
+     +1: jorton, trawick, covener 
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -157,12 +163,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Branch patch:
       http://svn.apache.org/viewvc?rev=1227860&view=rev
     +1: wrowe
-
-  * Fix CVE-2012-0031, scoreboard issue.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1230065
-     2.2.x patch: use patch in 2.4.x which avoids MMN bump, 
-           http://svn.apache.org/viewvc?view=revision&revision=1230069
-     +1: jorton, trawick
 
 PATCHES/ISSUES THAT ARE STALLED
 
