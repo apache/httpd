@@ -162,7 +162,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1230065
      2.2.x patch: use patch in 2.4.x which avoids MMN bump, 
            http://svn.apache.org/viewvc?view=revision&revision=1230069
-     +1: jorton
+     +1: jorton, trawick
 
 PATCHES/ISSUES THAT ARE STALLED
 
