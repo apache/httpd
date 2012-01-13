@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_authnz_ldap: Don't try a potentially expensive nested groups
+     search before exhausting all AuthLDAPGroupAttribute checks on the
+     current group. PR52464 [Eric Covener]
+
   *) mod_policy: Add a new testing module to help server administrators
      enforce a configurable level of protocol compliance on their
      servers and application servers behind theirs. [Graham Leggett]

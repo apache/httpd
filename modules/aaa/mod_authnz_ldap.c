@@ -870,6 +870,7 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
                   "membership in \"%s\"",
                   t);
 
+    /* PR52464 exhaust attrs in base group before checking subgroups */
     for (i = 0; i < sec->groupattr->nelts; i++) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01714)
                       "auth_ldap authorize: require group: testing for %s: "
@@ -879,19 +880,26 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
 
         result = util_ldap_cache_compare(r, ldc, sec->url, t, ent[i].name,
                              sec->group_attrib_is_dn ? req->dn : req->user);
-        switch(result) {
-            case LDAP_COMPARE_TRUE: {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01715)
-                              "auth_ldap authorize: require group: "
-                              "authorization successful (attribute %s) "
-                              "[%s][%d - %s]",
-                              ent[i].name, ldc->reason, result,
+        if (result == LDAP_COMPARE_TRUE) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01715)
+                          "auth_ldap authorize: require group: "
+                          "authorization successful (attribute %s) "
+                          "[%s][%d - %s]",
+                          ent[i].name, ldc->reason, result,
+                          ldap_err2string(result));
+            set_request_vars(r, LDAP_AUTHZ);
+            return AUTHZ_GRANTED;
+        }
+        else { 
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01719)
+                              "auth_ldap authorize: require group \"%s\": "
+                              "didn't match with attr %s [%s][%d - %s]",
+                              t, ldc->reason, ent[i].name, result, 
                               ldap_err2string(result));
-                set_request_vars(r, LDAP_AUTHZ);
-                return AUTHZ_GRANTED;
-            }
-            case LDAP_NO_SUCH_ATTRIBUTE:
-            case LDAP_COMPARE_FALSE: {
+        }
+    }
+    
+    for (i = 0; i < sec->groupattr->nelts; i++) {
                 /* nested groups need searches and compares, so grab a new handle */
                 authnz_ldap_cleanup_connection_close(ldc);
                 apr_pool_cleanup_kill(r->pool, ldc,authnz_ldap_cleanup_connection_close);
@@ -911,7 +919,7 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
                                                          sec->sgAttributes[0] ? sec->sgAttributes : default_attributes,
                                                          sec->subgroupclasses,
                                                          0, sec->maxNestingDepth);
-                if(result == LDAP_COMPARE_TRUE) {
+                if (result == LDAP_COMPARE_TRUE) {
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01717)
                                   "auth_ldap authorise: require group "
                                   "(sub-group): authorisation successful "
@@ -924,20 +932,11 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
                 else {
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01718)
                                   "auth_ldap authorise: require group "
-                                  "(sub-group) \"%s\": authorisation failed "
+                                  "(sub-group) \"%s\": didn't match with attr %s "
                                   "[%s][%d - %s]",
-                                  t, ldc->reason, result,
+                                  t, ldc->reason, ent[i].name, result, 
                                   ldap_err2string(result));
                 }
-                break;
-            }
-            default: {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01719)
-                              "auth_ldap authorize: require group \"%s\": "
-                              "authorization failed [%s][%d - %s]",
-                              t, ldc->reason, result, ldap_err2string(result));
-            }
-        }
     }
 
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01720)
