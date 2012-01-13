@@ -42,6 +42,8 @@ AP_DECLARE_DATA const char *ap_scoreboard_fname = NULL;
 AP_DECLARE_DATA int ap_extended_status = 0;
 AP_DECLARE_DATA int ap_mod_status_reqtail = 0;
 
+static ap_scoreboard_e scoreboard_type;
+
 #if APR_HAS_SHARED_MEMORY
 
 #include "apr_shm.h"
@@ -250,7 +252,7 @@ apr_status_t ap_cleanup_scoreboard(void *d)
     if (ap_scoreboard_image == NULL) {
         return APR_SUCCESS;
     }
-    if (ap_scoreboard_image->global->sb_type == SB_SHARED) {
+    if (scoreboard_type == SB_SHARED) {
         ap_cleanup_shared_mem(NULL);
     }
     else {
@@ -312,7 +314,7 @@ int ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
         ap_init_scoreboard(sb_mem);
     }
 
-    ap_scoreboard_image->global->sb_type = sb_type;
+    ap_scoreboard_image->global->sb_type = scoreboard_type = sb_type;
     ap_scoreboard_image->global->running_generation = 0;
     ap_scoreboard_image->global->restart_time = apr_time_now();
 
