@@ -96,7 +96,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1230065
      2.2.x patch: use patch in 2.4.x which avoids MMN bump, 
            http://svn.apache.org/viewvc?view=revision&revision=1230069
-     +1: jorton, trawick, covener 
+     +1: jorton, trawick, covener, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -141,7 +141,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_proxy_ajp: Missing support for ErrorOverride
     Trunk patch: http://svn.apache.org/viewvc?rev=1087864&view=rev
 	2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=27976
-	+1: igalic
+	+1: igalic, jim
 
   * mod_rewrite, mod_proxy: Fix CVE-2011-4317
       Trunk patch: http://svn.apache.org/viewvc?rev=1209432&view=rev
