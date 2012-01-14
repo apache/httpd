@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1208753:1212883 (outdated) -->
+<!-- English Revision : 1212883 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -391,6 +391,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td>L'argument est trait&eacute; comme un nom de fichier. Vrai si le
 	fichier existe et correspond &agrave; un fichier
 	r&eacute;gulier</td><td>oui</td></tr>
+    <tr><td><code>-s</code></td>
+        <td>L'argument est trait&eacute; comme un nom de fichier. Vrai si le
+	fichier existe et n'est pas vide</td><td>oui</td></tr>
     <tr><td><code>-L</code></td>
         <td>L'argument est trait&eacute; comme un nom de fichier. Vrai si le
 	fichier existe et correspond &agrave; un lien
