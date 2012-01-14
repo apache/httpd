@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1174747 -->
+<!-- English Revision : 1230286 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -978,6 +978,8 @@ l'ent&ecirc;te Cache-Control: a pour valeur no-store.</description>
   <default>CacheQuickHandler on</default>
   <contextlist><context>server config</context><context>virtual host</context>
   </contextlist>
+  <compatibility>Disponible à partir de la version 2.3.3 du serveur HTTP
+  Apache</compatibility>
 
   <usage>
     <p>La directive <directive
