@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1174747:1226477 (outdated) -->
+<!-- English Revision : 1226477 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -557,7 +557,14 @@ sont interpr&eacute;t&eacute;es.</p>
     type="section">Directory</directive> dans l'ordre de traitement.</p>
 
     <p>Les sections situ&eacute;es plus loin dans le fichier de configuration pr&eacute;valent
-    sur celles qui les pr&eacute;c&egrave;dent.</p>
+    sur celles qui les pr&eacute;c&egrave;dent ; cependant, chaque
+    module est responsable de la d&eacute;finition de la forme que doit prendre
+    cette pr&eacute;valence. Une section de configuration ult&eacute;rieure contenant
+    des directives d'un certain module peut &ecirc;tre &agrave; l'origine d'une
+    fusion conceptuelle de certaines directives, de toutes les
+    directives, ou un remplacement complet de la configuration du module
+    par ses valeurs par d&eacute;faut et les directives explicitement d&eacute;finies
+    dans cette section ult&eacute;rieure.</p>
 
 <note><title>Note technique</title>
 	Une s&eacute;quence

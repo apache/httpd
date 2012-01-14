@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1174747:1221670 (outdated) -->
+<!-- English Revision : 1221670 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -60,6 +60,7 @@
     <page href="dso.html">Objets Dynamiques Partag&eacute;s (DSO)</page>
     <page href="env.html">Variables d'environnement</page>
     <page href="logs.html">Fichiers de traces</page>
+    <page href="compliance.html">Conformit&eacute; au protocole HTTP</page>
     <page href="urlmapping.html">Mise en correspondance des URLs avec le syst&egrave;me de fichiers</page>
     <page href="misc/perf-tuning.html">Optimisation des performances</page>
     <page href="misc/security_tips.html">Conseils sur la s&eacute;curit&eacute;</page>
@@ -81,6 +82,7 @@
 
 <category id="platform"><title>Notes sp&eacute;cifiques aux diff&eacute;rentes plateformes</title>
     <page href="platform/windows.html">Microsoft Windows</page>
+    <page href="platform/rpm.html">Syst&egrave;mes bas&eacute;s sur les paquet RPM (Redhat / CentOS / Fedora)</page>
     <page href="platform/netware.html">Novell NetWare</page>
     <page href="platform/ebcdic.html">Portage EBCDIC</page>
 </category>

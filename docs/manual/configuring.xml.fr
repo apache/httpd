@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1157354:1213338 (outdated) -->
+<!-- English Revision : 1213338 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -109,6 +109,12 @@ le Serveur HTTP Apache.</p>
     module="mod_env">SetEnv</directive>, prennent effet trop tard pour
     pouvoir &ecirc;tre utilis&eacute;es dans les extensions au sein du fichier de
     configuration.</p>
+
+    <p>La longueur maximale d'une ligne dans un fichier de configuration
+    normal, apr&egrave;s substitution des variables et fusion des lignes
+    interrompues, est approximativement de 16 Mo. Dans les <a
+    href="configuring.xml#htaccess">fichiers .htaccess</a>, la longueur
+    maximale est de 8190 caract&egrave;res.</p>
 
     <p>Vous pouvez v&eacute;rifier l'absence d'erreurs de syntaxe dans vos fichiers
     de configuration sans d&eacute;marrer le serveur &agrave; l'aide de la commande

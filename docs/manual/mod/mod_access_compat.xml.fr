@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1174747:1226477 (outdated) -->
+<!-- English Revision : 1226477 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -79,6 +79,12 @@ ce module sont devenues obsol&egrave;tes depuis la refonte d'authz. Voir
     impos&eacute;e aucune restriction, en regroupant les directives &agrave;
     l'int&eacute;rieur d'une section <directive module="core"
     type="section">Limit</directive>.</p>
+
+    <note><title>Fusion des sections de configuration</title>
+      <p>Lorsqu'une directive fournie par ce module est utilis&eacute;e dans
+      une nouvelle section de configuration, cette derni&egrave;re n'h&eacute;rite
+      d'aucune directive d&eacute;finie dans une section pr&eacute;c&eacute;dente.</p>
+    </note>
 </summary>
 
 <seealso><directive module="mod_authz_core">Require</directive></seealso>
@@ -219,6 +225,12 @@ d'environnement</var>
     <p>Dans cet exemple, les navigateurs dont la cha&icirc;ne user-agent
     commence par <code>KnockKnock/2.0</code> se verront accorder
     l'acc&egrave;s, alors que tous les autres seront rejet&eacute;s.</p>
+
+    <note><title>Fusion des sections de configuration</title>
+      <p>Lorsqu'une directive fournie par ce module est utilis&eacute;e dans
+      une nouvelle section de configuration, cette derni&egrave;re n'h&eacute;rite
+      d'aucune directive d&eacute;finie dans une section pr&eacute;c&eacute;dente.</p>
+    </note>
 </usage>
 </directivesynopsis>
 
@@ -418,6 +430,12 @@ les directives <directive>Allow</directive> et
     le document <a
     href="../sections.html">Comment fonctionnent les sections Directory,
     Location et Files</a>.</p>
+
+    <note><title>Fusion des sections de configuration</title>
+      <p>Lorsqu'une directive fournie par ce module est utilis&eacute;e dans
+      une nouvelle section de configuration, cette derni&egrave;re n'h&eacute;rite
+      d'aucune directive d&eacute;finie dans une section pr&eacute;c&eacute;dente.</p>
+    </note>
 </usage>
 </directivesynopsis>
 
@@ -492,6 +510,12 @@ type="section">LimitExcept</directive> &agrave; partir de la version
     m&eacute;thodes particuli&egrave;res &agrave; l'aide des sections <directive
     module="core" type="section">Limit</directive> et <directive
     module="core" type="section">LimitExcept</directive>.</p>
+
+    <note><title>Fusion des sections de configuration</title>
+      <p>Lorsqu'une directive fournie par ce module est utilis&eacute;e dans
+      une nouvelle section de configuration, cette derni&egrave;re n'h&eacute;rite
+      d'aucune directive d&eacute;finie dans une section pr&eacute;c&eacute;dente.</p>
+    </note>
 </usage>
    <seealso><directive module="mod_access_compat">Allow</directive></seealso>
    <seealso><directive module="mod_authz_core">Require</directive></seealso>

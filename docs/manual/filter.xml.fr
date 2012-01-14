@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1189549:1221670 (outdated) -->
+<!-- English Revision : 1221670 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -49,6 +49,7 @@
         <module>mod_substitute</module>
 	<module>mod_xml2enc</module>
         <module>mod_proxy_html</module>
+	<module>mod_policy</module>
       </modulelist>
       <directivelist>
         <directive module="mod_filter">FilterChain</directive>

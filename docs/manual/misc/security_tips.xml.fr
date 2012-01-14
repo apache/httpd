@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1205885:1226477 (outdated) -->
+<!-- English revision : 1226477 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -460,6 +460,23 @@
       &lt;/Files&gt;
     </example>
 
+  </section>
+  <section id="merging">
+
+    <title>Fusion des sections de configuration</title>
+
+    <p>La fusion des sections de configuration est complexe et d&eacute;pend
+    souvent des directives utilis&eacute;es. Vous devez syst&eacute;matiquement tester
+    vos modifications pour v&eacute;rifier la mani&egrave;re dont les directives sont
+    fusionn&eacute;es.</p>
+
+    <p>Concernant les modules qui n'impl&eacute;mentent aucune logique de
+    fusion, comme <directive>mod_access_compat</directive>, le
+    comportement des sections suivantes est tributaire de la pr&eacute;sence
+    dans ces derni&egrave;res de directives appartenant &agrave; ces modules. La
+    configuration est h&eacute;rit&eacute;e jusqu'&agrave; ce qu'une modification soit
+    effectu&eacute;e ; &agrave; ce moment, la configuration est <em>remplac&eacute;e</em> et
+    non fusionn&eacute;e.</p>
   </section>
 
 </manualpage>
