@@ -216,7 +216,7 @@ headers</description>
     values.</dd>
 
     <dt><code>merge</code></dt>
-    <dd>The response header is appended to any existing header of
+    <dd>The request header is appended to any existing header of
     the same name, unless the value to be appended already appears in the
     existing header's comma-delimited list of values.  When a new value is
     merged onto an existing header it is separated from the existing header
@@ -370,7 +370,7 @@ headers</description>
     <var>value</var> must be omitted.</dd>
 
     <dt><code>edit</code></dt>
-    <dd>If this request header exists, its value is transformed
+    <dd>If this response header exists, its value is transformed
     according to a <glossary ref="regex">regular expression</glossary>
     search-and-replace.  The <var>value</var> argument is
     a <glossary ref="regex">regular expression</glossary>, and
