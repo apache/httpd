@@ -285,17 +285,6 @@ PATCHES/ISSUES THAT ARE STALLED
                  possible since mod_mem_cache is no longer in trunk) and
                  committed.
 
-   * config: fix/optimize SSL connections for IE6 browsers
-     PR 49484
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=966055
-     2.2 patch: should apply cleanly
-     +1: gstein
-     -0: sf: If we change it, then change it to something that will be OK for
-         MSIE 10, too. Also, some people recommend keeping ssl-unclean-shutdown
-         for newer versions of MSIE.
-         See http://marc.info/?l=apache-httpd-dev&m=127970632901262&w=2 and
-         the links therein.
-
    * mod_proxy: Release the backend connection as soon as EOS is detected,
      so the backend isn't forced to wait for the client to eventually
      acknowledge the data.
