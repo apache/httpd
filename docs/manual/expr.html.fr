@@ -21,8 +21,6 @@
 <p><span>Langues Disponibles: </span><a href="./en/expr.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/expr.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Historiquement, il existe de nombreuses variantes dans la syntaxe
     des expressions permettant d'exprimer une condition dans les
@@ -356,37 +354,40 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td>L'argument est traité comme un nom de fichier. Vrai si le
 	fichier existe et correspond à un fichier
 	régulier</td><td>oui</td></tr>
-<tr class="odd"><td><code>-L</code></td>
+<tr class="odd"><td><code>-s</code></td>
+        <td>L'argument est traité comme un nom de fichier. Vrai si le
+	fichier existe et n'est pas vide</td><td>oui</td></tr>
+<tr><td><code>-L</code></td>
         <td>L'argument est traité comme un nom de fichier. Vrai si le
 	fichier existe et correspond à un lien
 	symbolique</td><td>oui</td></tr>
-<tr><td><code>-h</code></td>
+<tr class="odd"><td><code>-h</code></td>
         <td>L'argument est traité comme un nom de fichier. Vrai si le
 	fichier existe et correspond à un lien symbolique
 	(identique à <code>-L</code>)</td><td>oui</td></tr>
-<tr class="odd"><td><code>-F</code></td>
+<tr><td><code>-F</code></td>
         <td>Vrai si la chaîne correspond a un fichier valide, accessible
 	avec tous les contrôles d'accès configurés pour ce chemin. A
 	cette fin, une sous-requête effectue la vérification, et vous
 	devez utiliser ce drapeau avec soin car il peut impacter les
 	performances de votre serveur !</td><td /></tr>
-<tr><td><code>-U</code></td>
+<tr class="odd"><td><code>-U</code></td>
         <td>Vrai si la chaîne correspond a une URL valide, accessible
 	avec tous les contrôles d'accès configurés pour ce chemin. A
 	cette fin, une sous-requête effectue la vérification, et vous
 	devez utiliser ce drapeau avec soin car il peut impacter les
 	performances de votre serveur !</td><td /></tr>
-<tr class="odd"><td><code>-A</code></td>
+<tr><td><code>-A</code></td>
         <td>Alias pour <code>-U</code></td><td /></tr>
-<tr><td><code>-n</code></td>
+<tr class="odd"><td><code>-n</code></td>
         <td>Vrai si la chaîne n'est pas vide</td><td /></tr>
-<tr class="odd"><td><code>-z</code></td>
+<tr><td><code>-z</code></td>
         <td>Vrai si la chaîne est vide</td><td /></tr>
-<tr><td><code>-T</code></td>
+<tr class="odd"><td><code>-T</code></td>
         <td>Faux si la chaîne est vide, "<code>0</code>",
 	"<code>off</code>", "<code>false</code>", ou "<code>no</code>"
 	(insensibilité à la casse). Vrai dans le cas contraire.</td><td /></tr>
-<tr class="odd"><td><code>-R</code></td>
+<tr><td><code>-R</code></td>
         <td>Idem "<code>%{REMOTE_ADDR} -ipmatch ...</code>", en plus
 	efficace
         </td><td /></tr>

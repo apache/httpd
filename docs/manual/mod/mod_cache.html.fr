@@ -1001,6 +1001,8 @@ document</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.3.3 du serveur HTTP
+  Apache</td></tr>
 </table>
     <p>La directive <code class="directive"><a href="#cachequickhandler">CacheQuickHandler</a></code> permet de contrôler
     la phase au cours de laquelle la mise en cache est effectuée.</p>
