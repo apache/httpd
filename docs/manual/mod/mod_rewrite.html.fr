@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_rewrite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_rewrite.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ce module fournit un moteur de réécriture à base de
 règles permettant de réécrire les URLs des requêtes
 à la volée</td></tr>
@@ -1093,7 +1091,12 @@ substitution !
         <dt>un chemin du système de fichiers</dt>
 
         <dd>Il indique alors la localisation dans le système de
-	fichiers de la ressource qui doit être envoyée au client.</dd>
+	fichiers de la ressource qui doit être envoyée au
+	client. Les substitutions ne sont traitées en tant que chemins du
+	système de fichiers que si la règle est configurée dans un
+	contexte de serveur (serveur virtuel), et si le premier
+	composant du chemin dans la substitution existe dans le système
+	de fichiers.</dd>
 
         <dt>chemin d'URL</dt>
 
