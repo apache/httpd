@@ -104,13 +104,6 @@ typedef struct firehose_ctx_t
 #define BODY_LEN (PIPE_BUF - HEADER_LEN - 2)
 #define HEADER_FMT "%" APR_UINT64_T_HEX_FMT " %" APR_UINT64_T_HEX_FMT " %c %s %" APR_UINT64_T_HEX_FMT CRLF
 
-static apr_status_t logs_cleanup(void *dummy)
-{
-    apr_file_t *file = (apr_file_t *) dummy;
-    apr_file_close(file);
-    return APR_SUCCESS;
-}
-
 static apr_status_t filter_output_cleanup(void *dummy)
 {
     ap_filter_t *f = (ap_filter_t *) dummy;
