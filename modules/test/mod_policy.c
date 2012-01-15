@@ -202,7 +202,7 @@ static apr_status_t policy_type_out_filter(ap_filter_t *f,
         /* content type present and valid? */
         if (f->r->content_type) {
             const char *type = f->r->content_type;
-            const char *end = strchr(type, ';');
+            const char *end = ap_strchr_c(type, ';');
             if (end) {
                 type = apr_pstrmemdup(f->r->pool, type, end - type);
             }
