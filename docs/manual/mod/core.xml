@@ -3236,8 +3236,8 @@ or specified mutexes</description>
     will be changed from the compiled-in default to <code>sysvsem</code>.</p>
 
     <example>
-    Mutex default sysvsem<br />
-    Mutex mpm-accept fcntl:/var/httpd/locks
+    Mutex sysvsem default<br />
+    Mutex fcntl:/var/httpd/locks mpm-accept
     </example>
 </usage>
 </directivesynopsis>
