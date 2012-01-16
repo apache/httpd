@@ -156,7 +156,8 @@ rm -rf srclib/{apr,apr-util,pcre}
         --enable-pie \
         --with-pcre \
         --enable-mods-shared=all \
-        --enable-ssl --with-ssl --enable-socache-dc \
+        --enable-ssl --with-ssl --enable-socache-dc --enable-bucketeer \
+        --enable-case-filter --enable-case-filter-in \
         --enable-policy \
         --disable-imagemap
 
@@ -332,9 +333,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/httpd/modules/mod_authz_owner.so
 %{_libdir}/httpd/modules/mod_authz_user.so
 %{_libdir}/httpd/modules/mod_autoindex.so
+%{_libdir}/httpd/modules/mod_bucketeer.so
 %{_libdir}/httpd/modules/mod_buffer.so
 %{_libdir}/httpd/modules/mod_cache_disk.so
 %{_libdir}/httpd/modules/mod_cache.so
+%{_libdir}/httpd/modules/mod_case_filter.so
+%{_libdir}/httpd/modules/mod_case_filter_in.so
 %{_libdir}/httpd/modules/mod_cgid.so
 %{_libdir}/httpd/modules/mod_charset_lite.so
 %{_libdir}/httpd/modules/mod_data.so
