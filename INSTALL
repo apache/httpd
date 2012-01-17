@@ -71,8 +71,8 @@
   mod_ssl plus the openssl library and command line utility.  These packages
   may be unpacked without "installing" them by using the msiexec /a option.
 
-  If you have unpacked a source distribution (named httpd-2.2-xx.zip, without
-  any -win32-x86 notation) you must compile the package yourself, see the links
+  If you have unpacked a source distribution (named httpd-2.2.x-win32-src.zip, 
+  without any -x86 notation) you must compile the package yourself, see the links
   mentioned above.  Unless you intended to do this, please look again for the 
   binary package from http://www.apache.org/dist/httpd/binaries/win32/ and
   install the desired .msi package.
