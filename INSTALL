@@ -67,33 +67,23 @@
   Quick Start - Windows
   ---------------------
 
-  For complete documentation, see [ht]docs/manual/platform/windows.html or
+  For complete documentation, see manual/platform/windows.html.en or
   http://httpd.apache.org/docs/2.5/platform/windows.html.
 
-  The Apache/Win32 binaries are primarily distributed as a Windows Installer 
-  package (.msi), and may be available as a .zip file as well.  These packages 
-  are named apache-2.5.xx-win32-x86.msi and apache-2.5.xx-win32-x86.zip.  
-  Please choose the .msi package if at all possible. Note that Apache version
-  2.5 is a development version and binaries may not be available. Use a 
-  released version from the stable 2.2 branch instead. 
+  The Apache/Win32 binaries are distributed as Windows Installer packages 
+  (.msi) named httpd-2.5.xx-win32-x86-no_ssl.msi for a version without mod_ssl
+  and httpd-2.5.xx-win32-x86-openssl-1.0.1x.msi for a version including the
+  mod_ssl plus the openssl library and command line utility.  These packages
+  may be unpacked without "installing" them by using the msiexec /a option.
 
   If you have unpacked a source distribution (named httpd-2.5-xx.zip, without
   any -win32-x86 notation) you must compile the package yourself, see the links
   mentioned above.  Unless you intended to do this, please look again for the 
   binary package from http://www.apache.org/dist/httpd/binaries/win32/ and
-  install that .msi (or .zip package, if you must.)
-
-  If you have unpacked this binary distribution from the .zip package, you 
-  _must_ edit the conf/httpd.conf file (with notepad or another text editor) 
-  to reflect the correct ServerName, Domain, and directory paths.  Search for 
-  the text "@@" to discover what you must edit.  To install and start the 
-  service after you have corrected the httpd.conf file, use the command
-
-    bin\httpd.exe -k install
-    bin\httpd.exe -k start
+  install the desired .msi package.
 
   The .msi package configures the httpd.conf file, and installs and starts 
-  the Apache2 service for you.  It also installs plenty of useful shortcuts
+  the Apache2.4 service for you.  It also installs plenty of useful shortcuts
   and the taskbar ApacheMonitor.  We strongly encourage you to use it.
 
 
