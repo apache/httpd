@@ -4,9 +4,10 @@ Changes with Apache 2.4.1
 
 Changes with Apache 2.4.0
 
-  *) SECURITY (CVE-2012-0031): Fix scoreboard issue which could allow
-     an unprivileged child process could cause the parent to crash at
-     shutdown rather than terminate cleanly.  [Joe Orton]
+  *) SECURITY: CVE-2012-0031 (cve.mitre.org)
+     Fix scoreboard issue which could allow an unprivileged child process
+     could cause the parent to crash at shutdown rather than terminate
+     cleanly.  [Joe Orton]
 
   *) mod_ssl: Fix compilation with xlc on AIX. PR 52394. [Stefan Fritsch]
 
