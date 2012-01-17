@@ -5,7 +5,7 @@
   ------------------
 
   For complete installation documentation, see [ht]docs/manual/install.html or
-  http://httpd.apache.org/docs/2.3/install.html
+  http://httpd.apache.org/docs/2.5/install.html
 
      $ ./configure --prefix=PREFIX
      $ make
@@ -59,7 +59,7 @@
      --enable-rewrite=shared \
      --enable-speling=shared 
 
-  The easiest way to find all of the configuration flags for Apache 2.3
+  The easiest way to find all of the configuration flags for Apache 2.5
   is to run ./configure --help.
 
 
@@ -67,16 +67,16 @@
   ---------------------
 
   For complete documentation, see [ht]docs/manual/platform/windows.html or
-  http://httpd.apache.org/docs/2.3/platform/windows.html.
+  http://httpd.apache.org/docs/2.5/platform/windows.html.
 
   The Apache/Win32 binaries are primarily distributed as a Windows Installer 
   package (.msi), and may be available as a .zip file as well.  These packages 
-  are named apache-2.3.xx-win32-x86.msi and apache-2.3.xx-win32-x86.zip.  
+  are named apache-2.5.xx-win32-x86.msi and apache-2.5.xx-win32-x86.zip.  
   Please choose the .msi package if at all possible. Note that Apache version
-  2.3 is a development version and binaries may not be available. Use a 
+  2.5 is a development version and binaries may not be available. Use a 
   released version from the stable 2.2 branch instead. 
 
-  If you have unpacked a source distribution (named httpd-2.3-xx.zip, without
+  If you have unpacked a source distribution (named httpd-2.5-xx.zip, without
   any -win32-x86 notation) you must compile the package yourself, see the links
   mentioned above.  Unless you intended to do this, please look again for the 
   binary package from http://www.apache.org/dist/httpd/binaries/win32/ and
@@ -106,7 +106,7 @@
   comp.infosystems.www.servers.unix or
   comp.infosystems.www.servers.ms-windows.
 
-  Thanks for using the Apache HTTP Server, version 2.3.
+  Thanks for using the Apache HTTP Server, version 2.5.
 
                                      The Apache Software Foundation
                                      http://www.apache.org/
