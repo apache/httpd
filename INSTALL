@@ -83,7 +83,7 @@
   install the desired .msi package.
 
   The .msi package configures the httpd.conf file, and installs and starts 
-  the Apache2.4 service for you.  It also installs plenty of useful shortcuts
+  the Apache2.x service for you.  It also installs plenty of useful shortcuts
   and the taskbar ApacheMonitor.  We strongly encourage you to use it.
 
 
