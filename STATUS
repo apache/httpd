@@ -150,6 +150,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
            should be much faster than a callout to strcmp.
     wrowe: Shouldn't this all simply be handled with an error result from
            apr_uri_parse?
+    trawick: leaning towards (b) with wrowe's tweak above, to let other mods
+           decide whether to handle odd URIs with core hook failing it if it got
+           that far
 
   * mod_proxy: cure size_t abuse part 1, backport relevant bits of r1227856,
     Specifically normalizes ap_proxy_string_read so that the prototype
