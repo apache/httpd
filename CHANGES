@@ -36,6 +36,12 @@ Changes with Apache 2.4.0
 
 Changes with Apache 2.3.16
 
+  *) SECURITY: CVE-2011-4317 (cve.mitre.org)
+     Resolve additional cases of URL rewriting with ProxyPassMatch or
+     RewriteRule, where particular request-URIs could result in undesired
+     backend network exposure in some configurations.
+     [Joe Orton]
+
   *) core: Limit line length in .htaccess to 8K like in 2.2.x, to avoid
      additional DoS potential. [Stefan Fritsch]
 
