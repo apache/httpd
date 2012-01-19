@@ -153,6 +153,11 @@ Changes with Apache 2.3.15
      core: Fix integer overflow in ap_pregsub. This can be triggered e.g.
      with mod_setenvif via a malicious .htaccess. [Stefan Fritsch]
 
+  *) SECURITY: CVE-2011-3368 (cve.mitre.org)
+     Reject requests where the request-URI does not match the HTTP
+     specification, preventing unexpected expansion of target URLs in
+     some reverse proxy configurations.  [Joe Orton]
+
   *) configure: Load all modules in the generated default configuration
      when using --enable-load-all-modules. [Rainer Jung]
 
