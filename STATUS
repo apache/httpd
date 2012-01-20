@@ -90,11 +90,19 @@ RELEASE SHOWSTOPPERS:
 
   FOR GA:
 
-  * Modules that are not ready for production use must be removed.
-    The same for modules without documentation.
+  * Core output filter reads whole CGI/PIPE-like mutating bucket types into
+    RAM.
 
-    See https://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x/docs/STATUS 
-    under 'modules docs' for a comprehensive list of undocumented modules.
+  KNOWN ISSUES, NEED TO BE EITHER FIXED OR DOCUMENTED IN GA ANNOUNCEMENT
+
+  * Docs about building / installing are not up to date.
+
+  * PR 52402: balancer crash on Windows
+
+  * PR 52476: SSL failures on windows with AcceptFilter https none
+
+  * configure does not take module inter-dependencies into account (can cause
+    build failure with statically compiled modules).
 
   NEW ISSUES THAT WOULD BE NICE TO HAVE DONE IN 2.4 BUT ARE NOT BLOCKERS
 
