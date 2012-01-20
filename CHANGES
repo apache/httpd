@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.1
 
+  * Rewrite and proxy now decline what they don't support rather
+    than fail the request. [Joe Orton]
 
 Changes with Apache 2.4.0
 
