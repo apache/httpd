@@ -137,7 +137,7 @@ int ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
          * empty).  We do this by returning whatever we have read.  This may
          * or may not be bogus, but is consistent (for now) with EOF logic.
          */
-        if (APR_STATUS_IS_EAGAIN(rv)) {
+        if (APR_STATUS_IS_EAGAIN(rv) && block == APR_NONBLOCK_READ) {
             rv = APR_SUCCESS;
         }
         return rv;
@@ -223,7 +223,9 @@ int ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
         e = APR_BRIGADE_FIRST(ctx->b);
         rv = apr_bucket_read(e, &str, &len, block);
 
-        if (APR_STATUS_IS_EAGAIN(rv)) {
+        if (APR_STATUS_IS_EAGAIN(rv) && block == APR_NONBLOCK_READ) {
+            /* getting EAGAIN for a blocking read is an error; for a
+             * non-blocking read, return an empty brigade. */
             return APR_SUCCESS;
         }
         else if (rv != APR_SUCCESS) {
