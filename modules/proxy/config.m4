@@ -37,11 +37,11 @@ case "$host" in
     ;;
 esac
 
-APACHE_MODULE(proxy_connect, Apache proxy CONNECT module.  Requires and is enabled by --enable-proxy., $proxy_connect_objs, , $proxy_mods_enable)
-APACHE_MODULE(proxy_ftp, Apache proxy FTP module.  Requires and is enabled by --enable-proxy., $proxy_ftp_objs, , $proxy_mods_enable)
-APACHE_MODULE(proxy_http, Apache proxy HTTP module.  Requires and is enabled by --enable-proxy., $proxy_http_objs, , $proxy_mods_enable)
-APACHE_MODULE(proxy_fcgi, Apache proxy FastCGI module.  Requires and is enabled by --enable-proxy., $proxy_fcgi_objs, , $proxy_mods_enable)
-APACHE_MODULE(proxy_scgi, Apache proxy SCGI module.  Requires and is enabled by --enable-proxy., $proxy_scgi_objs, , $proxy_mods_enable)
+APACHE_MODULE(proxy_connect, Apache proxy CONNECT module.  Requires and is enabled by --enable-proxy., $proxy_connect_objs, , $proxy_mods_enable,, proxy)
+APACHE_MODULE(proxy_ftp, Apache proxy FTP module.  Requires and is enabled by --enable-proxy., $proxy_ftp_objs, , $proxy_mods_enable,, proxy)
+APACHE_MODULE(proxy_http, Apache proxy HTTP module.  Requires and is enabled by --enable-proxy., $proxy_http_objs, , $proxy_mods_enable,, proxy)
+APACHE_MODULE(proxy_fcgi, Apache proxy FastCGI module.  Requires and is enabled by --enable-proxy., $proxy_fcgi_objs, , $proxy_mods_enable,, proxy)
+APACHE_MODULE(proxy_scgi, Apache proxy SCGI module.  Requires and is enabled by --enable-proxy., $proxy_scgi_objs, , $proxy_mods_enable,, proxy)
 APACHE_MODULE(proxy_fdpass, Apache proxy to Unix Daemon Socket module.  Requires --enable-proxy., $proxy_fdpass_objs, , , [
   AC_CHECK_DECL(CMSG_DATA,,, [
     #include <sys/types.h>
@@ -51,9 +51,9 @@ APACHE_MODULE(proxy_fdpass, Apache proxy to Unix Daemon Socket module.  Requires
     AC_MSG_WARN([Your system does not support CMSG_DATA.])
     enable_proxy_fdpass=no
   fi
-])
-APACHE_MODULE(proxy_ajp, Apache proxy AJP module.  Requires and is enabled by --enable-proxy., $proxy_ajp_objs, , $proxy_mods_enable)
-APACHE_MODULE(proxy_balancer, Apache proxy BALANCER module.  Requires and is enabled by --enable-proxy., $proxy_balancer_objs, , $proxy_mods_enable)
+],proxy)
+APACHE_MODULE(proxy_ajp, Apache proxy AJP module.  Requires and is enabled by --enable-proxy., $proxy_ajp_objs, , $proxy_mods_enable,, proxy)
+APACHE_MODULE(proxy_balancer, Apache proxy BALANCER module.  Requires and is enabled by --enable-proxy., $proxy_balancer_objs, , $proxy_mods_enable,, proxy)
 
 APACHE_MODULE(serf, [Reverse proxy module using Serf], , , no, [
     APACHE_CHECK_SERF
@@ -64,7 +64,7 @@ APACHE_MODULE(serf, [Reverse proxy module using Serf], , , no, [
     fi
 ])
 
-APACHE_MODULE(proxy_express, mass reverse-proxy module. Requires --enable-proxy., , , $proxy_mods_enable)
+APACHE_MODULE(proxy_express, mass reverse-proxy module. Requires --enable-proxy., , , $proxy_mods_enable,, proxy)
 
 APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
 

@@ -30,7 +30,7 @@ case "$host" in
 esac
 
 APACHE_MODULE(session, session module, , , most)
-APACHE_MODULE(session_cookie, session cookie module, $session_cookie_objects, , $session_mods_enable)
+APACHE_MODULE(session_cookie, session cookie module, $session_cookie_objects, , $session_mods_enable,,session)
 
 if test "$enable_session_crypto" != ""; then
   session_mods_enable_crypto=$enable_session_crypto
@@ -58,9 +58,9 @@ APACHE_MODULE(session_crypto, session crypto module, $session_crypto_objects, , 
 if test "$session_mods_enable_crypto" = "no" ; then
   enable_session_crypto=no
 fi
-])
+],session)
 
-APACHE_MODULE(session_dbd, session dbd module, $session_dbd_objects, , $session_mods_enable)
+APACHE_MODULE(session_dbd, session dbd module, $session_dbd_objects, , $session_mods_enable,,session)
 
 APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
 
