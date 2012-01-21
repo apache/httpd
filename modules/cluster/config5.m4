@@ -11,7 +11,7 @@ case "$host" in
     ;;
 esac
 
-APACHE_MODULE(heartbeat, Generates Heartbeats, $heartbeat_objects, , )
+APACHE_MODULE(heartbeat, Generates Heartbeats, $heartbeat_objects, , , , watchdog)
 APACHE_MODULE(heartmonitor, Collects Heartbeats, , , )
 
 APACHE_MODPATH_FINISH

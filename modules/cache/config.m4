@@ -23,7 +23,7 @@ case "$host" in
 esac
 
 APACHE_MODULE(cache, dynamic file caching.  At least one storage management module (e.g. mod_cache_disk) is also necessary., $cache_objs, , most)
-APACHE_MODULE(cache_disk, disk caching module, $cache_disk_objs, , most)
+APACHE_MODULE(cache_disk, disk caching module, $cache_disk_objs, , most, , cache)
 
 dnl
 dnl APACHE_CHECK_DISTCACHE
