@@ -125,6 +125,14 @@ docs:
 	    echo '  http://httpd.apache.org/docs-project/docsformat.html'; \
 	fi
 
+validate-xml:
+	@if test -d $(top_srcdir)/docs/manual/build; then \
+	    cd $(top_srcdir)/docs/manual/build && ./build.sh validate-xml; \
+	else \
+	    echo 'For details on generating the docs, please read:'; \
+	    echo '  http://httpd.apache.org/docs-project/docsformat.html'; \
+	fi
+
 dox:
 	doxygen $(top_srcdir)/docs/doxygen.conf
 
