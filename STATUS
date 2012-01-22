@@ -103,9 +103,6 @@ RELEASE SHOWSTOPPERS:
 
   * PR 52476: SSL failures on windows with AcceptFilter https none
 
-  * configure does not take module inter-dependencies into account (can cause
-    build failure with statically compiled modules).
-
   NEW ISSUES THAT WOULD BE NICE TO HAVE DONE IN 2.4 BUT ARE NOT BLOCKERS
 
   * mod_ssl's proxy support only allows one proxy client certificate per

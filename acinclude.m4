@@ -265,7 +265,7 @@ EOF
 ])dnl
 
 dnl
-dnl APACHE_MODULE(name, helptext[, objects[, structname[, default[, config]]]])
+dnl APACHE_MODULE(name, helptext[, objects[, structname[, default[, config[, prereq_module]]]]])
 dnl
 dnl default is one of:
 dnl   yes    -- enabled by default. user must explicitly disable.
@@ -281,6 +281,15 @@ dnl basically: yes/no is a hard setting. "most" means follow the "most"
 dnl            setting. otherwise, fall under the "all" setting.
 dnl            explicit yes/no always overrides, except if the user selects
 dnl            "reallyall".
+dnl
+dnl prereq_module is a module (without the "mod_" prefix) that must be enabled
+dnl   if the current module is enabled.  If the current module is built
+dnl   statically, prereq_module must be built statically, too.  If these
+dnl   conditions are not fulfilled, configure will abort if the current module
+dnl   has been enabled explicitly. Otherwise, configure will disable the
+dnl   current module.
+dnl   prereq_module's APACHE_MODULE() statement must have been processed
+dnl   before the current APACHE_MODULE() statement.
 dnl
 AC_DEFUN(APACHE_MODULE,[
   AC_MSG_CHECKING(whether to enable mod_$1)
@@ -334,16 +343,25 @@ AC_DEFUN(APACHE_MODULE,[
   if test "$enable_$1" != "no"; then
     dnl If we plan to enable it, allow the module to run some autoconf magic
     dnl that may disable it because of missing dependencies.
-    ifelse([$6],,:,[AC_MSG_RESULT([checking dependencies])
-                    $6
-                    AC_MSG_CHECKING(whether to enable mod_$1)
-                    if test "$enable_$1" = "no"; then
-                      if test "$_apmod_required" = "no"; then
-                        _apmod_extra_msg=" (disabled)"
-                      else
-                        AC_MSG_ERROR([mod_$1 has been requested but can not be built due to prerequisite failures])
-                      fi
-                    fi])
+    ifelse([$6$7],,:,
+           [AC_MSG_RESULT([checking dependencies])
+            ifelse([$7],,:,[if test "$enable_$7" = "no" ; then
+                              enable_$1=no
+                              AC_MSG_WARN("mod_$7 is disabled but required for mod_$1")
+                            elif test "$enable_$1" = "static" && test "$enable_$7" != "static" ; then
+                              enable_$1=no
+                              AC_MSG_WARN("cannot build mod_$1 statically if mod_$7 is built shared")
+                            else])
+            ifelse([$6],,:,[  $6])
+            ifelse([$7],,:,[fi])
+            AC_MSG_CHECKING(whether to enable mod_$1)
+            if test "$enable_$1" = "no"; then
+              if test "$_apmod_required" = "no"; then
+                _apmod_extra_msg=" (disabled)"
+              else
+                AC_MSG_ERROR([mod_$1 has been requested but can not be built due to prerequisite failures])
+              fi
+            fi])
   fi
   AC_MSG_RESULT($enable_$1$_apmod_extra_msg)
   if test "$enable_$1" != "no"; then
