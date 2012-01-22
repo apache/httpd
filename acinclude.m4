@@ -345,24 +345,25 @@ AC_DEFUN(APACHE_MODULE,[
   if test "$enable_$1" != "no"; then
     dnl If we plan to enable it, allow the module to run some autoconf magic
     dnl that may disable it because of missing dependencies.
-    ifelse([$6$7],,:,[AC_MSG_RESULT([checking dependencies])
-                      ifelse([$7],,:,[if test "$enable_$7" = "no" ; then
-                                        enable_$1=no
-                                        AC_MSG_WARN("mod_$7 is disabled but required for mod_$1")
-                                      elif test "$enable_$1" = "static" && test "$enable_$7" != "static" ; then
-                                        enable_$1=no
-                                        AC_MSG_WARN("cannot build mod_$1 statically if mod_$7 is built shared")
-                                      else])
-                                        ifelse([$6],,:,[$6])
-                      ifelse([$7],,:,[fi])
-                    AC_MSG_CHECKING(whether to enable mod_$1)
-                    if test "$enable_$1" = "no"; then
-                      if test "$_apmod_required" = "no"; then
-                        _apmod_extra_msg=" (disabled)"
-                      else
-                        AC_MSG_ERROR([mod_$1 has been requested but can not be built due to prerequisite failures])
-                      fi
-                    fi])
+    ifelse([$6$7],,:,
+           [AC_MSG_RESULT([checking dependencies])
+            ifelse([$7],,:,[if test "$enable_$7" = "no" ; then
+                              enable_$1=no
+                              AC_MSG_WARN("mod_$7 is disabled but required for mod_$1")
+                            elif test "$enable_$1" = "static" && test "$enable_$7" != "static" ; then
+                              enable_$1=no
+                              AC_MSG_WARN("cannot build mod_$1 statically if mod_$7 is built shared")
+                            else])
+            ifelse([$6],,:,[  $6])
+            ifelse([$7],,:,[fi])
+            AC_MSG_CHECKING(whether to enable mod_$1)
+            if test "$enable_$1" = "no"; then
+              if test "$_apmod_required" = "no"; then
+                _apmod_extra_msg=" (disabled)"
+              else
+                AC_MSG_ERROR([mod_$1 has been requested but can not be built due to prerequisite failures])
+              fi
+            fi])
   fi
   AC_MSG_RESULT($enable_$1$_apmod_extra_msg)
   if test "$enable_$1" != "no"; then
