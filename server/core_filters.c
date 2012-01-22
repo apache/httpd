@@ -398,14 +398,8 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
         ctx->buffered_bb = apr_brigade_create(c->pool, c->bucket_alloc);
     }
 
-    if (new_bb != NULL) {
-        for (bucket = APR_BRIGADE_FIRST(new_bb); bucket != APR_BRIGADE_SENTINEL(new_bb); bucket = APR_BUCKET_NEXT(bucket)) {
-            if (bucket->length > 0) {
-                ctx->bytes_in += bucket->length;
-            }
-        }
+    if (new_bb != NULL)
         bb = new_bb;
-    }
 
     if ((ctx->buffered_bb != NULL) &&
         !APR_BRIGADE_EMPTY(ctx->buffered_bb)) {
