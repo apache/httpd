@@ -105,6 +105,11 @@ int ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
     if (!ctx)
     {
+        /*
+         * Note that this code is never executed on Windows because the winnt
+         * MPM does the setup of net->in_ctx.
+         * XXX: This should be fixed.
+         */
         ctx = apr_pcalloc(f->c->pool, sizeof(*ctx));
         ctx->b = apr_brigade_create(f->c->pool, f->c->bucket_alloc);
         ctx->tmpbb = apr_brigade_create(ctx->b->p, ctx->b->bucket_alloc);
