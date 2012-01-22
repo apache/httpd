@@ -69,6 +69,7 @@ disponibles</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifdefine">&lt;IfDefine&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifmodule">&lt;IfModule&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#include">Include</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#includeoptional">IncludeOptional</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#keepalive">KeepAlive</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#keepalivetimeout">KeepAliveTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#limit">&lt;Limit&gt;</a></li>
@@ -2238,6 +2239,24 @@ version 2.3.6</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="IncludeOptional" id="IncludeOptional">IncludeOptional</a> <a name="includeoptional" id="includeoptional">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Includes other configuration files from within
+the server configuration files</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>IncludeOptional <var>file-path</var>|<var>directory-path</var>|<var>wildcard</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in 2.3.6 and later</td></tr>
+</table><p>La documentation de cette directive
+	n'a pas encore t traduite. Veuillez vous reporter  la version
+	en langue anglaise.</p><h3>Voir aussi</h3>
+<ul>
+<li><code class="directive"><a href="#include">Include</a></code></li>
+<li><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="KeepAlive" id="KeepAlive">KeepAlive</a> <a name="keepalive" id="keepalive">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active les connexions HTTP persistantes</td></tr>
@@ -3456,8 +3475,8 @@ verrou pour tous les mutex ou seulement les mutex spécifiés</td></tr>
     <code>sysvsem</code>.</p>
 
     <div class="example"><p><code>
-    Mutex default sysvsem<br />
-    Mutex mpm-accept fcntl:/var/httpd/locks
+    Mutex sysvsem default<br />
+    Mutex fcntl:/var/httpd/locks mpm-accept
     </code></p></div>
 
 </div>

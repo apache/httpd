@@ -70,6 +70,7 @@ Servers</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifdefine">&lt;IfDefine&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifmodule">&lt;IfModule&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#include">Include</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#includeoptional">IncludeOptional</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#keepalive">KeepAlive</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#keepalivetimeout">KeepAliveTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#limit">&lt;Limit&gt;</a></li>
@@ -1666,6 +1667,24 @@ Server-Konfigurationsdatei ein</td></tr>
 
 <h3>Siehe auch</h3>
 <ul>
+<li><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="IncludeOptional" id="IncludeOptional">IncludeOptional</a>-<a name="includeoptional" id="includeoptional">Direktive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Includes other configuration files from within
+the server configuration files</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>IncludeOptional <var>file-path</var>|<var>directory-path</var>|<var>wildcard</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host, Verzeichnis</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Available in 2.3.6 and later</td></tr>
+</table><p>Die Dokumentation zu dieser Direktive wurde
+            noch nicht übersetzt. Bitte schauen Sie in die englische
+            Version.</p><h3>Siehe auch</h3>
+<ul>
+<li><code class="directive"><a href="#include">Include</a></code></li>
 <li><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></li>
 </ul>
 </div>
