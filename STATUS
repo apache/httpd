@@ -155,7 +155,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Plan (b) from mail discussion above
       Adds trunk revision 1233604
       2.2.x patch: http://people.apache.org/~trawick/CVE-2011-4317-2.2.x.txt
-    +1: trawick
+    +1: trawick, covener
 
   * mod_proxy: cure size_t abuse part 1, backport relevant bits of r1227856,
     Specifically normalizes ap_proxy_string_read so that the prototype
