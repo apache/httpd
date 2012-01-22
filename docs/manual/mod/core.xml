@@ -1990,7 +1990,7 @@ later.</compatibility>
 <name>Include</name>
 <description>Includes other configuration files from within
 the server configuration files</description>
-<syntax>Include [<var>optional</var>|<var>strict</var>] <var>file-path</var>|<var>directory-path</var>|<var>wildcard</var></syntax>
+<syntax>Include <var>file-path</var>|<var>directory-path</var>|<var>wildcard</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
@@ -2012,27 +2012,14 @@ wildcard matching available in 2.3.6 and later</compatibility>
     wildcard syntax shown below, to include files that match a particular
     pattern, such as *.conf, for example.</p>
 
-    <p>When a wildcard is specified for a <strong>file</strong> component of
-    the path, and no file matches the wildcard, the
-    <directive module="core">Include</directive>
-    directive will be <strong>silently ignored</strong>. When a wildcard is
-    specified for a <strong>directory</strong> component of the path, and
-    no directory matches the wildcard, the
-    <directive module="core">Include</directive> directive will
-    <strong>fail with an error</strong> saying the directory cannot be found.
-    </p>
-
-    <p>For further control over the behavior of the server when no files or
-    directories match, prefix the path with the modifiers <var>optional</var>
-    or <var>strict</var>. If <var>optional</var> is specified, any wildcard
-    file or directory that does not match will be silently ignored. If
-    <var>strict</var> is specified, any wildcard file or directory that does
-    not match at least one file will cause server startup to fail.</p>
-
-    <p>When a directory or file component of the path is
-    specified exactly, and that directory or file does not exist,
-    <directive module="core">Include</directive> directive will fail with an
-    error saying the file or directory cannot be found.</p>
+    <p>The <directive module="core">Include</directive> directive will
+    <strong>fail with an error</strong> if a wildcard is specified for a
+    filename or directory component of the patch, but no file or directory
+    matches the wildcard. The same is true if a wildcard is specified for a
+    directory component of the path, and a mathing directory does not contain
+    the filename specified in the path. The
+    <directive module="core">IncludeOptional</directive> directive can be
+    used instead, if non-matching wildcards should be ignored.</p>
 
     <p>The file path specified may be an absolute path, or may be relative
     to the <directive module="core">ServerRoot</directive> directory.</p>
@@ -2053,31 +2040,47 @@ wildcard matching available in 2.3.6 and later</compatibility>
     </example>
 
     <p>Wildcards may be included in the directory or file portion of the
-    path. In the following example, the server will fail to load if no
-    directories match conf/vhosts/*, but will load successfully if no
-    files match *.conf.</p>
+    path. This example will fail if there is no subdirectory in conf/vhosts
+    or if a subdirectory of conf/vhosts does not contain at least one *.conf
+    file:</p>
 
     <example>
-      Include conf/vhosts/*/vhost.conf<br />
       Include conf/vhosts/*/*.conf
     </example>
 
-    <p>In this example, the server will fail to load if either
-    conf/vhosts/* matches no directories, or if *.conf matches no files:</p>
+    <p>Alternatively, the following command will just be ignored in case of
+    missing files or directories:</p>
 
     <example>
-      Include strict conf/vhosts/*/*.conf
-    </example>
-
-    <p>In this example, the server load successfully if either conf/vhosts/*
-    matches no directories, or if *.conf matches no files:</p>
-
-    <example>
-      Include optional conf/vhosts/*/*.conf
+      IncludeOptional conf/vhosts/*/*.conf
     </example>
 
 </usage>
 
+<seealso><directive module="core">IncludeOptional</directive></seealso>
+<seealso><program>apachectl</program></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>IncludeOptional</name>
+<description>Includes other configuration files from within
+the server configuration files</description>
+<syntax>IncludeOptional <var>file-path</var>|<var>directory-path</var>|<var>wildcard</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
+</contextlist>
+<compatibility>Available in 2.3.6 and later</compatibility>
+
+<usage>
+    <p>This directive allows inclusion of other configuration files
+    from within the server configuration files. It works identically to the
+    <directive module="core">Include</directive> directive, with the
+    exception that if wildcards do not match any file or directory, the
+    <directive module="core">IncludeOptional</directive> directive will be
+    silently ignored instead of causing an error.</p>
+</usage>
+
+<seealso><directive module="core">Include</directive></seealso>
 <seealso><program>apachectl</program></seealso>
 </directivesynopsis>
 
