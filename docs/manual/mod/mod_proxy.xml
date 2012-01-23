@@ -647,7 +647,7 @@ expressions</description>
 <usage>
     <p>This directive allows for growth potential in the number of
     Balancers available for a virtualhost in addition to the
-    number pre-configured. It only take effect if there is at
+    number pre-configured. It only takes effect if there is at
     least 1 pre-configured Balancer.</p>
 </usage>
 </directivesynopsis>
@@ -769,8 +769,10 @@ expressions</description>
     <code>http://example.com/mirror/foo/bar</code> to be internally converted
     into a proxy request to <code>http://backend.example.com/bar</code>.</p>
 
-    <p>The following alternative syntax is possible, however carries a
-    performance penalty when present in large numbers:</p>
+    <p>The following alternative syntax is possible, however it can carry a
+    performance penalty when present in very large numbers. The advantage of
+    the below syntax is that it allows for dynamic control via the
+    <a href="mod_proxy_balancer.html#balancer_manager">Balancer Manager</a> interface:</p>
 
     <example>
         ProxyPass /mirror/foo/ http://backend.example.com/
