@@ -6,6 +6,9 @@ Changes with Apache 2.4.1
      when no custom ErrorDocument is specified for status code 400.  
      [Eric Covener]
 
+  *) core: Fix memory consumption in core output filter with streaming
+     bucket types like CGI or PIPE.  [Joe Orton, Stefan Fritsch]
+
   *) configure: Disable modules at configure time if a prerequisite module
      is not enabled. PR 52487. [Stefan Fritsch]
 
