@@ -750,12 +750,12 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                 /* insure ap_escape_html will terminate correctly */
                 field[len - 1] = '\0';
                 apr_table_setn(r->notes, "error-notes",
-                               apr_pstrcat(r->pool,
+                               apr_psprintf(r->pool,
                                            "Size of a request header field "
                                            "exceeds server limit.<br />\n"
-                                           "<pre>\n",
-                                           ap_escape_html(r->pool, field),
-                                           "</pre>\n", NULL));
+                                           "<pre>\n%.*s\n</pre>\n", 
+                                           field_name_len(field), 
+                                           ap_escape_html(r->pool, field)));
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00561)
                               "Request header exceeds LimitRequestFieldSize: "
                               "%.*s", field_name_len(field), field);
@@ -779,13 +779,13 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                      * overflow (last_field) as the field with the problem
                      */
                     apr_table_setn(r->notes, "error-notes",
-                                   apr_pstrcat(r->pool,
+                                   apr_psprintf(r->pool,
                                                "Size of a request header field "
                                                "after folding "
                                                "exceeds server limit.<br />\n"
-                                               "<pre>\n",
-                                               ap_escape_html(r->pool, last_field),
-                                               "</pre>\n", NULL));
+                                               "<pre>\n%.*s\n</pre>\n", 
+                                               field_name_len(last_field), 
+                                               ap_escape_html(r->pool, last_field)));
                     ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00562)
                                   "Request header exceeds LimitRequestFieldSize "
                                   "after folding: %.*s",
@@ -824,13 +824,13 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                 if (!(value = strchr(last_field, ':'))) { /* Find ':' or    */
                     r->status = HTTP_BAD_REQUEST;      /* abort bad request */
                     apr_table_setn(r->notes, "error-notes",
-                                   apr_pstrcat(r->pool,
+                                   apr_psprintf(r->pool,
                                                "Request header field is "
                                                "missing ':' separator.<br />\n"
-                                               "<pre>\n",
+                                               "<pre>\n%.*s</pre>\n", 
+                                               (int)LOG_NAME_MAX_LEN,
                                                ap_escape_html(r->pool,
-                                                              last_field),
-                                               "</pre>\n", NULL));
+                                                              last_field)));
                     ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00564)
                                   "Request header field is missing ':' "
                                   "separator: %.*s", (int)LOG_NAME_MAX_LEN,
