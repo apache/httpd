@@ -165,6 +165,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=1227860&view=rev
     +1: wrowe
 
+  * core: Fix header/cookie values echoed in default 400 error document 
+    (CVE-2012-0053)
+    Trunk patch:
+      http://svn.apache.org/viewvc?rev=1234837&view=rev 
+    2.2.x patch: 
+      http://people.apache.org/~covener/patches/httpd-2.2.x-CVE-2012-0053.diff
+    +1 covener
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
