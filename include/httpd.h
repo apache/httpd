@@ -1270,30 +1270,6 @@ struct server_rec {
     void *context;
 };
 
-typedef struct core_output_filter_ctx {
-    apr_bucket_brigade *buffered_bb;
-    apr_bucket_brigade *tmp_flush_bb;
-    apr_pool_t *deferred_write_pool;
-    apr_size_t bytes_in;
-    apr_size_t bytes_written;
-} core_output_filter_ctx_t;
-
-typedef struct core_filter_ctx {
-    apr_bucket_brigade *b;
-    apr_bucket_brigade *tmpbb;
-} core_ctx_t;
-
-typedef struct core_net_rec {
-    /** Connection to the client */
-    apr_socket_t *client_socket;
-
-    /** connection record */
-    conn_rec *c;
-
-    core_output_filter_ctx_t *out_ctx;
-    core_ctx_t *in_ctx;
-} core_net_rec;
-
 /**
  * Get the context_document_root for a request. This is a generalization of
  * the document root, which is too limited in the presence of mappers like

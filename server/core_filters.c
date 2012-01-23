@@ -78,6 +78,32 @@ do { \
 #undef APLOG_MODULE_INDEX
 #define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
 
+typedef struct core_output_filter_ctx {
+    apr_bucket_brigade *buffered_bb;
+    apr_bucket_brigade *tmp_flush_bb;
+    apr_pool_t *deferred_write_pool;
+    apr_size_t bytes_written;
+} core_output_filter_ctx_t;
+
+typedef struct core_filter_ctx {
+    apr_bucket_brigade *b;
+    apr_bucket_brigade *tmpbb;
+} core_ctx_t;
+
+
+AP_DECLARE(core_ctx_t *) ap_create_core_ctx(conn_rec *c)
+{
+    core_ctx_t *ctx = apr_palloc(c->pool, sizeof(*ctx));
+    ctx->b = apr_brigade_create(c->pool, c->bucket_alloc);
+    ctx->tmpbb = apr_brigade_create(c->pool, c->bucket_alloc);
+    return ctx;
+}
+
+AP_DECLARE(apr_bucket_brigade *) ap_core_ctx_get_bb(core_ctx_t *ctx)
+{
+    return ctx->b;
+}
+
 int ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
                          ap_input_mode_t mode, apr_read_type_e block,
                          apr_off_t readbytes)
@@ -105,18 +131,10 @@ int ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
     if (!ctx)
     {
-        /*
-         * Note that this code is never executed on Windows because the winnt
-         * MPM does the setup of net->in_ctx.
-         * XXX: This should be fixed.
-         */
-        ctx = apr_pcalloc(f->c->pool, sizeof(*ctx));
-        ctx->b = apr_brigade_create(f->c->pool, f->c->bucket_alloc);
-        ctx->tmpbb = apr_brigade_create(ctx->b->p, ctx->b->bucket_alloc);
+        net->in_ctx = ctx = ap_create_core_ctx(f->c);
         /* seed the brigade with the client socket. */
         e = apr_bucket_socket_create(net->client_socket, f->c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(ctx->b, e);
-        net->in_ctx = ctx;
     }
     else if (APR_BRIGADE_EMPTY(ctx->b)) {
         return APR_EOF;
