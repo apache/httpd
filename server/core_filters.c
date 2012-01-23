@@ -656,10 +656,26 @@ static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
         if (!APR_BUCKET_IS_METADATA(bucket)) {
             const char *data;
             apr_size_t length;
-            rv = apr_bucket_read(bucket, &data, &length, APR_BLOCK_READ);
+            
+            /* Non-blocking read first, in case this is a morphing
+             * bucket type. */
+            rv = apr_bucket_read(bucket, &data, &length, APR_NONBLOCK_READ);
+            if (APR_STATUS_IS_EAGAIN(rv)) {
+                /* Read would block; flush any pending data and retry. */
+                if (nvec) {
+                    rv = writev_nonblocking(s, vec, nvec, bb, bytes_written, c);
+                    if (rv) {
+                        return rv;
+                    }
+                    nvec = 0;
+                }
+                
+                rv = apr_bucket_read(bucket, &data, &length, APR_BLOCK_READ);
+            }
             if (rv != APR_SUCCESS) {
                 return rv;
             }
+
             /* reading may have split the bucket, so recompute next: */
             next = APR_BUCKET_NEXT(bucket);
             vec[nvec].iov_base = (char *)data;
