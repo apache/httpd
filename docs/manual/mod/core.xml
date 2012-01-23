@@ -2013,13 +2013,9 @@ wildcard matching available in 2.3.6 and later</compatibility>
     pattern, such as *.conf, for example.</p>
 
     <p>The <directive module="core">Include</directive> directive will
-    <strong>fail with an error</strong> if a wildcard is specified for a
-    filename or directory component of the patch, but no file or directory
-    matches the wildcard. The same is true if a wildcard is specified for a
-    directory component of the path, and a mathing directory does not contain
-    the filename specified in the path. The
-    <directive module="core">IncludeOptional</directive> directive can be
-    used instead, if non-matching wildcards should be ignored.</p>
+    <strong>fail with an error</strong> if a wildcard expression does not
+    match any file. The <directive module="core">IncludeOptional</directive>
+    directive can be used if non-matching wildcards should be ignored.</p>
 
     <p>The file path specified may be an absolute path, or may be relative
     to the <directive module="core">ServerRoot</directive> directory.</p>
@@ -2041,8 +2037,7 @@ wildcard matching available in 2.3.6 and later</compatibility>
 
     <p>Wildcards may be included in the directory or file portion of the
     path. This example will fail if there is no subdirectory in conf/vhosts
-    or if a subdirectory of conf/vhosts does not contain at least one *.conf
-    file:</p>
+    that contains at least one *.conf file:</p>
 
     <example>
       Include conf/vhosts/*/*.conf
