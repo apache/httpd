@@ -689,6 +689,40 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *b);
 AP_DECLARE(const char*) ap_get_server_protocol(server_rec* s);
 AP_DECLARE(void) ap_set_server_protocol(server_rec* s, const char* proto);
 
+typedef struct core_output_filter_ctx core_output_filter_ctx_t;
+typedef struct core_filter_ctx        core_ctx_t;
+
+typedef struct core_net_rec {
+    /** Connection to the client */
+    apr_socket_t *client_socket;
+
+    /** connection record */
+    conn_rec *c;
+
+    core_output_filter_ctx_t *out_ctx;
+    core_ctx_t *in_ctx;
+} core_net_rec;
+
+/**
+ * Allocate and fill the core_ctx_t for the core input filter, but don't
+ * create a bucket with the input socket.
+ * Normally this is done automatically when the core input filter is called
+ * for the first time, but MPMs or protocol modules that need to do special
+ * socket setup can call this function to do the initialization earlier.
+ * They must add the input socket bucket to the core input filter's bucket
+ * brigade, see ap_core_ctx_get_bb().
+ * @param c The conn_rec of the connection
+ * @return The core_ctx_t to be stored in core_net_rec->in_ctx
+ */
+AP_DECLARE(core_ctx_t *) ap_create_core_ctx(conn_rec *c);
+
+/**
+ * Accessor for the core input filter's bucket brigade
+ * @param c The core_ctx_t to get the brigade from
+ * @return The bucket brigade
+ */
+AP_DECLARE(apr_bucket_brigade *) ap_core_ctx_get_bb(core_ctx_t *ctx);
+
 /* ----------------------------------------------------------------------
  *
  * Runtime status/management

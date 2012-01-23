@@ -385,12 +385,16 @@
  * 20111203.1 (2.5.0-dev)  Add ap_list_provider_groups()
  * 20120109.0 (2.5.0-dev)  Changes sizeof(overrides_t) in core config.
  * 20120111.0 (2.5.0-dev)  Remove sb_type from global_score.
+ * 20120123.0 (2.5.0-dev)  Make core_output_filter_ctx_t and core_ctx_t
+ *                         private, add ap_create_core_ctx(),
+ *                         ap_core_ctx_get_bb(), move core_net rec definition
+ *                         to http_core.h
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20120111
+#define MODULE_MAGIC_NUMBER_MAJOR 20120123
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                   /* 0...n */
 

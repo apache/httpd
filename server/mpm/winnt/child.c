@@ -812,7 +812,6 @@ static DWORD __stdcall worker_main(void *thread_num_val)
         }
         else if (e)
         {
-            core_ctx_t *ctx;
             core_net_rec *net;
             ap_filter_t *filt;
 
@@ -820,24 +819,20 @@ static DWORD __stdcall worker_main(void *thread_num_val)
             while ((strcmp(filt->frec->name, "core_in") != 0) && filt->next)
                 filt = filt->next;
             net = filt->ctx;
-            ctx = net->in_ctx;
 
-            if (net->in_ctx)
-                ctx = net->in_ctx;
-            else
+            if (net->in_ctx == NULL)
             {
-                ctx = apr_pcalloc(c->pool, sizeof(*ctx));
-                ctx->b = apr_brigade_create(c->pool, c->bucket_alloc);
-                ctx->tmpbb = apr_brigade_create(c->pool, c->bucket_alloc);
+                core_ctx_t *ctx = ap_create_core_ctx(c);
+                apr_bucket_brigade *bb = ap_core_ctx_get_bb(ctx);
 
                 /* seed the brigade with AcceptEx read heap bucket */
                 e = context->overlapped.Pointer;
-                APR_BRIGADE_INSERT_HEAD(ctx->b, e);
+                APR_BRIGADE_INSERT_HEAD(bb, e);
 
                 /* also seed the brigade with the client socket. */
                 e = apr_bucket_socket_create(net->client_socket,
                                              c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(ctx->b, e);
+                APR_BRIGADE_INSERT_TAIL(bb, e);
                 net->in_ctx = ctx;
             }
         }
