@@ -6,6 +6,12 @@ Changes with Apache 2.2.22
      could cause the parent to crash at shutdown rather than terminate 
      cleanly.  [Joe Orton]
 
+  *) SECURITY: CVE-2011-4317 (cve.mitre.org)
+     Resolve additional cases of URL rewriting with ProxyPassMatch or
+     RewriteRule, where particular request-URIs could result in undesired
+     backend network exposure in some configurations.
+     [Joe Orton]
+
   *) SECURITY: CVE-2011-3368 (cve.mitre.org)
      Reject requests where the request-URI does not match the HTTP
      specification, preventing unexpected expansion of target URLs in
