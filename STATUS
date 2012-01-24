@@ -155,7 +155,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Plan (b) from mail discussion above
       Adds trunk revision 1233604
       2.2.x patch: http://people.apache.org/~trawick/CVE-2011-4317-2.2.x.txt
-    +1: trawick, covener
+    +1: trawick, covener, gregames
 
   * mod_proxy: cure size_t abuse part 1, backport relevant bits of r1227856,
     Specifically normalizes ap_proxy_string_read so that the prototype
@@ -171,7 +171,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=1234837&view=rev 
     2.2.x patch: 
       http://people.apache.org/~covener/patches/httpd-2.2.x-CVE-2012-0053.diff
-    +1: covener, trawick
+    +1: covener, trawick, gregames
     trawick: sync with 2.4.x on use of APLOG_INFO instead of APLOG_DEBUG?
 
 PATCHES/ISSUES THAT ARE STALLED
