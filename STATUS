@@ -138,25 +138,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 	2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=27976
 	+1: igalic, jim
 
-  * mod_rewrite, mod_proxy: Fix CVE-2011-4317
-      Trunk patch: http://svn.apache.org/viewvc?rev=1209432&view=rev
-      2.2.x patch: trunk patch works
-    +1: jorton
-    trawick: http://mail-archives.apache.org/mod_mbox/httpd-dev/201112.mbox/%3CCAKUrXK4uwT%3DP1KtEziNqFdxXs%2BtyWvggzpL8x2u-Bbq8tZ-Zsw%40mail.gmail.com%3E
-    wrowe: Prefer Jeff's premise (a) to reject all non-resource URIs from httpd
-           rather than a module-by-module test.  In particular, '*' should just
-           work and bypass most hook phases.  In any case, in the revised
-           patch of 12/16, (r->unparsed_uri[0] == '*' && !r->unparsed_uri[1])
-           should be much faster than a callout to strcmp.
-    wrowe: Shouldn't this all simply be handled with an error result from
-           apr_uri_parse?
-    trawick: valid URIs can be used to exploit this, so apr_uri_parse() won't help
-
-    Plan (b) from mail discussion above
-      Adds trunk revision 1233604
-      2.2.x patch: http://people.apache.org/~trawick/CVE-2011-4317-2.2.x.txt
-    +1: trawick, covener, gregames
-
   * mod_proxy: cure size_t abuse part 1, backport relevant bits of r1227856,
     Specifically normalizes ap_proxy_string_read so that the prototype
     agrees with the actual implementation, which I believe is a bug fix

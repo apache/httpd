@@ -566,6 +566,11 @@ static int proxy_trans(request_rec *r)
         return OK;
     }
 
+    if ((r->unparsed_uri[0] == '*' && r->unparsed_uri[1] == '\0')
+        || !r->uri || r->uri[0] != '/') {
+        return DECLINED;
+    }
+
     /* XXX: since r->uri has been manipulated already we're not really
      * compliant with RFC1945 at this point.  But this probably isn't
      * an issue because this is a hybrid proxy/origin server.

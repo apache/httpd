@@ -4266,6 +4266,11 @@ static int hook_uri2file(request_rec *r)
         return DECLINED;
     }
 
+    if ((r->unparsed_uri[0] == '*' && r->unparsed_uri[1] == '\0')
+        || !r->uri || r->uri[0] != '/') {
+        return DECLINED;
+    }
+
     /*
      *  add the SCRIPT_URL variable to the env. this is a bit complicated
      *  due to the fact that apache uses subrequests and internal redirects
