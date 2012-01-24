@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.22
 
+  *) SECURITY: CVE-2012-0053 (cve.mitre.org)
+     Fix an issue in error responses that could expose "httpOnly" cookies
+     when no custom ErrorDocument is specified for status code 400.
+     [Eric Covener]
+
   *) SECURITY: CVE-2012-0031 (cve.mitre.org)
      Fix scoreboard issue which could allow an unprivileged child process 
      could cause the parent to crash at shutdown rather than terminate 
