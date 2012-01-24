@@ -171,7 +171,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=1234837&view=rev 
     2.2.x patch: 
       http://people.apache.org/~covener/patches/httpd-2.2.x-CVE-2012-0053.diff
-    +1 covener
+    +1: covener, trawick
+    trawick: sync with 2.4.x on use of APLOG_INFO instead of APLOG_DEBUG?
 
 PATCHES/ISSUES THAT ARE STALLED
 
