@@ -1,22 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.22
 
-  *) SECURITY: CVE-2012-0053 (cve.mitre.org)
-     Fix an issue in error responses that could expose "httpOnly" cookies
-     when no custom ErrorDocument is specified for status code 400.
-     [Eric Covener]
-
-  *) SECURITY: CVE-2012-0031 (cve.mitre.org)
-     Fix scoreboard issue which could allow an unprivileged child process 
-     could cause the parent to crash at shutdown rather than terminate 
-     cleanly.  [Joe Orton]
-
-  *) SECURITY: CVE-2011-4317 (cve.mitre.org)
-     Resolve additional cases of URL rewriting with ProxyPassMatch or
-     RewriteRule, where particular request-URIs could result in undesired
-     backend network exposure in some configurations.
-     [Joe Orton]
-
   *) SECURITY: CVE-2011-3368 (cve.mitre.org)
      Reject requests where the request-URI does not match the HTTP
      specification, preventing unexpected expansion of target URLs in
@@ -27,11 +11,27 @@ Changes with Apache 2.2.22
      is enabled, could allow local users to gain privileges via a .htaccess
      file. [Stefan Fritsch, Greg Ames]
 
+  *) SECURITY: CVE-2011-4317 (cve.mitre.org)
+     Resolve additional cases of URL rewriting with ProxyPassMatch or
+     RewriteRule, where particular request-URIs could result in undesired
+     backend network exposure in some configurations.
+     [Joe Orton]
+
   *) SECURITY: CVE-2012-0021 (cve.mitre.org)
      mod_log_config: Fix segfault (crash) when the '%{cookiename}C' log format
      string is in use and a client sends a nameless, valueless cookie, causing
      a denial of service. The issue existed since version 2.2.17. PR 52256.
      [Rainer Canavan <rainer-apache 7val com>]
+
+  *) SECURITY: CVE-2012-0031 (cve.mitre.org)
+     Fix scoreboard issue which could allow an unprivileged child process 
+     could cause the parent to crash at shutdown rather than terminate 
+     cleanly.  [Joe Orton]
+
+  *) SECURITY: CVE-2012-0053 (cve.mitre.org)
+     Fix an issue in error responses that could expose "httpOnly" cookies
+     when no custom ErrorDocument is specified for status code 400.
+     [Eric Covener]
 
   *) mod_proxy_ajp: Try to prevent a single long request from marking a worker
      in error. [Jean-Frederic Clere]
