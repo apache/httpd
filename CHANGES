@@ -31,7 +31,7 @@ Changes with Apache 2.2.22
      mod_log_config: Fix segfault (crash) when the '%{cookiename}C' log format
      string is in use and a client sends a nameless, valueless cookie, causing
      a denial of service. The issue existed since version 2.2.17. PR 52256.
-     [Stefan Fritsch]
+     [Rainer Canavan <rainer-apache 7val com>]
 
   *) mod_proxy_ajp: Try to prevent a single long request from marking a worker
      in error. [Jean-Frederic Clere]
