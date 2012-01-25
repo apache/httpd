@@ -27,8 +27,11 @@ Changes with Apache 2.2.22
      is enabled, could allow local users to gain privileges via a .htaccess
      file. [Stefan Fritsch, Greg Ames]
 
-  *) mod_log_config: Fix segfault when logging nameless, valueless cookie.
-     PR 52256. [Stefan Fritsch]
+  *) SECURITY: CVE-2012-0021 (cve.mitre.org)
+     mod_log_config: Fix segfault (crash) when the '%{cookiename}C' log format
+     string is in use and a client sends a nameless, valueless cookie, causing
+     a denial of service. The issue existed since version 2.2.17. PR 52256.
+     [Stefan Fritsch]
 
   *) mod_proxy_ajp: Try to prevent a single long request from marking a worker
      in error. [Jean-Frederic Clere]
