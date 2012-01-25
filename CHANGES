@@ -24,8 +24,11 @@ Changes with Apache 2.4.0
 
   *) mod_ssl: Fix compilation with xlc on AIX. PR 52394. [Stefan Fritsch]
 
-  *) mod_log_config: Fix segfault when trying to log a nameless, valueless
-     cookie. PR 52256. [Rainer Canavan <rainer-apache 7val com>]
+  *) SECURITY: CVE-2012-0021 (cve.mitre.org)
+     mod_log_config: Fix segfault (crash) when the '%{cookiename}C' log format
+     string is in use and a client sends a nameless, valueless cookie, causing
+     a denial of service. The issue existed since version 2.2.17 and 2.3.3.
+     PR 52256.  [Stefan Fritsch]
 
   *) mod_ssl: when compiled against OpenSSL 1.0.1 or later, allow explicit
      control of TLSv1.1 and TLSv1.2 through the SSLProtocol directive.
