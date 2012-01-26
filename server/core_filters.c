@@ -78,17 +78,17 @@ do { \
 #undef APLOG_MODULE_INDEX
 #define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
 
-typedef struct core_output_filter_ctx {
+struct core_output_filter_ctx {
     apr_bucket_brigade *buffered_bb;
     apr_bucket_brigade *tmp_flush_bb;
     apr_pool_t *deferred_write_pool;
     apr_size_t bytes_written;
-} core_output_filter_ctx_t;
+};
 
-typedef struct core_filter_ctx {
+struct core_filter_ctx {
     apr_bucket_brigade *b;
     apr_bucket_brigade *tmpbb;
-} core_ctx_t;
+};
 
 
 AP_DECLARE(core_ctx_t *) ap_create_core_ctx(conn_rec *c)
