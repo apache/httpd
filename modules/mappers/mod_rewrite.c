@@ -546,7 +546,7 @@ static unsigned is_absolute_uri(char *uri, int *supportsqs)
             return 7;
         }
         else if (!strncasecmp(uri, "ttps://", 7)) { /* https://  */
-            /* *sqs = 1; */
+            *sqs = 1;
             return 8;
         }
         break;
