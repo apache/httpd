@@ -125,6 +125,36 @@ RELEASE SHOWSTOPPERS:
   * Backport jorton's work on backstopping unrooted URI's (regex protection)
     and any mod_rewrite example corrections.
 
+  *) SECURITY: CVE-2010-2068 (cve.mitre.org)
+     mod_proxy_ajp, mod_proxy_http, mod_reqtimeout: Fix timeout detection
+     for platforms Windows, Netware and OS2.  PR: 49417. [Rainer Jung]
+
+  *) SECURITY: CVE-2011-3348 (cve.mitre.org)
+     mod_proxy_ajp: Respond with HTTP_NOT_IMPLEMENTED when the method is not
+     recognized.  [Jean-Frederic Clere]
+
+  *) SECURITY: CVE-2011-3607 (cve.mitre.org)
+     Fix integer overflow in ap_pregsub() which, when the mod_setenvif module
+     is enabled, could allow local users to gain privileges via a .htaccess
+     file. [Stefan Fritsch, Greg Ames]
+
+  *) SECURITY: CVE-2011-4317 (cve.mitre.org)
+     Resolve additional cases of URL rewriting with ProxyPassMatch or
+     RewriteRule, where particular request-URIs could result in undesired
+     backend network exposure in some configurations.
+     [Joe Orton]
+
+  *) SECURITY: CVE-2012-0031 (cve.mitre.org)
+     Fix scoreboard issue which could allow an unprivileged child process 
+     could cause the parent to crash at shutdown rather than terminate 
+     cleanly.  [Joe Orton]
+
+  *) SECURITY: CVE-2012-0053 (cve.mitre.org)
+     Fix an issue in error responses that could expose "httpOnly" cookies
+     when no custom ErrorDocument is specified for status code 400.
+     [Eric Covener]
+
+
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
