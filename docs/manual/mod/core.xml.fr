@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1231607:1234643 (outdated) -->
+<!-- English Revision : 1234876 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2181,8 +2181,7 @@ versions 2.1 et sup&eacute;rieures.</compatibility>
 <name>Include</name>
 <description>Inclut d'autres fichiers de configuration dans un des
 fichiers de configuration du serveur</description>
-<syntax>Include [<var>optional</var>|<var>strict</var>] <var>chemin fichier</var>|<var>chemin
-r&eacute;pertoire|<var>wildcard</var></var></syntax>
+<syntax>Include <var>chemin-fichier</var>|<var>chemin-r&eacute;pertoire</var>|<var>wildcard</var></syntax>
 <contextlist><context>server config</context><context>virtual
 host</context>
 <context>directory</context>
@@ -2210,36 +2209,12 @@ version 2.3.6</compatibility>
     exemple, nous vous recommandons d'utiliser plut&ocirc;t la syntaxe avec
     caract&egrave;res g&eacute;n&eacute;riques comme ci-dessous.</p>
 
-    <p>Lorsque la partie <strong>nom de fichier</strong> ou r&eacute;pertoires
-    du chemin
-    comporte des caract&egrave;res g&eacute;n&eacute;riques, et si aucun fichier ou
-    r&eacute;pertoire ne correspond, la directive <directive
-    module="core">Include</directive> sera <strong>ignor&eacute;e
-    silencieusement</strong>.
-    Lorsqu'une partie <strong>r&eacute;pertoires</strong> du chemin comporte
-    des caract&egrave;res g&eacute;n&eacute;riques, et si aucun
-    r&eacute;pertoire ne correspond, la directive <directive
-    module="core">Include</directive> <strong>&eacute;chouera et renverra une
-    erreur</strong>
-    indiquant que le fichier ou le r&eacute;pertoire n'a pas &eacute;t&eacute; trouv&eacute;.
-    </p>
-
-    <p>Pour contr&ocirc;ler plus finement le comportement du serveur
-    lorsqu'aucun fichier ou r&eacute;pertoire ne correspond, pr&eacute;fixez le chemin
-    avec les modificateurs <var>optional</var> ou <var>strict</var>. Si
-    <var>optional</var> est sp&eacute;cifi&eacute;, tout fichier ou r&eacute;pertoire avec
-    caract&egrave;res g&eacute;n&eacute;riques qui ne correspond &agrave; aucun fichier ou
-    r&eacute;pertoire sera ignor&eacute; silencieusement. Si <var>strict</var> est
-    sp&eacute;cifi&eacute;,  tout fichier ou r&eacute;pertoire avec
-    caract&egrave;res g&eacute;n&eacute;riques qui ne correspond pas &agrave; au moins un fichier
-    fera &eacute;chouer le d&eacute;marrage du serveur.</p>
-
-	<p>Lorsqu'une partie fichier ou r&eacute;pertoire du chemin est
-	sp&eacute;cip&eacute;e sans caract&egrave;res g&eacute;n&eacute;riques, et si ce fichier ou
-	r&eacute;pertoire n'existe pas, la directive <directive
-	module="core">Include</directive> &eacute;chouera avec un message
-	d'erreur indiquant que le fichier ou r&eacute;pertoire n'a pas pu &ecirc;tre
-	trouv&eacute;.</p>
+    <p>La directive <directive module="core">Include</directive>
+    <strong>&eacute;chouera avec un code d'erreur</strong> si une expression
+   contenant des caract&egrave;res g&eacute;n&eacute;riques ne correspond &agrave; aucun fichier.
+   Pour ignorer les expressions contenant des caract&egrave;res g&eacute;n&eacute;riques ne
+   correspondant &agrave; aucun fichier, utilisez la directive <directive
+   module="core">IncludeOptional</directive>.</p>
 
     <p>Le chemin fichier sp&eacute;cifi&eacute; peut &ecirc;tre soit un chemin absolu, soit
     un chemin relatif au r&eacute;pertoire d&eacute;fini par la directive <directive
@@ -2261,33 +2236,50 @@ version 2.3.6</compatibility>
     </example>
 
     <p>On peut aussi ins&eacute;rer des caract&egrave;res g&eacute;n&eacute;riques dans la partie
-    r&eacute;pertoires du chemin. Dans l'exemple suivant, le d&eacute;marrage du
-    serveur &eacute;chouera si aucun r&eacute;pertoire ne correspond &agrave; conf/vhosts/*,
-    mais r&eacute;ussira si aucun fichier ne correspond &agrave; *.conf :</p>
+    r&eacute;pertoires du chemin. Dans l'exemple suivant, la directive
+    &eacute;chouera si aucun sous-r&eacute;pertoire de conf/vhosts ne contient au
+    moins un fichier *.conf :</p>
   
     <example>
-      Include conf/vhosts/*/vhost.conf<br />
       Include conf/vhosts/*/*.conf
     </example>
 
-    <p>Dans cet exemple, le d&eacute;marrage du serveur &eacute;chouera si
-    conf/vhosts/* ne correspond &agrave; aucun r&eacute;pertoire, ou si *.conf ne
-    correspond &agrave; aucun fichier :</p>
+    <p>Par contre, dans l'exemple suivant, la directive sera simplement
+    ignor&eacute;e si aucun sous-r&eacute;pertoire de conf/vhosts ne contient au
+    moins un fichier *.conf :</p>
 
     <example>
-      Include strict conf/vhosts/*/*.conf
+      IncludeOptional conf/vhosts/*/*.conf
     </example>
   
-    <p>Dans cet exemple, le d&eacute;marrage du serveur r&eacute;ussira si
-    conf/vhosts/* ne correspond &agrave; aucun r&eacute;pertoire, ou si *.conf ne
-    correspond &agrave; aucun fichier.</p>
+</usage>    
 
-    <example>
-      Include optional conf/vhosts/*/*.conf
-    </example>
+<seealso><directive module="core">IncludeOptional</directive></seealso>
+<seealso><program>apachectl</program></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>IncludeOptional</name>
+<description>Inclusion de fichiers dans le fichier de configuration</description>
+<syntax>IncludeOptional
+<var>chemin-fichier</var>|<var>chemin-r&eacute;pertoire</var>|<var>wildcard</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
+</contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.3.6 du serveur HTTP
+Apache</compatibility>
+ 
+<usage>
+    <p>Cette directive permet d'inclure des fichiers dans les fichiers
+    de configuration du serveur. Elle fonctionne de mani&egrave;re identique &agrave;
+    la directive <directive module="core">Include</directive>, &agrave;
+    l'exception du fait que si l'expression avec caract&egrave;res g&eacute;n&eacute;riques
+    wilcard ne correspond &agrave; aucun fichier ou r&eacute;pertoire, elle sera
+    ignor&eacute;e silencieusement au lieu de causer une erreur.</p>    
     
 </usage>
 
+<seealso><directive module="core">Include</directive></seealso>
 <seealso><program>apachectl</program></seealso>
 </directivesynopsis>
 
