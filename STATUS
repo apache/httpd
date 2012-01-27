@@ -137,6 +137,7 @@ RELEASE SHOWSTOPPERS:
      Fix integer overflow in ap_pregsub() which, when the mod_setenvif module
      is enabled, could allow local users to gain privileges via a .htaccess
      file. [Stefan Fritsch, Greg Ames]
+       +1: gregames (r1227280 from 2.2.x)
 
   *) SECURITY: CVE-2011-4317 (cve.mitre.org)
      Resolve additional cases of URL rewriting with ProxyPassMatch or
