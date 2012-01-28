@@ -138,7 +138,7 @@ RELEASE SHOWSTOPPERS:
      is enabled, could allow local users to gain privileges via a .htaccess
      file. [Stefan Fritsch, Greg Ames]
      From 2.2.x; http://svn.apache.org/viewvc?view=revision&revision=1227280
-       +1: gregames, wrowe
+       +1: gregames, wrowe, trawick
 
   *) SECURITY: CVE-2011-4317 (cve.mitre.org)
      Resolve additional cases of URL rewriting with ProxyPassMatch or
@@ -160,6 +160,9 @@ RELEASE SHOWSTOPPERS:
      when no custom ErrorDocument is specified for status code 400.
      [Eric Covener]
 
+     r1234837 on 2.0.x:
+       http://people.apache.org/~trawick/2.0-CVE-2012-0053-r1234837.patch
+     +1: trawick
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
