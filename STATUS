@@ -150,6 +150,10 @@ RELEASE SHOWSTOPPERS:
      could cause the parent to crash at shutdown rather than terminate 
      cleanly.  [Joe Orton]
 
+     r1231058 on 2.0.x:
+       http://people.apache.org/~trawick/2.0-CVE-2012-0031-r1231058.patch
+     +1: trawick
+
   *) SECURITY: CVE-2012-0053 (cve.mitre.org)
      Fix an issue in error responses that could expose "httpOnly" cookies
      when no custom ErrorDocument is specified for status code 400.
