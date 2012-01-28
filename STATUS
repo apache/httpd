@@ -137,7 +137,8 @@ RELEASE SHOWSTOPPERS:
      Fix integer overflow in ap_pregsub() which, when the mod_setenvif module
      is enabled, could allow local users to gain privileges via a .htaccess
      file. [Stefan Fritsch, Greg Ames]
-       +1: gregames (r1227280 from 2.2.x)
+     From 2.2.x; http://svn.apache.org/viewvc?view=revision&revision=1227280
+       +1: gregames, wrowe
 
   *) SECURITY: CVE-2011-4317 (cve.mitre.org)
      Resolve additional cases of URL rewriting with ProxyPassMatch or
@@ -152,7 +153,7 @@ RELEASE SHOWSTOPPERS:
 
      r1231058 on 2.0.x:
        http://people.apache.org/~trawick/2.0-CVE-2012-0031-r1231058.patch
-     +1: trawick
+     +1: trawick, wrowe
 
   *) SECURITY: CVE-2012-0053 (cve.mitre.org)
      Fix an issue in error responses that could expose "httpOnly" cookies
