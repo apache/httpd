@@ -154,10 +154,8 @@ RELEASE SHOWSTOPPERS:
               both HTTP 1.0 and HTTP 0.9.
 
      From 2.2.x: http://svn.apache.org/viewvc?view=revision&revision=1235443
-              (sorry, I fitted the minor changes manually into 2.0.64
-              after first applying the original CVE-2011-3368 patch
-              for an intermediate test step; I haven't properly tested
-              patch-ability yet)
+        Individual patches apply with offsets; here's a clean all-in-one:
+        http://people.apache.org/~trawick/2.0-CVE-2011-4317-r1235443.patch
        +1: trawick
 
   *) SECURITY: CVE-2012-0031 (cve.mitre.org)
