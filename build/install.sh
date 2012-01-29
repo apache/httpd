@@ -71,53 +71,57 @@ while [ "x$1" != "x" ]; do
         -e) ext="$2"
             shift; shift; continue
             ;;
-        *)  if [ "x$src" = "x" ]; then
-                src=$1
-            else
-                dst=$1
-            fi
-            shift; continue
+        *)  break
             ;;
     esac
 done
-if [ "x$src" = "x" ]; then
-     echo "install.sh: no input file specified"
-     exit 1
+if test $# -eq 0 ; then
+    echo "install.sh: no input file(s) specified"
+    exit 1
 fi
-if [ "x$dst" = "x" ]; then
-     echo "install.sh: no destination specified"
-     exit 1
+if test $# -eq 1 ; then
+    echo "install.sh: no destination specified"
+    exit 1
 fi
+for arg ; do
+    dstarg="$arg"
+done
 
-#
-#  If destination is a directory, append the input filename; if
-#  your system does not like double slashes in filenames, you may
-#  need to add some logic
-#
-if [ -d $dst ]; then
-    dst="$dst/`basename $src`"
-fi
+while test $# -gt 1 ; do
+    dst="$dstarg"
+    src="$1"
+    shift
+    #
+    #  If destination is a directory, append the input filename; if
+    #  your system does not like double slashes in filenames, you may
+    #  need to add some logic
+    #
+    if [ -d $dst ]; then
+        dst="$dst/`basename $src`"
+    fi
 
-#  Add a possible extension (such as ".exe") to src and dst
-src="$src$ext"
-dst="$dst$ext"
+    #  Add a possible extension (such as ".exe") to src and dst
+    src="$src$ext"
+    dst="$dst$ext"
 
-#  Make a temp file name in the proper directory.
-dstdir=`dirname $dst`
-dsttmp=$dstdir/#inst.$$#
+    #  Make a temp file name in the proper directory.
+    dstdir=`dirname $dst`
+    dsttmp=$dstdir/#inst.$$#
 
-#  Move or copy the file name to the temp name
-$instcmd $src $dsttmp
+    #  Move or copy the file name to the temp name
+    $instcmd $src $dsttmp
 
-#  And set any options; do chmod last to preserve setuid bits
-if [ "x$chowncmd" != "x" ]; then $chowncmd $dsttmp; fi
-if [ "x$chgrpcmd" != "x" ]; then $chgrpcmd $dsttmp; fi
-if [ "x$stripcmd" != "x" ]; then $stripcmd $dsttmp; fi
-if [ "x$chmodcmd" != "x" ]; then $chmodcmd $dsttmp; fi
+    #  And set any options; do chmod last to preserve setuid bits
+    if [ "x$chowncmd" != "x" ]; then $chowncmd $dsttmp; fi
+    if [ "x$chgrpcmd" != "x" ]; then $chgrpcmd $dsttmp; fi
+    if [ "x$stripcmd" != "x" ]; then $stripcmd $dsttmp; fi
+    if [ "x$chmodcmd" != "x" ]; then $chmodcmd $dsttmp; fi
 
-#  Now rename the file to the real destination.
-$rmcmd $dst
-$mvcmd $dsttmp $dst
+    #  Now rename the file to the real destination.
+    $rmcmd $dst
+    $mvcmd $dsttmp $dst
+
+done
 
 exit 0
 

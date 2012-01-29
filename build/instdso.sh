@@ -24,18 +24,19 @@
 # 2) we never want the .la files copied, so we might as well copy
 #    the .so files ourselves
 
-if test "$#" != "3"; then
-    echo "wrong number of arguments to instdso.sh"
-    echo "Usage: instdso.sh SH_LIBTOOL-value dso-name path-to-modules"
+if test "$#" -lt "3"; then
+    echo "too few arguments to instdso.sh"
+    echo "Usage: instdso.sh SH_LIBTOOL-value dso-name [dso-name [...]] path-to-modules"
     exit 1
 fi
 
 SH_LIBTOOL=`echo $1 | sed -e 's/^SH_LIBTOOL=//'`
-DSOARCHIVE=$2
-DSOARCHIVE_BASENAME=`basename $2`
-TARGETDIR=$3
-DSOBASE=`echo $DSOARCHIVE_BASENAME | sed -e 's/\.la$//'`
-TARGET_NAME="$DSOBASE.so"
+shift
+# get last arg
+for arg ; do
+    DSOARCHIVES="$DSOARCHIVES $TARGETDIR"
+    TARGETDIR=$arg
+done
 
 SYS=`uname -s`
 
@@ -44,7 +45,11 @@ then
     # on AIX, shared libraries remain in storage even when
     # all processes using them have exited; standard practice
     # prior to installing a shared library is to rm -f first
-    CMD="rm -f $TARGETDIR/$TARGET_NAME"
+    CMD="rm -f"
+    for DSOARCHIVE in $DSOARCHIVES ; do
+        DSOBASE=`basename $DSOARCHIVE|sed -e 's/\.la$//'`
+        CMD="$CMD $TARGETDIR/$DSOBASE.so"
+    done
     echo $CMD
     $CMD || exit $?
 fi
@@ -58,7 +63,7 @@ case $SYS in
         ;;
 esac
 
-CMD="$SH_LIBTOOL --mode=install $INSTALL_CMD $DSOARCHIVE $TARGETDIR/"
+CMD="$SH_LIBTOOL --mode=install $INSTALL_CMD $DSOARCHIVES $TARGETDIR/"
 echo $CMD
 $CMD || exit $?
 
@@ -69,6 +74,11 @@ then
     # steps below make sense.
     exit 0
 fi
+
+for DSOARCHIVE in $DSOARCHIVES ; do
+DSOARCHIVE_BASENAME=`basename $DSOARCHIVE`
+DSOBASE=`echo $DSOARCHIVE_BASENAME | sed -e 's/\.la$//'`
+TARGET_NAME="$DSOBASE.so"
 
 if test -s "$TARGETDIR/$DSOARCHIVE_BASENAME"
 then
@@ -81,7 +91,7 @@ if test -z "$DLNAME"
 then
   echo "Warning!  dlname not found in $TARGETDIR/$DSOARCHIVE_BASENAME."
   echo "Assuming installing a .so rather than a libtool archive."
-  exit 0
+  continue
 fi
 
 if test -n "$LIBRARY_NAMES"
@@ -101,5 +111,7 @@ rm -f $TARGETDIR/$DSOARCHIVE_BASENAME
 rm -f $TARGETDIR/$DSOBASE.a
 rm -f $TARGETDIR/lib$DSOBASE.a
 rm -f $TARGETDIR/lib$TARGET_NAME
+
+done
 
 exit 0
