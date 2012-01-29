@@ -146,6 +146,20 @@ RELEASE SHOWSTOPPERS:
      backend network exposure in some configurations.
      [Joe Orton]
 
+     trawick: Applying the existing 2.0.x patch for CVE-2011-3368 to
+              2.0.64, the three well-known testcases work for HTTP 1.0
+              but fail with HTTP 0.9; after applying r1235443 (backing
+              out the server/protocol.c change and fixing rewrite and
+              proxy), the three well-known testcases work for me with
+              both HTTP 1.0 and HTTP 0.9.
+
+     From 2.2.x: http://svn.apache.org/viewvc?view=revision&revision=1235443
+              (sorry, I fitted the minor changes manually into 2.0.64
+              after first applying the original CVE-2011-3368 patch
+              for an intermediate test step; I haven't properly tested
+              patch-ability yet)
+       +1: trawick
+
   *) SECURITY: CVE-2012-0031 (cve.mitre.org)
      Fix scoreboard issue which could allow an unprivileged child process 
      could cause the parent to crash at shutdown rather than terminate 
