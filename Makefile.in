@@ -102,16 +102,14 @@ build/config_vars.out: build/config_vars.mk
 	@$(SHELL) build/config_vars.sh < build/config_vars.mk > build/config_vars.out
 
 install-build: build/config_vars.out
-	@echo Installing build system files 
-	@$(MKINSTALLDIRS) $(DESTDIR)$(installbuilddir) 
-	@for f in $(top_srcdir)/build/*.mk build/*.mk; do \
-	 $(INSTALL_DATA) $$f $(DESTDIR)$(installbuilddir); \
-	done
-	@for f in $(top_builddir)/config.nice \
-		  $(top_srcdir)/build/mkdir.sh \
-		  $(top_srcdir)/build/instdso.sh; do \
-	 $(INSTALL_PROGRAM) $$f $(DESTDIR)$(installbuilddir); \
-	done
+	@echo Installing build system files
+	@$(MKINSTALLDIRS) $(DESTDIR)$(installbuilddir)
+	@$(INSTALL_DATA) $(top_srcdir)/build/*.mk build/*.mk \
+		$(DESTDIR)$(installbuilddir)
+	@$(INSTALL_PROGRAM) $(top_builddir)/config.nice \
+		$(top_srcdir)/build/mkdir.sh \
+		$(top_srcdir)/build/instdso.sh \
+		$(DESTDIR)$(installbuilddir)
 	@$(INSTALL_DATA) build/config_vars.out $(DESTDIR)$(installbuilddir)/config_vars.mk
 	@rm build/config_vars.out
 
@@ -218,9 +216,7 @@ INSTALL_HEADERS = \
 install-include:
 	@echo Installing header files
 	@$(MKINSTALLDIRS) $(DESTDIR)$(includedir)
-	@for hdr in $(INSTALL_HEADERS); do \
-	  $(INSTALL_DATA) $$hdr $(DESTDIR)$(includedir); \
-	done
+	@$(INSTALL_DATA) $(INSTALL_HEADERS) $(DESTDIR)$(includedir)
 
 install-man:
 	@echo Installing man pages and online manual
