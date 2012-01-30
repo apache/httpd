@@ -138,6 +138,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patch: http://svn.apache.org/viewvc?rev=1087864&view=rev
 	2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=27976
 	+1: igalic, jim
+    rpluem says: The proposed patch contains tabs and indenting is not correct.
+                 This should be fixed first.
 
   * mod_proxy: cure size_t abuse part 1, backport relevant bits of r1227856,
     Specifically normalizes ap_proxy_string_read so that the prototype
