@@ -125,6 +125,10 @@ RELEASE SHOWSTOPPERS:
   *) Backport jorton's work on backstopping unrooted URI's (regex protection)
      and any mod_rewrite example corrections.
 
+     trawick: I assume the former is reflected in the fixes below.
+              I don't see mod_rewrite example fixes, but maybe I'm searching
+              ineffectively.  Hints?
+
   *) SECURITY: CVE-2010-2068 (cve.mitre.org)
      mod_proxy_ajp, mod_proxy_http, mod_reqtimeout: Fix timeout detection
      for platforms Windows, Netware and OS2.  PR: 49417. [Rainer Jung]
