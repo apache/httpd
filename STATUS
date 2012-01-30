@@ -105,6 +105,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: minfrin
     trawick: any reason it shouldn't be completely aligned with default_handler's
              choice to return OK vs. 500?
+    rpluem: Agreed with trawick. They should behave the same.
 
   * mod_ssl: Add SSLProxyMachineCertificateChainFile directive
     Uses openssl to construct a chain for each proxy cert. When a remote server requests
