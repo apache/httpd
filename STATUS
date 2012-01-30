@@ -157,7 +157,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport for 2.4.x: change was applied before branching 2.4.x.
       Backport version for 2.2.x of patch:
          http://people.apache.org/~rjung/patches/apu-version-check-backport-r1091330-2_2_x.patch
-      +1: rjung
+      +1: rjung, rpluem
       -1:
 
 PATCHES/ISSUES THAT ARE STALLED
