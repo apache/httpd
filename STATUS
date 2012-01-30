@@ -152,6 +152,31 @@ RELEASE SHOWSTOPPERS:
               proxy), the three well-known testcases work for me with
               both HTTP 1.0 and HTTP 0.9.
 
+              The reason is that ap_read_request() looks for a bad
+              status only for HTTP >= 1.0; processing proceeds for
+              HTTP/0.9 even after going through the error path in the 
+              existing CVE-2011-3368 patch.
+
+              The CVE-2011-3368 solution for 2.0 could be modified,
+              but I prefer going with the current CVE-2011-4317
+              solution since it handles everything.
+
+              While 2.2 also skips checking r->status for HTTP 0.9
+              in the obvious place, this logic in ap_read_request()
+              finally catches the problem before proceeding too far 
+              with the request:
+
+1052	     * status codes that do not cause the connection to be dropped and
+1053	     * in situations where the connection should be kept alive.
+1054	     */
+1055	
+1056	    ap_add_input_filter_handle(ap_http_input_filter_handle,
+1057	                               NULL, r, r->connection);
+1058	
+1059	    if (r->status != HTTP_OK) {
+1060	        ap_send_error_response(r, 0);
+1061	        ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
+
      From 2.2.x: http://svn.apache.org/viewvc?view=revision&revision=1235443
         Individual patches apply with offsets; here's a clean all-in-one:
         http://people.apache.org/~trawick/2.0-CVE-2011-4317-r1235443.patch
