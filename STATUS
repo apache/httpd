@@ -147,7 +147,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     as opposed to an actual API change, ergo no MMN bump necessary(?).
     Branch patch:
       http://svn.apache.org/viewvc?rev=1227860&view=rev
-    +1: wrowe
+    +1: wrowe, rpluem
 
   * configure: Using external apr and apu in non-default path
     breaks configure, since checking for apu version does not
