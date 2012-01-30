@@ -147,6 +147,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=1227860&view=rev
     +1: wrowe
 
+  * configure: Using external apr and apu in non-default path
+    breaks configure, since checking for apu version does not
+    set up apr include path in CPPFLAGS.
+    CPP with gcc before 4.6.2 only outputs an error, but our check
+    still succeeds; gcc 4.6.2 aborts and our check fails.
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=1091330&view=rev
+      Backport for 2.4.x: change was applied before branching 2.4.x.
+      Backport version for 2.2.x of patch:
+         http://people.apache.org/~rjung/patches/apu-version-check-backport-r1091330-2_2_x.patch
+      +1: rjung
+      -1:
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
