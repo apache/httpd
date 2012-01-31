@@ -135,6 +135,8 @@ BEGIN {
 	  print "#LoadModule file_cache_module modules/mod_file_cache.so" > dstfl;
 	  print "#LoadModule filter_module modules/mod_filter.so" > dstfl;
 	  print "#LoadModule headers_module modules/mod_headers.so" > dstfl;
+	  print "#LoadModule heartbeat_module modules/mod_heartbeat.so" > dstfl;
+	  print "#LoadModule heartmonitor_module modules/mod_heartmonitor.so" > dstfl;
 	  print "#LoadModule ident_module modules/mod_ident.so" > dstfl;
 	  print "#LoadModule imagemap_module modules/mod_imagemap.so" > dstfl;
 	  print "LoadModule include_module modules/mod_include.so" > dstfl;
@@ -143,6 +145,7 @@ BEGIN {
 	  print "#LoadModule lbmethod_bybusyness_module mod_lbmethod_bybusyness.so" > dstfl;
 	  print "#LoadModule lbmethod_byrequests_module mod_lbmethod_byrequests.so" > dstfl;
 	  print "#LoadModule lbmethod_bytraffic_module mod_lbmethod_bytraffic.so" > dstfl;
+	  print "#LoadModule lbmethod_heartbeat_module mod_lbmethod_heartbeat.so" > dstfl;
 	  print "#LoadModule ldap_module modules/mod_ldap.so" > dstfl;
 	  print "#LoadModule logio_module modules/mod_logio.so" > dstfl;
 	  print "LoadModule log_config_module modules/mod_log_config.so" > dstfl;
@@ -171,6 +174,7 @@ BEGIN {
  	  print "#LoadModule sed_module modules/mod_sed.so" > dstfl;
  	  print "#LoadModule session_module modules/mod_session.so" > dstfl;
  	  print "#LoadModule session_cookie_module modules/mod_session_cookie.so" > dstfl;
+ 	  print "#LoadModule session_crypto_module modules/mod_session_crypto.so" > dstfl;
  	  print "#LoadModule session_dbd_module modules/mod_session_dbd.so" > dstfl;
 	  print "LoadModule setenvif_module modules/mod_setenvif.so" > dstfl;
 	  print "#LoadModule slotmem_plain_module modules/mod_slotmem_plain.so" > dstfl;
@@ -187,6 +191,7 @@ BEGIN {
 	  print "#LoadModule usertrack_module modules/mod_usertrack.so" > dstfl;
 	  print "#LoadModule version_module modules/mod_version.so" > dstfl;
 	  print "#LoadModule vhost_alias_module modules/mod_vhost_alias.so" > dstfl;
+	  print "#LoadModule watchdog_module modules/mod_watchdog.so" > dstfl;
 	  print "#LoadModule xml2enc_module modules/mod_xml2enc.so" > dstfl;
 	  continue;
 	}
