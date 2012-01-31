@@ -50,7 +50,16 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-  OLD ISSUES THAT WERE THOUGHT TO BE SHOWSTOPPERS FOR 2.4 BUT OBVIOUSLY WEREN'T:
+THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
+
+  * Change default prefix from /usr/local/apache2 to something corresponding
+    to the project name. Rename apachectl.
+
+  * Change merge order of <Location> to be most specific match last. This
+    is more consistent with <Directory> and allows some optimizations for the
+    location merge code.
+
+OLD ISSUES THAT WERE THOUGHT TO BE SHOWSTOPPERS FOR 2.4 BUT OBVIOUSLY WEREN'T:
 
   * Handling of non-trailing / config by non-default handler is broken
     http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=105451701628081&w=2
