@@ -2133,8 +2133,7 @@ versions 2.1 et supérieures.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Inclut d'autres fichiers de configuration dans un des
 fichiers de configuration du serveur</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Include [<var>optional</var>|<var>strict</var>] <var>chemin fichier</var>|<var>chemin
-répertoire|<var>wildcard</var></var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Include <var>chemin-fichier</var>|<var>chemin-répertoire</var>|<var>wildcard</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
@@ -2160,33 +2159,11 @@ version 2.3.6</td></tr>
     exemple, nous vous recommandons d'utiliser plutôt la syntaxe avec
     caractères génériques comme ci-dessous.</p>
 
-    <p>Lorsque la partie <strong>nom de fichier</strong> ou répertoires
-    du chemin
-    comporte des caractères génériques, et si aucun fichier ou
-    répertoire ne correspond, la directive <code class="directive"><a href="#include">Include</a></code> sera <strong>ignorée
-    silencieusement</strong>.
-    Lorsqu'une partie <strong>répertoires</strong> du chemin comporte
-    des caractères génériques, et si aucun
-    répertoire ne correspond, la directive <code class="directive"><a href="#include">Include</a></code> <strong>échouera et renverra une
-    erreur</strong>
-    indiquant que le fichier ou le répertoire n'a pas été trouvé.
-    </p>
-
-    <p>Pour contrôler plus finement le comportement du serveur
-    lorsqu'aucun fichier ou répertoire ne correspond, préfixez le chemin
-    avec les modificateurs <var>optional</var> ou <var>strict</var>. Si
-    <var>optional</var> est spécifié, tout fichier ou répertoire avec
-    caractères génériques qui ne correspond à aucun fichier ou
-    répertoire sera ignoré silencieusement. Si <var>strict</var> est
-    spécifié,  tout fichier ou répertoire avec
-    caractères génériques qui ne correspond pas à au moins un fichier
-    fera échouer le démarrage du serveur.</p>
-
-	<p>Lorsqu'une partie fichier ou répertoire du chemin est
-	spécipée sans caractères génériques, et si ce fichier ou
-	répertoire n'existe pas, la directive <code class="directive"><a href="#include">Include</a></code> échouera avec un message
-	d'erreur indiquant que le fichier ou répertoire n'a pas pu être
-	trouvé.</p>
+    <p>La directive <code class="directive"><a href="#include">Include</a></code>
+    <strong>échouera avec un code d'erreur</strong> si une expression
+   contenant des caractères génériques ne correspond à aucun fichier.
+   Pour ignorer les expressions contenant des caractères génériques ne
+   correspondant à aucun fichier, utilisez la directive <code class="directive"><a href="#includeoptional">IncludeOptional</a></code>.</p>
 
     <p>Le chemin fichier spécifié peut être soit un chemin absolu, soit
     un chemin relatif au répertoire défini par la directive <code class="directive"><a href="#serverroot">ServerRoot</a></code>.</p>
@@ -2207,50 +2184,50 @@ version 2.3.6</td></tr>
     </code></p></div>
 
     <p>On peut aussi insérer des caractères génériques dans la partie
-    répertoires du chemin. Dans l'exemple suivant, le démarrage du
-    serveur échouera si aucun répertoire ne correspond à conf/vhosts/*,
-    mais réussira si aucun fichier ne correspond à *.conf :</p>
+    répertoires du chemin. Dans l'exemple suivant, la directive
+    échouera si aucun sous-répertoire de conf/vhosts ne contient au
+    moins un fichier *.conf :</p>
   
     <div class="example"><p><code>
-      Include conf/vhosts/*/vhost.conf<br />
       Include conf/vhosts/*/*.conf
     </code></p></div>
 
-    <p>Dans cet exemple, le démarrage du serveur échouera si
-    conf/vhosts/* ne correspond à aucun répertoire, ou si *.conf ne
-    correspond à aucun fichier :</p>
+    <p>Par contre, dans l'exemple suivant, la directive sera simplement
+    ignorée si aucun sous-répertoire de conf/vhosts ne contient au
+    moins un fichier *.conf :</p>
 
     <div class="example"><p><code>
-      Include strict conf/vhosts/*/*.conf
+      IncludeOptional conf/vhosts/*/*.conf
     </code></p></div>
   
-    <p>Dans cet exemple, le démarrage du serveur réussira si
-    conf/vhosts/* ne correspond à aucun répertoire, ou si *.conf ne
-    correspond à aucun fichier.</p>
-
-    <div class="example"><p><code>
-      Include optional conf/vhosts/*/*.conf
-    </code></p></div>
-    
 
 <h3>Voir aussi</h3>
 <ul>
+<li><code class="directive"><a href="#includeoptional">IncludeOptional</a></code></li>
 <li><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="IncludeOptional" id="IncludeOptional">IncludeOptional</a> <a name="includeoptional" id="includeoptional">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Includes other configuration files from within
-the server configuration files</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>IncludeOptional <var>file-path</var>|<var>directory-path</var>|<var>wildcard</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Inclusion de fichiers dans le fichier de configuration</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>IncludeOptional
+<var>chemin-fichier</var>|<var>chemin-répertoire</var>|<var>wildcard</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in 2.3.6 and later</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p><h3>Voir aussi</h3>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.3.6 du serveur HTTP
+Apache</td></tr>
+</table>
+    <p>Cette directive permet d'inclure des fichiers dans les fichiers
+    de configuration du serveur. Elle fonctionne de manière identique à
+    la directive <code class="directive"><a href="#include">Include</a></code>, à
+    l'exception du fait que si l'expression avec caractères génériques
+    wilcard ne correspond à aucun fichier ou répertoire, elle sera
+    ignorée silencieusement au lieu de causer une erreur.</p>    
+    
+
+<h3>Voir aussi</h3>
 <ul>
 <li><code class="directive"><a href="#include">Include</a></code></li>
 <li><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></li>
