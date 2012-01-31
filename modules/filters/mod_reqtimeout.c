@@ -44,7 +44,7 @@ typedef struct
     apr_time_t header_rate_factor;
     int body_timeout;       /* timeout for reading the req body in secs */
     int body_max_timeout;   /* max timeout for req body in secs */
-    int body_min_rate;      /* timeout for reading the req body in secs */
+    int body_min_rate;      /* min rate for reading req body in bytes/s */
     apr_time_t body_rate_factor;
 } reqtimeout_srv_cfg;
 
