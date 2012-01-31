@@ -6,6 +6,9 @@ Changes with Apache 2.4.1
      when no custom ErrorDocument is specified for status code 400.  
      [Eric Covener]
 
+  *) core: Check during configtest that the directories for error logs exist.
+     PR 29941 [Stefan Fritsch]
+
   *) Core configuration: add AllowOverride option to treat syntax
      errors in .htaccess as non-fatal. PR 52439 [Nick Kew, Jim Jagielski]
 
