@@ -1331,6 +1331,8 @@ rewriting headers that are a URL, this rewrites the <code>domain</code>
 string in <code>Set-Cookie</code> headers.</p>
 </usage>
 </directivesynopsis>
+
+
 <directivesynopsis>
 <name>ProxyPassReverseCookiePath</name>
 <description>Adjusts the Path string in Set-Cookie headers from a reverse-
@@ -1341,10 +1343,25 @@ proxied server</description>
 <context>directory</context>
 </contextlist>
 <usage>
-<p>Usage is basically similar to
-<directive module="mod_proxy">ProxyPassReverse</directive>, but instead of
-rewriting headers that are a URL, this rewrites the <code>path</code>
-string in <code>Set-Cookie</code> headers.</p>
+<p>
+Useful in conjunction with
+<directive module="mod_proxy">ProxyPassReverse</directive>
+in situations where backend URL paths are mapped to public paths on the
+reverse proxy. This directive rewrites the <code>path</code> string in
+<code>Set-Cookie</code> headers. If the beginning of the cookie path matches
+<var>internal-path</var>, the cookie path will be replaced with
+<var>public-path</var>.
+</p><p>
+In the example given with 
+<directive module="mod_proxy">ProxyPassReverse</directive>, the directive:
+</p>
+    <example>
+      ProxyPassReverseCookiePath  /  /mirror/foo/
+    </example>
+<p>
+will rewrite a cookie with backend path <code>/</code> (or
+<code>/example</code> or, in fact, anything) to <code>/mirror/foo/</code>.
+</p>
 </usage>
 </directivesynopsis>
 
@@ -1712,7 +1729,7 @@ header for proxied requests</description>
     <directive>ProxyPassReverseCookiePath</directive> directives,
     and causes them to substitute the value of an environment
     variable <code>varname</code> for the string <code>${varname}</code>
-    in configuration directives.</p>
+    in configuration directives (if the <var>interpolate</var> option is set).</p>
     <p>Keep this turned off (for server performance) unless you need it!</p>
 </usage>
 </directivesynopsis>
