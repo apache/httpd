@@ -18,7 +18,7 @@
  * @file ap_expr.h
  * @brief Expression parser
  *
- * @defgroup AP_EXPR ap_expr
+ * @defgroup AP_EXPR Expression parser
  * @ingroup  APACHE_CORE
  * @{
  */
