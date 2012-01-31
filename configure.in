@@ -86,9 +86,12 @@ AC_ARG_WITH(included-apr,
 APACHE_HELP_STRING(--with-included-apr,Use bundled copies of APR/APR-Util))
 
 if test "x$with_included_apr" = "xyes"; then
-   apr_found=reconfig
+  apr_found=reconfig
+  if test ! -d srclib/apr; then
+    AC_MSG_ERROR([Bundled APR requested but not found at srclib/apr. Download and unpack the corresponding httpd-${HTTPD_VERSION}-deps package over this one.])
+  fi
 else 
-   APR_FIND_APR("$srcdir/srclib/apr", "./srclib/apr", 1, 1 2)
+  APR_FIND_APR("$srcdir/srclib/apr", "./srclib/apr", 1, 1 2)
 fi
 
 if test "$apr_found" = "no"; then
@@ -96,9 +99,6 @@ if test "$apr_found" = "no"; then
 fi
 
 if test "$apr_found" = "reconfig"; then
-  if test ! -d srclib/apr; then
-    AC_MSG_ERROR([Bundled APR requested but not found at srclib/apr. Download and unpack the corresponding httpd-${HTTPD_VERSION}-deps package over this one.])
-  fi
   APR_SUBDIR_CONFIG(srclib/apr,
                     [$apache_apr_flags --prefix=$prefix --exec-prefix=$exec_prefix --libdir=$libdir --includedir=$includedir --bindir=$bindir --datadir=$datadir --with-installbuilddir=$installbuilddir],
                     [--enable-layout=*|\'--enable-layout=*])
@@ -133,9 +133,12 @@ APR_CONFIG="$APR_BINDIR/apr-${apr_major_version}-config"
 echo $ac_n "${nl}Configuring Apache Portable Runtime Utility library...${nl}"
 
 if test "x${apr_major_version}" = "x2"; then
-   apu_found=obsolete
+  apu_found=obsolete
 elif test "x$with_included_apr" = "xyes"; then
-   apu_found=reconfig
+  apu_found=reconfig
+  if test ! -d srclib/apr-util; then
+    AC_MSG_ERROR([Bundled APR-Util requested but not found at srclib/apr-util. Download and unpack the corresponding httpd-${HTTPD_VERSION}-deps package over this one.])
+  fi
 else 
    dnl If httpd is buildconf'ed against an apr 2.x tree, then 1.x
    dnl isn't supported. 
@@ -160,9 +163,6 @@ yes.reconfig)
 esac  
 
 if test "$apu_found" = "reconfig"; then
-  if test ! -d srclib/apr-util; then
-    AC_MSG_ERROR([Bundled APR-Util requested but not found at srclib/apr-util. Download and unpack the corresponding httpd-${HTTPD_VERSION}-deps package over this one.])
-  fi
   APR_SUBDIR_CONFIG(srclib/apr-util,
                     [--with-apr=../apr --prefix=$prefix --exec-prefix=$exec_prefix --libdir=$libdir --includedir=$includedir --bindir=$bindir],
                     [--enable-layout=*|\'--enable-layout=*])
