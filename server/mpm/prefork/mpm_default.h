@@ -18,7 +18,8 @@
  * @file  prefork/mpm_default.h
  * @brief Prefork MPM defaults
  *
- * @addtogroup APACHE_MPM_PREFORK
+ * @defgroup APACHE_MPM_PREFORK Prefork MPM
+ * @ingroup APACHE_INTERNAL
  * @{
  */
 
