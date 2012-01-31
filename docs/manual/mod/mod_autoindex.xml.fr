@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1204356 -->
+<!-- English Revision : 1206682 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -298,7 +298,7 @@ fichier en fonction de son type MIME</description>
     (<code>"</code>).</p>
 
     <example><title>Exemple</title>
-      AddDescription "La plan&egrave;te Mars" /web/pics/mars.gif
+      AddDescription "La plan&egrave;te Mars" mars.gif
     </example>
 
     <p>La taille par d&eacute;faut, habituelle du champ de description est de
@@ -334,6 +334,15 @@ fichier en fonction de son type MIME</description>
       exemple couper la fin d'une phrase en caract&egrave;res gras), le
       r&eacute;sultat pourrait en affecter toute la suite du listing du
       r&eacute;pertoire.</p>
+    </note>
+
+    <note><title>Arguments avec chemins</title>
+      <p>Les chemins absolus ne sont actuellement pas support&eacute;s et ne
+      peuvent correspondre &agrave; aucun chemin r&eacute;el &agrave; l'ex&eacute;cution. Les
+      arguments contenant des chemins relatifs, qui ne devraient &ecirc;tre
+      normalement utilis&eacute;s que dans les fichiers htaccess, sont
+      implicitement pr&eacute;fix&eacute;s par '*/' afin d'&eacute;viter toute association
+      avec des noms de r&eacute;pertoires partiels.</p>
     </note>
 </usage>
 </directivesynopsis>
@@ -559,6 +568,13 @@ de l'index d'un r&eacute;pertoire</description>
     <example>
       IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
     </example>
+
+    <note><title>Expressions rationnelles</title>
+      <p>Cette directive est actuellement incompatible avec les sections
+      de configuration qui comportent des arguments avec expressions
+      rationnelles comme  <directive module="core"
+      type="section">DirectoryMatch</directive></p>
+    </note>
 </usage>
 </directivesynopsis>
 
