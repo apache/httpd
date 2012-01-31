@@ -383,12 +383,13 @@
  *                         ap_proxy_sec2hex(), ap_proxy_make_fake_req(),
  *                         ap_proxy_strmatch_path, ap_proxy_strmatch_domain,
  *                         ap_proxy_table_unmerge(), proxy_lb_workers.
+ * 20120109.0 (2.4.1-dev)  Changes sizeof(overrides_t) in core config.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20111203
+#define MODULE_MAGIC_NUMBER_MAJOR 20120109
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                   /* 0...n */
 

@@ -446,7 +446,7 @@ AP_DECLARE(void **) ap_get_request_note(request_rec *r, apr_size_t note_num);
 
 
 typedef unsigned char allow_options_t;
-typedef unsigned char overrides_t;
+typedef unsigned int overrides_t;
 
 /*
  * Bits of info that go into making an ETag for a file
