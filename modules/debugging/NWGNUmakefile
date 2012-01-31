@@ -152,8 +152,8 @@ XDCDATA		=
 # If there is an NLM target, put it here
 #
 TARGET_nlm = \
-	$(OBJDIR)/moddumpio.nlm \
 	$(OBJDIR)/modbucketeer.nlm \
+	$(OBJDIR)/moddumpio.nlm \
 	$(EOLIST)
 
 #
