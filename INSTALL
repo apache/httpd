@@ -79,9 +79,9 @@
 
   If you have unpacked a source distribution (named httpd-2.4.x-win32-src.zip, 
   without any -x86 or -x64 notation) you must compile the package yourself, 
-  mentioned above.  Unless you intended to do this, please look again for the 
-  binary package from http://www.apache.org/dist/httpd/binaries/win32/ and
-  install the desired .msi package.
+  see the links mentioned above.  Unless you intended to do this, please look
+  again for an .msi package in http://www.apache.org/dist/httpd/binaries/win32/
+  and install that desired .msi package.
 
   The .msi package configures the httpd.conf file, and installs and starts 
   the Apache2.4 service for you.  It also installs plenty of useful shortcuts
