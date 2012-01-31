@@ -878,7 +878,7 @@ static int APR_THREAD_FUNC regfnServerSupportFunction(isapi_cid    *cid,
          * is done.
          * WARNING: Microsoft now advertises HSE_REQ_SEND_URL_REDIRECT_RESP
          *          and HSE_REQ_SEND_URL as equivalant per the Jan 2000 SDK.
-         *          They most definately are not, even in their own samples.
+         *          They most definitely are not, even in their own samples.
          */
         apr_table_set (r->headers_out, "Location", buf_data);
         cid->r->status = cid->ecb->dwHttpStatusCode = HTTP_MOVED_TEMPORARILY;
