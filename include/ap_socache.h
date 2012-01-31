@@ -87,10 +87,10 @@ typedef apr_status_t (ap_socache_iterator_t)(ap_socache_instance_t *instance,
  * with the ap_provider.h interface using the AP_SOCACHE_PROVIDER_*
  * constants. */
 typedef struct ap_socache_provider_t {
-    /** Canonical provider name: */
+    /** Canonical provider name. */
     const char *name;
 
-    /** Bitmask of AP_SOCACHE_FLAG_* flags: */
+    /** Bitmask of AP_SOCACHE_FLAG_* flags. */
     unsigned int flags;
 
     /**
@@ -99,7 +99,7 @@ typedef struct ap_socache_provider_t {
      * passed as the first argument to subsequent invocations.
      *
      * @param instance Output parameter to which instance object is written.
-     * @param arg Used-specified configuration string.  May be NULL to
+     * @param arg User-specified configuration string.  May be NULL to
      *        force use of defaults.
      * @param tmp Pool to be used for any temporary allocations
      * @param p Pool to be use for any allocations lasting as long as
@@ -109,13 +109,14 @@ typedef struct ap_socache_provider_t {
     const char *(*create)(ap_socache_instance_t **instance, const char *arg,
                           apr_pool_t *tmp, apr_pool_t *p);
 
-    /* Initialize the cache.  The cname must be of maximum length 16
+    /**
+     * Initialize the cache.  The cname must be of maximum length 16
      * characters, and uniquely identifies the consumer of the cache
      * within the server; using the module name is recommended, e.g.
      * "mod_ssl-sess".  This string may be used within a filesystem
      * path so use of only alphanumeric [a-z0-9_-] characters is
      * recommended.  If hints is non-NULL, it gives a set of hints for
-     * the provider.  Return APR error code.
+     * the provider.  Returns APR error code.
      *
      * @param instance The cache instance
      * @param cname A unique string identifying the consumer of this API
@@ -155,6 +156,7 @@ typedef struct ap_socache_provider_t {
 
     /**
      * Retrieve a cached object.
+     * 
      * @param instance The cache instance
      * @param s Associated server structure (for logging purposes)
      * @param id Unique ID for the object; binary blob
@@ -171,7 +173,9 @@ typedef struct ap_socache_provider_t {
                              unsigned char *data, unsigned int *datalen,
                              apr_pool_t *pool);
 
-    /* Remove an object from the cache
+    /**
+     * Remove an object from the cache
+     *
      * @param instance The cache instance
      * @param s Associated server structure (for logging purposes)
      * @param id Unique ID for the object; binary blob
@@ -182,7 +186,8 @@ typedef struct ap_socache_provider_t {
                            const unsigned char *id, unsigned int idlen,
                            apr_pool_t *pool);
 
-    /** Dump the status of a cache instance for mod_status.  Will use
+    /** 
+     * Dump the status of a cache instance for mod_status.  Will use
      * the ap_r* interfaces to produce appropriate status output.
      * XXX: ap_r* are deprecated, bad dogfood
      *
