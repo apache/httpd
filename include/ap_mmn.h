@@ -391,7 +391,7 @@
  *                         to http_core.h
  */
 
-#define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
+#define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120123
