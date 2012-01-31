@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 659902:1221670 (outdated) -->
+<!-- English Revision: 1221670 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -40,6 +40,16 @@
         <module>mod_ext_filter</module>
         <module>mod_include</module>
         <module>mod_charset_lite</module>
+        <module>mod_reflector</module>
+        <module>mod_buffer</module>
+        <module>mod_data</module>
+        <module>mod_ratelimit</module>
+        <module>mod_reqtimeout</module>
+        <module>mod_request</module>
+        <module>mod_sed</module>
+        <module>mod_substitute</module>
+        <module>mod_xml2enc</module>
+        <module>mod_proxy_html</module>
       </modulelist>
       <directivelist>
         <directive module="mod_filter">FilterChain</directive>
@@ -50,6 +60,7 @@
         <directive module="mod_mime">AddOutputFilter</directive>
         <directive module="mod_mime">RemoveInputFilter</directive>
         <directive module="mod_mime">RemoveOutputFilter</directive>
+        <directive module="mod_reflector">ReflectorHeader</directive>
         <directive module="mod_ext_filter">ExtFilterDefine</directive>
         <directive module="mod_ext_filter">ExtFilterOptions</directive>
         <directive module="core">SetInputFilter</directive>
@@ -132,6 +143,26 @@
     </ul>
   </section>
 
+  <section id="service">
+    <title>Süzgeçleri bir HTTP Hizmeti gibi göstermek </title>
+    <p>Süzgeçler, istemciden kaynaklanan içeriği işlemekte kullanılabileceği
+      gibi <module>mod_reflector</module> modülü kullanılarak sunucudan
+      kaynaklanan içeriği işlemekte de kullanılabilir.</p>
+
+    <p><module>mod_reflector</module> istemcilerden gelen POST isteklerini
+      kabul eder ve çıktı süzgeç yığıtı yoluyla istemciye aktararak, POST
+      isteği içinde alınan içerik istek gövdesini yanıt içinde geri
+      gönderir.</p>
+
+    <p>Bu teknik, bir çıktı süzgeciyle istek gövdesinde gerekli dönüşümün
+      sağlandığı durumda, bir uygulama sunucusu yığıtı içinde çalışan bir http
+      hizmetinin yerine de kullanılabilir. Örneğin,
+      <module>mod_deflate</module> modülü genel bir sıkıştırma hizmeti
+      sağlamakta kullanılabilir veya bir resim dönüştürme süzgeci bir resim
+      dönüşüm hizmeti haline getirilebilir.</p>
+
+  </section>
+
   <section id="using"><title>Süzgeçlerin Kullanımı</title>
     <p>Süzgeçler iki şekilde kullanılır: Basit ve Devingen.
       Genelde ikisinden biri kullanılır; karışık kullanılırsa istenmeyen
@@ -156,7 +187,7 @@
       <directive module="mod_filter">FilterProvider</directive>.</p>
 
     <p><directive module="core">AddOutputFilterByType</directive> yönergesi
-      hala desteklenmekteyse de sorun çıkarabilmesi sebebiyle kullanımı artık
+      hala desteklenmekteyse de kullanımı artık
       önerilmemektedir. Onun yerine devingen yapılandırma kullanınız.</p>
 
   </section>
