@@ -413,7 +413,10 @@ NoDecode option available in 2.3.12 and later.</compatibility>
       module="mod_authz_host">Deny</directive> and <directive
       module="mod_authz_host">Order</directive>).</dd>
 
-      <dt>Options[=<var>Option</var>,...]</dt>
+      <dt>Nonfatal</dt>
+
+      <dd>
+      Allow use of AllowOverride option to treat syntax errors in .htaccess as non-fatal.</dt>
 
       <dd>
       Allow use of the directives controlling specific directory
