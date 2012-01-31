@@ -18,7 +18,7 @@
  * @file mod_proxy_fdpass.h
  * @brief FD Passing interfaces
  *
- * @addtogroup FDPass_provider
+ * @ingroup APACHE_INTERNAL
  * @{
  */
 
