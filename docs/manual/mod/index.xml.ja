@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE moduleindex SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 420990:926432 (outdated) -->
+<!-- English Revision: 926432 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -24,9 +24,9 @@
   <title>モジュール一覧</title>
   <summary>
     <p>
-      以下は Apache の配布の一部として配られているすべてのモジュールの
-      一覧です。すべての <a href="directives.html">Apache
-      ディレクティブ</a> のアルファベット順のリストも見てください。
+      以下は Apache HTTP サーバの配布物に同梱されているモジュールの
+      一覧です。<a href="directives.html">Apache HTTP サーバ
+      ディレクティブ</a> のアルファベット順のリストもご覧ください。
     </p>
   </summary>
   <seealso><a href="../mpm.html">マルチプロセッシングモジュール (MPMs)</a>
