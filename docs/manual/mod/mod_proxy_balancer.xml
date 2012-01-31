@@ -198,7 +198,9 @@
 
     <p>You can now access load balancer manager by using a Web browser
     to access the page
-    <code>http://your.server.name/balancer-manager</code></p>
+    <code>http://your.server.name/balancer-manager</code>. Please note
+    that only Balancers defined outside of <code>&lt;Location ...&gt;</code>
+    containers can be dynamically controlled by the Manager.</p>
 </section>
 
 <section id="stickyness_implementation">
