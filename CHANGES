@@ -13,13 +13,6 @@ Changes with Apache 2.5.0
      passing through the server in such a way that connections and/or
      requests be reconstructed and replayed. [Graham Leggett]
 
-  *) ap_pass_brigade_fchk() added. [Jim Jagielski]
-
-  *) error log hook: Pass ap_errorlog_info struct.  [Stefan Fritsch]
-
-  *) Core configuration: add AllowOverride option to treat syntax
-     errors in .htaccess as non-fatal.  PR 52439 [Nick Kew]
-
   [Apache 2.5.0-dev includes those bug fixes and changes with the
    Apache 2.4.xx tree as documented below, except as noted.]
 
