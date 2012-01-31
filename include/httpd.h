@@ -26,6 +26,7 @@
  * @defgroup APACHE_MODS Loadable modules
  *           Top level group for modules
  * @defgroup APACHE_OS Operating System Specific
+ * @defgroup APACHE_INTERNAL Internal interfaces
  * @defgroup APACHE_CORE Core routines
  * @{
  * @defgroup APACHE_CORE_DAEMON HTTP Daemon Routine

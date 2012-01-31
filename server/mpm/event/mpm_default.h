@@ -19,7 +19,8 @@
  * @file  event/mpm_default.h
  * @brief Event MPM defaults
  *
- * @addtogroup APACHE_MPM_EVENT
+ * @defgroup APACHE_MPM_EVENT Event MPM
+ * @ingroup APACHE_INTERNAL
  * @{
  */
 
