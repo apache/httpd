@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1174747:1220529 (outdated) -->
+<!-- English Revision : 1220529 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -81,6 +81,7 @@
 
 <category id="platform"><title>Notes sp&eacute;cifiques aux diff&eacute;rentes plateformes</title>
     <page href="platform/windows.html">Microsoft Windows</page>
+    <page href="platform/rpm.html">Syst&egrave;mes bas&eacute;s sur les paquet RPM (Redhat / CentOS / Fedora)</page>
     <page href="platform/netware.html">Novell NetWare</page>
     <page href="platform/ebcdic.html">Portage EBCDIC</page>
 </category>
