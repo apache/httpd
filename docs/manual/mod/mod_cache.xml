@@ -320,8 +320,11 @@
     CustomLog revalidated-requests.log common env=cache-revalidate<br />
   </example>
 
+  <p>For module authors, a hook called <var>cache_status</var> is available,
+  allowing modules to respond to the caching outcomes above in customised
+  ways.</p>
 </section>
-    
+
 <directivesynopsis>
 <name>CacheEnable</name>
 <description>Enable caching of specified URLs using a specified storage
