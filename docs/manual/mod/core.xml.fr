@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1234876 -->
+<!-- English Revision : 1231607 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -3534,8 +3534,8 @@ verrou pour tous les mutex ou seulement les mutex sp&eacute;cifi&eacute;s</descr
     <code>sysvsem</code>.</p>
 
     <example>
-    Mutex default sysvsem<br />
-    Mutex mpm-accept fcntl:/var/httpd/locks
+    Mutex sysvsem default<br />
+    Mutex fcntl:/var/httpd/locks mpm-accept
     </example>
 </usage>
 </directivesynopsis>
