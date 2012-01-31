@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1174747:1221670 (outdated) -->
+<!-- English Revision: 1221670 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -79,6 +79,7 @@ Belgeleri</title>
 
 <category id="platform"><title>Platformlara Özgü Bilgiler</title>
     <page href="platform/windows.html">Microsoft Windows</page>
+    <page href="platform/rpm.html">RPM tabanlı Sistemler (Redhat / CentOS / Fedora)</page>
     <page href="platform/netware.html">Novell NetWare</page>
     <page href="platform/ebcdic.html">EBCDIC Port</page>
 </category>
