@@ -62,7 +62,7 @@ struct ap_varbuf {
  * @param pool the pool to allocate small buffers from and to register the
  *        cleanup with
  * @param vb pointer to the ap_varbuf struct
- * @init_size the initial size of the buffer (see ap_varbuf_grow() for details)
+ * @param init_size the initial size of the buffer (see ap_varbuf_grow() for details)
  */
 AP_DECLARE(void) ap_varbuf_init(apr_pool_t *pool, struct ap_varbuf *vb,
                                 apr_size_t init_size);
@@ -130,6 +130,7 @@ AP_DECLARE(char *) ap_varbuf_pdup(apr_pool_t *p, struct ap_varbuf *vb,
 /** Perform string substitutions based on regexp match, using an ap_varbuf.
  * This function behaves like ap_pregsub(), but appends to an ap_varbuf
  * instead of allocating the result from a pool.
+ * @param vb The ap_varbuf to which the string will be appended
  * @param input An arbitrary string containing $1 through $9.  These are
  *              replaced with the corresponding matched sub-expressions
  * @param source The string that was originally matched to the regex
