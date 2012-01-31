@@ -735,7 +735,7 @@ hook function usually returns OK, DECLINED, or HTTP_FORBIDDEN.</p>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
-<compatibility>2.5.0 and later</compatibility>
+<compatibility>2.4.0 and later</compatibility>
     <usage><p>By default, if LuaHook* directives are used in overlapping
     Directory or Location configuration sections, the scripts defined in the
     more specific section are run <em>after</em> those defined in the more
@@ -751,7 +751,7 @@ hook function usually returns OK, DECLINED, or HTTP_FORBIDDEN.</p>
 <description>Provide a hook for the quick handler of request processing</description>
 <syntax></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context>
+<context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
 <usage><p>...</p>
