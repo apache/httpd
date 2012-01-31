@@ -249,6 +249,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td>L'identifiant du message d'erreur associ&eacute; &agrave; la connexion
 	(voir la directive <directive
 	module="core">ErrorLogFormat</directive>)</td></tr>
+    <tr><td><code>CONN_REMOTE_ADDR</code></td>
+        <td>L'adresse IP r&eacute;elle de l'h&ocirc;te distant (voir le module
+	<module>mod_remoteip</module>)</td></tr>
 
     </table>
 
