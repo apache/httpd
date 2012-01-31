@@ -48,6 +48,9 @@ Package=<4>
     Project_Dep_Name BuildBin
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_authnz_ldap
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_bucketeer
     End Project Dependency
     Begin Project Dependency
@@ -127,9 +130,6 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_authn_socache
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_authnz_ldap
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_authz_core
