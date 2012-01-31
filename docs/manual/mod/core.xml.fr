@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1205075 -->
+<!-- English Revision : 1208753 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1509,10 +1509,11 @@ host</context>
         <td>Le signe pourcentage</td></tr>
 
     <tr><td><code>%a</code></td>
-        <td>Adresse IP et port distants</td></tr>
+        <td>Adresse IP et port clients</td></tr>
 
     <tr><td><code>%{c}a</code></td>
-        <td>Port et adresse IP distants r&eacute;els (voir le module
+        <td>Port et adresse IP sous-jacents du correspondant pour la
+	connexion (voir le module
 	<module>mod_remoteip</module>)</td></tr>
 
     <tr><td><code>%A</code></td>
