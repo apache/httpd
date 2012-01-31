@@ -6,6 +6,9 @@ Changes with Apache 2.4.1
      when no custom ErrorDocument is specified for status code 400.  
      [Eric Covener]
 
+  *) Core configuration: add AllowOverride option to treat syntax
+     errors in .htaccess as non-fatal. PR 52439 [Nick Kew, Jim Jagielski]
+
   *) core: Fix memory consumption in core output filter with streaming
      bucket types like CGI or PIPE.  [Joe Orton, Stefan Fritsch]
 
