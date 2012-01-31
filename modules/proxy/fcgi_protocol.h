@@ -18,7 +18,8 @@
  * @file fcgi_protocol.h
  * @brief FastCGI protocol defines
  *
- * @addtogroup FCGI_defines
+ * @defgroup FCGI_defines FastCGI protocol definition
+ * @ingroup APACHE_INTERNAL
  * @{
  */
 

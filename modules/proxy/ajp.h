@@ -18,8 +18,8 @@
  * @file ajp.h
  * @brief Apache Jserv Protocol
  *
- * @defgroup AJP_defines AJP definitions
- * @ingroup  MOD_PROXY
+ * @defgroup AJP_defines mod_proxy AJP definitions
+ * @ingroup  APACHE_INTERNAL
  * @{
  */
 
