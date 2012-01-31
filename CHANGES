@@ -15,6 +15,11 @@ Changes with Apache 2.4.1
   *) Rewrite and proxy now decline what they don't support rather
      than fail the request. [Joe Orton]
 
+  *) Fix building against external apr plus ap-util if apr is not installed
+     in a system default path. [Rainer Jung]
+
+  *) Doxygen fixes and improvements. [Joe Orton, Igor Galić]
+
 Changes with Apache 2.4.0
 
   *) SECURITY: CVE-2012-0031 (cve.mitre.org)
