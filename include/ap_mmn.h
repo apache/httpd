@@ -389,12 +389,13 @@
  *                         private, add ap_create_core_ctx(),
  *                         ap_core_ctx_get_bb(), move core_net rec definition
  *                         to http_core.h
+ * 20120201.0 (2.5.0-dev)  Bump MODULE_MAGIC_COOKIE to "AP25"!
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20120123
+#define MODULE_MAGIC_NUMBER_MAJOR 20120201
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                   /* 0...n */
 
