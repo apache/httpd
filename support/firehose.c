@@ -19,20 +19,18 @@
  *
  */
 
-#include <err.h>
-#include <apr.h>
-#include <apr.h>
-#include <apr_lib.h>
-#include <apr_buckets.h>
-#include <apr_file_io.h>
-#include <apr_file_info.h>
-#include <apr_hash.h>
-#include <apr_poll.h>
-#include <apr_portable.h>
-#include <apr_getopt.h>
-#include <apr_signal.h>
-#include <apr_strings.h>
-#include <apr_uuid.h>
+#include "apr.h"
+#include "apr_lib.h"
+#include "apr_buckets.h"
+#include "apr_file_io.h"
+#include "apr_file_info.h"
+#include "apr_hash.h"
+#include "apr_poll.h"
+#include "apr_portable.h"
+#include "apr_getopt.h"
+#include "apr_signal.h"
+#include "apr_strings.h"
+#include "apr_uuid.h"
 #if APR_HAVE_STDLIB_H
 #include <stdlib.h>
 #endif

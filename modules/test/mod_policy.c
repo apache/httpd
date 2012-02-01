@@ -36,13 +36,13 @@
 #include "http_log.h"
 #include "http_protocol.h"
 
-#include <apr_tables.h>
-#include <apr_strings.h>
-#include <apr_date.h>
+#include "apr_tables.h"
+#include "apr_strings.h"
+#include "apr_date.h"
 
 module AP_MODULE_DECLARE_DATA policy_module;
 
-#define DEFAULT_TYPE "*/*"
+#define POLICY_DEFAULT_TYPE "*/*"
 
 typedef enum policy_result
 {
@@ -207,7 +207,7 @@ static apr_status_t policy_type_out_filter(ap_filter_t *f,
                 type = apr_pstrmemdup(f->r->pool, type, end - type);
             }
             if (!conf->type_matches) {
-                if (!ap_strcmp_match(type, DEFAULT_TYPE)) {
+                if (!ap_strcmp_match(type, POLICY_DEFAULT_TYPE)) {
                     fail = 0;
                 }
             }
@@ -233,7 +233,7 @@ static apr_status_t policy_type_out_filter(ap_filter_t *f,
                 }
             }
             else {
-                types = DEFAULT_TYPE;
+                types = POLICY_DEFAULT_TYPE;
             }
 
             handle_policy(
