@@ -330,7 +330,7 @@ int ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
         ap_init_scoreboard(sb_mem);
     }
 
-    ap_scoreboard_image->global->sb_type = scoreboard_type = sb_type;
+    scoreboard_type = sb_type;
     ap_scoreboard_image->global->running_generation = 0;
     ap_scoreboard_image->global->restart_time = apr_time_now();
 
