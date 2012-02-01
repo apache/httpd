@@ -65,11 +65,11 @@ POST-RETIREMENT SECURITY PATCHES:
 
    *) CVE-2011-3368/CVE-2011-4317
       http://people.apache.org/~trawick/1.3-CVE-2011-4317-r1235443.patch
-      +1: trawick
+      +1: trawick, wrowe
 
    *) CVE-2012-0053
       http://people.apache.org/~trawick/1.3-CVE-2012-0053-r1234837.patch
-      +1: trawick
+      +1: trawick, wrowe
       trawick: I'll update the security doc once I get an idea of whether
                or not a patch will be made available.
 
