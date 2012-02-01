@@ -13,6 +13,16 @@ Changes with Apache 2.5.0
      passing through the server in such a way that connections and/or
      requests be reconstructed and replayed. [Graham Leggett]
 
+  *) Event MPM: Reduce locking by using a lock free circular queue.
+
+  *) mod_noloris
+
+  *) APREQ
+
+  *) Simple MPM
+
+  *) mod_serf
+
   [Apache 2.5.0-dev includes those bug fixes and changes with the
    Apache 2.4.xx tree as documented below, except as noted.]
 
