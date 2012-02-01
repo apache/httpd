@@ -46,9 +46,7 @@
 
 #if LUA_VERSION_NUM > 501
 /* Load mode for lua_load() */
-#define DFLT_LUA_LOAD_MODE "bt"
-#define lua_load(a,b,c,d) lua_load(a,b,c,d,DFLT_LUA_LOAD_MODE)
-#define luaL_reg luaL_Reg
+#define lua_load(a,b,c,d) lua_load(a,b,c,d,NULL)
 #endif
 
 /* Create a set of AP_LUA_DECLARE(type), AP_LUA_DECLARE_NONSTD(type) and
