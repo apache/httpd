@@ -210,11 +210,7 @@ static void register_hooks(apr_pool_t *p)
 
 /* the main config structure */
 
-#if MODULE_MAGIC_COOKIE == 0x41503234UL
 AP_DECLARE_MODULE(proxy_express) =
-#else
-module AP_MODULE_DECLARE_DATA proxy_express =
-#endif
 {
     STANDARD20_MODULE_STUFF,
     NULL,           /* create per-dir config structures */
