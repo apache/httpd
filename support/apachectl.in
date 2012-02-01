@@ -77,7 +77,7 @@ if [ "x$ARGV" = "x" ] ; then
 fi
 
 case $ACMD in
-start|stop|restart|graceful|graceful-stop)
+start|stop|restart|graceful|graceful-stop|status|fullstatus|configtest)
     $HTTPD -k $ARGV
     ERROR=$?
     ;;
