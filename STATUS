@@ -59,6 +59,19 @@ Release:
 
    ** THIS BRANCH IS CLOSED TO DEVELOPMENT AND MAINTENANCE **
 
+POST-RETIREMENT SECURITY PATCHES:
+
+   (for distribution in the official patches directory)
+
+   *) CVE-2011-3368/CVE-2011-4317
+      http://people.apache.org/~trawick/1.3-CVE-2011-4317-r1235443.patch
+      +1: trawick
+
+   *) CVE-2012-0053
+      http://people.apache.org/~trawick/1.3-CVE-2012-0053-r1234837.patch
+      +1: trawick
+      trawick: I'll update the security doc once I get an idea of whether
+               or not a patch will be made available.
 
 UNADDRESSED ISSUES:
 
