@@ -65,7 +65,7 @@ static int lua_table_get(lua_State *L)
     return 1;
 }
 
-static const luaL_reg lua_table_methods[] = {
+static const luaL_Reg lua_table_methods[] = {
     {"set", lua_table_set},
     {"get", lua_table_get},
     {0, 0}
