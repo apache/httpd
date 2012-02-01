@@ -59,6 +59,11 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
     is more consistent with <Directory> and allows some optimizations for the
     location merge code.
 
+  * Detect Lua 5.2.0 during configure and add LUA_COMPAT_ALL to CPPFLAGS.
+    Maybe it even suffices to add LUA_COMPAT_MODULE and individually
+    care about the two remaining incompatible code lines (one with lua_strlen,
+    one with lua_objlen).
+
 OLD ISSUES THAT WERE THOUGHT TO BE SHOWSTOPPERS FOR 2.4 BUT OBVIOUSLY WEREN'T:
 
   * Handling of non-trailing / config by non-default handler is broken
