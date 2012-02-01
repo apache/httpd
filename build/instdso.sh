@@ -33,7 +33,7 @@ fi
 SH_LIBTOOL=`echo $1 | sed -e 's/^SH_LIBTOOL=//'`
 shift
 # get last arg
-for arg ; do
+for arg in "$@" ; do
     DSOARCHIVES="$DSOARCHIVES $TARGETDIR"
     TARGETDIR=$arg
 done

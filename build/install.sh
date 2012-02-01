@@ -83,7 +83,7 @@ if test $# -eq 1 ; then
     echo "install.sh: no destination specified"
     exit 1
 fi
-for arg ; do
+for arg in "$@" ; do
     dstarg="$arg"
 done
 
