@@ -44,6 +44,11 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
+#if LUA_VERSION_NUM > 501
+/* Load mode for lua_load() */
+#define lua_load(a,b,c,d) lua_load(a,b,c,d,NULL)
+#endif
+
 /* Create a set of AP_LUA_DECLARE(type), AP_LUA_DECLARE_NONSTD(type) and
  * AP_LUA_DECLARE_DATA with appropriate export and import tags for the platform
  */
