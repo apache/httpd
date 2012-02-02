@@ -36,15 +36,15 @@
     must be present, and configured.</p>
     <p>The only configuration required is to select which cache provider
     to use.  This is the responsibility of modules using the cache, and
-    they enable selecton using directives such as
-    <code class="directive"><a href="./mod/authn_socache.html#authncachesocache">AuthnCacheSOCache</a></code>,
-    <code class="directive"><a href="./mod/ssl.html#sslsessioncache">SSLSessionCache</a></code>, and
-    <code class="directive"><a href="./mod/ssl.html#sslstaplingcache">SSLStaplingCache</a></code>.</p>
+    they enable selection using directives such as
+    <code class="directive"><a href="./mod/mod_authn_socache.html#authncachesocache">AuthnCacheSOCache</a></code>,
+    <code class="directive"><a href="./mod/mod_ssl.html#sslsessioncache">SSLSessionCache</a></code>, and
+    <code class="directive"><a href="./mod/mod_ssl.html#sslstaplingcache">SSLStaplingCache</a></code>.</p>
     <p>Currently available providers are:</p>
     <dl>
     <dt>"dbm" (<code class="module"><a href="./mod/mod_socache_dbm.html">mod_socache_dbm</a></code>)</dt>
     <dd>This makes use of a DBM hash file.
-     The choice of underlying DBM configuration may be configurable
+     The choice of underlying DBM used may be configurable
      if the installed APR version supports multiple DBM implementations.</dd>
     <dt>"dc" (<code class="module"><a href="./mod/mod_socache_dc.html">mod_socache_dc</a></code>)</dt>
     <dd>This makes use of the <a href="http://www.distcache.org/">distcache</a>

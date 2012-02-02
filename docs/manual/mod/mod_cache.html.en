@@ -345,6 +345,9 @@
     CustomLog revalidated-requests.log common env=cache-revalidate<br />
   </code></p></div>
 
+  <p>For module authors, a hook called <var>cache_status</var> is available,
+  allowing modules to respond to the caching outcomes above in customised
+  ways.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheDefaultExpire" id="CacheDefaultExpire">CacheDefaultExpire</a> <a name="cachedefaultexpire" id="cachedefaultexpire">Directive</a></h2>

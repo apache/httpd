@@ -8,7 +8,7 @@
 
   <variants>
     <variant>en</variant>
-    <variant outdated="yes">fr</variant>
+    <variant>fr</variant>
     <variant>tr</variant>
   </variants>
 </metafile>

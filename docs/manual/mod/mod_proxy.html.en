@@ -1341,7 +1341,7 @@ through</td></tr>
     <code class="directive">ProxyPassReverseCookiePath</code> directives,
     and causes them to substitute the value of an environment
     variable <code>varname</code> for the string <code>${varname}</code>
-    in configuration directives.</p>
+    in configuration directives (if the <var>interpolate</var> option is set).</p>
     <p>Keep this turned off (for server performance) unless you need it!</p>
 
 </div>
@@ -1504,10 +1504,25 @@ proxied server</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
-<p>Usage is basically similar to
-<code class="directive"><a href="#proxypassreverse">ProxyPassReverse</a></code>, but instead of
-rewriting headers that are a URL, this rewrites the <code>path</code>
-string in <code>Set-Cookie</code> headers.</p>
+<p>
+Useful in conjunction with
+<code class="directive"><a href="#proxypassreverse">ProxyPassReverse</a></code>
+in situations where backend URL paths are mapped to public paths on the
+reverse proxy. This directive rewrites the <code>path</code> string in
+<code>Set-Cookie</code> headers. If the beginning of the cookie path matches
+<var>internal-path</var>, the cookie path will be replaced with
+<var>public-path</var>.
+</p><p>
+In the example given with 
+<code class="directive"><a href="#proxypassreverse">ProxyPassReverse</a></code>, the directive:
+</p>
+    <div class="example"><p><code>
+      ProxyPassReverseCookiePath  /  /mirror/foo/
+    </code></p></div>
+<p>
+will rewrite a cookie with backend path <code>/</code> (or
+<code>/example</code> or, in fact, anything) to <code>/mirror/foo/</code>.
+</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
