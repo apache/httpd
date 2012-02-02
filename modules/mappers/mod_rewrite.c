@@ -1083,6 +1083,21 @@ static char *rewrite_mapfunc_unescape(request_rec *r, char *key)
 
     return key;
 }
+static char *rewrite_mapfunc_sleep(request_rec *r, char *key)
+{
+    apr_interval_time_t timeout;
+    apr_status_t rv;
+
+    if ((rv = ap_timeout_parameter_parse(key, &timeout, "ms")) != APR_SUCCESS) { 
+        ap_log_rerror(APLOG_MARK, APLOG_ERROR, rv, r, APLOGNO(02295)
+                      "Bad parameter to internal sleep map: '%s'", key);
+    }
+    else { 
+        apr_sleep(timeout);
+    }
+
+    return "";
+}
 
 static char *select_random_value_part(request_rec *r, char *value)
 {
@@ -4302,6 +4317,7 @@ static int pre_config(apr_pool_t *pconf,
         map_pfn_register("toupper", rewrite_mapfunc_toupper);
         map_pfn_register("escape", rewrite_mapfunc_escape);
         map_pfn_register("unescape", rewrite_mapfunc_unescape);
+        map_pfn_register("sleep", rewrite_mapfunc_sleep);
     }
     dbd_acquire = APR_RETRIEVE_OPTIONAL_FN(ap_dbd_acquire);
     dbd_prepare = APR_RETRIEVE_OPTIONAL_FN(ap_dbd_prepare);

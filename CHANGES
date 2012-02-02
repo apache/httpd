@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_rewrite: Add an internal RewriteMap function named "sleep"
+     that always returns an empty value and sleeps for the specified
+     interval. [Eric Covener]
+
   *) mod_rewrite: Treat a RewriteRule substitution that expands to
      "-" to behave as if a literal "-" was used in the RewriteRule
      (no substitution). [Eric Covener]
