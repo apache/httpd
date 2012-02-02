@@ -3909,6 +3909,7 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
     char *newuri = NULL;
     request_rec *r = ctx->r;
     int is_proxyreq = 0;
+    int force_no_sub = 0;
 
     ctx->uri = r->filename;
 
@@ -4022,6 +4023,11 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
         newuri = do_expand(p->output, ctx, p);
         rewritelog((r, 2, ctx->perdir, "rewrite '%s' -> '%s'", ctx->uri,
                     newuri));
+        /* Allow a substitution to resolve to "-" and act like a literal "-" */
+        if (newuri && *newuri == '-' && !newuri[1]) {
+            newuri = NULL;
+            force_no_sub = 1; 
+        }
     }
 
     /* expand [E=var:val] and [CO=<cookie>] */
@@ -4029,7 +4035,7 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
     do_expand_cookie(p->cookie, ctx);
 
     /* non-substitution rules ('RewriteRule <pat> -') end here. */
-    if (p->flags & RULEFLAG_NOSUB) {
+    if (p->flags & RULEFLAG_NOSUB || force_no_sub) {
         force_type_handler(p, ctx);
 
         if (p->flags & RULEFLAG_STATUS) {
