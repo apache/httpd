@@ -315,6 +315,11 @@ by many requests.
       <li><strong>unescape</strong>:<br/>
              Translates hex-encodings in the key back to
             special characters.</li>
+      <li><strong>sleep</strong>:<br/>
+             Causes the request to sleep for the amount of time specified in
+            the key, in milliseconds.  Keys are accepted in the form of 
+            "2000", "2000ms", or "2s".  This map always returns an empty value.
+            <p> Available since Apache HTTP Server 2.5.0</p> </li>
     </ul>
 
     <p>
@@ -326,6 +331,12 @@ by many requests.
     RewriteMap lc int:tolower<br />
     RewriteRule (.*?[A-Z]+.*) ${lc:$1} [R]
     </example>
+    
+    <example><title>Delay a request by one half of a second</title>
+    RewriteMap sleep int:sleep<br />
+    RewriteRule ^/foo/bar.html -${sleep:"500ms"} 
+    </example>
+
 
     <note>
     <p>Please note that the example offered here is for
