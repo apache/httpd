@@ -1083,21 +1083,6 @@ static char *rewrite_mapfunc_unescape(request_rec *r, char *key)
 
     return key;
 }
-static char *rewrite_mapfunc_sleep(request_rec *r, char *key)
-{
-    apr_interval_time_t timeout;
-    apr_status_t rv;
-
-    if ((rv = ap_timeout_parameter_parse(key, &timeout, "ms")) != APR_SUCCESS) { 
-        ap_log_rerror(APLOG_MARK, APLOG_ERROR, rv, r, APLOGNO(02295)
-                      "Bad parameter to internal sleep map: '%s'", key);
-    }
-    else { 
-        apr_sleep(timeout);
-    }
-
-    return "";
-}
 
 static char *select_random_value_part(request_rec *r, char *value)
 {
@@ -3924,7 +3909,6 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
     char *newuri = NULL;
     request_rec *r = ctx->r;
     int is_proxyreq = 0;
-    int force_no_sub = 0;
 
     ctx->uri = r->filename;
 
@@ -4038,11 +4022,6 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
         newuri = do_expand(p->output, ctx, p);
         rewritelog((r, 2, ctx->perdir, "rewrite '%s' -> '%s'", ctx->uri,
                     newuri));
-        /* Allow a substitution to resolve to "-" and act like a literal "-" */
-        if (newuri && *newuri == '-' && !newuri[1]) {
-            newuri = NULL;
-            force_no_sub = 1; 
-        }
     }
 
     /* expand [E=var:val] and [CO=<cookie>] */
@@ -4050,7 +4029,7 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
     do_expand_cookie(p->cookie, ctx);
 
     /* non-substitution rules ('RewriteRule <pat> -') end here. */
-    if (p->flags & RULEFLAG_NOSUB || force_no_sub) {
+    if (p->flags & RULEFLAG_NOSUB) {
         force_type_handler(p, ctx);
 
         if (p->flags & RULEFLAG_STATUS) {
@@ -4317,7 +4296,6 @@ static int pre_config(apr_pool_t *pconf,
         map_pfn_register("toupper", rewrite_mapfunc_toupper);
         map_pfn_register("escape", rewrite_mapfunc_escape);
         map_pfn_register("unescape", rewrite_mapfunc_unescape);
-        map_pfn_register("sleep", rewrite_mapfunc_sleep);
     }
     dbd_acquire = APR_RETRIEVE_OPTIONAL_FN(ap_dbd_acquire);
     dbd_prepare = APR_RETRIEVE_OPTIONAL_FN(ap_dbd_prepare);
