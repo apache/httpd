@@ -201,7 +201,7 @@ telephone  328
 
     <p>For example, you might use the following map
     file and directives to provide a random load balancing between
-    several back-end server, via a reverse-proxy. Images are sent
+    several back-end servers, via a reverse-proxy. Images are sent
     to one of the servers in the 'static' pool, while everything
     else is sent to one of the 'dynamic' pool.</p>
 
