@@ -29,7 +29,6 @@
 <a href="./tr/sitemap.html" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/sitemap.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
 <p>Bu sayfada <a href="./">Apache HTTP Sunucusu Sürüm 2.5
 Belgeleri</a>nin tamamı listelenmiştir.</p>
@@ -75,11 +74,13 @@ Belgeleri</a>nin tamamı listelenmiştir.</p>
 <li><a href="bind.html">Sunucunun Kullandığı Adreslerin ve Portların Ayarlanması</a></li>
 <li><a href="mpm.html">Çok Süreçlilik Modülleri (MPM’ler)</a></li>
 <li><a href="env.html">Ortam Değişkenleri</a></li>
+<li><a href="expr.html">Apache'de İfadelerin Çözümlenmesi</a></li>
 <li><a href="handler.html">Eylemci Kullanımı</a></li>
 <li><a href="filter.html">Süzgeçler</a></li>
+<li><a href="socache.html">Paylaşımlı Nesne Arabelleği Desteği</a></li>
 <li><a href="suexec.html">CGI için Suexec Desteği</a></li>
 <li><a href="misc/perf-tuning.html">Başarım Arttırma İpuçları</a></li>
-<li><a href="faq/">Sıkça Sorulan Sorular</a></li>
+<li><a href="http://wiki.apache.org/httpd/FAQ">Sıkça Sorulan Sorular</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="vhosts" id="vhosts">Apache Sanal Konak (VirtualHost) Belgeleri</a></h2>
@@ -99,9 +100,9 @@ Belgeleri</a>nin tamamı listelenmiştir.</p>
 <li><a href="rewrite/intro.html">Giriş</a></li>
 <li><a href="rewrite/flags.html">Seçenekler</a></li>
 <li><a href="rewrite/tech.html">Teknik Ayrıntılar</a></li>
-<li><a href="rewrite/rewrite_guide.html">Yeniden Yazma Rehberi - yararlı örnekler</a></li>
-<li><a href="rewrite/rewrite_guide_advanced.html">Gelişkin Yeniden Yazma Rehberi - daha
-yararlı örnekler</a></li>
+<li><a href="rewrite/remapping.html"> URL'lerin Yeniden Eşlenmesi</a></li>
+<li><a href="rewrite/access.html">Erişim Denetimi</a></li>
+<li><a href="rewrite/advanced.html">İleri Teknikler</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="ssl" id="ssl">Apache SSL/TLS Şifrelemesi</a></h2>
@@ -284,12 +285,13 @@ Windows ile Apache Kullanımı</a></li>
 <div class="section"><h2><a name="developer" id="developer">Geliştirici Belgeleri</a></h2>
 <ul><li class="separate"><a href="developer/">Genel Bakış</a></li>
 <li><a href="developer/API.html">Apache API Bilgileri</a></li>
+<li><a href="developer/new_api_2_4.html">Apache HTTPD 2.4'te API güncellemeleri</a></li>
 <li><a href="developer/debugging.html">APR’de Bellek Ayırmada Hata Ayıklama</a></li>
-<li><a href="developer/documenting.html">Apache 2.0 Belgeleri</a></li>
-<li><a href="developer/hooks.html">Apache 2.0 Kullanıcı İşlevleri</a></li>
-<li><a href="developer/modules.html">Modüllerin Apache 1.3’ten Apache 2.0’a Dönüştürülmesi</a></li>
-<li><a href="developer/request.html">Apache 2.0’da İsteklerin İşlenmesi</a></li>
-<li><a href="developer/filters.html">Apache 2.0’da Süzgeçler Nasıl Çalışır</a></li>
+<li><a href="developer/documenting.html">Apache 2.x Belgeleri</a></li>
+<li><a href="developer/hooks.html">Apache 2.x Kullanıcı İşlevleri</a></li>
+<li><a href="developer/modules.html">Modüllerin Apache 1.3’ten Apache 2.x’e Dönüştürülmesi</a></li>
+<li><a href="developer/request.html">Apache 2.x’de İsteklerin İşlenmesi</a></li>
+<li><a href="developer/filters.html">Apache 2.x’de Süzgeçler Nasıl Çalışır</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="index" id="index">Terimler ve Dizin</a></h2>

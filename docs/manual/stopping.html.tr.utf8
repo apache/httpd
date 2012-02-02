@@ -5,7 +5,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Durdurma ve Yeniden Başlatma - Apache HTTP Sunucusu</title>
+<title>Apache HTTP Sunucusunun Durdurulması ve Yeniden Başlatılması - Apache HTTP Sunucusu</title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
@@ -16,7 +16,7 @@
 <img alt="" src="./images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="./">Sürüm 2.5</a></div><div id="page-content"><div id="preamble"><h1>Durdurma ve Yeniden Başlatma</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="./">Sürüm 2.5</a></div><div id="page-content"><div id="preamble"><h1>Apache HTTP Sunucusunun Durdurulması ve Yeniden Başlatılması</h1>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="./de/stopping.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/stopping.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -26,15 +26,13 @@
 <a href="./ko/stopping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/stopping.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
-    <p>Bu belge Apache HTTPd’nin Unix benzeri sistemlerde durdurulması ve
-      yeniden başlatılması konularını kapsar. Windows NT, 2000 ve XP
+    <p>Bu belge Apache HTTP Sunucusunun Unix benzeri sistemlerde durdurulması
+      ve yeniden başlatılması konularını kapsar. Windows NT, 2000 ve XP
       kullanıcıları Apache HTTPd’yi bu platformlarda nasıl denetimlerine
-      alacaklarını öğrenmek için <a href="platform/windows.html#winsvc">Apache
-      HTTPd’nin Bir Hizmet Olarak Çalıştırılması</a> sayfasına, Windows 9x ve
-      ME kullanıcıları ise <a href="platform/windows.html#wincons">Apache
-      HTTPd’nin Bir Konsol Uygulaması Olarak Çalıştırılması</a> sayfasına
+      alacaklarını öğrenmek için <a href="platform/windows.html#winsvc">httpd’nin Bir Hizmet Olarak Çalıştırılması</a> sayfasına, Windows 9x ve
+      ME kullanıcıları ise <a href="platform/windows.html#wincons">httpd’nin
+      Bir Konsol Uygulaması Olarak Çalıştırılması</a> sayfasına
       bakabilirler.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Giriş</a></li>
@@ -47,7 +45,7 @@
 <div class="section">
 <h2><a name="introduction" id="introduction">Giriş</a></h2>
 
-    <p>Apache HTTPd’yi durdurmak ve yeniden başlatmak için çalışan
+    <p>Apache HTTP Sunucusunu durdurmak ve yeniden başlatmak için çalışan
       <code class="program"><a href="./programs/httpd.html">httpd</a></code> süreçlerine bir sinyal göndermeniz gerekir.
       Sinyal göndermek için iki yol vardır. İlki, süreçlere doğrudan sinyal
       göndermek için unix <code>kill</code> komutunun kullanımıdır. Bu
@@ -219,13 +217,14 @@
       haline gelmekteyse de, bazı yapılandırmalarda yarış koşullarının
       oluşmasına ve kısır çekişmelere (deadlock) sebep olabilir.</p>
 
-    <p>Sunucunun süreç kimliğini içeren <code class="directive"><a href="./mod/core.html#lockfile">Lockfile</a></code> ve <code class="directive"><a href="./mod/mod_cgid.html#scriptsock">ScriptSock</a></code> gibi dosyaların disk üzerindeki
-      mevcudiyetlerinin sorunsuz olarak devam ettiğinden emin olunmaya
-      çalışılmalıdır.  Ayrıca, bir yapılandırma yönergesi, üçüncü parti bir
-      modül veya kalıcı CGI uygulamalarına ait disk kilit veya durum dosyaları
-      olabilir; <code class="program"><a href="./programs/httpd.html">httpd</a></code>’nin birden fazla kopyasının çalışması
-      nedeniyle bu dosyaların da üzerine yazılmadığından emin olunmaya
-      çalışılmalıdır.</p>
+    <p>Sunucunun süreç kimliğini içeren kilit dosyaları (<code class="directive"><a href="./mod/core.html#mutex">Mutex</a></code>) ve Unix soket dosyaları
+      (<code class="directive"><a href="./mod/mod_cgid.html#scriptsock">ScriptSock</a></code>) gibi dosyaların
+      disk üzerindeki mevcudiyetlerinin sorunsuz olarak devam ettiğinden emin
+      olunmaya çalışılmalıdır.  Ayrıca, bir yapılandırma yönergesi, üçüncü
+      parti bir modül veya kalıcı CGI uygulamalarına ait disk kilit veya durum
+      dosyaları olabilir; <code class="program"><a href="./programs/httpd.html">httpd</a></code>’nin birden fazla kopyasının
+      çalışması nedeniyle bu dosyaların da üzerine yazılmadığından emin
+      olunmaya çalışılmalıdır.</p>
 
     <p><code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code> tarzı borulu günlükleme kullanımı gibi
       durumlarda yarış koşullarının oluşması olasılığına karşı uyanık
