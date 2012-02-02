@@ -804,9 +804,9 @@ Apache HTTP Server 2.0.41 and later</td></tr>
         utility.  (<a href="../rewrite/rewritemap.html#dbm">Details ...</a>)</dd>
 
     <dt>int</dt>
-        <dd>One of the four available internal functions provided by
-        <code>RewriteMap</code>: toupper, tolower, escape or
-        unescape. (<a href="../rewrite/rewritemap.html#int">Details ...</a>)</dd>
+        <dd>One of the five available internal functions provided by
+        <code>RewriteMap</code>: toupper, tolower, escape, unescape, or sleep. 
+        (<a href="../rewrite/rewritemap.html#int">Details ...</a>)</dd>
 
     <dt>prg</dt>
         <dd>Calls an external program or script to process the
@@ -1033,7 +1033,9 @@ cannot use <code>$N</code> in the substitution string!
         <dd>A dash indicates that no substitution should be performed
         (the existing path is passed through untouched). This is used
         when a flag (see below) needs to be applied without changing
-        the path.</dd>
+        the path.  In Apache HTTP Server 2.5.0 and later, a substitution
+        that ultimately expands to this single character is also treated as
+        "no substitution".</dd>
 
       </dl>
 
