@@ -323,3 +323,27 @@
     proxycachedir: ${localstatedir}/cache/httpd/cache-root
 </Layout>
 
+# AIX layout
+<Layout AIX>
+    prefix:        /opt/httpd
+    exec_prefix:   /opt/httpd
+    bindir:        ${exec_prefix}/bin
+    sbindir:       ${exec_prefix}/sbin
+    libdir:        ${exec_prefix}/lib
+    libexecdir:    ${exec_prefix}/libexec
+    mandir:        /usr/share/man
+    sysconfdir:    /etc/httpd
+    datadir:       /var/httpd
+    installbuilddir: ${datadir}/build
+    errordir:      ${datadir}/error
+    iconsdir:      ${datadir}/icons
+    htdocsdir:     ${datadir}/htdocs
+    manualdir:     ${datadir}/manual
+    cgidir:        ${datadir}/cgi-bin
+    includedir:    ${prefix}/include
+    localstatedir: /var+
+    runtimedir:    ${localstatedir}/run
+    logfiledir:    ${localstatedir}/logs
+    proxycachedir: ${localstatedir}/proxy
+</Layout>
+
