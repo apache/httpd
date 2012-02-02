@@ -25,18 +25,18 @@
 <a href="./ko/filter.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/filter.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Bu belge, Apache’de süzgeç kullanımı hakkındadır.</p>
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#intro">Apache 2’de Süzme İşlemi</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#smart">Akıllı Süzme</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#service">Süzgeçleri bir HTTP Hizmeti gibi göstermek </a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#using">Süzgeçlerin Kullanımı</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="intro" id="intro">Apache 2’de Süzme İşlemi</a></h2> 
-    <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code></li><li><code class="module"><a href="./mod/mod_deflate.html">mod_deflate</a></code></li><li><code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code></li><li><code class="module"><a href="./mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="./mod/mod_charset_lite.html">mod_charset_lite</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_filter.html#filterchain">FilterChain</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterdeclare">FilterDeclare</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterprotocol">FilterProtocol</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterprovider">FilterProvider</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addinputfilter">AddInputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removeinputfilter">RemoveInputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removeoutputfilter">RemoveOutputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_ext_filter.html#extfilterdefine">ExtFilterDefine</a></code></li><li><code class="directive"><a href="./mod/mod_ext_filter.html#extfilteroptions">ExtFilterOptions</a></code></li><li><code class="directive"><a href="./mod/core.html#setinputfilter">SetInputFilter</a></code></li><li><code class="directive"><a href="./mod/core.html#setoutputfilter">SetOutputFilter</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code></li><li><code class="module"><a href="./mod/mod_deflate.html">mod_deflate</a></code></li><li><code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code></li><li><code class="module"><a href="./mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="./mod/mod_charset_lite.html">mod_charset_lite</a></code></li><li><code class="module"><a href="./mod/mod_reflector.html">mod_reflector</a></code></li><li><code class="module"><a href="./mod/mod_buffer.html">mod_buffer</a></code></li><li><code class="module"><a href="./mod/mod_data.html">mod_data</a></code></li><li><code class="module"><a href="./mod/mod_ratelimit.html">mod_ratelimit</a></code></li><li><code class="module"><a href="./mod/mod_reqtimeout.html">mod_reqtimeout</a></code></li><li><code class="module"><a href="./mod/mod_request.html">mod_request</a></code></li><li><code class="module"><a href="./mod/mod_sed.html">mod_sed</a></code></li><li><code class="module"><a href="./mod/mod_substitute.html">mod_substitute</a></code></li><li><code class="module"><a href="./mod/mod_xml2enc.html">mod_xml2enc</a></code></li><li><code class="module"><a href="./mod/mod_proxy_html.html">mod_proxy_html</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_filter.html#filterchain">FilterChain</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterdeclare">FilterDeclare</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterprotocol">FilterProtocol</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterprovider">FilterProvider</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addinputfilter">AddInputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removeinputfilter">RemoveInputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removeoutputfilter">RemoveOutputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_reflector.html#reflectorheader">ReflectorHeader</a></code></li><li><code class="directive"><a href="./mod/mod_ext_filter.html#extfilterdefine">ExtFilterDefine</a></code></li><li><code class="directive"><a href="./mod/mod_ext_filter.html#extfilteroptions">ExtFilterOptions</a></code></li><li><code class="directive"><a href="./mod/core.html#setinputfilter">SetInputFilter</a></code></li><li><code class="directive"><a href="./mod/core.html#setoutputfilter">SetOutputFilter</a></code></li></ul></td></tr></table>
 
     <p>Apache 2.0 ve sonrasında mevcut olan Süzgeç Zinciri, uygulamaların
       nereden geldiğine bakmaksızın gelen ve giden verileri oldukça esnek ve
@@ -108,6 +108,26 @@
     </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
+<h2><a name="service" id="service">Süzgeçleri bir HTTP Hizmeti gibi göstermek </a></h2>
+    
+    <p>Süzgeçler, istemciden kaynaklanan içeriği işlemekte kullanılabileceği
+      gibi <code class="module"><a href="./mod/mod_reflector.html">mod_reflector</a></code> modülü kullanılarak sunucudan
+      kaynaklanan içeriği işlemekte de kullanılabilir.</p>
+
+    <p><code class="module"><a href="./mod/mod_reflector.html">mod_reflector</a></code> istemcilerden gelen POST isteklerini
+      kabul eder ve çıktı süzgeç yığıtı yoluyla istemciye aktararak, POST
+      isteği içinde alınan içerik istek gövdesini yanıt içinde geri
+      gönderir.</p>
+
+    <p>Bu teknik, bir çıktı süzgeciyle istek gövdesinde gerekli dönüşümün
+      sağlandığı durumda, bir uygulama sunucusu yığıtı içinde çalışan bir http
+      hizmetinin yerine de kullanılabilir. Örneğin,
+      <code class="module"><a href="./mod/mod_deflate.html">mod_deflate</a></code> modülü genel bir sıkıştırma hizmeti
+      sağlamakta kullanılabilir veya bir resim dönüştürme süzgeci bir resim
+      dönüşüm hizmeti haline getirilebilir.</p>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
 <h2><a name="using" id="using">Süzgeçlerin Kullanımı</a></h2>
     <p>Süzgeçler iki şekilde kullanılır: Basit ve Devingen.
       Genelde ikisinden biri kullanılır; karışık kullanılırsa istenmeyen
@@ -132,7 +152,7 @@
       <code class="directive"><a href="./mod/mod_filter.html#filterprovider">FilterProvider</a></code>.</p>
 
     <p><code class="directive"><a href="./mod/core.html#addoutputfilterbytype">AddOutputFilterByType</a></code> yönergesi
-      hala desteklenmekteyse de sorun çıkarabilmesi sebebiyle kullanımı artık
+      hala desteklenmekteyse de kullanımı artık
       önerilmemektedir. Onun yerine devingen yapılandırma kullanınız.</p>
 
   </div></div>

@@ -24,11 +24,10 @@
 <a href="./ko/urlmapping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/urlmapping.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Bu belgede, bir istekte belirtilen URL’nin sunulacak dosyanın dosya
-      sistemindeki yerini bulmak için Apache tarafından nasıl kullanıldığı
-      açıklanmaktadır.</p>
+      sistemindeki yerini bulmak için Apache HTTP Sunucusu tarafından nasıl
+      kullanıldığı açıklanmaktadır.</p>
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#related">İlgili Modüller ve Yönergeler</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#documentroot"><code>DocumentRoot</code></a></li>
@@ -38,18 +37,19 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#proxy">Karşı Vekil</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#rewrite">Yeniden Yazma Motoru</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#notfound">Dosya orada yok</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#other">Diğer URL Eşleme Modülleri</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="related" id="related">İlgili Modüller ve Yönergeler</a></h2>
 
-<table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_alias.html">mod_alias</a></code></li><li><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></li><li><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code></li><li><code class="module"><a href="./mod/mod_userdir.html">mod_userdir</a></code></li><li><code class="module"><a href="./mod/mod_speling.html">mod_speling</a></code></li><li><code class="module"><a href="./mod/mod_vhost_alias.html">mod_vhost_alias</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_alias.html#alias">Alias</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#aliasmatch">AliasMatch</a></code></li><li><code class="directive"><a href="./mod/mod_speling.html#checkspelling">CheckSpelling</a></code></li><li><code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code></li><li><code class="directive"><a href="./mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypassreversecookiedomain">ProxyPassReverseCookieDomain</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypassreversecookiepath">ProxyPassReverseCookiePath</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#redirect">Redirect</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#redirectmatch">RedirectMatch</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewritecond">RewriteCond</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewriterule">RewriteRule</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#scriptalias">ScriptAlias</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#scriptaliasmatch">ScriptAliasMatch</a></code></li><li><code class="directive"><a href="./mod/mod_userdir.html#userdir">UserDir</a></code></li></ul></td></tr></table>
+<table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_actions.html">mod_actions</a></code></li><li><code class="module"><a href="./mod/mod_alias.html">mod_alias</a></code></li><li><code class="module"><a href="./mod/mod_dir.html">mod_dir</a></code></li><li><code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code></li><li><code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code></li><li><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></li><li><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code></li><li><code class="module"><a href="./mod/mod_speling.html">mod_speling</a></code></li><li><code class="module"><a href="./mod/mod_userdir.html">mod_userdir</a></code></li><li><code class="module"><a href="./mod/mod_vhost_alias.html">mod_vhost_alias</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_alias.html#alias">Alias</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#aliasmatch">AliasMatch</a></code></li><li><code class="directive"><a href="./mod/mod_speling.html#checkspelling">CheckSpelling</a></code></li><li><code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code></li><li><code class="directive"><a href="./mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypassreversecookiedomain">ProxyPassReverseCookieDomain</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypassreversecookiepath">ProxyPassReverseCookiePath</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#redirect">Redirect</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#redirectmatch">RedirectMatch</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewritecond">RewriteCond</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewriterule">RewriteRule</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#scriptalias">ScriptAlias</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#scriptaliasmatch">ScriptAliasMatch</a></code></li><li><code class="directive"><a href="./mod/mod_userdir.html#userdir">UserDir</a></code></li></ul></td></tr></table>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="documentroot" id="documentroot"><code>DocumentRoot</code></a></h2>
 
     <p>Yapılan bir isteğe hangi dosyanın sunulacağına karar verirken
-      Apache’nin öntanımlı davranışı istek için URL yolunu (URL’den konak ismi
+      httpd’nin öntanımlı davranışı istek için URL yolunu (URL’den konak ismi
       ve port ayrıldıktan sonra kalan kısım) alıp bunu yapılandırma dosyasında
       <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> yönergesi ile
       belirtilen dizinin sonuna eklemektir. Bu nedenle, <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> altındaki dizinler ve dosyalar
@@ -61,7 +61,7 @@
       istek için istemciye <code>/var/http/html/balıklar/zargana.html</code>
       dosyası sunulur.</p>
 
-    <p>Apache ayrıca, sunucunun birden fazla konak için istek kabul etmesini
+    <p>httpd ayrıca, sunucunun birden fazla konak için istek kabul etmesini
       sağlayan <a href="vhosts/">sanal barındırmaya</a> da muktedirdir. Bu
       durumda her sanal konak için ayrı bir <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> belirtilebileceği gibi sunulacak içeriğin
       istekte bulunulan IP adresi veya konak ismine dayanarak devingen olarak
@@ -77,12 +77,12 @@
 <h2><a name="outside" id="outside">Belge Kök Dizini Dışındaki Dosyalar</a></h2>
 
     <p>Bazen dosya sisteminde doğrudan <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> altında bulunmayan dosyalara da erişim izni
-      vermek gerekir. Apache’de bunu sağlamanın çeşitli yolları vardır. Unix
+      vermek gerekir. httpd’de bunu sağlamanın çeşitli yolları vardır. Unix
       sistemlerinde sembolik bağlar sayesinde dosya sisteminin farklı
       yerlerindeki dosyaları ve dizinleri <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> altındaymış gibi göstermek mümkündür.
       <code class="directive"><a href="./mod/core.html#options">Options</a></code> yönergesine değer olarak
       <code>FollowSymLinks</code> veya <code>SymLinksIfOwnerMatch</code>
-      atanmadıkça Apache olası güvenlik açıklarına karşı öntanımlı olarak
+      atanmadıkça httpd olası güvenlik açıklarına karşı öntanımlı olarak
       sembolik bağları izlemez.</p>
 
     <p>Bundan başka, dosya sisteminin farklı parçalarını belge kök dizini
@@ -143,13 +143,13 @@
       eşlemek için <code>AliasMatch</code> yönergesi şöyle
       kullanılabilirdi:</p>
 
-    <div class="example"><p><code>AliasMatch ^/sayfalar/([a-zA-Z0-9]+)/?(.*)
-          /home/$1/public_html/$2</code></p></div>
+    <div class="example"><p><code>AliasMatch ^/sayfalar/([a-zA-Z0-9]+)(/(.*))?$
+          /home/$1/public_html/$3</code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="redirect" id="redirect">URL Yönlendirme</a></h2>
 
-    <p>Yukarıdaki bölümlerde açıklanan yapılandırma yönergeleri Apache’ye
+    <p>Yukarıdaki bölümlerde açıklanan yapılandırma yönergeleri httpd’ye
       içeriği dosya sisteminin belli bir yerinden alıp istemciye göndermesini
       söyler. Bazen istemciye, istediği içeriğe farklı bir URL ile
       erişebileceğini ve bu URL için ayrı bir istek yapması gerektiğini
@@ -169,7 +169,7 @@
       zorunda değilsiniz, bu yönerge ile başka bir sunucuya da yönlendirme
       yapabilirsiniz.</p>
 
-    <p>Apache ayrıca, yeniden yazma ile ilgili daha karmaşık sorunlara çözüm
+    <p>httpd ayrıca, yeniden yazma ile ilgili daha karmaşık sorunlara çözüm
       olarak <code class="directive"><a href="./mod/mod_alias.html#redirectmatch">RedirectMatch</a></code> diye bir
       yönerge daha sağlar. Örneğin bir sitenin baş sayfasını diğer isteklerden
       ayrı olarak farklı bir siteye yönlendirmek için yönergeyi şöyle
@@ -187,7 +187,7 @@
 <div class="section">
 <h2><a name="proxy" id="proxy">Karşı Vekil</a></h2>
 
-    <p>Apache ayrıca, uzak sunuculardaki belgelerin yerel sunucunun URL
+    <p>httpd ayrıca, uzak sunuculardaki belgelerin yerel sunucunun URL
       alanına getirilmesini de mümkün kılar. Bu tekniğe HTTP sunucunun
       belgeleri uzak bir sunucudan alıp istemciye sunmasını sağlayarak bir
       vekil sunucu gibi davranması nedeniyle <em>ters vekalet</em> adı
@@ -218,9 +218,17 @@
       dikkat ediniz. Dolayısıyla, belge içinde
       <code>dahili.mesela.dom</code>’u ismiyle hedef alan mutlak hiperbağlar
       varsa bunlar istemci tarafından vekil sunucudan değil doğrudan
-      <code>dahili.mesela.dom</code>’dan istenecektir. Üçüncü parti modüller
+      <code>dahili.mesela.dom</code>’dan istenecektir. Bir sayfanın içindeki bu
+      bağları (ve diğer içeriği) <code class="module"><a href="./mod/mod_substitute.html">mod_substitute</a></code> modülü
+      kullanılarak istemciye sunuluyormuşçasına değiştirebilirsiniz.</p>
+
+    <div class="example"><p><code>
+      Substitute s/dahili\.mesela\.dom/harici.mesela.dom/i
+    </code></p></div>
+
+     <p>Ayrıca, Üçüncü parti modüller
       arasında HTML ve XHTML’de hiperbağları yeniden yazabilen <a href="http://apache.webthing.com/mod_proxy_html/">mod_proxy_html</a>
-      adında bir modül vardır.</p>
+      adında bir modül de vardır.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="rewrite" id="rewrite">Yeniden Yazma Motoru</a></h2>
@@ -252,8 +260,8 @@
     <p>"Dosya orada yok" ("File Not Found") hatalarının diğer bir bildik
       sebebi de URL’lerin hiperbağlarda veya doğrudan tarayıcıda kasıtlı ya da
       kasıtsız, yanlış yazılmasıdır. Bu tür sorunlarda yardımcı olması için
-      Apache <code class="module"><a href="./mod/mod_speling.html">mod_speling</a></code> (sic) adında bir modülle gelir. Bu
-      modül etkin kılındığında Apache, "Dosya orada yok" ("File Not Found")
+      httpd <code class="module"><a href="./mod/mod_speling.html">mod_speling</a></code> (sic) adında bir modülle gelir. Bu
+      modül etkin kılındığında htpd, "Dosya orada yok" ("File Not Found")
       hatalarının önünü kesip başka bir yerde benzer isimde bir dosya var mı
       diye bakar. Böyle bir dosya varsa, <code class="module"><a href="./mod/mod_speling.html">mod_speling</a></code>
       istemciye dosyanın doğru yerini bildiren bir HTTP yönlendirmesi yollar.
@@ -269,11 +277,39 @@
       yönlendirmesine konu olmasına sebep olarak sunucunun yükünü
       arttırabilir.</p>
 
+    <p><code class="module"><a href="./mod/mod_dir.html">mod_dir</a></code> modülü sanal URI'leri, onları sunan gerçek
+      kaynağa eşlemekte kullanılan <code class="directive"><a href="./mod/mod_dir.html#fallbackresource">FallbackResource</a></code> yönergesini içerir. Bir 'ön denetleyici'
+      gerçeklerken <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code> modülünün kullanılmasını
+      sağlamak için çok kullanışlıdır.</p>
+
     <p>Yerinde bulunmayan içeriğin bulunması çabalarının tümü Apache’nin 404
       (Dosya orada yok) HTTP durum kodlu bir hata sayfası döndürmesine yol
       açar. Bu sayfanın içeriği <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code> yönergesi ile denetlenebilir ve <a href="custom-error.html">Hata Yanıtlarının Kişiselleştirilmesi</a>
       bölümünde anlatıldığı gibi oldukça esnek bir şekilde
       kişiselleştirilebilir.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="other" id="other">Diğer URL Eşleme Modülleri</a></h2>
+
+
+
+    <p>URL eşlemede kullanılabilecek diğer modüller:</p>
+
+    <ul>
+    <li><code class="module"><a href="./mod/mod_actions.html">mod_actions</a></code> - Bir isteği, özkaynağın MIME türüne veya
+      istek yöntemine bakarak bir CGI betiğine eşler.</li>
+
+    <li><code class="module"><a href="./mod/mod_dir.html">mod_dir</a></code> - URL'yi sonlandıran bölü çizgisini
+      <code>index.html</code> bir dosyaya eşler.</li>
+
+    <li><code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code> - Bir isteği, bir HTML belge içindeki
+      bir resme yapılan kullanıcı tıklamalarına dayanarak bir URL'ye
+      eşler.</li>
+
+    <li><code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code> - Dil veya içerik sıkıştırması gibi
+      kullanıcı tercihlerine dayanarak uygun bir belgeyi seçer.</li>
+    </ul>
+
 </div></div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="./en/urlmapping.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

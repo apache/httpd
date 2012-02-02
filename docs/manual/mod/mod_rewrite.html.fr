@@ -952,15 +952,8 @@ la version version 2.1</td></tr>
       Si on le souhaite, cette option permet de faire s'appliquer des
       règles de réécriture qui correspondent à un répertoire sans slash
       final au sein de fichiers .htaccess. Elle est disponible à
-      partir de la version 2.4.0 du serveur HTTP Apache.
-      
-      When the <code class="directive"><a href="../mod/mod_dir.html#directoryslash">DirectorySlash</a></code> directive
-+      is set to off, the <code>AllowNoSlash</code> option can be enabled to ensure
-+      that rewrite rules are no longer ignored. This option makes it possible to
-+      apply rewrite rules within .htaccess files that match the directory without
-+      a trailing slash, if so desired. Available in Apache HTTP Server 2.4.0 and
-+      later.</p>
-+      </dd>
+      partir de la version 2.4.0 du serveur HTTP Apache.</p>
+      </dd>
 
       </dl>
 

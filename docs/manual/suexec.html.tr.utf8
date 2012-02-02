@@ -24,9 +24,8 @@
 <a href="./ko/suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/suexec.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
-    <p><strong>SuEXEC</strong> özelliği, Apache kullanıcılarına
+    <p><strong>SuEXEC</strong> özelliği, Apache HTTP Sunucusu kullanıcılarına
       <strong>CGI</strong> ve <strong>SSI</strong> programlarını sunucunun
       aidiyetinde çalıştığı kullanıcıdan farklı bir kullanıcının aidiyetinde
       çalıştırma olanağı verir. Normalde, <strong>CGI</strong> ve
@@ -56,8 +55,9 @@
 <div class="section">
 <h2><a name="before" id="before">Başlamadan önce</a></h2>
 
-    <p>Belgeye balıklama dalmadan önce, Apache Grubu ve bu belge ile ilgili
-      kabuller hakkında bilgi sahibi olmalısınız.</p>
+    <p>Belgeye balıklama dalmadan önce, suexec'i kullanacağınız ortam ve
+      kendiniz hakkında yapılmış çeşitli kabuller hakkında bilgi sahibi
+      olmalısınız.</p>
 
     <p>Öncelikle, üzerinde <strong>setuid</strong> va <strong>setgid</strong>
       işlemlerinin yapılabildiği Unix türevi bir işletim sistemi
@@ -79,19 +79,20 @@
       yeni güvenlik risklerine yol açabilir. Özellikle güvenlikle ilgili
       programlarda deneyimli değilseniz suEXEC kodunda kesinlikle bir
       değişiklik yapmamalısınız. Değişiklik yaparsanız kodlarınızı gözden
-      geçirmek ve tartışmak üzere Apache Grubu ile paylaşmanızı öneririz.</p>
+      geçirmek ve tartışmak üzere Apache HTTP Sunucusu geliştirme ekibi ile
+      paylaşmanızı öneririz.</p>
 
-    <p>Dördüncü ve son olarak, Apache Grubunun suEXEC’i öntanımlı Apache
-      kurulumunun bir parçası yapmama kararından bahsetmek gerekir. Bunun
-      sonucu olarak, suEXEC yapılandırması sistem yöneticisinin ayrıntılı bir
-      incelemesini gerektirir. Gerekli incelemeden sonra yönetici tarafından
-      suEXEC yapılandırma seçeneklerine karar verilip, normal yollardan
-      sisteme kurulumu yapılır. Bu seçeneklerin belirlenmesi, suEXEC
-      işlevselliğinin kullanımı sırasında sistem güvenliğini gerektiği gibi
-      sağlamak için yönetici tarafından dikkatle saptanmayı gerektirir. Bu
-      sürecin ayrıntılarının yöneticiye bırakılma sebebi, Apache Grubunun
-      suEXEC kurulumunu, suEXEC’i dikkatle kullanacak yeterliliğe sahip
-      olanlarla sınırlama beklentisidir.</p>
+    <p>Dördüncü ve son olarak, Apache HTTP Sunucusu geliştirme ekibinin
+      suEXEC’i öntanımlı httpd kurulumunun bir parçası yapmama kararından
+      bahsetmek gerekir. Bunun sonucu olarak, suEXEC yapılandırması sistem
+      yöneticisinin ayrıntılı bir incelemesini gerektirir. Gerekli incelemeden
+      sonra yönetici tarafından suEXEC yapılandırma seçeneklerine karar
+      verilip, normal yollardan sisteme kurulumu yapılır. Bu seçeneklerin
+      belirlenmesi, suEXEC işlevselliğinin kullanımı sırasında sistem
+      güvenliğini gerektiği gibi sağlamak için yönetici tarafından dikkatle
+      saptanmayı gerektirir. Bu sürecin ayrıntılarının yöneticiye bırakılma
+      sebebi, suEXEC kurulumunu, suEXEC’i dikkatle kullanacak yeterliliğe sahip
+      olanlarla sınırlama  beklentimizdir.</p>
 
     <p>Hala bizimle misiniz? Evet mi? Pekala, o halde devam!</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -108,7 +109,7 @@
       Bu program, bir CGI veya SSI betiğine bir HTTP isteği yapıldığı zaman,
       bu betiği, yöneticinin ana sunucunun aidiyetinde çalıştığı kullanıcıdan
       farklı olarak seçtiği bir kullanıcının aidiyetinde çalıştırmak için
-      çağrılır. Böyle bir istek geldiğinde, Apache artalandaki setuid
+      çağrılır. Böyle bir istek geldiğinde, Apache httpd artalandaki setuid
       programına, HTTP isteği yapılan programın ismiyle beraber aidiyetinde
       çalışacağı kullanıcı ve grup kimliklerini de aktarır.</p>
 
@@ -131,11 +132,11 @@
         <strong>Setuid program yeterli sayıda argümanla çağrılmış mı?
         </strong>
 
-        <p class="indent">Apache’nin artalanda çağırdığı setuid program
-          ancak yeterli sayıda argüman sağlandığı takdirde çalışacaktır.
-          Argümanların sayısını ve sırasını Apache HTTP sunucusu bilir. Eğer
-          setuid program yeterli sayıda argümanla çağrılmamışsa ya
-          kendisinde bir değişiklik yapılmıştır ya da kurulu Apache
+        <p class="indent">Apache HTTP Sunucusunun artalanda çağırdığı
+          setuid program ancak yeterli sayıda argüman sağlandığı takdirde
+          çalışacaktır. Argümanların sayısını ve sırasını Apache HTTP sunucusu
+          bilir. Eğer setuid program yeterli sayıda argümanla çağrılmamışsa
+          ya kendisinde bir değişiklik yapılmıştır ya da kurulu Apache httpd
           çalıştırılabilirinin suEXEC ile ilgili kısmında yanlış giden bir
           şeyler vardır.</p>
       </li>
@@ -192,7 +193,7 @@
       <li>
         <strong>Hedef grup <code>root</code>  değil, değil mi?</strong>
 
-        <p class="indent">Mevcut durumda, <code>root</code> grubunun CGI/SSI
+        <p class="indent"><code>root</code> grubunun CGI/SSI
           programlarını çalıştırmasına izin verilmemektedir.</p>
       </li>
 
@@ -328,8 +329,8 @@
 
       <dt><code>--with-suexec-caller=<em>KULLANICI</em></code></dt>
 
-      <dd>Normalde Apache’nin aidiyetinde çalıştığı <a href="mod/mpm_common.html#user">kullanıcı</a>dır. Bu, bu programı
-        çalıştırmasına izin verilen tek kullanıcıdır.</dd>
+      <dd>Normalde httpd’nin aidiyetinde çalıştığı <a href="mod/mpm_common.html#user">kullanıcı</a>dır. Bu, suEXEC
+        çalıştırıcısını çalıştırmasına izin verilen tek kullanıcıdır.</dd>
 
       <dt><code>--with-suexec-userdir=<em>DİZİN</em></code></dt>
 
@@ -351,7 +352,7 @@
 
       <dt><code>--with-suexec-docroot=<em>DİZİN</em></code></dt>
 
-      <dd>Apache için belge kök dizinini belirler. Bu, (<code class="directive"><a href="./mod/mod_userdir.html#userdir">UserDir</a></code>’lardan başka) suEXEC için
+      <dd>httpd için belge kök dizinini belirler. Bu, (<code class="directive"><a href="./mod/mod_userdir.html#userdir">UserDir</a></code>’lardan başka) suEXEC için
         kullanılacak tek hiyerarşi olacaktır. Öntanımlı dizin sonuna
         "<code>/htdocs</code>" eklenmiş <code>--datadir</code> dizinidir.
         Yani, seçeneği "<code>--datadir=/home/apache</code>" olarak
@@ -389,7 +390,7 @@
       
 
       <p>SuEXEC özelliğini <code>--enable-suexec</code> seçeneği ile
-        etkinleştirdiyseniz <code>make</code> komutunu verdiğinizde Apache
+        etkinleştirdiyseniz <code>make</code> komutunu verdiğinizde httpd
         ile birlikte <code>suexec</code> çalıştırılabilir dosyası da
         derlenecektir.</p>
 
@@ -416,8 +417,8 @@
         olup olmadığına bakacaksa da, bu sınamanın da bir sistem veya
         kütüphane çağrısı ile istismar edilmiş olma ihtimali gözardı
         edilmemelidir. Bunun meydana gelmesini önlemek için ve genelde
-        yapıldığı gibi dosyanın izinlerini suEXEC çalıştırıcısı sadece Apache
-        sunucusunun aidiyetinde çalıştığı kullanıcı tarafından çalıştırılacak
+        yapıldığı gibi dosyanın izinlerini suEXEC çalıştırıcısı sadece
+        httpd'nin aidiyetinde çalıştığı grup tarafından çalıştırılacak
         şekilde ayarlayınız.</p>
 
       <p>Örneğin, sunucunuz şöyle yapılandırılmışsa:</p>
@@ -436,7 +437,7 @@
           chmod 4750 /usr/local/apache2/bin/suexec<br />
       </code></p></div>
 
-      <p>Böylece suEXEC çalıştırıcısını Apache’yi çalıştıran grubun
+      <p>Böylece suEXEC çalıştırıcısını httpd’yi çalıştıran grubun
         üyelerinden başkasının çalıştıramayacağından emin olabilirsiniz.</p>
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -444,11 +445,10 @@
 <h2><a name="enable" id="enable">suEXEC’in etkin kılınması ve iptal edilmesi</a></h2>
     
 
-    <p>Apache başlatıldığı sırada <code class="program"><a href="./programs/suexec.html">suexec</a></code> çalıştırıcısı
-      için <code>--sbindir</code> seçeneği ile tanımlanan dizine bakar
-      (seçeneğin öntanımlı değeri
-      <code>/usr/local/apache/sbin/suexec</code>’tir). Apache düzgün
-      yapılandırılmış bir suEXEC çalıştırıcısı bulduğu takdirde hata
+    <p>httpd başlatıldığı sırada <code class="program"><a href="./programs/suexec.html">suexec</a></code> çalıştırıcısı için
+      <code>--sbindir</code> seçeneği ile tanımlanan dizine bakar (seçeneğin
+      öntanımlı değeri <code>/usr/local/apache/sbin/suexec</code>’tir). httpd
+      düzgün yapılandırılmış bir suEXEC çalıştırıcısı bulduğu takdirde hata
       günlüğüne şöyle bir ileti yazacaktır:</p>
 
 <div class="example"><p><code>
@@ -465,8 +465,7 @@
       sağlamak yeterli olmayacaktır.</p>
 
      <p>SuEXEC mekanizmasını iptal etmek için ise <code class="program"><a href="./programs/suexec.html">suexec</a></code>
-      dosyasını sildikten sonra Apache sunucusunu öldürüp yeniden
-      başlamalısınız.</p>
+      dosyasını sildikten sonra httpd'yi öldürüp yeniden başlamalısınız.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="usage" id="usage">SuEXEC’in kullanımı</a></h2>
