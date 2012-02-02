@@ -28,8 +28,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fonctionnalités de base du serveur HTTP Apache toujours
 disponibles</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Core</td></tr></table>
@@ -1509,58 +1507,62 @@ personnalisation des réponses</a></li>
 <tr><td><code>%%</code></td>
         <td>Le signe pourcentage</td></tr>
 <tr class="odd"><td><code>%a</code></td>
-        <td>Adresse IP et port distants</td></tr>
-<tr><td><code>%A</code></td>
+        <td>Adresse IP et port clients</td></tr>
+<tr><td><code>%{c}a</code></td>
+        <td>Port et adresse IP sous-jacents du correspondant pour la
+	connexion (voir le module
+	<code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code>)</td></tr>
+<tr class="odd"><td><code>%A</code></td>
         <td>Adresse IP et port locaux</td></tr>
-<tr class="odd"><td><code>%{<em>name</em>}e</code></td>
+<tr><td><code>%{<em>name</em>}e</code></td>
         <td>Variable d'environnement de requête <em>name</em></td></tr>
-<tr><td><code>%E</code></td>
+<tr class="odd"><td><code>%E</code></td>
         <td>Etat d'erreur APR/OS et chaîne</td></tr>
-<tr class="odd"><td><code>%F</code></td>
+<tr><td><code>%F</code></td>
         <td>Nom du fichier source et numéro de ligne de l'appel du
 	journal</td></tr>
-<tr><td><code>%{<em>name</em>}i</code></td>
+<tr class="odd"><td><code>%{<em>name</em>}i</code></td>
         <td>En-tête de requête <em>name</em></td></tr>
-<tr class="odd"><td><code>%k</code></td>
+<tr><td><code>%k</code></td>
         <td>Nombre de requêtes persistantes pour cette connexion</td></tr>
-<tr><td><code>%l</code></td>
+<tr class="odd"><td><code>%l</code></td>
         <td>Sévérité du message</td></tr>
-<tr class="odd"><td><code>%L</code></td>
+<tr><td><code>%L</code></td>
         <td>Identifiant journal de la requête</td></tr>
-<tr><td><code>%{c}L</code></td>
+<tr class="odd"><td><code>%{c}L</code></td>
         <td>Identifiant journal de la connexion</td></tr>
-<tr class="odd"><td><code>%{C}L</code></td>
+<tr><td><code>%{C}L</code></td>
         <td>Identifiant journal de la connexion si utilisé dans la
 	portée de la connexion, vide sinon</td></tr>
-<tr><td><code>%m</code></td>
+<tr class="odd"><td><code>%m</code></td>
         <td>Nom du module qui effectue la journalisation du message</td></tr>
-<tr class="odd"><td><code>%M</code></td>
+<tr><td><code>%M</code></td>
         <td>Le message effectif</td></tr>
-<tr><td><code>%{<em>name</em>}n</code></td>
+<tr class="odd"><td><code>%{<em>name</em>}n</code></td>
         <td>Note de requête <em>name</em></td></tr>
-<tr class="odd"><td><code>%P</code></td>
+<tr><td><code>%P</code></td>
         <td>Identifiant du processus courant</td></tr>
-<tr><td><code>%T</code></td>
+<tr class="odd"><td><code>%T</code></td>
         <td>Identifiant du thread courant</td></tr>
-<tr class="odd"><td><code>%{g}T</code></td>
+<tr><td><code>%{g}T</code></td>
         <td>Identifiant unique de thread système du thread courant
 	(l'identifiant affiché par la commande <code>top</code> par
 	exemple ; seulement sous Linux pour l'instant)</td></tr>
-<tr><td><code>%t</code></td>
+<tr class="odd"><td><code>%t</code></td>
         <td>L'heure courante</td></tr>
-<tr class="odd"><td><code>%{u}t</code></td>
+<tr><td><code>%{u}t</code></td>
         <td>L'heure courante avec les microsecondes</td></tr>
-<tr><td><code>%{cu}t</code></td>
+<tr class="odd"><td><code>%{cu}t</code></td>
         <td>L'heure courante au format compact ISO 8601, avec les
 	microsecondes</td></tr>
-<tr class="odd"><td><code>%v</code></td>
+<tr><td><code>%v</code></td>
         <td>Le nom de serveur canonique <code class="directive"><a href="#servername">ServerName</a></code> du serveur courant.</td></tr>
-<tr><td><code>%V</code></td>
+<tr class="odd"><td><code>%V</code></td>
         <td>Le nom de serveur du serveur qui sert la requête en accord
 	avec la définition de la directive <code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code>.</td></tr>
-<tr class="odd"><td><code>\&nbsp;</code> (anti-slash espace)</td>
+<tr><td><code>\&nbsp;</code> (anti-slash espace)</td>
         <td>Espace non délimiteur</td></tr>
-<tr><td><code>%&nbsp;</code> (pourcentage espace)</td>
+<tr class="odd"><td><code>%&nbsp;</code> (pourcentage espace)</td>
         <td>Délimiteur de champ (aucune sortie)</td></tr>
 </table>
 
@@ -1654,11 +1656,13 @@ requête</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Caractéristiques de fichier utilisées lors de la génération
 de l'en-tête de réponse HTTP ETag pour les fichiers statiques</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FileETag <var>composant</var> ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>FileETag INode MTime Size</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>FileETag MTime Size</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>La valeur par défaut était "INode&nbsp;MTime&nbsp;Size"
+dans les versions 2.3.14 et antérieures.</td></tr>
 </table>
     <p>
     La directive <code class="directive">FileETag</code> définit les
@@ -1709,7 +1713,7 @@ de l'en-tête de réponse HTTP ETag pour les fichiers statiques</td></tr>
     localisations où WebDAV est activé et qui utilisent
     <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> comme fournisseur de stockage.
     <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> utilise
-    <code>INode&nbsp;MTime&nbsp;Size</code> comme format fixe pour les
+    <code>MTime&nbsp;Size</code> comme format fixe pour les
     comparaisons de champs <code>ETag</code> dans les requêtes
     conditionnelles. Ces requêtes conditionnelles échoueront si le
     format <code>ETag</code> est modifié via la directive
@@ -2127,8 +2131,7 @@ versions 2.1 et supérieures.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Inclut d'autres fichiers de configuration dans un des
 fichiers de configuration du serveur</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Include [<var>optional</var>|<var>strict</var>] <var>chemin fichier</var>|<var>chemin
-répertoire|<var>wildcard</var></var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Include <var>chemin-fichier</var>|<var>chemin-répertoire</var>|<var>wildcard</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
@@ -2154,33 +2157,11 @@ version 2.3.6</td></tr>
     exemple, nous vous recommandons d'utiliser plutôt la syntaxe avec
     caractères génériques comme ci-dessous.</p>
 
-    <p>Lorsque la partie <strong>nom de fichier</strong> ou répertoires
-    du chemin
-    comporte des caractères génériques, et si aucun fichier ou
-    répertoire ne correspond, la directive <code class="directive"><a href="#include">Include</a></code> sera <strong>ignorée
-    silencieusement</strong>.
-    Lorsqu'une partie <strong>répertoires</strong> du chemin comporte
-    des caractères génériques, et si aucun
-    répertoire ne correspond, la directive <code class="directive"><a href="#include">Include</a></code> <strong>échouera et renverra une
-    erreur</strong>
-    indiquant que le fichier ou le répertoire n'a pas été trouvé.
-    </p>
-
-    <p>Pour contrôler plus finement le comportement du serveur
-    lorsqu'aucun fichier ou répertoire ne correspond, préfixez le chemin
-    avec les modificateurs <var>optional</var> ou <var>strict</var>. Si
-    <var>optional</var> est spécifié, tout fichier ou répertoire avec
-    caractères génériques qui ne correspond à aucun fichier ou
-    répertoire sera ignoré silencieusement. Si <var>strict</var> est
-    spécifié,  tout fichier ou répertoire avec
-    caractères génériques qui ne correspond pas à au moins un fichier
-    fera échouer le démarrage du serveur.</p>
-
-	<p>Lorsqu'une partie fichier ou répertoire du chemin est
-	spécipée sans caractères génériques, et si ce fichier ou
-	répertoire n'existe pas, la directive <code class="directive"><a href="#include">Include</a></code> échouera avec un message
-	d'erreur indiquant que le fichier ou répertoire n'a pas pu être
-	trouvé.</p>
+    <p>La directive <code class="directive"><a href="#include">Include</a></code>
+    <strong>échouera avec un code d'erreur</strong> si une expression
+   contenant des caractères génériques ne correspond à aucun fichier.
+   Pour ignorer les expressions contenant des caractères génériques ne
+   correspondant à aucun fichier, utilisez la directive <code class="directive"><a href="#includeoptional">IncludeOptional</a></code>.</p>
 
     <p>Le chemin fichier spécifié peut être soit un chemin absolu, soit
     un chemin relatif au répertoire défini par la directive <code class="directive"><a href="#serverroot">ServerRoot</a></code>.</p>
@@ -2201,50 +2182,50 @@ version 2.3.6</td></tr>
     </code></p></div>
 
     <p>On peut aussi insérer des caractères génériques dans la partie
-    répertoires du chemin. Dans l'exemple suivant, le démarrage du
-    serveur échouera si aucun répertoire ne correspond à conf/vhosts/*,
-    mais réussira si aucun fichier ne correspond à *.conf :</p>
+    répertoires du chemin. Dans l'exemple suivant, la directive
+    échouera si aucun sous-répertoire de conf/vhosts ne contient au
+    moins un fichier *.conf :</p>
   
     <div class="example"><p><code>
-      Include conf/vhosts/*/vhost.conf<br />
       Include conf/vhosts/*/*.conf
     </code></p></div>
 
-    <p>Dans cet exemple, le démarrage du serveur échouera si
-    conf/vhosts/* ne correspond à aucun répertoire, ou si *.conf ne
-    correspond à aucun fichier :</p>
+    <p>Par contre, dans l'exemple suivant, la directive sera simplement
+    ignorée si aucun sous-répertoire de conf/vhosts ne contient au
+    moins un fichier *.conf :</p>
 
     <div class="example"><p><code>
-      Include strict conf/vhosts/*/*.conf
+      IncludeOptional conf/vhosts/*/*.conf
     </code></p></div>
   
-    <p>Dans cet exemple, le démarrage du serveur réussira si
-    conf/vhosts/* ne correspond à aucun répertoire, ou si *.conf ne
-    correspond à aucun fichier.</p>
-
-    <div class="example"><p><code>
-      Include optional conf/vhosts/*/*.conf
-    </code></p></div>
-    
 
 <h3>Voir aussi</h3>
 <ul>
+<li><code class="directive"><a href="#includeoptional">IncludeOptional</a></code></li>
 <li><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="IncludeOptional" id="IncludeOptional">IncludeOptional</a> <a name="includeoptional" id="includeoptional">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Includes other configuration files from within
-the server configuration files</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>IncludeOptional <var>file-path</var>|<var>directory-path</var>|<var>wildcard</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Inclusion de fichiers dans le fichier de configuration</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>IncludeOptional
+<var>chemin-fichier</var>|<var>chemin-répertoire</var>|<var>wildcard</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in 2.3.6 and later</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p><h3>Voir aussi</h3>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.3.6 du serveur HTTP
+Apache</td></tr>
+</table>
+    <p>Cette directive permet d'inclure des fichiers dans les fichiers
+    de configuration du serveur. Elle fonctionne de manière identique à
+    la directive <code class="directive"><a href="#include">Include</a></code>, à
+    l'exception du fait que si l'expression avec caractères génériques
+    wilcard ne correspond à aucun fichier ou répertoire, elle sera
+    ignorée silencieusement au lieu de causer une erreur.</p>    
+    
+
+<h3>Voir aussi</h3>
 <ul>
 <li><code class="directive"><a href="#include">Include</a></code></li>
 <li><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></li>
@@ -2593,7 +2574,7 @@ requête HTTP</td></tr>
     d'<var>octets</var> autorisés dans un en-tête de requête HTTP.</p>
 
     <p>La directive <code class="directive">LimitRequestFieldSize</code> permet
-    à l'administrateur du serveur de réduire ou augmenter la taille
+    à l'administrateur du serveur de définir la taille
     maximale autorisée d'un en-tête de requête HTTP. Pour un serveur,
     cette valeur doit être suffisamment grande pour contenir tout
     en-tête d'une requête client normale. La taille d'un champ d'en-tête
@@ -2615,7 +2596,9 @@ requête HTTP</td></tr>
     </code></p></div>
 
     <div class="note">Dans des conditions normales, la valeur par défaut de cette
-    directive ne doit pas être modifiée.</div>
+    directive ne doit pas être modifiée. En outre, vous ne
+    pouvez pas spécifier une valeur supérieure à 8190 sans modifier le
+    code source et recompiler.</div>
 
     <div class="warning"><h3>Avertissement</h3>
      <p>Dans le cas des serveurs virtuels à base de noms, la valeur de
@@ -2640,7 +2623,7 @@ HTTP</td></tr>
     pour une ligne de requête HTTP en <var>octets</var>.</p>
 
     <p>La directive <code class="directive">LimitRequestLine</code> permet à
-    l'administrateur du serveur de réduire ou augmenter la taille
+    l'administrateur du serveur de définir la taille
     maximale autorisée d'une ligne de requête HTTP client. Comme une
     requête comporte une méthode HTTP, un URI, et une version de
     protocole, la directive <code class="directive">LimitRequestLine</code>
@@ -2662,7 +2645,9 @@ HTTP</td></tr>
     </code></p></div>
 
     <div class="note">Dans des conditions normales, la valeur par défaut de cette
-    directive ne doit pas être modifiée.</div>
+    directive ne doit pas être modifiée. En outre, vous ne
+    pouvez pas spécifier une valeur supérieure à 8190 sans modifier le
+    code source et recompiler.</div>
 
     <div class="warning"><h3>Avertissement</h3>
      <p>Dans le cas des serveurs virtuels à base de noms, la valeur de
@@ -3465,8 +3450,8 @@ verrou pour tous les mutex ou seulement les mutex spécifiés</td></tr>
     <code>sysvsem</code>.</p>
 
     <div class="example"><p><code>
-    Mutex default sysvsem<br />
-    Mutex mpm-accept fcntl:/var/httpd/locks
+    Mutex sysvsem default<br />
+    Mutex fcntl:/var/httpd/locks mpm-accept
     </code></p></div>
 
 </div>

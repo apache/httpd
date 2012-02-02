@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_rewrite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_rewrite.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ce module fournit un moteur de réécriture à base de
 règles permettant de réécrire les URLs des requêtes
 à la volée</td></tr>
@@ -941,6 +939,22 @@ la version version 2.1</td></tr>
       Apache.</p>
       </dd>
 
+      <dt><code>AllowNoSlash</code></dt>
+      <dd>
+      <p>Par défaut, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> ignore les URLs qui
+      correspondent à un répertoire sur disque, mais ne comportent pas
+      de slash final, afin que le module <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code>
+      redirige le client vers l'URL canonique avec un slash final.</p>
+      
+      <p>Lorsque la directive <code class="directive"><a href="../mod/mod_dir.html#directoryslash">DirectorySlash</a></code> est définie à off, il
+      est possible de spécifier l'option <code>AllowNoSlash</code> pour
+      s'assurer que les règles de réécriture ne soient plus ignorées.
+      Si on le souhaite, cette option permet de faire s'appliquer des
+      règles de réécriture qui correspondent à un répertoire sans slash
+      final au sein de fichiers .htaccess. Elle est disponible à
+      partir de la version 2.4.0 du serveur HTTP Apache.</p>
+      </dd>
+
       </dl>
 
 </div>
@@ -1070,7 +1084,12 @@ substitution !
         <dt>un chemin du système de fichiers</dt>
 
         <dd>Il indique alors la localisation dans le système de
-	fichiers de la ressource qui doit être envoyée au client.</dd>
+	fichiers de la ressource qui doit être envoyée au
+	client. Les substitutions ne sont traitées en tant que chemins du
+	système de fichiers que si la règle est configurée dans un
+	contexte de serveur (serveur virtuel), et si le premier
+	composant du chemin dans la substitution existe dans le système
+	de fichiers.</dd>
 
         <dt>chemin d'URL</dt>
 

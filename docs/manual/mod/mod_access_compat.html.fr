@@ -25,8 +25,6 @@
 <a href="../fr/mod/mod_access_compat.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_access_compat.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Autorisations de groupe à base de nom d'hôte (nom ou
 adresse IP)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -75,6 +73,12 @@ ce module sont devenues obsolètes depuis la refonte d'authz. Voir
     certaines méthodes, alors que les autres méthodes ne se verront
     imposée aucune restriction, en regroupant les directives à
     l'intérieur d'une section <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code>.</p>
+
+    <div class="note"><h3>Fusion des sections de configuration</h3>
+      <p>Lorsqu'une directive fournie par ce module est utilisée dans
+      une nouvelle section de configuration, cette dernière n'hérite
+      d'aucune directive définie dans une section précédente.</p>
+    </div>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -222,6 +226,12 @@ d'environnement</var>
     <p>Dans cet exemple, les navigateurs dont la chaîne user-agent
     commence par <code>KnockKnock/2.0</code> se verront accorder
     l'accès, alors que tous les autres seront rejetés.</p>
+
+    <div class="note"><h3>Fusion des sections de configuration</h3>
+      <p>Lorsqu'une directive fournie par ce module est utilisée dans
+      une nouvelle section de configuration, cette dernière n'hérite
+      d'aucune directive définie dans une section précédente.</p>
+    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -399,6 +409,12 @@ les directives <code class="directive">Allow</code> et
     le document <a href="../sections.html">Comment fonctionnent les sections Directory,
     Location et Files</a>.</p>
 
+    <div class="note"><h3>Fusion des sections de configuration</h3>
+      <p>Lorsqu'une directive fournie par ce module est utilisée dans
+      une nouvelle section de configuration, cette dernière n'hérite
+      d'aucune directive définie dans une section précédente.</p>
+    </div>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Satisfy" id="Satisfy">Satisfy</a> <a name="satisfy" id="satisfy">Directive</a></h2>
@@ -467,6 +483,12 @@ et l'authentification utilisateur</td></tr>
     <p>Depuis la version 2.0.51, les directives
     <code class="directive">Satisfy</code> peuvent être restreintes à certaines
     méthodes particulières à l'aide des sections <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code> et <code class="directive"><a href="../mod/core.html#limitexcept">&lt;LimitExcept&gt;</a></code>.</p>
+
+    <div class="note"><h3>Fusion des sections de configuration</h3>
+      <p>Lorsqu'une directive fournie par ce module est utilisée dans
+      une nouvelle section de configuration, cette dernière n'hérite
+      d'aucune directive définie dans une section précédente.</p>
+    </div>
 
 <h3>Voir aussi</h3>
 <ul>

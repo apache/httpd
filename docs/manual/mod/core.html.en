@@ -476,10 +476,29 @@ NoDecode option available in 2.3.12 and later.</td></tr>
       <dd>
       Allow use of the directives controlling host access (<code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code>, <code class="directive"><a href="../mod/mod_authz_host.html#deny">Deny</a></code> and <code class="directive"><a href="../mod/mod_authz_host.html#order">Order</a></code>).</dd>
 
-      <dt>Nonfatal</dt>
+      <dt>Nonfatal=[Override|Unknown|All]</dt>
 
       <dd>
-      Allow use of AllowOverride option to treat syntax errors in .htaccess as non-fatal.</dd>
+      Allow use of AllowOverride option to treat syntax errors in
+      .htaccess as non-fatal: instead of causing an Internal Server
+      Error, disallowed or unrecognised directives will be ignored
+      and a warning logged:
+      <ul>
+          <li><strong>Nonfatal=Override</strong> treats directives
+              forbidden by AllowOverride as non-fatal.</li>
+          <li><strong>Nonfatal=Unknown</strong> treats unknown directives
+              as non-fatal.  This covers typos and directives implemented
+              by a module that's not present.</li>
+          <li><strong>Nonfatal=All</strong> treats both the above as non-fatal.</li>
+      </ul>
+      <p>Note that a syntax error in a valid directive will still cause
+      an internal server error.</p>
+      <div class="note"><h3>Security</h3>
+          Nonfatal errors may have security implications for .htaccess users.
+          For example, if AllowOverride disallows AuthConfig, users'
+          configuration designed to restrict access to a site will be disabled.
+      </div>
+      </dd>
 
       <dt>Options[=<var>Option</var>,...]</dt>
 
