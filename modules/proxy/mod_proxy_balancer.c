@@ -877,7 +877,7 @@ static void push2table(const char *input, apr_table_t *params,
             apr_table_set(params, key, val);
         }
         else {
-            const char **ok = *allowed;
+            const char **ok = allowed;
             while (*ok) {
                 if (strcmp(*ok, key) == 0) {
                     apr_table_set(params, key, val);
