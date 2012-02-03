@@ -104,9 +104,9 @@ AP_DECLARE(apr_bucket_brigade *) ap_core_ctx_get_bb(core_ctx_t *ctx)
     return ctx->b;
 }
 
-int ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
-                         ap_input_mode_t mode, apr_read_type_e block,
-                         apr_off_t readbytes)
+apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
+                                  ap_input_mode_t mode, apr_read_type_e block,
+                                  apr_off_t readbytes)
 {
     apr_bucket *e;
     apr_status_t rv;

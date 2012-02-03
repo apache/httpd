@@ -260,8 +260,11 @@ static apr_status_t pumpit(ap_filter_t *f, apr_bucket *b, firehose_ctx_t *ctx)
     return rv;
 }
 
-static int firehose_input_filter(ap_filter_t *f, apr_bucket_brigade *bb,
-        ap_input_mode_t mode, apr_read_type_e block, apr_off_t readbytes)
+static apr_status_t firehose_input_filter(ap_filter_t *f,
+                                          apr_bucket_brigade *bb,
+                                          ap_input_mode_t mode,
+                                          apr_read_type_e block,
+                                          apr_off_t readbytes)
 {
     apr_bucket *b;
     apr_status_t rv;
@@ -297,7 +300,8 @@ static int firehose_input_filter(ap_filter_t *f, apr_bucket_brigade *bb,
     return APR_SUCCESS;
 }
 
-static int firehose_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
+static apr_status_t firehose_output_filter(ap_filter_t *f,
+                                           apr_bucket_brigade *bb)
 {
     apr_bucket *b;
     apr_status_t rv = APR_SUCCESS;
