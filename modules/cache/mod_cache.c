@@ -577,7 +577,7 @@ static int cache_handler(request_rec *r)
  *
  * Deliver cached content (headers and body) up the stack.
  */
-static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *in)
+static apr_status_t cache_out_filter(ap_filter_t *f, apr_bucket_brigade *in)
 {
     request_rec *r = f->r;
     apr_bucket *e;
@@ -726,7 +726,7 @@ static int cache_save_store(ap_filter_t *f, apr_bucket_brigade *in,
  * waiting for a potentially slow client to acknowledge the failure.
  */
 
-static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
+static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 {
     int rv = !OK;
     request_rec *r = f->r;
@@ -1477,7 +1477,8 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
  * Therefore, if this filter is left in, it must mean we need to toss any
  * existing files.
  */
-static int cache_remove_url_filter(ap_filter_t *f, apr_bucket_brigade *in)
+static apr_status_t cache_remove_url_filter(ap_filter_t *f,
+                                            apr_bucket_brigade *in)
 {
     request_rec *r = f->r;
     cache_request_rec *cache;
@@ -1522,7 +1523,7 @@ static int cache_remove_url_filter(ap_filter_t *f, apr_bucket_brigade *in)
  * INCLUDES filter, or to a filter that might perform transformations unique
  * to the specific request and that would otherwise be non-cacheable.
  */
-static int cache_filter(ap_filter_t *f, apr_bucket_brigade *in)
+static apr_status_t cache_filter(ap_filter_t *f, apr_bucket_brigade *in)
 {
 
     cache_server_conf
