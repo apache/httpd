@@ -78,9 +78,9 @@ do { \
 #undef APLOG_MODULE_INDEX
 #define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
 
-int ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
-                         ap_input_mode_t mode, apr_read_type_e block,
-                         apr_off_t readbytes)
+apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
+                                  ap_input_mode_t mode, apr_read_type_e block,
+                                  apr_off_t readbytes)
 {
     apr_bucket *e;
     apr_status_t rv;

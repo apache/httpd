@@ -844,7 +844,7 @@ static saxctxt *check_filter_init (ap_filter_t *f)
     return f->ctx;
 }
 
-static int proxy_html_filter(ap_filter_t *f, apr_bucket_brigade *bb)
+static apr_status_t proxy_html_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 {
     apr_bucket* b;
     meta *m = NULL;
