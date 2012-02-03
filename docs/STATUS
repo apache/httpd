@@ -9,6 +9,13 @@ http://httpd.apache.org/docs-project/docsformat.html
 To Do List
 =======================
 
+- The following directives of modules included in 2.4.x are not documented:
+  DBDInitSQL (mod_dbd)
+  LDAPRetries (mod_ldap)
+  LDAPRetryDelay (mod_ldap)
+  ProxyHTMLMeta (mod_proxy_html)
+  SSLPKCS7CertificateFile (mod_ssl)
+
 - Update the http://httpd.apache.org/docs-project/docsformat.html
   document to be useful. In particular:
     - Document the various macros that can be used in documents.
