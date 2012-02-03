@@ -969,9 +969,9 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     return rv;
 }
 
-static int xlate_in_filter(ap_filter_t *f, apr_bucket_brigade *bb,
-                           ap_input_mode_t mode, apr_read_type_e block,
-                           apr_off_t readbytes)
+static apr_status_t xlate_in_filter(ap_filter_t *f, apr_bucket_brigade *bb,
+                                    ap_input_mode_t mode, apr_read_type_e block,
+                                    apr_off_t readbytes)
 {
     apr_status_t rv;
     charset_req_t *reqinfo = ap_get_module_config(f->r->request_config,
