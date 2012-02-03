@@ -147,7 +147,7 @@ places where the directive is valid. Directives provided by shared modules are n
 <dd>Show the settings as parsed from the config file (currently only
 shows the virtualhost settings).</dd>
 
-<dt><code>-T</code> (Availabe in 2.3.8 and later)</dt>
+<dt><code>-T</code> (Available in 2.3.8 and later)</dt>
 
 <dd>Skip document root check at startup/restart.</dd>
 
