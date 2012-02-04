@@ -6,6 +6,8 @@ Changes with Apache 2.4.1
      when no custom ErrorDocument is specified for status code 400.  
      [Eric Covener]
 
+  *) mod_proxy_balancer: Fix crash on Windows. PR 52402 [Mladen Turk]
+
   *) core: Check during configtest that the directories for error logs exist.
      PR 29941 [Stefan Fritsch]
 

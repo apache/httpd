@@ -90,14 +90,9 @@ RELEASE SHOWSTOPPERS:
 
   FOR GA:
 
-  * Core output filter reads whole CGI/PIPE-like mutating bucket types into
-    RAM.
-
   KNOWN ISSUES, NEED TO BE EITHER FIXED OR DOCUMENTED IN GA ANNOUNCEMENT
 
   * Docs about building / installing are not up to date.
-
-  * PR 52402: balancer crash on Windows
 
   * PR 52476: SSL failures on windows with AcceptFilter https none
 
