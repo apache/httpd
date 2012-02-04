@@ -689,6 +689,33 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *b);
 AP_DECLARE(const char*) ap_get_server_protocol(server_rec* s);
 AP_DECLARE(void) ap_set_server_protocol(server_rec* s, const char* proto);
 
+typedef struct core_output_filter_ctx core_output_filter_ctx_t;
+typedef struct core_filter_ctx        core_ctx_t;
+
+typedef struct core_net_rec {
+    /** Connection to the client */
+    apr_socket_t *client_socket;
+
+    /** connection record */
+    conn_rec *c;
+
+    core_output_filter_ctx_t *out_ctx;
+    core_ctx_t *in_ctx;
+} core_net_rec;
+
+/**
+ * Insert the network bucket into the core input filter's input brigade.
+ * This hook is intended for MPMs or protocol modules that need to do special
+ * socket setup.
+ * @param c The connection
+ * @param bb The brigade to insert the bucket into
+ * @param socket The socket to put into a bucket
+ * @return AP_DECLINED if the current function does not handle this connection,
+ *         APR_SUCCESS or an error otherwise.
+ */
+AP_DECLARE_HOOK(apr_status_t, insert_network_bucket,
+                (conn_rec *c, apr_bucket_brigade *bb, apr_socket_t *socket))
+
 /* ----------------------------------------------------------------------
  *
  * Runtime status/management

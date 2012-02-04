@@ -385,6 +385,10 @@
  *                         ap_proxy_table_unmerge(), proxy_lb_workers.
  * 20120109.0 (2.4.1-dev)  Changes sizeof(overrides_t) in core config.
  * 20120109.1 (2.4.1-dev)  remove sb_type in global_score.
+ * 20120109.2 (2.4.1-dev)  Make core_output_filter_ctx_t and core_ctx_t
+ *                         private;
+ *                         move core_net rec definition to http_core.h;
+ *                         add insert_network_bucket hook, AP_DECLINED
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -392,7 +396,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120109
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1                   /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 2                   /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

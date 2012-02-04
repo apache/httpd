@@ -386,6 +386,18 @@ extern "C" {
 #endif
 
 /**
+ * @defgroup APACHE_APR_STATUS_T HTTPD specific values of apr_status_t
+ * @{
+ */
+#define AP_START_USERERR            (APR_OS_START_USERERR + 2000)
+#define AP_USERERR_LEN              1000
+
+/** The function declines to handle the request */
+#define AP_DECLINED                 (AP_START_USERERR + 0)
+
+/** @} */
+
+/**
  * @brief The numeric version information is broken out into fields within this
  * structure.
  */
@@ -1269,30 +1281,6 @@ struct server_rec {
     /** Opaque storage location */
     void *context;
 };
-
-typedef struct core_output_filter_ctx {
-    apr_bucket_brigade *buffered_bb;
-    apr_bucket_brigade *tmp_flush_bb;
-    apr_pool_t *deferred_write_pool;
-    apr_size_t bytes_in;
-    apr_size_t bytes_written;
-} core_output_filter_ctx_t;
-
-typedef struct core_filter_ctx {
-    apr_bucket_brigade *b;
-    apr_bucket_brigade *tmpbb;
-} core_ctx_t;
-
-typedef struct core_net_rec {
-    /** Connection to the client */
-    apr_socket_t *client_socket;
-
-    /** connection record */
-    conn_rec *c;
-
-    core_output_filter_ctx_t *out_ctx;
-    core_ctx_t *in_ctx;
-} core_net_rec;
 
 /**
  * Get the context_document_root for a request. This is a generalization of

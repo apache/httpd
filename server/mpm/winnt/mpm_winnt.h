@@ -67,6 +67,7 @@ void mpm_nt_eventlog_stderr_flush(void);
 
 /* From mpm_winnt.c: */
 
+extern module AP_MODULE_DECLARE_DATA mpm_winnt_module;
 extern int ap_threads_per_child;
 
 extern DWORD my_pid;
@@ -92,6 +93,9 @@ void hold_console_open_on_error(void);
 
 /* From child.c: */
 void child_main(apr_pool_t *pconf);
+apr_status_t winnt_insert_network_bucket(conn_rec *c,
+                                         apr_bucket_brigade *bb,
+                                         apr_socket_t *socket);
 
 #endif /* APACHE_MPM_WINNT_H */
 /** @} */
