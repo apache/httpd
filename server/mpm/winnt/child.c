@@ -736,6 +736,23 @@ static winnt_conn_ctx_t *winnt_get_connection(winnt_conn_ctx_t *context)
     return context;
 }
 
+apr_status_t winnt_insert_network_bucket(conn_rec *c,
+                                         apr_bucket_brigade *bb,
+                                         apr_socket_t *socket)
+{
+    apr_bucket *e;
+    winnt_conn_ctx_t *context = ap_get_module_config(c->conn_config,
+                                                     &mpm_winnt_module);
+    if (context == NULL || (e = context->overlapped.Pointer) == NULL)
+        return AP_DECLINED;
+
+    /* seed the brigade with AcceptEx read heap bucket */
+    APR_BRIGADE_INSERT_HEAD(bb, e);
+    /* also seed the brigade with the client socket. */
+    e = apr_bucket_socket_create(socket, c->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(bb, e);
+    return APR_SUCCESS;
+}
 
 /*
  * worker_main()
@@ -810,31 +827,9 @@ static DWORD __stdcall worker_main(void *thread_num_val)
         {
             apr_bucket_free(e);
         }
-        else if (e)
+        else
         {
-            core_net_rec *net;
-            ap_filter_t *filt;
-
-            filt = c->input_filters;
-            while ((strcmp(filt->frec->name, "core_in") != 0) && filt->next)
-                filt = filt->next;
-            net = filt->ctx;
-
-            if (net->in_ctx == NULL)
-            {
-                core_ctx_t *ctx = ap_create_core_ctx(c);
-                apr_bucket_brigade *bb = ap_core_ctx_get_bb(ctx);
-
-                /* seed the brigade with AcceptEx read heap bucket */
-                e = context->overlapped.Pointer;
-                APR_BRIGADE_INSERT_HEAD(bb, e);
-
-                /* also seed the brigade with the client socket. */
-                e = apr_bucket_socket_create(net->client_socket,
-                                             c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(bb, e);
-                net->in_ctx = ctx;
-            }
+            ap_set_module_config(c->conn_config, &mpm_winnt_module, context);
         }
 
         if (!c->aborted)
