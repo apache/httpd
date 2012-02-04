@@ -82,11 +82,17 @@
 
 APR_HOOK_STRUCT(
     APR_HOOK_LINK(get_mgmt_items)
+    APR_HOOK_LINK(insert_network_bucket)
 )
 
 AP_IMPLEMENT_HOOK_RUN_ALL(int, get_mgmt_items,
                           (apr_pool_t *p, const char *val, apr_hash_t *ht),
                           (p, val, ht), OK, DECLINED)
+
+AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, insert_network_bucket,
+                            (conn_rec *c, apr_bucket_brigade *bb,
+                             apr_socket_t *socket),
+                            (c, bb, socket), AP_DECLINED)
 
 /* Server core module... This module provides support for really basic
  * server operations, including options and commands which control the
@@ -4729,6 +4735,15 @@ AP_DECLARE(apr_uint32_t) ap_random_pick(apr_uint32_t min, apr_uint32_t max)
     return number;
 }
 
+static apr_status_t core_insert_network_bucket(conn_rec *c,
+                                               apr_bucket_brigade *bb,
+                                               apr_socket_t *socket)
+{
+    apr_bucket *e = apr_bucket_socket_create(socket, c->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(bb, e);
+    return APR_SUCCESS;
+}
+
 static void core_dump_config(apr_pool_t *p, server_rec *s)
 {
     core_server_config *sconf = ap_get_core_module_config(s->module_config);
@@ -4803,6 +4818,8 @@ static void register_hooks(apr_pool_t *p)
                       APR_HOOK_MIDDLE);
     ap_hook_pre_mpm(ap_create_scoreboard, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_child_status(ap_core_child_status, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_insert_network_bucket(core_insert_network_bucket, NULL, NULL,
+                                  APR_HOOK_REALLY_LAST);
 
     /* register the core's insert_filter hook and register core-provided
      * filters

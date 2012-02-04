@@ -386,6 +386,18 @@ extern "C" {
 #endif
 
 /**
+ * @defgroup APACHE_APR_STATUS_T HTTPD specific values of apr_status_t
+ * @{
+ */
+#define AP_START_USERERR            (APR_OS_START_USERERR + 2000)
+#define AP_USERERR_LEN              1000
+
+/** The function declines to handle the request */
+#define AP_DECLINED                 (AP_START_USERERR + 0)
+
+/** @} */
+
+/**
  * @brief The numeric version information is broken out into fields within this
  * structure.
  */

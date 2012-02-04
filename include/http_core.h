@@ -704,24 +704,17 @@ typedef struct core_net_rec {
 } core_net_rec;
 
 /**
- * Allocate and fill the core_ctx_t for the core input filter, but don't
- * create a bucket with the input socket.
- * Normally this is done automatically when the core input filter is called
- * for the first time, but MPMs or protocol modules that need to do special
- * socket setup can call this function to do the initialization earlier.
- * They must add the input socket bucket to the core input filter's bucket
- * brigade, see ap_core_ctx_get_bb().
- * @param c The conn_rec of the connection
- * @return The core_ctx_t to be stored in core_net_rec->in_ctx
+ * Insert the network bucket into the core input filter's input brigade.
+ * This hook is intended for MPMs or protocol modules that need to do special
+ * socket setup.
+ * @param c The connection
+ * @param bb The brigade to insert the bucket into
+ * @param socket The socket to put into a bucket
+ * @return AP_DECLINED if the current function does not handle this connection,
+ *         APR_SUCCESS or an error otherwise.
  */
-AP_DECLARE(core_ctx_t *) ap_create_core_ctx(conn_rec *c);
-
-/**
- * Accessor for the core input filter's bucket brigade
- * @param c The core_ctx_t to get the brigade from
- * @return The bucket brigade
- */
-AP_DECLARE(apr_bucket_brigade *) ap_core_ctx_get_bb(core_ctx_t *ctx);
+AP_DECLARE_HOOK(apr_status_t, insert_network_bucket,
+                (conn_rec *c, apr_bucket_brigade *bb, apr_socket_t *socket))
 
 /* ----------------------------------------------------------------------
  *

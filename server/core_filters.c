@@ -91,24 +91,10 @@ struct core_filter_ctx {
 };
 
 
-AP_DECLARE(core_ctx_t *) ap_create_core_ctx(conn_rec *c)
-{
-    core_ctx_t *ctx = apr_palloc(c->pool, sizeof(*ctx));
-    ctx->b = apr_brigade_create(c->pool, c->bucket_alloc);
-    ctx->tmpbb = apr_brigade_create(c->pool, c->bucket_alloc);
-    return ctx;
-}
-
-AP_DECLARE(apr_bucket_brigade *) ap_core_ctx_get_bb(core_ctx_t *ctx)
-{
-    return ctx->b;
-}
-
 apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
                                   ap_input_mode_t mode, apr_read_type_e block,
                                   apr_off_t readbytes)
 {
-    apr_bucket *e;
     apr_status_t rv;
     core_net_rec *net = f->ctx;
     core_ctx_t *ctx = net->in_ctx;
@@ -131,10 +117,13 @@ apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
     if (!ctx)
     {
-        net->in_ctx = ctx = ap_create_core_ctx(f->c);
+        net->in_ctx = ctx = apr_palloc(f->c->pool, sizeof(*ctx));
+        ctx->b = apr_brigade_create(f->c->pool, f->c->bucket_alloc);
+        ctx->tmpbb = apr_brigade_create(f->c->pool, f->c->bucket_alloc);
         /* seed the brigade with the client socket. */
-        e = apr_bucket_socket_create(net->client_socket, f->c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(ctx->b, e);
+        rv = ap_run_insert_network_bucket(f->c, ctx->b, net->client_socket);
+        if (rv != APR_SUCCESS)
+            return rv;
     }
     else if (APR_BRIGADE_EMPTY(ctx->b)) {
         return APR_EOF;
