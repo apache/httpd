@@ -15,7 +15,7 @@
 # server will use that explicit path.  If the filenames do *not* begin
 # with "/", the value of ServerRoot is prepended -- so 'log/access_log'
 # with ServerRoot set to '/www' will be interpreted by the
-# server as '/www/log/access_log', where as '/log/access_log' will be
+# server as '/www/log/access_log', whereas '/log/access_log' will be
 # interpreted as '/log/access_log'.
 
 #
