@@ -43,7 +43,7 @@
       <dd>It is now possible to specify <code class="directive"><a href="./mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code> in milliseconds.
       </dd>
 
-      <dt>Loadable MPMs</dt>
+      <dt>Run-time Loadable MPMs</dt>
       <dd>Multiple MPMs can now be built as loadable modules at compile time.
       The MPM of choice can be configured at run time.</dd>
 

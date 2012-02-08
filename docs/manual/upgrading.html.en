@@ -84,6 +84,12 @@
 
       <li>configure: the "reallyall" module set adds developer modules
       to the "all" set</li>
+
+      <li>apr and apr-util: APR and APR-Util are no longer bundled with
+      Apache httpd 2.4. You can either use already installed versions or
+      continue to use <code>--with-included-apr</code> after downloading
+      (from <a href="http://apr.apache.org/">Apache APR</a>) and unpacking
+      apr/apr-util into <code>./srclib/</code></li>
     </ul>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
