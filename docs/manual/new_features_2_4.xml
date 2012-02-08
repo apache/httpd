@@ -39,7 +39,7 @@
       >KeepAliveTimeout</directive> in milliseconds.
       </dd>
 
-      <dt>Loadable MPMs</dt>
+      <dt>Run-time Loadable MPMs</dt>
       <dd>Multiple MPMs can now be built as loadable modules at compile time.
       The MPM of choice can be configured at run time.</dd>
 
