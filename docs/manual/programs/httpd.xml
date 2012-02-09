@@ -39,8 +39,8 @@
      a console application on Windows 9x and ME</a>.</p>
 </summary>
 
-<seealso><a href="../invoking.html">Starting Apache</a></seealso>
-<seealso><a href="../stopping.html">Stopping Apache</a></seealso>
+<seealso><a href="../invoking.html">Starting Apache httpd</a></seealso>
+<seealso><a href="../stopping.html">Stopping Apache httpd</a></seealso>
 <seealso><a href="../configuring.html">Configuration Files</a></seealso>
 <seealso><a href="../platform/">Platform-specific Documentation</a></seealso>
 <seealso><program>apachectl</program></seealso>
@@ -89,7 +89,7 @@ module="core">ServerRoot</directive>. The default is
 <dt><code>-k <code>start|restart|graceful|stop|graceful-stop</code></code></dt>
 
 <dd>Signals <code>httpd</code> to start, restart, or stop.  See <a
-href="../stopping.html">Stopping Apache</a> for more information.</dd>
+href="../stopping.html">Stopping Apache httpd</a> for more information.</dd>
 
 <dt><code>-C <var>directive</var></code></dt>
 
