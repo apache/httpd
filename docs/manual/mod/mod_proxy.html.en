@@ -888,7 +888,7 @@ through</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maps remote servers into the local server URL-space</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyPass [<var>path</var>] !|<var>url</var> [<var>key=value</var>
-  <var>[key=value</var> ...]] [nocanon] [interpolate]</code></td></tr>
+  <var>[key=value</var> ...]] [nocanon] [interpolate] [noquery]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
@@ -1302,6 +1302,11 @@ through</td></tr>
     environment variables will not exist when this interpolation happens,
     so you may still have to resort to <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
     for complex rules.</p>
+
+    <p>Normally, mod_proxy will include the query string when
+    generating the <var>SCRIPT_FILENAME</var> environment variable.
+    The optional <var>noquery</var> keyword (available in
+    httpd 2.4.1 and later) prevents this.</p>
 
     <p>When used inside a <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section, the first argument is omitted and the local
     directory is obtained from the <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>. The same will occur inside a
