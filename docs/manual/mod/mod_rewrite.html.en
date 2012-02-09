@@ -1153,7 +1153,7 @@ cannot use <code>$N</code> in the substitution string!
     </tr>
     <tr>
         <td>nocase|NC</td>
-        <td>Makes the pattern pattern comparison case-insensitive.
+        <td>Makes the pattern comparison case-insensitive.
         <em><a href="../rewrite/flags.html#flag_nc">details ...</a></em></td>
     </tr>
     <tr>
