@@ -183,12 +183,12 @@ href="../platform/windows.html">Windows platform</a>:</p>
 
 <dt><code>-k install|config|uninstall</code></dt>
 
-<dd>Install Apache as a Windows NT service; change startup options for
-the Apache service; and uninstall the Apache service.</dd>
+<dd>Install Apache httpd as a Windows NT service; change startup options for
+the Apache httpd service; and uninstall the Apache httpd service.</dd>
 
 <dt><code>-n <var>name</var></code></dt>
 
-<dd>The <var>name</var> of the Apache service to signal.</dd>
+<dd>The <var>name</var> of the Apache httpd service to signal.</dd>
 
 <dt><code>-w</code></dt>
 
