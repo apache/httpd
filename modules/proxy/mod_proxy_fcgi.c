@@ -188,7 +188,7 @@ static apr_status_t send_data(proxy_conn_rec *conn,
     while (to_write) {
         apr_size_t n = 0;
         rv = apr_socket_sendv(s, vec + offset, nvec - offset, &n);
-        if (rv != APR_SUCCESS) {
+        if ((rv != APR_SUCCESS) && !APR_STATUS_IS_EAGAIN(rv)) {
             break;
         }
         if (n > 0) {

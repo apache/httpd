@@ -636,6 +636,9 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
             /* mod_proxy_http needs to be told.  Different module. */
             apr_table_setn(r->notes, "proxy-nocanon", "1");
         }
+        if (ent->flags & PROXYPASS_NOQUERY) {
+            apr_table_setn(r->notes, "proxy-noquery", "1");
+        }
         return OK;
     }
 
@@ -1393,6 +1396,9 @@ static const char *
         }
         else if (!strcasecmp(word,"interpolate")) {
             flags |= PROXYPASS_INTERPOLATE;
+        }
+        else if (!strcasecmp(word,"noquery")) {
+            flags |= PROXYPASS_NOQUERY;
         }
         else {
             char *val = strchr(word, '=');
