@@ -181,7 +181,7 @@
       <dd>BalancerMembers can be set to 'Drain' so that they only respond to existing sticky
       sessions, allowing them to be taken gracefully offline.</dd>
 
-      <dd>Balancer settings can be persistant after restarts.</dd>
+      <dd>Balancer settings can be persistent after restarts.</dd>
 
       <dt><module>mod_cache</module></dt>
 
