@@ -735,7 +735,7 @@ expressions</description>
 <name>ProxyPass</name>
 <description>Maps remote servers into the local server URL-space</description>
 <syntax>ProxyPass [<var>path</var>] !|<var>url</var> [<var>key=value</var>
-  <var>[key=value</var> ...]] [nocanon] [interpolate]</syntax>
+  <var>[key=value</var> ...]] [nocanon] [interpolate] [noquery]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
@@ -1151,6 +1151,11 @@ expressions</description>
     environment variables will not exist when this interpolation happens,
     so you may still have to resort to <module>mod_rewrite</module>
     for complex rules.</p>
+
+    <p>Normally, mod_proxy will include the query string when
+    generating the <var>SCRIPT_FILENAME</var> environment variable.
+    The optional <var>noquery</var> keyword (available in
+    httpd 2.4.1 and later) prevents this.</p>
 
     <p>When used inside a <directive type="section" module="core"
     >Location</directive> section, the first argument is omitted and the local

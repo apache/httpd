@@ -144,6 +144,7 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
     const apr_table_entry_t *hdrs = (const apr_table_entry_t *) hdrs_arr->elts;
     int i;
     apr_port_t rport;
+    char *q;
 
     /* use a temporary apr_table_t which we'll overlap onto
      * r->subprocess_env later
@@ -241,7 +242,14 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
     apr_table_addn(e, "CONTEXT_PREFIX", ap_context_prefix(r));
     apr_table_addn(e, "CONTEXT_DOCUMENT_ROOT", ap_context_document_root(r));
     apr_table_addn(e, "SERVER_ADMIN", s->server_admin); /* Apache */
-    apr_table_addn(e, "SCRIPT_FILENAME", r->filename);  /* Apache */
+    if (apr_table_get(r->notes, "proxy-noquery") && (q = ap_strchr(r->filename, '?'))) {
+        *q = '\0';
+        apr_table_addn(e, "SCRIPT_FILENAME", apr_pstrdup(r->pool, r->filename));
+        *q = '?';
+    }
+    else {
+        apr_table_addn(e, "SCRIPT_FILENAME", r->filename);  /* Apache */
+    }
 
     rport = c->client_addr->port;
     apr_table_addn(e, "REMOTE_PORT", apr_itoa(r->pool, rport));
