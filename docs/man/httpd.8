@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "HTTPD" 8 "2010-09-28" "Apache HTTP Server" "httpd"
+.TH "HTTPD" 8 "2012-02-10" "Apache HTTP Server" "httpd"
 
 .SH NAME
 httpd \- Apache Hypertext Transfer Protocol Server
@@ -56,7 +56,7 @@ Set the initial value for the ServerRoot directive to \fIserverroot\fR\&. This c
 Uses the directives in the file \fIconfig\fR on startup\&. If \fIconfig\fR does not begin with a /, then it is taken to be a path relative to the ServerRoot\&. The default is conf/httpd\&.conf\&.  
 .TP
 -k start|restart|graceful|stop|graceful-stop
-Signals httpd to start, restart, or stop\&. See Stopping Apache for more information\&.  
+Signals httpd to start, restart, or stop\&. See Stopping Apache httpd for more information\&.  
 .TP
 -C \fIdirective\fR
 Process the configuration \fIdirective\fR before reading config files\&.  
@@ -112,10 +112,10 @@ The following arguments are available only on the Windows platform:
  
 .TP
 -k install|config|uninstall
-Install Apache as a Windows NT service; change startup options for the Apache service; and uninstall the Apache service\&.  
+Install Apache httpd as a Windows NT service; change startup options for the Apache httpd service; and uninstall the Apache httpd service\&.  
 .TP
 -n \fIname\fR
-The \fIname\fR of the Apache service to signal\&.  
+The \fIname\fR of the Apache httpd service to signal\&.  
 .TP
 -w
 Keep the console window open on error so that the error message can be read\&.  
