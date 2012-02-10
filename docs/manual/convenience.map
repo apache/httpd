@@ -246,6 +246,7 @@ imapbase	mod/mod_imagemap.html#imapbase
 imapdefault	mod/mod_imagemap.html#imapdefault
 imapmenu	mod/mod_imagemap.html#imapmenu
 include	mod/core.html#include
+includeoptional	mod/core.html#includeoptional
 indexheadinsert	mod/mod_autoindex.html#indexheadinsert
 indexignore	mod/mod_autoindex.html#indexignore
 indexignorereset	mod/mod_autoindex.html#indexignorereset
