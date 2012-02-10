@@ -1964,8 +1964,9 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 
                     /* ap_get_brigade will return success with an empty brigade
                      * for a non-blocking read which would block: */
-                    if (APR_STATUS_IS_EAGAIN(rv)
-                        || (rv == APR_SUCCESS && APR_BRIGADE_EMPTY(bb))) {
+                    if (mode == APR_NONBLOCK_READ
+                        && (APR_STATUS_IS_EAGAIN(rv)
+                            || (rv == APR_SUCCESS && APR_BRIGADE_EMPTY(bb)))) {
                         /* flush to the client and switch to blocking mode */
                         e = apr_bucket_flush_create(c->bucket_alloc);
                         APR_BRIGADE_INSERT_TAIL(bb, e);
