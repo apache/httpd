@@ -688,7 +688,7 @@ proxied resources</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxymaxforwards">ProxyMaxForwards <var>number</var></a></td><td> -1 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximium number of proxies that a request can be forwarded
 through</td></tr>
 <tr><td><a href="mod_proxy.html#proxypass">ProxyPass [<var>path</var>] !|<var>url</var> [<var>key=value</var>
-  <var>[key=value</var> ...]] [nocanon] [interpolate]</a></td><td></td><td>skd</td><td>E</td></tr><tr><td class="descr" colspan="4">Maps remote servers into the local server URL-space</td></tr>
+  <var>[key=value</var> ...]] [nocanon] [interpolate] [noquery]</a></td><td></td><td>skd</td><td>E</td></tr><tr><td class="descr" colspan="4">Maps remote servers into the local server URL-space</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxypassinterpolateenv">ProxyPassInterpolateEnv On|Off</a></td><td> Off </td><td>skd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable Environment Variable interpolation in Reverse Proxy configurations</td></tr>
 <tr><td><a href="mod_proxy.html#proxypassmatch">ProxyPassMatch [<var>regex</var>] !|<var>url</var> [<var>key=value</var>
 	<var>[key=value</var> ...]]</a></td><td></td><td>skd</td><td>E</td></tr><tr><td class="descr" colspan="4">Maps remote servers into the local server URL-space using regular expressions</td></tr>
