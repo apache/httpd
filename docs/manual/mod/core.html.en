@@ -493,7 +493,7 @@ NoDecode option available in 2.3.12 and later.</td></tr>
       </ul>
       <p>Note that a syntax error in a valid directive will still cause
       an internal server error.</p>
-      <div class="note"><h3>Security</h3>
+      <div class="warning"><h3>Security</h3>
           Nonfatal errors may have security implications for .htaccess users.
           For example, if AllowOverride disallows AuthConfig, users'
           configuration designed to restrict access to a site will be disabled.
