@@ -1410,11 +1410,11 @@ URL を調整する</td></tr>
 <var>public-path</var> に置換されます。
 </p><p>
 <code class="directive"><a href="#proxypassreverse">ProxyPassReverse</a></code>
-での例を使うと、ディレクティブ:
+での例を使うと、ディレクティブ:</p>
     <div class="example"><p><code>
       ProxyPassReverseCookiePath  /  /mirror/foo/
     </code></p></div>
-は、バックエンドのパスが <code>/</code> (あるいは <code>/example</code>
+<p>は、バックエンドのパスが <code>/</code> (あるいは <code>/example</code>
 あるいは実際のところなんでも) のクッキーを <code>/mirror/foo/</code>
 に書き換えます。
 </p>
