@@ -2037,8 +2037,7 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
     sslcon = myConnConfig(c);
     if (found && (ssl = sslcon->ssl) &&
         (sc = mySrvConfig(s))) {
-        SSL_CTX *ctx = SSL_get_SSL_CTX(ssl);
-        SSL_set_SSL_CTX(ssl, sc->server->ssl_ctx);
+        SSL_CTX *ctx = SSL_set_SSL_CTX(ssl, sc->server->ssl_ctx);
         /*
          * SSL_set_SSL_CTX() only deals with the server cert,
          * so we need to duplicate a few additional settings
