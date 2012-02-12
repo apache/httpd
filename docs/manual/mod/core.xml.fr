@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1234876:1242913 (outdated) -->
+<!-- English Revision : 1242913 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -454,6 +454,34 @@ All pour les versions ant&eacute;rieures</default>
       module="mod_authz_host">Allow</directive>, <directive
       module="mod_authz_host">Deny</directive> et <directive
       module="mod_authz_host">Order</directive>).</dd>
+
+      <dt>Nonfatal=[Override|Unknown|All]</dt>
+
+      <dd>
+      Permet d'utiliser l'option AllowOverride pour rendre les erreurs
+      de syntaxe non fatales dans les fichiers .htaccess : au lieu de
+      causer une Internal Server Error, les directives non autoris&eacute;es ou
+      non reconnues seront ignor&eacute;es et un avertissement enregistr&eacute; dans
+      le journal :
+      <ul>
+          <li><strong>Nonfatal=Override</strong> rend les directives
+	  interdite par AllowOverride non fatales.</li>
+          <li><strong>Nonfatal=Unknown</strong> rend les directives
+	  inconnues non fatales. Sont concern&eacute;es les erreurs de frappe
+	  et les directives impl&eacute;ment&eacute;es par un module non charg&eacute;.</li>
+          <li><strong>Nonfatal=All</strong> rend toutes les directives
+	  pr&eacute;c&eacute;dentes non fatales.</li>
+      </ul>
+      <p>Notez qu'une erreur de syntaxe dans une directive valide
+      causera toujours une internal server error.</p>
+      <note type="warning"><title>S&eacute;curit&eacute;</title>
+          Les erreurs non fatales peuvent &ecirc;tre &agrave; l'origine de probl&egrave;mes
+	  de s&eacute;curit&eacute; pour les utilisateurs de fichiers .htaccess. Par
+	  exemple, si AllowOverride interdit AuthConfig, toute
+	  configuration utilisateur destin&eacute;e &agrave; restreindre l'acc&egrave;s &agrave; un
+	  site ne sera pas prise en compte.
+      </note>
+      </dd>
 
       <dt>Options[=<var>Option</var>,...]</dt>
 

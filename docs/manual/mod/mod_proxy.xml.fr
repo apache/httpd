@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1226563:1242351 (outdated) -->
+<!-- English Revision : 1242351 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -817,7 +817,7 @@ du serveur HTTP Apache.</compatibility>
 <description>R&eacute;f&eacute;rencer des serveurs distants depuis
 l'espace d'URLs du serveur local</description>
 <syntax>ProxyPass [<var>chemin</var>] !|<var>url</var> [<var>cl&eacute;=valeur</var>
-  <var>[cl&eacute;=valeur</var> ...]] [nocanon] [interpolate]</syntax>
+  <var>[cl&eacute;=valeur</var> ...]] [nocanon] [interpolate] [noquery]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
@@ -852,9 +852,11 @@ l'espace d'URLs du serveur local</description>
     <code>http://example.com/miroir/foo/bar</code> en une requ&ecirc;te
     mandat&eacute;e pour <code>http://backend.example.com/bar</code>.</p>
 
-    <p>La syntaxe alternative suivante est valide, bien qu'elle induise
-    une d&eacute;gradation des performances lorsqu'elle est pr&eacute;sente en grand
-    nombre :</p>
+    <p>La syntaxe alternative suivante est valide, bien qu'elle puisse
+    induire une d&eacute;gradation des performances lorsqu'elle est
+    pr&eacute;sente en tr&egrave;s grand nombre. Elle poss&egrave;de l'avantage de
+    permettre un contr&ocirc;le dynamique via l'interface <a
+    href="mod_proxy_balancer.html#balancer_manager">Balancer Manager</a> :</p>
 
     <example>
         ProxyPass /miroir/foo/ http://backend.example.com/
@@ -1294,6 +1296,12 @@ l'espace d'URLs du serveur local</description>
     l'interpolation se produit ; vous devrez alors encore avoir avoir
     recours &agrave; <module>mod_rewrite</module> pour des r&egrave;gles
     complexes.</p>
+
+    <p>Par d&eacute;faut, mod_proxy inclut la cha&icirc;ne de param&egrave;tres lors de la
+    g&eacute;n&eacute;ration de la variable d'environnement
+    <var>SCRIPT_FILENAME</var>. Le mot-cl&eacute; optionnel <var>noquery</var>
+    (disponible &agrave; partir de la version 2.4.1) permet d'exclure cette
+    cha&icirc;ne.</p>
 
     <p>Lorsque la directive ProxyPass est utilis&eacute;e &agrave; l'int&eacute;rieur d'une
     section <directive type="section" module="core"
