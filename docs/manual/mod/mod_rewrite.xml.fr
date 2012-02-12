@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1180731:1242504 (outdated) -->
+<!-- English Revision : 1242504 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1347,7 +1347,11 @@ substitution !
         <dt>un chemin du syst&egrave;me de fichiers</dt>
 
         <dd>Il indique alors la localisation dans le syst&egrave;me de
-	fichiers de la ressource qui doit &ecirc;tre envoy&eacute;e au client.</dd>
+	fichiers de la ressource qui doit &ecirc;tre envoy&eacute;e au
+	client. Les substitutions ne sont trait&eacute;es en tant que chemin du
+	syst&egrave;me de fichiers que si les r&egrave;gles sont d&eacute;finies dans un
+	contexte de serveur (virtualhost), et si le premier &eacute;l&eacute;ment de ce
+	chemin existe dans le syst&egrave;me de fichiers.</dd>
 
         <dt>chemin d'URL</dt>
 

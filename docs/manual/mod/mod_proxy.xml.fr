@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1212798:1242938 (outdated) -->
+<!-- English Revision : 1242938 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1409,13 +1409,11 @@ r&eacute;&eacute;crire la cha&icirc;ne <code>path</code> dans les en-t&ecirc;tes
 <var>chemin-public</var>.
 </p><p>
 Dans l'exemple fourni avec la directive <directive
-module="mod_proxy">ProxyPassReverse</directive>, la directive :
-</p>
+module="mod_proxy">ProxyPassReverse</directive>, la directive :</p>
     <example>
       ProxyPassReverseCookiePath  /  /mirror/foo/
     </example>
-<p>
-va r&eacute;&eacute;crire un cookie poss&eacute;dant un chemin d'arri&egrave;re-plan <code>/</code>
+<p>va r&eacute;&eacute;crire un cookie poss&eacute;dant un chemin d'arri&egrave;re-plan <code>/</code>
 (ou <code>/example</code> ou en fait tout chemin)
 en <code>/mirror/foo/</code>..
 </p>
