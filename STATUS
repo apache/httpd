@@ -32,8 +32,8 @@ Release history:
     [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
           while x.{even}.z versions are Stable/GA releases.]
 
-    2.4.1   : In development.
-    2.4.0   : Tagged on January 16, 2012.
+    2.4.1   : Tagged on February 13, 2012.
+    2.4.0   : Tagged on January 16, 2012, not released.
     2.3.16  : Tagged on December 15, 2011.
     2.3.15  : Tagged on November 8, 2011. Released Nov. 15, 2011.
     2.3.14  : Tagged on August 1, 2011. Released Aug. 9, 2011.
@@ -72,7 +72,7 @@ Contributors looking for a mission:
 CURRENT RELEASE NOTES:
 
   * Forward binary compatibility is expected of Apache 2.4.x releases, such
-    that no MMN major number changes will occur after 2.4.0.  Such changes canr
+    that no MMN major number changes will occur after 2.4.1.  Such changes can
     only be made in the trunk.
 
   * All commits to branches/2.4.x must be reflected in SVN trunk,
@@ -83,16 +83,12 @@ CURRENT RELEASE NOTES:
 
 GA PLAN:
 
- Jim proposes GA in late November (at the latest). Jim volunteers to RM these.
-
 
 RELEASE SHOWSTOPPERS:
 
   FOR GA:
 
   KNOWN ISSUES, NEED TO BE EITHER FIXED OR DOCUMENTED IN GA ANNOUNCEMENT
-
-  * Docs about building / installing are not up to date.
 
   * PR 52476: SSL failures on windows with AcceptFilter https none
 
@@ -129,11 +125,6 @@ RELEASE SHOWSTOPPERS:
 
 CURRENT VOTES:
 
-  * Name the Server (version 2.4 or 3.0, depending on the final call)
-    Recent discussion indicates we should designate a (short name).
-    This is not yet a [Vote] - Your nominations please:
-      * Apache HTTP Server (httpd)
-        +1: sctemme (why mess with it?), pgollucci
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
@@ -384,9 +375,6 @@ TODO ISSUES REMAINING IN MOD_SSL:
     to also decrypt proxy keys
 
 WISH LIST
-  * mod_proxy: Ability to run SSL over proxy gateway connections,
-    encrypting (or reencrypting) at the proxy.
-
   * mod_cache: Handle ESI tags.
 
   * mod_cache: Resolve issue of how to cache page fragments (or perhaps
