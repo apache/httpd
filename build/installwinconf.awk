@@ -142,10 +142,10 @@ BEGIN {
 	  print "LoadModule include_module modules/mod_include.so" > dstfl;
 	  print "#LoadModule info_module modules/mod_info.so" > dstfl;
 	  print "LoadModule isapi_module modules/mod_isapi.so" > dstfl;
-	  print "#LoadModule lbmethod_bybusyness_module mod_lbmethod_bybusyness.so" > dstfl;
-	  print "#LoadModule lbmethod_byrequests_module mod_lbmethod_byrequests.so" > dstfl;
-	  print "#LoadModule lbmethod_bytraffic_module mod_lbmethod_bytraffic.so" > dstfl;
-	  print "#LoadModule lbmethod_heartbeat_module mod_lbmethod_heartbeat.so" > dstfl;
+	  print "#LoadModule lbmethod_bybusyness_module modules/mod_lbmethod_bybusyness.so" > dstfl;
+	  print "#LoadModule lbmethod_byrequests_module modules/mod_lbmethod_byrequests.so" > dstfl;
+	  print "#LoadModule lbmethod_bytraffic_module modules/mod_lbmethod_bytraffic.so" > dstfl;
+	  print "#LoadModule lbmethod_heartbeat_module modules/mod_lbmethod_heartbeat.so" > dstfl;
 	  print "#LoadModule ldap_module modules/mod_ldap.so" > dstfl;
 	  print "#LoadModule logio_module modules/mod_logio.so" > dstfl;
 	  print "LoadModule log_config_module modules/mod_log_config.so" > dstfl;
