@@ -3,6 +3,11 @@
 Changes with Apache 2.4.2
 
 
+Changes with Apache 2.4.2
+
+  *) configure: Fix out of tree build using apr and apr-util in srclib.
+     [Rainer Jung]
+
 Changes with Apache 2.4.1
 
   *) SECURITY: CVE-2012-0053 (cve.mitre.org)
