@@ -682,6 +682,7 @@ static int getsfunc_BRIGADE(char *buf, int len, void *arg)
         rv = apr_bucket_read(e, &bucket_data, &bucket_data_len,
                              APR_BLOCK_READ);
         if (rv != APR_SUCCESS || (bucket_data_len == 0)) {
+            *dst = '\0';
             return APR_STATUS_IS_TIMEUP(rv) ? -1 : 0;
         }
         src = bucket_data;
@@ -738,8 +739,10 @@ static int getsfunc_STRING(char *w, int len, void *pvastrs)
     const char *p;
     int t;
 
-    if (!strs->curpos || !*strs->curpos)
+    if (!strs->curpos || !*strs->curpos) {
+        w[0] = '\0';
         return 0;
+    }
     p = ap_strchr_c(strs->curpos, '\n');
     if (p)
         ++p;
