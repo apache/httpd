@@ -87,7 +87,6 @@ APACHE_HELP_STRING(--with-included-apr,Use bundled copies of APR/APR-Util))
 
 if test "x$with_included_apr" = "xyes"; then
   apr_found=reconfig
-  if test ! -d srclib/apr; then
   if test ! -d srclib/apr && test ! -d $srcdir/srclib/apr; then
     AC_MSG_ERROR([Bundled APR requested but not found at ./srclib/. Download and unpack the corresponding apr and apr-util packages to ./srclib/.])
   fi
