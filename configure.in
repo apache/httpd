@@ -88,7 +88,8 @@ APACHE_HELP_STRING(--with-included-apr,Use bundled copies of APR/APR-Util))
 if test "x$with_included_apr" = "xyes"; then
   apr_found=reconfig
   if test ! -d srclib/apr; then
-    AC_MSG_ERROR([Bundled APR requested but not found at srclib/apr. Download and unpack the corresponding httpd-${HTTPD_VERSION}-deps package over this one.])
+  if test ! -d srclib/apr && test ! -d $srcdir/srclib/apr; then
+    AC_MSG_ERROR([Bundled APR requested but not found at ./srclib/. Download and unpack the corresponding apr and apr-util packages to ./srclib/.])
   fi
 else 
   APR_FIND_APR("$srcdir/srclib/apr", "./srclib/apr", 1, 1 2)
@@ -136,8 +137,8 @@ if test "x${apr_major_version}" = "x2"; then
   apu_found=obsolete
 elif test "x$with_included_apr" = "xyes"; then
   apu_found=reconfig
-  if test ! -d srclib/apr-util; then
-    AC_MSG_ERROR([Bundled APR-Util requested but not found at srclib/apr-util. Download and unpack the corresponding httpd-${HTTPD_VERSION}-deps package over this one.])
+  if test ! -d srclib/apr-util && test ! -d $srcdir/srclib/apr-util; then
+    AC_MSG_ERROR([Bundled APR-Util requested but not found at ./srclib/. Download and unpack the corresponding apr and apr-util packages to ./srclib/.])
   fi
 else 
    dnl If httpd is buildconf'ed against an apr 2.x tree, then 1.x
