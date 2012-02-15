@@ -177,6 +177,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://people.apache.org/~rjung/patches/pcre-httpd-2_2_x.patch
     +1: rjung, jorton
 
+  * core: NUL-terminate string returned by ap_scan_script_header_err*()
+    in error case.
+    Trunk patch:
+      http://svn.apache.org/viewvc?rev=1244211&view=rev
+    2.4.x patch:
+      http://svn.apache.org/viewvc?rev=1244213&view=rev
+    2.2.x patch:
+      Trunk version works
+    +1: sf
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
