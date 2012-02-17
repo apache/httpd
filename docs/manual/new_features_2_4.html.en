@@ -100,7 +100,7 @@
 
       <dt><code class="module"><a href="./mod/mod_lua.html">mod_lua</a></code></dt>
       <dd>Embeds the <a href="http://www.lua.org/">Lua</a> language into httpd,
-      for configuration and small business logic functions.</dd>
+      for configuration and small business logic functions. (Experimental)</dd>
 
       <dt><code class="module"><a href="./mod/mod_proxy_express.html">mod_proxy_express</a></code></dt>
       <dd>Provides dynamically configured mass reverse proxies for <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></dd>
@@ -122,9 +122,6 @@
       with the IP address list presented by a proxies or a load balancer via
       the request headers.</dd>
 
-      <dt><code class="module"><a href="./mod/mod_reqtimeout.html">mod_reqtimeout</a></code></dt>
-      <dd>Set timeout and minimum data rate for receiving requests</dd>
-
       <dt><code class="module"><a href="./mod/mod_request.html">mod_request</a></code></dt>
       <dd>Provides Filters to handle and make available HTTP request bodies</dd>
 
@@ -143,6 +140,22 @@
       <dd>Formerly a third-party module, this supports fixing of HTML
       links in a reverse proxy situation, where the backend generates
       URLs that are not valid for the proxy's clients.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_heartmonitor.html">mod_heartmonitor</a></code>,
+          <code class="module"><a href="./mod/mod_lbmethod_heartbeat.html">mod_lbmethod_heartbeat</a></code></dt>
+      <dd>Allow <code class="module"><a href="./mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> to base loadbalancing decisions
+      on the number of active connections on the backend servers.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_sed.html">mod_sed</a></code></dt>
+      <dd>An advanced replacement of <code class="module"><a href="./mod/mod_substitute.html">mod_substitute</a></code>, allows
+      to edit the response body with the full power of sed.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_auth_form.html">mod_auth_form</a></code></dt>
+      <dd>Allows to do form-based authentication.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_session.html">mod_session</a></code></dt>
+      <dd>Allows to keep session state for clients, using cookie or
+      database storage.</dd>
 
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -231,9 +244,11 @@
 
       <dt><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code></dt>
       <dd><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code> adds the <code>[QSD]</code>
-      (Query String Discard) and <code>[END]</code> flags for
-      <code class="directive"><a href="./mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> to
-      simplify common rewriting scenarios.</dd>
+          (Query String Discard) and <code>[END]</code> flags for
+          <code class="directive"><a href="./mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> to
+          simplify common rewriting scenarios.</dd>
+      <dd>Adds the possibility to use complex boolean expressions in <code class="directive"><a href="./mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>.</dd>
+      <dd>Allows to use SQL queries as <code class="directive"><a href="./mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> functions.</dd>
 
       <dt><code class="module"><a href="./mod/mod_ldap.html">mod_ldap</a></code>, <code class="module"><a href="./mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></dt>
       <dd><code class="module"><a href="./mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> adds support for nested groups.</dd>
