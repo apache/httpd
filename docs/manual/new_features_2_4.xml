@@ -96,7 +96,7 @@
 
       <dt><module>mod_lua</module></dt>
       <dd>Embeds the <a href="http://www.lua.org/">Lua</a> language into httpd,
-      for configuration and small business logic functions.</dd>
+      for configuration and small business logic functions. (Experimental)</dd>
 
       <dt><module>mod_proxy_express</module></dt>
       <dd>Provides dynamically configured mass reverse proxies for <module>mod_proxy</module></dd>
@@ -118,9 +118,6 @@
       with the IP address list presented by a proxies or a load balancer via
       the request headers.</dd>
 
-      <dt><module>mod_reqtimeout</module></dt>
-      <dd>Set timeout and minimum data rate for receiving requests</dd>
-
       <dt><module>mod_request</module></dt>
       <dd>Provides Filters to handle and make available HTTP request bodies</dd>
 
@@ -139,6 +136,22 @@
       <dd>Formerly a third-party module, this supports fixing of HTML
       links in a reverse proxy situation, where the backend generates
       URLs that are not valid for the proxy's clients.</dd>
+
+      <dt><module>mod_heartmonitor</module>,
+          <module>mod_lbmethod_heartbeat</module></dt>
+      <dd>Allow <module>mod_proxy_balancer</module> to base loadbalancing decisions
+      on the number of active connections on the backend servers.</dd>
+
+      <dt><module>mod_sed</module></dt>
+      <dd>An advanced replacement of <module>mod_substitute</module>, allows
+      to edit the response body with the full power of sed.</dd>
+
+      <dt><module>mod_auth_form</module></dt>
+      <dd>Allows to do form-based authentication.</dd>
+
+      <dt><module>mod_session</module></dt>
+      <dd>Allows to keep session state for clients, using cookie or
+      database storage.</dd>
 
     </dl>
   </section>
@@ -228,9 +241,13 @@
 
       <dt><module>mod_rewrite</module></dt>
       <dd><module>mod_rewrite</module> adds the <code>[QSD]</code>
-      (Query String Discard) and <code>[END]</code> flags for
-      <directive module="mod_rewrite">RewriteRule</directive> to
-      simplify common rewriting scenarios.</dd>
+          (Query String Discard) and <code>[END]</code> flags for
+          <directive module="mod_rewrite">RewriteRule</directive> to
+          simplify common rewriting scenarios.</dd>
+      <dd>Adds the possibility to use complex boolean expressions in <directive
+          module="mod_rewrite">RewriteCond</directive>.</dd>
+      <dd>Allows to use SQL queries as <directive
+          module="mod_rewrite">RewriteMap</directive> functions.</dd>
 
       <dt><module>mod_ldap</module>, <module>mod_authnz_ldap</module></dt>
       <dd><module>mod_authnz_ldap</module> adds support for nested groups.</dd>
