@@ -57,8 +57,11 @@
       platforms.</dd>
 
       <dt>Per-request configuration sections</dt>
-      <dd>&lt;<directive module="core">If</directive>&gt; sections can be used to
-      set the configuration based on per-request criteria</dd>
+      <dd><directive module="core" type="section">If</directive>,
+          <directive module="core" type="section">ElseIf</directive>,
+          and <directive module="core" type="section">Else</directive>
+          sections can be used to set the configuration based on per-request
+          criteria.</dd>
 
       <dt>General-purpose expression parser</dt>
       <dd>A new expression parser allows to specify
@@ -67,7 +70,7 @@
           <directive module="mod_setenvif">SetEnvIfExpr</directive>,
           <directive module="mod_rewrite">RewriteCond</directive>,
           <directive module="mod_headers">Header</directive>,
-          <directive module="mod_headers" type="section">If</directive>,
+          <directive module="core" type="section">If</directive>,
           and others.
       </dd>
 
@@ -77,6 +80,17 @@
 
       <dt>NameVirtualHost directive</dt>
       <dd>No longer needed and is now deprecated.</dd>
+
+      <dt>Override Configuration</dt>
+      <dd>The new <directive module="core">AllowOverrideList</directive>
+          directive allows more fine grained control which directives are
+          allowed in <code>.htaccess</code> files. </dd>
+
+      <dt>Config file variable</dt>
+      <dd>It is now possible to <directive module="core">Define</directive>
+          variables in the configuration, allowing a clearer representation
+          if the same value is used at many places in the configuration.
+      </dd>
 
     </dl>
   </section>
@@ -174,6 +188,8 @@
       <dd><module>mod_ssl</module> can now be configured to share SSL Session
       data between servers through memcached</dd>
 
+      <dd>EC keys are now supported in addition to RSA and DSA.</dd>
+
       <dt><module>mod_proxy</module></dt>
 
       <dd>The <directive module="mod_proxy">ProxyPass</directive> directive
@@ -182,6 +198,7 @@
       <directive module="core">LocationMatch</directive>
       block, and offers a significant performance advantage over the traditional
       two-parameter syntax when present in large numbers.</dd>
+  <dd>The source address used for proxy requests is now configurable.</dd>
 
       <dt><module>mod_proxy_balancer</module></dt>
 
@@ -268,7 +285,8 @@
     <title>Program Enhancements</title>
     <dl>
         <dt>fcgistarter</dt>
-        <dd>FastCGI deamon starter utility</dd>
+        <dd>New FastCGI deamon starter utility</dd>
+
         <dt>htcacheclean</dt>
         <dd>Current cached URLs can now be listed, with optional metadata
         included.</dd>
@@ -279,6 +297,10 @@
         <dd>Cache size can now be limited by the number of inodes, instead
         of or in addition to being limited by the size of the files on
         disk.</dd>
+
+        <dt>rotatelogs</dt>
+        <dd>May now create a link to the current log file.</dd>
+        <dd>May now invoke a custom post-rotate script.</dd>
     </dl>
   </section>
 
