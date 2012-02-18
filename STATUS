@@ -93,6 +93,27 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * mod_proxy: cure size_t abuse part 1, backport relevant bits of r1227856,
+    Specifically normalizes ap_proxy_string_read so that the prototype
+    agrees with the actual implementation, which I believe is a bug fix
+    as opposed to an actual API change, ergo no MMN bump necessary(?).
+    Branch patch:
+      http://svn.apache.org/viewvc?rev=1227860&view=rev
+    +1: wrowe, rpluem, jorton
+
+  * configure: Using external apr and apu in non-default path
+    breaks configure, since checking for apu version does not
+    set up apr include path in CPPFLAGS.
+    CPP with gcc before 4.6.2 only outputs an error, but our check
+    still succeeds; gcc 4.6.2 aborts and our check fails.
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=1091330&view=rev
+      Backport for 2.4.x: change was applied before branching 2.4.x.
+      Backport version for 2.2.x of patch:
+         http://people.apache.org/~rjung/patches/apu-version-check-backport-r1091330-2_2_x.patch
+      +1: rjung, rpluem, jorton
+      -1:
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -143,28 +164,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     rpluem says: The proposed patch contains tabs and indenting is not correct.
                  This should be fixed first.
 
-  * mod_proxy: cure size_t abuse part 1, backport relevant bits of r1227856,
-    Specifically normalizes ap_proxy_string_read so that the prototype
-    agrees with the actual implementation, which I believe is a bug fix
-    as opposed to an actual API change, ergo no MMN bump necessary(?).
-    Branch patch:
-      http://svn.apache.org/viewvc?rev=1227860&view=rev
-    +1: wrowe, rpluem, jorton
-
-  * configure: Using external apr and apu in non-default path
-    breaks configure, since checking for apu version does not
-    set up apr include path in CPPFLAGS.
-    CPP with gcc before 4.6.2 only outputs an error, but our check
-    still succeeds; gcc 4.6.2 aborts and our check fails.
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=1091330&view=rev
-      Backport for 2.4.x: change was applied before branching 2.4.x.
-      Backport version for 2.2.x of patch:
-         http://people.apache.org/~rjung/patches/apu-version-check-backport-r1091330-2_2_x.patch
-      +1: rjung, rpluem, jorton
-      -1:
-
-  * core: Fix building against external PCRE 8.30.
+    * core: Fix building against external PCRE 8.30.
     PCRE has removed long deprecated pcre_info(). Use pcre_fullinfo()
     instead which is present as a replacement since PCRE 3.0 so
     would also be OK when building with bundled PCRE.
@@ -185,7 +185,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=1244213&view=rev
     2.2.x patch:
       Trunk version works
-    +1: sf
+    +1: sf, covener
 
 PATCHES/ISSUES THAT ARE STALLED
 
