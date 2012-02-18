@@ -39,19 +39,9 @@
 <h2><a name="core" id="core">Core Enhancements</a></h2>
     
     <dl>
-      <dt>KeepAliveTimeout in milliseconds</dt>
-      <dd>It is now possible to specify <code class="directive"><a href="./mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code> in milliseconds.
-      </dd>
-
       <dt>Loadable MPMs</dt>
       <dd>Multiple MPMs can now be built as loadable modules at compile time.
       The MPM of choice can be configured at run time.</dd>
-
-      <dt>Per-module and per-directory LogLevel configuration</dt>
-      <dd>The <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> can now be
-      configured per module and per directory.  New levels <code>trace1</code>
-      to <code>trace8</code> have been added above the <code>debug</code> log
-      level.</dd>
 
       <dt>Event MPM</dt>
       <dd>The Event MPM is no longer experimental but is now fully supported.</dd>
@@ -59,6 +49,12 @@
       <dt>Asynchronous support</dt>
       <dd>Better support for asynchronous read/write for supporting MPMs and
       platforms.</dd>
+
+      <dt>Per-module and per-directory LogLevel configuration</dt>
+      <dd>The <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> can now be
+      configured per module and per directory.  New levels <code>trace1</code>
+      to <code>trace8</code> have been added above the <code>debug</code> log
+      level.</dd>
 
       <dt>Per-request configuration sections</dt>
       <dd><code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code>,
@@ -78,9 +74,9 @@
           and others.
       </dd>
 
-      <dt>Reduced memory usage</dt>
-      <dd>Despite many new features, 2.4.x tends to use less memory than
-      2.2.x.</dd>
+      <dt>KeepAliveTimeout in milliseconds</dt>
+      <dd>It is now possible to specify <code class="directive"><a href="./mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code> in milliseconds.
+      </dd>
 
       <dt>NameVirtualHost directive</dt>
       <dd>No longer needed and is now deprecated.</dd>
@@ -90,11 +86,15 @@
           directive allows more fine grained control which directives are
           allowed in <code>.htaccess</code> files. </dd>
 
-      <dt>Config file variable</dt>
+      <dt>Config file variables</dt>
       <dd>It is now possible to <code class="directive"><a href="./mod/core.html#define">Define</a></code>
           variables in the configuration, allowing a clearer representation
           if the same value is used at many places in the configuration.
       </dd>
+
+      <dt>Reduced memory usage</dt>
+      <dd>Despite many new features, 2.4.x tends to use less memory than
+      2.2.x.</dd>
 
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -102,63 +102,30 @@
 <h2><a name="newmods" id="newmods">New Modules</a></h2>
     
     <dl>
-      <dt><code class="module"><a href="./mod/mod_allowmethods.html">mod_allowmethods</a></code></dt>
-      <dd>New module to restrict certain HTTP methods without interfering with
-      authentication or authorization.</dd>
-
-      <dt><code class="module"><a href="./mod/mod_buffer.html">mod_buffer</a></code></dt>
-      <dd>Provides for buffering the input and output filter stacks</dd>
-
-      <dt><code class="module"><a href="./mod/mod_data.html">mod_data</a></code></dt>
-      <dd>Convert response body into an RFC2397 data URL</dd>
-
-      <dt><code class="module"><a href="./mod/mod_lua.html">mod_lua</a></code></dt>
-      <dd>Embeds the <a href="http://www.lua.org/">Lua</a> language into httpd,
-      for configuration and small business logic functions. (Experimental)</dd>
-
-      <dt><code class="module"><a href="./mod/mod_proxy_express.html">mod_proxy_express</a></code></dt>
-      <dd>Provides dynamically configured mass reverse proxies for <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></dd>
-
       <dt><code class="module"><a href="./mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code></dt>
       <dd>FastCGI Protocol backend for <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></dd>
 
       <dt><code class="module"><a href="./mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code></dt>
       <dd>SCGI Protocol backend for <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></dd>
 
-      <dt><code class="module"><a href="./mod/mod_ratelimit.html">mod_ratelimit</a></code></dt>
-      <dd>Provides Bandwidth Rate Limiting for Clients</dd>
-
-      <dt><code class="module"><a href="./mod/mod_reflector.html">mod_reflector</a></code></dt>
-      <dd>Provides Reflection of a request body as a response via the output filter stack.</dd>
+      <dt><code class="module"><a href="./mod/mod_proxy_express.html">mod_proxy_express</a></code></dt>
+      <dd>Provides dynamically configured mass reverse proxies for
+      <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></dd>
 
       <dt><code class="module"><a href="./mod/mod_remoteip.html">mod_remoteip</a></code></dt>
       <dd>Replaces the apparent client remote IP address and hostname for the request
       with the IP address list presented by a proxies or a load balancer via
       the request headers.</dd>
 
-      <dt><code class="module"><a href="./mod/mod_request.html">mod_request</a></code></dt>
-      <dd>Provides Filters to handle and make available HTTP request bodies</dd>
-
-      <dt><code class="module"><a href="./mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code></dt>
-      <dd>Provides a Slot-based shared memory provider (ala the scoreboard).</dd>
-
-      <dt><code class="module"><a href="./mod/mod_log_debug.html">mod_log_debug</a></code></dt>
-      <dd>Allows to add customizable debug logging at different phases of the
-      request processing.</dd>
-
-      <dt><code class="module"><a href="./mod/mod_xml2enc.html">mod_xml2enc</a></code></dt>
-      <dd>Formerly a third-party module, this supports internationalisation
-      in libxml2-based (markup-aware) filter modules.</dd>
+      <dt><code class="module"><a href="./mod/mod_heartmonitor.html">mod_heartmonitor</a></code>,
+          <code class="module"><a href="./mod/mod_lbmethod_heartbeat.html">mod_lbmethod_heartbeat</a></code></dt>
+      <dd>Allow <code class="module"><a href="./mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> to base loadbalancing decisions
+      on the number of active connections on the backend servers.</dd>
 
       <dt><code class="module"><a href="./mod/mod_proxy_html.html">mod_proxy_html</a></code></dt>
       <dd>Formerly a third-party module, this supports fixing of HTML
       links in a reverse proxy situation, where the backend generates
       URLs that are not valid for the proxy's clients.</dd>
-
-      <dt><code class="module"><a href="./mod/mod_heartmonitor.html">mod_heartmonitor</a></code>,
-          <code class="module"><a href="./mod/mod_lbmethod_heartbeat.html">mod_lbmethod_heartbeat</a></code></dt>
-      <dd>Allow <code class="module"><a href="./mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> to base loadbalancing decisions
-      on the number of active connections on the backend servers.</dd>
 
       <dt><code class="module"><a href="./mod/mod_sed.html">mod_sed</a></code></dt>
       <dd>An advanced replacement of <code class="module"><a href="./mod/mod_substitute.html">mod_substitute</a></code>, allows
@@ -170,6 +137,40 @@
       <dt><code class="module"><a href="./mod/mod_session.html">mod_session</a></code></dt>
       <dd>Allows to keep session state for clients, using cookie or
       database storage.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_allowmethods.html">mod_allowmethods</a></code></dt>
+      <dd>New module to restrict certain HTTP methods without interfering with
+      authentication or authorization.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_lua.html">mod_lua</a></code></dt>
+      <dd>Embeds the <a href="http://www.lua.org/">Lua</a> language into httpd,
+      for configuration and small business logic functions. (Experimental)</dd>
+
+      <dt><code class="module"><a href="./mod/mod_log_debug.html">mod_log_debug</a></code></dt>
+      <dd>Allows to add customizable debug logging at different phases of the
+      request processing.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_buffer.html">mod_buffer</a></code></dt>
+      <dd>Provides for buffering the input and output filter stacks</dd>
+
+      <dt><code class="module"><a href="./mod/mod_data.html">mod_data</a></code></dt>
+      <dd>Convert response body into an RFC2397 data URL</dd>
+
+      <dt><code class="module"><a href="./mod/mod_ratelimit.html">mod_ratelimit</a></code></dt>
+      <dd>Provides Bandwidth Rate Limiting for Clients</dd>
+
+      <dt><code class="module"><a href="./mod/mod_request.html">mod_request</a></code></dt>
+      <dd>Provides Filters to handle and make available HTTP request bodies</dd>
+
+      <dt><code class="module"><a href="./mod/mod_reflector.html">mod_reflector</a></code></dt>
+      <dd>Provides Reflection of a request body as a response via the output filter stack.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code></dt>
+      <dd>Provides a Slot-based shared memory provider (ala the scoreboard).</dd>
+
+      <dt><code class="module"><a href="./mod/mod_xml2enc.html">mod_xml2enc</a></code></dt>
+      <dd>Formerly a third-party module, this supports internationalisation
+      in libxml2-based (markup-aware) filter modules.</dd>
 
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -255,10 +256,6 @@
           and the related container directives, such as
           <code class="directive"><a href="./mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code>.</dd>
 
-      <dt><code class="module"><a href="./mod/mod_info.html">mod_info</a></code></dt>
-      <dd><code class="module"><a href="./mod/mod_info.html">mod_info</a></code> can now dump the pre-parsed configuration
-          to stdout during server startup.</dd>
-
       <dt><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code></dt>
       <dd><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code> adds the <code>[QSD]</code>
           (Query String Discard) and <code>[END]</code> flags for
@@ -278,6 +275,11 @@
       <dd><code class="module"><a href="./mod/mod_ldap.html">mod_ldap</a></code> adds
           <code class="directive"><a href="./mod/mod_ldap.html#ldaplibrarydebug">LDAPLibraryDebug</a></code> to log
           debug information provided by the used LDAP toolkit.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_info.html">mod_info</a></code></dt>
+      <dd><code class="module"><a href="./mod/mod_info.html">mod_info</a></code> can now dump the pre-parsed configuration
+          to stdout during server startup.</dd>
+
 
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
