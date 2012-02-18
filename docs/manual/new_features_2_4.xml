@@ -34,20 +34,9 @@
   <section id="core">
     <title>Core Enhancements</title>
     <dl>
-      <dt>KeepAliveTimeout in milliseconds</dt>
-      <dd>It is now possible to specify <directive module="core"
-      >KeepAliveTimeout</directive> in milliseconds.
-      </dd>
-
       <dt>Run-time Loadable MPMs</dt>
       <dd>Multiple MPMs can now be built as loadable modules at compile time.
       The MPM of choice can be configured at run time.</dd>
-
-      <dt>Per-module and per-directory LogLevel configuration</dt>
-      <dd>The <directive module="core">LogLevel</directive> can now be
-      configured per module and per directory.  New levels <code>trace1</code>
-      to <code>trace8</code> have been added above the <code>debug</code> log
-      level.</dd>
 
       <dt>Event MPM</dt>
       <dd>The Event MPM is no longer experimental but is now fully supported.</dd>
@@ -56,9 +45,18 @@
       <dd>Better support for asynchronous read/write for supporting MPMs and
       platforms.</dd>
 
+      <dt>Per-module and per-directory LogLevel configuration</dt>
+      <dd>The <directive module="core">LogLevel</directive> can now be
+      configured per module and per directory.  New levels <code>trace1</code>
+      to <code>trace8</code> have been added above the <code>debug</code> log
+      level.</dd>
+
       <dt>Per-request configuration sections</dt>
-      <dd>&lt;<directive module="core">If</directive>&gt; sections can be used to
-      set the configuration based on per-request criteria</dd>
+      <dd><directive module="core" type="section">If</directive>,
+          <directive module="core" type="section">ElseIf</directive>,
+          and <directive module="core" type="section">Else</directive>
+          sections can be used to set the configuration based on per-request
+          criteria.</dd>
 
       <dt>General-purpose expression parser</dt>
       <dd>A new expression parser allows to specify
@@ -67,16 +65,32 @@
           <directive module="mod_setenvif">SetEnvIfExpr</directive>,
           <directive module="mod_rewrite">RewriteCond</directive>,
           <directive module="mod_headers">Header</directive>,
-          <directive module="mod_headers" type="section">If</directive>,
+          <directive module="core" type="section">If</directive>,
           and others.
+      </dd>
+
+      <dt>KeepAliveTimeout in milliseconds</dt>
+      <dd>It is now possible to specify <directive module="core"
+      >KeepAliveTimeout</directive> in milliseconds.
+      </dd>
+
+      <dt>NameVirtualHost directive</dt>
+      <dd>No longer needed and is now deprecated.</dd>
+
+      <dt>Override Configuration</dt>
+      <dd>The new <directive module="core">AllowOverrideList</directive>
+          directive allows more fine grained control which directives are
+          allowed in <code>.htaccess</code> files. </dd>
+
+      <dt>Config file variables</dt>
+      <dd>It is now possible to <directive module="core">Define</directive>
+          variables in the configuration, allowing a clearer representation
+          if the same value is used at many places in the configuration.
       </dd>
 
       <dt>Reduced memory usage</dt>
       <dd>Despite many new features, 2.4.x tends to use less memory than
       2.2.x.</dd>
-
-      <dt>NameVirtualHost directive</dt>
-      <dd>No longer needed and is now deprecated.</dd>
 
     </dl>
   </section>
@@ -84,63 +98,30 @@
   <section id="newmods">
     <title>New Modules</title>
     <dl>
-      <dt><module>mod_allowmethods</module></dt>
-      <dd>New module to restrict certain HTTP methods without interfering with
-      authentication or authorization.</dd>
-
-      <dt><module>mod_buffer</module></dt>
-      <dd>Provides for buffering the input and output filter stacks</dd>
-
-      <dt><module>mod_data</module></dt>
-      <dd>Convert response body into an RFC2397 data URL</dd>
-
-      <dt><module>mod_lua</module></dt>
-      <dd>Embeds the <a href="http://www.lua.org/">Lua</a> language into httpd,
-      for configuration and small business logic functions. (Experimental)</dd>
-
-      <dt><module>mod_proxy_express</module></dt>
-      <dd>Provides dynamically configured mass reverse proxies for <module>mod_proxy</module></dd>
-
       <dt><module>mod_proxy_fcgi</module></dt>
       <dd>FastCGI Protocol backend for <module>mod_proxy</module></dd>
 
       <dt><module>mod_proxy_scgi</module></dt>
       <dd>SCGI Protocol backend for <module>mod_proxy</module></dd>
 
-      <dt><module>mod_ratelimit</module></dt>
-      <dd>Provides Bandwidth Rate Limiting for Clients</dd>
-
-      <dt><module>mod_reflector</module></dt>
-      <dd>Provides Reflection of a request body as a response via the output filter stack.</dd>
+      <dt><module>mod_proxy_express</module></dt>
+      <dd>Provides dynamically configured mass reverse proxies for
+      <module>mod_proxy</module></dd>
 
       <dt><module>mod_remoteip</module></dt>
       <dd>Replaces the apparent client remote IP address and hostname for the request
       with the IP address list presented by a proxies or a load balancer via
       the request headers.</dd>
 
-      <dt><module>mod_request</module></dt>
-      <dd>Provides Filters to handle and make available HTTP request bodies</dd>
-
-      <dt><module>mod_slotmem_shm</module></dt>
-      <dd>Provides a Slot-based shared memory provider (ala the scoreboard).</dd>
-
-      <dt><module>mod_log_debug</module></dt>
-      <dd>Allows to add customizable debug logging at different phases of the
-      request processing.</dd>
-
-      <dt><module>mod_xml2enc</module></dt>
-      <dd>Formerly a third-party module, this supports internationalisation
-      in libxml2-based (markup-aware) filter modules.</dd>
+      <dt><module>mod_heartmonitor</module>,
+          <module>mod_lbmethod_heartbeat</module></dt>
+      <dd>Allow <module>mod_proxy_balancer</module> to base loadbalancing decisions
+      on the number of active connections on the backend servers.</dd>
 
       <dt><module>mod_proxy_html</module></dt>
       <dd>Formerly a third-party module, this supports fixing of HTML
       links in a reverse proxy situation, where the backend generates
       URLs that are not valid for the proxy's clients.</dd>
-
-      <dt><module>mod_heartmonitor</module>,
-          <module>mod_lbmethod_heartbeat</module></dt>
-      <dd>Allow <module>mod_proxy_balancer</module> to base loadbalancing decisions
-      on the number of active connections on the backend servers.</dd>
 
       <dt><module>mod_sed</module></dt>
       <dd>An advanced replacement of <module>mod_substitute</module>, allows
@@ -152,6 +133,40 @@
       <dt><module>mod_session</module></dt>
       <dd>Allows to keep session state for clients, using cookie or
       database storage.</dd>
+
+      <dt><module>mod_allowmethods</module></dt>
+      <dd>New module to restrict certain HTTP methods without interfering with
+      authentication or authorization.</dd>
+
+      <dt><module>mod_lua</module></dt>
+      <dd>Embeds the <a href="http://www.lua.org/">Lua</a> language into httpd,
+      for configuration and small business logic functions. (Experimental)</dd>
+
+      <dt><module>mod_log_debug</module></dt>
+      <dd>Allows to add customizable debug logging at different phases of the
+      request processing.</dd>
+
+      <dt><module>mod_buffer</module></dt>
+      <dd>Provides for buffering the input and output filter stacks</dd>
+
+      <dt><module>mod_data</module></dt>
+      <dd>Convert response body into an RFC2397 data URL</dd>
+
+      <dt><module>mod_ratelimit</module></dt>
+      <dd>Provides Bandwidth Rate Limiting for Clients</dd>
+
+      <dt><module>mod_request</module></dt>
+      <dd>Provides Filters to handle and make available HTTP request bodies</dd>
+
+      <dt><module>mod_reflector</module></dt>
+      <dd>Provides Reflection of a request body as a response via the output filter stack.</dd>
+
+      <dt><module>mod_slotmem_shm</module></dt>
+      <dd>Provides a Slot-based shared memory provider (ala the scoreboard).</dd>
+
+      <dt><module>mod_xml2enc</module></dt>
+      <dd>Formerly a third-party module, this supports internationalisation
+      in libxml2-based (markup-aware) filter modules.</dd>
 
     </dl>
   </section>
@@ -174,6 +189,8 @@
       <dd><module>mod_ssl</module> can now be configured to share SSL Session
       data between servers through memcached</dd>
 
+      <dd>EC keys are now supported in addition to RSA and DSA.</dd>
+
       <dt><module>mod_proxy</module></dt>
 
       <dd>The <directive module="mod_proxy">ProxyPass</directive> directive
@@ -182,6 +199,7 @@
       <directive module="core">LocationMatch</directive>
       block, and offers a significant performance advantage over the traditional
       two-parameter syntax when present in large numbers.</dd>
+  <dd>The source address used for proxy requests is now configurable.</dd>
 
       <dt><module>mod_proxy_balancer</module></dt>
 
@@ -235,10 +253,6 @@
           <directive module="mod_authz_core"
           type="section">RequireAll</directive>.</dd>
 
-      <dt><module>mod_info</module></dt>
-      <dd><module>mod_info</module> can now dump the pre-parsed configuration
-          to stdout during server startup.</dd>
-
       <dt><module>mod_rewrite</module></dt>
       <dd><module>mod_rewrite</module> adds the <code>[QSD]</code>
           (Query String Discard) and <code>[END]</code> flags for
@@ -261,6 +275,11 @@
           <directive module="mod_ldap">LDAPLibraryDebug</directive> to log
           debug information provided by the used LDAP toolkit.</dd>
 
+      <dt><module>mod_info</module></dt>
+      <dd><module>mod_info</module> can now dump the pre-parsed configuration
+          to stdout during server startup.</dd>
+
+
     </dl>
   </section>
 
@@ -268,7 +287,8 @@
     <title>Program Enhancements</title>
     <dl>
         <dt>fcgistarter</dt>
-        <dd>FastCGI deamon starter utility</dd>
+        <dd>New FastCGI deamon starter utility</dd>
+
         <dt>htcacheclean</dt>
         <dd>Current cached URLs can now be listed, with optional metadata
         included.</dd>
@@ -279,6 +299,10 @@
         <dd>Cache size can now be limited by the number of inodes, instead
         of or in addition to being limited by the size of the files on
         disk.</dd>
+
+        <dt>rotatelogs</dt>
+        <dd>May now create a link to the current log file.</dd>
+        <dd>May now invoke a custom post-rotate script.</dd>
     </dl>
   </section>
 
