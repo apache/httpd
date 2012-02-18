@@ -61,8 +61,11 @@
       platforms.</dd>
 
       <dt>Per-request configuration sections</dt>
-      <dd>&lt;<code class="directive"><a href="./mod/core.html#if">If</a></code>&gt; sections can be used to
-      set the configuration based on per-request criteria</dd>
+      <dd><code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code>,
+          <code class="directive"><a href="./mod/core.html#elseif">&lt;ElseIf&gt;</a></code>,
+          and <code class="directive"><a href="./mod/core.html#else">&lt;Else&gt;</a></code>
+          sections can be used to set the configuration based on per-request
+          criteria.</dd>
 
       <dt>General-purpose expression parser</dt>
       <dd>A new expression parser allows to specify
@@ -71,7 +74,7 @@
           <code class="directive"><a href="./mod/mod_setenvif.html#setenvifexpr">SetEnvIfExpr</a></code>,
           <code class="directive"><a href="./mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>,
           <code class="directive"><a href="./mod/mod_headers.html#header">Header</a></code>,
-          <code class="directive"><a href="./mod/mod_headers.html#if">&lt;If&gt;</a></code>,
+          <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code>,
           and others.
       </dd>
 
@@ -81,6 +84,17 @@
 
       <dt>NameVirtualHost directive</dt>
       <dd>No longer needed and is now deprecated.</dd>
+
+      <dt>Override Configuration</dt>
+      <dd>The new <code class="directive"><a href="./mod/core.html#allowoverridelist">AllowOverrideList</a></code>
+          directive allows more fine grained control which directives are
+          allowed in <code>.htaccess</code> files. </dd>
+
+      <dt>Config file variable</dt>
+      <dd>It is now possible to <code class="directive"><a href="./mod/core.html#define">Define</a></code>
+          variables in the configuration, allowing a clearer representation
+          if the same value is used at many places in the configuration.
+      </dd>
 
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -178,6 +192,8 @@
       <dd><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code> can now be configured to share SSL Session
       data between servers through memcached</dd>
 
+      <dd>EC keys are now supported in addition to RSA and DSA.</dd>
+
       <dt><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></dt>
 
       <dd>The <code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code> directive
@@ -186,6 +202,7 @@
       <code class="directive"><a href="./mod/core.html#locationmatch">LocationMatch</a></code>
       block, and offers a significant performance advantage over the traditional
       two-parameter syntax when present in large numbers.</dd>
+  <dd>The source address used for proxy requests is now configurable.</dd>
 
       <dt><code class="module"><a href="./mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></dt>
 
@@ -269,7 +286,8 @@
     
     <dl>
         <dt>fcgistarter</dt>
-        <dd>FastCGI deamon starter utility</dd>
+        <dd>New FastCGI deamon starter utility</dd>
+
         <dt>htcacheclean</dt>
         <dd>Current cached URLs can now be listed, with optional metadata
         included.</dd>
@@ -280,6 +298,10 @@
         <dd>Cache size can now be limited by the number of inodes, instead
         of or in addition to being limited by the size of the files on
         disk.</dd>
+
+        <dt>rotatelogs</dt>
+        <dd>May now create a link to the current log file.</dd>
+        <dd>May now invoke a custom post-rotate script.</dd>
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
