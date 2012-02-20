@@ -5,6 +5,9 @@ Changes with Apache 2.4.2
 
 Changes with Apache 2.4.2
 
+  *) Configuration: Switch documentation links from trunk to 2.4.
+     [Rainer Jung]
+
   *) configure: Fix out of tree build using apr and apr-util in srclib.
      [Rainer Jung]
 
