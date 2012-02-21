@@ -216,6 +216,10 @@
 
       <dt><module>mod_cache</module></dt>
 
+      <dd>The <module>mod_cache</module> CACHE filter can be optionally inserted
+      at a given point in the filter chain to provide fine control over caching.
+      </dd>
+
       <dd><module>mod_cache</module> can now cache HEAD requests.</dd>
 
       <dd>Where possible, <module>mod_cache</module> directives can now be set
