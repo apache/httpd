@@ -211,11 +211,14 @@
 #define AP_HAVE_RELIABLE_PIPED_LOGS TRUE
 #endif
 
+#if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+#define AP_HAVE_C99
+#endif
+
 /* Presume that the compiler supports C99-style designated
  * initializers if using GCC (but not G++), or for any other compiler
  * which claims C99 support. */
-#if (defined(__GNUC__) && !defined(__cplusplus))                \
-     || (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L)
+#if (defined(__GNUC__) && !defined(__cplusplus)) || defined(AP_HAVE_C99)
 #define AP_HAVE_DESIGNATED_INITIALIZER
 #endif
 
