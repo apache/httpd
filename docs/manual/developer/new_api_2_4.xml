@@ -27,12 +27,16 @@
 <summary>
   <p>This document describes changes to the Apache HTTPD API from
      version 2.2 to 2.4, that may be of interest to module/application
-     developers and core hacks.  At the time of writing, the 2.4 API
-     is not finalised, and this document may serve to highlight
-     points that call for further review.</p>
+     developers and core hacks.  As of the first GA release of the
+     2.4 branch API compatibility is preserved for the life of the
+     2.4 branch.  (The 
+     <a href="http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x/VERSIONING">VERSIONING</a>
+     description for the 2.4 release provides more information about API
+     compatibility.)</p>
+
   <p>API changes fall into two categories: APIs that are altogether new,
      and existing APIs that are expanded or changed.  The latter are
-     further divided into those where all changes are back-compatible
+     further divided into those where all changes are backwards-compatible
      (so existing modules can ignore them), and those that might
      require attention by maintainers.  As with the transition from
      HTTPD 2.0 to 2.2, existing modules and applications will require
@@ -56,8 +60,9 @@
   </section>
 
   <section id="ap_listen">
-    <title>ap_listen (changed; back-compatible)</title>
-    <p>Introduces new API to enable apache child processes to serve different purposes.</p>
+    <title>ap_listen (changed; backwards-compatible)</title>
+    <p>Introduces a new API to enable httpd child processes to serve
+       different purposes.</p>
   </section>
 
   <section id="ap_mpm">
@@ -73,13 +78,13 @@
   <code>ap_rxplus</code> is now provided.  This provides the capability to
   compile Perl-style expressions like <code>s/regexp/replacement/flags</code>
   and to execute them against arbitrary strings. Support for regexp
-  backreference.</p>
+  backreferences is also added.</p>
   </section>
 
   <section id="ap_slotmem">
     <title>ap_slotmem (NEW!)</title>
-    <p>Introduces an API for modules to allocate and manage memory slots
-    (normally) for shared memory.</p>
+    <p>Introduces an API for modules to allocate and manage memory slots,
+    most commonly for shared memory.</p>
   </section>
 
   <section id="ap_socache">
@@ -89,7 +94,7 @@
 
   <section id="heartbeat">
     <title>heartbeat (NEW!)</title>
-    <p>common structures for heartbeat modules (should this be public API?)</p>
+    <p>common structures for heartbeat modules</p>
   </section>
 
   <section id="ap_parse_htaccess">
@@ -103,14 +108,15 @@
     <title>http_config (changed)</title>
     <ul>
       <li>Introduces per-module, per-directory loglevels, including macro wrappers.</li>
-      <li>New AP_DECLARE_MODULE macro to declare all modules.</li>
-      <li>New APLOG_USE_MODULE macro necessary for per-module loglevels in
+      <li>New <code>AP_DECLARE_MODULE</code> macro to declare all modules.</li>
+      <li>New <code>APLOG_USE_MODULE</code> macro necessary for per-module loglevels in
           multi-file modules.</li>
       <li>New API to retain data across module unload/load</li>
-      <li>New check_config hook</li>
-      <li>New ap_process_fnmatch_configs() to process wildcards</li>
-      <li>Change ap_configfile_t, ap_cfg_getline(), ap_cfg_getc() to return error
-          code, new ap_pcfg_strerror().</li>
+      <li>New <code>check_config</code> hook</li>
+      <li>New <code>ap_process_fnmatch_configs()</code> function to process wildcards</li>
+      <li>Change <code>ap_configfile_t</code>, <code>ap_cfg_getline()</code>, 
+          <code>ap_cfg_getc()</code> to return error codes, and add 
+          <code>ap_pcfg_strerror()</code> for retrieving an error description.</li> 
       <li>Any config directive permitted in ACCESS_CONF context must now
           correctly handle being called from an .htaccess file via the new
           <directive module="core">AllowOverrideList</directive> directive.
@@ -122,18 +128,20 @@
   <section id="http_core">
     <title>http_core (changed)</title>
     <ul>
-      <li>REMOVED ap_default_type, ap_requires, all 2.2 authnz API</li>
+      <li>REMOVED <code>ap_default_type</code>, <code>ap_requires</code>, all 
+          2.2 authnz API</li>
       <li>Introduces Optional Functions for logio and authnz</li>
-      <li>New function ap_get_server_name_for_url to support ipv6 literals.</li>
-      <li>New function ap_register_errorlog_handler to register errorlog
+      <li>New function <code>ap_get_server_name_for_url</code> to support IPv6
+          literals.</li>
+      <li>New function <code>ap_register_errorlog_handler</code> to register error log
           format string handlers.</li>
-      <li>Arguments of error_log hook have changed. Declaration has moved to
+      <li>Arguments of <code>error_log</code> hook have changed. Declaration has moved to
           <code>http_core.h</code>.</li>
-      <li>New function ap_state_query to determine if the server is in the
+      <li>New function <code>ap_state_query</code> to determine if the server is in the
           initial configuration preflight phase or not. This is both easier to
           use and more correct than the old method of creating a pool userdata
           entry in the process pool.</li>
-      <li>New function ap_get_conn_socket to get the socket descriptor for a
+      <li>New function <code>ap_get_conn_socket</code> to get the socket descriptor for a
           connection. This should be used instead of accessing the core
           connection config directly.</li>
     </ul>
@@ -143,19 +151,20 @@
     <title>httpd (changed)</title>
     <ul>
       <li>Introduce per-directory, per-module loglevel</li>
-      <li>New loglevels APLOG_TRACEn</li>
+      <li>New loglevels <code>APLOG_TRACEn</code></li>
       <li>Introduce errorlog ids for requests and connections</li>
       <li>Support for mod_request kept_body</li>
       <li>Support buffering filter data for async requests</li>
-      <li>New CONN_STATE values</li>
-      <li>Function changes: ap_escape_html updated; ap_unescape_all,
-          ap_escape_path_segment_buffer</li>
-      <li>Modules that load other modules later than the EXEC_ON_READ config
-          reading stage need to call ap_reserve_module_slots() or
-          ap_reserve_module_slots_directive() in their pre_config hook.</li>
-      <li>The useragent IP address per request can now be specified
-          independently of the client IP address of the connection for
-          the benefit of load balancers</li>
+      <li>New <code>CONN_STATE</code> values</li>
+      <li>Function changes: <code>ap_escape_html</code> updated; 
+          <code>ap_unescape_all</code>, <code>ap_escape_path_segment_buffer</code></li>
+      <li>Modules that load other modules later than the <code>EXEC_ON_READ</code> config
+          reading stage need to call <code>ap_reserve_module_slots()</code> or
+          <code>ap_reserve_module_slots_directive()</code> in their 
+          <code>pre_config hook</code>.</li>
+      <li>The useragent IP address per request can now be tracked
+          independently of the client IP address of the connection, for
+          support of deployments with load balancers.</li>
     </ul>
   </section>
 
@@ -163,13 +172,13 @@
     <title>http_log (changed)</title>
     <ul>
       <li>Introduce per-directory, per-module loglevel</li>
-      <li>New loglevels APLOG_TRACEn</li>
-      <li>ap_log_*error become macro wrappers (back-compatible if
-          APLOG_MARK macro is used, except that is no longer possible to
-          use #ifdef inside the argument list)</li>
+      <li>New loglevels <code>APLOG_TRACEn</code></li>
+      <li><code>ap_log_*error</code> become macro wrappers (backwards-compatible if
+          <code>APLOG_MARK</code> macro is used, except that is no longer possible to
+          use <code>#ifdef</code> inside the argument list)</li>
       <li>piped logging revamped</li>
-      <li>module_index added to error_log hook</li>
-      <li>new function: ap_log_command_line</li>
+      <li><code>module_index</code> added to error_log hook</li>
+      <li>new function: <code>ap_log_command_line</code></li>
     </ul>
   </section>
 
@@ -177,19 +186,22 @@
     <title>http_request (changed)</title>
     <ul>
       <li>New auth_internal API and auth_provider API</li>
-      <li>New EOR bucket type</li>
-      <li>New function ap_process_async_request</li>
-      <li>New flags AP_AUTH_INTERNAL_PER_CONF and AP_AUTH_INTERNAL_PER_URI</li>
-      <li>New access_checker_ex hook to apply additional access control and/or
-          bypass authentication.</li>
-      <li>New functions ap_hook_check_access_ex, ap_hook_check_access,
-          ap_hook_check_authn, ap_hook_check_authz which accept
-          AP_AUTH_INTERNAL_PER_* flags</li>
-      <li>DEPRECATED direct use of ap_hook_access_checker, access_checker_ex,
-          ap_hook_check_user_id, ap_hook_auth_checker</li>
+      <li>New <code>EOR</code> bucket type</li>
+      <li>New function <code>ap_process_async_request</code></li>
+      <li>New flags <code>AP_AUTH_INTERNAL_PER_CONF</code> and 
+          <code>AP_AUTH_INTERNAL_PER_URI</code></li>
+      <li>New <code>access_checker_ex</code> hook to apply additional access control 
+          and/or bypass authentication.</li>
+      <li>New functions <code>ap_hook_check_access_ex</code>, 
+          <code>ap_hook_check_access</code>, <code>ap_hook_check_authn</code>, 
+          <code>ap_hook_check_authz</code> which accept 
+          <code>AP_AUTH_INTERNAL_PER_*</code> flags</li>
+      <li>DEPRECATED direct use of <code>ap_hook_access_checker</code>, 
+          <code>access_checker_ex</code>, <code>ap_hook_check_user_id</code>, 
+          <code>ap_hook_auth_checker</code></li>
     </ul>
     <p>When possible, registering all access control hooks (including
-       authentication and authorization hooks) using AP_AUTH_INTERNAL_PER_CONF
+       authentication and authorization hooks) using <code>AP_AUTH_INTERNAL_PER_CONF</code>
        is recommended.  If all modules' access control hooks are registered
        with this flag, then whenever the server handles an internal
        sub-request that matches the same set of access control configuration
@@ -198,7 +210,8 @@
     <p>If your module requires the old behavior and must perform access
        control checks on every sub-request with a different URI from the
        initial request, even if that URI matches the same set of access
-       control configuration directives, then use AP_AUTH_INTERNAL_PER_URI.</p>
+       control configuration directives, then use 
+       <code>AP_AUTH_INTERNAL_PER_URI</code>.</p>
   </section>
 
   <section id="mod_auth">
@@ -208,10 +221,10 @@
 
   <section id="mod_cache">
     <title>mod_cache (changed)</title>
-    <p>Introduces a commit_entity() function to the cache provider interface,
-    allowing atomic writes to cache. Add a cache_status() hook to report
-    the cache decision. Remove all private structures and functions from the
-    public mod_cache.h header file.</p>
+    <p>Introduces a <code>commit_entity()</code> function to the cache provider 
+    interface, allowing atomic writes to cache. Add a <code>cache_status()</code>
+    hook to report the cache decision. All private structures and functions were
+    removed.</p>
   </section>
 
   <section id="mod_core">
@@ -245,18 +258,21 @@
   <section id="mpm_common">
     <title>mpm_common (changed)</title>
     <ul>
-      <li>REMOVES: accept, lockfile, lock_mech, set_scoreboard (locking uses the new ap_mutex API)</li>
+      <li>REMOVES: <code>accept</code>, <code>lockfile</code>, <code>lock_mech</code>,
+          <code>set_scoreboard</code> (locking uses the new ap_mutex API)</li>
       <li>NEW API to drop privileges (delegates this platform-dependent
           function to modules)</li>
-      <li>NEW Hooks: mpm_query, timed_callback, and get_name</li>
-      <li>CHANGED interfaces: monitor hook,
-      ap_reclaim_child_processes, ap_relieve_child_processes</li>
+      <li>NEW Hooks: <code>mpm_query</code>, <code>timed_callback</code>, and 
+          <code>get_name</code></li>
+      <li>CHANGED interfaces: <code>monitor</code> hook,
+          <code>ap_reclaim_child_processes</code>, 
+          <code>ap_relieve_child_processes</code></li>
     </ul>
   </section>
 
   <section id="scoreboard">
     <title>scoreboard (changed)</title>
-    <p>ap_get_scoreboard_worker is gratuitously made non-back-compatible
+    <p><code>ap_get_scoreboard_worker</code> is made non-backwards-compatible
     as an alternative version is introduced.  Additional proxy_balancer
     support.  Child status stuff revamped.</p>
   </section>
@@ -268,22 +284,24 @@
 
   <section id="util_ldap">
     <title>util_ldap (changed)</title>
-    <p>I have yet to get a handle on this update.</p>
+    <p><em>no description available</em></p>
   </section>
 
   <section id="util_mutex">
     <title>util_mutex (NEW!)</title>
-    <p>A wrapper for APR proc and global mutexes in httpd.</p>
+    <p>A wrapper for APR proc and global mutexes in httpd, providing
+       common configuration for the underlying mechanism and location
+       of lock files.</p>
   </section>
 
   <section id="util_script">
     <title>util_script (changed)</title>
-    <p>NEW: ap_args_to_table</p>
+    <p>NEW: <code>ap_args_to_table</code></p>
   </section>
 
   <section id="util_time">
     <title>util_time (changed)</title>
-    <p>NEW: ap_recent_ctime_ex</p>
+    <p>NEW: <code>ap_recent_ctime_ex</code></p>
   </section>
 
 </section>
@@ -464,23 +482,24 @@
       <dt><code>unixd_config</code></dt>
       <dd>This has been renamed to ap_unixd_config.</dd>
 
-      <dt><code>conn_rec->remote_ip and conn_rec->remote_addr</code></dt>
-      <dd>In order to distinguish between the client IP address of the
-      connection, and the useragent IP address of the request potentially
-      overridden by a load balancer or proxy, the above variables have
-      been renamed. If a module makes reference to either of the above
-      variables, they need to be replaced with one of the following two
-      options as appropriate for the module:
+      <dt><code>conn_rec->remote_ip</code> and 
+          <code>conn_rec->remote_addr</code></dt>
+      <dd>These fields have been renamed in order to distinguish between 
+      the client IP address of the connection and the useragent IP address
+      of the request (potentially overridden by a load balancer or proxy).
+      References to either of these fields must be updated with one of the
+      following options, as appropriate for the module:
       <ul>
         <li>When you require the IP address of the user agent, which
         might be connected directly to the server, or might optionally be
         separated from the server by a transparent load balancer or
-        proxy, use request_rec->useragent_ip and
-        request_rec->useragent_addr.</li>
+        proxy, use <code>request_rec->useragent_ip</code> and
+        <code>request_rec->useragent_addr</code>.</li>
         <li>When you require the IP address of the client that is
         connected directly to the server, which might be the useragent or
         might be the load balancer or proxy itself, use
-        conn_rec->client_ip and conn_rec->client_addr.</li>
+        <code>conn_rec->client_ip</code> and 
+        <code>conn_rec->client_addr</code>.</li>
       </ul>
       </dd>
     </dl>
@@ -503,7 +522,6 @@
           set <code>ap_extended_status</code> to <code>1</code> in a
           pre-config hook and the extended status data will be
           available.</dd>
-
     </dl>
   </section>
 
