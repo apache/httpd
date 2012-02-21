@@ -306,6 +306,25 @@
     </dl>
   </section>
 
+  <section id="documentation">
+    <title>Documentation</title>
+    <dl>
+        <dt>mod_rewrite</dt>
+        <dd>The <module>mod_rewrite</module> documentation has been
+        rearranged and almost completely rewritten, with a focus on
+        examples and common usage, as well as on showing you when other
+        solutions are more appropriate. The <a href="rewrite/">Rewrite
+        Guide</a> is now a top-level section with much more detail and
+        better organization.</dd>
+
+        <dt>mod_ssl</dt>
+        <dd>The <module>mod_ssl</module> documentation has been greatly
+        enhanced, with more examples at the getting started level, in
+        addition to the previous focus on technical details.</dd>
+
+    </dl>
+  </section>
+
   <section id="developer">
     <title>Module Developer Changes</title>
     <dl>
