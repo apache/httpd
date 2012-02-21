@@ -326,6 +326,14 @@
         enhanced, with more examples at the getting started level, in
         addition to the previous focus on technical details.</dd>
 
+        <dt>Caching Guide</dt>
+        <dd>The <a href="caching.html">Caching Guide</a> has been rewritten
+        to properly distinguish between the RFC2616 HTTP/1.1 caching
+        features provided by <module>mod_cache</module>, and the generic
+        key/value caching provided by the <a href="socache.html">socache</a>
+        interface, as well as to cover specialised caching provided by
+        mechanisms such as <module>mod_file_cache</module>.</dd>
+
     </dl>
   </section>
 
