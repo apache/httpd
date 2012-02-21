@@ -221,6 +221,10 @@
 
       <dt><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code></dt>
 
+      <dd>The <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> CACHE filter can be optionally inserted
+      at a given point in the filter chain to provide fine control over caching.
+      </dd>
+
       <dd><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> can now cache HEAD requests.</dd>
 
       <dd>Where possible, <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> directives can now be set
@@ -323,6 +327,14 @@
         <dd>The <code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code> documentation has been greatly
         enhanced, with more examples at the getting started level, in
         addition to the previous focus on technical details.</dd>
+
+        <dt>Caching Guide</dt>
+        <dd>The <a href="caching.html">Caching Guide</a> has been rewritten
+        to properly distinguish between the RFC2616 HTTP/1.1 caching
+        features provided by <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>, and the generic
+        key/value caching provided by the <a href="socache.html">socache</a>
+        interface, as well as to cover specialised caching provided by
+        mechanisms such as <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code>.</dd>
 
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
