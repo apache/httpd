@@ -60,7 +60,7 @@
 
         <dt>Two-state key/value shared object caching</dt>
         <dd>
-            <module>mod_socache</module>
+            The <a href="socache.html">shared object cache API</a> (socache)
             and its provider modules provide a
             server wide key/value based shared object cache. These modules
             are designed to cache low level data such as SSL sessions and
