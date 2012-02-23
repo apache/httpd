@@ -1,0 +1,818 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1238738 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_lua.xml.meta">
+
+<name>mod_lua</name>
+
+<description>Fournit des points d'entr&eacute;e Lua dans diff&eacute;rentes parties du
+traitement des requ&ecirc;tes httpd</description>
+<status>Experimental</status>
+<sourcefile>mod_lua.c</sourcefile>
+<identifier>lua_module</identifier>
+<compatibility>versions 2.3 et sup&eacute;rieures</compatibility>
+
+<summary>
+<p>Ce module permet d'ajouter au serveur des extensions sous forme de
+scripts &eacute;crits dans le langage de programmation Lua.
+<module>mod_lua</module> fournit de nombreuses extensions
+(hooks) disponibles avec les modules natifs du serveur HTTP Apache,
+comme les associations de requ&ecirc;tes &agrave; des fichiers, la g&eacute;n&eacute;ration de
+r&eacute;ponses dynamiques, le contr&ocirc;le d'acc&egrave;s, l'authentification et
+l'autorisation.</p>
+
+<p>Vous trouverez davantage d'informations &agrave; propos du langage de
+programmation Lua sur <a href="http://www.lua.org/">le site web de
+Lua</a>.</p>
+
+<note><code>mod_lua</code> est encore au stade exp&eacute;rimental. Son mode
+d'utilisation et son comportement pourront changer &agrave; tout moment jusqu'&agrave;
+ce qu'il passe au stade stable, et ce m&ecirc;me entre deux versions stables
+2.4.x. N'oublez pas de consulter le fichier CHANGES avant toute mise &agrave;
+jour.</note>
+
+</summary>
+
+<section id="basicconf"><title>Configuration de base</title>
+
+<p>La directive de base pour le chargement du module est</p>
+
+<example>
+    LoadModule lua_module modules/mod_lua.so
+</example>
+
+<p>
+<code>mod_lua</code> fournit un gestionnaire nomm&eacute;
+<code>lua-script</code> qui peut &ecirc;tre utilis&eacute; avec une directive
+<code>AddHandler</code> :</p>
+
+<example>
+AddHandler lua-script .lua
+</example>
+
+<p>
+Ceci aura pour effet de faire traiter les requ&ecirc;tes pour les fichiers
+dont l'extension est <code>.lua</code> par <code>mod_lua</code> en
+invoquant cette fonction de <code>gestion</code> de fichier.
+</p>
+
+<p>Pour plus de d&eacute;tails, voir la directive
+<directive>LuaMapHandler</directive>.
+ </p>
+</section>
+
+<section id="writinghandlers"><title>Ecrire des gestionnaires</title>
+<p>Dans l'API du serveur HTTP Apache, un gestionnaire est une sorte de
+point d'accroche (hook) sp&eacute;cifique responsable de la g&eacute;n&eacute;ration de la
+r&eacute;ponse. <module>mod_proxy</module>, <module>mod_cgi</module> et
+<module>mod_status</module> sont des exemples de modules comportant un
+gestionnaire.</p>
+
+<p><code>mod_lua</code> cherche toujours &agrave; invoquer une fonction Lua pour le
+gestionnaire, plut&ocirc;t que de simplement &eacute;valuer le corps d'un script dans
+le style de CGI. Une fonction de gestionnaire se pr&eacute;sente comme suit :</p>
+
+<example><title>example.lua</title><pre>
+-- exemple de gestionnaire
+
+require "string"
+
+--[[
+     Il s'agit du nom de m&eacute;thode par d&eacute;faut pour les gestionnaires Lua ;
+     voir les noms de fonctions optionnels dans la directive
+     LuaMapHandler pour choisir un point d'entr&eacute;e diff&eacute;rent.
+--]]
+function handle(r)
+    r.content_type = "text/plain"
+    r:puts("Hello Lua World!\n")
+
+    if r.method == 'GET' then
+        for k, v in pairs( r:parseargs() ) do
+            r:puts( string.format("%s: %s", k, v) )
+        end
+    elseif r.method == 'POST' then
+        for k, v in pairs( r:parsebody() ) do
+            r:puts( string.format("%s: %s", k, v) )
+        end
+    else
+        r:puts("unknown HTTP method " .. r.method)
+    end
+end
+</pre></example>
+
+<p>
+Ce gestionnaire se contente d'afficher les arguments cod&eacute;s d'un uri ou
+d'un formulaire dans un page au format texte.
+</p>
+
+<p>
+Cela signifie que vous pouvez (et &ecirc;tes encourag&eacute; &agrave;) avoir plusieurs
+gestionnaires (ou points d'entr&eacute;e, ou filtres) dans le m&ecirc;me script.
+</p>
+
+</section>
+
+<section id="writinghooks"><title>Ecriture de fonctions d'accroche
+(hooks)</title>
+
+<p>Les fonctions d'accroche d&eacute;terminent la mani&egrave;re dont les modules (et
+les scripts Lua) participent au traitement des requ&ecirc;tes. Chaque type
+d'accroche propos&eacute; par le serveur a un r&ocirc;le sp&eacute;cifique, comme
+l'association de requ&ecirc;tes au syst&egrave;me de fichiers, le contr&ocirc;le d'acc&egrave;s,
+ou la d&eacute;finition de types MIME. Il existe aussi des accroches &agrave; usage
+g&eacute;n&eacute;ral qui s'ex&eacute;cutent simplement &agrave; des moments opportuns du cycle
+de vie de la requ&ecirc;te.</p>
+
+<p>Les fonctions d'accroche acceptent l'objet de la requ&ecirc;te comme seul
+et unique argument. Elles peuvent renvoyer une valeur, selon la
+fonction, mais il s'agit en g&eacute;n&eacute;ral d'un
+code d'&eacute;tat HTTP ou des valeurs OK, DONE, ou DECLINED,
+que vous pouvez &eacute;crire dans lua sous la forme <code>apache2.OK</code>,
+<code>apache2.DONE</code>, ou <code>apache2.DECLINED</code>.</p>
+
+<example><title>translate_name.lua</title><pre>
+-- exemple d'accroche qui r&eacute;&eacute;crit un URI en chemin du syst&egrave;me de
+fichiers.
+
+require 'apache2'
+
+function translate_name(r)
+    if r.uri == "/translate-name" then
+        r.filename = r.document_root .. "/find_me.txt"
+        return apache2.OK
+    end
+    -- on ne g&egrave;re pas cette URL et on donne sa chance &agrave; un autre module
+    return apache2.DECLINED
+end
+</pre></example>
+
+<example><title>translate_name2.lua</title><pre>
+--[[ exemple d'accroche qui r&eacute;&eacute;crit un URI vers un autre URI. Il renvoie
+	un apache2.DECLINED pour permettre &agrave; un autre interpr&eacute;teur d'URL de
+	travailler sur la substitution, y compris l'accroche translate_name
+	de base dont les tables de correspondances se basent sur DocumentRoot.
+
+     Note: actuellement, il est impossible de pr&eacute;voir si cette action
+     s'ex&eacute;cute avant ou apr&egrave;s mod_alias.
+--]]
+
+require 'apache2'
+
+function translate_name(r)
+    if r.uri == "/translate-name" then
+        r.uri = "/find_me.txt"
+        return apache2.DECLINED
+    end
+    return apache2.DECLINED
+end
+</pre></example>
+</section>
+
+<section id="datastructures"><title>Structures de donn&eacute;es</title>
+
+<dl>
+<dt>request_rec</dt>
+        <dd>
+        <p>request_rec est consid&eacute;r&eacute;e en tant que donn&eacute;e utilisateur.
+	Elle poss&egrave;de une m&eacute;tatable qui vous permet d'accomplir des
+	choses int&eacute;ressantes. Pour la plus grande partie, elle poss&egrave;de
+	les m&ecirc;mes champs que la structure request_rec (voir httpd.h en
+	attendant que cette documentation soit plus compl&egrave;te), la
+	plupart d'entre eux &eacute;tant accessibles en lecture et &eacute;criture (le
+	contenu des champs de la table peut &ecirc;tre modifi&eacute;, mais les
+	champs eux-m&ecirc;mes ne peuvent pas &ecirc;tre &eacute;tablis en tant que tables
+	distinctes).</p>
+
+	<table border="1">
+
+        <tr>
+          <th><strong>Nom</strong></th>
+          <th><strong>Type Lua</strong></th>
+          <th><strong>Modifiable</strong></th>
+        </tr>
+        <tr>
+          <td><code>ap_auth_type</code></td>
+          <td>string</td>
+          <td>non</td>
+        </tr>
+        <tr>
+          <td><code>args</code></td>
+          <td>string</td>
+          <td>oui</td>
+        </tr>
+        <tr>
+          <td><code>assbackwards</code></td>
+          <td>boolean</td>
+          <td>non</td>
+        </tr>
+
+        <tr>
+          <td><code>canonical_filename</code></td>
+          <td>string</td>
+          <td>non</td>
+        </tr>
+        <tr>
+          <td><code>content_encoding</code></td>
+          <td>string</td>
+          <td>non</td>
+        </tr>
+        <tr>
+          <td><code>content_type</code></td>
+          <td>string</td>
+          <td>oui</td>
+        </tr>
+
+        <tr>
+          <td><code>document_root</code></td>
+          <td>string</td>
+          <td>non</td>
+        </tr>
+        <tr>
+          <td><code>err_headers_out</code></td>
+          <td>table</td>
+          <td>non</td>
+        </tr>
+        <tr>
+          <td><code>filename</code></td>
+          <td>string</td>
+          <td>oui</td>
+        </tr>
+        <tr>
+          <td><code>handler</code></td>
+          <td>string</td>
+          <td>oui</td>
+        </tr>
+        <tr>
+	  <td><code>headers_in</code></td>
+          <td>table</td>
+          <td>oui</td>
+        </tr>
+        <tr>
+          <td><code>headers_out</code></td>
+          <td>table</td>
+          <td>oui</td>
+        </tr>
+        <tr>
+          <td><code>hostname</code></td>
+          <td>string</td>
+          <td>non</td>
+        </tr>
+        <tr>
+          <td><code>method</code></td>
+          <td>string</td>
+          <td>non</td>
+        </tr>
+        <tr>
+          <td><code>notes</code></td>
+          <td>table</td>
+          <td>oui</td>
+        </tr>
+        <tr>
+          <td><code>path_info</code></td>
+          <td>string</td>
+          <td>non</td>
+        </tr>
+        <tr>
+          <td><code>protocol</code></td>
+          <td>string</td>
+          <td>non</td>
+        </tr>
+        <tr>
+          <td><code>proxyreq</code></td>
+          <td>string</td>
+          <td>oui</td>
+        </tr>
+        <tr>
+	  <td><code>range</code></td>
+          <td>string</td>
+          <td>non</td>
+        </tr>
+        <tr>
+          <td><code>subprocess_env</code></td>
+          <td>table</td>
+          <td>oui</td>
+        </tr>
+        <tr>
+	  <td><code>status</code></td>
+          <td>number</td>
+          <td>oui</td>
+        </tr>
+        <tr>
+          <td><code>the_request</code></td>
+          <td>string</td>
+          <td>non</td>
+        </tr>
+        <tr>
+          <td><code>unparsed_uri</code></td>
+          <td>string</td>
+          <td>non</td>
+        </tr>
+        <tr>
+          <td><code>uri</code></td>
+          <td>string</td>
+          <td>oui</td>
+        </tr>
+        <tr>
+          <td><code>user</code></td>
+          <td>string</td>
+          <td>oui</td>
+        </tr>
+        </table>
+
+        <p>La structure request_rec poss&egrave;de (au minimum) les m&eacute;thodes
+	suivantes :</p>
+
+        <example>
+        r:addoutputfilter(name|function) -- ajoute un filtre en sortie
+        </example>
+
+        <example>
+	r:parseargs() -- renvoie une table lua contenant les arguments
+	de la cha&icirc;ne de param&egrave;tres de la requ&ecirc;te
+        </example>
+
+        <example>
+        r:parsebody() -- interpr&egrave;te le corps de la requ&ecirc;te en tant que
+	m&eacute;thode POST et renvoie une table lua
+        </example>
+
+        <example>
+        r:puts("bonjour", " le monde", "!") -- affichage dans le corps de la r&eacute;ponse
+        </example>
+
+	<example>
+        r:write("une simple cha&icirc;ne") -- affichage dans le
+	corps de la r&eacute;ponse
+        </example>
+        </dd>
+    </dl>
+
+</section>
+
+<section id="logging"><title>Fonctions de journalisation</title>
+
+<example>
+	-- exemples de messages de journalisation
+	r:trace1("Ceci est un message de journalisation de niveau
+	trace") -- les niveaux valides vont de trace1 &agrave; trace8 <br />
+        r:debug("Ceci est un message de journalisation de niveau debug")<br />
+        r:info("Ceci est un message de journalisation de niveau info")<br />
+        r:notice("Ceci est un message de journalisation de niveau notice")<br />
+        r:warn("Ceci est un message de journalisation de niveau warn")<br />
+        r:err("Ceci est un message de journalisation de niveau err")<br />
+        r:alert("Ceci est un message de journalisation de niveau alert")<br />
+        r:crit("Ceci est un message de journalisation de niveau crit")<br />
+        r:emerg("Ceci est un message de journalisation de niveau emerg")<br />
+</example>
+
+</section>
+
+<section id="apache2"><title>Paquet apache2</title>
+<p>Le paquet nomm&eacute; <code>apache2</code> est fourni avec (au minimum) le
+contenu suivant :</p>
+<dl>
+  <dt>apache2.OK</dt>
+  <dd>Constante interne OK. Les gestionnaires renverront cette valeur
+  s'ils ont trait&eacute; la requ&ecirc;te.</dd>
+  <dt>apache2.DECLINED</dt>
+  <dd>Constante interne DECLINED. Les gestionnaires renverront cette
+  valeur s'ils n'ont pas l'intention de traiter la requ&ecirc;te.</dd>
+  <dt>apache2.DONE</dt>
+  <dd>Constante interne DONE.</dd>
+  <dt>apache2.version</dt>
+  <dd>Cha&icirc;ne contenant la version du serveur HTTP Apache</dd>
+  <dt>apache2.HTTP_MOVED_TEMPORARILY</dt>
+  <dd>Code d'&eacute;tat HTTP</dd>
+  <dt>apache2.PROXYREQ_NONE, apache2.PROXYREQ_PROXY, apache2.PROXYREQ_REVERSE, apache2.PROXYREQ_RESPONSE</dt>
+  <dd>Constantes internes utilis&eacute;es par <module>mod_proxy</module></dd>
+</dl>
+<p>Les autres codes d'&eacute;tat HTTP ne sont pas encore impl&eacute;ment&eacute;s.</p>
+</section>
+
+
+
+<directivesynopsis>
+<name>LuaRoot</name>
+<description>Sp&eacute;cifie le chemin de base pour la r&eacute;solution des chemins
+relatifs dans les directives de mod_lua</description>
+<syntax>LuaRoot /chemin/vers/un/r&eacute;pertoire</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>Cette directive permet de sp&eacute;cifier le chemin de base qui sera
+    utilis&eacute; pour &eacute;valuer tous les chemins relatifs dans mod_lua. En
+    l'absence de cette directive, les chemins relatifs sont r&eacute;solus par
+    rapport au r&eacute;pertoire de travail courant, ce qui ne sera pas
+    toujours appropri&eacute; pour un serveur.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LuaScope</name>
+<description>Une valeur parmi once, request, conn, server -- la valeur
+par d&eacute;faut est once</description>
+<syntax>LuaScope once|request|conn|server [max|min max]</syntax>
+<default>LuaScope once</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>Cette directive permet de sp&eacute;cifier la dur&eacute;e de vie de
+    l'interpr&eacute;teur Lua qui sera utilis&eacute; dans ce "r&eacute;pertoire". La valeur
+    par d&eacute;faut est "once".</p>
+
+   <dl>
+    <dt>once:</dt> <dd>utilise l'interpr&eacute;teur une fois.</dd>
+
+    <dt>request:</dt> <dd>utilise l'interpr&eacute;teur pour traiter tout ce
+    qui est bas&eacute; sur le m&ecirc;me fichier dans la requ&ecirc;te, et qui se trouve
+    aussi dans la port&eacute;e de la requ&ecirc;te.</dd>
+
+    <dt>conn:</dt> <dd>idem request, mais attach&eacute; &agrave; connection_rec</dd>
+
+    <dt>server:</dt>  <dd>Le comportement est ici diff&eacute;rent, car la
+    port&eacute;e du serveur pr&eacute;sente une dur&eacute;e de vie assez longue, et
+    plusieurs threads vont partager le m&ecirc;me server_rec. Pour g&eacute;rer tout
+    ceci, les interpr&eacute;teurs sont stock&eacute;s dans une liste de ressources
+    apr. Les arguments min et max ont &eacute;t&eacute; pr&eacute;vus pour sp&eacute;cifier une
+    taille de jeu, mais sont inutilis&eacute;s pour le moment.</dd>
+   </dl>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LuaMapHandler</name>
+<description>Met en correspondance un chemin avec un gestionnaire lua</description>
+<syntax>LuaMapHandler modele-uri /chemin/vers/lua/script.lua
+[nom-fonction]</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+<usage>
+    <p>Cette directive permet de faire correspondre un mod&egrave;le d'uri avec
+    une fonction de gestionnaire situ&eacute;e dans un fichier sp&eacute;cifique. Elle
+    utilise les expressions rationnelles PCRE pour mettre en
+    correspondance l'uri, et supporte les groupes de correspondance
+    d'interpolation dans le chemin du fichier et le nom de la fonction.
+    Prenez garde aux probl&egrave;mes de s&eacute;curit&eacute; en &eacute;crivant vos expressions
+    rationnelles.</p>
+   <example><title>Exemples :</title>
+    LuaMapHandler /(\w+)/(/w+) /scripts/$1.lua handle_$2
+   </example>
+        <p>Cette directive va faire correspondre des uri comme
+	/photos/show?id=9 au fichier /scripts/photos.lua, et invoquera la
+	fonction de gestionnaire handle_show au niveau de la vm lua
+	apr&egrave;s chargement de ce fichier.</p>
+
+<example>
+    LuaMapHandler /bingo /scripts/wombat.lua
+</example>
+        <p>Cette directive invoquera la fonction "handle" qui est la
+	valeur par d&eacute;faut si aucun nom de fonction sp&eacute;cifique n'est
+	sp&eacute;cifi&eacute;.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LuaPackagePath</name>
+<description>Ajoute un r&eacute;pertoire au package.path de lua</description>
+<syntax>LuaPackagePath /chemin/vers/include/?.lua</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+    <usage><p>Cette directive permet d'ajouter un chemin &agrave; la liste des
+    chemins de recherche du module lua. Elle suit les m&ecirc;mes conventions
+    que lua. Ceci modifie le package.path dans les vms lua.</p>
+
+    <example><title>Exemples :</title>
+        LuaPackagePath /scripts/lib/?.lua<br />
+        LuaPackagePath /scripts/lib/?/init.lua
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LuaPackageCPath</name>
+<description>Ajoute un r&eacute;pertoire au package.cpath de lua</description>
+<syntax>LuaPackageCPath /chemin/vers/include/?.soa</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>Cette directive permet d'ajouter un chemin &agrave; la liste des chemins
+    de recherche des biblioth&egrave;ques partag&eacute;es de lua. Ceci modifie le
+    package.cpath dans les vms lua.</p>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LuaCodeCache</name>
+<description>Configure le cache de code compil&eacute;.</description>
+<syntax>LuaCodeCache stat|forever|never</syntax>
+<default>LuaCodeCache stat</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage><p>
+    Cette directive permet de d&eacute;finir le comportement du cache de code
+    en m&eacute;moire. La valeur par d&eacute;faut est stat ; dans ce cas, le script
+    du niveau le plus haut (et pas les scripts inclus) est v&eacute;rifi&eacute; &agrave;
+    chaque fois que ce fichier est n&eacute;cessaire, et est recharg&eacute; si la
+    date de modification est plus r&eacute;cente que celle du script d&eacute;j&agrave;
+    charg&eacute;. Les autres valeurs permettent respectivement de garder le
+    fichier en cache perp&eacute;tuellement (forever - jamais v&eacute;rifi&eacute; ni
+    remplac&eacute;), ou de ne jamais le mettre en cache (never).</p>
+
+    <p>En g&eacute;n&eacute;ral, les valeurs stat et forever sont utilis&eacute;es pour un
+    serveur en production, et les valeurs stat ou never pour un serveur
+    en d&eacute;veloppement.</p>
+
+    <example><title>Exemples :</title>
+        LuaCodeCache stat<br />
+        LuaCodeCache forever<br />
+        LuaCodeCache never<br />
+    </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LuaHookTranslateName</name>
+<description>Fournit un point d'entr&eacute;e &agrave; la phase du nom de
+traduction du traitement de la requ&ecirc;te</description>
+<syntax>LuaHookTranslateName  /chemin/vers/lua/script.lua  nom_fonction_hook [early|late]</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
+</contextlist>
+<override>All</override>
+<compatibility>Le troisi&egrave;me argument optionnel est disponible depuis la
+version 2.3.15 du serveur HTTP Apache.</compatibility>
+
+<usage><p>
+    Cette directive permet d'ajouter un point d'entr&eacute;e (&agrave;
+    APR_HOOK_MIDDLE) &agrave; la phase du nom de traduction du traitement de la
+    requ&ecirc;te. La fonction hook accepte un seul argument, le request_rec,
+    et doit renvoyer un code d'&eacute;tat qui est soit un code d'erreur HTTP,
+    ou une constante d&eacute;finie dans le module apache2 :  apache2.OK,
+    apache2.DECLINED, ou apache2.DONE.</p>
+
+    <p>Pour ceux qui ne sont pas familiers avec les points d'entr&eacute;e
+    (hook), en gros, chaque hook sera invoqu&eacute; jusqu'&agrave; ce que l'un
+    d'entre eux renvoie apache2.OK. Si un hook n'effectuer pas la
+    traduction, il doit juste renvoyer apache2.DECLINED. Si le
+    traitement de la requ&ecirc;te doit &ecirc;tre interrompu, la valeur renvoy&eacute;e
+    doit &ecirc;tre apache2.DONE.</p>
+
+    <p>Exemple :</p>
+
+<example><pre>
+# httpd.conf
+LuaHookTranslateName /scripts/conf/hooks.lua silly_mapper
+
+-- /scripts/conf/hooks.lua --
+require "apache2"
+function silly_mapper(r)
+    if r.uri == "/" then
+        r.filename = "/var/www/home.lua"
+        return apache2.OK
+    else
+        return apache2.DECLINED
+    end
+end
+</pre></example>
+
+   <note><title>Contexte</title><p>Cette directive ne peut &ecirc;tre
+   utilis&eacute;e ni &agrave; l'int&eacute;rieur d'une section <directive type="section"
+   module="core">Directory</directive> ou <directive type="section"
+   module="core">Files</directive>, ni dans un fichier htaccess.</p></note>
+
+   <note><title>Ordonnancement</title><p>Les arguments optionnels
+   "early" ou "late" permettent de contr&ocirc;ler le moment auquel ce script
+   s'ex&eacute;cute par rapport aux autres modules.</p></note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LuaHookFixups</name>
+<description>Fournit un point d'entr&eacute;e pour la phase de correction du
+traitement de la requ&ecirc;te</description>
+<syntax>LuaHookFixups  /chemin/vers/lua/script.lua hook_function_name</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+<usage>
+<p>
+    Idem LuaHookTranslateName, mais s'ex&eacute;cute durant la phase de
+    correction.
+</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LuaHookMapToStorage</name>
+<description>Fournit un point d'entr&eacute;e pour la phase map_to_storage du
+traitement de la requ&ecirc;te</description>
+<syntax>LuaHookMapToStorage  /chemin/vers/lua/script.lua hook_function_name</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+    <usage><p>...</p></usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LuaHookCheckUserID</name>
+<description>Fournit un point d'entr&eacute;e pour la phase check_user_id du
+traitement de la requ&ecirc;te</description>
+<syntax>LuaHookCheckUserID  /chemin/vers/lua/script.lua hook_function_name [early|late]</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+<compatibility>Le troisi&egrave;me argument optionnel est disponible depuis la
+version 2.3.15 du serveur HTTP Apache.</compatibility>
+<usage><p>...</p>
+   <note><title>Ordonnancement</title><p>Les arguments optionnels
+   "early" ou "late" permettent de contr&ocirc;ler le moment auquel ce script
+   s'ex&eacute;cute par rapport aux autres modules.</p></note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LuaHookTypeChecker</name>
+<description>Fournit un point d'entr&eacute;e pour la phase type_checker du
+traitement de la requ&ecirc;te</description>
+<syntax>LuaHookTypeChecker  /chemin/vers/lua/script.lua hook_function_name</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+    <usage><p>...</p></usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LuaHookAuthChecker</name>
+<description>Fournit un point d'entr&eacute;e pour la phase auth_checker du
+traitement de la requ&ecirc;te</description>
+<syntax>LuaHookAuthChecker  /chemin/vers/lua/script.lua hook_function_name [early|late]</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+<compatibility>Le troisi&egrave;me argument optionnel est disponible depuis la
+version 2.3.15 du serveur HTTP Apache.</compatibility>
+    <usage>
+<p>Invoque une fonction lua au cours de la phase auth_checker du
+traitement de la requ&ecirc;te. Cette directive peut s'utiliser pour
+impl&eacute;menter une v&eacute;rification arbitraire de l'authentification et de
+l'autorisation. Voici un exemple tr&egrave;s simple :
+</p>
+<example><pre>
+require 'apache2'
+
+-- fonction d'accroche authcheck fictive
+-- Si la requ&ecirc;te ne contient aucune donn&eacute;e d'authentification, l'en-t&ecirc;te
+-- de la r&eacute;ponse est d&eacute;fini et un code 401 est renvoy&eacute; afin de demander au
+-- navigateur d'effectuer une authentification basique. Si la requ&ecirc;te
+-- comporte des donn&eacute;es d'authentification, elles ne sont pas vraiment
+-- consult&eacute;es, mais on admet la prise en compte de l'utilisateur 'foo' et
+-- on la valide. On v&eacute;rifie ensuite si l'utilisateur est bien 'foo' et on
+-- accepte la requ&ecirc;te.
+function authcheck_hook(r)
+
+   -- recherche des informations d'authentification
+   auth = r.headers_in['Authorization']
+   if auth ~= nil then
+     -- d&eacute;finition d'un utilisateur par d&eacute;faut
+     r.user = 'foo'
+   end
+
+   if r.user == nil then
+      r:debug("authcheck: user is nil, returning 401")
+      r.err_headers_out['WWW-Authenticate'] = 'Basic realm="WallyWorld"'
+      return 401
+   elseif r.user == "foo" then
+      r:debug('user foo: OK')
+   else
+      r:debug("authcheck: user='" .. r.user .. "'")
+      r.err_headers_out['WWW-Authenticate'] = 'Basic realm="WallyWorld"'
+      return 401
+   end
+   return apache2.OK
+end
+</pre></example>
+<note><title>Ordonnancement</title><p>Les arguments optionnels
+   "early" ou "late" permettent de contr&ocirc;ler le moment auquel ce script
+   s'ex&eacute;cute par rapport aux autres modules.</p></note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LuaHookAccessChecker</name>
+<description>Fournit un point d'entr&eacute;e pour la phase access_checker du
+traitement de la requ&ecirc;te</description>
+<syntax>LuaHookAccessChecker  /chemin/vers/lua/script.lua  hook_function_name [early|late]</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+<compatibility>Le troisi&egrave;me argument optionnel est disponible depuis la
+version 2.3.15 du serveur HTTP Apache.</compatibility>
+</directivesynopsis>
+<usage>
+<p>Ajoute votre fonction d'accroche &agrave; la phase access_checker. Une
+fonction d'accroche access checker renvoie en g&eacute;n&eacute;ral OK, DECLINED, ou
+HTTP_FORBIDDEN.</p>
+<note><title>Ordonnancement</title><p>Les arguments optionnels
+   "early" ou "late" permettent de contr&ocirc;ler le moment auquel ce script
+   s'ex&eacute;cute par rapport aux autres modules.</p></note>
+</usage>
+<directivesynopsis>
+<name>LuaHookInsertFilter</name>
+<description>Fournit un point d'entr&eacute;e pour la phase insert_filter du
+traitement de la requ&ecirc;te</description>
+<syntax>LuaHookInsertFilter  /chemin/vers/lua/script.lua hook_function_name</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+    <usage><p>Non encore impl&eacute;ment&eacute;</p></usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LuaInherit</name>
+<description>Contr&ocirc;le la mani&egrave;re dont les sections de configuration
+parentes sont fusionn&eacute;es dans les enfants</description>
+<syntax>LuaInherit none|parent-first|parent-last</syntax>
+<default>LuaInherit parent-first</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+<compatibility>Versions 2.4.0 et sup&eacute;rieures</compatibility>
+    <usage><p>Par d&eacute;faut, si des directives LuaHook* se trouvent dans
+    des sections de configuration Directory ou Location qui se
+    chevauchent, les scripts
+    d&eacute;finis dans les sections les plus sp&eacute;cifiques s'ex&eacute;cutent
+    <em>apr&egrave;s</em> ceux d&eacute;finis dans les sections plus g&eacute;n&eacute;riques
+    (LuaInherit parent-first). Vous pouvez inverser cet ordre, ou faire
+    en sorte que le contexte parent ne s'applique pas du tout.</p>
+
+    <p>Jusqu'aux versions 2.3.x, le comportement par d&eacute;faut consistait &agrave;
+    ignorer les directives LuaHook* situ&eacute;es dans les sections de
+    configuration parentes.</p></usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LuaQuickHandler</name>
+<description>Fournit un point d'entr&eacute;e pour la gestion rapide du
+traitement de la requ&ecirc;te</description>
+<syntax></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+<usage><p>...</p>
+   <note><title>Contexte</title><p>Cette directive ne peut &ecirc;tre
+   utilis&eacute;e ni &agrave; l'int&eacute;rieur d'une section <directive type="section"
+   module="core">Directory</directive> ou <directive type="section"
+   module="core">Files</directive>, ni dans un fichier htaccess.</p></note>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
+
