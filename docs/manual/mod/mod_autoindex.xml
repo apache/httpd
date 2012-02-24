@@ -69,7 +69,8 @@
     same header repeatedly toggles between ascending and descending
     order. These column header links are suppressed with the
     <directive module="mod_autoindex">IndexOptions</directive> directive's
-    <code>SuppressColumnSorting</code> option.</p>
+    <code><a href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code> 
+    option.</p>
 
     <p>Note that when the display is sorted by "Size", it's the
     <em>actual</em> size of the files that's used, not the
