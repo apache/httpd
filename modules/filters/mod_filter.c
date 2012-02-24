@@ -131,6 +131,7 @@ static int filter_init(ap_filter_t *f)
     f->ctx = fctx;
     return OK;
 }
+
 static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
 {
     ap_filter_provider_t *provider;
@@ -461,9 +462,11 @@ static const char *add_filter(cmd_parms *cmd, void *CFG,
                                NULL);
         }
         provider->expr = node;
+        provider->types = NULL;
     }
     else {
         provider->types = types;
+        provider->expr = NULL;
     }
     provider->frec = provider_frec;
     provider->next = frec->providers;
@@ -594,7 +597,7 @@ static const char *filter_bytype(cmd_parms *cmd, void *CFG,
     name = apr_pstrdup(cmd->temp_pool, argv[0]);
     types = apr_palloc(cmd->pool, argc * sizeof(char *));
     memcpy(types, &argv[1], (argc - 1) * sizeof(char *));
-    types[argc] = NULL;
+    types[argc-1] = NULL;
     for (pname = apr_strtok(name, ";", &strtok_state);
          pname != NULL && rv == NULL;
          pname = apr_strtok(NULL, ";", &strtok_state)) {
