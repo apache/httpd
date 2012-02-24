@@ -223,3 +223,20 @@ AP_DECLARE(void) ap_set_core_module_config(ap_conf_vector_t *cv, void *val)
 {
     ((void **)cv)[AP_CORE_MODULE_INDEX] = val;
 }
+
+#if defined(apr_palloc)
+#undef apr_palloc
+#endif
+AP_DECLARE(void *) ap_palloc_debug(apr_pool_t *p, apr_size_t size)
+{
+    /* poison uninitialized memory */
+    return memset(apr_palloc(p, size), 0xEE, size);
+}
+
+#if defined(apr_pcalloc)
+#undef apr_pcalloc
+#endif
+AP_DECLARE(void *) ap_pcalloc_debug(apr_pool_t *p, apr_size_t size)
+{
+    return memset(apr_palloc(p, size), 0, size);
+}

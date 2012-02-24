@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: In maintainer mode, replace apr_palloc with a version that
+     initializes the allocated memory with non-zero values, except if
+     AP_DEBUG_NO_ALLOC_POISON is defined.
+
   *) mod_log_config: Check during config test that directories for access logs
      exist. PR 29941. [Stefan Fritsch]
 
