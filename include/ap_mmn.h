@@ -393,6 +393,7 @@
  * 20120204.0 (2.5.0-dev)  Remove ap_create_core_ctx(), ap_core_ctx_get_bb();
  *                         add insert_network_bucket hook, AP_DECLINED
  * 20120211.0 (2.5.0-dev)  Change re_nsub in ap_regex_t from apr_size_t to int.
+ * 20120211.0 (2.5.0-dev)  Add ap_palloc_debug, ap_pcalloc_debug
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -400,7 +401,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 0                   /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1                   /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

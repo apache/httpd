@@ -2068,6 +2068,8 @@ AP_DECLARE(char *) ap_strrchr(char *s, int c);
 AP_DECLARE(const char *) ap_strrchr_c(const char *s, int c);
 AP_DECLARE(char *) ap_strstr(char *s, const char *c);
 AP_DECLARE(const char *) ap_strstr_c(const char *s, const char *c);
+AP_DECLARE(void *) ap_palloc_debug(apr_pool_t *p, apr_size_t size);
+AP_DECLARE(void *) ap_pcalloc_debug(apr_pool_t *p, apr_size_t size);
 
 #ifdef AP_DEBUG
 
@@ -2077,6 +2079,21 @@ AP_DECLARE(const char *) ap_strstr_c(const char *s, const char *c);
 # define strrchr(s, c) ap_strrchr(s,c)
 #undef strstr
 # define strstr(s, c)  ap_strstr(s,c)
+
+#ifndef AP_DEBUG_NO_ALLOC_POISON
+/*
+ * ap_palloc_debug initializes allocated memory to non-zero
+ */
+#define apr_palloc     ap_palloc_debug
+/*
+ * this is necessary to avoid useless double memset of memory
+ * with ap_palloc_debug
+ */
+#ifdef apr_pcalloc
+#undef apr_pcalloc
+#endif
+#define apr_pcalloc    ap_pcalloc_debug
+#endif
 
 #else
 
