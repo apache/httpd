@@ -194,7 +194,7 @@
 #define AP_NONBLOCK_WHEN_MULTI_LISTEN 1
 #endif
 
-#if AP_ENABLE_DTRACE && HAVE_SYS_SDT_H
+#if defined(AP_ENABLE_DTRACE) && HAVE_SYS_SDT_H
 #include <sys/sdt.h>
 #else
 #undef _DTRACE_VERSION
