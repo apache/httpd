@@ -1265,7 +1265,8 @@ static void proxy_html_hooks(apr_pool_t *p)
     ap_hook_pre_config(mod_proxy_html, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_insert_filter(proxy_html_insert, NULL, aszSucc, APR_HOOK_MIDDLE);
 }
-module AP_MODULE_DECLARE_DATA proxy_html_module = {
+
+AP_DECLARE_MODULE(proxy_html) = {
     STANDARD20_MODULE_STUFF,
     proxy_html_config,
     proxy_html_merge,
