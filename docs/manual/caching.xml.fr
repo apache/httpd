@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1210725 -->
+<!-- English Revision : 1291840 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -64,7 +64,8 @@
         <dt>Mise en cache d'objets partag&eacute;s de forme cl&eacute;/valeur &agrave; deux
 	&eacute;tats</dt>
         <dd>
-            <module>mod_socache</module> et ses modules de fournisseurs
+            L'<a href="socache.html">API du cache d'objets partag&eacute;s</a> (socache)
+	    et ses modules de fournisseurs
 	    proposent une mise en cache d'objets partag&eacute;s &agrave; base de
 	    couples cl&eacute;/valeur de niveau serveur. Ces modules sont
 	    con&ccedil;us pour la mise en cache de donn&eacute;es de bas niveau comme

@@ -752,7 +752,7 @@ traitement de la requ&ecirc;te</description>
 <override>All</override>
 <compatibility>Le troisi&egrave;me argument optionnel est disponible depuis la
 version 2.3.15 du serveur HTTP Apache.</compatibility>
-</directivesynopsis>
+
 <usage>
 <p>Ajoute votre fonction d'accroche &agrave; la phase access_checker. Une
 fonction d'accroche access checker renvoie en g&eacute;n&eacute;ral OK, DECLINED, ou
@@ -761,6 +761,7 @@ HTTP_FORBIDDEN.</p>
    "early" ou "late" permettent de contr&ocirc;ler le moment auquel ce script
    s'ex&eacute;cute par rapport aux autres modules.</p></note>
 </usage>
+</directivesynopsis>
 <directivesynopsis>
 <name>LuaHookInsertFilter</name>
 <description>Fournit un point d'entr&eacute;e pour la phase insert_filter du

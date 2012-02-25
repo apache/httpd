@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1206682:1243769 (outdated) -->
+<!-- English Revision : 1293065 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -35,8 +35,8 @@ shell Win32 <code>dir</code></description>
       <p>L'index d'un r&eacute;pertoire peut &ecirc;tre g&eacute;n&eacute;r&eacute; de deux mani&egrave;res :</p>
 
     <ul>
-      <li>Un fichier &eacute;crit par l'utilisateur, en g&eacute;n&eacute;ral appel&eacute;
-      <code>index.html</code>, mais dont le nom peut &ecirc;tre d&eacute;fini par la
+      <li>Un fichier situ&eacute; dans ce r&eacute;pertoire, en g&eacute;n&eacute;ral appel&eacute;
+      <code>index.html</code>, mais dont le nom de ce ou ces fichiers peut &ecirc;tre d&eacute;fini par la
       directive <directive
       module="mod_dir">DirectoryIndex</directive>. C'est le module
       <module>mod_dir</module> qui traite alors cet index.</li>
@@ -69,7 +69,9 @@ shell Win32 <code>dir</code></description>
     actionne de mani&egrave;re r&eacute;p&eacute;titive le m&ecirc;me en-t&ecirc;te, l'ordre de tri est
     commut&eacute; entre les ordres croissant et d&eacute;croissant. On peut supprimer
     ces liens d'en-t&ecirc;tes de colonnes &agrave; l'aide de l'option
-    <code>SuppressColumnSorting</code> de la directive <directive
+    <code><a
+    href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code>
+    de la directive <directive
     module="mod_autoindex">IndexOptions</directive>.</p>
 
     <p>Notez que lorsque l'affichage est tri&eacute; en fonction de la taille,
@@ -82,13 +84,13 @@ shell Win32 <code>dir</code></description>
 <section id="query">
     <title>Arguments de la requ&ecirc;te d'autoindexation</title>
 
-    <p>Le serveur HTTP Apache version 2.0.23 a r&eacute;organis&eacute;
-    les arguments de requ&ecirc;te pour le tri
-    des colonnes, et intoduit un groupe complet de nouvelles options de
-    requ&ecirc;te. Pour interdire effectivement au client tout contr&ocirc;le sur
-    l'affichage, l'option <code><a
+    <p>La cha&icirc;ne de param&egrave;tres de la requ&ecirc;te peut contenir de nombreux
+    arguments permettant dans une certaine mesure au client de contr&ocirc;ler
+    l'ordre de l'index du r&eacute;pertoire, ainsi que la liste des fichiers &agrave;
+    afficher. Si vous souhaitez d&eacute;sactiver cette fonctionnalit&eacute;,
+    utilisez l'option <code><a
     href="#indexoptions.ignoreclient">IndexOptions
-    IgnoreClient</a></code> a &eacute;t&eacute; ajout&eacute;e.</p>
+    IgnoreClient</a></code>.</p>
 
     <p>Les en-t&ecirc;tes de tri des colonnes eux-m&ecirc;mes sont des hyper-liens
     auto-r&eacute;f&eacute;rant qui ajoutent les options de tri &agrave; la requ&ecirc;te &eacute;num&eacute;r&eacute;es
@@ -542,6 +544,8 @@ contenant l'index</description>
     +SuppressHTMLPreamble</code></a>, de mani&egrave;re &agrave; ce que ces balises ne
     soient pas r&eacute;p&eacute;t&eacute;es.</p>
 </usage>
+
+<seealso><directive module="autoindex">ReadmeName</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -576,6 +580,7 @@ de l'index d'un r&eacute;pertoire</description>
       type="section">DirectoryMatch</directive></p>
     </note>
 </usage>
+
 </directivesynopsis>
 
 <directivesynopsis>
@@ -665,8 +670,7 @@ r&eacute;pertoire</description>
 
       <dt><a name="indexoptions.descriptionwidth"
                id="indexoptions.descriptionwidth"
-      >DescriptionWidth=[<var>n</var> | *]</a> (<em>Versions 2.0.23 et
-      sup&eacute;rieures du serveur HTTP Apache</em>)</dt>
+      >DescriptionWidth=[<var>n</var> | *]</a></dt>
 
       <dd>Le mot-cl&eacute; <code>DescriptionWidth</code> vous permet de
       sp&eacute;cifier la taille en caract&egrave;res de la colonne description.</dd>
@@ -693,8 +697,7 @@ r&eacute;pertoire</description>
       auto-r&eacute;f&eacute;rants.</dd>
 
       <dt><a name="indexoptions.foldersfirst"
-               id="indexoptions.foldersfirst">FoldersFirst</a> (<em>Versions 2.0.23 et
-      sup&eacute;rieures du serveur HTTP Apache</em>)</dt>
+               id="indexoptions.foldersfirst">FoldersFirst</a></dt>
 
       <dd>Lorsque cette option est activ&eacute;e, la liste des
       sous-r&eacute;pertoires appara&icirc;tra <em>toujours</em> en premier, suivie
@@ -711,9 +714,7 @@ r&eacute;pertoire</description>
       est aussi activ&eacute;.</strong></dd>
 
       <dt><a name="indexoptions.htmltable"
-               id="indexoptions.htmltable">HTMLTable</a>
-	       (<em>Versions 2.0.23 et sup&eacute;rieures
-	       du serveur HTTP Apache</em>)</dt>
+               id="indexoptions.htmltable">HTMLTable</a></dt>
 
       <dd>Cette option pour l'affichage
       <code>FancyIndexing</code> permet de construire une table simple
@@ -820,11 +821,9 @@ r&eacute;pertoire</description>
       affichage "am&eacute;lior&eacute;". Par d&eacute;faut, ces en-t&ecirc;tes constituent des liens
       hyper-texte, et la s&eacute;lection de l'un d'entre eux va trier l'index
       du r&eacute;pertoire en fonction des valeurs de la colonne
-      correspondante. <strong>Avant la version 2.0.23 du serveur HTTP
-      Apache, cette option d&eacute;sactivait aussi l'interpr&eacute;tation des
-      informations de tri transmises via les arguments de la
-      requ&ecirc;te.</strong> Depuis la version 2.0.23 du serveur HTTP Apache, ce comportement est
-      contr&ocirc;l&eacute; par <a
+      correspondante. Cependant, les arguments de la cha&icirc;ne de
+      param&egrave;tres de la requ&ecirc;te ajout&eacute;s &agrave; l'URL seront toujours ignor&eacute;s.
+      Ce comportement est contr&ocirc;l&eacute; par l'option <a
       href="#indexoptions.ignoreclient"><code>IndexOptions
       IgnoreClient</code></a>.</dd>
 
@@ -868,9 +867,7 @@ r&eacute;pertoire</description>
       fichier.</dd>
 
       <dt><a name="indexoptions.suppressicon"
-               id="indexoptions.suppressicon">SuppressIcon</a>
-	       (<em>Versions 2.0.23 et sup&eacute;rieures du serveur
-	       HTTP Apache</em>)</dt>
+               id="indexoptions.suppressicon">SuppressIcon</a></dt>
 
       <dd>L'activation de cette option supprime l'affichage des ic&ocirc;nes
       dans le cas d'un affichage "am&eacute;lior&eacute;". La combinaison de
@@ -889,7 +886,7 @@ r&eacute;pertoire</description>
 
       <dt><a name="indexoptions.suppressrules"
                id="indexoptions.suppressrules">SuppressRules</a>
-      (<em>Versions 2.0.23 et sup&eacute;rieures du serveur HTTP Apache</em>)</dt>
+      </dt>
 
       <dd>L'activation de cette option supprime l'affichage des lignes
       horizontales (&eacute;l&eacute;ments <code>hr</code>) dans les index de
@@ -907,9 +904,7 @@ r&eacute;pertoire</description>
       du fichier dans le cas d'un affichage "am&eacute;lior&eacute;".</dd>
 
       <dt><a name="indexoptions.trackmodified"
-               id="indexoptions.trackmodified">TrackModified</a>
-	       (<em>Versions 2.0.23 et sup&eacute;rieures du serveur
-	       HTTP Apache</em>)</dt>
+               id="indexoptions.trackmodified">TrackModified</a></dt>
 
       <dd>Cette option renvoie les valeurs <code>Last-Modified</code> et
       <code>ETag</code> pour le r&eacute;pertoire index&eacute; dans l'en-t&ecirc;te HTTP.
@@ -1172,12 +1167,13 @@ l'index</description>
     le nom du fichier dont le contenu sera ajout&eacute; &agrave; la fin de l'index.
     <var>nom-fichier</var> est le nom du fichier &agrave; inclure, et est
     consid&eacute;r&eacute; comme relatif au r&eacute;pertoire faisant l'objet de l'index. Si
-    <var>nom-fichier</var> commence par un slash '/', il sera consid&eacute;r&eacute;
+    <var>nom-fichier</var> commence par un slash '/', comme dans
+    l'exemple 2, il sera consid&eacute;r&eacute;
     comme relatif au r&eacute;pertoire d&eacute;fini par la directive <directive
     module="core">DocumentRoot</directive>.
     </p>
 
-    <example><title>Exemple</title>
+    <example><title>Exemple 1</title>
       ReadmeName FOOTER.html
     </example>
 
