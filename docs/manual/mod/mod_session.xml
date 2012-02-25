@@ -63,10 +63,17 @@
 
     <section id="whatisasession"><title>What is a session?</title>
       <p>At the core of the session interface is a table of key and value pairs
-      that are made accessible across browser requests.</p>
+      that are made accessible across browser requests. These pairs can be set
+      to any valid string, as needed by the application making use of the
+      session.</p>
 
-      <p>These pairs can be set to any valid string, as needed by the
-      application making use of the session.</p>
+      <p>The "session" is a <strong>application/x-www-form-urlencoded</strong>
+      string containing these key value pairs, as defined by the
+      <a href="http://www.w3.org/TR/html4/">HTML specification</a>.</p>
+
+      <p>The session can optionally be encrypted and base64 encoded before
+      being written to the storage mechanism, as defined by the
+      administrator.</p>
 
     </section>
     <section id="whocanuseasession"><title>Who can use a session?</title>
@@ -99,9 +106,9 @@
     </section> <!-- /serversession -->
 
     <section id="browsersession"><title>Keeping sessions on the browser</title>
-      <p>Where keeping track of a session on a server is too resource
-      intensive or inconvenient, the option exists to store the contents
-      of the session within a cookie on the client browser instead.</p>
+      <p>In high traffic environments where keeping track of a session on a
+      server is too resource intensive or inconvenient, the option exists to store
+      the contents of the session within a cookie on the client browser instead.</p>
 
       <p>This has the advantage that minimal resources are required on the
       server to keep track of sessions, and multiple servers within a server
@@ -249,6 +256,64 @@
 
       <p>See the <module>mod_auth_form</module> module for documentation and complete
       examples.</p>
+
+    </section>
+    <section id="integration"><title>Integrating Sessions with External Applications</title>
+
+      <p>In order for sessions to be useful, it must be possible to share the contents
+      of a session with external applications, and it must be possible for an
+      external application to write a session of its own.</p>
+
+      <p> A typical example might be an application that changes a user's password set by
+      <module>mod_auth_form</module>. This application would need to read the current
+      username and password from the session, make the required changes to the user's
+      password, and then write the new password to the session in order to provide a
+      seamless transition to the new password.</p>
+
+      <p>A second example might involve an application that registers a new user for
+      the first time. When registration is complete, the username and password is
+      written to the session, providing a seamless transition to being logged in.</p>
+
+      <dl>
+      <dt>Apache modules</dt>
+      <dd>Modules within the server that need access to the session can use the
+      <strong>mod_session.h</strong> API in order to read from and write to the
+      session. This mechanism is used by modules like <module>mod_auth_form</module>.
+      </dd>
+
+      <dt>CGI programs and scripting languages</dt>
+      <dd>Applications that run within the webserver can optionally retrieve the
+      value of the session from the <strong>HTTP_SESSION</strong> environment
+      variable. The session should be encoded as a
+      <strong>application/x-www-form-urlencoded</strong> string as described by the
+      <a href="http://www.w3.org/TR/html4/">HTML specification</a>. The environment
+      variable is controlled by the setting of the
+      <directive module="mod_session">SessionEnv</directive> directive. The session
+      can be written to by the script by returning a
+      <strong>application/x-www-form-urlencoded</strong> response header with a name
+      set by the <directive module="mod_session">SessionHeader</directive>
+      directive. In both cases, any encryption or decryption, and the reading the
+      session from or writing the session to the chosen storage mechanism is handled
+      by the <module>mod_session</module> modules and corresponding configuration.
+      </dd>
+      
+      <dt>Applications behind <module>mod_proxy</module></dt>
+      <dd>If the <directive module="mod_session">SessionHeader</directive>
+      directive is used to define an HTTP request header, the session, encoded as
+      a <strong>application/x-www-form-urlencoded</strong> string, will be made
+      available to the application. If the same header is provided in the response,
+      the value of this response header will be used to replace the session. As
+      above, any encryption or decryption, and the reading the session from or
+      writing the session to the chosen storage mechanism is handled by the
+      <module>mod_session</module> modules and corresponding configuration.</dd>
+      
+      <dt>Standalone applications</dt>
+      <dd>Applications might choose to manipulate the session outside the control
+      of the Apache HTTP server. In this case, it is the responsibility of the
+      application to read the session from the chosen storage mechanism,
+      decrypt the session, update the session, encrypt the session and write
+      the session to the chosen storage mechanism, as appropriate.</dd>
+      </dl>
 
     </section>
 
