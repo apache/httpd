@@ -98,6 +98,24 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: Trunk patch works
     +1: minfrin, trawick
 
+  * Fix AddOutputFilterByType brown paper bag crash bug
+    Initialize pointers, fix off-by-one.
+    PR: 52755
+    Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1293405
+    2.4.x patch: Trunk patch works
+    +1: minfrin
+
+  * Enable per-module loglevel for mod_xml2enc and mod_proxy_html
+    Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1293708
+    2.4.x patch: Trunk patch works
+    +1: minfrin
+
+  * Fix another compiler warning
+    Submitted by: Daniel Shahaf <danielsh elego de>
+    Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1293535
+    2.4.x patch: Trunk patch works
+    +1: minfrin
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
