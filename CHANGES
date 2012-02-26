@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.2
 
+  * mod_session: Sessions are encoded as application/x-www-form-urlencoded
+    strings, however we do not handle the encoding of spaces properly.
+    Fixed. [Graham Leggett]
+
   *) Configuration: Example in comment should use a path consistent
      with the default configuration. PR 52715.
      [Rich Bowen, Jens Schleusener, Rainer Jung]
