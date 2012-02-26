@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.2
 
+  *) Configuration: Example in comment should use a path consistent
+     with the default configuration. PR 52715.
+     [Rich Bowen, Jens Schleusener, Rainer Jung]
+
   *) Configuration: Switch documentation links from trunk to 2.4.
      [Rainer Jung]
 
