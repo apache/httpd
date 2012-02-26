@@ -119,14 +119,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Submitted by: Daniel Shahaf <danielsh elego de>
     Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1293534
     2.4.x patch: Trunk patch works
-    +1: sf
+    +1: sf, minfrin
 
   * Add AP_HAVE_C99 to make correct check for C99 less onerous
     Using __STDC_VERSION__ without checking if it is defined causes warnings
     on C89.
     Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1292043
     2.4.x patch: http://people.apache.org/~sf/AP_HAVE_C99.diff
-    +1: sf
+    +1: sf, minfrin
 
   * mod_log_config: Check during config test that directories for access logs
     exist.
@@ -134,7 +134,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1243651
     2.4.x patch: Trunk patch works (except for CHANGES and
                  docs/log-message-tags/next-number)
-    +1: sf
+    +1: sf, minfrin
 
 
 PATCHES/ISSUES THAT ARE STALLED
