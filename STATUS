@@ -88,11 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_session: Sessions are encoded as application/x-www-form-urlencoded strings,
-    however we do not handle the encoding of spaces properly. Fixed.
-    Trunk patches: http://svn.apache.org/viewvc?rev=1293658&view=rev
-    2.4.x patch: Trunk patch works
-    +1: minfrin, trawick, sf
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

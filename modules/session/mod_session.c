@@ -303,11 +303,11 @@ static int identity_concat(char *buffer, const char *key, const char *val)
         *slider = '&';
         slider++;
     }
-    ap_escape_path_segment_buffer(slider, key);
+    ap_escape_urlencoded_buffer(slider, key);
     slider += strlen(slider);
     *slider = '=';
     slider++;
-    ap_escape_path_segment_buffer(slider, val);
+    ap_escape_urlencoded_buffer(slider, val);
     return 1;
 }
 
@@ -384,7 +384,7 @@ static apr_status_t session_identity_decode(request_rec * r, session_rec * z)
             if (!val || !*val) {
                 apr_table_unset(z->entries, key);
             }
-            else if (!ap_unescape_all(key) && !ap_unescape_all(val)) {
+            else if (!ap_unescape_urlencoded(key) && !ap_unescape_urlencoded(val)) {
                 if (!strcmp(SESSION_EXPIRY, key)) {
                     z->expiry = (apr_time_t) apr_atoi64(val);
                 }
