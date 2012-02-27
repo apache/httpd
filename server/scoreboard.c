@@ -487,8 +487,9 @@ static int update_child_status_internal(int child_num,
                         REMOTE_NOLOOKUP, NULL), sizeof(ws->client));
             copy_request(ws->request, sizeof(ws->request), r);
             if (r->server) {
-                apr_cpystrn(ws->vhost, r->server->server_hostname,
-                            sizeof(ws->vhost));
+                apr_snprintf(ws->vhost, sizeof(ws->vhost), "%s:%d",
+                             r->server->server_hostname,
+                             r->connection->local_addr->port);
             }
         }
         else if (c) {

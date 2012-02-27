@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Add the port number to the vhost's name in the scoreboard.
+     [Stefan Fritsch]
+
   *) mpm_event: Don't do a blocking write when starting a lingering close
      from the listener thread. PR 52229. [Stefan Fritsch]
 
