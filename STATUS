@@ -88,13 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * Add AP_HAVE_C99 to make correct check for C99 less onerous
-    Using __STDC_VERSION__ without checking if it is defined causes warnings
-    on C89.
-    Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1292043
-    2.4.x patch: http://people.apache.org/~sf/AP_HAVE_C99.diff
-    +1: sf, minfrin, trawick
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
