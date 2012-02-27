@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1174747:1241955 (outdated) -->
+<!-- English Revision : 1241955 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -120,6 +120,19 @@
     <p>Les pr&eacute;requis pour la construction d'Apache httpd sont les suivants:</p>
 
     <dl>
+      <dt>APR et APR-Util</dt>
+      <dd>APR et APR-Util doivent &ecirc;tre d&eacute;j&agrave; install&eacute;s sur votre syst&egrave;me.
+      Si ce n'est pas le cas, ou si vous pr&eacute;f&eacute;rez ne pas utiliser les
+      versions fournies avec le syst&egrave;me, t&eacute;l&eacute;chargez les derni&egrave;res
+      versions d'APR et APR-Util depuis <a
+      href="http://apr.apache.org/">Apache APR</a>, d&eacute;compressez-les
+      dans <code>./srclib/apr</code> et <code>./srclib/apr-util</code>
+      (assurez-vous que les noms de r&eacute;pertoires ne comportent pas de
+      num&eacute;ro de version ; par exemple, la distribution APR doit se
+      trouver dans ./srclib/apr/), et utilisez l'option
+      <code>--with-included-apr</code> du script
+      <code>./configure</code>.</dd>
+
       <dt>Espace disque</dt>
       <dd>Assurez-vous d'avoir au moins 50 Mo d'espace disque disponible
       temporaire. Apr&egrave;s l'installation le serveur occupe

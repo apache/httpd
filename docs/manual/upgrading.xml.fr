@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1204356:1241958 (outdated) -->
+<!-- English Revision : 1241958 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -91,6 +91,14 @@ fonctionnalit&eacute;s du serveur HTTP Apache 2.4</a></seealso>
 
       <li>configure: le jeu de modules "reallyall" ajoute les modules de
       d&eacute;veloppeur au jeu "all".</li>
+
+      <li>apr et apr-util: APR et APR-Util ne sont plus fournis dans le
+      paquet Apache httpd 2.4. Vous pouvez soit continuer &agrave; utiliser les
+      versions install&eacute;es, soit continuer &agrave; utiliser l'option du script
+      configure <code>--with-included-apr</code> apr&egrave;s avoir t&eacute;l&eacute;charg&eacute;s
+      les paquets apr/apr-util (depuis <a
+      href="http://apr.apache.org/">Apache
+      APR</a>), et les avoir d&eacute;compress&eacute;s dans <code>./srclib/</code>.</li>
     </ul>
 
   </section>
