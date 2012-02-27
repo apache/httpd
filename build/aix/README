@@ -1,0 +1,38 @@
+The script buildaix.ksh will attempt to build a AIX installp fileset
+out of a source tree for ASF project
+
+REQUIREMENTS:
+  Fileset                      Level  State  Type  Description (Uninstaller)
+  ----------------------------------------------------------------------------
+  bos.adt.insttools          5.3.7.2    C     F    Tool to Create installp
+                                                   Packages
+  Fileset                      Level  State  Type  Description (Uninstaller)
+  ----------------------------------------------------------------------------
+  rpm.rte                   3.0.5.41    C     F    RPM Package Manager
+
+Additional:
+Preferred: download zlib sources and copy zlib.h and zconf.h to /opt/include
+and, if configure cannot find them directly, add symbolic links from /usr/include to /opt/include
+
+To build a package, make sure you are in the root of the source tree,
+and run:
+
+build/aix/buildaix.ksh
+
+An AIX fileset named $PKG.$NAME.$ARCH.$VERSION.I will be
+created in the build/aix directory. the .template file created is also there.
+
+KNOWN issues:
+on AIX libtool is known to have issues with the install command.
+Some of these issues have been resolved by extracting the apr/apu utilities
+from the projects (i.e. NOT using the embedded version)
+In case of problems I recommend that you install the GNU 'install' program (part of coreutils)
+If make DESTDIR=$TEMPDIR install command continues to fail, try 'make install' and then run
+the buildaix.ksh command again
+
+TODO
+Add Copyright display/banner
+Add Apache LICENSE to fileset and require acceptance
+Add special instructions for TCB - to ignore /etc/* /var/httpd/htdocs/*
+Add _config_i scripts to setup autostart
+Add _pre_i scripts to verify pre-requisites, required users/groups, etc.
