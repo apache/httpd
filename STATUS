@@ -88,40 +88,39 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
   * Fix AddOutputFilterByType brown paper bag crash bug
     Initialize pointers, fix off-by-one.
     PR: 52755
     Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1293405
     2.4.x patch: Trunk patch works
-    +1: minfrin, sf
+    +1: minfrin, sf, trawick
 
   * Enable per-module loglevel for mod_xml2enc and mod_proxy_html
     Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1293708
     2.4.x patch: Trunk patch works
-    +1: minfrin, sf
+    +1: minfrin, sf, trawick
 
   * Fix another compiler warning
     Submitted by: Daniel Shahaf <danielsh elego de>
     Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1293535
     2.4.x patch: Trunk patch works
-    +1: minfrin, sf
+    +1: minfrin, sf, trawick
 
   * Fix compiler warning
     Submitted by: Daniel Shahaf <danielsh elego de>
     Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1293534
     2.4.x patch: Trunk patch works
-    +1: sf, minfrin
+    +1: sf, minfrin, trawick
 
   * Add AP_HAVE_C99 to make correct check for C99 less onerous
     Using __STDC_VERSION__ without checking if it is defined causes warnings
     on C89.
     Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1292043
     2.4.x patch: http://people.apache.org/~sf/AP_HAVE_C99.diff
-    +1: sf, minfrin
+    +1: sf, minfrin, trawick
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
   * mod_log_config: Check during config test that directories for access logs
     exist.
@@ -130,7 +129,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: Trunk patch works (except for CHANGES and
                  docs/log-message-tags/next-number)
     +1: sf, minfrin
-
 
 PATCHES/ISSUES THAT ARE STALLED
 
