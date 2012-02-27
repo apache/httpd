@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta name="generator" content="HTML Tidy, see www.w3.org" />
-
+    <link rel="stylesheet" type="text/css" href="style/style.css" />
     <title>Apache modules</title>
   </head>
   <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
