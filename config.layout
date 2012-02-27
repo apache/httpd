@@ -336,12 +336,12 @@
     datadir:       /var/httpd
     installbuilddir: ${datadir}/build
     errordir:      ${datadir}/error
-    iconsdir:      ${datadir}/icons
     htdocsdir:     ${datadir}/htdocs
-    manualdir:     ${datadir}/manual
     cgidir:        ${datadir}/cgi-bin
+    iconsdir:      ${prefix}/icons
+    manualdir:     ${prefix}/manual
     includedir:    ${prefix}/include
-    localstatedir: /var+
+    localstatedir: /var/httpd
     runtimedir:    ${localstatedir}/run
     logfiledir:    ${localstatedir}/logs
     proxycachedir: ${localstatedir}/proxy
