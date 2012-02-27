@@ -218,7 +218,7 @@ extern void moncontrol(int);
 #define AP_MONCONTROL(x)
 #endif
 
-#if AP_ENABLE_EXCEPTION_HOOK
+#ifdef AP_ENABLE_EXCEPTION_HOOK
 typedef struct ap_exception_info_t {
     int sig;
     pid_t pid;
