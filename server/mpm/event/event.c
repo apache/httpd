@@ -767,10 +767,6 @@ static int start_lingering_close(event_conn_state_t *cs)
 {
     apr_status_t rv;
 
-    cs->c->sbh = NULL;  /* prevent scoreboard updates from the listener 
-                         * worker will loop around and set SERVER_READY soon
-                         */
-
     if (ap_start_lingering_close(cs->c)) {
         apr_pool_clear(cs->p);
         ap_push_pool(worker_queue_info, cs->p);
@@ -861,6 +857,7 @@ static int process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * sock
     int rc;
     ap_sb_handle_t *sbh;
 
+    /* XXX: This will cause unbounded mem usage for long lasting connections */
     ap_create_sb_handle(&sbh, p, my_child_num, my_thread_num);
 
     if (cs == NULL) {           /* This is a new connection */
@@ -1016,6 +1013,13 @@ read_request:
             AP_DEBUG_ASSERT(rc == APR_SUCCESS);
         }
     }
+    /*
+     * Prevent this connection from writing to our connection state after it
+     * is no longer associated with this thread. This would happen if the EOR
+     * bucket is destroyed from the listener thread due to a connection abort
+     * or timeout.
+     */
+    c->sbh = NULL;
     return 1;
 }
 
