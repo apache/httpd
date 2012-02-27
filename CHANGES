@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.2
 
+  *) mod_xml2enc, mod_proxy_html: Enable per-module loglevels.
+     [Stefan Fritsch]
+
   *) mod_filter: Fix segfault with AddOutputFilterByType. PR 52755.
      [Stefan Fritsch]
 
