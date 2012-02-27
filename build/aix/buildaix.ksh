@@ -16,38 +16,112 @@
 #
 #
 
-# buildaix.ksh: This script builds an AIX fileset
+# buildaix.ksh: This script builds an AIX fileset of Apache httpd
 
+# if arguments - try to run fast
+cmd=$0
+
+export CFLAGS='-O2 -qlanglvl=extc99'
+
+lslpp -L bos.adt.insttools >/dev/null
+ [[ $? -ne 0 ]] && echo "must have bos.adt.insttools installed" && exit -1
+
+apr_config=`which apr-1-config`
+apu_config=`which apu-1-config`
+
+if [[ -z ${apr_config} && -z ${apu_config} ]]
+then
+	export PATH=/opt/bin:${PATH}
+	apr_config=`which apr-1-config`
+	apu_config=`which apu-1-config`
+fi
+
+while test $# -gt 0
+do
+  # Normalize
+  case "$1" in
+  -*=*) optarg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
+  *) optarg= ;;
+  esac
+
+  case "$1" in
+  --with-apr=*)
+  apr_config=$optarg
+  ;;
+  esac
+
+  case "$1" in
+  --with-apr-util=*)
+  apu_config=$optarg
+  ;;
+  esac
+
+  shift
+  argc--
+done
+
+if [ ! -f "$apr_config" -a ! -f "$apr_config/configure.in" ]; then
+  echo "The apr source directory / apr-1-config could not be found"
+  echo "If available, install the ASF.apu.rte and ASF.apr.rte filesets"
+  echo "Usage: $cmd [--with-apr=[dir|file]] [--with-apr-util=[dir|file]]"
+  exit 1
+fi
+
+if [ ! -f "$apu_config" -a ! -f "$apu_config/configure.in" ]; then
+  echo "The apu source directory / apu-1-config could not be found"
+  echo "If available, install the ASF.apu.rte and ASF.apr.rte filesets"
+  echo "Usage: $cmd [--with-apr=[dir|file]] [--with-apr-util=[dir|file]]"
+  exit 1
+fi
+
+. build/aix/aixinfo
 LAYOUT=AIX
-TEMPDIR=/var/tmp/$USER/httpd-root
+TEMPDIR=/var/tmp/$USER/${NAME}.${VERSION}
 rm -rf $TEMPDIR
 
-## strange interaction between install and libtool requires a regular install
-## for all the links to succeed in the TEMPDIR
-## httpd-2.0 does not include ssl by default
-## will make a seperate build for that later
+if [[ ! -e ./Makefile ]] # if Makefile exists go faster
+then
+#		--with-mpm=worker \n\
+	echo "+ ./configure \n\
+		--enable-layout=$LAYOUT \n\
+		--with-apr=$apr_config \n\
+		--with-apr-util=$apu_config \n\
+		--enable-mpms-shared=all \n\
+		--enable-mods-shared=all \n\
+		--disable-lua > build/aix/configure.out"
 
-> nohup.out
-./configure \
- 	--enable-layout=$LAYOUT \
- 	--enable-module=so \
- 	--enable-proxy \
- 	--enable-cache \
- 	--enable-disk-cache \
- 	--with-mpm=worker \
- 	--enable-mods-shared=all | tee nohup.out
+#		--with-mpm=worker \
+	./configure \
+		--enable-layout=$LAYOUT \
+		--with-apr=$apr_config \
+		--with-apr-util=$apu_config \
+		--enable-mpms-shared=all \
+		--enable-mods-shared=all \
+		--disable-lua > build/aix/configure.out
+		 [[ $? -ne 0 ]] && echo './configure' returned an error && exit -1
+else
+	echo $0: using existing Makefile
+	echo $0: run make distclean to get a standard AIX configure
+	echo
+	ls -l ./Makefile config.*
+	echo
+fi
 
-make | tee -a nohup.out
+echo "+ make > build/aix/make.out"
+make > build/aix/make.out
+ [[ $? -ne 0 ]] && echo 'make' returned an error && exit -1
 
-make install > install.log
-make install DESTDIR=$TEMPDIR
+echo "+ make install DESTDIR=$TEMPDIR > build/aix/install.out"
+make install DESTDIR=$TEMPDIR > build/aix/install.out
+ [[ $? -ne 0 ]] && echo 'make install' returned an error && exit -1
 
-# will make use of the pkginfo data as input for mkinstallp template
-cp build/aix/pkginfo $TEMPDIR
+echo "+ build/aix/mkinstallp.ksh $TEMPDIR > build/aix/mkinstallp.out"
+build/aix/mkinstallp.ksh $TEMPDIR > build/aix/mkinstallp.out
+ [[ $? -ne 0 ]] && echo mkinstallp.ksh returned an error && exit -1
 
-## no seperate filesets for man pages, documents, etc.
+rm -rf $TEMPDIR
 
-build/aix/aixproto.ksh $TEMPDIR
-
-# rm -rf $TEMPDIR
-ls -ltr build/aix | grep -i aix
+# list installable fileset(s)
+echo ========================
+installp -d build/aix -L
+echo ========================
