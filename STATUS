@@ -88,11 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * Enable per-module loglevel for mod_xml2enc and mod_proxy_html
-    Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1293708
-    2.4.x patch: Trunk patch works
-    +1: minfrin, sf, trawick
-
   * Fix another compiler warning
     Submitted by: Daniel Shahaf <danielsh elego de>
     Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1293535
