@@ -322,3 +322,27 @@
     installbuilddir: ${prefix}/etc/apache2/build
     errordir:      ${datadir}/error
 </Layout>
+
+# AIX layout
+<Layout AIX>
+    prefix:        /opt/httpd
+    exec_prefix:   /opt/httpd
+    bindir:        ${exec_prefix}/bin
+    sbindir:       ${exec_prefix}/sbin
+    libdir:        ${exec_prefix}/lib
+    libexecdir:    ${exec_prefix}/libexec
+    mandir:        /usr/share/man
+    sysconfdir:    /etc/httpd
+    datadir:       /var/httpd
+    installbuilddir: ${datadir}/build
+    errordir:      ${datadir}/error
+    htdocsdir:     ${datadir}/htdocs
+    cgidir:        ${datadir}/cgi-bin
+    iconsdir:      ${prefix}/icons
+    manualdir:     ${prefix}/manual
+    includedir:    ${prefix}/include
+    localstatedir: /var/httpd
+    runtimedir:    ${localstatedir}/run
+    logfiledir:    ${localstatedir}/logs
+    proxycachedir: ${localstatedir}/proxy
+</Layout>
