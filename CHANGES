@@ -1,9 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mpm_event: Don't do a blocking write when starting a lingering close
+     from the listener thread. PR 52229. [Stefan Fritsch]
+
   *) core: In maintainer mode, replace apr_palloc with a version that
      initializes the allocated memory with non-zero values, except if
-     AP_DEBUG_NO_ALLOC_POISON is defined.
+     AP_DEBUG_NO_ALLOC_POISON is defined. [Stefan Fritsch]
 
   *) mod_log_config: Check during config test that directories for access logs
      exist. PR 29941. [Stefan Fritsch]
