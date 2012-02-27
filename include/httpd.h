@@ -1147,6 +1147,8 @@ struct conn_rec {
 
 /**
  * Enumeration of connection states
+ * The two states CONN_STATE_LINGER_NORMAL and CONN_STATE_LINGER_SHORT may
+ * only be set by the MPM. Use CONN_STATE_LINGER outside of the MPM.
  */
 typedef enum  {
     CONN_STATE_CHECK_REQUEST_LINE_READABLE,
@@ -1154,9 +1156,9 @@ typedef enum  {
     CONN_STATE_HANDLER,
     CONN_STATE_WRITE_COMPLETION,
     CONN_STATE_SUSPENDED,
-    CONN_STATE_LINGER,
-    CONN_STATE_LINGER_NORMAL,
-    CONN_STATE_LINGER_SHORT
+    CONN_STATE_LINGER,          /* connection may be closed with lingering */
+    CONN_STATE_LINGER_NORMAL,   /* MPM has started lingering close with normal timeout */
+    CONN_STATE_LINGER_SHORT     /* MPM has started lingering close with short timeout */
 } conn_state_e;
 
 /**
