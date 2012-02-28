@@ -88,13 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_log_config: Check during config test that directories for access logs
-    exist.
-    PR 29941
-    Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1243651
-    2.4.x patch: Trunk patch works (except for CHANGES and
-                 docs/log-message-tags/next-number)
-    +1: sf, minfrin, jim
 
   * mod_ssl: properly free the GENERAL_NAMEs, as pointed out in PR 32652
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1294471
