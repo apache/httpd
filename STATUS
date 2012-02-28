@@ -102,7 +102,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_ssl: properly free the GENERAL_NAMEs, as pointed out in PR 32652
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1294471
     2.4.x patch: Trunk patch works
-    +1: kbrand
+    +1: kbrand, minfrin
 
 PATCHES/ISSUES THAT ARE STALLED
 
