@@ -2,6 +2,11 @@
 
 Changes with Apache 2.4.2
 
+  *) mod_ssl: Properly free the GENERAL_NAMEs. PR 32652.
+
+  *) core: Check during config test that directories for the access
+     logs actually exist. PR 29941.
+
   *) mod_xml2enc, mod_proxy_html: Enable per-module loglevels.
      [Stefan Fritsch]
 
