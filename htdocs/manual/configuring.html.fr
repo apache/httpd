@@ -5,6 +5,7 @@
   <!-- Traduction anglais 1.17 -->
 
   <head>
+<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
     <meta name="generator" content="HTML Tidy, see www.w3.org" />
     <meta http-equiv="Content-Type"
     content="text/html; charset=iso-8859-1" />

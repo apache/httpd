@@ -4,6 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
   <head>
+<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
 
     <title>Apache の keep-alive サポート</title>
     <!-- English revision:1.12 -->
