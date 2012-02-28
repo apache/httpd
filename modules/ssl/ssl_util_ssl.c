@@ -325,7 +325,7 @@ BOOL SSL_X509_getIDs(apr_pool_t *p, X509 *x509, apr_array_header_t **ids)
     }
 
     if (names)
-        sk_GENERAL_NAME_free(names);
+        sk_GENERAL_NAME_pop_free(names, GENERAL_NAME_free);
 
     /* Second, the CN-IDs (commonName attributes in the subject DN) */
     subj = X509_get_subject_name(x509);
