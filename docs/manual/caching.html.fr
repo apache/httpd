@@ -66,7 +66,8 @@
         <dt>Mise en cache d'objets partagés de forme clé/valeur à deux
 	états</dt>
         <dd>
-            <code class="module"><a href="./mod/mod_socache.html">mod_socache</a></code> et ses modules de fournisseurs
+            L'<a href="socache.html">API du cache d'objets partagés</a> (socache)
+	    et ses modules de fournisseurs
 	    proposent une mise en cache d'objets partagés à base de
 	    couples clé/valeur de niveau serveur. Ces modules sont
 	    conçus pour la mise en cache de données de bas niveau comme

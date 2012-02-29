@@ -21,8 +21,6 @@
 <p><span>Langues Disponibles: </span><a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/upgrading.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
   <p>Afin d'assister les utilisateurs lors de leurs opérations de mise à
   jour, nous maintenons un document
@@ -93,6 +91,13 @@ fonctionnalités du serveur HTTP Apache 2.4</a></li></ul></div>
 
       <li>configure: le jeu de modules "reallyall" ajoute les modules de
       développeur au jeu "all".</li>
+
+      <li>apr et apr-util: APR et APR-Util ne sont plus fournis dans le
+      paquet Apache httpd 2.4. Vous pouvez soit continuer à utiliser les
+      versions installées, soit continuer à utiliser l'option du script
+      configure <code>--with-included-apr</code> après avoir téléchargés
+      les paquets apr/apr-util (depuis <a href="http://apr.apache.org/">Apache
+      APR</a>), et les avoir décompressés dans <code>./srclib/</code>.</li>
     </ul>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
