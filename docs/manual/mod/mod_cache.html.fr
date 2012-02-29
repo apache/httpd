@@ -26,8 +26,6 @@
 <a href="../ja/mod/mod_cache.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Filtre de mise en cache HTTP conforme à la RFC 2616</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>cache_module</td></tr>
@@ -360,7 +358,7 @@ cache</a></li>
   </code></p></div>
 
   <p>En fonction de la décision prise, l'information est aussi écrite
-  dans l'environnement du sous-processus sous une des quatre clés
+  dans l'environnement du sous-processus sous une des trois clés
   suivantes :</p>
 
   <dl>
@@ -369,8 +367,6 @@ cache</a></li>
     mis à jour avec succès, puis servi depuis le cache.</dd>
     <dt>cache-miss</dt><dd>Le contenu n'était pas dans le cache et a été
     servi directement depuis le serveur demandé.</dd>
-    <dt>cache-invalidate</dt><dd>L'entité du cache est devenue invalide
-    suite à une requête d'un type autre que GET ou HEAD.</dd>
   </dl>
 
   <p>Il est alors possible d'envisager une journalisation conditionnelle
@@ -381,7 +377,6 @@ cache</a></li>
     CustomLog requetes-depuis-cache.log common env=cache-hit<br />
     CustomLog requetes-hors-cache.log common env=cache-miss<br />
     CustomLog requetes-avec-mise-a-jour-du-cache.log common env=cache-revalidate<br />
-    CustomLog requetes-avec-invalidation.log common env=cache-invalidate<br />
   </code></p></div>
 
   <p>Pour les concepteurs de modules, une accroche (hook) nommée
