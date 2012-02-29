@@ -1014,8 +1014,8 @@ LastModified date.</td></tr>
 </table>
     <p>Ordinarily, requests or responses with Cache-Control: no-store header
        values will not be stored in the cache.  The
-       <code class="directive">CacheStoreNoCache</code> directive allows this
-       behavior to be overridden.  <code class="directive">CacheStoreNoCache</code> On
+       <code class="directive">CacheStoreNoStore</code> directive allows this
+       behavior to be overridden.  <code class="directive">CacheStoreNoStore</code> On
        tells the server to attempt to cache the resource even if it contains
        no-store header values.  Resources requiring authorization will
        <em>never</em> be cached.</p>

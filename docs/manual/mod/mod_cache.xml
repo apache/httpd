@@ -797,8 +797,8 @@ LastModified date.</description>
 <usage>
     <p>Ordinarily, requests or responses with Cache-Control: no-store header
        values will not be stored in the cache.  The
-       <directive>CacheStoreNoCache</directive> directive allows this
-       behavior to be overridden.  <directive>CacheStoreNoCache</directive> On
+       <directive>CacheStoreNoStore</directive> directive allows this
+       behavior to be overridden.  <directive>CacheStoreNoStore</directive> On
        tells the server to attempt to cache the resource even if it contains
        no-store header values.  Resources requiring authorization will
        <em>never</em> be cached.</p>
