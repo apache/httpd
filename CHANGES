@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) Fix MPM DSO load failure on AIX.  [Jeff Trawick]
+
   *) core: Add the port number to the vhost's name in the scoreboard.
      [Stefan Fritsch]
 
