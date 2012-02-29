@@ -28,8 +28,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fonctionnalités de base du serveur HTTP Apache toujours
 disponibles</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Core</td></tr></table>
@@ -495,6 +493,34 @@ All pour les versions antérieures</code></td></tr>
       <dd>
       Permet l'utilisation des directives contrôlant l'accès au serveur
       (<code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code>, <code class="directive"><a href="../mod/mod_authz_host.html#deny">Deny</a></code> et <code class="directive"><a href="../mod/mod_authz_host.html#order">Order</a></code>).</dd>
+
+      <dt>Nonfatal=[Override|Unknown|All]</dt>
+
+      <dd>
+      Permet d'utiliser l'option AllowOverride pour rendre les erreurs
+      de syntaxe non fatales dans les fichiers .htaccess : au lieu de
+      causer une Internal Server Error, les directives non autorisées ou
+      non reconnues seront ignorées et un avertissement enregistré dans
+      le journal :
+      <ul>
+          <li><strong>Nonfatal=Override</strong> rend les directives
+	  interdite par AllowOverride non fatales.</li>
+          <li><strong>Nonfatal=Unknown</strong> rend les directives
+	  inconnues non fatales. Sont concernées les erreurs de frappe
+	  et les directives implémentées par un module non chargé.</li>
+          <li><strong>Nonfatal=All</strong> rend toutes les directives
+	  précédentes non fatales.</li>
+      </ul>
+      <p>Notez qu'une erreur de syntaxe dans une directive valide
+      causera toujours une internal server error.</p>
+      <div class="warning"><h3>Sécurité</h3>
+          Les erreurs non fatales peuvent être à l'origine de problèmes
+	  de sécurité pour les utilisateurs de fichiers .htaccess. Par
+	  exemple, si AllowOverride interdit AuthConfig, toute
+	  configuration utilisateur destinée à restreindre l'accès à un
+	  site ne sera pas prise en compte.
+      </div>
+      </dd>
 
       <dt>Options[=<var>Option</var>,...]</dt>
 

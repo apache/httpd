@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_lua.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_lua.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournit des points d'entrée Lua dans différentes parties du
 traitement des requêtes httpd</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
@@ -484,6 +482,13 @@ traitement de la requête</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le troisième argument optionnel est disponible depuis la
 version 2.3.15 du serveur HTTP Apache.</td></tr>
 </table>
+<p>Ajoute votre fonction d'accroche à la phase access_checker. Une
+fonction d'accroche access checker renvoie en général OK, DECLINED, ou
+HTTP_FORBIDDEN.</p>
+<div class="note"><h3>Ordonnancement</h3><p>Les arguments optionnels
+   "early" ou "late" permettent de contrôler le moment auquel ce script
+   s'exécute par rapport aux autres modules.</p></div>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaHookAuthChecker" id="LuaHookAuthChecker">LuaHookAuthChecker</a> <a name="luahookauthchecker" id="luahookauthchecker">Directive</a></h2>

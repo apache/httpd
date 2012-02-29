@@ -26,8 +26,6 @@
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/install.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Ce document couvre l'installation et la compilation du serveur
@@ -130,6 +128,18 @@
     <p>Les prérequis pour la construction d'Apache httpd sont les suivants:</p>
 
     <dl>
+      <dt>APR et APR-Util</dt>
+      <dd>APR et APR-Util doivent être déjà installés sur votre système.
+      Si ce n'est pas le cas, ou si vous préférez ne pas utiliser les
+      versions fournies avec le système, téléchargez les dernières
+      versions d'APR et APR-Util depuis <a href="http://apr.apache.org/">Apache APR</a>, décompressez-les
+      dans <code>./srclib/apr</code> et <code>./srclib/apr-util</code>
+      (assurez-vous que les noms de répertoires ne comportent pas de
+      numéro de version ; par exemple, la distribution APR doit se
+      trouver dans ./srclib/apr/), et utilisez l'option
+      <code>--with-included-apr</code> du script
+      <code>./configure</code>.</dd>
+
       <dt>Espace disque</dt>
       <dd>Assurez-vous d'avoir au moins 50 Mo d'espace disque disponible
       temporaire. Après l'installation le serveur occupe

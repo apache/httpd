@@ -27,8 +27,6 @@
 <a href="../ko/mod/mod_autoindex.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_autoindex.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Génère automatiquement des index de répertoires d'une
 manière similaire à la commande Unix <code>ls</code>, ou à la commande
 shell Win32 <code>dir</code></td></tr>
@@ -40,8 +38,8 @@ shell Win32 <code>dir</code></td></tr>
       <p>L'index d'un répertoire peut être généré de deux manières :</p>
 
     <ul>
-      <li>Un fichier écrit par l'utilisateur, en général appelé
-      <code>index.html</code>, mais dont le nom peut être défini par la
+      <li>Un fichier situé dans ce répertoire, en général appelé
+      <code>index.html</code>, mais dont le nom de ce ou ces fichiers peut être défini par la
       directive <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code>. C'est le module
       <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> qui traite alors cet index.</li>
 
@@ -67,7 +65,8 @@ shell Win32 <code>dir</code></td></tr>
     actionne de manière répétitive le même en-tête, l'ordre de tri est
     commuté entre les ordres croissant et décroissant. On peut supprimer
     ces liens d'en-têtes de colonnes à l'aide de l'option
-    <code>SuppressColumnSorting</code> de la directive <code class="directive"><a href="#indexoptions">IndexOptions</a></code>.</p>
+    <code><a href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code>
+    de la directive <code class="directive"><a href="#indexoptions">IndexOptions</a></code>.</p>
 
     <p>Notez que lorsque l'affichage est trié en fonction de la taille,
     c'est la taille <em>réelle</em> qui est prise en compte, et non la
@@ -103,12 +102,12 @@ shell Win32 <code>dir</code></td></tr>
 <h2><a name="query" id="query">Arguments de la requête d'autoindexation</a></h2>
     
 
-    <p>Le serveur HTTP Apache version 2.0.23 a réorganisé
-    les arguments de requête pour le tri
-    des colonnes, et intoduit un groupe complet de nouvelles options de
-    requête. Pour interdire effectivement au client tout contrôle sur
-    l'affichage, l'option <code><a href="#indexoptions.ignoreclient">IndexOptions
-    IgnoreClient</a></code> a été ajoutée.</p>
+    <p>La chaîne de paramètres de la requête peut contenir de nombreux
+    arguments permettant dans une certaine mesure au client de contrôler
+    l'ordre de l'index du répertoire, ainsi que la liste des fichiers à
+    afficher. Si vous souhaitez désactiver cette fonctionnalité,
+    utilisez l'option <code><a href="#indexoptions.ignoreclient">IndexOptions
+    IgnoreClient</a></code>.</p>
 
     <p>Les en-têtes de tri des colonnes eux-mêmes sont des hyper-liens
     auto-référant qui ajoutent les options de tri à la requête énumérées
@@ -536,6 +535,10 @@ contenant l'index</td></tr>
     +SuppressHTMLPreamble</code></a>, de manière à ce que ces balises ne
     soient pas répétées.</p>
 
+<h3>Voir aussi</h3>
+<ul>
+<li><code class="directive"><a href="../mod/autoindex.html#readmename">ReadmeName</a></code></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="IndexHeadInsert" id="IndexHeadInsert">IndexHeadInsert</a> <a name="indexheadinsert" id="indexheadinsert">Directive</a></h2>
@@ -671,8 +674,7 @@ répertoire</td></tr>
       </code></p></div>
       </dd>
 
-      <dt><a name="indexoptions.descriptionwidth" id="indexoptions.descriptionwidth">DescriptionWidth=[<var>n</var> | *]</a> (<em>Versions 2.0.23 et
-      supérieures du serveur HTTP Apache</em>)</dt>
+      <dt><a name="indexoptions.descriptionwidth" id="indexoptions.descriptionwidth">DescriptionWidth=[<var>n</var> | *]</a></dt>
 
       <dd>Le mot-clé <code>DescriptionWidth</code> vous permet de
       spécifier la taille en caractères de la colonne description.</dd>
@@ -696,8 +698,7 @@ répertoire</td></tr>
       c'est à dire avec en-têtes de colonnes sous forme d'hyper-liens
       auto-référants.</dd>
 
-      <dt><a name="indexoptions.foldersfirst" id="indexoptions.foldersfirst">FoldersFirst</a> (<em>Versions 2.0.23 et
-      supérieures du serveur HTTP Apache</em>)</dt>
+      <dt><a name="indexoptions.foldersfirst" id="indexoptions.foldersfirst">FoldersFirst</a></dt>
 
       <dd>Lorsque cette option est activée, la liste des
       sous-répertoires apparaîtra <em>toujours</em> en premier, suivie
@@ -712,9 +713,7 @@ répertoire</td></tr>
       <strong>Cette option n'a d'effet que si <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
       est aussi activé.</strong></dd>
 
-      <dt><a name="indexoptions.htmltable" id="indexoptions.htmltable">HTMLTable</a>
-	       (<em>Versions 2.0.23 et supérieures
-	       du serveur HTTP Apache</em>)</dt>
+      <dt><a name="indexoptions.htmltable" id="indexoptions.htmltable">HTMLTable</a></dt>
 
       <dd>Cette option pour l'affichage
       <code>FancyIndexing</code> permet de construire une table simple
@@ -806,11 +805,9 @@ répertoire</td></tr>
       affichage "amélioré". Par défaut, ces en-têtes constituent des liens
       hyper-texte, et la sélection de l'un d'entre eux va trier l'index
       du répertoire en fonction des valeurs de la colonne
-      correspondante. <strong>Avant la version 2.0.23 du serveur HTTP
-      Apache, cette option désactivait aussi l'interprétation des
-      informations de tri transmises via les arguments de la
-      requête.</strong> Depuis la version 2.0.23 du serveur HTTP Apache, ce comportement est
-      contrôlé par <a href="#indexoptions.ignoreclient"><code>IndexOptions
+      correspondante. Cependant, les arguments de la chaîne de
+      paramètres de la requête ajoutés à l'URL seront toujours ignorés.
+      Ce comportement est contrôlé par l'option <a href="#indexoptions.ignoreclient"><code>IndexOptions
       IgnoreClient</code></a>.</dd>
 
       <dt><a name="indexoptions.suppressdescription" id="indexoptions.suppressdescription">SuppressDescription</a></dt>
@@ -844,9 +841,7 @@ répertoire</td></tr>
       supposant que vous ayez placé ces balises de fermeture dans ce
       fichier.</dd>
 
-      <dt><a name="indexoptions.suppressicon" id="indexoptions.suppressicon">SuppressIcon</a>
-	       (<em>Versions 2.0.23 et supérieures du serveur
-	       HTTP Apache</em>)</dt>
+      <dt><a name="indexoptions.suppressicon" id="indexoptions.suppressicon">SuppressIcon</a></dt>
 
       <dd>L'activation de cette option supprime l'affichage des icônes
       dans le cas d'un affichage "amélioré". La combinaison de
@@ -862,7 +857,7 @@ répertoire</td></tr>
       de dernière modification dans le cas d'un affichage "amélioré".</dd>
 
       <dt><a name="indexoptions.suppressrules" id="indexoptions.suppressrules">SuppressRules</a>
-      (<em>Versions 2.0.23 et supérieures du serveur HTTP Apache</em>)</dt>
+      </dt>
 
       <dd>L'activation de cette option supprime l'affichage des lignes
       horizontales (éléments <code>hr</code>) dans les index de
@@ -878,9 +873,7 @@ répertoire</td></tr>
       <dd>L'activation de cette option supprime l'affichage de la taille
       du fichier dans le cas d'un affichage "amélioré".</dd>
 
-      <dt><a name="indexoptions.trackmodified" id="indexoptions.trackmodified">TrackModified</a>
-	       (<em>Versions 2.0.23 et supérieures du serveur
-	       HTTP Apache</em>)</dt>
+      <dt><a name="indexoptions.trackmodified" id="indexoptions.trackmodified">TrackModified</a></dt>
 
       <dd>Cette option renvoie les valeurs <code>Last-Modified</code> et
       <code>ETag</code> pour le répertoire indexé dans l'en-tête HTTP.
@@ -1107,11 +1100,12 @@ l'index</td></tr>
     le nom du fichier dont le contenu sera ajouté à la fin de l'index.
     <var>nom-fichier</var> est le nom du fichier à inclure, et est
     considéré comme relatif au répertoire faisant l'objet de l'index. Si
-    <var>nom-fichier</var> commence par un slash '/', il sera considéré
+    <var>nom-fichier</var> commence par un slash '/', comme dans
+    l'exemple 2, il sera considéré
     comme relatif au répertoire défini par la directive <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>.
     </p>
 
-    <div class="example"><h3>Exemple</h3><p><code>
+    <div class="example"><h3>Exemple 1</h3><p><code>
       ReadmeName FOOTER.html
     </code></p></div>
 
