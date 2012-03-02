@@ -25,8 +25,6 @@
 <a href="../fr/mod/mod_proxy.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle HTTP/1.1</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_module</td></tr>
@@ -1591,13 +1589,11 @@ réécrire la chaîne <code>path</code> dans les en-têtes
 <var>chemin-interne</var>, le chemin du cookie sera remplacé par
 <var>chemin-public</var>.
 </p><p>
-Dans l'exemple fourni avec la directive <code class="directive"><a href="#proxypassreverse">ProxyPassReverse</a></code>, la directive :
-</p>
+Dans l'exemple fourni avec la directive <code class="directive"><a href="#proxypassreverse">ProxyPassReverse</a></code>, la directive :</p>
     <div class="example"><p><code>
       ProxyPassReverseCookiePath  /  /mirror/foo/
     </code></p></div>
-<p>
-va réécrire un cookie possédant un chemin d'arrière-plan <code>/</code>
+<p>va réécrire un cookie possédant un chemin d'arrière-plan <code>/</code>
 (ou <code>/example</code> ou en fait tout chemin)
 en <code>/mirror/foo/</code>..
 </p>
