@@ -20,6 +20,7 @@
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/faq/" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/faq/" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ko/faq/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/faq/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/faq/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
@@ -31,6 +32,7 @@
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/faq/" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/faq/" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ko/faq/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/faq/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/faq/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
