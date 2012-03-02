@@ -94,6 +94,17 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
+ * mod_xml2enc: Fix handling of EOS buckets.
+   Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1293717
+   2.4.x patch: Trunk patch works, needs CHANGES entry:
+     mod_xml2enc: Fix broken handling of EOS buckets which could lead to
+     response headers not being sent. PR 52766. [Stefan Fritsch]
+   +1: sf
+
+ * envvars: Fix handling of LD_LIBRARY_PATH. CVE-2012-0883
+   Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1296428
+   2.4.x patch: Trunk patch works
+   +1: sf
 
 PATCHES/ISSUES THAT ARE STALLED
 
