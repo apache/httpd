@@ -1201,8 +1201,8 @@ cannot use <code>$N</code> in the substitution string!
     </tr>
     <tr>
         <td>qsappend|QSA</td>
-        <td>Appends any query string created in the rewrite target to
-        any query string that was in the original request URL. <em><a
+        <td>Appends any query string from the original request URL to 
+        any query string created in the rewrite target.<em><a
         href="../rewrite/flags.html#flag_qsa">details ...</a></em></td>
     </tr>
     <tr>
