@@ -187,6 +187,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Trunk version works
     +1: sf, covener
 
+  * envvars: Fix handling of LD_LIBRARY_PATH. CVE-2012-0883
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1296428
+    2.2.x patch: Trunk patch works
+    +1: sf
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
