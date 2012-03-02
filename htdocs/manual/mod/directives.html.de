@@ -12,7 +12,7 @@
  VLINK="#000080"
  ALINK="#FF0000"
 >
-<!--#include virtual="header.html" -->
+<!--#include virtual="../header_l2.html" -->
 <H1 ALIGN="CENTER">Apache Konfigurationsdirektiven</H1>
 <P>
 Dieses Dokument enth&auml;lt eine vollst&auml;ndige Liste aller

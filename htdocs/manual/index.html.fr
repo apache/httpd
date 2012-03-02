@@ -49,8 +49,8 @@
         </tr>
 
         <tr>
-          <td align="center" height="30">
-            <h3>Serveur HTTP Apache version 1.3</h3>
+          <td align="center">
+            <!--#include virtual="header.html.fr" -->
           </td>
         </tr>
       </table>

@@ -1,0 +1,12 @@
+    <div align="CENTER">
+      <img src="images/sub.gif" alt="[Documentation d'Apache]" lang="fr"/>
+
+      <h3>Serveur HTTP Apache Version 1.3</h3>
+        <div style="margin: 0; padding: 8px 10px; padding-left: 50px; padding-bottom: 10px; line-height: 1.4em; background: #f99 url(images/warning.png) no-repeat 0px 0px; margin-left: auto; margin-right: auto; width: 35em;">
+        <p>Vous lisez la documentation de la version 1.3 du serveur Apache, 
+        qui n'est plus maintenu, et a &eacute;t&eacute; d&eacute;clar&eacute; &laquo;en fin de vie&raquo;. Si vous
+        &ecirc;tes toujours en utilisant la version 1.3, <strong style="font-weight: inherit;">s'il vous pla&icirc;t 
+        envisager la mise &agrave; jour</strong>. La version actuelle du logiciel est 
+        <a href="http://httpd.apache.org/docs/2.4/">2.4</a>.</p></div>
+    </div>
+

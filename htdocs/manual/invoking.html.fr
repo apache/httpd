@@ -15,7 +15,7 @@
 
   <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
   vlink="#000080" alink="#FF0000">
-    <!--#include virtual="header.html" -->
+    <!--#include virtual="header.html.fr" -->
 
     <h1 align="CENTER">D&eacute;marrage d'Apache</h1>
 

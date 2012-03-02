@@ -10,7 +10,7 @@
   <!-- English revision: 1.21 -->
   <body bgcolor="#ffffff" text="#000000" link="#0000ff"
   vlink="#000080" alink="#ff0000">
-    <!--#include virtual="header.html" -->
+    <!--#include virtual="../header_l2.html" -->
 
     <p>この文書では名前ベースのバーチャルホストをどんなとき、
     またどうやって使うのかということを説明します。</p>

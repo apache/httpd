@@ -12,7 +12,7 @@
 
   <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
   vlink="#000080" alink="#FF0000">
-    <!--#include virtual="header.html" -->
+    <!--#include virtual="../header_l2.html" -->
 
     <h1 align="CENTER">Dynamic Content with CGI</h1>
     <a id="__index__" name="__index__"></a> <!-- INDEX BEGIN -->

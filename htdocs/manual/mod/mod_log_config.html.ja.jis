@@ -10,7 +10,7 @@
   <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
   <body bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#000080"
   alink="#FF0000">
-    <!--#include virtual="header.html" -->
+    <!--#include virtual="../header_l2.html" -->
 
     <h1 align="center">mod_log_config モジュール</h1>
 

@@ -17,7 +17,7 @@
   vlink="#000080" alink="#FF0000">
     <blockquote>
       <!-- page indentation -->
-      <!--#include virtual="header.html" -->
+      <!--#include virtual="../header_l2.html" -->
       <br />
 
       <h1 align="center">mod_rewrite モジュール<br />
