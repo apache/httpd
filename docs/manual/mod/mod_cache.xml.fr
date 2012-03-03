@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1230286:1295291 (outdated) -->
+<!-- English Revision : 1295291 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -881,9 +881,9 @@ l'ent&ecirc;te Cache-Control: a pour valeur no-store.</description>
 <usage>
     <p>Normalement, les requ&ecirc;tes ou r&eacute;ponses dont l'en-t&ecirc;te
     Cache-Control: a pour valeur no-store ne sont pas stock&eacute;es dans le
-    cache. La directive <directive>CacheStoreNoCache</directive> permet
+    cache. La directive <directive>CacheStoreNoStore</directive> permet
     de modifier ce comportement. Si
-    <directive>CacheStoreNoCache</directive> est d&eacute;finie &agrave; On, le
+    <directive>CacheStoreNoStore</directive> est d&eacute;finie &agrave; On, le
     serveur tente de mettre la ressource en cache m&ecirc;me si elle contient
     des en-t&ecirc;tes ayant pour valeur no-store. Les ressources
     n&eacute;cessitant une autorisation ne sont <em>jamais</em> mises en
