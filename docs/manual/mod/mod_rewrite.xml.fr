@@ -1328,9 +1328,9 @@ substitution !
     </tr>
     <tr>
         <td>qsappend|QSA</td>
-        <td>Ajoute toute cha&icirc;ne de param&egrave;tres cr&eacute;&eacute;e dans la cible de
-	r&eacute;&eacute;criture &agrave; toute cha&icirc;ne de param&egrave;tres pr&eacute;sente dans l'URL de la
-	requ&ecirc;te originale. <em><a
+        <td>Ajoute toute cha&icirc;ne de param&egrave;tres pr&eacute;sente dans l'URL de la
+	requ&ecirc;te originale &agrave; toute cha&icirc;ne de param&egrave;tres cr&eacute;&eacute;e dans la
+	cible de r&eacute;&eacute;criture. <em><a
         href="../rewrite/flags.html#flag_qsa">d&eacute;tails ...</a></em></td>
     </tr>
     <tr>
