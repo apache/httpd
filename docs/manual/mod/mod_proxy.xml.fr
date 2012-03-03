@@ -1178,8 +1178,9 @@ l'espace d'URLs du serveur local</description>
     <p>Lorsque la directive ProxyPass est utilis&eacute;e &agrave; l'int&eacute;rieur d'une
     section <directive type="section" module="core"
     >Location</directive>, le premier argument est omis et le r&eacute;pertoire
-    local est obtenu &agrave; partir de la section <directive type="section"
-    >module="core">Location</directive>. Il en est de m&ecirc;me &agrave; l'int&eacute;rieur
+    local est obtenu &agrave; partir de la section <directive
+    type="section" module="core">Location</directive>. Il en est de
+    m&ecirc;me &agrave; l'int&eacute;rieur
     d'une section <directive type="section"
     module="core">LocationMatch</directive> ; cependant, ProxyPass
     n'interpr&egrave;te pas les expressions rationnelles, et dans ce cas, il
