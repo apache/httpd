@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_remoteip.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_remoteip.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Remplace l'adresse IP et le nom d'hôte apparents du client
 pour la requête par l'adresse IP présentée par un mandataire ou un
 répartiteur de charge via les en-têtes de la requête.
