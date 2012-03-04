@@ -1286,9 +1286,9 @@ substitution !
     </tr>
     <tr>
         <td>qsappend|QSA</td>
-        <td>Ajoute toute chaîne de paramètres créée dans la cible de
-	réécriture à toute chaîne de paramètres présente dans l'URL de la
-	requête originale. <em><a href="../rewrite/flags.html#flag_qsa">détails ...</a></em></td>
+        <td>Ajoute toute chaîne de paramètres présente dans l'URL de la
+	requête originale à toute chaîne de paramètres créée dans la
+	cible de réécriture. <em><a href="../rewrite/flags.html#flag_qsa">détails ...</a></em></td>
     </tr>
     <tr>
         <td>qsdiscard|QSD</td>

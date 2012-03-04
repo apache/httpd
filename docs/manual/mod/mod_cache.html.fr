@@ -1105,9 +1105,9 @@ l'entête Cache-Control: a pour valeur no-store.</td></tr>
 </table>
     <p>Normalement, les requêtes ou réponses dont l'en-tête
     Cache-Control: a pour valeur no-store ne sont pas stockées dans le
-    cache. La directive <code class="directive">CacheStoreNoCache</code> permet
+    cache. La directive <code class="directive">CacheStoreNoStore</code> permet
     de modifier ce comportement. Si
-    <code class="directive">CacheStoreNoCache</code> est définie à On, le
+    <code class="directive">CacheStoreNoStore</code> est définie à On, le
     serveur tente de mettre la ressource en cache même si elle contient
     des en-têtes ayant pour valeur no-store. Les ressources
     nécessitant une autorisation ne sont <em>jamais</em> mises en
