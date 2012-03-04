@@ -1431,112 +1431,129 @@ substitution !
       réécriture</a>.</p>
 
 <table class="bordered">
-    <tr><th>Flag and syntax</th>
-        <th>Function</th>
+    <tr><th>Drapeaux et syntaxe</th>
+        <th>Fonction</th>
     </tr>
     <tr>
         <td>B</td>
-        <td>Escape non-alphanumeric characters <em>before</em> applying
-        the transformation. <em><a href="../rewrite/flags.html#flag_b">details ...</a></em></td>
+        <td>Echappe les caractères non-alphanumériques <em>avant</em>
+	d'appliquer la transformation. <em><a href="../rewrite/flags.html#flag_b">détails ...</a></em></td>
     </tr>
     <tr>
         <td>chain|C</td>
-        <td>Rule is chained to the following rule. If the rule fails,
-        the rule(s) chained to it will be skipped. <em><a href="../rewrite/flags.html#flag_c">details ...</a></em></td>
+        <td>La règle est chaînée avec la règle suivante. Si la règle
+	échoue, la ou les règles avec lesquelles elle est est chaînée
+	seront sautées. <em><a href="../rewrite/flags.html#flag_c">détails ...</a></em></td>
     </tr>
     <tr>
         <td>cookie|CO=<em>NAME</em>:<em>VAL</em></td>
-        <td>Sets a cookie in the client browser. Full syntax is: 
-        CO=<em>NAME</em>:<em>VAL</em>:<em>domain</em>[:<em>lifetime</em>[:<em>path</em>[:<em>secure</em>[:<em>httponly</em>]]]] <em><a href="../rewrite/flags.html#flag_co">details ...</a></em>
+        <td>Définit un cookie au niveau du navigateur client. La syntaxe
+	complète est :
+	CO=<em>NAME</em>:<em>VAL</em>:<em>domain</em>[:<em>lifetime</em>[:<em>path</em>[:<em>secure</em>[:<em>httponly</em>]]]] <em><a href="../rewrite/flags.html#flag_co">details ...</a></em>
+	<em><a href="../rewrite/flags.html#flag_co">détails ...</a></em>
         </td>
     </tr>
     <tr>
         <td>discardpath|DPI</td>
-        <td>Causes the PATH_INFO portion of the rewritten URI to be
-        discarded. <em><a href="../rewrite/flags.html#flag_dpi">details 
+        <td>Supprime la partie PATH_INFO de l'URI réécrit. <em><a href="../rewrite/flags.html#flag_dpi">détails
         ...</a></em></td>
     </tr>
     <tr>
         <td>env|E=[!]<em>VAR</em>[:<em>VAL</em>]</td>
-        <td>Causes an environment variable <em>VAR</em> to be set (to the
-        value <em>VAL</em> if provided). The form !<em>VAR</em> causes
-        the environment variable <em>VAR</em> to be unset.<em><a href="../rewrite/flags.html#flag_e">details ...</a></em></td>
+        <td>Définit la variable d'environnement <em>VAR</em> (à la valeur
+	<em>VAL</em> si elle est fournie). La variante !<em>VAR</em>
+	annule la définition de la variable <em>VAR</em>.<em><a href="../rewrite/flags.html#flag_e">détails ...</a></em></td>
     </tr>
     <tr>
         <td>forbidden|F</td>
-        <td>Returns a 403 FORBIDDEN response to the client browser.
-        <em><a href="../rewrite/flags.html#flag_f">details ...</a></em></td>
+        <td>Renvoie une réponse 403 FORBIDDEN au navigateur client.
+	<em><a href="../rewrite/flags.html#flag_f">détails ...</a></em></td>
     </tr>
     <tr>
         <td>gone|G</td>
-        <td>Returns a 410 GONE response to the client browser. <em><a href="../rewrite/flags.html#flag_g">details ...</a></em></td>
+        <td>Renvoie un message d'erreur 410 GONE au navigateur client. <em><a href="../rewrite/flags.html#flag_g">détails ...</a></em></td>
     </tr>
     <tr>
-        <td>Handler|H=<em>Content-handler</em></td>
-        <td>Causes the resulting URI to be sent to the specified
-        <em>Content-handler</em> for processing. <em><a href="../rewrite/flags.html#flag_h">details ...</a></em></td>
+        <td>Handler|H=<em>Gestionnaire de contenu</em></td>
+        <td>L'URI résultant est envoyé au <em>Gestionnaire de
+	contenu</em> pour traitement. <em><a href="../rewrite/flags.html#flag_h">détails ...</a></em></td>
     </tr>
     <tr>
         <td>last|L</td>
-        <td>Stop the rewriting process immediately and don't apply any
-        more rules. Especially note caveats for per-directory and
-        .htaccess context (see also the END flag). <em><a href="../rewrite/flags.html#flag_l">details ...</a></em></td>
+        <td>Arrête le processus de réécriture immédiatement et n'applique
+	plus aucune règle. Prêtez une attention particulière aux mises
+	en garde concernant les contextes de niveau répertoire et
+	.htaccess (voir aussi le drapeau END). <em><a href="../rewrite/flags.html#flag_l">détails ...</a></em></td>
     </tr>
     <tr>
         <td>next|N</td>
-        <td>Re-run the rewriting process, starting again with the first
-        rule, using the result of the ruleset so far as a starting
-        point. <em><a href="../rewrite/flags.html#flag_n">details
+        <td>Réexécute le processus de réécriture à partir de la première
+	règle, en utilisant le résultat du jeu de règles, sous réserve
+	qu'il y ait un point de départ. <em><a href="../rewrite/flags.html#flag_n">détails
         ...</a></em></td>
     </tr>
     <tr>
         <td>nocase|NC</td>
-        <td>Makes the pattern pattern comparison case-insensitive.
-        <em><a href="../rewrite/flags.html#flag_nc">details ...</a></em></td>
+        <td>Rend la comparaison entre modèles insensible à la casse.
+	<em><a href="../rewrite/flags.html#flag_nc">détails ...</a></em></td>
     </tr>
     <tr>
         <td>noescape|NE</td>
-        <td>Prevent mod_rewrite from applying hexcode escaping of
-        special characters in the result of the rewrite. <em><a href="../rewrite/flags.html#flag_ne">details ...</a></em></td>
+        <td>Empêche mod_rewrite d'effectuer un échappement hexadécimal
+	des caractères spéciaux dans le résultat de la réécriture. <em><a href="../rewrite/flags.html#flag_ne">détails ...</a></em></td>
     </tr>
     <tr>
         <td>nosubreq|NS</td>
-        <td>Causes a rule to be skipped if the current request is an
-        internal sub-request. <em><a href="../rewrite/flags.html#flag_ns">details ...</a></em></td>
+        <td>La règle est sautée si la requête courante est une
+	sous-requête interne. <em><a href="../rewrite/flags.html#flag_ns">détails ...</a></em></td>
     </tr>
     <tr>
         <td>proxy|P</td>
-        <td>Force the substitution URL to be internally sent as a proxy
-        request. <em><a href="../rewrite/flags.html#flag_p">details
+        <td>Force l'envoi en interne de l'URL de substitution en tant
+	que requête mandataire. <em><a href="../rewrite/flags.html#flag_p">détails
         ...</a></em></td>
     </tr>
     <tr>
         <td>passthrough|PT</td>
-        <td>Forces the resulting URI to be passed back to the URL
-        mapping engine for processing of other URI-to-filename
-        translators, such as <code>Alias</code> or
-        <code>Redirect</code>. <em><a href="../rewrite/flags.html#flag_pt">details ...</a></em></td>
+        <td>L'URI résultant est repassé au moteur de mise en
+	correspondance des URLs pour y être traité par d'autres
+	traducteurs URI-vers-nom de fichier, comme <code>Alias</code> ou
+	<code>Redirect</code>. <em><a href="../rewrite/flags.html#flag_pt">détails ...</a></em></td>
     </tr>
     <tr>
         <td>qsappend|QSA</td>
-        <td>Appends any query string created in the rewrite target to
-        any query string that was in the original request URL. <em><a href="../rewrite/flags.html#flag_qsa">details ...</a></em></td>
+        <td>Ajoute toute chaîne de paramètres présente dans l'URL de la
+	requête originale à toute chaîne de paramètres créée dans la
+	cible de réécriture. <em><a href="../rewrite/flags.html#flag_qsa">détails ...</a></em></td>
+    </tr>
+    <tr>
+        <td>qsdiscard|QSD</td>
+        <td>Supprime toute chaîne de paramètres de l'URI entrant. <em><a href="../rewrite/flags.html#flag_qsd">détails
+        ...</a></em></td>
     </tr>
     <tr>
         <td>redirect|R[=<em>code</em>]</td>
-        <td>Forces an external redirect, optionally with the specified
-        HTTP status code. <em><a href="../rewrite/flags.html#flag_r">details ...</a></em>
+        <td>Force une redirection externe, avec un code de statut HTTP
+	optionnel. <em><a href="../rewrite/flags.html#flag_r">détails ...</a></em>
         </td>
     </tr>
     <tr>
-        <td>skip|S=<em>num</em></td>
-        <td>Tells the rewriting engine to skip the next <em>num</em>
-        rules if the current rule matches. <em><a href="../rewrite/flags.html#flag_s">details ...</a></em></td>
+        <td>END</td>
+        <td>Arrête le processus de réécriture immédiatement et
+	n'applique plus aucune règle. Empêche aussi l'exécution
+	ultérieure de règles de réécriture dans des contextes de
+	répertoire et des fichiers .htaccess (disponible depuis la
+	version 2.3.9) <em><a href="../rewrite/flags.html#flag_l">détails ...</a></em></td>
+    </tr>
+    <tr>
+        <td>skip|S=<em>nombre</em></td>
+        <td>Si la règle courante s'applique, le moteur de réécriture
+	doit sauter les <em>nombre</em> règles suivantes. <em><a href="../rewrite/flags.html#flag_s">détails ...</a></em></td>
     </tr>
     <tr>
         <td>type|T=<em>MIME-type</em></td>
-        <td>Force the <a class="glossarylink" href="../glossary.html#mime-type" title="voir glossaire">MIME-type</a> of the target file
-        to be the specified type. <em><a href="../rewrite/flags.html#flag_t">details ...</a></em></td>
+        <td>Force l'attribution du <a class="glossarylink" href="../glossary.html#type-mime" title="voir glossaire">Type-MIME</a>
+	spécifié au fichier cible. <em><a href="../rewrite/flags.html#flag_t">détails ...</a></em></td>
     </tr>
     </table>
 

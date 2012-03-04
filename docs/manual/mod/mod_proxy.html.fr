@@ -1342,7 +1342,8 @@ l'espace d'URLs du serveur local</td></tr>
 
     <p>Lorsque la directive ProxyPass est utilisée à l'intérieur d'une
     section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>, le premier argument est omis et le répertoire
-    local est obtenu à partir de la section <code class="directive">&lt;module="core"&gt;Location&gt;</code>. Il en est de même à l'intérieur
+    local est obtenu à partir de la section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>. Il en est de
+    même à l'intérieur
     d'une section <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> ; cependant, ProxyPass
     n'interprète pas les expressions rationnelles, et dans ce cas, il
     est nécessaire d'utiliser la directive
