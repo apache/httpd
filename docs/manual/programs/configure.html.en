@@ -187,7 +187,7 @@
         <dt><code>--libexecdir=<var>DIR</var></code></dt>
         <dd>Install the program executables (i.e., shared modules) in
           <var>DIR</var>. By default <code>libexecdir</code> is set to
-          <code><var>EPREFIX</var>/libexec</code>.</dd>
+          <code><var>EPREFIX</var>/modules</code>.</dd>
 
         <dt><code>--localstatedir=<var>DIR</var></code></dt>
         <dd>Install modifiable single-machine data in <var>DIR</var>.
