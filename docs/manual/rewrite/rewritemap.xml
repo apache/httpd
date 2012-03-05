@@ -379,7 +379,7 @@ by many requests.
 
 <note><title>Use a RewriteLock!</title>
 <p>When using a <code>prg:</code> RewriteMap, you should use a
-<directive module="mod_rewrite">RewriteMap</directive>. Failure to do so
+<directive module="mod_rewrite">RewriteLock</directive>. Failure to do so
 will result in an error message in the log file, and may result in a
 race condition on concurrent requests.</p>
 </note>
