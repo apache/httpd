@@ -771,7 +771,13 @@ error when connecting to my newly installed server?</title>
     Apache has to know the <code>Host</code> HTTP header field. To do this, the
     HTTP request header has to be read. This cannot be done before the SSL
     handshake is finished, but the information is needed in order to 
-    complete the SSL handshake phase. Bingo!</p>
+    complete the SSL handshake phase. See the next question for how to
+    circumvent this issue.</p>
+
+    <p>Note that if you have a wildcard SSL certificate, or a
+    certificate that has multple hostnames on it using subjectAltName
+    fields, you can use SSL on name-based virtual hosts without further
+    workarounds.</p>
 </section>
 
 <section id="vhosts2"><title>Why is it not possible to use Name-Based
@@ -786,6 +792,11 @@ Virtual Hosting to identify different SSL virtual hosts?</title>
     built with 0.9.8j or later OpenSSL.  This is because it requires a
     feature that only the most recent revisions of the SSL
     specification added, called Server Name Indication (SNI).</p>
+
+    <p>Note that if you have a wildcard SSL certificate, or a
+    certificate that has multple hostnames on it using subjectAltName
+    fields, you can use SSL on name-based virtual hosts without further
+    workarounds.</p>
 
     <p>The reason is that the SSL protocol is a separate layer which
     encapsulates the HTTP protocol. So the SSL session is a separate 
