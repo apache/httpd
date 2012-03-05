@@ -347,8 +347,7 @@ The files in this directory have to be PEM-encoded and are accessed through
 hash filenames. So usually you can't just place the Certificate files
 there: you also have to create symbolic links named
 <em>hash-value</em><code>.N</code>. And you should always make sure this directory
-contains the appropriate symbolic links. Use the <code>Makefile</code> which
-comes with mod_ssl to accomplish this task.</p>
+contains the appropriate symbolic links.</p>
 <div class="example"><h3>Example</h3><p><code>
 SSLCACertificatePath /usr/local/apache2/conf/ssl.crt/
 </code></p></div>
@@ -413,9 +412,7 @@ details.</p>
 through hash filenames. So usually you can't just place the
 Certificate files there: you also have to create symbolic links named
 <em>hash-value</em><code>.N</code>. And you should always make sure
-this directory contains the appropriate symbolic links. Use the
-<code>Makefile</code> which comes with mod_ssl to accomplish this
-task.</p>
+this directory contains the appropriate symbolic links.</p>
 <div class="example"><h3>Example</h3><p><code>
 SSLCADNRequestPath /usr/local/apache2/conf/ca-names.crt/
 </code></p></div>
@@ -499,8 +496,7 @@ The files in this directory have to be PEM-encoded and are accessed through
 hash filenames. So usually you have not only to place the CRL files there.
 Additionally you have to create symbolic links named
 <em>hash-value</em><code>.rN</code>. And you should always make sure this directory
-contains the appropriate symbolic links. Use the <code>Makefile</code> which
-comes with <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> to accomplish this task.</p>
+contains the appropriate symbolic links.</p>
 <div class="example"><h3>Example</h3><p><code>
 SSLCARevocationPath /usr/local/apache2/conf/ssl.crl/
 </code></p></div>
@@ -1273,8 +1269,7 @@ The files in this directory have to be PEM-encoded and are accessed through
 hash filenames. So usually you can't just place the Certificate files
 there: you also have to create symbolic links named
 <em>hash-value</em><code>.N</code>. And you should always make sure this directory
-contains the appropriate symbolic links. Use the <code>Makefile</code> which
-comes with mod_ssl to accomplish this task.</p>
+contains the appropriate symbolic links.</p>
 <div class="example"><h3>Example</h3><p><code>
 SSLProxyCACertificatePath /usr/local/apache2/conf/ssl.crt/
 </code></p></div>
@@ -1359,8 +1354,7 @@ The files in this directory have to be PEM-encoded and are accessed through
 hash filenames. So usually you have not only to place the CRL files there.
 Additionally you have to create symbolic links named
 <em>hash-value</em><code>.rN</code>. And you should always make sure this directory
-contains the appropriate symbolic links. Use the <code>Makefile</code> which
-comes with <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> to accomplish this task.</p>
+contains the appropriate symbolic links.</p>
 <div class="example"><h3>Example</h3><p><code>
 SSLProxyCARevocationPath /usr/local/apache2/conf/ssl.crl/
 </code></p></div>
@@ -1523,9 +1517,7 @@ keys used for authentication of the proxy server to remote servers.
 <p>The files in this directory must be PEM-encoded and are accessed through
 hash filenames. Additionally, you must create symbolic links named
 <code><em>hash-value</em>.N</code>. And you should always make sure this
-directory contains the appropriate symbolic links. Use the Makefile which
-comes with mod_ssl to accomplish this task.
-</p>
+directory contains the appropriate symbolic links.</p>
 <div class="warning">
 <p>Currently there is no support for encrypted private keys</p>
 </div>
