@@ -376,6 +376,13 @@ by many requests.
     }<br />
     </code></p></div>
 
+<div class="note"><h3>Use a RewriteLock!</h3>
+<p>When using a <code>prg:</code> RewriteMap, you should use a
+<code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>. Failure to do so
+will result in an error message in the log file, and may result in a
+race condition on concurrent requests.</p>
+</div>
+
 <div class="note"><h3>Caution!</h3>
 <ul>
 <li>Keep your rewrite map program as simple as possible. If the program
