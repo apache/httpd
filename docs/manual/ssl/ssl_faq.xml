@@ -607,6 +607,11 @@ error when connecting to my newly installed server?</title>
     handshake is finished, but the information is needed in order to
     complete the SSL handshake phase. See the next question for how to
     circumvent this issue.</p>
+    
+    <p>Note that if you have a wildcard SSL certificate, or a
+    certificate that has multple hostnames on it using subjectAltName
+    fields, you can use SSL on name-based virtual hosts without further
+    workarounds.</p>
 </section>
 
 <section id="vhosts2"><title>Is it possible to use Name-Based
@@ -621,6 +626,11 @@ Virtual Hosting to identify different SSL virtual hosts?</title>
     built with 0.9.8j or later OpenSSL.  This is because it requires a
     feature that only the most recent revisions of the SSL
     specification added, called Server Name Indication (SNI).</p>
+
+    <p>Note that if you have a wildcard SSL certificate, or a
+    certificate that has multple hostnames on it using subjectAltName
+    fields, you can use SSL on name-based virtual hosts without further
+    workarounds.</p>
 
     <p>The reason is that the SSL protocol is a separate layer which
     encapsulates the HTTP protocol. So the SSL session is a separate
