@@ -125,6 +125,29 @@
     <p>The following requirements exist for building Apache httpd:</p>
 
     <dl>
+      <dt>APR and APR-Util</dt>
+      <dd>Make sure you have APR and APR-Util already installed on
+      your system. If you don't, or prefer to not use the system-provided
+      versions, download the latest versions of both APR and APR-Util
+      from <a href="http://apr.apache.org/">Apache APR</a>, unpack
+      them into <code>./srclib/apr</code> and <code>./srclib/apr-util</code>
+      (be sure the domain names do not have version numbers; for example,
+      the APR distribution must be under ./srclib/apr/) and use
+      <code>./configure</code>'s <code>--with-included-apr</code>
+      option.  On some platforms, you may have to install the 
+      corresponding <code>-dev</code> packages to allow httpd to build 
+      against your installed copy of APR and APR-Util.</dd>
+
+      <dt>Perl-Compatible Regular Expressions Library (PCRE)</dt>
+      <dd>This library is required but not longer bundled with httpd.  
+      Download the source code from <a href="http://www.pcre.org/">http://www.pcre.org</a>, 
+      or install a Port or Package.  If your build system can't find
+      the pcre-config script installed by the PCRE build, point to it
+      using the <code>--with-pcre</code> parameter.  On some platforms, 
+      you may have to install the corresponding <code>-dev</code> 
+      package to allow httpd to build against your installed copy 
+      of PCRE.</dd>
+      
       <dt>Disk Space</dt>
       <dd>Make sure you have at least 50 MB of temporary free disk
       space available. After installation the server occupies
