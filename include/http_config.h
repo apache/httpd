@@ -709,7 +709,7 @@ AP_DECLARE(char *) ap_server_root_relative(apr_pool_t *p, const char *fname);
 /**
  * Compute the name of a run-time file (e.g., shared memory "file") relative
  * to the appropriate run-time directory.  Absolute paths are returned as-is.
- * The run-time directory is configured via the RuntimeDir directive or
+ * The run-time directory is configured via the DefaultRuntimeDir directive or
  * at build time.
  */
 AP_DECLARE(char *) ap_runtime_dir_relative(apr_pool_t *p, const char *fname);

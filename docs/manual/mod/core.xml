@@ -605,6 +605,37 @@ headers</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>DefaultRuntimeDir</name>
+<description>Base directory for the server run-time files</description>
+<syntax>DefaultRuntimeDir <var>directory-path</var></syntax>
+<default>DefaultRuntimeDir DEFAULT_REL_RUNTIMEDIR (logs/)</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>The <directive>DefaultRuntimeDir</directive> directive sets the
+    directory in which the server will create various run-time files
+    (shared memory, locks, etc.). If set as a relative path, the full path
+    will be relative to <directive>ServerRoot</directive></p>
+
+    <example><title>Example</title>
+      DefaultRuntimeDir scratch/
+    </example>
+
+    <p>The default location of <directive>DefaultRuntimeDir</directive> may be
+    modified by changing the <code>DEFAULT_REL_RUNTIMEDIR</code> #define
+    at build time.</p>
+
+   <p>Note: <directive>ServerRoot</directive> should be specified before this
+   directive is used, otherwise the default value of <directive>ServerRoot</directive>
+   would be used to set the base directory.</p>
+
+</usage>
+<seealso><a href="../misc/security_tips.html#serverroot">the
+    security tips</a> for information on how to properly set
+    permissions on the <directive>ServerRoot</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>DefaultType</name>
 <description>This directive has no effect other than to emit warnings
 if the value is not <code>none</code>. In prior versions, DefaultType
