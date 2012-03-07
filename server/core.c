@@ -2775,6 +2775,24 @@ static const char *set_server_root(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
+static const char *set_runtime_dir(cmd_parms *cmd, void *dummy, const char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
+    if (err != NULL) {
+        return err;
+    }
+
+    if ((apr_filepath_merge((char**)&ap_runtime_dir, NULL,
+                            ap_server_root_relative(cmd->pool, arg),
+                            APR_FILEPATH_TRUENAME, cmd->pool) != APR_SUCCESS)
+        || !ap_is_directory(cmd->temp_pool, ap_runtime_dir)) {
+        return "DefaultRuntimeDir must be a valid directory, absolute or relative to ServerRoot";
+    }
+
+    return NULL;
+}
+
 static const char *set_timeout(cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
@@ -3928,6 +3946,8 @@ AP_INIT_TAKE1("ServerSignature", set_signature_flag, NULL, OR_ALL,
   "En-/disable server signature (on|off|email)"),
 AP_INIT_TAKE1("ServerRoot", set_server_root, NULL, RSRC_CONF | EXEC_ON_READ,
   "Common directory of server-related files (logs, confs, etc.)"),
+AP_INIT_TAKE1("DefaultRuntimeDir", set_runtime_dir, NULL, RSRC_CONF | EXEC_ON_READ,
+  "Common directory for run-time files (shared memory, locks, etc.)"),
 AP_INIT_TAKE1("ErrorLog", set_server_string_slot,
   (void *)APR_OFFSETOF(server_rec, error_fname), RSRC_CONF,
   "The filename of the error log"),

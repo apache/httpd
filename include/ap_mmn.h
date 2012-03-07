@@ -394,6 +394,7 @@
  *                         add insert_network_bucket hook, AP_DECLINED
  * 20120211.0 (2.5.0-dev)  Change re_nsub in ap_regex_t from apr_size_t to int.
  * 20120211.1 (2.5.0-dev)  Add ap_palloc_debug, ap_pcalloc_debug
+ * 20120211.2 (2.5.0-dev)  Add ap_runtime_dir_relative
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
