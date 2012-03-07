@@ -350,7 +350,7 @@ RewriteRule ^index\.html$  newsite.html
       </ul>
 
       <p>If the <em>TestString</em> has the special value <code>expr</code>, the
-      <em>CondPattern</em> will be treated as a
+      <em>CondPattern</em> will be treated as an
       <a href="../expr.html">ap_expr</a>.</p>
 
       <p>Other things you should be aware of:</p>
@@ -608,7 +608,7 @@ RewriteRule ^index\.html$  newsite.html
 
 	<li>
            <p>If the <em>TestString</em> has the special value <code>expr</code>, the
-           <em>CondPattern</em> will be treated as a
+           <em>CondPattern</em> will be treated as an
            <a href="../expr.html">ap_expr</a>.</p>
 
            <p>
