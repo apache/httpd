@@ -5,6 +5,10 @@ Changes with Apache 2.5.0
      envvars: Fix insecure handling of LD_LIBRARY_PATH that could lead to the
      current working directory to be searched for DSOs. [Stefan Fritsch]
 
+  *) "DirectoryIndex disabled" now undoes DirectoryIndex settings in
+     the current configuration section, not just previous config sections.
+     PR52845 [Eric Covener]
+
   *) Fix MPM DSO load failure on AIX.  [Jeff Trawick]
 
   *) core: Add the port number to the vhost's name in the scoreboard.
