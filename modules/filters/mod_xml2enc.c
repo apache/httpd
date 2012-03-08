@@ -392,13 +392,14 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
     while (b = APR_BRIGADE_FIRST(bb), b != APR_BRIGADE_SENTINEL(bb)) {
         ctx->bytes = 0;
         if (APR_BUCKET_IS_METADATA(b)) {
+            APR_BUCKET_REMOVE(b);
             if (APR_BUCKET_IS_EOS(b)) {
                 /* send remaining data */
+                APR_BRIGADE_INSERT_TAIL(ctx->bbnext, b);
                 return ap_fflush(f->next, ctx->bbnext);
             } else if (APR_BUCKET_IS_FLUSH(b)) {
                 ap_fflush(f->next, ctx->bbnext);
             }
-            APR_BUCKET_REMOVE(b);
             apr_bucket_destroy(b);
         }
         else {        /* data bucket */

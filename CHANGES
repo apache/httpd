@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.2
 
+  *) mod_xml2enc: Fix broken handling of EOS buckets which could lead to
+     response headers not being sent. PR 52766. [Stefan Fritsch]
+
   *) mod_ssl: Properly free the GENERAL_NAMEs. PR 32652.
 
   *) core: Check during config test that directories for the access
