@@ -104,8 +104,6 @@
         Anonymous_LogEmail on<br />
         Anonymous anonymous guest www test welcome<br />
         <br />
-        Require all granted<br />
-        <br />
         Require valid-user<br />
       </span>
       &lt;/Directory&gt;
