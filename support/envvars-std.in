@@ -18,7 +18,11 @@
 #
 # This file is generated from envvars-std.in
 #
-@SHLIBPATH_VAR@="@exp_libdir@:$@SHLIBPATH_VAR@"
+if test "x$@SHLIBPATH_VAR@" != "x" ; then
+  @SHLIBPATH_VAR@="@exp_libdir@:$@SHLIBPATH_VAR@"
+else
+  @SHLIBPATH_VAR@="@exp_libdir@"
+fi
 export @SHLIBPATH_VAR@
 #
 @OS_SPECIFIC_VARS@

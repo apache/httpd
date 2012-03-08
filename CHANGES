@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.2
 
+  *) SECURITY: CVE-2012-0883 (cve.mitre.org)
+     envvars: Fix insecure handling of LD_LIBRARY_PATH that could lead to the
+     current working directory to be searched for DSOs. [Stefan Fritsch]
+
   *) mod_xml2enc: Fix broken handling of EOS buckets which could lead to
      response headers not being sent. PR 52766. [Stefan Fritsch]
 
