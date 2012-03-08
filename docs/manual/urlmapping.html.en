@@ -238,9 +238,10 @@ content) in a page as it is being served to the client using
 Substitute s/internal\.example\.com/www.example.com/i
 </code></p></div>
 
-<p>Additionally, a third-party module,
-<a href="http://apache.webthing.com/mod_proxy_html/">mod_proxy_html</a>,
-is available to rewrite links in HTML and XHTML.</p>
+<p>For more sophisticated rewriting of links in HTML and XHTML, the 
+<code class="module"><a href="./mod/mod_proxy_html.html">mod_proxy_html</a></code> module is also available. It allows you
+to create maps of URLs that need to be rewritten, so that comples
+proxying scenarios can be handled.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="rewrite" id="rewrite">Rewriting Engine</a></h2>
