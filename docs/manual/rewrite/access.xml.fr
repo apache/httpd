@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1174747 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="access.xml.meta">
+  <parentdocument href="./">Rewrite</parentdocument>
+
+<title>Utiliser mod_rewrite pour le contr&ocirc;le d'acc&egrave;s</title>
+
+<summary>
+
+<p>Ce document est un compl&eacute;ment &agrave; la <a
+href="../mod/mod_rewrite.html">documentation de r&eacute;f&eacute;rence</a> de
+<module>mod_rewrite</module>. Il explique comment utiliser
+<module>mod_rewrite</module> pour contr&ocirc;ler l'acc&egrave;s &agrave; diverses
+ressources, ainsi que d'autres techniques en rapport. Il contient de
+nombreux exemples d'utilisation courante de mod_rewrite avec une
+description d&eacute;taill&eacute;e de leur fonctionnement.</p>
+
+<note type="warning">Vous devez vous attacher &agrave; comprendre le
+fonctionnement des exemples, car la plupart d'entre eux ne
+fonctionneront pas sur votre syst&egrave;me si vous vous contentez de les
+copier/coller dans vos fichiers de configuration.</note>
+
+</summary>
+<seealso><a href="../mod/mod_rewrite.html">Documentation du module mod_rewrite</a></seealso>
+<seealso><a href="intro.html">Introduction &agrave; mod_rewrite</a></seealso>
+<seealso><a href="remapping.html">Redirection et remise en
+correspondance</a></seealso>
+<!-- <seealso><a href="access.html">Contr&ocirc;ler l'acc&egrave;s</a></seealso> -->
+<seealso><a href="vhosts.html">Serveurs virtuels</a></seealso>
+<seealso><a href="proxy.html">Serveurs mandataires</a></seealso>
+<seealso><a href="rewritemap.html">Utilisation de RewriteMap</a></seealso>
+<seealso><a href="advanced.html">Techniques avanc&eacute;es</a></seealso>
+<seealso><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></seealso>
+
+    <section id="blocked-inline-images">
+
+      <title>Blocage du r&eacute;f&eacute;rencement &agrave; chaud (Hotlinking) d'images</title>
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+          <p>Cette technique vous permet d'interdire &agrave; d'autres sites
+	  d'inclure directement vos images dans leurs pages. On fait
+	  souvent r&eacute;f&eacute;rence &agrave; cette pratique sous le nom de
+	  r&eacute;f&eacute;rencement &agrave; chaud (Hotlinking) qui entra&icirc;ne l'utilisation
+	  de votre bande passante pour servir des contenus faisant
+	  partie du site de quelqu'un d'autre.</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+	<p>Cette technique repose sur la valeur de la variable
+	optionnelle <code>HTTP_REFERER</code>. Certaines personnes
+	pourront donc contourner cette limitation. Pour la plupart des
+	utilisateurs cependant, la requ&ecirc;te &eacute;chouera, en ce sens que
+	l'image ne sera pas affich&eacute;e depuis le site tiers.</p>
+	<p>Il y a plusieurs mani&egrave;res de g&eacute;rer cette situation.</p>
+
+	<p>Dans le premier exemple, nous rejetons tout simplement la
+	requ&ecirc;te si elle ne provenait pas d'une page appartenant &agrave; notre
+	site. Pour les besoins de cet exemple, nous supposons que le nom
+	de votre site est <code>www.example.com</code>.</p>
+
+<!-- TODO: Add discussion here of why we have !^$ in there. -->
+
+<example>
+RewriteCond %{HTTP_REFERER} <strong>!^$</strong><br />
+RewriteCond %{HTTP_REFERER} !www.example.com [NC]<br />
+RewriteRule <strong>\.(gif|jpg|png)$</strong>    -   [F,NC]
+</example>
+
+	<p>Dans le second exemple, plut&ocirc;t que de rejeter la requ&ecirc;te,
+	nous affichons une autre image &agrave; la place.</p>
+
+<example>
+RewriteCond %{HTTP_REFERER} <strong>!^$</strong><br />
+RewriteCond %{HTTP_REFERER} !www.example.com [NC]<br />
+RewriteRule <strong>\.(gif|jpg|png)$</strong>    /images/go-away.png   [R,NC]
+</example>
+
+	<p>Dans le troisi&egrave;me exemple, nous redirigeons la requ&ecirc;te vers
+	une image appartenant &agrave; un autre site.</p>
+
+
+<example>
+RewriteCond %{HTTP_REFERER} <strong>!^$</strong><br />
+RewriteCond %{HTTP_REFERER} !www.example.com [NC]<br />
+RewriteRule <strong>\.(gif|jpg|png)$</strong> http://other.example.com/image.gif   [R,NC]
+</example>
+	<p>De tous ces exemples, les deux derniers semblent les plus
+	efficaces pour faire en sorte que les gens arr&ecirc;tent de
+	r&eacute;f&eacute;rencer vos images &agrave; chaud, car il ne verront pas les images
+	qu'ils s'attendent &agrave; voir.</p>
+
+        </dd>
+
+        <dt>Discussion :</dt>
+
+        <dd>
+        <p>Si vous ne voulez pas rediriger la requ&ecirc;te, mais
+	simplement interdire l'acc&egrave;s &agrave; la ressource, vous pouvez y
+	parvenir sans utiliser mod_rewrite :</p>
+
+        <example>
+        SetEnvIf Referer exemple\.com localreferer<br />
+        &lt;FilesMatch \.(jpg|png|gif)$&gt;<br />
+        Order deny,allow<br />
+        Deny from all<br />
+        Allow from env=localreferer<br />
+        &lt;/FilesMatch&gt;
+        </example>
+        </dd>
+      </dl>
+
+    </section>
+
+    <section id="blocking-of-robots">
+
+      <title>Blocage des robots</title>
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+        <p>
+        Dans cet exemple, nous allons discuter d'une m&eacute;thode permettant
+	de bloquer les requ&ecirc;tes persistentes en provenance d'un robot
+	particulier, ou d'un navigateur.</p>
+
+        <p>La m&eacute;thode classique pour exclure un robot consiste &agrave; d&eacute;finir
+	un fichier, <code>/robots.txt</code> qui sp&eacute;cifie les parties de
+	votre site web pour lesquelles vous voulez exclure les robots.
+	Malheureusement, certains robots ne tiennent pas compte de ces
+	fichiers.
+        </p>
+
+        <p>Notez qu'il existe des m&eacute;thodes d'exclusion qui n'utilisent
+	pas mod_rewrite. Notez aussi que toute technique qui repose sur
+	le contenu de la cha&icirc;ne client <code>USER_AGENT</code> peut &ecirc;tre
+	contourn&eacute;e tr&egrave;s facilement car cette cha&icirc;ne de caract&egrave;res peut
+        &ecirc;tre modifi&eacute;e.</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+        <p>On utilise un jeu de r&egrave;gles qui sp&eacute;cifie le r&eacute;pertoire &agrave;
+	prot&eacute;ger, ainsi que la cha&icirc;ne client <code>USER_AGENT</code> qui
+	identifie le robot ind&eacute;sirable ou envahissant.</p>
+
+        <p>Dans cet exemple, nous bloquons un robot nomm&eacute;
+	<code>Vilain_Robot</code> pour le r&eacute;pertoire
+	<code>/secret/fichiers</code>. Si vous voulez bloquer ce client
+	seulement depuis une source particuli&egrave;re, vous pouvez aussi
+	sp&eacute;cifier un intervalle d'adresses IP.</p>
+
+<example>
+RewriteCond %{HTTP_USER_AGENT}   ^<strong>Vilain_Robot</strong><br />
+RewriteCond %{REMOTE_ADDR}       =<strong>123\.45\.67\.[8-9]</strong><br />
+RewriteRule ^<strong>/secret/fichiers/</strong>   -   [<strong>F</strong>]
+</example>
+        </dd>
+
+      <dt>Discussion :</dt>
+
+      <dd>
+      <p>
+        Vous pouvez cependant parvenir au m&ecirc;me r&eacute;sultat sans utiliser
+	mod_rewrite via la m&eacute;thode alternative suivante :
+      </p>
+      <example>
+      SetEnvIfNoCase User-Agent ^Vilain_Robot interdit<br />
+      &lt;Location /secret/fichiers&gt;<br />
+      Order allow,deny<br />
+      Allow from all<br />
+      Deny from env=interdit<br />
+      &lt;/Location&gt;
+      </example>
+      <p>
+      Comme indiqu&eacute; plus haut, il est ais&eacute; de contourner cette
+      technique, simplement en modifiant le contenu de l'en-t&ecirc;te
+      <code>USER_AGENT</code>. Si vous subissez une attaque en r&egrave;gle,
+      vous allez devoir r&eacute;fl&eacute;chir &agrave; un blocage &agrave; un niveau sup&eacute;rieur,
+      par exemple une r&egrave;gle de filtrage de votre pare-feu.
+      </p>
+
+      </dd>
+
+      </dl>
+
+    </section>
+
+<section id="host-deny">
+
+  <title>Rejet des clients contenus dans une liste noire</title>
+
+  <dl>
+    <dt>Description :</dt>
+
+    <dd>
+      <p>Nous voulons interdire l'acc&egrave;s &agrave; notre serveur aux clients
+      contenus dans une liste noire similaire &agrave;
+      <code>hosts.deny</code>.</p>
+    </dd>
+
+    <dt>Solution :</dt>
+
+    <dd>
+<example>
+RewriteEngine on<br />
+RewriteMap    hosts-deny  txt:/chemin/vers/hosts.deny<br />
+RewriteCond   ${hosts-deny:%{REMOTE_ADDR}|NOT-FOUND} !=NOT-FOUND [OR]<br />
+RewriteCond   ${hosts-deny:%{REMOTE_HOST}|NOT-FOUND} !=NOT-FOUND<br />
+RewriteRule   ^  -  [F]
+</example>
+
+<example>
+##<br />
+##  hosts.deny<br />
+##<br />
+##  ATTENTION! Ceci est une table de correspondances, non une liste,<br />
+##		m&ecirc;me si elle est trait&eacute;e comme telle. mod_rewrite<br />
+##		l'interpr&egrave;te comme une liste de paires cl&eacute;/valeur, et<br />
+##		chaque entr&eacute;e doit au moins poss&eacute;der une valeur par<br />
+##		d&eacute;faut "-".<br />
+<br />
+193.102.180.41 -<br />
+bsdti1.sdm.de  -<br />
+192.76.162.40  -<br />
+</example>
+    </dd>
+
+    <dt>Discussion :</dt>
+    <dd>
+    <p>
+    La seconde condition RewriteCond pr&eacute;suppose que HostNameLookups est
+    d&eacute;fini &agrave; On, de fa&ccedil;on &agrave; ce que les adresses IP des clients puissent
+    &ecirc;tre r&eacute;solues. Dans le cas contraire, vous devez supprimer la
+    seconde condition, ainsi que le drapeau <code>[OR]</code> de la
+    premi&egrave;re.
+    </p>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="referer-deflector">
+
+  <title>Aiguillage bas&eacute; sur l'en-t&ecirc;te Referer</title>
+
+  <dl>
+    <dt>Description :</dt>
+
+    <dd>
+      <p>Redirige les requ&ecirc;tes en fonction du Referer de provenance de
+      la requ&ecirc;te, avec des cibles diff&eacute;rentes pour chaque Referer.</p>
+    </dd>
+
+    <dt>Solution :</dt>
+
+    <dd>
+  <p>Le jeu de r&egrave;gles suivant utilise un fichier de correspondances pour
+  associer chaque Referer &agrave; une cible de redirection.</p>
+
+<example>
+RewriteMap  deflector txt:/chemin/vers/deflector.map<br />
+<br />
+RewriteCond %{HTTP_REFERER} !=""<br />
+RewriteCond ${deflector:%{HTTP_REFERER}} =-<br />
+RewriteRule ^ %{HTTP_REFERER} [R,L]<br />
+<br />
+RewriteCond %{HTTP_REFERER} !=""<br />
+RewriteCond ${deflector:%{HTTP_REFERER}|NOT-FOUND} !=NOT-FOUND<br />
+RewriteRule ^ ${deflector:%{HTTP_REFERER}} [R,L]
+</example>
+
+      <p>Le fichier de correspondances contient les cibles de
+      redirection associ&eacute;es &agrave; chaque Referer, ou, si nous voulons
+      simplement rediriger les requ&ecirc;tes vers leur Referer, un "-" est
+      inscrit dans le fichier de correspondances :</p>
+
+<example>
+##<br />
+##  deflector.map<br />
+##<br />
+<br />
+http://www.mauvais-gars.example.com/mauvais/index.html    -<br />
+http://www.mauvais-gars.example.com/mauvais/index2.html   -<br />
+http://www.mauvais-gars.example.com/mauvais/index3.html   http://quelque-part.example.com/
+</example>
+
+    </dd>
+  </dl>
+
+</section>
+
+
+</manualpage>
