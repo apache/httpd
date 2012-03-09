@@ -34,7 +34,7 @@
 <p>
 <code class="module"><a href="../mod/mod_sed.html">mod_sed</a></code> is an in-process content filter. The <code class="module"><a href="../mod/mod_sed.html">mod_sed</a></code> filter implements the <code>sed</code> editing
 commands implemented by the Solaris 10 <code>sed</code>
-program as described in the <a href="http://docs.sun.com/app/docs/doc/816-5165/sed-1b?a=view">manual
+program as described in the <a href="http://www.gnu.org/software/sed/manual/sed.txt">manual
 page</a>. However, unlike <code>sed</code>, <code class="module"><a href="../mod/mod_sed.html">mod_sed</a></code> doesn't take data from
 standard
 input. Instead, the filter acts on the entity data sent between client and
@@ -55,7 +55,7 @@ Both the input and output filters only process the data if newline characters ar
 </p>
 
 <p>A tutorial article on <code class="module"><a href="../mod/mod_sed.html">mod_sed</a></code>, and why it is more powerful than simple
-string or regular expression search and replace, is available <a href="http://blogs.sun.com/basant/entry/using_mod_sed_to_filter">on
+string or regular expression search and replace, is available <a href="https://blogs.oracle.com/basant/entry/using_mod_sed_to_filter">on
 the author's blog</a>.</p>
 
 </div>
