@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_rewrite et les fichiers .htaccess - Serveur Apache HTTP</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="apache">Serveur Apache HTTP Version 2.4</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>mod_rewrite et les fichiers .htaccess</h1>
+<div class="toplang">
+<p><span>Langues Disponibles: </span><a href="../en/rewrite/htaccess.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/rewrite/htaccess.html" title="Français">&nbsp;fr&nbsp;</a></p>
+</div>
+
+
+<p>Ce document est un complément de la <a href="../mod/mod_rewrite.html">documentation de référence</a> du module
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Il décrit les changements apportés aux règles
+lorsqu'on utilise mod_rewrite dans les fichiers .htaccess, et comment
+travailler avec ces changements.</p>
+
+</div>
+<div id="quickview"><h3>Voir aussi</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentation du module mod_rewrite</a></li><li><a href="intro.html">Introduction à mod_rewrite</a></li><li><a href="remapping.html">Redirection et remise en
+correspondance</a></li><li><a href="vhosts.html">Serveurs virtuels</a></li><li><a href="proxy.html">Serveurs mandataires</a></li><li><a href="rewritemap.html">Utilisation de RewriteMap</a></li><li><a href="advanced.html">Techniques avancées</a></li><li><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></li></ul></div>
+</div>
+<div class="bottomlang">
+<p><span>Langues Disponibles: </span><a href="../en/rewrite/htaccess.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/rewrite/htaccess.html" title="Français">&nbsp;fr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2012 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div>
+</body></html>
