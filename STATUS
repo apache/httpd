@@ -112,7 +112,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    2.4.x patch: http://people.apache.org/~jim/patches/runtime_dir.patch
    +1: jim
 
-  * mod_slotmem_shm: Use ap_runtime_dir_relative().
+  * mod_slotmem_shm: Use ap_runtime_dir_relative(). (Assumes r1297560)
    Trunk patch: http://svn.apache.org/viewvc?rev=1298433&view=rev
    2.4.x patch: Trunk patch works (skip docs/log-message-tags/next-number)
    +1:  jim
