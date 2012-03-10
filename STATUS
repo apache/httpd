@@ -103,7 +103,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Trunk patch: http://svn.apache.org/viewvc?rev=1297958&view=rev
    2.4.x patch: Trunk patch works
    +1: covener
-    
+
+ * core: Add ap_runtime_dir_relative() and DefaultRuntimeDir
+   Trunk patch: http://svn.apache.org/viewvc?rev=1297955&view=rev
+                http://svn.apache.org/viewvc?rev=1297956&view=rev
+                http://svn.apache.org/viewvc?rev=1297959&view=rev
+                http://svn.apache.org/viewvc?rev=1298432&view=rev
+   2.4.x patch: http://people.apache.org/~jim/patches/runtime_dir.patch
+   +1: jim
+
+  * mod_slotmem_shm: Use ap_runtime_dir_relative().
+   Trunk patch: http://svn.apache.org/viewvc?rev=1298433&view=rev
+   2.4.x patch: Trunk patch works (skip docs/log-message-tags/next-number)
+   +1:  jim
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
