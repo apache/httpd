@@ -106,7 +106,7 @@ the author's blog</a>.</p>
 <h2><a name="sed_commands" id="sed_commands">Sed Commands</a></h2>
     <p>
     Complete details of the <code>sed</code> command can be found from the
-   <a href="http://docs.sun.com/app/docs/doc/816-5165/sed-1b?a=view">sed manual
+   <a href="http://www.gnu.org/software/sed/manual/sed.txt">sed manual
 page</a>.
     </p>
     <dl>
