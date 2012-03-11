@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1241955:1296736 (outdated) -->
+<!-- English Revision : 1296736 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -131,7 +131,24 @@
       num&eacute;ro de version ; par exemple, la distribution APR doit se
       trouver dans ./srclib/apr/), et utilisez l'option
       <code>--with-included-apr</code> du script
-      <code>./configure</code>.</dd>
+      <code>./configure</code>. Sur certaines plateformes, vous devrez
+      peut-&ecirc;tre installer les paquets <code>-dev</code> correspondants
+      pour permettre la compilation de httpd avec la version
+      install&eacute;e de PCRE.</dd>
+
+      <dt>Biblioth&egrave;que d'expressions rationnelles compatibles Perl
+      (PCRE)</dt>
+      <dd>Cette librairie est n&eacute;cessaire mais n'est plus fournie avec la
+      distribution de httpd. T&eacute;l&eacute;chargez le code source depuis <a
+      href="http://www.pcre.org/">http://www.pcre.org</a> ou installez
+      un portage du paquet. Si votre suite de compilation ne trouve pas
+      le script pcre-config install&eacute; au cours du processus de
+      construction de PCRE, indiquez son chemin via l'option
+      <code>--with-pcre</code> du script <code>./configure</code>. Sur
+      certaines plateformes, vous devrez
+      peut-&ecirc;tre installer les paquets <code>-dev</code> correspondants
+      pour permettre la compilation de httpd avec la version
+      install&eacute;e de PCRE.</dd>
 
       <dt>Espace disque</dt>
       <dd>Assurez-vous d'avoir au moins 50 Mo d'espace disque disponible
