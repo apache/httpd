@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1189739:1296922 (outdated) -->
+<!-- English revision : 1296922 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -654,6 +654,11 @@ requ&ecirc;te HTTP. Mais il ne peut le faire tant que la n&eacute;gociation SSL 
 termin&eacute;e, or, la phase de n&eacute;gociation SSL a besoin du nom d'h&ocirc;te contenu
 dans l'en-t&ecirc;te de la requ&ecirc;te. Voir la question suivante pour
 contourner ce probl&egrave;me.</p>
+
+    <p>Notez que si votre certificat comporte un nom de serveur avec
+    caract&egrave;res g&eacute;n&eacute;riques, ou des noms de serveurs multiples dans le
+    champ subjectAltName, vous pouvez utiliser SSL avec les serveurs
+    virtuels &agrave; base de noms sans avoir &agrave; contourner ce probl&egrave;me.</p>
 </section>
 
 <section id="vhosts2"><title>Est-il possible d'utiliser
@@ -674,6 +679,11 @@ pour diff&eacute;rencier plusieurs h&ocirc;tes virtuels ?</title>
     Indication du Nom de Serveur (Server Name Indication - SNI) que
     seules les r&eacute;visions les plus r&eacute;centes de la
     sp&eacute;cification SSL supportent.</p>
+
+    <p>Notez que si votre certificat comporte un nom de serveur avec
+    caract&egrave;res g&eacute;n&eacute;riques, ou des noms de serveurs multiples dans le
+    champ subjectAltName, vous pouvez utiliser SSL avec les serveurs
+    virtuels &agrave; base de noms sans avoir &agrave; contourner ce probl&egrave;me.</p>    
 
     <p>La raison en est que le protocole SSL constitue une couche s&eacute;par&eacute;e qui
     encapsule le protocole HTTP. Aini, la session SSL n&eacute;cessite une
