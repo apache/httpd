@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1174747:1297485 (outdated) -->
+<!-- English Revision : 1297485 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -119,7 +119,7 @@ mobiliser des threads que pour les connexions en cours de traitement</descriptio
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>EnableExceptionHook</name>
 </directivesynopsis>
-<directivesynopsis location="mpm_common"><name>Group</name>
+<directivesynopsis location="mpm_unixd"><name>Group</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>Listen</name>
 </directivesynopsis>
@@ -151,7 +151,7 @@ mobiliser des threads que pour les connexions en cours de traitement</descriptio
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>ThreadStackSize</name>
 </directivesynopsis>
-<directivesynopsis location="mpm_common"><name>User</name>
+<directivesynopsis location="mpm_unixd"><name>User</name>
 </directivesynopsis>
 
 <directivesynopsis>

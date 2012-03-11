@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1041851:1298256 (outdated) -->
+<!-- English Revision: 1298256 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -278,9 +278,10 @@ client en utilisant le module <module>mod_substitute</module>.</p>
 Substitute s/internal\.example\.com/www.example.com/i
 </example>
 
-<p>En outre, un module tiers
-<a href="http://apache.webthing.com/mod_proxy_html/">mod_proxy_html</a>
-permet de r&eacute;&eacute;crire les liens dans les documents HTML et XHTML.</p>
+<p>Le module <module>mod_proxy_html</module> rend possible une r&eacute;&eacute;criture plus
+&eacute;labor&eacute;e des liens en HTML et XHTML. Il permet de cr&eacute;er des listes
+d'URLs et de leurs r&eacute;&eacute;critures, de fa&ccedil;on &agrave; pouvoir g&eacute;rer des sc&eacute;narios
+de r&eacute;&eacute;criture complexes.</p>
 </section>
 
 <section id="rewrite"><title>Moteur de r&eacute;&eacute;criture</title>

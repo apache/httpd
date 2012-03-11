@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1242913:1297959 (outdated) -->
+<!-- English Revision : 1297959 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -657,6 +657,42 @@ host</context>
     scripts CGI, et les r&eacute;ponses &agrave; des requ&ecirc;tes partielles (byte range)
     ne comportent pas cet en-t&ecirc;te.</p>
 </usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DefaultRuntimeDir</name>
+<description>R&eacute;pertoire de base des fichiers cr&eacute;&eacute;s au cours de l'ex&eacute;cution du serveur</description>
+<syntax>DefaultRuntimeDir <var>chemin-r&eacute;pertoire</var></syntax>
+<default>DefaultRuntimeDir DEFAULT_REL_RUNTIMEDIR (logs/)</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>La directive <directive>DefaultRuntimeDir</directive> permet de
+    d&eacute;finir le r&eacute;pertoire dans lequel le serveur va cr&eacute;er les diff&eacute;rents
+    fichiers relatifs &agrave; son ex&eacute;cution (m&eacute;moire partag&eacute;e, verrous,
+    etc...). Si le chemin sp&eacute;cifi&eacute; est relatif, le chemin absolu sera
+    g&eacute;n&eacute;r&eacute; relativement &agrave; la valeur de la directive
+    <directive>ServerRoot</directive>.</p>
+
+    <example><title>Exemple</title>
+      DefaultRuntimeDir scratch/
+    </example>
+
+    <p>La valeur par d&eacute;faut de la directive
+    <directive>DefaultRuntimeDir</directive> peut &ecirc;tre modifi&eacute;e en
+    changeant la valeur de la macro <code>DEFAULT_REL_RUNTIMEDIR</code>
+    d&eacute;finie &agrave; la compilation.</p>
+
+   <p>Note: si la valeur de <directive>ServerRoot</directive> n'a pas
+   &eacute;t&eacute; sp&eacute;cifi&eacute;e avant d'utiliser cette directive, c'est la valeur par
+   d&eacute;faut de <directive>ServerRoot</directive> qui sera utilis&eacute;e pour
+   d&eacute;finir la base du r&eacute;pertoire.</p>
+
+</usage>
+<seealso>Voir les <a
+href="../misc/security_tips.html#serverroot">conseils &agrave; propos de
+s&eacute;surit&eacute;</a> pour plus d'informations en vue de d&eacute;finir correctement les
+permissions sur la racine du serveur <directive>ServerRoot</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>

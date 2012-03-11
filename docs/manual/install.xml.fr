@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1174747:1296735 (outdated) -->
+<!-- English Revision : 1296735 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -120,6 +120,36 @@
     <p>Les pr&eacute;requis pour la construction d'Apache httpd sont les suivants:</p>
 
     <dl>
+      <dt>APR et APR-Util</dt>
+      <dd>APR et APR-Util doivent &ecirc;tre d&eacute;j&agrave; install&eacute;s sur votre syst&egrave;me.
+      Si ce n'est pas le cas, ou si vous pr&eacute;f&eacute;rez ne pas utiliser les
+      versions fournies par le syst&egrave;me, t&eacute;l&eacute;chargez les derni&egrave;res
+      versions d'APR et APR-Util depuis <a
+      href="http://apr.apache.org/">Apache APR</a>, d&eacute;compressez-les
+      respectivement dans <code>./srclib/apr</code> et
+      <code>./srclib/apr-util</code> (les noms des r&eacute;pertoires ne
+      doivent pas comporter de num&eacute;ros de versions ; par exemple, la
+      distribution d'APR doit se trouver dans ./srclib/apr/), et
+      utilisez l'option <code>--with-included-apr</code> du script
+      <code>./configure</code>. Sur certaines plateformes, vous devrez
+      peut-&ecirc;tre installer les paquets <code>-dev</code> correspondants
+      pour permettre la compilation de httpd avec les versions
+      install&eacute;es d'APR et APR-Util.</dd>
+
+      <dt>Biblioth&egrave;que d'expressions rationnelles compatibles Perl
+      (PCRE)</dt>
+      <dd>Cette librairie est n&eacute;cessaire mais n'est plus fournie avec la
+      distribution de httpd. T&eacute;l&eacute;chargez le code source depuis <a
+      href="http://www.pcre.org/">http://www.pcre.org</a> ou installez
+      un portage du paquet. Si votre suite de compilation ne trouve pas
+      le script pcre-config install&eacute; au cours du processus de
+      construction de PCRE, indiquez son chemin via l'option
+      <code>--with-pcre</code> du script <code>./configure</code>. Sur
+      certaines plateformes, vous devrez
+      peut-&ecirc;tre installer les paquets <code>-dev</code> correspondants
+      pour permettre la compilation de httpd avec la version
+      install&eacute;e de PCRE.</dd>
+
       <dt>Espace disque</dt>
       <dd>Assurez-vous d'avoir au moins 50 Mo d'espace disque disponible
       temporaire. Apr&egrave;s l'installation le serveur occupe
