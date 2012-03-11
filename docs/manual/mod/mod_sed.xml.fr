@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 734331:1299328 (outdated) -->
+<!-- English Revision : 1299328 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -37,7 +37,7 @@
 filtre <module>mod_sed</module> fournit les commandes d'&eacute;dition de
 <code>sed</code> impl&eacute;ment&eacute;es par le programme <code>sed</code> de
 Solaris 10 comme d&eacute;crit dans la <a
-href="http://docs.sun.com/app/docs/doc/816-5165/sed-1b?a=view">page de
+href="http://www.gnu.org/software/sed/manual/sed.txt">page de
 manuel</a>. Cependant, &agrave; la diff&eacute;rence de <code>sed</code>,
 <module>mod_sed</module> ne re&ccedil;oit pas de donn&eacute;es sur son entr&eacute;e
 standard. Au lieu de cela, le filtre agit sur les donn&eacute;es &eacute;chang&eacute;es
@@ -66,7 +66,7 @@ donn&eacute;es, ce qui reste est trait&eacute; comme la derni&egrave;re ligne.
 </p>
 
 <p>Vous trouverez sur le <a
-href="http://blogs.sun.com/basant/entry/using_mod_sed_to_filter">blog de
+href="https://blogs.oracle.com/basant/entry/using_mod_sed_to_filter">blog de
 l'auteur</a> un article en forme de tutoriel, ainsi que les raisons pour
 lesquelles ce filtre est plus puissant qu'une simple
 recherche/remplacement de cha&icirc;ne ou d'expression rationnelle.</p>
@@ -107,8 +107,7 @@ recherche/remplacement de cha&icirc;ne ou d'expression rationnelle.</p>
 <section id="sed_commands"><title>Commandes sed</title>
     <p>
     Vous trouverez tous les d&eacute;tails &agrave; propos de la commande
-    <code>sed</code> dans sa <a
-    href="http://docs.sun.com/app/docs/doc/816-5165/sed-1b?a=view">page
+    <code>sed</code> dans sa <a href="http://www.gnu.org/software/sed/manual/sed.txt">page
     de manuel</a>.
     </p>
     <dl>
