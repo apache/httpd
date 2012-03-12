@@ -102,7 +102,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             not just inherited config.  PR52845
    Trunk patch: http://svn.apache.org/viewvc?rev=1297958&view=rev
    2.4.x patch: Trunk patch works
-   +1: covener
+   +1: covener, sf
 
  * core: Add ap_runtime_dir_relative() and DefaultRuntimeDir
    Trunk patch: http://svn.apache.org/viewvc?rev=1297955&view=rev
