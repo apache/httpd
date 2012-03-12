@@ -157,7 +157,7 @@ AP_DECLARE_NONSTD(void) ap_mutex_init(apr_pool_t *p)
     /* initialize default mutex configuration */
     def = apr_pcalloc(p, sizeof *def);
     def->mech = APR_LOCK_DEFAULT;
-    def->dir = DEFAULT_REL_RUNTIMEDIR;
+    def->dir = ap_runtime_dir_relative(p, "");
     apr_hash_set(mxcfg_by_type, "default", APR_HASH_KEY_STRING, def);
 }
 
