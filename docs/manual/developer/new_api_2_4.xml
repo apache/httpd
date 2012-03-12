@@ -70,6 +70,8 @@
   <p><code>ap_mpm_run</code> is replaced by a new <code>mpm</code> hook.
   Also <code>ap_graceful_stop_signalled</code> is lost, and
   <code>ap_mpm_register_timed_callback</code> is new.</p>
+  <p><code>ap_mpm_query</code> is not longer available in the register hooks
+  phase during startup.</p>
   </section>
 
   <section id="ap_regex">
