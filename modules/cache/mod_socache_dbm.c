@@ -53,7 +53,7 @@ struct ap_socache_instance_t {
  */
 #define DBM_FILE_MODE ( APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD )
 
-#define DEFAULT_DBM_PREFIX DEFAULT_REL_RUNTIMEDIR "/socache-dbm-"
+#define DEFAULT_DBM_PREFIX "socache-dbm-"
 
 /* ### this should use apr_dbm_usednames. */
 #if !defined(DBM_FILE_SUFFIX_DIR) && !defined(DBM_FILE_SUFFIX_PAG)
@@ -127,7 +127,7 @@ static apr_status_t socache_dbm_init(ap_socache_instance_t *ctx,
         const char *path = apr_pstrcat(p, DEFAULT_DBM_PREFIX, namespace,
                                        NULL);
 
-        ctx->data_file = ap_server_root_relative(p, path);
+        ctx->data_file = ap_runtime_dir_relative(p, path);
 
         if (ctx->data_file == NULL) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00803)
