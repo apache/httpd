@@ -106,7 +106,7 @@ of consuming threads only for connections with active processing</description>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>EnableExceptionHook</name>
 </directivesynopsis>
-<directivesynopsis location="mpm_unixd"><name>Group</name>
+<directivesynopsis location="mod_unixd"><name>Group</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>Listen</name>
 </directivesynopsis>
@@ -138,7 +138,7 @@ of consuming threads only for connections with active processing</description>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>ThreadStackSize</name>
 </directivesynopsis>
-<directivesynopsis location="mpm_unixd"><name>User</name>
+<directivesynopsis location="mod_unixd"><name>User</name>
 </directivesynopsis>
 
 <directivesynopsis>
