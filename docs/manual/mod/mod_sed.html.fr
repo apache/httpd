@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_sed.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_sed.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Filtre les contenus en entrée (requêtes) et en sortie
 (réponses) en utilisant la syntaxe de <code>sed</code></td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td /></tr>
@@ -37,7 +35,7 @@
 <p><code class="module"><a href="../mod/mod_sed.html">mod_sed</a></code> est un filtre de contenu "in-process". Le
 filtre <code class="module"><a href="../mod/mod_sed.html">mod_sed</a></code> fournit les commandes d'édition de
 <code>sed</code> implémentées par le programme <code>sed</code> de
-Solaris 10 comme décrit dans la <a href="http://docs.sun.com/app/docs/doc/816-5165/sed-1b?a=view">page de
+Solaris 10 comme décrit dans la <a href="http://www.gnu.org/software/sed/manual/sed.txt">page de
 manuel</a>. Cependant, à la différence de <code>sed</code>,
 <code class="module"><a href="../mod/mod_sed.html">mod_sed</a></code> ne reçoit pas de données sur son entrée
 standard. Au lieu de cela, le filtre agit sur les données échangées
@@ -65,7 +63,7 @@ caractères newline sont détectés dans le contenu à filtrer. A la fin des
 données, ce qui reste est traité comme la dernière ligne.
 </p>
 
-<p>Vous trouverez sur le <a href="http://blogs.sun.com/basant/entry/using_mod_sed_to_filter">blog de
+<p>Vous trouverez sur le <a href="https://blogs.oracle.com/basant/entry/using_mod_sed_to_filter">blog de
 l'auteur</a> un article en forme de tutoriel, ainsi que les raisons pour
 lesquelles ce filtre est plus puissant qu'une simple
 recherche/remplacement de chaîne ou d'expression rationnelle.</p>
@@ -118,7 +116,7 @@ recherche/remplacement de chaîne ou d'expression rationnelle.</p>
 <h2><a name="sed_commands" id="sed_commands">Commandes sed</a></h2>
     <p>
     Vous trouverez tous les détails à propos de la commande
-    <code>sed</code> dans sa <a href="http://docs.sun.com/app/docs/doc/816-5165/sed-1b?a=view">page
+    <code>sed</code> dans sa <a href="http://www.gnu.org/software/sed/manual/sed.txt">page
     de manuel</a>.
     </p>
     <dl>

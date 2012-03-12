@@ -21,8 +21,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/ssl/ssl_faq.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/ssl/ssl_faq.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <blockquote>
 <p>Le sage n'apporte pas de bonnes réponses, il pose les bonnes questions</p>
@@ -644,7 +642,7 @@ l'oeuf ou de la poule. La couche du protocole SSL se trouve en dessous de la
 couche de protocole HTTP qu'elle encapsule. Lors de l'établissement d'une
 connexion SSL (HTTPS), Apache/mod_ssl doit négocier les paramètres du
 protocole SSL avec le client. Pour cela, mod_ssl doit consulter la
-configuration du serveur virtuel (par exemple, il doit accéder à la la suite
+configuration du serveur virtuel (par exemple, il doit accéder à la suite
 d'algorithmes de chiffrement, au certificat du serveur, etc...). Mais afin de
 sélectionner le bon serveur virtuel, Apache doit connaître le contenu du champ
 d'en-tête HTTP <code>Host</code>. Pour cela, il doit lire l'en-tête de la
@@ -652,6 +650,11 @@ requête HTTP. Mais il ne peut le faire tant que la négociation SSL n'est pas
 terminée, or, la phase de négociation SSL a besoin du nom d'hôte contenu
 dans l'en-tête de la requête. Voir la question suivante pour
 contourner ce problème.</p>
+
+    <p>Notez que si votre certificat comporte un nom de serveur avec
+    caractères génériques, ou des noms de serveurs multiples dans le
+    champ subjectAltName, vous pouvez utiliser SSL avec les serveurs
+    virtuels à base de noms sans avoir à contourner ce problème.</p>
 
 
 <h3><a name="vhosts2" id="vhosts2">Est-il possible d'utiliser
@@ -672,6 +675,11 @@ pour différencier plusieurs hôtes virtuels ?</a></h3>
     Indication du Nom de Serveur (Server Name Indication - SNI) que
     seules les révisions les plus récentes de la
     spécification SSL supportent.</p>
+
+    <p>Notez que si votre certificat comporte un nom de serveur avec
+    caractères génériques, ou des noms de serveurs multiples dans le
+    champ subjectAltName, vous pouvez utiliser SSL avec les serveurs
+    virtuels à base de noms sans avoir à contourner ce problème.</p>
 
     <p>La raison en est que le protocole SSL constitue une couche séparée qui
     encapsule le protocole HTTP. Aini, la session SSL nécessite une
