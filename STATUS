@@ -79,8 +79,7 @@ CURRENT RELEASE NOTES:
 
   * All commits to branches/2.4.x must be reflected in SVN trunk,
     as well, if they apply.  Logical progression is commit to trunk
-    then merge into branches/2.4.x, as applicable. The 2.4.x branch is
-    still CTR.
+    then merge into branches/2.4.x, as applicable.
 
 
 RELEASE SHOWSTOPPERS:
