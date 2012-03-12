@@ -26,8 +26,6 @@
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/install.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Ce document couvre l'installation et la compilation du serveur
@@ -140,7 +138,23 @@
       numéro de version ; par exemple, la distribution APR doit se
       trouver dans ./srclib/apr/), et utilisez l'option
       <code>--with-included-apr</code> du script
-      <code>./configure</code>.</dd>
+      <code>./configure</code>. Sur certaines plateformes, vous devrez
+      peut-être installer les paquets <code>-dev</code> correspondants
+      pour permettre la compilation de httpd avec la version
+      installée de PCRE.</dd>
+
+      <dt>Bibliothèque d'expressions rationnelles compatibles Perl
+      (PCRE)</dt>
+      <dd>Cette librairie est nécessaire mais n'est plus fournie avec la
+      distribution de httpd. Téléchargez le code source depuis <a href="http://www.pcre.org/">http://www.pcre.org</a> ou installez
+      un portage du paquet. Si votre suite de compilation ne trouve pas
+      le script pcre-config installé au cours du processus de
+      construction de PCRE, indiquez son chemin via l'option
+      <code>--with-pcre</code> du script <code>./configure</code>. Sur
+      certaines plateformes, vous devrez
+      peut-être installer les paquets <code>-dev</code> correspondants
+      pour permettre la compilation de httpd avec la version
+      installée de PCRE.</dd>
 
       <dt>Espace disque</dt>
       <dd>Assurez-vous d'avoir au moins 50 Mo d'espace disque disponible
