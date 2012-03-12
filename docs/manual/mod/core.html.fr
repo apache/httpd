@@ -28,8 +28,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fonctionnalités de base du serveur HTTP Apache toujours
 disponibles</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Core</td></tr></table>
@@ -698,19 +696,40 @@ dans la réponse HTTP</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="DefaultRuntimeDir" id="DefaultRuntimeDir">DefaultRuntimeDir</a> <a name="defaultruntimedir" id="defaultruntimedir">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Base directory for the server run-time files</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DefaultRuntimeDir <var>directory-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Répertoire de base des fichiers créés au cours de l'exécution du serveur</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DefaultRuntimeDir <var>chemin-répertoire</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DefaultRuntimeDir DEFAULT_REL_RUNTIMEDIR (logs/)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p><h3>Voir aussi</h3>
+</table>
+    <p>La directive <code class="directive">DefaultRuntimeDir</code> permet de
+    définir le répertoire dans lequel le serveur va créer les différents
+    fichiers relatifs à son exécution (mémoire partagée, verrous,
+    etc...). Si le chemin spécifié est relatif, le chemin absolu sera
+    généré relativement à la valeur de la directive
+    <code class="directive">ServerRoot</code>.</p>
+
+    <div class="example"><h3>Exemple</h3><p><code>
+      DefaultRuntimeDir scratch/
+    </code></p></div>
+
+    <p>La valeur par défaut de la directive
+    <code class="directive">DefaultRuntimeDir</code> peut être modifiée en
+    changeant la valeur de la macro <code>DEFAULT_REL_RUNTIMEDIR</code>
+    définie à la compilation.</p>
+
+   <p>Note: si la valeur de <code class="directive">ServerRoot</code> n'a pas
+   été spécifiée avant d'utiliser cette directive, c'est la valeur par
+   défaut de <code class="directive">ServerRoot</code> qui sera utilisée pour
+   définir la base du répertoire.</p>
+
+
+<h3>Voir aussi</h3>
 <ul>
-<li><a href="../misc/security_tips.html#serverroot">the
-    security tips</a> for information on how to properly set
-    permissions on the <code class="directive">ServerRoot</code></li>
+<li>Voir les <a href="../misc/security_tips.html#serverroot">conseils à propos de
+sésurité</a> pour plus d'informations en vue de définir correctement les
+permissions sur la racine du serveur <code class="directive">ServerRoot</code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
