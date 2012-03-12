@@ -538,6 +538,37 @@ valid</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>LDAPRetryDelay</name>
+<description>Configures the delay between LDAP server retries.</description>
+<syntax>LDAPRetryDelay <var>seconds</var></syntax>
+<default>LDAPRetryDelay 0</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>If <directive>LDAPRetryDelay</directive> is set to a non-zero
+    value, the server will delay retrying an LDAP request for the 
+    specified amount of time.  Setting this directive to 0 will
+    result in any retry to occur without delay.</p>
+
+    <p>LDAP errors such as timeouts and refused connections are retryable.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LDAPRetries</name>
+<description>Configures the number of LDAP server retries.</description>
+<syntax>LDAPRetries <var>number-of-retries</var></syntax>
+<default>LDAPRetries 3</default>
+<contextlist><context>server config</context></contextlist>
+<usage>
+    <p>The server will retry failed LDAP requests up to 
+    <directive>LDAPRetries</directive> times.  Setting this
+    directive to 0 disables retries.</p>
+    <p>LDAP errors such as timeouts and refused connections are retryable.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>LDAPTrustedGlobalCert</name>
 <description>Sets the file or database containing global trusted
 Certificate Authority or global client certificates</description>
