@@ -50,7 +50,7 @@ of consuming threads only for connections with active processing</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#asyncrequestworkerfactor">AsyncRequestWorkerFactor</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#enableexceptionhook">EnableExceptionHook</a></li>
-<li><img alt="" src="../images/right.gif" /> <a href="mpm_unixd.html#group">Group</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mod_unixd.html#group">Group</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listen">Listen</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listenbacklog">ListenBacklog</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></li>
@@ -66,7 +66,7 @@ of consuming threads only for connections with active processing</td></tr>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadlimit">ThreadLimit</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadstacksize">ThreadStackSize</a></li>
-<li><img alt="" src="../images/right.gif" /> <a href="mpm_unixd.html#user">User</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mod_unixd.html#user">User</a></li>
 </ul>
 <h3>Topics</h3>
 <ul id="topics">
