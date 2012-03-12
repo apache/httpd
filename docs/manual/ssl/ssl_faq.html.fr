@@ -21,8 +21,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/ssl/ssl_faq.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/ssl/ssl_faq.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <blockquote>
 <p>Le sage n'apporte pas de bonnes réponses, il pose les bonnes questions</p>
@@ -653,6 +651,11 @@ terminée, or, la phase de négociation SSL a besoin du nom d'hôte contenu
 dans l'en-tête de la requête. Voir la question suivante pour
 contourner ce problème.</p>
 
+    <p>Notez que si votre certificat comporte un nom de serveur avec
+    caractères génériques, ou des noms de serveurs multiples dans le
+    champ subjectAltName, vous pouvez utiliser SSL avec les serveurs
+    virtuels à base de noms sans avoir à contourner ce problème.</p>
+
 
 <h3><a name="vhosts2" id="vhosts2">Est-il possible d'utiliser
 l'hébergement virtuel basé sur le nom d'hôte
@@ -672,6 +675,11 @@ pour différencier plusieurs hôtes virtuels ?</a></h3>
     Indication du Nom de Serveur (Server Name Indication - SNI) que
     seules les révisions les plus récentes de la
     spécification SSL supportent.</p>
+
+    <p>Notez que si votre certificat comporte un nom de serveur avec
+    caractères génériques, ou des noms de serveurs multiples dans le
+    champ subjectAltName, vous pouvez utiliser SSL avec les serveurs
+    virtuels à base de noms sans avoir à contourner ce problème.</p>    
 
     <p>La raison en est que le protocole SSL constitue une couche séparée qui
     encapsule le protocole HTTP. Aini, la session SSL nécessite une
