@@ -11,8 +11,6 @@ To Do List
 
 - The following directives of modules included in 2.4.x are not documented:
   DBDInitSQL (mod_dbd)
-  LDAPRetries (mod_ldap)
-  LDAPRetryDelay (mod_ldap)
   ProxyHTMLMeta (mod_proxy_html)
   SSLPKCS7CertificateFile (mod_ssl)
 
