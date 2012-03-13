@@ -24,6 +24,8 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_ldap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_ldap.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Conservation des connexions LDAP et services de mise en
 cache du résultat à destination des autres modules LDAP</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -65,6 +67,8 @@ d'Apache</td></tr></table>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapopcachettl">LDAPOpCacheTTL</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapreferralhoplimit">LDAPReferralHopLimit</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapreferrals">LDAPReferrals</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ldapretries">LDAPRetries</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ldapretrydelay">LDAPRetryDelay</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapsharedcachefile">LDAPSharedCacheFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapsharedcachesize">LDAPSharedCacheSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldaptimeout">LDAPTimeout</a></li>
@@ -678,6 +682,30 @@ cours des requêtes vers le serveur LDAP.</td></tr>
     serveur LDAP qui en fera la demande.</p>
 
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LDAPRetries" id="LDAPRetries">LDAPRetries</a> <a name="ldapretries" id="ldapretries">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures the number of LDAP server retries.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPRetries <var>number-of-retries</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPRetries 3</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
+</table><p>La documentation de cette directive
+	n'a pas encore t traduite. Veuillez vous reporter  la version
+	en langue anglaise.</p></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LDAPRetryDelay" id="LDAPRetryDelay">LDAPRetryDelay</a> <a name="ldapretrydelay" id="ldapretrydelay">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures the delay between LDAP server retries.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPRetryDelay <var>seconds</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPRetryDelay 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
+</table><p>La documentation de cette directive
+	n'a pas encore t traduite. Veuillez vous reporter  la version
+	en langue anglaise.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LDAPSharedCacheFile" id="LDAPSharedCacheFile">LDAPSharedCacheFile</a> <a name="ldapsharedcachefile" id="ldapsharedcachefile">Directive</a></h2>
 <table class="directive">
