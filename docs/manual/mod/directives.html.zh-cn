@@ -306,6 +306,8 @@
 <li><a href="mod_ldap.html#ldapopcachettl">LDAPOpCacheTTL</a></li>
 <li><a href="mod_ldap.html#ldapreferralhoplimit">LDAPReferralHopLimit</a></li>
 <li><a href="mod_ldap.html#ldapreferrals">LDAPReferrals</a></li>
+<li><a href="mod_ldap.html#ldapretries">LDAPRetries</a></li>
+<li><a href="mod_ldap.html#ldapretrydelay">LDAPRetryDelay</a></li>
 <li><a href="mod_ldap.html#ldapsharedcachefile">LDAPSharedCacheFile</a></li>
 <li><a href="mod_ldap.html#ldapsharedcachesize">LDAPSharedCacheSize</a></li>
 <li><a href="mod_ldap.html#ldaptimeout">LDAPTimeout</a></li>

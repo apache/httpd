@@ -66,6 +66,8 @@ by other LDAP modules</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapopcachettl">LDAPOpCacheTTL</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapreferralhoplimit">LDAPReferralHopLimit</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapreferrals">LDAPReferrals</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ldapretries">LDAPRetries</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ldapretrydelay">LDAPRetryDelay</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapsharedcachefile">LDAPSharedCacheFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapsharedcachesize">LDAPSharedCacheSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldaptimeout">LDAPTimeout</a></li>
@@ -620,6 +622,40 @@ valid</td></tr>
     number of referral hops to follow before terminating the LDAP query. When referral processing
     is enabled client credentials will be provided, via a rebind callback, for any LDAP server
     requiring them. </p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LDAPRetries" id="LDAPRetries">LDAPRetries</a> <a name="ldapretries" id="ldapretries">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures the number of LDAP server retries.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPRetries <var>number-of-retries</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LDAPRetries 3</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
+</table>
+    <p>The server will retry failed LDAP requests up to 
+    <code class="directive">LDAPRetries</code> times.  Setting this
+    directive to 0 disables retries.</p>
+    <p>LDAP errors such as timeouts and refused connections are retryable.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LDAPRetryDelay" id="LDAPRetryDelay">LDAPRetryDelay</a> <a name="ldapretrydelay" id="ldapretrydelay">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures the delay between LDAP server retries.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPRetryDelay <var>seconds</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LDAPRetryDelay 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
+</table>
+    <p>If <code class="directive">LDAPRetryDelay</code> is set to a non-zero
+    value, the server will delay retrying an LDAP request for the 
+    specified amount of time.  Setting this directive to 0 will
+    result in any retry to occur without delay.</p>
+
+    <p>LDAP errors such as timeouts and refused connections are retryable.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
