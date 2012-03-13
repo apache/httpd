@@ -284,7 +284,8 @@ an authorization provider.</description>
       <dd>Access is allowed if <var>expression</var> evaluates to true.</dd>
     </dl>
 
-    <p>Some of the allowed syntaxes provided by <module>mod_authz_user</module>
+    <p>Some of the allowed syntaxes provided by <module>mod_authz_user</module>,
+       <module>mod_authz_host</module>,
        and <module>mod_authz_groupfile</module> are:</p>
 
     <dl>
@@ -298,12 +299,15 @@ an authorization provider.</description>
 
       <dt><code>Require valid-user</code></dt>
       <dd>All valid users can access the resource.</dd>
+
+      <dt><code>Require ip 10 172.20 192.168.2</code></dt>
+      <dd>Clients in the specified IP address ranges can access the
+      resource.</dd>
     </dl>
 
     <p>Other authorization modules that implement require options
     include <module>mod_authnz_ldap</module>,
     <module>mod_authz_dbm</module>, <module>mod_authz_dbd</module>,
-    <module>mod_authz_host</module>,
     <module>mod_authz_owner</module> and <module>mod_ssl</module>.</p>
 
     <p>In most cases, for a complete authentication and authorization
