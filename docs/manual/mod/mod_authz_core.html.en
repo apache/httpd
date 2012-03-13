@@ -421,7 +421,8 @@ an authorization provider.</td></tr>
       <dd>Access is allowed if <var>expression</var> evaluates to true.</dd>
     </dl>
 
-    <p>Some of the allowed syntaxes provided by <code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code>
+    <p>Some of the allowed syntaxes provided by <code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code>,
+       <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>,
        and <code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code> are:</p>
 
     <dl>
@@ -435,12 +436,15 @@ an authorization provider.</td></tr>
 
       <dt><code>Require valid-user</code></dt>
       <dd>All valid users can access the resource.</dd>
+
+      <dt><code>Require ip 10 172.20 192.168.2</code></dt>
+      <dd>Clients in the specified IP address ranges can access the
+      resource.</dd>
     </dl>
 
     <p>Other authorization modules that implement require options
     include <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>,
     <code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code>, <code class="module"><a href="../mod/mod_authz_dbd.html">mod_authz_dbd</a></code>,
-    <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>,
     <code class="module"><a href="../mod/mod_authz_owner.html">mod_authz_owner</a></code> and <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>.</p>
 
     <p>In most cases, for a complete authentication and authorization
