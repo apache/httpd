@@ -88,6 +88,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+ * mod_dir: Fix "DirectoryIndex disabled" so it wipes out the current config, 
+            not just inherited config.  PR52845
+   Trunk patch: http://svn.apache.org/viewvc?rev=1297958&view=rev
+   2.4.x patch: Trunk patch works
+   +1: covener, sf, igalic
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -97,12 +102,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    2.4.x patch: Trunk patch works
    +1:  jim
  
- * mod_dir: Fix "DirectoryIndex disabled" so it wipes out the current config, 
-            not just inherited config.  PR52845
-   Trunk patch: http://svn.apache.org/viewvc?rev=1297958&view=rev
-   2.4.x patch: Trunk patch works
-   +1: covener, sf, igalic
-
  * core: Add ap_runtime_dir_relative() and DefaultRuntimeDir
    Trunk patch: http://svn.apache.org/viewvc?rev=1297955&view=rev
                 http://svn.apache.org/viewvc?rev=1297956&view=rev
