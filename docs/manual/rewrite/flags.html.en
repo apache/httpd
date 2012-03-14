@@ -314,7 +314,7 @@ rewrite target when using the [G] flag:</p>
 RewriteRule oldproduct - [G,NC]
 </code></p></div>
 
-<p>When using [F], an [L] is implied - that is, the response is returned
+<p>When using [G], an [L] is implied - that is, the response is returned
 immediately, and no further rules are evaluated.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
