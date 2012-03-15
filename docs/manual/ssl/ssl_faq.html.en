@@ -54,7 +54,7 @@ generate temporary 512 bit RSA private key" when I start Apache?</a></li>
     Make sure that all parent directories (here <code>/opt</code>,
     <code>/opt/apache</code> and <code>/opt/apache/logs</code>) have the x-bit
     set for, at minimum, the UID under which Apache's children are running (see
-    the <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> directive).</p>
+    the <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> directive).</p>
 
 
 <h3><a name="entropy" id="entropy">Why does mod_ssl stop with the error
