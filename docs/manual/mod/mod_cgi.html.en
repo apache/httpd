@@ -98,7 +98,7 @@
 
       <dt>REMOTE_IDENT</dt>
 
-      <dd>This will only be set if <code class="directive"><a href="../mod/core.html#identitycheck">IdentityCheck</a></code> is set to
+      <dd>This will only be set if <code class="directive"><a href="../mod/mod_ident.html#identitycheck">IdentityCheck</a></code> is set to
       <code>on</code> and the accessing host supports the ident
       protocol. Note that the contents of this variable cannot be
       relied upon because it can easily be faked, and if there is a
