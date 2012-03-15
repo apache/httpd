@@ -475,7 +475,7 @@ NoDecode option available in 2.3.12 and later.</td></tr>
       <dt>Limit</dt>
 
       <dd>
-      Allow use of the directives controlling host access (<code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code>, <code class="directive"><a href="../mod/mod_authz_host.html#deny">Deny</a></code> and <code class="directive"><a href="../mod/mod_authz_host.html#order">Order</a></code>).</dd>
+      Allow use of the directives controlling host access (<code class="directive"><a href="../mod/mod_access_compat.html#allow">Allow</a></code>, <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code> and <code class="directive"><a href="../mod/mod_access_compat.html#order">Order</a></code>).</dd>
 
       <dt>Nonfatal=[Override|Unknown|All]</dt>
 
