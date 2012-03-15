@@ -88,7 +88,7 @@
 
       <dt>REMOTE_IDENT</dt>
 
-      <dd>This will only be set if <directive module="core"
+      <dd>This will only be set if <directive module="mod_ident"
       >IdentityCheck</directive> is set to
       <code>on</code> and the accessing host supports the ident
       protocol. Note that the contents of this variable cannot be
