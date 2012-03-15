@@ -114,13 +114,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patch: http://svn.apache.org/viewvc?rev=1299738&view=rev
     2.4.x patch: trunk works
     (Was changed in http://svn.apache.org/viewvc?view=revision&revision=962972)
-    +1: covener, jim (need proxy eyes to review that this was really a typo)
+    +1: covener, jim
 
   * server/mpm_unix.c (dummy_connection): Destroy temp pool and return
     on connect() failure.
     Trunk patch: http://svn.apache.org/viewvc?rev=1300171&view=rev
     2.4.x patch: trunk works
+    +1: jim
+
+  * mod_dumpio: Return an error code from a previous input filter
+    (likely fixes PR 52914)
+    Trunk patch: http://svn.apache.org/viewvc?rev=1301111&view=rev
+    2.4.x patch: trunk works
     +1: 
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
