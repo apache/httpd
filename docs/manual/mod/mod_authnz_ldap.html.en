@@ -752,7 +752,7 @@ Require group <em>mygroupfile</em>
       <li>The directives must be put in the <code>.htaccess</code>
       files. Attempting to put them inside <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> or <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> directives won't work. This
       is because <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> has to be able to grab
-      the <code class="directive"><a href="../mod/mod_authn_file.html#authgroupfile">AuthGroupFile</a></code>
+      the <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code>
       directive that is found in FrontPage <code>.htaccess</code>
       files so that it knows where to look for the valid user list. If
       the <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> directives aren't in the same
