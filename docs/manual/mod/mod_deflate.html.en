@@ -162,7 +162,7 @@ client</td></tr>
       </div>
       <div class="note"><h3>Note</h3>
         There is a environment variable <code>force-gzip</code>,
-        set via <code class="directive"><a href="../mod/core.html#setenv">SetEnv</a></code>, which
+        set via <code class="directive"><a href="../mod/mod_env.html#setenv">SetEnv</a></code>, which
         will ignore the accept-encoding setting of your browser and will
         send compressed output.
       </div>

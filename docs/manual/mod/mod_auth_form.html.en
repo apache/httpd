@@ -89,7 +89,6 @@
 <li><code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code></li>
 <li><code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code></li>
 <li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li>
-<li><code class="directive"><a href="../mod/mod_authz_core.html#match">Match</a></code></li>
 <li><a href="../howto/auth.html">Authentication howto</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
