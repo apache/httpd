@@ -276,7 +276,7 @@
         machine. This information is highly unreliable and should
         almost never be used except on tightly controlled internal
         networks. Apache httpd will not even attempt to determine
-        this information unless <code class="directive"><a href="./mod/core.html#identitycheck">IdentityCheck</a></code> is set
+        this information unless <code class="directive"><a href="./mod/mod_ident.html#identitycheck">IdentityCheck</a></code> is set
         to <code>On</code>.</dd>
 
         <dt><code>frank</code> (<code>%u</code>)</dt>
