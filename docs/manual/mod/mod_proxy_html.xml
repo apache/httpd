@@ -199,7 +199,7 @@ generates decent HTML or XHTML, set it accordingly.</p>
 will also clean up the HTML to the specified standard.  It cannot
 fix every error, but it will strip out bogus elements and attributes.
 It will also optionally log other errors at <directive
-module="mod_log_config">LogLevel</directive> Debug.</p>
+module="core">LogLevel</directive> Debug.</p>
 </usage>
 </directivesynopsis>
 
