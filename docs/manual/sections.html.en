@@ -76,7 +76,7 @@ installed.  It should not be used to enclose directives that you want
 to work all the time, because it can suppress useful error messages
 about missing modules.</p>
 
-<p>In the following example, the <code class="directive"><a href="./mod/mod_mime_magic.html#mimemagicfiles">MimeMagicFiles</a></code> directive will be
+<p>In the following example, the <code class="directive"><a href="./mod/mod_mime_magic.html#mimemagicfile">MimeMagicFile</a></code> directive will be
 applied only if <code class="module"><a href="./mod/mod_mime_magic.html">mod_mime_magic</a></code> is available.</p>
 
 <div class="example"><p><code>
@@ -224,7 +224,7 @@ certain sections or directives are evaluated. For
 &lt;Location /foo/bar&gt;<br />
 &lt;/Location&gt;
 </code></p></div>
-<p><code class="directive"><a href="./mod/core.html#alias">&lt;Alias&gt;</a></code>es on the other hand,
+<p><code class="directive"><a href="./mod/mod_alias.html#alias">&lt;Alias&gt;</a></code>es on the other hand,
 are mapped vice-versa:</p>
 <div class="example"><p><code>
 Alias /foo/bar /srv/www/uncommon/bar<br />
@@ -339,7 +339,7 @@ to all requests regardless of the specific URL.</p>
 <h3><a name="nesting" id="nesting">Nesting of sections</a></h3>
 
 <p>Some section types can be nested inside other section types. One the one
-hand, <code class="directive"><a href="./mod/core.html#file">&lt;File&gt;</a></code> can be used
+hand, <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> can be used
 inside <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>.  On
 the other hand, <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code> can
 be used inside <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>,
