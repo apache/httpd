@@ -513,7 +513,7 @@ by other LDAP modules</td></tr>
     <p> If a connection is not successful with the timeout period, either an error will be
     returned or the LDAP client library will attempt to connect to a secondary LDAP
     server if one is specified (via a space-separated list of hostnames in the
-    <code class="directive"><a href="#authldapurl">AuthLDAPURL</a></code>).</p>
+    <code class="directive"><a href="../mod/mod_authnz_ldap.html#authldapurl">AuthLDAPURL</a></code>).</p>
 
     <p>The default is 10 seconds, if the LDAP client library linked with the
     server supports the LDAP_OPT_NETWORK_TIMEOUT option.</p>
