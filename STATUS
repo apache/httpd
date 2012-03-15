@@ -126,7 +126,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     (likely fixes PR 52914)
     Trunk patch: http://svn.apache.org/viewvc?rev=1301111&view=rev
     2.4.x patch: trunk works
-    +1: 
+    +1: covener
 
 
 PATCHES/ISSUES THAT ARE STALLED
