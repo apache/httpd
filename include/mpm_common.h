@@ -102,8 +102,8 @@ typedef void ap_reclaim_callback_fn_t(int childnum, pid_t pid,
  * in the scoreboard as well as those currently registered via
  * ap_register_extra_mpm_process().
  */
-AP_DECLARE(void) ap_reclaim_child_processes(int terminate,
-                                            ap_reclaim_callback_fn_t *mpm_callback);
+void ap_reclaim_child_processes(int terminate,
+                                ap_reclaim_callback_fn_t *mpm_callback);
 
 /**
  * Catch any child processes that have been spawned by the parent process
@@ -115,7 +115,7 @@ AP_DECLARE(void) ap_reclaim_child_processes(int terminate,
  * in the scoreboard as well as those currently registered via
  * ap_register_extra_mpm_process().
  */
-AP_DECLARE(void) ap_relieve_child_processes(ap_reclaim_callback_fn_t *mpm_callback);
+void ap_relieve_child_processes(ap_reclaim_callback_fn_t *mpm_callback);
 
 /**
  * Tell ap_reclaim_child_processes() and ap_relieve_child_processes() about
@@ -128,7 +128,7 @@ AP_DECLARE(void) ap_relieve_child_processes(ap_reclaim_callback_fn_t *mpm_callba
  * ap_reclaim_child_processes(), remove it from the list of such processes
  * by calling ap_unregister_extra_mpm_process().
  */
-AP_DECLARE(void) ap_register_extra_mpm_process(pid_t pid, ap_generation_t gen);
+void ap_register_extra_mpm_process(pid_t pid, ap_generation_t gen);
 
 /**
  * Unregister an MPM child process which was previously registered by a
@@ -138,11 +138,10 @@ AP_DECLARE(void) ap_register_extra_mpm_process(pid_t pid, ap_generation_t gen);
  * @param old_gen Set to the server generation of the process, if found.
  * @return 1 if the process was found and removed, 0 otherwise
  */
-AP_DECLARE(int) ap_unregister_extra_mpm_process(pid_t pid, ap_generation_t *old_gen);
+int ap_unregister_extra_mpm_process(pid_t pid, ap_generation_t *old_gen);
 
 /**
  * Pool cleanup for end-generation hook implementation
- * (core httpd function)
  */
 apr_status_t ap_mpm_end_gen_helper(void *unused);
 
@@ -155,7 +154,7 @@ apr_status_t ap_mpm_end_gen_helper(void *unused);
  * APR_EINVAL is returned if passed either an invalid (< 1) pid, or if
  * the pid is not in the current process group
  */
-AP_DECLARE(apr_status_t) ap_mpm_safe_kill(pid_t pid, int sig);
+apr_status_t ap_mpm_safe_kill(pid_t pid, int sig);
 
 /**
  * Run the monitor hook (once every ten calls), determine if any child
@@ -167,9 +166,8 @@ AP_DECLARE(apr_status_t) ap_mpm_safe_kill(pid_t pid, int sig);
  * @param p The pool to allocate out of
  * @param s The server_rec to pass
  */
-AP_DECLARE(void) ap_wait_or_timeout(apr_exit_why_e *status, int *exitcode,
-                                    apr_proc_t *ret, apr_pool_t *p, 
-                                    server_rec *s);
+void ap_wait_or_timeout(apr_exit_why_e *status, int *exitcode, apr_proc_t *ret,
+                        apr_pool_t *p, server_rec *s);
 
 /**
  * Log why a child died to the error log, if the child died without the
@@ -179,7 +177,7 @@ AP_DECLARE(void) ap_wait_or_timeout(apr_exit_why_e *status, int *exitcode,
  * @param status The status returned from ap_wait_or_timeout
  * @return 0 on success, APEXIT_CHILDFATAL if MPM should terminate
  */
-AP_DECLARE(int) ap_process_child_status(apr_proc_t *pid, apr_exit_why_e why, int status);
+int ap_process_child_status(apr_proc_t *pid, apr_exit_why_e why, int status);
 
 #if defined(TCP_NODELAY)
 /**
@@ -291,14 +289,14 @@ AP_DECLARE(const char *) ap_check_mpm(void);
  * The maximum number of requests each child thread or
  * process handles before dying off
  */
-AP_DECLARE_DATA extern int ap_max_requests_per_child;
+extern int ap_max_requests_per_child;
 const char *ap_mpm_set_max_requests(cmd_parms *cmd, void *dummy,
                                     const char *arg);
 
 /**
  * The filename used to store the process id.
  */
-AP_DECLARE_DATA extern const char *ap_pid_fname;
+extern const char *ap_pid_fname;
 const char *ap_mpm_set_pidfile(cmd_parms *cmd, void *dummy,
                                const char *arg);
 void ap_mpm_dump_pidfile(apr_pool_t *p, apr_file_t *out);
@@ -306,16 +304,16 @@ void ap_mpm_dump_pidfile(apr_pool_t *p, apr_file_t *out);
 /*
  * The directory that the server changes directory to dump core.
  */
-AP_DECLARE_DATA extern char ap_coredump_dir[MAX_STRING_LEN];
-AP_DECLARE_DATA extern int ap_coredumpdir_configured;
+extern char ap_coredump_dir[MAX_STRING_LEN];
+extern int ap_coredumpdir_configured;
 const char *ap_mpm_set_coredumpdir(cmd_parms *cmd, void *dummy,
                                    const char *arg);
 
 /**
  * Set the timeout period for a graceful shutdown.
  */
-AP_DECLARE_DATA extern int ap_graceful_shutdown_timeout;
-AP_DECLARE(const char *)ap_mpm_set_graceful_shutdown(cmd_parms *cmd, void *dummy,
+extern int ap_graceful_shutdown_timeout;
+const char *ap_mpm_set_graceful_shutdown(cmd_parms *cmd, void *dummy,
                                          const char *arg);
 #define AP_GRACEFUL_SHUTDOWN_TIMEOUT_COMMAND \
 AP_INIT_TAKE1("GracefulShutdownTimeout", ap_mpm_set_graceful_shutdown, NULL, \
@@ -326,16 +324,16 @@ AP_INIT_TAKE1("GracefulShutdownTimeout", ap_mpm_set_graceful_shutdown, NULL, \
 int ap_signal_server(int *, apr_pool_t *);
 void ap_mpm_rewrite_args(process_rec *);
 
-AP_DECLARE_DATA extern apr_uint32_t ap_max_mem_free;
+extern AP_DECLARE_DATA apr_uint32_t ap_max_mem_free;
 extern const char *ap_mpm_set_max_mem_free(cmd_parms *cmd, void *dummy,
                                            const char *arg);
 
-AP_DECLARE_DATA extern apr_size_t ap_thread_stacksize;
+extern apr_size_t ap_thread_stacksize;
 extern const char *ap_mpm_set_thread_stacksize(cmd_parms *cmd, void *dummy,
                                                const char *arg);
 
-AP_DECLARE(apr_status_t) ap_fatal_signal_setup(server_rec *s, apr_pool_t *pconf);
-AP_DECLARE(apr_status_t) ap_fatal_signal_child_setup(server_rec *s);
+extern apr_status_t ap_fatal_signal_setup(server_rec *s, apr_pool_t *pconf);
+extern apr_status_t ap_fatal_signal_child_setup(server_rec *s);
 
 /* core's implementation of child_status hook */
 extern void ap_core_child_status(server_rec *s, pid_t pid, ap_generation_t gen,
