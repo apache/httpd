@@ -36,7 +36,7 @@
     must be already properly verified by an authentication module,
     such as <module>mod_auth_basic</module> or
     <module>mod_auth_digest</module>. <module>mod_authz_owner</module>
-    recognizes two arguments for the <directive module="core"
+    recognizes two arguments for the <directive module="mod_authz_core"
     >Require</directive> directive, <code>file-owner</code> and
     <code>file-group</code>, as follows:</p>
 
