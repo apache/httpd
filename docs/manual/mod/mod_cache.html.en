@@ -34,7 +34,7 @@
 
     <div class="warning">This module should be used with care, as when the
     <code class="directive"><a href="#cachequickhandler">CacheQuickHandler</a></code> directive is
-    in its default value of <strong>on</strong>, the <code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code> and <code class="directive"><a href="../mod/mod_authz_host.html#deny">Deny</a></code> directives will be circumvented.
+    in its default value of <strong>on</strong>, the <code class="directive"><a href="../mod/mod_access_compat.html#allow">Allow</a></code> and <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code> directives will be circumvented.
     You should not enable quick handler caching for any content to which you
     wish to limit access by client host name, address or environment
     variable.</div>
