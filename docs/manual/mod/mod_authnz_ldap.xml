@@ -743,7 +743,7 @@ Require group <em>mygroupfile</em>
       type="section">Location</directive> or <directive module="core"
       type="section">Directory</directive> directives won't work. This
       is because <module>mod_authnz_ldap</module> has to be able to grab
-      the <directive module="mod_authn_file">AuthGroupFile</directive>
+      the <directive module="mod_authz_groupfile">AuthGroupFile</directive>
       directive that is found in FrontPage <code>.htaccess</code>
       files so that it knows where to look for the valid user list. If
       the <module>mod_authnz_ldap</module> directives aren't in the same
