@@ -88,11 +88,7 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_proxy_balancer: fix error message implying recovery during a markdown
-    Trunk patch: http://svn.apache.org/viewvc?rev=1299738&view=rev
-    2.4.x patch: trunk works
-    (Was changed in http://svn.apache.org/viewvc?view=revision&revision=962972)
-    +1: covener, jim, trawick
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
