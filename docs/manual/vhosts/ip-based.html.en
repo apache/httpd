@@ -78,7 +78,7 @@ Virtual Hosts</a> to help you decide.  </p>
       <li>There are security partitioning issues, such as company1
       does not want anyone at company2 to be able to read their
       data except via the web. In this case you would need two
-      daemons, each running with different <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code>, <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code>, <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>, and <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> settings.</li>
+      daemons, each running with different <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code>, <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code>, <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>, and <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> settings.</li>
 
       <li>You can afford the memory and file descriptor
       requirements of listening to every IP alias on the

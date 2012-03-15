@@ -94,7 +94,7 @@ to work all the time, because it can suppress useful error messages
 about missing modules.</p>
 
 <p>In the following example, the <directive
-module="mod_mime_magic">MimeMagicFiles</directive> directive will be
+module="mod_mime_magic">MimeMagicFile</directive> directive will be
 applied only if <module>mod_mime_magic</module> is available.</p>
 
 <example>
@@ -247,7 +247,7 @@ certain sections or directives are evaluated. For
 &lt;Location /foo/bar&gt;<br />
 &lt;/Location>
 </example>
-<p><directive type="section" module="core">Alias</directive>es on the other hand,
+<p><directive type="section" module="mod_alias">Alias</directive>es on the other hand,
 are mapped vice-versa:</p>
 <example>
 Alias /foo/bar /srv/www/uncommon/bar<br />
@@ -371,7 +371,7 @@ to all requests regardless of the specific URL.</p>
 <section id="nesting"><title>Nesting of sections</title>
 
 <p>Some section types can be nested inside other section types. One the one
-hand, <directive type="section" module="core">File</directive> can be used
+hand, <directive type="section" module="core">Files</directive> can be used
 inside <directive type="section" module="core">Directory</directive>.  On
 the other hand, <directive type="section" module="core">If</directive> can
 be used inside <directive type="section" module="core">Directory</directive>,
