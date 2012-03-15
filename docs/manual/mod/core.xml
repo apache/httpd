@@ -409,9 +409,9 @@ NoDecode option available in 2.3.12 and later.</compatibility>
 
       <dd>
       Allow use of the directives controlling host access (<directive
-      module="mod_authz_host">Allow</directive>, <directive
-      module="mod_authz_host">Deny</directive> and <directive
-      module="mod_authz_host">Order</directive>).</dd>
+      module="mod_access_compat">Allow</directive>, <directive
+      module="mod_access_compat">Deny</directive> and <directive
+      module="mod_access_compat">Order</directive>).</dd>
 
       <dt>Nonfatal=[Override|Unknown|All]</dt>
 
