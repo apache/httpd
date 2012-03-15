@@ -93,28 +93,35 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
   * mod_slotmem_shm: Support DEFAULT_REL_RUNTIMEDIR for file-based shm.
-   Trunk patch: http://svn.apache.org/viewvc?rev=1297560&view=rev
-   2.4.x patch: Trunk patch works
-   +1:  jim
+    Trunk patch: http://svn.apache.org/viewvc?rev=1297560&view=rev
+    2.4.x patch: Trunk patch works
+    +1:  jim
  
- * core: Add ap_runtime_dir_relative() and DefaultRuntimeDir
-   Trunk patch: http://svn.apache.org/viewvc?rev=1297955&view=rev
+  * core: Add ap_runtime_dir_relative() and DefaultRuntimeDir
+    Trunk patch: http://svn.apache.org/viewvc?rev=1297955&view=rev
                 http://svn.apache.org/viewvc?rev=1297956&view=rev
                 http://svn.apache.org/viewvc?rev=1297959&view=rev
                 http://svn.apache.org/viewvc?rev=1298432&view=rev
-   2.4.x patch: http://people.apache.org/~jim/patches/runtime_dir.patch
-   +1: jim
+    2.4.x patch: http://people.apache.org/~jim/patches/runtime_dir.patch
+    +1: jim
 
   * mod_slotmem_shm: Use ap_runtime_dir_relative(). (Assumes r1297560)
-   Trunk patch: http://svn.apache.org/viewvc?rev=1298433&view=rev
-   2.4.x patch: Trunk patch works (skip docs/log-message-tags/next-number)
-   +1:  jim
+    Trunk patch: http://svn.apache.org/viewvc?rev=1298433&view=rev
+    2.4.x patch: Trunk patch works (skip docs/log-message-tags/next-number)
+    +1:  jim
 
   * mod_proxy_balancer: fix error message implying recovery during a markdown
-   Trunk patch: http://svn.apache.org/viewvc?rev=1299738&view=rev
-   2.4.x patch: trunk works
-   +1: covener (need proxy eyes to review that this was really a typo)
-    
+    Trunk patch: http://svn.apache.org/viewvc?rev=1299738&view=rev
+    2.4.x patch: trunk works
+    (Was changed in http://svn.apache.org/viewvc?view=revision&revision=962972)
+    +1: covener, jim (need proxy eyes to review that this was really a typo)
+
+  * server/mpm_unix.c (dummy_connection): Destroy temp pool and return
+    on connect() failure.
+    Trunk patch: http://svn.apache.org/viewvc?rev=1300171&view=rev
+    2.4.x patch: trunk works
+    +1: 
+
 PATCHES/ISSUES THAT ARE STALLED
 
 
