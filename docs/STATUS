@@ -159,6 +159,10 @@ To Do List
   fixing the problem. However, the error message is already very long.
   Thoughts?
 
+- Error codes
+    Decide how and where to document the error codes (AH****), and then
+    start on doing it.
+
 LaTeX Todo list
 ==================
 
@@ -174,5 +178,8 @@ LaTeX Todo list
 - Reduce the size of the pdf (both bytes and pages) in any way possible.
 
 - Translations.
+
+- https://issues.apache.org/bugzilla/show_bug.cgi?id=45526 Figure out
+  how to fix the underscore problem and regenerate PDF output.
 
 
