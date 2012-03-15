@@ -283,7 +283,7 @@ redirects.</p>
 <h2><a name="flag_f" id="flag_f">F|forbidden</a></h2>
 <p>Using the [F] flag causes the server to return a 403 Forbidden status
 code to the client. While the same behavior can be accomplished using
-the <code class="directive"><a href="../mod/mod_access.html#deny">Deny</a></code> directive, this
+the <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code> directive, this
 allows more flexibility in assigning a Forbidden status.</p>
 
 <p>The following rule will forbid <code>.exe</code> files from being
@@ -519,7 +519,7 @@ The target (or substitution string) in a RewriteRule is assumed to be a
 file path, by default. The use of the [PT] flag causes it to be treated
 as a URI instead. That is to say, the
 use of the [PT] flag causes the result of the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> to be passed back through
-URL mapping, so that location-based mappings, such as <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>, <code class="directive"><a href="../mod/core.html#redirect">Redirect</a></code>, or <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>, for example, might have a
+URL mapping, so that location-based mappings, such as <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>, <code class="directive"><a href="../mod/mod_alias.html#redirect">Redirect</a></code>, or <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>, for example, might have a
 chance to take effect.
 </p>
 

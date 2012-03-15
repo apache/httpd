@@ -79,7 +79,7 @@ ProxyPassReverse / http://old.example.com/
     that any redirects issued by the backend are correctly passed on to
     the client.</p>
 
-    <p>Consider using either <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> or <code class="directive"><a href="../mod/mod_rewrite.html#proxypassmatch">ProxyPassMatch</a></code> whenever possible in
+    <p>Consider using either <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> or <code class="directive"><a href="../mod/mod_proxy.html#proxypassmatch">ProxyPassMatch</a></code> whenever possible in
     preference to mod_rewrite.</p>
     </dd>
   </dl>
