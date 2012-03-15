@@ -150,7 +150,7 @@
     
 
     <p>In typical operation, Apache is started by the root user, and it
-    switches to the user defined by the <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> directive to serve hits. As is the
+    switches to the user defined by the <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> directive to serve hits. As is the
     case with any command that root executes, you must take care that it is
     protected from modification by non-root users. Not only must the files
     themselves be writeable only by root, but so must the directories, and
@@ -296,7 +296,7 @@
   <p>Embedded scripting options which run as part of the server itself,
   such as <code>mod_php</code>, <code>mod_perl</code>, <code>mod_tcl</code>,
   and <code>mod_python</code>, run under the identity of the server itself
-  (see the <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> directive), and
+  (see the <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> directive), and
   therefore scripts executed by these engines potentially can access anything
   the server user can. Some scripting engines may provide restrictions, but
   it is better to be safe and assume not.</p>
