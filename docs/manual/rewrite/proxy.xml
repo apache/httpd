@@ -94,7 +94,7 @@ ProxyPassReverse / http://old.example.com/
 
     <p>Consider using either <directive
     module="mod_proxy">ProxyPass</directive> or <directive
-    module="mod_rewrite">ProxyPassMatch</directive> whenever possible in
+    module="mod_proxy">ProxyPassMatch</directive> whenever possible in
     preference to mod_rewrite.</p>
     </dd>
   </dl>
