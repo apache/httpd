@@ -298,7 +298,7 @@
         almost never be used except on tightly controlled internal
         networks. Apache httpd will not even attempt to determine
         this information unless <directive
-        module="core">IdentityCheck</directive> is set
+        module="mod_ident">IdentityCheck</directive> is set
         to <code>On</code>.</dd>
 
         <dt><code>frank</code> (<code>%u</code>)</dt>
