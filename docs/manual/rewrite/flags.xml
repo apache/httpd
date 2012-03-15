@@ -277,7 +277,7 @@ redirects.</p>
 <section id="flag_f"><title>F|forbidden</title>
 <p>Using the [F] flag causes the server to return a 403 Forbidden status
 code to the client. While the same behavior can be accomplished using
-the <directive module="mod_access">Deny</directive> directive, this
+the <directive module="mod_access_compat">Deny</directive> directive, this
 allows more flexibility in assigning a Forbidden status.</p>
 
 <p>The following rule will forbid <code>.exe</code> files from being
@@ -522,7 +522,7 @@ use of the [PT] flag causes the result of the <directive
 module="mod_rewrite">RewriteRule</directive> to be passed back through
 URL mapping, so that location-based mappings, such as <directive
 module="mod_alias">Alias</directive>, <directive
-module="core">Redirect</directive>, or <directive
+module="mod_alias">Redirect</directive>, or <directive
 module="mod_alias">ScriptAlias</directive>, for example, might have a
 chance to take effect.
 </p>
