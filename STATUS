@@ -88,6 +88,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * mod_proxy_balancer: fix error message implying recovery during a markdown
+    Trunk patch: http://svn.apache.org/viewvc?rev=1299738&view=rev
+    2.4.x patch: trunk works
+    (Was changed in http://svn.apache.org/viewvc?view=revision&revision=962972)
+    +1: covener, jim, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -110,23 +115,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: Trunk patch works (skip docs/log-message-tags/next-number)
     +1:  jim
 
-  * mod_proxy_balancer: fix error message implying recovery during a markdown
-    Trunk patch: http://svn.apache.org/viewvc?rev=1299738&view=rev
-    2.4.x patch: trunk works
-    (Was changed in http://svn.apache.org/viewvc?view=revision&revision=962972)
-    +1: covener, jim
-
   * server/mpm_unix.c (dummy_connection): Destroy temp pool and return
     on connect() failure.
     Trunk patch: http://svn.apache.org/viewvc?rev=1300171&view=rev
     2.4.x patch: trunk works
-    +1: jim
+    +1: jim, trawick (if there is a CHANGES entry added)
 
   * mod_dumpio: Return an error code from a previous input filter
     (likely fixes PR 52914)
     Trunk patch: http://svn.apache.org/viewvc?rev=1301111&view=rev
     2.4.x patch: trunk works
-    +1: covener
+    +1: covener, trawick (if there is a CHANGES entry added)
 
 
 PATCHES/ISSUES THAT ARE STALLED
