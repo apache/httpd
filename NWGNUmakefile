@@ -345,17 +345,20 @@ FILES_lib_objs = \
 else
 
 FILES_lib_objs = \
+	$(OBJDIR)/chartables.o \
 	$(OBJDIR)/pcre_compile.o \
 	$(OBJDIR)/pcre_exec.o \
 	$(OBJDIR)/pcre_fullinfo.o \
 	$(OBJDIR)/pcre_globals.o \
-	$(OBJDIR)/pcre_info.o \
 	$(OBJDIR)/pcre_newline.o \
 	$(OBJDIR)/pcre_tables.o \
-	$(OBJDIR)/pcre_try_flipped.o \
 	$(OBJDIR)/pcre_version.o \
-	$(OBJDIR)/chartables.o \
 	$(EOLIST)
+ifeq "$(wildcard $(PCRE)/pcre_try_flipped.c)" "$(PCRE)/pcre_try_flipped.c"
+FILES_lib_objs += \
+	$(OBJDIR)/pcre_try_flipped.o \
+	$(EOLIST)
+endif 
 
 XDEFINES += -DHAVE_CONFIG_H
 
