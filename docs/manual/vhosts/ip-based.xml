@@ -71,8 +71,8 @@ Virtual Hosts</a> to help you decide.  </p>
       does not want anyone at company2 to be able to read their
       data except via the web. In this case you would need two
       daemons, each running with different <directive
-      module="mpm_common">User</directive>, <directive
-      module="mpm_common">Group</directive>, <directive
+      module="mod_unixd">User</directive>, <directive
+      module="mod_unixd">Group</directive>, <directive
       module="mpm_common">Listen</directive>, and <directive
       module="core">ServerRoot</directive> settings.</li>
 
