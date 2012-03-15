@@ -38,7 +38,6 @@
 <seealso><directive module="mod_authn_core">AuthName</directive></seealso>
 <seealso><directive module="mod_authn_core">AuthType</directive></seealso>
 <seealso><directive module="mod_authz_core">Require</directive></seealso>
-<seealso><directive module="mod_authz_core">Match</directive></seealso>
 <seealso><a href="../howto/auth.html">Authentication howto</a></seealso>
 
 <section id="using"><title>Using Digest Authentication</title>

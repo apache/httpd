@@ -265,7 +265,7 @@
       </p>
 
       <p>One option is to use the <module>mod_include</module> module along with the
-      <directive module="core">KeptBodySize</directive> directive, along with a suitable
+      <directive module="mod_request">KeptBodySize</directive> directive, along with a suitable
       CGI script to embed the variables in the form.</p>
 
       <p>Another option is to render the login form using a CGI script or other dynamic
@@ -529,7 +529,7 @@ lower level modules</description>
     <directive module="mod_auth_form">AuthFormMethod</directive>,
     <directive module="mod_auth_form">AuthFormMimetype</directive> and
     <directive module="mod_auth_form">AuthFormBody</directive>, you probably want to set this
-    field to a similar size as the <directive module="core">KeptBodySize</directive>
+    field to a similar size as the <directive module="mod_request">KeptBodySize</directive>
     directive.</p>
 
 </usage>
