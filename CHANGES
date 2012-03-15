@@ -9,8 +9,6 @@ Changes with Apache 2.5.0
      the current configuration section, not just previous config sections.
      PR52845 [Eric Covener]
 
-  *) Fix MPM DSO load failure on AIX.  [Jeff Trawick]
-
   *) core: Add the port number to the vhost's name in the scoreboard.
      [Stefan Fritsch]
 

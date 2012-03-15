@@ -156,21 +156,14 @@ typedef struct {
 
 typedef struct ap_sb_handle_t ap_sb_handle_t;
 
-/*
- * Creation and deletion (internal)
- */
-int ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e t);
-apr_status_t ap_cleanup_scoreboard(void *d);
-
-/*
- * APIs for MPMs and other modules
- */
 AP_DECLARE(int) ap_exists_scoreboard_image(void);
 AP_DECLARE(void) ap_increment_counts(ap_sb_handle_t *sbh, request_rec *r);
 
-AP_DECLARE(apr_status_t) ap_reopen_scoreboard(apr_pool_t *p, apr_shm_t **shm, int detached);
-AP_DECLARE(void) ap_init_scoreboard(void *shared_score);
+int ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e t);
+apr_status_t ap_reopen_scoreboard(apr_pool_t *p, apr_shm_t **shm, int detached);
+void ap_init_scoreboard(void *shared_score);
 AP_DECLARE(int) ap_calc_scoreboard_size(void);
+apr_status_t ap_cleanup_scoreboard(void *d);
 
 AP_DECLARE(void) ap_create_sb_handle(ap_sb_handle_t **new_sbh, apr_pool_t *p,
                                      int child_num, int thread_num);
