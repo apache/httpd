@@ -835,8 +835,8 @@ own username, instead of anonymously or with hard-coded credentials for the serv
          has no effect when this module is used exclusively for authorization.
      </note>
 </usage>
-<seealso><directive module="mod_authnnz_ldap">AuthLDAPInitialBindPattern</directive></seealso>
-<seealso><directive module="mod_authnnz_ldap">AuthLDAPBindDN</directive></seealso>
+<seealso><directive module="mod_authnz_ldap">AuthLDAPInitialBindPattern</directive></seealso>
+<seealso><directive module="mod_authnz_ldap">AuthLDAPBindDN</directive></seealso>
 <seealso><directive module="mod_authnz_ldap">AuthLDAPCompareAsUser</directive></seealso>
 <seealso><directive module="mod_authnz_ldap">AuthLDAPSearchAsUser</directive></seealso>
 </directivesynopsis>
