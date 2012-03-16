@@ -80,7 +80,7 @@
     <p>(Port numbers specified in the <code>VirtualHost</code> directive do
     not influence what port numbers Apache will listen on, they only control
     which <code>VirtualHost</code> will be selected to handle a request.
-    Use the <directive module="core">Listen</directive> directive to
+    Use the <directive module="mpm_common">Listen</directive> directive to
     control the addresses and ports on which the server listens.)
     </p>
 
@@ -114,14 +114,12 @@
 
     <ol>
       <li>If a vhost has no <directive module="core">ServerAdmin</directive>,
-      <directive module="core">ResourceConfig</directive>,
-      <directive module="core">AccessConfig</directive>,
       <directive module="core">Timeout</directive>,
       <directive module="core">KeepAliveTimeout</directive>,
       <directive module="core">KeepAlive</directive>,
       <directive module="core">MaxKeepAliveRequests</directive>,
-      <directive module="core">ReceiveBufferSize</directive>,
-      or <directive module="core">SendBufferSize</directive>
+      <directive module="mpm_common">ReceiveBufferSize</directive>,
+      or <directive module="mpm_common">SendBufferSize</directive>
       directive then the respective value is inherited from the
       main server. (That is, inherited from whatever the final
       setting of that value is in the main server.)</li>
