@@ -1025,8 +1025,8 @@ own username, instead of anonymously or with hard-coded credentials for the serv
 
 <h3>See also</h3>
 <ul>
-<li><code class="directive"><a href="../mod/mod_authnnz_ldap.html#authldapinitialbindpattern">AuthLDAPInitialBindPattern</a></code></li>
-<li><code class="directive"><a href="../mod/mod_authnnz_ldap.html#authldapbinddn">AuthLDAPBindDN</a></code></li>
+<li><code class="directive"><a href="#authldapinitialbindpattern">AuthLDAPInitialBindPattern</a></code></li>
+<li><code class="directive"><a href="#authldapbinddn">AuthLDAPBindDN</a></code></li>
 <li><code class="directive"><a href="#authldapcompareasuser">AuthLDAPCompareAsUser</a></code></li>
 <li><code class="directive"><a href="#authldapsearchasuser">AuthLDAPSearchAsUser</a></code></li>
 </ul>

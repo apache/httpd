@@ -78,7 +78,7 @@
     <p>(Port numbers specified in the <code>VirtualHost</code> directive do
     not influence what port numbers Apache will listen on, they only control
     which <code>VirtualHost</code> will be selected to handle a request.
-    Use the <code class="directive"><a href="../mod/core.html#listen">Listen</a></code> directive to
+    Use the <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> directive to
     control the addresses and ports on which the server listens.)
     </p>
 
@@ -111,14 +111,12 @@
 
     <ol>
       <li>If a vhost has no <code class="directive"><a href="../mod/core.html#serveradmin">ServerAdmin</a></code>,
-      <code class="directive"><a href="../mod/core.html#resourceconfig">ResourceConfig</a></code>,
-      <code class="directive"><a href="../mod/core.html#accessconfig">AccessConfig</a></code>,
       <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code>,
       <code class="directive"><a href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code>,
       <code class="directive"><a href="../mod/core.html#keepalive">KeepAlive</a></code>,
       <code class="directive"><a href="../mod/core.html#maxkeepaliverequests">MaxKeepAliveRequests</a></code>,
-      <code class="directive"><a href="../mod/core.html#receivebuffersize">ReceiveBufferSize</a></code>,
-      or <code class="directive"><a href="../mod/core.html#sendbuffersize">SendBufferSize</a></code>
+      <code class="directive"><a href="../mod/mpm_common.html#receivebuffersize">ReceiveBufferSize</a></code>,
+      or <code class="directive"><a href="../mod/mpm_common.html#sendbuffersize">SendBufferSize</a></code>
       directive then the respective value is inherited from the
       main server. (That is, inherited from whatever the final
       setting of that value is in the main server.)</li>
