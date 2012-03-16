@@ -33,7 +33,7 @@ URLs on the fly</description>
 
 <summary>
 	<p>The <module>mod_rewrite</module> module uses a rule-based rewriting
-      engine, based on a regular-expression parser, to rewrite requested URLs on
+      engine, based on a PCRE regular-expression parser, to rewrite requested URLs on
       the fly. By default, <module>mod_rewrite</module> maps a URL to a filesystem
       path. However, it can also be used to redirect one URL to another URL, or
       to invoke an internal proxy fetch.</p>
