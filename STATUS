@@ -96,7 +96,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_slotmem_shm: Support DEFAULT_REL_RUNTIMEDIR for file-based shm.
     Trunk patch: http://svn.apache.org/viewvc?rev=1297560&view=rev
     2.4.x patch: Trunk patch works
-    +1:  jim
+    +1:  jim, jorton
  
   * core: Add ap_runtime_dir_relative() and DefaultRuntimeDir
     Trunk patch: http://svn.apache.org/viewvc?rev=1297955&view=rev
@@ -115,7 +115,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     on connect() failure.
     Trunk patch: http://svn.apache.org/viewvc?rev=1300171&view=rev
     2.4.x patch: trunk works
-    +1: jim, trawick (if there is a CHANGES entry added)
+    +1: jim, trawick (if there is a CHANGES entry added), jorton
 
   * mod_dumpio: Return an error code from a previous input filter
     (likely fixes PR 52914)
@@ -126,7 +126,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * core: add r->filename to some errorlog access failed / access denied msgs
     Trunk patch: http://svn.apache.org/viewvc?rev=1301504&view=rev
     2.4.x patch: trunk works
-    +1: covener
+    +1: covener, jorton
 
 
 PATCHES/ISSUES THAT ARE STALLED
