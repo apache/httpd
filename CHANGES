@@ -6,6 +6,9 @@ Changes with Apache 2.4.2
      envvars: Fix insecure handling of LD_LIBRARY_PATH that could lead to the
      current working directory to be searched for DSOs. [Stefan Fritsch]
 
+  *) mod_dumpio: Properly handle errors from subsequent input filters.
+     PR 52914. [Stefan Fritsch]
+
   *) Unix MPMs: Fix small memory leak in parent process if connect()
      failed when waking up children.  [Joe Orton]
 
