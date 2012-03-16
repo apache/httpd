@@ -1558,7 +1558,7 @@ directly</description>
     </dl>
 
     <p>As a degenerate case, a <em>SubNet</em> with 32 valid bits is the
-    equivalent to an <var><a href="#ipadr">IPAddr</a></var>, while a <var>SubNet</var> with zero
+    equivalent to an <var><a href="#ipaddr">IPAddr</a></var>, while a <var>SubNet</var> with zero
     valid bits (<em>e.g.</em>, 0.0.0.0/0) is the same as the constant
     <var>_Default_</var>, matching any IP address.</p></dd>
 
