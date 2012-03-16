@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Add filesystem paths to access denied / access failed messages
+     AH00035 and AH00036. [Eric Covener]
+
   *) core: Add the port number to the vhost's name in the scoreboard.
      [Stefan Fritsch]
 
