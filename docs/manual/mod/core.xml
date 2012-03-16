@@ -3777,6 +3777,13 @@ to name-virtual hosts</description>
       # ...<br />
       &lt;/VirtualHost&gt;
     </example>
+
+    <p>Name-based virtual hosts for the best-matching set of  <directive
+    type="section" module="core">virtualhost</directive>s are processsed
+    in the order they appear in the configuration.  The first matching <directive
+    module="core">ServerName</directive> or <directive module="core"
+    >ServerAlias</directive> is used, with no different precedence for wildcards
+    (nor for ServerName vs. ServerAlias).  </p>
 </usage>
 <seealso><directive module="core">UseCanonicalName</directive></seealso>
 <seealso><a href="../vhosts/">Apache HTTP Server Virtual Host documentation</a></seealso>
