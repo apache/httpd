@@ -192,6 +192,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: Trunk patch works
     +1: sf
 
+  * mod_dumpio: Return an error code from a previous input filter
+    PR 52914
+    Trunk patch: http://svn.apache.org/viewvc?rev=1301111&view=rev
+    2.2.x patch: http://people.apache.org/~sf/PR52914-2.2.diff
+    +1: sf
+
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
