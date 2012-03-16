@@ -94,6 +94,15 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk works
     +1: covener, jorton, trawick
 
+  * mod_dumpio: Return an error code from a previous input filter
+    (likely fixes PR 52914)
+    Trunk patch: http://svn.apache.org/viewvc?rev=1301111&view=rev
+    2.4.x patch: trunk works, plus CHANGES entry:
+       mod_dumpio: Properly handle errors from subsequent input filters.
+       PR 52914. [Stefan Fritsch]
+    +1: covener, trawick, sf
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -114,12 +123,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patch: http://svn.apache.org/viewvc?rev=1298433&view=rev
     2.4.x patch: Trunk patch works (skip docs/log-message-tags/next-number)
     +1:  jim
-
-  * mod_dumpio: Return an error code from a previous input filter
-    (likely fixes PR 52914)
-    Trunk patch: http://svn.apache.org/viewvc?rev=1301111&view=rev
-    2.4.x patch: trunk works
-    +1: covener, trawick (if there is a CHANGES entry added)
 
 
 PATCHES/ISSUES THAT ARE STALLED
