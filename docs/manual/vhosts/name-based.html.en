@@ -118,7 +118,7 @@
         <span class="indent">
             # This first-listed virtual host is also the default for *:80
             ServerName www.example.com<br />
-            ServerAlias example.com *.example.com<br />
+            ServerAlias example.com <br />
             DocumentRoot /www/domain<br />
         </span>
         &lt;/VirtualHost&gt;<br />
@@ -152,6 +152,10 @@
     Of course, you can't just make up names and place them in <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> or <code>ServerAlias</code>. You must
     first have your DNS server properly configured to map those names to an IP
     address associated with your server.</p>
+
+    <p>Name-based virtual hosts for the best-matching set of  <code class="directive"><a href="../mod/core.html#virtualhost">&lt;virtualhost&gt;</a></code>s are processsed 
+    in the order they appear in the configuration.  The first matching <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> or <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code> is used, with no different precedence for wildcards
+    (nor for ServerName vs. ServerAlias).  </p>
 
     <p>Finally, you can fine-tune the configuration of the virtual hosts
     by placing other directives inside the <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> containers. Most directives can be
