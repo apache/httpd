@@ -76,7 +76,7 @@ installed.  It should not be used to enclose directives that you want
 to work all the time, because it can suppress useful error messages
 about missing modules.</p>
 
-<p>In the following example, the <code class="directive"><a href="./mod/mod_mime_magic.html#mimemagicfiles">MimeMagicFiles</a></code> directive will be
+<p>In the following example, the <code class="directive"><a href="./mod/mod_mime_magic.html#mimemagicfile">MimeMagicFile</a></code> directive will be
 applied only if <code class="module"><a href="./mod/mod_mime_magic.html">mod_mime_magic</a></code> is available.</p>
 
 <div class="example"><p><code>

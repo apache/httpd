@@ -212,7 +212,7 @@ error. See above for a method of avoiding this.</div>
     conditions with some configurations.</p> 
 
     <p>Care has been taken to ensure that on-disk files
-    such as the <code class="directive"><a href="./mod/core.html#lockfile">Lockfile</a></code> and <code class="directive"><a href="./mod/mod_cgid.html#scriptsock">ScriptSock</a></code> files contain the server
+    such as the <code class="directive"><a href="./mod/mpm_common.html#lockfile">Lockfile</a></code> and <code class="directive"><a href="./mod/mod_cgid.html#scriptsock">ScriptSock</a></code> files contain the server
     PID, and should coexist without problem. However, if a configuration
     directive, third-party module or persistent CGI utilises any other on-disk 
     lock or  state files, care should be taken to ensure that multiple running 
