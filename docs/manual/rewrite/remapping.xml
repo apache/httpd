@@ -249,7 +249,7 @@ RewriteRule ^(.*).html$ $1.php<br />
     &lt;Directory&gt; block or in a .htaccess file), so that the
     <code>-f</code> checks are looking at the correct directory path.
     You may need to set a <directive
-    module="mod_rewite">RewriteBase</directive> directive to specify the
+    module="mod_rewrite">RewriteBase</directive> directive to specify the
     directory base that you're working in.</p>
     </dd>
   </dl>
@@ -275,7 +275,7 @@ RewriteRule ^(.*).html$ $1.php<br />
         <dd>
 
 <p>The very best way to solve this doesn't involve mod_rewrite at all,
-but rather uses the <directive module="alias">Redirect</directive>
+but rather uses the <directive module="mod_alias">Redirect</directive>
 directive placed in a virtual host for the non-canonical
 hostname(s).</p>
 

@@ -215,7 +215,7 @@ error. See above for a method of avoiding this.</note>
     conditions with some configurations.</p> 
 
     <p>Care has been taken to ensure that on-disk files
-    such as the <directive module="core">Lockfile</directive> and <directive 
+    such as the <directive module="mpm_common">Lockfile</directive> and <directive 
     module="mod_cgid">ScriptSock</directive> files contain the server
     PID, and should coexist without problem. However, if a configuration
     directive, third-party module or persistent CGI utilises any other on-disk 
