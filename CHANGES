@@ -14,15 +14,15 @@ Changes with Apache 2.4.2
 
   *) "DirectoryIndex disabled" now undoes DirectoryIndex settings in
      the current configuration section, not just previous config sections.
-     PR52845 [Eric Covener]
+     PR 52845. [Eric Covener]
 
   *) mod_xml2enc: Fix broken handling of EOS buckets which could lead to
      response headers not being sent. PR 52766. [Stefan Fritsch]
 
-  *) mod_ssl: Properly free the GENERAL_NAMEs. PR 32652.
+  *) mod_ssl: Properly free the GENERAL_NAMEs. PR 32652. [Kaspar Brand]
 
   *) core: Check during config test that directories for the access
-     logs actually exist. PR 29941.
+     logs actually exist. PR 29941. [Stefan Fritsch]
 
   *) mod_xml2enc, mod_proxy_html: Enable per-module loglevels.
      [Stefan Fritsch]
