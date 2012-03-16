@@ -1,14 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) SECURITY: CVE-2012-0883 (cve.mitre.org)
-     envvars: Fix insecure handling of LD_LIBRARY_PATH that could lead to the
-     current working directory to be searched for DSOs. [Stefan Fritsch]
-
-  *) "DirectoryIndex disabled" now undoes DirectoryIndex settings in
-     the current configuration section, not just previous config sections.
-     PR52845 [Eric Covener]
-
   *) core: Add the port number to the vhost's name in the scoreboard.
      [Stefan Fritsch]
 
