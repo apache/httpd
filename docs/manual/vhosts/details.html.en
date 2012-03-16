@@ -181,8 +181,8 @@
       <code class="directive"><a href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code>,
       <code class="directive"><a href="../mod/core.html#keepalive">KeepAlive</a></code>,
       <code class="directive"><a href="../mod/core.html#maxkeepaliverequests">MaxKeepAliveRequests</a></code>,
-      <code class="directive"><a href="../mod/core.html#receivebuffersize">ReceiveBufferSize</a></code>,
-      or <code class="directive"><a href="../mod/core.html#sendbuffersize">SendBufferSize</a></code>
+      <code class="directive"><a href="../mod/mpm_common.html#receivebuffersize">ReceiveBufferSize</a></code>,
+      or <code class="directive"><a href="../mod/mpm_common.html#sendbuffersize">SendBufferSize</a></code>
       directive then the respective value is inherited from the
       main_server. (That is, inherited from whatever the final
       setting of that value is in the main_server.)</li>
