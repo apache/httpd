@@ -82,7 +82,7 @@ void ap_lua_rstack_dump(lua_State *L, request_rec *r, const char *msg)
             }
         default:{
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
-                              "%d:  unkown: -[%s]-", i, lua_typename(L, i));
+                              "%d:  unknown: -[%s]-", i, lua_typename(L, i));
                 break;
             }
         }

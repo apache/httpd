@@ -84,7 +84,7 @@ static void pstack_dump(lua_State *L, apr_pool_t *r, int level,
             }
         default:{
                 ap_log_perror(APLOG_MARK, level, 0, r,
-                              "%d:  unkown: [%s]", i, lua_typename(L, i));
+                              "%d:  unknown: [%s]", i, lua_typename(L, i));
                 break;
             }
         }
