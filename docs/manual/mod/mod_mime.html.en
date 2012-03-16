@@ -514,9 +514,9 @@ later.</td></tr>
     them.</p>
 
     <p>Note that when defining a set of filters using the
-    <code class="directive"><a href="#addouputfilter">AddOuputFilter</a></code> directive,
+    <code class="directive"><a href="#addoutputfilter">AddOutputFilter</a></code> directive,
     any definition made will replace any previous definition made by
-    the <code class="directive"><a href="#addouputfilter">AddOuputFilter</a></code>
+    the <code class="directive"><a href="#addoutputfilter">AddOutputFilter</a></code>
     directive.</p>
 
     <div class="example"><p><code>
