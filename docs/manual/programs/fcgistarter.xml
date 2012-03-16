@@ -27,11 +27,13 @@
 
 <summary>
     <p></p>
-    <note><title>Note</title>
-      <p>Currently only works on Unix systems.</p>
-    </note>
 </summary>
+
 <seealso><module>mod_proxy_fcgi</module></seealso>
+
+<section id="note"><title>Note</title>
+      <p>Currently only works on Unix systems.</p>
+</section>
 
 <section id="synopsis"><title>Synopsis</title>
     <p><code><strong>fcgistarter</strong>
