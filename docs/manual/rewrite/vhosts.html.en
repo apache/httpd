@@ -106,7 +106,7 @@ dynamic content, and Alias resolution.
     Virtual Hosts Using <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></a></h2>
 
     <p>This extract from <code>httpd.conf</code> does the same
-    thing as <a href="#simple">the first example</a>. The first
+    thing as <a href="#per-hostname">the first example</a>. The first
     half is very similar to the corresponding part above, except for
     some changes, required for backward compatibility and to make the
     <code>mod_rewrite</code> part work properly; the second half
