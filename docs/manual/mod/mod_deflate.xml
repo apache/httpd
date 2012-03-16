@@ -145,7 +145,7 @@ client</description>
       </note>
       <note><title>Note</title>
         There is a environment variable <code>force-gzip</code>,
-        set via <directive module="core">SetEnv</directive>, which
+        set via <directive module="mod_env">SetEnv</directive>, which
         will ignore the accept-encoding setting of your browser and will
         send compressed output.
       </note>
