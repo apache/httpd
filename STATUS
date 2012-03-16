@@ -123,6 +123,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk works
     +1: covener, trawick (if there is a CHANGES entry added)
 
+  * core: add r->filename to some errorlog access failed / access denied msgs
+    Trunk patch: http://svn.apache.org/viewvc?rev=1301504&view=rev
+    2.4.x patch: trunk works
+    +1: covener
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
