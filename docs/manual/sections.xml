@@ -93,7 +93,7 @@ to work all the time, because it can suppress useful error messages
 about missing modules.</p>
 
 <p>In the following example, the <directive
-module="mod_mime_magic">MimeMagicFiles</directive> directive will be
+module="mod_mime_magic">MimeMagicFile</directive> directive will be
 applied only if <module>mod_mime_magic</module> is available.</p>
 
 <example>

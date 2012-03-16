@@ -177,8 +177,8 @@
       <directive module="core">KeepAliveTimeout</directive>,
       <directive module="core">KeepAlive</directive>,
       <directive module="core">MaxKeepAliveRequests</directive>,
-      <directive module="core">ReceiveBufferSize</directive>,
-      or <directive module="core">SendBufferSize</directive>
+      <directive module="mpm_common">ReceiveBufferSize</directive>,
+      or <directive module="mpm_common">SendBufferSize</directive>
       directive then the respective value is inherited from the
       main_server. (That is, inherited from whatever the final
       setting of that value is in the main_server.)</li>
