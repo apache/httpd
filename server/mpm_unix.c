@@ -569,6 +569,8 @@ static apr_status_t dummy_connection(ap_pod_t *pod)
 
         ap_log_error(APLOG_MARK, log_level, rv, ap_server_conf, APLOGNO(00056)
                      "connect to listener on %pI", lp->bind_addr);
+        apr_pool_destroy(p);
+        return rv;
     }
 
     /* Create the request string. We include a User-Agent so that
