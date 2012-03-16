@@ -509,9 +509,9 @@ later.</compatibility>
     them.</p>
 
     <p>Note that when defining a set of filters using the
-    <directive module="mod_mime">AddOuputFilter</directive> directive,
+    <directive module="mod_mime">AddOutputFilter</directive> directive,
     any definition made will replace any previous definition made by
-    the <directive module="mod_mime">AddOuputFilter</directive>
+    the <directive module="mod_mime">AddOutputFilter</directive>
     directive.</p>
 
     <example>
