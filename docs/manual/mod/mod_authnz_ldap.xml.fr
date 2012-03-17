@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1001307:1301745 (outdated) -->
+<!-- English Revision : 1301745 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -708,7 +708,7 @@ Require group <em>mon-fichier-de-groupes</em>
       o&ugrave; se trouve la liste des utilisateurs valides,
       <module>mod_authnz_ldap</module> doit &ecirc;tre en mesure d'atteindre
       la directive <directive
-      module="mod_authn_file">AuthGroupFile</directive> qui se trouve
+      module="mod_authz_groupfile">AuthGroupFile</directive> qui se trouve
       dans les fichiers <code>.htaccess</code> de FrontPage. Si les directives
       de <module>mod_authnz_ldap</module> ne sont pas situ&eacute;es dans le
       m&ecirc;me fichier <code>.htaccess</code> que les directives FrontPage,
@@ -1036,7 +1036,7 @@ ldap2.example.com/dc=..."</example>
 	  v&eacute;ritable recherche de type round-robin.</p>
         </dd>
 
-<dt>DN-de-</dt>
+<dt>DN-de-base</dt>
 
         <dd>Le DN de la branche de l'annuaire &agrave; partir de laquelle
 	toutes les recherches seront lanc&eacute;es. Il doit au moins
