@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1297959:1301398 (outdated) -->
+<!-- English Revision : 1301398 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -387,7 +387,7 @@ All pour les versions ant&eacute;rieures</default>
       <dd>
 
       Permet l'utilisation des directives d'autorisation (<directive
-      module="mod_authn_dbm">AuthDBMGroupFile</directive>,
+      module="mod_authz_dbm">AuthDBMGroupFile</directive>,
       <directive module="mod_authn_dbm">AuthDBMUserFile</directive>,
       <directive module="mod_authz_groupfile">AuthGroupFile</directive>,
       <directive module="mod_authn_core">AuthName</directive>,
@@ -438,8 +438,9 @@ All pour les versions ant&eacute;rieures</default>
       module="mod_autoindex">AddIconByEncoding</directive>,
       <directive module="mod_autoindex">AddIconByType</directive>,
       <directive module="mod_autoindex">DefaultIcon</directive>, <directive
-      module="mod_dir">DirectoryIndex</directive>, <directive
-      module="mod_autoindex">FancyIndexing</directive>, <directive
+      module="mod_dir">DirectoryIndex</directive>, <a
+      href="mod_autoindex.html#indexoptions.fancyindexing"><code>FancyIndexing</code></a>,
+      <directive
       module="mod_autoindex">HeaderName</directive>, <directive
       module="mod_autoindex">IndexIgnore</directive>, <directive
       module="mod_autoindex">IndexOptions</directive>, <directive
@@ -451,9 +452,9 @@ All pour les versions ant&eacute;rieures</default>
       <dd>
       Permet l'utilisation des directives contr&ocirc;lant l'acc&egrave;s au serveur
       (<directive
-      module="mod_authz_host">Allow</directive>, <directive
-      module="mod_authz_host">Deny</directive> et <directive
-      module="mod_authz_host">Order</directive>).</dd>
+      module="mod_access_compat">Allow</directive>, <directive
+      module="mod_access_compat">Deny</directive> et <directive
+      module="mod_access_compat">Order</directive>).</dd>
 
       <dt>Nonfatal=[Override|Unknown|All]</dt>
 
@@ -4137,6 +4138,15 @@ serveurs virtuels &agrave; base de nom</description>
       # ...<br />
       &lt;/VirtualHost&gt;
     </example>
+    <p>La recherche du serveur virtuel &agrave; base de nom correspondant au
+    plus pr&egrave;s &agrave; la requ&ecirc;te s'effectue selon l'ordre d'apparition des
+    directives <directive type="section"
+    module="core">virtualhost</directive> dans le fichier de
+    configuration. Le premier serveur virtuel dont le <directive
+    module="core">ServerName</directive> ou le <directive
+    module="core">ServerAlias</directive> correspond est choisi, sans
+    priorit&eacute; particuli&egrave;re si le nom contient des caract&egrave;res g&eacute;n&eacute;riques
+    (que ce soit pour ServerName ou ServerAlias).</p>
 </usage>
 <seealso><directive module="core">UseCanonicalName</directive></seealso>
 <seealso><a href="../vhosts/">Documentation sur les serveurs virtuels

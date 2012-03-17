@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1174747:1300876 (outdated) -->
+<!-- English Revision : 1300876 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -157,7 +157,7 @@ client</description>
       <note><title>Note</title>
         La variable d'environnement <code>force-gzip</code>, d&eacute;finie &agrave;
 	l'aide de la directive <directive
-	module="core">SetEnv</directive>, permet d'ignorer la
+	module="mod_env">SetEnv</directive>, permet d'ignorer la
 	configuration de votre navigateur quant aux codages accept&eacute;s, et
 	d'envoyer sans condition une sortie comprim&eacute;e.
       </note>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1295291:1300892 (outdated) -->
+<!-- English Revision : 1300892 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -35,8 +35,8 @@
     car lorsque la directive <directive
     module="mod_cache">CacheQuickHandler</directive> est d&eacute;finie &agrave; sa
     valeur par d&eacute;faut <strong>on</strong>, les directives <directive
-    module="mod_authz_host">Allow</directive> and <directive
-    module="mod_authz_host">Deny</directive> sont court-circuit&eacute;es. Vous
+    module="mod_access_compat">Allow</directive> and <directive
+    module="mod_access_compat">Deny</directive> sont court-circuit&eacute;es. Vous
     ne devez donc pas activer la gestion rapide de la mise en cache pour
     un contenu auquel vous souhaitez limiter l'acc&egrave;s en fonction du nom
     d'h&ocirc;te du client, de l'adresse IP ou d'une variable

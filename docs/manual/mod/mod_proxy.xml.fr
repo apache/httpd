@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1242351 -->
+<!-- English Revision : 1301743 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1760,7 +1760,7 @@ directement</description>
 
     <p>Comme cas extr&ecirc;mes, un <em>Sous-r&eacute;seau</em> avec un masque de
     sous-r&eacute;seau de 32 bits significatifs est &eacute;quivalent &agrave; une <var><a
-    href="#ipadr">adresse IP</a></var>, alors qu'un <em>Sous-r&eacute;seau</em> avec un masque de
+    href="#ipaddr">adresse IP</a></var>, alors qu'un <em>Sous-r&eacute;seau</em> avec un masque de
     sous-r&eacute;seau de 0 bit significatif (c'est &agrave; dire 0.0.0.0/0) est
     identique &agrave; la constante <var>_Default_</var>, et peut correspondre
     &agrave; toute adresse IP.</p></dd>

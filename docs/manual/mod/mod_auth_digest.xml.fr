@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1174747:1300935 (outdated) -->
+<!-- English Revision : 1300935 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -42,7 +42,6 @@ MD5</description>
 <seealso><directive module="mod_authn_core">AuthName</directive></seealso>
 <seealso><directive module="mod_authn_core">AuthType</directive></seealso>
 <seealso><directive module="mod_authz_core">Require</directive></seealso>
-<seealso><directive module="mod_authz_core">Match</directive></seealso>
 <seealso><a href="../howto/auth.html">Mode d'emploi de
 l'authentification</a></seealso>
 
