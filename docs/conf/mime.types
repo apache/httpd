@@ -263,6 +263,7 @@ application/vnd.accpac.simply.imp		imp
 application/vnd.acucobol			acu
 application/vnd.acucorp				atc acutc
 application/vnd.adobe.air-application-installer-package+zip	air
+application/vnd.adobe.formscentral.fcdt		fcdt
 application/vnd.adobe.fxp			fxp fxpl
 # application/vnd.adobe.partial-upload
 application/vnd.adobe.xdp+xml			xdp
@@ -327,6 +328,7 @@ application/vnd.cups-ppd			ppd
 application/vnd.curl.car			car
 application/vnd.curl.pcurl			pcurl
 # application/vnd.cybank
+application/vnd.dart				dart
 application/vnd.data-vision.rdz			rdz
 application/vnd.dece.data			uvf uvvf uvd uvvd
 application/vnd.dece.ttml+xml			uvt uvvt
@@ -476,6 +478,7 @@ application/vnd.immervision-ivu			ivu
 # application/vnd.informix-visionary
 # application/vnd.infotech.project
 # application/vnd.infotech.project+xml
+# application/vnd.innopath.wamp.notification
 application/vnd.insors.igm			igm
 application/vnd.intercon.formnet		xpw xpx
 application/vnd.intergeo			i2g
@@ -486,7 +489,9 @@ application/vnd.intu.qfx			qfx
 # application/vnd.iptc.g2.conceptitem+xml
 # application/vnd.iptc.g2.knowledgeitem+xml
 # application/vnd.iptc.g2.newsitem+xml
+# application/vnd.iptc.g2.newsmessage+xml
 # application/vnd.iptc.g2.packageitem+xml
+# application/vnd.iptc.g2.planningitem+xml
 application/vnd.ipunplugged.rcprofile		rcprofile
 application/vnd.irepository.package+xml		irp
 application/vnd.is-xpr				xpr
@@ -609,6 +614,7 @@ application/vnd.mynfc				taglet
 # application/vnd.nervana
 # application/vnd.netfpx
 application/vnd.neurolanguage.nlu		nlu
+application/vnd.nitf				ntf nitf
 application/vnd.noblenet-directory		nnd
 application/vnd.noblenet-sealer			nns
 application/vnd.noblenet-web			nnw
@@ -783,6 +789,7 @@ application/vnd.openxmlformats-officedocument.wordprocessingml.template	dotx
 application/vnd.osgeo.mapguide.package		mgp
 # application/vnd.osgi.bundle
 application/vnd.osgi.dp				dp
+application/vnd.osgi.subsystem			esa
 # application/vnd.otps.ct-kip+xml
 application/vnd.palm				pdb pqa oprc
 # application/vnd.paos.xml
@@ -834,6 +841,7 @@ application/vnd.rig.cryptonote			cryptonote
 application/vnd.rim.cod				cod
 application/vnd.rn-realmedia			rm
 application/vnd.route66.link66+xml		link66
+# application/vnd.rs-274x
 # application/vnd.ruckus.download
 # application/vnd.s3sms
 application/vnd.sailingtracker.track		st
@@ -1212,7 +1220,7 @@ audio/vnd.digital-winds				eol
 audio/vnd.dra					dra
 audio/vnd.dts					dts
 audio/vnd.dts.hd				dtshd
-# audio/vnd.dvb.file				dvb
+# audio/vnd.dvb.file
 # audio/vnd.everad.plj
 # audio/vnd.hns.audio
 audio/vnd.lucent.voice				lvp
