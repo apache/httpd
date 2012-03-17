@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1297835:1301578 (outdated) -->
+<!-- English Revision : 1301578 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -37,7 +37,7 @@ r&egrave;gles permettant de r&eacute;&eacute;crire les URLs des requ&ecirc;tes
 <summary>
       <p>Le module <module>mod_rewrite</module> utilise un moteur de
       r&eacute;&eacute;criture &agrave; base de r&egrave;gles, bas&eacute; sur un interpr&eacute;teur
-      d'expressions rationnelles, pour r&eacute;&eacute;crire les URLs &agrave; la vol&eacute;e. Par
+      d'expressions rationnelles PCRE, pour r&eacute;&eacute;crire les URLs &agrave; la vol&eacute;e. Par
       d&eacute;faut, <module>mod_rewrite</module> met en correspondance une URL
       avec le syst&egrave;me de fichiers. Cependant, on peut aussi l'utiliser
       pour rediriger une URL vers une autre URL, ou pour invoquer une

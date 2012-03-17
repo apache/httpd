@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1202456:1301732 (outdated) -->
+<!-- English Revision : 1301732 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -826,7 +826,7 @@ Require group <em>mon-fichier-de-groupes</em>
       où se trouve la liste des utilisateurs valides,
       <module>mod_authnz_ldap</module> doit être en mesure d'atteindre
       la directive <directive
-      module="mod_authn_file">AuthGroupFile</directive> qui se trouve
+      module="mod_authz_groupfile">AuthGroupFile</directive> qui se trouve
       dans les fichiers <code>.htaccess</code> de FrontPage. Si les directives
       de <module>mod_authnz_ldap</module> ne sont pas situées dans le
       même fichier <code>.htaccess</code> que les directives FrontPage,
