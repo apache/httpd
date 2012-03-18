@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1226477:1300910 (outdated) -->
+<!-- English Revision : 1300910 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -100,7 +100,7 @@ syst&eacute;matiquement, car vous pouvez perdre ainsi de pr&eacute;cieux message
 &agrave; propos de modules manquants.</p>
 
 <p>Dans l'exemple suivant, la directive <directive
-module="mod_mime_magic">MimeMagicFiles</directive> ne s'appliquera que si le
+module="mod_mime_magic">MimeMagicFile</directive> ne s'appliquera que si le
 module <module>mod_mime_magic</module> est disponible.</p>
 
 <example>
@@ -267,7 +267,7 @@ avoir :</p>
 &lt;/Location>
 </example>
 <p>Les directives <directive type="section"
-module="core">Alias</directive>, quant &agrave; elles, sont &eacute;valu&eacute;es vice-versa :</p>
+module="mod_alias">Alias</directive>, quant &agrave; elles, sont &eacute;valu&eacute;es vice-versa :</p>
 <example>
 Alias /foo/bar /srv/www/uncommon/bar<br />
 Alias /foo /srv/www/common/foo<br />
@@ -407,7 +407,7 @@ toutes les requ&ecirc;tes sans tenir compte de l'URL sp&eacute;cifique.</p>
 
 <p>Certains types de sections peuvent &ecirc;tre imbriqu&eacute;s : d'une part, on
 peut utiliser les sections <directive type="section"
-module="core">File</directive> &agrave; l'int&eacute;rieur des sections <directive
+module="core">Files</directive> &agrave; l'int&eacute;rieur des sections <directive
 type="section" module="core">Directory</directive>, d'autre part, on
 peut utiliser les
 directives <directive type="section" module="core">If</directive> &agrave;

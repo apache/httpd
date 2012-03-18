@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1179266:1300917 (outdated) -->
+<!-- English Revision : 1300917 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -295,7 +295,7 @@ redirection externe.</p>
 <section id="flag_f"><title>F|forbidden</title>
 <p>L'utilisation du drapeau [F] permet de faire envoyer par le serveur au
 client un code de statut "403 Forbidden". Le m&ecirc;me effet peut &ecirc;tre obtenu &agrave;
-l'aide de la directive <directive module="mod_access">Deny</directive>,
+l'aide de la directive <directive module="mod_access_compat">Deny</directive>,
 mais ce drapeau offre plus de souplesse dans l'attribution d'un statut
 Forbidden.</p>
 
@@ -328,7 +328,7 @@ disponible auparavant ne l'est plus actuellement.</p>
 RewriteRule ancienne-ressource - [G,NC]
 </example>
 
-<p>Lorsqu'on utilise [F], [L] est implicite - c'est &agrave; dire que la
+<p>Lorsqu'on utilise [G], [L] est implicite - c'est &agrave; dire que la
 r&eacute;ponse est renvoy&eacute;e imm&eacute;diatement, et aucune autre r&egrave;gle n'est &eacute;valu&eacute;e.</p>
 
 </section>
@@ -563,7 +563,7 @@ syst&egrave;me de mise en correspondance des URLs avec le syst&egrave;me de fich
 de fa&ccedil;on &agrave; ce que les syst&egrave;mes de mise en correspondance bas&eacute;s sur les
 chemins de fichiers, comme la directive <directive
 module="mod_alias">Alias</directive>, <directive
-module="core">Redirect</directive>, ou <directive
+module="mod_alias">Redirect</directive>, ou <directive
 module="mod_alias">ScriptAlias</directive>, par exemple, puissent avoir une
 chance d'accomplir leur t&acirc;che.
 </p>
