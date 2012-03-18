@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1040809:1301748 (outdated) -->
+<!-- English Revision : 1301748 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -99,7 +99,7 @@ syst&eacute;matiquement, car vous pouvez perdre ainsi de pr&eacute;cieux message
 &agrave; propos de modules manquants.</p>
 
 <p>Dans l'exemple suivant, la directive <directive
-module="mod_mime_magic">MimeMagicFiles</directive> ne s'appliquera que si le
+module="mod_mime_magic">MimeMagicFile</directive> ne s'appliquera que si le
 module <module>mod_mime_magic</module> est disponible.</p>
 
 <example>
