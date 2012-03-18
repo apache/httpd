@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1028764:1301745 (outdated) -->
+<!-- English Revision : 1301745 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 <!-- $LastChangedRevision: 2010110801 $ -->
@@ -257,7 +257,7 @@
 	tr&egrave;s peu fiable et ne devrait jamais &ecirc;tre utilis&eacute;e, sauf dans le cas
 	de r&eacute;seaux internes &eacute;troitement contr&ocirc;l&eacute;s. Le d&eacute;mon httpd ne cherchera
 	d'ailleurs &agrave; obtenir cette information que si la directive
-	<directive module="core">IdentityCheck</directive> est positionn&eacute;e
+	<directive module="mod_ident">IdentityCheck</directive> est positionn&eacute;e
 	&agrave; <code>On</code>.</dd>
 
         <dt><code>frank</code> (<code>%u</code>)</dt>

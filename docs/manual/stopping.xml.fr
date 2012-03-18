@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 420990:1301748 (outdated) -->
+<!-- English Revision : 1301748 -->
 <!-- French translation : Lucien GENTIS -->
+<!-- $LastChangedRevision: 2012031801 $ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -245,10 +246,9 @@ pour &eacute;viter ce probl&egrave;me.</note>
 
     <p>On a pris soin de s'assurer que les fichiers sur disque
     comme ceux d&eacute;finis par les directives
-    <directive module="core">Lockfile</directive> et
+    <directive module="mpm_common">Lockfile</directive> et
     <directive  module="mod_cgid">ScriptSock</directive> contiennent le PID
-    du serveur dans leurs noms donc ils coexistent sans probl&egrave;me.
-    Cependant, si une directive de
+    du serveur,et coexistent sans probl&egrave;me. Cependant, si une directive de
     configuration , un module tiers ou une CGI r&eacute;sidente utilise un autre
     verrou ou fichier d'&eacute;tat sur disque, il faut prendre soin de s'assurer
     que chaque instance de <program>httpd</program> qui s'ex&eacute;cute
