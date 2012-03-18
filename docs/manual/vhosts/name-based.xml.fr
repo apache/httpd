@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1174747:1301398 (outdated) -->
+<!-- English Revision: 1301398 -->
 <!-- French translation by alain B, review by Vincent Deffontaines 
 	updated by Lucien GENTIS -->
 
@@ -160,7 +160,7 @@ virtuel basé sur le nom approprié</title>
             # Le premier serveur virtuel de la liste est aussi le
 	    # serveur par défaut pour *:80
             ServerName www.example.com<br />
-            ServerAlias example.com *.example.com<br />
+            ServerAlias example.com <br />
             DocumentRoot /www/domain<br />
         </indent>
         &lt;/VirtualHost&gt;<br />
@@ -203,6 +203,16 @@ virtuel basé sur le nom approprié</title>
     ou <code>ServerAlias</code>. Tout d'abord, votre serveur DNS 
     doit être correctement configuré pour lier ces noms à une 
     adresse IP associée avec votre serveur.</p>
+
+    <p>La recherche du serveur virtuel à base de nom qui correspond au
+    plus près à la requête s'effectue parmi les <directive
+    type="section" module="core">virtualhost</directive> selon leur
+    ordre d'apparition dans le fichier de configuration. Le premier
+    serveur virtuel dont le <directive
+    module="core">ServerName</directive> ou le <directive
+    module="core">ServerAlias</directive> correspond est utilisé, sans
+    priorité particulière en cas de présence de caractères génériques
+    (que ce soit pour le ServerName ou le ServerAlias).</p>
 
     <p>Finalement, vous pouvez affiner la configuration des serveurs 
     virtuels en plaçant d'autres directives à l'intérieur des sections 

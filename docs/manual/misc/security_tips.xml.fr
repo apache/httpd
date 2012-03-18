@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1226477:1300924 (outdated) -->
+<!-- English revision : 1300924 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -153,7 +153,7 @@
 
     <p>Typiquement, Apache est d&eacute;marr&eacute; par l'utilisateur root, puis il devient
     la propri&eacute;t&eacute; de l'utilisateur d&eacute;fini par la directive <directive
-    module="mpm_common">User</directive> afin de r&eacute;pondre aux demandes. Comme
+    module="mod_unixd">User</directive> afin de r&eacute;pondre aux demandes. Comme
     pour toutes les commandes ex&eacute;cut&eacute;es par root, vous devez vous assurer
     qu'elle n'est pas modifiable par les utilisateurs autres que root. Les
     fichiers eux-m&ecirc;mes, mais aussi les r&eacute;pertoires ainsi que leurs parents ne
@@ -317,7 +317,7 @@
   serveur lui-m&ecirc;me, comme <code>mod_php</code>, <code>mod_perl</code>,
   <code>mod_tcl</code>, et <code>mod_python</code>,
   s'ex&eacute;cutent sous le m&ecirc;me utilisateur que le serveur (voir la directive
-  <directive module="mpm_common">User</directive>), et par cons&eacute;quent,
+  <directive module="mod_unixd">User</directive>), et par cons&eacute;quent,
   les scripts que ces moteurs ex&eacute;cutent peuvent acc&eacute;der aux m&ecirc;mes ressources
   que le serveur. Certains moteurs de scripting peuvent proposer des
   restrictions, mais pour plus de s&ucirc;ret&eacute;, il vaut mieux partir du principe

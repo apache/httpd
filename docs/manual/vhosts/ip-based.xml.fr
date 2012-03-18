@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- English Revision: 1174747:1300910 (outdated) -->
+<!-- English Revision : 1300910 -->
 <!-- French translation by alain B, review by Vincent Deffontaines -->
 <!-- Updated by Lucien Gentis -->
 
@@ -62,8 +62,8 @@
       qu'une entreprise1 ne souhaite que personne d'une entreprise2
       ne puisse lire ses données excepté via le Web. Dans ce cas,
       vous aurez besoin de deux processus résidents, chacun fonctionnant
-      avec des paramètres <directive module="mpm_common">User</directive>,
-      <directive module="mpm_common">Group</directive>,
+      avec des paramètres <directive module="mod_unixd">User</directive>,
+      <directive module="mod_unixd">Group</directive>,
       <directive module="mpm_common">Listen</directive>, et
       <directive module="core">ServerRoot</directive> différents.</li>
 

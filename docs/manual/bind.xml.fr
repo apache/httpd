@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1174747 -->
+<!-- English Revision : 1301743 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -54,7 +54,7 @@
     Par d&eacute;faut, le serveur &eacute;coute toutes les adresses de l'h&ocirc;te local.
     Cependant, on peut lui pr&eacute;ciser des ports et des adresses sp&eacute;cifiques &agrave; &eacute;couter,
     ou une combinaison des deux.
-    Tout ceci est souvent associ&eacute; avec la fonctionnalit&eacute; des <a href="vhosts.html">h&ocirc;tes virtuels</a>
+    Tout ceci est souvent associ&eacute; avec la fonctionnalit&eacute; des <a href="vhosts">h&ocirc;tes virtuels</a>
     qui d&eacute;termine la mani&egrave;re dont <code>httpd</code> r&eacute;pond aux diff&eacute;rents ports,
     noms d'h&ocirc;tes et adresses IP.</p>
 

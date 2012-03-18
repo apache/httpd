@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1174747:1301735 (outdated) -->
+<!-- English Revision : 1301735 -->
 <!-- French translation by Vincent Deffontaines, review by alain B -->
 <!-- Updated by Lucien Gentis -->
 
@@ -60,7 +60,7 @@ dynamiquement</a></seealso>
     <p>Un <em>serveur  principal (main_server)</em> contient toutes
     les définitions qui apparaissent en dehors des sections
     <code>&lt;VirtualHost&gt;</code>.</p>
-    
+
     <p>Les serveurs virtuels, aussi
     appelés <em>vhosts</em> (pour virtual hosts), sont définis par les
     sections <directive type="section" module="core">VirtualHost</directive>.</p>
@@ -90,7 +90,7 @@ dynamiquement</a></seealso>
     <code>VirtualHost</code> ; ces derniers ne servent qu'à définir le
     <code>serveur virtuel</code> qui sera sélectionné pour traiter la
     requête. Pour définir les ports sur lesquels Apache est en écoute,
-    utilisez la directive <directive module="core">Listen</directive>).
+    utilisez la directive <directive module="mpm_common">Listen</directive>).
     </p>
 
     <p>L'ensemble des adresses (y compris les résultats multiples
@@ -124,14 +124,12 @@ dynamiquement</a></seealso>
     <ol>
       <li>Dans le cas où un serveur virtuel ne contient pas de directives
       <directive module="core">ServerAdmin</directive>,
-      <directive module="core">ResourceConfig</directive>,
-      <directive module="core">AccessConfig</directive>,
       <directive module="core">Timeout</directive>,
       <directive module="core">KeepAliveTimeout</directive>,
       <directive module="core">KeepAlive</directive>,
       <directive module="core">MaxKeepAliveRequests</directive>,
-      <directive module="core">ReceiveBufferSize</directive>,
-      ou <directive module="core">SendBufferSize</directive>,
+      <directive module="mpm_common">ReceiveBufferSize</directive>,
+      ou <directive module="mpm_common">SendBufferSize</directive>,
       alors la valeur de chacun de ces paramètres est héritée de celle du
       serveur principal. (C'est à dire, héritée de la valeur finale après
       lecture de la configuration du serveur principal.)</li>
@@ -192,7 +190,7 @@ dynamiquement</a></seealso>
     <p>S'il existe des définitions <code>VirtualHost</code> pour
     l'adresse IP, l'étape suivante consiste à déterminer si nous avons à
     faire à un serveur virtuel à base de nom ou d'adresse IP.</p>
-    
+
     </section>
 
     <section id="ipbased"><title>Serveur virtuel par IP</title>

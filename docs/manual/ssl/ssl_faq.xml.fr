@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1296919:1300910 (outdated) -->
+<!-- English revision : 1300910 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -54,7 +54,7 @@ erreurs de permission en rapport avec SSLMutex ?</title>
     parents (ici <code>/opt</code>, <code>/opt/apache</code> et
     <code>/opt/apache/logs</code>) ont le bit x positionn&eacute; au moins pour
     l'UID sous lequel les processus enfants d'Apache s'ex&eacute;cutent (voir la
-    directive <directive module="mpm_common">User</directive>).</p>
+    directive <directive module="mod_unixd">User</directive>).</p>
 </section>
 
 <section id="entropy"><title>Pourquoi mod_ssl s'arr&ecirc;te-t-il avec l'erreur

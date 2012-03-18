@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1202456:1300924 (outdated) -->
+<!-- English Revision : 1300924 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -592,6 +592,42 @@ cours des requ&ecirc;tes vers le serveur LDAP.</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>LDAPRetryDelay</name>
+<description>D&eacute;finit le temps d'attente avant un autre essai de connexion au
+serveur LDAP.</description>
+<syntax>LDAPRetryDelay <var>secondes</var></syntax>
+<default>LDAPRetryDelay 0</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>Si la directive <directive>LDAPRetryDelay</directive> est d&eacute;finie
+    &agrave; une valeur diff&eacute;rente de 0, le serveur attendra pendant la dur&eacute;e
+    sp&eacute;cifi&eacute;e pour envoyer &agrave; nouveau sa requ&ecirc;te LDAP. Une valeur de 0
+    implique une absence de d&eacute;lai pour les essais successifs.</p>
+
+    <p>Il est possible d'effectuer une autre tentative de connexion en
+    cas d'erreurs LDAP du type d&eacute;lai d&eacute;pass&eacute; ou connexion refus&eacute;e. </p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LDAPRetries</name>
+<description>D&eacute;finit le nombre maximum de tentatives de connexions au
+serveur LDAP.</description>
+<syntax>LDAPRetries <var>nombre d'essais</var></syntax>
+<default>LDAPRetries 3</default>
+<contextlist><context>server config</context></contextlist>
+<usage>
+    <p>Suite &agrave; des &eacute;checs de connexion au serveur LDAP, le serveur
+    tentera de se connecter autant de fois qu'indiqu&eacute; par la directive
+    <directive>LDAPRetries</directive>. Si cette directive est d&eacute;finie &agrave;
+    0, le serveur ne tentera pas d'autre connexion apr&egrave;s un &eacute;chec.</p>
+    <p>Il est possible d'effectuer une autre tentative de connexion en
+    cas d'erreurs LDAP du type d&eacute;lai d&eacute;pass&eacute; ou connexion refus&eacute;e. </p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>LDAPTrustedGlobalCert</name>
 <description>D&eacute;finit le nom de fichier ou la base de donn&eacute;es contenant
 les Autorit&eacute;s de Certification de confiance globales ou les certificats
@@ -718,7 +754,7 @@ connexion</description>
     renvoy&eacute;e, ou la biblioth&egrave;que client LDAP tentera de se connecter &agrave;
     un second serveur LDAP, s'il en a &eacute;t&eacute; d&eacute;fini un (via une liste de
     noms d'h&ocirc;tes s&eacute;par&eacute;s par des espaces dans la directive <directive
-    module="mod_ldap">AuthLDAPURL</directive>).</p>
+    module="mod_authnz_ldap">AuthLDAPURL</directive>).</p>
 
     <p>La valeur par d&eacute;faut est 10 secondes, si la biblioth&egrave;que client
     LDAP li&eacute;e avec le serveur supporte l'option

@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1174747:1300924 (outdated) -->
+<!-- English Revision : 1300924 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -318,7 +318,7 @@
 	tr&egrave;s peu fiable et ne devrait jamais &ecirc;tre utilis&eacute;e, sauf dans le cas
 	de r&eacute;seaux internes &eacute;troitement contr&ocirc;l&eacute;s. Le d&eacute;mon httpd ne cherchera
 	d'ailleurs &agrave; obtenir cette information que si la directive
-	<directive module="core">IdentityCheck</directive> est positionn&eacute;e
+	<directive module="mod_ident">IdentityCheck</directive> est positionn&eacute;e
 	&agrave; <code>On</code>.</dd>
 
         <dt><code>frank</code> (<code>%u</code>)</dt>
