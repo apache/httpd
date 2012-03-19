@@ -24,8 +24,6 @@
 <a href="./ko/sections.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/sections.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
  <p>Les directives des <a href="configuring.html">fichiers de configuration</a> peuvent s'appliquer
 au serveur dans son ensemble, ou seulement à des répertoires, fichiers, hôtes,
 ou URLs particuliers.  Ce document décrit comment utiliser les conteneurs de
@@ -85,7 +83,7 @@ Il ne doit pas contenir de directives que vous souhaitez voir s'appliquer
 systématiquement, car vous pouvez perdre ainsi de précieux messages d'erreur
 à propos de modules manquants.</p>
 
-<p>Dans l'exemple suivant, la directive <code class="directive"><a href="./mod/mod_mime_magic.html#mimemagicfiles">MimeMagicFiles</a></code> ne s'appliquera que si le
+<p>Dans l'exemple suivant, la directive <code class="directive"><a href="./mod/mod_mime_magic.html#mimemagicfile">MimeMagicFile</a></code> ne s'appliquera que si le
 module <code class="module"><a href="./mod/mod_mime_magic.html">mod_mime_magic</a></code> est disponible.</p>
 
 <div class="example"><p><code>
@@ -246,7 +244,7 @@ avoir :</p>
 &lt;Location /foo/bar&gt;<br />
 &lt;/Location&gt;
 </code></p></div>
-<p>Les directives <code class="directive"><a href="./mod/core.html#alias">&lt;Alias&gt;</a></code>, quant à elles, sont évaluées vice-versa :</p>
+<p>Les directives <code class="directive"><a href="./mod/mod_alias.html#alias">&lt;Alias&gt;</a></code>, quant à elles, sont évaluées vice-versa :</p>
 <div class="example"><p><code>
 Alias /foo/bar /srv/www/uncommon/bar<br />
 Alias /foo /srv/www/common/foo<br />
@@ -376,7 +374,7 @@ toutes les requêtes sans tenir compte de l'URL spécifique.</p>
 <h3><a name="nesting" id="nesting">Imbrication des sections</a></h3>
 
 <p>Certains types de sections peuvent être imbriqués : d'une part, on
-peut utiliser les sections <code class="directive"><a href="./mod/core.html#file">&lt;File&gt;</a></code> à l'intérieur des sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, d'autre part, on
+peut utiliser les sections <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> à l'intérieur des sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, d'autre part, on
 peut utiliser les
 directives <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code> à
 l'intérieur des sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> et <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>. Les valeurs des expressions

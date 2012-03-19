@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_rewrite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_rewrite.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ce module fournit un moteur de réécriture à base de
 règles permettant de réécrire les URLs des requêtes
 à la volée</td></tr>
@@ -36,7 +34,7 @@ règles permettant de réécrire les URLs des requêtes
 
       <p>Le module <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> utilise un moteur de
       réécriture à base de règles, basé sur un interpréteur
-      d'expressions rationnelles, pour réécrire les URLs à la volée. Par
+      d'expressions rationnelles PCRE, pour réécrire les URLs à la volée. Par
       défaut, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> met en correspondance une URL
       avec le système de fichiers. Cependant, on peut aussi l'utiliser
       pour rediriger une URL vers une autre URL, ou pour invoquer une

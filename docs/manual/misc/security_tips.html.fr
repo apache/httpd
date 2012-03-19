@@ -23,8 +23,6 @@
 <a href="../ko/misc/security_tips.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/misc/security_tips.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Ce document propose quelques conseils et astuces concernant les
     problèmes de sécurité liés
@@ -159,7 +157,7 @@
     
 
     <p>Typiquement, Apache est démarré par l'utilisateur root, puis il devient
-    la propriété de l'utilisateur défini par la directive <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> afin de répondre aux demandes. Comme
+    la propriété de l'utilisateur défini par la directive <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> afin de répondre aux demandes. Comme
     pour toutes les commandes exécutées par root, vous devez vous assurer
     qu'elle n'est pas modifiable par les utilisateurs autres que root. Les
     fichiers eux-mêmes, mais aussi les répertoires ainsi que leurs parents ne
@@ -323,7 +321,7 @@
   serveur lui-même, comme <code>mod_php</code>, <code>mod_perl</code>,
   <code>mod_tcl</code>, et <code>mod_python</code>,
   s'exécutent sous le même utilisateur que le serveur (voir la directive
-  <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code>), et par conséquent,
+  <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code>), et par conséquent,
   les scripts que ces moteurs exécutent peuvent accéder aux mêmes ressources
   que le serveur. Certains moteurs de scripting peuvent proposer des
   restrictions, mais pour plus de sûreté, il vaut mieux partir du principe

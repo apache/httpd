@@ -21,8 +21,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/flags.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/flags.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Ce document décrit les drapeaux disponibles dans la directive
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>, en fournissant
@@ -302,7 +300,7 @@ redirection externe.</p>
 <h2><a name="flag_f" id="flag_f">F|forbidden</a></h2>
 <p>L'utilisation du drapeau [F] permet de faire envoyer par le serveur au
 client un code de statut "403 Forbidden". Le même effet peut être obtenu à
-l'aide de la directive <code class="directive"><a href="../mod/mod_access.html#deny">Deny</a></code>,
+l'aide de la directive <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code>,
 mais ce drapeau offre plus de souplesse dans l'attribution d'un statut
 Forbidden.</p>
 
@@ -335,7 +333,7 @@ disponible auparavant ne l'est plus actuellement.</p>
 RewriteRule ancienne-ressource - [G,NC]
 </code></p></div>
 
-<p>Lorsqu'on utilise [F], [L] est implicite - c'est à dire que la
+<p>Lorsqu'on utilise [G], [L] est implicite - c'est à dire que la
 réponse est renvoyée immédiatement, et aucune autre règle n'est évaluée.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -560,7 +558,7 @@ par contre, elle est traitée comme un URI. Autrement dit, avec le
 drapeau [PT], le résultat de la règle  <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> est passé à nouveau au
 système de mise en correspondance des URLs avec le système de fichiers,
 de façon à ce que les systèmes de mise en correspondance basés sur les
-chemins de fichiers, comme la directive <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>, <code class="directive"><a href="../mod/core.html#redirect">Redirect</a></code>, ou <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>, par exemple, puissent avoir une
+chemins de fichiers, comme la directive <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>, <code class="directive"><a href="../mod/mod_alias.html#redirect">Redirect</a></code>, ou <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>, par exemple, puissent avoir une
 chance d'accomplir leur tâche.
 </p>
 

@@ -26,8 +26,6 @@
 <a href="../ja/mod/mod_deflate.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_deflate.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Comprime le contenu avant de le servir au
 client</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -172,7 +170,7 @@ client</td></tr>
       </div>
       <div class="note"><h3>Note</h3>
         La variable d'environnement <code>force-gzip</code>, définie à
-	l'aide de la directive <code class="directive"><a href="../mod/core.html#setenv">SetEnv</a></code>, permet d'ignorer la
+	l'aide de la directive <code class="directive"><a href="../mod/mod_env.html#setenv">SetEnv</a></code>, permet d'ignorer la
 	configuration de votre navigateur quant aux codages acceptés, et
 	d'envoyer sans condition une sortie comprimée.
       </div>

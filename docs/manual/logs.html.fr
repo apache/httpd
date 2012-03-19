@@ -24,8 +24,6 @@
 <a href="./ko/logs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/logs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Pour véritablement gérer un serveur web,
     il est nécessaire de disposer d'un
@@ -301,7 +299,7 @@
 	très peu fiable et ne devrait jamais être utilisée, sauf dans le cas
 	de réseaux internes étroitement contrôlés. Le démon httpd ne cherchera
 	d'ailleurs à obtenir cette information que si la directive
-	<code class="directive"><a href="./mod/core.html#identitycheck">IdentityCheck</a></code> est positionnée
+	<code class="directive"><a href="./mod/mod_ident.html#identitycheck">IdentityCheck</a></code> est positionnée
 	à <code>On</code>.</dd>
 
         <dt><code>frank</code> (<code>%u</code>)</dt>
