@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy: Correctly set up reverse proxy worker. PR 52935.
+     [Petter Berntsen <petterb gmail.com>]
+
   *) core: Add filesystem paths to access denied / access failed messages
      AH00035 and AH00036. [Eric Covener]
 
