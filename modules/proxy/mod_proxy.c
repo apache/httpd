@@ -2461,11 +2461,11 @@ static void child_init(apr_pool_t *p, server_rec *s)
                 ap_proxy_hashfunc(reverse->s->name, PROXY_HASHFUNC_FNV);
             /* Do not disable worker in case of errors */
             reverse->s->status |= PROXY_WORKER_IGNORE_ERRORS;
-            conf->reverse = reverse;
             ap_proxy_initialize_worker(conf->reverse, s, conf->pool);
             /* Disable address cache for generic reverse worker */
             reverse->s->is_address_reusable = 0;
         }
+        conf->reverse = reverse;
         s = s->next;
     }
 }
