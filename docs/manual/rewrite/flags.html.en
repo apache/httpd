@@ -265,7 +265,7 @@ an example, not as a recommendation.</p>
 <h2><a name="flag_f" id="flag_f">F|forbidden</a></h2>
 <p>Using the [F] flag causes the server to return a 403 Forbidden status
 code to the client. While the same behavior can be accomplished using
-the <code class="directive"><a href="../mod/mod_access.html#deny">Deny</a></code> directive, this 
+the <code class="directive"><a href="../mod/mod_authz_host.html#deny">Deny</a></code> directive, this 
 allows more flexibility in assigning a Forbidden status.</p>
 
 <p>The following rule will forbid <code>.exe</code> files from being
