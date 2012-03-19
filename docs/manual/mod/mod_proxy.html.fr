@@ -645,7 +645,7 @@ directement</td></tr>
     </dl>
 
     <p>Comme cas extrêmes, un <em>Sous-réseau</em> avec un masque de
-    sous-réseau de 32 bits significatifs est équivalent à une <var><a href="#ipadr">adresse IP</a></var>, alors qu'un <em>Sous-réseau</em> avec un masque de
+    sous-réseau de 32 bits significatifs est équivalent à une <var><a href="#ipaddr">adresse IP</a></var>, alors qu'un <em>Sous-réseau</em> avec un masque de
     sous-réseau de 0 bit significatif (c'est à dire 0.0.0.0/0) est
     identique à la constante <var>_Default_</var>, et peut correspondre
     à toute adresse IP.</p></dd>

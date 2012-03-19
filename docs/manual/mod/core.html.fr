@@ -28,8 +28,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fonctionnalités de base du serveur HTTP Apache toujours
 disponibles</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Core</td></tr></table>
@@ -462,7 +460,7 @@ All pour les versions antérieures</code></td></tr>
 
       <dd>
 
-      Permet l'utilisation des directives d'autorisation (<code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></code>,
+      Permet l'utilisation des directives d'autorisation (<code class="directive"><a href="../mod/mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></code>,
       <code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code>,
       <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code>,
       <code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code>,
@@ -488,14 +486,15 @@ All pour les versions antérieures</code></td></tr>
       des répertoires (<code class="directive"><a href="../mod/mod_autoindex.html#adddescription">AddDescription</a></code>,
       <code class="directive"><a href="../mod/mod_autoindex.html#addicon">AddIcon</a></code>, <code class="directive"><a href="../mod/mod_autoindex.html#addiconbyencoding">AddIconByEncoding</a></code>,
       <code class="directive"><a href="../mod/mod_autoindex.html#addiconbytype">AddIconByType</a></code>,
-      <code class="directive"><a href="../mod/mod_autoindex.html#defaulticon">DefaultIcon</a></code>, <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code>, <code class="directive"><a href="../mod/mod_autoindex.html#fancyindexing">FancyIndexing</a></code>, <code class="directive"><a href="../mod/mod_autoindex.html#headername">HeaderName</a></code>, <code class="directive"><a href="../mod/mod_autoindex.html#indexignore">IndexIgnore</a></code>, <code class="directive"><a href="../mod/mod_autoindex.html#indexoptions">IndexOptions</a></code>, <code class="directive"><a href="../mod/mod_autoindex.html#readmename">ReadmeName</a></code>,
+      <code class="directive"><a href="../mod/mod_autoindex.html#defaulticon">DefaultIcon</a></code>, <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code>, <a href="mod_autoindex.html#indexoptions.fancyindexing"><code>FancyIndexing</code></a>,
+      <code class="directive"><a href="../mod/mod_autoindex.html#headername">HeaderName</a></code>, <code class="directive"><a href="../mod/mod_autoindex.html#indexignore">IndexIgnore</a></code>, <code class="directive"><a href="../mod/mod_autoindex.html#indexoptions">IndexOptions</a></code>, <code class="directive"><a href="../mod/mod_autoindex.html#readmename">ReadmeName</a></code>,
       <em>etc...</em>).</dd>
 
       <dt>Limit</dt>
 
       <dd>
       Permet l'utilisation des directives contrôlant l'accès au serveur
-      (<code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code>, <code class="directive"><a href="../mod/mod_authz_host.html#deny">Deny</a></code> et <code class="directive"><a href="../mod/mod_authz_host.html#order">Order</a></code>).</dd>
+      (<code class="directive"><a href="../mod/mod_access_compat.html#allow">Allow</a></code>, <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code> et <code class="directive"><a href="../mod/mod_access_compat.html#order">Order</a></code>).</dd>
 
       <dt>Nonfatal=[Override|Unknown|All]</dt>
 
@@ -4057,6 +4056,12 @@ serveurs virtuels à base de nom</td></tr>
       # ...<br />
       &lt;/VirtualHost&gt;
     </code></p></div>
+    <p>La recherche du serveur virtuel à base de nom correspondant au
+    plus près à la requête s'effectue selon l'ordre d'apparition des
+    directives <code class="directive"><a href="#virtualhost">&lt;virtualhost&gt;</a></code> dans le fichier de
+    configuration. Le premier serveur virtuel dont le <code class="directive"><a href="#servername">ServerName</a></code> ou le <code class="directive"><a href="#serveralias">ServerAlias</a></code> correspond est choisi, sans
+    priorité particulière si le nom contient des caractères génériques
+    (que ce soit pour ServerName ou ServerAlias).</p>
 
 <h3>Voir aussi</h3>
 <ul>

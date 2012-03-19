@@ -47,7 +47,7 @@
     Par défaut, le serveur écoute toutes les adresses de l'hôte local.
     Cependant, on peut lui préciser des ports et des adresses spécifiques à écouter,
     ou une combinaison des deux.
-    Tout ceci est souvent associé avec la fonctionnalité des <a href="vhosts.html">hôtes virtuels</a>
+    Tout ceci est souvent associé avec la fonctionnalité des <a href="vhosts">hôtes virtuels</a>
     qui détermine la manière dont <code>httpd</code> répond aux différents ports,
     noms d'hôtes et adresses IP.</p>
 

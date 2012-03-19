@@ -25,8 +25,6 @@
 <a href="../ko/vhosts/name-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/name-based.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Ce document décrit quand et comment utiliser des serveurs 
     virtuels par nom.</p>
@@ -146,7 +144,7 @@ virtuel basé sur le nom approprié</a></h2>
             # Le premier serveur virtuel de la liste est aussi le
 	    # serveur par défaut pour *:80
             ServerName www.example.com<br />
-            ServerAlias example.com *.example.com<br />
+            ServerAlias example.com <br />
             DocumentRoot /www/domain<br />
         </span>
         &lt;/VirtualHost&gt;<br />
@@ -189,6 +187,13 @@ virtuel basé sur le nom approprié</a></h2>
     ou <code>ServerAlias</code>. Tout d'abord, votre serveur DNS 
     doit être correctement configuré pour lier ces noms à une 
     adresse IP associée avec votre serveur.</p>
+
+    <p>La recherche du serveur virtuel à base de nom qui correspond au
+    plus près à la requête s'effectue parmi les <code class="directive"><a href="../mod/core.html#virtualhost">&lt;virtualhost&gt;</a></code> selon leur
+    ordre d'apparition dans le fichier de configuration. Le premier
+    serveur virtuel dont le <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> ou le <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code> correspond est utilisé, sans
+    priorité particulière en cas de présence de caractères génériques
+    (que ce soit pour le ServerName ou le ServerAlias).</p>
 
     <p>Finalement, vous pouvez affiner la configuration des serveurs 
     virtuels en plaçant d'autres directives à l'intérieur des sections 

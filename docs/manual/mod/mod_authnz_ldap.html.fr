@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authnz_ldap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authnz_ldap.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet d'utiliser un annuaire LDAP pour l'authentification
 HTTP de base.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -826,7 +824,7 @@ Require group <em>mon-fichier-de-groupes</em>
       placez dans une section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>. Ceci est dû au fait que pour savoir
       où se trouve la liste des utilisateurs valides,
       <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> doit être en mesure d'atteindre
-      la directive <code class="directive"><a href="../mod/mod_authn_file.html#authgroupfile">AuthGroupFile</a></code> qui se trouve
+      la directive <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code> qui se trouve
       dans les fichiers <code>.htaccess</code> de FrontPage. Si les directives
       de <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> ne sont pas situées dans le
       même fichier <code>.htaccess</code> que les directives FrontPage,

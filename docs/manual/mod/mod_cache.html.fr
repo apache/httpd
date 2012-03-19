@@ -26,8 +26,6 @@
 <a href="../ja/mod/mod_cache.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Filtre de mise en cache HTTP conforme à la RFC 2616</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>cache_module</td></tr>
@@ -36,7 +34,7 @@
 
     <div class="warning">Ce module doit être utilisé avec précautions
     car lorsque la directive <code class="directive"><a href="#cachequickhandler">CacheQuickHandler</a></code> est définie à sa
-    valeur par défaut <strong>on</strong>, les directives <code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code> and <code class="directive"><a href="../mod/mod_authz_host.html#deny">Deny</a></code> sont court-circuitées. Vous
+    valeur par défaut <strong>on</strong>, les directives <code class="directive"><a href="../mod/mod_access_compat.html#allow">Allow</a></code> and <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code> sont court-circuitées. Vous
     ne devez donc pas activer la gestion rapide de la mise en cache pour
     un contenu auquel vous souhaitez limiter l'accès en fonction du nom
     d'hôte du client, de l'adresse IP ou d'une variable
