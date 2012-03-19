@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: In AllowOverrideList, do not allow 'None' together with other
+     directives. PR 52823. [Stefan Fritsch]
+
   *) mod_proxy: Correctly set up reverse proxy worker. PR 52935.
      [Petter Berntsen <petterb gmail.com>]
 
