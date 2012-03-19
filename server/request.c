@@ -1094,9 +1094,9 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
             }
             else if (APR_STATUS_IS_EACCES(rv)) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(00035)
-                              "access to %s denied because search "
-                              "permissions are missing on a component "
-                              "of the path", r->uri);
+                              "access to %s denied (filesystem path '%s') "
+                              "because search permissions are missing on a "
+                              "component of the path", r->uri, r->filename);
                 return r->status = HTTP_FORBIDDEN;
             }
             else if ((rv != APR_SUCCESS && rv != APR_INCOMPLETE)
@@ -1105,7 +1105,8 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                  * rather than assume not found.
                  */
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(00036)
-                              "access to %s failed", r->uri);
+                              "access to %s failed (filesystem path '%s')", 
+                              r->uri, r->filename);
                 return r->status = HTTP_FORBIDDEN;
             }
 
