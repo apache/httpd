@@ -1661,16 +1661,20 @@ static const char *set_override_list(cmd_parms *cmd, void *d_, int argc, char *c
     /* Throw a warning if we're in <Location> or <Files> */
     if (ap_check_cmd_context(cmd, NOT_IN_LOCATION | NOT_IN_FILES)) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(00115)
-                     "Useless use of AllowOverrideList in line %d of %s.",
-                     cmd->directive->line_num, cmd->directive->filename);
+                     "Useless use of AllowOverrideList at %s:%d",
+                     cmd->directive->filename, cmd->directive->line_num);
     }
     if ((err = ap_check_cmd_context(cmd, NOT_IN_HTACCESS)) != NULL)
         return err;
 
-    d->override_list = apr_table_make(cmd->pool, 1);
+    d->override_list = apr_table_make(cmd->pool, argc);
 
     for (i=0;i<argc;i++){
         if (!strcasecmp(argv[i], "None")) {
+            if (argc != 1) {
+                return "'None' not allowed with other directives in "
+                       "AllowOverrideList";
+            }
             return NULL;
         }
         else {
@@ -1680,9 +1684,11 @@ static const char *set_override_list(cmd_parms *cmd, void *d_, int argc, char *c
             if (result)
                 apr_table_set(d->override_list, argv[i], "1");
             else
-                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(00116)
-                             "Discarding unrecognized directive `%s' in AllowOverrideList.",
-                             argv[i]);
+                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+                             APLOGNO(00116) "Discarding unrecognized "
+                             "directive `%s' in AllowOverrideList at %s:%d",
+                             argv[i], cmd->directive->filename,
+                             cmd->directive->line_num);
         }
     }
 
