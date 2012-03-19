@@ -23,8 +23,6 @@
 <a href="../ko/vhosts/details.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/details.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Ce document vise à expliquer dans le détail comment le serveur
@@ -56,7 +54,7 @@ dynamiquement</a></li></ul></div>
     <p>Un <em>serveur  principal (main_server)</em> contient toutes
     les définitions qui apparaissent en dehors des sections
     <code>&lt;VirtualHost&gt;</code>.</p>
-    
+
     <p>Les serveurs virtuels, aussi
     appelés <em>vhosts</em> (pour virtual hosts), sont définis par les
     sections <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>.</p>
@@ -86,7 +84,7 @@ dynamiquement</a></li></ul></div>
     <code>VirtualHost</code> ; ces derniers ne servent qu'à définir le
     <code>serveur virtuel</code> qui sera sélectionné pour traiter la
     requête. Pour définir les ports sur lesquels Apache est en écoute,
-    utilisez la directive <code class="directive"><a href="../mod/core.html#listen">Listen</a></code>).
+    utilisez la directive <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>).
     </p>
 
     <p>L'ensemble des adresses (y compris les résultats multiples
@@ -119,14 +117,12 @@ dynamiquement</a></li></ul></div>
     <ol>
       <li>Dans le cas où un serveur virtuel ne contient pas de directives
       <code class="directive"><a href="../mod/core.html#serveradmin">ServerAdmin</a></code>,
-      <code class="directive"><a href="../mod/core.html#resourceconfig">ResourceConfig</a></code>,
-      <code class="directive"><a href="../mod/core.html#accessconfig">AccessConfig</a></code>,
       <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code>,
       <code class="directive"><a href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code>,
       <code class="directive"><a href="../mod/core.html#keepalive">KeepAlive</a></code>,
       <code class="directive"><a href="../mod/core.html#maxkeepaliverequests">MaxKeepAliveRequests</a></code>,
-      <code class="directive"><a href="../mod/core.html#receivebuffersize">ReceiveBufferSize</a></code>,
-      ou <code class="directive"><a href="../mod/core.html#sendbuffersize">SendBufferSize</a></code>,
+      <code class="directive"><a href="../mod/mpm_common.html#receivebuffersize">ReceiveBufferSize</a></code>,
+      ou <code class="directive"><a href="../mod/mpm_common.html#sendbuffersize">SendBufferSize</a></code>,
       alors la valeur de chacun de ces paramètres est héritée de celle du
       serveur principal. (C'est à dire, héritée de la valeur finale après
       lecture de la configuration du serveur principal.)</li>
@@ -187,7 +183,7 @@ dynamiquement</a></li></ul></div>
     <p>S'il existe des définitions <code>VirtualHost</code> pour
     l'adresse IP, l'étape suivante consiste à déterminer si nous avons à
     faire à un serveur virtuel à base de nom ou d'adresse IP.</p>
-    
+
     
 
     <h3><a name="ipbased" id="ipbased">Serveur virtuel par IP</a></h3>

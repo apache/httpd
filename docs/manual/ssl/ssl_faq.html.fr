@@ -21,8 +21,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/ssl/ssl_faq.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/ssl/ssl_faq.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <blockquote>
 <p>Le sage n'apporte pas de bonnes réponses, il pose les bonnes questions</p>
@@ -57,7 +55,7 @@ erreurs de permission en rapport avec SSLMutex ?</a></h3>
     parents (ici <code>/opt</code>, <code>/opt/apache</code> et
     <code>/opt/apache/logs</code>) ont le bit x positionné au moins pour
     l'UID sous lequel les processus enfants d'Apache s'exécutent (voir la
-    directive <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code>).</p>
+    directive <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code>).</p>
 
 
 <h3><a name="entropy" id="entropy">Pourquoi mod_ssl s'arrête-t-il avec l'erreur

@@ -25,8 +25,6 @@
 <a href="./ko/bind.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/bind.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Configuration du serveur HTTP Apache pour l'écoute
     sur un port et une adresse IP spécifiques.</p>
@@ -49,7 +47,7 @@
     Par défaut, le serveur écoute toutes les adresses de l'hôte local.
     Cependant, on peut lui préciser des ports et des adresses spécifiques à écouter,
     ou une combinaison des deux.
-    Tout ceci est souvent associé avec la fonctionnalité des <a href="vhosts.html">hôtes virtuels</a>
+    Tout ceci est souvent associé avec la fonctionnalité des <a href="vhosts">hôtes virtuels</a>
     qui détermine la manière dont <code>httpd</code> répond aux différents ports,
     noms d'hôtes et adresses IP.</p>
 

@@ -25,8 +25,6 @@
 <a href="../fr/mod/mod_proxy.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle multi-protocole</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_module</td></tr>
@@ -647,7 +645,7 @@ directement</td></tr>
     </dl>
 
     <p>Comme cas extrêmes, un <em>Sous-réseau</em> avec un masque de
-    sous-réseau de 32 bits significatifs est équivalent à une <var><a href="#ipadr">adresse IP</a></var>, alors qu'un <em>Sous-réseau</em> avec un masque de
+    sous-réseau de 32 bits significatifs est équivalent à une <var><a href="#ipaddr">adresse IP</a></var>, alors qu'un <em>Sous-réseau</em> avec un masque de
     sous-réseau de 0 bit significatif (c'est à dire 0.0.0.0/0) est
     identique à la constante <var>_Default_</var>, et peut correspondre
     à toute adresse IP.</p></dd>

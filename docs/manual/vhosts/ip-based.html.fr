@@ -24,8 +24,6 @@
 <a href="../ko/vhosts/ip-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/ip-based.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#requirements">Système requis</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#howto">Comment configurer Apache</a></li>
@@ -69,8 +67,8 @@ résident pour des serveurs virtuels</a></li>
       qu'une entreprise1 ne souhaite que personne d'une entreprise2
       ne puisse lire ses données excepté via le Web. Dans ce cas,
       vous aurez besoin de deux processus résidents, chacun fonctionnant
-      avec des paramètres <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code>,
-      <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code>,
+      avec des paramètres <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code>,
+      <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code>,
       <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>, et
       <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> différents.</li>
 
