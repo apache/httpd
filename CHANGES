@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Disallow directives in AllowOverrideList which are only allowed
+     in VirtualHost or server context. These are usually not prepared to be
+     called in .htaccess files. [Stefan Fritsch]
+
   *) core: In AllowOverrideList, do not allow 'None' together with other
      directives. PR 52823. [Stefan Fritsch]
 
