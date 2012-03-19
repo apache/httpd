@@ -1681,14 +1681,25 @@ static const char *set_override_list(cmd_parms *cmd, void *d_, int argc, char *c
             const command_rec *result = NULL;
             module *mod = ap_top_module;
             result = ap_find_command_in_modules(argv[i], &mod);
-            if (result)
-                apr_table_set(d->override_list, argv[i], "1");
-            else
+            if (result == NULL) {
                 ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
                              APLOGNO(00116) "Discarding unrecognized "
                              "directive `%s' in AllowOverrideList at %s:%d",
                              argv[i], cmd->directive->filename,
                              cmd->directive->line_num);
+                continue;
+            }
+            else if ((result->req_override & (OR_ALL|ACCESS_CONF)) == 0) {
+                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+                             APLOGNO(02304) "Discarding directive `%s' not "
+                             "allowed in AllowOverrideList at %s:%d",
+                             argv[i], cmd->directive->filename,
+                             cmd->directive->line_num);
+                continue;
+            }
+            else {
+                apr_table_set(d->override_list, argv[i], "1");
+            }
         }
     }
 
