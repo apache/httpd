@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_ldap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_ldap.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Conservation des connexions LDAP et services de mise en
 cache du résultat à destination des autres modules LDAP</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -551,7 +549,7 @@ connexion</td></tr>
     <p>Si la connexion n'a pas réussi avant ce délai, une erreur sera
     renvoyée, ou la bibliothèque client LDAP tentera de se connecter à
     un second serveur LDAP, s'il en a été défini un (via une liste de
-    noms d'hôtes séparés par des espaces dans la directive <code class="directive"><a href="#authldapurl">AuthLDAPURL</a></code>).</p>
+    noms d'hôtes séparés par des espaces dans la directive <code class="directive"><a href="../mod/mod_authnz_ldap.html#authldapurl">AuthLDAPURL</a></code>).</p>
 
     <p>La valeur par défaut est 10 secondes, si la bibliothèque client
     LDAP liée avec le serveur supporte l'option
@@ -685,27 +683,42 @@ cours des requêtes vers le serveur LDAP.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LDAPRetries" id="LDAPRetries">LDAPRetries</a> <a name="ldapretries" id="ldapretries">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures the number of LDAP server retries.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPRetries <var>number-of-retries</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le nombre maximum de tentatives de connexions au
+serveur LDAP.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPRetries <var>nombre d'essais</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPRetries 3</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p></div>
+</table>
+    <p>Suite à des échecs de connexion au serveur LDAP, le serveur
+    tentera de se connecter autant de fois qu'indiqué par la directive
+    <code class="directive">LDAPRetries</code>. Si cette directive est définie à
+    0, le serveur ne tentera pas d'autre connexion après un échec.</p>
+    <p>Il est possible d'effectuer une autre tentative de connexion en
+    cas d'erreurs LDAP du type délai dépassé ou connexion refusée. </p>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LDAPRetryDelay" id="LDAPRetryDelay">LDAPRetryDelay</a> <a name="ldapretrydelay" id="ldapretrydelay">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures the delay between LDAP server retries.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPRetryDelay <var>seconds</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le temps d'attente avant un autre essai de connexion au
+serveur LDAP.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPRetryDelay <var>secondes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPRetryDelay 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p></div>
+</table>
+    <p>Si la directive <code class="directive">LDAPRetryDelay</code> est définie
+    à une valeur différente de 0, le serveur attendra pendant la durée
+    spécifiée pour envoyer à nouveau sa requête LDAP. Une valeur de 0
+    implique une absence de délai pour les essais successifs.</p>
+
+    <p>Il est possible d'effectuer une autre tentative de connexion en
+    cas d'erreurs LDAP du type délai dépassé ou connexion refusée. </p>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LDAPSharedCacheFile" id="LDAPSharedCacheFile">LDAPSharedCacheFile</a> <a name="ldapsharedcachefile" id="ldapsharedcachefile">Directive</a></h2>
 <table class="directive">
