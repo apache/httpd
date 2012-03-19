@@ -6,6 +6,9 @@ Changes with Apache 2.4.2
      envvars: Fix insecure handling of LD_LIBRARY_PATH that could lead to the
      current working directory to be searched for DSOs. [Stefan Fritsch]
 
+  *) core: Add filesystem paths to access denied / access failed messages
+     AH00035 and AH00036. [Eric Covener]
+
   *) mod_dumpio: Properly handle errors from subsequent input filters.
      PR 52914. [Stefan Fritsch]
 
