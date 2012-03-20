@@ -73,7 +73,7 @@ typedef struct extra_process_t {
 
 static extra_process_t *extras;
 
-void ap_register_extra_mpm_process(pid_t pid, ap_generation_t gen)
+AP_DECLARE(void) ap_register_extra_mpm_process(pid_t pid, ap_generation_t gen)
 {
     extra_process_t *p = (extra_process_t *)ap_malloc(sizeof(extra_process_t));
 
@@ -83,7 +83,7 @@ void ap_register_extra_mpm_process(pid_t pid, ap_generation_t gen)
     extras = p;
 }
 
-int ap_unregister_extra_mpm_process(pid_t pid, ap_generation_t *gen)
+AP_DECLARE(int) ap_unregister_extra_mpm_process(pid_t pid, ap_generation_t *old_gen)
 {
     extra_process_t *cur = extras;
     extra_process_t *prev = NULL;
@@ -173,8 +173,8 @@ static int reclaim_one_pid(pid_t pid, action_t action)
     return 0;
 }
 
-void ap_reclaim_child_processes(int terminate,
-                                ap_reclaim_callback_fn_t *mpm_callback)
+AP_DECLARE(void) ap_reclaim_child_processes(int terminate,
+                                            ap_reclaim_callback_fn_t *mpm_callback)
 {
     apr_time_t waittime = 1024 * 16;
     int i;
@@ -270,7 +270,7 @@ void ap_reclaim_child_processes(int terminate,
              action_table[cur_action].action != GIVEUP);
 }
 
-void ap_relieve_child_processes(ap_reclaim_callback_fn_t *mpm_callback)
+AP_DECLARE(void) ap_relieve_child_processes(ap_reclaim_callback_fn_t *mpm_callback)
 {
     int i;
     extra_process_t *cur_extra;
@@ -313,7 +313,7 @@ void ap_relieve_child_processes(ap_reclaim_callback_fn_t *mpm_callback)
  * the pid is a member of the current process group; either using
  * apr_proc_wait(), where waitpid() guarantees to fail for non-child
  * processes; or by using getpgid() directly, if available. */
-apr_status_t ap_mpm_safe_kill(pid_t pid, int sig)
+AP_DECLARE(apr_status_t) ap_mpm_safe_kill(pid_t pid, int sig)
 {
 #ifndef HAVE_GETPGID
     apr_proc_t proc;
@@ -368,7 +368,8 @@ apr_status_t ap_mpm_safe_kill(pid_t pid, int sig)
 }
 
 
-int ap_process_child_status(apr_proc_t *pid, apr_exit_why_e why, int status)
+AP_DECLARE(int) ap_process_child_status(apr_proc_t *pid, apr_exit_why_e why,
+                                        int status)
 {
     int signum = status;
     const char *sigdesc;
@@ -869,13 +870,14 @@ static void sig_coredump(int sig)
      */
 }
 
-apr_status_t ap_fatal_signal_child_setup(server_rec *s)
+AP_DECLARE(apr_status_t) ap_fatal_signal_child_setup(server_rec *s)
 {
     my_pid = getpid();
     return APR_SUCCESS;
 }
 
-apr_status_t ap_fatal_signal_setup(server_rec *s, apr_pool_t *in_pconf)
+AP_DECLARE(apr_status_t) ap_fatal_signal_setup(server_rec *s,
+                                               apr_pool_t *pconf)
 {
 #ifndef NO_USE_SIGACTION
     struct sigaction sa;

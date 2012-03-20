@@ -139,13 +139,13 @@ static struct mpm_gen_info_head_t *geninfo, *unused_geninfo;
 static int gen_head_init; /* yuck */
 
 /* variables representing config directives implemented here */
-const char *ap_pid_fname;
-int ap_max_requests_per_child;
-char ap_coredump_dir[MAX_STRING_LEN];
-int ap_coredumpdir_configured;
-int ap_graceful_shutdown_timeout;
+AP_DECLARE_DATA const char *ap_pid_fname;
+AP_DECLARE_DATA int ap_max_requests_per_child;
+AP_DECLARE_DATA char ap_coredump_dir[MAX_STRING_LEN];
+AP_DECLARE_DATA int ap_coredumpdir_configured;
+AP_DECLARE_DATA int ap_graceful_shutdown_timeout;
 AP_DECLARE_DATA apr_uint32_t ap_max_mem_free;
-apr_size_t ap_thread_stacksize;
+AP_DECLARE_DATA apr_size_t ap_thread_stacksize;
 
 #define ALLOCATOR_MAX_FREE_DEFAULT (2048*1024)
 
@@ -170,8 +170,9 @@ void mpm_common_pre_config(apr_pool_t *pconf)
 #endif
 static int wait_or_timeout_counter;
 
-void ap_wait_or_timeout(apr_exit_why_e *status, int *exitcode, apr_proc_t *ret,
-                        apr_pool_t *p, server_rec *s)
+AP_DECLARE(void) ap_wait_or_timeout(apr_exit_why_e *status, int *exitcode,
+                                    apr_proc_t *ret, apr_pool_t *p,
+                                    server_rec *s)
 {
     apr_status_t rv;
 
@@ -356,8 +357,9 @@ const char *ap_mpm_set_coredumpdir(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-const char * ap_mpm_set_graceful_shutdown(cmd_parms *cmd, void *dummy,
-                                          const char *arg)
+AP_DECLARE(const char *)ap_mpm_set_graceful_shutdown(cmd_parms *cmd,
+                                                     void *dummy,
+                                                     const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
