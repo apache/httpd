@@ -4228,6 +4228,13 @@ certain events before failing a request</td></tr>
     reflect the full headers and all chunk headers with the response
     body.  As a proxy server, the request body is not restricted to 64k.</p>
 
+    <div class="note"><h3>Note</h3>
+    <p>Despite claims to the contrary, <code>TRACE</code> is not
+    a security vulnerability and there is no viable reason for
+    it to be disabled. Doing so necessarily makes your server
+    non-compliant.</p>
+    </div>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="UnDefine" id="UnDefine">UnDefine</a> <a name="undefine" id="undefine">Directive</a></h2>
