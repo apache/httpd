@@ -4201,6 +4201,13 @@ certain events before failing a request</description>
     <code>Transfer-Encoding: chunked</code> is used).  The core will
     reflect the full headers and all chunk headers with the response
     body.  As a proxy server, the request body is not restricted to 64k.</p>
+
+    <note><title>Note</title>
+    <p>Despite claims to the contrary, <code>TRACE</code> is not
+    a security vulnerability and there is no viable reason for
+    it to be disabled. Doing so necessarily makes your server
+    non-compliant.</p>
+    </note>
 </usage>
 </directivesynopsis>
 
