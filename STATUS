@@ -125,7 +125,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: Trunk patch works (skip docs/log-message-tags/next-number)
     +1: sf
 
-
+  * proxy: Correctly save the reverse proxy worker in all virtual host proxy configs.
+    Trunk Patch: http://svn.apache.org/viewvc?rev=1302444&view=rev
+                 http://svn.apache.org/viewvc?rev=1302483&view=rev
+    2.4.x patch:  http://people.apache.org/~covener/patches/httpd-2.4.x-proxy_reverse.diff
+    +1: 
+    
 PATCHES/ISSUES THAT ARE STALLED
 
 
