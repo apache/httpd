@@ -143,7 +143,7 @@ AP_DECLARE(int) ap_calc_scoreboard_size(void)
     return scoreboard_size;
 }
 
-void ap_init_scoreboard(void *shared_score)
+AP_DECLARE(void) ap_init_scoreboard(void *shared_score)
 {
     char *more_storage;
     int i;
@@ -251,7 +251,8 @@ static apr_status_t open_scoreboard(apr_pool_t *pconf)
 /* If detach is non-zero, this is a separate child process,
  * if zero, it is a forked child.
  */
-apr_status_t ap_reopen_scoreboard(apr_pool_t *p, apr_shm_t **shm, int detached)
+AP_DECLARE(apr_status_t) ap_reopen_scoreboard(apr_pool_t *p, apr_shm_t **shm,
+                                              int detached)
 {
 #if APR_HAS_SHARED_MEMORY
     if (!detached) {
