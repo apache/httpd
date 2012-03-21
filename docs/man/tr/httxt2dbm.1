@@ -1,0 +1,62 @@
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.\" DO NOT EDIT! Generated from XML source.
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.de Sh \" Subsection
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp \" Vertical space (when we can't use .PP)
+.if t .sp .5v
+.if n .sp
+..
+.de Ip \" List item
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.TH "HTTXT2DBM" 1 "2012-03-21" "Apache HTTP Sunucusu" "httxt2dbm"
+.nh
+.SH İSİM
+httxt2dbm \- RewriteMap ile kullanmak için DBM dosyaları üretir
+
+.SH "KULLANIM"
+ 
+.PP
+\fBhttxt2dbm\fR [ -\fBv\fR ] [ -\fBf\fR \fIDBM_türü\fR ] -\fBi\fR \fIkaynak_metin\fR -\fBo\fR \fIçıktı_DBM\fR
+ 
+
+.SH "ÖZET"
+ 
+.PP
+\fBhttxt2dbm\fR, RewriteMap ile kullanmak için düz metin dosyalardan DBM dosyaları üretir\&.
+ 
+
+.SH "SEÇENEKLER"
+ 
+ 
+.TP
+\fB-v\fR
+Çıktı daha ayrıntılı olur\&.  
+.TP
+\fB-f\fR \fIDBM_türü\fR
+Çıktı için kullanılacak DBM türü belirtilir\&. Belirtilmediği takdirde APR öntanımlısı kullanılır\&. Belirtilebilecek DBM türleri: GDBM dosyalar için GDBM SDBM dosyalar için SDBM Berkeley DB dosyalar için DB NDBM dosyalar için NDBM öntanımlı DBM türü için default  
+.TP
+\fB-i\fR \fIkaynak_metin\fR
+DBM dosyasının üretiminde kullanılacak girdi dosyası belirtilir\&. Bu dosya, her satırda bir kayıt bulunmak üzere her satırı şöyle biçemlenmiş olmalıdır: anahtar değer\&. Bu dosyanın biçemi ve manası ile ilgili ayrıntılar için RewriteMap yönergesinin açıklamasına bakınız\&.  
+.TP
+\fB-o\fR \fIçıktı_DBM\fR
+Çıktılanacak DBM dosyasının ismi belirtilir\&.  
+ 
+.SH "ÖRNEKLER"
+ 
+.nf
+
+      httxt2dbm -i rewritemap\&.txt -o rewritemap\&.dbm
+      httxt2dbm -f SDBM -i rewritemap\&.txt -o rewritemap\&.dbm 
+.fi
+ 

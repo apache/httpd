@@ -27,7 +27,6 @@
 <a href="../ko/mod/mod_autoindex.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_autoindex.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Unix <code>ls</code> veya Win32 <code>dir</code> kabuk komutunun
 yaptığı gibi dizin içeriğini listeler.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
@@ -282,7 +281,8 @@ metni belirler.</td></tr>
       (<code>"</code>) içine alınmalıdır.</p>
 
     <div class="example"><h3>Örnek</h3><p><code>
-      AddDescription "Mars Gezegeni" /resimler/mars.gif
+      AddDescription "Mars Gezegeni" mars.gif<br />
+      AddDescription "Maraşlı dostum" dostlar/mars.gif
     </code></p></div>
 
     <p>Normalde öntanımlı açıklama alanının genişliği 23 bayttır. <code><a href="#indexoptions.suppressicon">IndexOptions SuppressIcon</a></code>
@@ -302,6 +302,14 @@ metni belirler.</td></tr>
         kırpılırsa bu durum dizin listesinin kalanını etkileyebilir (örneğin,
         kalın gösterim listenin kalanına yayılabilir).</p>
     </div>
+
+    <div class="note"><h3>Yol bilgisi içeren argümanlar</h3>
+      <p>Mutlak yollar şu an desteklenmemektedir ve çalışma anında hiçbir
+        şeyle eşleşmezler. Normalde sadece htaccess bağlamında kullanılan,
+        göreli yol bilgisi içeren argümanların önüne, kısmen de olsa dizin
+        isimleriyle eşleşmemeleri için örtük olarak '*/' dizgesi eklenir.</p>
+    </div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -524,6 +532,11 @@ belirler.</td></tr>
     <div class="example"><p><code>
       IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
     </code></p></div>
+
+    <div class="note"><h3>Düzenli İfadeler</h3>
+      <p>Bu yönerge, <code class="directive"><a href="../mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code> gibi düzenli ifade bileşenlerine sahip
+        yapılandırma bölümlerinde şu an çalışmamaktadır.</p>
+    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

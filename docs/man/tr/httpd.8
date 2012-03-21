@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "HTTPD" 8 "2010-09-28" "Apache HTTP Sunucusu" "httpd"
+.TH "HTTPD" 8 "2012-03-21" "Apache HTTP Sunucusu" "httpd"
 .nh
 .SH İSİM
 httpd \- Apache Hiper Metin Aktarım Protokolü Sunucusu
@@ -56,7 +56,7 @@ Genelde, \fBhttpd\fR'nin doğrudan çağrılmaması gerekir\&. Unix ve benzerler
 Başlatma sırasında \fIyapılandırma-dosyası\fR'ndaki yönergeler kullanılır\&. Eğer \fIyapılandırma-dosyası\fR bir / ile başlamıyorsa dosyanın ServerRoot yönergesinin değerine göreli olduğu varsayılır\&. Seçenek belirtilmediği takdirde conf/httpd\&.conf öntanımlı değerdir\&.  
 .TP
 \fB-k\fR start | restart | graceful | stop | graceful-stop
-\fBhttpd\fR'yi başlatmak, durdurmak ve yeniden başlatmak için sinyal gönderir\&. Daha ayrıntılı bilgi edinmek için Apache'nin Durdurulması belgesine bakınız\&.  
+\fBhttpd\fR'yi başlatmak, durdurmak ve yeniden başlatmak için sinyal gönderir\&. Daha ayrıntılı bilgi edinmek için Apache httpd'nin Durdurulması belgesine bakınız\&.  
 .TP
 \fB-C\fR \fIyönerge\fR
 Yapılandırma \fIyönerge\fR'sini yapılandırma dosyalarını okumadan önce işleme sokar\&.  
@@ -112,10 +112,10 @@ Aşağıdaki seçenekler sadece Windows platformunda geçerlidir:
  
 .TP
 \fB-k\fR install | config | uninstall
-Parametreler bakımından sırasıyla: Apache bir Windows NT hizmeti haline getirilir; başlatma seçenekleri Apache hizmeti için değiştirilir; ve Apache hizmeti sistemden kaldırılır\&.  
+Parametreler bakımından sırasıyla: Apache httpd bir Windows NT hizmeti haline getirilir; başlatma seçenekleri Apache httpd hizmeti için değiştirilir; ve Apache httpd hizmeti sistemden kaldırılır\&.  
 .TP
 \fB-n\fR \fIisim\fR
-Sinyal gönderilecek Apache hizmetinin \fIismi\fR\&.  
+Sinyal gönderilecek Apache httpd hizmetinin \fIismi\fR\&.  
 .TP
 \fB-w\fR
 Hata durumunda konsol penceresi açık tutularak hata iletilerinin okunması sağlanır\&.  

@@ -27,7 +27,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Apache HTTP Sunucusunda daima mevcut olan çekirdek
  özellikler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr></table>
@@ -464,7 +463,7 @@ kullanımı önerilmemektedir.</td></tr>
     <dl>
       <dt>AuthConfig</dt>
 
-      <dd><code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></code>,
+      <dd><code class="directive"><a href="../mod/mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></code>,
         <code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code>,
         <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code>,
         <code class="directive"><a href="#authname">AuthName</a></code>,
@@ -517,7 +516,7 @@ kullanımı önerilmemektedir.</td></tr>
         <code class="directive"><a href="../mod/mod_autoindex.html#addiconbytype">AddIconByType</a></code>,
         <code class="directive"><a href="../mod/mod_autoindex.html#defaulticon">DefaultIcon</a></code>,
         <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code>,
-        <code class="directive"><a href="../mod/mod_autoindex.html#fancyindexing">FancyIndexing</a></code>,
+        <a href="mod_autoindex.html#indexoptions.fancyindexing"><code>FancyIndexing</code></a>,
         <code class="directive"><a href="../mod/mod_autoindex.html#headername">HeaderName</a></code>,
         <code class="directive"><a href="../mod/mod_autoindex.html#indexignore">IndexIgnore</a></code>,
         <code class="directive"><a href="../mod/mod_autoindex.html#indexoptions">IndexOptions</a></code>,

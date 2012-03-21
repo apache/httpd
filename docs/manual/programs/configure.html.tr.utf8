@@ -22,7 +22,6 @@
 <a href="../ko/programs/configure.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/configure.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p><code>configure</code> betiği, Apache HTTP Sunucusunun kaynak kodlarını
       belli bir platform için yapılandırmakta ve derlemekte kullanılır.
@@ -191,7 +190,7 @@
         <dd>Paylaşımlı modüller gibi program dosyaları
           <code><em>dizin</em></code> dizinine kurulur. Öntanımlı olarak
           <code>libexecdir</code> bu dizini
-          <code><var>EPREFIX</var>/libexec</code> olarak tanımlar.</dd>
+          <code><var>EPREFIX</var>/modules</code> olarak tanımlar.</dd>
 
         <dt><code>--localstatedir=<var>dizin</var></code></dt>
         <dd>Düzenlenebilir tek makinelik veri <code><em>dizin</em></code>
