@@ -100,7 +100,7 @@ AP_DECLARE(int) ap_unregister_extra_mpm_process(pid_t pid, ap_generation_t *old_
         else {
             extras = cur->next;
         }
-        *gen = cur->gen;
+        *old_gen = cur->gen;
         free(cur);
         return 1; /* found */
     }
@@ -937,7 +937,7 @@ AP_DECLARE(apr_status_t) ap_fatal_signal_setup(server_rec *s,
 
 #endif /* NO_USE_SIGACTION */
 
-    pconf = in_pconf;
+    pconf = pconf;
     parent_pid = my_pid = getpid();
 
     return APR_SUCCESS;
