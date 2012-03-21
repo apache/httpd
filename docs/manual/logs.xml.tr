@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1028764:1301745 (outdated) -->
+<!-- English Revision: 1301745 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -230,7 +230,7 @@
           üzerinde <code>identd</code> tarafından belirlenen istemcinin RFC
           1413 kimliğidir. Bu bilgi oldukça güvenilmezdir ve sıkıca denetlenen
           iç ağlar haricinde hemen hemen asla kullanılmamalıdır. Apache,
-          <directive module="core">IdentityCheck</directive> yönergesine
+          <directive module="mod_ident">IdentityCheck</directive> yönergesine
           <code>On</code> değeri atanmış olmadıkça bu bilgiyi saptamaya
           uğraşmaz.</dd>
 

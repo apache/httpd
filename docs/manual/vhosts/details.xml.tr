@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 833879:1301748 (outdated) -->
+<!-- English Revision: 1301748 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -172,8 +172,8 @@
         <directive module="core">KeepAliveTimeout</directive>,
         <directive module="core">KeepAlive</directive>,
         <directive module="core">MaxKeepAliveRequests</directive>,
-        <directive module="core">ReceiveBufferSize</directive> ve
-        <directive module="core">SendBufferSize</directive> yönergeleri için
+        <directive module="mpm_common">ReceiveBufferSize</directive> ve
+        <directive module="mpm_common">SendBufferSize</directive> yönergeleri için
         öntanımlı değerler ana_sunucudaki eşdeğerlerinden miras alınır. (Yani,
         bu yönergeler için ana_sunucudaki son değerler miras alınır.)</li>
 
