@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1179283:1206684 (outdated) -->
+<!-- English Revision: 1206684 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -277,7 +277,8 @@ metni belirler.</description>
       (<code>"</code>) içine alınmalıdır.</p>
 
     <example><title>Örnek</title>
-      AddDescription "Mars Gezegeni" /resimler/mars.gif
+      AddDescription "Mars Gezegeni" mars.gif<br/>
+      AddDescription "Maraşlı dostum" dostlar/mars.gif
     </example>
 
     <p>Normalde öntanımlı açıklama alanının genişliği 23 bayttır. <code><a
@@ -302,6 +303,14 @@ metni belirler.</description>
         kırpılırsa bu durum dizin listesinin kalanını etkileyebilir (örneğin,
         kalın gösterim listenin kalanına yayılabilir).</p>
     </note>
+
+    <note><title>Yol bilgisi içeren argümanlar</title>
+      <p>Mutlak yollar şu an desteklenmemektedir ve çalışma anında hiçbir
+        şeyle eşleşmezler. Normalde sadece htaccess bağlamında kullanılan,
+        göreli yol bilgisi içeren argümanların önüne, kısmen de olsa dizin
+        isimleriyle eşleşmemeleri için örtük olarak '*/' dizgesi eklenir.</p>
+    </note>
+
 </usage>
 </directivesynopsis>
 
@@ -516,6 +525,12 @@ belirler.</description>
     <example>
       IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
     </example>
+
+    <note><title>Düzenli İfadeler</title>
+      <p>Bu yönerge, <directive module="core" type="section"
+        >DirectoryMatch</directive> gibi düzenli ifade bileşenlerine sahip
+        yapılandırma bölümlerinde şu an çalışmamaktadır.</p>
+    </note>
 </usage>
 </directivesynopsis>
 

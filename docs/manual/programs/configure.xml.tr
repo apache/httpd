@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1031045:1296924 (outdated) -->
+<!-- English Revision: 1296924 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -196,7 +196,7 @@
         <dd>Paylaşımlı modüller gibi program dosyaları
           <code><em>dizin</em></code> dizinine kurulur. Öntanımlı olarak
           <code>libexecdir</code> bu dizini
-          <code><var>EPREFIX</var>/libexec</code> olarak tanımlar.</dd>
+          <code><var>EPREFIX</var>/modules</code> olarak tanımlar.</dd>
 
         <dt><code>--localstatedir=<var>dizin</var></code></dt>
         <dd>Düzenlenebilir tek makinelik veri <code><em>dizin</em></code>

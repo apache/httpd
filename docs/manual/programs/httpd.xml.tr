@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 990114:1242487 (outdated) -->
+<!-- English Revision: 1242487 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -43,8 +43,8 @@
       konsol uygulaması olarak çalıştırılır.</p>
 </summary>
 
-<seealso><a href="../invoking.html">Apache'nin Başlatılması</a></seealso>
-<seealso><a href="../stopping.html">Apache'nin Durdurulması</a></seealso>
+<seealso><a href="../invoking.html">Apache httpd'nin Başlatılması</a></seealso>
+<seealso><a href="../stopping.html">Apache httpd'nin Durdurulması</a></seealso>
 <seealso><a href="../configuring.html">Yapılandırma Dosyaları</a></seealso>
 <seealso><a href="../platform/">Platforma Özgü Belgeler</a></seealso>
 <seealso><program>apachectl</program></seealso>
@@ -93,7 +93,7 @@
       graceful-stop</code></code></dt>
     <dd><strong><code>httpd</code></strong>'yi başlatmak, durdurmak ve yeniden
       başlatmak için sinyal gönderir. Daha ayrıntılı bilgi edinmek için <a
-      href="../stopping.html">Apache'nin Durdurulması</a> belgesine
+      href="../stopping.html">Apache httpd'nin Durdurulması</a> belgesine
       bakınız.</dd>
 
     <dt><code><strong>-C</strong> <var>yönerge</var></code></dt>
@@ -180,12 +180,12 @@
 
   <dl>
     <dt><code><strong>-k</strong> install | config | uninstall</code></dt>
-    <dd>Parametreler bakımından sırasıyla: Apache bir Windows NT hizmeti
-      haline getirilir; başlatma seçenekleri Apache hizmeti için değiştirilir;
-      ve Apache hizmeti sistemden kaldırılır.</dd>
+    <dd>Parametreler bakımından sırasıyla: Apache httpd bir Windows NT hizmeti
+      haline getirilir; başlatma seçenekleri Apache httpd hizmeti için
+      değiştirilir; ve Apache httpd hizmeti sistemden kaldırılır.</dd>
 
     <dt><code><strong>-n</strong> <var>isim</var></code></dt>
-    <dd>Sinyal gönderilecek Apache hizmetinin <var>ismi</var>.</dd>
+    <dd>Sinyal gönderilecek Apache httpd hizmetinin <var>ismi</var>.</dd>
 
     <dt><code><strong>-w</strong></code></dt>
     <dd>Hata durumunda konsol penceresi açık tutularak hata iletilerinin
