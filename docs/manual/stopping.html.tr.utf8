@@ -26,7 +26,6 @@
 <a href="./ko/stopping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/stopping.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Bu belge Apache HTTPd’nin Unix benzeri sistemlerde durdurulması ve
       yeniden başlatılması konularını kapsar. Windows NT, 2000 ve XP
@@ -218,7 +217,7 @@
       haline gelmekteyse de, bazı yapılandırmalarda yarış koşullarının
       oluşmasına ve kısır çekişmelere (deadlock) sebep olabilir.</p>
 
-    <p>Sunucunun süreç kimliğini içeren <code class="directive"><a href="./mod/core.html#lockfile">Lockfile</a></code> ve <code class="directive"><a href="./mod/mod_cgid.html#scriptsock">ScriptSock</a></code> gibi dosyaların disk üzerindeki
+    <p>Sunucunun süreç kimliğini içeren <code class="directive"><a href="./mod/mpm_common.html#lockfile">Lockfile</a></code> ve <code class="directive"><a href="./mod/mod_cgid.html#scriptsock">ScriptSock</a></code> gibi dosyaların disk üzerindeki
       mevcudiyetlerinin sorunsuz olarak devam ettiğinden emin olunmaya
       çalışılmalıdır.  Ayrıca, bir yapılandırma yönergesi, üçüncü parti bir
       modül veya kalıcı CGI uygulamalarına ait disk kilit veya durum dosyaları

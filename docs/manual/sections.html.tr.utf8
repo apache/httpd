@@ -24,7 +24,6 @@
 <a href="./ko/sections.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/sections.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
  <p><a href="configuring.html">Yapılandırma dosyaları</a>ndaki
 yönergeler sunucunun tamamına uygulanacağı gibi sadece belli dizinler,
 dosyalar, konaklar veya URL’lere uygulanmakla sınırlanabilir. Bu belgede,
@@ -77,7 +76,7 @@ belli bir modülün varlığının veya yokluğunun yapılandırma dosyanızın
 modüllerle ilgili hata iletilerini engellediğinden, taşıyıcı içine, her
 zaman çalışması istenen yönergeler konulmamalıdır.</p>
 
-<p>Aşağıdaki örnekte, <code class="directive"><a href="./mod/mod_mime_magic.html#mimemagicfiles">MimeMagicFiles</a></code> yönergesi sadece
+<p>Aşağıdaki örnekte, <code class="directive"><a href="./mod/mod_mime_magic.html#mimemagicfile">MimeMagicFile</a></code> yönergesi sadece
 <code class="module"><a href="./mod/mod_mime_magic.html">mod_mime_magic</a></code> modülü mevcutsa uygulanacaktır.</p>
 
 <div class="example"><p><code>

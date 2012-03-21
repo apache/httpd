@@ -23,7 +23,6 @@
 <a href="../ko/vhosts/details.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/details.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
 
     <p>Sanal konak kodu <strong>Apache 1.3</strong> sürümünde baştan yeniden
@@ -172,8 +171,8 @@
         <code class="directive"><a href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code>,
         <code class="directive"><a href="../mod/core.html#keepalive">KeepAlive</a></code>,
         <code class="directive"><a href="../mod/core.html#maxkeepaliverequests">MaxKeepAliveRequests</a></code>,
-        <code class="directive"><a href="../mod/core.html#receivebuffersize">ReceiveBufferSize</a></code> ve
-        <code class="directive"><a href="../mod/core.html#sendbuffersize">SendBufferSize</a></code> yönergeleri için
+        <code class="directive"><a href="../mod/mpm_common.html#receivebuffersize">ReceiveBufferSize</a></code> ve
+        <code class="directive"><a href="../mod/mpm_common.html#sendbuffersize">SendBufferSize</a></code> yönergeleri için
         öntanımlı değerler ana_sunucudaki eşdeğerlerinden miras alınır. (Yani,
         bu yönergeler için ana_sunucudaki son değerler miras alınır.)</li>
 
