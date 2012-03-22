@@ -540,7 +540,7 @@ syst&egrave;me de mise en correspondance des URLs avec le syst&egrave;me de fich
 de fa&ccedil;on &agrave; ce que les syst&egrave;mes de mise en correspondance bas&eacute;s sur les
 chemins de fichiers, comme la directive <directive
 module="mod_alias">Alias</directive>, <directive
-module="core">Redirect</directive>, ou <directive 
+module="mod_alias">Redirect</directive>, ou <directive 
 module="mod_alias">ScriptAlias</directive>, par exemple, puissent avoir une
 chance d'accomplir leur t&acirc;che.
 </p>
