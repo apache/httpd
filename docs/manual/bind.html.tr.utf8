@@ -25,7 +25,6 @@
 <a href="./ko/bind.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/bind.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Apache HTTPD sunucusunun belli adresleri ve portları dinlemek üzere
     yapılandırılması.</p>
@@ -49,7 +48,7 @@
       seçilmiş bazı adresleri ya da her ikisini de dinlemesi için bunun
       belirtilmesi gerekebilir. Bu çoğunlukla, httpd’nin farklı IP
       adreslerine, konak isimlerine ve portlarına nasıl yanıt vereceğinin
-      belirlendiği <a href="vhosts.html">sanal konak</a> özelliği ile birlikte
+      belirlendiği <a href="vhosts">sanal konak</a> özelliği ile birlikte
       yürür.</p>
 
     <p><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> yönergesi sunucuya

@@ -22,7 +22,6 @@
 <a href="./fr/caching.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./tr/caching.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Bu belge <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>,
       <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code>, <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code>
@@ -33,50 +32,53 @@
       özelliklerinin nasıl kullanılacağı açıklanmıştır.</p>
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Giriş</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#overview">Önbelleklemeye Bir Bakış</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#http-caching">Üç durumlu RFC2616 HTTP önbelleklemesi</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#socache-caching">İki durumlu Anahtar/Değer Paylaşımlı Nesne Önbellekleme</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#file-caching">Uzmanlaşmış Dosya Önbellekleme</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#security">Güvenlik Kaygıları</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#filehandle">Dosya Tanıtıcı Önbelleklemesi</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#inmemory">Sistem Belleğinde Önbellekleme</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#disk">Disk Üzerinde Önbellekleme</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="introduction" id="introduction">Giriş</a></h2>
     
 
-    <p>Apache HTTP sunucusunun 2.2 sürümünden itibaren
-      <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> ve <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> modülleri
-      deneysel olmaktan çıkarılmış ve üretim amaçlı kullanılabileceğine karar
-      verilmiştir. Bu önbellekleme mimarileri gerek HTTP sunucusu gerekse
-      vekili olarak çalışmada HTTP işlemlerini hızlandırmak anlamında sunucuya
-      güç katarlar.</p>
+    <p>Apache HTTP sunucusu, sunucunun başarımını çeşitli yollarla arttırmak
+      üzere tasarlanmış bir dizi önbellekleme özelliğine sahiptir.</p>
 
-    <p><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>, ortam sağlayıcı modülü olan
-      <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code> ile birlikte HTTP önbelleklemesini
-      akıllıca yerine getirir. İçeriğin kendisi önbellekte saklanırken
-      <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> içeriğin önbelleklenebilmesini denetim
-      altında tutan HTTP başlıkları ve seçenekleri ile ilgilenir. Yerel ve
-      vekalet edilen içeriğin her ikisinin de aynı anda işlem görmesi
-      sağlanabilir. <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>, vekalet edilen içeriğe,
-      devingen yerel içeriğe veya zamanla değişen yerel dosyalara erişimi
-      hızlandırma ihtiyacına yönelik olarak hem basit hem de karmaşık
-      önbellekleme yapılandırmalarını mümkün kılar.</p>
-
-    <p><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> ise biraz daha temel ancak bazen daha
-      kullanışlı olabilen bir önbellekleme şekli ile ilgilenir. URL’lerin
-      önbelleklenebilmesini mümkün kılmanın karmaşıklığıyla boğuşmak yerine
-      <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code>, dosyaların httpd’nin son başlatıldığı
-      zamanki durumlarını saklamak için dosyaların belleğe eşlenmek üzere ele
-      alınmasını sağlar. Böylelikle, <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code>, çok sık
-      değişmeyen durağan yerel dosyalara erişim zamanını azaltmaya yardım
-      eder.</p>
-
-    <p><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code> ve
-      <code class="directive"><a href="./mod/mod_file_cache.html#mmapfile">MMapFile</a></code> yönergeleri ile
-      ilgili bölümlerde anlatılanları saymazsak
-      <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code>, bu belgenin asıl konusu olan
-      <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> önbellekleme mimarisine göre daha basit bir
-      önbellekleme gerçeklenimidir.</p>
+    <dl>
+        <dt>Üç durumlu RFC2616 HTTP önbelleklemesi</dt>
+        <dd>
+            <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> ve destek modülü
+            <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code> akılcı ve HTTP'ye uygun
+            önbellekleme sağlar. İçeriğin kendisi önbellekte saklanır ve
+            <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>, <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html">RFC2616'nın 13. bölümü</a>nde açıklandığı gibi, içeriğin
+            önbelleklenebilirliğini denetleyen çeşitli HTTP başlıklarının ve
+            seçeneklerinin tümünü onurlandırmayı hedefler.
+            Devingen yerel içerik veya vekalet edilen içerik ile ilgilendiğiniz
+            durumda veya muhtemel bir yavaş disk üzerinde yerel dosyalara
+            erişimi hızlandırmak ihtiyacında olduğunuz durumda
+            <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> hem basit hem de karmaşık önbellekleme
+            yapılandırmalarını hedefler.
+        </dd>
+        <dt>İki durumlu anahtar/değer paylaşımlı nesne önbellekleme</dt>
+        <dd>
+            <a href="socache.html">Paylaşımlı nesne önbellek API'si</a>
+            (socache) ve destek modülleri sunucu taraflı bir anahtar/değer
+            paylaşımlı nesne önbelleklemesi sağlar. Bu modüller SSL oturumları
+            ve kimlik doğrulama bilgileri gibi düşük seviyeli verileri
+            önbelleklemek için tasarlanmıştır. Destek modülleri verinin sunucu
+            tarafı bir paylaşımlı bellekte veya veri merkezi tarafı memcache
+            veya distcache gibi bir önbellekte saklanmasını mümkün kılar.
+        </dd>
+        <dt>Uzmanlaşmış dosya önbellekleme</dt>
+        <dd>
+            <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> dosyaların sunucunun başlatılması
+            sırasında  belleğe yüklenmesi ile ilgilenir. Böylece dosyalara
+            erişim zamanını kısaltabilir, sıkça erişilen dosyaların dosya
+            tanıtıcılarını kaydedebilir, her istekte diske gitme ihtiyacını
+            ortadan kaldırır.
+        </dd>
+    </dl>
 
     <p>Bu belgeden azami yararı sağlayabilmek için temel bir HTTP bilginizin
       olması ve <a href="urlmapping.html">URL’lerin Dosya Sistemine
@@ -85,142 +87,215 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="overview" id="overview">Önbelleklemeye Bir Bakış</a></h2>
+<h2><a name="http-caching" id="http-caching">Üç durumlu RFC2616 HTTP önbelleklemesi</a></h2>
 
     
 
-    <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code></li><li><code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code></li><li><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#mmapfile">MMapFile</a></code></li><li><code class="directive"><a href="./mod/core.html#usecanonicalname">UseCanonicalName</a></code></li><li><code class="directive"><a href="./mod/mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code></li><li><code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code></li><li><code class="directive"><a href="./mod/core.html#usecanonicalname">UseCanonicalName</a></code></li><li><code class="directive"><a href="./mod/mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></code></li></ul></td></tr></table>
 
-    <p>Bir istek sonuçlanıncaya kadar <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> modülünde iki
-      aşamadan geçer. İlkinde <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> bir URL eşleme modülü
-      olarak çalışır ve URL önbellekteyse ve zaman aşımına uğramamışsa isteğin
-      doğrudan <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> tarafından sunulmasını sağlar.</p>
+    <p>HTTP protokolü
+      <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html">RFC2616'nın 13. bölümü</a>nde açıklanan satıriçi önbellekleme
+      mekanizması için yerleşik bir destek içerir ve bunun getirilerinden
+      yararlanmak için <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> modülü kullanılabilir.</p>
 
-    <p>Yani isteğin sunumu sırasında, isteğin örneğin,
-      <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code> veya <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code> tarafından
-      ele alınması gerekse bile bu yapılmaz. Önbelleklenen içerik ilk alındığı
-      haliyle sunulur.</p>
+    <p>İçeriğin taze olmadığı durumda içeriğin kaybolmasına sebep olan basit
+      iki durumlu anahtar/değer önbelleklemesinin tersine, HTTP önbelleği
+      eskimiş içeriği tutan ve bu eski içeriğin değişip değişmediğini özgün
+      sunucuya soran ve duruma göre onu tekrar taze duruma getiren bir
+      mekanizma içerir.</p>
 
-    <p>Eğer URL önbellekte yoksa, <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> isteği bir  <a href="filter.html">süzgece</a> tabi tutar. httpd içeriğin varlığını
-      saptamışsa içeriğin süzgeç tarafından sunulmasını sağladıktan sonra,
-      süzgeç içeriğin önbelleklenebileceğini saptamışsa gelecekte sunmak üzere
-      içeriği önbelleğe kaydeder.</p>
+    <p>HTTP önbelleğinde bulunan bir girdi şu üç durumdan birinde olabilir:</p>
 
-    <p>Eğer URL önbellekte bulunmuş fakat içeriğin zaman aşımına uğradığı
-      anlaşılmışsa süzgeç yine de eklenir fakat bu kez
-      <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> önbellekteki sürümün hala geçerli olup
-      olmadığını saptamak için kaynağın bulunduğu sunucuya bir koşullu istek
-      gönderir. Önbellekteki sürüm hala geçerliyse temel verileri güncellenir
-      ve istek önbellekten sunulur. Önbellekteki sürüm artık geçerli değilse,
-      önbellekteki sürüm silinir ve süzgeç güncel içeriği önbelleğe kaydeder
-      ve isteği oradan sunar.</p>
+    <dl>
+    <dt>Taze</dt>
+    <dd>
+        İçerik yeteri kadar yeni (<strong>tazelik ömrü</strong>nden daha genç)
+        ise <strong>taze</strong> sayılır. Bir HTTP önbelleği böyle bir içeriği
+        özgün sunucuya birşey sormadan sunabilir.
+    </dd>
+    <dt>Bayat</dt>
+    <dd>
+        <p>İçerik çok eski (<strong>tazelik ömrü</strong>nden daha yaşlı)
+        ise <strong>bayat</strong> sayılır. Bir HTTP önbelleği böyle bir
+        içeriği istemciye sunmadan önce özgün sunucuya bağlanıp bayat içeriğin
+        hala yeterince taze olup olmadığına bakmalıdır. Özgün sunucu, içerik
+        geçersizse yenisini gönderecektir, aksi takdirde, (ideal olanı budur)
+        içeriğin hala geçerli olduğunu belirten bir kod ile yanıt verecektir.
+        İçerik tekrar taze hale gelince süreç kaldığı yerden devam eder.</p>
+
+        <p>HTTP protokolü belli koşullar altında önbelleğin bayat içeriği
+        sunmasına izin vermez. Örneğin, bir içeriği özgün sunucuda tazeleme
+        çabasının bir 5xx hatasıyla başarısız olması veya başka bir tazeleme
+        isteğinin henüz sonuçlanmamış olması bu çeşit koşullardandır. Bu
+        durumlarda yanıta bir <code>Warning</code> başlığı eklenir.</p>
+    </dd>
+    <dt>Yok</dt>
+    <dd>
+        Önbellekte yer kalmazsa yer açmak için içeriğin silinmesi seçenek
+        dahilindedir. İçerik taze olsun olmasın her zaman silinebilir. Önlem
+        olarak <code class="program"><a href="./programs/htcacheclean.html">htcacheclean</a></code> elle veya bir artalan süreci
+        olarak çalıştırılabilir. Böylece önbelleğin boyutunun belirtilen
+        boyutta veya belirtilen dosya düğümü sayısında kalması sağlanabilir.
+        Araç içeriği silerken bayat içeriğe öncelik verir.
+    </dd>
+    </dl>
+
+    <p>HTTP önbelleklemesinin çalışması ile ilgili bütün ayrıntılar
+    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html">RFC2616'nın 13. bölümünde</a> bulunabilir.</p>
+
+    <h3>Sunucu ile etkileşim</h3>
+      
+
+      <p><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> modülü
+      <code class="directive"><a href="./mod/mod_cache.html#cachequickhandler">CacheQuickHandler</a></code> yönergesinin
+      değerine bağlı olarak iki olası yerde sunucuya bağlanır:
+      </p>
+
+      <dl>
+      <dt>Çabuk eylem aşaması</dt>
+      <dd>
+          <p>Bu aşama çok erken gerçekleşen bir aşama olup isteğin işlenmesi
+          sırasında isteğin çözümlenmesinin hemen sonrasıdır. İçerik
+          önbellekte mevcutsa hemen sunulur ve geri kalan istek işleme işlemi
+          iptal edilir.</p>
+
+          <p>Bu senaryoda önbellek sunucunun önüne vidalanmış gibi
+          davranır.</p>
+
+          <p>Sunucuda gerçekleşecek bir dizi işlemin büyük çoğunluğunun
+          yapılmadan geçilmesi nedeniyle bu en yüksek başarımlı kiptir.
+          Bu kip ayrıca, sunucu işlemlerinin kimlik doğrulama ve yetkilendirme
+          aşamalarının da yapılmadan geçilmesini sağlar. Bu bakımdan bu kip
+          seçilirken bu durum dikkate alınmalıdır.</p>
+      </dd>
+      <dt>Normal eylem aşaması</dt>
+      <dd>
+          <p>Bu aşama geç bir aşama olup, isteğin tamamen işlenmesinin
+          sonrasıdır.</p>
+
+          <p>Bu senaryoda önbellek sunucunun arkasına vidalanmış gibi
+          davranır.</p>
+
+          <p>Bu kip en esneğidir. Önbelleğin, süzme zincirinin hassas olarak
+          denetlenen bir noktasında oluşması sağlanabilir ve önbelleklenen
+          içerik istemciye gönderilmeden önce süzülüp
+          kişiselleştirilebilir.</p>
+          </dd>
+        </dl>
+
+        <p>URL önbellekte yoksa <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> modülü yanıtı
+          önbelleğe kaydetme aşamasında süzgeç yığıtına bir
+          <a href="filter.html">süzgeç</a> ekler ve geri çekilerek normal istek
+          işlemlerinin devam etmesine izin verir. İçeriğin önbelleklenebilir
+          olduğu saptanırsa içerik gelecekte sunulmak üzere önbelleğe
+          kaydedilir, aksi takdirde içerik yok sayılır.</p>
+
+        <p>Önbellekteki içerik bayatsa, <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> modülü
+          isteği bir <strong>koşullu istek</strong> haline getirir. Özgün
+          sunucu normal bir yanıt verirse bu yanıt mevcut içeriğin yerine
+          önbelleklenir. Özgün sunucu bir <code>304 Not Modified</code> yanıtı
+          verirse içerik tekrar taze olarak imlenir ve önbellekteki içerik
+          süzgeç tarafından kaydedilmeden sunulur.</p>
+    
 
     <h3>Önbelleğin Hızlandırılması</h3>
       
 
-      <p>Yerel içerik önbelleklendiği takdirde <code class="directive"><a href="./mod/core.html#usecanonicalname">UseCanonicalName</a></code> yönergesine <code>On</code>
+      <p>Bir sanal konak birçok farklı sunucu takma adından biri olarak
+        bilindiği takdirde <code class="directive"><a href="./mod/core.html#usecanonicalname">UseCanonicalName</a></code> yönergesine <code>On</code>
         değeri atanmışsa önbellekten sunulan sayfa sayısında büyük bir artış
-        olduduğu görülür. Bunun sebebi içeriği sunan sanal konağın isminin
-        önbellek anahtarının bir parçası olarak kullanılmasıdır. Yönergeye
+        olduğu görülür. Bunun sebebi içeriği sunan sanal konağın isminin
+        önbellek anahtarının içinde kullanılmasıdır. Yönergeye
         <code>On</code> değerini atamak suretiyle çok isimli ve rumuzlu sanal
         konaklar için farklı önbellek girdileri oluşturulmaz, bunun yerine her
         meşru sanal konak için ayrı bir önbellek tutulur.</p>
-
-      <p>Önbellekleme, URL’nin dosya ismine dönüştürülmesi aşamasında
-        gerçekleştiğinden önbelleklenen belgeler sadece URL isteklerine bir
-        yanıt olarak sunulurlar. <a href="howto/ssi.html">Sunucu Taraflı
-        İçerikleri</a> kullanmazsanız genellikle bunun fazla bir önemi
-        olmaz.</p>
-
-      <div class="example"><p><code>
-        &lt;!-- Bu içerik önbelleklenebilir. --&gt;<br />
-        &lt;!--#include virtual="/dipnot.html" --&gt;<br />
-        <br />
-        &lt;!-- Bu içerik önbelleklenemez. --&gt;<br />
-        &lt;!--#include file="/bir/yol/dipnot.html" --&gt;
-      </code></p></div>
-
-      <p>Sunucu Taraflı İçerikleri kullanıyorsanız ve önbelleklemenin
-        sağladığı hız artışından da yaralanmak istiyorsanız içerik
-        yerleştirmek için <code>virtual</code> içerik türünü kullanınız.</p>
     
 
-    <h3>Zaman Aşımı Süreleri</h3>
+    <h3>Tazelik Ömrü</h3>
       
 
-      <p>Önbellekli öğeler için öntanımlı zaman aşımı süresi bir saat olmakla
-        birlikte <code class="directive"><a href="./mod/mod_cache.html#cachedefaultexpire">CacheDefaultExpire</a></code>
-        yönergesi kullanılarak bu değer kolaylıkla geçersiz kılınabilir. Bu
-        öntanımlı değer sadece içeriğin özgün kaynağı bir zaman aşımı süresi
-        veya son değişiklik tarihi belirtmediği takdirde kullanılır.</p>
+      <p>Önbelleklenmek üzere tasarlanmış iyi biçimli bir içerik tazelik ömrünü
+        <code>Cache-Control</code> başlığının  <code>max-age</code> veya
+        <code>s-maxage</code> alanlarıyla ya da bir <code>Expires</code>
+        başlığını içererek bildirmelidir.</p>
+
+      <p>Aynı zamanda, özgün sunucunun tanımladığı tazelik ömrü, bir istemci
+        tarafından istekte bir <code>Cache-Control</code> başlığı kullanılarak
+        geçersiz kılınmak istenebilir. Bu durumda hangi tazelik ömrü daha
+        kısaysa o geçerli olur.</p>
+
+      <p>Tazelik ömrü istekte veya yanıtta mevcut değilse öntanımlı bir tazelik
+        ömrü kullanılır. Öntanımlı tazelik ömrü önbellekli içerik için bir saat
+        olmakla birlikte <code class="directive"><a href="./mod/mod_cache.html#cachedefaultexpire">CacheDefaultExpire</a></code> yönergesi
+        kullanılarak kolayca değiştirilebilir.</p>
 
       <p>Bir yanıt <code>Expires</code> başlığını değil de
         <code>Last-Modified</code> başlığını içeriyorsa
-        <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> zaman aşımı süresini <code class="directive"><a href="./mod/mod_cache.html#cachelastmodifiedfactor">CacheLastModifiedFactor</a></code> yönergesinin
-        nasıl kullanıldığına bakarak saptar.</p>
+        <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> tazelik ömrünü <code class="directive"><a href="./mod/mod_cache.html#cachelastmodifiedfactor">CacheLastModifiedFactor</a></code> yönergesine
+        bakarak saptar.</p>
 
-      <p>Yerel içerik için, zaman aşımı süresini hassas olarak ayarlamak
-        gerekirse <code class="module"><a href="./mod/mod_expires.html">mod_expires</a></code> kullanılabilir.</p>
+      <p>Yerel içerik için, ya da kendi <code>Expires</code> başlığını
+        tanımlamayan uzak içerik için tazelik ömrünü <code>max-age</code> ve
+        <code>Expires</code> ekleyerek hassas olarak ayarlamak
+        için <code class="module"><a href="./mod/mod_expires.html">mod_expires</a></code> kullanılabilir.</p>
 
-      <p>Zaman aşımı süresinin üst sınırı <code class="directive"><a href="./mod/mod_cache.html#cachemaxexpire">CacheMaxExpire</a></code> yönergesi ile
+      <p>Tazelik ömrünün üst sınırı <code class="directive"><a href="./mod/mod_cache.html#cachemaxexpire">CacheMaxExpire</a></code> yönergesi ile
         belirlenebilir.</p>
-
     
 
     <h3>Şartlı İstekler için Özlü Kılavuz</h3>
       
 
-      <p>Önbellekteki içerik zaman aşımına uğrayıp, içerik sağlayıcıya veya
-        arka sunucuya özgün isteği aktarmak yerine ayrı bir istek yapılması
-        gereği httpd’nin şartlı bir istek yapması sonucunu doğurur.</p>
+      <p>Önbellekteki içeriğin zaman aşımına uğrayıp bayat hale gelmesi,
+        httpd’nin özgün isteği aktarmak yerine isteği değişikliğe uğratarak
+        şartlı bir istek yapması sonucunu doğurur.</p>
 
-      <p>Bir istemcinin veya önbelleğin aynı içeriğin farklı sürümleri
-        arasında ayrım yapabilmesi için HTTP protokolü bazı başlık alanları
-        önerir. Örneğin, "Etag:" başlığıyla sunulan bir özkaynak için
-        "If-None-Match:" başlığıyla bir şartlı istek yapmak mümkün olduğu gibi
-        özkaynak "Last-Modified:" başlığıyla sunuluyorsa şartlı istek
-        "If-Modified-Since:" başlığıyla yapılabilir, vesaire.</p>
+      <p>Özgün önbellekli yanıtta bir <code>ETag</code> başlığı mevcutsa,
+        <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> modülü özgün sunucuya yapılan isteğe
+        bir <code>If-None-Match</code> başlığı ekler.
+        Özgün önbellekli yanıtta bir <code>Last-Modified</code> başlığı
+        mevcutsa, <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> modülü özgün sunucuya yapılan
+        isteğe bir <code>If-Modified-Since</code> başlığı ekler. Bunlardan
+        birinin varlığı isteği <strong>koşullu</strong> yapar.</p>
 
-      <p>Böyle bir şartlı istek yapıldığında yanıt koşulun içerikle eşleşip
-        eşleşmediğine bağlı olarak farklı olur. Eğer istek bir
-        "If-Modified-Since:" başlığıyla yapılmışsa ve içerik istekte
-        belirtilen zamandan önce değiştirilmemişse kısa ve öz olarak bir "304
-        Not Modified" (Bir değişiklik yok) iletisiyle yanıt verilir.</p>
+      <p>Bir koşullu istek özgün sunucu tarafından alındığında, özgün sunucu
+        <code>ETag</code> veya <code>Last-Modified</code> başlığının isteğe
+        uygun olarak değişip değişmediğine bakmalıdır. Değişmemişse, özgün
+        sunucu kısa ve öz bir "304 Not Modified" yanıtı ile yanıt vermelidir.
+        Bunun önbellekteki anlamı şudur: Eskimiş içerik hala tazedir ve içerik
+        yeni tazelik ömrüne ulaşıncaya kadar sonraki isteklerde
+        kullanılmalıdır.</p>
 
-      <p>Aksi takdirde  bir şartlı istek yapılmamış gibi içeriğin kendisi
+      <p>İçerik değişmişse, bir şartlı istek yapılmamış gibi içeriğin kendisi
         sunulur.</p>
 
-      <p>Önbellekleme ile ilgili şartlı istekler çifte yarar sağlar. Birinci
-        olarak, böyle bir istek arkadaki sunucuya yapılıyorsa ve iki içerik de
-        aynıysa bunu saptamak kolay olur ve özkaynağın tamamını aktarma
-        külfetinden kurtulunur.</p>
+      <p>Şartlı istekler çifte yarar sağlar. Birinci olarak, böyle bir istek
+        özgün sunucuya yapılıyorsa ve iki içerik de aynıysa bunu saptamak kolay
+        olur ve özkaynağın tamamını aktarma külfetinden kurtulunur.</p>
 
-      <p>İkinci olarak, şartlı istekler arka sunucuda normalden daha az
-        faaliyete sebep olur. Durağan dosyalar için bu genellikle
+      <p>İkinci olarak, iyi tasarlanmış bir özgün sunucu, koşullu istekler tam
+        bir yanıt üretmekten önemli ölçüde ucuz olacak şekilde tasarlanmış
+        olacaktır. Durağan dosyalar için bu genellikle
         <code>stat()</code> veya  benzeri bir sistem çağrısıyla dosya
         boyutları ve değişiklik zamanına bakmak şeklinde gerçekleşir.
-        Böylelikle httpd yerel içeriği önbellekliyor olsa bile ve hatta
-        içerik zaman aşımına da uğrasa önbellekteki dosyada bir değişiklik
-        olmadığı takdirde içeriği önbellekten sunmak daha hızlı olacaktır.
-        Çünkü dosyayı önbellekten okumak, arka sunucudan okumaktan daha
-        hızlıdır (bu, bellekten okumayla diskten okumayı karşılaştırmak
-        gibidir).</p>
+        Böylelikle, yerel içeriği bir değişiklik olmadığı takdirde önbellekten
+        sunmak daha hızlı olacaktır.</p>
+
+      <p>Özgün sunucular koşullu istekleri desteklemek için her türlü çabayı
+        göstermelidir. Ancak, koşullu istekler desteklenmiyorsa, özgün sunucu
+        istek koşullu değilmiş gibi yanıt vermeli, önbellek ise, içerik
+        değişmiş ve yani içerik önbelleğe kaydedilmiş gibi yanıt vermelidir. Bu
+        durumda, önbellek basit bir iki durumlu (içerik ya tazedir ya da
+        silinmiş) önbellek gibi davranacaktır.</p>
     
 
     <h3>Neler Önbelleklenebilir?</h3>
       
 
-      <p>Evvelce bahsedildiği gibi httpd’de iki tür önbellekleme yapılır ve
-        bunlar farklı yöntemlerle çalışır. <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code>
-        önbelleklemesinde dosyalar httpd başlatıldığı zamanki içerikle
-        saklanır. Bu modül tarafından önbelleğe alınmış bir dosya için istek
-        geldiğinde isteğin yolu kesilip önbellekteki dosya sunulur.</p>
-
-      <p><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> önbelleklemesinde işler biraz daha
-        karışıktır. Bir isteğe hizmet sunulurken istenen içerik evvelce
-        önbelleklenmemişse önbellekleme modülü önce içeriğin
-        önbelleklenebilirliğine bakar. Bir yanıtın önbelleklenebilirliğini
-        belirleyen koşullar şunlardır:</p>
+      <p>HTTP önbelleğin tarafından önbelleklenebilecek içerik
+<a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.4">
+       RFC2616 Section 13.4 Response Cacheability</a> belgesinde tanımlanmış
+       olup, bunlar şöyle özetlenebilir:</p>
 
       <ol>
         <li>Önbellekleme bu URL ile etkin kılınabilmelidir. <code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code> ve <code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code> yönergelerine bakınız.</li>
@@ -229,12 +304,10 @@
 
         <li>İstek bir HTTP GET isteği olmalıdır.</li>
 
-        <li>İstek bir "Authorization:" başlığı içeriyorsa yanıt önbelleğe
-          alınmayacaktır.</li>
-
         <li>Eğer yanıt bir "Authorization:" başlığı içeriyorsa ayrıca
           "Cache-Control:" başlığında da "s-maxage", "must-revalidate" veya
-          "public" değerlerinden birini içermelidir.</li>
+          "public" değerlerinden birini içermelidir, aksi takdirde
+          önbelleklenmez.</li>
 
         <li>Eğer URL (GET yöntemi kullanan bir HTML formunun yaptığı gibi) bir
           sorgu dizgesi içeriyorsa  yanıt, RFC2616’nın 13.9. bölümünde
@@ -245,8 +318,8 @@
         <li><code class="directive"><a href="./mod/mod_cache.html#cacheignorenolastmod">CacheIgnoreNoLastMod</a></code>
           yönergesinin kullanımını gerektiren bir durum olmadıkça 200 durum
           koduna sahip bir yanıtın "Etag", "Last-Modified" ve "Expires"
-          başlıklarından birini veya "Cache-Control:" başlığının max-age veya
-          max-age yönergelerinden birini (en azından) içermesi gerekir.</li>
+          başlıklarından birini veya "Cache-Control:" başlığının "max-age" veya
+          "s-maxage" yönergelerinden birini (en azından) içermesi gerekir.</li>
 
         <li><code class="directive"><a href="./mod/mod_cache.html#cachestoreprivate">CacheStorePrivate</a></code>
           yönergesinin kullanımını gerektiren bir durum olmadıkça yanıt
@@ -265,26 +338,35 @@
     <h3>Neler Önbelleklenmemeli?</h3>
       
 
-      <p>Kısaca, istek zamana aşırı bağımlıysa ya da istek kısmen bile olsa
-        HTTP uzlaşımıyla bağdaşmıyorsa önbelleğe alınmamalıdır.</p>
+      <p>İçerik zamana bağımlıysa ya da istek kısmen bile olsa HTTP uzlaşımıyla
+        bağdaşmıyorsa önbelleğe alınmamalıdır. Bu içerik önbelleklenemeyeceğini
+        <code>Cache-Control</code> başlığını kullanarak sunucuya
+        bildirmelidir.</p>
 
-      <p>İçeriği istekçinin IP adresine bağlı olarak değişen veya her beş
-        dakikada bir değişikliğe uğrayan bir devingen içeriğe sahipseniz böyle
-        bir içerik asla önbelleğe alınmamalıdır.</p>
+      <p>İçerik sıkça değişiyorsa, tazelik ömrü dakikalar veya saniyelerle
+        ifade ediliyorsa, içerik yine de önbelleklenebilir. Ancak, tam
+        yanıtların düzenli olarak üretilmemesinin temini için  özgün sunucunun
+        <strong>koşullu istekleri</strong> doğru olarak desteklemesi
+        sağlanmalıdır.</p>
 
-      <p>Diğer taraftan, içerik HTTP başlığındaki değerlere bağlı olarak
-        değişiyorsa içeriğin bir "Vary" başlığı kullanılarak akıllıca
-        önbelleklenmesi imkanı mevcuttur.</p>
+      <p>İstemcinin sağladığı istek başlıklarına dayanarak değişen içerik,
+        <code>Vary</code> yanıt başlığının akıllıca kullanımıyla
+        önbelleklenebilir.</p>
     
 
     <h3>Değişken/Uzlaşımlı İçerik</h3>
       
 
-      <p>"Vary" başlıklı bir yanıt arka sunucudan istenirken
-        <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> tarafından alınmışsa akıllıca ele alınmaya
-        çalışılacaktır. Mümkünse, <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> gelecekte bu
-        içerikle ilgili isteklerin "Vary" başlıklı yanıtları olacağını
-        saptayacak ve önbellekten doğru içerikle yanıt verecektir.</p>
+      <p>Özgün sunucu, istekteki başlık değerlerine dayanarak farklı
+        içeriklerle yanıt vermeye ayarlandığı takdirde, örneğin aynı URL'de
+        farklı dillerde içerik sunmak gibi, HTTP'nin önbellekleme mekanizması
+        aynı URL'de aynı sayfanın değişik sürümlerini önbelleklemeyi mümkün
+        kılar.</p>
+
+      <p>Bu özgün sunucu tarafından bir <code>Vary</code> başlığı eklenerek
+        yapılır. Bir sayfanın farklı sürümleri arasındaki farkları saptarken
+        önbellek tarafından hangi başlıkların hesaba katılacağını
+        <code>Vary</code> başlığı belirler.</p>
 
       <p>Örneğin, bir yanıt şöyle bir başlık ile alınmışsa,</p>
 
@@ -294,254 +376,35 @@
 
       <p><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> sadece accept-language ve accept-charset
         başlıkları özgün istekle eşleşen önbellekli içeriği sunacaktır.</p>
+
+      <p>İçeriğin farklı sürümleri yan yana önbelleklenebilir.
+        <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> modülü <code>Vary</code> başlığını
+        kullanarak başlıkta listelenmiş istek başlıklarının uygun değerlerini
+        saptar ve istemciye hangi sürümle yanıt verileceğine karar verir.</p>
     
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="security" id="security">Güvenlik Kaygıları</a></h2>
-    
-
-    <h3>Erişim Denetimi ve Yetkilendirme</h3>
+    <h3><a name="disk" id="disk">Disk Üzerinde Önbellekleme</a></h3>
       
 
-      <p><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> çoğunlukla bir karşı vekile sahip olmak
-        amacıyla kullanılır. Arka sunucunun sorgulanmasını gerektirmeyen tüm
-        istekler önbellekleme modülü tarafından karşılanacaktır. Yerel
-        özkaynakların önbelleklenmesi söz konusu olduğunda httpd’nin güvenlik
-        modeli büyükçe bir değişikliğe uğrar.</p>
+      <p><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> modülü önbelleği yönetmek için çeşitli
+      depolama ortamlarına özgü gerçeklenimleri kullanır. Diske önbellekleme
+      desteğini <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code> sağlar.</p>
 
-      <p>Olası <code>.htaccess</code> dosyalarının dosya sisteminin tamamında
-        taranması çok pahalı bir işlem olduğundan <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>,
-        (işlemi hızlandırmak için) önbelleğe almanın temel amacını kısmen
-        gözardı ederek, önbellekteki içeriğin sunumu için gerekli
-        yetkilendirmenin olup olmadığı konusunda bir karar üretmez. Başka bir
-        deyişle, eğer <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> bir kısım içeriği önbelleğe
-        almışsa içerik zaman aşımına uğramadığı sürece bu içerik önbellekten
-        sunulacaktır.</p>
-
-      <p>Örneğin, yapılandırmanız bir özkaynağa IP adresine göre erişime izin
-        veriyorsa bu içeriğin önbelleğe alınmayacağından emin olmalısınız.
-        Bunu <code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code>
-        yönergesini veya <code class="module"><a href="./mod/mod_expires.html">mod_expires</a></code> kullanarak
-        yapabilirsiniz. Bunu yapmaz, olayı kendi haline bırakırsanız
-        <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> bir karşı vekil gibi çalışarak sunulan her
-        içeriği arabelleğe alacak ve hangi IP adresinden gelirse gelsin her
-        istemciye bunu sunacaktır.</p>
-    
-
-    <h3>Yerel İstismarcılar</h3>
-      
-
-      <p>Son kullanıcılarıın isteklerine önbellekten hizmet sunulduğundan
-        önbelleğin kendisi içerikle etkileşime geçmek isteyenlerin veya
-        içeriği tahrif etmek isteyenlerin hedefi haline gelebilir. httpd’yi
-        çalıştıran kullanıcı tarafından her zaman önbelleğe yazılabileceğini
-        akıldan çıkarmamak önemlidir. Bu durumda alışılmışın tersine tüm
-        içeriğin Apache kullanıcısı tarafından yazılamamasının sağlanması
-        önerilir.</p>
-
-      <p>Eğer Apache kullanıcısı, örneğin bir CGI sürecindeki açık nedeniyle
-        tehlikeye atılırsa, önbellek hedef alınabilir.
-        <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code> kullanılırken önbellekteki bir öğeyi
-        değiştirmek veya önbelleğe yeni bir öğe eklemek görece daha
-        kolaydır.</p>
-
-      <p>Bu risk, Apache kullanıcısını kullanan diğer saldırı türleriyle
-        karşılaştırıldığında daha yüksektir. <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code>
-        kullanıyorsanız şunları aklınızdan çıkarmayın: (1) httpd güvenlik
-        güncellemelerini takip edin ve sunucunuzu buna göre güncelleyin. (2)
-        Mümkünse <a href="suexec.html">suEXEC</a> kullanarak CGI süreçlerini
-        Apache kullanıcısı olmayan bir kullanıcının aidiyetinde çalıştırın.</p>
-
-    
-
-    <h3>Önbellek Zehirlenmeleri</h3>
-      
-
-      <p>httpd bir önbellekli vekil sunucu olarak çalıştığında önbellek
-        zehirlenmesi adı verilen sorunla karşılaşılma olasılığı vardır.
-        Önbellek zehirlenmesi, vekil sunucunun arka sunucudan yanlış (ve
-        genellikle istenmeyen) içerik almasına sebep olan bir saldırı türünü
-        betimlemek için yaygın olarak kullanılan bir terimdir.</p>
-
-      <p>Örneğin httpd’nin çalıştığı sistemin kullandığı DNS sunucuları DNS
-        önbellek zehirlenmesinden etkilenebilecek durumdaysa, bir saldırgan
-        httpd’nin istekleri almak için başvuracağı kaynak sunucunun yerini
-        değiştirebilir. Diğer bir örnek, HTTP istek kaçakçılığı adı verilen
-        bir saldırı türüdür.</p>
-
-      <p>Bu belge HTTP istek kaçakçılığını derinliğine incelenmesi için uygun
-        yer değildir (böyle kaynaklara arama motorunuzla erişebilirsiniz).
-        Bununla birlikte, vekil tarafından kaynak sunucudan alınan içeriği
-        tamamen denetim altına almak amacıyla kaynak sunucudaki bir açığı
-        istismar etmeye yönelik bir dizi istek yapılabileceğinin olasılık
-        dahilinde olduğunu bilmenizde yarar vardır.</p>
-    
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="filehandle" id="filehandle">Dosya Tanıtıcı Önbelleklemesi</a></h2>
-    
-
-    <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code></li><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code></li></ul></td></tr></table>
-
-    <p>Bir dosyanın açılması işlemi, özellikle de ağ dosya sistemlerinde
-      bulunan dosyalar için önemli bir gecikme kaynağı olabilir. Önbellekte,
-      çok sunulan dosyaların kendilerinin değil, açık dosya tanıtıcılarının
-      saklanması httpd’yi bu tür gecikmelerden koruyabilir. httpd’de tek türde
-      dosya tanıtıcı önbelleklemesi yapılabilmektedir.</p>
-
-    <h3><code>CacheFile</code> yönergesi ile</h3>
-      
-
-      <p>httpd’de mevcut önbelleklemenin en temel şekli
-        <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> tarafından sağlanan dosya tanıtıcı
-        önbelleklemesidir. Bu önbellek türü dosyaların kendilerini değil açık
-        dosya tanıtıcılarının bir listesini saklar. Dosyaların bu anlamda
-        önbelleklenmesi, <code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code> yönergesi yapılandırma dosyasında belirtilerek
-        sağlanabilir.</p>
-
-      <p><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code> yönergesi
-        belirtilen dosyanın httpd başlatıldığında açılmasını ve dosya için
-        yapılan sonraki her istekte bu dosya tanıtıcısının kullanılmasını
-        sağlar.</p>
+      <p>Tipik olarak modül şöyle yapılandırılır:</p>
 
       <div class="example"><p><code>
-        CacheFile /usr/local/apache2/htdocs/index.html
+CacheRoot   /var/cache/apache/<br />
+CacheEnable disk /<br />
+CacheDirLevels 2<br />
+CacheDirLength 1
       </code></p></div>
 
-      <p>Büyük miktarda dosyayı bu anlamda önbelleklemeyi tasarlıyorsanız
-        işletim sisteminizin açık dosya tanıtıcılarının sayısı ile ilgili
-        sınırlamasını uygun bir değere ayarlamanız gerekebilir.</p>
-
-      <p><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code> yönergesini
-        kullandığınız takdirde dosya içeriğindeki değişiklikleri anında isteğe
-        yansıtamazsınız. httpd dosyayı ilk başlatıldığındaki haliyle
-        sunar.</p>
-
-      <p>Eğer httpd çalışırken dosya silinmişse httpd ilk başlatıldığındaki
-        haline ilişkin dosya tanıtıcıyı sağlamaya ve dolayısıyla dosya
-        içeriğini sunmaya devam edecektir. Yani, dosya silinmiş ve artık dosya
-        sisteminde görünmüyor olsa bile httpd durdurulup dosya tanıtıcıları
-        kapanmadıkça dosyaların silinmesiyle açılan yer serbest
-        kalmayacaktır.</p>
+      <p>En önemlisi önbelleklenen dosyaların yerel olarak saklanması olup
+        işletim sisteminin sağladığı bellekiçi önbelleklemeden de ayrıca
+        faydalanılmış olur. Bu bakımdan, dosyalar disk üzerinde saklansa bile
+        sıkça erişilen dosyalar işletim sistemi sayesinde aslında bellekten
+        sunulmuş olacaklardır.</p>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="inmemory" id="inmemory">Sistem Belleğinde Önbellekleme</a></h2>
-    
-
-     <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#mmapfile">MMapFile</a></code></li></ul></td></tr></table>
-
-    <p>İçeriğin sistem belleğinden sunulması içerik sunmanın evrensel olarak
-      en hızlı yoludur. Dosyaların bir disk denetleyiciden okunması ya da daha
-      kötüsü uzak bir ağdan okunması bellekten okumayla karşılaştırılamayacak
-      ölçüde yavaş işlemlerdir. Disk denetleyiciler genellikle fiziksel
-      süreçleri denetlerler. Ağ erişimi ise band genişliği sınırlamalarından
-      etkilenir. Halbuki bellek erişimi sadece nano saniyeler mertebesinde
-      gerçekleşir.</p>
-
-    <p>Sistem belleği en pahalı saklama ortamı olması sebebiyle en verimli
-      şekilde kullanımı önemlidir. Dosyaları sistem belleğinde saklamakla
-      sistemin kullanabileceği bellek miktarını azaltmış olursunuz. İşletim
-      sistemi önbelleklemesinde göreceğiniz gibi bu öyle basit bir konu
-      değildir. httpd’nin kendi kullandığı belleğin bir kısmını önbellek
-      olarak ayırırken çok fazla bellek kullanmamak önemlidir. Aksi takdirde
-      işletim sistemi belleğin yetmediği noktada belleği diske
-      takaslayacağından istenen başarım artışı sağlanamayacaktır.</p>
-
-    <h3>İşletim Sistemi Önbelleklemesi</h3>
-      
-
-      <p>Günümüz iştetim sistemlerinin hemen hemen tamamında bellek içi
-        dosya/veri saklama işlemlerini çekirdek yönetir. Bu güçlü bir
-        özelliktir ve işletim sistemlerinin büyük çoğunluğu bunu böyle yapar.
-        Örneğin, Linux’ta bir dosyanın ilk defa okunduğunda ve ikinci kez
-        okunduğunda işlemcinin ne kadar meşgul edildiğine bakalım:</p>
-
-      <div class="example"><p><code>
-        colm@coroebus:~$ time cat testfile &gt; /dev/null<br />
-        real    0m0.065s<br />
-        user    0m0.000s<br />
-        sys     0m0.001s<br />
-        colm@coroebus:~$ time cat testfile &gt; /dev/null<br />
-        real    0m0.003s<br />
-        user    0m0.003s<br />
-        sys     0m0.000s
-      </code></p></div>
-
-      <p>Küçük bir dosya için bile okuma süresi bakımından büyük fark ortaya
-        çıkmaktadır. Bunun sebebi çekirdeğin dosya içeriğini bellek daha
-        güncel amaçlar için lazım olana dek bellek içinde saklamasıdır.</p>
-
-      <p>Sisteminizde yeterince yedek bellek olduğundan eminseniz, bu
-        önbellekte daha fazla dosya saklanacağından emin olabilirsiniz.
-        Bundan, önbelleğin sistem belleğinde verimli biçimde tutulması için
-        httpd’de ek bir yapılandırmaya gidilmesinin gerekmediği sonucu
-        çıkarılabilir.</p>
-
-      <p>Bundan başka, işletim sistemi dosyaların değiştiği ve silindiği
-        zamanları bildiğinden bu tür dosyaların içerikleri gerektiğinde
-        önbellekten kendiliğinden silinmiş olur. Bellek içinde dosya saklarken
-        dosyaların değiştirilme zamanlarını bilme olanağı olmadığından bu
-        durum httpd’ye büyük yarar sağlar.</p>
-    
-
-    <p>İşletim sisteminin dosyaların önbelleklenmesi için sağladığı bunca
-      yarara ve başarım artışına karşın bellek içinde dosya önbelleklemenin
-      httpd tarafından yerine getirilmesinin daha iyi olacağı bazı durumlar
-      vardır.</p>
-
-    <h3><code>MMapFile</code> yönergesi ile</h3>
-      
-
-      <p><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> modülü, bir durağan dosyanın
-        içeriğini sunucunun başlatılması sırasında (mmap sistem çağrısıyla)
-        belleğe eşlenmesini mümkün kılmak için <code class="directive"><a href="./mod/mod_file_cache.html#mmapfile">MMapFile</a></code> yönergesini sağlar.
-        httpd bu dosyaya gelecek sonraki istekler için dosyanın bellekiçi
-        içeriğini kullanacaktır.</p>
-
-      <div class="example"><p><code>
-        MMapFile /usr/local/apache2/htdocs/index.html
-      </code></p></div>
-
-      <p><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code> yönergesinde
-        olduğu gibi bu dosyalarda httpd başlatıldıktan sonra yapılacak bir
-        değişiklikten httpd’nin haberi olmayacaktır.</p>
-
-      <p><code class="directive"><a href="./mod/mod_file_cache.html#mmapfile">MMapFile</a></code> yönergesi
-        ayırdığı belleğin toplam miktarı ile ilgilenmez, dolayısıyla
-        yönergenin aşırı kullanımından kaçınmalısınız. httpd’nin çocuk
-        süreçlerinin her biri bu belleğin kendilerine ait birer kopyasını
-        yapacağından belleğe eşlenen dosyaların çok yer kaplamaması büyük önem
-        taşımaktadır; aksi takdirde işletim sistemi belleği diske
-        takaslayacağından beklenen fayda sağlanamayacaktır.</p>
-    
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="disk" id="disk">Disk Üzerinde Önbellekleme</a></h2>
-    
-
-     <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code></li></ul></td></tr></table>
-
-    <p><code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code> modülü önbelleklemenin
-      <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> için disk üzerinde yapılmasını mümkün
-      kılar. Bbu önbellekleme akıllıca yapılır ve önbellekteki içerik
-      sadece geçerli kabul edildiği sürece sunulabilir.</p>
-
-    <p>Modül bu amaçla genelde şöyle kullanılır:</p>
-
-    <div class="example"><p><code>
-      CacheRoot   /var/cache/apache/<br />
-      CacheEnable disk /<br />
-      CacheDirLevels 2<br />
-      CacheDirLength 1
-    </code></p></div>
-
-    <p>En önemlisi önbelleklenen dosyaların yerel olarak saklanması olup
-      işletim sisteminin sağladığı bellekiçi önbelleklemeden de ayrıca
-      faydalanılmış olur. Bu bakımdan, dosyalar disk üzerinde saklansa bile
-      sıkça erişilen dosyalar işletim sistemi sayesinde aslında bellekten
-      sunulmuş olacaklardır.</p>
 
     <h3>Önbellekte Saklamanın Anlamı</h3>
       
@@ -549,7 +412,8 @@
       <p><code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code> öğeleri önbellekte saklamak için
         istek yapılan URL’nin 22 karakterlik özetini oluşturur. Bu özet, çok
         sayıda URL’nin aynı özeti oluşturmaması için konak ismi, protokol,
-        port ve varsa CGI argümanlarından oluşur.</p>
+        port ve varsa CGI argümanlarından başka <code>Vary</code> başlığında
+        tanımlı elemanlardan oluşur.</p>
 
       <p>Özeti oluşturan karakterler 64 karakterlik bir karakter kümesinden
         seçildiğinden oluşturulması olası farklı özet sayısı 64^22’dir.
@@ -560,7 +424,8 @@
         değerlerine göre önce dizinlere ayrılır.</p>
 
       <p><code class="directive"><a href="./mod/mod_cache_disk.html#cachedirlevels">CacheDirLevels</a></code>
-        yönergesi kaç alt seviye dizin olacağını belirler. Örneğin, yukarıdaki
+        yönergesi kaç alt seviye dizin olacağını ve <code class="directive"><a href="./mod/mod_cache_disk.html#cachedirlength">CacheDirLength</a></code> her dizinde kaç
+        karakter olacağını belirler. Örneğin, yukarıdaki
         özete sahip bir dosyanın isminin başına yukarıdaki yapılandırma
         örneğine uygun olarak
         <code>/var/cache/apache/x/y/TGxSMO2b68mBCykqkp1w</code> gibi bir önek
@@ -615,17 +480,326 @@
         <code class="program"><a href="./programs/htcacheclean.html">htcacheclean</a></code>’in çalıştırılma aralığını iyi
         belirlemek gerekir.</p>
 
+      <p>Ayrıca, <code class="program"><a href="./programs/htcacheclean.html">htcacheclean</a></code> için uygun bir "nice" seviyesi
+        seçilmesi önerilr. Böylece, sunucu çalışırken aracın ölçüsüz disk g/ç
+        yapmasına sebebiyet verilmemiş olur.</p>
+
       <p class="figure">
       <img src="images/caching_fig1.tr.png" alt="" width="600" height="406" /><br />
       <a id="figure1" name="figure1"><dfn>Şekil 1</dfn></a>:
  Önbelleğin büyümesi ve düzenli aralıklarla temizlenmesi.</p>
 
-      <p><code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code> ne kadar önbellek alanı kullandığı
-        ile ilgili bir bilgi vermediğinden <code class="program"><a href="./programs/htcacheclean.html">htcacheclean</a></code>’in
-        bir temizlik sonrası yeterince büyük bir genişleme alanı kalacak
-        şekilde yapılandırılması önemlidir.</p>
+      <p><code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code> ne kadar bellek kullanıldığı hakkında
+        bilgi vermediğinden, <code class="program"><a href="./programs/htcacheclean.html">htcacheclean</a></code>'in bir temizliğin
+        ardından yeterli bir büyüme alanı kalacak şekilde yapılandırılması
+        temin edilmelidir.</p>
     
 
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="socache-caching" id="socache-caching">İki durumlu Anahtar/Değer Paylaşımlı Nesne Önbellekleme</a></h2>
+    
+
+    <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_authn_socache.html">mod_authn_socache</a></code></li><li><code class="module"><a href="./mod/mod_socache_dbm.html">mod_socache_dbm</a></code></li><li><code class="module"><a href="./mod/mod_socache_dc.html">mod_socache_dc</a></code></li><li><code class="module"><a href="./mod/mod_socache_memcache.html">mod_socache_memcache</a></code></li><li><code class="module"><a href="./mod/mod_socache_shmcb.html">mod_socache_shmcb</a></code></li><li><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_authn_socache.html#authncachesocache">AuthnCacheSOCache</a></code></li><li><code class="directive"><a href="./mod/mod_ssl.html#sslsessioncache">SSLSessionCache</a></code></li><li><code class="directive"><a href="./mod/mod_ssl.html#sslstaplingcache">SSLStaplingCache</a></code></li></ul></td></tr></table>
+
+    <p>Apache HTTP sunucusu, SSL oturumları, kimlik doğrulama bilgileri gibi
+      önbelleklenebilen özel bilgiler için <a href="socache.html">socache</a>
+      arayüzü içinde düşük seviyeli bir paylaşımlı nesne önbelleğine
+      sahiptir.</p>
+
+    <p>Her gerçeklenime uygun ek modüller de sağlanmıştır:</p>
+
+    <dl>
+    <dt><code class="module"><a href="./mod/mod_socache_dbm.html">mod_socache_dbm</a></code></dt>
+    <dd>DBM tabanlı paylaşımlı nesne önbelleklemesi.</dd>
+    <dt><code class="module"><a href="./mod/mod_socache_dc.html">mod_socache_dc</a></code></dt>
+    <dd>Distcache tabanlı paylaşımlı nesne önbelleklemesi.</dd>
+    <dt><code class="module"><a href="./mod/mod_socache_memcache.html">mod_socache_memcache</a></code></dt>
+    <dd>Memcache tabanlı paylaşımlı nesne önbelleklemesi.</dd>
+    <dt><code class="module"><a href="./mod/mod_socache_shmcb.html">mod_socache_shmcb</a></code></dt>
+    <dd>Paylaşımlı belleğe dayalı paylaşımlı nesne önbelleklemesi.</dd>
+    </dl>
+
+    <h3><a name="mod_authn_socache-caching" id="mod_authn_socache-caching">Kimlik Doğrulama Bilgilerinin Önbelleklenmesi</a></h3>
+      
+
+      <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_authn_socache.html">mod_authn_socache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_authn_socache.html#authncachesocache">AuthnCacheSOCache</a></code></li></ul></td></tr></table>
+
+      <p><code class="module"><a href="./mod/mod_authn_socache.html">mod_authn_socache</a></code> modülü kimlik doğrulama araçlarının
+        yükünün hafifletilmesini, kimlik doğrulama sonucunun önbelleklenmesini
+        sağlar.</p>
+    
+
+    <h3><a name="mod_ssl-caching" id="mod_ssl-caching">SSL Oturumlarının Önbelleklenmesi</a></h3>
+      
+
+      <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_ssl.html#sslsessioncache">SSLSessionCache</a></code></li><li><code class="directive"><a href="./mod/mod_ssl.html#sslstaplingcache">SSLStaplingCache</a></code></li></ul></td></tr></table>
+
+      <p><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code> modülü, oturum önbelleği ve önbellek
+       zımbalaması sağlamak için <code>socache</code> arayüzünü kullanır.</p>
+    
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="file-caching" id="file-caching">Uzmanlaşmış Dosya Önbellekleme</a></h2>
+    
+
+     <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#mmapfile">MMapFile</a></code></li></ul></td></tr></table>
+
+    <p>Dosya sisteminin yavaş olabildiği veya dosya tanıtıcılarının
+      kullanımının pahalıya mal olduğu sistemlerde, sunucunun başlatılması
+      sırasında dosyaların belleğe yüklenmesi seçeneği vardır.</p>
+
+    <p>Dosyaların açılmasının yavaş olduğu sistemlerde, dosyaların sunucunun
+      başlatılması sırasında açılması ve dosya tanıtıcısını önbelleklenmesi
+      seçeneği vardır. Bu seçeneklerin duruk dosyalara erişimin yavaş olduğu
+      sistemlere de bir yardımı olabilir.</p>
+
+    <h3><a name="filehandle" id="filehandle">Dosya Tanıtıcı Önbelleklemesi</a></h3>
+      
+
+      <p>Bir dosyanın açılması işlemi, özellikle de ağ dosya sistemlerinde
+        bulunan dosyalar için önemli bir gecikme kaynağı olabilir. Önbellekte,
+        çok sunulan dosyaların kendilerinin değil, açık dosya tanıtıcılarının
+        saklanması httpd’yi bu tür gecikmelerden koruyabilir. httpd’de tek
+        türde dosya tanıtıcı önbelleklemesi yapılabilmektedir.</p>
+
+      <h4><code>CacheFile</code> yönergesi ile</h4>
+        
+
+        <p>httpd’de mevcut önbelleklemenin en temel şekli
+          <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> tarafından sağlanan dosya tanıtıcı
+          önbelleklemesidir. Bu önbellek türü dosyaların kendilerini değil açık
+          dosya tanıtıcılarının bir listesini saklar. Dosyaların bu anlamda
+          önbelleklenmesi, <code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code> yönergesi yapılandırma dosyasında belirtilerek
+          sağlanabilir.</p>
+
+        <p><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code> yönergesi
+          belirtilen dosyanın httpd başlatıldığında açılmasını ve dosya için
+          yapılan sonraki her istekte bu dosya tanıtıcısının kullanılmasını
+          sağlar.</p>
+
+        <div class="example"><p><code>
+          CacheFile /usr/local/apache2/htdocs/index.html
+        </code></p></div>
+
+        <p>Büyük miktarda dosyayı bu anlamda önbelleklemeyi tasarlıyorsanız
+          işletim sisteminizin açık dosya tanıtıcılarının sayısı ile ilgili
+          sınırlamasını uygun bir değere ayarlamanız gerekebilir.</p>
+
+        <p><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code> yönergesini
+          kullandığınız takdirde dosya içeriğindeki değişiklikleri anında
+          isteğe yansıtamazsınız. httpd dosyayı ilk başlatıldığındaki haliyle
+          sunar.</p>
+
+        <p>Eğer httpd çalışırken dosya silinmişse httpd ilk başlatıldığındaki
+          haline ilişkin dosya tanıtıcıyı sağlamaya ve dolayısıyla dosya
+          içeriğini sunmaya devam edecektir. Yani, dosya silinmiş ve artık
+          dosya sisteminde görünmüyor olsa bile httpd durdurulup dosya
+          tanıtıcıları kapanmadıkça dosyaların silinmesiyle açılan yer serbest
+          kalmayacaktır.</p>
+      
+
+    
+
+    <h3><a name="inmemory" id="inmemory">Sistem Belleğinde Önbellekleme</a></h3>
+      
+
+      <p>İçeriğin sistem belleğinden sunulması içerik sunmanın evrensel olarak
+      en hızlı yoludur. Dosyaların bir disk denetleyiciden okunması ya da daha
+      kötüsü uzak bir ağdan okunması bellekten okumayla karşılaştırılamayacak
+      ölçüde yavaş işlemlerdir. Disk denetleyiciler genellikle fiziksel
+      süreçleri denetlerler. Ağ erişimi ise band genişliği sınırlamalarından
+      etkilenir. Halbuki bellek erişimi sadece nano saniyeler mertebesinde
+      gerçekleşir.</p>
+
+      <p>Sistem belleği en pahalı saklama ortamı olması sebebiyle en verimli
+      şekilde kullanımı önemlidir. Dosyaları sistem belleğinde saklamakla
+      sistemin kullanabileceği bellek miktarını azaltmış olursunuz. İşletim
+      sistemi önbelleklemesinde göreceğiniz gibi bu öyle basit bir konu
+      değildir. httpd’nin kendi kullandığı belleğin bir kısmını önbellek
+      olarak ayırırken çok fazla bellek kullanmamak önemlidir. Aksi takdirde
+      işletim sistemi belleğin yetmediği noktada belleği diske
+      takaslayacağından istenen başarım artışı sağlanamayacaktır.</p>
+
+      <h4>İşletim Sistemi Önbelleklemesi</h4>
+        
+
+        <p>Günümüz iştetim sistemlerinin hemen hemen tamamında bellek içi
+        dosya/veri saklama işlemlerini çekirdek yönetir. Bu güçlü bir
+        özelliktir ve işletim sistemlerinin büyük çoğunluğu bunu böyle yapar.
+        Örneğin, Linux’ta bir dosyanın ilk defa okunduğunda ve ikinci kez
+        okunduğunda işlemcinin ne kadar meşgul edildiğine bakalım:</p>
+
+        <div class="example"><p><code>
+          colm@coroebus:~$ time cat testfile &gt; /dev/null<br />
+          real    0m0.065s<br />
+          user    0m0.000s<br />
+          sys     0m0.001s<br />
+          colm@coroebus:~$ time cat testfile &gt; /dev/null<br />
+          real    0m0.003s<br />
+          user    0m0.003s<br />
+          sys     0m0.000s
+        </code></p></div>
+
+        <p>Küçük bir dosya için bile okuma süresi bakımından büyük fark ortaya
+          çıkmaktadır. Bunun sebebi çekirdeğin dosya içeriğini bellek daha
+          güncel amaçlar için lazım olana dek bellek içinde saklamasıdır.</p>
+
+        <p>Sisteminizde yeterince yedek bellek olduğundan eminseniz, bu
+          önbellekte daha fazla dosya saklanacağından emin olabilirsiniz.
+          Bundan, önbelleğin sistem belleğinde verimli biçimde tutulması için
+          httpd’de ek bir yapılandırmaya gidilmesinin gerekmediği sonucu
+          çıkarılabilir.</p>
+
+        <p>Bundan başka, işletim sistemi dosyaların değiştiği ve silindiği
+          zamanları bildiğinden bu tür dosyaların içerikleri gerektiğinde
+          önbellekten kendiliğinden silinmiş olur. Bellek içinde dosya
+          saklarken dosyaların değiştirilme zamanlarını bilme olanağı
+          olmadığından bu durum httpd’ye büyük yarar sağlar.</p>
+      
+
+      <p>İşletim sisteminin dosyaların önbelleklenmesi için sağladığı bunca
+        yarara ve başarım artışına karşın bellek içinde dosya önbelleklemenin
+        httpd tarafından yerine getirilmesinin daha iyi olacağı bazı durumlar
+        vardır.</p>
+
+      <h4><code>MMapFile</code> yönergesi ile</h4>
+        
+
+        <p><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> modülü, bir durağan dosyanın
+          içeriğini sunucunun başlatılması sırasında (mmap sistem çağrısıyla)
+          belleğe eşlenmesini mümkün kılmak için <code class="directive"><a href="./mod/mod_file_cache.html#mmapfile">MMapFile</a></code> yönergesini sağlar.
+          httpd bu dosyaya gelecek sonraki istekler için dosyanın bellekiçi
+          içeriğini kullanacaktır.</p>
+
+        <div class="example"><p><code>
+          MMapFile /usr/local/apache2/htdocs/index.html
+        </code></p></div>
+
+        <p><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code>
+          yönergesinde olduğu gibi bu dosyalarda httpd başlatıldıktan sonra
+          yapılacak bir değişiklikten httpd’nin haberi olmayacaktır.</p>
+
+        <p><code class="directive"><a href="./mod/mod_file_cache.html#mmapfile">MMapFile</a></code> yönergesi
+          ayırdığı belleğin toplam miktarı ile ilgilenmez, dolayısıyla
+          yönergenin aşırı kullanımından kaçınmalısınız. httpd’nin çocuk
+          süreçlerinin her biri bu belleğin kendilerine ait birer kopyasını
+          yapacağından belleğe eşlenen dosyaların çok yer kaplamaması büyük
+          önem taşımaktadır; aksi takdirde işletim sistemi belleği diske
+          takaslayacağından beklenen fayda sağlanamayacaktır.</p>
+      
+    
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="security" id="security">Güvenlik Kaygıları</a></h2>
+    
+
+    <h3>Erişim Denetimi ve Yetkilendirme</h3>
+      
+
+      <p><code class="directive"><a href="./mod/mod_cache.html#cachequickhandler">CacheQuickHandler</a></code>
+        yönergesine <code>On</code> değerinin atandığı öntanımlı durumda
+        <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> kullanımı, daha çok sunucunun önüne
+        vidalanmış önbelleklemeli bir karşı vekile sahip olmak gibidir. Özgün
+        sunucunun bir harici önbellekmiş gibi sorgulanmasını gerektirmeyen tüm
+        istekler önbellekleme modülü tarafından karşılanacaktır. Bu durum
+        httpd'nin güvenlik modelini büyük ölçüde değiştirir.</p>
+
+      <p>Olası <code>.htaccess</code> dosyalarının dosya sisteminin tamamında
+        taranması çok pahalı bir işlem olduğundan <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>,
+        (işlemi hızlandırmak için) önbelleğe almanın temel amacını kısmen
+        gözardı ederek, önbellekteki içeriğin sunumu için gerekli
+        yetkilendirmenin olup olmadığı konusunda bir karar üretmez. Başka bir
+        deyişle, eğer <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> bir kısım içeriği önbelleğe
+        almışsa içerik zaman aşımına uğramadığı sürece bu içerik önbellekten
+        sunulacaktır.</p>
+
+      <p>Örneğin, yapılandırmanız bir özkaynağa IP adresine göre erişime izin
+        veriyorsa bu içeriğin önbelleğe alınmayacağından emin olmalısınız.
+        Bunu <code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code>
+        yönergesini veya <code class="module"><a href="./mod/mod_expires.html">mod_expires</a></code> modülünü kullanarak
+        yapabilirsiniz. Bunu yapmaz, olayı kendi haline bırakırsanız
+        <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> bir karşı vekil gibi çalışarak sunulan her
+        içeriği önbelleğe alacak ve hangi IP adresinden gelirse gelsin her
+        istemciye bunu sunacaktır.</p>
+
+      <p><code class="directive"><a href="./mod/mod_cache.html#cachequickhandler">CacheQuickHandler</a></code>
+        yönergesine <code>Off</code> atandığı takdirde, istek işleme
+        aşamalarının tamamı yerine getirilir ve güvenlik modeli değişmeden
+        kalır.</p>
+    
+
+    <h3>Yerel İstismarcılar</h3>
+      
+
+      <p>Son kullanıcılarıın isteklerine önbellekten hizmet sunulduğundan
+        önbelleğin kendisi içerikle etkileşime geçmek isteyenlerin veya
+        içeriği tahrif etmek isteyenlerin hedefi haline gelebilir. httpd’yi
+        çalıştıran kullanıcı tarafından her zaman önbelleğe yazılabileceğini
+        akıldan çıkarmamak önemlidir. Bu durumda alışılmışın tersine tüm
+        içeriğin Apache kullanıcısı tarafından yazılamamasının sağlanması
+        önerilir.</p>
+
+      <p>Eğer Apache kullanıcısı, örneğin bir CGI sürecindeki açık nedeniyle
+        tehlikeye atılırsa, önbellek hedef alınabilir.
+        <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code> kullanılırken önbellekteki bir öğeyi
+        değiştirmek veya önbelleğe yeni bir öğe eklemek görece daha
+        kolaydır.</p>
+
+      <p>Bu risk, Apache kullanıcısını kullanan diğer saldırı türleriyle
+        karşılaştırıldığında daha yüksektir. <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code>
+        kullanıyorsanız şunları aklınızdan çıkarmayın: (1) httpd güvenlik
+        güncellemelerini takip edin ve sunucunuzu buna göre güncelleyin. (2)
+        Mümkünse <a href="suexec.html">suEXEC</a> kullanarak CGI süreçlerini
+        Apache kullanıcısı olmayan bir kullanıcının aidiyetinde çalıştırın.</p>
+    
+
+    <h3>Önbellek Zehirlenmeleri</h3>
+      
+
+      <p>httpd bir önbellekli vekil sunucu olarak çalıştığında önbellek
+        zehirlenmesi adı verilen sorunla karşılaşılma olasılığı vardır.
+        Önbellek zehirlenmesi, vekil sunucunun özgün sunucudan yanlış (ve
+        genellikle istenmeyen) içerik almasına sebep olan bir saldırı türünü
+        betimlemek için yaygın olarak kullanılan bir terimdir.</p>
+
+      <p>Örneğin httpd’nin çalıştığı sistemin kullandığı DNS sunucuları DNS
+        önbellek zehirlenmesinden etkilenebilecek durumdaysa, bir saldırgan
+        httpd’nin istekleri almak için başvuracağı kaynak sunucunun yerini
+        değiştirebilir. Diğer bir örnek, HTTP istek kaçakçılığı adı verilen
+        bir saldırı türüdür.</p>
+
+      <p>Bu belge HTTP istek kaçakçılığını derinliğine incelenmesi için uygun
+        yer değildir (böyle kaynaklara arama motorunuzla erişebilirsiniz).
+        Bununla birlikte, vekil tarafından kaynak sunucudan alınan içeriği
+        tamamen denetim altına almak amacıyla kaynak sunucudaki bir açığı
+        istismar etmeye yönelik bir dizi istek yapılabileceğinin olasılık
+        dahilinde olduğunu bilmenizde yarar vardır.</p>
+    
+
+    <h3>Hizmet Reddi / Önbelleğin Engellenmesi</h3>
+      
+
+      <p>Vary mekanizması aynı URL'nin çok sayıda sürümünün yan yana
+        önbelleklenmesini mümkün kılar. İstemci tarafından sağlanan başlık
+        değerlerine bağlı olarak, önbellek istemciye gönderilecek doğru yanıtı
+        bulacaktır. Normal kullanımda olası değerlerin çok geniş olduğunun
+        bilindiği durumda bir başlığı (örn, <code>User-Agent</code>)
+        değişikliğe uğratma çabası bu mekanizmayı bir sorun haline getirebilir.
+        Sitenin tanınırlığına bağlı olarak aynı URL'nin binlerce hatta
+        milyonlarca önbellek girdisi oluşabilir ve bunlar önbellekteki diğer
+        girdilerin yerini alabilir.</p>
+
+      <p>Diğer yandan, belli bir özkaynağın URL'sinin her istekte
+      değiştirilmesi ihtiyacı ortaya çıkabilir. Bu normalde URL dizgesine bir
+      "cachebuster" dizgesi eklenerek yapılır. Bu içerik sunucu tarafından
+      anlamlı bir tazelik ömrüyle önbelleklenebilir olarak imlenmişse bu
+      girdiler kısa zamanda önbellekteki meşru girdilerin yerini alabilir.
+      <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> modülü bunun önlenmesi için <code class="directive"><a href="./mod/mod_cache.html#cacheignoreurlsessionidentifiers">CacheIgnoreURLSessionIdentifiers</a></code>
+      yönergesine sahipse de bu yönerge, yoldaki vekillerin veya tarayıcı
+      önbelleklerinin aynı hizmet reddi saldırısına maruz kalmamaları için
+      dikkatle kullanılmalıdır.</p>
+    
   </div></div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="./en/caching.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
