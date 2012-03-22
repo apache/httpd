@@ -39,7 +39,7 @@
     must be already properly verified by an authentication module,
     such as <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> or
     <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>. <code class="module"><a href="../mod/mod_authz_owner.html">mod_authz_owner</a></code>
-    recognizes two arguments for the <code class="directive"><a href="../mod/core.html#require">Require</a></code> directive, <code>file-owner</code> and
+    recognizes two arguments for the <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directive, <code>file-owner</code> and
     <code>file-group</code>, as follows:</p>
 
     <dl>
