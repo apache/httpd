@@ -43,7 +43,7 @@ d'Apache</compatibility>
     un module d'authentification comme <module>mod_auth_basic</module>
     ou <module>mod_auth_digest</module>.
     <module>mod_authz_owner</module> reconna&icirc;t deux arguments pour la
-    directive <directive module="core">Require</directive> :
+    directive <directive module="mod_authz_core">Require</directive> :
     <code>file-owner</code> et <code>file-group</code> :</p>
 
     <dl>
