@@ -536,7 +536,7 @@ par contre, elle est traitée comme un URI. Autrement dit, avec le
 drapeau [PT], le résultat de la règle  <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> est passé à nouveau au
 système de mise en correspondance des URLs avec le système de fichiers,
 de façon à ce que les systèmes de mise en correspondance basés sur les
-chemins de fichiers, comme la directive <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>, <code class="directive"><a href="../mod/core.html#redirect">Redirect</a></code>, ou <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>, par exemple, puissent avoir une
+chemins de fichiers, comme la directive <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>, <code class="directive"><a href="../mod/mod_alias.html#redirect">Redirect</a></code>, ou <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>, par exemple, puissent avoir une
 chance d'accomplir leur tâche.
 </p>
 
