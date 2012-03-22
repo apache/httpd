@@ -877,7 +877,7 @@ AP_DECLARE(apr_status_t) ap_fatal_signal_child_setup(server_rec *s)
 }
 
 AP_DECLARE(apr_status_t) ap_fatal_signal_setup(server_rec *s,
-                                               apr_pool_t *pconf)
+                                               apr_pool_t *in_pconf)
 {
 #ifndef NO_USE_SIGACTION
     struct sigaction sa;
@@ -937,7 +937,7 @@ AP_DECLARE(apr_status_t) ap_fatal_signal_setup(server_rec *s,
 
 #endif /* NO_USE_SIGACTION */
 
-    pconf = pconf;
+    pconf = in_pconf;
     parent_pid = my_pid = getpid();
 
     return APR_SUCCESS;

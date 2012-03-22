@@ -162,7 +162,7 @@ AP_DECLARE(apr_status_t) ap_mpm_safe_kill(pid_t pid, int sig);
  */
 AP_DECLARE(int) ap_process_child_status(apr_proc_t *pid, apr_exit_why_e why, int status);
 
-AP_DECLARE(apr_status_t) ap_fatal_signal_setup(server_rec *s, apr_pool_t *pconf);
+AP_DECLARE(apr_status_t) ap_fatal_signal_setup(server_rec *s, apr_pool_t *in_pconf);
 AP_DECLARE(apr_status_t) ap_fatal_signal_child_setup(server_rec *s);
 #endif /* !NETWARE */
 
