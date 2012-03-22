@@ -28,9 +28,6 @@ extern "C" {
 #include <limits.h>
 
 #include "apr_file_io.h"
-#ifndef PATH_MAX
-#define PATH_MAX MAX_PATH
-#endif
 
 #define SED_NLINES 256
 #define SED_DEPTH 20
