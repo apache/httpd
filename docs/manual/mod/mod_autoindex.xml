@@ -508,7 +508,7 @@ of the index listing</description>
     repeated.</p>
 </usage>
 
-<seealso><directive module="autoindex">ReadmeName</directive></seealso>
+<seealso><directive module="mod_autoindex">ReadmeName</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
