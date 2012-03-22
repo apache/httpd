@@ -202,8 +202,6 @@ key file?</a></li>
 dialog at Apache startup time?</a></li>
 <li><a href="#verify">How do I verify that a private key matches its
 Certificate?</a></li>
-<li><a href="#badcert">Why do connections fail with an "alert bad
-certificate" error?</a></li>
 <li><a href="#pemder">How can I convert a certificate from PEM to DER
 format?</a></li>
 <li><a href="#gid">Why do browsers complain that they cannot
