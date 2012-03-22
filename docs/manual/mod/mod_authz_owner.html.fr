@@ -45,7 +45,7 @@ d'Apache</td></tr></table>
     un module d'authentification comme <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>
     ou <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>.
     <code class="module"><a href="../mod/mod_authz_owner.html">mod_authz_owner</a></code> reconnaît deux arguments pour la
-    directive <code class="directive"><a href="../mod/core.html#require">Require</a></code> :
+    directive <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> :
     <code>file-owner</code> et <code>file-group</code> :</p>
 
     <dl>
