@@ -499,7 +499,7 @@ use of the [PT] flag causes the result of the <directive
 module="mod_rewrite">RewriteRule</directive> to be passed back through
 URL mapping, so that location-based mappings, such as <directive
 module="mod_alias">Alias</directive>, <directive
-module="core">Redirect</directive>, or <directive 
+module="mod_alias">Redirect</directive>, or <directive 
 module="mod_alias">ScriptAlias</directive>, for example, might have a 
 chance to take effect.
 </p>
