@@ -142,7 +142,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_remoteip: Downgrade log message level
     Trunk patch: http://svn.apache.org/viewvc?rev=1304855&view=rev
     2.4.x patch: Trunk patch works
-    +1: sf, trawick
+    +1: sf, trawick, druggeri (nonbinding)
 
   * core: Unbreak external MPMs with per-dir config.
     PR: 52904
