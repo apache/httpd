@@ -238,7 +238,7 @@
     führen.</p>
 
     <p>Es ist besonders darauf zu achten, dass auf Festplatte gespeicherte
-    Dateien wie <code class="directive"><a href="./mod/core.html#lockfile">Lockfile</a></code> und <code class="directive"><a href="./mod/mod_cgid.html#scriptsock">ScriptSock</a></code> die Server-PID enthalten und ohne
+    Dateien wie <code class="directive"><a href="./mod/mpm_common.html#lockfile">Lockfile</a></code> und <code class="directive"><a href="./mod/mod_cgid.html#scriptsock">ScriptSock</a></code> die Server-PID enthalten und ohne
     Probleme nebeneinander existieren müssen. Wann auch immer eine
     Konfigurationsanweisung, ein Drittanbieter-Modul oder ein persistentes
     CGI-Skript irgend eine Sperre oder eine Statusdatei auf Festplatte

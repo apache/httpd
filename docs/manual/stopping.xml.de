@@ -233,7 +233,7 @@
     f&uuml;hren.</p>
 
     <p>Es ist besonders darauf zu achten, dass auf Festplatte gespeicherte
-    Dateien wie <directive module="core">Lockfile</directive> und <directive
+    Dateien wie <directive module="mpm_common">Lockfile</directive> und <directive
     module="mod_cgid">ScriptSock</directive> die Server-PID enthalten und ohne
     Probleme nebeneinander existieren m&uuml;ssen. Wann auch immer eine
     Konfigurationsanweisung, ein Drittanbieter-Modul oder ein persistentes
