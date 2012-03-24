@@ -226,7 +226,7 @@
       <dt><module>mod_auth_dbm</module></dt>
 
       <dd>Now supports multiple types of DBM-like databases using the
-      <a href="../../2.0/mod/mod_auth_dbm.html#AuthDBMType"><code>AuthDBMType</code></a>
+      <a href="../2.0/mod/mod_auth_dbm.html#AuthDBMType"><code>AuthDBMType</code></a>
       directive.</dd>
 
     </dl>
