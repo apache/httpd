@@ -144,6 +144,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: Trunk patch works
     +1: sf, trawick
 
+  * core: Unbreak external MPMs with per-dir config.
+    PR: 52904
+    Trunk patch: http://svn.apache.org/viewvc?rev=1304874&view=rev
+                 http://svn.apache.org/viewvc?rev=1304875&view=rev
+    2.4.x patch: Trunk patch works
+    +1: sf
+    
 PATCHES/ISSUES THAT ARE STALLED
 
 
