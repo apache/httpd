@@ -134,7 +134,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_request: PR52981 check apr_stroff error correctly to allow KeptBodySize to be used
     Trunk patch: http://svn.apache.org/viewvc?rev=1304641&view=rev
     2.4.x patch: trunk works + CHANGES.
-    +1: covener
+    +1: covener, igalic
     
 PATCHES/ISSUES THAT ARE STALLED
 
