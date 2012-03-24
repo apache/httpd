@@ -139,6 +139,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: Trunk patch works
     +1: sf
 
+  * mod_remoteip: Downgrade log message level
+    Trunk patch: http://svn.apache.org/viewvc?rev=1304855&view=rev
+    2.4.x patch: Trunk patch works
+    +1: sf
+
 PATCHES/ISSUES THAT ARE STALLED
 
 
