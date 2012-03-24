@@ -400,13 +400,13 @@ erlaubt sind.</description>
 
       <dd>
       Erlaubt die Verwendung von Autorisierungs-Anweisungen (<directive
-      module="mod_authn_dbm">AuthDBMGroupFile</directive>,
+      module="mod_authz_dbm">AuthDBMGroupFile</directive>,
       <directive module="mod_authn_dbm">AuthDBMUserFile</directive>,
       <directive module="mod_authz_groupfile">AuthGroupFile</directive>,
-      <directive module="core">AuthName</directive>,
-      <directive module="core">AuthType</directive>, <directive
+      <directive module="mod_authn_core">AuthName</directive>,
+      <directive module="mod_authn_core">AuthType</directive>, <directive
       module="mod_authn_file">AuthUserFile</directive>, <directive
-      module="core">Require</directive> <em>usw.</em>).</dd>
+      module="mod_authz_core">Require</directive> <em>usw.</em>).</dd>
 
       <dt>FileInfo</dt>
 
@@ -452,8 +452,9 @@ erlaubt sind.</description>
       module="mod_autoindex">AddIconByEncoding</directive>,
       <directive module="mod_autoindex">AddIconByType</directive>,
       <directive module="mod_autoindex">DefaultIcon</directive>, <directive
-      module="mod_dir">DirectoryIndex</directive>, <directive
-      module="mod_autoindex">FancyIndexing</directive>, <directive
+      module="mod_dir">DirectoryIndex</directive>, <a 
+	  href="mod_autoindex.html#indexoptions.fancyindexing">
+	  <code>FancyIndexing</code></a>, <directive
       module="mod_autoindex">HeaderName</directive>, <directive
       module="mod_autoindex">IndexIgnore</directive>, <directive
       module="mod_autoindex">IndexOptions</directive>, <directive
@@ -465,9 +466,9 @@ erlaubt sind.</description>
       <dd>
       Erlaubt die Verwendung von Direktiven zur Steuerung des
       Zugriffs von Hosts (<directive
-      module="mod_authz_host">Allow</directive>, <directive
-      module="mod_authz_host">Deny</directive> und <directive
-      module="mod_authz_host">Order</directive>).</dd>
+      module="mod_access_compat">Allow</directive>, <directive
+      module="mod_access_compat">Deny</directive> und <directive
+      module="mod_access_compat">Order</directive>).</dd>
 
       <dt>Options[=<var>Option</var>,...]</dt>
 
@@ -2569,8 +2570,8 @@ Ressource zugreifen k&ouml;nnen</description>
     </dl>
 
     <p><directive>Require</directive> muss von den Direktiven
-    <directive module="core">AuthName</directive> und <directive
-    module="core">AuthType</directive> sowie Direktiven wie
+    <directive module="mod_authn_core">AuthName</directive> und <directive
+    module="mod_authn_core">AuthType</directive> sowie Direktiven wie
     <directive module="mod_authn_file">AuthUserFile</directive>
     und <directive module="mod_authz_groupfile">AuthGroupFile</directive>
     (zur Definition von Benutzern und Gruppen) begleitet werden, um
@@ -2593,7 +2594,7 @@ Ressource zugreifen k&ouml;nnen</description>
     <directive module="core" type="section">Limit</directive>-Abschnitts
     platzieren.</p>
 </usage>
-<seealso><directive module="core">Satisfy</directive></seealso>
+<seealso><directive module="mod_access_compat">Satisfy</directive></seealso>
 <seealso><module>mod_authz_host</module></seealso>
 </directivesynopsis>
 
@@ -2721,8 +2722,8 @@ Benutzerauthentisierung</description>
 
 <usage>
     <p>Verfahrensweise f&uuml;r den Zugriff, falls sowohl <directive
-    module="mod_authz_host">Allow</directive> als auch <directive
-    module="core">Require</directive> verwendet werden. Der Parameter kann
+    module="mod_access_compat">Allow</directive> als auch <directive
+    module="mod_authz_core">Require</directive> verwendet werden. Der Parameter kann
     entweder <code>All</code> oder <code>Any</code> sein. Die Direktive ist
     nur dann n&uuml;tzlich, wenn der Zugriff zu einem bestimmten Bereich
     durch Benutzername/Passwort <em>und</em> Clientrechner-Adressen
@@ -2755,8 +2756,8 @@ Benutzerauthentisierung</description>
         type="section">LimitExcept</directive>-Abschnitte auf bestimmte Methoden
       beschr&auml;nkt werden.</p>
 </usage>
-   <seealso><directive module="mod_authz_host">Allow</directive></seealso>
-   <seealso><directive module="core">Require</directive></seealso>
+   <seealso><directive module="mod_access_compat">Allow</directive></seealso>
+   <seealso><directive module="mod_access_compat">Require</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
