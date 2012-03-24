@@ -213,8 +213,6 @@ de ma clé privée ?</a></li>
 mot de passe ?</a></li>
 <li><a href="#verify">Comment vérifier si une clé privée correspond bien
 à son certificat ?</a></li>
-<li><a href="#badcert">Pour quelle raison une connexion échoue-t-elle avec
-l'erreur "alert bad certificate" ?</a></li>
 <li><a href="#pemder">Comment convertir un certificat du format PEM
 au format DER ?</a></li>
 <li><a href="#gid">Pourquoi les navigateurs se plaignent-ils de ne pas pouvoir
