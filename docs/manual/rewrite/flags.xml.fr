@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1179283:1302501 (outdated) -->
+<!-- English Revision : 1303775 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -272,7 +272,7 @@ est pr&eacute;sent&eacute;e &agrave; titre d'exemple et non de recommandation.</
 <section id="flag_f"><title>F|forbidden</title>
 <p>L'utilisation du drapeau [F] permet de faire envoyer par le serveur au
 client un code de statut "403 Forbidden". Le m&ecirc;me effet peut &ecirc;tre obtenu &agrave;
-l'aide de la directive <directive module="mod_access">Deny</directive>,
+l'aide de la directive <directive module="mod_authz_host">Deny</directive>,
 mais ce drapeau offre plus de souplesse dans l'attribution d'un statut
 Forbidden.</p>
 
