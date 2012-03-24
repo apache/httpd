@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Fix merging of AllowOverrideList and ContentDigest.
+     [Stefan Fritsch]
+
   *) core: Disallow directives in AllowOverrideList which are only allowed
      in VirtualHost or server context. These are usually not prepared to be
      called in .htaccess files. [Stefan Fritsch]
