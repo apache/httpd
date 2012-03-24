@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Fix breakage of Listen directives with MPMs that use a
+     per-directory config. PR 52904. [Stefan Fritsch]
+
   *) core: Fix merging of AllowOverrideList and ContentDigest.
      [Stefan Fritsch]
 
