@@ -134,6 +134,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch:  http://people.apache.org/~covener/patches/httpd-2.4.x-proxy_reverse.diff
     +1: 
 
+  * core: Fix merging of AllowOverrideList and ContentDigest.
+    Trunk patch: http://svn.apache.org/viewvc?rev=1304852&view=rev
+    2.4.x patch: Trunk patch works
+    +1: sf
+
 PATCHES/ISSUES THAT ARE STALLED
 
 
