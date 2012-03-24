@@ -545,7 +545,7 @@ contenant l'index</description>
     soient pas r&eacute;p&eacute;t&eacute;es.</p>
 </usage>
 
-<seealso><directive module="autoindex">ReadmeName</directive></seealso>
+<seealso><directive module="mod_autoindex">ReadmeName</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
