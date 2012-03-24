@@ -88,7 +88,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
+  * mod_request: PR52981 check apr_stroff error correctly to allow KeptBodySize to be used
+    Trunk patch: http://svn.apache.org/viewvc?rev=1304641&view=rev
+    2.4.x patch: trunk works + CHANGES.
+    +1: covener, igalic, sf
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -131,11 +134,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch:  http://people.apache.org/~covener/patches/httpd-2.4.x-proxy_reverse.diff
     +1: 
 
-  * mod_request: PR52981 check apr_stroff error correctly to allow KeptBodySize to be used
-    Trunk patch: http://svn.apache.org/viewvc?rev=1304641&view=rev
-    2.4.x patch: trunk works + CHANGES.
-    +1: covener, igalic
-    
 PATCHES/ISSUES THAT ARE STALLED
 
 
