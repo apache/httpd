@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1301398:1302855 (outdated) -->
+<!-- English Revision : 1302855 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -4607,6 +4607,13 @@ sup&eacute;rieures du serveur HTTP Apache</compatibility>
     y compris les en-t&ecirc;tes de fractionnement avec le corps de la
     r&eacute;ponse. Dans le cas d'un serveur mandataire, la taille du corps de
     requ&ecirc;te n'est pas limit&eacute;e &agrave; 64k.</p>
+
+    <note><title>Note</title>
+    <p>Bien que certains pr&eacute;tendent le contraire, <code>TRACE</code> ne
+    constitue pas une vuln&eacute;rabilit&eacute; en mati&egrave;re de s&eacute;curit&eacute;, et il n'y a
+    aucune raison suffisante pour le d&eacute;sactiver, ce qui rendrait
+    votre serveur non conforme.</p>
+    </note>
 </usage>
 </directivesynopsis>
 
