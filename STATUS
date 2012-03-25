@@ -88,12 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * core: In AllowOverrideList, do not allow 'None' together with other directives.
-    PR 52823
-    Trunk patch: http://svn.apache.org/viewvc?rev=1302653&view=rev
-    2.4.x patch: Trunk patch works
-    +1: sf, covener, druggeri
-
   * core: In AllowOverrideList, disallow directives which are only allowed
     in VirtualHost or server context.
     Trunk patch: http://svn.apache.org/viewvc?rev=1302665&view=rev

@@ -6,6 +6,9 @@ Changes with Apache 2.4.2
      envvars: Fix insecure handling of LD_LIBRARY_PATH that could lead to the
      current working directory to be searched for DSOs. [Stefan Fritsch]
 
+  *) core: In AllowOverrideList, do not allow 'None' together with other
+     directives. PR 52823. [Stefan Fritsch]
+
   *) mod_slotmem_shm: Support DEFAULT_REL_RUNTIMEDIR for file-based shm.
      [Jim Jagielski]
 
