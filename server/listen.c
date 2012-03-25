@@ -238,7 +238,7 @@ static apr_status_t close_listeners_on_exec(void *v)
 
 static const char *alloc_listener(process_rec *process, char *addr,
                                   apr_port_t port, const char* proto,
-                                  void *dummy)
+                                  void *slave)
 {
     ap_listen_rec **walk, *last;
     apr_status_t status;
@@ -273,7 +273,7 @@ static const char *alloc_listener(process_rec *process, char *addr,
     }
 
     if (found_listener) {
-        if (ap_listeners->slave != dummy) {
+        if (ap_listeners->slave != slave) {
             return "Cannot define a slave on the same IP:port as a Listener";
         }
         return NULL;
@@ -333,7 +333,7 @@ static const char *alloc_listener(process_rec *process, char *addr,
             last->next = new;
             last = new;
         }
-        new->slave = dummy;
+        new->slave = slave;
     }
 
     return NULL;
@@ -612,10 +612,6 @@ AP_DECLARE(void) ap_listen_pre_config(void)
     ap_listenbacklog = DEFAULT_LISTENBACKLOG;
 }
 
-/* Hack: populate an extra field
- * When this gets called from a Listen directive, dummy is null.
- * So we can use non-null dummy to pass a data pointer without conflict
- */
 AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy,
                                                 int argc, char *const argv[])
 {
@@ -662,7 +658,7 @@ AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy,
         ap_str_tolower(proto);
     }
 
-    return alloc_listener(cmd->server->process, host, port, proto, dummy);
+    return alloc_listener(cmd->server->process, host, port, proto, NULL);
 }
 
 AP_DECLARE_NONSTD(const char *) ap_set_listenbacklog(cmd_parms *cmd,
