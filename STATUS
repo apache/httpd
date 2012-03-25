@@ -88,6 +88,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * core: Unbreak external MPMs with per-dir config.
+    PR: 52904
+    Trunk patch: http://svn.apache.org/viewvc?rev=1304874&view=rev
+                 http://svn.apache.org/viewvc?rev=1304875&view=rev
+    2.4.x patch: Trunk patch works
+    +1: sf, covener, minfrin
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -113,13 +119,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/viewvc?rev=1302483&view=rev
     2.4.x patch:  http://people.apache.org/~covener/patches/httpd-2.4.x-proxy_reverse.diff
     +1: covener
-
-  * core: Unbreak external MPMs with per-dir config.
-    PR: 52904
-    Trunk patch: http://svn.apache.org/viewvc?rev=1304874&view=rev
-                 http://svn.apache.org/viewvc?rev=1304875&view=rev
-    2.4.x patch: Trunk patch works
-    +1: sf, covener
 
   * mod_ssl: Initialize EC temporary key on server startup, fixing a crash
     with threaded MPMs.
