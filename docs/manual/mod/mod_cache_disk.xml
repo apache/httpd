@@ -66,6 +66,9 @@
       cache.</p>
     </note>
 </summary>
+<seealso><module>mod_cache</module></seealso>
+<seealso><module>mod_cache_socache</module></seealso>
+<seealso><a href="../caching.html">Caching Guide</a></seealso>
 
 <directivesynopsis>
 <name>CacheRoot</name>

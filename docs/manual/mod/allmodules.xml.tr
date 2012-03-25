@@ -29,6 +29,7 @@
   <modulefile>mod_buffer.xml</modulefile>
   <modulefile>mod_cache.xml</modulefile>
   <modulefile>mod_cache_disk.xml</modulefile>
+  <modulefile>mod_cache_socache.xml</modulefile>
   <modulefile>mod_cern_meta.xml</modulefile>
   <modulefile>mod_cgi.xml</modulefile>
   <modulefile>mod_cgid.xml</modulefile>

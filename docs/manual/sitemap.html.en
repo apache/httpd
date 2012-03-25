@@ -196,6 +196,7 @@ Server on HPUX</a></li>
 <li><a href="mod/mod_buffer.html">Apache Module mod_buffer</a></li>
 <li><a href="mod/mod_cache.html">Apache Module mod_cache</a></li>
 <li><a href="mod/mod_cache_disk.html">Apache Module mod_cache_disk</a></li>
+<li><a href="mod/mod_cache_socache.html">Apache Module mod_cache_socache</a></li>
 <li><a href="mod/mod_cern_meta.html">Apache Module mod_cern_meta</a></li>
 <li><a href="mod/mod_cgi.html">Apache Module mod_cgi</a></li>
 <li><a href="mod/mod_cgid.html">Apache Module mod_cgid</a></li>
