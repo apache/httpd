@@ -129,7 +129,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     compile problems on GNU hurd.
     Trunk patch: http://svn.apache.org/viewvc?rev=1304087&view=rev
     2.4.x patch: Trunk patch works
-    +1: sf
+    +1: sf, minfrin
 
 PATCHES/ISSUES THAT ARE STALLED
 
