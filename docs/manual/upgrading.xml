@@ -295,7 +295,11 @@
       variables has changed. The old format can still be used with the new
       <code>LegacyDNStringFormat</code> argument to <directive
       module="mod_ssl">SSLOptions</directive>. The SSLv2 protocol is
-      no longer supported.</li>
+      no longer supported. <directive module="mod_ssl">SSLProxyCheckPeerCN
+	  </directive> and <directive module="mod_ssl">SSLProxyCheckPeerExpire
+	  </directive> now default to On, causing proxy requests to HTTPS hosts
+	  with bad or outdated certificates to fail with a 502 status code (Bad 
+	  gateway)</li>
 
       <li><program>htpasswd</program> now uses MD5 hash by default on
       all platforms.</li>
