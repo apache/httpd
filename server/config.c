@@ -59,6 +59,7 @@
 
 AP_DECLARE_DATA const char *ap_server_argv0 = NULL;
 AP_DECLARE_DATA const char *ap_server_root = NULL;
+AP_DECLARE_DATA const char *ap_runtime_dir = NULL;
 AP_DECLARE_DATA server_rec *ap_server_conf = NULL;
 AP_DECLARE_DATA apr_pool_t *ap_pglobal = NULL;
 
@@ -1559,6 +1560,25 @@ AP_DECLARE(char *) ap_server_root_relative(apr_pool_t *p, const char *file)
         return NULL;
     }
 }
+
+AP_DECLARE(char *) ap_runtime_dir_relative(apr_pool_t *p, const char *file)
+{
+    char *newpath = NULL;
+    apr_status_t rv;
+    const char *runtime_dir = ap_runtime_dir ? ap_runtime_dir : ap_server_root_relative(p, DEFAULT_REL_RUNTIMEDIR);
+
+    rv = apr_filepath_merge(&newpath, runtime_dir, file,
+                            APR_FILEPATH_TRUENAME, p);
+    if (newpath && (rv == APR_SUCCESS || APR_STATUS_IS_EPATHWILD(rv)
+                                      || APR_STATUS_IS_ENOENT(rv)
+                                      || APR_STATUS_IS_ENOTDIR(rv))) {
+        return newpath;
+    }
+    else {
+        return NULL;
+    }
+}
+
 
 AP_DECLARE(const char *) ap_soak_end_container(cmd_parms *cmd, char *directive)
 {
