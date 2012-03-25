@@ -88,16 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * core: Add ap_runtime_dir_relative() and DefaultRuntimeDir
-    Trunk patch: http://svn.apache.org/viewvc?rev=1297955&view=rev
-                http://svn.apache.org/viewvc?rev=1297956&view=rev
-                http://svn.apache.org/viewvc?rev=1297959&view=rev
-                http://svn.apache.org/viewvc?rev=1298432&view=rev
-    2.4.x patch: http://people.apache.org/~jim/patches/runtime_dir.patch
-    +1: jim, trawick (docs may need adjusting depending how much exploitation
-        is possible vs. what is in 2.4.1; no need to tie possible adjustments
-        to the code though)
-    +1: minfrin
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:

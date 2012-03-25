@@ -43,6 +43,11 @@ extern "C" {
 AP_DECLARE_DATA extern const char *ap_server_argv0;
 /** The global server's ServerRoot */
 AP_DECLARE_DATA extern const char *ap_server_root;
+/** The global server's DefaultRuntimeDir
+ * This is not usable directly in the general case; use
+ * ap_runtime_dir_relative() instead.
+ */
+AP_DECLARE_DATA extern const char *ap_runtime_dir;
 /** The global server's server_rec */
 AP_DECLARE_DATA extern server_rec *ap_server_conf;
 /** global pool, for access prior to creation of server_rec */
