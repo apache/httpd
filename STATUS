@@ -120,7 +120,24 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/viewvc?rev=1304875&view=rev
     2.4.x patch: Trunk patch works
     +1: sf, covener
-    
+
+  * mod_ssl: Initialize EC temporary key on server startup, fixing a crash
+    with threaded MPMs.
+    Trunk patch: http://svn.apache.org/viewvc?rev=1294306&view=rev
+    2.4.x patch: Trunk patch works, skip docs/log-message-tags/next-number,
+                 add CHANGES:
+        mod_ssl: Fix crash with threaded MPMs due to race condition when
+        initializing EC temporary keys. [Stefan Fritsch]
+    NOTE: If you get strange openssl errors during server start, you may have
+          forgotten "make clean" before building.
+    +1: sf
+
+  * mod_sed: Don't define PATH_MAX to a potentially undefined value, causing
+    compile problems on GNU hurd.
+    Trunk patch: http://svn.apache.org/viewvc?rev=1304087&view=rev
+    2.4.x patch: Trunk patch works
+    +1: sf
+
 PATCHES/ISSUES THAT ARE STALLED
 
 
