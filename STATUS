@@ -100,10 +100,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4.x patch: Trunk patch works (skip docs/log-message-tags/next-number)
     +1: sf, covener, druggeri
 
-  * mod_slotmem_shm: Support DEFAULT_REL_RUNTIMEDIR for file-based shm.
-    Trunk patch: http://svn.apache.org/viewvc?rev=1297560&view=rev
-    2.4.x patch: Trunk patch works
-    +1:  jim, jorton, minfrin
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

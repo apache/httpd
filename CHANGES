@@ -6,6 +6,9 @@ Changes with Apache 2.4.2
      envvars: Fix insecure handling of LD_LIBRARY_PATH that could lead to the
      current working directory to be searched for DSOs. [Stefan Fritsch]
 
+  *) mod_slotmem_shm: Support DEFAULT_REL_RUNTIMEDIR for file-based shm.
+     [Jim Jagielski]
+
   *) core: Fix merging of AllowOverrideList and ContentDigest.
      [Stefan Fritsch]
 
