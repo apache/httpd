@@ -88,11 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * core: Fix merging of AllowOverrideList and ContentDigest.
-    Trunk patch: http://svn.apache.org/viewvc?rev=1304852&view=rev
-    2.4.x patch: Trunk patch works
-    +1: sf, trawick, covener
-
   * mod_remoteip: Downgrade log message level
     Trunk patch: http://svn.apache.org/viewvc?rev=1304855&view=rev
     2.4.x patch: Trunk patch works

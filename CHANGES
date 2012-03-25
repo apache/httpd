@@ -6,6 +6,9 @@ Changes with Apache 2.4.2
      envvars: Fix insecure handling of LD_LIBRARY_PATH that could lead to the
      current working directory to be searched for DSOs. [Stefan Fritsch]
 
+  *) core: Fix merging of AllowOverrideList and ContentDigest.
+     [Stefan Fritsch]
+
   *) mod_request: Fix validation of the KeptBodySize argument so it
      doesn't always throw a configuration error. PR 52981 [Eric Covener]
 
