@@ -1,16 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) core: Fix breakage of Listen directives with MPMs that use a
-     per-directory config. PR 52904. [Stefan Fritsch]
-
-  *) core: Disallow directives in AllowOverrideList which are only allowed
-     in VirtualHost or server context. These are usually not prepared to be
-     called in .htaccess files. [Stefan Fritsch]
-
-  *) core: In AllowOverrideList, do not allow 'None' together with other
-     directives. PR 52823. [Stefan Fritsch]
-
   *) mod_proxy: Correctly set up reverse proxy worker. PR 52935.
      [Petter Berntsen <petterb gmail.com>]
 
