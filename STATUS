@@ -93,6 +93,16 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk works + CHANGES.
     +1: covener, igalic, sf
 
+  * core: Fix merging of AllowOverrideList and ContentDigest.
+    Trunk patch: http://svn.apache.org/viewvc?rev=1304852&view=rev
+    2.4.x patch: Trunk patch works
+    +1: sf, trawick, covener
+
+  * mod_remoteip: Downgrade log message level
+    Trunk patch: http://svn.apache.org/viewvc?rev=1304855&view=rev
+    2.4.x patch: Trunk patch works
+    +1: sf, trawick, druggeri 
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -133,16 +143,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/viewvc?rev=1302483&view=rev
     2.4.x patch:  http://people.apache.org/~covener/patches/httpd-2.4.x-proxy_reverse.diff
     +1: 
-
-  * core: Fix merging of AllowOverrideList and ContentDigest.
-    Trunk patch: http://svn.apache.org/viewvc?rev=1304852&view=rev
-    2.4.x patch: Trunk patch works
-    +1: sf, trawick
-
-  * mod_remoteip: Downgrade log message level
-    Trunk patch: http://svn.apache.org/viewvc?rev=1304855&view=rev
-    2.4.x patch: Trunk patch works
-    +1: sf, trawick, druggeri (nonbinding)
 
   * core: Unbreak external MPMs with per-dir config.
     PR: 52904
