@@ -88,11 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_remoteip: Downgrade log message level
-    Trunk patch: http://svn.apache.org/viewvc?rev=1304855&view=rev
-    2.4.x patch: Trunk patch works
-    +1: sf, trawick, druggeri 
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
