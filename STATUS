@@ -123,7 +123,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         initializing EC temporary keys. [Stefan Fritsch]
     NOTE: If you get strange openssl errors during server start, you may have
           forgotten "make clean" before building.
-    +1: sf
+    +1: sf, minfrin
 
   * mod_sed: Don't define PATH_MAX to a potentially undefined value, causing
     compile problems on GNU hurd.
