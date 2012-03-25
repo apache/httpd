@@ -88,11 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * core: In AllowOverrideList, disallow directives which are only allowed
-    in VirtualHost or server context.
-    Trunk patch: http://svn.apache.org/viewvc?rev=1302665&view=rev
-    2.4.x patch: Trunk patch works (skip docs/log-message-tags/next-number)
-    +1: sf, covener, druggeri
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
