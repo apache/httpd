@@ -112,7 +112,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk Patch: http://svn.apache.org/viewvc?rev=1302444&view=rev
                  http://svn.apache.org/viewvc?rev=1302483&view=rev
     2.4.x patch:  http://people.apache.org/~covener/patches/httpd-2.4.x-proxy_reverse.diff
-    +1: covener
+    +1: covener, minfrin
 
   * mod_ssl: Initialize EC temporary key on server startup, fixing a crash
     with threaded MPMs.
