@@ -115,13 +115,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR 52823
     Trunk patch: http://svn.apache.org/viewvc?rev=1302653&view=rev
     2.4.x patch: Trunk patch works
-    +1: sf, covener
+    +1: sf, covener, druggeri
 
   * core: In AllowOverrideList, disallow directives which are only allowed
     in VirtualHost or server context.
     Trunk patch: http://svn.apache.org/viewvc?rev=1302665&view=rev
     2.4.x patch: Trunk patch works (skip docs/log-message-tags/next-number)
-    +1: sf, covener
+    +1: sf, covener, druggeri
 
   * proxy: Correctly save the reverse proxy worker in all virtual host proxy configs.
     Trunk Patch: http://svn.apache.org/viewvc?rev=1302444&view=rev
