@@ -247,7 +247,7 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
         conf->override_opts = new->override_opts;
     }
 
-    if (conf->override_list == NULL) {
+    if (new->override_list != NULL) {
         conf->override_list = new->override_list;
     }
 
@@ -274,7 +274,7 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
         conf->hostname_lookups = new->hostname_lookups;
     }
 
-    if (new->content_md5 == AP_CONTENT_MD5_UNSET) {
+    if (new->content_md5 != AP_CONTENT_MD5_UNSET) {
         conf->content_md5 = new->content_md5;
     }
 
@@ -314,8 +314,6 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
 
     if (new->limit_xml_body != AP_LIMIT_UNSET)
         conf->limit_xml_body = new->limit_xml_body;
-    else
-        conf->limit_xml_body = base->limit_xml_body;
 
     if (!conf->sec_file) {
         conf->sec_file = new->sec_file;
