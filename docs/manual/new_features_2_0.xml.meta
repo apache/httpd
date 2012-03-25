@@ -14,6 +14,6 @@
     <variant outdated="yes">ko</variant>
     <variant outdated="yes">pt-br</variant>
     <variant outdated="yes">ru</variant>
-    <variant>tr</variant>
+    <variant outdated="yes">tr</variant>
   </variants>
 </metafile>

@@ -112,6 +112,12 @@
     supported by this module. The <program>htcacheclean</program> tool is
     provided to list cached URLs, remove cached URLs, or to maintain the size
     of the disk cache within size and inode limits.</dd>
+    <dt><module>mod_cache_socache</module></dt>
+    <dd>Implements a shared object cache based storage manager. Headers and
+    bodies are stored together beneath a single key based on the URL of the
+    response being cached. Multiple content negotiated responses can
+    be stored concurrently, however the caching of partial content is not
+    supported by this module.</dd>
     </dl>
 
     <p>Further details, discussion, and examples, are provided in the
@@ -123,6 +129,7 @@
     <related>
       <modulelist>
         <module>mod_cache_disk</module>
+        <module>mod_cache_socache</module>
       </modulelist>
       <directivelist>
         <directive module="mod_cache_disk">CacheRoot</directive>
@@ -130,6 +137,12 @@
         <directive module="mod_cache_disk">CacheDirLength</directive>
         <directive module="mod_cache_disk">CacheMinFileSize</directive>
         <directive module="mod_cache_disk">CacheMaxFileSize</directive>
+        <directive module="mod_cache_socache">CacheSocache</directive>
+        <directive module="mod_cache_socache">CacheSocacheMaxTime</directive>
+        <directive module="mod_cache_socache">CacheSocacheMinTime</directive>
+        <directive module="mod_cache_socache">CacheSocacheMaxSize</directive>
+        <directive module="mod_cache_socache">CacheSocacheReadSize</directive>
+        <directive module="mod_cache_socache">CacheSocacheReadTime</directive>
       </directivelist>
     </related>
 </section>
@@ -348,7 +361,10 @@ manager</description>
     the content is cacheable.
     <var>cache_type</var> <code>disk</code> instructs
     <module>mod_cache</module> to use the disk based storage manager
-    implemented by <module>mod_cache_disk</module>.</p>
+    implemented by <module>mod_cache_disk</module>. <var>cache_type</var>
+    <code>socache</code> instructs <module>mod_cache</module> to use the
+    shared object cache based storage manager implemented by
+    <module>mod_cache_socache</module>.</p>
     <p>In the event that the URL space overlaps between different
     <directive>CacheEnable</directive> directives (as in the example below),
     each possible storage manager will be run until the first one that
