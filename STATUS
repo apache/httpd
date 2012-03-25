@@ -97,6 +97,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patch: http://svn.apache.org/viewvc?rev=1298433&view=rev
     2.4.x patch: Trunk patch works (skip docs/log-message-tags/next-number)
     +1:  jim
+    +1: minfrin (with docs at http://svn.apache.org/viewvc?rev=1305166&view=rev)
 
   * proxy: Correctly save the reverse proxy worker in all virtual host proxy configs.
     Trunk Patch: http://svn.apache.org/viewvc?rev=1302444&view=rev
