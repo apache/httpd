@@ -131,7 +131,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/viewvc/httpd/httpd/trunk/server/mpm_unix.c?view=diff&r1=1303201&r2=1303827&pathrev=1303827
                  http://svn.apache.org/viewvc/httpd/httpd/trunk/include/mpm_common.h?view=diff&r1=1303201&r2=1303827&pathrev=1303827
     2.4.x patch: http://people.apache.org/~fuankg/diffs/mpm_dso_exports.diff
-    +1: fuankg
+    +1: fuankg, minfrin
 
 PATCHES/ISSUES THAT ARE STALLED
 
