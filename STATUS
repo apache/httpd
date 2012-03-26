@@ -122,6 +122,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: Trunk patch works
     +1: sf, minfrin
 
+  * mpm: Export MPM symbols properly to avoid load failures on AIX when build MPM as DSO.
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1303201
+                 http://svn.apache.org/viewvc/httpd/httpd/trunk/server/mpm_unix.c?view=diff&r1=1303201&r2=1303827&pathrev=1303827
+                 http://svn.apache.org/viewvc/httpd/httpd/trunk/include/mpm_common.h?view=diff&r1=1303201&r2=1303827&pathrev=1303827
+    2.4.x patch: http://people.apache.org/~fuankg/diffs/mpm_dso_exports.diff
+    +1: fuankg
+
 PATCHES/ISSUES THAT ARE STALLED
 
 
