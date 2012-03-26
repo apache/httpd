@@ -125,6 +125,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     minfrin: That's what the patch does, and what the log message on the
              commit says:
              "Don't define PATH_MAX, we use APR_PATH_MAX anyway."
+    sf: Exactly. The commit only removes unused code.  The error comes from this useless
+        definition of PATH_MAX confusing some glibc header.
 
   * mpm: Export MPM symbols properly to avoid load failures on AIX when build MPM as DSO.
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1303201
