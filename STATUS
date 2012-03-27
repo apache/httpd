@@ -88,12 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_sed: Don't define PATH_MAX to a potentially undefined value, causing
-    compile problems on GNU hurd.
-    Trunk patch: http://svn.apache.org/viewvc?rev=1304087&view=rev
-    2.4.x patch: Trunk patch works
-    +1: sf, minfrin, fuankg (/me stupid, sorry - saw the removal as add ...)
-
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
