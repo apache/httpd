@@ -50,11 +50,11 @@
 # MaxConnectionsPerChild: maximum number of connections a server process serves
 #                         before terminating
 <IfModule mpm_worker_module>
-    StartServers             2
-    MinSpareThreads         25
-    MaxSpareThreads         75 
+    StartServers             3
+    MinSpareThreads         75
+    MaxSpareThreads        250 
     ThreadsPerChild         25
-    MaxRequestWorkers      150
+    MaxRequestWorkers      400
     MaxConnectionsPerChild   0
 </IfModule>
 
