@@ -423,7 +423,7 @@ static void force_recovery(proxy_balancer *balancer, server_rec *s)
             }
         }
     }
-    if (!ok) {
+    if (!ok && balancer->s->forcerecovery) {
         /* If all workers are in error state force the recovery.
          */
         worker = (proxy_worker **)balancer->workers->elts;
