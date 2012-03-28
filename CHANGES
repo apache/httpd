@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy: Add the forcerecovery balancer parameter that determines if
+     recovery for balancer workers is enforced. [Ruediger Pluem]
+
   *) mod_proxy: Correctly set up reverse proxy worker. PR 52935.
      [Petter Berntsen <petterb gmail.com>]
 
