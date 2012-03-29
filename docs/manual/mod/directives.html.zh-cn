@@ -172,6 +172,12 @@
 <li><a href="mod_cache_disk.html#cachereadsize">CacheReadSize</a></li>
 <li><a href="mod_cache_disk.html#cachereadtime">CacheReadTime</a></li>
 <li><a href="mod_cache_disk.html#cacheroot">CacheRoot</a></li>
+<li><a href="mod_cache_socache.html#cachesocache">CacheSocache</a></li>
+<li><a href="mod_cache_socache.html#cachesocachemaxsize">CacheSocacheMaxSize</a></li>
+<li><a href="mod_cache_socache.html#cachesocachemaxtime">CacheSocacheMaxTime</a></li>
+<li><a href="mod_cache_socache.html#cachesocachemintime">CacheSocacheMinTime</a></li>
+<li><a href="mod_cache_socache.html#cachesocachereadsize">CacheSocacheReadSize</a></li>
+<li><a href="mod_cache_socache.html#cachesocachereadtime">CacheSocacheReadTime</a></li>
 <li><a href="mod_cache.html#cachestaleonerror">CacheStaleOnError</a></li>
 <li><a href="mod_cache.html#cachestoreexpired">CacheStoreExpired</a></li>
 <li><a href="mod_cache.html#cachestorenostore">CacheStoreNoStore</a></li>

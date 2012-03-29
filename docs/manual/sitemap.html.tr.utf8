@@ -192,6 +192,7 @@ Windows ile Apache Kullanımı</a></li>
 <li><a href="mod/mod_buffer.html">Apache Modülü mod_buffer</a></li>
 <li><a href="mod/mod_cache.html">Apache Modülü mod_cache</a></li>
 <li><a href="mod/mod_cache_disk.html">Apache Modülü mod_cache_disk</a></li>
+<li><a href="mod/mod_cache_socache.html">Apache Modülü mod_cache_socache</a></li>
 <li><a href="mod/mod_cern_meta.html">Apache Modülü mod_cern_meta</a></li>
 <li><a href="mod/mod_cgi.html">Apache Modülü mod_cgi</a></li>
 <li><a href="mod/mod_cgid.html">Apache Modülü mod_cgid</a></li>

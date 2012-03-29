@@ -28,8 +28,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fonctionnalités de base du serveur HTTP Apache toujours
 disponibles</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Core</td></tr></table>
@@ -4527,6 +4525,13 @@ supérieures du serveur HTTP Apache</td></tr>
     y compris les en-têtes de fractionnement avec le corps de la
     réponse. Dans le cas d'un serveur mandataire, la taille du corps de
     requête n'est pas limitée à 64k.</p>
+
+    <div class="note"><h3>Note</h3>
+    <p>Bien que certains prétendent le contraire, <code>TRACE</code> ne
+    constitue pas une vulnérabilité en matière de sécurité, et il n'y a
+    aucune raison suffisante pour le désactiver, ce qui rendrait
+    votre serveur non conforme.</p>
+    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

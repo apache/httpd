@@ -190,6 +190,7 @@
 <li><a href="mod/mod_buffer.html">아파치 모듈 mod_buffer</a></li>
 <li><a href="mod/mod_cache.html">아파치 모듈 mod_cache</a></li>
 <li><a href="mod/mod_cache_disk.html">아파치 모듈 mod_cache_disk</a></li>
+<li><a href="mod/mod_cache_socache.html">아파치 모듈 mod_cache_socache</a></li>
 <li><a href="mod/mod_cern_meta.html">아파치 모듈 mod_cern_meta</a></li>
 <li><a href="mod/mod_cgi.html">아파치 모듈 mod_cgi</a></li>
 <li><a href="mod/mod_cgid.html">아파치 모듈 mod_cgid</a></li>

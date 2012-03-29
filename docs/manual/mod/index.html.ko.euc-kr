@@ -98,6 +98,8 @@ address)</dd>
 <dt><a href="mod_buffer.html" id="B" name="B">mod_buffer</a></dt><dd>Support for request buffering</dd>
 <dt><a href="mod_cache.html" id="C" name="C">mod_cache</a></dt><dd>URI를 키로 사용하여 내용을 캐쉬한다.</dd>
 <dt><a href="mod_cache_disk.html">mod_cache_disk</a></dt><dd>Content cache storage manager keyed to URIs</dd>
+<dt><a href="mod_cache_socache.html">mod_cache_socache</a></dt><dd>Shared object cache (socache) based storage module for the
+HTTP caching filter.</dd>
 <dt><a href="mod_cern_meta.html">mod_cern_meta</a></dt><dd>CERN 웹서버 메타파일 지원</dd>
 <dt><a href="mod_cgi.html">mod_cgi</a></dt><dd>CGI 스크립트 실행</dd>
 <dt><a href="mod_cgid.html">mod_cgid</a></dt><dd>외부 CGI 데몬을 사용하여 CGI 스크립트를 실행</dd>

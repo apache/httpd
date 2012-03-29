@@ -191,6 +191,7 @@
 <li><a href="mod/mod_buffer.html">Apache 模块 mod_buffer</a></li>
 <li><a href="mod/mod_cache.html">Apache 模块 mod_cache</a></li>
 <li><a href="mod/mod_cache_disk.html">Apache 模块 mod_cache_disk</a></li>
+<li><a href="mod/mod_cache_socache.html">Apache 模块 mod_cache_socache</a></li>
 <li><a href="mod/mod_cern_meta.html">Apache 模块 mod_cern_meta</a></li>
 <li><a href="mod/mod_cgi.html">Apache 模块 mod_cgi</a></li>
 <li><a href="mod/mod_cgid.html">Apache 模块 mod_cgid</a></li>

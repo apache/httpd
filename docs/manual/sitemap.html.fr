@@ -209,6 +209,7 @@ pour décrire les directives Apache</a></li>
 <li><a href="mod/mod_buffer.html">Module Apache mod_buffer</a></li>
 <li><a href="mod/mod_cache.html">Module Apache mod_cache</a></li>
 <li><a href="mod/mod_cache_disk.html">Module Apache mod_cache_disk</a></li>
+<li><a href="mod/mod_cache_socache.html">Module Apache mod_cache_socache</a></li>
 <li><a href="mod/mod_cern_meta.html">Module Apache mod_cern_meta</a></li>
 <li><a href="mod/mod_cgi.html">Module Apache mod_cgi</a></li>
 <li><a href="mod/mod_cgid.html">Module Apache mod_cgid</a></li>

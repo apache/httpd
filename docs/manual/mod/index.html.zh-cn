@@ -98,6 +98,8 @@ address)</dd>
 <dt><a href="mod_buffer.html" id="B" name="B">mod_buffer</a></dt><dd>Support for request buffering</dd>
 <dt><a href="mod_cache.html" id="C" name="C">mod_cache</a></dt><dd>RFC 2616 compliant HTTP caching filter.</dd>
 <dt><a href="mod_cache_disk.html">mod_cache_disk</a></dt><dd>Disk based storage module for the HTTP caching filter.</dd>
+<dt><a href="mod_cache_socache.html">mod_cache_socache</a></dt><dd>Shared object cache (socache) based storage module for the
+HTTP caching filter.</dd>
 <dt><a href="mod_cern_meta.html">mod_cern_meta</a></dt><dd>CERN httpd metafile semantics</dd>
 <dt><a href="mod_cgi.html">mod_cgi</a></dt><dd>Execution of CGI scripts</dd>
 <dt><a href="mod_cgid.html">mod_cgid</a></dt><dd>Execution of CGI scripts using an
