@@ -123,6 +123,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: http://people.apache.org/~fuankg/diffs/mpm_dso_exports.diff
     +1: fuankg, minfrin
 
+  * core: Fix regexp substitution bug
+    Trunk patch: http://svn.apache.org/viewvc?rev=1307067&view=rev
+    2.4.x patch: Trunk patch works, add CHANGES:
+       core: Fix regular expression substitution if the replacment string
+       contained '&' or '\'. (Bug introduced in 2.3.5).
+
 PATCHES/ISSUES THAT ARE STALLED
 
 
