@@ -770,18 +770,6 @@
       documentation du module <a href="mod/mod_cgi.html">mod_cgi</a>.</p>
     </section>
 
-    <section id="rewritelog">
-      <title>Journal de r&eacute;&eacute;criture</title>
-
-      <p>Lorsqu'on utilise les fonctionnalit&eacute;s puissantes et complexes du
-      module <a href="mod/mod_rewrite.html">mod_rewrite</a>, il est presque
-      toujours n&eacute;cessaire d'utiliser la directive
-      <directive module="mod_rewrite">RewriteLog</directive> afin de
-      faciliter le d&eacute;bogage. Ce fichier journal fournit une analyse d&eacute;taill&eacute;e
-      de la transformation des requ&ecirc;tes par le moteur de r&eacute;&eacute;criture. Le niveau
-      de d&eacute;tail est contr&ocirc;l&eacute; par la directive
-      <directive module="mod_rewrite">RewriteLogLevel</directive>.</p>
-    </section>
   </section>
 </manualpage>
 
