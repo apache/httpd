@@ -728,18 +728,6 @@
       documentation du module <a href="mod/mod_cgi.html">mod_cgi</a>.</p>
     
 
-    <h3><a name="rewritelog" id="rewritelog">Journal de réécriture</a></h3>
-      
-
-      <p>Lorsqu'on utilise les fonctionnalités puissantes et complexes du
-      module <a href="mod/mod_rewrite.html">mod_rewrite</a>, il est presque
-      toujours nécessaire d'utiliser la directive
-      <code class="directive"><a href="./mod/mod_rewrite.html#rewritelog">RewriteLog</a></code> afin de
-      faciliter le débogage. Ce fichier journal fournit une analyse détaillée
-      de la transformation des requêtes par le moteur de réécriture. Le niveau
-      de détail est contrôlé par la directive
-      <code class="directive"><a href="./mod/mod_rewrite.html#rewriteloglevel">RewriteLogLevel</a></code>.</p>
-    
   </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="./en/logs.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
