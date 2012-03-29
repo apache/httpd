@@ -71,7 +71,7 @@
       <dd>Este módulo é uma migração do <code>mod_auth_ldap</code>,
           da versão 2.0 para a estrutura 2.2 de <code>Authn/Authz</code>.
 	  As novas funcionalidades incluem o uso de atributos LDAP e
-	  filtros de procura complexos na diretriz <code class="directive"><a href="./mod/core.html#require">Require</a></code>.</dd>
+	  filtros de procura complexos na diretriz <code class="directive"><a href="./mod/mod_authz_core.html#require">Require</a></code>.</dd>
 
       <dt><code class="module"><a href="./mod/mod_info.html">mod_info</a></code></dt>
       <dd>Adicionado um novo argumento <code>?config</code> que

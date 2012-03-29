@@ -1185,8 +1185,8 @@ distant utilisé tel quel)</code></td></tr>
 
 <h3>Voir aussi</h3>
 <ul>
-<li><code class="directive"><a href="../mod/mod_authnnz_ldap.html#authldapinitialbindasuser">AuthLDAPInitialBindAsUser</a></code></li>
-<li><code class="directive"><a href="../mod/mod_authnnz_ldap.html#authldapbinddn">AuthLDAPBindDN</a></code></li>
+<li><code class="directive"><a href="#authldapinitialbindasuser">AuthLDAPInitialBindAsUser</a></code></li>
+<li><code class="directive"><a href="#authldapbinddn">AuthLDAPBindDN</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

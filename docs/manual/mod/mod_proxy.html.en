@@ -1255,6 +1255,15 @@ through</td></tr>
         <td>Number of additional BalancerMembers to allow to be added
         to this balancer in addition to those defined at configuration.
     </td></tr>
+    <tr><td>forcerecovery</td>
+        <td>On</td>
+        <td>Force the immediate recovery of all workers without considering the
+        retry parameter of the workers if all workers of a balancer are
+        in error state. There might be cases where an already overloaded backend
+        can get into deeper trouble if the recovery of all workers is enforced
+        without considering the retry parameter of each worker. In this case
+        set to <code>Off</code>.
+    </td></tr>
 
     </table>
     <p>A sample balancer setup</p>

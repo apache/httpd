@@ -104,6 +104,8 @@ shell Win32 <code>dir</code></dd>
 <dt><a href="mod_cache.html" id="C" name="C">mod_cache</a></dt><dd>Filtre de mise en cache HTTP conforme à la RFC 2616</dd>
 <dt><a href="mod_cache_disk.html">mod_cache_disk</a></dt><dd>Module de stockage sur disque pour le filtre de mise en
 cache HTTP.</dd>
+<dt><a href="mod_cache_socache.html">mod_cache_socache</a></dt><dd>Shared object cache (socache) based storage module for the
+HTTP caching filter.</dd>
 <dt><a href="mod_cern_meta.html">mod_cern_meta</a></dt><dd>CERN httpd metafile semantics</dd>
 <dt><a href="mod_cgi.html">mod_cgi</a></dt><dd>Execution of CGI scripts</dd>
 <dt><a href="mod_cgid.html">mod_cgid</a></dt><dd>Execution of CGI scripts using an

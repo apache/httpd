@@ -192,6 +192,7 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_buffer.html">Módulo Apache mod_buffer</a></li>
 <li><a href="mod/mod_cache.html">Módulo Apache mod_cache</a></li>
 <li><a href="mod/mod_cache_disk.html">Módulo Apache mod_cache_disk</a></li>
+<li><a href="mod/mod_cache_socache.html">Módulo Apache mod_cache_socache</a></li>
 <li><a href="mod/mod_cern_meta.html">Módulo Apache mod_cern_meta</a></li>
 <li><a href="mod/mod_cgi.html">Módulo Apache mod_cgi</a></li>
 <li><a href="mod/mod_cgid.html">Módulo Apache mod_cgid</a></li>
