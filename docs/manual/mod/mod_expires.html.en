@@ -117,7 +117,7 @@ criteria</td></tr>
     </code></p></div>
 
     <p>The expiry time can be fine-tuned by adding several
-    '&lt;num&gt; &lt;type&gt;' clauses:</p>
+    '<var>num</var> <var>type</var>' clauses:</p>
 
     <div class="example"><p><code>
       ExpiresByType text/html "access plus 1 month 15
