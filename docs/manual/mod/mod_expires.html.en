@@ -75,13 +75,13 @@ criteria</td></tr>
     can also be defined in a more readable syntax of the form:</p>
 
     <div class="example"><p><code>
-      ExpiresDefault "&lt;base&gt; [plus] {&lt;num&gt;
-      &lt;type&gt;}*"<br />
-      ExpiresByType type/encoding "&lt;base&gt; [plus]
-      {&lt;num&gt; &lt;type&gt;}*"
+      ExpiresDefault "<var>base</var> [plus <var>num</var> <var>type</var>]
+        [<var>num</var> <var>type</var>] ..."<br />
+      ExpiresByType type/encoding "<var>base</var> [plus <var>num</var> <var>type</var>]
+        [<var>num</var> <var>type</var>] ..."
     </code></p></div>
 
-    <p>where &lt;base&gt; is one of:</p>
+    <p>where <var>base</var> is one of:</p>
 
     <ul>
       <li><code>access</code></li>
@@ -92,9 +92,9 @@ criteria</td></tr>
       <li><code>modification</code></li>
     </ul>
 
-    <p>The <code>plus</code> keyword is optional. &lt;num&gt;
+    <p>The <code>plus</code> keyword is optional. <var>num</var>
     should be an integer value [acceptable to <code>atoi()</code>],
-    and &lt;type&gt; is one of:</p>
+    and <var>type</var> is one of:</p>
 
     <ul>
       <li><code>years</code></li>
