@@ -198,6 +198,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://people.apache.org/~sf/PR52914-2.2.diff
     +1: sf
 
+  * mod_proxy: Add the forcerecovery balancer parameter that determines if
+     recovery for balancer workers is enforced.
+    Trunk version of patch:
+       http://svn.apache.org/viewvc?rev=1306409&view=rev
+    Backport version for 2.2.x of patch:
+       http://people.apache.org/~rpluem/patches/forcerecovery_2.2.diff
+    +1: rpluem,
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
