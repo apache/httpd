@@ -1291,6 +1291,28 @@ boolean expression is true</description>
 <override>AuthConfig</override>
 
 <usage>
+
+<note><title>SSLRequire is deprecated</title>
+<p><code>SSLRequire</code> is deprecated and should in general be replaced
+by <a href="mod_authz_core.html#reqexpr">Require expr</a>. The so called
+<a href="../expr.html">ap_expr</a> syntax of <code>Require expr</code> is
+a superset of the syntax of <code>SSLRequire</code>, with the following
+exception:</p>
+
+<p>In <code>SSLRequire</code>, the comparison operators <code>&lt;</code>,
+<code>&lt;=</code>, ... are completely equivalent to the operators
+<code>lt</code>, <code>le</code>, ... and work in a somewhat pecular way that
+first compares the length of two strings and then the lexical order.
+On the other hand, <a href="../expr.html">ap_expr</a> has two sets of
+comparison operators: The operators <code>&lt;</code>,
+<code>&lt;=</code>, ... do lexical string comparison, while the operators
+<code>-lt</code>, <code>-le</code>, ... do integer comparison.
+For the latter, there are also aliases without the leading dashes:
+<code>lt</code>, <code>le</code>, ...
+</p>
+
+</note>
+
 <p>
 This directive specifies a general access requirement which has to be
 fulfilled in order to allow access. It is a very powerful directive because the
@@ -1382,27 +1404,6 @@ value will be converted to UTF-8 if necessary, then compared against
 the left-hand-side expression.</p></li>
 
 </ul>
-</note>
-
-<note><title>SSLRequire is deprecated</title>
-<p><code>SSLRequire</code> is deprecated and should in general be replaced
-by <a href="mod_authz_core.html#reqexpr">Require expr</a>. The so called
-<a href="../expr.html">ap_expr</a> syntax of <code>Require expr</code> is
-a superset of the syntax of <code>SSLRequire</code>, with the following
-exception:</p>
-
-<p>In <code>SSLRequire</code>, the comparison operators <code>&lt;</code>,
-<code>&lt;=</code>, ... are completely equivalent to the operators
-<code>lt</code>, <code>le</code>, ... and work in a somewhat pecular way that
-first compares the length of two strings and then the lexical order.
-On the other hand, <a href="../expr.html">ap_expr</a> has two sets of
-comparison operators: The operators <code>&lt;</code>,
-<code>&lt;=</code>, ... do lexical string comparison, while the operators
-<code>-lt</code>, <code>-le</code>, ... do integer comparison.
-For the latter, there are also aliases without the leading dashes:
-<code>lt</code>, <code>le</code>, ...
-</p>
-
 </note>
 
 </usage>
