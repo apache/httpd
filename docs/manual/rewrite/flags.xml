@@ -661,10 +661,31 @@ module="mod_rewrite">RewriteCond</directive> only applies to the
 <directive module="mod_rewrite">RewriteRule</directive> immediately
 following it. Thus, if you want to make a <code>RewriteCond</code> apply
 to several <code>RewriteRule</code>s, one possible technique is to
-negate those conditions and use a [Skip] flag. So, you can
+negate those conditions and add a <code>RewriteRule</code> with a [Skip] flag. You can
 use this to make pseudo if-then-else constructs: The last rule of
 the then-clause becomes <code>skip=N</code>, where N is the
-number of rules in the else-clause.</p>
+number of rules in the else-clause:</p>
+<example>
+# Does the file exist?<br />
+RewriteCond %{REQUEST_FILENAME} !-f<br />
+RewriteCond %{REQUEST_FILENAME} !-d<br />
+# Create an if-then-else construct by skipping 3 lines if we meant to go to the &quot;else&quot; stanza.<br />
+RewriteRule .? - [S=3]<br />
+<br />
+# IF the file exists, then:
+<indent>
+	RewriteRule (.*\.gif) images.php?$1<br />
+	RewriteRule (.*\.html) docs.php?$1<br />
+	# Skip past the &quot;else&quot; stanza.<br />
+	RewriteRule .? - [S=1]<br />
+</indent>
+# ELSE...
+<indent>
+	RewriteRule (.*) 404.php?file=$1<br />
+</indent>
+# END
+</example>
+
 </section>
 
 <section id="flag_t"><title>T|type</title>
