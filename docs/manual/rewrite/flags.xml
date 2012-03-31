@@ -686,6 +686,11 @@ RewriteRule .? - [S=3]<br />
 # END
 </example>
 
+<p>It is probably easier to accomplish this kind of configuration using
+the <directive type="section">If</directive>, <directive,
+type="section">ElseIf</directive>, and <directive
+type="section">Else</directive> directives instead.</p>
+
 </section>
 
 <section id="flag_t"><title>T|type</title>
