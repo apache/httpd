@@ -2466,6 +2466,7 @@ static void child_init(apr_pool_t *p, server_rec *s)
             /* Disable address cache for generic reverse worker */
             reverse->s->is_address_reusable = 0;
         }
+        conf->reverse = reverse;
         s = s->next;
     }
 }

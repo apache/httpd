@@ -6,6 +6,9 @@ Changes with Apache 2.4.2
      envvars: Fix insecure handling of LD_LIBRARY_PATH that could lead to the
      current working directory to be searched for DSOs. [Stefan Fritsch]
 
+  *) mod_proxy: Correctly set up reverse proxy worker. PR 52935.
+     [Petter Berntsen <petterb gmail.com>]
+
   *) mod_sed: Don't define PATH_MAX to a potentially undefined value, causing
      compile problems on GNU hurd. [Stefan Fritsch]
 
