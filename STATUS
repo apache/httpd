@@ -88,6 +88,14 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * mod_proxy: Add the forcerecovery balancer parameter that determines if
+     recovery for balancer workers is enforced.
+    Trunk version of patch:
+       http://svn.apache.org/viewvc?rev=1306409&view=rev
+    Backport version for 2.2.x of patch:
+       http://people.apache.org/~rpluem/patches/forcerecovery_2.4.diff
+    +1: rpluem, covener, sf
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -114,14 +122,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        core: Fix regular expression substitution if the replacment string
        contained '&' or '\'. (Bug introduced in 2.3.5).
     +1: sf, covener
-
-  * mod_proxy: Add the forcerecovery balancer parameter that determines if
-     recovery for balancer workers is enforced.
-    Trunk version of patch:
-       http://svn.apache.org/viewvc?rev=1306409&view=rev
-    Backport version for 2.2.x of patch:
-       http://people.apache.org/~rpluem/patches/forcerecovery_2.4.diff
-    +1: rpluem, covener
 
 PATCHES/ISSUES THAT ARE STALLED
 
