@@ -197,6 +197,8 @@ a directory</td></tr>
     <code>index.html</code> file. <strong>But a request without trailing slash
     would list the directory contents</strong>.</p>
     </div>
+	<p>Also note that some browsers may erroneously change POST requests into GET 
+	(thus discarding POST data) when a redirect is issued.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
