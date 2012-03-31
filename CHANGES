@@ -6,6 +6,9 @@ Changes with Apache 2.4.2
      envvars: Fix insecure handling of LD_LIBRARY_PATH that could lead to the
      current working directory to be searched for DSOs. [Stefan Fritsch]
 
+  *) mod_proxy: Add the forcerecovery balancer parameter that determines if
+     recovery for balancer workers is enforced. [Ruediger Pluem]
+
   *) Fix MPM DSO load failure on AIX.  [Jeff Trawick]
 
   *) mod_proxy: Correctly set up reverse proxy worker. PR 52935.

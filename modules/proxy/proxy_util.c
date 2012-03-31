@@ -1164,6 +1164,8 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
     bshared->hash.fnv = ap_proxy_hashfunc(bshared->name, PROXY_HASHFUNC_FNV);
     (*balancer)->hash = bshared->hash;
 
+    bshared->forcerecovery = 1;
+
     /* Retrieve a UUID and store the nonce for the lifetime of
      * the process. */
     apr_uuid_get(&uuid);
