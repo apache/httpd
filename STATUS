@@ -95,6 +95,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4.x patch: http://people.apache.org/~fuankg/diffs/mpm_dso_exports.diff
     +1: fuankg, minfrin, trawick (Thanks!)
 
+  * proxy: Correctly save the reverse proxy worker in all virtual host proxy configs.
+    Trunk Patch: http://svn.apache.org/viewvc?rev=1302444&view=rev
+                 http://svn.apache.org/viewvc?rev=1302483&view=rev
+    2.4.x patch:  http://people.apache.org/~covener/patches/httpd-2.4.x-proxy_reverse.diff
+    +1: covener, minfrin, sf
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -103,12 +109,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: Trunk patch works (skip docs/log-message-tags/next-number)
     +1:  jim
     +1: minfrin (with docs at http://svn.apache.org/viewvc?rev=1305166&view=rev)
-
-  * proxy: Correctly save the reverse proxy worker in all virtual host proxy configs.
-    Trunk Patch: http://svn.apache.org/viewvc?rev=1302444&view=rev
-                 http://svn.apache.org/viewvc?rev=1302483&view=rev
-    2.4.x patch:  http://people.apache.org/~covener/patches/httpd-2.4.x-proxy_reverse.diff
-    +1: covener, minfrin
 
   * mod_ssl: Initialize EC temporary key on server startup, fixing a crash
     with threaded MPMs.
