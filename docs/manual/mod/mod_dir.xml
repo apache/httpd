@@ -188,6 +188,8 @@ a directory</description>
     <code>index.html</code> file. <strong>But a request without trailing slash
     would list the directory contents</strong>.</p>
     </note>
+	<p>Also note that some browsers may erroneously change POST requests into GET 
+	(thus discarding POST data) when a redirect is issued.</p>
 </usage>
 </directivesynopsis>
 <directivesynopsis>
