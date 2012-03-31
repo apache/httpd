@@ -216,4 +216,129 @@
     would measure the <code>ab</code> performance rather than the server's.</p>
 </section>
 
+<section id="output"><title>Example Output</title>
+
+    <p>Sample output is provided here.</p>
+    <note><pre>Server Software:        Apache/2.2.17
+Server Hostname:        testserver.com
+Server Port:            80
+
+Document Path:          /index.html
+Document Length:        787 bytes
+
+Concurrency Level:      5
+Time taken for tests:   0.436 seconds
+Complete requests:      1000
+Failed requests:        0
+Write errors:           0
+Total transferred:      1026000 bytes
+HTML transferred:       787000 bytes
+Requests per second:    2292.26 [#/sec] (mean)
+Time per request:       2.181 [ms] (mean)
+Time per request:       0.436 [ms] (mean, across all concurrent requests)
+Transfer rate:          2296.74 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    1   0.4      1       3
+Processing:     1    1   0.4      1       3
+Waiting:        0    1   0.5      1       2
+Total:          2    2   0.1      2       3
+
+Percentage of the requests served within a certain time (ms)
+  50%      2
+  66%      2
+  75%      2
+  80%      2
+  90%      2
+  95%      2
+  98%      2
+  99%      3
+ 100%      3 (longest request)</pre></note>
+
+    <p>The output may vary depending on the command line parameters given.
+    Possible output with a brief explanation of each element is listed below.
+    </p>
+
+    <dl>
+        <dt>Server Software</dt>
+        <dd>The value, if any, returned in the <var>server</var> HTTP header
+        of the first successful response. This includes all characters in the
+        header from beginning to the point a character with decimal value of 32
+        (most notably: a space or CR/LF) is detected.</dd>
+
+        <dt>Server Hostname</dt>
+        <dd>The DNS or IP address given on the command line</dd>
+
+        <dt>Server Port</dt>
+        <dd>The port to which ab is connecting. If no port is given on the
+        command line, this will default to 80 for http and 443 for
+        https.</dd>
+
+        <dt>SSL/TLS Protocol</dt>
+        <dd>The protocol parameters negotiated between the client and server.
+        This will only be printed if SSL is used.</dd>
+
+        <dt>Document Path</dt>
+        <dd>The request URI parsed from the command line string.</dd>
+
+        <dt>Document Length</dt>
+        <dd>This is size in bytes of the first succesfully returning document.
+        If the document length changes during testing, the response is
+        considered an error.</dd>
+
+        <dt>Concurrency Level</dt>
+        <dd>The number of concurrent clients used during the test</dd>
+
+        <dt>Time taken for tests</dt>
+        <dd>This is the time taken from the moment the first socket connection
+        is created to the moment the last response is recieved</dd>
+
+        <dt>Complete requests</dt>
+        <dd>The number of successful responses recieved</dd>
+
+        <dt>Failed requests</dt>
+        <dd>The number of requests that were considered a failure. If the
+        number is greater than zero, another line will be printed showing the
+        numer of requests that failed due to connecting, reading, incorrect
+        content length, or exceptions.</dd>
+
+        <dt>Write errors</dt>
+        <dd>The number of errors that failed during write (broken pipe).</dd>
+
+        <dt>Non-2xx responses</dt>
+        <dd>The number of responses that were not in the 200 series of response
+        codes. If all responses were 200, this field is not printed.</dd>
+
+        <dt>Keep-Alive requests</dt>
+        <dd>The number of connections that resulted in Keep-Alive requests</dd>
+
+        <dt>Total body sent</dt>
+        <dd>If configured to send data as part of the test, this is the total
+        number of bytes sent during the tests. This field is omitted if the test
+        did not include a body to send.</dd>
+
+        <dt>Total transferred</dt>
+        <dd>The total number of bytes received from the server. This number
+        is essentially the number of bytes sent over the wire.</dd>
+
+        <dt>HTML transferred</dt>
+        <dd>The total number of document bytes received from the server. This
+        number excludes bytes received in HTTP headers</dd>
+
+        <dt>Requests per second</dt>
+        <dd>This is the number of requests per second. This value is the result
+        of dividing the number of requests by the total time taken</dd>
+
+        <dt>Time per request</dt>
+        <dd>The average time spent per request. The first value is calculated
+        with the formula <code>concurrency * timetaken * 1000 / done</code>
+        while the second value is calculated with the formula
+        <code>timetaken * 1000 / done</code></dd>
+
+        <dt>Transfer rate</dt>
+        <dd>The rate of transfer as calculated by the formula
+        <code>totalread / 1024 / timetaken</code></dd>
+    </dl>
+</section>
 </manualpage>
