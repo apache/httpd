@@ -687,7 +687,7 @@ RewriteRule .? - [S=3]<br />
 </example>
 
 <p>It is probably easier to accomplish this kind of configuration using
-the <directive type="section">If</directive>, <directive,
+the <directive type="section">If</directive>, <directive
 type="section">ElseIf</directive>, and <directive
 type="section">Else</directive> directives instead.</p>
 
