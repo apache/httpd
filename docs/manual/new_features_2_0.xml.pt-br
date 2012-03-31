@@ -230,7 +230,8 @@
       <dt><module>mod_auth_dbm</module></dt>
 
       <dd>Agora suporta m&#250;ltiplos tipos de banco de dados similares ao DBM,
-      usando a diretriz <directive module="mod_auth_dbm">AuthDBMType</directive>
+      usando a diretriz <a href="../2.0/mod/mod_auth_dbm.html#AuthDBMType">
+	  <code>AuthDBMType</code></a>
       .</dd>
 
     </dl>
