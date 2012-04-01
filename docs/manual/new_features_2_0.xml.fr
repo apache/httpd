@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 421100:1304981 (outdated) -->
+<!-- English Revision: 1304981 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -231,8 +231,7 @@
             <dt><module>mod_auth_dbm</module></dt>
 
             <dd>Plusieurs bases de donn&#233;es DBM sont support&#233;es, et s&#233;lectionnables 
-            au moyen de la directive <directive 
-            module="mod_auth_dbm">AuthDBMType</directive>.</dd>
+            au moyen du type <a href="../2.0/mod/mod_auth_dbm.html#AuthDBMType"><code>AuthDBMType</code></a>.</dd>
         </dl>
     </section>
 </manualpage>
