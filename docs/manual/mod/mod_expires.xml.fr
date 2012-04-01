@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1174747:1307365 (outdated) -->
+<!-- English Revision : 1307365 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -69,13 +69,13 @@ l'intervalle</title>
     module="mod_expires">ExpiresByType</directive> comme suit :</p>
 
     <example>
-      ExpiresDefault "&lt;base&gt; [plus] {&lt;num&gt;
-      &lt;type&gt;}*"<br />
-      ExpiresByType type/encoding "&lt;base&gt; [plus]
-      {&lt;num&gt; &lt;type&gt;}*"
+      ExpiresDefault "<var>base</var> [plus <var>num</var> <var>type</var>]
+        [<var>num</var> <var>type</var>] ..."<br />
+      ExpiresByType type/encoding "<var>base</var> [plus <var>num</var> <var>type</var>]
+        [<var>num</var> <var>type</var>] ..."
     </example>
 
-    <p>o&ugrave; &lt;base&gt; peut &ecirc;tre :</p>
+    <p>o&ugrave; <var>base</var> peut &ecirc;tre :</p>
 
     <ul>
       <li><code>access</code></li>
@@ -86,9 +86,9 @@ l'intervalle</title>
       <li><code>modification</code></li>
     </ul>
 
-    <p>Le mot-cl&eacute; <code>plus</code> est optionnel. &lt;num&gt; doit
+    <p>Le mot-cl&eacute; <code>plus</code> est optionnel. <var>num</var> doit
     correspondre &agrave; une valeur enti&egrave;re [compatible avec
-    <code>atoi()</code>], et &lt;type&gt; peut &ecirc;tre choisi parmi :</p>
+    <code>atoi()</code>], et <var>type</var> peut &ecirc;tre choisi parmi :</p>
 
     <ul>
       <li><code>years</code></li>
@@ -110,7 +110,7 @@ l'intervalle</title>
 
 
     <p>La date d'expiration peut &ecirc;tre d&eacute;finie plus pr&eacute;cis&eacute;ment en
-    ajoutant plusieurs clauses'&lt;num&gt; &lt;type&gt;' :</p>
+    ajoutant plusieurs clauses '<var>num</var> <var>type</var>' :</p>
 
     <example>
       ExpiresByType text/html "access plus 1 month 15
