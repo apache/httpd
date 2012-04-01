@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1303379:1305164 (outdated) -->
+<!-- English Revision : 1305164 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -658,6 +658,42 @@ host</context>
     scripts CGI, et les r&eacute;ponses &agrave; des requ&ecirc;tes partielles (byte range)
     ne comportent pas cet en-t&ecirc;te.</p>
 </usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DefaultRuntimeDir</name>
+<description>Répertoire de base des fichiers créés par le serveur au
+cours de son exécution</description>
+<syntax>DefaultRuntimeDir <var>chemin</var></syntax>
+<default>DefaultRuntimeDir DEFAULT_REL_RUNTIMEDIR (logs/)</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>La directive <directive>DefaultRuntimeDir</directive> permet de
+    définir le répertoire dans lequel le serveur va créer différents
+    fichiers au cours de son exécution (mémoire partagée, verrous,
+    etc...). Si on spécifie un chemin relatif, ce chemin sera relatif au
+    chemin défini par la directive <directive>ServerRoot</directive>.</p>
+
+    <example><title>Exemple</title>
+      DefaultRuntimeDir scratch/
+    </example>
+
+    <p>Il est possible de modifier la valeur par défaut de la directive
+    <directive>DefaultRuntimeDir</directive> en redéfinissant la valeur
+    de la variable <code>DEFAULT_REL_RUNTIMEDIR</code> à la compilation.</p>
+
+   <p>Note: la directive <directive>ServerRoot</directive> doit être
+   déjà définie pour utiliser cette directive, car dans le cas
+   contraire, c'est la valeur par défaut de
+   <directive>ServerRoot</directive> qui sera utilisée pour construire
+   la répertoire de base.</p>
+
+</usage>
+<seealso><a href="../misc/security_tips.html#serverroot">Conseil en
+matière de sécurité</a> pour plus d'information à propos des permissions
+à définir sur le répertoire d'installation
+<directive>ServerRoot</directive> du serveur.</seealso>
 </directivesynopsis>
 
 <directivesynopsis>
