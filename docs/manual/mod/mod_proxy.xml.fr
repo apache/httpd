@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1301743:1306409 (outdated) -->
+<!-- English Revision : 1306409 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1245,6 +1245,16 @@ l'espace d'URLs du serveur local</description>
         <td>Nombre de membres suppl&eacute;mentaires que l'on peut ajouter &agrave; ce
 	r&eacute;partiteur en plus de ceux d&eacute;finis au niveau de la
 	configuration. 
+    </td></tr>
+    <tr><td>forcerecovery</td>
+        <td>On</td>
+        <td>Force la relance imm&eacute;diate de tous les membres sans tenir
+	compte de leur param&egrave;tre retry dans le cas o&ugrave; ils sont tous en
+	&eacute;tat d'erreur. Il peut cependant arriver qu'un membre d&eacute;j&agrave;
+	surcharg&eacute; entre dans une situation critique si la relance de
+	tous les membres est forc&eacute;e sans tenir compte du param&egrave;tre retry
+	de chaque membre. Dans ce cas, d&eacute;finissez ce param&egrave;tre &agrave;
+	<code>Off</code>.
     </td></tr>
 
     </table>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1029833:1305167 (outdated) -->
+<!-- English Revision: 1305167 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -60,6 +60,7 @@ cache HTTP.</description>
       <module>mod_cache_disk</module> pour que ce dernier puisse
       fonctionner.</p>
     </note>
+    <note><title>Note :</title>
     <p>Lorsque la plate-forme la supporte, et si elle est activ&eacute;e via la
     directive <directive module="core">EnableSendfile</directive>,
     <module>mod_cache_disk</module> utilise la fonctionnalit&eacute; sendfile
@@ -69,7 +70,11 @@ cache HTTP.</description>
     un contexte de r&eacute;pertoire ou de fichier .htaccess, car le module ne
     dispose pas des d&eacute;finitions correspondantes lorsque la requ&ecirc;te est
     servie depuis le cache.</p>
+    </note>
 </summary>
+<seealso><module>mod_cache</module></seealso>
+<seealso><module>mod_cache_socache</module></seealso>
+<seealso><a href="../caching.html">Guide de la mise en cache</a></seealso>
 
 <directivesynopsis>
 <name>CacheRoot</name>

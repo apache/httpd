@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1174747 -->
+<!-- English Revision : 1307726 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -210,6 +210,9 @@ d'Apache</compatibility>
     de fin afficherait un listing du contenu du
     r&eacute;pertoire</strong>.</p>
     </note>
+    <p>Notez aussi que certains navigateurs peuvent modifier par erreur
+    des requ&ecirc;tes POST en requ&ecirc;tes GET lors d'une redirection, les
+    donn&eacute;es POST &eacute;tant alors perdues.</p>
 </usage>
 </directivesynopsis>
 <directivesynopsis>

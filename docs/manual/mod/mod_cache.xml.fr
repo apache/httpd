@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1300892:1305167 (outdated) -->
+<!-- English Revision : 1305167 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -128,6 +128,12 @@
     <program>htcacheclean</program> permet de lister et de supprimer les
     URLs mises en cache, et de maintenir le cache en de&ccedil;&agrave; de
     certaines limites de taille et de nombre d'inodes.</dd>
+    <dt><module>mod_cache_socache</module></dt>
+    <dd>Impl&eacute;mente un gestionnaire de stockage bas&eacute; sur un cache d'objets
+    partag&eacute;s. Les en-t&ecirc;tes et corps sont stock&eacute;s ensemble sous une seule
+    cl&eacute; bas&eacute;e sur l'URL de la r&eacute;ponse mise en cache. Des r&eacute;ponses &agrave;
+    contenus multiples n&eacute;goci&eacute;s peuvent &ecirc;tre stock&eacute;es simultan&eacute;ment, mais
+    ce module ne supporte pas la mise en cache de contenus partiels.</dd>
     </dl>
 
     <p>Pour de plus amples d&eacute;tails, une description, et des exemples,
@@ -140,7 +146,7 @@ cache</a></seealso>
 <section id="related"><title>Modules apparent&eacute;s et directives</title>
     <related>
       <modulelist>
-        <module>mod_cache_disk</module>
+        <module>mod_cache_socache</module>
       </modulelist>
       <directivelist>
         <directive module="mod_cache_disk">CacheRoot</directive>
@@ -148,6 +154,12 @@ cache</a></seealso>
         <directive module="mod_cache_disk">CacheDirLength</directive>
         <directive module="mod_cache_disk">CacheMinFileSize</directive>
         <directive module="mod_cache_disk">CacheMaxFileSize</directive>
+	<directive module="mod_cache_socache">CacheSocache</directive>
+        <directive module="mod_cache_socache">CacheSocacheMaxTime</directive>
+        <directive module="mod_cache_socache">CacheSocacheMinTime</directive>
+        <directive module="mod_cache_socache">CacheSocacheMaxSize</directive>
+        <directive module="mod_cache_socache">CacheSocacheReadSize</directive>
+        <directive module="mod_cache_socache">CacheSocacheReadTime</directive>
       </directivelist>
     </related>
 </section>
@@ -397,7 +409,11 @@ URL</var>]</syntax>
     contenu consid&eacute;r&eacute; peut &ecirc;tre mis en cache. Si <var>type de cache</var>
     a pour valeur <code>disk</code>, <module>mod_cache</module>
     utilisera le gestionnaire de stockage sur disque impl&eacute;ment&eacute; par
-    <module>mod_cache_disk</module>.</p>
+    <module>mod_cache_disk</module>. Pour que <module>mod_cache</module>
+    utilise le gestionnaire de stockage bas&eacute; sur le cache d'objets
+    partag&eacute;s impl&eacute;ment&eacute; par <module>mod_cache_socache</module>,
+    sp&eacute;cifiez <code>socache</code> comme valeur du param&egrave;tre <var>type
+    de cache</var>.</p>
     <p>Si les diff&eacute;rentes directives <directive>CacheEnable</directive>
     sp&eacute;cifient des URLs qui se recoupent (comme dans l'exemple
     ci-dessous), tous les gestionnaires de stockage possibles seront
@@ -978,7 +994,7 @@ l'ent&ecirc;te Cache-Control: a pour valeur no-store.</description>
   <default>CacheQuickHandler on</default>
   <contextlist><context>server config</context><context>virtual host</context>
   </contextlist>
-  <compatibility>Disponible à partir de la version 2.3.3 du serveur HTTP
+  <compatibility>Disponible &agrave; partir de la version 2.3.3 du serveur HTTP
   Apache</compatibility>
 
   <usage>

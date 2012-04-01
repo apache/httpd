@@ -101,10 +101,10 @@ correspondance</a></seealso>
     substitution est un chemin relatif, la directive <directive
     module="mod_rewrite">RewriteBase</directive> d&eacute;termine le chemin URL
     devant pr&eacute;fixer cette substitution. Dans un contexte de r&eacute;pertoire,
-    il faut s'assurer de cr&eacute;er des r&egrave;gles qui, dans certains cas,
-    n'effectueront pas de substitution afin d'&eacute;viter les bouclages (au
+    il faut s'assurer de cr&eacute;er des r&egrave;gles qui
+    n'effectueront pas de substitution au
     cours d'une passe ult&eacute;rieure du processus de r&eacute;&eacute;criture au niveau
-    r&eacute;pertoire). Voir <a
+    r&eacute;pertoire afin d'&eacute;viter les bouclages . Voir <a
     href="http://wiki.apache.org/httpd/RewriteLooping">Bouclage dans le
     processus de r&eacute;&eacute;criture</a> pour une discussion plus d&eacute;taill&eacute;e &agrave;
     propos de ce probl&egrave;me.</p>

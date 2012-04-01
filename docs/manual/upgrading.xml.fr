@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1204356:1304985 (outdated) -->
+<!-- English Revision : 1304985 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -318,7 +318,12 @@ n&eacute;cessiter une mise &agrave; jour des fichiers de configuration de la ver
       d'utiliser l'ancien format via la nouvelle option
       <code>LegacyDNStringFormat</code> de la directive <directive
       module="mod_ssl">SSLOptions</directive>. Le protocole SSLv2 n'est
-      plus support&eacute;.</li>
+      plus support&eacute;. Les directives <directive
+      module="mod_ssl">SSLProxyCheckPeerCN</directive> et
+      <directive module="mod_ssl">SSLProxyCheckPeerExpire</directive>
+      sont maintenant d&eacute;finies par d&eacute;faut &agrave; On, et les requ&ecirc;tes mandat&eacute;es
+      vers des serveurs HTTPS poss&egrave;dant des certificats non conformes ou
+      p&eacute;rim&eacute;s &eacute;choueront donc avec un code d'erreur 502 (Bad gateway).</li>
 
       <li><program>htpasswd</program> utilise maintenant par d&eacute;faut les
       condens&eacute;s MD5 sur toutes les plates-formes.</li>
