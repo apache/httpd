@@ -52,8 +52,8 @@
 <seealso><module>mod_include</module></seealso>
 
   <section id="grammar">
-    <title>Grammar in Backus–Naur Form notation</title>
-      <p><a href="http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form">Backus–Naur Form</a> (BNF) is a notation
+    <title>Grammar in Backus-Naur Form notation</title>
+      <p><a href="http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form">Backus-Naur Form</a> (BNF) is a notation
       technique for context-free grammars, often used to describe the syntax of languages used in computing.
       </p>
 <blockquote>
