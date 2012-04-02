@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 420990:922232 (outdated) -->
+<!-- English Revision: 922232 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -29,8 +29,9 @@
   <title>Sunucu Genelinde Yapılandırma</title>
 
 <summary>
-<p>Bu belgede <module>core</module> modülü ile sağlanan ve  sunucunun temel
-işlemlerini yapılandırmakta kullanılan yönergelerden bazıları açıklanmıştır.</p>
+    <p>Bu belgede <module>core</module> modülü ile sağlanan ve  sunucunun temel
+    işlemlerini yapılandırmakta kullanılan yönergelerden bazıları
+    açıklanmıştır.</p>
 </summary>
 
   <section id="identification">
@@ -60,7 +61,7 @@ işlemlerini yapılandırmakta kullanılan yönergelerden bazıları açıklanm�
       yönergeleri, sunucu tarafından, özüne yönelik URL’leri nasıl
       oluşturacağını saptamak için kullanılır. Örneğin bir istemci bir dizin
       isteğinde bulunurken URL’nin sonuna bölü çizgisi eklemese bile
-      Apache’nin istemciyi bölü çizgisi ile bitirilmiş URL yoluna
+      Apache httpd’nin istemciyi bölü çizgisi ile bitirilmiş URL yoluna
       yönlendirmesi gerekir; böylece istemci belge içindeki göreli
       bağlantıları doğru şekilde çözümleyebilir.</p>
   </section>
@@ -73,15 +74,15 @@ işlemlerini yapılandırmakta kullanılan yönergelerden bazıları açıklanm�
         <directive module="mpm_common">CoreDumpDirectory</directive>
         <directive module="core">DocumentRoot</directive>
         <directive module="core">ErrorLog</directive>
-        <directive module="mpm_common">LockFile</directive>
+        <directive module="core">Mutex</directive>
         <directive module="mpm_common">PidFile</directive>
         <directive module="mpm_common">ScoreBoardFile</directive>
         <directive module="core">ServerRoot</directive>
       </directivelist>
     </related>
 
-    <p>Bu yönergeler Apache’nin doğru işlem yapması için gereksinim duyduğu
-      çeşitli dosyaların yerlerini belirlerler. Bölü çizgisi (/) ile
+    <p>Bu yönergeler Apache httpd’nin doğru işlem yapması için gereksinim
+      duyduğu çeşitli dosyaların yerlerini belirlerler. Bölü çizgisi (/) ile
       başlamayan dosya yolları kullanıldığında bu dosyaların yerlerinin
       <directive module="core">ServerRoot</directive> yönergesinde belirtilen
       dizine göre belirtildiği varsayılır; root olmayan kullanıcılar
@@ -107,12 +108,12 @@ işlemlerini yapılandırmakta kullanılan yönergelerden bazıları açıklanm�
       </directivelist>
     </related>
 
-    <p><code>LimitRequest*</code> yönergeleri, Apache’nin istemcilerden gelen
-      istekleri okumak için kullanacağı özkaynakların miktarları ile ilgili
-      sınırlamalar koymak için kullanılırlar. Bu değerleri sınırlamak
+    <p><code>LimitRequest*</code> yönergeleri, Apache httpd’nin istemcilerden
+      gelen istekleri okumak için kullanacağı özkaynakların miktarları ile
+      ilgili sınırlamalar koymak için kullanılırlar. Bu değerleri sınırlamak
       suretiyle bazı hizmet reddi saldırılarının etkileri azaltılabilir.</p>
 
-    <p><code>RLimit*</code> yönergeleri ise Apache’nin çocuk süreçleri
+    <p><code>RLimit*</code> yönergeleri ise Apache httpd’nin çocuk süreçleri
       tarafından çatallanabilen özkaynakların miktarlarını sınırlamakta
       kullanılırlar. Özellikle de CGI betikleri ve SSI çalıştırma komutları
       tarafından kullanılan özkaynakları denetlemekte kullanılırlar.</p>
@@ -121,4 +122,20 @@ işlemlerini yapılandırmakta kullanılan yönergelerden bazıları açıklanm�
       bazı platformlarda yığıt boyutunu denetim altında tutmak için
       kullanılır.</p>
   </section>
+
+  <section id="implementation">
+    <title>Gerçeklenimle ilgili Seçimler</title>
+
+    <related>
+      <directivelist>
+        <directive module="core">Mutex</directive>
+      </directivelist>
+    </related>
+
+    <p><directive>Mutex</directive> yönergesi, <glossary>APR</glossary>'nin
+      öntanımlı seçimi ile ilgili işlevsel ve başarımsal sorunlarına çare
+      bulmada ilgili gerçeklenimi mutex'ler için değiştirmekte
+      kullanılabilir.</p>
+  </section>
+
 </manualpage>
