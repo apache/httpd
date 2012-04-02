@@ -21,8 +21,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/flags.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/flags.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Ce document décrit les drapeaux disponibles dans la directive
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>, en fournissant
@@ -698,10 +696,34 @@ RewriteRule (.*\.html) docs.php?$1
 qu'à la règle qui la suit immédiatement. Ainsi, si vous voulez
 qu'une directive <code>RewriteCond</code> s'applique à plusieurs règles
 <code>RewriteRule</code>, une technique possible consiste à inverser ces
-conditions et à utiliser le drapeau [Skip]. Cette technique permet
+conditions et ajouter une <code>RewriteRule</code> avec le drapeau [Skip]. Cette technique permet
 d'élaborer des pseudo-constructions if-then-else : la dernière règle du
 bloc then contiendra <code>skip=N</code>, où N est le nombre de règles
-contenues dans le bloc else.</p>
+contenues dans le bloc else :</p>
+<div class="example"><p><code>
+# Est-ce que le fichier existe ?<br />
+RewriteCond %{REQUEST_FILENAME} !-f<br />
+RewriteCond %{REQUEST_FILENAME} !-d<br />
+
+# Create an if-then-else construct by skipping 3 lines if we meant to go to the "else" stanza.<br />
+RewriteRule .? - [S=3]<br />
+<br />
+# Si le fichier existe, alors :
+<span class="indent">
+	RewriteRule (.*\.gif) images.php?$1<br />
+	RewriteRule (.*\.html) docs.php?$1<br />
+	# Skip past the "else" stanza.<br />
+	RewriteRule .? - [S=1]<br />
+</span>
+# ELSE...
+<span class="indent">
+	RewriteRule (.*) 404.php?file=$1<br />
+</span>
+# END
+</code></p></div>
+
+<p>Il est probablement plus aisé de définir ce genre de configuration
+via les directives <code class="directive">&lt;If&gt;</code>, <code class="directive">&lt;ElseIf&gt;</code>, et <code class="directive">&lt;Else&gt;</code>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">

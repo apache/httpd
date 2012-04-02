@@ -219,6 +219,9 @@ d'Apache</td></tr>
     de fin afficherait un listing du contenu du
     répertoire</strong>.</p>
     </div>
+    <p>Notez aussi que certains navigateurs peuvent modifier par erreur
+    des requêtes POST en requêtes GET lors d'une redirection, les
+    données POST étant alors perdues.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
