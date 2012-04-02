@@ -329,7 +329,7 @@ simultaneously</td></tr>
     you must also raise <code class="directive"><a href="#serverlimit">ServerLimit</a></code>.</p>
 
     <p><code class="directive">MaxRequestWorkers</code> was called
-    <code class="directive">MaxClients</code> before version 2.3.13. The old name ist still
+    <code class="directive">MaxClients</code> before version 2.3.13. The old name is still
     supported.</p>
 
 </div>
