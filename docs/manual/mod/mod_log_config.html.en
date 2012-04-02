@@ -113,7 +113,12 @@
 <tr><td><code>%{<var>VARNAME</var>}i</code></td>
         <td>The contents of <code><var>VARNAME</var>:</code> header line(s)
         in the request sent to the server. Changes made by other
-        modules (e.g. <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code>) affect this.
+        modules (e.g. <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code>) affect this.  If you're
+        interested in what the request header was prior to when most
+        modules would have modified it, use <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>
+        to copy the header into an internal environment variable and log
+        that value with the <code>%{<var>VARNAME</var>}e</code> described
+        above.
         </td></tr>
 <tr class="odd"><td><code>%k</code></td>
         <td>Number of keepalive requests handled on this connection.  Interesting if

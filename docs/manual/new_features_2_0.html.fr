@@ -29,8 +29,6 @@
 <a href="./ru/new_features_2_0.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a> |
 <a href="./tr/new_features_2_0.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
         <p>Ce document décrit les changements majeurs apportés entre les 
         versions 1.3 et 2.0 du serveur HTTP Apache.</p>
@@ -193,7 +191,7 @@
 
             <dt><code class="module"><a href="./mod/mod_headers.html">mod_headers</a></code></dt>
 
-            <dd>Ce module gagne beaucoup de flexibilité et peut aussi positionner; avec Apache
+            <dd>Ce module gagne beaucoup de flexibilité avec Apache
 	    httpd 2.0 : on peut 
             désormais l'utiliser pour modifier les en-têtes des requêtes 
             utilisés par <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>, et pour positionner les 
@@ -244,7 +242,7 @@
             <dt><code class="module"><a href="./mod/mod_auth_dbm.html">mod_auth_dbm</a></code></dt>
 
             <dd>Plusieurs bases de données DBM sont supportées, et sélectionnables 
-            au moyen de la directive <code class="directive"><a href="./mod/mod_auth_dbm.html#authdbmtype">AuthDBMType</a></code>.</dd>
+            au moyen du type <a href="../2.0/mod/mod_auth_dbm.html#AuthDBMType"><code>AuthDBMType</code></a>.</dd>
         </dl>
     </div></div>
 <div class="bottomlang">

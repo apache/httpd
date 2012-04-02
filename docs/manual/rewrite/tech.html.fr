@@ -88,10 +88,10 @@ correspondance</a></li><li><a href="access.html">Contrôle d'accès</a></li><li><a
     ce qui relance le traitement des phases de la requête. Si la
     substitution est un chemin relatif, la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code> détermine le chemin URL
     devant préfixer cette substitution. Dans un contexte de répertoire,
-    il faut s'assurer de créer des règles qui, dans certains cas,
-    n'effectueront pas de substitution afin d'éviter les bouclages (au
+    il faut s'assurer de créer des règles qui
+    n'effectueront pas de substitution au
     cours d'une passe ultérieure du processus de réécriture au niveau
-    répertoire). Voir <a href="http://wiki.apache.org/httpd/RewriteLooping">Bouclage dans le
+    répertoire afin d'éviter les bouclages . Voir <a href="http://wiki.apache.org/httpd/RewriteLooping">Bouclage dans le
     processus de réécriture</a> pour une discussion plus détaillée à
     propos de ce problème.</p>
 

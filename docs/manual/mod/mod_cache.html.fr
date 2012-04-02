@@ -26,8 +26,6 @@
 <a href="../ja/mod/mod_cache.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Filtre de mise en cache HTTP conforme à la RFC 2616</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>cache_module</td></tr>
@@ -121,6 +119,12 @@
     <code class="program"><a href="../programs/htcacheclean.html">htcacheclean</a></code> permet de lister et de supprimer les
     URLs mises en cache, et de maintenir le cache en deçà de
     certaines limites de taille et de nombre d'inodes.</dd>
+    <dt><code class="module"><a href="../mod/mod_cache_socache.html">mod_cache_socache</a></code></dt>
+    <dd>Implémente un gestionnaire de stockage basé sur un cache d'objets
+    partagés. Les en-têtes et corps sont stockés ensemble sous une seule
+    clé basée sur l'URL de la réponse mise en cache. Des réponses à
+    contenus multiples négociés peuvent être stockées simultanément, mais
+    ce module ne supporte pas la mise en cache de contenus partiels.</dd>
     </dl>
 
     <p>Pour de plus amples détails, une description, et des exemples,
@@ -167,7 +171,7 @@ cache</a></li>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="related" id="related">Modules apparentés et directives</a></h2>
-    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_cache_disk.html#cacheroot">CacheRoot</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cachedirlevels">CacheDirLevels</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cachedirlength">CacheDirLength</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cacheminfilesize">CacheMinFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cachemaxfilesize">CacheMaxFileSize</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_cache_socache.html">mod_cache_socache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_cache_disk.html#cacheroot">CacheRoot</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cachedirlevels">CacheDirLevels</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cachedirlength">CacheDirLength</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cacheminfilesize">CacheMinFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cachemaxfilesize">CacheMaxFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_cache_socache.html#cachesocache">CacheSocache</a></code></li><li><code class="directive"><a href="../mod/mod_cache_socache.html#cachesocachemaxtime">CacheSocacheMaxTime</a></code></li><li><code class="directive"><a href="../mod/mod_cache_socache.html#cachesocachemintime">CacheSocacheMinTime</a></code></li><li><code class="directive"><a href="../mod/mod_cache_socache.html#cachesocachemaxsize">CacheSocacheMaxSize</a></code></li><li><code class="directive"><a href="../mod/mod_cache_socache.html#cachesocachereadsize">CacheSocacheReadSize</a></code></li><li><code class="directive"><a href="../mod/mod_cache_socache.html#cachesocachereadtime">CacheSocacheReadTime</a></code></li></ul></td></tr></table>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="sampleconf" id="sampleconf">Exemple de configuration</a></h2>
@@ -516,7 +520,11 @@ URL</var>]</code></td></tr>
     contenu considéré peut être mis en cache. Si <var>type de cache</var>
     a pour valeur <code>disk</code>, <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>
     utilisera le gestionnaire de stockage sur disque implémenté par
-    <code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code>.</p>
+    <code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code>. Pour que <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>
+    utilise le gestionnaire de stockage basé sur le cache d'objets
+    partagés implémenté par <code class="module"><a href="../mod/mod_cache_socache.html">mod_cache_socache</a></code>,
+    spécifiez <code>socache</code> comme valeur du paramètre <var>type
+    de cache</var>.</p>
     <p>Si les différentes directives <code class="directive">CacheEnable</code>
     spécifient des URLs qui se recoupent (comme dans l'exemple
     ci-dessous), tous les gestionnaires de stockage possibles seront

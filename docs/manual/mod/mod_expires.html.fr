@@ -26,8 +26,6 @@
 <a href="../ja/mod/mod_expires.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_expires.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Génération des en-têtes HTTP <code>Expires</code> et
 <code>Cache-Control</code> en fonction de critères spécifiés par
 l'utilisateur</td></tr>
@@ -80,13 +78,13 @@ l'intervalle</a></h2>
     directives <code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code> et <code class="directive"><a href="#expiresbytype">ExpiresByType</a></code> comme suit :</p>
 
     <div class="example"><p><code>
-      ExpiresDefault "&lt;base&gt; [plus] {&lt;num&gt;
-      &lt;type&gt;}*"<br />
-      ExpiresByType type/encoding "&lt;base&gt; [plus]
-      {&lt;num&gt; &lt;type&gt;}*"
+      ExpiresDefault "<var>base</var> [plus <var>num</var> <var>type</var>]
+        [<var>num</var> <var>type</var>] ..."<br />
+      ExpiresByType type/encoding "<var>base</var> [plus <var>num</var> <var>type</var>]
+        [<var>num</var> <var>type</var>] ..."
     </code></p></div>
 
-    <p>où &lt;base&gt; peut être :</p>
+    <p>où <var>base</var> peut être :</p>
 
     <ul>
       <li><code>access</code></li>
@@ -97,9 +95,9 @@ l'intervalle</a></h2>
       <li><code>modification</code></li>
     </ul>
 
-    <p>Le mot-clé <code>plus</code> est optionnel. &lt;num&gt; doit
+    <p>Le mot-clé <code>plus</code> est optionnel. <var>num</var> doit
     correspondre à une valeur entière [compatible avec
-    <code>atoi()</code>], et &lt;type&gt; peut être choisi parmi :</p>
+    <code>atoi()</code>], et <var>type</var> peut être choisi parmi :</p>
 
     <ul>
       <li><code>years</code></li>
@@ -121,7 +119,7 @@ l'intervalle</a></h2>
 
 
     <p>La date d'expiration peut être définie plus précisément en
-    ajoutant plusieurs clauses'&lt;num&gt; &lt;type&gt;' :</p>
+    ajoutant plusieurs clauses '<var>num</var> <var>type</var>' :</p>
 
     <div class="example"><p><code>
       ExpiresByType text/html "access plus 1 month 15

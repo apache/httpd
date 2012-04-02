@@ -26,8 +26,6 @@
 <a href="../ja/mod/mod_cache_disk.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_cache_disk.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module de stockage sur disque pour le filtre de mise en
 cache HTTP.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -63,6 +61,7 @@ cache HTTP.</td></tr>
       <code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code> pour que ce dernier puisse
       fonctionner.</p>
     </div>
+    <div class="note"><h3>Note :</h3>
     <p>Lorsque la plate-forme la supporte, et si elle est activée via la
     directive <code class="directive"><a href="../mod/core.html#enablesendfile">EnableSendfile</a></code>,
     <code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code> utilise la fonctionnalité sendfile
@@ -72,6 +71,7 @@ cache HTTP.</td></tr>
     un contexte de répertoire ou de fichier .htaccess, car le module ne
     dispose pas des définitions correspondantes lorsque la requête est
     servie depuis le cache.</p>
+    </div>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -83,7 +83,12 @@ cache HTTP.</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachereadtime">CacheReadTime</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheroot">CacheRoot</a></li>
 </ul>
-</div>
+<h3>Voir aussi</h3>
+<ul class="seealso">
+<li><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code></li>
+<li><code class="module"><a href="../mod/mod_cache_socache.html">mod_cache_socache</a></code></li>
+<li><a href="../caching.html">Guide de la mise en cache</a></li>
+</ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheDirLength" id="CacheDirLength">CacheDirLength</a> <a name="cachedirlength" id="cachedirlength">Directive</a></h2>

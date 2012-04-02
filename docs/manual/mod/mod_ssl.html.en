@@ -681,7 +681,7 @@ together with prefixes to form the <em>cipher-spec</em>. Available
 prefixes are:</p>
 <ul>
 <li>none: add cipher to list</li>
-<li><code>+</code>: add ciphers to list and pull them to current location in list</li>
+<li><code>+</code>: move matching ciphers to the current location in list</li>
 <li><code>-</code>: remove cipher from list (can be added later again)</li>
 <li><code>!</code>: kill cipher from list completely (can <strong>not</strong> be added later again)</li>
 </ul>
