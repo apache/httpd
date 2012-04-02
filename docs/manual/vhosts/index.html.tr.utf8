@@ -26,13 +26,13 @@
 <a href="../tr/vhosts/" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/vhosts/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
 
     <p><cite>Sanal Konak</cite> (Virtual Host) terimi tek bir makine üzerinde
-      birden fazla sitenin (www.sirket1.dom, www.sirket2.dom gibi) barındırılma
-      uygulamasını betimler. Sanal konaklar, "<a href="ip-based.html">IP’ye
-      dayalı</a>" veya "<a href="name-based.html">isme dayalı</a>" olabilir;
+      birden fazla sitenin (sirket1.example.com, sirket2.example.com gibi)
+      barındırılma uygulamasını betimler. Sanal konaklar,
+      "<a href="ip-based.html">IP’ye dayalı</a>" veya
+      "<a href="name-based.html">isme dayalı</a>" olabilir;
       birincisinde, her site ayrı bir IP adresinden sunulurken, ikincisinde her
       IP adresinde birden fazla site sunulur. Olayda aynı fiziksel sunucu
       kullanıldığı halde bu sunucu son kullanıcıya görünür değildir.</p>
@@ -43,13 +43,14 @@
       konaklara bazen <em>konağa dayalı</em> sanal konaklar veya <em>IP’ye
       dayanmayan</em> sanal konaklar da denmektedir.</p>
 
-    <p>Aşağıda, Apache’nin 1.3 sürümü ve sonrası için sanal konak desteğini bütün
+    <p>Aşağıda, Apache HTTP Suncusundaki sanal konak desteğini bütün
       ayrıntıları ile açıklayan belgeler listelenmiştir.</p>
 
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#support">Sanal Konak Desteği</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#directives">Yapılandırma Yönergeleri</a></li>
-</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code></li><li><a href="name-based.html">İsme Dayalı Sanal Konaklar</a></li><li><a href="ip-based.html">IP Adresine Dayalı Sanal Konaklar</a></li><li><a href="examples.html">Sanal Konak Örnekleri</a></li><li><a href="fd-limits.html">Dosya Tanıtıcı Sınırları</a></li><li><a href="mass.html">Kütlesel Sanal Konaklık</a></li><li><a href="details.html">Ayrıntılı olarak Konak Eşleme</a></li></ul></div>
+</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code></li><li><a href="name-based.html">İsme Dayalı Sanal Konaklar</a></li><li><a href="ip-based.html">IP Adresine Dayalı Sanal Konaklar</a>
+</li><li><a href="examples.html">Sanal Konak Örnekleri</a></li><li><a href="fd-limits.html">Dosya Tanıtıcı Sınırları</a></li><li><a href="mass.html">Kütlesel Sanal Konaklık</a></li><li><a href="details.html">Ayrıntılı olarak Konak Eşleme</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="support" id="support">Sanal Konak Desteği</a></h2>
@@ -57,15 +58,16 @@
     <ul>
       <li><a href="name-based.html">İsme Dayalı Sanal Konaklar</a> (Her IP
         adresinde birden fazla site)</li>
-      <li><a href="ip-based.html">IP Adresine Dayalı Sanal Konaklar</a> (Her site
-        için ayrı IP adresi)</li>
+      <li><a href="ip-based.html">IP Adresine Dayalı Sanal Konaklar</a> (Her
+        site için ayrı IP adresi)</li>
       <li><a href="examples.html">Çok kullanılan sanal konak yapılandırma
         örnekleri</a></li>
       <li><a href="fd-limits.html">Dosya Tanıtıcı Sınırları</a> (veya,
       <em>çok fazla günlük dosyası</em>)</li>
       <li><a href="mass.html">Devingen olarak Yapılandırılan Kütlesel Sanal
         Barındırma</a></li>
-      <li><a href="details.html">Konak Eşlemenin Derinliğine İncelenmesi</a></li>
+      <li><a href="details.html">Konak Eşlemenin Derinliğine
+        İncelenmesi</a></li>
     </ul>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -74,7 +76,6 @@
 
     <ul>
       <li><code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li>
-      <li><code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code></li>
       <li><code class="directive"><a href="../mod/core.html#servername">ServerName</a></code></li>
       <li><code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code></li>
       <li><code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code></li>
