@@ -24,14 +24,15 @@
 <a href="./ko/server-wide.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/server-wide.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
-<p>Bu belgede <code class="module"><a href="./mod/core.html">core</a></code> modülü ile sağlanan ve  sunucunun temel
-işlemlerini yapılandırmakta kullanılan yönergelerden bazıları açıklanmıştır.</p>
+    <p>Bu belgede <code class="module"><a href="./mod/core.html">core</a></code> modülü ile sağlanan ve  sunucunun temel
+    işlemlerini yapılandırmakta kullanılan yönergelerden bazıları
+    açıklanmıştır.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#identification">Sunucu Kimliği</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#locations">Dosyaların Yerleri</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#resource">Özkaynak Kullanımının Sınırlanması</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#implementation">Gerçeklenimle ilgili Seçimler</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -51,7 +52,7 @@ işlemlerini yapılandırmakta kullanılan yönergelerden bazıları açıklanm�
       yönergeleri, sunucu tarafından, özüne yönelik URL’leri nasıl
       oluşturacağını saptamak için kullanılır. Örneğin bir istemci bir dizin
       isteğinde bulunurken URL’nin sonuna bölü çizgisi eklemese bile
-      Apache’nin istemciyi bölü çizgisi ile bitirilmiş URL yoluna
+      Apache httpd’nin istemciyi bölü çizgisi ile bitirilmiş URL yoluna
       yönlendirmesi gerekir; böylece istemci belge içindeki göreli
       bağlantıları doğru şekilde çözümleyebilir.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -59,10 +60,10 @@ işlemlerini yapılandırmakta kullanılan yönergelerden bazıları açıklanm�
 <h2><a name="locations" id="locations">Dosyaların Yerleri</a></h2>
     
 
-    <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></code></li><li><code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#lockfile">LockFile</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#scoreboardfile">ScoreBoardFile</a></code></li><li><code class="directive"><a href="./mod/core.html#serverroot">ServerRoot</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></code></li><li><code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code></li><li><code class="directive"><a href="./mod/core.html#mutex">Mutex</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#scoreboardfile">ScoreBoardFile</a></code></li><li><code class="directive"><a href="./mod/core.html#serverroot">ServerRoot</a></code></li></ul></td></tr></table>
 
-    <p>Bu yönergeler Apache’nin doğru işlem yapması için gereksinim duyduğu
-      çeşitli dosyaların yerlerini belirlerler. Bölü çizgisi (/) ile
+    <p>Bu yönergeler Apache httpd’nin doğru işlem yapması için gereksinim
+      duyduğu çeşitli dosyaların yerlerini belirlerler. Bölü çizgisi (/) ile
       başlamayan dosya yolları kullanıldığında bu dosyaların yerlerinin
       <code class="directive"><a href="./mod/core.html#serverroot">ServerRoot</a></code> yönergesinde belirtilen
       dizine göre belirtildiği varsayılır; root olmayan kullanıcılar
@@ -76,12 +77,12 @@ işlemlerini yapılandırmakta kullanılan yönergelerden bazıları açıklanm�
 
     <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#limitrequestbody">LimitRequestBody</a></code></li><li><code class="directive"><a href="./mod/core.html#limitrequestfields">LimitRequestFields</a></code></li><li><code class="directive"><a href="./mod/core.html#limitrequestfieldsize">LimitRequestFieldsize</a></code></li><li><code class="directive"><a href="./mod/core.html#limitrequestline">LimitRequestLine</a></code></li><li><code class="directive"><a href="./mod/core.html#rlimitcpu">RLimitCPU</a></code></li><li><code class="directive"><a href="./mod/core.html#rlimitmem">RLimitMEM</a></code></li><li><code class="directive"><a href="./mod/core.html#rlimitnproc">RLimitNPROC</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#threadstacksize">ThreadStackSize</a></code></li></ul></td></tr></table>
 
-    <p><code>LimitRequest*</code> yönergeleri, Apache’nin istemcilerden gelen
-      istekleri okumak için kullanacağı özkaynakların miktarları ile ilgili
-      sınırlamalar koymak için kullanılırlar. Bu değerleri sınırlamak
+    <p><code>LimitRequest*</code> yönergeleri, Apache httpd’nin istemcilerden
+      gelen istekleri okumak için kullanacağı özkaynakların miktarları ile
+      ilgili sınırlamalar koymak için kullanılırlar. Bu değerleri sınırlamak
       suretiyle bazı hizmet reddi saldırılarının etkileri azaltılabilir.</p>
 
-    <p><code>RLimit*</code> yönergeleri ise Apache’nin çocuk süreçleri
+    <p><code>RLimit*</code> yönergeleri ise Apache httpd’nin çocuk süreçleri
       tarafından çatallanabilen özkaynakların miktarlarını sınırlamakta
       kullanılırlar. Özellikle de CGI betikleri ve SSI çalıştırma komutları
       tarafından kullanılan özkaynakları denetlemekte kullanılırlar.</p>
@@ -89,6 +90,17 @@ işlemlerini yapılandırmakta kullanılan yönergelerden bazıları açıklanm�
     <p><code class="directive"><a href="./mod/mpm_common.html#threadstacksize">ThreadStackSize</a></code> yönergesi
       bazı platformlarda yığıt boyutunu denetim altında tutmak için
       kullanılır.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="implementation" id="implementation">Gerçeklenimle ilgili Seçimler</a></h2>
+    
+
+    <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#mutex">Mutex</a></code></li></ul></td></tr></table>
+
+    <p><code class="directive">Mutex</code> yönergesi, <a class="glossarylink" href="./glossary.html#apr" title="sözlüğe bakınız">APR</a>'nin
+      öntanımlı seçimi ile ilgili işlevsel ve başarımsal sorunlarına çare
+      bulmada ilgili gerçeklenimi mutex'ler için değiştirmekte
+      kullanılabilir.</p>
   </div></div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="./en/server-wide.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

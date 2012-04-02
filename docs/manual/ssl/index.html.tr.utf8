@@ -24,7 +24,6 @@
 <a href="../tr/ssl/" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/ssl/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
   <p>Apache HTTP Sunucusunun <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> modülü, Güvenli Soketler
     Katmanı (SSL) ve Aktarım Katmanı Güvenliği (TLS) protokollerinin
@@ -39,9 +38,9 @@
 <div class="section">
 <h2><a name="documentation" id="documentation">Belgeler</a></h2>
   <ul>
-    <li><a href="ssl_intro.html">Giriş</a></li>
+    <li><a href="ssl_howto.html">mod_ssl Yapılandırması Nasıl</a></li>
+    <li><a href="ssl_intro.html">SSL'ye Giriş</a></li>
     <li><a href="ssl_compat.html">Uyumluluk</a></li>
-    <li><a href="ssl_howto.html">NASIL</a></li>
     <li><a href="ssl_faq.html">Sıkça Sorulan Sorular</a></li>
     <li><a href="../glossary.html">Terimler</a></li>
   </ul>
