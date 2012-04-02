@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 658546:1180828 (outdated) -->
+<!-- English Revision: 1180828 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -35,10 +35,12 @@
 
 <summary>
 
-    <p><module>mod_setenvif</module> modülü ortam değişkenlerinin isteğin
-      farklı bileşenlerinin belirttiğiniz düzenli ifade ile eşleşmesine bağlı
-      olarak atanmasını mümkün kılar. Bu ortam değişkenleri sunucunun çeşitli
-      kısımlarında yapılacak eylemlere karar verirken kullanılır.</p>
+    <p><module>mod_setenvif</module> modülü dahili ortam değişkenlerinin
+      isteğin farklı bileşenlerinin belirttiğiniz düzenli ifade ile eşleşmesine
+      bağlı olarak atanmasını mümkün kılar. Bu ortam değişkenleri sunucunun
+      çeşitli kısımlarında yapılacak eylemlerin yanında CGI betiklerinde ve SSI
+      sayfalarında kullanılabilir hale gelmelerine karar verilirken
+      kullanılır.</p>
 
     <p>Yönergeler yapılandırma dosyasında yer aldıkları sıraya göre ele
       alınırlar. Böylece daha karmaşık dizilimler kullanılabilir, bu örnekteki
@@ -51,7 +53,7 @@
     </example>
 </summary>
 
-<seealso><a href="../env.html">Apache’de Ortam Değişkenleri</a></seealso>
+<seealso><a href="../env.html">Apache HTTP Sunucusundaki Ortam Değişkenleri</a></seealso>
 
 <directivesynopsis>
 <name>BrowserMatch</name>
@@ -180,15 +182,6 @@ duyarsız eşleşmelerine bağlı olarak belirler.</description>
         Ortam değişkenlerinin dikkate alınabilmesi için istek öznitelikleri
         arasında hiçbir eşleşme olmaması ve <code><em>öznitelik</em></code>
         olarak bir düzenli ifade belirtilmemiş olması gerekir.</li>
-
-      <li>Nesne kimliği <code><em>oid</em></code> olan bir SSL istemci
-        sertifikası eklentisine bir başvuru. SSL olarak yapılmamış bir istekte
-        veya yapılandırılmış bir <code><em>oid</em></code>’in yokluğunda
-        hiçbir değişken ataması yapılmaz. Birden fazla
-        <code><em>oid</em></code> söz konusu ise aralarına virgül
-        (<code>','</code>) konarak ilgili dizgeler birleştirilir.
-        <code><em>oid</em></code> dizge değerli bir eklentiyi
-        betimlemelidir.</li>
     </ol>
 
     <p>İkinci bileşen (<code><em>düzifd</em></code>) bir <glossary
@@ -211,8 +204,8 @@ duyarsız eşleşmelerine bağlı olarak belirler.</description>
     <p>İlk biçemde değişkene "1" değeri atanır. İkincisinde atanmış bir
       değişken atanmamış yapılır. Üçüncüsünde ise değişkene belirtilen
       <code><em>değer</em></code> bire bir atanır. 2.0.52 sürümünden itibaren
-      parantezli düzenli ifadelerin sonuçları ile değiştirilmek üzere
-      <code><em>value</em></code> içinde <code>$1</code>..<code>$9</code>
+      Apache httpd parantezli düzenli ifadelerin sonuçları ile değiştirilmek
+      üzere <code><em>value</em></code> içinde <code>$1</code>..<code>$9</code>
       gösterimleri tanınmaktadır.</p>
 
     <example><title>Örnek:</title>
@@ -224,9 +217,7 @@ duyarsız eşleşmelerine bağlı olarak belirler.</description>
             :<br />
       SetEnvIf object_is_image xbm XBIT_PROCESSING=1<br />
             :<br />
-      SetEnvIf OID("2.16.840.1.113730.1.13") "(.*)" NetscapeComment=$1<br />
-            :<br />
-      SetEnvIf ^TS*  ^[a-z].*  TS_VAR<br />
+      SetEnvIf ^TS  ^[a-z]  TS_VAR<br />
     </example>
 
     <p>İlk üçünde istek bir resim dosyası için yapılmışsa
@@ -235,23 +226,53 @@ duyarsız eşleşmelerine bağlı olarak belirler.</description>
       bulunuyorsa <code>dahili_site_istendi</code> ortam değişkeni
       atanmaktadır.</p>
 
-    <p>Altıncı örnekte <code>NetscapeComment</code> ortam değişkenine ilgili
-      SSL istemci sertifikası alanındaki (varsa) dizge atanmaktadır.</p>
-
     <p>Son örnekte ise istekte "TS" ile başlayıp [a-z] arasındaki
       karakterlerle devam eden bir başlık alanı varsa <code>TS_VAR</code>
       ortam değişkeni atanmaktadır.</p>
 </usage>
 
-<seealso><a href="../env.html">Apache’de Ortam Değişkenleri</a> belgesinde
-daha fazla örnek bulunabilir.</seealso>
+<seealso><a href="../env.html">Apache HTTP Sunucusundaki Ortam Değişkenleri</a>
+belgesinde daha fazla örnek bulunabilir.</seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>SetEnvIfExpr</name>
-<description>Sets environment variables based on an ap_expr expression</description>
-<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
-<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
+<description>Bir ap_expr ifadesine dayanarak ortam değişkenlerine değer atar</description>
+<syntax>SetEnvIfExpr <em>ifade
+    [!]ort-değişkeni</em>[=<em>değer</em>]
+    [[!]<em>ort-değişkeni</em>[=<em>değer</em>]] ...</syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p><directive>SetEnvIfExpr</directive> yönergesi bir
+      <directive type="section">If</directive> <code>ap_expr</code> ifadesine
+      dayanarak ortam değişkenlerine değer atar. Bu ifadeler çalışma anında
+      değerlendirilirerek <directive>SetEnvIf</directive> yönergesindeki gibi
+      <em>ort-değişkeni</em>ne uygulanır.</p>
+
+<example>
+    SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered
+</example>
+
+    <p>Burada uygulamamızın her <code>X-Sendfile</code> göndermeye çalışmasında
+      ortam değişkenine <code>iso_delivered</code> değeri atanmaktadır.</p>
+
+    <p>Uzak IP adresi RFC 1918'e göre özel bir adres ise rfc1918 değişkenine 1
+      atanması daha kullanışlı bir örnek olurdu:</p>
+
+<example>
+    SetEnvIfExpr "-R '10.0.0.0/8' || -R '172.16.0.0/12' || -R '192.168.0.0/16'" rfc1918
+</example>
+</usage>
+
+<seealso><a href="../expr.html">Expressions in Apache HTTP Server</a>,
+for a complete reference and more examples.</seealso>
+<seealso><directive type="section">If</directive> can be used to achive similar
+results.</seealso>
+<seealso><module>mod_filter</module></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -265,7 +286,6 @@ bağlı olmaksızın yapılmış tanımlara göre atar.</description>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Apache 1.3 ve sonrasında mevcuttur.</compatibility>
 
 <usage>
     <p><directive>SetEnvIfNoCase</directive> yönergesi sözdizimsel ve anlamsal
@@ -274,13 +294,13 @@ bağlı olmaksızın yapılmış tanımlara göre atar.</description>
       duyarsızdır. Örnek:</p>
 
     <example>
-      SetEnvIfNoCase Host Apache\.Org site=apache
+      SetEnvIfNoCase Host Example\.Org site=example
     </example>
 
     <p>Burada, <code>Host:</code> HTTP istek başlığında
-      <code>Apache.Org</code>, <code>apache.org</code> veya harf büyüklüğünce
+      <code>Example.Org</code>, <code>example.org</code> veya harf büyüklüğünce
       farklı benzerleri belirtilmişse <code>site</code> ortam değişkenine
-      "<code>apache</code>" değeri atanmaktadır.</p>
+      "<code>example</code>" değeri atanmaktadır.</p>
 </usage>
 </directivesynopsis>
 </modulesynopsis>
