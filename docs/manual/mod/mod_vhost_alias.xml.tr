@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 420990:1174747 (outdated) -->
+<!-- English Revision: 1174747 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -223,7 +223,7 @@ Sanal Barındırma</a></seealso>
 <usage>
 
     <p><directive>VirtualDocumentRoot</directive> yönergesi sunucu ismine göre
-      belgelerin bulunacağı yeri Apache’nin saptamasını sağlar.
+      belgelerin bulunacağı yeri Apache HTTP Sunucusunun saptamasını sağlar.
       <code><em>hesaplanan-dizin</em></code>’in dönüşüm sonucu <directive
       module="core" >DocumentRoot</directive> yönergesinin değeriymiş gibi
       belge ağacının kök dizini olarak kullanılır.
@@ -270,11 +270,11 @@ Sanal Barındırma</a></seealso>
 <usage>
 
     <p><directive>VirtualScriptAlias</directive> yönergesi, CGI betiklerinin
-      bulunacağı yeri Apache’nin saptamasını sağlamak bakımından <directive
-      module="mod_vhost_alias" >VirtualDocumentRoot</directive> yönergesinin
-      yaptığını yapar. <code>/cgi-bin/</code> ile başlayan istekler için ise
-      <directive module="mod_alias">ScriptAlias</directive> yönergesinin
-      yaptığını yapar.</p>
+      bulunacağı yeri Apache httpd’nin saptamasını sağlamak bakımından
+      <directive module="mod_vhost_alias" >VirtualDocumentRoot</directive>
+      yönergesinin yaptığını yapar. <code>/cgi-bin/</code> ile başlayan
+      istekler için ise <directive module="mod_alias">ScriptAlias</directive>
+      yönergesinin yaptığını yapar.</p>
 
 </usage>
 </directivesynopsis>
