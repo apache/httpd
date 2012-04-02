@@ -205,9 +205,8 @@
     </dl>
 </section>
 
-<section id="output"><title>Description of output</title>
-    <p>The output may vary depending on the command line parameters given.
-    Possible output with a brief explanation of each element is listed below.
+<section id="output"><title>Output</title>
+    <p>The following list describes the values returned by <code>ab</code>:
     </p>
 
     <dl>
