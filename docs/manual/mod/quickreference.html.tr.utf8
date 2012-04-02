@@ -836,7 +836,9 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
     düzifd [!]ort-değişkeni</em>[=<em>değer</em>]
     [[!]<em>ort-değişkeni</em>[=<em>değer</em>]] ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Ortam değişkenlerini isteğin özniteliklerine göre atar.
 </td></tr>
-<tr><td><a href="mod_setenvif.html#setenvifexpr" /></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Sets environment variables based on an ap_expr expression</td></tr>
+<tr><td><a href="mod_setenvif.html#setenvifexpr">SetEnvIfExpr <em>ifade
+    [!]ort-değişkeni</em>[=<em>değer</em>]
+    [[!]<em>ort-değişkeni</em>[=<em>değer</em>]] ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Bir ap_expr ifadesine dayanarak ortam değişkenlerine değer atar</td></tr>
 <tr class="odd"><td><a href="mod_setenvif.html#setenvifnocase">SetEnvIfNoCase <em>öznitelik
     düzifd [!]ort-değişkeni</em>[=<em>değer</em>]
     [[!]<em>ort-değişkeni</em>[=<em>değer</em>]] ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Ortam değişkenlerini isteğin özniteliklerinde harf büyüklüğüne
