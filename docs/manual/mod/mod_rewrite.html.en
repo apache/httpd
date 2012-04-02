@@ -112,39 +112,39 @@ URLs on the fly</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_rewrite</td></tr>
 </table>
-      <p>The <code class="directive">RewriteBase</code> directive explicitly
-      sets the base URL-path (not filesystem directory path!)  for per-directory rewrites
-      that result in the substitution of a relative path.
-      When you use a <code class="directive"><a href="#rewriterule">RewriteRule</a></code>
-      in a <code>.htaccess</code> file, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> strips off
-      the local directory prefix before processing, then rewrites the rest of
-      the URL. When the rewrite is completed, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
-      automatically adds the local directory prefix (or the
-      <code class="directive">RewriteBase</code> when set) back on to the substitution
-      before handing it back to the core of the server as if it were the original
-      URL.</p>
+      <p>The <code class="directive">RewriteBase</code> directive specifies the
+      URL prefix to be used for per-directory (htaccess) 
+      <code class="directive">RewriteRule</code> directives that substitute a relative
+      path.</p>
+      <p> This directive is <em>required</em> when you use a relative path
+      in a substitution in per-directory (htaccess) context unless either
+      of the following conditions are true:
+      <ul>
+          <li> The original request, and the substitution, are underneath the 
+               <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>
+               (as opposed to reachable by other means, such as 
+               <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>).</li>
+          <li> The <em>filesystem</em> path to the directory containing the
+               <code class="directive">RewriteRule</code>, suffixed by the relative 
+               substitution is also valid as a URL path on the server 
+               (this is rare).</li>
+      </ul>
+      </p>
 
-      <p>This directive is <em>required</em> for per-directory rewrites whose context
-      is a directory made available via the <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>
-      directive, when the substitution uses a relative path.</p>
-
-      <p>If your URL path does not exist verbatim on the filesystem,
-      or isn't directly under your <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>,
-      you must use <code class="directive">RewriteBase</code> in every
-      <code>.htaccess</code> file where you want to use <code class="directive"><a href="#rewriterule">RewriteRule</a></code> directives.</p>
-
-      <p>The example below demonstrates how to map
-      http://example.com/myapp/index.html to
-      /home/www/example/newsite.html, in a <code>.htaccess</code> file. This
-      assumes that the content available at
-      http://example.com/ is on disk at /home/www/example/</p>
+<p> In the example below, <code class="directive">RewriteBase</code> is necessary
+    to avoid rewriting to http://example.com/opt/myapp-1.2.3/welcome.html
+    since the resource was not relative to the document root.  This 
+    misconfiguration would normally cause the server to look for an "opt"
+    directory under the document root.</p>
 <div class="example"><pre>
+DocumentRoot /var/www/example.com
+Alias /myapp /opt/myapp-1.2.3
+&lt;Directory /opt/myapp-1.2.3&gt;
 RewriteEngine On
-# The URL-path used to get to this context, not the filesystem path
 RewriteBase /myapp/
-RewriteRule ^index\.html$  newsite.html
+RewriteRule ^index\.html$  welcome.html 
+&lt;/Directory&gt;
 </pre></div>
-
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
