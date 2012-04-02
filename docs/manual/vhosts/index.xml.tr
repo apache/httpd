@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 420990:1053231 (outdated) -->
+<!-- English Revision: 1053231 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -32,9 +32,10 @@
 <summary>
 
     <p><cite>Sanal Konak</cite> (Virtual Host) terimi tek bir makine üzerinde
-      birden fazla sitenin (www.sirket1.dom, www.sirket2.dom gibi) barındırılma
-      uygulamasını betimler. Sanal konaklar, "<a href="ip-based.html">IP’ye
-      dayalı</a>" veya "<a href="name-based.html">isme dayalı</a>" olabilir;
+      birden fazla sitenin (sirket1.example.com, sirket2.example.com gibi)
+      barındırılma uygulamasını betimler. Sanal konaklar,
+      "<a href="ip-based.html">IP’ye dayalı</a>" veya
+      "<a href="name-based.html">isme dayalı</a>" olabilir;
       birincisinde, her site ayrı bir IP adresinden sunulurken, ikincisinde her
       IP adresinde birden fazla site sunulur. Olayda aynı fiziksel sunucu
       kullanıldığı halde bu sunucu son kullanıcıya görünür değildir.</p>
@@ -45,14 +46,15 @@
       konaklara bazen <em>konağa dayalı</em> sanal konaklar veya <em>IP’ye
       dayanmayan</em> sanal konaklar da denmektedir.</p>
 
-    <p>Aşağıda, Apache’nin 1.3 sürümü ve sonrası için sanal konak desteğini bütün
+    <p>Aşağıda, Apache HTTP Suncusundaki sanal konak desteğini bütün
       ayrıntıları ile açıklayan belgeler listelenmiştir.</p>
 
 </summary>
 
 <seealso><module>mod_vhost_alias</module></seealso>
 <seealso><a href="name-based.html">İsme Dayalı Sanal Konaklar</a></seealso>
-<seealso><a href="ip-based.html">IP Adresine Dayalı Sanal Konaklar</a></seealso>
+<seealso><a href="ip-based.html">IP Adresine Dayalı Sanal Konaklar</a>
+</seealso>
 <seealso><a href="examples.html">Sanal Konak Örnekleri</a></seealso>
 <seealso><a href="fd-limits.html">Dosya Tanıtıcı Sınırları</a></seealso>
 <seealso><a href="mass.html">Kütlesel Sanal Konaklık</a></seealso>
@@ -63,15 +65,16 @@
     <ul>
       <li><a href="name-based.html">İsme Dayalı Sanal Konaklar</a> (Her IP
         adresinde birden fazla site)</li>
-      <li><a href="ip-based.html">IP Adresine Dayalı Sanal Konaklar</a> (Her site
-        için ayrı IP adresi)</li>
+      <li><a href="ip-based.html">IP Adresine Dayalı Sanal Konaklar</a> (Her
+        site için ayrı IP adresi)</li>
       <li><a href="examples.html">Çok kullanılan sanal konak yapılandırma
         örnekleri</a></li>
       <li><a href="fd-limits.html">Dosya Tanıtıcı Sınırları</a> (veya,
       <em>çok fazla günlük dosyası</em>)</li>
       <li><a href="mass.html">Devingen olarak Yapılandırılan Kütlesel Sanal
         Barındırma</a></li>
-      <li><a href="details.html">Konak Eşlemenin Derinliğine İncelenmesi</a></li>
+      <li><a href="details.html">Konak Eşlemenin Derinliğine
+        İncelenmesi</a></li>
     </ul>
 
 </section>
@@ -81,7 +84,6 @@
     <ul>
       <li><directive type="section"
            module="core">VirtualHost</directive></li>
-      <li><directive module="core">NameVirtualHost</directive></li>
       <li><directive module="core">ServerName</directive></li>
       <li><directive module="core">ServerAlias</directive></li>
       <li><directive module="core">ServerPath</directive></li>
