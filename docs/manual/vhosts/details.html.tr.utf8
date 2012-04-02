@@ -171,7 +171,7 @@
 
     <h3><a name="namebased" id="namebased">İsme dayalı sankon</a></h3>
 
-    <p>&gt;Eğer en iyi eşleşme olarak saptanmış IP adresi ve port çiftini içeren
+    <p>Eğer en iyi eşleşme olarak saptanmış IP adresi ve port çiftini içeren
       birden fazla <code>VirtualHost</code> yönergesi varsa, sonraki
       adımlardaki "liste" eşleşen sankonların listesi olup sankonlar listede
       yapılandırma dosyasındaki yerlerine göre sıralanırlar.</p>
