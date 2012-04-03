@@ -266,7 +266,7 @@ an example, not as a recommendation.</p>
 </section>
 
 <section id="flag_end"><title>END</title>
-<p>Using the [END] flag terminates not only the current round ot rewrite
+<p>Using the [END] flag terminates not only the current round of rewrite
 processing (like [L]) but also prevents any subsequent rewrite
 processing from occurring in per-directory (htaccess) context.</p>
 
