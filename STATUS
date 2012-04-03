@@ -105,7 +105,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         initializing EC temporary keys. [Stefan Fritsch]
     NOTE: If you get strange openssl errors during server start, you may have
           forgotten "make clean" before building.
-    +1: sf, minfrin
+    +1: sf, minfrin, jim
 
   * core: Fix regexp substitution bug
     Trunk patch: http://svn.apache.org/viewvc?rev=1307067&view=rev
