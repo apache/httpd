@@ -88,12 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * core: Fix regexp substitution bug
-    Trunk patch: http://svn.apache.org/viewvc?rev=1307067&view=rev
-    2.4.x patch: Trunk patch works, add CHANGES:
-       core: Fix regular expression substitution if the replacment string
-       contained '&' or '\'. (Bug introduced in 2.3.5).
-    +1: sf, covener, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
