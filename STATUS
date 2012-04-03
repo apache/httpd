@@ -88,14 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
-  * mod_slotmem_shm: Use ap_runtime_dir_relative(). (Assumes r1297560)
-    Trunk patch: http://svn.apache.org/viewvc?rev=1298433&view=rev
-    2.4.x patch: Trunk patch works (skip docs/log-message-tags/next-number)
-    +1: jim, minfrin (with docs at http://svn.apache.org/viewvc?rev=1305166&view=rev)
-
   * mod_ssl: Initialize EC temporary key on server startup, fixing a crash
     with threaded MPMs.
     Trunk patch: http://svn.apache.org/viewvc?rev=1294306&view=rev
@@ -113,6 +105,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        core: Fix regular expression substitution if the replacment string
        contained '&' or '\'. (Bug introduced in 2.3.5).
     +1: sf, covener, jim
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+  * mod_slotmem_shm: Use ap_runtime_dir_relative(). (Assumes r1297560)
+    Trunk patch: http://svn.apache.org/viewvc?rev=1298433&view=rev
+    2.4.x patch: Trunk patch works (skip docs/log-message-tags/next-number)
+    +1: jim, minfrin (with docs at http://svn.apache.org/viewvc?rev=1305166&view=rev)
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
