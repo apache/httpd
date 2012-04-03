@@ -298,7 +298,12 @@ typedef int ssl_algo_t;
 #define SSL_TMP_KEY_RSA_1024 (1)
 #define SSL_TMP_KEY_DH_512   (2)
 #define SSL_TMP_KEY_DH_1024  (3)
+#ifndef OPENSSL_NO_EC
+#define SSL_TMP_KEY_EC_256   (4)
+#define SSL_TMP_KEY_MAX      (5)
+#else
 #define SSL_TMP_KEY_MAX      (4)
+#endif
 
 /**
  * Define the SSL options

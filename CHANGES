@@ -6,6 +6,9 @@ Changes with Apache 2.4.2
      envvars: Fix insecure handling of LD_LIBRARY_PATH that could lead to the
      current working directory to be searched for DSOs. [Stefan Fritsch]
 
+  *) mod_ssl: Fix crash with threaded MPMs due to race condition when
+     initializing EC temporary keys. [Stefan Fritsch]
+
   *) mod_proxy: Add the forcerecovery balancer parameter that determines if
      recovery for balancer workers is enforced. [Ruediger Pluem]
 
