@@ -163,23 +163,10 @@ To Do List
     Decide how and where to document the error codes (AH****), and then
     start on doing it.
 
-LaTeX Todo list
-==================
-
-- Dozens of other little problems with presentation, cross-referencing,
-  etc.
-
-- Cleanup xsl to make it more readable.  Almost everything
-  that is currently in latex.xsl should probably be moved to common.xsl.
-  There may be a license problem with the atbeginend.sty file, since
-  latex style files rarely have explict licenses.  At worst, we can
-  drop this and manually adjust the relevant spacing.
-
-- Reduce the size of the pdf (both bytes and pages) in any way possible.
-
-- Translations.
-
-- https://issues.apache.org/bugzilla/show_bug.cgi?id=45526 Figure out
-  how to fix the underscore problem and regenerate PDF output.
+- If someone has xslt and LaTeX skills, they could consider getting the
+  xml->LaTeX->PDF build chain working again. See specifically 
+  https://issues.apache.org/bugzilla/show_bug.cgi?id=45526 for details
+  of what's broken. For the moment, PDF docs are no longer referenced on
+  the docs site.
 
 
