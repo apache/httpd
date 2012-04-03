@@ -130,6 +130,14 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     <p>It is up to dbd user modules to use the prepared statements
     and document what statements can be specified in httpd.conf,
     or to provide their own directives and use <code>ap_dbd_prepare</code>.</p>
+	
+	<div class="warning"><h3>Caveat</h3>
+	When using prepared statements with a MySQL database, it is preferred to set
+	<code>reconnect</code> to 0 in the connection string as to avoid errors that
+	arise from the MySQL client reconnecting without properly resetting the
+	prepared statements. If set to 1, any broken connections will be attempted
+	fixed, but as mod_dbd is not informed, the prepared statements will be invalidated.
+	</div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="security" id="security">SECURITY WARNING</a></h2>
