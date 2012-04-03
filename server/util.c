@@ -437,15 +437,13 @@ static apr_status_t regsub_core(apr_pool_t *p, char **result,
     src = input;
 
     while ((c = *src++) != '\0') {
-        if (c == '&')
-            no = 0;
-        else if (c == '$' && apr_isdigit(*src))
+        if (c == '$' && apr_isdigit(*src))
             no = *src++ - '0';
         else
             no = AP_MAX_REG_MATCH;
 
         if (no >= AP_MAX_REG_MATCH) {  /* Ordinary character. */
-            if (c == '\\' && (*src == '$' || *src == '&'))
+            if (c == '\\' && *src)
                 c = *src++;
             *dst++ = c;
         }
