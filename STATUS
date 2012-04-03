@@ -88,15 +88,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
   * mod_slotmem_shm: Use ap_runtime_dir_relative(). (Assumes r1297560)
     Trunk patch: http://svn.apache.org/viewvc?rev=1298433&view=rev
     2.4.x patch: Trunk patch works (skip docs/log-message-tags/next-number)
     +1: jim, minfrin (with docs at http://svn.apache.org/viewvc?rev=1305166&view=rev)
     +1: igalic
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
 
 PATCHES/ISSUES THAT ARE STALLED
