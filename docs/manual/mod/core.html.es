@@ -25,6 +25,7 @@
 <a href="../en/mod/core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/mod/core.html" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/mod/core.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../hold/mod/core.html" hreflang="hold" rel="alternate" title="">&nbsp;hold&nbsp;</a> |
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
@@ -4287,6 +4288,7 @@ hostname or IP address</td></tr>
 <a href="../en/mod/core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/mod/core.html" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/mod/core.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../hold/mod/core.html" hreflang="hold" rel="alternate" title="">&nbsp;hold&nbsp;</a> |
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
