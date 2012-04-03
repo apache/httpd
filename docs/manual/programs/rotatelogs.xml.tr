@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 735925:1189220 (outdated) -->
+<!-- English Revision: 1189220 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -41,8 +41,12 @@
 
      <p><code><strong>rotatelogs</strong>
      [ -<strong>l</strong> ]
+     [ -<strong>L</strong> <var>isim</var> ]
+     [ -<strong>p</strong> <var>program</var> ]
      [ -<strong>f</strong> ]
      [ -<strong>v</strong> ]
+     [ -<strong>e</strong> ]
+     [ -<strong>c</strong> ]
      <var>dosyaismi</var>
      <var>süre</var>|<var>boyut</var>(B|K|M|G)
      [ <var>saat_farkı</var> ]</code></p>
@@ -52,9 +56,24 @@
 
 <dl>
     <dt><code><strong>-l</strong></code></dt>
-    <dd>GMT yerine yerel zamanın kullanılmasını sağlar. Zaman dilimi değişik
-    olan ortamlarda (BST, DST gibi) bu seçeneğin kullanımı beklenmedik
-    sonuçlar verebilir!</dd>
+    <dd>GMT yerine yerel zamanın kullanılmasını sağlar.</dd>
+
+    <dt><code><strong>-L</strong></code> <var>bagismi</var></dt>
+    <dd>Belirtilen bağ dosyası ismine geçerli günlük dosyasından kalıcı bir bağ
+    oluşturulur. <code>tail -F bagismi</code> gibi bir komut kullanılarak
+    günlüğün sürekli izlenmesi için kullanılabilir.</dd>
+
+    <dt><code><strong>-p</strong></code> <var>program</var></dt>
+
+    <dd>Belirtildiği takdirde, <code><strong>rotatelogs</strong></code> yeni
+    bir günlük dosyasının her açılışında belirtilen programı çalıştırır. Yeni
+    açılan dosyanın ismi programa ilk argüman olarak aktarılır. Bu işlem bir
+    döndürme sonrası yapılırsa eski günlük dosyası ikinci argüman olarak
+    aktarılır. <code><strong>rotatelogs</strong></code> işlemini sürdürmek için
+    belirtilen programın sonlanmasını beklemez, dolayısıyla sonlanma soucunda
+    döndürülen hata kodunu günlüğe kaydetmez. Çalıştırılan program
+    <code><strong>rotatelogs</strong></code> ile aynı stdin, stdout ve stderr'i
+    kullanır ve ortamı da miras alır.</dd>
 
     <dt><code><strong>-f</strong></code></dt>
     <dd>İlk günlük giridisinin okunmasını beklemeden
@@ -64,21 +83,47 @@
     özdevinimli işlemler yapan bazı günlükleme araçlarında sorunlara yol
     açabilir. Bu seçenek bu gibi durumlarda yararlıdır.</dd>
 
+    <dt><code><strong>-t</strong></code></dt>
+    <dd>Günlük dosyasının döndürülmek yerine tepeden kırpılmasına sebep olur.
+    Günlüğün <code><strong>tail</strong></code> gibi bir araç tarafından gerçek
+    zamanda işlendiği ve veriyi saklamanın gerekmediği durumda kullanışlıdır.
+    Dosya ismine bir sonek eklenmez, ancak biçem dizgesi '%' karakteri
+    içeriyorsa buna uyulur.</dd>
+
     <dt><code><strong>-v</strong></code></dt>
     <dd>Standart hataya verilen çıktı daha ayrıntılı olur. Çıktı,
     yapılandırma çözümlemesinin sonuçlarını ve tüm dosya açma/kapama
     işlemlerini içerir.</dd>
 
+    <dt><code><strong>-e</strong></code></dt>
+    <dd>Günlüğü standart çıktıya basar. Günlüğün zincirdeki ilgili araç
+    tarafından gerçek zamanda işlenmesi gerektiğinde kullanışlıdır.</dd>
+
+    <dt><code><strong>-c</strong></code></dt>
+    <dd>Create log file for each interval, even if empty.</dd>
+
     <dt><code><var>dosyaismi</var></code></dt>
-    <dd>Günlük dosyasının ismi yoluyla birlikte belirtilir.
-    <var>dosyaismi</var> '%' karakterleri içeriyorsa bunlar
-    <code>strftime(3)</code> biçem belirteçleri olarak ele alınır. Aksi
-    takdirde, özdevinimli olarak <var>.nnnnnnnnnn</var> uzantısı üretilir.
-    Uzantı saniye cinsindendir ve her iki durumda da bu değer, mevcut döngü
-    diliminin başlangıcına göre hesaplanır. Örneğin, döndürmenin 86400
-    saniyede bir yapılacağı belirtilmişse, <code>strftime(3)</code> biçeminde
-    oluşturulan saat, dakika ve saniye alanları, 24 saatlik sürenin
-    başlangıcını (geceyarısı) göstermek üzere sıfırlarla doldurulur.</dd>
+    <dd><p>Günlük dosyasının ismi yoluyla birlikte belirtilir.
+      <var>dosyaismi</var> '%' karakterleri içeriyorsa bunlar
+      <code>strftime(3)</code> biçem belirteçleri olarak ele alınır. Aksi
+      takdirde, özdevinimli olarak <var>.nnnnnnnnnn</var> uzantısı üretilir.
+      (<code><strong>-t</strong></code> seçeneği kullanılmadıkça) Uzantı saniye
+      cinsindendir  ve her iki durumda da bu değer, mevcut döngü
+      diliminin başlangıcına göre hesaplanır. Örneğin, döndürmenin 86400
+      saniyede bir yapılacağı belirtilmişse, <code>strftime(3)</code> biçeminde
+      oluşturulan saat, dakika ve saniye alanları, 24 saatlik sürenin
+      başlangıcını (geceyarısı) göstermek üzere sıfırlarla doldurulur.</p>
+
+      <p><code>strftime(3)</code> dosyaismi biçemlemesi kullanılırken, günlük
+      dosyası biçeminin günlük dosyası döndürülürken her zaman farklı bir dosya
+      ismi üretecek yeterlilikte parçacıklı yapıya sahip olduğundan emin
+      olmalısınız. Aks takdirde döndürme işlemi yeni bir dosya başlatmak yerine
+      hep aynı dosyanın üzerine yazar. Örneğin, <var>logfile</var> için
+      <code>/var/logs/errorlog.%Y-%m-%d</code> belirtilmişse 5 mega baytta bir
+      yeni bir günlük dosyasına başlanacaktır. Fakat 5 megabayta gün içinde iki
+      kez ulaşılırsa aynı günlük dosyası üretilir ve günlük hep aynı dosyanın
+      üzerine yazılır.</p>
+    </dd>
 
     <dt><code><var>süre</var></code></dt>
     <dd>Günlük dosyasının yenisinin kaç saniyede bir açılacağı belirtilir.
@@ -101,8 +146,8 @@
     öntanımlıdır. Örneğin, -5 saatlik bir zaman diliminde bulunuyorsanız bu
     değer <code>-300</code> olmalıdır. Çoğu durumda, bunun yerine
     <code><strong>-l</strong></code> seçeneğini kullanmak gerekir.</dd>
-
 </dl>
+
 </section>
 
 <section id="examples"><title>Örnekler</title>
@@ -138,6 +183,14 @@
      <p>Hata günlüğünün 5 megabaytta bir
      <code>errorlog.YYYY-mm-dd-HH_MM_SS</code> biçemli bir isimle
      oluşturulmasını sağlar.</p>
+
+<example>
+     CustomLog "|bin/rotatelogs -t /var/logs/logfile 86400" common
+</example>
+
+     <p>/var/logs/logfile dosyasını oluşturur, sunucu başlatılırken ve günde
+       bir kere dosyanın tepesi kırpılır. Bu senaryoda ayrı bir sürecin (tail
+       gibi) dosyayı gerçek zamanlı işleyeceği umulur.</p>
 
 </section>
 
