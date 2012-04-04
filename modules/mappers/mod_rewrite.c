@@ -3243,37 +3243,59 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
         newcond->ptype = CONDPAT_AP_EXPR;
     }
     else if (*a2 && a2[1]) {
-        if (!a2[2] && *a2 == '-') {
-            switch (a2[1]) {
-            case 'f': newcond->ptype = CONDPAT_FILE_EXISTS; break;
-            case 's': newcond->ptype = CONDPAT_FILE_SIZE;   break;
-            case 'd': newcond->ptype = CONDPAT_FILE_DIR;    break;
-            case 'x': newcond->ptype = CONDPAT_FILE_XBIT;   break;
-            case 'h': newcond->ptype = CONDPAT_FILE_LINK;   break;
-            case 'L': newcond->ptype = CONDPAT_FILE_LINK;   break;
-            case 'U': newcond->ptype = CONDPAT_LU_URL;      break;
-            case 'F': newcond->ptype = CONDPAT_LU_FILE;     break;
-            case 'l': if (a2[2] == 't')
-                          a2 += 3, newcond->ptype = CONDPAT_INT_LT;
-                      else if (a2[2] == 'e')
-                          a2 += 3, newcond->ptype = CONDPAT_INT_LE;
-                      else /* Historical; prefer -L or -h instead */
-                          newcond->ptype = CONDPAT_FILE_LINK;
-                      break;
-            case 'g': if (a2[2] == 't')
-                          a2 += 3, newcond->ptype = CONDPAT_INT_GT;
-                      else if (a2[2] == 'e')
-                          a2 += 3, newcond->ptype = CONDPAT_INT_GE;
-                      break;
-            case 'e': if (a2[2] == 'q')
-                          a2 += 3, newcond->ptype = CONDPAT_INT_EQ;
-                      break;
-            case 'n': if (a2[2] == 'e') {
-                          /* Inversion, ensure !-ne == -eq */
-                          a2 += 3, newcond->ptype = CONDPAT_INT_EQ;
-                          newcond->flags ^= CONDFLAG_NOTMATCH;
-                      }
-                      break;
+        if (*a2 == '-') {
+            if (!a2[2]) {
+                switch (a2[1]) {
+                case 'f': newcond->ptype = CONDPAT_FILE_EXISTS; break;
+                case 's': newcond->ptype = CONDPAT_FILE_SIZE;   break;
+                case 'd': newcond->ptype = CONDPAT_FILE_DIR;    break;
+                case 'x': newcond->ptype = CONDPAT_FILE_XBIT;   break;
+                case 'h': newcond->ptype = CONDPAT_FILE_LINK;   break;
+                case 'L': newcond->ptype = CONDPAT_FILE_LINK;   break;
+                case 'l': newcond->ptype = CONDPAT_FILE_LINK;   break;
+                case 'U': newcond->ptype = CONDPAT_LU_URL;      break;
+                case 'F': newcond->ptype = CONDPAT_LU_FILE;     break;
+                }
+            }
+            else if (a2[3]) {
+                switch (a2[1]) {
+                case 'l':
+                    if (a2[2] == 't') {
+                        a2 += 3;
+                        newcond->ptype = CONDPAT_INT_LT;
+                    }
+                    else if (a2[2] == 'e') {
+                        a2 += 3;
+                        newcond->ptype = CONDPAT_INT_LE;
+                    }
+                    break;
+
+                case 'g':
+                    if (a2[2] == 't') {
+                        a2 += 3; newcond->ptype = CONDPAT_INT_GT;
+                    }
+                    else if (a2[2] == 'e') {
+                        a2 += 3;
+                        newcond->ptype = CONDPAT_INT_GE;
+                    }
+                    break;
+
+                case 'e':
+                    if (a2[2] == 'q') {
+                        a2 += 3;
+                        newcond->ptype = CONDPAT_INT_EQ;
+                    }
+                    break;
+
+                case 'n':
+                    if (a2[2] == 'e') {
+                        /* Inversion, ensure !-ne == -eq */
+                        a2 += 3;
+                        newcond->ptype = CONDPAT_INT_EQ;
+                        newcond->flags ^= CONDFLAG_NOTMATCH;
+                    }
+                    break;
+                }
             }
         }
         else {
