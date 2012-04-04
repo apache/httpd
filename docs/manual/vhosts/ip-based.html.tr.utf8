@@ -5,7 +5,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Apache’de IP’ye Dayalı Sanal Konak Desteği - Apache HTTP Sunucusu</title>
+<title>IP’ye Dayalı Sanal Konak Desteği - Apache HTTP Sunucusu</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
@@ -16,7 +16,7 @@
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.5</a> &gt; <a href="./">Sanal Konaklar</a></div><div id="page-content"><div id="preamble"><h1>Apache’de IP’ye Dayalı Sanal Konak Desteği</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.5</a> &gt; <a href="./">Sanal Konaklar</a></div><div id="page-content"><div id="preamble"><h1>IP’ye Dayalı Sanal Konak Desteği</h1>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../en/vhosts/ip-based.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/vhosts/ip-based.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
@@ -24,9 +24,9 @@
 <a href="../ko/vhosts/ip-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/ip-based.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#requirements">Sistem gereksinimleri</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#explanation">IP'ye dayalı sanal konak desteği nedir</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#requirements">Sistem gereksinimleri</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#howto">Apache nasıl ayarlanır?</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#multiple">Çok sayıda sürecin yapılandırılması</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#single">Sanal konaklar tek bir sürecin yapılandırılması</a></li>
@@ -35,17 +35,33 @@
 </li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
+<h2><a name="explanation" id="explanation">IP'ye dayalı sanal konak desteği nedir</a></h2>
+    <p>IP'ye dayalı sanal konak desteği, bir isteğin alındığı IP adresi ve
+      porta bağlı olarak farklı yönergeleri uygulamak için bir yoldur. Özetle,
+      farklı siteleri farklı portlardan ve arayüzlerden sunmakta
+      kullanılır.</p>
+
+     <p>Çoğu durumda, <a href="name-based.html">isme dayalı sanal konaklar</a>
+       birçok sanal konağın tek bir IP adresi/port çiftini paylaşmasını
+       sağladığından daha kullanışlıdır. Neyi kullanacağınıza karar vermek için
+       <a href="name-based.html#namevip">İsme dayalı ve IP’ye dayalı Sanal
+       Konaklar</a> bölümüne bakınız.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
 <h2><a name="requirements" id="requirements">Sistem gereksinimleri</a></h2>
 
     <p><cite>IP’ye dayalı</cite> deyince, sunucunun <strong>her IP’ye dayalı
-      sanal konak için ayrı bir IP adresi</strong>ne sahip olduğunu anlıyoruz.
-      Bunun olması için, makine ya çok sayıda ağ bağlantısına sahiptir ya da
-      makinede, günümüzde çoğu işletim sistemi tarafından desteklenen sanal
-      arabirimler kullanılıyordur. (Sanal arabirimlerle ilgili ayrıntılar için
-      sistem belgelerinize bakınız; bu konu genellikle IP rumuzları (ip aliases)
-      olarak geçer ve ayarlamak için genellikle "ifconfig" komutu
-      kullanılır.)</p>
+      sanal konak için ayrı bir IP adresi/port çifti</strong>ne sahip olduğunu
+      anlıyoruz. Bunun olması için, makine ya çok sayıda ağ bağlantısına
+      sahiptir ya da makinede, günümüzde çoğu işletim sistemi tarafından
+      desteklenen sanal arabirimler ve/veya çok sayıda port kullanılıyordur.
+      (Sanal arabirimlerle ilgili ayrıntılar için sistem belgelerinize bakınız;
+      bu konu genellikle IP rumuzları (ip aliases) olarak geçer ve ayarlamak
+      için genellikle "ifconfig" komutu kullanılır.)</p>
 
+    <p>Apache HTTP Sunucusu terminolojisinde, tek bir IP adresinin çok sayıda
+      TCP portuyla kullanımı IP'ye dayalı sanal konak desteği olarak
+      bilinir.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="howto" id="howto">Apache nasıl ayarlanır?</a></h2>
@@ -61,8 +77,8 @@
       <li>Güvenli bölgeler oluşturmanız gerekiyordur. Örneğin, şirket2’deki hiç
         kimse dosya sistemi üzerinden şirket1’e ait verileri okuyamasın, sadece
         herkes gibi tarayıcı kullanarak okuyabilsin istenebilir.  Bu durumda,
-        <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code>,
-        <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code>,
+        <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code>,
+        <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code>,
         <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> ve
         <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> yönergeleri farklı
         değerlerle yapılandırılmış iki ayrı süreç çalıştırmanız gerekir.</li>
@@ -97,7 +113,7 @@
       yönergesi kullanılır. Örnek:</p>
 
     <div class="example"><p><code>
-    Listen www.birkobi.dom:80
+    Listen 192.0.2.100:80
     </code></p></div>
 
     <p>Burada konak ismi yerine IP adresi kullanmanız önerilir (ayrıntılar için
@@ -122,7 +138,7 @@
       DocumentRoot /gruplar/birkobi/belgeler<br />
       ServerName www.birkobi.dom<br />
       ErrorLog /gruplar/birkobi/günlükler/hatalar.log<br />
-      TransferLog /gruplar/birkobi/günlükler/erisim.log
+      CustomLog /gruplar/birkobi/günlükler/erisim.log combined
     </span>
     &lt;/VirtualHost&gt;<br />
     <br />
@@ -132,7 +148,7 @@
       DocumentRoot /gruplar/digerkobi/belgeler<br />
       ServerName www.digerkobi.dom<br />
       ErrorLog /gruplar/digerkobi/günlükler/hatalar.log<br />
-      TransferLog /gruplar/digerkobi/günlükler/erisim.log
+      CustomLog /gruplar/digerkobi/günlükler/erisim.log combined
     </span>
     &lt;/VirtualHost&gt;
     </code></p></div>
@@ -142,10 +158,15 @@
        <a href="../dns-caveats.html">DNS ile ilgili konular</a>
        belgesine bakınız).</p>
 
+    <p>Belli bir IP adresi veya port kullanımı bunların joker eşdeğerlerine
+      göre daha yüksek öncelik sağlar ve eşleşen bir sanal konak da genel
+      sunucuya göre öncelik alır.</p>
+
     <p>Süreç oluşturmayı denetleyen yönergeler ve bir kaç başka yönerge dışında
-      hemen hemen tüm yapılandırma yönergeleri <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code> bölümleri içinde kullanılabilir. Bir
-      yönergenin <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code> bölümlerinde
-      kullanılıp kullanılmayacağını öğrenmek için <a href="../mod/directives.html">yönerge dizinini</a> kullanarak yönergenin <a href="../mod/directive-dict.html#Context">Bağlam</a>’ına bakınız.</p>
+      hemen hemen tüm yapılandırma yönergeleri <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code> bölümleri içinde kullanılabilir.
+      Bir yönergenin <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code>
+      bölümlerinde kullanılıp kullanılmayacağını öğrenmek için <a href="../mod/directives.html">yönerge dizinini</a> kullanarak yönergenin
+      <a href="../mod/directive-dict.html#Context">Bağlam</a>’ına bakınız.</p>
 
     <p><a href="../suexec.html">suEXEC sarmalayıcısı</a> kullanıldığı takdirde
       <code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code> yönergesi de
@@ -154,9 +175,9 @@
 
     <p><em>GÜVENLİK:</em>Günlük dosyalarının yazılacağı yeri belirlerken,
       Apache’yi başlatan kullanıcıdan başka kimsenin yazamayacağı bir yerin
-      seçilmesi bazı güvenlik risklerini ortadan kaldırmak bakımından önemlidir.
-      Ayrıntılar için <a href="../misc/security_tips.html">güvenlik ipuçları</a>
-      belgesine bakınız.</p>
+      seçilmesi bazı güvenlik risklerini ortadan kaldırmak bakımından
+      önemlidir. Ayrıntılar için <a href="../misc/security_tips.html">güvenlik
+      ipuçları</a> belgesine bakınız.</p>
 </div></div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="../en/vhosts/ip-based.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

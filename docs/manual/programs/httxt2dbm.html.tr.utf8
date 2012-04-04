@@ -21,7 +21,6 @@
 <p><span>Mevcut Diller: </span><a href="../en/programs/httxt2dbm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../tr/programs/httxt2dbm.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p><code><strong>httxt2dbm</strong></code>, <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> ile kullanmak için düz metin
     dosyalardan DBM dosyaları üretir.</p>
@@ -49,19 +48,19 @@
     <dt><code><strong>-f</strong> <var>DBM_türü</var></code></dt>
     <dd>Çıktı için kullanılacak DBM türü belirtilir. Belirtilmediği takdirde
     <a class="glossarylink" href="../glossary.html#apr" title="sözlüğe bakınız">APR</a> öntanımlısı kullanılır. Belirtilebilecek DBM
-    türleri:<br />
-    GDBM dosyalar için <code>GDBM</code><br />
-    SDBM dosyalar için <code>SDBM</code><br />
-    Berkeley DB dosyalar için <code>DB</code><br />
-    NDBM dosyalar için <code>NDBM</code><br />
+    türleri:
+    GDBM dosyalar için <code>GDBM</code>,
+    SDBM dosyalar için <code>SDBM</code>,
+    Berkeley DB dosyalar için <code>DB</code>,
+    NDBM dosyalar için <code>NDBM</code>,
     öntanımlı DBM türü için <code>default</code>
     </dd>
 
     <dt><code><strong>-i</strong> <var>kaynak_metin</var></code></dt>
     <dd>DBM dosyasının üretiminde kullanılacak girdi dosyası belirtilir. Bu
     dosya, her satırda bir kayıt bulunmak üzere her satırı şöyle biçemlenmiş
-    olmalıdır:<br />
-    <code>anahtar değer</code><br />
+    olmalıdır:
+    <code>anahtar değer</code>.
     Bu dosyanın biçemi ve manası ile ilgili ayrıntılar için <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> yönergesinin açıklamasına
     bakınız.
     </dd>

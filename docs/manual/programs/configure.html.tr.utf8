@@ -22,7 +22,6 @@
 <a href="../ko/programs/configure.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/configure.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p><code>configure</code> betiği, Apache HTTP Sunucusunun kaynak kodlarını
       belli bir platform için yapılandırmakta ve derlemekte kullanılır.
@@ -191,7 +190,7 @@
         <dd>Paylaşımlı modüller gibi program dosyaları
           <code><em>dizin</em></code> dizinine kurulur. Öntanımlı olarak
           <code>libexecdir</code> bu dizini
-          <code><var>EPREFIX</var>/libexec</code> olarak tanımlar.</dd>
+          <code><var>EPREFIX</var>/modules</code> olarak tanımlar.</dd>
 
         <dt><code>--localstatedir=<var>dizin</var></code></dt>
         <dd>Düzenlenebilir tek makinelik veri <code><em>dizin</em></code>
@@ -232,8 +231,8 @@
         <dd><code>httpd.conf</code>, <code>mime.types</code> gibi tek
           makinelik salt okunur sunucu yapılandırma dosyaları
           <code><em>dizin</em></code> dizinine kurulur. Öntanımlı olarak
-          <code>sysconfdir</code> bu dizini <code><var>PREFIX</var>/etc</code>
-          olarak tanımlar.</dd>
+          <code>sysconfdir</code> bu dizini
+          <code><var>PREFIX</var>/conf</code> olarak tanımlar.</dd>
       </dl>
     
   
@@ -284,11 +283,11 @@
           <code>yes</code> (evet) öntanımlıdır.</dd>
 
         <dt><code>--enable-<var>modül</var>=shared</code></dt>
-        <dd>Belirtilen modül DSO modülü olarak derlenir.</dd>
+        <dd>Belirtilen modül DSO modülü olarak derlenir. Öntanımlı olarak
+          etkin modüller devingen ilintilenir.</dd>
 
         <dt><code>--enable-<var>modül</var>=static</code></dt>
-        <dd>Öntanımlı olarak etkin olan modüller durağan ilintilenir. Bunu bu
-          seçenekle alenen zorlayabilirsiniz.</dd>
+        <dd>Belirtilen modül durağan ilintilenir.</dd>
       </dl>
 
       <div class="note"><h3>Bilginize</h3>
@@ -299,366 +298,87 @@
       </div>
     
 
+    <h4><a name="choosemodules" id="choosemodules">Derlenecek modüllerin seçimi</a></h4>
+      <p>Modüllerin çoğu öntanımlı olarak derlenir ve ya açıkça iptal edilmek
+        ya da <code>few</code> veya <code>none</code> anahtar sözcükleri
+        kullanılarak kaldırılmak zorunda kalınır (ayrıntılar için
+        <code>--enable-modules</code>, <code>--enable-mods-shared</code> ve
+        <code>--enable-mods-static</code> seçeneklerine bakın).</p>
+
+        <p>Öntanımlı olarak derlenmeyenler ise ya açıkça etkin kılınmak ya da
+          <code>all</code> veya <code>reallyall</code> anahtar sözcükleriyle
+          kullanılabilir yapılmak zorunda kalınır.</p>
+
+        <p>Hangi modüllerin öntanımlı olarak derlendiğini öğrenmek için
+          <code>./configure -h</code> veya <code>./configure --help</code>
+          komutunu çalıştırın ve çıktıdaki <code>Optional Features</code>
+          bölümüne bakın. Örnek olarak, <code class="module"><a href="../mod/mod_example1.html">mod_example1</a></code> ve
+          <code class="module"><a href="../mod/mod_example2.html">mod_example2</a></code> modülleriyle ilgilendiğinizi
+          varsayalım:</p>
+
+        <div class="example"><pre>Optional Features:
+  ...
+  --disable-example1     example module 1
+  --enable-example2      example module 2
+  ...</pre></div>
+
+        <p>Burada, <code>mod_example1</code> öntanımlı olarak etkindir ve
+          derlenmemesini istiyorsanız <code>--disable-example1</code>
+          seçeneğini kullanmalısınız. <code>mod_example2</code> ise öntanımlı
+          olarak derlenmemektedir ve derlenmesini istiyorsanız
+          <code>--enable-example2</code> seçeneğini kullanmalısınız.</p>
     
-    <h4><a name="enabledmodules" id="enabledmodules">Öntanımlı olarak etkin modüller</a></h4>
-      <p>Bazı modüller öntanımlı olarak derlendiğinden iptal edilmek istenirse
-        bunun açıkça belirtilmesi gerekir. Aşağıdaki seçenekler bu tür
-        modüllerin diğerlerinden bağımsız olarak derlenmemesini sağlar.</p>
+
+    <h4><a name="mpms" id="mpms">Çok Süreçlilik Modülleri</a></h4>
+      <p><a href="../mpm.html">Çok Süreçlilik Modülleri</a> veya MPM'ler
+        sunucunun temel davranışını belirler. Sunucuya yüklenebilecek azami MPM
+        sayısı birdir. Kullanılabilecek modüller <a href="../mod/">modül
+        dizini</a>nde listelenmiştir.</p>
+
+      <p>MPM'ler devingen yükleme için DSO olarak derlenebileceği gibi
+        sunucuyla duruk olarak da ilintilenebilir ve bunlar aşağıdaki
+        seçeneklerle etkin kılınır:</p>
 
       <dl>
-        <dt><code>--disable-actions</code></dt>
-        <dd><code class="module"><a href="../mod/mod_actions.html">mod_actions</a></code> modülü tarafından sağlanan ve
-          isteklerle tetiklenen eylemleri iptal eder.</dd>
+        <dt><code>--with-mpm=MPM</code></dt>
+        <dd>
+          <p>Sunucu için öntanımlı MPM'i seçer. MPM'ler DSO modülleri olarak
+            derleniyorsa (bak <code>--enable-mpms-shared</code>), bu seçenek
+            öntanımlı yapılandırma dosyasında yüklenecek MPM'i seçer. Aksi
+            takdirde, sunucuyla duruk olarak ilintilenecek, kullanılabilir tek
+            MPM'i seçer.</p>
 
-        <dt><code>--disable-alias</code></dt>
-        <dd><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> modülü tarafından sağlanan, isteklerin
-          farklı dosya sistemi bölümleriyle eşlenmesi iptal edilir.</dd>
+          <p>Bu seçenek belirtilmezse, işletim sisteminiz için
+            <a href="../mpm.html#defaults">öntanımlı olan MPM</a> seçilir.</p>
+        </dd>
 
-        <dt><code>--disable-asis</code></dt>
-        <dd><code class="module"><a href="../mod/mod_asis.html">mod_asis</a></code> modülü tarafından sağlanan kendinden
-          HTTP başlıklı dosya türü desteğini iptal eder.</dd>
+       <dt><code>--enable-mpms-shared=<var>MPM-LISTESİ</var></code></dt>
+        <dd>
+          <p>MPM'leri devingen paylaşımlı modül olarak etkinleştirir.
+            <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> yönergesi
+            kullanılarak bu modüllerden biri devingen olarak yüklenmelidir.</p>
 
-        <dt><code>--disable-auth</code></dt>
-        <dd><code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> modülü tarafından sağlanan kullanıcıya
-          dayalı erişim denetimi iptal edilir. Bu modül, kullanıcı isminin ve
-          parolasının salt metin dosyalarda saklandığı Temel HTTP Kimlik
-          Doğrulaması için kullanılır.</dd>
+          <p><var>MPM-LISTESİ</var> MPM'lerin aralarına boşluk bırakılarak ve
+            tamamı tek tırnaklarla sarmalanarak oluşturulmuş bir listesidir.
+            Örnek:</p>
 
-        <dt><code>--disable-autoindex</code></dt>
-        <dd><code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> modülü tarafından sağlanan dizin
-          içerik listelemesini iptal eder.</dd>
+          <div class="example"><p><code>
+            --enable-mpms-shared='prefork worker'
+          </code></p></div>
 
-        <dt><code>--disable-access</code></dt>
-        <dd><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> modülü tarafından sağlanan konağa
-          dayalı erişim denetimi iptal edilir.</dd>
+          <p>Ek olarak, kullandığınız platformda devingen yüklemeyi destekleyen
+            ve DSO modülü olarak derlenmiş tüm modülleri seçmek için
+            <code>all</code> anahtar sözcüğünü de kullanabilirsiniz. Örnek:</p>
 
-        <dt><code>--disable-cgi</code></dt>
-        <dd>CGI betiklerine destek sağlayan <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, çok
-          evreli olmayan MPM kullanıldığında öntanımlı olarak etkin kılınır.
-          CGI desteğini iptal etmek için bu seçeneği kullanın.</dd>
-
-        <dt><code>--disable-cgid</code></dt>
-        <dd><code class="module"><a href="../mod/worker.html">worker</a></code> çok evreli MPM’i kullanılırken CGI
-          betikleri için desteği öntanımlı olarak <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code>
-          modülü sağlar. CGI desteğini iptal etmek için bu seçeneği
-          kullanın.</dd>
-
-        <dt><code>--disable-charset-lite</code></dt>
-        <dd><code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> modülü tarafından sağlanan
-          karakter kümesi dönüşümleri iptal edilir. Bu modül sadece EBCDIC
-          sistemlerinde öntanımlı olarak kurulur.</dd>
-
-        <dt><code>--disable-dir</code></dt>
-        <dd><code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> modülü tarafından sağlanan dizin
-          isteklerine destek iptal edilir.</dd>
-
-        <dt><code>--disable-env</code></dt>
-        <dd><code class="module"><a href="../mod/mod_env.html">mod_env</a></code> modülü tarafından sağlanan ortam
-          değişkenlerine destek iptal edilir.</dd>
-
-        
-        <dt><code>--disable-http</code></dt>
-          <dd>HTTP protokolüne destek iptal edilir. <code>http</code> modülü
-          en temel modüldür ve sunucunun bir HTTP sunucusu olarak çalışmasını
-          sağlar. Sadece, HTTP protokolü yerine başka bir protokol kullanmak
-          isterseniz bu seçeneği kullunın. <strong>Ne yaptığınızdan gerçekten
-          emin olamıyorsanız bu desteği asla iptal etmeyin.</strong>
-            <br />
-          Dikkat: Bu modül ana kodla daima durağan ilintilidir.</dd>
-
-        <dt><code>--disable-imagemap</code></dt>
-        <dd><code class="module"><a href="../mod/mod_imagemap.html">mod_imagemap</a></code> modülü tarafından sağlanan resim
-          eşlemlerine destek iptal edilir.</dd>
-
-        <dt><code>--disable-include</code></dt>
-        <dd><code class="module"><a href="../mod/mod_include.html">mod_include</a></code> modülü tarafından sağlanan SSI
-          sayfaları desteği iptal edilir.</dd>
-
-        <dt><code>--disable-log-config</code></dt>
-        <dd><code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> modülü tarafından sağlanan günlük
-          kayıtları yapılandırması iptal edilir. Bu modül olmaksızın sunucu
-          yapılan isteklerin günlük kayıtlarını tutamaz.</dd>
-
-        <dt><code>--disable-mime</code></dt>
-        <dd><code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> modülü istenen dosyanın uzantısına
-          bakarak dosya içeriğinin (<a class="glossarylink" href="../glossary.html#mime-type" title="sözlüğe bakınız">MIME
-          türü</a>, dil, karakter kümesi ve kodlama) nasıl ele
-          alınacağını belirler. Bu modülün iptal edilmesi önerilmez.</dd>
-
-        <dt><code>--disable-negotiation</code></dt>
-        <dd><code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code> modülü tarafından sağlanan içerik
-          dili uzlaşımı iptal edilir.</dd>
-
-        <dt><code>--disable-setenvif</code></dt>
-        <dd><code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> modülü tarafından sağlanan
-          başlıklarla ilgili ortam değişkenlerine dayalı destek iptal
-          edilir.</dd>
-
-        <dt><code>--disable-status</code></dt>
-        <dd><code class="module"><a href="../mod/mod_status.html">mod_status</a></code> modülü tarafından sağlanan süreç/evre
-          izleme iptal edilir.</dd>
-
-        <dt><code>--disable-userdir</code></dt>
-        <dd><code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code> modülü tarafından sağlanan,
-          isteklerin kullanıcıya özel dizinlere eşlenmesi iptal edilir.</dd>
-      </dl>
+            <div class="example"><p><code>
+            --enable-mpms-shared=all
+          </code></p></div>
+       </dd>
+     </dl>
     
 
-    <h4><a name="disabledmodules" id="disabledmodules">Öntanımlı olarak etkin olmayan modüller</a></h4>
-      
-
-      <p>Bazı modüller öntanımlı olarak derlendiği halde açıkça istenmedikçe
-        veya <code>most</code> ya da <code>all</code> anahtar sözcükleri
-        kullanılmadıkça etkin kılınmazlar (bu konu, <a href="#otheroptfeat">aşağıda</a> <code>--enable-mods-shared</code>
-        seçeneğinde daha ayrıntılı ele alınmıştır). Bu modülleri
-        etkinleştirmek için aşağıdaki seçenekleri kullanabilirsiniz.</p>
-
-      <dl>
-        <dt><code>--enable-authn-anon</code></dt>
-        <dd><code class="module"><a href="../mod/mod_authn_anon.html">mod_authn_anon</a></code> modülünün sağladığı anonim
-          kullanıcı erişimi etkin kılınır.</dd>
-
-        <dt><code>--enable-authn-dbm</code></dt>
-        <dd><code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> modülü kullanıcı isimlerinin ve
-          parolalarının DBM türü veritabanı dosyalarında saklandığı HTTP Temel
-          Kimlik Kanıtlaması için destek sağlar. Bu seçeneği bu modülü etkin
-          kılmak için kullanabilirsiniz.</dd>
-
-        <dt><code>--enable-authz-dbm</code></dt>
-        <dd><code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code> modülü kullanıcı isimlerinin ve
-          gruplarının DBM türü veritabanı dosyalarında saklandığı HTTP Temel
-          Kimlik Kanıtlaması için destek sağlar. Bu seçeneği bu modülü etkin
-          kılmak için kullanabilirsiniz.</dd>
-
-        <dt><code>--enable-auth-digest</code></dt>
-        <dd><code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> modülü tarafından sağlanan
-          RFC2617 Özet Kimlik Kanıtlaması etkin kılınır. Bu modül delilleri
-          salt metin dosyalarda saklar.</dd>
-
-        <dt><code>--enable-authnz-ldap</code></dt>
-        <dd><code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> modülü tarafından sağlanan LDAP’a
-          Dayalı Kimlik Kanıtlaması etkin kılınır.</dd>
-
-        <dt><code>--enable-cache</code></dt>
-        <dd><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> modülü tarafından sağlanan devingen
-          dosya önbelleklemesi etkin kılınır. Bu deneysel modülün kullanımı,
-          aşırı yüklü sunucularda ya da önbellekli vekillerde ilginç sonuçlar
-          verebilir. Bunun yanında en azından bir saklama alanı yönetim modülü
-          (örn, <code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code>) gerekebilir.</dd>
-
-        <dt><code>--enable-cern-meta</code></dt>
-        <dd><code class="module"><a href="../mod/mod_cern_meta.html">mod_cern_meta</a></code> modülü tarafından sağlanan CERN
-          türü temel veri dosyalarına destek etkin kılınır.</dd>
-
-        <dt><code>--enable-charset-lite</code></dt>
-        <dd><code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> modülü tarafından sağlanan
-          karakter kümesi dönüşümleri etkin kılınır. Bu modül sadece EBCDIC
-          sistemlerinde öntanımlı olarak etkindir. Diğer sistemlerde gerekirse
-          alenen etkin kılınması gerekir.</dd>
-
-        <dt><code>--enable-dav</code></dt>
-        <dd><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> modülü tarafından sağlanan WebDAV
-          protokolü desteği etkin kılınır. Dosya sistemi özkaynaklarına destek
-          için <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> modülü de gerekir ve bu seçenekle o
-          da etkin kılınır.<br />
-          Dikkat: <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> sadece <code>http</code> protokolü
-          modülü ile birlikte kullanılabilir.</dd>
-
-        <dt><code>--enable-dav-fs</code></dt>
-        <dd><code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> modülü tarafından sağlanan WebDAV
-          protokolünün dosya sistemi özkaynaklarına erişim desteği etkin
-          kılınır. Bu modül <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> modülü için destek
-          sağlar. Bu bakımdan, <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> modülünü de etkin
-          kılmak için <code>--enable-dav</code> seçeneğini de
-          kullanmalısınız.</dd>
-
-        <dt><code>--enable-dav-lock</code></dt>
-        <dd><code class="module"><a href="../mod/mod_dav_lock.html">mod_dav_lock</a></code> modülü tarafından sağlanan geri
-          destek modüllerine temel DAV kilitleme desteği etkin kılınır. Bu
-          modülün işlevsel olabilmesi için en azından <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>
-          modülünün etkin olması gerekir, dolayısıyla bu seçeneği
-          <code>--enable-dav</code> ile birlikte kullanmalısınız.</dd>
-
-        <dt><code>--enable-deflate</code></dt>
-        <dd><code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> modülü tarafından sağlanan
-          sıkıştırılmış aktarım kodlaması etkin kılınır.</dd>
-
-        <dt><code>--enable-disk-cache</code></dt>
-        <dd><code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code> modülü tarafından sağlanan diskte
-          önbellekleme etkin kılınır.</dd>
-
-        <dt><code>--enable-expires</code></dt>
-        <dd><code class="module"><a href="../mod/mod_expires.html">mod_expires</a></code> modülü tarafından sağlanan
-          <code>Expires</code> başlığıyla denetim etkin kılınır.</dd>
-
-        <dt><code>--enable-ext-filter</code></dt>
-        <dd><code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> modülü tarafından sağlanan harici
-          süzgeç desteği etkin kılınır.</dd>
-
-        <dt><code>--enable-file-cache</code></dt>
-        <dd><code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code> modülü tarafından sağlanan dosya
-          önbelleklemesi etkin kılınır.</dd>
-
-        <dt><code>--enable-headers</code></dt>
-        <dd><code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> modülü tarafından sağlanan HTTP
-          başlıkları denetimi etkin kılınır.</dd>
-
-        <dt><code>--enable-info</code></dt>
-        <dd> <code class="module"><a href="../mod/mod_info.html">mod_info</a></code> modülü tarafından sağlanan sunucu
-          bilgileri etkin kılınır.</dd>
-
-        <dt><code>--enable-ldap</code></dt>
-        <dd><code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> modülü tarafından sağlanan LDAP
-          önbelleklemesi ve bağlantı havuzu hizmetleri etkin kılınır.</dd>
-
-        <dt><code>--enable-logio</code></dt>
-        <dd><code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> modülü tarafından sağlanan başlıklarda
-          bulunan girdi ve çıktı bayt sayılarının günlüklenmesi etkin
-          kılınır.</dd>
-
-        <dt><code>--enable-mime-magic</code></dt>
-        <dd><code class="module"><a href="../mod/mod_mime_magic.html">mod_mime_magic</a></code> modülü tarafından sağlanan
-          <a class="glossarylink" href="../glossary.html#mime-type" title="sözlüğe bakınız">MIME türleri</a>nin kendiliğinden
-          belirlenmesi desteği etkin kılınır.</dd>
-
-        <dt><code>--enable-isapi</code></dt>
-        <dd><code class="module"><a href="../mod/mod_isapi.html">mod_isapi</a></code> modülü tarafından sağlanan isapi
-          eklenti desteği etkin kılınır.</dd>
-
-        <dt><code>--enable-proxy</code></dt>
-        <dd><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> modülü tarafından sağlanan
-          vekil/ağ-geçidi işlevselliği etkin kılınır. <code>AJP13</code>,
-          <code>CONNECT</code>, <code>FTP</code>, <code>HTTP</code> ve
-          dengeleyici vekil yetenekleri ayrı olarak
-          <code class="module"><a href="../mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code>, <code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code>,
-          <code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code>, <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> ve
-          <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> modülleri tarafından sağlanır.
-          Bu beş modül bu seçenekle kendiliğinden etkin olur.</dd>
-
-        <dt><code>--enable-proxy-ajp</code></dt>
-        <dd><code class="module"><a href="../mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code> modülü tarafından sağlanan
-          <code>AJP13</code> (Apache JServ Protokolü 1.3) için vekil desteği
-          etkin kılınır. Bu modül <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> modülünün bir
-          eklentisidir, dolayısıyla bu seçeneği <code>--enable-proxy</code>
-          seçeneği ile birlikte kullanmalısınız.</dd>
-
-        <dt><code>--enable-proxy-balancer</code></dt>
-        <dd><code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> modülü tarafından sağlanan
-          <code>AJP13</code>, <code>FTP</code> ve <code>HTTP</code>
-          protokollerine yük dengeleme desteği etkin kılınır. Bu modül
-          <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> modülünün bir eklentisidir, dolayısıyla
-          bu seçeneği <code>--enable-proxy</code> seçeneği ile birlikte
-          kullanmalısınız.</dd>
-
-        <dt><code>--enable-proxy-connect</code></dt>
-        <dd><code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code> modülü tarafından sağlanan
-          <code>CONNECT</code> isteklerine vekil desteği etkin kılınır. Bu
-          modül <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> modülünün bir eklentisidir,
-          dolayısıyla bu seçeneği <code>--enable-proxy</code> seçeneği ile
-          birlikte kullanmalısınız.</dd>
-
-        <dt><code>--enable-proxy-ftp</code></dt>
-        <dd><code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code> modülü tarafından sağlanan
-          <code>FTP</code> isteklerine vekil desteği etkin kılınır. Bu modül
-          <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> modülünün bir eklentisidir, dolayısıyla
-          bu seçeneği <code>--enable-proxy</code> seçeneği ile birlikte
-          kullanmalısınız.</dd>
-
-        <dt><code>--enable-proxy-http</code></dt>
-        <dd><code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> modülü tarafından sağlanan
-          <code>HTTP</code> isteklerine vekil desteği etkin kılınır. Bu modül
-          <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> modülünün bir eklentisidir, dolayısıyla
-          bu seçeneği <code>--enable-proxy</code> seçeneği ile birlikte
-          kullanmalısınız.</dd>
-
-        <dt><code>--enable-rewrite</code></dt>
-        <dd><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> modülü tarafından sağlanan kurallara
-          dayalı URL kurgulaması etkin kılınır.</dd>
-
-        <dt><code>--enable-so</code></dt>
-        <dd><code class="module"><a href="../mod/mod_so.html">mod_so</a></code> modülü tarafından sağlanan DSO yeteneği
-          etkin kılınır. <code>--enable-mods-shared</code> seçeneği bu
-          seçeneği de etkin kılar.</dd>
-
-        <dt><code>--enable-speling</code></dt>
-        <dd><code class="module"><a href="../mod/mod_speling.html">mod_speling</a></code> modülü tarafından sağlanan URL
-          yanlışlarını düzeltme desteği etkin kılınır.</dd>
-
-        <dt><code>--enable-ssl</code></dt>
-        <dd><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> modülü tarafından sağlanan SSL/TLS
-          şifreleme desteği etkin kılınır.</dd>
-
-        <dt><code>--enable-unique-id</code></dt>
-        <dd><code class="module"><a href="../mod/mod_unique_id.html">mod_unique_id</a></code> modülü tarafından sağlanan her
-          isteğe bir eşsiz kimlik atama desteği etkin kılınır.</dd>
-
-        <dt><code>--enable-usertrack</code></dt>
-        <dd><code class="module"><a href="../mod/mod_usertrack.html">mod_usertrack</a></code> modülü tarafından sağlanan
-          kullanıcı oturumunu izleme desteği etkin kılınır.</dd>
-
-        <dt><code>--enable-vhost-alias</code></dt>
-        <dd><code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> modülü tarafından sağlanan
-          kitlesel sanal barındırma desteği etkin kılınır.</dd>
-      </dl>
-    
-
-    <h4><a name="developermodules" id="developermodules">Geliştiriciler için modüller</a></h4>
-      
-
-      <p>Aşağıdakiler geliştiricilerin yaptıklarını sınamalar için yararlı
-        modülleri etkinleştiren seçeneklerdir. Bu seçenekler öntanımlı olarak
-        etkin değildir. Bu modüllere ihtiyacınız olup olmadığı konusunda bir
-        fikriniz yoksa bu bölümü atlayabilirsiniz.</p>
-
-      <dl>
-        
-        <dt><code>--enable-bucketeer</code></dt>
-        <dd><code>mod_bucketeer</code> modülü tarafından sağlanan veri
-          kümelerine müdahale süzgeci etkin kılınır.</dd>
-
-        
-        <dt><code>--enable-case-filter</code></dt>
-        <dd><code>mod_case_filter</code> modülünün sağladığı çıktıda büyük
-          harfe dönüşüm süzgeci örneği etkin kılınır.</dd>
-
-        
-        <dt><code>--enable-case-filter-in</code></dt>
-        <dd><code>mod_case_filter_in</code> modülünün sağladığı girdide büyük
-          harfe dönüşüm süzgeci örneği etkin kılınır.</dd>
-
-        <dt><code>--enable-echo</code></dt>
-        <dd><code class="module"><a href="../mod/mod_echo.html">mod_echo</a></code> modülünün sağladığı ECHO sunucusu etkin
-          kılınır.</dd>
-
-        <dt><code>--enable-example</code></dt>
-        <dd>Örnek ve demo modülü <code class="module"><a href="../mod/mod_example.html">mod_example</a></code> etkin
-          kılınır.</dd>
-
-        
-        <dt><code>--enable-optional-fn-export</code></dt>
-        <dd><code>mod_optional_fn_export</code> modülünün sağladığı seçimlik
-          işlev ihraç örneği etkin kılınır.</dd>
-
-        
-        <dt><code>--enable-optional-fn-import</code></dt>
-        <dd><code>mod_optional_fn_import</code> modülünün sağladığı seçimlik
-          işlev ithal örneği etkin kılınır.</dd>
-
-        
-        <dt><code>--enable-optional-hook-export</code></dt>
-        <dd><code>mod_optional_hook_export</code> modülünün sağladığı seçimlik
-          kanca işlev ihraç örneği etkin kılınır.</dd>
-
-        
-        <dt><code>--enable-optional-hook-import</code></dt>
-        <dd><code>mod_optional_hook_import</code> modülünün sağladığı seçimlik
-          kanca işlev ithal örneği etkin kılınır.</dd>
-      </dl>
-    
-
-    <h4><a name="modules" id="modules">MPM'ler ve üçüncü parti modüller</a></h4>
-      <p>Gereken çok süreçlilik modüllerini ve üçüncü parti modülleri etkin
-        kılmak için şu seçenekler kullanılır:</p>
+    <h4><a name="modules" id="modules">Üçüncü parti modüller</a></h4>
+      <p>Üçüncü parti modülleri etkin kılmak için şu seçenekler kullanılır:</p>
 
       <dl>
         <dt><code>--with-module=<var>modül-türü</var>:<var>modül-dosyası</var>[,<var>modül-türü</var>:<var>modül-dosyası</var>]</code></dt>
@@ -682,13 +402,6 @@
             isterseniz <code class="program"><a href="../programs/apxs.html">apxs</a></code> programını kullanınız.</p>
         </div>
         </dd>
-
-        <dt><code>--with-mpm=<var>MPM</var></code></dt>
-        <dd>Sunucu süreç modeli seçilir. Bu seçenekte <a href="../mpm.html">çok süreçlilik modüllerinden sadece biri</a>
-          belirtilebilir. Bu seçenek kullanılmadığı takdirde işletim
-          sisteminiz için <a href="../mpm.html#defaults">öntanımlı MPM</a>
-          etkin olur. Bu seçenekte belirtilebilecek MPM isimleri:
-          <code class="module"><a href="../mod/prefork.html">prefork</a></code> ve <code class="module"><a href="../mod/worker.html">worker</a></code>.</dd>
       </dl>
     
 
@@ -696,7 +409,7 @@
       <dl>
         <dt><code>--enable-maintainer-mode</code></dt>
         <dd>Hata ayıklama iletileri ve derleme sırasındaki uyarıların
-          gösterilmesi etkin kılınır.</dd>
+          gösterilmesi etkin kılınır ve derlenmiş tüm modüller yüklenir.</dd>
 
         <dt><code>--enable-mods-shared=<var>modül-listesi</var></code></dt>
         <dd>
@@ -712,15 +425,36 @@
             --enable-mods-shared='headers rewrite dav'
           </code></p></div>
 
-          <p><code><var>modül-listesi</var></code> yerine <code>all</code> ve
-            <code>most</code> anahtar sözcükleri de belirtilebilir.
-            Örneğin,</p>
+          <p><code><var>modül-listesi</var></code> yerine
+            <code>reallyall</code>, <code>all</code>, <code>most</code>,
+            <code>few</code> ve <code>none</code> anahtar sözcükleri de
+            belirtilebilir. Örneğin,</p>
 
           <div class="example"><p><code>
             --enable-mods-shared=most
           </code></p></div>
 
-          <p>seçeneği ile çoğu modül DSO modülü olarak derlenecektir.</p>
+          <p>seçeneği ile çoğu modül DSO modülü olarak derlenir,</p>
+
+          <div class="example"><p><code>
+            --enable-mods-shared=few
+          </code></p></div>
+
+          <p>seçeneği ile sadece en temel modüller derlenir.</p>
+
+          <p><code>most</code> öntanımlıdır.</p>
+
+          <p>Seçilen modüller için <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> yönergeleri ana yapılandırma dosyasında
+            kendiliğinden üretilir. Öntanımlı olarak, <code>--enable-foo</code>
+            yapılandıma seçeneği ile açıkça seçilen modüller ve gerekli olanlar
+            dışında kalan <code>LoadModule</code> yönergeleri açıklama haline
+            getirilir. Yüklü modülleri <code>httpd.conf</code> dosyasındaki
+            <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> yönergelerini
+            etkin kılarak veya açıklama haline getirerek değiştirebilirsiniz.
+            <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> yönergelerine ek
+            olarak, derlenmiş tüm modüller
+            <code>--enable-load-all-modules</code> yapılandırma seçeneği ile de
+            etkinleştirilebilir.</p>
 
           <p><strong>Yetersizlikler:</strong>
             <code>--enable-mods-shared=all</code> aslında bütün modüllerin
@@ -731,18 +465,23 @@
             ./configure \<br />
             <span class="indent">
                 --with-ldap \<br />
-                --enable-mods-shared="all ssl ldap cache proxy authn_alias
-                file_cache authnz_ldap charset_lite dav_lock cache_disk"
+                --enable-mods-shared="all ssl ldap cache proxy authn_alias file_cache authnz_ldap charset_lite dav_lock cache_disk"
             </span>
           </code></p></div>
         </dd>
 
-        <dt><code>--enable-modules=<var>modül-listesi</var></code></dt>
+        <dt><code>--enable-mods-static=<var>modül-listesi</var></code></dt>
         <dd>Bu seçenek modülleri devingen değil de durağan ilintilemek dışında
           <code>--enable-mods-shared</code> seçeneğine benzer. Yani bu
           modüller <code class="program"><a href="../programs/httpd.html">httpd</a></code> çalıştırılır çalıştırılmaz etkin
           olurlar. Yüklenmeleri için <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> yönergesine ihtiyaçları
           yoktur.</dd>
+
+        <dt><code>--enable-modules=<var>MODULE-LIST</var></code></dt>
+        <dd>Bu seçenek <code>--enable-mods-shared</code> gibi davranır ve ek
+          olarak belirtilen modülleri devingen olarak ilintiler.Özel
+          <code>none</code> anahtar sözcüğü tüm modüllerin derlenmesini iptal
+          eder.</dd>
 
         <dt><code>--enable-v4-mapped</code></dt>
         <dd>IPv6 soketlierinin IPv4 bağlantılar üzerinde kullanılması mümkün

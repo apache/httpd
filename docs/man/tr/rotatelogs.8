@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "ROTATELOGS" 8 "2009-02-16" "Apache HTTP Sunucusu" "rotatelogs"
+.TH "ROTATELOGS" 8 "2012-04-04" "Apache HTTP Sunucusu" "rotatelogs"
 .nh
 .SH İSİM
 rotatelogs \- Apache günlüklerini döndürmek için borulu günlük kayıt programı
@@ -27,7 +27,7 @@ rotatelogs \- Apache günlüklerini döndürmek için borulu günlük kayıt pro
 .SH "KULLANIM"
  
 .PP
-\fBrotatelogs\fR [ -\fBl\fR ] [ -\fBf\fR ] [ -\fBv\fR ] \fIdosyaismi\fR \fIsüre\fR|\fIboyut\fR(B|K|M|G) [ \fIsaat_farkı\fR ]
+\fBrotatelogs\fR [ -\fBl\fR ] [ -\fBL\fR \fIisim\fR ] [ -\fBp\fR \fIprogram\fR ] [ -\fBf\fR ] [ -\fBv\fR ] [ -\fBe\fR ] [ -\fBc\fR ] \fIdosyaismi\fR \fIsüre\fR|\fIboyut\fR(B|K|M|G) [ \fIsaat_farkı\fR ]
  
 
 .SH "ÖZET"
@@ -41,16 +41,31 @@ rotatelogs \- Apache günlüklerini döndürmek için borulu günlük kayıt pro
  
 .TP
 \fB-l\fR
-GMT yerine yerel zamanın kullanılmasını sağlar\&. Zaman dilimi değişik olan ortamlarda (BST, DST gibi) bu seçeneğin kullanımı beklenmedik sonuçlar verebilir!  
+GMT yerine yerel zamanın kullanılmasını sağlar\&.  
+.TP
+\fB-L\fR \fIbagismi\fR
+Belirtilen bağ dosyası ismine geçerli günlük dosyasından kalıcı bir bağ oluşturulur\&. tail -F bagismi gibi bir komut kullanılarak günlüğün sürekli izlenmesi için kullanılabilir\&.  
+.TP
+\fB-p\fR \fIprogram\fR
+Belirtildiği takdirde, \fBrotatelogs\fR yeni bir günlük dosyasının her açılışında belirtilen programı çalıştırır\&. Yeni açılan dosyanın ismi programa ilk argüman olarak aktarılır\&. Bu işlem bir döndürme sonrası yapılırsa eski günlük dosyası ikinci argüman olarak aktarılır\&. \fBrotatelogs\fR işlemini sürdürmek için belirtilen programın sonlanmasını beklemez, dolayısıyla sonlanma soucunda döndürülen hata kodunu günlüğe kaydetmez\&. Çalıştırılan program \fBrotatelogs\fR ile aynı stdin, stdout ve stderr'i kullanır ve ortamı da miras alır\&.  
 .TP
 \fB-f\fR
 İlk günlük giridisinin okunmasını beklemeden \fBrotatelogs\fR başlar başlamaz günlük dosyasının açılmasını sağlar\&. Çok meşgul sitelerde, sunucu başlatılıp ilk istek sunuluncaya kadar geçen zamanda günlük dosyasının yokluğu özdevinimli işlemler yapan bazı günlükleme araçlarında sorunlara yol açabilir\&. Bu seçenek bu gibi durumlarda yararlıdır\&.  
 .TP
+\fB-t\fR
+Günlük dosyasının döndürülmek yerine tepeden kırpılmasına sebep olur\&. Günlüğün \fBtail\fR gibi bir araç tarafından gerçek zamanda işlendiği ve veriyi saklamanın gerekmediği durumda kullanışlıdır\&. Dosya ismine bir sonek eklenmez, ancak biçem dizgesi '%' karakteri içeriyorsa buna uyulur\&.  
+.TP
 \fB-v\fR
 Standart hataya verilen çıktı daha ayrıntılı olur\&. Çıktı, yapılandırma çözümlemesinin sonuçlarını ve tüm dosya açma/kapama işlemlerini içerir\&.  
 .TP
+\fB-e\fR
+Günlüğü standart çıktıya basar\&. Günlüğün zincirdeki ilgili araç tarafından gerçek zamanda işlenmesi gerektiğinde kullanışlıdır\&.  
+.TP
+\fB-c\fR
+Create log file for each interval, even if empty\&.  
+.TP
 \fIdosyaismi\fR
-Günlük dosyasının ismi yoluyla birlikte belirtilir\&. \fIdosyaismi\fR '%' karakterleri içeriyorsa bunlar strftime(3) biçem belirteçleri olarak ele alınır\&. Aksi takdirde, özdevinimli olarak \fI\&.nnnnnnnnnn\fR uzantısı üretilir\&. Uzantı saniye cinsindendir ve her iki durumda da bu değer, mevcut döngü diliminin başlangıcına göre hesaplanır\&. Örneğin, döndürmenin 86400 saniyede bir yapılacağı belirtilmişse, strftime(3) biçeminde oluşturulan saat, dakika ve saniye alanları, 24 saatlik sürenin başlangıcını (geceyarısı) göstermek üzere sıfırlarla doldurulur\&.  
+.PP Günlük dosyasının ismi yoluyla birlikte belirtilir\&. \fIdosyaismi\fR '%' karakterleri içeriyorsa bunlar strftime(3) biçem belirteçleri olarak ele alınır\&. Aksi takdirde, özdevinimli olarak \fI\&.nnnnnnnnnn\fR uzantısı üretilir\&. (\fB-t\fR seçeneği kullanılmadıkça) Uzantı saniye cinsindendir ve her iki durumda da bu değer, mevcut döngü diliminin başlangıcına göre hesaplanır\&. Örneğin, döndürmenin 86400 saniyede bir yapılacağı belirtilmişse, strftime(3) biçeminde oluşturulan saat, dakika ve saniye alanları, 24 saatlik sürenin başlangıcını (geceyarısı) göstermek üzere sıfırlarla doldurulur\&. .PP strftime(3) dosyaismi biçemlemesi kullanılırken, günlük dosyası biçeminin günlük dosyası döndürülürken her zaman farklı bir dosya ismi üretecek yeterlilikte parçacıklı yapıya sahip olduğundan emin olmalısınız\&. Aks takdirde döndürme işlemi yeni bir dosya başlatmak yerine hep aynı dosyanın üzerine yazar\&. Örneğin, \fIlogfile\fR için /var/logs/errorlog\&.%Y-%m-%d belirtilmişse 5 mega baytta bir yeni bir günlük dosyasına başlanacaktır\&. Fakat 5 megabayta gün içinde iki kez ulaşılırsa aynı günlük dosyası üretilir ve günlük hep aynı dosyanın üzerine yazılır\&.  
 .TP
 \fIsüre\fR
 Günlük dosyasının yenisinin kaç saniyede bir açılacağı belirtilir\&. Örneğin, bu süre 3600 saniye ise günlük dosyası her saat başında yenilenir; 86400 saniye ise her geceyarısı yenilenir\&. (Bu süre zarfında günlüğe kaydedilecek bir olay gerçekleşmemişse dosya oluşturulmaz\&.)  
@@ -98,6 +113,15 @@ Günlük dosyası 5 megabaytlık olunca yenisinin oluşturulmasını sağlar\&.
  
 .PP
 Hata günlüğünün 5 megabaytta bir errorlog\&.YYYY-mm-dd-HH_MM_SS biçemli bir isimle oluşturulmasını sağlar\&.
+ 
+.nf
+
+     CustomLog "|bin/rotatelogs -t /var/logs/logfile 86400" common
+
+.fi
+ 
+.PP
+/var/logs/logfile dosyasını oluşturur, sunucu başlatılırken ve günde bir kere dosyanın tepesi kırpılır\&. Bu senaryoda ayrı bir sürecin (tail gibi) dosyayı gerçek zamanlı işleyeceği umulur\&.
  
 .SH "TAŞINABİLİRLİK"
  

@@ -251,7 +251,7 @@
         <dt>Failed requests</dt>
         <dd>The number of requests that were considered a failure. If the
         number is greater than zero, another line will be printed showing the
-        numer of requests that failed due to connecting, reading, incorrect
+        number of requests that failed due to connecting, reading, incorrect
         content length, or exceptions.</dd>
 
         <dt>Write errors</dt>

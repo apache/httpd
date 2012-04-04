@@ -22,7 +22,6 @@
 <a href="../ko/programs/apxs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/apxs.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p><code><strong>apxs</strong></code>, Apache Hiper Metin Aktarım
      Protokolü (HTTP) sunucusu için ek modül derleme ve kurulum aracıdır. Bu

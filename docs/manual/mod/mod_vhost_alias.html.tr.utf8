@@ -24,7 +24,6 @@
 <p><span>Mevcut Diller: </span><a href="../en/mod/mod_vhost_alias.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../tr/mod/mod_vhost_alias.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Kitlesel sanal konakların devingen olarak yapılandırılmasını sağlar</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Eklenti</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>vhost_alias_module</td></tr>
@@ -231,7 +230,7 @@ Sanal Barındırma</a></li>
 </table>
 
     <p><code class="directive">VirtualDocumentRoot</code> yönergesi sunucu ismine göre
-      belgelerin bulunacağı yeri Apache’nin saptamasını sağlar.
+      belgelerin bulunacağı yeri Apache HTTP Sunucusunun saptamasını sağlar.
       <code><em>hesaplanan-dizin</em></code>’in dönüşüm sonucu <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> yönergesinin değeriymiş gibi
       belge ağacının kök dizini olarak kullanılır.
       <code><em>hesaplanan-dizin</em></code> yerine <code>none</code>
@@ -271,10 +270,11 @@ Sanal Barındırma</a></li>
 </table>
 
     <p><code class="directive">VirtualScriptAlias</code> yönergesi, CGI betiklerinin
-      bulunacağı yeri Apache’nin saptamasını sağlamak bakımından <code class="directive"><a href="#virtualdocumentroot">VirtualDocumentRoot</a></code> yönergesinin
-      yaptığını yapar. <code>/cgi-bin/</code> ile başlayan istekler için ise
-      <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> yönergesinin
-      yaptığını yapar.</p>
+      bulunacağı yeri Apache httpd’nin saptamasını sağlamak bakımından
+      <code class="directive"><a href="#virtualdocumentroot">VirtualDocumentRoot</a></code>
+      yönergesinin yaptığını yapar. <code>/cgi-bin/</code> ile başlayan
+      istekler için ise <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>
+      yönergesinin yaptığını yapar.</p>
 
 
 </div>
