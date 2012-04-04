@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE moduleindex SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 420990:926432 (outdated) -->
+<!-- English Revision: 926432 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -23,10 +23,10 @@
 <moduleindex metafile="index.xml.meta">
   <title>Modül Dizini</title>
   <summary>
-    <p>Apache dağıtımının parçası olarak gelen modüllerin tamamı aşağıda
-    listelenmiştir. Ayrıca, tüm Apache yönergelerinin alfabetik olarak
-    listelendiği bir <a href="directives.html">Yönerge Dizini</a> de
-    mevcuttur.</p>
+    <p>Apache HTTP Sunucusu dağıtımının parçası olarak gelen modüllerin tamamı
+    aşağıda listelenmiştir. Ayrıca, tüm Apache HTTP Sunucusu yönergelerinin
+    alfabetik olarak listelendiği bir <a href="directives.html">Yönerge
+      Dizini</a> de mevcuttur.</p>
   </summary>
   <seealso><a href="../mpm.html">Çok Süreçlilik Modülleri (MPM’ler)</a>
   </seealso>

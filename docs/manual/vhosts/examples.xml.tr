@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 659902:1132802 (outdated) -->
+<!-- English Revision: 1132802 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by:  Orhan Berent <berent belgeler.org>
@@ -30,11 +30,11 @@
 
 <summary>
 
-    <p>Bu belgede sanal konaklarla ile ilgili olarak karşılaşılması olası tüm
-      senaryolara yer verilmeye çalışılmıştır. Buradaki senaryolar, tek bir
-      sunucu üzerinde  <a href="name-based.html">isme dayalı</a> veya <a
-      href="ip-based.html">IP’ye dayalı</a> sanal konaklar aracılığıyla çok
-      sayıda sitenin sunumu ile ilgilidir.
+    <p>Bu belgede <a href="index.html">sanal konaklarla</a> ile ilgili olarak
+      karşılaşılması olası tüm  senaryolara yer verilmeye çalışılmıştır.
+      Buradaki senaryolar, tek bir  sunucu üzerinde  <a href="name-
+      based.html">isme dayalı</a> veya <a href="ip-based.html">IP’ye dayalı</a>
+      sanal konaklar aracılığıyla çok sayıda sitenin sunumu ile ilgilidir.
     </p>
 
 </summary>
@@ -64,9 +64,6 @@
     # Apache’nin 80. portu dinlediğinden emin olalım<br />
     Listen 80<br />
     <br />
-    # Sanal konak istekleri için bütün IP adresleri dinlensin.<br />
-    NameVirtualHost *:80<br />
-    <br />
     &lt;VirtualHost *:80&gt;<br />
     <indent>
       DocumentRoot /siteler/mesela<br />
@@ -90,17 +87,17 @@
 
     <p>Yıldız imleri tüm adreslerle eşleşmeyi sağladığından ana sunucu
       (yapılandırma dosyası genelindeki yapılandırma - sunucu geneli)
-      erişilebilir olmayacaktır. <code>mesela.dom</code> yapılandırma
-      dosyasındaki ilk sanal konak olduğundan en yüksek önceliğe sahiptir ve
+      erişilebilir olmayacaktır. Yapılandırma
+      dosyasındaki <code>ServerName mesela.dom</code> yönergeli konak, ilk
+      sanal konak olduğundan en yüksek önceliğe sahiptir ve
       <cite>öntanımlı</cite> veya <cite>baskın</cite> site olarak davranır.
       Yani, hiçbir <code>ServerName</code> yönergesi ile eşleşmeyen bir istek
       alındığında bu istek ilk <code>VirtualHost</code> yapılandırması ile
       karşılanır.</p>
 
     <note><title>Bilginize</title>
-      <p>İsterseniz, <code>*</code> yerine kendi IP adresinizi yazabilirsiniz.
-        Ancak bu durumda bunu hem <code>VirtualHost</code> hem de
-        <code>NameVirtualHost</code> için yapmalısınız:</p>
+      <p>IP adresi ve porta dayalı ayrımı umursamıyorsanız, <code>*</code>
+        yerine kendi IP adresinizi yazabilirsiniz.</p>
 
       <example>
       NameVirtualHost 192.168.1.22<br />
@@ -146,9 +143,6 @@
     ServerName sunucu.faraza.dom<br />
     DocumentRoot /siteler/anasunucu<br />
     <br />
-    # Burası da diğer adres için<br />
-    NameVirtualHost 192.168.2.2<br />
-    <br />
     &lt;VirtualHost 192.168.2.2&gt;<br />
     <indent>
         DocumentRoot /siteler/mesela<br />
@@ -190,9 +184,6 @@
       verebilir.</p>
 
     <example><title>Sunucu yapılandırması</title>
-
-    NameVirtualHost 192.168.1.1<br />
-    NameVirtualHost 172.20.30.40<br />
     <br />
     &lt;VirtualHost 192.168.1.1 172.20.30.40&gt;<br />
     <indent>
@@ -223,20 +214,13 @@
 
     <p>Aynı IP adresine sahip çok sayıda konak ismine sahip olduğunuzu ve
       bunların bazılarının farklı portları kullanmasını istediğinizi
-      varsayalım. <directive module="core">NameVirtualHost</directive>
-      yönergesi ile port tanımlamak suretiyle bunu mümkün kılabilirsiniz.
-      <code>NameVirtualHost&nbsp;<em>isim:port</em></code> tanımı yapmadan
-      veya bunun yerine <directive module="mpm_common">Listen</directive>
-      kullanarak <code>VirtualHost&nbsp;<em>isim:port</em></code> kullanmaya
-      kalkışırsanız, yapılandırmanız çalışmayacaktır.</p>
+      varsayalım. Aşağıdaki örnekte, isim eşleşmesinin, en iyi eşleşen IP
+      adresi ve port çifti saptandıktan sonra yer alması gösterilmiştir. </p>
 
     <example><title>Sunucu yapılandırması</title>
 
     Listen 80<br />
     Listen 8080<br />
-    <br />
-    NameVirtualHost 172.20.30.40:80<br />
-    NameVirtualHost 172.20.30.40:8080<br />
     <br />
     &lt;VirtualHost 172.20.30.40:80&gt;<br />
     <indent>
@@ -348,14 +332,13 @@
   <section id="mixed">
     <title>Hem isme hem de IP‘ye dayalı sanal konaklar</title>
 
-    <p>Bazı adreslerde isme dayalı, bazılarında da IP’ye dayalı sanal konaklar
-      çalışsın istersek...</p>
+    <p>Bir <code>VirtualHost</code> yönergesinde belirtilen bir IP adresi başka
+      bir sanal konakta görünmüyorsa bu sankon kesinlikle IP'ye dayalı bir
+      sanal konaktır.</p>
 
     <example><title>Sunucu yapılandırması</title>
 
     Listen 80<br />
-    <br />
-    NameVirtualHost 172.20.30.40<br />
     <br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
@@ -502,7 +485,10 @@
     <p>80. porttan gelen IP adresi belirtilmemiş isteklere
       <code>_default_</code> sanal konağı, diğer portlardan gelen adres
       belirtilmemiş isteklere ise ana sunucu hizmet verecektir.</p>
-    </section>
+
+    <p>Bir sanal konak bildiriminde <code>*</code> kullanımı
+      <code>_default_</code> kullanımından daha yüksek öncelik sağlar.</p>
+   </section>
 
   </section>
 
@@ -517,7 +503,8 @@
       sunmamız lazım.</p>
 
     <p>Çözüm kolay, çünkü yapacağımız sadece <code>VirtualHost</code>
-      yönergesine yeni IP adresini (<code>192.168.2.2</code>) eklemek olacak.</p>
+      yönergesine yeni IP adresini (<code>192.168.2.2</code>) eklemek
+      olacak.</p>
 
     <example>
     <title>Sunucu yapılandırması</title>
@@ -567,14 +554,12 @@
     <example>
     <title>Sunucu yapılandırması</title>
 
-    NameVirtualHost 172.20.30.40<br />
-    <br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
         # ilk sanal konak<br />
         DocumentRoot /siteler/baska<br />
         RewriteEngine On<br />
-        RewriteRule ^/.* /siteler/baska/index.html<br />
+        RewriteRule . /siteler/baska/index.html<br />
         # ...<br />
     </indent>
     &lt;/VirtualHost&gt;<br />

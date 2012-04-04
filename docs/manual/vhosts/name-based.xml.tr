@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 659902:1301398 (outdated) -->
+<!-- English Revision: 1301398 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -40,45 +40,59 @@
 Barındırma</a></seealso>
 <seealso><a href="examples.html">Çok kullanılan sanal konak yapılandırma
 örnekleri</a></seealso>
-<seealso><a href="examples.html#serverpath">ServerPath yapılandırma örneği</a>
-</seealso>
 
 <section id="namevip"><title>İsme dayalı ve IP’ye dayalı Sanal Konaklar</title>
 
-    <p>IP’ye dayalı sanal konaklarda sunulacak sanal konağı doğru tespit
-      edebilmek için bağlantının yapıldığı IP adresine bakılır. Bu bakımdan her
-      konak için ayrı bir IP adresine gereksinim vardır. İsme dayalı sanal
-      konaklarda ise sunucu, istemcinin HTTP başlığının bir parçası olarak
-      gönderdiği konak adını kullanır. Bu teknikte aynı IP adresini çok sayıda
-      farklı konak kullanabilir.</p>
+    <p><a href="ip-based.html">IP’ye dayalı sanal konaklar</a>da sunulacak
+      sanal konağı doğru tespit edebilmek için bağlantının yapıldığı IP
+      adresine bakılır. Bu bakımdan her konak için ayrı bir IP adresine
+      gereksinim vardır.</p>
+
+    <p>İsme dayalı sanal konaklarda ise sunucu, istemcinin HTTP başlığının bir
+      parçası olarak gönderdiği konak adını kullanır. Bu teknikte aynı IP
+      adresini çok sayıda farklı konak kullanabilir.</p>
 
     <p>İsme dayalı sanal barındırma nispeten daha kolaydır, çünkü her konak
       ismini doğru IP adresiyle eşlemek için DNS sunucunuzu yapılandırdıktan
       sonra Apache HTTP sunucusunu farklı konak isimlerini tanıyacak şekilde
       yapılandırmanız yeterli olur. İsme dayalı sanal barındırma ayrıca zaten
       kıt olan IP adreslerine talebi de azaltır. Bu nedenle, IP’ye dayalı sanal
-      konakları kullanmanızı gerektirecek çok özel bir sebep olmadıkça isme
-      dayalı sanal konaklar kullanmalısınız. IP’ye dayalı sanal konakların
-      kullanımını gerektirebilecek bazı durumlar:</p>
+      konakları kullanmanızı gerektiren donanım kullanmadıkça isme  dayalı
+      sanal konaklar kullanmalısınız. İstemci uyumuna bağlı IP’ye dayalı
+      sanal barındırma için eskiden varolan sebepler genel amaçlı bir HTTP
+      sunucusu için artık uygulanabilir değildir.</p>
 
-    <ul>
-        <li>Bazı tarihi istemciler isme dayalı sanal konaklarla uyumlu değildir.
-          İsme dayalı sanal konakların çalışması için istemcinin HTTP Host
-          başlığı göndermesi gerekir. Bu da HTTP/1.1 desteği gerektirir.
-          Günümüzdeki HTTP/1.0 istemcileri bir eklenti olarak HTTP/1.1’i de
-          desteklemektedir. Tarihi eser haline gelmiş HTTP/1.1 desteği
-          bulurmayan eski istemcileri hala isme dayalı sanal konaklarla
-          desteklemek isterseniz bu belgenin sonunda bunu mümkün kılabilecek bir
-          tekniğe yer verilmiştir.</li>
+    <p>İsme dayalı sanal barındırma, IP'ye dayalı sanal barındırma seçim
+      algoritmasını kullanmaz, yani uygun sunucu ismini arama işlemi sadece en
+      iyi IP'ye dayalı adrese sahip sanal konaklar arasında gerçekleşir.</p>
 
-        <li>İsme dayalı sanal konaklar SSL portokolünün doğası gereğince SSL’li
-          güvenli sunucular için kullanılamazlar.</li>
+</section>
 
-        <li>Bazı işletim sistemlerinin ve ağ donanımlarının gerçekleştirdiği
-          band genişliği yönetim teknikleri IP adresleri farklı olmadığı sürece
-          konaklar arasında ayrım yapamazlar.</li>
-    </ul>
+<section id="alg">
+  <title>Sunucu isme dayalı sanal konaklardan uygun olanını nasıl seçer</title>
 
+    <p>İsme dayalı sanal konak çözümlemesinin ilk adımının IP'ye dayalı
+      çözümleme olduğunun anlaşılması çok önemlidir. İsme dayalı sanal konak
+      çözümlemesi en uygun isme dayalı sanal konağı seçerken önce en iyi IP'ye
+      dayalı eşleşme adaylarının sayısını azaltır, sonra bunlar arasından en
+      uygununu seçer. Tüm <code>VirtualHost</code> yönergelerinde IP adresi
+      yerine joker kullanımı bu IP'ye dayalı eşlemeyi yersiz kılar.</p>
+
+    <p>Bir istek geldiğinde, sunucu, istekte kullanılan IP adresi ve portu ile
+      en iyi eşleşen <directive type="section" module="core"
+      >VirtualHost</directive> bileşenini bulur. Bu IP adresi ve port çifti ile
+      eşleşen birden fazla sanal konak varsa, Apache httpd istekte kullanılan
+      sunucu ismini <directive module="core" >ServerName</directive> ve
+      <directive module="core">ServerAlias</directive> yönergelerindeki
+      isimlerle karşılaştırır.</p>
+
+  <section id="defaultvhost">
+   <title>Bir IP adresi ve port çifti için öntanımlı isme dayalı sankon</title>
+    <p><directive module="core" >ServerName</directive> ve
+      <directive module="core">ServerAlias</directive> yönergelerinde bir
+      eşleşme bulunamazsa, Apache httpd bu çift ile eşleşen <strong>sanal
+      konaklar listesindeki ilk sanal konağı</strong> kullanır.</p>
+  </section>
 </section>
 
 <section id="using"><title>İsme Dayalı Sanal Konakların Kullanımı</title>
@@ -89,85 +103,68 @@ Barındırma</a></seealso>
     </modulelist>
 
     <directivelist>
-	<directive module="core">DocumentRoot</directive>
-	<directive module="core">NameVirtualHost</directive>
-	<directive module="core">ServerAlias</directive>
-	<directive module="core">ServerName</directive>
-	<directive module="core">ServerPath</directive>
-	<directive module="core" type="section">VirtualHost</directive>
+      <directive module="core">DocumentRoot</directive>
+      <directive module="core">ServerAlias</directive>
+      <directive module="core">ServerName</directive>
+      <directive module="core" type="section">VirtualHost</directive>
     </directivelist>
 </related>
 
-    <p>İsme dayalı sanal konakları kullanmak için, bu konaklar için istekleri
-      kabul edecek sunucuya IP adresini (ve muhtemelen portu da)
-      belirtmelisiniz. Bu işlem <directive
-      module="core">NameVirtualHost</directive> yönergesiyle yapılır. Normal
-      şartlar altında sunucu üzerinde bütün IP adreslerinin kullanılması
-      gerekir; bunun için <directive module="core">NameVirtualHost</directive>
-      yönergesine argüman olarak <code>*</code> belirtebilirsiniz. Çok sayıda
-      port kullanmayı planlıyorsanız (SSL çalıştırmak gibi), argümana
-      <code>*:80</code> şeklinde port ekleyebilirsiniz. Yalnız, <directive
-      module="core">NameVirtualHost</directive> yönergesinde bir IP adresi
-      belirtmiş olmakla sunucunun kendiliğinden o IP adresini dinlemeyeceğine
-      dikkat ediniz. Bu konuda ayrıntılı bilgi edinmek için <a
-      href="../bind.html">Apache’nin kullanacağı adreslerin ve portların
-      ayarlanması</a> belgesine bakınız. Ayrıca, sunucuda, burada belirttiğiniz
-      IP adresine sahip bir ağ arabirimi olmalıdır.</p>
-
-    <p>Sonraki adım sunacağınız her konak için ayrı bir <directive
-      type="section" module="core">VirtualHost</directive> bölümü oluşturmaktır.
-      <directive type="section" module="core">VirtualHost</directive>
-      yönergesinin argümanı ile eşleşen bir <directive
-      module="core">NameVirtualHost</directive> yönergesi tanımlanmış olmalıdır
-      (değer normalde "*:80" olacaktır). Her <directive type="section"
-      module="core">VirtualHost</directive> bölümü içinde sunulan konağı
-      belirtmek üzere en azından bir adet <directive
-      module="core">ServerName</directive> yönergesine ve konak içeriğinin dosya
-      sisteminde bulunduğu yeri gösteren bir <directive
-      module="core">DocumentRoot</directive> yönergesine
-      ihtiyacınız olacaktır.</p>
+    <p>İlk adım sunacağınız her konak için ayrı bir <directive type="section"
+      module="core">VirtualHost</directive> bölümü oluşturmaktır. Her
+      <directive type="section" module="core" >VirtualHost</directive> bölümü
+      içinde sunulan konağı belirtmek üzere en azından bir adet <directive
+      module="core">ServerName</directive> yönergesine ve konak içeriğinin
+      dosya sisteminde bulunduğu yeri gösteren bir <directive
+      module="core">DocumentRoot</directive> yönergesine ihtiyacınız
+      olacaktır.</p>
 
     <note><title>Ana konağı unutmayın</title>
-        <p>Mevcut sitenize sanal konaklar eklerseniz, mevcut siteniz için de bir
-          <directive type="section" module="core">VirtualHost</directive> bölümü
-          oluşturmalısınız. Bu sanal konak bölümü içinde kullanacağınız
-          <directive module="core">ServerName</directive> ve <directive
-          module="core">DocumentRoot</directive> yönergelerinin argümanları, bu
-          yönergelerin  sunucu geneli için belirttiğiniz değerlerini
-          içermelidir. Bu sanal konağı yapılandırma dosyanızdaki ilk sanal konak
-          yapın ki, öntanımlı konak olsun.</p>
+      <p>Mevcut <directive type="section" module="core">VirtualHost</directive>
+        yönergelerinin hiçbiriyle eşleşmeyen bir istek için, sunucu veya konak
+        ismine bakılmaksızın genel sunucu yapılandırmanız kullanılır.</p>
+
+      <p>Mevcut sitenize isme dayalı bir sanal konak eklerseniz ve bu sanal
+        konak ana sunucunun IP adresi ve portuna sahipse, ana sunucuya yapılan
+        istekler için bu sanal konak kullanılır. Bu bakımdan, <directive
+        module="core">ServerName</directive> yönergesi ana sunucununki ile aynı
+        olan bir <a href="#defaultvhost">öntanımlı sanal konak</a> oluşturmak
+        akıllıca olacaktır. Aynı arayüz ve portu kullanan fakat farklı
+        yapılandırmalara sahip diğer alan isimlerinin sanal konakları (yani
+        öntanımlı olmayanlar) bu öntanımlı sanal konağın sonrasına
+        yerleştirilmelidir.</p>
     </note>
 
-    <p>Örnek olarak, <code>www.biralan.tld</code> adresinden sitenizi sunmakta
-      olduğunuzu ve bunun yanına aynı IP adresini kullanan
-      <code>www.digeralan.tld</code> sanal konağını eklemek istediğinizi
+    <p>Örnek olarak, <code>site1.example.com</code> adresinden sitenizi
+      sunmakta olduğunuzu ve bunun yanına aynı IP adresini kullanan
+      <code>site2.example.com</code> sanal konağını eklemek istediğinizi
       varsayalım. Bunun için <code>httpd.conf</code> dosyanıza basitçe şu
       satırları ekleyebilirsiniz:</p>
 
     <example>
-        NameVirtualHost *:80<br />
-        <br />
         &lt;VirtualHost *:80&gt;<br />
         <indent>
-            ServerName www.biralan.tld<br />
-            ServerAlias biralan.tld *.biralan.tld<br />
-            DocumentRoot /siteler/biralan<br />
+            #İlk sanal konak aynı zamanda *:80 için de öntanımlıdır.
+            ServerName site1.example.com<br />
+            ServerAlias example.com<br />
+            DocumentRoot /siteler/site1<br />
         </indent>
         &lt;/VirtualHost&gt;<br />
         <br />
         &lt;VirtualHost *:80&gt;<br />
-        <indent>ServerName www.digeralan.tld<br />
-            DocumentRoot /siteler/digeralan<br />
+        <indent>
+            ServerName site2.example.com<br />
+            DocumentRoot /siteler/site2<br />
         </indent>
         &lt;/VirtualHost&gt;<br />
     </example>
 
-    <p>İsterseniz, <directive module="core">NameVirtualHost</directive> ve
-      <directive type="section" module="core">VirtualHost</directive>
-      yönergelerinde argüman olarak <code>*</code> yerine doğrudan bir IP adresi
-      belirtebilirsiniz. Hatta, daha sonra, isme dayalı sanal konakları bir IP
-      adresinden ve IP’ye dayalı olanları veya isme dayalı diğer bir sanal konak
-      grubunu diğer IP adreslerinden sunmak isteyebilirsiniz.</p>
+    <p>İsterseniz, <directive type="section" module="core"
+      >VirtualHost</directive> yönergesinde argüman olarak <code>*</code>
+      yerine doğrudan bir IP adresi belirtebilirsiniz. Hatta, daha sonra, isme
+      dayalı sanal konakları bir IP adresinden ve IP’ye dayalı olanları veya
+      isme dayalı diğer bir sanal konak grubunu diğer IP adreslerinden sunmak
+      isteyebilirsiniz.</p>
 
     <p>Çoğu sunucunun birden fazla isim ile erişilebilir olması istenir. Bu,
       <directive type="section" module="core">VirtualHost</directive> bölümü
@@ -177,18 +174,25 @@ Barındırma</a></seealso>
       için bölüm içine şu satırı ekleyebilirsiniz:</p>
 
     <example>
-        ServerAlias biralan.tld *.biralan.tld
+        ServerAlias example.com *.example.com
     </example>
 
-    <p>Böylece <code>biralan.tld</code> alanındaki tüm konaklar için gelen
-      isteklere <code>www.biralan.tld</code> sanal konağından hizmet sunulmuş
+    <p>Böylece <code>example.com</code> alanındaki tüm konaklar için gelen
+      isteklere <code>www.example.com</code> sanal konağından hizmet sunulmuş
       olur. Konak isimleriyle eşleşmek üzere dosya ismi kalıp karakterleri
-      <code>*</code> ve <code>?</code> kullanılabilir. Şüphesiz bu isimleri sırf
-      <directive module="core">ServerName</directive> veya
+      <code>*</code> ve <code>?</code> kullanılabilir. Şüphesiz bu isimleri
+      sırf <directive module="core">ServerName</directive> veya
       <code>ServerAlias</code> yönergesinde belirtmiş olmakla bu isimleri
       erişilebilir kılamazsınız. Öncelikle, bu isimleri sunucunuzdaki IP
       adresleriyle eşlemek üzere yapılandıracağınız bir DNS sunucunuz
       olmalıdır.</p>
+
+    <p>İsme dayalı sanal konaklardan en iyi eşleşme kümesinde olanlar
+      yapılandırmada göründükleri sıraya göre işleme sokulur. Joker
+      kullanımları arasında fark gözetilmeksizin <directive module="core"
+      >ServerName</directive> veya <directive module="core"
+      >ServerAlias</directive> yönergesi eşleşen ilk sanal konak
+      kullanılır.</p>
 
     <p>Son olarak, sanal konak yapılandırmanıza, <directive type="section"
       module="core">VirtualHost</directive> bölümlerinin içine başka yönergeler
@@ -202,78 +206,6 @@ Barındırma</a></seealso>
       yapılandırma yönergelerinden sadece sanal konak bölümlerinde geçersiz
       kılınmamış olanlar kullanılacaktır.</p>
 
-    <p>Sunucuya bir istek geldiğinde, sunucu önce IP adresiyle eşleşmesi olası
-      <directive module="core">NameVirtualHost</directive> bölümleri var mı diye
-      bakar. Varsa, IP adresini eşleştirmek için <directive
-      module="core">NameVirtualHost</directive> bölümlerine tek tek bakar ve
-      istenen konak ismi ile eşleşen bir <directive module="core"
-      >ServerName</directive> veya <code>ServerAlias</code> yönergesi bulmaya
-      çalışır. Bir tane bulduğunda, sunucu için onun yapılandırmasını kullanır.
-      İsimle eşleşen bir sanal konak bulamazsa IP adresiyle eşleşen <strong>ilk
-      sanal konağın</strong> yapılandırmasını kullanır.</p>
-
-    <p>Bir önkabul olarak yapılandırma dosyasında rastlanan ilk sanal konak
-      <em>öntanımlı</em> sanal konaktır. IP adresi bir sanal konakla eşleştiği
-      takdirde <em>ana sunucunun</em> <directive module="core"
-      >DocumentRoot</directive> değeri <strong>asla</strong> kullanılmayacaktır.
-      Sanal konaklardan hiçbiriyle eşleşmeyen istekler için özel bir
-      yapılandırmanız olsun isterseniz, bu yapılandırmayı yapılandırma
-      dosyanızdaki ilk <directive type="section"
-      module="core">VirtualHost</directive> bölümüne yerleştirmeniz
-      yetecektir.</p>
-
 </section>
 
-<section id="compat"><title>Artık Tarihe Karışmış Tarayıcılarla Uyumluluk</title>
-
-    <p>Evvelce de bahsedildiği gibi, isme dayalı sanal konakların gerektiği gibi
-      çalışması için gerekli veriyi göndermeyen bazı istemciler vardır. Bu
-      istemcilere daima o IP adresinin yapılandırma dosyasındaki ilk sanal
-      konağının (isme dayalı <cite>başat</cite> sanal konak) sayfaları
-      gönderilir.</p>
-
-    <note><title>Ne kadar eski?</title>
-    <p>Lütfen dikkat edin, eski deyince gerçekten de antika demek istiyoruz.
-      Günümüzde bu tür tarayıcılara rastlamanız neredeyse imkansızdır. Günümüz
-      tarayıcılarının hepsi isme dayalı sanal konakların gerektirdiği
-      <code>Host</code> başlığını gönderirler.</p>
-    </note>
-
-    <p>Olayı fazla germeden <directive module="core">ServerPath</directive>
-      yönergesini kullanarak sorunun çevresinden dolanmak mümkündür:</p>
-
-    <p>Örnek yapılandırma:</p>
-
-    <example>
-        NameVirtualHost 111.22.33.44<br />
-        <br />
-        &lt;VirtualHost 111.22.33.44&gt;<br />
-        <indent>
-            ServerName www.biralan.tld<br />
-            ServerPath /biralan<br />
-            DocumentRoot /siteler/biralan<br />
-        </indent>
-        &lt;/VirtualHost&gt;<br />
-    </example>
-
-    <p>Bu ne anlama geliyor? Anlamı, "<code>/biralan</code>" ile başlayan her
-      URI isteği <code>www.biralan.tld</code> sanal konağı tarafından sunulacak,
-      demektir. Yani, tüm istemcilerin
-      <code>http://www.biralan.tld/biralan/</code> olarak eriştiği yere
-      <code>Host:</code> başlığı gönderen istemciler
-      <code>http://www.biralan.tld/</code> olarak erişirler.</p>
-
-    <p>Bunu gerçekleştirebilmek için başat sanal konağın baş sayfasına
-      <code>http://www.biralan.tld/biralan/</code> için bir bağ koyduktan sonra
-      sanal konağın sayfalarında ya tamamen göreli bağlar
-      ("<code>dosya.html</code>", "<code>../simgeler/resim.png</code>" gibi)
-      veya <code>/biralan/</code> ile öncelenmiş bağlar
-      ("<code>http://www.biralan.tld/biralan/muht/dosya.html</code>" veya
-      "<code>/biralan/muht/dosya.html</code>" gibi) kullanın.</p>
-
-    <p>Bu işlem biraz disiplin gerektirse de bu yazılanlara sıkı sıkıya bağlı
-      kalarak hem eski hem de yeni tarayıcıların sayfalarınızı doğru
-      görüntülemesini sağlamış olursunuz.</p>
-
-</section>
 </manualpage>

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 669564:1301725 (outdated) -->
+<!-- English Revision: 1301725 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -31,11 +31,13 @@
 
 <summary>
     <p></p>
-    <note><title>Bilginize</title>
-      <p>Şimdilik sadece Unix sistemlerinde çalışmaktadır.</p>
-    </note>
 </summary>
+
 <seealso><module>mod_proxy_fcgi</module></seealso>
+
+<section id="note"><title>Bilginize</title>
+    <p>Şimdilik sadece Unix sistemlerinde çalışmaktadır.</p>
+</section>
 
 <section id="synopsis"><title>Kullanım</title>
     <p><code><strong>fcgistarter</strong>
