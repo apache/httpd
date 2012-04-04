@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 811869:1308459 (outdated) -->
+<!-- English Revision: 1309536 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -43,6 +43,7 @@
     <p><code><strong>ab</strong>
     [ -<strong>A</strong> <var>yetkili-kullanıcı:parola</var> ]
     [ -<strong>b</strong> <var>tampon-boyu</var> ]
+    [ -<strong>B</strong> <var>yerel-adres</var> ]
     [ -<strong>c</strong> <var>bağlantı-sayısı</var> ]
     [ -<strong>C</strong> <var>çerez-ismi=değer</var> ]
     [ -<strong>d</strong> ]
@@ -71,7 +72,8 @@
     [ -<strong>y</strong> <var>&lt;tr&gt;-öznitelikleri</var> ]
     [ -<strong>z</strong> <var>&lt;td&gt;-öznitelikleri</var> ]
     [ -<strong>Z</strong> <var>şifre-kümesi</var> ]
-    [http[s]://]<var>konakadı</var>[:<var>port</var>]/<var>dizin</var></code></p>
+    [http[s]://]<var>konakadı</var>[:<var>port</var>]/<var>dizin</var>
+    </code></p>
 </section>
 
 <section id="options"><title>Seçenekler</title>
@@ -86,6 +88,9 @@
 
     <dt><code><strong>-b</strong> <var>tampon-boyu</var></code></dt>
     <dd>TCP gönderme/alma tamponlarının bayt cinsinden uzunluğu.</dd>
+
+    <dt><code><strong>-B</strong> <var>yerel-adres</var></code></dt>
+    <dd>Uzak bağlantılar yaparken dinlenecek adres.</dd>
 
     <dt><code><strong>-c</strong> <var>bağlantı-sayısı</var></code></dt>
     <dd>Aynı anda işleme sokulacak bağlantı sayısı. Aynı anda bir bağlantı
@@ -223,7 +228,92 @@
       belirtilir.</dd>
 
     <dt><code>-Z <var>şifre-kümesi</var></code></dt>
-    <dd>SSL/TLS şifre kümesi belirtilir (<code><strong>openssl</strong></code>(1) şifrelerine bakınız).</dd>
+    <dd>SSL/TLS şifre kümesi belirtilir
+      (<code><strong>openssl</strong></code>(1) şifrelerine bakınız).</dd>
+    </dl>
+</section>
+
+<section id="output"><title>Çıktı</title>
+    <p>Aşağıda <code><strong>ab</strong></code> tarafından döndürülen değerler
+      açıklanmıştır:</p>
+
+    <dl>
+        <dt>Server Software</dt>
+        <dd>İlk başarılı yanıtın, varsa, <var>server</var> HTTP başlığında
+          döndürülen değer. Bu başlıktaki başlangıçtan 32 ondalık değerli
+          karaktere (genellikle boşluk veya CR/LF karakteri) kadar tüm
+          karakterleri içerir.</dd>
+
+        <dt>Server Hostname</dt>
+        <dd>Komut satırında belirtilen DNS veya IP adresi.</dd>
+
+        <dt>Server Port</dt>
+        <dd><code><strong>ab</strong></code>'nin bağlandığı port. Komut
+          satırında port belirtilmemişse, öntanımlı olarak http için 80, https
+          için 443'tür.</dd>
+
+        <dt>SSL/TLS Protocol</dt>
+        <dd>İstemci le sunucu arasında uzlaşılmış protokol değerleri. Bu sadece
+          SSL kullanılıyorsa çıktılanır.</dd>
+
+        <dt>Document Path</dt>
+        <dd>Komut satırı dizgesinden çözümlenen isteğin URI'si.</dd>
+
+        <dt>Document Length</dt>
+        <dd>Başarıyla döndürülen ilk belgenin bayt cinsinden uzunluğu. Eğer
+          belge uzunluğu sınama sırasında değişirse yanıt bir hata
+          içerecektir.</dd>
+
+        <dt>Concurrency Level</dt>
+        <dd>Sınama sırasında kullanılan eşzamanlı istemcilerin sayısı.</dd>
+
+        <dt>Time taken for tests</dt>
+        <dd>İlk soket bağlantısının alındığı andan son yanıtın alındığı ana
+          kadar geçen süre.</dd>
+
+        <dt>Complete requests</dt>
+        <dd>Alınan başarılı yanıtların sayısı.</dd>
+
+        <dt>Failed requests</dt>
+        <dd>Başarısızlık olarak addedilen isteklerin sayısı. Sayı sıfırdan
+          büyükse, diğer satırda,  bağlanma, okuma, yanlış içerik uzunluğu,
+          istisnalar gibi sebeplerle başarısız olmuş istekler gösterilir.</dd>
+
+        <dt>Write errors</dt>
+        <dd>Başarısız yazma hatalarının (kırık boru) sayısı.</dd>
+
+        <dt>Non-2xx responses</dt>
+        <dd>200 serisi yanıt kodları ile açıklanamayan yanıtların sayısı. Tüm
+          yanıtlar 200 olursa bu alan çıktılanmaz.</dd>
+
+        <dt>Keep-Alive requests</dt>
+        <dd>Keep-Alive isteklerinde sonuçlanan bağlantı sayısı.</dd>
+
+        <dt>Total body sent</dt>
+        <dd>Sınamanın parçası olarak veri gönderimi yapılandırılmışsa, bu
+          sınama sırasında gönderilen toplam bayt sayısıdır. Sınama sırasında
+          gövde gönderilmiyorsa bu alan çıktılanmaz.</dd>
+
+        <dt>Total transferred</dt>
+        <dd>Sunucudan alınan toplam bayt sayısı. Bu sayı aslında hattan
+          gönderilen bayt sayısıdır.</dd>
+
+        <dt>HTML transferred</dt>
+        <dd>Sunucudan alınan belge baytlarının sayısı. Bu sayı HTTP
+          başlıklarının bayt sayısını içermez.</dd>
+
+        <dt>Requests per second</dt>
+        <dd>Saniyedeki istek sayısı. İstek sayısının toplam süreye
+          oranıdır.</dd>
+
+        <dt>Time per request</dt>
+        <dd>İstek başına harcanan süre. İlk değer <code>eşzamanlılık * süre *
+          1000 / biten</code> formülüyle hesaplanırken ikincisi için
+          <code>süre * 1000 / biten</code> formülü kullanılır.</dd>
+
+        <dt>Transfer rate</dt>
+        <dd><code>okunantoplam / 1024 / süre</code> formülüyle hesaplanan
+          aktarım hızı.</dd>
     </dl>
 </section>
 

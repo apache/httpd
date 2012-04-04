@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 743251:1229116 (outdated) -->
+<!-- English Revision: 1229116 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -54,19 +54,19 @@
     <dt><code><strong>-f</strong> <var>DBM_türü</var></code></dt>
     <dd>Çıktı için kullanılacak DBM türü belirtilir. Belirtilmediği takdirde
     <glossary>APR</glossary> öntanımlısı kullanılır. Belirtilebilecek DBM
-    türleri:<br />
-    GDBM dosyalar için <code>GDBM</code><br />
-    SDBM dosyalar için <code>SDBM</code><br />
-    Berkeley DB dosyalar için <code>DB</code><br />
-    NDBM dosyalar için <code>NDBM</code><br />
+    türleri:
+    GDBM dosyalar için <code>GDBM</code>,
+    SDBM dosyalar için <code>SDBM</code>,
+    Berkeley DB dosyalar için <code>DB</code>,
+    NDBM dosyalar için <code>NDBM</code>,
     öntanımlı DBM türü için <code>default</code>
     </dd>
 
     <dt><code><strong>-i</strong> <var>kaynak_metin</var></code></dt>
     <dd>DBM dosyasının üretiminde kullanılacak girdi dosyası belirtilir. Bu
     dosya, her satırda bir kayıt bulunmak üzere her satırı şöyle biçemlenmiş
-    olmalıdır:<br />
-    <code>anahtar değer</code><br />
+    olmalıdır:
+    <code>anahtar değer</code>.
     Bu dosyanın biçemi ve manası ile ilgili ayrıntılar için <directive
     module="mod_rewrite">RewriteMap</directive> yönergesinin açıklamasına
     bakınız.
