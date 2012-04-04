@@ -1,7 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.23
 
-
+  *) core: Fix building against PCRE 8.30 by switching from the obsolete
+     pcre_info() to pcre_fullinfo(). PR 52623 [Ruediger Pluem, Rainer Jung]
 
 Changes with Apache 2.2.22
 

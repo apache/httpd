@@ -128,6 +128,7 @@ AP_DECLARE(int) ap_regcomp(ap_regex_t *preg, const char *pattern, int cflags)
 const char *errorptr;
 int erroffset;
 int options = 0;
+int nsub;
 
 if ((cflags & AP_REG_ICASE) != 0) options |= PCRE_CASELESS;
 if ((cflags & AP_REG_NEWLINE) != 0) options |= PCRE_MULTILINE;
@@ -137,7 +138,9 @@ preg->re_erroffset = erroffset;
 
 if (preg->re_pcre == NULL) return AP_REG_INVARG;
 
-preg->re_nsub = pcre_info((const pcre *)preg->re_pcre, NULL, NULL);
+pcre_fullinfo((const pcre *)preg->re_pcre, NULL,
+              PCRE_INFO_CAPTURECOUNT, &nsub);
+preg->re_nsub = (apr_size_t)nsub;
 return 0;
 }
 
