@@ -120,10 +120,9 @@ Barındırma</a></seealso>
       olacaktır.</p>
 
     <note><title>Ana konağı unutmayın</title>
-      <p>Any request that doesn't match an existing Mevcut <directive
-        type="section" module="core">VirtualHost</directive> yönergelerinin
-        hiçbiriyle eşleşmeyen bir istekiçin, sunucu veya konak ismine
-        bakılmaksızın genel sunucu yapılandırmanız kullanılır.</p>
+      <p>Mevcut <directive type="section" module="core">VirtualHost</directive>
+        yönergelerinin hiçbiriyle eşleşmeyen bir istek için, sunucu veya konak
+        ismine bakılmaksızın genel sunucu yapılandırmanız kullanılır.</p>
 
       <p>Mevcut sitenize isme dayalı bir sanal konak eklerseniz ve bu sanal
         konak ana sunucunun IP adresi ve portuna sahipse, ana sunucuya yapılan
@@ -160,7 +159,7 @@ Barındırma</a></seealso>
         &lt;/VirtualHost&gt;<br />
     </example>
 
-    <p>İsterseniz,<directive type="section" module="core"
+    <p>İsterseniz, <directive type="section" module="core"
       >VirtualHost</directive> yönergesinde argüman olarak <code>*</code>
       yerine doğrudan bir IP adresi belirtebilirsiniz. Hatta, daha sonra, isme
       dayalı sanal konakları bir IP adresinden ve IP’ye dayalı olanları veya
@@ -178,8 +177,8 @@ Barındırma</a></seealso>
         ServerAlias example.com *.example.com
     </example>
 
-    <p>Böylece <code>biralan.tld</code> alanındaki tüm konaklar için gelen
-      isteklere <code>www.biralan.tld</code> sanal konağından hizmet sunulmuş
+    <p>Böylece <code>example.com</code> alanındaki tüm konaklar için gelen
+      isteklere <code>www.example.com</code> sanal konağından hizmet sunulmuş
       olur. Konak isimleriyle eşleşmek üzere dosya ismi kalıp karakterleri
       <code>*</code> ve <code>?</code> kullanılabilir. Şüphesiz bu isimleri
       sırf <directive module="core">ServerName</directive> veya
