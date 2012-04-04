@@ -92,6 +92,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
+  * mod_rewrite: Fix RewriteCond integer checks to be parsed correctly.
+    (PR 53023)
+    Patch: http://svn.apache.org/viewvc?view=revision&revision=1309602
+    (applies cleanly to 2.4.x)
+    +1: nd
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
