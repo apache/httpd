@@ -19,8 +19,6 @@
 # and certificates as to facilitate testing of TLS server name 
 # indication support (RFC 4366) or SNI.
 #
-# $Id$
-#
 #
 OPENSSL=${OPENSSL:-openssl}
 DOMAIN=${DOMAIN:-my-sni-test.org}
