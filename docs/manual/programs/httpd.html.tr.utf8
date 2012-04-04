@@ -22,7 +22,6 @@
 <a href="../ko/programs/httpd.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/httpd.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
      <p><strong><code>httpd</code></strong>, Apache Hiper Metin Aktarım
       Protokolü (HTTP) sunucusu programıdır. Tek başına çalışan bir artalan
@@ -38,7 +37,7 @@
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Kullanım</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Seçenekler</a></li>
-</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="../invoking.html">Apache'nin Başlatılması</a></li><li><a href="../stopping.html">Apache'nin Durdurulması</a></li><li><a href="../configuring.html">Yapılandırma Dosyaları</a></li><li><a href="../platform/">Platforma Özgü Belgeler</a></li><li><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></li></ul></div>
+</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="../invoking.html">Apache httpd'nin Başlatılması</a></li><li><a href="../stopping.html">Apache httpd'nin Durdurulması</a></li><li><a href="../configuring.html">Yapılandırma Dosyaları</a></li><li><a href="../platform/">Platforma Özgü Belgeler</a></li><li><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="synopsis" id="synopsis">Kullanım</a></h2>
@@ -50,10 +49,11 @@
      [ -<strong>e</strong> <var>seviye</var> ] [ -<strong>E</strong>
      <var>dosya</var> ]
      [ <strong>-k</strong> start | restart | graceful | stop | graceful-stop ]
-     [ -<strong>R</strong> <var>dizin</var> ] [ -<strong>h</strong> ]
+     [ -<strong>h</strong> ]
      [ -<strong>l</strong> ] [ -<strong>L</strong> ] [ -<strong>S</strong> ]
      [ -<strong>t</strong> ] [ -<strong>v</strong> ] [ -<strong>V</strong> ]
-     [ -<strong>X</strong> ] [ -<strong>M</strong> ]</code></p>
+     [ -<strong>X</strong> ] [ -<strong>M</strong> ] [ -<strong>T</strong> ]
+     </code></p>
 
      <p><a href="../platform/windows.html">Windows sistemlerinde</a>, ek
       olarak şunlar vardır:</p>
@@ -82,7 +82,7 @@
     <dt><code><strong>-k</strong> <code>start | restart | graceful | stop |
       graceful-stop</code></code></dt>
     <dd><strong><code>httpd</code></strong>'yi başlatmak, durdurmak ve yeniden
-      başlatmak için sinyal gönderir. Daha ayrıntılı bilgi edinmek için <a href="../stopping.html">Apache'nin Durdurulması</a> belgesine
+      başlatmak için sinyal gönderir. Daha ayrıntılı bilgi edinmek için <a href="../stopping.html">Apache httpd'nin Durdurulması</a> belgesine
       bakınız.</dd>
 
     <dt><code><strong>-C</strong> <var>yönerge</var></code></dt>
@@ -130,13 +130,14 @@
     <dt><code><strong>-M</strong></code></dt>
     <dd>Yüklü durağan ve paylaşımlı modülleri listeler.</dd>
 
-    <dt><code><strong>-R</strong> <var>dizin</var></code></dt>
-    <dd>Sunucu <code>SHARED_CORE</code> kullanılarak derlendiği takdirde bu
-      seçenek paylaşımlı nesne dosyaları için <var>dizin</var> belirtir.</dd>
-
     <dt><code><strong>-S</strong></code></dt>
     <dd>Yapılandırma dosyasından çözümlenmiş haliyle ayarları gösterir (şu an
       sadece sanal konak ayarları gösterilmektedir).</dd>
+
+    <dt><code><strong>-T</strong></code> (2.3.8 ve sonrasında
+    kullanılabilmektedir)</dt>
+    <dd>Başlatma ve yeniden başlatma sırasında belge kökü sınanmadan
+      geçilir.</dd>
 
     <dt><code><strong>-t</strong></code></dt>
     <dd>Yapılandırma dosyasını sözdizimi hatalarına karşı denetler. Program
@@ -164,12 +165,12 @@
 
   <dl>
     <dt><code><strong>-k</strong> install | config | uninstall</code></dt>
-    <dd>Parametreler bakımından sırasıyla: Apache bir Windows NT hizmeti
-      haline getirilir; başlatma seçenekleri Apache hizmeti için değiştirilir;
-      ve Apache hizmeti sistemden kaldırılır.</dd>
+    <dd>Parametreler bakımından sırasıyla: Apache httpd bir Windows NT hizmeti
+      haline getirilir; başlatma seçenekleri Apache httpd hizmeti için
+      değiştirilir; ve Apache httpd hizmeti sistemden kaldırılır.</dd>
 
     <dt><code><strong>-n</strong> <var>isim</var></code></dt>
-    <dd>Sinyal gönderilecek Apache hizmetinin <var>ismi</var>.</dd>
+    <dd>Sinyal gönderilecek Apache httpd hizmetinin <var>ismi</var>.</dd>
 
     <dt><code><strong>-w</strong></code></dt>
     <dd>Hata durumunda konsol penceresi açık tutularak hata iletilerinin

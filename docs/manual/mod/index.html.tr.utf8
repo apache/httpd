@@ -27,12 +27,11 @@
 <a href="../tr/mod/" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
-    <p>Apache dağıtımının parçası olarak gelen modüllerin tamamı aşağıda
-    listelenmiştir. Ayrıca, tüm Apache yönergelerinin alfabetik olarak
-    listelendiği bir <a href="directives.html">Yönerge Dizini</a> de
-    mevcuttur.</p>
+    <p>Apache HTTP Sunucusu dağıtımının parçası olarak gelen modüllerin tamamı
+    aşağıda listelenmiştir. Ayrıca, tüm Apache HTTP Sunucusu yönergelerinin
+    alfabetik olarak listelendiği bir <a href="directives.html">Yönerge
+      Dizini</a> de mevcuttur.</p>
   </div>
 <div id="quickview"><ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#core">Temel Özellikler ve Çoklu İşlem Modülleri</a></li><li><img alt="" src="../images/down.gif" /> <a href="#other">Diğer Modüller</a></li></ul><h3>Ayrıca bakınız:</h3>

@@ -27,7 +27,6 @@
 <a href="../ko/mod/mod_setenvif.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_setenvif.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Ortam değişkenlerinin isteğin özelliklerine uygun olarak atanmasını sağlar</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>setenvif_module</td></tr>
@@ -35,10 +34,12 @@
 <h3>Özet</h3>
 
 
-    <p><code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> modülü ortam değişkenlerinin isteğin
-      farklı bileşenlerinin belirttiğiniz düzenli ifade ile eşleşmesine bağlı
-      olarak atanmasını mümkün kılar. Bu ortam değişkenleri sunucunun çeşitli
-      kısımlarında yapılacak eylemlere karar verirken kullanılır.</p>
+    <p><code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> modülü dahili ortam değişkenlerinin
+      isteğin farklı bileşenlerinin belirttiğiniz düzenli ifade ile eşleşmesine
+      bağlı olarak atanmasını mümkün kılar. Bu ortam değişkenleri sunucunun
+      çeşitli kısımlarında yapılacak eylemlerin yanında CGI betiklerinde ve SSI
+      sayfalarında kullanılabilir hale gelmelerine karar verilirken
+      kullanılır.</p>
 
     <p>Yönergeler yapılandırma dosyasında yer aldıkları sıraya göre ele
       alınırlar. Böylece daha karmaşık dizilimler kullanılabilir, bu örnekteki
@@ -60,7 +61,7 @@
 </ul>
 <h3>Ayrıca bakınız:</h3>
 <ul class="seealso">
-<li><a href="../env.html">Apache’de Ortam Değişkenleri</a></li>
+<li><a href="../env.html">Apache HTTP Sunucusundaki Ortam Değişkenleri</a></li>
 </ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -183,15 +184,6 @@ duyarsız eşleşmelerine bağlı olarak belirler.</td></tr>
         Ortam değişkenlerinin dikkate alınabilmesi için istek öznitelikleri
         arasında hiçbir eşleşme olmaması ve <code><em>öznitelik</em></code>
         olarak bir düzenli ifade belirtilmemiş olması gerekir.</li>
-
-      <li>Nesne kimliği <code><em>oid</em></code> olan bir SSL istemci
-        sertifikası eklentisine bir başvuru. SSL olarak yapılmamış bir istekte
-        veya yapılandırılmış bir <code><em>oid</em></code>’in yokluğunda
-        hiçbir değişken ataması yapılmaz. Birden fazla
-        <code><em>oid</em></code> söz konusu ise aralarına virgül
-        (<code>','</code>) konarak ilgili dizgeler birleştirilir.
-        <code><em>oid</em></code> dizge değerli bir eklentiyi
-        betimlemelidir.</li>
     </ol>
 
     <p>İkinci bileşen (<code><em>düzifd</em></code>) bir <a class="glossarylink" href="../glossary.html#regex" title="sözlüğe bakınız">düzenli ifade</a>dir.  <code><em>düzifd</em></code>
@@ -213,8 +205,8 @@ duyarsız eşleşmelerine bağlı olarak belirler.</td></tr>
     <p>İlk biçemde değişkene "1" değeri atanır. İkincisinde atanmış bir
       değişken atanmamış yapılır. Üçüncüsünde ise değişkene belirtilen
       <code><em>değer</em></code> bire bir atanır. 2.0.52 sürümünden itibaren
-      parantezli düzenli ifadelerin sonuçları ile değiştirilmek üzere
-      <code><em>value</em></code> içinde <code>$1</code>..<code>$9</code>
+      Apache httpd parantezli düzenli ifadelerin sonuçları ile değiştirilmek
+      üzere <code><em>value</em></code> içinde <code>$1</code>..<code>$9</code>
       gösterimleri tanınmaktadır.</p>
 
     <div class="example"><h3>Örnek:</h3><p><code>
@@ -226,9 +218,7 @@ duyarsız eşleşmelerine bağlı olarak belirler.</td></tr>
             :<br />
       SetEnvIf object_is_image xbm XBIT_PROCESSING=1<br />
             :<br />
-      SetEnvIf OID("2.16.840.1.113730.1.13") "(.*)" NetscapeComment=$1<br />
-            :<br />
-      SetEnvIf ^TS*  ^[a-z].*  TS_VAR<br />
+      SetEnvIf ^TS  ^[a-z]  TS_VAR<br />
     </code></p></div>
 
     <p>İlk üçünde istek bir resim dosyası için yapılmışsa
@@ -237,28 +227,56 @@ duyarsız eşleşmelerine bağlı olarak belirler.</td></tr>
       bulunuyorsa <code>dahili_site_istendi</code> ortam değişkeni
       atanmaktadır.</p>
 
-    <p>Altıncı örnekte <code>NetscapeComment</code> ortam değişkenine ilgili
-      SSL istemci sertifikası alanındaki (varsa) dizge atanmaktadır.</p>
-
     <p>Son örnekte ise istekte "TS" ile başlayıp [a-z] arasındaki
       karakterlerle devam eden bir başlık alanı varsa <code>TS_VAR</code>
       ortam değişkeni atanmaktadır.</p>
 
 <h3>Ayrıca bakınız:</h3>
 <ul>
-<li><a href="../env.html">Apache’de Ortam Değişkenleri</a> belgesinde
-daha fazla örnek bulunabilir.</li>
+<li><a href="../env.html">Apache HTTP Sunucusundaki Ortam Değişkenleri</a>
+belgesinde daha fazla örnek bulunabilir.</li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SetEnvIfExpr" id="SetEnvIfExpr">SetEnvIfExpr</a> <a name="setenvifexpr" id="setenvifexpr">Yönergesi</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sets environment variables based on an ap_expr expression</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir ap_expr ifadesine dayanarak ortam değişkenlerine değer atar</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>SetEnvIfExpr <em>ifade
+    [!]ort-değişkeni</em>[=<em>değer</em>]
+    [[!]<em>ort-değişkeni</em>[=<em>değer</em>]] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_setenvif</td></tr>
-</table><p>Documentation not yet translated. Please see English version of document.</p>
+</table>
+    <p><code class="directive">SetEnvIfExpr</code> yönergesi bir
+      <code class="directive">&lt;If&gt;</code> <code>ap_expr</code> ifadesine
+      dayanarak ortam değişkenlerine değer atar. Bu ifadeler çalışma anında
+      değerlendirilirerek <code class="directive">SetEnvIf</code> yönergesindeki gibi
+      <em>ort-değişkeni</em>ne uygulanır.</p>
+
+<div class="example"><p><code>
+    SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered
+</code></p></div>
+
+    <p>Burada uygulamamızın her <code>X-Sendfile</code> göndermeye çalışmasında
+      ortam değişkenine <code>iso_delivered</code> değeri atanmaktadır.</p>
+
+    <p>Uzak IP adresi RFC 1918'e göre özel bir adres ise rfc1918 değişkenine 1
+      atanması daha kullanışlı bir örnek olurdu:</p>
+
+<div class="example"><p><code>
+    SetEnvIfExpr "-R '10.0.0.0/8' || -R '172.16.0.0/12' || -R '192.168.0.0/16'" rfc1918
+</code></p></div>
+
+<h3>Ayrıca bakınız:</h3>
+<ul>
+<li><a href="../expr.html">Expressions in Apache HTTP Server</a>,
+for a complete reference and more examples.</li>
+<li><code class="directive">&lt;If&gt;</code> can be used to achive similar
+results.</li>
+<li><code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SetEnvIfNoCase" id="SetEnvIfNoCase">SetEnvIfNoCase</a> <a name="setenvifnocase" id="setenvifnocase">Yönergesi</a></h2>
@@ -272,7 +290,6 @@ bağlı olmaksızın yapılmış tanımlara göre atar.</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_setenvif</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache 1.3 ve sonrasında mevcuttur.</td></tr>
 </table>
     <p><code class="directive">SetEnvIfNoCase</code> yönergesi sözdizimsel ve anlamsal
       olarak <code class="directive"><a href="#setenvif">SetEnvIf</a></code>
@@ -280,13 +297,13 @@ bağlı olmaksızın yapılmış tanımlara göre atar.</td></tr>
       duyarsızdır. Örnek:</p>
 
     <div class="example"><p><code>
-      SetEnvIfNoCase Host Apache\.Org site=apache
+      SetEnvIfNoCase Host Example\.Org site=example
     </code></p></div>
 
     <p>Burada, <code>Host:</code> HTTP istek başlığında
-      <code>Apache.Org</code>, <code>apache.org</code> veya harf büyüklüğünce
+      <code>Example.Org</code>, <code>example.org</code> veya harf büyüklüğünce
       farklı benzerleri belirtilmişse <code>site</code> ortam değişkenine
-      "<code>apache</code>" değeri atanmaktadır.</p>
+      "<code>example</code>" değeri atanmaktadır.</p>
 
 </div>
 </div>

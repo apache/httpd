@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "AB" 8 "2009-11-03" "Apache HTTP Sunucusu" "ab"
+.TH "AB" 1 "2012-04-04" "Apache HTTP Sunucusu" "ab"
 .nh
 .SH İSİM
 ab \- Apache HTTP sunucusu başarım ölçme aracı
@@ -27,7 +27,7 @@ ab \- Apache HTTP sunucusu başarım ölçme aracı
 .SH "KULLANIM"
  
 .PP
-\fBab\fR [ -\fBA\fR \fIyetkili-kullanıcı:parola\fR ] [ -\fBb\fR \fItampon-boyu\fR ] [ -\fBc\fR \fIbağlantı-sayısı\fR ] [ -\fBC\fR \fIçerez-ismi=değer\fR ] [ -\fBd\fR ] [ -\fBe\fR \fIcsv-dosyası\fR ] [ -\fBf\fR \fIprotokol\fR ] [ -\fBg\fR \fIgnuplot-dosyası\fR ] [ -\fBh\fR ] [ -\fBH\fR \fIözel-başlık\fR ] [ -\fBi\fR ] [ -\fBk\fR ] [ -\fBn\fR \fIistek-sayısı\fR ] [ -\fBp\fR \fIPOST-dosyası\fR ] [ -\fBP\fR \fIvekil-yetkilisi:parola\fR ] [ -\fBq\fR ] [ -\fBr\fR ] [ -\fBs\fR ] [ -\fBS\fR ] [ -\fBt\fR \fIsaniye\fR ] [ -\fBT\fR \fIiçerik-türü\fR ] [ -\fBu\fR \fIPUT-dosyası\fR ] [ -\fBv\fR \fIayrıntı-düzeyi\fR] [ -\fBV\fR ] [ -\fBw\fR ] [ -\fBx\fR \fI<table>-öznitelikleri\fR ] [ -\fBX\fR \fIvekil\fR[:\fIport\fR] ] [ -\fBy\fR \fI<tr>-öznitelikleri\fR ] [ -\fBz\fR \fI<td>-öznitelikleri\fR ] [ -\fBZ\fR \fIşifre-kümesi\fR ] [http[s]://]\fIkonakadı\fR[:\fIport\fR]/\fIdizin\fR
+\fBab\fR [ -\fBA\fR \fIyetkili-kullanıcı:parola\fR ] [ -\fBb\fR \fItampon-boyu\fR ] [ -\fBB\fR \fIyerel-adres\fR ] [ -\fBc\fR \fIbağlantı-sayısı\fR ] [ -\fBC\fR \fIçerez-ismi=değer\fR ] [ -\fBd\fR ] [ -\fBe\fR \fIcsv-dosyası\fR ] [ -\fBf\fR \fIprotokol\fR ] [ -\fBg\fR \fIgnuplot-dosyası\fR ] [ -\fBh\fR ] [ -\fBH\fR \fIözel-başlık\fR ] [ -\fBi\fR ] [ -\fBk\fR ] [ -\fBn\fR \fIistek-sayısı\fR ] [ -\fBp\fR \fIPOST-dosyası\fR ] [ -\fBP\fR \fIvekil-yetkilisi:parola\fR ] [ -\fBq\fR ] [ -\fBr\fR ] [ -\fBs\fR ] [ -\fBS\fR ] [ -\fBt\fR \fIsaniye\fR ] [ -\fBT\fR \fIiçerik-türü\fR ] [ -\fBu\fR \fIPUT-dosyası\fR ] [ -\fBv\fR \fIayrıntı-düzeyi\fR] [ -\fBV\fR ] [ -\fBw\fR ] [ -\fBx\fR \fI<table>-öznitelikleri\fR ] [ -\fBX\fR \fIvekil\fR[:\fIport\fR] ] [ -\fBy\fR \fI<tr>-öznitelikleri\fR ] [ -\fBz\fR \fI<td>-öznitelikleri\fR ] [ -\fBZ\fR \fIşifre-kümesi\fR ] [http[s]://]\fIkonakadı\fR[:\fIport\fR]/\fIdizin\fR
  
 
 .SH "ÖZET"
@@ -45,6 +45,9 @@ Sunucuya TEMEL Kimlik Doğrulamada kullanılmak üzere kanıt sağlar\&. Kullan�
 .TP
 \fB-b\fR \fItampon-boyu\fR
 TCP gönderme/alma tamponlarının bayt cinsinden uzunluğu\&.  
+.TP
+\fB-B\fR \fIyerel-adres\fR
+Uzak bağlantılar yaparken dinlenecek adres\&.  
 .TP
 \fB-c\fR \fIbağlantı-sayısı\fR
 Aynı anda işleme sokulacak bağlantı sayısı\&. Aynı anda bir bağlantı öntanımlı değerdir\&.  
@@ -129,6 +132,70 @@ Sonuçları HTML tabloları olarak basar\&. Öntanımlı tablo, beyaz artalanlı
 .TP
 -Z \fIşifre-kümesi\fR
 SSL/TLS şifre kümesi belirtilir (\fBopenssl\fR(1) şifrelerine bakınız)\&.  
+ 
+.SH "ÇIKTI"
+ 
+.PP
+Aşağıda \fBab\fR tarafından döndürülen değerler açıklanmıştır:
+ 
+ 
+.TP
+Server Software
+İlk başarılı yanıtın, varsa, \fIserver\fR HTTP başlığında döndürülen değer\&. Bu başlıktaki başlangıçtan 32 ondalık değerli karaktere (genellikle boşluk veya CR/LF karakteri) kadar tüm karakterleri içerir\&.  
+.TP
+Server Hostname
+Komut satırında belirtilen DNS veya IP adresi\&.  
+.TP
+Server Port
+\fBab\fR'nin bağlandığı port\&. Komut satırında port belirtilmemişse, öntanımlı olarak http için 80, https için 443'tür\&.  
+.TP
+SSL/TLS Protocol
+İstemci le sunucu arasında uzlaşılmış protokol değerleri\&. Bu sadece SSL kullanılıyorsa çıktılanır\&.  
+.TP
+Document Path
+Komut satırı dizgesinden çözümlenen isteğin URI'si\&.  
+.TP
+Document Length
+Başarıyla döndürülen ilk belgenin bayt cinsinden uzunluğu\&. Eğer belge uzunluğu sınama sırasında değişirse yanıt bir hata içerecektir\&.  
+.TP
+Concurrency Level
+Sınama sırasında kullanılan eşzamanlı istemcilerin sayısı\&.  
+.TP
+Time taken for tests
+İlk soket bağlantısının alındığı andan son yanıtın alındığı ana kadar geçen süre\&.  
+.TP
+Complete requests
+Alınan başarılı yanıtların sayısı\&.  
+.TP
+Failed requests
+Başarısızlık olarak addedilen isteklerin sayısı\&. Sayı sıfırdan büyükse, diğer satırda, bağlanma, okuma, yanlış içerik uzunluğu, istisnalar gibi sebeplerle başarısız olmuş istekler gösterilir\&.  
+.TP
+Write errors
+Başarısız yazma hatalarının (kırık boru) sayısı\&.  
+.TP
+Non-2xx responses
+200 serisi yanıt kodları ile açıklanamayan yanıtların sayısı\&. Tüm yanıtlar 200 olursa bu alan çıktılanmaz\&.  
+.TP
+Keep-Alive requests
+Keep-Alive isteklerinde sonuçlanan bağlantı sayısı\&.  
+.TP
+Total body sent
+Sınamanın parçası olarak veri gönderimi yapılandırılmışsa, bu sınama sırasında gönderilen toplam bayt sayısıdır\&. Sınama sırasında gövde gönderilmiyorsa bu alan çıktılanmaz\&.  
+.TP
+Total transferred
+Sunucudan alınan toplam bayt sayısı\&. Bu sayı aslında hattan gönderilen bayt sayısıdır\&.  
+.TP
+HTML transferred
+Sunucudan alınan belge baytlarının sayısı\&. Bu sayı HTTP başlıklarının bayt sayısını içermez\&.  
+.TP
+Requests per second
+Saniyedeki istek sayısı\&. İstek sayısının toplam süreye oranıdır\&.  
+.TP
+Time per request
+İstek başına harcanan süre\&. İlk değer eşzamanlılık * süre * 1000 / biten formülüyle hesaplanırken ikincisi için süre * 1000 / biten formülü kullanılır\&.  
+.TP
+Transfer rate
+okunantoplam / 1024 / süre formülüyle hesaplanan aktarım hızı\&.  
  
 .SH "BÖRTÜ BÖCEK"
  

@@ -118,7 +118,7 @@ URLs on the fly</td></tr>
       path.</p>
       <p> This directive is <em>required</em> when you use a relative path
       in a substitution in per-directory (htaccess) context unless either
-      of the following conditions are true:
+      of the following conditions are true:</p>
       <ul>
           <li> The original request, and the substitution, are underneath the 
                <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>
@@ -129,7 +129,6 @@ URLs on the fly</td></tr>
                substitution is also valid as a URL path on the server 
                (this is rare).</li>
       </ul>
-      </p>
 
 <p> In the example below, <code class="directive">RewriteBase</code> is necessary
     to avoid rewriting to http://example.com/opt/myapp-1.2.3/welcome.html
