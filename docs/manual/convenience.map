@@ -140,6 +140,12 @@ cachequickhandler	mod/mod_cache.html#cachequickhandler
 cachereadsize	mod/mod_cache_disk.html#cachereadsize
 cachereadtime	mod/mod_cache_disk.html#cachereadtime
 cacheroot	mod/mod_cache_disk.html#cacheroot
+cachesocache	mod/mod_cache_socache.html#cachesocache
+cachesocachemaxsize	mod/mod_cache_socache.html#cachesocachemaxsize
+cachesocachemaxtime	mod/mod_cache_socache.html#cachesocachemaxtime
+cachesocachemintime	mod/mod_cache_socache.html#cachesocachemintime
+cachesocachereadsize	mod/mod_cache_socache.html#cachesocachereadsize
+cachesocachereadtime	mod/mod_cache_socache.html#cachesocachereadtime
 cachestaleonerror	mod/mod_cache.html#cachestaleonerror
 cachestoreexpired	mod/mod_cache.html#cachestoreexpired
 cachestorenostore	mod/mod_cache.html#cachestorenostore
@@ -174,6 +180,7 @@ dbdpreparesql	mod/mod_dbd.html#dbdpreparesql
 dbdriver	mod/mod_dbd.html#dbdriver
 defaulticon	mod/mod_autoindex.html#defaulticon
 defaultlanguage	mod/mod_mime.html#defaultlanguage
+defaultruntimedir	mod/core.html#defaultruntimedir
 defaulttype	mod/core.html#defaulttype
 define	mod/core.html#define
 deflatebuffersize	mod/mod_deflate.html#deflatebuffersize
@@ -273,6 +280,8 @@ ldapopcacheentries	mod/mod_ldap.html#ldapopcacheentries
 ldapopcachettl	mod/mod_ldap.html#ldapopcachettl
 ldapreferralhoplimit	mod/mod_ldap.html#ldapreferralhoplimit
 ldapreferrals	mod/mod_ldap.html#ldapreferrals
+ldapretries	mod/mod_ldap.html#ldapretries
+ldapretrydelay	mod/mod_ldap.html#ldapretrydelay
 ldapsharedcachefile	mod/mod_ldap.html#ldapsharedcachefile
 ldapsharedcachesize	mod/mod_ldap.html#ldapsharedcachesize
 ldaptimeout	mod/mod_ldap.html#ldaptimeout
