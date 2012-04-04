@@ -1360,12 +1360,12 @@ href="#envvars">Environment Variables</a> can be used.  For
 <code>funcname</code> the available functions are listed in
 the <a href="../expr.html#functions">ap_expr documentation</a>.</p>
 
-<p>Notice that <em>expression</em> is first parsed into an internal machine
-representation and then evaluated in a second step. Actually, in Global and
-Per-Server Class context <em>expression</em> is parsed at startup time and
-at runtime only the machine representation is executed. For Per-Directory
-context, specifically in a .htaccess context, this is different: here <em>
-expression</em> has to be parsed and immediately executed for every request.</p>
+<p>The <em>expression</em> is parsed into an internal machine
+representation when the configuration is loaded, and then evaluated 
+during request processing.  In .htaccess context, the <em>expression</em> is 
+both parsed and executed each time the .htaccess file is encountered during 
+request processing.</p>
+
 <example><title>Example</title>
 <pre>SSLRequire (    %{SSL_CIPHER} !~ m/^(EXP|NULL)-/                \
             and %{SSL_CLIENT_S_DN_O} eq "Snake Oil, Ltd."        \
