@@ -102,9 +102,9 @@ Barındırma</a></li><li><a href="examples.html">Çok kullanılan sanal konak ya
       olacaktır.</p>
 
     <div class="note"><h3>Ana konağı unutmayın</h3>
-      <p>Any request that doesn't match an existing Mevcut <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> yönergelerinin
-        hiçbiriyle eşleşmeyen bir istekiçin, sunucu veya konak ismine
-        bakılmaksızın genel sunucu yapılandırmanız kullanılır.</p>
+      <p>Mevcut <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
+        yönergelerinin hiçbiriyle eşleşmeyen bir istek için, sunucu veya konak
+        ismine bakılmaksızın genel sunucu yapılandırmanız kullanılır.</p>
 
       <p>Mevcut sitenize isme dayalı bir sanal konak eklerseniz ve bu sanal
         konak ana sunucunun IP adresi ve portuna sahipse, ana sunucuya yapılan
@@ -140,7 +140,7 @@ Barındırma</a></li><li><a href="examples.html">Çok kullanılan sanal konak ya
         &lt;/VirtualHost&gt;<br />
     </code></p></div>
 
-    <p>İsterseniz,<code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> yönergesinde argüman olarak <code>*</code>
+    <p>İsterseniz, <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> yönergesinde argüman olarak <code>*</code>
       yerine doğrudan bir IP adresi belirtebilirsiniz. Hatta, daha sonra, isme
       dayalı sanal konakları bir IP adresinden ve IP’ye dayalı olanları veya
       isme dayalı diğer bir sanal konak grubunu diğer IP adreslerinden sunmak
@@ -157,8 +157,8 @@ Barındırma</a></li><li><a href="examples.html">Çok kullanılan sanal konak ya
         ServerAlias example.com *.example.com
     </code></p></div>
 
-    <p>Böylece <code>biralan.tld</code> alanındaki tüm konaklar için gelen
-      isteklere <code>www.biralan.tld</code> sanal konağından hizmet sunulmuş
+    <p>Böylece <code>example.com</code> alanındaki tüm konaklar için gelen
+      isteklere <code>www.example.com</code> sanal konağından hizmet sunulmuş
       olur. Konak isimleriyle eşleşmek üzere dosya ismi kalıp karakterleri
       <code>*</code> ve <code>?</code> kullanılabilir. Şüphesiz bu isimleri
       sırf <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> veya
