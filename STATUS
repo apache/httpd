@@ -114,6 +114,19 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       +1: rjung, rpluem, jorton
       -1:
 
+   * core: Fix building against external PCRE 8.30.
+    PCRE has removed long deprecated pcre_info(). Use pcre_fullinfo()
+    instead which is present as a replacement since PCRE 3.0 so
+    would also be OK when building with bundled PCRE.
+    PR 52623.
+    Trunk patch:
+      http://svn.apache.org/viewvc?rev=r1243176&view=rev
+    2.4.x patch:
+      http://svn.apache.org/viewvc?rev=r1243177&view=rev
+    Backport version for 2.2.x of patch:
+      http://people.apache.org/~rjung/patches/pcre-httpd-2_2_x.patch
+    +1: rjung, jorton, wrowe
+    (Style nit; PCRE_... is indented one char too much)
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -163,19 +176,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 	+1: igalic, jim
     rpluem says: The proposed patch contains tabs and indenting is not correct.
                  This should be fixed first.
-
-    * core: Fix building against external PCRE 8.30.
-    PCRE has removed long deprecated pcre_info(). Use pcre_fullinfo()
-    instead which is present as a replacement since PCRE 3.0 so
-    would also be OK when building with bundled PCRE.
-    PR 52623.
-    Trunk patch:
-      http://svn.apache.org/viewvc?rev=r1243176&view=rev
-    2.4.x patch:
-      http://svn.apache.org/viewvc?rev=r1243177&view=rev
-    Backport version for 2.2.x of patch:
-      http://people.apache.org/~rjung/patches/pcre-httpd-2_2_x.patch
-    +1: rjung, jorton
 
   * core: NUL-terminate string returned by ap_scan_script_header_err*()
     in error case.
