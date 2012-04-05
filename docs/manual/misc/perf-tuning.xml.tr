@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 805049:1174747 (outdated) -->
+<!-- English Revision: 1174747 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -60,7 +60,7 @@
       kullanıcının "yeterince hız" umduğu noktada sunumun gecikmesine sebep
       olur. Böyle bir durumda kullanıcılar yüklemeyi durdurup tekrar
       başlatma eğilimindedirler; sonuçta yük daha da artar. <directive
-      module="mpm_common" >MaxClients</directive> yönergesinin değerini
+      module="mpm_common" >MaxRequestWorkers</directive> yönergesinin değerini
       değiştirerek takaslamaya sebep olabilecek kadar çok çocuk süreç
       oluşturulmasını engelleyebilirsiniz ve böyle bir durumda bunu mutlaka
       yapmalısınız. Bunun için yapacağınız işlem basittir: <code>top</code>
@@ -419,7 +419,7 @@
         kılavuz olarak kullanabilirsiniz.</p>
 
       <p>Süreç oluşturmayla ilgili olarak süreç ölümü <directive
-        module="mpm_common">MaxRequestsPerChild</directive> değeri ile
+        module="mpm_common">MaxConnectionsPerChild</directive> değeri ile
         sağlanır. Bu değer öntanımlı olarak <code>0</code> olup, çocuk süreç
         başına istek sayısının sınırsız olduğu anlamına gelir. Eğer
         yapılandırmanızda bu değeri <code>30</code> gibi çok düşük bir
@@ -725,69 +725,10 @@
       module="mpm_common">Listen</directive> yönergesi kullanmak güvenilir
       olmayacaktır.</p>
 
-      <p><directive module="mpm_common">AcceptMutex</directive> yönergesi,
-      seçilen muteks gerçeklenimini çalışma anında değiştirmek için
-      kullanılabilir.</p>
-
-      <dl>
-        <dt><code>AcceptMutex flock</code></dt>
-
-        <dd>
-          <p>Bu yöntem, bir kilit dosyasını kilitlemek için
-          <code>flock(2)</code> sistem çağrısını kullanır (Kilit dosyasının
-          yeri <directive module="mpm_common" >LockFile</directive>
-          yönergesiyle belirtilir).</p>
-        </dd>
-
-        <dt><code>AcceptMutex fcntl</code></dt>
-
-        <dd>
-          <p>Bu yöntem, bir kilit dosyasını kilitlemek için
-          <code>fcntl(2)</code> sistem çağrısını kullanır (Kilit dosyasının
-          yeri <directive module="mpm_common" >LockFile</directive>
-          yönergesiyle belirtilir).</p>
-        </dd>
-
-        <dt><code>AcceptMutex sysvsem</code></dt>
-
-        <dd>
-          <p>(1.3 ve sonrası) Bu yöntem muteksi gerçeklemek için SysV tarzı
-          semaforları kullanır. Maalesef, SysV tarzı semaforların bazı yan
-          etkileri vardır. Bunlardan biri Apache'nin semaforu temizlemeden
-          ölme ihtimalidir (<code>ipcs(8)</code> kılavuz sayfasına bakınız).
-          Diğer biri, CGI'lerin sunucu ile aynı kullanıcı kimliğini
-          kullanmaları nedeniyle semafor arayüzünün hizmet reddi
-          saldırılarına açık olmasıdır (<program>suexec</program> veya
-          <code>cgiwrapper</code> gibi bir şeyler kullanmadıkça bütün
-          CGI'ler için söz konusudur).</p>
-        </dd>
-
-        <dt><code>AcceptMutex pthread</code></dt>
-
-        <dd>
-          <p>(1.3 ve sonrası) Bu yöntem POSIX mutekslerini kullanır ve POSIX
-          evreleri belirtiminin tamamen gerçeklendiği mimarilerde çalışması
-          gerekirse de sadece Solaris (2.5 ve sonrası) üzerinde ve sadece
-          belli yapılandırmalarla çalışmakta gibi görünmektedir. Bunu
-          denemişseniz sunucunuzun çöktüğünü ve yanıt vermediğini
-          görmüşsünüzdür. Sadece duruk içerikli sunucular iyi
-          çalışmaktadır.</p>
-        </dd>
-
-        <dt><code>AcceptMutex posixsem</code></dt>
-
-        <dd>
-          <p>(2.0 ve sonrası)  Bu yöntem POSIX semaforlarını kullanır. Eğer
-          işlem sırasında bir evre muteks kaynaklı parçalama arızalarıyla
-          karşı karşıya kalırsa HTTP sunucusunun çökmesiyle semaforun sahibi
-          kurtarılamaz.</p>
-        </dd>
-
-      </dl>
-
-      <p>Eğer sisteminiz yukarıda bahsedilenler dışında başka bir dizgileme
-      yöntemi kullanıyorsa bununla ilgili kodun APR'ye eklenmesi girilen
-      zahmete değecektir.</p>
+      <p><directive module="core">Mutex</directive> yönergesi,
+      <code>mpm-accept</code> muteks gerçeklenimini çalışma anında değiştirmek
+      için kullanılabilir. Farklı muteks gerçeklenimleri ile ilgili hususlar
+      bu yönergede belgelenmiştir.</p>
 
       <p>Başka bir çözüm daha vardır ancak döngü kısmen dizgilenmeyeceğinden
       (yani belli sayıda sürece izin verilemeyeceğinden) asla
@@ -851,9 +792,7 @@
       bahsedildiği gibi, bir HTTP sunucusunun protokolü <strong>güvenilir
       şekilde</strong> gerçeklemesi için her iki yöndeki iletişimi
       birbirinden bağımsız olarak (iki yönlü bir TCP bağlantısının her
-      yarısını diğerinden bağımsız olarak) kapatması gerekir. Bu olgu başka
-      sunucular tarafından çoğunlukla dikkate alınmaz fakat Apache'nin 1.2
-      sürümünden beri gerektiği gibi gerçeklenmektedir.</p>
+      yarısını diğerinden bağımsız olarak) kapatması gerekir.</p>
 
       <p>Bu özellik Apache'ye eklendiğinde Unix'in çeşitli sürümlerinde
       uzgörüsüzlükten dolayı bir takım geçici telaş sorunlarına sebep oldu.

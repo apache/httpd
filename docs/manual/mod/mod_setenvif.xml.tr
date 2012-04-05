@@ -213,7 +213,7 @@ duyarsız eşleşmelerine bağlı olarak belirler.</description>
       SetEnvIf Request_URI "\.jpg$" nesne_bir_resim=jpg<br />
       SetEnvIf Request_URI "\.xbm$" nesne_bir_resim=xbm<br />
             :<br />
-      SetEnvIf Referer belgeler\.alanismi\.mesela\.dom dahili_site_istendi<br />
+      SetEnvIf Referer belgeler\.alanismi\.example\.com dahili_site_istendi<br />
             :<br />
       SetEnvIf object_is_image xbm XBIT_PROCESSING=1<br />
             :<br />
@@ -222,7 +222,7 @@ duyarsız eşleşmelerine bağlı olarak belirler.</description>
 
     <p>İlk üçünde istek bir resim dosyası için yapılmışsa
       <code>nesne_bir_resim</code> ortam değişkeni atanmakta, dördüncüsünde
-      istenen sayfa <code>belgeler.alanismi.mesela.dom</code> adlı sitede
+      istenen sayfa <code>belgeler.alanismi.example.com</code> adlı sitede
       bulunuyorsa <code>dahili_site_istendi</code> ortam değişkeni
       atanmaktadır.</p>
 
