@@ -93,7 +93,7 @@
     that daemon services. e.g.</p>
 
     <example>
-    Listen 172.20.30.40:80
+    Listen 192.168.0.1:80
     </example>
 
     <p>It is recommended that you use an IP address instead of a
@@ -118,18 +118,18 @@
     host. e.g.</p>
 
     <example>
-    &lt;VirtualHost 172.20.30.40:80&gt;<br />
-    ServerAdmin webmaster@mail.smallco.com<br />
+    &lt;VirtualHost 192.168.0.1:80&gt;<br />
+    ServerAdmin webmaster@smallco.example.com<br />
     DocumentRoot /groups/smallco/www<br />
-    ServerName www.smallco.com<br />
+    ServerName smallco.example.com<br />
     ErrorLog /groups/smallco/logs/error_log<br />
     TransferLog /groups/smallco/logs/access_log<br />
     &lt;/VirtualHost&gt;<br />
 		<br />
-    &lt;VirtualHost 172.20.30.50:80&gt;<br />
-    ServerAdmin webmaster@mail.baygroup.org<br />
+    &lt;VirtualHost 192.168.0.2:80&gt;<br />
+    ServerAdmin webmaster@baygroup.example.org<br />
     DocumentRoot /groups/baygroup/www<br />
-    ServerName www.baygroup.org<br />
+    ServerName baygroup.example.com<br />
     ErrorLog /groups/baygroup/logs/error_log<br />
     TransferLog /groups/baygroup/logs/access_log<br />
     &lt;/VirtualHost&gt;
