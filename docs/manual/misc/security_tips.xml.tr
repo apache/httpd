@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 805049:1300924 (outdated) -->
+<!-- English Revision: 1300924 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -75,6 +75,10 @@
       tedbirler alınmasını sağlayacak bazı yapılandırmaları vardır:</p>
 
     <ul>
+      <li><directive module="mod_reqtimeout">RequestReadTimeout</directive>
+        yönergesi bir istemcinin isteği göndermek için harcadığı zamanı
+        sınırlamayı sağlar.</li>
+
       <li>HRS’ye maruz kalması olası sitelerde <directive module="core"
         >TimeOut</directive> yönergesinin değeri düşürülmelidir. Birkaç
         saniye gibi mümkün olduğunca düşük bir ayar uygun olabilir. Ancak
@@ -108,17 +112,18 @@
 
       <li>Sunucu tarafından özkaynakları tüketmeden aynı anda işlenebilecek
         bağlantıların sayısını sınırlamak için <directive module="mpm_common"
-        >MaxClients</directive> yönergesini kullanın. Ayrıca, <a
+        >MaxRequestWorkers</directive> yönergesini kullanın. Ayrıca, <a
         href="perf-tuning.html">başarım arttırma belgesine</a> de
         bakabilirsiniz.</li>
 
       <li>HRS’lerin etkilerini azaltmak için aynı andaki bağlantı sayısını
         arttırabilecek evreli <a href="../mpm.html">MPM</a>’lerden birini
-        kullanmak iyi olabilir. Dahası, deneysel <module>event</module> MPM’i
+        kullanmak iyi olabilir. Dahası, <module>event</module> MPM’i
         her bağlantıya yeni bir evre atanmaması için eşzamansız işlem yapar.
-        Ancak bu çalışma henüz tamamlanmamıştır. Özellikle de,
+        OpenSSL kütüphanesinin doğası nedeniyle
         <module>event</module> MPM’i <module>mod_ssl</module> ve diğer girdi
-        süzgeçleri ile henüz uyumlu değildir.</li>
+        süzgeçleri ile henüz uyumlu değildir. Bu durumlarda,
+        <module>worker</module> MPM'inin davranışına geri döner.</li>
 
       <li><a href="http://modules.apache.org/">http://modules.apache.org/</a>
         adresinde, belli istemci davranışlarını sınırlayacak ve HRS ile
@@ -132,7 +137,7 @@
     <title><code>ServerRoot</code> Dizinlerinin İzinleri</title>
 
     <p>Normalde, Apache root kullanıcı tarafından başlatılır ve hizmetleri
-      sunarken <directive module="mpm_common">User</directive> yönergesi
+      sunarken <directive module="mod_unixd">User</directive> yönergesi
       tarafından tanımlanan kullanıcının aidiyetinde çalışır. Root tarafından
       çalıştırılan komutlarda olduğu gibi, root olmayan kullanıcıların
       yapacakları değişikliklerden korunmak konusunda da dikkatli
@@ -283,7 +288,7 @@
     <p>Sunucunun bir parçası gibi çalışan, <code>mod_php</code>,
       <code>mod_perl</code>, <code>mod_tcl</code> ve <code>mod_python</code>
       gibi gömülü betik çalıştırma seçenekleri sunucuyu çalıştıran
-      kullanıcının aidiyetinde çalışırlar (<directive module="mpm_common"
+      kullanıcının aidiyetinde çalışırlar (<directive module="mod_unixd"
       >User</directive> yönergesine bakınız). Bu bakımdan bu betik
       yorumlayıcılar tarafından çalıştırılan betikler, sunucu kullanıcısının
       eriştiği herşeye erişebilirler. Bazı betik yorumlayıcıların getirdiği
@@ -341,7 +346,10 @@
   <section id="protectserverfiles">
     <title>Sunucu dosyalarının öntanımlı olarak korunması</title>
 
-    <p>Apache’nin ister istemez yanlış anlaşılan yönlerinden biri öntanımlı erişim özelliğidir. Yani siz aksine bir şeyler yapmadıkça, sunucu normal URL eşleme kurallarını kullanarak bir dosyayı bulabildiği sürece onu istemciye sunacaktır.</p>
+    <p>Apache’nin ister istemez yanlış anlaşılan yönlerinden biri öntanımlı
+      erişim özelliğidir. Yani siz aksine bir şeyler yapmadıkça, sunucu normal
+      URL eşleme kurallarını kullanarak bir dosyayı bulabildiği sürece onu
+      istemciye sunacaktır.</p>
 
     <p>Örneğin, aşağıdaki durumu ele alalım:</p>
 
@@ -351,7 +359,9 @@
 
     <p>Ve, tarayıcınıza <code>http://localhost/~root/</code> yazın.</p>
 
-    <p>Böylece, istemcilerin tüm dosya sisteminizi gezmelerine izin vermiş olursunuz. Bu işlemin sonuçlarının önünü almak için sunucu yapılandırma dosyanıza şunları yazın:</p>
+    <p>Böylece, istemcilerin tüm dosya sisteminizi gezmelerine izin vermiş
+      olursunuz. Bu işlemin sonuçlarının önünü almak için sunucu yapılandırma
+      dosyanıza şunları yazın:</p>
 
     <example>
       &lt;Directory /&gt;
@@ -362,7 +372,10 @@
       &lt;/Directory&gt;
     </example>
 
-    <p>Bu suretle, dosya sisteminize öntanımlı erişimi yasaklamış olursunuz. Erişime izin vermek istediğiniz dizinler için uygun <directive module="core">Directory</directive> bölümleri eklemeniz yeterli olacaktır. Örnek:</p>
+    <p>Bu suretle, dosya sisteminize öntanımlı erişimi yasaklamış olursunuz.
+      Erişime izin vermek istediğiniz dizinler için uygun <directive
+      module="core">Directory</directive> bölümleri eklemeniz yeterli
+      olacaktır. Örnek:</p>
 
     <example>
       &lt;Directory /usr/users/*/public_html&gt;
@@ -380,9 +393,16 @@
     </example>
 
     <p><directive module="core">Location</directive> ve <directive
-    module="core">Directory</directive> yönergelerinin etkileşimine de özellikle önem vermelisiniz; örneğin <code>&lt;Directory /&gt;</code> erişimi yasaklarken bir <code>&lt;Location /&gt;</code> yönergesi bunu ortadan kaldırabilir.</p>
+      module="core">Directory</directive> yönergelerinin etkileşimine de
+      özellikle önem vermelisiniz; örneğin <code>&lt;Directory /&gt;</code>
+      erişimi yasaklarken bir <code>&lt;Location /&gt;</code> yönergesi bunu
+      ortadan kaldırabilir.</p>
 
-    <p><directive module="mod_userdir">UserDir</directive> yönergesi de size buna benzer bir oyun oynayabilir; yönergeye <code>./</code> atamasını yaparsanız, root kullanıcısı söz konusu olduğunda yukarıda ilk örnekteki durumla karşılaşırız. Apache 1.3 veya üstünü kullanıyorsanız, sunucu yapılandırma dosyanızda aşağıdaki satırın mutlaka bulunmasını öneririz:</p>
+    <p><directive module="mod_userdir">UserDir</directive> yönergesi de size
+      buna benzer bir oyun oynayabilir; yönergeye <code>./</code> atamasını
+      yaparsanız, root kullanıcısı söz konusu olduğunda yukarıda ilk örnekteki
+      durumla karşılaşırız. Sunucu yapılandırma dosyanızda aşağıdaki satırın
+      mutlaka bulunmasını öneririz:</p>
 
     <example>
       UserDir disabled root
@@ -393,7 +413,11 @@
   <section id="watchyourlogs">
     <title>Günlüklerin İzlenmesi</title>
 
-    <p>Sunucunuzda olup biteni günü gününe bilmek istiyorsanız <a href="../logs.html">günlük dosyalarına</a> bakmalısınız. Günlük dosyaları sadece olup biteni raporlamakla kalmaz, sunucunuza ne tür saldırılar yapıldığını ve güvenlik seviyenizin yeterli olup olmadığını anlamanızı da sağlarlar.</p>
+    <p>Sunucunuzda olup biteni günü gününe bilmek istiyorsanız <a
+      href="../logs.html">günlük dosyalarına</a> bakmalısınız. Günlük dosyaları
+      sadece olup biteni raporlamakla kalmaz, sunucunuza ne tür saldırılar
+      yapıldığını ve güvenlik seviyenizin yeterli olup olmadığını anlamanızı da
+      sağlarlar.</p>
 
     <p>Bazı örnekler:</p>
 
@@ -402,31 +426,52 @@
       grep "client denied" error_log | tail -n 10
     </example>
 
-    <p>İlk örnek, <a href="http://online.securityfocus.com/bid/4876/info/">Apache Tomcat
-    Source.JSP Bozuk İstek Bilgilerini İfşa Açığı</a>nı istismar etmeyi deneyen saldırıların sayısını verirken ikinci örnek, reddedilen son on istemciyi listeler; örnek:</p>
+    <p>İlk örnek, <a href="http://online.securityfocus.com/bid/4876/info/"
+      >Apache Tomcat Source.JSP Bozuk İstek Bilgilerini İfşa Açığı</a>nı
+      istismar etmeyi deneyen saldırıların sayısını verirken ikinci örnek,
+      reddedilen son on istemciyi listeler; örnek:</p>
 
     <example>
-      [Thu Jul 11 17:18:39 2002] [error] [client falan.filan.dom] client denied
+      [Thu Jul 11 17:18:39 2002] [error] [client foo.example.com] client denied
       by server configuration: /usr/local/apache/htdocs/.htpasswd
     </example>
 
-    <p>Gördüğünüz gibi günlük dosyaları sadece ne olup bittiğini raporlar, bu bakımdan eğer istemci <code>.htpasswd</code> dosyasına erişebiliyorsa <a href="../logs.html#accesslog">erişim günlüğünüzde</a> şuna benzer bir kayıt görürsünüz:</p>
+    <p>Gördüğünüz gibi günlük dosyaları sadece ne olup bittiğini raporlar, bu
+      bakımdan eğer istemci <code>.htpasswd</code> dosyasına erişebiliyorsa <a
+      href="../logs.html#accesslog">erişim günlüğünüzde</a> şuna benzer bir
+      kayıt görürsünüz:</p>
 
     <example>
-      falan.filan.dom - - [12/Jul/2002:01:59:13 +0200] "GET /.htpasswd HTTP/1.1"
+      foo.example.com - - [12/Jul/2002:01:59:13 +0200] "GET /.htpasswd HTTP/1.1"
     </example>
 
-    <p>Bu, sunucu yapılandırma dosyanızda aşağıdaki yapılandırmayı iptal ettiğiniz anlamına gelir:</p>
+    <p>Bu, sunucu yapılandırma dosyanızda aşağıdaki yapılandırmayı iptal
+      ettiğiniz anlamına gelir:</p>
 
     <example>
-      &lt;Files "^.ht*"&gt;
+      &lt;Files ".ht*"&gt;
       <indent>
         Order allow,deny <br />
         Deny from all
       </indent>
       &lt;/Files&gt;
     </example>
+  </section>
 
+  <section id="merging">
+
+    <title>Yapılandırma bölümlerinin birleştirilmesi</title>
+
+    <p>Yapılandırma bölümlerinin birleştirilmesi karmaşık bir işlem olup bazı
+      durumlarda yönergelere bağlıdır. Yönergeleri bir araya getirirken
+      aralarındaki bağımlılıkları daima sınayın.</p>
+
+    <p><directive>mod_access_compat</directive> gibi henüz yönerge katıştırma
+      mantığını gerçeklememiş modüller için sonraki bölümlerdeki davranış, bu
+      modüllerin yönergelerini içerip içermemesine bağlıdır. Yapılandırmada
+      yönergelerin <em>yerleri değiştirildiğinde</em> fakat bir katıştırma
+      yapılmadığında, yapılandırma bir değişiklik yapılana kadar miras
+      alınır.</p>
   </section>
 
 </manualpage>

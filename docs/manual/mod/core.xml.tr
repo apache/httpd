@@ -1225,7 +1225,7 @@ için iptal edilmiştir.</compatibility>
       bir ileti de belirtilebilir. Örnekler:</p>
 
     <example>
-      ErrorDocument 500 http://hata.meselae.dom/cgi-bin/dnmci<br />
+      ErrorDocument 500 http://hata.example.com/cgi-bin/dnmci<br />
       ErrorDocument 404 /cgi-bin/bad_urls.pl<br />
       ErrorDocument 401 /subscription_info.html<br />
       ErrorDocument 403 "Kusura bakmayın, bugün hizmet veremiyoruz."
@@ -2670,7 +2670,7 @@ sınırlar.</description>
     <p><directive type="section">Location</directive> işlevselliği özellikle
       <directive module="core">SetHandler</directive> yönergesi ile birlikte
       kullanışlı olur. Örneğin, durum isteklerini etkin kılmak ama sadece
-      <code>mesela.dom</code>’dan gelen isteklere izin vermek için şöyle bir
+      <code>example.com</code>’dan gelen isteklere izin vermek için şöyle bir
       uygulama yapabilirsiniz:</p>
 
     <example>
@@ -4334,16 +4334,17 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
 
 
     <p>İsteğe bağlı port numarasını belirtmeyi mümkün kılmak için IPv6
-      adresleri köşeli ayraç içine alınır. IPv6 adresi kullanılan bir örnek:</p>
+      adresleri köşeli ayraç içine alınır. IPv6 adresi kullanılan bir
+      örnek:</p>
 
     <example>
       &lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]&gt;<br />
       <indent>
-        ServerAdmin webmaster@konak.mesela.dom<br />
-        DocumentRoot /www/docs/konak.mesela.dom<br />
-        ServerName konak.mesela.dom<br />
-        ErrorLog logs/konak.mesela.dom-error_log<br />
-        TransferLog logs/konak.mesela.dom-access_log<br />
+        ServerAdmin webmaster@host.example.com<br />
+        DocumentRoot /www/docs/host.example.com<br />
+        ServerName host.example.com<br />
+        ErrorLog logs/host.example.com-error_log<br />
+        TransferLog logs/host.example.com-access_log<br />
       </indent>
       &lt;/VirtualHost&gt;
     </example>

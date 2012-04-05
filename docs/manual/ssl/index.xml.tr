@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 420990:1070915 (outdated) -->
+<!-- English Revision: 1070915 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -40,9 +40,9 @@
 
 <section id="documentation"><title>Belgeler</title>
   <ul>
-    <li><a href="ssl_intro.html">Giriş</a></li>
+    <li><a href="ssl_howto.html">mod_ssl Yapılandırması Nasıl</a></li>
+    <li><a href="ssl_intro.html">SSL'ye Giriş</a></li>
     <li><a href="ssl_compat.html">Uyumluluk</a></li>
-    <li><a href="ssl_howto.html">NASIL</a></li>
     <li><a href="ssl_faq.html">Sıkça Sorulan Sorular</a></li>
     <li><a href="../glossary.html">Terimler</a></li>
   </ul>
