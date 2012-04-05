@@ -10,7 +10,7 @@
     <variant>en</variant>
     <variant>fr</variant>
     <variant>ko</variant>
-    <variant outdated="yes">tr</variant>
+    <variant>tr</variant>
     <variant>zh-cn</variant>
   </variants>
 </metafile>
