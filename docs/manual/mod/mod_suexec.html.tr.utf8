@@ -26,7 +26,6 @@
 <a href="../ko/mod/mod_suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_suexec.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>CGI betiklerinin belli bir kullanıcı ve grubun aidiyetinde
 çalışmasını mümkün kılar.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Eklenti</td></tr>
@@ -62,16 +61,21 @@
     <p><code class="directive">SuexecUserGroup</code> yönergesi CGI programlarını
       çalıştıracak kullanıcı ve grubu belirtmeye yarar. CGI harici istekler
       hala <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> yönergesinde
-      belirtilen kullanıcı tarafından yerine getirilir. Bu yönerge,  Apache
-      1.3 yapılandırmasında sanal konak bölümlerindeki <code>User</code> ve
-      <code>Group</code> yönergelerinin yerini almak üzere tasarlanmıştır.</p>
+      belirtilen kullanıcı tarafından yerine getirilir.</p>
 
     <div class="example"><h3>Örnek</h3><p><code>
     
     SuexecUserGroup nobody nogroup
     </code></p></div>
 
+    <p>Apache HTTP Sunucusunun 2.3.9 ve sonraki sürümlerinde, bu yönerge
+      belirtildiği halde <code class="directive"><a href="../mod/mod_unixd.html#suexec">Suexec</a></code>
+      özelliği etkinleştirilmemişse Apache httpd başlatılamaz.</p>
 
+<h3>Ayrıca bakınız:</h3>
+<ul>
+<li><code class="directive"><a href="../mod/mod_unixd.html#suexec">Suexec</a></code></li>
+</ul>
 </div>
 </div>
 <div class="bottomlang">

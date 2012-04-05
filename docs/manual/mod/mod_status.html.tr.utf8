@@ -27,7 +27,6 @@
 <a href="../ko/mod/mod_status.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_status.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Sunucu etkinliği ve başarımı hakkında bilgi sağlar.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>status_module</td></tr>
@@ -59,14 +58,16 @@
       <li>Saniyedeki ortalama istek sayısı, saniyedeki bayt sayısı ve istek
         başına ortalama bayt sayısı (*)</li>
 
-      <li>Apache tarafınan toplamda ve her çocuk süreç tarafından ayrı ayrı
-        kullanılan o anki işlemci zamanı yüzdesi (*)</li>
+      <li>Birlikte tüm çocuk süreçler tarafınan toplamda ve her çocuk süreç
+        tarafından ayrı ayrı kullanılan o anki işlemci zamanı yüzdesi (*)</li>
 
       <li>O an işlem görmekte olan konakların ve isteklerin sayısı (*)</li>
     </ul>
 
-    <p>"(*)" imli bilgiler sadece <code class="directive"><a href="#extendedstatus">ExtendedStatus</a></code> yönergesinin değeri <code>On</code> olduğu
-      takdirde mevcuttur.</p>
+    <p>"(*)" imli bilgiler sadece <code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code> yönergesinin değeri <code>On</code> olduğu
+      takdirde mevcuttur. 2.3.6 sürümünde, bu modulün yüklenmesi öntanımlı
+      olarak <code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code> yönergesinin
+      değerini <code>On</code> yapacaktır.</p>
 </div>
 <div id="quickview"><h3 class="directives">Yönergeler</h3>
 <p>Bu modül yönerge içermez.</p>
@@ -75,13 +76,14 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#enable">Durum Bilgisi Desteğinin Etkinleştirilmesi</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#autoupdate">Sayfanın Tazelenmesi</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#machinereadable">Makine Tarafından Okunabilen Durum Dosyası</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#troubleshoot">Sorun gidermek için server-status kullanımı</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="enable" id="enable">Durum Bilgisi Desteğinin Etkinleştirilmesi</a></h2>
     
 
-    <p>Durum raporları, sadece mesela.dom alanından ve sadece tarayıcılar için
+    <p>Durum raporları, sadece example.com alanından ve sadece tarayıcılar için
       etkin kılınmak istenirse <code>httpd.conf</code> dosyasına şu satırlar
       eklenebilir:</p>
 
@@ -90,9 +92,7 @@
       <span class="indent">
         SetHandler server-status<br />
         <br />
-        Order Deny,Allow<br />
-        Deny from all<br />
-        Allow from .mesela.dom<br />
+        Require host example.com<br />
       </span>
       &lt;/Location&gt;
     </code></p></div>
@@ -118,16 +118,47 @@
     <p>Durum dosyasının makine tarafından okunabilen sürümüne
       <code>http://sunucunuzun.ismi.buraya/server-status?auto</code>
       şeklinde bir istek yaparak erişebilirsiniz. Bu, kendiliğinden çalıştığı
-      takdirde yararlıdır; Apache dağıtımının <code>/support</code> dizininde
-      bulunan <code>log_server_status</code> isimli perl betiğine bakınız.</p>
+      takdirde yararlıdır; Apache HTTP Sunucusu kurulumunuzun
+      <code>/support</code> dizininde bulunan <code>log_server_status</code>
+      isimli Perl betiğine bakınız.</p>
 
     <div class="note"><h3>Güvenlik</h3>
-      <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> sunucu içinde derlendiği takdirde
+      <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> sunucuya yüklendiği takdirde
        istatistikleri raporlama yeteneği dizin içi yapılandırma dosyaları
        (<code>.htaccess</code> gibi) dahil <em>tüm</em> yapılandırma dosyaları
        için kullanılabilir olacaktır. Bu durum güvenlik ile ilgili olarak
        siteniz için içinden çıkılması güç durumlara yol açabilir (çapanoğlu
        durumu).</div>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="troubleshoot" id="troubleshoot">Sorun gidermek için server-status kullanımı</a></h2>
+    
+
+    <p>Sunucunuzun kullanılabilir tüm özkaynakları (işlemci veya bellek)
+      sömürdüğü ve sizin de bu soruna hangi istemcilerin veya isteklerin yol
+      açtığını saptamak istediğiniz durumda sorunu gidermek için başlangıç yeri
+      olarak  <code>server-status</code> sayfası kullanılabilir.</p>
+
+    <p>Önce <code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code> yönergesine On
+      atadığınızsan emin olun. Böylece her çocuk süreç veya evre için tüm istek
+      ve istemci bilgilerini görebilirsiniz.</p>
+
+    <p>(<code>top</code> veya benzeri bir süreç izleme aracı kullanarak) Artık
+      kendi süreç listenize  ana zanlılar olan süreçleri bulmak için
+      bakabilirsiniz. Sorunun çeşidine bağlı olarak <code>top</code> çıktısını
+      işlemci kullanımına veya bellek kullanımına göre sıralatabilirsiniz.</p>
+
+  <p><code>server-status</code> sayfasını yeniden yükleyip bu süreç
+    kimliklerine bakın. Böylece, bu süreçler tarafından hangi isteklerin hangi
+    istemcilere sunulduğunu görebilirsiniz. İstekler kısa sürelerle görünürler,
+    bu bakımdan iş üstünde yakalamak için çeşitli denemeler yapmanız
+    gerekebilir.</p>
+
+    <p>Bu işlem, yük sorununuzdan birinci derecede sorumlu istek türleri veya
+      istemciler hakkında bir fikir verecektir. Çoğu durumda belli bir HTTP
+      uygulamasının yanlış davrandığını veya belli bir istemcinin sitenize
+      saldırmakta olduğunu farkedersiniz.</p>
 
 </div>
 </div>
