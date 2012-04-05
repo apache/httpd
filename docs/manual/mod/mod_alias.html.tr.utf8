@@ -27,7 +27,6 @@
 <a href="../ko/mod/mod_alias.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_alias.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Belge ağacının parçalarının dosya sisteminin parçalarıyla
 eşlenmesini sağlar ve URL yönlendirmesi yapar.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
@@ -110,8 +109,8 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</td></tr>
 <div class="directive-section"><h2><a name="Alias" id="Alias">Alias</a> <a name="alias" id="alias">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>URL’leri dosya sistemi konumlarıyla eşler.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Alias <var>URL-yolu</var>
-<var>dosya-yolu</var>|<var>dizin-yolu</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Alias <var>URL-yolu</var> <var>dosya-yolu</var> |
+<var>dizin-yolu</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_alias</td></tr>
@@ -128,11 +127,11 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</td></tr>
       Alias /image /ftp/pub/image
     </code></p></div>
 
-    <p><code>http://sunucum/image/foo.gif</code> şeklinde bir istek, sunucunun
-      <code>/ftp/pub/image/foo.gif</code> dosyasıyla yanıt vermesine sebep
-      olurdu. Sadece tam yol parçaları eşleştirilir; bu bakımdan yukarıdaki
-      <code class="directive">Alias</code> yapılandırması
-      <code>http://sunucum/imagefoo.gif</code> ile eşleşmez. Düzenli
+    <p><code>http://example.com/image/foo.gif</code> şeklinde bir istek,
+      sunucunun <code>/ftp/pub/image/foo.gif</code> dosyasıyla yanıt vermesine
+      sebep olurdu. Sadece tam yol parçaları eşleştirilir; bu bakımdan
+      yukarıdaki <code class="directive">Alias</code> yapılandırması
+      <code>http://example.com/imagefoo.gif</code> ile eşleşmez. Düzenli
       ifadelerin kullanıldığı daha karmaşık eşleşmeler için <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> yönergesine bakınız.</p>
 
     <p><code><em>URL-yolu</em></code>’nu bir <code>/</code> ile
@@ -142,8 +141,9 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</td></tr>
 
     <dl><dd><code>Alias /icons/ /usr/local/apache/icons/</code></dd></dl>
 
-    <p>diye bir tanım yaparsanız <code>/icons</code> URL’si için bir
-      <code class="directive">Alias</code> kullanılmayacaktır.</p>
+    <p>diye bir tanım yaparsanız sona bir / ekleme ihtiyacından dolayı
+      <code>/icons</code> URL’si için bir <code class="directive">Alias</code>
+      kullanılmayacaktır.</p>
 
     <p><code class="directive">Alias</code> <em>hedefleri</em> için ek <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> bölümleri
       belirtmeniz gerekebileceğine dikkat ediniz. <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> bölümlerinden önce yer alan
@@ -161,8 +161,7 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</td></tr>
         Alias /image /ftp/pub/image<br />
         &lt;Directory /ftp/pub/image&gt;<br />
         <span class="indent">
-            Order allow,deny<br />
-            Allow from all<br />
+            Require all granted<br />
         </span>
         &lt;/Directory&gt;
     </code></p></div>
@@ -191,12 +190,59 @@ eşler.</td></tr>
       AliasMatch ^/icons(.*) /usr/local/apache/icons$1
     </code></p></div>
 
-    <p>Ayrıca, <code><em>URL-yolu</em></code> ile harf büyüklüğüne duyarsız
-      eşleşmeler sağlayacak düzenli ifadeler de kullanılabilir:</p>
+    <p><a class="glossarylink" href="../glossary.html#regex" title="sözlüğe bakınız">Düzenli ifadeler</a>in tamamı
+      kullanılabilmektedir. Örneğin, <code><em>URL-yolu</em></code> ile harf
+      büyüklüğüne duyarsız eşleşmeler sağlayacak takma adlar
+      kullanılabilir:</p>
 
     <div class="example"><p><code>
       AliasMatch (?i)^/image(.*) /ftp/pub/image$1
     </code></p></div>
+
+    <p><code class="directive"><a href="#alias">Alias</a></code>
+      ve <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> yönergeleri
+      arasındaki başlıca fark <code class="directive"><a href="#alias">Alias</a></code>
+      yönergesinin, URI'nin ek parçasını, eşleşen parçayı geçip sağ tarafta
+      dosya yolunun ucuna kendiliğinden kopyalamasıdır. <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> bunu böyle yapmaz. Yani hemen
+      her durumda, düzenli ifadenin istenen URI'nin tamamıyla baştan sona
+      eşleşmesi ve yer değiştirmeyi sağ tarafta yapması istenir.</p>
+
+    <p>Başka bir deyişle, basitçe
+      <code class="directive"><a href="#alias">Alias</a></code> yerine
+      <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> yazmakla aynı etkiyi
+      alamazsınız. En azından düzenli ifadenin başına bir <code>^</code> ve
+      sonuna bir <code>(.*)$</code>, ikinci değiştirgenin sonuna da bir
+      <code>$1</code> eklemeniz gerekir.</p>
+
+    <p>Örneğin aşağıdakini AliasMatch ile değiştirmek isteyelim:</p>
+
+    <div class="example"><p><code>
+      Alias /image/ /ftp/pub/image/
+    </code></p></div>
+
+    <p>Bu eşdeğer DEĞİLdir - bunu yapmayın!  Bu herhangi bir yerinde /image/
+      dizgesi bulunan tüm istekleri /ftp/pub/image/ altına gönderecektir:</p>
+
+    <div class="example"><p><code>
+      AliasMatch /image/ /ftp/pub/image/
+    </code></p></div>
+
+    <p>Aynı etkiyi elde etmek için bu gerekiyor:</p>
+
+    <div class="example"><p><code>
+      AliasMatch ^/image/(.*)$ /ftp/pub/image/$1
+    </code></p></div>
+
+    <p>Şüphesiz, <code class="directive"><a href="#alias">Alias</a></code> yönergesini
+      çalıştığı yerde <code class="directive"><a href="#aliasmatch">AliasMatch</a></code>
+      kullanmanın hiç gereği yoktur. <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> daha karmaşık şeyler yapmamızı sağlar. Örneğin
+      farklı dosya çeşitlerini farklı dizinlerden sunmak isteyelim:</p>
+
+    <div class="example"><p><code>
+      AliasMatch ^/image/(.*)\.jpg$ /files/jpg.images/$1.jpg<br />
+      AliasMatch ^/image/(.*)\.gif$ /files/gif.images/$1.gif
+    </code></p></div>
+
   
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -219,7 +265,9 @@ yönlendirir.</td></tr>
       <code><em>URL-yolu</em></code> olarak göreli yollara izin verilmez.</p>
 
     <p><code><em>URL</em></code> ise ya bir şema ve konak ismi ile başlayan
-      bir mutlak URL ya da bir bölü çizgisi ile başlayan bir URL yolu olabilir. İkinci durumda URL yolunun başına geçerli sunucu ismi ve şemayı sunucu ekler.</p>
+      bir mutlak URL ya da bir bölü çizgisi ile başlayan bir URL yolu olabilir.
+      İkinci durumda URL yolunun başına geçerli sunucu ismi ve şemayı sunucu
+      ekler.</p>
 
     <p><code><em>URL-yolu</em></code> ile başlayan istekler istemciye hedef
       <code><em>URL</em></code> konumuna bir yönlendirme isteği olarak
@@ -228,17 +276,21 @@ yönlendirir.</td></tr>
 
     <div class="example"><h3>Örnek:</h3><p><code>
       # Farklı bir konaktaki bir URL'ye yönlendirme<br />
-      Redirect /hizmet http://iki.mesela.dom/hizmet<br />
+      Redirect /hizmet http://iki.example.com/hizmet<br />
       <br />
       # Aynı konak üzerinde yönlendirme<br />
       Redirect /bir /iki
     </code></p></div>
 
-    <p>İstemcinin yaptığı <code>http://mesela.dom/hizmet/fesmekan.txt</code>
+    <p>İstemcinin yaptığı <code>http://example.com/hizmet/fesmekan.txt</code>
       isteğine karşılık istemciye isteği
-      <code>http://iki.mesela.dom/hizmet/fesmekan.txt</code> olarak yapması
-      söylenecektir. Sadece tam yol parçaları eşleştirilir, bu nedenle
-      <code>http://mesela.dom/hizmetfesmekan.txt</code> isteği yukarıdaki
+      <code>http://iki.example.com/hizmet/fesmekan.txt</code> olarak yapması
+      söylenecektir. Bu <code>GET</code> isteklerinde de geçerlidir. Örneğin,
+      <code>http://example.com/hizmet/foo.pl?q=23&amp;a=42</code> isteği
+      <code>http://iki.example.com/hizmet/foo.pl?q=23&amp;a=42</code> adresine
+      yönlendirilir. <code>POST</code>'ların iptal edileceğini unutmayın.<br />
+      Sadece tam yol parçaları eşleştirilir, bu nedenle
+      <code>http://example.com/hizmetfesmekan.txt</code> isteği yukarıdaki
       yönlendirme ile eşleşmeyecektir. Düzenli ifadelerin kullanıldığı daha
       karmaşık eşleşmeler için <code class="directive"><a href="#redirectmatch">RedirectMatch</a></code> yönergesine bakınız.</p>
 
@@ -274,16 +326,17 @@ yönlendirir.</td></tr>
         belirtilmez.</dd>
     </dl>
 
-    <p>Diğer durum kodları için <code><em>durum</em></code> olarak sayısal
-      durum kodu belirtilir. Eğer durum 300 ile 399 arasındaysa bir
-      <code><em>URL</em></code> belirtmek gereklidir, yoksa belirtilmez.
-      Belirtilecek durum kodunu Apache’nin bilmesi gerektiğine dikkat ediniz
-      (<code>http_protocol.c</code> dosyasında bulunan
+    <p>Diğer durum kodları için <code><em>durum</em></code> değiştirgesiyle
+      sayısal durum kodu belirtilir. Eğer durum 300 ile 399 arasındaysa bir
+      <code><em>URL</em></code> belirtmek gereklidir. Aksi takdirde,
+      <var>URL</var> bileşeni ihmal edilmelidir. Belirtilecek durum kodunun
+      geçerli bir HTTP Status kodu olmalı ve Apache HTTP Sunucusu kodu
+      bilmelidir (<code>http_protocol.c</code> dosyasında bulunan
       <code>send_error_response</code> işlevine bakınız).</p>
 
     <div class="example"><h3>Örnek:</h3><p><code>
-      Redirect permanent /bir http://mesela.dom/iki<br />
-      Redirect 303 /yedi http://mesela.dom/baskabisey
+      Redirect permanent /bir http://example.com/iki<br />
+      Redirect 303 /yedi http://example.com/baskabisey
     </code></p></div>
   
 </div>
@@ -309,9 +362,16 @@ yönlendirme gönderir.</td></tr>
       yazılabilir:</p>
 
     <div class="example"><p><code>
-      RedirectMatch (.*)\.gif$ http://baska.sunucu.dom$1.jpg
+      RedirectMatch (.*)\.gif$ http://baska.example.com$1.jpg
     </code></p></div>
-  
+
+    <p><code class="directive"><a href="#alias">Alias</a></code> ve
+      <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> arasındaki farklarla
+      ilgili hususlar <code class="directive"><a href="#redirect">Redirect</a></code> ve
+      <code class="directive"><a href="#redirectmatch">RedirectMatch</a></code> arasındakilere de
+      uygulanır. Ayrıntılar için  <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> yönergesine bakınız.</p>
+
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="RedirectPermanent" id="RedirectPermanent">RedirectPermanent</a> <a name="redirectpermanent" id="redirectpermanent">Yönergesi</a></h2>
@@ -365,9 +425,9 @@ URL’ye yönlendirir.</td></tr>
       ScriptAlias /cgi-bin/ /siteler/cgi-bin/
     </code></p></div>
 
-    <p><code>http://sunucum/cgi-bin/foo</code> şeklindeki bir istek sunucunun
-      <code>/siteler/cgi-bin/foo</code> betiğini çalıştırmasına sebep olur. Bu
-      yapılandırma aslında şuna eşdeğerdir:</p>
+    <p><code>http://example.com/cgi-bin/foo</code> şeklindeki bir istek
+      sunucunun <code>/siteler/cgi-bin/foo</code> betiğini çalıştırmasına sebep
+      olur. Bu yapılandırma aslında şuna eşdeğerdir:</p>
 
     <div class="example"><p><code>
       Alias /cgi-bin/ /siteler/cgi-bin/<br />
@@ -445,7 +505,23 @@ eşler ve hedefi bir CGI betiği olarak çalıştırır.</td></tr>
     <div class="example"><p><code>
       ScriptAliasMatch ^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
     </code></p></div>
-  
+
+    <p>AliasMatch yönergesindeki gibi, <a class="glossarylink" href="../glossary.html#rexex" title="sözlüğe bakınız">düzenli
+      ifadeler</a>in tamamı tüm güçleriyle kullanılabilmektedir.
+      Örneğin, <code><em>URL-yolu</em></code> için harf büyüklüğüne duyarsız
+      eşleşmeli bir takma ad oluşturmak mümkünür:</p>
+
+    <div class="example"><p><code>
+      ScriptAliasMatch (?i)^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
+    </code></p></div>
+
+    <p><code class="directive"><a href="#alias">Alias</a></code> ve
+      <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> arasındaki farklarla
+      ilgili hususlar <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> ve
+      <code class="directive"><a href="#scriptaliasmatch">ScriptAliasMatch</a></code> arasındakilere
+      de uygulanır. Ayrıntılar için  <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> yönergesine bakınız.</p>
+
+
 </div>
 </div>
 <div class="bottomlang">
