@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 926409:1304805 (outdated) -->
+<!-- English Revision: 1304805 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -237,7 +237,8 @@
 
       <dt><module>mod_auth_dbm</module></dt>
 
-      <dd><directive module="mod_auth_dbm">AuthDBMType</directive> yönergesi
+      <dd><a href="../2.0/mod/mod_auth_dbm.html#AuthDBMType"
+        ><code>AuthDBMType</code></a> yönergesi
         sayesinde artık çok sayıda DBM tarzı veritabanı türü
         desteklenmektedir.</dd>
     </dl>
