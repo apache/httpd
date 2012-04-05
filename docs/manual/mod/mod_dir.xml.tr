@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 815782:1307726 (outdated) -->
+<!-- English Revision: 1307726 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -47,11 +47,11 @@
       kendiliğinden dizin içerik listesi üretimini tamamen iptal
       edebilirsiniz.</p>
 
-    <p>Sunucu <code>http://sunucum/filanca/birdizin</code> şeklinde bir istek
-      aldığında <code>birdizin</code> bir dizinin ismiyse ‘bölü çizgisiyle
-      biten’ bir yönlendirme söz konusudur. Dizinler URL sonuna bir bölü
-      çizgisi eklenmesini gerektirir, bu bakımdan <module>mod_dir</module>
-      modülü isteği <code>http://sunucum/filanca/birdizin/</code> şeklinde
+    <p>Sunucu <code>http://example.com/filanca/birdizin</code> şeklinde bir
+      istek aldığında <code>birdizin</code> bir dizinin ismiyse ‘bölü
+      çizgisiyle biten’ bir yönlendirme söz konusudur. Dizinler URL sonuna bir
+      bölü çizgisi eklenmesini gerektirir, bu bakımdan <module>mod_dir</module>
+      modülü isteği <code>http://example.com/filanca/birdizin/</code> şeklinde
       yönlendirir.</p>
 </summary>
 
@@ -105,6 +105,37 @@
 </directivesynopsis>
 
 <directivesynopsis>
+<name>DirectoryIndexRedirect</name>
+<description>Dizin içerik listeleri için harici bir yönlendirme yapılandırır.
+</description>
+<syntax>DirectoryIndexRedirect on | off | permanent | temp | seeother |
+<var>3xx-kodu</var>
+</syntax>
+<default>DirectoryIndexRedirect off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>Indexes</override>
+<compatibility>Apache HTTP Sunucusunun 2.3.14 ve sonraki sürümlerinde
+    kullanılabilmektedir.</compatibility>
+
+<usage>
+    <p>Öntanımlı olarak, <directive>DirectoryIndex</directive> listeyi
+      istemciye şeffaf olarak seçip gönderir.
+      <directive>DirectoryIndexRedirect</directive> ise harici bir
+      yönlendirmeye sebep olur.</p>
+
+    <example><title>Örnek</title>
+      DirectoryIndexRedirect on
+    </example>
+
+    <p><code>http://example.com/docs/</code> için yapılan bir istek, <code
+      >http://example.com/docs/index.html</code> (mevcutsa) adresine geçici bir
+      yönlendirme döndürür.</p>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>DirectorySlash</name>
 <description>Bölü çizgisi ile biten yönlendirmeleri açar/kapar.</description>
 <syntax>DirectorySlash On|Off</syntax>
@@ -135,7 +166,9 @@
     </ul>
 
     <p>Siz yine de bu etkiyi istemezseniz ve yukarıdaki sebepler de size uygun
-      değilse yönlendirmeyi şöyle kapatabilirsiniz:</p>
+      değilse yönlendirmeyi aşağıdaki gibi kapatabilirsiniz. Ancak bunu
+      yaparken dikkatli olun, bununla ilgili bazı güvenlik sorunları olasılığı
+      vardır.</p>
 
     <example>
         # Aşağıdaki güvenlik uyarısına bakınız!<br />
@@ -158,6 +191,9 @@
       <strong>Fakat bölü çizgisi ile bitmeyen bir istek dizin içeriğinin
       listelenmesi ile sonuçlanırdı.</strong></p>
     </note>
+    <p>Bir yönlendirme sözkonusu olduğunda bazı tarayıcıların yanlışlıkla POST
+      isteklerini GET istekleri haline getirme (böylece POST verisi iptal olur)
+      olasılığı olduğuna da dikkat edin.</p>
 </usage>
 </directivesynopsis>
 <directivesynopsis>
@@ -175,7 +211,7 @@
       Örnek:</p>
 
     <example>
-        <code>FallbackResource not-404.php</code>
+        <code>FallbackResource /not-404.php</code>
     </example>
 
     <p>Bu satırla, (mevcut dosyaları etkilemeden) mevcut olmayan dosyaların
@@ -191,10 +227,22 @@
       yapılandırma yeterli olmaktadır.</p>
 
     <example>
-        <code>FallbackResource index.php</code>
+        <code>FallbackResource /index.php</code>
     </example>
 
     <p>Resim, CSS dosyaları gibi mevcut dosyalar normal olarak sunulur.</p>
+
+    <p><em>http://example.com/blog/</em> gibi bir alt URI <var>yerel-url</var>
+      olarak sağlanır:</p>
+    <example>
+         <code>
+             &lt;Directory /web/example.com/htdocs/blog&gt;<br />
+            <indent>
+                  FallbackResource /blog/index.php<br />
+             </indent>
+             &lt;/Directory&gt;
+         </code>
+    </example>
 </usage>
 </directivesynopsis>
 </modulesynopsis>

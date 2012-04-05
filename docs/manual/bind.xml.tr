@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1174747:1301743 (outdated) -->
+<!-- English Revision: 1301743 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -57,7 +57,7 @@
       seçilmiş bazı adresleri ya da her ikisini de dinlemesi için bunun
       belirtilmesi gerekebilir. Bu çoğunlukla, httpd’nin farklı IP
       adreslerine, konak isimlerine ve portlarına nasıl yanıt vereceğinin
-      belirlendiği <a href="vhosts.html">sanal konak</a> özelliği ile birlikte
+      belirlendiği <a href="vhosts">sanal konak</a> özelliği ile birlikte
       yürür.</p>
 
     <p><directive module="mpm_common">Listen</directive> yönergesi sunucuya
