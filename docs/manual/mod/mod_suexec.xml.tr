@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 713242:1041030 (outdated) -->
+<!-- English Revision: 1041030 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -57,17 +57,19 @@
     <p><directive>SuexecUserGroup</directive> yönergesi CGI programlarını
       çalıştıracak kullanıcı ve grubu belirtmeye yarar. CGI harici istekler
       hala <directive module="mod_unixd">User</directive> yönergesinde
-      belirtilen kullanıcı tarafından yerine getirilir. Bu yönerge,  Apache
-      1.3 yapılandırmasında sanal konak bölümlerindeki <code>User</code> ve
-      <code>Group</code> yönergelerinin yerini almak üzere tasarlanmıştır.</p>
+      belirtilen kullanıcı tarafından yerine getirilir.</p>
 
     <example>
     <title>Örnek</title>
     SuexecUserGroup nobody nogroup
     </example>
 
+    <p>Apache HTTP Sunucusunun 2.3.9 ve sonraki sürümlerinde, bu yönerge
+      belirtildiği halde <directive module="mod_unixd">Suexec</directive>
+      özelliği etkinleştirilmemişse Apache httpd başlatılamaz.</p>
 </usage>
-
+<seealso><directive module="mod_unixd">Suexec</directive></seealso>
 </directivesynopsis>
+
 </modulesynopsis>
 
