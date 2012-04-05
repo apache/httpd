@@ -26,7 +26,6 @@
 <a href="../ja/mod/worker.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/worker.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Çok evreli ve çok süreçli melez bir HTTP sunucusu oluşturan çok
 süreçlilik modülü.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>MPM</td></tr>
@@ -43,7 +42,7 @@ süreçlilik modülü.</td></tr>
 
     <p>Bu MPM’i denetim altında tutmakta kullanılan en önemli yönergeler, her
       çocuk süreç için konuşlandırılacak evre sayısını belirleyen <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> yönergesi ile devreye
-      sokulacak toplam evre sayısının azamisini belirleyen <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> yönergesidir.</p>
+      sokulacak toplam evre sayısının azamisini belirleyen <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> yönergesidir.</p>
 </div>
 <div id="quickview"><h3 class="directives">Yönergeler</h3>
 <ul id="toc">
@@ -73,8 +72,8 @@ süreçlilik modülü.</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#how-it-works">Nasıl çalışır?</a></li>
 </ul><h3>Ayrıca bakınız:</h3>
 <ul class="seealso">
-<li><a href="../bind.html">Apache’nin kullandığı adres ve portların
-ayarlanması</a></li>
+<li><a href="../bind.html">Apache HTTP Sunucusunun kullandığı adres ve
+  portların ayarlanması</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -85,27 +84,28 @@ ayarlanması</a></li>
       dinleyip gelenleri işlenmek üzere bu sunucu evrelerinden birine
       aktarır.</p>
 
-    <p>Apache daima, gelen isteklere hizmet sunmaya hazır <dfn>yedek</dfn>
+    <p>Apache HTTP Sunucusu daima, gelen isteklere hizmet sunmaya hazır
+      <dfn>yedek</dfn>
       veya boştaki sunucu evrelerinden oluşan bir havuzu canlı tutmaya
       çalışır. Bu suretle, istemcilere isteklerinin sunulması için yeni çocuk
       süreçlerin çatallanmasını, dolayısıyla yeni evrelerin
       konuşlandırılmasını beklemek gerekmez. Başlangıçta çalıştırılacak çocuk
       süreçlerin sayısı <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code> yönergesinde belirtilir.
-      Apache, çalışma süresi boyunca <code class="directive"><a href="../mod/mpm_common.html#minsparethreads">MinSpareThreads</a></code> ve <code class="directive"><a href="../mod/mpm_common.html#maxsparethreads">MaxSpareThreads</a></code> yönergeleri ile belirtilen sınırlar
+      Apache httpd, çalışma süresi boyunca <code class="directive"><a href="../mod/mpm_common.html#minsparethreads">MinSpareThreads</a></code> ve <code class="directive"><a href="../mod/mpm_common.html#maxsparethreads">MaxSpareThreads</a></code> yönergeleri ile belirtilen sınırlar
       dahilinde kalmak üzere gerektiğinde süreçleri öldürerek gerektiğinde
       yenilerini devreye alarak tüm süreçlerdeki toplam evre sayısını sabit
       tutmaya çalışır. Bu işlem kendiliğinden çok iyi yürüdüğünden bu
       yönergelere öntanımlı değerlerinden farklı değerlerin atanması nadiren
       gerekli olur. Aynı anda hizmet sunulabilecek istemcilerin sayısı (yani,
-      tüm süreçlerin toplam evre sayısı) <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> yönergesi ile belirlenir. Etkin çocuk
-      süreçlerin sayısı ise <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> yönergesindeki değerin <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> yönergesindeki değere
+      tüm süreçlerin toplam evre sayısı) <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> yönergesi ile belirlenir. Etkin çocuk
+      süreçlerin sayısı ise <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> yönergesindeki değerin <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> yönergesindeki değere
       bölünmesi ile elde edilir.</p>
 
     <p>Bu iki yönerge aynı anda etkin olabilecek çocuk süreçlerin ve her
       çocuk süreçteki sunucu evreleri sayısının üst sınırını belirler ve bu
       sınır sadece ana sunucu tamamen durdurulup yeniden başlatılarak
       değiştirilebilir. <code class="directive"><a href="../mod/mpm_common.html#serverlimit">ServerLimit</a></code> yönergesinin değeri etkin çocuk süreç
-      sayısının üst sınırı olup <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> yönergesindeki değerin <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> yönergesindeki değere
+      sayısının üst sınırı olup <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> yönergesindeki değerin <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> yönergesindeki değere
       bölünmesi ile elde değere eşit veya bundan küçük olması gerekir.
       <code class="directive"><a href="../mod/mpm_common.html#threadlimit">ThreadLimit</a></code> yönergesinin
       değeri ise sunucu evreleri sayısının üst sınırını belirler ve <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> yönergesindeki değerden
@@ -114,17 +114,17 @@ ayarlanması</a></li>
     <p>Sonlandırma sırasında etkin çocuk süreçlere ek olarak mevcut istemci
       bağlantılarını işleme sokmaya çalışan tek bir sunucu evresinden başka
       fazladan bir çocuk süreç etkin kalabileceği gibi sonlandırılacak süreç
-      sayısının en fazla <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> olması gerekirse de gerçekte sayı bundan küçük
-      olabilir.  Şöyle bir işlemle tek bir çocuk sürecin sonlandırılması
+      sayısının en fazla <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> olması gerekirse de gerçekte sayı bundan
+      küçük olabilir.  Şöyle bir işlemle tek bir çocuk sürecin sonlandırılması
       iptal edilerek bu gibi durumlara karşı önlem alınabilir:</p>
 
     <ul>
-      <li><code class="directive"><a href="../mod/mpm_common.html# maxrequestsperchild"> MaxRequestsPerChild</a></code>
+      <li><code class="directive"><a href="../mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code>
         yönergesinin değeri sıfır yapılır.</li>
 
       <li><code class="directive"><a href="../mod/mpm_common.html#maxsparethreads">MaxSpareThreads</a></code> ve
-        <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> yönergelerinin
-        değerleri birbirine eşitlenir.</li>
+        <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code>
+        yönergelerinin değerleri birbirine eşitlenir.</li>
     </ul>
 
     <p><code class="module"><a href="../mod/worker.html">worker</a></code> modülünün öntanımlı süreç-evre yapılandırması
@@ -133,7 +133,7 @@ ayarlanması</a></li>
     <div class="example"><p><code>
       ServerLimit         16<br />
       StartServers         2<br />
-      MaxClients         150<br />
+      MaxRequestWorkers  150<br />
       MinSpareThreads     25<br />
       MaxSpareThreads     75<br />
       ThreadsPerChild     25
@@ -141,19 +141,28 @@ ayarlanması</a></li>
 
     <p>Unix altında 80. portu dinleyebilmek için ana sürecin root tarafından
       çalıştırılmış olması gerekirse de çocuk süreçler ve evreler Apache
-      tarafından daha az yetkili bir kullanıcının aidiyetinde
-      çalıştırılırlar. Apache’nin çocuk süreçlerinin kullanıcı ve gruplarını
-      ayarlamak için <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> ve
-      <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code> yönergeleri kullanılır.
+      httpd tarafından daha az yetkili bir kullanıcının aidiyetinde
+      çalıştırılırlar. Apache httpd’nin çocuk süreçlerinin kullanıcı ve
+      gruplarını ayarlamak için <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code>
+      ve <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code> yönergeleri
+      kullanılır.
       Çocuk süreçlerin sunacakları içeriği okumaya yetkili olmaları gerekir,
       fakat bu yetkinin mümkün olduğunca kısıtlı tutulmasına çalışılmalıdır.
       Bundan başka, <code class="program"><a href="../programs/suexec.html">suexec</a></code> kullanılmadığı takdirde, bu
       yönergeler CGI betikleri tarafından miras alınacak yetkili kullanıcı
       ve grubu da ayarlarlar.</p>
 
-    <p><code class="directive"><a href="../mod/mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></code>
+    <p><code class="directive"><a href="../mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code>
       yönergesi ana sunucunun eski süreçleri öldürüp yenilerini oluşturmayı
       ne kadar sıklıkla yapacağını denetler.</p>
+
+    <p>Bu MPM, gürleyen sürü sorunu ortaya çıktığında (genelde çok sayıda
+      dinlenen soket varlığında) gelen bağlantılara erişimi dizgileştirmek için
+      <code>mpm-accept</code> muteksini kullanır. Bu muteksin gerçeklenimle
+      ilgili hususları <code class="directive"><a href="../mod/core.html#mutex">Mutex</a></code> yönergesi ile
+      yapılandırılabilir. Bu muteks hakkında ek bilgi  için <a href="../misc/perf-tuning.html">başarımın arttırılması</a>
+      belgesine bakınız.</p>
+
 </div>
 </div>
 <div class="bottomlang">
