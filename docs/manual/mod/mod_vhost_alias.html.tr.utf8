@@ -142,8 +142,8 @@ Sanal Barındırma</a></li>
       VirtualDocumentRoot /usr/local/apache/sankonlar/%0
     </code></p></div>
 
-    <p><code>http://mesela.dom/dizin/dosya.html</code> için yapılan bir istek
-      <code>/usr/local/apache/sankonlar/mesela.dom/dizin/dosya.html</code>
+    <p><code>http://example.com/dizin/dosya.html</code> için yapılan bir istek
+      <code>/usr/local/apache/sankonlar/example.com/dizin/dosya.html</code>
       dosyası ile yerine getirilecektir.</p>
 
     <p>Çok büyük sayıda sanal konak için <code>sankonlar</code> dizininin
@@ -155,9 +155,9 @@ Sanal Barındırma</a></li>
       VirtualDocumentRoot /usr/local/apache/sankonlar/%3+/%2.1/%2.2/%2.3/%2
     </code></p></div>
 
-    <p><code>http://falan.filan.mesela.dom/dizin/dosya.html</code> için
+    <p><code>http://falan.filan.example.com/dizin/dosya.html</code> için
       yapılan bir istek
-      <code>/usr/local/apache/sankonlar/mesela.dom/f/i/l/filan/dizin/dosya.html
+    <code>/usr/local/apache/sankonlar/example.com/f/i/l/filan/dizin/dosya.html
       </code> ile yerine getirilecektir.</p>
 
     <p>Bu sefer de parçaları ismin sonundan toplayalım: </p>
@@ -167,8 +167,8 @@ Sanal Barındırma</a></li>
 </code></p></div>
 
     <p>Bu durumda istek
-      <code>/usr/local/apache/sankonlar/mesela.dom/n/a/l/filan/dizin/dosya.html
-      </code> ile karşılanırdı.</p>
+    <code>/usr/local/apache/sankonlar/example.com/n/a/l/filan/dizin/dosya.html
+    </code>ile karşılanırdı.</p>
 
     <p>Şöyle bir şey de yapabilirsiniz:</p>
 
@@ -177,7 +177,7 @@ Sanal Barındırma</a></li>
 </code></p></div>
 
     <p>Bu örnek için istek
-      <code>/usr/local/apache/sankonlar/mesela.dom/f/i/l/an/dizin/dosya.html
+      <code>/usr/local/apache/sankonlar/example.com/f/i/l/an/dizin/dosya.html
       </code> dosyasından karşılanırdı.</p>
 
     <p>IP’ye dayalı sanal konaklar için yapılandırma dosyanızda şu satırlar
@@ -190,12 +190,12 @@ Sanal Barındırma</a></li>
       VirtualScriptAliasIP  /usr/local/apache/sankonlar/%1/%2/%3/%4/cgi-bin
     </code></p></div>
 
-    <p><code>http://falan.filan.mesela.dom/dizin/dosya.html</code> için
-      yapılan bir istek eğer <code>falan.filan.mesela.dom</code>’un IP adresi
+    <p><code>http://falan.filan.example.com/dizin/dosya.html</code> için
+      yapılan bir istek eğer <code>falan.filan.example.com</code>’un IP adresi
       10.20.30.40 olsaydı,
       <code>/usr/local/apache/sankonlar/10/20/30/40/belgeler/dizin/dosya.html
       </code> dosyası ile karşılanırdı.
-      <code>http://falan.filan.mesela.dom/cgi-bin/betik.pl</code> için yapılan
+      <code>http://falan.filan.example.com/cgi-bin/betik.pl</code> için yapılan
       bir istek ise
       <code>/usr/local/apache/sankonlar/10/20/30/40/cgi-bin/betik.pl</code>
       betiğinin çalıştırılması ile sağlanırdı.</p>
@@ -208,7 +208,7 @@ Sanal Barındırma</a></li>
     VirtualDocumentRoot /usr/local/apache/sankonlar/%2.0.%3.0
 </code></p></div>
 
-    <p>Bu durumda <code>http://falan.filan.mesela.dom/dizin/dosya.html</code>
+    <p>Bu durumda <code>http://falan.filan.example.com/dizin/dosya.html</code>
       için yapılan bir istek
       <code>/usr/local/apache/sankonlar/filan.mesela/dizin/dosya.html</code>
       dosyası ile karşılanacaktır.</p>

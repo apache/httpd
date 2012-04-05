@@ -987,7 +987,7 @@ Certificate verification</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#startthreads">StartThreads <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucunun başlatılması sırasında oluşturulan evrelerin sayısını
   belirler.</td></tr>
 <tr><td><a href="mod_substitute.html#substitute">Substitute <var>s/pattern/substitution/[infq]</var></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Pattern to filter the response content</td></tr>
-<tr class="odd"><td><a href="mod_unixd.html#suexec">Suexec On|Off</a></td><td></td><td>s</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Enable or disable the suEXEC feature</td></tr>
+<tr class="odd"><td><a href="mod_unixd.html#suexec">Suexec On|Off</a></td><td></td><td>s</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">suEXEC özelliğini etkin veya etkisiz yapar</td></tr>
 <tr><td><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup <em>Kullanıcı Grup</em></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">CGI betiklerini çalıştıracak kullanıcı ve grup belirtilir.
 </td></tr>
 <tr class="odd"><td><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Çocuk süreç başına ayarlanabilir evre sayısının üst sınırını

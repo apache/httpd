@@ -26,7 +26,6 @@
 <a href="../ko/mod/mod_userdir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_userdir.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Kullanıcılara özel dizinler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>userdir_module</td></tr>
@@ -34,7 +33,7 @@
 <h3>Özet</h3>
 
 <p>Bu modül kullanıcılara özel dizinlere
-  <code>http://mesela.dom/~kullanıcı/</code> sözdizimi kullanılarak
+  <code>http://example.com/~kullanıcı/</code> sözdizimi kullanılarak
   erişilebilmesini mümkün kılar.</p>
 </div>
 <div id="quickview"><h3 class="directives">Yönergeler</h3>
@@ -87,7 +86,7 @@
     <p><code>Userdir</code> yönergesinde ne <code>enabled</code> ne de
       <code>disabled</code> varsa, argüman bir dosya ismi kalıbı olarak ele
       alınır ve kullanıcı belge kök dizininin yolunu oluşturmakta kullanılır.
-      <code>http://mesela.dom/~ali/bir/iki.html</code> şöyle dönüştürülür:</p>
+      <code>http://example.com/~ali/bir/iki.html</code> şöyle dönüştürülür:</p>
 
     <table>
       <tr><th>Kullanılan UserDir yönergesi&nbsp;&nbsp;&nbsp;&nbsp;</th>
@@ -105,12 +104,12 @@
     <table>
       <tr><th>Kullanılan UserDir yönergesi&nbsp;&nbsp;&nbsp;&nbsp;</th>
           <th>Elde edilen yönlendirme</th></tr>
-      <tr><td>UserDir http://mesela.dom/users</td>
-          <td>http://mesela.dom/users/ali/bir/iki.html</td></tr>
-      <tr><td>UserDir http://mesela.dom/*/usr</td>
-          <td>http://mesela.dom/ali/usr/bir/iki.html</td></tr>
-      <tr><td>UserDir http://mesela.dom/~*/</td>
-          <td>http://mesela.dom/~ali/bir/iki.html</td></tr>
+      <tr><td>UserDir http://example.com/users</td>
+          <td>http://example.com/users/ali/bir/iki.html</td></tr>
+      <tr><td>UserDir http://example.com/*/usr</td>
+          <td>http://example.com/ali/usr/bir/iki.html</td></tr>
+      <tr><td>UserDir http://example.com/~*/</td>
+          <td>http://example.com/~ali/bir/iki.html</td></tr>
     </table>
 
     <div class="note">
@@ -143,19 +142,19 @@
     <p>Birden fazla dizin belirtmek de mümkündür:</p>
 
     <div class="example"><p><code>
-      Userdir public_html /usr/siteler http://mesela.dom/
+      Userdir public_html /usr/siteler http://example.com/
     </code></p></div>
 
-    <p>Bu örneğe göre, <code>http://mesela.dom/~ali/bir/iki.html</code>
+    <p>Bu örneğe göre, <code>http://example.com/~ali/bir/iki.html</code>
       şeklinde bir istek alındığında sunucu önce
-      <code>http://mesela.dom/~ali/bir/iki.html</code> yönlendirmesini
+      <code>http://example.com/~ali/bir/iki.html</code> yönlendirmesini
       deneyecektir. Onu bulamazsa isteği
       <code>/usr/siteler/ali/bir/iki.html</code> dosyasını arayacak onu da
-      bulamazsa istemciyi <code>http://mesela.dom/ali/bir/iki.html</code>
+      bulamazsa istemciyi <code>http://example.com/ali/bir/iki.html</code>
       adresine yönlendirecektir.</p>
 
     <p>Argüman listesine bir yönlendirme ekleyecekseniz, bu, listenin son
-      elemanı olmalıdır. Apache yönlendirmenin başarılı sonuç verip
+      elemanı olmalıdır. Apache httpd yönlendirmenin başarılı sonuç verip
       vermediğini bilemeyecektir. Bu bakımdan, listede bu yönlendirmeden
       sonra bir yönlendirme daha bulunması daha iyi olacaktır.</p>
 
@@ -163,11 +162,16 @@
       olarak etkin değildir. Daha önceki sürümlerde bir <code class="directive"><a href="#userdir">UserDir</a></code> yönergesinin yokluğunda
       <code>UserDir public_html</code> öntanımlıydı.</p>
 
+    <div class="note"><h3>Ayrıntıların birleştirilmesi</h3>
+    <p>Etkinleştirilen ve etkisizleştirilen kullanıcılara özgü listeler küresel
+      etki alanından sanal konak etki alanına aktarılırken yer değiştirme
+      yapılır, mevcutla birleştirilmez.</p></div>
+
 
 <h3>Ayrıca bakınız:</h3>
 <ul>
 <li>
-  <a href="../howto/public_html.html">public_html eğitmeni</a>
+  <a href="../howto/public_html.html">Kullanıcı Dizinleri</a>
 </li>
 </ul>
 </div>

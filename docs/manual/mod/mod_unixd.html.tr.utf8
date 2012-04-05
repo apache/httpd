@@ -24,7 +24,6 @@
 <p><span>Mevcut Diller: </span><a href="../en/mod/mod_unixd.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../tr/mod/mod_unixd.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Unix ailesi platformlar için temel (gerekli) güvenlik.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr></table>
 </div>
@@ -35,7 +34,10 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#suexec">Suexec</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#user">User</a></li>
 </ul>
-</div>
+<h3>Ayrıca bakınız:</h3>
+<ul class="seealso">
+<li><a href="../suexec.html">suEXEC desteği</a></li>
+</ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ChrootDir" id="ChrootDir">ChrootDir</a> <a name="chrootdir" id="chrootdir">Yönergesi</a></h2>
@@ -47,10 +49,12 @@
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td><code class="module"><a href="../mod/mod_unixd.html">mod_unixd</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache HTTP Sunucusunun 2.2.10 and laterve sonraki sürümlerinde
+    kullanılabilir.</td></tr>
 </table>
-    <p>Bu yönerge httpd 2.2.9(?) ve sonrasında mevcuttur ve sunucuya
-      başlatıldıktan sonra ağdan gelen istekleri kabul etmeden önce
-      belirtilen dizine <var>chroot(8)</var> yapmasını söyler.</p>
+    <p>Bu yönerge sunucuya başlatıldıktan sonra ağdan gelen istekleri kabul
+      etmeden önce belirtilen dizine <var>chroot(8)</var> yapmasını söyler.</p>
+
     <p>Sunucuyu chroot altında çalıştırmanın basit bir işlem olmadığına ve
       özellikle CGI veya PHP gibi betikler çalıştırıyorsanız ek ayarlamalar
       yapmanız gerektiğine dikkat ediniz. Lütfen, bu özelliği kullanmaya
@@ -108,16 +112,22 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Suexec" id="Suexec">Suexec</a> <a name="suexec" id="suexec">Yönergesi</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Enable or disable the suEXEC feature</td></tr>
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>suEXEC özelliğini etkin veya etkisiz yapar</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Suexec On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>On if suexec binary exists with proper owner and mode,
-Off otherwise</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>suexec çalıştırılabiliri uygun sahip ve kip ile mevcutsa On, değilse
+    Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_unixd</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Available in Apache httpd 2.3.9 and later</td></tr>
-</table><p>Bu yönergenin belgesi henüz Türkçeye çevrilmedi.
-            Lütfen İngilizce sürümüne bakınız.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache HTTP Sunucusunun 2.3.9 ve sonraki sürümlerinde
+    kullanılabilir.</td></tr>
+</table>
+    <p>On olduğunda, suexec çalıştırılabiliri yoksa veya dosya kipi ve sahibi
+      geçersizse httpd başlatılamaz.</p>
+    <p>Off olduğunda, suexec çalıştırılabiliri varsa ve hatta dosya kipi ve
+      sahibi geçerli olsa bile suEXEC özelliği iptal edilir.</p>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="User" id="User">User</a> <a name="user" id="user">Yönergesi</a></h2>
 <table class="directive">

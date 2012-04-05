@@ -26,7 +26,6 @@
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/install.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
 
     <p>Bu belge Apache HTTP Sunucusunun sadece Unix ve Unix benzeri
@@ -126,6 +125,29 @@
     <p>Apache httpd’yi derleyebilmek için şunlar mevcut olmalıdır:</p>
 
     <dl>
+      <dt>APR ve APR-Util</dt>
+      <dd>APR ve APR-Util'in sisteminizde kurulu olduğundan emin olun. Kurulu
+        değilse veya sisteminizce sağlanmış sürümlerini kullanmak
+        istemiyorsanız APR ve APR-Util'in ikisini birden <a href="http://apr.apache.org/">Apache APR</a>'den indirin ve onları
+        Apache httpd dağıtımını açtığınız dizinin altında
+        <code>./srclib/apr</code> ve <code>./srclib/apr-util</code> dizinlerine
+        açın (Dizin isimlerinin sürüm numarası içermemesine dikkat edin,
+        örneğin, APR dağıtımı ./srclib/apr/ altında olsun.) ve
+        <code>./configure</code> betiğinin <code>--with-included-apr</code>
+        seçeneğini kullanın. Bazı platformlarda, httpd'nin, kurulu APR ve
+        APR-Util kopyanıza karşın derlenmesini sağlamak için ilgili
+        <code>-dev</code> paketlerini kurmanız gerekebilir.</dd>
+
+      <dt>Perl-Uyumlu Düzenli İfade Kütüphanesi (PCRE)</dt>
+      <dd>Bu kütüphane gereklidir, ancak artık httpd ile birlikte
+        dağıtılmamaktadır. Kaynak kodunu <a href="http://www.pcre.org/">http://www.pcre.org</a> sitesinden indirin ve bir port veya paket
+        olarak kurun. Eğer derleme sisteminiz PCRE kurulumunuz tarafından
+        kurulan <code>pcre-config</code> betiğini bulamazsa
+        <code>--with-pcre</code> seçeneğini kullanarak yerini belirtin. Bazı
+        platformlarda, httpd'nin, kurulu PCRE kopyanıza karşın derlenmesini
+        sağlamak için ilgili <code>-dev</code> paketlerini kurmanız
+        gerekebilir.</dd>
+
       <dt>Disk Alanı</dt>
       <dd>Geçici olarak en azından 50 MB boş disk alanınız olduğundan emin
         olunuz. Kurulumdan sonra sunucu yaklaşık 10 MB disk alanı kaplıyor
