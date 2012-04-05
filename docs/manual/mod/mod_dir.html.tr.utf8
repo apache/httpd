@@ -27,7 +27,6 @@
 <a href="../ko/mod/mod_dir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_dir.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Bölü çizgisiyle biten yönlendirmeleri yapar ve dizin içeriği dosyalarını sunar.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>dir_module</td></tr>
@@ -48,11 +47,11 @@
       kendiliğinden dizin içerik listesi üretimini tamamen iptal
       edebilirsiniz.</p>
 
-    <p>Sunucu <code>http://sunucum/filanca/birdizin</code> şeklinde bir istek
-      aldığında <code>birdizin</code> bir dizinin ismiyse ‘bölü çizgisiyle
-      biten’ bir yönlendirme söz konusudur. Dizinler URL sonuna bir bölü
-      çizgisi eklenmesini gerektirir, bu bakımdan <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code>
-      modülü isteği <code>http://sunucum/filanca/birdizin/</code> şeklinde
+    <p>Sunucu <code>http://example.com/filanca/birdizin</code> şeklinde bir
+      istek aldığında <code>birdizin</code> bir dizinin ismiyse ‘bölü
+      çizgisiyle biten’ bir yönlendirme söz konusudur. Dizinler URL sonuna bir
+      bölü çizgisi eklenmesini gerektirir, bu bakımdan <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code>
+      modülü isteği <code>http://example.com/filanca/birdizin/</code> şeklinde
       yönlendirir.</p>
 </div>
 <div id="quickview"><h3 class="directives">Yönergeler</h3>
@@ -116,19 +115,33 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="DirectoryIndexRedirect" id="DirectoryIndexRedirect">DirectoryIndexRedirect</a> <a name="directoryindexredirect" id="directoryindexredirect">Yönergesi</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Configures an external redirect for directory indexes.
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Dizin içerik listeleri için harici bir yönlendirme yapılandırır.
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>DirectoryIndexRedirect on | off | permanent | temp | seeother |
-<var>3xx-code</var>
+<var>3xx-kodu</var>
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>DirectoryIndexRedirect off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_dir</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Available in version 2.3.14 and later</td></tr>
-</table><p>Bu yönergenin belgesi henüz Türkçeye çevrilmedi.
-            Lütfen İngilizce sürümüne bakınız.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache HTTP Sunucusunun 2.3.14 ve sonraki sürümlerinde
+    kullanılabilmektedir.</td></tr>
+</table>
+    <p>Öntanımlı olarak, <code class="directive">DirectoryIndex</code> listeyi
+      istemciye şeffaf olarak seçip gönderir.
+      <code class="directive">DirectoryIndexRedirect</code> ise harici bir
+      yönlendirmeye sebep olur.</p>
+
+    <div class="example"><h3>Örnek</h3><p><code>
+      DirectoryIndexRedirect on
+    </code></p></div>
+
+    <p><code>http://example.com/docs/</code> için yapılan bir istek, <code>http://example.com/docs/index.html</code> (mevcutsa) adresine geçici bir
+      yönlendirme döndürür.</p>
+
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="DirectorySlash" id="DirectorySlash">DirectorySlash</a> <a name="directoryslash" id="directoryslash">Yönergesi</a></h2>
 <table class="directive">
@@ -161,7 +174,9 @@
     </ul>
 
     <p>Siz yine de bu etkiyi istemezseniz ve yukarıdaki sebepler de size uygun
-      değilse yönlendirmeyi şöyle kapatabilirsiniz:</p>
+      değilse yönlendirmeyi aşağıdaki gibi kapatabilirsiniz. Ancak bunu
+      yaparken dikkatli olun, bununla ilgili bazı güvenlik sorunları olasılığı
+      vardır.</p>
 
     <div class="example"><p><code>
         # Aşağıdaki güvenlik uyarısına bakınız!<br />
@@ -183,6 +198,9 @@
       <strong>Fakat bölü çizgisi ile bitmeyen bir istek dizin içeriğinin
       listelenmesi ile sonuçlanırdı.</strong></p>
     </div>
+    <p>Bir yönlendirme sözkonusu olduğunda bazı tarayıcıların yanlışlıkla POST
+      isteklerini GET istekleri haline getirme (böylece POST verisi iptal olur)
+      olasılığı olduğuna da dikkat edin.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -202,7 +220,7 @@
       Örnek:</p>
 
     <div class="example"><p><code>
-        <code>FallbackResource not-404.php</code>
+        <code>FallbackResource /not-404.php</code>
     </code></p></div>
 
     <p>Bu satırla, (mevcut dosyaları etkilemeden) mevcut olmayan dosyaların
@@ -218,10 +236,22 @@
       yapılandırma yeterli olmaktadır.</p>
 
     <div class="example"><p><code>
-        <code>FallbackResource index.php</code>
+        <code>FallbackResource /index.php</code>
     </code></p></div>
 
     <p>Resim, CSS dosyaları gibi mevcut dosyalar normal olarak sunulur.</p>
+
+    <p><em>http://example.com/blog/</em> gibi bir alt URI <var>yerel-url</var>
+      olarak sağlanır:</p>
+    <div class="example"><p><code>
+         <code>
+             &lt;Directory /web/example.com/htdocs/blog&gt;<br />
+            <span class="indent">
+                  FallbackResource /blog/index.php<br />
+             </span>
+             &lt;/Directory&gt;
+         </code>
+    </code></p></div>
 
 </div>
 </div>
