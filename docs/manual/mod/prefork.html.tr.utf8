@@ -26,25 +26,26 @@
 <a href="../ja/mod/prefork.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/prefork.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Evresiz ön çatallamalı HTTP sunucusu oluşturur</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>MPM</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>mpm_prefork_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Kaynak Dosyası:</a></th><td>prefork.c</td></tr></table>
 <h3>Özet</h3>
 
-    <p>Bu çok süreçlilik modülü (MPM) Apache 1.3’ün yaptığı gibi evresiz ve
-      çocuk süreçlerin önceden çatallandığı bir HTTP sunucusu oluşturur.
-      Evresiz kütüphanelerle uyumluluk için evrelemeden kaçınma ihtiyacında
-      olan siteler için uygundur. Ayrıca istekleri birbirlerinden yalıtmak
-      için en iyi MPM’dir, dolayısıyla herhangi bir istekle ilgili bir sorun
-      diğerlerini etkilemez.</p>
+    <p>Bu çok süreçlilik modülü (MPM) evresiz ve
+      çocuk süreçlerin önceden çatallandığı bir HTTP sunucusu oluşturur. Her
+      çocuk süreç gelen bir isteğe yanıt verirken ebeveyn süreç çocuk süreç
+      havuzunu yönetir. Evresiz kütüphanelerle uyumluluk için evrelemeden
+      kaçınma ihtiyacında olan siteler için uygundur. Ayrıca istekleri
+      birbirlerinden yalıtmak için en iyi MPM’dir, dolayısıyla herhangi bir
+      istekle ilgili bir sorun diğerlerini etkilemez.</p>
 
     <p>Bu MPM kendi kendine her duruma çok iyi uyum sağladığından
       yapılandırma yönergeleri ile yapılandırılmaya nadiren ihtiyaç gösterir.
-      Yönergelerin en önemlisi <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> olup, değeri aynı anda almayı umduğunuz istek
-      sayısını işleyebilecek kadar büyük, fiziksel belleğin tüm süreçlerin
-      ihtiyaçlarını karşılamasına yetecek kadar da küçük olması gerekir.</p>
+      Yönergelerin en önemlisi <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> olup, değeri aynı anda almayı umduğunuz
+      istek sayısını işleyebilecek kadar büyük, fiziksel belleğin tüm
+      süreçlerin ihtiyaçlarını karşılamasına yetecek kadar da küçük olması
+      gerekir.</p>
 </div>
 <div id="quickview"><h3 class="directives">Yönergeler</h3>
 <ul id="toc">
@@ -71,24 +72,24 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#how-it-works">Nasıl çalışır?</a></li>
 </ul><h3>Ayrıca bakınız:</h3>
 <ul class="seealso">
-<li><a href="../bind.html">Apache’nin kullandığı adres ve portların
-ayarlanması</a></li>
+<li><a href="../bind.html">Apache HTTP Sunucusunun kullandığı adres ve
+    portların ayarlanması</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="how-it-works" id="how-it-works">Nasıl çalışır?</a></h2>
     <p>Bağlantıları dinleyip gerektiğinde onlara hizmet sunan çocuk süreçleri
-      devreye almak tek bir denetim sürecinin sorumluluğundadır. Apache
+      devreye almak tek bir denetim sürecinin sorumluluğundadır. Apache httpd
       daima, gelen isteklere hizmet vermeye hazır bekleyen en fazla sayıda
       sunucu sürecini <dfn>yedekte tutmaya</dfn> veya boşta bekletmeye
       çalışır. Bu suretle, istemcilere isteklerinin sunulması için yeni çocuk
       süreçlerin çatallanmasını beklemek gerekmez.</p>
 
     <p>Ana sürecin istekleri sunacak çocuk süreçleri oluşturma işlemini nasıl
-      gerçekleştireceği <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code>, <code class="directive"><a href="#minspareservers">MinSpareServers</a></code>, <code class="directive"><a href="#maxspareservers">MaxSpareServers</a></code> ve <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> yönergeleri ile düzenlenir. Apache
+      gerçekleştireceği <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code>, <code class="directive"><a href="#minspareservers">MinSpareServers</a></code>, <code class="directive"><a href="#maxspareservers">MaxSpareServers</a></code> ve <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> yönergeleri ile düzenlenir. Apache httpd
       kendiliğinden her duruma çok iyi uyum sağladığından, genelde, çoğu
       sitenin bu yönergelerin öntanımlı değerlerini değiştirmesi gerekmez.
-      Aynı anda 256’dan fazla isteğe hizmet sunacak sitelerin <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> değerini arttırmaları
+      Aynı anda 256’dan fazla isteğe hizmet sunacak sitelerin <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> değerini arttırmaları
       gerekebilir. Ancak, fiziksel belleği yeterli olmayan sitelerin de
       sunucunun belleği diske takaslamasını önlemek için bu değeri
       azaltmaları gerekebilir. Süreç oluşturmanın ayarlanması ile ilgili daha
@@ -97,17 +98,23 @@ ayarlanması</a></li>
 
     <p>Unix altında 80. portu dinleyebilmek için ana sürecin
       <code>root</code> tarafından çalıştırılmış olması gerekirse de çocuk
-      süreçler Apache tarafından daha az yetkili bir kullanıcının aidiyetinde
-      çalıştırılırlar. Apache’nin çocuk süreçlerinin kullanıcı ve gruplarını
-      ayarlamak için <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> ve
-      <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code> yönergeleri
-      kullanılır. Çocuk süreçlerin sunacakları içeriği okumaya yetkili
-      olmaları gerekir, fakat bu yetkinin mümkün olduğunca kısıtlı
+      süreçler Apache httpd tarafından daha az yetkili bir kullanıcının
+      aidiyetinde çalıştırılırlar. Apache httpd’nin çocuk süreçlerinin
+      kullanıcı ve gruplarını ayarlamak için <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> ve <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code>
+      yönergeleri kullanılır. Çocuk süreçlerin sunacakları içeriği okumaya
+      yetkili olmaları gerekir, fakat bu yetkinin mümkün olduğunca kısıtlı
       tutulmasına çalışılmalıdır.</p>
 
-    <p><code class="directive"><a href="../mod/mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></code>
+    <p><code class="directive"><a href="../mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code>
       yönergesi ana sunucunun eski süreçleri öldürüp yenilerini oluşturmayı
       ne kadar sıklıkla yapacağını denetler.</p>
+
+    <p>Bu MPM, gürleyen sürü sorunu ortaya çıktığında (genelde çok sayıda
+      dinlenen soket varlığında) gelen bağlantılara erişimi dizgileştirmek için
+      <code>mpm-accept</code> muteksini kullanır. Bu muteksin gerçeklenimle
+      ilgili hususları <code class="directive"><a href="../mod/core.html#mutex">Mutex</a></code> yönergesi ile
+      yapılandırılabilir. Bu muteks hakkında ek bilgi  için <a href="../misc/perf-tuning.html">başarımın arttırılması</a>
+      belgesine bakınız.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MaxSpareServers" id="MaxSpareServers">MaxSpareServers</a> <a name="maxspareservers" id="maxspareservers">Yönergesi</a></h2>
@@ -128,13 +135,14 @@ ayarlanması</a></li>
     <p>Bu parametrenin ayarlanması sadece çok meşgul siteler için gerekli
       olabilir. Bu parametreye çok büyük bir değerin atanması oldukça kötü
       bir fikirdir. Eğer bu değeri <code class="directive"><a href="#minspareservers">MinSpareServers</a></code> değerine eşit veya daha küçük bir değere
-      ayarlarsanız, Apache bu değeri kendiliğinden <code class="directive">MinSpareServers</code><code> + 1</code> olarak
+      ayarlarsanız, Apache HTTP Sunucusu bu değeri kendiliğinden <code class="directive">MinSpareServers</code><code> + 1</code> olarak
       değiştirecektir.</p>
 
 <h3>Ayrıca bakınız:</h3>
 <ul>
 <li><code class="directive"><a href="#minspareservers">MinSpareServers</a></code></li>
 <li><code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code></li>
+<li><code class="directive"><a href="../mod/mpm_common.html#maxsparethreads">MaxSpareThreads</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -151,8 +159,12 @@ ayarlanması</a></li>
       çocuk sunucu süreçlerinin asgari sayısını belirler. Boştaki süreç, o an
       bir isteğe hizmet sunmayan süreçtir. Eğer
       <code class="directive">MinSpareServers</code> sayıda süreçten daha az boşta
-      süreç varsa ana süreç sayıyı tamamlamak için saniyede en fazla 1 süreç
-      olmak üzere yeni çocuk süreçler oluşturacaktır.</p>
+      süreç varsa ana süreç sayıyı tamamlamak için yeni çocuk süreçler
+      oluşturacaktır: Bir tane oluşturur, 1 saniye bekler, sonra 2 tane
+      oluşturur, 1 saniye bekler, sonra 4 tane oluşturur ve saniyede 32 çocuk
+      süreç oluşturuluncaya kadar böyle üstel olarak artar. Artış
+      <code class="directive">MinSpareServers</code> ile belirlenen sayıda
+      duracaktır.</p>
 
     <p>Bu parametrenin ayarlanması sadece çok meşgul siteler için gerekli
       olabilir. Bu parametreye çok büyük bir değerin atanması oldukça kötü
@@ -162,6 +174,7 @@ ayarlanması</a></li>
 <ul>
 <li><code class="directive"><a href="#maxspareservers">MaxSpareServers</a></code></li>
 <li><code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code></li>
+<li><code class="directive"><a href="../mod/mpm_common.html#minsparethreads">MinSpareThreads</a></code></li>
 </ul>
 </div>
 </div>

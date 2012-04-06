@@ -332,11 +332,12 @@ module</td></tr>
 <tr class="odd"><td><a href="mod_usertrack.html#cookiestyle">CookieStyle
     <em>Netscape|Cookie|Cookie2|RFC2109|RFC2965</em></a></td><td> Netscape </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Format of the cookie header field</td></tr>
 <tr><td><a href="mod_usertrack.html#cookietracking">CookieTracking on|off</a></td><td> off </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables tracking cookie</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory <var>dizin</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4"><code>core</code> dosyasını dökümlemek üzere Apache’nin geçmeye
-  çalışacağı dizin.</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory <var>dizin</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4"><code>core</code> dosyasını dökümlemek üzere Apache HTTP
+    Sunucusunun geçmeye çalışacağı dizin.</td></tr>
 <tr><td><a href="mod_log_config.html#customlog">CustomLog  <var>dosya</var>|<var>borulu-süreç</var>
 <var>biçem</var>|<var>takma-ad</var>
-[env=[!]<var>ortam-değişkeni</var>]</a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">Günlük dosyasın ismini ve girdi biçemini belirler.</td></tr>
+[env=[!]<var>ortam-değişkeni</var>]|
+expr=<var>ifade</var>]</a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">Günlük dosyasın ismini ve girdi biçemini belirler.</td></tr>
 <tr class="odd"><td><a href="mod_dav.html#dav" id="D" name="D">Dav On|Off|<var>provider-name</var></a></td><td> Off </td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable WebDAV HTTP methods</td></tr>
 <tr><td><a href="mod_dav.html#davdepthinfinity">DavDepthInfinity on|off</a></td><td> off </td><td>skd</td><td>E</td></tr><tr><td class="descr" colspan="4">Allow PROPFIND, Depth: Infinity requests</td></tr>
 <tr class="odd"><td><a href="mod_dav_lock.html#davgenericlockdb">DavGenericLockDB <var>file-path</var></a></td><td></td><td>skd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Location of the DAV lock database</td></tr>
@@ -591,10 +592,10 @@ processing</td></tr>
 <tr class="odd"><td><a href="mod_lua.html#luaquickhandler" /></td><td></td><td>skdh</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Provide a hook for the quick handler of request processing</td></tr>
 <tr><td><a href="mod_lua.html#luaroot">LuaRoot /path/to/a/directory</a></td><td></td><td>skdh</td><td>D</td></tr><tr><td class="descr" colspan="4">Specify the base path for resolving relative paths for mod_lua directives</td></tr>
 <tr class="odd"><td><a href="mod_lua.html#luascope">LuaScope once|request|conn|server [max|min max]</a></td><td> once </td><td>skdh</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">One of once, request, conn, server -- default is once</td></tr>
-<tr><td><a href="mpm_common.html#maxconnectionsperchild" id="M" name="M">MaxConnectionsPerChild <var>number</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Limit on the number of connections that an individual child server
-will handle during its life</td></tr>
+<tr><td><a href="mpm_common.html#maxconnectionsperchild" id="M" name="M">MaxConnectionsPerChild <var>sayı</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Tek bir çocuk sürecin ömrü boyunca işleme sokabileceği istek
+  sayısını sınırlamakta kullanılır.</td></tr>
 <tr class="odd"><td><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests <var>sayı</var></a></td><td> 100 </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bir kalıcı bağlantıda izin verilen istek sayısı</td></tr>
-<tr><td><a href="mpm_common.html#maxmemfree">MaxMemFree <var>kB-sayısı</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4"><code>free()</code> çağrılmaksızın ana bellek ayırıcının
+<tr><td><a href="mpm_common.html#maxmemfree">MaxMemFree <var>kB-sayısı</var></a></td><td> 2048 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4"><code>free()</code> çağrılmaksızın ana bellek ayırıcının
   ayırmasına izin verilen azami bellek miktarını belirler.</td></tr>
 <tr class="odd"><td><a href="core.html#maxrangeoverlaps">MaxRangeOverlaps default | unlimited | none |
   <var>aralık-sayısı</var></a></td><td> 20 </td><td>skd</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Özkaynağın tamamını döndürmeden önce izin verilen üst üste binen
@@ -604,8 +605,7 @@ will handle during its life</td></tr>
     aralık sayısı (<code>100-200,50-70</code> gibi)</td></tr>
 <tr class="odd"><td><a href="core.html#maxranges">MaxRanges default | unlimited | none |
   <var>aralık-sayısı</var></a></td><td> 200 </td><td>skd</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Özkaynağın tamamını döndürmeden önce izin verilen aralık sayısı</td></tr>
-<tr><td><a href="mpm_common.html#maxrequestworkers">MaxRequestWorkers <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Maximum number of connections that will be processed
-simultaneously</td></tr>
+<tr><td><a href="mpm_common.html#maxrequestworkers">MaxRequestWorkers <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Aynı anda işleme sokulacak azami bağlantı sayısı</td></tr>
 <tr class="odd"><td><a href="prefork.html#maxspareservers">MaxSpareServers <var>sayı</var></a></td><td> 10 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Boştaki çocuk süreçlerin azami sayısı</td></tr>
 <tr><td><a href="mpm_common.html#maxsparethreads">MaxSpareThreads <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Boştaki azami evre sayısını belirler</td></tr>
 <tr class="odd"><td><a href="mpm_netware.html#maxthreads">MaxThreads <var>number</var></a></td><td> 2048 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Set the maximum number of worker threads</td></tr>
@@ -991,7 +991,7 @@ Certificate verification</td></tr>
 <tr><td><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup <em>Kullanıcı Grup</em></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">CGI betiklerini çalıştıracak kullanıcı ve grup belirtilir.
 </td></tr>
 <tr class="odd"><td><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Çocuk süreç başına ayarlanabilir evre sayısının üst sınırını
-  belirler.</td></tr>
+    belirler.</td></tr>
 <tr><td><a href="mpm_common.html#threadsperchild">ThreadsPerChild <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Her çocuk süreç tarafından oluşturulan evrelerin sayısını
   belirler.</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#threadstacksize">ThreadStackSize <var>boyut</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">İstemci bağlantılarını elde eden evreler tarafından kullanılan
