@@ -261,7 +261,7 @@
       <p>Particular items can be restricted to print only for
       responses with specific HTTP status codes by placing a
       comma-separated list of status codes immediately following the
-      "%". The status code list may be peceded by a "<code>!</code>" to
+      "%". The status code list may be preceded by a "<code>!</code>" to
       indicate negation.</p>
 
     <table border="1" style="zebra">
