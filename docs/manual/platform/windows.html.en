@@ -680,7 +680,7 @@
     </p>
 
     <div class="example"><p><code>
-      HKEY_LOCAL_MACHINE\SOFTWARE\Apache Software Foundation\Apache\2.42
+      HKEY_LOCAL_MACHINE\SOFTWARE\Apache Software Foundation\Apache\2.43
     </code></p></div>
 
     <p>Correspondingly, if you chose to install Apache for the current
@@ -689,7 +689,7 @@
     logged on:</p>
 
     <div class="example"><p><code>
-      HKEY_CURRENT_USER\SOFTWARE\Apache Software Foundation\Apache\2.42
+      HKEY_CURRENT_USER\SOFTWARE\Apache Software Foundation\Apache\2.43
     </code></p></div>
 
     <p>This key is compiled into the server and can enable you to test
