@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 804678:1308409 (outdated) -->
+<!-- English Revision: 1308409 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -32,125 +32,47 @@
 <status>MPM</status>
 
 <directivesynopsis>
-<name>AcceptMutex</name>
-<description>Apache HTTPd Sunucusunun ağ soketlerinden istekleri kabul eden
-  çok sayıda çocuk süreci sıraya sokmak için kullandığı yöntemi
-  belirler.</description>
-<syntax>AcceptMutex Default|<var>yöntem</var></syntax>
-<default>AcceptMutex Default</default>
-<contextlist><context>server config</context></contextlist>
-<modulelist><module>prefork</module><module>worker</module>
-</modulelist>
-
-<usage>
-    <p><directive>AcceptMutex</directive> yönergesi Apache HTTPd Sunucusunun
-     ağ soketlerinden istekleri kabul eden çok sayıda çocuk süreci sıraya
-     sokmak için kullandığı yöntemi (ve uygunsa kilit dosyasının yerini)
-     belirler. Apache 2.0’dan önce, yöntem sadece derleme sırasında
-     seçilebiliyordu. Kullanılacak en uygun yöntem mimariye ve platforma aşırı
-     derecede bağımlıdır. Bu konuda daha ayrıntılı bilgi edinmek için <a
-     href="../misc/perf-tuning.html">Başarım Arttırma İpuçları</a> belgesine
-     bakabilirsiniz.</p>
-
-    <p>Bu yönergeye değer olarak <code>Default</code> belirtilmişse derleme
-     sırasında seçilen öntanımlı yöntem kullanılacaktır. Diğer olası yöntemler
-     aşağıda listelenmiştir. Tüm yöntemlerin tüm platformlarda mevcut
-     olmadığına dikkat ediniz. Eğer belirtilen yöntem mevcut değilse hata
-     günlüğüne mevcut yöntemlerin listesini içeren bir ileti yazılacaktır.</p>
-
-    <dl>
-      <dt><code>flock&lt;<var>:/dosya/yolu/kilit.dosyası</var>&gt;</code></dt>
-      <dd>İsteğe bağlı <var>/dosya/yolu/kilit.dosyası</var> ile tanımlanan
-      dosyayı kilitlemek için <code>flock(2)</code> sistem çağrısı kullanılır.
-      Ayrıca, önerilmiyor olsa bile kilit dosyasının yerini belirtmek için
-      <directive module="mpm_common">LockFile</directive> yönergesi
-      kullanılabilir.</dd>
-
-      <dt><code>fcntl&lt;<var>:/dosya/yolu/kilit.dosyası</var>&gt;</code></dt>
-      <dd>İsteğe bağlı <var>/dosya/yolu/kilit.dosyası</var> ile tanımlanan
-       dosyayı kilitlemek için <code>fcntl(2)</code> sistem çağrısı
-       kullanılır. Ayrıca, önerilmiyor olsa bile kilit dosyasının yerini
-       belirtmek için <directive module="mpm_common">LockFile</directive>
-       yönergesi kullanılabilir.</dd>
-
-      <dt><code>file&lt;<var>:/dosya/yolu/kilit.dosyası</var>&gt;</code></dt>
-      <dd>Bu yönerge Apache’ye, <code>fcntl</code> ve <code>flock</code>
-       arasında "en iyi" dosya kilitleme gerçeklenimini seçip kullanmasını
-       söyler. Sadece bu işlevleri içeren ve <glossary>APR</glossary>’nin
-       ikisinden birini desteklediği platformlarda kullanılabilir.</dd>
-
-      <dt><code>posixsem</code></dt>
-      <dd>Muteksleri gerçeklemek için POSIX uyumlu semaforlar kullanılır.</dd>
-
-      <dt><code>sysvsem</code></dt>
-      <dd>Muteksleri gerçeklemek için SysV tarzı semaforlar kullanılır.</dd>
-
-      <dt><code>sem</code></dt>
-      <dd>Bu yönerge Apache’ye, POSIX ve SystemV IPC arasında "en iyi" semafor
-       gerçeklenimini seçip kullanmasını söyler. Sadece bu semaforları içeren
-       ve <glossary>APR</glossary>’nin ikisinden birini desteklediği
-       platformlarda kullanılabilir.</dd>
-
-      <dt><code>pthread</code></dt>
-      <dd>POSIX Evreleri (PThreads) belirtimi tarafından gerçeklenen muteksler
-       kullanılır.</dd>
-
-    </dl>
-
-    <p>Sisteminiz için derleme sırasında seçilmiş öntanımlı yöntemi öğrenmek
-      isterseniz <directive module="core">LogLevel</directive> yönergesine
-      <code>debug</code> değerini atayabilirsiniz. Öntanımlı <directive
-      >AcceptMutex</directive>, <directive module="core">ErrorLog</directive>
-      ile belirtilen günlük dosyasına yazılacaktır.</p>
-
-  <note type="warning"><title>Uyarı</title>
-     <p>Çoğu sistemde, <code>pthread</code> seçeneği seçildiği takdirde,
-      <code>AcceptCntl</code> muteksi tutulurken bir çocuk süreç anormal
-      şekilde sonlanırsa, muteksi kurtarmak için sunucunun elle yeniden
-      başlatılması gerekecektir.</p>
-     <p>Solaris, bir muteks tutulurken, bir çocuk süreç anormal şekilde
-      sonlandıktan sonra muteksin Apache tarafından kurtarılmasına imkan veren
-      bir mekanizma sağlaması sebebiyle diğerlerinden ayrılır.</p>
-     <p>Sisteminiz <code>pthread_mutexattr_setrobust_np()</code> işlevini
-      gerçekliyorsa <code>pthread</code> seçeneğini gönül rahatlığıyla
-      kullanabilirsiniz.</p>
-  </note>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>CoreDumpDirectory</name>
-<description><code>core</code> dosyasını dökümlemek üzere Apache’nin geçmeye
-  çalışacağı dizin.</description>
+<description><code>core</code> dosyasını dökümlemek üzere Apache HTTP
+    Sunucusunun geçmeye çalışacağı dizin.</description>
 <syntax>CoreDumpDirectory <var>dizin</var></syntax>
 <default>Öntanımlı değer için aşağıdaki açıklamaya bakınız</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>mpm_winnt</module><module>prefork</module>
+<modulelist><module>event</module><module>prefork</module>
 <module>worker</module></modulelist>
 
 <usage>
-    <p>Bu yönerge <code>core</code> dosyasını dökümlemek üzere Apache’nin
+    <p>Bu yönerge <code>core</code> dosyasını dökümlemek üzere Apache httpd’nin
       geçmeye çalışacağı dizini belirler. Eğer işletim sisteminiz, çöken bir
-      sürecin olması durumunda <code>core</code> dosyasını çalışma dizinine
-      yazacak şekilde yapılandırılmışsa,
+      sürecin olması durumunda <code>core</code> dosyasını çöken sürecin
+      çalışma dizinine yazacak şekilde yapılandırılmışsa,
       <directive>CoreDumpDirectory</directive> yönergesinin değeri olarak,
       öntanımlı olan ve sunucuyu çalıştıran kullanıcı tarafından yazılamayan
-      <directive module="core">ServerRoot</directive> dizini yerine çalışma
-      dizinini belirtmek gerekir.</p>
+      <directive module="core">ServerRoot</directive> dizini yerine başka bir
+      çalışma dizini belirtmek gerekir.</p>
+
     <p>Hata ayıklamak amacıyla bir <code>core</code> dosyası dökümlemek
       isterseniz farklı bir yer belirtmek için bu yönergeyi
       kullanabilirsiniz. Eğer işletim sisteminiz çöken bir sürecin olması
-      durumunda <code>core</code> dosyasını çalışma dizinine yazacak şekilde
-      yapılandırılmamışsa, bu yönergenin bir etkisi olmaz.</p>
+      durumunda <code>core</code> dosyasını çöken sürecin çalışma dizinine
+      yazacak şekilde yapılandırılmamışsa, bu yönergenin bir etkisi olmaz.</p>
 
     <note><title>Linux üzerinde <code>core</code> dökümlemek</title>
-      <p>Apache root olarak başlatılıp başka bir kullanıcıya geçilirse Linux
-        çekirdeği süreç tarafından yazılabilir olsa bile <code>core</code>
-        dökümlemeyi <em>iptal eder</em>. Eğer
+      <p>Apache httpd root olarak başlatılıp başka bir kullanıcıya geçilirse
+        Linux çekirdeği, süreç tarafından yazılabilir olsa bile
+        <code>core</code> dökümlemeyi <em>iptal eder</em>. Eğer
         <directive>CoreDumpDirectory</directive> yönergesi ile açıkça bir
-        dizin belirtirseniz, Apache (2.0.46 ve sonraki sürümleri), Linux 2.4
-        ve sonrasında <code>core</code> dökümlemeyi yeniden
+        dizin belirtirseniz, Apache httpd (2.0.46 ve sonraki sürümleri), Linux
+        2.4 ve sonrasında <code>core</code> dökümlemeyi yeniden
         etkinleştirecektir.</p>
+    </note>
+
+    <note>
+    <title>BSD üzerinde <code>core</code> dökümlemek</title>
+    <p>BSD sistemlerinde (FreeBSD gibi) suid bitli çalıştırılabilirlerin
+      <code>core</code> dökümlemesini etkin kılmak için
+      <code>kern.sugid_coredump</code> değişkenine 1 değerini atayın.
+    </p>
     </note>
 
     <note><title>Özel sinyaller</title>
@@ -174,7 +96,8 @@
 <syntax>EnableExceptionHook On|Off</syntax>
 <default>EnableExceptionHook Off</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>prefork</module><module>worker</module></modulelist>
+<modulelist><module>event</module><module>prefork</module>
+<module>worker</module></modulelist>
 <compatibility>Sürüm 2.0.49 ve sonrasında mevcuttur</compatibility>
 
 <usage>
@@ -220,8 +143,9 @@
 <syntax>PidFile <var>dosya</var></syntax>
 <default>PidFile logs/httpd.pid</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>mpm_winnt</module><module>mpmt_os2</module>
-<module>prefork</module><module>worker</module></modulelist>
+<modulelist><module>event</module><module>mpm_winnt</module>
+<module>mpmt_os2</module><module>prefork</module><module>worker</module>
+</modulelist>
 
 <usage>
     <p><directive>PidFile</directive> yönergesi, sunucunun artalan sürecinin
@@ -247,7 +171,7 @@
       olabilir.</p>
 
     <note><title>Ek Bilgi</title>
-      <p>Apache 2’de sunucuyu (yeniden) başlatırken veya durdururken sadece
+      <p>Apache HTTP Sunucusunu (yeniden) başlatırken veya durdururken sadece
         <program>apachectl</program> betiğini kullanmanız önerilir.</p>
     </note>
 </usage>
@@ -263,18 +187,19 @@
 <module>mpmt_os2</module><module>perchild</module>
 <module>prefork</module><module>worker</module><module>event</module>
 </modulelist>
-<compatibility>Apache 2.0’dan beri gerekli yönergelerden biridir.<br/>
-<var>protokol</var> argümanı 2.1.5 sürümünde eklenmiştir.</compatibility>
+<compatibility>Apache HTTP Sunucusu 2.0’dan beri gerekli yönergelerden
+    biridir.<br/><var>protokol</var> değiştirgesi 2.1.5 sürümünde
+    eklenmiştir.</compatibility>
 
 <usage>
-    <p><directive>Listen</directive> yönergesi Apache’yi sadece belli IP
+    <p><directive>Listen</directive> yönergesi Apache httpd’yi sadece belli IP
       adreslerini ve portlarını dinlemeye sevkeder.
       <directive>Listen</directive> artık belirtilmesi zorunlu yönergelerden
       biridir. Yapılandırma dosyasında bulunmadığı takdirde sunucu
-      başlatılırken başarısız olacaktır. Bu Apache Sunucusunun önceki
+      başlatılırken başarısız olacaktır. Bu Apache HTTP Sunucusunun önceki
       sürümünde böyle değildi.</p>
 
-    <p><directive>Listen</directive> yönergesi Apache’ye, sadece belli
+    <p><directive>Listen</directive> yönergesi Apache httpd’ye, sadece belli
       portlardan veya IP adresi ve port çiftlerinden gelen istekleri kabul
       etmesini söyler. Eğer sadece port numarası belirtilmişse sunucu
       belirtilen portu bütün ağ arabirimlerinde dinleyecektir. Eğer portla
@@ -333,8 +258,11 @@
 
 </usage>
 <seealso><a href="../dns-caveats.html">DNS ve Apache ile ilgili Konular</a> </seealso>
-<seealso><a href="../bind.html">Sunucunun Kullandığı Adreslerin ve Portların
-  Ayarlanması</a></seealso>
+<seealso><a href="../bind.html">Apache HTTP Sunucusunun Kullandığı Adreslerin
+    ve Portların Ayarlanması</a></seealso>
+<seealso><a href="http://wiki.apache.org/httpd/CouldNotBindToAddress"
+><code>Address already in use</code> hata iletisinin ve diğer sebeplerin
+açıklaması</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -344,10 +272,9 @@
 <syntax>ListenBacklog <var>kuyruk-uzunluğu</var></syntax>
 <default>ListenBacklog 511</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
-<module>mpm_netware</module><module>mpm_winnt</module>
-<module>mpmt_os2</module><module>prefork</module><module>worker</module>
-</modulelist>
+<modulelist><module>event</module><module>mpm_netware</module>
+<module>mpm_winnt</module><module>mpmt_os2</module>
+<module>prefork</module><module>worker</module></modulelist>
 
 <usage>
     <p>Bekleyen bağlantılar kuyruğunun azami uzunluğu. Genellikle bu ayar ne
@@ -365,79 +292,44 @@
 </directivesynopsis>
 
 <directivesynopsis>
-<name>LockFile</name>
-<description>Apache HTTPd Sunucusunun ağ soketlerinden istekleri kabul eden
-  çok sayıda çocuk süreci sıraya sokarken kullandığı kilit dosyasının yerini
-  belirler. <em>(kullanımı önerilmemektedir)</em></description>
-<syntax>LockFile <var>dosya</var></syntax>
-<default>LockFile logs/accept.lock</default>
-<contextlist><context>server config</context></contextlist>
-<modulelist><module>prefork</module><module>worker</module>
-</modulelist>
-
-<usage>
-    <p><directive>LockFile</directive> yönergesi, <directive
-      module="mpm_common">AcceptMutex</directive> yönergesi <code>fcntl</code>
-      veya <code>flock</code> değeri ile belirtildiği takdirde kullanılan
-      kilit dosyasının yerini belirler. Bu yönerge normalde öntanımlı
-      değeriyle bırakılır. Değişmesini gerektiren ana sebep, <code>logs</code>
-      dizininin ağ dosya sisteminde (NFS) yeralması halinde <strong>kilit
-      dosyasının bir yerel diskte saklanması gereği</strong>dir. Ana sürecin
-      süreç kimliği dosyaya kendiliğinden eklenir.</p>
-
-    <note type="warning"><title>Güvenlik</title>
-      <p>Bu dosyayı herkesin yazabildiği <code>/var/tmp</code> gibi bir dizine
-        koymaktan kaçınmak gerekir. Çünkü, bu takdirde, birileri sunucunun
-        hizmet sunmaya başlarken oluşturacağı kilit dosyası ile aynı isimde
-        bir dosya oluşturarak hizmet reddi saldırısı (DoS) başlatabilir.</p>
-    </note>
-    <note type="warning"><title>Kullanımı önerilmiyor</title>
-      <p>Bu yönergenin kullanılması önerilmemektedir. Kilit dosyasının yerini
-        <directive module="mpm_common">AcceptMutex</directive> yönergesinde
-        muteks kilitleme gerçeklenimiyle birlikte belirtmeniz
-        önerilmektedir.</p>
-    </note>
-
-</usage>
-<seealso><directive module="mpm_common">AcceptMutex</directive></seealso>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>MaxClients</name>
+<name>MaxRequestWorkers</name>
 <description>Aynı anda işleme sokulacak azami bağlantı sayısı</description>
-<syntax>MaxClients <var>sayı</var></syntax>
+<syntax>MaxRequestWorkers <var>sayı</var></syntax>
 <default>Ayrıntılar için aşağıdaki açıklamaya bakınız.</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>prefork</module><module>worker</module>
-</modulelist>
+<modulelist><module>event</module><module>prefork</module>
+<module>worker</module></modulelist>
 
 <usage>
-    <p><directive>MaxClients</directive> yönergesi aynı anda işleme sokulacak
-      bağlantı sayısını sınırlamak için kullanılır. <directive
-      >MaxClients</directive> bağlantı isteğinden fazlası geldiği takdirde bu
-      istekler normal olarak kuyruğa alınıp bekletilir. Kuyrukta bekletilecek
-      isteklerin azami sayısı ise <directive module="mpm_common"
+    <p><directive>MaxRequestWorkers</directive> yönergesi aynı anda işleme
+      sokulacak bağlantı sayısını sınırlamak için kullanılır. <directive
+      >MaxRequestWorkers</directive> bağlantı isteğinden fazlası geldiği
+      takdirde bu istekler normal olarak kuyruğa alınıp bekletilir. Kuyrukta
+      bekletilecek isteklerin azami sayısı ise <directive module="mpm_common"
       >ListenBacklog</directive> yönergesi ile belirlenir. İstek sunmakta olan
       çocuk süreçlerden biri serbest kaldığında bekletilen bağlantılardan
       birine hizmet sunulmaya başlanır.</p>
 
     <p>Evreli olmayan sunucularda (<module>prefork</module> gibi)
-      <directive>MaxClients</directive> yönergesi istekleri sunmak için
+      <directive>MaxRequestWorkers</directive> yönergesi istekleri sunmak için
       başlatılacak çocuk süreçlerin azami sayısını belirler. Öntanımlı değer
       256 olup bu değeri arttırmak isterseniz <directive
       module="mpm_common">ServerLimit</directive> değerini de
       arttırmalısınız.</p>
 
     <p>Çok evreli ve melez sunucularda (<module>event</module> veya
-      <module>worker</module> gibi) <directive>MaxClients</directive>
+      <module>worker</module> gibi) <directive>MaxRequestWorkers</directive>
       yönergesi istemcilere hizmet verecek evre sayısını sınırlar. Öntanımlı
       değer melez MPM’ler için 16'dır
       (<directive module="mpm_common">ServerLimit</directive> ile <directive
       module="mpm_common">ThreadsPerChild</directive> çarpılır: <code>16 x
-      25</code>). Bu bakımdan <directive>MaxClients</directive> değerini 16
-      süreçten fazlasına ayarlamak için <directive
-      module="mpm_common">ServerLimit</directive> değerini de
-      arttırmalısınız.</p>
+      25</code>). Bu bakımdan <directive>MaxRequestWorkers</directive> değerini
+      16 süreçten fazlasına ayarlamak için <directive module="mpm_common"
+      >ServerLimit</directive> değerini de arttırmalısınız.</p>
+
+    <p><directive>MaxRequestWorkers</directive> yerine 2.3.13 öncesinde
+      <directive>MaxClients</directive> kullanılırdı. Eski isim hala
+      desteklenmektedir.</p>
 </usage>
 </directivesynopsis>
 
@@ -446,53 +338,46 @@
 <description><code>free()</code> çağrılmaksızın ana bellek ayırıcının
   ayırmasına izin verilen azami bellek miktarını belirler.</description>
 <syntax>MaxMemFree <var>kB-sayısı</var></syntax>
-<default>MaxMemFree 0</default>
+<default>MaxMemFree 2048</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
-<module>mpm_netware</module><module>prefork</module>
-<module>threadpool</module><module>worker</module><module>mpm_winnt</module></modulelist>
+<modulelist><module>event</module><module>mpm_netware</module>
+<module>prefork</module><module>worker</module>
+<module>mpm_winnt</module></modulelist>
 
 <usage>
     <p><directive>MaxMemFree</directive> yönergesi, <code>free()</code>
-      çağrılmaksızın ana bellek ayırıcının ayırmasına izin verilen azami
-      bellek miktarını kB cinsinden belirler. Bir değerle belirtilmediğinde
-      veya <code>0</code> değeriyle belirtildiğinde eşik sınırsız
+      çağrılmaksızın her bellek ayırıcının ayırmasına izin verilen azami
+      bellek miktarını kB cinsinden belirler. Evreli MPM'lerde her evre kendi
+      ayırıcısına sahiptir. <code>0</code> değeri belirtildiğinde eşik sınırsız
       olacaktır.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>MaxRequestsPerChild</name>
+<name>MaxConnectionsPerChild</name>
 <description>Tek bir çocuk sürecin ömrü boyunca işleme sokabileceği istek
   sayısını sınırlamakta kullanılır.</description>
-<syntax>MaxRequestsPerChild <var>sayı</var></syntax>
-<default>MaxRequestsPerChild 10000</default>
+<syntax>MaxConnectionsPerChild <var>sayı</var></syntax>
+<default>MaxConnectionsPerChild 0</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>mpm_netware</module><module>mpmt_os2</module>
-<module>mpm_winnt</module><module>prefork</module><module>worker</module>
+<modulelist><module>event</module><module>mpm_netware</module>
+<module>mpmt_os2</module><module>mpm_winnt</module>
+<module>prefork</module><module>worker</module>
 </modulelist>
+<compatibility>Apache HTTP Sunucusunun 2.3.9 ve sonraki sürümlerinde
+    kullanılabilmektedir. Eski isim <code>MaxRequestsPerChild</code> hala
+    desteklenmektedir.</compatibility>
 
 <usage>
-    <p><directive>MaxRequestsPerChild</directive> yönergesi, tek bir çocuk
+    <p><directive>MaxConnectionsPerChild</directive> yönergesi, tek bir çocuk
       sürecin işleme sokabileceği istek sayısını sınırlamakta kullanılır.
-      <directive>MaxRequestsPerChild</directive> istekten sonra çocuk süreç
-      ölür. Eğer <directive>MaxRequestsPerChild</directive> için
+      <directive>MaxConnectionsPerChild</directive> istekten sonra çocuk süreç
+      ölür. Eğer <directive>MaxConnectionsPerChild</directive> için
       <code>0</code> belirtilmişse sürecin ömrü sonsuz olacaktır.</p>
 
-    <note><title>Sıfırdan farklı öntanımlı değerler</title>
-      <p><module>mpm_netware</module> ve <module>mpm_winnt</module> için
-        öntanımlı değer <code>0</code>’dır.</p>
-    </note>
-
-    <p><directive>MaxRequestsPerChild</directive> için sıfırdan farklı bir
-      değer belirtilmesi sürecin kullanacağı bellek miktarını sınırlamak suretiyle olası bellek sızıntılarını engeller.</p>
-
-    <note><title>Ek Bilgi</title>
-      <p><directive module="core">KeepAlive</directive> isteklerinde sadece
-        ilk istek bu sınıra uygun sayılır. Etkisi ise, davranışın çocuk süreç
-        başına <em>bağlantı</em> sayısının sınırlanması şeklinde
-        değişmesidir.</p>
-    </note>
+    <p><directive>MaxConnectionsPerChild</directive> için sıfırdan farklı bir
+      değer belirtilmesi sürecin kullanacağı bellek miktarını sınırlamak
+      suretiyle olası bellek sızıntılarını engeller.</p>
 </usage>
 </directivesynopsis>
 
@@ -502,8 +387,8 @@
 <syntax>MaxSpareThreads <var>number</var></syntax>
 <default>Ayrıntılar için aşağıdaki açıklamaya bakınız.</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>mpm_netware</module><module>mpmt_os2</module>
-<module>worker</module></modulelist>
+<modulelist><module>event</module><module>mpm_netware</module>
+<module>mpmt_os2</module><module>worker</module></modulelist>
 
 <usage>
     <p>Boştaki azami evre sayısı. Her MPM bu yönerge karşısında farklı
@@ -517,14 +402,14 @@
     <p><module>mpm_netware</module> için <code>MaxSpareThreads 100</code>
       öntanımlıdır. Bu MPM tek bir süreç olarak çalıştığından boştaki evre
       sayısı aynı zamanda sunucu genelinde boştaki evre sayısıdır.</p>
-    
+
     <p><module>mpmt_os2</module> modülü <module>mpm_netware</module> modülü
       gibi çalışır. <module>mpmt_os2</module> için öntanımlı değer
       <code>10</code>'dur.</p>
 
     <note><title>Kısıtlamalar</title>
       <p><directive>MaxSpareThreads</directive> için değer aralığı sınırlıdır.
-        Apache belirtilen değeri aşağıdaki kurallara uygun olarak
+        Apache httpd belirtilen değeri aşağıdaki kurallara uygun olarak
         kendiliğinden düzeltecektir:</p>
       <ul>
         <li><module>mpm_netware</module> modülü, değerin <directive
@@ -540,6 +425,7 @@
 </usage>
 <seealso><directive module="mpm_common">MinSpareThreads</directive></seealso>
 <seealso><directive module="mpm_common">StartServers</directive></seealso>
+<seealso><directive module="prefork">MaxSpareServers</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -549,9 +435,8 @@
 <syntax>MinSpareThreads <var>sayı</var></syntax>
 <default>Ayrıntılar için aşağıdaki açıklamaya bakınız.</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
-<module>mpm_netware</module><module>mpmt_os2</module>
-<module>worker</module></modulelist>
+<modulelist><module>event</module><module>mpm_netware</module>
+<module>mpmt_os2</module><module>worker</module></modulelist>
 
 <usage>
     <p>İsteklerin ani artışında devreye girecek boştaki evrelerin asgari
@@ -574,6 +459,7 @@
 </usage>
 <seealso><directive module="mpm_common">MaxSpareThreads</directive></seealso>
 <seealso><directive module="mpm_common">StartServers</directive></seealso>
+<seealso><directive module="prefork">MinSpareServers</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -583,16 +469,17 @@
 <syntax>ScoreBoardFile <var>dosya-yolu</var></syntax>
 <default>ScoreBoardFile logs/apache_status</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>mpm_winnt</module><module>prefork</module>
-<module>worker</module></modulelist>
+<modulelist><module>event</module><module>mpm_winnt</module>
+<module>prefork</module><module>worker</module></modulelist>
 
 <usage>
-    <p>Apache ana ve çocuk süreçler arasında iletişim için bir çetele tutar.
+    <p>Apache HTTP Sunucusu ana ve çocuk süreçler arasında iletişim için bir
+      çetele tutar.
       Bazı mimariler bu iletişimi kolaylaştırmak için bir dosya gerektirir.
-      Eğer yönerge belirtilmezse Apache çeteleyi önce tamamen bellekte
+      Eğer yönerge belirtilmezse Apache httpd çeteleyi önce tamamen bellekte
       oluşturmayı dener (anonim paylaşımlı bellek kullanarak); bunda başarılı
       olamazsa dosyayı diskte oluşturmaya çalışacaktır (paylaşımlı belleğe
-      eşlemli dosya kullanarak). Bu yönergenin belirtilmesi Apache sunucusunun
+      eşlemli dosya kullanarak). Bu yönergenin belirtilmesi Apache httpd'nin
       dosyayı daima diskte oluşturmasına sebep olur.</p>
 
     <example><title>Örnek</title>
@@ -608,7 +495,8 @@
       href="../misc/security_tips.html">güvenlik</a> ile ilgili uyarılara
       benzer uyarılara karşı dikkatli olunuz.</p>
 </usage>
-<seealso><a href="../stopping.html">Sunucuyu Durdurma ve Yeniden Başlatma</a> </seealso>
+<seealso><a href="../stopping.html">Apache HTTP Sunucusunu Durdurma ve Yeniden
+  Başlatma</a> </seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -617,16 +505,17 @@
 <syntax>ReceiveBufferSize <var>bayt-sayısı</var></syntax>
 <default>ReceiveBufferSize 0</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>mpm_netware</module><module>mpm_winnt</module>
-<module>mpmt_os2</module><module>prefork</module><module>worker</module>
-</modulelist>
+<modulelist><module>event</module><module>mpm_netware</module>
+<module>mpm_winnt</module><module>mpmt_os2</module><module>prefork</module>
+<module>worker</module></modulelist>
 
 <usage>
-    <p>Sunucu TCP alım tamponu boyunu <var>bayt-sayısı</var> ile belirtilen
-      bayta ayarlayacaktır.</p>
+    <p>Sunucunun TCP alım tamponu boyunu <var>bayt-sayısı</var> ile belirtilen
+      bayta ayarlar.</p>
 
     <p><code>0</code> değeri atarsanız sunucu işletim sistemi öntanımlısını
       kullanacaktır.</p>
+
 </usage>
 </directivesynopsis>
 
@@ -636,20 +525,30 @@
 <syntax>SendBufferSize <var>bayt-sayısı</var></syntax>
 <default>SendBufferSize 0</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
-<module>mpm_netware</module><module>mpm_winnt</module>
-<module>mpmt_os2</module><module>prefork</module><module>worker</module>
-</modulelist>
+<modulelist><module>event</module><module>mpm_netware</module>
+<module>mpm_winnt</module><module>mpmt_os2</module><module>prefork</module>
+<module>worker</module></modulelist>
 
 <usage>
     <p>Sunucu TCP gönderim tamponu boyunu <var>bayt-sayısı</var> ile
-      belirtilen bayta ayarlayacaktır. Yüksek hızlı yüksek yataklık süresi
-      için standart işletim sistemi öntanımlılarını arttırmak çok yararlıdır
-      (örneğin, kıtalar arası hızlı borularda olduğu gibi 100 ms
-      civarında).</p>
+      belirtilen bayta ayarlayacaktır. Yüksek hızlı yüksek yataklık süreli
+      bağlantılarda işletim sisteminin öntanımlı değerini aşacak şekilde (örn,
+      kıtalararası hızlı hatlarda 100ms veya fazlası) ayarlamak çoğunlukla
+      kullanışlıdır.</p>
 
     <p><code>0</code> değeri atarsanız sunucu işletim sistemi öntanımlısını
       kullanacaktır.</p>
+
+    <p>İşletim sisteminizin ilaveten yapılandırılması, yüksek hız, yüksek
+      gecikme bağlantılarında daha yüksek başarım elde etmek için gerekli
+      olabilir.</p>
+
+    <note><p>Bazı işletim sistemlerinde, TCP davranışı, <directive
+      module="core">EnableSendfile</directive> yönergesine <code>Off</code>
+      değeri atanmadıkça görülemeyen, büyükçe bir
+      <directive>SendBufferSize</directive> değerinden kaynaklanarak değişir.
+      Bu etkileşim sadece duruk dosyalarda görülür.</p> </note>
+
 </usage>
 </directivesynopsis>
 
@@ -659,53 +558,56 @@
 <syntax>ServerLimit <var>sayı</var></syntax>
 <default>Ayrıntılar için aşağıdaki açıklamaya bakınız.</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>prefork</module><module>worker</module>
-</modulelist>
+<modulelist><module>event</module><module>prefork</module>
+<module>worker</module></modulelist>
 
 <usage>
     <p><module>prefork</module> modülü söz konusu olduğunda bu yönerge, Apache
-      sürecinin ömrü boyunca <directive
-      module="mpm_common">MaxClients</directive> yönergesine atanabilecek
+      httpd sürecinin ömrü boyunca <directive module="mpm_common"
+      >MaxRequestWorkers</directive> yönergesine atanabilecek
       azami değeri belirler. <module>worker</module> modülü sözkonusu
-      olduğunda ise, Apache sürecinin ömrü boyunca <directive
-      module="mpm_common">MaxClients</directive> yönergesine atanabilecek
-      azami değeri <directive module="mpm_common">ThreadLimit</directive> ile
-      birlikte belirler. Bu yönergeyi bir yeniden başlatma sırasında
-      değiştirirseniz bu değişiklik yok sayılır fakat <directive
-      module="mpm_common">MaxClients</directive> değişiklikleri dikkate
-      alınır.</p>
+      olduğunda ise, Apache httpd sürecinin ömrü boyunca <directive
+      module="mpm_common">MaxRequestWorkers</directive> yönergesine
+      atanabilecek  azami değeri <directive module="mpm_common"
+      >ThreadLimit</directive> ile birlikte belirler. Bu yönergeyi bir yeniden
+      başlatma sırasında değiştirirseniz bu değişiklik yok sayılır fakat
+      <directive module="mpm_common">MaxRequestWorkers</directive>
+      değişiklikleri dikkate alınır.</p>
 
     <p>Bu yönergenin kullanılması özel bir dikkat gerektirir. Eğer
       <directive>ServerLimit</directive> gereğinden yüksek bir değere
       ayarlanırsa, gereksiz yere paylaşımlı bellek ayrılmış olur. Eğer
       <directive>ServerLimit</directive> ve <directive
-      module="mpm_common">MaxClients</directive> değerleri sistemin
-      işleyebileceğinden daha yüksek değerlere ayarlanırsa Apache
+      module="mpm_common">MaxRequestWorkers</directive> değerleri sistemin
+      işleyebileceğinden daha yüksek değerlere ayarlanırsa Apache httpd
       başlayamayacağı gibi sistemi kararsız hale de getirebilir.</p>
 
     <p>Bu yönergeyi <module>prefork</module> modülü ile sadece <directive
-      module="mpm_common">MaxClients</directive> yönergesine 256’dan
+      module="mpm_common">MaxRequestWorkers</directive> yönergesine 256’dan
       (öntanımlı) daha büyük bir değer atayacaksanız kullanınız. Bu yönergeye
-      <directive module="mpm_common">MaxClients</directive> için atamak
+      <directive module="mpm_common">MaxRequestWorkers</directive> için atamak
       istediğiniz değerden fazlasını atamayınız.</p>
 
     <p><module>worker</module> modülü söz konusu olduğunda bu yönergeyi
-      <directive module="mpm_common">MaxClients</directive> ve
+      <directive module="mpm_common">MaxRequestWorkers</directive> ve
       <directive module="mpm_common">ThreadsPerChild</directive> ayarları 16
       sunucu sürecinden (16 öntanımlıdır) fazlasını gerektiriyorsa
-      ayarlayınız. Bu yönergeye <directive module="mpm_common">MaxClients
-      </directive> ve <directive
-      module="mpm_common">ThreadsPerChild</directive> için gerekli gördüğünüz
-      sunucu süreci sayısından fazlasını atamayınız.</p>
+      ayarlayınız. Bu yönergeye <directive module="mpm_common"
+      >MaxRequestWorkers</directive> ve <directive module="mpm_common"
+      >ThreadsPerChild</directive> için gerekli gördüğünüz sunucu süreci
+      sayısından fazlasını atamayınız.</p>
 
     <note><title>Ek Bilgi</title>
       <p>Sunucu içinde derlenmiş olarak <code>ServerLimit 20000</code>
         şeklinde bir zorlayıcı sınır vardır (<module>prefork</module> için
         200000’dir). Bu önlem, yazım hatalarının istenmeyen sonuçlara yol
-        açmasını engellemek için düşünülmüştür.</p>
+        açmasını engellemek için düşünülmüştür. Bu sınırı daha da arttırmak
+        için mpm kaynak dosyasındaki MAX_SERVER_LIMIT değerini değiştirip
+        sunucuyu yeniden derlemeniz gerekir.</p>
     </note>
 </usage>
-<seealso><a href="../stopping.html">Sunucuyu Durdurma ve Yeniden Başlatma</a> </seealso>
+<seealso><a href="../stopping.html">Apache HTTP Sunucusunu Durdurma ve Yeniden
+    Başlatma</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -715,14 +617,19 @@
 <syntax>StartServers <var>sayı</var></syntax>
 <default>Ayrıntılar için aşağıdaki açıklamaya bakınız.</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>mpmt_os2</module><module>prefork</module>
-<module>worker</module></modulelist>
+<modulelist><module>event</module><module>mpmt_os2</module>
+<module>prefork</module><module>worker</module></modulelist>
 
 <usage>
     <p><directive>StartServers</directive> yönergesi, sunucunun başlatılması
       sırasında oluşturulan çocuk süreçlerin sayısını belirler. Süreç sayısı
       normal olarak yüke bağlı olarak değişse de bu değerin ayarlanmasını
-      gerektirecek küçük bir sebep vardır.</p>
+      gerektirecek küçük bir sebep vardır.
+      (<directive module="mpm_common">MinSpareThreads</directive>,
+      <directive module="mpm_common">MaxSpareThreads</directive>,
+      <directive module="prefork">MinSpareServers</directive>,
+      <directive module="prefork">MaxSpareServers</directive> yönergelerine
+      bakınız.)</p>
 
     <p>Öntanımlı değer MPM’den MPM’e fark eder. Öntanımlı değer
       <module>worker</module> için <code>3</code> iken
@@ -744,7 +651,12 @@
     <p><directive>StartThreads</directive> yönergesi, sunucunun başlatılması
       sırasında oluşturulan evrelerin sayısını belirler. Evre sayısı normal
       olarak yüke bağlı olarak değişse de bu değerin ayarlanmasını
-      gerektirecek küçük bir sebep vardır.</p>
+      gerektirecek küçük bir sebep vardır.
+      (<directive module="mpm_common">MinSpareThreads</directive>,
+      <directive module="mpm_common">MaxSpareThreads</directive>,
+      <directive module="prefork">MinSpareServers</directive>,
+      <directive module="prefork">MaxSpareServers</directive> yönergelerine
+      bakınız.)</p>
 
     <p><module>mpm_netware</module> için <code>StartThreads 50</code>
       öntanımlı olup, sadece tek bir süreç olduğundan, sunucunun başlatılması
@@ -755,16 +667,17 @@
 <directivesynopsis>
 <name>ThreadLimit</name>
 <description>Çocuk süreç başına ayarlanabilir evre sayısının üst sınırını
-  belirler.</description>
+    belirler.</description>
 <syntax>ThreadLimit <var>sayı</var></syntax>
 <default>Ayrıntılar için aşağıdaki açıklamaya bakınız.</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>mpm_winnt</module><module>worker</module>
-</modulelist>
-<compatibility><module>mpm_winnt</module> için Apache 2.0.41 ve sonrasında mevcuttur.</compatibility>
+<modulelist><module>event</module><module>mpm_winnt</module>
+<module>worker</module></modulelist>
+<compatibility><module>mpm_winnt</module> için Apache HTTP Sunucusu 2.0.41 ve
+    sonrasında kullanılabilmektedir.</compatibility>
 
 <usage>
-    <p>Bu yönerge, Apache sürecinin ömrü boyunca <directive
+    <p>Bu yönerge, Apache httpd sürecinin ömrü boyunca <directive
       module="mpm_common">ThreadsPerChild</directive> yönergesine
       atanabilecek azami değeri belirler. Bu yönergeyi bir yeniden başlatma
       sırasında değiştirirseniz bu değişiklik yok sayılır fakat <directive
@@ -777,9 +690,9 @@
       değere ayarlanırsa, gereksiz yere paylaşımlı bellek ayrılmış olur. Eğer
       <directive>ThreadLimit</directive> ve <directive
       module="mpm_common">ThreadsPerChild</directive> değerleri sistemin
-      işleyebileceğinden daha yüksek değerlere ayarlanırsa Apache
+      işleyebileceğinden daha yüksek değerlere ayarlanırsa Apache httpd
       başlayamayacağı gibi sistemi kararsız hale de getirebilir. Bu yönergeye
-      Apache sunucusunun çalışması için öngörülmüş en büyük değerden daha
+      Apache httpd'nin çalışması için öngörülmüş en büyük değerden daha
       yükseğini atamayınız.</p>
 
     <p><directive>ThreadLimit</directive> yönergesinin öntanımlı değeri
@@ -790,7 +703,9 @@
       <p>Sunucu içinde derlenmiş olarak <code>ThreadLimit 20000</code>
         şeklinde bir zorlayıcı sınır vardır (<module>mpm_winnt</module> için
         15000’dir). Bu önlem, yazım hatalarının istenmeyen sonuçlara yol
-        açmasını engellemek için düşünülmüştür.</p>
+        açmasını engellemek için düşünülmüştür. Bu sınırı daha da arttırmak
+        için mpm kaynak dosyasındaki MAX_SERVER_LIMIT değerini değiştirip
+        sunucuyu yeniden derlemeniz gerekir.</p>
     </note>
 </usage>
 </directivesynopsis>
@@ -802,17 +717,18 @@
 <syntax>ThreadsPerChild <var>sayı</var></syntax>
 <default>Ayrıntılar için aşağıdaki açıklamaya bakınız.</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>mpm_winnt</module><module>worker</module></modulelist>
+<modulelist><module>event</module><module>mpm_winnt</module>
+<module>worker</module></modulelist>
 
 <usage>
     <p>Bu yönerge, her çocuk süreç tarafından oluşturulan evrelerin sayısını
       belirler. Çocuk süreçler bu evreleri başlatıldıklarında oluştururlar ve
       bundan daha fazlasını asla oluşturmazlar. <module>mpm_winnt</module>
       gibi sadece bir çocuk sürecin bulunduğu bir MPM kullanıyorsanız, bu
-      sayı sunucunun tüm yükünü kaldırabilecek kadar büyük olmalıdır.
+      sayı Apache httpd'nin tüm yükünü kaldırabilecek kadar büyük olmalıdır.
       <module>worker</module> gibi çok çocuk süreçli bir MPM kullanıyorsanız,
-      <em>toplam</em> evre sayısı sunucunun tüm yükünü kaldırabilecek kadar
-      büyük olmalıdır.</p>
+      <em>toplam</em> evre sayısı Apache httpd'nin tüm yükünü kaldırabilecek
+      kadar büyük olmalıdır.</p>
 
     <p><directive>ThreadsPerChild</directive> için öntanımlı değer
       <module>mpm_winnt</module> kullanıldığında <code>64</code> diğerleri
@@ -828,9 +744,11 @@
 <default>NetWare üzerinde 65536; diğer işletim sistemlerinde
   değişir.</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>mpm_netware</module><module>mpm_winnt</module>
-<module>worker</module></modulelist>
-<compatibility>Apache 2.1 ve sonrasında mevcuttur.</compatibility>
+<modulelist><module>event</module><module>mpm_netware</module>
+<module>mpmt_os2</module><module>mpm_winnt</module><module>worker</module>
+<module>event</module></modulelist>
+<compatibility>Apache HTTP Sunucusu 2.1 ve sonrasında
+    kullanılabilir.</compatibility>
 
 <usage>
     <p><directive>ThreadStackSize</directive> yönergesi, istemci
@@ -841,13 +759,13 @@
       olabilir:</p>
 
     <ul>
-      <li>HP-UX gibi görece küçük yığıt boyuna sahip platformlarda, Apache,
-        görece büyük yığıt alanı kullanan bazı üçüncü parti modüller yüzünden
-        çökebilir. Bu modüller öntanımlı yığıt boyu daha büyük olan diğer
-        platformlarda sorunsuz çalışabilir. Bu tür çökmeler
+      <li>HP-UX gibi görece küçük yığıt boyuna sahip platformlarda, Apache
+        httpd, görece büyük yığıt alanı kullanan bazı üçüncü parti modüller
+        yüzünden çökebilir. Bu modüller öntanımlı yığıt boyu daha büyük olan
+        diğer platformlarda sorunsuz çalışabilir. Bu tür çökmeler
         <directive>ThreadStackSize</directive> yönergesine daha büyük yığıt
         boyu atanarak çözümlenir. Böyle bir ayarlamayı sadece üçüncü parti
-        modülün üreticisi bunun gerekliliğini belirtmişse veya Apache’nin
+        modülün üreticisi bunun gerekliliğini belirtmişse veya Apache httpd’nin
         evre yığıt boyutunun küçüklüğünden dolayı çöktüğü teşhis edildiği
         takdirde yapınız.</li>
 
@@ -857,10 +775,23 @@
         düşük bir değer atanmışsa çocuk süreç başına evre sayısının yüksek
         olduğu durumlarda bu yığıt yetmeyebilir. Böyle bir ayarlama sadece
         sunucunun öldüresiye denendiği dolayısıyla yığıt boyutlarının aşırı
-        zorlandığı deneme ortamlarında yapılmalıdır. Sunucu yapılandırmasında
-        yapılan bir değişiklik mevcut <directive>ThreadStackSize</directive>
-        ayarını geçersiz hale getirebilir.</li>
+        zorlandığı deneme ortamlarında yapılmalıdır. Gereken en küçük yığıt
+        boyutu kullanılan modüle sıkı sıkıya bağlıdır, fakat Apache httpd
+        yapılandırmasında yapılan bir değişiklik mevcut
+        <directive>ThreadStackSize</directive> ayarını geçersiz hale
+        getirebilir.</li>
+
+      <li>Linux üzerinde, ilgili sistem çağrısı <em>en küçük</em> yığıt boyutu
+        olarak bu değeri kullanacağından, bu yönerge sadece öntanımlı yığıt
+        boyutunu arttırmak için kullanılabilir. <code>ulimit -s</code>  için
+        (çoğunlukla büyükçe) soft sınır (sınırsızsa 8MB), öntanımlı yığıt
+        boyutu olarak kullanılır.</li>
     </ul>
+
+    <note>Çocuk süreç başına yüksek bir evre sayısı gerekmedikçe
+      <directive>ThreadStackSize</directive> değerinin azaltılmaması önerilir.
+      Bazı platformlarda (Linux dahil), 128000 ayarı zaten çok düşüktür ve daha
+      da azaltmak bazı modüllerle çökmeye sebep olur.</note>
 </usage>
 </directivesynopsis>
 
