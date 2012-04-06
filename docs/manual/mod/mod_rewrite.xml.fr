@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1301578:1309551 (outdated) -->
+<!-- English Revision : 1309551 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -330,51 +330,45 @@ r&eacute;pertoire</description>
 <override>FileInfo</override>
 
 <usage>
-      <p>La directive <directive>RewriteBase</directive> d&eacute;finit
-      explicitement le chemin URL de base (et non le chemin du
-      r&eacute;pertoire dans le syst&egrave;me de fichiers !) pour les r&eacute;&eacute;critures dans un contexte
-      de r&eacute;pertoire dont le r&eacute;sultat est la substitution d'un
-      chemin relatif. Lorsque vous utilisez une directive <directive
-      module="mod_rewrite">RewriteRule</directive> dans un fichier
-      <code>.htaccess</code>, <module>mod_rewrite</module> enl&egrave;ve le
-      pr&eacute;fixe de r&eacute;pertoire local avant d'effectuer le traitement, puis
-      r&eacute;&eacute;crit ce qui reste de l'URL. Lorsque la r&eacute;&eacute;criture est termin&eacute;e,
-      <module>mod_rewrite</module> ajoute automatiquement le pr&eacute;fixe de
-      r&eacute;pertoire local (ou la valeur de la directive
-      <directive>RewriteBase</directive> si cette derni&egrave;re est d&eacute;finie)
-      &agrave; la cha&icirc;ne de substitution avant de la remettre &agrave; disposition du
-      serveur, comme s'il s'agissait de l'URL d'origine.</p>
+      <p>La directive <directive>RewriteBase</directive> permet de
+      sp&eacute;cifier le pr&eacute;fixe d'URL &agrave; utiliser dans un contexte de
+      r&eacute;pertoire (htaccess) pour les directives
+      <directive>RewriteRule</directive> qui r&eacute;&eacute;crivent vers un chemin
+      relatif.</p>
+      <p>Cette directive est <em>obligatoire</em> si vous utilisez un
+      chemin relatif dans une substitution, et dans un contexte de
+      r&eacute;pertoire (htaccess), sauf si au moins une de ces conditions est
+      v&eacute;rifi&eacute;e :</p>
+      <ul>
+          <li>La requ&ecirc;te initiale, ainsi que la substitution, sont dans
+	  la <directive module="core">DocumentRoot</directive> (c'est &agrave;
+	  dire que pour y acc&eacute;der, il n'est pas n&eacute;cessaire d'utiliser
+	  une directive telle qu'<directive
+	  module="mod_alias">Alias</directive>).</li>
+          <li>Le chemin du syst&egrave;me de fichiers vers le r&eacute;pertoire
+	  contenant la <directive>RewriteRule</directive>, suffix&eacute; par
+	  la substitution relative est aussi valide en tant qu'URL sur
+	  le serveur (ce qui est rare).</li>
+      </ul>
 
-	<p>Cette directive est <em>requise</em> pour les r&eacute;&eacute;critures
-	dans un contexte de r&eacute;pertoire d&eacute;fini via la directive
-	<directive module="mod_alias">Alias</directive> lorsque la
-	substitution utilise un chemin relatif.</p>
-
-      <p>Si votre chemin URL n'existe pas r&eacute;ellement dans le syst&egrave;me de
-      fichiers, ou ne trouve pas directement sous le r&eacute;pertoire d&eacute;fini
-      par la directive <directive
-      module="core">DocumentRoot</directive>, vous devez utiliser la
-      directive	<directive>RewriteBase</directive> dans chaque fichier
-	<code>.htaccess</code> o&ugrave; vous voulez utiliser des directives <directive
-      module="mod_rewrite">RewriteRule</directive>.</p>
-
-      <p>L'exemple ci-dessous montre comment faire correspondre
-      http://example.com/mon-appli/index.html &agrave;
-      /home/www/exemple/nouveau_site.html dans un fichier
-      <code>.htaccess</code>. On suppose que le contenu disponible &agrave;
-      http://example.com/ se situe sur le disque &agrave;
-      /home/www/exemple/.</p>
+<p>Dans l'exemple ci-dessous, la directive
+<directive>RewriteBase</directive> est n&eacute;cessaire afin d'&eacute;viter une
+r&eacute;&eacute;criture en http://example.com/opt/myapp-1.2.3/welcome.html car la
+ressource n'&eacute;tait pas relative &agrave; la racine des documents. Cette erreur
+de configuration aurait conduit le serveur &agrave; rechercher un r&eacute;pertoire
+"opt" &agrave; la racine des documents.</p>
 
 <example>
 <pre>
+DocumentRoot /var/www/example.com
+Alias /myapp /opt/myapp-1.2.3
+&lt;Directory /opt/myapp-1.2.3&gt;
 RewriteEngine On
-# Le chemin URL utilis&eacute; pour arriver dans ce contexte, et non le chemin
-# du syst&egrave;me de fichiers
-RewriteBase /mon-appli/
-RewriteRule ^index\.html$  nouveau_site.html
+RewriteBase /myapp/
+RewriteRule ^index\.html$  welcome.html 
+&lt;/Directory&gt;
 </pre>
 </example>
-
 </usage>
 
 </directivesynopsis>
