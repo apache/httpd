@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1041851:1298256 (outdated) -->
+<!-- English Revision: 1310494 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -263,10 +263,10 @@
       Substitute s/dahili\.mesela\.dom/harici.mesela.dom/i
     </example>
 
-     <p>Ayrıca, Üçüncü parti modüller
-      arasında HTML ve XHTML’de hiperbağları yeniden yazabilen <a
-      href="http://apache.webthing.com/mod_proxy_html/" >mod_proxy_html</a>
-      adında bir modül de vardır.</p>
+     <p>HTML ve XHTML’de hiperbağları daha bilgece yeniden yazabilen
+      <module>mod_proxy_html</module> modülü de kullanılabilir. Yeniden
+      yazılması gereken URL eşlemlerini oluşturmanızı sağlar, böylece karmaşık
+      vekil senaryoları oluşturulabilir.</p>
 </section>
 
 <section id="rewrite"><title>Yeniden Yazma Motoru</title>
