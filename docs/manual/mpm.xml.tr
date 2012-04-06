@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 804678:1174747 (outdated) -->
+<!-- English Revision: 1174747 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -39,24 +39,26 @@
       çalışabilen güçlü ve esnek bir HTTP sunucusu olarak tasarlanmıştır.
       Farklı platformlar ve farklı ortamlar çoğunlukla farklı özellikler veya
       aynı özelliğin en yüksek verimlilikle gerçeklenmesi için farklı yöntemler
-      gerektirir. Apache, geniş ortam çeşitliliğini daima modüler tasarımı
-      sayesinde uzlaştırmıştır.  Bu tasarım, site yöneticilerine, sunucularında
-      bulunmasını istedikleri özellikleri derleme sırasında veya çalışma anında
-      gerekli modülleri yüklemek suretiyle seçebilme imkanı verir.</p>
+      gerektirir. Apache httpd, geniş ortam çeşitliliğini daima modüler
+      tasarımı sayesinde uzlaştırmıştır.  Bu tasarım, site yöneticilerine,
+      sunucularında bulunmasını istedikleri özellikleri derleme sırasında veya
+      çalışma anında gerekli modülleri yüklemek suretiyle seçebilme imkanı
+      verir.</p>
 
-    <p>Apache 2.0, bu modüler tasarımı sunucunun en temel işlevlerine kadar
-      indirmiştir. Sunucu, Çok Süreçlilik Modülleri adı verilen ve makine
-      üzerindeki ağ portlarının bağlanmasından, isteklerin kabul edilmesinden
-      ve bu istekleri yanıtlayacak çocuklara dağıtmaktan sorumlu olan
-      modüllerin seçimine imkan verecek bir yapılanma ile gelir.</p>
+    <p>Apache HTTP Sunucusu 2.0, bu modüler tasarımı sunucunun en temel
+      işlevlerine kadar indirmiştir. Sunucu, Çok Süreçlilik Modülleri adı
+      verilen ve makine üzerindeki ağ portlarının bağlanmasından, isteklerin
+      kabul edilmesinden ve bu istekleri yanıtlayacak çocuklara dağıtmaktan
+      sorumlu olan modüllerin seçimine imkan verecek bir yapılanma ile
+      gelir.</p>
 
     <p>Sunucunun modüler tasarımının bu seviyede genişletilmesi iki önemli
       yarar sağlar:</p>
 
     <ul>
-      <li>Apache geniş çeşitlilikteki işletim sistemlerini daha temiz ve daha
-        verimli bir şekilde destekleyebilmektedir. Özellikle,
-        <module>mpm_winnt</module> modülü, Apache 1.3’te kullanılan POSIX
+      <li>Apache httpd geniş çeşitlilikteki işletim sistemlerini daha temiz ve
+        daha verimli bir şekilde destekleyebilmektedir. Özellikle,
+        <module>mpm_winnt</module> modülü, Apache httpd 1.3’te kullanılan POSIX
         katmanının yerine işletim sistemine özgü özellikleri
         kullanabildiğinden, Apache HTTP Sunucusunun Windows sürümü artık çok
         daha verimli bir duruma gelmiştir. Aynı fayda özelleştirilmiş MPM’lerle
@@ -70,28 +72,11 @@
         modüllerinden birini seçebilmektedir.</li>
     </ul>
 
-    <p>Kullanıcı açısından MPM’lerin diğer Apache modüllerinden görünüşte bir
-      farkı yoktur. Asıl fark sunucuya yüklenebilecek azami MPM modülü
+    <p>Kullanıcı açısından MPM’lerin diğer Apache httpd modüllerinden görünüşte
+      bir farkı yoktur. Asıl fark sunucuya yüklenebilecek azami MPM modülü
       sayısının bir ve yalnız bir olarak sınırlanmış olmasıdır. Mevcut MPM
-      modülleri <a href="mod/">modül dizini</a> sayfasında listelenmiştir..</p>
+      modülleri <a href="mod/">modül dizini</a> sayfasında listelenmiştir.</p>
 
-</section>
-
-<section id="choosing"><title>MPM Seçimi</title>
-
-    <p>MPM’ler paket yapılandırması sırasında seçilmeli ve sunucu içinde
-      derlenmelidir. Derleyiciler evrelerin kullanılacağını bildikleri
-      takdirde çoğu işlevi evreleri kullanacak şekilde
-      en iyileyebilmektedir.</p>
-
-    <p>Kullanmak istediğiniz MPM’yi kendiniz seçmek istediğiniz takdirde
-      <program>configure</program> betiğini
-      <code>--with-mpm=<em>AD</em></code> seçeneği ile kullanınız. Burada
-      <em>AD</em> istenen MPM’nin adıdır.</p>
-
-    <p>Sunucu derlendikten sonra hangi MPM’nin seçilmiş olduğunu <code>./httpd
-      -l</code> komutuyla saptamak mümkündür. Bu komut, MPM de dahil omak
-      üzere sunucuyla birlikte derlenmiş tüm modülleri listeleyecektir.</p>
 </section>
 
 <section id="defaults"><title>Öntanımlı MPM’ler</title>
@@ -100,13 +85,53 @@
       listelenmiştir. Derleme sırasında başka bir seçim yapmadığınız takdirde
       bu işletim sistemlerinde bu MPM’ler seçilmiş olacaktır.</p>
 
-    <table>
+    <table border="1" style="zebra">
       <columnspec><column width=".2"/><column width=".2"/></columnspec>
       <tr><td>Netware</td><td><module>mpm_netware</module></td></tr>
       <tr><td>OS/2</td><td><module>mpmt_os2</module></td></tr>
-      <tr><td>Unix</td><td><module>prefork</module></td></tr>
+      <tr><td>Unix</td><td>Platformun yapabildiklerine bağlı olarak,
+        <module>prefork</module>, <module>worker</module> veya
+        <module>event</module></td></tr>
       <tr><td>Windows</td><td><module>mpm_winnt</module></td></tr>
     </table>
+</section>
+
+<section id="static"><title>Bir MPM'i bir duruk modül olarak derlemek</title>
+
+    <p>MPM'ler tüm platformlarda duruk (static) modüller olarak derlenebilir.
+      Derleme sırasında tek bir modül seçilir ve sunucu ile ilintilenir. MPM
+      değiştirilmek istenirse sunucunun yeniden derlenmesi gerekir.</p>
+
+    <p>Öntanımlı MPM seçimin değiştirmek için <program>configure</program>
+      betiğinin <code>--with-mpm=<em>AD</em></code> seçeneği kullanılır.
+      Buradaki <em>AD</em> istenen MPM'in ismidir.</p>
+
+    <p>Sunucu bir kere derlendi mi, hangi MPM'in seçilmiş olduğunu
+      <code>./httpd -l</code> komutuyla öğrenebilirsiniz. Bu komut, içerilen
+      MPM dahil, sunucu içinde derlenmiş bütüm modülleri listeler.</p>
+
+</section>
+
+<section id="dynamic"><title>Bir MPM'i bir DSO modülü olarak derlemek</title>
+
+    <p>Unix ve benzeri platformlarda, MPM'ler DSO modülleri olarak derlenebilir
+      ve diğer DSO modülleri gibi sunucuya devingen olarak yüklenebilir. DSO
+      modülü olarak derlenen MPM'ler, sunucunun yeniden derlenmesini
+      gerektirmeden <directive module="mod_so">LoadModule</directive> yönergesi
+      güncellenerek değiştirilebilir.</p>
+
+    <p>Bu özellik <program>configure</program> betiğinin
+      <code>--enable-mpms-shared</code> seçeneği ile etkinleştirilebilir.
+      <code><em>all</em></code> değeri belirtilerek platform için
+      kullanılabilen tüm modüller kurulur. İstenirse, değer olarak bir MPM
+      listesi de belirtilebilir.</p>
+
+    <p>Özdevinimli olarak seçilerek veya  <program>configure</program> betiğine
+      <code>--with-mpm</code> seçeneğiyle belirtilerek seçilen öntanımlı MPM
+      üretilen sunucu yapılandırma dosyasıyla yüklenir. Farklı bir MPM seçmek
+      için MPM'i <directive module="mod_so">LoadModule</directive> yönergesinde
+      belirtin.</p>
+
 </section>
 
 </manualpage>
