@@ -25,8 +25,6 @@
 <a href="../fr/mod/mod_proxy.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle multi-protocole</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_module</td></tr>
@@ -1410,6 +1408,16 @@ l'espace d'URLs du serveur local</td></tr>
         <td>Nombre de membres supplémentaires que l'on peut ajouter à ce
 	répartiteur en plus de ceux définis au niveau de la
 	configuration. 
+    </td></tr>
+    <tr><td>forcerecovery</td>
+        <td>On</td>
+        <td>Force la relance immédiate de tous les membres sans tenir
+	compte de leur paramètre retry dans le cas où ils sont tous en
+	état d'erreur. Il peut cependant arriver qu'un membre déjà
+	surchargé entre dans une situation critique si la relance de
+	tous les membres est forcée sans tenir compte du paramètre retry
+	de chaque membre. Dans ce cas, définissez ce paramètre à
+	<code>Off</code>.
     </td></tr>
 
     </table>
