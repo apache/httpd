@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 788930:1187986 (outdated) -->
+<!-- English Revision: 1187986 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -29,166 +29,174 @@
   <title>Hata Yanıtlarının Kişiselleştirilmesi</title>
 
   <summary>
-    <p>Apache, bazı sorunlara ve hatalara karşılık vereceği yanıtların
-      yapılandırabilmesini mümkün kılan ek bir işlevselliğe sahiptir.</p>
 
-    <p>Site yöneticisi tarafından kişiselleştirilebilen bu tür yanıtlar,
-      sunucu belli hatalar veya sorunlarla karşılaştığında etkin kılınmak
-      üzere tanımlanabilir.</p>
+    <p>Apache HTTP Sunucusu 4xx veya 5xx HTTP durum kodları ile ilgili
+      olaylarda soysal hata yanıtları üretse de bu yanıtlar site
+      kullanıcılarına aşırı sade, bilgi vermez ve hatta korkutucu gelebilir.
+      Daha dostça yazılmış, İngilizce değil de kendi dilinizde ve belki
+      sayfalarınızın yerleşimine uygun daha hoş satırlarda özel hata yanıtları
+      üretmek isteyebilirsiniz.</p>
 
-    <p>Bir betik bir hata nedeniyle bir "500 Server Error" yanıtının
-      verilmesine sebep olursa bu yanıt yerine başka bir adrese
-      yönlendirilerek (dahili veya harici) veya doğrudan daha dostça bir
-      metin sunulabilir.</p>
+    <p>Kişiselleştirilmiş hata yanıtları, bir hata durumuna göre tasarlanmış
+      herhangi bir HTTP durum kodu (yani 4xx ve 5xx kodlarından biri) için
+      tanımlanabilir.</p>
+
+    <p>Ek olarak bir değer kümesi de sağlanmıştır. Böylece hata belgeleri, <a
+      href="howto/ssi.html">Sunucu taraflı İçerik Yerleştirme</a> kullanılarak
+      bu değişkenlerin değerlerine göre özelleştirilebilir. İsterseniz bunun
+      yerine bir CGI programı veya devingen bir eylemci (PHP, mod_perl, vs.)
+      kullanarak da bu değişkenlerin değerlerine göre hata sayfalarınızı
+      üretebilirsiniz.</p>
+
   </summary>
 
-  <section id="behavior">
-    <title>Davranış</title>
+  <section id="configuration"><title>Yapılandırma</title>
 
-    <section>
-      <title>Eski Davranış</title>
-
-      <p>NCSA httpd 1.3, çoğunlukla kullanıcıya anlamsız gelen ve sebebiyle
-        kavramsal bir bağ kurulamayan günlük kayıtları üreten, can sıkıcı
-        bazı hata/sorun yanıtları döndürürdü.</p>
-    </section>
-
-    <section>
-      <title>Yeni Davranış</title>
-
-      <p>Sunucudan NCSA kodlu iletiler yerine</p>
-
-      <ul>
-        <li>başka bir metin göstermesi,</li>
-
-        <li>istemciyi başka bir yerel adrese yönlendirmesi veya</li>
-
-        <li>istemciyi bir harici adrese yönlendirmesi</li>
-      </ul>
-
-      <p>istenebilir. Başka bir adrese yönlendirme, hata veya sorunu daha iyi
-        açıklamakta kullanılabilecek bazı bilgilerin aktarılması şartıyla
-        oldukça kullanışlı olabilir.</p>
-
-      <p>Apache, buna olanak vermek için CGI benzeri yeni ortam değişkenleri
-        tanımlamıştır:</p>
-
-      <example>
-        REDIRECT_HTTP_ACCEPT=*/*, image/gif, image/x-xbitmap,
-            image/jpeg<br />
-        REDIRECT_HTTP_USER_AGENT=Mozilla/1.1b2 (X11; I; HP-UX A.09.05
-            9000/712)<br />
-        REDIRECT_PATH=.:/bin:/usr/local/bin:/etc<br />
-        REDIRECT_QUERY_STRING=<br />
-        REDIRECT_REMOTE_ADDR=121.345.78.123<br />
-        REDIRECT_REMOTE_HOST=ooh.ahhh.dom<br />
-        REDIRECT_SERVER_NAME=batti.balik.yan.gider.edu<br />
-        REDIRECT_SERVER_PORT=80<br />
-        REDIRECT_SERVER_SOFTWARE=Apache/0.8.15<br />
-        REDIRECT_URL=/cgi-bin/hatalar.pl
-      </example>
-
-      <p><code>REDIRECT_</code> önekine dikkat edin.</p>
-
-      <p>Yeni adrese (hedefin bir CGI betiği veya SSI sayfası olduğu
-        kabulüyle) en azından <code>REDIRECT_URL</code> ve
-        <code>REDIRECT_QUERY_STRING</code> değişkenleri aktarılır. Diğer
-        değişkenler ise sadece hata veya sorunun öncesinde mevcut oldukları
-        takdirde aktarılacaklardır. Eğer <em>harici</em> yönlendirmeyi
-        <directive module="core">ErrorDocument</directive> yönergesi
-        üzerinden yapıyorsanız bunlara <strong>None</strong> değeri
-        atanacaktır. (Yönlendirme adresi <code>http:</code> ile başlıyorsa
-        adres aynı sunucuya ait olsa bile bu bir harici yönlendirme olarak
-        ele alınır.)</p>
-    </section>
-  </section>
-
-  <section id="configuration">
-    <title>Yapılandırma</title>
-
-    <p><directive module="core">ErrorDocument</directive> yönergesinin
-      <code>.htaccess</code> dosyalarında kullanılması sadece <directive
+    <p>Kişiselleştirilmiş hata belgeleri <directive module="core"
+      >ErrorDocument</directive> yönergesi kullanılarak yapılandırılabilir. Bu
+      yönerge küresel bağlamda olabileceği gibi sanal konak ve dizin
+      bağlamlarında da kullanılabilir. <directive
       module="core">AllowOverride</directive> yönergesine <code>FileInfo</code>
-      atanmışsa mümkündür.</p>
-
-    <p>Bazı örnekler:</p>
+      atanarak <code>.htaccess</code> dosyalarında da kullanılabilir.</p>
 
     <example>
-      ErrorDocument 500 /cgi-bin/hata-kurtarma <br />
       ErrorDocument 500 "Pardon, galiba bizim betik hata verdi." <br />
-      ErrorDocument 500 http://xxx/ <br />
+      ErrorDocument 500 /cgi-bin/hata-kurtarma<br />
+      ErrorDocument 500 http://error.example.com/server_error.html<br />
       ErrorDocument 404 /ozuru_kabahatinden_buyuk/yok.html <br />
       ErrorDocument 401 /Uyeler/NASIL_uye_olunur.html
     </example>
 
-    <p>Burada sözdizimi şöyledir:</p>
+    <p><code>ErrorDocument</code> yönergesinin sözdizimi:</p>
 
     <example>
       ErrorDocument &lt;3-rakamlı-kod&gt; &lt;eylem&gt;
     </example>
 
-    <p><code><em>eylem</em></code> şunlardan biri olabilir:</p>
+    <p><var>eylem</var> şunlardan biri olabilir:</p>
 
-    <ul>
-      <li>Gösterilecek metin. Metin tırnak (") içine alınmalıdır.</li>
+    <ol>
+      <li>Yönlendirmenin yapılacağı dahili adres (<var>eylem</var> bir "/" ile
+        başlıyorsa).</li>
+      <li>Yönlendirmenin yapılacağı harici adres (<var>eylem</var> geçerli bir
+        URL ise).</li>
+      <li>Gösterilecek metin (yukardakilerin hiçbiri yoksa). Birden fazla
+        sözcük içeriyorsa tırnak (") içine alınmalıdır.</li>
+    </ol>
 
-      <li>Yönlendirmenin yapılacağı harici adres.</li>
+    <p>Yerel bir adrese yönlendirme yapılırken ek ortam değişkenleri de
+      atanarak yanıt daha da özelleştirilebilir. Bunlar harici URL'lere
+      gönderilmez.</p>
 
-      <li>Yönlendirmenin yapılacağı dahili adres.</li>
-    </ul>
   </section>
 
-  <section id="custom">
-    <title>Özel Hata Yanıtları ve Yönlendirme</title>
+  <section id="variables"><title>Kullanılabilen Değişkenler</title>
 
-    <p>Apache’nin yönlendirme ile ilgili davranışı bir CGI betiği veya SSI
-      sayfası sözkonusu olduğunda bazı ek ortam değişkenleri ile
-      yapılandırılabilir.</p>
+      <p>Hata durumunu açıklayacak veya hata günlüğüne daha açıkça
+        kaydedilebilecek bazı bilgilerin aktarılması koşuluyla, başka bir
+        adrese yönlendirme kullanışlı olabilir</p>
 
-    <section>
-      <title>Eski Davranış</title>
+      <p>Hata yönlendirmesi yapılırken bunu sağlamak için ek ortam değişkenleri
+        tanımlanır. Bu değişkenlerin isimleri, özgün istekle sağlanan
+        başlık isimlerinin  önüne 'REDIRECT_' dizgesi getirilerek üretilir.
+        Böylece özgün istek bağlamından hata belgesi üretilebilir.</p>
 
-      <p>Yönlendirme yapılan betikte standart CGI değişkenleri kullanılırdı.
-        Yönlendirmenin kaynağı ile ilgili bir belirtiye rastlanmazdı.</p>
-    </section>
+      <p>Örneğin, aşağıdaki gibi, daha yararlı olacak ek ortam değişkenleri
+        alabilirsiniz.</p>
 
-    <section>
-      <title>Yeni Davranış</title>
+      <example>
+        REDIRECT_HTTP_ACCEPT=*/*, image/gif, image/jpeg, image/png<br />
+        REDIRECT_HTTP_USER_AGENT=Mozilla/5.0 Fedora/3.5.8-1.fc12 Firefox/3.5.8<br />
+        REDIRECT_PATH=.:/bin:/usr/local/bin:/sbin<br />
+        REDIRECT_QUERY_STRING=<br />
+        REDIRECT_REMOTE_ADDR=121.345.78.123<br />
+        REDIRECT_REMOTE_HOST=client.example.com<br />
+        REDIRECT_SERVER_NAME=www.example.edu<br />
+        REDIRECT_SERVER_PORT=80<br />
+        REDIRECT_SERVER_SOFTWARE=Apache/2.2.15<br />
+        REDIRECT_URL=/cgi-bin/buggy.pl
+      </example>
 
-      <p>Yönlendirme yapılan betikte kullanılmak üzere özel olarak
-        tanımlanmış ortam değişkenleri vardır. Her değişkenin ismi
-        <code>REDIRECT_</code> ile başlar. <code>REDIRECT_</code> ortam
-        değişkenleri, yönlendirme öncesinde tanımlanmış CGI ortam
-        değişkenlerinin isimlerinin başına <code>REDIRECT_</code> öneki
-        getirilerek oluşturulur. Yani, <code>HTTP_USER_AGENT</code> değişkeni
-        <code>REDIRECT_HTTP_USER_AGENT</code> haline gelir. Bunlara ek
-        olarak, betiğe olayın izini sürmekte yardımcı olması için
-        <code>REDIRECT_URL</code> ve <code>REDIRECT_STATUS</code>
-        değişkenleri tanımlanmıştır. Erişim günlüğüne özgün adresle birlikte
-        yönlendirme adresi de kaydedilir.</p>
+      <p><code>REDIRECT_</code> ortam değişkenleri, yönlendirme öncesi varolan
+        ortam değişkenlerinden üretilir. Bunlar önlerine <code>REDIRECT_</code>
+        getirilerek yeniden isimlendirilir. Örneğin,
+        <code>HTTP_USER_AGENT</code> değişkeni
+        <code>REDIRECT_HTTP_USER_AGENT</code> haline gelir.</p>
 
-      <p>Eğer <directive module="core">ErrorDocument</directive> yönergesi
-        bir yerel CGI betiğine yönlendirme belirtiyorsa, hatanın kaynağı
-        hakkında istemciye bilgi vermek amacıyla betiğin çıktısında bir
-        "<code>Status:</code>" başlık alanına yer verilmesi önerilir.
-        Örneğin, bir Perl betiği şunları içerebilirdi:</p>
+      <p><code>REDIRECT_URL</code>, <code>REDIRECT_STATUS</code> ve
+        <code>REDIRECT_QUERY_STRING</code> mutlaka atanır. Diğer başlıklarla
+        ilgili olanlar ise hata durumu öncesinde mevcut oldukları takdirde
+        üretilirler.</p>
+
+      <p>Eğer <directive module="core">ErrorDocument</directive> hedefi bir
+        <em>harici</em> yönlendirme ise bunların <strong>hiçbiri</strong>
+        üretilmez (sunucunun bulunduğu konağı hedeflese bile <code>http:</code>
+        ile başlayan herşey harici yönlendirme sayılır).</p>
+  </section>
+
+  <section id="custom"><title>Özel Hata Yanıtları</title>
+
+      <p>Hata yanıtınızı üretmek için sunucu taraflı içerik yerleştirme, bir
+        CGI betiği veya başka bir eylemciyi devingen eylemci olarak
+        kullanıyorsanız, bu yanıtı özelleştirmek için bu kullanıma özel
+        üretilmiş ortam değişkenlerini kullanmak isteyebilirsiniz.</p>
+
+      <p><directive module="core">ErrorDocument</directive> yönergesi bir CGI
+        betiğine bir yerel yönlendirme belirtiyorsa, hatanın kaynağı hakkında
+        istemciye bilgi vermek amacıyla betiğin çıktısında bir
+        "<code>Status:</code>" başlık alanına yer verilmelidir. Örneğin, bir
+        Perl betiği şunları içerebilirdi:</p>
 
       <example>
         ... <br />
-        print  "Content-type: text/html; charset=UTF-8\n"; <br />
+        print  "Content-type: text/html\n"; <br />
         printf "Status: %s durumu saptandı.\n", $ENV{"REDIRECT_STATUS"}; <br />
         ...
       </example>
 
-      <p>Eğer betik,  <code>404&nbsp;Not&nbsp;Found</code> gibi, belli bir
-        hata durumunu ele almaya adanmışsa duruma özel kod ve hata metni
+      <p>Eğer betik, <code>404&nbsp;Not&nbsp;Found</code> gibi, belli bir hata
+        durumunu ele almaya adanmışsa duruma özel kod ve hata metni
         kullanılabilir.</p>
 
       <p>Eğer yanıt, (istemci taraflı yönlendirme yapılırken) bir
-        <code>Location:</code> başlığı da içeriyorsa betiğin çıktıya uygun
-        bir <code>Status:</code> başlığı (<code>302&nbsp;Found</code> gibi)
-        eklemesinin <em>gerekli</em> oluşuna dikkat ediniz. Aksi takdirde,
-        <code>Location:</code> başlığı etkisiz olabilir.</p>
-    </section>
+        <code>Location:</code> başlığı da içeriyorsa betiğin çıktıya uygun bir
+        <code>Status:</code> başlığı (<code>302&nbsp;Found</code>) eklemesinin
+        gerekli oluşuna dikkat ediniz. Aksi takdirde, <code>Location:</code>
+        başlığı etkisiz olabilir.</p>
+
   </section>
+
+  <section id="multi-lang"><title>Çok Dilli Özel Hata Belgeleri</title>
+
+    <p>Apache HTTP Sunucusunun kurulumunda, 16 dile çevrilmiş özel hata
+      iletileri belgeleri içeren bir dizin bulunmaktadır. Ayrıca,
+      <code>conf/extra</code> yaplandırma dizininde bu özelliği etkin kılmak
+      için yapılandırmaya dahil edilebilecek bir yapılandırma dosyası
+      vardır.</p>
+
+    <p>Sunucu yapılandırma dosyanızda şöyle satırlar görebilirsiniz:</p>
+
+    <example>
+    # Multi-language error messages<br />
+    #Include conf/extra/httpd-multilang-errordoc.conf
+    </example>
+
+    <p>Bu <code>Include</code> satırını açıklama olmaktan çıkarırsanız
+      bu özelliği etkinleştirmiş olursunuz. Böylece, istemcinin tarayıcısında
+      belirtilmiş dil tercihine uygun dil uzlaşımlı hata iletileri
+      sağlanır.</p>
+
+    <p>Ek olarak, bu belgeler çeşitli <code>REDIRECT_</code> değişkenleri
+      içerir. Böylece, son kullanıcıya neler olduğu ve şimdi ne yapması
+      beklendiği hakkında ek bilgiler sağlanabilir.</p>
+
+    <p>Bu belgeleri istediğiniz kadar özelleştirebilir, kullanıcıya siteniz
+      hakkında ve orada bulabilecekleri şeylere dair faydalı bilgiler de
+      sağlayabilirsiniz.</p>
+
+    <p>Bu özelliği kullanmak için <module>mod_include</module> ve
+      <module>mod_negotiation</module> etkin kılınmalıdır.</p>
+
+ </section>
+
 </manualpage>
