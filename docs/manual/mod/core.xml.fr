@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1301745 -->
+<!-- English Revision : 1308110 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -3265,6 +3265,14 @@ serveurs virtuels &agrave; base de nom</description>
       # ...<br />
       &lt;/VirtualHost&gt;
     </example>
+
+    <p>La recherche du serveur virtuel &agrave; base de nom qui correspond le
+    mieux s'effectue selon l'ordre d'apparition des sections <directive
+    type="section" module="core">virtualhost</directive> dans le fichier
+    de configuration. Le premier serveur virtuel dont le <directive
+    module="core">ServerName</directive> ou le <directive
+    module="core">ServerAlias</directive> correspond est choisi, sans
+    pr&eacute;f&eacute;rence si le nom contient des caract&egrave;res g&eacute;n&eacute;riques ou pas.</p>
 </usage>
 <seealso><directive module="core">UseCanonicalName</directive></seealso>
 <seealso><a href="../vhosts/">Documentation sur les serveurs virtuels

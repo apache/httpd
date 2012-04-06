@@ -1,8 +1,9 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
-<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- English Revision: 421100 -->
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 1309686 -->
 <!-- French translation by alain B, review by Vincent Deffontaines -->
+<!-- Maintained by Lucien Gentis -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -98,7 +99,7 @@
     que le processus résident doit gérer. Par exemple&nbsp;:</p>
 
     <example>
-    Listen www.smallco.com:80
+    Listen 192.168.0.1:80
     </example>
 
     <p>Il est recommandé d'utiliser une adresse IP plutôt qu'un nom 
@@ -124,18 +125,18 @@ résident pour des serveurs virtuels</title>
     valeurs différentes pour chaque serveur virtuel. Par exemple&nbsp;:</p>
 
     <example>
-    &lt;VirtualHost www.smallco.com&gt;<br />
-    ServerAdmin webmaster@mail.smallco.com<br />
+    &lt;VirtualHost 192.168.0.1:80&gt;<br />
+    ServerAdmin webmaster@smallco.example.com<br />
     DocumentRoot /groups/smallco/www<br />
-    ServerName www.smallco.com<br />
+    ServerName smallco.example.com<br />
     ErrorLog /groups/smallco/logs/error_log<br />
     TransferLog /groups/smallco/logs/access_log<br />
     &lt;/VirtualHost&gt;<br />
 		<br />
-    &lt;VirtualHost www.baygroup.org&gt;<br />
-    ServerAdmin webmaster@mail.baygroup.org<br />
+    &lt;VirtualHost 192.168.0.2:80&gt;<br />
+    ServerAdmin webmaster@baygroup.example.org<br />
     DocumentRoot /groups/baygroup/www<br />
-    ServerName www.baygroup.org<br />
+    ServerName baygroup.example.com<br />
     ErrorLog /groups/baygroup/logs/error_log<br />
     TransferLog /groups/baygroup/logs/access_log<br />
     &lt;/VirtualHost&gt;
@@ -162,7 +163,7 @@ résident pour des serveurs virtuels</title>
     en remplacement depuis la version 2.0.</p>
  -->
     <p><directive module="mod_suexec">SuexecUserGroup</directive> peut être
-    utilisée à l'intérieur d'une directive VirtualHost si l'exécution se fait
+    utilisées à l'intérieur d'une directive VirtualHost si l'exécution se fait
     sous suEXEC. (Voir <a href="../suexec.html">suEXEC</a>).</p>
 
     <p><em>SÉCURITÉ&nbsp;:</em> lorsque vous spécifiez où écrire les 
