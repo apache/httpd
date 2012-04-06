@@ -26,7 +26,6 @@
 <a href="../ko/mod/mod_log_config.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_log_config.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Sunucuya yapılan isteklerin günlük kayıtlarının tutulması
 </td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
@@ -81,55 +80,70 @@
     <table class="bordered"><tr class="header"><th>Belirteç</th>
         <th>Açıklama</th></tr>
 <tr><td><code>%%</code></td>
-        <td>Yüzde imi</td></tr>
+        <td>Yüzde imi.</td></tr>
 <tr class="odd"><td><code>%a</code></td>
-        <td>Uzak IP adresi</td></tr>
-<tr><td><code>%A</code></td>
-        <td>Yerel IP adresi</td></tr>
-<tr class="odd"><td><code>%B</code></td>
+        <td>Uzak IP adresi ve isteğin portu.</td></tr>
+<tr><td><code>%{c}a</code></td>
+        <td>bağlantının emsal IP adresi and portu
+        (<code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> modülüne bakın).</td></tr>
+<tr class="odd"><td><code>%A</code></td>
+        <td>Yerel IP adresi.</td></tr>
+<tr><td><code>%B</code></td>
         <td>HTTP başlıkları hariç, yanıtın bayt cinsinden uzunluğu.</td></tr>
-<tr><td><code>%b</code></td>
+<tr class="odd"><td><code>%b</code></td>
         <td>HTTP başlıkları hariç, yanıtın bayt cinsinden uzunluğu. OGB
           biçeminde hiç bayt gönderilmemişse günlüğe '<code>-</code>' yerine
           '<code>0</code>' çıktılanır.</td></tr>
-<tr class="odd"><td><code>%{<var>DEĞİŞKEN</var>}C</code></td>
+<tr><td><code>%{<var>DEĞİŞKEN</var>}C</code></td>
         <td>İstek içinde sunucuya gönderilen <var>DEĞİŞKEN</var> çerezinin
-          içeriği.</td></tr>
-<tr><td><code>%D</code></td>
+          içeriği. Sadece 0 sürümlü çerezler tam olarak desteklenir.</td></tr>
+<tr class="odd"><td><code>%D</code></td>
         <td>Mikrosaniye cinsinden isteği sunmak için harcanan zaman.</td></tr>
-<tr class="odd"><td><code>%{<var>DEĞİŞKEN</var>}e</code></td>
+<tr><td><code>%{<var>DEĞİŞKEN</var>}e</code></td>
         <td><var>DEĞİŞKEN</var> ortam değişkeninin içeriği.</td></tr>
-<tr><td><code>%f</code></td>
-        <td>Dosya ismi</td></tr>
-<tr class="odd"><td><code>%h</code></td>
-        <td>Uzak konak</td></tr>
-<tr><td><code>%H</code></td>
-        <td>İstek Protokolü</td></tr>
-<tr class="odd"><td><code>%{<var>DEĞİŞKEN</var>}i</code></td>
+<tr class="odd"><td><code>%f</code></td>
+        <td>Dosya ismi.</td></tr>
+<tr><td><code>%h</code></td>
+        <td>Uzak konak ismi. <code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code> yönergesine öntanımlı olan
+          <code>Off</code> değeri atanmışsa, IP adresi günlüğe kaydedilir. Bir
+          kaç konak için konak ismi de günlüğe kaydoluyorsa muhtemelen onların
+          isimlerini içeren erişim denetim yönergelerine sahipsinizdir. Bak: <a href="mod_authz_host.html#reqhost">Require host</a>.</td></tr>
+<tr class="odd"><td><code>%H</code></td>
+        <td>İstek Protokolü.</td></tr>
+<tr><td><code>%{<var>DEĞİŞKEN</var>}i</code></td>
         <td>İstekle birlikte sunucuya gönderilen
           <code><var>DEĞİŞKEN</var>:</code> başlık satır(lar)ının
           içeriği. Diğer modüllerde (örn. <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code>)
-          yapılan değişikliklerden etkilenir.</td></tr>
-<tr><td><code>%k</code></td>
+          yapılan değişikliklerden etkilenir. Modüllerin çoğu bunu
+          değiştirdiğinde önceki istek başlık isminin ne olduğuyla
+          ilgileniyorsanız, başlığı bir ortam değişkenine kaydetmek için
+          <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> modülünü kullanın ve yukarıda
+          açıklandığı gibi bu değeri <code>%{<var>DEĞİŞKEN</var>}e</code> ile
+          günlüğe kaydedin.</td></tr>
+<tr class="odd"><td><code>%k</code></td>
         <td>Bu bağlantıda işlenen isteklerin sayısı; yani örneğin,
     	  '1' değeri bağlantı kurulduktan sonraki ilk kalıcı bağlantıyı,
     	  '2', ikinci bağlantıyı, ..., vb. gösterir;
           <code class="directive"><a href="../mod/core.html#keepalive">KeepAlive</a></code> kullanılmışsa
           değer anlamlıdır; aksi takdirde değer daima 0’dır.</td></tr>
-<tr class="odd"><td><code>%l</code></td>
+<tr><td><code>%l</code></td>
         <td>Uzak kullanıcı kimliği (sağlanmışsa, identd üzerinden).
           <code class="module"><a href="../mod/mod_ident.html">mod_ident</a></code> modülü mevcut ve <code class="directive"><a href="../mod/mod_ident.html#identitycheck">IdentityCheck</a></code> yönergesine değer
           olarak <code>On</code> atanmış olmadıkça bu belirteç için günlüğe
           tire imi yazılır.</td></tr>
+<tr class="odd"><td><code>%L</code></td>
+        <td>Hata günlüğündeki istek günlük kimliği (veya bu istek için hata
+          günlüğüne hiçbir şey kaydedilmemise '-'). Bu hataya neyin sebep
+          olduğunu öğrenmek için ilgili hata günlüğü satırına bakın.</td></tr>
 <tr><td><code>%m</code></td>
-        <td>İstek yöntemi</td></tr>
+        <td>İstek yöntemi.</td></tr>
 <tr class="odd"><td><code>%{<var>DEĞİŞKEN</var>}n</code></td>
         <td>Diğer modüldeki <var>DEĞİŞKEN</var> bilgisinin içeriği.</td></tr>
 <tr><td><code>%{<var>DEĞİŞKEN</var>}o</code></td>
         <td>Yanıttaki <code><var>DEĞİŞKEN</var>:</code> başlık satır(lar)ının
           içeriği.</td></tr>
 <tr class="odd"><td><code>%p</code></td>
-        <td>Sunucunun isteği sunduğu meşru port</td></tr>
+        <td>Sunucunun isteği sunduğu meşru port.</td></tr>
 <tr><td><code>%{<var>biçem</var>}p</code></td>
         <td>Sunucunun veya istemcinin gerçek portu veya sunucunun isteği
           sunduğu meşru port. Geçerli biçemler: <code>canonical</code>,
@@ -148,15 +162,36 @@
 <tr><td><code>%r</code></td>
         <td>İsteğin ilk satırı.</td></tr>
 <tr class="odd"><td><code>%s</code></td>
-        <td>Durum. Dahili olarak yönlendirilen istekler için isteğin *özgün*
-          durumudur --- isteğin son durumu için <code>%&gt;s</code>
-          kullanınız.</td></tr>
+        <td>Durum. Dahili olarak yönlendirilmiş istekler için isteğin
+          <em>özgün</em>  durumudur. İsteğin son durumu için
+          <code>%&gt;s</code> kullanınız.</td></tr>
 <tr><td><code>%t</code></td>
-        <td>İsteğin alındığı tarih ve saat (standart ingiliz biçemi).</td></tr>
+        <td><code>[18/Sep/2011:19:18:28 -0400]</code> biçeminde isteğin
+          alındığı tarih ve saat. Sondaki sayı zaman diliminin GMT'ye
+          uzaklığıdır.</td></tr>
 <tr class="odd"><td><code>%{<var>biçem</var>}t</code></td>
         <td>İsteğin alındığı tarih ve saat; <var>biçem</var>
-          <code>strftime(3)</code> biçeminde belirtilmelidir (genelde
-          yerelleştirme amaçlı).</td></tr>
+          uzatılmış <code>strftime(3)</code> biçeminde belirtilmelidir (genelde
+          yerelleştirme amaçlı). <code>begin:</code> (öntanımlı) ile başlayan
+          biçemlerde süre isteğin başlangıcına göredir. <code>end:</code> ile
+          başlayan biçemlerde ise süre isteğin işlenmesinin bi,tmesine yakın,
+          günlük girdisinin yazılmaya başladığı ana göredir.
+          <code>strftime(3)</code> tarafından desteklenen biçemlere ek olarak
+          aşağıdaki biçem dizgecikleri de desteklenmektedir:
+          <table>
+          <tr><td><code>sec</code></td><td>Mutlak zaman başlangıcından (epoch)
+            beri geçen saniye sayısı</td></tr>
+          <tr><td><code>msec</code></td><td>Mutlak zaman başlangıcından beri
+            geçen milisaniye sayısı</td></tr>
+          <tr><td><code>usec</code></td><td>Mutlak zaman başlangıcından beri
+            geçen mikrosaniye sayısı</td></tr>
+          <tr><td><code>msec_frac</code></td><td>milisaniyelik kesir</td></tr>
+          <tr><td><code>usec_frac</code></td><td>mikrosaniyelik kesir</td></tr>
+          </table>
+          Bu dizgecikler, aynı biçem dizgesi içinde bir diğeriyle birlikte veya
+          <code>strftime(3)</code> biçemlemesiyle birlikte yer alamazlar fakat
+          çok sayıda  <code>%{<var>biçem</var>}t</code> kullanılabilir.
+        </td></tr>
 <tr><td><code>%T</code></td>
         <td>Saniye cinsinden, isteği sunmak için harcanan zaman.</td></tr>
 <tr class="odd"><td><code>%u</code></td>
@@ -180,16 +215,12 @@
             <td>Yanıt gönderildikten sonra bağlantı canlı kalabilir.</td></tr>
         <tr><td><code>-</code> = </td>
             <td>Yanıt gönderildikten sonra bağlantı kapatılacak.</td></tr>
-        </table>
-
-        <p>(Apache 1.3’ün son sürümlerinde bu belirteç <code>%c</code> idi
-          fakat geçmişe yönelik olarak <code>%{<var>isim</var>}c</code> ssl
-          sözdizimi ile çelişiyordu.)</p></td></tr>
+        </table></td></tr>
 <tr><td><code>%I</code></td>
-        <td>İstek ve başlıklar dahil alınan bayt sayısı; sıfır olamaz. Bunu
+        <td>İstek ve başlıklar dahil alınan bayt sayısı. Sıfır olamaz. Bunu
           kullanmak için <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> etkin olmalıdır.</td></tr>
 <tr class="odd"><td><code>%O</code></td>
-        <td>Başlıklar dahil gönderilen bayt sayısı; sıfır olamaz.Bunu
+        <td>Başlıklar dahil gönderilen bayt sayısı. Sıfır olamaz. Bunu
           kullanmak için <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> etkin olmalıdır.</td></tr>
 </table>
 
@@ -197,15 +228,20 @@
 
       <p>Belli öğelerin sadece belli durum kodlarıyla ilgili yanıtlarla
         basılabilmesi için bu durum kodları % iminden hemen sonra virgüllerle
-        ayrılmış olarak yazılabilir. Örneğin,
-        <code>"%400,501{User-agent}i"</code> belirteci,
-        <code>User-agent</code> başlığını sadece 400 ve 501 hatalarında
-        günlüğe kaydeder. Diğer durum kodları için günlüğe <code>"-"</code>
-        yazılır. Durum kodlarını olumsuzlamak için başa bir "<code>!</code>"
-        konabilir. Örneğin, <code>"%!200,304,302{Referer}i"</code> belirteci,
-        200,304,302 durum kodlarından biriyle dönmeyen tüm istekler için
-        <code>Referer</code> başlığını durum koduyla birlikte günlüğe
-        kaydedecektir.</p>
+        ayrılmış olarak yazılabilir. Olumsuzlama belirtmek için durum kodu listesinin önüne bir "<code>!</code>" konabilir.</p>
+
+      <table class="bordered"><tr class="header"><th>Biçem Dizgesi</th>
+      <th>Anlamı</th></tr>
+<tr><td><code>%400,501{User-agent}i</code></td>
+      <td>Sadece 400 ve 501 hatalarında <code>User-agent</code> günlüğe
+        kaydedilir. Diğer durum kodları için günlüğe <code>"-"</code> yazılır.
+      </td></tr>
+<tr class="odd"><td><code>%!200,304,302{Referer}i</code></td>
+      <td>200,304,302 durum kodlarından biriyle dönmeyen tüm istekler için
+        <code>Referer</code> başlığı durum koduyla birlikte günlüğe
+        kaydedilir. Aksi takdirde günlüğe "<code>-</code>" yazılır.
+      </td></tr>
+</table>
 
       <p>İsteğin dahili olarak yönlendirilmesinde özgün durumunun mu yoksa son
         durumunun mu hesaba katılacağı "&lt;" ve "&gt;" değiştiricileri ile
@@ -238,6 +274,13 @@
         <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> modülü tarafından sağlanan <code>%O</code>
         biçem belirteci kullanılmaktadır.</p>
 
+      <div class="note">
+      <p>Ek bilgi: <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> standat bir eylemci olarak değil
+        hızlı bir eylemci olarak gerçeklenmiştir. Bu nedenle, içerik
+        arabelleklemesi sözkonusu olduğunda <code>%R</code> biçem dizgesi
+        herhangi bir eylemci bilgisi döndürmeyecektir.</p>
+      </div>
+
     
 
     <h3><a name="examples" id="examples">Örnekler</a></h3>
@@ -261,6 +304,14 @@
 
         <dt>User-agent başlığını içeren günlük biçemi</dt>
         <dd><code>"%{User-agent}i"</code></dd>
+      </dl>
+
+      <p><code>msec_frac</code> gibi ek biçem dizgeciklerini kullanan bir zaman
+        biçemi belirtmek isterseniz <code>%{format}t</code> biçem dizgesini
+        defalarca kullanabilirsiniz:</p>
+      <dl>
+        <dt>Milisaniyeleri de içeren bir zaman damgası</dt>
+        <dd><code>"%{%d/%b/%Y %T}t.%{msec_frac}t %{%z}t"</code></dd>
       </dl>
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -291,7 +342,8 @@
       sunucu geneli için belirtilebilir, sanal konaklar için ayrı ayrı
       yapılandırılamaz.</p>
 
-    <div class="note">Bu yönerge deneyseldir ve dikkatli kullanılmalıdır.</div>
+    <div class="note">Bir çökme günlük verisi kaybına sebep olacağından bu yönerge
+      dikkatli kullanılmalıdır.</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -300,7 +352,8 @@
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Günlük dosyasın ismini ve girdi biçemini belirler.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>CustomLog  <var>dosya</var>|<var>borulu-süreç</var>
 <var>biçem</var>|<var>takma-ad</var>
-[env=[!]<var>ortam-değişkeni</var>]</code></td></tr>
+[env=[!]<var>ortam-değişkeni</var>]|
+expr=<var>ifade</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_log_config</td></tr>
@@ -321,7 +374,8 @@
       <dt><var>borulu-süreç</var></dt>
       <dd>"<code>|</code>" boru karakteri ile öncelenmiş olarak günlük
         bilgisini standart girdisinden kabul edecek sürecin ismi (veya komut
-        satırı).
+        satırı) Daha fazla bilgi için <a href="../logs.html#piped">borulu
+        günlükler</a>e bakınız.
 
       <div class="warning"><h3>Güvenlik:</h3>
       <p>Bir borulu süreç kullanılmışsa, süreç <code class="program"><a href="../programs/httpd.html">httpd</a></code>’yi
@@ -352,11 +406,12 @@
       CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"
     </code></p></div>
 
-    <p>Üçüncü argüman isteğe bağlı olup, sunucu ortamında belli bir değişkenin
-      varlığına bağlı olarak belli bir isteğin günlüğe kaydedilip
-      kaydedilmeyeceğini belirler. Eğer istek için belirtilen <a href="../env.html">ortam değişkeni</a> mevcutsa (veya
-      '<code>env=!<var>değişken</var></code>' durumunda mevcut değilse) istek
-      günlüğe kaydedilir.</p>
+    <p>Üçüncü argüman isteğe bağlı olup,belli bir isteğin günlüğe kaydedilip
+      kaydedilmeyeceğini belirler. Koşul, sunucu <a href="../env.html">ortamında</a> belli bir değişkenin varlığı veya
+      yokluğu olabilir (bir '<code>env=!<var>isim</var></code>' durumu).
+      İstenirse koşul keyfi bir mantıksal <a href="../expr.html">ifade</a>
+      olarak da belirtilebilir. Eğer koşul sağlanmazsa istek günlüğe
+      kaydedilmez.</p>
 
     <p>Ortam değişkenleri <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>
       ve/veya <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> modülleri kullanılarak her istek
