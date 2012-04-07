@@ -24,7 +24,6 @@
 <a href="../tr/programs/" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/programs/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Bu sayfada Apache HTTP Sunucusuna dahil tüm çalıştırılabilir programlar
       tanıtılmıştır.</p>
@@ -55,6 +54,9 @@
 
       <dt><code class="program"><a href="../programs/fcgistarter.html">fcgistarter</a></code></dt>
       <dd>Bir FastCGI programını çalıştırır.</dd>
+
+      <dt><code class="program"><a href="../programs/firehose.html">firehose</a></code></dt>
+      <dd><code class="module"><a href="../mod/mod_firehose.html">mod_firehose</a></code>'daki itfaiye hortumunun katlarını açar...</dd>
 
       <dt><code class="program"><a href="../programs/htcacheclean.html">htcacheclean</a></code></dt>
       <dd>Disk arabelleğini temizler.</dd>
