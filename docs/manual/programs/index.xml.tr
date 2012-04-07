@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 669736:1215525 (outdated) -->
+<!-- English Revision: 1215525 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -58,6 +58,9 @@
 
       <dt><program>fcgistarter</program></dt>
       <dd>Bir FastCGI programını çalıştırır.</dd>
+
+      <dt><program>firehose</program></dt>
+      <dd><module>mod_firehose</module>'daki itfaiye hortumunun katlarını açar...</dd>
 
       <dt><program>htcacheclean</program></dt>
       <dd>Disk arabelleğini temizler.</dd>
