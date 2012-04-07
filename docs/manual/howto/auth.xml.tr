@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 816418:1070891 (outdated) -->
+<!-- English Revision: 1070891 -->
 <!-- =====================================================
  Translated by: Umut Samuk <umut belgeler.org>
    Reviewed by: Nilgün Belma Bugüner <nilgun belgeler.org>
@@ -31,9 +31,12 @@
 
   <summary>
     <p>Kimlik Doğrulama istediğiniz kişileri teyid etme işlemidir.
-    Yetkilendirme ise kişilerin nereye gireceklerine ve hangi bilgiye
-    ulaşacaklarına müsaade edilmesi işlemidir.</p>
-  </summary>
+      Yetkilendirme ise kişilerin nereye gireceklerine ve hangi bilgiye
+      ulaşacaklarına müsaade edilmesi işlemidir.</p>
+
+    <p>Genel erişim denetimi için <a href="access.html">Erişim Denetimi
+      Nasıl</a> belgesine bakınız.</p>
+</summary>
 
   <section id="related"><title>İlgili modüller ve Yönergeler</title>
 
@@ -59,6 +62,7 @@
           <li><module>mod_authn_dbm</module></li>
           <li><module>mod_authn_file</module></li>
           <li><module>mod_authnz_ldap</module></li>
+          <li><module>mod_authn_socache</module></li>
         </ul>
       </li>
       <li>Yetkilendirme (bkz.
@@ -379,11 +383,13 @@
 
     <example>
     &lt;Directory /www/docs/private&gt;<br />
+    <indent>
     AuthName "Private"<br />
     AuthType Basic<br />
     AuthBasicProvider dbm<br />
     AuthDBMUserFile /www/passwords/passwd.dbm<br />
     Require valid-user<br />
+  </indent>
     &lt;/Directory&gt;
     </example>
 
@@ -403,12 +409,14 @@
 
     <example>
     &lt;Directory /www/docs/private&gt;<br />
+    <indent>
     AuthName "Private"<br />
     AuthType Basic<br />
     AuthBasicProvider file ldap<br />
     AuthUserFile /usr/local/apache/passwd/passwords<br />
     AuthLDAPURL ldap://ldaphost/o=yourorg<br />
     Require valid-user<br />
+    </indent>
     &lt;/Directory&gt;
     </example>
 
@@ -427,6 +435,7 @@
 
     <example>
     &lt;Directory /www/docs/private&gt;<br />
+    <indent>
     AuthName "Private"<br />
     AuthType Basic<br />
     AuthBasicProvider file<br />
@@ -435,6 +444,7 @@
     AuthGroupFile /usr/local/apache/passwd/groups<br />
     Require group GroupName<br />
     Require ldap-group cn=mygroup,o=yourorg<br />
+    </indent>
     &lt;/Directory&gt;
     </example>
 
@@ -596,6 +606,16 @@
 
     </section>
 
+  </section>
+
+  <section id="socache"><title>Kimlik Doğrulama Arabelleği</title>
+    <p>Zaman zaman kimlik doğrulama ağınızda veya sağlayıcı(ları)nızda kabul
+    edilemez yükler oluşturur. Bu çoğunlukla <module>mod_authn_dbd</module>
+    (veya üçüncü parti/özel sağlayıcıların) kullanıcılarını etkiler. Bununla
+    ilgilenmek için httpd 2.3/2.4, kimlik bilgilerini arabelleklemek ve özgün
+    sağlayıcıların yüklerini azaltmak için yeni bir arabellekleme sağlayıcısı
+    olarak <module>mod_authn_socache</module> modülü ile gelmektedir.</p>
+    <p>Bu, bazı kullanıcılar için önemli bir başarım artışı sağlayabilir.</p>
   </section>
 
   <section id="moreinformation"><title>Daha fazla bilgi</title>
