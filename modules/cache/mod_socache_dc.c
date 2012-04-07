@@ -140,7 +140,8 @@ static apr_status_t socache_dc_remove(ap_socache_instance_t *ctx,
     if (!DC_CTX_remove_session(ctx->dc, id, idlen)) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00745) "distributed scache 'remove' MISS");
         return APR_NOTFOUND;
-    } else {
+    }
+    else {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00746) "distributed scache 'remove' HIT");
         return APR_SUCCESS;
     }
