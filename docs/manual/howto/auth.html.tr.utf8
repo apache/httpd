@@ -24,12 +24,14 @@
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/auth.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Kimlik Doğrulama istediğiniz kişileri teyid etme işlemidir.
-    Yetkilendirme ise kişilerin nereye gireceklerine ve hangi bilgiye
-    ulaşacaklarına müsaade edilmesi işlemidir.</p>
-  </div>
+      Yetkilendirme ise kişilerin nereye gireceklerine ve hangi bilgiye
+      ulaşacaklarına müsaade edilmesi işlemidir.</p>
+
+    <p>Genel erişim denetimi için <a href="access.html">Erişim Denetimi
+      Nasıl</a> belgesine bakınız.</p>
+</div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">İlgili modüller ve Yönergeler</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#introduction">Giriş</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#theprerequisites">Ön gereksinimler</a></li>
@@ -39,6 +41,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#dbmdbd">Diğer parola depolama yöntemleri</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#multprovider">Birden çok tedarikçi kullanmak</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#beyond">Yetkilendirmenin biraz ötesi</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#socache">Kimlik Doğrulama Arabelleği</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#moreinformation">Daha fazla bilgi</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -65,6 +68,7 @@
           <li><code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code></li>
           <li><code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code></li>
           <li><code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></li>
+          <li><code class="module"><a href="../mod/mod_authn_socache.html">mod_authn_socache</a></code></li>
         </ul>
       </li>
       <li>Yetkilendirme (bkz.
@@ -378,11 +382,13 @@
 
     <div class="example"><p><code>
     &lt;Directory /www/docs/private&gt;<br />
+    <span class="indent">
     AuthName "Private"<br />
     AuthType Basic<br />
     AuthBasicProvider dbm<br />
     AuthDBMUserFile /www/passwords/passwd.dbm<br />
     Require valid-user<br />
+  </span>
     &lt;/Directory&gt;
     </code></p></div>
 
@@ -402,12 +408,14 @@
 
     <div class="example"><p><code>
     &lt;Directory /www/docs/private&gt;<br />
+    <span class="indent">
     AuthName "Private"<br />
     AuthType Basic<br />
     AuthBasicProvider file ldap<br />
     AuthUserFile /usr/local/apache/passwd/passwords<br />
     AuthLDAPURL ldap://ldaphost/o=yourorg<br />
     Require valid-user<br />
+    </span>
     &lt;/Directory&gt;
     </code></p></div>
 
@@ -426,6 +434,7 @@
 
     <div class="example"><p><code>
     &lt;Directory /www/docs/private&gt;<br />
+    <span class="indent">
     AuthName "Private"<br />
     AuthType Basic<br />
     AuthBasicProvider file<br />
@@ -434,6 +443,7 @@
     AuthGroupFile /usr/local/apache/passwd/groups<br />
     Require group GroupName<br />
     Require ldap-group cn=mygroup,o=yourorg<br />
+    </span>
     &lt;/Directory&gt;
     </code></p></div>
 
@@ -582,6 +592,16 @@
 
     
 
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="socache" id="socache">Kimlik Doğrulama Arabelleği</a></h2>
+    <p>Zaman zaman kimlik doğrulama ağınızda veya sağlayıcı(ları)nızda kabul
+    edilemez yükler oluşturur. Bu çoğunlukla <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>
+    (veya üçüncü parti/özel sağlayıcıların) kullanıcılarını etkiler. Bununla
+    ilgilenmek için httpd 2.3/2.4, kimlik bilgilerini arabelleklemek ve özgün
+    sağlayıcıların yüklerini azaltmak için yeni bir arabellekleme sağlayıcısı
+    olarak <code class="module"><a href="../mod/mod_authn_socache.html">mod_authn_socache</a></code> modülü ile gelmektedir.</p>
+    <p>Bu, bazı kullanıcılar için önemli bir başarım artışı sağlayabilir.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="moreinformation" id="moreinformation">Daha fazla bilgi</a></h2>
