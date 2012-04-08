@@ -302,4 +302,19 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>DBDInitSQL</name>
+<description>Execute an SQL statement after connecting to a database</description>
+<syntax>DBDInitSQL <var>"SQL statement"</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Modules, that wish it, can have one or more SQL statements 
+    executed when a connection to a database is created. Example 
+    usage could be initializing certain values or adding a log 
+    entry when a new connection is made to the database.</p>
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>
