@@ -43,6 +43,7 @@
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#dbdexptime">DBDExptime</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#dbdinitsql">DBDInitSQL</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#dbdkeep">DBDKeep</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#dbdmax">DBDMax</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#dbdmin">DBDMin</a></li>
@@ -188,6 +189,21 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     <p>Set the time to keep idle connections alive when the number
     of connections specified in DBDKeep has been exceeded (threaded
     platforms only).</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DBDInitSQL" id="DBDInitSQL">DBDInitSQL</a> <a name="dbdinitsql" id="dbdinitsql">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Execute an SQL statement after connecting to a database</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DBDInitSQL <var>"SQL statement"</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dbd</td></tr>
+</table>
+    <p>Modules, that wish it, can have one or more SQL statements 
+    executed when a connection to a database is created. Example 
+    usage could be initializing certain values or adding a log 
+    entry when a new connection is made to the database.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
