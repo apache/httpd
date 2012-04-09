@@ -553,7 +553,7 @@ AP_DECLARE(int) ap_scan_script_header_err_core_ex(request_rec *r, char *buffer,
         if (!(l = strchr(w, ':'))) {
             if (!buffer) {
                 /* Soak up all the script output - may save an outright kill */
-                while ((*getsfunc) (w, MAX_STRING_LEN - 1, getsfunc_data)) {
+                while ((*getsfunc)(w, MAX_STRING_LEN - 1, getsfunc_data) > 0) {
                     continue;
                 }
             }
@@ -672,7 +672,8 @@ static int getsfunc_BRIGADE(char *buf, int len, void *arg)
     apr_status_t rv;
     int done = 0;
 
-    while ((dst < dst_end) && !done && !APR_BUCKET_IS_EOS(e)) {
+    while ((dst < dst_end) && !done && e != APR_BRIGADE_SENTINEL(bb)
+           && !APR_BUCKET_IS_EOS(e)) {
         const char *bucket_data;
         apr_size_t bucket_data_len;
         const char *src;
@@ -706,7 +707,7 @@ static int getsfunc_BRIGADE(char *buf, int len, void *arg)
         e = next;
     }
     *dst = 0;
-    return 1;
+    return done;
 }
 
 AP_DECLARE(int) ap_scan_script_header_err_brigade(request_rec *r,
