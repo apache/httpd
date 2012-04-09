@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_fcgi: If there is an error reading the headers from the
+     backend, send an error to the client. [Stefan Fritsch]
+
   *) mod_rewrite: Fix RewriteCond integer checks to be parsed correctly.
      PR 53023. [Axel Reinhold <apache freakout.de>, André Malo]
 
