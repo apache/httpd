@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Fix error handling in ap_scan_script_header_err_brigade() if there
+     is no EOS bucket in the brigade. Fixes segfault with mod_proxy_fcgi.
+     PR 48272. [Stefan Fritsch]
+
   *) mod_proxy_fcgi: If there is an error reading the headers from the
      backend, send an error to the client. [Stefan Fritsch]
 
