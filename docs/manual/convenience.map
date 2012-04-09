@@ -171,6 +171,7 @@ davgenericlockdb	mod/mod_dav_lock.html#davgenericlockdb
 davlockdb	mod/mod_dav_fs.html#davlockdb
 davmintimeout	mod/mod_dav.html#davmintimeout
 dbdexptime	mod/mod_dbd.html#dbdexptime
+dbdinitsql	mod/mod_dbd.html#dbdinitsql
 dbdkeep	mod/mod_dbd.html#dbdkeep
 dbdmax	mod/mod_dbd.html#dbdmax
 dbdmin	mod/mod_dbd.html#dbdmin

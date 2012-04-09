@@ -240,7 +240,7 @@ Substitute s/internal\.example\.com/www.example.com/i
 
 <p>For more sophisticated rewriting of links in HTML and XHTML, the 
 <code class="module"><a href="./mod/mod_proxy_html.html">mod_proxy_html</a></code> module is also available. It allows you
-to create maps of URLs that need to be rewritten, so that comples
+to create maps of URLs that need to be rewritten, so that complex
 proxying scenarios can be handled.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
