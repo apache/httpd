@@ -39,6 +39,7 @@
 <section id="topics"><title>Topics</title>
     <ul>
       <li><a href="new_api_2_4.html">API changes in Apache 2.3/2.4</a></li>
+      <li><a href="modguide.html">Developing modules for Apache 2.4</a></li>
       <li><a href="hooks.html">Apache 2.x Hook Functions</a></li>
       <li><a href="request.html">Request Processing in Apache 2.x</a></li>
       <li><a href="filters.html">How filters work in Apache 2.x</a></li>
