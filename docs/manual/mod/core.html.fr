@@ -3246,6 +3246,11 @@ serveurs virtuels à base de nom</td></tr>
       &lt;/VirtualHost&gt;
     </code></p></div>
 
+    <p>La recherche du serveur virtuel à base de nom qui correspond le
+    mieux s'effectue selon l'ordre d'apparition des sections <code class="directive"><a href="#virtualhost">&lt;virtualhost&gt;</a></code> dans le fichier
+    de configuration. Le premier serveur virtuel dont le <code class="directive"><a href="#servername">ServerName</a></code> ou le <code class="directive"><a href="#serveralias">ServerAlias</a></code> correspond est choisi, sans
+    préférence si le nom contient des caractères génériques ou pas.</p>
+
 <h3>Voir aussi</h3>
 <ul>
 <li><code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code></li>

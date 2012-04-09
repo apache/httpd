@@ -149,101 +149,48 @@ SCRIPT_URI=http://en1.engelschall.com/u/rse/
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit l'URL de base pour les réécritures au niveau
 répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RewriteBase <em>chemin URL</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Voir utilisation pour plus d'informations.</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_rewrite</td></tr>
 </table>
-      <p>La directive <code class="directive">RewriteBase</code> définit
-      explicitement l'URL de base pour les réécritures au niveau du
-      répertoire. Comme vous le verrez plus loin, la directive
-      <code class="directive"><a href="#rewriterule">RewriteRule</a></code> peut
-      être utilisée dans les fichiers de configuration au niveau du
-      répertoire (<code>.htaccess</code>). Elle agit alors localement,
-      en amputant le répertoire local de son préfixe avant traitement,
-      et en n'appliquant les règles de réécriture que sur ce qui reste
-      de l'URL. Lorsque le traitement est terminé, le préfixe est
-      automatiquement rajouté à l'URL. La valeur par défaut est
-      <code class="directive">RewriteBase</code>
-      <em>chemin répertoire physique</em></p>
+      <p>La directive <code class="directive">RewriteBase</code> permet de
+      spécifier le préfixe d'URL à utiliser dans un contexte de
+      répertoire (htaccess) pour les directives
+      <code class="directive">RewriteRule</code> qui réécrivent vers un chemin
+      relatif.</p>
+      <p>Cette directive est <em>obligatoire</em> si vous utilisez un
+      chemin relatif dans une substitution, et dans un contexte de
+      répertoire (htaccess), sauf si au moins une de ces conditions est
+      vérifiée :</p>
+      <ul>
+          <li>La requête initiale, ainsi que la substitution, sont dans
+	  la <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> (c'est à
+	  dire que pour y accéder, il n'est pas nécessaire d'utiliser
+	  une directive telle qu'<code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>).</li>
+          <li>Le chemin du système de fichiers vers le répertoire
+	  contenant la <code class="directive">RewriteRule</code>, suffixé par
+	  la substitution relative est aussi valide en tant qu'URL sur
+	  le serveur (ce qui est rare).</li>
+      </ul>
 
-      <p>Lorsqu'une substitution intervient pour une nouvelle URL, ce
-      module doit réinjecté l'URL dans le traitement du serveur. Pour
-      y parvenir, il doit connaître le préfixe de l'URL ou l'URL de
-      base correspondants. Par défaut, le préfixe est le chemin du
-      fichier correspondant lui-même. <strong>Cependant, pour la
-      plupart des sites web, les URLs ne correspondent PAS directement
-      aux chemins des fichiers physiques, cette assertion s'avère
-      ainsi souvent fausse !</strong>. C'est pourquoi vous pouvez
-      utiliser la directive <code>RewriteBase</code> pour spécifier
-      le préfixe correct.</p>
-
-<div class="note"> Si les URLs de votre serveur web ne correspondent
-<strong>pas</strong> directement aux chemins physiques des fichiers,
-vous devrez utiliser <code class="directive">RewriteBase</code> dans chaque
-fichier <code>.htaccess</code> où vous voudrez utiliser des
-directives <code class="directive"><a href="#rewriterule">RewriteRule</a></code>.
-</div>
-
-        <p> Par exemple, considérons le fichier de configuration de
-	répertoire suivant :</p>
+<p>Dans l'exemple ci-dessous, la directive
+<code class="directive">RewriteBase</code> est nécessaire afin d'éviter une
+réécriture en http://example.com/opt/myapp-1.2.3/welcome.html car la
+ressource n'était pas relative à la racine des documents. Cette erreur
+de configuration aurait conduit le serveur à rechercher un répertoire
+"opt" à la racine des documents.</p>
 
 <div class="example"><pre>
-#
-#  /abc/def/.htaccess -- fichier de configuration pour le répertoire
-/abc/def
-#  Rappel : /abc/def est le chemin physique de /xyz,
-#  <em>ce qui veut dire</em> que la configuration du serveur comporte
-#  une directive du style 'Alias /xyz /abc/def'.
-#
-
+DocumentRoot /var/www/example.com
+Alias /myapp /opt/myapp-1.2.3
+&lt;Directory /opt/myapp-1.2.3&gt;
 RewriteEngine On
-
-#  faisons savoir au serveur qu'on nous a atteint via /xyz et non par
-#  le chemin physique /abc/def
-RewriteBase   /xyz
-
-#  maintenant les règles de réécriture
-RewriteRule   ^avant\.html$  après.html
+RewriteBase /myapp/
+RewriteRule ^index\.html$  welcome.html 
+&lt;/Directory&gt;
 </pre></div>
-
-        <p>Dans l'exemple précédent, une requête pour
-	<code>/xyz/avant.html</code> sera correctement réécrite sous
-	sous sa forme chemin physique
-	<code>/abc/def/après.html</code>.</p>
-
-<div class="note"><h3>Pour les hackers d'Apache</h3>
-<p>La liste suivante fournit des informations détaillées à propos des
-étapes du traitement interne :</p>
-<pre>
-Requête :
-  /xyz/avant.html
-
-Traitement interne :
-  /xyz/avant.html     -&gt; /abc/def/avant.html  (Alias au niveau serveur)
-  /abc/def/avant.html -&gt; /abc/def/après.html  (RewriteRule au niveau répertoire)
-  /abc/def/après.html -&gt; /xyz/après.html      (RewriteBase au niveau répertoire)
-  /xyz/après.html     -&gt; /abc/def/après.html  (Alias au niveau serveur)
-
-Résultat :
-  /abc/def/après.html
-
-</pre>
-              <p>Tout ceci paraît très compliqué, mais correspond
-	      réellement au traitement interne d'Apache. Comme la
-	      réécriture au niveau du répertoire intervient plus tard
-	      au cours du traitement, la requête de réécriture doit être
-	      réinjectée dans le noyau d'Apache, comme s'il s'agissait
-	      d'une nouvelle requête (Voir les <a href="../rewrite/tech.html">détails techniques à
-	      propos de mod_rewrite</a>). La surcharge
-	      correspondante n'est pas aussi importante qu'il n'y
-	      paraît, car la réinjection est entièrement prise en charge
-	      en interne par Apache (comme c'est d'ailleurs le cas pour
-	      de nombreuses autres opérations effectuées à l'intérieur
-	      d'Apache).</p>
-</div>
-
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
