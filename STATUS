@@ -98,6 +98,36 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     (applies cleanly to 2.4.x)
     +1: nd
 
+  * mod_proxy_fcgi: Report errors to the client
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1311172
+    2.4 patch: Trunk patch works
+    +1: sf
+
+  * core: Fix error handling in ap_scan_script_header_err_brigade() if there
+    is no EOS bucket in the brigade.
+    Also don't loop if there is a timeout when discarding the script output.
+    PR: 48272 (partial fix)
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1311174
+    2.4 patch: Trunk patch works
+    +1: sf
+
+  * mod_authz_core: Fix parsing of Require arguments in <AuthzProviderAlias>.
+    Add some logging and an assert for a case that should not happen.
+    PR: 53048
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1311183
+    2.4 patch: Trunk patch works
+    +1: sf
+
+  * mod_lua: Log better error message if parsing of a script fails (including
+    the line number of a syntax error!).
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1305586
+    2.4 patch: Trunk patch works
+    +1: sf
+
+  * mod_filter: Add some trace logging for AddOutputFilterByType
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1299783
+    2.4 patch: Trunk patch works
+    +1: sf
 
 PATCHES/ISSUES THAT ARE STALLED
 
