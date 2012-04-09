@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_rewrite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_rewrite.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ce module fournit un moteur de réécriture à base de
 règles permettant de réécrire les URLs des requêtes
 à la volée</td></tr>
@@ -126,46 +124,42 @@ répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_rewrite</td></tr>
 </table>
-      <p>La directive <code class="directive">RewriteBase</code> définit
-      explicitement le chemin URL de base (et non le chemin du
-      répertoire dans le système de fichiers !) pour les réécritures dans un contexte
-      de répertoire dont le résultat est la substitution d'un
-      chemin relatif. Lorsque vous utilisez une directive <code class="directive"><a href="#rewriterule">RewriteRule</a></code> dans un fichier
-      <code>.htaccess</code>, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> enlève le
-      préfixe de répertoire local avant d'effectuer le traitement, puis
-      réécrit ce qui reste de l'URL. Lorsque la réécriture est terminée,
-      <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> ajoute automatiquement le préfixe de
-      répertoire local (ou la valeur de la directive
-      <code class="directive">RewriteBase</code> si cette dernière est définie)
-      à la chaîne de substitution avant de la remettre à disposition du
-      serveur, comme s'il s'agissait de l'URL d'origine.</p>
+      <p>La directive <code class="directive">RewriteBase</code> permet de
+      spécifier le préfixe d'URL à utiliser dans un contexte de
+      répertoire (htaccess) pour les directives
+      <code class="directive">RewriteRule</code> qui réécrivent vers un chemin
+      relatif.</p>
+      <p>Cette directive est <em>obligatoire</em> si vous utilisez un
+      chemin relatif dans une substitution, et dans un contexte de
+      répertoire (htaccess), sauf si au moins une de ces conditions est
+      vérifiée :</p>
+      <ul>
+          <li>La requête initiale, ainsi que la substitution, sont dans
+	  la <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> (c'est à
+	  dire que pour y accéder, il n'est pas nécessaire d'utiliser
+	  une directive telle qu'<code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>).</li>
+          <li>Le chemin du système de fichiers vers le répertoire
+	  contenant la <code class="directive">RewriteRule</code>, suffixé par
+	  la substitution relative est aussi valide en tant qu'URL sur
+	  le serveur (ce qui est rare).</li>
+      </ul>
 
-	<p>Cette directive est <em>requise</em> pour les réécritures
-	dans un contexte de répertoire défini via la directive
-	<code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> lorsque la
-	substitution utilise un chemin relatif.</p>
-
-      <p>Si votre chemin URL n'existe pas réellement dans le système de
-      fichiers, ou ne trouve pas directement sous le répertoire défini
-      par la directive <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>, vous devez utiliser la
-      directive	<code class="directive">RewriteBase</code> dans chaque fichier
-	<code>.htaccess</code> où vous voulez utiliser des directives <code class="directive"><a href="#rewriterule">RewriteRule</a></code>.</p>
-
-      <p>L'exemple ci-dessous montre comment faire correspondre
-      http://example.com/mon-appli/index.html à
-      /home/www/exemple/nouveau_site.html dans un fichier
-      <code>.htaccess</code>. On suppose que le contenu disponible à
-      http://example.com/ se situe sur le disque à
-      /home/www/exemple/.</p>
+<p>Dans l'exemple ci-dessous, la directive
+<code class="directive">RewriteBase</code> est nécessaire afin d'éviter une
+réécriture en http://example.com/opt/myapp-1.2.3/welcome.html car la
+ressource n'était pas relative à la racine des documents. Cette erreur
+de configuration aurait conduit le serveur à rechercher un répertoire
+"opt" à la racine des documents.</p>
 
 <div class="example"><pre>
+DocumentRoot /var/www/example.com
+Alias /myapp /opt/myapp-1.2.3
+&lt;Directory /opt/myapp-1.2.3&gt;
 RewriteEngine On
-# Le chemin URL utilisé pour arriver dans ce contexte, et non le chemin
-# du système de fichiers
-RewriteBase /mon-appli/
-RewriteRule ^index\.html$  nouveau_site.html
+RewriteBase /myapp/
+RewriteRule ^index\.html$  welcome.html 
+&lt;/Directory&gt;
 </pre></div>
-
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

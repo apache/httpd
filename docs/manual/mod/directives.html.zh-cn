@@ -203,6 +203,7 @@
 <li><a href="mod_dav_fs.html#davlockdb">DavLockDB</a></li>
 <li><a href="mod_dav.html#davmintimeout">DavMinTimeout</a></li>
 <li><a href="mod_dbd.html#dbdexptime">DBDExptime</a></li>
+<li><a href="mod_dbd.html#dbdinitsql">DBDInitSQL</a></li>
 <li><a href="mod_dbd.html#dbdkeep">DBDKeep</a></li>
 <li><a href="mod_dbd.html#dbdmax">DBDMax</a></li>
 <li><a href="mod_dbd.html#dbdmin">DBDMin</a></li>
