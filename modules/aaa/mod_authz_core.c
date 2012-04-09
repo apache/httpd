@@ -221,6 +221,14 @@ static authz_status authz_alias_check_authorization(request_rec *r,
 
             r->per_dir_config = orig_dir_config;
         }
+        else {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02305)
+                          "no alias provider found for '%s' (BUG?)",
+                          provider_name);
+        }
+    }
+    else {
+        ap_assert(provider_name != NULL);
     }
 
     return ret;
@@ -304,6 +312,14 @@ static const char *authz_require_alias_section(cmd_parms *cmd, void *mconfig,
             return apr_psprintf(cmd->pool,
                                 "Unknown Authz provider: %s",
                                 provider_name);
+        }
+        if (prvdraliasrec->provider->parse_require_line) {
+            const char *err = prvdraliasrec->provider->parse_require_line(cmd,
+                         provider_args, &prvdraliasrec->provider_parsed_args);
+            if (err)
+                return apr_psprintf(cmd->pool,
+                                    "Can't parse 'Require %s %s': %s",
+                                    provider_name, provider_args, err);
         }
 
         authcfg = ap_get_module_config(cmd->server->module_config,
