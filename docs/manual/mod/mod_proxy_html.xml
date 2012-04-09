@@ -42,6 +42,43 @@ extensive <a href="http://apache.webthing.com/mod_proxy_html/"
 </summary>
 
 <directivesynopsis>
+<name>ProxyHTMLMeta</name>
+<description>Turns on or off extra pre-parsing of metadata in HTML
+<code>&lt;head&gt;</code> sections.</description>
+<syntax>ProxyHTMLMeta <var>On|Off</var></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+</contextlist>
+<compatibility>Version 2.4 and later; available as a third-party
+module for earlier 2.x versions.</compatibility>
+
+<usage>
+    <p>This turns on or off pre-parsing of metadata in HTML
+    <code>&lt;head&gt;</code> sections.</p>
+    <p>If not required, turning ProxyHTMLMeta Off will give a small
+    performance boost by skipping this parse step.  However, it
+    is sometimes necessary for internationalisation to work correctly.</p>
+    <p>ProxyHTMLMeta has two effects.  Firstly and most importantly
+    it enables detection of character encodings declared in the form</p>
+    <pre>&lt;meta http-equiv="Content-Type" content="text/html;charset=<var>foo</var>"&gt;</pre>
+    <p>or, in the case of an XHTML document, an XML declaration.
+    It is NOT required if the charset is declared in a real HTTP header
+    (which is always preferable) from the backend server, nor if the
+    document is <var>utf-8</var> (unicode) or a subset such as ASCII.
+    You may also be able to dispense with it where documents use a
+    default declared using <directive module="mod_xml2enc"
+    >xml2EncDefault</directive>, but that risks propagating an
+    incorrect declaration.  A <directive>ProxyHTMLCharsetOut</directive>
+    can remove that risk, but is likely to be a bigger processing
+    overhead than enabling ProxyHTMLMeta.</p>
+    <p>The other effect of enabling ProxyHTMLMeta is to parse all
+    <code>&lt;meta http-equiv=...&gt;</code> declarations and convert
+    them to real HTTP headers, in keeping with the original purpose
+    of this form of the HTML &lt;meta&gt; element.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>ProxyHTMLEnable</name>
 <description>Turns the proxy_html filter on or off.</description>
 <syntax>ProxyHTMLEnable <var>On|Off</var></syntax>
