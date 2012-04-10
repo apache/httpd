@@ -410,12 +410,15 @@ In our module, we will primarilly be allocating memory for each request, so it's
 use the <code><code style='color:#008833'>r-&gt;pool</code></code> reference when creating new objects. A few of the functions for 
 allocating memory within a pool are:
 <ul>
-<li><code>void* <a href="http://apr.apache.org/docs/apr/0.9/group__apr__pools.html#g85f1e193c31d109affda72f9a92c6915">apr_palloc</a>(
+<li><code>void* <a href="http://apr.apache.org/docs/apr/1.4/group__apr__pools.html#ga85f1e193c31d109affda72f9a92c6915">apr_palloc</a>(
 apr_pool_t *p, apr_size_t size)</code>: Allocates <code>size</code> number of bytes in the pool for you</li>
-<li><code>void* <a href="http://apr.apache.org/docs/apr/0.9/group__apr__pools.html#gf61c098ad258069d64cdf8c0a9369f9e">apr_pcalloc</a>(
+<li><code>void* <a href="http://apr.apache.org/docs/apr/1.4/group__apr__pools.html#gaf61c098ad258069d64cdf8c0a9369f9e">apr_pcalloc</a>(
 apr_pool_t *p, apr_size_t size)</code>: Allocates <code>size</code> number of bytes in the pool for you and sets all bytes to 0</li>
-<li><code>char* <a href="http://apr.apache.org/docs/apr/0.9/group__apr__strings.html#gbc79e99ff19abbd7cfd18308c5f85d47">apr_pstrdup</a>(
+<li><code>char* <a href="http://apr.apache.org/docs/apr/1.4/group__apr__strings.html#gabc79e99ff19abbd7cfd18308c5f85d47">apr_pstrdup</a>(
 apr_pool_t *p, const char *s)</code>: Creates a duplicate of the string <code>s</code>. This is useful for copying constant values so you can edit them</li>
+<li><code>char* <a href="http://apr.apache.org/docs/apr/1.4/group__apr__strings.html#ga3eca76b8d293c5c3f8021e45eda813d8">apr_psprintf</a>(
+apr_pool_t *p, const char *fmt, ...)</code>: Similar to <code>sprintf</code>, except Apache supplies you with an appropriately allocated target variable</li>
+
 </ul>
 Let's put these functions into an example handler:<br/>
 
