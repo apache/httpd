@@ -26,7 +26,8 @@
   <title>Developing modules for the Apache HTTP Server 2.4</title>
 
 <summary>
-<p>This document explains how you can develop modules for the Apache HTTP Server 2.4</p>
+<p>This document explains how you can develop modules for the Apache HTTP 
+Server 2.4</p>
 </summary>
 
 <seealso><a href="request.html">Request Processing in Apache 2.4</a></seealso>
@@ -35,33 +36,44 @@
 <section id="introduction"><title>Introduction</title>
 <section id="what"><title>What we will be discussing in this document</title>
 <p>
-This document will discuss how you can easily create modules for the Apache HTTP Server 2.4 (&quot;Apache&quot;), 
-by exploring an example module called <code>mod_example</code>. In the first part of this document, the purpose of this 
-module will be to calculate and print out various digest values for existing files on your web server, whenever we 
-access the URL <code>http://hostname/filename.sum</code>. For instance, if we want to know the MD5 digest value of the file 
-located at <code>http://www.example.com/index.html</code>, we would visit <code>http://www.example.com/index.html.sum</code>. 
+This document will discuss how you can easily create modules for the Apache 
+HTTP Server 2.4 (&quot;Apache&quot;), by exploring an example module called 
+<code>mod_example</code>. In the first part of this document, the purpose 
+of this module will be to calculate and print out various digest values for 
+existing files on your web server, whenever we access the URL <code>
+http://hostname/filename.sum</code>. For instance, if we want to know the 
+MD5 digest value of the file located at <code>
+http://www.example.com/index.html</code>, we would visit <code>
+http://www.example.com/index.html.sum</code>. 
 </p>
 <p>
-In the second part of this document, which deals with configuration directive and context awareness, we will be looking at 
-a module that simply write out its own configuration to the client.
+In the second part of this document, which deals with configuration 
+directive and context awareness, we will be looking at a module that simply 
+write out its own configuration to the client.
 </p>
 </section>
 <section id="prerequisites"><title>Prerequisites</title>
 <p>
-First and foremost, you are expected to have a basic knowledge of how the C programming language works. In most cases, 
-we will try to be as pedagogical as possible and link to documents describing the functions used in the examples, 
-but there are also many cases where it is necessary to either just assume that "it works" or do some digging youself 
-into what the hows and whys of various function calls. 
+First and foremost, you are expected to have a basic knowledge of how the C 
+programming language works. In most cases, we will try to be as pedagogical 
+as possible and link to documents describing the functions used in the 
+examples, but there are also many cases where it is necessary to either 
+just assume that "it works" or do some digging youself into what the hows 
+and whys of various function calls. 
 </p>
 <p>
-Lastly, you will need to have a basic understanding of how modules are loaded and configured in Apache, as well as 
-how to get the headers for Apache if you do not have them already, as these are needed for compiling new modules.
+Lastly, you will need to have a basic understanding of how modules are 
+loaded and configured in Apache, as well as how to get the headers for 
+Apache if you do not have them already, as these are needed for compiling 
+new modules.
 </p>
 </section>
 <section id="compiling"><title>Compiling your module</title>
 <p>
-To compile the source code we are building in this document, we will be using <a href="../programs/apxs.html">APXS</a>. 
-Assuming your source file is called mod_example.c, compiling, installing and activating the module is as simple as: 
+To compile the source code we are building in this document, we will be 
+using <a href="../programs/apxs.html">APXS</a>. Assuming your source file 
+is called mod_example.c, compiling, installing and activating the module is 
+as simple as: 
 <example><pre>
 apxs -i -a -c mod_example.c
 </pre></example>
@@ -71,7 +83,8 @@ apxs -i -a -c mod_example.c
 
 <section id="basics"><title>Defining a module</title>
 <img src="../images/build_a_mod_3.png"/><br/>
-<p>Every module starts with the same declaration, or name tag if you will, that defines a module as <em>a separate entity within Apache</em>:
+<p>Every module starts with the same declaration, or name tag if you will, 
+that defines a module as <em>a separate entity within Apache</em>:
 
 
 <!-- BEGIN EXAMPLE CODE -->
@@ -90,9 +103,9 @@ module AP_MODULE_DECLARE_DATA   example_module <code style='color:#806030; '>=</
 <!-- END EXAMPLE CODE -->
 
 
-This bit of code lets Apache know that we have now registered a new module in the system, 
-and that its name is <code>example_module</code>. The name of the module is used primarilly
-for two things:<br/>
+This bit of code lets Apache know that we have now registered a new module 
+in the system, and that its name is <code>example_module</code>. The name 
+of the module is used primarilly for two things:<br/>
 <ul>
 <li>Letting Apache know how to load the module using the LoadModule</li>
 <li>Setting up a namespace for the module to use in configurations</li>
@@ -104,51 +117,60 @@ In essence, this tells Apache to open up <code>mod_example.so</code> and look fo
 called <code>example_module</code>.
 </p>
 <p>
-Within this name tag of ours is also a bunch of references to how we would like to handle things: 
-Which directives do we respond to in a configuration file or .htaccess, how do we operate 
-within specific contexts, and what handlers are we interested in registering with the Apache 
-service. We'll return to all these elements later in this document.
+Within this name tag of ours is also a bunch of references to how we would 
+like to handle things: Which directives do we respond to in a configuration 
+file or .htaccess, how do we operate within specific contexts, and what 
+handlers are we interested in registering with the Apache service. We'll 
+return to all these elements later in this document.
 </p>
 </section>
 <section id="hooking"><title>Getting started: Hooking into Apache</title>
 <section id="hook_intro"><title>An introduction to hooks</title>
 <p>
-When handling requests in Apache, the first thing you will need to do is create a hook into 
-the request handling process. A hook is essentially a message telling Apache that you are 
-willing to either serve or at least take a glance at certain requests given by clients. All 
-handlers, whether it's mod_rewrite, mod_authn_*, mod_proxy and so on, are hooked into specific 
-parts of the request process. As you are probably aware, modules serve different purposes; Some 
-are authentication/authorization handlers, others are file or script handlers while some third 
-modules rewrite URIs or proxies content. Furthermore, in the end, it is up to the user of Apache 
-how and when each module will come into place. Thus, Apache itself does not presume to know 
-which module is responsible for handling a specific request, and will ask each module whether 
-they have an interest in a given request or not. It is then up to each module to either gently 
-decline serving a request, accept serving it or flat out deny the request from being served, 
-as authentication/authorization modules do: <br/>
+When handling requests in Apache, the first thing you will need to do is 
+create a hook into the request handling process. A hook is essentially a 
+message telling Apache that you are willing to either serve or at least 
+take a glance at certain requests given by clients. All handlers, whether 
+it's mod_rewrite, mod_authn_*, mod_proxy and so on, are hooked into 
+specific parts of the request process. As you are probably aware, modules 
+serve different purposes; Some are authentication/authorization handlers, 
+others are file or script handlers while some third modules rewrite URIs or 
+proxies content. Furthermore, in the end, it is up to the user of Apache 
+how and when each module will come into place. Thus, Apache itself does not 
+presume to know which module is responsible for handling a specific 
+request, and will ask each module whether they have an interest in a given 
+request or not. It is then up to each module to either gently decline 
+serving a request, accept serving it or flat out deny the request from 
+being served, as authentication/authorization modules do: <br/>
 <img src="../images/build_a_mod_2.png" /><br/>
-To make it a bit easier for handlers such as our mod_example to know whether the client is 
-requesting content we should handle or not, Apache has directives for hinting to modules whether 
-their assistance is needed or not. Two of these are <directive
-module="mod_mime">AddHandler</directive> and <directive module="core">SetHandler</directive>. 
-Let's take a look at an example using <directive module="mod_mime">AddHandler</directive>. 
-In our example case, we want every request ending with .sum to be served by <code>mod_example</code>, 
-so we'll add a configuration directive that tells Apache to do just that:
+To make it a bit easier for handlers such as our mod_example to know 
+whether the client is requesting content we should handle or not, Apache 
+has directives for hinting to modules whether their assistance is needed or 
+not. Two of these are <directive module="mod_mime">AddHandler</directive> 
+and <directive module="core">SetHandler</directive>. Let's take a look at 
+an example using <directive module="mod_mime">AddHandler</directive>. In 
+our example case, we want every request ending with .sum to be served by 
+<code>mod_example</code>, so we'll add a configuration directive that tells 
+Apache to do just that:
 <example><pre>
 AddHandler example-handler .sum
 </pre></example>
-What this tells Apache is the following: <em>Whenever we receive a request for a URI ending in .sum, 
-we are to let all modules know that we are looking for whoever goes by the name of &quot;example-handler&quot;
-</em>. Thus, when a request is being served that ends in .sum, Apache will let all modules know, that 
-this request should be served by &quot;example-handler&quot;. As you will see later, when we start 
-building mod_example, we will check for this handler tag relayed by <code>AddHandler</code> and 
-reply to Apache based on the value of this tag.
+What this tells Apache is the following: <em>Whenever we receive a request 
+for a URI ending in .sum, we are to let all modules know that we are 
+looking for whoever goes by the name of &quot;example-handler&quot; </em>. 
+Thus, when a request is being served that ends in .sum, Apache will let all 
+modules know, that this request should be served by &quot;example-handler
+&quot;. As you will see later, when we start building mod_example, we will 
+check for this handler tag relayed by <code>AddHandler</code> and reply to 
+Apache based on the value of this tag.
 </p>
 </section>
 <section id="hook_declaration"><title>Hooking into httpd</title>
 <p>
-To begin with, we only want to create a simple handler, that replies to the client browser 
-when a specific URL is requested, so we won't bother setting up configuration handlers and 
-directives just yet. Our initial module definition will look like this:<br/>
+To begin with, we only want to create a simple handler, that replies to the 
+client browser when a specific URL is requested, so we won't bother setting 
+up configuration handlers and directives just yet. Our initial module 
+definition will look like this:<br/>
 
 
 <!-- BEGIN EXAMPLE CODE -->
@@ -167,15 +189,14 @@ module AP_MODULE_DECLARE_DATA   example_module =
 <!-- END EXAMPLE CODE -->
 
 
-This lets Apache know that we are not interesting in anything fancy, we just want to hook onto 
-the requests and possibly handle some of them.
-</p>
-<p>
-The reference in our example declaration, <code>register_hooks</code> is the name of a function 
-we will create to manage how we hook onto the request process. In this example module, the function 
-has just one purpose; To create a simple hook that gets called after all the rewrites, access 
-control etc has been handled. Thus, we will let Apache know, that we want to hook into its process 
-as one of the last modules: 
+This lets Apache know that we are not interesting in anything fancy, we 
+just want to hook onto the requests and possibly handle some of them. </p> 
+<p> The reference in our example declaration, <code>register_hooks</code> 
+is the name of a function we will create to manage how we hook onto the 
+request process. In this example module, the function has just one purpose; 
+To create a simple hook that gets called after all the rewrites, access 
+control etc has been handled. Thus, we will let Apache know, that we want 
+to hook into its process as one of the last modules: 
 
 
 <!-- BEGIN EXAMPLE CODE -->
@@ -189,13 +210,14 @@ as one of the last modules:
 <!-- END EXAMPLE CODE -->
 
 
-The <code>example_handler</code> reference is the function that will handle the request. We will 
-discuss how to create a handler in the next chapter.
+The <code>example_handler</code> reference is the function that will handle 
+the request. We will discuss how to create a handler in the next chapter.
 </p>
 </section>
 <section id="hook_others"><title>Other useful hooks</title>
 <p>
-Hooking into the request handling phase is but one of many hooks that you can create. Some other ways of hooking are:
+Hooking into the request handling phase is but one of many hooks that you 
+can create. Some other ways of hooking are:
 <ul>
 <li><code>ap_hook_child_init</code>: Place a hook that executes when a child process is spawned (commonly used for initializing modules after Apache has forked)</li>
 <li><code>ap_hook_pre_config</code>: Place a hook that executes before any configuration data has been read (very early hook)</li>
@@ -208,13 +230,15 @@ Hooking into the request handling phase is but one of many hooks that you can cr
 
 <section id="handling"><title>Building a handler</title>
 <p>
-A handler is essentially a function that receives a callback when a request to Apache is made. 
-It is passed a record of the current request (how it was made, which headers and requests were 
-passed along, who's giving the request and so on), and is put in charge of either telling 
-Apache that it's not interested in the request or handle the request with the tools provided.
+A handler is essentially a function that receives a callback when a request 
+to Apache is made. It is passed a record of the current request (how it was 
+made, which headers and requests were passed along, who's giving the 
+request and so on), and is put in charge of either telling Apache that it's 
+not interested in the request or handle the request with the tools provided.
 </p>
-<section id="simple_handler"><title>A simple &quot;Hello, world!&quot; handler</title>
-Let's start off by making a very simple request handler that does the following: <br/>
+<section id="simple_handler"><title>A simple &quot;Hello, world!&quot; 
+handler</title> Let's start off by making a very simple request handler 
+that does the following: <br/>
 <ol>
 <li>Check that this is a request that should be served by &quot;example-handler&quot;</li>
 <li>Set the content type of our output to <code>text/html</code></li>
@@ -249,16 +273,19 @@ In C code, our example handler will now look like this:<br/>
 <!-- END EXAMPLE CODE -->
 
 
-Now, we put all we have learned together and end up with a program that looks like <a href="mod_example_1.c">
-mod_example_1.c</a>. The functions used in this example will be explained later in the section 
-<a href="#functions">&quot;Some useful functions you should know&quot;</a>.
-</section>
-<section id="request_rec"><title>The request_rec structure</title>
-<p>The most essential part of any request is the <em>request record</em>. In a call to a handler function, this 
-is represented by the <code>request_req*</code> structure passed along with every call that is made. This 
-struct, typically just refered to as <code>r</code> in modules, contains all the information you need for 
-your module to fully process any HTTP request and respond accordingly.</p>
-<p>Some key elements of the <code>request_req</code> structure are:
+Now, we put all we have learned together and end up with a program that 
+looks like 
+<a href="http://people.apache.org/~humbedooh/mods/examples/mod_example_1.c">mod_example_1.c</a>
+. The functions used in this example will be explained later in the section 
+<a href= "#functions">&quot;Some useful functions you should know&quot;</a>
+. </section> <section id="request_rec"><title>The request_rec structure 
+</title> <p>The most essential part of any request is the <em>request record
+</em>. In a call to a handler function, this is represented by the <code>
+request_req* </code> structure passed along with every call that is made. 
+This struct, typically just refered to as <code>r</code> in modules, 
+contains all the information you need for your module to fully process any 
+HTTP request and respond accordingly.</p> <p>Some key elements of the <code>
+request_req </code> structure are:
 <ul>
 <li><code><code style='color:#008833'>r-&gt;handler</code> (char*)</code>: Contains the name of the handler Apache is currently asking to do the handling of this request</li>
 <li><code><code style='color:#008833'>r-&gt;method</code> (char*)</code>: Contains the HTTP method being used, f.x. GET or POST</li>
@@ -311,11 +338,12 @@ Let's try out some of these variables in another example handler:<br/>
 
 <section id="return_value"><title>Return values</title>
 <p>
-Apache relies on return values from handlers to signify whether a request was handled or not, 
-and if so, whether the request went well or not. If a module is not interested in handling 
-a specific request, it should always return the value <code>DECLINED</code>. If it is handling 
-a request, it should either return the generic value <code>OK</code>, or a specific HTTP status 
-code, for example:
+Apache relies on return values from handlers to signify whether a request 
+was handled or not, and if so, whether the request went well or not. If a 
+module is not interested in handling a specific request, it should always 
+return the value <code>DECLINED</code>. If it is handling a request, it 
+should either return the generic value <code>OK</code>, or a specific HTTP 
+status code, for example:
 
 
 <!-- BEGIN EXAMPLE CODE -->
@@ -329,12 +357,14 @@ code, for example:
 <!-- END EXAMPLE CODE -->
 
 
-Returning <code>OK</code> or a HTTP status code does not necessarilly mean that the request will end. Apache 
-may still have other handlers that are interested in this request, for instance the logging modules 
-which, upon a successful request, will write down a summary of what was requested and how it went. 
-To do a full stop and prevent any further processing after your module is done, you can return the 
-value <code>DONE</code> to let Apache know that it should cease all activity on this request and 
-carry on with the next, without informing other handlers.
+Returning <code>OK</code> or a HTTP status code does not necessarilly mean 
+that the request will end. Apache may still have other handlers that are 
+interested in this request, for instance the logging modules which, upon a 
+successful request, will write down a summary of what was requested and how 
+it went. To do a full stop and prevent any further processing after your 
+module is done, you can return the value <code>DONE</code> to let Apache 
+know that it should cease all activity on this request and carry on with 
+the next, without informing other handlers.
 <br/>
 <strong>General response codes:</strong>
 <ul>
@@ -399,16 +429,19 @@ carry on with the next, without informing other handlers.
 
 <section id="memory"><title>Memory management</title>
 <p>
-Managing your resources in Apache is quite easy, thanks to the memory pool system. In essence, 
-each server, connection and request have their own memory pool that gets cleaned up when its 
-scope ends, e.g. when a request is done or when a server process shuts down. All your module 
-needs to do is latch onto this memory pool, and you won't have to worry about having to clean 
-up after yourself - pretty neat, huh?</p>
+Managing your resources in Apache is quite easy, thanks to the memory pool 
+system. In essence, each server, connection and request have their own 
+memory pool that gets cleaned up when its scope ends, e.g. when a request 
+is done or when a server process shuts down. All your module needs to do is 
+latch onto this memory pool, and you won't have to worry about having to 
+clean up after yourself - pretty neat, huh?
+</p>
 
 <p>
-In our module, we will primarilly be allocating memory for each request, so it's appropriate to 
-use the <code><code style='color:#008833'>r-&gt;pool</code></code> reference when creating new objects. A few of the functions for 
-allocating memory within a pool are:
+In our module, we will primarilly be allocating memory for each request, so 
+it's appropriate to use the <code style='color:#008833'>r-&gt;pool</code> 
+reference when creating new objects. A few of the functions for allocating 
+memory within a pool are:
 <ul>
 <li><code>void* <a href="http://apr.apache.org/docs/apr/1.4/group__apr__pools.html#ga85f1e193c31d109affda72f9a92c6915">apr_palloc</a>(
 apr_pool_t *p, apr_size_t size)</code>: Allocates <code>size</code> number of bytes in the pool for you</li>
@@ -438,9 +471,11 @@ Let's put these functions into an example handler:<br/>
 </pre>
 <!-- END EXAMPLE CODE -->
 
-This is all well and good for our module, which won't need any pre-initialized variables or structures. 
-However, if we wanted to initialize something early on, before the requests come rolling in, we could 
-simply add a call to a function in our <code>register_hooks</code> function to sort it out:
+This is all well and good for our module, which won't need any 
+pre-initialized variables or structures. However, if we wanted to 
+initialize something early on, before the requests come rolling in, we 
+could simply add a call to a function in our <code>register_hooks</code> 
+function to sort it out:
 
 <!-- BEGIN EXAMPLE CODE -->
 <pre style='color:#000000;background:#ffffef;border: 1px dashed #333; padding: 0.5em; margin: 1em 2em 1em 1em;'>
@@ -454,25 +489,30 @@ simply add a call to a function in our <code>register_hooks</code> function to s
 </pre>
 <!-- END EXAMPLE CODE -->
 
-In this, pre-request initialization function, we would not be using the same pool as we did when 
-allocating resources for request-based functions. Instead, we would use the pool given to us by 
-Apache for allocating memory on a per-process based level.
+In this pre-request initialization function we would not be using the 
+same pool as we did when allocating resources for request-based functions. 
+Instead, we would use the pool given to us by Apache for allocating memory 
+on a per-process based level.
 
 </p>
 </section>
 
 <section id="parsing"><title>Parsing request data</title>
 <p>
-In our example module, we would like to add a feature, that checks which type of digest, MD5 or SHA1 
-the client would like to see. This could be solved by adding a query string to the request. A query 
-string is typically comprised of several keys and values put together in a string, for instance 
-<code>valueA=yes&amp;valueB=no&amp;valueC=maybe</code>. It is up to the module itself to parse these 
-and get the data it requires. In our example, we'll be looking for a key called <code>digest</code>, 
-and if set to <code>md5</code>, we'll produce an MD5 digest, otherwise we'll produce a SHA1 digest.
+In our example module, we would like to add a feature, that checks which 
+type of digest, MD5 or SHA1 the client would like to see. This could be 
+solved by adding a query string to the request. A query string is typically 
+comprised of several keys and values put together in a string, for instance 
+<code>valueA=yes&amp;valueB=no&amp;valueC=maybe</code>. It is up to the 
+module itself to parse these and get the data it requires. In our example, 
+we'll be looking for a key called <code>digest</code>, and if set to <code>
+md5</code>, we'll produce an MD5 digest, otherwise we'll produce a SHA1 
+digest.
 </p>
 <p>
-Since the introduction of Apache 2.4, parsing request data from GET and POST requests have never 
-been easier. All we require to parse both GET and POST data is four simple lines: 
+Since the introduction of Apache 2.4, parsing request data from GET and 
+POST requests have never been easier. All we require to parse both GET and 
+POST data is four simple lines: 
 
 
 <!-- BEGIN EXAMPLE CODE -->
@@ -486,9 +526,10 @@ been easier. All we require to parse both GET and POST data is four simple lines
 <!-- END EXAMPLE CODE -->
 
 
-In our specific example module, we're looking for the <code>digest</code> value from the query string, 
-which now resides inside a table called <code>GET</code>. To extract this value, we need only perform 
-a simple operation:<br/>
+In our specific example module, we're looking for the <code>digest</code> 
+value from the query string, which now resides inside a table called <code>
+GET</code>. To extract this value, we need only perform a simple operation:
+<br/>
 
 
 <!-- BEGIN EXAMPLE CODE -->
@@ -503,15 +544,17 @@ a simple operation:<br/>
 <!-- END EXAMPLE CODE -->
 
 
-The structures used for the POST and GET data are not exactly the same, so if we were to fetch a value from 
-POST data instead of the query string, we would have to resort to a few more lines, as outlined in 
-<a href="#get_post">this example</a> in the last chapter of this document.
+The structures used for the POST and GET data are not exactly the same, so 
+if we were to fetch a value from POST data instead of the query string, we 
+would have to resort to a few more lines, as outlined in <a href="#get_post"
+>this example</a> in the last chapter of this document.
 </p>
 </section>
 
 <section id="advanced_handler"><title>Making an advanced handler</title>
-Now that we have learned how to parse form data and manage our resources, we can move on to creating an advanced 
-version of our module, that spits out the MD5 or SHA1 digest of files:<br/>
+Now that we have learned how to parse form data and manage our resources, 
+we can move on to creating an advanced version of our module, that spits 
+out the MD5 or SHA1 digest of files:<br/>
 
 
 <!-- BEGIN EXAMPLE CODE -->
@@ -631,29 +674,33 @@ version of our module, that spits out the MD5 or SHA1 digest of files:<br/>
 <!-- END EXAMPLE CODE -->
 
 
-This version in its entirity can be found here: <a href="mod_example_2.c">mod_example_2.c</a>.
+This version in its entirity can be found here: 
+<a href="http://people.apache.org/~humbedooh/mods/examples/mod_example_2.c">mod_example_2.c</a>.
 </section>
 
 </section>
 
 <section id="configuration"><title>Adding configuration options</title>
 <p>
-In this next segment of this document, we will turn our eyes away from the digest module and create a new 
-example module, whose only function is to write out its own configuration. The purpose of this is to 
-examine how Apache works with configuration, and what happens when you start writing advanced configurations 
+In this next segment of this document, we will turn our eyes away from the 
+digest module and create a new example module, whose only function is to 
+write out its own configuration. The purpose of this is to examine how 
+Apache works with configuration, and what happens when you start writing 
+advanced configurations 
 for your modules.
 </p>
-<section id="config_intro"><title>An introduction to configuration directives</title>
-If you are reading this, then you probably already know what a configuration directive is. Simply put, 
-a directive is a way of telling an individual module (or a set of modules) how to behave, such as these 
-directives control how <code>mod_rewrite</code> works:
+<section id="config_intro"><title>An introduction to configuration 
+directives</title> If you are reading this, then you probably already know 
+what a configuration directive is. Simply put, a directive is a way of 
+telling an individual module (or a set of modules) how to behave, such as 
+these directives control how <code>mod_rewrite</code> works:
 <example><pre>
 RewriteEngine On
 RewriteCond %{REQUEST_URI} ^/foo/bar
 RewriteRule ^/foo/bar/(.*)$ /foobar?page=$1
 </pre></example>
-Each of these configuration directives are handled by a separate function, that parses the parameters given 
-and sets up a configuration accordingly.
+Each of these configuration directives are handled by a separate function, 
+that parses the parameters given and sets up a configuration accordingly.
 </section>
 <section id="config_simple"><title>Making an example configuration</title>
 To begin with, we'll create a basic configuration in C-space:
@@ -670,9 +717,10 @@ To begin with, we'll create a basic configuration in C-space:
 <!-- END EXAMPLE CODE -->
 
 
-Now, let's put this into perspective by creating a very small module that just prints out a hard-coded 
-configuration. You'll notice that we use the <code>register_hooks</code> function for initializing the 
-configuration values to their defaults:
+Now, let's put this into perspective by creating a very small module that 
+just prints out a hard-coded configuration. You'll notice that we use the 
+<code>register_hooks</code> function for initializing the configuration 
+values to their defaults:
 
 
 <!-- BEGIN EXAMPLE CODE -->
@@ -719,20 +767,23 @@ module AP_MODULE_DECLARE_DATA   example_module <code style='color:#806030; '>=</
 <!-- END EXAMPLE CODE -->
 
 
-So far so good. To access our new handler, we could add the following to our configuration:
+So far so good. To access our new handler, we could add the following to 
+our configuration:
 <example><pre>
 &lt;Location /example&gt;
     SetHandler example-handler
 &lt;/Location&gt;
 </pre></example>
-When we visit, we'll see our current configuration being spit out by our module. 
+When we visit, we'll see our current configuration being spit out by our 
+module. 
 </section>
 
 <section id="register_directive"><title>Registering directives with Apache</title>
-What if we want to change our configuration, not by hard-coding new values into the module, 
-but by using either the httpd.conf file or possibly a .htaccess file? It's time to let Apache 
-know that we want this to be possible. To do so, we must first change our <em>name tag</em> 
-to include a reference to the configuration directives we want to register with Apache:
+What if we want to change our configuration, not by hard-coding new values 
+into the module, but by using either the httpd.conf file or possibly a 
+.htaccess file? It's time to let Apache know that we want this to be 
+possible. To do so, we must first change our <em>name tag</em> to include a 
+reference to the configuration directives we want to register with Apache:
 
 
 <!-- BEGIN EXAMPLE CODE -->
@@ -751,10 +802,11 @@ module AP_MODULE_DECLARE_DATA   example_module =
 <!-- END EXAMPLE CODE -->
 
 
-This will tell Apache that we are now accepting directives from the configuration files, and that the 
-structure called <code>example_directives</code> holds information on what our directives are and how 
-they work. Since we have three different variables in our module configuration, we will add a structure 
-with three directives and a NULL at the end:
+This will tell Apache that we are now accepting directives from the 
+configuration files, and that the structure called <code>example_directives
+</code> holds information on what our directives are and how they work. 
+Since we have three different variables in our module configuration, we 
+will add a structure with three directives and a NULL at the end:
 
 
 <!-- BEGIN EXAMPLE CODE -->
@@ -785,18 +837,22 @@ accordingly. We will discuss how to make this in the following paragraph.</li>
 later chapters, but for now, <code>RSRC_CONF</code> means that Apache will only accept these directives in a server context.</li>
 <li><code>"Enable or disable...."</code>: This is simply a brief description of what the directive does.</li>
 </ol>
-(<em>The "missing" parameter in our definition, which is usually set to <code>NULL</code>, is an optional function that can be 
-run after the initial function to parse the arguments have been run. This is usually omitted, as the function for verifying 
-arguments might as well be used to set them.</em>)
+(<em>The "missing" parameter in our definition, which is usually set to 
+<code>NULL</code>, is an optional function that can be run after the 
+initial function to parse the arguments have been run. This is usually 
+omitted, as the function for verifying arguments might as well be used to 
+set them.</em>)
 </p>
 </section>
 <section id="directive_handler"><title>The directive handler function</title>
 <p>
-Now that we've told Apache to expect some directives for our module, it's time to make a few functions for handling these. What 
-Apache reads in the configuration file(s) is text, and so naturally, what it passes along to our directive handler is one or 
-more strings, that we ourselves need to recognize and act upon. You'll notice, that since we set our <code>exampleAction</code> 
-directive to accept two arguments, its C function also has an additional parameter defined:<br/>
-
+Now that we've told Apache to expect some directives for our module, it's 
+time to make a few functions for handling these. What Apache reads in the 
+configuration file(s) is text, and so naturally, what it passes along to 
+our directive handler is one or more strings, that we ourselves need to 
+recognize and act upon. You'll notice, that since we set our <code>
+exampleAction</code> directive to accept two arguments, its C function also 
+has an additional parameter defined:<br/> 
 
 <!-- BEGIN EXAMPLE CODE -->
 <pre style='color:#000000;background:#ffffef;border: 1px dashed #333; padding: 0.5em; margin: 1em 2em 1em 1em;'>
@@ -835,8 +891,8 @@ directive to accept two arguments, its C function also has an additional paramet
 </section>
 <section id="directive_complete"><title>Putting it all together</title>
 <p>
-Now that we have our directives set up, and handlers configured for them, we can assemble our module 
-into one big file:
+Now that we have our directives set up, and handlers configured for them, 
+we can assemble our module into one big file:
 
 
 <!-- BEGIN EXAMPLE CODE -->
@@ -959,14 +1015,16 @@ module AP_MODULE_DECLARE_DATA   example_module <code style='color:#806030; '>=</
 
 </p>
 <p>
-In our httpd.conf file, we can now change the hard-coded configuration by adding a few lines:
+In our httpd.conf file, we can now change the hard-coded configuration by 
+adding a few lines:
 <example><pre>
 ExampleEnabled On
 ExamplePath "/usr/bin/foo"
 ExampleAction file allow
 </pre></example>
-And thus we apply the configuration, visit <code>/example</code> on our web site, and we see the configuration has 
-adapted to what we wrote in our configuration file.
+And thus we apply the configuration, visit <code>/example</code> on our 
+web site, and we see the configuration has adapted to what we wrote in our 
+configuration file.
 </p>
 </section>
 
@@ -976,9 +1034,10 @@ adapted to what we wrote in our configuration file.
 <section id="context"><title>Context aware configurations</title>
 <section id="context_intro"><title>Introduction to context aware configurations</title>
 <p>
-In Apache, different URLs, virtual hosts, directories etc can have very different meanings 
-to the user of Apache, and thus different contexts within which modules must operate. For example, 
-let's assume you have this configuration set up for mod_rewrite:
+In Apache, different URLs, virtual hosts, directories etc can have very 
+different meanings to the user of Apache, and thus different contexts 
+within which modules must operate. For example, let's assume you have this 
+configuration set up for mod_rewrite:
 <example><pre>
 &lt;Directory &quot;/var/www&quot;&gt;
     RewriteCond %{HTTP_HOST} ^example.com$
@@ -988,17 +1047,22 @@ let's assume you have this configuration set up for mod_rewrite:
     RewriteRule ^foobar$ index.php?foobar=true
 &lt;/Directory&gt;
 </pre></example>
-In this example, you will have set up two different contexts for mod_rewrite:
+In this example, you will have set up two different contexts for 
+mod_rewrite:
 <ol>
 <li>Inside <code>/var/www</code>, all requests for <code>http://example.com</code> must go to <code>http://www.example.com</code></li>
 <li>Inside <code>/var/www/sub</code>, all requests for <code>foobar</code> must go to <code>index.php?foobar=true</code></li>
 </ol>
-If mod_rewrite (or Apache for that matter) wasn't context aware, then these rewrite rules would just apply to every and any request made, 
-regardless of where and how they were made, but since the module can pull the context specific configuration straight from Apache, it 
-does not need to know itself, which of the directives are valid in this context, since Apache takes care of this.</p>
+If mod_rewrite (or Apache for that matter) wasn't context aware, then 
+these rewrite rules would just apply to every and any request made, 
+regardless of where and how they were made, but since the module can pull 
+the context specific configuration straight from Apache, it does not need 
+to know itself, which of the directives are valid in this context, since 
+Apache takes care of this.</p>
 
 <p>
-So how does a module get the specific configuration for the server, directory or location in question? It does so by making one simple call:
+So how does a module get the specific configuration for the server, 
+directory or location in question? It does so by making one simple call:
 
 
 <!-- BEGIN EXAMPLE CODE -->
@@ -1008,15 +1072,18 @@ So how does a module get the specific configuration for the server, directory or
 
 example_config *config = (example_config*) <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__CONFIG.html#ga1093a5908a384eacc929b028c79f2a02">ap_get_module_config</a>(<code style='color:#008833'>r-&gt;per_dir_config</code>, &amp;example_module);
 </pre>
-That's it! Of course, a whole lot goes on behind the scenes, which we will discuss in this chapter, starting with how 
-Apache came to know what our configuration looks like, and how it came to be set up as it is in the specific context.
+That's it! Of course, a whole lot goes on behind the scenes, which we will 
+discuss in this chapter, starting with how Apache came to know what our 
+configuration looks like, and how it came to be set up as it is in the 
+specific context.
 </p>
 </section>
 
 <section id="context_base"><title>Our basic configuration setup</title>
-<p>In this chapter, we will be working with a slightly modified version of our previous 
-context structure. We will set a <code>context</code> variable that we can use to track 
-which context configuration is being used by Apache in various places:
+<p>In this chapter, we will be working with a slightly modified version of 
+our previous context structure. We will set a <code>context</code> 
+variable that we can use to track which context configuration is being 
+used by Apache in various places:
 
 
 <!-- BEGIN EXAMPLE CODE -->
@@ -1059,8 +1126,9 @@ which context configuration is being used by Apache in various places:
 
 <section id="context_which"><title>Choosing a context</title>
 <p>
-Before we can start making our module context aware, we must first define, which contexts we will accept. 
-As we saw in the previous chapter, defining a directive required five elements be set:
+Before we can start making our module context aware, we must first define, 
+which contexts we will accept. As we saw in the previous chapter, defining 
+a directive required five elements be set:
 
 
 <!-- BEGIN EXAMPLE CODE -->
@@ -1070,18 +1138,21 @@ As we saw in the previous chapter, defining a directive required five elements b
 <!-- END EXAMPLE CODE -->
 
 
-The <code>RSRC_CONF</code> definition told Apache that we would only allow this directive in a global server context, but 
-since we are now trying out a context aware version of our module, we should set this to something more lenient, namely 
-the value <code>ACCESS_CONF</code>, which lets us use the directive inside &lt;Directory&gt; and &lt;Location&gt; blocks.
+The <code>RSRC_CONF</code> definition told Apache that we would only allow 
+this directive in a global server context, but since we are now trying out 
+a context aware version of our module, we should set this to something 
+more lenient, namely the value <code>ACCESS_CONF</code>, which lets us use 
+the directive inside &lt;Directory&gt; and &lt;Location&gt; blocks.
 </p>
 </section>
 
 <section id="context_pool"><title>Using Apache to allocate configuration slots</title>
-<p> A much smarter way to manage your configurations is by letting Apache help you create them. 
-To do so, we must first start off by chancing our <em>name tag</em> to let Apache know, that 
-it should assist us in creating and managing our configurations. Since we have chosen the per-directory 
-(or per-location) context for our module configurations, we'll add a per-directory creator and merger 
-function reference in our tag:
+<p> A much smarter way to manage your configurations is by letting Apache 
+help you create them. To do so, we must first start off by chancing our 
+<em>name tag</em> to let Apache know, that it should assist us in creating 
+and managing our configurations. Since we have chosen the per-directory 
+(or per-location) context for our module configurations, we'll add a 
+per-directory creator and merger function reference in our tag:
 
 <!-- BEGIN EXAMPLE CODE -->
 <pre style='color:#000000;background:#ffffef;border: 1px dashed #333; padding: 0.5em; margin: 1em 2em 1em 1em;'>
@@ -1107,9 +1178,10 @@ module AP_MODULE_DECLARE_DATA   example_module <code style='color:#806030; '>=</
 
 <section id="context_which"><title>Creating new context configurations</title>
 <p>
-Now that we have told Apache to help us create and manage configurations, our first step is to 
-make a function for creating new, blank configurations. We do so by creating the function we just 
-referenced in our name tag as the Per-directory configuration handler:
+Now that we have told Apache to help us create and manage configurations, 
+our first step is to make a function for creating new, blank 
+configurations. We do so by creating the function we just referenced in 
+our name tag as the Per-directory configuration handler:
 <!-- BEGIN EXAMPLE CODE -->
 <pre style='color:#000000;background:#ffffef;border: 1px dashed #333; padding: 0.5em; margin: 1em 2em 1em 1em;'>
 <code style='color:#400000; font-weight:bold; '>void</code><code style='color:#806030; '>*</code> example_create_dir_conf<code style='color:#806030; '>(</code>apr_pool_t<code style='color:#806030; '>*</code> pool<code style='color:#806030; '>,</code> <code style='color:#400000; font-weight:bold; '>char</code><code style='color:#806030; '>*</code> context<code style='color:#806030; '>)</code> <code style='color:#806030; '>{</code>
@@ -1133,8 +1205,9 @@ referenced in our name tag as the Per-directory configuration handler:
 
 <section id="context_which"><title>Merging configurations</title>
 <p>
-Our next step in creating a context aware configuration is merging configurations. This part of the process 
-particularly apply to scenarios where you have a parent configuration and a child, such as the following: 
+Our next step in creating a context aware configuration is merging 
+configurations. This part of the process particularly apply to scenarios 
+where you have a parent configuration and a child, such as the following: 
 <example><pre>
 &lt;Directory &quot;/var/www&quot;&gt;
     ExampleEnable On
@@ -1145,10 +1218,11 @@ particularly apply to scenarios where you have a parent configuration and a chil
     ExampleAction file deny
 &lt;/Directory&gt;
 </pre></example>
-In this example, it is natural to assume that the directory <code>/var/www/subdir</code> should inherit the 
-value set for the <code>/var/www</code> directory, as we did not specify a <code>ExampleEnable</code> nor an 
-<code>ExamplePath</code> for this directory. Apache does not presume to know if this is true, but cleverly 
-does the following:
+In this example, it is natural to assume that the directory <code>
+/var/www/subdir</code> should inherit the value set for the <code>/var/www
+</code> directory, as we did not specify a <code>ExampleEnable</code> nor 
+an <code>ExamplePath</code> for this directory. Apache does not presume to 
+know if this is true, but cleverly does the following:
 <ol>
 <li>Creates a new configuration for <code>/var/www</code></li>
 <li>Sets the configuration values according to the directives given for <code>/var/www</code></li>
@@ -1156,8 +1230,9 @@ does the following:
 <li>Sets the configuration values according to the directives given for <code>/var/www/subdir</code></li>
 <li><strong>Proposes a merge</strong> of the two configurations into a new configuration for <code>/var/www/subdir</code></li>
 </ol>
-This proposal is handled by the <code>merge_dir_conf</code> function we referenced in our name tag. The purpose of 
-this function is to assess the two configurations and decide how they are to be merged:
+This proposal is handled by the <code>merge_dir_conf</code> function we 
+referenced in our name tag. The purpose of this function is to assess the 
+two configurations and decide how they are to be merged:
 
 
 <!-- BEGIN EXAMPLE CODE -->
@@ -1181,8 +1256,9 @@ this function is to assess the two configurations and decide how they are to be 
 
 <section id="context_which"><title>Trying out our new context aware configurations</title>
 <p>
-Now, let's try putting it all together to create a new module that it context aware. First off, we'll 
-create a configuration that lets us test how the module works:
+Now, let's try putting it all together to create a new module that it 
+context aware. First off, we'll create a configuration that lets us test 
+how the module works:
 <example><pre>
 &lt;Location &quot;/a&quot;&gt;
     SetHandler example-handler
@@ -1202,8 +1278,9 @@ create a configuration that lets us test how the module works:
     ExampleEnabled on
 &lt;/Location&gt;
 </pre></example>
-Then we'll assemble our module code. Note, that since we are now using our name tag as reference when fetching 
-configurations in our handler, I have added some prototypes to keep the compiler happy:
+Then we'll assemble our module code. Note, that since we are now using our 
+name tag as reference when fetching configurations in our handler, I have 
+added some prototypes to keep the compiler happy:
 </p>
 
 <!-- BEGIN EXAMPLE CODE -->
@@ -1443,9 +1520,11 @@ module AP_MODULE_DECLARE_DATA    example_module <code style='color:#806030; '>=<
 
 <section id="summary"><title>Summing up</title>
 <p>
-We have now looked at how to create simple modules for Apache and configuring them. What you do next is entirely up 
-to you, but it is my hope that something valuable has come out of reading this documentation. If you have questions 
-on how to further develop modules, you are welcome to join our <a href="http://httpd.apache.org/lists.html">mailing lists</a> 
+We have now looked at how to create simple modules for Apache and 
+configuring them. What you do next is entirely up to you, but it is my 
+hope that something valuable has come out of reading this documentation. 
+If you have questions on how to further develop modules, you are welcome 
+to join our <a href="http://httpd.apache.org/lists.html">mailing lists</a> 
 or check out the rest of our documentation for further tips.
 </p>
 </section>
