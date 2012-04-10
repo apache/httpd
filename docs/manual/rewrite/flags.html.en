@@ -633,10 +633,12 @@ URI in request' warnings.
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_s" id="flag_s">S|skip</a></h2>
-<p>The [S] flag is used to skip rules that you don't want to run. This
-can be thought of as a <code>goto</code> statement in your rewrite
-ruleset. In the following example, we only want to run the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> if the requested URI
-doesn't correspond with an actual file.</p>
+<p>The [S] flag is used to skip rules that you don't want to run. The 
+syntax of the skip flag is [S=<em>N</em>], where <em>N</em> signifies 
+the number of rules to skip. This can be thought of as a <code>goto</code> 
+statement in your rewrite ruleset. In the following example, we only want 
+to run the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> if the 
+requested URI doesn't correspond with an actual file.</p>
 
 <div class="example"><p><code>
 # Is the request for a non-existent file?<br />
