@@ -262,7 +262,7 @@ struct, typically just refered to as <code>r</code> in modules, contains all the
 your module to fully process any HTTP request and respond accordingly.</p>
 <p>Some key elements of the <code>request_req</code> structure are:
 <ul>
-<li><code><code style="color:#008833">r-&gt;handler</code> (char*)</code>: Contains the name of the handler, Apache is currently asking to do the handling of this request</li>
+<li><code><code style="color:#008833">r-&gt;handler</code> (char*)</code>: Contains the name of the handler Apache is currently asking to do the handling of this request</li>
 <li><code><code style="color:#008833">r-&gt;method</code> (char*)</code>: Contains the HTTP method being used, f.x. GET or POST</li>
 <li><code><code style="color:#008833">r-&gt;filename</code> (char*)</code>: Contains the translated filename the client is requesting</li>
 <li><code><code style="color:#008833">r-&gt;args</code> (char*)</code>: Contains the query string of the request, if any</li>
@@ -274,7 +274,7 @@ your module to fully process any HTTP request and respond accordingly.</p>
 </ul>
 A complete list of all the values contained with in the <code>request_req</code> structure can be found in 
 the <a href="http://svn.apache.org/repos/asf/httpd/httpd/trunk/include/httpd.h"><code>httpd.h</code></a> header 
-file or at [insert link here].
+file or at <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/structrequest__rec.html">http://ci.apache.org/projects/httpd/trunk/doxygen/structrequest__rec.html</a>.
 </p>
 <p>
 Let's try out some of these variables in another example handler:<br />
