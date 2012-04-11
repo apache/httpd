@@ -50,6 +50,7 @@ extensive <a href="http://apache.webthing.com/mod_proxy_html/">documentation</a>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmlfixups">ProxyHTMLFixups</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmlinterp">ProxyHTMLInterp</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmllinks">ProxyHTMLLinks</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmlmeta">ProxyHTMLMeta</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmlstripcomments">ProxyHTMLStripComments</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmlurlmap">ProxyHTMLURLMap</a></li>
 </ul>
@@ -247,6 +248,41 @@ using standard <code class="directive">ProxyHTMLURLMap</code>s.  You will need o
 ProxyHTMLLinks directive per element, but it can have any number of attributes.</p>
 <p>The default configuration defines the HTML links for standard HTML 4
 and XHTML 1.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ProxyHTMLMeta" id="ProxyHTMLMeta">ProxyHTMLMeta</a> <a name="proxyhtmlmeta" id="proxyhtmlmeta">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Turns on or off extra pre-parsing of metadata in HTML
+<code>&lt;head&gt;</code> sections.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHTMLMeta <var>On|Off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_html</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Version 2.4 and later; available as a third-party
+module for earlier 2.x versions.</td></tr>
+</table>
+    <p>This turns on or off pre-parsing of metadata in HTML
+    <code>&lt;head&gt;</code> sections.</p>
+    <p>If not required, turning ProxyHTMLMeta Off will give a small
+    performance boost by skipping this parse step.  However, it
+    is sometimes necessary for internationalisation to work correctly.</p>
+    <p>ProxyHTMLMeta has two effects.  Firstly and most importantly
+    it enables detection of character encodings declared in the form</p>
+    <pre>&lt;meta http-equiv="Content-Type" content="text/html;charset=<var>foo</var>"&gt;</pre>
+    <p>or, in the case of an XHTML document, an XML declaration.
+    It is NOT required if the charset is declared in a real HTTP header
+    (which is always preferable) from the backend server, nor if the
+    document is <var>utf-8</var> (unicode) or a subset such as ASCII.
+    You may also be able to dispense with it where documents use a
+    default declared using <code class="directive"><a href="../mod/mod_xml2enc.html#xml2encdefault">xml2EncDefault</a></code>, but that risks propagating an
+    incorrect declaration.  A <code class="directive">ProxyHTMLCharsetOut</code>
+    can remove that risk, but is likely to be a bigger processing
+    overhead than enabling ProxyHTMLMeta.</p>
+    <p>The other effect of enabling ProxyHTMLMeta is to parse all
+    <code>&lt;meta http-equiv=...&gt;</code> declarations and convert
+    them to real HTTP headers, in keeping with the original purpose
+    of this form of the HTML &lt;meta&gt; element.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

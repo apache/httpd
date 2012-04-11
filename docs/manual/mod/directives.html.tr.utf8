@@ -430,6 +430,7 @@
 <li><a href="mod_proxy_html.html#proxyhtmlfixups">ProxyHTMLFixups</a></li>
 <li><a href="mod_proxy_html.html#proxyhtmlinterp">ProxyHTMLInterp</a></li>
 <li><a href="mod_proxy_html.html#proxyhtmllinks">ProxyHTMLLinks</a></li>
+<li><a href="mod_proxy_html.html#proxyhtmlmeta">ProxyHTMLMeta</a></li>
 <li><a href="mod_proxy_html.html#proxyhtmlstripcomments">ProxyHTMLStripComments</a></li>
 <li><a href="mod_proxy_html.html#proxyhtmlurlmap">ProxyHTMLURLMap</a></li>
 <li><a href="mod_proxy.html#proxyiobuffersize">ProxyIOBufferSize</a></li>
