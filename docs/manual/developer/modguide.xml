@@ -1151,7 +1151,7 @@ the directive inside &lt;Directory&gt; and &lt;Location&gt; blocks.
 
 <section id="context_pool"><title>Using Apache to allocate configuration slots</title>
 <p> A much smarter way to manage your configurations is by letting Apache 
-help you create them. To do so, we must first start off by chancing our 
+help you create them. To do so, we must first start off by changing our 
 <em>name tag</em> to let Apache know, that it should assist us in creating 
 and managing our configurations. Since we have chosen the per-directory 
 (or per-location) context for our module configurations, we'll add a 
@@ -1259,7 +1259,7 @@ two configurations and decide how they are to be merged:
 
 <section id="context_which"><title>Trying out our new context aware configurations</title>
 <p>
-Now, let's try putting it all together to create a new module that it 
+Now, let's try putting it all together to create a new module that is 
 context aware. First off, we'll create a configuration that lets us test 
 how the module works:
 <example><pre>
