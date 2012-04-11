@@ -46,7 +46,7 @@ provides the <code>byrequests</code> load balancing method..</p>
     of the number of requests. It works as follows:</p>
 
     <p><dfn>lbfactor</dfn> is <em>how much we expect this worker
-    to work</em>, or <em>the workers's work quota</em>. This is
+    to work</em>, or <em>the workers' work quota</em>. This is
     a normalized value representing their "share" of the amount of
     work to be done.</p>
 

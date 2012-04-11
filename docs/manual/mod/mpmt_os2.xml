@@ -32,7 +32,7 @@
     <p>The Server consists of a main, parent process and a small, static
     number of child processes.</p>
 
-    <p>The parent process's job is to manage the child processes. This
+    <p>The parent process' job is to manage the child processes. This
     involves spawning children as required to ensure there are always
     <directive module="mpm_common">StartServers</directive> processes
     accepting connections.</p>
