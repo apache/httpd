@@ -1071,7 +1071,7 @@ cannot use <code>$N</code> in the substitution string!
 
       <p>Rewrite rules are applied to the results of previous rewrite
       rules, in the order in which they are defined
-      in the config file. The URI or file path (see <a
+      in the config file. The URL-path or file-system path (see <a
       href="#what_is_matched">"What is matched?"</a>, above) is <strong>completely
       replaced</strong> by the <em>Substitution</em> and the
       rewriting process continues until all rules have been applied,
