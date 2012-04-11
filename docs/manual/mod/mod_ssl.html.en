@@ -689,21 +689,22 @@ prefixes are:</p>
 -v</code>'' command which provides a nice way to successively create the
 correct <em>cipher-spec</em> string. The default <em>cipher-spec</em> string
 depends on the version of the OpenSSL libraries used. Let's suppose it is
-``<code>ALL:!aNULL:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP</code>'' which
-means the following: first, remove from consideration any ciphers that do not
-authenticate, i.e. for SSL the Anonymous Diffie-Hellman ciphers. Next,
-use ciphers using RC4 and RSA. Next include the high, medium and then the low
-security ciphers. Finally <em>pull</em> all SSLv2 and export ciphers to the
-end of the list.</p>
+``<code>RC4-SHA:AES128-SHA:HIGH:MEDIUM:!aNULL:!MD5</code>'' which
+means the following: Put <code>RC4-SHA</code> and <code>AES128-SHA</code> at
+the beginning. We do this, because these ciphers offer a good compromise
+between speed and security. Next, include high and medium security ciphers.
+Finally, remove all ciphers which do not authenticate, i.e. for SSL the
+Anonymous Diffie-Hellman ciphers, as well as all ciphers which use
+<code>MD5</code> as hash algorithm, because it has been proven insufficient.</p>
 <div class="example"><pre>
-$ openssl ciphers -v 'ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP'
-NULL-SHA                SSLv3 Kx=RSA      Au=RSA  Enc=None      Mac=SHA1
-NULL-MD5                SSLv3 Kx=RSA      Au=RSA  Enc=None      Mac=MD5
-EDH-RSA-DES-CBC3-SHA    SSLv3 Kx=DH       Au=RSA  Enc=3DES(168) Mac=SHA1
+$ openssl ciphers -v 'RC4-SHA:AES128-SHA:HIGH:MEDIUM:!aNULL:!MD5'
+RC4-SHA                 SSLv3 Kx=RSA      Au=RSA  Enc=RC4(128)  Mac=SHA1
+AES128-SHA              SSLv3 Kx=RSA      Au=RSA  Enc=AES(128)  Mac=SHA1
+DHE-RSA-AES256-SHA      SSLv3 Kx=DH       Au=RSA  Enc=AES(256)  Mac=SHA1
 ...                     ...               ...     ...           ...
-EXP-RC4-MD5             SSLv3 Kx=RSA(512) Au=RSA  Enc=RC4(40)   Mac=MD5  export
-EXP-RC2-CBC-MD5         SSLv2 Kx=RSA(512) Au=RSA  Enc=RC2(40)   Mac=MD5  export
-EXP-RC4-MD5             SSLv2 Kx=RSA(512) Au=RSA  Enc=RC4(40)   Mac=MD5  export
+SEED-SHA                SSLv3 Kx=RSA      Au=RSA  Enc=SEED(128) Mac=SHA1
+PSK-RC4-SHA             SSLv3 Kx=PSK      Au=PSK  Enc=RC4(128)  Mac=SHA1
+KRB5-RC4-SHA            SSLv3 Kx=KRB5     Au=KRB5 Enc=RC4(128)  Mac=SHA1
 </pre></div>
 <p>The complete list of particular RSA &amp; DH ciphers for SSL is given in <a href="#table2">Table 2</a>.</p>
 <div class="example"><h3>Example</h3><p><code>
@@ -1662,16 +1663,7 @@ The following <em>source</em> variants are available:</p>
     can take a long time). Here using an existing <code>/dev/urandom</code> is
     better, because it never blocks and actually gives the amount of requested
     data. The drawback is just that the quality of the received data may not
-    be the best.</p>
-    <p>
-    On some platforms like FreeBSD one can even control how the entropy is
-    actually generated, i.e. by which system interrupts. More details one can
-    find under <em>rndcontrol(8)</em> on those platforms. Alternatively, when
-    your system lacks such a random device, you can use tool
-    like <a href="http://www.lothar.com/tech/crypto/">EGD</a>
-    (Entropy Gathering Daemon) and run it's client program with the
-    <code>exec:/path/to/program/</code> variant (see below) or use
-    <code>egd:/path/to/egd-socket</code> (see below).</p></li>
+    be the best.</p></li>
 
 <li><code>exec:/path/to/program</code>
     <p>

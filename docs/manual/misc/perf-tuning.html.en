@@ -871,7 +871,7 @@
     </code></p></div>
 
     <p>The <code>-l</code> option tells truss to log the ID of the
-    LWP (lightweight process--Solaris's form of kernel-level thread)
+    LWP (lightweight process--Solaris' form of kernel-level thread)
     that invokes each system call.</p>
 
     <p>Other systems may have different system call tracing utilities
@@ -931,7 +931,7 @@
     <p>Next, the worker thread puts the connection to the client (file
     descriptor 9) in non-blocking mode. The <code>setsockopt(2)</code>
     and <code>getsockopt(2)</code> calls are a side-effect of how
-    Solaris's libc handles <code>fcntl(2)</code> on sockets.</p>
+    Solaris' libc handles <code>fcntl(2)</code> on sockets.</p>
 
     <div class="example"><pre>/65:    read(9, " G E T   / 1 0 k . h t m".., 8000)     = 97</pre></div>
 
