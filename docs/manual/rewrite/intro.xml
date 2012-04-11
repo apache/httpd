@@ -145,15 +145,20 @@ the expression.</p>
       <em>CondPattern</em>, back-references are internally created
       which can be used with the strings <code>$N</code> and
       <code>%N</code> (see below). These are available for creating
-      the strings <em>Substitution</em> and <em>TestString</em>.
-      Figure 1 shows to which locations the back-references are
-      transferred for expansion as well as illustrating the flow of the
-      RewriteRule, RewriteCond matching.</p>
+      the strings <em>Substitution</em> and <em>TestString</em> as 
+      outlined in the following chapters. Figure 1 shows to which 
+      locations the back-references are transferred for expansion as 
+      well as illustrating the flow of the RewriteRule, RewriteCond 
+      matching. In the next chapters, we will be exploring how to use 
+      these back-references, so do not fret if it seems a bit alien 
+      to you at first.
+      </p>
 
 <p class="figure">
       <img src="../images/rewrite_backreferences.png"
       alt="Flow of RewriteRule and RewriteCond matching" /><br />
-      <dfn>Figure 1:</dfn> The back-reference flow through a rule.
+      <dfn>Figure 1:</dfn> The back-reference flow through a rule.<br />
+      In this example, a request for <code>/test/1234</code> would be transformed into <code>/admin.foo?page=test&amp;id=1234&amp;host=admin.example.com</code>.
 </p>
 
 </section>
