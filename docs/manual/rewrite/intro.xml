@@ -151,7 +151,7 @@ the expression.</p>
       RewriteRule, RewriteCond matching.</p>
 
 <p class="figure">
-      <img src="../images/rewrite_rule_flow.png"
+      <img src="../images/rewrite_backreferences.png"
       alt="Flow of RewriteRule and RewriteCond matching" /><br />
       <dfn>Figure 1:</dfn> The back-reference flow through a rule.
 </p>
