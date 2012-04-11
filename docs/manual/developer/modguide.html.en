@@ -1198,7 +1198,7 @@ our name tag as the Per-directory configuration handler:
         cfg<code style="color:#806030; ">-</code><code style="color:#806030; ">&gt;</code><code style="color:#008833">path</code> <code style="color:#806030; ">=</code> <code style="color:#800000; ">"</code><code style="color:#e60000; ">/foo/bar</code><code style="color:#800000; ">"</code><code style="color:#806030; ">;</code>
         cfg<code style="color:#806030; ">-</code><code style="color:#806030; ">&gt;</code><code style="color:#008833">typeOfAction</code> <code style="color:#806030; ">=</code> <code style="color:#c00000; ">0x11</code><code style="color:#806030; ">;</code>
     <code style="color:#806030; ">}</code>
-    <code style="color:#400000; font-weight:bold; ">return</code> dir<code style="color:#806030; ">;</code>
+    <code style="color:#400000; font-weight:bold; ">return</code> cfg<code style="color:#806030; ">;</code>
 <code style="color:#806030; ">}</code>
 </pre>
 
