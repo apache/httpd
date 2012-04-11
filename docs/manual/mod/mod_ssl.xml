@@ -366,16 +366,7 @@ The following <em>source</em> variants are available:</p>
     can take a long time). Here using an existing <code>/dev/urandom</code> is
     better, because it never blocks and actually gives the amount of requested
     data. The drawback is just that the quality of the received data may not
-    be the best.</p>
-    <p>
-    On some platforms like FreeBSD one can even control how the entropy is
-    actually generated, i.e. by which system interrupts. More details one can
-    find under <em>rndcontrol(8)</em> on those platforms. Alternatively, when
-    your system lacks such a random device, you can use tool
-    like <a href="http://www.lothar.com/tech/crypto/">EGD</a>
-    (Entropy Gathering Daemon) and run it's client program with the
-    <code>exec:/path/to/program/</code> variant (see below) or use
-    <code>egd:/path/to/egd-socket</code> (see below).</p></li>
+    be the best.</p></li>
 
 <li><code>exec:/path/to/program</code>
     <p>
