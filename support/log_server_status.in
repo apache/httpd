@@ -55,12 +55,18 @@ sub tcp_connect
 ### Main
 
 {
-    my $year = `date +%y`;
-    chomp($year);
-    $year += ( $year < 70 ) ? 2000 : 1900;
-    my $date = $year . `date +%m%d:%H%M%S`;
-    chomp($date);
-    my ( $day, $time ) = split( /:/, $date );
+    my @ltime = localtime(time);
+    
+    my $day =
+        $ltime[5] + 1900
+      . sprintf( "%02d", $ltime[4] + 1 ) 
+      . sprintf( "%02d", $ltime[3] );
+
+    my $time =
+        sprintf( "%02d", $ltime[2] )
+      . sprintf( "%02d", $ltime[1] )
+      . sprintf( "%02d", $ltime[0] );
+
     my $res = &tcp_connect( $server, $port );
     open( OUT, ">>$wherelog$day" );
 
