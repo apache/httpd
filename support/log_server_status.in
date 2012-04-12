@@ -29,7 +29,7 @@ use IO::Socket;
 use strict;
 use warnings;
 
-my $wherelog = "@exp_logfiledir@";  # Logs will be like "@exp_logfiledir@/19960312"
+my $wherelog = "@exp_logfiledir@/";  # Logs will be like "@exp_logfiledir@/19960312"
 my $server   = "localhost";        # Name of server, could be "www.foo.com"
 my $port     = "@PORT@";               # Port on server
 my $request = "/server-status/?auto";    # Request to send
