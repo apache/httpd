@@ -41,7 +41,7 @@
 
 <example>
 <pre>
-my $wherelog = "/usr/local/apache2/logs/";  # Logs will be like "/var/log/graph/19960312"
+my $wherelog = "/usr/local/apache2/logs/";  # Logs will be like "/usr/local/apache2/logs/19960312"
 my $server   = "localhost";        # Name of server, could be "www.foo.com"
 my $port     = "80";               # Port on server
 my $request = "/server-status/?auto";    # Request to send
