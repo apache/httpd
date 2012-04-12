@@ -23,10 +23,10 @@
 <manualpage metafile="documenting.xml.meta">
 <parentdocument href="./">Developer Documentation</parentdocument>
 
-<title>Documenting Apache 2.0</title>
+<title>Documenting code in Apache 2.4</title>
 
 <summary>
-    <p>Apache 2.0 uses <a href="http://www.doxygen.org/">Doxygen</a> to
+    <p>Apache 2.4 uses <a href="http://www.doxygen.org/">Doxygen</a> to
     document the APIs and global variables in the code. This will explain
     the basics of how to document using Doxygen.</p>
 </summary>
