@@ -908,10 +908,11 @@ later</td></tr>
 
       <p><a id="patterns" name="patterns"><em>Pattern</em></a> is
       a perl compatible <a id="regexp" name="regexp">regular
-      expression</a>. On the first RewriteRule it is applied to the (%-decoded)
-      <a href="./directive-dict.html#Syntax">URL-path</a> of the request;
-      subsequent patterns are applied to the output of the last matched
-      RewriteRule.</p>
+      expression</a>. On the first RewriteRule that matches, it is applied to 
+      the (%-decoded) <a href="./directive-dict.html#Syntax">URL-path</a> (or 
+      <a href="./directive-dict.html#Syntax">file-path</a>, depending 
+      on the context) of the request. Subsequent patterns are applied to the 
+      output of the last matched RewriteRule.</p>
 
 <div class="note"><h3><a id="what_is_matched" name="what_is_matched">What is matched?</a></h3>
       <p>In <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code> context,
@@ -920,7 +921,7 @@ later</td></tr>
 
       <p>In <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> and htaccess context,
       the <em>Pattern</em> will initially be matched against the
-      <em>filesystem</em> path, after removing the prefix that lead the server
+      <em>filesystem</em> path, after removing the prefix that led the server
       to the current <code class="directive">RewriteRule</code> (e.g. "app1/index.html"
       or "index.html" depending on where the directives are defined).</p>
 
