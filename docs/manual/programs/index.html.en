@@ -93,7 +93,7 @@
       <dd>Resolve hostnames for IP-addresses in Apache
       logfiles</dd>
 
-      <dt><a href="other.html#log_server_status">log_server_status</a></dt>
+      <dt><code class="program"><a href="../programs/log_server_status.html">log_server_status</a></code></dt>
 
       <dd>Periodically log the server's status</dd>
 
@@ -101,7 +101,7 @@
 
       <dd>Rotate Apache logs without having to kill the server</dd>
 
-      <dt><a href="other.html#split-logfile">split-logfile</a></dt>
+      <dt><code class="program"><a href="../programs/split-logfile.html">split-logfile</a></code></dt>
 
       <dd>Split a multi-vhost logfile into per-host logfiles</dd>
 
