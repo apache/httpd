@@ -25,7 +25,7 @@
 # it to a file.  Make sure the directory $wherelog is writable by the
 # user who runs this script.
 #
-use Socket;
+use IO::Socket;
 use strict;
 use warnings;
 
@@ -34,55 +34,43 @@ my $server   = "localhost";        # Name of server, could be "www.foo.com"
 my $port     = "80";               # Port on server
 my $request = "/server-status/?auto";    # Request to send
 
-sub tcp_connect
-{
-    my ( $host, $port ) = @_;
-    my $sockaddr = 'S n a4 x8';
-    chop( my $hostname = `hostname` );
-    $port = ( getservbyname( $port, 'tcp' ) )[2] unless $port =~ /^\d+$/;
-    my $me = pack( $sockaddr, &AF_INET, 0, ( gethostbyname($hostname) )[4] );
-    my $them = pack( $sockaddr, &AF_INET, $port, ( gethostbyname($host) )[4] );
-    socket( S, &PF_INET, &SOCK_STREAM, ( getprotobyname('tcp') )[2] )
-      || die "socket: $!";
-    bind( S, $me ) || return "bind: $!";
-    connect( S, $them ) || return "connect: $!";
-    select(S);
-    $| = 1;
-    select(STDOUT);
-    return "";
+my @ltime = localtime(time);
+
+my $day =
+    $ltime[5] + 1900
+  . sprintf( "%02d", $ltime[4] + 1 )
+  . sprintf( "%02d", $ltime[3] );
+
+my $time =
+    sprintf( "%02d", $ltime[2] )
+  . sprintf( "%02d", $ltime[1] )
+  . sprintf( "%02d", $ltime[0] );
+
+open(OUT,">>$wherelog$day");
+
+my $socket = new IO::Socket::INET(
+    PeerAddr => $server,
+    PeerPort => $port,
+    Proto    => "tcp",
+    Type     => SOCK_STREAM
+  )
+  or do {
+    print OUT "$time:-1:-1:-1:-1:$@\n";
+    close OUT;
+    die "Couldn't connect to $server:$port : $@\n";
+  };
+$| = 1;
+
+print $socket
+  "GET $request HTTP/1.1\r\nHost: $server\r\nConnection: close\r\n\r\n\r\n";
+
+my ( $requests, $idle, $number, $cpu );
+while (<$socket>) {
+    $requests = $1 if (m|^BusyWorkers:\ (\S+)|);
+    $idle     = $1 if (m|^IdleWorkers:\ (\S+)|);
+    $number   = $1 if (m|sses:\ (\S+)|);
+    $cpu      = $1 if (m|^CPULoad:\ (\S+)|);
 }
-
-### Main
-
-{
-    my @ltime = localtime(time);
-    
-    my $day =
-        $ltime[5] + 1900
-      . sprintf( "%02d", $ltime[4] + 1 ) 
-      . sprintf( "%02d", $ltime[3] );
-
-    my $time =
-        sprintf( "%02d", $ltime[2] )
-      . sprintf( "%02d", $ltime[1] )
-      . sprintf( "%02d", $ltime[0] );
-
-    my $res = &tcp_connect( $server, $port );
-    open( OUT, ">>$wherelog$day" );
-
-    if ($res) {
-        print OUT "$time:-1:-1:-1:-1:$res\n";
-        exit 1;
-    }
-    print S "GET $request\n";
-    my ( $requests, $idle, $number, $cpu );
-    while (<S>) {
-        $requests = $1 if (m|^BusyWorkers:\ (\S+)|);
-        $idle     = $1 if (m|^IdleWorkers:\ (\S+)|);
-        $number   = $1 if (m|sses:\ (\S+)|);
-        $cpu      = $1 if (m|^CPULoad:\ (\S+)|);
-    }
-    print OUT "$time:$requests:$idle:$number:$cpu\n";
-}
-
+print OUT "$time:$requests:$idle:$number:$cpu\n";
+close OUT;
 
