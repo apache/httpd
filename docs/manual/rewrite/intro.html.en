@@ -168,7 +168,9 @@ of three arguments separated by spaces. The arguments are</p>
 <p>The <var>Pattern</var> is always a <a href="#regex">regular
 expression</a> matched against the URL-Path of the incoming request
 (the part after the hostname but before any question mark indicating
-the beginning of a query string).</p>
+the beginning of a query string) or, in per-directory context, against 
+the request's path relative to the directory for which the rule is 
+defined.</p>
 
 <p class="figure">
       <img src="../images/syntax_rewriterule.png" alt="Syntax of the RewriteRule directive" /><br />
