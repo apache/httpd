@@ -5,7 +5,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Apache 2.0 Hook Functions - Apache HTTP Server</title>
+<title>Hook Functions in the Apache HTTP Server 2.x - Apache HTTP Server</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
@@ -16,7 +16,7 @@
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Developer Documentation</a></div><div id="page-content"><div id="preamble"><h1>Apache 2.0 Hook Functions</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Developer Documentation</a></div><div id="page-content"><div id="preamble"><h1>Hook Functions in the Apache HTTP Server 2.x</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/developer/hooks.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
@@ -26,10 +26,10 @@
       date.</p>
     </div>
 
-    <p>In general, a hook function is one that Apache will call at
-    some point during the processing of a request. Modules can
-    provide functions that are called, and specify when they get
-    called in comparison to other modules.</p>
+    <p>In general, a hook function is one that the Apache HTTP Server 
+    will call at some point during the processing of a request. 
+    Modules can provide functions that are called, and specify when 
+    they get called in comparison to other modules.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#create">Creating a hook function</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#hooking">Hooking the hook</a></li>
@@ -109,8 +109,8 @@
 
         <p>The first hook that does <em>not</em> return <code>DECLINED</code>
         stops the loop and its return value is returned from the hook
-        caller. Note that <code>DECLINED</code> is the tradition Apache
-        hook return meaning "I didn't do anything", but it can be
+        caller. Note that <code>DECLINED</code> is the traditional 
+        hook return value meaning "I didn't do anything", but it can be
         whatever suits you.</p>
 
         <p>Alternatively, all hooks can be run until an error occurs.
@@ -162,7 +162,7 @@
     
 
     <h3><a name="hooking-add" id="hooking-add">Add a hook registering function</a></h3>
-      <p>During initialisation, Apache will call each modules hook
+      <p>During initialisation, the server will call each modules hook
       registering function, which is included in the module
       structure:</p>
 
@@ -197,9 +197,9 @@
       order relative to each other, but, of course, all modules using
       <code>APR_HOOK_FIRST</code> will be run before <code>APR_HOOK_MIDDLE</code>
       which are before <code>APR_HOOK_LAST</code>. Modules that don't care
-      when they are run should use <code>APR_HOOK_MIDDLE</code>. <em>(I spaced
-      these out so people could do stuff like <code>APR_HOOK_FIRST-2</code>
-      to get in slightly earlier, but is this wise? - Ben)</em></p>
+      when they are run should use <code>APR_HOOK_MIDDLE</code>. <em>These 
+      values are spaced out, so that positions like <code>APR_HOOK_FIRST-2</code>
+      are possible to hook slightly earlier than other functions.</em></p>
 
       <p>Note that there are two more values,
       <code>APR_HOOK_REALLY_FIRST</code> and <code>APR_HOOK_REALLY_LAST</code>. These
@@ -228,7 +228,6 @@
       ordering set by <code>APR_HOOK_<var>ORDER</var></code> is preserved, as far
       as is possible.</p>
 
-      <p class="cite"><cite>Ben Laurie</cite>, 15th August 1999</p>
     
 </div></div>
 <div class="bottomlang">
