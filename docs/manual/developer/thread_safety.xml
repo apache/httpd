@@ -23,10 +23,10 @@
 <manualpage metafile="thread_safety.xml.meta">
 <parentdocument href="./">Developer Documentation</parentdocument>
 
-<title>Apache 2.0 Thread Safety Issues</title>
+<title>Apache HTTP Server 2.x Thread Safety Issues</title>
 
 <summary>
-    <p>When using any of the threaded mpms in Apache 2.0 it is important
+    <p>When using any of the threaded mpms in the Apache HTTP Server 2.x it is important
     that every function called from Apache be thread safe.  When linking in 3rd
     party extensions it can be difficult to determine whether the resulting
     server will be thread safe.  Casual testing generally won't tell you this
