@@ -31,10 +31,10 @@
       date.</p>
     </note>
 
-    <p>In general, a hook function is one that Apache will call at
-    some point during the processing of a request. Modules can
-    provide functions that are called, and specify when they get
-    called in comparison to other modules.</p>
+    <p>In general, a hook function is one that the Apache HTTP Server 
+    will call at some point during the processing of a request. 
+    Modules can provide functions that are called, and specify when 
+    they get called in comparison to other modules.</p>
 </summary>
 
 <section id="create"><title>Creating a hook function</title>
@@ -110,8 +110,8 @@
 
         <p>The first hook that does <em>not</em> return <code>DECLINED</code>
         stops the loop and its return value is returned from the hook
-        caller. Note that <code>DECLINED</code> is the tradition Apache
-        hook return meaning "I didn't do anything", but it can be
+        caller. Note that <code>DECLINED</code> is the traditional 
+        hook return value meaning "I didn't do anything", but it can be
         whatever suits you.</p>
 
         <p>Alternatively, all hooks can be run until an error occurs.
@@ -163,7 +163,7 @@
     </section>
 
     <section id="hooking-add"><title>Add a hook registering function</title>
-      <p>During initialisation, Apache will call each modules hook
+      <p>During initialisation, the server will call each modules hook
       registering function, which is included in the module
       structure:</p>
 
@@ -198,9 +198,9 @@
       order relative to each other, but, of course, all modules using
       <code>APR_HOOK_FIRST</code> will be run before <code>APR_HOOK_MIDDLE</code>
       which are before <code>APR_HOOK_LAST</code>. Modules that don't care
-      when they are run should use <code>APR_HOOK_MIDDLE</code>. <em>(I spaced
-      these out so people could do stuff like <code>APR_HOOK_FIRST-2</code>
-      to get in slightly earlier, but is this wise? - Ben)</em></p>
+      when they are run should use <code>APR_HOOK_MIDDLE</code>. <em>These 
+      values are spaced out, so that positions like <code>APR_HOOK_FIRST-2</code>
+      are possible to hook slightly earlier than other functions.</em></p>
 
       <p>Note that there are two more values,
       <code>APR_HOOK_REALLY_FIRST</code> and <code>APR_HOOK_REALLY_LAST</code>. These
@@ -229,7 +229,6 @@
       ordering set by <code>APR_HOOK_<var>ORDER</var></code> is preserved, as far
       as is possible.</p>
 
-      <p class="cite"><cite>Ben Laurie</cite>, 15th August 1999</p>
     </section>
 </section>
 </manualpage>
