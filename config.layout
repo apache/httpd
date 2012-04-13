@@ -347,3 +347,26 @@
     proxycachedir: ${localstatedir}/proxy
 </Layout>
 
+# FHS layout
+<Layout Slackware-FHS>
+    prefix:          /usr
+    exec_prefix:     ${prefix}
+    bindir:          ${prefix}/bin
+    sbindir:         ${prefix}/sbin
+    libdir:          ${prefix}/lib/httpd
+    libexecdir:      ${prefix}/lib/httpd/modules
+    installbuilddir: ${prefix}/lib/httpd/build
+    mandir:          ${prefix}/man
+    sysconfdir:      /etc/httpd
+    datadir:         /srv/httpd
+    iconsdir:        ${datadir}/icons
+    htdocsdir:       ${datadir}/htdocs
+    manualdir:       ${htdocsdir}/manual
+    cgidir:          ${datadir}/cgi-bin
+    errordir:        ${datadir}/error
+    includedir:      ${prefix}/include/httpd
+    localstatedir:   /var
+    runtimedir:      ${localstatedir}/run/httpd
+    logfiledir:      ${localstatedir}/log/httpd
+    proxycachedir:   ${localstatedir}/cache/httpd
+</Layout>
