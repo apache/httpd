@@ -23,7 +23,7 @@
 <manualpage metafile="request.xml.meta">
 <parentdocument href="./">Developer Documentation</parentdocument>
 
-<title>Request Processing in Apache 2.0</title>
+<title>Request Processing in the Apache HTTP Server 2.x</title>
 
 <summary>
     <note type="warning"><title>Warning</title>
@@ -31,15 +31,15 @@
       revision!</p>
     </note>
 
-    <p>Several changes in Apache 2.0 affect the internal request
+    <p>Several changes in 2.0 and above affect the internal request
     processing mechanics. Module authors need to be aware of these
     changes so they may take advantage of the optimizations and
     security enhancements.</p>
 
     <p>The first major change is to the subrequest and redirect
     mechanisms. There were a number of different code paths in
-    Apache 1.3 to attempt to optimize subrequest or redirect
-    behavior. As patches were introduced to 2.0, these
+    the Apache HTTP Server 1.3 to attempt to optimize subrequest 
+    or redirect behavior. As patches were introduced to 2.0, these
     optimizations (and the server behavior) were quickly broken due
     to this duplication of code. All duplicate code has been folded
     back into <code>ap_process_request_internal()</code> to prevent
@@ -50,7 +50,7 @@
     and correct implementation of the HTTP server RFC. Additional
     goals include security, scalability and optimization. New
     methods were sought to optimize the server (beyond the
-    performance of Apache 1.3) without introducing fragile or
+    performance of 1.3) without introducing fragile or
     insecure code.</p>
 </summary>
 
@@ -63,7 +63,7 @@
 
     <p>To streamline requests, the module author can take advantage
     of the hooks offered to drop out of the request cycle early, or
-    to bypass core Apache hooks which are irrelevant (and costly in
+    to bypass core hooks which are irrelevant (and costly in
     terms of CPU.)</p>
 </section>
 
