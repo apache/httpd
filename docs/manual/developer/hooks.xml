@@ -23,7 +23,7 @@
 <manualpage metafile="hooks.xml.meta">
 <parentdocument href="./">Developer Documentation</parentdocument>
 
-<title>Apache 2.0 Hook Functions</title>
+<title>Hook Functions in the Apache HTTP Server 2.x</title>
 
 <summary>
     <note type="warning"><title>Warning</title>
