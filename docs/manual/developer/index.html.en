@@ -5,7 +5,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Developer Documentation for Apache 2.4 - Apache HTTP Server</title>
+<title>Developer Documentation for the Apache HTTP Server 2.4 - Apache HTTP Server</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
@@ -16,7 +16,7 @@
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="../"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Developer Documentation for Apache 2.4</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Developer Documentation for the Apache HTTP Server 2.4</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/developer/" title="English">&nbsp;en&nbsp;</a> |
 <a href="../zh-cn/developer/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
@@ -30,28 +30,28 @@
     <a href="http://httpd.apache.org/lists.html#http-dev">dev@httpd.apache.org</a> mailing list.</p>
     </div>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#developing">Apache 2.4 development documents</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#developing">2.4 development documents</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#upgrading">Upgrading to 2.4</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#external">External Resources</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="developing" id="developing">Apache 2.4 development documents</a></h2>
+<h2><a name="developing" id="developing">2.4 development documents</a></h2>
     <ul>
-      <li><a href="modguide.html">Developing modules for Apache 2.4</a></li>
-      <li><a href="hooks.html">Apache 2.x Hook Functions</a></li>
-      <li><a href="request.html">Request Processing in Apache 2.x</a></li>
-      <li><a href="filters.html">How filters work in Apache 2.x</a></li>
-      <li><a href="output-filters.html">Guidelines for output filters in Apache 2.x</a></li>
-      <li><a href="documenting.html">Documenting code in Apache 2.4</a></li>
-      <li><a href="thread_safety.html">Apache 2.x Thread Safety Issues</a></li>
+      <li><a href="modguide.html">Developing modules for the Apache HTTP Server 2.4</a></li>
+      <li><a href="hooks.html">Hook Functions in 2.4</a></li>
+      <li><a href="request.html">Request Processing in 2.4</a></li>
+      <li><a href="filters.html">How filters work in 2.4</a></li>
+      <li><a href="output-filters.html">Guidelines for output filters in 2.4</a></li>
+      <li><a href="documenting.html">Documenting code in 2.4</a></li>
+      <li><a href="thread_safety.html">Thread Safety Issues in 2.4</a></li>
     </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="upgrading" id="upgrading">Upgrading to 2.4</a></h2>
     <ul>
-      <li><a href="new_api_2_4.html">API changes in Apache 2.3/2.4</a></li>
-      <li><a href="modules.html">Converting Modules from Apache 1.3 to Apache 2.x</a></li>
+      <li><a href="new_api_2_4.html">API changes in 2.3/2.4</a></li>
+      <li><a href="modules.html">Converting Modules from 1.3 to 2.x</a></li>
     </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -61,10 +61,10 @@
 
       <li>Developer articles at <a href="http://www.apachetutor.org/">apachetutor</a> include:
       <ul>
-        <li><a href="http://www.apachetutor.org/dev/request">Request Processing in Apache</a></li>
+        <li><a href="http://www.apachetutor.org/dev/request">Request Processing</a></li>
         <li><a href="http://www.apachetutor.org/dev/config">Configuration for Modules</a></li>
-        <li><a href="http://www.apachetutor.org/dev/pools">Resource Management in Apache</a></li>
-        <li><a href="http://www.apachetutor.org/dev/reslist">Connection Pooling in Apache</a></li>
+        <li><a href="http://www.apachetutor.org/dev/pools">Resource Management</a></li>
+        <li><a href="http://www.apachetutor.org/dev/reslist">Connection Pooling</a></li>
         <li><a href="http://www.apachetutor.org/dev/brigades">Introduction to Buckets and Brigades</a></li>
       </ul></li>
     </ul>
