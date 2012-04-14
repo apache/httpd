@@ -23,7 +23,7 @@
 <manualpage metafile="htaccess.xml.meta">
 <parentdocument href="./">How-To / Tutorials</parentdocument>
 
-<title>Apache Tutorial: .htaccess files</title>
+<title>Apache HTTP Server Tutorial: .htaccess files</title>
 
 <summary>
 <p><code>.htaccess</code> files provide a way to make configuration
@@ -57,7 +57,7 @@ changes on a per-directory basis.</p>
     </related>
 
     <note>You should avoid using <code>.htaccess</code> files completely if you have access to
-    httpd main server config file. Using <code>.htaccess</code> files slows down your Apache server.
+    httpd main server config file. Using <code>.htaccess</code> files slows down your Apache http server.
     Any directive that you can include in a <code>.htaccess</code> file is better set in a <directive module="core">Directory</directive> block, as it will have the same effect with better performance.</note>
 </section>
 
@@ -159,18 +159,18 @@ changes on a per-directory basis.</p>
 
     <p>The first of these is performance. When <directive
     module="core">AllowOverride</directive>
-    is set to allow the use of <code>.htaccess</code> files, Apache will
+    is set to allow the use of <code>.htaccess</code> files, httpd will
     look in every directory for <code>.htaccess</code> files. Thus,
     permitting <code>.htaccess</code> files causes a performance hit,
     whether or not you actually even use them! Also, the
     <code>.htaccess</code> file is loaded every time a document is
     requested.</p>
 
-    <p>Further note that Apache must look for <code>.htaccess</code> files
+    <p>Further note that httpd must look for <code>.htaccess</code> files
     in all higher-level directories, in order to have a full complement of
     directives that it must apply. (See section on <a href="#how">how
     directives are applied</a>.) Thus, if a file is requested out of a
-    directory <code>/www/htdocs/example</code>, Apache must look for the
+    directory <code>/www/htdocs/example</code>, httpd must look for the
     following files:</p>
 
     <example>
@@ -232,7 +232,7 @@ changes on a per-directory basis.</p>
 
     <p>However, putting this configuration in your server configuration
     file will result in less of a performance hit, as the configuration is
-    loaded once when Apache starts, rather than every time a file is
+    loaded once when httpd starts, rather than every time a file is
     requested.</p>
 
     <p>The use of <code>.htaccess</code> files can be disabled completely
@@ -420,7 +420,7 @@ Options +IncludesNoExec -ExecCGI<br />
     None</code> in effect.</p>
 
     <p>If, on the other hand, you are getting server errors when trying to
-    access documents, check your Apache error log. It will likely tell you
+    access documents, check your httpd error log. It will likely tell you
     that the directive used in your <code>.htaccess</code> file is not
     permitted.</p>
 
