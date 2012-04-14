@@ -5,7 +5,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Apache Tutorial: .htaccess files - Apache HTTP Server</title>
+<title>Apache HTTP Server Tutorial: .htaccess files - Apache HTTP Server</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
@@ -16,7 +16,7 @@
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>Apache Tutorial: .htaccess files</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>Apache HTTP Server Tutorial: .htaccess files</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/howto/htaccess.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/howto/htaccess.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
@@ -43,7 +43,7 @@ changes on a per-directory basis.</p>
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/core.html">core</a></code></li><li><code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code></li><li><code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code></li><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="../mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#accessfilename">AccessFileName</a></code></li><li><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li><li><code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code></li><li><code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code></li><li><code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code></li><li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li></ul></td></tr></table>
 
     <div class="note">You should avoid using <code>.htaccess</code> files completely if you have access to
-    httpd main server config file. Using <code>.htaccess</code> files slows down your Apache server.
+    httpd main server config file. Using <code>.htaccess</code> files slows down your Apache http server.
     Any directive that you can include in a <code>.htaccess</code> file is better set in a <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> block, as it will have the same effect with better performance.</div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -135,18 +135,18 @@ changes on a per-directory basis.</p>
     <code>.htaccess</code> files.</p>
 
     <p>The first of these is performance. When <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code>
-    is set to allow the use of <code>.htaccess</code> files, Apache will
+    is set to allow the use of <code>.htaccess</code> files, httpd will
     look in every directory for <code>.htaccess</code> files. Thus,
     permitting <code>.htaccess</code> files causes a performance hit,
     whether or not you actually even use them! Also, the
     <code>.htaccess</code> file is loaded every time a document is
     requested.</p>
 
-    <p>Further note that Apache must look for <code>.htaccess</code> files
+    <p>Further note that httpd must look for <code>.htaccess</code> files
     in all higher-level directories, in order to have a full complement of
     directives that it must apply. (See section on <a href="#how">how
     directives are applied</a>.) Thus, if a file is requested out of a
-    directory <code>/www/htdocs/example</code>, Apache must look for the
+    directory <code>/www/htdocs/example</code>, httpd must look for the
     following files:</p>
 
     <div class="example"><p><code>
@@ -206,7 +206,7 @@ changes on a per-directory basis.</p>
 
     <p>However, putting this configuration in your server configuration
     file will result in less of a performance hit, as the configuration is
-    loaded once when Apache starts, rather than every time a file is
+    loaded once when httpd starts, rather than every time a file is
     requested.</p>
 
     <p>The use of <code>.htaccess</code> files can be disabled completely
@@ -387,7 +387,7 @@ Options +IncludesNoExec -ExecCGI<br />
     None</code> in effect.</p>
 
     <p>If, on the other hand, you are getting server errors when trying to
-    access documents, check your Apache error log. It will likely tell you
+    access documents, check your httpd error log. It will likely tell you
     that the directive used in your <code>.htaccess</code> file is not
     permitted.</p>
 
