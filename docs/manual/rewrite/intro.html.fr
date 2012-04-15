@@ -155,16 +155,23 @@ arrières dans les expressions rationnelles</a></h3>
       sont créées en interne et peuvent être rappelées via les chaînes
       <code>$N</code> et <code>%N</code> (voir ci-dessous). Ces
       références sont disponibles lors de la création des chaînes de
-      <em>Substitution</em> et des <em>Chaînes de test</em>. La
-      figure 1
+      <em>Substitution</em> et des <em>Chaînes de test</em> comme
+      précisé dans les chapitres suivants. La figure 1
       montre à quels endroits les références arrières sont suceptibles
       d'être développées, et illustre le flux des comparaisons
-      effectuées par les règles RewriteRule et RewriteCond.</p>
+      effectuées par les règles RewriteRule et
+      RewriteCond. Dans les chapitres suivants, nous examinerons comment
+      utiliser ces références arrières, donc ne vous affolez pas si
+      elles vous paraissent un peu exotiques au premier abord.
+      </p>
 
 <p class="figure">
-      <img src="../images/rewrite_rule_flow.png" alt="Flux des comparaisons effectuées par les règles RewriteRule       et RewriteCond" /><br />
+      <img src="../images/rewrite_backreferences.png" alt="Flux des comparaisons effectuées par les règles RewriteRule       et RewriteCond" /><br />
       <dfn>Figure 1 :</dfn> Le cheminement d'une référence arrière à
-      travers une règle.
+      travers une règle.<br />
+      Dans cet exemple, une requête pour <code>/test/1234</code> serait
+      transformée en
+      <code>/admin.foo?page=test&amp;id=1234&amp;host=admin.example.com</code>.
 </p>
 
 
