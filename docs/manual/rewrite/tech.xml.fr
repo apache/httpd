@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1201690:1325527 (outdated) -->
+<!-- English Revision : 1325527 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -173,7 +173,7 @@ correspondance</a></seealso>
       contr&ocirc;le est un peu compliqu&eacute;. Voir la figure 1 pour plus de
       d&eacute;tails.</p>
 <p class="figure">
-      <img src="../images/rewrite_rule_flow.png"
+      <img src="../images/rewrite_process_uri.png"
           alt="Flux des comparaisons des directives RewriteRule et RewriteCond" /><br />
       <dfn>Figure 1:</dfn>D&eacute;roulement du contr&ocirc;le &agrave; travers le jeu de
       r&egrave;gles de r&eacute;&eacute;criture
