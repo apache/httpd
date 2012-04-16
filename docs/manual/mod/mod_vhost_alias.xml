@@ -283,7 +283,7 @@ a given virtual host</description>
 
 <directivesynopsis>
 <name>VirtualScriptAliasIP</name>
-<description>Dynamically configure the location of the cgi directory for
+<description>Dynamically configure the location of the CGI directory for
 a given virtual host</description>
 <syntax>VirtualScriptAliasIP <em>interpolated-directory</em>|none</syntax>
 <default>VirtualScriptAliasIP none</default>
