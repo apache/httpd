@@ -518,7 +518,7 @@ Apache HTTP Server</a></li>
 </table>
     <p>Sets the server's TCP send buffer size to the number of bytes
     specified. It is often useful to set this past the OS's standard
-    default value on high speed, high latency conections
+    default value on high speed, high latency connections
     (<em>i.e.</em>, 100ms or so, such as transcontinental fast pipes).</p>
 
     <p>If set to the value of <code>0</code>, the server will use the
