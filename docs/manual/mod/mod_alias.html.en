@@ -119,9 +119,9 @@
     <p>The <code class="directive">Alias</code> directive allows documents to
     be stored in the local filesystem other than under the
     <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>. URLs with a
-    (%-decoded) path beginning with <var>url-path</var> will be mapped
+    (%-decoded) path beginning with <var>URL-path</var> will be mapped
     to local files beginning with <var>directory-path</var>.  The
-    <var>url-path</var> is case-sensitive, even on case-insensitive
+    <var>URL-path</var> is case-sensitive, even on case-insensitive
     file systems.</p>
 
     <div class="example"><h3>Example:</h3><p><code>
@@ -135,14 +135,14 @@
     matching using regular expressions, see the <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> directive.</p>
 
     <p>Note that if you include a trailing / on the
-    <var>url-path</var> then the server will require a trailing / in
+    <var>URL-path</var> then the server will require a trailing / in
     order to expand the alias. That is, if you use</p>
 
     <dl><dd><code>Alias /icons/ /usr/local/apache/icons/</code></dd></dl>
 
     <p>then the url <code>/icons</code> will not be aliased, as it lacks
     that trailing /. Likewise, if you omit the slash on the
-    <var>url-path</var> then you must also omit it from the
+    <var>URL-path</var> then you must also omit it from the
     <var>file-path</var>.</p>
 
     <p>Note that you may need to specify additional <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> sections which
@@ -195,7 +195,7 @@ expressions</td></tr>
     <p>The full range of <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>
     power is available.  For example,
     it is possible to construct an alias with case-insensitive
-    matching of the url-path:</p>
+    matching of the URL-path:</p>
 
     <div class="example"><p><code>
       AliasMatch (?i)^/image(.*) /ftp/pub/image$1
@@ -524,7 +524,7 @@ and designates the target as a CGI script</td></tr>
     <p>As for AliasMatch, the full range of <a class="glossarylink" href="../glossary.html#rexex" title="see glossary">regular
     expression</a> power is available.
     For example, it is possible to construct an alias with case-insensitive
-    matching of the url-path:</p>
+    matching of the URL-path:</p>
 
     <div class="example"><p><code>
       ScriptAliasMatch (?i)^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
