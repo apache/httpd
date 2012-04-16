@@ -109,7 +109,7 @@ a directory</td></tr>
     existed in a directory.</p>
 
     <p>A single argument of "disabled" prevents <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> from
-    searching for an index.  An argument of "disabled" will be interpeted
+    searching for an index.  An argument of "disabled" will be interpreted
     literally if it has any arguments before or after it, even if they are "disabled"
     as well.</p>
 
