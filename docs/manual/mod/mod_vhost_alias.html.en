@@ -287,7 +287,7 @@ a given virtual host</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="VirtualScriptAliasIP" id="VirtualScriptAliasIP">VirtualScriptAliasIP</a> <a name="virtualscriptaliasip" id="virtualscriptaliasip">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Dynamically configure the location of the cgi directory for
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Dynamically configure the location of the CGI directory for
 a given virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>VirtualScriptAliasIP <em>interpolated-directory</em>|none</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>VirtualScriptAliasIP none</code></td></tr>
