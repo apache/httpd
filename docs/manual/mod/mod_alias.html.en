@@ -77,7 +77,7 @@
 <div class="section">
 <h2><a name="order" id="order">Order of Processing</a></h2>
 
-    <p>Aliases and Redirects occuring in different contexts are processed
+    <p>Aliases and Redirects occurring in different contexts are processed
     like other directives according to standard <a href="../sections.html#mergin">merging rules</a>.  But when multiple
     Aliases or Redirects occur in the same context (for example, in the
     same <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
