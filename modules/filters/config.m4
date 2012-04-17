@@ -16,7 +16,13 @@ APACHE_MODULE(reflector, Reflect request through the output filter stack, , , )
 APACHE_MODULE(substitute, response content rewrite-like filtering, , , most)
 
 sed_obj="mod_sed.lo sed0.lo sed1.lo regexp.lo"
-APACHE_MODULE(sed, filter request and/or response bodies through sed, $sed_obj, , most)
+APACHE_MODULE(sed, filter request and/or response bodies through sed, $sed_obj, , most, [
+    if test "x$enable_sed" = "xshared"; then
+        # The only symbol which needs to be exported is the module
+        # structure, so ask libtool to hide libsed internals:
+        APR_ADDTO(MOD_SED_LDADD, [-export-symbols-regex sed_module])
+    fi
+])
 
 if test "$ac_cv_ebcdic" = "yes"; then
 # mod_charset_lite can be very useful on an ebcdic system,
