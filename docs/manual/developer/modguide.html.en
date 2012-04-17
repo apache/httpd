@@ -60,7 +60,7 @@ First and foremost, you are expected to have a basic knowledge of how the C
 programming language works. In most cases, we will try to be as pedagogical 
 as possible and link to documents describing the functions used in the 
 examples, but there are also many cases where it is necessary to either 
-just assume that "it works" or do some digging youself into what the hows 
+just assume that "it works" or do some digging yourself into what the hows 
 and whys of various function calls. 
 </p>
 <p>
@@ -107,7 +107,7 @@ module AP_MODULE_DECLARE_DATA   example_module <code style="color:#806030; ">=</
 
 This bit of code lets the server know that we have now registered a new module 
 in the system, and that its name is <code>example_module</code>. The name 
-of the module is used primarilly for two things:<br />
+of the module is used primarily for two things:<br />
 <ul>
 <li>Letting the server know how to load the module using the LoadModule</li>
 <li>Setting up a namespace for the module to use in configurations</li>
@@ -360,7 +360,7 @@ status code, for example:
 
 
 
-Returning <code>OK</code> or a HTTP status code does not necessarilly mean 
+Returning <code>OK</code> or a HTTP status code does not necessarily mean 
 that the request will end. The server may still have other handlers that are 
 interested in this request, for instance the logging modules which, upon a 
 successful request, will write down a summary of what was requested and how 
@@ -440,7 +440,7 @@ clean up after yourself - pretty neat, huh?
 </p>
 
 <p>
-In our module, we will primarilly be allocating memory for each request, so 
+In our module, we will primarily be allocating memory for each request, so 
 it's appropriate to use the <code style="color:#008833">r-&gt;pool</code> 
 reference when creating new objects. A few of the functions for allocating 
 memory within a pool are:
@@ -837,7 +837,7 @@ for more macros).</li>
 configuration in order to invoke a configuration change in our module.</li>
 <li><code>example_set_enabled</code>: This is a reference to a C function that parses the directive and sets the configuration 
 accordingly. We will discuss how to make this in the following paragraph.</li>
-<li><code>RSRC_CONF</code>: This tells the server where the directive is permissable. We'll go into details on this value in the 
+<li><code>RSRC_CONF</code>: This tells the server where the directive is permitted. We'll go into details on this value in the 
 later chapters, but for now, <code>RSRC_CONF</code> means that the server will only accept these directives in a server context.</li>
 <li><code>"Enable or disable...."</code>: This is simply a brief description of what the directive does.</li>
 </ol>
