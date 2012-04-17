@@ -129,6 +129,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4 patch: Trunk patch works
     +1: sf
 
+  * log_server_status: Bring Perl style forward to the present, use
+    standard modules, update for new format of server-status output.
+    Trunk patch: http://people.apache.org/~rbowen/log_server_status.trunk.patch
+      (Revisions r1325218 through r1325275)
+    2.4 patch: Trunk patch works
+    +1: rbowen
+
 PATCHES/ISSUES THAT ARE STALLED
 
 
