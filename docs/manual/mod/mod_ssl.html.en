@@ -31,8 +31,7 @@ Layer (SSL) and Transport Layer Security (TLS) protocols</td></tr>
 <h3>Summary</h3>
 
 <p>This module provides SSL v2/v3 and TLS v1 support for the Apache
-HTTP Server.  It was contributed by Ralf S. Engelschall based on his
-mod_ssl project and originally derived from work by Ben Laurie.</p>
+HTTP Server.</p>
 
 <p>This module relies on <a href="http://www.openssl.org/">OpenSSL</a>
 to provide the cryptography engine.</p>
@@ -1633,7 +1632,7 @@ in the global server context because the PRNG is a global facility.</p>
 The following <em>source</em> variants are available:</p>
 <ul>
 <li><code>builtin</code>
-    <p> This is the always available builtin seeding source. It's usage
+    <p> This is the always available builtin seeding source. Its usage
     consumes minimum CPU cycles under runtime and hence can be always used
     without drawbacks. The source used for seeding the PRNG contains of the
     current time, the current process id and (when applicable) a randomly
@@ -1749,7 +1748,7 @@ exception:</p>
 
 <p>In <code>SSLRequire</code>, the comparison operators <code>&lt;</code>,
 <code>&lt;=</code>, ... are completely equivalent to the operators
-<code>lt</code>, <code>le</code>, ... and work in a somewhat pecular way that
+<code>lt</code>, <code>le</code>, ... and work in a somewhat peculiar way that
 first compares the length of two strings and then the lexical order.
 On the other hand, <a href="../expr.html">ap_expr</a> has two sets of
 comparison operators: The operators <code>&lt;</code>,
