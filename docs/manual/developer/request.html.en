@@ -78,7 +78,7 @@
       <code>parsed_uri.path</code> element is unset. The module has no further
       control of this one-time unescape operation, either failing to
       unescape or multiply unescaping the URL leads to security
-      reprecussions.</p>
+      repercussions.</p>
     
 
     <h3><a name="strip" id="strip">Strips Parent and This Elements from the
