@@ -96,7 +96,7 @@ files</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MetaSuffix" id="MetaSuffix">MetaSuffix</a> <a name="metasuffix" id="metasuffix">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File name suffix for the file containg CERN-style
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File name suffix for the file containing CERN-style
 meta information</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MetaSuffix <var>suffix</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MetaSuffix .meta</code></td></tr>
