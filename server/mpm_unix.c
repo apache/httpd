@@ -581,7 +581,7 @@ static apr_status_t dummy_connection(ap_pod_t *pod)
          * the server actually expects SSLv3/TLSv1.  With
          * SSLv23_server_method() OpenSSL's SSL_accept() fails
          * ungracefully on receipt of this message, since it requires
-         * an 11-byte ClientHello message and this is to short. */
+         * an 11-byte ClientHello message and this is too short. */
         static const unsigned char tls10_close_notify[7] = {
             '\x15',         /* TLSPlainText.type = Alert (21) */
             '\x03', '\x01', /* TLSPlainText.version = {3, 1} */
