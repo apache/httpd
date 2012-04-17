@@ -92,7 +92,7 @@ files</description>
 
 <directivesynopsis>
 <name>MetaSuffix</name>
-<description>File name suffix for the file containg CERN-style
+<description>File name suffix for the file containing CERN-style
 meta information</description>
 <syntax>MetaSuffix <var>suffix</var></syntax>
 <default>MetaSuffix .meta</default>
