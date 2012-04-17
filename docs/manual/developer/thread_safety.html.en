@@ -25,7 +25,7 @@
     that every function called from Apache be thread safe.  When linking in 3rd
     party extensions it can be difficult to determine whether the resulting
     server will be thread safe.  Casual testing generally won't tell you this
-    either as thread safety problems can lead to subtle race conditons that
+    either as thread safety problems can lead to subtle race conditions that
     may only show up in certain conditions under heavy load.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#variables">Global and static variables</a></li>
