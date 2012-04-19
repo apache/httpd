@@ -27,9 +27,14 @@ TARGETS = delete-exports $(LTLIBRARY_NAME) $(CORE_IMPLIB_FILE) export_vars.h htt
 include $(top_builddir)/build/rules.mk
 include $(top_srcdir)/build/library.mk
 
+ifdef CC_FOR_BUILD
+gen_test_char: gen_test_char.c
+	$(CC_FOR_BUILD) -DCROSS_COMPILE -o $@ $<
+else
 gen_test_char_OBJECTS = gen_test_char.lo
 gen_test_char: $(gen_test_char_OBJECTS)
 	$(LINK) $(EXTRA_LDFLAGS) $(gen_test_char_OBJECTS) $(EXTRA_LIBS)
+endif
 
 test_char.h: gen_test_char
 	./gen_test_char > test_char.h
