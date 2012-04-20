@@ -114,7 +114,6 @@
 <page href="platform/win_compiling.html">为 Microsoft Windows 编译 Apache</page>
 <page href="platform/netware.html">在 Novell NetWare 中使用 Apache</page>
 <page href="platform/perf-hp.html">在 HPUX 中运行高性能 web 服务器</page>
-<page href="platform/ebcdic.html">Apache 与 EBCDIC 系统</page>
 </category>
 
 <category id="programs">
