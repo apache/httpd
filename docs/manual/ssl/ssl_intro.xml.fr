@@ -28,15 +28,6 @@
   <title>Chiffrement SSL/TLS fort :  Introduction</title>
 
 <summary>
-<blockquote>
-<p>Ce qui est agr&eacute;able avec les standards est d'avoir l'embarras du choix. Et
-si certains standards ne vous conviennent pas vraiment, il vous suffit
-d'attendre un an pour voir appara&icirc;tre celui qui r&eacute;pondra &agrave; vos attentes.</p>
-
-<p class="cite">-- <cite>A. Tanenbaum</cite>, "Introduction to
-Computer Networks"</p>
-</blockquote>
-
 <p>Ce chapitre en guise d'introduction est destin&eacute; aux lecteurs pour lesquels
 le Web, HTTP et Apache sont familiers, mais ne sont pas des experts en mati&egrave;re
 de s&eacute;curit&eacute;. Il n'a pas la pr&eacute;tention d'&ecirc;tre un guide d&eacute;taill&eacute; sur le
@@ -46,20 +37,6 @@ brevets ou des restrictions d'importation ou d'exportation. Il se veut plut&ocir
 une base de travail pour les utilisateurs de <module>mod_ssl</module> en
 rassemblant diff&eacute;rents concepts, d&eacute;finitions et exemples comme point de d&eacute;part
 pour une exploration plus d&eacute;taill&eacute;e.</p>
-
-<p>Le contenu s'inspire en grande partie, avec la permission de l'auteur,
-de l'article <a
-href="http://home.comcast.net/~fjhirsch/Papers/wwwj/">Introducing
-SSL and Certificates using SSLeay</a> de <a
-href="http://home.comcast.net/~fjhirsch/">Frederick J. Hirsch</a>, de
-l'Open Group Research Institute, publi&eacute; dans <a
-href="http://www.ora.com/catalog/wjsum97/">Web Security: A Matter of
-Trust</a>, World Wide Web Journal, Volume 2, Issue 3, Summer 1997. Vous
-pouvez envoyer toute remarque positive &agrave; <a
-href="mailto:hirsch@fjhirsch.com">Frederick Hirsch</a> (l'auteur de l'article
-original) et toute remarque n&eacute;gative &agrave; <a
-href="mailto:rse@engelschall.com">Ralf S. Engelschall</a> (l'auteur du module
-<module>mod_ssl</module>).</p>
 </summary>
 
 <section id="cryptographictech">

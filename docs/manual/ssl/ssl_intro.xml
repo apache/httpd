@@ -26,14 +26,6 @@
   <title>SSL/TLS Strong Encryption: An Introduction</title>
 
 <summary>
-<blockquote>
-<p>The nice thing about standards is that there are so many to choose
-from. And if you really don't like all the standards you just have to
-wait another year until the one arises you are looking for.</p>
-
-<p class="cite">-- <cite>A. Tanenbaum</cite>, "Introduction to
-Computer Networks"</p>
-</blockquote>
 
 <p>As an introduction this chapter is aimed at readers who are familiar
 with the Web, HTTP, and Apache, but are not security experts. It is not
@@ -43,20 +35,6 @@ important legal issues of patents and import and export restrictions.
 Rather, it is intended to provide a common background to <module
 >mod_ssl</module> users by pulling together various concepts, definitions,
 and examples as a starting point for further exploration.</p>
-
-<p>The presented content is mainly derived, with the author's permission,
-from the article <a
-href="http://home.comcast.net/~fjhirsch/Papers/wwwj/">Introducing
-SSL and Certificates using SSLeay</a> by <a
-href="http://home.comcast.net/~fjhirsch/">Frederick J. Hirsch</a>, of The
-Open Group Research Institute, which was published in <a
-href="http://www.ora.com/catalog/wjsum97/">Web Security: A Matter of
-Trust</a>, World Wide Web Journal, Volume 2, Issue 3, Summer 1997.
-Please send any positive feedback to <a
-href="mailto:hirsch@fjhirsch.com">Frederick Hirsch</a> (the original
-article author) and all negative feedback to <a
-href="mailto:rse@engelschall.com">Ralf S. Engelschall</a> (the
-<module>mod_ssl</module> author).</p>
 </summary>
 
 <section id="cryptographictech">
