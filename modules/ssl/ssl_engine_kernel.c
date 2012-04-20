@@ -141,30 +141,10 @@ int ssl_hook_ReadReq(request_rec *r)
     }
 
     if (sslconn->non_ssl_request == NON_SSL_SET_ERROR_MSG) {
-        const char *errmsg;
-        char *thisurl;
-        char *thisport = "";
-        int port = ap_get_server_port(r);
-
-        if (!ap_is_default_port(port, r)) {
-            thisport = apr_psprintf(r->pool, ":%u", port);
-        }
-
-        thisurl = ap_escape_html(r->pool,
-                                 apr_psprintf(r->pool, "https://%s%s/",
-                                              ap_get_server_name_for_url(r),
-                                              thisport));
-
-        errmsg = apr_psprintf(r->pool,
-                              "Reason: You're speaking plain HTTP "
-                              "to an SSL-enabled server port.<br />\n"
-                              "Instead use the HTTPS scheme to access "
-                              "this URL, please.<br />\n"
-                              "<blockquote>Hint: "
-                              "<a href=\"%s\"><b>%s</b></a></blockquote>",
-                              thisurl, thisurl);
-
-        apr_table_setn(r->notes, "error-notes", errmsg);
+        apr_table_setn(r->notes, "error-notes",
+                       "Reason: You're speaking plain HTTP to an SSL-enabled "
+                       "server port.<br />\n Instead use the HTTPS scheme to "
+                       "access this URL, please.<br />\n");
 
         /* Now that we have caught this error, forget it. we are done
          * with using SSL on this request.
