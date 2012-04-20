@@ -180,7 +180,7 @@ about them.</p>
 <div class="section">
 <h2><a name="logs" id="logs">Log Files and Troubleshooting</a></h2>
 
-<p>As an Apache HTTP Server administrator, your most valuable asset is
+<p>As an Apache HTTP Server administrator, your most valuable assets are
 the log files, and, in particular, the error log. Troubleshooting any
 problem without the error log is like driving with your eyes closed.</p>
 
