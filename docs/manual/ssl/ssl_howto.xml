@@ -92,7 +92,7 @@ URL?</title>
     This can be done as follows:</p>
     <example>
       # be liberal in general<br />
-      SSLCipherSuite ALL:!aNULL:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL<br />
+      SSLCipherSuite ALL:!aNULL:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP:+eNULL<br />
       <br />
       &lt;Location /strong/area&gt;<br />
       # but https://hostname/strong/area/ and below<br />

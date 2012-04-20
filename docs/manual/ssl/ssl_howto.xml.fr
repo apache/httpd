@@ -105,7 +105,7 @@ acc&eacute;der &agrave; une URL particuli&egrave;re ?</title>
     Cette configuration peut se pr&eacute;senter comme suit :</p>
     <example>
       # soyons tr&egrave;s tol&eacute;rant a priori<br />
-      SSLCipherSuite ALL:!aNULL:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL<br />
+      SSLCipherSuite ALL:!aNULL:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP:+eNULL<br />
       <br />
       &lt;Location /strong/area&gt;<br />
       # sauf pour https://hostname/strong/area/ et ses sous-r&eacute;pertoires<br />
