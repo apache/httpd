@@ -240,7 +240,7 @@ certificates are used for authentication.</p>
     as <code>*.snakeoil.com</code>.</p>
 
     <p>The binary format of a certificate is defined using the ASN.1
-    notation [<a href="#X208">X208</a>] [<a href="#PKCS">PKCS</a>]. This
+    notation [<a href="#ASN1">ASN1</a>] [<a href="#PKCS">PKCS</a>]. This
     notation defines how to specify the contents and encoding rules
     define how this information is translated into binary form. The binary
     encoding of the certificate is defined using Distinguished Encoding
@@ -387,8 +387,7 @@ establishing a protocol session.</p>
         <th>Description</th>
         <th>Browser Support</th></tr>
     <tr><td>SSL v2.0</td>
-        <td>Vendor Standard (from Netscape Corp.) [<a href="#SSL2"
-        >SSL2</a>]</td>
+        <td>Vendor Standard (from Netscape Corp.)</td>
         <td>First SSL protocol for which implementations exist</td>
         <td>- NS Navigator 1.x/2.x<br />
         - MS IE 3.x<br />
@@ -408,6 +407,18 @@ establishing a protocol session.</p>
         padding for block ciphers, message order standardization and more
         alert messages.</td>
         <td>- Lynx/2.8+OpenSSL</td></tr>
+    <tr><td>TLS v1.1</td>
+        <td>Proposed Internet Standard (from IETF) [<a href="#TLS11"
+        >TLS11</a>]</td>
+        <td>Update of TLS 1.0 to add protection against Cipher block chaining
+        (CBC) attacks.</td>
+        <td>-</td></tr>
+    <tr><td>TLS v1.2</td>
+        <td>Proposed Internet Standard (from IETF) [<a href="#TLS12"
+        >TLS12</a>]</td>
+        <td>Update of TLS 1.2 deprecating MD5 as hash, and adding incompatibility
+        to SSL so it will never negotiate the use of SSLv2.</td>
+        <td>-</td></tr>
     </table>
 </section>
 
@@ -613,18 +624,17 @@ the Internet Engineering Task Force (IETF).</p>
 >http://www.counterpane.com/</a> for various other materials by Bruce
 Schneier.</dd>
 
-<dt><a id="X208" name="X208">[X208]</a></dt>
+<dt><a id="ASN1" name="ASN1">[ASN1]</a></dt>
 <dd>ITU-T Recommendation X.208, <q>Specification of Abstract Syntax Notation
-One (ASN.1)</q>, 1988. See for instance <a
-href="http://www.itu.int/rec/recommendation.asp?type=items&amp;lang=e&amp;parent=T-REC-X.208-198811-I"
->http://www.itu.int/rec/recommendation.asp?type=items&amp;lang=e&amp;parent=T-REC-X.208-198811-I</a>.
+One (ASN.1)</q>, last updated 2008. See <a href="http://www.itu.int/ITU-T/asn1/"
+>http://www.itu.int/ITU-T/asn1/</a>.
 </dd>
 
 <dt><a id="X509" name="X509">[X509]</a></dt>
 <dd>ITU-T Recommendation X.509, <q>The Directory - Authentication
-Framework</q>. See for instance <a
-href="http://www.itu.int/rec/recommendation.asp?type=folders&amp;lang=e&amp;parent=T-REC-X.509"
->http://www.itu.int/rec/recommendation.asp?type=folders&amp;lang=e&amp;parent=T-REC-X.509</a>.
+Framework</q>. For references, see <a
+href="http://en.wikipedia.org/wiki/X.509"
+>http://en.wikipedia.org/wiki/X.509</a>.
 </dd>
 
 <dt><a id="PKCS" name="PKCS">[PKCS]</a></dt>
@@ -636,13 +646,8 @@ href="http://www.rsasecurity.com/rsalabs/pkcs/"
 <dt><a id="MIME" name="MIME">[MIME]</a></dt>
 <dd>N. Freed, N. Borenstein, <q>Multipurpose Internet Mail Extensions
 (MIME) Part One: Format of Internet Message Bodies</q>, RFC2045.
-See for instance <a href="http://ietf.org/rfc/rfc2045.txt"
->http://ietf.org/rfc/rfc2045.txt</a>.</dd>
-
-<dt><a id="SSL2" name="SSL2">[SSL2]</a></dt>
-<dd>Kipp E.B. Hickman, <q>The SSL Protocol</q>, 1995. See <a
-href="http://www.netscape.com/eng/security/SSL_2.html"
->http://www.netscape.com/eng/security/SSL_2.html</a>.</dd>
+See for instance <a href="http://tools.ietf.org/html/rfc2045"
+>http://tools.ietf.org/html/rfc2045</a>.</dd>
 
 <dt><a id="SSL3" name="SSL3">[SSL3]</a></dt>
 <dd>Alan O. Freier, Philip Karlton, Paul C. Kocher, <q>The SSL Protocol
@@ -654,6 +659,16 @@ href="http://www.netscape.com/eng/ssl3/draft302.txt"
 <dd>Tim Dierks, Christopher Allen, <q>The TLS Protocol Version 1.0</q>,
 1999. See <a href="http://ietf.org/rfc/rfc2246.txt"
 >http://ietf.org/rfc/rfc2246.txt</a>.</dd>
+
+<dt><a id="TLS11" name="TLS11">[TLS11]</a></dt>
+<dd><q>The TLS Protocol Version 1.1</q>,
+2006. See <a href="http://tools.ietf.org/html/rfc4346"
+>http://tools.ietf.org/html/rfc4346</a>.</dd>
+
+<dt><a id="TLS12" name="TLS12">[TLS12]</a></dt>
+<dd><q>The TLS Protocol Version 1.2</q>,
+2008. See <a href="http://tools.ietf.org/html/rfc5246"
+>http://tools.ietf.org/html/rfc5246</a>.</dd>
 </dl>
 </section>
 <!-- /references -->
