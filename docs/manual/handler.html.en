@@ -117,7 +117,7 @@
 
       <div class="example"><p><code>
         &lt;Directory /web/htdocs/asis&gt;<br />
-        SetHandler send-as-is<br />
+	<span class="indent">SetHandler send-as-is<br /></span>
         &lt;/Directory&gt;
       </code></p></div>
 
