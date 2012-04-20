@@ -159,12 +159,12 @@ Server on HPUX</page>
 <page separate="yes" href="developer/">Overview</page>
 <page href="developer/API.html">Apache API notes</page>
 <page href="developer/new_api_2_4.html">API updates in Apache HTTPD 2.4</page>
-<page href="developer/debugging.html">Debugging Memory Allocation in APR</page>
-<page href="developer/documenting.html">Documenting Apache 2.x</page>
+<page href="developer/modguide.html">Developing modules for Apache HTTPD 2.4</page>
+<page href="developer/documenting.html">Documenting Apache HTTPD</page>
 <page href="developer/hooks.html">Apache 2.x Hook Functions</page>
-<page href="developer/modules.html">Converting Modules from Apache 1.3 to Apache 2.x</page>
-<page href="developer/request.html">Request Processing in Apache 2.x</page>
-<page href="developer/filters.html">How Filters Work in Apache 2.x</page>
+<page href="developer/modules.html">Converting Modules from 1.3 to 2.x</page>
+<page href="developer/request.html">Request Processing in 2.x</page>
+<page href="developer/filters.html">How Filters Work in 2.x</page>
 </category>
 
 <category id="index">
