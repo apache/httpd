@@ -54,7 +54,7 @@ of <directive module="mod_proxy">ProxyPass</directive>.</p>
   <p>
       Every 1 second, this module generates a single multicast UDP
       packet, containing the number of busy and idle workers.  The
-      packet is a simple ASCII format, similiar to GET query parameters
+      packet is a simple ASCII format, similar to GET query parameters
       in HTTP.
   </p>
   
