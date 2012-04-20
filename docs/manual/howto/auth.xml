@@ -23,7 +23,7 @@
 <manualpage metafile="auth.xml.meta">
 <parentdocument href="./">How-To / Tutorials</parentdocument>
 
-<title>Authentication, Authorization and Access Control</title>
+<title>Authentication and Authorization</title>
 
 <summary>
     <p>Authentication is any process by which you verify that
