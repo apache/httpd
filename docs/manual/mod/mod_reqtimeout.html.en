@@ -55,7 +55,7 @@
       <li>
         Allow at least 10 seconds to receive the request body.
         If the client sends data, increase the timeout by 1 second for every
-        1000 bytes received, with no upper limit for the timeout (exept for
+        1000 bytes received, with no upper limit for the timeout (except for
         the limit given indirectly by
         <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code>):
 

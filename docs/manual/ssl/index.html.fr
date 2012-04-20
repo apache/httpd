@@ -24,6 +24,8 @@
 <a href="../tr/ssl/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/ssl/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
 <p>Le module <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> du serveur HTTP Apache fournit une
 interface avec la bibliothèque <a href="http://www.openssl.org/">OpenSSL</a>, qui permet d'effectuer un

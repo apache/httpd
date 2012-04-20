@@ -116,7 +116,7 @@
 <h2><a name="ftppass" id="ftppass">How can I hide the FTP cleartext password
     in my browser's URL line?</a></h2>
       <p>To log in to an FTP server by username and password, Apache uses
-      different strategies. In absense of a user name and password in the URL
+      different strategies. In absence of a user name and password in the URL
       altogether, Apache sends an anonymous login to the FTP server,
       <em>i.e.</em>,</p>
 
@@ -155,7 +155,7 @@
         a base64-encoded cleartext string, and between the Apache proxy and the
         FTP server as plaintext. You should therefore think twice before
         accessing your FTP server via HTTP (or before accessing your personal
-        files via FTP at all!) When using unsecure channels, an eavesdropper
+        files via FTP at all!) When using insecure channels, an eavesdropper
         might intercept your password on its way.</p>
       </div>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

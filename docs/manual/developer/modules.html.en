@@ -125,7 +125,7 @@ static void register_hooks(void)
 
     <h3><a name="moddef" id="moddef">Module Definition</a></h3>
       <p>There are now a lot fewer stages to worry about when
-      creating your module definition. The old defintion looked
+      creating your module definition. The old definition looked
       like</p>
 
       <div class="example"><pre>
