@@ -473,7 +473,7 @@
         matter of commenting out the associated <directive
         module="mod_so">LoadModule</directive> directive for that module.
         This allows you to experiment with removing modules, and seeing
-        if your site still functions in their absense.</p>
+        if your site still functions in their absence.</p>
 
         <p>If, on the other hand, you have modules statically linked
         into your Apache binary, you will need to recompile Apache in
