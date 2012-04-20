@@ -127,7 +127,7 @@ static void register_hooks(void)
 
     <section id="moddef"><title>Module Definition</title>
       <p>There are now a lot fewer stages to worry about when
-      creating your module definition. The old defintion looked
+      creating your module definition. The old definition looked
       like</p>
 
       <example><pre>
