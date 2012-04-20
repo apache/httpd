@@ -454,7 +454,11 @@ typedef struct {
     int verify_depth;
     int is_proxy;
     int disabled;
-    int non_ssl_request;
+    enum {
+        NON_SSL_OK = 0,        /* is SSL request, or error handling completed */
+        NON_SSL_SEND_HDR_SEP,  /* Need to send the header separator */
+        NON_SSL_SET_ERROR_MSG  /* Need to set the error message */
+    } non_ssl_request;
 
     /* Track the handshake/renegotiation state for the connection so
      * that all client-initiated renegotiations can be rejected, as a
