@@ -189,7 +189,7 @@ about them.</p>
 
 <section id="logs">
 <title>Log Files and Troubleshooting</title>
-<p>As an Apache HTTP Server administrator, your most valuable asset is
+<p>As an Apache HTTP Server administrator, your most valuable assets are
 the log files, and, in particular, the error log. Troubleshooting any
 problem without the error log is like driving with your eyes closed.</p>
 
