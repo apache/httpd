@@ -111,6 +111,7 @@
 사용하기</page>
 <page href="platform/perf-hp.html">HPUX에서 고성능 웹서버
 실행하기</page>
+<page href="platform/ebcdic.html">아파치 EBCDIC 포팅</page>
 </category>
 
 <category id="programs">

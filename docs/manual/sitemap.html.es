@@ -126,6 +126,8 @@ Microsoft Windows</a></li>
 Apache con Novell NetWare</a></li>
 <li><a href="platform/perf-hp.html">Servidor Web de alto rendimiento con
 HPUX</a></li>
+<li><a href="platform/ebcdic.html">La versión EBCDIC de
+Apache</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="programs" id="programs">Programas de soporte y el Servidor HTTP Apache</a></h2>
