@@ -108,7 +108,7 @@ accéder à une URL particulière ?</a></h2>
     Cette configuration peut se présenter comme suit :</p>
     <div class="example"><p><code>
       # soyons très tolérant a priori<br />
-      SSLCipherSuite ALL:!aNULL:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL<br />
+      SSLCipherSuite ALL:!aNULL:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP:+eNULL<br />
       <br />
       &lt;Location /strong/area&gt;<br />
       # sauf pour https://hostname/strong/area/ et ses sous-répertoires<br />
