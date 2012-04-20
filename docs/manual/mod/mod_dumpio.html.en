@@ -56,7 +56,7 @@
 
     <p>To enable the module, it should be compiled and loaded
     in to your running Apache configuration. Logging can then
-    be enabled or disabled seperately for input and output via
+    be enabled or disabled separately for input and output via
     the below directives.  Additionally, <code class="module"><a href="../mod/mod_dumpio.html">mod_dumpio</a></code>
     needs to be configured to <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> <code>trace7</code>:
     </p>
