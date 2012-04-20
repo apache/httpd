@@ -707,7 +707,7 @@ int main(void)
 {
     return sizeof(void *) < sizeof(long); 
 }], [ap_cv_void_ptr_lt_long=no], [ap_cv_void_ptr_lt_long=yes], 
-    [ap_cv_void_ptr_lt_long=yes])])
+    [ap_cv_void_ptr_lt_long="cross compile - not checked"])])
 
 if test "$ap_cv_void_ptr_lt_long" = "yes"; then
     AC_MSG_ERROR([Size of "void *" is less than size of "long"])
