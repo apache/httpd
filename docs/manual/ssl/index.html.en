@@ -28,8 +28,7 @@
 <p>The Apache HTTP Server module <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>
 provides an interface to the <a href="http://www.openssl.org/">OpenSSL</a> library, which provides
 Strong Encryption using the Secure Sockets Layer and Transport Layer
-Security protocols.  The module and this documentation are based on
-Ralf S. Engelschall's mod_ssl project.</p>
+Security protocols.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#documentation">Documentation</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mod-ssl">mod_ssl</a></li>
