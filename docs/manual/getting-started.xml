@@ -75,6 +75,11 @@ the servername to an IP address - the location on the Internet where the
 server resides. Thus, in order for your web server to be reachable, it
 is necessary that the servername be in DNS.</p>
 
+<p>More than one hostname may point to the same IP address, and more
+than one IP address can be attached to the same physical server. Thus, you
+can run more than one web site on the same physical server, using a
+feature called <a href="vhosts/">virtual hosts</a>.</p>
+
 <p>If you don't know how to do this, you'll need to contact your network
 administrator, or Internet service provider, to perform this step for
 you.</p>
@@ -100,10 +105,86 @@ href="http://en.wikipedia.org/wiki/Domain_Name_System">Wikipedia.org/wiki/Domain
 
 <section id="configuration">
 <title>Configuration Files and Directives</title>
+
+<p>The Apache HTTP Server is configured via simple text files.
+These files may be located any of a variety of places, depending on how
+exactly you installed the server. Common locations for these files may
+be found <a href="http://wiki.apache.org/httpd/DistrosDefaultLayout">in
+the httpd wiki</a>. If you installed httpd from source, the default
+location of the configuration files is
+<code>/usr/local/apache2/conf</code>. The default configuration file is
+usually called <code>httpd.conf</code>. This, too, can vary in
+third-party distributions of the server.</p>
+
+<p>The configuration is frequently broken into multiple smaller files,
+for ease of management. These files are loaded via the <directive
+module="core">Include</directive> directive. The names or locations of
+these sub-files are not magical, and may vary greatly from one
+installation to another. Arrange and subdivide these files as
+makes the most sense to <strong>you</strong>. If the file arrangement
+you have by default doesn't make sense to you, feel free to rerrange it.</p>
+
+<p>The server is configured by placing <a
+href="mod/quickreference.html">configuration directives</a> in these
+configuration files. A directive is a keyword followed by one or more
+arguments that set its value.</p>
+
+<p>The question of "<em>Where should I put that
+directive?</em>" is generally answered by considering where you want a
+directive to be effective. If it is a global setting, it should appear
+in the configuration file, outside of any <directive
+type="section">Directory</directive>, <directive
+type="section">Location</directive>, <directive
+type="section">VirtualHost</directive>, or other section. If it is to
+apply only to a particular directory, then it should go inside a
+<directive type="section">Directory</directive> section referring to
+that directory, and so on. See the <a href="sections.html">Configuration
+Sections</a> document for further discussion of these sections.</p>
+
+<p>In addition to the main configuration files, certain directives may go in
+<code>.htaccess</code> files located in the content directories.
+<code>.htaccess</code> files are primarily for people who do not have
+access to the main server configuration file(s). You can read more about
+<code>.htaccess</code> files in the <a
+href="howto/htaccess.html"><code>.htaccess</code> howto</a>.</p>
+
 </section>
 
 <section id="content">
 <title>Web Site Content</title>
+
+<p>Web site content can take many different forms, but may be broadly
+divided into static and dynamic content.</p>
+
+<p>Static content is things like HTML files, image files, CSS files,
+and other files that reside in the filesystem. The <directive
+module="core">DocumentRoot</directive> directive specifies where in your
+filesystem you should place these files. This directive is either set
+globally, or per virual host. Look in your configuration file(s) to
+determine how this is set for your server.</p>
+
+<p>Typically, a document called <code>index.html</code> will be served
+when a directory is requested without a file name being specified. For
+example, if <code>DocumentRoot</code> is set to
+<code>/var/www/html</code> and a request is made for
+<code>http://www.example.com/work/</code>, the file
+<code>/var/www/html/work/index.html</code> will be served to the
+client.</p>
+
+<p>Dynamic content is anything that is generated at request
+time, and may change from one request to another. There are numerous
+ways that dynamic content may be generated. Various <a
+href="handler.html">handlers</a> are available to generate content. <a
+href="howto/cgi.html">CGI programs</a> may be written to generate
+content for your site.</p>
+
+<p>Third-party modules like mod_php may be used to write code that does a
+variety of things. Many third-party applications, written using a
+variety of languages and tools, are available for download and
+installation on your Apache HTTP Server. Support of these third-party
+things is beyond the scope of this documentation, and you should find
+their documentation or other support forums to answer your questions
+about them.</p>
 </section>
 
 <section id="logs">
