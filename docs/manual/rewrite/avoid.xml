@@ -180,7 +180,7 @@ RewriteRule ^/?images(.*) http://imageserver.local/images$1 [P]
 </example>
 
 <p>However, in many cases, when there is no actual pattern matching
-meeded, as in the example shown above, the <directive
+needed, as in the example shown above, the <directive
 module="mod_proxy">ProxyPass</directive> directive is a better choice.
 The example here could be rendered as:</p>
 
@@ -209,7 +209,7 @@ accomplish.</p>
 <section id="setenv"><title>Environment Variable Testing</title>
 
 <p><module>mod_rewrite</module> is frequently used to take a particular
-action based on the presence or absense of a particular environment
+action based on the presence or absence of a particular environment
 variable or request header. This can be done more efficiently using the
 <directive module="core" type="section">If</directive>.</p>
 
