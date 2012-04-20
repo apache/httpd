@@ -128,7 +128,7 @@
 
       <example>
         &lt;Directory /web/htdocs/asis&gt;<br/>
-        SetHandler send-as-is<br/>
+	<indent>SetHandler send-as-is<br/></indent>
         &lt;/Directory&gt;
       </example>
 
