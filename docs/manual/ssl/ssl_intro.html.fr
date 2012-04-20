@@ -25,15 +25,6 @@
 <div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
             anglaise pour les changements récents.</div>
 
-<blockquote>
-<p>Ce qui est agréable avec les standards est d'avoir l'embarras du choix. Et
-si certains standards ne vous conviennent pas vraiment, il vous suffit
-d'attendre un an pour voir apparaître celui qui répondra à vos attentes.</p>
-
-<p class="cite">-- <cite>A. Tanenbaum</cite>, "Introduction to
-Computer Networks"</p>
-</blockquote>
-
 <p>Ce chapitre en guise d'introduction est destiné aux lecteurs pour lesquels
 le Web, HTTP et Apache sont familiers, mais ne sont pas des experts en matière
 de sécurité. Il n'a pas la prétention d'être un guide détaillé sur le
@@ -43,15 +34,6 @@ brevets ou des restrictions d'importation ou d'exportation. Il se veut plutôt
 une base de travail pour les utilisateurs de <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> en
 rassemblant différents concepts, définitions et exemples comme point de départ
 pour une exploration plus détaillée.</p>
-
-<p>Le contenu s'inspire en grande partie, avec la permission de l'auteur,
-de l'article <a href="http://home.comcast.net/~fjhirsch/Papers/wwwj/">Introducing
-SSL and Certificates using SSLeay</a> de <a href="http://home.comcast.net/~fjhirsch/">Frederick J. Hirsch</a>, de
-l'Open Group Research Institute, publié dans <a href="http://www.ora.com/catalog/wjsum97/">Web Security: A Matter of
-Trust</a>, World Wide Web Journal, Volume 2, Issue 3, Summer 1997. Vous
-pouvez envoyer toute remarque positive à <a href="mailto:hirsch@fjhirsch.com">Frederick Hirsch</a> (l'auteur de l'article
-original) et toute remarque négative à <a href="mailto:rse@engelschall.com">Ralf S. Engelschall</a> (l'auteur du module
-<code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>).</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#cryptographictech">Techniques de chiffrement</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#certificates">Certificats</a></li>
