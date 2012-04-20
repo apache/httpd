@@ -180,9 +180,35 @@ about them.</p>
 <div class="section">
 <h2><a name="logs" id="logs">Log Files and Troubleshooting</a></h2>
 
+<p>As an Apache HTTP Server administrator, your most valuable asset is
+the log files, and, in particular, the error log. Troubleshooting any
+problem without the error log is like driving with your eyes closed.</p>
+
+<p>The location of the error log is defined by the <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code> directive, which may be set globally,
+or per virtual host. Entries in the error log tell you what went wrong,
+and when. They often also tell you how to fix it. Each error log message
+contains a error code, which you can search for online for even more
+detailed descriptions of how to address the problem. You can also
+configure your error log to contain a log ID which you can then
+correlate to an access log entry, so that you can determine what request
+caused the error condition.</p>
+
+<p>You can read more about logging in the <a href="logs.html">logs
+documentation</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="other" id="other">What Else Do I Need To Know?</a></h2>
+
+<p>This document covers only the bare basics. We hope that this gets you
+started, but there are many other things that you might need to know.
+Here's a partial list of what you might be looking for:</p>
+
+<ul>
+<li><a href="howto/auth.html">Authentication and Authorization (password protecting resources)</a></li>
+<li><a href="howto/access.html">Access Control</a></li>
+<li><a href="ssl/ssl_howto.html">Setting up SSL</a></li>
+<li><a href="http://wiki.apache.org/httpd/FAQ">Frequently Asked Questions</a></li>
+</ul>
 
 </div></div>
 <div class="bottomlang">
