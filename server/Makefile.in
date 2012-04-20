@@ -29,7 +29,7 @@ include $(top_srcdir)/build/library.mk
 
 ifdef CC_FOR_BUILD
 gen_test_char: gen_test_char.c
-	$(CC_FOR_BUILD) -DCROSS_COMPILE -o $@ $<
+	$(CC_FOR_BUILD) $(CFLAGS_FOR_BUILD) -DCROSS_COMPILE -o $@ $<
 else
 gen_test_char_OBJECTS = gen_test_char.lo
 gen_test_char: $(gen_test_char_OBJECTS)
