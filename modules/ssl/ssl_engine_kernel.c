@@ -140,7 +140,7 @@ int ssl_hook_ReadReq(request_rec *r)
         return DECLINED;
     }
 
-    if (sslconn->non_ssl_request) {
+    if (sslconn->non_ssl_request == NON_SSL_SET_ERROR_MSG) {
         const char *errmsg;
         char *thisurl;
         char *thisport = "";
@@ -169,8 +169,7 @@ int ssl_hook_ReadReq(request_rec *r)
         /* Now that we have caught this error, forget it. we are done
          * with using SSL on this request.
          */
-        sslconn->non_ssl_request = 0;
-
+        sslconn->non_ssl_request = NON_SSL_OK;
 
         return HTTP_BAD_REQUEST;
     }
