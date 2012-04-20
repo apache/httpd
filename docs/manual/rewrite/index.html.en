@@ -51,7 +51,7 @@
       <p>Since mod_rewrite is so powerful, it can indeed be rather
       complex. This document supplements the <a href="../mod/mod_rewrite.html">reference documentation</a>, and
       attempts to allay some of that complexity, and provide highly
-      annoted examples of common scenarios that you may handle with
+      annotated examples of common scenarios that you may handle with
       mod_rewrite. But we also attempt to show you when you should not
       use mod_rewrite, and use other standard Apache features instead,
       thus avoiding this unnecessary complexity.</p>
