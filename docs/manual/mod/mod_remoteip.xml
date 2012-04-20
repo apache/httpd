@@ -235,7 +235,7 @@ via the request headers.
     to trust as presenting a valid RemoteIPHeader value of the useragent IP.</p>
 
     <p>The '<code>#</code>' hash character designates a comment line, otherwise
-    each whitespace or newline seperated entry is processed identically to
+    each whitespace or newline separated entry is processed identically to
     the <directive>RemoteIPTrustedProxy</directive> directive.</p>
 
     <example><title>Trusted (Load Balancer) Example</title>
