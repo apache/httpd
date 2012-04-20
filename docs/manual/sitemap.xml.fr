@@ -133,6 +133,7 @@ Microsoft Windows</page>
 NetWare</page>
 <page href="platform/perf-hp.html">Mise en oeuvre d'un serveur web
 hautes performances sous HPUX</page>
+<page href="platform/ebcdic.html">Le portage EBCDIC d'Apache</page>
 </category>
 
 <category id="programs">

@@ -126,6 +126,7 @@
 사용하기</a></li>
 <li><a href="platform/perf-hp.html">HPUX에서 고성능 웹서버
 실행하기</a></li>
+<li><a href="platform/ebcdic.html">아파치 EBCDIC 포팅</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="programs" id="programs">아파치 웹서버와 지원 프로그램</a></h2>
