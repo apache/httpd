@@ -50,7 +50,7 @@ of consuming threads only for connections with active processing</description>
     <p>This MPM tries to fix the 'keep alive problem' in HTTP. After a client
     completes the first request, the client can keep the connection
     open, and send further requests using the same socket. This can
-    save signifigant overhead in creating TCP connections. However,
+    save significant overhead in creating TCP connections. However,
     Apache HTTP Server traditionally keeps an entire child process/thread waiting
     for data from the client, which brings its own disadvantages. To
     solve this problem, this MPM uses a dedicated thread to handle both
@@ -155,7 +155,7 @@ of consuming threads only for connections with active processing</description>
     needed, and other (mostly SSL) connections with one request worker thread
     reserved per connection. This can lead to situations where all workers are
     tied up and no worker thread is available to handle new work on established
-    async connetions.</p>
+    async connections.</p>
 
     <p>To mitigate this problem, the event MPM does two things: Firstly, it
     limits the number of connections accepted per process, depending on the
