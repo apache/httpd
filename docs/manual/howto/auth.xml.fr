@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1070891:1328337 (outdated) -->
+<!-- English Revision : 1328337 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviwed by : Vincent Deffontaines -->
 
@@ -25,7 +25,7 @@
 <manualpage metafile="auth.xml.meta">
 <parentdocument href="./">Recettes / Tutoriels</parentdocument>
 
-<title>Authentification, autorisation et contr&ocirc;le d'acc&egrave;s</title>
+<title>Authentification et autorisation</title>
 
 <summary>
     <p>L'authentification est un processus qui vous permet de v&eacute;rifier

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1075625:1328365 (outdated) -->
+<!-- English Revision : 1328365 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -174,17 +174,16 @@ pour d&eacute;crire les directives Apache</page>
 <page separate="yes" href="developer/">Aper&ccedil;u</page>
 <page href="developer/API.html">Notes sur l'API Apache</page>
 <page href="developer/new_api_2_4.html">Mises &agrave; jour de l'API dans Apache HTTPD 2.4</page>
-<page href="developer/debugging.html">D&eacute;bogage de l'allocation m&eacute;moire
-dans APR</page>
-<page href="developer/documenting.html">Documenter Apache 2.x</page>
+<page href="developer/modguide.html">D&eacute;veloppement de modules pour Apache HTTPD 2.4</page>
+<page href="developer/documenting.html">Documentation d'Apache HTTPD</page>
 <page href="developer/hooks.html">Fonctions d'accroche (Hook Functions)
 d'Apache 2.x</page>
-<page href="developer/modules.html">Convertir un module depuis Apache
-1.3 vers Apache 2.x</page>
-<page href="developer/request.html">Traitement des requ&ecirc;tes avec Apache
-2.x</page>
-<page href="developer/filters.html">Fonctionnement des filtres dans
-Apache 2.x</page>
+<page href="developer/modules.html">Convertir un module depuis la
+version 1.3 vers la version 2.x</page>
+<page href="developer/request.html">Traitement des requ&ecirc;tes avec
+la version 2.x</page>
+<page href="developer/filters.html">Fonctionnement des filtres dans la
+version 2.x</page>
 </category>
 
 <category id="index">

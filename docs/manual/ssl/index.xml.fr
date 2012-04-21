@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1070915:1328159 (outdated) -->
+<!-- English Revision : 1328159 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -33,8 +33,7 @@ interface avec la biblioth&egrave;que <a
 href="http://www.openssl.org/">OpenSSL</a>, qui permet d'effectuer un
 chiffrement fort en s'appuyant sur les protocoles "Couche Points d'acc&egrave;s
 S&eacute;curis&eacute;s" (Secure Sockets Layer - SSL) et "S&eacute;curit&eacute; de la Couche Transport"
-(Transport Layer Security - TLS). Le module et cette documentation sont bas&eacute;s
-sur le projet mod_ssl de Ralf S. Engelschall.</p>
+(Transport Layer Security - TLS).</p>
 </summary>
 
 <section id="documentation"><title>Documentation</title>

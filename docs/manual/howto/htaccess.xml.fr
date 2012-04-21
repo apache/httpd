@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1031040:1326216 (outdated) -->
+<!-- English Revision : 1326216 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -25,7 +25,7 @@
 <manualpage metafile="htaccess.xml.meta">
 <parentdocument href="./">Recettes / Tutoriels</parentdocument>
 
-<title>Tutoriel Apache : fichiers .htaccess</title>
+<title>Tutoriel du serveur HTTP Apache : fichiers .htaccess</title>
 
 <summary>
 <p>Les fichiers <code>.htaccess</code> fournissent une m&eacute;thode pour
@@ -61,7 +61,7 @@ modifier la configuration du serveur au niveau de chaque r&eacute;pertoire.</p>
     <note>Les fichiers <code>.htaccess</code> ne doivent &ecirc;tre utilis&eacute;s
     que si vous n'avez pas acc&egrave;s au fichier de configuration du serveur
     principal. L'utilisation des fichiers <code>.htaccess</code>
-    ralentit le fonctionnement de votre serveur Apache. Il est toujours
+    ralentit le fonctionnement de votre serveur HTTP Apache. Il est toujours
     pr&eacute;f&eacute;rable de d&eacute;finir les directives que vous pouvez inclure dans un
     fichier <code>.htaccess</code> dans une section <directive
     module="core">Directory</directive>, car elles produiront le
@@ -182,20 +182,20 @@ modifier la configuration du serveur au niveau de chaque r&eacute;pertoire.</p>
     <p>La premi&egrave;re est li&eacute;e aux performances. Lorsque la directive
     <directive module="core">AllowOverride</directive> est d&eacute;finie de
     fa&ccedil;on &agrave; autoriser l'utilisation des fichiers <code>.htaccess</code>,
-    Apache va rechercher leur pr&eacute;sence dans chaque r&eacute;pertoire. Ainsi,
+    httpd va rechercher leur pr&eacute;sence dans chaque r&eacute;pertoire. Ainsi,
     permettre l'utilisation des fichiers <code>.htaccess</code> est d&eacute;j&agrave;
     en soi une cause de d&eacute;gradation des performances, que vous utilisiez
     effectivement ces fichiers ou non ! De plus, le fichier
     <code>.htaccess</code> est charg&eacute; en m&eacute;moire chaque fois qu'un
     document fait l'objet d'une requ&ecirc;te.</p>
 
-    <p>Notez aussi qu'Apache doit rechercher les fichiers
+    <p>Notez aussi que httpd doit rechercher les fichiers
     <code>.htaccess</code> dans tous les r&eacute;pertoires de niveau
     sup&eacute;rieur, afin de rassembler toutes les directives qui s'appliquent
     au r&eacute;pertoire courant (Voir la section <a href="#how">comment sont
     appliqu&eacute;es les directives</a>). Ainsi, si un fichier fait l'objet
     d'une requ&ecirc;te &agrave; partir d'un r&eacute;pertoire
-    <code>/www/htdocs/exemple</code>, Apache doit rechercher les
+    <code>/www/htdocs/exemple</code>, httpd doit rechercher les
     fichiers suivants :</p>
 
     <example>
@@ -459,7 +459,7 @@ Includes - SSI)</title>
 
     <p>Par contre, si vous obtenez des erreurs de serveur lorsque vous
     tentez d'acc&eacute;der &agrave; des documents, consultez votre journal des
-    erreurs d'Apache. Il vous indiquera probablement que la directive
+    erreurs de httpd. Il vous indiquera probablement que la directive
     utilis&eacute;e dans votre fichier <code>.htaccess</code> n'est pas
     permise.</p>
 

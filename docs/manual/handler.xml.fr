@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1174747:1328350 (outdated) -->
+<!-- English Revision: 1328350 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -131,7 +131,7 @@
 
       <example>
         &lt;Directory /web/htdocs/asis&gt;<br/>
-        SetHandler send-as-is<br/>
+        <indent>SetHandler send-as-is<br/></indent>
         &lt;/Directory&gt;
       </example>
 
