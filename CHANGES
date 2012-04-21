@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) cross-compile: allow to provide CC_FOR_BUILD so that gen_test_char will
+     be compiled by the build compiler instead of the host compiler.
+     Also set CC_FOR_BUILD to 'cc' when cross-compilation is detected.
+     PR 51257. [Guenter Knauf]
+
   *) mod_ssl: Send the error message for speaking http to an https port using
      HTTP/1.0 instead of HTTP/0.9, and omit the link that may be wrong when
      using SNI. PR 50823. [Stefan Fritsch]
