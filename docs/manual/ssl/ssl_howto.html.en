@@ -38,7 +38,7 @@ before progressing to the advanced techniques.</p>
 <h2><a name="configexample" id="configexample">Basic Configuration Example</a></h2>
 
 
-<p>Your SSL configuration will need to contain, at a minumum, the
+<p>Your SSL configuration will need to contain, at minimum, the
 following directives.</p>
 
 <div class="example"><p><code>

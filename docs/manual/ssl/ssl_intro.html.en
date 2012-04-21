@@ -437,7 +437,7 @@ the Internet Engineering Task Force (IETF).</p>
     to start a session. To do this, the server assigns each SSL session a
     unique session identifier which is cached in the server and which the
     client can use in future connections to reduce the handshake time
-    (until the session identifer expires from the cache of the server).</p>
+    (until the session identifier expires from the cache of the server).</p>
     </div>
 
     <p class="figure">

@@ -251,7 +251,7 @@
 
         <p class="indent">
           If it doesn't exist, it can't very well contain files. If we
-          can't change directory to it, it might aswell not exist.
+          can't change directory to it, it might as well not exist.
         </p>
       </li>
 
