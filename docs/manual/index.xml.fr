@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1221670:1328365 (outdated) -->
+<!-- English Revision : 1328365 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -91,6 +91,8 @@
     <page href="http://wiki.apache.org/httpd/FAQ">Foire Aux Questions</page>
     <page href="sitemap.html">Plan du site</page>
     <page href="developer/">Documentation du d&eacute;veloppeur</page>
+    <page href="http://httpd.apache.org/docs-project/">Aide pour la
+    documentation</page>
     <page href="misc/">Autres notes</page>
     <page href="http://wiki.apache.org/httpd/">Wiki</page>
 </category>
