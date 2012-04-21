@@ -362,7 +362,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     major releases (for example, from 2.0 to 2.2 or from 2.2 to 2.3),
     there will likely be major differences in the compile-time and
     run-time configuration that will require manual adjustments.  All
-    modules will also need to be upgraded to accomodate changes in the
+    modules will also need to be upgraded to accommodate changes in the
     module API.</p>
 
     <p>Upgrading from one minor version to the next (for example, from

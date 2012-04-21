@@ -102,7 +102,7 @@
       'REDIRECT_' onto the original header name. This provides the error
       document the context of the original request.</p>
 
-      <p>For example, you might recieve, in addition to more usual
+      <p>For example, you might receive, in addition to more usual
       environment variables, the following.</p>
 
       <div class="example"><p><code>
@@ -141,7 +141,7 @@
       <p>If you point your <code>ErrorDocument</code> to some variety of
       dynamic handler such as a server-side include document, CGI
       script, or some variety of other handler, you may wish to use the
-      available custom environent variables to customize this
+      available custom environment variables to customize this
       response.</p>
 
       <p>If the ErrorDocument specifies a local redirect to a CGI
