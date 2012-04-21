@@ -194,6 +194,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://people.apache.org/~rpluem/patches/forcerecovery_2.2.diff
     +1: rpluem,
 
+  * cross-compile: allow to provide CC_FOR_BUILD so that gen_test_char will be
+    compiled by the build compiler instead of the host compiler.
+    Also set CC_FOR_BUILD to 'cc' when cross-compilation is detected.
+    Since PCRE is included with 2.2.x this patch also takes care for dftables.
+    Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1327907
+                   http://svn.apache.org/viewvc?view=revision&revision=1328390
+                   http://svn.apache.org/viewvc?view=revision&revision=1328714
+    2.4 patch: http://people.apache.org/~fuankg/diffs/httpd-2.4.x-cross_compile.diff
+    2.2 patch: http://people.apache.org/~fuankg/diffs/httpd-2.2.x-cross_compile.diff
+    +1: fuankg
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
