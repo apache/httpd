@@ -607,7 +607,7 @@ error when connecting to my newly installed server?</title>
     circumvent this issue.</p>
     
     <p>Note that if you have a wildcard SSL certificate, or a
-    certificate that has multple hostnames on it using subjectAltName
+    certificate that has multiple hostnames on it using subjectAltName
     fields, you can use SSL on name-based virtual hosts without further
     workarounds.</p>
 </section>
@@ -668,7 +668,7 @@ a negotiable standard compression method.
 <p>OpenSSL 0.9.8 started to support this by default when compiled with the
 <code>zlib</code> option. If both the client and the server support compression,
 it will be used. However, most clients still try to initially connect with an
-SSLv2 Hello. As SSLv2 did not include an array of prefered compression algorithms
+SSLv2 Hello. As SSLv2 did not include an array of preferred compression algorithms
 in its handshake, compression cannot be negotiated with these clients.
 If the client disables support for SSLv2, either an SSLv3 or TLS Hello
 may be sent, depending on which SSL library is used, and compression may
