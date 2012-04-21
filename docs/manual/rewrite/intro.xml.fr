@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1179179:1325683 (outdated) -->
+<!-- English Revision : 1325683 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -171,18 +171,24 @@ arri&egrave;res dans les expressions rationnelles</title>
       sont cr&eacute;&eacute;es en interne et peuvent &ecirc;tre rappel&eacute;es via les cha&icirc;nes
       <code>$N</code> et <code>%N</code> (voir ci-dessous). Ces
       r&eacute;f&eacute;rences sont disponibles lors de la cr&eacute;ation des cha&icirc;nes de
-      <em>Substitution</em> et des <em>Cha&icirc;nes de test</em>. La
-      figure 1
+      <em>Substitution</em> et des <em>Cha&icirc;nes de test</em> comme
+      pr&eacute;cis&eacute; dans les chapitres suivants. La figure 1
       montre &agrave; quels endroits les r&eacute;f&eacute;rences arri&egrave;res sont suceptibles
       d'&ecirc;tre d&eacute;velopp&eacute;es, et illustre le flux des comparaisons
-      effectu&eacute;es par les r&egrave;gles RewriteRule et RewriteCond.</p>
+      effectu&eacute;es par les r&egrave;gles RewriteRule et
+      RewriteCond. Dans les chapitres suivants, nous examinerons comment
+      utiliser ces r&eacute;f&eacute;rences arri&egrave;res, donc ne vous affolez pas si
+      elles vous paraissent un peu exotiques au premier abord.</p>
 
 <p class="figure">
-      <img src="../images/rewrite_rule_flow.png"
+      <img src="../images/rewrite_backreferences.png"
       alt="Flux des comparaisons effectu&eacute;es par les r&egrave;gles RewriteRule
       et RewriteCond" /><br />
       <dfn>Figure 1 :</dfn> Le cheminement d'une r&eacute;f&eacute;rence arri&egrave;re &agrave;
-      travers une r&egrave;gle.
+      travers une r&egrave;gle.<br />
+      Dans cet exemple, une requ&ecirc;te pour <code>/test/1234</code> serait
+      transform&eacute;e en
+      <code>/admin.foo?page=test&amp;id=1234&amp;host=admin.example.com</code>.
 </p>
 
 </section>
@@ -203,7 +209,9 @@ transform&eacute;e;</li>
 <p>Le <var>Mod&egrave;le</var> est toujours une <a href="#regex">expression
 rationnelle</a> compar&eacute;e au chemin de l'URL de la requ&ecirc;te entrante (la
 partie situ&eacute;e apr&egrave;s le nom d'h&ocirc;te mais avant tout point d'interrogation
-qui indique le d&eacute;but d'une cha&icirc;ne de requ&ecirc;te).</p>
+qui indique le d&eacute;but d'une cha&icirc;ne de param&egrave;tres de
+requ&ecirc;te) ou, dans un contexte de r&eacute;pertoire, au chemin de la
+requ&ecirc;te relativement au r&eacute;pertoire pour lequel la r&egrave;gle est d&eacute;finie..</p>
 
 <p class="figure">
       <img src="../images/syntax_rewriterule.png"
