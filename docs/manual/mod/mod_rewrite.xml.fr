@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1309551:1325680 (outdated) -->
+<!-- English Revision : 1325680 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -993,9 +993,12 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
       <a id="regexp" name="regexp">expression rationnelle</a>
       compatible perl. Dans la premi&egrave;re r&egrave;gle de r&eacute;&eacute;criture,
       l'expression est compar&eacute;e au (%-decoded)
-      <a href="./directive-dict.html#Syntax">chemin de l'URL</a> de la
-      requ&ecirc;te ; les expressions suivantes sont compar&eacute;es &agrave; la sortie de
-      la derni&egrave;re r&egrave;gle de r&eacute;&eacute;criture qui a &eacute;t&eacute; appliqu&eacute;e.</p>
+      <a href="./directive-dict.html#Syntax">chemin de l'URL</a> (ou au
+      <a href="./directive-dict.html#Syntax">chemin fichier</a>, en
+      fonction du contexte) de la
+      requ&ecirc;te. Les expressions suivantes sont compar&eacute;es &agrave; la sortie de
+      la derni&egrave;re r&egrave;gle de r&eacute;&eacute;criture qui
+      correspondait.</p>
 
 <note><title><a id="what_is_matched" name="what_is_matched">Qu'est-ce qui est compar&eacute; ?</a></title>
 
@@ -1009,7 +1012,7 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
       module="core">Directory</directive> et htaccess, le
       <em>mod&egrave;le</em> est tout d'abord compar&eacute; au chemin du <em>syst&egrave;me
       de fichiers</em>, apr&egrave;s suppression du pr&eacute;fixe ou chemin de base
-      ayant conduit &agrave; la r&egrave;gle <directive>RewriteRule</directive> (par
+      ayant conduit le serveur vers la r&egrave;gle <directive>RewriteRule</directive> (par
       exemple "app1/index.html" ou
       "index.html" selon l'endroit o&ugrave; les directives sont d&eacute;finies).</p>
 
@@ -1180,7 +1183,7 @@ substitution !
 
        <p>Chaque r&egrave;gle de r&eacute;&eacute;criture s'applique au r&eacute;sultat de la r&egrave;gle
        pr&eacute;c&eacute;dente, selon l'ordre dans lequel elles ont &eacute;t&eacute; d&eacute;finies dans
-       le fichier de configuration. L'URI du chemin du fichier (voir
+       le fichier de configuration. Le chemin de l'URL ou du syst&egrave;me de fichier (voir
        ci-dessus <a href="#what_is_matched">Qu'est-ce qui est
        compar&eacute; ?</a>) est <strong>int&eacute;gralement
       remplac&eacute;e</strong> par la cha&icirc;ne de <em>Substitution</em> et le
