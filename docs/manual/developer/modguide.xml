@@ -74,15 +74,16 @@ To compile the source code we are building in this document, we will be
 using <a href="../programs/apxs.html">APXS</a>. Assuming your source file 
 is called mod_example.c, compiling, installing and activating the module is 
 as simple as: 
+</p>
 <example><pre>
 apxs -i -a -c mod_example.c
 </pre></example>
-</p>
+
 </section>
 </section>
 
 <section id="basics"><title>Defining a module</title>
-<img src="../images/build_a_mod_3.png"/><br/>
+<img src="../images/build_a_mod_3.png" alt="Module name tags"/><br/>
 <p>Every module starts with the same declaration, or name tag if you will, 
 that defines a module as <em>a separate entity within Apache</em>:
 
@@ -106,13 +107,17 @@ module AP_MODULE_DECLARE_DATA   example_module <code style='color:#806030; '>=</
 This bit of code lets the server know that we have now registered a new module 
 in the system, and that its name is <code>example_module</code>. The name 
 of the module is used primarily for two things:<br/>
+</p>
 <ul>
 <li>Letting the server know how to load the module using the LoadModule</li>
 <li>Setting up a namespace for the module to use in configurations</li>
 </ul>
+<p>
 For now, we're only concerned with the first purpose of the module name, 
-which comes into play when we need to load the module:<br/>
+which comes into play when we need to load the module:
+</p>
 <example><pre><a href="../mod/mod_so.html#LoadModule">LoadModule</a> example_module modules/mod_example.so</pre></example>
+<p>
 In essence, this tells the server to open up <code>mod_example.so</code> and look for a module 
 called <code>example_module</code>.
 </p>
@@ -142,7 +147,7 @@ request, and will ask each module whether they have an interest in a given
 request or not. It is then up to each module to either gently decline 
 serving a request, accept serving it or flat out deny the request from 
 being served, as authentication/authorization modules do: <br/>
-<img src="../images/build_a_mod_2.png" /><br/>
+<img src="../images/build_a_mod_2.png" alt="Hook handling in httpd"/><br/>
 To make it a bit easier for handlers such as our mod_example to know 
 whether the client is requesting content we should handle or not, the server 
 has directives for hinting to modules whether their assistance is needed or 
@@ -152,9 +157,11 @@ an example using <directive module="mod_mime">AddHandler</directive>. In
 our example case, we want every request ending with .sum to be served by 
 <code>mod_example</code>, so we'll add a configuration directive that tells 
 the server to do just that:
+</p>
 <example><pre>
 AddHandler example-handler .sum
 </pre></example>
+<p>
 What this tells the server is the following: <em>Whenever we receive a request 
 for a URI ending in .sum, we are to let all modules know that we are 
 looking for whoever goes by the name of &quot;example-handler&quot; </em>. 
@@ -693,17 +700,22 @@ advanced configurations
 for your modules.
 </p>
 <section id="config_intro"><title>An introduction to configuration 
-directives</title> If you are reading this, then you probably already know 
+directives</title>
+<p>
+If you are reading this, then you probably already know 
 what a configuration directive is. Simply put, a directive is a way of 
 telling an individual module (or a set of modules) how to behave, such as 
 these directives control how <code>mod_rewrite</code> works:
+</p>
 <example><pre>
 RewriteEngine On
 RewriteCond %{REQUEST_URI} ^/foo/bar
 RewriteRule ^/foo/bar/(.*)$ /foobar?page=$1
 </pre></example>
+<p>
 Each of these configuration directives are handled by a separate function, 
 that parses the parameters given and sets up a configuration accordingly.
+</p>
 </section>
 <section id="config_simple"><title>Making an example configuration</title>
 To begin with, we'll create a basic configuration in C-space:
@@ -825,7 +837,7 @@ static const command_rec        example_directives[] =
 <!-- END EXAMPLE CODE -->
 
 
-<img src="../images/build_a_mod_4.png" border="1"/><br/>
+<img src="../images/build_a_mod_4.png" border="1" alt="Directives structure"/><br/>
 <p>
 As you can see, each directive needs at least 5 parameters set:
 <ol>
@@ -1020,11 +1032,13 @@ module AP_MODULE_DECLARE_DATA   example_module <code style='color:#806030; '>=</
 <p>
 In our httpd.conf file, we can now change the hard-coded configuration by 
 adding a few lines:
+</p>
 <example><pre>
 ExampleEnabled On
 ExamplePath "/usr/bin/foo"
 ExampleAction file allow
 </pre></example>
+<p>
 And thus we apply the configuration, visit <code>/example</code> on our 
 web site, and we see the configuration has adapted to what we wrote in our 
 configuration file.
@@ -1041,6 +1055,7 @@ In Apache HTTP Server 2.4, different URLs, virtual hosts, directories etc can ha
 different meanings to the user of the server, and thus different contexts 
 within which modules must operate. For example, let's assume you have this 
 configuration set up for mod_rewrite:
+</p>
 <example><pre>
 &lt;Directory &quot;/var/www&quot;&gt;
     RewriteCond %{HTTP_HOST} ^example.com$
@@ -1050,6 +1065,7 @@ configuration set up for mod_rewrite:
     RewriteRule ^foobar$ index.php?foobar=true
 &lt;/Directory&gt;
 </pre></example>
+<p>
 In this example, you will have set up two different contexts for 
 mod_rewrite:
 <ol>
@@ -1179,7 +1195,7 @@ module AP_MODULE_DECLARE_DATA   example_module <code style='color:#806030; '>=</
 
 </section>
 
-<section id="context_which"><title>Creating new context configurations</title>
+<section id="context_new"><title>Creating new context configurations</title>
 <p>
 Now that we have told the server to help us create and manage configurations, 
 our first step is to make a function for creating new, blank 
@@ -1206,11 +1222,12 @@ our name tag as the Per-directory configuration handler:
 </p>
 </section>
 
-<section id="context_which"><title>Merging configurations</title>
+<section id="context_merge"><title>Merging configurations</title>
 <p>
 Our next step in creating a context aware configuration is merging 
 configurations. This part of the process particularly apply to scenarios 
 where you have a parent configuration and a child, such as the following: 
+</p>
 <example><pre>
 &lt;Directory &quot;/var/www&quot;&gt;
     ExampleEnable On
@@ -1221,6 +1238,7 @@ where you have a parent configuration and a child, such as the following:
     ExampleAction file deny
 &lt;/Directory&gt;
 </pre></example>
+<p>
 In this example, it is natural to assume that the directory <code>
 /var/www/subdir</code> should inherit the value set for the <code>/var/www
 </code> directory, as we did not specify a <code>ExampleEnable</code> nor 
@@ -1257,11 +1275,12 @@ two configurations and decide how they are to be merged:
 </p>
 </section>
 
-<section id="context_which"><title>Trying out our new context aware configurations</title>
+<section id="context_example"><title>Trying out our new context aware configurations</title>
 <p>
 Now, let's try putting it all together to create a new module that is 
 context aware. First off, we'll create a configuration that lets us test 
 how the module works:
+</p>
 <example><pre>
 &lt;Location &quot;/a&quot;&gt;
     SetHandler example-handler
@@ -1281,6 +1300,7 @@ how the module works:
     ExampleEnabled on
 &lt;/Location&gt;
 </pre></example>
+<p>
 Then we'll assemble our module code. Note, that since we are now using our 
 name tag as reference when fetching configurations in our handler, I have 
 added some prototypes to keep the compiler happy:
