@@ -563,10 +563,10 @@ static int log_remote_address(const ap_errorlog_info *info, const char *arg,
 {
     if (info->r && !(arg && *arg == 'c'))
         return apr_snprintf(buf, buflen, "%s:%d", info->r->useragent_ip,
-                            info->r->useragent_addr->port);
+                            info->r->useragent_addr ? info->r->useragent_addr->port : 0);
     else if (info->c)
         return apr_snprintf(buf, buflen, "%s:%d", info->c->client_ip,
-                            info->c->client_addr->port);
+                            info->c->client_addr ? info->c->client_addr->port : 0);
     else
         return 0;
 }
@@ -968,12 +968,14 @@ static int do_errorlog_default(const ap_errorlog_info *info, char *buf,
     if (info->r) {
         len += apr_snprintf(buf + len, buflen - len,
                             info->r->connection->sbh ? "[client %s:%d] " : "[remote %s:%d] ",
-                            info->r->useragent_ip, info->r->useragent_addr->port);
+                            info->r->useragent_ip,
+                            info->r->useragent_addr ? info->r->useragent_addr->port : 0);
     }
     else if (info->c) {
         len += apr_snprintf(buf + len, buflen - len,
                             info->c->sbh ? "[client %s:%d] " : "[remote %s:%d] ",
-                            info->c->client_ip, info->c->client_addr->port);
+                            info->c->client_ip,
+                            info->c->client_addr ? info->c->client_addr->port : 0);
     }
 
     /* the actual error message */

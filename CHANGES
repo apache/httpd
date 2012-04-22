@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Fix segfault in logging if r->useragent_addr or c->client_addr is
+     unset. [Stefan Fritsch]
+
   *) cross-compile: allow to provide CC_FOR_BUILD so that gen_test_char will
      be compiled by the build compiler instead of the host compiler.
      Also set CC_FOR_BUILD to 'cc' when cross-compilation is detected.
