@@ -78,7 +78,6 @@
 <category id="platform"><title>平台相关说明</title>
     <page href="platform/windows.html">Microsoft Windows</page>
     <page href="platform/netware.html">Novell NetWare</page>
-    <page href="platform/ebcdic.html">EBCDIC 系统</page>
 </category>
 
 <category id="other"><title>其它主题</title>

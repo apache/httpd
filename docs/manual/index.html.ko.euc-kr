@@ -81,7 +81,6 @@
 </div><div class="category"><h2><a name="platform" id="platform">플래폼별 설명</a></h2>
 <ul><li><a href="platform/windows.html">Microsoft Windows</a></li>
 <li><a href="platform/netware.html">Novell NetWare</a></li>
-<li><a href="platform/ebcdic.html">EBCDIC 포팅</a></li>
 </ul>
 </div><div class="category"><h2><a name="other" id="other">다른 주제</a></h2>
 <ul><li><a href="faq/">자주 물어보는 질문 (FAQ)</a></li>

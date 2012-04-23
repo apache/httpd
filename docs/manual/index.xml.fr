@@ -84,7 +84,6 @@
     <page href="platform/windows.html">Microsoft Windows</page>
     <page href="platform/rpm.html">Syst&egrave;mes bas&eacute;s sur les paquet RPM (Redhat / CentOS / Fedora)</page>
     <page href="platform/netware.html">Novell NetWare</page>
-    <page href="platform/ebcdic.html">Portage EBCDIC</page>
 </category>
 
 <category id="other"><title>Autres sujets</title>

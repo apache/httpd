@@ -80,7 +80,6 @@
 <category id="platform"><title>Notas Espec&#237;ficas para diferentes Platformas</title>
     <page href="platform/windows.html">Microsoft Windows</page>
     <page href="platform/netware.html">Novell NetWare</page>
-    <page href="platform/ebcdic.html">EBCDIC Port</page>
 </category>
 
 <category id="other"><title>Outros T&#243;picos</title>

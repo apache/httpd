@@ -88,7 +88,6 @@ ejecución</a></li>
 </div><div class="category"><h2><a name="platform" id="platform">Notas específicas sobre plataformas</a></h2>
 <ul><li><a href="platform/windows.html">Microsoft Windows</a></li>
 <li><a href="platform/netware.html">Novell NetWare</a></li>
-<li><a href="platform/ebcdic.html">EBCDIC Port</a></li>
 </ul>
 </div><div class="category"><h2><a name="other" id="other">Documentación adicional</a></h2>
 <ul><li><a href="faq/">Preguntas Más Frecuentes</a></li>

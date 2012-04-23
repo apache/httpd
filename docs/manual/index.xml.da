@@ -78,7 +78,6 @@ Dokumentation</title>
 <category id="platform"><title>Platformspecifikke noter</title>
     <page href="platform/windows.html">Microsoft Windows</page>
     <page href="platform/netware.html">Novell NetWare</page>
-    <page href="platform/ebcdic.html">EBCDIC Port</page>
 </category>
 
 <category id="other"><title>Andre emner</title>
