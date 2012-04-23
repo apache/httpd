@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_rewrite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_rewrite.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ce module fournit un moteur de réécriture à base de
 règles permettant de réécrire les URLs des requêtes
 à la volée</td></tr>
@@ -979,9 +977,12 @@ la version version 2.1</td></tr>
       <a id="regexp" name="regexp">expression rationnelle</a>
       compatible perl. Dans la première règle de réécriture,
       l'expression est comparée au (%-decoded)
-      <a href="./directive-dict.html#Syntax">chemin de l'URL</a> de la
-      requête ; les expressions suivantes sont comparées à la sortie de
-      la dernière règle de réécriture qui a été appliquée.</p>
+      <a href="./directive-dict.html#Syntax">chemin de l'URL</a> (ou au
+      <a href="./directive-dict.html#Syntax">chemin fichier</a>, en
+      fonction du contexte) de la
+      requête. Les expressions suivantes sont comparées à la sortie de
+      la dernière règle de réécriture qui
+      correspondait.</p>
 
 <div class="note"><h3><a id="what_is_matched" name="what_is_matched">Qu'est-ce qui est comparé ?</a></h3>
 
@@ -993,7 +994,7 @@ la version version 2.1</td></tr>
       <p>Dans les contextes de répertoire <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> et htaccess, le
       <em>modèle</em> est tout d'abord comparé au chemin du <em>système
       de fichiers</em>, après suppression du préfixe ou chemin de base
-      ayant conduit à la règle <code class="directive">RewriteRule</code> (par
+      ayant conduit le serveur vers la règle <code class="directive">RewriteRule</code> (par
       exemple "app1/index.html" ou
       "index.html" selon l'endroit où les directives sont définies).</p>
 
@@ -1157,7 +1158,7 @@ substitution !
 
        <p>Chaque règle de réécriture s'applique au résultat de la règle
        précédente, selon l'ordre dans lequel elles ont été définies dans
-       le fichier de configuration. L'URI du chemin du fichier (voir
+       le fichier de configuration. Le chemin de l'URL ou du système de fichier (voir
        ci-dessus <a href="#what_is_matched">Qu'est-ce qui est
        comparé ?</a>) est <strong>intégralement
       remplacée</strong> par la chaîne de <em>Substitution</em> et le

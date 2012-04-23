@@ -5,7 +5,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Tutoriel Apache : fichiers .htaccess - Serveur Apache HTTP</title>
+<title>Tutoriel du serveur HTTP Apache : fichiers .htaccess - Serveur Apache HTTP</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
@@ -16,7 +16,7 @@
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Recettes / Tutoriels</a></div><div id="page-content"><div id="preamble"><h1>Tutoriel Apache : fichiers .htaccess</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Recettes / Tutoriels</a></div><div id="page-content"><div id="preamble"><h1>Tutoriel du serveur HTTP Apache : fichiers .htaccess</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/howto/htaccess.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/howto/htaccess.html" title="Français">&nbsp;fr&nbsp;</a> |
@@ -24,8 +24,6 @@
 <a href="../ko/howto/htaccess.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../pt-br/howto/htaccess.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Les fichiers <code>.htaccess</code> fournissent une méthode pour
 modifier la configuration du serveur au niveau de chaque répertoire.</p>
@@ -49,7 +47,7 @@ Includes - SSI)</a></li>
     <div class="note">Les fichiers <code>.htaccess</code> ne doivent être utilisés
     que si vous n'avez pas accès au fichier de configuration du serveur
     principal. L'utilisation des fichiers <code>.htaccess</code>
-    ralentit le fonctionnement de votre serveur Apache. Il est toujours
+    ralentit le fonctionnement de votre serveur HTTP Apache. Il est toujours
     préférable de définir les directives que vous pouvez inclure dans un
     fichier <code>.htaccess</code> dans une section <code class="directive"><a href="../mod/core.html#directory">Directory</a></code>, car elles produiront le
     même effet avec de meilleures performances.</div>
@@ -161,20 +159,20 @@ Includes - SSI)</a></li>
     <p>La première est liée aux performances. Lorsque la directive
     <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> est définie de
     façon à autoriser l'utilisation des fichiers <code>.htaccess</code>,
-    Apache va rechercher leur présence dans chaque répertoire. Ainsi,
+    httpd va rechercher leur présence dans chaque répertoire. Ainsi,
     permettre l'utilisation des fichiers <code>.htaccess</code> est déjà
     en soi une cause de dégradation des performances, que vous utilisiez
     effectivement ces fichiers ou non ! De plus, le fichier
     <code>.htaccess</code> est chargé en mémoire chaque fois qu'un
     document fait l'objet d'une requête.</p>
 
-    <p>Notez aussi qu'Apache doit rechercher les fichiers
+    <p>Notez aussi que httpd doit rechercher les fichiers
     <code>.htaccess</code> dans tous les répertoires de niveau
     supérieur, afin de rassembler toutes les directives qui s'appliquent
     au répertoire courant (Voir la section <a href="#how">comment sont
     appliquées les directives</a>). Ainsi, si un fichier fait l'objet
     d'une requête à partir d'un répertoire
-    <code>/www/htdocs/exemple</code>, Apache doit rechercher les
+    <code>/www/htdocs/exemple</code>, httpd doit rechercher les
     fichiers suivants :</p>
 
     <div class="example"><p><code>
@@ -433,7 +431,7 @@ Includes - SSI)</a></h2>
 
     <p>Par contre, si vous obtenez des erreurs de serveur lorsque vous
     tentez d'accéder à des documents, consultez votre journal des
-    erreurs d'Apache. Il vous indiquera probablement que la directive
+    erreurs de httpd. Il vous indiquera probablement que la directive
     utilisée dans votre fichier <code>.htaccess</code> n'est pas
     permise.</p>
 

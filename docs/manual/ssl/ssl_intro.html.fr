@@ -22,8 +22,7 @@
 <a href="../fr/ssl/ssl_intro.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/ssl/ssl_intro.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
+
 
 <p>Ce chapitre en guise d'introduction est destiné aux lecteurs pour lesquels
 le Web, HTTP et Apache sont familiers, mais ne sont pas des experts en matière
@@ -34,6 +33,7 @@ brevets ou des restrictions d'importation ou d'exportation. Il se veut plutôt
 une base de travail pour les utilisateurs de <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> en
 rassemblant différents concepts, définitions et exemples comme point de départ
 pour une exploration plus détaillée.</p>
+
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#cryptographictech">Techniques de chiffrement</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#certificates">Certificats</a></li>
@@ -257,7 +257,7 @@ on utilise les certificats à des fins d'authentification.</p>
     <code>*.snakeoil.com</code>.</p>
 
     <p>Le format binaire d'un certificat est défini en utilisant la
-    notation ASN.1 [<a href="#X208">X208</a>] [<a href="#PKCS">PKCS</a>].
+    notation ASN.1 [<a href="#ASN1">ASN1</a>] [<a href="#PKCS">PKCS</a>].
     Cette notation definit la manière de spécifier les contenus, et les règles
     d'encodage définissent la manière dont ces information sont converties au
     format binaire. L'encodage binaire du certificat est défini par les Règles
@@ -408,7 +408,7 @@ l'établissement de la session protocolaire.</p>
         <th>Description</th>
         <th>Navigateurs supportés</th></tr>
     <tr><td>SSL v2.0</td>
-        <td>Standard du fournisseur (de Netscape Corp.) [<a href="#SSL2">SSL2</a>]</td>
+        <td>Standard du fournisseur (de Netscape Corp.)</td>
         <td>Premier protocole SSL pour lequel il existe des implémentations</td>
         <td>- NS Navigator 1.x/2.x<br />
         - MS IE 3.x<br />
@@ -427,6 +427,17 @@ l'établissement de la session protocolaire.</p>
 	ajout du bourrage de bloc pour le chiffrement de bloc, standardisation
 	de l'ordonnancement des messages et plus de messages d'alerte.</td>
         <td>- Lynx/2.8+OpenSSL</td></tr>
+	<tr><td>TLS v1.1</td>
+        <td>Standard proposé pour l'Internet (de l'IETF) [<a href="#TLS11">TLS11</a>]</td>
+        <td>Mise à jour de TLS 1.0 pour la protection contre les
+	attaques de type Cipher block chaining (CBC).</td>
+        <td>-</td></tr>
+    <tr><td>TLS v1.2</td>
+        <td>Standard proposé pour l'Internet (de l'IETF) [<a href="#TLS12">TLS12</a>]</td>
+        <td>Mise à jour de TLS 1.2 rendant les condensés MD5 obsolètes,
+	et introduisant une incompatibilité avec SSL ce qui interdit toute
+	négociation en vue d'une utilisation de SSLv2.</td>
+        <td>-</td></tr>
     </table>
 
 
@@ -648,14 +659,14 @@ l'Internet Engineering Task Force (IETF).</p>
 1996. Voir <a href="http://www.counterpane.com/">http://www.counterpane.com/</a> pour diverses autres productions de Bruce
 Schneier.</dd>
 
-<dt><a id="X208" name="X208">[X208]</a></dt>
+<dt><a id="ASN1" name="ASN1">[ASN1]</a></dt>
 <dd>ITU-T Recommendation X.208, <q>Specification of Abstract Syntax Notation
-One (ASN.1)</q>, 1988. Voir par exemple <a href="http://www.itu.int/rec/recommendation.asp?type=items&amp;lang=e&amp;parent=T-REC-X.208-198811-I">http://www.itu.int/rec/recommendation.asp?type=items&amp;lang=e&amp;parent=T-REC-X.208-198811-I</a>.
+One (ASN.1)</q>, dernière mise à jour en 2008. Voir <a href="http://www.itu.int/ITU-T/asn1/">http://www.itu.int/ITU-T/asn1/</a>.
 </dd>
 
 <dt><a id="X509" name="X509">[X509]</a></dt>
 <dd>ITU-T Recommendation X.509, <q>The Directory - Authentication
-Framework</q>. Voir par exemple <a href="http://www.itu.int/rec/recommendation.asp?type=folders&amp;lang=e&amp;parent=T-REC-X.509">http://www.itu.int/rec/recommendation.asp?type=folders&amp;lang=e&amp;parent=T-REC-X.509</a>.
+Framework</q>. A titre de référence, voir <a href="http://en.wikipedia.org/wiki/X.509">http://en.wikipedia.org/wiki/X.509</a>.
 </dd>
 
 <dt><a id="PKCS" name="PKCS">[PKCS]</a></dt>
@@ -665,10 +676,7 @@ RSA Laboratories Technical Notes, Voir <a href="http://www.rsasecurity.com/rsala
 <dt><a id="MIME" name="MIME">[MIME]</a></dt>
 <dd>N. Freed, N. Borenstein, <q>Multipurpose Internet Mail Extensions
 (MIME) Part One: Format of Internet Message Bodies</q>, RFC2045.
-Voir par exemple <a href="http://ietf.org/rfc/rfc2045.txt">http://ietf.org/rfc/rfc2045.txt</a>.</dd>
-
-<dt><a id="SSL2" name="SSL2">[SSL2]</a></dt>
-<dd>Kipp E.B. Hickman, <q>The SSL Protocol</q>, 1995. See <a href="http://www.netscape.com/eng/security/SSL_2.html">http://www.netscape.com/eng/security/SSL_2.html</a>.</dd>
+Voir par exemple <a href="http://tools.ietf.org/html/rfc2045">http://tools.ietf.org/html/rfc2045</a>.</dd>
 
 <dt><a id="SSL3" name="SSL3">[SSL3]</a></dt>
 <dd>Alan O. Freier, Philip Karlton, Paul C. Kocher, <q>The SSL Protocol
@@ -677,6 +685,14 @@ Version 3.0</q>, 1996. Voir <a href="http://www.netscape.com/eng/ssl3/draft302.t
 <dt><a id="TLS1" name="TLS1">[TLS1]</a></dt>
 <dd>Tim Dierks, Christopher Allen, <q>The TLS Protocol Version 1.0</q>,
 1999. Voir <a href="http://ietf.org/rfc/rfc2246.txt">http://ietf.org/rfc/rfc2246.txt</a>.</dd>
+
+<dt><a id="TLS11" name="TLS11">[TLS11]</a></dt>
+<dd><q>Le protocole TLS Version 1.1</q>,
+2006. Voir <a href="http://tools.ietf.org/html/rfc4346">http://tools.ietf.org/html/rfc4346</a>.</dd>
+
+<dt><a id="TLS12" name="TLS12">[TLS12]</a></dt>
+<dd><q>Le protocole TLS Version 1.2</q>,
+2008. Voir <a href="http://tools.ietf.org/html/rfc5246">http://tools.ietf.org/html/rfc5246</a>.</dd>
 </dl>
 </div></div>
 <div class="bottomlang">

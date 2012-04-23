@@ -21,8 +21,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/intro.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/intro.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Ce document est un complément à la <a href="../mod/mod_rewrite.html">documentation de référence</a> du module
 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Il décrit les concepts de base dont la
@@ -157,16 +155,22 @@ arrières dans les expressions rationnelles</a></h3>
       sont créées en interne et peuvent être rappelées via les chaînes
       <code>$N</code> et <code>%N</code> (voir ci-dessous). Ces
       références sont disponibles lors de la création des chaînes de
-      <em>Substitution</em> et des <em>Chaînes de test</em>. La
-      figure 1
+      <em>Substitution</em> et des <em>Chaînes de test</em> comme
+      précisé dans les chapitres suivants. La figure 1
       montre à quels endroits les références arrières sont suceptibles
       d'être développées, et illustre le flux des comparaisons
-      effectuées par les règles RewriteRule et RewriteCond.</p>
+      effectuées par les règles RewriteRule et
+      RewriteCond. Dans les chapitres suivants, nous examinerons comment
+      utiliser ces références arrières, donc ne vous affolez pas si
+      elles vous paraissent un peu exotiques au premier abord.</p>
 
 <p class="figure">
-      <img src="../images/rewrite_rule_flow.png" alt="Flux des comparaisons effectuées par les règles RewriteRule       et RewriteCond" /><br />
+      <img src="../images/rewrite_backreferences.png" alt="Flux des comparaisons effectuées par les règles RewriteRule       et RewriteCond" /><br />
       <dfn>Figure 1 :</dfn> Le cheminement d'une référence arrière à
-      travers une règle.
+      travers une règle.<br />
+      Dans cet exemple, une requête pour <code>/test/1234</code> serait
+      transformée en
+      <code>/admin.foo?page=test&amp;id=1234&amp;host=admin.example.com</code>.
 </p>
 
 
@@ -186,7 +190,9 @@ transformée;</li>
 <p>Le <var>Modèle</var> est toujours une <a href="#regex">expression
 rationnelle</a> comparée au chemin de l'URL de la requête entrante (la
 partie située après le nom d'hôte mais avant tout point d'interrogation
-qui indique le début d'une chaîne de requête).</p>
+qui indique le début d'une chaîne de paramètres de
+requête) ou, dans un contexte de répertoire, au chemin de la
+requête relativement au répertoire pour lequel la règle est définie..</p>
 
 <p class="figure">
       <img src="../images/syntax_rewriterule.png" alt="Syntaxe de la directive RewriteRule" /><br />
