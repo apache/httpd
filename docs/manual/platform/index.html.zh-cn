@@ -68,19 +68,6 @@
       </dd>
     </dl>
 
-    <dl>
-      <dt>EBCDIC</dt>
-      <dd>
-        <p>从 Apache HTTP 版本 1.3 开始支持使用 EBCDIC 字符集作为原生字符集的(非 ASCII)主机。</p>
-
-        <div class="warning"><strong>警告:</strong>
-        这篇文档尚未完全更新，以反映自 Apache HTTP 服务器版本 2.0
-        之后的修改。某些信息可能仍旧适用，但请小心使用它。</div>
-
-        <p>参见: <a href="ebcdic.html">Apache 与 EBCDIC 系统</a></p>
-      </dd>
-    </dl>
-
   </div></div>
 <div class="bottomlang">
 <p><span>可用语言: </span><a href="../en/platform/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
