@@ -107,8 +107,7 @@ href="platform/windows.html">Usar Apache con Microsoft Windows</page>
 Microsoft Windows</page> <page href="platform/netware.html">Usar
 Apache con Novell NetWare</page> <page
 href="platform/perf-hp.html">Servidor Web de alto rendimiento con
-HPUX</page> <page href="platform/ebcdic.html">La versi&#243;n EBCDIC de
-Apache</page>
+HPUX</page> 
 </category>
 
 <category id="programs">

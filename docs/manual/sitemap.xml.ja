@@ -111,7 +111,6 @@
 のコンパイル</page>
 <page href="platform/netware.html">Novell NetWare で Apache を使う</page>
 <page href="platform/perf-hp.html">HPUX で高性能ウェブサーバを実行する</page>
-<page href="platform/ebcdic.html">EBCDIC 版 Apache</page>
 </category>
 
 <category id="programs">
