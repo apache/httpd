@@ -72,21 +72,6 @@
       </dd>
     </dl>
 
-    <dl>
-      <dt>EBCDIC</dt>
-      <dd>
-        <p>아파치 웹서버는 1.3 버전때 처음으로 EBCDIC 문자집합을
-        기본 문자집합으로 사용하는 (비-ASCII) 메인플레임 컴퓨터로
-        포팅되었다.</p>
-
-        <div class="warning"><strong>경고:</strong> 이 문서는
-        아파치 웹서버 2.0 버전에서 변경된 내용을 담고있지 않다.
-        아직도 유효한 정보가 있지만, 주의해서 사용하길 바란다.</div>
-
-        <p>문서: <a href="ebcdic.html">아파치 EBCDIC 포팅</a></p>
-      </dd>
-    </dl>
-
   </div></div>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="../en/platform/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
