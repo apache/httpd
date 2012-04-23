@@ -81,7 +81,6 @@ ejecuci&#243;n</page>
 <category id="platform"><title>Notas espec&#237;ficas sobre plataformas</title>
     <page href="platform/windows.html">Microsoft Windows</page>
     <page href="platform/netware.html">Novell NetWare</page>
-    <page href="platform/ebcdic.html">EBCDIC Port</page>
 </category>
 
 <category id="other"><title>Documentaci&#243;n adicional</title>

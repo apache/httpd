@@ -81,7 +81,6 @@ Belgeleri</title>
     <page href="platform/windows.html">Microsoft Windows</page>
     <page href="platform/rpm.html">RPM tabanlı Sistemler (Redhat / CentOS / Fedora)</page>
     <page href="platform/netware.html">Novell NetWare</page>
-    <page href="platform/ebcdic.html">EBCDIC Port</page>
 </category>
 
 <category id="other"><title>Diğer Konular</title>

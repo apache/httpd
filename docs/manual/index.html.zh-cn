@@ -82,7 +82,6 @@
 </div><div class="category"><h2><a name="platform" id="platform">平台相关说明</a></h2>
 <ul><li><a href="platform/windows.html">Microsoft Windows</a></li>
 <li><a href="platform/netware.html">Novell NetWare</a></li>
-<li><a href="platform/ebcdic.html">EBCDIC 系统</a></li>
 </ul>
 </div><div class="category"><h2><a name="other" id="other">其它主题</a></h2>
 <ul><li><a href="http://wiki.apache.org/httpd/FAQ">常见问题</a></li>

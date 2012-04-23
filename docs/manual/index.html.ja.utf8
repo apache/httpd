@@ -88,7 +88,6 @@
 </div><div class="category"><h2><a name="platform" id="platform">プラットフォーム固有の情報</a></h2>
 <ul><li><a href="platform/windows.html">Microsoft Windows</a></li>
 <li><a href="platform/netware.html">Novell NetWare</a></li>
-<li><a href="platform/ebcdic.html">EBCDIC 版</a></li>
 </ul>
 </div><div class="category"><h2><a name="other" id="other">その他</a></h2>
 <ul><li><a href="faq/">よくある質問 (FAQ)</a></li>

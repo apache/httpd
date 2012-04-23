@@ -82,7 +82,6 @@
 <category id="platform"><title>Plattform-spezifische Anmerkungen</title>
     <page href="platform/windows.html">Microsoft Windows</page>
     <page href="platform/netware.html">Novell NetWare</page>
-    <page href="platform/ebcdic.html">EBCDIC-Portierung</page>
 </category>
 
 <category id="other"><title>Weitere Themen</title>

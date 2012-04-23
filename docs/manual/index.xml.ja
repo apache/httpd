@@ -80,7 +80,6 @@
 <category id="platform"><title>プラットフォーム固有の情報</title>
     <page href="platform/windows.html">Microsoft Windows</page>
     <page href="platform/netware.html">Novell NetWare</page>
-    <page href="platform/ebcdic.html">EBCDIC 版</page>
 </category>
 
 <category id="other"><title>その他</title>

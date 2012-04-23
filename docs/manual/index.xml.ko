@@ -76,7 +76,6 @@
 <category id="platform"><title>플래폼별 설명</title>
     <page href="platform/windows.html">Microsoft Windows</page>
     <page href="platform/netware.html">Novell NetWare</page>
-    <page href="platform/ebcdic.html">EBCDIC 포팅</page>
 </category>
 
 <category id="other"><title>다른 주제</title>

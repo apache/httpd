@@ -82,23 +82,6 @@
       </dd>
     </dl>
 
-    <dl>
-      <dt>EBCDIC</dt>
-      <dd>
-        <p>Version 1.3 of the Apache HTTP Server is the first version which
-        includes a port to a (non-ASCII) mainframe machine which uses the
-        EBCDIC character set as its native codeset.</p>
-
-        <note type="warning"><strong>Warning:</strong> This document
-        has not been updated to take into account changes made in
-        the 2.4 version of the Apache HTTP Server. Some of the
-        information may still be relevant, but please use it
-        with care.</note>
-
-        <p>See: <a href="ebcdic.html">The Apache EBCDIC Port</a></p>
-      </dd>
-    </dl>
-
   </section>
 
 </manualpage>
