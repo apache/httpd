@@ -5,7 +5,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Authentification, autorisation et contrôle d'accès - Serveur Apache HTTP</title>
+<title>Authentification et autorisation - Serveur Apache HTTP</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
@@ -16,7 +16,7 @@
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Recettes / Tutoriels</a></div><div id="page-content"><div id="preamble"><h1>Authentification, autorisation et contrôle d'accès</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Recettes / Tutoriels</a></div><div id="page-content"><div id="preamble"><h1>Authentification et autorisation</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/howto/auth.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/howto/auth.html" title="Français">&nbsp;fr&nbsp;</a> |
@@ -24,8 +24,6 @@
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>L'authentification est un processus qui vous permet de vérifier
     qu'une personne est bien celle qu'elle prétend être. L'autorisation

@@ -26,8 +26,6 @@
 <a href="./tr/handler.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/handler.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Ce document décrit l'utilisation des gestionnaires d'Apache (handlers).</p>
   </div>
@@ -121,7 +119,7 @@
 
       <div class="example"><p><code>
         &lt;Directory /web/htdocs/asis&gt;<br />
-        SetHandler send-as-is<br />
+        <span class="indent">SetHandler send-as-is<br /></span>
         &lt;/Directory&gt;
       </code></p></div>
 
