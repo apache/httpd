@@ -375,14 +375,15 @@ by many requests.
     </code></p></div>
 
     <div class="example"><h3>dash2under.pl</h3><p><code>
-    #!/usr/bin/perl<br />
-    $| = 1; # Turn off I/O buffering<br />
-    while (&lt;STDIN&gt;) {<br />
-        <span class="indent">
-        s/-/_/g; # Replace dashes with underscores<br />
-        print $_;<br />
-        </span>
-    }<br />
+    <pre class="prettyprint lang-perl">
+    #!/usr/bin/perl
+    $| = 1; # Turn off I/O buffering
+    while (&lt;STDIN&gt;) {
+        s/-/_/g; # Replace dashes with underscores
+        print $_;
+    }
+    </pre>
+
     </code></p></div>
 
 <div class="note"><h3>Caution!</h3>
