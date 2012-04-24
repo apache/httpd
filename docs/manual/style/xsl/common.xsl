@@ -161,13 +161,15 @@
         <link title="No Sidebar - Default font size" type="text/css" media="all"
                rel="alternate stylesheet"
                href="{$path}/style/css/manual-loose-100pc.css"/>
+        
     </xsl:otherwise>
     </xsl:choose>&lf;
 
     <link type="text/css" media="print"
            rel="stylesheet"
            href="{$path}/style/css/manual-print.css"/>
-
+    <link href="{$path}/style/css/prettify.css" type="text/css" rel="stylesheet" />&lf;
+    <script type="text/javascript" src="{$path}/style/scripts/prettify.js">&lf; </script> &lf;
     <!-- chm files do not need a favicon -->
     <xsl:if test="not($is-chm or $is-zip)">&lf;
         <link rel="shortcut icon" href="{$path}/images/favicon.ico" />
@@ -307,10 +309,14 @@
 
         <xsl:text>.</xsl:text>
     </p>&lf;
-
     <xsl:call-template name="super-menu"/>
 
 </div> <!-- /footer -->
+<script type="text/javascript">
+    if (prettyPrint) {
+        prettyPrint();
+    }
+</script>
 </xsl:template>
 <!-- /bottom -->
 
@@ -467,6 +473,17 @@
 </xsl:template>
 <!-- /section/section/section/section -->
 
+
+<!-- ==================================================================== -->
+<!-- Process source code highlighting                                     -->
+<!-- ==================================================================== -->
+<xsl:template match="highlight">
+<pre class="prettyprint lang-{@language}">
+    <!-- highlight body -->
+    <xsl:apply-templates />
+</pre>&lf; <!-- /.highlight -->
+</xsl:template>
+<!-- /higlight -->
 
 <!-- ==================================================================== -->
 <!-- (sub)section titles                                                  -->
