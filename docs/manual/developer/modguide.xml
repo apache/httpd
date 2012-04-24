@@ -1077,7 +1077,7 @@ different meanings to the user of the server, and thus different contexts
 within which modules must operate. For example, let's assume you have this 
 configuration set up for mod_rewrite:
 </p>
-<example><pre>
+<highlight language="config">
 &lt;Directory &quot;/var/www&quot;&gt;
     RewriteCond %{HTTP_HOST} ^example.com$
     RewriteRule (.*) http://www.example.com/$1
@@ -1085,7 +1085,7 @@ configuration set up for mod_rewrite:
 &lt;Directory &quot;/var/www/sub&quot;&gt;
     RewriteRule ^foobar$ index.php?foobar=true
 &lt;/Directory&gt;
-</pre></example>
+</highlight>
 <p>
 In this example, you will have set up two different contexts for 
 mod_rewrite:</p>
@@ -1622,7 +1622,12 @@ static int example_handler(request_req *r)
         ap_rprintf(r, &quot;&lt;b&gt;%s&lt;/b&gt;: %s&lt;br/&gt;&quot;, e[i].key, e[i].val);
     }
     return OK;
+<<<<<<< .mine
+}
+</highlight>
+=======
 }</highlight>
+>>>>>>> .r1329854
 <!-- END EXAMPLE CODE -->
 
 
@@ -1680,7 +1685,11 @@ static int example_handler(request_req* r)
     }
     return OK;
 }
+<<<<<<< .mine
+</highlight>
+=======
     </highlight>
+>>>>>>> .r1329854
 <!-- END EXAMPLE CODE -->
 
 
