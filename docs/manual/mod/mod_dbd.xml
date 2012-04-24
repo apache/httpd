@@ -59,8 +59,8 @@
     <p><module>mod_dbd</module> exports five functions for other modules
     to use. The API is as follows:</p>
 
-    <example>
-<pre><code>typedef struct {
+<highlight language="c">
+typedef struct {
     apr_dbd_t *handle;
     apr_dbd_driver_t *driver;
     apr_hash_t *prepared;
@@ -96,8 +96,7 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_close, (server_rec*, ap_dbd_t*));
 APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_acquire, (request_rec*));
 APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_cacquire, (conn_rec*));
 APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const char*));
-</code></pre>
-    </example>
+</highlight>
 </section>
 
 <section id="prepared"><title>SQL Prepared Statements</title>
