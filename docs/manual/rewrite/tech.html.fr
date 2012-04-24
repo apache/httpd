@@ -21,8 +21,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/tech.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/tech.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Ce document passe en revue certains détails techniques à propos du
 module mod_rewrite et de la mise en correspondance des URLs</p>
@@ -160,7 +158,7 @@ correspondance</a></li><li><a href="access.html">Contrôle d'accès</a></li><li><a
       contrôle est un peu compliqué. Voir la figure 1 pour plus de
       détails.</p>
 <p class="figure">
-      <img src="../images/rewrite_rule_flow.png" alt="Flux des comparaisons des directives RewriteRule et RewriteCond" /><br />
+      <img src="../images/rewrite_process_uri.png" alt="Flux des comparaisons des directives RewriteRule et RewriteCond" /><br />
       <dfn>Figure 1:</dfn>Déroulement du contrôle à travers le jeu de
       règles de réécriture
 </p>
