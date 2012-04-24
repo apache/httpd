@@ -44,8 +44,8 @@
 <!ENTITY % inlinetags "em | strong | code | a | br | directive | module |
 program | img | cite | q | dfn | var | transnote | glossary | phonetic">
 
-<!ENTITY % blocktags "p | example | note | table | ul | ol | dl | pre
-| blockquote">
+<!ENTITY % blocktags "p | example | note | table | ul | ol | dl | pre | 
+highlight | blockquote">
 
 <!ENTITY % Block "(%blocktags;)*">
 <!ENTITY % Inline "(#PCDATA | %inlinetags;)*">
@@ -164,6 +164,10 @@ program | img | cite | q | dfn | var | transnote | glossary | phonetic">
 <!ELEMENT dd %BlockOrInline;>
 
 <!ELEMENT pre %Inline;>
+<!ATTLIST pre class CDATA #IMPLIED>
+
+<!ELEMENT highlight %Inline;>
+<!ATTLIST highlight language CDATA #IMPLIED>
 
 <!ELEMENT img EMPTY>
 <!ATTLIST img
