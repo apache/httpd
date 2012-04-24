@@ -96,10 +96,6 @@
        &lt;/Location&gt;<br />
     </example>
 
-   <p><module>mod_dav</module>는 Greg Stein이 만든 <a
-   href="http://www.webdav.org/mod_dav/">Apache 1.3용 mod_dav</a>를
-   기반으로 만들었다. 모듈에 대한 더 자세한 정보는 그 사이트를
-   참고하라.</p>
 </section>
 
 <section id="security"><title>보안 문제</title>
