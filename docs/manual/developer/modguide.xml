@@ -1,6 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+
 <!-- $LastChangedRevision$ -->
 
 <!--
@@ -92,18 +93,18 @@ that defines a module as <em>a separate entity within Apache</em>:</p>
 
 
 <!-- BEGIN EXAMPLE CODE -->
-<p class="source">
-module AP_MODULE_DECLARE_DATA   example_module <code class="sh_misc">=</code>
-<code class="sh_misc">{</code>
-    STANDARD20_MODULE_STUFF<code class="sh_misc">,</code>
-    create_dir_conf<code class="sh_misc">,</code> <code class="sh_comment">/* Per-directory configuration handler */</code>
-    merge_dir_conf<code class="sh_misc">,</code>  <code class="sh_comment">/* Merge handler for per-directory configurations */</code>
-    create_svr_conf<code class="sh_misc">,</code> <code class="sh_comment">/* Per-server configuration handler */</code>
-    merge_svr_conf<code class="sh_misc">,</code>  <code class="sh_comment">/* Merge handler for per-server configurations */</code>
-    directives<code class="sh_misc">,</code>      <code class="sh_comment">/* Any directives we may have for httpd */</code>
-    register_hooks   <code class="sh_comment">/* Our hook registering function */</code>
-<code class="sh_misc">}</code><code class="sh_misc">;</code>
-</p>
+<pre class="sh_c">
+module AP_MODULE_DECLARE_DATA   example_module =
+{ 
+    STANDARD20_MODULE_STUFF,
+    create_dir_conf, /* Per-directory configuration handler */
+    merge_dir_conf,  /* Merge handler for per-directory configurations */
+    create_svr_conf, /* Per-server configuration handler */
+    merge_svr_conf,  /* Merge handler for per-server configurations */
+    directives,      /* Any directives we may have for httpd */
+    register_hooks   /* Our hook registering function */
+};
+</pre>
 <!-- END EXAMPLE CODE -->
 
 <p>
@@ -184,18 +185,18 @@ definition will look like this:</p>
 
 
 <!-- BEGIN EXAMPLE CODE -->
-<p class="source">
+<pre class="sh_c">
 module AP_MODULE_DECLARE_DATA   example_module =
 {
     STANDARD20_MODULE_STUFF,
-    <code class="sh_constant">NULL</code>,
-    <code class="sh_constant">NULL</code>,
-    <code class="sh_constant">NULL</code>,
-    <code class="sh_constant">NULL</code>,
-    <code class="sh_constant">NULL</code>,
-    <code class="sh_function">register_hooks</code>   <code class="sh_comment"><code class="sh_comment">/* Our hook registering function */</code></code>
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    register_hooks   /* Our hook registering function */
 };
-</p>
+</pre>
 <!-- END EXAMPLE CODE -->
 
 
@@ -211,13 +212,13 @@ to hook into its process as one of the last modules:
 </p>
 
 <!-- BEGIN EXAMPLE CODE -->
-<p class="source">
-<code class="sh_declare">static</code> <code class="sh_declare">void</code> register_hooks<code class="sh_misc">(</code>apr_pool_t <code class="sh_misc">*</code>pool<code class="sh_misc">)</code>
-<code class="sh_misc">{</code>
-    <code class="sh_comment">/* Create a hook in the request handler, so we get called when a request arrives */</code>
-    <code class="sh_function">ap_hook_handler</code><code class="sh_misc">(</code>example_handler<code class="sh_misc">,</code> <code class="sh_constant">NULL</code><code class="sh_misc">,</code> <code class="sh_constant">NULL</code><code class="sh_misc">,</code> APR_HOOK_LAST<code class="sh_misc">)</code><code class="sh_misc">;</code>
-<code class="sh_misc">}</code>
-</p>
+<pre class="sh_c">
+static void register_hooks(apr_pool_t *pool)
+{
+    /* Create a hook in the request handler, so we get called when a request arrives */
+    ap_hook_handler(example_handler, NULL, NULL, APR_HOOK_LAST);
+}
+</pre>
 <!-- END EXAMPLE CODE -->
 
 <p>
@@ -264,27 +265,27 @@ In C code, our example handler will now look like this:
 </p>
 
 <!-- BEGIN EXAMPLE CODE -->
-<p class="source">
-<code class="sh_declare">static</code> <code class="sh_declare">int</code> example_handler<code class="sh_misc">(</code>request_rec <code class="sh_misc">*</code>r<code class="sh_misc">)</code>
-<code class="sh_misc">{</code>
-    <code class="sh_comment">/* First off, we need to check if this is a call for the "example-handler" handler.</code>
-<code class="sh_comment">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;* If it is, we accept it and do our things, if not, we simply return DECLINED,</code>
-<code class="sh_comment">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;* and the server will try somewhere else.</code>
-<code class="sh_comment">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;*/</code>
-    <code class="sh_declare">if</code> <code class="sh_misc">(</code><code class="sh_misc">!</code>r<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">handler</code> <code class="sh_misc">|</code><code class="sh_misc">|</code> <code class="sh_function">strcmp</code><code class="sh_misc">(</code>r<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">handler</code><code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">example-handler</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">)</code> <code class="sh_declare">return</code> <code class="sh_misc">(</code>DECLINED<code class="sh_misc">)</code><code class="sh_misc">;</code>
+<pre class="sh_c">
+static int example_handler(request_rec *r)
+{
+    /* First off, we need to check if this is a call for the "example-handler" handler.
+     * If it is, we accept it and do our things, if not, we simply return DECLINED,
+     * and the server will try somewhere else.
+     */
+    if (!r->handler || strcmp(r->handler, "example-handler")) return (DECLINED);
     
-    <code class="sh_comment">/* Now that we are handling this request, we'll write out "Hello, world!" to the client.</code>
-<code class="sh_comment">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;* To do so, we must first set the appropriate content type, followed by our output.</code>
-<code class="sh_comment">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;*/</code>
-    <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__PROTO.html#gaa2f8412c400197338ec509f4a45e4579">ap_set_content_type</a><code class="sh_misc">(</code>r<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">text/html</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
-    <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__PROTO.html#ga5e91eb6ca777c9a427b2e82bf1eeb81d">ap_rprintf</a><code class="sh_misc">(</code>r<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">Hello, world!</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
+    /* Now that we are handling this request, we'll write out "Hello, world!" to the client.
+     * To do so, we must first set the appropriate content type, followed by our output.
+     */
+    ap_set_content_type(r, "text/html");
+    ap_rprintf(r, "Hello, world!");
     
-    <code class="sh_comment">/* Lastly, we must tell the server that we took care of this request and everything went fine.</code>
-<code class="sh_comment">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;* We do so by simply returning the value OK to the server.</code>
-<code class="sh_comment">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;*/</code>
-    <code class="sh_declare">return</code> OK<code class="sh_misc">;</code>
-<code class="sh_misc">}</code>
-</p>
+    /* Lastly, we must tell the server that we took care of this request and everything went fine.
+     * We do so by simply returning the value OK to the server.
+     */
+    return OK;
+}
+</pre>
 <!-- END EXAMPLE CODE -->
 
 <p>
@@ -305,14 +306,14 @@ HTTP request and respond accordingly.</p> <p>Some key elements of the <code>
 request_req </code> structure are:
 </p>
 <ul>
-<li><code><code class="sh_subobject">r-&gt;handler</code> (char*)</code>: Contains the name of the handler the server is currently asking to do the handling of this request</li>
-<li><code><code class="sh_subobject">r-&gt;method</code> (char*)</code>: Contains the HTTP method being used, f.x. GET or POST</li>
-<li><code><code class="sh_subobject">r-&gt;filename</code> (char*)</code>: Contains the translated filename the client is requesting</li>
-<li><code><code class="sh_subobject">r-&gt;args</code> (char*)</code>: Contains the query string of the request, if any</li>
-<li><code><code class="sh_subobject">r-&gt;headers_in</code> (apr_table_t*)</code>: Contains all the headers sent by the client</li>
-<li><code><code class="sh_subobject">r-&gt;connection</code> (conn_rec*)</code>: A record containing information about the current connection</li>
-<li><code><code class="sh_subobject">r-&gt;useragent_ip</code> (char*)</code>: The IP address of the client connecting to us</li>
-<li><code><code class="sh_subobject">r-&gt;pool</code> (apr_pool_t*)</code>: The memory pool of this request. We'll discuss this in the &quot;
+<li><code>r-&gt;handler (char*):</code> Contains the name of the handler the server is currently asking to do the handling of this request</li>
+<li><code>r-&gt;method (char*):</code> Contains the HTTP method being used, f.x. GET or POST</li>
+<li><code>r-&gt;filename (char*):</code> Contains the translated filename the client is requesting</li>
+<li><code>r-&gt;args (char*):</code> Contains the query string of the request, if any</li>
+<li><code>r-&gt;headers_in (apr_table_t*):</code> Contains all the headers sent by the client</li>
+<li><code>r-&gt;connection (conn_rec*):</code> A record containing information about the current connection</li>
+<li><code>r-&gt;useragent_ip (char*):</code> The IP address of the client connecting to us</li>
+<li><code>r-&gt;pool (apr_pool_t*)</code>: The memory pool of this request. We'll discuss this in the &quot;
 <a href="#memory">Memory management</a>&quot; chapter.</li>
 </ul>
 <p>
@@ -327,30 +328,30 @@ Let's try out some of these variables in another example handler:<br/>
 </p>
 
 <!-- BEGIN EXAMPLE CODE -->
-<p class="source">
-<code class="sh_declare">static</code> <code class="sh_declare">int</code> example_handler<code class="sh_misc">(</code>request_rec <code class="sh_misc">*</code>r<code class="sh_misc">)</code>
-<code class="sh_misc">{</code>
-    <code class="sh_comment">/* Set the appropriate content type */</code>
-    <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__PROTO.html#gaa2f8412c400197338ec509f4a45e4579">ap_set_content_type</a><code class="sh_misc">(</code>r<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">text/html</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
+<pre class="sh_c">
+static int example_handler(request_rec *r)
+{
+    /* Set the appropriate content type */
+    ap_set_content_type(r, &quot;text/html&quot;);
 
-    <code class="sh_comment">/* Print out the IP address of the client connecting to us: */</code>
-    <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__PROTO.html#ga5e91eb6ca777c9a427b2e82bf1eeb81d">ap_rprintf</a><code class="sh_misc">(</code>r<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">&lt;h2>Hello, </code><code class="sh_reference">%s</code><code class="sh_value">!&lt;/h2></code><code class="sh_character">"</code><code class="sh_misc">,</code> r<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">useragent_ip</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
+    /* Print out the IP address of the client connecting to us: */
+    ap_rprintf(r, &quot;&lt;h2&gt;Hello, %s!&lt;/h2&gt;&quot;, r-&gt;useragent_ip);
     
-    <code class="sh_comment">/* If we were reached through a GET or a POST request, be happy, else sad. */</code>
-    <code class="sh_declare">if</code> <code class="sh_misc">(</code> <code class="sh_misc">!</code><code class="sh_function">strcmp</code><code class="sh_misc">(</code>r<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">method</code><code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">POST</code><code class="sh_character">"</code><code class="sh_misc">)</code> <code class="sh_misc">|</code><code class="sh_misc">|</code> <code class="sh_misc">!</code><code class="sh_function">strcmp</code><code class="sh_misc">(</code>r<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">method</code><code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">GET</code><code class="sh_character">"</code><code class="sh_misc">)</code> <code class="sh_misc">)</code> <code class="sh_misc">{</code>
-        ap_rputs<code class="sh_misc">(</code><code class="sh_character">"</code><code class="sh_value">You used a GET or a POST method, that makes us happy!&lt;br></code><code class="sh_character">"</code><code class="sh_misc">,</code> r<code class="sh_misc">)</code><code class="sh_misc">;</code>
-    <code class="sh_misc">}</code>
-    <code class="sh_declare">else</code> <code class="sh_misc">{</code>
-        ap_rputs<code class="sh_misc">(</code><code class="sh_character">"</code><code class="sh_value">You did not use POST or GET, that makes us sad :(&lt;br></code><code class="sh_character">"</code><code class="sh_misc">,</code> r<code class="sh_misc">)</code><code class="sh_misc">;</code>
-    <code class="sh_misc">}</code>
+    /* If we were reached through a GET or a POST request, be happy, else sad. */
+    if ( !strcmp(r-&gt;method, &quot;POST&quot;) || !strcmp(r-&gt;method, &quot;GET&quot;) ) {
+        ap_rputs(&quot;You used a GET or a POST method, that makes us happy!&lt;br/&gt;&quot;, r);
+    }
+    else {
+        ap_rputs(&quot;You did not use POST or GET, that makes us sad :(&lt;br/&gt;&quot;, r);
+    }
 
-    <code class="sh_comment">/* Lastly, if there was a query string, let's print that too! */</code>
-    <code class="sh_declare">if</code> <code class="sh_misc">(</code>r<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">args</code><code class="sh_misc">)</code> <code class="sh_misc">{</code>
-        <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__PROTO.html#ga5e91eb6ca777c9a427b2e82bf1eeb81d">ap_rprintf</a><code class="sh_misc">(</code>r<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">Your query string was: </code><code class="sh_reference">%s</code><code class="sh_character">"</code><code class="sh_misc">,</code> r<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">args</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
-    <code class="sh_misc">}</code>
-    <code class="sh_declare">return</code> OK<code class="sh_misc">;</code>
-<code class="sh_misc">}</code>
-</p>
+    /* Lastly, if there was a query string, let's print that too! */
+    if (r-&gt;args) {
+        ap_rprintf(r, &quot;Your query string was: %s&quot;, r-&gt;args);
+    }
+    return OK;
+}
+</pre>
 <!-- END EXAMPLE CODE -->
 
 </section>
@@ -366,13 +367,13 @@ status code, for example:
 </p>
 
 <!-- BEGIN EXAMPLE CODE -->
-<p class="source">
-<code class="sh_declare">static</code> <code class="sh_declare">int</code> example_handler<code class="sh_misc">(</code>request_rec <code class="sh_misc">*</code>r<code class="sh_misc">)</code>
-<code class="sh_misc">{</code>
-    <code class="sh_comment">/* Return 404: Not found */</code>
-    <code class="sh_declare">return</code> HTTP_NOT_FOUND<code class="sh_misc">;</code>
-<code class="sh_misc">}</code>
-</p>
+<pre class="sh_c">
+static int example_handler(request_rec *r)
+{
+    /* Return 404: Not found */
+    return HTTP_NOT_FOUND;
+}
+</pre>
 <!-- END EXAMPLE CODE -->
 
 <p>
@@ -416,7 +417,7 @@ the next, without informing other handlers.
     
 
 <!-- BEGIN EXAMPLE CODE -->
-<p class="source">ap_rputs<code class="sh_misc">(</code><code class="sh_character">"</code><code class="sh_value">Hello, world!</code><code class="sh_character">"</code><code class="sh_misc">,</code> r<code class="sh_misc">)</code><code class="sh_misc">;</code></p>
+<pre class="sh_c">ap_rputs("Hello, world!", r);</pre>
 <!-- END EXAMPLE CODE -->
 
 
@@ -428,7 +429,7 @@ the next, without informing other handlers.
     
 
 <!-- BEGIN EXAMPLE CODE -->
-<p class="source"><code class="sh_declare"><a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__PROTO.html#ga5e91eb6ca777c9a427b2e82bf1eeb81d">ap_rprintf</a></code><code class="sh_misc">(</code>r<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">Hello, </code><code class="sh_reference">%s</code><code class="sh_value">!</code><code class="sh_character">"</code><code class="sh_misc">,</code> r<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">useragent_ip</code><code class="sh_misc">)</code><code class="sh_misc">;</code></p>
+<pre class="sh_c">ap_rprintf(r, "Hello, %s!", r->useragent_ip);</pre>
 <!-- END EXAMPLE CODE -->
 
 </li>
@@ -439,7 +440,7 @@ the next, without informing other handlers.
     
 
 <!-- BEGIN EXAMPLE CODE -->
-<p class="source"><code class="sh_declare"><a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__PROTO.html#gaa2f8412c400197338ec509f4a45e4579">ap_set_content_type</a></code><code class="sh_misc">(</code>r<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">text/plain</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">;</code> <code class="sh_comment">/* force a raw text output */</code></p>
+<pre class="sh_c">ap_set_content_type(r, "text/plain"); /* force a raw text output */</pre>
 <!-- END EXAMPLE CODE -->
 
 </li>
@@ -460,7 +461,7 @@ clean up after yourself - pretty neat, huh?
 
 <p>
 In our module, we will primarily be allocating memory for each request, so 
-it's appropriate to use the <code class="sh_subobject">r-&gt;pool</code> 
+it's appropriate to use the <code>r-&gt;pool</code> 
 reference when creating new objects. A few of the functions for allocating 
 memory within a pool are:
 </p>
@@ -479,21 +480,21 @@ apr_pool_t *p, const char *fmt, ...)</code>: Similar to <code>sprintf</code>, ex
 
 
 <!-- BEGIN EXAMPLE CODE -->
-<p class="source">
-<code class="sh_declare">static</code> <code class="sh_declare">int</code> example_handler<code class="sh_misc">(</code>request_rec <code class="sh_misc">*</code>r<code class="sh_misc">)</code>
-<code class="sh_misc">{</code>
-    <code class="sh_declare">const</code> <code class="sh_declare">char</code><code class="sh_misc">*</code> original <code class="sh_misc">=</code> <code class="sh_character">"</code><code class="sh_value">You can't edit this!</code><code class="sh_character">"</code><code class="sh_misc">;</code>
-    <code class="sh_declare">char</code><code class="sh_misc">*</code> copy<code class="sh_misc">;</code>
-    <code class="sh_declare">int</code><code class="sh_misc">*</code> integers<code class="sh_misc">;</code>
+<pre class="sh_c">
+static int example_handler(request_rec *r)
+{
+    const char* original = "You can't edit this!";
+    char* copy;
+    int* integers;
     
-    <code class="sh_comment">/* Allocate space for 10 integer values and set them all to zero. */</code>
-    integers <code class="sh_misc">=</code> apr_pcalloc<code class="sh_misc">(</code>r<code class="sh_misc">-</code><code class="sh_misc">></code>pool<code class="sh_misc">,</code> <code class="sh_declare">sizeof</code><code class="sh_misc">(</code><code class="sh_declare">int</code><code class="sh_misc">)</code><code class="sh_misc">*</code><code class="sh_reference">10</code><code class="sh_misc">)</code><code class="sh_misc">;</code> 
+    /* Allocate space for 10 integer values and set them all to zero. */
+    integers = apr_pcalloc(r->pool, sizeof(int)*10); 
     
-    <code class="sh_comment">/* Create a copy of the 'original' variable that we can edit. */</code>
-    copy <code class="sh_misc">=</code> apr_pstrdup<code class="sh_misc">(</code>r<code class="sh_misc">-</code><code class="sh_misc">></code>pool<code class="sh_misc">,</code> original<code class="sh_misc">)</code><code class="sh_misc">;</code>
-    <code class="sh_declare">return</code> OK<code class="sh_misc">;</code>
-<code class="sh_misc">}</code>
-</p>
+    /* Create a copy of the 'original' variable that we can edit. */
+    copy = apr_pstrdup(r->pool, original);
+    return OK;
+}
+</pre>
 <!-- END EXAMPLE CODE -->
 
 <p>
@@ -505,15 +506,15 @@ function to sort it out:
 </p>
 
 <!-- BEGIN EXAMPLE CODE -->
-<p class="source">
-<code class="sh_declare">static</code> <code class="sh_declare">void</code> register_hooks<code class="sh_misc">(</code>apr_pool_t <code class="sh_misc">*</code>pool<code class="sh_misc">)</code>
-<code class="sh_misc">{</code>
-    <code class="sh_comment">/* Call a function that initializes some stuff */</code>
-    <code class="sh_function">example_init_function</code><code class="sh_misc">(</code>pool<code class="sh_misc">)</code><code class="sh_misc">;</code>
-    <code class="sh_comment">/* Create a hook in the request handler, so we get called when a request arrives */</code>
-    <code class="sh_function">ap_hook_handler</code><code class="sh_misc">(</code>example_handler<code class="sh_misc">,</code> <code class="sh_constant">NULL</code><code class="sh_misc">,</code> <code class="sh_constant">NULL</code><code class="sh_misc">,</code> APR_HOOK_LAST<code class="sh_misc">)</code><code class="sh_misc">;</code>
-<code class="sh_misc">}</code>
-</p>
+<pre class="sh_c">
+static void register_hooks(apr_pool_t *pool)
+{
+    /* Call a function that initializes some stuff */
+    example_init_function(pool);
+    /* Create a hook in the request handler, so we get called when a request arrives */
+    ap_hook_handler(example_handler, NULL, NULL, APR_HOOK_LAST);
+}
+</pre>
 <!-- END EXAMPLE CODE -->
 
 <p>
@@ -544,13 +545,13 @@ POST data is four simple lines:
 
 
 <!-- BEGIN EXAMPLE CODE -->
-<p class="source">
+<pre class="sh_c">
 <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__apr__tables.html#gad7ea82d6608a4a633fc3775694ab71e4">apr_table_t</a> *GET;
 <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/structapr__array__header__t.html">apr_array_header_t</a> *POST;
 
 <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__SCRIPT.html#gaed25877b529623a4d8f99f819ba1b7bd">ap_args_to_table</a>(r, &amp;GET);
-<a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__DAEMON.html#ga9d426b6382b49754d4f87c55f65af202">ap_parse_form_data</a>(r, <code class="sh_constant">NULL</code>, &amp;POST, -1, 8192);
-</p>
+<a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__DAEMON.html#ga9d426b6382b49754d4f87c55f65af202">ap_parse_form_data</a>(r, NULL, &amp;POST, -1, 8192);
+</pre>
 <!-- END EXAMPLE CODE -->
 
 <p>
@@ -561,14 +562,13 @@ GET</code>. To extract this value, we need only perform a simple operation:
 
 
 <!-- BEGIN EXAMPLE CODE -->
-<p class="source">
-<code class="sh_comment">/* Get the "digest" key from the query string, if any. */</code>
-<code class="sh_declare">const</code> <code class="sh_declare">char</code><code class="sh_misc"> *</code>digestType <code class="sh_misc">=</code> <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__apr__tables.html#ga4db13e3915c6b9a3142b175d4c15d915">apr_table_get</a><code class="sh_misc">(</code>GET<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">digest</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
+<pre class="sh_c">
+/* Get the "digest" key from the query string, if any. */
+const char *digestType = apr_table_get(GET, "digest");
 
-<code class="sh_comment">/* If no key was returned, we will set a default value instead. */</code>
-<code class="sh_declare">if</code> <code class="sh_misc">(</code><code class="sh_misc">!</code>digestType<code class="sh_misc">)</code> digestType <code class="sh_misc">=</code> <code class="sh_character">"</code><code class="sh_value">sha1</code><code class="sh_character">"</code><code class="sh_misc">;</code>
-
-</p>
+/* If no key was returned, we will set a default value instead. */
+if (!digestType) digestType = "sha1";
+</pre>
 <!-- END EXAMPLE CODE -->
 
 <p>
@@ -588,119 +588,116 @@ out the MD5 or SHA1 digest of files:
 
 
 <!-- BEGIN EXAMPLE CODE -->
-<p class="source">
-<code class="sh_declare">static</code> <code class="sh_declare">int</code> example_handler<code class="sh_misc">(</code>request_rec <code class="sh_misc">*</code>r<code class="sh_misc">)</code>
-<code class="sh_misc">{</code>
-    <code class="sh_declare">int</code> rc<code class="sh_misc">,</code> exists<code class="sh_misc">;</code>
-    apr_finfo_t finfo<code class="sh_misc">;</code>
-    apr_file_t<code class="sh_misc"> *</code>file<code class="sh_misc">;</code>
-    <code class="sh_declare">char</code> <code class="sh_misc">*</code>filename<code class="sh_misc">;</code>
-    <code class="sh_declare">char</code> buffer<code class="sh_misc">[</code><code class="sh_reference">256</code><code class="sh_misc">]</code><code class="sh_misc">;</code>
-    apr_size_t readBytes<code class="sh_misc">;</code>
-    <code class="sh_declare">int</code> n<code class="sh_misc">;</code>
-    apr_table_t<code class="sh_misc"> *</code>GET<code class="sh_misc">;</code>
-    apr_array_header_t<code class="sh_misc"> *</code>POST<code class="sh_misc">;</code>
-    <code class="sh_declare">const</code> <code class="sh_declare">char</code><code class="sh_misc"> *</code>digestType<code class="sh_misc">;</code>
+<pre class="sh_c">
+static int example_handler(request_rec *r)
+{
+    int rc, exists;
+    apr_finfo_t finfo;
+    apr_file_t *file;
+    char *filename;
+    char buffer[256];
+    apr_size_t readBytes;
+    int n;
+    apr_table_t *GET;
+    apr_array_header_t *POST;
+    const char *digestType;
     
     
-    <code class="sh_comment">/* Check that the "example-handler" handler is being called. */</code>
-    <code class="sh_declare">if</code> <code class="sh_misc">(</code><code class="sh_misc">!</code>r<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">handler</code> <code class="sh_misc">|</code><code class="sh_misc">|</code> <code class="sh_function">strcmp</code><code class="sh_misc">(</code>r<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">handler</code><code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">example-handler</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">)</code> <code class="sh_declare">return</code> <code class="sh_misc">(</code>DECLINED<code class="sh_misc">)</code><code class="sh_misc">;</code>
+    /* Check that the &quot;example-handler&quot; handler is being called. */
+    if (!r-&gt;handler || strcmp(r-&gt;handler, &quot;example-handler&quot;)) return (DECLINED);
     
-    <code class="sh_comment">/* Figure out which file is being requested by removing the .sum from it */</code>
-    filename <code class="sh_misc">=</code> apr_pstrdup<code class="sh_misc">(</code>r<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">pool</code><code class="sh_misc">,</code> r<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">filename</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
-    filename<code class="sh_misc">[</code><code class="sh_function">strlen</code><code class="sh_misc">(</code>filename<code class="sh_misc">)</code><code class="sh_misc">-</code><code class="sh_reference">4</code><code class="sh_misc">]</code> <code class="sh_misc">=</code> <code class="sh_reference">0</code><code class="sh_misc">;</code> <code class="sh_comment">/* Cut off the last 4 characters. */</code>
+    /* Figure out which file is being requested by removing the .sum from it */
+    filename = apr_pstrdup(r-&gt;pool, r-&gt;filename);
+    filename[strlen(filename)-4] = 0; /* Cut off the last 4 characters. */
     
-    <code class="sh_comment">/* Figure out if the file we request a sum on exists and isn't a directory */</code>
-    rc <code class="sh_misc">=</code> apr_stat<code class="sh_misc">(</code><code class="sh_misc">&amp;</code>finfo<code class="sh_misc">,</code> filename<code class="sh_misc">,</code> APR_FINFO_MIN<code class="sh_misc">,</code> r<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">pool</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
-    <code class="sh_declare">if</code> <code class="sh_misc">(</code>rc <code class="sh_misc">=</code><code class="sh_misc">=</code> APR_SUCCESS<code class="sh_misc">)</code> <code class="sh_misc">{</code>
-        exists <code class="sh_misc">=</code>
-        <code class="sh_misc">(</code>
-            <code class="sh_misc">(</code>finfo<code class="sh_misc">.</code>filetype <code class="sh_misc">!</code><code class="sh_misc">=</code> APR_NOFILE<code class="sh_misc">)</code>
-        <code class="sh_misc">&amp;</code><code class="sh_misc">&amp;</code>  <code class="sh_misc">!</code><code class="sh_misc">(</code>finfo<code class="sh_misc">.</code>filetype <code class="sh_misc">&amp;</code> APR_DIR<code class="sh_misc">)</code>
-        <code class="sh_misc">)</code><code class="sh_misc">;</code>
-        <code class="sh_declare">if</code> <code class="sh_misc">(</code><code class="sh_misc">!</code>exists<code class="sh_misc">)</code> <code class="sh_declare">return</code> HTTP_NOT_FOUND<code class="sh_misc">;</code> <code class="sh_comment">/* Return a 404 if not found. */</code>
-    <code class="sh_misc">}</code>
-    <code class="sh_comment">/* If apr_stat failed, we're probably not allowed to check this file. */</code>
-    <code class="sh_declare">else</code> <code class="sh_declare">return</code> HTTP_FORBIDDEN<code class="sh_misc">;</code>
+    /* Figure out if the file we request a sum on exists and isn't a directory */
+    rc = apr_stat(&amp;finfo, filename, APR_FINFO_MIN, r-&gt;pool);
+    if (rc == APR_SUCCESS) {
+        exists =
+        (
+            (finfo.filetype != APR_NOFILE)
+        &amp;&amp;  !(finfo.filetype &amp; APR_DIR)
+        );
+        if (!exists) return HTTP_NOT_FOUND; /* Return a 404 if not found. */
+    }
+    /* If apr_stat failed, we're probably not allowed to check this file. */
+    else return HTTP_FORBIDDEN;
     
-    <code class="sh_comment">/* Parse the GET and, optionally, the POST data sent to us */</code>
+    /* Parse the GET and, optionally, the POST data sent to us */
     
-    ap_args_to_table<code class="sh_misc">(</code>r<code class="sh_misc">,</code> <code class="sh_misc">&amp;</code>GET<code class="sh_misc">)</code><code class="sh_misc">;</code>
-    ap_parse_form_data<code class="sh_misc">(</code>r<code class="sh_misc">,</code> <code class="sh_constant">NULL</code><code class="sh_misc">,</code> <code class="sh_misc">&amp;</code>POST<code class="sh_misc">,</code> <code class="sh_misc">-</code><code class="sh_reference">1</code><code class="sh_misc">,</code> <code class="sh_reference">8192</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
+    ap_args_to_table(r, &amp;GET);
+    ap_parse_form_data(r, NULL, &amp;POST, -1, 8192);
     
-    <code class="sh_comment">/* Set the appropriate content type */</code>
-    ap_set_content_type<code class="sh_misc">(</code>r<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">text/html</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
+    /* Set the appropriate content type */
+    ap_set_content_type(r, &quot;text/html&quot;);
     
-    <code class="sh_comment">/* Print a title and some general information */</code>
-    ap_rprintf<code class="sh_misc">(</code>r<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">&lt;h2>Information on </code><code class="sh_reference">%s</code><code class="sh_value">:&lt;/h2></code><code class="sh_character">"</code><code class="sh_misc">,</code> filename<code class="sh_misc">)</code><code class="sh_misc">;</code>
-    ap_rprintf<code class="sh_misc">(</code>r<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">&lt;b>Size:&lt;/b> </code><code class="sh_reference">%u</code><code class="sh_value"> bytes&lt;br/></code><code class="sh_character">"</code><code class="sh_misc">,</code> finfo<code class="sh_misc">.</code>size<code class="sh_misc">)</code><code class="sh_misc">;</code>
+    /* Print a title and some general information */
+    ap_rprintf(r, &quot;&lt;h2&gt;Information on %s:&lt;/h2&gt;&quot;, filename);
+    ap_rprintf(r, &quot;&lt;b&gt;Size:&lt;/b&gt; %u bytes&lt;br/&gt;&quot;, finfo.size);
     
-    <code class="sh_comment">/* Get the digest type the client wants to see */</code>
-    digestType <code class="sh_misc">=</code> apr_table_get<code class="sh_misc">(</code>GET<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">digest</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
-    <code class="sh_declare">if</code> <code class="sh_misc">(</code><code class="sh_misc">!</code>digestType<code class="sh_misc">)</code> digestType <code class="sh_misc">=</code> <code class="sh_character">"</code><code class="sh_value">MD5</code><code class="sh_character">"</code><code class="sh_misc">;</code>
+    /* Get the digest type the client wants to see */
+    digestType = apr_table_get(GET, &quot;digest&quot;);
+    if (!digestType) digestType = &quot;MD5&quot;;
     
     
-    rc <code class="sh_misc">=</code> apr_file_open<code class="sh_misc">(</code><code class="sh_misc">&amp;</code>file<code class="sh_misc">,</code> filename<code class="sh_misc">,</code> APR_READ<code class="sh_misc">,</code> APR_OS_DEFAULT<code class="sh_misc">,</code> r<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">pool</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
-    <code class="sh_declare">if</code> <code class="sh_misc">(</code>rc <code class="sh_misc">=</code><code class="sh_misc">=</code> APR_SUCCESS<code class="sh_misc">)</code> <code class="sh_misc">{</code>
+    rc = apr_file_open(&amp;file, filename, APR_READ, APR_OS_DEFAULT, r-&gt;pool);
+    if (rc == APR_SUCCESS) {
         
-        <code class="sh_comment">/* Are we trying to calculate the MD5 or the SHA1 digest? */</code>
-        <code class="sh_declare">if</code> <code class="sh_misc">(</code><code class="sh_misc">!</code>strcasecmp<code class="sh_misc">(</code>digestType<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">md5</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">)</code> <code class="sh_misc">{</code>
-            <code class="sh_comment">/* Calculate the MD5 sum of the file */</code>
-            <code class="sh_declare">union</code> <code class="sh_misc">{</code>
-                <code class="sh_declare">char</code>      chr<code class="sh_misc">[</code><code class="sh_reference">16</code><code class="sh_misc">]</code><code class="sh_misc">;</code>
-                uint32_t  num<code class="sh_misc">[</code><code class="sh_reference">4</code><code class="sh_misc">]</code><code class="sh_misc">;</code>
-            <code class="sh_misc">}</code> digest<code class="sh_misc">;</code>
-            apr_md5_ctx_t md5<code class="sh_misc">;</code>
-            apr_md5_init<code class="sh_misc">(</code><code class="sh_misc">&amp;</code>md5<code class="sh_misc">)</code><code class="sh_misc">;</code>
-            readBytes <code class="sh_misc">=</code> <code class="sh_reference">256</code><code class="sh_misc">;</code>
-            <code class="sh_declare">while</code> <code class="sh_misc">(</code> apr_file_read<code class="sh_misc">(</code>file<code class="sh_misc">,</code> buffer<code class="sh_misc">,</code> <code class="sh_misc">&amp;</code>readBytes<code class="sh_misc">)</code> <code class="sh_misc">=</code><code class="sh_misc">=</code> APR_SUCCESS <code class="sh_misc">)</code> <code class="sh_misc">{</code>
-                apr_md5_update<code class="sh_misc">(</code><code class="sh_misc">&amp;</code>md5<code class="sh_misc">,</code> buffer<code class="sh_misc">,</code> readBytes<code class="sh_misc">)</code><code class="sh_misc">;</code>
-            <code class="sh_misc">}</code>
-            apr_md5_final<code class="sh_misc">(</code>digest<code class="sh_misc">.</code>chr<code class="sh_misc">,</code> <code class="sh_misc">&amp;</code>md5<code class="sh_misc">)</code><code class="sh_misc">;</code>
+        /* Are we trying to calculate the MD5 or the SHA1 digest? */
+        if (!strcasecmp(digestType, &quot;md5&quot;)) {
+            /* Calculate the MD5 sum of the file */
+            union {
+                char      chr[16];
+                uint32_t  num[4];
+            } digest;
+            apr_md5_ctx_t md5;
+            apr_md5_init(&amp;md5);
+            readBytes = 256;
+            while ( apr_file_read(file, buffer, &amp;readBytes) == APR_SUCCESS ) {
+                apr_md5_update(&amp;md5, buffer, readBytes);
+            }
+            apr_md5_final(digest.chr, &amp;md5);
             
-            <code class="sh_comment">/* Print out the MD5 digest */</code>
-            ap_rputs<code class="sh_misc">(</code><code class="sh_character">"</code><code class="sh_value">&lt;b>MD5: &lt;/b>&lt;code></code><code class="sh_character">"</code><code class="sh_misc">,</code> r<code class="sh_misc">)</code><code class="sh_misc">;</code>
-            <code class="sh_declare">for</code> <code class="sh_misc">(</code>n <code class="sh_misc">=</code> <code class="sh_reference">0</code><code class="sh_misc">;</code> n <code class="sh_misc">&lt;</code> APR_MD5_DIGESTSIZE<code class="sh_misc">/</code><code class="sh_reference">4</code><code class="sh_misc">;</code> n<code class="sh_misc">+</code><code class="sh_misc">+</code><code class="sh_misc">)</code> <code class="sh_misc">{</code>
-                ap_rprintf<code class="sh_misc">(</code>r<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_reference">%08x</code><code class="sh_character">"</code><code class="sh_misc">,</code> digest<code class="sh_misc">.</code>num<code class="sh_misc">[</code>n<code class="sh_misc">]</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
-            <code class="sh_misc">}</code>
-            ap_rputs<code class="sh_misc">(</code><code class="sh_character">"</code><code class="sh_value">&lt;/code></code><code class="sh_character">"</code><code class="sh_misc">,</code> r<code class="sh_misc">)</code><code class="sh_misc">;</code>
-            <code class="sh_comment">/* Print a link to the SHA1 version */</code>
-            ap_rputs<code class="sh_misc">(</code><code class="sh_character">"</code><code class="sh_value">&lt;br/>&lt;a href='?digest=sha1'>View the SHA1 hash instead&lt;/a></code><code class="sh_character">"</code><code class="sh_misc">,</code> r<code class="sh_misc">)</code><code class="sh_misc">;</code>
-        <code class="sh_misc">}</code>
-        <code class="sh_declare">else</code> <code class="sh_misc">{</code>
-            <code class="sh_comment">/* Calculate the SHA1 sum of the file */</code>
-            <code class="sh_declare">union</code> <code class="sh_misc">{</code>
-                <code class="sh_declare">char</code>      chr<code class="sh_misc">[</code><code class="sh_reference">20</code><code class="sh_misc">]</code><code class="sh_misc">;</code>
-                uint32_t  num<code class="sh_misc">[</code><code class="sh_reference">5</code><code class="sh_misc">]</code><code class="sh_misc">;</code>
-            <code class="sh_misc">}</code> digest<code class="sh_misc">;</code>
-            apr_sha1_ctx_t sha1<code class="sh_misc">;</code>
-            apr_sha1_init<code class="sh_misc">(</code><code class="sh_misc">&amp;</code>sha1<code class="sh_misc">)</code><code class="sh_misc">;</code>
-            readBytes <code class="sh_misc">=</code> <code class="sh_reference">256</code><code class="sh_misc">;</code>
-            <code class="sh_declare">while</code> <code class="sh_misc">(</code> apr_file_read<code class="sh_misc">(</code>file<code class="sh_misc">,</code> buffer<code class="sh_misc">,</code> <code class="sh_misc">&amp;</code>readBytes<code class="sh_misc">)</code> <code class="sh_misc">=</code><code class="sh_misc">=</code> APR_SUCCESS <code class="sh_misc">)</code> <code class="sh_misc">{</code>
-                apr_sha1_update<code class="sh_misc">(</code><code class="sh_misc">&amp;</code>sha1<code class="sh_misc">,</code> buffer<code class="sh_misc">,</code> readBytes<code class="sh_misc">)</code><code class="sh_misc">;</code>
-            <code class="sh_misc">}</code>
-            apr_sha1_final<code class="sh_misc">(</code>digest<code class="sh_misc">.</code>chr<code class="sh_misc">,</code> <code class="sh_misc">&amp;</code>sha1<code class="sh_misc">)</code><code class="sh_misc">;</code>
+            /* Print out the MD5 digest */
+            ap_rputs(&quot;&lt;b&gt;MD5: &lt;/b&gt;&lt;code&gt;&quot;, r);
+            for (n = 0; n &lt; APR_MD5_DIGESTSIZE/4; n++) {
+                ap_rprintf(r, &quot;%08x&quot;, digest.num[n]);
+            }
+            ap_rputs(&quot;&lt;/code&gt;&quot;, r);
+            /* Print a link to the SHA1 version */
+            ap_rputs(&quot;&lt;br/&gt;&lt;a href='?digest=sha1'&gt;View the SHA1 hash instead&lt;/a&gt;&quot;, r);
+        }
+        else {
+            /* Calculate the SHA1 sum of the file */
+            union {
+                char      chr[20];
+                uint32_t  num[5];
+            } digest;
+            apr_sha1_ctx_t sha1;
+            apr_sha1_init(&amp;sha1);
+            readBytes = 256;
+            while ( apr_file_read(file, buffer, &amp;readBytes) == APR_SUCCESS ) {
+                apr_sha1_update(&amp;sha1, buffer, readBytes);
+            }
+            apr_sha1_final(digest.chr, &amp;sha1);
             
-            <code class="sh_comment">/* Print out the SHA1 digest */</code>
-            ap_rputs<code class="sh_misc">(</code><code class="sh_character">"</code><code class="sh_value">&lt;b>SHA1: &lt;/b>&lt;code></code><code class="sh_character">"</code><code class="sh_misc">,</code> r<code class="sh_misc">)</code><code class="sh_misc">;</code>
-            <code class="sh_declare">for</code> <code class="sh_misc">(</code>n <code class="sh_misc">=</code> <code class="sh_reference">0</code><code class="sh_misc">;</code> n <code class="sh_misc">&lt;</code> APR_SHA1_DIGESTSIZE<code class="sh_misc">/</code><code class="sh_reference">4</code><code class="sh_misc">;</code> n<code class="sh_misc">+</code><code class="sh_misc">+</code><code class="sh_misc">)</code> <code class="sh_misc">{</code>
-                ap_rprintf<code class="sh_misc">(</code>r<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_reference">%08x</code><code class="sh_character">"</code><code class="sh_misc">,</code> digest<code class="sh_misc">.</code>num<code class="sh_misc">[</code>n<code class="sh_misc">]</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
-            <code class="sh_misc">}</code>
-            ap_rputs<code class="sh_misc">(</code><code class="sh_character">"</code><code class="sh_value">&lt;/code></code><code class="sh_character">"</code><code class="sh_misc">,</code> r<code class="sh_misc">)</code><code class="sh_misc">;</code>
+            /* Print out the SHA1 digest */
+            ap_rputs(&quot;&lt;b&gt;SHA1: &lt;/b&gt;&lt;code&gt;&quot;, r);
+            for (n = 0; n &lt; APR_SHA1_DIGESTSIZE/4; n++) {
+                ap_rprintf(r, &quot;%08x&quot;, digest.num[n]);
+            }
+            ap_rputs(&quot;&lt;/code&gt;&quot;, r);
             
-            <code class="sh_comment">/* Print a link to the MD5 version */</code>
-            ap_rputs<code class="sh_misc">(</code><code class="sh_character">"</code><code class="sh_value">&lt;br/>&lt;a href='?digest=md5'>View the MD5 hash instead&lt;/a></code><code class="sh_character">"</code><code class="sh_misc">,</code> r<code class="sh_misc">)</code><code class="sh_misc">;</code>
-        <code class="sh_misc">}</code>
-        apr_file_close<code class="sh_misc">(</code>file<code class="sh_misc">)</code><code class="sh_misc">;</code>
+            /* Print a link to the MD5 version */
+            ap_rputs(&quot;&lt;br/&gt;&lt;a href='?digest=md5'&gt;View the MD5 hash instead&lt;/a&gt;&quot;, r);
+        }
+        apr_file_close(file);
         
-    <code class="sh_misc">}</code>
-    
-    
-    
-    <code class="sh_comment">/* Let the server know that we responded to this request. */</code>
-    <code class="sh_declare">return</code> OK<code class="sh_misc">;</code>
-<code class="sh_misc">}</code>
-</p>
+    }    
+    /* Let the server know that we responded to this request. */
+    return OK;
+}
+</pre>
 <!-- END EXAMPLE CODE -->
 
 <p>
@@ -743,13 +740,13 @@ that parses the parameters given and sets up a configuration accordingly.
 
 
 <!-- BEGIN EXAMPLE CODE -->
-<p class="source">
-<code class="sh_declare">typedef</code> <code class="sh_declare">struct</code> <code class="sh_misc">{</code>
-    <code class="sh_declare">int</code>         enabled<code class="sh_misc">;</code>      <code class="sh_comment">/* Enable or disable our module */</code>
-    <code class="sh_declare">const</code> <code class="sh_declare">char</code> <code class="sh_misc">*</code>path<code class="sh_misc">;</code>         <code class="sh_comment">/* Some path to...something */</code>
-    <code class="sh_declare">int</code>         typeOfAction<code class="sh_misc">;</code> <code class="sh_comment">/* 1 means action A, 2 means action B and so on */</code>
-<code class="sh_misc">}</code> example_config<code class="sh_misc">;</code>
-</p>
+<pre class="sh_c">
+typedef struct {
+    int         enabled;      /* Enable or disable our module */
+    const char *path;         /* Some path to...something */
+    int         typeOfAction; /* 1 means action A, 2 means action B and so on */
+} example_config;
+</pre>
 <!-- END EXAMPLE CODE -->
 
 <p>
@@ -760,46 +757,46 @@ values to their defaults:
 </p>
 
 <!-- BEGIN EXAMPLE CODE -->
-<p class="source">
-<code class="sh_declare">typedef</code> <code class="sh_declare">struct</code> <code class="sh_misc">{</code>
-    <code class="sh_declare">int</code>         enabled<code class="sh_misc">;</code>      <code class="sh_comment">/* Enable or disable our module */</code>
-    <code class="sh_declare">const</code> <code class="sh_declare">char</code> <code class="sh_misc">*</code>path<code class="sh_misc">;</code>         <code class="sh_comment">/* Some path to...something */</code>
-    <code class="sh_declare">int</code>         typeOfAction<code class="sh_misc">;</code> <code class="sh_comment">/* 1 means action A, 2 means action B and so on */</code>
-<code class="sh_misc">}</code> example_config<code class="sh_misc">;</code>
+<pre class="sh_c">
+typedef struct {
+    int         enabled;      /* Enable or disable our module */
+    const char *path;         /* Some path to...something */
+    int         typeOfAction; /* 1 means action A, 2 means action B and so on */
+} example_config;
 
-<code class="sh_declare">static</code> example_config config<code class="sh_misc">;</code>
+static example_config config;
 
-<code class="sh_declare">static</code> <code class="sh_declare">int</code> example_handler<code class="sh_misc">(</code>request_rec <code class="sh_misc">*</code>r<code class="sh_misc">)</code>
-<code class="sh_misc">{</code>
-    <code class="sh_declare">if</code> <code class="sh_misc">(</code><code class="sh_misc">!</code>r<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">handler</code> <code class="sh_misc">|</code><code class="sh_misc">|</code> <code class="sh_function">strcmp</code><code class="sh_misc">(</code>r<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">handler</code><code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">example-handler</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">)</code> <code class="sh_declare">return</code><code class="sh_misc">(</code>DECLINED<code class="sh_misc">)</code><code class="sh_misc">;</code>
-    ap_set_content_type<code class="sh_misc">(</code>r<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">text/plain</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
-    ap_rprintf<code class="sh_misc">(r, </code><code class="sh_character">"</code><code class="sh_value">Enabled: </code><code class="sh_reference">%u</code><code class="sh_reference">\n</code><code class="sh_character">"</code><code class="sh_misc">,</code> config<code class="sh_misc">.</code>enabled<code class="sh_misc">)</code><code class="sh_misc">;</code>
-    ap_rprintf<code class="sh_misc">(r, </code><code class="sh_character">"</code><code class="sh_value">Path: </code><code class="sh_reference">%s</code><code class="sh_reference">\n</code><code class="sh_character">"</code><code class="sh_misc">,</code> config<code class="sh_misc">.</code>path<code class="sh_misc">)</code><code class="sh_misc">;</code>
-    ap_rprintf<code class="sh_misc">(r, </code><code class="sh_character">"</code><code class="sh_value">TypeOfAction: </code><code class="sh_reference">%x</code><code class="sh_reference">\n</code><code class="sh_character">"</code><code class="sh_misc">,</code> config<code class="sh_misc">.</code>typeOfAction<code class="sh_misc">)</code><code class="sh_misc">;</code>
-    <code class="sh_declare">return</code> OK<code class="sh_misc">;</code>
-<code class="sh_misc">}</code>
+static int example_handler(request_rec *r)
+{
+    if (!r-&gt;handler || strcmp(r-&gt;handler, &quot;example-handler&quot;)) return(DECLINED);
+    ap_set_content_type(r, &quot;text/plain&quot;);
+    ap_rprintf(r, &quot;Enabled: %u\n&quot;, config.enabled);
+    ap_rprintf(r, &quot;Path: %s\n&quot;, config.path);
+    ap_rprintf(r, &quot;TypeOfAction: %x\n&quot;, config.typeOfAction);
+    return OK;
+}
 
-<code class="sh_declare">static</code> <code class="sh_declare">void</code> register_hooks<code class="sh_misc">(</code>apr_pool_t <code class="sh_misc">*</code>pool<code class="sh_misc">)</code> 
-<code class="sh_misc">{</code>
-    config<code class="sh_misc">.</code>enabled <code class="sh_misc">=</code> <code class="sh_reference">1</code><code class="sh_misc">;</code>
-    config<code class="sh_misc">.</code>path <code class="sh_misc">=</code> <code class="sh_character">"</code><code class="sh_value">/foo/bar</code><code class="sh_character">"</code><code class="sh_misc">;</code>
-    config<code class="sh_misc">.</code>typeOfAction <code class="sh_misc">=</code> <code class="sh_reference">0x00</code><code class="sh_misc">;</code>
-    ap_hook_handler<code class="sh_misc">(</code>example_handler<code class="sh_misc">,</code> <code class="sh_constant">NULL</code><code class="sh_misc">,</code> <code class="sh_constant">NULL</code><code class="sh_misc">,</code> APR_HOOK_LAST<code class="sh_misc">)</code><code class="sh_misc">;</code>
-<code class="sh_misc">}</code>
+static void register_hooks(apr_pool_t *pool) 
+{
+    config.enabled = 1;
+    config.path = &quot;/foo/bar&quot;;
+    config.typeOfAction = 0x00;
+    ap_hook_handler(example_handler, NULL, NULL, APR_HOOK_LAST);
+}
 
-<code class="sh_comment">/* Define our module as an entity and assign a function for registering hooks  */</code>
+/* Define our module as an entity and assign a function for registering hooks  */
 
-module AP_MODULE_DECLARE_DATA   example_module <code class="sh_misc">=</code>
-<code class="sh_misc">{</code>
-    STANDARD20_MODULE_STUFF<code class="sh_misc">,</code>
-    <code class="sh_constant">NULL</code><code class="sh_misc">,</code>            <code class="sh_comment">/* Per-directory configuration handler */</code>
-    <code class="sh_constant">NULL</code><code class="sh_misc">,</code>            <code class="sh_comment">/* Merge handler for per-directory configurations */</code>
-    <code class="sh_constant">NULL</code><code class="sh_misc">,</code>            <code class="sh_comment">/* Per-server configuration handler */</code>
-    <code class="sh_constant">NULL</code><code class="sh_misc">,</code>            <code class="sh_comment">/* Merge handler for per-server configurations */</code>
-    <code class="sh_constant">NULL</code><code class="sh_misc">,</code>            <code class="sh_comment">/* Any directives we may have for httpd */</code>
-    register_hooks   <code class="sh_comment">/* Our hook registering function */</code>
-<code class="sh_misc">}</code><code class="sh_misc">;</code>
-</p>
+module AP_MODULE_DECLARE_DATA   example_module =
+{
+    STANDARD20_MODULE_STUFF,
+    NULL,            /* Per-directory configuration handler */
+    NULL,            /* Merge handler for per-directory configurations */
+    NULL,            /* Per-server configuration handler */
+    NULL,            /* Merge handler for per-server configurations */
+    NULL,            /* Any directives we may have for httpd */
+    register_hooks   /* Our hook registering function */
+};
+</pre>
 <!-- END EXAMPLE CODE -->
 
 <p>
@@ -827,18 +824,18 @@ reference to the configuration directives we want to register with the server:
 </p>
 
 <!-- BEGIN EXAMPLE CODE -->
-<p class="source">
+<pre class="sh_c">
 module AP_MODULE_DECLARE_DATA   example_module =
 {
     STANDARD20_MODULE_STUFF,
-    <code class="sh_constant">NULL</code>,               <code class="sh_comment">/* Per-directory configuration handler */</code>
-    <code class="sh_constant">NULL</code>,               <code class="sh_comment">/* Merge handler for per-directory configurations */</code>
-    <code class="sh_constant">NULL</code>,               <code class="sh_comment">/* Per-server configuration handler */</code>
-    <code class="sh_constant">NULL</code>,               <code class="sh_comment">/* Merge handler for per-server configurations */</code>
-    example_directives, <code class="sh_comment">/* Any directives we may have for httpd */</code>
-    register_hooks      <code class="sh_comment">/* Our hook registering function */</code>
+    NULL,               /* Per-directory configuration handler */
+    NULL,               /* Merge handler for per-directory configurations */
+    NULL,               /* Per-server configuration handler */
+    NULL,               /* Merge handler for per-server configurations */
+    example_directives, /* Any directives we may have for httpd */
+    register_hooks      /* Our hook registering function */
 };
-</p>
+</pre>
 <!-- END EXAMPLE CODE -->
 
 <p>
@@ -850,15 +847,15 @@ will add a structure with three directives and a NULL at the end:
 </p>
 
 <!-- BEGIN EXAMPLE CODE -->
-<p class="source">
+<pre class="sh_c">
 static const command_rec        example_directives[] =
 {
-    <code class="sh_declare"><a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__CONFIG.html#ga07c7d22ae17805e61204463326cf9c34">AP_INIT_TAKE1</a></code>("exampleEnabled", example_set_enabled, <code class="sh_constant">NULL</code>, RSRC_CONF, "Enable or disable mod_example"),
-    <code class="sh_declare"><a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__CONFIG.html#ga07c7d22ae17805e61204463326cf9c34">AP_INIT_TAKE1</a></code>("examplePath", example_set_path, <code class="sh_constant">NULL</code>, RSRC_CONF, "The path to whatever"),
-    <code class="sh_declare"><a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__CONFIG.html#gafaec43534fcf200f37d9fecbf9247c21">AP_INIT_TAKE2</a></code>("exampleAction", example_set_action, <code class="sh_constant">NULL</code>, RSRC_CONF, "Special action value!"),
-    { <code class="sh_constant">NULL</code> }
+    AP_INIT_TAKE1("exampleEnabled", example_set_enabled, NULL, RSRC_CONF, "Enable or disable mod_example"),
+    AP_INIT_TAKE1("examplePath", example_set_path, NULL, RSRC_CONF, "The path to whatever"),
+    AP_INIT_TAKE2("exampleAction", example_set_action, NULL, RSRC_CONF, "Special action value!"),
+    { NULL }
 };
-</p>
+</pre>
 <!-- END EXAMPLE CODE -->
 
 <p>
@@ -896,35 +893,35 @@ exampleAction</code> directive to accept two arguments, its C function also
 has an additional parameter defined:</p> 
 
 <!-- BEGIN EXAMPLE CODE -->
-<p class="source">
-<code class="sh_comment">/* Handler for the "exambleEnabled" directive */</code>
-<code class="sh_declare">const</code> <code class="sh_declare">char</code><code class="sh_misc"> *</code>example_set_enabled<code class="sh_misc">(</code>cmd_parms <code class="sh_misc">*</code>cmd<code class="sh_misc">,</code> <code class="sh_declare">void</code> <code class="sh_misc">*</code>cfg<code class="sh_misc">,</code> <code class="sh_declare">const</code> <code class="sh_declare">char</code> <code class="sh_misc">*</code>arg<code class="sh_misc">)</code>
-<code class="sh_misc">{</code>
-    <code class="sh_declare">if</code><code class="sh_misc">(</code><code class="sh_misc">!</code>strcasecmp<code class="sh_misc">(</code>arg<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">on</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">)</code> config<code class="sh_misc">.</code>enabled <code class="sh_misc">=</code> <code class="sh_reference">1</code><code class="sh_misc">;</code>
-    <code class="sh_declare">else</code> config<code class="sh_misc">.</code>enabled <code class="sh_misc">=</code> <code class="sh_reference">0</code><code class="sh_misc">;</code>
-    <code class="sh_declare">return</code> <code class="sh_constant">NULL</code><code class="sh_misc">;</code>
-<code class="sh_misc">}</code>
+<pre class="sh_c">
+/* Handler for the "exambleEnabled" directive */
+const char *example_set_enabled(cmd_parms *cmd, void *cfg, const char *arg)
+{
+    if(!strcasecmp(arg, "on")) config.enabled = 1;
+    else config.enabled = 0;
+    return NULL;
+}
 
-<code class="sh_comment">/* Handler for the "examplePath" directive */</code>
-<code class="sh_declare">const</code> <code class="sh_declare">char</code><code class="sh_misc"> *</code>example_set_path<code class="sh_misc">(</code>cmd_parms <code class="sh_misc">*</code>cmd<code class="sh_misc">,</code> <code class="sh_declare">void</code> <code class="sh_misc">*</code>cfg<code class="sh_misc">,</code> <code class="sh_declare">const</code> <code class="sh_declare">char</code> <code class="sh_misc">*</code>arg<code class="sh_misc">)</code>
-<code class="sh_misc">{</code>
-    config<code class="sh_misc">.</code>path <code class="sh_misc">=</code> arg<code class="sh_misc">;</code>
-    <code class="sh_declare">return</code> <code class="sh_constant">NULL</code><code class="sh_misc">;</code>
-<code class="sh_misc">}</code>
+/* Handler for the "examplePath" directive */
+const char *example_set_path(cmd_parms *cmd, void *cfg, const char *arg)
+{
+    config.path = arg;
+    return NULL;
+}
 
-<code class="sh_comment">/* Handler for the "exampleAction" directive */</code>
-<code class="sh_comment">/* Let's pretend this one takes one argument (file or db), and a second (deny or allow), */</code>
-<code class="sh_comment">/* and we store it in a bit-wise manner. */</code>
-<code class="sh_declare">const</code> <code class="sh_declare">char</code><code class="sh_misc"> *</code>example_set_action<code class="sh_misc">(</code>cmd_parms <code class="sh_misc">*</code>cmd<code class="sh_misc">,</code> <code class="sh_declare">void</code> <code class="sh_misc">*</code>cfg<code class="sh_misc">,</code> <code class="sh_declare">const</code> <code class="sh_declare">char</code> <code class="sh_misc">*</code>arg1<code class="sh_misc">,</code> <code class="sh_declare">const</code> <code class="sh_declare">char</code><code class="sh_misc">*</code> arg2<code class="sh_misc">)</code>
-<code class="sh_misc">{</code>
-    <code class="sh_declare">if</code><code class="sh_misc">(</code><code class="sh_misc">!</code>strcasecmp<code class="sh_misc">(</code>arg1<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">file</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">)</code> config<code class="sh_misc">.</code>typeOfAction <code class="sh_misc">=</code> <code class="sh_reference">0x01</code><code class="sh_misc">;</code>
-    <code class="sh_declare">else</code> config<code class="sh_misc">.</code>typeOfAction <code class="sh_misc">=</code> <code class="sh_reference">0x02</code><code class="sh_misc">;</code>
+/* Handler for the "exampleAction" directive */
+/* Let's pretend this one takes one argument (file or db), and a second (deny or allow), */
+/* and we store it in a bit-wise manner. */
+const char *example_set_action(cmd_parms *cmd, void *cfg, const char *arg1, const char* arg2)
+{
+    if(!strcasecmp(arg1, "file")) config.typeOfAction = 0x01;
+    else config.typeOfAction = 0x02;
     
-    <code class="sh_declare">if</code><code class="sh_misc">(</code><code class="sh_misc">!</code>strcasecmp<code class="sh_misc">(</code>arg2<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">deny</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">)</code> config<code class="sh_misc">.</code>typeOfAction <code class="sh_misc">+</code><code class="sh_misc">=</code> <code class="sh_reference">0x10</code><code class="sh_misc">;</code>
-    <code class="sh_declare">else</code> config<code class="sh_misc">.</code>typeOfAction <code class="sh_misc">+</code><code class="sh_misc">=</code> <code class="sh_reference">0x20</code><code class="sh_misc">;</code>
-    <code class="sh_declare">return</code> <code class="sh_constant">NULL</code><code class="sh_misc">;</code>
-<code class="sh_misc">}</code>
-</p>
+    if(!strcasecmp(arg2, "deny")) config.typeOfAction += 0x10;
+    else config.typeOfAction += 0x20;
+    return NULL;
+}
+</pre>
 <!-- END EXAMPLE CODE -->
 
 
@@ -936,120 +933,120 @@ we can assemble our module into one big file:
 </p>
 
 <!-- BEGIN EXAMPLE CODE -->
-<p class="source">
-<code class="sh_comment">/* mod_example_config_simple.c: */</code>
-<code class="sh_function">#</code><code class="sh_function">include </code><code class="sh_character">&lt;</code><code class="sh_reference">stdio.h</code><code class="sh_character">></code>
-<code class="sh_function">#</code><code class="sh_function">include </code><code class="sh_character">"</code><code class="sh_reference">apr_hash.h</code><code class="sh_character">"</code>
-<code class="sh_function">#</code><code class="sh_function">include </code><code class="sh_character">"</code><code class="sh_reference">ap_config.h</code><code class="sh_character">"</code>
-<code class="sh_function">#</code><code class="sh_function">include </code><code class="sh_character">"</code><code class="sh_reference">ap_provider.h</code><code class="sh_character">"</code>
-<code class="sh_function">#</code><code class="sh_function">include </code><code class="sh_character">"</code><code class="sh_reference">httpd.h</code><code class="sh_character">"</code>
-<code class="sh_function">#</code><code class="sh_function">include </code><code class="sh_character">"</code><code class="sh_reference">http_core.h</code><code class="sh_character">"</code>
-<code class="sh_function">#</code><code class="sh_function">include </code><code class="sh_character">"</code><code class="sh_reference">http_config.h</code><code class="sh_character">"</code>
-<code class="sh_function">#</code><code class="sh_function">include </code><code class="sh_character">"</code><code class="sh_reference">http_log.h</code><code class="sh_character">"</code>
-<code class="sh_function">#</code><code class="sh_function">include </code><code class="sh_character">"</code><code class="sh_reference">http_protocol.h</code><code class="sh_character">"</code>
-<code class="sh_function">#</code><code class="sh_function">include </code><code class="sh_character">"</code><code class="sh_reference">http_request.h</code><code class="sh_character">"</code>
+<pre class="sh_c">
+/* mod_example_config_simple.c: */
+#include &lt;stdio.h&gt;
+#include "apr_hash.h"
+#include "ap_config.h"
+#include "ap_provider.h"
+#include "httpd.h"
+#include "http_core.h"
+#include "http_config.h"
+#include "http_log.h"
+#include "http_protocol.h"
+#include "http_request.h"
 
-<code class="sh_comment">/*</code>
-<code class="sh_comment">&#xa0;==============================================================================</code>
-<code class="sh_comment">&#xa0;Our configuration prototype and declaration:</code>
-<code class="sh_comment">&#xa0;==============================================================================</code>
-<code class="sh_comment">&#xa0;*/</code>
-<code class="sh_declare">typedef</code> <code class="sh_declare">struct</code> <code class="sh_misc">{</code>
-    <code class="sh_declare">int</code>         enabled<code class="sh_misc">;</code>      <code class="sh_comment">/* Enable or disable our module */</code>
-    <code class="sh_declare">const</code> <code class="sh_declare">char</code> <code class="sh_misc">*</code>path<code class="sh_misc">;</code>         <code class="sh_comment">/* Some path to...something */</code>
-    <code class="sh_declare">int</code>         typeOfAction<code class="sh_misc">;</code> <code class="sh_comment">/* 1 means action A, 2 means action B and so on */</code>
-<code class="sh_misc">}</code> example_config<code class="sh_misc">;</code>
+/*
+ ==============================================================================
+ Our configuration prototype and declaration:
+ ==============================================================================
+ */
+typedef struct {
+    int         enabled;      /* Enable or disable our module */
+    const char *path;         /* Some path to...something */
+    int         typeOfAction; /* 1 means action A, 2 means action B and so on */
+} example_config;
 
-<code class="sh_declare">static</code> example_config config<code class="sh_misc">;</code>
+static example_config config;
 
-<code class="sh_comment">/*</code>
-<code class="sh_comment">&#xa0;==============================================================================</code>
-<code class="sh_comment">&#xa0;Our directive handlers:</code>
-<code class="sh_comment">&#xa0;==============================================================================</code>
-<code class="sh_comment">&#xa0;*/</code>
-<code class="sh_comment">/* Handler for the "exambleEnabled" directive */</code>
-<code class="sh_declare">const</code> <code class="sh_declare">char</code><code class="sh_misc"> *</code>example_set_enabled<code class="sh_misc">(</code>cmd_parms <code class="sh_misc">*</code>cmd<code class="sh_misc">,</code> <code class="sh_declare">void</code> <code class="sh_misc">*</code>cfg<code class="sh_misc">,</code> <code class="sh_declare">const</code> <code class="sh_declare">char</code> <code class="sh_misc">*</code>arg<code class="sh_misc">)</code>
-<code class="sh_misc">{</code>
-    <code class="sh_declare">if</code><code class="sh_misc">(</code><code class="sh_misc">!</code>strcasecmp<code class="sh_misc">(</code>arg<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">on</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">)</code> config<code class="sh_misc">.</code>enabled <code class="sh_misc">=</code> <code class="sh_reference">1</code><code class="sh_misc">;</code>
-    <code class="sh_declare">else</code> config<code class="sh_misc">.</code>enabled <code class="sh_misc">=</code> <code class="sh_reference">0</code><code class="sh_misc">;</code>
-    <code class="sh_declare">return</code> <code class="sh_constant">NULL</code><code class="sh_misc">;</code>
-<code class="sh_misc">}</code>
+/*
+ ==============================================================================
+ Our directive handlers:
+ ==============================================================================
+ */
+/* Handler for the &quot;exambleEnabled&quot; directive */
+const char *example_set_enabled(cmd_parms *cmd, void *cfg, const char *arg)
+{
+    if(!strcasecmp(arg, &quot;on&quot;)) config.enabled = 1;
+    else config.enabled = 0;
+    return NULL;
+}
 
-<code class="sh_comment">/* Handler for the "examplePath" directive */</code>
-<code class="sh_declare">const</code> <code class="sh_declare">char</code><code class="sh_misc"> *</code>example_set_path<code class="sh_misc">(</code>cmd_parms <code class="sh_misc">*</code>cmd<code class="sh_misc">,</code> <code class="sh_declare">void</code> <code class="sh_misc">*</code>cfg<code class="sh_misc">,</code> <code class="sh_declare">const</code> <code class="sh_declare">char</code> <code class="sh_misc">*</code>arg<code class="sh_misc">)</code>
-<code class="sh_misc">{</code>
-    config<code class="sh_misc">.</code>path <code class="sh_misc">=</code> arg<code class="sh_misc">;</code>
-    <code class="sh_declare">return</code> <code class="sh_constant">NULL</code><code class="sh_misc">;</code>
-<code class="sh_misc">}</code>
+/* Handler for the &quot;examplePath&quot; directive */
+const char *example_set_path(cmd_parms *cmd, void *cfg, const char *arg)
+{
+    config.path = arg;
+    return NULL;
+}
 
-<code class="sh_comment">/* Handler for the "exampleAction" directive */</code>
-<code class="sh_comment">/* Let's pretend this one takes one argument (file or db), and a second (deny or allow), */</code>
-<code class="sh_comment">/* and we store it in a bit-wise manner. */</code>
-<code class="sh_declare">const</code> <code class="sh_declare">char</code><code class="sh_misc"> *</code>example_set_action<code class="sh_misc">(</code>cmd_parms <code class="sh_misc">*</code>cmd<code class="sh_misc">,</code> <code class="sh_declare">void</code> <code class="sh_misc">*</code>cfg<code class="sh_misc">,</code> <code class="sh_declare">const</code> <code class="sh_declare">char</code> <code class="sh_misc">*</code>arg1<code class="sh_misc">,</code> <code class="sh_declare">const</code> <code class="sh_declare">char</code><code class="sh_misc">*</code> arg2<code class="sh_misc">)</code>
-<code class="sh_misc">{</code>
-    <code class="sh_declare">if</code><code class="sh_misc">(</code><code class="sh_misc">!</code>strcasecmp<code class="sh_misc">(</code>arg1<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">file</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">)</code> config<code class="sh_misc">.</code>typeOfAction <code class="sh_misc">=</code> <code class="sh_reference">0x01</code><code class="sh_misc">;</code>
-    <code class="sh_declare">else</code> config<code class="sh_misc">.</code>typeOfAction <code class="sh_misc">=</code> <code class="sh_reference">0x02</code><code class="sh_misc">;</code>
+/* Handler for the &quot;exampleAction&quot; directive */
+/* Let's pretend this one takes one argument (file or db), and a second (deny or allow), */
+/* and we store it in a bit-wise manner. */
+const char *example_set_action(cmd_parms *cmd, void *cfg, const char *arg1, const char* arg2)
+{
+    if(!strcasecmp(arg1, &quot;file&quot;)) config.typeOfAction = 0x01;
+    else config.typeOfAction = 0x02;
     
-    <code class="sh_declare">if</code><code class="sh_misc">(</code><code class="sh_misc">!</code>strcasecmp<code class="sh_misc">(</code>arg2<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">deny</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">)</code> config<code class="sh_misc">.</code>typeOfAction <code class="sh_misc">+</code><code class="sh_misc">=</code> <code class="sh_reference">0x10</code><code class="sh_misc">;</code>
-    <code class="sh_declare">else</code> config<code class="sh_misc">.</code>typeOfAction <code class="sh_misc">+</code><code class="sh_misc">=</code> <code class="sh_reference">0x20</code><code class="sh_misc">;</code>
-    <code class="sh_declare">return</code> <code class="sh_constant">NULL</code><code class="sh_misc">;</code>
-<code class="sh_misc">}</code>
+    if(!strcasecmp(arg2, &quot;deny&quot;)) config.typeOfAction += 0x10;
+    else config.typeOfAction += 0x20;
+    return NULL;
+}
 
-<code class="sh_comment">/*</code>
-<code class="sh_comment">&#xa0;==============================================================================</code>
-<code class="sh_comment">&#xa0;The directive structure for our name tag:</code>
-<code class="sh_comment">&#xa0;==============================================================================</code>
-<code class="sh_comment">&#xa0;*/</code>
-<code class="sh_declare">static</code> <code class="sh_declare">const</code> command_rec        example_directives<code class="sh_misc">[</code><code class="sh_misc">]</code> <code class="sh_misc">=</code>
-<code class="sh_misc">{</code>
-    <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__CONFIG.html#ga07c7d22ae17805e61204463326cf9c34">AP_INIT_TAKE1</a><code class="sh_misc">(</code><code class="sh_character">"</code><code class="sh_value">exampleEnabled</code><code class="sh_character">"</code><code class="sh_misc">,</code> example_set_enabled<code class="sh_misc">,</code> <code class="sh_constant">NULL</code><code class="sh_misc">,</code> RSRC_CONF<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">Enable or disable mod_example</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">,</code>
-    <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__CONFIG.html#ga07c7d22ae17805e61204463326cf9c34">AP_INIT_TAKE1</a><code class="sh_misc">(</code><code class="sh_character">"</code><code class="sh_value">examplePath</code><code class="sh_character">"</code><code class="sh_misc">,</code> example_set_path<code class="sh_misc">,</code> <code class="sh_constant">NULL</code><code class="sh_misc">,</code> RSRC_CONF<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">The path to whatever</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">,</code>
-    <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__CONFIG.html#gafaec43534fcf200f37d9fecbf9247c21">AP_INIT_TAKE2</a><code class="sh_misc">(</code><code class="sh_character">"</code><code class="sh_value">exampleAction</code><code class="sh_character">"</code><code class="sh_misc">,</code> example_set_action<code class="sh_misc">,</code> <code class="sh_constant">NULL</code><code class="sh_misc">,</code> RSRC_CONF<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">Special action value!</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">,</code>
-    <code class="sh_misc">{</code> <code class="sh_constant">NULL</code> <code class="sh_misc">}</code>
-<code class="sh_misc">}</code><code class="sh_misc">;</code>
-<code class="sh_comment">/*</code>
-<code class="sh_comment">&#xa0;==============================================================================</code>
-<code class="sh_comment">&#xa0;Our module handler:</code>
-<code class="sh_comment">&#xa0;==============================================================================</code>
-<code class="sh_comment">&#xa0;*/</code>
-<code class="sh_declare">static</code> <code class="sh_declare">int</code> example_handler<code class="sh_misc">(</code>request_rec <code class="sh_misc">*</code>r<code class="sh_misc">)</code>
-<code class="sh_misc">{</code>
-    <code class="sh_declare">if</code><code class="sh_misc">(</code><code class="sh_misc">!</code>r<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">handler</code> <code class="sh_misc">|</code><code class="sh_misc">|</code> <code class="sh_function">strcmp</code><code class="sh_misc">(</code>r<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">handler</code><code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">example-handler</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">)</code> <code class="sh_declare">return</code><code class="sh_misc">(</code>DECLINED<code class="sh_misc">)</code><code class="sh_misc">;</code>
-    ap_set_content_type<code class="sh_misc">(</code>r<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">text/plain</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
-    ap_rprintf<code class="sh_misc">(</code>r<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">Enabled: </code><code class="sh_reference">%u</code><code class="sh_reference">\n</code><code class="sh_character">"</code><code class="sh_misc">,</code> config<code class="sh_misc">.</code>enabled<code class="sh_misc">)</code><code class="sh_misc">;</code>
-    ap_rprintf<code class="sh_misc">(</code>r<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">Path: </code><code class="sh_reference">%s</code><code class="sh_reference">\n</code><code class="sh_character">"</code><code class="sh_misc">,</code> config<code class="sh_misc">.</code>path<code class="sh_misc">)</code><code class="sh_misc">;</code>
-    ap_rprintf<code class="sh_misc">(</code>r<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">TypeOfAction: </code><code class="sh_reference">%x</code><code class="sh_reference">\n</code><code class="sh_character">"</code><code class="sh_misc">,</code> config<code class="sh_misc">.</code>typeOfAction<code class="sh_misc">)</code><code class="sh_misc">;</code>
-    <code class="sh_declare">return</code> OK<code class="sh_misc">;</code>
-<code class="sh_misc">}</code>
+/*
+ ==============================================================================
+ The directive structure for our name tag:
+ ==============================================================================
+ */
+static const command_rec        example_directives[] =
+{
+    AP_INIT_TAKE1(&quot;exampleEnabled&quot;, example_set_enabled, NULL, RSRC_CONF, &quot;Enable or disable mod_example&quot;),
+    AP_INIT_TAKE1(&quot;examplePath&quot;, example_set_path, NULL, RSRC_CONF, &quot;The path to whatever&quot;),
+    AP_INIT_TAKE2(&quot;exampleAction&quot;, example_set_action, NULL, RSRC_CONF, &quot;Special action value!&quot;),
+    { NULL }
+};
+/*
+ ==============================================================================
+ Our module handler:
+ ==============================================================================
+ */
+static int example_handler(request_rec *r)
+{
+    if(!r-&gt;handler || strcmp(r-&gt;handler, &quot;example-handler&quot;)) return(DECLINED);
+    ap_set_content_type(r, &quot;text/plain&quot;);
+    ap_rprintf(r, &quot;Enabled: %u\n&quot;, config.enabled);
+    ap_rprintf(r, &quot;Path: %s\n&quot;, config.path);
+    ap_rprintf(r, &quot;TypeOfAction: %x\n&quot;, config.typeOfAction);
+    return OK;
+}
 
-<code class="sh_comment">/*</code>
-<code class="sh_comment">&#xa0;==============================================================================</code>
-<code class="sh_comment">&#xa0;The hook registration function (also initializes the default config values):</code>
-<code class="sh_comment">&#xa0;==============================================================================</code>
-<code class="sh_comment">&#xa0;*/</code>
-<code class="sh_declare">static</code> <code class="sh_declare">void</code> register_hooks<code class="sh_misc">(</code>apr_pool_t <code class="sh_misc">*</code>pool<code class="sh_misc">)</code> 
-<code class="sh_misc">{</code>
-    config<code class="sh_misc">.</code>enabled <code class="sh_misc">=</code> <code class="sh_reference">1</code><code class="sh_misc">;</code>
-    config<code class="sh_misc">.</code>path <code class="sh_misc">=</code> <code class="sh_character">"</code><code class="sh_value">/foo/bar</code><code class="sh_character">"</code><code class="sh_misc">;</code>
-    config<code class="sh_misc">.</code>typeOfAction <code class="sh_misc">=</code> <code class="sh_reference">3</code><code class="sh_misc">;</code>
-    ap_hook_handler<code class="sh_misc">(</code>example_handler<code class="sh_misc">,</code> <code class="sh_constant">NULL</code><code class="sh_misc">,</code> <code class="sh_constant">NULL</code><code class="sh_misc">,</code> APR_HOOK_LAST<code class="sh_misc">)</code><code class="sh_misc">;</code>
-<code class="sh_misc">}</code>
-<code class="sh_comment">/*</code>
-<code class="sh_comment">&#xa0;==============================================================================</code>
-<code class="sh_comment">&#xa0;Our module name tag:</code>
-<code class="sh_comment">&#xa0;==============================================================================</code>
-<code class="sh_comment">&#xa0;*/</code>
-module AP_MODULE_DECLARE_DATA   example_module <code class="sh_misc">=</code>
-<code class="sh_misc">{</code>
-    STANDARD20_MODULE_STUFF<code class="sh_misc">,</code>
-    <code class="sh_constant">NULL</code><code class="sh_misc">,</code>               <code class="sh_comment">/* Per-directory configuration handler */</code>
-    <code class="sh_constant">NULL</code><code class="sh_misc">,</code>               <code class="sh_comment">/* Merge handler for per-directory configurations */</code>
-    <code class="sh_constant">NULL</code><code class="sh_misc">,</code>               <code class="sh_comment">/* Per-server configuration handler */</code>
-    <code class="sh_constant">NULL</code><code class="sh_misc">,</code>               <code class="sh_comment">/* Merge handler for per-server configurations */</code>
-    example_directives<code class="sh_misc">,</code> <code class="sh_comment">/* Any directives we may have for httpd */</code>
-    register_hooks      <code class="sh_comment">/* Our hook registering function */</code>
-<code class="sh_misc">}</code><code class="sh_misc">;</code>
-</p>
+/*
+ ==============================================================================
+ The hook registration function (also initializes the default config values):
+ ==============================================================================
+ */
+static void register_hooks(apr_pool_t *pool) 
+{
+    config.enabled = 1;
+    config.path = &quot;/foo/bar&quot;;
+    config.typeOfAction = 3;
+    ap_hook_handler(example_handler, NULL, NULL, APR_HOOK_LAST);
+}
+/*
+ ==============================================================================
+ Our module name tag:
+ ==============================================================================
+ */
+module AP_MODULE_DECLARE_DATA   example_module =
+{
+    STANDARD20_MODULE_STUFF,
+    NULL,               /* Per-directory configuration handler */
+    NULL,               /* Merge handler for per-directory configurations */
+    NULL,               /* Per-server configuration handler */
+    NULL,               /* Merge handler for per-server configurations */
+    example_directives, /* Any directives we may have for httpd */
+    register_hooks      /* Our hook registering function */
+};
+</pre>
 <!-- END EXAMPLE CODE -->
 
 
@@ -1110,10 +1107,11 @@ directory or location in question? It does so by making one simple call:
 </p>
 
 <!-- BEGIN EXAMPLE CODE -->
-<p class="source">
+<pre class="sh_c">
+example_config *config = (example_config*) <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__CONFIG.html#ga1093a5908a384eacc929b028c79f2a02">ap_get_module_config</a>(r-&gt;per_dir_config, &amp;example_module);
+</pre>
 <!-- END EXAMPLE CODE -->
-example_config *config = (example_config*) <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__CONFIG.html#ga1093a5908a384eacc929b028c79f2a02">ap_get_module_config</a>(<code class="sh_subobject">r-&gt;per_dir_config</code>, &amp;example_module);
-</p>
+
 <p>
 That's it! Of course, a whole lot goes on behind the scenes, which we will 
 discuss in this chapter, starting with how the server came to know what our 
@@ -1129,33 +1127,33 @@ variable that we can use to track which context configuration is being
 used by the server in various places:
 </p>
 <!-- BEGIN EXAMPLE CODE -->
-<p class="source">
-<code class="sh_declare">typedef</code> <code class="sh_declare">struct</code> <code class="sh_misc">{</code>
-    <code class="sh_declare">char</code>        context<code class="sh_misc">[</code><code class="sh_reference">256</code><code class="sh_misc">]</code><code class="sh_misc">;</code>
-    <code class="sh_declare">char</code>        path<code class="sh_misc">[</code><code class="sh_reference">256</code><code class="sh_misc">]</code><code class="sh_misc">;</code>
-    <code class="sh_declare">int</code>         typeOfAction<code class="sh_misc">;</code>
-    <code class="sh_declare">int</code>         enabled<code class="sh_misc">;</code>
-<code class="sh_misc">}</code> example_config<code class="sh_misc">;</code>
-</p>
+<pre class="sh_c">
+typedef struct {
+    char        context[256];
+    char        path[256];
+    int         typeOfAction;
+    int         enabled;
+} example_config;
+</pre>
 <!-- END EXAMPLE CODE -->
 
 <p>Our handler for requests will also be modified, yet still very simple:</p>
 
 
 <!-- BEGIN EXAMPLE CODE -->
-<p class="source">
-<code class="sh_declare">static</code> <code class="sh_declare">int</code> example_handler<code class="sh_misc">(</code>request_rec <code class="sh_misc">*</code>r<code class="sh_misc">)</code>
-<code class="sh_misc">{</code>
-    <code class="sh_declare">if</code><code class="sh_misc">(</code><code class="sh_misc">!</code>r<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">handler</code> <code class="sh_misc">|</code><code class="sh_misc">|</code> <code class="sh_function">strcmp</code><code class="sh_misc">(</code>r<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">handler</code><code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">example-handler</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">)</code> <code class="sh_declare">return</code><code class="sh_misc">(</code>DECLINED<code class="sh_misc">)</code><code class="sh_misc">;</code>
-    example_config<code class="sh_misc"> *</code>config <code class="sh_misc">=</code> <code class="sh_misc">(</code>example_config<code class="sh_misc">*</code><code class="sh_misc">)</code> ap_get_module_config<code class="sh_misc">(</code>r<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">per_dir_config</code><code class="sh_misc">,</code> <code class="sh_misc">&amp;</code>example_module<code class="sh_misc">)</code><code class="sh_misc">;</code>
-    ap_set_content_type<code class="sh_misc">(</code>r<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">text/plain</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
-    ap_rprintf<code class="sh_misc">(</code><code class="sh_character">"</code><code class="sh_value">Enabled: </code><code class="sh_reference">%u</code><code class="sh_reference">\n</code><code class="sh_character">"</code><code class="sh_misc">,</code> config<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">enabled</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
-    ap_rprintf<code class="sh_misc">(</code><code class="sh_character">"</code><code class="sh_value">Path: </code><code class="sh_reference">%s</code><code class="sh_reference">\n</code><code class="sh_character">"</code><code class="sh_misc">,</code> config<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">path</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
-    ap_rprintf<code class="sh_misc">(</code><code class="sh_character">"</code><code class="sh_value">TypeOfAction: </code><code class="sh_reference">%x</code><code class="sh_reference">\n</code><code class="sh_character">"</code><code class="sh_misc">,</code> config<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">typeOfAction</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
-    ap_rprintf<code class="sh_misc">(</code><code class="sh_character">"</code><code class="sh_value">Context: </code><code class="sh_reference">%s</code><code class="sh_reference">\n</code><code class="sh_character">"</code><code class="sh_misc">,</code> config<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">context</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
-    <code class="sh_declare">return</code> OK<code class="sh_misc">;</code>
-<code class="sh_misc">}</code>
-</p>
+<pre class="sh_c">
+static int example_handler(request_rec *r)
+{
+    if(!r->handler || strcmp(r->handler, "example-handler")) return(DECLINED);
+    example_config *config = (example_config*) ap_get_module_config(r->per_dir_config, &amp;example_module);
+    ap_set_content_type(r, "text/plain");
+    ap_rprintf("Enabled: %u\n", config->enabled);
+    ap_rprintf("Path: %s\n", config->path);
+    ap_rprintf("TypeOfAction: %x\n", config->typeOfAction);
+    ap_rprintf("Context: %s\n", config->context);
+    return OK;
+}
+</pre>
 <!-- END EXAMPLE CODE -->
 
 </section>
@@ -1168,9 +1166,9 @@ a directive required five elements be set:</p>
 
 
 <!-- BEGIN EXAMPLE CODE -->
-<p class="source">
-<code class="sh_declare"><a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__CONFIG.html#ga07c7d22ae17805e61204463326cf9c34">AP_INIT_TAKE1</a></code>(&quot;exampleEnabled&quot;, example_set_enabled, <code class="sh_constant">NULL</code>, RSRC_CONF, &quot;Enable or disable mod_example&quot;),
-</p>
+<pre class="sh_c">
+AP_INIT_TAKE1("exampleEnabled", example_set_enabled, NULL, RSRC_CONF, "Enable or disable mod_example"),
+</pre>
 <!-- END EXAMPLE CODE -->
 
 
@@ -1191,18 +1189,18 @@ and managing our configurations. Since we have chosen the per-directory
 per-directory creator and merger function reference in our tag:</p>
 
 <!-- BEGIN EXAMPLE CODE -->
-<p class="source">
-module AP_MODULE_DECLARE_DATA   example_module <code class="sh_misc">=</code>
-<code class="sh_misc">{</code>
-    STANDARD20_MODULE_STUFF<code class="sh_misc">,</code>
-    create_dir_conf<code class="sh_misc">,</code> <code class="sh_comment">/* Per-directory configuration handler */</code>
-    merge_dir_conf<code class="sh_misc">,</code>  <code class="sh_comment">/* Merge handler for per-directory configurations */</code>
-    <code class="sh_constant">NULL</code><code class="sh_misc">,</code>            <code class="sh_comment">/* Per-server configuration handler */</code>
-    <code class="sh_constant">NULL</code><code class="sh_misc">,</code>            <code class="sh_comment">/* Merge handler for per-server configurations */</code>
-    directives<code class="sh_misc">,</code>      <code class="sh_comment">/* Any directives we may have for httpd */</code>
-    register_hooks   <code class="sh_comment">/* Our hook registering function */</code>
-<code class="sh_misc">}</code><code class="sh_misc">;</code>
-</p>
+<pre class="sh_c">
+module AP_MODULE_DECLARE_DATA   example_module =
+{
+    STANDARD20_MODULE_STUFF,
+    create_dir_conf, /* Per-directory configuration handler */
+    merge_dir_conf,  /* Merge handler for per-directory configurations */
+    NULL,            /* Per-server configuration handler */
+    NULL,            /* Merge handler for per-server configurations */
+    directives,      /* Any directives we may have for httpd */
+    register_hooks   /* Our hook registering function */
+};
+</pre>
 <!-- END EXAMPLE CODE -->
 
 
@@ -1216,20 +1214,20 @@ our first step is to make a function for creating new, blank
 configurations. We do so by creating the function we just referenced in 
 our name tag as the Per-directory configuration handler:</p>
 <!-- BEGIN EXAMPLE CODE -->
-<p class="source">
-<code class="sh_declare">void</code><code class="sh_misc">*</code> example_create_dir_conf<code class="sh_misc">(</code>apr_pool_t<code class="sh_misc">*</code> pool<code class="sh_misc">,</code> <code class="sh_declare">char</code><code class="sh_misc">*</code> context<code class="sh_misc">)</code> <code class="sh_misc">{</code>
-    context <code class="sh_misc">=</code> context <code class="sh_misc">?</code> context <code class="sh_misc">:</code> <code class="sh_character">"</code><code class="sh_value">(undefined context)</code><code class="sh_character">"</code><code class="sh_misc">;</code>
-    example_config<code class="sh_misc"> *</code>cfg <code class="sh_misc">=</code> apr_pcalloc<code class="sh_misc">(</code>pool<code class="sh_misc">,</code> <code class="sh_declare">sizeof</code><code class="sh_misc">(</code>example_config<code class="sh_misc">)</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
-    <code class="sh_declare">if</code><code class="sh_misc">(</code>cfg<code class="sh_misc">)</code> <code class="sh_misc">{</code>
-        <code class="sh_comment">/* Set some default values */</code>
-        <code class="sh_function">strcpy</code><code class="sh_misc">(</code>cfg<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">context</code><code class="sh_misc">,</code> x<code class="sh_misc">)</code><code class="sh_misc">;</code>
-        cfg<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">enabled</code> <code class="sh_misc">=</code> <code class="sh_reference">0</code><code class="sh_misc">;</code>
-        cfg<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">path</code> <code class="sh_misc">=</code> <code class="sh_character">"</code><code class="sh_value">/foo/bar</code><code class="sh_character">"</code><code class="sh_misc">;</code>
-        cfg<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">typeOfAction</code> <code class="sh_misc">=</code> <code class="sh_reference">0x11</code><code class="sh_misc">;</code>
-    <code class="sh_misc">}</code>
-    <code class="sh_declare">return</code> cfg<code class="sh_misc">;</code>
-<code class="sh_misc">}</code>
-</p>
+<pre class="sh_c">
+void* example_create_dir_conf(apr_pool_t* pool, char* context) {
+    context = context ? context : "(undefined context)";
+    example_config *cfg = apr_pcalloc(pool, sizeof(example_config));
+    if(cfg) {
+        /* Set some default values */
+        strcpy(cfg->context, x);
+        cfg->enabled = 0;
+        cfg->path = "/foo/bar";
+        cfg->typeOfAction = 0x11;
+    }
+    return cfg;
+}
+</pre>
 <!-- END EXAMPLE CODE -->
 
 
@@ -1272,19 +1270,19 @@ two configurations and decide how they are to be merged:</p>
 
 
 <!-- BEGIN EXAMPLE CODE -->
-<p class="source">
-<code class="sh_declare">void</code><code class="sh_misc">*</code> merge_dir_conf<code class="sh_misc">(</code>apr_pool_t<code class="sh_misc">*</code> pool<code class="sh_misc">,</code> <code class="sh_declare">void</code><code class="sh_misc">*</code> BASE<code class="sh_misc">,</code> <code class="sh_declare">void</code><code class="sh_misc">*</code> ADD<code class="sh_misc">)</code> <code class="sh_misc">{</code>
-    example_config<code class="sh_misc">*</code> base <code class="sh_misc">=</code> <code class="sh_misc">(</code>example_config <code class="sh_misc">*</code><code class="sh_misc">)</code> BASE <code class="sh_misc">;</code>
-    example_config<code class="sh_misc">*</code> add <code class="sh_misc">=</code> <code class="sh_misc">(</code>example_config <code class="sh_misc">*</code><code class="sh_misc">)</code> ADD <code class="sh_misc">;</code>
-    example_config<code class="sh_misc">*</code> conf <code class="sh_misc">=</code> <code class="sh_misc">(</code>example_config <code class="sh_misc">*</code><code class="sh_misc">)</code> create_dir_conf<code class="sh_misc">(</code>pool<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">Merged configuration</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
+<pre class="sh_c">
+void* merge_dir_conf(apr_pool_t* pool, void* BASE, void* ADD) {
+    example_config* base = (example_config *) BASE ;
+    example_config* add = (example_config *) ADD ;
+    example_config* conf = (example_config *) create_dir_conf(pool, "Merged configuration");
     
-    conf<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">enabled</code> <code class="sh_misc">=</code> <code class="sh_misc">(</code> add<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">enabled</code> <code class="sh_misc">=</code><code class="sh_misc">=</code> <code class="sh_reference">0</code> <code class="sh_misc">)</code> <code class="sh_misc">?</code> base<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">enabled</code> <code class="sh_misc">:</code> add<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">enabled</code> <code class="sh_misc">;</code>
-    conf<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">typeOfAction</code> <code class="sh_misc">=</code> add<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">typeOfAction</code> <code class="sh_misc">?</code> add<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">typeOfAction</code> <code class="sh_misc">:</code> base<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">typeOfAction</code><code class="sh_misc">;</code>
-    <code class="sh_function">strcpy</code><code class="sh_misc">(</code>conf<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">path</code><code class="sh_misc">,</code> <code class="sh_function">strlen</code><code class="sh_misc">(</code>add<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">path</code><code class="sh_misc">)</code> <code class="sh_misc">?</code> add<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">path</code> <code class="sh_misc">:</code> base<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">path</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
+    conf->enabled = ( add->enabled == 0 ) ? base->enabled : add->enabled ;
+    conf->typeOfAction = add->typeOfAction ? add->typeOfAction : base->typeOfAction;
+    strcpy(conf->path, strlen(add->path) ? add->path : base->path);
     
-    <code class="sh_declare">return</code> conf <code class="sh_misc">;</code>
-<code class="sh_misc">}</code>
-</p>
+    return conf ;
+}
+</pre>
 <!-- END EXAMPLE CODE -->
 
 
@@ -1322,232 +1320,232 @@ added some prototypes to keep the compiler happy:
 </p>
 
 <!-- BEGIN EXAMPLE CODE -->
-<p class="source">
-<code class="sh_comment">/*$6</code>
-<code class="sh_comment">&#xa0;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++</code>
-<code class="sh_comment">&#xa0;* mod_example_config.c</code>
-<code class="sh_comment">&#xa0;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++</code>
-<code class="sh_comment">&#xa0;*/</code>
+<pre class="sh_c">
+/*$6
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ * mod_example_config.c
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ */
 
 
-<code class="sh_function">#</code><code class="sh_function">include </code><code class="sh_character">&lt;</code><code class="sh_reference">stdio.h</code><code class="sh_character">></code>
-<code class="sh_function">#</code><code class="sh_function">include </code><code class="sh_character">"</code><code class="sh_reference">apr_hash.h</code><code class="sh_character">"</code>
-<code class="sh_function">#</code><code class="sh_function">include </code><code class="sh_character">"</code><code class="sh_reference">ap_config.h</code><code class="sh_character">"</code>
-<code class="sh_function">#</code><code class="sh_function">include </code><code class="sh_character">"</code><code class="sh_reference">ap_provider.h</code><code class="sh_character">"</code>
-<code class="sh_function">#</code><code class="sh_function">include </code><code class="sh_character">"</code><code class="sh_reference">httpd.h</code><code class="sh_character">"</code>
-<code class="sh_function">#</code><code class="sh_function">include </code><code class="sh_character">"</code><code class="sh_reference">http_core.h</code><code class="sh_character">"</code>
-<code class="sh_function">#</code><code class="sh_function">include </code><code class="sh_character">"</code><code class="sh_reference">http_config.h</code><code class="sh_character">"</code>
-<code class="sh_function">#</code><code class="sh_function">include </code><code class="sh_character">"</code><code class="sh_reference">http_log.h</code><code class="sh_character">"</code>
-<code class="sh_function">#</code><code class="sh_function">include </code><code class="sh_character">"</code><code class="sh_reference">http_protocol.h</code><code class="sh_character">"</code>
-<code class="sh_function">#</code><code class="sh_function">include </code><code class="sh_character">"</code><code class="sh_reference">http_request.h</code><code class="sh_character">"</code>
+#include &lt;stdio.h&gt;
+#include "apr_hash.h"
+#include "ap_config.h"
+#include "ap_provider.h"
+#include "httpd.h"
+#include "http_core.h"
+#include "http_config.h"
+#include "http_log.h"
+#include "http_protocol.h"
+#include "http_request.h"
 
-<code class="sh_comment">/*$1</code>
-<code class="sh_comment">&#xa0;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</code>
-<code class="sh_comment">&#xa0;&#xa0;&#xa0;&#xa0;Configuration structure</code>
-<code class="sh_comment">&#xa0;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</code>
-<code class="sh_comment">&#xa0;*/</code>
+/*$1
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Configuration structure
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ */
 
-<code class="sh_declare">typedef</code> <code class="sh_declare">struct</code>
-<code class="sh_misc">{</code>
-    <code class="sh_declare">char</code>    context<code class="sh_misc">[</code><code class="sh_reference">256</code><code class="sh_misc">]</code><code class="sh_misc">;</code>
-    <code class="sh_declare">char</code>    path<code class="sh_misc">[</code><code class="sh_reference">256</code><code class="sh_misc">]</code><code class="sh_misc">;</code>
-    <code class="sh_declare">int</code>     typeOfAction<code class="sh_misc">;</code>
-    <code class="sh_declare">int</code>     enabled<code class="sh_misc">;</code>
-<code class="sh_misc">}</code> example_config<code class="sh_misc">;</code>
+typedef struct
+{
+    char    context[256];
+    char    path[256];
+    int     typeOfAction;
+    int     enabled;
+} example_config;
 
-<code class="sh_comment">/*$1</code>
-<code class="sh_comment">&#xa0;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</code>
-<code class="sh_comment">&#xa0;&#xa0;&#xa0;&#xa0;Prototypes</code>
-<code class="sh_comment">&#xa0;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</code>
-<code class="sh_comment">&#xa0;*/</code>
+/*$1
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Prototypes
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ */
 
-<code class="sh_declare">static</code> <code class="sh_declare">int</code>    example_handler<code class="sh_misc">(</code>request_rec <code class="sh_misc">*</code>r<code class="sh_misc">)</code><code class="sh_misc">;</code>
-<code class="sh_declare">const</code> <code class="sh_declare">char</code>    <code class="sh_misc">*</code>example_set_enabled<code class="sh_misc">(</code>cmd_parms <code class="sh_misc">*</code>cmd<code class="sh_misc">,</code> <code class="sh_declare">void</code> <code class="sh_misc">*</code>cfg<code class="sh_misc">,</code> <code class="sh_declare">const</code> <code class="sh_declare">char</code> <code class="sh_misc">*</code>arg<code class="sh_misc">)</code><code class="sh_misc">;</code>
-<code class="sh_declare">const</code> <code class="sh_declare">char</code>    <code class="sh_misc">*</code>example_set_path<code class="sh_misc">(</code>cmd_parms <code class="sh_misc">*</code>cmd<code class="sh_misc">,</code> <code class="sh_declare">void</code> <code class="sh_misc">*</code>cfg<code class="sh_misc">,</code> <code class="sh_declare">const</code> <code class="sh_declare">char</code> <code class="sh_misc">*</code>arg<code class="sh_misc">)</code><code class="sh_misc">;</code>
-<code class="sh_declare">const</code> <code class="sh_declare">char</code>    <code class="sh_misc">*</code>example_set_action<code class="sh_misc">(</code>cmd_parms <code class="sh_misc">*</code>cmd<code class="sh_misc">,</code> <code class="sh_declare">void</code> <code class="sh_misc">*</code>cfg<code class="sh_misc">,</code> <code class="sh_declare">const</code> <code class="sh_declare">char</code> <code class="sh_misc">*</code>arg1<code class="sh_misc">,</code> <code class="sh_declare">const</code> <code class="sh_declare">char</code> <code class="sh_misc">*</code>arg2<code class="sh_misc">)</code><code class="sh_misc">;</code>
-<code class="sh_declare">void</code>          <code class="sh_misc">*</code>create_dir_conf<code class="sh_misc">(</code>apr_pool_t <code class="sh_misc">*</code>pool<code class="sh_misc">,</code> <code class="sh_declare">char</code> <code class="sh_misc">*</code>context<code class="sh_misc">)</code><code class="sh_misc">;</code>
-<code class="sh_declare">void</code>          <code class="sh_misc">*</code>merge_dir_conf<code class="sh_misc">(</code>apr_pool_t <code class="sh_misc">*</code>pool<code class="sh_misc">,</code> <code class="sh_declare">void</code> <code class="sh_misc">*</code>BASE<code class="sh_misc">,</code> <code class="sh_declare">void</code> <code class="sh_misc">*</code>ADD<code class="sh_misc">)</code><code class="sh_misc">;</code>
-<code class="sh_declare">static</code> <code class="sh_declare">void</code>   register_hooks<code class="sh_misc">(</code>apr_pool_t <code class="sh_misc">*</code>pool<code class="sh_misc">)</code><code class="sh_misc">;</code>
+static int    example_handler(request_rec *r);
+const char    *example_set_enabled(cmd_parms *cmd, void *cfg, const char *arg);
+const char    *example_set_path(cmd_parms *cmd, void *cfg, const char *arg);
+const char    *example_set_action(cmd_parms *cmd, void *cfg, const char *arg1, const char *arg2);
+void          *create_dir_conf(apr_pool_t *pool, char *context);
+void          *merge_dir_conf(apr_pool_t *pool, void *BASE, void *ADD);
+static void   register_hooks(apr_pool_t *pool);
 
-<code class="sh_comment">/*$1</code>
-<code class="sh_comment">&#xa0;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</code>
-<code class="sh_comment">&#xa0;&#xa0;&#xa0;&#xa0;Configuration directives</code>
-<code class="sh_comment">&#xa0;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</code>
-<code class="sh_comment">&#xa0;*/</code>
+/*$1
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Configuration directives
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ */
 
-<code class="sh_declare">static</code> <code class="sh_declare">const</code> command_rec    directives<code class="sh_misc">[</code><code class="sh_misc">]</code> <code class="sh_misc">=</code>
-<code class="sh_misc">{</code>
-    <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__CONFIG.html#ga07c7d22ae17805e61204463326cf9c34">AP_INIT_TAKE1</a><code class="sh_misc">(</code><code class="sh_character">"</code><code class="sh_value">exampleEnabled</code><code class="sh_character">"</code><code class="sh_misc">,</code> example_set_enabled<code class="sh_misc">,</code> <code class="sh_constant">NULL</code><code class="sh_misc">,</code> ACCESS_CONF<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">Enable or disable mod_example</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">,</code>
-    <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__CONFIG.html#ga07c7d22ae17805e61204463326cf9c34">AP_INIT_TAKE1</a><code class="sh_misc">(</code><code class="sh_character">"</code><code class="sh_value">examplePath</code><code class="sh_character">"</code><code class="sh_misc">,</code> example_set_path<code class="sh_misc">,</code> <code class="sh_constant">NULL</code><code class="sh_misc">,</code> ACCESS_CONF<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">The path to whatever</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">,</code>
-    <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__CONFIG.html#gafaec43534fcf200f37d9fecbf9247c21">AP_INIT_TAKE2</a><code class="sh_misc">(</code><code class="sh_character">"</code><code class="sh_value">exampleAction</code><code class="sh_character">"</code><code class="sh_misc">,</code> example_set_action<code class="sh_misc">,</code> <code class="sh_constant">NULL</code><code class="sh_misc">,</code> ACCESS_CONF<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">Special action value!</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">,</code>
-    <code class="sh_misc">{</code> <code class="sh_constant">NULL</code> <code class="sh_misc">}</code>
-<code class="sh_misc">}</code><code class="sh_misc">;</code>
+static const command_rec    directives[] =
+{
+    AP_INIT_TAKE1(&quot;exampleEnabled&quot;, example_set_enabled, NULL, ACCESS_CONF, &quot;Enable or disable mod_example&quot;),
+    AP_INIT_TAKE1(&quot;examplePath&quot;, example_set_path, NULL, ACCESS_CONF, &quot;The path to whatever&quot;),
+    AP_INIT_TAKE2(&quot;exampleAction&quot;, example_set_action, NULL, ACCESS_CONF, &quot;Special action value!&quot;),
+    { NULL }
+};
 
-<code class="sh_comment">/*$1</code>
-<code class="sh_comment">&#xa0;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</code>
-<code class="sh_comment">&#xa0;&#xa0;&#xa0;&#xa0;Our name tag</code>
-<code class="sh_comment">&#xa0;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</code>
-<code class="sh_comment">&#xa0;*/</code>
+/*$1
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Our name tag
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ */
 
-module AP_MODULE_DECLARE_DATA    example_module <code class="sh_misc">=</code>
-<code class="sh_misc">{</code>
-    STANDARD20_MODULE_STUFF<code class="sh_misc">,</code>
-    create_dir_conf<code class="sh_misc">,</code>    <code class="sh_comment">/* Per-directory configuration handler */</code>
-    merge_dir_conf<code class="sh_misc">,</code>     <code class="sh_comment">/* Merge handler for per-directory configurations */</code>
-    <code class="sh_constant">NULL</code><code class="sh_misc">,</code>               <code class="sh_comment">/* Per-server configuration handler */</code>
-    <code class="sh_constant">NULL</code><code class="sh_misc">,</code>               <code class="sh_comment">/* Merge handler for per-server configurations */</code>
-    directives<code class="sh_misc">,</code>         <code class="sh_comment">/* Any directives we may have for httpd */</code>
-    register_hooks      <code class="sh_comment">/* Our hook registering function */</code>
-<code class="sh_misc">}</code><code class="sh_misc">;</code>
+module AP_MODULE_DECLARE_DATA    example_module =
+{
+    STANDARD20_MODULE_STUFF,
+    create_dir_conf,    /* Per-directory configuration handler */
+    merge_dir_conf,     /* Merge handler for per-directory configurations */
+    NULL,               /* Per-server configuration handler */
+    NULL,               /* Merge handler for per-server configurations */
+    directives,         /* Any directives we may have for httpd */
+    register_hooks      /* Our hook registering function */
+};
 
-<code class="sh_comment">/*</code>
-<code class="sh_comment">&#xa0;=======================================================================================================================</code>
-<code class="sh_comment">&#xa0;&#xa0;&#xa0;&#xa0;Hook registration function</code>
-<code class="sh_comment">&#xa0;=======================================================================================================================</code>
-<code class="sh_comment">&#xa0;*/</code>
-<code class="sh_declare">static</code> <code class="sh_declare">void</code> register_hooks<code class="sh_misc">(</code>apr_pool_t <code class="sh_misc">*</code>pool<code class="sh_misc">)</code>
-<code class="sh_misc">{</code>
-    ap_hook_handler<code class="sh_misc">(</code>example_handler<code class="sh_misc">,</code> <code class="sh_constant">NULL</code><code class="sh_misc">,</code> <code class="sh_constant">NULL</code><code class="sh_misc">,</code> APR_HOOK_LAST<code class="sh_misc">)</code><code class="sh_misc">;</code>
-<code class="sh_misc">}</code>
+/*
+ =======================================================================================================================
+    Hook registration function
+ =======================================================================================================================
+ */
+static void register_hooks(apr_pool_t *pool)
+{
+    ap_hook_handler(example_handler, NULL, NULL, APR_HOOK_LAST);
+}
 
-<code class="sh_comment">/*</code>
-<code class="sh_comment">&#xa0;=======================================================================================================================</code>
-<code class="sh_comment">&#xa0;&#xa0;&#xa0;&#xa0;Our example web service handler</code>
-<code class="sh_comment">&#xa0;=======================================================================================================================</code>
-<code class="sh_comment">&#xa0;*/</code>
-<code class="sh_declare">static</code> <code class="sh_declare">int</code> example_handler<code class="sh_misc">(</code>request_rec <code class="sh_misc">*</code>r<code class="sh_misc">)</code>
-<code class="sh_misc">{</code>
-    <code class="sh_declare">if</code><code class="sh_misc">(</code><code class="sh_misc">!</code>r<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">handler</code> <code class="sh_misc">|</code><code class="sh_misc">|</code> <code class="sh_function">strcmp</code><code class="sh_misc">(</code>r<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">handler</code><code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">example-handler</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">)</code> <code class="sh_declare">return</code><code class="sh_misc">(</code>DECLINED<code class="sh_misc">)</code><code class="sh_misc">;</code>
+/*
+ =======================================================================================================================
+    Our example web service handler
+ =======================================================================================================================
+ */
+static int example_handler(request_rec *r)
+{
+    if(!r-&gt;handler || strcmp(r-&gt;handler, &quot;example-handler&quot;)) return(DECLINED);
 
-    <code class="sh_comment">/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/</code>
-    example_config    <code class="sh_misc">*</code>config <code class="sh_misc">=</code> <code class="sh_misc">(</code>example_config <code class="sh_misc">*</code><code class="sh_misc">)</code> ap_get_module_config<code class="sh_misc">(</code>r<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">per_dir_config</code><code class="sh_misc">,</code> <code class="sh_misc">&amp;</code>example_module<code class="sh_misc">)</code><code class="sh_misc">;</code>
-    <code class="sh_comment">/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/</code>
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+    example_config    *config = (example_config *) ap_get_module_config(r-&gt;per_dir_config, &amp;example_module);
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-    ap_set_content_type<code class="sh_misc">(</code>r<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">text/plain</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
-    ap_rprintf<code class="sh_misc">(</code>r<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">Enabled: </code><code class="sh_reference">%u</code><code class="sh_reference">\n</code><code class="sh_character">"</code><code class="sh_misc">,</code> config<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">enabled</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
-    ap_rprintf<code class="sh_misc">(</code>r<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">Path: </code><code class="sh_reference">%s</code><code class="sh_reference">\n</code><code class="sh_character">"</code><code class="sh_misc">,</code> config<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">path</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
-    ap_rprintf<code class="sh_misc">(</code>r<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">TypeOfAction: </code><code class="sh_reference">%x</code><code class="sh_reference">\n</code><code class="sh_character">"</code><code class="sh_misc">,</code> config<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">typeOfAction</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
-    ap_rprintf<code class="sh_misc">(</code>r<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">Context: </code><code class="sh_reference">%s</code><code class="sh_reference">\n</code><code class="sh_character">"</code><code class="sh_misc">,</code> config<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">context</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
-    <code class="sh_declare">return</code> OK<code class="sh_misc">;</code>
-<code class="sh_misc">}</code>
+    ap_set_content_type(r, &quot;text/plain&quot;);
+    ap_rprintf(r, &quot;Enabled: %u\n&quot;, config-&gt;enabled);
+    ap_rprintf(r, &quot;Path: %s\n&quot;, config-&gt;path);
+    ap_rprintf(r, &quot;TypeOfAction: %x\n&quot;, config-&gt;typeOfAction);
+    ap_rprintf(r, &quot;Context: %s\n&quot;, config-&gt;context);
+    return OK;
+}
 
-<code class="sh_comment">/*</code>
-<code class="sh_comment">&#xa0;=======================================================================================================================</code>
-<code class="sh_comment">&#xa0;&#xa0;&#xa0;&#xa0;Handler for the "exambleEnabled" directive</code>
-<code class="sh_comment">&#xa0;=======================================================================================================================</code>
-<code class="sh_comment">&#xa0;*/</code>
-<code class="sh_declare">const</code> <code class="sh_declare">char</code> <code class="sh_misc">*</code>example_set_enabled<code class="sh_misc">(</code>cmd_parms <code class="sh_misc">*</code>cmd<code class="sh_misc">,</code> <code class="sh_declare">void</code> <code class="sh_misc">*</code>cfg<code class="sh_misc">,</code> <code class="sh_declare">const</code> <code class="sh_declare">char</code> <code class="sh_misc">*</code>arg<code class="sh_misc">)</code>
-<code class="sh_misc">{</code>
-    <code class="sh_comment">/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/</code>
-    example_config    <code class="sh_misc">*</code>conf <code class="sh_misc">=</code> <code class="sh_misc">(</code>example_config <code class="sh_misc">*</code><code class="sh_misc">)</code> cfg<code class="sh_misc">;</code>
-    <code class="sh_comment">/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/</code>
+/*
+ =======================================================================================================================
+    Handler for the &quot;exambleEnabled&quot; directive
+ =======================================================================================================================
+ */
+const char *example_set_enabled(cmd_parms *cmd, void *cfg, const char *arg)
+{
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+    example_config    *conf = (example_config *) cfg;
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-    <code class="sh_declare">if</code><code class="sh_misc">(</code>conf<code class="sh_misc">)</code>
-    <code class="sh_misc">{</code>
-        <code class="sh_declare">if</code><code class="sh_misc">(</code><code class="sh_misc">!</code>strcasecmp<code class="sh_misc">(</code>arg<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">on</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">)</code>
-            conf<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">enabled</code> <code class="sh_misc">=</code> <code class="sh_reference">1</code><code class="sh_misc">;</code>
-        <code class="sh_declare">else</code>
-            conf<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">enabled</code> <code class="sh_misc">=</code> <code class="sh_reference">0</code><code class="sh_misc">;</code>
-    <code class="sh_misc">}</code>
+    if(conf)
+    {
+        if(!strcasecmp(arg, &quot;on&quot;))
+            conf-&gt;enabled = 1;
+        else
+            conf-&gt;enabled = 0;
+    }
 
-    <code class="sh_declare">return</code> <code class="sh_constant">NULL</code><code class="sh_misc">;</code>
-<code class="sh_misc">}</code>
+    return NULL;
+}
 
-<code class="sh_comment">/*</code>
-<code class="sh_comment">&#xa0;=======================================================================================================================</code>
-<code class="sh_comment">&#xa0;&#xa0;&#xa0;&#xa0;Handler for the "examplePath" directive</code>
-<code class="sh_comment">&#xa0;=======================================================================================================================</code>
-<code class="sh_comment">&#xa0;*/</code>
-<code class="sh_declare">const</code> <code class="sh_declare">char</code> <code class="sh_misc">*</code>example_set_path<code class="sh_misc">(</code>cmd_parms <code class="sh_misc">*</code>cmd<code class="sh_misc">,</code> <code class="sh_declare">void</code> <code class="sh_misc">*</code>cfg<code class="sh_misc">,</code> <code class="sh_declare">const</code> <code class="sh_declare">char</code> <code class="sh_misc">*</code>arg<code class="sh_misc">)</code>
-<code class="sh_misc">{</code>
-    <code class="sh_comment">/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/</code>
-    example_config    <code class="sh_misc">*</code>conf <code class="sh_misc">=</code> <code class="sh_misc">(</code>example_config <code class="sh_misc">*</code><code class="sh_misc">)</code> cfg<code class="sh_misc">;</code>
-    <code class="sh_comment">/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/</code>
+/*
+ =======================================================================================================================
+    Handler for the &quot;examplePath&quot; directive
+ =======================================================================================================================
+ */
+const char *example_set_path(cmd_parms *cmd, void *cfg, const char *arg)
+{
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+    example_config    *conf = (example_config *) cfg;
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-    <code class="sh_declare">if</code><code class="sh_misc">(</code>conf<code class="sh_misc">)</code>
-    <code class="sh_misc">{</code>
-        <code class="sh_function">strcpy</code><code class="sh_misc">(</code>conf<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">path</code><code class="sh_misc">,</code> arg<code class="sh_misc">)</code><code class="sh_misc">;</code>
-    <code class="sh_misc">}</code>
+    if(conf)
+    {
+        strcpy(conf-&gt;path, arg);
+    }
 
-    <code class="sh_declare">return</code> <code class="sh_constant">NULL</code><code class="sh_misc">;</code>
-<code class="sh_misc">}</code>
+    return NULL;
+}
 
-<code class="sh_comment">/*</code>
-<code class="sh_comment">&#xa0;=======================================================================================================================</code>
-<code class="sh_comment">&#xa0;&#xa0;&#xa0;&#xa0;Handler for the "exampleAction" directive ;</code>
-<code class="sh_comment">&#xa0;&#xa0;&#xa0;&#xa0;Let's pretend this one takes one argument (file or db), and a second (deny or allow), ;</code>
-<code class="sh_comment">&#xa0;&#xa0;&#xa0;&#xa0;and we store it in a bit-wise manner.</code>
-<code class="sh_comment">&#xa0;=======================================================================================================================</code>
-<code class="sh_comment">&#xa0;*/</code>
-<code class="sh_declare">const</code> <code class="sh_declare">char</code> <code class="sh_misc">*</code>example_set_action<code class="sh_misc">(</code>cmd_parms <code class="sh_misc">*</code>cmd<code class="sh_misc">,</code> <code class="sh_declare">void</code> <code class="sh_misc">*</code>cfg<code class="sh_misc">,</code> <code class="sh_declare">const</code> <code class="sh_declare">char</code> <code class="sh_misc">*</code>arg1<code class="sh_misc">,</code> <code class="sh_declare">const</code> <code class="sh_declare">char</code> <code class="sh_misc">*</code>arg2<code class="sh_misc">)</code>
-<code class="sh_misc">{</code>
-    <code class="sh_comment">/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/</code>
-    example_config    <code class="sh_misc">*</code>conf <code class="sh_misc">=</code> <code class="sh_misc">(</code>example_config <code class="sh_misc">*</code><code class="sh_misc">)</code> cfg<code class="sh_misc">;</code>
-    <code class="sh_comment">/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/</code>
+/*
+ =======================================================================================================================
+    Handler for the &quot;exampleAction&quot; directive ;
+    Let's pretend this one takes one argument (file or db), and a second (deny or allow), ;
+    and we store it in a bit-wise manner.
+ =======================================================================================================================
+ */
+const char *example_set_action(cmd_parms *cmd, void *cfg, const char *arg1, const char *arg2)
+{
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+    example_config    *conf = (example_config *) cfg;
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-    <code class="sh_declare">if</code><code class="sh_misc">(</code>conf<code class="sh_misc">)</code>
-    <code class="sh_misc">{</code>
-        <code class="sh_misc">{</code>
-            <code class="sh_declare">if</code><code class="sh_misc">(</code><code class="sh_misc">!</code>strcasecmp<code class="sh_misc">(</code>arg1<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">file</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">)</code>
-                conf<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">typeOfAction</code> <code class="sh_misc">=</code> <code class="sh_reference">0x01</code><code class="sh_misc">;</code>
-            <code class="sh_declare">else</code>
-                conf<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">typeOfAction</code> <code class="sh_misc">=</code> <code class="sh_reference">0x02</code><code class="sh_misc">;</code>
-            <code class="sh_declare">if</code><code class="sh_misc">(</code><code class="sh_misc">!</code>strcasecmp<code class="sh_misc">(</code>arg2<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">deny</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">)</code>
-                conf<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">typeOfAction</code> <code class="sh_misc">+</code><code class="sh_misc">=</code> <code class="sh_reference">0x10</code><code class="sh_misc">;</code>
-            <code class="sh_declare">else</code>
-                conf<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">typeOfAction</code> <code class="sh_misc">+</code><code class="sh_misc">=</code> <code class="sh_reference">0x20</code><code class="sh_misc">;</code>
-        <code class="sh_misc">}</code>
-    <code class="sh_misc">}</code>
+    if(conf)
+    {
+        {
+            if(!strcasecmp(arg1, &quot;file&quot;))
+                conf-&gt;typeOfAction = 0x01;
+            else
+                conf-&gt;typeOfAction = 0x02;
+            if(!strcasecmp(arg2, &quot;deny&quot;))
+                conf-&gt;typeOfAction += 0x10;
+            else
+                conf-&gt;typeOfAction += 0x20;
+        }
+    }
 
-    <code class="sh_declare">return</code> <code class="sh_constant">NULL</code><code class="sh_misc">;</code>
-<code class="sh_misc">}</code>
+    return NULL;
+}
 
-<code class="sh_comment">/*</code>
-<code class="sh_comment">&#xa0;=======================================================================================================================</code>
-<code class="sh_comment">&#xa0;&#xa0;&#xa0;&#xa0;Function for creating new configurations for per-directory contexts</code>
-<code class="sh_comment">&#xa0;=======================================================================================================================</code>
-<code class="sh_comment">&#xa0;*/</code>
-<code class="sh_declare">void</code> <code class="sh_misc">*</code>create_dir_conf<code class="sh_misc">(</code>apr_pool_t <code class="sh_misc">*</code>pool<code class="sh_misc">,</code> <code class="sh_declare">char</code> <code class="sh_misc">*</code>context<code class="sh_misc">)</code>
-<code class="sh_misc">{</code>
-    context <code class="sh_misc">=</code> context <code class="sh_misc">?</code> context <code class="sh_misc">:</code> <code class="sh_character">"</code><code class="sh_value">Newly created configuration</code><code class="sh_character">"</code><code class="sh_misc">;</code>
+/*
+ =======================================================================================================================
+    Function for creating new configurations for per-directory contexts
+ =======================================================================================================================
+ */
+void *create_dir_conf(apr_pool_t *pool, char *context)
+{
+    context = context ? context : &quot;Newly created configuration&quot;;
 
-    <code class="sh_comment">/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/</code>
-    example_config    <code class="sh_misc">*</code>cfg <code class="sh_misc">=</code> apr_pcalloc<code class="sh_misc">(</code>pool<code class="sh_misc">,</code> <code class="sh_declare">sizeof</code><code class="sh_misc">(</code>example_config<code class="sh_misc">)</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
-    <code class="sh_comment">/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/</code>
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+    example_config    *cfg = apr_pcalloc(pool, sizeof(example_config));
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-    <code class="sh_declare">if</code><code class="sh_misc">(</code>cfg<code class="sh_misc">)</code>
-    <code class="sh_misc">{</code>
-        <code class="sh_misc">{</code>
-            <code class="sh_comment">/* Set some default values */</code>
-            <code class="sh_function">strcpy</code><code class="sh_misc">(</code>cfg<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">context</code><code class="sh_misc">,</code> context<code class="sh_misc">)</code><code class="sh_misc">;</code>
-            cfg<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">enabled</code> <code class="sh_misc">=</code> <code class="sh_reference">0</code><code class="sh_misc">;</code>
-            <code class="sh_function">memset</code><code class="sh_misc">(</code>cfg<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">path</code><code class="sh_misc">,</code> <code class="sh_reference">0</code><code class="sh_misc">,</code> <code class="sh_reference">256</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
-            cfg<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">typeOfAction</code> <code class="sh_misc">=</code> <code class="sh_reference">0x00</code><code class="sh_misc">;</code>
-        <code class="sh_misc">}</code>
-    <code class="sh_misc">}</code>
+    if(cfg)
+    {
+        {
+            /* Set some default values */
+            strcpy(cfg-&gt;context, context);
+            cfg-&gt;enabled = 0;
+            memset(cfg-&gt;path, 0, 256);
+            cfg-&gt;typeOfAction = 0x00;
+        }
+    }
 
-    <code class="sh_declare">return</code> cfg<code class="sh_misc">;</code>
-<code class="sh_misc">}</code>
+    return cfg;
+}
 
-<code class="sh_comment">/*</code>
-<code class="sh_comment">&#xa0;=======================================================================================================================</code>
-<code class="sh_comment">&#xa0;&#xa0;&#xa0;&#xa0;Merging function for configurations</code>
-<code class="sh_comment">&#xa0;=======================================================================================================================</code>
-<code class="sh_comment">&#xa0;*/</code>
-<code class="sh_declare">void</code> <code class="sh_misc">*</code>merge_dir_conf<code class="sh_misc">(</code>apr_pool_t <code class="sh_misc">*</code>pool<code class="sh_misc">,</code> <code class="sh_declare">void</code> <code class="sh_misc">*</code>BASE<code class="sh_misc">,</code> <code class="sh_declare">void</code> <code class="sh_misc">*</code>ADD<code class="sh_misc">)</code>
-<code class="sh_misc">{</code>
-    <code class="sh_comment">/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/</code>
-    example_config    <code class="sh_misc">*</code>base <code class="sh_misc">=</code> <code class="sh_misc">(</code>example_config <code class="sh_misc">*</code><code class="sh_misc">)</code> BASE<code class="sh_misc">;</code>
-    example_config    <code class="sh_misc">*</code>add <code class="sh_misc">=</code> <code class="sh_misc">(</code>example_config <code class="sh_misc">*</code><code class="sh_misc">)</code> ADD<code class="sh_misc">;</code>
-    example_config    <code class="sh_misc">*</code>conf <code class="sh_misc">=</code> <code class="sh_misc">(</code>example_config <code class="sh_misc">*</code><code class="sh_misc">)</code> create_dir_conf<code class="sh_misc">(</code>pool<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">Merged configuration</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
-    <code class="sh_comment">/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/</code>
+/*
+ =======================================================================================================================
+    Merging function for configurations
+ =======================================================================================================================
+ */
+void *merge_dir_conf(apr_pool_t *pool, void *BASE, void *ADD)
+{
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+    example_config    *base = (example_config *) BASE;
+    example_config    *add = (example_config *) ADD;
+    example_config    *conf = (example_config *) create_dir_conf(pool, &quot;Merged configuration&quot;);
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-    conf<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">enabled</code> <code class="sh_misc">=</code> <code class="sh_misc">(</code>add<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">enabled</code> <code class="sh_misc">=</code><code class="sh_misc">=</code> <code class="sh_reference">0</code><code class="sh_misc">)</code> <code class="sh_misc">?</code> base<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">enabled</code> <code class="sh_misc">:</code> add<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">enabled</code><code class="sh_misc">;</code>
-    conf<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">typeOfAction</code> <code class="sh_misc">=</code> add<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">typeOfAction</code> <code class="sh_misc">?</code> add<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">typeOfAction</code> <code class="sh_misc">:</code> base<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">typeOfAction</code><code class="sh_misc">;</code>
-    <code class="sh_function">strcpy</code><code class="sh_misc">(</code>conf<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">path</code><code class="sh_misc">,</code> <code class="sh_function">strlen</code><code class="sh_misc">(</code>add<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">path</code><code class="sh_misc">)</code> <code class="sh_misc">?</code> add<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">path</code> <code class="sh_misc">:</code> base<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">path</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
-    <code class="sh_declare">return</code> conf<code class="sh_misc">;</code>
-<code class="sh_misc">}</code>
-</p>
+    conf-&gt;enabled = (add-&gt;enabled == 0) ? base-&gt;enabled : add-&gt;enabled;
+    conf-&gt;typeOfAction = add-&gt;typeOfAction ? add-&gt;typeOfAction : base-&gt;typeOfAction;
+    strcpy(conf-&gt;path, strlen(add-&gt;path) ? add-&gt;path : base-&gt;path);
+    return conf;
+}
+</pre>
 <!-- END EXAMPLE CODE -->
 
 
@@ -1573,33 +1571,33 @@ or check out the rest of our documentation for further tips.
 
 
 <!-- BEGIN EXAMPLE CODE -->
-<p class="source">
-<code class="sh_declare">const</code> <code class="sh_declare">char</code> <code class="sh_misc">*</code>read_post_value<code class="sh_misc">(</code><code class="sh_declare">const</code> apr_array_header_t <code class="sh_misc">*</code>fields<code class="sh_misc">,</code> <code class="sh_declare">const</code> <code class="sh_declare">char</code> <code class="sh_misc">*</code>key<code class="sh_misc">)</code> 
-<code class="sh_misc">{</code>
-    <code class="sh_comment">/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/</code>
-    <code class="sh_declare">int</code>                         i<code class="sh_misc">;</code>
-    apr_table_entry_t           <code class="sh_misc">*</code>e <code class="sh_misc">=</code> <code class="sh_reference">0</code><code class="sh_misc">;</code>
-    <code class="sh_comment">/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/</code>
-    e <code class="sh_misc">=</code> <code class="sh_misc">(</code>apr_table_entry_t <code class="sh_misc">*</code><code class="sh_misc">)</code> fields<code class="sh_misc">-</code><code class="sh_misc">></code>elts<code class="sh_misc">;</code>
-    <code class="sh_declare">for</code><code class="sh_misc">(</code>i <code class="sh_misc">=</code> <code class="sh_reference">0</code><code class="sh_misc">;</code> i <code class="sh_misc">&lt;</code> fields<code class="sh_misc">-</code><code class="sh_misc">></code>nelts<code class="sh_misc">;</code> i<code class="sh_misc">+</code><code class="sh_misc">+</code><code class="sh_misc">)</code> <code class="sh_misc">{</code>
-        <code class="sh_declare">if</code><code class="sh_misc">(</code><code class="sh_misc">!</code><code class="sh_function">strcmp</code><code class="sh_misc">(</code>e<code class="sh_misc">[</code>i<code class="sh_misc">]</code><code class="sh_misc">.</code>key<code class="sh_misc">,</code> key<code class="sh_misc">)</code><code class="sh_misc">)</code> <code class="sh_declare">return</code> e<code class="sh_misc">[</code>i<code class="sh_misc">]</code><code class="sh_misc">.</code>val<code class="sh_misc">;</code>
-    <code class="sh_misc">}</code>
-    <code class="sh_declare">return</code> <code class="sh_reference">0</code><code class="sh_misc">;</code>
-<code class="sh_misc">}</code>
-<code class="sh_declare">static</code> <code class="sh_declare">int</code> example_handler<code class="sh_misc">(</code>request_req <code class="sh_misc">*</code>r<code class="sh_misc">)</code> 
-<code class="sh_misc">{</code>
-    <code class="sh_comment">/*~~~~~~~~~~~~~~~~~~~~~~*/</code>
-    apr_array_header_t <code class="sh_misc">*</code>POST<code class="sh_misc">;</code>
-    <code class="sh_declare">const</code> <code class="sh_declare">char</code>         <code class="sh_misc">*</code>value<code class="sh_misc">;</code>
-    <code class="sh_comment">/*~~~~~~~~~~~~~~~~~~~~~~*/</code>
-    ap_parse_form_data<code class="sh_misc">(</code>r<code class="sh_misc">,</code> <code class="sh_constant">NULL</code><code class="sh_misc">,</code> <code class="sh_misc">&amp;</code>POST<code class="sh_misc">,</code> <code class="sh_misc">-</code><code class="sh_reference">1</code><code class="sh_misc">,</code> <code class="sh_reference">8192</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
+<pre class="sh_c">
+const char *read_post_value(const apr_array_header_t *fields, const char *key) 
+{
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+    int                         i;
+    apr_table_entry_t           *e = 0;
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+    e = (apr_table_entry_t *) fields-&gt;elts;
+    for(i = 0; i &lt; fields-&gt;nelts; i++) {
+        if(!strcmp(e[i].key, key)) return e[i].val;
+    }
+    return 0;
+}
+static int example_handler(request_req *r) 
+{
+    /*~~~~~~~~~~~~~~~~~~~~~~*/
+    apr_array_header_t *POST;
+    const char         *value;
+    /*~~~~~~~~~~~~~~~~~~~~~~*/
+    ap_parse_form_data(r, NULL, &amp;POST, -1, 8192);
     
-    value <code class="sh_misc">=</code> read_post_value<code class="sh_misc">(</code>POST<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">valueA</code><code class="sh_character">"</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
-    <code class="sh_declare">if</code> <code class="sh_misc">(</code><code class="sh_misc">!</code>value<code class="sh_misc">)</code> value <code class="sh_misc">=</code> <code class="sh_character">"</code><code class="sh_value">(undefined)</code><code class="sh_character">"</code><code class="sh_misc">;</code>
-    ap_rprintf<code class="sh_misc">(</code>r<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">The value of valueA is: </code><code class="sh_reference">%s</code><code class="sh_character">"</code><code class="sh_misc">,</code> value<code class="sh_misc">)</code><code class="sh_misc">;</code>
-    <code class="sh_declare">return</code> OK<code class="sh_misc">;</code>
-<code class="sh_misc">}</code>
-</p>
+    value = read_post_value(POST, &quot;valueA&quot;);
+    if (!value) value = &quot;(undefined)&quot;;
+    ap_rprintf(r, &quot;The value of valueA is: %s&quot;, value);
+    return OK;
+}
+</pre>
 <!-- END EXAMPLE CODE -->
 
 
@@ -1609,23 +1607,22 @@ or check out the rest of our documentation for further tips.
     
 
 <!-- BEGIN EXAMPLE CODE -->
-<p class="source">
-<code class="sh_declare">static</code> <code class="sh_declare">int</code> example_handler<code class="sh_misc">(</code>request_req <code class="sh_misc">*</code>r<code class="sh_misc">)</code> 
-<code class="sh_misc">{</code>
-    <code class="sh_comment">/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/</code>
-    <code class="sh_declare">const</code> apr_array_header_t    <code class="sh_misc">*</code>fields<code class="sh_misc">;</code>
-    <code class="sh_declare">int</code>                         i<code class="sh_misc">;</code>
-    apr_table_entry_t           <code class="sh_misc">*</code>e <code class="sh_misc">=</code> <code class="sh_reference">0</code><code class="sh_misc">;</code>
-    <code class="sh_comment">/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/</code>
+<pre class="sh_c">
+static int example_handler(request_req *r) 
+{
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+    const apr_array_header_t    *fields;
+    int                         i;
+    apr_table_entry_t           *e = 0;
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-    fields <code class="sh_misc">=</code> <a href="http://apr.apache.org/docs/apr/1.4/group__apr__tables.html#gaea3005541cce67481f48ab201b5c0cf3">apr_table_elts</a><code class="sh_misc">(</code>r<code class="sh_misc">-</code><code class="sh_misc">></code>headers_in<code class="sh_misc">)</code><code class="sh_misc">;</code>
-    e <code class="sh_misc">=</code> <code class="sh_misc">(</code>apr_table_entry_t <code class="sh_misc">*</code><code class="sh_misc">)</code> fields<code class="sh_misc">-</code><code class="sh_misc">></code>elts<code class="sh_misc">;</code>
-    <code class="sh_declare">for</code><code class="sh_misc">(</code>i <code class="sh_misc">=</code> <code class="sh_reference">0</code><code class="sh_misc">;</code> i <code class="sh_misc">&lt;</code> fields<code class="sh_misc">-</code><code class="sh_misc">></code>nelts<code class="sh_misc">;</code> i<code class="sh_misc">+</code><code class="sh_misc">+</code><code class="sh_misc">)</code> <code class="sh_misc">{</code>
-        ap_rprintf<code class="sh_misc">(</code>r<code class="sh_misc">,</code> <code class="sh_character">"</code><code class="sh_value">&lt;b></code><code class="sh_reference">%s</code><code class="sh_value">&lt;/b>: </code><code class="sh_reference">%s</code><code class="sh_value">&lt;br/></code><code class="sh_character">"</code><code class="sh_misc">,</code> e<code class="sh_misc">[</code>i<code class="sh_misc">]</code><code class="sh_misc">.</code>key<code class="sh_misc">,</code> e<code class="sh_misc">[</code>i<code class="sh_misc">]</code><code class="sh_misc">.</code>val<code class="sh_misc">)</code><code class="sh_misc">;</code>
-    <code class="sh_misc">}</code>
-    <code class="sh_declare">return</code> OK<code class="sh_misc">;</code>
-<code class="sh_misc">}</code>
-</p>
+    fields = apr_table_elts(r-&gt;headers_in);
+    e = (apr_table_entry_t *) fields-&gt;elts;
+    for(i = 0; i &lt; fields-&gt;nelts; i++) {
+        ap_rprintf(r, &quot;&lt;b&gt;%s&lt;/b&gt;: %s&lt;br/&gt;&quot;, e[i].key, e[i].val);
+    }
+    return OK;
+}</pre>
 <!-- END EXAMPLE CODE -->
 
 
@@ -1635,55 +1632,55 @@ or check out the rest of our documentation for further tips.
     
 
 <!-- BEGIN EXAMPLE CODE -->
-<p class="source">
-<code class="sh_declare">static</code> <code class="sh_declare">int</code> util_read<code class="sh_misc">(</code>request_rec <code class="sh_misc">*</code>r<code class="sh_misc">,</code> <code class="sh_declare">const</code> <code class="sh_declare">char</code> <code class="sh_misc">*</code><code class="sh_misc">*</code>rbuf<code class="sh_misc">,</code> apr_off_t <code class="sh_misc">*</code>size<code class="sh_misc">)</code>
-<code class="sh_misc">{</code>
-    <code class="sh_comment">/*~~~~~~~~*/</code>
-    <code class="sh_declare">int</code> rc <code class="sh_misc">=</code> OK<code class="sh_misc">;</code>
-    <code class="sh_comment">/*~~~~~~~~*/</code>
+<pre class="sh_c">
+static int util_read(request_rec *r, const char **rbuf, apr_off_t *size)
+{
+    /*~~~~~~~~*/
+    int rc = OK;
+    /*~~~~~~~~*/
 
-    <code class="sh_declare">if</code><code class="sh_misc">(</code><code class="sh_misc">(</code>rc <code class="sh_misc">=</code> ap_setup_client_block<code class="sh_misc">(</code>r<code class="sh_misc">,</code> REQUEST_CHUNKED_ERROR<code class="sh_misc">)</code><code class="sh_misc">)</code><code class="sh_misc">)</code> <code class="sh_misc">{</code>
-        <code class="sh_declare">return</code><code class="sh_misc">(</code>rc<code class="sh_misc">)</code><code class="sh_misc">;</code>
-    <code class="sh_misc">}</code>
+    if((rc = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR))) {
+        return(rc);
+    }
 
-    <code class="sh_declare">if</code><code class="sh_misc">(</code>ap_should_client_block<code class="sh_misc">(</code>r<code class="sh_misc">)</code><code class="sh_misc">)</code> <code class="sh_misc">{</code>
+    if(ap_should_client_block(r)) {
 
-        <code class="sh_comment">/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/</code>
-        <code class="sh_declare">char</code>         argsbuffer<code class="sh_misc">[</code>HUGE_STRING_LEN<code class="sh_misc">]</code><code class="sh_misc">;</code>
-        apr_off_t    rsize<code class="sh_misc">,</code> len_read<code class="sh_misc">,</code> rpos <code class="sh_misc">=</code> <code class="sh_reference">0</code><code class="sh_misc">;</code>
-        apr_off_t length <code class="sh_misc">=</code> r<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">remaining</code><code class="sh_misc">;</code>
-        <code class="sh_comment">/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/</code>
+        /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+        char         argsbuffer[HUGE_STRING_LEN];
+        apr_off_t    rsize, len_read, rpos = 0;
+        apr_off_t length = r-&gt;remaining;
+        /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-        <code class="sh_misc">*</code>rbuf <code class="sh_misc">=</code> <code class="sh_misc">(</code><code class="sh_declare">const</code> <code class="sh_declare">char</code> <code class="sh_misc">*</code><code class="sh_misc">)</code> apr_pcalloc<code class="sh_misc">(</code>r<code class="sh_misc">-</code><code class="sh_misc">></code><code class="sh_subobject">pool</code><code class="sh_misc">,</code> <code class="sh_misc">(</code>apr_size_t<code class="sh_misc">)</code> <code class="sh_misc">(</code>length <code class="sh_misc">+</code> <code class="sh_reference">1</code><code class="sh_misc">)</code><code class="sh_misc">)</code><code class="sh_misc">;</code>
-        <code class="sh_misc">*</code>size <code class="sh_misc">=</code> length<code class="sh_misc">;</code>
-        <code class="sh_declare">while</code><code class="sh_misc">(</code><code class="sh_misc">(</code>len_read <code class="sh_misc">=</code> ap_get_client_block<code class="sh_misc">(</code>r<code class="sh_misc">,</code> argsbuffer<code class="sh_misc">,</code> <code class="sh_declare">sizeof</code><code class="sh_misc">(</code>argsbuffer<code class="sh_misc">)</code><code class="sh_misc">)</code><code class="sh_misc">)</code> <code class="sh_misc">></code> <code class="sh_reference">0</code><code class="sh_misc">)</code> <code class="sh_misc">{</code>
-            <code class="sh_declare">if</code><code class="sh_misc">(</code><code class="sh_misc">(</code>rpos <code class="sh_misc">+</code> len_read<code class="sh_misc">)</code> <code class="sh_misc">></code> length<code class="sh_misc">)</code> <code class="sh_misc">{</code>
-                rsize <code class="sh_misc">=</code> length <code class="sh_misc">-</code> rpos<code class="sh_misc">;</code>
-            <code class="sh_misc">}</code>
-            <code class="sh_declare">else</code> <code class="sh_misc">{</code>
-                rsize <code class="sh_misc">=</code> len_read<code class="sh_misc">;</code>
-            <code class="sh_misc">}</code>
+        *rbuf = (const char *) apr_pcalloc(r-&gt;pool, (apr_size_t) (length + 1));
+        *size = length;
+        while((len_read = ap_get_client_block(r, argsbuffer, sizeof(argsbuffer))) &gt; 0) {
+            if((rpos + len_read) &gt; length) {
+                rsize = length - rpos;
+            }
+            else {
+                rsize = len_read;
+            }
 
-            <code class="sh_function">memcpy</code><code class="sh_misc">(</code><code class="sh_misc">(</code><code class="sh_declare">char</code> <code class="sh_misc">*</code><code class="sh_misc">)</code> <code class="sh_misc">*</code>rbuf <code class="sh_misc">+</code> rpos<code class="sh_misc">,</code> argsbuffer<code class="sh_misc">,</code> <code class="sh_misc">(</code><code class="sh_function">size_t</code><code class="sh_misc">)</code> rsize<code class="sh_misc">)</code><code class="sh_misc">;</code>
-            rpos <code class="sh_misc">+</code><code class="sh_misc">=</code> rsize<code class="sh_misc">;</code>
-        <code class="sh_misc">}</code>
-    <code class="sh_misc">}</code>
-    <code class="sh_declare">return</code><code class="sh_misc">(</code>rc<code class="sh_misc">)</code><code class="sh_misc">;</code>
-<code class="sh_misc">}</code>
+            memcpy((char *) *rbuf + rpos, argsbuffer, (size_t) rsize);
+            rpos += rsize;
+        }
+    }
+    return(rc);
+}
 
-<code class="sh_declare">static</code> <code class="sh_declare">int</code> example_handler<code class="sh_misc">(</code>request_req<code class="sh_misc">*</code> r<code class="sh_misc">)</code> 
-<code class="sh_misc">{</code>
-    <code class="sh_comment">/*~~~~~~~~~~~~~~~~*/</code>
-    apr_off_t   size<code class="sh_misc">;</code>
-    <code class="sh_declare">const</code> <code class="sh_declare">char</code>  <code class="sh_misc">*</code>buffer<code class="sh_misc">;</code>
-    <code class="sh_comment">/*~~~~~~~~~~~~~~~~*/</code>
+static int example_handler(request_req* r) 
+{
+    /*~~~~~~~~~~~~~~~~*/
+    apr_off_t   size;
+    const char  *buffer;
+    /*~~~~~~~~~~~~~~~~*/
 
-    <code class="sh_declare">if</code><code class="sh_misc">(</code>util_read<code class="sh_misc">(</code>r<code class="sh_misc">,</code> <code class="sh_misc">&amp;</code>data<code class="sh_misc">,</code> <code class="sh_misc">&amp;</code>size<code class="sh_misc">)</code> <code class="sh_misc">=</code><code class="sh_misc">=</code> OK<code class="sh_misc">)</code> <code class="sh_misc">{</code>
-        ap_rprintf<code class="sh_misc">(</code><code class="sh_character">"</code><code class="sh_value">We read a request body that was </code><code class="sh_reference">%u</code><code class="sh_value"> bytes long</code><code class="sh_character">"</code><code class="sh_misc">,</code> size<code class="sh_misc">)</code><code class="sh_misc">;</code>
-    <code class="sh_misc">}</code>
-    <code class="sh_declare">return</code> OK<code class="sh_misc">;</code>
-<code class="sh_misc">}</code>
-    </p>
+    if(util_read(r, &amp;data, &amp;size) == OK) {
+        ap_rprintf(&quot;We read a request body that was %u bytes long&quot;, size);
+    }
+    return OK;
+}
+    </pre>
 <!-- END EXAMPLE CODE -->
 
 
