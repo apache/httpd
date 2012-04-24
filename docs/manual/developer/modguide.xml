@@ -93,7 +93,7 @@ that defines a module as <em>a separate entity within Apache</em>:</p>
 
 
 <!-- BEGIN EXAMPLE CODE -->
-<pre class="sh_c">
+<highlight language="c">
 module AP_MODULE_DECLARE_DATA   example_module =
 { 
     STANDARD20_MODULE_STUFF,
@@ -104,7 +104,7 @@ module AP_MODULE_DECLARE_DATA   example_module =
     directives,      /* Any directives we may have for httpd */
     register_hooks   /* Our hook registering function */
 };
-</pre>
+</highlight>
 <!-- END EXAMPLE CODE -->
 
 <p>
@@ -185,7 +185,7 @@ definition will look like this:</p>
 
 
 <!-- BEGIN EXAMPLE CODE -->
-<pre class="sh_c">
+<highlight language="c">
 module AP_MODULE_DECLARE_DATA   example_module =
 {
     STANDARD20_MODULE_STUFF,
@@ -196,7 +196,7 @@ module AP_MODULE_DECLARE_DATA   example_module =
     NULL,
     register_hooks   /* Our hook registering function */
 };
-</pre>
+</highlight>
 <!-- END EXAMPLE CODE -->
 
 
@@ -212,13 +212,13 @@ to hook into its process as one of the last modules:
 </p>
 
 <!-- BEGIN EXAMPLE CODE -->
-<pre class="sh_c">
+<highlight language="c">
 static void register_hooks(apr_pool_t *pool)
 {
     /* Create a hook in the request handler, so we get called when a request arrives */
     ap_hook_handler(example_handler, NULL, NULL, APR_HOOK_LAST);
 }
-</pre>
+</highlight>
 <!-- END EXAMPLE CODE -->
 
 <p>
@@ -265,7 +265,7 @@ In C code, our example handler will now look like this:
 </p>
 
 <!-- BEGIN EXAMPLE CODE -->
-<pre class="sh_c">
+<highlight language="c">
 static int example_handler(request_rec *r)
 {
     /* First off, we need to check if this is a call for the "example-handler" handler.
@@ -285,7 +285,7 @@ static int example_handler(request_rec *r)
      */
     return OK;
 }
-</pre>
+</highlight>
 <!-- END EXAMPLE CODE -->
 
 <p>
@@ -328,7 +328,7 @@ Let's try out some of these variables in another example handler:<br/>
 </p>
 
 <!-- BEGIN EXAMPLE CODE -->
-<pre class="sh_c">
+<highlight language="c">
 static int example_handler(request_rec *r)
 {
     /* Set the appropriate content type */
@@ -351,7 +351,7 @@ static int example_handler(request_rec *r)
     }
     return OK;
 }
-</pre>
+</highlight>
 <!-- END EXAMPLE CODE -->
 
 </section>
@@ -367,13 +367,13 @@ status code, for example:
 </p>
 
 <!-- BEGIN EXAMPLE CODE -->
-<pre class="sh_c">
+<highlight language="c">
 static int example_handler(request_rec *r)
 {
     /* Return 404: Not found */
     return HTTP_NOT_FOUND;
 }
-</pre>
+</highlight>
 <!-- END EXAMPLE CODE -->
 
 <p>
@@ -417,7 +417,7 @@ the next, without informing other handlers.
     
 
 <!-- BEGIN EXAMPLE CODE -->
-<pre class="sh_c">ap_rputs("Hello, world!", r);</pre>
+<highlight language="c">ap_rputs("Hello, world!", r);</highlight>
 <!-- END EXAMPLE CODE -->
 
 
@@ -429,7 +429,7 @@ the next, without informing other handlers.
     
 
 <!-- BEGIN EXAMPLE CODE -->
-<pre class="sh_c">ap_rprintf(r, "Hello, %s!", r->useragent_ip);</pre>
+<highlight language="c">ap_rprintf(r, "Hello, %s!", r->useragent_ip);</highlight>
 <!-- END EXAMPLE CODE -->
 
 </li>
@@ -440,7 +440,7 @@ the next, without informing other handlers.
     
 
 <!-- BEGIN EXAMPLE CODE -->
-<pre class="sh_c">ap_set_content_type(r, "text/plain"); /* force a raw text output */</pre>
+<highlight language="c">ap_set_content_type(r, "text/plain"); /* force a raw text output */</highlight>
 <!-- END EXAMPLE CODE -->
 
 </li>
@@ -480,7 +480,7 @@ apr_pool_t *p, const char *fmt, ...)</code>: Similar to <code>sprintf</code>, ex
 
 
 <!-- BEGIN EXAMPLE CODE -->
-<pre class="sh_c">
+<highlight language="c">
 static int example_handler(request_rec *r)
 {
     const char* original = "You can't edit this!";
@@ -494,7 +494,7 @@ static int example_handler(request_rec *r)
     copy = apr_pstrdup(r->pool, original);
     return OK;
 }
-</pre>
+</highlight>
 <!-- END EXAMPLE CODE -->
 
 <p>
@@ -506,7 +506,7 @@ function to sort it out:
 </p>
 
 <!-- BEGIN EXAMPLE CODE -->
-<pre class="sh_c">
+<highlight language="c">
 static void register_hooks(apr_pool_t *pool)
 {
     /* Call a function that initializes some stuff */
@@ -514,7 +514,7 @@ static void register_hooks(apr_pool_t *pool)
     /* Create a hook in the request handler, so we get called when a request arrives */
     ap_hook_handler(example_handler, NULL, NULL, APR_HOOK_LAST);
 }
-</pre>
+</highlight>
 <!-- END EXAMPLE CODE -->
 
 <p>
@@ -545,13 +545,13 @@ POST data is four simple lines:
 
 
 <!-- BEGIN EXAMPLE CODE -->
-<pre class="sh_c">
+<highlight language="c">
 <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__apr__tables.html#gad7ea82d6608a4a633fc3775694ab71e4">apr_table_t</a> *GET;
 <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/structapr__array__header__t.html">apr_array_header_t</a> *POST;
 
 <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__SCRIPT.html#gaed25877b529623a4d8f99f819ba1b7bd">ap_args_to_table</a>(r, &amp;GET);
 <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__DAEMON.html#ga9d426b6382b49754d4f87c55f65af202">ap_parse_form_data</a>(r, NULL, &amp;POST, -1, 8192);
-</pre>
+</highlight>
 <!-- END EXAMPLE CODE -->
 
 <p>
@@ -562,13 +562,13 @@ GET</code>. To extract this value, we need only perform a simple operation:
 
 
 <!-- BEGIN EXAMPLE CODE -->
-<pre class="sh_c">
+<highlight language="c">
 /* Get the "digest" key from the query string, if any. */
 const char *digestType = apr_table_get(GET, "digest");
 
 /* If no key was returned, we will set a default value instead. */
 if (!digestType) digestType = "sha1";
-</pre>
+</highlight>
 <!-- END EXAMPLE CODE -->
 
 <p>
@@ -588,7 +588,7 @@ out the MD5 or SHA1 digest of files:
 
 
 <!-- BEGIN EXAMPLE CODE -->
-<pre class="sh_c">
+<highlight language="c">
 static int example_handler(request_rec *r)
 {
     int rc, exists;
@@ -697,7 +697,7 @@ static int example_handler(request_rec *r)
     /* Let the server know that we responded to this request. */
     return OK;
 }
-</pre>
+</highlight>
 <!-- END EXAMPLE CODE -->
 
 <p>
@@ -740,13 +740,13 @@ that parses the parameters given and sets up a configuration accordingly.
 
 
 <!-- BEGIN EXAMPLE CODE -->
-<pre class="sh_c">
+<highlight language="c">
 typedef struct {
     int         enabled;      /* Enable or disable our module */
     const char *path;         /* Some path to...something */
     int         typeOfAction; /* 1 means action A, 2 means action B and so on */
 } example_config;
-</pre>
+</highlight>
 <!-- END EXAMPLE CODE -->
 
 <p>
@@ -757,7 +757,7 @@ values to their defaults:
 </p>
 
 <!-- BEGIN EXAMPLE CODE -->
-<pre class="sh_c">
+<highlight language="c">
 typedef struct {
     int         enabled;      /* Enable or disable our module */
     const char *path;         /* Some path to...something */
@@ -796,7 +796,7 @@ module AP_MODULE_DECLARE_DATA   example_module =
     NULL,            /* Any directives we may have for httpd */
     register_hooks   /* Our hook registering function */
 };
-</pre>
+</highlight>
 <!-- END EXAMPLE CODE -->
 
 <p>
@@ -824,7 +824,7 @@ reference to the configuration directives we want to register with the server:
 </p>
 
 <!-- BEGIN EXAMPLE CODE -->
-<pre class="sh_c">
+<highlight language="c">
 module AP_MODULE_DECLARE_DATA   example_module =
 {
     STANDARD20_MODULE_STUFF,
@@ -835,7 +835,7 @@ module AP_MODULE_DECLARE_DATA   example_module =
     example_directives, /* Any directives we may have for httpd */
     register_hooks      /* Our hook registering function */
 };
-</pre>
+</highlight>
 <!-- END EXAMPLE CODE -->
 
 <p>
@@ -847,7 +847,7 @@ will add a structure with three directives and a NULL at the end:
 </p>
 
 <!-- BEGIN EXAMPLE CODE -->
-<pre class="sh_c">
+<highlight language="c">
 static const command_rec        example_directives[] =
 {
     AP_INIT_TAKE1("exampleEnabled", example_set_enabled, NULL, RSRC_CONF, "Enable or disable mod_example"),
@@ -855,7 +855,7 @@ static const command_rec        example_directives[] =
     AP_INIT_TAKE2("exampleAction", example_set_action, NULL, RSRC_CONF, "Special action value!"),
     { NULL }
 };
-</pre>
+</highlight>
 <!-- END EXAMPLE CODE -->
 
 <p>
@@ -893,7 +893,7 @@ exampleAction</code> directive to accept two arguments, its C function also
 has an additional parameter defined:</p> 
 
 <!-- BEGIN EXAMPLE CODE -->
-<pre class="sh_c">
+<highlight language="c">
 /* Handler for the "exambleEnabled" directive */
 const char *example_set_enabled(cmd_parms *cmd, void *cfg, const char *arg)
 {
@@ -921,7 +921,7 @@ const char *example_set_action(cmd_parms *cmd, void *cfg, const char *arg1, cons
     else config.typeOfAction += 0x20;
     return NULL;
 }
-</pre>
+</highlight>
 <!-- END EXAMPLE CODE -->
 
 
@@ -933,7 +933,7 @@ we can assemble our module into one big file:
 </p>
 
 <!-- BEGIN EXAMPLE CODE -->
-<pre class="sh_c">
+<highlight language="c">
 /* mod_example_config_simple.c: */
 #include &lt;stdio.h&gt;
 #include "apr_hash.h"
@@ -1046,7 +1046,7 @@ module AP_MODULE_DECLARE_DATA   example_module =
     example_directives, /* Any directives we may have for httpd */
     register_hooks      /* Our hook registering function */
 };
-</pre>
+</highlight>
 <!-- END EXAMPLE CODE -->
 
 
@@ -1107,9 +1107,9 @@ directory or location in question? It does so by making one simple call:
 </p>
 
 <!-- BEGIN EXAMPLE CODE -->
-<pre class="sh_c">
+<highlight language="c">
 example_config *config = (example_config*) <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__CONFIG.html#ga1093a5908a384eacc929b028c79f2a02">ap_get_module_config</a>(r-&gt;per_dir_config, &amp;example_module);
-</pre>
+</highlight>
 <!-- END EXAMPLE CODE -->
 
 <p>
@@ -1127,21 +1127,21 @@ variable that we can use to track which context configuration is being
 used by the server in various places:
 </p>
 <!-- BEGIN EXAMPLE CODE -->
-<pre class="sh_c">
+<highlight language="c">
 typedef struct {
     char        context[256];
     char        path[256];
     int         typeOfAction;
     int         enabled;
 } example_config;
-</pre>
+</highlight>
 <!-- END EXAMPLE CODE -->
 
 <p>Our handler for requests will also be modified, yet still very simple:</p>
 
 
 <!-- BEGIN EXAMPLE CODE -->
-<pre class="sh_c">
+<highlight language="c">
 static int example_handler(request_rec *r)
 {
     if(!r->handler || strcmp(r->handler, "example-handler")) return(DECLINED);
@@ -1153,7 +1153,7 @@ static int example_handler(request_rec *r)
     ap_rprintf("Context: %s\n", config->context);
     return OK;
 }
-</pre>
+</highlight>
 <!-- END EXAMPLE CODE -->
 
 </section>
@@ -1166,9 +1166,9 @@ a directive required five elements be set:</p>
 
 
 <!-- BEGIN EXAMPLE CODE -->
-<pre class="sh_c">
+<highlight language="c">
 AP_INIT_TAKE1("exampleEnabled", example_set_enabled, NULL, RSRC_CONF, "Enable or disable mod_example"),
-</pre>
+</highlight>
 <!-- END EXAMPLE CODE -->
 
 
@@ -1189,7 +1189,7 @@ and managing our configurations. Since we have chosen the per-directory
 per-directory creator and merger function reference in our tag:</p>
 
 <!-- BEGIN EXAMPLE CODE -->
-<pre class="sh_c">
+<highlight language="c">
 module AP_MODULE_DECLARE_DATA   example_module =
 {
     STANDARD20_MODULE_STUFF,
@@ -1200,7 +1200,7 @@ module AP_MODULE_DECLARE_DATA   example_module =
     directives,      /* Any directives we may have for httpd */
     register_hooks   /* Our hook registering function */
 };
-</pre>
+</highlight>
 <!-- END EXAMPLE CODE -->
 
 
@@ -1214,7 +1214,7 @@ our first step is to make a function for creating new, blank
 configurations. We do so by creating the function we just referenced in 
 our name tag as the Per-directory configuration handler:</p>
 <!-- BEGIN EXAMPLE CODE -->
-<pre class="sh_c">
+<highlight language="c">
 void* example_create_dir_conf(apr_pool_t* pool, char* context) {
     context = context ? context : "(undefined context)";
     example_config *cfg = apr_pcalloc(pool, sizeof(example_config));
@@ -1227,7 +1227,7 @@ void* example_create_dir_conf(apr_pool_t* pool, char* context) {
     }
     return cfg;
 }
-</pre>
+</highlight>
 <!-- END EXAMPLE CODE -->
 
 
@@ -1270,7 +1270,7 @@ two configurations and decide how they are to be merged:</p>
 
 
 <!-- BEGIN EXAMPLE CODE -->
-<pre class="sh_c">
+<highlight language="c">
 void* merge_dir_conf(apr_pool_t* pool, void* BASE, void* ADD) {
     example_config* base = (example_config *) BASE ;
     example_config* add = (example_config *) ADD ;
@@ -1282,7 +1282,7 @@ void* merge_dir_conf(apr_pool_t* pool, void* BASE, void* ADD) {
     
     return conf ;
 }
-</pre>
+</highlight>
 <!-- END EXAMPLE CODE -->
 
 
@@ -1320,7 +1320,7 @@ added some prototypes to keep the compiler happy:
 </p>
 
 <!-- BEGIN EXAMPLE CODE -->
-<pre class="sh_c">
+<highlight language="c">
 /*$6
  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  * mod_example_config.c
@@ -1545,7 +1545,7 @@ void *merge_dir_conf(apr_pool_t *pool, void *BASE, void *ADD)
     strcpy(conf-&gt;path, strlen(add-&gt;path) ? add-&gt;path : base-&gt;path);
     return conf;
 }
-</pre>
+</highlight>
 <!-- END EXAMPLE CODE -->
 
 
@@ -1571,7 +1571,7 @@ or check out the rest of our documentation for further tips.
 
 
 <!-- BEGIN EXAMPLE CODE -->
-<pre class="sh_c">
+<highlight language="c">
 const char *read_post_value(const apr_array_header_t *fields, const char *key) 
 {
     /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -1597,7 +1597,7 @@ static int example_handler(request_req *r)
     ap_rprintf(r, &quot;The value of valueA is: %s&quot;, value);
     return OK;
 }
-</pre>
+</highlight>
 <!-- END EXAMPLE CODE -->
 
 
@@ -1607,7 +1607,7 @@ static int example_handler(request_req *r)
     
 
 <!-- BEGIN EXAMPLE CODE -->
-<pre class="sh_c">
+<highlight language="c">
 static int example_handler(request_req *r) 
 {
     /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -1622,7 +1622,7 @@ static int example_handler(request_req *r)
         ap_rprintf(r, &quot;&lt;b&gt;%s&lt;/b&gt;: %s&lt;br/&gt;&quot;, e[i].key, e[i].val);
     }
     return OK;
-}</pre>
+}</highlight>
 <!-- END EXAMPLE CODE -->
 
 
@@ -1632,7 +1632,7 @@ static int example_handler(request_req *r)
     
 
 <!-- BEGIN EXAMPLE CODE -->
-<pre class="sh_c">
+<highlight language="c">
 static int util_read(request_rec *r, const char **rbuf, apr_off_t *size)
 {
     /*~~~~~~~~*/
@@ -1680,7 +1680,7 @@ static int example_handler(request_req* r)
     }
     return OK;
 }
-    </pre>
+    </highlight>
 <!-- END EXAMPLE CODE -->
 
 

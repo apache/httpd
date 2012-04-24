@@ -8,7 +8,10 @@
 <title>Apache 2.0 文档 - Apache HTTP 服务器</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<script src="../style/scripts/prettify.js" type="text/javascript">
+</script>
+
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page" class="no-sidebar"><div id="page-header">
 <p class="menu"><a href="../mod/">模块</a> | <a href="../mod/directives.html">指令</a> | <a href="../faq/">常见问题</a> | <a href="../glossary.html">术语</a> | <a href="../sitemap.html">网站导航</a></p>
@@ -79,5 +82,9 @@
 <a href="../zh-cn/developer/documenting.html" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2012 The Apache Software Foundation.<br />基于 <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> 许可证.</p>
-<p class="menu"><a href="../mod/">模块</a> | <a href="../mod/directives.html">指令</a> | <a href="../faq/">常见问题</a> | <a href="../glossary.html">术语</a> | <a href="../sitemap.html">网站导航</a></p></div>
+<p class="menu"><a href="../mod/">模块</a> | <a href="../mod/directives.html">指令</a> | <a href="../faq/">常见问题</a> | <a href="../glossary.html">术语</a> | <a href="../sitemap.html">网站导航</a></p></div><script type="text/javascript">
+    if (prettyPrint) {
+        prettyPrint();
+    }
+</script>
 </body></html>
