@@ -100,9 +100,6 @@
       &lt;/Directory&gt;<br />
     </example>
 
-   <p><module>mod_dav</module> は Greg Stein さんの <a
-   href="http://www.webdav.org/mod_dav/">Apache 1.3 用の mod_dav</a> に
-   由来するものです。そのサイトからより多くの情報を手に入れることができます。</p>
 </section>
 
 <section id="security"><title>セキュリティの問題</title>
