@@ -121,16 +121,14 @@
     private to the filter).</p>
 
     <example><title>How to handle an empty brigade</title>
+    <highlight language="c">
     apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)<br />
-    {<br />
-    <indent>
-        if (APR_BRIGADE_EMPTY(bb)) {<br />
-        <indent>
-            return APR_SUCCESS;<br />
-        </indent>
-        }<br />
-        ....<br />
-    </indent>
+    {
+        if (APR_BRIGADE_EMPTY(bb)) {
+            return APR_SUCCESS;
+        }
+        ....
+    </highlight>
     </example>
 
   </section>
@@ -251,18 +249,19 @@
     follows:</p>
 
     <example><title>Bad output filter -- do not imitate!</title>
-    apr_bucket *e = APR_BRIGADE_FIRST(bb);<br />
-const char *data;<br />
-apr_size_t len;<br />
-<br />
-while (e != APR_BRIGADE_SENTINEL(bb)) {<br />
-<indent>
-    apr_bucket_read(e, &amp;data, &amp;length, APR_BLOCK_READ);<br />
-    e = APR_BUCKET_NEXT(e);<br />
-</indent>
-}<br />
-<br />
+    <highlight language="c">
+apr_bucket *e = APR_BRIGADE_FIRST(bb);
+const char *data;
+apr_size_t len;
+
+while (e != APR_BRIGADE_SENTINEL(bb)) {
+    apr_bucket_read(e, &amp;data, &amp;length, APR_BLOCK_READ);
+    e = APR_BUCKET_NEXT(e);
+
+}
+
 return ap_pass_brigade(bb);
+</highlight>
     </example>
 
     <p>The above implementation would consume memory proportional to
@@ -277,24 +276,24 @@ return ap_pass_brigade(bb);
     href="#state">Maintaining state</a> section.</p>
 
     <example><title>Better output filter</title>
-apr_bucket *e;<br />
-const char *data;<br />
-apr_size_t len;<br />
-<br />
-while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {<br />
-<indent>
-   rv = apr_bucket_read(e, &amp;data, &amp;length, APR_BLOCK_READ);<br />
-   if (rv) ...;<br />
-   /* Remove bucket e from bb. */<br />
-   APR_BUCKET_REMOVE(e);<br />
-   /* Insert it into  temporary brigade. */<br />
-   APR_BRIGADE_INSERT_HEAD(tmpbb, e);<br />
-   /* Pass brigade downstream. */<br />
-   rv = ap_pass_brigade(f->next, tmpbb);<br />
-   if (rv) ...;<br />
-   apr_brigade_cleanup(tmpbb);<br />
-</indent>
+<highlight language="c">
+apr_bucket *e;
+const char *data;
+apr_size_t len;
+
+while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
+   rv = apr_bucket_read(e, &amp;data, &amp;length, APR_BLOCK_READ);
+   if (rv) ...;
+   /* Remove bucket e from bb. */
+   APR_BUCKET_REMOVE(e);
+   /* Insert it into  temporary brigade. */
+   APR_BRIGADE_INSERT_HEAD(tmpbb, e);
+   /* Pass brigade downstream. */
+   rv = ap_pass_brigade(f->next, tmpbb);
+   if (rv) ...;
+   apr_brigade_cleanup(tmpbb);
 }
+</highlight>
     </example>
 
   </section>
@@ -311,32 +310,31 @@ while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {<br />
     href="#brigade">Brigade structure</a> section.</p>
 
   <example><title>Example code to maintain filter state</title>
-struct dummy_state {<br />
-<indent>
-   apr_bucket_brigade *tmpbb;<br />
-   int filter_state;<br />
-   ....<br />
-</indent>
-};<br />
-<br />
-apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)<br />
-{<br />
-<indent>
-    struct dummy_state *state;<br />
-<br />
-    state = f->ctx;<br />
-    if (state == NULL) {<br />
-    <indent>
+  <highlight language="c">
+struct dummy_state {
+   apr_bucket_brigade *tmpbb;
+   int filter_state;
+   ....
+};
+
+apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)
+{
+
+    struct dummy_state *state;
+    
+    state = f->ctx;
+    if (state == NULL) {
+    
        /* First invocation for this response: initialise state structure.
-        */<br />
-       f->ctx = state = apr_palloc(sizeof *state, f->r->pool);<br />
-<br />
-       state->tmpbb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);<br />
-       state->filter_state = ...;<br />
-    </indent>
-    }<br />
+        */
+       f->ctx = state = apr_palloc(sizeof *state, f->r->pool);
+
+       state->tmpbb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
+       state->filter_state = ...;
+
+    }
     ...
-</indent>
+</highlight>
     </example>
 
   </section>
@@ -414,37 +412,34 @@ apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)<br />
 
     <example>
       <title>Example code using non-blocking bucket reads</title>
-apr_bucket *e;<br />
-apr_read_type_e mode = APR_NONBLOCK_READ;<br />
-<br />
-while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {<br />
-<indent>
-    apr_status_t rv;<br />
-<br />
-    rv = apr_bucket_read(e, &amp;data, &amp;length, mode);<br />
-    if (rv == APR_EAGAIN &amp;&amp; mode == APR_NONBLOCK_READ) {<br />
-    <indent>
-        /* Pass down a brigade containing a flush bucket: */<br />
-        APR_BRIGADE_INSERT_TAIL(tmpbb, apr_bucket_flush_create(...));<br />
-        rv = ap_pass_brigade(f->next, tmpbb);<br />
-        apr_brigade_cleanup(tmpbb);<br />
-        if (rv != APR_SUCCESS) return rv;<br />
-<br />
-        /* Retry, using a blocking read. */<br />
-        mode = APR_BLOCK_READ;<br />
-        continue;<br />
-    </indent>
-    } else if (rv != APR_SUCCESS) {<br />
-    <indent>
-        /* handle errors */<br />
-    </indent>
-    }<br />
-<br />
-    /* Next time, try a non-blocking read first. */<br />
-    mode = APR_NONBLOCK_READ;<br />
-    ...<br />
-</indent>
+      <highlight language="c">
+apr_bucket *e;
+apr_read_type_e mode = APR_NONBLOCK_READ;
+
+while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
+    apr_status_t rv;
+
+    rv = apr_bucket_read(e, &amp;data, &amp;length, mode);
+    if (rv == APR_EAGAIN &amp;&amp; mode == APR_NONBLOCK_READ) {
+
+        /* Pass down a brigade containing a flush bucket: */
+        APR_BRIGADE_INSERT_TAIL(tmpbb, apr_bucket_flush_create(...));
+        rv = ap_pass_brigade(f->next, tmpbb);
+        apr_brigade_cleanup(tmpbb);
+        if (rv != APR_SUCCESS) return rv;
+
+        /* Retry, using a blocking read. */
+        mode = APR_BLOCK_READ;
+        continue;
+    } else if (rv != APR_SUCCESS) {
+        /* handle errors */
+    }
+
+    /* Next time, try a non-blocking read first. */
+    mode = APR_NONBLOCK_READ;
+    ...
 }
+</highlight>
     </example>
 
   </section>

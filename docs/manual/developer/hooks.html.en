@@ -49,9 +49,10 @@
       arguments. For example, if the hook returns an <code>int</code> and
       takes a <code>request_rec *</code> and an <code>int</code> and is
       called <code>do_something</code>, then declare it like this:</p>
-      <div class="example"><p><code>
+      <pre class="prettyprint lang-c">
         AP_DECLARE_HOOK(int, do_something, (request_rec *r, int n))
-      </code></p></div>
+      </pre>
+
 
       <p>This should go in a header which modules will include if
       they want to use the hook.</p>
@@ -62,14 +63,13 @@
       which is used to record the module functions that use the hook.
       This is declared as follows:</p>
 
-      <div class="example"><p><code>
-        APR_HOOK_STRUCT(<br />
-        <span class="indent">
-          APR_HOOK_LINK(do_something)<br />
-          ...<br />
-        </span>
+      <pre class="prettyprint lang-c">
+        APR_HOOK_STRUCT(
+          APR_HOOK_LINK(do_something)
+          ...
         )
-      </code></p></div>
+      </pre>
+
     
 
     <h3><a name="create-implement" id="create-implement">Implement the hook caller</a></h3>
@@ -82,33 +82,34 @@
         <p>If the return value of a hook is <code>void</code>, then all the
         hooks are called, and the caller is implemented like this:</p>
 
-        <div class="example"><p><code>
+        <pre class="prettyprint lang-c">
           AP_IMPLEMENT_HOOK_VOID(do_something, (request_rec *r, int n), (r, n))
-        </code></p></div>
+        </pre>
+
 
         <p>The second and third arguments are the dummy argument
         declaration and the dummy arguments as they will be used when
         calling the hook. In other words, this macro expands to
         something like this:</p>
 
-        <div class="example"><p><code>
-          void ap_run_do_something(request_rec *r, int n)<br />
-          {<br />
-          <span class="indent">
-            ...<br />
-            do_something(r, n);<br />
-          </span>
+        <pre class="prettyprint lang-c">
+          void ap_run_do_something(request_rec *r, int n)
+          {
+            ...
+            do_something(r, n);
           }
-        </code></p></div>
+        </pre>
+
       
 
       <h4>Hooks that return a value</h4>
         <p>If the hook returns a value, then it can either be run until
         the first hook that does something interesting, like so:</p>
 
-        <div class="example"><p><code>
+        <pre class="prettyprint lang-c">
           AP_IMPLEMENT_HOOK_RUN_FIRST(int, do_something, (request_rec *r, int n), (r, n), DECLINED)
-        </code></p></div>
+        </pre>
+
 
         <p>The first hook that does <em>not</em> return <code>DECLINED</code>
         stops the loop and its return value is returned from the hook
@@ -123,9 +124,10 @@
         value other than one of those two stops the loop, and its
         return is the return value. Declare these like so:</p>
 
-        <div class="example"><p><code>
+        <pre class="prettyprint lang-c">
           AP_IMPLEMENT_HOOK_RUN_ALL(int, do_something, (request_rec *r, int n), (r, n), OK, DECLINED)
-        </code></p></div>
+        </pre>
+
 
         <p>Again, <code>OK</code> and <code>DECLINED</code> are the traditional
         values. You can use what you want.</p>
@@ -136,12 +138,13 @@
       <p>At appropriate moments in the code, call the hook caller,
       like so:</p>
 
-      <div class="example"><p><code>
-        int n, ret;<br />
-        request_rec *r;<br />
-        <br />
+      <pre class="prettyprint lang-c">
+        int n, ret;
+        request_rec *r;
+
         ret=ap_run_do_something(r, n);
-      </code></p></div>
+      </pre>
+
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -153,15 +156,14 @@
       <p>Include the appropriate header, and define a static function
       of the correct type:</p>
 
-      <div class="example"><p><code>
+      <pre class="prettyprint lang-c">
         static int my_something_doer(request_rec *r, int n)<br />
-        {<br />
-        <span class="indent">
-          ...<br />
-          return OK;<br />
-        </span>
+        {
+          ...
+          return OK;
         }
-      </code></p></div>
+      </pre>
+
     
 
     <h3><a name="hooking-add" id="hooking-add">Add a hook registering function</a></h3>
@@ -169,22 +171,19 @@
       registering function, which is included in the module
       structure:</p>
 
-      <div class="example"><p><code>
-        static void my_register_hooks()<br />
-        {<br />
-        <span class="indent">
-          ap_hook_do_something(my_something_doer, NULL, NULL, APR_HOOK_MIDDLE);<br />
-        </span>
-        }<br />
-        <br />
-        mode MODULE_VAR_EXPORT my_module =<br />
-        {<br />
-        <span class="indent">
-          ...<br />
-          my_register_hooks       /* register hooks */<br />
-        </span>
+      <pre class="prettyprint lang-c">
+        static void my_register_hooks()
+        {
+          ap_hook_do_something(my_something_doer, NULL, NULL, APR_HOOK_MIDDLE);
+        }
+
+        mode MODULE_VAR_EXPORT my_module =
+        {
+          ...
+          my_register_hooks       /* register hooks */
         };
-      </code></p></div>
+      </pre>
+
     
 
     <h3><a name="hooking-order" id="hooking-order">Controlling hook calling order</a></h3>
@@ -216,16 +215,15 @@
       example, suppose we want "mod_xyz.c" and "mod_abc.c" to run
       before we do, then we'd hook as follows:</p>
 
-      <div class="example"><p><code>
-        static void register_hooks()<br />
-        {<br />
-        <span class="indent">
-          static const char * const aszPre[] = { "mod_xyz.c", "mod_abc.c", NULL };<br />
-          <br />
-          ap_hook_do_something(my_something_doer, aszPre, NULL, APR_HOOK_MIDDLE);<br />
-        </span>
+      <pre class="prettyprint lang-c">
+        static void register_hooks()
+        {
+          static const char * const aszPre[] = { "mod_xyz.c", "mod_abc.c", NULL };
+
+          ap_hook_do_something(my_something_doer, aszPre, NULL, APR_HOOK_MIDDLE);
         }
-      </code></p></div>
+      </pre>
+
 
       <p>Note that the sort used to achieve this is stable, so
       ordering set by <code>APR_HOOK_<var>ORDER</var></code> is preserved, as far
