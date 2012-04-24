@@ -47,9 +47,9 @@
       arguments. For example, if the hook returns an <code>int</code> and
       takes a <code>request_rec *</code> and an <code>int</code> and is
       called <code>do_something</code>, then declare it like this:</p>
-      <example>
+      <highlight language="c">
         AP_DECLARE_HOOK(int, do_something, (request_rec *r, int n))
-      </example>
+      </highlight>
 
       <p>This should go in a header which modules will include if
       they want to use the hook.</p>
@@ -60,14 +60,12 @@
       which is used to record the module functions that use the hook.
       This is declared as follows:</p>
 
-      <example>
-        APR_HOOK_STRUCT(<br />
-        <indent>
-          APR_HOOK_LINK(do_something)<br />
-          ...<br />
-        </indent>
+      <highlight language="c">
+        APR_HOOK_STRUCT(
+          APR_HOOK_LINK(do_something)
+          ...
         )
-      </example>
+      </highlight>
     </section>
 
     <section id="create-implement"><title>Implement the hook caller</title>
@@ -80,33 +78,31 @@
         <p>If the return value of a hook is <code>void</code>, then all the
         hooks are called, and the caller is implemented like this:</p>
 
-        <example>
+        <highlight language="c">
           AP_IMPLEMENT_HOOK_VOID(do_something, (request_rec *r, int n), (r, n))
-        </example>
+        </highlight>
 
         <p>The second and third arguments are the dummy argument
         declaration and the dummy arguments as they will be used when
         calling the hook. In other words, this macro expands to
         something like this:</p>
 
-        <example>
-          void ap_run_do_something(request_rec *r, int n)<br />
-          {<br />
-          <indent>
-            ...<br />
-            do_something(r, n);<br />
-          </indent>
+        <highlight language="c">
+          void ap_run_do_something(request_rec *r, int n)
+          {
+            ...
+            do_something(r, n);
           }
-        </example>
+        </highlight>
       </section>
 
       <section><title>Hooks that return a value</title>
         <p>If the hook returns a value, then it can either be run until
         the first hook that does something interesting, like so:</p>
 
-        <example>
+        <highlight language="c">
           AP_IMPLEMENT_HOOK_RUN_FIRST(int, do_something, (request_rec *r, int n), (r, n), DECLINED)
-        </example>
+        </highlight>
 
         <p>The first hook that does <em>not</em> return <code>DECLINED</code>
         stops the loop and its return value is returned from the hook
@@ -121,9 +117,9 @@
         value other than one of those two stops the loop, and its
         return is the return value. Declare these like so:</p>
 
-        <example>
+        <highlight language="c">
           AP_IMPLEMENT_HOOK_RUN_ALL(int, do_something, (request_rec *r, int n), (r, n), OK, DECLINED)
-        </example>
+        </highlight>
 
         <p>Again, <code>OK</code> and <code>DECLINED</code> are the traditional
         values. You can use what you want.</p>
@@ -134,12 +130,12 @@
       <p>At appropriate moments in the code, call the hook caller,
       like so:</p>
 
-      <example>
-        int n, ret;<br />
-        request_rec *r;<br />
-        <br />
+      <highlight language="c">
+        int n, ret;
+        request_rec *r;
+
         ret=ap_run_do_something(r, n);
-      </example>
+      </highlight>
     </section>
 </section>
 
@@ -151,15 +147,13 @@
       <p>Include the appropriate header, and define a static function
       of the correct type:</p>
 
-      <example>
+      <highlight language="c">
         static int my_something_doer(request_rec *r, int n)<br />
-        {<br />
-        <indent>
-          ...<br />
-          return OK;<br />
-        </indent>
+        {
+          ...
+          return OK;
         }
-      </example>
+      </highlight>
     </section>
 
     <section id="hooking-add"><title>Add a hook registering function</title>
@@ -167,22 +161,18 @@
       registering function, which is included in the module
       structure:</p>
 
-      <example>
-        static void my_register_hooks()<br />
-        {<br />
-        <indent>
-          ap_hook_do_something(my_something_doer, NULL, NULL, APR_HOOK_MIDDLE);<br />
-        </indent>
-        }<br />
-        <br />
-        mode MODULE_VAR_EXPORT my_module =<br />
-        {<br />
-        <indent>
-          ...<br />
-          my_register_hooks       /* register hooks */<br />
-        </indent>
+      <highlight language="c">
+        static void my_register_hooks()
+        {
+          ap_hook_do_something(my_something_doer, NULL, NULL, APR_HOOK_MIDDLE);
+        }
+
+        mode MODULE_VAR_EXPORT my_module =
+        {
+          ...
+          my_register_hooks       /* register hooks */
         };
-      </example>
+      </highlight>
     </section>
 
     <section id="hooking-order"><title>Controlling hook calling order</title>
@@ -214,16 +204,14 @@
       example, suppose we want "mod_xyz.c" and "mod_abc.c" to run
       before we do, then we'd hook as follows:</p>
 
-      <example>
-        static void register_hooks()<br />
-        {<br />
-        <indent>
-          static const char * const aszPre[] = { "mod_xyz.c", "mod_abc.c", NULL };<br />
-          <br />
-          ap_hook_do_something(my_something_doer, aszPre, NULL, APR_HOOK_MIDDLE);<br />
-        </indent>
+      <highlight language="c">
+        static void register_hooks()
+        {
+          static const char * const aszPre[] = { "mod_xyz.c", "mod_abc.c", NULL };
+
+          ap_hook_do_something(my_something_doer, aszPre, NULL, APR_HOOK_MIDDLE);
         }
-      </example>
+      </highlight>
 
       <p>Note that the sort used to achieve this is stable, so
       ordering set by <code>APR_HOOK_<var>ORDER</var></code> is preserved, as far

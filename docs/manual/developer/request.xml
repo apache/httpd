@@ -148,7 +148,7 @@
 <section id="security"><title>The Security Phase</title>
     <p>Needs Documentation. Code is:</p>
 
-    <example><pre>
+    <highlight language="c">
         if ((access_status = ap_run_access_checker(r)) != 0) {
             return decl_die(access_status, "check access", r);
         }
@@ -160,8 +160,7 @@
         if ((access_status = ap_run_auth_checker(r)) != 0) {
             return decl_die(access_status, "check authorization", r);
         }
-    </pre>
-    </example>
+    </highlight>
 </section>
 
 <section id="preparation"><title>The Preparation Phase</title>

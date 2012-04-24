@@ -1100,7 +1100,7 @@ different meanings to the user of the server, and thus different contexts
 within which modules must operate. For example, let's assume you have this 
 configuration set up for mod_rewrite:
 </p>
-<div class="example"><pre>
+<pre class="prettyprint lang-config">
 &lt;Directory "/var/www"&gt;
     RewriteCond %{HTTP_HOST} ^example.com$
     RewriteRule (.*) http://www.example.com/$1
@@ -1108,7 +1108,8 @@ configuration set up for mod_rewrite:
 &lt;Directory "/var/www/sub"&gt;
     RewriteRule ^foobar$ index.php?foobar=true
 &lt;/Directory&gt;
-</pre></div>
+</pre>
+
 <p>
 In this example, you will have set up two different contexts for 
 mod_rewrite:</p>
@@ -1654,7 +1655,8 @@ static int example_handler(request_req *r)
         ap_rprintf(r, "&lt;b&gt;%s&lt;/b&gt;: %s&lt;br/&gt;", e[i].key, e[i].val);
     }
     return OK;
-}</pre>
+}
+</pre>
 
 
 
@@ -1714,6 +1716,7 @@ static int example_handler(request_req* r)
     return OK;
 }
     </pre>
+
 
 
 
