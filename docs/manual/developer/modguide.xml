@@ -1622,12 +1622,8 @@ static int example_handler(request_req *r)
         ap_rprintf(r, &quot;&lt;b&gt;%s&lt;/b&gt;: %s&lt;br/&gt;&quot;, e[i].key, e[i].val);
     }
     return OK;
-<<<<<<< .mine
 }
 </highlight>
-=======
-}</highlight>
->>>>>>> .r1329854
 <!-- END EXAMPLE CODE -->
 
 
@@ -1685,11 +1681,8 @@ static int example_handler(request_req* r)
     }
     return OK;
 }
-<<<<<<< .mine
-</highlight>
-=======
     </highlight>
->>>>>>> .r1329854
+
 <!-- END EXAMPLE CODE -->
 
 
