@@ -313,7 +313,7 @@
 
 </div> <!-- /footer -->
 <script type="text/javascript">
-    if (prettyPrint) {
+    if (typeof(prettyPrint) !== undefined) {
         prettyPrint();
     }
 </script>
