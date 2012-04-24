@@ -372,14 +372,14 @@ by many requests.
     </example>
 
     <example><title>dash2under.pl</title>
-    #!/usr/bin/perl<br />
-    $| = 1; # Turn off I/O buffering<br />
-    while (&lt;STDIN&gt;) {<br />
-        <indent>
-        s/-/_/g; # Replace dashes with underscores<br />
-        print $_;<br />
-        </indent>
-    }<br />
+    <highlight language="perl">
+    #!/usr/bin/perl
+    $| = 1; # Turn off I/O buffering
+    while (&lt;STDIN&gt;) {
+        s/-/_/g; # Replace dashes with underscores
+        print $_;
+    }
+    </highlight>
     </example>
 
 <note><title>Caution!</title>
