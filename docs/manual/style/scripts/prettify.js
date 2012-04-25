@@ -896,6 +896,8 @@ var REGEXP_PRECEDER_PATTERN = '(?:^^\\.?|[+-]|[!=]=?=?|\\#|%=?|&&?=?|\\(|\\*=?|[
              '^(?:'
              // A hex number
              + '0x[a-f0-9]+'
+             // An IPv6 Address
+             + '|[a-f0-9:]+:[a-f0-9:]+:[a-f0-9:]+:[a-f0-9:]+:[a-f0-9:]+:[a-f0-9:]+'
              // or an octal or decimal number,
              + '|(?:\\d(?:_\\d+)*\\d*(?:\\.\\d*)?|\\.\\d\\+)'
              // possibly in scientific notation
