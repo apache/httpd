@@ -60,7 +60,8 @@ pre.lang-config{
     border: none;
 }
 
-.lang-config .tag { color: #821; font-weight: bold }  /* a markup tag name */
+.lang-config .tag { color: #821; font-weight: bold }  /* enclosures */
+.lang-config .kwd { color: #128; font-weight: bold }  /* directives */
 
 
 
