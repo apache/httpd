@@ -92,13 +92,13 @@ http://physical_host_of_user1/u/user/anypath
       files assuming that server0 is a default server which will be used if
       a user has no entry in the map:</p>
 
-<example>
-RewriteEngine on<br />
-<br />
-RewriteMap      users-to-hosts   txt:/path/to/map.users-to-hosts<br />
-<br />
+<highlight language="config">
+RewriteEngine on
+
+RewriteMap      users-to-hosts   txt:/path/to/map.users-to-hosts
+
 RewriteRule   ^/u/<strong>([^/]+)</strong>/?(.*)   http://<strong>${users-to-hosts:$1|server0}</strong>/u/$1/$2
-</example>
+</highlight>
     </dd>
   </dl>
 
@@ -127,11 +127,11 @@ RewriteRule   ^/u/<strong>([^/]+)</strong>/?(.*)   http://<strong>${users-to-hos
     <dd>
       This is done via the following ruleset:
 
-<example>
-# This example is valid in per-directory context only<br />
-RewriteCond %{REQUEST_URI}   <strong>!-U</strong><br />
+<highlight language="config">
+# This example is valid in per-directory context only
+RewriteCond %{REQUEST_URI}   <strong>!-U</strong>
 RewriteRule ^(.+)\.html$          /regenerate_page.cgi   [PT,L]
-</example>
+</highlight>
 
     <p>The <code>-U</code> operator determines whether the test string
     (in this case, <code>REQUEST_URI</code>) is a valid URL. It does
@@ -169,12 +169,12 @@ RewriteRule ^(.+)\.html$          /regenerate_page.cgi   [PT,L]
       module="mod_rewrite">RewriteMap</directive> and a list of servers
       to accomplish this.</p>
 
-<example>
-RewriteEngine on<br />
-RewriteMap lb rnd:/path/to/serverlist.txt<br />
-<br />
+<highlight language="config">
+RewriteEngine on
+RewriteMap lb rnd:/path/to/serverlist.txt
+
 RewriteRule ^/(.*) http://${lb:servers}/$1 [P,L]
-</example>
+</highlight>
 
 <p><code>serverlist.txt</code> will contain a list of the servers:</p>
 
@@ -230,9 +230,9 @@ nph-refresh techniques.
       URL causes the 'page' to be refreshed every time it is
       updated on the filesystem.</p>
 
-<example>
+<highlight language="config">
 RewriteRule   ^(/[uge]/[^/]+/?.*):refresh  /internal/cgi/apache/nph-refresh?f=$1
-</example>
+</highlight>
 
       <p>Now when we reference the URL</p>
 
@@ -250,7 +250,7 @@ RewriteRule   ^(/[uge]/[^/]+/?.*):refresh  /internal/cgi/apache/nph-refresh?f=$1
       one would usually say "left as an exercise to the reader"
       ;-) I will provide this, too.</p>
 
-<example><pre>
+<highlight language="perl">
 #!/sw/bin/perl
 ##
 ##  nph-refresh -- NPH/CGI script for auto refreshing pages
@@ -352,7 +352,7 @@ while (1) {
 exit(0);
 
 ##EOF##
-</pre></example>
+</highlight>
     </dd>
   </dl>
 
@@ -381,10 +381,10 @@ exit(0);
       <p>We use the following ruleset to expand the tilde URLs
       into the above layout.</p>
 
-<example>
-RewriteEngine on<br />
+<highlight language="config">
+RewriteEngine on
 RewriteRule   ^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)  /home/<strong>$2</strong>/$1/public_html$3
-</example>
+</highlight>
     </dd>
   </dl>
 
@@ -440,13 +440,13 @@ RewriteRule   ^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)  /home/<strong>$2</stro
       <code>&gt;STRING</code> and <code>=STRING</code> we can
       do time-dependent redirects:</p>
 
-<example>
-RewriteEngine on<br />
-RewriteCond   %{TIME_HOUR}%{TIME_MIN} &gt;0700<br />
-RewriteCond   %{TIME_HOUR}%{TIME_MIN} &lt;1900<br />
-RewriteRule   ^foo\.html$             foo.day.html [L]<br />
+<highlight language="config">
+RewriteEngine on
+RewriteCond   %{TIME_HOUR}%{TIME_MIN} &gt;0700
+RewriteCond   %{TIME_HOUR}%{TIME_MIN} &lt;1900
+RewriteRule   ^foo\.html$             foo.day.html [L]
 RewriteRule   ^foo\.html$             foo.night.html
-</example>
+</highlight>
 
       <p>This provides the content of <code>foo.day.html</code>
       under the URL <code>foo.html</code> from
@@ -485,17 +485,17 @@ RewriteRule   ^foo\.html$             foo.night.html
     <dd>
       <p>Use the [E] flag to set an environment variable.</p>
 
-<example>
-RewriteEngine on<br />
+<highlight language="config">
+RewriteEngine on
 RewriteRule   ^/horse/(.*)   /pony/$1 [E=<strong>rewritten:1</strong>]
-</example>
+</highlight>
 
     <p>Later in your ruleset you might check for this environment
     variable using a RewriteCond:</p>
 
-<example>
+<highlight language="config">
 RewriteCond %{ENV:rewritten} =1
-</example>
+</highlight>
 
     <p>Note that environment variables do not survive an external
     redirect. You might consider using the [CO] flag to set a
