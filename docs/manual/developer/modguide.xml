@@ -120,7 +120,9 @@ of the module is used primarily for two things:<br/>
 For now, we're only concerned with the first purpose of the module name, 
 which comes into play when we need to load the module:
 </p>
-<example><pre><a href="../mod/mod_so.html#LoadModule">LoadModule</a> example_module modules/mod_example.so</pre></example>
+<highlight language="config">
+<a href="../mod/mod_so.html#LoadModule">LoadModule</a> example_module modules/mod_example.so
+</highlight>
 <p>
 In essence, this tells the server to open up <code>mod_example.so</code> and look for a module 
 called <code>example_module</code>.
@@ -162,9 +164,9 @@ our example case, we want every request ending with .sum to be served by
 <code>mod_example</code>, so we'll add a configuration directive that tells 
 the server to do just that:
 </p>
-<example><pre>
+<highlight language="config">
 AddHandler example-handler .sum
-</pre></example>
+</highlight>
 <p>
 What this tells the server is the following: <em>Whenever we receive a request 
 for a URI ending in .sum, we are to let all modules know that we are 
@@ -725,11 +727,11 @@ what a configuration directive is. Simply put, a directive is a way of
 telling an individual module (or a set of modules) how to behave, such as 
 these directives control how <code>mod_rewrite</code> works:
 </p>
-<example><pre>
+<highlight language="config">
 RewriteEngine On
 RewriteCond %{REQUEST_URI} ^/foo/bar
 RewriteRule ^/foo/bar/(.*)$ /foobar?page=$1
-</pre></example>
+</highlight>
 <p>
 Each of these configuration directives are handled by a separate function, 
 that parses the parameters given and sets up a configuration accordingly.
@@ -803,11 +805,11 @@ module AP_MODULE_DECLARE_DATA   example_module =
 So far so good. To access our new handler, we could add the following to 
 our configuration:
 </p>
-<example><pre>
+<highlight language="config">
 &lt;Location /example&gt;
     SetHandler example-handler
 &lt;/Location&gt;
-</pre></example>
+</highlight>
 <p>
 When we visit, we'll see our current configuration being spit out by our 
 module. 
@@ -1054,11 +1056,11 @@ module AP_MODULE_DECLARE_DATA   example_module =
 In our httpd.conf file, we can now change the hard-coded configuration by 
 adding a few lines:
 </p>
-<example><pre>
+<highlight language="config">
 ExampleEnabled On
 ExamplePath "/usr/bin/foo"
 ExampleAction file allow
-</pre></example>
+</highlight>
 <p>
 And thus we apply the configuration, visit <code>/example</code> on our 
 web site, and we see the configuration has adapted to what we wrote in our 
@@ -1239,7 +1241,7 @@ Our next step in creating a context aware configuration is merging
 configurations. This part of the process particularly apply to scenarios 
 where you have a parent configuration and a child, such as the following: 
 </p>
-<example><pre>
+<highlight language="config">
 &lt;Directory &quot;/var/www&quot;&gt;
     ExampleEnable On
     ExamplePath /foo/bar
@@ -1248,7 +1250,7 @@ where you have a parent configuration and a child, such as the following:
 &lt;Directory &quot;/var/www/subdir&quot;&gt;
     ExampleAction file deny
 &lt;/Directory&gt;
-</pre></example>
+</highlight>
 <p>
 In this example, it is natural to assume that the directory <code>
 /var/www/subdir</code> should inherit the value set for the <code>/var/www
@@ -1294,7 +1296,7 @@ Now, let's try putting it all together to create a new module that is
 context aware. First off, we'll create a configuration that lets us test 
 how the module works:
 </p>
-<example><pre>
+<highlight language="config">
 &lt;Location &quot;/a&quot;&gt;
     SetHandler example-handler
     ExampleEnabled on
@@ -1312,7 +1314,7 @@ how the module works:
     ExamplePath &quot;/foo/bar/baz&quot;
     ExampleEnabled on
 &lt;/Location&gt;
-</pre></example>
+</highlight>
 <p>
 Then we'll assemble our module code. Note, that since we are now using our 
 name tag as reference when fetching configurations in our handler, I have 
