@@ -128,7 +128,7 @@ var prettyPrint;
   var ALL_KEYWORDS = [
       CPP_KEYWORDS, CSHARP_KEYWORDS, JSCRIPT_KEYWORDS, PERL_KEYWORDS +
       PYTHON_KEYWORDS, RUBY_KEYWORDS, SH_KEYWORDS];
-  var C_TYPES = /^(DIR|FILE|vector|(de|priority_)?queue|list|stack|(const_)?iterator|(multi)?(set|map)|bitset|u?(int|float|char|void|const|static|struct)\d*)|[a-z_]+_rec|cmd_parms\b/;
+  var C_TYPES = /^(DIR|FILE|vector|(de|priority_)?queue|list|stack|(const_)?iterator|(multi)?(set|map)|bitset|u?(int|float|char|void|const|static|struct)\d*(_t)?)|[a-z_]+_rec|cmd_parms\b/;
 
   // token style names.  correspond to css classes
   /**
@@ -886,7 +886,7 @@ var REGEXP_PRECEDER_PATTERN = '(?:^^\\.?|[+-]|[!=]=?=?|\\#|%=?|&&?=?|\\(|\\*=?|[
     shortcutStylePatterns.push([PR_PLAIN,       /^\s+/, null, ' \r\n\t\xA0']);
     fallthroughStylePatterns.push(
         // TODO(mikesamuel): recognize non-latin letters and numerals in idents
-        [PR_LITERAL,     /^@[a-z_$][a-z_$@0-9]*/i, null],
+        [PR_LITERAL,     /^@[a-z_$][a-z_$@0-9]*|NULL/i, null],
         [PR_TYPE,        /^(?:[@_]?[A-Z]+[a-z][A-Za-z_$@0-9]*|\w+_(t|req)\b)/, null],
         [PR_PLAIN,       /^[a-z_$][a-z_$@0-9]*/i, null],
         [PR_LITERAL,
