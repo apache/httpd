@@ -72,9 +72,7 @@
     assumed to be a directory path relative to the home directory of the
     specified user. Given this configuration:</p>
 
-    <example>
-      UserDir public_html
-    </example>
+    <highlight language="config">UserDir public_html</highlight>
 
     <p>the URL <code>http://example.com/~rbowen/file.html</code> will be
     translated to the file path
@@ -84,9 +82,7 @@
     constructed using that path, plus the username specified. Given this
     configuration:</p>
 
-    <highlight language="config">
-      UserDir /var/html
-    </highlight>
+    <highlight language="config">UserDir /var/html</highlight>
 
     <p>the URL <code>http://example.com/~rbowen/file.html</code> will be
     translated to the file path <code>/var/html/rbowen/file.html</code></p>
@@ -95,9 +91,7 @@
     in which the asterisk is replaced with the username. Given this
     configuration:</p>
 
-    <highlight language="config">
-      UserDir /var/www/*/docs
-    </highlight>
+    <highlight language="config">UserDir /var/www/*/docs</highlight>
 
     <p>the URL <code>http://example.com/~rbowen/file.html</code> will be
     translated to the file path
@@ -105,9 +99,7 @@
 
     <p>Multiple directories or directory paths can also be set.</p>
 
-    <example>
-      UserDir public_html /var/html
-    </example>
+    <highlight language="config">UserDir public_html /var/html</highlight>
 
     <p>For the URL <code>http://example.com/~rbowen/file.html</code>,
     Apache will search for <code>~rbowen</code>. If it isn't found,
@@ -122,9 +114,7 @@
     <p>The <directive module="mod_userdir">UserDir</directive> directive can be
       used to redirect user directory requests to external URLs.</p>
 
-    <highlight language="config">
-      UserDir http://example.org/users/*/
-    </highlight>
+    <highlight language="config">UserDir http://example.org/users/*/</highlight>
 
     <p>The above example will redirect a request for
     <code>http://example.com/~bob/abc.html</code> to
@@ -138,9 +128,7 @@
     <p>Using the syntax shown in the UserDir documentation, you can restrict
     what users are permitted to use this functionality:</p>
 
-    <highlight language="config">
-      UserDir disabled root jro fish
-    </highlight>
+    <highlight language="config">UserDir disabled root jro fish</highlight>
 
     <p>The configuration above will enable the feature for all users
     except for those listed in the <code>disabled</code> statement.
@@ -166,10 +154,10 @@
     cgi-enabled.</p>
 
     <highlight language="config">
-      &lt;Directory /home/*/public_html/cgi-bin/&gt;
-       Options ExecCGI
-       SetHandler cgi-script
-       &lt;/Directory&gt;
+&lt;Directory /home/*/public_html/cgi-bin/&gt;
+    Options ExecCGI
+    SetHandler cgi-script
+&lt;/Directory&gt;
     </highlight>
 
     <p>Then, presuming that <code>UserDir</code> is set to

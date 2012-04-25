@@ -69,8 +69,8 @@
     <p>The usage of these directives is:</p>
 
     <pre class="prettyprint lang-config">
-      Require host <var>address</var>
-      Require ip <var>ip.address</var>
+Require host <var>address</var>
+Require ip <var>ip.address</var>
     </pre>
 
 
@@ -91,25 +91,23 @@
     board, and you want to keep them out, you could do the
     following:</p>
 
-    <div class="example"><p><code>
-      Require not ip 10.252.46.165
-    </code></p></div>
+    <pre class="prettyprint lang-config">Require not ip 10.252.46.165</pre>
+
 
     <p>Visitors coming from that address will not be able to see
     the content covered by this directive. If, instead, you have a
     machine name, rather than an IP address, you can use that.</p>
 
-    <div class="example"><p><code>
-      Require not host <var>host.example.com</var>
-    </code></p></div>
+    <pre class="prettyprint lang-config">Require not host <var>host.example.com</var></pre>
+
 
     <p>And, if you'd like to block access from an entire domain,
     you can specify just part of an address or domain name:</p>
 
     <pre class="prettyprint lang-config">
-      Require not ip <var>192.168.205</var>
-      Require not host <var>phishers.example.com</var> <var>moreidiots.example</var>
-      Require not gov
+Require not ip <var>192.168.205</var>
+Require not host <var>phishers.example.com</var> <var>moreidiots.example</var>
+Require not gov
     </pre>
 
 
@@ -127,9 +125,9 @@
     following:</p>
 
     <pre class="prettyprint lang-config">
-    &lt;If "%{HTTP_USER_AGENT} = 'BadBot'"&gt;
-        Require All Denied
-    &lt;/If&gt;
+&lt;If "%{HTTP_USER_AGENT} = 'BadBot'"&gt;
+    Require All Denied
+&lt;/If&gt;
     </pre>
 
 
@@ -155,10 +153,10 @@
     and 6am, you can do this using <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
     <pre class="prettyprint lang-config">
-    RewriteEngine On
-    RewriteCond %{TIME_HOUR} &gt;20 [OR]
-    RewriteCond %{TIME_HOUR} &lt;07
-    RewriteRule ^/fridge - [F]
+RewriteEngine On
+RewriteCond %{TIME_HOUR} &gt;20 [OR]
+RewriteCond %{TIME_HOUR} &lt;07
+RewriteRule ^/fridge - [F]
     </pre>
 
 
