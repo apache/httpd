@@ -192,18 +192,18 @@ defined.</p>
 <dl>
 <dt>A full filesystem path to a resource</dt>
 <dd>
-<example>
+<highlight language="config">
 RewriteRule ^/games /usr/local/games/web
-</example>
+</highlight>
 <p>This maps a request to an arbitrary location on your filesystem, much
 like the <directive module="mod_alias">Alias</directive> directive.</p>
 </dd>
 
 <dt>A web-path to a resource</dt>
 <dd>
-<example>
+<highlight language="config">
 RewriteRule ^/foo$ /bar
-</example>
+</highlight>
 <p>If <directive module="core">DocumentRoot</directive> is set
 to <code>/usr/local/apache2/htdocs</code>, then this directive would
 map requests for <code>http://example.com/foo</code> to the
@@ -212,9 +212,9 @@ path <code>/usr/local/apache2/htdocs/bar</code>.</p>
 
 <dt>An absolute URL</dt>
 <dd>
-<example>
+<highlight language="config">
 RewriteRule ^/product/view$ http://site2.example.com/seeproduct.html [R]
-</example>
+</highlight>
 <p>This tells the client to make a new request for the specified URL.</p>
 </dd>
 </dl>
@@ -222,9 +222,9 @@ RewriteRule ^/product/view$ http://site2.example.com/seeproduct.html [R]
 <p>The <var>Substitution</var> can also
 contain <em>back-references</em> to parts of the incoming URL-path
 matched by the <var>Pattern</var>. Consider the following:</p>
-<example>
+<highlight language="config">
 RewriteRule ^/product/(.*)/view$ /var/web/productdb/$1
-</example>
+</highlight>
 <p>The variable <code>$1</code> will be replaced with whatever text
 was matched by the expression inside the parenthesis in
 the <var>Pattern</var>. For example, a request
@@ -246,9 +246,9 @@ application of one or more flags to the end of the rule. For example, the
 matching behavior of a rule can be made case-insensitive by the
 application of the <code>[NC]</code> flag:
 </p>
-<example>
+<highlight language="config">
 RewriteRule ^puppy.html smalldog.html [NC]
-</example>
+</highlight>
 
 <p>For more details on the available flags, their meanings, and
 examples, see the <a href="flags.html">Rewrite Flags</a> document.</p>
@@ -274,10 +274,10 @@ argument is a list of flags that modify how the match is evaluated.</p>
 
 <p>For example, to send all requests from a particular IP range to a
 different server, you could use:</p>
-<example>
-RewriteCond %{REMOTE_ADDR} ^10\.2\.<br />
+<highlight language="config">
+RewriteCond %{REMOTE_ADDR} ^10\.2\.
 RewriteRule (.*) http://intranet.example.com$1
-</example>
+</highlight>
 
 <p>When more than
 one <directive module="mod_rewrite">RewriteCond</directive> is
@@ -286,11 +286,11 @@ the <directive module="mod_rewrite">RewriteRule</directive> to be
 applied. For example, to deny requests that contain the word "hack" in
 their query string, unless they also contain a cookie containing
 the word "go", you could use:</p>
-<example>
-RewriteCond %{QUERY_STRING} hack<br />
-RewriteCond %{HTTP_COOKIE} !go<br />
+<highlight language="config">
+RewriteCond %{QUERY_STRING} hack
+RewriteCond %{HTTP_COOKIE} !go
 RewriteRule . - [F]
-</example>
+</highlight>
 <p>Notice that the exclamation mark specifies a negative match, so the rule is only applied if the cookie does not contain "go".</p>
 
 <p>Matches in the regular expressions contained in
@@ -300,10 +300,10 @@ the <directive module="mod_rewrite">RewriteRule</directive> using the
 variables <code>%1</code>, <code>%2</code>, etc. For example, this
 will direct the request to a different directory depending on the
 hostname used to access the site:</p>
-<example>
-RewriteCond %{HTTP_HOST} (.*)<br />
+<highlight language="config">
+RewriteCond %{HTTP_HOST} (.*)
 RewriteRule ^/(.*) /sites/%1/$1
-</example>
+</highlight>
 <p>If the request was for <code>http://example.com/foo/bar</code>,
 then <code>%1</code> would contain <code>example.com</code>
 and <code>$1</code> would contain <code>foo/bar</code>.</p>
