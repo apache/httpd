@@ -95,3 +95,21 @@ pre.lang-lua{
 .lang-lua .str { color: #009606 } /* string content */
 .lang-lua .kwd { color: #00C; font-weight: bold }  /* a keyword */
 .lang-lua .typ { color: #808 }  /* a type name */
+
+
+
+
+/* Highlighting style for Perl source code */
+pre.lang-perl{ 
+    background-color: #f8f6ee;
+    color: #000;
+    padding: 0.5em;
+    margin: 1em 2em 1em 1em;
+    border: 1px dotted #666;
+}
+
+.lang-perl .com { color: #c34e00 }  /* a comment */
+.lang-perl .lit { color: #088 } /* a literal */
+.lang-perl .str { color: #009606 } /* string content */
+.lang-perl .kwd { color: #00C; font-weight: bold }  /* a keyword */
+.lang-perl .typ { color: #808 }  /* a type name */
