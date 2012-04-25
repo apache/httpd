@@ -119,7 +119,7 @@
 
     <p>Puede encontrar m&#225;s informaci&#243;n sobre c&#243;mo
     solucionar problemas, en la secci&#243;n de <a
-    href="faq/">Preguntas Frecuentes</a> de Apache.</p>
+    href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> de Apache.</p>
 </section>
 
 <section id="boot"><title>Iniciar Apache al Iniciar el Sistema</title>
