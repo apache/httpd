@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 669736:1329864 (outdated) -->
+<!-- English Revision: 1329864 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -82,14 +82,14 @@
       <dd>Apache günlük dosyalarındaki IP adreslerini konak isimlerine
         dönüştürür.</dd>
 
-      <dt><a href="other.html#log_server_status">log_server_status</a></dt>
+      <dt><program>log_server_status</program></dt>
       <dd>Sunucunun durumunu düzenli aralıklarla günlüğe kaydeder.</dd>
 
       <dt><program>rotatelogs</program></dt>
       <dd>Sunucuyu öldürmek gerekmeksizin günlük dosyalarının döndürülmesini
         sağlar.</dd>
 
-      <dt><a href="other.html#split-logfile">split-logfile</a></dt>
+      <dt><program>split-logfile</program></dt>
       <dd>Bir çok konaklı günlük dosyasını konak başına bir günlük dosyası düşecek şekilde böler.</dd>
 
       <dt><program>suexec</program></dt>
