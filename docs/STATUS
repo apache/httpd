@@ -36,8 +36,7 @@ To Do List
     two-httpd dav setup covered in Rich Bowen's DAV Apachecon
     presentation.
 
-- Performance doc "drop-in replace" wikified by Igor from Sander's
-  presentation: http://wiki.apache.org/httpd/PerformanceScalingUp
+- Performance doc "drop-in replace" misc/perf-scaling.xml
   as well as: http://wiki.apache.org/httpd/PerformanceScalingOut
   They both need review and updates to reflect the current state
   of the art.
