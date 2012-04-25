@@ -97,13 +97,13 @@ following:</p>
 
 <highlight language="config">
 &lt;VirtualHost *:80&gt;
-	ServerName www.example.com
-	Redirect / https://www.example.com/
+    ServerName www.example.com
+    Redirect / https://www.example.com/
 &lt;/VirtualHost &gt;
 
 &lt;VirtualHost *:443&gt;
-	ServerName www.example.com
-	# ... SSL configuration goes here
+    ServerName www.example.com
+    # ... SSL configuration goes here
 &lt;/VirtualHost &gt;
 </highlight>
 
@@ -218,7 +218,7 @@ module="core" type="section">If</directive> directive, as shown here:</p>
 
 <highlight language="config">
 &lt;If "$req{Host} != 'www.example.com'"&gt;
-	RedirectMatch (.*) http://www.example.com$1
+    RedirectMatch (.*) http://www.example.com$1
 &lt;/If&gt;
 </highlight>
 

@@ -143,8 +143,8 @@ may be used, and give examples of each.</p>
     recipe:</p>
 
     <pre class="prettyprint lang-config"><strong>#Product to ID configuration</strong>
-    RewriteMap product2id txt:/etc/apache2/productmap.txt
-    RewriteRule ^/product/(.*) /prods.php?id=${product2id:$1|NOTFOUND} [PT]
+RewriteMap product2id txt:/etc/apache2/productmap.txt
+RewriteRule ^/product/(.*) /prods.php?id=${product2id:$1|NOTFOUND} [PT]
     </pre>
 
 
@@ -325,9 +325,9 @@ by many requests.
     the int function, and then use that in your <code>RewriteRule</code>:
     </p>
 
-    <pre class="prettyprint lang-config"><strong>Redirect a URI to an all-lowercase version of itself</strong>
-    RewriteMap lc int:tolower
-    RewriteRule (.*?[A-Z]+.*) ${lc:$1} [R]
+    <pre class="prettyprint lang-config"><strong>#Redirect a URI to an all-lowercase version of itself</strong>
+RewriteMap lc int:tolower
+RewriteRule (.*?[A-Z]+.*) ${lc:$1} [R]
     </pre>
 
 
