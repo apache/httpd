@@ -186,18 +186,20 @@ defined.</p>
 <dl>
 <dt>A full filesystem path to a resource</dt>
 <dd>
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
 RewriteRule ^/games /usr/local/games/web
-</code></p></div>
+</pre>
+
 <p>This maps a request to an arbitrary location on your filesystem, much
 like the <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> directive.</p>
 </dd>
 
 <dt>A web-path to a resource</dt>
 <dd>
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
 RewriteRule ^/foo$ /bar
-</code></p></div>
+</pre>
+
 <p>If <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> is set
 to <code>/usr/local/apache2/htdocs</code>, then this directive would
 map requests for <code>http://example.com/foo</code> to the
@@ -206,9 +208,10 @@ path <code>/usr/local/apache2/htdocs/bar</code>.</p>
 
 <dt>An absolute URL</dt>
 <dd>
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
 RewriteRule ^/product/view$ http://site2.example.com/seeproduct.html [R]
-</code></p></div>
+</pre>
+
 <p>This tells the client to make a new request for the specified URL.</p>
 </dd>
 </dl>
@@ -216,9 +219,10 @@ RewriteRule ^/product/view$ http://site2.example.com/seeproduct.html [R]
 <p>The <var>Substitution</var> can also
 contain <em>back-references</em> to parts of the incoming URL-path
 matched by the <var>Pattern</var>. Consider the following:</p>
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
 RewriteRule ^/product/(.*)/view$ /var/web/productdb/$1
-</code></p></div>
+</pre>
+
 <p>The variable <code>$1</code> will be replaced with whatever text
 was matched by the expression inside the parenthesis in
 the <var>Pattern</var>. For example, a request
@@ -239,9 +243,10 @@ application of one or more flags to the end of the rule. For example, the
 matching behavior of a rule can be made case-insensitive by the
 application of the <code>[NC]</code> flag:
 </p>
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
 RewriteRule ^puppy.html smalldog.html [NC]
-</code></p></div>
+</pre>
+
 
 <p>For more details on the available flags, their meanings, and
 examples, see the <a href="flags.html">Rewrite Flags</a> document.</p>
@@ -265,10 +270,11 @@ argument is a list of flags that modify how the match is evaluated.</p>
 
 <p>For example, to send all requests from a particular IP range to a
 different server, you could use:</p>
-<div class="example"><p><code>
-RewriteCond %{REMOTE_ADDR} ^10\.2\.<br />
+<pre class="prettyprint lang-config">
+RewriteCond %{REMOTE_ADDR} ^10\.2\.
 RewriteRule (.*) http://intranet.example.com$1
-</code></p></div>
+</pre>
+
 
 <p>When more than
 one <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> is
@@ -277,11 +283,12 @@ the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">Rewrit
 applied. For example, to deny requests that contain the word "hack" in
 their query string, unless they also contain a cookie containing
 the word "go", you could use:</p>
-<div class="example"><p><code>
-RewriteCond %{QUERY_STRING} hack<br />
-RewriteCond %{HTTP_COOKIE} !go<br />
+<pre class="prettyprint lang-config">
+RewriteCond %{QUERY_STRING} hack
+RewriteCond %{HTTP_COOKIE} !go
 RewriteRule . - [F]
-</code></p></div>
+</pre>
+
 <p>Notice that the exclamation mark specifies a negative match, so the rule is only applied if the cookie does not contain "go".</p>
 
 <p>Matches in the regular expressions contained in
@@ -291,10 +298,11 @@ the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">Rewrit
 variables <code>%1</code>, <code>%2</code>, etc. For example, this
 will direct the request to a different directory depending on the
 hostname used to access the site:</p>
-<div class="example"><p><code>
-RewriteCond %{HTTP_HOST} (.*)<br />
+<pre class="prettyprint lang-config">
+RewriteCond %{HTTP_HOST} (.*)
 RewriteRule ^/(.*) /sites/%1/$1
-</code></p></div>
+</pre>
+
 <p>If the request was for <code>http://example.com/foo/bar</code>,
 then <code>%1</code> would contain <code>example.com</code>
 and <code>$1</code> would contain <code>foo/bar</code>.</p>
