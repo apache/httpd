@@ -78,29 +78,32 @@ configuration.</div>
 
 
 
-<div class="example"><p><code>
-RewriteCond %{HTTP_REFERER} <strong>!^$</strong><br />
-RewriteCond %{HTTP_REFERER} !www.example.com [NC]<br />
+<pre class="prettyprint lang-config">
+RewriteCond %{HTTP_REFERER} <strong>!^$</strong>
+RewriteCond %{HTTP_REFERER} !www.example.com [NC]
 RewriteRule <strong>\.(gif|jpg|png)$</strong>    -   [F,NC]
-</code></p></div>
+</pre>
+
 
     <p>In this second example, instead of failing the request, we display
     an alternate image instead.</p>
 
-<div class="example"><p><code>
-RewriteCond %{HTTP_REFERER} <strong>!^$</strong><br />
-RewriteCond %{HTTP_REFERER} !www.example.com [NC]<br />
+<pre class="prettyprint lang-config">
+RewriteCond %{HTTP_REFERER} <strong>!^$</strong>
+RewriteCond %{HTTP_REFERER} !www.example.com [NC]
 RewriteRule <strong>\.(gif|jpg|png)$</strong>    /images/go-away.png   [R,NC]
-</code></p></div>
+</pre>
+
 
     <p>In the third example, we redirect the request to an image on some
     other site.</p>
 
-<div class="example"><p><code>
-RewriteCond %{HTTP_REFERER} <strong>!^$</strong><br />
-RewriteCond %{HTTP_REFERER} !www.example.com [NC]<br />
+<pre class="prettyprint lang-config">
+RewriteCond %{HTTP_REFERER} <strong>!^$</strong>
+RewriteCond %{HTTP_REFERER} !www.example.com [NC]
 RewriteRule <strong>\.(gif|jpg|png)$</strong> http://other.example.com/image.gif   [R,NC]
-</code></p></div>
+</pre>
+
 
     <p>Of these techniques, the last two tend to be the most effective
     in getting people to stop hotlinking your images, because they will
@@ -115,14 +118,15 @@ RewriteRule <strong>\.(gif|jpg|png)$</strong> http://other.example.com/image.gif
         than redirecting that request elsewhere, this can be
         accomplished without the use of mod_rewrite:</p>
 
-        <div class="example"><p><code>
-        SetEnvIf Referer example\.com localreferer<br />
-        &lt;FilesMatch \.(jpg|png|gif)$&gt;<br />
-        Order deny,allow<br />
-        Deny from all<br />
-        Allow from env=localreferer<br />
-        &lt;/FilesMatch&gt;
-        </code></p></div>
+        <pre class="prettyprint lang-config">
+SetEnvIf Referer example\.com localreferer
+&lt;FilesMatch \.(jpg|png|gif)$&gt;
+	Order deny,allow
+	Deny from all
+	Allow from env=localreferer
+&lt;/FilesMatch&gt;
+        </pre>
+
         </dd>
       </dl>
 
@@ -165,11 +169,12 @@ RewriteRule <strong>\.(gif|jpg|png)$</strong> http://other.example.com/image.gif
         range, if you are trying to block that user agent only from the
         particular source.</p>
 
-<div class="example"><p><code>
-RewriteCond %{HTTP_USER_AGENT}   ^<strong>NameOfBadRobot</strong><br />
-RewriteCond %{REMOTE_ADDR}       =<strong>123\.45\.67\.[8-9]</strong><br />
+<pre class="prettyprint lang-config">
+RewriteCond %{HTTP_USER_AGENT}   ^<strong>NameOfBadRobot</strong>
+RewriteCond %{REMOTE_ADDR}       =<strong>123\.45\.67\.[8-9]</strong>
 RewriteRule ^<strong>/secret/files/</strong>   -   [<strong>F</strong>]
-</code></p></div>
+</pre>
+
         </dd>
 
       <dt>Discussion:</dt>
@@ -179,14 +184,15 @@ RewriteRule ^<strong>/secret/files/</strong>   -   [<strong>F</strong>]
         Rather than using mod_rewrite for this, you can accomplish the
         same end using alternate means, as illustrated here:
       </p>
-      <div class="example"><p><code>
-      SetEnvIfNoCase User-Agent ^NameOfBadRobot goaway<br />
-      &lt;Location /secret/files&gt;<br />
-      Order allow,deny<br />
-      Allow from all<br />
-      Deny from env=goaway<br />
-      &lt;/Location&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+SetEnvIfNoCase User-Agent ^NameOfBadRobot goaway
+&lt;Location /secret/files&gt;
+	Order allow,deny
+	Allow from all
+	Deny from env=goaway
+&lt;/Location&gt;
+      </pre>
+
       <p>
       As noted above, this technique is trivial to circumvent, by simply
       modifying the <code>USER_AGENT</code> request header. If you
@@ -216,13 +222,14 @@ RewriteRule ^<strong>/secret/files/</strong>   -   [<strong>F</strong>]
     <dt>Solution:</dt>
 
     <dd>
-<div class="example"><p><code>
-RewriteEngine on<br />
-RewriteMap    hosts-deny  txt:/path/to/hosts.deny<br />
-RewriteCond   ${hosts-deny:%{REMOTE_ADDR}|NOT-FOUND} !=NOT-FOUND [OR]<br />
-RewriteCond   ${hosts-deny:%{REMOTE_HOST}|NOT-FOUND} !=NOT-FOUND<br />
+<pre class="prettyprint lang-config">
+RewriteEngine on
+RewriteMap    hosts-deny  txt:/path/to/hosts.deny
+RewriteCond   ${hosts-deny:%{REMOTE_ADDR}|NOT-FOUND} !=NOT-FOUND [OR]
+RewriteCond   ${hosts-deny:%{REMOTE_HOST}|NOT-FOUND} !=NOT-FOUND
 RewriteRule   ^  -  [F]
-</code></p></div>
+</pre>
+
 
 <div class="example"><p><code>
 ##<br />
@@ -270,17 +277,18 @@ bsdti1.sdm.de  -<br />
   <p>The following ruleset uses a map file to associate each Referer
   with a redirection target.</p>
 
-<div class="example"><p><code>
-RewriteMap  deflector txt:/path/to/deflector.map<br />
-<br />
-RewriteCond %{HTTP_REFERER} !=""<br />
-RewriteCond ${deflector:%{HTTP_REFERER}} =-<br />
-RewriteRule ^ %{HTTP_REFERER} [R,L]<br />
-<br />
-RewriteCond %{HTTP_REFERER} !=""<br />
-RewriteCond ${deflector:%{HTTP_REFERER}|NOT-FOUND} !=NOT-FOUND<br />
+<pre class="prettyprint lang-config">
+RewriteMap  deflector txt:/path/to/deflector.map
+
+RewriteCond %{HTTP_REFERER} !=""
+RewriteCond ${deflector:%{HTTP_REFERER}} =-
+RewriteRule ^ %{HTTP_REFERER} [R,L]
+
+RewriteCond %{HTTP_REFERER} !=""
+RewriteCond ${deflector:%{HTTP_REFERER}|NOT-FOUND} !=NOT-FOUND
 RewriteRule ^ ${deflector:%{HTTP_REFERER}} [R,L]
-</code></p></div>
+</pre>
+
 
       <p>The map file lists redirection targets for each referer, or, if
       we just wish to redirect back to where they came from, a "-" is

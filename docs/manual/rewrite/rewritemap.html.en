@@ -64,9 +64,8 @@ configuration.</div>
    <p>The syntax of the <code>RewriteMap</code> directive is as
    follows:</p>
 
-<div class="example"><p><code>
-RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
-</code></p></div>
+<pre class="prettyprint lang-config">RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em></pre>
+
 
     <p>The <a id="mapfunc" name="mapfunc"><em>MapName</em></a> is an
     arbitray name that you assign to the map, and which you will use in
@@ -90,21 +89,18 @@ RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
 
     <p>For example, you might define a
       <code class="directive">RewriteMap</code> as:</p>
-    <div class="example"><p><code>
-      RewriteMap examplemap txt:/path/to/file/map.txt
-      </code></p></div>
+    <pre class="prettyprint lang-config">RewriteMap examplemap txt:/path/to/file/map.txt</pre>
+
     <p>You would then be able to use this map in a
       <code class="directive">RewriteRule</code> as follows:</p>
-<div class="example"><p><code>
-  RewriteRule ^/ex/(.*) ${examplemap:$1}
-</code></p></div>
+<pre class="prettyprint lang-config">RewriteRule ^/ex/(.*) ${examplemap:$1}</pre>
+
 
 <p>A default value can be specified in the event that nothing is found
 in the map:</p>
 
-<div class="example"><p><code>
-RewriteRule ^/ex/(.*) ${examplemap:$1|/not_found.html}
-</code></p></div>
+<pre class="prettyprint lang-config">RewriteRule ^/ex/(.*) ${examplemap:$1|/not_found.html}</pre>
+
 
 <div class="note"><h3>Per-directory and .htaccess context</h3>
 <p>
@@ -146,10 +142,11 @@ may be used, and give examples of each.</p>
     product IDs for easier-to-remember URLs, using the following
     recipe:</p>
 
-    <div class="example"><h3>Product to ID configuration</h3><p><code>
-    RewriteMap product2id txt:/etc/apache2/productmap.txt<br />
+    <pre class="prettyprint lang-config"><strong>#Product to ID configuration</strong>
+    RewriteMap product2id txt:/etc/apache2/productmap.txt
     RewriteRule ^/product/(.*) /prods.php?id=${product2id:$1|NOTFOUND} [PT]
-    </code></p></div>
+    </pre>
+
 
     <p>We assume here that the <code>prods.php</code> script knows what
     to do when it received an argument of <code>id=NOTFOUND</code> when
@@ -179,9 +176,8 @@ telephone  328
     scope. If you're planning to use this in a <code>.htaccess</code>
     file, you'll need to remove the leading slash from the rewrite
     pattern in order for it to match anything:
-    <div class="example"><p><code>
-    RewriteRule ^product/(.*) /prods.php?id=${product2id:$1|NOTFOUND} [PT]
-    </code></p></div>
+    <pre class="prettyprint lang-config">RewriteRule ^product/(.*) /prods.php?id=${product2id:$1|NOTFOUND} [PT]</pre>
+
     </div>
 
     <div class="note"><h3>Cached lookups</h3>
@@ -219,12 +215,13 @@ static   www1|www2|www3|www4<br />
 dynamic  www5|www6
     </code></p></div>
 
-    <div class="example"><h3>Configuration directives</h3><p><code>
-    RewriteMap servers rnd:/path/to/file/map.txt<br />
-    <br />
-    RewriteRule ^/(.*\.(png|gif|jpg)) http://${servers:static}/$1 [NC,P,L]<br />
-    RewriteRule ^/(.*) http://${servers:dynamic}/$1 [P,L]
-    </code></p></div>
+    <pre class="prettyprint lang-config"><strong>#Configuration directives</strong>
+RewriteMap servers rnd:/path/to/file/map.txt
+
+RewriteRule ^/(.*\.(png|gif|jpg)) http://${servers:static}/$1 [NC,P,L]
+RewriteRule ^/(.*) http://${servers:dynamic}/$1 [P,L]
+    </pre>
+
 
     <p>So, when an image is requested and the first of these rules is
     matched, <code>RewriteMap</code> looks up the string
@@ -255,9 +252,10 @@ static   www1|www1|www2|www3|www4
 
     <p>You may optionally specify a particular dbm type:</p>
 
- <div class="example"><p><code>
- RewriteMap examplemap dbm=sdbm:/etc/apache/mapfile.dbm
- </code></p></div>
+ <pre class="prettyprint lang-config">
+RewriteMap examplemap dbm=sdbm:/etc/apache/mapfile.dbm
+ </pre>
+
 
     <p>The type can be sdbm, gdbm, ndbm or db.
     However, it is recommended that you just use the <a href="../programs/httxt2dbm.html">httxt2dbm</a> utility that is
@@ -275,9 +273,10 @@ $ httxt2dbm -i mapfile.txt -o mapfile.map
 <p>You can then reference the resulting file in your
 <code>RewriteMap</code> directive:</p>
 
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
 RewriteMap mapname dbm:/etc/apache/mapfile.map
-</code></p></div>
+</pre>
+
 
 <div class="note">
 <p>Note that with some dbm types, more than one file is generated, with
@@ -326,10 +325,11 @@ by many requests.
     the int function, and then use that in your <code>RewriteRule</code>:
     </p>
 
-    <div class="example"><h3>Redirect a URI to an all-lowercase version of itself</h3><p><code>
-    RewriteMap lc int:tolower<br />
+    <pre class="prettyprint lang-config"><strong>Redirect a URI to an all-lowercase version of itself</strong>
+    RewriteMap lc int:tolower
     RewriteRule (.*?[A-Z]+.*) ${lc:$1} [R]
-    </code></p></div>
+    </pre>
+
 
     <div class="note">
     <p>Please note that the example offered here is for
@@ -369,12 +369,13 @@ by many requests.
     <p>A simple example is shown here which will replace all dashes with
     underscores in a request URI.</p>
 
-    <div class="example"><h3>Rewrite configuration</h3><p><code>
-    RewriteMap d2u prg:/www/bin/dash2under.pl<br />
-    RewriteRule - ${d2u:%{REQUEST_URI}}
-    </code></p></div>
+    <pre class="prettyprint lang-config"><strong>#Rewrite configuration</strong>
+RewriteMap d2u prg:/www/bin/dash2under.pl<br />
+RewriteRule - ${d2u:%{REQUEST_URI}}
+    </pre>
 
-    <div class="example"><h3>dash2under.pl</h3><p><code>
+
+    <p><strong>dash2under.pl</strong></p>
     <pre class="prettyprint lang-perl">
     #!/usr/bin/perl
     $| = 1; # Turn off I/O buffering
@@ -384,7 +385,6 @@ by many requests.
     }
     </pre>
 
-    </code></p></div>
 
 <div class="note"><h3>Caution!</h3>
 <ul>
@@ -426,9 +426,10 @@ this process, or if the script itself is very slow.</li>
     <p>If a query returns more than one row, a random row from
 the result set is used.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config"><strong>Example</strong>
 RewriteMap myquery "fastdbd:SELECT destination FROM rewrite WHERE source = %s"
-    </code></p></div>
+    </pre>
+
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
