@@ -46,9 +46,7 @@ providing detailed explanations and examples.</p>
 its behavior modified by one or more flags. Flags are included in
 square brackets at the end of the rule, and multiple flags are separated
 by commas.</p>
-<example>
-RewriteRule pattern target [Flag1,Flag2,Flag3]
-</example>
+<highlight language="config">RewriteRule pattern target [Flag1,Flag2,Flag3]</highlight>
 
 <p>The flags all have a short form, such as <code>CO</code>, as well as
 a longer form, such as <code>cookie</code>. Some flags take one or more
@@ -79,9 +77,7 @@ so backreferences will be unescaped at the time they are applied.
 Using the B flag, non-alphanumeric characters in backreferences
 will be escaped. For example, consider the rule:</p>
 
-<example>
-RewriteRule ^search/(.*)$ /search.php?term=$1
-</example>
+<highlight language="config">RewriteRule ^search/(.*)$ /search.php?term=$1</highlight>
 
 <p>Given a search term of 'x &amp; y/z', a browser will encode it as
 'x%20%26%20y%2Fz', making the request 'search/x%20%26%20y%2Fz'. Without the B
@@ -167,10 +163,10 @@ browsers that support this feature.</dd>
 
 <p>Several examples are offered here:</p>
 
-<example>
-RewriteEngine On<br />
+<highlight language="config">
+RewriteEngine On
 RewriteRule ^/index\.html - [CO=frontdoor:yes:.example.com:1440:/]
-</example>
+</highlight>
 
 <p>In the example give, the rule doesn't rewrite the request.
 The "-" rewrite target tells mod_rewrite to pass the request
@@ -255,10 +251,10 @@ value of '1' if the requested URI is an image file. Then, that
 environment variable is used to exclude those requests from the access
 log.</p>
 
-<example>
-RewriteRule \.(png|gif|jpg) - [E=image:1]<br />
+<highlight language="config">
+RewriteRule \.(png|gif|jpg) - [E=image:1]
 CustomLog logs/access_log combined env=!image
-</example>
+</highlight>
 
 <p>Note that this same effect can be obtained using <directive
 module="mod_setenvif">SetEnvIf</directive>. This technique is offered as
@@ -283,9 +279,7 @@ allows more flexibility in assigning a Forbidden status.</p>
 <p>The following rule will forbid <code>.exe</code> files from being
 downloaded from your server.</p>
 
-<example>
-RewriteRule \.exe - [F]
-</example>
+<highlight language="config">RewriteRule \.exe - [F]</highlight>
 
 <p>This example uses the "-" syntax for the rewrite target, which means
 that the requested URI is not modified. There's no reason to rewrite to
@@ -304,9 +298,7 @@ longer available.</p>
 <p>As with the [F] flag, you will typically use the "-" syntax for the
 rewrite target when using the [G] flag:</p>
 
-<example>
-RewriteRule oldproduct - [G,NC]
-</example>
+<highlight language="config">RewriteRule oldproduct - [G,NC]</highlight>
 
 <p>When using [G], an [L] is implied - that is, the response is returned
 immediately, and no further rules are evaluated.</p>
@@ -318,9 +310,7 @@ immediately, and no further rules are evaluated.</p>
 handler. For example, one might use this to force all files without a
 file extension to be parsed by the php handler:</p>
 
-<example>
-RewriteRule !\. - [H=application/x-httpd-php]
-</example>
+<highlight language="config">RewriteRule !\. - [H=application/x-httpd-php]</highlight>
 
 <p>
 The regular expression above - <code>!\.</code> - will match any request
@@ -332,9 +322,9 @@ For example, the following snippet used in per-server context allows
 <code>.php</code> files to be <em>displayed</em> by <code>mod_php</code>
 if they are requested with the <code>.phps</code> extension:</p>
 
-<example>
+<highlight language="config">
 RewriteRule ^(/source/.+\.php)s$ $1 [H=application/x-httpd-php-source]
-</example>
+</highlight>
 
 <p>The regular expression above - <code>^(/source/.+\.php)s$</code> - will
 match any request that starts with <code>/source/</code> followed by 1 or
@@ -385,11 +375,11 @@ module="mod_rewrite">RewriteCond</directive> ensures that if the request
 is already for <code>index.php</code>, the <directive
 module="mod_rewrite">RewriteRule</directive> will be skipped.</p>
 
-<example>
-RewriteBase /<br />
-RewriteCond %{REQUEST_URI} !=/index.php<br />
+<highlight language="config">
+RewriteBase /
+RewriteCond %{REQUEST_URI} !=/index.php
 RewriteRule ^(.*) /index.php?req=$1 [L,PT]
-</example>
+</highlight>
 </section>
 
 <section id="flag_n"><title>N|next</title>
@@ -405,9 +395,7 @@ will replace A with B everywhere in a request, and will continue doing
 so until there are no more As to be replaced.
 </p>
 
-<example>
-RewriteRule (.*)A(.*) $1B$2 [N]
-</example>
+<highlight language="config">RewriteRule (.*)A(.*) $1B$2 [N]</highlight>
 
 <p>You can think of this as a <code>while</code> loop: While this
 pattern still matches (i.e., while the URI still contains an
@@ -427,9 +415,7 @@ to your dedicated image server. The match is case-insensitive, so that
 <code>.jpg</code> and <code>.JPG</code> files are both acceptable, for
 example.</p>
 
-<example>
-RewriteRule (.*\.(jpg|gif|png))$ http://images.example.com$1 [P,NC]
-</example>
+<highlight language="config">RewriteRule (.*\.(jpg|gif|png))$ http://images.example.com$1 [P,NC]</highlight>
 </section>
 
 <section id="flag_ne"><title>NE|noescape</title>
@@ -438,9 +424,7 @@ RewriteRule (.*\.(jpg|gif|png))$ http://images.example.com$1 [P,NC]
 equivalent. Using the [NE] flag prevents that from happening.
 </p>
 
-<example>
-RewriteRule ^/anchor/(.+) /bigpage.html#$1 [NE,R]
-</example>
+<highlight language="config">RewriteRule ^/anchor/(.+) /bigpage.html#$1 [NE,R]</highlight>
 
 <p>
 The above example will redirect <code>/anchor/xyz</code> to
@@ -481,9 +465,7 @@ requests.
 example, if you wanted all image requests to be handled by a back-end
 image server, you might do something like the following:</p>
 
-<example>
-RewriteRule /(.*)\.(jpg|gif|png) http://images.example.com/$1.$2 [P]
-</example>
+<highlight language="config">RewriteRule /(.*)\.(jpg|gif|png) http://images.example.com/$1.$2 [P]</highlight>
 
 <p>Use of the [P] flag implies [L] - that is, the request is immediately
 pushed through the proxy, and any following rules will not be
@@ -536,10 +518,10 @@ use the [PT] flag to ensure that the
 <directive module="mod_alias">Alias</directive> is evaluated.
 </p>
 
-<example>
-Alias /icons /usr/local/apache/icons<br />
+<highlight language="config">
+Alias /icons /usr/local/apache/icons
 RewriteRule /pics/(.+)\.jpg /icons/$1.gif [PT]
-</example>
+</highlight>
 
 <p>
 Omission of the [PT] flag in this case will cause the Alias to be
@@ -568,9 +550,7 @@ Using the [QSA] flag causes the query strings to be combined.
 
 <p>Consider the following rule:</p>
 
-<example>
-RewriteRule /pages/(.+) /page.php?page=$1 [QSA]
-</example>
+<highlight language="config">RewriteRule /pages/(.+) /page.php?page=$1 [QSA]</highlight>
 
 <p>With the [QSA] flag, a request for <code>/pages/123?one=two</code> will be
 mapped to <code>/page.php?page=123&amp;one=two</code>. Without the [QSA]
@@ -646,16 +626,16 @@ statement in your rewrite ruleset. In the following example, we only want
 to run the <directive module="mod_rewrite">RewriteRule</directive> if the 
 requested URI doesn't correspond with an actual file.</p>
 
-<example>
-# Is the request for a non-existent file?<br />
-RewriteCond %{REQUEST_FILENAME} !-f<br />
-RewriteCond %{REQUEST_FILENAME} !-d<br />
-# If so, skip these two RewriteRules<br />
-RewriteRule .? - [S=2]<br />
-<br />
-RewriteRule (.*\.gif) images.php?$1<br />
+<highlight language="config">
+# Is the request for a non-existent file?
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+# If so, skip these two RewriteRules
+RewriteRule .? - [S=2]
+
+RewriteRule (.*\.gif) images.php?$1
 RewriteRule (.*\.html) docs.php?$1
-</example>
+</highlight>
 
 <p>This technique is useful because a <directive
 module="mod_rewrite">RewriteCond</directive> only applies to the
@@ -666,26 +646,22 @@ negate those conditions and add a <code>RewriteRule</code> with a [Skip] flag. Y
 use this to make pseudo if-then-else constructs: The last rule of
 the then-clause becomes <code>skip=N</code>, where N is the
 number of rules in the else-clause:</p>
-<example>
-# Does the file exist?<br />
-RewriteCond %{REQUEST_FILENAME} !-f<br />
-RewriteCond %{REQUEST_FILENAME} !-d<br />
-# Create an if-then-else construct by skipping 3 lines if we meant to go to the &quot;else&quot; stanza.<br />
-RewriteRule .? - [S=3]<br />
-<br />
+<highlight language="config">
+# Does the file exist?
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+# Create an if-then-else construct by skipping 3 lines if we meant to go to the &quot;else&quot; stanza.
+RewriteRule .? - [S=3]
+
 # IF the file exists, then:
-<indent>
-	RewriteRule (.*\.gif) images.php?$1<br />
-	RewriteRule (.*\.html) docs.php?$1<br />
-	# Skip past the &quot;else&quot; stanza.<br />
-	RewriteRule .? - [S=1]<br />
-</indent>
+	RewriteRule (.*\.gif) images.php?$1
+	RewriteRule (.*\.html) docs.php?$1
+	# Skip past the &quot;else&quot; stanza.
+	RewriteRule .? - [S=1]
 # ELSE...
-<indent>
-	RewriteRule (.*) 404.php?file=$1<br />
-</indent>
+	RewriteRule (.*) 404.php?file=$1
 # END
-</example>
+</highlight>
 
 <p>It is probably easier to accomplish this kind of configuration using
 the <directive type="section">If</directive>, <directive
@@ -702,19 +678,19 @@ module="mod_mime">AddType</directive> directive.</p>
 <p>For example, you might use the following technique to serve Perl
 source code as plain text, if requested in a particular way:</p>
 
-<example>
-# Serve .pl files as plain text<br />
+<highlight language="config">
+# Serve .pl files as plain text
 RewriteRule \.pl$ - [T=text/plain]
-</example>
+</highlight>
 
 <p>Or, perhaps, if you have a camera that produces jpeg images without
 file extensions, you could force those images to be served with the
 correct MIME type by virtue of their file names:</p>
 
-<example>
-# Files with 'IMG' in the name are jpg images.<br />
+<highlight language="config">
+# Files with 'IMG' in the name are jpg images.
 RewriteRule IMG - [T=image/jpg]
-</example>
+</highlight>
 
 <p>Please note that this is a trivial example, and could be better done
 using <directive type="section" module="core">FilesMatch</directive>

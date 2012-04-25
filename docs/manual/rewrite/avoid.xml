@@ -90,25 +90,22 @@ and <code>/one/three/four.html</code>.</p>
 <p>To redirect URLs under <code>/one</code> to
 <code>http://one.example.com</code>, do the following:</p>
 
-<example>
-Redirect /one/ http://one.example.com/
-</example>
+<highlight language="config">Redirect /one/ http://one.example.com/</highlight>
 
 <p>To redirect <code>http</code> URLs to <code>https</code>, do the
 following:</p>
 
-<example>
+<highlight language="config">
 &lt;VirtualHost *:80&gt;
-ServerName www.example.com<br />
-Redirect / https://www.example.com/<br />
+	ServerName www.example.com
+	Redirect / https://www.example.com/
 &lt;/VirtualHost &gt;
-<br />
+
 &lt;VirtualHost *:443&gt;
-ServerName www.example.com<br />
-<br />
-# ... SSL configuration goes here<br />
+	ServerName www.example.com
+	# ... SSL configuration goes here
 &lt;/VirtualHost &gt;
-</example>
+</highlight>
 
 <p>The use of <code>RewriteRule</code> to perform this task may be
 appropriate if there are other <code>RewriteRule</code> directives in
@@ -133,7 +130,7 @@ is possible to perform this mapping with <code>mod_rewrite</code>,
 and performance.</p>
 
 <example><title>Using Alias</title>
-Alias /cats /var/www/virtualhosts/felines/htdocs
+<highlight language="config">Alias /cats /var/www/virtualhosts/felines/htdocs</highlight>
 </example>
 
 <p>
@@ -175,18 +172,18 @@ seems like the right approach.</p>
 href="flags.html#flag_p">[P]</a> flag to pass rewritten URIs through
 <module>mod_proxy</module>.</p>
 
-<example>
+<highlight language="config">
 RewriteRule ^/?images(.*) http://imageserver.local/images$1 [P]
-</example>
+</highlight>
 
 <p>However, in many cases, when there is no actual pattern matching
 needed, as in the example shown above, the <directive
 module="mod_proxy">ProxyPass</directive> directive is a better choice.
 The example here could be rendered as:</p>
 
-<example>
+<highlight language="config">
 ProxyPass /images/ http://imageserver.local/images/
-</example>
+</highlight>
 
 <p>Note that whether you use <directive
 module="mod_rewrite">RewriteRule</directive> or <directive
@@ -194,9 +191,9 @@ module="mod_proxy">ProxyPass</directive>, you'll still need to use the
 <directive module="mod_proxy">ProxyPassReverse</directive> directive to
 catch redirects issued from the back-end server:</p>
 
-<example>
+<highlight language="config">
 ProxyPassReverse /images/ http://imageserver.local/images/
-</example>
+</highlight>
 
 <p>You may need to use <code>RewriteRule</code> instead when there are
 other <code>RewriteRule</code>s in effect in the same scope, as a
@@ -219,11 +216,11 @@ hostname, such as <code>www.example.com</code> instead of
 <code>example.com</code>. This can be done using the <directive
 module="core" type="section">If</directive> directive, as shown here:</p>
 
-<example>
-&lt;If "$req{Host} != 'www.example.com'"&gt;<br />
-RedirectMatch (.*) http://www.example.com$1<br />
+<highlight language="config">
+&lt;If "$req{Host} != 'www.example.com'"&gt;
+	RedirectMatch (.*) http://www.example.com$1
 &lt;/If&gt;
-</example>
+</highlight>
 
 <p>This technique can be used to take actions based on any request
 header, response header, or environment variable, replacing
