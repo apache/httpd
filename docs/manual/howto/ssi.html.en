@@ -96,10 +96,11 @@ existing HTML documents.</p>
     do this. You can tell Apache to parse any file with a
     particular file extension, such as <code>.shtml</code>, with
     the following directives:</p>
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
         AddType text/html .shtml<br />
         AddOutputFilter INCLUDES .shtml
-</code></p></div>
+</pre>
+
 
     <p>One disadvantage to this approach is that if you wanted to
     add SSI directives to an existing page, you would have to
@@ -108,9 +109,10 @@ existing HTML documents.</p>
     directives would be executed.</p>
 
     <p>The other method is to use the <code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code> directive:</p>
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
         XBitHack on
-</code></p></div>
+</pre>
+
 
     <p><code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code>
     tells Apache to parse files for SSI
@@ -431,10 +433,11 @@ modified?</a></h3>
 
     <p>In your configuration file, you could put the following
     line:</p>
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
         BrowserMatchNoCase macintosh Mac<br />
         BrowserMatchNoCase MSIE InternetExplorer
-</code></p></div>
+</pre>
+
 
     <p>This will set environment variables ``Mac'' and
     ``InternetExplorer'' to true, if the client is running Internet

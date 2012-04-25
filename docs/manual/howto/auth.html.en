@@ -142,9 +142,10 @@ module from each group.</p>
     an <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> directive like the
     following:</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       AllowOverride AuthConfig
-    </code></p></div>
+    </pre>
+
 
     <p>Or, if you are just going to put the directives directly in
     your main server configuration file, you will of course need to
@@ -216,14 +217,15 @@ module from each group.</p>
     placed in <code>httpd.conf</code> inside a &lt;Directory
     /usr/local/apache/htdocs/secret&gt; section.</p>
 
-    <div class="example"><p><code>
-      AuthType Basic<br />
-      AuthName "Restricted Files"<br />
-      # (Following line optional)<br />
-      AuthBasicProvider file<br />
-      AuthUserFile /usr/local/apache/passwd/passwords<br />
+    <pre class="prettyprint lang-config">
+      AuthType Basic
+      AuthName "Restricted Files"
+      # (Following line optional)
+      AuthBasicProvider file
+      AuthUserFile /usr/local/apache/passwd/passwords
       Require user rbowen
-    </code></p></div>
+    </pre>
+
 
     <p>Let's examine each of those directives individually. The <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code> directive selects
     that method that is used to authenticate the user. The most
@@ -313,15 +315,16 @@ person in</a></h2>
     <p>Now, you need to modify your <code>.htaccess</code> file to
     look like the following:</p>
 
-    <div class="example"><p><code>
-      AuthType Basic<br />
-      AuthName "By Invitation Only"<br />
-      # Optional line:<br />
-      AuthBasicProvider file<br />
-      AuthUserFile /usr/local/apache/passwd/passwords<br />
-      AuthGroupFile /usr/local/apache/passwd/groups<br />
+    <pre class="prettyprint lang-config">
+      AuthType Basic
+      AuthName "By Invitation Only"
+      # Optional line:
+      AuthBasicProvider file
+      AuthUserFile /usr/local/apache/passwd/passwords
+      AuthGroupFile /usr/local/apache/passwd/groups
       Require group GroupName
-    </code></p></div>
+    </pre>
+
 
     <p>Now, anyone that is listed in the group <code>GroupName</code>,
     and has an entry in the <code>password</code> file, will be let in, if
@@ -379,17 +382,16 @@ person in</a></h2>
 
     <p>To select a dbd file rather than a text file, for example:</p>
 
-    <div class="example"><p><code>
-    &lt;Directory /www/docs/private&gt;<br />
-    <span class="indent">
-    AuthName "Private"<br />
-    AuthType Basic<br />
-    AuthBasicProvider dbm<br />
-    AuthDBMUserFile /www/passwords/passwd.dbm<br />
-    Require valid-user<br />
-    </span>
+    <pre class="prettyprint lang-config">
+    &lt;Directory /www/docs/private&gt;
+        AuthName "Private"
+        AuthType Basic
+        AuthBasicProvider dbm
+        AuthDBMUserFile /www/passwords/passwd.dbm
+        Require valid-user
     &lt;/Directory&gt;
-    </code></p></div>
+    </pre>
+
 
     <p>Other options are available. Consult the
     <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> documentation for more details.</p>
@@ -404,18 +406,17 @@ person in</a></h2>
     scheme that meets your needs. In the following example, both the
     file and LDAP based authentication providers are being used.</p>
 
-    <div class="example"><p><code>
-    &lt;Directory /www/docs/private&gt;<br />
-    <span class="indent">
-    AuthName "Private"<br />
-    AuthType Basic<br />
-    AuthBasicProvider file ldap<br />
-    AuthUserFile /usr/local/apache/passwd/passwords<br />
-    AuthLDAPURL ldap://ldaphost/o=yourorg<br />
-    Require valid-user<br />
-    </span>
+    <pre class="prettyprint lang-config">
+    &lt;Directory /www/docs/private&gt;
+        AuthName "Private"
+        AuthType Basic
+        AuthBasicProvider file ldap
+        AuthUserFile /usr/local/apache/passwd/passwords
+        AuthLDAPURL ldap://ldaphost/o=yourorg
+        Require valid-user
     &lt;/Directory&gt;
-    </code></p></div>
+    </pre>
+
 
     <p>In this example the file provider will attempt to authenticate
     the user first. If it is unable to authenticate the user, the LDAP
@@ -430,20 +431,19 @@ person in</a></h2>
     authorization methods can also be used. In this example both file group
     authorization as well as LDAP group authorization is being used.</p>
 
-    <div class="example"><p><code>
-    &lt;Directory /www/docs/private&gt;<br />
-    <span class="indent">
-    AuthName "Private"<br />
-    AuthType Basic<br />
-    AuthBasicProvider file<br />
-    AuthUserFile /usr/local/apache/passwd/passwords<br />
-    AuthLDAPURL ldap://ldaphost/o=yourorg
-    AuthGroupFile /usr/local/apache/passwd/groups<br />
-    Require group GroupName<br />
-    Require ldap-group cn=mygroup,o=yourorg<br />
-    </span>
+    <pre class="prettyprint lang-config">
+    &lt;Directory /www/docs/private&gt;
+        AuthName "Private"
+        AuthType Basic
+        AuthBasicProvider file
+        AuthUserFile /usr/local/apache/passwd/passwords
+        AuthLDAPURL ldap://ldaphost/o=yourorg
+        AuthGroupFile /usr/local/apache/passwd/groups
+        Require group GroupName
+        Require ldap-group cn=mygroup,o=yourorg
     &lt;/Directory&gt;
-    </code></p></div>
+    </pre>
+
 
     <p>To take authorization a little further, authorization container
     directives such as
@@ -521,16 +521,18 @@ person in</a></h2>
         that will be called during the authorization stage of the request
         processing. For example:</p>
 
-        <div class="example"><p><code>
+        <pre class="prettyprint lang-config">
           Require ip <var>address</var>
-        </code></p></div>
+        </pre>
+
 
         <p>where <var>address</var> is an IP address (or a partial IP
         address) or:</p>
 
-        <div class="example"><p><code>
+        <pre class="prettyprint lang-config">
           Require host <var>domain_name</var>
-        </code></p></div>
+        </pre>
+
 
         <p>where <var>domain_name</var> is a fully qualified domain name
         (or a partial domain name); you may provide multiple addresses or
@@ -540,45 +542,40 @@ person in</a></h2>
         board, and you want to keep them out, you could do the
         following:</p>
 
-        <div class="example"><p><code>
+        <pre class="prettyprint lang-config">
           &lt;RequireAll&gt;
-          <span class="indent">
-            Require all granted<br />
+            Require all granted
             Require not ip 10.252.46.165
-          </span>
           &lt;/RequireAll&gt;
-        </code></p></div>
+        </pre>
+
 
         <p>Visitors coming from that address will not be able to see
         the content covered by this directive. If, instead, you have a
         machine name, rather than an IP address, you can use that.</p>
 
-        <div class="example"><p><code>
+        <pre class="prettyprint lang-config">
           &lt;RequireAll&gt;
-          <span class="indent">
-            Require all granted<br />
+            Require all granted
             Require not host <var>host.example.com</var>
-          </span>
           &lt;/RequireAll&gt;
-        </code></p></div>
+        </pre>
+
 
         <p>And, if you'd like to block access from an entire domain,
         you can specify just part of an address or domain name:</p>
 
-        <div class="example"><p><code>
-          &lt;RequireAll&gt;
-          <span class="indent">
-            Require all granted<br />
-            &lt;RequireNone&gt;
-            <span class="indent">
-              Require ip 192.168.205<br />
-              Require host phishers.example.com moreidiots.example<br />
-              Require host ke
-            </span>
-            &lt;/RequireNone&gt;
-          </span>
-          &lt;/RequireAll&gt;
-        </code></p></div>
+        <pre class="prettyprint lang-config">
+  &lt;RequireAll&gt;
+    Require all granted
+    &lt;RequireNone&gt;
+      Require ip 192.168.205
+      Require host phishers.example.com moreidiots.example
+      Require host ke
+    &lt;/RequireNone&gt;
+  &lt;/RequireAll&gt;
+        </pre>
+
 
         <p>The above example uses the <code class="directive"><a href="../mod/mod_authz_core.html#requirenone">&lt;RequireNone&gt;</a></code> directive
         to make sure that none of the

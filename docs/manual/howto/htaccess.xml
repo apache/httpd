@@ -299,19 +299,15 @@ changes on a per-directory basis.</p>
     prevent script execution while allowing anything else to be set in
     <code>.htaccess</code> you can use:</p>
 
-    <example>
-&lt;Directory /www/htdocs&gt;<br />
-<indent>
-Allowoverride All<br />
-</indent>
-&lt;/Directory&gt;<br />
-<br />
-&lt;Location /&gt;<br />
-<indent>
-Options +IncludesNoExec -ExecCGI<br />
-</indent>
+    <highlight language="config">
+&lt;Directory /www/htdocs&gt;
+    Allowoverride All
+&lt;/Directory&gt;
+
+&lt;Location /&gt;
+    Options +IncludesNoExec -ExecCGI<br />
 &lt;/Location&gt;
-    </example>
+    </highlight>
 
     <note>This example assumes that your <directive
     module="core">DocumentRoot</directive> is <code>/www/htdocs</code>.</note>
@@ -339,13 +335,13 @@ Options +IncludesNoExec -ExecCGI<br />
 
     <p><code>.htaccess</code> file contents:</p>
 
-    <example>
-      AuthType Basic<br />
-      AuthName "Password Required"<br />
-      AuthUserFile /www/passwords/password.file<br />
-      AuthGroupFile /www/passwords/group.file<br />
+    <highlight language="config">
+      AuthType Basic
+      AuthName "Password Required"
+      AuthUserFile /www/passwords/password.file
+      AuthGroupFile /www/passwords/group.file
       Require Group admins
-    </example>
+    </highlight>
 
     <p>Note that <code>AllowOverride AuthConfig</code> must be in effect
     for these directives to have any effect.</p>
@@ -361,11 +357,11 @@ Options +IncludesNoExec -ExecCGI<br />
     the following configuration directives, placed in a
     <code>.htaccess</code> file in the desired directory:</p>
 
-    <example>
-       Options +Includes<br />
-       AddType text/html shtml<br />
+    <highlight language="config">
+       Options +Includes
+       AddType text/html shtml
        AddHandler server-parsed shtml
-    </example>
+    </highlight>
 
     <p>Note that <code>AllowOverride Options</code> and <code>AllowOverride
     FileInfo</code> must both be in effect for these directives to have any
@@ -381,19 +377,19 @@ Options +IncludesNoExec -ExecCGI<br />
     the execution of CGI programs in a particular directory. This may be
     implemented with the following configuration:</p>
 
-    <example>
+    <highlight language="config">
        Options +ExecCGI<br />
        AddHandler cgi-script cgi pl
-    </example>
+    </highlight>
 
     <p>Alternately, if you wish to have all files in the given directory be
     considered to be CGI programs, this may be done with the following
     configuration:</p>
 
-    <example>
+    <highlight language="config">
        Options +ExecCGI<br />
        SetHandler cgi-script
-    </example>
+    </highlight>
 
     <p>Note that <code>AllowOverride Options</code> and <code>AllowOverride
     FileInfo</code> must both be in effect for these directives to have any

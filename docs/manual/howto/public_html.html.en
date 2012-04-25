@@ -80,9 +80,10 @@
     constructed using that path, plus the username specified. Given this
     configuration:</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       UserDir /var/html
-    </code></p></div>
+    </pre>
+
 
     <p>the URL <code>http://example.com/~rbowen/file.html</code> will be
     translated to the file path <code>/var/html/rbowen/file.html</code></p>
@@ -91,9 +92,10 @@
     in which the asterisk is replaced with the username. Given this
     configuration:</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       UserDir /var/www/*/docs
-    </code></p></div>
+    </pre>
+
 
     <p>the URL <code>http://example.com/~rbowen/file.html</code> will be
     translated to the file path
@@ -118,9 +120,10 @@
     <p>The <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> directive can be
       used to redirect user directory requests to external URLs.</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       UserDir http://example.org/users/*/
-    </code></p></div>
+    </pre>
+
 
     <p>The above example will redirect a request for
     <code>http://example.com/~bob/abc.html</code> to
@@ -134,19 +137,21 @@
     <p>Using the syntax shown in the UserDir documentation, you can restrict
     what users are permitted to use this functionality:</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       UserDir disabled root jro fish
-    </code></p></div>
+    </pre>
+
 
     <p>The configuration above will enable the feature for all users
     except for those listed in the <code>disabled</code> statement.
     You can, likewise, disable the feature for all but a few users by
     using a configuration like the following:</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       UserDir disabled<br />
       UserDir enabled rbowen krietz
-    </code></p></div>
+    </pre>
+
 
     <p>See <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code>
     documentation for additional examples.</p>
@@ -161,12 +166,13 @@
     directive to make a particular subdirectory of a user's home directory
     cgi-enabled.</p>
 
-    <div class="example"><p><code>
-      &lt;Directory /home/*/public_html/cgi-bin/&gt;<br />
-       Options ExecCGI<br />
-       SetHandler cgi-script<br />
+    <pre class="prettyprint lang-config">
+      &lt;Directory /home/*/public_html/cgi-bin/&gt;
+       Options ExecCGI
+       SetHandler cgi-script
        &lt;/Directory&gt;
-    </code></p></div>
+    </pre>
+
 
     <p>Then, presuming that <code>UserDir</code> is set to
     <code>public_html</code>, a cgi program <code>example.cgi</code>

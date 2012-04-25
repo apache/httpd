@@ -98,10 +98,10 @@ existing HTML documents.</p>
     do this. You can tell Apache to parse any file with a
     particular file extension, such as <code>.shtml</code>, with
     the following directives:</p>
-<example>
+<highlight language="config">
         AddType text/html .shtml<br />
         AddOutputFilter INCLUDES .shtml
-</example>
+</highlight>
 
     <p>One disadvantage to this approach is that if you wanted to
     add SSI directives to an existing page, you would have to
@@ -111,9 +111,9 @@ existing HTML documents.</p>
 
     <p>The other method is to use the <directive
     module="mod_include">XBitHack</directive> directive:</p>
-<example>
+<highlight language="config">
         XBitHack on
-</example>
+</highlight>
 
     <p><directive module="mod_include">XBitHack</directive>
     tells Apache to parse files for SSI
@@ -436,10 +436,10 @@ modified?</title>
 
     <p>In your configuration file, you could put the following
     line:</p>
-<example>
+<highlight language="config">
         BrowserMatchNoCase macintosh Mac<br />
         BrowserMatchNoCase MSIE InternetExplorer
-</example>
+</highlight>
 
     <p>This will set environment variables ``Mac'' and
     ``InternetExplorer'' to true, if the client is running Internet

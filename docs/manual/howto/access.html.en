@@ -68,10 +68,11 @@
 
     <p>The usage of these directives is:</p>
 
-    <div class="example"><p><code>
-      Require host <var>address</var><br />
+    <pre class="prettyprint lang-config">
+      Require host <var>address</var>
       Require ip <var>ip.address</var>
-    </code></p></div>
+    </pre>
+
 
     <p>In the first form, <var>address</var> is a fully qualified
     domain name (or a partial domain name); you may provide multiple
@@ -105,11 +106,12 @@
     <p>And, if you'd like to block access from an entire domain,
     you can specify just part of an address or domain name:</p>
 
-    <div class="example"><p><code>
-      Require not ip <var>192.168.205</var><br />
-      Require not host <var>phishers.example.com</var> <var>moreidiots.example</var><br />
+    <pre class="prettyprint lang-config">
+      Require not ip <var>192.168.205</var>
+      Require not host <var>phishers.example.com</var> <var>moreidiots.example</var>
       Require not gov
-    </code></p></div>
+    </pre>
+
 
     <p>Use of the <code class="directive"><a href="../mod/mod_authz_core.html#requireall">RequireAll</a></code>, <code class="directive"><a href="../mod/mod_authz_core.html#requireany">RequireAny</a></code>, and <code class="directive"><a href="../mod/mod_authz_core.html#requirenone">RequireNone</a></code> directives may be
     used to enforce more complex sets of requirements.</p>
@@ -124,13 +126,12 @@
     based on user-agent (the browser type) you might do the
     following:</p>
 
-    <div class="example"><p><code>
-    &lt;If "%{HTTP_USER_AGENT} = 'BadBot'"&gt;<br />
-    <span class="indent">
-        Require All Denied<br />
-    </span>
+    <pre class="prettyprint lang-config">
+    &lt;If "%{HTTP_USER_AGENT} = 'BadBot'"&gt;
+        Require All Denied
     &lt;/If&gt;
-    </code></p></div>
+    </pre>
+
 
     <div class="note"><h3>Warning:</h3>
     <p>Access control by <code>User-Agent</code> is an unreliable technique,
@@ -153,12 +154,13 @@
     <p>For example, if you wish to block access to a resource between 8pm
     and 6am, you can do this using <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
-    <div class="example"><p><code>
-    RewriteEngine On<br />
-    RewriteCond %{TIME_HOUR} &gt;20 [OR]<br />
-    RewriteCond %{TIME_HOUR} &lt;07<br />
+    <pre class="prettyprint lang-config">
+    RewriteEngine On
+    RewriteCond %{TIME_HOUR} &gt;20 [OR]
+    RewriteCond %{TIME_HOUR} &lt;07
     RewriteRule ^/fridge - [F]
-    </code></p></div>
+    </pre>
+
 
     <p>This will return a 403 Forbidden response for any request after 8pm
     or before 7am. This technique can be used for any criteria that you wish
