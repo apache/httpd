@@ -55,14 +55,14 @@
         
     </summary>
     
-    <section id="What Will and Will Not Be Discussed">
+  <section id="what-will-and-will-not-be-discussed">
         <title>What Will and Will Not Be Discussed
         </title>
         <p>The session will focus on easily accessible configuration and tuning
             options for Apache httpd 2.2 and 2.3 as well as monitoring tools.
             Monitoring tools will allow you to observe your web server to
             gather information about its performance, or lack thereof.
-            We&apos;ll assume that you don&apos;t have an unlimited budget for
+            We'll assume that you don't have an unlimited budget for
             server hardware, so the existing infrastructure will have to do the
             job. You have no desire to compile your own Apache, or to recompile
             the operating system kernel. We do assume, though, that you have
@@ -71,7 +71,7 @@
         
     </section>
     
-    <section id="Monitoring Your Server">
+    <section id="monitoring-your-server">
         <title>Monitoring Your Server
         </title>
         <p>The first task when sizing or performance-tuning your server is to
@@ -82,7 +82,7 @@
         </p>
         
         
-        <section id="Monitoring Tools">
+        <section id="monitoring-tools">
             <title>Monitoring Tools
             </title>
             
@@ -91,7 +91,7 @@
                 <title>top
                 </title>
                 <p>The top tool ships with Linux and FreeBSD. Solaris offers
-                    `prstat&apos;. It collects a number of statistics for the
+                    `prstat'. It collects a number of statistics for the
                     system and for each running process, then displays them
                     interactively on your terminal. The data displayed is
                     refreshed every second and varies by platform, but
@@ -179,10 +179,10 @@
                     top ten CPU gluttons). It is indispensable in determining
                     the size of a running process, which comes in handy when
                     determining how many server processes you can run on your
-                    machine. How to do this is described in &apos;<a href="/httpd/PerformanceScalingUp#S">
+                    machine. How to do this is described in '<a href="/httpd/PerformanceScalingUp#S">
                         sizing MaxClients
                     </a>
-                    &apos;. Top is, however, an interactive tool and running it
+                    '. Top is, however, an interactive tool and running it
                     continuously has few if any advantages. 
                 </p>
             </section>
@@ -194,10 +194,10 @@
                     memory as file system cache. The free command shows usage
                     both with and without this cache. The free command can be
                     used to find out how much memory the operating system is
-                    using, as described in the paragraph &apos;<a href="/httpd/PerformanceScalingUp#S">
+                    using, as described in the paragraph '<a href="/httpd/PerformanceScalingUp#S">
                         Sizing MaxClients
                     </a>
-                    &apos;. The output of free looks like this: 
+                    '. The output of free looks like this: 
                 </p>
                 
                 <example>
@@ -274,7 +274,7 @@
                 
                 
             </section>
-            <section id="SE Toolkit">
+            <section id="se-toolkit">
                 <title>SE Toolkit
                 </title>
                 <p>The SE Toolkit is a system monitoring toolkit for Solaris.
@@ -301,11 +301,11 @@
                 
                 
             </section>
-            <section id="DTrace">
+            <section id="dtrace">
                 <title>DTrace
                 </title>
                 <p>Given that DTrace is available for Solaris, FreeBSD and OS
-                    X, it might be worth exploring it. There&apos;s also
+                    X, it might be worth exploring it. There's also
                     mod_dtrace available for httpd. 
                 </p>
                 
@@ -335,7 +335,7 @@
                 
             </section>
         </section>
-        <section id="Web Server Log Files">
+        <section id="web-server-log-files">
             <title>Web Server Log Files
             </title>
             <p>Monitoring and analyzing the log files httpd writes is one of
@@ -351,7 +351,7 @@
             </p>
             
             
-            <section id="Error Log">
+            <section id="ErrorLog">
                 <title>Error Log
                 </title>
                 <p>The error log will contain messages if the server has
@@ -391,7 +391,7 @@
                     directive can also be used in virtual host containers. The
                     error log of a virtual host receives only log messages
                     specific to that virtual host, such as authentication
-                    failures and &apos;File not Found&apos; errors. 
+                    failures and 'File not Found' errors. 
                 </p>
                 <p>On a server that is visible to the Internet, expect to see a
                     lot of exploit attempt and worm attacks in the error log. A
@@ -528,7 +528,7 @@
                 
                 
             </section>
-            <section id="Access Log">
+            <section id="AccessLog">
                 <title>Access Log
                 </title>
                 <p>Apache httpd keeps track of every request it services in its
@@ -695,7 +695,7 @@
                 </table>
                 
             </section>
-            <section id="Rotating Log Files">
+            <section id="rotating-log-files">
                 <title>Rotating Log Files
                 </title>
                 <p>There are several reasons to rotate logfiles. Even though
@@ -769,7 +769,7 @@
                 
                 
             </section>
-            <section id="Logging and Performance">
+            <section id="logging-and-performance">
                 <title>Logging and Performance
                 </title>
                 <p>Writing entries to the Apache log files obviously takes some
@@ -797,20 +797,14 @@
                     easier to analyze the logfile later. However, if your
                     server has many virtual hosts, all the open logfiles put a
                     resource burden on your system, and it may be preferable to
-                    log to a single file. Use the <code>%v
-                    </code>
-                    format character at the start of your <a href="/httpd/LogFormat" class="nonexistent">
-                        LogFormat
-                    </a>
-                    and starting 2.3.8 of your <code>ErrorLogFormat
-                    </code>
+                    log to a single file. Use the <code>%v</code>
+					format character at the start of your <directive module="mod_log_config">LogFormat</directive>
+					and starting 2.3.8 of your <directive module="core">ErrorLog</directive>
                     to make httpd print the hostname of the virtual host that
                     received the request or the error at the beginning of each
                     log line. A simple Perl script can split out the log file
                     after it rotates: one is included with the Apache source
-                    under <code>support/split-logfile
-                    </code>
-                    .
+                    under <code>support/split-logfile</code>.
                 </p>
                 <p>
                     You can use the <code>BufferedLogs
@@ -818,20 +812,18 @@
                     directive to have Apache collect several log lines in
                     memory before writing them to disk. This might yield better
                     performance, but could affect the order in which the
-                    server&apos;s log is written. 
+                    server's log is written. 
                 </p>
                 
                 
             </section>
         </section>
-        <section id="Generating A Test Load">
+        <section id="generating-a-test-load">
             <title>Generating A Test Load
             </title>
             <p>It is useful to generate a test load to monitor system
                 performance under realistic operating circumstances. Besides
-                commercial packages such as <a href="/httpd/LoadRunner" class="nonexistent">
-                    LoadRunner
-                </a>
+				commercial packages such as <a href="http://learnloadrunner.com/">LoadRunner</a>
                 ,there are a number of freely available tools to generate a
                 test load against your web server. 
             </p>
@@ -858,9 +850,7 @@
                 </li>
                 <li>
                     <p>ASF external projects, that have proven to be quite
-                        good: grinder, httperf, tsung, <a href="/httpd/FunkLoad" class="nonexistent">
-                            FunkLoad
-                        </a>
+						good: grinder, httperf, tsung, <a href="http://funkload.nuxeo.org/">FunkLoad</a>
                     </p>
                 </li>
             </ul>
@@ -873,12 +863,12 @@
             
         </section>
     </section>
-    <section id="Configuring for Performance">
+    <section id="configuring-for-performance">
         <title>Configuring for Performance
         </title>
         
         
-        <section id="Apache Configuration">
+        <section id="apache-configuration">
             <title>Apache Configuration
             </title>
             <p>The Apache 2.2 httpd is by default a pre-forking web server.
@@ -894,9 +884,8 @@
                 MPM runs a smaller number of child processes, and spawns
                 multiple request handling threads within each child process. In
                 2.3+ MPMs are no longer hard-wired. They too can be exchanged
-                via <a href="/httpd/LoadModule" class="nonexistent">LoadModule
-                </a>
-                .The default MPM in 2.3 is the event MPM. 
+				via <directive module="core">LoadModule</directive>.
+				The default MPM in 2.3 is the event MPM. 
             </p>
             <p>The maximum number of workers, be they pre-forked child
                 processes or threads within a process, is an indication of how
@@ -904,7 +893,7 @@
                 a rough estimate because the kernel can queue connection
                 attempts for your web server. When your site becomes busy and
                 the maximum number of workers is running, the machine
-                doesn&apos;t hit a hard limit beyond which clients will be
+                doesn't hit a hard limit beyond which clients will be
                 denied access. However, once requests start backing up, system
                 performance is likely to degrade. 
             </p>
@@ -932,7 +921,7 @@
                 
                 
             </section>
-            <section id="Spinning Threads">
+            <section id="spinning-threads">
                 <title>Spinning Threads
                 </title>
                 <p>For the prefork MPM of the above directives are all there is
@@ -958,7 +947,7 @@
                 
                 
             </section>
-            <section id="Sizing MaxClients">
+            <section id="sizing-maxClients">
                 <title>Sizing MaxClients
                 </title>
                 <p>Optimally, the maximum number of processes should be set so
@@ -989,7 +978,7 @@
                 <p>The difference between these two is the amount of memory
                     per-process. The shared segment really exists only once and
                     is used for the code and libraries loaded and the dynamic
-                    inter-process tally, or &apos;scoreboard,&apos; that Apache
+                    inter-process tally, or 'scoreboard,' that Apache
                     keeps. How much memory each process takes for itself
                     depends heavily on the number and kind of modules you use.
                     The best approach to use in determining this need is to
@@ -1019,7 +1008,7 @@
                 
                 
             </section>
-            <section id="Selecting your MPM">
+            <section id="selecting-your-mpm">
                 <title>Selecting your MPM
                 </title>
                 <p>The prime reason for selecting a threaded MPM is that
@@ -1056,14 +1045,14 @@
                 
                 
             </section>
-            <section id="Spinning Locks">
+            <section id="spinning-locks">
                 <title>Spinning Locks
                 </title>
                 <p>Apache httpd maintains an inter-process lock around its
                     network listener. For all practical purposes, this means
                     that only one httpd child process can receive a request at
                     any given time. The other processes are either servicing
-                    requests already received or are &apos;camping out&apos; on
+                    requests already received or are 'camping out' on
                     the lock, waiting for the network listener to become
                     available. This process is best visualized as a revolving
                     door, with only one process allowed in the door at any
@@ -1081,10 +1070,10 @@
                 
                 
             </section>
-            <section id="The Thundering Herd">
+            <section id="the-thundering-herd">
                 <title>The Thundering Herd
                 </title>
-                <p>The function of the &apos;accept mutex&apos; (as this
+                <p>The function of the 'accept mutex' (as this
                     inter-process lock is called) is to keep request reception
                     moving along in an orderly fashion. If the lock is absent,
                     the server may exhibit the Thundering Herd syndrome. 
@@ -1132,10 +1121,10 @@
                 
             </section>
         </section>
-        <section id="Tuning the Operating System">
+        <section id="tuning-the-operating-system">
             <title>Tuning the Operating System
             </title>
-            <p>People often look for the &apos;magic tune-up&apos; that will
+            <p>People often look for the 'magic tune-up' that will
                 make their system perform four times as fast by tweaking just
                 one little setting. The truth is, present-day UNIX derivatives
                 are pretty well adjusted straight out of the box and there is
@@ -1145,7 +1134,7 @@
             </p>
             
             
-            <section id="RAM and Swap Space">
+            <section id="ram-and-swap-space">
                 <title>RAM and Swap Space
                 </title>
                 <p>The usual mantra regarding RAM is &quot;more is
@@ -1163,7 +1152,7 @@
                     different ways, it is never a good idea to run with less
                     disk-based swap space than RAM. The virtual memory system
                     is designed to provide a fallback for RAM, but when you
-                    don&apos;t have disk space available and run out of
+                    don't have disk space available and run out of
                     swappable memory, your machine grinds to a halt. This can
                     crash your box, requiring a physical reboot for which your
                     hosting facility may charge you. 
@@ -1206,7 +1195,7 @@
                 
                 
             </section>
-            <section id="ulimit: Files and Processes">
+            <section id="ulimit-files-and-processes">
                 <title>ulimit: Files and Processes
                 </title>
                 <p>Given a machine with plenty of RAM and processor capacity,
@@ -1260,7 +1249,7 @@
                 
                 
             </section>
-            <section id="Setting User Limits on System Startup">
+            <section id="setting-user-limits-on-system-startup">
                 <title>Setting User Limits on System Startup
                 </title>
                 <p>Under Linux, you can set the ulimit parameters on bootup by
@@ -1277,19 +1266,19 @@
                 <example>session required /lib/security/pam_limits.so
                 </example>
                 
-                <p>All items can have a &apos;soft&apos; and a &apos;hard&apos;
+                <p>All items can have a 'soft' and a 'hard'
                     limit: the first is the default setting and the second the
                     maximum value for that item. 
                 </p>
                 <p>
-                    In FreeBSD&apos;s <code>/etc/login.conf
+                    In FreeBSD's <code>/etc/login.conf
                     </code>
                     these resources can be limited or extended system wide,
                     analogously to <code>limits.conf
                     </code>
-                    .&apos;Soft&apos; limits can be specified with <code>-cur
+                    .'Soft' limits can be specified with <code>-cur
                     </code>
-                    and &apos;hard&apos; limits with <code>-max
+                    and 'hard' limits with <code>-max
                     </code>
                     .
                 </p>
@@ -1326,7 +1315,7 @@
                 
                 
             </section>
-            <section id="Turn Off Unused Services and Modules">
+            <section id="turn-off-unused-services-and-modules">
                 <title>Turn Off Unused Services and Modules
                 </title>
                 <p>Many UNIX and Linux distributions come with a slew of
@@ -1351,7 +1340,7 @@
                     </code>
                     directive. 
                 </p>
-                <p>Unused modules may be culled: if you don&apos;t rely on
+                <p>Unused modules may be culled: if you don't rely on
                     their functionality and configuration directives, you can
                     turn them off by commenting out the corresponding <code>
                         LoadModule
@@ -1359,14 +1348,14 @@
                     lines. Read the documentation on each module’s
                     functionality before deciding whether to keep it enabled.
                     While the performance overhead of an unused module is
-                    small, it&apos;s also unnecessary. 
+                    small, it's also unnecessary. 
                 </p>
                 
                 
             </section>
         </section>
     </section>
-    <section id="Caching Content">
+    <section id="caching-content">
         <title>Caching Content
         </title>
         <p>Requests for dynamically generated content usually take
@@ -1386,7 +1375,7 @@
         </p>
         
         
-        <section id="Making Popular Pages Static">
+        <section id="making-popular-pages-static">
             <title>Making Popular Pages Static
             </title>
             <p>By pre-rendering the response pages for the most popular queries
@@ -1395,7 +1384,7 @@
                 generated content. For instance, if your application is a
                 flower delivery service, you would probably want to pre-render
                 your catalog pages for red roses during the weeks leading up to
-                Valentine&apos;s Day. When the user searches for red roses,
+                Valentine's Day. When the user searches for red roses,
                 they are served the pre-rendered page. Queries for, say, yellow
                 roses will be generated directly from the database. The
                 mod_rewrite module included with Apache is a great tool to
@@ -1403,14 +1392,14 @@
             </p>
             
             
-            <section id="Example: A Statically Rendered Blog">
+            <section id="example-a-statically-rendered-blog">
                 <title>Example: A Statically Rendered Blog
                 </title>
                 <p>
-                    <strong>&apos;we should provide a more useful example here.
+                    <strong>'we should provide a more useful example here.
                         One showing how to make Wordpress or Drupal suck less.
                     </strong>
-                    &apos; 
+                    ' 
                 </p>
                 <p>Blosxom is a lightweight web log package that runs as a CGI.
                     It is written in Perl and uses plain text files for entry
@@ -1493,7 +1482,7 @@
                     specify blog entries and index pages, so this means that if
                     a particular path under Blosxom exists as a static file in
                     the file system, the file is served instead. Any request
-                    that isn&apos;t pre- rendered is served by the CGI. This
+                    that isn't pre- rendered is served by the CGI. This
                     means that individual entries, which show the comments, are
                     always served by the CGI which in turn means that your
                     comment spam is always visible. This configuration also
@@ -1506,7 +1495,7 @@
                 
             </section>
         </section>
-        <section id="Caching Content With mod_cache">
+        <section id="caching-content-with-mod_cache">
             <title>Caching Content With mod_cache
             </title>
             <p>The mod_cache module provides intelligent caching of HTTP
@@ -1518,7 +1507,7 @@
                 the cache. The provider module for mod_cache, mod_disk_cache,
                 determines how the cached content is stored on disk. Most
                 server systems will have more disk available than memory, and
-                it&apos;s good to note that some operating system kernels cache
+                it's good to note that some operating system kernels cache
                 frequently accessed disk content transparently in memory, so
                 replicating this in the server is not very useful. 
             </p>
@@ -1545,21 +1534,17 @@
             </p>
             
             
-            <section id="Example: wiki.apache.org">
+            <section id="example-wiki">
                 <title>Example: wiki.apache.org
                 </title>
                 <p>
-                    <strong>&apos;Is this still the case? Maybe we should give
+                    <strong>'Is this still the case? Maybe we should give
                         a better example here too.
                     </strong>
                 </p>
                 <p>
-                    The Apache Software Foundation Wiki is served by <a href="/httpd/MoinMoin">
-                        MoinMoin
-                    </a>
-                    .<a href="/httpd/MoinMoin">MoinMoin
-                    </a>
-                    is written in Python and runs as a CGI. To date, any
+                    The Apache Software Foundation Wiki is served by MoinMoin.
+					MoinMoin is written in Python and runs as a CGI. To date, any
                     attempts to run it under mod_python has been unsuccessful.
                     The CGI proved to place an untenably high load on the
                     server machine, especially when the Wiki was being indexed
@@ -1636,7 +1621,7 @@
             </section>
         </section>
     </section>
-    <section id="Further Considerations">
+    <section id="further-considerations">
         <title>Further Considerations
         </title>
         <p>Armed with the knowledge of how to tune a sytem to deliver the
