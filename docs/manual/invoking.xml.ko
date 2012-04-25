@@ -98,7 +98,7 @@
       서버를 시작하려 한 경우.</li>
     </ul>
 
-    <p>기타 문제해결 방법은 아파치 <a href="faq/">FAQ</a>를
+	<p>기타 문제해결 방법은 아파치 <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a>를
     참고하라.</p>
 </section>
 

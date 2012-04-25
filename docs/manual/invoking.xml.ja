@@ -110,7 +110,7 @@
     </ul>
 
     <p>より多くの問題解決の方策の説明は、
-    Apache <a href="faq/">FAQ</a> をご覧下さい。</p>
+	Apache <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> をご覧下さい。</p>
 </section>
 
 <section id="boot"><title>ブート時の起動</title>
