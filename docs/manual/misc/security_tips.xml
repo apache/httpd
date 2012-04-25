@@ -327,11 +327,11 @@
 
     <p>In the server configuration file, put</p>
 
-    <example>
-      &lt;Directory /&gt; <br />
-        AllowOverride None <br />
+    <highlight language="config">
+      &lt;Directory /&gt;
+        AllowOverride None
       &lt;/Directory&gt;
-    </example>
+    </highlight>
 
     <p>This prevents the use of <code>.htaccess</code> files in all
     directories apart from those specifically enabled.</p>
@@ -358,27 +358,27 @@
     work around this, add the following block to your server's
     configuration:</p>
 
-    <example>
-      &lt;Directory /&gt; <br />
-      Order Deny,Allow <br />
-      Deny from all <br />
+    <highlight language="config">
+      &lt;Directory /&gt;
+      Order Deny,Allow
+      Deny from all
       &lt;/Directory&gt;
-    </example>
+    </highlight>
 
     <p>This will forbid default access to filesystem locations. Add
     appropriate <directive module="core">Directory</directive> blocks to
     allow access only in those areas you wish. For example,</p>
 
-    <example>
-      &lt;Directory /usr/users/*/public_html&gt; <br />
-        Order Deny,Allow <br />
-        Allow from all <br />
-      &lt;/Directory&gt; <br />
-      &lt;Directory /usr/local/httpd&gt; <br />
-        Order Deny,Allow <br />
-        Allow from all <br />
+    <highlight language="config">
+      &lt;Directory /usr/users/*/public_html&gt;
+        Order Deny,Allow
+        Allow from all
       &lt;/Directory&gt;
-    </example>
+      &lt;Directory /usr/local/httpd&gt;
+        Order Deny,Allow
+        Allow from all
+      &lt;/Directory&gt;
+    </highlight>
 
     <p>Pay particular attention to the interactions of <directive
     module="core">Location</directive> and <directive
@@ -393,9 +393,7 @@
     recommend that you include the following line in your server
     configuration files:</p>
 
-    <example>
-      UserDir disabled root
-    </example>
+    <highlight language="config">UserDir disabled root</highlight>
 
   </section>
 
@@ -438,12 +436,12 @@
     you probably commented out the following in your server configuration
     file:</p>
 
-    <example>
-      &lt;Files ".ht*"&gt; <br />
-        Order allow,deny <br />
-        Deny from all <br />
+    <highlight language="config">
+      &lt;Files ".ht*"&gt;
+        Order allow,deny
+        Deny from all
       &lt;/Files&gt;
-    </example>
+    </highlight>
 
   </section>
 
