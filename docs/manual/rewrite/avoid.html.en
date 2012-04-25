@@ -83,25 +83,24 @@ and <code>/one/three/four.html</code>.</p>
 <p>To redirect URLs under <code>/one</code> to
 <code>http://one.example.com</code>, do the following:</p>
 
-<div class="example"><p><code>
-Redirect /one/ http://one.example.com/
-</code></p></div>
+<pre class="prettyprint lang-config">Redirect /one/ http://one.example.com/</pre>
+
 
 <p>To redirect <code>http</code> URLs to <code>https</code>, do the
 following:</p>
 
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
 &lt;VirtualHost *:80&gt;
-ServerName www.example.com<br />
-Redirect / https://www.example.com/<br />
+	ServerName www.example.com
+	Redirect / https://www.example.com/
 &lt;/VirtualHost &gt;
-<br />
+
 &lt;VirtualHost *:443&gt;
-ServerName www.example.com<br />
-<br />
-# ... SSL configuration goes here<br />
+	ServerName www.example.com
+	# ... SSL configuration goes here
 &lt;/VirtualHost &gt;
-</code></p></div>
+</pre>
+
 
 <p>The use of <code>RewriteRule</code> to perform this task may be
 appropriate if there are other <code>RewriteRule</code> directives in
@@ -126,7 +125,8 @@ is possible to perform this mapping with <code>mod_rewrite</code>,
 and performance.</p>
 
 <div class="example"><h3>Using Alias</h3><p><code>
-Alias /cats /var/www/virtualhosts/felines/htdocs
+<pre class="prettyprint lang-config">Alias /cats /var/www/virtualhosts/felines/htdocs</pre>
+
 </code></p></div>
 
 <p>
@@ -167,25 +167,28 @@ seems like the right approach.</p>
 <p><code>RewriteRule</code> provides the <a href="flags.html#flag_p">[P]</a> flag to pass rewritten URIs through
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>.</p>
 
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
 RewriteRule ^/?images(.*) http://imageserver.local/images$1 [P]
-</code></p></div>
+</pre>
+
 
 <p>However, in many cases, when there is no actual pattern matching
 needed, as in the example shown above, the <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> directive is a better choice.
 The example here could be rendered as:</p>
 
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
 ProxyPass /images/ http://imageserver.local/images/
-</code></p></div>
+</pre>
+
 
 <p>Note that whether you use <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> or <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>, you'll still need to use the
 <code class="directive"><a href="../mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code> directive to
 catch redirects issued from the back-end server:</p>
 
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
 ProxyPassReverse /images/ http://imageserver.local/images/
-</code></p></div>
+</pre>
+
 
 <p>You may need to use <code>RewriteRule</code> instead when there are
 other <code>RewriteRule</code>s in effect in the same scope, as a
@@ -207,11 +210,12 @@ variable or request header. This can be done more efficiently using the
 hostname, such as <code>www.example.com</code> instead of
 <code>example.com</code>. This can be done using the <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> directive, as shown here:</p>
 
-<div class="example"><p><code>
-&lt;If "$req{Host} != 'www.example.com'"&gt;<br />
-RedirectMatch (.*) http://www.example.com$1<br />
+<pre class="prettyprint lang-config">
+&lt;If "$req{Host} != 'www.example.com'"&gt;
+	RedirectMatch (.*) http://www.example.com$1
 &lt;/If&gt;
-</code></p></div>
+</pre>
+
 
 <p>This technique can be used to take actions based on any request
 header, response header, or environment variable, replacing
