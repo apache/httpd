@@ -39,14 +39,12 @@
 
 <p>The script contains the following section.</p>
 
-<example>
-<pre>
+<highlight language="perl">
 my $wherelog = "/usr/local/apache2/logs/";  # Logs will be like "/usr/local/apache2/logs/19960312"
 my $server   = "localhost";        # Name of server, could be "www.foo.com"
 my $port     = "80";               # Port on server
 my $request = "/server-status/?auto";    # Request to send
-</pre>
-</example>
+</highlight>
 
 <p>You'll need to ensure that these variables have the correct values,
 and you'll need to have the <code>/server-status</code> handler
