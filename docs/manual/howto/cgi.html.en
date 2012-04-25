@@ -231,11 +231,12 @@
       file called <code>first.pl</code>, and put it in your
       <code>cgi-bin</code> directory.</p>
 
-      <div class="example"><p><code>
-        #!/usr/bin/perl<br />
-        print "Content-type: text/html\n\n";<br />
-        print "Hello, World.";
-      </code></p></div>
+      <pre class="prettyprint lang-perl">
+#!/usr/bin/perl
+print "Content-type: text/html\n\n";
+print "Hello, World.";
+      </pre>
+
 
       <p>Even if you are not familiar with Perl, you should be able
       to see what is happening here. The first line tells Apache
@@ -479,15 +480,14 @@
       <a href="../env.html">add your own environment variables</a>
       to the basic ones provided by default.</p>
 
-      <div class="example"><p><code>
-        #!/usr/bin/perl<br />
-        print "Content-type: text/html\n\n";<br />
-        foreach $key (keys %ENV) {<br />
-        <span class="indent">
-          print "$key --&gt; $ENV{$key}&lt;br&gt;";<br />
-        </span>
-        }
-      </code></p></div>
+      <pre class="prettyprint lang-perl">
+#!/usr/bin/perl
+print "Content-type: text/html\n\n";
+foreach $key (keys %ENV) {
+    print "$key --&gt; $ENV{$key}&lt;br&gt;";
+}
+      </pre>
+
     
 
     <h3><a name="stdin" id="stdin">STDIN and STDOUT</a></h3>
