@@ -4,10 +4,10 @@
 .pln { color: #000 }  /* plain text */
 
 @media screen {
-  .str { color: #080 }  /* string content */
-  .kwd { color: #008 }  /* a keyword */
-  .com { color: #800 }  /* a comment */
-  .typ { color: #606 }  /* a type name */
+  .str { color: #060 }  /* string content */
+  .kwd { color: #006 }  /* a keyword */
+  .com { color: #600 }  /* a comment */
+  .typ { color: #404 }  /* a type name */
   .lit { color: #066 }  /* a literal value */
   /* punctuation, lisp open bracket, lisp close bracket */
   .pun, .opn, .clo { color: #660 }
@@ -75,3 +75,21 @@ pre.lang-c{
 .lang-c .lit { color: #088 } /* a literal */
 .lang-c .str { color: #009606 } /* string content */
 .lang-c .kwd { color: #00C; font-weight: bold }  /* a keyword */
+.lang-c .typ { color: #808 }  /* a type name */
+
+
+
+/* Highlighting style for Lua source code */
+pre.lang-lua{ 
+    background-color: #f8f6ee;
+    color: #000;
+    padding: 0.5em;
+    margin: 1em 2em 1em 1em;
+    border: 1px dotted #666;
+}
+
+.lang-lua .com { color: #c34e00 }  /* a comment */
+.lang-lua .lit { color: #088 } /* a literal */
+.lang-lua .str { color: #009606 } /* string content */
+.lang-lua .kwd { color: #00C; font-weight: bold }  /* a keyword */
+.lang-lua .typ { color: #808 }  /* a type name */
