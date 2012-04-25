@@ -118,7 +118,9 @@ and <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>.
 just evaluating a script body CGI style. A handler function looks
 something like this:</p>
 
-<div class="example"><h3>example.lua</h3><pre>
+
+<pre class="prettyprint lang-lua">
+<strong>example.lua</strong>
 -- example handler
 
 require "string"
@@ -144,7 +146,8 @@ function handle(r)
         r:puts("unknown HTTP method " .. r.method)
     end
 end
-</pre></div>
+</pre>
+
 
 <p>
 This handler function just prints out the uri or form encoded
@@ -172,7 +175,8 @@ they'll return OK, DONE, or DECLINED, which you can write in lua as
 <code>apache2.OK</code>, <code>apache2.DONE</code>, or
 <code>apache2.DECLINED</code>, or else an HTTP status code.</p>
 
-<div class="example"><h3>translate_name.lua</h3><pre>
+<pre class="prettyprint lang-lua">
+<strong>translate_name.lua</strong>
 -- example hook that rewrites the URI to a filesystem path.
 
 require 'apache2'
@@ -185,9 +189,11 @@ function translate_name(r)
     -- we don't care about this URL, give another module a chance
     return apache2.DECLINED
 end
-</pre></div>
+</pre>
 
-<div class="example"><h3>translate_name2.lua</h3><pre>
+
+<pre class="prettyprint lang-lua">
+<strong>translate_name2.lua</strong>
 --[[ example hook that rewrites one URI to another URI. It returns a
      apache2.DECLINED to give other URL mappers a chance to work on the
      substitution, including the core translate_name hook which maps based
@@ -206,7 +212,8 @@ function translate_name(r)
     end
     return apache2.DECLINED
 end
-</pre></div>
+</pre>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="datastructures" id="datastructures">Data Structures</a></h2>
@@ -388,7 +395,7 @@ end
 <div class="section">
 <h2><a name="logging" id="logging">Logging Functions</a></h2>
 
-<div class="example"><p><code>
+<pre class="prettyprint lang-lua">
         -- examples of logging messages<br />
         r:trace1("This is a trace log message") -- trace1 through trace8 can be used <br />
         r:debug("This is a debug log message")<br />
@@ -399,7 +406,8 @@ end
         r:alert("This is an alert log message")<br />
         r:crit("This is an crit log message")<br />
         r:emerg("This is an emerg log message")<br />
-</code></p></div>
+</pre>
+
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -485,7 +493,7 @@ hook function usually returns OK, DECLINED, or HTTP_FORBIDDEN.</p>
 a request.  This can be used to implement arbitrary authentication
 and authorization checking.  A very simple example:
 </p>
-<div class="example"><pre>
+<pre class="prettyprint lang-lua">
 require 'apache2'
 
 -- fake authcheck hook
@@ -516,7 +524,8 @@ function authcheck_hook(r)
    end
    return apache2.OK
 end
-</pre></div>
+</pre>
+
    <div class="note"><h3>Ordering</h3><p>The optional arguments "early" or "late" 
    control when this script runs relative to other modules.</p></div>
 
@@ -603,7 +612,9 @@ processing</td></tr>
 <div class="example"><pre>
 # httpd.conf
 LuaHookTranslateName /scripts/conf/hooks.lua silly_mapper
+</pre></div>
 
+<pre class="prettyprint lang-lua">
 -- /scripts/conf/hooks.lua --
 require "apache2"
 function silly_mapper(r)
@@ -614,7 +625,8 @@ function silly_mapper(r)
         return apache2.DECLINED
     end
 end
-</pre></div>
+</pre>
+
 
    <div class="note"><h3>Context</h3><p>This directive is not valid in <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, or htaccess
    context.</p></div>
