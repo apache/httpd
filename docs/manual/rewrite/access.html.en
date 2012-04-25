@@ -187,9 +187,9 @@ RewriteRule ^<strong>/secret/files/</strong>   -   [<strong>F</strong>]
       <pre class="prettyprint lang-config">
 SetEnvIfNoCase User-Agent ^NameOfBadRobot goaway
 &lt;Location /secret/files&gt;
-	Order allow,deny
-	Allow from all
-	Deny from env=goaway
+    Order allow,deny
+    Allow from all
+    Deny from env=goaway
 &lt;/Location&gt;
       </pre>
 

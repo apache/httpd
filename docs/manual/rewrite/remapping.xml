@@ -116,9 +116,7 @@ RewriteRule    ^<strong>/foo</strong>\.html$  <strong>bar</strong>.html  [<stron
     use the Redirect directive. mod_rewrite was used in that earlier
     example in order to hide the redirect from the client:</p>
 
-    <highlight language="config">
-    Redirect /foo.html /bar.html
-    </highlight>
+    <highlight language="config">Redirect /foo.html /bar.html</highlight>
 
     </dd>
   </dl>
@@ -222,14 +220,12 @@ RewriteRule    ^foo\.<strong>html</strong>$  foo.<strong>cgi</strong>  [H=<stron
 #   rewriting document.html to document.php
 #   when and only when document.php exists
 &lt;Directory /var/www/htdocs&gt;
-<indent>
-RewriteEngine on
-RewriteBase /var/www/htdocs
+    RewriteEngine on
+    RewriteBase /var/www/htdocs
 
-RewriteCond $1.php -f
-RewriteCond $1.html !-f
-RewriteRule ^(.*).html$ $1.php
-</indent>
+    RewriteCond $1.php -f
+    RewriteCond $1.html !-f
+    RewriteRule ^(.*).html$ $1.php
 &lt;/Directory&gt;
 </highlight>
     </dd>

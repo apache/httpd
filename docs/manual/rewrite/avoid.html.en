@@ -91,13 +91,13 @@ following:</p>
 
 <pre class="prettyprint lang-config">
 &lt;VirtualHost *:80&gt;
-	ServerName www.example.com
-	Redirect / https://www.example.com/
+    ServerName www.example.com
+    Redirect / https://www.example.com/
 &lt;/VirtualHost &gt;
 
 &lt;VirtualHost *:443&gt;
-	ServerName www.example.com
-	# ... SSL configuration goes here
+    ServerName www.example.com
+    # ... SSL configuration goes here
 &lt;/VirtualHost &gt;
 </pre>
 
@@ -212,7 +212,7 @@ hostname, such as <code>www.example.com</code> instead of
 
 <pre class="prettyprint lang-config">
 &lt;If "$req{Host} != 'www.example.com'"&gt;
-	RedirectMatch (.*) http://www.example.com$1
+    RedirectMatch (.*) http://www.example.com$1
 &lt;/If&gt;
 </pre>
 
