@@ -1605,7 +1605,7 @@
                 <example>
                     &lt;FilesMatch \.(jpe?g|png|gif|js|css|x?html|xml)&gt;<br />
                     <indent>
-                        FilesETag None<br />
+                        FileETag None<br />
                     </indent>
                     &lt;/FilesMatch&gt;
                 </example>
