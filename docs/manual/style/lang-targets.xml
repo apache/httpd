@@ -23,7 +23,7 @@
 <project name="lang-targets">
 
 <target name="check-man"><if><not><available type="dir" file="../../man"/></not><then><property value="yes" name="skip-man"/></then></if></target>
-<target description="- builds all HTML files and nroff man pages" name="all" depends="da, de, en, es, fr, ja, ko, pt-br, ru, tr, zh-cn"/>
+<target description="- builds all HTML files and nroff man pages" name="all" depends="validate-xml, da, de, en, es, fr, ja, ko, pt-br, ru, tr, zh-cn"/>
 <target description="- builds all zip download packages" name="zip-all" depends="zip-da, zip-de, zip-en, zip-es, zip-fr, zip-ja, zip-ko, zip-pt-br, zip-ru, zip-tr, zip-zh-cn"/>
 <target description="- builds all war download packages" name="war-all" depends="war-da, war-de, war-en, war-es, war-fr, war-ja, war-ko, war-pt-br, war-ru, war-tr, war-zh-cn"/>
 
@@ -292,7 +292,7 @@
 <!-- because it mostly gives you a hint, where you forgot the </p> ;-)    -->
 <!-- ==================================================================== -->
 <target description="- validates all XML source files" name="validate-xml">
-    <xmlvalidate warn="true" failonerror="false" lenient="false">
+    <xmlvalidate warn="true" failonerror="true" lenient="false">
         <xmlcatalog refid="w3c-catalog"/>
         <fileset dir="../">
             <include name="**/*.xml.da"/>
