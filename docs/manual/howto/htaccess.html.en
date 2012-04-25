@@ -272,19 +272,16 @@ changes on a per-directory basis.</p>
     prevent script execution while allowing anything else to be set in
     <code>.htaccess</code> you can use:</p>
 
-    <div class="example"><p><code>
-&lt;Directory /www/htdocs&gt;<br />
-<span class="indent">
-Allowoverride All<br />
-</span>
-&lt;/Directory&gt;<br />
-<br />
-&lt;Location /&gt;<br />
-<span class="indent">
-Options +IncludesNoExec -ExecCGI<br />
-</span>
+    <pre class="prettyprint lang-config">
+&lt;Directory /www/htdocs&gt;
+    Allowoverride All
+&lt;/Directory&gt;
+
+&lt;Location /&gt;
+    Options +IncludesNoExec -ExecCGI<br />
 &lt;/Location&gt;
-    </code></p></div>
+    </pre>
+
 
     <div class="note">This example assumes that your <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> is <code>/www/htdocs</code>.</div>
 
@@ -310,13 +307,14 @@ Options +IncludesNoExec -ExecCGI<br />
 
     <p><code>.htaccess</code> file contents:</p>
 
-    <div class="example"><p><code>
-      AuthType Basic<br />
-      AuthName "Password Required"<br />
-      AuthUserFile /www/passwords/password.file<br />
-      AuthGroupFile /www/passwords/group.file<br />
+    <pre class="prettyprint lang-config">
+      AuthType Basic
+      AuthName "Password Required"
+      AuthUserFile /www/passwords/password.file
+      AuthGroupFile /www/passwords/group.file
       Require Group admins
-    </code></p></div>
+    </pre>
+
 
     <p>Note that <code>AllowOverride AuthConfig</code> must be in effect
     for these directives to have any effect.</p>
@@ -332,11 +330,12 @@ Options +IncludesNoExec -ExecCGI<br />
     the following configuration directives, placed in a
     <code>.htaccess</code> file in the desired directory:</p>
 
-    <div class="example"><p><code>
-       Options +Includes<br />
-       AddType text/html shtml<br />
+    <pre class="prettyprint lang-config">
+       Options +Includes
+       AddType text/html shtml
        AddHandler server-parsed shtml
-    </code></p></div>
+    </pre>
+
 
     <p>Note that <code>AllowOverride Options</code> and <code>AllowOverride
     FileInfo</code> must both be in effect for these directives to have any
@@ -352,19 +351,21 @@ Options +IncludesNoExec -ExecCGI<br />
     the execution of CGI programs in a particular directory. This may be
     implemented with the following configuration:</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
        Options +ExecCGI<br />
        AddHandler cgi-script cgi pl
-    </code></p></div>
+    </pre>
+
 
     <p>Alternately, if you wish to have all files in the given directory be
     considered to be CGI programs, this may be done with the following
     configuration:</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
        Options +ExecCGI<br />
        SetHandler cgi-script
-    </code></p></div>
+    </pre>
+
 
     <p>Note that <code>AllowOverride Options</code> and <code>AllowOverride
     FileInfo</code> must both be in effect for these directives to have any

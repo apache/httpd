@@ -67,10 +67,10 @@
 
     <p>The usage of these directives is:</p>
 
-    <example>
-      Require host <var>address</var><br />
+    <highlight language="config">
+      Require host <var>address</var>
       Require ip <var>ip.address</var>
-    </example>
+    </highlight>
 
     <p>In the first form, <var>address</var> is a fully qualified
     domain name (or a partial domain name); you may provide multiple
@@ -104,11 +104,11 @@
     <p>And, if you'd like to block access from an entire domain,
     you can specify just part of an address or domain name:</p>
 
-    <example>
-      Require not ip <var>192.168.205</var><br />
-      Require not host <var>phishers.example.com</var> <var>moreidiots.example</var><br />
+    <highlight language="config">
+      Require not ip <var>192.168.205</var>
+      Require not host <var>phishers.example.com</var> <var>moreidiots.example</var>
       Require not gov
-    </example>
+    </highlight>
 
     <p>Use of the <directive
     module="mod_authz_core">RequireAll</directive>, <directive
@@ -126,13 +126,11 @@
     based on user-agent (the browser type) you might do the
     following:</p>
 
-    <example>
-    &lt;If "%{HTTP_USER_AGENT} = 'BadBot'"&gt;<br />
-    <indent>
-        Require All Denied<br />
-    </indent>
+    <highlight language="config">
+    &lt;If "%{HTTP_USER_AGENT} = 'BadBot'"&gt;
+        Require All Denied
     &lt;/If&gt;
-    </example>
+    </highlight>
 
     <note><title>Warning:</title>
     <p>Access control by <code>User-Agent</code> is an unreliable technique,
@@ -156,12 +154,12 @@
     <p>For example, if you wish to block access to a resource between 8pm
     and 6am, you can do this using <module>mod_rewrite</module>.</p>
 
-    <example>
-    RewriteEngine On<br />
-    RewriteCond %{TIME_HOUR} &gt;20 [OR]<br />
-    RewriteCond %{TIME_HOUR} &lt;07<br />
+    <highlight language="config">
+    RewriteEngine On
+    RewriteCond %{TIME_HOUR} &gt;20 [OR]
+    RewriteCond %{TIME_HOUR} &lt;07
     RewriteRule ^/fridge - [F]
-    </example>
+    </highlight>
 
     <p>This will return a 403 Forbidden response for any request after 8pm
     or before 7am. This technique can be used for any criteria that you wish
