@@ -49,7 +49,7 @@ On Windows from Apache httpd 2.3.3 and later.</compatibility>
        for that protocol.  This is useful for protocols that require a server
        send data first, such as <code>ftp:</code> or <code>nntp</code>:</p>
     <highlight language="config">
-AcceptFilter nntp none
+    AcceptFilter nntp none
     </highlight>
 
     <p>The default protocol names are <code>https</code> for port 443
@@ -174,9 +174,9 @@ AcceptFilter https data
 
     <highlight language="config">
 &lt;Files "mypaths.shtml"&gt;
-  Options +Includes<br />
-  SetOutputFilter INCLUDES<br />
-  AcceptPathInfo On<br />
+  Options +Includes
+  SetOutputFilter INCLUDES
+  AcceptPathInfo On
 &lt;/Files&gt;
     </highlight>
 
@@ -198,9 +198,7 @@ AcceptFilter https data
     configuration files are <a href="#allowoverride">enabled for that
     directory</a>. For example:</p>
 
-    <highlight language="config">
-AccessFileName .acl
-    </highlight>
+    <highlight language="config">AccessFileName .acl</highlight>
 
     <p>before returning the document
     <code>/usr/local/web/index.html</code>, the server will read
@@ -209,8 +207,8 @@ AccessFileName .acl
     for directives, unless they have been disabled with</p>
 
     <highlight language="config">
-&lt;Directory /&gt;<br />
-    AllowOverride None<br />
+&lt;Directory /&gt;
+    AllowOverride None
 &lt;/Directory&gt;
     </highlight>
 </usage>
@@ -245,9 +243,7 @@ content-type is <code>text/plain</code> or <code>text/html</code></description>
     charset values</a> for use in Internet media types (MIME types).
     For example:</p>
 
-    <highlight language="config">
-AddDefaultCharset utf-8
-    </highlight>
+    <highlight language="config">AddDefaultCharset utf-8</highlight>
 
     <p><directive>AddDefaultCharset</directive> should only be used when all
     of the text resources to which it applies are known to be in that
@@ -458,9 +454,7 @@ NoDecode option available in 2.3.12 and later.</compatibility>
 
     <p>Example:</p>
 
-    <highlight language="config">
-AllowOverride AuthConfig Indexes
-    </highlight>
+    <highlight language="config">AllowOverride AuthConfig Indexes</highlight>
 
     <p>In the example above all directives that are neither in the group
     <code>AuthConfig</code> nor <code>Indexes</code> cause an internal
@@ -616,7 +610,7 @@ headers</description>
     will be relative to <directive>ServerRoot</directive></p>
 
    <highlight language="config">
-<strong>Example</strong>
+#Example
 DefaultRuntimeDir scratch/
     </highlight>
 
@@ -654,9 +648,7 @@ which no other media type configuration could be found.
     of configuration files, it may be specified with the value
     <code>none</code>, meaning no default media type. For example:</p>
 
-    <highlight language="config">
-DefaultType None
-    </highlight>
+    <highlight language="config">DefaultType None</highlight>
 
     <p><code>DefaultType None</code> is only available in
     httpd-2.2.7 and later.</p>
@@ -750,9 +742,7 @@ named file-system directory, sub-directories, and their contents.</description>
     expressions</glossary> can also be used, with the addition of the
     <code>~</code> character. For example:</p>
 
-    <highlight language="config">
-&lt;Directory ~ "^/www/.*/[0-9]{3}"&gt;
-    </highlight>
+    <highlight language="config">&lt;Directory ~ "^/www/.*/[0-9]{3}"&gt;</highlight>
 
     <p>would match directories in <code>/www/</code> that consisted of
     three numbers.</p>
@@ -854,9 +844,7 @@ the contents of file-system directories matching a regular expression.</descript
     However, it takes as an argument a
     <glossary ref="regex">regular expression</glossary>.  For example:</p>
 
-    <highlight language="config">
-&lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}"&gt;
-    </highlight>
+    <highlight language="config">&lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}"&gt;</highlight>
 
     <p>would match directories in <code>/www/</code> that consisted of three
     numbers.</p>
@@ -900,9 +888,7 @@ from the web</description>
     path from the requested URL to the document root to make the
     path to the document. Example:</p>
 
-    <highlight language="config">
-DocumentRoot "/usr/web"
-    </highlight>
+    <highlight language="config">DocumentRoot "/usr/web"</highlight>
 
     <p>then an access to
     <code>http://my.example.com/index.html</code> refers to
@@ -1047,9 +1033,7 @@ for a complete reference and more examples.</seealso>
     <p>For server configurations that are vulnerable to these problems,
     you should disable memory-mapping of delivered files by specifying:</p>
 
-    <highlight language="config">
-EnableMMAP Off
-    </highlight>
+    <highlight language="config">EnableMMAP Off</highlight>
 
     <p>For NFS mounted files, this feature may be disabled explicitly for
     the offending files by specifying:</p>
@@ -1105,9 +1089,7 @@ version 2.3.9.</compatibility>
     <p>For server configurations that are not vulnerable to these problems,
     you may enable this feature by specifying:</p>
 
-    <highlight language="config">
-EnableSendfile On
-    </highlight>
+    <highlight language="config">EnableSendfile On</highlight>
 
     <p>For network mounted files, this feature may be disabled explicitly
     for the offending files by specifying:</p>
@@ -1142,7 +1124,7 @@ EnableSendfile On
     modules which are missing from the configuration.</p>
 
     <highlight language="config">
-<strong>Example</strong>
+# Example
 # ensure that mod_include is loaded
 &lt;IfModule !include_module&gt;
   Error mod_include is required by mod_foo.  Load it with LoadModule.
@@ -1218,7 +1200,6 @@ ErrorDocument 403 Forbidden!
     <highlight language="config">
 ErrorDocument 404 /cgi-bin/bad_urls.pl
 
-
 &lt;Directory /web/docs&gt;
   ErrorDocument 404 default
 &lt;/Directory&gt;
@@ -1282,17 +1263,13 @@ ErrorDocument 404 /cgi-bin/bad_urls.pl
     the <var>file-path</var> is not absolute then it is assumed to be
     relative to the <directive module="core">ServerRoot</directive>.</p>
 
-    <highlight language="config"><strong>Example</strong>
-ErrorLog "/var/log/httpd/error_log"
-    </highlight>
+    <highlight language="config">ErrorLog "/var/log/httpd/error_log"</highlight>
 
     <p>If the <var>file-path</var>
     begins with a pipe character "<code>|</code>" then it is assumed to be a
     command to spawn to handle the error log.</p>
 
-    <highlight language="config"><strong>Example</strong>
-ErrorLog "|/usr/local/bin/httpd_errors"
-    </highlight>
+    <highlight language="config">ErrorLog "|/usr/local/bin/httpd_errors"</highlight>
 
     <p>See the notes on <a href="../logs.html#piped">piped logs</a> for
     more information.</p>
@@ -1306,9 +1283,7 @@ ErrorLog "|/usr/local/bin/httpd_errors"
     in individual virtual hosts, the final facility specified affects the
     entire server.</p>
 
-    <highlight language="config"><strong>Example</strong>
-ErrorLog syslog:user
-    </highlight>
+    <highlight language="config">ErrorLog syslog:user</highlight>
 
     <p>SECURITY: See the <a
     href="../misc/security_tips.html#serverroot">security tips</a>
@@ -1339,7 +1314,8 @@ ErrorLog syslog:user
     supplementary information is logged in the error log in addition to the
     actual log message.</p>
 
-    <highlight language="config"><strong>Simple example</strong>
+    <highlight language="config">
+#Simple example
 ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
     </highlight>
 
@@ -1505,7 +1481,8 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
     with error log lines. If <module>mod_unique_id</module> is loaded, its
     unique id will be used as log ID for requests.</p>
 
-    <highlight language="config"><strong>Example (default format)</strong>
+    <highlight language="config">
+#Example (default format)
 ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\ %a] %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
     </highlight>
 
@@ -1518,11 +1495,13 @@ ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\ %a] %M%&nbsp;
     <p>Notice that, as discussed above, some fields are ommitted
     entirely because they are not defined.</p>
 
-    <highlight language="config"><strong>Example (similar to the 2.2.x format)</strong>
+    <highlight language="config">
+#Example (similar to the 2.2.x format)
 ErrorLogFormat "[%t] [%l] %7F: %E: [client\ %a] %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
     </highlight>
 
-    <highlight language="config"><strong>Advanced example with request/connection log IDs</strong>
+    <highlight language="config">
+#Advanced example with request/connection log IDs
 ErrorLogFormat "[%{uc}t] [%-m:%-l] [R:%L] [C:%{C}L] %7F: %E: %M"
 ErrorLogFormat request "[%{uc}t] [R:%L] Request %k on C:%{c}L pid:%P tid:%T"
 ErrorLogFormat request "[%{uc}t] [R:%L] UA:'%+{User-Agent}i'"
@@ -1674,9 +1653,7 @@ filenames</description>
     can also be used, with the addition of the
     <code>~</code> character. For example:</p>
 
-    <highlight language="config">
-&lt;Files ~ "\.(gif|jpe?g|png)$"&gt;
-    </highlight>
+    <highlight language="config">&lt;Files ~ "\.(gif|jpe?g|png)$"&gt;</highlight>
 
     <p>would match most common Internet graphics formats. <directive
     module="core" type="section">FilesMatch</directive> is preferred,
@@ -1712,9 +1689,7 @@ filenames</description>
     does. However, it accepts a <glossary ref="regex">regular
     expression</glossary>. For example:</p>
 
-    <highlight language="config">
-&lt;FilesMatch "\.(gif|jpe?g|png)$"&gt;
-    </highlight>
+    <highlight language="config">&lt;FilesMatch "\.(gif|jpe?g|png)$"&gt;</highlight>
 
     <p>would match most common Internet graphics formats.</p>
 </usage>
@@ -1745,9 +1720,7 @@ media type in the HTTP Content-Type header field</description>
     GIF files, but did not want to label them all with <code>.gif</code>,
     you might want to use:</p>
 
-    <highlight language="config">
-ForceType image/gif
-    </highlight>
+    <highlight language="config">ForceType image/gif</highlight>
 
     <p>Note that this directive overrides other indirect media type
     associations defined in mime.types or via the
@@ -1857,9 +1830,7 @@ satisfied by a request at runtime</description>
     directives if and only if the expression evaluates to true.
     For example:</p>
 
-    <highlight language="config">
-&lt;If "-z req('Host')"&gt;
-    </highlight>
+    <highlight language="config">&lt;If "-z req('Host')"&gt;</highlight>
 
     <p>would match HTTP/1.0 requests without a <var>Host:</var> header.
     Expressions may contain various shell-like operators for string
@@ -1868,9 +1839,7 @@ satisfied by a request at runtime</description>
     and others (<code>-n</code>, <code>-z</code>, <code>-f</code>, ...).
     It is also possible to use regular expressions, </p>
 
-    <highlight language="config">
-&lt;If "%{QUERY_STRING} =~ /(delete|commit)=.*?elem/"&gt;
-    </highlight>
+    <highlight language="config">&lt;If "%{QUERY_STRING} =~ /(delete|commit)=.*?elem/"&gt;</highlight>
 
     <p>shell-like pattern matches and many other operations. These operations
     can be done on request headers (<code>req</code>), environment variables
@@ -2048,8 +2017,8 @@ wildcard matching available in 2.3.6 and later</compatibility>
     <p>Examples:</p>
 
     <highlight language="config">
-      Include /usr/local/apache2/conf/ssl.conf<br />
-      Include /usr/local/apache2/conf/vhosts/*.conf
+Include /usr/local/apache2/conf/ssl.conf
+Include /usr/local/apache2/conf/vhosts/*.conf
     </highlight>
 
     <p>Or, providing paths relative to your <directive
@@ -2064,16 +2033,12 @@ Include conf/vhosts/*.conf
     path. This example will fail if there is no subdirectory in conf/vhosts
     that contains at least one *.conf file:</p>
 
-    <highlight language="config">
-Include conf/vhosts/*/*.conf
-    </highlight>
+    <highlight language="config">Include conf/vhosts/*/*.conf</highlight>
 
     <p>Alternatively, the following command will just be ignored in case of
     missing files or directories:</p>
 
-    <highlight language="config">
-IncludeOptional conf/vhosts/*/*.conf
-    </highlight>
+    <highlight language="config">IncludeOptional conf/vhosts/*/*.conf</highlight>
 
 </usage>
 
@@ -2312,9 +2277,7 @@ subrequests</description>
     determines, how deep subrequests may be nested. If you specify only one
     <var>number</var>, it will be assigned to both limits.</p>
 
-    <highlight language="config"><strong>Example</strong>
-LimitInternalRecursion 5
-    </highlight>
+    <highlight language="config">LimitInternalRecursion 5</highlight>
 </usage>
 </directivesynopsis>
 
@@ -2357,9 +2320,7 @@ from the client</description>
     location, and wish to limit the size of the uploaded file to 100K,
     you might use the following directive:</p>
 
-    <highlight language="config">
-LimitRequestBody 102400
-    </highlight>
+    <highlight language="config">LimitRequestBody 102400</highlight>
 
     <note><p>For a full description of how this directive is interpreted by
     proxy requests, see the <module>mod_proxy</module> documentation.</p>
@@ -2402,9 +2363,7 @@ will be accepted from the client</description>
 
     <p>For example:</p>
 
-    <highlight language="config">
-LimitRequestFields 50
-    </highlight>
+    <highlight language="config">LimitRequestFields 50</highlight>
 
      <note type="warning"><title>Warning</title>
      <p> When name-based virtual hosting is used, the value for this
@@ -2443,9 +2402,7 @@ client</description>
 
     <p>For example:</p>
 
-    <highlight language="config">
-LimitRequestFieldSize 4094
-    </highlight>
+    <highlight language="config">LimitRequestFieldSize 4094</highlight>
 
     <note>Under normal conditions, the value should not be changed from
     the default. Also, you can't set this higher than 8190 without
@@ -2487,9 +2444,7 @@ from the client</description>
 
     <p>For example:</p>
 
-    <highlight language="config">
-LimitRequestLine 4094
-    </highlight>
+    <highlight language="config">LimitRequestLine 4094</highlight>
 
     <note>Under normal conditions, the value should not be changed from
     the default. Also, you can't set this higher than 8190 without
@@ -2519,9 +2474,7 @@ LimitRequestLine 4094
 
     <p>Example:</p>
 
-    <highlight language="config">
-LimitXMLRequestBody 0
-    </highlight>
+    <highlight language="config">LimitXMLRequestBody 0</highlight>
 
 </usage>
 </directivesynopsis>
@@ -2613,9 +2566,7 @@ URLs</description>
     can also be used, with the addition of the <code>~</code>
     character. For example:</p>
 
-    <highlight language="config">
-&lt;Location ~ "/(extra|special)/data"&gt;
-    </highlight>
+    <highlight language="config">&lt;Location ~ "/(extra|special)/data"&gt;</highlight>
 
     <p>would match URLs that contained the substring <code>/extra/data</code>
     or <code>/special/data</code>. The directive <directive
@@ -2682,9 +2633,7 @@ matching URLs</description>
     it takes a <glossary ref="regex">regular expression</glossary>
     as an argument instead of a simple string. For example:</p>
 
-    <highlight language="config">
-&lt;LocationMatch "/(extra|special)/data"&gt;
-    </highlight>
+    <highlight language="config">&lt;LocationMatch "/(extra|special)/data"&gt;</highlight>
 
     <p>would match URLs that contained the substring <code>/extra/data</code>
     or <code>/special/data</code>.</p>
@@ -2861,9 +2810,7 @@ matching URLs</description>
 
     <p>For example:</p>
 
-    <highlight language="config">
-LogLevel notice
-    </highlight>
+    <highlight language="config">LogLevel notice</highlight>
 
     <note><title>Note</title>
       <p>When logging to a regular file messages of the level
@@ -2923,9 +2870,7 @@ connection</description>
 
     <p>For example:</p>
 
-    <highlight language="config">
-MaxKeepAliveRequests 500
-    </highlight>
+    <highlight language="config">MaxKeepAliveRequests 500</highlight>
 </usage>
 </directivesynopsis>
 
@@ -3400,12 +3345,12 @@ directory</description>
     <p>For example, without any <code>+</code> and <code>-</code> symbols:</p>
 
     <highlight language="config">
-&lt;Directory "/web/docs"&gt;<br />
-  Options Indexes FollowSymLinks<br />
-&lt;/Directory&gt;<br />
+&lt;Directory "/web/docs"&gt;
+  Options Indexes FollowSymLinks
+&lt;/Directory&gt;
 
-&lt;Directory "/web/docs/spec"&gt;<br />
-  Options Includes<br />
+&lt;Directory "/web/docs/spec"&gt;
+  Options Includes
 &lt;/Directory&gt;
     </highlight>
 
@@ -3457,9 +3402,7 @@ On Windows from Apache 2.3.3 and later.</compatibility>
 
     <p>For example, if you are running <code>https</code> on a non-standard port, specify the protocol explicitly:</p>
 
-    <highlight language="config">
-Protocol https
-    </highlight>
+    <highlight language="config">Protocol https</highlight>
 
     <p>You can also specify the protocol using the <directive module="mpm_common">Listen</directive> directive.</p>
 </usage>
@@ -3595,15 +3538,11 @@ later</compatibility>
     by the shebang line (first line, starting with <code>#!</code>) in the
     script. On Win32 systems this line usually looks like:</p>
 
-    <highlight language="perl">
-#!C:/Perl/bin/perl.exe
-    </highlight>
+    <highlight language="perl">#!C:/Perl/bin/perl.exe</highlight>
 
     <p>or, if <code>perl</code> is in the <code>PATH</code>, simply:</p>
 
-    <highlight language="perl">
-#!perl
-    </highlight>
+    <highlight language="perl">#!perl</highlight>
 
     <p>Setting <code>ScriptInterpreterSource Registry</code> will
     cause the Windows Registry tree <code>HKEY_CLASSES_ROOT</code> to be
@@ -3699,9 +3638,7 @@ messages sent to the client</description>
 
     <p>It may be worth setting up a dedicated address for this, e.g.</p>
 
-    <highlight language="config">
-ServerAdmin www-admin@foo.example.com
-    </highlight>
+    <highlight language="config">ServerAdmin www-admin@foo.example.com</highlight>
     <p>as users do not always mention that they are talking about the
     server!</p>
 </usage>
@@ -3766,9 +3703,7 @@ itself</description>
     and you wish the web server to be so identified, the following
     directive should be used:</p>
 
-    <highlight language="config">
-ServerName www.example.com
-    </highlight>
+    <highlight language="config">ServerName www.example.com</highlight>
 
     <p>The <directive>ServerName</directive> directive
     may appear anywhere within the definition of a server. However,
@@ -3860,9 +3795,7 @@ is accessed by an incompatible browser</description>
     module="mod_so">LoadModule</directive>, for example) are taken as
     relative to this directory.</p>
 
-    <highlight language="config"><strong>Example</strong>
-ServerRoot "/home/httpd"
-    </highlight>
+    <highlight language="config">ServerRoot "/home/httpd"</highlight>
 
     <p>The default location of <directive>ServerRoot</directive> may be
     modified by using the <code>--prefix</code> argument to
@@ -4002,9 +3935,7 @@ handler</description>
     of extension, you might put the following into an
     <code>.htaccess</code> file in that directory:</p>
 
-    <highlight language="config">
-SetHandler imap-file
-    </highlight>
+    <highlight language="config">SetHandler imap-file</highlight>
 
     <p>Another example: if you wanted to have the server display a
     status report whenever a URL of
