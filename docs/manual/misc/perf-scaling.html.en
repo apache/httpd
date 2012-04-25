@@ -55,20 +55,20 @@
         </p>
         
     </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#What Will and Will Not Be Discussed">What Will and Will Not Be Discussed
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#what-will-and-will-not-be-discussed">What Will and Will Not Be Discussed
         </a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#Monitoring Your Server">Monitoring Your Server
+<li><img alt="" src="../images/down.gif" /> <a href="#monitoring-your-server">Monitoring Your Server
         </a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#Configuring for Performance">Configuring for Performance
+<li><img alt="" src="../images/down.gif" /> <a href="#configuring-for-performance">Configuring for Performance
         </a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#Caching Content">Caching Content
+<li><img alt="" src="../images/down.gif" /> <a href="#caching-content">Caching Content
         </a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#Further Considerations">Further Considerations
+<li><img alt="" src="../images/down.gif" /> <a href="#further-considerations">Further Considerations
         </a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="What Will and Will Not Be Discussed" id="What Will and Will Not Be Discussed">What Will and Will Not Be Discussed
+<h2><a name="what-will-and-will-not-be-discussed" id="what-will-and-will-not-be-discussed">What Will and Will Not Be Discussed
         </a></h2>
         
         <p>The session will focus on easily accessible configuration and tuning
@@ -84,7 +84,7 @@
         
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Monitoring Your Server" id="Monitoring Your Server">Monitoring Your Server
+<h2><a name="monitoring-your-server" id="monitoring-your-server">Monitoring Your Server
         </a></h2>
         
         <p>The first task when sizing or performance-tuning your server is to
@@ -95,7 +95,7 @@
         </p>
         
         
-        <h3><a name="Monitoring Tools" id="Monitoring Tools">Monitoring Tools
+        <h3><a name="monitoring-tools" id="monitoring-tools">Monitoring Tools
             </a></h3>
             
             
@@ -287,7 +287,7 @@
                 
                 
             
-            <h4><a name="SE Toolkit" id="SE Toolkit">SE Toolkit
+            <h4><a name="se-toolkit" id="se-toolkit">SE Toolkit
                 </a></h4>
                 
                 <p>The SE Toolkit is a system monitoring toolkit for Solaris.
@@ -314,7 +314,7 @@
                 
                 
             
-            <h4><a name="DTrace" id="DTrace">DTrace
+            <h4><a name="dtrace" id="dtrace">DTrace
                 </a></h4>
                 
                 <p>Given that DTrace is available for Solaris, FreeBSD and OS
@@ -348,7 +348,7 @@
                 
             
         
-        <h3><a name="Web Server Log Files" id="Web Server Log Files">Web Server Log Files
+        <h3><a name="web-server-log-files" id="web-server-log-files">Web Server Log Files
             </a></h3>
             
             <p>Monitoring and analyzing the log files httpd writes is one of
@@ -364,7 +364,7 @@
             </p>
             
             
-            <h4><a name="Error Log" id="Error Log">Error Log
+            <h4><a name="ErrorLog" id="ErrorLog">Error Log
                 </a></h4>
                 
                 <p>The error log will contain messages if the server has
@@ -541,7 +541,7 @@
                 
                 
             
-            <h4><a name="Access Log" id="Access Log">Access Log
+            <h4><a name="AccessLog" id="AccessLog">Access Log
                 </a></h4>
                 
                 <p>Apache httpd keeps track of every request it services in its
@@ -708,7 +708,7 @@
                 </table>
                 
             
-            <h4><a name="Rotating Log Files" id="Rotating Log Files">Rotating Log Files
+            <h4><a name="rotating-log-files" id="rotating-log-files">Rotating Log Files
                 </a></h4>
                 
                 <p>There are several reasons to rotate logfiles. Even though
@@ -782,7 +782,7 @@
                 
                 
             
-            <h4><a name="Logging and Performance" id="Logging and Performance">Logging and Performance
+            <h4><a name="logging-and-performance" id="logging-and-performance">Logging and Performance
                 </a></h4>
                 
                 <p>Writing entries to the Apache log files obviously takes some
@@ -810,20 +810,14 @@
                     easier to analyze the logfile later. However, if your
                     server has many virtual hosts, all the open logfiles put a
                     resource burden on your system, and it may be preferable to
-                    log to a single file. Use the <code>%v
-                    </code>
-                    format character at the start of your <a href="/httpd/LogFormat" class="nonexistent">
-                        LogFormat
-                    </a>
-                    and starting 2.3.8 of your <code>ErrorLogFormat
-                    </code>
+                    log to a single file. Use the <code>%v</code>
+					format character at the start of your <code class="directive"><a href="../mod/mod_log_config.html#logformat">LogFormat</a></code>
+					and starting 2.3.8 of your <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code>
                     to make httpd print the hostname of the virtual host that
                     received the request or the error at the beginning of each
                     log line. A simple Perl script can split out the log file
                     after it rotates: one is included with the Apache source
-                    under <code>support/split-logfile
-                    </code>
-                    .
+                    under <code>support/split-logfile</code>.
                 </p>
                 <p>
                     You can use the <code>BufferedLogs
@@ -837,14 +831,12 @@
                 
             
         
-        <h3><a name="Generating A Test Load" id="Generating A Test Load">Generating A Test Load
+        <h3><a name="generating-a-test-load" id="generating-a-test-load">Generating A Test Load
             </a></h3>
             
             <p>It is useful to generate a test load to monitor system
                 performance under realistic operating circumstances. Besides
-                commercial packages such as <a href="/httpd/LoadRunner" class="nonexistent">
-                    LoadRunner
-                </a>
+				commercial packages such as <a href="http://learnloadrunner.com/">LoadRunner</a>
                 ,there are a number of freely available tools to generate a
                 test load against your web server. 
             </p>
@@ -871,9 +863,7 @@
                 </li>
                 <li>
                     <p>ASF external projects, that have proven to be quite
-                        good: grinder, httperf, tsung, <a href="/httpd/FunkLoad" class="nonexistent">
-                            FunkLoad
-                        </a>
+						good: grinder, httperf, tsung, <a href="http://funkload.nuxeo.org/">FunkLoad</a>
                     </p>
                 </li>
             </ul>
@@ -887,12 +877,12 @@
         
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Configuring for Performance" id="Configuring for Performance">Configuring for Performance
+<h2><a name="configuring-for-performance" id="configuring-for-performance">Configuring for Performance
         </a></h2>
         
         
         
-        <h3><a name="Apache Configuration" id="Apache Configuration">Apache Configuration
+        <h3><a name="apache-configuration" id="apache-configuration">Apache Configuration
             </a></h3>
             
             <p>The Apache 2.2 httpd is by default a pre-forking web server.
@@ -908,9 +898,8 @@
                 MPM runs a smaller number of child processes, and spawns
                 multiple request handling threads within each child process. In
                 2.3+ MPMs are no longer hard-wired. They too can be exchanged
-                via <a href="/httpd/LoadModule" class="nonexistent">LoadModule
-                </a>
-                .The default MPM in 2.3 is the event MPM. 
+				via <code class="directive"><a href="../mod/core.html#loadmodule">LoadModule</a></code>.
+				The default MPM in 2.3 is the event MPM. 
             </p>
             <p>The maximum number of workers, be they pre-forked child
                 processes or threads within a process, is an indication of how
@@ -946,7 +935,7 @@
                 
                 
             
-            <h4><a name="Spinning Threads" id="Spinning Threads">Spinning Threads
+            <h4><a name="spinning-threads" id="spinning-threads">Spinning Threads
                 </a></h4>
                 
                 <p>For the prefork MPM of the above directives are all there is
@@ -972,7 +961,7 @@
                 
                 
             
-            <h4><a name="Sizing MaxClients" id="Sizing MaxClients">Sizing MaxClients
+            <h4><a name="sizing-maxClients" id="sizing-maxClients">Sizing MaxClients
                 </a></h4>
                 
                 <p>Optimally, the maximum number of processes should be set so
@@ -1033,7 +1022,7 @@
                 
                 
             
-            <h4><a name="Selecting your MPM" id="Selecting your MPM">Selecting your MPM
+            <h4><a name="selecting-your-mpm" id="selecting-your-mpm">Selecting your MPM
                 </a></h4>
                 
                 <p>The prime reason for selecting a threaded MPM is that
@@ -1070,7 +1059,7 @@
                 
                 
             
-            <h4><a name="Spinning Locks" id="Spinning Locks">Spinning Locks
+            <h4><a name="spinning-locks" id="spinning-locks">Spinning Locks
                 </a></h4>
                 
                 <p>Apache httpd maintains an inter-process lock around its
@@ -1095,7 +1084,7 @@
                 
                 
             
-            <h4><a name="The Thundering Herd" id="The Thundering Herd">The Thundering Herd
+            <h4><a name="the-thundering-herd" id="the-thundering-herd">The Thundering Herd
                 </a></h4>
                 
                 <p>The function of the 'accept mutex' (as this
@@ -1146,7 +1135,7 @@
                 
             
         
-        <h3><a name="Tuning the Operating System" id="Tuning the Operating System">Tuning the Operating System
+        <h3><a name="tuning-the-operating-system" id="tuning-the-operating-system">Tuning the Operating System
             </a></h3>
             
             <p>People often look for the 'magic tune-up' that will
@@ -1159,7 +1148,7 @@
             </p>
             
             
-            <h4><a name="RAM and Swap Space" id="RAM and Swap Space">RAM and Swap Space
+            <h4><a name="ram-and-swap-space" id="ram-and-swap-space">RAM and Swap Space
                 </a></h4>
                 
                 <p>The usual mantra regarding RAM is "more is
@@ -1220,7 +1209,7 @@
                 
                 
             
-            <h4><a name="ulimit: Files and Processes" id="ulimit: Files and Processes">ulimit: Files and Processes
+            <h4><a name="ulimit-files-and-processes" id="ulimit-files-and-processes">ulimit: Files and Processes
                 </a></h4>
                 
                 <p>Given a machine with plenty of RAM and processor capacity,
@@ -1274,7 +1263,7 @@
                 
                 
             
-            <h4><a name="Setting User Limits on System Startup" id="Setting User Limits on System Startup">Setting User Limits on System Startup
+            <h4><a name="setting-user-limits-on-system-startup" id="setting-user-limits-on-system-startup">Setting User Limits on System Startup
                 </a></h4>
                 
                 <p>Under Linux, you can set the ulimit parameters on bootup by
@@ -1340,7 +1329,7 @@
                 
                 
             
-            <h4><a name="Turn Off Unused Services and Modules" id="Turn Off Unused Services and Modules">Turn Off Unused Services and Modules
+            <h4><a name="turn-off-unused-services-and-modules" id="turn-off-unused-services-and-modules">Turn Off Unused Services and Modules
                 </a></h4>
                 
                 <p>Many UNIX and Linux distributions come with a slew of
@@ -1381,7 +1370,7 @@
         
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Caching Content" id="Caching Content">Caching Content
+<h2><a name="caching-content" id="caching-content">Caching Content
         </a></h2>
         
         <p>Requests for dynamically generated content usually take
@@ -1401,7 +1390,7 @@
         </p>
         
         
-        <h3><a name="Making Popular Pages Static" id="Making Popular Pages Static">Making Popular Pages Static
+        <h3><a name="making-popular-pages-static" id="making-popular-pages-static">Making Popular Pages Static
             </a></h3>
             
             <p>By pre-rendering the response pages for the most popular queries
@@ -1418,7 +1407,7 @@
             </p>
             
             
-            <h4><a name="Example: A Statically Rendered Blog" id="Example: A Statically Rendered Blog">Example: A Statically Rendered Blog
+            <h4><a name="example-a-statically-rendered-blog" id="example-a-statically-rendered-blog">Example: A Statically Rendered Blog
                 </a></h4>
                 
                 <p>
@@ -1521,7 +1510,7 @@
                 
             
         
-        <h3><a name="Caching Content With mod_cache" id="Caching Content With mod_cache">Caching Content With mod_cache
+        <h3><a name="caching-content-with-mod_cache" id="caching-content-with-mod_cache">Caching Content With mod_cache
             </a></h3>
             
             <p>The mod_cache module provides intelligent caching of HTTP
@@ -1560,7 +1549,7 @@
             </p>
             
             
-            <h4><a name="Example: wiki.apache.org" id="Example: wiki.apache.org">Example: wiki.apache.org
+            <h4><a name="example-wiki" id="example-wiki">Example: wiki.apache.org
                 </a></h4>
                 
                 <p>
@@ -1569,12 +1558,8 @@
                     </strong>
                 </p>
                 <p>
-                    The Apache Software Foundation Wiki is served by <a href="/httpd/MoinMoin">
-                        MoinMoin
-                    </a>
-                    .<a href="/httpd/MoinMoin">MoinMoin
-                    </a>
-                    is written in Python and runs as a CGI. To date, any
+                    The Apache Software Foundation Wiki is served by MoinMoin.
+					MoinMoin is written in Python and runs as a CGI. To date, any
                     attempts to run it under mod_python has been unsuccessful.
                     The CGI proved to place an untenably high load on the
                     server machine, especially when the Wiki was being indexed
@@ -1635,7 +1620,7 @@
                 <div class="example"><p><code>
                     &lt;FilesMatch \.(jpe?g|png|gif|js|css|x?html|xml)&gt;<br />
                     <span class="indent">
-                        FilesETag None<br />
+                        FileETag None<br />
                     </span>
                     &lt;/FilesMatch&gt;
                 </code></p></div>
@@ -1652,7 +1637,7 @@
         
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Further Considerations" id="Further Considerations">Further Considerations
+<h2><a name="further-considerations" id="further-considerations">Further Considerations
         </a></h2>
         
         <p>Armed with the knowledge of how to tune a sytem to deliver the
