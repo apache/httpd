@@ -68,8 +68,8 @@
     <p>The usage of these directives is:</p>
 
     <highlight language="config">
-      Require host <var>address</var>
-      Require ip <var>ip.address</var>
+Require host <var>address</var>
+Require ip <var>ip.address</var>
     </highlight>
 
     <p>In the first form, <var>address</var> is a fully qualified
@@ -89,25 +89,21 @@
     board, and you want to keep them out, you could do the
     following:</p>
 
-    <example>
-      Require not ip 10.252.46.165
-    </example>
+    <highlight language="config">Require not ip 10.252.46.165</highlight>
 
     <p>Visitors coming from that address will not be able to see
     the content covered by this directive. If, instead, you have a
     machine name, rather than an IP address, you can use that.</p>
 
-    <example>
-      Require not host <var>host.example.com</var>
-    </example>
+    <highlight language="config">Require not host <var>host.example.com</var></highlight>
 
     <p>And, if you'd like to block access from an entire domain,
     you can specify just part of an address or domain name:</p>
 
     <highlight language="config">
-      Require not ip <var>192.168.205</var>
-      Require not host <var>phishers.example.com</var> <var>moreidiots.example</var>
-      Require not gov
+Require not ip <var>192.168.205</var>
+Require not host <var>phishers.example.com</var> <var>moreidiots.example</var>
+Require not gov
     </highlight>
 
     <p>Use of the <directive
@@ -127,9 +123,9 @@
     following:</p>
 
     <highlight language="config">
-    &lt;If "%{HTTP_USER_AGENT} = 'BadBot'"&gt;
-        Require All Denied
-    &lt;/If&gt;
+&lt;If "%{HTTP_USER_AGENT} = 'BadBot'"&gt;
+    Require All Denied
+&lt;/If&gt;
     </highlight>
 
     <note><title>Warning:</title>
@@ -155,10 +151,10 @@
     and 6am, you can do this using <module>mod_rewrite</module>.</p>
 
     <highlight language="config">
-    RewriteEngine On
-    RewriteCond %{TIME_HOUR} &gt;20 [OR]
-    RewriteCond %{TIME_HOUR} &lt;07
-    RewriteRule ^/fridge - [F]
+RewriteEngine On
+RewriteCond %{TIME_HOUR} &gt;20 [OR]
+RewriteCond %{TIME_HOUR} &lt;07
+RewriteRule ^/fridge - [F]
     </highlight>
 
     <p>This will return a 403 Forbidden response for any request after 8pm

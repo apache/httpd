@@ -142,9 +142,7 @@ module from each group.</p>
     an <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> directive like the
     following:</p>
 
-    <pre class="prettyprint lang-config">
-      AllowOverride AuthConfig
-    </pre>
+    <pre class="prettyprint lang-config">AllowOverride AuthConfig</pre>
 
 
     <p>Or, if you are just going to put the directives directly in
@@ -218,12 +216,12 @@ module from each group.</p>
     /usr/local/apache/htdocs/secret&gt; section.</p>
 
     <pre class="prettyprint lang-config">
-      AuthType Basic
-      AuthName "Restricted Files"
-      # (Following line optional)
-      AuthBasicProvider file
-      AuthUserFile /usr/local/apache/passwd/passwords
-      Require user rbowen
+AuthType Basic
+AuthName "Restricted Files"
+# (Following line optional)
+AuthBasicProvider file
+AuthUserFile /usr/local/apache/passwd/passwords
+Require user rbowen
     </pre>
 
 
@@ -316,13 +314,13 @@ person in</a></h2>
     look like the following:</p>
 
     <pre class="prettyprint lang-config">
-      AuthType Basic
-      AuthName "By Invitation Only"
-      # Optional line:
-      AuthBasicProvider file
-      AuthUserFile /usr/local/apache/passwd/passwords
-      AuthGroupFile /usr/local/apache/passwd/groups
-      Require group GroupName
+AuthType Basic
+AuthName "By Invitation Only"
+# Optional line:
+AuthBasicProvider file
+AuthUserFile /usr/local/apache/passwd/passwords
+AuthGroupFile /usr/local/apache/passwd/groups
+Require group GroupName
     </pre>
 
 
@@ -334,9 +332,8 @@ person in</a></h2>
     specific. Rather than creating a group file, you can just use
     the following directive:</p>
 
-    <div class="example"><p><code>
-      Require valid-user
-    </code></p></div>
+    <pre class="prettyprint lang-config">Require valid-user</pre>
+
 
     <p>Using that rather than the <code>Require user rbowen</code>
     line will allow anyone in that is listed in the password file,
@@ -383,13 +380,13 @@ person in</a></h2>
     <p>To select a dbd file rather than a text file, for example:</p>
 
     <pre class="prettyprint lang-config">
-    &lt;Directory /www/docs/private&gt;
-        AuthName "Private"
-        AuthType Basic
-        AuthBasicProvider dbm
-        AuthDBMUserFile /www/passwords/passwd.dbm
-        Require valid-user
-    &lt;/Directory&gt;
+&lt;Directory /www/docs/private&gt;
+    AuthName "Private"
+    AuthType Basic
+    AuthBasicProvider dbm
+    AuthDBMUserFile /www/passwords/passwd.dbm
+    Require valid-user
+&lt;/Directory&gt;
     </pre>
 
 
@@ -407,14 +404,14 @@ person in</a></h2>
     file and LDAP based authentication providers are being used.</p>
 
     <pre class="prettyprint lang-config">
-    &lt;Directory /www/docs/private&gt;
-        AuthName "Private"
-        AuthType Basic
-        AuthBasicProvider file ldap
-        AuthUserFile /usr/local/apache/passwd/passwords
-        AuthLDAPURL ldap://ldaphost/o=yourorg
-        Require valid-user
-    &lt;/Directory&gt;
+&lt;Directory /www/docs/private&gt;
+    AuthName "Private"
+    AuthType Basic
+    AuthBasicProvider file ldap
+    AuthUserFile /usr/local/apache/passwd/passwords
+    AuthLDAPURL ldap://ldaphost/o=yourorg
+    Require valid-user
+&lt;/Directory&gt;
     </pre>
 
 
@@ -432,16 +429,16 @@ person in</a></h2>
     authorization as well as LDAP group authorization is being used.</p>
 
     <pre class="prettyprint lang-config">
-    &lt;Directory /www/docs/private&gt;
-        AuthName "Private"
-        AuthType Basic
-        AuthBasicProvider file
-        AuthUserFile /usr/local/apache/passwd/passwords
-        AuthLDAPURL ldap://ldaphost/o=yourorg
-        AuthGroupFile /usr/local/apache/passwd/groups
-        Require group GroupName
-        Require ldap-group cn=mygroup,o=yourorg
-    &lt;/Directory&gt;
+&lt;Directory /www/docs/private&gt;
+    AuthName "Private"
+    AuthType Basic
+    AuthBasicProvider file
+    AuthUserFile /usr/local/apache/passwd/passwords
+    AuthLDAPURL ldap://ldaphost/o=yourorg
+    AuthGroupFile /usr/local/apache/passwd/groups
+    Require group GroupName
+    Require ldap-group cn=mygroup,o=yourorg
+&lt;/Directory&gt;
     </pre>
 
 
@@ -521,17 +518,13 @@ person in</a></h2>
         that will be called during the authorization stage of the request
         processing. For example:</p>
 
-        <pre class="prettyprint lang-config">
-          Require ip <var>address</var>
-        </pre>
+        <pre class="prettyprint lang-config">Require ip <var>address</var></pre>
 
 
         <p>where <var>address</var> is an IP address (or a partial IP
         address) or:</p>
 
-        <pre class="prettyprint lang-config">
-          Require host <var>domain_name</var>
-        </pre>
+        <pre class="prettyprint lang-config">Require host <var>domain_name</var></pre>
 
 
         <p>where <var>domain_name</var> is a fully qualified domain name
@@ -543,10 +536,10 @@ person in</a></h2>
         following:</p>
 
         <pre class="prettyprint lang-config">
-          &lt;RequireAll&gt;
-            Require all granted
-            Require not ip 10.252.46.165
-          &lt;/RequireAll&gt;
+&lt;RequireAll&gt;
+    Require all granted
+    Require not ip 10.252.46.165
+&lt;/RequireAll&gt;
         </pre>
 
 
@@ -555,10 +548,10 @@ person in</a></h2>
         machine name, rather than an IP address, you can use that.</p>
 
         <pre class="prettyprint lang-config">
-          &lt;RequireAll&gt;
-            Require all granted
-            Require not host <var>host.example.com</var>
-          &lt;/RequireAll&gt;
+&lt;RequireAll&gt;
+    Require all granted
+    Require not host <var>host.example.com</var>
+&lt;/RequireAll&gt;
         </pre>
 
 
@@ -566,14 +559,14 @@ person in</a></h2>
         you can specify just part of an address or domain name:</p>
 
         <pre class="prettyprint lang-config">
-  &lt;RequireAll&gt;
+&lt;RequireAll&gt;
     Require all granted
     &lt;RequireNone&gt;
-      Require ip 192.168.205
-      Require host phishers.example.com moreidiots.example
-      Require host ke
+        Require ip 192.168.205
+        Require host phishers.example.com moreidiots.example
+        Require host ke
     &lt;/RequireNone&gt;
-  &lt;/RequireAll&gt;
+&lt;/RequireAll&gt;
         </pre>
 
 

@@ -127,9 +127,7 @@ module from each group.</p>
     an <directive module="core">AllowOverride</directive> directive like the
     following:</p>
 
-    <highlight language="config">
-      AllowOverride AuthConfig
-    </highlight>
+    <highlight language="config">AllowOverride AuthConfig</highlight>
 
     <p>Or, if you are just going to put the directives directly in
     your main server configuration file, you will of course need to
@@ -202,12 +200,12 @@ module from each group.</p>
     /usr/local/apache/htdocs/secret&gt; section.</p>
 
     <highlight language="config">
-      AuthType Basic
-      AuthName "Restricted Files"
-      # (Following line optional)
-      AuthBasicProvider file
-      AuthUserFile /usr/local/apache/passwd/passwords
-      Require user rbowen
+AuthType Basic
+AuthName "Restricted Files"
+# (Following line optional)
+AuthBasicProvider file
+AuthUserFile /usr/local/apache/passwd/passwords
+Require user rbowen
     </highlight>
 
     <p>Let's examine each of those directives individually. The <directive
@@ -306,13 +304,13 @@ person in</title>
     look like the following:</p>
 
     <highlight language="config">
-      AuthType Basic
-      AuthName "By Invitation Only"
-      # Optional line:
-      AuthBasicProvider file
-      AuthUserFile /usr/local/apache/passwd/passwords
-      AuthGroupFile /usr/local/apache/passwd/groups
-      Require group GroupName
+AuthType Basic
+AuthName "By Invitation Only"
+# Optional line:
+AuthBasicProvider file
+AuthUserFile /usr/local/apache/passwd/passwords
+AuthGroupFile /usr/local/apache/passwd/groups
+Require group GroupName
     </highlight>
 
     <p>Now, anyone that is listed in the group <code>GroupName</code>,
@@ -323,9 +321,7 @@ person in</title>
     specific. Rather than creating a group file, you can just use
     the following directive:</p>
 
-    <example>
-      Require valid-user
-    </example>
+    <highlight language="config">Require valid-user</highlight>
 
     <p>Using that rather than the <code>Require user rbowen</code>
     line will allow anyone in that is listed in the password file,
@@ -373,13 +369,13 @@ person in</title>
     <p>To select a dbd file rather than a text file, for example:</p>
 
     <highlight language="config">
-    &lt;Directory /www/docs/private&gt;
-        AuthName "Private"
-        AuthType Basic
-        AuthBasicProvider dbm
-        AuthDBMUserFile /www/passwords/passwd.dbm
-        Require valid-user
-    &lt;/Directory&gt;
+&lt;Directory /www/docs/private&gt;
+    AuthName "Private"
+    AuthType Basic
+    AuthBasicProvider dbm
+    AuthDBMUserFile /www/passwords/passwd.dbm
+    Require valid-user
+&lt;/Directory&gt;
     </highlight>
 
     <p>Other options are available. Consult the
@@ -396,14 +392,14 @@ person in</title>
     file and LDAP based authentication providers are being used.</p>
 
     <highlight language="config">
-    &lt;Directory /www/docs/private&gt;
-        AuthName "Private"
-        AuthType Basic
-        AuthBasicProvider file ldap
-        AuthUserFile /usr/local/apache/passwd/passwords
-        AuthLDAPURL ldap://ldaphost/o=yourorg
-        Require valid-user
-    &lt;/Directory&gt;
+&lt;Directory /www/docs/private&gt;
+    AuthName "Private"
+    AuthType Basic
+    AuthBasicProvider file ldap
+    AuthUserFile /usr/local/apache/passwd/passwords
+    AuthLDAPURL ldap://ldaphost/o=yourorg
+    Require valid-user
+&lt;/Directory&gt;
     </highlight>
 
     <p>In this example the file provider will attempt to authenticate
@@ -420,16 +416,16 @@ person in</title>
     authorization as well as LDAP group authorization is being used.</p>
 
     <highlight language="config">
-    &lt;Directory /www/docs/private&gt;
-        AuthName "Private"
-        AuthType Basic
-        AuthBasicProvider file
-        AuthUserFile /usr/local/apache/passwd/passwords
-        AuthLDAPURL ldap://ldaphost/o=yourorg
-        AuthGroupFile /usr/local/apache/passwd/groups
-        Require group GroupName
-        Require ldap-group cn=mygroup,o=yourorg
-    &lt;/Directory&gt;
+&lt;Directory /www/docs/private&gt;
+    AuthName "Private"
+    AuthType Basic
+    AuthBasicProvider file
+    AuthUserFile /usr/local/apache/passwd/passwords
+    AuthLDAPURL ldap://ldaphost/o=yourorg
+    AuthGroupFile /usr/local/apache/passwd/groups
+    Require group GroupName
+    Require ldap-group cn=mygroup,o=yourorg
+&lt;/Directory&gt;
     </highlight>
 
     <p>To take authorization a little further, authorization container
@@ -508,16 +504,12 @@ person in</title>
         that will be called during the authorization stage of the request
         processing. For example:</p>
 
-        <highlight language="config">
-          Require ip <var>address</var>
-        </highlight>
+        <highlight language="config">Require ip <var>address</var></highlight>
 
         <p>where <var>address</var> is an IP address (or a partial IP
         address) or:</p>
 
-        <highlight language="config">
-          Require host <var>domain_name</var>
-        </highlight>
+        <highlight language="config">Require host <var>domain_name</var></highlight>
 
         <p>where <var>domain_name</var> is a fully qualified domain name
         (or a partial domain name); you may provide multiple addresses or
@@ -528,10 +520,10 @@ person in</title>
         following:</p>
 
         <highlight language="config">
-          &lt;RequireAll&gt;
-            Require all granted
-            Require not ip 10.252.46.165
-          &lt;/RequireAll&gt;
+&lt;RequireAll&gt;
+    Require all granted
+    Require not ip 10.252.46.165
+&lt;/RequireAll&gt;
         </highlight>
 
         <p>Visitors coming from that address will not be able to see
@@ -539,24 +531,24 @@ person in</title>
         machine name, rather than an IP address, you can use that.</p>
 
         <highlight language="config">
-          &lt;RequireAll&gt;
-            Require all granted
-            Require not host <var>host.example.com</var>
-          &lt;/RequireAll&gt;
+&lt;RequireAll&gt;
+    Require all granted
+    Require not host <var>host.example.com</var>
+&lt;/RequireAll&gt;
         </highlight>
 
         <p>And, if you'd like to block access from an entire domain,
         you can specify just part of an address or domain name:</p>
 
         <highlight language="config">
-  &lt;RequireAll&gt;
+&lt;RequireAll&gt;
     Require all granted
     &lt;RequireNone&gt;
-      Require ip 192.168.205
-      Require host phishers.example.com moreidiots.example
-      Require host ke
+        Require ip 192.168.205
+        Require host phishers.example.com moreidiots.example
+        Require host ke
     &lt;/RequireNone&gt;
-  &lt;/RequireAll&gt;
+&lt;/RequireAll&gt;
         </highlight>
 
         <p>The above example uses the <directive module="mod_authz_core"

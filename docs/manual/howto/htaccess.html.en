@@ -65,9 +65,8 @@ changes on a per-directory basis.</p>
       if you would rather call the file <code>.config</code> then you
       can put the following in your server configuration file:</p>
 
-      <div class="example"><p><code>
-        AccessFileName .config
-      </code></p></div>
+      <pre class="prettyprint lang-config">AccessFileName .config</pre>
+
     </div>
 
     <p>In general, <code>.htaccess</code> files use the same syntax as
@@ -195,16 +194,18 @@ changes on a per-directory basis.</p>
 
     <div class="example"><h3>Contents of .htaccess file in
     <code>/www/htdocs/example</code></h3><p><code>
-        AddType text/example .exm
+    <pre class="prettyprint lang-config">AddType text/example .exm</pre>
+
     </code></p></div>
 
     <div class="example"><h3>Section from your <code>httpd.conf</code>
     file</h3><p><code>
-      &lt;Directory /www/htdocs/example&gt;<br />
-      <span class="indent">
-        AddType text/example .exm<br />
-      </span>
-      &lt;/Directory&gt;
+    <pre class="prettyprint lang-config">
+&lt;Directory /www/htdocs/example&gt;<br />
+    AddType text/example .exm<br />
+&lt;/Directory&gt;
+    </pre>
+
     </code></p></div>
 
     <p>However, putting this configuration in your server configuration
@@ -216,9 +217,8 @@ changes on a per-directory basis.</p>
     by setting the <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code>
     directive to <code>none</code>:</p>
 
-    <div class="example"><p><code>
-      AllowOverride None
-    </code></p></div>
+    <pre class="prettyprint lang-config">AllowOverride None</pre>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="how" id="how">How directives are applied</a></h2>
@@ -239,9 +239,8 @@ changes on a per-directory basis.</p>
     <p>In the directory <code>/www/htdocs/example1</code> we have a
     <code>.htaccess</code> file containing the following:</p>
 
-    <div class="example"><p><code>
-       Options +ExecCGI
-    </code></p></div>
+    <pre class="prettyprint lang-config">Options +ExecCGI</pre>
+
 
     <p>(Note: you must have "<code>AllowOverride Options</code>" in effect
     to permit the use of the "<code class="directive"><a href="../mod/core.html#options">Options</a></code>" directive in
@@ -250,9 +249,8 @@ changes on a per-directory basis.</p>
     <p>In the directory <code>/www/htdocs/example1/example2</code> we have
     a <code>.htaccess</code> file containing:</p>
 
-    <div class="example"><p><code>
-       Options Includes
-    </code></p></div>
+    <pre class="prettyprint lang-config">Options Includes</pre>
+
 
     <p>Because of this second <code>.htaccess</code> file, in the directory
     <code>/www/htdocs/example1/example2</code>, CGI execution is not
@@ -308,11 +306,11 @@ changes on a per-directory basis.</p>
     <p><code>.htaccess</code> file contents:</p>
 
     <pre class="prettyprint lang-config">
-      AuthType Basic
-      AuthName "Password Required"
-      AuthUserFile /www/passwords/password.file
-      AuthGroupFile /www/passwords/group.file
-      Require Group admins
+AuthType Basic
+AuthName "Password Required"
+AuthUserFile /www/passwords/password.file
+AuthGroupFile /www/passwords/group.file
+Require Group admins
     </pre>
 
 
@@ -331,9 +329,9 @@ changes on a per-directory basis.</p>
     <code>.htaccess</code> file in the desired directory:</p>
 
     <pre class="prettyprint lang-config">
-       Options +Includes
-       AddType text/html shtml
-       AddHandler server-parsed shtml
+Options +Includes
+AddType text/html shtml
+AddHandler server-parsed shtml
     </pre>
 
 
@@ -352,8 +350,8 @@ changes on a per-directory basis.</p>
     implemented with the following configuration:</p>
 
     <pre class="prettyprint lang-config">
-       Options +ExecCGI<br />
-       AddHandler cgi-script cgi pl
+Options +ExecCGI
+AddHandler cgi-script cgi pl
     </pre>
 
 
@@ -362,8 +360,8 @@ changes on a per-directory basis.</p>
     configuration:</p>
 
     <pre class="prettyprint lang-config">
-       Options +ExecCGI<br />
-       SetHandler cgi-script
+Options +ExecCGI
+SetHandler cgi-script
     </pre>
 
 

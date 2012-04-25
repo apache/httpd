@@ -68,9 +68,8 @@
     assumed to be a directory path relative to the home directory of the
     specified user. Given this configuration:</p>
 
-    <div class="example"><p><code>
-      UserDir public_html
-    </code></p></div>
+    <pre class="prettyprint lang-config">UserDir public_html</pre>
+
 
     <p>the URL <code>http://example.com/~rbowen/file.html</code> will be
     translated to the file path
@@ -80,9 +79,7 @@
     constructed using that path, plus the username specified. Given this
     configuration:</p>
 
-    <pre class="prettyprint lang-config">
-      UserDir /var/html
-    </pre>
+    <pre class="prettyprint lang-config">UserDir /var/html</pre>
 
 
     <p>the URL <code>http://example.com/~rbowen/file.html</code> will be
@@ -92,9 +89,7 @@
     in which the asterisk is replaced with the username. Given this
     configuration:</p>
 
-    <pre class="prettyprint lang-config">
-      UserDir /var/www/*/docs
-    </pre>
+    <pre class="prettyprint lang-config">UserDir /var/www/*/docs</pre>
 
 
     <p>the URL <code>http://example.com/~rbowen/file.html</code> will be
@@ -103,9 +98,8 @@
 
     <p>Multiple directories or directory paths can also be set.</p>
 
-    <div class="example"><p><code>
-      UserDir public_html /var/html
-    </code></p></div>
+    <pre class="prettyprint lang-config">UserDir public_html /var/html</pre>
+
 
     <p>For the URL <code>http://example.com/~rbowen/file.html</code>,
     Apache will search for <code>~rbowen</code>. If it isn't found,
@@ -120,9 +114,7 @@
     <p>The <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> directive can be
       used to redirect user directory requests to external URLs.</p>
 
-    <pre class="prettyprint lang-config">
-      UserDir http://example.org/users/*/
-    </pre>
+    <pre class="prettyprint lang-config">UserDir http://example.org/users/*/</pre>
 
 
     <p>The above example will redirect a request for
@@ -137,9 +129,7 @@
     <p>Using the syntax shown in the UserDir documentation, you can restrict
     what users are permitted to use this functionality:</p>
 
-    <pre class="prettyprint lang-config">
-      UserDir disabled root jro fish
-    </pre>
+    <pre class="prettyprint lang-config">UserDir disabled root jro fish</pre>
 
 
     <p>The configuration above will enable the feature for all users
@@ -167,10 +157,10 @@
     cgi-enabled.</p>
 
     <pre class="prettyprint lang-config">
-      &lt;Directory /home/*/public_html/cgi-bin/&gt;
-       Options ExecCGI
-       SetHandler cgi-script
-       &lt;/Directory&gt;
+&lt;Directory /home/*/public_html/cgi-bin/&gt;
+    Options ExecCGI
+    SetHandler cgi-script
+&lt;/Directory&gt;
     </pre>
 
 
