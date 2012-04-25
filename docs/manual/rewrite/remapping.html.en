@@ -148,18 +148,18 @@ RewriteRule    ^<strong>/foo</strong>\.html$  <strong>bar</strong>.html  [<stron
       to the new server, but you might also consider using the Redirect
       or RedirectMatch directive.</p>
 
-<pre class="prettyprint lang-config"><strong>With mod_rewrite</strong>
+<pre class="prettyprint lang-config"><strong>#With mod_rewrite</strong>
 RewriteEngine on
 RewriteRule   ^/docs/(.+)  http://new.example.com/docs/$1  [R,L]
 </pre>
 
 
-<pre class="prettyprint lang-config"><strong>With RedirectMatch</strong>
+<pre class="prettyprint lang-config"><strong>#With RedirectMatch</strong>
 RedirectMatch ^/docs/(.*) http://new.example.com/docs/$1
 </pre>
 
 
-<pre class="prettyprint lang-config"><strong>With Redirect</strong>
+<pre class="prettyprint lang-config"><strong>#With Redirect</strong>
 Redirect /docs/ http://new.example.com/docs/
 </pre>
 
