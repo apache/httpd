@@ -60,6 +60,8 @@ pre.lang-config{
     border: none;
 }
 
+.lang-config .tag { color: #821; font-weight: bold }  /* a markup tag name */
+
 
 
 /* Highlighting style for C source code */
@@ -76,7 +78,7 @@ pre.lang-c{
 .lang-c .str { color: #009606 } /* string content */
 .lang-c .kwd { color: #00C; font-weight: bold }  /* a keyword */
 .lang-c .typ { color: #808 }  /* a type name */
-
+.lang-c .tag { color: #248 }  /* a markup tag name */
 
 
 /* Highlighting style for Lua source code */

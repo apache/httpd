@@ -887,7 +887,7 @@ var REGEXP_PRECEDER_PATTERN = '(?:^^\\.?|[+-]|[!=]=?=?|\\#|%=?|&&?=?|\\(|\\*=?|[
     fallthroughStylePatterns.push(
         // TODO(mikesamuel): recognize non-latin letters and numerals in idents
         [PR_LITERAL,     /^@[a-z_$][a-z_$@0-9]*|NULL/i, null],
-        
+        [PR_TAG,     /^Directory|Location|VirtualHost|If|Else|ElseIf|Proxy|LoadBalancer/i, null],
         [PR_TYPE,        /^(?:[@_]?[A-Z]+[a-z][A-Za-z_$@0-9]*|\w+_(t|req)\b)/, null],
         [PR_TAG,     /^apr_[a-z_0-9]+|ap_[a-z_0-9]+/i, null],
         [PR_PLAIN,       /^[a-z_$][a-z_$@0-9]*/i, null],
@@ -1266,7 +1266,6 @@ var REGEXP_PRECEDER_PATTERN = '(?:^^\\.?|[+-]|[!=]=?=?|\\#|%=?|&&?=?|\\(|\\*=?|[
           'hashComments': true,
           'cStyleComments': true,
           'types': C_TYPES,
-          'functions': "apr_[a-z_]+,ap_rputs"
         }), ['c', 'cc', 'cpp', 'cxx', 'cyc', 'm']);
   registerLangHandler(sourceDecorator({
           'keywords': 'null,true,false'
