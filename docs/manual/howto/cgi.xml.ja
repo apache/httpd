@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 545841:1174747 (outdated) -->
+<!-- English Revision: 545841:1330165 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -235,11 +235,11 @@
       というファイルに保存し、それを <code>cgi-bin</code>
       ディレクトリに置いてください。</p>
 
-      <example>
-        #!/usr/bin/perl<br />
-        print "Content-type: text/html\n\n";<br />
-        print "Hello, World.";
-      </example>
+      <highlight language="perl">
+#!/usr/bin/perl<br />
+print "Content-type: text/html\n\n";<br />
+print "Hello, World.";
+      </highlight>
 
       <p>Perl に精通していなくても、
       何が起こるかを理解することはできるでしょう。1 行目は、
@@ -463,15 +463,13 @@
       <a href="../env.html">あなた自身の環境変数を加える</a>ための、
       多くの異なる方法を用意してします。</p>
 
-      <example>
-        #!/usr/bin/perl<br />
-        print "Content-type: text/html\n\n";<br />
-        foreach $key (keys %ENV) {<br />
-        <indent>
-          print "$key --&gt; $ENV{$key}&lt;br&gt;";<br />
-        </indent>
-        }
-      </example>
+      <highlight language="perl">
+#!/usr/bin/perl
+print "Content-type: text/html\n\n";
+foreach $key (keys %ENV) {
+  print "$key --&gt; $ENV{$key}&lt;br&gt;";
+}
+      </highlight>
     </section>
 
     <section id="stdin">

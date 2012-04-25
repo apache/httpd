@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1174747 -->
+<!-- English Revision: 1174747:1330165 (outdated) -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -255,11 +255,11 @@
       <code>premier.pl</code>, et placez le dans votre r&eacute;pertoire
       <code>cgi-bin</code>.</p>
 
-      <example>
-        #!/usr/bin/perl<br />
-        print "Content-type: text/html\n\n";<br />
-        print "Bonjour tout le monde . . .";
-      </example>
+      <highlight language="perl">
+#!/usr/bin/perl
+print "Content-type: text/html\n\n";
+print "Bonjour tout le monde . . .";
+      </highlight>
 
       <p>M&ecirc;me si Perl ne vous est pas familier, vous devriez &ecirc;tre
       capable de comprendre le fonctionnement de ce programme. La
@@ -531,15 +531,13 @@
       variables d'environnement</a> aux variables de base fournies par
       d&eacute;faut.</p>
 
-      <example>
-        #!/usr/bin/perl<br />
-        print "Content-type: text/html\n\n";<br />
-        foreach $key (keys %ENV) {<br />
-        <indent>
-          print "$key --&gt; $ENV{$key}&lt;br&gt;";<br />
-        </indent>
-        }
-      </example>
+      <highlight language="perl">
+#!/usr/bin/perl
+print "Content-type: text/html\n\n";
+foreach $key (keys %ENV) {
+  print "$key --&gt; $ENV{$key}&lt;br&gt;";
+}
+      </highlight>
     </section>
 
     <section id="stdin">

@@ -93,7 +93,9 @@ gestionnaire.</p>
 gestionnaire, plut&ocirc;t que de simplement &eacute;valuer le corps d'un script dans
 le style de CGI. Une fonction de gestionnaire se pr&eacute;sente comme suit :</p>
 
-<example><title>example.lua</title><pre>
+
+<highlight language="lua">
+<strong>example.lua</strong>
 -- exemple de gestionnaire
 
 require "string"
@@ -119,7 +121,7 @@ function handle(r)
         r:puts("unknown HTTP method " .. r.method)
     end
 end
-</pre></example>
+</highlight>
 
 <p>
 Ce gestionnaire se contente d'afficher les arguments cod&eacute;s d'un uri ou
@@ -151,7 +153,8 @@ code d'&eacute;tat HTTP ou des valeurs OK, DONE, ou DECLINED,
 que vous pouvez &eacute;crire dans lua sous la forme <code>apache2.OK</code>,
 <code>apache2.DONE</code>, ou <code>apache2.DECLINED</code>.</p>
 
-<example><title>translate_name.lua</title><pre>
+<highlight language="lua">
+<strong>translate_name.lua</strong>
 -- exemple d'accroche qui r&eacute;&eacute;crit un URI en chemin du syst&egrave;me de
 fichiers.
 
@@ -165,9 +168,10 @@ function translate_name(r)
     -- on ne g&egrave;re pas cette URL et on donne sa chance &agrave; un autre module
     return apache2.DECLINED
 end
-</pre></example>
+</highlight>
 
-<example><title>translate_name2.lua</title><pre>
+<highlight language="lua">
+<strong>translate_name2.lua</strong>
 --[[ exemple d'accroche qui r&eacute;&eacute;crit un URI vers un autre URI. Il renvoie
 	un apache2.DECLINED pour permettre &agrave; un autre interpr&eacute;teur d'URL de
 	travailler sur la substitution, y compris l'accroche translate_name
@@ -186,7 +190,7 @@ function translate_name(r)
     end
     return apache2.DECLINED
 end
-</pre></example>
+</highlight>
 </section>
 
 <section id="datastructures"><title>Structures de donn&eacute;es</title>
@@ -372,7 +376,7 @@ end
 
 <section id="logging"><title>Fonctions de journalisation</title>
 
-<example>
+<highlight language="lua">
 	-- exemples de messages de journalisation
 	r:trace1("Ceci est un message de journalisation de niveau
 	trace") -- les niveaux valides vont de trace1 &agrave; trace8 <br />
@@ -384,7 +388,7 @@ end
         r:alert("Ceci est un message de journalisation de niveau alert")<br />
         r:crit("Ceci est un message de journalisation de niveau crit")<br />
         r:emerg("Ceci est un message de journalisation de niveau emerg")<br />
-</example>
+</highlight>
 
 </section>
 
@@ -601,7 +605,9 @@ version 2.3.15 du serveur HTTP Apache.</compatibility>
 <example><pre>
 # httpd.conf
 LuaHookTranslateName /scripts/conf/hooks.lua silly_mapper
-
+</pre></example>
+ 
+<highlight language="lua">
 -- /scripts/conf/hooks.lua --
 require "apache2"
 function silly_mapper(r)
@@ -612,7 +618,7 @@ function silly_mapper(r)
         return apache2.DECLINED
     end
 end
-</pre></example>
+</highlight>
 
    <note><title>Contexte</title><p>Cette directive ne peut &ecirc;tre
    utilis&eacute;e ni &agrave; l'int&eacute;rieur d'une section <directive type="section"
@@ -701,7 +707,7 @@ traitement de la requ&ecirc;te. Cette directive peut s'utiliser pour
 impl&eacute;menter une v&eacute;rification arbitraire de l'authentification et de
 l'autorisation. Voici un exemple tr&egrave;s simple :
 </p>
-<example><pre>
+<highlight language="lua">
 require 'apache2'
 
 -- fonction d'accroche authcheck fictive
@@ -734,7 +740,7 @@ function authcheck_hook(r)
    end
    return apache2.OK
 end
-</pre></example>
+</highlight>
 <note><title>Ordonnancement</title><p>Les arguments optionnels
    "early" ou "late" permettent de contr&ocirc;ler le moment auquel ce script
    s'ex&eacute;cute par rapport aux autres modules.</p></note>
