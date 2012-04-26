@@ -143,16 +143,16 @@ RewriteRule    ^<strong>/foo</strong>\.html$  <strong>bar</strong>.html  [<stron
       to the new server, but you might also consider using the Redirect
       or RedirectMatch directive.</p>
 
-<highlight language="config"><strong>#With mod_rewrite</strong>
+<highlight language="config">#With mod_rewrite
 RewriteEngine on
 RewriteRule   ^/docs/(.+)  http://new.example.com/docs/$1  [R,L]
 </highlight>
 
-<highlight language="config"><strong>#With RedirectMatch</strong>
+<highlight language="config">#With RedirectMatch
 RedirectMatch ^/docs/(.*) http://new.example.com/docs/$1
 </highlight>
 
-<highlight language="config"><strong>#With Redirect</strong>
+<highlight language="config">#With Redirect
 Redirect /docs/ http://new.example.com/docs/
 </highlight>
     </dd>
