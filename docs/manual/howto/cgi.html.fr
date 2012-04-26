@@ -245,11 +245,12 @@
       <code>premier.pl</code>, et placez le dans votre répertoire
       <code>cgi-bin</code>.</p>
 
-      <div class="example"><p><code>
-        #!/usr/bin/perl<br />
-        print "Content-type: text/html\n\n";<br />
-        print "Bonjour tout le monde . . .";
-      </code></p></div>
+      <pre class="prettyprint lang-perl">
+#!/usr/bin/perl
+print "Content-type: text/html\n\n";
+print "Bonjour tout le monde . . .";
+      </pre>
+
 
       <p>Même si Perl ne vous est pas familier, vous devriez être
       capable de comprendre le fonctionnement de ce programme. La
@@ -518,15 +519,14 @@
       variables d'environnement</a> aux variables de base fournies par
       défaut.</p>
 
-      <div class="example"><p><code>
-        #!/usr/bin/perl<br />
-        print "Content-type: text/html\n\n";<br />
-        foreach $key (keys %ENV) {<br />
-        <span class="indent">
-          print "$key --&gt; $ENV{$key}&lt;br&gt;";<br />
-        </span>
-        }
-      </code></p></div>
+      <pre class="prettyprint lang-perl">
+#!/usr/bin/perl
+print "Content-type: text/html\n\n";
+foreach $key (keys %ENV) {
+  print "$key --&gt; $ENV{$key}&lt;br&gt;";
+}
+      </pre>
+
     
 
     <h3><a name="stdin" id="stdin">STDIN et STDOUT</a></h3>
