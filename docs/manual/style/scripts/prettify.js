@@ -1135,7 +1135,10 @@ var REGEXP_PRECEDER_PATTERN = '(?:^^\\.?|[+-]|[!=]=?=?|\\#|%=?|&&?=?|\\(|\\*=?|[
     }
     try {
       var decoration = null;
+      var X = 0;
       while (spanIndex < nSpans) {
+        X = X + 1;
+        if (X > 1000) { break; }
         var spanStart = spans[spanIndex];
         var spanEnd = spans[spanIndex + 2] || sourceLength;
   
