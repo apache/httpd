@@ -33,27 +33,23 @@ configuration</description>
     <p>To configure <module>mod_info</module>, add the following to your
     <code>httpd.conf</code> file.</p>
 
-    <example>
-      &lt;Location /server-info&gt;<br />
-      <indent>
-        SetHandler server-info<br />
-      </indent>
-      &lt;/Location&gt;
-    </example>
+    <highlight language="config">
+&lt;Location /server-info&gt;
+    SetHandler server-info
+&lt;/Location&gt;
+    </highlight>
 
     <p>You may wish to use <module>mod_access</module> inside the
     <directive type="section" module="core">Location</directive>
     directive to limit access to your server configuration
     information:</p>
 
-    <example>
-      &lt;Location /server-info&gt;<br />
-      <indent>
-        SetHandler server-info<br />
-        Require host example.com<br />
-      </indent>
-      &lt;/Location&gt;
-    </example>
+    <highlight language="config">
+&lt;Location /server-info&gt;
+    SetHandler server-info
+    Require host example.com
+&lt;/Location&gt;
+    </highlight>
 
     <p>Once configured, the server information is obtained by
     accessing <code>http://your.host.example.com/server-info</code></p>
@@ -76,16 +72,16 @@ configuration</description>
     to limit access to your server configuration information.</p>
 
     <example><title>Access control</title>
-      &lt;Location /server-info&gt;<br />
-      <indent>
-        SetHandler server-info<br />
-        Order allow,deny<br />
-        # Allow access from server itself<br />
-        Allow from 127.0.0.1<br />
-        # Additionally, allow access from local workstation<br />
-        Allow from 192.168.1.17<br />
-      </indent>
-      &lt;/Location&gt;
+    <highlight language="config">
+&lt;Location /server-info&gt;
+    SetHandler server-info
+    Order allow,deny
+    # Allow access from server itself
+    Allow from 127.0.0.1
+    # Additionally, allow access from local workstation
+    Allow from 192.168.1.17
+&lt;/Location&gt;
+      </highlight>
     </example>
 </section>
 
@@ -165,13 +161,11 @@ information displayed by the server-info handler</description>
     HTML interpreted, <strong>Additional Information</strong> for
     the module <var>module-name</var>. Example:</p>
 
-    <example>
-      AddModuleInfo mod_deflate.c 'See &lt;a \<br />
-      <indent>
-        href="http://www.apache.org/docs/&httpd.docs;/mod/mod_deflate.html"&gt;\<br />
-        http://www.apache.org/docs/&httpd.docs;/mod/mod_deflate.html&lt;/a&gt;'
-      </indent>
-    </example>
+    <highlight language="config">
+AddModuleInfo mod_deflate.c 'See &lt;a \
+    href="http://www.apache.org/docs/&httpd.docs;/mod/mod_deflate.html"&gt;\
+    http://www.apache.org/docs/&httpd.docs;/mod/mod_deflate.html&lt;/a&gt;'
+    </highlight>
 </usage>
 
 </directivesynopsis>

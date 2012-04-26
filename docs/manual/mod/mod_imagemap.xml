@@ -40,11 +40,11 @@
     <p>The following directive will activate files ending with
     <code>.map</code> as imagemap files:</p>
 
-    <example>AddHandler imap-file map</example>
+    <highlight language="config">AddHandler imap-file map</highlight>
 
     <p>Note that the following is still supported:</p>
 
-    <example>AddType application/x-httpd-imap map</example>
+    <highlight language="config">AddType application/x-httpd-imap map</highlight>
 
     <p>However, we are trying to phase out "magic MIME types" so we
     are deprecating this method.</p>
