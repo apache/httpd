@@ -149,27 +149,24 @@
 
 <section id="sampleconf"><title>Sample Configuration</title>
     <example><title>Sample httpd.conf</title>
-      #<br />
-      # Sample Cache Configuration<br />
-      #<br />
-      LoadModule cache_module modules/mod_cache.so<br />
-      <br />
-      &lt;IfModule mod_cache.c&gt;<br />
-      <indent>
-        LoadModule cache_disk_module modules/mod_cache_disk.so<br />
-        &lt;IfModule mod_cache_disk.c&gt;<br />
-        <indent>
-          CacheRoot c:/cacheroot<br />
-          CacheEnable disk  /<br />
-          CacheDirLevels 5<br />
-          CacheDirLength 3<br />
-        </indent>
-        &lt;/IfModule&gt; <br />
-        <br />
-        # When acting as a proxy, don't cache the list of security updates<br />
-        CacheDisable http://security.update.server/update-list/<br />
-      </indent>
-      &lt;/IfModule&gt;
+    <highlight language="config">
+#
+# Sample Cache Configuration
+#
+LoadModule cache_module modules/mod_cache.so
+&lt;IfModule mod_cache.c&gt;
+    LoadModule cache_disk_module modules/mod_cache_disk.so
+    &lt;IfModule mod_cache_disk.c&gt;
+        CacheRoot c:/cacheroot
+        CacheEnable disk  /
+        CacheDirLevels 5
+        CacheDirLength 3
+    &lt;/IfModule&gt;
+    
+    # When acting as a proxy, don't cache the list of security updates
+    CacheDisable http://security.update.server/update-list/
+&lt;/IfModule&gt;
+      </highlight>
     </example>
 </section>
 
@@ -223,16 +220,16 @@
   <section>
     <title>Example configuration</title>
     <example><title>Enabling the cache lock</title>
-      #<br />
-      # Enable the cache lock<br />
-      #<br />
-      &lt;IfModule mod_cache.c&gt;<br />
-      <indent>
-        CacheLock on<br />
-        CacheLockPath /tmp/mod_cache-lock<br />
-        CacheLockMaxAge 5<br />
-      </indent>
-      &lt;/IfModule&gt;
+    <highlight language="config">
+#
+# Enable the cache lock
+#
+&lt;IfModule mod_cache.c&gt;
+    CacheLock on
+    CacheLockPath /tmp/mod_cache-lock
+    CacheLockMaxAge 5
+&lt;/IfModule&gt;
+      </highlight>
     </example>
   </section>
 </section>
@@ -266,33 +263,33 @@
   place the <strong>CACHE</strong> filter before the <strong>DEFLATE</strong>
   filter as in the example below:</p>
 
-  <example>
-    # Cache content before optional compression<br />
-    CacheQuickHandler off<br />
-    AddOutputFilterByType CACHE;DEFLATE text/plain<br /><br />
-  </example>
+  <highlight language="config">
+# Cache content before optional compression
+CacheQuickHandler off
+AddOutputFilterByType CACHE;DEFLATE text/plain
+  </highlight>
 
   <p>Another option is to have content cached before personalisation is applied
   by <module>mod_include</module> (or another content processing filter). In this
   example templates containing tags understood by
   <module>mod_include</module> are cached before being parsed:</p>
 
-  <example>
-    # Cache content before mod_include and mod_deflate<br />
-    CacheQuickHandler off<br />
-    AddOutputFilterByType CACHE;INCLUDES;DEFLATE text/html<br /><br />
-  </example>
+  <highlight language="config">
+# Cache content before mod_include and mod_deflate
+CacheQuickHandler off
+AddOutputFilterByType CACHE;INCLUDES;DEFLATE text/html
+  </highlight>
 
   <p>You may place the <strong>CACHE</strong> filter anywhere you wish within the
   filter chain. In this example, content is cached after being parsed by
   <module>mod_include</module>, but before being processed by
   <module>mod_deflate</module>:</p>
 
-  <example>
-    # Cache content between mod_include and mod_deflate<br />
-    CacheQuickHandler off<br />
-    AddOutputFilterByType INCLUDES;CACHE;DEFLATE text/html<br /><br />
-  </example>
+  <highlight language="config">
+# Cache content between mod_include and mod_deflate
+CacheQuickHandler off
+AddOutputFilterByType INCLUDES;CACHE;DEFLATE text/html
+  </highlight>
 
   <note type="warning"><title>Warning:</title>If the location of the
   <strong>CACHE</strong> filter in the filter chain is changed for any reason,
@@ -310,9 +307,9 @@
   <directive module="mod_log_config">LogFormat</directive> directive as
   follows:</p>
 
-  <example>
+  <highlight language="config">
     LogFormat "%{cache-status}e ..."
-  </example>
+  </highlight>
 
   <p>Based on the caching decision made, the reason is also written to the
   subprocess environment under one the following four keys, as appropriate:</p>
@@ -329,12 +326,12 @@
   <p>This makes it possible to support conditional logging of cached requests
   as per the following example:</p>
 
-  <example>
-    CustomLog cached-requests.log common env=cache-hit<br />
-    CustomLog uncached-requests.log common env=cache-miss<br />
-    CustomLog revalidated-requests.log common env=cache-revalidate<br />
-    CustomLog invalidated-requests.log common env=cache-invalidate<br />
-  </example>
+  <highlight language="config">
+CustomLog cached-requests.log common env=cache-hit
+CustomLog uncached-requests.log common env=cache-miss
+CustomLog revalidated-requests.log common env=cache-revalidate
+CustomLog invalidated-requests.log common env=cache-invalidate
+  </highlight>
 
   <p>For module authors, a hook called <var>cache_status</var> is available,
   allowing modules to respond to the caching outcomes above in customised
@@ -379,37 +376,37 @@ manager</description>
     also be used to specify remote sites and proxy protocols which
     caching should be enabled for.</p>
 
-    <example>
-      # Cache content<br />
-      &lt;Location /foo&gt;<br />
-      <indent>
-        CacheEnable disk<br />
-      </indent>
-      &lt;/Location&gt;<br /><br />
-      # Cache regex<br />
-      &lt;LocationMatch foo$&gt;<br />
-      <indent>
-        CacheEnable disk<br />
-      </indent>
-      &lt;/LocationMatch&gt;<br /><br />
-      # Cache proxied url's<br />
-      CacheEnable  disk  /<br /><br />
-      # Cache FTP-proxied url's<br />
-      CacheEnable  disk  ftp://<br /><br />
-      # Cache content from www.example.org<br />
-      CacheEnable  disk  http://www.example.org/<br />
-    </example>
+    <highlight language="config">
+# Cache content
+&lt;Location /foo&gt;
+    CacheEnable disk
+&lt;/Location&gt;
+
+# Cache regex
+&lt;LocationMatch foo$&gt;
+    CacheEnable disk
+&lt;/LocationMatch&gt;
+
+# Cache proxied url's
+CacheEnable  disk  /
+
+# Cache FTP-proxied url's
+CacheEnable  disk  ftp://
+
+# Cache content from www.example.org
+CacheEnable  disk  http://www.example.org/
+    </highlight>
 
     <p>A hostname starting with a <strong>"*"</strong> matches all hostnames with
     that suffix. A hostname starting with <strong>"."</strong> matches all
     hostnames containing the domain components that follow.</p>
 
-    <example>
-      # Match www.example.org, and fooexample.org<br />
-      CacheEnable  disk  http://*example.org/<br />
-      # Match www.example.org, but not fooexample.org<br />
-      CacheEnable  disk  http://.example.org/<br />
-    </example>
+    <highlight language="config">
+# Match www.example.org, and fooexample.org
+CacheEnable  disk  http://*example.org/
+# Match www.example.org, but not fooexample.org
+CacheEnable  disk  http://.example.org/
+    </highlight>
 
     <p> The <code>no-cache</code> environment variable can be set to
     disable caching on a finer grained set of resources in versions
@@ -433,7 +430,9 @@ manager</description>
     <var>url-string</var>.</p>
 
     <example><title>Example</title>
+    <highlight language="config">
       CacheDisable /local_files
+      </highlight>
     </example>
 
     <p>If used in a <directive type="section">Location</directive> directive,
@@ -441,11 +440,11 @@ manager</description>
     is used, caching for the whole location will be disabled.</p>
 
     <example><title>Example</title>
-      &lt;Location /foo&gt;<br />
-      <indent>
-        CacheDisable on<br />
-      </indent>
-      &lt;/Location&gt;<br />
+    <highlight language="config">
+&lt;Location /foo&gt;
+    CacheDisable on
+&lt;/Location&gt;
+      </highlight>
     </example>
 
     <p>The <code>no-cache</code> environment variable can be set to
@@ -472,9 +471,9 @@ manager</description>
     server. Thus, documents will be out of date at most this number of seconds. This maximum
     value is enforced even if an expiry date was supplied with the document.</p>
 
-    <example>
+    <highlight language="config">
       CacheMaxExpire 604800
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -495,9 +494,9 @@ manager</description>
     server. This is only used if no valid expire time was supplied with the document.</p>
 
 
-    <example>
+    <highlight language="config">
       CacheMinExpire 3600
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -518,9 +517,9 @@ manager</description>
     with the document. The value specified with the <directive>CacheMaxExpire</directive>
     directive does <em>not</em> override this setting.</p>
 
-    <example>
+    <highlight language="config">
       CacheDefaultExpire 86400
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -548,9 +547,9 @@ header.</description>
     <directive>CacheDefaultExpire</directive> directive will be used to
     generate an expiration date.</p>
 
-    <example>
+    <highlight language="config">
       CacheIgnoreNoLastMod On
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -571,9 +570,9 @@ header.</description>
     if the request contains no-cache header values.  Resources requiring
     authorization will <em>never</em> be cached.</p>
 
-    <example>
+    <highlight language="config">
       CacheIgnoreCacheControl On
-    </example>
+    </highlight>
 
     <note type="warning"><title>Warning:</title>
        This directive will allow serving from the cache even if the client has
@@ -603,9 +602,9 @@ header.</description>
     view the request is treated as if having no query string when this
     directive is enabled.</p>
 
-    <example>
+    <highlight language="config">
       CacheIgnoreQueryString On
-    </example>
+    </highlight>
 
 </usage>
 </directivesynopsis>
@@ -642,9 +641,9 @@ LastModified date.</description>
     <directive>CacheMaxExpire</directive>, then the latter takes
     precedence.</p>
 
-    <example>
+    <highlight language="config">
       CacheLastModifiedFactor 0.5
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -685,11 +684,15 @@ LastModified date.</description>
     <code>None</code>.</p>
 
     <example><title>Example 1</title>
+    <highlight language="config">
       CacheIgnoreHeaders Set-Cookie
+      </highlight>
     </example>
 
     <example><title>Example 2</title>
+    <highlight language="config">
       CacheIgnoreHeaders None
+      </highlight>
     </example>
 
     <note type="warning"><title>Warning:</title>
@@ -728,11 +731,15 @@ LastModified date.</description>
     identifiers. Otherwise, each identifier is added to the list.</p>
 
     <example><title>Example 1</title>
+    <highlight language="config">
       CacheIgnoreURLSessionIdentifiers jsessionid
+      </highlight>
     </example>
 
     <example><title>Example 2</title>
+    <highlight language="config">
       CacheIgnoreURLSessionIdentifiers None
+      </highlight>
     </example>
 
 </usage>
@@ -759,9 +766,9 @@ LastModified date.</description>
        the origin server, and the response may be fulfilled from cache
        if the backend resource has not changed.</p>
 
-    <example>
+    <highlight language="config">
       CacheStoreExpired On
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -785,9 +792,9 @@ LastModified date.</description>
        private header values.  Resources requiring authorization will
        <em>never</em> be cached.</p>
 
-    <example>
+    <highlight language="config">
       CacheStorePrivate On
-    </example>
+    </highlight>
 
     <note type="warning"><title>Warning:</title>
        This directive will allow caching even if the upstream server has
@@ -819,9 +826,9 @@ LastModified date.</description>
        no-store header values.  Resources requiring authorization will
        <em>never</em> be cached.</p>
 
-    <example>
+    <highlight language="config">
       CacheStoreNoStore On
-    </example>
+    </highlight>
 
     <note type="warning"><title>Warning:</title>
        As described in RFC 2616, the no-store directive is intended to
@@ -850,10 +857,10 @@ LastModified date.</description>
   <p>In a minimal configuration the following directive is all that is needed to
   enable the thundering herd lock in the default system temp directory.</p>
 
-  <example>
-    # Enable cache lock<br />
-    CacheLock on<br /><br />
-  </example>
+  <highlight language="config">
+# Enable cache lock
+CacheLock on
+  </highlight>
 
 </usage>
 </directivesynopsis>
@@ -920,21 +927,21 @@ LastModified date.</description>
     slower than the default, it allows the cache to be used in cases where full
     processing is required, such as when content is subject to authorisation.</p>
 
-    <example>
-      # Run cache as a normal handler<br />
-      CacheQuickHandler off<br /><br />
-    </example>
+    <highlight language="config">
+# Run cache as a normal handler
+CacheQuickHandler off
+    </highlight>
 
     <p>It is also possible, when the quick handler is disabled, for the
     administrator to choose the precise location within the filter chain where
     caching is to be performed, by adding the <strong>CACHE</strong> filter to
     the chain.</p>
 
-    <example>
-      # Cache content before mod_include and mod_deflate<br />
-      CacheQuickHandler off<br />
-      AddOutputFilterByType CACHE;INCLUDES;DEFLATE text/html<br /><br />
-    </example>
+    <highlight language="config">
+# Cache content before mod_include and mod_deflate
+CacheQuickHandler off
+AddOutputFilterByType CACHE;INCLUDES;DEFLATE text/html
+    </highlight>
 
     <p>If the CACHE filter is specified more than once, the last instance will
     apply.</p>
@@ -972,14 +979,14 @@ LastModified date.</description>
       server and was not served from cache.</dd>
   </dl>
 
-  <example>
-    # Enable the X-Cache header<br />
-    CacheHeader on<br />
-  </example>
+  <highlight language="config">
+# Enable the X-Cache header
+CacheHeader on
+  </highlight>
 
-  <example>
-    X-Cache: HIT from localhost<br />
-  </example>
+  <highlight language="config">
+    X-Cache: HIT from localhost
+  </highlight>
 
 </usage>
 </directivesynopsis>
@@ -1012,10 +1019,10 @@ LastModified date.</description>
   is used, this directive must appear within a server or virtual host context, otherwise
   the setting will be ignored.</p>
 
-  <example>
-    # Enable the X-Cache-Detail header<br />
-    CacheDetailHeader on<br />
-  </example>
+  <highlight language="config">
+# Enable the X-Cache-Detail header
+CacheDetailHeader on
+  </highlight>
 
   <example>
     X-Cache-Detail: "conditional cache hit: entity refreshed" from localhost<br />
@@ -1043,10 +1050,10 @@ LastModified date.</description>
   should be cached beneath the same cache key, a new base URL can be specified
   with this directive.</p>
 
-  <example>
-    # Override the base URL of the cache key.<br />
-    CacheKeyBaseURL http://www.example.com/<br />
-  </example>
+  <highlight language="config">
+# Override the base URL of the cache key.
+CacheKeyBaseURL http://www.example.com/
+  </highlight>
 
   <note type="warning">Take care when setting this directive. If two separate virtual
   hosts are accidentally given the same base URL, entries from one virtual host
@@ -1075,10 +1082,10 @@ LastModified date.</description>
   and the raw 5xx responses returned to the client on request, the 5xx response so
   returned to the client will not invalidate the content in the cache.</p>
 
-  <example>
-    # Serve stale data on error.<br />
-    CacheStaleOnError on<br />
-  </example>
+  <highlight language="config">
+# Serve stale data on error.
+CacheStaleOnError on
+  </highlight>
 
 </usage>
 </directivesynopsis>

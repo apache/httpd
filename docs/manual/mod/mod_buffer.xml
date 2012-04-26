@@ -55,7 +55,9 @@
     <directive module="mod_filter">AddOutputFilterByType</directive> directives.</p>
 
       <example><title>Using buffer with mod_include</title>
-        AddOutputFilterByType INCLUDES;BUFFER text/html<br />
+      <highlight language="config">
+        AddOutputFilterByType INCLUDES;BUFFER text/html
+        </highlight>
       </example>
 
     <note type="warning">The buffer filters read the request/response into

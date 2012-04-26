@@ -81,12 +81,12 @@ files</description>
     accessed. Set to "<code>.</code>" to look in the same directory
     as the file:</p>
 
-    <example>MetaDir .</example>
+    <highlight language="config">MetaDir .</highlight>
 
     <p>Or, to set it to a subdirectory of the directory containing the
     files:</p>
 
-    <example>MetaDir .meta</example>
+    <highlight language="config">MetaDir .meta</highlight>
 </usage>
 </directivesynopsis>
 

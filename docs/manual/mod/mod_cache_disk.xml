@@ -89,9 +89,9 @@ stored</description>
     module="mod_cache_disk">CacheDirLength</directive> directives define
     the structure of the directories under the specified root directory.</p>
 
-    <example>
+    <highlight language="config">
       CacheRoot c:/cacheroot
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -167,9 +167,9 @@ cache</description>
     minimum size, in bytes, for a document to be considered for storage
     in the cache.</p>
 
-    <example>
+    <highlight language="config">
       CacheMinFileSize 64
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -190,9 +190,9 @@ cache</description>
     maximum size, in bytes, for a document to be considered for storage in
     the cache.</p>
 
-    <example>
+    <highlight language="config">
       CacheMaxFileSize 64000
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -220,9 +220,9 @@ cache</description>
     <p>This directive only takes effect when the data is being saved to the
     cache, as opposed to data being served from the cache.</p>
 
-    <example>
+    <highlight language="config">
       CacheReadSize 102400
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -254,9 +254,9 @@ cache</description>
     ensure that the server does not buffer excessively should data arrive faster
     than expected.</p>
 
-    <example>
+    <highlight language="config">
       CacheReadTime 1000
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 

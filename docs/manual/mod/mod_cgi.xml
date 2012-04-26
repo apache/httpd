@@ -168,7 +168,9 @@
     </p>
 
     <example><title>Example</title>
+    <highlight language="config">
       ScriptLog logs/cgi_log
+    </highlight>
     </example>
 
     <p>This log will be opened as the user the child processes run
