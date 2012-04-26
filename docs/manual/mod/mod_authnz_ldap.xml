@@ -366,12 +366,12 @@ Require ldap-user "Joe Manager"
     group. Note: Do not surround the group name with quotes.
     For example, assume that the following entry existed in
     the LDAP directory:</p>
-<highlight language="config">
+<example><pre>
 dn: cn=Administrators, o=Example
 objectClass: groupOfUniqueNames
 uniqueMember: cn=Barbara Jenson, o=Example
 uniqueMember: cn=Fred User, o=Example
-</highlight>
+</pre></example>
 
     <p>The following directive would grant access to both Fred and
     Barbara:</p>
@@ -381,7 +381,7 @@ uniqueMember: cn=Fred User, o=Example
     if <directive module="mod_authnz_ldap">AuthLDAPMaxSubGroupDepth</directive>
     is set to a value greater than 0. For example, assume the following entries
     exist in the LDAP directory:</p>
-<highlight language="config">
+<example><pre>
 dn: cn=Employees, o=Example
 objectClass: groupOfUniqueNames
 uniqueMember: cn=Managers, o=Example
@@ -408,7 +408,7 @@ dn: cn=Temporary Employees, o=Example
 objectClass: groupOfUniqueNames
 uniqueMember: cn=Jim Swenson, o=Example
 uniqueMember: cn=Elliot Rhodes, o=Example
-</highlight>
+</pre></example>
 
     <p>The following directives would allow access for Bob Ellis, Tom Jackson,
     Barbara Jensen, Fred User, Allan Jefferson, and Paul Tilley but would not
@@ -690,11 +690,11 @@ AuthLDAPURL ldap://10.0.0.1:3268/?userPrincipalName?sub
     authentication to it is a matter of adding the following
     directives to <em>every</em> <code>.htaccess</code> file
     that gets created in the web</p>
-<highlight language="config"><pre>
+<highlight language="config">
 AuthLDAPURL            "the url"
 AuthGroupFile <em>mygroupfile</em>
 Require group <em>mygroupfile</em>
-</pre></highlight>
+</highlight>
 
 <section id="howitworks"><title>How It Works</title>
 

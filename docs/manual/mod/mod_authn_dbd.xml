@@ -72,7 +72,7 @@ to cache credentials and take most of the load off the database.</p>
 <title>Configuration Example</title>
 <p>This simple example shows use of this module in the context of
 the Authentication and DBD frameworks.</p>
-<highlight language="config"><pre>
+<highlight language="config">
 # mod_dbd configuration
 # UPDATED to include authentication cacheing
 DBDriver pgsql
@@ -100,10 +100,9 @@ DBDExptime 300
   Require valid-user
 
   # mod_authn_dbd SQL query to authenticate a user
-  AuthDBDUserPWQuery \
-    "SELECT password FROM authn WHERE user = %s"
+  AuthDBDUserPWQuery "SELECT password FROM authn WHERE user = %s"
 &lt;/Directory&gt;
-</pre></highlight>
+</highlight>
 </section>
 
 <section id="exposed">
@@ -136,10 +135,9 @@ configuration required in some web applications.
     will be passed as a single string parameter when the SQL query is
     executed.  It may be referenced within the query statement using
     a <code>%s</code> format specifier.</p>
-    <highlight language="config"><pre>
-AuthDBDUserPWQuery \
-  "SELECT password FROM authn WHERE user = %s"
-</pre></highlight>
+    <highlight language="config">
+AuthDBDUserPWQuery "SELECT password FROM authn WHERE user = %s"
+</highlight>
     <p>The first column value of the first row returned by the query
     statement should be a string containing the encrypted password.
     Subsequent rows will be ignored.  If no rows are returned, the user
@@ -171,10 +169,9 @@ AuthDBDUserPWQuery \
     The user's ID and the realm, in that order, will be passed as string
     parameters when the SQL query is executed.  They may be referenced
     within the query statement using <code>%s</code> format specifiers.</p>
-    <highlight language="config"><pre>
-AuthDBDUserRealmQuery \
-  "SELECT password FROM authn WHERE user = %s AND realm = %s"
-</pre></highlight>
+    <highlight language="config">
+AuthDBDUserRealmQuery "SELECT password FROM authn WHERE user = %s AND realm = %s"
+</highlight>
     <p>The first column value of the first row returned by the query
     statement should be a string containing the encrypted password.
     Subsequent rows will be ignored.  If no rows are returned, the user

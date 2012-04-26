@@ -69,7 +69,7 @@ the load on backends</description>
     </ol>
     <p>A simple usage example to accelerate <module>mod_authn_dbd</module>
     using dbm as a cache engine:</p>
-    <highlight language="config"><pre>
+    <highlight language="config">
 &lt;Directory /usr/www/myhost/private&gt;
     AuthType Basic
     AuthName "Cached Authentication Example"
@@ -80,7 +80,7 @@ the load on backends</description>
     AuthnCacheSOCache dbm
     Require valid-user
 &lt;/Directory&gt;
-    </pre></highlight>
+    </highlight>
 </section>
 
 <section id="dev"><title>Cacheing with custom modules</title>
@@ -143,7 +143,7 @@ the load on backends</description>
     or by a custom provider <var>myprovider</var>, but leave those looked
     up by lightweight providers like file or dbm lookup alone:</p>
     <highlight language="config">
-        AuthnCacheProvideFor dbd myprovider
+AuthnCacheProvideFor dbd myprovider
     </highlight>
 </usage>
 </directivesynopsis>
