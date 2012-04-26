@@ -45,7 +45,7 @@
     <p>To enable <module>mod_dav</module>, add the following to a
     container in your <code>httpd.conf</code> file:</p>
 
-    <example>Dav On</example>
+    <highlight language="config">Dav On</highlight>
 
     <p>This enables the DAV file system provider, which is implemented
     by the <module>mod_dav_fs</module> module. Therefore, that module
@@ -57,9 +57,9 @@
     file using the <directive module="mod_dav_fs">DavLockDB</directive>
     directive:</p>
 
-    <example>
+    <highlight language="config">
       DavLockDB /usr/local/apache2/var/DavLock
-    </example>
+    </highlight>
 
     <p>The directory containing the lock database file must be
     writable by the <directive module="mod_unixd">User</directive>
@@ -77,24 +77,22 @@
     requests.</p>
 
     <example><title>Full Example</title>
-      DavLockDB /usr/local/apache2/var/DavLock<br />
-      <br />
-      &lt;Directory /usr/local/apache2/htdocs/foo&gt;<br />
-      <indent>
-        Require all granted<br />
-        Dav On<br />
-        <br />
-        AuthType Basic<br />
-        AuthName DAV<br />
-        AuthUserFile user.passwd<br />
-        <br />
-        &lt;LimitExcept GET POST OPTIONS&gt;<br />
-        <indent>
-          Require user admin<br />
-        </indent>
-        &lt;/LimitExcept&gt;<br />
-      </indent>
-      &lt;/Directory&gt;<br />
+    <highlight language="config">
+DavLockDB /usr/local/apache2/var/DavLock
+
+&lt;Directory /usr/local/apache2/htdocs/foo&gt;
+    Require all granted
+    Dav On
+
+    AuthType Basic
+    AuthName DAV
+    AuthUserFile user.passwd
+
+    &lt;LimitExcept GET POST OPTIONS&gt;
+        Require user admin
+    &lt;/LimitExcept&gt;
+&lt;/Directory&gt;
+      </highlight>
     </example>
 
 </section>
@@ -150,16 +148,14 @@
     will run the script, and one of which will allow it to be
     downloaded and manipulated with DAV.</p>
 
-<example>
-Alias /phparea /home/gstein/php_files<br />
-Alias /php-source /home/gstein/php_files<br />
+<highlight language="config">
+Alias /phparea /home/gstein/php_files
+Alias /php-source /home/gstein/php_files
 &lt;Location /php-source&gt;
-<indent>
-    DAV On<br />
-    ForceType text/plain<br />
-</indent>
+    DAV On
+    ForceType text/plain
 &lt;/Location&gt;
-</example>
+</highlight>
 
     <p>With this setup, <code>http://example.com/phparea</code> can be
     used to access the output of the PHP scripts, and
@@ -178,13 +174,11 @@ Alias /php-source /home/gstein/php_files<br />
     <p>Use the <directive>Dav</directive> directive to enable the
     WebDAV HTTP methods for the given container:</p>
 
-    <example>
-      &lt;Location /foo&gt;<br />
-      <indent>
-        Dav On<br />
-      </indent>
-      &lt;/Location&gt;
-    </example>
+    <highlight language="config">
+&lt;Location /foo&gt;
+    Dav On
+&lt;/Location&gt;
+    </highlight>
 
     <p>The value <code>On</code> is actually an alias for the default
     provider <code>filesystem</code> which is served by the <module
@@ -223,11 +217,11 @@ a DAV resource</description>
     the lock due to network latency.</p>
 
     <example><title>Example</title>
-      &lt;Location /MSWord&gt;<br />
-      <indent>
-        DavMinTimeout 600<br />
-      </indent>
-      &lt;/Location&gt;
+    <highlight language="config">
+&lt;Location /MSWord&gt;
+    DavMinTimeout 600
+&lt;/Location&gt;
+    </highlight>
     </example>
 </usage>
 </directivesynopsis>

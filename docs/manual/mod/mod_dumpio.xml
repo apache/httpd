@@ -50,9 +50,9 @@
     needs to be configured to <directive
     module="core">LogLevel</directive> <code>trace7</code>:
     </p>
-    <example>
+    <highlight language="config">
       LogLevel dumpio:trace7
-    </example>
+    </highlight>
 </section>
 
 <directivesynopsis>
@@ -69,7 +69,9 @@ later.</compatibility>
     <p>Enable dumping of all input.</p>
 
     <example><title>Example</title>
+    <highlight language="config">
       DumpIOInput On
+      </highlight>
     </example>
 </usage>
 
@@ -89,7 +91,9 @@ later.</compatibility>
     <p>Enable dumping of all output.</p>
 
     <example><title>Example</title>
+    <highlight language="config">
       DumpIOOutput On
+      </highlight>
     </example>
 </usage>
 

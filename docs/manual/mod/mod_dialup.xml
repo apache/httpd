@@ -36,11 +36,11 @@ the document to validate. -->
 by the various old modem standards. So, you can browse your site with a 56k
 V.92 modem, by adding something like this:</p>
 
-<example>
-&lt;Location /mysite&gt;<br />
-ModemStandard V.92<br />
+<highlight language="config">
+&lt;Location /mysite&gt;
+    ModemStandard V.92
 &lt;/Location&gt;
-</example>
+</highlight>
 
 <p>Previously to do bandwidth rate limiting modules would have to block an entire
 thread, for each client, and insert sleeps to slow the bandwidth down.
@@ -58,11 +58,11 @@ once the timer hits.  From there the handler can continue to send data to the cl
 <usage>
 <p>Specify what modem standard you wish to simulate.</p>
 
-<example>
-&lt;Location /mysite&gt;<br />
-ModemStandard V.26bis<br />
+<highlight language="config">
+&lt;Location /mysite&gt;
+    ModemStandard V.26bis
 &lt;/Location&gt;
-</example>
+</highlight>
 
 </usage>
 

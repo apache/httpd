@@ -72,7 +72,9 @@
     locks.</p>
 
     <example><title>Example</title>
+    <highlight language="config">
       DavGenericLockDB var/DavLock
+      </highlight>
     </example>
 
     <p>The directory containing the lock database file must be
