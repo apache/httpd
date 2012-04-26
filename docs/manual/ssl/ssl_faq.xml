@@ -172,11 +172,11 @@ relative hyperlinks?</a></li>
     fully-qualified hyperlinks (because you have to change the URL
     scheme).  Using <module>mod_rewrite</module> however, you can
     manipulate relative hyperlinks, to achieve the same effect.</p>
-    <example>
-    RewriteEngine on<br />
-    RewriteRule   ^/(.*)_SSL$   https://%{SERVER_NAME}/$1 [R,L]<br />
-    RewriteRule   ^/(.*)_NOSSL$ http://%{SERVER_NAME}/$1  [R,L]
-    </example>
+    <highlight language="config">
+RewriteEngine on
+RewriteRule   ^/(.*)_SSL$   https://%{SERVER_NAME}/$1 [R,L]
+RewriteRule   ^/(.*)_NOSSL$ http://%{SERVER_NAME}/$1  [R,L]
+    </highlight>
 
     <p>This rewrite ruleset lets you use hyperlinks of the form
     <code>&lt;a href="document.html_SSL"&gt;</code>, to switch to HTTPS
@@ -253,10 +253,10 @@ Certificate for testing purposes?</title>
                         -keyout server.key</strong></code><br />
         These can be used as follows in your <code>httpd.conf</code>
         file:
-        <pre>
-             SSLCertificateFile    /path/to/this/server.crt
-             SSLCertificateKeyFile /path/to/this/server.key
-        </pre>
+        <highlight language="config">
+SSLCertificateFile    /path/to/this/server.crt
+SSLCertificateKeyFile /path/to/this/server.key
+        </highlight>
     </li>
     <li>It is important that you are aware that this
         <code>server.key</code> does <em>not</em> have any passphrase.
@@ -333,10 +333,10 @@ Certificate for testing purposes?</title>
     <li>You should now have two files: <code>server.key</code> and
     <code>server.crt</code>. These can be used as follows in your
     <code>httpd.conf</code> file:
-       <pre>
-       SSLCertificateFile    /path/to/this/server.crt
-       SSLCertificateKeyFile /path/to/this/server.key
-       </pre>
+       <highlight language="config">
+SSLCertificateFile    /path/to/this/server.crt
+SSLCertificateKeyFile /path/to/this/server.key
+       </highlight>
        The <code>server.csr</code> file is no longer needed.
     </li>
 
@@ -650,9 +650,9 @@ Virtual Hosting to identify different SSL virtual hosts?</title>
     you must make sure to put the non-SSL port number on the NameVirtualHost
     directive, e.g.</p>
 
-    <example>
+    <highlight language="config">
       NameVirtualHost 192.168.1.1:80
-    </example>
+    </highlight>
 
     <p>Other workaround solutions include: </p>
 
@@ -702,11 +702,11 @@ Explorer (MSIE)?</title>
     keep-alive connections or send the SSL close notify messages to MSIE clients.
     This can be done by using the following directive in your SSL-aware
     virtual host section:</p>
-    <example>
-    SetEnvIf User-Agent "MSIE [2-5]" \<br />
-             nokeepalive ssl-unclean-shutdown \<br />
-             downgrade-1.0 force-response-1.0
-    </example>
+    <highlight language="config">
+SetEnvIf User-Agent "MSIE [2-5]" \
+         nokeepalive ssl-unclean-shutdown \
+         downgrade-1.0 force-response-1.0
+    </highlight>
     <p>Further, some MSIE versions have problems with particular ciphers.
     Unfortunately, it is not possible to implement a MSIE-specific
     workaround for this, because the ciphers are needed as early as the
