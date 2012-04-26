@@ -109,7 +109,7 @@ AcceptFilter https data
        filters.</p>
 
 </usage>
-<seealso><directive>Protocol</directive></seealso>
+<seealso><directive module="core">Protocol</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -3406,7 +3406,7 @@ On Windows from Apache 2.3.3 and later.</compatibility>
 
     <p>You can also specify the protocol using the <directive module="mpm_common">Listen</directive> directive.</p>
 </usage>
-<seealso><directive>AcceptFilter</directive></seealso>
+<seealso><directive module="core">AcceptFilter</directive></seealso>
 <seealso><directive module="mpm_common">Listen</directive></seealso>
 </directivesynopsis>
 
@@ -3865,7 +3865,7 @@ header</description>
     <dl>
       <dt><code>ServerTokens Full</code> (or not specified)</dt>
 
-      <dd>Server sends (<em>e.g.</em>): <code>Server: Apache/2.4.1
+      <dd>Server sends (<em>e.g.</em>): <code>Server: Apache/2.4.2
       (Unix) PHP/4.2.2 MyMod/1.2</code></dd>
 
       <dt><code>ServerTokens Prod[uctOnly]</code></dt>
@@ -3886,11 +3886,11 @@ header</description>
       <dt><code>ServerTokens Min[imal]</code></dt>
 
       <dd>Server sends (<em>e.g.</em>): <code>Server:
-      Apache/2.4.1</code></dd>
+      Apache/2.4.2</code></dd>
 
       <dt><code>ServerTokens OS</code></dt>
 
-      <dd>Server sends (<em>e.g.</em>): <code>Server: Apache/2.4.1
+      <dd>Server sends (<em>e.g.</em>): <code>Server: Apache/2.4.2
       (Unix)</code></dd>
 
     </dl>
