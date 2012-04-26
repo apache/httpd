@@ -39,17 +39,15 @@ before progressing to the advanced techniques.</p>
 <p>Your SSL configuration will need to contain, at minimum, the
 following directives.</p>
 
-<example>
-   Listen 443<br />
-   &lt;VirtualHost *:443&gt;<br />
-   <indent>
-        ServerName www.example.com<br />
-        SSLEngine on<br />
-        SSLCertificateFile /path/to/www.example.com.cert<br />
-        SSLCertificateKeyFile /path/to/www.example.com.key<br />
-   </indent>
-   &lt;/VirtualHost&gt;
-</example>
+<highlight language="config">
+Listen 443
+&lt;VirtualHost *:443&gt;
+    ServerName www.example.com
+    SSLEngine on
+    SSLCertificateFile /path/to/www.example.com.cert
+    SSLCertificateKeyFile /path/to/www.example.com.key
+&lt;/VirtualHost&gt;
+</highlight>
 
 </section>
 
@@ -65,18 +63,18 @@ requires a strong cipher for access to a particular URL?</a></li>
 <title>How can I create an SSL server which accepts strong encryption
 only?</title>
     <p>The following enables only the strongest ciphers:</p>
-    <example><title>httpd.conf</title>
-      SSLCipherSuite HIGH:!aNULL:!MD5<br />
-    </example>
+    <highlight language="config">
+      SSLCipherSuite HIGH:!aNULL:!MD5
+    </highlight>
 
     <p>While with the following configuration you specify a preference
     for specific speed-optimized ciphers (which will be selected by
     mod_ssl, provided that they are supported by the client):</p>
 
-    <example><title>httpd.conf</title>
-      SSLCipherSuite RC4-SHA:AES128-SHA:HIGH:!aNULL:!MD5<br />
-      SSLHonorCipherOrder on
-    </example>
+    <highlight language="config">
+SSLCipherSuite RC4-SHA:AES128-SHA:HIGH:!aNULL:!MD5
+SSLHonorCipherOrder on
+    </highlight>
 </section>
 
 <section id="strongurl">
@@ -90,16 +88,16 @@ URL?</title>
     blocks, to give a per-directory solution, and can automatically force
     a renegotiation of the SSL parameters to meet the new configuration.
     This can be done as follows:</p>
-    <example>
-      # be liberal in general<br />
-      SSLCipherSuite ALL:!aNULL:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP:+eNULL<br />
-      <br />
-      &lt;Location /strong/area&gt;<br />
-      # but https://hostname/strong/area/ and below<br />
-      # requires strong ciphers<br />
-      SSLCipherSuite HIGH:!aNULL:!MD5<br />
-      &lt;/Location&gt;
-    </example>
+    <highlight language="config">
+# be liberal in general
+SSLCipherSuite ALL:!aNULL:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP:+eNULL
+
+&lt;Location /strong/area&gt;
+# but https://hostname/strong/area/ and below
+# requires strong ciphers
+SSLCipherSuite HIGH:!aNULL:!MD5
+&lt;/Location&gt;
+    </highlight>
 </section>
 </section>
 <!-- /ciphersuites -->
@@ -125,13 +123,13 @@ Intranet website, for clients coming from the Internet?</a></li>
     need to do is to create client certificates signed by your own CA
     certificate (<code>ca.crt</code>) and then verify the clients against this
     certificate.</p>
-    <example><title>httpd.conf</title>
-      # require a client certificate which has to be directly<br />
-      # signed by our CA certificate in ca.crt<br />
-      SSLVerifyClient require<br />
-      SSLVerifyDepth 1<br />
-      SSLCACertificateFile conf/ssl.crt/ca.crt
-    </example>
+    <highlight language="config">
+# require a client certificate which has to be directly
+# signed by our CA certificate in ca.crt
+SSLVerifyClient require
+SSLVerifyDepth 1
+SSLCACertificateFile conf/ssl.crt/ca.crt
+    </highlight>
 </section>
 
 <section id="arbitraryclients">
@@ -142,15 +140,15 @@ Intranet website, for clients coming from the Internet?</a></li>
     you can use the per-directory reconfiguration features of
     <module>mod_ssl</module>:</p>
 
-    <example><title>httpd.conf</title>
-    SSLVerifyClient none<br />
-    SSLCACertificateFile conf/ssl.crt/ca.crt<br />
-    <br />
-    &lt;Location /secure/area&gt;<br />
-    SSLVerifyClient require<br />
-    SSLVerifyDepth 1<br />
-    &lt;/Location&gt;<br />
-    </example>
+    <highlight language="config">
+SSLVerifyClient none
+SSLCACertificateFile conf/ssl.crt/ca.crt
+
+&lt;Location /secure/area&gt;
+SSLVerifyClient require
+SSLVerifyDepth 1
+&lt;/Location&gt;
+    </highlight>
 </section>
 
 <section id="certauthenticate">
@@ -169,23 +167,22 @@ Intranet website, for clients coming from the Internet?</a></li>
     you should establish a password database containing <em>all</em>
     clients allowed, as follows:</p>
 
-    <example><title>httpd.conf</title><pre>
+    <highlight language="config">
 SSLVerifyClient      none
 &lt;Directory /usr/local/apache2/htdocs/secure/area&gt;
-
-SSLVerifyClient      require
-SSLVerifyDepth       5
-SSLCACertificateFile conf/ssl.crt/ca.crt
-SSLCACertificatePath conf/ssl.crt
-SSLOptions           +FakeBasicAuth
-SSLRequireSSL
-AuthName             "Snake Oil Authentication"
-AuthType             Basic
-AuthBasicProvider    file
-AuthUserFile         /usr/local/apache2/conf/httpd.passwd
-Require              valid-user
-&lt;/Directory&gt;</pre>
-    </example>
+    SSLVerifyClient      require
+    SSLVerifyDepth       5
+    SSLCACertificateFile conf/ssl.crt/ca.crt
+    SSLCACertificatePath conf/ssl.crt
+    SSLOptions           +FakeBasicAuth
+    SSLRequireSSL
+    AuthName             "Snake Oil Authentication"
+    AuthType             Basic
+    AuthBasicProvider    file
+    AuthUserFile         /usr/local/apache2/conf/httpd.passwd
+    Require              valid-user
+&lt;/Directory&gt;
+    </highlight>
 
     <p>The password used in this example is the DES encrypted string "password".
     See the <directive module="mod_ssl">SSLOptions</directive> docs for more
@@ -202,10 +199,9 @@ Require              valid-user
     >SSLRequire</directive>, as follows:</p>
 
 
-    <example><title>httpd.conf</title><pre>
+    <highlight language="config">
 SSLVerifyClient      none
 &lt;Directory /usr/local/apache2/htdocs/secure/area&gt;
-
   SSLVerifyClient      require
   SSLVerifyDepth       5
   SSLCACertificateFile conf/ssl.crt/ca.crt
@@ -214,8 +210,8 @@ SSLVerifyClient      none
   SSLRequireSSL
   SSLRequire       %{SSL_CLIENT_S_DN_O}  eq "Snake Oil, Ltd." \
                and %{SSL_CLIENT_S_DN_OU} in {"Staff", "CA", "Dev"}
-&lt;/Directory&gt;</pre>
-    </example>
+&lt;/Directory&gt;
+    </highlight>
 </section>
 
 <section id="intranet">
@@ -230,50 +226,50 @@ plain HTTP access for clients on the Intranet.</title>
    This configuration should remain outside of your HTTPS virtual host, so
    that it applies to both HTTPS and HTTP.</p>
 
-    <example><title>httpd.conf</title><pre>
+    <highlight language="config">
 SSLCACertificateFile conf/ssl.crt/company-ca.crt
 
 &lt;Directory /usr/local/apache2/htdocs&gt;
-#   Outside the subarea only Intranet access is granted
-Order                deny,allow
-Deny                 from all
-Allow                from 192.168.1.0/24
+    #   Outside the subarea only Intranet access is granted
+    Order                deny,allow
+    Deny                 from all
+    Allow                from 192.168.1.0/24
 &lt;/Directory&gt;
 
 &lt;Directory /usr/local/apache2/htdocs/subarea&gt;
-#   Inside the subarea any Intranet access is allowed
-#   but from the Internet only HTTPS + Strong-Cipher + Password
-#   or the alternative HTTPS + Strong-Cipher + Client-Certificate
-
-#   If HTTPS is used, make sure a strong cipher is used.
-#   Additionally allow client certs as alternative to basic auth.
-SSLVerifyClient      optional
-SSLVerifyDepth       1
-SSLOptions           +FakeBasicAuth +StrictRequire
-SSLRequire           %{SSL_CIPHER_USEKEYSIZE} &gt;= 128
-
-#   Force clients from the Internet to use HTTPS
-RewriteEngine        on
-RewriteCond          %{REMOTE_ADDR} !^192\.168\.1\.[0-9]+$
-RewriteCond          %{HTTPS} !=on
-RewriteRule          . - [F]
-
-#   Allow Network Access and/or Basic Auth
-Satisfy              any
-
-#   Network Access Control
-Order                deny,allow
-Deny                 from all
-Allow                192.168.1.0/24
-
-#   HTTP Basic Authentication
-AuthType             basic
-AuthName             "Protected Intranet Area"
-AuthBasicProvider    file
-AuthUserFile         conf/protected.passwd
-Require              valid-user
-&lt;/Directory&gt;</pre>
-    </example>
+    #   Inside the subarea any Intranet access is allowed
+    #   but from the Internet only HTTPS + Strong-Cipher + Password
+    #   or the alternative HTTPS + Strong-Cipher + Client-Certificate
+    
+    #   If HTTPS is used, make sure a strong cipher is used.
+    #   Additionally allow client certs as alternative to basic auth.
+    SSLVerifyClient      optional
+    SSLVerifyDepth       1
+    SSLOptions           +FakeBasicAuth +StrictRequire
+    SSLRequire           %{SSL_CIPHER_USEKEYSIZE} &gt;= 128
+    
+    #   Force clients from the Internet to use HTTPS
+    RewriteEngine        on
+    RewriteCond          %{REMOTE_ADDR} !^192\.168\.1\.[0-9]+$
+    RewriteCond          %{HTTPS} !=on
+    RewriteRule          . - [F]
+    
+    #   Allow Network Access and/or Basic Auth
+    Satisfy              any
+    
+    #   Network Access Control
+    Order                deny,allow
+    Deny                 from all
+    Allow                192.168.1.0/24
+    
+    #   HTTP Basic Authentication
+    AuthType             basic
+    AuthName             "Protected Intranet Area"
+    AuthBasicProvider    file
+    AuthUserFile         conf/protected.passwd
+    Require              valid-user
+&lt;/Directory&gt;
+    </highlight>
 </section>
 </section>
 <!-- /access control -->
