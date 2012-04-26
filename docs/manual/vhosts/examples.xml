@@ -53,33 +53,23 @@
           <code>hosts</code> entries.</p>
     </note>
 
-    <example>
-    <title>Server configuration</title>
+    <highlight language="config">
+# Ensure that Apache listens on port 80
+Listen 80
+&lt;VirtualHost *:80&gt;
+    DocumentRoot /www/example1
+    ServerName www.example.com
+  
+    # Other directives here
+&lt;/VirtualHost&gt;
 
-    # Ensure that Apache listens on port 80<br />
-    Listen 80<br />
-    <br />
-    <br />
-    &lt;VirtualHost *:80&gt;<br />
-    <indent>
-      DocumentRoot /www/example1<br />
-      ServerName www.example.com<br />
-      <br />
-      # Other directives here<br />
-      <br />
-    </indent>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost *:80&gt;<br />
-    <indent>
-      DocumentRoot /www/example2<br />
-      ServerName www.example.org<br />
-      <br />
-      # Other directives here<br />
-      <br />
-    </indent>
-    &lt;/VirtualHost&gt;
-    </example>
+&lt;VirtualHost *:80&gt;
+    DocumentRoot /www/example2
+    ServerName www.example.org
+
+    # Other directives here
+&lt;/VirtualHost&gt;
+    </highlight>
 
     <p>The asterisks match all addresses, so the main server serves no
     requests. Due to the fact that the virtual host with
@@ -126,35 +116,27 @@
     will serve the "main" server, <code>server.example.com</code> and on the
     other (<code>172.20.30.50</code>), we will serve two or more virtual hosts.</p>
 
-    <example>
-    <title>Server configuration</title>
+    <highlight language="config">
+Listen 80
 
-    Listen 80<br />
-    <br />
-    # This is the "main" server running on 172.20.30.40<br />
-    ServerName server.example.com<br />
-    DocumentRoot /www/mainserver<br />
-    <br />
-    &lt;VirtualHost 172.20.30.50&gt;<br />
-    <indent>
-        DocumentRoot /www/example1<br />
-        ServerName www.example.com<br />
-        <br />
-        # Other directives here ...<br />
-        <br />
-    </indent>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.50&gt;<br />
-    <indent>
-        DocumentRoot /www/example2<br />
-        ServerName www.example.org<br />
-        <br />
-        # Other directives here ...<br />
-        <br />
-    </indent>
-    &lt;/VirtualHost&gt;
-    </example>
+# This is the "main" server running on 172.20.30.40
+ServerName server.example.com
+DocumentRoot /www/mainserver
+
+&lt;VirtualHost 172.20.30.50&gt;
+    DocumentRoot /www/example1
+    ServerName www.example.com
+    
+    # Other directives here ...
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.50&gt;
+    DocumentRoot /www/example2
+    ServerName www.example.org
+    
+    # Other directives here ...
+&lt;/VirtualHost&gt;
+    </highlight>
 
     <p>Any request to an address other than <code>172.20.30.50</code> will be
     served from the main server. A request to <code>172.20.30.50</code> with an
@@ -179,18 +161,13 @@
     with the same content, with just one <code>VirtualHost</code>
     section.</p>
 
-    <example>
-    <title>Server configuration</title>
-
-    <br />
-    &lt;VirtualHost 192.168.1.1 172.20.30.40&gt;<br />
-    <indent>
-        DocumentRoot /www/server1<br />
-        ServerName server.example.com<br />
-        ServerAlias server<br />
-    </indent>
-    &lt;/VirtualHost&gt;
-    </example>
+    <highlight language="config">
+&lt;VirtualHost 192.168.1.1 172.20.30.40&gt;
+    DocumentRoot /www/server1
+    ServerName server.example.com
+    ServerAlias server
+&lt;/VirtualHost&gt;
+    </highlight>
 
     <p>Now requests from both networks will be served from the same
     <code>VirtualHost</code>.</p>
@@ -216,40 +193,30 @@
     takes place after the best matching IP address and port combination
     is determined.</p>
 
-    <example>
-    <title>Server configuration</title>
+    <highlight language="config">
+Listen 80
+Listen 8080
 
-    Listen 80<br />
-    Listen 8080<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40:80&gt;<br />
-    <indent>
-        ServerName www.example.com<br />
-        DocumentRoot /www/domain-80<br />
-    </indent>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40:8080&gt;<br />
-    <indent>
-        ServerName www.example.com<br />
-        DocumentRoot /www/domain-8080<br />
-    </indent>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40:80&gt;<br />
-    <indent>
-        ServerName www.example.org<br />
-        DocumentRoot /www/otherdomain-80<br />
-    </indent>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40:8080&gt;<br />
-    <indent>
-        ServerName www.example.org<br />
-        DocumentRoot /www/otherdomain-8080<br />
-    </indent>
-    &lt;/VirtualHost&gt;
-    </example>
+&lt;VirtualHost 172.20.30.40:80&gt;
+    ServerName www.example.com
+    DocumentRoot /www/domain-80
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.40:8080&gt;
+    ServerName www.example.com
+    DocumentRoot /www/domain-8080
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.40:80&gt;
+    ServerName www.example.org
+    DocumentRoot /www/otherdomain-80
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.40:8080&gt;
+    ServerName www.example.org
+    DocumentRoot /www/otherdomain-8080
+&lt;/VirtualHost&gt;
+    </highlight>
 
   </section>
 
@@ -260,25 +227,19 @@
     <code>www.example.com</code> and <code>www.example.org</code>
     respectively.</p>
 
-    <example>
-    <title>Server configuration</title>
+    <highlight language="config">
+Listen 80
 
-    Listen 80<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40&gt;<br />
-    <indent>
-        DocumentRoot /www/example1<br />
-        ServerName www.example.com<br />
-    </indent>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.50&gt;<br />
-    <indent>
-        DocumentRoot /www/example2<br />
-        ServerName www.example.org<br />
-    </indent>
-    &lt;/VirtualHost&gt;
-    </example>
+&lt;VirtualHost 172.20.30.40&gt;
+    DocumentRoot /www/example1
+    ServerName www.example.com
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.50&gt;
+    DocumentRoot /www/example2
+    ServerName www.example.org
+&lt;/VirtualHost&gt;
+    </highlight>
 
     <p>Requests for any address not specified in one of the
     <code>&lt;VirtualHost&gt;</code> directives (such as
@@ -296,42 +257,32 @@
     respectively. In each case, we want to run hosts on ports 80 and
     8080.</p>
 
-    <example>
-    <title>Server configuration</title>
+    <highlight language="config">
+Listen 172.20.30.40:80
+Listen 172.20.30.40:8080
+Listen 172.20.30.50:80
+Listen 172.20.30.50:8080
 
-    Listen 172.20.30.40:80<br />
-    Listen 172.20.30.40:8080<br />
-    Listen 172.20.30.50:80<br />
-    Listen 172.20.30.50:8080<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40:80&gt;<br />
-    <indent>
-        DocumentRoot /www/example1-80<br />
-        ServerName www.example.com<br />
-    </indent>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40:8080&gt;<br />
-    <indent>
-        DocumentRoot /www/example1-8080<br />
-        ServerName www.example.com<br />
-    </indent>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.50:80&gt;<br />
-    <indent>
-        DocumentRoot /www/example2-80<br />
-        ServerName www.example.org<br />
-    </indent>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.50:8080&gt;<br />
-    <indent>
-        DocumentRoot /www/example2-8080<br />
-        ServerName www.example.org<br />
-    </indent>
-    &lt;/VirtualHost&gt;
-    </example>
+&lt;VirtualHost 172.20.30.40:80&gt;
+    DocumentRoot /www/example1-80
+    ServerName www.example.com
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.40:8080&gt;
+    DocumentRoot /www/example1-8080
+    ServerName www.example.com
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.50:80&gt;
+    DocumentRoot /www/example2-80
+    ServerName www.example.org
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.50:8080&gt;
+    DocumentRoot /www/example2-8080
+    ServerName www.example.org
+&lt;/VirtualHost&gt;
+    </highlight>
 
   </section>
 
@@ -341,46 +292,34 @@
     <p>Any address mentioned in the argument to a virtualhost that never
     appears in another virtual host is a strictly IP-based virtual host.</p>
 
-    <example>
-    <title>Server configuration</title>
+    <highlight language="config">
+Listen 80
+&lt;VirtualHost 172.20.30.40&gt;
+    DocumentRoot /www/example1
+    ServerName www.example.com
+&lt;/VirtualHost&gt;
 
-    Listen 80<br />
-    &lt;VirtualHost 172.20.30.40&gt;<br />
-    <indent>
-        DocumentRoot /www/example1<br />
-        ServerName www.example.com<br />
-    </indent>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40&gt;<br />
-    <indent>
-        DocumentRoot /www/example2<br />
-        ServerName www.example.org<br />
-    </indent>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40&gt;<br />
-    <indent>
-        DocumentRoot /www/example3<br />
-        ServerName www.example.net<br />
-    </indent>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    # IP-based<br />
-    &lt;VirtualHost 172.20.30.50&gt;<br />
-    <indent>
-        DocumentRoot /www/example4<br />
-        ServerName www.example.edu<br />
-    </indent>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.60&gt;<br />
-    <indent>
-        DocumentRoot /www/example5<br />
-        ServerName www.example.gov<br />
-    </indent>
-    &lt;/VirtualHost&gt;
-    </example>
+&lt;VirtualHost 172.20.30.40&gt;
+    DocumentRoot /www/example2
+    ServerName www.example.org
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.40&gt;
+    DocumentRoot /www/example3
+    ServerName www.example.net
+&lt;/VirtualHost&gt;
+
+# IP-based
+&lt;VirtualHost 172.20.30.50&gt;
+    DocumentRoot /www/example4
+    ServerName www.example.edu
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.60&gt;
+    DocumentRoot /www/example5
+    ServerName www.example.gov
+&lt;/VirtualHost&gt;
+    </highlight>
 
   </section>
 
@@ -395,14 +334,14 @@
     used so that the desired hostname is passed through, in case we are
     proxying multiple hostnames to a single machine.</p>
 
-    <example>
-    &lt;VirtualHost *:*&gt;<br />
-        ProxyPreserveHost On<br />
-        ProxyPass / http://192.168.111.2/<br />
-        ProxyPassReverse / http://192.168.111.2/<br />
-        ServerName hostname.example.com<br />
-    &lt;/VirtualHost&gt;
-    </example>
+    <highlight language="config">
+&lt;VirtualHost *:*&gt;
+    ProxyPreserveHost On
+    ProxyPass / http://192.168.111.2/
+    ProxyPassReverse / http://192.168.111.2/
+    ServerName hostname.example.com
+&lt;/VirtualHost&gt;
+    </highlight>
 
     </section>
 
@@ -416,15 +355,11 @@
     port, <em>i.e.</em>, an address/port combination that is not used for
     any other virtual host.</p>
 
-    <example>
-    <title>Server configuration</title>
-
-    &lt;VirtualHost _default_:*&gt;<br />
-    <indent>
-        DocumentRoot /www/default<br />
-    </indent>
-    &lt;/VirtualHost&gt;
-    </example>
+    <highlight language="config">
+&lt;VirtualHost _default_:*&gt;
+    DocumentRoot /www/default
+&lt;/VirtualHost&gt;
+    </highlight>
 
     <p>Using such a default vhost with a wildcard port effectively prevents
     any request going to the main server.</p>
@@ -446,23 +381,17 @@
     <p>Same as setup 1, but the server listens on several ports and we want
     to use a second <code>_default_</code> vhost for port 80.</p>
 
-    <example>
-    <title>Server configuration</title>
+    <highlight language="config">
+&lt;VirtualHost _default_:80&gt;
+    DocumentRoot /www/default80
+    # ...
+&lt;/VirtualHost&gt;
 
-    &lt;VirtualHost _default_:80&gt;<br />
-    <indent>
-        DocumentRoot /www/default80<br />
-        # ...<br />
-    </indent>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost _default_:*&gt;<br />
-    <indent>
-        DocumentRoot /www/default<br />
-        # ...<br />
-    </indent>
-    &lt;/VirtualHost&gt;
-    </example>
+&lt;VirtualHost _default_:*&gt;
+    DocumentRoot /www/default
+    # ...
+&lt;/VirtualHost&gt;
+    </highlight>
 
     <p>The default vhost for port 80 (which <em>must</em> appear before any
     default vhost with a wildcard port) catches all requests that were sent
@@ -476,14 +405,12 @@
     <p>We want to have a default vhost for port 80, but no other default
     vhosts.</p>
 
-    <example>
-    <title>Server configuration</title>
-
-    &lt;VirtualHost _default_:80&gt;<br />
-    DocumentRoot /www/default<br />
-    ...<br />
-    &lt;/VirtualHost&gt;
-    </example>
+    <highlight language="config">
+&lt;VirtualHost _default_:80&gt;
+DocumentRoot /www/default
+...
+&lt;/VirtualHost&gt;
+    </highlight>
 
     <p>A request to an unspecified address on port 80 is served from the
     default vhost. Any other request to an unspecified address and port is
@@ -511,30 +438,24 @@
     (<code>172.20.30.50</code>) to the <code>VirtualHost</code>
     directive.</p>
 
-    <example>
-    <title>Server configuration</title>
+    <highlight language="config">
+Listen 80
+ServerName www.example.com
+DocumentRoot /www/example1
 
-    Listen 80<br />
-    ServerName www.example.com<br />
-    DocumentRoot /www/example1<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40 172.20.30.50&gt;<br />
-    <indent>
-        DocumentRoot /www/example2<br />
-        ServerName www.example.org<br />
-        # ...<br />
-    </indent>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40&gt;<br />
-    <indent>
-        DocumentRoot /www/example3<br />
-        ServerName www.example.net<br />
-        ServerAlias *.example.net<br />
-        # ...<br />
-    </indent>
-    &lt;/VirtualHost&gt;
-    </example>
+&lt;VirtualHost 172.20.30.40 172.20.30.50&gt;
+    DocumentRoot /www/example2
+    ServerName www.example.org
+    # ...
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.40&gt;
+    DocumentRoot /www/example3
+    ServerName www.example.net
+    ServerAlias *.example.net
+    # ...
+&lt;/VirtualHost&gt;
+    </highlight>
 
     <p>The vhost can now be accessed through the new address (as an
     IP-based vhost) and through the old address (as a name-based
@@ -554,41 +475,33 @@
     containing links with an URL prefix to the name-based virtual
     hosts.</p>
 
-    <example>
-    <title>Server configuration</title>
+    <highlight language="config">
+&lt;VirtualHost 172.20.30.40&gt;
+    # primary vhost
+    DocumentRoot /www/subdomain
+    RewriteEngine On
+    RewriteRule . /www/subdomain/index.html
+    # ...
+&lt;/VirtualHost&gt;
 
-    &lt;VirtualHost 172.20.30.40&gt;<br />
-    <indent>
-        # primary vhost<br />
-        DocumentRoot /www/subdomain<br />
-        RewriteEngine On<br />
-        RewriteRule . /www/subdomain/index.html<br />
-        # ...<br />
-    </indent>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40&gt;<br />
-    DocumentRoot /www/subdomain/sub1<br />
-    <indent>
-        ServerName www.sub1.domain.tld<br />
-        ServerPath /sub1/<br />
-        RewriteEngine On<br />
-        RewriteRule ^(/sub1/.*) /www/subdomain$1<br />
-        # ...<br />
-    </indent>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40&gt;<br />
-    <indent>
-        DocumentRoot /www/subdomain/sub2<br />
-        ServerName www.sub2.domain.tld<br />
-        ServerPath /sub2/<br />
-        RewriteEngine On<br />
-        RewriteRule ^(/sub2/.*) /www/subdomain$1<br />
-        # ...<br />
-    </indent>
-    &lt;/VirtualHost&gt;
-    </example>
+&lt;VirtualHost 172.20.30.40&gt;
+DocumentRoot /www/subdomain/sub1
+    ServerName www.sub1.domain.tld
+    ServerPath /sub1/
+    RewriteEngine On
+    RewriteRule ^(/sub1/.*) /www/subdomain$1
+    # ...
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.40&gt;
+    DocumentRoot /www/subdomain/sub2
+    ServerName www.sub2.domain.tld
+    ServerPath /sub2/
+    RewriteEngine On
+    RewriteRule ^(/sub2/.*) /www/subdomain$1
+    # ...
+&lt;/VirtualHost&gt;
+    </highlight>
 
     <p>Due to the <directive module="core">ServerPath</directive>
     directive a request to the URL
