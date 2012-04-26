@@ -4253,7 +4253,7 @@ hostname or IP address</description>
 
     </ul>
 
-    <highlight language="config"><strong>Example</strong>
+    <highlight language="config">
 &lt;VirtualHost 10.1.2.3:80&gt;
   ServerAdmin webmaster@host.example.com
   DocumentRoot /www/docs/host.example.com
