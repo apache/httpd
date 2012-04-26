@@ -954,7 +954,7 @@ and automatically <em>added</em> after any relative (not starting with a
 slash or protocol name) substitution encounters the end of a rule set.
 See the <directive module="mod_rewrite">RewriteBase</directive>
 directive for more information regarding what prefix will be added back to
-relative substitions.</li>
+relative substitutions.</li>
 
 <li> If you wish to match against the full URL-path in a per-directory
 (htaccess) RewriteRule, use the <code>%{REQUEST_URI}</code> variable in
@@ -1044,7 +1044,7 @@ cannot use <code>$N</code> in the substitution string!
 
       </dl>
 
-      <p>In addition to plain text, the <em>Substition</em> string can include</p>
+      <p>In addition to plain text, the <em>Substitution</em> string can include</p>
 
       <ol>
         <li>back-references (<code>$N</code>) to the RewriteRule
