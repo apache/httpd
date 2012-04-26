@@ -99,18 +99,18 @@
 
     <p>To activate the example module, include a block similar to
     the following in your <code>httpd.conf</code> file:</p>
-<example>
-   &lt;Location /example-info&gt;<br />
-       SetHandler example-handler<br />
-   &lt;/Location&gt;
-</example>
+<highlight language="config">
+&lt;Location /example-info&gt;
+   SetHandler example-handler
+&lt;/Location&gt;
+</highlight>
 
     <p>As an alternative, you can put the following into a <a
     href="core.html#accessfilename"><code>.htaccess</code></a> file
     and then request the file "test.example" from that location:</p>
-<example>
+<highlight language="config">
    AddHandler example-handler .example
-</example>
+</highlight>
 
     <p>After reloading/restarting your server, you should be able
     to browse to this location and see the brief display mentioned

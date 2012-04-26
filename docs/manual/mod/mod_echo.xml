@@ -52,7 +52,9 @@ later.</compatibility>
     disables the echo server.</p>
 
     <example><title>Example</title>
+    <highlight language="config">
       ProtocolEcho On
+    </highlight>
     </example>
 </usage>
 

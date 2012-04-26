@@ -62,12 +62,10 @@ criteria</description>
     <directive module="mod_expires">ExpiresByType</directive> directives
     can also be defined in a more readable syntax of the form:</p>
 
-    <example>
-      ExpiresDefault "<var>base</var> [plus <var>num</var> <var>type</var>]
-        [<var>num</var> <var>type</var>] ..."<br />
-      ExpiresByType type/encoding "<var>base</var> [plus <var>num</var> <var>type</var>]
-        [<var>num</var> <var>type</var>] ..."
-    </example>
+    <highlight language="config">
+ExpiresDefault "<var>base</var>  [plus <var>num</var> <var>type</var>] [<var>num</var> <var>type</var>] ..."
+ExpiresByType type/encoding "<var>base</var>  [plus <var>num</var> <var>type</var>] [<var>num</var> <var>type</var>] ..."
+    </highlight>
 
     <p>where <var>base</var> is one of:</p>
 
@@ -98,21 +96,19 @@ criteria</description>
     make documents expire 1 month after being accessed, by
     default:</p>
 
-    <example>
-      ExpiresDefault "access plus 1 month"<br />
-      ExpiresDefault "access plus 4 weeks"<br />
-      ExpiresDefault "access plus 30 days"
-    </example>
+    <highlight language="config">
+ExpiresDefault "access plus 1 month"
+ExpiresDefault "access plus 4 weeks"
+ExpiresDefault "access plus 30 days"
+    </highlight>
 
     <p>The expiry time can be fine-tuned by adding several
     '<var>num</var> <var>type</var>' clauses:</p>
 
-    <example>
-      ExpiresByType text/html "access plus 1 month 15
-      days 2 hours"<br />
-      ExpiresByType image/gif "modification plus 5 hours 3
-      minutes"
-    </example>
+    <highlight language="config">
+ExpiresByType text/html "access plus 1 month 15 days 2 hours"
+ExpiresByType image/gif "modification plus 5 hours 3 minutes"
+    </highlight>
 
     <p>Note that if you use a modification date based setting, the
     Expires header will <strong>not</strong> be added to content
@@ -193,13 +189,15 @@ by MIME type</description>
     repeatedly within a relatively short timespan).</p>
 
     <example><title>Example:</title>
-      # enable expirations<br />
-      ExpiresActive On<br />
-      # expire GIF images after a month in the client's cache<br />
-      ExpiresByType image/gif A2592000<br />
-      # HTML documents are good for a week from the<br />
-      # time they were changed<br />
-      ExpiresByType text/html M604800
+    <highlight language="config">
+# enable expirations
+ExpiresActive On
+# expire GIF images after a month in the client's cache
+ExpiresByType image/gif A2592000
+# HTML documents are good for a week from the
+# time they were changed
+ExpiresByType text/html M604800
+      </highlight>
     </example>
 
     <p>Note that this directive only has effect if
