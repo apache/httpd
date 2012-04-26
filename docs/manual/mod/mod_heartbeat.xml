@@ -82,9 +82,9 @@ multicast address to which <module>mod_heartbeat</module> will send
 status information. This address will usually correspond to a configured
  <directive module="mod_heartmonitor">HeartbeatListen</directive> on a
 frontend proxy system.</p>
-<example>
+<highlight language="config">
 HeartbeatAddress 239.0.0.1:27999
-</example>    
+</highlight>    
 </usage>
 </directivesynopsis>
 

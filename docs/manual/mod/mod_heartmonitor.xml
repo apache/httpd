@@ -66,9 +66,9 @@ use <module>mod_slotmem_shm</module>.</p>
     module="mod_heartbeat">HeartbeatAddress</directive> on an origin server.
     </p>
     
-    <example>
+    <highlight language="config">
     HeartbeatListen 239.0.0.1:27999
-    </example>
+    </highlight>
 
     <p> This module is inactive until this directive is used.</p>
 </usage>

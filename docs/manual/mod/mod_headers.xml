@@ -47,10 +47,10 @@ headers</description>
     href="../sections.html#mergin">configuration sections</a>. These
     two directives have a different effect if reversed:</p>
 
-    <example>
-      RequestHeader append MirrorID "mirror 12"<br />
-      RequestHeader unset MirrorID
-    </example>
+    <highlight language="config">
+RequestHeader append MirrorID "mirror 12"
+RequestHeader unset MirrorID
+    </highlight>
 
     <p>This way round, the <code>MirrorID</code> header is not set. If
     reversed, the MirrorID header is set to "mirror 12".</p>
@@ -84,9 +84,9 @@ headers</description>
         Copy all request headers that begin with "TS" to the
         response headers:
 
-        <example>
+        <highlight language="config">
           Header echo ^TS
-        </example>
+        </highlight>
       </li>
 
       <li>
@@ -96,9 +96,9 @@ headers</description>
         the client to intuit load on the server or in isolating
         bottlenecks between the client and the server.
 
-        <example>
+        <highlight language="config">
           Header set MyHeader "%D %t"
-        </example>
+        </highlight>
 
         <p>results in this header being added to the response:</p>
 
@@ -110,10 +110,9 @@ headers</description>
       <li>
         Say hello to Joe
 
-        <example>
-          Header set MyHeader "Hello Joe. It took %D microseconds \<br />
-          for Apache to serve this request."
-        </example>
+        <highlight language="config">
+Header set MyHeader "Hello Joe. It took %D microseconds for Apache to serve this request."
+        </highlight>
 
         <p>results in this header being added to the response:</p>
 
@@ -130,10 +129,10 @@ headers</description>
         stimulus. Note that this example requires the services of the
         <module>mod_setenvif</module> module.
 
-        <example>
-          SetEnvIf MyRequestHeader myvalue HAVE_MyRequestHeader<br />
-          Header set MyHeader "%D %t mytext" env=HAVE_MyRequestHeader
-        </example>
+        <highlight language="config">
+SetEnvIf MyRequestHeader myvalue HAVE_MyRequestHeader
+Header set MyHeader "%D %t mytext" env=HAVE_MyRequestHeader
+        </highlight>
 
         <p>If the header <code>MyRequestHeader: myvalue</code> is present on
         the HTTP request, the response will contain the following header:</p>
@@ -149,9 +148,9 @@ headers</description>
         description</a>) by replacing <var>https:</var> with
         <var>http:</var> in the <var>Destination</var> header:
 
-        <example>
+        <highlight language="config">
           RequestHeader edit Destination ^https: http: early
-        </example>
+        </highlight>
       </li>
 
       <li>
@@ -162,11 +161,11 @@ headers</description>
         <code>NO_STORE</code> environment variables all existed for the
         request):
 
-        <example>
-          Header merge Cache-Control no-cache env=CGI<br />
-          Header merge Cache-Control no-cache env=NO_CACHE<br />
-          Header merge Cache-Control no-store env=NO_STORE
-        </example>
+        <highlight language="config">
+Header merge Cache-Control no-cache env=CGI
+Header merge Cache-Control no-cache env=NO_CACHE
+Header merge Cache-Control no-store env=NO_STORE
+        </highlight>
 
         <p>then the response would contain the following header:</p>
 
@@ -183,9 +182,9 @@ headers</description>
       </li>
       <li>
         Set a test cookie if and only if the client didn't send us a cookie
-        <example>
+        <highlight language="config">
           Header set Set-Cookie testcookie "expr=-z %{req:Cookie}"
-        </example>
+        </highlight>
       </li>
     </ol>
 </section>
