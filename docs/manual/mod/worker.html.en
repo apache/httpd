@@ -142,14 +142,15 @@
     <p>A typical configuration of the process-thread controls in
     the <code class="module"><a href="../mod/worker.html">worker</a></code> MPM could look as follows:</p>
 
-    <div class="example"><p><code>
-      ServerLimit         16<br />
-      StartServers         2<br />
-      MaxRequestWorkers         150<br />
-      MinSpareThreads     25<br />
-      MaxSpareThreads     75<br />
-      ThreadsPerChild     25
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+ServerLimit         16
+StartServers         2
+MaxRequestWorkers  150
+MinSpareThreads     25
+MaxSpareThreads     75
+ThreadsPerChild     25
+    </pre>
+
 
     <p>While the parent process is usually started as <code>root</code>
     under Unix in order to bind to port 80, the child processes and threads

@@ -78,38 +78,34 @@
         multiple ldap hosts:
         </p>
 
-        <div class="example"><h3>Example</h3><p><code>
-          &lt;AuthzProviderAlias ldap-group ldap-group-alias1 cn=my-group,o=ctx&gt;<br />
-          <span class="indent">
-             AuthLDAPBindDN cn=youruser,o=ctx<br />
-             AuthLDAPBindPassword yourpassword<br />
-             AuthLDAPURL ldap://ldap.host/o=ctx<br />
-          </span>
-          &lt;/AuthzProviderAlias&gt;<br /><br />
-          &lt;AuthzProviderAlias ldap-group ldap-group-alias2
-           cn=my-other-group,o=dev&gt;<br />
-          <span class="indent">
-             AuthLDAPBindDN cn=yourotheruser,o=dev<br />
-             AuthLDAPBindPassword yourotherpassword<br />
-             AuthLDAPURL ldap://other.ldap.host/o=dev?cn<br />
-          </span>
-          &lt;/AuthzProviderAlias&gt;<br /><br />
+        <pre class="prettyprint lang-config">
+&lt;AuthzProviderAlias ldap-group ldap-group-alias1 cn=my-group,o=ctx&gt;
+    AuthLDAPBindDN cn=youruser,o=ctx
+    AuthLDAPBindPassword yourpassword
+    AuthLDAPURL ldap://ldap.host/o=ctx
+&lt;/AuthzProviderAlias&gt;
 
-          Alias /secure /webpages/secure<br />
-          &lt;Directory /webpages/secure&gt;<br />
-          <span class="indent">
-             Require all granted<br /><br />
+&lt;AuthzProviderAlias ldap-group ldap-group-alias2 cn=my-other-group,o=dev&gt;
+    AuthLDAPBindDN cn=yourotheruser,o=dev
+    AuthLDAPBindPassword yourotherpassword
+    AuthLDAPURL ldap://other.ldap.host/o=dev?cn
+&lt;/AuthzProviderAlias&gt;
 
-             AuthBasicProvider file<br /><br />
+Alias /secure /webpages/secure
+&lt;Directory /webpages/secure&gt;
+    Require all granted
+    
+    AuthBasicProvider file
+    
+    AuthType Basic
+    AuthName LDAP_Protected_Place
+    
+    #implied OR operation
+    Require ldap-group-alias1
+    Require ldap-group-alias2
+&lt;/Directory&gt;
+        </pre>
 
-             AuthType Basic<br />
-             AuthName LDAP_Protected_Place<br /><br />
-
-             #implied OR operation<br />
-             Require ldap-group-alias1<br />
-             Require ldap-group-alias2<br />
-          </span> &lt;/Directory&gt;<br />
-        </code></p></div>
     
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -135,39 +131,28 @@
     not belong to either the <code>temps</code> group or the
     LDAP group <code>Temporary Employees</code>.</p>
 
-    <div class="example"><p><code>
-        &lt;Directory /www/mydocs&gt;
-        <span class="indent">
+    <pre class="prettyprint lang-config">
+&lt;Directory /www/mydocs&gt;
+    &lt;RequireAll&gt;
+        &lt;RequireAny&gt;
+            Require user superadmin
             &lt;RequireAll&gt;
-            <span class="indent">
+                Require group admins
+                Require ldap-group cn=Administrators,o=Airius
                 &lt;RequireAny&gt;
-                <span class="indent">
-                    Require user superadmin<br />
-                    &lt;RequireAll&gt;
-                    <span class="indent">
-                        Require group admins<br />
-                        Require ldap-group cn=Administrators,o=Airius<br />
-                        &lt;RequireAny&gt;
-                        <span class="indent">
-                            Require group sales<br />
-                            Require ldap-attribute dept="sales"
-                        </span>
-                        &lt;/RequireAny&gt;
-                    </span>
-                    &lt;/RequireAll&gt;
-                </span>
-                &lt;/RequireAny&gt;<br />
-                &lt;RequireNone&gt;
-                <span class="indent">
-                    Require group temps<br />
-                    Require ldap-group cn=Temporary Employees,o=Airius
-                </span>
-                &lt;/RequireNone&gt;
-            </span>
+                    Require group sales
+                    Require ldap-attribute dept="sales"
+                &lt;/RequireAny&gt;
             &lt;/RequireAll&gt;
-        </span>
-        &lt;/Directory&gt;
-    </code></p></div>
+        &lt;/RequireAny&gt;
+        &lt;RequireNone&gt;
+            Require group temps
+            Require ldap-group cn=Temporary Employees,o=Airius
+        &lt;/RequireNone&gt;
+    &lt;/RequireAll&gt;
+&lt;/Directory&gt;
+    </pre>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="requiredirectives" id="requiredirectives">The Require Directives</a></h2>
@@ -190,14 +175,13 @@
     <code>User-Agent</code> (browser type), <code>Referer</code>, or
     other HTTP request header fields.</p>
 
-    <div class="example"><h3>Example:</h3><p><code>
-      SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in<br />
-      &lt;Directory /docroot&gt;<br />
-      <span class="indent">
-        Require env let_me_in<br />
-      </span>
-      &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
+&lt;Directory /docroot&gt;
+    Require env let_me_in
+&lt;/Directory&gt;
+    </pre>
+
 
     <p>In this case, browsers with a user-agent string beginning
     with <code>KnockKnock/2.0</code> will be allowed access, and all
@@ -213,13 +197,15 @@
     'granted' or 'denied'.  The following examples will grant or deny
     access to all requests.</p>
 
-    <div class="example"><p><code>
-    Require all granted<br />
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+    Require all granted
+    </pre>
 
-    <div class="example"><p><code>
-    Require all denied<br />
-    </code></p></div>
+
+    <pre class="prettyprint lang-config">
+    Require all denied
+    </pre>
+
 
   
 
@@ -233,20 +219,22 @@
     <p>The following example will only allow GET, HEAD, POST, and OPTIONS
     requests:</p>
 
-    <div class="example"><p><code>
-        Require method GET POST OPTIONS<br />
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+        Require method GET POST OPTIONS
+    </pre>
+
 
     <p>The following example will allow GET, HEAD, POST, and OPTIONS
     requests without authentication, and require a valid user for all other
     methods:</p>
 
-    <div class="example"><p><code>
-        &lt;RequireAny&gt;<br />
-        &nbsp;Require method GET POST OPTIONS<br />
-        &nbsp;Require valid-user<br />
-        &lt;/RequireAny&gt;<br />
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;RequireAny&gt;
+    &nbsp;Require method GET POST OPTIONS
+    &nbsp;Require valid-user
+&lt;/RequireAny&gt;
+    </pre>
+
 
   
 
@@ -255,9 +243,10 @@
   <p>The <code>expr</code> provider allows to base authorization
   decisions on arbitrary expressions.</p>
 
-    <div class="example"><p><code>
-        Require expr %{TIME_HOUR} &gt;= 9 &amp;&amp; %{TIME_HOUR} &lt;= 17 <br />
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+        Require expr %{TIME_HOUR} &gt;= 9 &amp;&amp; %{TIME_HOUR} &lt;= 17 
+    </pre>
+
 
   <p>The syntax is described in the <a href="../expr.html">ap_expr</a>
   documentation.</p>
@@ -314,30 +303,25 @@ sections.</td></tr>
     preceding sections.  Thus only users belong to the group
     <code>gamma</code> may access <code>/www/docs/ab/gamma</code>.</div>
 
-    <div class="example"><p><code>
-        &lt;Directory /www/docs&gt;
-        <span class="indent">
-            AuthType Basic<br />
-            AuthName Documents<br />
-            AuthBasicProvider file<br />
-            AuthUserFile /usr/local/apache/passwd/passwords<br />
-            Require group alpha
-        </span>
-        &lt;/Directory&gt;<br />
-        <br />
-        &lt;Directory /www/docs/ab&gt;
-        <span class="indent">
-            AuthMerging Or<br />
-            Require group beta
-        </span>
-        &lt;/Directory&gt;<br />
-        <br />
-        &lt;Directory /www/docs/ab/gamma&gt;
-        <span class="indent">
-            Require group gamma
-        </span>
-        &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Directory /www/docs&gt;
+    AuthType Basic
+    AuthName Documents
+    AuthBasicProvider file
+    AuthUserFile /usr/local/apache/passwd/passwords
+    Require group alpha
+&lt;/Directory&gt;
+
+&lt;Directory /www/docs/ab&gt;
+    AuthMerging Or
+    Require group beta
+&lt;/Directory&gt;
+
+&lt;Directory /www/docs/ab/gamma&gt;
+    Require group gamma
+&lt;/Directory&gt;
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -460,14 +444,15 @@ an authorization provider.</td></tr>
     and <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code> (to
     define users and groups) in order to work correctly. Example:</p>
 
-    <div class="example"><p><code>
-       AuthType Basic<br />
-       AuthName "Restricted Resource"<br />
-       AuthBasicProvider file<br />
-       AuthUserFile /web/users<br />
-       AuthGroupFile /web/groups<br />
-       Require group admin
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+AuthType Basic
+AuthName "Restricted Resource"
+AuthBasicProvider file
+AuthUserFile /web/users
+AuthGroupFile /web/groups
+Require group admin
+    </pre>
+
 
     <p>Access controls which are applied in this way are effective for
     <strong>all</strong> methods. <strong>This is what is normally
@@ -489,18 +474,15 @@ an authorization provider.</td></tr>
     and <code>beta</code> groups are authorized, except for those who
     are also in the <code>reject</code> group.</p>
 
-    <div class="example"><p><code>
-        &lt;Directory /www/docs&gt;
-        <span class="indent">
-            &lt;RequireAll&gt;
-            <span class="indent">
-                Require group alpha beta<br />
-                Require not group reject
-            </span>
-            &lt;/RequireAll&gt;
-        </span>
-        &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Directory /www/docs&gt;
+    &lt;RequireAll&gt;
+        Require group alpha beta
+        Require not group reject
+    &lt;/RequireAll&gt;
+&lt;/Directory&gt;
+    </pre>
+
 
     <p>When multiple <code class="directive">Require</code> directives are
     used in a single

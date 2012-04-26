@@ -78,17 +78,18 @@
     <code class="program"><a href="../programs/htdigest.html">htdigest</a></code> tool.</p>
 
     <div class="example"><h3>Example:</h3><p><code>
-      &lt;Location /private/&gt;<br />
-      <span class="indent">
-        AuthType Digest<br />
-        AuthName "private area"<br />
-        AuthDigestDomain /private/ http://mirror.my.dom/private2/<br />
-        <br />
-        AuthDigestProvider file<br />
-        AuthUserFile /web/auth/.digest_pw<br />
-        Require valid-user<br />
-      </span>
-      &lt;/Location&gt;
+    <pre class="prettyprint lang-config">
+&lt;Location /private/&gt;
+    AuthType Digest
+    AuthName "private area"
+    AuthDigestDomain /private/ http://mirror.my.dom/private2/
+    
+    AuthDigestProvider file
+    AuthUserFile /web/auth/.digest_pw
+    Require valid-user
+&lt;/Location&gt;
+      </pre>
+
     </code></p></div>
 
     <div class="note"><h3>Note</h3>
@@ -128,7 +129,10 @@
     method would look similar to the following.</p>
 
     <div class="example"><h3>Using Digest Authentication with MSIE:</h3><p><code>
-    BrowserMatch "MSIE" AuthDigestEnableQueryStringHack=On
+    <pre class="prettyprint lang-config">
+        BrowserMatch "MSIE" AuthDigestEnableQueryStringHack=On
+    </pre>
+
     </code></p></div>
 
     <p>This workaround is not necessary for MSIE 7, though enabling it does
@@ -322,11 +326,12 @@ of clients</td></tr>
     express your value as KBytes or MBytes. For example, the following
     directives are all equivalent:</p>
 
-    <div class="example"><p><code>
-      AuthDigestShmemSize 1048576<br />
-      AuthDigestShmemSize 1024K<br />
-      AuthDigestShmemSize 1M
-    </code></p></div>
+<pre class="prettyprint lang-config">
+AuthDigestShmemSize 1048576
+AuthDigestShmemSize 1024K
+AuthDigestShmemSize 1M
+    </pre>
+
 
 </div>
 </div>

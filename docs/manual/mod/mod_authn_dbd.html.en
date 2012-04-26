@@ -88,7 +88,7 @@ to cache credentials and take most of the load off the database.</p>
 
 <p>This simple example shows use of this module in the context of
 the Authentication and DBD frameworks.</p>
-<div class="example"><pre>
+<pre class="prettyprint lang-config">
 # mod_dbd configuration
 # UPDATED to include authentication cacheing
 DBDriver pgsql
@@ -116,10 +116,10 @@ DBDExptime 300
   Require valid-user
 
   # mod_authn_dbd SQL query to authenticate a user
-  AuthDBDUserPWQuery \
-    "SELECT password FROM authn WHERE user = %s"
+  AuthDBDUserPWQuery "SELECT password FROM authn WHERE user = %s"
 &lt;/Directory&gt;
-</pre></div>
+</pre>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="exposed" id="exposed">Exposing Login Information</a></h2>
@@ -152,10 +152,10 @@ configuration required in some web applications.
     will be passed as a single string parameter when the SQL query is
     executed.  It may be referenced within the query statement using
     a <code>%s</code> format specifier.</p>
-    <div class="example"><h3>Example</h3><pre>
-AuthDBDUserPWQuery \
-  "SELECT password FROM authn WHERE user = %s"
-</pre></div>
+    <pre class="prettyprint lang-config">
+AuthDBDUserPWQuery "SELECT password FROM authn WHERE user = %s"
+</pre>
+
     <p>The first column value of the first row returned by the query
     statement should be a string containing the encrypted password.
     Subsequent rows will be ignored.  If no rows are returned, the user
@@ -186,10 +186,10 @@ AuthDBDUserPWQuery \
     The user's ID and the realm, in that order, will be passed as string
     parameters when the SQL query is executed.  They may be referenced
     within the query statement using <code>%s</code> format specifiers.</p>
-    <div class="example"><h3>Example</h3><pre>
-AuthDBDUserRealmQuery \
-  "SELECT password FROM authn WHERE user = %s AND realm = %s"
-</pre></div>
+    <pre class="prettyprint lang-config">
+AuthDBDUserRealmQuery "SELECT password FROM authn WHERE user = %s AND realm = %s"
+</pre>
+
     <p>The first column value of the first row returned by the query
     statement should be a string containing the encrypted password.
     Subsequent rows will be ignored.  If no rows are returned, the user

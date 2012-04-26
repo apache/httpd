@@ -123,10 +123,11 @@ server</td></tr>
       <dt>A (partial) domain-name</dt>
 
       <dd>
-      <div class="example"><h3>Example:</h3><p><code>
-        Allow from example.org<br />
-        Allow from .net example.edu
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+Allow from example.org
+Allow from .net example.edu
+      </pre>
+
       <p>Hosts whose names match, or end in, this string are allowed
       access. Only complete components are matched, so the above
       example will match <code>foo.example.org</code> but it will not
@@ -142,37 +143,41 @@ server</td></tr>
       <dt>A full IP address</dt>
 
       <dd>
-      <div class="example"><h3>Example:</h3><p><code>
-        Allow from 10.1.2.3<br />
-        Allow from 192.168.1.104 192.168.1.205
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+Allow from 10.1.2.3
+Allow from 192.168.1.104 192.168.1.205
+      </pre>
+
       <p>An IP address of a host allowed access</p></dd>
 
       <dt>A partial IP address</dt>
 
       <dd>
-      <div class="example"><h3>Example:</h3><p><code>
-        Allow from 10.1<br />
-        Allow from 10 172.20 192.168.2
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+Allow from 10.1
+Allow from 10 172.20 192.168.2
+      </pre>
+
       <p>The first 1 to 3 bytes of an IP address, for subnet
       restriction.</p></dd>
 
       <dt>A network/netmask pair</dt>
 
       <dd>
-      <div class="example"><h3>Example:</h3><p><code>
+      <pre class="prettyprint lang-config">
         Allow from 10.1.0.0/255.255.0.0
-      </code></p></div>
+      </pre>
+
       <p>A network a.b.c.d, and a netmask w.x.y.z. For more
       fine-grained subnet restriction.</p></dd>
 
       <dt>A network/nnn CIDR specification</dt>
 
       <dd>
-      <div class="example"><h3>Example:</h3><p><code>
+      <pre class="prettyprint lang-config">
         Allow from 10.1.0.0/16
-      </code></p></div>
+      </pre>
+
       <p>Similar to the previous case, except the netmask consists of
       nnn high-order 1 bits.</p></dd>
     </dl>
@@ -183,10 +188,11 @@ server</td></tr>
     <p>IPv6 addresses and IPv6 subnets can be specified as shown
     below:</p>
 
-    <div class="example"><p><code>
-       Allow from 2001:db8::a00:20ff:fea7:ccea<br />
-       Allow from 2001:db8::a00:20ff:fea7:ccea/10
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Allow from 2001:db8::a00:20ff:fea7:ccea
+Allow from 2001:db8::a00:20ff:fea7:ccea/10
+    </pre>
+
 
     <p>The third format of the arguments to the
     <code class="directive">Allow</code> directive allows access to the server
@@ -204,16 +210,15 @@ server</td></tr>
     <code>User-Agent</code> (browser type), <code>Referer</code>, or
     other HTTP request header fields.</p>
 
-    <div class="example"><h3>Example:</h3><p><code>
-      SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in<br />
-      &lt;Directory /docroot&gt;<br />
-      <span class="indent">
-        Order Deny,Allow<br />
-        Deny from all<br />
-        Allow from env=let_me_in<br />
-      </span>
-      &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
+&lt;Directory /docroot&gt;
+    Order Deny,Allow
+    Deny from all
+    Allow from env=let_me_in
+&lt;/Directory&gt;
+    </pre>
+
 
     <p>In this case, browsers with a user-agent string beginning
     with <code>KnockKnock/2.0</code> will be allowed access, and all
@@ -335,11 +340,12 @@ evaluated.</td></tr>
     <p>In the following example, all hosts in the example.org domain
     are allowed access; all other hosts are denied access.</p>
 
-    <div class="example"><p><code>
-      Order Deny,Allow<br />
-      Deny from all<br />
-      Allow from example.org
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Order Deny,Allow
+Deny from all
+Allow from example.org
+    </pre>
+
 
     <p>In the next example, all hosts in the example.org domain are
     allowed access, except for the hosts which are in the
@@ -348,11 +354,12 @@ evaluated.</td></tr>
     state is to <code class="directive"><a href="#deny">Deny</a></code>
     access to the server.</p>
 
-    <div class="example"><p><code>
-      Order Allow,Deny<br />
-      Allow from example.org<br />
-      Deny from foo.example.org
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Order Allow,Deny
+Allow from example.org
+Deny from foo.example.org
+    </pre>
+
 
     <p>On the other hand, if the <code class="directive">Order</code> in the
     last example is changed to <code>Deny,Allow</code>, all hosts will
@@ -370,13 +377,12 @@ evaluated.</td></tr>
     directives because of its effect on the default access state. For
     example,</p>
 
-    <div class="example"><p><code>
-      &lt;Directory /www&gt;<br />
-      <span class="indent">
-        Order Allow,Deny<br />
-      </span>
-      &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Directory /www&gt;
+    Order Allow,Deny
+&lt;/Directory&gt;
+    </pre>
+
 
     <p>will Deny all access to the <code>/www</code> directory
     because the default access state is set to
@@ -433,27 +439,29 @@ later</td></tr>
     people outside of your network provide a password, you could use a
     configuration similar to the following:</p>
 
-    <div class="example"><p><code>
-      Require valid-user<br />
-      Allow from 192.168.1<br />
-      Satisfy Any
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Require valid-user
+Allow from 192.168.1
+Satisfy Any
+    </pre>
+
 
     <p>
     Another frequent use of the <code class="directive">Satisfy</code> directive
     is to relax access restrictions for a subdirectory:
     </p>
 
-    <div class="example"><p><code>
-      &lt;Directory /var/www/private&gt;<br />
-        Require valid-user<br />
-      &lt;/Directory&gt;<br />
-      <br />
-      &lt;Directory /var/www/private/public&gt;<br />
-        Allow from all<br />
-        Satisfy Any<br />
-      &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Directory /var/www/private&gt;
+    Require valid-user
+&lt;/Directory&gt;
+
+&lt;Directory /var/www/private/public&gt;
+    Allow from all
+    Satisfy Any
+&lt;/Directory&gt;
+    </pre>
+
 
     <p>In the above example, authentication will be required for the
     <code>/var/www/private</code> directory, but will not be required
