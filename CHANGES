@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) various modules, rotatelogs: Replace use of apr_file_write() with
+     apr_file_write_full() to prevent incomplete writes. PR 53131.
+     [Nicolas Viennot <apache viennot biz>, Stefan Fritsch]
+
   *) core: Fix segfault in logging if r->useragent_addr or c->client_addr is
      unset. [Stefan Fritsch]
 

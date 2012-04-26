@@ -166,7 +166,8 @@ static void store_slotmem(ap_slotmem_instance_t *slotmem)
         }
         nbytes = (slotmem->desc.size * slotmem->desc.num) +
                  (slotmem->desc.num * sizeof(char)) + AP_UNSIGNEDINT_OFFSET;
-        apr_file_write(fp, slotmem->persist, &nbytes);
+	/* XXX: Error handling */
+        apr_file_write_full(fp, slotmem->persist, &nbytes, NULL);
         apr_file_close(fp);
     }
 }

@@ -845,7 +845,7 @@ static dav_error * dav_fs_save_locknull_list(apr_pool_t *p, const char *dirpath,
     }
 
     amt = pbuf->cur_len;
-    if ((rv = apr_file_write(file, pbuf->buf, &amt)) != APR_SUCCESS
+    if ((rv = apr_file_write_full(file, pbuf->buf, amt, &amt)) != APR_SUCCESS
         || amt != pbuf->cur_len) {
         err = dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0, rv,
                             apr_psprintf(p,

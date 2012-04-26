@@ -222,7 +222,7 @@ static int log_before(request_rec *r)
     *h.pos++ = '\n';
 
     n = h.count-1;
-    rv = apr_file_write(cfg->fd, h.log, &n);
+    rv = apr_file_write_full(cfg->fd, h.log, n, &n);
     ap_assert(rv == APR_SUCCESS && n == h.count-1);
 
     apr_table_setn(r->notes, "forensic-id", id);
@@ -246,7 +246,7 @@ static int log_after(request_rec *r)
 
     s = apr_pstrcat(r->pool, "-", id, "\n", NULL);
     l = n = strlen(s);
-    rv = apr_file_write(cfg->fd, s, &n);
+    rv = apr_file_write_full(cfg->fd, s, n, &n);
     ap_assert(rv == APR_SUCCESS && n == l);
 
     return OK;

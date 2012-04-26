@@ -739,8 +739,7 @@ static apr_status_t store_array(apr_file_t *fd, apr_array_header_t* arr)
         iov[1].iov_base = CRLF;
         iov[1].iov_len = sizeof(CRLF) - 1;
 
-        rv = apr_file_writev(fd, (const struct iovec *) &iov, 2,
-                             &amt);
+        rv = apr_file_writev_full(fd, (const struct iovec *) &iov, 2, &amt);
         if (rv != APR_SUCCESS) {
             return rv;
         }
@@ -749,8 +748,7 @@ static apr_status_t store_array(apr_file_t *fd, apr_array_header_t* arr)
     iov[0].iov_base = CRLF;
     iov[0].iov_len = sizeof(CRLF) - 1;
 
-    return apr_file_writev(fd, (const struct iovec *) &iov, 1,
-                         &amt);
+    return apr_file_writev_full(fd, (const struct iovec *) &iov, 1, &amt);
 }
 
 static apr_status_t read_table(cache_handle_t *handle, request_rec *r,
@@ -898,8 +896,7 @@ static apr_status_t store_table(apr_file_t *fd, apr_table_t *table)
             iov[3].iov_base = CRLF;
             iov[3].iov_len = sizeof(CRLF) - 1;
 
-            rv = apr_file_writev(fd, (const struct iovec *) &iov, 4,
-                                 &amt);
+            rv = apr_file_writev_full(fd, (const struct iovec *) &iov, 4, &amt);
             if (rv != APR_SUCCESS) {
                 return rv;
             }
@@ -907,8 +904,7 @@ static apr_status_t store_table(apr_file_t *fd, apr_table_t *table)
     }
     iov[0].iov_base = CRLF;
     iov[0].iov_len = sizeof(CRLF) - 1;
-    rv = apr_file_writev(fd, (const struct iovec *) &iov, 1,
-                         &amt);
+    rv = apr_file_writev_full(fd, (const struct iovec *) &iov, 1, &amt);
     return rv;
 }
 
@@ -974,7 +970,7 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r)
             }
 
             amt = sizeof(format);
-            rv = apr_file_write(dobj->vary.tempfd, &format, &amt);
+            rv = apr_file_write_full(dobj->vary.tempfd, &format, amt, NULL);
             if (rv != APR_SUCCESS) {
                 ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r, APLOGNO(00722)
                         "could not write to vary file %s",
@@ -985,8 +981,8 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r)
             }
 
             amt = sizeof(h->cache_obj->info.expire);
-            rv = apr_file_write(dobj->vary.tempfd, &h->cache_obj->info.expire,
-                    &amt);
+            rv = apr_file_write_full(dobj->vary.tempfd,
+                                     &h->cache_obj->info.expire, amt, NULL);
             if (rv != APR_SUCCESS) {
                 ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r, APLOGNO(00723)
                         "could not write to vary file %s",
@@ -1051,7 +1047,8 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r)
     iov[1].iov_base = (void*)dobj->name;
     iov[1].iov_len = disk_info.name_len;
 
-    rv = apr_file_writev(dobj->hdrs.tempfd, (const struct iovec *) &iov, 2, &amt);
+    rv = apr_file_writev_full(dobj->hdrs.tempfd, (const struct iovec *) &iov,
+                              2, &amt);
     if (rv != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r, APLOGNO(00726)
                 "could not write info to header file %s",
