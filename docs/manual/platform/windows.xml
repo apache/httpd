@@ -284,12 +284,12 @@
       how it is accessed.  If you wish to assure that only lowercase
       is used in URLs, you can use something like:</p>
 
-      <example>
-      RewriteEngine On<br />
-      RewriteMap lowercase int:tolower<br />
-      RewriteCond %{REQUEST_URI} [A-Z]<br />
-      RewriteRule (.*) ${lowercase:$1} [R,L]
-      </example></li>
+      <highlight language="config">
+RewriteEngine On
+RewriteMap lowercase int:tolower
+RewriteCond %{REQUEST_URI} [A-Z]
+RewriteRule (.*) ${lowercase:$1} [R,L]
+      </highlight></li>
 
       <li><p>When running, Apache needs write access only to the logs
       directory and any configured cache directory tree.  Due to the
@@ -310,9 +310,9 @@
       module, use the following (in addition to the status-activating
       directives in <code>access.conf</code>):</p>
 
-      <example>
+      <highlight language="config">
         LoadModule status_module modules/mod_status.so
-      </example>
+      </highlight>
 
       <p>Information on <a href="../mod/mod_so.html#creating">creating
       loadable modules</a> is also available.</p></li>
@@ -782,19 +782,25 @@
   on mapped drive letters, but this is not recommended.)</p>
 
   <example><title>Example DocumentRoot with UNC path</title>
+  <highlight language="config">
   DocumentRoot //dochost/www/html/
+  </highlight>
   </example>
 
   <example><title>Example DocumentRoot with IP address in UNC path</title>
-  DocumentRoot //192.168.1.50/docs/<br />
+  <highlight language="config">
+  DocumentRoot //192.168.1.50/docs/
+  </highlight>
   </example>
 
   <example><title>Example Alias and corresponding Directory with UNC path</title>
-  Alias /images/ //imagehost/www/images/<br />
-  <br />
-  &lt;Directory //imagehost/www/images/&gt;<br />
-  ...<br />
-  &lt;Directory&gt;<br />
+  <highlight language="config">
+Alias /images/ //imagehost/www/images/
+
+&lt;Directory //imagehost/www/images/&gt;
+#...
+&lt;Directory&gt;
+  </highlight>
   </example>
 
   <p>When running Apache httpd as a service, you must create a

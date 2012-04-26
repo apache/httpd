@@ -328,9 +328,9 @@
     <p>In the server configuration file, put</p>
 
     <highlight language="config">
-      &lt;Directory /&gt;
-        AllowOverride None
-      &lt;/Directory&gt;
+&lt;Directory /&gt;
+    AllowOverride None
+&lt;/Directory&gt;
     </highlight>
 
     <p>This prevents the use of <code>.htaccess</code> files in all
@@ -359,10 +359,10 @@
     configuration:</p>
 
     <highlight language="config">
-      &lt;Directory /&gt;
-      Order Deny,Allow
-      Deny from all
-      &lt;/Directory&gt;
+&lt;Directory /&gt;
+    Order Deny,Allow
+    Deny from all
+&lt;/Directory&gt;
     </highlight>
 
     <p>This will forbid default access to filesystem locations. Add
@@ -370,14 +370,14 @@
     allow access only in those areas you wish. For example,</p>
 
     <highlight language="config">
-      &lt;Directory /usr/users/*/public_html&gt;
-        Order Deny,Allow
-        Allow from all
-      &lt;/Directory&gt;
-      &lt;Directory /usr/local/httpd&gt;
-        Order Deny,Allow
-        Allow from all
-      &lt;/Directory&gt;
+&lt;Directory /usr/users/*/public_html&gt;
+    Order Deny,Allow
+    Allow from all
+&lt;/Directory&gt;
+&lt;Directory /usr/local/httpd&gt;
+    Order Deny,Allow
+    Allow from all
+&lt;/Directory&gt;
     </highlight>
 
     <p>Pay particular attention to the interactions of <directive
@@ -437,10 +437,10 @@
     file:</p>
 
     <highlight language="config">
-      &lt;Files ".ht*"&gt;
-        Order allow,deny
-        Deny from all
-      &lt;/Files&gt;
+&lt;Files ".ht*"&gt;
+    Order allow,deny
+    Deny from all
+&lt;/Files&gt;
     </highlight>
 
   </section>
