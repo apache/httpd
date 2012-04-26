@@ -81,7 +81,7 @@ to implement functions that start and end client-side sessions.</p>
 
 <section id="example">
 <title>Configuration example</title>
-<highlight language="config"><pre>
+<highlight language="config">
 # mod_dbd configuration
 DBDriver pgsql
 DBDParams "dbname=apacheauth user=apache pass=xxxxxx"
@@ -115,13 +115,11 @@ DBDExptime 300
 
   &lt;Files login.html&gt;
     # don't require user to already be logged in!
-    AuthDBDUserPWQuery \
-      "SELECT password FROM authn WHERE user = %s"
+    AuthDBDUserPWQuery "SELECT password FROM authn WHERE user = %s"
 
     # dbd-login action executes a statement to log user in
     Require dbd-login
-    AuthzDBDQuery \
-      "UPDATE authn SET login = 'true' WHERE user = %s"
+    AuthzDBDQuery "UPDATE authn SET login = 'true' WHERE user = %s"
 
     # return user to referring page (if any) after
     # successful login
@@ -131,11 +129,10 @@ DBDExptime 300
   &lt;Files logout.html&gt;
     # dbd-logout action executes a statement to log user out
     Require dbd-logout
-    AuthzDBDQuery \
-      "UPDATE authn SET login = 'false' WHERE user = %s"
+    AuthzDBDQuery "UPDATE authn SET login = 'false' WHERE user = %s"
   &lt;/Files&gt;
 &lt;/Directory&gt;
-</pre></highlight>
+</highlight>
 </section>
 
 <directivesynopsis>
@@ -159,8 +156,7 @@ DBDExptime 300
     may be returned.
     <highlight language="config">
 Require dbd-group
-AuthzDBDQuery \
-  "SELECT group FROM groups WHERE user = %s"
+AuthzDBDQuery "SELECT group FROM groups WHERE user = %s"
 </highlight>
     </li>
     <li>When used with a <code>Require dbd-login</code> or
@@ -168,11 +164,10 @@ AuthzDBDQuery \
     but will instead execute a SQL statement designed to log the user
     in or out.  The user must already be authenticated with
     <module>mod_authn_dbd</module>.
-    <highlight language="config"><pre>
+    <highlight language="config">
 Require dbd-login
-AuthzDBDQuery \
-  "UPDATE authn SET login = 'true' WHERE user = %s"
-</pre></highlight>
+AuthzDBDQuery "UPDATE authn SET login = 'true' WHERE user = %s"
+</highlight>
     </li>
     </ul>
     <p>In all cases, the user's ID will be passed as a single string
@@ -194,8 +189,7 @@ AuthzDBDQuery \
     parameter when the SQL query is executed.  It may be referenced within
     the query statement using a <code>%s</code> format specifier.</p>
     <highlight language="config">
-AuthzDBDRedirectQuery \
-  "SELECT userpage FROM userpages WHERE user = %s"
+AuthzDBDRedirectQuery "SELECT userpage FROM userpages WHERE user = %s"
 </highlight>
     <p>The first column value of the first row returned by the query
     statement should be a string containing a URL to which to redirect
