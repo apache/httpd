@@ -421,12 +421,13 @@ Vary: negotiate,accept-language,accept-charset
 
       <p>Typically the module will be configured as so;</p>
 
-      <div class="example"><p><code>
-CacheRoot   /var/cache/apache/<br />
-CacheEnable disk /<br />
-CacheDirLevels 2<br />
+      <pre class="prettyprint lang-config">
+CacheRoot   "/var/cache/apache/"
+CacheEnable disk /
+CacheDirLevels 2
 CacheDirLength 1
-      </code></p></div>
+      </pre>
+
 
       <p>Importantly, as the cached files are locally stored, operating system
       in-memory caching will typically be applied to their access also. So

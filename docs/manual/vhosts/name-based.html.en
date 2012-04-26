@@ -116,22 +116,20 @@
     <code>other.example.com</code>, which points at the same IP address.
     Then you simply add the following to <code>httpd.conf</code>:</p>
 
-    <div class="example"><p><code>
-        &lt;VirtualHost *:80&gt;<br />
-        <span class="indent">
-            # This first-listed virtual host is also the default for *:80
-            ServerName www.example.com<br />
-            ServerAlias example.com <br />
-            DocumentRoot /www/domain<br />
-        </span>
-        &lt;/VirtualHost&gt;<br />
-        <br />
-        &lt;VirtualHost *:80&gt;<br />
-        <span class="indent">ServerName other.example.com<br />
-            DocumentRoot /www/otherdomain<br />
-        </span>
-        &lt;/VirtualHost&gt;<br />
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;VirtualHost *:80&gt;
+    # This first-listed virtual host is also the default for *:80
+    ServerName www.example.com
+    ServerAlias example.com 
+    DocumentRoot /www/domain
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost *:80&gt;
+ServerName other.example.com
+    DocumentRoot /www/otherdomain
+&lt;/VirtualHost&gt;
+    </pre>
+
 
     <p>You can alternatively specify an explicit IP address in place of the
     <code>*</code> in <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> directives. For example, you might want to do this
@@ -145,9 +143,10 @@
     the listed names are other names which people can use to see that same
     web site:</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
         ServerAlias example.com *.example.com
-    </code></p></div>
+    </pre>
+
 
     <p>then requests for all hosts in the <code>example.com</code> domain will
     be served by the <code>www.example.com</code> virtual host. The wildcard

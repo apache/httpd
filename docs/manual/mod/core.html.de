@@ -2689,7 +2689,7 @@ On Windows from Apache 2.3.3 and later.</td></tr>
             noch nicht übersetzt. Bitte schauen Sie in die englische
             Version.</p><h3>Siehe auch</h3>
 <ul>
-<li><code class="directive">AcceptFilter</code></li>
+<li><code class="directive"><a href="#acceptfilter">AcceptFilter</a></code></li>
 <li><code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code></li>
 </ul>
 </div>

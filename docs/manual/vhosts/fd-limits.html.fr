@@ -27,6 +27,8 @@
 <a href="../ko/vhosts/fd-limits.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/fd-limits.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
 
     <p>Quand de nombreux serveurs virtuels sont créés, Apache peut

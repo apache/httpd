@@ -113,9 +113,10 @@ Virtual Hosts</a> to help you decide.  </p>
     configuration file to select which IP address (or virtual host)
     that daemon services. e.g.</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
     Listen 192.0.2.100:80
-    </code></p></div>
+    </pre>
+
 
     <p>It is recommended that you use an IP address instead of a
     hostname (see <a href="../dns-caveats.html">DNS caveats</a>).</p>
@@ -132,23 +133,24 @@ Virtual Hosts</a> to help you decide.  </p>
     configuration directives to different values for each virtual
     host. e.g.</p>
 
-    <div class="example"><p><code>
-    &lt;VirtualHost 172.20.30.40:80&gt;<br />
-    ServerAdmin webmaster@www1.example.com<br />
-    DocumentRoot /www/vhosts/www1<br />
-    ServerName www1.example.com<br />
-    ErrorLog /www/logs/www1/error_log<br />
-    CustomLog /www/logs/www1/access_log combined<br />
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.50:80&gt;<br />
-    ServerAdmin webmaster@www2.example.org<br />
-    DocumentRoot /www/vhosts/www2<br />
-    ServerName www2.example.org<br />
-    ErrorLog /www/logs/www2/error_log<br />
-    CustomLog /www/logs/www2/access_log combined<br />
-    &lt;/VirtualHost&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;VirtualHost 172.20.30.40:80&gt;
+    ServerAdmin webmaster@www1.example.com
+    DocumentRoot /www/vhosts/www1
+    ServerName www1.example.com
+    ErrorLog /www/logs/www1/error_log
+    CustomLog /www/logs/www1/access_log combined
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.50:80&gt;
+    ServerAdmin webmaster@www2.example.org
+    DocumentRoot /www/vhosts/www2
+    ServerName www2.example.org
+    ErrorLog /www/logs/www2/error_log
+    CustomLog /www/logs/www2/access_log combined
+&lt;/VirtualHost&gt;
+    </pre>
+
 
     <p>It is recommended that you use an IP address instead of a
     hostname in the &lt;VirtualHost&gt; directive

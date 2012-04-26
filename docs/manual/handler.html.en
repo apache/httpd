@@ -97,10 +97,11 @@
       the <code>html</code> extension to trigger the launch of the
       <code>footer.pl</code> CGI script.</p>
 
-      <div class="example"><p><code>
-        Action add-footer /cgi-bin/footer.pl<br />
-        AddHandler add-footer .html
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+Action add-footer /cgi-bin/footer.pl
+AddHandler add-footer .html
+      </pre>
+
 
       <p>Then the CGI script is responsible for sending the
       originally requested document (pointed to by the
@@ -118,11 +119,12 @@
       the <code>send-as-is</code> handler, regardless of their
       filename extensions.</p>
 
-      <div class="example"><p><code>
-        &lt;Directory /web/htdocs/asis&gt;<br />
-	<span class="indent">SetHandler send-as-is<br /></span>
-        &lt;/Directory&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+&lt;Directory /web/htdocs/asis&gt;
+    SetHandler send-as-is
+&lt;/Directory&gt;
+      </pre>
+
 
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -135,9 +137,10 @@
     you may wish to make use of. Specifically, a new record has
     been added to the <code>request_rec</code> structure:</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-c">
       char *handler
-    </code></p></div>
+    </pre>
+
 
     <p>If you wish to have your module engage a handler, you need
     only to set <code>r-&gt;handler</code> to the name of the
