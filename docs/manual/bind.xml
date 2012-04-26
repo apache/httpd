@@ -71,25 +71,25 @@
     <p>For example, to make the server accept connections on both
     port 80 and port 8000, on all interfaces, use:</p>
 
-    <example>
-      Listen 80<br />
-      Listen 8000
-    </example>
+    <highlight language="config">
+Listen 80
+Listen 8000
+    </highlight>
 
     <p>To make the server accept connections on port 80 for one interface,
        and port 8000 on another, use</p>
 
-    <example>
-      Listen 192.0.2.1:80<br />
-      Listen 192.0.2.5:8000
-    </example>
+    <highlight language="config">
+Listen 192.0.2.1:80
+Listen 192.0.2.5:8000
+    </highlight>
 
     <p>IPv6 addresses must be enclosed in square brackets, as in the
     following example:</p>
 
-    <example>
+    <highlight language="config">
       Listen [2001:db8::a00:20ff:fea7:ccea]:80
-    </example>
+    </highlight>
 
     <note type="warning"><p>Overlapping <directive
     module="mpm_common">Listen</directive> directives will result in a
@@ -136,10 +136,10 @@
     <directive module="mpm_common">Listen</directive> directives, as in the
     following examples:</p>
 
-    <example>
-      Listen 0.0.0.0:80<br />
-      Listen 192.0.2.1:80
-    </example>
+    <highlight language="config">
+Listen 0.0.0.0:80
+Listen 192.0.2.1:80
+    </highlight>
 
     <p>If your platform supports it and you want httpd to handle IPv4 and
     IPv6 connections on separate sockets (i.e., to disable IPv4-mapped
@@ -162,9 +162,9 @@
     <p>You only need to set the protocol if you are running on non-standard
        ports.  For example, running an <code>https</code> site on port 8443:</p>
 
-    <example>
+    <highlight language="config">
       Listen 192.170.2.1:8443 https
-    </example>
+    </highlight>
   </section>
 
   <section id="virtualhost">

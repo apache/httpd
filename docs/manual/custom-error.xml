@@ -55,19 +55,19 @@
     if <directive module="core">AllowOverride</directive> is set to
     FileInfo.</p>
 
-    <example>
-      ErrorDocument 500 "Sorry, our script crashed. Oh dear"<br />
-      ErrorDocument 500 /cgi-bin/crash-recover<br />
-      ErrorDocument 500 http://error.example.com/server_error.html<br />
-      ErrorDocument 404 /errors/not_found.html <br />
-      ErrorDocument 401 /subscription/how_to_subscribe.html
-    </example>
+    <highlight language="config">
+ErrorDocument 500 "Sorry, our script crashed. Oh dear"<br />
+ErrorDocument 500 /cgi-bin/crash-recover<br />
+ErrorDocument 500 http://error.example.com/server_error.html<br />
+ErrorDocument 404 /errors/not_found.html <br />
+ErrorDocument 401 /subscription/how_to_subscribe.html
+    </highlight>
 
     <p>The syntax of the <code>ErrorDocument</code> directive is:</p>
 
-    <example>
+    <highlight language="config">
       ErrorDocument &lt;3-digit-code&gt; &lt;action&gt;
-    </example>
+    </highlight>
 
     <p>where the action will be treated as:</p>
 

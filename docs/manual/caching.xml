@@ -430,12 +430,12 @@ Vary: negotiate,accept-language,accept-charset
 
       <p>Typically the module will be configured as so;</p>
 
-      <example>
-CacheRoot   /var/cache/apache/<br />
-CacheEnable disk /<br />
-CacheDirLevels 2<br />
+      <highlight language="config">
+CacheRoot   "/var/cache/apache/"
+CacheEnable disk /
+CacheDirLevels 2
 CacheDirLength 1
-      </example>
+      </highlight>
 
       <p>Importantly, as the cached files are locally stored, operating system
       in-memory caching will typically be applied to their access also. So
