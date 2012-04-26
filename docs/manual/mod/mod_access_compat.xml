@@ -113,10 +113,10 @@ server</description>
       <dt>A (partial) domain-name</dt>
 
       <dd>
-      <example><title>Example:</title>
-        Allow from example.org<br />
-        Allow from .net example.edu
-      </example>
+      <highlight language="config">
+Allow from example.org
+Allow from .net example.edu
+      </highlight>
       <p>Hosts whose names match, or end in, this string are allowed
       access. Only complete components are matched, so the above
       example will match <code>foo.example.org</code> but it will not
@@ -133,37 +133,37 @@ server</description>
       <dt>A full IP address</dt>
 
       <dd>
-      <example><title>Example:</title>
-        Allow from 10.1.2.3<br />
-        Allow from 192.168.1.104 192.168.1.205
-      </example>
+      <highlight language="config">
+Allow from 10.1.2.3
+Allow from 192.168.1.104 192.168.1.205
+      </highlight>
       <p>An IP address of a host allowed access</p></dd>
 
       <dt>A partial IP address</dt>
 
       <dd>
-      <example><title>Example:</title>
-        Allow from 10.1<br />
-        Allow from 10 172.20 192.168.2
-      </example>
+      <highlight language="config">
+Allow from 10.1
+Allow from 10 172.20 192.168.2
+      </highlight>
       <p>The first 1 to 3 bytes of an IP address, for subnet
       restriction.</p></dd>
 
       <dt>A network/netmask pair</dt>
 
       <dd>
-      <example><title>Example:</title>
+      <highlight language="config">
         Allow from 10.1.0.0/255.255.0.0
-      </example>
+      </highlight>
       <p>A network a.b.c.d, and a netmask w.x.y.z. For more
       fine-grained subnet restriction.</p></dd>
 
       <dt>A network/nnn CIDR specification</dt>
 
       <dd>
-      <example><title>Example:</title>
+      <highlight language="config">
         Allow from 10.1.0.0/16
-      </example>
+      </highlight>
       <p>Similar to the previous case, except the netmask consists of
       nnn high-order 1 bits.</p></dd>
     </dl>
@@ -174,10 +174,10 @@ server</description>
     <p>IPv6 addresses and IPv6 subnets can be specified as shown
     below:</p>
 
-    <example>
-       Allow from 2001:db8::a00:20ff:fea7:ccea<br />
-       Allow from 2001:db8::a00:20ff:fea7:ccea/10
-    </example>
+    <highlight language="config">
+Allow from 2001:db8::a00:20ff:fea7:ccea
+Allow from 2001:db8::a00:20ff:fea7:ccea/10
+    </highlight>
 
     <p>The third format of the arguments to the
     <directive>Allow</directive> directive allows access to the server
@@ -196,16 +196,14 @@ server</description>
     <code>User-Agent</code> (browser type), <code>Referer</code>, or
     other HTTP request header fields.</p>
 
-    <example><title>Example:</title>
-      SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in<br />
-      &lt;Directory /docroot&gt;<br />
-      <indent>
-        Order Deny,Allow<br />
-        Deny from all<br />
-        Allow from env=let_me_in<br />
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
+&lt;Directory /docroot&gt;
+    Order Deny,Allow
+    Deny from all
+    Allow from env=let_me_in
+&lt;/Directory&gt;
+    </highlight>
 
     <p>In this case, browsers with a user-agent string beginning
     with <code>KnockKnock/2.0</code> will be allowed access, and all
@@ -341,11 +339,11 @@ evaluated.</description>
     <p>In the following example, all hosts in the example.org domain
     are allowed access; all other hosts are denied access.</p>
 
-    <example>
-      Order Deny,Allow<br />
-      Deny from all<br />
-      Allow from example.org
-    </example>
+    <highlight language="config">
+Order Deny,Allow
+Deny from all
+Allow from example.org
+    </highlight>
 
     <p>In the next example, all hosts in the example.org domain are
     allowed access, except for the hosts which are in the
@@ -354,11 +352,11 @@ evaluated.</description>
     state is to <directive module="mod_access_compat">Deny</directive>
     access to the server.</p>
 
-    <example>
-      Order Allow,Deny<br />
-      Allow from example.org<br />
-      Deny from foo.example.org
-    </example>
+    <highlight language="config">
+Order Allow,Deny
+Allow from example.org
+Deny from foo.example.org
+    </highlight>
 
     <p>On the other hand, if the <directive>Order</directive> in the
     last example is changed to <code>Deny,Allow</code>, all hosts will
@@ -377,13 +375,11 @@ evaluated.</description>
     directives because of its effect on the default access state. For
     example,</p>
 
-    <example>
-      &lt;Directory /www&gt;<br />
-      <indent>
-        Order Allow,Deny<br />
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory /www&gt;
+    Order Allow,Deny
+&lt;/Directory&gt;
+    </highlight>
 
     <p>will Deny all access to the <code>/www</code> directory
     because the default access state is set to
@@ -448,27 +444,27 @@ later</compatibility>
     people outside of your network provide a password, you could use a
     configuration similar to the following:</p>
 
-    <example>
-      Require valid-user<br />
-      Allow from 192.168.1<br />
-      Satisfy Any
-    </example>
+    <highlight language="config">
+Require valid-user
+Allow from 192.168.1
+Satisfy Any
+    </highlight>
 
     <p>
     Another frequent use of the <directive>Satisfy</directive> directive
     is to relax access restrictions for a subdirectory:
     </p>
 
-    <example>
-      &lt;Directory /var/www/private&gt;<br />
-        Require valid-user<br />
-      &lt;/Directory&gt;<br />
-      <br />
-      &lt;Directory /var/www/private/public&gt;<br />
-        Allow from all<br />
-        Satisfy Any<br />
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory /var/www/private&gt;
+    Require valid-user
+&lt;/Directory&gt;
+
+&lt;Directory /var/www/private/public&gt;
+    Allow from all
+    Satisfy Any
+&lt;/Directory&gt;
+    </highlight>
 
     <p>In the above example, authentication will be required for the
     <code>/var/www/private</code> directory, but will not be required

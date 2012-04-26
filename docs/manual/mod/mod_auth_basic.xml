@@ -59,20 +59,18 @@
     The default <code>file</code> provider is implemented
     by the <module>mod_authn_file</module> module.  Make sure
     that the chosen provider module is present in the server.</p>
-
     <example><title>Example</title>
-      &lt;Location /secure&gt;<br />
-      <indent>
-        AuthType basic<br />
-        AuthName "private area"<br />
-        AuthBasicProvider  dbm<br />
-        AuthDBMType        SDBM<br />
-        AuthDBMUserFile    /www/etc/dbmpasswd<br />
-        Require            valid-user<br />
-      </indent>
-      &lt;/Location&gt;
+    <highlight language="config">
+&lt;Location /secure&gt;
+    AuthType basic
+    AuthName "private area"
+    AuthBasicProvider  dbm
+    AuthDBMType        SDBM
+    AuthDBMUserFile    /www/etc/dbmpasswd
+    Require            valid-user
+&lt;/Location&gt;
+    </highlight>
     </example>
-
     <p> Providers are queried in order until a provider finds a match
     for the requested username, at which point this sole provider will
     attempt to check the password.  A failure to verify the password does

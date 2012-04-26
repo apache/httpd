@@ -42,13 +42,11 @@ in order for it to rebuild correctly.
 <p>This module makes it easy to restrict what HTTP methods can
 used on an server. The most common configuration would be:</p>
 
-<example><title>Example</title>
-&lt;Location /&gt;<br />
-<indent>
-   AllowMethods GET POST OPTIONS<br />
-</indent>
+<highlight language="config">
+&lt;Location /&gt;
+   AllowMethods GET POST OPTIONS
 &lt;/Location&gt;
-</example>
+</highlight>
 
 </summary>
 
@@ -68,13 +66,11 @@ RFC given in upper case. The GET and HEAD methods are treated as
 equivalent. The <code>reset</code> keyword can be used
 turn off <module>mod_allowmethods</module> in a deeper nested context:</p>
 
-<example><title>Example</title>
-&lt;Location /svn&gt;<br />
-<indent>
-   AllowMethods reset<br />
-</indent>
+<highlight language="config">
+&lt;Location /svn&gt;
+   AllowMethods reset
 &lt;/Location&gt;
-</example>
+</highlight>
 
 <note><title>Caution</title>
   <p>The TRACE method can not be denied by this module,
