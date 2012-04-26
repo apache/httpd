@@ -1019,6 +1019,7 @@ struct request_rec {
 
     /** remote address information from conn_rec, can be overridden if
      * necessary by a module.
+     * This is the address that originated the request.
      */
     apr_sockaddr_t *useragent_addr;
     char *useragent_ip;
@@ -1064,10 +1065,14 @@ struct conn_rec {
     /* Information about the connection itself */
     /** local address */
     apr_sockaddr_t *local_addr;
-    /** remote address */
+    /** remote address; this is the end-point of the next hop, for the address
+     *  of the request creator, see useragent_addr in request_rec
+     */
     apr_sockaddr_t *client_addr;
 
-    /** Client's IP address */
+    /** Client's IP address; this is the end-point of the next hop, for the
+     *  IP of the request creator, see useragent_ip in request_rec
+     */
     char *client_ip;
     /** Client's DNS name, if known.  NULL if DNS hasn't been checked,
      *  "" if it has and no address was found.  N.B. Only access this though
