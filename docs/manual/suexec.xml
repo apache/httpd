@@ -466,10 +466,10 @@
 
       <p>If for example, your web server is configured to run as:</p>
 
-      <example>
-          User www<br />
-          Group webgroup<br />
-      </example>
+      <highlight language="config">
+User www
+Group webgroup
+      </highlight>
 
       <p>and <program>suexec</program> is installed at
       "/usr/local/apache2/bin/suexec", you should run:</p>

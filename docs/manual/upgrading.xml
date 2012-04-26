@@ -130,23 +130,31 @@
       <p>In this example, all requests are denied.</p>
       <example>
         <title>2.2 configuration:</title>
-        Order deny,allow<br />
-        Deny from all
+        <highlight language="config">
+Order deny,allow
+Deny from all
+        </highlight>
       </example>
       <example>
         <title>2.4 configuration:</title>
+        <highlight language="config">
         Require all denied
+        </highlight>
       </example>
 
       <p>In this example, all requests are allowed.</p>
       <example>
         <title>2.2 configuration:</title>
-        Order allow,deny<br />
-        Allow from all
+        <highlight language="config">
+Order allow,deny
+Allow from all
+        </highlight>
       </example>
       <example>
         <title>2.4 configuration:</title>
+        <highlight language="config">
         Require all granted
+        </highlight>
       </example>
 
       <p>In the following example, all hosts in the example.org domain
@@ -154,13 +162,17 @@
 
       <example>
         <title>2.2 configuration:</title>
-        Order Deny,Allow<br />
-        Deny from all<br />
-        Allow from example.org
+        <highlight language="config">
+Order Deny,Allow
+Deny from all
+Allow from example.org
+        </highlight>
       </example>
       <example>
         <title>2.4 configuration:</title>
+        <highlight language="config">
         Require host example.org
+        </highlight>
       </example>
     </section>
 
