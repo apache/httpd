@@ -38,7 +38,9 @@
     directive:</p>
 
     <example><title>Example</title>
+    <highlight language="config">
       Dav filesystem
+      </highlight>
     </example>
 
     <p>Since <code>filesystem</code> is the default provider for
@@ -67,7 +69,9 @@
     the server to display all locks in a lock database.</p> -->
 
     <example><title>Example</title>
+    <highlight language="config">
       DavLockDB var/DavLock
+      </highlight>
     </example>
 
     <p>The directory containing the lock database file must be

@@ -77,7 +77,9 @@ a directory</description>
     directory.</p>
 
     <example><title>Example</title>
+    <highlight language="config">
       DirectoryIndex index.html
+      </highlight>
     </example>
 
     <p>then a request for <code>http://example.com/docs/</code> would
@@ -87,9 +89,9 @@ a directory</description>
     <p>Note that the documents do not need to be relative to the
     directory;</p>
 
-    <example>
+    <highlight language="config">
       DirectoryIndex index.html index.txt  /cgi-bin/index.pl
-    </example>
+    </highlight>
 
     <p>would cause the CGI script <code>/cgi-bin/index.pl</code> to be
     executed if neither <code>index.html</code> or <code>index.txt</code>
@@ -123,7 +125,9 @@ a directory</description>
     to instead be issued.</p>
 
     <example><title>Example</title>
+    <highlight language="config">
       DirectoryIndexRedirect on
+      </highlight>
     </example>
 
     <p>A request for <code>http://example.com/docs/</code> would
@@ -168,15 +172,13 @@ a directory</description>
     be aware that there are possible security implications to doing
     this.</p>
 
-    <example>
-        # see security warning below!<br />
-        &lt;Location /some/path&gt;<br />
-        <indent>
-            DirectorySlash Off<br />
-            SetHandler some-handler<br />
-        </indent>
-        &lt;/Location&gt;
-    </example>
+    <highlight language="config">
+# see security warning below!
+&lt;Location /some/path&gt;
+    DirectorySlash Off
+    SetHandler some-handler
+&lt;/Location&gt;
+    </highlight>
 
     <note type="warning"><title>Security Warning</title>
     <p>Turning off the trailing slash redirect may result in an information
@@ -204,9 +206,9 @@ a directory</description>
     <p>Use this to set a handler for any URL that doesn't map to anything
     in your filesystem, and would otherwise return HTTP 404 (Not Found).
     For example</p>
-    <example>
-        <code>FallbackResource /not-404.php</code>
-    </example>
+    <highlight language="config">
+        FallbackResource /not-404.php
+    </highlight>
     <p>will cause requests for non-existent files to be handled by
     <code>not-404.php</code>, while requests for files that exist
     are unaffected.</p>
@@ -218,22 +220,18 @@ a directory</description>
     <module>mod_rewrite</module>, and the use of the <code>-f</code> and
     <code>-d</code> tests for file and directory existence. This now
     requires only one line of configuration.</p>
-    <example>
-        <code>FallbackResource /index.php</code>
-    </example>
+    <highlight language="config">
+        FallbackResource /index.php
+    </highlight>
     <p>Existing files, such as images, css files, and so on, will be
     served normally.</p>
     <p>In a sub-URI, such as <em>http://example.com/blog/</em> this
     <em>sub-URI</em> has to be supplied as <var>local-url</var>:</p>
-    <example>
-         <code>
-             &lt;Directory /web/example.com/htdocs/blog&gt;<br />
-	     <indent>
-                  FallbackResource /blog/index.php<br />
-             </indent>
-             &lt;/Directory&gt;
-         </code>
-    </example>
+    <highlight language="config">
+&lt;Directory /web/example.com/htdocs/blog&gt;
+    FallbackResource /blog/index.php
+&lt;/Directory&gt;
+    </highlight>
 </usage>
 </directivesynopsis>
 

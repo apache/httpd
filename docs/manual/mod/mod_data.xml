@@ -56,11 +56,11 @@
     module.</p>
 
     <example><title>Configuring the filter</title>
-        &lt;Location /data/images&gt;<br />
-        <indent>
-            SetOutputFilter DATA
-        </indent>
-        &lt;/Location&gt;<br />
+    <highlight language="config">
+&lt;Location /data/images&gt;
+    SetOutputFilter DATA
+&lt;/Location&gt;
+        </highlight>
     </example>
 
 </summary>
