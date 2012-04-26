@@ -546,6 +546,10 @@ var REGEXP_PRECEDER_PATTERN = '(?:^^\\.?|[+-]|[!=]=?=?|\\#|%=?|&&?=?|\\(|\\*=?|[
               text = text.replace(/[ \t\r\n]+/g, ' ');
             } else {
               text = text.replace(/\r\n?/g, '\n');  // Normalize newlines.
+              text = text.replace(/^\r?\n\s*/g, '');  // Remove leading newlines
+              text = text.replace(/^\s*/g, '');  // Remove leading spaces due to indented formatting
+              text = text.replace(/\r?\n\s*$/g, '');  // Remove ending newlines
+              
             }
             // TODO: handle tabs here?
             chunks[k] = text;
