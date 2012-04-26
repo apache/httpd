@@ -335,9 +335,9 @@
     <p>In the server configuration file, put</p>
 
     <pre class="prettyprint lang-config">
-      &lt;Directory /&gt;
-        AllowOverride None
-      &lt;/Directory&gt;
+&lt;Directory /&gt;
+    AllowOverride None
+&lt;/Directory&gt;
     </pre>
 
 
@@ -367,10 +367,10 @@
     configuration:</p>
 
     <pre class="prettyprint lang-config">
-      &lt;Directory /&gt;
-      Order Deny,Allow
-      Deny from all
-      &lt;/Directory&gt;
+&lt;Directory /&gt;
+    Order Deny,Allow
+    Deny from all
+&lt;/Directory&gt;
     </pre>
 
 
@@ -379,14 +379,14 @@
     allow access only in those areas you wish. For example,</p>
 
     <pre class="prettyprint lang-config">
-      &lt;Directory /usr/users/*/public_html&gt;
-        Order Deny,Allow
-        Allow from all
-      &lt;/Directory&gt;
-      &lt;Directory /usr/local/httpd&gt;
-        Order Deny,Allow
-        Allow from all
-      &lt;/Directory&gt;
+&lt;Directory /usr/users/*/public_html&gt;
+    Order Deny,Allow
+    Allow from all
+&lt;/Directory&gt;
+&lt;Directory /usr/local/httpd&gt;
+    Order Deny,Allow
+    Allow from all
+&lt;/Directory&gt;
     </pre>
 
 
@@ -445,10 +445,10 @@
     file:</p>
 
     <pre class="prettyprint lang-config">
-      &lt;Files ".ht*"&gt;
-        Order allow,deny
-        Deny from all
-      &lt;/Files&gt;
+&lt;Files ".ht*"&gt;
+    Order allow,deny
+    Deny from all
+&lt;/Files&gt;
     </pre>
 
 

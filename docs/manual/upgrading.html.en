@@ -129,23 +129,35 @@
       <p>In this example, all requests are denied.</p>
       <div class="example"><h3>2.2 configuration:</h3><p><code>
         
-        Order deny,allow<br />
-        Deny from all
+        <pre class="prettyprint lang-config">
+Order deny,allow
+Deny from all
+        </pre>
+
       </code></p></div>
       <div class="example"><h3>2.4 configuration:</h3><p><code>
         
+        <pre class="prettyprint lang-config">
         Require all denied
+        </pre>
+
       </code></p></div>
 
       <p>In this example, all requests are allowed.</p>
       <div class="example"><h3>2.2 configuration:</h3><p><code>
         
-        Order allow,deny<br />
-        Allow from all
+        <pre class="prettyprint lang-config">
+Order allow,deny
+Allow from all
+        </pre>
+
       </code></p></div>
       <div class="example"><h3>2.4 configuration:</h3><p><code>
         
+        <pre class="prettyprint lang-config">
         Require all granted
+        </pre>
+
       </code></p></div>
 
       <p>In the following example, all hosts in the example.org domain
@@ -153,13 +165,19 @@
 
       <div class="example"><h3>2.2 configuration:</h3><p><code>
         
-        Order Deny,Allow<br />
-        Deny from all<br />
-        Allow from example.org
+        <pre class="prettyprint lang-config">
+Order Deny,Allow
+Deny from all
+Allow from example.org
+        </pre>
+
       </code></p></div>
       <div class="example"><h3>2.4 configuration:</h3><p><code>
         
+        <pre class="prettyprint lang-config">
         Require host example.org
+        </pre>
+
       </code></p></div>
     
 
