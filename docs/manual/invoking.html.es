@@ -126,7 +126,7 @@
     </ul>
 
     <p>Puede encontrar más información sobre cómo
-    solucionar problemas, en la sección de <a href="faq/">Preguntas Frecuentes</a> de Apache.</p>
+    solucionar problemas, en la sección de <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> de Apache.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="boot" id="boot">Iniciar Apache al Iniciar el Sistema</a></h2>
