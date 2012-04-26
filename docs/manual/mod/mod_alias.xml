@@ -79,10 +79,10 @@ href="../urlmapping.html">Mapping URLs to the filesystem</a></seealso>
     all the directives to have an effect.  For example, the following
     configuration will work as expected:</p>
 
-    <example>
-    Alias /foo/bar /baz<br />
-    Alias /foo /gaq
-    </example>
+    <highlight language="config">
+Alias /foo/bar /baz
+Alias /foo /gaq
+    </highlight>
 
     <p>But if the above two directives were reversed in order, the
     <code>/foo</code> <directive module="mod_alias">Alias</directive>
@@ -110,9 +110,9 @@ href="../urlmapping.html">Mapping URLs to the filesystem</a></seealso>
     <var>URL-path</var> is case-sensitive, even on case-insensitive
     file systems.</p>
 
-    <example><title>Example:</title>
+    <highlight language="config">
       Alias /image /ftp/pub/image
-    </example>
+    </highlight>
 
     <p>A request for <code>http://example.com/image/foo.gif</code> would cause
     the server to return the file <code>/ftp/pub/image/foo.gif</code>.  Only
@@ -146,14 +146,12 @@ href="../urlmapping.html">Mapping URLs to the filesystem</a></seealso>
     module="core">DocumentRoot</directive>, you may need to explicitly
     permit access to the target directory.</p>
 
-    <example><title>Example:</title>
-        Alias /image /ftp/pub/image<br />
-        &lt;Directory /ftp/pub/image&gt;<br />
-        <indent>
-            Require all granted<br />
-        </indent>
-        &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+Alias /image /ftp/pub/image
+&lt;Directory /ftp/pub/image&gt;
+    Require all granted
+&lt;/Directory&gt;
+    </highlight>
 
 </usage>
 </directivesynopsis>
@@ -178,18 +176,18 @@ expressions</description>
     example, to activate the <code>/icons</code> directory, one might
     use:</p>
 
-    <example>
+    <highlight language="config">
       AliasMatch ^/icons(.*) /usr/local/apache/icons$1
-    </example>
+    </highlight>
 
     <p>The full range of <glossary ref="regex">regular expression</glossary>
     power is available.  For example,
     it is possible to construct an alias with case-insensitive
     matching of the URL-path:</p>
 
-    <example>
+    <highlight language="config">
       AliasMatch (?i)^/image(.*) /ftp/pub/image$1
-    </example>
+    </highlight>
 
     <p>One subtle difference
     between <directive module="mod_alias">Alias</directive>
@@ -212,22 +210,22 @@ expressions</description>
 
     <p>For example, suppose you want to replace this with AliasMatch:</p>
 
-    <example>
+    <highlight language="config">
       Alias /image/ /ftp/pub/image/
-    </example>
+    </highlight>
 
     <p>This is NOT equivalent - don't do this!  This will send all
     requests that have /image/ anywhere in them to /ftp/pub/image/:</p>
 
-    <example>
+    <highlight language="config">
       AliasMatch /image/ /ftp/pub/image/
-    </example>
+    </highlight>
 
     <p>This is what you need to get the same effect:</p>
 
-    <example>
+    <highlight language="config">
       AliasMatch ^/image/(.*)$ /ftp/pub/image/$1
-    </example>
+    </highlight>
 
     <p>Of course, there's no point in
     using <directive module="mod_alias">AliasMatch</directive>
@@ -236,10 +234,10 @@ expressions</description>
     you do more complicated things.  For example, you could
     serve different kinds of files from different directories:</p>
 
-    <example>
+    <highlight language="config">
       AliasMatch ^/image/(.*)\.jpg$ /files/jpg.images/$1.jpg<br/>
       AliasMatch ^/image/(.*)\.gif$ /files/gif.images/$1.gif
-    </example>
+    </highlight>
 
 </usage>
 </directivesynopsis>
@@ -271,13 +269,13 @@ a different URL</description>
     <em>URL</em>.  Additional path information beyond the matched
     <em>URL-Path</em> will be appended to the target URL.</p>
 
-    <example><title>Example:</title>
-      # Redirect to a URL on a different host<br />
-      Redirect /service http://foo2.example.com/service<br />
-      <br />
-      # Redirect to a URL on the same host<br />
-      Redirect /one /two
-    </example>
+    <highlight language="config">
+# Redirect to a URL on a different host
+Redirect /service http://foo2.example.com/service
+
+# Redirect to a URL on the same host
+Redirect /one /two
+    </highlight>
 
     <p>If the client requests <code>http://example.com/service/foo.txt</code>,
     it will be told to access
@@ -335,10 +333,10 @@ a different URL</description>
     HTTP status code, known to the Apache HTTP Server (see the function
     <code>send_error_response</code> in http_protocol.c).</p>
 
-    <example><title>Example:</title>
-      Redirect permanent /one http://example.com/two<br />
-      Redirect 303 /three http://example.com/other
-    </example>
+    <highlight language="config">
+Redirect permanent /one http://example.com/two
+Redirect 303 /three http://example.com/other
+    </highlight>
 
 </usage>
 </directivesynopsis>
@@ -364,9 +362,9 @@ of the current URL</description>
     example, to redirect all GIF files to like-named JPEG files on
     another server, one might use:</p>
 
-    <example>
+    <highlight language="config">
       RedirectMatch (.*)\.gif$ http://other.example.com$1.jpg
-    </example>
+    </highlight>
 
     <p>The considerations related to the difference between
     <directive module="mod_alias">Alias</directive> and
@@ -432,29 +430,27 @@ target as a CGI script</description>
     to scripts beginning with the second argument, which is a full
     pathname in the local filesystem.</p>
 
-    <example><title>Example:</title>
+    <highlight language="config">
       ScriptAlias /cgi-bin/ /web/cgi-bin/
-    </example>
+    </highlight>
 
     <p>A request for <code>http://example.com/cgi-bin/foo</code> would cause the
     server to run the script <code>/web/cgi-bin/foo</code>.  This configuration
     is essentially equivalent to:</p>
-    <example>
-      Alias /cgi-bin/ /web/cgi-bin/<br />
-      &lt;Location /cgi-bin &gt;<br />
-      <indent>
-      SetHandler cgi-script<br />
-      Options +ExecCGI<br />
-      </indent>
-      &lt;/Location&gt;
-    </example>
+    <highlight language="config">
+Alias /cgi-bin/ /web/cgi-bin/
+&lt;Location /cgi-bin &gt;
+    SetHandler cgi-script
+    Options +ExecCGI
+&lt;/Location&gt;
+    </highlight>
 
 	<p><directive>ScriptAlias</directive> can also be used in conjunction with
 	a script or handler you have. For example:</p>
 
-	<example>
+	<highlight language="config">
 	  ScriptAlias /cgi-bin/ /web/cgi-handler.pl
-    </example>
+    </highlight>
 
     <p>In this scenario all files requested in <code>/cgi-bin/</code> will be
     handled by the file you have configured, this allows you to use your own custom
@@ -473,14 +469,12 @@ target as a CGI script</description>
     module="core" type="section">Directory</directive>, <directive
     module="core">SetHandler</directive>, and <directive
     module="core">Options</directive> as in:
-    <example>
-      &lt;Directory /usr/local/apache2/htdocs/cgi-bin &gt;<br />
-      <indent>
-      SetHandler cgi-script<br />
-      Options ExecCGI<br />
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory /usr/local/apache2/htdocs/cgi-bin &gt;
+    SetHandler cgi-script
+    Options ExecCGI
+&lt;/Directory&gt;
+    </highlight>
     This is necessary since multiple <var>URL-paths</var> can map
     to the same filesystem location, potentially bypassing the
     <directive>ScriptAlias</directive> and revealing the source code
@@ -511,18 +505,18 @@ and designates the target as a CGI script</description>
     example, to activate the standard <code>/cgi-bin</code>, one
     might use:</p>
 
-    <example>
+    <highlight language="config">
       ScriptAliasMatch ^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
-    </example>
+    </highlight>
 
     <p>As for AliasMatch, the full range of <glossary ref="rexex">regular
     expression</glossary> power is available.
     For example, it is possible to construct an alias with case-insensitive
     matching of the URL-path:</p>
 
-    <example>
+    <highlight language="config">
       ScriptAliasMatch (?i)^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
-    </example>
+    </highlight>
 
     <p>The considerations related to the difference between
     <directive module="mod_alias">Alias</directive> and

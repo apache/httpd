@@ -80,8 +80,8 @@ to implement functions that start and end client-side sessions.</p>
 </section>
 
 <section id="example">
-<title>Configuration Example</title>
-<example><pre>
+<title>Configuration example</title>
+<highlight language="config"><pre>
 # mod_dbd configuration
 DBDriver pgsql
 DBDParams "dbname=apacheauth user=apache pass=xxxxxx"
@@ -135,7 +135,7 @@ DBDExptime 300
       "UPDATE authn SET login = 'false' WHERE user = %s"
   &lt;/Files&gt;
 &lt;/Directory&gt;
-</pre></example>
+</pre></highlight>
 </section>
 
 <directivesynopsis>
@@ -157,22 +157,22 @@ DBDExptime 300
     The first column value of each row returned by the query statement
     should be a string containing a group name.  Zero, one, or more rows
     may be returned.
-    <example><title>Example</title><pre>
+    <highlight language="config">
 Require dbd-group
 AuthzDBDQuery \
   "SELECT group FROM groups WHERE user = %s"
-</pre></example>
+</highlight>
     </li>
     <li>When used with a <code>Require dbd-login</code> or
     <code>Require dbd-logout</code> directive, it will never deny access,
     but will instead execute a SQL statement designed to log the user
     in or out.  The user must already be authenticated with
     <module>mod_authn_dbd</module>.
-    <example><title>Example</title><pre>
+    <highlight language="config"><pre>
 Require dbd-login
 AuthzDBDQuery \
   "UPDATE authn SET login = 'true' WHERE user = %s"
-</pre></example>
+</pre></highlight>
     </li>
     </ul>
     <p>In all cases, the user's ID will be passed as a single string
@@ -193,10 +193,10 @@ AuthzDBDQuery \
     specific to the user.  The user's ID will be passed as a single string
     parameter when the SQL query is executed.  It may be referenced within
     the query statement using a <code>%s</code> format specifier.</p>
-    <example><title>Example</title><pre>
+    <highlight language="config">
 AuthzDBDRedirectQuery \
   "SELECT userpage FROM userpages WHERE user = %s"
-</pre></example>
+</highlight>
     <p>The first column value of the first row returned by the query
     statement should be a string containing a URL to which to redirect
     the client.  Subsequent rows will be ignored.  If no rows are returned,

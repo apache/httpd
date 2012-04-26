@@ -81,22 +81,22 @@
     </ul>
 
     <example><title>Example</title>
-      &lt;Directory /var/www/html/private&gt;
-      <indent>
-        AuthName "Use 'anonymous' &amp; Email address for guest entry"<br />
-        AuthType Basic<br />
-        AuthBasicProvider file anon<br />
-        AuthUserFile /path/to/your/.htpasswd<br />
-        <br />
-        Anonymous_NoUserID off<br />
-        Anonymous_MustGiveEmail on<br />
-        Anonymous_VerifyEmail on<br />
-        Anonymous_LogEmail on<br />
-        Anonymous anonymous guest www test welcome<br />
-        <br />
-        Require valid-user<br />
-      </indent>
-      &lt;/Directory&gt;
+    <highlight language="config">
+&lt;Directory /var/www/html/private&gt;
+    AuthName "Use 'anonymous' &amp; Email address for guest entry"
+    AuthType Basic
+    AuthBasicProvider file anon
+    AuthUserFile /path/to/your/.htpasswd
+    
+    Anonymous_NoUserID off
+    Anonymous_MustGiveEmail on
+    Anonymous_VerifyEmail on
+    Anonymous_LogEmail on
+    Anonymous anonymous guest www test welcome
+    
+    Require valid-user
+&lt;/Directory&gt;
+      </highlight>
     </example>
 </section>
 

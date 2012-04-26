@@ -340,11 +340,11 @@ for HTTP Basic authentication.</description>
     <code>ldap://ldap/o=Example?cn</code> (i.e., <code>cn</code> is
     used for searches), the following Require directives could be used
     to restrict access:</p>
-<example>
-Require ldap-user "Barbara Jenson"<br />
-Require ldap-user "Fred User"<br />
-Require ldap-user "Joe Manager"<br />
-</example>
+<highlight language="config">
+Require ldap-user "Barbara Jenson"
+Require ldap-user "Fred User"
+Require ldap-user "Joe Manager"
+</highlight>
 
     <p>Because of the way that <module>mod_authnz_ldap</module> handles this
     directive, Barbara Jenson could sign on as <em>Barbara
@@ -356,7 +356,7 @@ Require ldap-user "Joe Manager"<br />
     <p>If the <code>uid</code> attribute was used instead of the
     <code>cn</code> attribute in the URL above, the above three lines
     could be condensed to</p>
-<example>Require ldap-user bjenson fuser jmanager</example>
+<highlight language="config">Require ldap-user bjenson fuser jmanager</highlight>
 </section>
 
 <section id="reqgroup"><title>Require ldap-group</title>
@@ -366,58 +366,58 @@ Require ldap-user "Joe Manager"<br />
     group. Note: Do not surround the group name with quotes.
     For example, assume that the following entry existed in
     the LDAP directory:</p>
-<example>
-dn: cn=Administrators, o=Example<br />
-objectClass: groupOfUniqueNames<br />
-uniqueMember: cn=Barbara Jenson, o=Example<br />
-uniqueMember: cn=Fred User, o=Example<br />
-</example>
+<highlight language="config">
+dn: cn=Administrators, o=Example
+objectClass: groupOfUniqueNames
+uniqueMember: cn=Barbara Jenson, o=Example
+uniqueMember: cn=Fred User, o=Example
+</highlight>
 
     <p>The following directive would grant access to both Fred and
     Barbara:</p>
-<example>Require ldap-group cn=Administrators, o=Example</example>
+<highlight language="config">Require ldap-group cn=Administrators, o=Example</highlight>
 
     <p>Members can also be found within sub-groups of a specified LDAP group
     if <directive module="mod_authnz_ldap">AuthLDAPMaxSubGroupDepth</directive>
     is set to a value greater than 0. For example, assume the following entries
     exist in the LDAP directory:</p>
-<example>
-dn: cn=Employees, o=Example<br />
-objectClass: groupOfUniqueNames<br />
-uniqueMember: cn=Managers, o=Example<br />
-uniqueMember: cn=Administrators, o=Example<br />
-uniqueMember: cn=Users, o=Example<br />
-<br />
-dn: cn=Managers, o=Example<br />
-objectClass: groupOfUniqueNames<br />
-uniqueMember: cn=Bob Ellis, o=Example<br />
-uniqueMember: cn=Tom Jackson, o=Example<br />
-<br />
-dn: cn=Administrators, o=Example<br />
-objectClass: groupOfUniqueNames<br />
-uniqueMember: cn=Barbara Jenson, o=Example<br />
-uniqueMember: cn=Fred User, o=Example<br />
-<br />
-dn: cn=Users, o=Example<br />
-objectClass: groupOfUniqueNames<br />
-uniqueMember: cn=Allan Jefferson, o=Example<br />
-uniqueMember: cn=Paul Tilley, o=Example<br />
-uniqueMember: cn=Temporary Employees, o=Example<br />
-<br />
-dn: cn=Temporary Employees, o=Example<br />
-objectClass: groupOfUniqueNames<br />
-uniqueMember: cn=Jim Swenson, o=Example<br />
-uniqueMember: cn=Elliot Rhodes, o=Example<br />
-</example>
+<highlight language="config">
+dn: cn=Employees, o=Example
+objectClass: groupOfUniqueNames
+uniqueMember: cn=Managers, o=Example
+uniqueMember: cn=Administrators, o=Example
+uniqueMember: cn=Users, o=Example
+
+dn: cn=Managers, o=Example
+objectClass: groupOfUniqueNames
+uniqueMember: cn=Bob Ellis, o=Example
+uniqueMember: cn=Tom Jackson, o=Example
+
+dn: cn=Administrators, o=Example
+objectClass: groupOfUniqueNames
+uniqueMember: cn=Barbara Jenson, o=Example
+uniqueMember: cn=Fred User, o=Example
+
+dn: cn=Users, o=Example
+objectClass: groupOfUniqueNames
+uniqueMember: cn=Allan Jefferson, o=Example
+uniqueMember: cn=Paul Tilley, o=Example
+uniqueMember: cn=Temporary Employees, o=Example
+
+dn: cn=Temporary Employees, o=Example
+objectClass: groupOfUniqueNames
+uniqueMember: cn=Jim Swenson, o=Example
+uniqueMember: cn=Elliot Rhodes, o=Example
+</highlight>
 
     <p>The following directives would allow access for Bob Ellis, Tom Jackson,
     Barbara Jensen, Fred User, Allan Jefferson, and Paul Tilley but would not
     allow access for Jim Swenson, or Elliot Rhodes (since they are at a
     sub-group depth of 2):</p>
-<example>
-Require ldap-group cn=Employees, o-Example<br />
-AuthLDAPSubGroupDepth 1<br />
-</example>
+<highlight language="config">
+Require ldap-group cn=Employees, o-Example
+AuthLDAPSubGroupDepth 1
+</highlight>
 
     <p>Behavior of this directive is modified by the <directive
     module="mod_authnz_ldap">AuthLDAPGroupAttribute</directive>, <directive
@@ -440,7 +440,7 @@ AuthLDAPSubGroupDepth 1<br />
 
     <p>The following directive would grant access to a specific
     DN:</p>
-<example>Require ldap-dn cn=Barbara Jenson, o=Example</example>
+<highlight language="config">Require ldap-dn cn=Barbara Jenson, o=Example</highlight>
 
     <p>Behavior of this directive is modified by the <directive
     module="mod_authnz_ldap">AuthLDAPCompareDNOnServer</directive>
@@ -457,7 +457,7 @@ AuthLDAPSubGroupDepth 1<br />
     <p>The following directive would grant access to anyone with
     the attribute employeeType = active</p>
 
-    <example>Require ldap-attribute employeeType=active</example>
+    <highlight language="config">Require ldap-attribute employeeType=active</highlight>
 
     <p>Multiple attribute/value pairs can be specified on the same line
     separated by spaces or they can be specified in multiple
@@ -470,7 +470,7 @@ AuthLDAPSubGroupDepth 1<br />
     <p>The following directive would grant access to anyone with
     the city attribute equal to "San Jose" or status equal to "Active"</p>
 
-    <example>Require ldap-attribute city="San Jose" status=active</example>
+    <highlight language="config">Require ldap-attribute city="San Jose" status=active</highlight>
 
 </section>
 
@@ -484,7 +484,7 @@ AuthLDAPSubGroupDepth 1<br />
     <p>The following directive would grant access to anyone having a cell phone
     and is in the marketing department</p>
 
-    <example>Require ldap-filter &amp;(cell=*)(department=marketing)</example>
+    <highlight language="config">Require ldap-filter &amp;(cell=*)(department=marketing)</highlight>
 
     <p>The difference between the <code>Require ldap-filter</code> directive and the
     <code>Require ldap-attribute</code> directive is that <code>ldap-filter</code>
@@ -504,19 +504,19 @@ AuthLDAPSubGroupDepth 1<br />
       <li>
         Grant access to anyone who exists in the LDAP directory,
         using their UID for searches.
-<example>
-AuthLDAPURL "ldap://ldap1.example.com:389/ou=People, o=Example?uid?sub?(objectClass=*)"<br />
+<highlight language="config">
+AuthLDAPURL "ldap://ldap1.example.com:389/ou=People, o=Example?uid?sub?(objectClass=*)"
 Require valid-user
-</example>
+</highlight>
       </li>
 
       <li>
         The next example is the same as above; but with the fields
         that have useful defaults omitted. Also, note the use of a
         redundant LDAP server.
-<example>AuthLDAPURL "ldap://ldap1.example.com ldap2.example.com/ou=People, o=Example"<br />
+<highlight language="config">AuthLDAPURL "ldap://ldap1.example.com ldap2.example.com/ou=People, o=Example"
 Require valid-user
-</example>
+</highlight>
       </li>
 
       <li>
@@ -528,19 +528,19 @@ Require valid-user
         this approach is not recommended: it's a better idea to
         choose an attribute that is guaranteed unique in your
         directory, such as <code>uid</code>.
-<example>
-AuthLDAPURL "ldap://ldap.example.com/ou=People, o=Example?cn"<br />
+<highlight language="config">
+AuthLDAPURL "ldap://ldap.example.com/ou=People, o=Example?cn"
 Require valid-user
-</example>
+</highlight>
       </li>
 
       <li>
         Grant access to anybody in the Administrators group. The
         users must authenticate using their UID.
-<example>
-AuthLDAPURL ldap://ldap.example.com/o=Example?uid<br />
+<highlight language="config">
+AuthLDAPURL ldap://ldap.example.com/o=Example?uid
 Require ldap-group cn=Administrators, o=Example
-</example>
+</highlight>
       </li>
 
       <li>
@@ -549,10 +549,10 @@ Require ldap-group cn=Administrators, o=Example
         of <code>qpagePagerID</code>. The example will grant access
         only to people (authenticated via their UID) who have
         alphanumeric pagers:
-<example>
-AuthLDAPURL ldap://ldap.example.com/o=Example?uid??(qpagePagerID=*)<br />
+<highlight language="config">
+AuthLDAPURL ldap://ldap.example.com/o=Example?uid??(qpagePagerID=*)
 Require valid-user
-</example>
+</highlight>
       </li>
 
       <li>
@@ -565,10 +565,10 @@ Require valid-user
         a pager, plus grant access to Joe Manager, who doesn't
         have a pager, but does need to access the same
         resource:</p>
-<example>
-AuthLDAPURL ldap://ldap.example.com/o=Example?uid??(|(qpagePagerID=*)(uid=jmanager))<br />
+<highlight language="config">
+AuthLDAPURL ldap://ldap.example.com/o=Example?uid??(|(qpagePagerID=*)(uid=jmanager))
 Require valid-user
-</example>
+</highlight>
 
         <p>This last may look confusing at first, so it helps to
         evaluate what the search filter will look like based on who
@@ -663,11 +663,11 @@ Require valid-user
     subtree search for the attribute <em>userPrincipalName</em>, with
     an empty search root, like so:</p>
 
-<example>
-AuthLDAPBindDN apache@example.com<br />
-AuthLDAPBindPassword password<br />
+<highlight language="config">
+AuthLDAPBindDN apache@example.com
+AuthLDAPBindPassword password
 AuthLDAPURL ldap://10.0.0.1:3268/?userPrincipalName?sub
-</example>
+</highlight>
 
     <p>Users will need to enter their User Principal Name as a login, in
     the form <em>somebody@nz.example.com</em>.</p>
@@ -690,11 +690,11 @@ AuthLDAPURL ldap://10.0.0.1:3268/?userPrincipalName?sub
     authentication to it is a matter of adding the following
     directives to <em>every</em> <code>.htaccess</code> file
     that gets created in the web</p>
-<example><pre>
+<highlight language="config"><pre>
 AuthLDAPURL            "the url"
 AuthGroupFile <em>mygroupfile</em>
 Require group <em>mygroupfile</em>
-</pre></example>
+</pre></highlight>
 
 <section id="howitworks"><title>How It Works</title>
 
@@ -864,8 +864,8 @@ to perform a DN lookup</description>
         <directive module="mod_authnz_ldap">AuthLDAPBindDN</directive>.
     </p>
 
-    <example> AuthLDAPInitialBindPattern (.+) $1@example.com </example>
-    <example> AuthLDAPInitialBindPattern (.+) cn=$1,dc=example,dc=com</example>
+    <highlight language="config"> AuthLDAPInitialBindPattern (.+) $1@example.com </highlight>
+    <highlight language="config"> AuthLDAPInitialBindPattern (.+) cn=$1,dc=example,dc=com</highlight>
 
     <note><title>Not available with authorization-only</title>
         This directive can only be used if this module authenticates the user, and
@@ -1215,7 +1215,7 @@ objects that are groups during sub-group processing.</description>
     to use. The syntax of the URL is</p>
 <example>ldap://host:port/basedn?attribute?scope?filter</example>
     <p>If you want to specify more than one LDAP URL that Apache should try in turn, the syntax is:</p>
-<example>AuthLDAPUrl "ldap://ldap1.example.com ldap2.example.com/dc=..."</example>
+<highlight language="config">AuthLDAPUrl "ldap://ldap1.example.com ldap2.example.com/dc=..."</highlight>
 <p><em><strong>Caveat: </strong>If you specify multiple servers, you need to enclose the entire URL string in quotes;
 otherwise you will get an error: "AuthLDAPURL takes one argument, URL to define LDAP connection.." </em>
 You can of course use search parameters on each of these.</p>
