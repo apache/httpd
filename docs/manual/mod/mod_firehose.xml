@@ -158,7 +158,9 @@ later.</compatibility>
     present.</p>
 
     <example><title>Example</title>
+    <highlight language="config">
       FirehoseConnectionInput connection-input.firehose
+      </highlight>
     </example>
 </usage>
 
@@ -180,7 +182,9 @@ later.</compatibility>
     keepalive is present.</p>
 
     <example><title>Example</title>
+    <highlight language="config">
       FirehoseConnectionOutput connection-output.firehose
+      </highlight>
     </example>
 </usage>
 
@@ -201,7 +205,9 @@ later.</compatibility>
     will be captured separately, regardless of the presence of keepalive.</p>
 
     <example><title>Example</title>
+    <highlight language="config">
       FirehoseRequestInput request-input.firehose
+      </highlight>
     </example>
 </usage>
 
@@ -222,7 +228,9 @@ later.</compatibility>
     will be captured separately, regardless of the presence of keepalive.</p>
 
     <example><title>Example</title>
+    <highlight language="config">
       FirehoseRequestOutput request-output.firehose
+      </highlight>
     </example>
 </usage>
 
@@ -242,7 +250,9 @@ later.</compatibility>
     <p>Capture traffic being received by mod_proxy.</p>
 
     <example><title>Example</title>
+    <highlight language="config">
       FirehoseProxyConnectionInput proxy-input.firehose
+      </highlight>
     </example>
 </usage>
 
@@ -262,7 +272,9 @@ later.</compatibility>
     <p>Capture traffic being sent out by mod_proxy.</p>
 
     <example><title>Example</title>
+    <highlight language="config">
       FirehoseProxyConnectionOutput proxy-output.firehose
+      </highlight>
     </example>
 </usage>
 
