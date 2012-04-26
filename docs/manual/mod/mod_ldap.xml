@@ -60,34 +60,32 @@ by other LDAP modules</description>
     <module>mod_ldap</module> to increase the performance of HTTP Basic
     authentication provided by <module>mod_authnz_ldap</module>.</p>
 
-    <example>
-      # Enable the LDAP connection pool and shared<br />
-      # memory cache. Enable the LDAP cache status<br />
-      # handler. Requires that mod_ldap and mod_authnz_ldap<br />
-      # be loaded. Change the "yourdomain.example.com" to<br />
-      # match your domain.<br />
-      <br />
-      LDAPSharedCacheSize 500000<br />
-      LDAPCacheEntries 1024<br />
-      LDAPCacheTTL 600<br />
-      LDAPOpCacheEntries 1024<br />
-      LDAPOpCacheTTL 600<br />
-      <br />
-      &lt;Location /ldap-status&gt;<br />
-      <indent>
-        SetHandler ldap-status<br />
+    <highlight language="config">
+# Enable the LDAP connection pool and shared
+# memory cache. Enable the LDAP cache status
+# handler. Requires that mod_ldap and mod_authnz_ldap
+# be loaded. Change the "yourdomain.example.com" to
+# match your domain.
 
-        Require host yourdomain.example.com<br />
+LDAPSharedCacheSize 500000
+LDAPCacheEntries 1024
+LDAPCacheTTL 600
+LDAPOpCacheEntries 1024
+LDAPOpCacheTTL 600
 
-        Satisfy any<br />
-        AuthType Basic<br />
-        AuthName "LDAP Protected"<br />
-        AuthBasicProvider ldap<br />
-        AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one<br />
-        Require valid-user<br />
-      </indent>
-      &lt;/Location&gt;
-    </example>
+&lt;Location /ldap-status&gt;
+    SetHandler ldap-status
+    
+    Require host yourdomain.example.com
+    
+    Satisfy any
+    AuthType Basic
+    AuthName "LDAP Protected"
+    AuthBasicProvider ldap
+    AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one
+    Require valid-user
+&lt;/Location&gt;
+    </highlight>
 </section>
 
 <section id="pool"><title>LDAP Connection Pool</title>
@@ -183,13 +181,11 @@ by other LDAP modules</description>
       following directives could be used to access the
       <module>mod_ldap</module> cache information:</p>
 
-      <example>
-        &lt;Location /server/cache-info&gt;<br />
-        <indent>
-          SetHandler ldap-status<br />
-        </indent>
-        &lt;/Location&gt;
-      </example>
+      <highlight language="config">
+&lt;Location /server/cache-info&gt;
+    SetHandler ldap-status
+&lt;/Location&gt;
+      </highlight>
 
       <p>By fetching the URL <code>http://servername/cache-info</code>,
       the administrator can get a status report of every cache that is used
@@ -211,51 +207,47 @@ by other LDAP modules</description>
     optional client certificates to be used, as well as the type of
     encryption to be used on the connection (none, SSL or TLS/STARTTLS).</p>
 
-    <example>
-      # Establish an SSL LDAP connection on port 636. Requires that <br />
-      # mod_ldap and mod_authnz_ldap be loaded. Change the <br />
-      # "yourdomain.example.com" to match your domain.<br />
-      <br />
-      LDAPTrustedGlobalCert CA_DER /certs/certfile.der<br />
-      <br />
-      &lt;Location /ldap-status&gt;<br />
-      <indent>
-        SetHandler ldap-status<br />
+    <highlight language="config">
+# Establish an SSL LDAP connection on port 636. Requires that 
+# mod_ldap and mod_authnz_ldap be loaded. Change the 
+# "yourdomain.example.com" to match your domain.
 
-        Require host yourdomain.example.com<br />
+LDAPTrustedGlobalCert CA_DER /certs/certfile.der
 
-        Satisfy any<br />
-        AuthType Basic<br />
-        AuthName "LDAP Protected"<br />
-        AuthBasicProvider ldap<br />
-        AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one<br />
-        Require valid-user<br />
-      </indent>
-      &lt;/Location&gt;
-    </example>
+&lt;Location /ldap-status&gt;
+    SetHandler ldap-status
+    
+    Require host yourdomain.example.com
+    
+    Satisfy any
+    AuthType Basic
+    AuthName "LDAP Protected"
+    AuthBasicProvider ldap
+    AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one
+    Require valid-user
+&lt;/Location&gt;
+    </highlight>
 
-    <example>
-      # Establish a TLS LDAP connection on port 389. Requires that <br />
-      # mod_ldap and mod_authnz_ldap be loaded. Change the <br />
-      # "yourdomain.example.com" to match your domain.<br />
-      <br />
-      LDAPTrustedGlobalCert CA_DER /certs/certfile.der<br />
-      <br />
-      &lt;Location /ldap-status&gt;<br />
-      <indent>
-        SetHandler ldap-status<br />
+    <highlight language="config">
+# Establish a TLS LDAP connection on port 389. Requires that 
+# mod_ldap and mod_authnz_ldap be loaded. Change the 
+# "yourdomain.example.com" to match your domain.
 
-        Require host yourdomain.example.com<br />
+LDAPTrustedGlobalCert CA_DER /certs/certfile.der
 
-        Satisfy any<br />
-        AuthType Basic<br />
-        AuthName "LDAP Protected"<br />
-        AuthBasicProvider ldap<br />
-        AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one TLS<br />
-        Require valid-user<br />
-      </indent>
-      &lt;/Location&gt;
-    </example>
+&lt;Location /ldap-status&gt;
+    SetHandler ldap-status
+    
+    Require host yourdomain.example.com
+    
+    Satisfy any
+    AuthType Basic
+    AuthName "LDAP Protected"
+    AuthBasicProvider ldap
+    AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one TLS
+    Require valid-user
+&lt;/Location&gt;
+    </highlight>
 
 </section>
 
@@ -288,29 +280,27 @@ by other LDAP modules</description>
         an error when an attempt is made to contact the LDAP server at
         runtime.</p>
 
-        <example>
-            # Specify a Netscape CA certificate file<br />
-            LDAPTrustedGlobalCert CA_CERT7_DB /certs/cert7.db<br />
-            # Specify an optional key3.db file for client certificate support<br />
-            LDAPTrustedGlobalCert CERT_KEY3_DB /certs/key3.db<br />
-            # Specify the secmod file if required<br />
-            LDAPTrustedGlobalCert CA_SECMOD /certs/secmod<br />
-            &lt;Location /ldap-status&gt;<br />
-            <indent>
-                SetHandler ldap-status<br />
+        <highlight language="config">
+# Specify a Netscape CA certificate file
+LDAPTrustedGlobalCert CA_CERT7_DB /certs/cert7.db
+# Specify an optional key3.db file for client certificate support
+LDAPTrustedGlobalCert CERT_KEY3_DB /certs/key3.db
+# Specify the secmod file if required
+LDAPTrustedGlobalCert CA_SECMOD /certs/secmod
+&lt;Location /ldap-status&gt;
+    SetHandler ldap-status
 
-                Require host yourdomain.example.com<br />
+    Require host yourdomain.example.com
 
-                Satisfy any<br />
-                AuthType Basic<br />
-                AuthName "LDAP Protected"<br />
-                AuthBasicProvider ldap<br />
-                LDAPTrustedClientCert CERT_NICKNAME &lt;nickname&gt; [password]<br />
-                AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one<br />
-                Require valid-user<br />
-            </indent>
-            &lt;/Location&gt;
-        </example>
+    Satisfy any
+    AuthType Basic
+    AuthName "LDAP Protected"
+    AuthBasicProvider ldap
+    LDAPTrustedClientCert CERT_NICKNAME &lt;nickname&gt; [password]
+    AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one
+    Require valid-user
+&lt;/Location&gt;
+        </highlight>
 
     </section>
 
@@ -330,16 +320,16 @@ by other LDAP modules</description>
         LDAPTrustedMode parameter. If an ldaps:// URL is specified,
         SSL mode is forced, override this directive.</p>
 
-        <example>
-             # Specify two CA certificate files<br />
-             LDAPTrustedGlobalCert CA_DER /certs/cacert1.der<br />
-             LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem<br />
-             # Specify a client certificate file and key<br />
-             LDAPTrustedGlobalCert CERT_BASE64 /certs/cert1.pem<br />
-             LDAPTrustedGlobalCert KEY_BASE64 /certs/key1.pem [password]<br />
-             # Do not use this directive, as it will throw an error<br />
-             #LDAPTrustedClientCert CERT_BASE64 /certs/cert1.pem<br />
-        </example>
+        <highlight language="config">
+# Specify two CA certificate files
+LDAPTrustedGlobalCert CA_DER /certs/cacert1.der
+LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
+# Specify a client certificate file and key
+LDAPTrustedGlobalCert CERT_BASE64 /certs/cert1.pem
+LDAPTrustedGlobalCert KEY_BASE64 /certs/key1.pem [password]
+# Do not use this directive, as it will throw an error
+#LDAPTrustedClientCert CERT_BASE64 /certs/cert1.pem
+        </highlight>
 
     </section>
 
@@ -362,30 +352,28 @@ by other LDAP modules</description>
         (ldaps://) support has been deprecated to be replaced with TLS,
         although the SSL functionality still works.</p>
 
-        <example>
-             # Specify two CA certificate files<br />
-             LDAPTrustedGlobalCert CA_DER /certs/cacert1.der<br />
-             LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem<br />
-            &lt;Location /ldap-status&gt;<br />
-            <indent>
-                SetHandler ldap-status<br />
-
-                Require host yourdomain.example.com<br />
-
-                LDAPTrustedClientCert CERT_BASE64 /certs/cert1.pem<br />
-                LDAPTrustedClientCert KEY_BASE64 /certs/key1.pem<br />
-                # CA certs respecified due to per-directory client certs<br />
-                LDAPTrustedClientCert CA_DER /certs/cacert1.der<br />
-                LDAPTrustedClientCert CA_BASE64 /certs/cacert2.pem<br />
-                Satisfy any<br />
-                AuthType Basic<br />
-                AuthName "LDAP Protected"<br />
-                AuthBasicProvider ldap<br />
-                AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one<br />
-                Require valid-user<br />
-            </indent>
-            &lt;/Location&gt;
-        </example>
+        <highlight language="config">
+# Specify two CA certificate files
+LDAPTrustedGlobalCert CA_DER /certs/cacert1.der
+LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
+&lt;Location /ldap-status&gt;
+    SetHandler ldap-status
+    
+    Require host yourdomain.example.com
+    
+    LDAPTrustedClientCert CERT_BASE64 /certs/cert1.pem
+    LDAPTrustedClientCert KEY_BASE64 /certs/key1.pem
+    # CA certs respecified due to per-directory client certs
+    LDAPTrustedClientCert CA_DER /certs/cacert1.der
+    LDAPTrustedClientCert CA_BASE64 /certs/cacert2.pem
+    Satisfy any
+    AuthType Basic
+    AuthName "LDAP Protected"
+    AuthBasicProvider ldap
+    AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one
+    Require valid-user
+&lt;/Location&gt;
+        </highlight>
 
     </section>
 

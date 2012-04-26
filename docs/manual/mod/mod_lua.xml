@@ -53,17 +53,17 @@ Be sure to check the CHANGES file before upgrading.</note>
 
 <p>The basic module loading directive is</p>
 
-<example>
+<highlight language="config">
     LoadModule lua_module modules/mod_lua.so
-</example>
+</highlight>
 
 <p>
 <code>mod_lua</code> provides a handler named <code>lua-script</code>,
 which can be used with an <code>AddHandler</code> directive:</p>
 
-<example>
+<highlight language="config">
 AddHandler lua-script .lua
-</example>
+</highlight>
 
 <p>
 This will cause <code>mod_lua</code> to handle requests for files
@@ -462,16 +462,18 @@ end
     be careful writing your regular expressions to avoid security
     issues.</p>
    <example><title>Examples:</title>
+   <highlight language="config">
     LuaMapHandler /(\w+)/(/w+) /scripts/$1.lua handle_$2
+    </highlight>
    </example>
         <p>This would match uri's such as /photos/show?id=9
         to the file /scripts/photos.lua and invoke the
         handler function handle_show on the lua vm after
         loading that file.</p>
 
-<example>
+<highlight language="config">
     LuaMapHandler /bingo /scripts/wombat.lua
-</example>
+</highlight>
         <p>This would invoke the "handle" function, which
         is the default if no specific function name is
         provided.</p>
@@ -491,8 +493,10 @@ end
     lua vms.</p>
 
     <example><title>Examples:</title>
-        LuaPackagePath /scripts/lib/?.lua<br />
-        LuaPackagePath /scripts/lib/?/init.lua
+    <highlight language="config">
+LuaPackagePath /scripts/lib/?.lua
+LuaPackagePath /scripts/lib/?/init.lua
+    </highlight>
     </example>
 </usage>
 </directivesynopsis>
@@ -537,9 +541,11 @@ end
     for development.</p>
 
     <example><title>Examples:</title>
-        LuaCodeCache stat<br />
-        LuaCodeCache forever<br />
-        LuaCodeCache never<br />
+    <highlight language="config">
+LuaCodeCache stat
+LuaCodeCache forever
+LuaCodeCache never
+    </highlight>
     </example>
 
 </usage>
@@ -571,10 +577,10 @@ end
 
     <p>Example:</p>
 
-<example><pre>
+<highlight language="config">
 # httpd.conf
 LuaHookTranslateName /scripts/conf/hooks.lua silly_mapper
-</pre></example>
+</highlight>
 
 <highlight language="lua">
 -- /scripts/conf/hooks.lua --
