@@ -8,6 +8,6 @@
 
   <variants>
     <variant>en</variant>
-    <variant outdated="yes">tr</variant>
+    <variant>tr</variant>
   </variants>
 </metafile>

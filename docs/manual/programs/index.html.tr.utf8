@@ -27,7 +27,6 @@
 <a href="../tr/programs/" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/programs/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Bu sayfada Apache HTTP Sunucusuna dahil tüm çalıştırılabilir programlar
       tanıtılmıştır.</p>
@@ -82,14 +81,14 @@
       <dd>Apache günlük dosyalarındaki IP adreslerini konak isimlerine
         dönüştürür.</dd>
 
-      <dt><a href="other.html#log_server_status">log_server_status</a></dt>
+      <dt><code class="program"><a href="../programs/log_server_status.html">log_server_status</a></code></dt>
       <dd>Sunucunun durumunu düzenli aralıklarla günlüğe kaydeder.</dd>
 
       <dt><code class="program"><a href="../programs/rotatelogs.html">rotatelogs</a></code></dt>
       <dd>Sunucuyu öldürmek gerekmeksizin günlük dosyalarının döndürülmesini
         sağlar.</dd>
 
-      <dt><a href="other.html#split-logfile">split-logfile</a></dt>
+      <dt><code class="program"><a href="../programs/split-logfile.html">split-logfile</a></code></dt>
       <dd>Bir çok konaklı günlük dosyasını konak başına bir günlük dosyası düşecek şekilde böler.</dd>
 
       <dt><code class="program"><a href="../programs/suexec.html">suexec</a></code></dt>
@@ -104,9 +103,9 @@
 <a href="../zh-cn/programs/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2012 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div><script type="text/javascript">
-    if (prettyPrint) {
-        prettyPrint();
-    }
-</script>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== undefined) {
+    prettyPrint();
+}
+//--><!]]></script>
 </body></html>
