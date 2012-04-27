@@ -64,7 +64,7 @@ pre.lang-config{
 .lang-config .tag { color: #821; font-weight: bold }  /* enclosures */
 .lang-config .kwd { color: #128; font-weight: bold }  /* directives */
 .lang-config .com { color: #c46d34 }  /* comments */
-
+.lang-config .lit { color: #077 }  /* miscellaneous types: Options arguments, handler names etc */
 
 
 
@@ -97,7 +97,7 @@ pre.lang-lua{
 }
 
 .lang-lua .com { color: #c34e00 }  /* a comment */
-.lang-lua .lit { color: #088 } /* a literal */
+.lang-lua .lit { color: #088 } /* a literal (in this context; a known directive argument, a number or an IP address) */
 .lang-lua .str { color: #009606 } /* string content */
 .lang-lua .kwd { color: #00C; font-weight: bold }  /* a keyword */
 .lang-lua .typ { color: #808 }  /* a type name */
