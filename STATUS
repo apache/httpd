@@ -103,7 +103,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1311172
     CHANGES fix: http://svn.apache.org/viewvc?view=revision&revision=1331243
     2.4 patch: Trunk patch works
-    +1: sf, jorton
+    +1: sf, jorton, jim
 
   * core: Fix error handling in ap_scan_script_header_err_brigade() if there
     is no EOS bucket in the brigade.
@@ -111,7 +111,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR: 48272 (partial fix)
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1311174
     2.4 patch: Trunk patch works
-    +1: sf, jorton
+    +1: sf, jorton, jim
 
   * mod_authz_core: Fix parsing of Require arguments in <AuthzProviderAlias>.
     Add some logging and an assert for a case that should not happen.
@@ -124,19 +124,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     the line number of a syntax error!).
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1305586
     2.4 patch: Trunk patch works
-    +1: sf, jorton
+    +1: sf, jorton, jim
 
   * mod_filter: Add some trace logging for AddOutputFilterByType
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1299783
     2.4 patch: Trunk patch works
-    +1: sf, jorton
+    +1: sf, jorton, jim
 
   * log_server_status: Bring Perl style forward to the present, use
     standard modules, update for new format of server-status output.
     Trunk patch: http://people.apache.org/~rbowen/log_server_status.trunk.patch
       (Revisions r1325218 through r1325275)
     2.4 patch: Trunk patch works
-    +1: rbowen
+    +1: rbowen, jim
 
   * cross-compile: allow to provide CC_FOR_BUILD so that gen_test_char will be
     compiled by the build compiler instead of the host compiler.
@@ -150,20 +150,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * core: Prevent "httpd -k restart" from killing server in presence of config error.
     trunk patch: http://svn.apache.org/viewvc?rev=1328345&view=rev
     2.4 patch: trunk patch works
-    +1: jorton
+    +1: jorton, jim
  
   * mod_sed, mod_log_debug: Symbol namespace cleanups.
     trunk patches: http://svn.apache.org/viewvc?rev=1326980&view=rev
                    http://svn.apache.org/viewvc?rev=1326984&view=rev
                    http://svn.apache.org/viewvc?rev=1326991&view=rev
     2.4 patch: trunk works => http://people.apache.org/~jorton/httpd-2.4.1-symbols.patch
-    +1: jorton 
+    +1: jorton , jim
 
   * core: Use a TLS/10 close_notify for dummy connection to SSL listener.
     trunk patches: http://svn.apache.org/viewvc?rev=1327036&view=rev
                    http://svn.apache.org/viewvc?rev=1327080&view=rev
     2.4 patch: trunk works => http://people.apache.org/~jorton/httpd-2.4.2-dummytls.patch
-    +1: jorton 
+    +1: jorton , jim
 
 PATCHES/ISSUES THAT ARE STALLED
 
