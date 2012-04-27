@@ -369,27 +369,30 @@ end
 
         <p>The request_rec has (at least) the following methods:</p>
 
-        <div class="example"><p><code>
+        <pre class="prettyprint lang-lua">
         r:addoutputfilter(name|function) -- add an output filter
-        </code></p></div>
+        </pre>
 
-        <div class="example"><p><code>
-        r:parseargs() -- returns a lua table containing the request's
-                         query string arguments
-        </code></p></div>
 
-        <div class="example"><p><code>
-        r:parsebody() -- parse the request body as a POST and return
-                         a lua table
-        </code></p></div>
+        <pre class="prettyprint lang-lua">
+        r:parseargs() -- returns a lua table containing the request's query string arguments
+        </pre>
 
-        <div class="example"><p><code>
+
+        <pre class="prettyprint lang-lua">
+        r:parsebody() -- parse the request body as a POST and return  a lua table
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
         r:puts("hello", " world", "!") -- print to response body
-        </code></p></div>
+        </pre>
 
-        <div class="example"><p><code>
+
+        <pre class="prettyprint lang-lua">
         r:write("a single string") -- print to response body
-        </code></p></div>
+        </pre>
+
         </dd>
     </dl>
 

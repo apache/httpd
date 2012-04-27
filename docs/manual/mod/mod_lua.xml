@@ -332,27 +332,25 @@ end
 
         <p>The request_rec has (at least) the following methods:</p>
 
-        <example>
+        <highlight language="lua">
         r:addoutputfilter(name|function) -- add an output filter
-        </example>
+        </highlight>
 
-        <example>
-        r:parseargs() -- returns a lua table containing the request's
-                         query string arguments
-        </example>
+        <highlight language="lua">
+        r:parseargs() -- returns a lua table containing the request's query string arguments
+        </highlight>
 
-        <example>
-        r:parsebody() -- parse the request body as a POST and return
-                         a lua table
-        </example>
+        <highlight language="lua">
+        r:parsebody() -- parse the request body as a POST and return  a lua table
+        </highlight>
 
-        <example>
+        <highlight language="lua">
         r:puts("hello", " world", "!") -- print to response body
-        </example>
+        </highlight>
 
-        <example>
+        <highlight language="lua">
         r:write("a single string") -- print to response body
-        </example>
+        </highlight>
         </dd>
     </dl>
 
