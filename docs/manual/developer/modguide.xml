@@ -861,7 +861,7 @@ static const command_rec        example_directives[] =
 <!-- END EXAMPLE CODE -->
 
 <p>
-<img src="../images/build_a_mod_4.png" border="1" alt="Directives structure"/><br/>
+<img src="../images/build_a_mod_4.png" alt="Directives structure"/><br />
 As you can see, each directive needs at least 5 parameters set:
 </p>
 <ol>
