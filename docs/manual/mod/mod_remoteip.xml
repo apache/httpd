@@ -118,11 +118,15 @@ via the request headers.
     hosts presenting a <directive>RemoteIPHeader</directive> IP value.</p>
 
     <example><title>Internal (Load Balancer) Example</title>
+    <highlight language="config">
         RemoteIPHeader X-Client-IP
+        </highlight>
     </example>
 
     <example><title>Proxy Example</title>
+    <highlight language="config">
         RemoteIPHeader X-Forwarded-For
+        </highlight>
     </example>
 </usage>
 </directivesynopsis>
@@ -142,9 +146,11 @@ via the request headers.
     trusted when passed from these proxies.</p>
 
     <example><title>Internal (Load Balancer) Example</title>
-        RemoteIPHeader X-Client-IP<br/>
-        RemoteIPTrustedProxy 10.0.2.0/24<br/>
-        RemoteIPTrustedProxy gateway.localdomain
+    <highlight language="config">
+RemoteIPHeader X-Client-IP
+RemoteIPTrustedProxy 10.0.2.0/24
+RemoteIPTrustedProxy gateway.localdomain
+        </highlight>
     </example>
 </usage>
 </directivesynopsis>
@@ -170,9 +176,11 @@ via the request headers.
     </example>
 
     <example><title>conf/trusted-proxies.lst contents</title>
-         # Our internally trusted proxies;<br/>
-         10.0.2.0/24         #Everyone in the testing group<br/>
-         gateway.localdomain #The front end balancer
+    <example><pre>
+# Our internally trusted proxies;
+10.0.2.0/24         #Everyone in the testing group
+gateway.localdomain #The front end balancer
+         </pre></example>
     </example>
 </usage>
 </directivesynopsis>
@@ -193,8 +201,10 @@ via the request headers.
     <directive>RemoteIPInternalProxy</directive> addresses are discarded.</p>
 
     <example><title>Example</title>
-        RemoteIPHeader X-Forwarded-For<br/>
-        RemoteIPProxiesHeader X-Forwarded-By
+    <highlight language="config">
+RemoteIPHeader X-Forwarded-For
+RemoteIPProxiesHeader X-Forwarded-By
+    </highlight>
     </example>
 </usage>
 </directivesynopsis>
@@ -216,9 +226,11 @@ via the request headers.
     <directive>RemoteIPHeader</directive> header's value.</p>
 
     <example><title>Trusted (Load Balancer) Example</title>
-        RemoteIPHeader X-Forwarded-For<br/>
-        RemoteIPTrustedProxy 10.0.2.16/28<br/>
-        RemoteIPTrustedProxy proxy.example.com
+        <highlight language="config">
+RemoteIPHeader X-Forwarded-For
+RemoteIPTrustedProxy 10.0.2.16/28
+RemoteIPTrustedProxy proxy.example.com
+        </highlight>
     </example>
 </usage>
 </directivesynopsis>
@@ -239,8 +251,10 @@ via the request headers.
     the <directive>RemoteIPTrustedProxy</directive> directive.</p>
 
     <example><title>Trusted (Load Balancer) Example</title>
-        RemoteIPHeader X-Forwarded-For<br/>
-        RemoteIPTrustedProxyList conf/trusted-proxies.lst
+    <highlight language="config">
+RemoteIPHeader X-Forwarded-For
+RemoteIPTrustedProxyList conf/trusted-proxies.lst
+        </highlight>
     </example>
 
     <example><title>conf/trusted-proxies.lst contents</title>
