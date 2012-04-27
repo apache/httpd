@@ -103,11 +103,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4 patch: Trunk patch works
     +1: sf, jorton, jim
 
-  * mod_lua: Log better error message if parsing of a script fails (including
-    the line number of a syntax error!).
-    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1305586
-    2.4 patch: Trunk patch works
-    +1: sf, jorton, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
