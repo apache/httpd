@@ -122,7 +122,9 @@ password verification</description>
     userIDs.</p>
 
     <example><title>Example:</title>
+    <highlight language="config">
       Anonymous anonymous "Not Registered" "I don't know"
+    </highlight>
     </example>
 
     <p>This would allow the user to enter without password
