@@ -45,26 +45,23 @@ HTTP caching filter.</td></tr>
     however the caching of partial content is not yet supported by this
     module.</p>
 
-    <div class="example"><p><code>
-      # Turn on caching<br />
-      CacheSocache shmcb<br />
-      CacheSocacheMaxSize 102400<br />
-      &lt;Location /foo&gt;<br />
-        <span class="indent">
-        CacheEnable socache<br />
-        </span>
-      &lt;/Location&gt;<br />
-      <br />
-      # Fall back to the disk cache<br />
-      CacheSocache shmcb<br />
-      CacheSocacheMaxSize 102400<br />
-      &lt;Location /foo&gt;<br />
-        <span class="indent">
-        CacheEnable socache<br />
-        CacheEnable disk<br />
-        </span>
-      &lt;/Location&gt;<br />
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+# Turn on caching
+CacheSocache shmcb
+CacheSocacheMaxSize 102400
+&lt;Location /foo&gt;
+    CacheEnable socache
+&lt;/Location&gt;
+
+# Fall back to the disk cache
+CacheSocache shmcb
+CacheSocacheMaxSize 102400
+&lt;Location /foo&gt;
+    CacheEnable socache
+    CacheEnable disk
+&lt;/Location&gt;
+    </pre>
+
 
     <div class="note"><h3>Note:</h3>
       <p><code class="module"><a href="../mod/mod_cache_socache.html">mod_cache_socache</a></code> requires the services of
@@ -105,9 +102,10 @@ stored</td></tr>
     implementations</a> of shared object caches are available to choose
     from.</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       CacheSocache shmcb
-    </code></p></div>
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -134,9 +132,10 @@ cache</td></tr>
     responses larger than those cacheable within
     <code class="module"><a href="../mod/mod_cache_socache.html">mod_cache_socache</a></code>.</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       CacheSocacheMaxSize 102400
-    </code></p></div>
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -156,9 +155,10 @@ cache</td></tr>
     the cache. This value overrides the freshness lifetime defined for the
     document by the HTTP protocol.</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       CacheSocacheMaxTime 86400
-    </code></p></div>
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -179,9 +179,10 @@ cache</td></tr>
     only stored for its freshness lifetime, there will be no opportunity to
     revalidate the response to make it fresh again.</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       CacheSocacheMinTime 600
-    </code></p></div>
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -207,9 +208,10 @@ cache</td></tr>
     <p>This directive only takes effect when the data is being saved to the
     cache, as opposed to data being served from the cache.</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       CacheReadSize 102400
-    </code></p></div>
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -239,9 +241,10 @@ cache</td></tr>
     to ensure that the server does not buffer excessively should data arrive faster
     than expected.</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       CacheSocacheReadTime 1000
-    </code></p></div>
+    </pre>
+
 
 </div>
 </div>

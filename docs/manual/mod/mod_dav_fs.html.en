@@ -41,7 +41,10 @@
     directive:</p>
 
     <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       Dav filesystem
+      </pre>
+
     </code></p></div>
 
     <p>Since <code>filesystem</code> is the default provider for
@@ -75,7 +78,10 @@
     
 
     <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       DavLockDB var/DavLock
+      </pre>
+
     </code></p></div>
 
     <p>The directory containing the lock database file must be

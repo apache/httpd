@@ -74,12 +74,14 @@ files</td></tr>
     accessed. Set to "<code>.</code>" to look in the same directory
     as the file:</p>
 
-    <div class="example"><p><code>MetaDir .</code></p></div>
+    <pre class="prettyprint lang-config">MetaDir .</pre>
+
 
     <p>Or, to set it to a subdirectory of the directory containing the
     files:</p>
 
-    <div class="example"><p><code>MetaDir .meta</code></p></div>
+    <pre class="prettyprint lang-config">MetaDir .meta</pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

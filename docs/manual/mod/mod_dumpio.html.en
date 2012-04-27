@@ -63,9 +63,10 @@
     the below directives.  Additionally, <code class="module"><a href="../mod/mod_dumpio.html">mod_dumpio</a></code>
     needs to be configured to <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> <code>trace7</code>:
     </p>
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       LogLevel dumpio:trace7
-    </code></p></div>
+    </pre>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="DumpIOInput" id="DumpIOInput">DumpIOInput</a> <a name="dumpioinput" id="dumpioinput">Directive</a></h2>
@@ -82,7 +83,10 @@ later.</td></tr>
     <p>Enable dumping of all input.</p>
 
     <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       DumpIOInput On
+      </pre>
+
     </code></p></div>
 
 </div>
@@ -101,7 +105,10 @@ later.</td></tr>
     <p>Enable dumping of all output.</p>
 
     <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       DumpIOOutput On
+      </pre>
+
     </code></p></div>
 
 </div>

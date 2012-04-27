@@ -80,7 +80,10 @@
     locks.</p>
 
     <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       DavGenericLockDB var/DavLock
+      </pre>
+
     </code></p></div>
 
     <p>The directory containing the lock database file must be
