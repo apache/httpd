@@ -88,16 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
-  * mod_rewrite: Fix RewriteCond integer checks to be parsed correctly.
-    (PR 53023)
-    Patch: http://svn.apache.org/viewvc?view=revision&revision=1309602
-    (applies cleanly to 2.4.x)
-    +1: nd
-
   * mod_proxy_fcgi: Report errors to the client
     PR: 52879
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1311172
@@ -113,13 +103,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4 patch: Trunk patch works
     +1: sf, jorton, jim
 
-  * mod_authz_core: Fix parsing of Require arguments in <AuthzProviderAlias>.
-    Add some logging and an assert for a case that should not happen.
-    PR: 53048
-    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1311183
-    2.4 patch: Trunk patch works
-    +1: sf
-
   * mod_lua: Log better error message if parsing of a script fails (including
     the line number of a syntax error!).
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1305586
@@ -130,6 +113,22 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1299783
     2.4 patch: Trunk patch works
     +1: sf, jorton, jim
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+  * mod_rewrite: Fix RewriteCond integer checks to be parsed correctly.
+    (PR 53023)
+    Patch: http://svn.apache.org/viewvc?view=revision&revision=1309602
+    (applies cleanly to 2.4.x)
+    +1: nd
+
+  * mod_authz_core: Fix parsing of Require arguments in <AuthzProviderAlias>.
+    Add some logging and an assert for a case that should not happen.
+    PR: 53048
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1311183
+    2.4 patch: Trunk patch works
+    +1: sf
 
   * log_server_status: Bring Perl style forward to the present, use
     standard modules, update for new format of server-status output.
