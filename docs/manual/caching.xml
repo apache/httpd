@@ -663,9 +663,9 @@ CacheDirLength 1
         instructs httpd to open the file when it is started and to re-use
         this file-handle for all subsequent access to this file.</p>
 
-        <example>
+        <highlight language="config">
         CacheFile /usr/local/apache2/htdocs/index.html
-        </example>
+        </highlight>
 
         <p>If you intend to cache a large number of files in this manner, you
         must ensure that your operating system's limit for the number of open
@@ -755,9 +755,9 @@ sys     0m0.000s</pre>
         start time (using the mmap system call). httpd will use the in-memory
         contents for all subsequent accesses to this file.</p>
 
-        <example>
+        <highlight language="config">
         MMapFile /usr/local/apache2/htdocs/index.html
-        </example>
+        </highlight>
 
         <p>As with the
         <directive module="mod_file_cache">CacheFile</directive> directive, any
