@@ -77,9 +77,10 @@ use <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</
     address will usually correspond to a configured  <code class="directive"><a href="../mod/mod_heartbeat.html#heartbeataddress">HeartbeatAddress</a></code> on an origin server.
     </p>
     
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
     HeartbeatListen 239.0.0.1:27999
-    </code></p></div>
+    </pre>
+
 
     <p> This module is inactive until this directive is used.</p>
 

@@ -228,50 +228,45 @@
     <p>A typical configuration protecting a server serving static content
     might be as follows:</p>
 
-    <div class="example"><p><code>
-    &lt;Location /&gt;<br />
-    <span class="indent">
-      SetOutputFilter POLICY_TYPE;POLICY_LENGTH;POLICY_KEEPALIVE;POLICY_VARY;POLICY_VALIDATION; \<br />
-      <span class="indent">
-        POLICY_CONDITIONAL;POLICY_NOCACHE;POLICY_MAXAGE;POLICY_VERSION<br />
-      </span>
-      <br />
-      # content type must be present and valid, but can be anything<br />
-      PolicyType enforce */*<br />
-      <br />
-      # reject if no explicitly declared content length<br />
-      PolicyLength enforce<br />
-      <br />
-      # covered by the policy length filter<br />
-      PolicyKeepalive ignore<br />
-      <br />
-      # reject if User-Agent appears within Vary headers<br />
-      PolicyVary enforce User-Agent<br />
-      <br />
-      # we want to enforce validation<br />
-      PolicyValidation enforce<br />
-      <br />
-      # non-functional conditional responses should be rejected<br />
-      PolicyConditional enforce<br />
-      <br />
-      # no-cache responses should be rejected<br />
-      PolicyNocache enforce<br />
-      <br />
-      # maxage must be at least a day<br />
-      PolicyMaxage enforce 86400<br />
-      <br />
-      # request version can be anything<br />
-      PolicyVersion ignore HTTP/1.1<br />
-    </span>
-    &lt;/Location&gt;<br />
-    <br />
-    # suppress policy protection for server-status<br />
-    &lt;Location /server-status&gt;<br />
-    <span class="indent">
-      PolicyFilter off<br />
-    </span>
-    &lt;/Location&gt;<br />
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Location /&gt;
+  SetOutputFilter POLICY_TYPE;POLICY_LENGTH;POLICY_KEEPALIVE;POLICY_VARY;POLICY_VALIDATION; \
+    POLICY_CONDITIONAL;POLICY_NOCACHE;POLICY_MAXAGE;POLICY_VERSION
+  
+  # content type must be present and valid, but can be anything
+  PolicyType enforce */*
+  
+  # reject if no explicitly declared content length
+  PolicyLength enforce
+  
+  # covered by the policy length filter
+  PolicyKeepalive ignore
+  
+  # reject if User-Agent appears within Vary headers
+  PolicyVary enforce User-Agent
+  
+  # we want to enforce validation
+  PolicyValidation enforce
+  
+  # non-functional conditional responses should be rejected
+  PolicyConditional enforce
+  
+  # no-cache responses should be rejected
+  PolicyNocache enforce
+  
+  # maxage must be at least a day
+  PolicyMaxage enforce 86400
+  
+  # request version can be anything
+  PolicyVersion ignore HTTP/1.1
+&lt;/Location&gt;
+
+# suppress policy protection for server-status
+&lt;Location /server-status&gt;
+  PolicyFilter off
+&lt;/Location&gt;
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -290,8 +285,11 @@ later.</td></tr>
     but wasn't will be rejected.</p>
 
     <div class="example"><h3>Example</h3><p><code>
-    # non-functional conditional responses should be rejected<br />
-    PolicyConditional enforce<br />
+    <pre class="prettyprint lang-config">
+# non-functional conditional responses should be rejected
+PolicyConditional enforce
+    </pre>
+
     </code></p></div>
 
 </div>
@@ -330,8 +328,11 @@ later.</td></tr>
     be ignored.</p>
 
     <div class="example"><h3>Example</h3><p><code>
-    # downgrade if POLICY_CONTROL was present<br />
-    PolicyEnvironment POLICY_CONTROL log ignore<br />
+    <pre class="prettyprint lang-config">
+# downgrade if POLICY_CONTROL was present
+PolicyEnvironment POLICY_CONTROL log ignore
+    </pre>
+
     </code></p></div>
 
 </div>
@@ -350,19 +351,18 @@ later.</td></tr>
     <p>Master switch to enable or disable policies for a given URL space.</p>
 
     <div class="example"><h3>Example</h3><p><code>
-    # enabled by default<br />
-    &lt;Location /&gt;<br />
-    <span class="indent">
-      PolicyFilter on<br />
-    </span>
-    &lt;/Location&gt;<br />
-    <br />
-    # suppress policy protection for server-status<br />
-    &lt;Location /server-status&gt;<br />
-    <span class="indent">
-      PolicyFilter off<br />
-    </span>
-    &lt;/Location&gt;<br />
+    <pre class="prettyprint lang-config">
+# enabled by default
+&lt;Location /&gt;
+  PolicyFilter on
+&lt;/Location&gt;
+
+# suppress policy protection for server-status
+&lt;Location /server-status&gt;
+  PolicyFilter off
+&lt;/Location&gt;
+</pre>
+
     </code></p></div>
 
 </div>
@@ -383,8 +383,11 @@ later.</td></tr>
     of <code>chunked</code> will be rejected.</p>
 
     <div class="example"><h3>Example</h3><p><code>
-    # missing Content-Length or Transfer-Encoding should be rejected<br />
-    PolicyKeepalive enforce<br />
+    <pre class="prettyprint lang-config">
+# missing Content-Length or Transfer-Encoding should be rejected
+PolicyKeepalive enforce
+</pre>
+
     </code></p></div>
 
 </div>
@@ -420,8 +423,11 @@ later.</td></tr>
     <code>Content-Length</code> header will be rejected.</p>
 
     <div class="example"><h3>Example</h3><p><code>
-    # missing Content-Length header should be rejected<br />
-    PolicyLength enforce<br />
+    <pre class="prettyprint lang-config">
+# missing Content-Length header should be rejected
+PolicyLength enforce
+    </pre>
+
     </code></p></div>
 
 </div>
@@ -459,8 +465,11 @@ later.</td></tr>
     smaller than the given value, will be rejected.</p>
 
     <div class="example"><h3>Example</h3><p><code>
-    # reject responses with a freshness lifetime shorter than a day<br />
-    PolicyMaxage enforce 86400<br />
+    <pre class="prettyprint lang-config">
+# reject responses with a freshness lifetime shorter than a day
+PolicyMaxage enforce 86400
+    </pre>
+
     </code></p></div>
 
 
@@ -498,8 +507,11 @@ later.</td></tr>
     be rejected.</p>
 
     <div class="example"><h3>Example</h3><p><code>
-    # Cache-Control: no-cache will be rejected<br />
-    PolicyNocache enforce<br />
+    <pre class="prettyprint lang-config">
+# Cache-Control: no-cache will be rejected
+PolicyNocache enforce
+    </pre>
+
     </code></p></div>
 
 
@@ -537,13 +549,19 @@ later.</td></tr>
     header does not match the given pattern or patterns will be rejected.</p>
 
     <div class="example"><h3>Example</h3><p><code>
-    # enforce json or XML<br />
-    PolicyType enforce application/json text/xml<br />
+    <pre class="prettyprint lang-config">
+# enforce json or XML
+PolicyType enforce application/json text/xml
+    </pre>
+
     </code></p></div>
 
     <div class="example"><h3>Example</h3><p><code>
-    # malformed content type should be rejected<br />
-    PolicyType enforce */*<br />
+    <pre class="prettyprint lang-config">
+# malformed content type should be rejected
+PolicyType enforce */*
+    </pre>
+
     </code></p></div>
 
 
@@ -581,8 +599,11 @@ later.</td></tr>
     either header is syntactically incorrect, will be rejected.</p>
 
     <div class="example"><h3>Example</h3><p><code>
-    # no ETag or Last-Modified will be rejected<br />
-    PolicyValidation enforce<br />
+    <pre class="prettyprint lang-config">
+# no ETag or Last-Modified will be rejected
+PolicyValidation enforce
+    </pre>
+
     </code></p></div>
 
 
@@ -620,8 +641,11 @@ later.</td></tr>
     rejected.</p>
 
     <div class="example"><h3>Example</h3><p><code>
-    # reject reponses with "User-Agent" listed in the Vary header<br />
-    PolicyVary enforce User-Agent<br />
+    <pre class="prettyprint lang-config">
+# reject reponses with "User-Agent" listed in the Vary header
+PolicyVary enforce User-Agent
+    </pre>
+
     </code></p></div>
 
 
@@ -658,8 +682,11 @@ later.</td></tr>
     will be rejected.</p>
 
     <div class="example"><h3>Example</h3><p><code>
-    # reject requests with an HTTP version older than HTTP/1.1<br />
-    PolicyVersion enforce HTTP/1.1<br />
+    <pre class="prettyprint lang-config">
+# reject requests with an HTTP version older than HTTP/1.1
+PolicyVersion enforce HTTP/1.1
+    </pre>
+
     </code></p></div>
 
 

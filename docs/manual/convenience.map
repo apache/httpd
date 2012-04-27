@@ -397,6 +397,7 @@ proxyhtmlextended	mod/mod_proxy_html.html#proxyhtmlextended
 proxyhtmlfixups	mod/mod_proxy_html.html#proxyhtmlfixups
 proxyhtmlinterp	mod/mod_proxy_html.html#proxyhtmlinterp
 proxyhtmllinks	mod/mod_proxy_html.html#proxyhtmllinks
+proxyhtmlmeta	mod/mod_proxy_html.html#proxyhtmlmeta
 proxyhtmlstripcomments	mod/mod_proxy_html.html#proxyhtmlstripcomments
 proxyhtmlurlmap	mod/mod_proxy_html.html#proxyhtmlurlmap
 proxyiobuffersize	mod/mod_proxy.html#proxyiobuffersize

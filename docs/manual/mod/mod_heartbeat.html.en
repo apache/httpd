@@ -95,9 +95,10 @@ multicast address to which <code class="module"><a href="../mod/mod_heartbeat.ht
 status information. This address will usually correspond to a configured
  <code class="directive"><a href="../mod/mod_heartmonitor.html#heartbeatlisten">HeartbeatListen</a></code> on a
 frontend proxy system.</p>
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
 HeartbeatAddress 239.0.0.1:27999
-</code></p></div>    
+</pre>
+    
 
 </div>
 </div>
