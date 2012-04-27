@@ -3,6 +3,9 @@
 
 Changes with Apache 2.4.3
 
+  *) mod_proxy_fcgi: If there is an error reading the headers from the
+     backend, send an error to the client. PR 52879. [Stefan Fritsch]
+
 Changes with Apache 2.4.2
 
   *) SECURITY: CVE-2012-0883 (cve.mitre.org)
