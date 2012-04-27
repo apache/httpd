@@ -59,11 +59,12 @@
     module.</p>
 
     <div class="example"><h3>Configuring the filter</h3><p><code>
-        &lt;Location /data/images&gt;<br />
-        <span class="indent">
-            SetOutputFilter DATA
-        </span>
-        &lt;/Location&gt;<br />
+    <pre class="prettyprint lang-config">
+&lt;Location /data/images&gt;
+    SetOutputFilter DATA
+&lt;/Location&gt;
+        </pre>
+
     </code></p></div>
 
 </div>

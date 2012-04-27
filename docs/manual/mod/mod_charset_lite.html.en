@@ -115,12 +115,13 @@
     supported by iconv.</p>
 
     <div class="example"><h3>Example</h3><p><code>
-      &lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;<br />
-      <span class="indent">
-        CharsetSourceEnc  UTF-16BE<br />
-        CharsetDefault    ISO-8859-1<br />
-      </span>
-      &lt;/Directory&gt;
+    <pre class="prettyprint lang-config">
+&lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;
+    CharsetSourceEnc  UTF-16BE
+    CharsetDefault    ISO-8859-1
+&lt;/Directory&gt;
+      </pre>
+
     </code></p></div>
 
      <div class="note">
@@ -186,12 +187,13 @@
     supported by iconv.</p>
 
     <div class="example"><h3>Example</h3><p><code>
-      &lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;<br />
-      <span class="indent">
-        CharsetSourceEnc  UTF-16BE<br />
-        CharsetDefault    ISO-8859-1<br />
-      </span>
-      &lt;/Directory&gt;
+    <pre class="prettyprint lang-config">
+&lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;
+    CharsetSourceEnc  UTF-16BE
+    CharsetDefault    ISO-8859-1
+&lt;/Directory&gt;
+      </pre>
+
     </code></p></div>
 
     <p>The character set names in this example work with the iconv

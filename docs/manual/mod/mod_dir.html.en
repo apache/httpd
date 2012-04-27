@@ -93,7 +93,10 @@ a directory</td></tr>
     directory.</p>
 
     <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       DirectoryIndex index.html
+      </pre>
+
     </code></p></div>
 
     <p>then a request for <code>http://example.com/docs/</code> would
@@ -103,9 +106,10 @@ a directory</td></tr>
     <p>Note that the documents do not need to be relative to the
     directory;</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       DirectoryIndex index.html index.txt  /cgi-bin/index.pl
-    </code></p></div>
+    </pre>
+
 
     <p>would cause the CGI script <code>/cgi-bin/index.pl</code> to be
     executed if neither <code>index.html</code> or <code>index.txt</code>
@@ -138,7 +142,10 @@ a directory</td></tr>
     to instead be issued.</p>
 
     <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       DirectoryIndexRedirect on
+      </pre>
+
     </code></p></div>
 
     <p>A request for <code>http://example.com/docs/</code> would
@@ -181,15 +188,14 @@ a directory</td></tr>
     be aware that there are possible security implications to doing
     this.</p>
 
-    <div class="example"><p><code>
-        # see security warning below!<br />
-        &lt;Location /some/path&gt;<br />
-        <span class="indent">
-            DirectorySlash Off<br />
-            SetHandler some-handler<br />
-        </span>
-        &lt;/Location&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+# see security warning below!
+&lt;Location /some/path&gt;
+    DirectorySlash Off
+    SetHandler some-handler
+&lt;/Location&gt;
+    </pre>
+
 
     <div class="warning"><h3>Security Warning</h3>
     <p>Turning off the trailing slash redirect may result in an information
@@ -218,9 +224,10 @@ a directory</td></tr>
     <p>Use this to set a handler for any URL that doesn't map to anything
     in your filesystem, and would otherwise return HTTP 404 (Not Found).
     For example</p>
-    <div class="example"><p><code>
-        <code>FallbackResource /not-404.php</code>
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+        FallbackResource /not-404.php
+    </pre>
+
     <p>will cause requests for non-existent files to be handled by
     <code>not-404.php</code>, while requests for files that exist
     are unaffected.</p>
@@ -232,22 +239,20 @@ a directory</td></tr>
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, and the use of the <code>-f</code> and
     <code>-d</code> tests for file and directory existence. This now
     requires only one line of configuration.</p>
-    <div class="example"><p><code>
-        <code>FallbackResource /index.php</code>
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+        FallbackResource /index.php
+    </pre>
+
     <p>Existing files, such as images, css files, and so on, will be
     served normally.</p>
     <p>In a sub-URI, such as <em>http://example.com/blog/</em> this
     <em>sub-URI</em> has to be supplied as <var>local-url</var>:</p>
-    <div class="example"><p><code>
-         <code>
-             &lt;Directory /web/example.com/htdocs/blog&gt;<br />
-	     <span class="indent">
-                  FallbackResource /blog/index.php<br />
-             </span>
-             &lt;/Directory&gt;
-         </code>
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Directory /web/example.com/htdocs/blog&gt;
+    FallbackResource /blog/index.php
+&lt;/Directory&gt;
+    </pre>
+
 
 </div>
 </div>

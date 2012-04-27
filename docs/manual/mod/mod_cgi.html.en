@@ -178,7 +178,10 @@
     </p>
 
     <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       ScriptLog logs/cgi_log
+    </pre>
+
     </code></p></div>
 
     <p>This log will be opened as the user the child processes run

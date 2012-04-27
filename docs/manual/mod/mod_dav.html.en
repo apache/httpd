@@ -64,7 +64,8 @@
     <p>To enable <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>, add the following to a
     container in your <code>httpd.conf</code> file:</p>
 
-    <div class="example"><p><code>Dav On</code></p></div>
+    <pre class="prettyprint lang-config">Dav On</pre>
+
 
     <p>This enables the DAV file system provider, which is implemented
     by the <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> module. Therefore, that module
@@ -76,9 +77,10 @@
     file using the <code class="directive"><a href="../mod/mod_dav_fs.html#davlockdb">DavLockDB</a></code>
     directive:</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       DavLockDB /usr/local/apache2/var/DavLock
-    </code></p></div>
+    </pre>
+
 
     <p>The directory containing the lock database file must be
     writable by the <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code>
@@ -93,24 +95,23 @@
     requests.</p>
 
     <div class="example"><h3>Full Example</h3><p><code>
-      DavLockDB /usr/local/apache2/var/DavLock<br />
-      <br />
-      &lt;Directory /usr/local/apache2/htdocs/foo&gt;<br />
-      <span class="indent">
-        Require all granted<br />
-        Dav On<br />
-        <br />
-        AuthType Basic<br />
-        AuthName DAV<br />
-        AuthUserFile user.passwd<br />
-        <br />
-        &lt;LimitExcept GET POST OPTIONS&gt;<br />
-        <span class="indent">
-          Require user admin<br />
-        </span>
-        &lt;/LimitExcept&gt;<br />
-      </span>
-      &lt;/Directory&gt;<br />
+    <pre class="prettyprint lang-config">
+DavLockDB /usr/local/apache2/var/DavLock
+
+&lt;Directory /usr/local/apache2/htdocs/foo&gt;
+    Require all granted
+    Dav On
+
+    AuthType Basic
+    AuthName DAV
+    AuthUserFile user.passwd
+
+    &lt;LimitExcept GET POST OPTIONS&gt;
+        Require user admin
+    &lt;/LimitExcept&gt;
+&lt;/Directory&gt;
+      </pre>
+
     </code></p></div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -163,16 +164,15 @@
     will run the script, and one of which will allow it to be
     downloaded and manipulated with DAV.</p>
 
-<div class="example"><p><code>
-Alias /phparea /home/gstein/php_files<br />
-Alias /php-source /home/gstein/php_files<br />
+<pre class="prettyprint lang-config">
+Alias /phparea /home/gstein/php_files
+Alias /php-source /home/gstein/php_files
 &lt;Location /php-source&gt;
-<span class="indent">
-    DAV On<br />
-    ForceType text/plain<br />
-</span>
+    DAV On
+    ForceType text/plain
 &lt;/Location&gt;
-</code></p></div>
+</pre>
+
 
     <p>With this setup, <code>http://example.com/phparea</code> can be
     used to access the output of the PHP scripts, and
@@ -192,13 +192,12 @@ Alias /php-source /home/gstein/php_files<br />
     <p>Use the <code class="directive">Dav</code> directive to enable the
     WebDAV HTTP methods for the given container:</p>
 
-    <div class="example"><p><code>
-      &lt;Location /foo&gt;<br />
-      <span class="indent">
-        Dav On<br />
-      </span>
-      &lt;/Location&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Location /foo&gt;
+    Dav On
+&lt;/Location&gt;
+    </pre>
+
 
     <p>The value <code>On</code> is actually an alias for the default
     provider <code>filesystem</code> which is served by the <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> module. Note, that once you have DAV enabled
@@ -251,11 +250,12 @@ a DAV resource</td></tr>
     the lock due to network latency.</p>
 
     <div class="example"><h3>Example</h3><p><code>
-      &lt;Location /MSWord&gt;<br />
-      <span class="indent">
-        DavMinTimeout 600<br />
-      </span>
-      &lt;/Location&gt;
+    <pre class="prettyprint lang-config">
+&lt;Location /MSWord&gt;
+    DavMinTimeout 600
+&lt;/Location&gt;
+    </pre>
+
     </code></p></div>
 
 </div>
