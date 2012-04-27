@@ -458,14 +458,12 @@ end
     <p>In general stat or forever is good for production, and stat or never
     for development.</p>
 
-    <div class="example"><h3>Examples:</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Examples:</h3><pre class="prettyprint lang-config">
 LuaCodeCache stat
 LuaCodeCache forever
 LuaCodeCache never
     </pre>
-
-    </code></p></div>
+</div>
 
 
 </div>
@@ -692,12 +690,10 @@ end
     match groups into both the file path and the function name
     be careful writing your regular expressions to avoid security
     issues.</p>
-   <div class="example"><h3>Examples:</h3><p><code>
-   <pre class="prettyprint lang-config">
+   <div class="example"><h3>Examples:</h3><pre class="prettyprint lang-config">
     LuaMapHandler /(\w+)/(/w+) /scripts/$1.lua handle_$2
     </pre>
-
-   </code></p></div>
+</div>
         <p>This would match uri's such as /photos/show?id=9
         to the file /scripts/photos.lua and invoke the
         handler function handle_show on the lua vm after
@@ -741,13 +737,11 @@ end
     conventions as lua. This just munges the package.path in the
     lua vms.</p>
 
-    <div class="example"><h3>Examples:</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Examples:</h3><pre class="prettyprint lang-config">
 LuaPackagePath /scripts/lib/?.lua
 LuaPackagePath /scripts/lib/?/init.lua
     </pre>
-
-    </code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

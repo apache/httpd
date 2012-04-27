@@ -75,8 +75,7 @@ the author's blog</a>.</p>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="sampleconf" id="sampleconf">Sample Configuration</a></h2>
-    <div class="example"><h3>Adding an output filter </h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Adding an output filter </h3><pre class="prettyprint lang-config">
 # In the following example, the sed filter will change the string
 # "monday" to "MON" and the string "sunday" to SUN in html documents
 # before sending to the client.
@@ -86,11 +85,9 @@ the author's blog</a>.</p>
     OutputSed "s/sunday/SUN/g" 
 &lt;/Directory&gt; 
     </pre>
+</div>
 
-    </code></p></div>
-
-    <div class="example"><h3>Adding an input filter </h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Adding an input filter </h3><pre class="prettyprint lang-config">
 # In the following example, the sed filter will change the string
 # "monday" to "MON" and the string "sunday" to SUN in the POST data
 # sent to PHP.
@@ -100,8 +97,7 @@ the author's blog</a>.</p>
     InputSed "s/sunday/SUN/g" 
 &lt;/Directory&gt; 
         </pre>
-
-    </code></p></div>
+</div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="sed_commands" id="sed_commands">Sed Commands</a></h2>

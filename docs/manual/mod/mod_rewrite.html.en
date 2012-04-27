@@ -84,12 +84,10 @@ URLs on the fly</td></tr>
       level higher than <code>trace2</code> only for debugging!
     </div>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       LogLevel alert rewrite:trace3
       </pre>
-
-    </code></p></div>
+</div>
 
     <div class="note"><h3>RewriteLog</h3>
       <p>Those familiar with earlier versions of

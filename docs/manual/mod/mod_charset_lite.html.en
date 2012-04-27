@@ -114,15 +114,13 @@
     <a class="glossarylink" href="../glossary.html#apr" title="see glossary">APR</a>. Generally, this means that it must be
     supported by iconv.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 &lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;
     CharsetSourceEnc  UTF-16BE
     CharsetDefault    ISO-8859-1
 &lt;/Directory&gt;
       </pre>
-
-    </code></p></div>
+</div>
 
      <div class="note">
      Specifying the same charset for both <code class="directive"><a href="#charsetsourceenc">CharsetSourceEnc</a></code>
@@ -186,15 +184,13 @@
     <a class="glossarylink" href="../glossary.html#apr" title="see glossary">APR</a>. Generally, this means that it must be
     supported by iconv.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 &lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;
     CharsetSourceEnc  UTF-16BE
     CharsetDefault    ISO-8859-1
 &lt;/Directory&gt;
       </pre>
-
-    </code></p></div>
+</div>
 
     <p>The character set names in this example work with the iconv
     translation support in Solaris 8.</p>

@@ -168,12 +168,10 @@
     with filenames rewritten by <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> or
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       CacheFile /usr/local/apache/htdocs/index.html
       </pre>
-
-    </code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -201,12 +199,10 @@
     with filenames rewritten by <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> or
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       MMapFile /usr/local/apache/htdocs/index.html
       </pre>
-
-    </code></p></div>
+</div>
 
 </div>
 </div>

@@ -72,16 +72,13 @@
     (e.g. Apache Tomcat) using the AJP13 protocol. The usage is similar to
     an HTTP reverse proxy, but uses the <code>ajp://</code> prefix:</p>
 
-    <div class="example"><h3>Simple Reverse Proxy</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Simple Reverse Proxy</h3><pre class="prettyprint lang-config">
     ProxyPass /app ajp://backend.example.com:8009/app
     </pre>
-
-    </code></p></div>
+</div>
 
     <p>Balancers may also be used:</p>
-    <div class="example"><h3>Balancer Reverse Proxy</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Balancer Reverse Proxy</h3><pre class="prettyprint lang-config">
 &lt;Proxy balancer://cluster&gt;
     BalancerMember ajp://app1.example.com:8009 loadfactor=1
     BalancerMember ajp://app2.example.com:8009 loadfactor=2
@@ -89,8 +86,7 @@
 &lt;/Proxy&gt;
 ProxyPass /app balancer://cluster/app
       </pre>
-
-    </code></p></div>
+</div>
 
     <p>Note that usually no
     <code class="directive"><a href="../mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code>
@@ -104,13 +100,11 @@ ProxyPass /app balancer://cluster/app
     backend. In this case, a redirect header can be rewritten relative to the
     original host URL (not the backend <code>ajp://</code> URL), for
     example:</p>
-    <div class="example"><h3>Rewriting Proxied Path</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Rewriting Proxied Path</h3><pre class="prettyprint lang-config">
 ProxyPass /apps/foo ajp://backend.example.com:8009/foo
 ProxyPassReverse /apps/foo http://www.example.com/foo
     </pre>
-
-    </code></p></div>
+</div>
     <p>However, it is usually better to deploy the application on the backend
     server at the same path as the proxy rather than to take this approach.
     </p>

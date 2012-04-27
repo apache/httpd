@@ -124,10 +124,8 @@ is possible to perform this mapping with <code>mod_rewrite</code>,
 <code>Alias</code> is the preferred method, for reasons of simplicity
 and performance.</p>
 
-<div class="example"><h3>Using Alias</h3><p><code>
-<pre class="prettyprint lang-config">Alias /cats /var/www/virtualhosts/felines/htdocs</pre>
-
-</code></p></div>
+<div class="example"><h3>Using Alias</h3><pre class="prettyprint lang-config">Alias /cats /var/www/virtualhosts/felines/htdocs</pre>
+</div>
 
 <p>
 The use of <code>mod_rewrite</code> to perform this mapping may be

@@ -791,30 +791,24 @@ RewriteRule (.*) ${lowercase:$1} [R,L]
   (Arcane and error prone procedures may work around the restriction
   on mapped drive letters, but this is not recommended.)</p>
 
-  <div class="example"><h3>Example DocumentRoot with UNC path</h3><p><code>
-  <pre class="prettyprint lang-config">
+  <div class="example"><h3>Example DocumentRoot with UNC path</h3><pre class="prettyprint lang-config">
   DocumentRoot //dochost/www/html/
   </pre>
+</div>
 
-  </code></p></div>
-
-  <div class="example"><h3>Example DocumentRoot with IP address in UNC path</h3><p><code>
-  <pre class="prettyprint lang-config">
+  <div class="example"><h3>Example DocumentRoot with IP address in UNC path</h3><pre class="prettyprint lang-config">
   DocumentRoot //192.168.1.50/docs/
   </pre>
+</div>
 
-  </code></p></div>
-
-  <div class="example"><h3>Example Alias and corresponding Directory with UNC path</h3><p><code>
-  <pre class="prettyprint lang-config">
+  <div class="example"><h3>Example Alias and corresponding Directory with UNC path</h3><pre class="prettyprint lang-config">
 Alias /images/ //imagehost/www/images/
 
 &lt;Directory //imagehost/www/images/&gt;
 #...
 &lt;Directory&gt;
   </pre>
-
-  </code></p></div>
+</div>
 
   <p>When running Apache httpd as a service, you must create a
   separate account in order to access network resources, as described

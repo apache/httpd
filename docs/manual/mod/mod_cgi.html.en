@@ -177,12 +177,10 @@
     taken relative to the <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.
     </p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       ScriptLog logs/cgi_log
     </pre>
-
-    </code></p></div>
+</div>
 
     <p>This log will be opened as the user the child processes run
     as, <em>i.e.</em> the user specified in the main <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> directive. This means that

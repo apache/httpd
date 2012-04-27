@@ -58,14 +58,12 @@
     or any of the directives supported by the <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code>
     module.</p>
 
-    <div class="example"><h3>Configuring the filter</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Configuring the filter</h3><pre class="prettyprint lang-config">
 &lt;Location /data/images&gt;
     SetOutputFilter DATA
 &lt;/Location&gt;
         </pre>
-
-    </code></p></div>
+</div>
 
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>

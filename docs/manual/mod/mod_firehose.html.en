@@ -177,12 +177,10 @@ later.</td></tr>
     requests will be captured within the same connection if keepalive is
     present.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       FirehoseConnectionInput connection-input.firehose
       </pre>
-
-    </code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -201,12 +199,10 @@ later.</td></tr>
     Multiple requests will be captured within the same connection if
     keepalive is present.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       FirehoseConnectionOutput connection-output.firehose
       </pre>
-
-    </code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -223,12 +219,10 @@ later.</td></tr>
 </table>
     <p>Capture traffic being received by mod_proxy.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       FirehoseProxyConnectionInput proxy-input.firehose
       </pre>
-
-    </code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -245,12 +239,10 @@ later.</td></tr>
 </table>
     <p>Capture traffic being sent out by mod_proxy.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       FirehoseProxyConnectionOutput proxy-output.firehose
       </pre>
-
-    </code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -268,12 +260,10 @@ later.</td></tr>
     <p>Capture traffic coming into the server on each request. Requests
     will be captured separately, regardless of the presence of keepalive.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       FirehoseRequestInput request-input.firehose
       </pre>
-
-    </code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -291,12 +281,10 @@ later.</td></tr>
     <p>Capture traffic going out of the server on each request. Requests
     will be captured separately, regardless of the presence of keepalive.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       FirehoseRequestOutput request-output.firehose
       </pre>
-
-    </code></p></div>
+</div>
 
 </div>
 </div>

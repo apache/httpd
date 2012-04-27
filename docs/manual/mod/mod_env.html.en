@@ -73,12 +73,10 @@ SSI pages</td></tr>
     native OS environment of the shell which invoked the
     <code class="program"><a href="../programs/httpd.html">httpd</a></code> process.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       PassEnv LD_LIBRARY_PATH
       </pre>
-
-    </code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -94,12 +92,10 @@ SSI pages</td></tr>
     <p>Sets an internal environment variable, which is then available to Apache
     HTTP Server modules, and passed on to CGI scripts and SSI pages.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       SetEnv SPECIAL_PATH /foo/bin
       </pre>
-
-    </code></p></div>
+</div>
 
     <div class="note"><p>The internal environment variables set by this directive are set
     <em>after</em> most early request processing directives are run, such as access
@@ -130,12 +126,10 @@ SSI pages</td></tr>
     <p>Removes one or more internal environment variables from those passed
     on to CGI scripts and SSI pages.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       UnsetEnv LD_LIBRARY_PATH
       </pre>
-
-    </code></p></div>
+</div>
 
 </div>
 </div>

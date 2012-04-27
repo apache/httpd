@@ -264,12 +264,10 @@ using the specified magic file</td></tr>
     used, in which case the more specific setting overrides the main
     server's file.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       MimeMagicFile conf/magic
       </pre>
-
-    </code></p></div>
+</div>
 
 </div>
 </div>

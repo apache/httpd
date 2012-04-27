@@ -193,20 +193,16 @@ changes on a per-directory basis.</p>
     <p><code>.htaccess</code> file in <code>/www/htdocs/example</code>:</p>
 
     <div class="example"><h3>Contents of .htaccess file in
-    <code>/www/htdocs/example</code></h3><p><code>
-    <pre class="prettyprint lang-config">AddType text/example .exm</pre>
-
-    </code></p></div>
+    <code>/www/htdocs/example</code></h3><pre class="prettyprint lang-config">AddType text/example .exm</pre>
+</div>
 
     <div class="example"><h3>Section from your <code>httpd.conf</code>
-    file</h3><p><code>
-    <pre class="prettyprint lang-config">
+    file</h3><pre class="prettyprint lang-config">
 &lt;Directory /www/htdocs/example&gt;<br />
     AddType text/example .exm<br />
 &lt;/Directory&gt;
     </pre>
-
-    </code></p></div>
+</div>
 
     <p>However, putting this configuration in your server configuration
     file will result in less of a performance hit, as the configuration is

@@ -156,14 +156,12 @@
     script, but not the file <code>bar.cgi.html</code>, then instead
     of using <code>AddHandler cgi-script .cgi</code>, use</p>
 
-    <div class="example"><h3>Configure handler based on final extension only</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Configure handler based on final extension only</h3><pre class="prettyprint lang-config">
 &lt;FilesMatch \.cgi$&gt;
   SetHandler cgi-script
 &lt;/FilesMatch&gt;
     </pre>
-
-    </code></p></div>
+</div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -270,15 +268,13 @@ charset</td></tr>
     overriding any mappings that already exist for the same
     <var>extension</var>.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 AddLanguage ja .ja
 AddCharset EUC-JP .euc
 AddCharset ISO-2022-JP .jis
 AddCharset SHIFT_JIS .sjis
       </pre>
-
-    </code></p></div>
+</div>
 
     <p>Then the document <code>xxxx.ja.jis</code> will be treated
     as being a Japanese document whose charset is <code>ISO-2022-JP</code>
@@ -321,13 +317,11 @@ type</td></tr>
     overriding any mappings that already exist for the same
     <var>extension</var>.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 AddEncoding x-gzip .gz
 AddEncoding x-compress .Z
       </pre>
-
-    </code></p></div>
+</div>
 
     <p>This will cause filenames containing the <code>.gz</code> extension
     to be marked as encoded using the <code>x-gzip</code> encoding, and
@@ -449,14 +443,12 @@ language</td></tr>
     This directive overrides any mappings that already exist for the same
     <var>extension</var>.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 AddEncoding x-compress .Z
 AddLanguage en .en
 AddLanguage fr .fr
       </pre>
-
-    </code></p></div>
+</div>
 
     <p>Then the document <code>xxxx.en.Z</code> will be treated as
     being a compressed English document (as will the document
@@ -590,21 +582,17 @@ type</td></tr>
       <code class="directive"><a href="#typesconfig">TypesConfig</a></code> file.
     </div>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       AddType image/gif .gif
       </pre>
-
-    </code></p></div>
+</div>
 
     <p>Or, to specify multiple file extensions in one directive:</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       AddType image/jpeg jpeg jpg jpe
       </pre>
-
-    </code></p></div>
+</div>
 
     <p>The <var>extension</var> argument is case-insensitive and can
     be specified with or without a leading dot. Filenames may have <a href="#multipleext">multiple extensions</a> and the
@@ -616,12 +604,10 @@ type</td></tr>
     can be achieved by qualifying a <var>media-type</var> with
     <code>qs</code>:</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       AddType application/rss+xml;qs=0.8 .xml
       </pre>
-
-    </code></p></div>
+</div>
 
     <p>This is useful in situations, <em>e.g.</em> when a client
     requesting <code>Accept: */*</code> can not actually processes
@@ -667,12 +653,10 @@ assigned a language-tag by some other means.</td></tr>
     by <code class="directive"><a href="#addlanguage">AddLanguage</a></code>, then no
     Content-Language header field will be generated.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       DefaultLanguage en
       </pre>
-
-    </code></p></div>
+</div>
 
 <h3>See also</h3>
 <ul>
@@ -699,12 +683,10 @@ components as part of the filename</td></tr>
 
     <p>This directive is recommended when you have a virtual filesystem.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       ModMimeUsePathInfo On
       </pre>
-
-    </code></p></div>
+</div>
 
     <p>If you have a request for <code>/index.php/foo.shtml</code>
     <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> will now treat the
@@ -806,12 +788,10 @@ later.</td></tr>
     <p>The <var>extension</var> argument is case-insensitive and can
     be specified with or without a leading dot.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       RemoveCharset .html .shtml
       </pre>
-
-    </code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -832,16 +812,14 @@ extensions</td></tr>
     any associations inherited from parent directories or the
     server config files. An example of its use might be:</p>
 
-    <div class="example"><h3>/foo/.htaccess:</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>/foo/.htaccess:</h3><pre class="prettyprint lang-config">
 AddEncoding x-gzip .gz
 AddType text/plain .asc
 &lt;Files *.gz.asc&gt;
     RemoveEncoding .gz
 &lt;/Files&gt;
       </pre>
-
-    </code></p></div>
+</div>
 
     <p>This will cause <code>foo.gz</code> to be marked as being
     encoded with the gzip method, but <code>foo.gz.asc</code> as an
@@ -876,19 +854,15 @@ extensions</td></tr>
     associations inherited from parent directories or the server
     config files. An example of its use might be:</p>
 
-    <div class="example"><h3>/foo/.htaccess:</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>/foo/.htaccess:</h3><pre class="prettyprint lang-config">
       AddHandler server-parsed .html
       </pre>
+</div>
 
-    </code></p></div>
-
-    <div class="example"><h3>/foo/bar/.htaccess:</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>/foo/bar/.htaccess:</h3><pre class="prettyprint lang-config">
       RemoveHandler .html
       </pre>
-
-    </code></p></div>
+</div>
 
     <p>This has the effect of returning <code>.html</code> files in
     the <code>/foo/bar</code> directory to being treated as normal
@@ -976,12 +950,10 @@ later.</td></tr>
     <p>The <var>extension</var> argument is case-insensitive and can
     be specified with or without a leading dot.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       RemoveOutputFilter shtml
       </pre>
-
-    </code></p></div>
+</div>
 
 <h3>See also</h3>
 <ul>
@@ -1007,12 +979,10 @@ extensions</td></tr>
     directories or the server config files. An example of its use
     might be:</p>
 
-    <div class="example"><h3>/foo/.htaccess:</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>/foo/.htaccess:</h3><pre class="prettyprint lang-config">
       RemoveType .cgi
       </pre>
-
-    </code></p></div>
+</div>
 
     <p>This will remove any special handling of <code>.cgi</code>
     files in the <code>/foo/</code> directory and any beneath it,

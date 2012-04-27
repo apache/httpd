@@ -94,8 +94,7 @@
     directive. The "normal" <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code> directive has no effect on DAV
     requests.</p>
 
-    <div class="example"><h3>Full Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Full Example</h3><pre class="prettyprint lang-config">
 DavLockDB /usr/local/apache2/var/DavLock
 
 &lt;Directory /usr/local/apache2/htdocs/foo&gt;
@@ -111,8 +110,7 @@ DavLockDB /usr/local/apache2/var/DavLock
     &lt;/LimitExcept&gt;
 &lt;/Directory&gt;
       </pre>
-
-    </code></p></div>
+</div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -249,14 +247,12 @@ a DAV resource</td></tr>
     (like 600 seconds) to reduce the chance of the client losing
     the lock due to network latency.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 &lt;Location /MSWord&gt;
     DavMinTimeout 600
 &lt;/Location&gt;
     </pre>
-
-    </code></p></div>
+</div>
 
 </div>
 </div>

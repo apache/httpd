@@ -41,8 +41,7 @@
     allows a flexible version checking including numeric comparisons and
     regular expressions.</p>
 
-    <div class="example"><h3>Examples</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Examples</h3><pre class="prettyprint lang-config">
 &lt;IfVersion 2.4.2&gt;
     # current httpd version is exactly 2.4.2
 &lt;/IfVersion&gt;
@@ -51,8 +50,7 @@
     # use really new features :-)
 &lt;/IfVersion&gt;
       </pre>
-
-    </code></p></div>
+</div>
 
     <p>See below for further possibilities.</p>
 </div>
@@ -97,15 +95,13 @@
         <td>httpd version is less or equal</td></tr>
 </table>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 &lt;IfVersion &gt;= 2.3&gt;
     # this happens only in versions greater or
     # equal 2.3.0.
 &lt;/IfVersion&gt;
       </pre>
-
-    </code></p></div>
+</div>
 
     <p>Besides the numerical comparison it is possible to match a
     <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>
@@ -120,14 +116,12 @@
             <code><var>regex</var></code></td></tr>
 </table>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 &lt;IfVersion = /^2.4.[01234]$/&gt;
     # e.g. workaround for buggy versions
 &lt;/IfVersion&gt;
       </pre>
-
-    </code></p></div>
+</div>
 
     <p>In order to reverse the meaning, all operators can be preceded by an
     exclamation mark (<code>!</code>):</p>

@@ -169,8 +169,7 @@
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="sampleconf" id="sampleconf">Sample Configuration</a></h2>
-    <div class="example"><h3>Sample httpd.conf</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Sample httpd.conf</h3><pre class="prettyprint lang-config">
 #
 # Sample Cache Configuration
 #
@@ -188,8 +187,7 @@ LoadModule cache_module modules/mod_cache.so
     CacheDisable http://security.update.server/update-list/
 &lt;/IfModule&gt;
       </pre>
-
-    </code></p></div>
+</div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="thunderingherd" id="thunderingherd">Avoiding the Thundering Herd</a></h2>
@@ -241,8 +239,7 @@ LoadModule cache_module modules/mod_cache.so
   
   <h3>Example configuration</h3>
     
-    <div class="example"><h3>Enabling the cache lock</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Enabling the cache lock</h3><pre class="prettyprint lang-config">
 #
 # Enable the cache lock
 #
@@ -252,8 +249,7 @@ LoadModule cache_module modules/mod_cache.so
     CacheLockMaxAge 5
 &lt;/IfModule&gt;
       </pre>
-
-    </code></p></div>
+</div>
   
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -437,25 +433,21 @@ CacheDetailHeader on
     <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> to <em>not</em> cache urls at or below
     <var>url-string</var>.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       CacheDisable /local_files
       </pre>
-
-    </code></p></div>
+</div>
 
     <p>If used in a <code class="directive">&lt;Location&gt;</code> directive,
     the path needs to be specified below the Location, or if the word "on"
     is used, caching for the whole location will be disabled.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 &lt;Location /foo&gt;
     CacheDisable on
 &lt;/Location&gt;
       </pre>
-
-    </code></p></div>
+</div>
 
     <p>The <code>no-cache</code> environment variable can be set to
     disable caching on a finer grained set of resources in versions
@@ -662,19 +654,15 @@ CacheHeader on
     behaviour), <code class="directive">CacheIgnoreHeaders</code> can be set to
     <code>None</code>.</p>
 
-    <div class="example"><h3>Example 1</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example 1</h3><pre class="prettyprint lang-config">
       CacheIgnoreHeaders Set-Cookie
       </pre>
+</div>
 
-    </code></p></div>
-
-    <div class="example"><h3>Example 2</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example 2</h3><pre class="prettyprint lang-config">
       CacheIgnoreHeaders None
       </pre>
-
-    </code></p></div>
+</div>
 
     <div class="warning"><h3>Warning:</h3>
       If headers like <code>Expires</code> which are needed for proper cache
@@ -765,19 +753,15 @@ header.</td></tr>
     <p><code>CacheIgnoreURLSessionIdentifiers None</code> clears the list of ignored
     identifiers. Otherwise, each identifier is added to the list.</p>
 
-    <div class="example"><h3>Example 1</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example 1</h3><pre class="prettyprint lang-config">
       CacheIgnoreURLSessionIdentifiers jsessionid
       </pre>
+</div>
 
-    </code></p></div>
-
-    <div class="example"><h3>Example 2</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example 2</h3><pre class="prettyprint lang-config">
       CacheIgnoreURLSessionIdentifiers None
       </pre>
-
-    </code></p></div>
+</div>
 
 
 </div>

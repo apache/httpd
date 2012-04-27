@@ -79,12 +79,10 @@
     <code class="module"><a href="../mod/mod_dav_lock.html">mod_dav_lock</a></code> uses a SDBM database to track user
     locks.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       DavGenericLockDB var/DavLock
       </pre>
-
-    </code></p></div>
+</div>
 
     <p>The directory containing the lock database file must be
     writable by the <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code>

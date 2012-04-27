@@ -79,13 +79,11 @@
       <p>To create a simple session and store it in a cookie called
       <var>session</var>, configure the session as follows:</p>
 
-      <div class="example"><h3>Browser based session</h3><p><code>
-      <pre class="prettyprint lang-config">
+      <div class="example"><h3>Browser based session</h3><pre class="prettyprint lang-config">
 Session On
 SessionCookieName session path=/
         </pre>
-
-      </code></p></div>
+</div>
 
       <p>For more examples on how the session can be configured to be read
       from and written to by a CGI application, see the
@@ -115,13 +113,11 @@ SessionCookieName session path=/
     Apache. Ensure that your attributes are defined correctly as per the cookie specification.
     </p>
 
-    <div class="example"><h3>Cookie with attributes</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Cookie with attributes</h3><pre class="prettyprint lang-config">
 Session On
 SessionCookieName session path=/private;domain=example.com;httponly;secure;version=1;
       </pre>
-
-    </code></p></div>
+</div>
 
 
 </div>
@@ -145,13 +141,11 @@ SessionCookieName session path=/private;domain=example.com;httponly;secure;versi
     Apache. Ensure that your attributes are defined correctly as per the cookie specification.
     </p>
 
-    <div class="example"><h3>Cookie2 with attributes</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Cookie2 with attributes</h3><pre class="prettyprint lang-config">
 Session On
 SessionCookieName2 session path=/private;domain=example.com;httponly;secure;version=1;
     </pre>
-
-    </code></p></div>
+</div>
 
 
 </div>

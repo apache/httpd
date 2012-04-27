@@ -100,8 +100,7 @@ lower level modules</td></tr>
     The default <code>file</code> provider is implemented
     by the <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> module.  Make sure
     that the chosen provider module is present in the server.</p>
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 &lt;Location /secure&gt;
     AuthType basic
     AuthName "private area"
@@ -111,8 +110,7 @@ lower level modules</td></tr>
     Require            valid-user
 &lt;/Location&gt;
     </pre>
-
-    </code></p></div>
+</div>
     <p> Providers are queried in order until a provider finds a match
     for the requested username, at which point this sole provider will
     attempt to check the password.  A failure to verify the password does
