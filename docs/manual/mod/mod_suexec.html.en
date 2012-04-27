@@ -64,13 +64,10 @@ later.</td></tr>
     to specify a user and group for CGI programs to run as. Non-CGI
     requests are still processed with the user specified in the <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> directive.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
     SuexecUserGroup nobody nogroup
     </pre>
-
-    </code></p></div>
+</div>
 
     <p>In Apache httpd 2.3.9 and later, startup will fail if this
     directive is specified but the suEXEC feature is disabled.</p>

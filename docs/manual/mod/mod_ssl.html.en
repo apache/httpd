@@ -239,12 +239,10 @@ you find in the above table.</p>
 For backward compatibility there is additionally a special
 ``<code>%{</code><em>name</em><code>}c</code>'' cryptography format function
 provided. Information about this function is provided in the <a href="../ssl/ssl_compat.html">Compatibility</a> chapter.</p>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 CustomLog logs/ssl_request_log "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
 </pre>
-
-</code></p></div>
+</div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="notes" id="notes">Request Notes</a></h2>
@@ -329,12 +327,10 @@ with. These are used for Client Authentication. Such a file is simply the
 concatenation of the various PEM-encoded Certificate files, in order of
 preference. This can be used alternatively and/or additionally to
 <code class="directive"><a href="#sslcacertificatepath">SSLCACertificatePath</a></code>.</p>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLCACertificateFile /usr/local/apache2/conf/ssl.crt/ca-bundle-client.crt
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -357,12 +353,10 @@ hash filenames. So usually you can't just place the Certificate files
 there: you also have to create symbolic links named
 <em>hash-value</em><code>.N</code>. And you should always make sure this directory
 contains the appropriate symbolic links.</p>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLCACertificatePath /usr/local/apache2/conf/ssl.crt/
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -399,12 +393,10 @@ directives.</p>
 specify an <em>all-in-one</em> file containing a concatenation of
 PEM-encoded CA certificates.</p>
 
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLCADNRequestFile /usr/local/apache2/conf/ca-names.crt
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -428,12 +420,10 @@ through hash filenames. So usually you can't just place the
 Certificate files there: you also have to create symbolic links named
 <em>hash-value</em><code>.N</code>. And you should always make sure
 this directory contains the appropriate symbolic links.</p>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLCADNRequestPath /usr/local/apache2/conf/ca-names.crt/
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -468,12 +458,10 @@ to succeed - otherwise it will fail with an
 <code>"unable to get certificate CRL"</code> error.
 </p>
 </div>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLCARevocationCheck chain
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -493,12 +481,10 @@ Authorities (CA) whose <em>clients</em> you deal with. These are used
 for Client Authentication.  Such a file is simply the concatenation of
 the various PEM-encoded CRL files, in order of preference. This can be
 used alternatively and/or additionally to <code class="directive"><a href="#sslcarevocationpath">SSLCARevocationPath</a></code>.</p>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLCARevocationFile /usr/local/apache2/conf/ssl.crl/ca-bundle-client.crl
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -521,12 +507,10 @@ hash filenames. So usually you have not only to place the CRL files there.
 Additionally you have to create symbolic links named
 <em>hash-value</em><code>.rN</code>. And you should always make sure this directory
 contains the appropriate symbolic links.</p>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLCARevocationPath /usr/local/apache2/conf/ssl.crl/
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -561,12 +545,10 @@ But be careful: Providing the certificate chain works only if you are using a
 using a coupled RSA+DSA certificate pair, this will work only if actually both
 certificates use the <em>same</em> certificate chain. Else the browsers will be
 confused in this situation.</p>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLCertificateChainFile /usr/local/apache2/conf/ssl.crt/ca.crt
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -585,12 +567,10 @@ optionally also to the corresponding RSA or DSA Private Key file for it
 Pass Phrase dialog is forced at startup time. This directive can be used up to
 two times (referencing different filenames) when both a RSA and a DSA based
 server certificate is used in parallel.</p>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLCertificateFile /usr/local/apache2/conf/ssl.crt/server.crt
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -615,12 +595,10 @@ contained Private Key is encrypted, the Pass Phrase dialog is forced
 at startup time. This directive can be used up to two times
 (referencing different filenames) when both a RSA and a DSA based
 private key is used in parallel.</p>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLCertificateKeyFile /usr/local/apache2/conf/ssl.key/server.key
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -743,12 +721,10 @@ PSK-RC4-SHA             SSLv3 Kx=PSK      Au=PSK  Enc=RC4(128)  Mac=SHA1
 KRB5-RC4-SHA            SSLv3 Kx=KRB5     Au=KRB5 Enc=RC4(128)  Mac=SHA1
 </pre></div>
 <p>The complete list of particular RSA &amp; DH ciphers for SSL is given in <a href="#table2">Table 2</a>.</p>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLCipherSuite RSA:!EXP:!NULL:+HIGH:+MEDIUM:-LOW
 </pre>
-
-</code></p></div>
+</div>
 <table class="bordered">
 
 <tr><th><a name="table2">Cipher-Tag</a></th> <th>Protocol</th> <th>Key Ex.</th> <th>Auth.</th> <th>Enc.</th> <th>MAC</th> <th>Type</th> </tr>
@@ -806,13 +782,11 @@ separate "-engine" releases of OpenSSL 0.9.6 must be used.</p>
 <p>To discover which engine names are supported, run the command
 "<code>openssl engine</code>".</p>
 
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 # For a Broadcom accelerator:
 SSLCryptoDevice ubsec
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -830,15 +804,13 @@ This directive toggles the usage of the SSL/TLS Protocol Engine. This
 is should be used inside a <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> section to enable SSL/TLS for a
 that virtual host. By default the SSL/TLS Protocol Engine is
 disabled for both the main server and all configured virtual hosts.</p>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 &lt;VirtualHost _default_:443&gt;
 SSLEngine on
 #...
 &lt;/VirtualHost&gt;
 </pre>
-
-</code></p></div>
+</div>
 <p>In Apache 2.1 and later, <code class="directive">SSLEngine</code> can be set to
 <code>optional</code>. This enables support for
 <a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>, Upgrading to TLS
@@ -886,12 +858,10 @@ by the applicable Security Policy.
 <p>When choosing a cipher during an SSLv3 or TLSv1 handshake, normally
 the client's preference is used.  If this directive is enabled, the
 server's preference will be used instead.</p>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLHonorCipherOrder on
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -926,12 +896,10 @@ the Man-in-the-Middle prefix attack as described
 in <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>.</p>
 </div>
 
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLInsecureRenegotiation on
 </pre>
-
-</code></p></div>
+</div>
 
 <p>The <code>SSL_SECURE_RENEG</code> environment variable can be used
 from an SSI or CGI script to determine whether secure renegotiation is
@@ -975,15 +943,13 @@ itself, or derived by configuration; see the
 <code class="directive"><a href="#sslocspoverrideresponder">SSLOCSPOverrideResponder</a></code>
 directives.</p>
 
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLVerifyClient on
 SSLOCSPEnable on
 SSLOCSPDefaultResponder http://responder.example.com:8888/responder
 SSLOCSPOverrideResponder on
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1147,15 +1113,13 @@ The available <em>option</em>s are:</p>
     </p>
 </li>
 </ul>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLOptions +FakeBasicAuth -StrictRequire
 &lt;Files ~ "\.(cgi|shtml)$"&gt;
     SSLOptions +StdEnvVars -ExportCertData
 &lt;Files&gt;
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1231,12 +1195,10 @@ query can be done in two ways which can be configured by
     The reuse-algorithm above is used here, too. In other words: The external
     program is called only once per unique Pass Phrase.</p></li>
 </ul>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLPassPhraseDialog exec:/usr/local/apache/sbin/pp-filter
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1284,12 +1246,10 @@ The available (case-insensitive) <em>protocol</em>s are:</p>
     - when using OpenSSL 1.0.1 and later -
     ``<code>+SSLv3 +TLSv1 +TLSv1.1 +TLSv1.2</code>, respectively.</p></li>
 </ul>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLProtocol TLSv1
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1309,12 +1269,10 @@ with. These are used for Remote Server Authentication. Such a file is simply the
 concatenation of the various PEM-encoded Certificate files, in order of
 preference. This can be used alternatively and/or additionally to
 <code class="directive"><a href="#sslproxycacertificatepath">SSLProxyCACertificatePath</a></code>.</p>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLProxyCACertificateFile /usr/local/apache2/conf/ssl.crt/ca-bundle-remote-server.crt
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1337,12 +1295,10 @@ hash filenames. So usually you can't just place the Certificate files
 there: you also have to create symbolic links named
 <em>hash-value</em><code>.N</code>. And you should always make sure this directory
 contains the appropriate symbolic links.</p>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLProxyCACertificatePath /usr/local/apache2/conf/ssl.crt/
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1378,12 +1334,10 @@ to succeed - otherwise it will fail with an
 <code>"unable to get certificate CRL"</code> error.
 </p>
 </div>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLProxyCARevocationCheck chain
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1403,12 +1357,10 @@ Authorities (CA) whose <em>remote servers</em> you deal with. These are used
 for Remote Server Authentication.  Such a file is simply the concatenation of
 the various PEM-encoded CRL files, in order of preference. This can be
 used alternatively and/or additionally to <code class="directive"><a href="#sslproxycarevocationpath">SSLProxyCARevocationPath</a></code>.</p>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLProxyCARevocationFile /usr/local/apache2/conf/ssl.crl/ca-bundle-remote-server.crl
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1431,12 +1383,10 @@ hash filenames. So usually you have not only to place the CRL files there.
 Additionally you have to create symbolic links named
 <em>hash-value</em><code>.rN</code>. And you should always make sure this directory
 contains the appropriate symbolic links.</p>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLProxyCARevocationPath /usr/local/apache2/conf/ssl.crl/
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1455,12 +1405,10 @@ This directive sets whether the remote server certificates CN field is
 compared against the hostname of the request URL. If both are not equal
 a 502 status code (Bad Gateway) is sent.
 </p>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLProxyCheckPeerCN on
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1479,12 +1427,10 @@ This directive sets whether it is checked if the remote server certificate
 is expired or not. If the check fails a 502 status code (Bad Gateway) is
 sent.
 </p>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLProxyCheckPeerExpire on
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1519,15 +1465,13 @@ This directive toggles the usage of the SSL/TLS Protocol Engine for proxy. This
 is usually used inside a <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> section to enable SSL/TLS for proxy
 usage in a particular virtual host. By default the SSL/TLS Protocol Engine is
 disabled for proxy image both for the main server and all configured virtual hosts.</p>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 &lt;VirtualHost _default_:443&gt;
     SSLProxyEngine on
     #...
 &lt;/VirtualHost&gt;
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1556,12 +1500,10 @@ be examined and a chain of trust will be constructed.
 trusted as if they were also in <code class="directive"><a href="#&#10;sslproxycacertificatefile">
 SSLProxyCACertificateFile</a></code>.</p>
 </div>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLProxyMachineCertificateChainFile /usr/local/apache2/conf/ssl.crt/proxyCA.pem
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1586,12 +1528,10 @@ or additionally to <code>SSLProxyMachineCertificatePath</code>.
 <div class="warning">
 <p>Currently there is no support for encrypted private keys</p>
 </div>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLProxyMachineCertificateFile /usr/local/apache2/conf/ssl.crt/proxy.pem
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1615,12 +1555,10 @@ directory contains the appropriate symbolic links.</p>
 <div class="warning">
 <p>Currently there is no support for encrypted private keys</p>
 </div>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLProxyMachineCertificatePath /usr/local/apache2/conf/proxy.crt/
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1676,12 +1614,10 @@ The following levels are available for <em>level</em>:</p>
 <strong>optional</strong> doesn't work with all servers and level
 <strong>optional_no_ca</strong> is actually against the idea of
 authentication (but can be used to establish SSL test pages, etc.)</p>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLProxyVerify require
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1706,12 +1642,10 @@ remote server certificates are accepted only, the default depth of 1 means
 the remote server certificate can be self-signed or has to be signed by a CA
 which is directly known to the server (i.e. the CA's certificate is under
 <code class="directive"><a href="#sslproxycacertificatepath">SSLProxyCACertificatePath</a></code>), etc.</p>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLProxyVerifyDepth 10
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1789,8 +1723,7 @@ The following <em>source</em> variants are available:</p>
     /crypto/</a>) to seed the PRNG. Use this if no random device exists
     on your platform.</p></li>
 </ul>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLRandomSeed startup builtin
 SSLRandomSeed startup file:/dev/random
 SSLRandomSeed startup file:/dev/urandom 1024
@@ -1799,8 +1732,7 @@ SSLRandomSeed connect builtin
 SSLRandomSeed connect file:/dev/random
 SSLRandomSeed connect file:/dev/urandom 1024
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1828,12 +1760,10 @@ will be untrusted so a denial of service attack by consumption of
 memory must be considered when changing this configuration setting.
 </p></div>
 
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLRenegBufferSize 262144
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1921,8 +1851,7 @@ during request processing.  In .htaccess context, the <em>expression</em> is
 both parsed and executed each time the .htaccess file is encountered during 
 request processing.</p>
 
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLRequire (    %{SSL_CIPHER} !~ m/^(EXP|NULL)-/                \
             and %{SSL_CLIENT_S_DN_O} eq "Snake Oil, Ltd."        \
             and %{SSL_CLIENT_S_DN_OU} in {"Staff", "CA", "Dev"}  \
@@ -1930,8 +1859,7 @@ SSLRequire (    %{SSL_CIPHER} !~ m/^(EXP|NULL)-/                \
             and %{TIME_HOUR} &gt;= 8 and %{TIME_HOUR} &lt;= 20       ) \
            or %{REMOTE_ADDR} =~ m/^192\.76\.162\.[0-9]+$/
 </pre>
-
-</code></p></div>
+</div>
 
 <p>The <code>PeerExtList(<em>object-ID</em>)</code> function expects
 to find zero or more instances of the X.509 certificate extension
@@ -1941,12 +1869,10 @@ exactly against the value of an extension identified with this OID.
 (If multiple extensions with the same OID are present, at least one
 extension must match).</p>
 
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLRequire "foobar" in PeerExtList("1.2.3.4.5.6")
 </pre>
-
-</code></p></div>
+</div>
 
 <div class="note"><h3>Notes on the PeerExtList function</h3>
 
@@ -1995,12 +1921,10 @@ the current connection. This is very handy inside the SSL-enabled virtual
 host or directories for defending against configuration errors that expose
 stuff that should be protected. When this directive is present all requests
 are denied which are not using SSL.</p>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLRequireSSL
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2069,13 +1993,11 @@ The following five storage <em>type</em>s are currently supported:</p>
 
 </ul>
 
-<div class="example"><h3>Examples</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Examples</h3><pre class="prettyprint lang-config">
 SSLSessionCache dbm:/usr/local/apache/logs/ssl_gcache_data
 SSLSessionCache shmcb:/usr/local/apache/logs/ssl_gcache_data(512000)
 </pre>
-
-</code></p></div>
+</div>
 
 <p>The <code>ssl-cache</code> mutex is used to serialize access to
 the session cache to prevent corruption.  This mutex can be configured
@@ -2098,12 +2020,10 @@ This directive sets the timeout in seconds for the information stored in the
 global/inter-process SSL Session Cache and the OpenSSL internal memory cache.
 It can be set as low as 15 for testing, but should be set to higher
 values like 300 in real life.</p>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLSessionCacheTimeout 600
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2324,12 +2244,10 @@ This option is only available if httpd was compiled against an SNI capable
 version of OpenSSL.
 </p></div>
 
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLStrictSNIVHostCheck on
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2353,12 +2271,10 @@ any of the <a href="#envvars">SSL environment variables</a>.</p>
 <p>Note that this directive has no effect if the
 <code>FakeBasicAuth</code> option is used (see <a href="#ssloptions">SSLOptions</a>).</p>
 
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLUserName SSL_CLIENT_S_DN_CN
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2427,12 +2343,10 @@ The following levels are available for <em>level</em>:</p>
 <strong>optional</strong> doesn't work with all browsers and level
 <strong>optional_no_ca</strong> is actually against the idea of
 authentication (but can be used to establish SSL test pages, etc.)</p>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLVerifyClient require
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2463,12 +2377,10 @@ certificates are accepted only, the default depth of 1 means the client
 certificate can be self-signed or has to be signed by a CA which is directly
 known to the server (i.e. the CA's certificate is under
 <code class="directive"><a href="#sslcacertificatepath">SSLCACertificatePath</a></code>), etc.</p>
-<div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLVerifyDepth 10
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 </div>

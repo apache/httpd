@@ -37,15 +37,13 @@
 The connection speed to be simulated is specified, in KiB/s, using the environment
 variable <code>rate-limit</code>.</p>
 
-<div class="example"><h3>Example Configuration</h3><p><code>
-<pre class="prettyprint lang-config">
+<div class="example"><h3>Example Configuration</h3><pre class="prettyprint lang-config">
 &lt;Location /downloads&gt;
     SetOutputFilter RATE_LIMIT
     SetEnv rate-limit 400 
 &lt;/Location&gt;
 </pre>
-
-</code></p></div>
+</div>
 
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>

@@ -186,8 +186,7 @@ ExtFilterDefine traceafter \
       </pre>
 
 
-      <div class="example"><h3>Here is the filter which traces the data:</h3><p><code>
-      <pre class="prettyprint lang-perl">
+      <div class="example"><h3>Here is the filter which traces the data:</h3><pre class="prettyprint lang-perl">
 #!/usr/local/bin/perl -w
 use strict;
 
@@ -201,8 +200,7 @@ while (&lt;STDIN&gt;) {
 
 close(SAVE);
         </pre>
-
-      </code></p></div>
+</div>
     
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

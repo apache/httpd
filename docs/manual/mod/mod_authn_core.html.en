@@ -68,8 +68,7 @@
         <p>This example checks for passwords in two different text
         files.</p>
 
-        <div class="example"><h3>Checking multiple text password files</h3><p><code>
-        <pre class="prettyprint lang-config">
+        <div class="example"><h3>Checking multiple text password files</h3><pre class="prettyprint lang-config">
 # Check here first
 &lt;AuthnProviderAlias file file1&gt;
     AuthUserFile /www/conf/passwords1
@@ -88,16 +87,14 @@
     Require valid-user
 &lt;/Directory&gt;
         </pre>
-
-        </code></p></div>
+</div>
 
         <p>The example below creates two different ldap authentication
         provider aliases based on the ldap provider.  This allows
         a single authenticated location to be serviced by multiple ldap
         hosts:</p>
 
-        <div class="example"><h3>Checking multiple LDAP servers</h3><p><code>
-        <pre class="prettyprint lang-config">
+        <div class="example"><h3>Checking multiple LDAP servers</h3><pre class="prettyprint lang-config">
 &lt;AuthnProviderAlias ldap ldap-alias1&gt;
     AuthLDAPBindDN cn=youruser,o=ctx
     AuthLDAPBindPassword yourpassword
@@ -121,8 +118,7 @@ Alias /secure /webpages/secure
     Require valid-user
 &lt;/Directory&gt;
           </pre>
-
-        </code></p></div>
+</div>
     
 
 </div>

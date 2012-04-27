@@ -82,12 +82,10 @@ later.</td></tr>
 </table>
     <p>Enable dumping of all input.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       DumpIOInput On
       </pre>
-
-    </code></p></div>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -104,12 +102,10 @@ later.</td></tr>
 </table>
     <p>Enable dumping of all output.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       DumpIOOutput On
       </pre>
-
-    </code></p></div>
+</div>
 
 </div>
 </div>

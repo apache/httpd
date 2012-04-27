@@ -205,8 +205,7 @@ by MIME type</td></tr>
     the same images (<em>i.e.</em>, the images will be accessed
     repeatedly within a relatively short timespan).</p>
 
-    <div class="example"><h3>Example:</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example:</h3><pre class="prettyprint lang-config">
 # enable expirations
 ExpiresActive On
 # expire GIF images after a month in the client's cache
@@ -215,8 +214,7 @@ ExpiresByType image/gif A2592000
 # time they were changed
 ExpiresByType text/html M604800
       </pre>
-
-    </code></p></div>
+</div>
 
     <p>Note that this directive only has effect if
     <code>ExpiresActive On</code> has been specified. It overrides,

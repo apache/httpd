@@ -494,12 +494,10 @@ CustomLog referer.log referer env=!localreferer
     to define another nickname. Note that the nickname should not contain
     percent signs (<code>%</code>).</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost_common
       </pre>
-
-    </code></p></div>
+</div>
     
 
 </div>
@@ -521,13 +519,11 @@ CustomLog referer.log referer env=!localreferer
     which does not define a nickname. Common Log Format is used if no
     other format has been specified.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""
 TransferLog logs/access_log
       </pre>
-
-    </code></p></div>
+</div>
 
 </div>
 </div>

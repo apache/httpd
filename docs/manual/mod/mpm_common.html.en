@@ -440,12 +440,10 @@ of the daemon</td></tr>
     filename is not absolute then it is assumed to be relative to the
     <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       PidFile /var/run/apache.pid
       </pre>
-
-    </code></p></div>
+</div>
 
     <p>It is often useful to be able to send the server a signal,
     so that it closes and then re-opens its <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code> and <code class="directive"><a href="../mod/mod_log_config.html#transferlog">TransferLog</a></code>, and
@@ -498,12 +496,10 @@ the child processes</td></tr>
     disk (using file-based shared memory). Specifying this directive causes
     Apache httpd to always create the file on the disk.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       ScoreBoardFile /var/run/apache_status
       </pre>
-
-    </code></p></div>
+</div>
 
     <p>File-based shared memory is useful for third-party applications
     that require direct access to the scoreboard.</p>

@@ -71,12 +71,10 @@
     <p>Remember, in order to make the following examples work, you have to
     enable <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> and <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code>.</p>
 
-    <div class="example"><h3>Single application instance</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Single application instance</h3><pre class="prettyprint lang-config">
       ProxyPass /myapp/ fcgi://localhost:4000/
       </pre>
-
-    </code></p></div>
+</div>
 
     <p>This application should be able to handle multiple concurrent
     connections.  <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> enables connection reuse by
@@ -89,12 +87,10 @@
     reuse on the <code class="directive">ProxyPass</code> directive, as shown in
     the following example:</p>
 
-    <div class="example"><h3>Single application instance, no connection reuse</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Single application instance, no connection reuse</h3><pre class="prettyprint lang-config">
       ProxyPass /myapp/ fcgi://localhost:4000/ disablereuse=on
       </pre>
-
-    </code></p></div>
+</div>
 
     <p>The balanced gateway needs <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> and
     at least one load balancer algorithm module, such as
@@ -102,16 +98,14 @@
     modules listed above.  <code class="module"><a href="../mod/mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></code> is the
     default, and will be used for this example configuration.</p>
 
-    <div class="example"><h3>Balanced gateway to multiple application instances</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Balanced gateway to multiple application instances</h3><pre class="prettyprint lang-config">
 ProxyPass /myapp/ balancer://myappcluster/
 &lt;Proxy balancer://myappcluster/&gt;
     BalancerMember fcgi://localhost:4000/
     BalancerMember fcgi://localhost:4001/
 &lt;/Proxy&gt;
     </pre>
-
-    </code></p></div>
+</div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="env" id="env">Environment Variables</a></h2>

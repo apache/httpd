@@ -129,8 +129,7 @@
     brigade should have no side effects (such as changing any state
     private to the filter).</p>
 
-    <div class="example"><h3>How to handle an empty brigade</h3><p><code>
-    <pre class="prettyprint lang-c">
+    <div class="example"><h3>How to handle an empty brigade</h3><pre class="prettyprint lang-c">
     apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)<br />
     {
         if (APR_BRIGADE_EMPTY(bb)) {
@@ -138,8 +137,7 @@
         }
         ....
     </pre>
-
-    </code></p></div>
+</div>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -256,8 +254,7 @@
     <p>Taking an example which loops through the entire brigade as
     follows:</p>
 
-    <div class="example"><h3>Bad output filter -- do not imitate!</h3><p><code>
-    <pre class="prettyprint lang-c">
+    <div class="example"><h3>Bad output filter -- do not imitate!</h3><pre class="prettyprint lang-c">
 apr_bucket *e = APR_BRIGADE_FIRST(bb);
 const char *data;
 apr_size_t len;
@@ -270,8 +267,7 @@ while (e != APR_BRIGADE_SENTINEL(bb)) {
 
 return ap_pass_brigade(bb);
 </pre>
-
-    </code></p></div>
+</div>
 
     <p>The above implementation would consume memory proportional to
     content size.  If passed a <code>FILE</code> bucket, for example,
@@ -283,8 +279,7 @@ return ap_pass_brigade(bb);
     amount of memory to filter any brigade; a temporary brigade is
     needed and must be allocated only once per response, see the <a href="#state">Maintaining state</a> section.</p>
 
-    <div class="example"><h3>Better output filter</h3><p><code>
-<pre class="prettyprint lang-c">
+    <div class="example"><h3>Better output filter</h3><pre class="prettyprint lang-c">
 apr_bucket *e;
 const char *data;
 apr_size_t len;
@@ -302,8 +297,7 @@ while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
    apr_brigade_cleanup(tmpbb);
 }
 </pre>
-
-    </code></p></div>
+</div>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -317,8 +311,7 @@ while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
     temporary brigade in such a structure, to avoid having to allocate
     a new brigade per invocation as described in the <a href="#brigade">Brigade structure</a> section.</p>
 
-  <div class="example"><h3>Example code to maintain filter state</h3><p><code>
-  <pre class="prettyprint lang-c">
+  <div class="example"><h3>Example code to maintain filter state</h3><pre class="prettyprint lang-c">
 struct dummy_state {
    apr_bucket_brigade *tmpbb;
    int filter_state;
@@ -343,8 +336,7 @@ apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     }
     ...
 </pre>
-
-    </code></p></div>
+</div>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -418,9 +410,7 @@ apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     script; reading from such a bucket will block when waiting for the
     CGI script to produce more output.</p>
 
-    <div class="example"><h3>Example code using non-blocking bucket reads</h3><p><code>
-      
-      <pre class="prettyprint lang-c">
+    <div class="example"><h3>Example code using non-blocking bucket reads</h3><pre class="prettyprint lang-c">
 apr_bucket *e;
 apr_read_type_e mode = APR_NONBLOCK_READ;
 
@@ -448,8 +438,7 @@ while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
     ...
 }
 </pre>
-
-    </code></p></div>
+</div>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">

@@ -106,8 +106,7 @@
       a file using <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>. If authentication is unsuccessful,
       the user will be redirected to the form login page.</p>
 
-      <div class="example"><h3>Basic example</h3><p><code>
-      <pre class="prettyprint lang-config">
+      <div class="example"><h3>Basic example</h3><pre class="prettyprint lang-config">
 AuthFormProvider file
 AuthUserFile conf/passwd
 AuthType form
@@ -117,8 +116,7 @@ Session On
 SessionCookieName session path=/
 SessionCryptoPassphrase secret
         </pre>
-
-      </code></p></div>
+</div>
 
       <p>The directive <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code> will enable
       the <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code> authentication when set to the value <var>form</var>.
@@ -163,8 +161,7 @@ SessionCryptoPassphrase secret
       The action of the form should point at this handler, which is configured within
       Apache httpd as follows:</p>
 
-      <div class="example"><h3>Form login handler example</h3><p><code>
-      <pre class="prettyprint lang-config">
+      <div class="example"><h3>Form login handler example</h3><pre class="prettyprint lang-config">
 &lt;Location /dologin.html&gt;
     SetHandler form-login-handler
     AuthFormLoginRequiredLocation http://example.com/login.html
@@ -178,8 +175,7 @@ SessionCryptoPassphrase secret
     SessionCryptoPassphrase secret
 &lt;/Location&gt;
         </pre>
-
-      </code></p></div>
+</div>
 
       <p>The URLs specified by the
       <code class="directive"><a href="#authformloginrequiredlocation">AuthFormLoginRequiredLocation</a></code> directive will typically
@@ -231,8 +227,7 @@ SessionCryptoPassphrase secret
       returned by the <var>HTTP_UNAUTHORIZED</var> status code with a custom error document
       containing the login form, as follows:</p>
 
-      <div class="example"><h3>Basic inline example</h3><p><code>
-      <pre class="prettyprint lang-config">
+      <div class="example"><h3>Basic inline example</h3><pre class="prettyprint lang-config">
 AuthFormProvider file
 ErrorDocument 401 /login.shtml
 AuthUserFile conf/passwd
@@ -243,8 +238,7 @@ Session On
 SessionCookieName session path=/
 SessionCryptoPassphrase secret
         </pre>
-
-      </code></p></div>
+</div>
 
       <p>The error document page should contain a login form with an empty action property,
       as per the example below.  This has the effect of submitting the form to
@@ -311,14 +305,12 @@ SessionCryptoPassphrase secret
       <p>Another option is to render the login form using a CGI script or other dynamic
       technology.</p>
 
-      <div class="example"><h3>CGI example</h3><p><code>
-      <pre class="prettyprint lang-config">
+      <div class="example"><h3>CGI example</h3><pre class="prettyprint lang-config">
         AuthFormProvider file
         <strong>ErrorDocument 401 /cgi-bin/login.cgi</strong>
         ...
         </pre>
-
-      </code></p></div>
+</div>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -335,8 +327,7 @@ SessionCryptoPassphrase secret
       logout. This URL might explain to the user that they have been logged out, and
       give the user the option to log in again.</p>
 
-      <div class="example"><h3>Basic logout example</h3><p><code>
-      <pre class="prettyprint lang-config">
+      <div class="example"><h3>Basic logout example</h3><pre class="prettyprint lang-config">
 SetHandler form-logout-handler
 AuthName realm
 AuthFormLogoutLocation http://example.com/loggedout.html
@@ -344,8 +335,7 @@ Session On
 SessionCookieName session path=/
 SessionCryptoPassphrase secret
         </pre>
-
-      </code></p></div>
+</div>
 
       <p>Note that logging a user out does not delete the session; it merely removes
       the username and password from the session. If this results in an empty session,
@@ -355,8 +345,7 @@ SessionCryptoPassphrase secret
       value, like 1 (setting the directive to zero would mean no session age limit).
       </p>
 
-      <div class="example"><h3>Basic session expiry example</h3><p><code>
-      <pre class="prettyprint lang-config">
+      <div class="example"><h3>Basic session expiry example</h3><pre class="prettyprint lang-config">
 SetHandler form-logout-handler
 AuthFormLogoutLocation http://example.com/loggedout.html
 Session On
@@ -364,8 +353,7 @@ SessionMaxAge 1
 SessionCookieName session path=/
 SessionCryptoPassphrase secret
         </pre>
-
-      </code></p></div>
+</div>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -539,8 +527,7 @@ lower level modules</td></tr>
     <p>When a URI is accessed that is served by the handler <code>form-logout-handler</code>,
     the page specified by this directive will be shown to the end user. For example:</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 &lt;Location /logout&gt;
     SetHandler form-logout-handler
     AuthFormLogoutLocation http://example.com/loggedout.html
@@ -548,8 +535,7 @@ lower level modules</td></tr>
     #...
 &lt;/Location&gt;
       </pre>
-
-    </code></p></div>
+</div>
 
     <p>An attempt to access the URI <var>/logout/</var> will result in the user being logged
     out, and the page <var>/loggedout.html</var> will be displayed. Make sure that the page
@@ -638,8 +624,7 @@ lower level modules</td></tr>
     by the <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> module.  Make sure
     that the chosen provider module is present in the server.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 &lt;Location /secure&gt;
     AuthType form
     AuthName "private area"
@@ -650,8 +635,7 @@ lower level modules</td></tr>
     #...
 &lt;/Location&gt;
       </pre>
-
-    </code></p></div>
+</div>
 
     <p>Providers are implemented by <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code>,
     <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>, <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>,

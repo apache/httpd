@@ -77,8 +77,7 @@
     <p>Appropriate user (text) files can be created using the
     <code class="program"><a href="../programs/htdigest.html">htdigest</a></code> tool.</p>
 
-    <div class="example"><h3>Example:</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example:</h3><pre class="prettyprint lang-config">
 &lt;Location /private/&gt;
     AuthType Digest
     AuthName "private area"
@@ -89,8 +88,7 @@
     Require valid-user
 &lt;/Location&gt;
       </pre>
-
-    </code></p></div>
+</div>
 
     <div class="note"><h3>Note</h3>
     <p>Digest authentication is more secure than Basic authentication,
@@ -128,12 +126,10 @@
     remove the query string from the digest comparison.  Using this
     method would look similar to the following.</p>
 
-    <div class="example"><h3>Using Digest Authentication with MSIE:</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Using Digest Authentication with MSIE:</h3><pre class="prettyprint lang-config">
         BrowserMatch "MSIE" AuthDigestEnableQueryStringHack=On
     </pre>
-
-    </code></p></div>
+</div>
 
     <p>This workaround is not necessary for MSIE 7, though enabling it does
     not cause any compatibility issues or significant overhead.</p>

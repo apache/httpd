@@ -40,12 +40,10 @@
     will be invoked by using the <code class="directive"><a href="../mod/mod_dav.html#dav">Dav</a></code>
     directive:</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       Dav filesystem
       </pre>
-
-    </code></p></div>
+</div>
 
     <p>Since <code>filesystem</code> is the default provider for
     <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>, you may simply use the value
@@ -77,12 +75,10 @@
 
     
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       DavLockDB var/DavLock
       </pre>
-
-    </code></p></div>
+</div>
 
     <p>The directory containing the lock database file must be
     writable by the <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code>

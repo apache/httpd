@@ -92,12 +92,10 @@ a directory</td></tr>
     set, the server will generate its own listing of the
     directory.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       DirectoryIndex index.html
       </pre>
-
-    </code></p></div>
+</div>
 
     <p>then a request for <code>http://example.com/docs/</code> would
     return <code>http://example.com/docs/index.html</code> if it
@@ -141,12 +139,10 @@ a directory</td></tr>
     and returned transparently to the client.  <code class="directive">DirectoryIndexRedirect</code> causes an external redirect
     to instead be issued.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-    <pre class="prettyprint lang-config">
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       DirectoryIndexRedirect on
       </pre>
-
-    </code></p></div>
+</div>
 
     <p>A request for <code>http://example.com/docs/</code> would
     return a temporary redirect to <code>http://example.com/docs/index.html</code>
