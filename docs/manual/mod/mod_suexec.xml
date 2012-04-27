@@ -57,7 +57,9 @@ later.</compatibility>
 
     <example>
     <title>Example</title>
+    <highlight language="config">
     SuexecUserGroup nobody nogroup
+    </highlight>
     </example>
 
     <p>In Apache httpd 2.3.9 and later, startup will fail if this

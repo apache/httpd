@@ -144,7 +144,7 @@ Windows</compatibility>
 
     <p>For example:</p>
 
-    <example>LoadFile libexec/libxmlparse.so</example>
+    <highlight language="config">LoadFile libexec/libxmlparse.so</highlight>
 
 </usage>
 </directivesynopsis>
@@ -167,9 +167,9 @@ of active modules</description>
     href="module-dict.html#ModuleIdentifier">Module Identifier</a>
     in the module documentation. Example:</p>
 
-    <example>
+    <highlight language="config">
       LoadModule status_module modules/mod_status.so
-    </example>
+    </highlight>
 
     <p>loads the named module from the modules subdirectory of the
     ServerRoot.</p>

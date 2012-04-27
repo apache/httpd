@@ -131,8 +131,10 @@
       stored on the browser, in a cookie called <code>session</code>.</p>
 
       <example><title>Browser based session</title>
-        Session On<br />
-        SessionCookieName session path=/<br />
+      <highlight language="config">
+Session On
+SessionCookieName session path=/
+        </highlight>
       </example>
 
       <p>The session is not useful unless it can be written to or read from. The
@@ -141,9 +143,11 @@
       <code>X-Replace-Session</code>.</p>
 
       <example><title>Writing to a session</title>
-        Session On<br />
-        SessionCookieName session path=/<br />
-        SessionHeader X-Replace-Session<br />
+      <highlight language="config">
+Session On
+SessionCookieName session path=/
+SessionHeader X-Replace-Session
+        </highlight>
       </example>
 
       <p>The header should contain name value pairs expressed in the same format
@@ -151,11 +155,13 @@
       empty string has the effect of removing that key from the session.</p>
 
       <example><title>CGI to write to a session</title>
-        #!/bin/bash<br />
-        echo "Content-Type: text/plain"<br />
-        echo "X-Replace-Session: key1=foo&amp;key2=&amp;key3=bar"<br />
-        echo<br />
-        env<br />
+      <highlight language="sh">
+#!/bin/bash
+echo "Content-Type: text/plain"
+echo "X-Replace-Session: key1=foo&amp;key2=&amp;key3=bar"
+echo
+env
+        </highlight>
       </example>
 
       <p>If configured, the session can be read back from the HTTP_SESSION
@@ -164,10 +170,12 @@
       <directive module="mod_session">SessionEnv</directive> directive.</p>
 
       <example><title>Read from a session</title>
-        Session On<br />
-        SessionEnv On<br />
-        SessionCookieName session path=/<br />
-        SessionHeader X-Replace-Session<br />
+      <highlight language="config">
+Session On
+SessionEnv On
+SessionCookieName session path=/
+SessionHeader X-Replace-Session
+        </highlight>
       </example>
 
       <p>Once read, the CGI variable <code>HTTP_SESSION</code> should contain
@@ -187,9 +195,11 @@
       module.</p>
 
       <example><title>Browser based encrypted session</title>
-        Session On<br />
-        SessionCryptoPassphrase secret<br />
-        SessionCookieName session path=/<br />
+      <highlight language="config">
+Session On
+SessionCryptoPassphrase secret
+SessionCookieName session path=/
+        </highlight>
       </example>
 
       <p>The session will be automatically decrypted on load, and encrypted on
@@ -223,9 +233,11 @@
       as in the example below.</p>
 
       <example><title>Setting cookie parameters</title>
-        Session On<br />
-        SessionCryptoPassphrase secret<br />
-        SessionCookieName session path=/private;domain=example.com;httponly;secure;<br />
+      <highlight language="config">
+Session On
+SessionCryptoPassphrase secret
+SessionCookieName session path=/private;domain=example.com;httponly;secure;
+        </highlight>
       </example>
 
       <p>In cases where the Apache server forms the frontend for backend origin servers,
@@ -244,14 +256,16 @@
       the session.</p>
 
       <example><title>Form based authentication</title>
-        Session On<br />
-        SessionCryptoPassphrase secret<br />
-        SessionCookieName session path=/<br />
-        AuthFormProvider file<br />
-        AuthUserFile conf/passwd<br />
-        AuthType form<br />
-        AuthName realm<br />
-        ...<br />
+      <highlight language="config">
+Session On
+SessionCryptoPassphrase secret
+SessionCookieName session path=/
+AuthFormProvider file
+AuthUserFile conf/passwd
+AuthType form
+AuthName realm
+#...
+        </highlight>
       </example>
 
       <p>See the <module>mod_auth_form</module> module for documentation and complete
