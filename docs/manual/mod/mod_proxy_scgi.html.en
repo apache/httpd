@@ -68,7 +68,10 @@
     enable <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> and <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code>.</p>
 
     <div class="example"><h3>Simple gateway</h3><p><code>
+    <pre class="prettyprint lang-config">
       ProxyPass /scgi-bin/ scgi://localhost:4000/
+      </pre>
+
     </code></p></div>
 
     <p>The balanced gateway needs <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> and
@@ -78,13 +81,14 @@
     default, and will be used for this example configuration.</p>
 
     <div class="example"><h3>Balanced gateway</h3><p><code>
-    ProxyPass /scgi-bin/ balancer://somecluster/<br />
-    &lt;Proxy balancer://somecluster/&gt;<br />
-    <span class="indent">
-        BalancerMember scgi://localhost:4000/<br />
-        BalancerMember scgi://localhost:4001/<br />
-    </span>
-    &lt;/Proxy&gt;
+    <pre class="prettyprint lang-config">
+ProxyPass /scgi-bin/ balancer://somecluster/
+&lt;Proxy balancer://somecluster/&gt;
+    BalancerMember scgi://localhost:4000/
+    BalancerMember scgi://localhost:4001/
+&lt;/Proxy&gt;
+    </pre>
+
     </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -127,7 +131,10 @@ backend</td></tr>
     feature.</p>
 
     <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
     ProxySCGIInternalRedirect Off
+    </pre>
+
     </code></p></div>
 
 </div>
@@ -165,11 +172,14 @@ header</td></tr>
     </dl>
 
     <div class="example"><h3>Example</h3><p><code>
-    # Use the default header (X-Sendfile)<br />
-    ProxySCGISendfile On<br />
-    <br />
-    # Use a different header<br />
+    <pre class="prettyprint lang-config">
+    # Use the default header (X-Sendfile)
+    ProxySCGISendfile On
+    
+    # Use a different header
     ProxySCGISendfile X-Send-Static
+    </pre>
+
     </code></p></div>
 
 </div>
