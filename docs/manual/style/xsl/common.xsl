@@ -45,7 +45,7 @@
 <!-- space separated list of blockelements defined in common.dtd -->
 <!--    used for inline content catching in <example>s           -->
 <xsl:variable name="blockelements">
-    p  example  note  table  ul  ol  dl  pre  img  blockquote
+    p  example  note  table  ul  ol  dl  pre  highlight img  blockquote
 </xsl:variable>
 
 <!-- relative path to /manual/ -->
@@ -312,11 +312,12 @@
     <xsl:call-template name="super-menu"/>
 
 </div> <!-- /footer -->
-<script type="text/javascript">
+
+<script type="text/javascript"><![CDATA[
     if (typeof(prettyPrint) !== undefined) {
         prettyPrint();
     }
-</script>
+]]></script>
 </xsl:template>
 <!-- /bottom -->
 
@@ -484,6 +485,7 @@
 </pre>&lf; <!-- /.highlight -->
 </xsl:template>
 <!-- /higlight -->
+
 
 <!-- ==================================================================== -->
 <!-- (sub)section titles                                                  -->
