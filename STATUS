@@ -88,13 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_proxy_fcgi: Report errors to the client
-    PR: 52879
-    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1311172
-    CHANGES fix: http://svn.apache.org/viewvc?view=revision&revision=1331243
-    2.4 patch: Trunk patch works
-    +1: sf, jorton, jim
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
