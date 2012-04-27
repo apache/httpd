@@ -91,31 +91,30 @@
     load balancing between two back-end servers:
     </p>
 
-    <example>
-    &lt;Proxy balancer://mycluster&gt;<br />
-        BalancerMember http://192.168.1.50:80<br />
-        BalancerMember http://192.168.1.51:80<br />
-    &lt;/Proxy&gt;<br />
-    ProxyPass /test balancer://mycluster<br />
-    ProxyPassReverse /test balancer://mycluster
-    </example>
+    <highlight language="config">
+&lt;Proxy balancer://mycluster&gt;
+    BalancerMember http://192.168.1.50:80
+    BalancerMember http://192.168.1.51:80
+&lt;/Proxy&gt;
+ProxyPass /test balancer://mycluster
+ProxyPassReverse /test balancer://mycluster
+    </highlight>
 
     <p>Another example of how to provide load balancing with stickyness
     using <module>mod_headers</module>, even if the back-end server does
     not set a suitable session cookie:
     </p>
 
-    <example>
-    Header add Set-Cookie "ROUTEID=.%{BALANCER_WORKER_ROUTE}e; path=/"
-           env=BALANCER_ROUTE_CHANGED<br />
-    &lt;Proxy balancer://mycluster&gt;<br />
-    BalancerMember http://192.168.1.50:80 route=1<br />
-    BalancerMember http://192.168.1.51:80 route=2<br />
-    ProxySet stickysession=ROUTEID<br />
-    &lt;/Proxy&gt;<br />
-    ProxyPass /test balancer://mycluster<br />
-    ProxyPassReverse /test balancer://mycluster
-    </example>
+    <highlight language="config">
+Header add Set-Cookie "ROUTEID=.%{BALANCER_WORKER_ROUTE}e; path=/" env=BALANCER_ROUTE_CHANGED
+&lt;Proxy balancer://mycluster&gt;
+    BalancerMember http://192.168.1.50:80 route=1
+    BalancerMember http://192.168.1.51:80 route=2
+    ProxySet stickysession=ROUTEID
+&lt;/Proxy&gt;
+ProxyPass /test balancer://mycluster
+ProxyPassReverse /test balancer://mycluster
+    </highlight>
 </section>
 
 <section id="environment">
@@ -188,13 +187,12 @@
     <p>To enable load balancer management for browsers from the example.com
     domain add this code to your <code>httpd.conf</code>
     configuration file</p>
-<example>
-    &lt;Location /balancer-manager&gt;<br />
-    SetHandler balancer-manager<br />
-<br />
-    Require host example.com<br />
-    &lt;/Location&gt;
-</example>
+<highlight language="config">
+&lt;Location /balancer-manager&gt;
+    SetHandler balancer-manager
+    Require host example.com
+&lt;/Location&gt;
+</highlight>
 
     <p>You can now access load balancer manager by using a Web browser
     to access the page

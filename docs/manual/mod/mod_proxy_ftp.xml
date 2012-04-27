@@ -59,7 +59,7 @@
       </example>
     <p>Alternatively you may prefer to default everything to binary:</p>
       <example>
-<pre>ForceType application/octet-stream</pre>
+        <highlight language="config">ForceType application/octet-stream</highlight>
       </example>
     </section> <!-- /mimetypes -->
 

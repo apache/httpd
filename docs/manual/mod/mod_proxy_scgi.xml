@@ -55,7 +55,9 @@
     enable <module>mod_proxy</module> and <module>mod_proxy_scgi</module>.</p>
 
     <example><title>Simple gateway</title>
+    <highlight language="config">
       ProxyPass /scgi-bin/ scgi://localhost:4000/
+      </highlight>
     </example>
 
     <p>The balanced gateway needs <module>mod_proxy_balancer</module> and
@@ -65,13 +67,13 @@
     default, and will be used for this example configuration.</p>
 
     <example><title>Balanced gateway</title>
-    ProxyPass /scgi-bin/ balancer://somecluster/<br />
-    &lt;Proxy balancer://somecluster/&gt;<br />
-    <indent>
-        BalancerMember scgi://localhost:4000/<br />
-        BalancerMember scgi://localhost:4001/<br />
-    </indent>
-    &lt;/Proxy&gt;
+    <highlight language="config">
+ProxyPass /scgi-bin/ balancer://somecluster/
+&lt;Proxy balancer://somecluster/&gt;
+    BalancerMember scgi://localhost:4000/
+    BalancerMember scgi://localhost:4001/
+&lt;/Proxy&gt;
+    </highlight>
     </example>
 </section>
 
@@ -124,11 +126,13 @@ header</description>
     </dl>
 
     <example><title>Example</title>
-    # Use the default header (X-Sendfile)<br />
-    ProxySCGISendfile On<br />
-    <br />
-    # Use a different header<br />
+    <highlight language="config">
+    # Use the default header (X-Sendfile)
+    ProxySCGISendfile On
+    
+    # Use a different header
     ProxySCGISendfile X-Send-Static
+    </highlight>
     </example>
 </usage>
 </directivesynopsis>
@@ -156,7 +160,9 @@ backend</description>
     feature.</p>
 
     <example><title>Example</title>
+    <highlight language="config">
     ProxySCGIInternalRedirect Off
+    </highlight>
     </example>
 </usage>
 </directivesynopsis>

@@ -151,19 +151,21 @@
     the documentation from <module>mod_cache</module>.</p>
 
     <example><title>Reverse Proxy</title>
-    ProxyPass /foo http://foo.example.com/bar<br />
-    ProxyPassReverse /foo http://foo.example.com/bar
+    <highlight language="config">
+ProxyPass /foo http://foo.example.com/bar
+ProxyPassReverse /foo http://foo.example.com/bar
+    </highlight>
     </example>
 
     <example><title>Forward Proxy</title>
-    ProxyRequests On<br />
-    ProxyVia On<br />
-    <br />
-    &lt;Proxy *&gt;<br />
-    <indent>
-      Require host internal.example.com<br />
-    </indent>
-    &lt;/Proxy&gt;
+    <highlight language="config">
+ProxyRequests On
+ProxyVia On
+
+&lt;Proxy *&gt;
+  Require host internal.example.com
+&lt;/Proxy&gt;
+    </highlight>
     </example>
     </section> <!-- /examples -->
 
@@ -187,29 +189,27 @@
       <directive module="mod_proxy">ProxyPassMatch</directive> when used
       for a reverse proxy:</p>
 
-      <example>
+      <highlight language="config">
           ProxyPass /example http://backend.example.com connectiontimeout=5 timeout=30
-      </example>
+      </highlight>
 
       <p>This will create a worker associated with the origin server URL
       <code>http://backend.example.com</code> and using the given timeout
       values. When used in a forward proxy, workers are usually defined
       via the <directive module="mod_proxy">ProxySet</directive> directive:</p>
 
-      <example>
+      <highlight language="config">
           ProxySet http://backend.example.com connectiontimeout=5 timeout=30
-      </example>
+      </highlight>
 
       <p>or alternatively using <directive module="mod_proxy">Proxy</directive>
       and <directive module="mod_proxy">ProxySet</directive>:</p>
 
-      <example>
-        &lt;Proxy http://backend.example.com&gt;<br />
-        <indent>
-          ProxySet connectiontimeout=5 timeout=30
-        </indent>
-        &lt;/Proxy&gt;
-      </example>
+      <highlight language="config">
+&lt;Proxy http://backend.example.com&gt;
+  ProxySet connectiontimeout=5 timeout=30
+&lt;/Proxy&gt;
+      </highlight>
 
       <p>Using explicitly configured workers in the forward mode is
       not very common, because forward proxies usually communicate with many
@@ -225,10 +225,10 @@
       <p>The URL identifying a direct worker is the URL of its
       origin server including any path components given:</p>
 
-      <example>
-          ProxyPass /examples http://backend.example.com/examples<br />
-          ProxyPass /docs http://backend.example.com/docs
-      </example>
+     <highlight language="config">
+ProxyPass /examples http://backend.example.com/examples
+ProxyPass /docs http://backend.example.com/docs
+      </highlight>
 
       <p>This example defines two different workers, each using a separate
       connection pool and configuration.</p>
@@ -238,10 +238,10 @@
         the URL of some worker is a leading substring of the URL of another
         worker defined later in the configuration file. In the following example</p>
 
-        <example>
-            ProxyPass /apps http://backend.example.com/ timeout=60<br />
-            ProxyPass /examples http://backend.example.com/examples timeout=10
-        </example>
+        <highlight language="config">
+ProxyPass /apps http://backend.example.com/ timeout=60
+ProxyPass /examples http://backend.example.com/examples timeout=10
+        </highlight>
 
         <p>the second worker isn't actually created. Instead the first
         worker is used. The benefit is, that there is only one connection pool,
@@ -288,13 +288,11 @@
       module="mod_proxy" type="section">Proxy</directive> control block as in
       the following example:</p>
 
-      <example>
-        &lt;Proxy *&gt;<br />
-        <indent>
-          Require ip 192.168.0<br />
-        </indent>
-        &lt;/Proxy&gt;
-      </example>
+      <highlight language="config">
+&lt;Proxy *&gt;
+  Require ip 192.168.0
+&lt;/Proxy&gt;
+      </highlight>
 
       <p>For more information on access control directives, see
       <module>mod_authz_host</module>.</p>
@@ -358,15 +356,13 @@
       <p>These are the <code>force-proxy-request-1.0</code> and
       <code>proxy-nokeepalive</code> notes.</p>
 
-      <example>
-        &lt;Location /buggyappserver/&gt;<br />
-        <indent>
-          ProxyPass http://buggyappserver:7001/foo/<br />
-          SetEnv force-proxy-request-1.0 1<br />
-          SetEnv proxy-nokeepalive 1<br />
-        </indent>
-        &lt;/Location&gt;
-      </example>
+      <highlight language="config">
+&lt;Location /buggyappserver/&gt;
+  ProxyPass http://buggyappserver:7001/foo/
+  SetEnv force-proxy-request-1.0 1
+  SetEnv proxy-nokeepalive 1
+&lt;/Location&gt;
+        </highlight>
 
     </section> <!-- /envsettings -->
 
@@ -452,25 +448,21 @@
     <code>yournetwork.example.com</code> to access content via your proxy
     server:</p>
 
-    <example>
-      &lt;Proxy *&gt;<br />
-      <indent>
-        Require host yournetwork.example.com<br />
-      </indent>
-      &lt;/Proxy&gt;
-    </example>
+    <highlight language="config">
+&lt;Proxy *&gt;
+  Require host yournetwork.example.com
+&lt;/Proxy&gt;
+    </highlight>
 
     <p>The following example will process all files in the <code>foo</code>
     directory of <code>example.com</code> through the <code>INCLUDES</code>
     filter when they are sent through the proxy server:</p>
 
-    <example>
-      &lt;Proxy http://example.com/foo/*&gt;<br />
-      <indent>
-        SetOutputFilter INCLUDES<br />
-      </indent>
-      &lt;/Proxy&gt;
-    </example>
+   <highlight language="config">    
+&lt;Proxy http://example.com/foo/*&gt;
+  SetOutputFilter INCLUDES
+&lt;/Proxy&gt;
+    </highlight>
 
 </usage>
 <seealso><directive type="section" module="mod_proxy">ProxyMatch</directive></seealso>
@@ -605,9 +597,11 @@ context in 2.3.3 and later.</compatibility>
     are forwarded through the remote proxy using the HTTP CONNECT method.</p>
 
     <example><title>Example</title>
-      ProxyRemote http://goodguys.example.com/ http://mirrorguys.example.com:8000<br />
-      ProxyRemote * http://cleverproxy.localdomain<br />
-      ProxyRemote ftp http://ftpproxy.mydomain:8080
+    <highlight language="config">
+ProxyRemote http://goodguys.example.com/ http://mirrorguys.example.com:8000
+ProxyRemote * http://cleverproxy.localdomain
+ProxyRemote ftp http://ftpproxy.mydomain:8080
+    </highlight>
     </example>
 
     <p>In the last example, the proxy will forward FTP requests, encapsulated
@@ -697,30 +691,28 @@ expressions</description>
     <directive module="mod_proxy">ProxyPass</directive> directive.</p>
 
     <example>
-      &lt;Proxy balancer://hotcluster&gt;<br />
-      <indent>
-        BalancerMember http://www2.example.com:8080 loadfactor=1<br />
-        BalancerMember http://www3.example.com:8080 loadfactor=2<br />
-        ProxySet lbmethod=bytraffic<br />
-      </indent>
-      &lt;/Proxy&gt;
+        <highlight language="config">
+&lt;Proxy balancer://hotcluster&gt;
+    BalancerMember http://www2.example.com:8080 loadfactor=1
+    BalancerMember http://www3.example.com:8080 loadfactor=2
+    ProxySet lbmethod=bytraffic
+&lt;/Proxy&gt;
+      </highlight>
     </example>
 
-    <example>
-      &lt;Proxy http://backend&gt;<br />
-      <indent>
-        ProxySet keepalive=On<br />
-      </indent>
-      &lt;/Proxy&gt;
-    </example>
+    <highlight language="config">
+&lt;Proxy http://backend&gt;
+    ProxySet keepalive=On
+&lt;/Proxy&gt;
+    </highlight>
 
-    <example>
+    <highlight language="config">
         ProxySet balancer://foo lbmethod=bytraffic timeout=15
-    </example>
+    </highlight>
 
-    <example>
+    <highlight language="config">
         ProxySet ajp://backend:7001 timeout=15
-    </example>
+    </highlight>
 
    <note type="warning"><title>Warning</title>
       <p>Keep in mind that the same parameter key can have a different meaning
@@ -757,13 +749,11 @@ expressions</description>
     <p>Suppose the local server has address <code>http://example.com/</code>;
     then</p>
 
-    <example>
-        &lt;Location /mirror/foo/&gt;<br />
-        <indent>
-          ProxyPass http://backend.example.com/<br />
-        </indent>
-        &lt;/Location&gt;<br />
-    </example>
+    <highlight language="config">
+&lt;Location /mirror/foo/&gt;
+    ProxyPass http://backend.example.com/
+&lt;/Location&gt;
+    </highlight>
 
     <p>will cause a local request for
     <code>http://example.com/mirror/foo/bar</code> to be internally converted
@@ -774,9 +764,9 @@ expressions</description>
     the below syntax is that it allows for dynamic control via the
     <a href="mod_proxy_balancer.html#balancer_manager">Balancer Manager</a> interface:</p>
 
-    <example>
+    <highlight language="config">
         ProxyPass /mirror/foo/ http://backend.example.com/
-    </example>
+    </highlight>
 
     <note type="warning">
     <p>If the first argument ends with a trailing <strong>/</strong>, the second
@@ -789,23 +779,19 @@ expressions</description>
     <p>The <code>!</code> directive is useful in situations where you don't want
     to reverse-proxy a subdirectory, <em>e.g.</em></p>
 
-    <example>
-        &lt;Location /mirror/foo/&gt;<br />
-        <indent>
-          ProxyPass http://backend.example.com/<br />
-        </indent>
-        &lt;/Location&gt;<br />
-        &lt;Location /mirror/foo/i&gt;<br />
-        <indent>
-            ProxyPass !<br />
-        </indent>
-        &lt;/Location&gt;<br />
-    </example>
+    <highlight language="config">
+&lt;Location /mirror/foo/&gt;
+    ProxyPass http://backend.example.com/
+&lt;/Location&gt;
+&lt;Location /mirror/foo/i&gt;
+    ProxyPass !
+&lt;/Location&gt;
+    </highlight>
 
-    <example>
-      ProxyPass /mirror/foo/i !<br />
-      ProxyPass /mirror/foo http://backend.example.com
-    </example>
+    <highlight language="config">
+ProxyPass /mirror/foo/i !
+ProxyPass /mirror/foo http://backend.example.com
+    </highlight>
 
     <p>will proxy all requests to <code>/mirror/foo</code> to
     <code>backend.example.com</code> <em>except</em> requests made to
@@ -1116,33 +1102,29 @@ expressions</description>
 
     </table>
     <p>A sample balancer setup</p>
-    <example>
-      ProxyPass /special-area http://special.example.com smax=5 max=10<br />
-      ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On<br />
-      &lt;Proxy balancer://mycluster&gt;<br />
-      <indent>
-        BalancerMember ajp://1.2.3.4:8009<br />
-        BalancerMember ajp://1.2.3.5:8009 loadfactor=20<br />
-        # Less powerful server, don't send as many requests there,<br />
-        BalancerMember ajp://1.2.3.6:8009 loadfactor=5<br />
-      </indent>
-      &lt;/Proxy&gt;
-    </example>
+    <highlight language="config">
+ProxyPass /special-area http://special.example.com smax=5 max=10
+ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On
+&lt;Proxy balancer://mycluster&gt;
+    BalancerMember ajp://1.2.3.4:8009
+    BalancerMember ajp://1.2.3.5:8009 loadfactor=20
+    # Less powerful server, don't send as many requests there,
+    BalancerMember ajp://1.2.3.6:8009 loadfactor=5
+&lt;/Proxy&gt;
+    </highlight>
 
     <p>Setting up a hot-standby, that will only be used if no other
      members are available</p>
-    <example>
-      ProxyPass / balancer://hotcluster/ <br />
-      &lt;Proxy balancer://hotcluster&gt;<br />
-      <indent>
-        BalancerMember ajp://1.2.3.4:8009 loadfactor=1<br />
-        BalancerMember ajp://1.2.3.5:8009 loadfactor=2<br />
-        # The below is the hot standby<br />
-        BalancerMember ajp://1.2.3.6:8009 status=+H<br />
-        ProxySet lbmethod=bytraffic
-      </indent>
-      &lt;/Proxy&gt;
-    </example>
+    <highlight language="config">
+ProxyPass / balancer://hotcluster/ 
+&lt;Proxy balancer://hotcluster&gt;
+    BalancerMember ajp://1.2.3.4:8009 loadfactor=1
+    BalancerMember ajp://1.2.3.5:8009 loadfactor=2
+    # The below is the hot standby
+    BalancerMember ajp://1.2.3.6:8009 status=+H
+    ProxySet lbmethod=bytraffic
+&lt;/Proxy&gt;
+    </highlight>
 
     <p>Normally, mod_proxy will canonicalise ProxyPassed URLs.
     But this may be incompatible with some backends, particularly those
@@ -1204,9 +1186,9 @@ expressions</description>
     <p>Suppose the local server has address <code>http://example.com/</code>;
     then</p>
 
-    <example>
+    <highlight language="config">
       ProxyPassMatch ^(/.*\.gif)$ http://backend.example.com$1
-    </example>
+    </highlight>
 
     <p>will cause a local request for
     <code>http://example.com/foo/bar.gif</code> to be internally converted
@@ -1215,15 +1197,15 @@ expressions</description>
       <p>The URL argument must be parsable as a URL <em>before</em> regexp
       substitutions (as well as after).  This limits the matches you can use.
       For instance, if we had used</p>
-      <example>
+      <highlight language="config">
         ProxyPassMatch ^(/.*\.gif)$ http://backend.example.com:8000$1
-      </example>
+      </highlight>
       <p>in our previous example, it would fail with a syntax error
       at server startup.  This is a bug (PR 46665 in the ASF bugzilla),
       and the workaround is to reformulate the match:</p>
-      <example>
+      <highlight language="config">
         ProxyPassMatch ^/(.*\.gif)$ http://backend.example.com:8000/$1
-      </example>
+      </highlight>
     </note>
     <p>The <code>!</code> directive is useful in situations where you don't want
     to reverse-proxy a subdirectory.</p>
@@ -1282,12 +1264,12 @@ proxied server</description>
     <p>For example, suppose the local server has address
     <code>http://example.com/</code>; then</p>
 
-    <example>
-      ProxyPass         /mirror/foo/ http://backend.example.com/<br />
-      ProxyPassReverse  /mirror/foo/ http://backend.example.com/<br />
-      ProxyPassReverseCookieDomain  backend.example.com  public.example.com<br />
-      ProxyPassReverseCookiePath  /  /mirror/foo/
-    </example>
+    <highlight language="config">
+ProxyPass         /mirror/foo/ http://backend.example.com/
+ProxyPassReverse  /mirror/foo/ http://backend.example.com/
+ProxyPassReverseCookieDomain  backend.example.com  public.example.com
+ProxyPassReverseCookiePath  /  /mirror/foo/
+    </highlight>
 
     <p>will not only cause a local request for the
     <code>http://example.com/mirror/foo/bar</code> to be internally converted
@@ -1369,9 +1351,9 @@ reverse proxy. This directive rewrites the <code>path</code> string in
 In the example given with 
 <directive module="mod_proxy">ProxyPassReverse</directive>, the directive:
 </p>
-    <example>
+    <highlight language="config">
       ProxyPassReverseCookiePath  /  /mirror/foo/
-    </example>
+    </highlight>
 <p>
 will rewrite a cookie with backend path <code>/</code> (or
 <code>/example</code> or, in fact, anything) to <code>/mirror/foo/</code>.
@@ -1398,7 +1380,9 @@ proxied</description>
     well. That may slow down the startup time of the server.</p>
 
     <example><title>Example</title>
+    <highlight language="config">
       ProxyBlock news.example.com auctions.example.com friends.example.com
+      </highlight>
     </example>
 
     <p>Note that <code>example</code> would also be sufficient to match any
@@ -1408,9 +1392,9 @@ proxied</description>
 
     <p>Note also that</p>
 
-    <example>
+    <highlight language="config">
       ProxyBlock *
-    </example>
+    </highlight>
 
     <p>blocks connections to all sites.</p>
 </usage>
@@ -1433,7 +1417,9 @@ connections</description>
     be used.</p>
 
     <example><title>Example</title>
+    <highlight language="config">
       ProxyReceiveBufferSize 2048
+      </highlight>
     </example>
 </usage>
 </directivesynopsis>
@@ -1482,7 +1468,9 @@ through</description>
     be set to prevent infinite proxy loops, or a DoS attack.</p>
 
     <example><title>Example</title>
+    <highlight language="config">
       ProxyMaxForwards 15
+      </highlight>
     </example>
 
     <p>Note that setting <directive>ProxyMaxForwards</directive> is a
@@ -1512,8 +1500,10 @@ directly</description>
     <directive module="mod_proxy">ProxyRemote</directive> proxy server(s).</p>
 
     <example><title>Example</title>
-      ProxyRemote  *  http://firewall.example.com:81<br />
-      NoProxy         .example.com 192.168.112.0/21
+    <highlight language="config">
+ProxyRemote  *  http://firewall.example.com:81
+NoProxy         .example.com 192.168.112.0/21
+    </highlight>
     </example>
 
     <p>The <var>host</var> arguments to the <directive>NoProxy</directive>
@@ -1652,9 +1642,11 @@ directly</description>
     will be generated.</p>
 
     <example><title>Example</title>
+    <highlight language="config">
       ProxyRemote  *  http://firewall.example.com:81<br />
       NoProxy         .example.com 192.168.112.0/21<br />
       ProxyDomain     .example.com
+      </highlight>
     </example>
 </usage>
 </directivesynopsis>
