@@ -41,10 +41,10 @@
     <p><module>mod_usertrack</module> sets a cookie which can be logged
     via <module>mod_log_config</module> configurable logging formats:</p>
 
-    <example>
-    LogFormat "%{Apache}n %r %t" usertrack<br />
-    CustomLog logs/clickstream.log usertrack
-    </example>
+    <highlight language="config">
+LogFormat "%{Apache}n %r %t" usertrack
+CustomLog logs/clickstream.log usertrack
+    </highlight>
 
 </section>
 
@@ -83,9 +83,9 @@
     level domain (for example <code>.example.co.uk</code>).
     </note>
 
-    <example>
+    <highlight language="config">
     CookieDomain .example.com
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -114,9 +114,9 @@
     <p>If this directive is not used, cookies last only for the
     current browser session.</p>
 
-    <example>
+    <highlight language="config">
     CookieExpires "3 weeks"
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -142,9 +142,9 @@
     unpredictable if you use a name containing unusual characters.
     Valid characters include A-Z, a-z, 0-9, "_", and "-".</p>
 
-    <example>
+    <highlight language="config">
     CookieName clicktrack
-    </example>
+    </highlight>
 </usage>
 
 </directivesynopsis>
@@ -185,9 +185,9 @@
     three of these formats, with <code>Cookie2</code> being the
     preferred format.</p>
 
-    <example>
+    <highlight language="config">
     CookieStyle Cookie2
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -215,9 +215,9 @@
     <module>mod_usertrack</module> will <strong>not</strong>
     activate cookies. </p>
 
-    <example>
+    <highlight language="config">
     CookieTracking on
-    </example>
+    </highlight>
 
 </usage>
 </directivesynopsis>
