@@ -533,7 +533,7 @@ Require group GroupName
         <highlight language="config">
 &lt;RequireAll&gt;
     Require all granted
-    Require not host <var>host.example.com</var>
+    Require not host host.example.com
 &lt;/RequireAll&gt;
         </highlight>
 
@@ -547,7 +547,7 @@ Require group GroupName
         Require ip 192.168.205
         Require host phishers.example.com moreidiots.example
         Require host ke
-    &lt;/RequireNone&gt;
+    &lt;/RequireNone&gt; 
 &lt;/RequireAll&gt;
         </highlight>
 
