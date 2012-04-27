@@ -55,7 +55,9 @@ requests</description>
     </dl>
 
     <example><title>Example</title>
+    <highlight language="config">
       Group www-group
+      </highlight>
     </example>
 
     <p>It is recommended that you set up a new group specifically for
