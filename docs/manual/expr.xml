@@ -476,26 +476,22 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 	<title>Example expressions</title>
 	<p>The following examples show how expressions might be used to evaluate requests:</p>
 	<!-- This section should probably be extended with more, useful examples -->
-	<example>
-	# Compare the host name to example.com and redirect to www.example.com if it matches<br />
-	&lt;If "%{HTTP_HOST} == 'example.com'"&gt;<br />
-	<indent>
-		Redirect permanent / http://www.example.com<br />
-	</indent>
-	&lt;/If&gt;<br /><br />
-	# Force text/plain if requesting a file with the query string contains 'forcetext'<br />
-	&lt;If "%{QUERY_STRING} =~ /forcetext/"&gt;<br />
-	<indent>
-		ForceType text/plain<br />
-	</indent>
-	&lt;/If&gt;<br /><br />
-	# Only allow access to this content during business hours<br />
-	&lt;Directory "/foo/bar/business"&gt;<br />
-	<indent>
-		Require expr %{TIME_HOUR} &gt;= 9 &amp;&amp; %{TIME_HOUR} &lt;= 17 <br />
-	</indent>
-	&lt;/Directory&gt;	
-	</example>
+	<highlight language="config">
+# Compare the host name to example.com and redirect to www.example.com if it matches
+&lt;If "%{HTTP_HOST} == 'example.com'"&gt;
+    Redirect permanent / http://www.example.com
+&lt;/If&gt;
+
+# Force text/plain if requesting a file with the query string contains 'forcetext'
+&lt;If "%{QUERY_STRING} =~ /forcetext/"&gt;
+    ForceType text/plain
+&lt;/If&gt;
+
+# Only allow access to this content during business hours
+&lt;Directory "/foo/bar/business"&gt;
+    Require expr %{TIME_HOUR} &gt;= 9 &amp;&amp; %{TIME_HOUR} &lt;= 17 
+&lt;/Directory&gt;	
+	</highlight>
 </section>
 
 <section id="other">

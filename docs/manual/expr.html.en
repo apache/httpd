@@ -449,26 +449,23 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 	
 	<p>The following examples show how expressions might be used to evaluate requests:</p>
 	
-	<div class="example"><p><code>
-	# Compare the host name to example.com and redirect to www.example.com if it matches<br />
-	&lt;If "%{HTTP_HOST} == 'example.com'"&gt;<br />
-	<span class="indent">
-		Redirect permanent / http://www.example.com<br />
-	</span>
-	&lt;/If&gt;<br /><br />
-	# Force text/plain if requesting a file with the query string contains 'forcetext'<br />
-	&lt;If "%{QUERY_STRING} =~ /forcetext/"&gt;<br />
-	<span class="indent">
-		ForceType text/plain<br />
-	</span>
-	&lt;/If&gt;<br /><br />
-	# Only allow access to this content during business hours<br />
-	&lt;Directory "/foo/bar/business"&gt;<br />
-	<span class="indent">
-		Require expr %{TIME_HOUR} &gt;= 9 &amp;&amp; %{TIME_HOUR} &lt;= 17 <br />
-	</span>
-	&lt;/Directory&gt;	
-	</code></p></div>
+	<pre class="prettyprint lang-config">
+# Compare the host name to example.com and redirect to www.example.com if it matches
+&lt;If "%{HTTP_HOST} == 'example.com'"&gt;
+    Redirect permanent / http://www.example.com
+&lt;/If&gt;
+
+# Force text/plain if requesting a file with the query string contains 'forcetext'
+&lt;If "%{QUERY_STRING} =~ /forcetext/"&gt;
+    ForceType text/plain
+&lt;/If&gt;
+
+# Only allow access to this content during business hours
+&lt;Directory "/foo/bar/business"&gt;
+    Require expr %{TIME_HOUR} &gt;= 9 &amp;&amp; %{TIME_HOUR} &lt;= 17 
+&lt;/Directory&gt;	
+	</pre>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="other" id="other">Other</a></h2>
