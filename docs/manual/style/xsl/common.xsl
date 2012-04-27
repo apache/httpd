@@ -313,11 +313,12 @@
 
 </div> <!-- /footer -->
 
-<script type="text/javascript"><![CDATA[
-    if (typeof(prettyPrint) !== undefined) {
-        prettyPrint();
-    }
-]]></script>
+<script type="text/javascript">
+<xsl:text disable-output-escaping="yes"><![CDATA[<!--//--><![CDATA[//><!--]]></xsl:text><![CDATA[
+if (typeof(prettyPrint) !== undefined) {
+    prettyPrint();
+}
+]]><xsl:text disable-output-escaping="yes"><![CDATA[//--><!]]]]>></xsl:text></script>
 </xsl:template>
 <!-- /bottom -->
 
