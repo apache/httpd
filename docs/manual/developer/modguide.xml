@@ -121,7 +121,7 @@ For now, we're only concerned with the first purpose of the module name,
 which comes into play when we need to load the module:
 </p>
 <highlight language="config">
-<a href="../mod/mod_so.html#LoadModule">LoadModule</a> example_module modules/mod_example.so
+LoadModule example_module modules/mod_example.so
 </highlight>
 <p>
 In essence, this tells the server to open up <code>mod_example.so</code> and look for a module 
