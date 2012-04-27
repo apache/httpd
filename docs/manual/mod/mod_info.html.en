@@ -39,27 +39,25 @@ configuration</td></tr>
     <p>To configure <code class="module"><a href="../mod/mod_info.html">mod_info</a></code>, add the following to your
     <code>httpd.conf</code> file.</p>
 
-    <div class="example"><p><code>
-      &lt;Location /server-info&gt;<br />
-      <span class="indent">
-        SetHandler server-info<br />
-      </span>
-      &lt;/Location&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Location /server-info&gt;
+    SetHandler server-info
+&lt;/Location&gt;
+    </pre>
+
 
     <p>You may wish to use <code class="module"><a href="../mod/mod_access.html">mod_access</a></code> inside the
     <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
     directive to limit access to your server configuration
     information:</p>
 
-    <div class="example"><p><code>
-      &lt;Location /server-info&gt;<br />
-      <span class="indent">
-        SetHandler server-info<br />
-        Require host example.com<br />
-      </span>
-      &lt;/Location&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Location /server-info&gt;
+    SetHandler server-info
+    Require host example.com
+&lt;/Location&gt;
+    </pre>
+
 
     <p>Once configured, the server information is obtained by
     accessing <code>http://your.host.example.com/server-info</code></p>
@@ -94,16 +92,17 @@ configuration</td></tr>
     to limit access to your server configuration information.</p>
 
     <div class="example"><h3>Access control</h3><p><code>
-      &lt;Location /server-info&gt;<br />
-      <span class="indent">
-        SetHandler server-info<br />
-        Order allow,deny<br />
-        # Allow access from server itself<br />
-        Allow from 127.0.0.1<br />
-        # Additionally, allow access from local workstation<br />
-        Allow from 192.168.1.17<br />
-      </span>
-      &lt;/Location&gt;
+    <pre class="prettyprint lang-config">
+&lt;Location /server-info&gt;
+    SetHandler server-info
+    Order allow,deny
+    # Allow access from server itself
+    Allow from 127.0.0.1
+    # Additionally, allow access from local workstation
+    Allow from 192.168.1.17
+&lt;/Location&gt;
+      </pre>
+
     </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -183,13 +182,12 @@ information displayed by the server-info handler</td></tr>
     HTML interpreted, <strong>Additional Information</strong> for
     the module <var>module-name</var>. Example:</p>
 
-    <div class="example"><p><code>
-      AddModuleInfo mod_deflate.c 'See &lt;a \<br />
-      <span class="indent">
-        href="http://www.apache.org/docs/trunk/mod/mod_deflate.html"&gt;\<br />
-        http://www.apache.org/docs/trunk/mod/mod_deflate.html&lt;/a&gt;'
-      </span>
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+AddModuleInfo mod_deflate.c 'See &lt;a \
+    href="http://www.apache.org/docs/trunk/mod/mod_deflate.html"&gt;\
+    http://www.apache.org/docs/trunk/mod/mod_deflate.html&lt;/a&gt;'
+    </pre>
+
 
 </div>
 </div>

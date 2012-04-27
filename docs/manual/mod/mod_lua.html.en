@@ -85,17 +85,19 @@ Be sure to check the CHANGES file before upgrading.</div>
 
 <p>The basic module loading directive is</p>
 
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
     LoadModule lua_module modules/mod_lua.so
-</code></p></div>
+</pre>
+
 
 <p>
 <code>mod_lua</code> provides a handler named <code>lua-script</code>,
 which can be used with an <code>AddHandler</code> directive:</p>
 
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
 AddHandler lua-script .lua
-</code></p></div>
+</pre>
+
 
 <p>
 This will cause <code>mod_lua</code> to handle requests for files
@@ -454,9 +456,12 @@ end
     for development.</p>
 
     <div class="example"><h3>Examples:</h3><p><code>
-        LuaCodeCache stat<br />
-        LuaCodeCache forever<br />
-        LuaCodeCache never<br />
+    <pre class="prettyprint lang-config">
+LuaCodeCache stat
+LuaCodeCache forever
+LuaCodeCache never
+    </pre>
+
     </code></p></div>
 
 
@@ -609,10 +614,11 @@ processing</td></tr>
 
     <p>Example:</p>
 
-<div class="example"><pre>
+<pre class="prettyprint lang-config">
 # httpd.conf
 LuaHookTranslateName /scripts/conf/hooks.lua silly_mapper
-</pre></div>
+</pre>
+
 
 <pre class="prettyprint lang-lua">
 -- /scripts/conf/hooks.lua --
@@ -684,16 +690,20 @@ end
     be careful writing your regular expressions to avoid security
     issues.</p>
    <div class="example"><h3>Examples:</h3><p><code>
+   <pre class="prettyprint lang-config">
     LuaMapHandler /(\w+)/(/w+) /scripts/$1.lua handle_$2
+    </pre>
+
    </code></p></div>
         <p>This would match uri's such as /photos/show?id=9
         to the file /scripts/photos.lua and invoke the
         handler function handle_show on the lua vm after
         loading that file.</p>
 
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
     LuaMapHandler /bingo /scripts/wombat.lua
-</code></p></div>
+</pre>
+
         <p>This would invoke the "handle" function, which
         is the default if no specific function name is
         provided.</p>
@@ -729,8 +739,11 @@ end
     lua vms.</p>
 
     <div class="example"><h3>Examples:</h3><p><code>
-        LuaPackagePath /scripts/lib/?.lua<br />
-        LuaPackagePath /scripts/lib/?/init.lua
+    <pre class="prettyprint lang-config">
+LuaPackagePath /scripts/lib/?.lua
+LuaPackagePath /scripts/lib/?/init.lua
+    </pre>
+
     </code></p></div>
 
 </div>

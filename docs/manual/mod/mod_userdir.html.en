@@ -134,24 +134,27 @@ tutorial</a></li>
     <p>To allow a few users to have <code>UserDir</code> directories, but
     not anyone else, use the following:</p>
 
-    <div class="example"><p><code>
-      UserDir disabled<br />
-      UserDir enabled user1 user2 user3
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+UserDir disabled
+UserDir enabled user1 user2 user3
+    </pre>
+
 
     <p>To allow most users to have <code>UserDir</code> directories, but
     deny this to a few, use the following:</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       UserDir disabled user4 user5 user6
-    </code></p></div>
+    </pre>
+
 
     <p>It is also possible to specify alternative user directories.
     If you use a command like:</p>
 
-    <div class="example"><p><code>
-      Userdir public_html /usr/web http://www.example.com/
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+      UserDir public_html /usr/web http://www.example.com/
+    </pre>
+
 
     <p>With a request for
     <code>http://www.example.com/~bob/one/two.html</code>, will try to

@@ -94,15 +94,13 @@ performance</td></tr>
     <p>To enable status reports only for browsers from the example.com
     domain add this code to your <code>httpd.conf</code>
     configuration file</p>
-<div class="example"><p><code>
-    &lt;Location /server-status&gt;<br />
-    <span class="indent">
-    SetHandler server-status<br />
-<br />
-    Require host example.com<br />
-    </span>
-    &lt;/Location&gt;
-</code></p></div>
+<pre class="prettyprint lang-config">
+&lt;Location /server-status&gt;
+    SetHandler server-status
+    Require host example.com
+&lt;/Location&gt;
+</pre>
+
 
     <p>You can now access server statistics by using a Web browser
     to access the page

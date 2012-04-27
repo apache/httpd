@@ -64,7 +64,10 @@ client</td></tr>
     <p>This is a simple sample configuration for the impatient.</p>
 
     <div class="example"><h3>Compress only a few types</h3><p><code>
+    <pre class="prettyprint lang-config">
       AddOutputFilterByType DEFLATE text/html text/plain text/xml
+      </pre>
+
     </code></p></div>
 
     <p>The following configuration, while resulting in more compressed content,
@@ -72,29 +75,27 @@ client</td></tr>
     all the configuration details.</p>
 
     <div class="example"><h3>Compress everything except images</h3><p><code>
-      &lt;Location /&gt;<br />
-      <span class="indent">
-        # Insert filter<br />
-        SetOutputFilter DEFLATE<br />
-        <br />
-        # Netscape 4.x has some problems...<br />
-        BrowserMatch ^Mozilla/4         gzip-only-text/html<br />
-        <br />
-        # Netscape 4.06-4.08 have some more problems<br />
-        BrowserMatch ^Mozilla/4\.0[678] no-gzip<br />
-        <br />
-        # MSIE masquerades as Netscape, but it is fine<br />
-        BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html<br />
-        # Don't compress images<br />
-        SetEnvIfNoCase Request_URI \<br />
-        <span class="indent">
-          \.(?:gif|jpe?g|png)$ no-gzip dont-vary<br />
-        </span>
-        <br />
-        # Make sure proxies don't deliver the wrong content<br />
-        Header append Vary User-Agent env=!dont-vary<br />
-      </span>
-      &lt;/Location&gt;
+    <pre class="prettyprint lang-config">
+&lt;Location /&gt;
+    # Insert filter
+    SetOutputFilter DEFLATE
+    
+    # Netscape 4.x has some problems...
+    BrowserMatch ^Mozilla/4         gzip-only-text/html
+    
+    # Netscape 4.06-4.08 have some more problems
+    BrowserMatch ^Mozilla/4\.0[678] no-gzip
+    
+    # MSIE masquerades as Netscape, but it is fine
+    BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html
+    # Don't compress images
+    SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip dont-vary
+    
+    # Make sure proxies don't deliver the wrong content
+    Header append Vary User-Agent env=!dont-vary
+&lt;/Location&gt;
+      </pre>
+
     </code></p></div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -107,9 +108,10 @@ client</td></tr>
       will enable compression for documents in the container where it
       is placed:</p>
 
-      <div class="example"><p><code>
+      <pre class="prettyprint lang-config">
         SetOutputFilter DEFLATE
-      </code></p></div>
+      </pre>
+
 
       <p>Some popular browsers cannot handle compression of all content
       so you may want to set the <code>gzip-only-text/html</code> note to
@@ -122,13 +124,12 @@ client</td></tr>
       enabling compression only for the html files of the Apache
       documentation:</p>
 
-      <div class="example"><p><code>
-        &lt;Directory "/your-server-root/manual"&gt;<br />
-        <span class="indent">
-          AddOutputFilterByType DEFLATE text/html<br />
-        </span>
-        &lt;/Directory&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+&lt;Directory "/your-server-root/manual"&gt;
+    AddOutputFilterByType DEFLATE text/html
+&lt;/Directory&gt;
+      </pre>
+
 
       <p>For browsers that have problems even with compression of all file
       types, use the <code class="directive"><a href="../mod/mod_setenvif.html#browsermatch">BrowserMatch</a></code> directive to set the <code>no-gzip</code>
@@ -138,11 +139,12 @@ client</td></tr>
       excerpt from the <a href="#recommended">configuration example</a>
       defined in the section above:</p>
 
-      <div class="example"><p><code>
-        BrowserMatch ^Mozilla/4         gzip-only-text/html<br />
-        BrowserMatch ^Mozilla/4\.0[678] no-gzip<br />
-        BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+BrowserMatch ^Mozilla/4         gzip-only-text/html
+BrowserMatch ^Mozilla/4\.0[678] no-gzip
+BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html
+      </pre>
+
 
       <p>At first we probe for a <code>User-Agent</code> string that
       indicates a Netscape Navigator version of 4.x. These versions
@@ -177,14 +179,13 @@ client</td></tr>
       this feature you have to insert the <code>INFLATE</code> filter into
       the outputfilter chain using <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code> or <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code>, for example:</p>
 
-      <div class="example"><p><code>
-        &lt;Location /dav-area&gt;<br />
-        <span class="indent">
-          ProxyPass http://example.com/<br />
-          SetOutputFilter INFLATE<br />
-        </span>
-        &lt;/Location&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+&lt;Location /dav-area&gt;
+    ProxyPass http://example.com/
+    SetOutputFilter INFLATE
+&lt;/Location&gt;
+      </pre>
+
 
       <p>This Example will uncompress gzip'ed output from example.com, so other
       filters can do further processing with it.
@@ -197,13 +198,12 @@ client</td></tr>
       this feature you have to insert the <code>DEFLATE</code> filter into
       the input filter chain using <code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code> or <code class="directive"><a href="../mod/mod_mime.html#addinputfilter">AddInputFilter</a></code>, for example:</p>
 
-      <div class="example"><p><code>
-        &lt;Location /dav-area&gt;<br />
-        <span class="indent">
-          SetInputFilter DEFLATE<br />
-        </span>
-        &lt;/Location&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+&lt;Location /dav-area&gt;
+    SetInputFilter DEFLATE
+&lt;/Location&gt;
+      </pre>
+
 
       <p>Now if a request contains a <code>Content-Encoding:
       gzip</code> header, the body will be automatically decompressed.
@@ -237,9 +237,10 @@ client</td></tr>
     in a typical configuration where the addition of the <code>DEFLATE</code>
     filter depends on the <code>User-Agent</code>, you should add:</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       Header append Vary User-Agent
-    </code></p></div>
+    </pre>
+
 
     <p>If your decision about compression depends on other information
     than request headers (<em>e.g.</em> HTTP version), you have to set the
@@ -247,7 +248,10 @@ client</td></tr>
     compliant proxies from caching entirely.</p>
 
     <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       Header set Vary *
+      </pre>
+
     </code></p></div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -300,10 +304,13 @@ client</td></tr>
     adding the value to your <a href="../logs.html#accesslog">access log</a>.</p>
 
     <div class="example"><h3>Example</h3><p><code>
-      DeflateFilterNote ratio<br />
-      <br />
-      LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' deflate<br />
+    <pre class="prettyprint lang-config">
+      DeflateFilterNote ratio
+    
+      LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' deflate
       CustomLog logs/deflate_log deflate
+      </pre>
+
     </code></p></div>
 
     <p>If you want to extract more accurate values from your logs, you
@@ -326,12 +333,15 @@ client</td></tr>
     <p>Thus you may log it this way:</p>
 
     <div class="example"><h3>Accurate Logging</h3><p><code>
-      DeflateFilterNote Input instream<br />
-      DeflateFilterNote Output outstream<br />
-      DeflateFilterNote Ratio ratio<br />
-      <br />
-      LogFormat '"%r" %{outstream}n/%{instream}n (%{ratio}n%%)' deflate<br />
-      CustomLog logs/deflate_log deflate
+    <pre class="prettyprint lang-config">
+DeflateFilterNote Input instream
+DeflateFilterNote Output outstream
+DeflateFilterNote Ratio ratio
+
+LogFormat '"%r" %{outstream}n/%{instream}n (%{ratio}n%%)' deflate
+CustomLog logs/deflate_log deflate
+</pre>
+
     </code></p></div>
 
 <h3>See also</h3>

@@ -74,7 +74,10 @@ SSI pages</td></tr>
     <code class="program"><a href="../programs/httpd.html">httpd</a></code> process.</p>
 
     <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       PassEnv LD_LIBRARY_PATH
+      </pre>
+
     </code></p></div>
 
 </div>
@@ -92,7 +95,10 @@ SSI pages</td></tr>
     HTTP Server modules, and passed on to CGI scripts and SSI pages.</p>
 
     <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       SetEnv SPECIAL_PATH /foo/bin
+      </pre>
+
     </code></p></div>
 
     <div class="note"><p>The internal environment variables set by this directive are set
@@ -125,7 +131,10 @@ SSI pages</td></tr>
     on to CGI scripts and SSI pages.</p>
 
     <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       UnsetEnv LD_LIBRARY_PATH
+      </pre>
+
     </code></p></div>
 
 </div>

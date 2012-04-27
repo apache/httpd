@@ -159,7 +159,8 @@ Windows</td></tr></table>
 
     <p>For example:</p>
 
-    <div class="example"><p><code>LoadFile libexec/libxmlparse.so</code></p></div>
+    <pre class="prettyprint lang-config">LoadFile libexec/libxmlparse.so</pre>
+
 
 
 </div>
@@ -180,9 +181,10 @@ of active modules</td></tr>
     <code>module</code> in the file, and is listed as the <a href="module-dict.html#ModuleIdentifier">Module Identifier</a>
     in the module documentation. Example:</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       LoadModule status_module modules/mod_status.so
-    </code></p></div>
+    </pre>
+
 
     <p>loads the named module from the modules subdirectory of the
     ServerRoot.</p>

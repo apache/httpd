@@ -85,7 +85,10 @@ URLs on the fly</td></tr>
     </div>
 
     <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       LogLevel alert rewrite:trace3
+      </pre>
+
     </code></p></div>
 
     <div class="note"><h3>RewriteLog</h3>
@@ -138,15 +141,16 @@ URLs on the fly</td></tr>
     since the resource was not relative to the document root.  This 
     misconfiguration would normally cause the server to look for an "opt"
     directory under the document root.</p>
-<div class="example"><pre>
+<pre class="prettyprint lang-config">
 DocumentRoot /var/www/example.com
 Alias /myapp /opt/myapp-1.2.3
 &lt;Directory /opt/myapp-1.2.3&gt;
-RewriteEngine On
-RewriteBase /myapp/
-RewriteRule ^index\.html$  welcome.html 
+    RewriteEngine On
+    RewriteBase /myapp/
+    RewriteRule ^index\.html$  welcome.html 
 &lt;/Directory&gt;
-</pre></div>
+</pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -619,10 +623,11 @@ RewriteRule ^index\.html$  welcome.html
             to block unwanted hotlinking.
            </p>
 
-           <div class="example"><p><code>
+           <pre class="prettyprint lang-config">
            RewriteCond expr "! %{HTTP_REFERER} -strmatch '*://%{HTTP_HOST}/*'"<br />
            RewriteRule ^/images - [F]
-           </code></p></div>
+           </pre>
+
         </li>
 
         <li>You can also set special flags for
@@ -648,12 +653,13 @@ RewriteRule ^index\.html$  welcome.html
           Use this to combine rule conditions with a local OR
           instead of the implicit AND. Typical example:
 
-<div class="example"><pre>
+<pre class="prettyprint lang-config">
 RewriteCond %{REMOTE_HOST}  ^host1  [OR]
 RewriteCond %{REMOTE_HOST}  ^host2  [OR]
 RewriteCond %{REMOTE_HOST}  ^host3
 RewriteRule ...some special stuff for any of these hosts...
-</pre></div>
+</pre>
+
 
           Without this flag you would have to write the condition/rule
           pair three times.
@@ -678,7 +684,7 @@ RewriteRule ...some special stuff for any of these hosts...
         ``<code>User-Agent:</code>'' header of the request, you can
         use the following: </p>
 
-<div class="example"><pre>
+<pre class="prettyprint lang-config">
 RewriteCond  %{HTTP_USER_AGENT}  ^Mozilla
 RewriteRule  ^/$                 /homepage.max.html  [L]
 
@@ -686,7 +692,8 @@ RewriteCond  %{HTTP_USER_AGENT}  ^Lynx
 RewriteRule  ^/$                 /homepage.min.html  [L]
 
 RewriteRule  ^/$                 /homepage.std.html  [L]
-</pre></div>
+</pre>
+
 
         <p>Explanation: If you use a browser which identifies itself
         as 'Mozilla' (including Netscape Navigator, Mozilla etc), then you
@@ -776,16 +783,18 @@ Apache HTTP Server 2.0.41 and later</td></tr>
       <p>For example, you might define a
       <code class="directive">RewriteMap</code> as:</p>
 
-      <div class="example"><p><code>
+      <pre class="prettyprint lang-config">
       RewriteMap examplemap txt:/path/to/file/map.txt
-      </code></p></div>
+      </pre>
+
 
       <p>You would then be able to use this map in a
       <code class="directive">RewriteRule</code> as follows:</p>
 
-      <div class="example"><p><code>
+      <pre class="prettyprint lang-config">
       RewriteRule ^/ex/(.*) ${examplemap:$1}
-      </code></p></div>
+      </pre>
+
 
       <p>The following combinations for <em>MapType</em> and
       <em>MapSource</em> can be used:</p>

@@ -9,7 +9,7 @@
   <variants>
     <variant>en</variant>
     <variant outdated="yes">fr</variant>
-    <variant>ja</variant>
+    <variant outdated="yes">ja</variant>
     <variant outdated="yes">ko</variant>
   </variants>
 </metafile>

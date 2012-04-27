@@ -63,7 +63,10 @@ later.</td></tr>
     disables the echo server.</p>
 
     <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       ProtocolEcho On
+    </pre>
+
     </code></p></div>
 
 </div>
