@@ -136,7 +136,10 @@ password verification</td></tr>
     userIDs.</p>
 
     <div class="example"><h3>Example:</h3><p><code>
+    <pre class="prettyprint lang-config">
       Anonymous anonymous "Not Registered" "I don't know"
+    </pre>
+
     </code></p></div>
 
     <p>This would allow the user to enter without password
