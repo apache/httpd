@@ -133,8 +133,8 @@ may be used, and give examples of each.</p>
     <p>For example, we might use a mapfile to translate product names to
     product IDs for easier-to-remember URLs, using the following
     recipe:</p>
-
-    <highlight language="config"><strong>#Product to ID configuration</strong>
+<p><strong>Product to ID configuration</strong></p>
+    <highlight language="config">
 RewriteMap product2id txt:/etc/apache2/productmap.txt
 RewriteRule ^/product/(.*) /prods.php?id=${product2id:$1|NOTFOUND} [PT]
     </highlight>
@@ -203,8 +203,8 @@ telephone  328
 static   www1|www2|www3|www4<br />
 dynamic  www5|www6
     </example>
-
-    <highlight language="config"><strong>#Configuration directives</strong>
+<p><strong>Configuration directives</strong></p>
+    <highlight language="config">
 RewriteMap servers rnd:/path/to/file/map.txt
 
 RewriteRule ^/(.*\.(png|gif|jpg)) http://${servers:static}/$1 [NC,P,L]
@@ -312,7 +312,9 @@ by many requests.
     the int function, and then use that in your <code>RewriteRule</code>:
     </p>
 
-    <highlight language="config"><strong>#Redirect a URI to an all-lowercase version of itself</strong>
+   <p> <strong>Redirect a URI to an all-lowercase version of itself</strong></p>
+    <highlight language="config">
+
 RewriteMap lc int:tolower
 RewriteRule (.*?[A-Z]+.*) ${lc:$1} [R]
     </highlight>
@@ -356,7 +358,7 @@ RewriteRule (.*?[A-Z]+.*) ${lc:$1} [R]
     <p>A simple example is shown here which will replace all dashes with
     underscores in a request URI.</p>
     
-<strong>Rewrite configuration</strong>
+<p><strong>Rewrite configuration</strong></p>
     <highlight language="config">
 
 RewriteMap d2u prg:/www/bin/dash2under.pl<br />
