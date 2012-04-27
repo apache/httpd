@@ -95,14 +95,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4 patch: Trunk patch works
     +1: sf, jorton, jim
 
-  * core: Fix error handling in ap_scan_script_header_err_brigade() if there
-    is no EOS bucket in the brigade.
-    Also don't loop if there is a timeout when discarding the script output.
-    PR: 48272 (partial fix)
-    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1311174
-    2.4 patch: Trunk patch works
-    +1: sf, jorton, jim
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
