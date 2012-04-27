@@ -37,9 +37,9 @@
         Allow 10 seconds to receive the request including the headers and
         30 seconds for receiving the request body:
 
-        <example>
+        <highlight language="config">
           RequestReadTimeout header=10 body=30
-        </example>
+        </highlight>
       </li>
 
       <li>
@@ -49,9 +49,9 @@
         the limit given indirectly by
         <directive module="core">LimitRequestBody</directive>):
 
-        <example>
+        <highlight language="config">
           RequestReadTimeout body=10,MinRate=1000
-        </example>
+        </highlight>
       </li>
 
       <li>
@@ -60,9 +60,9 @@
         500 bytes received. But do not allow more than 30 seconds for the
         request including the headers:
 
-        <example>
+        <highlight language="config">
           RequestReadTimeout header=10-30,MinRate=500
-        </example>
+        </highlight>
       </li>
 
       <li>
@@ -70,9 +70,9 @@
         If a common configuration is used for http and https virtual hosts, the
         timeouts should not be set too low:
 
-        <example>
+        <highlight language="config">
           RequestReadTimeout header=20-40,MinRate=500 body=20,MinRate=500
-        </example>
+        </highlight>
       </li>
 
     </ol>
