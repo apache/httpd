@@ -71,36 +71,36 @@
     </dl>
 
     <example><title>Example</title>
-        &lt;Location /&gt;
-        <indent>
-            AddOutputFilterByType SUBSTITUTE text/html<br />
-            Substitute s/foo/bar/ni<br />
-        </indent>
-        &lt;/Location&gt;
+    <highlight language="config">
+&lt;Location /&gt;
+    AddOutputFilterByType SUBSTITUTE text/html
+    Substitute s/foo/bar/ni
+&lt;/Location&gt;
+        </highlight>
     </example>
 
     <p>If either the pattern or the substitution contain a slash
     character then an alternative delimiter should be used:</p>
 
     <example><title>Example of using an alternate delimiter</title>
-        &lt;Location /&gt;
-        <indent>
-            AddOutputFilterByType SUBSTITUTE text/html<br />
-            Substitute "s|&lt;BR */?&gt;|&lt;br /&gt;|i"
-        </indent>
-        &lt;/Location&gt;
+    <highlight language="config">
+&lt;Location /&gt;
+    AddOutputFilterByType SUBSTITUTE text/html
+    Substitute "s|&lt;BR */?&gt;|&lt;br /&gt;|i"
+&lt;/Location&gt;
+        </highlight>
     </example>
 
     <p>Backreferences can be used in the comparison and in the substitution,
     when regular expressions are used, as illustrated in the following example: </p>
     <example><title>Example of using backreferences and captures</title>
-        &lt;Location /&gt;
-        <indent>
-            AddOutputFilterByType SUBSTITUTE text/html<br />
-            # "foo=k,bar=k" -> "foo/bar=k" <br />
-            Substitute "s|foo=(\w+),bar=\1|foo/bar=$1"
-        </indent>
-        &lt;/Location&gt;
+    <highlight language="config">
+&lt;Location /&gt;
+    AddOutputFilterByType SUBSTITUTE text/html
+    # "foo=k,bar=k" -> "foo/bar=k" 
+    Substitute "s|foo=(\w+),bar=\1|foo/bar=$1"
+&lt;/Location&gt;
+    </highlight>
     </example>
 
     <p>A common use scenario for <code>mod_substitute</code> is the
@@ -113,10 +113,12 @@
     those URLs into something that will work from the front end:</p>
 
     <example><title>Rewriting URLs embedded in proxied content</title>
-    ProxyPass /blog/ http://internal.blog.example.com<br />
-    ProxyPassReverse /blog/ http://internal.blog.example.com/<br />
-    <br />
-    Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"
+    <highlight language="config">
+ProxyPass /blog/ http://internal.blog.example.com
+ProxyPassReverse /blog/ http://internal.blog.example.com/
+
+Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"
+    </highlight>
     </example>
 
     <p><directive module="mod_proxy">ProxyPassReverse</directive>

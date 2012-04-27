@@ -62,33 +62,29 @@ the author's blog</a>.</p>
 
 <section id="sampleconf"><title>Sample Configuration</title>
     <example><title>Adding an output filter </title>
-         # In the following example, the sed filter will change the string<br />
-         # "monday" to "MON" and the string "sunday" to SUN in html documents<br />
-         # before sending to the client.<br />
-        <indent>
-        &lt;Directory "/var/www/docs/sed"&gt; <br />
-           <indent>
-           AddOutputFilter Sed html <br />
-           OutputSed "s/monday/MON/g" <br />
-           OutputSed "s/sunday/SUN/g" <br />
-           </indent>
-        &lt;/Directory&gt; <br />
-        </indent>
+    <highlight language="config">
+# In the following example, the sed filter will change the string
+# "monday" to "MON" and the string "sunday" to SUN in html documents
+# before sending to the client.
+&lt;Directory "/var/www/docs/sed"&gt; 
+    AddOutputFilter Sed html 
+    OutputSed "s/monday/MON/g" 
+    OutputSed "s/sunday/SUN/g" 
+&lt;/Directory&gt; 
+    </highlight>
     </example>
 
     <example><title>Adding an input filter </title>
-         # In the following example, the sed filter will change the string<br />
-         # "monday" to "MON" and the string "sunday" to SUN in the POST data<br />
-         # sent to PHP.<br />
-        <indent>
-        &lt;Directory "/var/www/docs/sed"&gt; <br />
-           <indent>
-           AddInputFilter Sed php <br />
-           InputSed "s/monday/MON/g" <br />
-           InputSed "s/sunday/SUN/g" <br />
-           </indent>
-        &lt;/Directory&gt; <br />
-        </indent>
+    <highlight language="config">
+# In the following example, the sed filter will change the string
+# "monday" to "MON" and the string "sunday" to SUN in the POST data
+# sent to PHP.
+&lt;Directory "/var/www/docs/sed"&gt; 
+    AddInputFilter Sed php 
+    InputSed "s/monday/MON/g" 
+    InputSed "s/sunday/SUN/g" 
+&lt;/Directory&gt; 
+        </highlight>
     </example>
 </section>
 <section id="sed_commands"><title>Sed Commands</title>
