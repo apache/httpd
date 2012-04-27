@@ -72,7 +72,10 @@
     enable <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> and <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code>.</p>
 
     <div class="example"><h3>Single application instance</h3><p><code>
+    <pre class="prettyprint lang-config">
       ProxyPass /myapp/ fcgi://localhost:4000/
+      </pre>
+
     </code></p></div>
 
     <p>This application should be able to handle multiple concurrent
@@ -87,7 +90,10 @@
     the following example:</p>
 
     <div class="example"><h3>Single application instance, no connection reuse</h3><p><code>
+    <pre class="prettyprint lang-config">
       ProxyPass /myapp/ fcgi://localhost:4000/ disablereuse=on
+      </pre>
+
     </code></p></div>
 
     <p>The balanced gateway needs <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> and
@@ -97,13 +103,14 @@
     default, and will be used for this example configuration.</p>
 
     <div class="example"><h3>Balanced gateway to multiple application instances</h3><p><code>
-    ProxyPass /myapp/ balancer://myappcluster/<br />
-    &lt;Proxy balancer://myappcluster/&gt;<br />
-    <span class="indent">
-        BalancerMember fcgi://localhost:4000/<br />
-        BalancerMember fcgi://localhost:4001/<br />
-    </span>
-    &lt;/Proxy&gt;
+    <pre class="prettyprint lang-config">
+ProxyPass /myapp/ balancer://myappcluster/
+&lt;Proxy balancer://myappcluster/&gt;
+    BalancerMember fcgi://localhost:4000/
+    BalancerMember fcgi://localhost:4001/
+&lt;/Proxy&gt;
+    </pre>
+
     </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">

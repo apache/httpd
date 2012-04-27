@@ -80,36 +80,39 @@
     </dl>
 
     <div class="example"><h3>Example</h3><p><code>
-        &lt;Location /&gt;
-        <span class="indent">
-            AddOutputFilterByType SUBSTITUTE text/html<br />
-            Substitute s/foo/bar/ni<br />
-        </span>
-        &lt;/Location&gt;
+    <pre class="prettyprint lang-config">
+&lt;Location /&gt;
+    AddOutputFilterByType SUBSTITUTE text/html
+    Substitute s/foo/bar/ni
+&lt;/Location&gt;
+        </pre>
+
     </code></p></div>
 
     <p>If either the pattern or the substitution contain a slash
     character then an alternative delimiter should be used:</p>
 
     <div class="example"><h3>Example of using an alternate delimiter</h3><p><code>
-        &lt;Location /&gt;
-        <span class="indent">
-            AddOutputFilterByType SUBSTITUTE text/html<br />
-            Substitute "s|&lt;BR */?&gt;|&lt;br /&gt;|i"
-        </span>
-        &lt;/Location&gt;
+    <pre class="prettyprint lang-config">
+&lt;Location /&gt;
+    AddOutputFilterByType SUBSTITUTE text/html
+    Substitute "s|&lt;BR */?&gt;|&lt;br /&gt;|i"
+&lt;/Location&gt;
+        </pre>
+
     </code></p></div>
 
     <p>Backreferences can be used in the comparison and in the substitution,
     when regular expressions are used, as illustrated in the following example: </p>
     <div class="example"><h3>Example of using backreferences and captures</h3><p><code>
-        &lt;Location /&gt;
-        <span class="indent">
-            AddOutputFilterByType SUBSTITUTE text/html<br />
-            # "foo=k,bar=k" -&gt; "foo/bar=k" <br />
-            Substitute "s|foo=(\w+),bar=\1|foo/bar=$1"
-        </span>
-        &lt;/Location&gt;
+    <pre class="prettyprint lang-config">
+&lt;Location /&gt;
+    AddOutputFilterByType SUBSTITUTE text/html
+    # "foo=k,bar=k" -&gt; "foo/bar=k" 
+    Substitute "s|foo=(\w+),bar=\1|foo/bar=$1"
+&lt;/Location&gt;
+    </pre>
+
     </code></p></div>
 
     <p>A common use scenario for <code>mod_substitute</code> is the
@@ -122,10 +125,13 @@
     those URLs into something that will work from the front end:</p>
 
     <div class="example"><h3>Rewriting URLs embedded in proxied content</h3><p><code>
-    ProxyPass /blog/ http://internal.blog.example.com<br />
-    ProxyPassReverse /blog/ http://internal.blog.example.com/<br />
-    <br />
-    Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"
+    <pre class="prettyprint lang-config">
+ProxyPass /blog/ http://internal.blog.example.com
+ProxyPassReverse /blog/ http://internal.blog.example.com/
+
+Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"
+    </pre>
+
     </code></p></div>
 
     <p><code class="directive"><a href="../mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code>

@@ -240,7 +240,7 @@ For backward compatibility there is additionally a special
 ``<code>%{</code><em>name</em><code>}c</code>'' cryptography format function
 provided. Information about this function is provided in the <a href="../ssl/ssl_compat.html">Compatibility</a> chapter.</p>
 <div class="example"><h3>Example</h3><p><code>
-<pre class="prettyprint lang-config"> 
+<pre class="prettyprint lang-config">
 CustomLog logs/ssl_request_log "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
 </pre>
 

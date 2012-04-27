@@ -48,10 +48,11 @@ hosting</td></tr>
       /cgi-bin/script.pl</code> to <code>
       /usr/local/apache2/cgi-bin/script.pl</code> in all cases:</p>
 
-      <div class="example"><p><code>
-        ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/<br />
-        VirtualScriptAlias /never/found/%0/cgi-bin/
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/
+VirtualScriptAlias /never/found/%0/cgi-bin/
+      </pre>
+
     </div>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
@@ -143,10 +144,11 @@ hosting</td></tr>
     <p>For simple name-based virtual hosts you might use the
     following directives in your server configuration file:</p>
 
-    <div class="example"><p><code>
-      UseCanonicalName    Off<br />
-      VirtualDocumentRoot /usr/local/apache/vhosts/%0
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+UseCanonicalName    Off
+VirtualDocumentRoot /usr/local/apache/vhosts/%0
+    </pre>
+
 
     <p>A request for
     <code>http://www.example.com/directory/file.html</code> will be
@@ -159,10 +161,11 @@ hosting</td></tr>
     <code>vhosts</code> directory. To do this you might use the
     following in your configuration file:</p>
 
-    <div class="example"><p><code>
-      UseCanonicalName    Off<br />
-      VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+UseCanonicalName    Off
+VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2
+    </pre>
+
 
     <p>A request for
     <code>http://www.domain.example.com/directory/file.html</code>
@@ -172,18 +175,20 @@ hosting</td></tr>
     <p>A more even spread of files can be achieved by hashing from the
     end of the name, for example: </p>
 
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
     VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.-1/%2.-2/%2.-3/%2
-</code></p></div>
+</pre>
+
 
     <p>The example request would come from
     <code>/usr/local/apache/vhosts/example.com/n/i/a/domain/directory/file.html</code>.</p>
 
     <p>Alternatively you might use: </p>
 
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
     VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2.4+
-</code></p></div>
+</pre>
+
 
     <p>The example request would come from
     <code>/usr/local/apache/vhosts/example.com/d/o/m/ain/directory/file.html</code>.</p>
@@ -191,11 +196,12 @@ hosting</td></tr>
     <p>For IP-based virtual hosting you might use the following in
     your configuration file:</p>
 
-    <div class="example"><p><code>
-      UseCanonicalName DNS<br />
-      VirtualDocumentRootIP /usr/local/apache/vhosts/%1/%2/%3/%4/docs<br />
-      VirtualScriptAliasIP  /usr/local/apache/vhosts/%1/%2/%3/%4/cgi-bin
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+UseCanonicalName DNS
+VirtualDocumentRootIP /usr/local/apache/vhosts/%1/%2/%3/%4/docs
+VirtualScriptAliasIP  /usr/local/apache/vhosts/%1/%2/%3/%4/cgi-bin
+    </pre>
+
 
     <p>A request for
     <code>http://www.domain.example.com/directory/file.html</code>
@@ -212,9 +218,10 @@ hosting</td></tr>
     a <code>%</code> directive, you can work around the problem in
     the following way:</p>
 
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
     VirtualDocumentRoot /usr/local/apache/vhosts/%2.0.%3.0
-</code></p></div>
+</pre>
+
 
     <p>A request for
     <code>http://www.domain.example.com/directory/file.html</code>

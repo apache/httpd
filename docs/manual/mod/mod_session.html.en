@@ -160,8 +160,11 @@
       stored on the browser, in a cookie called <code>session</code>.</p>
 
       <div class="example"><h3>Browser based session</h3><p><code>
-        Session On<br />
-        SessionCookieName session path=/<br />
+      <pre class="prettyprint lang-config">
+Session On
+SessionCookieName session path=/
+        </pre>
+
       </code></p></div>
 
       <p>The session is not useful unless it can be written to or read from. The
@@ -170,9 +173,12 @@
       <code>X-Replace-Session</code>.</p>
 
       <div class="example"><h3>Writing to a session</h3><p><code>
-        Session On<br />
-        SessionCookieName session path=/<br />
-        SessionHeader X-Replace-Session<br />
+      <pre class="prettyprint lang-config">
+Session On
+SessionCookieName session path=/
+SessionHeader X-Replace-Session
+        </pre>
+
       </code></p></div>
 
       <p>The header should contain name value pairs expressed in the same format
@@ -180,11 +186,14 @@
       empty string has the effect of removing that key from the session.</p>
 
       <div class="example"><h3>CGI to write to a session</h3><p><code>
-        #!/bin/bash<br />
-        echo "Content-Type: text/plain"<br />
-        echo "X-Replace-Session: key1=foo&amp;key2=&amp;key3=bar"<br />
-        echo<br />
-        env<br />
+      <pre class="prettyprint lang-sh">
+#!/bin/bash
+echo "Content-Type: text/plain"
+echo "X-Replace-Session: key1=foo&amp;key2=&amp;key3=bar"
+echo
+env
+        </pre>
+
       </code></p></div>
 
       <p>If configured, the session can be read back from the HTTP_SESSION
@@ -193,10 +202,13 @@
       <code class="directive"><a href="#sessionenv">SessionEnv</a></code> directive.</p>
 
       <div class="example"><h3>Read from a session</h3><p><code>
-        Session On<br />
-        SessionEnv On<br />
-        SessionCookieName session path=/<br />
-        SessionHeader X-Replace-Session<br />
+      <pre class="prettyprint lang-config">
+Session On
+SessionEnv On
+SessionCookieName session path=/
+SessionHeader X-Replace-Session
+        </pre>
+
       </code></p></div>
 
       <p>Once read, the CGI variable <code>HTTP_SESSION</code> should contain
@@ -217,9 +229,12 @@
       module.</p>
 
       <div class="example"><h3>Browser based encrypted session</h3><p><code>
-        Session On<br />
-        SessionCryptoPassphrase secret<br />
-        SessionCookieName session path=/<br />
+      <pre class="prettyprint lang-config">
+Session On
+SessionCryptoPassphrase secret
+SessionCookieName session path=/
+        </pre>
+
       </code></p></div>
 
       <p>The session will be automatically decrypted on load, and encrypted on
@@ -254,9 +269,12 @@
       as in the example below.</p>
 
       <div class="example"><h3>Setting cookie parameters</h3><p><code>
-        Session On<br />
-        SessionCryptoPassphrase secret<br />
-        SessionCookieName session path=/private;domain=example.com;httponly;secure;<br />
+      <pre class="prettyprint lang-config">
+Session On
+SessionCryptoPassphrase secret
+SessionCookieName session path=/private;domain=example.com;httponly;secure;
+        </pre>
+
       </code></p></div>
 
       <p>In cases where the Apache server forms the frontend for backend origin servers,
@@ -276,14 +294,17 @@
       the session.</p>
 
       <div class="example"><h3>Form based authentication</h3><p><code>
-        Session On<br />
-        SessionCryptoPassphrase secret<br />
-        SessionCookieName session path=/<br />
-        AuthFormProvider file<br />
-        AuthUserFile conf/passwd<br />
-        AuthType form<br />
-        AuthName realm<br />
-        ...<br />
+      <pre class="prettyprint lang-config">
+Session On
+SessionCryptoPassphrase secret
+SessionCookieName session path=/
+AuthFormProvider file
+AuthUserFile conf/passwd
+AuthType form
+AuthName realm
+#...
+        </pre>
+
       </code></p></div>
 
       <p>See the <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code> module for documentation and complete
