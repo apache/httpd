@@ -65,9 +65,10 @@
     directive has not been commented out.  A correctly configured directive
     may look like this:
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       LoadModule cgi_module modules/mod_cgi.so
-    </code></p></div></div>
+    </pre>
+</div>
 
     <h3><a name="scriptalias" id="scriptalias">ScriptAlias</a></h3>
       
@@ -84,9 +85,10 @@
       <p>The <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>
       directive looks like:</p>
 
-      <div class="example"><p><code>
+      <pre class="prettyprint lang-config">
         ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/
-      </code></p></div>
+      </pre>
+
 
       <p>The example shown is from your default <code>httpd.conf</code>
       configuration file, if you installed Apache in the default
@@ -139,13 +141,12 @@
       file, to specify that CGI execution was permitted in a particular
       directory:</p>
 
-      <div class="example"><p><code>
-        &lt;Directory /usr/local/apache2/htdocs/somedir&gt;<br />
-        <span class="indent">
-          Options +ExecCGI<br />
-        </span>
-        &lt;/Directory&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+&lt;Directory /usr/local/apache2/htdocs/somedir&gt;
+    Options +ExecCGI
+&lt;/Directory&gt;
+      </pre>
+
 
       <p>The above directive tells Apache to permit the execution
       of CGI files. You will also need to tell the server what
@@ -153,9 +154,10 @@
       files with the <code>cgi</code> or <code>pl</code> extension as CGI
       programs:</p>
 
-      <div class="example"><p><code>
+      <pre class="prettyprint lang-config">
         AddHandler cgi-script .cgi .pl
-      </code></p></div>
+      </pre>
+
     
 
     <h3><a name="htaccess" id="htaccess">.htaccess files</a></h3>
@@ -173,27 +175,25 @@
       <code>.cgi</code> in users' directories, you can use the
       following configuration.</p>
 
-      <div class="example"><p><code>
-      &lt;Directory /home/*/public_html&gt;<br />
-      <span class="indent">
-        Options +ExecCGI<br />
-        AddHandler cgi-script .cgi<br />
-      </span>
-      &lt;/Directory&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+&lt;Directory /home/*/public_html&gt;
+    Options +ExecCGI
+    AddHandler cgi-script .cgi
+&lt;/Directory&gt;
+      </pre>
+
 
       <p>If you wish designate a <code>cgi-bin</code> subdirectory of
       a user's directory where everything will be treated as a CGI
       program, you can use the following.</p>
 
-      <div class="example"><p><code>
-      &lt;Directory /home/*/public_html/cgi-bin&gt;<br />
-      <span class="indent">
-        Options ExecCGI<br />
-        SetHandler cgi-script<br />
-      </span>
-      &lt;/Directory&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+&lt;Directory /home/*/public_html/cgi-bin&gt;
+    Options ExecCGI
+    SetHandler cgi-script
+&lt;/Directory&gt;
+      </pre>
+
 
     
 
@@ -340,9 +340,10 @@ print "Hello, World.";
       interpreter (often <code>perl</code>) indicated in the first
       line of your CGI program, which will look something like:</p>
 
-      <div class="example"><p><code>
+      <pre class="prettyprint lang-perl">
         #!/usr/bin/perl
-      </code></p></div>
+      </pre>
+
 
       <p>Make sure that this is in fact the path to the
       interpreter.</p>
