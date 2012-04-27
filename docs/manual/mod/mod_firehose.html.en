@@ -178,7 +178,10 @@ later.</td></tr>
     present.</p>
 
     <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       FirehoseConnectionInput connection-input.firehose
+      </pre>
+
     </code></p></div>
 
 </div>
@@ -199,7 +202,10 @@ later.</td></tr>
     keepalive is present.</p>
 
     <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       FirehoseConnectionOutput connection-output.firehose
+      </pre>
+
     </code></p></div>
 
 </div>
@@ -218,7 +224,10 @@ later.</td></tr>
     <p>Capture traffic being received by mod_proxy.</p>
 
     <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       FirehoseProxyConnectionInput proxy-input.firehose
+      </pre>
+
     </code></p></div>
 
 </div>
@@ -237,7 +246,10 @@ later.</td></tr>
     <p>Capture traffic being sent out by mod_proxy.</p>
 
     <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       FirehoseProxyConnectionOutput proxy-output.firehose
+      </pre>
+
     </code></p></div>
 
 </div>
@@ -257,7 +269,10 @@ later.</td></tr>
     will be captured separately, regardless of the presence of keepalive.</p>
 
     <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       FirehoseRequestInput request-input.firehose
+      </pre>
+
     </code></p></div>
 
 </div>
@@ -277,7 +292,10 @@ later.</td></tr>
     will be captured separately, regardless of the presence of keepalive.</p>
 
     <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       FirehoseRequestOutput request-output.firehose
+      </pre>
+
     </code></p></div>
 
 </div>

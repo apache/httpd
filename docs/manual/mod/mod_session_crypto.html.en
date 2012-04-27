@@ -77,9 +77,12 @@
       <var>session</var>, configure the session as follows:</p>
 
       <div class="example"><h3>Browser based encrypted session</h3><p><code>
-        Session On<br />
-        SessionCookieName session path=/<br />
-        SessionCryptoPassphrase secret
+      <pre class="prettyprint lang-config">
+Session On
+SessionCookieName session path=/
+SessionCryptoPassphrase secret
+    </pre>
+
       </code></p></div>
 
       <p>The session will be encrypted with the given key. Different servers can
@@ -133,19 +136,31 @@
     which are specified as parameters with optional values after the driver name.</p>
 
     <div class="example"><h3>NSS without a certificate database</h3><p><code>
+    <pre class="prettyprint lang-config">
       SessionCryptoDriver nss
+      </pre>
+
     </code></p></div>
 
     <div class="example"><h3>NSS with certificate database</h3><p><code>
+    <pre class="prettyprint lang-config">
       SessionCryptoDriver nss dir=certs
+      </pre>
+
     </code></p></div>
 
     <div class="example"><h3>NSS with certificate database and parameters</h3><p><code>
+    <pre class="prettyprint lang-config">
       SessionCryptoDriver nss dir=certs key3=key3.db cert7=cert7.db secmod=secmod
+      </pre>
+
     </code></p></div>
 
     <div class="example"><h3>NSS with paths containing spaces</h3><p><code>
+    <pre class="prettyprint lang-config">
       SessionCryptoDriver nss "dir=My Certs" key3=key3.db cert7=cert7.db secmod=secmod
+      </pre>
+
     </code></p></div>
 
     <p>The <var>NSS</var> crypto driver might have already been configured by another
@@ -155,7 +170,10 @@
     To avoid this warning, use the noinit parameter as follows.</p>
 
     <div class="example"><h3>NSS with certificate database</h3><p><code>
+    <pre class="prettyprint lang-config">
       SessionCryptoDriver nss noinit
+      </pre>
+
     </code></p></div>
 
     <p>To prevent confusion, ensure that all modules requiring NSS are configured with
@@ -165,7 +183,10 @@
     the engine to be used for encryption.</p>
 
     <div class="example"><h3>OpenSSL with engine support</h3><p><code>
+    <pre class="prettyprint lang-config">
       SessionCryptoDriver openssl engine=name
+      </pre>
+
     </code></p></div>
 
 

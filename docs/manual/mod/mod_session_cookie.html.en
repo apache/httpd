@@ -80,8 +80,11 @@
       <var>session</var>, configure the session as follows:</p>
 
       <div class="example"><h3>Browser based session</h3><p><code>
-        Session On<br />
-        SessionCookieName session path=/<br />
+      <pre class="prettyprint lang-config">
+Session On
+SessionCookieName session path=/
+        </pre>
+
       </code></p></div>
 
       <p>For more examples on how the session can be configured to be read
@@ -113,8 +116,11 @@
     </p>
 
     <div class="example"><h3>Cookie with attributes</h3><p><code>
-      Session On<br />
-      SessionCookieName session path=/private;domain=example.com;httponly;secure;version=1;<br />
+    <pre class="prettyprint lang-config">
+Session On
+SessionCookieName session path=/private;domain=example.com;httponly;secure;version=1;
+      </pre>
+
     </code></p></div>
 
 
@@ -140,8 +146,11 @@
     </p>
 
     <div class="example"><h3>Cookie2 with attributes</h3><p><code>
-      Session On<br />
-      SessionCookieName2 session path=/private;domain=example.com;httponly;secure;version=1;<br />
+    <pre class="prettyprint lang-config">
+Session On
+SessionCookieName2 session path=/private;domain=example.com;httponly;secure;version=1;
+    </pre>
+
     </code></p></div>
 
 

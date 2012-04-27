@@ -44,11 +44,13 @@
     <p>The following directive will activate files ending with
     <code>.map</code> as imagemap files:</p>
 
-    <div class="example"><p><code>AddHandler imap-file map</code></p></div>
+    <pre class="prettyprint lang-config">AddHandler imap-file map</pre>
+
 
     <p>Note that the following is still supported:</p>
 
-    <div class="example"><p><code>AddType application/x-httpd-imap map</code></p></div>
+    <pre class="prettyprint lang-config">AddType application/x-httpd-imap map</pre>
+
 
     <p>However, we are trying to phase out "magic MIME types" so we
     are deprecating this method.</p>
