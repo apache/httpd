@@ -177,9 +177,9 @@ Negotiation</a></seealso>
     <code>type-map</code> handler with an <directive
     module="mod_mime">AddHandler</directive> directive:</p>
 
-    <example>
+    <highlight language="config">
     AddHandler type-map .var
-    </example>
+    </highlight>
 
     <p>A request for <code>document.html</code> in this directory will
     result in <code>document.html.var</code> being consulted, and the
@@ -257,10 +257,10 @@ found</description>
     (equally acceptable) then the first matching variant, <code>en</code>,
     will be served.</p>
 
-    <example>
-      LanguagePriority en fr de<br />
-      ForceLanguagePriority Prefer
-    </example>
+    <highlight language="config">
+LanguagePriority en fr de
+ForceLanguagePriority Prefer
+    </highlight>
 
     <p><code>ForceLanguagePriority Fallback</code> uses
     <directive module="mod_negotiation">LanguagePriority</directive> to
@@ -271,10 +271,10 @@ found</description>
     variant from the <directive module="mod_negotiation"
     >LanguagePriority</directive> list below will be served.</p>
 
-    <example>
-      LanguagePriority en fr de<br />
-      ForceLanguagePriority Fallback
-    </example>
+    <highlight language="config">
+LanguagePriority en fr de
+ForceLanguagePriority Fallback
+    </highlight>
 
     <p>Both options, <code>Prefer</code> and <code>Fallback</code>, may be
     specified, so either the first matching variant from <directive
@@ -302,9 +302,9 @@ the client does not express a preference</description>
     express a preference, when handling a Multiviews request. The list
     of <var>MIME-lang</var> are in order of decreasing preference.</p>
 
-    <example><title>Example:</title>
+    <highlight language="config">
       LanguagePriority en fr de
-    </example>
+    </highlight>
 
     <p>For a request for <code>foo.html</code>, where
     <code>foo.html.fr</code> and <code>foo.html.de</code> both
