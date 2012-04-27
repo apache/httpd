@@ -64,9 +64,9 @@
     directive has not been commented out.  A correctly configured directive
     may look like this:
 
-    <example>
+    <highlight language="config">
       LoadModule cgi_module modules/mod_cgi.so
-    </example></note>
+    </highlight></note>
 
     <section id="scriptalias">
       <title>ScriptAlias</title>
@@ -83,9 +83,9 @@
       <p>The <directive module="mod_alias">ScriptAlias</directive>
       directive looks like:</p>
 
-      <example>
+      <highlight language="config">
         ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/
-      </example>
+      </highlight>
 
       <p>The example shown is from your default <code>httpd.conf</code>
       configuration file, if you installed Apache in the default
@@ -145,13 +145,11 @@
       file, to specify that CGI execution was permitted in a particular
       directory:</p>
 
-      <example>
-        &lt;Directory /usr/local/apache2/htdocs/somedir&gt;<br />
-        <indent>
-          Options +ExecCGI<br />
-        </indent>
-        &lt;/Directory&gt;
-      </example>
+      <highlight language="config">
+&lt;Directory /usr/local/apache2/htdocs/somedir&gt;
+    Options +ExecCGI
+&lt;/Directory&gt;
+      </highlight>
 
       <p>The above directive tells Apache to permit the execution
       of CGI files. You will also need to tell the server what
@@ -160,9 +158,9 @@
       files with the <code>cgi</code> or <code>pl</code> extension as CGI
       programs:</p>
 
-      <example>
+      <highlight language="config">
         AddHandler cgi-script .cgi .pl
-      </example>
+      </highlight>
     </section>
 
     <section id="htaccess">
@@ -180,27 +178,23 @@
       <code>.cgi</code> in users' directories, you can use the
       following configuration.</p>
 
-      <example>
-      &lt;Directory /home/*/public_html&gt;<br/>
-      <indent>
-        Options +ExecCGI<br/>
-        AddHandler cgi-script .cgi<br/>
-      </indent>
-      &lt;/Directory&gt;
-      </example>
+      <highlight language="config">
+&lt;Directory /home/*/public_html&gt;
+    Options +ExecCGI
+    AddHandler cgi-script .cgi
+&lt;/Directory&gt;
+      </highlight>
 
       <p>If you wish designate a <code>cgi-bin</code> subdirectory of
       a user's directory where everything will be treated as a CGI
       program, you can use the following.</p>
 
-      <example>
-      &lt;Directory /home/*/public_html/cgi-bin&gt;<br/>
-      <indent>
-        Options ExecCGI<br/>
-        SetHandler cgi-script<br/>
-      </indent>
-      &lt;/Directory&gt;
-      </example>
+      <highlight language="config">
+&lt;Directory /home/*/public_html/cgi-bin&gt;
+    Options ExecCGI
+    SetHandler cgi-script
+&lt;/Directory&gt;
+      </highlight>
 
     </section>
 
@@ -346,9 +340,9 @@ print "Hello, World.";
       interpreter (often <code>perl</code>) indicated in the first
       line of your CGI program, which will look something like:</p>
 
-      <example>
+      <highlight language="perl">
         #!/usr/bin/perl
-      </example>
+      </highlight>
 
       <p>Make sure that this is in fact the path to the
       interpreter.</p>
