@@ -117,15 +117,9 @@ To Do List
     - Logging, log rotation, and log reporting
     - Secure mod_dav configuration
 
-- Writing modules - Daniel Gruno (humbedooh) has written a proposal 
-  for a guide on writing modules for httpd. Please do review it and 
-  say what you think. The document can be found at 
-  http://httpd.apache.org/docs/trunk/developer/modguide.html
-
 - http://httpd.apache.org/docs/trunk/developer/ is a graveyard, and a
   profound embarrassment.
     - Purge all the dead links
-    - Introductory module authoring doc (see previous note on mod guide)
     - Verify links to external resources at least every year
 
 - Update the list of translations at
