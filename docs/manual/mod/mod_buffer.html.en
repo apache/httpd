@@ -59,7 +59,10 @@
     <code class="directive"><a href="../mod/mod_filter.html#addoutputfilterbytype">AddOutputFilterByType</a></code> directives.</p>
 
       <div class="example"><h3>Using buffer with mod_include</h3><p><code>
-        AddOutputFilterByType INCLUDES;BUFFER text/html<br />
+      <pre class="prettyprint lang-config">
+        AddOutputFilterByType INCLUDES;BUFFER text/html
+        </pre>
+
       </code></p></div>
 
     <div class="warning">The buffer filters read the request/response into

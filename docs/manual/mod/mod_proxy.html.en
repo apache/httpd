@@ -197,19 +197,23 @@
     the documentation from <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>.</p>
 
     <div class="example"><h3>Reverse Proxy</h3><p><code>
-    ProxyPass /foo http://foo.example.com/bar<br />
-    ProxyPassReverse /foo http://foo.example.com/bar
+    <pre class="prettyprint lang-config">
+ProxyPass /foo http://foo.example.com/bar
+ProxyPassReverse /foo http://foo.example.com/bar
+    </pre>
+
     </code></p></div>
 
     <div class="example"><h3>Forward Proxy</h3><p><code>
-    ProxyRequests On<br />
-    ProxyVia On<br />
-    <br />
-    &lt;Proxy *&gt;<br />
-    <span class="indent">
-      Require host internal.example.com<br />
-    </span>
-    &lt;/Proxy&gt;
+    <pre class="prettyprint lang-config">
+ProxyRequests On
+ProxyVia On
+
+&lt;Proxy *&gt;
+  Require host internal.example.com
+&lt;/Proxy&gt;
+    </pre>
+
     </code></p></div>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -232,29 +236,30 @@
       <code class="directive"><a href="#proxypassmatch">ProxyPassMatch</a></code> when used
       for a reverse proxy:</p>
 
-      <div class="example"><p><code>
+      <pre class="prettyprint lang-config">
           ProxyPass /example http://backend.example.com connectiontimeout=5 timeout=30
-      </code></p></div>
+      </pre>
+
 
       <p>This will create a worker associated with the origin server URL
       <code>http://backend.example.com</code> and using the given timeout
       values. When used in a forward proxy, workers are usually defined
       via the <code class="directive"><a href="#proxyset">ProxySet</a></code> directive:</p>
 
-      <div class="example"><p><code>
+      <pre class="prettyprint lang-config">
           ProxySet http://backend.example.com connectiontimeout=5 timeout=30
-      </code></p></div>
+      </pre>
+
 
       <p>or alternatively using <code class="directive"><a href="#proxy">Proxy</a></code>
       and <code class="directive"><a href="#proxyset">ProxySet</a></code>:</p>
 
-      <div class="example"><p><code>
-        &lt;Proxy http://backend.example.com&gt;<br />
-        <span class="indent">
-          ProxySet connectiontimeout=5 timeout=30
-        </span>
-        &lt;/Proxy&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+&lt;Proxy http://backend.example.com&gt;
+  ProxySet connectiontimeout=5 timeout=30
+&lt;/Proxy&gt;
+      </pre>
+
 
       <p>Using explicitly configured workers in the forward mode is
       not very common, because forward proxies usually communicate with many
@@ -270,10 +275,11 @@
       <p>The URL identifying a direct worker is the URL of its
       origin server including any path components given:</p>
 
-      <div class="example"><p><code>
-          ProxyPass /examples http://backend.example.com/examples<br />
-          ProxyPass /docs http://backend.example.com/docs
-      </code></p></div>
+     <pre class="prettyprint lang-config">
+ProxyPass /examples http://backend.example.com/examples
+ProxyPass /docs http://backend.example.com/docs
+      </pre>
+
 
       <p>This example defines two different workers, each using a separate
       connection pool and configuration.</p>
@@ -283,10 +289,11 @@
         the URL of some worker is a leading substring of the URL of another
         worker defined later in the configuration file. In the following example</p>
 
-        <div class="example"><p><code>
-            ProxyPass /apps http://backend.example.com/ timeout=60<br />
-            ProxyPass /examples http://backend.example.com/examples timeout=10
-        </code></p></div>
+        <pre class="prettyprint lang-config">
+ProxyPass /apps http://backend.example.com/ timeout=60
+ProxyPass /examples http://backend.example.com/examples timeout=10
+        </pre>
+
 
         <p>the second worker isn't actually created. Instead the first
         worker is used. The benefit is, that there is only one connection pool,
@@ -332,13 +339,12 @@
       <p>You can control who can access your proxy via the <code class="directive"><a href="#proxy">&lt;Proxy&gt;</a></code> control block as in
       the following example:</p>
 
-      <div class="example"><p><code>
-        &lt;Proxy *&gt;<br />
-        <span class="indent">
-          Require ip 192.168.0<br />
-        </span>
-        &lt;/Proxy&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+&lt;Proxy *&gt;
+  Require ip 192.168.0
+&lt;/Proxy&gt;
+      </pre>
+
 
       <p>For more information on access control directives, see
       <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>.</p>
@@ -395,15 +401,14 @@
       <p>These are the <code>force-proxy-request-1.0</code> and
       <code>proxy-nokeepalive</code> notes.</p>
 
-      <div class="example"><p><code>
-        &lt;Location /buggyappserver/&gt;<br />
-        <span class="indent">
-          ProxyPass http://buggyappserver:7001/foo/<br />
-          SetEnv force-proxy-request-1.0 1<br />
-          SetEnv proxy-nokeepalive 1<br />
-        </span>
-        &lt;/Location&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+&lt;Location /buggyappserver/&gt;
+  ProxyPass http://buggyappserver:7001/foo/
+  SetEnv force-proxy-request-1.0 1
+  SetEnv proxy-nokeepalive 1
+&lt;/Location&gt;
+        </pre>
+
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -527,8 +532,11 @@ directly</td></tr>
     <code class="directive"><a href="#proxyremote">ProxyRemote</a></code> proxy server(s).</p>
 
     <div class="example"><h3>Example</h3><p><code>
-      ProxyRemote  *  http://firewall.example.com:81<br />
-      NoProxy         .example.com 192.168.112.0/21
+    <pre class="prettyprint lang-config">
+ProxyRemote  *  http://firewall.example.com:81
+NoProxy         .example.com 192.168.112.0/21
+    </pre>
+
     </code></p></div>
 
     <p>The <var>host</var> arguments to the <code class="directive">NoProxy</code>
@@ -651,25 +659,23 @@ directly</td></tr>
     <code>yournetwork.example.com</code> to access content via your proxy
     server:</p>
 
-    <div class="example"><p><code>
-      &lt;Proxy *&gt;<br />
-      <span class="indent">
-        Require host yournetwork.example.com<br />
-      </span>
-      &lt;/Proxy&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Proxy *&gt;
+  Require host yournetwork.example.com
+&lt;/Proxy&gt;
+    </pre>
+
 
     <p>The following example will process all files in the <code>foo</code>
     directory of <code>example.com</code> through the <code>INCLUDES</code>
     filter when they are sent through the proxy server:</p>
 
-    <div class="example"><p><code>
-      &lt;Proxy http://example.com/foo/*&gt;<br />
-      <span class="indent">
-        SetOutputFilter INCLUDES<br />
-      </span>
-      &lt;/Proxy&gt;
-    </code></p></div>
+   <pre class="prettyprint lang-config">    
+&lt;Proxy http://example.com/foo/*&gt;
+  SetOutputFilter INCLUDES
+&lt;/Proxy&gt;
+    </pre>
+
 
 
 <h3>See also</h3>
@@ -747,7 +753,10 @@ proxied</td></tr>
     well. That may slow down the startup time of the server.</p>
 
     <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       ProxyBlock news.example.com auctions.example.com friends.example.com
+      </pre>
+
     </code></p></div>
 
     <p>Note that <code>example</code> would also be sufficient to match any
@@ -757,9 +766,10 @@ proxied</td></tr>
 
     <p>Note also that</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       ProxyBlock *
-    </code></p></div>
+    </pre>
+
 
     <p>blocks connections to all sites.</p>
 
@@ -781,9 +791,12 @@ proxied</td></tr>
     will be generated.</p>
 
     <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       ProxyRemote  *  http://firewall.example.com:81<br />
       NoProxy         .example.com 192.168.112.0/21<br />
       ProxyDomain     .example.com
+      </pre>
+
     </code></p></div>
 
 </div>
@@ -874,7 +887,10 @@ through</td></tr>
     be set to prevent infinite proxy loops, or a DoS attack.</p>
 
     <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       ProxyMaxForwards 15
+      </pre>
+
     </code></p></div>
 
     <p>Note that setting <code class="directive">ProxyMaxForwards</code> is a
@@ -911,13 +927,12 @@ through</td></tr>
     <p>Suppose the local server has address <code>http://example.com/</code>;
     then</p>
 
-    <div class="example"><p><code>
-        &lt;Location /mirror/foo/&gt;<br />
-        <span class="indent">
-          ProxyPass http://backend.example.com/<br />
-        </span>
-        &lt;/Location&gt;<br />
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Location /mirror/foo/&gt;
+    ProxyPass http://backend.example.com/
+&lt;/Location&gt;
+    </pre>
+
 
     <p>will cause a local request for
     <code>http://example.com/mirror/foo/bar</code> to be internally converted
@@ -928,9 +943,10 @@ through</td></tr>
     the below syntax is that it allows for dynamic control via the
     <a href="mod_proxy_balancer.html#balancer_manager">Balancer Manager</a> interface:</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
         ProxyPass /mirror/foo/ http://backend.example.com/
-    </code></p></div>
+    </pre>
+
 
     <div class="warning">
     <p>If the first argument ends with a trailing <strong>/</strong>, the second
@@ -943,23 +959,21 @@ through</td></tr>
     <p>The <code>!</code> directive is useful in situations where you don't want
     to reverse-proxy a subdirectory, <em>e.g.</em></p>
 
-    <div class="example"><p><code>
-        &lt;Location /mirror/foo/&gt;<br />
-        <span class="indent">
-          ProxyPass http://backend.example.com/<br />
-        </span>
-        &lt;/Location&gt;<br />
-        &lt;Location /mirror/foo/i&gt;<br />
-        <span class="indent">
-            ProxyPass !<br />
-        </span>
-        &lt;/Location&gt;<br />
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Location /mirror/foo/&gt;
+    ProxyPass http://backend.example.com/
+&lt;/Location&gt;
+&lt;Location /mirror/foo/i&gt;
+    ProxyPass !
+&lt;/Location&gt;
+    </pre>
 
-    <div class="example"><p><code>
-      ProxyPass /mirror/foo/i !<br />
-      ProxyPass /mirror/foo http://backend.example.com
-    </code></p></div>
+
+    <pre class="prettyprint lang-config">
+ProxyPass /mirror/foo/i !
+ProxyPass /mirror/foo http://backend.example.com
+    </pre>
+
 
     <p>will proxy all requests to <code>/mirror/foo</code> to
     <code>backend.example.com</code> <em>except</em> requests made to
@@ -1270,33 +1284,31 @@ through</td></tr>
 
     </table>
     <p>A sample balancer setup</p>
-    <div class="example"><p><code>
-      ProxyPass /special-area http://special.example.com smax=5 max=10<br />
-      ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On<br />
-      &lt;Proxy balancer://mycluster&gt;<br />
-      <span class="indent">
-        BalancerMember ajp://1.2.3.4:8009<br />
-        BalancerMember ajp://1.2.3.5:8009 loadfactor=20<br />
-        # Less powerful server, don't send as many requests there,<br />
-        BalancerMember ajp://1.2.3.6:8009 loadfactor=5<br />
-      </span>
-      &lt;/Proxy&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+ProxyPass /special-area http://special.example.com smax=5 max=10
+ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On
+&lt;Proxy balancer://mycluster&gt;
+    BalancerMember ajp://1.2.3.4:8009
+    BalancerMember ajp://1.2.3.5:8009 loadfactor=20
+    # Less powerful server, don't send as many requests there,
+    BalancerMember ajp://1.2.3.6:8009 loadfactor=5
+&lt;/Proxy&gt;
+    </pre>
+
 
     <p>Setting up a hot-standby, that will only be used if no other
      members are available</p>
-    <div class="example"><p><code>
-      ProxyPass / balancer://hotcluster/ <br />
-      &lt;Proxy balancer://hotcluster&gt;<br />
-      <span class="indent">
-        BalancerMember ajp://1.2.3.4:8009 loadfactor=1<br />
-        BalancerMember ajp://1.2.3.5:8009 loadfactor=2<br />
-        # The below is the hot standby<br />
-        BalancerMember ajp://1.2.3.6:8009 status=+H<br />
-        ProxySet lbmethod=bytraffic
-      </span>
-      &lt;/Proxy&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+ProxyPass / balancer://hotcluster/ 
+&lt;Proxy balancer://hotcluster&gt;
+    BalancerMember ajp://1.2.3.4:8009 loadfactor=1
+    BalancerMember ajp://1.2.3.5:8009 loadfactor=2
+    # The below is the hot standby
+    BalancerMember ajp://1.2.3.6:8009 status=+H
+    ProxySet lbmethod=bytraffic
+&lt;/Proxy&gt;
+    </pre>
+
 
     <p>Normally, mod_proxy will canonicalise ProxyPassed URLs.
     But this may be incompatible with some backends, particularly those
@@ -1381,9 +1393,10 @@ through</td></tr>
     <p>Suppose the local server has address <code>http://example.com/</code>;
     then</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       ProxyPassMatch ^(/.*\.gif)$ http://backend.example.com$1
-    </code></p></div>
+    </pre>
+
 
     <p>will cause a local request for
     <code>http://example.com/foo/bar.gif</code> to be internally converted
@@ -1392,15 +1405,17 @@ through</td></tr>
       <p>The URL argument must be parsable as a URL <em>before</em> regexp
       substitutions (as well as after).  This limits the matches you can use.
       For instance, if we had used</p>
-      <div class="example"><p><code>
+      <pre class="prettyprint lang-config">
         ProxyPassMatch ^(/.*\.gif)$ http://backend.example.com:8000$1
-      </code></p></div>
+      </pre>
+
       <p>in our previous example, it would fail with a syntax error
       at server startup.  This is a bug (PR 46665 in the ASF bugzilla),
       and the workaround is to reformulate the match:</p>
-      <div class="example"><p><code>
+      <pre class="prettyprint lang-config">
         ProxyPassMatch ^/(.*\.gif)$ http://backend.example.com:8000/$1
-      </code></p></div>
+      </pre>
+
     </div>
     <p>The <code>!</code> directive is useful in situations where you don't want
     to reverse-proxy a subdirectory.</p>
@@ -1455,12 +1470,13 @@ proxied server</td></tr>
     <p>For example, suppose the local server has address
     <code>http://example.com/</code>; then</p>
 
-    <div class="example"><p><code>
-      ProxyPass         /mirror/foo/ http://backend.example.com/<br />
-      ProxyPassReverse  /mirror/foo/ http://backend.example.com/<br />
-      ProxyPassReverseCookieDomain  backend.example.com  public.example.com<br />
-      ProxyPassReverseCookiePath  /  /mirror/foo/
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+ProxyPass         /mirror/foo/ http://backend.example.com/
+ProxyPassReverse  /mirror/foo/ http://backend.example.com/
+ProxyPassReverseCookieDomain  backend.example.com  public.example.com
+ProxyPassReverseCookiePath  /  /mirror/foo/
+    </pre>
+
 
     <p>will not only cause a local request for the
     <code>http://example.com/mirror/foo/bar</code> to be internally converted
@@ -1533,9 +1549,10 @@ reverse proxy. This directive rewrites the <code>path</code> string in
 In the example given with 
 <code class="directive"><a href="#proxypassreverse">ProxyPassReverse</a></code>, the directive:
 </p>
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       ProxyPassReverseCookiePath  /  /mirror/foo/
-    </code></p></div>
+    </pre>
+
 <p>
 will rewrite a cookie with backend path <code>/</code> (or
 <code>/example</code> or, in fact, anything) to <code>/mirror/foo/</code>.
@@ -1583,7 +1600,10 @@ connections</td></tr>
     be used.</p>
 
     <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       ProxyReceiveBufferSize 2048
+      </pre>
+
     </code></p></div>
 
 </div>
@@ -1613,9 +1633,12 @@ connections</td></tr>
     are forwarded through the remote proxy using the HTTP CONNECT method.</p>
 
     <div class="example"><h3>Example</h3><p><code>
-      ProxyRemote http://goodguys.example.com/ http://mirrorguys.example.com:8000<br />
-      ProxyRemote * http://cleverproxy.localdomain<br />
-      ProxyRemote ftp http://ftpproxy.mydomain:8080
+    <pre class="prettyprint lang-config">
+ProxyRemote http://goodguys.example.com/ http://mirrorguys.example.com:8000
+ProxyRemote * http://cleverproxy.localdomain
+ProxyRemote ftp http://ftpproxy.mydomain:8080
+    </pre>
+
     </code></p></div>
 
     <p>In the last example, the proxy will forward FTP requests, encapsulated
@@ -1697,30 +1720,32 @@ expressions</td></tr>
     <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive.</p>
 
     <div class="example"><p><code>
-      &lt;Proxy balancer://hotcluster&gt;<br />
-      <span class="indent">
-        BalancerMember http://www2.example.com:8080 loadfactor=1<br />
-        BalancerMember http://www3.example.com:8080 loadfactor=2<br />
-        ProxySet lbmethod=bytraffic<br />
-      </span>
-      &lt;/Proxy&gt;
+        <pre class="prettyprint lang-config">
+&lt;Proxy balancer://hotcluster&gt;
+    BalancerMember http://www2.example.com:8080 loadfactor=1
+    BalancerMember http://www3.example.com:8080 loadfactor=2
+    ProxySet lbmethod=bytraffic
+&lt;/Proxy&gt;
+      </pre>
+
     </code></p></div>
 
-    <div class="example"><p><code>
-      &lt;Proxy http://backend&gt;<br />
-      <span class="indent">
-        ProxySet keepalive=On<br />
-      </span>
-      &lt;/Proxy&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Proxy http://backend&gt;
+    ProxySet keepalive=On
+&lt;/Proxy&gt;
+    </pre>
 
-    <div class="example"><p><code>
+
+    <pre class="prettyprint lang-config">
         ProxySet balancer://foo lbmethod=bytraffic timeout=15
-    </code></p></div>
+    </pre>
 
-    <div class="example"><p><code>
+
+    <pre class="prettyprint lang-config">
         ProxySet ajp://backend:7001 timeout=15
-    </code></p></div>
+    </pre>
+
 
    <div class="warning"><h3>Warning</h3>
       <p>Keep in mind that the same parameter key can have a different meaning

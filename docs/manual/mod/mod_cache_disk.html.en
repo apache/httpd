@@ -157,9 +157,10 @@ cache</td></tr>
     maximum size, in bytes, for a document to be considered for storage in
     the cache.</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       CacheMaxFileSize 64000
-    </code></p></div>
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -177,9 +178,10 @@ cache</td></tr>
     minimum size, in bytes, for a document to be considered for storage
     in the cache.</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       CacheMinFileSize 64
-    </code></p></div>
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -204,9 +206,10 @@ cache</td></tr>
     <p>This directive only takes effect when the data is being saved to the
     cache, as opposed to data being served from the cache.</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       CacheReadSize 102400
-    </code></p></div>
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -235,9 +238,10 @@ cache</td></tr>
     ensure that the server does not buffer excessively should data arrive faster
     than expected.</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       CacheReadTime 1000
-    </code></p></div>
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -257,9 +261,10 @@ stored</td></tr>
     a configuration file processing error. The <code class="directive"><a href="#cachedirlevels">CacheDirLevels</a></code> and <code class="directive"><a href="#cachedirlength">CacheDirLength</a></code> directives define
     the structure of the directories under the specified root directory.</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       CacheRoot c:/cacheroot
-    </code></p></div>
+    </pre>
+
 
 </div>
 </div>

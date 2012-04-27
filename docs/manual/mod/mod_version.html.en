@@ -42,17 +42,16 @@
     regular expressions.</p>
 
     <div class="example"><h3>Examples</h3><p><code>
-      &lt;IfVersion 2.1.0&gt;<br />
-      <span class="indent">
-        # current httpd version is exactly 2.1.0<br />
-      </span>
-      &lt;/IfVersion&gt;<br />
-      <br />
-      &lt;IfVersion &gt;= 2.2&gt;<br />
-      <span class="indent">
-        # use really new features :-)<br />
-      </span>
-      &lt;/IfVersion&gt;
+    <pre class="prettyprint lang-config">
+&lt;IfVersion 2.4.2&gt;
+    # current httpd version is exactly 2.4.2
+&lt;/IfVersion&gt;
+
+&lt;IfVersion &gt;= 2.5&gt;
+    # use really new features :-)
+&lt;/IfVersion&gt;
+      </pre>
+
     </code></p></div>
 
     <p>See below for further possibilities.</p>
@@ -99,12 +98,13 @@
 </table>
 
     <div class="example"><h3>Example</h3><p><code>
-      &lt;IfVersion &gt;= 2.1&gt;<br />
-      <span class="indent">
-        # this happens only in versions greater or<br />
-        # equal 2.1.0.<br />
-      </span>
-      &lt;/IfVersion&gt;
+    <pre class="prettyprint lang-config">
+&lt;IfVersion &gt;= 2.3&gt;
+    # this happens only in versions greater or
+    # equal 2.3.0.
+&lt;/IfVersion&gt;
+      </pre>
+
     </code></p></div>
 
     <p>Besides the numerical comparison it is possible to match a
@@ -121,23 +121,23 @@
 </table>
 
     <div class="example"><h3>Example</h3><p><code>
-      &lt;IfVersion = /^2.1.[01234]$/&gt;<br />
-      <span class="indent">
-        # e.g. workaround for buggy versions
-      </span>
-      &lt;/IfVersion&gt;
+    <pre class="prettyprint lang-config">
+&lt;IfVersion = /^2.4.[01234]$/&gt;
+    # e.g. workaround for buggy versions
+&lt;/IfVersion&gt;
+      </pre>
+
     </code></p></div>
 
     <p>In order to reverse the meaning, all operators can be preceded by an
     exclamation mark (<code>!</code>):</p>
 
-    <div class="example"><p><code>
-      &lt;IfVersion !~ ^2.1.[01234]$&gt;<br />
-      <span class="indent">
-        # not for those versions<br />
-      </span>
-      &lt;/IfVersion&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;IfVersion !~ ^2.4.[01234]$&gt;
+    # not for those versions
+&lt;/IfVersion&gt;
+    </pre>
+
 
     <p>If the <var>operator</var> is omitted, it is assumed to be
     <code>=</code>.</p>

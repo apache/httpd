@@ -137,11 +137,17 @@ via the request headers.
     hosts presenting a <code class="directive">RemoteIPHeader</code> IP value.</p>
 
     <div class="example"><h3>Internal (Load Balancer) Example</h3><p><code>
+    <pre class="prettyprint lang-config">
         RemoteIPHeader X-Client-IP
+        </pre>
+
     </code></p></div>
 
     <div class="example"><h3>Proxy Example</h3><p><code>
+    <pre class="prettyprint lang-config">
         RemoteIPHeader X-Forwarded-For
+        </pre>
+
     </code></p></div>
 
 </div>
@@ -162,9 +168,12 @@ via the request headers.
     trusted when passed from these proxies.</p>
 
     <div class="example"><h3>Internal (Load Balancer) Example</h3><p><code>
-        RemoteIPHeader X-Client-IP<br />
-        RemoteIPTrustedProxy 10.0.2.0/24<br />
-        RemoteIPTrustedProxy gateway.localdomain
+    <pre class="prettyprint lang-config">
+RemoteIPHeader X-Client-IP
+RemoteIPTrustedProxy 10.0.2.0/24
+RemoteIPTrustedProxy gateway.localdomain
+        </pre>
+
     </code></p></div>
 
 </div>
@@ -190,11 +199,11 @@ via the request headers.
         RemoteIPTrustedProxyList conf/trusted-proxies.lst
     </code></p></div>
 
-    <div class="example"><h3>conf/trusted-proxies.lst contents</h3><p><code>
-         # Our internally trusted proxies;<br />
-         10.0.2.0/24         #Everyone in the testing group<br />
-         gateway.localdomain #The front end balancer
-    </code></p></div>
+    <div class="example"><h3>conf/trusted-proxies.lst contents</h3><div class="example"><pre>
+# Our internally trusted proxies;
+10.0.2.0/24         #Everyone in the testing group
+gateway.localdomain #The front end balancer
+         </pre></div></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -215,8 +224,11 @@ via the request headers.
     <code class="directive">RemoteIPInternalProxy</code> addresses are discarded.</p>
 
     <div class="example"><h3>Example</h3><p><code>
-        RemoteIPHeader X-Forwarded-For<br />
-        RemoteIPProxiesHeader X-Forwarded-By
+    <pre class="prettyprint lang-config">
+RemoteIPHeader X-Forwarded-For
+RemoteIPProxiesHeader X-Forwarded-By
+    </pre>
+
     </code></p></div>
 
 </div>
@@ -239,9 +251,12 @@ via the request headers.
     <code class="directive">RemoteIPHeader</code> header's value.</p>
 
     <div class="example"><h3>Trusted (Load Balancer) Example</h3><p><code>
-        RemoteIPHeader X-Forwarded-For<br />
-        RemoteIPTrustedProxy 10.0.2.16/28<br />
-        RemoteIPTrustedProxy proxy.example.com
+        <pre class="prettyprint lang-config">
+RemoteIPHeader X-Forwarded-For
+RemoteIPTrustedProxy 10.0.2.16/28
+RemoteIPTrustedProxy proxy.example.com
+        </pre>
+
     </code></p></div>
 
 </div>
@@ -263,8 +278,11 @@ via the request headers.
     the <code class="directive">RemoteIPTrustedProxy</code> directive.</p>
 
     <div class="example"><h3>Trusted (Load Balancer) Example</h3><p><code>
-        RemoteIPHeader X-Forwarded-For<br />
-        RemoteIPTrustedProxyList conf/trusted-proxies.lst
+    <pre class="prettyprint lang-config">
+RemoteIPHeader X-Forwarded-For
+RemoteIPTrustedProxyList conf/trusted-proxies.lst
+        </pre>
+
     </code></p></div>
 
     <div class="example"><h3>conf/trusted-proxies.lst contents</h3><p><code>

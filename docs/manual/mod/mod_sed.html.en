@@ -76,33 +76,31 @@ the author's blog</a>.</p>
 <div class="section">
 <h2><a name="sampleconf" id="sampleconf">Sample Configuration</a></h2>
     <div class="example"><h3>Adding an output filter </h3><p><code>
-         # In the following example, the sed filter will change the string<br />
-         # "monday" to "MON" and the string "sunday" to SUN in html documents<br />
-         # before sending to the client.<br />
-        <span class="indent">
-        &lt;Directory "/var/www/docs/sed"&gt; <br />
-           <span class="indent">
-           AddOutputFilter Sed html <br />
-           OutputSed "s/monday/MON/g" <br />
-           OutputSed "s/sunday/SUN/g" <br />
-           </span>
-        &lt;/Directory&gt; <br />
-        </span>
+    <pre class="prettyprint lang-config">
+# In the following example, the sed filter will change the string
+# "monday" to "MON" and the string "sunday" to SUN in html documents
+# before sending to the client.
+&lt;Directory "/var/www/docs/sed"&gt; 
+    AddOutputFilter Sed html 
+    OutputSed "s/monday/MON/g" 
+    OutputSed "s/sunday/SUN/g" 
+&lt;/Directory&gt; 
+    </pre>
+
     </code></p></div>
 
     <div class="example"><h3>Adding an input filter </h3><p><code>
-         # In the following example, the sed filter will change the string<br />
-         # "monday" to "MON" and the string "sunday" to SUN in the POST data<br />
-         # sent to PHP.<br />
-        <span class="indent">
-        &lt;Directory "/var/www/docs/sed"&gt; <br />
-           <span class="indent">
-           AddInputFilter Sed php <br />
-           InputSed "s/monday/MON/g" <br />
-           InputSed "s/sunday/SUN/g" <br />
-           </span>
-        &lt;/Directory&gt; <br />
-        </span>
+    <pre class="prettyprint lang-config">
+# In the following example, the sed filter will change the string
+# "monday" to "MON" and the string "sunday" to SUN in the POST data
+# sent to PHP.
+&lt;Directory "/var/www/docs/sed"&gt; 
+    AddInputFilter Sed php 
+    InputSed "s/monday/MON/g" 
+    InputSed "s/sunday/SUN/g" 
+&lt;/Directory&gt; 
+        </pre>
+
     </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">

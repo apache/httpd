@@ -412,14 +412,15 @@ expr=<var>expression</var>]</code></td></tr>
     <p>For example, the following two sets of directives have
     exactly the same effect:</p>
 
-    <div class="example"><p><code>
-      # CustomLog with format nickname<br />
-      LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br />
-      CustomLog logs/access_log common<br />
-      <br />
-      # CustomLog with explicit format string<br />
-      CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+# CustomLog with format nickname
+LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
+CustomLog logs/access_log common
+
+# CustomLog with explicit format string
+CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"
+    </pre>
+
 
     <p>The third argument is optional and controls whether or
     not to log a particular request. The condition can be the
@@ -436,19 +437,21 @@ expr=<var>expression</var>]</code></td></tr>
     images on your server in a separate logfile but not in your main
     log, you can use:</p>
 
-    <div class="example"><p><code>
-      SetEnvIf Request_URI \.gif$ gif-image<br />
-      CustomLog gif-requests.log common env=gif-image<br />
-      CustomLog nongif-requests.log common env=!gif-image
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+SetEnvIf Request_URI \.gif$ gif-image
+CustomLog gif-requests.log common env=gif-image
+CustomLog nongif-requests.log common env=!gif-image
+    </pre>
+
 
     <p>Or, to reproduce the behavior of the old RefererIgnore
     directive, you might use the following:</p>
 
-    <div class="example"><p><code>
-    SetEnvIf Referer example\.com localreferer<br />
-    CustomLog referer.log referer env=!localreferer
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+SetEnvIf Referer example\.com localreferer
+CustomLog referer.log referer env=!localreferer
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -492,8 +495,12 @@ expr=<var>expression</var>]</code></td></tr>
     percent signs (<code>%</code>).</p>
 
     <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost_common
+      </pre>
+
     </code></p></div>
+    
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -515,8 +522,11 @@ expr=<var>expression</var>]</code></td></tr>
     other format has been specified.</p>
 
     <div class="example"><h3>Example</h3><p><code>
-      LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""<br />
-      TransferLog logs/access_log
+    <pre class="prettyprint lang-config">
+LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""
+TransferLog logs/access_log
+      </pre>
+
     </code></p></div>
 
 </div>
