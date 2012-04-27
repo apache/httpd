@@ -264,7 +264,9 @@ using the specified magic file</description>
     server's file.</p>
 
     <example><title>Example</title>
+    <highlight language="config">
       MimeMagicFile conf/magic
+      </highlight>
     </example>
 </usage>
 </directivesynopsis>
