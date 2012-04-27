@@ -128,7 +128,7 @@ var prettyPrint;
   var ALL_KEYWORDS = [
       CPP_KEYWORDS, CSHARP_KEYWORDS, JSCRIPT_KEYWORDS, PERL_KEYWORDS +
       PYTHON_KEYWORDS, RUBY_KEYWORDS, SH_KEYWORDS, CONFIG_KEYWORDS];
-  var C_TYPES = /^(DIR|FILE|vector|(de|priority_)?queue|list|stack|(const_)?iterator|(multi)?(set|map)|bitset|u?(int|float|char|void|const|static|struct)\d*(_t)?)|[a-z_]+_rec|cmd_parms\b/;
+  var C_TYPES = /^(DIR|FILE|vector|(de|priority_)?queue|list|stack|(const_)?iterator|(multi)?(set|map)|bitset|u?(int|float|char|void|const|static|struct)\d*(_t)?\b)|[a-z_]+_rec|cmd_parms\b/;
 
   // token style names.  correspond to css classes
   /**
