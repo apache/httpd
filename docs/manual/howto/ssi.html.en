@@ -80,9 +80,10 @@ existing HTML documents.</p>
     <p>To permit SSI on your server, you must have the following
     directive either in your <code>httpd.conf</code> file, or in a
     <code>.htaccess</code> file:</p>
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
         Options +Includes
-</code></p></div>
+</pre>
+
 
     <p>This tells Apache that you want to permit files to be parsed
     for SSI directives.  Note that most configurations contain
