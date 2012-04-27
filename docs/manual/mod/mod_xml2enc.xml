@@ -132,7 +132,7 @@ module for earlier versions.</compatibility>
     information, you can set this default to help mod_xml2enc process
     the data correctly.  For example, to work with the default value
     of Latin1 (<var>iso-8859-1</var> specified in HTTP/1.0, use</p>
-    <example>xml2EncDefault iso-8859-1</example>
+    <highlight language="config">xml2EncDefault iso-8859-1</highlight>
 </usage>
 </directivesynopsis>
 
