@@ -355,8 +355,10 @@ RewriteRule (.*?[A-Z]+.*) ${lc:$1} [R]
 
     <p>A simple example is shown here which will replace all dashes with
     underscores in a request URI.</p>
+    
+<strong>Rewrite configuration</strong>
+    <highlight language="config">
 
-    <highlight language="config"><strong>#Rewrite configuration</strong>
 RewriteMap d2u prg:/www/bin/dash2under.pl<br />
 RewriteRule - ${d2u:%{REQUEST_URI}}
     </highlight>
