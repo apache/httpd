@@ -169,7 +169,10 @@
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
     <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       CacheFile /usr/local/apache/htdocs/index.html
+      </pre>
+
     </code></p></div>
 
 </div>
@@ -199,7 +202,10 @@
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
     <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       MMapFile /usr/local/apache/htdocs/index.html
+      </pre>
+
     </code></p></div>
 
 </div>

@@ -77,30 +77,26 @@ delivery to the client</td></tr>
 <h2><a name="examples" id="examples">Examples</a></h2>
 
     <h3>Generating HTML from some other type of response</h3>
-      <div class="example"><p><code>
-        # mod_ext_filter directive to define a filter<br />
-        # to HTML-ize text/c files using the external<br />
-        # program /usr/bin/enscript, with the type of<br />
-        # the result set to text/html<br />
-        ExtFilterDefine c-to-html mode=output \<br />
-        <span class="indent">
-          intype=text/c outtype=text/html \<br />
-          cmd="/usr/bin/enscript --color -W html -Ec -o - -"<br />
-        </span>
-        <br />
-        &lt;Directory "/export/home/trawick/apacheinst/htdocs/c"&gt;<br />
-        <span class="indent">
-          # core directive to cause the new filter to<br />
-          # be run on output<br />
-          SetOutputFilter c-to-html<br />
-          <br />
-          # mod_mime directive to set the type of .c<br />
-          # files to text/c<br />
-          AddType text/c .c<br />
-          <br />
-        </span>
-        &lt;/Directory&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+# mod_ext_filter directive to define a filter
+# to HTML-ize text/c files using the external
+# program /usr/bin/enscript, with the type of
+# the result set to text/html
+ExtFilterDefine c-to-html mode=output \
+    intype=text/c outtype=text/html \
+    cmd="/usr/bin/enscript --color -W html -Ec -o - -"
+
+&lt;Directory "/export/home/trawick/apacheinst/htdocs/c"&gt;
+    # core directive to cause the new filter to
+    # be run on output
+    SetOutputFilter c-to-html
+    
+    # mod_mime directive to set the type of .c
+    # files to text/c
+    AddType text/c .c
+&lt;/Directory&gt;
+      </pre>
+
     
 
     <h3>Implementing a content encoding filter</h3>
@@ -108,116 +104,104 @@ delivery to the client</td></tr>
       Please refer to <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> for a practical
       implementation.</p>
 
-      <div class="example"><p><code>
-        # mod_ext_filter directive to define the external filter<br />
-        ExtFilterDefine gzip mode=output cmd=/bin/gzip<br />
-        <br />
-        &lt;Location /gzipped&gt;<br />
-        <span class="indent">
-          # core directive to cause the gzip filter to be<br />
-          # run on output<br />
-          SetOutputFilter gzip<br />
-          <br />
-          # mod_header directive to add<br />
-          # "Content-Encoding: gzip" header field<br />
-          Header set Content-Encoding gzip<br />
-        </span>
-        &lt;/Location&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+# mod_ext_filter directive to define the external filter
+ExtFilterDefine gzip mode=output cmd=/bin/gzip
+
+&lt;Location /gzipped&gt;
+    
+    # core directive to cause the gzip filter to be
+    # run on output
+    SetOutputFilter gzip
+    
+    # mod_header directive to add
+    # "Content-Encoding: gzip" header field
+    Header set Content-Encoding gzip
+&lt;/Location&gt;
+      </pre>
+
     
 
     <h3>Slowing down the server</h3>
-      <div class="example"><p><code>
-        # mod_ext_filter directive to define a filter<br />
-        # which runs everything through cat; cat doesn't<br />
-        # modify anything; it just introduces extra pathlength<br />
-        # and consumes more resources<br />
-        ExtFilterDefine slowdown mode=output cmd=/bin/cat \<br />
-        <span class="indent">
-          preservescontentlength<br />
-        </span>
-        <br />
-        &lt;Location /&gt;<br />
-        <span class="indent">
-          # core directive to cause the slowdown filter to<br />
-          # be run several times on output<br />
-          #<br />
-          SetOutputFilter slowdown;slowdown;slowdown<br />
-        </span>
-        &lt;/Location&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+# mod_ext_filter directive to define a filter
+# which runs everything through cat; cat doesn't
+# modify anything; it just introduces extra pathlength
+# and consumes more resources
+ExtFilterDefine slowdown mode=output cmd=/bin/cat \
+    preservescontentlength
+
+&lt;Location /&gt;
+    # core directive to cause the slowdown filter to
+    # be run several times on output
+    #
+    SetOutputFilter slowdown;slowdown;slowdown
+&lt;/Location&gt;
+      </pre>
+
     
 
     <h3>Using sed to replace text in the response</h3>
-      <div class="example"><p><code>
-        # mod_ext_filter directive to define a filter which<br />
-        # replaces text in the response<br />
-        #<br />
-        ExtFilterDefine fixtext mode=output intype=text/html \<br />
-        <span class="indent">
-          cmd="/bin/sed s/verdana/arial/g"<br />
-        </span>
-        <br />
-        &lt;Location /&gt;<br />
-        <span class="indent">
-          # core directive to cause the fixtext filter to<br />
-          # be run on output<br />
-          SetOutputFilter fixtext<br />
-        </span>
-        &lt;/Location&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+# mod_ext_filter directive to define a filter which
+# replaces text in the response
+#
+ExtFilterDefine fixtext mode=output intype=text/html \
+    cmd="/bin/sed s/verdana/arial/g"
+
+&lt;Location /&gt;
+    # core directive to cause the fixtext filter to
+    # be run on output
+    SetOutputFilter fixtext
+&lt;/Location&gt;
+      </pre>
+
     
 
     <h3>Tracing another filter</h3>
-      <div class="example"><p><code>
-        # Trace the data read and written by mod_deflate<br />
-        # for a particular client (IP 192.168.1.31)<br />
-        # experiencing compression problems.<br />
-        # This filter will trace what goes into mod_deflate.<br />
-        ExtFilterDefine tracebefore \<br />
-        <span class="indent">
-          cmd="/bin/tracefilter.pl /tmp/tracebefore" \<br />
-          EnableEnv=trace_this_client<br />
-        </span>
-        <br />
-        # This filter will trace what goes after mod_deflate.<br />
-        # Note that without the ftype parameter, the default<br />
-        # filter type of AP_FTYPE_RESOURCE would cause the<br />
-        # filter to be placed *before* mod_deflate in the filter<br />
-        # chain.  Giving it a numeric value slightly higher than<br />
-        # AP_FTYPE_CONTENT_SET will ensure that it is placed<br />
-        # after mod_deflate.<br />
-        ExtFilterDefine traceafter \<br />
-        <span class="indent">
-          cmd="/bin/tracefilter.pl /tmp/traceafter" \<br />
-          EnableEnv=trace_this_client ftype=21<br />
-        </span>
-        <br />
-        &lt;Directory /usr/local/docs&gt;<br />
-        <span class="indent">
-          SetEnvIf Remote_Addr 192.168.1.31 trace_this_client<br />
-          SetOutputFilter tracebefore;deflate;traceafter<br />
-        </span>
-        &lt;/Directory&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+# Trace the data read and written by mod_deflate
+# for a particular client (IP 192.168.1.31)
+# experiencing compression problems.
+# This filter will trace what goes into mod_deflate.
+ExtFilterDefine tracebefore \
+    cmd="/bin/tracefilter.pl /tmp/tracebefore" \
+    EnableEnv=trace_this_client
+
+# This filter will trace what goes after mod_deflate.
+# Note that without the ftype parameter, the default
+# filter type of AP_FTYPE_RESOURCE would cause the
+# filter to be placed *before* mod_deflate in the filter
+# chain.  Giving it a numeric value slightly higher than
+# AP_FTYPE_CONTENT_SET will ensure that it is placed
+# after mod_deflate.
+ExtFilterDefine traceafter \
+    cmd="/bin/tracefilter.pl /tmp/traceafter" \
+    EnableEnv=trace_this_client ftype=21
+
+&lt;Directory /usr/local/docs&gt;
+    SetEnvIf Remote_Addr 192.168.1.31 trace_this_client
+    SetOutputFilter tracebefore;deflate;traceafter
+&lt;/Directory&gt;
+      </pre>
+
 
       <div class="example"><h3>Here is the filter which traces the data:</h3><p><code>
-        #!/usr/local/bin/perl -w<br />
-        use strict;<br />
-        <br />
-        open(SAVE, "&gt;$ARGV[0]")<br />
-        <span class="indent">
-          or die "can't open $ARGV[0]: $?";<br />
-        </span>
-        <br />
-        while (&lt;STDIN&gt;) {<br />
-        <span class="indent">
-          print SAVE $_;<br />
-          print $_;<br />
-        </span>
-        }<br />
-        <br />
-        close(SAVE);
+      <pre class="prettyprint lang-perl">
+#!/usr/local/bin/perl -w
+use strict;
+
+open(SAVE, "&gt;$ARGV[0]")
+    or die "can't open $ARGV[0]: $?";
+
+while (&lt;STDIN&gt;) {
+    print SAVE $_;
+    print $_;
+}
+
+close(SAVE);
+        </pre>
+
       </code></p></div>
     
 </div>
@@ -344,9 +328,10 @@ delivery to the client</td></tr>
       filter is removed and the request continues without it.</dd>
     </dl>
 
-    <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       ExtFilterOptions LogStderr
-    </code></p></div>
+    </pre>
+
 
     <p>Messages written to the filter's standard error will be stored
     in the Apache error log.</p>
