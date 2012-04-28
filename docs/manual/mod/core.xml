@@ -609,8 +609,8 @@ headers</description>
     (shared memory, locks, etc.). If set as a relative path, the full path
     will be relative to <directive>ServerRoot</directive></p>
 
+    <p><strong>Example</strong></p>
    <highlight language="config">
-#Example
 DefaultRuntimeDir scratch/
     </highlight>
 
@@ -791,7 +791,7 @@ named file-system directory, sub-directories, and their contents.</description>
 
     <highlight language="config">
 &lt;Directory ~ "abc$"&gt;
-# ... directives here ...
+  # ... directives here ...
 &lt;/Directory&gt;
     </highlight>
 
@@ -933,10 +933,10 @@ satisfied by a request at runtime</description>
 
     <highlight language="config">
 &lt;If "-z req('Host')"&gt;
-# ...
+  # ...
 &lt;/If&gt;
 &lt;Else&gt;
-# ...
+  # ...
 &lt;/Else&gt;
     </highlight>
 
@@ -3685,11 +3685,11 @@ to name-virtual hosts</description>
 
     <highlight language="config">
 &lt;VirtualHost *:80&gt;
-ServerName server.example.com
-ServerAlias server server2.example.com server2
-ServerAlias *.example.com
-UseCanonicalName Off
-# ...
+  ServerName server.example.com
+  ServerAlias server server2.example.com server2
+  ServerAlias *.example.com
+  UseCanonicalName Off
+  # ...
 &lt;/VirtualHost&gt;
     </highlight>
 
