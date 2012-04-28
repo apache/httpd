@@ -3,6 +3,10 @@
 
 Changes with Apache 2.4.3
 
+  *) log_server_status: Bring Perl style forward to the present, use
+     standard modules, update for new format of server-status output.
+     PR 45424. [Richard Bowen, Dave Brondsema, and others]
+
   *) mod_sed, mod_log_debug: Symbol namespace cleanups. [Joe Orton]
 
   *) core: Prevent "httpd -k restart" from killing server in presence of
