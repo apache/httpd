@@ -893,7 +893,7 @@ var REGEXP_PRECEDER_PATTERN = '(?:^^\\.?|[+-]|[!=]=?=?|\\#|%=?|&&?=?|\\(|\\*=?|[
         // TODO(mikesamuel): recognize non-latin letters and numerals in idents
         [PR_LITERAL,     /^@[a-z_$][a-z_$@0-9]*|\bNULL\b/i, null],
         [PR_LITERAL,     CONFIG_OPTIONS, null],
-        [PR_TAG,     /^\b(RequireAny|RequireAll|RequireNone|Directory|DirectoryMatch|Location|LocationMatch|VirtualHost|If|Else|ElseIf|Proxy\b|LoadBalancer|Files|FilesMatch|Limit|LimitExcept|IfDefine|IfModule|IfVersion)\b/i, null],
+        [PR_TAG,     /^\b(RequireAny|RequireAll|RequireNone|Directory|DirectoryMatch|Location|LocationMatch|VirtualHost|If|Else|ElseIf|Proxy\b|LoadBalancer|Files|FilesMatch|Limit|LimitExcept|IfDefine|IfModule|IfVersion)\b/, null],
         [PR_TYPE,        /^(?:[@_]?[A-Z]+[a-z][A-Za-z_$@0-9]*|\w+_(t|req)\b)/, null],
         [PR_TAG,     /^apr_[a-z_0-9]+|ap_[a-z_0-9]+/i, null],
         [PR_PLAIN,       /^[a-z_$][a-z_$@0-9]*/i, null],
