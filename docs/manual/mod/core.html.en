@@ -1769,7 +1769,11 @@ filenames</td></tr>
     does. However, it accepts a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular
     expression</a>. For example:</p>
 
-    <pre class="prettyprint lang-config">&lt;FilesMatch "\.(gif|jpe?g|png)$"&gt;</pre>
+<pre class="prettyprint lang-config">
+&lt;FilesMatch "\.(gif|jpe?g|png)$"&gt;
+    # ...
+&lt;/FilesMatch&gt;
+</pre>
 
 
     <p>would match most common Internet graphics formats.</p>

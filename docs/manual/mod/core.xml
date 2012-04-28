@@ -1701,7 +1701,11 @@ filenames</description>
     does. However, it accepts a <glossary ref="regex">regular
     expression</glossary>. For example:</p>
 
-    <highlight language="config">&lt;FilesMatch "\.(gif|jpe?g|png)$"&gt;</highlight>
+<highlight language="config">
+&lt;FilesMatch "\.(gif|jpe?g|png)$"&gt;
+    # ...
+&lt;/FilesMatch&gt;
+</highlight>
 
     <p>would match most common Internet graphics formats.</p>
 </usage>
