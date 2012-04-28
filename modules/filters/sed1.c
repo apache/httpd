@@ -25,7 +25,7 @@
 #include "apr_strings.h"
 #include "regexp.h"
 
-char    *trans[040]  = {
+static const char *const trans[040]  = {
     "\\01",
     "\\02",
     "\\03",
@@ -58,7 +58,7 @@ char    *trans[040]  = {
     "\\36",
     "\\37"
 };
-char rub[] = {"\\177"};
+static const char rub[] = {"\\177"};
 
 extern int sed_step(char *p1, char *p2, int circf, step_vars_storage *vars);
 static int substitute(sed_eval_t *eval, sed_reptr_t *ipc,
@@ -692,7 +692,8 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
                             step_vars_storage *step_vars)
 {
     int    i;
-    char   *p1, *p2, *p3;
+    char   *p1, *p2;
+    const char *p3;
     int length;
     char sz[32]; /* 32 bytes enough to store 64 bit integer in decimal */
     apr_status_t rv = APR_SUCCESS;

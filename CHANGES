@@ -3,6 +3,8 @@
 
 Changes with Apache 2.4.3
 
+  *) mod_sed, mod_log_debug: Symbol namespace cleanups. [Joe Orton]
+
   *) core: Prevent "httpd -k restart" from killing server in presence of
      config error. [Joe Orton]
 
