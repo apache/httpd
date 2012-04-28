@@ -1120,7 +1120,7 @@ ProxyPass / balancer://hotcluster/
 &lt;Proxy balancer://hotcluster&gt;
     BalancerMember ajp://1.2.3.4:8009 loadfactor=1
     BalancerMember ajp://1.2.3.5:8009 loadfactor=2
-    # The below is the hot standby
+    # The server below is on hot standby
     BalancerMember ajp://1.2.3.6:8009 status=+H
     ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;
