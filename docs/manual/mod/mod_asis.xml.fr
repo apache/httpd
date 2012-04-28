@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1036315:1330911 (outdated) -->
+<!-- English Revision : 1330911 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -54,7 +54,7 @@ d'Apache httpd</a></seealso>
     <p>Dans le fichier de configuration, associez les fichiers asis au
     gestionnaire <code>send-as-is</code> comme ceci :</p>
 
-    <example>AddHandler send-as-is asis</example>
+    <highlight language="config">AddHandler send-as-is asis</highlight>
 
     <p>Le contenu de tout fichier poss&eacute;dant l'extension
     <code>.asis</code> sera envoy&eacute; par Apache httpd au client pratiquement tel

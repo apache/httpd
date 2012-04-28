@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1180828:1331227 (outdated) -->
+<!-- English Revision : 1331227 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -47,10 +47,10 @@ de caract&eacute;ristiques de la requ&ecirc;te</description>
     exemple qui d&eacute;finit netscape si le navigateur est Mozilla et non
     MSIE.</p>
 
-<example>
-  BrowserMatch ^Mozilla netscape<br />
-  BrowserMatch MSIE !netscape<br />
-</example>
+<highlight language="config">
+BrowserMatch ^Mozilla netscape
+BrowserMatch MSIE !netscape
+</highlight>
 </summary>
 
 <seealso><a href="../env.html">Les variables d'environnement et le
@@ -74,17 +74,17 @@ contenu de l'en-t&ecirc;te HTTP User-Agent</description>
   d'environnement en fonction du contenu de l'en-t&ecirc;te de requ&ecirc;te HTTP
   <code>User-Agent</code>. Les deux lignes suivantes produisent le m&ecirc;me
   effet :</p>
-<example>
-   BrowserMatchNoCase Robot est_un_robot<br />
-   SetEnvIfNoCase User-Agent Robot est_un_robot<br />
-</example>
+<highlight language="config">
+BrowserMatchNoCase Robot is_a_robot
+SetEnvIfNoCase User-Agent Robot is_a_robot
+</highlight>
 
     <p>Quelques exemples suppl&eacute;mentaires :</p>
-<example>
-    BrowserMatch ^Mozilla forms jpeg=yes browser=netscape<br />
-    BrowserMatch "^Mozilla/[2-3]" tables agif frames javascript<br />
-    BrowserMatch MSIE !javascript<br />
-</example>
+<highlight language="config">
+BrowserMatch ^Mozilla forms jpeg=yes browser=netscape
+BrowserMatch "^Mozilla/[2-3]" tables agif frames javascript
+BrowserMatch MSIE !javascript
+</highlight>
 </usage>
 </directivesynopsis>
 
@@ -106,20 +106,20 @@ casse</description>
     identique sur le plan s&eacute;mantique &agrave; la directive <directive
     module="mod_setenvif">BrowserMatch</directive>. Elle permet
     cependant une comparaison insensible &agrave; la casse. Par exemple :</p>
-<example>
-    BrowserMatchNoCase mac platform=macintosh<br />
-    BrowserMatchNoCase win platform=windows<br />
-</example>
+<highlight language="config">
+BrowserMatchNoCase mac platform=macintosh
+BrowserMatchNoCase win platform=windows
+</highlight>
 
     <p>Les directives <directive>BrowserMatch</directive> et
     <directive>BrowserMatchNoCase</directive> sont des cas particuliers
     des directives <directive module="mod_setenvif">SetEnvIf</directive>
     et <directive module="mod_setenvif">SetEnvIfNoCase</directive>.
     Ainsi, les deux lignes suivantes produisent le m&ecirc;me effet :</p>
-<example>
-   BrowserMatchNoCase Robot est_un_robot<br />
-   SetEnvIfNoCase User-Agent Robot est_un_robot<br />
-</example>
+<highlight language="config">
+BrowserMatchNoCase Robot is_a_robot
+SetEnvIfNoCase User-Agent Robot is_a_robot
+</highlight>
 </usage>
 </directivesynopsis>
 
@@ -222,18 +222,17 @@ peuvent se pr&eacute;senter sous les formes suivantes :</p>
     sous-expressions entre parenth&egrave;ses correspondantes de
     <var>regex</var>.</p>
 
-<example>
-<title>Example:</title>
-   SetEnvIf Request_URI "\.gif$" objet_est_une_image=gif<br />
-   SetEnvIf Request_URI "\.jpg$" objet_est_une_image=jpg<br />
-   SetEnvIf Request_URI "\.xbm$" objet_est_une_image=xbm<br />
-        :<br />
-   SetEnvIf Referer www\.mon-domaine\.example\.com r&eacute;f&eacute;rant_intra_site<br />
-        :<br />
-   SetEnvIf objet_est_une_image xbm XBIT_PROCESSING=1<br />
-        :<br />
-   SetEnvIf ^TS  ^[a-z]  HAVE_TS<br />
-</example>
+<highlight language="config">
+SetEnvIf Request_URI "\.gif$" object_is_image=gif
+SetEnvIf Request_URI "\.jpg$" object_is_image=jpg
+SetEnvIf Request_URI "\.xbm$" object_is_image=xbm
+    
+SetEnvIf Referer www\.mydomain\.example\.com intra_site_referral
+    
+SetEnvIf object_is_image xbm XBIT_PROCESSING=1
+    
+SetEnvIf ^TS  ^[a-z]  HAVE_TS
+</highlight>
 
     <p>Les trois premi&egrave;res lignes d&eacute;finissent la variable
     d'environnement <code>objet_est_une_image</code> si l'objet de la
@@ -273,9 +272,9 @@ serveur HTTP Apache</a> pour des exemples suppl&eacute;mentaires.
     d'environnement <em>env-variable</em> de la m&ecirc;me mani&egrave;re que la
     directive <directive>SetEnvIf</directive>.</p>
 
-<example>
+<highlight language="config">
     SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered
-</example>
+</highlight>
 
     <p>Dans cet exemple, la variable d'environnement
     <code>iso_delivered</code> est d&eacute;finie chaque fois que notre
@@ -285,9 +284,9 @@ serveur HTTP Apache</a> pour des exemples suppl&eacute;mentaires.
     l'adresse IP distante est une adresse priv&eacute;e au sens de la RFC 1918
     :</p>
 
-<example>
+<highlight language="config">
     SetEnvIfExpr "-R '10.0.0.0/8' || -R '172.16.0.0/12' || -R '192.168.0.0/16'" rfc1918
-</example>
+</highlight>
 </usage>
 
 <seealso><a href="../expr.html">Les expressions dans le serveur HTTP
@@ -316,9 +315,9 @@ attributs de la requ&ecirc;te sans tenir compte de la casse</description>
     module="mod_setenvif">SetEnvIf</directive>, et ne s'en distingue que
     par le fait que la comparaison des expressions rationnelles est
     effectu&eacute;e sans tenir compte de la casse. Par exemple :</p>
-<example>
+<highlight language="config">
    SetEnvIfNoCase Host Example\.Org site=apache
-</example>
+</highlight>
 
     <p>Cette ligne va d&eacute;finir la variable d'environnement
     <code>site</code> avec la valeur "<code>example</code>" si le champ
