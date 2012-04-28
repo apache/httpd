@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1326216:1330277 (outdated) -->
+<!-- English Revision : 1330277 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -86,9 +86,9 @@ modifier la configuration du serveur au niveau de chaque r&eacute;pertoire.</p>
       <code>.config</code>, vous pouvez mettre ceci dans le fichier de
       configuration de votre serveur :</p>
 
-      <example>
+      <highlight language="config">
         AccessFileName .config
-      </example>
+      </highlight>
     </note>
 
     <p>En g&eacute;n&eacute;ral, les fichiers <code>.htaccess</code> utilisent la m&ecirc;me
@@ -238,16 +238,16 @@ modifier la configuration du serveur au niveau de chaque r&eacute;pertoire.</p>
 
     <example><title>Contenu du fichier .htaccess dans
     <code>/www/htdocs/exemple</code></title>
-    	AddType text/exemple .exm
+    	<highlight language="config">AddType text/example .exm</highlight>
     </example>
 
     <example><title>Section de votre fichier
     <code>httpd.conf</code></title>
-      &lt;Directory /www/htdocs/exemple&gt;<br />
-      <indent>
-        AddType text/exemple .exm<br />
-      </indent>
-      &lt;/Directory&gt;
+      <highlight language="config">
+&lt;Directory /www/htdocs/example&gt;<br />
+    AddType text/example .exm<br />
+&lt;/Directory&gt;
+    </highlight>
     </example>
 
     <p>Cependant, la perte de performances sera moindre si vous
@@ -260,9 +260,7 @@ modifier la configuration du serveur au niveau de chaque r&eacute;pertoire.</p>
     enti&egrave;rement d&eacute;sactiv&eacute;e en d&eacute;finissant la directive <directive
     module="core">AllowOverride</directive> &agrave; <code>none</code> :</p>
 
-    <example>
-      AllowOverride None
-    </example>
+    <highlight language="config">AllowOverride None</highlight>
 </section>
 
 <section id="how"><title>Comment sont appliqu&eacute;es les directives ?</title>
@@ -287,9 +285,7 @@ modifier la configuration du serveur au niveau de chaque r&eacute;pertoire.</p>
     <p>Dans le r&eacute;pertoire <code>/www/htdocs/exemple1</code> se trouve un
     fichier <code>.htaccess</code> contenant ce qui suit :</p>
 
-    <example>
-       Options +ExecCGI
-    </example>
+    <highlight language="config">Options +ExecCGI</highlight>
 
     <p>Note : "<code>AllowOverride Options</code>" doit &ecirc;tre pr&eacute;sent
     pour permettre l'utilisation de la directive "<directive
@@ -300,9 +296,7 @@ modifier la configuration du serveur au niveau de chaque r&eacute;pertoire.</p>
     trouve un fichier <code>.htaccess</code> contenant ce qui suit
     :</p>
 
-    <example>
-       Options Includes
-    </example>
+    <highlight language="config">Options Includes</highlight>
 
     <p>Ainsi, &agrave; cause de ce second fichier <code>.htaccess</code> du
     r&eacute;pertoire <code>/www/htdocs/exemple1/exemple2</code>, l'ex&eacute;cution
@@ -327,19 +321,15 @@ modifier la configuration du serveur au niveau de chaque r&eacute;pertoire.</p>
     d&eacute;finition de toute autre option dans les fichiers
     <code>.htaccess</code>, vous pouvez utiliser :</p>
 
-    <example>
-&lt;Directory /www/htdocs&gt;<br />
-<indent>
-Allowoverride All<br />
-</indent>
-&lt;/Directory&gt;<br />
-<br />
-&lt;Location /&gt;<br />
-<indent>
-Options +IncludesNoExec -ExecCGI<br />
-</indent>
+    <highlight language="config">
+&lt;Directory /www/htdocs&gt;
+    Allowoverride All
+&lt;/Directory&gt;
+
+&lt;Location /&gt;
+    Options +IncludesNoExec -ExecCGI<br />
 &lt;/Location&gt;
-    </example>
+    </highlight>
 
     <note>Dans cet exemple, on consid&egrave;re que le chemin d&eacute;fini par la
     directive <directive module="core">DocumentRoot</directive> est
@@ -370,13 +360,13 @@ Options +IncludesNoExec -ExecCGI<br />
 
     <p>Contenu du fichier <code>.htaccess</code> :</p>
 
-    <example>
-      AuthType Basic<br />
-      AuthName "Password Required"<br />
-      AuthUserFile /www/passwords/password.file<br />
-      AuthGroupFile /www/passwords/group.file<br />
-      Require Group admins
-    </example>
+    <highlight language="config">
+AuthType Basic
+AuthName "Password Required"
+AuthUserFile /www/passwords/password.file
+AuthGroupFile /www/passwords/group.file
+Require Group admins
+    </highlight>
 
     <p>Notez que <code>AllowOverride AuthConfig</code> doit &ecirc;tre pr&eacute;sent
     pour que ces directives produisent leur effet.</p>
@@ -395,11 +385,11 @@ Includes - SSI)</title>
     plac&eacute;es dans un fichier <code>.htaccess</code> enregistr&eacute; dans le
     r&eacute;pertoire consid&eacute;r&eacute; :</p>
 
-    <example>
-       Options +Includes<br />
-       AddType text/html shtml<br />
-       AddHandler server-parsed shtml
-    </example>
+    <highlight language="config">
+Options +Includes
+AddType text/html shtml
+AddHandler server-parsed shtml
+    </highlight>
 
     <p>Notez que <code>AllowOverride Options</code> et <code>AllowOverride
     FileInfo</code> doivent &ecirc;tre tous les deux pr&eacute;sents pour que ces
@@ -416,19 +406,19 @@ Includes - SSI)</title>
     dans un r&eacute;pertoire particulier. Pour y parvenir, vous pouvez
     utiliser la configuration suivante :</p>
 
-    <example>
-       Options +ExecCGI<br />
-       AddHandler cgi-script cgi pl
-    </example>
+    <highlight language="config">
+Options +ExecCGI
+AddHandler cgi-script cgi pl
+    </highlight>
 
     <p>Alternativement, si vous souhaitez que tous les fichiers d'un
     r&eacute;pertoire donn&eacute; soient consid&eacute;r&eacute;s comme des programmes CGI, vous
     pouvez utiliser la configuration suivante :</p>
 
-    <example>
-       Options +ExecCGI<br />
-       SetHandler cgi-script
-    </example>
+    <highlight language="config">
+Options +ExecCGI
+SetHandler cgi-script
+    </highlight>
 
     <p>Notez que <code>AllowOverride Options</code> et <code>AllowOverride
     FileInfo</code> doivent &ecirc;tre tous les deux pr&eacute;sents pour que ces

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1305167:1330964 (outdated) -->
+<!-- English Revision: 1330964 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -97,9 +97,9 @@ seront stock&eacute;s</description>
     d&eacute;finir la structure des sous-r&eacute;pertoires du r&eacute;pertoire racine
     sp&eacute;cifi&eacute;.</p>
 
-    <example>
+    <highlight language="config">
       CacheRoot c:/cacheroot
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -179,9 +179,9 @@ sous-r&eacute;pertoires</description>
     d&eacute;finir la taille minimale d'un document, en octets, pour que
     celui-ci puisse faire l'objet d'un stockage dans le cache.</p>
 
-    <example>
+    <highlight language="config">
       CacheMinFileSize 64
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -200,9 +200,9 @@ sous-r&eacute;pertoires</description>
     d&eacute;finir la taille maximale d'un document, en octets, pour que
     celui-ci puisse faire l'objet d'un stockage dans le cache.</p>
 
-    <example>
+    <highlight language="config">
       CacheMaxFileSize 64000
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 <directivesynopsis>
@@ -232,9 +232,9 @@ mettre en cache avant de les envoyer au client</description>
     enregistr&eacute;es dans le cache, et non lorsque les donn&eacute;es sont servies &agrave;
     partir du cache.</p>
   
-    <example>
+    <highlight language="config">
       CacheReadSize 102400
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -268,9 +268,9 @@ avant d'envoyer les donn&eacute;es au client</description>
     que le serveur n'effectue pas une mise en tampon excessive au cas
     o&ugrave; les donn&eacute;es arriveraient plus vite que pr&eacute;vu.</p>
 
-    <example>
+    <highlight language="config">
       CacheReadTime 1000
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 

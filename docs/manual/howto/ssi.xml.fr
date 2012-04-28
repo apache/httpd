@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1174747:1331486 (outdated) -->
+<!-- English Revision : 1331486 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -87,9 +87,9 @@ HTML pr&eacute;existants.</p>
     devez ajouter la directive suivante dans votre fichier
     <code>httpd.conf</code>, ou dans un fichier <code>.htaccess</code>
     :</p>
-<example>
+<highlight language="config">
         Options +Includes
-</example>
+</highlight>
 
     <p>Cette directive indique &agrave; Apache que vous d&eacute;sirez permettre la
     recherche de directives SSI lors de l'interpr&eacute;tation des fichiers.
@@ -104,10 +104,10 @@ HTML pr&eacute;existants.</p>
     directives SSI. Vous devez indiquer &agrave; Apache quels fichiers seront
     concern&eacute;s. Vous pouvez y parvenir en indiquant une extension, comme
     <code>.shtml</code>, &agrave; l'aide des directives suivantes :</p>
-<example>
+<highlight language="config">
         AddType text/html .shtml<br />
         AddOutputFilter INCLUDES .shtml
-</example>
+</highlight>
 
     <p>Un des d&eacute;savantages de cette approche r&eacute;side dans le fait que si
     vous voulez ajouter des directives SSI &agrave; une page pr&eacute;existante, vous
@@ -118,9 +118,9 @@ HTML pr&eacute;existants.</p>
 
     <p>Une autre m&eacute;thode consiste &agrave; utiliser la directive <directive
     module="mod_include">XBitHack</directive> :</p>
-<example>
+<highlight language="config">
         XBitHack on
-</example>
+</highlight>
 
     <p>La directive <directive module="mod_include">XBitHack</directive>
     indique &agrave; Apache qu'il doit rechercher des directivves SSI dans les
@@ -446,10 +446,10 @@ HTML pr&eacute;existants.</p>
 
     <p>Vous pouvez ajouter les lignes suivantes dans votre fichier de
     configuration :</p>
-<example>
+<highlight language="config">
         BrowserMatchNoCase macintosh Mac<br />
         BrowserMatchNoCase MSIE InternetExplorer
-</example>
+</highlight>
 
     <p>Ces lignes d&eacute;finissent les variables d'environnement "Mac" et
     "InternetExplorer" &agrave; true, si le client utilise InternetExplorer sur

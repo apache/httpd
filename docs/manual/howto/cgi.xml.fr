@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1174747:1331576 (outdated) -->
+<!-- English Revision : 1331576 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -67,9 +67,9 @@
     comment&eacute;e dans votre <code>httpd.conf</code>. Une directive correcte
     doit ressembler &agrave; ceci :
 
-    <example>
+    <highlight language="config">
       LoadModule cgi_module modules/mod_cgi.so
-    </example></note>
+    </highlight></note>
 
     <section id="scriptalias">
       <title>ScriptAlias</title>
@@ -85,9 +85,9 @@
       module="mod_alias">ScriptAlias</directive> se pr&eacute;sente comme suit
       :</p>
 
-      <example>
+      <highlight language="config">
         ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/
-      </example>
+      </highlight>
 
       <p>Cet exemple est tir&eacute; de votre fichier de configuration
       <code>httpd.conf</code> par d&eacute;faut, si vous avez install&eacute; Apache
@@ -158,13 +158,11 @@
       l'ex&eacute;cution des programmes CGI est permise depuis un r&eacute;pertoire
       particulier :</p>
 
-      <example>
-        &lt;Directory /usr/local/apache2/htdocs/un-repertoire&gt;<br />
-        <indent>
-          Options +ExecCGI<br />
-        </indent>
-        &lt;/Directory&gt;
-      </example>
+      <highlight language="config">
+&lt;Directory /usr/local/apache2/htdocs/somedir&gt;
+    Options +ExecCGI
+&lt;/Directory&gt;
+      </highlight>
 
       <p>La directive ci-dessus indique &agrave; Apache qu'il doit permettre
       l'ex&eacute;cution des fichiers CGI. Vous devez aussi indiquer au serveur
@@ -174,9 +172,9 @@
       extension <code>cgi</code> ou <code>pl</code> en tant que
       programmes CGI :</p>
 
-      <example>
+      <highlight language="config">
         AddHandler cgi-script .cgi .pl
-      </example>
+      </highlight>
     </section>
 
     <section id="htaccess">
@@ -196,27 +194,23 @@
       r&eacute;pertoire utilisateur, vous pouvez utiliser la configuration
       suivante :</p>
 
-      <example>
-      &lt;Directory /home/*/public_html&gt;<br/>
-      <indent>
-        Options +ExecCGI<br/>
-        AddHandler cgi-script .cgi<br/>
-      </indent>
-      &lt;/Directory&gt;
-      </example>
+      <highlight language="config">
+&lt;Directory /home/*/public_html&gt;
+    Options +ExecCGI
+    AddHandler cgi-script .cgi
+&lt;/Directory&gt;
+      </highlight>
 
       <p>Pour indiquer un sous-r&eacute;pertoire <code>cgi-bin</code> d'un
       r&eacute;pertoire utilisateur o&ugrave; tout fichier sera trait&eacute; en tant que
       programme CGI, vous pouvez utiliser ceci :</p>
 
-      <example>
-      &lt;Directory /home/*/public_html/cgi-bin&gt;<br/>
-      <indent>
-        Options ExecCGI<br/>
-        SetHandler cgi-script<br/>
-      </indent>
-      &lt;/Directory&gt;
-      </example>
+      <highlight language="config">
+&lt;Directory /home/*/public_html/cgi-bin&gt;
+    Options ExecCGI
+    SetHandler cgi-script
+&lt;/Directory&gt;
+      </highlight>
 
     </section>
 
@@ -258,7 +252,7 @@
       <highlight language="perl">
 #!/usr/bin/perl
 print "Content-type: text/html\n\n";
-print "Bonjour tout le monde . . .";
+print "Hello, World.";
       </highlight>
 
       <p>M&ecirc;me si Perl ne vous est pas familier, vous devriez &ecirc;tre
@@ -374,9 +368,9 @@ print "Bonjour tout le monde . . .";
       trouve &agrave; la premi&egrave;re ligne de votre programme CGI et qui va
       ressembler &agrave; ceci :</p>
 
-      <example>
+      <highlight language="perl">
         #!/usr/bin/perl
-      </example>
+      </highlight>
 
       <p>Assurez-vous qu'il s'agit bien du chemin correct vers
       l'interpr&eacute;teur.</p>
@@ -535,7 +529,7 @@ print "Bonjour tout le monde . . .";
 #!/usr/bin/perl
 print "Content-type: text/html\n\n";
 foreach $key (keys %ENV) {
-  print "$key --&gt; $ENV{$key}&lt;br&gt;";
+    print "$key --&gt; $ENV{$key}&lt;br&gt;";
 }
       </highlight>
     </section>

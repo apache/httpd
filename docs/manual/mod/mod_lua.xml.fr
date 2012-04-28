@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1238738:1331691 (outdated) -->
+<!-- English Revision : 1331691 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -58,18 +58,18 @@ jour.</note>
 
 <p>La directive de base pour le chargement du module est</p>
 
-<example>
+<highlight language="config">
     LoadModule lua_module modules/mod_lua.so
-</example>
+</highlight>
 
 <p>
 <code>mod_lua</code> fournit un gestionnaire nomm&eacute;
 <code>lua-script</code> qui peut &ecirc;tre utilis&eacute; avec une directive
 <code>AddHandler</code> :</p>
 
-<example>
+<highlight language="config">
 AddHandler lua-script .lua
-</example>
+</highlight>
 
 <p>
 Ceci aura pour effet de faire traiter les requ&ecirc;tes pour les fichiers
@@ -347,28 +347,26 @@ end
         <p>La structure request_rec poss&egrave;de (au minimum) les m&eacute;thodes
 	suivantes :</p>
 
-        <example>
+        <highlight language="lua">
         r:addoutputfilter(name|function) -- ajoute un filtre en sortie
-        </example>
+        </highlight>
 
-        <example>
-	r:parseargs() -- renvoie une table lua contenant les arguments
-	de la cha&icirc;ne de param&egrave;tres de la requ&ecirc;te
-        </example>
+        <highlight language="lua">
+        r:parseargs() -- returns a lua table containing the request's query string arguments
+        </highlight>
 
-        <example>
-        r:parsebody() -- interpr&egrave;te le corps de la requ&ecirc;te en tant que
-	m&eacute;thode POST et renvoie une table lua
-        </example>
+        <highlight language="lua">
+        r:parsebody() -- parse the request body as a POST and return  a lua table
+        </highlight>
 
-        <example>
+        <highlight language="lua">
         r:puts("bonjour", " le monde", "!") -- affichage dans le corps de la r&eacute;ponse
-        </example>
+        </highlight>
 
-	<example>
+	<highlight language="lua">
         r:write("une simple cha&icirc;ne") -- affichage dans le
 	corps de la r&eacute;ponse
-        </example>
+        </highlight>
         </dd>
     </dl>
 
@@ -488,16 +486,18 @@ par d&eacute;faut est once</description>
     Prenez garde aux probl&egrave;mes de s&eacute;curit&eacute; en &eacute;crivant vos expressions
     rationnelles.</p>
    <example><title>Exemples :</title>
-    LuaMapHandler /(\w+)/(/w+) /scripts/$1.lua handle_$2
+    <highlight language="config">
+    LuaMapHandler /(\w+)/(\w+) /scripts/$1.lua handle_$2
+    </highlight>
    </example>
         <p>Cette directive va faire correspondre des uri comme
 	/photos/show?id=9 au fichier /scripts/photos.lua, et invoquera la
 	fonction de gestionnaire handle_show au niveau de la vm lua
 	apr&egrave;s chargement de ce fichier.</p>
 
-<example>
+<highlight language="config">
     LuaMapHandler /bingo /scripts/wombat.lua
-</example>
+</highlight>
         <p>Cette directive invoquera la fonction "handle" qui est la
 	valeur par d&eacute;faut si aucun nom de fonction sp&eacute;cifique n'est
 	sp&eacute;cifi&eacute;.</p>
@@ -517,8 +517,10 @@ par d&eacute;faut est once</description>
     que lua. Ceci modifie le package.path dans les vms lua.</p>
 
     <example><title>Exemples :</title>
-        LuaPackagePath /scripts/lib/?.lua<br />
-        LuaPackagePath /scripts/lib/?/init.lua
+        <highlight language="config">
+LuaPackagePath /scripts/lib/?.lua
+LuaPackagePath /scripts/lib/?/init.lua
+    </highlight>
     </example>
 </usage>
 </directivesynopsis>
@@ -565,9 +567,11 @@ par d&eacute;faut est once</description>
     en d&eacute;veloppement.</p>
 
     <example><title>Exemples :</title>
-        LuaCodeCache stat<br />
-        LuaCodeCache forever<br />
-        LuaCodeCache never<br />
+        <highlight language="config">
+LuaCodeCache stat
+LuaCodeCache forever
+LuaCodeCache never
+    </highlight>
     </example>
 
 </usage>
@@ -602,11 +606,11 @@ version 2.3.15 du serveur HTTP Apache.</compatibility>
 
     <p>Exemple :</p>
 
-<example><pre>
+<highlight language="config">
 # httpd.conf
 LuaHookTranslateName /scripts/conf/hooks.lua silly_mapper
-</pre></example>
- 
+</highlight>
+
 <highlight language="lua">
 -- /scripts/conf/hooks.lua --
 require "apache2"

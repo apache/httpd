@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1174747:1330277 (outdated) -->
+<!-- English Revision : 1330277 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -77,9 +77,7 @@ avec le syst&egrave;me de fichiers</a></seealso>
     interpr&eacute;t&eacute; comme chemin relatif au r&eacute;pertoire home de l'utilisateur
     consid&eacute;r&eacute;. Par exemple, avec cette configuration :</p>
 
-    <example>
-      UserDir public_html
-    </example>
+    <highlight language="config">UserDir public_html</highlight>
 
     <p>l'URL <code>http://example.com/~rbowen/fichier.html</code>
     correspondra au chemin fichier
@@ -89,9 +87,7 @@ avec le syst&egrave;me de fichiers</a></seealso>
     sera construit en utilisant ce chemin, suivi du nom de l'utilisateur
     consid&eacute;r&eacute;. Par exemple, avec cette configuration :</p>
 
-    <example>
-      UserDir /var/html
-    </example>
+    <highlight language="config">UserDir /var/html</highlight>
 
     <p>l'URL <code>http://example.com/~rbowen/fichier.html</code>
     correspondra au chemin fichier
@@ -101,9 +97,7 @@ avec le syst&egrave;me de fichiers</a></seealso>
     remplac&eacute; par le nom de l'utilisateur dans le chemin du fichier
     correspondant. Par exemple, avec cette configuration :</p>
 
-    <example>
-      UserDir /var/www/*/docs
-    </example>
+    <highlight language="config">UserDir /var/www/*/docs</highlight>
 
     <p>l'URL <code>http://example.com/~rbowen/fichier.html</code>
     correspondra au chemin fichier
@@ -112,9 +106,7 @@ avec le syst&egrave;me de fichiers</a></seealso>
     <p>On peut aussi d&eacute;finir plusieurs r&eacute;pertoires ou chemins de
     r&eacute;pertoires.</p>
 
-    <example>
-      UserDir public_html /var/html
-    </example>
+    <highlight language="config">UserDir public_html /var/html</highlight>
 
     <p>Avec l'URL <code>http://example.com/~rbowen/fichier.html</code>,
     Apache va rechercher <code>~rbowen</code>. S'il ne le trouve pas,
@@ -130,9 +122,7 @@ avec le syst&egrave;me de fichiers</a></seealso>
     module="mod_userdir">UserDir</directive> pour rediriger les requ&ecirc;tes
     relatives aux r&eacute;pertoires utilisateurs vers des URLs externes.</p>
 
-    <example>
-      UserDir http://exemple.org/users/*/
-    </example>
+    <highlight language="config">UserDir http://example.org/users/*/</highlight>
 
     <p>L'exemple ci-dessus va rediriger une requ&ecirc;te pour
     <code>http://example.com/~bob/abc.html</code> vers
@@ -147,9 +137,7 @@ avec le syst&egrave;me de fichiers</a></seealso>
     vous pouvez d&eacute;finir quels utilisateurs sont autoris&eacute;s &agrave; utiliser
     cette fonctionnalit&eacute; :</p>
 
-    <example>
-      UserDir disabled root jro fish
-    </example>
+    <highlight language="config">UserDir disabled root jro fish</highlight>
 
     <p>La configuration ci-dessus va autoriser l'utilisation de la
     fonctionnalit&eacute; pour tous les utilisateurs, &agrave; l'exception de ceux
@@ -158,10 +146,10 @@ avec le syst&egrave;me de fichiers</a></seealso>
     utilisateurs sauf certains d'entre eux en utilisant une
     configuration du style :</p>
 
-    <example>
+    <highlight language="config">
       UserDir disabled<br />
       UserDir enabled rbowen krietz
-    </example>
+    </highlight>
 
     <p>Vous trouverez d'autres exemples dans la documentation de
     <directive module="mod_userdir">UserDir</directive>.</p>
@@ -176,12 +164,12 @@ avec le syst&egrave;me de fichiers</a></seealso>
    type="section">Directory</directive> pour activer CGI dans un
    sous-r&eacute;pertoire particulier d'un r&eacute;pertoire home utilisateur.</p>
 
-    <example>
-      &lt;Directory /home/*/public_html/cgi-bin/&gt;<br />
-       Options ExecCGI<br />
-       SetHandler cgi-script<br />
-       &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory /home/*/public_html/cgi-bin/&gt;
+    Options ExecCGI
+    SetHandler cgi-script
+&lt;/Directory&gt;
+    </highlight>
 
     <p>Avec la configuration ci-dessus, et en supposant que
     <code>UserDir</code> est d&eacute;fini &agrave; <code>public_html</code>, un
