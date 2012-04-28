@@ -112,15 +112,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4 patch: Trunk patch works
     +1: rbowen, jim
 
-  * cross-compile: allow to provide CC_FOR_BUILD so that gen_test_char will be
-    compiled by the build compiler instead of the host compiler.
-    Also set CC_FOR_BUILD to 'cc' when cross-compilation is detected.
-    Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1327907
-                   http://svn.apache.org/viewvc?view=revision&revision=1328390
-                   http://svn.apache.org/viewvc?view=revision&revision=1328714
-    2.4 patch: http://people.apache.org/~fuankg/diffs/httpd-2.4.x-cross_compile.diff
-    +1: fuankg
-
   * core: Prevent "httpd -k restart" from killing server in presence of config error.
     trunk patch: http://svn.apache.org/viewvc?rev=1328345&view=rev
     2.4 patch: trunk patch works
@@ -139,6 +130,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4 patch: trunk works => http://people.apache.org/~jorton/httpd-2.4.2-dummytls.patch
     +1: jorton , jim
 
+
 PATCHES/ISSUES THAT ARE STALLED
+
+  * cross-compile: allow to provide CC_FOR_BUILD so that gen_test_char will be
+    compiled by the build compiler instead of the host compiler.
+    Also set CC_FOR_BUILD to 'cc' when cross-compilation is detected.
+    Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1327907
+                   http://svn.apache.org/viewvc?view=revision&revision=1328390
+                   http://svn.apache.org/viewvc?view=revision&revision=1328714
+    2.4 patch: http://people.apache.org/~fuankg/diffs/httpd-2.4.x-cross_compile.diff
+    fuankg: on hold until we agree for a better and more simple solution ...
 
 
