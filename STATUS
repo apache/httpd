@@ -165,8 +165,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   * mod_proxy_ajp: Missing support for ErrorOverride
     Trunk patch: http://svn.apache.org/viewvc?rev=1087864&view=rev
-	2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=27976
-	+1: igalic, jim
+    2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=27976
+    +1: igalic, jim
     rpluem says: The proposed patch contains tabs and indenting is not correct.
                  This should be fixed first.
 
@@ -193,17 +193,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Backport version for 2.2.x of patch:
        http://people.apache.org/~rpluem/patches/forcerecovery_2.2.diff
     +1: rpluem,
-
-  * cross-compile: allow to provide CC_FOR_BUILD so that gen_test_char will be
-    compiled by the build compiler instead of the host compiler.
-    Also set CC_FOR_BUILD to 'cc' when cross-compilation is detected.
-    Since PCRE is included with 2.2.x this patch also takes care for dftables.
-    Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1327907
-                   http://svn.apache.org/viewvc?view=revision&revision=1328390
-                   http://svn.apache.org/viewvc?view=revision&revision=1328714
-    2.4 patch: http://people.apache.org/~fuankg/diffs/httpd-2.4.x-cross_compile.diff
-    2.2 patch: http://people.apache.org/~fuankg/diffs/httpd-2.2.x-cross_compile.diff
-    +1: fuankg
 
 
 PATCHES/ISSUES THAT ARE STALLED
@@ -357,3 +346,16 @@ PATCHES/ISSUES THAT ARE STALLED
     -0 covener: feels like a 2.4 feature && needs druggeri's vote?
     sf agrees with covener. This can cause segfaults with some directives,
        see r1153676, r1153687.
+
+  * cross-compile: allow to provide CC_FOR_BUILD so that gen_test_char will be
+    compiled by the build compiler instead of the host compiler.
+    Also set CC_FOR_BUILD to 'cc' when cross-compilation is detected.
+    Since PCRE is included with 2.2.x this patch also takes care for dftables.
+    Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1327907
+                   http://svn.apache.org/viewvc?view=revision&revision=1328390
+                   http://svn.apache.org/viewvc?view=revision&revision=1328714
+    2.4 patch: http://people.apache.org/~fuankg/diffs/httpd-2.4.x-cross_compile.diff
+    2.2 patch: http://people.apache.org/~fuankg/diffs/httpd-2.2.x-cross_compile.diff
+    fuankg: on hold until we agree for a better and more simple solution ...
+
+
