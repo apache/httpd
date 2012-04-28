@@ -826,7 +826,11 @@ named file-system directory, sub-directories, and their contents.</td></tr>
     expressions</a> can also be used, with the addition of the
     <code>~</code> character. For example:</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory ~ "^/www/.*/[0-9]{3}"&gt;</pre>
+    <pre class="prettyprint lang-config">
+&lt;Directory ~ "^/www/.*/[0-9]{3}"&gt;
+
+&lt;/Directory&gt;
+</pre>
 
 
     <p>would match directories in <code>/www/</code> that consisted of
@@ -930,7 +934,11 @@ the contents of file-system directories matching a regular expression.</td></tr>
     However, it takes as an argument a
     <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>.  For example:</p>
 
-    <pre class="prettyprint lang-config">&lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}"&gt;</pre>
+    <pre class="prettyprint lang-config">
+&lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}"&gt;
+    # ...
+&lt;/DirectoryMatch&gt;
+</pre>
 
 
     <p>would match directories in <code>/www/</code> that consisted of three
@@ -1722,7 +1730,11 @@ filenames</td></tr>
     can also be used, with the addition of the
     <code>~</code> character. For example:</p>
 
-    <pre class="prettyprint lang-config">&lt;Files ~ "\.(gif|jpe?g|png)$"&gt;</pre>
+    <pre class="prettyprint lang-config">
+&lt;Files ~ "\.(gif|jpe?g|png)$"&gt;
+    #...
+&lt;/Files&gt;
+</pre>
 
 
     <p>would match most common Internet graphics formats. <code class="directive"><a href="#filesmatch">&lt;FilesMatch&gt;</a></code> is preferred,
@@ -2603,7 +2615,8 @@ URLs</td></tr>
     </p>
     <pre class="prettyprint lang-config">
 &lt;Location /private1&gt;
-#  ...
+    #  ...
+&lt;/Location&gt;
     </pre>
 
     <p>
@@ -2613,7 +2626,8 @@ URLs</td></tr>
     </p>
     <pre class="prettyprint lang-config">
 &lt;Location /private2<em>/</em>&gt;
-# ...
+    # ...
+&lt;/Location&gt;
     </pre>
 
 
@@ -2641,7 +2655,11 @@ URLs</td></tr>
     can also be used, with the addition of the <code>~</code>
     character. For example:</p>
 
-    <pre class="prettyprint lang-config">&lt;Location ~ "/(extra|special)/data"&gt;</pre>
+    <pre class="prettyprint lang-config">
+&lt;Location ~ "/(extra|special)/data"&gt;
+    #...
+&lt;/Location&gt;
+</pre>
 
 
     <p>would match URLs that contained the substring <code>/extra/data</code>
@@ -2708,7 +2726,11 @@ matching URLs</td></tr>
     it takes a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>
     as an argument instead of a simple string. For example:</p>
 
-    <pre class="prettyprint lang-config">&lt;LocationMatch "/(extra|special)/data"&gt;</pre>
+    <pre class="prettyprint lang-config">
+&lt;LocationMatch "/(extra|special)/data"&gt;
+    # ...
+&lt;/LocationMatch&gt;
+</pre>
 
 
     <p>would match URLs that contained the substring <code>/extra/data</code>
