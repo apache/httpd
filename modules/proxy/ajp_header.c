@@ -139,7 +139,7 @@ static const unsigned char sc_for_req_method_table[] = {
     SC_M_PUT,
     SC_M_POST,
     SC_M_DELETE,
-    0,                      /* M_DELETE */
+    0,                      /* M_CONNECT */
     SC_M_OPTIONS,
     SC_M_TRACE,
     0,                      /* M_PATCH  */
