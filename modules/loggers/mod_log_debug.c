@@ -35,8 +35,8 @@ typedef struct {
     apr_array_header_t *entries;
 } log_debug_dirconf;
 
-const char *allhooks = "all";
-const char * const hooks[] = {
+static const char *allhooks = "all";
+static const char * const hooks[] = {
     "log_transaction",      /*  0 */
     "quick_handler",        /*  1 */
     "handler",              /*  2 */

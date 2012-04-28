@@ -95,13 +95,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4 patch: Trunk patch works
     +1: rbowen, jim, sf
 
-  * mod_sed, mod_log_debug: Symbol namespace cleanups.
-    trunk patches: http://svn.apache.org/viewvc?rev=1326980&view=rev
-                   http://svn.apache.org/viewvc?rev=1326984&view=rev
-                   http://svn.apache.org/viewvc?rev=1326991&view=rev
-    2.4 patch: trunk works => http://people.apache.org/~jorton/httpd-2.4.1-symbols.patch
-    +1: jorton , jim, sf
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
