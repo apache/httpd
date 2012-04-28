@@ -95,11 +95,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4 patch: Trunk patch works
     +1: rbowen, jim, sf
 
-  * core: Prevent "httpd -k restart" from killing server in presence of config error.
-    trunk patch: http://svn.apache.org/viewvc?rev=1328345&view=rev
-    2.4 patch: trunk patch works
-    +1: jorton, jim, sf
- 
   * mod_sed, mod_log_debug: Symbol namespace cleanups.
     trunk patches: http://svn.apache.org/viewvc?rev=1326980&view=rev
                    http://svn.apache.org/viewvc?rev=1326984&view=rev
