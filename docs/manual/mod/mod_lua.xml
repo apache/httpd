@@ -461,7 +461,7 @@ end
     issues.</p>
    <example><title>Examples:</title>
    <highlight language="config">
-    LuaMapHandler /(\w+)/(/w+) /scripts/$1.lua handle_$2
+    LuaMapHandler /(\w+)/(\w+) /scripts/$1.lua handle_$2
     </highlight>
    </example>
         <p>This would match uri's such as /photos/show?id=9
