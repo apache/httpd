@@ -742,7 +742,11 @@ named file-system directory, sub-directories, and their contents.</description>
     expressions</glossary> can also be used, with the addition of the
     <code>~</code> character. For example:</p>
 
-    <highlight language="config">&lt;Directory ~ "^/www/.*/[0-9]{3}"&gt;</highlight>
+    <highlight language="config">
+&lt;Directory ~ "^/www/.*/[0-9]{3}"&gt;
+
+&lt;/Directory&gt;
+</highlight>
 
     <p>would match directories in <code>/www/</code> that consisted of
     three numbers.</p>
@@ -844,7 +848,11 @@ the contents of file-system directories matching a regular expression.</descript
     However, it takes as an argument a
     <glossary ref="regex">regular expression</glossary>.  For example:</p>
 
-    <highlight language="config">&lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}"&gt;</highlight>
+    <highlight language="config">
+&lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}"&gt;
+    # ...
+&lt;/DirectoryMatch&gt;
+</highlight>
 
     <p>would match directories in <code>/www/</code> that consisted of three
     numbers.</p>
@@ -1653,7 +1661,11 @@ filenames</description>
     can also be used, with the addition of the
     <code>~</code> character. For example:</p>
 
-    <highlight language="config">&lt;Files ~ "\.(gif|jpe?g|png)$"&gt;</highlight>
+    <highlight language="config">
+&lt;Files ~ "\.(gif|jpe?g|png)$"&gt;
+    #...
+&lt;/Files&gt;
+</highlight>
 
     <p>would match most common Internet graphics formats. <directive
     module="core" type="section">FilesMatch</directive> is preferred,
@@ -2527,7 +2539,8 @@ URLs</description>
     </p>
     <highlight language="config">
 &lt;Location /private1&gt;
-#  ...
+    #  ...
+&lt;/Location&gt;
     </highlight>
     <p>
     In the example below, where a trailing slash is used, requests to
@@ -2536,7 +2549,8 @@ URLs</description>
     </p>
     <highlight language="config">
 &lt;Location /private2<em>/</em>&gt;
-# ...
+    # ...
+&lt;/Location&gt;
     </highlight>
 
     <note><title>When to use <directive
@@ -2566,7 +2580,11 @@ URLs</description>
     can also be used, with the addition of the <code>~</code>
     character. For example:</p>
 
-    <highlight language="config">&lt;Location ~ "/(extra|special)/data"&gt;</highlight>
+    <highlight language="config">
+&lt;Location ~ "/(extra|special)/data"&gt;
+    #...
+&lt;/Location&gt;
+</highlight>
 
     <p>would match URLs that contained the substring <code>/extra/data</code>
     or <code>/special/data</code>. The directive <directive
@@ -2633,7 +2651,11 @@ matching URLs</description>
     it takes a <glossary ref="regex">regular expression</glossary>
     as an argument instead of a simple string. For example:</p>
 
-    <highlight language="config">&lt;LocationMatch "/(extra|special)/data"&gt;</highlight>
+    <highlight language="config">
+&lt;LocationMatch "/(extra|special)/data"&gt;
+    # ...
+&lt;/LocationMatch&gt;
+</highlight>
 
     <p>would match URLs that contained the substring <code>/extra/data</code>
     or <code>/special/data</code>.</p>
