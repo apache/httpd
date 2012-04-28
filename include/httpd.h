@@ -595,7 +595,7 @@ AP_DECLARE(const char *) ap_get_server_built(void);
 #define M_MKACTIVITY            23
 #define M_BASELINE_CONTROL      24
 #define M_MERGE                 25
-#define M_INVALID               26      /** RFC 3253: WebDAV Versioning */
+#define M_INVALID               26      /** no valid method */
 
 /**
  * METHODS needs to be equal to the number of bits
