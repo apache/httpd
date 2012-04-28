@@ -691,7 +691,7 @@ end
     be careful writing your regular expressions to avoid security
     issues.</p>
    <div class="example"><h3>Examples:</h3><pre class="prettyprint lang-config">
-    LuaMapHandler /(\w+)/(/w+) /scripts/$1.lua handle_$2
+    LuaMapHandler /(\w+)/(\w+) /scripts/$1.lua handle_$2
     </pre>
 </div>
         <p>This would match uri's such as /photos/show?id=9
