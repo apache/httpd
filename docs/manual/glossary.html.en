@@ -368,7 +368,7 @@
       be written as "<code>/images/.*(jpg|gif)$</code>".  In places where
       regular expressions are used to replace strings, the special variables
       $1 ... $9 contain backreferences to the grouped parts (in parentheses) of
-      the matched expression. The special variable $0 contains a backerference
+      the matched expression. The special variable $0 contains a backreference
       to the whole matched expression. To write a literal dollar sign in a
       replacement string, it can be escaped with a backslash. Historically, the
       variable &amp; could be used as alias for $0 in some places. This is no
