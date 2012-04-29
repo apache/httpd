@@ -169,7 +169,7 @@ ServerName other.example.com
     address associated with your server.</p>
 
     <p>Name-based virtual hosts for the best-matching set of  <directive
-    type="section" module="core">virtualhost</directive>s are processsed 
+    type="section" module="core">virtualhost</directive>s are processed 
     in the order they appear in the configuration.  The first matching <directive
     module="core">ServerName</directive> or <directive module="core"
     >ServerAlias</directive> is used, with no different precedence for wildcards
