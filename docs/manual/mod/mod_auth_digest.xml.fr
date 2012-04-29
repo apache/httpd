@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1300935:1330911 (outdated) -->
+<!-- English Revision : 1330911 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -61,17 +61,17 @@ condens&eacute;s</title>
     texte) &agrave; l'aide de l'outil <program>htdigest</program>.</p>
 
     <example><title>Exemple :</title>
-      &lt;Location /private/&gt;<br />
-      <indent>
-        AuthType Digest<br />
-        AuthName "private area"<br />
-        AuthDigestDomain /private/ http://mirror.my.dom/private2/<br />
-        <br />
-        AuthDigestProvider file<br />
-        AuthUserFile /web/auth/.digest_pw<br />
-        Require valid-user<br />
-      </indent>
-      &lt;/Location&gt;
+      <highlight language="config">
+&lt;Location /private/&gt;
+    AuthType Digest
+    AuthName "private area"
+    AuthDigestDomain /private/ http://mirror.my.dom/private2/
+    
+    AuthDigestProvider file
+    AuthUserFile /web/auth/.digest_pw
+    Require valid-user
+&lt;/Location&gt;
+      </highlight>
     </example>
 
     <note><title>Note</title>
@@ -127,7 +127,9 @@ condens&eacute;s</title>
 
     <example><title>Utilisation de l'authentification &agrave; base de condens&eacute;
     avec MSIE :</title>
-    BrowserMatch "MSIE" AuthDigestEnableQueryStringHack=On
+    <highlight language="config">
+        BrowserMatch "MSIE" AuthDigestEnableQueryStringHack=On
+    </highlight>
     </example>
 
     <p>Cette correction n'est pas n&eacute;cessaire avec MSIE 7, bien que son
@@ -375,11 +377,11 @@ les informations &agrave; propos des clients</description>
     M&eacute;gaOctets. Par exemple, les directives qui suivent sont toutes
     &eacute;quivalentes :</p>
 
-    <example>
-      AuthDigestShmemSize 1048576<br />
-      AuthDigestShmemSize 1024K<br />
-      AuthDigestShmemSize 1M
-    </example>
+    <highlight language="config">
+AuthDigestShmemSize 1048576
+AuthDigestShmemSize 1024K
+AuthDigestShmemSize 1M
+    </highlight>
 </usage>
 </directivesynopsis>
 

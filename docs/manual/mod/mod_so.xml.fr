@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1174747:1331227 (outdated) -->
+<!-- English Revision : 1331227 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -160,7 +160,7 @@ sp&eacute;cifi&eacute;</description>
 
     <p>Par exemple:</p>
 
-    <example>LoadFile libexec/libxmlparse.so</example>
+    <highlight language="config">LoadFile libexec/libxmlparse.so</highlight>
 
 </usage>
 </directivesynopsis>
@@ -184,9 +184,9 @@ actifs</description>
     href="module-dict.html#ModuleIdentifier">Identificateur de
     module</a> dans la documentation des modules. Exemple :</p>
 
-    <example>
+    <highlight language="config">
       LoadModule status_module modules/mod_status.so
-    </example>
+    </highlight>
 
     <p>charge le module sp&eacute;cifi&eacute; depuis le sous-r&eacute;pertoire des modules
     situ&eacute; &agrave; la racine du serveur.</p>
