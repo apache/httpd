@@ -1071,13 +1071,13 @@ satisfied</td></tr>
 
     <pre class="prettyprint lang-config">
 &lt;If "-R '10.1.0.0/16'"&gt;
-#...
+  #...
 &lt;/If&gt;
 &lt;ElseIf "-R '10.0.0.0/8'"&gt;
-#...
+  #...
 &lt;/ElseIf&gt;
 &lt;Else&gt;
-#...
+  #...
 &lt;/Else&gt;
     </pre>
 
@@ -1334,7 +1334,7 @@ ErrorDocument 404 /cgi-bin/bad_urls.pl
     error rather than masking it.  More information is available in
     Microsoft Knowledge Base article <a href="http://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807">Q294807</a>.</p>
 
-    <p>Although most error messages can be overriden, there are certain
+    <p>Although most error messages can be overridden, there are certain
     circumstances where the internal messages are used regardless of the
     setting of <code class="directive"><a href="#errordocument">ErrorDocument</a></code>.  In
     particular, if a malformed request is detected, normal request processing
@@ -1442,11 +1442,11 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
     example, the Referer header is only present if the log message is
     associated to a request and the log message happens at a time when the
     Referer header has already been read from the client.  If no output is
-    produced, the default behavior is to delete everything from the preceeding
+    produced, the default behavior is to delete everything from the preceding
     space character to the next space character.  This means the log line is
     implicitly divided into fields on non-whitespace to whitespace transitions.
     If a format string item does not produce output, the whole field is
-    ommitted.  For example, if the remote address <code>%a</code> in the log
+    omitted.  For example, if the remote address <code>%a</code> in the log
     format <code>[%t] [%l] [%a] %M&nbsp;</code> is not available, the surrounding
     brackets are not logged either.  Space characters can be escaped with a
     backslash to prevent them from delimiting a field.  The combination '%&nbsp;'
@@ -1458,7 +1458,7 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
     respective item does not produce any output. In once-per-connection/request
     formats, it is also possible to use the <code>+</code> (plus) modifier. If an
     item with the plus modifier does not produce any output, the whole line is
-    ommitted.</p>
+    omitted.</p>
 
     <p>A number as modifier can be used to assign a log severity level to a
     format item. The item will only be logged if the severity of the log
@@ -1568,7 +1568,7 @@ ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\ %a] %M%&nbsp;
     [Thu May 12 08:28:57.652118 2011] [core:error] [pid 8777:tid 4326490112] [client ::1:58619] File does not exist: /usr/local/apache2/htdocs/favicon.ico
     </code></p></div>
 
-    <p>Notice that, as discussed above, some fields are ommitted
+    <p>Notice that, as discussed above, some fields are omitted
     entirely because they are not defined.</p>
 
     <pre class="prettyprint lang-config">
@@ -1847,7 +1847,7 @@ media type in the HTTP Content-Type header field</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-    <p>When the server has been compiled with gprof profiling suppport,
+    <p>When the server has been compiled with gprof profiling support,
     <code class="directive">GprofDir</code> causes <code>gmon.out</code> files to
     be written to the specified directory when the process exits.  If the
     argument ends with a percent symbol ('%'), subdirectories are created
@@ -3784,7 +3784,7 @@ to name-virtual hosts</td></tr>
     </pre>
 
 
-    <p>Name-based virtual hosts for the best-matching set of  <code class="directive"><a href="#virtualhost">&lt;virtualhost&gt;</a></code>s are processsed
+    <p>Name-based virtual hosts for the best-matching set of  <code class="directive"><a href="#virtualhost">&lt;virtualhost&gt;</a></code>s are processed
     in the order they appear in the configuration.  The first matching <code class="directive"><a href="#servername">ServerName</a></code> or <code class="directive"><a href="#serveralias">ServerAlias</a></code> is used, with no different precedence for wildcards
     (nor for ServerName vs. ServerAlias).  </p>
 
