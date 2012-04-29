@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1174747:1331215 (outdated) -->
+<!-- English Revision : 1331215 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -185,9 +185,9 @@ contenu</a></seealso>
     <code>type-map</code> via une directive <directive
     module="mod_mime">AddHandler</directive> :</p>
 
-    <example>
+    <highlight language="config">
     AddHandler type-map .var
-    </example>
+    </highlight>
 
     <p>A l'arriv&eacute;e d'une requ&ecirc;te pour la ressource
     <code>document.html</code>, le fichier
@@ -271,10 +271,10 @@ n'est pas trouv&eacute;</description>
     premi&egrave;re variante acceptable de langue <code>en</code> qui sera
     servie.</p>
 
-    <example>
-      LanguagePriority en fr de<br />
-      ForceLanguagePriority Prefer
-    </example>
+    <highlight language="config">
+LanguagePriority en fr de
+ForceLanguagePriority Prefer
+    </highlight>
 
     <p><code>ForceLanguagePriority Fallback</code> utilise la directive
     <directive module="mod_negotiation">LanguagePriority</directive>
@@ -286,10 +286,10 @@ n'est pas trouv&eacute;</description>
     liste d&eacute;finie par la directive <directive module="mod_negotiation"
     >LanguagePriority</directive> qui sera servie.</p>
 
-    <example>
-      LanguagePriority en fr de<br />
-      ForceLanguagePriority Fallback
-    </example>
+    <highlight language="config">
+LanguagePriority en fr de
+ForceLanguagePriority Fallback
+    </highlight>
 
     <p>Les deux options, <code>Prefer</code> et <code>Fallback</code>,
     peuvent &ecirc;tre sp&eacute;cifi&eacute;es, de fa&ccedil;on &agrave; ce que la variante servie soit
@@ -320,9 +320,9 @@ cas o&ugrave; le client n'a pas formul&eacute; de pr&eacute;f&eacute;rences</des
     <var>langages-MIME</var> dans un ordre de pr&eacute;f&eacute;rences
     d&eacute;croissantes.</p>
 
-    <example><title>Exemple:</title>
+    <highlight language="config">
       LanguagePriority en fr de
-    </example>
+    </highlight>
 
     <p>Dans le cas d'une requ&ecirc;te pour <code>foo.html</code>, si
     <code>foo.html.fr</code> et <code>foo.html.de</code> existent, et si
