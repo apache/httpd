@@ -155,7 +155,7 @@ ServerName other.example.com
     first have your DNS server properly configured to map those names to an IP
     address associated with your server.</p>
 
-    <p>Name-based virtual hosts for the best-matching set of  <code class="directive"><a href="../mod/core.html#virtualhost">&lt;virtualhost&gt;</a></code>s are processsed 
+    <p>Name-based virtual hosts for the best-matching set of  <code class="directive"><a href="../mod/core.html#virtualhost">&lt;virtualhost&gt;</a></code>s are processed 
     in the order they appear in the configuration.  The first matching <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> or <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code> is used, with no different precedence for wildcards
     (nor for ServerName vs. ServerAlias).  </p>
 
