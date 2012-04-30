@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_so: If a filename without slashes is specified for LoadFile or
+     LoadModule and the file cannot be found in the server root directory,
+     try to use the standard dlopen() search path. [Stefan Fritsch]
+
   *) various modules, rotatelogs: Replace use of apr_file_write() with
      apr_file_write_full() to prevent incomplete writes. PR 53131.
      [Nicolas Viennot <apache viennot biz>, Stefan Fritsch]
