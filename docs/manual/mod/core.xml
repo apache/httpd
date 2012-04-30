@@ -1135,18 +1135,18 @@ version 2.3.9.</compatibility>
 # Example
 # ensure that mod_include is loaded
 &lt;IfModule !include_module&gt;
-  Error mod_include is required by mod_foo.  Load it with LoadModule.
+  Error "mod_include is required by mod_foo.  Load it with LoadModule."
 &lt;/IfModule&gt;
 
 # ensure that exactly one of SSL,NOSSL is defined
 &lt;IfDefine SSL&gt;
 &lt;IfDefine NOSSL&gt;
-  Error Both SSL and NOSSL are defined.  Define only one of them.
+  Error "Both SSL and NOSSL are defined.  Define only one of them."
 &lt;/IfDefine&gt;
 &lt;/IfDefine&gt;
 &lt;IfDefine !SSL&gt;
 &lt;IfDefine !NOSSL&gt;
-  Error Either SSL or NOSSL must be defined.
+  Error "Either SSL or NOSSL must be defined."
 &lt;/IfDefine&gt;
 &lt;/IfDefine&gt;
     </highlight>
