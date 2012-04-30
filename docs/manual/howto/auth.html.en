@@ -437,7 +437,7 @@ person in</a></h2>
     AuthType Basic<br />
     AuthBasicProvider file<br />
     AuthUserFile /usr/local/apache/passwd/passwords<br />
-    AuthLDAPURL ldap://ldaphost/o=yourorg
+    AuthLDAPURL ldap://ldaphost/o=yourorg<br />
     AuthGroupFile /usr/local/apache/passwd/groups<br />
     Require group GroupName<br />
     Require ldap-group cn=mygroup,o=yourorg<br />
