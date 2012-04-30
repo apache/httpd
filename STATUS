@@ -114,19 +114,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patches: http://svn.apache.org/viewvc?rev=1225798&view=rev
                    http://svn.apache.org/viewvc?rev=1225799&view=rev
     2.4 patch: http://people.apache.org/~sf/mod_info-show-providers.diff
-    +1: sf
+    +1: sf, jorton
 
   * mod_rewrite: Don't export rewritemap_mutex_type symbol.
     trunk patch: http://svn.apache.org/viewvc?rev=1309585&view=rev
     2.4 patch: Trunk patch works
-    +1: sf
+    +1: sf, jorton
 
   * mod_ssl: Send speaking-http-on-https-port error response with http 1.0,
     not 0.9. Remove potentially wrong link.  PR 50823
     trunk patches: http://svn.apache.org/viewvc?rev=1328325&view=rev
                    http://svn.apache.org/viewvc?rev=1328326&view=rev
     2.4 patch: Trunk patch works
-    +1: sf
+    +1: sf, jorton
 
   * mod_log_config: Fix %{abc}C truncating cookie values at first "=".
     PR 53104
@@ -141,7 +141,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     while playing with mod_perl).
     trunk patch: http://svn.apache.org/viewvc?rev=1328950&view=rev
     2.4 patch: Trunk patch works
-    +1: sf
+    +1: sf, jorton
 
 PATCHES/ISSUES THAT ARE STALLED
 
