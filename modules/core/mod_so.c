@@ -143,6 +143,37 @@ static apr_status_t unload_module(void *data)
     return APR_SUCCESS;
 }
 
+static const char *dso_load(cmd_parms *cmd, apr_dso_handle_t **modhandlep,
+                            const char *filename, const char **used_filename)
+{
+    int retry = 0;
+    const char *fullname = ap_server_root_relative(cmd->temp_pool, filename);
+    char my_error[256];
+    if (filename != NULL && ap_strchr_c(filename, '/') == NULL) {
+        /* retry on error without path to use dlopen()'s search path */
+        retry = 1;
+    }
+
+    if (fullname == NULL && !retry) {
+        return apr_psprintf(cmd->temp_pool, "Invalid %s path %s",
+                            cmd->cmd->name, filename);
+    }
+    *used_filename = fullname;
+    if (apr_dso_load(modhandlep, fullname, cmd->pool) == APR_SUCCESS) {
+        return NULL;
+    }
+    if (retry) {
+        *used_filename = filename;
+        if (apr_dso_load(modhandlep, filename, cmd->pool) == APR_SUCCESS)
+            return NULL;
+    }
+
+    return apr_pstrcat(cmd->temp_pool, "Cannot load ", filename,
+                        " into server: ",
+                        apr_dso_error(*modhandlep, my_error, sizeof(my_error)),
+                        NULL);
+}
+
 /*
  * This is called for the directive LoadModule and actually loads
  * a shared object file into the address space of the server process.
@@ -154,7 +185,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
     apr_dso_handle_t *modhandle;
     apr_dso_handle_sym_t modsym;
     module *modp;
-    const char *szModuleFile = ap_server_root_relative(cmd->pool, filename);
+    const char *module_file;
     so_server_conf *sconf;
     ap_module_symbol_t *modi;
     ap_module_symbol_t *modie;
@@ -166,11 +197,6 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
      * execute_now.
      */
     *(ap_directive_t **)dummy = NULL;
-
-    if (!szModuleFile) {
-        return apr_pstrcat(cmd->pool, "Invalid LoadModule path ",
-                           filename, NULL);
-    }
 
     /*
      * check for already existing module
@@ -234,16 +260,11 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
     /*
      * Load the file into the Apache address space
      */
-    if (apr_dso_load(&modhandle, szModuleFile, cmd->pool) != APR_SUCCESS) {
-        char my_error[256];
-
-        return apr_pstrcat(cmd->pool, "Cannot load ", szModuleFile,
-                          " into server: ",
-                          apr_dso_error(modhandle, my_error, sizeof(my_error)),
-                          NULL);
-    }
+    error = dso_load(cmd, &modhandle, filename, &module_file);
+    if (error)
+        return error;
     ap_log_perror(APLOG_MARK, APLOG_DEBUG, 0, cmd->pool, APLOGNO(01575)
-                 "loaded module %s", modname);
+                 "loaded module %s from %s", modname, module_file);
 
     /*
      * Retrieve the pointer to the module structure through the module name:
@@ -254,7 +275,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
         char my_error[256];
 
         return apr_pstrcat(cmd->pool, "Can't locate API module structure `",
-                          modname, "' in file ", szModuleFile, ": ",
+                          modname, "' in file ", module_file, ": ",
                           apr_dso_error(modhandle, my_error, sizeof(my_error)),
                           NULL);
     }
@@ -271,7 +292,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
                             "is garbled - expected signature %08lx but saw "
                             "%08lx - perhaps this is not an Apache module DSO, "
                             "or was compiled for a different Apache version?",
-                            modname, szModuleFile,
+                            modname, module_file,
                             MODULE_MAGIC_COOKIE, modp->magic);
     }
 
@@ -306,26 +327,14 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
 static const char *load_file(cmd_parms *cmd, void *dummy, const char *filename)
 {
     apr_dso_handle_t *handle;
-    const char *file;
+    const char *used_file, *error;
 
-    file = ap_server_root_relative(cmd->pool, filename);
-
-    if (!file) {
-        return apr_pstrcat(cmd->pool, "Invalid LoadFile path ",
-                           filename, NULL);
-    }
-
-    if (apr_dso_load(&handle, file, cmd->pool) != APR_SUCCESS) {
-        char my_error[256];
-
-        return apr_pstrcat(cmd->pool, "Cannot load ", filename,
-                          " into server: ",
-                          apr_dso_error(handle, my_error, sizeof(my_error)),
-                          NULL);
-    }
+    error = dso_load(cmd, &handle, filename, &used_file);
+    if (error)
+        return error;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL, APLOGNO(01576)
-                 "loaded file %s", filename);
+                 "loaded file %s", used_file);
 
     return NULL;
 }
