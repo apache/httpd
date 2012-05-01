@@ -70,7 +70,7 @@ $(NWOS)/chartables.c: dftables.exe $(PCRE)/dftables.c
 
 %.exe: $(PCRE)/%.c $(PCRE)/config.h $(PCRE)/pcre.h
 	@echo $(DL)Creating Build Helper $@$(DL)
-	$(HOST_CC) $(HOST_CFLAGS) -DHAVE_CONFIG_H $< -o $@
+	$(CC_FOR_BUILD) $(CFLAGS_FOR_BUILD) -DHAVE_CONFIG_H $< -o $@
 
 $(NWOS)/test_char.h: gen_test_char.exe $(SERVER)/gen_test_char.c
 	@echo $(DL)GEN  $@$(DL)
@@ -78,7 +78,7 @@ $(NWOS)/test_char.h: gen_test_char.exe $(SERVER)/gen_test_char.c
 
 %.exe: $(SERVER)/%.c
 	@echo $(DL)Creating Build Helper $@$(DL)
-	$(HOST_CC) $(HOST_CFLAGS) -DCROSS_COMPILE $< -o $@
+	$(CC_FOR_BUILD) $(CFLAGS_FOR_BUILD) -DCROSS_COMPILE $< -o $@
 
 else
 
