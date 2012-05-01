@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 654507:1330988 (outdated) -->
+<!-- English Revision : 1330988 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -54,7 +54,9 @@ d'Apache.</compatibility>
     ou de d&eacute;sactiver le serveur d'&eacute;cho.</p>
 
     <example><title>Exemple</title>
+    <highlight language="config">
       ProtocolEcho On
+      </highlight>
     </example>
 </usage>
 

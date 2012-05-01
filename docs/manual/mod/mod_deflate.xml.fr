@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1300876:1330980 (outdated) -->
+<!-- English Revision : 1330980 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -43,7 +43,9 @@ client</description>
     impatients.</p>
 
     <example><title>Ne comprime que certains types de documents</title>
+    <highlight language="config">
       AddOutputFilterByType DEFLATE text/html text/plain text/xml
+      </highlight>
     </example>
 
     <p>La configuration suivante, tout en produisant un contenu encore
@@ -52,30 +54,27 @@ client</description>
     configuration.</p>
 
     <example><title>Comprime tout, sauf les images</title>
-      &lt;Location /&gt;<br />
-      <indent>
-        # Ins&egrave;re le filtre<br />
-        SetOutputFilter DEFLATE<br />
-        <br />
-        # Netscape 4.x a quelques probl&egrave;mes ...<br />
-        BrowserMatch ^Mozilla/4         gzip-only-text/html<br />
-        <br />
-        # Netscape 4.06-4.08 ont d'autres probl&egrave;mes<br />
-        BrowserMatch ^Mozilla/4\.0[678] no-gzip<br />
-        <br />
-        # MSIE se fait passer pour Netscape, mais &ccedil;a marche<br />
-        BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html<br />
-        # Ne pas comprimer les images<br />
-        SetEnvIfNoCase Request_URI \<br />
-        <indent>
-          \.(?:gif|jpe?g|png)$ no-gzip dont-vary<br />
-        </indent>
-        <br />
-        # On s'assure que les mandataires ne servent pas le mauvais
-	# contenu<br />
-        Header append Vary User-Agent env=!dont-vary<br />
-      </indent>
-      &lt;/Location&gt;
+      <highlight language="config">
+&lt;Location /&gt;
+    # Insert filter
+    SetOutputFilter DEFLATE
+    
+    # Netscape 4.x a quelques probl&egrave;mes ...
+    BrowserMatch ^Mozilla/4         gzip-only-text/html
+    
+    # Netscape 4.06-4.08 ont d'autres probl&egrave;mes
+    BrowserMatch ^Mozilla/4\.0[678] no-gzip
+    
+    # MSIE se fait passer pour Netscape, mais &ccedil;a marche
+    BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html
+    # Ne pas comprimer les images
+    SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip dont-vary
+    
+    # On s'assure que les mandataires ne servent pas le mauvais
+     # contenu
+    Header append Vary User-Agent env=!dont-vary
+&lt;/Location&gt;
+      </highlight>
     </example>
 
 </section>
@@ -88,9 +87,9 @@ client</description>
       directive suivante active la compression des documents dans le
       conteneur o&ugrave; elle est plac&eacute;e :</p>
 
-      <example>
+      <highlight language="config">
         SetOutputFilter DEFLATE
-      </example>
+	</highlight>
 
       <p>Certains navigateurs populaires ne g&egrave;rent pas la compression de
       tous les contenus, et pour r&eacute;soudre ce probl&egrave;me, vous pouvez
@@ -105,13 +104,11 @@ client</description>
       o&ugrave; la compression n'est activ&eacute;e que pour les fichiers html de la
       documentation d'Apache :</p>
 
-      <example>
-        &lt;Directory "/racine-de-votre-serveur/manual"&gt;<br />
-        <indent>
-          AddOutputFilterByType DEFLATE text/html<br />
-        </indent>
-        &lt;/Directory&gt;
-      </example>
+      <highlight language="config">
+&lt;Directory "/your-server-root/manual"&gt;
+    AddOutputFilterByType DEFLATE text/html
+&lt;/Directory&gt;
+      </highlight>
 
       <p>Pour les navigateurs qui ont des probl&egrave;mes avec la compression
       de tous les types de fichiers, vous pouvez utiliser la directive
@@ -125,11 +122,11 @@ client</description>
       href="#recommended">exemple de configuration</a> de la section
       pr&eacute;c&eacute;dente :</p>
 
-      <example>
-        BrowserMatch ^Mozilla/4         gzip-only-text/html<br />
-        BrowserMatch ^Mozilla/4\.0[678] no-gzip<br />
-        BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html
-      </example>
+      <highlight language="config">
+BrowserMatch ^Mozilla/4         gzip-only-text/html
+BrowserMatch ^Mozilla/4\.0[678] no-gzip
+BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html
+      </highlight>
 
       <p>Tout d'abord, on recherche un en-t&ecirc;te <code>User-Agent</code>
       qui signale un navigateur Netscape version 4.x. Ces versions ne
@@ -172,14 +169,12 @@ client</description>
       <directive module="mod_mime">AddOutputFilter</directive>, comme
       dans l'exemple suivant :</p>
 
-      <example>
-        &lt;Location /dav-area&gt;<br />
-        <indent>
-          ProxyPass http://example.com/<br />
-          SetOutputFilter INFLATE<br />
-        </indent>
-        &lt;/Location&gt;
-      </example>
+      <highlight language="config">
+&lt;Location /dav-area&gt;
+    ProxyPass http://example.com/
+    SetOutputFilter INFLATE
+&lt;/Location&gt;
+      </highlight>
 
       <p>Dans cet exemple, les sorties comprim&eacute;es par gzip en
       provenance de example.com seront d&eacute;comprim&eacute;es afin de pouvoir
@@ -196,13 +191,11 @@ client</description>
       <directive module="mod_mime">AddInputFilter</directive>, comme
       dans l'exemple suivant :</p>
 
-      <example>
-        &lt;Location /dav-area&gt;<br />
-        <indent>
-          SetInputFilter DEFLATE<br />
-        </indent>
-        &lt;/Location&gt;
-      </example>
+      <highlight language="config">
+&lt;Location /dav-area&gt;
+    SetInputFilter DEFLATE
+&lt;/Location&gt;
+      </highlight>
 
       <p>D&eacute;sormais, si une requ&ecirc;te contient un en-t&ecirc;te
       <code>Content-Encoding: gzip</code>, son corps sera
@@ -242,9 +235,9 @@ client</description>
     <code>DEFLATE</code> d&eacute;pend du contenu de l'en-t&ecirc;te
     <code>User-Agent</code>, vous devez sp&eacute;cifier :</p>
 
-    <example>
+    <highlight language="config">
       Header append Vary User-Agent
-    </example>
+    </highlight>
 
     <p>Si votre d&eacute;cision de comprimer le contenu d&eacute;pend d'autres
     informations que celles contenues dans les en-t&ecirc;tes de la requ&ecirc;te
@@ -253,7 +246,9 @@ client</description>
     les mandataires compatibles de tout mettre en cache.</p>
 
     <example><title>Exemple</title>
+    <highlight language="config">
       Header set Vary *
+      </highlight>
     </example>
 </section>
 
@@ -276,10 +271,12 @@ d'Apache</compatibility>
     href="../logs.html#accesslog">journal des acc&egrave;s</a>.</p>
 
     <example><title>Exemple</title>
-      DeflateFilterNote ratio<br />
-      <br />
-      LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' deflate<br />
+      <highlight language="config">
+      DeflateFilterNote ratio
+    
+      LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' deflate
       CustomLog logs/deflate_log deflate
+      </highlight>
     </example>
 
     <p>Pour extraire des informations plus pr&eacute;cises de vos journaux,
@@ -306,12 +303,14 @@ d'Apache</compatibility>
     suivante :</p>
 
     <example><title>Journalisation d&eacute;taill&eacute;e</title>
-      DeflateFilterNote Input instream<br />
-      DeflateFilterNote Output outstream<br />
-      DeflateFilterNote Ratio ratio<br />
-      <br />
-      LogFormat '"%r" %{outstream}n/%{instream}n (%{ratio}n%%)' deflate<br />
-      CustomLog logs/deflate_log deflate
+      <highlight language="config">
+DeflateFilterNote Input instream
+DeflateFilterNote Output outstream
+DeflateFilterNote Ratio ratio
+
+LogFormat '"%r" %{outstream}n/%{instream}n (%{ratio}n%%)' deflate
+CustomLog logs/deflate_log deflate
+</highlight>
     </example>
 </usage>
 <seealso><module>mod_log_config</module></seealso>
