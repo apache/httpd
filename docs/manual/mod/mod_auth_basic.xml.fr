@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1300935:1330911 (outdated) -->
+<!-- English Revision : 1330911 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -68,18 +68,17 @@ cette zone du site web</description>
     serveur.</p>
 
     <example><title>Exemple</title>
-      &lt;Location /secure&gt;<br />
-      <indent>
-        AuthType basic<br />
-        AuthName "private area"<br />
-        AuthBasicProvider  dbm<br />
-        AuthDBMType        SDBM<br />
-        AuthDBMUserFile    /www/etc/dbmpasswd<br />
-        Require            valid-user<br />
-      </indent>
-      &lt;/Location&gt;
+      <highlight language="config">
+&lt;Location /secure&gt;
+    AuthType basic
+    AuthName "private area"
+    AuthBasicProvider  dbm
+    AuthDBMType        SDBM
+    AuthDBMUserFile    /www/etc/dbmpasswd
+    Require            valid-user
+&lt;/Location&gt;
+    </highlight>
     </example>
-
     <p>Les fournisseurs sont sollicit&eacute;s dans l'ordre jusqu'&agrave; ce que l'un
     d'entre eux trouve une correspondance pour le nom d'utilisateur de
     la requ&ecirc;te ; alors, ce dernier fournisseur sera le seul &agrave; v&eacute;rifier

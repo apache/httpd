@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1299328:1331227 (outdated) -->
+<!-- English Revision : 1331227 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -75,33 +75,29 @@ recherche/remplacement de cha&icirc;ne ou d'expression rationnelle.</p>
 
 <section id="sampleconf"><title>Exemple de configuration</title>
     <example><title>Ajout d'un filtre en sortie</title>
-         # Dans l'exemple suivant, le filtre sed va remplacer la cha&icirc;ne
+	    <highlight language="config">
+# Dans l'exemple suivant, le filtre sed va remplacer la cha&icirc;ne
 	 # "monday" par "MON" et la cha&icirc;ne "sunday" par "SUN" dans les
-	 # documents html avant de les envoyer au client.<br />
-        <indent>
-        &lt;Directory "/var/www/docs/sed"&gt; <br />
-           <indent>
-           AddOutputFilter Sed html <br />
-           OutputSed "s/monday/MON/g" <br />
-           OutputSed "s/sunday/SUN/g" <br />
-           </indent>
-        &lt;/Directory&gt; <br />
-        </indent>
+	 # documents html avant de les envoyer au client.
+&lt;Directory "/var/www/docs/sed"&gt; 
+    AddOutputFilter Sed html 
+    OutputSed "s/monday/MON/g" 
+    OutputSed "s/sunday/SUN/g" 
+&lt;/Directory&gt; 
+    </highlight>
     </example>
 
     <example><title>Ajout d'un filtre en entr&eacute;e</title>
+    <highlight language="config">
          # Dans l'exemple suivant, le filtre sed va remplacer la cha&icirc;ne
 	 # "monday" par "MON" et la cha&icirc;ne "sunday" par "SUN" dans les
-	 # donn&eacute;es POST envoy&eacute;es &agrave; PHP.<br />
-        <indent>
-        &lt;Directory "/var/www/docs/sed"&gt; <br />
-           <indent>
-           AddInputFilter Sed php <br />
-           InputSed "s/monday/MON/g" <br />
-           InputSed "s/sunday/SUN/g" <br />
-           </indent>
-        &lt;/Directory&gt; <br />
-        </indent>
+	 # donn&eacute;es POST envoy&eacute;es &agrave; PHP.
+        &lt;Directory "/var/www/docs/sed"&gt; 
+    AddInputFilter Sed php 
+    InputSed "s/monday/MON/g" 
+    InputSed "s/sunday/SUN/g" 
+&lt;/Directory&gt; 
+        </highlight>
     </example>
 </section>
 <section id="sed_commands"><title>Commandes sed</title>
