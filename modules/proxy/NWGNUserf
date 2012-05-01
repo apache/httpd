@@ -20,6 +20,13 @@ V_PATH = \
 			$(SERFSRC)/buckets \
 			$(ZLIBSDK) \
 			$(EOLIST)
+
+ifeq "$(wildcard $(SERFSRC)/incoming.c)" "$(SERFSRC)/incoming.c"
+V_PATH += \
+			$(SERFSRC)/auth \
+			$(EOLIST)
+endif
+
 #
 # These directories will be at the beginning of the include list, followed by
 # INCDIRS
@@ -197,13 +204,29 @@ FILES_nlm_objs += \
 	$(OBJDIR)/file_buckets.o \
 	$(OBJDIR)/headers_buckets.o \
 	$(OBJDIR)/limit_buckets.o \
-	$(OBJDIR)/mmap_buckets.o \
 	$(OBJDIR)/request_buckets.o \
 	$(OBJDIR)/response_buckets.o \
 	$(OBJDIR)/simple_buckets.o \
 	$(OBJDIR)/socket_buckets.o \
 	$(OBJDIR)/ssl_buckets.o \
 	$(EOLIST)
+
+ifeq "$(wildcard $(SERFSRC)/incoming.c)" "$(SERFSRC)/incoming.c"
+ifeq "$(wildcard $(SERFSRC)/buckets/iovec_buckets.c)" "$(SERFSRC)/buckets/iovec_buckets.c"
+FILES_nlm_objs += \
+	$(OBJDIR)/auth.o \
+	$(OBJDIR)/auth_basic.o \
+	$(OBJDIR)/auth_digest.o \
+	$(OBJDIR)/bwtp_buckets.o \
+	$(OBJDIR)/incoming.o \
+	$(OBJDIR)/iovec_buckets.o \
+	$(OBJDIR)/outgoing.o \
+	$(OBJDIR)/ssltunnel.o \
+	$(EOLIST)
+else
+$(error This libserf version is broken for NetWare platform!)
+endif
+endif
 
 # Build zlib from source
 FILES_nlm_objs += \
