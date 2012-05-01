@@ -80,6 +80,7 @@ Dokumentation</h1>
 </div></td><td class="col3"><div class="category"><h2><a name="howto" id="howto">How-To / Gennemgange</a></h2>
 <ul><li><a href="howto/auth.html">Godkendelse, autorisation og adgangskontrol</a></li>
 <li><a href="howto/cgi.html">CGI: Dynamisk indhold</a></li>
+<li><a href="howto/access.html">Adgangskontrol</a></li>
 <li><a href="howto/htaccess.html">.htaccess filer</a></li>
 <li><a href="howto/ssi.html">Server Side Includes (SSI)</a></li>
 <li><a href="howto/public_html.html">Per-bruger webmapper (public_html)</a></li>
@@ -87,11 +88,13 @@ Dokumentation</h1>
 </div><div class="category"><h2><a name="platform" id="platform">Platformspecifikke noter</a></h2>
 <ul><li><a href="platform/windows.html">Microsoft Windows</a></li>
 <li><a href="platform/netware.html">Novell NetWare</a></li>
+<li><a href="platform/rpm.html">RPM-baserede systemer (Redhat / CentOS / Fedora)</a></li>
 </ul>
 </div><div class="category"><h2><a name="other" id="other">Andre emner</a></h2>
 <ul><li><a href="faq/">Ofte stillede spørgsmål</a></li>
 <li><a href="sitemap.html">Sitemap</a></li>
 <li><a href="developer/">Dokumentation for udviklere</a></li>
+<li><a href="http://httpd.apache.org/docs-project/">Hjælp med dokumentationen</a></li>
 <li><a href="misc/">Andre noter</a></li>
 <li><a href="http://wiki.apache.org/httpd/">Wiki</a></li>
 </ul>
