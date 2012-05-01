@@ -72,6 +72,7 @@ Dokumentation</title>
 <category id="howto"><title>How-To / Gennemgange</title>
     <page href="howto/auth.html">Godkendelse, autorisation og adgangskontrol</page>
     <page href="howto/cgi.html">CGI: Dynamisk indhold</page>
+    <page href="howto/access.html">Adgangskontrol</page>
     <page href="howto/htaccess.html">.htaccess filer</page>
     <page href="howto/ssi.html">Server Side Includes (SSI)</page>
     <page href="howto/public_html.html">Per-bruger webmapper (public_html)</page>
@@ -80,12 +81,14 @@ Dokumentation</title>
 <category id="platform"><title>Platformspecifikke noter</title>
     <page href="platform/windows.html">Microsoft Windows</page>
     <page href="platform/netware.html">Novell NetWare</page>
+    <page href="platform/rpm.html">RPM-baserede systemer (Redhat / CentOS / Fedora)</page>
 </category>
 
 <category id="other"><title>Andre emner</title>
     <page href="faq/">Ofte stillede spørgsmål</page>
     <page href="sitemap.html">Sitemap</page>
     <page href="developer/">Dokumentation for udviklere</page>
+    <page href="http://httpd.apache.org/docs-project/">Hjælp med dokumentationen</page>
     <page href="misc/">Andre noter</page>
     <page href="http://wiki.apache.org/httpd/">Wiki</page>
 </category>
