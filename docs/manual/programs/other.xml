@@ -30,7 +30,7 @@
     have their own docs pages. Please update any links.</p>
 
     <p><program>log_server_status</program></p>
-    <p><program>split-lofile</program></p>
+    <p><program>split-logfile</program></p>
 </summary>
 
 </manualpage>
