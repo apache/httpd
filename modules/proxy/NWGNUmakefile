@@ -167,8 +167,8 @@ TARGET_nlm = \
 	$(OBJDIR)/proxylbm_traf.nlm \
 	$(EOLIST)
 
-# If WITH_MOD_SERF and SERFSRC have been defined then build the mod_serf module
-ifdef WITH_MOD_SERF
+# If WITH_SERF and SERFSRC have been defined then build the mod_serf module
+ifdef WITH_SERF
 ifneq "$(SERFSRC)" ""
 ifneq "$(ZLIBSDK)" ""
 TARGET_nlm += \
