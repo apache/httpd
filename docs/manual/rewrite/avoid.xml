@@ -217,8 +217,8 @@ hostname, such as <code>www.example.com</code> instead of
 module="core" type="section">If</directive> directive, as shown here:</p>
 
 <highlight language="config">
-&lt;If "$req{Host} != 'www.example.com'"&gt;
-    RedirectMatch (.*) http://www.example.com$1
+&lt;If "req('Host') != 'www.example.com'"&gt;
+    Redirect / http://www.example.com/
 &lt;/If&gt;
 </highlight>
 
