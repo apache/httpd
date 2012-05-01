@@ -4169,8 +4169,8 @@ port</description>
     authentication enabled, this will cause the user to have to
     authenticate twice (once for <code>www</code> and once again
     for <code>www.example.com</code> -- see <a
-    href="http://httpd.apache.org/docs/misc/FAQ.html#prompted-twice">the
-    FAQ on this subject for more information</a>). But if
+    href="http://wiki.apache.org/httpd/FAQ#Why_does_Apache_ask_for_my_password_twice_before_serving_a_file.3F">
+    the FAQ on this subject for more information</a>). But if
     <directive>UseCanonicalName</directive> is set <code>Off</code>, then
     Apache httpd will redirect to <code>http://www/splat/</code>.</p>
 
