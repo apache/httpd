@@ -46,13 +46,14 @@
 <h2><a name="example" id="example">A Simple Example</a></h2>
     
 
-    <div class="example"><p><code>
-      # This is a misconfiguration example, do not use on your server <br />
-      &lt;VirtualHost www.example.dom&gt; <br />
-      ServerAdmin webgirl@example.dom <br />
-      DocumentRoot /www/example <br />
-      &lt;/VirtualHost&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+# This is a misconfiguration example, do not use on your server
+&lt;VirtualHost www.example.dom&gt;
+  ServerAdmin webgirl@example.dom
+  DocumentRoot /www/example
+&lt;/VirtualHost&gt;
+    </pre>
+
 
     <p>In order for the server to function properly, it absolutely needs
     to have two pieces of information about each virtual host: the
@@ -68,13 +69,14 @@
     <p>Suppose that <code>www.example.dom</code> has address 192.0.2.1.
     Then consider this configuration snippet:</p>
 
-    <div class="example"><p><code>
-      # This is a misconfiguration example, do not use on your server <br />
-      &lt;VirtualHost 192.0.2.1&gt; <br />
-      ServerAdmin webgirl@example.dom <br />
-      DocumentRoot /www/example <br />
-      &lt;/VirtualHost&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+# This is a misconfiguration example, do not use on your server
+&lt;VirtualHost 192.0.2.1&gt;
+  ServerAdmin webgirl@example.dom
+  DocumentRoot /www/example
+&lt;/VirtualHost&gt;
+    </pre>
+
 
     <p>This time httpd needs to use reverse DNS to find the
     <code>ServerName</code> for this virtualhost. If that reverse
@@ -87,13 +89,14 @@
 
     <p>Here is a snippet that avoids both of these problems:</p>
 
-    <div class="example"><p><code>
-      &lt;VirtualHost 192.0.2.1&gt; <br />
-      ServerName www.example.dom <br />
-      ServerAdmin webgirl@example.dom <br />
-      DocumentRoot /www/example <br />
-      &lt;/VirtualHost&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;VirtualHost 192.0.2.1&gt;
+  ServerName www.example.dom
+  ServerAdmin webgirl@example.dom
+  DocumentRoot /www/example
+&lt;/VirtualHost&gt;
+    </pre>
+
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="denial" id="denial">Denial of Service</a></h2>
@@ -101,21 +104,17 @@
 
     <p>Consider this configuration snippet:</p>
 
-    <div class="example"><p><code>
-      &lt;VirtualHost www.example1.dom&gt;<br />
-      <span class="indent">
-        ServerAdmin webgirl@example1.dom<br />
-        DocumentRoot /www/example1<br />
-      </span>
-      &lt;/VirtualHost&gt;<br />
-      <br />
-      &lt;VirtualHost www.example2.dom&gt;<br />
-      <span class="indent">
-        ServerAdmin webguy@example2.dom<br />
-        DocumentRoot /www/example2<br />
-      </span>
-      &lt;/VirtualHost&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;VirtualHost www.example1.dom&gt;
+  ServerAdmin webgirl@example1.dom
+  DocumentRoot /www/example1
+&lt;/VirtualHost&gt;
+&lt;VirtualHost www.example2.dom&gt;
+  ServerAdmin webguy@example2.dom
+  DocumentRoot /www/example2
+&lt;/VirtualHost&gt;
+    </pre>
+
 
     <p>Suppose that you've assigned 192.0.2.1 to
     <code>www.example1.dom</code> and 192.0.2.2 to
