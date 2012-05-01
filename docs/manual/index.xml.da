@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
-<!-- English Revision: 1221670:1329361 (outdated) -->
+<!-- English Revision: 1329361 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -44,6 +44,7 @@ Dokumentation</title>
     <page href="mpm.html">Multibehandlingsmoduler (MPM)</page>
     <page href="filter.html">Filtre</page>
     <page href="handler.html">Behandlere</page>
+    <page href="expr.html">Udtryksanalysering</page>
     <page href="programs/">Serveren og understøttende programmer</page>
     <page href="glossary.html">Anvendte gloser</page>
 </category>    
@@ -57,6 +58,7 @@ Dokumentation</title>
     <page href="dso.html">Dynamisk delte objekter (DSO)</page>
     <page href="env.html">Miljøvariabler</page>
     <page href="logs.html">Logfiler</page>
+    <page href="compliance.html">HTTP-protokoloverensstemmelse</page>
     <page href="urlmapping.html">Afbilding af URL'er til filsystem</page>
     <page href="misc/perf-tuning.html">Justering af ydeevne</page>
     <page href="misc/security_tips.html">Sikkerhedstips</page>
