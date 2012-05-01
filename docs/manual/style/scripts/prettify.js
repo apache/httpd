@@ -114,6 +114,13 @@ var prettyPrint;
   var PERL_KEYWORDS = "caller,delete,die,do,dump,else,elsif,eval,exit,foreach,for," +
       "goto,if,import,last,local,my,next,no,our,print,package,redo,require," +
       "sub,undef,unless,until,use,wantarray,while,BEGIN,END";
+  var PHP_KEYWORDS = "abstract,and,array,as,break,case,catch,cfunction,class," +
+      "clone,const,continue,declare,default,do,else,elseif,enddeclare,endfor," + 
+      "endforeach,endif,endswitch,endwhile,extends,final,for,foreach,function," +
+      "global,goto,if,implements,interface,instanceof,namespace,new,old_function," +
+      "or,private,protected,public,static,switch,throw,try,use,var,while,xor," + 
+      "die,echo,empty,exit,eval,include,include_once,isset,list,require," + 
+      "require_once,return,print,unset";
   var PYTHON_KEYWORDS = [FLOW_CONTROL_KEYWORDS, "and,as,assert,class,def,del," +
       "elif,except,exec,finally,from,global,import,in,is,lambda," +
       "nonlocal,not,or,pass,print,raise,try,with,yield," +
@@ -128,7 +135,7 @@ var prettyPrint;
   var CONFIG_OPTIONS = /^[\\+\\-]?(AuthConfig|Includes|ExecCGI|FollowSymLinks|MultiViews|IncludesNOEXEC|Indexes|SymLinksIfOwnerMatch)/;
   var ALL_KEYWORDS = [
       CPP_KEYWORDS, CSHARP_KEYWORDS, JSCRIPT_KEYWORDS, PERL_KEYWORDS +
-      PYTHON_KEYWORDS, RUBY_KEYWORDS, SH_KEYWORDS, CONFIG_KEYWORDS];
+      PYTHON_KEYWORDS, RUBY_KEYWORDS, SH_KEYWORDS, CONFIG_KEYWORDS, PHP_KEYWORDS];
   var C_TYPES = /^(DIR|FILE|vector|(de|priority_)?queue|list|stack|(const_)?iterator|(multi)?(set|map)|bitset|u?(int|float|char|void|const|static|struct)\d*(_t)?\b)|[a-z_]+_rec|cmd_parms\b/;
 
   // token style names.  correspond to css classes
@@ -889,6 +896,11 @@ var REGEXP_PRECEDER_PATTERN = '(?:^^\\.?|[+-]|[!=]=?=?|\\#|%=?|&&?=?|\\(|\\*=?|[
     }
 
     shortcutStylePatterns.push([PR_PLAIN,       /^\s+/, null, ' \r\n\t\xA0']);
+    if (options['httpdComments']) {
+        fallthroughStylePatterns.push(
+            [PR_PLAIN,     /^.*\S.*#/i, null]
+        );
+    }
     fallthroughStylePatterns.push(
         // TODO(mikesamuel): recognize non-latin letters and numerals in idents
         [PR_LITERAL,     /^@[a-z_$][a-z_$@0-9]*|\bNULL\b/i, null],
@@ -1056,7 +1068,7 @@ var REGEXP_PRECEDER_PATTERN = '(?:^^\\.?|[+-]|[!=]=?=?|\\#|%=?|&&?=?|\\(|\\*=?|[
       // Stick a class on the LIs so that stylesheets can
       // color odd/even rows, or any other row pattern that
       // is co-prime with 10.
-      li.className = 'L' + ((i + offset) % 10);
+      li.className = 'L' + ((i + offset) % 1);
       if (!li.firstChild) {
         li.appendChild(document.createTextNode('\xA0'));
       }
@@ -1140,7 +1152,7 @@ var REGEXP_PRECEDER_PATTERN = '(?:^^\\.?|[+-]|[!=]=?=?|\\#|%=?|&&?=?|\\(|\\*=?|[
       var X = 0;
       while (spanIndex < nSpans) {
         X = X + 1;
-        if (X > 2500) { break; }
+        if (X > 5000) { break; }
         var spanStart = spans[spanIndex];
         var spanEnd = spans[spanIndex + 2] || sourceLength;
   
@@ -1279,6 +1291,14 @@ var REGEXP_PRECEDER_PATTERN = '(?:^^\\.?|[+-]|[!=]=?=?|\\#|%=?|&&?=?|\\(|\\*=?|[
           'types': C_TYPES,
         }), ['c', 'cc', 'cpp', 'cxx', 'cyc', 'm']);
   registerLangHandler(sourceDecorator({
+          'keywords': PHP_KEYWORDS,
+          'hashComments': false,
+          'cStyleComments': true,
+          'multiLineStrings': true,
+          'regexLiterals': true
+//          'types': C_TYPES,
+        }), ['php', 'phtml', 'inc']);
+  registerLangHandler(sourceDecorator({
           'keywords': 'null,true,false'
         }), ['json']);
   registerLangHandler(sourceDecorator({
@@ -1334,8 +1354,10 @@ var REGEXP_PRECEDER_PATTERN = '(?:^^\\.?|[+-]|[!=]=?=?|\\#|%=?|&&?=?|\\(|\\*=?|[
           'keywords': CONFIG_KEYWORDS,
           'literals': CONFIG_OPTIONS,
           'hashComments': true,
+          'cStyleComments': false,
           'multiLineStrings': false,
-          'regexLiterals': false
+          'regexLiterals': false,
+          'httpdComments': true
         }), ['config']);
 
   function applyDecorator(job) {
