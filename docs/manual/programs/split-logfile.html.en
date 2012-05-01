@@ -38,11 +38,11 @@
 
     <p>Create a log file with virtual host information in it:</p>
 
-    <div class="example"><p><code>
-        LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""
-             combined_plus_vhost<br />
-        CustomLog logs/access_log combined_plus_vhost
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\"" combined_plus_vhost
+CustomLog logs/access_log combined_plus_vhost
+    </pre>
+
 
     <p>Log files will be created, in the directory where you run the
     script, for each virtual host name that appears in the combined log file.
