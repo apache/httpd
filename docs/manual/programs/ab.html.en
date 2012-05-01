@@ -237,7 +237,7 @@
         <dd>The request URI parsed from the command line string.</dd>
 
         <dt>Document Length</dt>
-        <dd>This is size in bytes of the first successfully returning document.
+        <dd>This is the size in bytes of the first successfully returned document.
         If the document length changes during testing, the response is
         considered an error.</dd>
 
