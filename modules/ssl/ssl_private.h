@@ -139,6 +139,11 @@
 #define HAVE_FIPS
 #endif
 
+#if OPENSSL_VERSION_NUMBER >= 0x10001000L && !defined(OPENSSL_NO_NEXTPROTONEG) \
+    && !defined(OPENSSL_NO_TLSEXT)
+#define HAVE_TLS_NPN
+#endif
+
 #if (OPENSSL_VERSION_NUMBER >= 0x10000000)
 #define MODSSL_SSL_CIPHER_CONST const
 #define MODSSL_SSL_METHOD_CONST const
@@ -811,6 +816,7 @@ int          ssl_callback_ServerNameIndication(SSL *, int *, modssl_ctx_t *);
 int         ssl_callback_SessionTicket(SSL *, unsigned char *, unsigned char *,
                                        EVP_CIPHER_CTX *, HMAC_CTX *, int);
 #endif
+int ssl_callback_AdvertiseNextProtos(SSL *ssl, const unsigned char **data, unsigned int *len, void *arg);
 
 /**  Session Cache Support  */
 void         ssl_scache_init(server_rec *, apr_pool_t *);

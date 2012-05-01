@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: Add support for TLS Next Protocol Negotiation.  PR 52210.
+     [Matthew Steele <mdsteele google.com>]
+
   *) mod_so: If a filename without slashes is specified for LoadFile or
      LoadModule and the file cannot be found in the server root directory,
      try to use the standard dlopen() search path. [Stefan Fritsch]

@@ -28,6 +28,7 @@
                                   core keeps dumping.''
                                             -- Unknown    */
 #include "ssl_private.h"
+#include "mod_ssl.h"
 #include "apr_date.h"
 
 /*  _________________________________________________________________
@@ -297,6 +298,7 @@ typedef struct {
     apr_pool_t *pool;
     char buffer[AP_IOBUFSIZE];
     ssl_filter_ctx_t *filter_ctx;
+    int npn_finished;  /* 1 if NPN has finished, 0 otherwise */
 } bio_filter_in_ctx_t;
 
 /*
@@ -1374,6 +1376,27 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
         APR_BRIGADE_INSERT_TAIL(bb, bucket);
     }
 
+#ifdef HAVE_TLS_NPN
+    /* By this point, Next Protocol Negotiation (NPN) should be completed (if
+     * our version of OpenSSL supports it).  If we haven't already, find out
+     * which protocol was decided upon and inform other modules by calling
+     * npn_proto_negotiated_hook. */
+    if (!inctx->npn_finished) {
+        const unsigned char *next_proto = NULL;
+        unsigned next_proto_len = 0;
+
+        SSL_get0_next_proto_negotiated(
+            inctx->ssl, &next_proto, &next_proto_len);
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, f->c,
+                      "SSL NPN negotiated protocol: '%s'",
+                      apr_pstrmemdup(f->c->pool, (const char*)next_proto,
+                                     next_proto_len));
+        modssl_run_npn_proto_negotiated_hook(
+            f->c, (const char*)next_proto, next_proto_len);
+        inctx->npn_finished = 1;
+    }
+#endif
+
     return APR_SUCCESS;
 }
 
@@ -1855,6 +1878,7 @@ static void ssl_io_input_add_filter(ssl_filter_ctx_t *filter_ctx, conn_rec *c,
     inctx->block = APR_BLOCK_READ;
     inctx->pool = c->pool;
     inctx->filter_ctx = filter_ctx;
+    inctx->npn_finished = 0;
 }
 
 /* The request_rec pointer is passed in here only to ensure that the
