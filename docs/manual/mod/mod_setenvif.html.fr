@@ -30,8 +30,6 @@
 <a href="../ko/mod/mod_setenvif.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_setenvif.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet de définir des variables d'environnement en fonction
 de caractéristiques de la requête</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -54,10 +52,11 @@ de caractéristiques de la requête</td></tr>
     exemple qui définit netscape si le navigateur est Mozilla et non
     MSIE.</p>
 
-<div class="example"><p><code>
-  BrowserMatch ^Mozilla netscape<br />
-  BrowserMatch MSIE !netscape<br />
-</code></p></div>
+<pre class="prettyprint lang-config">
+BrowserMatch ^Mozilla netscape
+BrowserMatch MSIE !netscape
+</pre>
+
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -90,17 +89,19 @@ contenu de l'en-tête HTTP User-Agent</td></tr>
   d'environnement en fonction du contenu de l'en-tête de requête HTTP
   <code>User-Agent</code>. Les deux lignes suivantes produisent le même
   effet :</p>
-<div class="example"><p><code>
-   BrowserMatchNoCase Robot est_un_robot<br />
-   SetEnvIfNoCase User-Agent Robot est_un_robot<br />
-</code></p></div>
+<pre class="prettyprint lang-config">
+BrowserMatchNoCase Robot is_a_robot
+SetEnvIfNoCase User-Agent Robot is_a_robot
+</pre>
+
 
     <p>Quelques exemples supplémentaires :</p>
-<div class="example"><p><code>
-    BrowserMatch ^Mozilla forms jpeg=yes browser=netscape<br />
-    BrowserMatch "^Mozilla/[2-3]" tables agif frames javascript<br />
-    BrowserMatch MSIE !javascript<br />
-</code></p></div>
+<pre class="prettyprint lang-config">
+BrowserMatch ^Mozilla forms jpeg=yes browser=netscape
+BrowserMatch "^Mozilla/[2-3]" tables agif frames javascript
+BrowserMatch MSIE !javascript
+</pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -120,20 +121,22 @@ casse</td></tr>
     <p>La directive <code class="directive">BrowserMatchNoCase</code> est
     identique sur le plan sémantique à la directive <code class="directive"><a href="#browsermatch">BrowserMatch</a></code>. Elle permet
     cependant une comparaison insensible à la casse. Par exemple :</p>
-<div class="example"><p><code>
-    BrowserMatchNoCase mac platform=macintosh<br />
-    BrowserMatchNoCase win platform=windows<br />
-</code></p></div>
+<pre class="prettyprint lang-config">
+BrowserMatchNoCase mac platform=macintosh
+BrowserMatchNoCase win platform=windows
+</pre>
+
 
     <p>Les directives <code class="directive">BrowserMatch</code> et
     <code class="directive">BrowserMatchNoCase</code> sont des cas particuliers
     des directives <code class="directive"><a href="#setenvif">SetEnvIf</a></code>
     et <code class="directive"><a href="#setenvifnocase">SetEnvIfNoCase</a></code>.
     Ainsi, les deux lignes suivantes produisent le même effet :</p>
-<div class="example"><p><code>
-   BrowserMatchNoCase Robot est_un_robot<br />
-   SetEnvIfNoCase User-Agent Robot est_un_robot<br />
-</code></p></div>
+<pre class="prettyprint lang-config">
+BrowserMatchNoCase Robot is_a_robot
+SetEnvIfNoCase User-Agent Robot is_a_robot
+</pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -232,18 +235,18 @@ peuvent se présenter sous les formes suivantes :</p>
     sous-expressions entre parenthèses correspondantes de
     <var>regex</var>.</p>
 
-<div class="example"><h3>Example:</h3><p><code>
+<pre class="prettyprint lang-config">
+SetEnvIf Request_URI "\.gif$" object_is_image=gif
+SetEnvIf Request_URI "\.jpg$" object_is_image=jpg
+SetEnvIf Request_URI "\.xbm$" object_is_image=xbm
+    
+SetEnvIf Referer www\.mydomain\.example\.com intra_site_referral
+    
+SetEnvIf object_is_image xbm XBIT_PROCESSING=1
+    
+SetEnvIf ^TS  ^[a-z]  HAVE_TS
+</pre>
 
-   SetEnvIf Request_URI "\.gif$" objet_est_une_image=gif<br />
-   SetEnvIf Request_URI "\.jpg$" objet_est_une_image=jpg<br />
-   SetEnvIf Request_URI "\.xbm$" objet_est_une_image=xbm<br />
-        :<br />
-   SetEnvIf Referer www\.mon-domaine\.example\.com référant_intra_site<br />
-        :<br />
-   SetEnvIf objet_est_une_image xbm XBIT_PROCESSING=1<br />
-        :<br />
-   SetEnvIf ^TS  ^[a-z]  HAVE_TS<br />
-</code></p></div>
 
     <p>Les trois premières lignes définissent la variable
     d'environnement <code>objet_est_une_image</code> si l'objet de la
@@ -283,9 +286,10 @@ serveur HTTP Apache</a> pour des exemples supplémentaires.
     d'environnement <em>env-variable</em> de la même manière que la
     directive <code class="directive">SetEnvIf</code>.</p>
 
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
     SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered
-</code></p></div>
+</pre>
+
 
     <p>Dans cet exemple, la variable d'environnement
     <code>iso_delivered</code> est définie chaque fois que notre
@@ -295,9 +299,10 @@ serveur HTTP Apache</a> pour des exemples supplémentaires.
     l'adresse IP distante est une adresse privée au sens de la RFC 1918
     :</p>
 
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
     SetEnvIfExpr "-R '10.0.0.0/8' || -R '172.16.0.0/12' || -R '192.168.0.0/16'" rfc1918
-</code></p></div>
+</pre>
+
 
 <h3>Voir aussi</h3>
 <ul>
@@ -326,9 +331,10 @@ attributs de la requête sans tenir compte de la casse</td></tr>
     d'un point de vue sémantique à la directive <code class="directive"><a href="#setenvif">SetEnvIf</a></code>, et ne s'en distingue que
     par le fait que la comparaison des expressions rationnelles est
     effectuée sans tenir compte de la casse. Par exemple :</p>
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
    SetEnvIfNoCase Host Example\.Org site=apache
-</code></p></div>
+</pre>
+
 
     <p>Cette ligne va définir la variable d'environnement
     <code>site</code> avec la valeur "<code>example</code>" si le champ

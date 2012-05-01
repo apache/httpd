@@ -29,8 +29,6 @@
 <a href="../ja/mod/mod_auth_basic.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_auth_basic.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Authentification de base</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>auth_basic_module</td></tr>
@@ -112,19 +110,17 @@ cette zone du site web</td></tr>
     implémentant le fournisseur choisi soit bien présent dans le
     serveur.</p>
 
-    <div class="example"><h3>Exemple</h3><p><code>
-      &lt;Location /secure&gt;<br />
-      <span class="indent">
-        AuthType basic<br />
-        AuthName "private area"<br />
-        AuthBasicProvider  dbm<br />
-        AuthDBMType        SDBM<br />
-        AuthDBMUserFile    /www/etc/dbmpasswd<br />
-        Require            valid-user<br />
-      </span>
-      &lt;/Location&gt;
-    </code></p></div>
-
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
+&lt;Location /secure&gt;
+    AuthType basic
+    AuthName "private area"
+    AuthBasicProvider  dbm
+    AuthDBMType        SDBM
+    AuthDBMUserFile    /www/etc/dbmpasswd
+    Require            valid-user
+&lt;/Location&gt;
+    </pre>
+</div>
     <p>Les fournisseurs sont sollicités dans l'ordre jusqu'à ce que l'un
     d'entre eux trouve une correspondance pour le nom d'utilisateur de
     la requête ; alors, ce dernier fournisseur sera le seul à vérifier

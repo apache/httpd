@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_sed.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_sed.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Filtre les contenus en entrée (requêtes) et en sortie
 (réponses) en utilisant la syntaxe de <code>sed</code></td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td /></tr>
@@ -87,35 +85,29 @@ recherche/remplacement de chaîne ou d'expression rationnelle.</p>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="sampleconf" id="sampleconf">Exemple de configuration</a></h2>
-    <div class="example"><h3>Ajout d'un filtre en sortie</h3><p><code>
-         # Dans l'exemple suivant, le filtre sed va remplacer la chaîne
+    <div class="example"><h3>Ajout d'un filtre en sortie</h3><pre class="prettyprint lang-config">
+# Dans l'exemple suivant, le filtre sed va remplacer la chaîne
 	 # "monday" par "MON" et la chaîne "sunday" par "SUN" dans les
-	 # documents html avant de les envoyer au client.<br />
-        <span class="indent">
-        &lt;Directory "/var/www/docs/sed"&gt; <br />
-           <span class="indent">
-           AddOutputFilter Sed html <br />
-           OutputSed "s/monday/MON/g" <br />
-           OutputSed "s/sunday/SUN/g" <br />
-           </span>
-        &lt;/Directory&gt; <br />
-        </span>
-    </code></p></div>
+	 # documents html avant de les envoyer au client.
+&lt;Directory "/var/www/docs/sed"&gt; 
+    AddOutputFilter Sed html 
+    OutputSed "s/monday/MON/g" 
+    OutputSed "s/sunday/SUN/g" 
+&lt;/Directory&gt; 
+    </pre>
+</div>
 
-    <div class="example"><h3>Ajout d'un filtre en entrée</h3><p><code>
+    <div class="example"><h3>Ajout d'un filtre en entrée</h3><pre class="prettyprint lang-config">
          # Dans l'exemple suivant, le filtre sed va remplacer la chaîne
 	 # "monday" par "MON" et la chaîne "sunday" par "SUN" dans les
-	 # données POST envoyées à PHP.<br />
-        <span class="indent">
-        &lt;Directory "/var/www/docs/sed"&gt; <br />
-           <span class="indent">
-           AddInputFilter Sed php <br />
-           InputSed "s/monday/MON/g" <br />
-           InputSed "s/sunday/SUN/g" <br />
-           </span>
-        &lt;/Directory&gt; <br />
-        </span>
-    </code></p></div>
+	 # données POST envoyées à PHP.
+        &lt;Directory "/var/www/docs/sed"&gt; 
+    AddInputFilter Sed php 
+    InputSed "s/monday/MON/g" 
+    InputSed "s/sunday/SUN/g" 
+&lt;/Directory&gt; 
+        </pre>
+</div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="sed_commands" id="sed_commands">Commandes sed</a></h2>

@@ -28,8 +28,6 @@
 <a href="../fr/mod/mod_negotiation.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_negotiation.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Effectue la <a href="../content-negotiation.html">négociation de
 contenu</a></td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -199,9 +197,10 @@ contenu</a></li>
     et le fichier <code>.var</code> doit être associé au gestionnaire
     <code>type-map</code> via une directive <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> :</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
     AddHandler type-map .var
-    </code></p></div>
+    </pre>
+
 
     <p>A l'arrivée d'une requête pour la ressource
     <code>document.html</code>, le fichier
@@ -282,10 +281,11 @@ n'est pas trouvé</td></tr>
     première variante acceptable de langue <code>en</code> qui sera
     servie.</p>
 
-    <div class="example"><p><code>
-      LanguagePriority en fr de<br />
-      ForceLanguagePriority Prefer
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+LanguagePriority en fr de
+ForceLanguagePriority Prefer
+    </pre>
+
 
     <p><code>ForceLanguagePriority Fallback</code> utilise la directive
     <code class="directive"><a href="#languagepriority">LanguagePriority</a></code>
@@ -296,10 +296,11 @@ n'est pas trouvé</td></tr>
     dans cette langue n'est trouvée, c'est la première variante de la
     liste définie par la directive <code class="directive"><a href="#languagepriority">LanguagePriority</a></code> qui sera servie.</p>
 
-    <div class="example"><p><code>
-      LanguagePriority en fr de<br />
-      ForceLanguagePriority Fallback
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+LanguagePriority en fr de
+ForceLanguagePriority Fallback
+    </pre>
+
 
     <p>Les deux options, <code>Prefer</code> et <code>Fallback</code>,
     peuvent être spécifiées, de façon à ce que la variante servie soit
@@ -333,9 +334,10 @@ cas où le client n'a pas formulé de préférences</td></tr>
     <var>langages-MIME</var> dans un ordre de préférences
     décroissantes.</p>
 
-    <div class="example"><h3>Exemple:</h3><p><code>
+    <pre class="prettyprint lang-config">
       LanguagePriority en fr de
-    </code></p></div>
+    </pre>
+
 
     <p>Dans le cas d'une requête pour <code>foo.html</code>, si
     <code>foo.html.fr</code> et <code>foo.html.de</code> existent, et si

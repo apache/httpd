@@ -27,8 +27,6 @@
 <a href="../ko/howto/public_html.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/public_html.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Sur les systèmes multi-utilisateurs, on peut permettre à chaque
 utilisateur d'avoir un site web dans son répertoire home à l'aide de la
@@ -78,9 +76,8 @@ avec le système de fichiers</a></li></ul></div>
     interprété comme chemin relatif au répertoire home de l'utilisateur
     considéré. Par exemple, avec cette configuration :</p>
 
-    <div class="example"><p><code>
-      UserDir public_html
-    </code></p></div>
+    <pre class="prettyprint lang-config">UserDir public_html</pre>
+
 
     <p>l'URL <code>http://example.com/~rbowen/fichier.html</code>
     correspondra au chemin fichier
@@ -90,9 +87,8 @@ avec le système de fichiers</a></li></ul></div>
     sera construit en utilisant ce chemin, suivi du nom de l'utilisateur
     considéré. Par exemple, avec cette configuration :</p>
 
-    <div class="example"><p><code>
-      UserDir /var/html
-    </code></p></div>
+    <pre class="prettyprint lang-config">UserDir /var/html</pre>
+
 
     <p>l'URL <code>http://example.com/~rbowen/fichier.html</code>
     correspondra au chemin fichier
@@ -102,9 +98,8 @@ avec le système de fichiers</a></li></ul></div>
     remplacé par le nom de l'utilisateur dans le chemin du fichier
     correspondant. Par exemple, avec cette configuration :</p>
 
-    <div class="example"><p><code>
-      UserDir /var/www/*/docs
-    </code></p></div>
+    <pre class="prettyprint lang-config">UserDir /var/www/*/docs</pre>
+
 
     <p>l'URL <code>http://example.com/~rbowen/fichier.html</code>
     correspondra au chemin fichier
@@ -113,9 +108,8 @@ avec le système de fichiers</a></li></ul></div>
     <p>On peut aussi définir plusieurs répertoires ou chemins de
     répertoires.</p>
 
-    <div class="example"><p><code>
-      UserDir public_html /var/html
-    </code></p></div>
+    <pre class="prettyprint lang-config">UserDir public_html /var/html</pre>
+
 
     <p>Avec l'URL <code>http://example.com/~rbowen/fichier.html</code>,
     Apache va rechercher <code>~rbowen</code>. S'il ne le trouve pas,
@@ -130,9 +124,8 @@ avec le système de fichiers</a></li></ul></div>
     <p>On peut utiliser la directive <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> pour rediriger les requêtes
     relatives aux répertoires utilisateurs vers des URLs externes.</p>
 
-    <div class="example"><p><code>
-      UserDir http://exemple.org/users/*/
-    </code></p></div>
+    <pre class="prettyprint lang-config">UserDir http://example.org/users/*/</pre>
+
 
     <p>L'exemple ci-dessus va rediriger une requête pour
     <code>http://example.com/~bob/abc.html</code> vers
@@ -147,9 +140,8 @@ avec le système de fichiers</a></li></ul></div>
     vous pouvez définir quels utilisateurs sont autorisés à utiliser
     cette fonctionnalité :</p>
 
-    <div class="example"><p><code>
-      UserDir disabled root jro fish
-    </code></p></div>
+    <pre class="prettyprint lang-config">UserDir disabled root jro fish</pre>
+
 
     <p>La configuration ci-dessus va autoriser l'utilisation de la
     fonctionnalité pour tous les utilisateurs, à l'exception de ceux
@@ -158,10 +150,11 @@ avec le système de fichiers</a></li></ul></div>
     utilisateurs sauf certains d'entre eux en utilisant une
     configuration du style :</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       UserDir disabled<br />
       UserDir enabled rbowen krietz
-    </code></p></div>
+    </pre>
+
 
     <p>Vous trouverez d'autres exemples dans la documentation de
     <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code>.</p>
@@ -175,12 +168,13 @@ avec le système de fichiers</a></li></ul></div>
    vous pouvez utiliser une section <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> pour activer CGI dans un
    sous-répertoire particulier d'un répertoire home utilisateur.</p>
 
-    <div class="example"><p><code>
-      &lt;Directory /home/*/public_html/cgi-bin/&gt;<br />
-       Options ExecCGI<br />
-       SetHandler cgi-script<br />
-       &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Directory /home/*/public_html/cgi-bin/&gt;
+    Options ExecCGI
+    SetHandler cgi-script
+&lt;/Directory&gt;
+    </pre>
+
 
     <p>Avec la configuration ci-dessus, et en supposant que
     <code>UserDir</code> est défini à <code>public_html</code>, un

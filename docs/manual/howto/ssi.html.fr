@@ -28,8 +28,6 @@
 <a href="../ja/howto/ssi.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/ssi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Les SSI permettent d'ajouter du contenu dynamique à des documents
 HTML préexistants.</p>
@@ -86,9 +84,10 @@ HTML préexistants.</p>
     devez ajouter la directive suivante dans votre fichier
     <code>httpd.conf</code>, ou dans un fichier <code>.htaccess</code>
     :</p>
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
         Options +Includes
-</code></p></div>
+</pre>
+
 
     <p>Cette directive indique à Apache que vous désirez permettre la
     recherche de directives SSI lors de l'interprétation des fichiers.
@@ -103,10 +102,11 @@ HTML préexistants.</p>
     directives SSI. Vous devez indiquer à Apache quels fichiers seront
     concernés. Vous pouvez y parvenir en indiquant une extension, comme
     <code>.shtml</code>, à l'aide des directives suivantes :</p>
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
         AddType text/html .shtml<br />
         AddOutputFilter INCLUDES .shtml
-</code></p></div>
+</pre>
+
 
     <p>Un des désavantages de cette approche réside dans le fait que si
     vous voulez ajouter des directives SSI à une page préexistante, vous
@@ -116,9 +116,10 @@ HTML préexistants.</p>
     SSI qu'elle contient soient traitées.</p>
 
     <p>Une autre méthode consiste à utiliser la directive <code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code> :</p>
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
         XBitHack on
-</code></p></div>
+</pre>
+
 
     <p>La directive <code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code>
     indique à Apache qu'il doit rechercher des directivves SSI dans les
@@ -442,10 +443,11 @@ HTML préexistants.</p>
 
     <p>Vous pouvez ajouter les lignes suivantes dans votre fichier de
     configuration :</p>
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
         BrowserMatchNoCase macintosh Mac<br />
         BrowserMatchNoCase MSIE InternetExplorer
-</code></p></div>
+</pre>
+
 
     <p>Ces lignes définissent les variables d'environnement "Mac" et
     "InternetExplorer" à true, si le client utilise InternetExplorer sur

@@ -29,8 +29,6 @@
 <a href="../ja/mod/mod_deflate.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_deflate.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Comprime le contenu avant de le servir au
 client</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -65,41 +63,38 @@ client</td></tr>
     <p>Voici un exemple simple de configuration pour les
     impatients.</p>
 
-    <div class="example"><h3>Ne comprime que certains types de documents</h3><p><code>
+    <div class="example"><h3>Ne comprime que certains types de documents</h3><pre class="prettyprint lang-config">
       AddOutputFilterByType DEFLATE text/html text/plain text/xml
-    </code></p></div>
+      </pre>
+</div>
 
     <p>La configuration suivante, tout en produisant un contenu encore
     plus comprimé, est aussi beaucoup plus compliquée. N'utilisez pas
     cet exemple si vous ne comprenez pas tous les détails de la
     configuration.</p>
 
-    <div class="example"><h3>Comprime tout, sauf les images</h3><p><code>
-      &lt;Location /&gt;<br />
-      <span class="indent">
-        # Insère le filtre<br />
-        SetOutputFilter DEFLATE<br />
-        <br />
-        # Netscape 4.x a quelques problèmes ...<br />
-        BrowserMatch ^Mozilla/4         gzip-only-text/html<br />
-        <br />
-        # Netscape 4.06-4.08 ont d'autres problèmes<br />
-        BrowserMatch ^Mozilla/4\.0[678] no-gzip<br />
-        <br />
-        # MSIE se fait passer pour Netscape, mais ça marche<br />
-        BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html<br />
-        # Ne pas comprimer les images<br />
-        SetEnvIfNoCase Request_URI \<br />
-        <span class="indent">
-          \.(?:gif|jpe?g|png)$ no-gzip dont-vary<br />
-        </span>
-        <br />
-        # On s'assure que les mandataires ne servent pas le mauvais
-	# contenu<br />
-        Header append Vary User-Agent env=!dont-vary<br />
-      </span>
-      &lt;/Location&gt;
-    </code></p></div>
+    <div class="example"><h3>Comprime tout, sauf les images</h3><pre class="prettyprint lang-config">
+&lt;Location /&gt;
+    # Insert filter
+    SetOutputFilter DEFLATE
+    
+    # Netscape 4.x a quelques problèmes ...
+    BrowserMatch ^Mozilla/4         gzip-only-text/html
+    
+    # Netscape 4.06-4.08 ont d'autres problèmes
+    BrowserMatch ^Mozilla/4\.0[678] no-gzip
+    
+    # MSIE se fait passer pour Netscape, mais ça marche
+    BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html
+    # Ne pas comprimer les images
+    SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip dont-vary
+    
+    # On s'assure que les mandataires ne servent pas le mauvais
+     # contenu
+    Header append Vary User-Agent env=!dont-vary
+&lt;/Location&gt;
+      </pre>
+</div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -110,9 +105,10 @@ client</td></tr>
       directive suivante active la compression des documents dans le
       conteneur où elle est placée :</p>
 
-      <div class="example"><p><code>
+      <pre class="prettyprint lang-config">
         SetOutputFilter DEFLATE
-      </code></p></div>
+	</pre>
+
 
       <p>Certains navigateurs populaires ne gèrent pas la compression de
       tous les contenus, et pour résoudre ce problème, vous pouvez
@@ -126,13 +122,12 @@ client</td></tr>
       où la compression n'est activée que pour les fichiers html de la
       documentation d'Apache :</p>
 
-      <div class="example"><p><code>
-        &lt;Directory "/racine-de-votre-serveur/manual"&gt;<br />
-        <span class="indent">
-          AddOutputFilterByType DEFLATE text/html<br />
-        </span>
-        &lt;/Directory&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+&lt;Directory "/your-server-root/manual"&gt;
+    AddOutputFilterByType DEFLATE text/html
+&lt;/Directory&gt;
+      </pre>
+
 
       <p>Pour les navigateurs qui ont des problèmes avec la compression
       de tous les types de fichiers, vous pouvez utiliser la directive
@@ -145,11 +140,12 @@ client</td></tr>
       deuxième. Considérons l'extrait suivant de l'<a href="#recommended">exemple de configuration</a> de la section
       précédente :</p>
 
-      <div class="example"><p><code>
-        BrowserMatch ^Mozilla/4         gzip-only-text/html<br />
-        BrowserMatch ^Mozilla/4\.0[678] no-gzip<br />
-        BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+BrowserMatch ^Mozilla/4         gzip-only-text/html
+BrowserMatch ^Mozilla/4\.0[678] no-gzip
+BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html
+      </pre>
+
 
       <p>Tout d'abord, on recherche un en-tête <code>User-Agent</code>
       qui signale un navigateur Netscape version 4.x. Ces versions ne
@@ -190,14 +186,13 @@ client</td></tr>
       <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code>, comme
       dans l'exemple suivant :</p>
 
-      <div class="example"><p><code>
-        &lt;Location /dav-area&gt;<br />
-        <span class="indent">
-          ProxyPass http://example.com/<br />
-          SetOutputFilter INFLATE<br />
-        </span>
-        &lt;/Location&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+&lt;Location /dav-area&gt;
+    ProxyPass http://example.com/
+    SetOutputFilter INFLATE
+&lt;/Location&gt;
+      </pre>
+
 
       <p>Dans cet exemple, les sorties comprimées par gzip en
       provenance de example.com seront décomprimées afin de pouvoir
@@ -214,13 +209,12 @@ client</td></tr>
       <code class="directive"><a href="../mod/mod_mime.html#addinputfilter">AddInputFilter</a></code>, comme
       dans l'exemple suivant :</p>
 
-      <div class="example"><p><code>
-        &lt;Location /dav-area&gt;<br />
-        <span class="indent">
-          SetInputFilter DEFLATE<br />
-        </span>
-        &lt;/Location&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+&lt;Location /dav-area&gt;
+    SetInputFilter DEFLATE
+&lt;/Location&gt;
+      </pre>
+
 
       <p>Désormais, si une requête contient un en-tête
       <code>Content-Encoding: gzip</code>, son corps sera
@@ -259,9 +253,10 @@ client</td></tr>
     <code>DEFLATE</code> dépend du contenu de l'en-tête
     <code>User-Agent</code>, vous devez spécifier :</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       Header append Vary User-Agent
-    </code></p></div>
+    </pre>
+
 
     <p>Si votre décision de comprimer le contenu dépend d'autres
     informations que celles contenues dans les en-têtes de la requête
@@ -269,9 +264,10 @@ client</td></tr>
     <code>Vary</code> la valeur <code>*</code>, ce qui permet d'empêcher
     les mandataires compatibles de tout mettre en cache.</p>
 
-    <div class="example"><h3>Exemple</h3><p><code>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
       Header set Vary *
-    </code></p></div>
+      </pre>
+</div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="DeflateBufferSize" id="DeflateBufferSize">DeflateBufferSize</a> <a name="deflatebuffersize" id="deflatebuffersize">Directive</a></h2>
@@ -329,12 +325,13 @@ d'Apache</td></tr>
     d'un argument de la directive. Vous pouvez utiliser cette note à des
     fins statistiques en enregistrant sa valeur dans votre <a href="../logs.html#accesslog">journal des accès</a>.</p>
 
-    <div class="example"><h3>Exemple</h3><p><code>
-      DeflateFilterNote ratio<br />
-      <br />
-      LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' deflate<br />
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
+      DeflateFilterNote ratio
+    
+      LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' deflate
       CustomLog logs/deflate_log deflate
-    </code></p></div>
+      </pre>
+</div>
 
     <p>Pour extraire des informations plus précises de vos journaux,
     vous pouvez utiliser l'argument <var>type</var> pour spécifier le
@@ -359,14 +356,15 @@ d'Apache</td></tr>
     <p>Vous pouvez donc configurer votre journalisation de la manière
     suivante :</p>
 
-    <div class="example"><h3>Journalisation détaillée</h3><p><code>
-      DeflateFilterNote Input instream<br />
-      DeflateFilterNote Output outstream<br />
-      DeflateFilterNote Ratio ratio<br />
-      <br />
-      LogFormat '"%r" %{outstream}n/%{instream}n (%{ratio}n%%)' deflate<br />
-      CustomLog logs/deflate_log deflate
-    </code></p></div>
+    <div class="example"><h3>Journalisation détaillée</h3><pre class="prettyprint lang-config">
+DeflateFilterNote Input instream
+DeflateFilterNote Output outstream
+DeflateFilterNote Ratio ratio
+
+LogFormat '"%r" %{outstream}n/%{instream}n (%{ratio}n%%)' deflate
+CustomLog logs/deflate_log deflate
+</pre>
+</div>
 
 <h3>Voir aussi</h3>
 <ul>

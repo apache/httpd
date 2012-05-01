@@ -28,8 +28,6 @@
 <a href="../fr/mod/mod_auth_digest.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/mod/mod_auth_digest.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Authentification utilisateur utilisant les condensés
 MD5</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -80,19 +78,18 @@ condensés</a></h2>
     <p>On peut créer les fichiers utilisateur appropriés (au format
     texte) à l'aide de l'outil <code class="program"><a href="../programs/htdigest.html">htdigest</a></code>.</p>
 
-    <div class="example"><h3>Exemple :</h3><p><code>
-      &lt;Location /private/&gt;<br />
-      <span class="indent">
-        AuthType Digest<br />
-        AuthName "private area"<br />
-        AuthDigestDomain /private/ http://mirror.my.dom/private2/<br />
-        <br />
-        AuthDigestProvider file<br />
-        AuthUserFile /web/auth/.digest_pw<br />
-        Require valid-user<br />
-      </span>
-      &lt;/Location&gt;
-    </code></p></div>
+    <div class="example"><h3>Exemple :</h3><pre class="prettyprint lang-config">
+&lt;Location /private/&gt;
+    AuthType Digest
+    AuthName "private area"
+    AuthDigestDomain /private/ http://mirror.my.dom/private2/
+    
+    AuthDigestProvider file
+    AuthUserFile /web/auth/.digest_pw
+    Require valid-user
+&lt;/Location&gt;
+      </pre>
+</div>
 
     <div class="note"><h3>Note</h3>
     <p>L'authentification à base de condensés MD5 est plus sécurisée que
@@ -138,9 +135,10 @@ condensés</a></h2>
     ceci :</p>
 
     <div class="example"><h3>Utilisation de l'authentification à base de condensé
-    avec MSIE :</h3><p><code>
-    BrowserMatch "MSIE" AuthDigestEnableQueryStringHack=On
-    </code></p></div>
+    avec MSIE :</h3><pre class="prettyprint lang-config">
+        BrowserMatch "MSIE" AuthDigestEnableQueryStringHack=On
+    </pre>
+</div>
 
     <p>Cette correction n'est pas nécessaire avec MSIE 7, bien que son
     activation ne pose pas de problème de compatibilité ou de surcharge
@@ -350,11 +348,12 @@ les informations à propos des clients</td></tr>
     MégaOctets. Par exemple, les directives qui suivent sont toutes
     équivalentes :</p>
 
-    <div class="example"><p><code>
-      AuthDigestShmemSize 1048576<br />
-      AuthDigestShmemSize 1024K<br />
-      AuthDigestShmemSize 1M
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+AuthDigestShmemSize 1048576
+AuthDigestShmemSize 1024K
+AuthDigestShmemSize 1M
+    </pre>
+
 
 </div>
 </div>
