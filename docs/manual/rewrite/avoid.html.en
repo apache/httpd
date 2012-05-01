@@ -209,8 +209,8 @@ hostname, such as <code>www.example.com</code> instead of
 <code>example.com</code>. This can be done using the <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> directive, as shown here:</p>
 
 <pre class="prettyprint lang-config">
-&lt;If "$req{Host} != 'www.example.com'"&gt;
-    RedirectMatch (.*) http://www.example.com$1
+&lt;If "req('Host') != 'www.example.com'"&gt;
+    Redirect / http://www.example.com/
 &lt;/If&gt;
 </pre>
 
