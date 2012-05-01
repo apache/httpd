@@ -26,8 +26,6 @@
 <a href="../ja/howto/cgi.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/cgi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#intro">Introduction</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#configuring">Configurer Apache pour autoriser CGI</a></li>
@@ -67,9 +65,10 @@
     commentée dans votre <code>httpd.conf</code>. Une directive correcte
     doit ressembler à ceci :
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       LoadModule cgi_module modules/mod_cgi.so
-    </code></p></div></div>
+    </pre>
+</div>
 
     <h3><a name="scriptalias" id="scriptalias">ScriptAlias</a></h3>
       
@@ -83,9 +82,10 @@
       <p>La directive <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> se présente comme suit
       :</p>
 
-      <div class="example"><p><code>
+      <pre class="prettyprint lang-config">
         ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/
-      </code></p></div>
+      </pre>
+
 
       <p>Cet exemple est tiré de votre fichier de configuration
       <code>httpd.conf</code> par défaut, si vous avez installé Apache
@@ -149,13 +149,12 @@
       l'exécution des programmes CGI est permise depuis un répertoire
       particulier :</p>
 
-      <div class="example"><p><code>
-        &lt;Directory /usr/local/apache2/htdocs/un-repertoire&gt;<br />
-        <span class="indent">
-          Options +ExecCGI<br />
-        </span>
-        &lt;/Directory&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+&lt;Directory /usr/local/apache2/htdocs/somedir&gt;
+    Options +ExecCGI
+&lt;/Directory&gt;
+      </pre>
+
 
       <p>La directive ci-dessus indique à Apache qu'il doit permettre
       l'exécution des fichiers CGI. Vous devez aussi indiquer au serveur
@@ -164,9 +163,10 @@
       extension <code>cgi</code> ou <code>pl</code> en tant que
       programmes CGI :</p>
 
-      <div class="example"><p><code>
+      <pre class="prettyprint lang-config">
         AddHandler cgi-script .cgi .pl
-      </code></p></div>
+      </pre>
+
     
 
     <h3><a name="htaccess" id="htaccess">Fichiers .htaccess</a></h3>
@@ -186,27 +186,25 @@
       répertoire utilisateur, vous pouvez utiliser la configuration
       suivante :</p>
 
-      <div class="example"><p><code>
-      &lt;Directory /home/*/public_html&gt;<br />
-      <span class="indent">
-        Options +ExecCGI<br />
-        AddHandler cgi-script .cgi<br />
-      </span>
-      &lt;/Directory&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+&lt;Directory /home/*/public_html&gt;
+    Options +ExecCGI
+    AddHandler cgi-script .cgi
+&lt;/Directory&gt;
+      </pre>
+
 
       <p>Pour indiquer un sous-répertoire <code>cgi-bin</code> d'un
       répertoire utilisateur où tout fichier sera traité en tant que
       programme CGI, vous pouvez utiliser ceci :</p>
 
-      <div class="example"><p><code>
-      &lt;Directory /home/*/public_html/cgi-bin&gt;<br />
-      <span class="indent">
-        Options ExecCGI<br />
-        SetHandler cgi-script<br />
-      </span>
-      &lt;/Directory&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+&lt;Directory /home/*/public_html/cgi-bin&gt;
+    Options ExecCGI
+    SetHandler cgi-script
+&lt;/Directory&gt;
+      </pre>
+
 
     
 
@@ -248,7 +246,7 @@
       <pre class="prettyprint lang-perl">
 #!/usr/bin/perl
 print "Content-type: text/html\n\n";
-print "Bonjour tout le monde . . .";
+print "Hello, World.";
       </pre>
 
 
@@ -364,9 +362,10 @@ print "Bonjour tout le monde . . .";
       trouve à la première ligne de votre programme CGI et qui va
       ressembler à ceci :</p>
 
-      <div class="example"><p><code>
+      <pre class="prettyprint lang-perl">
         #!/usr/bin/perl
-      </code></p></div>
+      </pre>
+
 
       <p>Assurez-vous qu'il s'agit bien du chemin correct vers
       l'interpréteur.</p>
@@ -523,7 +522,7 @@ print "Bonjour tout le monde . . .";
 #!/usr/bin/perl
 print "Content-type: text/html\n\n";
 foreach $key (keys %ENV) {
-  print "$key --&gt; $ENV{$key}&lt;br&gt;";
+    print "$key --&gt; $ENV{$key}&lt;br&gt;";
 }
       </pre>
 

@@ -29,8 +29,6 @@
 <a href="../ja/mod/mod_cache_disk.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_cache_disk.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module de stockage sur disque pour le filtre de mise en
 cache HTTP.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -170,9 +168,10 @@ cache.</td></tr>
     définir la taille maximale d'un document, en octets, pour que
     celui-ci puisse faire l'objet d'un stockage dans le cache.</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       CacheMaxFileSize 64000
-    </code></p></div>
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -190,9 +189,10 @@ cache.</td></tr>
     définir la taille minimale d'un document, en octets, pour que
     celui-ci puisse faire l'objet d'un stockage dans le cache.</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       CacheMinFileSize 64
-    </code></p></div>
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -220,9 +220,10 @@ mettre en cache avant de les envoyer au client</td></tr>
     enregistrées dans le cache, et non lorsque les données sont servies à
     partir du cache.</p>
   
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       CacheReadSize 102400
-    </code></p></div>
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -252,9 +253,10 @@ avant d'envoyer les données au client</td></tr>
     que le serveur n'effectue pas une mise en tampon excessive au cas
     où les données arriveraient plus vite que prévu.</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       CacheReadTime 1000
-    </code></p></div>
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -277,9 +279,10 @@ seront stockés</td></tr>
     définir la structure des sous-répertoires du répertoire racine
     spécifié.</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       CacheRoot c:/cacheroot
-    </code></p></div>
+    </pre>
+
 
 </div>
 </div>

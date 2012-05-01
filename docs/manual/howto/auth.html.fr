@@ -27,8 +27,6 @@
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>L'authentification est un processus qui vous permet de vérifier
     qu'une personne est bien celle qu'elle prétend être. L'autorisation
@@ -146,9 +144,8 @@ module de chaque groupe.</p>
     d'une directive <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code>
     du style :</p>
 
-    <div class="example"><p><code>
-      AllowOverride AuthConfig
-    </code></p></div>
+    <pre class="prettyprint lang-config">AllowOverride AuthConfig</pre>
+
 
     <p>Si vous avez l'intention d'ajouter les directives directement
     dans le fichier de configuration principal, vous devrez bien entendu
@@ -224,14 +221,15 @@ module de chaque groupe.</p>
     fichier <code>httpd.conf</code> à l'intérieur d'une section &lt;Directory
     /usr/local/apache/htdocs/secret&gt; :</p>
 
-    <div class="example"><p><code>
-      AuthType Basic<br />
-      AuthName "Fichiers réservés"<br />
-      # (La ligne suivante est facultative)<br />
-      AuthBasicProvider file<br />
-      AuthUserFile /usr/local/apache/passwd/passwords<br />
-      Require user rbowen
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+AuthType Basic
+AuthName "Restricted Files"
+# (Following line optional)
+AuthBasicProvider file
+AuthUserFile /usr/local/apache/passwd/passwords
+Require user rbowen
+    </pre>
+
 
     <p>Examinons ces directives une à une. La directive <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code> définit la méthode
     utilisée pour authentifier l'utilisateur. La méthode la plus
@@ -326,15 +324,16 @@ plusieurs personnes</a></h2>
     <p>Maintenant, vous devez modifier votre fichier
     <code>.htaccess</code> comme suit :</p>
 
-    <div class="example"><p><code>
-      AuthType Basic<br />
-      AuthName "By Invitation Only"<br />
-      # Ligne facultative :<br />
-      AuthBasicProvider file<br />
-      AuthUserFile /usr/local/apache/passwd/passwords<br />
-      AuthGroupFile /usr/local/apache/passwd/groups<br />
-      Require group Nom-de-groupe
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+AuthType Basic
+AuthName "By Invitation Only"
+# Optional line:
+AuthBasicProvider file
+AuthUserFile /usr/local/apache/passwd/passwords
+AuthGroupFile /usr/local/apache/passwd/groups
+Require group GroupName
+    </pre>
+
 
     <p>Maintenant, quiconque appartient au groupe
     <code>Nom-de-groupe</code>, et possède une entrée dans le fichier
@@ -345,9 +344,8 @@ plusieurs personnes</a></h2>
     l'accès à plusieurs personnes. Plutôt que de créer un fichier de
     groupes, il vous suffit d'ajouter la directive suivante :</p>
 
-    <div class="example"><p><code>
-      Require valid-user
-    </code></p></div>
+    <pre class="prettyprint lang-config">Require valid-user</pre>
+
 
     <p>Le remplacement de la ligne <code>Require user rbowen</code> par
     la ligne <code>Require valid-user</code> autorisera l'accès à
@@ -399,17 +397,16 @@ passe</a></h2>
     <p>Par exemple, pour sélectionner un fichier dbm à la place d'un
     fichier texte :</p>
 
-    <div class="example"><p><code>
-    &lt;Directory /www/docs/private&gt;<br />
-    <span class="indent">
-    AuthName "Private"<br />
-    AuthType Basic<br />
-    AuthBasicProvider dbm<br />
-    AuthDBMUserFile /www/passwords/passwd.dbm<br />
-    Require valid-user<br />
-    </span>
-    &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Directory /www/docs/private&gt;
+    AuthName "Private"
+    AuthType Basic
+    AuthBasicProvider dbm
+    AuthDBMUserFile /www/passwords/passwd.dbm
+    Require valid-user
+&lt;/Directory&gt;
+    </pre>
+
 
     <p>D'autres options sont disponibles. Consultez la documentation de
     <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> pour plus de détails.</p>
@@ -427,18 +424,17 @@ d'authentification</a></h2>
     conjointement les fournisseurs d'authentification
     file et LDAP :</p>
 
-    <div class="example"><p><code>
-    &lt;Directory /www/docs/private&gt;<br />
-    <span class="indent">
-    AuthName "Private"<br />
-    AuthType Basic<br />
-    AuthBasicProvider file ldap<br />
-    AuthUserFile /usr/local/apache/passwd/passwords<br />
-    AuthLDAPURL ldap://ldaphost/o=yourorg<br />
-    Require valid-user<br />
-    </span>
-    &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Directory /www/docs/private&gt;
+    AuthName "Private"
+    AuthType Basic
+    AuthBasicProvider file ldap
+    AuthUserFile /usr/local/apache/passwd/passwords
+    AuthLDAPURL ldap://ldaphost/o=yourorg
+    Require valid-user
+&lt;/Directory&gt;
+    </pre>
+
 
     <p>Dans cet exemple, le fournisseur file va tenter d'authentifier
     l'utilisateur en premier. S'il n'y parvient pas, le fournisseur LDAP
@@ -456,20 +452,19 @@ d'authentification</a></h2>
     autorisation à base de fichier de groupes et une autorisation à base
     de groupes LDAP.</p>
 
-    <div class="example"><p><code>
-    &lt;Directory /www/docs/private&gt;<br />
-    <span class="indent">
-    AuthName "Private"<br />
-    AuthType Basic<br />
-    AuthBasicProvider file<br />
-    AuthUserFile /usr/local/apache/passwd/passwords<br />
+    <pre class="prettyprint lang-config">
+&lt;Directory /www/docs/private&gt;
+    AuthName "Private"
+    AuthType Basic
+    AuthBasicProvider file
+    AuthUserFile /usr/local/apache/passwd/passwords
     AuthLDAPURL ldap://ldaphost/o=yourorg
-    AuthGroupFile /usr/local/apache/passwd/groups<br />
-    Require group GroupName<br />
-    Require ldap-group cn=mygroup,o=yourorg<br />
-    </span>
-    &lt;/Directory&gt;
-    </code></p></div>
+    AuthGroupFile /usr/local/apache/passwd/groups
+    Require group GroupName
+    Require ldap-group cn=mygroup,o=yourorg
+&lt;/Directory&gt;
+    </pre>
+
 
     <p>Pour un scénario d'autorisation un peu plus avancé, des
     directives de conteneur d'autorisation comme <code class="directive"><a href="../mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code> et
@@ -552,16 +547,14 @@ autorisation</a></h2>
 	seront appelés dans le processus d'autorisation au cours du
 	traitement de la requête. Par exemple :</p>
 
-        <div class="example"><p><code>
-          Require ip <var>adresse</var>
-        </code></p></div>
+        <pre class="prettyprint lang-config">Require ip <var>address</var></pre>
+
 
         <p>où <var>adresse</var> est une adresse IP (ou une adresse IP
 	partielle) ou :</p>
 
-        <div class="example"><p><code>
-          Require host <var>nom_domaine</var>
-        </code></p></div>
+        <pre class="prettyprint lang-config">Require host <var>domain_name</var></pre>
+
 
         <p>où <var>nom_domaine</var> est un nom de domaine entièrement
 	qualifé (ou un nom de domaine partiel) ; vous pouvez indiquer
@@ -570,47 +563,42 @@ autorisation</a></h2>
         <p>Par exemple, si vous voulez rejeter les spams dont une
 	machine vous inonde, vous pouvez utiliser ceci :</p>
 
-        <div class="example"><p><code>
-          &lt;RequireAll&gt;
-          <span class="indent">
-            Require all granted<br />
-            Require not ip 10.252.46.165
-          </span>
-          &lt;/RequireAll&gt;
-        </code></p></div>
+        <pre class="prettyprint lang-config">
+&lt;RequireAll&gt;
+    Require all granted
+    Require not ip 10.252.46.165
+&lt;/RequireAll&gt;
+        </pre>
+
 
         <p>Ainsi, les visiteurs en provenance de cette adresse ne
 	pourront pas voir le contenu concerné par cette directive. Si,
 	par contre, vous connaissez le nom de la machine, vous pouvez
 	utiliser ceci :</p>
 
-        <div class="example"><p><code>
-           &lt;RequireAll&gt;
-          <span class="indent">
-            Require all granted<br />
-            Require not host <var>serveur.example.com</var>
-          </span>
-          &lt;/RequireAll&gt;
-        </code></p></div>
+        <pre class="prettyprint lang-config">
+&lt;RequireAll&gt;
+    Require all granted
+    Require not host host.example.com
+&lt;/RequireAll&gt;
+        </pre>
+
 
         <p>Et si vous voulez interdire l'accès à toutes les machines
 	d'un domaine, vous pouvez spécifier une partie seulement de
 	l'adresse ou du nom de domaine :</p>
 
-        <div class="example"><p><code>
-         &lt;RequireAll&gt;
-          <span class="indent">
-             Require all granted<br />
-            &lt;RequireNone&gt;
-            <span class="indent">
-              Require ip 192.168.205<br />
-              Require host phishers.example.com autres-idiots.exemple<br />
-              Require host ke
-            </span>
-            &lt;/RequireNone&gt;
-          </span>
-          &lt;/RequireAll&gt;
-        </code></p></div>
+        <pre class="prettyprint lang-config">
+&lt;RequireAll&gt;
+    Require all granted
+    &lt;RequireNone&gt;
+        Require ip 192.168.205
+        Require host phishers.example.com moreidiots.example
+        Require host ke
+    &lt;/RequireNone&gt; 
+&lt;/RequireAll&gt;
+        </pre>
+
 
         <p>Dans l'exemple ci-dessus, on utilise la directive du
 	conteneur <code class="directive"><a href="../mod/mod_authz_core.html#requirenone">&lt;RequireNone&gt;</a></code> afin de s'assurer

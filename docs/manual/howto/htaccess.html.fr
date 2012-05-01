@@ -27,8 +27,6 @@
 <a href="../ko/howto/htaccess.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../pt-br/howto/htaccess.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Les fichiers <code>.htaccess</code> fournissent une méthode pour
 modifier la configuration du serveur au niveau de chaque répertoire.</p>
@@ -76,9 +74,10 @@ Includes - SSI)</a></li>
       <code>.config</code>, vous pouvez mettre ceci dans le fichier de
       configuration de votre serveur :</p>
 
-      <div class="example"><p><code>
+      <pre class="prettyprint lang-config">
         AccessFileName .config
-      </code></p></div>
+      </pre>
+
     </div>
 
     <p>En général, les fichiers <code>.htaccess</code> utilisent la même
@@ -219,18 +218,16 @@ Includes - SSI)</a></li>
     <code>/www/htdocs/exemple</code> :</p>
 
     <div class="example"><h3>Contenu du fichier .htaccess dans
-    <code>/www/htdocs/exemple</code></h3><p><code>
-    	AddType text/exemple .exm
-    </code></p></div>
+    <code>/www/htdocs/exemple</code></h3><pre class="prettyprint lang-config">AddType text/example .exm</pre>
+</div>
 
     <div class="example"><h3>Section de votre fichier
-    <code>httpd.conf</code></h3><p><code>
-      &lt;Directory /www/htdocs/exemple&gt;<br />
-      <span class="indent">
-        AddType text/exemple .exm<br />
-      </span>
-      &lt;/Directory&gt;
-    </code></p></div>
+    <code>httpd.conf</code></h3><pre class="prettyprint lang-config">
+&lt;Directory /www/htdocs/example&gt;<br />
+    AddType text/example .exm<br />
+&lt;/Directory&gt;
+    </pre>
+</div>
 
     <p>Cependant, la perte de performances sera moindre si vous
     définissez cette directive dans la configuration de
@@ -241,9 +238,8 @@ Includes - SSI)</a></li>
     <p>L'utilisation des fichiers <code>.htaccess</code> peut être
     entièrement désactivée en définissant la directive <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> à <code>none</code> :</p>
 
-    <div class="example"><p><code>
-      AllowOverride None
-    </code></p></div>
+    <pre class="prettyprint lang-config">AllowOverride None</pre>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="how" id="how">Comment sont appliquées les directives ?</a></h2>
@@ -268,9 +264,8 @@ Includes - SSI)</a></li>
     <p>Dans le répertoire <code>/www/htdocs/exemple1</code> se trouve un
     fichier <code>.htaccess</code> contenant ce qui suit :</p>
 
-    <div class="example"><p><code>
-       Options +ExecCGI
-    </code></p></div>
+    <pre class="prettyprint lang-config">Options +ExecCGI</pre>
+
 
     <p>Note : "<code>AllowOverride Options</code>" doit être présent
     pour permettre l'utilisation de la directive "<code class="directive"><a href="../mod/core.html#options">Options</a></code>"  dans les fichiers
@@ -280,9 +275,8 @@ Includes - SSI)</a></li>
     trouve un fichier <code>.htaccess</code> contenant ce qui suit
     :</p>
 
-    <div class="example"><p><code>
-       Options Includes
-    </code></p></div>
+    <pre class="prettyprint lang-config">Options Includes</pre>
+
 
     <p>Ainsi, à cause de ce second fichier <code>.htaccess</code> du
     répertoire <code>/www/htdocs/exemple1/exemple2</code>, l'exécution
@@ -306,19 +300,16 @@ Includes - SSI)</a></li>
     définition de toute autre option dans les fichiers
     <code>.htaccess</code>, vous pouvez utiliser :</p>
 
-    <div class="example"><p><code>
-&lt;Directory /www/htdocs&gt;<br />
-<span class="indent">
-Allowoverride All<br />
-</span>
-&lt;/Directory&gt;<br />
-<br />
-&lt;Location /&gt;<br />
-<span class="indent">
-Options +IncludesNoExec -ExecCGI<br />
-</span>
+    <pre class="prettyprint lang-config">
+&lt;Directory /www/htdocs&gt;
+    Allowoverride All
+&lt;/Directory&gt;
+
+&lt;Location /&gt;
+    Options +IncludesNoExec -ExecCGI<br />
 &lt;/Location&gt;
-    </code></p></div>
+    </pre>
+
 
     <div class="note">Dans cet exemple, on considère que le chemin défini par la
     directive <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> est
@@ -347,13 +338,14 @@ Options +IncludesNoExec -ExecCGI<br />
 
     <p>Contenu du fichier <code>.htaccess</code> :</p>
 
-    <div class="example"><p><code>
-      AuthType Basic<br />
-      AuthName "Password Required"<br />
-      AuthUserFile /www/passwords/password.file<br />
-      AuthGroupFile /www/passwords/group.file<br />
-      Require Group admins
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+AuthType Basic
+AuthName "Password Required"
+AuthUserFile /www/passwords/password.file
+AuthGroupFile /www/passwords/group.file
+Require Group admins
+    </pre>
+
 
     <p>Notez que <code>AllowOverride AuthConfig</code> doit être présent
     pour que ces directives produisent leur effet.</p>
@@ -372,11 +364,12 @@ Includes - SSI)</a></h2>
     placées dans un fichier <code>.htaccess</code> enregistré dans le
     répertoire considéré :</p>
 
-    <div class="example"><p><code>
-       Options +Includes<br />
-       AddType text/html shtml<br />
-       AddHandler server-parsed shtml
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Options +Includes
+AddType text/html shtml
+AddHandler server-parsed shtml
+    </pre>
+
 
     <p>Notez que <code>AllowOverride Options</code> et <code>AllowOverride
     FileInfo</code> doivent être tous les deux présents pour que ces
@@ -393,19 +386,21 @@ Includes - SSI)</a></h2>
     dans un répertoire particulier. Pour y parvenir, vous pouvez
     utiliser la configuration suivante :</p>
 
-    <div class="example"><p><code>
-       Options +ExecCGI<br />
-       AddHandler cgi-script cgi pl
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Options +ExecCGI
+AddHandler cgi-script cgi pl
+    </pre>
+
 
     <p>Alternativement, si vous souhaitez que tous les fichiers d'un
     répertoire donné soient considérés comme des programmes CGI, vous
     pouvez utiliser la configuration suivante :</p>
 
-    <div class="example"><p><code>
-       Options +ExecCGI<br />
-       SetHandler cgi-script
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Options +ExecCGI
+SetHandler cgi-script
+    </pre>
+
 
     <p>Notez que <code>AllowOverride Options</code> et <code>AllowOverride
     FileInfo</code> doivent être tous les deux présents pour que ces

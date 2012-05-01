@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authn_core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authn_core.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Le noyau de l'authentification</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>authn_core_module</td></tr>
@@ -73,32 +71,26 @@ d'authentification</a></h2>
 	textes différents.</p>
 
 	<div class="example"><h3>Vérification dans plusieurs fichiers de mots de
-	passe au format texte</h3><p><code>
+	passe au format texte</h3><pre class="prettyprint lang-config">
+# Première vérification
+&lt;AuthnProviderAlias file file1&gt;
+    AuthUserFile /www/conf/passwords1
+&lt;/AuthnProviderAlias&gt;
 
-        # On vérifie tout d'abord ici<br />
-        &lt;AuthnProviderAlias file file1&gt;<br />
-        <span class="indent">
-            AuthUserFile /www/conf/passwords1<br />
-        </span>
-        &lt;/AuthnProviderAlias&gt;<br />
-        <br />
-        # On vérifie ensuite là<br />
-        &lt;AuthnProviderAlias file file2&gt;   <br />
-        <span class="indent">
-            AuthUserFile /www/conf/passwords2<br />
-        </span>
-        &lt;/AuthnProviderAlias&gt;<br />
-        <br />
-        &lt;Directory /var/web/pages/secure&gt;<br />
-        <span class="indent">
-            AuthBasicProvider file1 file2<br />
-            <br />
-            AuthType Basic<br />
-            AuthName "Zone protégée"<br />
-            Require valid-user<br />
-        </span>
-        &lt;/Directory&gt;<br />
-        </code></p></div>
+# Vérification suivante
+&lt;AuthnProviderAlias file file2&gt;   
+    AuthUserFile /www/conf/passwords2
+&lt;/AuthnProviderAlias&gt;
+
+&lt;Directory /var/web/pages/secure&gt;
+    AuthBasicProvider file1 file2
+    
+    AuthType Basic
+    AuthName "Protected Area"
+    Require valid-user
+&lt;/Directory&gt;
+        </pre>
+</div>
 
 
 
@@ -109,36 +101,31 @@ d'authentification</a></h2>
 	ldap :</p>
 
         <div class="example"><h3>Vérification auprès de plusieurs serveurs
-	LDAP</h3><p><code>
-          &lt;AuthnProviderAlias ldap alias-ldap&gt;<br />
-          <span class="indent">
-             AuthLDAPBindDN cn=utilisateur,o=ctx<br />
-             AuthLDAPBindPassword mot-de-passe<br />
-             AuthLDAPURL ldap://serveur.ldap/o=ctx<br />
-          </span>
-          &lt;/AuthnProviderAlias&gt;<br /><br />
-          &lt;AuthnProviderAlias ldap autre-alias-ldap&gt;<br />
-          <span class="indent">
-             AuthLDAPBindDN cn=autre-utilisateur,o=dev<br />
-             AuthLDAPBindPassword autre-mot-de-passe<br />
-             AuthLDAPURL ldap://autre.serveur.ldap/o=dev?cn<br />
-          </span>
-          &lt;/AuthnProviderAlias&gt;<br /><br />
+	LDAP</h3><pre class="prettyprint lang-config">
+&lt;AuthnProviderAlias ldap ldap-alias1&gt;
+    AuthLDAPBindDN cn=youruser,o=ctx
+    AuthLDAPBindPassword yourpassword
+    AuthLDAPURL ldap://ldap.host/o=ctx
+    &lt;/AuthnProviderAlias&gt;
+    &lt;AuthnProviderAlias ldap ldap-other-alias&gt;
+    AuthLDAPBindDN cn=yourotheruser,o=dev
+    AuthLDAPBindPassword yourotherpassword
+    AuthLDAPURL ldap://other.ldap.host/o=dev?cn
+&lt;/AuthnProviderAlias&gt;
 
-          Alias /secure /webpages/secure<br />
-          &lt;Directory /webpages/secure&gt;<br />
-          <span class="indent">
-             Order deny,allow<br />
-             Allow from all<br /><br />
-
-             AuthBasicProvider autre-alias-ldap alias-ldap <br /><br />
-
-             AuthType Basic<br />Exemple
-             AuthName Zone_protégée_par_LDAP<br />
-             Require valid-user<br />
-          </span>
-          &lt;/Directory&gt;<br />
-        </code></p></div>
+Alias /secure /webpages/secure
+&lt;Directory /webpages/secure&gt;
+    Order deny,allow
+    Allow from all
+    
+    AuthBasicProvider ldap-other-alias  ldap-alias1
+    
+    AuthType Basic
+    AuthName LDAP_Protected_Place
+    Require valid-user
+&lt;/Directory&gt;
+          </pre>
+</div>
     
 
 </div>
@@ -164,9 +151,10 @@ l'authentification HTTP</td></tr>
 
    <p>Par exemple :</p>
 
-   <div class="example"><p><code>
+   <pre class="prettyprint lang-config">
      AuthName "Top Secret"
-   </code></p></div>
+   </pre>
+
 
     <p>La chaîne fournie comme argument à <code>AuthName</code>
     apparaîtra dans la boîte de dialogue d'authentification pour la
@@ -232,24 +220,21 @@ l'alias spécifié</td></tr>
     l'exemple suivant, les clients peuvent accéder au répertoire
     <code>/www/docs/public</code> sans devoir s'authentifier :</p>
 
-    <div class="example"><p><code>
-        &lt;Directory /www/docs&gt;
-        <span class="indent">
-            AuthType Basic<br />
-            AuthName Documents<br />
-            AuthBasicProvider file<br />
-            AuthUserFile /usr/local/apache/passwd/passwords<br />
-            Require valid-user
-        </span>
-        &lt;/Directory&gt;<br />
-        <br />
-        &lt;Directory /www/docs/public&gt;
-        <span class="indent">
-            AuthType None<br />
-            Require all granted
-        </span>
-        &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Directory /www/docs&gt;
+    AuthType Basic
+    AuthName Documents
+    AuthBasicProvider file
+    AuthUserFile /usr/local/apache/passwd/passwords
+    Require valid-user
+&lt;/Directory&gt;
+
+&lt;Directory /www/docs/public&gt;
+    AuthType None
+    Require all granted
+&lt;/Directory&gt;
+    </pre>
+
 
     <div class="note">Veuillez noter que, lorsque l'authentification n'est pas
     activée, les clients qui se sont déjà authentifiés pour une autre
