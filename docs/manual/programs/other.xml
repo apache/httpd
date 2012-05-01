@@ -26,44 +26,11 @@
 <title>Other Programs</title>
 
 <summary>
-    <p>The following programs are simple support programs included with the
-    Apache HTTP Server which do not have their own manual pages. They are not
-    installed automatically. You can find them after the configuration process
-    in the <code>support/</code> directory.</p>
+    <p>This page used to contain documentation for programs which now
+    have their own docs pages. Please update any links.</p>
+
+    <p><program>log_server_status</program></p>
+    <p><program>split-logfile</program></p>
 </summary>
-
-<section id="log_server_status"><title>log_server_status</title>
-    <p>This perl script is designed to be run at a frequent interval by
-    something like cron. It connects to the server and downloads the status
-    information. It reformats the information to a single line and logs it to
-    a file. Adjust the variables at the top of the script to specify the
-    location of the resulting logfile.</p>
-</section>
-
-<section id="split-logfile"><title>split-logfile</title>
-    <p>This perl script will take a combined Web server access log file and
-    break its contents into separate files. It assumes that the first field of
-    each line is the virtual host identity, put there using the "<code>%v</code>"
-    variable in <directive module="mod_log_config">LogFormat</directive>.
-    </p>
-
-    <example>
-        LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""
-             combined_plus_vhost<br />
-        CustomLog logs/access_log combined_plus_vhost
-    </example>
-
-    <p>Log files will be created, in the directory where are running the
-    script, for each virtual host name that appears in the combined log file.
-    These logfiles will named after the hostname, with a
-    <code>.log</code> file extension.</p>
-
-    <p>The combined log file is read from stdin. Records read will be appended
-    to any existing log files.</p>
-
-    <example>split-logfile &lt; access_log</example>
-
-
-</section>
 
 </manualpage>

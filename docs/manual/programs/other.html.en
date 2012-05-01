@@ -13,7 +13,7 @@
 </script>
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
-<body id="manual-page"><div id="page-header">
+<body id="manual-page" class="no-sidebar"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.gif" /></div>
@@ -26,49 +26,13 @@
 <a href="../tr/programs/other.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
-    <p>The following programs are simple support programs included with the
-    Apache HTTP Server which do not have their own manual pages. They are not
-    installed automatically. You can find them after the configuration process
-    in the <code>support/</code> directory.</p>
+    <p>This page used to contain documentation for programs which now
+    have their own docs pages. Please update any links.</p>
+
+    <p><code class="program"><a href="../programs/log_server_status.html">log_server_status</a></code></p>
+    <p><code class="program"><a href="../programs/split-logfile.html">split-logfile</a></code></p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#log_server_status">log_server_status</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#split-logfile">split-logfile</a></li>
-</ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="log_server_status" id="log_server_status">log_server_status</a></h2>
-    <p>This perl script is designed to be run at a frequent interval by
-    something like cron. It connects to the server and downloads the status
-    information. It reformats the information to a single line and logs it to
-    a file. Adjust the variables at the top of the script to specify the
-    location of the resulting logfile.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="split-logfile" id="split-logfile">split-logfile</a></h2>
-    <p>This perl script will take a combined Web server access log file and
-    break its contents into separate files. It assumes that the first field of
-    each line is the virtual host identity, put there using the "<code>%v</code>"
-    variable in <code class="directive"><a href="../mod/mod_log_config.html#logformat">LogFormat</a></code>.
-    </p>
-
-    <div class="example"><p><code>
-        LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""
-             combined_plus_vhost<br />
-        CustomLog logs/access_log combined_plus_vhost
-    </code></p></div>
-
-    <p>Log files will be created, in the directory where are running the
-    script, for each virtual host name that appears in the combined log file.
-    These logfiles will named after the hostname, with a
-    <code>.log</code> file extension.</p>
-
-    <p>The combined log file is read from stdin. Records read will be appended
-    to any existing log files.</p>
-
-    <div class="example"><p><code>split-logfile &lt; access_log</code></p></div>
-
-
-</div></div>
+</div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/programs/other.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/programs/other.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
