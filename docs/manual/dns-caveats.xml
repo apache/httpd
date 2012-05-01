@@ -37,13 +37,13 @@
   <section id="example">
     <title>A Simple Example</title>
 
-    <example>
-      # This is a misconfiguration example, do not use on your server <br />
-      &lt;VirtualHost www.example.dom&gt; <br />
-      ServerAdmin webgirl@example.dom <br />
-      DocumentRoot /www/example <br />
-      &lt;/VirtualHost&gt;
-    </example>
+    <highlight language="config">
+# This is a misconfiguration example, do not use on your server
+&lt;VirtualHost www.example.dom&gt;
+  ServerAdmin webgirl@example.dom
+  DocumentRoot /www/example
+&lt;/VirtualHost&gt;
+    </highlight>
 
     <p>In order for the server to function properly, it absolutely needs
     to have two pieces of information about each virtual host: the
@@ -59,13 +59,13 @@
     <p>Suppose that <code>www.example.dom</code> has address 192.0.2.1.
     Then consider this configuration snippet:</p>
 
-    <example>
-      # This is a misconfiguration example, do not use on your server <br />
-      &lt;VirtualHost 192.0.2.1&gt; <br />
-      ServerAdmin webgirl@example.dom <br />
-      DocumentRoot /www/example <br />
-      &lt;/VirtualHost&gt;
-    </example>
+    <highlight language="config">
+# This is a misconfiguration example, do not use on your server
+&lt;VirtualHost 192.0.2.1&gt;
+  ServerAdmin webgirl@example.dom
+  DocumentRoot /www/example
+&lt;/VirtualHost&gt;
+    </highlight>
 
     <p>This time httpd needs to use reverse DNS to find the
     <code>ServerName</code> for this virtualhost. If that reverse
@@ -78,13 +78,13 @@
 
     <p>Here is a snippet that avoids both of these problems:</p>
 
-    <example>
-      &lt;VirtualHost 192.0.2.1&gt; <br />
-      ServerName www.example.dom <br />
-      ServerAdmin webgirl@example.dom <br />
-      DocumentRoot /www/example <br />
-      &lt;/VirtualHost&gt;
-    </example>
+    <highlight language="config">
+&lt;VirtualHost 192.0.2.1&gt;
+  ServerName www.example.dom
+  ServerAdmin webgirl@example.dom
+  DocumentRoot /www/example
+&lt;/VirtualHost&gt;
+    </highlight>
   </section>
 
   <section id="denial">
@@ -92,21 +92,16 @@
 
     <p>Consider this configuration snippet:</p>
 
-    <example>
-      &lt;VirtualHost www.example1.dom&gt;<br />
-      <indent>
-        ServerAdmin webgirl@example1.dom<br />
-        DocumentRoot /www/example1<br />
-      </indent>
-      &lt;/VirtualHost&gt;<br />
-      <br />
-      &lt;VirtualHost www.example2.dom&gt;<br />
-      <indent>
-        ServerAdmin webguy@example2.dom<br />
-        DocumentRoot /www/example2<br />
-      </indent>
-      &lt;/VirtualHost&gt;
-    </example>
+    <highlight language="config">
+&lt;VirtualHost www.example1.dom&gt;
+  ServerAdmin webgirl@example1.dom
+  DocumentRoot /www/example1
+&lt;/VirtualHost&gt;
+&lt;VirtualHost www.example2.dom&gt;
+  ServerAdmin webguy@example2.dom
+  DocumentRoot /www/example2
+&lt;/VirtualHost&gt;
+    </highlight>
 
     <p>Suppose that you've assigned 192.0.2.1 to
     <code>www.example1.dom</code> and 192.0.2.2 to
