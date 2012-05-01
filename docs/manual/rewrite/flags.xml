@@ -252,7 +252,7 @@ environment variable is used to exclude those requests from the access
 log.</p>
 
 <highlight language="config">
-RewriteRule \.(png|gif|jpg) - [E=image:1]
+RewriteRule \.(png|gif|jpg)$ - [E=image:1]
 CustomLog logs/access_log combined env=!image
 </highlight>
 
@@ -465,7 +465,7 @@ requests.
 example, if you wanted all image requests to be handled by a back-end
 image server, you might do something like the following:</p>
 
-<highlight language="config">RewriteRule /(.*)\.(jpg|gif|png) http://images.example.com/$1.$2 [P]</highlight>
+<highlight language="config">RewriteRule /(.*)\.(jpg|gif|png)$ http://images.example.com/$1.$2 [P]</highlight>
 
 <p>Use of the [P] flag implies [L] - that is, the request is immediately
 pushed through the proxy, and any following rules will not be
@@ -520,7 +520,7 @@ use the [PT] flag to ensure that the
 
 <highlight language="config">
 Alias /icons /usr/local/apache/icons
-RewriteRule /pics/(.+)\.jpg /icons/$1.gif [PT]
+RewriteRule /pics/(.+)\.jpg$ /icons/$1.gif [PT]
 </highlight>
 
 <p>
@@ -654,12 +654,12 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule .? - [S=3]
 
 # IF the file exists, then:
-	RewriteRule (.*\.gif) images.php?$1
-	RewriteRule (.*\.html) docs.php?$1
-	# Skip past the &quot;else&quot; stanza.
-	RewriteRule .? - [S=1]
+    RewriteRule (.*\.gif) images.php?$1
+    RewriteRule (.*\.html) docs.php?$1
+    # Skip past the &quot;else&quot; stanza.
+    RewriteRule .? - [S=1]
 # ELSE...
-	RewriteRule (.*) 404.php?file=$1
+    RewriteRule (.*) 404.php?file=$1
 # END
 </highlight>
 

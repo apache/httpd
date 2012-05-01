@@ -272,13 +272,13 @@ $QS_n = 3600 if ($QS_n eq '');
 if ($QS_f eq '') {
 print "HTTP/1.0 200 OK\n";
 print "Content-type: text/html\n\n";
-print "&amp;lt;b&amp;gt;ERROR&amp;lt;/b&amp;gt;: No file given\n";
+print "&lt;b&gt;ERROR&lt;/b&gt;: No file given\n";
 exit(0);
 }
 if (! -f $QS_f) {
 print "HTTP/1.0 200 OK\n";
 print "Content-type: text/html\n\n";
-print "&amp;lt;b&amp;gt;ERROR&amp;lt;/b&amp;gt;: File $QS_f not found\n";
+print "&lt;b&gt;ERROR&lt;/b&gt;: File $QS_f not found\n";
 exit(0);
 }
 
@@ -310,7 +310,7 @@ local($file) = @_;
 local(*FP, $size, $buffer, $bytes);
 ($x, $x, $x, $x, $x, $x, $x, $size) = stat($file);
 $size = sprintf("%d", $size);
-open(FP, "&amp;lt;$file");
+open(FP, "&lt;$file");
 $bytes = sysread(FP, $buffer, $size);
 close(FP);
 return $buffer;
