@@ -445,7 +445,7 @@ sections.</li>
 </ul>
 </section>
 
-<section id="mergin"><title>How the sections are merged</title>
+<section id="merging"><title>How the sections are merged</title>
 
 <p>The configuration sections are applied in a very particular order.
 Since this can have important effects on how configuration directives
