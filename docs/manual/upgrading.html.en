@@ -308,6 +308,11 @@ Allow from example.org
       enabled for the directory containing the error documents.
       </li>
 
+      <li>The functionality provided by <code>mod_authn_alias</code>
+      in previous versions (i.e., the <code class="directive"><a href="./mod/mod_authn_core.html#authnprovideralias">AuthnProviderAlias</a></code> directive)
+      has been moved into <code class="module"><a href="./mod/mod_authn_core.html">mod_authn_core</a></code>.  
+      </li>
+
     </ul>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
