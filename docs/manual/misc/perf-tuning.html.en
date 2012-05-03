@@ -413,6 +413,12 @@ DocumentRoot /www/htdocs
         one connection at a time.  Worker generally is a good
         choice for high-traffic servers because it has a smaller
         memory footprint than the prefork MPM.</li>
+        
+        <li>The <code class="module"><a href="../mod/event.html">event</a></code> MPM is threaded like the 
+        Worker MPM, but is designed to allow more requests to be 
+        served simultaneously by passing off some processing work 
+        to supporting threads, freeing up the main threads to work
+        on new requests.</li>
 
         <li>The <code class="module"><a href="../mod/prefork.html">prefork</a></code> MPM uses multiple child
         processes with one thread each.  Each process handles
