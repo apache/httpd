@@ -50,6 +50,7 @@ Documentation</title>
 </category>
 
 <category id="usersguide"><title>Users' Guide</title>
+    <page href="getting-started.html">Getting Started</page>
     <page href="bind.html">Binding to Addresses and Ports</page>
     <page href="configuring.html">Configuration Files</page>
     <page href="sections.html">Configuration Sections</page>
