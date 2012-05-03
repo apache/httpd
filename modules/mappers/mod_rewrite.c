@@ -401,7 +401,7 @@ static int proxy_available;
 
 /* Locks/Mutexes */
 static apr_global_mutex_t *rewrite_mapr_lock_acquire = NULL;
-const char *rewritemap_mutex_type = "rewrite-map";
+static const char *rewritemap_mutex_type = "rewrite-map";
 
 /* Optional functions imported from mod_ssl when loaded: */
 static APR_OPTIONAL_FN_TYPE(ssl_var_lookup) *rewrite_ssl_lookup = NULL;
