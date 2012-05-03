@@ -7,7 +7,8 @@ Changes with Apache 2.4.3
      standard modules, update for new format of server-status output.
      PR 45424. [Richard Bowen, Dave Brondsema, and others]
 
-  *) mod_sed, mod_log_debug: Symbol namespace cleanups. [Joe Orton]
+  *) mod_sed, mod_log_debug, mod_rewrite: Symbol namespace cleanups. 
+     [Joe Orton, André Malo]
 
   *) core: Prevent "httpd -k restart" from killing server in presence of
      config error. [Joe Orton]
