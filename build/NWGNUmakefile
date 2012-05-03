@@ -79,7 +79,7 @@ $(NWOS)/chartables.c: dftables.exe $(PCRE)/dftables.c
 
 %.exe: $(PCRE)/%.c $(PCRE)/config.h $(PCRE)/pcre.h
 	@echo Creating Build Helper $@
-	@$(WIN_CC) $(WIN_CFLAGS) $< -o $@
+	$(CC_FOR_BUILD) $(CFLAGS_FOR_BUILD) $< -o $@
 
 $(NWOS)/test_char.h: gen_test_char.exe $(AP_WORK)/server/gen_test_char.c
 	@echo Creating $(subst /,\,$@)
@@ -87,7 +87,7 @@ $(NWOS)/test_char.h: gen_test_char.exe $(AP_WORK)/server/gen_test_char.c
 
 %.exe: $(AP_WORK)/server/%.c
 	@echo Creating Build Helper $@
-	@$(WIN_CC) $(WIN_CFLAGS) -DCROSS_COMPILE $< -o $@
+	$(CC_FOR_BUILD) $(CFLAGS_FOR_BUILD) -DCROSS_COMPILE $< -o $@
 
 else
 
