@@ -537,7 +537,7 @@ if (typeof(prettyPrint) !== undefined) {
 
     <xsl:text> | </xsl:text>
 
-    <a href="{$path}/faq/{$index-file}">
+    <a href="http://wiki.apache.org/httpd/FAQ">
         <xsl:value-of select="$message[@id='faq']" />
     </a>
 
