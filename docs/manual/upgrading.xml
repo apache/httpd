@@ -334,6 +334,12 @@ Allow from example.org
       enabled for the directory containing the error documents.
       </li>
 
+      <li>The functionality provided by <code>mod_authn_alias</code>
+      in previous versions (i.e., the <directive 
+      module="mod_authn_core">AuthnProviderAlias</directive> directive)
+      has been moved into <module>mod_authn_core</module>.  
+      </li>
+
     </ul>
 
   </section>
