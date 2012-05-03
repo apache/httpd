@@ -194,6 +194,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://people.apache.org/~rpluem/patches/forcerecovery_2.2.diff
     +1: rpluem,
 
+   * mod_ssl: Add support for Next Protocol Negotiation.
+     Trunk patch:
+       http://svn.apache.org/viewvc?view=revision&revision=1332643
+     2.2.x patch:
+       http://www.links.org/files/npn-patch-2.2.patch
+     +1: benl
 
 PATCHES/ISSUES THAT ARE STALLED
 
