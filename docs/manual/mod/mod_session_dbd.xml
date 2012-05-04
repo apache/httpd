@@ -73,13 +73,15 @@
       session. These queries are configured as per the example below.</p>
 
       <example><title>Sample DBD configuration</title>
-        DBDriver pgsql<br />
-        DBDParams "dbname=apachesession user=apache password=xxxxx host=localhost"<br />
-        DBDPrepareSQL "delete from session where key = %s" deletesession<br />
-        DBDPrepareSQL "update session set value = %s, expiry = %lld where key = %s" updatesession<br />
-        DBDPrepareSQL "insert into session (value, expiry, key) values (%s, %lld, %s)" insertsession<br />
-        DBDPrepareSQL "select value from session where key = %s and (expiry = 0 or expiry &gt; %lld)" selectsession<br />
-        DBDPrepareSQL "delete from session where expiry != 0 and expiry &lt; %lld" cleansession<br />
+      <highlight language="config">
+DBDriver pgsql
+DBDParams "dbname=apachesession user=apache password=xxxxx host=localhost"
+DBDPrepareSQL "delete from session where key = %s" deletesession
+DBDPrepareSQL "update session set value = %s, expiry = %lld where key = %s" updatesession
+DBDPrepareSQL "insert into session (value, expiry, key) values (%s, %lld, %s)" insertsession
+DBDPrepareSQL "select value from session where key = %s and (expiry = 0 or expiry &gt; %lld)" selectsession
+DBDPrepareSQL "delete from session where expiry != 0 and expiry &lt; %lld" cleansession
+    </highlight>
       </example>
 
     </section>
@@ -95,8 +97,10 @@
       called <var>session</var>, configure the session as follows:</p>
 
       <example><title>SQL based anonymous session</title>
-        Session On<br />
-        SessionDBDCookieName session path=/<br />
+      <highlight language="config">
+Session On
+SessionDBDCookieName session path=/
+        </highlight>
       </example>
 
       <p>For more examples on how the session can be configured to be read
@@ -126,8 +130,10 @@
       userid, configure the session as follows:</p>
 
       <example><title>SQL based per user session</title>
-        Session On<br />
-        SessionDBDPerUser On<br />
+      <highlight language="config">
+Session On
+SessionDBDPerUser On
+        </highlight>
       </example>
 
     </section>
@@ -167,8 +173,10 @@
     </p>
 
     <example><title>Cookie with attributes</title>
-      Session On<br />
-      SessionDBDCookieName session path=/private;domain=example.com;httponly;secure;version=1;<br />
+    <highlight language="config">
+Session On
+SessionDBDCookieName session path=/private;domain=example.com;httponly;secure;version=1;
+      </highlight>
     </example>
 
 </usage>
@@ -197,8 +205,10 @@
     </p>
 
     <example><title>Cookie2 with attributes</title>
-      Session On<br />
-      SessionDBDCookieName2 session path=/private;domain=example.com;httponly;secure;version=1;<br />
+    <highlight language="config">
+Session On
+SessionDBDCookieName2 session path=/private;domain=example.com;httponly;secure;version=1;
+      </highlight>
     </example>
 
 </usage>

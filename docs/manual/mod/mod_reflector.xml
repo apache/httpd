@@ -43,23 +43,23 @@
     <dd>Pass the request body through the DEFLATE filter to compress the
     body. This request requires a Content-Encoding request header containing
     "gzip" for the filter to return compressed data.
-    <example>
-      &lt;Location /compress&gt;<br/>
-        SetHandler reflector<br/>
-        SetOutputFilter DEFLATE<br/>
-      &lt;/Location&gt;
-    </example>
+    <highlight language="config">
+&lt;Location /compress&gt;
+    SetHandler reflector
+    SetOutputFilter DEFLATE
+&lt;/Location&gt;
+    </highlight>
     </dd>
 
     <dt>Image downsampling service</dt>
     <dd>Pass the request body through an image downsampling filter, and reflect
     the results to the caller.
-    <example>
-      &lt;Location /downsample&gt;<br/>
-        SetHandler reflector<br/>
-        SetOutputFilter DOWNSAMPLE<br/>
-      &lt;/Location&gt;
-    </example>
+    <highlight language="config">
+&lt;Location /downsample&gt;
+    SetHandler reflector
+    SetOutputFilter DOWNSAMPLE
+&lt;/Location&gt;
+    </highlight>
     </dd>
     </dl>
 </section>

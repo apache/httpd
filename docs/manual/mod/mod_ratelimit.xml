@@ -38,12 +38,12 @@ The connection speed to be simulated is specified, in KiB/s, using the environme
 variable <code>rate-limit</code>.</p>
 
 <example><title>Example Configuration</title>
-&lt;Location /downloads&gt;<br />
-<indent>
-SetOutputFilter RATE_LIMIT<br />
-SetEnv rate-limit 400 <br />
-</indent>
+<highlight language="config">
+&lt;Location /downloads&gt;
+    SetOutputFilter RATE_LIMIT
+    SetEnv rate-limit 400 
 &lt;/Location&gt;
+</highlight>
 </example>
 
 </summary>

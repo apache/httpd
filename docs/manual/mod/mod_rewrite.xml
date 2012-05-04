@@ -69,7 +69,9 @@ URLs on the fly</description>
     </note>
 
     <example><title>Example</title>
+    <highlight language="config">
       LogLevel alert rewrite:trace3
+      </highlight>
     </example>
 
     <note><title>RewriteLog</title>
@@ -234,16 +236,16 @@ Apache HTTP Server 2.0.41 and later</compatibility>
       <p>For example, you might define a
       <directive>RewriteMap</directive> as:</p>
 
-      <example>
+      <highlight language="config">
       RewriteMap examplemap txt:/path/to/file/map.txt
-      </example>
+      </highlight>
 
       <p>You would then be able to use this map in a
       <directive>RewriteRule</directive> as follows:</p>
 
-      <example>
+      <highlight language="config">
       RewriteRule ^/ex/(.*) ${examplemap:$1}
-      </example>
+      </highlight>
 
       <p>The following combinations for <em>MapType</em> and
       <em>MapSource</em> can be used:</p>
@@ -293,42 +295,38 @@ Apache HTTP Server 2.0.41 and later</compatibility>
 <override>FileInfo</override>
 
 <usage>
-      <p>The <directive>RewriteBase</directive> directive explicitly
-      sets the base URL-path (not filesystem directory path!)  for per-directory rewrites
-      that result in the substitution of a relative path.
-      When you use a <directive module="mod_rewrite">RewriteRule</directive>
-      in a <code>.htaccess</code> file, <module>mod_rewrite</module> strips off
-      the local directory prefix before processing, then rewrites the rest of
-      the URL. When the rewrite is completed, <module>mod_rewrite</module>
-      automatically adds the local directory prefix (or the
-      <directive>RewriteBase</directive> when set) back on to the substitution
-      before handing it back to the core of the server as if it were the original
-      URL.</p>
+      <p>The <directive>RewriteBase</directive> directive specifies the
+      URL prefix to be used for per-directory (htaccess) 
+      <directive>RewriteRule</directive> directives that substitute a relative
+      path.</p>
+      <p> This directive is <em>required</em> when you use a relative path
+      in a substitution in per-directory (htaccess) context unless either
+      of the following conditions are true:</p>
+      <ul>
+          <li> The original request, and the substitution, are underneath the 
+               <directive module="core">DocumentRoot</directive>
+               (as opposed to reachable by other means, such as 
+               <directive module="mod_alias">Alias</directive>).</li>
+          <li> The <em>filesystem</em> path to the directory containing the
+               <directive>RewriteRule</directive>, suffixed by the relative 
+               substitution is also valid as a URL path on the server 
+               (this is rare).</li>
+      </ul>
 
-      <p>This directive is <em>required</em> for per-directory rewrites whose context
-      is a directory made available via the <directive module="mod_alias">Alias</directive>
-      directive, when the substitution uses a relative path.</p>
-
-      <p>If your URL path does not exist verbatim on the filesystem,
-      or isn't directly under your <directive module="core">DocumentRoot</directive>,
-      you must use <directive>RewriteBase</directive> in every
-      <code>.htaccess</code> file where you want to use <directive
-      module="mod_rewrite">RewriteRule</directive> directives.</p>
-
-      <p>The example below demonstrates how to map
-      http://example.com/myapp/index.html to
-      /home/www/example/newsite.html, in a <code>.htaccess</code> file. This
-      assumes that the content available at
-      http://example.com/ is on disk at /home/www/example/</p>
-<example>
-<pre>
-RewriteEngine On
-# The URL-path used to get to this context, not the filesystem path
-RewriteBase /myapp/
-RewriteRule ^index\.html$  newsite.html
-</pre>
-</example>
-
+<p> In the example below, <directive>RewriteBase</directive> is necessary
+    to avoid rewriting to http://example.com/opt/myapp-1.2.3/welcome.html
+    since the resource was not relative to the document root.  This 
+    misconfiguration would normally cause the server to look for an "opt"
+    directory under the document root.</p>
+<highlight language="config">
+DocumentRoot /var/www/example.com
+Alias /myapp /opt/myapp-1.2.3
+&lt;Directory /opt/myapp-1.2.3&gt;
+    RewriteEngine On
+    RewriteBase /myapp/
+    RewriteRule ^index\.html$  welcome.html 
+&lt;/Directory&gt;
+</highlight>
 </usage>
 
 </directivesynopsis>
@@ -805,10 +803,10 @@ RewriteRule ^index\.html$  newsite.html
             to block unwanted hotlinking.
            </p>
 
-           <example>
+           <highlight language="config">
            RewriteCond expr "! %{HTTP_REFERER} -strmatch '*://%{HTTP_HOST}/*'"<br />
            RewriteRule ^/images - [F]
-           </example>
+           </highlight>
         </li>
 
         <li>You can also set special flags for
@@ -834,14 +832,12 @@ RewriteRule ^index\.html$  newsite.html
           Use this to combine rule conditions with a local OR
           instead of the implicit AND. Typical example:
 
-<example>
-<pre>
+<highlight language="config">
 RewriteCond %{REMOTE_HOST}  ^host1  [OR]
 RewriteCond %{REMOTE_HOST}  ^host2  [OR]
 RewriteCond %{REMOTE_HOST}  ^host3
 RewriteRule ...some special stuff for any of these hosts...
-</pre>
-</example>
+</highlight>
 
           Without this flag you would have to write the condition/rule
           pair three times.
@@ -866,8 +862,7 @@ RewriteRule ...some special stuff for any of these hosts...
         ``<code>User-Agent:</code>'' header of the request, you can
         use the following: </p>
 
-<example>
-<pre>
+<highlight language="config">
 RewriteCond  %{HTTP_USER_AGENT}  ^Mozilla
 RewriteRule  ^/$                 /homepage.max.html  [L]
 
@@ -875,8 +870,7 @@ RewriteCond  %{HTTP_USER_AGENT}  ^Lynx
 RewriteRule  ^/$                 /homepage.min.html  [L]
 
 RewriteRule  ^/$                 /homepage.std.html  [L]
-</pre>
-</example>
+</highlight>
 
         <p>Explanation: If you use a browser which identifies itself
         as 'Mozilla' (including Netscape Navigator, Mozilla etc), then you
@@ -911,10 +905,11 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
 
       <p><a id="patterns" name="patterns"><em>Pattern</em></a> is
       a perl compatible <a id="regexp" name="regexp">regular
-      expression</a>. On the first RewriteRule it is applied to the (%-decoded)
-      <a href="./directive-dict.html#Syntax">URL-path</a> of the request;
-      subsequent patterns are applied to the output of the last matched
-      RewriteRule.</p>
+      expression</a>. On the first RewriteRule, it is matched against
+      the (%-decoded) <a href="./directive-dict.html#Syntax">URL-path</a> (or 
+      <a href="./directive-dict.html#Syntax">file-path</a>, depending 
+      on the context) of the request. Subsequent patterns are matched against the 
+      output of the last matching RewriteRule.</p>
 
 <note><title><a id="what_is_matched" name="what_is_matched">What is matched?</a></title>
       <p>In <directive module="core">VirtualHost</directive> context,
@@ -923,7 +918,7 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
 
       <p>In <directive module="core">Directory</directive> and htaccess context,
       the <em>Pattern</em> will initially be matched against the
-      <em>filesystem</em> path, after removing the prefix that lead the server
+      <em>filesystem</em> path, after removing the prefix that led the server
       to the current <directive>RewriteRule</directive> (e.g. "app1/index.html"
       or "index.html" depending on where the directives are defined).</p>
 
@@ -955,7 +950,7 @@ and automatically <em>added</em> after any relative (not starting with a
 slash or protocol name) substitution encounters the end of a rule set.
 See the <directive module="mod_rewrite">RewriteBase</directive>
 directive for more information regarding what prefix will be added back to
-relative substitions.</li>
+relative substitutions.</li>
 
 <li> If you wish to match against the full URL-path in a per-directory
 (htaccess) RewriteRule, use the <code>%{REQUEST_URI}</code> variable in
@@ -1006,7 +1001,7 @@ cannot use <code>$N</code> in the substitution string!
         to be delivered to the client.  Substitutions are only
         treated as a file-system path when the rule is configured in 
         server (virtualhost) context and the first component of the
-        path in the substitution is exists in the file-system</dd>
+        path in the substitution exists in the file-system</dd>
 
         <dt>URL-path</dt>
 
@@ -1045,7 +1040,7 @@ cannot use <code>$N</code> in the substitution string!
 
       </dl>
 
-      <p>In addition to plain text, the <em>Substition</em> string can include</p>
+      <p>In addition to plain text, the <em>Substitution</em> string can include</p>
 
       <ol>
         <li>back-references (<code>$N</code>) to the RewriteRule
@@ -1073,7 +1068,7 @@ cannot use <code>$N</code> in the substitution string!
 
       <p>Rewrite rules are applied to the results of previous rewrite
       rules, in the order in which they are defined
-      in the config file. The URI or file path (see <a
+      in the config file. The URL-path or file-system path (see <a
       href="#what_is_matched">"What is matched?"</a>, above) is <strong>completely
       replaced</strong> by the <em>Substitution</em> and the
       rewriting process continues until all rules have been applied,
