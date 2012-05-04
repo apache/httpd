@@ -87,10 +87,11 @@ of user groups for authorization</td></tr>
     accomplished by first setting the group and password files to
     point to the same DBM:</p>
 
-    <div class="example"><p><code>
-      AuthDBMGroupFile /www/userbase<br />
-      AuthDBMUserFile /www/userbase
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+AuthDBMGroupFile /www/userbase
+AuthDBMUserFile /www/userbase
+    </pre>
+
 
     <p>The key for the single DBM is the username. The value consists
     of</p>

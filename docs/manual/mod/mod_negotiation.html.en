@@ -192,9 +192,10 @@ Negotiation</a></li>
     and the <code>.var</code> file should be associated with the
     <code>type-map</code> handler with an <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> directive:</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
     AddHandler type-map .var
-    </code></p></div>
+    </pre>
+
 
     <p>A request for <code>document.html</code> in this directory will
     result in <code>document.html.var</code> being consulted, and the
@@ -271,10 +272,11 @@ found</td></tr>
     (equally acceptable) then the first matching variant, <code>en</code>,
     will be served.</p>
 
-    <div class="example"><p><code>
-      LanguagePriority en fr de<br />
-      ForceLanguagePriority Prefer
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+LanguagePriority en fr de
+ForceLanguagePriority Prefer
+    </pre>
+
 
     <p><code>ForceLanguagePriority Fallback</code> uses
     <code class="directive"><a href="#languagepriority">LanguagePriority</a></code> to
@@ -284,10 +286,11 @@ found</td></tr>
     language response, but such a variant isn't found, then the first
     variant from the <code class="directive"><a href="#languagepriority">LanguagePriority</a></code> list below will be served.</p>
 
-    <div class="example"><p><code>
-      LanguagePriority en fr de<br />
-      ForceLanguagePriority Fallback
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+LanguagePriority en fr de
+ForceLanguagePriority Fallback
+    </pre>
+
 
     <p>Both options, <code>Prefer</code> and <code>Fallback</code>, may be
     specified, so either the first matching variant from <code class="directive"><a href="#languagepriority">LanguagePriority</a></code> will be served if
@@ -317,9 +320,10 @@ the client does not express a preference</td></tr>
     express a preference, when handling a Multiviews request. The list
     of <var>MIME-lang</var> are in order of decreasing preference.</p>
 
-    <div class="example"><h3>Example:</h3><p><code>
+    <pre class="prettyprint lang-config">
       LanguagePriority en fr de
-    </code></p></div>
+    </pre>
+
 
     <p>For a request for <code>foo.html</code>, where
     <code>foo.html.fr</code> and <code>foo.html.de</code> both

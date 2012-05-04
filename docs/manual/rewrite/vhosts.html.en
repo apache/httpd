@@ -65,14 +65,15 @@ mod_rewrite</a> document.</div>
 
     <dd>
 
-<div class="example"><p><code>
-RewriteEngine on<br />
-<br />
-RewriteMap    lowercase int:tolower<br />
-<br />
-RewriteCond   %{lowercase:%{<strong>HTTP_HOST</strong>}}   ^www\.<strong>([^.]+)</strong>\.example\.com$<br />
+<pre class="prettyprint lang-config">
+RewriteEngine on
+
+RewriteMap    lowercase int:tolower
+
+RewriteCond   %{lowercase:%{<strong>HTTP_HOST</strong>}}   ^www\.<strong>([^.]+)</strong>\.example\.com$
 RewriteRule   ^(.*) /home/<strong>%1</strong>/www$1
-</code></p></div></dd>
+</pre>
+</dd>
 
 <dt>Discussion</dt>
     <dd>
@@ -122,39 +123,38 @@ dynamic content, and Alias resolution.
     any <code>ScriptAlias</code> directives, we must have
     <code>mod_rewrite</code> explicitly enact those mappings.</p>
 
-<div class="example"><p><code>
-# get the server name from the Host: header<br />
-UseCanonicalName Off<br />
-<br />
-# splittable logs<br />
-LogFormat "%{Host}i %h %l %u %t \"%r\" %s %b" vcommon<br />
-CustomLog logs/access_log vcommon<br />
-<br />
-&lt;Directory /www/hosts&gt;<br />
-<span class="indent">
-    # ExecCGI is needed here because we can't force<br />
-    # CGI execution in the way that ScriptAlias does<br />
-    Options FollowSymLinks ExecCGI<br />
-</span>
-&lt;/Directory&gt;<br />
-<br />
-RewriteEngine On<br />
-<br />
-# a ServerName derived from a Host: header may be any case at all<br />
-RewriteMap  lowercase  int:tolower<br />
-<br />
-## deal with normal documents first:<br />
-# allow Alias /icons/ to work - repeat for other aliases<br />
-RewriteCond  %{REQUEST_URI}  !^/icons/<br />
-# allow CGIs to work<br />
-RewriteCond  %{REQUEST_URI}  !^/cgi-bin/<br />
-# do the magic<br />
-RewriteRule  ^/(.*)$  /www/hosts/${lowercase:%{SERVER_NAME}}/docs/$1<br />
-<br />
-## and now deal with CGIs - we have to force a handler<br />
-RewriteCond  %{REQUEST_URI}  ^/cgi-bin/<br />
-RewriteRule  ^/(.*)$  /www/hosts/${lowercase:%{SERVER_NAME}}/cgi-bin/$1  [H=cgi-script]<br />
-</code></p></div>
+<pre class="prettyprint lang-config">
+# get the server name from the Host: header
+UseCanonicalName Off
+
+# splittable logs
+LogFormat "%{Host}i %h %l %u %t \"%r\" %s %b" vcommon
+CustomLog logs/access_log vcommon
+
+&lt;Directory /www/hosts&gt;
+    # ExecCGI is needed here because we can't force
+    # CGI execution in the way that ScriptAlias does
+    Options FollowSymLinks ExecCGI
+&lt;/Directory&gt;
+
+RewriteEngine On
+
+# a ServerName derived from a Host: header may be any case at all
+RewriteMap  lowercase  int:tolower
+
+## deal with normal documents first:
+# allow Alias /icons/ to work - repeat for other aliases
+RewriteCond  %{REQUEST_URI}  !^/icons/
+# allow CGIs to work
+RewriteCond  %{REQUEST_URI}  !^/cgi-bin/
+# do the magic
+RewriteRule  ^/(.*)$  /www/hosts/${lowercase:%{SERVER_NAME}}/docs/$1
+
+## and now deal with CGIs - we have to force a handler
+RewriteCond  %{REQUEST_URI}  ^/cgi-bin/
+RewriteRule  ^/(.*)$  /www/hosts/${lowercase:%{SERVER_NAME}}/cgi-bin/$1  [H=cgi-script]
+</pre>
+
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -177,27 +177,28 @@ customer-N.example.com  /www/customers/N<br />
 
     <p>The <code>httpd.conf</code> should contain the following:</p>
 
-<div class="example"><p><code>
-RewriteEngine on<br />
-<br />
-RewriteMap   lowercase  int:tolower<br />
-<br />
-# define the map file<br />
-RewriteMap   vhost      txt:/www/conf/vhost.map<br />
-<br />
-# deal with aliases as above<br />
-RewriteCond  %{REQUEST_URI}               !^/icons/<br />
-RewriteCond  %{REQUEST_URI}               !^/cgi-bin/<br />
-RewriteCond  ${lowercase:%{SERVER_NAME}}  ^(.+)$<br />
-# this does the file-based remap<br />
-RewriteCond  ${vhost:%1}                  ^(/.*)$<br />
-RewriteRule  ^/(.*)$                      %1/docs/$1<br />
-<br />
-RewriteCond  %{REQUEST_URI}               ^/cgi-bin/<br />
-RewriteCond  ${lowercase:%{SERVER_NAME}}  ^(.+)$<br />
-RewriteCond  ${vhost:%1}                  ^(/.*)$<br />
+<pre class="prettyprint lang-config">
+RewriteEngine on
+
+RewriteMap   lowercase  int:tolower
+
+# define the map file
+RewriteMap   vhost      txt:/www/conf/vhost.map
+
+# deal with aliases as above
+RewriteCond  %{REQUEST_URI}               !^/icons/
+RewriteCond  %{REQUEST_URI}               !^/cgi-bin/
+RewriteCond  ${lowercase:%{SERVER_NAME}}  ^(.+)$
+# this does the file-based remap
+RewriteCond  ${vhost:%1}                  ^(/.*)$
+RewriteRule  ^/(.*)$                      %1/docs/$1
+
+RewriteCond  %{REQUEST_URI}               ^/cgi-bin/
+RewriteCond  ${lowercase:%{SERVER_NAME}}  ^(.+)$
+RewriteCond  ${vhost:%1}                  ^(/.*)$
 RewriteRule  ^/(.*)$                      %1/cgi-bin/$1 [H=cgi-script]
-</code></p></div>
+</pre>
+
 
 </div></div>
 <div class="bottomlang">

@@ -58,9 +58,10 @@
     <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code> or
     <code class="directive"><a href="../mod/mod_filter.html#addoutputfilterbytype">AddOutputFilterByType</a></code> directives.</p>
 
-      <div class="example"><h3>Using buffer with mod_include</h3><p><code>
-        AddOutputFilterByType INCLUDES;BUFFER text/html<br />
-      </code></p></div>
+      <div class="example"><h3>Using buffer with mod_include</h3><pre class="prettyprint lang-config">
+        AddOutputFilterByType INCLUDES;BUFFER text/html
+        </pre>
+</div>
 
     <div class="warning">The buffer filters read the request/response into
         RAM and then repack the request/response into the fewest memory

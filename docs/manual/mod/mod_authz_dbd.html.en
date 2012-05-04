@@ -57,7 +57,7 @@
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#login">Database Login</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#client">Client Login</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#example">Configuration Example</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#example">Configuration example</a></li>
 </ul><h3>See also</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li>
@@ -96,9 +96,9 @@ the database.  Other session management modules can then use the hook
 to implement functions that start and end client-side sessions.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="example" id="example">Configuration Example</a></h2>
+<h2><a name="example" id="example">Configuration example</a></h2>
 
-<div class="example"><pre>
+<pre class="prettyprint lang-config">
 # mod_dbd configuration
 DBDriver pgsql
 DBDParams "dbname=apacheauth user=apache pass=xxxxxx"
@@ -132,13 +132,11 @@ DBDExptime 300
 
   &lt;Files login.html&gt;
     # don't require user to already be logged in!
-    AuthDBDUserPWQuery \
-      "SELECT password FROM authn WHERE user = %s"
+    AuthDBDUserPWQuery "SELECT password FROM authn WHERE user = %s"
 
     # dbd-login action executes a statement to log user in
     Require dbd-login
-    AuthzDBDQuery \
-      "UPDATE authn SET login = 'true' WHERE user = %s"
+    AuthzDBDQuery "UPDATE authn SET login = 'true' WHERE user = %s"
 
     # return user to referring page (if any) after
     # successful login
@@ -148,11 +146,11 @@ DBDExptime 300
   &lt;Files logout.html&gt;
     # dbd-logout action executes a statement to log user out
     Require dbd-logout
-    AuthzDBDQuery \
-      "UPDATE authn SET login = 'false' WHERE user = %s"
+    AuthzDBDQuery "UPDATE authn SET login = 'false' WHERE user = %s"
   &lt;/Files&gt;
 &lt;/Directory&gt;
-</pre></div>
+</pre>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthzDBDLoginToReferer" id="AuthzDBDLoginToReferer">AuthzDBDLoginToReferer</a> <a name="authzdbdlogintoreferer" id="authzdbdlogintoreferer">Directive</a></h2>
@@ -195,22 +193,22 @@ header is present</td></tr>
     The first column value of each row returned by the query statement
     should be a string containing a group name.  Zero, one, or more rows
     may be returned.
-    <div class="example"><h3>Example</h3><pre>
+    <pre class="prettyprint lang-config">
 Require dbd-group
-AuthzDBDQuery \
-  "SELECT group FROM groups WHERE user = %s"
-</pre></div>
+AuthzDBDQuery "SELECT group FROM groups WHERE user = %s"
+</pre>
+
     </li>
     <li>When used with a <code>Require dbd-login</code> or
     <code>Require dbd-logout</code> directive, it will never deny access,
     but will instead execute a SQL statement designed to log the user
     in or out.  The user must already be authenticated with
     <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>.
-    <div class="example"><h3>Example</h3><pre>
+    <pre class="prettyprint lang-config">
 Require dbd-login
-AuthzDBDQuery \
-  "UPDATE authn SET login = 'true' WHERE user = %s"
-</pre></div>
+AuthzDBDQuery "UPDATE authn SET login = 'true' WHERE user = %s"
+</pre>
+
     </li>
     </ul>
     <p>In all cases, the user's ID will be passed as a single string
@@ -232,10 +230,10 @@ AuthzDBDQuery \
     specific to the user.  The user's ID will be passed as a single string
     parameter when the SQL query is executed.  It may be referenced within
     the query statement using a <code>%s</code> format specifier.</p>
-    <div class="example"><h3>Example</h3><pre>
-AuthzDBDRedirectQuery \
-  "SELECT userpage FROM userpages WHERE user = %s"
-</pre></div>
+    <pre class="prettyprint lang-config">
+AuthzDBDRedirectQuery "SELECT userpage FROM userpages WHERE user = %s"
+</pre>
+
     <p>The first column value of the first row returned by the query
     statement should be a string containing a URL to which to redirect
     the client.  Subsequent rows will be ignored.  If no rows are returned,

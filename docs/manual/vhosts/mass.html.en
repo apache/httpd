@@ -55,7 +55,7 @@ mod_rewrite</a></li>
     <code>&lt;VirtualHost&gt;</code> sections that are
     substantially the same, for example:</p>
 
-<div class="example"><pre>
+<pre class="prettyprint lang-config">
 &lt;VirtualHost 111.22.33.44&gt;
     ServerName                 customer-1.example.com
     DocumentRoot        /www/hosts/customer-1.example.com/docs
@@ -73,7 +73,8 @@ mod_rewrite</a></li>
     DocumentRoot        /www/hosts/customer-N.example.com/docs
     ScriptAlias  /cgi-bin/  /www/hosts/customer-N.example.com/cgi-bin
 &lt;/VirtualHost&gt;
-</pre></div>
+</pre>
+
 
     <p>We wish to replace these multiple
     <code>&lt;VirtualHost&gt;</code> blocks with a mechanism
@@ -157,19 +158,20 @@ mod_vhost_alias</a></h2>
     virtual host arrangement outlined in the <a href="#motivation">Motivation</a> section above
     using <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code>.</p>
 
-<div class="example"><p><code>
-# get the server name from the Host: header<br />
-UseCanonicalName Off<br />
-<br />
-# this log format can be split per-virtual-host based on the first field<br />
-# using the split-logfile utility.<br />
-LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon<br />
-CustomLog logs/access_log vcommon<br />
-<br />
-# include the server name in the filenames used to satisfy requests<br />
-VirtualDocumentRoot /www/hosts/%0/docs<br />
+<pre class="prettyprint lang-config">
+# get the server name from the Host: header
+UseCanonicalName Off
+
+# this log format can be split per-virtual-host based on the first field
+# using the split-logfile utility.
+LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
+CustomLog logs/access_log vcommon
+
+# include the server name in the filenames used to satisfy requests
+VirtualDocumentRoot /www/hosts/%0/docs
 VirtualScriptAlias  /www/hosts/%0/cgi-bin
-</code></p></div>
+</pre>
+
 
     <p>This configuration can be changed into an IP-based virtual
     hosting solution by just turning <code>UseCanonicalName
@@ -194,18 +196,19 @@ examples.</p>
     <code>/home/user/www</code>. It uses a single <code>cgi-bin</code>
     directory instead of one per virtual host.</p>
 
-<div class="example"><p><code>
-UseCanonicalName Off<br />
-<br />
-LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon<br />
-CustomLog logs/access_log vcommon<br />
-<br />
-# include part of the server name in the filenames<br />
-VirtualDocumentRoot /home/%2/www<br />
-<br />
-# single cgi-bin directory<br />
-ScriptAlias  /cgi-bin/  /www/std-cgi/<br />
-</code></p></div>
+<pre class="prettyprint lang-config">
+UseCanonicalName Off
+
+LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
+CustomLog logs/access_log vcommon
+
+# include part of the server name in the filenames
+VirtualDocumentRoot /home/%2/www
+
+# single cgi-bin directory
+ScriptAlias  /cgi-bin/  /www/std-cgi/
+</pre>
+
 
     <p>There are examples of more complicated
     <code>VirtualDocumentRoot</code> settings in the
@@ -225,47 +228,40 @@ ScriptAlias  /cgi-bin/  /www/std-cgi/<br />
     <code>&lt;VirtualHost&gt;</code> configuration sections, as shown
     below.</p>
 
-<div class="example"><p><code>
-UseCanonicalName Off<br />
-<br />
-LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon<br />
-<br />
-&lt;Directory /www/commercial&gt;<br />
-<span class="indent">
-    Options FollowSymLinks<br />
-    AllowOverride All<br />
-</span>
-&lt;/Directory&gt;<br />
-<br />
-&lt;Directory /www/homepages&gt;<br />
-<span class="indent">
-    Options FollowSymLinks<br />
-    AllowOverride None<br />
-</span>
-&lt;/Directory&gt;<br />
-<br />
-&lt;VirtualHost 111.22.33.44&gt;<br />
-<span class="indent">
-    ServerName www.commercial.example.com<br />
-    <br />
-    CustomLog logs/access_log.commercial vcommon<br />
-    <br />
-    VirtualDocumentRoot /www/commercial/%0/docs<br />
-    VirtualScriptAlias  /www/commercial/%0/cgi-bin<br />
-</span>
-&lt;/VirtualHost&gt;<br />
-<br />
-&lt;VirtualHost 111.22.33.45&gt;<br />
-<span class="indent">
-    ServerName www.homepages.example.com<br />
-    <br />
-    CustomLog logs/access_log.homepages vcommon<br />
-    <br />
-    VirtualDocumentRoot /www/homepages/%0/docs<br />
-    ScriptAlias         /cgi-bin/ /www/std-cgi/<br />
-</span>
+<pre class="prettyprint lang-config">
+UseCanonicalName Off
+
+LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
+
+&lt;Directory /www/commercial&gt;
+    Options FollowSymLinks
+    AllowOverride All
+&lt;/Directory&gt;
+
+&lt;Directory /www/homepages&gt;
+    Options FollowSymLinks
+    AllowOverride None
+&lt;/Directory&gt;
+
+&lt;VirtualHost 111.22.33.44&gt;
+    ServerName www.commercial.example.com
+    
+    CustomLog logs/access_log.commercial vcommon
+    
+    VirtualDocumentRoot /www/commercial/%0/docs
+    VirtualScriptAlias  /www/commercial/%0/cgi-bin
 &lt;/VirtualHost&gt;
-</code></p></div>
+
+&lt;VirtualHost 111.22.33.45&gt;
+    ServerName www.homepages.example.com
+    
+    CustomLog logs/access_log.homepages vcommon
+    
+    VirtualDocumentRoot /www/homepages/%0/docs
+    ScriptAlias         /cgi-bin/ /www/std-cgi/
+&lt;/VirtualHost&gt;
+</pre>
+
 
 <div class="note">
     <h3>Note</h3>
@@ -290,18 +286,19 @@ LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon<br />
     negating the need for a DNS lookup. Logging will also have to be adjusted
     to fit this system.</p>
 
-<div class="example"><p><code>
-# get the server name from the reverse DNS of the IP address<br />
-UseCanonicalName DNS<br />
-<br />
-# include the IP address in the logs so they may be split<br />
-LogFormat "%A %h %l %u %t \"%r\" %s %b" vcommon<br />
-CustomLog logs/access_log vcommon<br />
-<br />
-# include the IP address in the filenames<br />
-VirtualDocumentRootIP /www/hosts/%0/docs<br />
-VirtualScriptAliasIP  /www/hosts/%0/cgi-bin<br />
-</code></p></div>
+<pre class="prettyprint lang-config">
+# get the server name from the reverse DNS of the IP address
+UseCanonicalName DNS
+
+# include the IP address in the logs so they may be split
+LogFormat "%A %h %l %u %t \"%r\" %s %b" vcommon
+CustomLog logs/access_log vcommon
+
+# include the IP address in the filenames
+VirtualDocumentRootIP /www/hosts/%0/docs
+VirtualScriptAliasIP  /www/hosts/%0/cgi-bin
+</pre>
+
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">

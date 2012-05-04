@@ -113,17 +113,19 @@
 
     <p>To activate the example module, include a block similar to
     the following in your <code>httpd.conf</code> file:</p>
-<div class="example"><p><code>
-   &lt;Location /example-info&gt;<br />
-       SetHandler example-handler<br />
-   &lt;/Location&gt;
-</code></p></div>
+<pre class="prettyprint lang-config">
+&lt;Location /example-info&gt;
+   SetHandler example-handler
+&lt;/Location&gt;
+</pre>
+
 
     <p>As an alternative, you can put the following into a <a href="core.html#accessfilename"><code>.htaccess</code></a> file
     and then request the file "test.example" from that location:</p>
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
    AddHandler example-handler .example
-</code></p></div>
+</pre>
+
 
     <p>After reloading/restarting your server, you should be able
     to browse to this location and see the brief display mentioned

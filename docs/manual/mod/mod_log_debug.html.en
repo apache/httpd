@@ -48,20 +48,22 @@
       <li>
         Log message after request to /foo/* is processed:
 
-        <div class="example"><p><code>
-            &lt;Location /foo/&gt;<br />
-            &nbsp;&nbsp;LogMessage "/foo/ has been requested"<br />
-            &lt;/Location&gt;<br />
-        </code></p></div>
+        <pre class="prettyprint lang-config">
+&lt;Location /foo/&gt;
+&nbsp;&nbsp;LogMessage "/foo/ has been requested"
+&lt;/Location&gt;
+        </pre>
+
       </li>
 
       <li>
         Log message if request to /foo/* is processed in a sub-request:
-        <div class="example"><p><code>
-            &lt;Location /foo/&gt;<br />
-            &nbsp;&nbsp;LogMessage "subrequest to /foo/" hook=type_checker expr=%{IS_SUBREQ}<br />
-            &lt;/Location&gt;<br />
-        </code></p></div>
+        <pre class="prettyprint lang-config">
+&lt;Location /foo/&gt;
+&nbsp;&nbsp;LogMessage "subrequest to /foo/" hook=type_checker expr=%{IS_SUBREQ}
+&lt;/Location&gt;
+        </pre>
+
 
         The default log_transaction hook is not executed for sub-requests,
         therefore we have to use a different hook.
@@ -70,21 +72,22 @@
 
       <li>
         Log message if an IPv6 client causes a request timeout:
-        <div class="example"><p><code>
-            LogMessage "IPv6 timeout from %{REMOTE_ADDR}"
-              "expr=-T %{IPV6} &amp;&amp; %{REQUEST_STATUS} = 408"
-        </code></p></div>
+        <pre class="prettyprint lang-config">
+            LogMessage "IPv6 timeout from %{REMOTE_ADDR}" "expr=-T %{IPV6} &amp;&amp; %{REQUEST_STATUS} = 408"
+        </pre>
+
         Note the placing of the double quotes for the <code>expr=</code> argument.
       </li>
 
       <li>
         Log the value of the "X-Foo" request environment variable in each
         stage of the request:
-        <div class="example"><p><code>
-            &lt;Location /&gt;<br />
-            &nbsp;&nbsp;LogMessage "%{reqenv:X-Foo}" hook=all<br />
-            &lt;/Location&gt;<br />
-        </code></p></div>
+        <pre class="prettyprint lang-config">
+&lt;Location /&gt;
+&nbsp;&nbsp;LogMessage "%{reqenv:X-Foo}" hook=all
+&lt;/Location&gt;
+        </pre>
+
         Together with microsecond time stamps in the error log,
         <code>hook=all</code> also allows to determine the times spent
         in the different parts of the request processing.

@@ -164,9 +164,10 @@
     <p>Do this by specifying the name of the module in your
     <code class="directive">LogLevel</code> directive:</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
     LogLevel info rewrite:trace5
-    </code></p></div>
+    </pre>
+
 
     <p>This sets the main <code class="directive">LogLevel</code> to info, but
     turns it up to <code>trace5</code> for
@@ -218,10 +219,11 @@
       <p>A typical configuration for the access log might look as
       follows.</p>
 
-      <div class="example"><p><code>
-        LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br />
-         CustomLog logs/access_log common
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
+CustomLog logs/access_log common
+      </pre>
+
 
       <p>This defines the <em>nickname</em> <code>common</code> and
       associates it with a particular log format string. The format
@@ -360,11 +362,11 @@
       <p>Another commonly used format string is called the Combined
       Log Format. It can be used as follows.</p>
 
-      <div class="example"><p><code>
-        LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\"
-        \"%{User-agent}i\"" combined<br />
-         CustomLog log/access_log combined
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\"" combined
+CustomLog log/access_log combined
+      </pre>
+
 
       <p>This format is exactly the same as the Common Log Format,
       with the addition of two more fields. Each of the additional
@@ -412,12 +414,13 @@
       information. The last two <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> lines show how
       to mimic the effects of the <code>ReferLog</code> and <code>AgentLog</code> directives.</p>
 
-      <div class="example"><p><code>
-        LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br />
-        CustomLog logs/access_log common<br />
-        CustomLog logs/referer_log "%{Referer}i -&gt; %U"<br />
-        CustomLog logs/agent_log "%{User-agent}i"
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
+CustomLog logs/access_log common
+CustomLog logs/referer_log "%{Referer}i -&gt; %U"
+CustomLog logs/agent_log "%{User-agent}i"
+      </pre>
+
 
       <p>This example also shows that it is not necessary to define a
       nickname with the <code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code> directive. Instead,
@@ -437,34 +440,37 @@
       include or exclude requests where the environment variable is
       set. Some examples:</p>
 
-      <div class="example"><p><code>
-        # Mark requests from the loop-back interface<br />
-        SetEnvIf Remote_Addr "127\.0\.0\.1" dontlog<br />
-        # Mark requests for the robots.txt file<br />
-        SetEnvIf Request_URI "^/robots\.txt$" dontlog<br />
-        # Log what remains<br />
-        CustomLog logs/access_log common env=!dontlog
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+# Mark requests from the loop-back interface
+SetEnvIf Remote_Addr "127\.0\.0\.1" dontlog
+# Mark requests for the robots.txt file
+SetEnvIf Request_URI "^/robots\.txt$" dontlog
+# Log what remains
+CustomLog logs/access_log common env=!dontlog
+      </pre>
+
 
       <p>As another example, consider logging requests from
       english-speakers to one log file, and non-english speakers to a
       different log file.</p>
 
-      <div class="example"><p><code>
+      <pre class="prettyprint lang-config">
         SetEnvIf Accept-Language "en" english<br />
         CustomLog logs/english_log common env=english<br />
         CustomLog logs/non_english_log common env=!english
-      </code></p></div>
+      </pre>
+
 
       <p>In a caching scenario one would want to know about
       the efficiency of the cache. A very simple method to
       find this out would be:</p>
 
-      <div class="example"><p><code>
-        SetEnv CACHE_MISS 1<br />
-        LogFormat "%h %l %u %t "%r " %&gt;s %b %{CACHE_MISS}e" common-cache<br />
-        CustomLog logs/access_log common-cache
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+SetEnv CACHE_MISS 1
+LogFormat "%h %l %u %t "%r " %&gt;s %b %{CACHE_MISS}e" common-cache
+CustomLog logs/access_log common-cache
+      </pre>
+
 
       <p><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> will run before
       <code class="module"><a href="./mod/mod_env.html">mod_env</a></code> and when successfull will deliver the
@@ -474,10 +480,11 @@
       <p>In addition to the <code>env=</code> syntax, <code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code> supports logging values
       conditional upon the HTTP response code:</p>
 
-      <div class="example"><p><code>
-      LogFormat "%400,501{User-agent}i" browserlog<br />
-      LogFormat "%!200,304,302{Referer}i" refererlog
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+LogFormat "%400,501{User-agent}i" browserlog
+LogFormat "%!200,304,302{Referer}i" refererlog
+      </pre>
+
 
       <p>In the first example, the <code>User-agent</code> will be
       logged if the HTTP status code is 400 or 501. In other cases, a
@@ -556,10 +563,10 @@
     for this purpose. For example, to rotate the logs every 24 hours, you
     can use:</p>
 
-    <div class="example"><p><code>
-      CustomLog "|/usr/local/apache/bin/rotatelogs
-      /var/log/access_log 86400" common
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+      CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/access_log 86400" common
+    </pre>
+
 
     <p>Notice that quotes are used to enclose the entire command
     that will be called for the pipe. Although these examples are
@@ -578,11 +585,11 @@
     a shell. Use "<code>|$</code>" instead of "<code>|</code>"
     to spawn using a shell (usually with <code>/bin/sh -c</code>):</p>
 
-    <div class="example"><p><code>
-      # Invoke "rotatelogs" using a shell<br />
-      CustomLog "|$/usr/local/apache/bin/rotatelogs
-      /var/log/access_log 86400" common
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+# Invoke "rotatelogs" using a shell
+CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" common
+    </pre>
+
 
     <p>This was the default behaviour for Apache 2.2.
     Depending on the shell specifics this might lead to
@@ -625,11 +632,11 @@
     later split the log into individual files. For example,
     consider the following directives.</p>
 
-    <div class="example"><p><code>
-      LogFormat "%v %l %u %t \"%r\" %&gt;s %b"
-      comonvhost<br />
-      CustomLog logs/access_log comonvhost
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+LogFormat "%v %l %u %t \"%r\" %&gt;s %b" comonvhost
+CustomLog logs/access_log comonvhost
+    </pre>
+
 
     <p>The <code>%v</code> is used to log the name of the virtual
     host that is serving the request. Then a program like <a href="programs/other.html">split-logfile</a> can be used to

@@ -91,9 +91,10 @@ requests</td></tr>
       <dd>Refers to a group by its number.</dd>
     </dl>
 
-    <div class="example"><h3>Example</h3><p><code>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       Group www-group
-    </code></p></div>
+      </pre>
+</div>
 
     <p>It is recommended that you set up a new group specifically for
     running the server. Some admins use user <code>nobody</code>,

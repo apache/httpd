@@ -71,9 +71,10 @@
     it to them with their file extensions. To enable any .dll file to be
     processed as an ISAPI extension, edit the httpd.conf file and add the
     following line:</p>
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
         AddHandler isapi-handler .dll
-    </code></p></div>
+    </pre>
+
 
     <div class="note">In older versions of the Apache server,
     <code>isapi-isa</code> was the proper handler name, rather than
@@ -86,9 +87,10 @@
     requested module loaded. However, you may preload and keep a
     specific module loaded by using the following syntax in your
     httpd.conf:</p>
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
         ISAPICacheFile c:/WebWork/Scripts/ISAPI/mytest.dll
-    </code></p></div>
+    </pre>
+
 
     <p>Whether or not you have preloaded an ISAPI extension, all
     ISAPI extensions are governed by the same permissions and

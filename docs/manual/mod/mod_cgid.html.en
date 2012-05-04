@@ -92,9 +92,10 @@ the cgi daemon</td></tr>
     scripts, it is important that no other user has permission to
     write in the directory where the socket is located.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       ScriptSock /var/run/cgid.sock
-    </code></p></div>
+    </pre>
+</div>
 
 
 </div>

@@ -97,10 +97,11 @@
     all the directives to have an effect.  For example, the following
     configuration will work as expected:</p>
 
-    <div class="example"><p><code>
-    Alias /foo/bar /baz<br />
-    Alias /foo /gaq
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Alias /foo/bar /baz
+Alias /foo /gaq
+    </pre>
+
 
     <p>But if the above two directives were reversed in order, the
     <code>/foo</code> <code class="directive"><a href="#alias">Alias</a></code>
@@ -127,9 +128,10 @@
     <var>URL-path</var> is case-sensitive, even on case-insensitive
     file systems.</p>
 
-    <div class="example"><h3>Example:</h3><p><code>
+    <pre class="prettyprint lang-config">
       Alias /image /ftp/pub/image
-    </code></p></div>
+    </pre>
+
 
     <p>A request for <code>http://example.com/image/foo.gif</code> would cause
     the server to return the file <code>/ftp/pub/image/foo.gif</code>.  Only
@@ -160,14 +162,13 @@
     directory outside of your <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>, you may need to explicitly
     permit access to the target directory.</p>
 
-    <div class="example"><h3>Example:</h3><p><code>
-        Alias /image /ftp/pub/image<br />
-        &lt;Directory /ftp/pub/image&gt;<br />
-        <span class="indent">
-            Require all granted<br />
-        </span>
-        &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Alias /image /ftp/pub/image
+&lt;Directory /ftp/pub/image&gt;
+    Require all granted
+&lt;/Directory&gt;
+    </pre>
+
 
 
 </div>
@@ -191,18 +192,20 @@ expressions</td></tr>
     example, to activate the <code>/icons</code> directory, one might
     use:</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       AliasMatch ^/icons(.*) /usr/local/apache/icons$1
-    </code></p></div>
+    </pre>
+
 
     <p>The full range of <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>
     power is available.  For example,
     it is possible to construct an alias with case-insensitive
     matching of the URL-path:</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       AliasMatch (?i)^/image(.*) /ftp/pub/image$1
-    </code></p></div>
+    </pre>
+
 
     <p>One subtle difference
     between <code class="directive"><a href="#alias">Alias</a></code>
@@ -225,22 +228,25 @@ expressions</td></tr>
 
     <p>For example, suppose you want to replace this with AliasMatch:</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       Alias /image/ /ftp/pub/image/
-    </code></p></div>
+    </pre>
+
 
     <p>This is NOT equivalent - don't do this!  This will send all
     requests that have /image/ anywhere in them to /ftp/pub/image/:</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       AliasMatch /image/ /ftp/pub/image/
-    </code></p></div>
+    </pre>
+
 
     <p>This is what you need to get the same effect:</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       AliasMatch ^/image/(.*)$ /ftp/pub/image/$1
-    </code></p></div>
+    </pre>
+
 
     <p>Of course, there's no point in
     using <code class="directive"><a href="#aliasmatch">AliasMatch</a></code>
@@ -249,10 +255,11 @@ expressions</td></tr>
     you do more complicated things.  For example, you could
     serve different kinds of files from different directories:</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       AliasMatch ^/image/(.*)\.jpg$ /files/jpg.images/$1.jpg<br />
       AliasMatch ^/image/(.*)\.gif$ /files/gif.images/$1.gif
-    </code></p></div>
+    </pre>
+
 
 
 </div>
@@ -284,13 +291,14 @@ a different URL</td></tr>
     <em>URL</em>.  Additional path information beyond the matched
     <em>URL-Path</em> will be appended to the target URL.</p>
 
-    <div class="example"><h3>Example:</h3><p><code>
-      # Redirect to a URL on a different host<br />
-      Redirect /service http://foo2.example.com/service<br />
-      <br />
-      # Redirect to a URL on the same host<br />
-      Redirect /one /two
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+# Redirect to a URL on a different host
+Redirect /service http://foo2.example.com/service
+
+# Redirect to a URL on the same host
+Redirect /one /two
+    </pre>
+
 
     <p>If the client requests <code>http://example.com/service/foo.txt</code>,
     it will be told to access
@@ -347,10 +355,11 @@ a different URL</td></tr>
     HTTP status code, known to the Apache HTTP Server (see the function
     <code>send_error_response</code> in http_protocol.c).</p>
 
-    <div class="example"><h3>Example:</h3><p><code>
-      Redirect permanent /one http://example.com/two<br />
-      Redirect 303 /three http://example.com/other
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Redirect permanent /one http://example.com/two
+Redirect 303 /three http://example.com/other
+    </pre>
+
 
 
 </div>
@@ -375,9 +384,10 @@ of the current URL</td></tr>
     example, to redirect all GIF files to like-named JPEG files on
     another server, one might use:</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       RedirectMatch (.*)\.gif$ http://other.example.com$1.jpg
-    </code></p></div>
+    </pre>
+
 
     <p>The considerations related to the difference between
     <code class="directive"><a href="#alias">Alias</a></code> and
@@ -442,29 +452,30 @@ target as a CGI script</td></tr>
     to scripts beginning with the second argument, which is a full
     pathname in the local filesystem.</p>
 
-    <div class="example"><h3>Example:</h3><p><code>
+    <pre class="prettyprint lang-config">
       ScriptAlias /cgi-bin/ /web/cgi-bin/
-    </code></p></div>
+    </pre>
+
 
     <p>A request for <code>http://example.com/cgi-bin/foo</code> would cause the
     server to run the script <code>/web/cgi-bin/foo</code>.  This configuration
     is essentially equivalent to:</p>
-    <div class="example"><p><code>
-      Alias /cgi-bin/ /web/cgi-bin/<br />
-      &lt;Location /cgi-bin &gt;<br />
-      <span class="indent">
-      SetHandler cgi-script<br />
-      Options +ExecCGI<br />
-      </span>
-      &lt;/Location&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Alias /cgi-bin/ /web/cgi-bin/
+&lt;Location /cgi-bin &gt;
+    SetHandler cgi-script
+    Options +ExecCGI
+&lt;/Location&gt;
+    </pre>
+
 
 	<p><code class="directive">ScriptAlias</code> can also be used in conjunction with
 	a script or handler you have. For example:</p>
 
-	<div class="example"><p><code>
+	<pre class="prettyprint lang-config">
 	  ScriptAlias /cgi-bin/ /web/cgi-handler.pl
-    </code></p></div>
+    </pre>
+
 
     <p>In this scenario all files requested in <code>/cgi-bin/</code> will be
     handled by the file you have configured, this allows you to use your own custom
@@ -480,14 +491,13 @@ target as a CGI script</td></tr>
     choose to place your CGI scripts in a directory already
     accessible from the web, do not use
     <code class="directive">ScriptAlias</code>.  Instead, use <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code>, and <code class="directive"><a href="../mod/core.html#options">Options</a></code> as in:
-    <div class="example"><p><code>
-      &lt;Directory /usr/local/apache2/htdocs/cgi-bin &gt;<br />
-      <span class="indent">
-      SetHandler cgi-script<br />
-      Options ExecCGI<br />
-      </span>
-      &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Directory /usr/local/apache2/htdocs/cgi-bin &gt;
+    SetHandler cgi-script
+    Options ExecCGI
+&lt;/Directory&gt;
+    </pre>
+
     This is necessary since multiple <var>URL-paths</var> can map
     to the same filesystem location, potentially bypassing the
     <code class="directive">ScriptAlias</code> and revealing the source code
@@ -520,18 +530,20 @@ and designates the target as a CGI script</td></tr>
     example, to activate the standard <code>/cgi-bin</code>, one
     might use:</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       ScriptAliasMatch ^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
-    </code></p></div>
+    </pre>
+
 
     <p>As for AliasMatch, the full range of <a class="glossarylink" href="../glossary.html#rexex" title="see glossary">regular
     expression</a> power is available.
     For example, it is possible to construct an alias with case-insensitive
     matching of the URL-path:</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       ScriptAliasMatch (?i)^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
-    </code></p></div>
+    </pre>
+
 
     <p>The considerations related to the difference between
     <code class="directive"><a href="#alias">Alias</a></code> and

@@ -134,7 +134,8 @@ Negotiation</a></li>
     defines a file suffix as <code>type-map</code>; this is best done
     with</p>
 
-<div class="example"><p><code>AddHandler type-map .var</code></p></div>
+<pre class="prettyprint lang-config">AddHandler type-map .var</pre>
+
 
     <p>in the server configuration file.</p>
 
@@ -231,7 +232,8 @@ Negotiation</a></li>
     named by the <code class="directive"><a href="./mod/mod_dir.html#directoryindex">DirectoryIndex</a></code> directive, if the
     server is trying to index a directory. If the configuration files
     specify</p>
-<div class="example"><p><code>DirectoryIndex index</code></p></div>
+<pre class="prettyprint lang-config">DirectoryIndex index</pre>
+
     <p>then the server will arbitrate between <code>index.html</code>
     and <code>index.html3</code> if both are present. If neither
     are present, and <code>index.cgi</code> is there, the server
@@ -516,10 +518,11 @@ Negotiation</a></li>
     try to select a matching variant. If there's no such variant,
     the normal negotiation process applies.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-      SetEnvIf Cookie "language=(.+)" prefer-language=$1<br />
-      Header append Vary cookie
-    </code></p></div>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
+SetEnvIf Cookie "language=(.+)" prefer-language=$1
+Header append Vary cookie
+    </pre>
+</div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">

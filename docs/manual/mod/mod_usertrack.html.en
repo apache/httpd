@@ -57,10 +57,11 @@
     <p><code class="module"><a href="../mod/mod_usertrack.html">mod_usertrack</a></code> sets a cookie which can be logged
     via <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> configurable logging formats:</p>
 
-    <div class="example"><p><code>
-    LogFormat "%{Apache}n %r %t" usertrack<br />
-    CustomLog logs/clickstream.log usertrack
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+LogFormat "%{Apache}n %r %t" usertrack
+CustomLog logs/clickstream.log usertrack
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -95,9 +96,10 @@
     level domain (for example <code>.example.co.uk</code>).
     </div>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
     CookieDomain .example.com
-    </code></p></div>
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -121,9 +123,10 @@
     <p>If this directive is not used, cookies last only for the
     current browser session.</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
     CookieExpires "3 weeks"
-    </code></p></div>
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -145,9 +148,10 @@
     unpredictable if you use a name containing unusual characters.
     Valid characters include A-Z, a-z, 0-9, "_", and "-".</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
     CookieName clicktrack
-    </code></p></div>
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -183,9 +187,10 @@
     three of these formats, with <code>Cookie2</code> being the
     preferred format.</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
     CookieStyle Cookie2
-    </code></p></div>
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -207,9 +212,10 @@
     <code class="module"><a href="../mod/mod_usertrack.html">mod_usertrack</a></code> will <strong>not</strong>
     activate cookies. </p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
     CookieTracking on
-    </code></p></div>
+    </pre>
+
 
 
 </div>

@@ -254,7 +254,7 @@
 
         <p class="indent">
           If it doesn't exist, it can't very well contain files. If we
-          can't change directory to it, it might aswell not exist.
+          can't change directory to it, it might as well not exist.
         </p>
       </li>
 
@@ -476,10 +476,11 @@
 
       <p>If for example, your web server is configured to run as:</p>
 
-      <div class="example"><p><code>
-          User www<br />
-          Group webgroup<br />
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+User www
+Group webgroup
+      </pre>
+
 
       <p>and <code class="program"><a href="./programs/suexec.html">suexec</a></code> is installed at
       "/usr/local/apache2/bin/suexec", you should run:</p>
