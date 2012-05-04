@@ -113,6 +113,7 @@
         <message id="search">Google Search</message> <!-- search button -->
         <message id="index">Оглавление</message> <!-- deprecated -->
         <message id="home">На главную страницу</message> <!-- deprecated -->
+        <message id="comments">Comments</message>
 
         <!-- breadcrumb links -->
         <message id="apache">Apache</message>

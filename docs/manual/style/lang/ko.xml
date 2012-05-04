@@ -121,6 +121,7 @@
         <message id="search">Google °Ë»ö</message> <!-- search button -->
         <message id="index">Index</message> <!-- deprecated -->
         <message id="home">Home</message> <!-- deprecated -->
+        <message id="comments">Comments</message>
 
         <!-- breadcrumb links -->
         <message id="apache">Apache</message>

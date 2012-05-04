@@ -119,6 +119,7 @@
         <message id="search">Google’de Ara</message> <!-- search button -->
         <message id="index">Dizin</message> <!-- deprecated -->
         <message id="home">Baş Sayfa</message> <!-- deprecated -->
+        <message id="comments">Yorum</message>
 
         <!-- breadcrumb links -->
         <message id="apache">Apache</message>

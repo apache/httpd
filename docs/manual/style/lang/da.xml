@@ -116,6 +116,7 @@
         <message id="search">Google Søgning</message> <!-- search button -->
         <message id="index">Indeks</message> <!-- deprecated -->
         <message id="home">Hjem</message> <!-- deprecated -->
+        <message id="comments">Kommentarer</message>
 
         <!-- breadcrumb links -->
         <message id="apache">Apache</message>
