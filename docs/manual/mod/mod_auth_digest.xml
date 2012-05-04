@@ -56,17 +56,17 @@
     <program>htdigest</program> tool.</p>
 
     <example><title>Example:</title>
-      &lt;Location /private/&gt;<br />
-      <indent>
-        AuthType Digest<br />
-        AuthName "private area"<br />
-        AuthDigestDomain /private/ http://mirror.my.dom/private2/<br />
-        <br />
-        AuthDigestProvider file<br />
-        AuthUserFile /web/auth/.digest_pw<br />
-        Require valid-user<br />
-      </indent>
-      &lt;/Location&gt;
+    <highlight language="config">
+&lt;Location /private/&gt;
+    AuthType Digest
+    AuthName "private area"
+    AuthDigestDomain /private/ http://mirror.my.dom/private2/
+    
+    AuthDigestProvider file
+    AuthUserFile /web/auth/.digest_pw
+    Require valid-user
+&lt;/Location&gt;
+      </highlight>
     </example>
 
     <note><title>Note</title>
@@ -113,7 +113,9 @@
     method would look similar to the following.</p>
 
     <example><title>Using Digest Authentication with MSIE:</title>
-    BrowserMatch "MSIE" AuthDigestEnableQueryStringHack=On
+    <highlight language="config">
+        BrowserMatch "MSIE" AuthDigestEnableQueryStringHack=On
+    </highlight>
     </example>
 
     <p>This workaround is not necessary for MSIE 7, though enabling it does
@@ -335,11 +337,11 @@ of clients</description>
     express your value as KBytes or MBytes. For example, the following
     directives are all equivalent:</p>
 
-    <example>
-      AuthDigestShmemSize 1048576<br />
-      AuthDigestShmemSize 1024K<br />
-      AuthDigestShmemSize 1M
-    </example>
+<highlight language="config">
+AuthDigestShmemSize 1048576
+AuthDigestShmemSize 1024K
+AuthDigestShmemSize 1M
+    </highlight>
 </usage>
 </directivesynopsis>
 

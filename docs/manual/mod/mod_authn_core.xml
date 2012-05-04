@@ -54,30 +54,25 @@
         files.</p>
 
         <example><title>Checking multiple text password files</title>
+        <highlight language="config">
+# Check here first
+&lt;AuthnProviderAlias file file1&gt;
+    AuthUserFile /www/conf/passwords1
+&lt;/AuthnProviderAlias&gt;
 
-        # Check here first<br />
-        &lt;AuthnProviderAlias file file1&gt;<br />
-        <indent>
-            AuthUserFile /www/conf/passwords1<br />
-        </indent>
-        &lt;/AuthnProviderAlias&gt;<br />
-        <br />
-        # Then check here<br />
-        &lt;AuthnProviderAlias file file2&gt;   <br />
-        <indent>
-            AuthUserFile /www/conf/passwords2<br />
-        </indent>
-        &lt;/AuthnProviderAlias&gt;<br />
-        <br />
-        &lt;Directory /var/web/pages/secure&gt;<br />
-        <indent>
-            AuthBasicProvider file1 file2<br />
-            <br />
-            AuthType Basic<br />
-            AuthName "Protected Area"<br />
-            Require valid-user<br />
-        </indent>
-        &lt;/Directory&gt;<br />
+# Then check here
+&lt;AuthnProviderAlias file file2&gt;   
+    AuthUserFile /www/conf/passwords2
+&lt;/AuthnProviderAlias&gt;
+
+&lt;Directory /var/web/pages/secure&gt;
+    AuthBasicProvider file1 file2
+    
+    AuthType Basic
+    AuthName "Protected Area"
+    Require valid-user
+&lt;/Directory&gt;
+        </highlight>
         </example>
 
         <p>The example below creates two different ldap authentication
@@ -86,34 +81,30 @@
         hosts:</p>
 
         <example><title>Checking multiple LDAP servers</title>
-          &lt;AuthnProviderAlias ldap ldap-alias1&gt;<br />
-          <indent>
-             AuthLDAPBindDN cn=youruser,o=ctx<br />
-             AuthLDAPBindPassword yourpassword<br />
-             AuthLDAPURL ldap://ldap.host/o=ctx<br />
-          </indent>
-          &lt;/AuthnProviderAlias&gt;<br /><br />
-          &lt;AuthnProviderAlias ldap ldap-other-alias&gt;<br />
-          <indent>
-             AuthLDAPBindDN cn=yourotheruser,o=dev<br />
-             AuthLDAPBindPassword yourotherpassword<br />
-             AuthLDAPURL ldap://other.ldap.host/o=dev?cn<br />
-          </indent>
-          &lt;/AuthnProviderAlias&gt;<br /><br />
+        <highlight language="config">
+&lt;AuthnProviderAlias ldap ldap-alias1&gt;
+    AuthLDAPBindDN cn=youruser,o=ctx
+    AuthLDAPBindPassword yourpassword
+    AuthLDAPURL ldap://ldap.host/o=ctx
+    &lt;/AuthnProviderAlias&gt;
+    &lt;AuthnProviderAlias ldap ldap-other-alias&gt;
+    AuthLDAPBindDN cn=yourotheruser,o=dev
+    AuthLDAPBindPassword yourotherpassword
+    AuthLDAPURL ldap://other.ldap.host/o=dev?cn
+&lt;/AuthnProviderAlias&gt;
 
-          Alias /secure /webpages/secure<br />
-          &lt;Directory /webpages/secure&gt;<br />
-          <indent>
-             Order deny,allow<br />
-             Allow from all<br /><br />
-
-             AuthBasicProvider ldap-other-alias  ldap-alias1<br /><br />
-
-             AuthType Basic<br />
-             AuthName LDAP_Protected_Place<br />
-             Require valid-user<br />
-          </indent>
-          &lt;/Directory&gt;<br />
+Alias /secure /webpages/secure
+&lt;Directory /webpages/secure&gt;
+    Order deny,allow
+    Allow from all
+    
+    AuthBasicProvider ldap-other-alias  ldap-alias1
+    
+    AuthType Basic
+    AuthName LDAP_Protected_Place
+    Require valid-user
+&lt;/Directory&gt;
+          </highlight>
         </example>
     </section>
 
@@ -144,9 +135,9 @@ authentication</description>
 
    <p>For example:</p>
 
-   <example>
+   <highlight language="config">
      AuthName "Top Secret"
-   </example>
+   </highlight>
 
     <p>The string provided for the <code>AuthName</code> is what will
     appear in the password dialog provided by most browsers.</p>
@@ -189,24 +180,20 @@ authentication</description>
     in the following example, clients may access the
     <code>/www/docs/public</code> directory without authenticating:</p>
 
-    <example>
-        &lt;Directory /www/docs&gt;
-        <indent>
-            AuthType Basic<br />
-            AuthName Documents<br />
-            AuthBasicProvider file<br />
-            AuthUserFile /usr/local/apache/passwd/passwords<br />
-            Require valid-user
-        </indent>
-        &lt;/Directory&gt;<br />
-        <br />
-        &lt;Directory /www/docs/public&gt;
-        <indent>
-            AuthType None<br />
-            Require all granted
-        </indent>
-        &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory /www/docs&gt;
+    AuthType Basic
+    AuthName Documents
+    AuthBasicProvider file
+    AuthUserFile /usr/local/apache/passwd/passwords
+    Require valid-user
+&lt;/Directory&gt;
+
+&lt;Directory /www/docs/public&gt;
+    AuthType None
+    Require all granted
+&lt;/Directory&gt;
+    </highlight>
 
     <note>When disabling authentication, note that clients which have
     already authenticated against another portion of the server's document
