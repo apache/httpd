@@ -109,31 +109,32 @@
     load balancing between two back-end servers:
     </p>
 
-    <div class="example"><p><code>
-    &lt;Proxy balancer://mycluster&gt;<br />
-        BalancerMember http://192.168.1.50:80<br />
-        BalancerMember http://192.168.1.51:80<br />
-    &lt;/Proxy&gt;<br />
-    ProxyPass /test balancer://mycluster<br />
-    ProxyPassReverse /test balancer://mycluster
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Proxy balancer://mycluster&gt;
+    BalancerMember http://192.168.1.50:80
+    BalancerMember http://192.168.1.51:80
+&lt;/Proxy&gt;
+ProxyPass /test balancer://mycluster
+ProxyPassReverse /test balancer://mycluster
+    </pre>
+
 
     <p>Another example of how to provide load balancing with stickyness
     using <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code>, even if the back-end server does
     not set a suitable session cookie:
     </p>
 
-    <div class="example"><p><code>
-    Header add Set-Cookie "ROUTEID=.%{BALANCER_WORKER_ROUTE}e; path=/"
-           env=BALANCER_ROUTE_CHANGED<br />
-    &lt;Proxy balancer://mycluster&gt;<br />
-    BalancerMember http://192.168.1.50:80 route=1<br />
-    BalancerMember http://192.168.1.51:80 route=2<br />
-    ProxySet stickysession=ROUTEID<br />
-    &lt;/Proxy&gt;<br />
-    ProxyPass /test balancer://mycluster<br />
-    ProxyPassReverse /test balancer://mycluster
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Header add Set-Cookie "ROUTEID=.%{BALANCER_WORKER_ROUTE}e; path=/" env=BALANCER_ROUTE_CHANGED
+&lt;Proxy balancer://mycluster&gt;
+    BalancerMember http://192.168.1.50:80 route=1
+    BalancerMember http://192.168.1.51:80 route=2
+    ProxySet stickysession=ROUTEID
+&lt;/Proxy&gt;
+ProxyPass /test balancer://mycluster
+ProxyPassReverse /test balancer://mycluster
+    </pre>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="environment" id="environment">Exported Environment Variables</a></h2>
@@ -206,13 +207,13 @@
     <p>To enable load balancer management for browsers from the example.com
     domain add this code to your <code>httpd.conf</code>
     configuration file</p>
-<div class="example"><p><code>
-    &lt;Location /balancer-manager&gt;<br />
-    SetHandler balancer-manager<br />
-<br />
-    Require host example.com<br />
-    &lt;/Location&gt;
-</code></p></div>
+<pre class="prettyprint lang-config">
+&lt;Location /balancer-manager&gt;
+    SetHandler balancer-manager
+    Require host example.com
+&lt;/Location&gt;
+</pre>
+
 
     <p>You can now access load balancer manager by using a Web browser
     to access the page

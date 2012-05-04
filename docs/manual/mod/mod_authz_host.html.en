@@ -88,35 +88,39 @@ address)</td></tr>
 
     <p>A full IP address:</p>
 
-    <div class="example"><p><code>
-      Require ip 10.1.2.3<br />
-      Require ip 192.168.1.104 192.168.1.205
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Require ip 10.1.2.3
+Require ip 192.168.1.104 192.168.1.205
+    </pre>
+
 
     <p>An IP address of a host allowed access</p>
 
     <p>A partial IP address:</p>
 
-    <div class="example"><p><code>
-      Require ip 10.1<br />
-      Require ip 10 172.20 192.168.2
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Require ip 10.1
+Require ip 10 172.20 192.168.2
+    </pre>
+
     <p>The first 1 to 3 bytes of an IP address, for subnet
     restriction.</p>
 
     <p>A network/netmask pair:</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       Require ip 10.1.0.0/255.255.0.0
-    </code></p></div>
+    </pre>
+
     <p>A network a.b.c.d, and a netmask w.x.y.z. For more
     fine-grained subnet restriction.</p>
 
     <p>A network/nnn CIDR specification:</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       Require ip 10.1.0.0/16
-    </code></p></div>
+    </pre>
+
     <p>Similar to the previous case, except the netmask consists of
     nnn high-order 1 bits.</p>
 
@@ -126,10 +130,11 @@ address)</td></tr>
     <p>IPv6 addresses and IPv6 subnets can be specified as shown
     below:</p>
 
-    <div class="example"><p><code>
-     Require ip 2001:db8::a00:20ff:fea7:ccea<br />
-     Require ip 2001:db8::a00:20ff:fea7:ccea/10
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Require ip 2001:db8::a00:20ff:fea7:ccea
+Require ip 2001:db8::a00:20ff:fea7:ccea/10
+    </pre>
+
 
 
 
@@ -143,10 +148,11 @@ address)</td></tr>
 
     <p>A (partial) domain-name</p>
 
-    <div class="example"><p><code>
-    Require host example.org<br />
-    Require host .net example.edu
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Require host example.org
+Require host .net example.edu
+    </pre>
+
 
     <p>Hosts whose names match, or end in, this string are allowed
     access. Only complete components are matched, so the above
@@ -176,9 +182,10 @@ address)</td></tr>
     <p>This allows a convenient way to match connections that originate from
     the local host:</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
     Require local
-    </code></p></div>
+    </pre>
+
 
 
 </div>

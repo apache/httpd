@@ -62,9 +62,10 @@ later.</td></tr>
     <p>The <code class="directive">ProtocolEcho</code> directive enables or
     disables the echo server.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       ProtocolEcho On
-    </code></p></div>
+    </pre>
+</div>
 
 </div>
 </div>

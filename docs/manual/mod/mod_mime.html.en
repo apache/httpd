@@ -156,13 +156,12 @@
     script, but not the file <code>bar.cgi.html</code>, then instead
     of using <code>AddHandler cgi-script .cgi</code>, use</p>
 
-    <div class="example"><h3>Configure handler based on final extension only</h3><p><code>
-    &lt;FilesMatch \.cgi$&gt;
-    <span class="indent">
-      SetHandler cgi-script
-    </span>
-    &lt;/FilesMatch&gt;
-    </code></p></div>
+    <div class="example"><h3>Configure handler based on final extension only</h3><pre class="prettyprint lang-config">
+&lt;FilesMatch \.cgi$&gt;
+  SetHandler cgi-script
+&lt;/FilesMatch&gt;
+    </pre>
+</div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -205,7 +204,8 @@
     resource, in order to tell the client browser about the
     encoding method.</p>
 
-    <div class="example"><p><code>Content-encoding: pkzip</code></p></div>
+    <pre class="prettyprint lang-config">Content-encoding: pkzip</pre>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="charset-lang" id="charset-lang">Character sets and languages</a></h2>
@@ -238,8 +238,8 @@
       render the information.</p>
 
       <div class="example"><p><code>
-        Content-Language: en, fr<br />
-        Content-Type: text/plain; charset=ISO-8859-1
+Content-Language: en, fr
+Content-Type: text/plain; charset=ISO-8859-1
       </code></p></div>
 
       <p>The language specification is the two-letter abbreviation
@@ -268,12 +268,13 @@ charset</td></tr>
     overriding any mappings that already exist for the same
     <var>extension</var>.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-      AddLanguage ja .ja<br />
-      AddCharset EUC-JP .euc<br />
-      AddCharset ISO-2022-JP .jis<br />
-      AddCharset SHIFT_JIS .sjis
-    </code></p></div>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
+AddLanguage ja .ja
+AddCharset EUC-JP .euc
+AddCharset ISO-2022-JP .jis
+AddCharset SHIFT_JIS .sjis
+      </pre>
+</div>
 
     <p>Then the document <code>xxxx.ja.jis</code> will be treated
     as being a Japanese document whose charset is <code>ISO-2022-JP</code>
@@ -316,10 +317,11 @@ type</td></tr>
     overriding any mappings that already exist for the same
     <var>extension</var>.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-      AddEncoding x-gzip .gz<br />
-      AddEncoding x-compress .Z
-    </code></p></div>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
+AddEncoding x-gzip .gz
+AddEncoding x-compress .Z
+      </pre>
+</div>
 
     <p>This will cause filenames containing the <code>.gz</code> extension
     to be marked as encoded using the <code>x-gzip</code> encoding, and
@@ -365,9 +367,10 @@ handler</td></tr>
     activate CGI scripts with the file extension <code>.cgi</code>, you
     might use:</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       AddHandler cgi-script .cgi
-    </code></p></div>
+    </pre>
+
 
     <p>Once that has been put into your httpd.conf file, any file containing
     the <code>.cgi</code> extension will be treated as a CGI program.</p>
@@ -440,11 +443,12 @@ language</td></tr>
     This directive overrides any mappings that already exist for the same
     <var>extension</var>.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-      AddEncoding x-compress .Z<br />
-      AddLanguage en .en<br />
-      AddLanguage fr .fr
-    </code></p></div>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
+AddEncoding x-compress .Z
+AddLanguage en .en
+AddLanguage fr .fr
+      </pre>
+</div>
 
     <p>Then the document <code>xxxx.en.Z</code> will be treated as
     being a compressed English document (as will the document
@@ -459,11 +463,12 @@ language</td></tr>
     extension, the last one encountered is the one that is used.
     That is, for the case of:</p>
 
-    <div class="example"><p><code>
-      AddLanguage en .en<br />
-      AddLanguage en-gb .en<br />
-      AddLanguage en-us .en
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+AddLanguage en .en
+AddLanguage en-gb .en
+AddLanguage en-us .en
+    </pre>
+
 
     <p>documents with the extension <code>.en</code> would be treated as
     being <code>en-us</code>.</p>
@@ -503,9 +508,10 @@ later.</td></tr>
     <code>.shtml</code> files for server-side includes and will then
     compress the output using <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>.</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       AddOutputFilter INCLUDES;DEFLATE shtml
-    </code></p></div>
+    </pre>
+
 
     <p>If more than one filter is specified, they must be separated
     by semicolons in the order in which they should process the
@@ -522,34 +528,27 @@ later.</td></tr>
     the <code class="directive"><a href="#addoutputfilter">AddOutputFilter</a></code>
     directive.</p>
 
-    <div class="example"><p><code>
-    # Effective filter "DEFLATE"<br />
-    AddOutputFilter DEFLATE shtml<br />
-    &lt;Location /foo&gt;<br />
-      <span class="indent">
-      # Effective filter "INCLUDES", replacing "DEFLATE"<br />
-      AddOutputFilter INCLUDES shtml<br />
-      </span>
-    &lt;/Location&gt;<br />
-    &lt;Location /bar&gt;<br />
-      <span class="indent">
-      # Effective filter "INCLUDES;DEFLATE", replacing "DEFLATE"<br />
-      AddOutputFilter INCLUDES;DEFLATE shtml<br />
-      </span>
-    &lt;/Location&gt;<br />
-    &lt;Location /bar/baz&gt;<br />
-      <span class="indent">
-      # Effective filter "BUFFER", replacing "INCLUDES;DEFLATE"<br />
-      AddOutputFilter BUFFER shtml<br />
-      </span>
-    &lt;/Location&gt;<br />
-    &lt;Location /bar/baz/buz&gt;<br />
-      <span class="indent">
-      # No effective filter, replacing "BUFFER"<br />
-      RemoveOutputFilter shtml<br />
-      </span>
-    &lt;/Location&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+# Effective filter "DEFLATE"
+AddOutputFilter DEFLATE shtml
+&lt;Location /foo&gt;
+  # Effective filter "INCLUDES", replacing "DEFLATE"
+  AddOutputFilter INCLUDES shtml
+&lt;/Location&gt;
+&lt;Location /bar&gt;
+  # Effective filter "INCLUDES;DEFLATE", replacing "DEFLATE"
+  AddOutputFilter INCLUDES;DEFLATE shtml
+&lt;/Location&gt;
+&lt;Location /bar/baz&gt;
+  # Effective filter "BUFFER", replacing "INCLUDES;DEFLATE"
+  AddOutputFilter BUFFER shtml
+&lt;/Location&gt;
+&lt;Location /bar/baz/buz&gt;
+  # No effective filter, replacing "BUFFER"
+  RemoveOutputFilter shtml
+&lt;/Location&gt;
+    </pre>
+
 
 <h3>See also</h3>
 <ul>
@@ -583,15 +582,17 @@ type</td></tr>
       <code class="directive"><a href="#typesconfig">TypesConfig</a></code> file.
     </div>
 
-    <div class="example"><h3>Example</h3><p><code>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       AddType image/gif .gif
-    </code></p></div>
+      </pre>
+</div>
 
     <p>Or, to specify multiple file extensions in one directive:</p>
 
-    <div class="example"><h3>Example</h3><p><code>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       AddType image/jpeg jpeg jpg jpe
-    </code></p></div>
+      </pre>
+</div>
 
     <p>The <var>extension</var> argument is case-insensitive and can
     be specified with or without a leading dot. Filenames may have <a href="#multipleext">multiple extensions</a> and the
@@ -603,9 +604,10 @@ type</td></tr>
     can be achieved by qualifying a <var>media-type</var> with
     <code>qs</code>:</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-      Addtype application/rss+xml;qs=0.8 .xml
-    </code></p></div>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
+      AddType application/rss+xml;qs=0.8 .xml
+      </pre>
+</div>
 
     <p>This is useful in situations, <em>e.g.</em> when a client
     requesting <code>Accept: */*</code> can not actually processes
@@ -651,9 +653,10 @@ assigned a language-tag by some other means.</td></tr>
     by <code class="directive"><a href="#addlanguage">AddLanguage</a></code>, then no
     Content-Language header field will be generated.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       DefaultLanguage en
-    </code></p></div>
+      </pre>
+</div>
 
 <h3>See also</h3>
 <ul>
@@ -680,9 +683,10 @@ components as part of the filename</td></tr>
 
     <p>This directive is recommended when you have a virtual filesystem.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       ModMimeUsePathInfo On
-    </code></p></div>
+      </pre>
+</div>
 
     <p>If you have a request for <code>/index.php/foo.shtml</code>
     <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> will now treat the
@@ -746,9 +750,10 @@ a matching file with MultiViews</td></tr>
     and filters to participate in Multviews, but will exclude unknown
     files:</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       MultiviewsMatch Handlers Filters
-    </code></p></div>
+    </pre>
+
 
     <p><code class="directive">MultiviewsMatch</code> is not allowed in a
     <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> or <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> section.</p>
@@ -783,9 +788,10 @@ later.</td></tr>
     <p>The <var>extension</var> argument is case-insensitive and can
     be specified with or without a leading dot.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       RemoveCharset .html .shtml
-    </code></p></div>
+      </pre>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -806,15 +812,14 @@ extensions</td></tr>
     any associations inherited from parent directories or the
     server config files. An example of its use might be:</p>
 
-    <div class="example"><h3>/foo/.htaccess:</h3><p><code>
-      AddEncoding x-gzip .gz<br />
-      AddType text/plain .asc<br />
-      &lt;Files *.gz.asc&gt;<br />
-      <span class="indent">
-        RemoveEncoding .gz<br />
-      </span>
-      &lt;/Files&gt;
-    </code></p></div>
+    <div class="example"><h3>/foo/.htaccess:</h3><pre class="prettyprint lang-config">
+AddEncoding x-gzip .gz
+AddType text/plain .asc
+&lt;Files *.gz.asc&gt;
+    RemoveEncoding .gz
+&lt;/Files&gt;
+      </pre>
+</div>
 
     <p>This will cause <code>foo.gz</code> to be marked as being
     encoded with the gzip method, but <code>foo.gz.asc</code> as an
@@ -849,13 +854,15 @@ extensions</td></tr>
     associations inherited from parent directories or the server
     config files. An example of its use might be:</p>
 
-    <div class="example"><h3>/foo/.htaccess:</h3><p><code>
+    <div class="example"><h3>/foo/.htaccess:</h3><pre class="prettyprint lang-config">
       AddHandler server-parsed .html
-    </code></p></div>
+      </pre>
+</div>
 
-    <div class="example"><h3>/foo/bar/.htaccess:</h3><p><code>
+    <div class="example"><h3>/foo/bar/.htaccess:</h3><pre class="prettyprint lang-config">
       RemoveHandler .html
-    </code></p></div>
+      </pre>
+</div>
 
     <p>This has the effect of returning <code>.html</code> files in
     the <code>/foo/bar</code> directory to being treated as normal
@@ -943,9 +950,10 @@ later.</td></tr>
     <p>The <var>extension</var> argument is case-insensitive and can
     be specified with or without a leading dot.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       RemoveOutputFilter shtml
-    </code></p></div>
+      </pre>
+</div>
 
 <h3>See also</h3>
 <ul>
@@ -971,9 +979,10 @@ extensions</td></tr>
     directories or the server config files. An example of its use
     might be:</p>
 
-    <div class="example"><h3>/foo/.htaccess:</h3><p><code>
+    <div class="example"><h3>/foo/.htaccess:</h3><pre class="prettyprint lang-config">
       RemoveType .cgi
-    </code></p></div>
+      </pre>
+</div>
 
     <p>This will remove any special handling of <code>.cgi</code>
     files in the <code>/foo/</code> directory and any beneath it,

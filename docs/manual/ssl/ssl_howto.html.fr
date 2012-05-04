@@ -24,6 +24,8 @@
 <p><span>Langues Disponibles: </span><a href="../en/ssl/ssl_howto.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/ssl/ssl_howto.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
 
 <p>Ce document doit vous permettre de démarrer et de faire fonctionner
@@ -111,7 +113,7 @@ accéder à une URL particulière ?</a></h2>
     Cette configuration peut se présenter comme suit :</p>
     <div class="example"><p><code>
       # soyons très tolérant a priori<br />
-      SSLCipherSuite ALL:!aNULL:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL<br />
+      SSLCipherSuite ALL:!aNULL:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP:+eNULL<br />
       <br />
       &lt;Location /strong/area&gt;<br />
       # sauf pour https://hostname/strong/area/ et ses sous-répertoires<br />

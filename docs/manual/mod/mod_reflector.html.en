@@ -55,23 +55,25 @@
     <dd>Pass the request body through the DEFLATE filter to compress the
     body. This request requires a Content-Encoding request header containing
     "gzip" for the filter to return compressed data.
-    <div class="example"><p><code>
-      &lt;Location /compress&gt;<br />
-        SetHandler reflector<br />
-        SetOutputFilter DEFLATE<br />
-      &lt;/Location&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Location /compress&gt;
+    SetHandler reflector
+    SetOutputFilter DEFLATE
+&lt;/Location&gt;
+    </pre>
+
     </dd>
 
     <dt>Image downsampling service</dt>
     <dd>Pass the request body through an image downsampling filter, and reflect
     the results to the caller.
-    <div class="example"><p><code>
-      &lt;Location /downsample&gt;<br />
-        SetHandler reflector<br />
-        SetOutputFilter DOWNSAMPLE<br />
-      &lt;/Location&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Location /downsample&gt;
+    SetHandler reflector
+    SetOutputFilter DOWNSAMPLE
+&lt;/Location&gt;
+    </pre>
+
     </dd>
     </dl>
 </div>

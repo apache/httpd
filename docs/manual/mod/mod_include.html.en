@@ -82,10 +82,11 @@
     parse them and assign the resulting document the mime type of
     <code>text/html</code>:</p>
 
-    <div class="example"><p><code>
-      AddType text/html .shtml<br />
-      AddOutputFilter INCLUDES .shtml
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+AddType text/html .shtml
+AddOutputFilter INCLUDES .shtml
+    </pre>
+
 
     <p>The following directive must be given for the directories
     containing the shtml files (typically in a
@@ -94,9 +95,10 @@
     <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> <code>Options</code>
     is set):</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       Options +Includes
-    </code></p></div>
+    </pre>
+
 
     <p>For backwards compatibility, the <code>server-parsed</code>
     <a href="../handler.html">handler</a> also activates the
@@ -773,9 +775,10 @@
     <p>This directive changes the string that <code class="module"><a href="../mod/mod_include.html">mod_include</a></code>
     looks for to mark the end of an include element.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       SSIEndTag "%&gt;"
-    </code></p></div>
+    </pre>
+
 
 
 <h3>See also</h3>
@@ -806,9 +809,10 @@ directive]"</code></td></tr>
     <p>This directive has the same effect as the <code>&lt;!--#config
     errmsg=<var>message</var> --&gt;</code> element.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       SSIErrorMsg "&lt;!-- Error --&gt;"
-    </code></p></div>
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -930,10 +934,11 @@ server.</td></tr>
     output of a file each processing different commands (possibly at
     different times).</p>
 
-    <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       SSIStartTag "&lt;%"<br />
       SSIEndTag   "%&gt;"
-    </code></p></div>
+    </pre>
+
 
     <p>The example given above, which also specifies a matching
     <code class="directive"><a href="#ssiendtag">SSIEndTag</a></code>, will
@@ -970,9 +975,10 @@ displayed</td></tr>
     <p>This directive has the same effect as the <code>&lt;!--#config
     timefmt=<var>formatstring</var> --&gt;</code> element.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       SSITimeFormat "%R, %B %d, %Y"
-    </code></p></div>
+    </pre>
+
 
     <p>The above directive would cause times to be displayed in the
     format "22:26, June 14, 2002".</p>
@@ -993,9 +999,10 @@ displayed</td></tr>
     <p>This directive changes the string that <code class="module"><a href="../mod/mod_include.html">mod_include</a></code>
     displays when a variable is not set and "echoed".</p>
 
-    <div class="example"><h3>Example</h3><p><code>
+    <pre class="prettyprint lang-config">
       SSIUndefinedEcho "&lt;!-- undef --&gt;"
-    </code></p></div>
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

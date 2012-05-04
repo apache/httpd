@@ -66,7 +66,8 @@ HTTP headers</td></tr>
     <p>In the server configuration file, associate files with the
     <code>send-as-is</code> handler <em>e.g.</em></p>
 
-    <div class="example"><p><code>AddHandler send-as-is asis</code></p></div>
+    <pre class="prettyprint lang-config">AddHandler send-as-is asis</pre>
+
 
     <p>The contents of any file with a <code>.asis</code> extension
     will then be sent by Apache httpd to the client with almost no
