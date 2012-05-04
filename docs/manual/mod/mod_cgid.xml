@@ -90,7 +90,9 @@ the cgi daemon</description>
     write in the directory where the socket is located.</p>
 
     <example><title>Example</title>
+    <highlight language="config">
       ScriptSock /var/run/cgid.sock
+    </highlight>
     </example>
 
 </usage>

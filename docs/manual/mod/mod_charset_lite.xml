@@ -102,12 +102,12 @@
     supported by iconv.</p>
 
     <example><title>Example</title>
-      &lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;<br />
-      <indent>
-        CharsetSourceEnc  UTF-16BE<br />
-        CharsetDefault    ISO-8859-1<br />
-      </indent>
-      &lt;/Directory&gt;
+    <highlight language="config">
+&lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;
+    CharsetSourceEnc  UTF-16BE
+    CharsetDefault    ISO-8859-1
+&lt;/Directory&gt;
+      </highlight>
     </example>
 
     <p>The character set names in this example work with the iconv
@@ -143,12 +143,12 @@
     supported by iconv.</p>
 
     <example><title>Example</title>
-      &lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;<br />
-      <indent>
-        CharsetSourceEnc  UTF-16BE<br />
-        CharsetDefault    ISO-8859-1<br />
-      </indent>
-      &lt;/Directory&gt;
+    <highlight language="config">
+&lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;
+    CharsetSourceEnc  UTF-16BE
+    CharsetDefault    ISO-8859-1
+&lt;/Directory&gt;
+      </highlight>
     </example>
 
      <note>
