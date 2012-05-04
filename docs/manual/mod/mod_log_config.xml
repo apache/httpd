@@ -445,14 +445,14 @@ expr=<var>expression</var>]</syntax>
     <p>For example, the following two sets of directives have
     exactly the same effect:</p>
 
-    <example>
-      # CustomLog with format nickname<br />
-      LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br />
-      CustomLog logs/access_log common<br />
-      <br />
-      # CustomLog with explicit format string<br />
-      CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"
-    </example>
+    <highlight language="config">
+# CustomLog with format nickname
+LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
+CustomLog logs/access_log common
+
+# CustomLog with explicit format string
+CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"
+    </highlight>
 
     <p>The third argument is optional and controls whether or
     not to log a particular request. The condition can be the
@@ -470,19 +470,19 @@ expr=<var>expression</var>]</syntax>
     images on your server in a separate logfile but not in your main
     log, you can use:</p>
 
-    <example>
-      SetEnvIf Request_URI \.gif$ gif-image<br />
-      CustomLog gif-requests.log common env=gif-image<br />
-      CustomLog nongif-requests.log common env=!gif-image
-    </example>
+    <highlight language="config">
+SetEnvIf Request_URI \.gif$ gif-image
+CustomLog gif-requests.log common env=gif-image
+CustomLog nongif-requests.log common env=!gif-image
+    </highlight>
 
     <p>Or, to reproduce the behavior of the old RefererIgnore
     directive, you might use the following:</p>
 
-    <example>
-    SetEnvIf Referer example\.com localreferer<br />
-    CustomLog referer.log referer env=!localreferer
-    </example>
+    <highlight language="config">
+SetEnvIf Referer example\.com localreferer
+CustomLog referer.log referer env=!localreferer
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -526,8 +526,11 @@ expr=<var>expression</var>]</syntax>
     percent signs (<code>%</code>).</p>
 
     <example><title>Example</title>
+    <highlight language="config">
       LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost_common
+      </highlight>
     </example>
+    
 </usage>
 </directivesynopsis>
 
@@ -549,8 +552,10 @@ expr=<var>expression</var>]</syntax>
     other format has been specified.</p>
 
     <example><title>Example</title>
-      LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""<br />
-      TransferLog logs/access_log
+    <highlight language="config">
+LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""
+TransferLog logs/access_log
+      </highlight>
     </example>
 </usage>
 </directivesynopsis>

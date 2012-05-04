@@ -53,10 +53,10 @@
     parse them and assign the resulting document the mime type of
     <code>text/html</code>:</p>
 
-    <example>
-      AddType text/html .shtml<br />
-      AddOutputFilter INCLUDES .shtml
-    </example>
+    <highlight language="config">
+AddType text/html .shtml
+AddOutputFilter INCLUDES .shtml
+    </highlight>
 
     <p>The following directive must be given for the directories
     containing the shtml files (typically in a
@@ -65,9 +65,9 @@
     <directive module="core">AllowOverride</directive> <code>Options</code>
     is set):</p>
 
-    <example>
+    <highlight language="config">
       Options +Includes
-    </example>
+    </highlight>
 
     <p>For backwards compatibility, the <code>server-parsed</code>
     <a href="../handler.html">handler</a> also activates the
@@ -764,9 +764,9 @@
     <p>This directive changes the string that <module>mod_include</module>
     looks for to mark the end of an include element.</p>
 
-    <example><title>Example</title>
+    <highlight language="config">
       SSIEndTag "%&gt;"
-    </example>
+    </highlight>
 
 </usage>
 <seealso><directive module="mod_include">SSIStartTag</directive></seealso>
@@ -786,9 +786,9 @@
     <p>This directive changes the string that <module>mod_include</module>
     displays when a variable is not set and &quot;echoed&quot;.</p>
 
-    <example><title>Example</title>
+    <highlight language="config">
       SSIUndefinedEcho "&lt;!-- undef --&gt;"
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -814,9 +814,9 @@ directive]&quot;</default>
     <p>This directive has the same effect as the <code>&lt;!--#config
     errmsg=<var>message</var> --&gt;</code> element.</p>
 
-    <example><title>Example</title>
+    <highlight language="config">
       SSIErrorMsg "&lt;!-- Error --&gt;"
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -837,10 +837,10 @@ directive]&quot;</default>
     output of a file each processing different commands (possibly at
     different times).</p>
 
-    <example><title>Example</title>
+    <highlight language="config">
       SSIStartTag "&lt;%"<br />
       SSIEndTag   "%&gt;"
-    </example>
+    </highlight>
 
     <p>The example given above, which also specifies a matching
     <directive module="mod_include">SSIEndTag</directive>, will
@@ -875,9 +875,9 @@ displayed</description>
     <p>This directive has the same effect as the <code>&lt;!--#config
     timefmt=<var>formatstring</var> --&gt;</code> element.</p>
 
-    <example><title>Example</title>
+    <highlight language="config">
       SSITimeFormat "%R, %B %d, %Y"
-    </example>
+    </highlight>
 
     <p>The above directive would cause times to be displayed in the
     format "22:26, June 14, 2002".</p>
