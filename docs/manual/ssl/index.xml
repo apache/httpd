@@ -30,8 +30,7 @@
 provides an interface to the <a
 href="http://www.openssl.org/">OpenSSL</a> library, which provides
 Strong Encryption using the Secure Sockets Layer and Transport Layer
-Security protocols.  The module and this documentation are based on
-Ralf S. Engelschall's mod_ssl project.</p>
+Security protocols.</p>
 </summary>
 
 <section id="documentation"><title>Documentation</title>

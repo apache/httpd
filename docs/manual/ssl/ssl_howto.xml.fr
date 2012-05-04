@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1203753 -->
+<!-- English Revision: 1328589:1330881 (outdated) -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -105,7 +105,7 @@ acc&eacute;der &agrave; une URL particuli&egrave;re ?</title>
     Cette configuration peut se pr&eacute;senter comme suit :</p>
     <example>
       # soyons tr&egrave;s tol&eacute;rant a priori<br />
-      SSLCipherSuite ALL:!aNULL:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL<br />
+      SSLCipherSuite ALL:!aNULL:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP:+eNULL<br />
       <br />
       &lt;Location /strong/area&gt;<br />
       # sauf pour https://hostname/strong/area/ et ses sous-r&eacute;pertoires<br />
