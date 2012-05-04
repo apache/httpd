@@ -154,52 +154,50 @@
     <dl>
     <dt>Server side Includes (SSI)</dt>
     <dd>A simple case of replacing <directive>AddOutputFilterByType</directive>
-    <example>
-      FilterDeclare SSI<br/>
-      FilterProvider SSI INCLUDES "%{CONTENT_TYPE} =~ m|^text/html|"<br/>
-      FilterChain SSI
-    </example>
+    <highlight language="config">
+FilterDeclare SSI
+FilterProvider SSI INCLUDES "%{CONTENT_TYPE} =~ m|^text/html|"
+FilterChain SSI
+    </highlight>
     </dd>
 
     <dt>Server side Includes (SSI)</dt>
     <dd>The same as the above but dispatching on handler (classic
     SSI behaviour; .shtml files get processed).
-    <example>
-      FilterProvider SSI INCLUDES "%{HANDLER} = 'server-parsed'"<br/>
-      FilterChain SSI
-    </example>
+    <highlight language="config">
+FilterProvider SSI INCLUDES "%{HANDLER} = 'server-parsed'"
+FilterChain SSI
+    </highlight>
     </dd>
 
     <dt>Emulating mod_gzip with mod_deflate</dt>
     <dd>Insert INFLATE filter only if "gzip" is NOT in the
     Accept-Encoding header.  This filter runs with ftype CONTENT_SET.
-    <example>
-      FilterDeclare gzip CONTENT_SET<br/>
-      FilterProvider gzip inflate "%{req:Accept-Encoding} !~ /gzip/"<br/>
-      FilterChain gzip
-    </example>
+    <highlight language="config">
+FilterDeclare gzip CONTENT_SET
+FilterProvider gzip inflate "%{req:Accept-Encoding} !~ /gzip/"
+FilterChain gzip
+    </highlight>
     </dd>
 
     <dt>Image Downsampling</dt>
     <dd>Suppose we want to downsample all web images, and have filters
     for GIF, JPEG and PNG.
-    <example>
-      FilterProvider unpack jpeg_unpack "%{CONTENT_TYPE} = 'image/jpeg'"<br/>
-      FilterProvider unpack gif_unpack "%{CONTENT_TYPE} = 'image/gif'"<br/>
-      FilterProvider unpack png_unpack "%{CONTENT_TYPE} = 'image/png'"<br/>
-      <br />
-      FilterProvider downsample downsample_filter "%{CONTENT_TYPE} = m|^image/(jpeg|gif|png)|"<br/>
-      FilterProtocol downsample "change=yes"<br/>
-      <br />
-      FilterProvider repack jpeg_pack "%{CONTENT_TYPE} = 'image/jpeg'"<br/>
-      FilterProvider repack gif_pack "%{CONTENT_TYPE} = 'image/gif'"<br/>
-      FilterProvider repack png_pack "%{CONTENT_TYPE} = 'image/png'"<br/>
-      &lt;Location /image-filter&gt;<br/>
-      <indent>
-        FilterChain unpack downsample repack<br/>
-      </indent>
-      &lt;/Location&gt;
-    </example>
+    <highlight language="config">
+FilterProvider unpack jpeg_unpack "%{CONTENT_TYPE} = 'image/jpeg'"
+FilterProvider unpack gif_unpack "%{CONTENT_TYPE} = 'image/gif'"
+FilterProvider unpack png_unpack "%{CONTENT_TYPE} = 'image/png'"
+
+FilterProvider downsample downsample_filter "%{CONTENT_TYPE} = m|^image/(jpeg|gif|png)|"
+FilterProtocol downsample "change=yes"
+
+FilterProvider repack jpeg_pack "%{CONTENT_TYPE} = 'image/jpeg'"
+FilterProvider repack gif_pack "%{CONTENT_TYPE} = 'image/gif'"
+FilterProvider repack png_pack "%{CONTENT_TYPE} = 'image/png'"
+&lt;Location /image-filter&gt;
+    FilterChain unpack downsample repack
+&lt;/Location&gt;
+    </highlight>
     </dd>
     </dl>
 </section>
@@ -269,9 +267,9 @@ being moved to <module>mod_filter</module> in version 2.3.7</compatibility>
     <code>text/html</code> or <code>text/plain</code> before it is sent
     to the client.</p>
 
-    <example>
+    <highlight language="config">
       AddOutputFilterByType DEFLATE text/html text/plain
-    </example>
+    </highlight>
 
     <p>If you want the content to be processed by more than one filter, their
     names have to be separated by semicolons. It's also possible to use one
@@ -283,14 +281,12 @@ being moved to <module>mod_filter</module> in version 2.3.7</compatibility>
     <code>INCLUDES</code> filter and then by the <code>DEFLATE</code>
     filter.</p>
 
-    <example>
-    &lt;Location /cgi-bin/&gt;<br />
-    <indent>
-      Options Includes<br />
-      AddOutputFilterByType INCLUDES;DEFLATE text/html<br />
-    </indent>
-    &lt;/Location&gt;
-    </example>
+    <highlight language="config">
+&lt;Location /cgi-bin/&gt;
+    Options Includes
+    AddOutputFilterByType INCLUDES;DEFLATE text/html
+&lt;/Location&gt;
+    </highlight>
 
 </usage>
 
