@@ -945,9 +945,10 @@ restriction is required for security reasons.</li>
 
 <li>When using the rewrite engine in <code>.htaccess</code> files the
 per-directory prefix (which always is the same for a specific
-directory) is automatically <em>removed</em> for the RewriteRule pattern matching
+directory, except in the case where the directory can be reached by multiple 
+<code>Alias</code>es) is automatically <em>removed</em> for the RewriteRule pattern matching
 and automatically <em>added</em> after any relative (not starting with a
-slash or protocol name) substitution encounters the end of a rule set.
+slash or protocol name) substitution has been performed.
 See the <directive module="mod_rewrite">RewriteBase</directive>
 directive for more information regarding what prefix will be added back to
 relative substitutions.</li>
