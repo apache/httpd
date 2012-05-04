@@ -165,8 +165,8 @@ via the request headers.
 
     <div class="example"><h3>Internal (Load Balancer) Example</h3><pre class="prettyprint lang-config">
 RemoteIPHeader X-Client-IP
-RemoteIPTrustedProxy 10.0.2.0/24
-RemoteIPTrustedProxy gateway.localdomain
+RemoteIPInternalProxy 10.0.2.0/24
+RemoteIPInternalProxy gateway.localdomain
         </pre>
 </div>
 
@@ -188,10 +188,11 @@ RemoteIPTrustedProxy gateway.localdomain
     each whitespace or newline separated entry is processed identically to
     the <code class="directive">RemoteIPInternalProxy</code> directive.</p>
 
-    <div class="example"><h3>Internal (Load Balancer) Example</h3><p><code>
-        RemoteIPHeader X-Client-IP<br />
-        RemoteIPTrustedProxyList conf/trusted-proxies.lst
-    </code></p></div>
+    <div class="example"><h3>Internal (Load Balancer) Example</h3><pre class="prettyprint lang-config">
+RemoteIPHeader X-Client-IP
+RemoteIPInternalProxyList conf/trusted-proxies.lst
+        </pre>
+</div>
 
     <div class="example"><h3>conf/trusted-proxies.lst contents</h3><div class="example"><pre>
 # Our internally trusted proxies;

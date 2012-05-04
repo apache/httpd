@@ -153,13 +153,11 @@ du client</td></tr>
     <code class="directive">RemoteIPHeader</code> comme hôte de confiance.</p>
 
     <div class="example"><h3>Exemple à usage interne (répartiteur de
-    charge)</h3><p><code>
-        RemoteIPHeader X-Client-IP
-    </code></p></div>
+    charge)</h3><pre class="prettyprint lang-config">RemoteIPHeader X-Client-IP</pre>
+</div>
 
-    <div class="example"><h3>Exemple dans le cas d'un mandataire</h3><p><code>
-        RemoteIPHeader X-Forwarded-For
-    </code></p></div>
+    <div class="example"><h3>Exemple dans le cas d'un mandataire</h3><pre class="prettyprint lang-config">RemoteIPHeader X-Forwarded-For</pre>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -183,11 +181,12 @@ confiance pour présenter la valeur RemoteIPHeader</td></tr>
     sont indiquées par ces mandataires.</p>
 
     <div class="example"><h3>Exemple à usage interne (répartiteur de
-    charge)</h3><p><code>
-        RemoteIPHeader X-Client-IP<br />
-        RemoteIPTrustedProxy 10.0.2.0/24<br />
-        RemoteIPTrustedProxy passerelle.domaine-local
-    </code></p></div>
+    charge)</h3><pre class="prettyprint lang-config">
+RemoteIPHeader X-Client-IP
+RemoteIPInternalProxy 10.0.2.0/24
+RemoteIPInternalProxy passerelle.domaine-local
+    </pre>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -214,10 +213,11 @@ confiance pour présenter la valeur RemoteIPHeader</td></tr>
     <code class="directive">RemoteIPInternalProxy</code>.</p>
 
     <div class="example"><h3>Exemple à usage interne (répartiteur de
-    charge)</h3><p><code>
-        RemoteIPHeader X-Client-IP<br />
-        RemoteIPTrustedProxyList conf/mandataires-de-confiance.lst
-    </code></p></div>
+    charge)</h3><pre class="prettyprint lang-config">
+RemoteIPHeader X-Client-IP
+RemoteIPInternalProxyList conf/mandataires-de-confiance.lst
+    </pre>
+</div>
 
     <div class="example"><h3>contenu de conf/mandataires-de-confiance.lst</h3><p><code>
          # Nos mandataires internes de confiance<br />
@@ -245,10 +245,11 @@ adresses IP intermédiaires</td></tr>
     cet en-tête, alors que toute adresse intermédiaire
     <code class="directive">RemoteIPInternalProxy</code> est omise.</p>
 
-    <div class="example"><h3>Exemple</h3><p><code>
-        RemoteIPHeader X-Forwarded-For<br />
-        RemoteIPProxiesHeader X-Forwarded-By
-    </code></p></div>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
+RemoteIPHeader X-Forwarded-For
+RemoteIPProxiesHeader X-Forwarded-By
+        </pre>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -275,11 +276,12 @@ confiance pour présenter la valeur RemoteIPHeader</td></tr>
     <code class="directive">RemoteIPHeader</code>.</p>
 
     <div class="example"><h3>Exemple d'adresse de confiance (répartiteur de
-    charge</h3><p><code>
-        RemoteIPHeader X-Forwarded-For<br />
-        RemoteIPTrustedProxy 10.0.2.16/28<br />
-        RemoteIPTrustedProxy proxy.example.com
-    </code></p></div>
+    charge</h3><pre class="prettyprint lang-config">
+RemoteIPHeader X-Forwarded-For
+RemoteIPTrustedProxy 10.0.2.16/28
+RemoteIPTrustedProxy proxy.example.com
+        </pre>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -305,10 +307,11 @@ confiance pour présenter la valeur RemoteIPHeader</td></tr>
     <code class="directive">RemoteIPTrustedProxy</code>.</p>
 
     <div class="example"><h3>Exemple d'adresse de confiance (répartiteur de
-    charge</h3><p><code>
-        RemoteIPHeader X-Forwarded-For<br />
-        RemoteIPTrustedProxyList conf/mandataires-de-confiance.lst
-    </code></p></div>
+    charge</h3><pre class="prettyprint lang-config">
+RemoteIPHeader X-Forwarded-For
+RemoteIPTrustedProxyList conf/mandataires-de-confiance.lst
+        </pre>
+</div>
 
     <div class="example"><h3>conf/mandataires-de-confiance.lst contents</h3><p><code>
        # Mandataires externes identifiés<br />
