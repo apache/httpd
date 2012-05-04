@@ -64,8 +64,10 @@
       <var>session</var>, configure the session as follows:</p>
 
       <example><title>Browser based session</title>
-        Session On<br />
-        SessionCookieName session path=/<br />
+      <highlight language="config">
+Session On
+SessionCookieName session path=/
+        </highlight>
       </example>
 
       <p>For more examples on how the session can be configured to be read
@@ -100,8 +102,10 @@
     </p>
 
     <example><title>Cookie with attributes</title>
-      Session On<br />
-      SessionCookieName session path=/private;domain=example.com;httponly;secure;version=1;<br />
+    <highlight language="config">
+Session On
+SessionCookieName session path=/private;domain=example.com;httponly;secure;version=1;
+      </highlight>
     </example>
 
 </usage>
@@ -130,8 +134,10 @@
     </p>
 
     <example><title>Cookie2 with attributes</title>
-      Session On<br />
-      SessionCookieName2 session path=/private;domain=example.com;httponly;secure;version=1;<br />
+    <highlight language="config">
+Session On
+SessionCookieName2 session path=/private;domain=example.com;httponly;secure;version=1;
+    </highlight>
     </example>
 
 </usage>

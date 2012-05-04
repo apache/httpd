@@ -60,9 +60,11 @@
       <var>session</var>, configure the session as follows:</p>
 
       <example><title>Browser based encrypted session</title>
-        Session On<br />
-        SessionCookieName session path=/<br />
-        SessionCryptoPassphrase secret
+      <highlight language="config">
+Session On
+SessionCookieName session path=/
+SessionCryptoPassphrase secret
+    </highlight>
       </example>
 
       <p>The session will be encrypted with the given key. Different servers can
@@ -95,19 +97,27 @@
     which are specified as parameters with optional values after the driver name.</p>
 
     <example><title>NSS without a certificate database</title>
+    <highlight language="config">
       SessionCryptoDriver nss
+      </highlight>
     </example>
 
     <example><title>NSS with certificate database</title>
+    <highlight language="config">
       SessionCryptoDriver nss dir=certs
+      </highlight>
     </example>
 
     <example><title>NSS with certificate database and parameters</title>
+    <highlight language="config">
       SessionCryptoDriver nss dir=certs key3=key3.db cert7=cert7.db secmod=secmod
+      </highlight>
     </example>
 
     <example><title>NSS with paths containing spaces</title>
+    <highlight language="config">
       SessionCryptoDriver nss "dir=My Certs" key3=key3.db cert7=cert7.db secmod=secmod
+      </highlight>
     </example>
 
     <p>The <var>NSS</var> crypto driver might have already been configured by another
@@ -117,7 +127,9 @@
     To avoid this warning, use the noinit parameter as follows.</p>
 
     <example><title>NSS with certificate database</title>
+    <highlight language="config">
       SessionCryptoDriver nss noinit
+      </highlight>
     </example>
 
     <p>To prevent confusion, ensure that all modules requiring NSS are configured with
@@ -127,7 +139,9 @@
     the engine to be used for encryption.</p>
 
     <example><title>OpenSSL with engine support</title>
+    <highlight language="config">
       SessionCryptoDriver openssl engine=name
+      </highlight>
     </example>
 
 </usage>
