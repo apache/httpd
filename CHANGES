@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy: Use the the same hostname for SNI as for the HTTP request when
+     forwarding to SSL backends. PR 53134.
+     [Michael Weiser <michael weiser.dinsnail.net>, Ruediger Pluem]
+
   *) mod_ssl: Add support for TLS Next Protocol Negotiation.  PR 52210.
      [Matthew Steele <mdsteele google.com>]
 
