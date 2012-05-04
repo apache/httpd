@@ -116,6 +116,7 @@
         <message id="search">Busca Google</message> <!-- search button -->
         <message id="index">&#205;ndice</message> <!-- deprecated -->
         <message id="home">In&#237;cio</message> <!-- deprecated -->
+        <message id="comments">Comentários</message>
 
         <!-- breadcrumb links -->
         <message id="apache">Apache</message>

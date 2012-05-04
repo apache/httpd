@@ -115,6 +115,7 @@
         <message id="search">Google 検索</message> <!-- search button -->
         <message id="index">索引</message> <!-- deprecated -->
         <message id="home">ホーム</message> <!-- deprecated -->
+        <message id="comments">コメント</message>
 
         <!-- breadcrumb links -->
         <message id="apache">Apache</message>
