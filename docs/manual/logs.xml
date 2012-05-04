@@ -167,9 +167,9 @@
     <p>Do this by specifying the name of the module in your
     <directive>LogLevel</directive> directive:</p>
 
-    <example>
+    <highlight language="config">
     LogLevel info rewrite:trace5
-    </example>
+    </highlight>
 
     <p>This sets the main <directive>LogLevel</directive> to info, but
     turns it up to <code>trace5</code> for
@@ -235,10 +235,10 @@
       <p>A typical configuration for the access log might look as
       follows.</p>
 
-      <example>
-        LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br />
-         CustomLog logs/access_log common
-      </example>
+      <highlight language="config">
+LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
+CustomLog logs/access_log common
+      </highlight>
 
       <p>This defines the <em>nickname</em> <code>common</code> and
       associates it with a particular log format string. The format
@@ -381,11 +381,10 @@
       <p>Another commonly used format string is called the Combined
       Log Format. It can be used as follows.</p>
 
-      <example>
-        LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\"
-        \"%{User-agent}i\"" combined<br />
-         CustomLog log/access_log combined
-      </example>
+      <highlight language="config">
+LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\"" combined
+CustomLog log/access_log combined
+      </highlight>
 
       <p>This format is exactly the same as the Common Log Format,
       with the addition of two more fields. Each of the additional
@@ -435,12 +434,12 @@
       to mimic the effects of the <code>ReferLog</code> and <code
       >AgentLog</code> directives.</p>
 
-      <example>
-        LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br />
-        CustomLog logs/access_log common<br />
-        CustomLog logs/referer_log "%{Referer}i -&gt; %U"<br />
-        CustomLog logs/agent_log "%{User-agent}i"
-      </example>
+      <highlight language="config">
+LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
+CustomLog logs/access_log common
+CustomLog logs/referer_log "%{Referer}i -&gt; %U"
+CustomLog logs/agent_log "%{User-agent}i"
+      </highlight>
 
       <p>This example also shows that it is not necessary to define a
       nickname with the <directive
@@ -464,34 +463,34 @@
       include or exclude requests where the environment variable is
       set. Some examples:</p>
 
-      <example>
-        # Mark requests from the loop-back interface<br />
-        SetEnvIf Remote_Addr "127\.0\.0\.1" dontlog<br />
-        # Mark requests for the robots.txt file<br />
-        SetEnvIf Request_URI "^/robots\.txt$" dontlog<br />
-        # Log what remains<br />
-        CustomLog logs/access_log common env=!dontlog
-      </example>
+      <highlight language="config">
+# Mark requests from the loop-back interface
+SetEnvIf Remote_Addr "127\.0\.0\.1" dontlog
+# Mark requests for the robots.txt file
+SetEnvIf Request_URI "^/robots\.txt$" dontlog
+# Log what remains
+CustomLog logs/access_log common env=!dontlog
+      </highlight>
 
       <p>As another example, consider logging requests from
       english-speakers to one log file, and non-english speakers to a
       different log file.</p>
 
-      <example>
+      <highlight language="config">
         SetEnvIf Accept-Language "en" english<br />
         CustomLog logs/english_log common env=english<br />
         CustomLog logs/non_english_log common env=!english
-      </example>
+      </highlight>
 
       <p>In a caching scenario one would want to know about
       the efficiency of the cache. A very simple method to
       find this out would be:</p>
 
-      <example>
-        SetEnv CACHE_MISS 1<br />
-        LogFormat "%h %l %u %t "%r " %>s %b %{CACHE_MISS}e" common-cache<br />
-        CustomLog logs/access_log common-cache
-      </example>
+      <highlight language="config">
+SetEnv CACHE_MISS 1
+LogFormat "%h %l %u %t "%r " %>s %b %{CACHE_MISS}e" common-cache
+CustomLog logs/access_log common-cache
+      </highlight>
 
       <p><module>mod_cache</module> will run before
       <module>mod_env</module> and when successfull will deliver the
@@ -502,10 +501,10 @@
       module="mod_log_config">LogFormat</directive> supports logging values
       conditional upon the HTTP response code:</p>
 
-      <example>
-      LogFormat "%400,501{User-agent}i" browserlog<br />
-      LogFormat "%!200,304,302{Referer}i" refererlog
-      </example>
+      <highlight language="config">
+LogFormat "%400,501{User-agent}i" browserlog
+LogFormat "%!200,304,302{Referer}i" refererlog
+      </highlight>
 
       <p>In the first example, the <code>User-agent</code> will be
       logged if the HTTP status code is 400 or 501. In other cases, a
@@ -586,10 +585,9 @@
     for this purpose. For example, to rotate the logs every 24 hours, you
     can use:</p>
 
-    <example>
-      CustomLog "|/usr/local/apache/bin/rotatelogs
-      /var/log/access_log 86400" common
-    </example>
+    <highlight language="config">
+      CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/access_log 86400" common
+    </highlight>
 
     <p>Notice that quotes are used to enclose the entire command
     that will be called for the pipe. Although these examples are
@@ -608,11 +606,10 @@
     a shell. Use "<code>|$</code>" instead of "<code>|</code>"
     to spawn using a shell (usually with <code>/bin/sh -c</code>):</p>
 
-    <example>
-      # Invoke "rotatelogs" using a shell<br />
-      CustomLog "|$/usr/local/apache/bin/rotatelogs
-      /var/log/access_log 86400" common
-    </example>
+    <highlight language="config">
+# Invoke "rotatelogs" using a shell
+CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" common
+    </highlight>
 
     <p>This was the default behaviour for Apache 2.2.
     Depending on the shell specifics this might lead to
@@ -657,11 +654,10 @@
     later split the log into individual files. For example,
     consider the following directives.</p>
 
-    <example>
-      LogFormat "%v %l %u %t \"%r\" %&gt;s %b"
-      comonvhost<br />
-      CustomLog logs/access_log comonvhost
-    </example>
+    <highlight language="config">
+LogFormat "%v %l %u %t \"%r\" %&gt;s %b" comonvhost
+CustomLog logs/access_log comonvhost
+    </highlight>
 
     <p>The <code>%v</code> is used to log the name of the virtual
     host that is serving the request. Then a program like <a

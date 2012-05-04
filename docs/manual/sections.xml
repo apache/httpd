@@ -75,11 +75,11 @@ with the following configuration, all requests will be redirected
 to another site only if the server is started using
 <code>httpd -DClosedForNow</code>:</p>
 
-<example>
-&lt;IfDefine ClosedForNow&gt;<br />
-Redirect / http://otherserver.example.com/<br />
+<highlight language="config">
+&lt;IfDefine ClosedForNow&gt;
+    Redirect / http://otherserver.example.com/
 &lt;/IfDefine&gt;
-</example>
+</highlight>
 
 <p>The <directive type="section" module="core">IfModule</directive>
 directive is very similar, except it encloses directives that will
@@ -97,11 +97,11 @@ about missing modules.</p>
 module="mod_mime_magic">MimeMagicFile</directive> directive will be
 applied only if <module>mod_mime_magic</module> is available.</p>
 
-<example>
-&lt;IfModule mod_mime_magic.c&gt;<br />
-MimeMagicFile conf/magic<br />
+<highlight language="config">
+&lt;IfModule mod_mime_magic.c&gt;
+    MimeMagicFile conf/magic
 &lt;/IfModule&gt;
-</example>
+</highlight>
 
 <p>The <directive type="section" module="mod_version">IfVersion</directive>
 directive is very similar to <directive type="section"
@@ -111,14 +111,12 @@ only be applied if a particular version of the server is executing.  This
 module is designed for the use in test suites and large networks which have to
 deal with different httpd versions and different configurations.</p>
 
-<example>
-  &lt;IfVersion >= 2.1&gt;<br />
-  <indent>
-    # this happens only in versions greater or<br />
-    # equal 2.1.0.<br />
-  </indent>
+<highlight language="config">
+  &lt;IfVersion >= 2.1&gt;
+    # this happens only in versions greater or
+    # equal 2.1.0.
   &lt;/IfVersion&gt;
-</example>
+</highlight>
 
 <p><directive type="section" module="core">IfDefine</directive>,
 <directive type="section" module="core">IfModule</directive>, and the
@@ -162,11 +160,11 @@ href="howto/htaccess.html">.htaccess files</a>.  For example, in the
 following configuration, directory indexes will be enabled for the
 <code>/var/web/dir1</code> directory and all subdirectories.</p>
 
-<example>
-&lt;Directory /var/web/dir1&gt;<br />
-Options +Indexes<br />
+<highlight language="config">
+&lt;Directory /var/web/dir1&gt;
+    Options +Indexes
 &lt;/Directory&gt;
-</example>
+</highlight>
 
 <p>Directives enclosed in a <directive type="section"
 module="core">Files</directive> section apply to any file with
@@ -176,12 +174,12 @@ when placed in the main section of the configuration file,
 deny access to any file named <code>private.html</code> regardless
 of where it is found.</p>
 
-<example>
-&lt;Files private.html&gt;<br />
-Order allow,deny<br />
-Deny from all<br />
+<highlight language="config">
+&lt;Files private.html&gt;
+    Order allow,deny
+    Deny from all
 &lt;/Files&gt;
-</example>
+</highlight>
 
 <p>To address files found in a particular part of the filesystem, the
 <directive type="section" module="core">Files</directive> and
@@ -193,14 +191,14 @@ access to <code>/var/web/dir1/private.html</code>,
 of <code>private.html</code> found under the <code>/var/web/dir1/</code>
 directory.</p>
 
-<example>
-&lt;Directory /var/web/dir1&gt;<br />
-&lt;Files private.html&gt;<br />
-Order allow,deny<br />
-Deny from all<br />
-&lt;/Files&gt;<br />
+<highlight language="config">
+&lt;Directory /var/web/dir1&gt;
+    &lt;Files private.html&gt;
+        Order allow,deny
+        Deny from all
+    &lt;/Files&gt;
 &lt;/Directory&gt;
-</example>
+</highlight>
 </section>
 
 <section id="webspace"><title>Webspace Containers</title>
@@ -216,12 +214,12 @@ In particular, it will apply to requests for
 <code>http://yoursite.example.com/private/dir/file.html</code> as well
 as any other requests starting with the <code>/private</code> string.</p>
 
-<example>
-&lt;LocationMatch ^/private&gt;<br />
-Order Allow,Deny<br />
-Deny from all<br />
+<highlight language="config">
+&lt;LocationMatch ^/private&gt;
+    Order Allow,Deny
+    Deny from all
 &lt;/Location&gt;
-</example>
+</highlight>
 
 <p>The <directive type="section" module="core">Location</directive>
 directive need not have anything to do with the filesystem.
@@ -230,35 +228,35 @@ URL to an internal Apache HTTP Server handler provided by <module>mod_status</mo
 No file called <code>server-status</code> needs to exist in the
 filesystem.</p>
 
-<example>
-&lt;Location /server-status&gt;<br />
-SetHandler server-status<br />
+<highlight language="config">
+&lt;Location /server-status&gt;
+    SetHandler server-status
 &lt;/Location&gt;
-</example>
+</highlight>
 </section>
 
 <section id="overlapping-webspace"><title>Overlapping Webspace</title>
 <p>In order to have two overlapping URLs one has to consider the order in which
 certain sections or directives are evaluated. For
 <directive type="section" module="core">Location</directive> this would be:</p>
-<example>
-&lt;Location /foo&gt;<br />
-&lt;/Location&gt;<br />
-&lt;Location /foo/bar&gt;<br />
+<highlight language="config">
+&lt;Location /foo&gt;
+&lt;/Location&gt;
+&lt;Location /foo/bar&gt;
 &lt;/Location>
-</example>
+</highlight>
 <p><directive type="section" module="mod_alias">Alias</directive>es on the other hand,
 are mapped vice-versa:</p>
-<example>
-Alias /foo/bar /srv/www/uncommon/bar<br />
-Alias /foo /srv/www/common/foo<br />
-</example>
+<highlight language="config">
+Alias /foo/bar /srv/www/uncommon/bar
+Alias /foo /srv/www/common/foo
+</highlight>
 <p>The same is true for the <directive module="mod_proxy">ProxyPass</directive>
 directives:</p>
-<example>
-ProxyPass /special-area http://special.example.com smax=5 max=10<br />
+<highlight language="config">
+ProxyPass /special-area http://special.example.com smax=5 max=10
 ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On
-</example>
+</highlight>
 </section>
 
 <section id="wildcards"><title>Wildcards and Regular Expressions</title>
@@ -287,20 +285,20 @@ how directives are applied.</p>
 <p>A non-regex wildcard section that changes the configuration of
 all user directories could look as follows:</p>
 
-<example>
-&lt;Directory /home/*/public_html&gt;<br />
-Options Indexes<br />
+<highlight language="config">
+&lt;Directory /home/*/public_html&gt;
+    Options Indexes
 &lt;/Directory&gt;
-</example>
+</highlight>
 
 <p>Using regex sections, we can deny access to many types of image files
 at once:</p>
-<example>
-&lt;FilesMatch \.(?i:gif|jpe?g|png)$&gt;<br />
-Order allow,deny<br />
-Deny from all<br />
+<highlight language="config">
+&lt;FilesMatch \.(?i:gif|jpe?g|png)$&gt;
+    Order allow,deny
+    Deny from all
 &lt;/FilesMatch&gt;
-</example>
+</highlight>
 
 </section>
 
@@ -310,11 +308,11 @@ directive change the configuration depending on a condition which can be
 expressed by a boolean expression. For example, the following configuration
 denies access if the HTTP Referer header does not start with
 "http://www.example.com/".</p>
-<example>
-&lt;If "!(%{HTTP_REFERER} -strmatch 'http://www.example.com/*')"&gt;<br />
-Require all denied<br />
+<highlight language="config">
+&lt;If "!(%{HTTP_REFERER} -strmatch 'http://www.example.com/*')"&gt;
+    Require all denied
 &lt;/If&gt;
-</example>
+</highlight>
 
 </section>
 
@@ -336,12 +334,12 @@ different webspace locations (URLs) could map to the same filesystem
 location, allowing your restrictions to be circumvented.
 For example, consider the following configuration:</p>
 
-<example>
-&lt;Location /dir/&gt;<br />
-Order allow,deny<br />
-Deny from all<br />
+<highlight language="config">
+&lt;Location /dir/&gt;
+    Order allow,deny
+    Deny from all
 &lt;/Location&gt;
-</example>
+</highlight>
 
 <p>This works fine if the request is for
 <code>http://yoursite.example.com/dir/</code>.  But what if you are on
@@ -404,12 +402,12 @@ that match the specified URL.  For example, the following configuration
 will prevent the proxy server from being used to access the
 <code>www.example.com</code> website.</p>
 
-<example>
-&lt;Proxy http://www.example.com/*&gt;<br />
-Order allow,deny<br />
-Deny from all<br />
+<highlight language="config">
+&lt;Proxy http://www.example.com/*&gt;
+    Order allow,deny
+    Deny from all
 &lt;/Proxy&gt;
-</example>
+</highlight>
 </section>
 
 <section id="whatwhere"><title>What Directives are Allowed?</title>
@@ -530,30 +528,30 @@ merging. Assuming they all apply to the request, the directives in
 this example will be applied in the order A &gt; B &gt; C &gt; D &gt;
 E.</p>
 
-<example>
-&lt;Location /&gt;<br />
-E<br />
-&lt;/Location&gt;<br />
-<br />
-&lt;Files f.html&gt;<br />
-D<br />
-&lt;/Files&gt;<br />
-<br />
-&lt;VirtualHost *&gt;<br />
-&lt;Directory /a/b&gt;<br />
-B<br />
-&lt;/Directory&gt;<br />
-&lt;/VirtualHost&gt;<br />
-<br />
-&lt;DirectoryMatch "^.*b$"&gt;<br />
-C<br />
-&lt;/DirectoryMatch&gt;<br />
-<br />
-&lt;Directory /a/b&gt;<br />
-A<br />
-&lt;/Directory&gt;<br />
-<br />
-</example>
+<highlight language="config">
+&lt;Location /&gt;
+    E
+&lt;/Location&gt;
+
+&lt;Files f.html&gt;
+    D
+&lt;/Files&gt;
+
+&lt;VirtualHost *&gt;
+&lt;Directory /a/b&gt;
+    B
+&lt;/Directory&gt;
+&lt;/VirtualHost&gt;
+
+&lt;DirectoryMatch "^.*b$"&gt;
+    C
+&lt;/DirectoryMatch&gt;
+
+&lt;Directory /a/b&gt;
+    A
+&lt;/Directory&gt;
+
+</highlight>
 
 <p>For a more concrete example, consider the following.  Regardless of
 any access restrictions placed in <directive module="core"
@@ -562,19 +560,19 @@ module="core" type="section">Location</directive> section will be
 evaluated last and will allow unrestricted access to the server.  In
 other words, order of merging is important, so be careful!</p>
 
-<example>
-&lt;Location /&gt;<br />
-Order deny,allow<br />
-Allow from all<br />
-&lt;/Location&gt;<br />
-<br />
-# Woops!  This &lt;Directory&gt; section will have no effect<br />
-&lt;Directory /&gt;<br />
-Order allow,deny<br />
-Allow from all<br />
-Deny from badguy.example.com<br />
+<highlight language="config">
+&lt;Location /&gt;
+    Order deny,allow
+    Allow from all
+&lt;/Location&gt;
+
+# Woops!  This &lt;Directory&gt; section will have no effect
+&lt;Directory /&gt;
+    Order allow,deny
+    Allow from all
+    Deny from badguy.example.com
 &lt;/Directory&gt;
-</example>
+</highlight>
 
 </section>
 
