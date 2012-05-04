@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1311809 -->
+<!-- English Revision: 1311806:1332585 (outdated) -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -711,7 +711,7 @@ RewriteRule (.*\.html) docs.php?$1
 qu'&agrave; la r&egrave;gle qui la suit imm&eacute;diatement. Ainsi, si vous voulez
 qu'une directive <code>RewriteCond</code> s'applique &agrave; plusieurs r&egrave;gles
 <code>RewriteRule</code>, une technique possible consiste &agrave; inverser ces
-conditions et &agrave; ajouter une <code>RewriteRule</code> avec le drapeau [Skip]. Cette technique permet
+conditions et ajouter une <code>RewriteRule</code> avec le drapeau [Skip]. Cette technique permet
 d'&eacute;laborer des pseudo-constructions if-then-else : la derni&egrave;re r&egrave;gle du
 bloc then contiendra <code>skip=N</code>, o&ugrave; N est le nombre de r&egrave;gles
 contenues dans le bloc else :</p>
