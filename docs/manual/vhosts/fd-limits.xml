@@ -91,10 +91,10 @@ LogFormat</directive>
 directive, and the <code>%v</code> variable. Add this to the beginning
 of your log format string:</p>
 
-<example>
-LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost<br />
+<highlight language="config">
+LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost
 CustomLog logs/multiple_vhost_log vhost
-</example>
+</highlight>
 
 <p>This will create a log file in the common log format, but with the
 canonical virtual host (whatever appears in the
