@@ -148,8 +148,8 @@ via the request headers.
     <example><title>Internal (Load Balancer) Example</title>
     <highlight language="config">
 RemoteIPHeader X-Client-IP
-RemoteIPTrustedProxy 10.0.2.0/24
-RemoteIPTrustedProxy gateway.localdomain
+RemoteIPInternalProxy 10.0.2.0/24
+RemoteIPInternalProxy gateway.localdomain
         </highlight>
     </example>
 </usage>
@@ -171,8 +171,10 @@ RemoteIPTrustedProxy gateway.localdomain
     the <directive>RemoteIPInternalProxy</directive> directive.</p>
 
     <example><title>Internal (Load Balancer) Example</title>
-        RemoteIPHeader X-Client-IP<br/>
-        RemoteIPTrustedProxyList conf/trusted-proxies.lst
+        <highlight language="config">
+RemoteIPHeader X-Client-IP
+RemoteIPInternalProxyList conf/trusted-proxies.lst
+        </highlight>
     </example>
 
     <example><title>conf/trusted-proxies.lst contents</title>

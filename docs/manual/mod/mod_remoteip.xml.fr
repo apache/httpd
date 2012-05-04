@@ -138,11 +138,11 @@ du client</description>
 
     <example><title>Exemple &agrave; usage interne (r&eacute;partiteur de
     charge)</title>
-        RemoteIPHeader X-Client-IP
+    <highlight language="config">RemoteIPHeader X-Client-IP</highlight>
     </example>
 
     <example><title>Exemple dans le cas d'un mandataire</title>
-        RemoteIPHeader X-Forwarded-For
+        <highlight language="config">RemoteIPHeader X-Forwarded-For</highlight>
     </example>
 </usage>
 </directivesynopsis>
@@ -167,9 +167,11 @@ confiance pour pr&eacute;senter la valeur RemoteIPHeader</description>
 
     <example><title>Exemple &agrave; usage interne (r&eacute;partiteur de
     charge)</title>
-        RemoteIPHeader X-Client-IP<br/>
-        RemoteIPTrustedProxy 10.0.2.0/24<br/>
-        RemoteIPTrustedProxy passerelle.domaine-local
+    <highlight language="config">
+RemoteIPHeader X-Client-IP
+RemoteIPInternalProxy 10.0.2.0/24
+RemoteIPInternalProxy passerelle.domaine-local
+    </highlight>
     </example>
 </usage>
 </directivesynopsis>
@@ -197,8 +199,10 @@ confiance pour pr&eacute;senter la valeur RemoteIPHeader</description>
 
     <example><title>Exemple &agrave; usage interne (r&eacute;partiteur de
     charge)</title>
-        RemoteIPHeader X-Client-IP<br/>
-        RemoteIPTrustedProxyList conf/mandataires-de-confiance.lst
+    <highlight language="config">
+RemoteIPHeader X-Client-IP
+RemoteIPInternalProxyList conf/mandataires-de-confiance.lst
+    </highlight>
     </example>
 
     <example><title>contenu de conf/mandataires-de-confiance.lst</title>
@@ -227,8 +231,10 @@ adresses IP interm&eacute;diaires</description>
     <directive>RemoteIPInternalProxy</directive> est omise.</p>
 
     <example><title>Exemple</title>
-        RemoteIPHeader X-Forwarded-For<br/>
-        RemoteIPProxiesHeader X-Forwarded-By
+        <highlight language="config">
+RemoteIPHeader X-Forwarded-For
+RemoteIPProxiesHeader X-Forwarded-By
+        </highlight>
     </example>
 </usage>
 </directivesynopsis>
@@ -256,9 +262,11 @@ confiance pour pr&eacute;senter la valeur RemoteIPHeader</description>
 
     <example><title>Exemple d'adresse de confiance (r&eacute;partiteur de
     charge</title>
-        RemoteIPHeader X-Forwarded-For<br/>
-        RemoteIPTrustedProxy 10.0.2.16/28<br/>
-        RemoteIPTrustedProxy proxy.example.com
+        <highlight language="config">
+RemoteIPHeader X-Forwarded-For
+RemoteIPTrustedProxy 10.0.2.16/28
+RemoteIPTrustedProxy proxy.example.com
+        </highlight>
     </example>
 </usage>
 </directivesynopsis>
@@ -285,8 +293,10 @@ confiance pour pr&eacute;senter la valeur RemoteIPHeader</description>
 
     <example><title>Exemple d'adresse de confiance (r&eacute;partiteur de
     charge</title>
-        RemoteIPHeader X-Forwarded-For<br/>
-        RemoteIPTrustedProxyList conf/mandataires-de-confiance.lst
+        <highlight language="config">
+RemoteIPHeader X-Forwarded-For
+RemoteIPTrustedProxyList conf/mandataires-de-confiance.lst
+        </highlight>
     </example>
 
     <example><title>conf/mandataires-de-confiance.lst contents</title>
