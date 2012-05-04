@@ -342,9 +342,8 @@ the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">Rewrit
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/rewrite/intro.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/intro.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div id="disqus_thread" /><script type="text/javascript">
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div id="disqus_thread" /><script type="text/javascript"><!--//--><![CDATA[//><!--
 var lang = 'en';
-<!--//--><![CDATA[//><!--
 var disqus_shortname = 'httpd';
 var disqus_identifier = window.location.href.replace(/(current|trunk)/, "2.4").replace(/\/[a-z]{2}\//, "/") + '.' + lang;
 
