@@ -143,11 +143,11 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
     of using <code>AddHandler cgi-script .cgi</code>, use</p>
 
     <example><title>Configure handler based on final extension only</title>
-    &lt;FilesMatch \.cgi$&gt;
-    <indent>
-      SetHandler cgi-script
-    </indent>
-    &lt;/FilesMatch&gt;
+    <highlight language="config">
+&lt;FilesMatch \.cgi$&gt;
+  SetHandler cgi-script
+&lt;/FilesMatch&gt;
+    </highlight>
     </example>
 
 </section>
@@ -192,7 +192,7 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
     resource, in order to tell the client browser about the
     encoding method.</p>
 
-    <example>Content-encoding: pkzip</example>
+    <highlight language="config">Content-encoding: pkzip</highlight>
 </section>
 
 <section id="charset-lang"><title>Character sets and languages</title>
@@ -232,8 +232,8 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
       render the information.</p>
 
       <example>
-        Content-Language: en, fr<br />
-        Content-Type: text/plain; charset=ISO-8859-1
+Content-Language: en, fr
+Content-Type: text/plain; charset=ISO-8859-1
       </example>
 
       <p>The language specification is the two-letter abbreviation
@@ -263,10 +263,12 @@ charset</description>
     <var>extension</var>.</p>
 
     <example><title>Example</title>
-      AddLanguage ja .ja<br />
-      AddCharset EUC-JP .euc<br />
-      AddCharset ISO-2022-JP .jis<br />
-      AddCharset SHIFT_JIS .sjis
+    <highlight language="config">
+AddLanguage ja .ja
+AddCharset EUC-JP .euc
+AddCharset ISO-2022-JP .jis
+AddCharset SHIFT_JIS .sjis
+      </highlight>
     </example>
 
     <p>Then the document <code>xxxx.ja.jis</code> will be treated
@@ -310,8 +312,10 @@ type</description>
     <var>extension</var>.</p>
 
     <example><title>Example</title>
-      AddEncoding x-gzip .gz<br />
-      AddEncoding x-compress .Z
+    <highlight language="config">
+AddEncoding x-gzip .gz
+AddEncoding x-compress .Z
+      </highlight>
     </example>
 
     <p>This will cause filenames containing the <code>.gz</code> extension
@@ -359,9 +363,9 @@ handler</description>
     activate CGI scripts with the file extension <code>.cgi</code>, you
     might use:</p>
 
-    <example>
+    <highlight language="config">
       AddHandler cgi-script .cgi
-    </example>
+    </highlight>
 
     <p>Once that has been put into your httpd.conf file, any file containing
     the <code>.cgi</code> extension will be treated as a CGI program.</p>
@@ -431,9 +435,11 @@ language</description>
     <var>extension</var>.</p>
 
     <example><title>Example</title>
-      AddEncoding x-compress .Z<br />
-      AddLanguage en .en<br />
-      AddLanguage fr .fr
+    <highlight language="config">
+AddEncoding x-compress .Z
+AddLanguage en .en
+AddLanguage fr .fr
+      </highlight>
     </example>
 
     <p>Then the document <code>xxxx.en.Z</code> will be treated as
@@ -449,11 +455,11 @@ language</description>
     extension, the last one encountered is the one that is used.
     That is, for the case of:</p>
 
-    <example>
-      AddLanguage en .en<br />
-      AddLanguage en-gb .en<br />
-      AddLanguage en-us .en
-    </example>
+    <highlight language="config">
+AddLanguage en .en
+AddLanguage en-gb .en
+AddLanguage en-us .en
+    </highlight>
 
     <p>documents with the extension <code>.en</code> would be treated as
     being <code>en-us</code>.</p>
@@ -494,9 +500,9 @@ later.</compatibility>
     <code>.shtml</code> files for server-side includes and will then
     compress the output using <module>mod_deflate</module>.</p>
 
-    <example>
+    <highlight language="config">
       AddOutputFilter INCLUDES;DEFLATE shtml
-    </example>
+    </highlight>
 
     <p>If more than one filter is specified, they must be separated
     by semicolons in the order in which they should process the
@@ -514,34 +520,26 @@ later.</compatibility>
     the <directive module="mod_mime">AddOutputFilter</directive>
     directive.</p>
 
-    <example>
-    # Effective filter "DEFLATE"<br />
-    AddOutputFilter DEFLATE shtml<br />
-    &lt;Location /foo&gt;<br />
-      <indent>
-      # Effective filter "INCLUDES", replacing "DEFLATE"<br />
-      AddOutputFilter INCLUDES shtml<br />
-      </indent>
-    &lt;/Location&gt;<br />
-    &lt;Location /bar&gt;<br />
-      <indent>
-      # Effective filter "INCLUDES;DEFLATE", replacing "DEFLATE"<br />
-      AddOutputFilter INCLUDES;DEFLATE shtml<br />
-      </indent>
-    &lt;/Location&gt;<br />
-    &lt;Location /bar/baz&gt;<br />
-      <indent>
-      # Effective filter "BUFFER", replacing "INCLUDES;DEFLATE"<br />
-      AddOutputFilter BUFFER shtml<br />
-      </indent>
-    &lt;/Location&gt;<br />
-    &lt;Location /bar/baz/buz&gt;<br />
-      <indent>
-      # No effective filter, replacing "BUFFER"<br />
-      RemoveOutputFilter shtml<br />
-      </indent>
-    &lt;/Location&gt;
-    </example>
+    <highlight language="config">
+# Effective filter "DEFLATE"
+AddOutputFilter DEFLATE shtml
+&lt;Location /foo&gt;
+  # Effective filter "INCLUDES", replacing "DEFLATE"
+  AddOutputFilter INCLUDES shtml
+&lt;/Location&gt;
+&lt;Location /bar&gt;
+  # Effective filter "INCLUDES;DEFLATE", replacing "DEFLATE"
+  AddOutputFilter INCLUDES;DEFLATE shtml
+&lt;/Location&gt;
+&lt;Location /bar/baz&gt;
+  # Effective filter "BUFFER", replacing "INCLUDES;DEFLATE"
+  AddOutputFilter BUFFER shtml
+&lt;/Location&gt;
+&lt;Location /bar/baz/buz&gt;
+  # No effective filter, replacing "BUFFER"
+  RemoveOutputFilter shtml
+&lt;/Location&gt;
+    </highlight>
 </usage>
 <seealso><directive module="mod_mime">RemoveOutputFilter</directive></seealso>
 <seealso><directive module="core">SetOutputFilter</directive></seealso>
@@ -573,13 +571,17 @@ type</description>
     </note>
 
     <example><title>Example</title>
+    <highlight language="config">
       AddType image/gif .gif
+      </highlight>
     </example>
 
     <p>Or, to specify multiple file extensions in one directive:</p>
 
     <example><title>Example</title>
+    <highlight language="config">
       AddType image/jpeg jpeg jpg jpe
+      </highlight>
     </example>
 
     <p>The <var>extension</var> argument is case-insensitive and can
@@ -594,7 +596,9 @@ type</description>
     <code>qs</code>:</p>
 
     <example><title>Example</title>
-      Addtype application/rss+xml;qs=0.8 .xml
+    <highlight language="config">
+      AddType application/rss+xml;qs=0.8 .xml
+      </highlight>
     </example>
 
     <p>This is useful in situations, <em>e.g.</em> when a client
@@ -658,9 +662,9 @@ a matching file with MultiViews</description>
     and filters to participate in Multviews, but will exclude unknown
     files:</p>
 
-    <example>
+    <highlight language="config">
       MultiviewsMatch Handlers Filters
-    </example>
+    </highlight>
 
     <p><directive>MultiviewsMatch</directive> is not allowed in a
     <directive type="section" module="core">Location</directive> or <directive
@@ -700,7 +704,9 @@ assigned a language-tag by some other means.</description>
     Content-Language header field will be generated.</p>
 
     <example><title>Example</title>
+    <highlight language="config">
       DefaultLanguage en
+      </highlight>
     </example>
 </usage>
 <seealso><module>mod_negotiation</module></seealso>
@@ -725,7 +731,9 @@ components as part of the filename</description>
     <p>This directive is recommended when you have a virtual filesystem.</p>
 
     <example><title>Example</title>
+    <highlight language="config">
       ModMimeUsePathInfo On
+      </highlight>
     </example>
 
     <p>If you have a request for <code>/index.php/foo.shtml</code>
@@ -764,7 +772,9 @@ later.</compatibility>
     be specified with or without a leading dot.</p>
 
     <example><title>Example</title>
+    <highlight language="config">
       RemoveCharset .html .shtml
+      </highlight>
     </example>
 </usage>
 </directivesynopsis>
@@ -787,13 +797,13 @@ extensions</description>
     server config files. An example of its use might be:</p>
 
     <example><title>/foo/.htaccess:</title>
-      AddEncoding x-gzip .gz<br />
-      AddType text/plain .asc<br />
-      &lt;Files *.gz.asc&gt;<br />
-      <indent>
-        RemoveEncoding .gz<br />
-      </indent>
-      &lt;/Files&gt;
+    <highlight language="config">
+AddEncoding x-gzip .gz
+AddType text/plain .asc
+&lt;Files *.gz.asc&gt;
+    RemoveEncoding .gz
+&lt;/Files&gt;
+      </highlight>
     </example>
 
     <p>This will cause <code>foo.gz</code> to be marked as being
@@ -830,11 +840,15 @@ extensions</description>
     config files. An example of its use might be:</p>
 
     <example><title>/foo/.htaccess:</title>
+    <highlight language="config">
       AddHandler server-parsed .html
+      </highlight>
     </example>
 
     <example><title>/foo/bar/.htaccess:</title>
+    <highlight language="config">
       RemoveHandler .html
+      </highlight>
     </example>
 
     <p>This has the effect of returning <code>.html</code> files in
@@ -922,7 +936,9 @@ later.</compatibility>
     be specified with or without a leading dot.</p>
 
     <example><title>Example</title>
+    <highlight language="config">
       RemoveOutputFilter shtml
+      </highlight>
     </example>
 </usage>
 <seealso><directive module="mod_mime">AddOutputFilter</directive></seealso>
@@ -947,7 +963,9 @@ extensions</description>
     might be:</p>
 
     <example><title>/foo/.htaccess:</title>
+    <highlight language="config">
       RemoveType .cgi
+      </highlight>
     </example>
 
     <p>This will remove any special handling of <code>.cgi</code>
