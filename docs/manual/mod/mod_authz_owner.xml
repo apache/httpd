@@ -85,17 +85,15 @@
       files in <code>/home/smith/public_html/private</code> unless they
       were owned by <code>jones</code> instead of <code>smith</code>.</p>
 
-      <example>
-        &lt;Directory /home/*/public_html/private&gt;<br />
-        <indent>
-          AuthType Basic<br />
-          AuthName MyPrivateFiles<br />
-          AuthBasicProvider dbm<br />
-          AuthDBMUserFile /usr/local/apache2/etc/.htdbm-all<br />
-          Require file-owner<br />
-        </indent>
-        &lt;/Directory&gt;
-      </example>
+      <highlight language="config">
+&lt;Directory /home/*/public_html/private&gt;
+    AuthType Basic
+    AuthName MyPrivateFiles
+    AuthBasicProvider dbm
+    AuthDBMUserFile /usr/local/apache2/etc/.htdbm-all
+    Require file-owner
+&lt;/Directory&gt;
+      </highlight>
     </section>
 
     <section id="examples.file-group"><title>Require file-group</title>
@@ -111,22 +109,20 @@
       authorized to access the <code>project-foo</code> directories of
       each other.</p>
 
-      <example>
-        &lt;Directory /home/*/public_html/project-foo&gt;<br />
-        <indent>
-          AuthType Basic<br />
-          AuthName "Project Foo Files"<br />
-          AuthBasicProvider dbm<br />
-          <br />
-          # combined user/group database<br />
-          AuthDBMUserFile  /usr/local/apache2/etc/.htdbm-all<br />
-          AuthDBMGroupFile /usr/local/apache2/etc/.htdbm-all<br />
-          <br />
-          Satisfy All<br />
-          Require file-group<br />
-        </indent>
-        &lt;/Directory&gt;
-      </example>
+      <highlight language="config">
+&lt;Directory /home/*/public_html/project-foo&gt;
+    AuthType Basic
+    AuthName "Project Foo Files"
+    AuthBasicProvider dbm
+    
+    # combined user/group database
+    AuthDBMUserFile  /usr/local/apache2/etc/.htdbm-all
+    AuthDBMGroupFile /usr/local/apache2/etc/.htdbm-all
+    
+    Satisfy All
+    Require file-group
+&lt;/Directory&gt;
+      </highlight>
     </section>
 </section>
 

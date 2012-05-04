@@ -75,10 +75,10 @@ of user groups for authorization</description>
     accomplished by first setting the group and password files to
     point to the same DBM:</p>
 
-    <example>
-      AuthDBMGroupFile /www/userbase<br />
-      AuthDBMUserFile /www/userbase
-    </example>
+    <highlight language="config">
+AuthDBMGroupFile /www/userbase
+AuthDBMUserFile /www/userbase
+    </highlight>
 
     <p>The key for the single DBM is the username. The value consists
     of</p>

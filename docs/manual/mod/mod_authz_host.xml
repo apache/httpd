@@ -75,35 +75,35 @@ address)</description>
 
     <p>A full IP address:</p>
 
-    <example>
-      Require ip 10.1.2.3<br />
-      Require ip 192.168.1.104 192.168.1.205
-    </example>
+    <highlight language="config">
+Require ip 10.1.2.3
+Require ip 192.168.1.104 192.168.1.205
+    </highlight>
 
     <p>An IP address of a host allowed access</p>
 
     <p>A partial IP address:</p>
 
-    <example>
-      Require ip 10.1<br />
-      Require ip 10 172.20 192.168.2
-    </example>
+    <highlight language="config">
+Require ip 10.1
+Require ip 10 172.20 192.168.2
+    </highlight>
     <p>The first 1 to 3 bytes of an IP address, for subnet
     restriction.</p>
 
     <p>A network/netmask pair:</p>
 
-    <example>
+    <highlight language="config">
       Require ip 10.1.0.0/255.255.0.0
-    </example>
+    </highlight>
     <p>A network a.b.c.d, and a netmask w.x.y.z. For more
     fine-grained subnet restriction.</p>
 
     <p>A network/nnn CIDR specification:</p>
 
-    <example>
+    <highlight language="config">
       Require ip 10.1.0.0/16
-    </example>
+    </highlight>
     <p>Similar to the previous case, except the netmask consists of
     nnn high-order 1 bits.</p>
 
@@ -113,10 +113,10 @@ address)</description>
     <p>IPv6 addresses and IPv6 subnets can be specified as shown
     below:</p>
 
-    <example>
-     Require ip 2001:db8::a00:20ff:fea7:ccea<br />
-     Require ip 2001:db8::a00:20ff:fea7:ccea/10
-    </example>
+    <highlight language="config">
+Require ip 2001:db8::a00:20ff:fea7:ccea
+Require ip 2001:db8::a00:20ff:fea7:ccea/10
+    </highlight>
 
 
 </section>
@@ -130,10 +130,10 @@ address)</description>
 
     <p>A (partial) domain-name</p>
 
-    <example>
-    Require host example.org<br />
-    Require host .net example.edu
-    </example>
+    <highlight language="config">
+Require host example.org
+Require host .net example.edu
+    </highlight>
 
     <p>Hosts whose names match, or end in, this string are allowed
     access. Only complete components are matched, so the above
@@ -164,9 +164,9 @@ address)</description>
     <p>This allows a convenient way to match connections that originate from
     the local host:</p>
 
-    <example>
+    <highlight language="config">
     Require local
-    </example>
+    </highlight>
 </section>
 
 </section>
