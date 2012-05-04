@@ -124,24 +124,24 @@ host</context></contextlist>
     <p>To allow a few users to have <code>UserDir</code> directories, but
     not anyone else, use the following:</p>
 
-    <example>
-      UserDir disabled<br />
-      UserDir enabled user1 user2 user3
-    </example>
+    <highlight language="config">
+UserDir disabled
+UserDir enabled user1 user2 user3
+    </highlight>
 
     <p>To allow most users to have <code>UserDir</code> directories, but
     deny this to a few, use the following:</p>
 
-    <example>
+    <highlight language="config">
       UserDir disabled user4 user5 user6
-    </example>
+    </highlight>
 
     <p>It is also possible to specify alternative user directories.
     If you use a command like:</p>
 
-    <example>
-      Userdir public_html /usr/web http://www.example.com/
-    </example>
+    <highlight language="config">
+      UserDir public_html /usr/web http://www.example.com/
+    </highlight>
 
     <p>With a request for
     <code>http://www.example.com/~bob/one/two.html</code>, will try to

@@ -37,17 +37,15 @@
     regular expressions.</p>
 
     <example><title>Examples</title>
-      &lt;IfVersion 2.1.0&gt;<br />
-      <indent>
-        # current httpd version is exactly 2.1.0<br />
-      </indent>
-      &lt;/IfVersion&gt;<br />
-      <br />
-      &lt;IfVersion >= 2.2&gt;<br />
-      <indent>
-        # use really new features :-)<br />
-      </indent>
-      &lt;/IfVersion&gt;
+    <highlight language="config">
+&lt;IfVersion 2.4.2&gt;
+    # current httpd version is exactly 2.4.2
+&lt;/IfVersion&gt;
+
+&lt;IfVersion >= 2.5&gt;
+    # use really new features :-)
+&lt;/IfVersion&gt;
+      </highlight>
     </example>
 
     <p>See below for further possibilities.</p>
@@ -89,12 +87,12 @@
     </table>
 
     <example><title>Example</title>
-      &lt;IfVersion >= 2.1&gt;<br />
-      <indent>
-        # this happens only in versions greater or<br />
-        # equal 2.1.0.<br />
-      </indent>
-      &lt;/IfVersion&gt;
+    <highlight language="config">
+&lt;IfVersion >= 2.3&gt;
+    # this happens only in versions greater or
+    # equal 2.3.0.
+&lt;/IfVersion&gt;
+      </highlight>
     </example>
 
     <p>Besides the numerical comparison it is possible to match a
@@ -112,23 +110,21 @@
     </table>
 
     <example><title>Example</title>
-      &lt;IfVersion = /^2.1.[01234]$/&gt;<br />
-      <indent>
-        # e.g. workaround for buggy versions
-      </indent>
-      &lt;/IfVersion&gt;
+    <highlight language="config">
+&lt;IfVersion = /^2.4.[01234]$/&gt;
+    # e.g. workaround for buggy versions
+&lt;/IfVersion&gt;
+      </highlight>
     </example>
 
     <p>In order to reverse the meaning, all operators can be preceded by an
     exclamation mark (<code>!</code>):</p>
 
-    <example>
-      &lt;IfVersion !~ ^2.1.[01234]$&gt;<br />
-      <indent>
-        # not for those versions<br />
-      </indent>
-      &lt;/IfVersion&gt;
-    </example>
+    <highlight language="config">
+&lt;IfVersion !~ ^2.4.[01234]$&gt;
+    # not for those versions
+&lt;/IfVersion&gt;
+    </highlight>
 
     <p>If the <var>operator</var> is omitted, it is assumed to be
     <code>=</code>.</p>
