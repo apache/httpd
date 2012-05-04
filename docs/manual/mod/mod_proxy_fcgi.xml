@@ -61,7 +61,9 @@
     enable <module>mod_proxy</module> and <module>mod_proxy_fcgi</module>.</p>
 
     <example><title>Single application instance</title>
+    <highlight language="config">
       ProxyPass /myapp/ fcgi://localhost:4000/
+      </highlight>
     </example>
 
     <p>This application should be able to handle multiple concurrent
@@ -76,7 +78,9 @@
     the following example:</p>
 
     <example><title>Single application instance, no connection reuse</title>
+    <highlight language="config">
       ProxyPass /myapp/ fcgi://localhost:4000/ disablereuse=on
+      </highlight>
     </example>
 
     <p>The balanced gateway needs <module>mod_proxy_balancer</module> and
@@ -86,13 +90,13 @@
     default, and will be used for this example configuration.</p>
 
     <example><title>Balanced gateway to multiple application instances</title>
-    ProxyPass /myapp/ balancer://myappcluster/<br />
-    &lt;Proxy balancer://myappcluster/&gt;<br />
-    <indent>
-        BalancerMember fcgi://localhost:4000/<br />
-        BalancerMember fcgi://localhost:4001/<br />
-    </indent>
-    &lt;/Proxy&gt;
+    <highlight language="config">
+ProxyPass /myapp/ balancer://myappcluster/
+&lt;Proxy balancer://myappcluster/&gt;
+    BalancerMember fcgi://localhost:4000/
+    BalancerMember fcgi://localhost:4001/
+&lt;/Proxy&gt;
+    </highlight>
     </example>
 </section>
 
