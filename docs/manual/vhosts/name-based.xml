@@ -136,7 +136,7 @@
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost *:80&gt;
-ServerName other.example.com
+    ServerName other.example.com
     DocumentRoot /www/otherdomain
 &lt;/VirtualHost&gt;
     </highlight>
