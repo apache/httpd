@@ -88,12 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_ssl: Send speaking-http-on-https-port error response with http 1.0,
-    not 0.9. Remove potentially wrong link.  PR 50823
-    trunk patches: http://svn.apache.org/viewvc?rev=1328325&view=rev
-                   http://svn.apache.org/viewvc?rev=1328326&view=rev
-    2.4 patch: Trunk patch works
-    +1: sf, jorton, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
