@@ -164,14 +164,12 @@
       Voici un exemple qui d&eacute;sactive les recherches DNS sauf pour les fichiers
       <code>.html</code> et <code>.cgi</code> :</p>
 
-      <example>
-        HostnameLookups off<br />
-        &lt;Files ~ "\.(html|cgi)$"&gt;<br />
-        <indent>
-          HostnameLookups on<br />
-        </indent>
-        &lt;/Files&gt;
-      </example>
+      <highlight language="config">
+HostnameLookups off
+&lt;Files ~ "\.(html|cgi)$"&gt;
+  HostnameLookups on
+&lt;/Files&gt;
+      </highlight>
 
       <p>Mais m&ecirc;me dans ce cas, si vous n'avez besoin de noms DNS que dans
       certains CGIs, vous pouvez effectuer l'appel &agrave; <code>gethostbyname</code>
@@ -190,14 +188,12 @@
       symboliques. Un appel suppl&eacute;mentaire par &eacute;l&eacute;ment du chemin du fichier.
       Par exemple, si vous avez :</p>
 
-      <example>
-        DocumentRoot /www/htdocs<br />
-        &lt;Directory /&gt;<br />
-        <indent>
-          Options SymLinksIfOwnerMatch<br />
-        </indent>
-        &lt;/Directory&gt;
-      </example>
+      <highlight language="config">
+DocumentRoot /www/htdocs
+&lt;Directory /&gt;
+  Options SymLinksIfOwnerMatch
+&lt;/Directory&gt;
+      </highlight>
 
       <p>et si une requ&ecirc;te demande l'URI <code>/index.html</code>, Apache
       effectuera un appel &agrave; <code>lstat(2)</code> pour
@@ -208,20 +204,16 @@
       v&eacute;rifier la s&eacute;curit&eacute; des liens symboliques, vous pouvez utiliser une
       configuration du style :</p>
 
-      <example>
-        DocumentRoot /www/htdocs<br />
-        &lt;Directory /&gt;<br />
-        <indent>
-          Options FollowSymLinks<br />
-        </indent>
-        &lt;/Directory&gt;<br />
-        <br />
-        &lt;Directory /www/htdocs&gt;<br />
-        <indent>
-          Options -FollowSymLinks +SymLinksIfOwnerMatch<br />
-        </indent>
-        &lt;/Directory&gt;
-      </example>
+      <highlight language="config">
+DocumentRoot /www/htdocs
+&lt;Directory /&gt;
+  Options FollowSymLinks
+&lt;/Directory&gt;
+
+&lt;Directory /www/htdocs&gt;
+  Options -FollowSymLinks +SymLinksIfOwnerMatch
+&lt;/Directory&gt;
+      </highlight>
 
       <p>Ceci &eacute;vite au moins les v&eacute;rifications suppl&eacute;mentaires pour le chemin
       d&eacute;fini par <directive module="core">DocumentRoot</directive>. Notez que
@@ -246,14 +238,12 @@
       pour chaque &eacute;l&eacute;ment du chemin du fichier demand&eacute;. Par exemple, si vous
       avez : </p>
 
-      <example>
-        DocumentRoot /www/htdocs<br />
-        &lt;Directory /&gt;<br />
-        <indent>
-          AllowOverride all<br />
-        </indent>
-        &lt;/Directory&gt;
-      </example>
+      <highlight language="config">
+DocumentRoot /www/htdocs
+&lt;Directory /&gt;
+  AllowOverride all
+&lt;/Directory&gt;
+      </highlight>
 
       <p>et qu'une requ&ecirc;te demande l'URI <code>/index.html</code>, Apache
       tentera d'ouvrir <code>/.htaccess</code>, <code>/www/.htaccess</code>,
@@ -275,15 +265,15 @@
       Il y a cependant un cas dans lequel vous pouvez acc&eacute;l&eacute;rer le serveur.
       Au lieu d'utiliser une directive g&eacute;n&eacute;rique comme :</p>
 
-      <example>
+      <highlight language="config">
         DirectoryIndex index
-      </example>
+      </highlight>
 
       <p>utilisez une liste explicite d'options :</p>
 
-      <example>
+      <highlight language="config">
         DirectoryIndex index.cgi index.pl index.shtml index.html
-      </example>
+      </highlight>
 
       <p>o&ugrave; vous placez le choix courant en premi&egrave;re position.</p>
 
@@ -628,39 +618,29 @@
       (ces exemples ne sont pas extraits du code d'Apache, ils ne sont
       propos&eacute;s qu'&agrave; des fins p&eacute;dagogiques) :</p>
 
-      <example>
-        for (;;) {<br />
-        <indent>
-          for (;;) {<br />
-          <indent>
-            fd_set accept_fds;<br />
-            <br />
-            FD_ZERO (&amp;accept_fds);<br />
-            for (i = first_socket; i &lt;= last_socket; ++i) {<br />
-            <indent>
-              FD_SET (i, &amp;accept_fds);<br />
-            </indent>
-            }<br />
-            rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);<br />
-            if (rc &lt; 1) continue;<br />
-            new_connection = -1;<br />
-            for (i = first_socket; i &lt;= last_socket; ++i) {<br />
-            <indent>
-              if (FD_ISSET (i, &amp;accept_fds)) {<br />
-              <indent>
-                new_connection = accept (i, NULL, NULL);<br />
-                if (new_connection != -1) break;<br />
-              </indent>
-              }<br />
-            </indent>
-            }<br />
-            if (new_connection != -1) break;<br />
-          </indent>
-          }<br />
-          process the new_connection;<br />
-        </indent>
-        }
-      </example>
+      <highlight language="c">
+for (;;) {
+  for (;;) {
+    fd_set accept_fds;
+    
+    FD_ZERO (&amp;accept_fds);
+    for (i = first_socket; i &lt;= last_socket; ++i) {
+      FD_SET (i, &amp;accept_fds);
+    }
+    rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);
+    if (rc &lt; 1) continue;
+    new_connection = -1;
+    for (i = first_socket; i &lt;= last_socket; ++i) {
+      if (FD_ISSET (i, &amp;accept_fds)) {
+        new_connection = accept (i, NULL, NULL);
+        if (new_connection != -1) break;
+      }
+    }
+    if (new_connection != -1) break;
+  }
+  process the new_connection;
+}
+      </highlight>
 
       <p>Mais cette impl&eacute;mentation rudimentaire pr&eacute;sente une s&eacute;rieuse lacune.
       Rappelez-vous que les processus enfants ex&eacute;cutent cette boucle au m&ecirc;me
@@ -699,41 +679,31 @@
       entr&eacute;es dans la boucle interne. La boucle ressemble &agrave; ceci (les
       diff&eacute;rences sont mises en surbrillance) :</p>
 
-      <example>
-        for (;;) {<br />
-        <indent>
-          <strong>accept_mutex_on ();</strong><br />
-          for (;;) {<br />
-          <indent>
-            fd_set accept_fds;<br />
-            <br />
-            FD_ZERO (&amp;accept_fds);<br />
-            for (i = first_socket; i &lt;= last_socket; ++i) {<br />
-            <indent>
-              FD_SET (i, &amp;accept_fds);<br />
-            </indent>
-            }<br />
-            rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);<br />
-            if (rc &lt; 1) continue;<br />
-            new_connection = -1;<br />
-            for (i = first_socket; i &lt;= last_socket; ++i) {<br />
-            <indent>
-              if (FD_ISSET (i, &amp;accept_fds)) {<br />
-              <indent>
-                new_connection = accept (i, NULL, NULL);<br />
-                if (new_connection != -1) break;<br />
-              </indent>
-              }<br />
-            </indent>
-            }<br />
-            if (new_connection != -1) break;<br />
-          </indent>
-          }<br />
-          <strong>accept_mutex_off ();</strong><br />
-          process the new_connection;<br />
-        </indent>
-        }
-      </example>
+      <highlight language="c">
+for (;;) {
+  <strong>accept_mutex_on ();</strong>
+  for (;;) {
+    fd_set accept_fds;
+
+    FD_ZERO (&amp;accept_fds);
+    for (i = first_socket; i &lt;= last_socket; ++i) {
+      FD_SET (i, &amp;accept_fds);
+    }
+    rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);
+    if (rc &lt; 1) continue;
+    new_connection = -1;
+    for (i = first_socket; i &lt;= last_socket; ++i) {
+      if (FD_ISSET (i, &amp;accept_fds)) {
+        new_connection = accept (i, NULL, NULL);
+        if (new_connection != -1) break;
+      }
+    }
+    if (new_connection != -1) break;
+  }
+  <strong>accept_mutex_off ();</strong>
+  process the new_connection;
+}
+      </highlight>
 
       <p><a id="serialize" name="serialize">Les fonctions</a>
       <code>accept_mutex_on</code> et <code>accept_mutex_off</code>
@@ -846,39 +816,31 @@
       <code>http_main.c</code>). La fonction ressemble approximativement &agrave;
       ceci :</p>
 
-      <example>
-        void lingering_close (int s)<br />
-        {<br />
-        <indent>
-          char junk_buffer[2048];<br />
-          <br />
-          /* shutdown the sending side */<br />
-          shutdown (s, 1);<br />
-          <br />
-          signal (SIGALRM, lingering_death);<br />
-          alarm (30);<br />
-          <br />
-          for (;;) {<br />
-          <indent>
-            select (s for reading, 2 second timeout);<br />
-            if (error) break;<br />
-            if (s is ready for reading) {<br />
-            <indent>
-              if (read (s, junk_buffer, sizeof (junk_buffer)) &lt;= 0) {<br />
-              <indent>
-                break;<br />
-              </indent>
-              }<br />
-              /* just toss away whatever is here */<br />
-            </indent>
-            }<br />
-          </indent>
-          }<br />
-          <br />
-          close (s);<br />
-        </indent>
-        }
-      </example>
+      <highlight language="c">
+void lingering_close (int s)
+{
+  char junk_buffer[2048];
+
+  /* shutdown the sending side */
+  shutdown (s, 1);
+
+  signal (SIGALRM, lingering_death);
+  alarm (30);
+
+  for (;;) {
+    select (s for reading, 2 second timeout);
+    if (error) break;
+    if (s is ready for reading) {
+      if (read (s, junk_buffer, sizeof (junk_buffer)) &lt;= 0) {
+        break;
+      }
+      /* just toss away whatever is here */
+    }
+  }
+ 
+  close (s);
+}
+      </highlight>
 
       <p>Ceci ajoute naturellement un peu de charge &agrave; la fin d'une connexion,
       mais s'av&egrave;re n&eacute;cessaire pour une impl&eacute;mentation fiable. Comme HTTP/1.1
