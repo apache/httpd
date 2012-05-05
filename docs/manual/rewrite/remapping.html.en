@@ -570,7 +570,7 @@ using the following ruleset:</p>
 
 <pre class="prettyprint lang-config">
 RewriteEngine on
-RewriteRule   <strong>^/$</strong>  /about/  [<strong>R</strong>]
+RewriteRule   ^/$  /about/  [<strong>R</strong>]
 </pre>
 
 
