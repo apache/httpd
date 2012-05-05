@@ -3,6 +3,9 @@
 
 Changes with Apache 2.4.3
 
+  *) core: Fix segfault in logging if r->useragent_addr or c->client_addr is
+     unset. [Stefan Fritsch]
+
   *) log_server_status: Bring Perl style forward to the present, use
      standard modules, update for new format of server-status output.
      PR 45424. [Richard Bowen, Dave Brondsema, and others]
