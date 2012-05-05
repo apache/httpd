@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1174747:1331227 (outdated) -->
+<!-- English Revision : 1331227 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -81,15 +81,12 @@ du serveur</description>
     <p>Pour n'activer les rapports d'&eacute;tat que pour les navigateurs
     appartenent au domaine example.com, ajoutez ces lignes &agrave; votre
     fichier de configuration <code>httpd.conf</code> :</p>
-<example>
-    &lt;Location /etat-serveur&gt;<br />
-    <indent>
-    SetHandler server-status<br />
-<br />
-    Require host example.com<br />
-    </indent>
-    &lt;/Location&gt;
-</example>
+<highlight language="config">
+&lt;Location /server-status&gt;
+    SetHandler server-status
+    Require host example.com
+&lt;/Location&gt;
+</highlight>
 
     <p>Il est alors possible d'obtenir les statistiques du serveur en
     utilisant un navigateur web et en acc&eacute;dant &agrave; la page

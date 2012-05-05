@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 574882:1330911 (outdated) -->
+<!-- English Revision : 1330911 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -43,7 +43,7 @@ d'Apache</compatibility>
     un module d'authentification comme <module>mod_auth_basic</module>
     ou <module>mod_auth_digest</module>.
     <module>mod_authz_owner</module> reconna&icirc;t deux arguments pour la
-    directive <directive module="mod_authz_core">Require</directive> :
+    directive <directive module="core">Require</directive> :
     <code>file-owner</code> et <code>file-group</code> :</p>
 
     <dl>
@@ -97,17 +97,15 @@ d'Apache</compatibility>
       propri&eacute;taire ne soit <code>jones</code> au lieu de
       <code>smith</code>.</p>
 
-      <example>
-        &lt;Directory /home/*/public_html/private&gt;<br />
-        <indent>
-          AuthType Basic<br />
-          AuthName mes-fichiers-prive<br />
-          AuthBasicProvider dbm<br />
-          AuthDBMUserFile /usr/local/apache2/etc/.htdbm-all<br />
-          Require file-owner<br />
-        </indent>
-        &lt;/Directory&gt;
-      </example>
+      <highlight language="config">
+&lt;Directory /home/*/public_html/private&gt;
+    AuthType Basic
+    AuthName MyPrivateFiles
+    AuthBasicProvider dbm
+    AuthDBMUserFile /usr/local/apache2/etc/.htdbm-all
+    Require file-owner
+&lt;/Directory&gt;
+      </highlight>
     </section>
 
     <section id="examples.file-group"><title>Require file-group</title>
@@ -124,22 +122,20 @@ d'Apache</compatibility>
       <code>foo</code>, ils seront autoris&eacute;s &agrave; acc&eacute;der aux
       r&eacute;pertoires <code>project-foo</code> de chacun d'entre eux.</p>
 
-      <example>
-        &lt;Directory /home/*/public_html/project-foo&gt;<br />
-        <indent>
-          AuthType Basic<br />
-          AuthName "Project Foo Files"<br />
-          AuthBasicProvider dbm<br />
-          <br />
-          # combined user/group database<br />
-          AuthDBMUserFile  /usr/local/apache2/etc/.htdbm-all<br />
-          AuthDBMGroupFile /usr/local/apache2/etc/.htdbm-all<br />
-          <br />
-          Satisfy All<br />
-          Require file-group<br />
-        </indent>
-        &lt;/Directory&gt;
-      </example>
+      <highlight language="config">
+&lt;Directory /home/*/public_html/project-foo&gt;
+    AuthType Basic
+    AuthName "Project Foo Files"
+    AuthBasicProvider dbm
+    
+    # combined user/group database
+    AuthDBMUserFile  /usr/local/apache2/etc/.htdbm-all
+    AuthDBMGroupFile /usr/local/apache2/etc/.htdbm-all
+    
+    Satisfy All
+    Require file-group
+&lt;/Directory&gt;
+      </highlight>
     </section>
 </section>
 

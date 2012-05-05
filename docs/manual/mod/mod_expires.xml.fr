@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1307365:1330988 (outdated) -->
+<!-- English Revision : 1330988 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -68,12 +68,10 @@ l'intervalle</title>
     module="mod_expires">ExpiresDefault</directive> et <directive
     module="mod_expires">ExpiresByType</directive> comme suit :</p>
 
-    <example>
-      ExpiresDefault "<var>base</var> [plus <var>num</var> <var>type</var>]
-        [<var>num</var> <var>type</var>] ..."<br />
-      ExpiresByType type/encoding "<var>base</var> [plus <var>num</var> <var>type</var>]
-        [<var>num</var> <var>type</var>] ..."
-    </example>
+    <highlight language="config">
+ExpiresDefault "<var>base</var>  [plus <var>num</var> <var>type</var>] [<var>num</var> <var>type</var>] ..."
+ExpiresByType type/encoding "<var>base</var>  [plus <var>num</var> <var>type</var>] [<var>num</var> <var>type</var>] ..."
+    </highlight>
 
     <p>o&ugrave; <var>base</var> peut &ecirc;tre :</p>
 
@@ -102,22 +100,20 @@ l'intervalle</title>
 
     <p>Par exemple, pour faire expirer par d&eacute;faut les documents 1 mois
     apr&egrave;s leur acc&egrave;s, on peut utiliser une des directives suivantes :</p>
-    <example>
-      ExpiresDefault "access plus 1 month"<br />
-      ExpiresDefault "access plus 4 weeks"<br />
-      ExpiresDefault "access plus 30 days"
-    </example>
+    <highlight language="config">
+ExpiresDefault "access plus 1 month"
+ExpiresDefault "access plus 4 weeks"
+ExpiresDefault "access plus 30 days"
+    </highlight>
 
 
     <p>La date d'expiration peut &ecirc;tre d&eacute;finie plus pr&eacute;cis&eacute;ment en
     ajoutant plusieurs clauses '<var>num</var> <var>type</var>' :</p>
 
-    <example>
-      ExpiresByType text/html "access plus 1 month 15
-      days 2 hours"<br />
-      ExpiresByType image/gif "modification plus 5 hours 3
-      minutes"
-    </example>
+    <highlight language="config">
+ExpiresByType text/html "access plus 1 month 15 days 2 hours"
+ExpiresByType image/gif "modification plus 5 hours 3 minutes"
+    </highlight>
 
     <p>Notez que si vous utilisez une configuration bas&eacute;e sur la date de
     modification, l'en-t&ecirc;te Expires ne sera pas ajout&eacute; &agrave; un contenu qui
@@ -203,14 +199,16 @@ en fonction du type MIME</description>
     de temps assez court).</p>
 
     <example><title>Exemple :</title>
-      # active la g&eacute;n&eacute;ration des en-t&ecirc;tes Expires<br />
-      ExpiresActive On<br />
-      # les images GIF expirent au bout d'un mois dans le cache du
-      # client<br />
-      ExpiresByType image/gif A2592000<br />
-      # les documents HTML restent valables une semaine apr&egrave;s leur date
-      # de derni&egrave;re modification<br />
-      ExpiresByType text/html M604800
+      <highlight language="config">
+# active la g&eacute;n&eacute;ration des en-t&ecirc;tes Expires
+ExpiresActive On
+# les images GIF expirent au bout d'un mois dans le cache du
+# client
+ExpiresByType image/gif A2592000
+# les documents HTML restent valables une semaine apr&egrave;s leur date
+# de derni&egrave;re modification
+ExpiresByType text/html M604800
+      </highlight>
     </example>
 
     <p>Notez que cette directive ne produit d'effet que si
