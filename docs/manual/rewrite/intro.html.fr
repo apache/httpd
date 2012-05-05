@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/intro.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/intro.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Ce document est un complément à la <a href="../mod/mod_rewrite.html">documentation de référence</a> du module
 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Il décrit les concepts de base dont la
@@ -44,7 +42,7 @@ pieds.
 <li><img alt="" src="../images/down.gif" /> <a href="#htaccess">Fichiers .htaccess</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentation du
 module mod_rewrite</a></li><li><a href="remapping.html">Redirection and remise en
-correspondance</a></li><li><a href="access.html">Contrôle d'accès</a></li><li><a href="vhosts.html">Serveurs virtuels</a></li><li><a href="proxy.html">Mise en cache</a></li><li><a href="rewritemap.html">Utilisation de RewriteMap</a></li><li><a href="advanced.html">Techniques avancées</a></li><li><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></li></ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
+correspondance</a></li><li><a href="access.html">Contrôle d'accès</a></li><li><a href="vhosts.html">Serveurs virtuels</a></li><li><a href="proxy.html">Mise en cache</a></li><li><a href="rewritemap.html">Utilisation de RewriteMap</a></li><li><a href="advanced.html">Techniques avancées</a></li><li><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="introduction" id="introduction">Introduction</a></h2>
@@ -241,9 +239,10 @@ l'URL spécifiée.</p>
 <p>La chaîne de <var>Substitution</var> peut aussi contenir des
 <em>références arrières</em> vers des parties du chemin d'URL entrant
 correspondant au <var>Modèle</var>. Considérons ce qui suit :</p>
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
 RewriteRule ^/produits/(.*)/view$ /var/web/produitsdb/$1
-</code></p></div>
+</pre>
+
 <p>La variable <code>$1</code> sera remplacée par tout texte
 correspondant à l'expression située entre les parenthèses dans le
 <var>Modèle</var>. Par exemple, une requête pour
@@ -263,9 +262,10 @@ présence d'un ou plusieurs drapeaux en fin de règle. Par exemple, les
 conditions de correspondance d'une règle peuvent être rendues
 insensibles à la casse par la présence du drapeau <code>[NC]</code> :
 </p>
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
 RewriteRule ^puppy.html petitchien.html [NC]
-</code></p></div>
+</pre>
+
 
 <p>Pour une liste des drapeaux disponibles, leurs significations, et des
 exemples, voir le document <a href="flags.html">Drapeaux de
@@ -291,21 +291,23 @@ correspondance est évaluée.</p>
 <p>Par exemple, pour renvoyer toutes les requêtes en provenance d'une
 certaine tranche d'adresses IP vers un autre serveur, vous pouvez
 utiliser :</p>
-<div class="example"><p><code>
-RewriteCond %{REMOTE_ADDR} ^10\.2\.<br />
+<pre class="prettyprint lang-config">
+RewriteCond %{REMOTE_ADDR} ^10\.2\.
 RewriteRule (.*) http://intranet.example.com$1
-</code></p></div>
+</pre>
+
 
 <p>Si vous spécifiez plus d'une directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>, ces directives
 doivent toutes être satisfaites pour que la règle <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> suivante s'applique. Par exemple,
 pour interdire les requêtes qui contiennent le mot "hack" dans la chaîne
 de requête, sauf si elles contiennent aussi un cookie contenant le mot
 "go", vous pouvez utiliser :</p>
-<div class="example"><p><code>
-RewriteCond %{QUERY_STRING} hack<br />
-RewriteCond %{HTTP_COOKIE} !go<br />
+<pre class="prettyprint lang-config">
+RewriteCond %{QUERY_STRING} hack
+RewriteCond %{HTTP_COOKIE} !go
 RewriteRule . - [F]
-</code></p></div>
+</pre>
+
 <p>Notez que le point d'exclamation indique une correspondance négative
 ; ainsi, la règle n'est appliquée que si le cookie ne contient pas "go"</p>
 
@@ -316,10 +318,11 @@ de la règle <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule
 les variables <code>%1</code>, <code>%2</code>, etc... Par
 exemple, ce qui suit va diriger la requête vers un répertoire différent
 en fonction du nom d'hôte utilisé pour accéder au site :</p>
-<div class="example"><p><code>
-RewriteCond %{HTTP_HOST} (.*)<br />
+<pre class="prettyprint lang-config">
+RewriteCond %{HTTP_HOST} (.*)
 RewriteRule ^/(.*) /sites/%1/$1
-</code></p></div>
+</pre>
+
 <p>Si la requête concernait <code>http://example.com/foo/bar</code>,
 alors <code>%1</code> contiendrait <code>example.com</code> et
 <code>$1</code> contiendrait <code>foo/bar</code>.</p>
@@ -358,18 +361,7 @@ requête est correctement mise en correspondance.</p>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/intro.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/intro.html" title="Français">&nbsp;fr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div id="disqus_thread" /><script type="text/javascript">
-var lang = 'fr';
-<!--//--><![CDATA[//><!--
-var disqus_shortname = 'httpd';
-var disqus_identifier = window.location.href.replace(/(current|trunk)/, "2.4").replace(/\/[a-z]{2}\//, "/") + '.' + lang;
-
-(function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-//--><!]]></script></div><div id="footer">
+</div><div id="footer">
 <p class="apache">Copyright 2012 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== undefined) {
