@@ -551,7 +551,7 @@ using the following ruleset:</p>
 
 <highlight language="config">
 RewriteEngine on
-RewriteRule   <strong>^/$</strong>  /about/  [<strong>R</strong>]
+RewriteRule   ^/$  /about/  [<strong>R</strong>]
 </highlight>
 
 <p>Note that this can also be handled using the <directive
