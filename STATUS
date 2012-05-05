@@ -88,13 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * core: Fix segfault in logging if r->useragent_addr or c->client_addr is
-    unset. (This can only happen with buggy modules but it happened to me
-    while playing with mod_perl).
-    trunk patch: http://svn.apache.org/viewvc?rev=1328950&view=rev
-    2.4 patch: Trunk patch works
-    +1: sf, jorton, trawick
-
   * mod_ssl: Send speaking-http-on-https-port error response with http 1.0,
     not 0.9. Remove potentially wrong link.  PR 50823
     trunk patches: http://svn.apache.org/viewvc?rev=1328325&view=rev
