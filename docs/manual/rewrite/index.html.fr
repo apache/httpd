@@ -91,7 +91,7 @@ contrôle d'accès</a></li>
 <div id="quickview"><h3>Voir aussi</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentation de
 référence de mod_rewrite</a></li><li><a href="../urlmapping.html">Mise en correspondance des URLs
 avec le système de fichiers</a></li><li><a href="http://wiki.apache.org/httpd/Rewrite">wiki mod_rewrite
-</a></li><li><a href="../glossary.html">Glossaire</a></li></ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
+</a></li><li><a href="../glossary.html">Glossaire</a></li></ul></div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
