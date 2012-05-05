@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_ajp: Reduce memory usage in case of many keep-alive requests on
+     one connection. PR 52275. [Naohiro Ooiwa <naohiro ooiwa miraclelinux com>]
+
   *) mod_proxy: Use the the same hostname for SNI as for the HTTP request when
      forwarding to SSL backends. PR 53134.
      [Michael Weiser <michael weiser.dinsnail.net>, Ruediger Pluem]
