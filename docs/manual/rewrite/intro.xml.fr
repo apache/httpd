@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1325683:1332592 (outdated) -->
+<!-- English Revision: 1332592 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -257,9 +257,9 @@ l'URL sp&eacute;cifi&eacute;e.</p>
 <p>La cha&icirc;ne de <var>Substitution</var> peut aussi contenir des
 <em>r&eacute;f&eacute;rences arri&egrave;res</em> vers des parties du chemin d'URL entrant
 correspondant au <var>Mod&egrave;le</var>. Consid&eacute;rons ce qui suit :</p>
-<example>
+<highlight language="config">
 RewriteRule ^/produits/(.*)/view$ /var/web/produitsdb/$1
-</example>
+</highlight>
 <p>La variable <code>$1</code> sera remplac&eacute;e par tout texte
 correspondant &agrave; l'expression situ&eacute;e entre les parenth&egrave;ses dans le
 <var>Mod&egrave;le</var>. Par exemple, une requ&ecirc;te pour
@@ -280,9 +280,9 @@ pr&eacute;sence d'un ou plusieurs drapeaux en fin de r&egrave;gle. Par exemple, 
 conditions de correspondance d'une r&egrave;gle peuvent &ecirc;tre rendues
 insensibles &agrave; la casse par la pr&eacute;sence du drapeau <code>[NC]</code> :
 </p>
-<example>
+<highlight language="config">
 RewriteRule ^puppy.html petitchien.html [NC]
-</example>
+</highlight>
 
 <p>Pour une liste des drapeaux disponibles, leurs significations, et des
 exemples, voir le document <a href="flags.html">Drapeaux de
@@ -312,10 +312,10 @@ correspondance est &eacute;valu&eacute;e.</p>
 <p>Par exemple, pour renvoyer toutes les requ&ecirc;tes en provenance d'une
 certaine tranche d'adresses IP vers un autre serveur, vous pouvez
 utiliser :</p>
-<example>
-RewriteCond %{REMOTE_ADDR} ^10\.2\.<br />
+<highlight language="config">
+RewriteCond %{REMOTE_ADDR} ^10\.2\.
 RewriteRule (.*) http://intranet.example.com$1
-</example>
+</highlight>
 
 <p>Si vous sp&eacute;cifiez plus d'une directive <directive
 module="mod_rewrite">RewriteCond</directive>, ces directives
@@ -324,11 +324,11 @@ module="mod_rewrite">RewriteRule</directive> suivante s'applique. Par exemple,
 pour interdire les requ&ecirc;tes qui contiennent le mot "hack" dans la cha&icirc;ne
 de requ&ecirc;te, sauf si elles contiennent aussi un cookie contenant le mot
 "go", vous pouvez utiliser :</p>
-<example>
-RewriteCond %{QUERY_STRING} hack<br />
-RewriteCond %{HTTP_COOKIE} !go<br />
+<highlight language="config">
+RewriteCond %{QUERY_STRING} hack
+RewriteCond %{HTTP_COOKIE} !go
 RewriteRule . - [F]
-</example>
+</highlight>
 <p>Notez que le point d'exclamation indique une correspondance n&eacute;gative
 ; ainsi, la r&egrave;gle n'est appliqu&eacute;e que si le cookie ne contient pas "go"</p>
 
@@ -339,10 +339,10 @@ de la r&egrave;gle <directive module="mod_rewrite">RewriteRule</directive> via
 les variables <code>%1</code>, <code>%2</code>, etc... Par
 exemple, ce qui suit va diriger la requ&ecirc;te vers un r&eacute;pertoire diff&eacute;rent
 en fonction du nom d'h&ocirc;te utilis&eacute; pour acc&eacute;der au site :</p>
-<example>
-RewriteCond %{HTTP_HOST} (.*)<br />
+<highlight language="config">
+RewriteCond %{HTTP_HOST} (.*)
 RewriteRule ^/(.*) /sites/%1/$1
-</example>
+</highlight>
 <p>Si la requ&ecirc;te concernait <code>http://example.com/foo/bar</code>,
 alors <code>%1</code> contiendrait <code>example.com</code> et
 <code>$1</code> contiendrait <code>foo/bar</code>.</p>
