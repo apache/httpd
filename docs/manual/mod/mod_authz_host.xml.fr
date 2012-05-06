@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1174747:1330911 (outdated) -->
+<!-- English Revision : 1330911 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -84,35 +84,35 @@ contr&ocirc;le d'acc&egrave;s</a></seealso>
 
     <p>Une adresse IP compl&egrave;te :</p>
 
-    <example>
-      Require ip 10.1.2.3<br />
-      Require ip 192.168.1.104 192.168.1.205
-    </example>
+    <highlight language="config">
+Require ip 10.1.2.3
+Require ip 192.168.1.104 192.168.1.205
+    </highlight>
 
     <p>L'adresse IP d'un h&ocirc;te pour qui l'acc&egrave;s est accord&eacute;</p>
 
     <p>Une adresse IP partielle :</p>
 
-    <example>
-      Require ip 10.1<br />
-      Require ip 10 172.20 192.168.2
-    </example>
+    <highlight language="config">
+Require ip 10.1
+Require ip 10 172.20 192.168.2
+    </highlight>
     <p>Les 1 &agrave; 3 premiers octets d'une adresse IP, pour une restriction
     &agrave; un sous-r&eacute;seau.</p>
 
     <p>Une paire r&eacute;seau/masque de sous-r&eacute;seau :</p>
 
-    <example>
+    <highlight language="config">
       Require ip 10.1.0.0/255.255.0.0
-    </example>
+    </highlight>
     <p>Un r&eacute;seau a.b.c.d, et un masque de sous-r&eacute;seau w.x.y.z. pour une
     restriction de sous-r&eacute;seau plus fine.</p>
 
     <p>Une sp&eacute;cification CIDR r&eacute;seau/nnn :</p>
 
-    <example>
+    <highlight language="config">
       Require ip 10.1.0.0/16
-    </example>
+    </highlight>
     <p>Identique au cas pr&eacute;c&eacute;dent, except&eacute; que le masque de sous-r&eacute;seau
     repr&eacute;sente les nnn premiers bits de poids fort.</p>
 
@@ -122,10 +122,10 @@ contr&ocirc;le d'acc&egrave;s</a></seealso>
     <p>On peut sp&eacute;cifier des adresses et des sous-r&eacute;seaux IPv6 comme
     suit :</p>
 
-    <example>
-     Require ip 2001:db8::a00:20ff:fea7:ccea<br />
-     Require ip 2001:db8::a00:20ff:fea7:ccea/10
-    </example>
+    <highlight language="config">
+Require ip 2001:db8::a00:20ff:fea7:ccea
+Require ip 2001:db8::a00:20ff:fea7:ccea/10
+    </highlight>
 
 
 </section>
@@ -139,10 +139,10 @@ contr&ocirc;le d'acc&egrave;s</a></seealso>
 
     <p>Un nom de domaine (&eacute;ventuellement partiel)</p>
 
-    <example>
-    Require host example.org<br />
-    Require host .net example.edu
-    </example>
+    <highlight language="config">
+Require host example.org
+Require host .net example.edu
+    </highlight>
 
     <p>Les h&ocirc;tes dont les noms correspondent ou se terminent par la
     cha&icirc;ne sp&eacute;cifi&eacute;e se voient accorder l'acc&egrave;s. Seuls les &eacute;l&eacute;ment de
@@ -173,9 +173,9 @@ contr&ocirc;le d'acc&egrave;s</a></seealso>
     <p>L'exemple suivant montre une m&eacute;thode simple pour s&eacute;lectionner les
     connexions en provenance de l'h&ocirc;te local :</p>
 
-    <example>
+    <highlight language="config">
     Require local
-    </example>
+    </highlight>
 </section>
 
 </section>
