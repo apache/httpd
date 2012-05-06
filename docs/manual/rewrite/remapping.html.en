@@ -195,7 +195,7 @@ Redirect /docs/ http://new.example.com/docs/
 <pre class="prettyprint lang-config">
 RewriteEngine  on
 RewriteBase    /~quux/
-RewriteRule    ^foo\.<strong>html</strong>$  foo.<strong>cgi</strong>  [H=<strong>cgi-script</strong>]
+RewriteRule    ^foo\.html$  foo.cgi &nbsp; [H=<strong>cgi-script</strong>]
 </pre>
 
     </dd>
@@ -492,8 +492,8 @@ com       http://www.example.com/<br />
 RewriteCond %{HTTP_USER_AGENT}  ^<strong>Mozilla/3</strong>.*
 RewriteRule ^foo\.html$         foo.<strong>NS</strong>.html          [<strong>L</strong>]
 
-RewriteCond %{HTTP_USER_AGENT}  ^<strong>Lynx/</strong>         [OR]
-RewriteCond %{HTTP_USER_AGENT}  ^<strong>Mozilla/[12]</strong>
+RewriteCond %{HTTP_USER_AGENT}  ^Lynx/ [OR]
+RewriteCond %{HTTP_USER_AGENT}  ^Mozilla/[12]
 RewriteRule ^foo\.html$         foo.<strong>20</strong>.html          [<strong>L</strong>]
 
 RewriteRule ^foo\.html$         foo.<strong>32</strong>.html          [<strong>L</strong>]
@@ -648,12 +648,16 @@ to last beyond the testing phase of this system, nor do we in any way guarantee 
 var lang = 'en';
 var disqus_shortname = 'httpd';
 var disqus_identifier = window.location.href.replace(/(current|trunk)/, "2.4").replace(/\/[a-z]{2}\//, "/") + '.' + lang;
-
-(function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
+if (disqus_identifier.indexOf("httpd.apache.org") != -1) {
+    (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+} else {
+    var text = document.createTextNode("Comments have been disabled for offline viewing.");
+    document.getElementById('disqus_thread').appendChild(text);
+}
 //--><!]]></script></div><div id="footer">
 <p class="apache">Copyright 2012 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
