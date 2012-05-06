@@ -131,7 +131,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <code>%{REMOTE_USER}</code> will not be set in this case.</p>
 
     <p>The following variables provide the values of the named HTTP request
-    headers. The values of other headers can be obtained witht the
+    headers. The values of other headers can be obtained with the
     <code>req</code> <a href="#functions">function</a>.</p>
 
     <table class="bordered"><tr class="header"><th>Name</th></tr>
