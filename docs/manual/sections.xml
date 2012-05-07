@@ -112,10 +112,10 @@ module is designed for the use in test suites and large networks which have to
 deal with different httpd versions and different configurations.</p>
 
 <highlight language="config">
-  &lt;IfVersion >= 2.1&gt;
+&lt;IfVersion >= 2.1&gt;
     # this happens only in versions greater or
     # equal 2.1.0.
-  &lt;/IfVersion&gt;
+&lt;/IfVersion&gt;
 </highlight>
 
 <p><directive type="section" module="core">IfDefine</directive>,
