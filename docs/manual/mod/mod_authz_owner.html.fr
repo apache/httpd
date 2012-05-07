@@ -29,8 +29,6 @@
 <a href="../ja/mod/mod_authz_owner.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authz_owner.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Autorisation basée sur l'appartenance des
 fichiers</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -48,7 +46,7 @@ d'Apache</td></tr></table>
     un module d'authentification comme <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>
     ou <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>.
     <code class="module"><a href="../mod/mod_authz_owner.html">mod_authz_owner</a></code> reconnaît deux arguments pour la
-    directive <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> :
+    directive <code class="directive"><a href="../mod/core.html#require">Require</a></code> :
     <code>file-owner</code> et <code>file-group</code> :</p>
 
     <dl>
@@ -91,7 +89,7 @@ d'Apache</td></tr></table>
 </ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li>
-</ul></div>
+</ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="examples" id="examples">Exemples de configuration</a></h2>
@@ -111,17 +109,16 @@ d'Apache</td></tr></table>
       propriétaire ne soit <code>jones</code> au lieu de
       <code>smith</code>.</p>
 
-      <div class="example"><p><code>
-        &lt;Directory /home/*/public_html/private&gt;<br />
-        <span class="indent">
-          AuthType Basic<br />
-          AuthName mes-fichiers-prive<br />
-          AuthBasicProvider dbm<br />
-          AuthDBMUserFile /usr/local/apache2/etc/.htdbm-all<br />
-          Require file-owner<br />
-        </span>
-        &lt;/Directory&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+&lt;Directory /home/*/public_html/private&gt;
+    AuthType Basic
+    AuthName MyPrivateFiles
+    AuthBasicProvider dbm
+    AuthDBMUserFile /usr/local/apache2/etc/.htdbm-all
+    Require file-owner
+&lt;/Directory&gt;
+      </pre>
+
     
 
     <h3><a name="examples.file-group" id="examples.file-group">Require file-group</a></h3>
@@ -137,22 +134,21 @@ d'Apache</td></tr></table>
       <code>foo</code>, ils seront autorisés à accéder aux
       répertoires <code>project-foo</code> de chacun d'entre eux.</p>
 
-      <div class="example"><p><code>
-        &lt;Directory /home/*/public_html/project-foo&gt;<br />
-        <span class="indent">
-          AuthType Basic<br />
-          AuthName "Project Foo Files"<br />
-          AuthBasicProvider dbm<br />
-          <br />
-          # combined user/group database<br />
-          AuthDBMUserFile  /usr/local/apache2/etc/.htdbm-all<br />
-          AuthDBMGroupFile /usr/local/apache2/etc/.htdbm-all<br />
-          <br />
-          Satisfy All<br />
-          Require file-group<br />
-        </span>
-        &lt;/Directory&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+&lt;Directory /home/*/public_html/project-foo&gt;
+    AuthType Basic
+    AuthName "Project Foo Files"
+    AuthBasicProvider dbm
+    
+    # combined user/group database
+    AuthDBMUserFile  /usr/local/apache2/etc/.htdbm-all
+    AuthDBMGroupFile /usr/local/apache2/etc/.htdbm-all
+    
+    Satisfy All
+    Require file-group
+&lt;/Directory&gt;
+      </pre>
+
     
 </div>
 </div>
@@ -161,7 +157,22 @@ d'Apache</td></tr></table>
 <a href="../fr/mod/mod_authz_owner.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_authz_owner.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authz_owner.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
-</div><div id="footer">
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>This section is experimental!</strong><br />Comments placed here should not be expected 
+to last beyond the testing phase of this system, nor do we in any way guarantee that we'll read them.</div><div id="disqus_thread" /><script type="text/javascript"><!--//--><![CDATA[//><!--
+var lang = 'fr';
+var disqus_shortname = 'httpd';
+var disqus_identifier = window.location.href.replace(/(current|trunk)/, "2.4").replace(/\/[a-z]{2}\//, "/").replace(window.location.protocol, "http:") + '.' + lang;
+if (disqus_identifier.indexOf("httpd.apache.org") != -1) {
+    (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = window.location.protocol + '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+} else {
+    var text = document.createTextNode("Comments have been disabled for offline viewing.");
+    document.getElementById('disqus_thread').appendChild(text);
+}
+//--><!]]></script></div><div id="footer">
 <p class="apache">Copyright 2012 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== undefined) {

@@ -44,7 +44,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#errors">Başlatma Sırasındaki Hatalar</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#boot">Sistem Açılışında Başlatma</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#info">Ek Bilgiler</a></li>
-</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="stopping.html">Durdurma ve Yeniden Başlatma</a></li><li><code class="program"><a href="./programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="./programs/apachectl.html">apachectl</a></code></li></ul></div>
+</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="stopping.html">Durdurma ve Yeniden Başlatma</a></li><li><code class="program"><a href="./programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="./programs/apachectl.html">apachectl</a></code></li></ul><ul class="seealso"><li><a href="#comments_section">Yorum</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="startup" id="startup">Apache Nasıl Başlatılır?</a></h2>
@@ -145,7 +145,22 @@
 <a href="./ja/invoking.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/invoking.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/invoking.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div id="footer">
+</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Yorum</a></h2><div class="warning"><strong>This section is experimental!</strong><br />Comments placed here should not be expected 
+to last beyond the testing phase of this system, nor do we in any way guarantee that we'll read them.</div><div id="disqus_thread" /><script type="text/javascript"><!--//--><![CDATA[//><!--
+var lang = 'tr';
+var disqus_shortname = 'httpd';
+var disqus_identifier = window.location.href.replace(/(current|trunk)/, "2.4").replace(/\/[a-z]{2}\//, "/").replace(window.location.protocol, "http:") + '.' + lang;
+if (disqus_identifier.indexOf("httpd.apache.org") != -1) {
+    (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = window.location.protocol + '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+} else {
+    var text = document.createTextNode("Comments have been disabled for offline viewing.");
+    document.getElementById('disqus_thread').appendChild(text);
+}
+//--><!]]></script></div><div id="footer">
 <p class="apache">Copyright 2012 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
 <p class="menu"><a href="./mod/">Modüller</a> | <a href="./mod/directives.html">Yönergeler</a> | <a href="http://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== undefined) {

@@ -73,7 +73,7 @@
 </div>
 <div id="quickview"><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">mod_rewrite başvuru belgesi</a>
 </li><li><a href="../urlmapping.html">URL’lerin Dosya Sistemine Eşlenmesi</a></li><li><a href="http://wiki.apache.org/httpd/Rewrite">mod_rewrite wiki</a>
-</li><li><a href="../glossary.html">Terimler</a></li></ul><ul class="seealso"><li><a href="#comments_section">Yorum</a></li></ul></div>
+</li><li><a href="../glossary.html">Terimler</a></li></ul></div>
 </div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="../en/rewrite/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

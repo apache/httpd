@@ -29,8 +29,6 @@
 <a href="../ja/mod/mod_expires.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_expires.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Génération des en-têtes HTTP <code>Expires</code> et
 <code>Cache-Control</code> en fonction de critères spécifiés par
 l'utilisateur</td></tr>
@@ -74,7 +72,7 @@ l'utilisateur</td></tr>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#AltSyn">Autre syntaxe de définition de
 l'intervalle</a></li>
-</ul></div>
+</ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="AltSyn" id="AltSyn">Autre syntaxe de définition de
@@ -82,12 +80,11 @@ l'intervalle</a></h2>
     <p>Pour une syntaxe plus lisible, on peut aussi utiliser les
     directives <code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code> et <code class="directive"><a href="#expiresbytype">ExpiresByType</a></code> comme suit :</p>
 
-    <div class="example"><p><code>
-      ExpiresDefault "<var>base</var> [plus <var>num</var> <var>type</var>]
-        [<var>num</var> <var>type</var>] ..."<br />
-      ExpiresByType type/encoding "<var>base</var> [plus <var>num</var> <var>type</var>]
-        [<var>num</var> <var>type</var>] ..."
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+ExpiresDefault "<var>base</var>  [plus <var>num</var> <var>type</var>] [<var>num</var> <var>type</var>] ..."
+ExpiresByType type/encoding "<var>base</var>  [plus <var>num</var> <var>type</var>] [<var>num</var> <var>type</var>] ..."
+    </pre>
+
 
     <p>où <var>base</var> peut être :</p>
 
@@ -116,22 +113,22 @@ l'intervalle</a></h2>
 
     <p>Par exemple, pour faire expirer par défaut les documents 1 mois
     après leur accès, on peut utiliser une des directives suivantes :</p>
-    <div class="example"><p><code>
-      ExpiresDefault "access plus 1 month"<br />
-      ExpiresDefault "access plus 4 weeks"<br />
-      ExpiresDefault "access plus 30 days"
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+ExpiresDefault "access plus 1 month"
+ExpiresDefault "access plus 4 weeks"
+ExpiresDefault "access plus 30 days"
+    </pre>
+
 
 
     <p>La date d'expiration peut être définie plus précisément en
     ajoutant plusieurs clauses '<var>num</var> <var>type</var>' :</p>
 
-    <div class="example"><p><code>
-      ExpiresByType text/html "access plus 1 month 15
-      days 2 hours"<br />
-      ExpiresByType image/gif "modification plus 5 hours 3
-      minutes"
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+ExpiresByType text/html "access plus 1 month 15 days 2 hours"
+ExpiresByType image/gif "modification plus 5 hours 3 minutes"
+    </pre>
+
 
     <p>Notez que si vous utilisez une configuration basée sur la date de
     modification, l'en-tête Expires ne sera pas ajouté à un contenu qui
@@ -213,16 +210,17 @@ en fonction du type MIME</td></tr>
     images sont alors accédées de manière répétitive dans un intervalle
     de temps assez court).</p>
 
-    <div class="example"><h3>Exemple :</h3><p><code>
-      # active la génération des en-têtes Expires<br />
-      ExpiresActive On<br />
-      # les images GIF expirent au bout d'un mois dans le cache du
-      # client<br />
-      ExpiresByType image/gif A2592000<br />
-      # les documents HTML restent valables une semaine après leur date
-      # de dernière modification<br />
-      ExpiresByType text/html M604800
-    </code></p></div>
+    <div class="example"><h3>Exemple :</h3><pre class="prettyprint lang-config">
+# active la génération des en-têtes Expires
+ExpiresActive On
+# les images GIF expirent au bout d'un mois dans le cache du
+# client
+ExpiresByType image/gif A2592000
+# les documents HTML restent valables une semaine après leur date
+# de dernière modification
+ExpiresByType text/html M604800
+      </pre>
+</div>
 
     <p>Notez que cette directive ne produit d'effet que si
     <code>ExpiresActive On</code> a été spécifié. Elle l'emporte, mais
@@ -259,7 +257,22 @@ d'expiration</td></tr>
 <a href="../fr/mod/mod_expires.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_expires.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_expires.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
-</div><div id="footer">
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>This section is experimental!</strong><br />Comments placed here should not be expected 
+to last beyond the testing phase of this system, nor do we in any way guarantee that we'll read them.</div><div id="disqus_thread" /><script type="text/javascript"><!--//--><![CDATA[//><!--
+var lang = 'fr';
+var disqus_shortname = 'httpd';
+var disqus_identifier = window.location.href.replace(/(current|trunk)/, "2.4").replace(/\/[a-z]{2}\//, "/").replace(window.location.protocol, "http:") + '.' + lang;
+if (disqus_identifier.indexOf("httpd.apache.org") != -1) {
+    (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = window.location.protocol + '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+} else {
+    var text = document.createTextNode("Comments have been disabled for offline viewing.");
+    document.getElementById('disqus_thread').appendChild(text);
+}
+//--><!]]></script></div><div id="footer">
 <p class="apache">Copyright 2012 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== undefined) {

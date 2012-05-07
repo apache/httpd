@@ -61,7 +61,7 @@
 </ul>
 </div>
 <div id="quickview"><h3>参见</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">mod_rewrite 参考手册</a></li><li><a href="../urlmapping.html">从 URL 映射到文件系统</a></li><li><a href="http://wiki.apache.org/httpd/Rewrite">mod_rewrite
-wiki</a></li><li><a href="../glossary.html">术语</a></li></ul><ul class="seealso"><li><a href="#comments_section">评论</a></li></ul></div>
+wiki</a></li><li><a href="../glossary.html">术语</a></li></ul></div>
 </div>
 <div class="bottomlang">
 <p><span>可用语言: </span><a href="../en/rewrite/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
