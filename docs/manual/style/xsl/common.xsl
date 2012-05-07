@@ -287,7 +287,33 @@
 <xsl:call-template name="langavail">
     <xsl:with-param name="position" select="'bottom'" />
 </xsl:call-template>
-
+<xsl:choose>
+<xsl:when test="not($is-chm or $is-zip or $metafile/basename = 'index')">
+<div class="top"><a href="#page-header"><img alt="top" src="{$path}/images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="comments_section" id="comments_section"><xsl:value-of select="$message[@id='comments']" /></a></h2>
+<div class="warning"><strong>This section is experimental!</strong><br/>Comments placed here should not be expected 
+to last beyond the testing phase of this system, nor do we in any way guarantee that we'll read them.</div>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+<xsl:text disable-output-escaping="yes"><![CDATA[<!--//--><![CDATA[//><!--]]></xsl:text>
+var lang = '<xsl:value-of select="$doclang"/>';<![CDATA[
+var disqus_shortname = 'httpd';
+var disqus_identifier = window.location.href.replace(/(current|trunk)/, "2.4").replace(/\/[a-z]{2}\//, "/").replace(window.location.protocol, "http:") + '.' + lang;
+if (disqus_identifier.indexOf("httpd.apache.org") != -1) {
+    (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = window.location.protocol + '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+} else {
+    var text = document.createTextNode("Comments have been disabled for offline viewing.");
+    document.getElementById('disqus_thread').appendChild(text);
+}
+]]><xsl:text disable-output-escaping="yes"><![CDATA[//--><!]]]]>></xsl:text></script>
+</div>
+</xsl:when>
+</xsl:choose>
 <div id="footer">&lf;
     <p class="apache">
         <xsl:text>Copyright 2012 The Apache Software Foundation.</xsl:text><br />
