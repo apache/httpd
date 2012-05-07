@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1303788:1330911 (outdated) -->
+<!-- English Revision : 1330911 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -215,10 +215,10 @@ fichier en fonction de son nom</description>
     peut pas afficher d'images, si le chargement d'images est d&eacute;sactiv&eacute;
     ou si l'ic&ocirc;ne ne peut pas &ecirc;tre trouv&eacute;.</p>
 
-    <example><title>Exemples</title>
-      AddAlt "Fichier PDF" *.pdf<br />
-      AddAlt Compress&eacute; *.gz *.zip *.Z
-    </example>
+    <highlight language="config">
+AddAlt "PDF file" *.pdf
+AddAlt Compressed *.gz *.zip *.Z
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -245,9 +245,9 @@ fichier en fonction de son codage MIME</description>
     peut pas afficher d'images, si le chargement d'images est d&eacute;sactiv&eacute;
     ou si l'ic&ocirc;ne ne peut pas &ecirc;tre trouv&eacute;.</p>
 
-    <example><title>Exemple</title>
+    <highlight language="config">
       AddAltByEncoding gzip x-gzip
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -274,9 +274,9 @@ fichier en fonction de son type MIME</description>
     peut pas afficher d'images, si le chargement d'images est d&eacute;sactiv&eacute;
     ou si l'ic&ocirc;ne ne peut pas &ecirc;tre trouv&eacute;.</p>
 
-    <example><title>Exemple</title>
+    <highlight language="config">
       AddAltByType 'Fichier texte' text/plain
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -299,9 +299,10 @@ fichier en fonction de son type MIME</description>
     <var>texte</var> doit &ecirc;tre entour&eacute; de guillemets
     (<code>"</code>).</p>
 
-    <example><title>Exemple</title>
-      AddDescription "La plan&egrave;te Mars" mars.gif
-    </example>
+    <highlight language="config">
+AddDescription "The planet Mars" mars.gif
+AddDescription "My friend Marshall" friends/mars.gif
+    </highlight>
 
     <p>La taille par d&eacute;faut, habituelle du champ de description est de
     23 octets. L'option <code><a href="#indexoptions.suppressicon"
@@ -381,11 +382,12 @@ nom</description>
     et n'est donc pas n&eacute;cessaire si vous utilisez <code>IndexOptions
     HTMLTable</code>.</p>
 
-    <example><title>Exemples</title>
-      AddIcon (IMG,/icons/image.png) .gif .jpg .png<br />
-      AddIcon /icons/dir.png ^^DIRECTORY^^<br />
-      AddIcon /icons/backup.png *~
-    </example>
+    <highlight language="config">
+#Examples
+AddIcon (IMG,/icons/image.png) .gif .jpg .png
+AddIcon /icons/dir.png ^^DIRECTORY^^
+AddIcon /icons/backup.png *~
+    </highlight>
 
     <p>Lorsque c'est possible, il est pr&eacute;f&eacute;rable d'utiliser <directive
     module="mod_autoindex">AddIconByType</directive> plut&ocirc;t que
@@ -418,9 +420,9 @@ codage MIME</description>
     <p><var>codage MIME</var> doit &ecirc;tre un codage valide, comme
     <code>x-compress</code>.</p>
 
-    <example><title>Exemple</title>
+    <highlight language="config">
       AddIconByEncoding /icons/compress.png x-compress
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -450,9 +452,9 @@ type MIME</description>
     <p><var>type MIME</var> est une expression avec caract&egrave;res
     g&eacute;n&eacute;riques repr&eacute;sentant le type MIME.</p>
 
-    <example><title>Exemple</title>
+    <highlight language="config">
       AddIconByType (IMG,/icons/image.png) image/*
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -474,9 +476,9 @@ n'est pr&eacute;cis&eacute;</description>
     <var>chemin URL</var> est une URL relative (&eacute;chapp&eacute;e par des
     caract&egrave;res '%') vers l'ic&ocirc;ne ou une URL pleinement qualifi&eacute;e.</p>
 
-    <example><title>Exemple</title>
+    <highlight language="config">
       DefaultIcon /icon/unknown.png
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -495,9 +497,9 @@ contenant l'index</description>
     le nom du fichier qui sera ins&eacute;r&eacute; au d&eacute;but de la page contenant
     l'index. <var>nom fichier</var> est le nom du fichier &agrave; inclure.</p>
 
-    <example><title>Exemple</title>
+    <highlight language="config">
       HeaderName HEADER.html
-    </example>
+    </highlight>
 
     <note>
       <p>Les deux directives HeaderName et <directive
@@ -508,9 +510,9 @@ contenant l'index</description>
       consid&eacute;r&eacute; comme relatif au r&eacute;pertoire d&eacute;fini par la directive
       <directive module="core">DocumentRoot</directive>.</p>
 
-      <example><title>Exemple</title>
+      <highlight language="config">
         HeaderName /include/HEADER.html
-      </example>
+      </highlight>
 
       <p><var>nom fichier</var> doit correspondre &agrave; un document dont le
       type MIME est du style <code>text/*</code> (<em>par exemple</em>
@@ -520,9 +522,9 @@ contenant l'index</description>
       sortie) est marqu&eacute; comme <code>text/html</code> par exemple &agrave;
       l'aide d'une directive comme :</p>
 
-      <example>
+      <highlight language="config">
         AddType text/html .cgi
-      </example>
+      </highlight>
 
       <p>Une <a href="../content-negotiation.html">n&eacute;gociation de
       contenu</a> sera effectu&eacute;e si <directive
@@ -569,9 +571,9 @@ de l'index d'un r&eacute;pertoire</description>
     ignorer. Par d&eacute;faut, la liste contient <code>.</code> (le r&eacute;pertoire
     courant).</p>
 
-    <example>
+    <highlight language="config">
       IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
-    </example>
+    </highlight>
 
     <note><title>Expressions rationnelles</title>
       <p>Cette directive est actuellement incompatible avec les sections
@@ -600,15 +602,15 @@ contenu d'un r&eacute;pertoire</description>
     <directive>IndexIgnore</directive> et h&eacute;rit&eacute;e par ailleurs d'autres
     sections de configuration.</p>
 
-    <example>
-      &lt;Directory /var/www&gt;
-      IndexIgnore *.bak .??* *~ *# HEADER* README* RCS CVS *,v *,t
-      &lt;/Directory&gt;
-      &lt;Directory /var/www/backups&gt;
-      IndexIgnoreReset ON
-      IndexIgnore .??* *# HEADER* README* RCS CVS *,v *,t
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory /var/www&gt;
+    IndexIgnore *.bak .??* *~ *# HEADER* README* RCS CVS *,v *,t
+&lt;/Directory&gt;
+&lt;Directory /var/www/backups&gt;
+    IndexIgnoreReset ON
+    IndexIgnore .??* *# HEADER* README* RCS CVS *,v *,t
+&lt;/Directory&gt;
+    </highlight>
 
     <note type="warning"><p>Revoyez la configuration par d&eacute;faut pour une
     liste de mod&egrave;les que vous voulez ignorer explicitement apr&egrave;s usage
@@ -663,9 +665,9 @@ r&eacute;pertoire</description>
       syst&egrave;me de fichiers sous-jacent utilise les noms de fichiers en
       Unicode ou non).
 
-      <example><title>Exemple :</title>
+      <highlight language="config">
         IndexOptions Charset=UTF-8
-      </example>
+      </highlight>
       </dd>
 
       <dt><a name="indexoptions.descriptionwidth"
@@ -934,9 +936,9 @@ r&eacute;pertoire</description>
       MIME de la page g&eacute;n&eacute;r&eacute;e. La valeur par d&eacute;faut est
       <var>text/html</var>.
 
-      <example><title>Exemple :</title>
+      <highlight language="config">
         IndexOptions Type=text/plain
-      </example>
+      </highlight>
       </dd>
 
 
@@ -993,20 +995,18 @@ r&eacute;pertoire</description>
      apparaissant dans la m&ecirc;me section directory sont maintenant
      fusionn&eacute;es. Le r&eacute;sultat de :
 
-     <example>
-       &lt;Directory /foo&gt;
-       <indent>
-         IndexOptions HTMLTable<br />
-         IndexOptions SuppressColumnsorting
-       </indent>
-       &lt;/Directory&gt;
-     </example>
+     <highlight language="config">
+&lt;Directory /foo&gt;
+    IndexOptions HTMLTable
+    IndexOptions SuppressColumnsorting
+&lt;/Directory&gt;
+     </highlight>
 
      <p>est &eacute;quivalent &agrave;</p>
 
-     <example>
+     <highlight language="config">
        IndexOptions HTMLTable SuppressColumnsorting
-     </example>
+     </highlight>
      </li>
 
      <li>L'ajout de la syntaxe incr&eacute;mentale (en pr&eacute;fixant les mots-cl&eacute;s
@@ -1022,10 +1022,10 @@ r&eacute;pertoire</description>
      d&eacute;finition incr&eacute;mentale. Consid&eacute;rons l'exemple
      suivant :</p>
 
-     <example>
-       IndexOptions +ScanHTMLTitles -IconsAreLinks FancyIndexing<br />
-       IndexOptions +SuppressSize
-     </example>
+     <highlight language="config">
+IndexOptions +ScanHTMLTitles -IconsAreLinks FancyIndexing<br />
+IndexOptions +SuppressSize
+     </highlight>
 
      <p>L'effet global est &eacute;quivalent &agrave; l'effet qu'aurait provoqu&eacute;
      <code>IndexOptions FancyIndexing +SuppressSize</code>, car l'option
@@ -1098,10 +1098,9 @@ r&eacute;pertoire</description>
     d&eacute;finir le nom du fichier qui servira de feuille de style CSS pour
     l'index.
     </p>
-    <example>
-      <title>Exemple</title>
+    <highlight language="config">
       IndexStyleSheet "/css/style.css"
-    </example>
+    </highlight>
 
     <p>L'utilisation de cette directive en conjonction avec <code>IndexOptions
     HTMLTable</code> ajoute plusieurs classes CSS au document HTML
@@ -1145,10 +1144,9 @@ d'index.</description>
     sp&eacute;cifier une cha&icirc;ne de caract&egrave;res &agrave; ins&eacute;rer dans la section
     <var>&lt;head&gt;</var> du code HTML g&eacute;n&eacute;r&eacute; pour la page
     d'index.</p>
-    <example>
-      <title>Exemple</title>
+    <highlight language="config">
       IndexHeadInsert "&lt;link rel=\"sitemap\" href=\"/sitemap.html\"&gt;"
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -1173,13 +1171,15 @@ l'index</description>
     module="core">DocumentRoot</directive>.
     </p>
 
-    <example><title>Exemple 1</title>
-      ReadmeName FOOTER.html
-    </example>
+    <highlight language="config">
+# Example 1
+ReadmeName FOOTER.html
+    </highlight>
 
-    <example><title>Exemple 2</title>
-      ReadmeName /include/FOOTER.html
-    </example>
+    <highlight language="config">
+# Example 2
+ReadmeName /include/FOOTER.html
+    </highlight>
 
     <p>Voir aussi la directive <directive module="mod_autoindex"
     >HeaderName</directive>, o&ugrave; cette fonctionnalit&eacute; est d&eacute;crite plus en

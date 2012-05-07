@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1226477:1330911 (outdated) -->
+<!-- English Revision : 1330911 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -123,10 +123,10 @@ d'environnement</var>
       <dt>Un nom de domaine (partiel)</dt>
 
       <dd>
-      <example><title>Exemple :</title>
-        Allow from example.org<br />
-        Allow from .net example.edu
-      </example>
+      <highlight language="config">
+Allow from example.org
+Allow from .net example.edu
+      </highlight>
       <p>Les h&ocirc;tes dont les noms correspondent ou se terminent par la
       cha&icirc;ne sp&eacute;cifi&eacute;e ont l'autorisation d'acc&egrave;s. Seules les
       composantes enti&egrave;res du nom d'h&ocirc;te doivent correspondre ; ainsi,
@@ -146,28 +146,28 @@ d'environnement</var>
       <dt>Une adresse IP compl&egrave;te</dt>
 
       <dd>
-      <example><title>Exemple :</title>
-        Allow from 10.1.2.3<br />
-        Allow from 192.168.1.104 192.168.1.205
-      </example>
+      <highlight language="config">
+Allow from 10.1.2.3
+Allow from 192.168.1.104 192.168.1.205
+      </highlight>
       <p>L'adresse IP d'un h&ocirc;te auquel on a accord&eacute; l'acc&egrave;s</p></dd>
 
       <dt>Une adresse IP partielle</dt>
 
       <dd>
-      <example><title>Exemple :</title>
-        Allow from 10.1<br />
-        Allow from 10 172.20 192.168.2
-      </example>
+      <highlight language="config">
+Allow from 10.1
+Allow from 10 172.20 192.168.2
+      </highlight>
       <p>De un &agrave; trois des premiers octets d'une adresse IP, afin de
       restreindre l'acc&egrave;s &agrave; un sous-r&eacute;seau.</p></dd>
 
       <dt>Une paire r&eacute;seau/masque de sous-r&eacute;seau</dt>
 
       <dd>
-      <example><title>Exemple :</title>
+      <highlight language="config">
         Allow from 10.1.0.0/255.255.0.0
-      </example>
+      </highlight>
       <p>Un r&eacute;seau a.b.c.d, et un masque de sous-r&eacute;seau w.x.y.z, pour
       une d&eacute;finition plus pr&eacute;cise de la restriction d'acc&egrave;s impos&eacute;e &agrave; un
       sous-r&eacute;seau.</p></dd>
@@ -175,9 +175,9 @@ d'environnement</var>
       <dt>Une sp&eacute;cification CIDR r&eacute;seau/nnn</dt>
 
       <dd>
-      <example><title>Exemple :</title>
+      <highlight language="config">
         Allow from 10.1.0.0/16
-      </example>
+      </highlight>
       <p>Identique au cas pr&eacute;c&eacute;dent, mis &agrave; part que le masque est
       constitu&eacute; des nnn bits de poids fort.</p></dd>
     </dl>
@@ -188,10 +188,10 @@ d'environnement</var>
     <p>On peut sp&eacute;cifier des adresses et sous-r&eacute;seaux IPv6 de la mani&egrave;re
     suivante :</p>
 
-    <example>
-       Allow from 2001:db8::a00:20ff:fea7:ccea<br />
-       Allow from 2001:db8::a00:20ff:fea7:ccea/10
-    </example>
+    <highlight language="config">
+Allow from 2001:db8::a00:20ff:fea7:ccea
+Allow from 2001:db8::a00:20ff:fea7:ccea/10
+    </highlight>
 
     <p>Le troisi&egrave;me format d'argument de la directive
     <directive>Allow</directive> permet de contr&ocirc;ler l'acc&egrave;s au serveur
@@ -211,16 +211,14 @@ d'environnement</var>
     (type de navigateur) des clients, le <code>Referer</code>, ou
     d'autres champs d'en-t&ecirc;te de la requ&ecirc;te HTTP.</p>
 
-    <example><title>Exemple :</title>
-      SetEnvIf User-Agent ^KnockKnock/2\.0 laissez_moi_entrer<br />
-      &lt;Directory /docroot&gt;<br />
-      <indent>
-        Order Deny,Allow<br />
-        Deny from all<br />
-        Allow from env=laissez_moi_entrer<br />
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
+&lt;Directory /docroot&gt;
+    Order Deny,Allow
+    Deny from all
+    Allow from env=let_me_in
+&lt;/Directory&gt;
+    </highlight>
 
     <p>Dans cet exemple, les navigateurs dont la cha&icirc;ne user-agent
     commence par <code>KnockKnock/2.0</code> se verront accorder
@@ -361,11 +359,11 @@ les directives <directive>Allow</directive> et
     l'autorisation d'acc&egrave;s ; tous les autres voient leur acc&egrave;s
     refus&eacute;.</p>
 
-    <example>
-      Order Deny,Allow<br />
-      Deny from all<br />
-      Allow from example.org
-    </example>
+    <highlight language="config">
+Order Deny,Allow
+Deny from all
+Allow from example.org
+    </highlight>
 
     <p>Dans l'exemple suivant, tous les h&ocirc;tes du domaine example.org ont
     l'autorisation d'acc&egrave;s, sauf ceux du sous-domaine foo.example.org qui
@@ -375,11 +373,11 @@ les directives <directive>Allow</directive> et
     module="mod_access_compat">Deny</directive>, et consiste donc en un
     refus d'acc&egrave;s.</p>
 
-    <example>
-      Order Allow,Deny<br />
-      Allow from example.org<br />
-      Deny from foo.example.org
-    </example>
+    <highlight language="config">
+Order Allow,Deny
+Allow from example.org
+Deny from foo.example.org
+    </highlight>
 
     <p>Par contre, si la valeur de la directive
     <directive>Order</directive>, dans l'exemple pr&eacute;c&eacute;dent, est
@@ -401,13 +399,11 @@ les directives <directive>Allow</directive> et
     module="mod_access_compat">Deny</directive> associ&eacute;es, &agrave; cause de
     son influence sur le statut par d&eacute;faut. Par exemple,</p>
 
-    <example>
-      &lt;Directory /www&gt;<br />
-      <indent>
-        Order Allow,Deny<br />
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory /www&gt;
+    Order Allow,Deny
+&lt;/Directory&gt;
+    </highlight>
 
     <p>va interdire tout acc&egrave;s au r&eacute;pertoire <code>/www</code> &agrave; cause
     du statut d'acc&egrave;s par d&eacute;faut qui est d&eacute;fini &agrave; <directive
@@ -475,11 +471,11 @@ type="section">LimitExcept</directive> &agrave; partir de la version
     que l'acc&egrave;s &agrave; cette zone n&eacute;cessite un mot de passe pour les autres
     utilisateurs, vous pouvez utiliser une configuration du style :</p>
 
-    <example>
-      Require valid-user<br />
-      Allow from 192.168.1<br />
-      Satisfy Any
-    </example>
+    <highlight language="config">
+Require valid-user
+Allow from 192.168.1
+Satisfy Any
+    </highlight>
 
     <p>
     Une autre utilisation fr&eacute;quente de la directive
@@ -488,16 +484,16 @@ type="section">LimitExcept</directive> &agrave; partir de la version
     r&eacute;pertoire parent :
     </p>
 
-    <example>
-      &lt;Directory /var/www/private&gt;<br />
-        Require valid-user<br />
-      &lt;/Directory&gt;<br />
-      <br />
-      &lt;Directory /var/www/private/public&gt;<br />
-        Allow from all<br />
-        Satisfy Any<br />
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory /var/www/private&gt;
+    Require valid-user
+&lt;/Directory&gt;
+
+&lt;Directory /var/www/private/public&gt;
+    Allow from all
+    Satisfy Any
+&lt;/Directory&gt;
+    </highlight>
 
     <p>Dans l'exemple ci-dessus, l'acc&egrave;s au r&eacute;pertoire
     <code>/var/www/private</code> n&eacute;cessitera une authentification,
