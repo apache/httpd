@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1326758-->
+<!-- English Revision : 1330980-->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -81,7 +81,9 @@ client envoie une requ&ecirc;te pour un r&eacute;pertoire</description>
     listing du r&eacute;pertoire.</p>
 
     <example><title>Exemple</title>
+    <highlight language="config">
       DirectoryIndex index.html
+      </highlight>
     </example>
 
     <p>Avec cette configuration, une requ&ecirc;te pour l'URL
@@ -93,9 +95,9 @@ client envoie une requ&ecirc;te pour un r&eacute;pertoire</description>
     <p>Notez qu'il n'est pas n&eacute;cessaire que les documents soient
     relatifs au r&eacute;pertoire ;</p>
 
-    <example>
+    <highlight language="config">
       DirectoryIndex index.html index.txt  /cgi-bin/index.pl
-    </example>
+    </highlight>
 
     <p>provoquerait l'ex&eacute;cution du script CGI
     <code>/cgi-bin/index.pl</code> si aucun des fichiers
@@ -133,7 +135,9 @@ r&eacute;pertoires.
     client vers une ressource externe.</p>
 
     <example><title>Exemple</title>
+    <highlight language="config">
       DirectoryIndexRedirect on
+      </highlight>
     </example>
 
     <p>Une requ&ecirc;te pour <code>http://example.com/docs/</code> se
@@ -187,15 +191,13 @@ d'Apache</compatibility>
     Gardez cependant &agrave; l'esprit que ceci peut avoir des r&eacute;percutions en
     mati&egrave;re de s&eacute;curit&eacute;.</p>
 
-    <example>
-        # voir l'avertissement de s&eacute;curit&eacute; ci-dessous !<br />
-        &lt;Location /un/chemin&gt;<br />
-        <indent>
-            DirectorySlash Off<br />
-            SetHandler un-gestionnaire<br />
-        </indent>
-        &lt;/Location&gt;
-    </example>
+    <highlight language="config">
+# voir l'avertissement de s&eacute;curit&eacute; ci-dessous !
+&lt;Location /some/path&gt;
+    DirectorySlash Off
+    SetHandler some-handler
+&lt;/Location&gt;
+    </highlight>
 
     <note type="warning"><title>Avertissement de s&eacute;curit&eacute;</title>
     <p>La d&eacute;sactivation de la redirection "slash de fin" peut entra&icirc;ner
@@ -230,9 +232,9 @@ aucun fichier</description>
     et qui provoquerait sans cela l'envoi d'un code d'erreur HTTP 404
     (Not Found).
     Par exemple</p>
-    <example>
-        <code>FallbackResource /not-404.php</code>
-    </example>
+    <highlight language="config">
+        FallbackResource /not-404.php
+    </highlight>
     <p>fait en sorte que les requ&ecirc;tes ne correspondant &agrave; aucun fichier
     soient trait&eacute;es par <code>non-404.php</code>, sans affecter les
     requ&ecirc;tes pour des fichiers existants.</p>
@@ -246,23 +248,19 @@ aucun fichier</description>
     conditionnels <code>-f</code> et <code>-d</code> pour v&eacute;rifier
     l'existence des fichiers et r&eacute;pertoires. Maintenant, une seule ligne
     de configuration est n&eacute;cessaire.</p>
-    <example>
-        <code>FallbackResource /index.php</code>
-    </example>
+    <highlight language="config">
+        FallbackResource /index.php
+    </highlight>
     <p>Les fichiers existants comme des images, des fichiers css, etc...
     seront trait&eacute;s normalement.</p>
     <p>Pour un URI interm&eacute;diaire tel que
     <em>http://example.com/blog/</em>, cet URI interm&eacute;diaire doit &ecirc;tre
     sp&eacute;cifi&eacute; en tant que <var>url-locale</var> :</p>
-    <example>
-         <code>
-             &lt;Directory /web/example.com/htdocs/blog&gt;<br />
-	     <indent>
-		   FallbackResource /blog/index.php<br />
-             </indent>
-             &lt;/Directory&gt;
-         </code>
-    </example>
+    <highlight language="config">
+&lt;Directory /web/example.com/htdocs/blog&gt;
+    FallbackResource /blog/index.php
+&lt;/Directory&gt;
+    </highlight>
 </usage>
 </directivesynopsis>
 

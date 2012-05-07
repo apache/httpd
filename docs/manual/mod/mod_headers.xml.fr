@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1231446:1331006 (outdated) -->
+<!-- English Revision : 1331006 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -51,10 +51,10 @@ HTTP</description>
     ces deux directives ont un effet diff&eacute;rent si leur ordre est invers&eacute;
     :</p>
 
-    <example>
-      RequestHeader append MirrorID "mirror 12"<br />
-      RequestHeader unset MirrorID
-    </example>
+    <highlight language="config">
+RequestHeader append MirrorID "mirror 12"
+RequestHeader unset MirrorID
+    </highlight>
 
     <p>Dans cet ordre, l'en-t&ecirc;te <code>MirrorID</code> n'est pas d&eacute;fini.
     Si l'ordre des directives &eacute;tait invers&eacute;, l'en-t&ecirc;te
@@ -95,9 +95,9 @@ tardif</title>
         Copie tous les en-t&ecirc;tes de requ&ecirc;te qui commencent par "TS" vers
 	les en-t&ecirc;tes de la r&eacute;ponse :
 
-        <example>
+        <highlight language="config">
           Header echo ^TS
-        </example>
+        </highlight>
       </li>
 
       <li>
@@ -109,9 +109,9 @@ tardif</title>
 	isoler les goulets d'&eacute;tranglement entre le client et le
 	serveur.
 
-        <example>
+        <highlight language="config">
           Header set mon-en-t&ecirc;te "%D %t"
-        </example>
+        </highlight>
 
         <p>le r&eacute;sultat est l'ajout &agrave; la r&eacute;ponse d'un en-t&ecirc;te du type :</p>
 
@@ -130,10 +130,10 @@ tardif</title>
 
         <p>le r&eacute;sultat est l'ajout &agrave; la r&eacute;ponse d'un en-t&ecirc;te du type :</p>
 
-        <example>
-          mon-en-t&ecirc;te: Bonjour Joe. Il a fallu D=3775428 microsecondes &agrave; Apache
-          pour servir cette requ&ecirc;te.
-        </example>
+        <highlight language="config">
+	Header set MyHeader "Bonjour Joe. Il a fallu D=3775428 microsecondes &agrave; Apache
+          pour servir cette requ&ecirc;te."
+        </highlight>
       </li>
 
       <li>
@@ -144,10 +144,10 @@ tardif</title>
 	exemple n&eacute;cessite les services du module
 	<module>mod_setenvif</module>.
 
-        <example>
-          SetEnvIf mon-en-t&ecirc;te-requ&ecirc;te mavaleur HAVE_MyRequestHeader<br />
-          Header set mon-en-t&ecirc;te "%D %t montexte" env=HAVE_MyRequestHeader
-        </example>
+        <highlight language="config">
+SetEnvIf MyRequestHeader myvalue HAVE_MyRequestHeader
+Header set MyHeader "%D %t mytext" env=HAVE_MyRequestHeader
+        </highlight>
 
         <p>Si l'en-t&ecirc;te <code>mon-en-t&ecirc;te-requ&ecirc;te: mavaleur</code> est
 	pr&eacute;sent dans la requ&ecirc;te HTTP, la r&eacute;ponse contiendra un en-t&ecirc;te
@@ -164,9 +164,9 @@ tardif</title>
 	du probl&egrave;me</a>) en rempla&ccedil;ant <var>https:</var> par
 	<var>http:</var> dans l'en-t&ecirc;te <var>Destination</var> :
 
-        <example>
+        <highlight language="config">
           RequestHeader edit Destination ^https: http: early
-        </example>
+        </highlight>
       </li>
 
       <li>
@@ -178,11 +178,11 @@ tardif</title>
 	<code>NO_CACHE</code> et <code>NO_STORE</code> existent pour la
 	requ&ecirc;te) :
 
-        <example>
-          Header merge Cache-Control no-cache env=CGI<br />
-          Header merge Cache-Control no-cache env=NO_CACHE<br />
-          Header merge Cache-Control no-store env=NO_STORE
-        </example>
+        <highlight language="config">
+Header merge Cache-Control no-cache env=CGI
+Header merge Cache-Control no-cache env=NO_CACHE
+Header merge Cache-Control no-store env=NO_STORE
+        </highlight>
 
         <p>alors, la r&eacute;ponse contiendra l'en-t&ecirc;te suivant :</p>
 
@@ -201,9 +201,9 @@ tardif</title>
       <li>
         D&eacute;finit un cookie de test si et seulement si le client n'envoie
 	pas de cookie
-        <example>
+        <highlight language="config">
           Header set Set-Cookie testcookie "expr=-z %{req:Cookie}"
-        </example>
+        </highlight>
       </li>
     </ol>
 </section>
