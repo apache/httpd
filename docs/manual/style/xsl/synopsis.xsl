@@ -256,6 +256,13 @@
                         </xsl:for-each>
                         </ul>
                     </xsl:if>
+                    <xsl:if test="not($is-chm or $is-zip or $metafile/basename = 'index')">
+                    <ul class="seealso">
+                        <li><a href="#comments_section"><xsl:value-of
+                                select="$message[@id='comments']" /></a>
+                        </li>
+                    </ul>
+                    </xsl:if>
                 </div> <!-- /#quickview -->
             </xsl:if>&lf; <!-- have sidebar -->
 
