@@ -30,8 +30,6 @@
 <a href="../ko/mod/mod_status.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_status.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournit des informations sur les performances et l'activité
 du serveur</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -89,7 +87,7 @@ du serveur</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#machinereadable">Fichier d'état lisible par une machine</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#troubleshoot">Utilisation de server-status pour la recherche de défauts de
     fonctionnement</a></li>
-</ul></div>
+</ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="enable" id="enable">Activation du rapport d'état</a></h2>
@@ -98,15 +96,13 @@ du serveur</td></tr>
     <p>Pour n'activer les rapports d'état que pour les navigateurs
     appartenent au domaine example.com, ajoutez ces lignes à votre
     fichier de configuration <code>httpd.conf</code> :</p>
-<div class="example"><p><code>
-    &lt;Location /etat-serveur&gt;<br />
-    <span class="indent">
-    SetHandler server-status<br />
-<br />
-    Require host example.com<br />
-    </span>
-    &lt;/Location&gt;
-</code></p></div>
+<pre class="prettyprint lang-config">
+&lt;Location /server-status&gt;
+    SetHandler server-status
+    Require host example.com
+&lt;/Location&gt;
+</pre>
+
 
     <p>Il est alors possible d'obtenir les statistiques du serveur en
     utilisant un navigateur web et en accédant à la page
@@ -185,7 +181,22 @@ du serveur</td></tr>
 <a href="../ja/mod/mod_status.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_status.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_status.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div id="footer">
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>This section is experimental!</strong><br />Comments placed here should not be expected 
+to last beyond the testing phase of this system, nor do we in any way guarantee that we'll read them.</div><div id="disqus_thread" /><script type="text/javascript"><!--//--><![CDATA[//><!--
+var lang = 'fr';
+var disqus_shortname = 'httpd';
+var disqus_identifier = window.location.href.replace(/(current|trunk)/, "2.4").replace(/\/[a-z]{2}\//, "/").replace(window.location.protocol, "http:") + '.' + lang;
+if (disqus_identifier.indexOf("httpd.apache.org") != -1) {
+    (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = window.location.protocol + '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+} else {
+    var text = document.createTextNode("Comments have been disabled for offline viewing.");
+    document.getElementById('disqus_thread').appendChild(text);
+}
+//--><!]]></script></div><div id="footer">
 <p class="apache">Copyright 2012 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== undefined) {

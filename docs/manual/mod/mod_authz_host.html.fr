@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authz_host.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authz_host.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Autorisations de groupe basées sur l'hôte (nom ou adresse
 IP)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -64,7 +62,7 @@ d'Apache</td></tr></table>
 <li><a href="../howto/auth.html">Authentification, autorisation et
 contrôle d'accès</a></li>
 <li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li>
-</ul></div>
+</ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="requiredirectives" id="requiredirectives">Les directives Require</a></h2>
@@ -92,35 +90,39 @@ contrôle d'accès</a></li>
 
     <p>Une adresse IP complète :</p>
 
-    <div class="example"><p><code>
-      Require ip 10.1.2.3<br />
-      Require ip 192.168.1.104 192.168.1.205
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Require ip 10.1.2.3
+Require ip 192.168.1.104 192.168.1.205
+    </pre>
+
 
     <p>L'adresse IP d'un hôte pour qui l'accès est accordé</p>
 
     <p>Une adresse IP partielle :</p>
 
-    <div class="example"><p><code>
-      Require ip 10.1<br />
-      Require ip 10 172.20 192.168.2
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Require ip 10.1
+Require ip 10 172.20 192.168.2
+    </pre>
+
     <p>Les 1 à 3 premiers octets d'une adresse IP, pour une restriction
     à un sous-réseau.</p>
 
     <p>Une paire réseau/masque de sous-réseau :</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       Require ip 10.1.0.0/255.255.0.0
-    </code></p></div>
+    </pre>
+
     <p>Un réseau a.b.c.d, et un masque de sous-réseau w.x.y.z. pour une
     restriction de sous-réseau plus fine.</p>
 
     <p>Une spécification CIDR réseau/nnn :</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       Require ip 10.1.0.0/16
-    </code></p></div>
+    </pre>
+
     <p>Identique au cas précédent, excepté que le masque de sous-réseau
     représente les nnn premiers bits de poids fort.</p>
 
@@ -130,10 +132,11 @@ contrôle d'accès</a></li>
     <p>On peut spécifier des adresses et des sous-réseaux IPv6 comme
     suit :</p>
 
-    <div class="example"><p><code>
-     Require ip 2001:db8::a00:20ff:fea7:ccea<br />
-     Require ip 2001:db8::a00:20ff:fea7:ccea/10
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Require ip 2001:db8::a00:20ff:fea7:ccea
+Require ip 2001:db8::a00:20ff:fea7:ccea/10
+    </pre>
+
 
 
 
@@ -147,10 +150,11 @@ contrôle d'accès</a></li>
 
     <p>Un nom de domaine (éventuellement partiel)</p>
 
-    <div class="example"><p><code>
-    Require host example.org<br />
-    Require host .net example.edu
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Require host example.org
+Require host .net example.edu
+    </pre>
+
 
     <p>Les hôtes dont les noms correspondent ou se terminent par la
     chaîne spécifiée se voient accorder l'accès. Seuls les élément de
@@ -181,9 +185,10 @@ contrôle d'accès</a></li>
     <p>L'exemple suivant montre une méthode simple pour sélectionner les
     connexions en provenance de l'hôte local :</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
     Require local
-    </code></p></div>
+    </pre>
+
 
 
 </div>
@@ -191,7 +196,22 @@ contrôle d'accès</a></li>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authz_host.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authz_host.html" title="Français">&nbsp;fr&nbsp;</a></p>
-</div><div id="footer">
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>This section is experimental!</strong><br />Comments placed here should not be expected 
+to last beyond the testing phase of this system, nor do we in any way guarantee that we'll read them.</div><div id="disqus_thread" /><script type="text/javascript"><!--//--><![CDATA[//><!--
+var lang = 'fr';
+var disqus_shortname = 'httpd';
+var disqus_identifier = window.location.href.replace(/(current|trunk)/, "2.4").replace(/\/[a-z]{2}\//, "/").replace(window.location.protocol, "http:") + '.' + lang;
+if (disqus_identifier.indexOf("httpd.apache.org") != -1) {
+    (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = window.location.protocol + '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+} else {
+    var text = document.createTextNode("Comments have been disabled for offline viewing.");
+    document.getElementById('disqus_thread').appendChild(text);
+}
+//--><!]]></script></div><div id="footer">
 <p class="apache">Copyright 2012 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== undefined) {

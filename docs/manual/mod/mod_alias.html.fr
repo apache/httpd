@@ -30,8 +30,6 @@
 <a href="../ko/mod/mod_alias.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_alias.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet d'atteindre différentes parties du système de
 fichiers depuis l'arborescence des documents du site web, ainsi que la
 redirection d'URL</td></tr>
@@ -81,7 +79,7 @@ redirection d'URL</td></tr>
 <li><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></li>
 <li><a href="../urlmapping.html">Mise en correspondance des URLs avec le
 système de fichiers</a></li>
-</ul></div>
+</ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="order" id="order">Chronologie du traitement</a></h2>
@@ -105,10 +103,11 @@ système de fichiers</a></li>
     au moins précis afin que toutes les directives puissent
     éventuellement s'appliquer, comme dans l'exemple suivant :</p>
 
-    <div class="example"><p><code>
-    Alias /foo/bar /baz<br />
-    Alias /foo /gaq
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Alias /foo/bar /baz
+Alias /foo /gaq
+    </pre>
+
 
     <p>Si l'ordre des directives était inversé, la directive <code class="directive"><a href="#alias">Alias</a></code> ayant pour argument
     <code>/foo</code> serait toujours appliquée avant la directive
@@ -138,9 +137,10 @@ de fichiers</td></tr>
     est sensible à la casse, même sur les systèmes de fichiers
     insensibles à la casse.</p>
 
-    <div class="example"><h3>Exemple :</h3><p><code>
+    <pre class="prettyprint lang-config">
       Alias /image /ftp/pub/image
-    </code></p></div>
+    </pre>
+
 
     <p>Une requête pour <code>http://example.com/image/foo.gif</code> fera
     renvoyer par le serveur le fichier
@@ -176,14 +176,13 @@ de fichiers</td></tr>
     <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>, vous devrez
     probablement permettre explicitement l'accès à ce répertoire.</p>
 
-    <div class="example"><h3>Exemple :</h3><p><code>
-        Alias /image /ftp/pub/image<br />
-        &lt;Directory /ftp/pub/image&gt;<br />
-        <span class="indent">
-            Require all granted<br />
-        </span>
-        &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Alias /image /ftp/pub/image
+&lt;Directory /ftp/pub/image&gt;
+    Require all granted
+&lt;/Directory&gt;
+    </pre>
+
 
 
 </div>
@@ -207,18 +206,20 @@ en faisant intervenir les expressions rationnelles</td></tr>
     Par exemple, pour activer le répertoire <code>/icons</code>, on peut
     utiliser :</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       AliasMatch ^/icons(.*) /usr/local/apache/icons$1
-    </code></p></div>
+    </pre>
+
 
     <p>Toute la puissance des <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expressions
     rationnelles</a> peut être mise à contribution. Par exemple,
     il est possible de construire un alias avec un modèle de chemin URL
     insensible à la casse :</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       AliasMatch (?i)^/image(.*) /ftp/pub/image$1
-    </code></p></div>
+    </pre>
+
 
     <p>Il existe une différence subtile entre <code class="directive"><a href="#alias">Alias</a></code> et <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> : <code class="directive"><a href="#alias">Alias</a></code> copie automatiquement toute
     portion supplémentaire de l'URI située après la partie du modèle qui
@@ -237,34 +238,38 @@ en faisant intervenir les expressions rationnelles</td></tr>
     <p>Par exemple, supposons que nous voulions reformuler cet alias
     avec AliasMatch :</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       Alias /image/ /ftp/pub/image/
-    </code></p></div>
+    </pre>
+
 
     <p>Le simple remplacement d'Alias par AliasMatch ne produira pas le
     même résultat. Ainsi, ce qui suit va rediriger toutes les requêtes
     qui contiennent /image/ vers /ftp/pub/image/ :</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       AliasMatch /image/ /ftp/pub/image/
-    </code></p></div>
+    </pre>
+
 
     <p>Voici la directive AliasMatch qui produira le même résultat que
     la directive Alias ci-dessus :</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       AliasMatch ^/image/(.*)$ /ftp/pub/image/$1
-    </code></p></div>
+    </pre>
+
 
     <p>Bien entendu, il n'y a aucune raison d'utiliser <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> dans le cas où <code class="directive"><a href="#alias">Alias</a></code> suffit. <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> vous permet d'effectuer
     des choses beaucoup plus sophistiquées. Par exemple, vous pouvez
     servir différentes sortes de fichiers à partir de répertoires
     différents :</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       AliasMatch ^/image/(.*)\.jpg$ /fichiers/jpg.images/$1.jpg<br />
       AliasMatch ^/image/(.*)\.gif$ /fichiers/gif.images/$1.gif
-    </code></p></div>
+    </pre>
+
 
 
 </div>
@@ -299,13 +304,14 @@ d'effectuer une autre requête avec une URL différente</td></tr>
     élément de chemin supplémentaire situé en aval du <em>chemin
     URL</em> sera ajouté à l'URL cible.</p>
 
-    <div class="example"><h3>Exemple :</h3><p><code>
-      # Redirige vers une URL sur un serveur différent<br />
-      Redirect /service http://foo2.example.com/service<br />
-      <br />
-      # Redirige vers une URL sur le même serveur<br />
-      Redirect /one /two
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+# Redirige vers une URL sur un serveur différent
+Redirect /service http://foo2.example.com/service
+
+# Redirige vers une URL sur le même serveur
+Redirect /one /two
+    </pre>
+
 
     <p>Si le client effectue une requête pour l'URL
     <code>http://example.com/service/foo.txt</code>, il lui sera demandé
@@ -368,10 +374,11 @@ d'effectuer une autre requête avec une URL différente</td></tr>
     fonction <code>send_error_response</code> dans
     http_protocol.c).</p>
 
-    <div class="example"><h3>Exemple :</h3><p><code>
-      Redirect permanent /un http://example.com/deux<br />
-      Redirect 303 /trois http://example.com/autre
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Redirect permanent /one http://example.com/two
+Redirect 303 /three http://example.com/other
+    </pre>
+
 
 
 </div>
@@ -398,9 +405,10 @@ courante</td></tr>
     les fichiers GIF vers les fichiers JPEG de même nom sur un autre
     serveur, on peut utiliser :</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       RedirectMatch (.*)\.gif$ http://autre.example.com$1.jpg
-    </code></p></div>
+    </pre>
+
 
     <p>Les remarques à propos de la différence entre <code class="directive"><a href="#alias">Alias</a></code> et <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> s'appliquent aussi à la
     différence entre les directives <code class="directive"><a href="#redirect">Redirect</a></code> et <code class="directive"><a href="#redirectmatch">RedirectMatch</a></code>. Voir la directive
@@ -464,30 +472,31 @@ et désigne la cible comme script CGI</td></tr>
     second argument, qui est un chemin complet dans le système de
     fichiers local.</p>
 
-    <div class="example"><h3>Exemple :</h3><p><code>
+    <pre class="prettyprint lang-config">
       ScriptAlias /cgi-bin/ /web/cgi-bin/
-    </code></p></div>
+    </pre>
+
 
     <p>Une requête pour <code>http://example.com/cgi-bin/foo</code>
     ferait exécuter par le serveur le script
     <code>/web/cgi-bin/foo</code>. Cette configuration est sensiblement
     équivalente à :</p>
-    <div class="example"><p><code>
-      Alias /cgi-bin/ /web/cgi-bin/<br />
-      &lt;Location /cgi-bin &gt;<br />
-      <span class="indent">
-      SetHandler cgi-script<br />
-      Options +ExecCGI<br />
-      </span>
-      &lt;/Location&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Alias /cgi-bin/ /web/cgi-bin/
+&lt;Location /cgi-bin &gt;
+    SetHandler cgi-script
+    Options +ExecCGI
+&lt;/Location&gt;
+    </pre>
+
 
 	<p>Vous pouvez aussi utiliser <code class="directive">ScriptAlias</code>
 	avec un script ou gestionnaire de votre cru. Par exemple :</p>
 
-	<div class="example"><p><code>
+	<pre class="prettyprint lang-config">
 	  ScriptAlias /cgi-bin/ /web/cgi-handler.pl
-    </code></p></div>
+    </pre>
+
 
     <p>Dans ce scénario, tous les fichiers faisant l'objet d'une requête
     dans <code>/cgi-bin/</code> seront traités par le fichier que vous
@@ -504,14 +513,13 @@ et désigne la cible comme script CGI</td></tr>
     Si vous choisissez de placer vos scripts CGI dans un répertoire
     accessible depuis le web, n'utilisez pas
     <code class="directive">ScriptAlias</code>. Utilisez plutôt <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code>, et <code class="directive"><a href="../mod/core.html#options">Options</a></code> comme dans l'exemple suivant :
-    <div class="example"><p><code>
-      &lt;Directory /usr/local/apache2/htdocs/cgi-bin &gt;<br />
-      <span class="indent">
-      SetHandler cgi-script<br />
-      Options ExecCGI<br />
-      </span>
-      &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Directory /usr/local/apache2/htdocs/cgi-bin &gt;
+    SetHandler cgi-script
+    Options ExecCGI
+&lt;/Directory&gt;
+    </pre>
+
     Ceci est nécessaire car plusieurs <var>chemins URL</var> peuvent
     correspondre à la même zone du système de fichiers, court-circuitant
     ainsi la directive <code class="directive">ScriptAlias</code> et révélant le
@@ -545,17 +553,19 @@ comme un script CGI</td></tr>
     comme nom de fichier. Par exemple, pour activer le répertoire
     standard <code>/cgi-bin</code>, on peut utiliser :</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       ScriptAliasMatch ^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
-    </code></p></div>
+    </pre>
+
 
     <p>Comme dans le cas d'AliasMatch, toute la puissance des <a class="glossarylink" href="../glossary.html#rexex" title="voir glossaire">expressions rationnelles</a> peut être mise à
     contribution. Par exemple, il est possible de construire un alias
     avec une comparaison du modèle du chemin URL insensible à la casse :</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       ScriptAliasMatch (?i)^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
-    </code></p></div>
+    </pre>
+
 
     <p>Les remarques à propos de la différence entre <code class="directive"><a href="#alias">Alias</a></code> et <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> s'appliquent aussi à la
     différence entre les directives <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> et <code class="directive"><a href="#scriptaliasmatch">ScriptAliasMatch</a></code>. Voir la directive
@@ -571,7 +581,22 @@ comme un script CGI</td></tr>
 <a href="../ja/mod/mod_alias.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_alias.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_alias.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div id="footer">
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>This section is experimental!</strong><br />Comments placed here should not be expected 
+to last beyond the testing phase of this system, nor do we in any way guarantee that we'll read them.</div><div id="disqus_thread" /><script type="text/javascript"><!--//--><![CDATA[//><!--
+var lang = 'fr';
+var disqus_shortname = 'httpd';
+var disqus_identifier = window.location.href.replace(/(current|trunk)/, "2.4").replace(/\/[a-z]{2}\//, "/").replace(window.location.protocol, "http:") + '.' + lang;
+if (disqus_identifier.indexOf("httpd.apache.org") != -1) {
+    (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = window.location.protocol + '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+} else {
+    var text = document.createTextNode("Comments have been disabled for offline viewing.");
+    document.getElementById('disqus_thread').appendChild(text);
+}
+//--><!]]></script></div><div id="footer">
 <p class="apache">Copyright 2012 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== undefined) {
