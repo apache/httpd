@@ -647,7 +647,7 @@ file, as well as in a &lt;Directory&gt; block.</p>
 to last beyond the testing phase of this system, nor do we in any way guarantee that we'll read them.</div><div id="disqus_thread" /><script type="text/javascript"><!--//--><![CDATA[//><!--
 var lang = 'en';
 var disqus_shortname = 'httpd';
-var disqus_identifier = window.location.href.replace(/(current|trunk)/, "2.4").replace(/\/[a-z]{2}\//, "/") + '.' + lang;
+var disqus_identifier = window.location.href.replace(/(current|trunk)/, "2.4").replace(/\/[a-z]{2}\//, "/").replace(window.location.protocol, "http:") + '.' + lang;
 if (disqus_identifier.indexOf("httpd.apache.org") != -1) {
     (function() {
                 var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
