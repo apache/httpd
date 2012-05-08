@@ -293,8 +293,8 @@
 <div class="section">
 <h2><a name="comments_section" id="comments_section"><xsl:value-of select="$message[@id='comments']" /></a></h2>
 <div class="warning"><strong>This section is experimental!</strong><br/>Comments placed here should not be expected 
-to last beyond the testing phase of this system, nor do we in any way guarantee that we'll read them.</div>
-<div id="disqus_thread"></div>
+to last beyond the testing phase of this system, nor do we in any way guarantee that we'll read them.</div>&lf;
+<div id="disqus_thread">&lf;</div>
 <script type="text/javascript">
 <xsl:text disable-output-escaping="yes"><![CDATA[<!--//--><![CDATA[//><!--]]></xsl:text>
 var lang = '<xsl:value-of select="$doclang"/>';<![CDATA[
