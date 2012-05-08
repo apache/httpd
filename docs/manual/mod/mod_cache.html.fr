@@ -29,8 +29,6 @@
 <a href="../ja/mod/mod_cache.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Filtre de mise en cache HTTP conforme à la RFC 2616</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>cache_module</td></tr>
@@ -180,30 +178,26 @@ cache</a></li>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="sampleconf" id="sampleconf">Exemple de configuration</a></h2>
-    <div class="example"><h3>Extrait de httpd.conf</h3><p><code>
-      #<br />
-      # Exemple de configuration du cache<br />
-      #<br />
-      LoadModule cache_module modules/mod_cache.so<br />
-      <br />
-      &lt;IfModule mod_cache.c&gt;<br />
-      <span class="indent">
-        LoadModule disk_cache_module modules/mod_cache_disk.so<br />
-        &lt;IfModule mod_cache_disk.c&gt;<br />
-        <span class="indent">
-          CacheRoot c:/cacheroot<br />
-          CacheEnable disk  /<br />
-          CacheDirLevels 5<br />
-          CacheDirLength 3<br />
-        </span>
-        &lt;/IfModule&gt; <br />
-        <br />
-        # Lorsqu'on sert de mandataire, on ne met pas en cache la liste
-	# des mises à jour de sécurité<br />
-        CacheDisable http://security.update.server/update-list/<br />
-      </span>
-      &lt;/IfModule&gt;
-    </code></p></div>
+    <div class="example"><h3>Extrait de httpd.conf</h3><pre class="prettyprint lang-config">
+#
+# Exemple de configuration du cache
+#
+LoadModule cache_module modules/mod_cache.so
+&lt;IfModule mod_cache.c&gt;
+    LoadModule cache_disk_module modules/mod_cache_disk.so
+    &lt;IfModule mod_cache_disk.c&gt;
+        CacheRoot c:/cacheroot
+        CacheEnable disk  /
+        CacheDirLevels 5
+        CacheDirLength 3
+    &lt;/IfModule&gt;
+    
+    # Lorsqu'on sert de mandataire, on ne met pas en cache la liste
+# des mises à jour de sécurité
+    CacheDisable http://security.update.server/update-list/
+&lt;/IfModule&gt;
+      </pre>
+</div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="thunderingherd" id="thunderingherd">Eviter une tempête de requête</a></h2>
@@ -267,18 +261,17 @@ cache</a></li>
   
   <h3>Exemple de configuration</h3>
     
-    <div class="example"><h3>Activation du verrouillage du cache</h3><p><code>
-      #<br />
-      # Active le verrouillage du cache<br />
-      #<br />
-      &lt;IfModule mod_cache.c&gt;<br />
-      <span class="indent">
-        CacheLock on<br />
-        CacheLockPath /tmp/mod_cache-lock<br />
-        CacheLockMaxAge 5<br />
-      </span>
-      &lt;/IfModule&gt;
-    </code></p></div>
+    <div class="example"><h3>Activation du verrouillage du cache</h3><pre class="prettyprint lang-config">
+#
+# Active le verrouillage du cache
+#
+&lt;IfModule mod_cache.c&gt;
+    CacheLock on
+    CacheLockPath /tmp/mod_cache-lock
+    CacheLockMaxAge 5
+&lt;/IfModule&gt;
+      </pre>
+</div>
   
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -316,11 +309,12 @@ cache</a></li>
   avant le filtre <strong>DEFLATE</strong> comme dans l'exemple suivant
   :</p>
 
-  <div class="example"><p><code>
-    # Mise en cache du contenu avant la compression optionnelle<br />
-    CacheQuickHandler off<br />
-    AddOutputFilterByType CACHE;DEFLATE text/plain<br /><br />
-  </code></p></div>
+  <pre class="prettyprint lang-config">
+# Mise en cache du contenu avant la compression optionnelle
+CacheQuickHandler off
+AddOutputFilterByType CACHE;DEFLATE text/plain
+  </pre>
+
 
   <p>Une autre possibilité consiste à mettre en cache le contenu avant
   l'ajout de contenu personnalisé via <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> (ou
@@ -329,24 +323,26 @@ cache</a></li>
   <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> sont mis en cache avant d'être
   interprétés :</p>
 
-  <div class="example"><p><code>
-    # Mise en cache du contenu avant l'intervention de mod_include et
-    # mod_deflate<br />
-    CacheQuickHandler off<br />
-    AddOutputFilterByType CACHE;INCLUDES;DEFLATE text/html<br /><br />
-  </code></p></div>
+  <pre class="prettyprint lang-config">
+# Mise en cache du contenu avant l'intervention de mod_include et
+   # mod_deflate
+CacheQuickHandler off
+AddOutputFilterByType CACHE;INCLUDES;DEFLATE text/html
+  </pre>
+
 
   <p>Vous pouvez insérer le filtre <strong>CACHE</strong> en tout point
   de la chaîne de filtrage. Dans l'exemple suivant, le contenu est mis
   en cache après avoir été interprété par <code class="module"><a href="../mod/mod_include.html">mod_include</a></code>,
   mais avant d'être traité par <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> :</p>
 
-  <div class="example"><p><code>
-    # Mise en cache du contenu entre les interventions de mod_include et
-    # mod_deflate<br />
-    CacheQuickHandler off<br />
-    AddOutputFilterByType INCLUDES;CACHE;DEFLATE text/html<br /><br />
-  </code></p></div>
+  <pre class="prettyprint lang-config">
+# Mise en cache du contenu entre les interventions de mod_include et
+   # mod_deflate
+CacheQuickHandler off
+AddOutputFilterByType INCLUDES;CACHE;DEFLATE text/html
+  </pre>
+
 
   <div class="warning"><h3>Avertissement :</h3>Si pour une raison
   ou pour une autre, le point d'insertion du filtre
@@ -364,9 +360,10 @@ cache</a></li>
   interne à la requête sous la clé <strong>cache-status</strong>.
   Cette information peut être journalisée via la directive <code class="directive"><a href="../mod/mod_log_config.html#logformat">LogFormat</a></code> comme suit :</p>
 
-  <div class="example"><p><code>
+  <pre class="prettyprint lang-config">
     LogFormat "%{cache-status}e ..."
-  </code></p></div>
+  </pre>
+
 
   <p>En fonction de la décision prise, l'information est aussi écrite
   dans l'environnement du sous-processus sous une des quatre clés
@@ -386,12 +383,13 @@ cache</a></li>
   du traitement des requêtes par rapport au cache comme dans l'exemple
   suivant :</p>
 
-  <div class="example"><p><code>
-    CustomLog requetes-depuis-cache.log common env=cache-hit<br />
-    CustomLog requetes-hors-cache.log common env=cache-miss<br />
-    CustomLog requetes-avec-mise-a-jour-du-cache.log common env=cache-revalidate<br />
-    CustomLog requetes-avec-invalidation.log common env=cache-invalidate<br />
-  </code></p></div>
+  <pre class="prettyprint lang-config">
+CustomLog cached-requests.log common env=cache-hit
+CustomLog uncached-requests.log common env=cache-miss
+CustomLog revalidated-requests.log common env=cache-revalidate
+CustomLog invalidated-requests.log common env=cache-invalidate
+  </pre>
+
 
   <p>Pour les concepteurs de modules, une accroche (hook) nommée
   <var>cache_status</var> est disponible et permet aux modules de
@@ -418,9 +416,10 @@ lorsqu'aucune date d'expiration n'a été spécifiée.</td></tr>
     <code class="directive">CacheMaxExpire</code> si cette dernière est
     utilisée.</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       CacheDefaultExpire 86400
-    </code></p></div>
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -451,10 +450,11 @@ lorsqu'aucune date d'expiration n'a été spécifiée.</td></tr>
   rapide qui est utilisé, elle doit se situer dans un contexte de
   serveur principal ou de serveur virtuel, sinon elle sera ignorée.</p>
 
-  <div class="example"><p><code>
-    # Active l'en-tête X-Cache-Detail<br />
-    CacheDetailHeader on<br />
-  </code></p></div>
+  <pre class="prettyprint lang-config">
+# Active l'en-tête X-Cache-Detail
+CacheDetailHeader on
+  </pre>
+
 
   <div class="example"><p><code>
     X-Cache-Detail: "conditional cache hit: entity refreshed" from localhost<br />
@@ -477,22 +477,22 @@ spécifiées</td></tr>
     spécifiée par <var>chaîne URL</var>, ainsi que les URLs de niveaux
     inférieurs.</p>
 
-    <div class="example"><h3>Exemple</h3><p><code>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
       CacheDisable /fichiers_locaux
-    </code></p></div>
+      </pre>
+</div>
 
     <p>Si la directive se trouve à l'intérieur d'une section <code class="directive">&lt;Location&gt;</code>, le chemin doit être spécifié en
     dessous de la Location, et si le mot "on" est utilisé, la mise en
     cache sera désactivée pour l'ensemble de l'arborescence concernée
     par la section Location.</p>
 
-    <div class="example"><h3>Exemple</h3><p><code>
-      &lt;Location /foo&gt;<br />
-      <span class="indent">
-        CacheDisable on<br />
-      </span>
-      &lt;/Location&gt;<br />
-    </code></p></div>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
+&lt;Location /foo&gt;
+    CacheDisable on
+&lt;/Location&gt;
+      </pre>
+</div>
 
     <p>Avec les versions 2.2.12 et ultérieures, on peut définir la
     variable d'environnement <code>no-cache</code> pour une définition
@@ -548,26 +548,27 @@ URL</var>]</code></td></tr>
     et des protocoles de mandat pour lesquels la mise en cache devra
     être activée.</p>
 
-    <div class="example"><p><code>
-      # Mise en cache de contenu<br />
-      &lt;Location /foo&gt;<br />
-      <span class="indent">
-        CacheEnable disk<br />
-      </span>
-      &lt;/Location&gt;<br /><br />
-      # Mise en cache via une expression rationnelle<br />
-      &lt;LocationMatch foo$&gt;<br />
-      <span class="indent">
-        CacheEnable disk<br />
-      </span>
-      &lt;/LocationMatch&gt;<br /><br />
-      # Mise en cache des URLs mandatées<br />
-      CacheEnable  disk  /<br /><br />
-      # Mise en cache des URLs FTP mandatées<br />
-      CacheEnable  disk  ftp://<br /><br />
-      # Mise en cache des contenus situés dans www.example.org<br />
-      CacheEnable  disk  http://www.example.org/<br />
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+# Mise en cache de contenu
+&lt;Location /foo&gt;
+    CacheEnable disk
+&lt;/Location&gt;
+
+# Mise en cache via une expression rationnelle
+&lt;LocationMatch foo$&gt;
+    CacheEnable disk
+&lt;/LocationMatch&gt;
+
+# Mise en cache des URLs mandatées
+CacheEnable  disk  /
+
+# Mise en cache des URLs FTP mandatées
+CacheEnable  disk  ftp://
+
+# Mise en cache des contenus situés dans www.example.org
+CacheEnable  disk  http://www.example.org/
+    </pre>
+
 
     <p>Un nom d'hôte commençant par un caractère <strong>"*"</strong>
     correspondra à tout nom d'hôte se terminant par le suffixe
@@ -575,12 +576,13 @@ URL</var>]</code></td></tr>
     <strong>"."</strong> correspondra à tout nom d'hôte contenant le
     composant de nom de domaine qui suit ce caractère.</p>
 
-    <div class="example"><p><code>
-      # Correspond à www.example.org et fooexample.org<br />
-      CacheEnable  disk  http://*example.org/<br />
-      # Correspond à www.example.org, mais pas à fooexample.org<br />
-      CacheEnable  disk  http://.example.org/<br />
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+# Correspond à www.example.org et fooexample.org
+CacheEnable  disk  http://*example.org/
+# Correspond à www.example.org, mais pas à fooexample.org
+CacheEnable  disk  http://.example.org/
+    </pre>
+
 
     <p>Depuis la version 2.2.12, on peut définir la variable
     d'environnement <code>no-cache</code> pour une définition plus fine
@@ -621,14 +623,17 @@ Apache</a></li>
     depuis le cache, mais directement depuis le serveur demandé.</dd>
   </dl>
 
-  <div class="example"><p><code>
-    # Active l'en-tête X-Cache<br />
-    CacheHeader on<br />
-  </code></p></div>
+  <pre class="prettyprint lang-config">
+# Active l'en-tête X-Cache
+CacheHeader on
+  </pre>
 
-  <div class="example"><p><code>
-    X-Cache: HIT from localhost<br />
-  </code></p></div>
+
+  <pre class="prettyprint lang-config">
+    X-Cache: HIT from localhost
+  </pre>
+
+  
 
 
 </div>
@@ -653,9 +658,10 @@ le contenu au client depuis le cache</td></tr>
     Les ressources qui requièrent une autorisation ne seront
     <em>jamais</em> mises en cache.</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       CacheIgnoreCacheControl On
-    </code></p></div>
+    </pre>
+
 
     <div class="warning"><h3>Avertissement :</h3>
        Cette directive permet de servir des ressources depuis le cache,
@@ -710,13 +716,15 @@ le contenu au client depuis le cache</td></tr>
     <code class="directive">CacheIgnoreHeaders</code> peut être définie à
     <code>None</code>.</p>
 
-    <div class="example"><h3>Exemple 1</h3><p><code>
+    <div class="example"><h3>Exemple 1</h3><pre class="prettyprint lang-config">
       CacheIgnoreHeaders Set-Cookie
-    </code></p></div>
+      </pre>
+</div>
 
-    <div class="example"><h3>Exemple 2</h3><p><code>
+    <div class="example"><h3>Exemple 2</h3><pre class="prettyprint lang-config">
       CacheIgnoreHeaders None
-    </code></p></div>
+      </pre>
+</div>
 
     <div class="warning"><h3>Avertissement :</h3>
       Si des en-têtes nécessaires à la bonne gestion du cache, comme
@@ -751,9 +759,10 @@ Modified.</td></tr>
     d'expiration.
     </p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       CacheIgnoreNoLastMod On
-    </code></p></div>
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -779,9 +788,10 @@ cache</td></tr>
     traitée comme si elle ne possèdait pas de chaîne de paramètres
     lorsque cette directive est activée.</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       CacheIgnoreQueryString On
-    </code></p></div>
+    </pre>
+
 
 
 </div>
@@ -817,13 +827,15 @@ l'URL lors de la mise en cache
     des identifiants ignorés. Autrement, chaque identifiant spécifié est
     ajouté à la liste.</p>
 
-    <div class="example"><h3>Exemple 1</h3><p><code>
+    <div class="example"><h3>Exemple 1</h3><pre class="prettyprint lang-config">
       CacheIgnoreURLSessionIdentifiers jsessionid
-    </code></p></div>
+      </pre>
+</div>
 
-    <div class="example"><h3>Exemple 2</h3><p><code>
+    <div class="example"><h3>Exemple 2</h3><pre class="prettyprint lang-config">
       CacheIgnoreURLSessionIdentifiers None
-    </code></p></div>
+      </pre>
+</div>
 
 
 </div>
@@ -847,10 +859,11 @@ inverse</td></tr>
   machines, si toutes les entrées du cache doivent posséder la même clé,
   cette directive permet de spécifier une nouvelle URL de base.</p>
 
-  <div class="example"><p><code>
-    # Remplace l'URL de base de la clé de cache.<br />
-    CacheKeyBaseURL http://www.example.com/<br />
-  </code></p></div>
+  <pre class="prettyprint lang-config">
+# Remplace l'URL de base de la clé de cache.
+CacheKeyBaseURL http://www.example.com/
+  </pre>
+
 
   <div class="warning">Prenez garde en définissant cette directive. Si
   deux serveurs virtuels distincts possèdent accidentellement la même
@@ -891,9 +904,10 @@ fonction de la date de dernière modification.</td></tr>
     directive <code class="directive">CacheMaxExpire</code>, c'est ce dernier
     qui l'emporte.</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       CacheLastModifiedFactor 0.5
-    </code></p></div>
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -914,10 +928,11 @@ fonction de la date de dernière modification.</td></tr>
   tempêtes de requêtes dans le répertoire temp par défaut du système est
   la suivante :</p>
 
-  <div class="example"><p><code>
-    # Active le verrouillage du cache<br />
-    CacheLock on<br /><br />
-  </code></p></div>
+  <pre class="prettyprint lang-config">
+# Active le verrouillage du cache
+CacheLock on
+  </pre>
+
 
 
 </div>
@@ -979,9 +994,11 @@ document</td></tr>
     sera pas à jour. L'utilisation de cette valeur maximale est forcée,
     même si le document possède une date d'expiration.</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       CacheMaxExpire 604800
-    </code></p></div>
+      </pre>
+
+    
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1002,9 +1019,10 @@ document</td></tr>
     que dans le cas où le document ne possède aucune date d'expiration
     valide.</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       CacheMinExpire 3600
-    </code></p></div>
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1036,22 +1054,24 @@ document</td></tr>
     traitement complet de la requête est nécessaire, comme par exemple
     lorsque le contenu est soumis à autorisation.</p>
 
-    <div class="example"><p><code>
-      # Exécute le cache comme un gestionnaire normal<br />
-      CacheQuickHandler off<br /><br />
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+# Exécute le cache comme un gestionnaire normal
+CacheQuickHandler off
+    </pre>
+
 
     <p>Lorsque le gestionnaire rapide est désactivé, l'administrateur a
     aussi la possibilité de choisir avec précision le point de la chaîne
     de filtrage où la mise en cache sera effectuée, en utilisant le
     filtre <strong>CACHE</strong>.</p>
 
-    <div class="example"><p><code>
-      # Mise en cache du contenu avant l'intervention de mod_include et
-      # mod_deflate<br />
-      CacheQuickHandler off<br />
-      AddOutputFilterByType CACHE;INCLUDES;DEFLATE text/html<br /><br />
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+# Mise en cache du contenu avant l'intervention de mod_include et
+     # mod_deflate
+CacheQuickHandler off
+AddOutputFilterByType CACHE;INCLUDES;DEFLATE text/html
+    </pre>
+
 
     <p>Si le filtre CACHE est spécifié plusieurs fois, c'est la dernière
     instance qui sera prise en compte.</p>
@@ -1078,10 +1098,11 @@ document</td></tr>
   réponse 5xx renvoyée au client n'invalidera pas le contenu dans le
   cache.  </p>
 
-  <div class="example"><p><code>
-    # Sert des données non mises à jour en cas d'erreur.<br />
-    CacheStaleOnError on<br />
-  </code></p></div>
+  <pre class="prettyprint lang-config">
+# Sert des données non mises à jour en cas d'erreur.
+CacheStaleOnError on
+  </pre>
+
 
 
 </div>
@@ -1105,9 +1126,11 @@ considère comme arrivées à expiration</td></tr>
     de la part du serveur d'origine, et la réponse sera renvoyée à
     partir du cache si la ressource d'arrière-plan n'a pas été modifiée.</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       CacheStoreExpired On
-    </code></p></div>
+      </pre>
+
+    
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1131,9 +1154,12 @@ l'entête Cache-Control: a pour valeur no-store.</td></tr>
     nécessitant une autorisation ne sont <em>jamais</em> mises en
     cache.</p>
 
-    <div class="example"><p><code>
+    
+    <pre class="prettyprint lang-config">
       CacheStoreNoStore On
-    </code></p></div>
+      </pre>
+
+    
 
     <div class="warning"><h3>Avertissement :</h3>
        Selon la RFC 2616, la valeur d'en-tête no-store est censée
@@ -1172,9 +1198,12 @@ marquées comme privées</td></tr>
     nécessitant une autorisation ne sont <em>jamais</em> mises en
     cache.</p>
 
-    <div class="example"><p><code>
+    
+    <pre class="prettyprint lang-config">
       CacheStorePrivate On
-    </code></p></div>
+      </pre>
+
+    
 
     <div class="warning"><h3>Avertissement :</h3>
        Cette directive autorise la mise en cache même si le serveur
@@ -1197,19 +1226,20 @@ marquées comme privées</td></tr>
 <a href="../ko/mod/mod_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>This section is experimental!</strong><br />Comments placed here should not be expected 
 to last beyond the testing phase of this system, nor do we in any way guarantee that we'll read them.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
+<div id="disqus_thread">
+</div><script type="text/javascript"><!--//--><![CDATA[//><!--
 var lang = 'fr';
 var disqus_shortname = 'httpd';
 var disqus_identifier = window.location.href.replace(/(current|trunk)/, "2.4").replace(/\/[a-z]{2}\//, "/").replace(window.location.protocol, "http:") + '.' + lang;
-if (disqus_identifier.indexOf("httpd.apache.org") == -1) {
-    document.write('<div id="disqus_thread">\n</div>');
+if (disqus_identifier.indexOf("httpd.apache.org") != -1) {
     (function() {
                 var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
                 dsq.src = window.location.protocol + '//' + disqus_shortname + '.disqus.com/embed.js';
             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
         })();
 } else {
-    document.write("Comments have been disabled for offline viewing.");
+    var text = document.createTextNode("Comments have been disabled for offline viewing.");
+    document.getElementById('disqus_thread').appendChild(text);
 }
 //--><!]]></script></div><div id="footer">
 <p class="apache">Copyright 2012 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>

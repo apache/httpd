@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_rewrite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_rewrite.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ce module fournit un moteur de réécriture à base de
 règles permettant de réécrire les URLs des requêtes
 à la volée</td></tr>
@@ -95,9 +93,10 @@ règles permettant de réécrire les URLs des requêtes
       supérieur à <code>trace2</code> qu'à des fins de débogage !
     </div>
 
-    <div class="example"><h3>Exemple</h3><p><code>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
       LogLevel alert rewrite:trace3
-    </code></p></div>
+      </pre>
+</div>
 
     <div class="note"><h3>RewriteLog</h3>
       <p>Ceux qui sont familiers avec les versions précédentes de
@@ -156,15 +155,16 @@ ressource n'était pas relative à la racine des documents. Cette erreur
 de configuration aurait conduit le serveur à rechercher un répertoire
 "opt" à la racine des documents.</p>
 
-<div class="example"><pre>
+<pre class="prettyprint lang-config">
 DocumentRoot /var/www/example.com
 Alias /myapp /opt/myapp-1.2.3
 &lt;Directory /opt/myapp-1.2.3&gt;
-RewriteEngine On
-RewriteBase /myapp/
-RewriteRule ^index\.html$  welcome.html 
+ RewriteEngine On
+    RewriteBase /myapp/
+    RewriteRule ^index\.html$  welcome.html
 &lt;/Directory&gt;
-</pre></div>
+</pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -663,10 +663,11 @@ la réécriture soit effectuée
 	    non désiré.
            </p>
 
-           <div class="example"><p><code>
+           <pre class="prettyprint lang-config">
            RewriteCond expr "! %{HTTP_REFERER} -strmatch '*://%{HTTP_HOST}/*'"<br />
            RewriteRule ^/images - [F]
-           </code></p></div>
+           </pre>
+
         </li>
 
 	<li>Vous pouvez aussi définir certains drapeaux pour
@@ -694,12 +695,13 @@ la réécriture soit effectuée
 	  Permet de chaîner les conditions de règles avec un OU au
 	  lieu du AND implicite. Exemple typique :
 
-<div class="example"><pre>
+<pre class="prettyprint lang-config">
 RewriteCond %{REMOTE_HOST}  ^host1  [OR]
 RewriteCond %{REMOTE_HOST}  ^host2  [OR]
 RewriteCond %{REMOTE_HOST}  ^host3
 RewriteRule ...règles concernant tous ces hôtes...
-</pre></div>
+</pre>
+
 
           Sans ce drapeau, les paires
 	  condition/règle devraient être écrites trois fois.
@@ -725,7 +727,7 @@ RewriteRule ...règles concernant tous ces hôtes...
        l'en-tête ``<code>User-Agent:</code>'' de la requête, vous
        pouvez utiliser ce qui suit : </p>
 
-<div class="example"><pre>
+<pre class="prettyprint lang-config">
 RewriteCond  %{HTTP_USER_AGENT}  ^Mozilla
 RewriteRule  ^/$                 /homepage.max.html  [L]
 
@@ -733,7 +735,8 @@ RewriteCond  %{HTTP_USER_AGENT}  ^Lynx
 RewriteRule  ^/$                 /homepage.min.html  [L]
 
 RewriteRule  ^/$                 /homepage.std.html  [L]
-</pre></div>
+</pre>
+
 
         <p>Explications : si vous utilisez un navigateur
 	(Netscape Navigator, Mozilla etc) qui s'identifie comme
@@ -839,16 +842,18 @@ bases de données depuis la version 2.0.41 du serveur HTTP Apache</td></tr>
       <p>Par exemple, vous pouvez définir une directive
       <code class="directive">RewriteMap</code> comme suit </p>
 
-      <div class="example"><p><code>
+      <pre class="prettyprint lang-config">
       RewriteMap map-exemple txt:/chemin/vers/fichier/map.txt
-      </code></p></div>
+      </pre>
+
 
       <p>Vous pourrez ensuite utiliser cette table dans une
       directive <code class="directive">RewriteRule</code> comme suit :</p>
 
-      <div class="example"><p><code>
+      <pre class="prettyprint lang-config">
       RewriteRule ^/ex/(.*) ${map-exemple:$1}
-      </code></p></div>
+      </pre>
+
 
       <p>Les combinaisons suivantes pour <em>type de correspondance</em>
       et <em>source de la correspondance</em>
@@ -1499,19 +1504,20 @@ externe</td>
 <a href="../fr/mod/mod_rewrite.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>This section is experimental!</strong><br />Comments placed here should not be expected 
 to last beyond the testing phase of this system, nor do we in any way guarantee that we'll read them.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
+<div id="disqus_thread">
+</div><script type="text/javascript"><!--//--><![CDATA[//><!--
 var lang = 'fr';
 var disqus_shortname = 'httpd';
 var disqus_identifier = window.location.href.replace(/(current|trunk)/, "2.4").replace(/\/[a-z]{2}\//, "/").replace(window.location.protocol, "http:") + '.' + lang;
-if (disqus_identifier.indexOf("httpd.apache.org") == -1) {
-    document.write('<div id="disqus_thread">\n</div>');
+if (disqus_identifier.indexOf("httpd.apache.org") != -1) {
     (function() {
                 var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
                 dsq.src = window.location.protocol + '//' + disqus_shortname + '.disqus.com/embed.js';
             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
         })();
 } else {
-    document.write("Comments have been disabled for offline viewing.");
+    var text = document.createTextNode("Comments have been disabled for offline viewing.");
+    document.getElementById('disqus_thread').appendChild(text);
 }
 //--><!]]></script></div><div id="footer">
 <p class="apache">Copyright 2012 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>

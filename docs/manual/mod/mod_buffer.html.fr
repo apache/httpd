@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_buffer.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_buffer.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Support de la mise en tampon des requêtes</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>buffer_module</td></tr>
@@ -62,9 +60,10 @@ d'Apache</td></tr></table>
     directives <code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code>,
     <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code>, <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code> ou <code class="directive"><a href="../mod/mod_filter.html#addoutputfilterbytype">AddOutputFilterByType</a></code>.</p>
 
-      <div class="example"><h3>Utilisation d'un tampon avec mod_include</h3><p><code>
-        AddOutputFilterByType INCLUDES;BUFFER text/html<br />
-      </code></p></div>
+      <div class="example"><h3>Utilisation d'un tampon avec mod_include</h3><pre class="prettyprint lang-config">
+        AddOutputFilterByType INCLUDES;BUFFER text/html
+        </pre>
+</div>
 
     <div class="warning">Les filtres de mise en tampon lisent la
     requête/réponse en RAM, puis la reconditionnent sous la forme d'un
@@ -107,19 +106,20 @@ d'Apache</td></tr></table>
 <a href="../fr/mod/mod_buffer.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>This section is experimental!</strong><br />Comments placed here should not be expected 
 to last beyond the testing phase of this system, nor do we in any way guarantee that we'll read them.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
+<div id="disqus_thread">
+</div><script type="text/javascript"><!--//--><![CDATA[//><!--
 var lang = 'fr';
 var disqus_shortname = 'httpd';
 var disqus_identifier = window.location.href.replace(/(current|trunk)/, "2.4").replace(/\/[a-z]{2}\//, "/").replace(window.location.protocol, "http:") + '.' + lang;
-if (disqus_identifier.indexOf("httpd.apache.org") == -1) {
-    document.write('<div id="disqus_thread">\n</div>');
+if (disqus_identifier.indexOf("httpd.apache.org") != -1) {
     (function() {
                 var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
                 dsq.src = window.location.protocol + '//' + disqus_shortname + '.disqus.com/embed.js';
             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
         })();
 } else {
-    document.write("Comments have been disabled for offline viewing.");
+    var text = document.createTextNode("Comments have been disabled for offline viewing.");
+    document.getElementById('disqus_thread').appendChild(text);
 }
 //--><!]]></script></div><div id="footer">
 <p class="apache">Copyright 2012 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
