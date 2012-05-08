@@ -291,7 +291,7 @@ RewriteRule ^ ${deflector:%{HTTP_REFERER}} [R,L]
       we just wish to redirect back to where they came from, a "-" is
       placed in the map:</p>
 
-<hightlight language="config">
+<highlight language="config">
 ##<br />
 ##  deflector.map<br />
 ##<br />
