@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1301574:1334024 (outdated) -->
+<!-- English Revision : 1334024 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -80,7 +80,9 @@ r&egrave;gles permettant de r&eacute;&eacute;crire les URLs des requ&ecirc;tes
     </note>
 
     <example><title>Exemple</title>
+    <highlight language="config">
       LogLevel alert rewrite:trace3
+      </highlight>
     </example>
 
     <note><title>RewriteLog</title>
@@ -265,16 +267,16 @@ bases de donn&eacute;es depuis la version 2.0.41 du serveur HTTP Apache</compati
       <p>Par exemple, vous pouvez d&eacute;finir une directive
       <directive>RewriteMap</directive> comme suit </p>
 
-      <example>
+      <highlight language="config">
       RewriteMap map-exemple txt:/chemin/vers/fichier/map.txt
-      </example>
+      </highlight>
 
       <p>Vous pourrez ensuite utiliser cette table dans une
       directive <directive>RewriteRule</directive> comme suit :</p>
 
-      <example>
+      <highlight language="config">
       RewriteRule ^/ex/(.*) ${map-exemple:$1}
-      </example>
+      </highlight>
 
       <p>Les combinaisons suivantes pour <em>type de correspondance</em>
       et <em>source de la correspondance</em>
@@ -330,51 +332,43 @@ r&eacute;pertoire</description>
 <override>FileInfo</override>
 
 <usage>
-      <p>La directive <directive>RewriteBase</directive> d&eacute;finit
-      explicitement le chemin URL de base (et non le chemin du
-      r&eacute;pertoire dans le syst&egrave;me de fichiers !) pour les r&eacute;&eacute;critures dans un contexte
-      de r&eacute;pertoire dont le r&eacute;sultat est la substitution d'un
-      chemin relatif. Lorsque vous utilisez une directive <directive
-      module="mod_rewrite">RewriteRule</directive> dans un fichier
-      <code>.htaccess</code>, <module>mod_rewrite</module> enl&egrave;ve le
-      pr&eacute;fixe de r&eacute;pertoire local avant d'effectuer le traitement, puis
-      r&eacute;&eacute;crit ce qui reste de l'URL. Lorsque la r&eacute;&eacute;criture est termin&eacute;e,
-      <module>mod_rewrite</module> ajoute automatiquement le pr&eacute;fixe de
-      r&eacute;pertoire local (ou la valeur de la directive
-      <directive>RewriteBase</directive> si cette derni&egrave;re est d&eacute;finie)
-      &agrave; la cha&icirc;ne de substitution avant de la remettre &agrave; disposition du
-      serveur, comme s'il s'agissait de l'URL d'origine.</p>
+      <p>La directive <directive>RewriteBase</directive> permet de
+      sp&eacute;cifier le pr&eacute;fixe d'URL &agrave; utiliser dans un contexte de
+      r&eacute;pertoire (htaccess) pour les directives
+      <directive>RewriteRule</directive> qui r&eacute;&eacute;crivent vers un chemin
+      relatif.</p>
+      <p>Cette directive est <em>obligatoire</em> si vous utilisez un
+      chemin relatif dans une substitution, et dans un contexte de
+      r&eacute;pertoire (htaccess), sauf si au moins une de ces conditions est
+      v&eacute;rifi&eacute;e :</p>
+      <ul>
+          <li>La requ&ecirc;te initiale, ainsi que la substitution, sont dans
+	  la <directive module="core">DocumentRoot</directive> (c'est &agrave;
+	  dire que pour y acc&eacute;der, il n'est pas n&eacute;cessaire d'utiliser
+	  une directive telle qu'<directive
+	  module="mod_alias">Alias</directive>).</li>
+          <li>Le chemin du syst&egrave;me de fichiers vers le r&eacute;pertoire
+	  contenant la <directive>RewriteRule</directive>, suffix&eacute; par
+	  la substitution relative est aussi valide en tant qu'URL sur
+	  le serveur (ce qui est rare).</li>
+      </ul>
 
-	<p>Cette directive est <em>requise</em> pour les r&eacute;&eacute;critures
-	dans un contexte de r&eacute;pertoire d&eacute;fini via la directive
-	<directive module="mod_alias">Alias</directive> lorsque la
-	substitution utilise un chemin relatif.</p>
+<p>Dans l'exemple ci-dessous, la directive
+<directive>RewriteBase</directive> est n&eacute;cessaire afin d'&eacute;viter une
+r&eacute;&eacute;criture en http://example.com/opt/myapp-1.2.3/welcome.html car la
+ressource n'&eacute;tait pas relative &agrave; la racine des documents. Cette erreur
+de configuration aurait conduit le serveur &agrave; rechercher un r&eacute;pertoire
+"opt" &agrave; la racine des documents.</p>
 
-      <p>Si votre chemin URL n'existe pas r&eacute;ellement dans le syst&egrave;me de
-      fichiers, ou ne trouve pas directement sous le r&eacute;pertoire d&eacute;fini
-      par la directive <directive
-      module="core">DocumentRoot</directive>, vous devez utiliser la
-      directive	<directive>RewriteBase</directive> dans chaque fichier
-	<code>.htaccess</code> o&ugrave; vous voulez utiliser des directives <directive
-      module="mod_rewrite">RewriteRule</directive>.</p>
-
-      <p>L'exemple ci-dessous montre comment faire correspondre
-      http://example.com/mon-appli/index.html &agrave;
-      /home/www/exemple/nouveau_site.html dans un fichier
-      <code>.htaccess</code>. On suppose que le contenu disponible &agrave;
-      http://example.com/ se situe sur le disque &agrave;
-      /home/www/exemple/.</p>
-
-<example>
-<pre>
-RewriteEngine On
-# Le chemin URL utilis&eacute; pour arriver dans ce contexte, et non le chemin
-# du syst&egrave;me de fichiers
-RewriteBase /mon-appli/
-RewriteRule ^index\.html$  nouveau_site.html
-</pre>
-</example>
-
+<highlight language="config">
+DocumentRoot /var/www/example.com
+Alias /myapp /opt/myapp-1.2.3
+&lt;Directory /opt/myapp-1.2.3&gt;
+ RewriteEngine On
+    RewriteBase /myapp/
+    RewriteRule ^index\.html$  welcome.html
+&lt;/Directory&gt;
+</highlight>
 </usage>
 
 </directivesynopsis>
@@ -883,10 +877,10 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 	    non d&eacute;sir&eacute;.
            </p>
 
-           <example>
+           <highlight language="config">
            RewriteCond expr "! %{HTTP_REFERER} -strmatch '*://%{HTTP_HOST}/*'"<br />
            RewriteRule ^/images - [F]
-           </example>
+           </highlight>
         </li>
 
 	<li>Vous pouvez aussi d&eacute;finir certains drapeaux pour
@@ -914,14 +908,12 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 	  Permet de cha&icirc;ner les conditions de r&egrave;gles avec un OU au
 	  lieu du AND implicite. Exemple typique :
 
-<example>
-<pre>
+<highlight language="config">
 RewriteCond %{REMOTE_HOST}  ^host1  [OR]
 RewriteCond %{REMOTE_HOST}  ^host2  [OR]
 RewriteCond %{REMOTE_HOST}  ^host3
 RewriteRule ...r&egrave;gles concernant tous ces h&ocirc;tes...
-</pre>
-</example>
+</highlight>
 
           Sans ce drapeau, les paires
 	  condition/r&egrave;gle devraient &ecirc;tre &eacute;crites trois fois.
@@ -947,8 +939,7 @@ RewriteRule ...r&egrave;gles concernant tous ces h&ocirc;tes...
        l'en-t&ecirc;te ``<code>User-Agent:</code>'' de la requ&ecirc;te, vous
        pouvez utiliser ce qui suit : </p>
 
-<example>
-<pre>
+<highlight language="config">
 RewriteCond  %{HTTP_USER_AGENT}  ^Mozilla
 RewriteRule  ^/$                 /homepage.max.html  [L]
 
@@ -956,8 +947,7 @@ RewriteCond  %{HTTP_USER_AGENT}  ^Lynx
 RewriteRule  ^/$                 /homepage.min.html  [L]
 
 RewriteRule  ^/$                 /homepage.std.html  [L]
-</pre>
-</example>
+</highlight>
 
         <p>Explications : si vous utilisez un navigateur
 	(Netscape Navigator, Mozilla etc) qui s'identifie comme
@@ -999,9 +989,12 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
       <a id="regexp" name="regexp">expression rationnelle</a>
       compatible perl. Dans la premi&egrave;re r&egrave;gle de r&eacute;&eacute;criture,
       l'expression est compar&eacute;e au (%-decoded)
-      <a href="./directive-dict.html#Syntax">chemin de l'URL</a> de la
-      requ&ecirc;te ; les expressions suivantes sont compar&eacute;es &agrave; la sortie de
-      la derni&egrave;re r&egrave;gle de r&eacute;&eacute;criture qui a &eacute;t&eacute; appliqu&eacute;e.</p>
+      <a href="./directive-dict.html#Syntax">chemin de l'URL</a> (ou au
+      <a href="./directive-dict.html#Syntax">chemin fichier</a>, en
+      fonction du contexte) de la
+      requ&ecirc;te. Les expressions suivantes sont compar&eacute;es &agrave; la sortie de
+      la derni&egrave;re r&egrave;gle de r&eacute;&eacute;criture qui
+      correspondait.</p>
 
 <note><title><a id="what_is_matched" name="what_is_matched">Qu'est-ce qui est compar&eacute; ?</a></title>
 
@@ -1015,7 +1008,7 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
       module="core">Directory</directive> et htaccess, le
       <em>mod&egrave;le</em> est tout d'abord compar&eacute; au chemin du <em>syst&egrave;me
       de fichiers</em>, apr&egrave;s suppression du pr&eacute;fixe ou chemin de base
-      ayant conduit &agrave; la r&egrave;gle <directive>RewriteRule</directive> (par
+      ayant conduit le serveur vers la r&egrave;gle <directive>RewriteRule</directive> (par
       exemple "app1/index.html" ou
       "index.html" selon l'endroit o&ugrave; les directives sont d&eacute;finies).</p>
 
@@ -1186,7 +1179,7 @@ substitution !
 
        <p>Chaque r&egrave;gle de r&eacute;&eacute;criture s'applique au r&eacute;sultat de la r&egrave;gle
        pr&eacute;c&eacute;dente, selon l'ordre dans lequel elles ont &eacute;t&eacute; d&eacute;finies dans
-       le fichier de configuration. L'URI du chemin du fichier (voir
+       le fichier de configuration. Le chemin de l'URL ou du syst&egrave;me de fichier (voir
        ci-dessus <a href="#what_is_matched">Qu'est-ce qui est
        compar&eacute; ?</a>) est <strong>int&eacute;gralement
       remplac&eacute;e</strong> par la cha&icirc;ne de <em>Substitution</em> et le
