@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1174747:1330964 (outdated) -->
+<!-- English Revision : 1330964 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -61,7 +61,9 @@ d'Apache</compatibility>
     module="mod_filter">AddOutputFilterByType</directive>.</p>
 
       <example><title>Utilisation d'un tampon avec mod_include</title>
-        AddOutputFilterByType INCLUDES;BUFFER text/html<br />
+        <highlight language="config">
+        AddOutputFilterByType INCLUDES;BUFFER text/html
+        </highlight>
       </example>
 
     <note type="warning">Les filtres de mise en tampon lisent la

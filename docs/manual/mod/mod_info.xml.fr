@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1174747:1331006 (outdated) -->
+<!-- English Revision : 1331006 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -35,27 +35,23 @@ serveur</description>
     <p>Pour activer <module>mod_info</module>, ajoutez les lignes
     suivantes &agrave; votre fichier <code>httpd.conf</code>.</p>
 
-    <example>
-      &lt;Location /infos-serveur&gt;<br />
-      <indent>
-        SetHandler server-info<br />
-      </indent>
-      &lt;/Location&gt;
-    </example>
+    <highlight language="config">
+&lt;Location /server-info&gt;
+    SetHandler server-info
+&lt;/Location&gt;
+    </highlight>
 
     <p>Il est recommand&eacute; d'utiliser <module>mod_access</module> &agrave;
     l'int&eacute;rieur de la section <directive type="section"
     module="core">Location</directive> afin de restreindre l'acc&egrave;s aux
     informations de configuration de votre serveur :</p>
 
-    <example>
-      &lt;Location /infos-serveur&gt;<br />
-      <indent>
-        SetHandler server-info<br />
-        Require host example.com<br />
-      </indent>
-      &lt;/Location&gt;
-    </example>
+    <highlight language="config">
+&lt;Location /server-info&gt;
+    SetHandler server-info
+    Require host example.com
+&lt;/Location&gt;
+    </highlight>
 
     <p>Une fois cette configuration effectu&eacute;e, les informations du
     serveur sont disponibles &agrave; l'adresse
@@ -82,17 +78,17 @@ serveur</description>
     serveur.</p>
 
     <example><title>Contr&ocirc;le d'acc&egrave;s</title>
-      &lt;Location /infos-serveur&gt;<br />
-      <indent>
-        SetHandler server-info<br />
-        Order allow,deny<br />
-        # Autorisation d'acc&egrave;s depuis le serveur lui-m&ecirc;me<br />
-        Allow from 127.0.0.1<br />
-        # Autorisation d'acc&egrave;s depuis une station de travail du r&eacute;seau
-	# local<br />
-        Allow from 192.168.1.17<br />
-      </indent>
-      &lt;/Location&gt;
+      <highlight language="config">
+&lt;Location /server-info&gt;
+    SetHandler server-info
+    Order allow,deny
+    # Autorisation d'acc&egrave;s depuis le serveur lui-m&ecirc;me
+    Allow from 127.0.0.1
+    # Autorisation d'acc&egrave;s depuis une station de travail du r&eacute;seau
+# local
+    Allow from 192.168.1.17
+&lt;/Location&gt;
+      </highlight>
     </example>
 </section>
 
@@ -180,13 +176,11 @@ module affich&eacute;es par le gestionnaire server-info</description>
     en tant qu'<strong>Information suppl&eacute;mentaire</strong> interpr&eacute;t&eacute;e
     en HTML pour le module <var>nom-module</var>. Exemple :</p>
 
-    <example>
-      AddModuleInfo mod_deflate.c 'Voir &lt;a \<br />
-      <indent>
-        href="http://www.apache.org/docs/&httpd.docs;/mod/mod_deflate.html"&gt;\<br />
-        http://www.apache.org/docs/&httpd.docs;/mod/mod_deflate.html&lt;/a&gt;'
-      </indent>
-    </example>
+    <highlight language="config">
+AddModuleInfo mod_deflate.c 'See &lt;a \
+    href="http://www.apache.org/docs/&httpd.docs;/mod/mod_deflate.html"&gt;\
+    http://www.apache.org/docs/&httpd.docs;/mod/mod_deflate.html&lt;/a&gt;'
+    </highlight>
 </usage>
 
 </directivesynopsis>
