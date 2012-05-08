@@ -84,27 +84,27 @@ configuration.</note>
 <!-- TODO: Add discussion here of why we have !^$ in there. -->
 
 <highlight language="config">
-RewriteCond %{HTTP_REFERER} <strong>!^$</strong>
+RewriteCond %{HTTP_REFERER} !^$
 RewriteCond %{HTTP_REFERER} !www.example.com [NC]
-RewriteRule <strong>\.(gif|jpg|png)$</strong>    -   [F,NC]
+RewriteRule \.(gif|jpg|png)$    -   [F,NC]
 </highlight>
 
     <p>In this second example, instead of failing the request, we display
     an alternate image instead.</p>
 
 <highlight language="config">
-RewriteCond %{HTTP_REFERER} <strong>!^$</strong>
+RewriteCond %{HTTP_REFERER} !^$
 RewriteCond %{HTTP_REFERER} !www.example.com [NC]
-RewriteRule <strong>\.(gif|jpg|png)$</strong>    /images/go-away.png   [R,NC]
+RewriteRule \.(gif|jpg|png)$    /images/go-away.png   [R,NC]
 </highlight>
 
     <p>In the third example, we redirect the request to an image on some
     other site.</p>
 
 <highlight language="config">
-RewriteCond %{HTTP_REFERER} <strong>!^$</strong>
+RewriteCond %{HTTP_REFERER} !^$
 RewriteCond %{HTTP_REFERER} !www.example.com [NC]
-RewriteRule <strong>\.(gif|jpg|png)$</strong> http://other.example.com/image.gif   [R,NC]
+RewriteRule \.(gif|jpg|png)$ http://other.example.com/image.gif   [R,NC]
 </highlight>
 
     <p>Of these techniques, the last two tend to be the most effective
@@ -291,7 +291,7 @@ RewriteRule ^ ${deflector:%{HTTP_REFERER}} [R,L]
       we just wish to redirect back to where they came from, a "-" is
       placed in the map:</p>
 
-<example>
+<hightlight language="config">
 ##<br />
 ##  deflector.map<br />
 ##<br />
@@ -299,7 +299,7 @@ RewriteRule ^ ${deflector:%{HTTP_REFERER}} [R,L]
 http://badguys.example.com/bad/index.html    -<br />
 http://badguys.example.com/bad/index2.html   -<br />
 http://badguys.example.com/bad/index3.html   http://somewhere.example.com/
-</example>
+</highlight>
 
     </dd>
   </dl>
