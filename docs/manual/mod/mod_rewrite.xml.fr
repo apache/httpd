@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1325680:1334163 (outdated) -->
+<!-- English Revision : 1334163 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -80,7 +80,9 @@ r&egrave;gles permettant de r&eacute;&eacute;crire les URLs des requ&ecirc;tes
     </note>
 
     <example><title>Exemple</title>
+    <highlight language="config">
       LogLevel alert rewrite:trace3
+      </highlight>
     </example>
 
     <note><title>RewriteLog</title>
@@ -265,16 +267,16 @@ bases de donn&eacute;es depuis la version 2.0.41 du serveur HTTP Apache</compati
       <p>Par exemple, vous pouvez d&eacute;finir une directive
       <directive>RewriteMap</directive> comme suit </p>
 
-      <example>
+      <highlight language="config">
       RewriteMap map-exemple txt:/chemin/vers/fichier/map.txt
-      </example>
+      </highlight>
 
       <p>Vous pourrez ensuite utiliser cette table dans une
       directive <directive>RewriteRule</directive> comme suit :</p>
 
-      <example>
+      <highlight language="config">
       RewriteRule ^/ex/(.*) ${map-exemple:$1}
-      </example>
+      </highlight>
 
       <p>Les combinaisons suivantes pour <em>type de correspondance</em>
       et <em>source de la correspondance</em>
@@ -358,17 +360,15 @@ ressource n'&eacute;tait pas relative &agrave; la racine des documents. Cette er
 de configuration aurait conduit le serveur &agrave; rechercher un r&eacute;pertoire
 "opt" &agrave; la racine des documents.</p>
 
-<example>
-<pre>
+<highlight language="config">
 DocumentRoot /var/www/example.com
 Alias /myapp /opt/myapp-1.2.3
 &lt;Directory /opt/myapp-1.2.3&gt;
-RewriteEngine On
-RewriteBase /myapp/
-RewriteRule ^index\.html$  welcome.html 
+ RewriteEngine On
+    RewriteBase /myapp/
+    RewriteRule ^index\.html$  welcome.html
 &lt;/Directory&gt;
-</pre>
-</example>
+</highlight>
 </usage>
 
 </directivesynopsis>
@@ -877,10 +877,10 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 	    non d&eacute;sir&eacute;.
            </p>
 
-           <example>
+           <highlight language="config">
            RewriteCond expr "! %{HTTP_REFERER} -strmatch '*://%{HTTP_HOST}/*'"<br />
            RewriteRule ^/images - [F]
-           </example>
+           </highlight>
         </li>
 
 	<li>Vous pouvez aussi d&eacute;finir certains drapeaux pour
@@ -908,14 +908,12 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 	  Permet de cha&icirc;ner les conditions de r&egrave;gles avec un OU au
 	  lieu du AND implicite. Exemple typique :
 
-<example>
-<pre>
+<highlight language="config">
 RewriteCond %{REMOTE_HOST}  ^host1  [OR]
 RewriteCond %{REMOTE_HOST}  ^host2  [OR]
 RewriteCond %{REMOTE_HOST}  ^host3
 RewriteRule ...r&egrave;gles concernant tous ces h&ocirc;tes...
-</pre>
-</example>
+</highlight>
 
           Sans ce drapeau, les paires
 	  condition/r&egrave;gle devraient &ecirc;tre &eacute;crites trois fois.
@@ -941,8 +939,7 @@ RewriteRule ...r&egrave;gles concernant tous ces h&ocirc;tes...
        l'en-t&ecirc;te ``<code>User-Agent:</code>'' de la requ&ecirc;te, vous
        pouvez utiliser ce qui suit : </p>
 
-<example>
-<pre>
+<highlight language="config">
 RewriteCond  %{HTTP_USER_AGENT}  ^Mozilla
 RewriteRule  ^/$                 /homepage.max.html  [L]
 
@@ -950,8 +947,7 @@ RewriteCond  %{HTTP_USER_AGENT}  ^Lynx
 RewriteRule  ^/$                 /homepage.min.html  [L]
 
 RewriteRule  ^/$                 /homepage.std.html  [L]
-</pre>
-</example>
+</highlight>
 
         <p>Explications : si vous utilisez un navigateur
 	(Netscape Navigator, Mozilla etc) qui s'identifie comme

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1305167:1330964 (outdated) -->
+<!-- English Revision : 1330964 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -166,28 +166,25 @@ cache</a></seealso>
 
 <section id="sampleconf"><title>Exemple de configuration</title>
     <example><title>Extrait de httpd.conf</title>
-      #<br />
-      # Exemple de configuration du cache<br />
-      #<br />
-      LoadModule cache_module modules/mod_cache.so<br />
-      <br />
-      &lt;IfModule mod_cache.c&gt;<br />
-      <indent>
-        LoadModule disk_cache_module modules/mod_cache_disk.so<br />
-        &lt;IfModule mod_cache_disk.c&gt;<br />
-        <indent>
-          CacheRoot c:/cacheroot<br />
-          CacheEnable disk  /<br />
-          CacheDirLevels 5<br />
-          CacheDirLength 3<br />
-        </indent>
-        &lt;/IfModule&gt; <br />
-        <br />
-        # Lorsqu'on sert de mandataire, on ne met pas en cache la liste
-	# des mises &agrave; jour de s&eacute;curit&eacute;<br />
-        CacheDisable http://security.update.server/update-list/<br />
-      </indent>
-      &lt;/IfModule&gt;
+      <highlight language="config">
+#
+# Exemple de configuration du cache
+#
+LoadModule cache_module modules/mod_cache.so
+&lt;IfModule mod_cache.c&gt;
+    LoadModule cache_disk_module modules/mod_cache_disk.so
+    &lt;IfModule mod_cache_disk.c&gt;
+        CacheRoot c:/cacheroot
+        CacheEnable disk  /
+        CacheDirLevels 5
+        CacheDirLength 3
+    &lt;/IfModule&gt;
+    
+    # Lorsqu'on sert de mandataire, on ne met pas en cache la liste
+# des mises &agrave; jour de s&eacute;curit&eacute;
+    CacheDisable http://security.update.server/update-list/
+&lt;/IfModule&gt;
+      </highlight>
     </example>
 </section>
 
@@ -253,16 +250,16 @@ cache</a></seealso>
   <section>
     <title>Exemple de configuration</title>
     <example><title>Activation du verrouillage du cache</title>
-      #<br />
-      # Active le verrouillage du cache<br />
-      #<br />
-      &lt;IfModule mod_cache.c&gt;<br />
-      <indent>
-        CacheLock on<br />
-        CacheLockPath /tmp/mod_cache-lock<br />
-        CacheLockMaxAge 5<br />
-      </indent>
-      &lt;/IfModule&gt;
+      <highlight language="config">
+#
+# Active le verrouillage du cache
+#
+&lt;IfModule mod_cache.c&gt;
+    CacheLock on
+    CacheLockPath /tmp/mod_cache-lock
+    CacheLockMaxAge 5
+&lt;/IfModule&gt;
+      </highlight>
     </example>
   </section>
 </section>
@@ -302,11 +299,11 @@ cache</a></seealso>
   avant le filtre <strong>DEFLATE</strong> comme dans l'exemple suivant
   :</p>
 
-  <example>
-    # Mise en cache du contenu avant la compression optionnelle<br />
-    CacheQuickHandler off<br />
-    AddOutputFilterByType CACHE;DEFLATE text/plain<br /><br />
-  </example>
+  <highlight language="config">
+# Mise en cache du contenu avant la compression optionnelle
+CacheQuickHandler off
+AddOutputFilterByType CACHE;DEFLATE text/plain
+  </highlight>
 
   <p>Une autre possibilit&eacute; consiste &agrave; mettre en cache le contenu avant
   l'ajout de contenu personnalis&eacute; via <module>mod_include</module> (ou
@@ -315,24 +312,24 @@ cache</a></seealso>
   <module>mod_include</module> sont mis en cache avant d'&ecirc;tre
   interpr&eacute;t&eacute;s :</p>
 
-  <example>
-    # Mise en cache du contenu avant l'intervention de mod_include et
-    # mod_deflate<br />
-    CacheQuickHandler off<br />
-    AddOutputFilterByType CACHE;INCLUDES;DEFLATE text/html<br /><br />
-  </example>
+  <highlight language="config">
+# Mise en cache du contenu avant l'intervention de mod_include et
+   # mod_deflate
+CacheQuickHandler off
+AddOutputFilterByType CACHE;INCLUDES;DEFLATE text/html
+  </highlight>
 
   <p>Vous pouvez ins&eacute;rer le filtre <strong>CACHE</strong> en tout point
   de la cha&icirc;ne de filtrage. Dans l'exemple suivant, le contenu est mis
   en cache apr&egrave;s avoir &eacute;t&eacute; interpr&eacute;t&eacute; par <module>mod_include</module>,
   mais avant d'&ecirc;tre trait&eacute; par <module>mod_deflate</module> :</p>
 
-  <example>
-    # Mise en cache du contenu entre les interventions de mod_include et
-    # mod_deflate<br />
-    CacheQuickHandler off<br />
-    AddOutputFilterByType INCLUDES;CACHE;DEFLATE text/html<br /><br />
-  </example>
+  <highlight language="config">
+# Mise en cache du contenu entre les interventions de mod_include et
+   # mod_deflate
+CacheQuickHandler off
+AddOutputFilterByType INCLUDES;CACHE;DEFLATE text/html
+  </highlight>
 
   <note type="warning"><title>Avertissement :</title>Si pour une raison
   ou pour une autre, le point d'insertion du filtre
@@ -351,9 +348,9 @@ cache</a></seealso>
   Cette information peut &ecirc;tre journalis&eacute;e via la directive <directive
   module="mod_log_config">LogFormat</directive> comme suit :</p>
 
-  <example>
+  <highlight language="config">
     LogFormat "%{cache-status}e ..."
-  </example>
+  </highlight>
 
   <p>En fonction de la d&eacute;cision prise, l'information est aussi &eacute;crite
   dans l'environnement du sous-processus sous une des quatre cl&eacute;s
@@ -373,12 +370,12 @@ cache</a></seealso>
   du traitement des requ&ecirc;tes par rapport au cache comme dans l'exemple
   suivant :</p>
 
-  <example>
-    CustomLog requetes-depuis-cache.log common env=cache-hit<br />
-    CustomLog requetes-hors-cache.log common env=cache-miss<br />
-    CustomLog requetes-avec-mise-a-jour-du-cache.log common env=cache-revalidate<br />
-    CustomLog requetes-avec-invalidation.log common env=cache-invalidate<br />
-  </example>
+  <highlight language="config">
+CustomLog cached-requests.log common env=cache-hit
+CustomLog uncached-requests.log common env=cache-miss
+CustomLog revalidated-requests.log common env=cache-revalidate
+CustomLog invalidated-requests.log common env=cache-invalidate
+  </highlight>
 
   <p>Pour les concepteurs de modules, une accroche (hook) nomm&eacute;e
   <var>cache_status</var> est disponible et permet aux modules de
@@ -434,26 +431,26 @@ URL</var>]</syntax>
     et des protocoles de mandat pour lesquels la mise en cache devra
     &ecirc;tre activ&eacute;e.</p>
 
-    <example>
-      # Mise en cache de contenu<br />
-      &lt;Location /foo&gt;<br />
-      <indent>
-        CacheEnable disk<br />
-      </indent>
-      &lt;/Location&gt;<br /><br />
-      # Mise en cache via une expression rationnelle<br />
-      &lt;LocationMatch foo$&gt;<br />
-      <indent>
-        CacheEnable disk<br />
-      </indent>
-      &lt;/LocationMatch&gt;<br /><br />
-      # Mise en cache des URLs mandat&eacute;es<br />
-      CacheEnable  disk  /<br /><br />
-      # Mise en cache des URLs FTP mandat&eacute;es<br />
-      CacheEnable  disk  ftp://<br /><br />
-      # Mise en cache des contenus situ&eacute;s dans www.example.org<br />
-      CacheEnable  disk  http://www.example.org/<br />
-    </example>
+    <highlight language="config">
+# Mise en cache de contenu
+&lt;Location /foo&gt;
+    CacheEnable disk
+&lt;/Location&gt;
+
+# Mise en cache via une expression rationnelle
+&lt;LocationMatch foo$&gt;
+    CacheEnable disk
+&lt;/LocationMatch&gt;
+
+# Mise en cache des URLs mandat&eacute;es
+CacheEnable  disk  /
+
+# Mise en cache des URLs FTP mandat&eacute;es
+CacheEnable  disk  ftp://
+
+# Mise en cache des contenus situ&eacute;s dans www.example.org
+CacheEnable  disk  http://www.example.org/
+    </highlight>
 
     <p>Un nom d'h&ocirc;te commen&ccedil;ant par un caract&egrave;re <strong>"*"</strong>
     correspondra &agrave; tout nom d'h&ocirc;te se terminant par le suffixe
@@ -461,12 +458,12 @@ URL</var>]</syntax>
     <strong>"."</strong> correspondra &agrave; tout nom d'h&ocirc;te contenant le
     composant de nom de domaine qui suit ce caract&egrave;re.</p>
 
-    <example>
-      # Correspond &agrave; www.example.org et fooexample.org<br />
-      CacheEnable  disk  http://*example.org/<br />
-      # Correspond &agrave; www.example.org, mais pas &agrave; fooexample.org<br />
-      CacheEnable  disk  http://.example.org/<br />
-    </example>
+    <highlight language="config">
+# Correspond &agrave; www.example.org et fooexample.org
+CacheEnable  disk  http://*example.org/
+# Correspond &agrave; www.example.org, mais pas &agrave; fooexample.org
+CacheEnable  disk  http://.example.org/
+    </highlight>
 
     <p>Depuis la version 2.2.12, on peut d&eacute;finir la variable
     d'environnement <code>no-cache</code> pour une d&eacute;finition plus fine
@@ -493,7 +490,9 @@ sp&eacute;cifi&eacute;es</description>
     inf&eacute;rieurs.</p>
 
     <example><title>Exemple</title>
+    <highlight language="config">
       CacheDisable /fichiers_locaux
+      </highlight>
     </example>
 
     <p>Si la directive se trouve &agrave; l'int&eacute;rieur d'une section <directive
@@ -503,11 +502,11 @@ sp&eacute;cifi&eacute;es</description>
     par la section Location.</p>
 
     <example><title>Exemple</title>
-      &lt;Location /foo&gt;<br />
-      <indent>
-        CacheDisable on<br />
-      </indent>
-      &lt;/Location&gt;<br />
+      <highlight language="config">
+&lt;Location /foo&gt;
+    CacheDisable on
+&lt;/Location&gt;
+      </highlight>
     </example>
 
     <p>Avec les versions 2.2.12 et ult&eacute;rieures, on peut d&eacute;finir la
@@ -536,9 +535,10 @@ document</description>
     sera pas &agrave; jour. L'utilisation de cette valeur maximale est forc&eacute;e,
     m&ecirc;me si le document poss&egrave;de une date d'expiration.</p>
 
-    <example>
+    <highlight language="config">
       CacheMaxExpire 604800
-    </example>
+      </highlight>
+    
 </usage>
 </directivesynopsis>
 
@@ -560,9 +560,9 @@ document</description>
     que dans le cas o&ugrave; le document ne poss&egrave;de aucune date d'expiration
     valide.</p>
 
-    <example>
+    <highlight language="config">
       CacheMinExpire 3600
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -585,9 +585,9 @@ lorsqu'aucune date d'expiration n'a &eacute;t&eacute; sp&eacute;cifi&eacute;e.</
     <directive>CacheMaxExpire</directive> si cette derni&egrave;re est
     utilis&eacute;e.</p>
 
-    <example>
+    <highlight language="config">
       CacheDefaultExpire 86400
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -616,9 +616,9 @@ Modified.</description>
     d'expiration.
     </p>
 
-    <example>
+    <highlight language="config">
       CacheIgnoreNoLastMod On
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -642,9 +642,9 @@ le contenu au client depuis le cache</description>
     Les ressources qui requi&egrave;rent une autorisation ne seront
     <em>jamais</em> mises en cache.</p>
 
-    <example>
+    <highlight language="config">
       CacheIgnoreCacheControl On
-    </example>
+    </highlight>
 
     <note type="warning"><title>Avertissement :</title>
        Cette directive permet de servir des ressources depuis le cache,
@@ -678,9 +678,9 @@ cache</description>
     trait&eacute;e comme si elle ne poss&egrave;dait pas de cha&icirc;ne de param&egrave;tres
     lorsque cette directive est activ&eacute;e.</p>
 
-    <example>
+    <highlight language="config">
       CacheIgnoreQueryString On
-    </example>
+    </highlight>
 
 </usage>
 </directivesynopsis>
@@ -717,9 +717,9 @@ fonction de la date de derni&egrave;re modification.</description>
     directive <directive>CacheMaxExpire</directive>, c'est ce dernier
     qui l'emporte.</p>
 
-    <example>
+    <highlight language="config">
       CacheLastModifiedFactor 0.5
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -764,11 +764,15 @@ fonction de la date de derni&egrave;re modification.</description>
     <code>None</code>.</p>
 
     <example><title>Exemple 1</title>
+    <highlight language="config">
       CacheIgnoreHeaders Set-Cookie
+      </highlight>
     </example>
 
     <example><title>Exemple 2</title>
+    <highlight language="config">
       CacheIgnoreHeaders None
+      </highlight>
     </example>
 
     <note type="warning"><title>Avertissement :</title>
@@ -812,11 +816,15 @@ l'URL lors de la mise en cache
     ajout&eacute; &agrave; la liste.</p>
 
     <example><title>Exemple 1</title>
+    <highlight language="config">
       CacheIgnoreURLSessionIdentifiers jsessionid
+      </highlight>
     </example>
 
     <example><title>Exemple 2</title>
+    <highlight language="config">
       CacheIgnoreURLSessionIdentifiers None
+      </highlight>
     </example>
 
 </usage>
@@ -842,9 +850,10 @@ consid&egrave;re comme arriv&eacute;es &agrave; expiration</description>
     de la part du serveur d'origine, et la r&eacute;ponse sera renvoy&eacute;e &agrave;
     partir du cache si la ressource d'arri&egrave;re-plan n'a pas &eacute;t&eacute; modifi&eacute;e.</p>
 
-    <example>
+    <highlight language="config">
       CacheStoreExpired On
-    </example>
+      </highlight>
+    
 </usage>
 </directivesynopsis>
 
@@ -869,9 +878,11 @@ marqu&eacute;es comme priv&eacute;es</description>
     n&eacute;cessitant une autorisation ne sont <em>jamais</em> mises en
     cache.</p>
 
-    <example>
+    
+    <highlight language="config">
       CacheStorePrivate On
-    </example>
+      </highlight>
+    
 
     <note type="warning"><title>Avertissement :</title>
        Cette directive autorise la mise en cache m&ecirc;me si le serveur
@@ -905,9 +916,11 @@ l'ent&ecirc;te Cache-Control: a pour valeur no-store.</description>
     n&eacute;cessitant une autorisation ne sont <em>jamais</em> mises en
     cache.</p>
 
-    <example>
+    
+    <highlight language="config">
       CacheStoreNoStore On
-    </example>
+      </highlight>
+    
 
     <note type="warning"><title>Avertissement :</title>
        Selon la RFC 2616, la valeur d'en-t&ecirc;te no-store est cens&eacute;e
@@ -940,10 +953,10 @@ l'ent&ecirc;te Cache-Control: a pour valeur no-store.</description>
   temp&ecirc;tes de requ&ecirc;tes dans le r&eacute;pertoire temp par d&eacute;faut du syst&egrave;me est
   la suivante :</p>
 
-  <example>
-    # Active le verrouillage du cache<br />
-    CacheLock on<br /><br />
-  </example>
+  <highlight language="config">
+# Active le verrouillage du cache
+CacheLock on
+  </highlight>
 
 </usage>
 </directivesynopsis>
@@ -1016,22 +1029,22 @@ l'ent&ecirc;te Cache-Control: a pour valeur no-store.</description>
     traitement complet de la requ&ecirc;te est n&eacute;cessaire, comme par exemple
     lorsque le contenu est soumis &agrave; autorisation.</p>
 
-    <example>
-      # Ex&eacute;cute le cache comme un gestionnaire normal<br />
-      CacheQuickHandler off<br /><br />
-    </example>
+    <highlight language="config">
+# Ex&eacute;cute le cache comme un gestionnaire normal
+CacheQuickHandler off
+    </highlight>
 
     <p>Lorsque le gestionnaire rapide est d&eacute;sactiv&eacute;, l'administrateur a
     aussi la possibilit&eacute; de choisir avec pr&eacute;cision le point de la cha&icirc;ne
     de filtrage o&ugrave; la mise en cache sera effectu&eacute;e, en utilisant le
     filtre <strong>CACHE</strong>.</p>
 
-    <example>
-      # Mise en cache du contenu avant l'intervention de mod_include et
-      # mod_deflate<br />
-      CacheQuickHandler off<br />
-      AddOutputFilterByType CACHE;INCLUDES;DEFLATE text/html<br /><br />
-    </example>
+    <highlight language="config">
+# Mise en cache du contenu avant l'intervention de mod_include et
+     # mod_deflate
+CacheQuickHandler off
+AddOutputFilterByType CACHE;INCLUDES;DEFLATE text/html
+    </highlight>
 
     <p>Si le filtre CACHE est sp&eacute;cifi&eacute; plusieurs fois, c'est la derni&egrave;re
     instance qui sera prise en compte.</p>
@@ -1072,14 +1085,15 @@ l'ent&ecirc;te Cache-Control: a pour valeur no-store.</description>
     depuis le cache, mais directement depuis le serveur demand&eacute;.</dd>
   </dl>
 
-  <example>
-    # Active l'en-t&ecirc;te X-Cache<br />
-    CacheHeader on<br />
-  </example>
+  <highlight language="config">
+# Active l'en-t&ecirc;te X-Cache
+CacheHeader on
+  </highlight>
 
-  <example>
-    X-Cache: HIT from localhost<br />
-  </example>
+  <highlight language="config">
+    X-Cache: HIT from localhost
+  </highlight>
+  
 
 </usage>
 </directivesynopsis>
@@ -1117,10 +1131,10 @@ l'ent&ecirc;te Cache-Control: a pour valeur no-store.</description>
   rapide qui est utilis&eacute;, elle doit se situer dans un contexte de
   serveur principal ou de serveur virtuel, sinon elle sera ignor&eacute;e.</p>
 
-  <example>
-    # Active l'en-t&ecirc;te X-Cache-Detail<br />
-    CacheDetailHeader on<br />
-  </example>
+  <highlight language="config">
+# Active l'en-t&ecirc;te X-Cache-Detail
+CacheDetailHeader on
+  </highlight>
 
   <example>
     X-Cache-Detail: "conditional cache hit: entity refreshed" from localhost<br />
@@ -1150,10 +1164,10 @@ inverse</description>
   machines, si toutes les entr&eacute;es du cache doivent poss&eacute;der la m&ecirc;me cl&eacute;,
   cette directive permet de sp&eacute;cifier une nouvelle URL de base.</p>
 
-  <example>
-    # Remplace l'URL de base de la cl&eacute; de cache.<br />
-    CacheKeyBaseURL http://www.example.com/<br />
-  </example>
+  <highlight language="config">
+# Remplace l'URL de base de la cl&eacute; de cache.
+CacheKeyBaseURL http://www.example.com/
+  </highlight>
 
   <note type="warning">Prenez garde en d&eacute;finissant cette directive. Si
   deux serveurs virtuels distincts poss&egrave;dent accidentellement la m&ecirc;me
@@ -1186,10 +1200,10 @@ inverse</description>
   r&eacute;ponse 5xx renvoy&eacute;e au client n'invalidera pas le contenu dans le
   cache.  </p>
 
-  <example>
-    # Sert des donn&eacute;es non mises &agrave; jour en cas d'erreur.<br />
-    CacheStaleOnError on<br />
-  </example>
+  <highlight language="config">
+# Sert des donn&eacute;es non mises &agrave; jour en cas d'erreur.
+CacheStaleOnError on
+  </highlight>
 
 </usage>
 </directivesynopsis>
