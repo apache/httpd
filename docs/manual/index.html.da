@@ -113,7 +113,7 @@ Dokumentation</h1>
 </div><div id="footer">
 <p class="apache">Copyright 2012 The Apache Software Foundation.<br />Licenseret under <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Moduler</a> | <a href="./mod/directives.html">Direktiver</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Ordbog</a> | <a href="./sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
-if (typeof(prettyPrint) !== undefined) {
+if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }
 //--><!]]></script>

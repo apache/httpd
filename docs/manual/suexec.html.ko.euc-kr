@@ -537,25 +537,26 @@
 <a href="./tr/suexec.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>This section is experimental!</strong><br />Comments placed here should not be expected 
 to last beyond the testing phase of this system, nor do we in any way guarantee that we'll read them.</div>
-<div id="disqus_thread">
-</div><script type="text/javascript"><!--//--><![CDATA[//><!--
-var lang = 'ko';
+<script type="text/javascript"><!--//--><![CDATA[//><!--
 var disqus_shortname = 'httpd';
-var disqus_identifier = window.location.href.replace(/(current|trunk)/, "2.4").replace(/\/[a-z]{2}\//, "/").replace(window.location.protocol, "http:") + '.' + lang;
-if (disqus_identifier.indexOf("httpd.apache.org") != -1) {
-    (function() {
-                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-                dsq.src = window.location.protocol + '//' + disqus_shortname + '.disqus.com/embed.js';
-            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-        })();
-} else {
-    var text = document.createTextNode("Comments have been disabled for offline viewing.");
-    document.getElementById('disqus_thread').appendChild(text);
-}
+var disqus_identifier = 'http://httpd.apache.org/docs/2.4/suexec.html.ko';
+(function(w, d) {
+    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
+        d.write('<div id="disqus_thread"><\/div>');
+        var s = d.createElement('script');
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = 'http' + '://' + disqus_shortname + '.disqus.com/embed.js';
+        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
+    }
+    else {
+        d.write('<div id="disqus_thread">Comments have been disabled for offline viewing.<\/div>');
+    }
+})(window, document);
 //--><!]]></script></div><div id="footer">
 <p class="apache">Copyright 2012 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">모듈</a> | <a href="./mod/directives.html">지시어들</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">용어</a> | <a href="./sitemap.html">사이트맵</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
-if (typeof(prettyPrint) !== undefined) {
+if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }
 //--><!]]></script>
