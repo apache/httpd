@@ -297,11 +297,12 @@ to last beyond the testing phase of this system, nor do we in any way guarantee 
 <script type="text/javascript">
 <xsl:text disable-output-escaping="yes"><![CDATA[<!--//--><![CDATA[//><!--]]></xsl:text>
 var lang = '<xsl:value-of select="$doclang"/>';
+<xsl:text disable-output-escaping="yes"><![CDATA[
 var disqus_shortname = 'httpd';
 var disqus_identifier = window.location.href.replace(/(current|trunk)/, "2.4").replace(/\/[a-z]{2}\//, "/").replace(window.location.protocol, "http:") + '.' + lang;
 if (disqus_identifier.indexOf("httpd.apache.org") != -1) {
-    document.write('<div id="disqus_thread">\n</div>');
     (function() {
+                document.write('<div id="disqus_thread">&nbsp;<\/div>');
                 var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
                 dsq.src = window.location.protocol + '//' + disqus_shortname + '.disqus.com/embed.js';
             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
@@ -309,7 +310,7 @@ if (disqus_identifier.indexOf("httpd.apache.org") != -1) {
 } else {
     document.write("Comments have been disabled for offline viewing.");
 }
-<xsl:text disable-output-escaping="yes"><![CDATA[//--><!]]]]>></xsl:text></script>
+]]><![CDATA[//--><!]]]]>></xsl:text></script>
 </div>
 </xsl:when>
 </xsl:choose>
