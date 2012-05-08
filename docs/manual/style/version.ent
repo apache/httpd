@@ -22,3 +22,6 @@
 <!ENTITY httpd.patch "0">
 
 <!ENTITY httpd.docs "trunk">
+
+<!-- Version tag for disqus comments -->
+<!ENTITY httpd.disqus "2.4">
