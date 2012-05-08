@@ -170,9 +170,9 @@ SetEnvIf Referer example\.com localreferer
         particular source.</p>
 
 <pre class="prettyprint lang-config">
-RewriteCond %{HTTP_USER_AGENT}   ^<strong>NameOfBadRobot</strong>
-RewriteCond %{REMOTE_ADDR}       =<strong>123\.45\.67\.[8-9]</strong>
-RewriteRule ^<strong>/secret/files/</strong>   -   [<strong>F</strong>]
+RewriteCond %{HTTP_USER_AGENT}   ^NameOfBadRobot
+RewriteCond %{REMOTE_ADDR}       =123\.45\.67\.[8-9]
+RewriteRule ^/secret/files/   -   [F]
 </pre>
 
         </dd>
