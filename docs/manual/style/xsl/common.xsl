@@ -299,7 +299,7 @@ to last beyond the testing phase of this system, nor do we in any way guarantee 
 var lang = '<xsl:value-of select="$doclang"/>';
 var disqus_shortname = 'httpd';
 var disqus_identifier = window.location.href.replace(/(current|trunk)/, "2.4").replace(/\/[a-z]{2}\//, "/").replace(window.location.protocol, "http:") + '.' + lang;
-if (disqus_identifier.indexOf("httpd.apache.org") == -1) {
+if (disqus_identifier.indexOf("httpd.apache.org") != -1) {
     document.write('<div id="disqus_thread">\n</div>');
     (function() {
                 var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
