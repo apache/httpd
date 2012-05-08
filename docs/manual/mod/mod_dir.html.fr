@@ -95,9 +95,10 @@ client envoie une requête pour un répertoire</td></tr>
     <code>Indexes</code> est définie, le serveur générera son propre
     listing du répertoire.</p>
 
-    <div class="example"><h3>Exemple</h3><p><code>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
       DirectoryIndex index.html
-    </code></p></div>
+      </pre>
+</div>
 
     <p>Avec cette configuration, une requête pour l'URL
     <code>http://example.com/docs/</code> renverrait au client la
@@ -108,9 +109,10 @@ client envoie une requête pour un répertoire</td></tr>
     <p>Notez qu'il n'est pas nécessaire que les documents soient
     relatifs au répertoire ;</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       DirectoryIndex index.html index.txt  /cgi-bin/index.pl
-    </code></p></div>
+    </pre>
+
 
     <p>provoquerait l'exécution du script CGI
     <code>/cgi-bin/index.pl</code> si aucun des fichiers
@@ -147,9 +149,10 @@ répertoires.
     <code class="directive">DirectoryIndexRedirect</code> permet de rediriger le
     client vers une ressource externe.</p>
 
-    <div class="example"><h3>Exemple</h3><p><code>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
       DirectoryIndexRedirect on
-    </code></p></div>
+      </pre>
+</div>
 
     <p>Une requête pour <code>http://example.com/docs/</code> se
     solderait par une redirection temporaire vers
@@ -200,15 +203,14 @@ d'Apache</td></tr>
     Gardez cependant à l'esprit que ceci peut avoir des répercutions en
     matière de sécurité.</p>
 
-    <div class="example"><p><code>
-        # voir l'avertissement de sécurité ci-dessous !<br />
-        &lt;Location /un/chemin&gt;<br />
-        <span class="indent">
-            DirectorySlash Off<br />
-            SetHandler un-gestionnaire<br />
-        </span>
-        &lt;/Location&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+# voir l'avertissement de sécurité ci-dessous !
+&lt;Location /some/path&gt;
+    DirectorySlash Off
+    SetHandler some-handler
+&lt;/Location&gt;
+    </pre>
+
 
     <div class="warning"><h3>Avertissement de sécurité</h3>
     <p>La désactivation de la redirection "slash de fin" peut entraîner
@@ -244,9 +246,10 @@ aucun fichier</td></tr>
     et qui provoquerait sans cela l'envoi d'un code d'erreur HTTP 404
     (Not Found).
     Par exemple</p>
-    <div class="example"><p><code>
-        <code>FallbackResource /not-404.php</code>
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+        FallbackResource /not-404.php
+    </pre>
+
     <p>fait en sorte que les requêtes ne correspondant à aucun fichier
     soient traitées par <code>non-404.php</code>, sans affecter les
     requêtes pour des fichiers existants.</p>
@@ -260,23 +263,21 @@ aucun fichier</td></tr>
     conditionnels <code>-f</code> et <code>-d</code> pour vérifier
     l'existence des fichiers et répertoires. Maintenant, une seule ligne
     de configuration est nécessaire.</p>
-    <div class="example"><p><code>
-        <code>FallbackResource /index.php</code>
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+        FallbackResource /index.php
+    </pre>
+
     <p>Les fichiers existants comme des images, des fichiers css, etc...
     seront traités normalement.</p>
     <p>Pour un URI intermédiaire tel que
     <em>http://example.com/blog/</em>, cet URI intermédiaire doit être
     spécifié en tant que <var>url-locale</var> :</p>
-    <div class="example"><p><code>
-         <code>
-             &lt;Directory /web/example.com/htdocs/blog&gt;<br />
-	     <span class="indent">
-		   FallbackResource /blog/index.php<br />
-             </span>
-             &lt;/Directory&gt;
-         </code>
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Directory /web/example.com/htdocs/blog&gt;
+    FallbackResource /blog/index.php
+&lt;/Directory&gt;
+    </pre>
+
 
 </div>
 </div>
@@ -287,7 +288,9 @@ aucun fichier</td></tr>
 <a href="../ko/mod/mod_dir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_dir.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>This section is experimental!</strong><br />Comments placed here should not be expected 
-to last beyond the testing phase of this system, nor do we in any way guarantee that we'll read them.</div><div id="disqus_thread" /><script type="text/javascript"><!--//--><![CDATA[//><!--
+to last beyond the testing phase of this system, nor do we in any way guarantee that we'll read them.</div>
+<div id="disqus_thread">
+</div><script type="text/javascript"><!--//--><![CDATA[//><!--
 var lang = 'fr';
 var disqus_shortname = 'httpd';
 var disqus_identifier = window.location.href.replace(/(current|trunk)/, "2.4").replace(/\/[a-z]{2}\//, "/").replace(window.location.protocol, "http:") + '.' + lang;

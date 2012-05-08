@@ -29,8 +29,6 @@
 <a href="../ja/mod/mod_headers.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_headers.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Personnalisation des en-têtes de requêtes et de réponses
 HTTP</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -68,10 +66,11 @@ tardif</a></li>
     ces deux directives ont un effet différent si leur ordre est inversé
     :</p>
 
-    <div class="example"><p><code>
-      RequestHeader append MirrorID "mirror 12"<br />
-      RequestHeader unset MirrorID
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+RequestHeader append MirrorID "mirror 12"
+RequestHeader unset MirrorID
+    </pre>
+
 
     <p>Dans cet ordre, l'en-tête <code>MirrorID</code> n'est pas défini.
     Si l'ordre des directives était inversé, l'en-tête
@@ -112,9 +111,10 @@ tardif</a></h2>
         Copie tous les en-têtes de requête qui commencent par "TS" vers
 	les en-têtes de la réponse :
 
-        <div class="example"><p><code>
+        <pre class="prettyprint lang-config">
           Header echo ^TS
-        </code></p></div>
+        </pre>
+
       </li>
 
       <li>
@@ -126,9 +126,10 @@ tardif</a></h2>
 	isoler les goulets d'étranglement entre le client et le
 	serveur.
 
-        <div class="example"><p><code>
+        <pre class="prettyprint lang-config">
           Header set mon-en-tête "%D %t"
-        </code></p></div>
+        </pre>
+
 
         <p>le résultat est l'ajout à la réponse d'un en-tête du type :</p>
 
@@ -147,10 +148,11 @@ tardif</a></h2>
 
         <p>le résultat est l'ajout à la réponse d'un en-tête du type :</p>
 
-        <div class="example"><p><code>
-          mon-en-tête: Bonjour Joe. Il a fallu D=3775428 microsecondes à Apache
-          pour servir cette requête.
-        </code></p></div>
+        <pre class="prettyprint lang-config">
+	Header set MyHeader "Bonjour Joe. Il a fallu D=3775428 microsecondes à Apache
+          pour servir cette requête."
+        </pre>
+
       </li>
 
       <li>
@@ -161,10 +163,11 @@ tardif</a></h2>
 	exemple nécessite les services du module
 	<code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>.
 
-        <div class="example"><p><code>
-          SetEnvIf mon-en-tête-requête mavaleur HAVE_MyRequestHeader<br />
-          Header set mon-en-tête "%D %t montexte" env=HAVE_MyRequestHeader
-        </code></p></div>
+        <pre class="prettyprint lang-config">
+SetEnvIf MyRequestHeader myvalue HAVE_MyRequestHeader
+Header set MyHeader "%D %t mytext" env=HAVE_MyRequestHeader
+        </pre>
+
 
         <p>Si l'en-tête <code>mon-en-tête-requête: mavaleur</code> est
 	présent dans la requête HTTP, la réponse contiendra un en-tête
@@ -180,9 +183,10 @@ tardif</a></h2>
 	du problème</a>) en remplaçant <var>https:</var> par
 	<var>http:</var> dans l'en-tête <var>Destination</var> :
 
-        <div class="example"><p><code>
+        <pre class="prettyprint lang-config">
           RequestHeader edit Destination ^https: http: early
-        </code></p></div>
+        </pre>
+
       </li>
 
       <li>
@@ -194,11 +198,12 @@ tardif</a></h2>
 	<code>NO_CACHE</code> et <code>NO_STORE</code> existent pour la
 	requête) :
 
-        <div class="example"><p><code>
-          Header merge Cache-Control no-cache env=CGI<br />
-          Header merge Cache-Control no-cache env=NO_CACHE<br />
-          Header merge Cache-Control no-store env=NO_STORE
-        </code></p></div>
+        <pre class="prettyprint lang-config">
+Header merge Cache-Control no-cache env=CGI
+Header merge Cache-Control no-cache env=NO_CACHE
+Header merge Cache-Control no-store env=NO_STORE
+        </pre>
+
 
         <p>alors, la réponse contiendra l'en-tête suivant :</p>
 
@@ -217,9 +222,10 @@ tardif</a></h2>
       <li>
         Définit un cookie de test si et seulement si le client n'envoie
 	pas de cookie
-        <div class="example"><p><code>
+        <pre class="prettyprint lang-config">
           Header set Set-Cookie testcookie "expr=-z %{req:Cookie}"
-        </code></p></div>
+        </pre>
+
       </li>
     </ol>
 </div>
@@ -525,7 +531,9 @@ tardif</a></h2>
 <a href="../ja/mod/mod_headers.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_headers.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>This section is experimental!</strong><br />Comments placed here should not be expected 
-to last beyond the testing phase of this system, nor do we in any way guarantee that we'll read them.</div><div id="disqus_thread" /><script type="text/javascript"><!--//--><![CDATA[//><!--
+to last beyond the testing phase of this system, nor do we in any way guarantee that we'll read them.</div>
+<div id="disqus_thread">
+</div><script type="text/javascript"><!--//--><![CDATA[//><!--
 var lang = 'fr';
 var disqus_shortname = 'httpd';
 var disqus_identifier = window.location.href.replace(/(current|trunk)/, "2.4").replace(/\/[a-z]{2}\//, "/").replace(window.location.protocol, "http:") + '.' + lang;
