@@ -185,7 +185,10 @@ RewriteRule ^/secret/files/   -   [F]
       <highlight language="config">
 SetEnvIfNoCase User-Agent ^NameOfBadRobot goaway
 &lt;Location /secret/files&gt;
-    Require not env goaway
+    &lt;RequireAll&gt;
+        Require all granted
+        Require not env goaway
+    &lt;/RequireAll&gt;
 &lt;/Location&gt;
       </highlight>
       <p>
@@ -287,7 +290,7 @@ RewriteRule ^ ${deflector:%{HTTP_REFERER}} [R,L]
       we just wish to redirect back to where they came from, a "-" is
       placed in the map:</p>
 
-<example>
+<highlight language="config">
 ##<br />
 ##  deflector.map<br />
 ##<br />
@@ -295,7 +298,7 @@ RewriteRule ^ ${deflector:%{HTTP_REFERER}} [R,L]
 http://badguys.example.com/bad/index.html    -<br />
 http://badguys.example.com/bad/index2.html   -<br />
 http://badguys.example.com/bad/index3.html   http://somewhere.example.com/
-</example>
+</highlight>
 
     </dd>
   </dl>

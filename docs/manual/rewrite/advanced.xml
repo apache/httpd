@@ -94,10 +94,8 @@ http://physical_host_of_user1/u/user/anypath
 
 <highlight language="config">
 RewriteEngine on
-
 RewriteMap      users-to-hosts   txt:/path/to/map.users-to-hosts
-
-RewriteRule   ^/u/<strong>([^/]+)</strong>/?(.*)   http://<strong>${users-to-hosts:$1|server0}</strong>/u/$1/$2
+RewriteRule   ^/u/([^/]+)/?(.*)   http://${users-to-hosts:$1|server0}/u/$1/$2
 </highlight>
     </dd>
   </dl>
@@ -129,7 +127,7 @@ RewriteRule   ^/u/<strong>([^/]+)</strong>/?(.*)   http://<strong>${users-to-hos
 
 <highlight language="config">
 # This example is valid in per-directory context only
-RewriteCond %{REQUEST_URI}   <strong>!-U</strong>
+RewriteCond %{REQUEST_URI}   !-U
 RewriteRule ^(.+)\.html$          /regenerate_page.cgi   [PT,L]
 </highlight>
 
@@ -172,7 +170,6 @@ RewriteRule ^(.+)\.html$          /regenerate_page.cgi   [PT,L]
 <highlight language="config">
 RewriteEngine on
 RewriteMap lb rnd:/path/to/serverlist.txt
-
 RewriteRule ^/(.*) http://${lb:servers}/$1 [P,L]
 </highlight>
 
