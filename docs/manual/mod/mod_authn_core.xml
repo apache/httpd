@@ -86,8 +86,8 @@
     AuthLDAPBindDN cn=youruser,o=ctx
     AuthLDAPBindPassword yourpassword
     AuthLDAPURL ldap://ldap.host/o=ctx
-    &lt;/AuthnProviderAlias&gt;
-    &lt;AuthnProviderAlias ldap ldap-other-alias&gt;
+&lt;/AuthnProviderAlias&gt;
+&lt;AuthnProviderAlias ldap ldap-other-alias&gt;
     AuthLDAPBindDN cn=yourotheruser,o=dev
     AuthLDAPBindPassword yourotherpassword
     AuthLDAPURL ldap://other.ldap.host/o=dev?cn
@@ -101,7 +101,7 @@ Alias /secure /webpages/secure
     AuthBasicProvider ldap-other-alias  ldap-alias1
     
     AuthType Basic
-    AuthName LDAP_Protected_Place
+    AuthName "LDAP Protected Place"
     Require valid-user
 &lt;/Directory&gt;
           </highlight>
