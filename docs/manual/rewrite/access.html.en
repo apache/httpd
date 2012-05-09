@@ -80,9 +80,9 @@ configuration.</div>
 
 
 <pre class="prettyprint lang-config">
-RewriteCond %{HTTP_REFERER} <strong>!^$</strong>
+RewriteCond %{HTTP_REFERER} !^$
 RewriteCond %{HTTP_REFERER} !www.example.com [NC]
-RewriteRule <strong>\.(gif|jpg|png)$</strong>    -   [F,NC]
+RewriteRule \.(gif|jpg|png)$    -   [F,NC]
 </pre>
 
 
@@ -90,9 +90,9 @@ RewriteRule <strong>\.(gif|jpg|png)$</strong>    -   [F,NC]
     an alternate image instead.</p>
 
 <pre class="prettyprint lang-config">
-RewriteCond %{HTTP_REFERER} <strong>!^$</strong>
+RewriteCond %{HTTP_REFERER} !^$
 RewriteCond %{HTTP_REFERER} !www.example.com [NC]
-RewriteRule <strong>\.(gif|jpg|png)$</strong>    /images/go-away.png   [R,NC]
+RewriteRule \.(gif|jpg|png)$    /images/go-away.png   [R,NC]
 </pre>
 
 
@@ -100,9 +100,9 @@ RewriteRule <strong>\.(gif|jpg|png)$</strong>    /images/go-away.png   [R,NC]
     other site.</p>
 
 <pre class="prettyprint lang-config">
-RewriteCond %{HTTP_REFERER} <strong>!^$</strong>
+RewriteCond %{HTTP_REFERER} !^$
 RewriteCond %{HTTP_REFERER} !www.example.com [NC]
-RewriteRule <strong>\.(gif|jpg|png)$</strong> http://other.example.com/image.gif   [R,NC]
+RewriteRule \.(gif|jpg|png)$ http://other.example.com/image.gif   [R,NC]
 </pre>
 
 
@@ -122,9 +122,7 @@ RewriteRule <strong>\.(gif|jpg|png)$</strong> http://other.example.com/image.gif
         <pre class="prettyprint lang-config">
 SetEnvIf Referer example\.com localreferer
 &lt;FilesMatch \.(jpg|png|gif)$&gt;
-	Order deny,allow
-	Deny from all
-	Allow from env=localreferer
+    Require env localreferer
 &lt;/FilesMatch&gt;
         </pre>
 
@@ -171,9 +169,9 @@ SetEnvIf Referer example\.com localreferer
         particular source.</p>
 
 <pre class="prettyprint lang-config">
-RewriteCond %{HTTP_USER_AGENT}   ^<strong>NameOfBadRobot</strong>
-RewriteCond %{REMOTE_ADDR}       =<strong>123\.45\.67\.[8-9]</strong>
-RewriteRule ^<strong>/secret/files/</strong>   -   [<strong>F</strong>]
+RewriteCond %{HTTP_USER_AGENT}   ^NameOfBadRobot
+RewriteCond %{REMOTE_ADDR}       =123\.45\.67\.[8-9]
+RewriteRule ^/secret/files/   -   [F]
 </pre>
 
         </dd>
@@ -188,9 +186,7 @@ RewriteRule ^<strong>/secret/files/</strong>   -   [<strong>F</strong>]
       <pre class="prettyprint lang-config">
 SetEnvIfNoCase User-Agent ^NameOfBadRobot goaway
 &lt;Location /secret/files&gt;
-    Order allow,deny
-    Allow from all
-    Deny from env=goaway
+    Require not env goaway
 &lt;/Location&gt;
       </pre>
 
