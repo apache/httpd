@@ -195,7 +195,7 @@ Redirect /docs/ http://new.example.com/docs/
 <pre class="prettyprint lang-config">
 RewriteEngine  on
 RewriteBase    /~quux/
-RewriteRule    ^foo\.<strong>html</strong>$  foo.<strong>cgi</strong>  [H=<strong>cgi-script</strong>]
+RewriteRule    ^foo\.html$  foo.cgi &nbsp; [H=<strong>cgi-script</strong>]
 </pre>
 
     </dd>
@@ -492,8 +492,8 @@ com       http://www.example.com/<br />
 RewriteCond %{HTTP_USER_AGENT}  ^<strong>Mozilla/3</strong>.*
 RewriteRule ^foo\.html$         foo.<strong>NS</strong>.html          [<strong>L</strong>]
 
-RewriteCond %{HTTP_USER_AGENT}  ^<strong>Lynx/</strong>         [OR]
-RewriteCond %{HTTP_USER_AGENT}  ^<strong>Mozilla/[12]</strong>
+RewriteCond %{HTTP_USER_AGENT}  ^Lynx/ [OR]
+RewriteCond %{HTTP_USER_AGENT}  ^Mozilla/[12]
 RewriteRule ^foo\.html$         foo.<strong>20</strong>.html          [<strong>L</strong>]
 
 RewriteRule ^foo\.html$         foo.<strong>32</strong>.html          [<strong>L</strong>]
@@ -570,7 +570,7 @@ using the following ruleset:</p>
 
 <pre class="prettyprint lang-config">
 RewriteEngine on
-RewriteRule   <strong>^/$</strong>  /about/  [<strong>R</strong>]
+RewriteRule   ^/$  /about/  [<strong>R</strong>]
 </pre>
 
 
