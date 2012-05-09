@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1302855:1332627 (outdated) -->
+<!-- English Revision : 1332627 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -55,7 +55,9 @@ sur les autres plates-formes.</compatibility>
     filtre d'acceptation pour ce protocole. Ceci s'av&egrave;re utile pour les
     protocoles qui n&eacute;cessitent l'envoi de donn&eacute;es par le serveur en
     premier, comme <code>ftp:</code> ou <code>nntp</code>:</p>
-    <example>AcceptFilter nntp none</example>
+    <highlight language="config">
+    AcceptFilter nntp none
+    </highlight>
 
     <p>Les noms de protocoles par d&eacute;faut sont <code>https</code> pour le
     port 443 et <code>http</code> pour tous les autres ports. Pour
@@ -64,10 +66,10 @@ sur les autres plates-formes.</compatibility>
     module="mpm_common">Listen</directive>.</p>
 
     <p>Sous FreeBSD, les valeurs par d&eacute;faut sont :</p>
-    <example>
-        AcceptFilter http httpready <br/>
-        AcceptFilter https dataready
-    </example>
+    <highlight language="config">
+AcceptFilter http httpready
+AcceptFilter https dataready
+    </highlight>
 
     <p>Le filtre d'acceptation <code>httpready</code> met en tampon des
     requ&ecirc;tes HTTP enti&egrave;res au niveau du noyau. Quand une requ&ecirc;te
@@ -80,10 +82,10 @@ sur les autres plates-formes.</compatibility>
     sektion=9">accf_data(9)</a>.</p>
 
     <p>Sous Linux, les valeurs par d&eacute;faut sont :</p>
-    <example>
-        AcceptFilter http data <br/>
-        AcceptFilter https data
-    </example>
+    <highlight language="config">
+AcceptFilter http data
+AcceptFilter https data
+    </highlight>
 
     <p>Le filtre <code>TCP_DEFER_ACCEPT</code> de Linux ne supporte pas
     la mise en tampon des requ&ecirc;tes http. Toute valeur autre que
@@ -94,10 +96,10 @@ sur les autres plates-formes.</compatibility>
     tcp.7.html">tcp(7)</a>.</p>
 
     <p>Sous Windows, les valeurs par d&eacute;faut sont :</p>
-    <example>
-        AcceptFilter http data <br/>
-        AcceptFilter https data
-    </example>
+    <highlight language="config">
+AcceptFilter http data
+AcceptFilter https data
+    </highlight>
 
     <p>Le module MPM pour Windows mpm_winnt utilise la directive
     AcceptFilter comme commutateur de l'API AcceptEx(), et ne supporte
@@ -119,7 +121,7 @@ sur les autres plates-formes.</compatibility>
     anti-spyware.</p>
 
 </usage>
-<seealso><directive>Protocol</directive></seealso>
+<seealso><directive module="core">Protocol</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -186,16 +188,14 @@ sup&eacute;rieures</compatibility>
     sur <code>PATH_INFO</code>. Le gestionnaire de base va en g&eacute;n&eacute;ral
     rejeter la requ&ecirc;te, et vous pouvez utiliser la configuration
     suivante pour utiliser un tel script :</p>
-
-    <example>
-      &lt;Files "mes-chemins.shtml"&gt;<br />
-      <indent>
-        Options +Includes<br />
-        SetOutputFilter INCLUDES<br />
-        AcceptPathInfo On<br />
-      </indent>
-      &lt;/Files&gt;
-    </example>
+<highlight language="config">
+&lt;Files "mypaths.shtml"&gt;
+  Options +Includes
+  SetOutputFilter INCLUDES
+  AcceptPathInfo On
+&lt;/Files&gt;
+    </highlight>
+    
 
 </usage>
 </directivesynopsis>
@@ -218,9 +218,7 @@ host</context>
     href="#allowoverride">activ&eacute;s pour ce r&eacute;pertoire</a>. Par exemple
     :</p>
 
-    <example>
-      AccessFileName .acl
-    </example>
+    <highlight language="config">AccessFileName .acl</highlight>
 
     <p>avant de renvoyer le document
     <code>/usr/local/web/index.html</code>, le serveur va rechercher les
@@ -229,13 +227,11 @@ host</context>
     pour y lire d'&eacute;ventuelles directives, &agrave; moins quelles n'aient &eacute;t&eacute;
     d&eacute;sactiv&eacute;es avec</p>
 
-    <example>
-      &lt;Directory /&gt;<br />
-      <indent>
-        AllowOverride None<br />
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory /&gt;
+    AllowOverride None
+&lt;/Directory&gt;
+    </highlight>
 </usage>
 <seealso><directive module="core">AllowOverride</directive></seealso>
 <seealso><a href="../configuring.html">Fichiers de configuration</a></seealso>
@@ -273,9 +269,7 @@ type de contenu d'une r&eacute;ponse est <code>text/plain</code> ou
     types de m&eacute;dia Internet (types MIME).
     Par exemple :</p>
 
-    <example>
-      AddDefaultCharset utf-8
-    </example>
+    <highlight language="config">AddDefaultCharset utf-8</highlight>
 
     <p>La directive <directive>AddDefaultCharset</directive> ne doit
     &ecirc;tre utilis&eacute;e que lorsque toutes les ressources textes auxquelles
@@ -512,9 +506,7 @@ All pour les versions ant&eacute;rieures</default>
 
     <p>Exemple :</p>
 
-    <example>
-      AllowOverride AuthConfig Indexes
-    </example>
+    <highlight language="config">AllowOverride AuthConfig Indexes</highlight>
 
     <p>Dans l'exemple ci-dessus, toutes les directives qui ne font
     partie ni du groupe <code>AuthConfig</code>, ni du groupe
@@ -566,10 +558,10 @@ All pour les versions ant&eacute;rieures</default>
 
     <p>Example:</p>
 
-    <example>
-      AllowOverride None<br />
-      AllowOverrideList Redirect RedirectMatch
-    </example>
+    <highlight language="config">
+AllowOverride None
+AllowOverrideList Redirect RedirectMatch
+    </highlight>
 
     <p>Dans l'exemple ci-dessus, seules les directives
     <code>Redirect</code> et <code>RedirectMatch</code> sont autoris&eacute;es.
@@ -577,10 +569,10 @@ All pour les versions ant&eacute;rieures</default>
 
     <p>Example:</p>
 
-    <example>
-      AllowOverride AuthConfig<br />
-      AllowOverrideList CookieTracking CookieName
-    </example>
+    <highlight language="config">
+AllowOverride AuthConfig
+AllowOverrideList CookieTracking CookieName
+    </highlight>
 
     <p>Dans l'exemple ci-dessus, la directive <directive
     module="core">AllowOverride</directive> autorise les directives du
@@ -675,9 +667,10 @@ host</context>
     g&eacute;n&eacute;r&eacute; relativement &agrave; la valeur de la directive
     <directive>ServerRoot</directive>.</p>
 
-    <example><title>Exemple</title>
-      DefaultRuntimeDir scratch/
-    </example>
+    <p><strong>Example</strong></p>
+   <highlight language="config">
+DefaultRuntimeDir scratch/
+    </highlight>
 
     <p>La valeur par d&eacute;faut de la directive
     <directive>DefaultRuntimeDir</directive> peut &ecirc;tre modifi&eacute;e en
@@ -721,9 +714,8 @@ DESACTIV&Eacute;S &agrave; partir des version 2.3.x.</compatibility>
     &ecirc;tre sp&eacute;cifi&eacute;e avec la valeur <code>none</code>, c'est &agrave; dire sans
     type de m&eacute;dium par d&eacute;faut. Par exemple :</p>
 
-    <example>
-      DefaultType None
-    </example>
+    <highlight language="config">DefaultType None</highlight>
+
     <p><code>DefaultType None</code> n'est disponible que dans les
     versions d'Apache 2.2.7 et sup&eacute;rieures.</p>
 
@@ -759,15 +751,15 @@ DESACTIV&Eacute;S &agrave; partir des version 2.3.x.</compatibility>
     La port&eacute;e de la variable est toujours globale, et n'est jamais
     limit&eacute;e &agrave; la section de configuration courante.</p>
 
-    <example>
-      &lt;IfDefine TEST&gt;<br/>
-      &nbsp;&nbsp;Define servername test.example.com<br/>
-      &lt;/IfDefine&gt;<br/>
-      &lt;IfDefine !TEST&gt;<br/>
-      &nbsp;&nbsp;Define servername www.example.com<br/>
-      &nbsp;&nbsp;Define SSL<br/>
-      &lt;/IfDefine&gt;<br/>
-    </example>
+    <highlight language="config">
+&lt;IfDefine TEST&gt;
+  Define servername test.example.com
+&lt;/IfDefine&gt;
+&lt;IfDefine !TEST&gt;
+  Define servername www.example.com
+  Define SSL
+&lt;/IfDefine&gt;
+    </highlight>
 
     <p>Le caract&egrave;re ":" est interdit dans les noms de variables afin
     d'&eacute;viter les conflits avec la syntaxe de la directive <directive
@@ -805,13 +797,11 @@ host</context>
      * <code>/home/user/public_html</code>, alors que <code>&lt;Directory
     /home/*/public_html&gt;</code> conviendra. Exemple :</p>
 
-    <example>
-      &lt;Directory /usr/local/httpd/htdocs&gt;<br />
-      <indent>
-        Options Indexes FollowSymLinks<br />
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory "/usr/local/httpd/htdocs"&gt;
+  Options Indexes FollowSymLinks
+&lt;/Directory&gt;
+    </highlight>
 
     <note>
       <p>Soyez prudent avec l'argument <var>chemin r&eacute;pertoire</var> : il
@@ -827,9 +817,11 @@ host</context>
     peuvent aussi &ecirc;tre utilis&eacute;es en ajoutant le caract&egrave;re
     <code>~</code>. Par exemple :</p>
 
-    <example>
-      &lt;Directory ~ "^/www/.*/[0-9]{3}"&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory ~ "^/www/.*/[0-9]{3}"&gt;
+
+&lt;/Directory&gt;
+</highlight>
 
     <p>pourra correspondre &agrave; tout r&eacute;pertoire situ&eacute; dans /www/ et dont le
     nom se compose de trois chiffres.</p>
@@ -843,19 +835,15 @@ host</context>
     directives des fichiers <a href="#accessfilename">.htaccess</a>. Par
     exemple, avec</p>
 
-    <example>
-      &lt;Directory /&gt;<br />
-      <indent>
-        AllowOverride None<br />
-      </indent>
-      &lt;/Directory&gt;<br />
-      <br />
-      &lt;Directory /home&gt;<br />
-      <indent>
-        AllowOverride FileInfo<br />
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory /&gt;
+  AllowOverride None
+&lt;/Directory&gt;
+
+&lt;Directory "/home"&gt;
+  AllowOverride FileInfo
+&lt;/Directory&gt;
+    </highlight>
 
     <p>l'acc&egrave;s au document <code>/home/web/dir/doc.html</code> emprunte
     le chemin suivant :</p>
@@ -880,13 +868,11 @@ host</context>
     test&eacute;s selon l'ordre dans lequel ils apparaissent dans le fichier de
     configuration. Par exemple, avec</p>
 
-    <example>
-      &lt;Directory ~ abc$&gt;<br />
-      <indent>
-        # ... directives here ...<br />
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory ~ "abc$"&gt;
+  # ... directives ici ...
+&lt;/Directory&gt;
+    </highlight>
 
     <p>la section avec expression rationnelle ne sera prise en compte
     qu'apr&egrave;s les sections <directive
@@ -902,13 +888,11 @@ host</context>
    correspondant &agrave; une URL. Il est recommand&eacute; de modifier cette
    situation &agrave; l'aide d'un bloc du style</strong></p>
 
-    <example>
-      &lt;Directory /&gt;<br />
-      <indent>
-        Require all denied<br />
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory /&gt;
+  Require all denied
+&lt;/Directory&gt;
+    </highlight>
 
     <p><strong>puis d'affiner la configuration pour les r&eacute;pertoires que vous
     voulez rendre accessibles. Voir la page <a
@@ -947,9 +931,11 @@ du syst&egrave;me de fichiers correspondant &agrave; une expression rationnelle<
     r&eacute;pertoire est pr&eacute;cis&eacute; sous la forme d'une <glossary
     ref="regex">expression rationnelle</glossary>. Par exemple :</p>
 
-    <example>
-      &lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}"&gt;
-    </example>
+    <highlight language="config">
+&lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}"&gt;
+    # ...
+&lt;/DirectoryMatch&gt;
+</highlight>
 
     <p>conviendrait pour les sous-r&eacute;pertoires de <code>/www/</code> dont
     le nom se compose de trois chiffres.</p>
@@ -998,9 +984,7 @@ host</context>
     de l'URL sera ajout&eacute; par le serveur &agrave; la racine des documents afin
     de construire le chemin du document recherch&eacute;. Exemple :</p>
 
-    <example>
-      DocumentRoot /usr/web
-    </example>
+    <highlight language="config">DocumentRoot "/usr/web"</highlight>
 
     <p>un acc&egrave;s &agrave; <code>http://my.example.com/index.html</code> se
     r&eacute;f&egrave;re alors &agrave; <code>/usr/web/index.html</code>. Si <var>chemin
@@ -1037,14 +1021,14 @@ requ&ecirc;te &agrave; l'ex&eacute;cution</description>
     sup&eacute;rieure et dans la m&ecirc;me port&eacute;e n'ont pas &eacute;t&eacute; satisfaites. Par
     exemple, dans :</p>
 
-    <example>
-        &lt;If "-z req('Host')"&gt;<br/>
-        ...<br/>
-        &lt;/If&gt;<br/>
-        &lt;Else&gt;<br/>
-        ...<br/>
-        &lt;/Else&gt;<br/>
-    </example>
+    <highlight language="config">
+&lt;If "-z req('Host')"&gt;
+  # ...
+&lt;/If&gt;
+&lt;Else&gt;
+  # ...
+&lt;/Else&gt;
+    </highlight>
 
     <p>La condition de la section <directive
     type="section">If</directive> serait satisfaite pour les requ&ecirc;tes
@@ -1084,17 +1068,17 @@ type="section">ElseIf</directive> pr&eacute;c&eacute;dente ne l'&eacute;tait pas
     ou <directive type="section">ElseIf</directive> de la m&ecirc;me port&eacute;e ne
     l'est pas. Par exemple, dans :</p>
 
-    <example>
-        &lt;If "-R '10.1.0.0/16'"&gt;<br/>
-        ...<br/>
-        &lt;/If&gt;<br/>
-        &lt;ElseIf "-R '10.0.0.0/8'"&gt;<br/>
-        ...<br/>
-        &lt;/ElseIf&gt;<br/>
-        &lt;Else&gt;<br/>
-        ...<br/>
-        &lt;/Else&gt;<br/>
-    </example>
+    <highlight language="config">
+&lt;If "-R '10.1.0.0/16'"&gt;
+  #...
+&lt;/If&gt;
+&lt;ElseIf "-R '10.0.0.0/8'"&gt;
+  #...
+&lt;/ElseIf&gt;
+&lt;Else&gt;
+  #...
+&lt;/Else&gt;
+    </highlight>
 
     <p>La condition correspondant &agrave; la section <directive
     type="section">ElseIf</directive> est satisfaite si l'adresse
@@ -1154,21 +1138,17 @@ host</context>
     probl&egrave;me, il est pr&eacute;f&eacute;rable de d&eacute;sactiver la projection en m&eacute;moire
     des fichiers servis en sp&eacute;cifiant :</p>
     
-    <example>
-      EnableMMAP Off
-    </example>
+    <highlight language="config">EnableMMAP Off</highlight>
 
     <p>Pour les montages NFS, cette fonctionnalit&eacute; peut &ecirc;tre
     explicitement d&eacute;sactiv&eacute;e pour les fichiers concern&eacute;s en sp&eacute;cifiant
     :</p>
 
-    <example>
-      &lt;Directory "/chemin vers montage NFS"&gt;
-      <indent>
-        EnableMMAP Off
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory "/path-to-nfs-files"&gt;
+  EnableMMAP Off
+&lt;/Directory&gt;
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -1224,21 +1204,17 @@ sup&eacute;rieures. Par d&eacute;faut &agrave; Off depuis la version 2.3.9.</com
     probl&egrave;me, vous pouvez activer cette fonctionnalit&eacute; en
     sp&eacute;cifiant :</p>
 
-    <example>
-      EnableSendfile On
-    </example>
+    <highlight language="config">EnableSendfile On</highlight>
 
     <p>Pour les montages r&eacute;seau, cette fonctionnalit&eacute; peut &ecirc;tre
     explicitement d&eacute;sactiv&eacute;e pour les fichiers concern&eacute;s en sp&eacute;cifiant
     :</p>
 
-    <example>
-      &lt;Directory "/chemin vers montage r&eacute;seau"&gt;
-      <indent>
-        EnableSendfile Off
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory "/path-to-nfs-files"&gt;
+  EnableSendfile Off
+&lt;/Directory&gt;
+    </highlight>
     <p>Veuillez noter que la configuration de la directive
     <directive>EnableSendfile</directive> dans un contexte de r&eacute;pertoire
     ou de fichier .htaccess n'est pas support&eacute;e par
@@ -1265,26 +1241,25 @@ d'erreur personnalis&eacute;</description>
     directive peut &ecirc;tre utilis&eacute;e pour g&eacute;n&eacute;rer un message d'erreur
     personnalis&eacute;, et interrompre la lecture de la configuration. </p>
 
-    <example><title>Exemple</title>
-      # v&eacute;rification du chargement de mod_include<br />
-      &lt;IfModule !include_module&gt;<br />
-      Error mod_foo n&eacute;cessite mod_include. Chargez-le via LoadModule.<br />
-      &lt;/IfModule&gt;<br />
-      <br />
-      # v&eacute;rification de la d&eacute;finition de SSL ou (exclusif) NOSSL<br />
-      &lt;IfDefine SSL&gt;<br />
-      &lt;IfDefine NOSSL&gt;<br />
-      Error SSL et NOSSL sont d&eacute;finies. Vous devez d&eacute;finir soit l'une,
-      soit l'autre.<br />
-      &lt;/IfDefine&gt;<br />
-      &lt;/IfDefine&gt;<br />
-      &lt;IfDefine !SSL&gt;<br />
-      &lt;IfDefine !NOSSL&gt;<br />
-      Error Vous devez d&eacute;finir une et une seule des deux variables SSL
-      ou NOSSL.<br />
-      &lt;/IfDefine&gt;<br />
-      &lt;/IfDefine&gt;<br />
-    </example>
+    <highlight language="config">
+# Exemple
+# v&eacute;rification du chargement de mod_include
+&lt;IfModule !include_module&gt;
+  Error "mod_include is required by mod_foo.  Load it with LoadModule."
+&lt;/IfModule&gt;
+
+# v&eacute;rification de la d&eacute;finition de SSL ou (exclusif) NOSSL
+&lt;IfDefine SSL&gt;
+&lt;IfDefine NOSSL&gt;
+  Error "Both SSL and NOSSL are defined.  Define only one of them."
+&lt;/IfDefine&gt;
+&lt;/IfDefine&gt;
+&lt;IfDefine !SSL&gt;
+&lt;IfDefine !NOSSL&gt;
+  Error "Either SSL or NOSSL must be defined."
+&lt;/IfDefine&gt;
+&lt;/IfDefine&gt;
+    </highlight>
 
 </usage>
 </directivesynopsis>
@@ -1330,14 +1305,13 @@ host</context>
     Alternativement, un message &agrave; afficher par le navigateur pourra &ecirc;tre
     fourni. Exemples :</p>
 
-    <example>
-      ErrorDocument 500 http://foo.example.com/cgi-bin/tester<br />
-      ErrorDocument 404 /cgi-bin/bad_urls.pl<br />
-      ErrorDocument 401 /subscription_info.html<br />
-      ErrorDocument 403 "D&eacute;sol&eacute;, vous n'avez pas l'autorisation d'acc&egrave;s
-      aujourd'hui"<br />
-      ErrorDocument 403 Interdit!
-    </example>
+    <highlight language="config">
+ErrorDocument 500 http://foo.example.com/cgi-bin/tester
+ErrorDocument 404 /cgi-bin/bad_urls.pl
+ErrorDocument 401 /subscription_info.html
+ErrorDocument 403 "Sorry can't allow you access today"
+ErrorDocument 403 Forbidden!
+    </highlight>
 
     <p>De plus, on peut sp&eacute;cifier la valeur sp&eacute;ciale <code>default</code>
     pour indiquer l'utilisation d'un simple message d'Apache httpd cod&eacute; en
@@ -1347,14 +1321,13 @@ host</context>
     les configurations qui sans cela, h&eacute;riteraient d'une directive
     <directive>ErrorDocument</directive> existante.</p>
 
-    <example>
-      ErrorDocument 404 /cgi-bin/bad_urls.pl<br /><br />
-      &lt;Directory /web/docs&gt;<br />
-      <indent>
-        ErrorDocument 404 default<br />
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+ErrorDocument 404 /cgi-bin/bad_urls.pl
+
+&lt;Directory /web/docs&gt;
+  ErrorDocument 404 default
+&lt;/Directory&gt;
+    </highlight>
 
     <p>Notez que lorsque vous sp&eacute;cifiez une directive
     <directive>ErrorDocument</directive> pointant vers une URL distante
@@ -1425,17 +1398,13 @@ host</context>
     absolu, il est consid&eacute;r&eacute; comme relatif au chemin d&eacute;fini par la
     directive <directive module="core">ServerRoot</directive>.</p>
 
-    <example><title>Exemple</title>
-    ErrorLog /var/log/httpd/error_log
-    </example>
+    <highlight language="config">ErrorLog "/var/log/httpd/error_log"</highlight>
 
     <p>Si le <var>chemin fichier</var> commence par une barre verticale
     "<code>(|)</code>", il est consid&eacute;r&eacute; comme une commande &agrave; lancer pour traiter la
     journalisation de l'erreur.</p>
 
-    <example><title>Exemple</title>
-    ErrorLog "|/usr/local/bin/erreurs_httpd"
-    </example>
+    <highlight language="config">ErrorLog "|/usr/local/bin/httpd_errors"</highlight>
 
     <p>Voir les notes &agrave; propos des <a href="../logs.html#piped">journaux
     redirig&eacute;s</a> pour plus d'informations.</p>
@@ -1450,9 +1419,7 @@ host</context>
     global, et si il est modifi&eacute; dans un serveur virtuel, le dispositif
     final sp&eacute;cifi&eacute; affecte l'ensemble du serveur</p>
 
-    <example><title>Exemple</title>
-    ErrorLog syslog:user
-    </example>
+    <highlight language="config">ErrorLog syslog:user</highlight>
 
     <p>SECURITE : Voir le document <a
     href="../misc/security_tips.html#serverroot">conseils &agrave; propos de
@@ -1486,9 +1453,10 @@ host</context>
     sp&eacute;cifier quelles informations suppl&eacute;mentaires vont &ecirc;tre enregistr&eacute;es
     dans le journal des erreurs en plus du message habituel.</p>
 
-    <example><title>Exemple simple</title>
-        ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
-    </example>
+    <highlight language="config">
+# Exemple simple
+ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
+    </highlight>
 
     <p>La sp&eacute;cification de <code>connection</code> ou
     <code>request</code> comme premier param&egrave;tre permet de d&eacute;finir des
@@ -1670,10 +1638,10 @@ host</context>
     c'est son identifiant unique qui sera utilis&eacute; comme identifiant de
     journal pour les requ&ecirc;tes.</p>
 
-    <example><title>Exemple (format par d&eacute;faut)</title>
-        ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\ %a]
-        %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
-    </example>
+    <highlight language="config">
+# Exemple (format par d&eacute;faut)
+ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\ %a] %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
+    </highlight>
 
     <p>Cet exemple renverrait un message d'erreur du style :</p>
 
@@ -1684,19 +1652,19 @@ host</context>
     <p>Notez que, comme indiqu&eacute; plus haut, certains champs sont
     totalement supprim&eacute;s s'ils n'ont pas &eacute;t&eacute; d&eacute;finis.</p>
 
-    <example><title>Exemple (similaire au format 2.2.x)</title>
-        ErrorLogFormat "[%t] [%l] %7F: %E: [client\ %a]
-        %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
-    </example>
+    <highlight language="config">
+# Exemple (similaire au format 2.2.x)
+ErrorLogFormat "[%t] [%l] %7F: %E: [client\ %a] %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
+    </highlight>
 
-    <example><title>Exemple avanc&eacute; avec identifiants journal de
-    requ&ecirc;te/connexion</title>
-        ErrorLogFormat "[%{uc}t] [%-m:%-l] [R:%L] [C:%{C}L] %7F: %E: %M"<br/>
-        ErrorLogFormat request "[%{uc}t] [R:%L] Request %k on C:%{c}L pid:%P tid:%T"<br/>
-        ErrorLogFormat request "[%{uc}t] [R:%L] UA:'%+{User-Agent}i'"<br/>
-        ErrorLogFormat request "[%{uc}t] [R:%L] Referer:'%+{Referer}i'"<br/>
-        ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"<br/>
-    </example>
+    <highlight language="config">
+# Exemple avanc&eacute; avec identifiants journal de requ&ecirc;te/connexion
+ErrorLogFormat "[%{uc}t] [%-m:%-l] [R:%L] [C:%{C}L] %7F: %E: %M"
+ErrorLogFormat request "[%{uc}t] [R:%L] Request %k on C:%{c}L pid:%P tid:%T"
+ErrorLogFormat request "[%{uc}t] [R:%L] UA:'%+{User-Agent}i'"
+ErrorLogFormat request "[%{uc}t] [R:%L] Referer:'%+{Referer}i'"
+ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"
+    </highlight>
 
 </usage>
 <seealso><directive module="core">ErrorLog</directive></seealso>
@@ -1780,8 +1748,8 @@ dans les versions 2.3.14 et ant&eacute;rieures.</compatibility>
      <dd>La taille du fichier en octets sera incluse</dd>
      <dt><strong>All</strong></dt>
      <dd>Tous les champs disponibles seront utilis&eacute;s. Cette d&eacute;finition
-     est &eacute;quivalente &agrave; : <example>FileETag INode MTime
-     Size</example></dd>
+     est &eacute;quivalente &agrave; : 
+     <highlight language="config">FileETag INode MTime Size</highlight></dd>
      <dt><strong>None</strong></dt>
      <dd>Si le document se compose d'un fichier, aucun champ
      <code>ETag</code> ne sera inclus dans la r&eacute;ponse</dd>
@@ -1861,9 +1829,11 @@ host</context>
     ref="regex">Expressions rationnelles</glossary> en ajoutant la
     caract&egrave;re <code>~</code>. Par exemple :</p>
 
-    <example>
-      &lt;Files ~ "\.(gif|jpe?g|png)$"&gt;
-    </example>
+    <highlight language="config">
+&lt;Files ~ "\.(gif|jpe?g|png)$"&gt;
+    #...
+&lt;/Files&gt;
+</highlight>
 
     <p>correspondrait &agrave; la plupart des formats graphiques de l'Internet.
     Il est cependant pr&eacute;f&eacute;rable d'utiliser la directive <directive
@@ -1904,9 +1874,11 @@ host</context>
     <glossary ref="regex">expressions rationnelles</glossary>. Par
     exemple :</p>
 
-    <example>
-      &lt;FilesMatch "\.(gif|jpe?g|png)$"&gt;
-    </example>
+    <highlight language="config">
+&lt;FilesMatch "\.(gif|jpe?g|png)$"&gt;
+    # ...
+&lt;/FilesMatch&gt;
+</highlight>
 
     <p>correspondrait &agrave; la plupart des formats graphiques de
     l'Internet.</p>
@@ -1941,9 +1913,7 @@ HTTP Content-Type pour les fichiers correspondants</description>
     pas leur ajouter l'extension <code>.gif</code>, vous pouvez utiliser
     :</p>
 
-    <example>
-      ForceType image/gif
-    </example>
+    <highlight language="config">ForceType image/gif</highlight>
 
     <p>Notez que cette directive l'emporte sur d'autres associations de
     type de m&eacute;dium indirectes d&eacute;finies dans mime.types ou via la
@@ -1953,22 +1923,18 @@ HTTP Content-Type pour les fichiers correspondants</description>
     <directive>ForceType</directive> en affectant la valeur
     <code>None</code> &agrave; l'argument <var>type m&eacute;dium</var> :</p>
 
-    <example>
-      # force le type MIME de tous les fichiers &agrave; image/gif:<br />
-      &lt;Location /images&gt;<br />
-        <indent>
-          ForceType image/gif<br />
-        </indent>
-      &lt;/Location&gt;<br />
-      <br />
-      # mais utilise les m&eacute;thodes classiques d'attribution du type MIME
-      # dans le sous-r&eacute;pertoire suivant :<br />
-      &lt;Location /images/mixed&gt;<br />
-      <indent>
-        ForceType None<br />
-      </indent>
-      &lt;/Location&gt;
-    </example>
+    <highlight language="config">
+# force le type MIME de tous les fichiers &agrave; image/gif:
+&lt;Location /images&gt;
+  ForceType image/gif
+&lt;/Location&gt;
+
+# mais utilise les m&eacute;thodes classiques d'attribution du type MIME
+# dans le sous-r&eacute;pertoire suivant :
+&lt;Location /images/mixed&gt;
+  ForceType None
+&lt;/Location&gt;
+    </highlight>
     
     <p>A la base, cette directive &eacute;crase le type de contenu g&eacute;n&eacute;r&eacute; pour
     les fichiers statiques servis &agrave; partir du syt&egrave;me de fichiers. Pour
@@ -2071,9 +2037,7 @@ host</context>
     si et seulement si l'expression renvoie la valeur "vrai". Par
     exemple :</p>
 
-    <example>
-        &lt;If "-z req('Host')"&gt;
-    </example>
+    <highlight language="config">&lt;If "-z req('Host')"&gt;</highlight>
 
     <p>serait satisfaite pour les requ&ecirc;tes HTTP/1.0 sans en-t&ecirc;te
     <var>Host:</var>. Les expressions peuvent contenir diff&eacute;rents
@@ -2083,9 +2047,7 @@ host</context>
     &agrave; usages divers (<code>-n</code>, <code>-z</code>, <code>-f</code>,
     ...). Les expressions rationnelles sont aussi support&eacute;es,</p>
 
-    <example>
-        &lt;If "%{QUERY_STRING} =~ /(delete|commit)=.*?elem/"&gt;
-    </example>
+    <highlight language="config">&lt;If "%{QUERY_STRING} =~ /(delete|commit)=.*?elem/"&gt;</highlight>
 
     <p>ainsi que les comparaison de mod&egrave;les de type shell et de
     nombreuses autres op&eacute;rations. Ces op&eacute;rations peuvent &ecirc;tre effectu&eacute;es
@@ -2154,32 +2116,22 @@ host</context>
     peuvent &ecirc;tre imbriqu&eacute;es, ce qui permet d'impl&eacute;menter un test
     multi-param&egrave;tres simple. Exemple :</p>
 
-    <example>
-      httpd -DReverseProxy -DUseCache -DMemCache ...<br />
-      <br />
-      # httpd.conf<br />
-      &lt;IfDefine ReverseProxy&gt;<br />
-      <indent>
-        LoadModule proxy_module   modules/mod_proxy.so<br />
-        LoadModule proxy_http_module   modules/mod_proxy_http.so<br />
-        &lt;IfDefine UseCache&gt;<br />
-        <indent>
-          LoadModule cache_module   modules/mod_cache.so<br />
-          &lt;IfDefine MemCache&gt;<br />
-          <indent>
-            LoadModule mem_cache_module   modules/mod_mem_cache.so<br />
-          </indent>
-          &lt;/IfDefine&gt;<br />
-          &lt;IfDefine !MemCache&gt;<br />
-          <indent>
-            LoadModule cache_disk_module   modules/mod_cache_disk.so<br />
-          </indent>
-          &lt;/IfDefine&gt;
-        </indent>
-        &lt;/IfDefine&gt;
-      </indent>
-      &lt;/IfDefine&gt;
-    </example>
+    <example>httpd -DReverseProxy -DUseCache -DMemCache ...</example>
+    <highlight language="config">
+&lt;IfDefine ReverseProxy&gt;
+  LoadModule proxy_module   modules/mod_proxy.so
+  LoadModule proxy_http_module   modules/mod_proxy_http.so
+  &lt;IfDefine UseCache&gt;
+    LoadModule cache_module   modules/mod_cache.so
+    &lt;IfDefine MemCache&gt;
+      LoadModule mem_cache_module   modules/mod_mem_cache.so
+    &lt;/IfDefine&gt;
+    &lt;IfDefine !MemCache&gt;
+      LoadModule cache_disk_module   modules/mod_cache_disk.so
+    &lt;/IfDefine&gt;
+  &lt;/IfDefine&gt;
+&lt;/IfDefine&gt;
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -2287,35 +2239,31 @@ version 2.3.6</compatibility>
 
     <p>Exemples :</p>
 
-    <example>
-      Include /usr/local/apache2/conf/ssl.conf<br />
-      Include /usr/local/apache2/conf/vhosts/*.conf
-    </example>
+    <highlight language="config">
+Include /usr/local/apache2/conf/ssl.conf
+Include /usr/local/apache2/conf/vhosts/*.conf
+    </highlight>
 
     <p>ou encore, avec des chemins relatifs au r&eacute;pertoire d&eacute;fini par la
     directive <directive module="core">ServerRoot</directive> :</p>
 
-    <example>
-      Include conf/ssl.conf<br />
-      Include conf/vhosts/*.conf
-    </example>
+    <highlight language="config">
+Include conf/ssl.conf
+Include conf/vhosts/*.conf
+    </highlight>
 
     <p>On peut aussi ins&eacute;rer des caract&egrave;res g&eacute;n&eacute;riques dans la partie
     r&eacute;pertoires du chemin. Dans l'exemple suivant, la directive
     &eacute;chouera si aucun sous-r&eacute;pertoire de conf/vhosts ne contient au
     moins un fichier *.conf :</p>
   
-    <example>
-      Include conf/vhosts/*/*.conf
-    </example>
+    <highlight language="config">Include conf/vhosts/*/*.conf</highlight>
 
     <p>Par contre, dans l'exemple suivant, la directive sera simplement
     ignor&eacute;e si aucun sous-r&eacute;pertoire de conf/vhosts ne contient au
     moins un fichier *.conf :</p>
 
-    <example>
-      IncludeOptional conf/vhosts/*/*.conf
-    </example>
+    <highlight language="config">IncludeOptional conf/vhosts/*/*.conf</highlight>
   
 </usage>    
 
@@ -2448,13 +2396,11 @@ certaines m&eacute;thodes HTTP</description>
     <code>DELETE</code>, en laissant les autres m&eacute;thodes sans protection
     :</p>
 
-    <example>
-      &lt;Limit POST PUT DELETE&gt;<br />
-      <indent>
-        Require valid-user<br />
-      </indent>
-      &lt;/Limit&gt;
-    </example>
+    <highlight language="config">
+&lt;Limit POST PUT DELETE&gt;
+  Require valid-user
+&lt;/Limit&gt;
+    </highlight>
 
     <p>La liste des noms de m&eacute;thodes peut contenir une ou plusieurs
     valeurs parmi les suivantes : <code>GET</code>, <code>POST</code>,
@@ -2497,18 +2443,14 @@ certaines m&eacute;thodes HTTP</description>
     <code>POST</code>, et la directive <code>Require group
     editors</code> sera ignor&eacute;e dans tous les cas :</p>
 
-    <example>
-      &lt;LimitExcept GET&gt;
-      <indent>
-        Require valid-user
-      </indent>
-      &lt;/LimitExcept&gt;<br />
-      &lt;Limit POST&gt;
-      <indent>
-        Require group editors
-      </indent>
-      &lt;/Limit&gt;
-    </example>
+    <highlight language="config">
+&lt;LimitExcept GET&gt;
+  Require valid-user
+&lt;/LimitExcept&gt;
+&lt;Limit POST&gt;
+  Require group editors
+&lt;/Limit&gt;
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -2537,13 +2479,11 @@ sauf celles qui sont sp&eacute;cifi&eacute;es</description>
 
     <p>Par exemple :</p>
 
-    <example>
-      &lt;LimitExcept POST GET&gt;<br />
-      <indent>
-        Require valid-user<br />
-      </indent>
-      &lt;/LimitExcept&gt;
-    </example>
+    <highlight language="config">
+&lt;LimitExcept POST GET&gt;
+  Require valid-user
+&lt;/LimitExcept&gt;
+    </highlight>
 
 </usage>
 </directivesynopsis>
@@ -2581,9 +2521,7 @@ host</context>
     maximum des sous-requ&ecirc;tes. Si vous ne sp&eacute;cifiez qu'un seul
     <var>nombre</var>, il sera affect&eacute; aux deux limites.</p>
 
-    <example><title>Exemple</title>
-      LimitInternalRecursion 5
-    </example>
+    <highlight language="config">LimitInternalRecursion 5</highlight>
 </usage>
 </directivesynopsis>
 
@@ -2630,9 +2568,7 @@ host</context>
     fichiers charg&eacute;s &agrave; 100Ko, vous pouvez utiliser la directive suivante
     :</p>
 
-    <example>
-      LimitRequestBody 102400
-    </example>
+    <highlight language="config">LimitRequestBody 102400</highlight>
 
     <note><p>Pour une description d&eacute;taill&eacute;e de la mani&egrave;re dont cette
     directive est interpr&eacute;t&eacute;e par les requ&ecirc;tes mandat&eacute;es, voir la
@@ -2678,9 +2614,7 @@ requ&ecirc;te HTTP</description>
 
     <p>Par exemple :</p>
 
-    <example>
-      LimitRequestFields 50
-    </example>
+    <highlight language="config">LimitRequestFields 50</highlight>
 
     <note type="warning"><title>Avertissement</title>
      <p>Dans le cas des serveurs virtuels &agrave; base de noms, la valeur de
@@ -2721,9 +2655,7 @@ requ&ecirc;te HTTP</description>
 
     <p>Par exemple ::</p>
 
-    <example>
-      LimitRequestFieldSize 4094
-    </example>
+    <highlight language="config">LimitRequestFieldSize 4094</highlight>
 
     <note>Dans des conditions normales, la valeur par d&eacute;faut de cette
     directive ne doit pas &ecirc;tre modifi&eacute;e. En outre, vous ne
@@ -2769,9 +2701,7 @@ HTTP</description>
 
     <p>Par exemple :</p>
 
-    <example>
-      LimitRequestLine 4094
-    </example>
+    <highlight language="config">LimitRequestLine 4094</highlight>
 
     <note>Dans des conditions normales, la valeur par d&eacute;faut de cette
     directive ne doit pas &ecirc;tre modifi&eacute;e. En outre, vous ne
@@ -2806,9 +2736,7 @@ host</context>
 
     <p>Exemple :</p>
 
-    <example>
-      LimitXMLRequestBody 0
-    </example>
+    <highlight language="config">LimitXMLRequestBody 0</highlight>
 
 </usage>
 </directivesynopsis>
@@ -2867,19 +2795,21 @@ host</context>
     directives contenues dans la section s'appliqueront &agrave; /private1,
     /private1/ et /private1/file.txt, mais pas &agrave; /private1other. 
     </p>
-    <example>
-      &lt;Location /private1&gt;
-          ...
-    </example>
+    <highlight language="config">
+&lt;Location /private1&gt;
+    #  ...
+&lt;/Location&gt;
+    </highlight>
     <p>
     De m&ecirc;me, dans l'exemple ci-dessous, o&ugrave; l'on utilise un slash de fin, les
     directives contenues dans la section s'appliqueront &agrave; /private2/ et
     &agrave; /private2/file.txt, mais pas &agrave; /private2other.
     </p>
-    <example>
-      &lt;Location /private2<em>/</em>&gt;
-          ...
-    </example>
+    <highlight language="config">
+&lt;Location /private2<em>/</em>&gt;
+    # ...
+&lt;/Location&gt;
+    </highlight>
     
     <note><title>Quand utiliser la section <directive
     type="section">Location</directive></title>
@@ -2913,9 +2843,11 @@ host</context>
     rationnelles</glossary>, moyennant l'addition d'un caract&egrave;re
     <code>~</code>. Par exemple :</p>
 
-    <example>
-      &lt;Location ~ "/(extra|special)/data"&gt;
-    </example>
+    <highlight language="config">
+&lt;Location ~ "/(extra|special)/data"&gt;
+    #...
+&lt;/Location&gt;
+</highlight>
 
     <p>concernerait les URLs contenant les sous-cha&icirc;ne
     <code>/extra/data</code> ou <code>/special/data</code>. La directive
@@ -2934,14 +2866,12 @@ host</context>
     appartenant au domaine <code>example.com</code>, vous pouvez
     utiliser :</p>
 
-    <example>
-      &lt;Location /status&gt;<br />
-      <indent>
-        SetHandler server-status<br />
-        Require host example.com<br />
-      </indent>
-      &lt;/Location&gt;
-    </example>
+    <highlight language="config">
+&lt;Location /status&gt;
+  SetHandler server-status
+  Require host example.com
+&lt;/Location&gt;
+    </highlight>
 
     <note><title>Note &agrave; propos du slash (/)</title>
       <p>La signification du caract&egrave;re slash d&eacute;pend de l'endroit o&ugrave; il
@@ -2996,9 +2926,11 @@ host</context>
     ref="regex">expression rationnelle</glossary> au lieu d'une simple
     cha&icirc;ne de caract&egrave;res. Par exemple :</p>
 
-    <example>
-      &lt;LocationMatch "/(extra|special)/data"&gt;
-    </example>
+    <highlight language="config">
+&lt;LocationMatch "/(extra|special)/data"&gt;
+    # ...
+&lt;/LocationMatch&gt;
+</highlight>
 
     <p>correspondrait &agrave; toute URL contenant les sous-cha&icirc;nes
     <code>/extra/data</code> ou <code>/special/data</code>.</p>
@@ -3177,9 +3109,7 @@ Apache</compatibility>
 
     <p>Par exemple :</p>
 
-    <example>
-      LogLevel notice
-    </example>
+    <highlight language="config">LogLevel notice</highlight>
 
     <note><title>Note</title>
       <p>Si la journalisation s'effectue directement dans un fichier,
@@ -3196,21 +3126,21 @@ Apache</compatibility>
     identificateur, avec ou sans le suffixe <code>_module</code>. Les
     trois sp&eacute;cifications suivantes sont donc &eacute;quivalentes :</p>
 
-    <example>
-      LogLevel info ssl:warn<br />
-      LogLevel info mod_ssl.c:warn<br />
-      LogLevel info ssl_module:warn<br />
-    </example>
+    <highlight language="config">
+LogLevel info ssl:warn
+LogLevel info mod_ssl.c:warn
+LogLevel info ssl_module:warn
+    </highlight>
 
     <p>Il est aussi possible d'attribuer un niveau de journalisation par
     r&eacute;pertoire :</p>
 
-    <example>
-        LogLevel info<br />
-        &lt;Directory /usr/local/apache/htdocs/app&gt;<br />
-        &nbsp; LogLevel debug<br />
-        &lt;/Files&gt;
-    </example>
+    <highlight language="config">
+LogLevel info
+&lt;Directory "/usr/local/apache/htdocs/app"&gt;
+  LogLevel debug
+&lt;/Directory&gt;
+    </highlight>
 
     <note>
         La configuration du niveau de journalisation par r&eacute;pertoire
@@ -3242,9 +3172,7 @@ host</context>
 
     <p>Par exemple :</p>
 
-    <example>
-      MaxKeepAliveRequests 500
-    </example>
+    <highlight language="config">MaxKeepAliveRequests 500</highlight>
 </usage>
 </directivesynopsis>
 
@@ -3598,10 +3526,10 @@ verrou pour tous les mutex ou seulement les mutex sp&eacute;cifi&eacute;s</descr
     mutex par d&eacute;faut pour tous les autres mutex deviendra
     <code>sysvsem</code>.</p>
 
-    <example>
-    Mutex sysvsem default<br />
-    Mutex fcntl:/var/httpd/locks mpm-accept
-    </example>
+    <highlight language="config">
+Mutex sysvsem default
+Mutex fcntl:/var/httpd/locks mpm-accept
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -3766,38 +3694,30 @@ host</context>
     <p>Par exemple, sans aucun symbole <code>+</code> et <code>-</code>
     :</p>
 
-    <example>
-      &lt;Directory /web/docs&gt;<br />
-      <indent>
-        Options Indexes FollowSymLinks<br />
-      </indent>
-      &lt;/Directory&gt;<br />
-      <br />
-      &lt;Directory /web/docs/spec&gt;<br />
-      <indent>
-        Options Includes<br />
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory "/web/docs"&gt;
+  Options Indexes FollowSymLinks
+&lt;/Directory&gt;
+
+&lt;Directory "/web/docs/spec"&gt;
+  Options Includes
+&lt;/Directory&gt;
+    </highlight>
 
     <p>ici, seule l'option <code>Includes</code> sera prise en compte
     pour le r&eacute;pertoire <code>/web/docs/spec</code>. Par contre, si la
     seconde directive <directive>Options</directive> utilise les
     symboles <code>+</code> et <code>-</code> :</p>
 
-    <example>
-      &lt;Directory /web/docs&gt;<br />
-      <indent>
-        Options Indexes FollowSymLinks<br />
-      </indent>
-      &lt;/Directory&gt;<br />
-      <br />
-      &lt;Directory /web/docs/spec&gt;<br />
-      <indent>
-        Options +Includes -Indexes<br />
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory "/web/docs"&gt;
+  Options Indexes FollowSymLinks
+&lt;/Directory&gt;
+
+&lt;Directory "/web/docs/spec"&gt;
+  Options +Includes -Indexes
+&lt;/Directory&gt;
+    </highlight>
 
     <p>alors, les options <code>FollowSymLinks</code> et
     <code>Includes</code> seront prises en compte pour le r&eacute;pertoire
@@ -3838,14 +3758,12 @@ seulement depuis la version 2.3.3 sous Windows.</compatibility>
     <code>https</code> sur un port non standard, sp&eacute;cifiez le protocole
     de mani&egrave;re explicite :</p>
 
-    <example>
-      Protocol https
-    </example>
+    <highlight language="config">Protocol https</highlight>
 
     <p>Vous pouvez aussi sp&eacute;cifier le protocole via la directive
     <directive module="mpm_common">Listen</directive>.</p>
 </usage>
-<seealso><directive>AcceptFilter</directive></seealso>
+<seealso><directive module="core">AcceptFilter</directive></seealso>
 <seealso><directive module="mpm_common">Listen</directive></seealso>
 </directivesynopsis>
 
@@ -3992,16 +3910,12 @@ l'option <code>Registry-Strict</code> est disponible dans les versions
     <code>#!</code>). Sur les syst&egrave;mes Win32, cette ligne ressemble
     souvent &agrave; ceci :</p>
 
-    <example>
-      #!C:/Perl/bin/perl.exe
-    </example>
+    <highlight language="perl">#!C:/Perl/bin/perl.exe</highlight>
 
     <p>ou simplement, dans le cas o&ugrave; <code>perl</code> est dans le
     <code>PATH</code> :</p>
 
-    <example>
-      #!perl
-    </example>
+    <highlight language="perl">#!perl</highlight>
 
     <p>Avec <code>ScriptInterpreterSource Registry</code>, Windows va
     effectuer une recherche dans l'arborescence
@@ -4106,9 +4020,7 @@ host</context>
     <p>Il peut s'av&eacute;rer utile de d&eacute;finir une adresse d&eacute;di&eacute;e &agrave;
     l'administration du serveur, par exemple :</p>
 
-    <example>
-      ServerAdmin www-admin@foo.example.com
-    </example>
+    <highlight language="config">ServerAdmin www-admin@foo.example.com</highlight>
     <p>car les utilisateurs ne mentionnent pas syst&eacute;matiquement le
     serveur dont ils parlent !</p>
 </usage>
@@ -4129,15 +4041,15 @@ serveurs virtuels &agrave; base de nom</description>
     nom</a>. La directive <directive>ServerAlias</directive> peut
     contenir des caract&egrave;res g&eacute;n&eacute;riques, si n&eacute;cessaire.</p>
 
-    <example>
-      &lt;VirtualHost *:80&gt;<br />
-      ServerName serveur.example.com<br />
-      ServerAlias serveur serveur2.example.com serveur2<br />
-      ServerAlias *.example.com<br />
-      UseCanonicalName Off<br />
-      # ...<br />
-      &lt;/VirtualHost&gt;
-    </example>
+    <highlight language="config">
+&lt;VirtualHost *:80&gt;
+  ServerName server.example.com
+  ServerAlias server server2.example.com server2
+  ServerAlias *.example.com
+  UseCanonicalName Off
+  # ...
+&lt;/VirtualHost&gt;
+    </highlight>
     <p>La recherche du serveur virtuel &agrave; base de nom correspondant au
     plus pr&egrave;s &agrave; la requ&ecirc;te s'effectue selon l'ordre d'apparition des
     directives <directive type="section"
@@ -4183,9 +4095,7 @@ host</context>
     web s'identifie avec cet alias, vous devez utilisez la d&eacute;finition
     suivante :</p>
 
-    <example>
-      ServerName www.example.com
-    </example>
+    <highlight language="config">ServerName www.example.com</highlight>
 
     <p>La directive <directive>ServerName</directive> peut appara&icirc;tre &agrave;
     toutes les &eacute;tapes de la d&eacute;finition du serveur. Toute occurrence
@@ -4284,9 +4194,7 @@ serveur</description>
     module="mod_so">LoadModule</directive>) seront d&eacute;finis par
     rapport &agrave; ce r&eacute;pertoire.</p>
 
-    <example><title>Example</title>
-      ServerRoot /home/httpd
-    </example>
+    <highlight language="config">ServerRoot "/home/httpd"</highlight>
 
     <p>La valeur par d&eacute;faut de <directive>ServerRoot</directive> peut
     &ecirc;tre modifi&eacute;e via l'argument <code>--prefix</code> de la commande <a
@@ -4360,13 +4268,10 @@ HTTP</description>
     <dl>
 	<dt><code>ServerTokens Full</code> (ou non sp&eacute;cifi&eacute;)</dt>
 
-	<dd>Le serveur envoie par exemple : <code>Server: Apache/2.4.1
+	<dd>Le serveur envoie par exemple : <code>Server: Apache/2.4.2
 	(Unix) PHP/4.2.2 MyMod/1.2</code></dd>
 
-    	
-
-
-      <dt><code>ServerTokens Prod[uctOnly]</code></dt>
+    	<dt><code>ServerTokens Prod[uctOnly]</code></dt>
 
       <dd>Le serveur renvoie (<em>par exemple</em>): <code>Server:
       Apache</code></dd>
@@ -4384,12 +4289,12 @@ HTTP</description>
       <dt><code>ServerTokens Min[imal]</code></dt>
 
       <dd>Le serveur renvoie (<em>par exemple</em>): <code>Server:
-      Apache/2.4.1</code></dd>
+      Apache/2.4.2</code></dd>
 
       <dt><code>ServerTokens OS</code></dt>
 
       <dd>Le serveur renvoie (<em>par exemple</em>): <code>Server:
-      Apache/2.4.1 (Unix)</code></dd>
+      Apache/2.4.2 (Unix)</code></dd>
 
       
       
@@ -4443,22 +4348,18 @@ host</context>
     extensions, vous pouvez ajouter la ligne suivante dans un fichier
     <code>.htaccess</code> de ce r&eacute;pertoire :</p>
 
-    <example>
-      SetHandler imap-file
-    </example>
+    <highlight language="config">SetHandler imap-file</highlight>
 
     <p>Autre exemple : si vous voulez que le serveur affiche un
     compte-rendu d'&eacute;tat chaque fois qu'une URL du type <code>http://nom
     serveur/status</code> est appel&eacute;e, vous pouvez ajouter ceci dans
     <code>httpd.conf</code> :</p>
 
-    <example>
-      &lt;Location /status&gt;<br />
-      <indent>
-        SetHandler server-status<br />
-      </indent>
-      &lt;/Location&gt;
-    </example>
+    <highlight language="config">
+&lt;Location "/status"&gt;
+  SetHandler server-status
+&lt;/Location&gt;
+    </highlight>
 
     <p>Vous pouvez &eacute;craser la d&eacute;finition ant&eacute;rieure d'une directive
     <directive>SetHandler</directive> en utilisant la valeur
@@ -4525,13 +4426,11 @@ host</context>
     fichiers du r&eacute;pertoire <code>/www/data/</code> comme des inclusions
     c&ocirc;t&eacute; serveur (SSI) :</p>
 
-    <example>
-      &lt;Directory /www/data/&gt;<br />
-      <indent>
-        SetOutputFilter INCLUDES<br />
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory "/www/data/"&gt;
+  SetOutputFilter INCLUDES
+&lt;/Directory&gt;
+    </highlight>
 
     <p>Si la directive comporte plusieurs filtres, ils doivent &ecirc;tre
     s&eacute;par&eacute;s par des points-virgules, et sp&eacute;cifi&eacute;s selon l'ordre dans
@@ -4677,9 +4576,9 @@ host</context>
     l'authentification, ceci va obliger l'utilisateur &agrave; s'authentifier
     deux fois (une premi&egrave;re fois pour <code>www</code> et une seconde
     fois pour <code>www.example.com</code> -- voir <a
-    href="http://httpd.apache.org/docs/misc/FAQ.html#prompted-twice">la
-    foire aux questions sur ce sujet pour plus d'informations</a>). Par
-    contre, si <directive>UseCanonicalName</directive> est d&eacute;finie &agrave;
+    href="http://wiki.apache.org/httpd/FAQ#Why_does_Apache_ask_for_my_password_twice_before_serving_a_file.3F">la
+    foire aux questions sur ce sujet pour plus d'informations</a>).
+    Par contre, si <directive>UseCanonicalName</directive> est d&eacute;finie &agrave;
     <code>Off</code>, Apache httpd redirigera l'utilisateur vers
     <code>http://www/splat/</code>.</p>
 
@@ -4797,17 +4696,15 @@ d'h&ocirc;te sp&eacute;cifique ou &agrave; une adresse IP</description>
 
     </ul>
 
-    <example><title>Exemple</title>
-      &lt;VirtualHost 10.1.2.3:80&gt;<br />
-      <indent>
-        ServerAdmin webmaster@host.example.com<br />
-        DocumentRoot /www/docs/host.example.com<br />
-        ServerName host.example.com<br />
-        ErrorLog logs/host.example.com-error_log<br />
-        TransferLog logs/host.example.com-access_log<br />
-      </indent>
-      &lt;/VirtualHost&gt;
-    </example>
+    <highlight language="config">
+&lt;VirtualHost 10.1.2.3:80&gt;
+  ServerAdmin webmaster@host.example.com
+  DocumentRoot /www/docs/host.example.com
+  ServerName host.example.com
+  ErrorLog logs/host.example.com-error_log
+  TransferLog logs/host.example.com-access_log
+&lt;/VirtualHost&gt;
+    </highlight>
 
 
     <p>Les adresses IPv6 doivent &ecirc;tre entour&eacute;es de crochets car dans le
@@ -4815,17 +4712,15 @@ d'h&ocirc;te sp&eacute;cifique ou &agrave; une adresse IP</description>
     d&eacute;termin&eacute;. Voici un exemple de serveur virtuel avec adresse IPv6
     :</p>
 
-    <example>
-      &lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]:80&gt;<br />
-      <indent>
-        ServerAdmin webmaster@host.example.com<br />
-        DocumentRoot /www/docs/host.example.com<br />
-        ServerName host.example.com<br />
-        ErrorLog logs/host.example.com-error_log<br />
-        TransferLog logs/host.example.com-access_log<br />
-      </indent>
-      &lt;/VirtualHost&gt;
-    </example>
+    <highlight language="config">
+&lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]:80&gt;
+  ServerAdmin webmaster@host.example.com
+  DocumentRoot /www/docs/host.example.com
+  ServerName host.example.com
+  ErrorLog logs/host.example.com-error_log
+  TransferLog logs/host.example.com-access_log
+&lt;/VirtualHost&gt;
+    </highlight>
 
     <p>Chaque serveur virtuel doit correspondre &agrave; une adresse IP, un
     port ou un nom d'h&ocirc;te sp&eacute;cifique ; dans le premier cas, le serveur
