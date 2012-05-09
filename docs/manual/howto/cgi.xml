@@ -234,7 +234,7 @@
 
       <highlight language="perl">
 #!/usr/bin/perl
-print "Content-type: text/html\n\n";
+print "Content-type: text/html\r\n\r\n";
 print "Hello, World.";
       </highlight>
 
@@ -488,7 +488,7 @@ print "Hello, World.";
 use strict;
 use warnings;
 
-print "Content-type: text/html\n\n";
+print "Content-type: text/html\r\n\r\n";
 foreach my $key (keys %ENV) {
     print "$key --&gt; $ENV{$key}&lt;br&gt;";
 }
