@@ -185,7 +185,10 @@ RewriteRule ^/secret/files/   -   [F]
       <highlight language="config">
 SetEnvIfNoCase User-Agent ^NameOfBadRobot goaway
 &lt;Location /secret/files&gt;
-    Require not env goaway
+    &lt;RequireAll&gt;
+        Require all granted
+        Require not env goaway
+    &lt;/RequireAll&gt;
 &lt;/Location&gt;
       </highlight>
       <p>
