@@ -73,12 +73,12 @@ passwords for authentication</description>
     use the first occurrence to verify the password.</p>
 
     <p>The encrypted password format depends on which authentication
-    frontend (e.g. <module>mod_authn_basic</module> or
-    <module>mod_authn_digest</module>) is being used.  See <a
+    frontend (e.g. <module>mod_auth_basic</module> or
+    <module>mod_auth_digest</module>) is being used.  See <a
     href="../misc/password_encryptions.html">Password Formats</a> for
     more information.</p>
 
-    <p>For <module>mod_authn_basic</module>, use the utility <program>htpasswd</program>
+    <p>For <module>mod_auth_basic</module>, use the utility <program>htpasswd</program>
     which is installed as part of the binary distribution, or which
     can be found in <code>src/support</code>. See the
     <a href="../programs/htpasswd.html">man page</a> for more details.

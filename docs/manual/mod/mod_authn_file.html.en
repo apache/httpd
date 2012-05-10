@@ -87,11 +87,11 @@ passwords for authentication</td></tr>
     use the first occurrence to verify the password.</p>
 
     <p>The encrypted password format depends on which authentication
-    frontend (e.g. <code class="module"><a href="../mod/mod_authn_basic.html">mod_authn_basic</a></code> or
-    <code class="module"><a href="../mod/mod_authn_digest.html">mod_authn_digest</a></code>) is being used.  See <a href="../misc/password_encryptions.html">Password Formats</a> for
+    frontend (e.g. <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> or
+    <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>) is being used.  See <a href="../misc/password_encryptions.html">Password Formats</a> for
     more information.</p>
 
-    <p>For <code class="module"><a href="../mod/mod_authn_basic.html">mod_authn_basic</a></code>, use the utility <code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code>
+    <p>For <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>, use the utility <code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code>
     which is installed as part of the binary distribution, or which
     can be found in <code>src/support</code>. See the
     <a href="../programs/htpasswd.html">man page</a> for more details.
