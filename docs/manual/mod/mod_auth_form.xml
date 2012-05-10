@@ -278,7 +278,7 @@ SessionCryptoPassphrase secret
       <example><title>CGI example</title>
       <highlight language="config">
         AuthFormProvider file
-        <strong>ErrorDocument 401 /cgi-bin/login.cgi</strong>
+        ErrorDocument 401 /cgi-bin/login.cgi
         ...
         </highlight>
       </example>
