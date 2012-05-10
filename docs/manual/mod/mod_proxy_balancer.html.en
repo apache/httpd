@@ -269,13 +269,14 @@ ProxyPassReverse /test balancer://mycluster
     <p>Finally you can support cookies and URL encoding at the same time, by
     configuring the name of the cookie and the name of the URL parameter
     separated by a vertical bar (<code>|</code>) as in the following example:</p>
-    <div class="example"><p><code>
-    ProxyPass /test balancer://mycluster stickysession=JSESSIONID|jsessionid scolonpathdelim=On<br />
-    &lt;Proxy balancer://mycluster&gt;<br />
-    BalancerMember http://192.168.1.50:80 route=node1<br />
-    BalancerMember http://192.168.1.51:80 route=node2<br />
-    &lt;/Proxy&gt;<br />
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+ProxyPass /test balancer://mycluster stickysession=JSESSIONID|jsessionid scolonpathdelim=On
+&lt;Proxy balancer://mycluster&gt;
+    BalancerMember http://192.168.1.50:80 route=node1
+    BalancerMember http://192.168.1.51:80 route=node2
+&lt;/Proxy&gt;
+    </pre>
+
     <p>If the cookie and the request parameter both provide routing information
     for the same request, the information from the request parameter is used.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
