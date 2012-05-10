@@ -118,9 +118,10 @@ meta information</td></tr>
     will use its contents to generate additional MIME header
     information.</p>
 
-    <div class="example"><h3>Example:</h3><p><code>
+    <div class="example"><h3>Example:</h3><pre class="prettyprint lang-config">
       MetaSuffix .meta
-    </code></p></div>
+     </pre>
+</div>
 
 </div>
 </div>
