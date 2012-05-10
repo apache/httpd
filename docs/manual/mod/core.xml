@@ -2611,6 +2611,15 @@ URLs</description>
 &lt;/Location&gt;
     </highlight>
 
+    <p>You could also use this directive to configure a particular
+    handler for files with a particular file extension. For example:</p>
+
+    <highlight language="config">
+&lt;FilesMatch \.php$&gt;
+    SetHandler application/x-httpd-php
+&lt;/FilesMatch&gt;
+    </highlight>
+
     <note><title>Note about / (slash)</title>
       <p>The slash character has special meaning depending on where in a
       URL it appears. People may be used to its behavior in the filesystem
