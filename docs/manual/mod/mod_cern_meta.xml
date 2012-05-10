@@ -112,7 +112,9 @@ meta information</description>
     information.</p>
 
     <example><title>Example:</title>
+    <highlight language="config">
       MetaSuffix .meta
+     </highlight>
     </example>
 </usage>
 </directivesynopsis>
