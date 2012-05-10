@@ -307,7 +307,7 @@ SessionCryptoPassphrase secret
 
       <div class="example"><h3>CGI example</h3><pre class="prettyprint lang-config">
         AuthFormProvider file
-        <strong>ErrorDocument 401 /cgi-bin/login.cgi</strong>
+        ErrorDocument 401 /cgi-bin/login.cgi
         ...
         </pre>
 </div>
