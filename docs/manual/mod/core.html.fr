@@ -31,8 +31,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fonctionnalités de base du serveur HTTP Apache toujours
 disponibles</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Core</td></tr></table>
@@ -145,7 +143,10 @@ sur les autres plates-formes.</td></tr>
     filtre d'acceptation pour ce protocole. Ceci s'avère utile pour les
     protocoles qui nécessitent l'envoi de données par le serveur en
     premier, comme <code>ftp:</code> ou <code>nntp</code>:</p>
-    <div class="example"><p><code>AcceptFilter nntp none</code></p></div>
+    <pre class="prettyprint lang-config">
+    AcceptFilter nntp none
+    </pre>
+
 
     <p>Les noms de protocoles par défaut sont <code>https</code> pour le
     port 443 et <code>http</code> pour tous les autres ports. Pour
@@ -153,10 +154,11 @@ sur les autres plates-formes.</td></tr>
     ajoutez l'argument <var>protocol</var> à la directive <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>.</p>
 
     <p>Sous FreeBSD, les valeurs par défaut sont :</p>
-    <div class="example"><p><code>
-        AcceptFilter http httpready <br />
-        AcceptFilter https dataready
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+AcceptFilter http httpready
+AcceptFilter https dataready
+    </pre>
+
 
     <p>Le filtre d'acceptation <code>httpready</code> met en tampon des
     requêtes HTTP entières au niveau du noyau. Quand une requête
@@ -165,10 +167,11 @@ sur les autres plates-formes.</td></tr>
     HTTPS sont chiffrées, celles-ci n'autorisent que le filtre <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_data&amp;     sektion=9">accf_data(9)</a>.</p>
 
     <p>Sous Linux, les valeurs par défaut sont :</p>
-    <div class="example"><p><code>
-        AcceptFilter http data <br />
-        AcceptFilter https data
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+AcceptFilter http data
+AcceptFilter https data
+    </pre>
+
 
     <p>Le filtre <code>TCP_DEFER_ACCEPT</code> de Linux ne supporte pas
     la mise en tampon des requêtes http. Toute valeur autre que
@@ -177,10 +180,11 @@ sur les autres plates-formes.</td></tr>
     manuel Linux de <a href="http://homepages.cwi.nl/~aeb/linux/man2html/man7/     tcp.7.html">tcp(7)</a>.</p>
 
     <p>Sous Windows, les valeurs par défaut sont :</p>
-    <div class="example"><p><code>
-        AcceptFilter http data <br />
-        AcceptFilter https data
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+AcceptFilter http data
+AcceptFilter https data
+    </pre>
+
 
     <p>Le module MPM pour Windows mpm_winnt utilise la directive
     AcceptFilter comme commutateur de l'API AcceptEx(), et ne supporte
@@ -204,7 +208,7 @@ sur les autres plates-formes.</td></tr>
 
 <h3>Voir aussi</h3>
 <ul>
-<li><code class="directive">Protocol</code></li>
+<li><code class="directive"><a href="#protocol">Protocol</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -266,16 +270,15 @@ supérieures</td></tr>
     sur <code>PATH_INFO</code>. Le gestionnaire de base va en général
     rejeter la requête, et vous pouvez utiliser la configuration
     suivante pour utiliser un tel script :</p>
+<pre class="prettyprint lang-config">
+&lt;Files "mypaths.shtml"&gt;
+  Options +Includes
+  SetOutputFilter INCLUDES
+  AcceptPathInfo On
+&lt;/Files&gt;
+    </pre>
 
-    <div class="example"><p><code>
-      &lt;Files "mes-chemins.shtml"&gt;<br />
-      <span class="indent">
-        Options +Includes<br />
-        SetOutputFilter INCLUDES<br />
-        AcceptPathInfo On<br />
-      </span>
-      &lt;/Files&gt;
-    </code></p></div>
+    
 
 
 </div>
@@ -296,9 +299,8 @@ supérieures</td></tr>
     partir du moment où les fichiers de configuration distribués sont <a href="#allowoverride">activés pour ce répertoire</a>. Par exemple
     :</p>
 
-    <div class="example"><p><code>
-      AccessFileName .acl
-    </code></p></div>
+    <pre class="prettyprint lang-config">AccessFileName .acl</pre>
+
 
     <p>avant de renvoyer le document
     <code>/usr/local/web/index.html</code>, le serveur va rechercher les
@@ -307,13 +309,12 @@ supérieures</td></tr>
     pour y lire d'éventuelles directives, à moins quelles n'aient été
     désactivées avec</p>
 
-    <div class="example"><p><code>
-      &lt;Directory /&gt;<br />
-      <span class="indent">
-        AllowOverride None<br />
-      </span>
-      &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Directory /&gt;
+    AllowOverride None
+&lt;/Directory&gt;
+    </pre>
+
 
 <h3>Voir aussi</h3>
 <ul>
@@ -352,9 +353,8 @@ type de contenu d'une réponse est <code>text/plain</code> ou
     types de média Internet (types MIME).
     Par exemple :</p>
 
-    <div class="example"><p><code>
-      AddDefaultCharset utf-8
-    </code></p></div>
+    <pre class="prettyprint lang-config">AddDefaultCharset utf-8</pre>
+
 
     <p>La directive <code class="directive">AddDefaultCharset</code> ne doit
     être utilisée que lorsque toutes les ressources textes auxquelles
@@ -554,9 +554,8 @@ All pour les versions antérieures</code></td></tr>
 
     <p>Exemple :</p>
 
-    <div class="example"><p><code>
-      AllowOverride AuthConfig Indexes
-    </code></p></div>
+    <pre class="prettyprint lang-config">AllowOverride AuthConfig Indexes</pre>
+
 
     <p>Dans l'exemple ci-dessus, toutes les directives qui ne font
     partie ni du groupe <code>AuthConfig</code>, ni du groupe
@@ -608,10 +607,11 @@ All pour les versions antérieures</code></td></tr>
 
     <p>Example:</p>
 
-    <div class="example"><p><code>
-      AllowOverride None<br />
-      AllowOverrideList Redirect RedirectMatch
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+AllowOverride None
+AllowOverrideList Redirect RedirectMatch
+    </pre>
+
 
     <p>Dans l'exemple ci-dessus, seules les directives
     <code>Redirect</code> et <code>RedirectMatch</code> sont autorisées.
@@ -619,10 +619,11 @@ All pour les versions antérieures</code></td></tr>
 
     <p>Example:</p>
 
-    <div class="example"><p><code>
-      AllowOverride AuthConfig<br />
-      AllowOverrideList CookieTracking CookieName
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+AllowOverride AuthConfig
+AllowOverrideList CookieTracking CookieName
+    </pre>
+
 
     <p>Dans l'exemple ci-dessus, la directive <code class="directive"><a href="#allowoverride">AllowOverride</a></code> autorise les directives du
     groupement <code>AuthConfig</code>, et
@@ -716,9 +717,11 @@ dans la réponse HTTP</td></tr>
     généré relativement à la valeur de la directive
     <code class="directive">ServerRoot</code>.</p>
 
-    <div class="example"><h3>Exemple</h3><p><code>
-      DefaultRuntimeDir scratch/
-    </code></p></div>
+    <p><strong>Example</strong></p>
+   <pre class="prettyprint lang-config">
+DefaultRuntimeDir scratch/
+    </pre>
+
 
     <p>La valeur par défaut de la directive
     <code class="directive">DefaultRuntimeDir</code> peut être modifiée en
@@ -762,9 +765,9 @@ DESACTIVÉS à partir des version 2.3.x.</td></tr>
     être spécifiée avec la valeur <code>none</code>, c'est à dire sans
     type de médium par défaut. Par exemple :</p>
 
-    <div class="example"><p><code>
-      DefaultType None
-    </code></p></div>
+    <pre class="prettyprint lang-config">DefaultType None</pre>
+
+
     <p><code>DefaultType None</code> n'est disponible que dans les
     versions d'Apache 2.2.7 et supérieures.</p>
 
@@ -799,15 +802,16 @@ DESACTIVÉS à partir des version 2.3.x.</td></tr>
     La portée de la variable est toujours globale, et n'est jamais
     limitée à la section de configuration courante.</p>
 
-    <div class="example"><p><code>
-      &lt;IfDefine TEST&gt;<br />
-      &nbsp;&nbsp;Define servername test.example.com<br />
-      &lt;/IfDefine&gt;<br />
-      &lt;IfDefine !TEST&gt;<br />
-      &nbsp;&nbsp;Define servername www.example.com<br />
-      &nbsp;&nbsp;Define SSL<br />
-      &lt;/IfDefine&gt;<br />
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;IfDefine TEST&gt;
+  Define servername test.example.com
+&lt;/IfDefine&gt;
+&lt;IfDefine !TEST&gt;
+  Define servername www.example.com
+  Define SSL
+&lt;/IfDefine&gt;
+    </pre>
+
 
     <p>Le caractère ":" est interdit dans les noms de variables afin
     d'éviter les conflits avec la syntaxe de la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>.</p>
@@ -843,13 +847,12 @@ sous-répertoires, et à leur contenu.</td></tr>
      * <code>/home/user/public_html</code>, alors que <code>&lt;Directory
     /home/*/public_html&gt;</code> conviendra. Exemple :</p>
 
-    <div class="example"><p><code>
-      &lt;Directory /usr/local/httpd/htdocs&gt;<br />
-      <span class="indent">
-        Options Indexes FollowSymLinks<br />
-      </span>
-      &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Directory "/usr/local/httpd/htdocs"&gt;
+  Options Indexes FollowSymLinks
+&lt;/Directory&gt;
+    </pre>
+
 
     <div class="note">
       <p>Soyez prudent avec l'argument <var>chemin répertoire</var> : il
@@ -865,9 +868,12 @@ sous-répertoires, et à leur contenu.</td></tr>
     peuvent aussi être utilisées en ajoutant le caractère
     <code>~</code>. Par exemple :</p>
 
-    <div class="example"><p><code>
-      &lt;Directory ~ "^/www/.*/[0-9]{3}"&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Directory ~ "^/www/.*/[0-9]{3}"&gt;
+
+&lt;/Directory&gt;
+</pre>
+
 
     <p>pourra correspondre à tout répertoire situé dans /www/ et dont le
     nom se compose de trois chiffres.</p>
@@ -879,19 +885,16 @@ sous-répertoires, et à leur contenu.</td></tr>
     directives des fichiers <a href="#accessfilename">.htaccess</a>. Par
     exemple, avec</p>
 
-    <div class="example"><p><code>
-      &lt;Directory /&gt;<br />
-      <span class="indent">
-        AllowOverride None<br />
-      </span>
-      &lt;/Directory&gt;<br />
-      <br />
-      &lt;Directory /home&gt;<br />
-      <span class="indent">
-        AllowOverride FileInfo<br />
-      </span>
-      &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Directory /&gt;
+  AllowOverride None
+&lt;/Directory&gt;
+
+&lt;Directory "/home"&gt;
+  AllowOverride FileInfo
+&lt;/Directory&gt;
+    </pre>
+
 
     <p>l'accès au document <code>/home/web/dir/doc.html</code> emprunte
     le chemin suivant :</p>
@@ -916,13 +919,12 @@ sous-répertoires, et à leur contenu.</td></tr>
     testés selon l'ordre dans lequel ils apparaissent dans le fichier de
     configuration. Par exemple, avec</p>
 
-    <div class="example"><p><code>
-      &lt;Directory ~ abc$&gt;<br />
-      <span class="indent">
-        # ... directives here ...<br />
-      </span>
-      &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Directory ~ "abc$"&gt;
+  # ... directives ici ...
+&lt;/Directory&gt;
+    </pre>
+
 
     <p>la section avec expression rationnelle ne sera prise en compte
     qu'après les sections <code class="directive">&lt;Directory&gt;</code> sans expression rationnelle
@@ -937,13 +939,12 @@ sous-répertoires, et à leur contenu.</td></tr>
    correspondant à une URL. Il est recommandé de modifier cette
    situation à l'aide d'un bloc du style</strong></p>
 
-    <div class="example"><p><code>
-      &lt;Directory /&gt;<br />
-      <span class="indent">
-        Require all denied<br />
-      </span>
-      &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Directory /&gt;
+  Require all denied
+&lt;/Directory&gt;
+    </pre>
+
 
     <p><strong>puis d'affiner la configuration pour les répertoires que vous
     voulez rendre accessibles. Voir la page <a href="../misc/security_tips.html">Conseils à propos de sécurité</a>
@@ -978,9 +979,12 @@ du système de fichiers correspondant à une expression rationnelle</td></tr>
     précisé (et aux fichiers qu'il contient), comme pour la section <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>. Cependant, le
     répertoire est précisé sous la forme d'une <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression rationnelle</a>. Par exemple :</p>
 
-    <div class="example"><p><code>
-      &lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}"&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}"&gt;
+    # ...
+&lt;/DirectoryMatch&gt;
+</pre>
+
 
     <p>conviendrait pour les sous-répertoires de <code>/www/</code> dont
     le nom se compose de trois chiffres.</p>
@@ -1028,9 +1032,8 @@ depuis Internet</td></tr>
     de l'URL sera ajouté par le serveur à la racine des documents afin
     de construire le chemin du document recherché. Exemple :</p>
 
-    <div class="example"><p><code>
-      DocumentRoot /usr/web
-    </code></p></div>
+    <pre class="prettyprint lang-config">DocumentRoot "/usr/web"</pre>
+
 
     <p>un accès à <code>http://my.example.com/index.html</code> se
     réfère alors à <code>/usr/web/index.html</code>. Si <var>chemin
@@ -1066,14 +1069,15 @@ requête à l'exécution</td></tr>
     supérieure et dans la même portée n'ont pas été satisfaites. Par
     exemple, dans :</p>
 
-    <div class="example"><p><code>
-        &lt;If "-z req('Host')"&gt;<br />
-        ...<br />
-        &lt;/If&gt;<br />
-        &lt;Else&gt;<br />
-        ...<br />
-        &lt;/Else&gt;<br />
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;If "-z req('Host')"&gt;
+  # ...
+&lt;/If&gt;
+&lt;Else&gt;
+  # ...
+&lt;/Else&gt;
+    </pre>
+
 
     <p>La condition de la section <code class="directive">&lt;If&gt;</code> serait satisfaite pour les requêtes
     HTTP/1.0 sans en-tête <var>Host:</var>, alors que celle de la section
@@ -1111,17 +1115,18 @@ alors que la condition correspondant à la section <code class="directive"><a hre
     ou <code class="directive">&lt;ElseIf&gt;</code> de la même portée ne
     l'est pas. Par exemple, dans :</p>
 
-    <div class="example"><p><code>
-        &lt;If "-R '10.1.0.0/16'"&gt;<br />
-        ...<br />
-        &lt;/If&gt;<br />
-        &lt;ElseIf "-R '10.0.0.0/8'"&gt;<br />
-        ...<br />
-        &lt;/ElseIf&gt;<br />
-        &lt;Else&gt;<br />
-        ...<br />
-        &lt;/Else&gt;<br />
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;If "-R '10.1.0.0/16'"&gt;
+  #...
+&lt;/If&gt;
+&lt;ElseIf "-R '10.0.0.0/8'"&gt;
+  #...
+&lt;/ElseIf&gt;
+&lt;Else&gt;
+  #...
+&lt;/Else&gt;
+    </pre>
+
 
     <p>La condition correspondant à la section <code class="directive">&lt;ElseIf&gt;</code> est satisfaite si l'adresse
     distante de la requête appartient au sous-réseau 10.0.0.0/8, mais
@@ -1180,21 +1185,19 @@ lire les fichiers pendant qu'ils sont servis</td></tr>
     problème, il est préférable de désactiver la projection en mémoire
     des fichiers servis en spécifiant :</p>
     
-    <div class="example"><p><code>
-      EnableMMAP Off
-    </code></p></div>
+    <pre class="prettyprint lang-config">EnableMMAP Off</pre>
+
 
     <p>Pour les montages NFS, cette fonctionnalité peut être
     explicitement désactivée pour les fichiers concernés en spécifiant
     :</p>
 
-    <div class="example"><p><code>
-      &lt;Directory "/chemin vers montage NFS"&gt;
-      <span class="indent">
-        EnableMMAP Off
-      </span>
-      &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Directory "/path-to-nfs-files"&gt;
+  EnableMMAP Off
+&lt;/Directory&gt;
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1247,21 +1250,19 @@ supérieures. Par défaut à Off depuis la version 2.3.9.</td></tr>
     problème, vous pouvez activer cette fonctionnalité en
     spécifiant :</p>
 
-    <div class="example"><p><code>
-      EnableSendfile On
-    </code></p></div>
+    <pre class="prettyprint lang-config">EnableSendfile On</pre>
+
 
     <p>Pour les montages réseau, cette fonctionnalité peut être
     explicitement désactivée pour les fichiers concernés en spécifiant
     :</p>
 
-    <div class="example"><p><code>
-      &lt;Directory "/chemin vers montage réseau"&gt;
-      <span class="indent">
-        EnableSendfile Off
-      </span>
-      &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Directory "/path-to-nfs-files"&gt;
+  EnableSendfile Off
+&lt;/Directory&gt;
+    </pre>
+
     <p>Veuillez noter que la configuration de la directive
     <code class="directive">EnableSendfile</code> dans un contexte de répertoire
     ou de fichier .htaccess n'est pas supportée par
@@ -1287,26 +1288,26 @@ d'erreur personnalisé</td></tr>
     directive peut être utilisée pour générer un message d'erreur
     personnalisé, et interrompre la lecture de la configuration. </p>
 
-    <div class="example"><h3>Exemple</h3><p><code>
-      # vérification du chargement de mod_include<br />
-      &lt;IfModule !include_module&gt;<br />
-      Error mod_foo nécessite mod_include. Chargez-le via LoadModule.<br />
-      &lt;/IfModule&gt;<br />
-      <br />
-      # vérification de la définition de SSL ou (exclusif) NOSSL<br />
-      &lt;IfDefine SSL&gt;<br />
-      &lt;IfDefine NOSSL&gt;<br />
-      Error SSL et NOSSL sont définies. Vous devez définir soit l'une,
-      soit l'autre.<br />
-      &lt;/IfDefine&gt;<br />
-      &lt;/IfDefine&gt;<br />
-      &lt;IfDefine !SSL&gt;<br />
-      &lt;IfDefine !NOSSL&gt;<br />
-      Error Vous devez définir une et une seule des deux variables SSL
-      ou NOSSL.<br />
-      &lt;/IfDefine&gt;<br />
-      &lt;/IfDefine&gt;<br />
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+# Exemple
+# vérification du chargement de mod_include
+&lt;IfModule !include_module&gt;
+  Error "mod_include is required by mod_foo.  Load it with LoadModule."
+&lt;/IfModule&gt;
+
+# vérification de la définition de SSL ou (exclusif) NOSSL
+&lt;IfDefine SSL&gt;
+&lt;IfDefine NOSSL&gt;
+  Error "Both SSL and NOSSL are defined.  Define only one of them."
+&lt;/IfDefine&gt;
+&lt;/IfDefine&gt;
+&lt;IfDefine !SSL&gt;
+&lt;IfDefine !NOSSL&gt;
+  Error "Either SSL or NOSSL must be defined."
+&lt;/IfDefine&gt;
+&lt;/IfDefine&gt;
+    </pre>
+
 
 
 </div>
@@ -1349,14 +1350,14 @@ d'erreur</td></tr>
     Alternativement, un message à afficher par le navigateur pourra être
     fourni. Exemples :</p>
 
-    <div class="example"><p><code>
-      ErrorDocument 500 http://foo.example.com/cgi-bin/tester<br />
-      ErrorDocument 404 /cgi-bin/bad_urls.pl<br />
-      ErrorDocument 401 /subscription_info.html<br />
-      ErrorDocument 403 "Désolé, vous n'avez pas l'autorisation d'accès
-      aujourd'hui"<br />
-      ErrorDocument 403 Interdit!
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+ErrorDocument 500 http://foo.example.com/cgi-bin/tester
+ErrorDocument 404 /cgi-bin/bad_urls.pl
+ErrorDocument 401 /subscription_info.html
+ErrorDocument 403 "Sorry can't allow you access today"
+ErrorDocument 403 Forbidden!
+    </pre>
+
 
     <p>De plus, on peut spécifier la valeur spéciale <code>default</code>
     pour indiquer l'utilisation d'un simple message d'Apache httpd codé en
@@ -1366,14 +1367,14 @@ d'erreur</td></tr>
     les configurations qui sans cela, hériteraient d'une directive
     <code class="directive">ErrorDocument</code> existante.</p>
 
-    <div class="example"><p><code>
-      ErrorDocument 404 /cgi-bin/bad_urls.pl<br /><br />
-      &lt;Directory /web/docs&gt;<br />
-      <span class="indent">
-        ErrorDocument 404 default<br />
-      </span>
-      &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+ErrorDocument 404 /cgi-bin/bad_urls.pl
+
+&lt;Directory /web/docs&gt;
+  ErrorDocument 404 default
+&lt;/Directory&gt;
+    </pre>
+
 
     <p>Notez que lorsque vous spécifiez une directive
     <code class="directive">ErrorDocument</code> pointant vers une URL distante
@@ -1442,17 +1443,15 @@ personnalisation des réponses</a></li>
     absolu, il est considéré comme relatif au chemin défini par la
     directive <code class="directive"><a href="#serverroot">ServerRoot</a></code>.</p>
 
-    <div class="example"><h3>Exemple</h3><p><code>
-    ErrorLog /var/log/httpd/error_log
-    </code></p></div>
+    <pre class="prettyprint lang-config">ErrorLog "/var/log/httpd/error_log"</pre>
+
 
     <p>Si le <var>chemin fichier</var> commence par une barre verticale
     "<code>(|)</code>", il est considéré comme une commande à lancer pour traiter la
     journalisation de l'erreur.</p>
 
-    <div class="example"><h3>Exemple</h3><p><code>
-    ErrorLog "|/usr/local/bin/erreurs_httpd"
-    </code></p></div>
+    <pre class="prettyprint lang-config">ErrorLog "|/usr/local/bin/httpd_errors"</pre>
+
 
     <p>Voir les notes à propos des <a href="../logs.html#piped">journaux
     redirigés</a> pour plus d'informations.</p>
@@ -1467,9 +1466,8 @@ personnalisation des réponses</a></li>
     global, et si il est modifié dans un serveur virtuel, le dispositif
     final spécifié affecte l'ensemble du serveur</p>
 
-    <div class="example"><h3>Exemple</h3><p><code>
-    ErrorLog syslog:user
-    </code></p></div>
+    <pre class="prettyprint lang-config">ErrorLog syslog:user</pre>
+
 
     <p>SECURITE : Voir le document <a href="../misc/security_tips.html#serverroot">conseils à propos de
     sécurité</a> pour des détails sur les raisons pour lesquelles votre
@@ -1505,9 +1503,11 @@ personnalisation des réponses</a></li>
     spécifier quelles informations supplémentaires vont être enregistrées
     dans le journal des erreurs en plus du message habituel.</p>
 
-    <div class="example"><h3>Exemple simple</h3><p><code>
-        ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+# Exemple simple
+ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
+    </pre>
+
 
     <p>La spécification de <code>connection</code> ou
     <code>request</code> comme premier paramètre permet de définir des
@@ -1651,10 +1651,11 @@ personnalisation des réponses</a></li>
     c'est son identifiant unique qui sera utilisé comme identifiant de
     journal pour les requêtes.</p>
 
-    <div class="example"><h3>Exemple (format par défaut)</h3><p><code>
-        ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\ %a]
-        %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+# Exemple (format par défaut)
+ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\ %a] %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
+    </pre>
+
 
     <p>Cet exemple renverrait un message d'erreur du style :</p>
 
@@ -1665,19 +1666,21 @@ personnalisation des réponses</a></li>
     <p>Notez que, comme indiqué plus haut, certains champs sont
     totalement supprimés s'ils n'ont pas été définis.</p>
 
-    <div class="example"><h3>Exemple (similaire au format 2.2.x)</h3><p><code>
-        ErrorLogFormat "[%t] [%l] %7F: %E: [client\ %a]
-        %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+# Exemple (similaire au format 2.2.x)
+ErrorLogFormat "[%t] [%l] %7F: %E: [client\ %a] %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
+    </pre>
 
-    <div class="example"><h3>Exemple avancé avec identifiants journal de
-    requête/connexion</h3><p><code>
-        ErrorLogFormat "[%{uc}t] [%-m:%-l] [R:%L] [C:%{C}L] %7F: %E: %M"<br />
-        ErrorLogFormat request "[%{uc}t] [R:%L] Request %k on C:%{c}L pid:%P tid:%T"<br />
-        ErrorLogFormat request "[%{uc}t] [R:%L] UA:'%+{User-Agent}i'"<br />
-        ErrorLogFormat request "[%{uc}t] [R:%L] Referer:'%+{Referer}i'"<br />
-        ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"<br />
-    </code></p></div>
+
+    <pre class="prettyprint lang-config">
+# Exemple avancé avec identifiants journal de requête/connexion
+ErrorLogFormat "[%{uc}t] [%-m:%-l] [R:%L] [C:%{C}L] %7F: %E: %M"
+ErrorLogFormat request "[%{uc}t] [R:%L] Request %k on C:%{c}L pid:%P tid:%T"
+ErrorLogFormat request "[%{uc}t] [R:%L] UA:'%+{User-Agent}i'"
+ErrorLogFormat request "[%{uc}t] [R:%L] Referer:'%+{Referer}i'"
+ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"
+    </pre>
+
 
 
 <h3>Voir aussi</h3>
@@ -1762,8 +1765,9 @@ dans les versions 2.3.14 et antérieures.</td></tr>
      <dd>La taille du fichier en octets sera incluse</dd>
      <dt><strong>All</strong></dt>
      <dd>Tous les champs disponibles seront utilisés. Cette définition
-     est équivalente à : <div class="example"><p><code>FileETag INode MTime
-     Size</code></p></div></dd>
+     est équivalente à : 
+     <pre class="prettyprint lang-config">FileETag INode MTime Size</pre>
+</dd>
      <dt><strong>None</strong></dt>
      <dd>Si le document se compose d'un fichier, aucun champ
      <code>ETag</code> ne sera inclus dans la réponse</dd>
@@ -1835,9 +1839,12 @@ précisés</td></tr>
     de caractères. On peut aussi utiliser les <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">Expressions rationnelles</a> en ajoutant la
     caractère <code>~</code>. Par exemple :</p>
 
-    <div class="example"><p><code>
-      &lt;Files ~ "\.(gif|jpe?g|png)$"&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Files ~ "\.(gif|jpe?g|png)$"&gt;
+    #...
+&lt;/Files&gt;
+</pre>
+
 
     <p>correspondrait à la plupart des formats graphiques de l'Internet.
     Il est cependant préférable d'utiliser la directive <code class="directive"><a href="#filesmatch">&lt;FilesMatch&gt;</a></code>.</p>
@@ -1874,9 +1881,12 @@ spécifiés sous la forme d'expressions rationnelles</td></tr>
     <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expressions rationnelles</a>. Par
     exemple :</p>
 
-    <div class="example"><p><code>
-      &lt;FilesMatch "\.(gif|jpe?g|png)$"&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;FilesMatch "\.(gif|jpe?g|png)$"&gt;
+    # ...
+&lt;/FilesMatch&gt;
+</pre>
+
 
     <p>correspondrait à la plupart des formats graphiques de
     l'Internet.</p>
@@ -1910,9 +1920,8 @@ HTTP Content-Type pour les fichiers correspondants</td></tr>
     pas leur ajouter l'extension <code>.gif</code>, vous pouvez utiliser
     :</p>
 
-    <div class="example"><p><code>
-      ForceType image/gif
-    </code></p></div>
+    <pre class="prettyprint lang-config">ForceType image/gif</pre>
+
 
     <p>Notez que cette directive l'emporte sur d'autres associations de
     type de médium indirectes définies dans mime.types ou via la
@@ -1922,22 +1931,19 @@ HTTP Content-Type pour les fichiers correspondants</td></tr>
     <code class="directive">ForceType</code> en affectant la valeur
     <code>None</code> à l'argument <var>type médium</var> :</p>
 
-    <div class="example"><p><code>
-      # force le type MIME de tous les fichiers à image/gif:<br />
-      &lt;Location /images&gt;<br />
-        <span class="indent">
-          ForceType image/gif<br />
-        </span>
-      &lt;/Location&gt;<br />
-      <br />
-      # mais utilise les méthodes classiques d'attribution du type MIME
-      # dans le sous-répertoire suivant :<br />
-      &lt;Location /images/mixed&gt;<br />
-      <span class="indent">
-        ForceType None<br />
-      </span>
-      &lt;/Location&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+# force le type MIME de tous les fichiers à image/gif:
+&lt;Location /images&gt;
+  ForceType image/gif
+&lt;/Location&gt;
+
+# mais utilise les méthodes classiques d'attribution du type MIME
+# dans le sous-répertoire suivant :
+&lt;Location /images/mixed&gt;
+  ForceType None
+&lt;/Location&gt;
+    </pre>
+
     
     <p>A la base, cette directive écrase le type de contenu généré pour
     les fichiers statiques servis à partir du sytème de fichiers. Pour
@@ -2037,9 +2043,8 @@ requête</td></tr>
     si et seulement si l'expression renvoie la valeur "vrai". Par
     exemple :</p>
 
-    <div class="example"><p><code>
-        &lt;If "-z req('Host')"&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">&lt;If "-z req('Host')"&gt;</pre>
+
 
     <p>serait satisfaite pour les requêtes HTTP/1.0 sans en-tête
     <var>Host:</var>. Les expressions peuvent contenir différents
@@ -2049,9 +2054,8 @@ requête</td></tr>
     à usages divers (<code>-n</code>, <code>-z</code>, <code>-f</code>,
     ...). Les expressions rationnelles sont aussi supportées,</p>
 
-    <div class="example"><p><code>
-        &lt;If "%{QUERY_STRING} =~ /(delete|commit)=.*?elem/"&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">&lt;If "%{QUERY_STRING} =~ /(delete|commit)=.*?elem/"&gt;</pre>
+
 
     <p>ainsi que les comparaison de modèles de type shell et de
     nombreuses autres opérations. Ces opérations peuvent être effectuées
@@ -2116,32 +2120,23 @@ test retourne "vrai" au démarrage du serveur</td></tr>
     peuvent être imbriquées, ce qui permet d'implémenter un test
     multi-paramètres simple. Exemple :</p>
 
-    <div class="example"><p><code>
-      httpd -DReverseProxy -DUseCache -DMemCache ...<br />
-      <br />
-      # httpd.conf<br />
-      &lt;IfDefine ReverseProxy&gt;<br />
-      <span class="indent">
-        LoadModule proxy_module   modules/mod_proxy.so<br />
-        LoadModule proxy_http_module   modules/mod_proxy_http.so<br />
-        &lt;IfDefine UseCache&gt;<br />
-        <span class="indent">
-          LoadModule cache_module   modules/mod_cache.so<br />
-          &lt;IfDefine MemCache&gt;<br />
-          <span class="indent">
-            LoadModule mem_cache_module   modules/mod_mem_cache.so<br />
-          </span>
-          &lt;/IfDefine&gt;<br />
-          &lt;IfDefine !MemCache&gt;<br />
-          <span class="indent">
-            LoadModule cache_disk_module   modules/mod_cache_disk.so<br />
-          </span>
-          &lt;/IfDefine&gt;
-        </span>
-        &lt;/IfDefine&gt;
-      </span>
-      &lt;/IfDefine&gt;
-    </code></p></div>
+    <div class="example"><p><code>httpd -DReverseProxy -DUseCache -DMemCache ...</code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;IfDefine ReverseProxy&gt;
+  LoadModule proxy_module   modules/mod_proxy.so
+  LoadModule proxy_http_module   modules/mod_proxy_http.so
+  &lt;IfDefine UseCache&gt;
+    LoadModule cache_module   modules/mod_cache.so
+    &lt;IfDefine MemCache&gt;
+      LoadModule mem_cache_module   modules/mod_mem_cache.so
+    &lt;/IfDefine&gt;
+    &lt;IfDefine !MemCache&gt;
+      LoadModule cache_disk_module   modules/mod_cache_disk.so
+    &lt;/IfDefine&gt;
+  &lt;/IfDefine&gt;
+&lt;/IfDefine&gt;
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2242,35 +2237,35 @@ version 2.3.6</td></tr>
 
     <p>Exemples :</p>
 
-    <div class="example"><p><code>
-      Include /usr/local/apache2/conf/ssl.conf<br />
-      Include /usr/local/apache2/conf/vhosts/*.conf
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Include /usr/local/apache2/conf/ssl.conf
+Include /usr/local/apache2/conf/vhosts/*.conf
+    </pre>
+
 
     <p>ou encore, avec des chemins relatifs au répertoire défini par la
     directive <code class="directive"><a href="#serverroot">ServerRoot</a></code> :</p>
 
-    <div class="example"><p><code>
-      Include conf/ssl.conf<br />
-      Include conf/vhosts/*.conf
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Include conf/ssl.conf
+Include conf/vhosts/*.conf
+    </pre>
+
 
     <p>On peut aussi insérer des caractères génériques dans la partie
     répertoires du chemin. Dans l'exemple suivant, la directive
     échouera si aucun sous-répertoire de conf/vhosts ne contient au
     moins un fichier *.conf :</p>
   
-    <div class="example"><p><code>
-      Include conf/vhosts/*/*.conf
-    </code></p></div>
+    <pre class="prettyprint lang-config">Include conf/vhosts/*/*.conf</pre>
+
 
     <p>Par contre, dans l'exemple suivant, la directive sera simplement
     ignorée si aucun sous-répertoire de conf/vhosts ne contient au
     moins un fichier *.conf :</p>
 
-    <div class="example"><p><code>
-      IncludeOptional conf/vhosts/*/*.conf
-    </code></p></div>
+    <pre class="prettyprint lang-config">IncludeOptional conf/vhosts/*/*.conf</pre>
+
   
 
 <h3>Voir aussi</h3>
@@ -2403,13 +2398,12 @@ certaines méthodes HTTP</td></tr>
     <code>DELETE</code>, en laissant les autres méthodes sans protection
     :</p>
 
-    <div class="example"><p><code>
-      &lt;Limit POST PUT DELETE&gt;<br />
-      <span class="indent">
-        Require valid-user<br />
-      </span>
-      &lt;/Limit&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Limit POST PUT DELETE&gt;
+  Require valid-user
+&lt;/Limit&gt;
+    </pre>
+
 
     <p>La liste des noms de méthodes peut contenir une ou plusieurs
     valeurs parmi les suivantes : <code>GET</code>, <code>POST</code>,
@@ -2444,18 +2438,15 @@ certaines méthodes HTTP</td></tr>
     <code>POST</code>, et la directive <code>Require group
     editors</code> sera ignorée dans tous les cas :</p>
 
-    <div class="example"><p><code>
-      &lt;LimitExcept GET&gt;
-      <span class="indent">
-        Require valid-user
-      </span>
-      &lt;/LimitExcept&gt;<br />
-      &lt;Limit POST&gt;
-      <span class="indent">
-        Require group editors
-      </span>
-      &lt;/Limit&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;LimitExcept GET&gt;
+  Require valid-user
+&lt;/LimitExcept&gt;
+&lt;Limit POST&gt;
+  Require group editors
+&lt;/Limit&gt;
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2483,13 +2474,12 @@ sauf celles qui sont spécifiées</td></tr>
 
     <p>Par exemple :</p>
 
-    <div class="example"><p><code>
-      &lt;LimitExcept POST GET&gt;<br />
-      <span class="indent">
-        Require valid-user<br />
-      </span>
-      &lt;/LimitExcept&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;LimitExcept POST GET&gt;
+  Require valid-user
+&lt;/LimitExcept&gt;
+    </pre>
+
 
 
 </div>
@@ -2525,9 +2515,8 @@ sous-requêtes imbriquées</td></tr>
     maximum des sous-requêtes. Si vous ne spécifiez qu'un seul
     <var>nombre</var>, il sera affecté aux deux limites.</p>
 
-    <div class="example"><h3>Exemple</h3><p><code>
-      LimitInternalRecursion 5
-    </code></p></div>
+    <pre class="prettyprint lang-config">LimitInternalRecursion 5</pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2572,9 +2561,8 @@ envoyée par le client</td></tr>
     fichiers chargés à 100Ko, vous pouvez utiliser la directive suivante
     :</p>
 
-    <div class="example"><p><code>
-      LimitRequestBody 102400
-    </code></p></div>
+    <pre class="prettyprint lang-config">LimitRequestBody 102400</pre>
+
 
     <div class="note"><p>Pour une description détaillée de la manière dont cette
     directive est interprétée par les requêtes mandatées, voir la
@@ -2621,9 +2609,8 @@ requête HTTP</td></tr>
 
     <p>Par exemple :</p>
 
-    <div class="example"><p><code>
-      LimitRequestFields 50
-    </code></p></div>
+    <pre class="prettyprint lang-config">LimitRequestFields 50</pre>
+
 
     <div class="warning"><h3>Avertissement</h3>
      <p>Dans le cas des serveurs virtuels à base de noms, la valeur de
@@ -2665,9 +2652,8 @@ requête HTTP</td></tr>
 
     <p>Par exemple ::</p>
 
-    <div class="example"><p><code>
-      LimitRequestFieldSize 4094
-    </code></p></div>
+    <pre class="prettyprint lang-config">LimitRequestFieldSize 4094</pre>
+
 
     <div class="note">Dans des conditions normales, la valeur par défaut de cette
     directive ne doit pas être modifiée. En outre, vous ne
@@ -2714,9 +2700,8 @@ HTTP</td></tr>
 
     <p>Par exemple :</p>
 
-    <div class="example"><p><code>
-      LimitRequestLine 4094
-    </code></p></div>
+    <pre class="prettyprint lang-config">LimitRequestLine 4094</pre>
+
 
     <div class="note">Dans des conditions normales, la valeur par défaut de cette
     directive ne doit pas être modifiée. En outre, vous ne
@@ -2750,9 +2735,8 @@ XML</td></tr>
 
     <p>Exemple :</p>
 
-    <div class="example"><p><code>
-      LimitXMLRequestBody 0
-    </code></p></div>
+    <pre class="prettyprint lang-config">LimitXMLRequestBody 0</pre>
+
 
 
 </div>
@@ -2806,19 +2790,23 @@ spécifiées</td></tr>
     directives contenues dans la section s'appliqueront à /private1,
     /private1/ et /private1/file.txt, mais pas à /private1other. 
     </p>
-    <div class="example"><p><code>
-      &lt;Location /private1&gt;
-          ...
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Location /private1&gt;
+    #  ...
+&lt;/Location&gt;
+    </pre>
+
     <p>
     De même, dans l'exemple ci-dessous, où l'on utilise un slash de fin, les
     directives contenues dans la section s'appliqueront à /private2/ et
     à /private2/file.txt, mais pas à /private2other.
     </p>
-    <div class="example"><p><code>
-      &lt;Location /private2<em>/</em>&gt;
-          ...
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Location /private2<em>/</em>&gt;
+    # ...
+&lt;/Location&gt;
+    </pre>
+
     
     <div class="note"><h3>Quand utiliser la section <code class="directive">&lt;Location&gt;</code></h3>
 
@@ -2848,9 +2836,12 @@ spécifiées</td></tr>
     rationnelles</a>, moyennant l'addition d'un caractère
     <code>~</code>. Par exemple :</p>
 
-    <div class="example"><p><code>
-      &lt;Location ~ "/(extra|special)/data"&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Location ~ "/(extra|special)/data"&gt;
+    #...
+&lt;/Location&gt;
+</pre>
+
 
     <p>concernerait les URLs contenant les sous-chaîne
     <code>/extra/data</code> ou <code>/special/data</code>. La directive
@@ -2867,14 +2858,13 @@ spécifiées</td></tr>
     appartenant au domaine <code>example.com</code>, vous pouvez
     utiliser :</p>
 
-    <div class="example"><p><code>
-      &lt;Location /status&gt;<br />
-      <span class="indent">
-        SetHandler server-status<br />
-        Require host example.com<br />
-      </span>
-      &lt;/Location&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Location /status&gt;
+  SetHandler server-status
+  Require host example.com
+&lt;/Location&gt;
+    </pre>
+
 
     <div class="note"><h3>Note à propos du slash (/)</h3>
       <p>La signification du caractère slash dépend de l'endroit où il
@@ -2925,9 +2915,12 @@ correspondant à une expression rationnelle</td></tr>
     spécifier les URLs concernées est une <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression rationnelle</a> au lieu d'une simple
     chaîne de caractères. Par exemple :</p>
 
-    <div class="example"><p><code>
-      &lt;LocationMatch "/(extra|special)/data"&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;LocationMatch "/(extra|special)/data"&gt;
+    # ...
+&lt;/LocationMatch&gt;
+</pre>
+
 
     <p>correspondrait à toute URL contenant les sous-chaînes
     <code>/extra/data</code> ou <code>/special/data</code>.</p>
@@ -3108,9 +3101,8 @@ Apache</td></tr>
 
     <p>Par exemple :</p>
 
-    <div class="example"><p><code>
-      LogLevel notice
-    </code></p></div>
+    <pre class="prettyprint lang-config">LogLevel notice</pre>
+
 
     <div class="note"><h3>Note</h3>
       <p>Si la journalisation s'effectue directement dans un fichier,
@@ -3127,21 +3119,23 @@ Apache</td></tr>
     identificateur, avec ou sans le suffixe <code>_module</code>. Les
     trois spécifications suivantes sont donc équivalentes :</p>
 
-    <div class="example"><p><code>
-      LogLevel info ssl:warn<br />
-      LogLevel info mod_ssl.c:warn<br />
-      LogLevel info ssl_module:warn<br />
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+LogLevel info ssl:warn
+LogLevel info mod_ssl.c:warn
+LogLevel info ssl_module:warn
+    </pre>
+
 
     <p>Il est aussi possible d'attribuer un niveau de journalisation par
     répertoire :</p>
 
-    <div class="example"><p><code>
-        LogLevel info<br />
-        &lt;Directory /usr/local/apache/htdocs/app&gt;<br />
-        &nbsp; LogLevel debug<br />
-        &lt;/Files&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+LogLevel info
+&lt;Directory "/usr/local/apache/htdocs/app"&gt;
+  LogLevel debug
+&lt;/Directory&gt;
+    </pre>
+
 
     <div class="note">
         La configuration du niveau de journalisation par répertoire
@@ -3172,9 +3166,8 @@ persistante</td></tr>
 
     <p>Par exemple :</p>
 
-    <div class="example"><p><code>
-      MaxKeepAliveRequests 500
-    </code></p></div>
+    <pre class="prettyprint lang-config">MaxKeepAliveRequests 500</pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -3523,10 +3516,11 @@ verrou pour tous les mutex ou seulement les mutex spécifiés</td></tr>
     mutex par défaut pour tous les autres mutex deviendra
     <code>sysvsem</code>.</p>
 
-    <div class="example"><p><code>
-    Mutex sysvsem default<br />
-    Mutex fcntl:/var/httpd/locks mpm-accept
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Mutex sysvsem default
+Mutex fcntl:/var/httpd/locks mpm-accept
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -3684,38 +3678,32 @@ particulier</td></tr>
     <p>Par exemple, sans aucun symbole <code>+</code> et <code>-</code>
     :</p>
 
-    <div class="example"><p><code>
-      &lt;Directory /web/docs&gt;<br />
-      <span class="indent">
-        Options Indexes FollowSymLinks<br />
-      </span>
-      &lt;/Directory&gt;<br />
-      <br />
-      &lt;Directory /web/docs/spec&gt;<br />
-      <span class="indent">
-        Options Includes<br />
-      </span>
-      &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Directory "/web/docs"&gt;
+  Options Indexes FollowSymLinks
+&lt;/Directory&gt;
+
+&lt;Directory "/web/docs/spec"&gt;
+  Options Includes
+&lt;/Directory&gt;
+    </pre>
+
 
     <p>ici, seule l'option <code>Includes</code> sera prise en compte
     pour le répertoire <code>/web/docs/spec</code>. Par contre, si la
     seconde directive <code class="directive">Options</code> utilise les
     symboles <code>+</code> et <code>-</code> :</p>
 
-    <div class="example"><p><code>
-      &lt;Directory /web/docs&gt;<br />
-      <span class="indent">
-        Options Indexes FollowSymLinks<br />
-      </span>
-      &lt;/Directory&gt;<br />
-      <br />
-      &lt;Directory /web/docs/spec&gt;<br />
-      <span class="indent">
-        Options +Includes -Indexes<br />
-      </span>
-      &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Directory "/web/docs"&gt;
+  Options Indexes FollowSymLinks
+&lt;/Directory&gt;
+
+&lt;Directory "/web/docs/spec"&gt;
+  Options +Includes -Indexes
+&lt;/Directory&gt;
+    </pre>
+
 
     <p>alors, les options <code>FollowSymLinks</code> et
     <code>Includes</code> seront prises en compte pour le répertoire
@@ -3757,16 +3745,15 @@ seulement depuis la version 2.3.3 sous Windows.</td></tr>
     <code>https</code> sur un port non standard, spécifiez le protocole
     de manière explicite :</p>
 
-    <div class="example"><p><code>
-      Protocol https
-    </code></p></div>
+    <pre class="prettyprint lang-config">Protocol https</pre>
+
 
     <p>Vous pouvez aussi spécifier le protocole via la directive
     <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>.</p>
 
 <h3>Voir aussi</h3>
 <ul>
-<li><code class="directive">AcceptFilter</code></li>
+<li><code class="directive"><a href="#acceptfilter">AcceptFilter</a></code></li>
 <li><code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code></li>
 </ul>
 </div>
@@ -3918,16 +3905,14 @@ l'option <code>Registry-Strict</code> est disponible dans les versions
     <code>#!</code>). Sur les systèmes Win32, cette ligne ressemble
     souvent à ceci :</p>
 
-    <div class="example"><p><code>
-      #!C:/Perl/bin/perl.exe
-    </code></p></div>
+    <pre class="prettyprint lang-perl">#!C:/Perl/bin/perl.exe</pre>
+
 
     <p>ou simplement, dans le cas où <code>perl</code> est dans le
     <code>PATH</code> :</p>
 
-    <div class="example"><p><code>
-      #!perl
-    </code></p></div>
+    <pre class="prettyprint lang-perl">#!perl</pre>
+
 
     <p>Avec <code>ScriptInterpreterSource Registry</code>, Windows va
     effectuer une recherche dans l'arborescence
@@ -4029,9 +4014,8 @@ messages d'erreur envoyés au client</td></tr>
     <p>Il peut s'avérer utile de définir une adresse dédiée à
     l'administration du serveur, par exemple :</p>
 
-    <div class="example"><p><code>
-      ServerAdmin www-admin@foo.example.com
-    </code></p></div>
+    <pre class="prettyprint lang-config">ServerAdmin www-admin@foo.example.com</pre>
+
     <p>car les utilisateurs ne mentionnent pas systématiquement le
     serveur dont ils parlent !</p>
 
@@ -4052,15 +4036,16 @@ serveurs virtuels à base de nom</td></tr>
     nom</a>. La directive <code class="directive">ServerAlias</code> peut
     contenir des caractères génériques, si nécessaire.</p>
 
-    <div class="example"><p><code>
-      &lt;VirtualHost *:80&gt;<br />
-      ServerName serveur.example.com<br />
-      ServerAlias serveur serveur2.example.com serveur2<br />
-      ServerAlias *.example.com<br />
-      UseCanonicalName Off<br />
-      # ...<br />
-      &lt;/VirtualHost&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;VirtualHost *:80&gt;
+  ServerName server.example.com
+  ServerAlias server server2.example.com server2
+  ServerAlias *.example.com
+  UseCanonicalName Off
+  # ...
+&lt;/VirtualHost&gt;
+    </pre>
+
     <p>La recherche du serveur virtuel à base de nom correspondant au
     plus près à la requête s'effectue selon l'ordre d'apparition des
     directives <code class="directive"><a href="#virtualhost">&lt;virtualhost&gt;</a></code> dans le fichier de
@@ -4104,9 +4089,8 @@ entièrement qualifié</var>[:<var>port</var>]</code></td></tr>
     web s'identifie avec cet alias, vous devez utilisez la définition
     suivante :</p>
 
-    <div class="example"><p><code>
-      ServerName www.example.com
-    </code></p></div>
+    <pre class="prettyprint lang-config">ServerName www.example.com</pre>
+
 
     <p>La directive <code class="directive">ServerName</code> peut apparaître à
     toutes les étapes de la définition du serveur. Toute occurrence
@@ -4205,9 +4189,8 @@ serveur</td></tr>
     directives (comme <code class="directive"><a href="#include">Include</a></code> ou <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>) seront définis par
     rapport à ce répertoire.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
-      ServerRoot /home/httpd
-    </code></p></div>
+    <pre class="prettyprint lang-config">ServerRoot "/home/httpd"</pre>
+
 
     <p>La valeur par défaut de <code class="directive">ServerRoot</code> peut
     être modifiée via l'argument <code>--prefix</code> de la commande <a href="../programs/configure.html"><code>configure</code></a>, et de
@@ -4285,13 +4268,10 @@ HTTP</td></tr>
     <dl>
 	<dt><code>ServerTokens Full</code> (ou non spécifié)</dt>
 
-	<dd>Le serveur envoie par exemple : <code>Server: Apache/2.4.1
+	<dd>Le serveur envoie par exemple : <code>Server: Apache/2.4.2
 	(Unix) PHP/4.2.2 MyMod/1.2</code></dd>
 
-    	
-
-
-      <dt><code>ServerTokens Prod[uctOnly]</code></dt>
+    	<dt><code>ServerTokens Prod[uctOnly]</code></dt>
 
       <dd>Le serveur renvoie (<em>par exemple</em>): <code>Server:
       Apache</code></dd>
@@ -4309,12 +4289,12 @@ HTTP</td></tr>
       <dt><code>ServerTokens Min[imal]</code></dt>
 
       <dd>Le serveur renvoie (<em>par exemple</em>): <code>Server:
-      Apache/2.4.1</code></dd>
+      Apache/2.4.2</code></dd>
 
       <dt><code>ServerTokens OS</code></dt>
 
       <dd>Le serveur renvoie (<em>par exemple</em>): <code>Server:
-      Apache/2.4.1 (Unix)</code></dd>
+      Apache/2.4.2 (Unix)</code></dd>
 
       
       
@@ -4365,22 +4345,20 @@ gestionnaire particulier</td></tr>
     extensions, vous pouvez ajouter la ligne suivante dans un fichier
     <code>.htaccess</code> de ce répertoire :</p>
 
-    <div class="example"><p><code>
-      SetHandler imap-file
-    </code></p></div>
+    <pre class="prettyprint lang-config">SetHandler imap-file</pre>
+
 
     <p>Autre exemple : si vous voulez que le serveur affiche un
     compte-rendu d'état chaque fois qu'une URL du type <code>http://nom
     serveur/status</code> est appelée, vous pouvez ajouter ceci dans
     <code>httpd.conf</code> :</p>
 
-    <div class="example"><p><code>
-      &lt;Location /status&gt;<br />
-      <span class="indent">
-        SetHandler server-status<br />
-      </span>
-      &lt;/Location&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Location "/status"&gt;
+  SetHandler server-status
+&lt;/Location&gt;
+    </pre>
+
 
     <p>Vous pouvez écraser la définition antérieure d'une directive
     <code class="directive">SetHandler</code> en utilisant la valeur
@@ -4444,13 +4422,12 @@ du serveur</td></tr>
     fichiers du répertoire <code>/www/data/</code> comme des inclusions
     côté serveur (SSI) :</p>
 
-    <div class="example"><p><code>
-      &lt;Directory /www/data/&gt;<br />
-      <span class="indent">
-        SetOutputFilter INCLUDES<br />
-      </span>
-      &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Directory "/www/data/"&gt;
+  SetOutputFilter INCLUDES
+&lt;/Directory&gt;
+    </pre>
+
 
     <p>Si la directive comporte plusieurs filtres, ils doivent être
     séparés par des points-virgules, et spécifiés selon l'ordre dans
@@ -4597,9 +4574,9 @@ et son port</td></tr>
     <code>http://www.example.com/splat/</code>. Si vous avez activé
     l'authentification, ceci va obliger l'utilisateur à s'authentifier
     deux fois (une première fois pour <code>www</code> et une seconde
-    fois pour <code>www.example.com</code> -- voir <a href="http://httpd.apache.org/docs/misc/FAQ.html#prompted-twice">la
-    foire aux questions sur ce sujet pour plus d'informations</a>). Par
-    contre, si <code class="directive">UseCanonicalName</code> est définie à
+    fois pour <code>www.example.com</code> -- voir <a href="http://wiki.apache.org/httpd/FAQ#Why_does_Apache_ask_for_my_password_twice_before_serving_a_file.3F">la
+    foire aux questions sur ce sujet pour plus d'informations</a>).
+    Par contre, si <code class="directive">UseCanonicalName</code> est définie à
     <code>Off</code>, Apache httpd redirigera l'utilisateur vers
     <code>http://www/splat/</code>.</p>
 
@@ -4723,17 +4700,16 @@ d'hôte spécifique ou à une adresse IP</td></tr>
 
     </ul>
 
-    <div class="example"><h3>Exemple</h3><p><code>
-      &lt;VirtualHost 10.1.2.3:80&gt;<br />
-      <span class="indent">
-        ServerAdmin webmaster@host.example.com<br />
-        DocumentRoot /www/docs/host.example.com<br />
-        ServerName host.example.com<br />
-        ErrorLog logs/host.example.com-error_log<br />
-        TransferLog logs/host.example.com-access_log<br />
-      </span>
-      &lt;/VirtualHost&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;VirtualHost 10.1.2.3:80&gt;
+  ServerAdmin webmaster@host.example.com
+  DocumentRoot /www/docs/host.example.com
+  ServerName host.example.com
+  ErrorLog logs/host.example.com-error_log
+  TransferLog logs/host.example.com-access_log
+&lt;/VirtualHost&gt;
+    </pre>
+
 
 
     <p>Les adresses IPv6 doivent être entourées de crochets car dans le
@@ -4741,17 +4717,16 @@ d'hôte spécifique ou à une adresse IP</td></tr>
     déterminé. Voici un exemple de serveur virtuel avec adresse IPv6
     :</p>
 
-    <div class="example"><p><code>
-      &lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]:80&gt;<br />
-      <span class="indent">
-        ServerAdmin webmaster@host.example.com<br />
-        DocumentRoot /www/docs/host.example.com<br />
-        ServerName host.example.com<br />
-        ErrorLog logs/host.example.com-error_log<br />
-        TransferLog logs/host.example.com-access_log<br />
-      </span>
-      &lt;/VirtualHost&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]:80&gt;
+  ServerAdmin webmaster@host.example.com
+  DocumentRoot /www/docs/host.example.com
+  ServerName host.example.com
+  ErrorLog logs/host.example.com-error_log
+  TransferLog logs/host.example.com-access_log
+&lt;/VirtualHost&gt;
+    </pre>
+
 
     <p>Chaque serveur virtuel doit correspondre à une adresse IP, un
     port ou un nom d'hôte spécifique ; dans le premier cas, le serveur
