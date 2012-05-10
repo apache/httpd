@@ -1678,7 +1678,7 @@ AP_DECLARE(char *) ap_make_dirstr_parent(apr_pool_t *p, const char *s);
 
 /**
  * Given a directory and filename, create a single path from them.  This
- * function is smart enough to ensure that there is a sinlge '/' between the
+ * function is smart enough to ensure that there is a single '/' between the
  * directory and file names
  * @param a The pool to allocate from
  * @param dir The directory name
