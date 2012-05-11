@@ -4075,6 +4075,16 @@ handler</td></tr>
     </pre>
 
 
+    <p>You could also use this directive to configure a particular
+    handler for files with a particular file extension. For example:</p>
+
+    <pre class="prettyprint lang-config">
+&lt;FilesMatch \.php$&gt;
+    SetHandler application/x-httpd-php
+&lt;/FilesMatch&gt;
+    </pre>
+
+
     <p>You can override an earlier defined <code class="directive">SetHandler</code>
     directive by using the value <code>None</code>.</p>
 
