@@ -171,6 +171,25 @@ VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2
     <p>The example request would come from
     <code>/usr/local/apache/vhosts/example.com/d/o/m/ain/directory/file.html</code>.</p>
 
+<p> A very common request by users is the ability to point multiple domains to multiple 
+document roots without having to worry about the length or number of parts of the 
+hostname being requested. If the requested hostname is <code>sub.www.domain.example.com</code>
+ instead of simply <code>www.domain.example.com</code>, then using %3+ will result in the document
+root being <code>/usr/local/apache/vhosts/domain.example.com/...</code> instead of the
+intended <code>example.com</code> directory. In such cases, it can be beneficial to use 
+the combination <code>%-2.0.%-1.0</code>, which will always yield the domain name and the 
+tld, for example <code>example.com</code> regardless of the number of subdomains appended 
+to the hostname. As such, one can make a configuration that will direct all first, second 
+or third level subdomains to the same directory:
+</p>
+<highlight language="config">
+    VirtualDocumentRoot "/usr/local/apache/vhosts/%-2.0.%-1.0"
+</highlight>
+<p>
+In the example above, both <code>www.example.com</code> as well as <code>www.sub.example.com</code>
+or <code>example.com</code> will all point to <code>/usr/local/apache/vhosts/example.com</code>.
+</p>
+
     <p>For IP-based virtual hosting you might use the following in
     your configuration file:</p>
 
