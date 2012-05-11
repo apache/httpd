@@ -29,8 +29,6 @@
 <a href="../ja/mod/mod_authz_owner.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authz_owner.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Autorisation basée sur l'appartenance des
 fichiers</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -48,7 +46,7 @@ d'Apache</td></tr></table>
     un module d'authentification comme <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>
     ou <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>.
     <code class="module"><a href="../mod/mod_authz_owner.html">mod_authz_owner</a></code> reconnaît deux arguments pour la
-    directive <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> :
+    directive <code class="directive"><a href="../mod/core.html#require">Require</a></code> :
     <code>file-owner</code> et <code>file-group</code> :</p>
 
     <dl>
@@ -111,17 +109,16 @@ d'Apache</td></tr></table>
       propriétaire ne soit <code>jones</code> au lieu de
       <code>smith</code>.</p>
 
-      <div class="example"><p><code>
-        &lt;Directory /home/*/public_html/private&gt;<br />
-        <span class="indent">
-          AuthType Basic<br />
-          AuthName mes-fichiers-prive<br />
-          AuthBasicProvider dbm<br />
-          AuthDBMUserFile /usr/local/apache2/etc/.htdbm-all<br />
-          Require file-owner<br />
-        </span>
-        &lt;/Directory&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+&lt;Directory /home/*/public_html/private&gt;
+    AuthType Basic
+    AuthName MyPrivateFiles
+    AuthBasicProvider dbm
+    AuthDBMUserFile /usr/local/apache2/etc/.htdbm-all
+    Require file-owner
+&lt;/Directory&gt;
+      </pre>
+
     
 
     <h3><a name="examples.file-group" id="examples.file-group">Require file-group</a></h3>
@@ -137,22 +134,21 @@ d'Apache</td></tr></table>
       <code>foo</code>, ils seront autorisés à accéder aux
       répertoires <code>project-foo</code> de chacun d'entre eux.</p>
 
-      <div class="example"><p><code>
-        &lt;Directory /home/*/public_html/project-foo&gt;<br />
-        <span class="indent">
-          AuthType Basic<br />
-          AuthName "Project Foo Files"<br />
-          AuthBasicProvider dbm<br />
-          <br />
-          # combined user/group database<br />
-          AuthDBMUserFile  /usr/local/apache2/etc/.htdbm-all<br />
-          AuthDBMGroupFile /usr/local/apache2/etc/.htdbm-all<br />
-          <br />
-          Satisfy All<br />
-          Require file-group<br />
-        </span>
-        &lt;/Directory&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+&lt;Directory /home/*/public_html/project-foo&gt;
+    AuthType Basic
+    AuthName "Project Foo Files"
+    AuthBasicProvider dbm
+    
+    # combined user/group database
+    AuthDBMUserFile  /usr/local/apache2/etc/.htdbm-all
+    AuthDBMGroupFile /usr/local/apache2/etc/.htdbm-all
+    
+    Satisfy All
+    Require file-group
+&lt;/Directory&gt;
+      </pre>
+
     
 </div>
 </div>

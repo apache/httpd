@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_buffer.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_buffer.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Support de la mise en tampon des requêtes</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>buffer_module</td></tr>
@@ -62,9 +60,10 @@ d'Apache</td></tr></table>
     directives <code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code>,
     <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code>, <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code> ou <code class="directive"><a href="../mod/mod_filter.html#addoutputfilterbytype">AddOutputFilterByType</a></code>.</p>
 
-      <div class="example"><h3>Utilisation d'un tampon avec mod_include</h3><p><code>
-        AddOutputFilterByType INCLUDES;BUFFER text/html<br />
-      </code></p></div>
+      <div class="example"><h3>Utilisation d'un tampon avec mod_include</h3><pre class="prettyprint lang-config">
+        AddOutputFilterByType INCLUDES;BUFFER text/html
+        </pre>
+</div>
 
     <div class="warning">Les filtres de mise en tampon lisent la
     requête/réponse en RAM, puis la reconditionnent sous la forme d'un
