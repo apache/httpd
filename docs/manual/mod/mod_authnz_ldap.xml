@@ -416,7 +416,7 @@ uniqueMember: cn=Elliot Rhodes, o=Example
     sub-group depth of 2):</p>
 <highlight language="config">
 Require ldap-group cn=Employees, o-Example
-AuthLDAPSubGroupDepth 1
+AuthLDAPMaxSubGroupDepth 1
 </highlight>
 
     <p>Behavior of this directive is modified by the <directive
@@ -691,9 +691,9 @@ AuthLDAPURL ldap://10.0.0.1:3268/?userPrincipalName?sub
     directives to <em>every</em> <code>.htaccess</code> file
     that gets created in the web</p>
 <highlight language="config">
-AuthLDAPURL            "the url"
-AuthGroupFile <em>mygroupfile</em>
-Require group <em>mygroupfile</em>
+AuthLDAPURL       "the url"
+AuthGroupFile     mygroupfile
+Require group     mygroupfile
 </highlight>
 
 <section id="howitworks"><title>How It Works</title>
