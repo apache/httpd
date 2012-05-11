@@ -3974,6 +3974,15 @@ handler</description>
 &lt;/Location&gt;
     </highlight>
 
+    <p>You could also use this directive to configure a particular
+    handler for files with a particular file extension. For example:</p>
+
+    <highlight language="config">
+&lt;FilesMatch \.php$&gt;
+    SetHandler application/x-httpd-php
+&lt;/FilesMatch&gt;
+    </highlight>
+
     <p>You can override an earlier defined <directive>SetHandler</directive>
     directive by using the value <code>None</code>.</p>
 
