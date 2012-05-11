@@ -212,47 +212,6 @@ authentication</description>
 </usage>
 </directivesynopsis>
 
-<directivesynopsis>
-<name>AuthDigestNonceFormat</name>
-<description>Determines how the nonce is generated</description>
-<syntax>AuthDigestNonceFormat <var>format</var></syntax>
-<contextlist><context>directory</context><context>.htaccess</context>
-</contextlist>
-<override>AuthConfig</override>
-
-<usage>
-    <note>Not implemented yet.</note>
-    <!-- The AuthDigestNonceFormat directive determines how the nonce is
-    generated. -->
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>AuthDigestNcCheck</name>
-<description>Enables or disables checking of the nonce-count sent by the
-server</description>
-<syntax>AuthDigestNcCheck On|Off</syntax>
-<default>AuthDigestNcCheck Off</default>
-<contextlist><context>server config</context></contextlist>
-
-<usage>
-    <note>
-      Not implemented yet.
-    </note>
-    <!--
-    <p>The AuthDigestNcCheck directive enables or disables the checking of the
-    nonce-count sent by the server.</p>
-
-    <p>While recommended from a security standpoint, turning this directive
-    On has one important performance implication. To check the nonce-count
-    *all* requests (which have an Authorization header, irrespective of
-    whether they require digest authentication) must be serialized through
-    a critical section. If the server is handling a large number of
-    requests which contain the Authorization header then this may noticeably
-    impact performance.</p>
-     -->
-</usage>
-</directivesynopsis>
 
 <directivesynopsis>
 <name>AuthDigestAlgorithm</name>
