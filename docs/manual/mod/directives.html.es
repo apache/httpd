@@ -92,8 +92,6 @@
 <li><a href="mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></li>
 <li><a href="mod_auth_digest.html#authdigestalgorithm">AuthDigestAlgorithm</a></li>
 <li><a href="mod_auth_digest.html#authdigestdomain">AuthDigestDomain</a></li>
-<li><a href="mod_auth_digest.html#authdigestnccheck">AuthDigestNcCheck</a></li>
-<li><a href="mod_auth_digest.html#authdigestnonceformat">AuthDigestNonceFormat</a></li>
 <li><a href="mod_auth_digest.html#authdigestnoncelifetime">AuthDigestNonceLifetime</a></li>
 <li><a href="mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></li>
 <li><a href="mod_auth_digest.html#authdigestqop">AuthDigestQop</a></li>
