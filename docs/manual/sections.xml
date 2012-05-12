@@ -112,9 +112,9 @@ module is designed for the use in test suites and large networks which have to
 deal with different httpd versions and different configurations.</p>
 
 <highlight language="config">
-&lt;IfVersion >= 2.1&gt;
+&lt;IfVersion >= 2.4&gt;
     # this happens only in versions greater or
-    # equal 2.1.0.
+    # equal 2.4.0.
 &lt;/IfVersion&gt;
 </highlight>
 
@@ -176,8 +176,7 @@ of where it is found.</p>
 
 <highlight language="config">
 &lt;Files private.html&gt;
-    Order allow,deny
-    Deny from all
+    Require all denied
 &lt;/Files&gt;
 </highlight>
 
@@ -194,8 +193,7 @@ directory.</p>
 <highlight language="config">
 &lt;Directory /var/web/dir1&gt;
     &lt;Files private.html&gt;
-        Order allow,deny
-        Deny from all
+        Require all denied
     &lt;/Files&gt;
 &lt;/Directory&gt;
 </highlight>
@@ -216,8 +214,7 @@ as any other requests starting with the <code>/private</code> string.</p>
 
 <highlight language="config">
 &lt;LocationMatch ^/private&gt;
-    Order Allow,Deny
-    Deny from all
+    Require all denied
 &lt;/Location&gt;
 </highlight>
 
@@ -295,8 +292,7 @@ all user directories could look as follows:</p>
 at once:</p>
 <highlight language="config">
 &lt;FilesMatch \.(?i:gif|jpe?g|png)$&gt;
-    Order allow,deny
-    Deny from all
+    Require all denied
 &lt;/FilesMatch&gt;
 </highlight>
 
@@ -336,8 +332,7 @@ For example, consider the following configuration:</p>
 
 <highlight language="config">
 &lt;Location /dir/&gt;
-    Order allow,deny
-    Deny from all
+    Require all denied
 &lt;/Location&gt;
 </highlight>
 
@@ -404,8 +399,7 @@ will prevent the proxy server from being used to access the
 
 <highlight language="config">
 &lt;Proxy http://www.example.com/*&gt;
-    Order allow,deny
-    Deny from all
+    Require all granted
 &lt;/Proxy&gt;
 </highlight>
 </section>
@@ -562,15 +556,15 @@ other words, order of merging is important, so be careful!</p>
 
 <highlight language="config">
 &lt;Location /&gt;
-    Order deny,allow
-    Allow from all
+    Require all granted
 &lt;/Location&gt;
 
 # Woops!  This &lt;Directory&gt; section will have no effect
 &lt;Directory /&gt;
-    Order allow,deny
-    Allow from all
-    Deny from badguy.example.com
+    &lt;RequireAll&gt;
+        Require all granted
+        Require not host badguy.example.com
+    &lt;/RequireAll&gt;
 &lt;/Directory&gt;
 </highlight>
 
