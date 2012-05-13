@@ -222,8 +222,8 @@ changes on a per-directory basis.</p>
     <example><title>Section from your <code>httpd.conf</code>
     file</title>
     <highlight language="config">
-&lt;Directory /www/htdocs/example&gt;<br />
-    AddType text/example .exm<br />
+&lt;Directory /www/htdocs/example&gt;
+    AddType text/example .exm
 &lt;/Directory&gt;
     </highlight>
     </example>
@@ -293,7 +293,7 @@ changes on a per-directory basis.</p>
 
     <highlight language="config">
 &lt;Directory /www/htdocs&gt;
-    Allowoverride All
+    AllowOverride All
 &lt;/Directory&gt;
 
 &lt;Location /&gt;
