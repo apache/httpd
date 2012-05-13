@@ -68,8 +68,8 @@
     <p>The usage of these directives is:</p>
 
     <highlight language="config">
-Require host <var>address</var>
-Require ip <var>ip.address</var>
+Require host address
+Require ip ip.address
     </highlight>
 
     <p>In the first form, <var>address</var> is a fully qualified
@@ -85,15 +85,25 @@ Require ip <var>ip.address</var>
     syntax.</p>
 
     <p>You can insert <code>not</code> to negate a particular requirement.
+    Note, that since a <code>not</code> is a negation of a value, it cannot 
+    be used by itself to allow or deny a request, as <em>not true</em>
+    does not constitute <em>false</em>. Thus, to deny a visit using a negation,
+    the block must have one element that evaluates as true or false.
     For example, if you have someone spamming your message
     board, and you want to keep them out, you could do the
     following:</p>
 
-    <highlight language="config">Require not ip 10.252.46.165</highlight>
+    <highlight language="config">
+&lt;RequireAll&gt;
+    Require all granted
+    Require not ip 10.252.46.165
+&lt;/RequireAll&gt;
+</highlight>
 
-    <p>Visitors coming from that address will not be able to see
-    the content covered by this directive. If, instead, you have a
-    machine name, rather than an IP address, you can use that.</p>
+    <p>Visitors coming from that address (<code>10.252.46.165</code>)
+    will not be able to see the content covered by this directive. If, 
+    instead, you have a machine name, rather than an IP address, you 
+    can use that.</p>
 
     <highlight language="config">Require not host <var>host.example.com</var></highlight>
 
@@ -101,8 +111,8 @@ Require ip <var>ip.address</var>
     you can specify just part of an address or domain name:</p>
 
     <highlight language="config">
-Require not ip <var>192.168.205</var>
-Require not host <var>phishers.example.com</var> <var>moreidiots.example</var>
+Require not ip 192.168.205
+Require not host phishers.example.commoreidiots.example
 Require not gov
     </highlight>
 
