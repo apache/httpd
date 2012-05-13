@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_ldap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_ldap.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Conservation des connexions LDAP et services de mise en
 cache du résultat à destination des autres modules LDAP</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -96,34 +94,33 @@ d'Apache</td></tr></table>
     l'authentification HTTP de base fournie par
     <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>.</p>
 
-    <div class="example"><p><code>
-      # Active la conservation des connexions LDAP et le cache partagé en<br />
-      # mémoire. Active le gestionnaire de statut du cache LDAP.<br />
-      # Nécessite le chargement de mod_ldap et de mod_authnz_ldap.<br />
-      # Remplacez "votre-domaine.example.com" par le nom de votre<br />
-      # domaine.<br />
-      <br />
-      LDAPSharedCacheSize 500000<br />
-      LDAPCacheEntries 1024<br />
-      LDAPCacheTTL 600<br />
-      LDAPOpCacheEntries 1024<br />
-      LDAPOpCacheTTL 600<br />
-      <br />
-      &lt;Location /statut-ldap&gt;<br />
-      <span class="indent">
-        SetHandler ldap-status<br />
+    <pre class="prettyprint lang-config">
+# Active la conservation des connexions LDAP et le cache partagé en
+# mémoire. Active le gestionnaire de statut du cache LDAP.
+# Nécessite le chargement de mod_ldap et de mod_authnz_ldap.
+# Remplacez "votre-domaine.example.com" par le nom de votre
+# domaine.
 
-        Require host votre-domaine.example.com<br />
+LDAPSharedCacheSize 500000
+LDAPCacheEntries 1024
+LDAPCacheTTL 600
+LDAPOpCacheEntries 1024
+LDAPOpCacheTTL 600
 
-        Satisfy any<br />
-        AuthType Basic<br />
-        AuthName "Protégé par LDAP"<br />
-        AuthBasicProvider ldap<br />
-        AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one<br />
-        Require valid-user<br />
-      </span>
-      &lt;/Location&gt;
-    </code></p></div>
+&lt;Location /ldap-status&gt;
+    SetHandler ldap-status
+    
+    Require host yourdomain.example.com
+    
+    Satisfy any
+    AuthType Basic
+    AuthName "LDAP Protected"
+    AuthBasicProvider ldap
+    AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one
+    Require valid-user
+&lt;/Location&gt;
+    </pre>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="pool" id="pool">Conservation des connexions LDAP</a></h2>
@@ -226,13 +223,12 @@ d'Apache</td></tr></table>
       suivantes pour accéder aux informations du cache de
       <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> :</p>
 
-      <div class="example"><p><code>
-        &lt;Location /serveur/infos-cache&gt;<br />
-        <span class="indent">
-          SetHandler ldap-status<br />
-        </span>
-        &lt;/Location&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+&lt;Location /server/cache-info&gt;
+    SetHandler ldap-status
+&lt;/Location&gt;
+      </pre>
+
 
       <p>En se connectant à l'URL
       <code>http://nom-serveur/infos-cache</code>, l'administrateur peut
@@ -257,53 +253,51 @@ d'Apache</td></tr></table>
     ainsi que le type de chiffrement à utiliser pour la connexion (none,
     SSL ou TLS/STARTTLS).</p>
 
-    <div class="example"><p><code>
-      # Etablissement d'une connexion SSL LDAP sur le port 636.<br />
-      # Nécessite le chargement de mod_ldap et mod_authnz_ldap.<br />
-      # Remplacez "votre-domaine.example.com" par le nom de votre<br />
-      # domaine.<br />
-      <br />
-      LDAPTrustedGlobalCert CA_DER /certs/fichier-certificat.der<br />
-      <br />
-      &lt;Location /statut-ldap&gt;<br />
-      <span class="indent">
-        SetHandler ldap-status<br />
+    <pre class="prettyprint lang-config">
+# Etablissement d'une connexion SSL LDAP sur le port 636.
+# Nécessite le chargement de mod_ldap et mod_authnz_ldap.
+# Remplacez "votre-domaine.example.com" par le nom de votre
+# domaine.
 
-        Require host votre-domaine.example.com<br />
+LDAPTrustedGlobalCert CA_DER /certs/certfile.der
 
-        Satisfy any<br />
-        AuthType Basic<br />
-        AuthName "Protégé par LDAP"<br />
-        AuthBasicProvider ldap<br />
-        AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one<br />
-        Require valid-user<br />
-      </span>
-      &lt;/Location&gt;
-    </code></p></div>
+&lt;Location /ldap-status&gt;
+    SetHandler ldap-status
+    
+    Require host yourdomain.example.com
+    
+    Satisfy any
+    AuthType Basic
+    AuthName "LDAP Protected"
+    AuthBasicProvider ldap
+    AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one
+    Require valid-user
+&lt;/Location&gt;
+    </pre>
 
-    <div class="example"><p><code>
-      # Etablissement d'une connexion TLS LDAP sur le port 389.<br />
-      # Nécessite le chargement de mod_ldap et mod_authnz_ldap.<br />
-      # Remplacez "votre-domaine.example.com" par le nom de votre<br />
-      # domaine.<br />
-      <br />
-      LDAPTrustedGlobalCert CA_DER /certs/fichier-certificat.der<br />
-      <br />
-      &lt;Location /statut-ldap&gt;<br />
-      <span class="indent">
-        SetHandler ldap-status<br />
 
-        Require host votre-domaine.example.com<br />
+    <pre class="prettyprint lang-config">
+# Etablissement d'une connexion TLS LDAP sur le port 389.
+# Nécessite le chargement de mod_ldap et mod_authnz_ldap.
+# Remplacez "votre-domaine.example.com" par le nom de votre
+# domaine.
 
-        Satisfy any<br />
-        AuthType Basic<br />
-        AuthName "Protégé par LDAP"<br />
-        AuthBasicProvider ldap<br />
-        AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one TLS<br />
-        Require valid-user<br />
-      </span>
-      &lt;/Location&gt;
-    </code></p></div>
+LDAPTrustedGlobalCert CA_DER /certs/certfile.der
+
+&lt;Location /ldap-status&gt;
+    SetHandler ldap-status
+    
+    Require host yourdomain.example.com
+    
+    Satisfy any
+    AuthType Basic
+    AuthName "LDAP Protected"
+    AuthBasicProvider ldap
+    AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one TLS
+    Require valid-user
+&lt;/Location&gt;
+    </pre>
+
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -339,31 +333,29 @@ d'Apache</td></tr></table>
 	de STARTTLS engendrera une erreur lors des tentatives de
 	contacter le serveur LDAP pendant l'exécution.</p>
 
-        <div class="example"><p><code>
-            # Spécifie un fichier de certificats de CA Netscape<br />
-            LDAPTrustedGlobalCert CA_CERT7_DB /certs/cert7.db<br />
-            # Spécifie un fichier key3db optionnel pour le support des
-	    # certificats clients<br />
-            LDAPTrustedGlobalCert CERT_KEY3_DB /certs/key3.db<br />
-            # Spécifie le fichier secmod si nécessaire<br />
-            LDAPTrustedGlobalCert CA_SECMOD /certs/secmod<br />
-            &lt;Location /statut-ldap&gt;<br />
-            <span class="indent">
-                SetHandler ldap-status<br />
+        <pre class="prettyprint lang-config">
+# Spécifie un fichier de certificats de CA Netscape
+LDAPTrustedGlobalCert CA_CERT7_DB /certs/cert7.db
+# Spécifie un fichier key3db optionnel pour le support des
+# certificats clients
+LDAPTrustedGlobalCert CERT_KEY3_DB /certs/key3.db
+# Spécifie le fichier secmod si nécessaire
+LDAPTrustedGlobalCert CA_SECMOD /certs/secmod
+&lt;Location /ldap-status&gt;
+    SetHandler ldap-status
 
-                Require host votre-domaine.example.com<br />
+    Require host yourdomain.example.com
 
-                Satisfy any<br />
-                AuthType Basic<br />
-                AuthName "Protégé par LDAP"<br />
-                AuthBasicProvider ldap<br />
-                LDAPTrustedClientCert CERT_NICKNAME &lt;nickname&gt;
-		[mot de passe]<br />
-                AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one<br />
-                Require valid-user<br />
-            </span>
-            &lt;/Location&gt;
-        </code></p></div>
+    Satisfy any
+    AuthType Basic
+    AuthName "LDAP Protected"
+    AuthBasicProvider ldap
+    LDAPTrustedClientCert CERT_NICKNAME &lt;nickname&gt; [password]
+    AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one
+    Require valid-user
+&lt;/Location&gt;
+        </pre>
+
 
     
 
@@ -386,19 +378,19 @@ d'Apache</td></tr></table>
 	ldaps:// est spécifiée, le mode SSL est forcé, et l'emporte sur
 	cette directive.</p>
 
-        <div class="example"><p><code>
-             # Spécifie deux fichiers contenant des certificats de CA<br />
-             LDAPTrustedGlobalCert CA_DER /certs/cacert1.der<br />
-             LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem<br />
-             # Spécifie un fichier contenant des certificats clients
-	     # ainsi qu'une clé<br />
-             LDAPTrustedGlobalCert CERT_BASE64 /certs/cert1.pem<br />
-             LDAPTrustedGlobalCert KEY_BASE64 /certs/key1.pem [mot de
-	     passe]<br />
-             # N'utilisez pas cette directive, sous peine de provoquer
-	     # une erreur<br />
-             #LDAPTrustedClientCert CERT_BASE64 /certs/cert1.pem<br />
-        </code></p></div>
+        <pre class="prettyprint lang-config">
+# Spécifie deux fichiers contenant des certificats de CA
+LDAPTrustedGlobalCert CA_DER /certs/cacert1.der
+LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
+# Spécifie un fichier contenant des certificats clients
+# ainsi qu'une clé
+LDAPTrustedGlobalCert CERT_BASE64 /certs/cert1.pem
+LDAPTrustedGlobalCert KEY_BASE64 /certs/key1.pem [password]
+# N'utilisez pas cette directive, sous peine de provoquer
+# une erreur
+#LDAPTrustedClientCert CERT_BASE64 /certs/cert1.pem
+        </pre>
+
 
     
 
@@ -421,27 +413,29 @@ d'Apache</td></tr></table>
 	OpenLDAP indique que le support SSL (ldaps://) tend à être
 	remplacé par TLS, bien que le mode SSL fonctionne toujours.</p>
 
-        <div class="example"><p><code>
-             # Spécifie deux fichiers contenant des certificats de CA<br />
-             LDAPTrustedGlobalCert CA_DER /certs/cacert1.der<br />
-             LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem<br />
-            &lt;Location /statut-ldap&gt;<br />
-            <span class="indent">
-                SetHandler ldap-status<br />
+        <pre class="prettyprint lang-config">
+# Spécifie deux fichiers contenant des certificats de CA
+LDAPTrustedGlobalCert CA_DER /certs/cacert1.der
+LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
+&lt;Location /ldap-status&gt;
+    SetHandler ldap-status
+    
+    Require host yourdomain.example.com
+    
+    LDAPTrustedClientCert CERT_BASE64 /certs/cert1.pem
+    LDAPTrustedClientCert KEY_BASE64 /certs/key1.pem
+    # CA certs respecified due to per-directory client certs
+    LDAPTrustedClientCert CA_DER /certs/cacert1.der
+    LDAPTrustedClientCert CA_BASE64 /certs/cacert2.pem
+    Satisfy any
+    AuthType Basic
+    AuthName "LDAP Protected"
+    AuthBasicProvider ldap
+    AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one
+    Require valid-user
+&lt;/Location&gt;
+        </pre>
 
-                Require host votre-domaine.example.com<br />
-
-                LDAPTrustedClientCert CERT_BASE64 /certs/cert1.pem<br />
-                LDAPTrustedClientCert KEY_BASE64 /certs/key1.pem<br />
-                Satisfy any<br />
-                AuthType Basic<br />
-                AuthName "Protégé par LDAP"<br />
-                AuthBasicProvider ldap<br />
-                AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one<br />
-                Require valid-user<br />
-            </span>
-            &lt;/Location&gt;
-        </code></p></div>
 
     
 
