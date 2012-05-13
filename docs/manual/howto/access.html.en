@@ -116,7 +116,7 @@ Require ip ip.address
 
     <pre class="prettyprint lang-config">
 Require not ip 192.168.205
-Require not host phishers.example.commoreidiots.example
+Require not host phishers.example.com moreidiots.example
 Require not gov
     </pre>
 
