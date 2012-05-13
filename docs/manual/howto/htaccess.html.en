@@ -198,8 +198,8 @@ changes on a per-directory basis.</p>
 
     <div class="example"><h3>Section from your <code>httpd.conf</code>
     file</h3><pre class="prettyprint lang-config">
-&lt;Directory /www/htdocs/example&gt;<br />
-    AddType text/example .exm<br />
+&lt;Directory /www/htdocs/example&gt;
+    AddType text/example .exm
 &lt;/Directory&gt;
     </pre>
 </div>
@@ -268,7 +268,7 @@ changes on a per-directory basis.</p>
 
     <pre class="prettyprint lang-config">
 &lt;Directory /www/htdocs&gt;
-    Allowoverride All
+    AllowOverride All
 &lt;/Directory&gt;
 
 &lt;Location /&gt;
