@@ -76,7 +76,7 @@ RewriteEngine on
 
 RewriteMap    lowercase int:tolower
 
-RewriteCond   %{lowercase:%{<strong>HTTP_HOST</strong>}}   ^www\.<strong>([^.]+)</strong>\.example\.com$
+RewriteCond   ${lowercase:%{<strong>HTTP_HOST</strong>}}   ^www\.<strong>([^.]+)</strong>\.example\.com$
 RewriteRule   ^(.*) /home/<strong>%1</strong>/www$1
 </highlight></dd>
 
