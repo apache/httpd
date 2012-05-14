@@ -416,9 +416,11 @@ this process, or if the script itself is very slow.</li>
     <p>If a query returns more than one row, a random row from
 the result set is used.</p>
 
-    <highlight language="config"><strong>Example</strong>
+	<example><title>Example</title>
+    <highlight language="config">
 RewriteMap myquery "fastdbd:SELECT destination FROM rewrite WHERE source = %s"
     </highlight>
+</example>
 
   </section>
   <section id="summary">
