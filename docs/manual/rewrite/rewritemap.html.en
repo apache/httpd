@@ -430,10 +430,10 @@ this process, or if the script itself is very slow.</li>
     <p>If a query returns more than one row, a random row from
 the result set is used.</p>
 
-    <pre class="prettyprint lang-config"><strong>Example</strong>
+	<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 RewriteMap myquery "fastdbd:SELECT destination FROM rewrite WHERE source = %s"
     </pre>
-
+</div>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">

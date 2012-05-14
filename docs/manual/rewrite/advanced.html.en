@@ -253,61 +253,61 @@ RewriteRule   ^(/[uge]/[^/]+/?.*):refresh  /internal/cgi/apache/nph-refresh?f=$1
 $| = 1;
 
 #   split the QUERY_STRING variable
-@pairs = split(/&amp;/, $ENV{'QUERY_STRING'});
+@pairs = split( /&amp;/, $ENV{'QUERY_STRING'} );
 foreach $pair (@pairs) {
-($name, $value) = split(/=/, $pair);
-$name =~ tr/A-Z/a-z/;
-$name = 'QS_' . $name;
-$value =~ s/%([a-fA-F0-9][a-fA-F0-9])/pack("C", hex($1))/eg;
-eval "\$$name = \"$value\"";
+    ( $name, $value ) = split( /=/, $pair );
+    $name =~ tr/A-Z/a-z/;
+    $name = 'QS_' . $name;
+    $value =~ s/%([a-fA-F0-9][a-fA-F0-9])/pack("C", hex($1))/eg;
+    eval "\$$name = \"$value\"";
 }
-$QS_s = 1 if ($QS_s eq '');
-$QS_n = 3600 if ($QS_n eq '');
-if ($QS_f eq '') {
-print "HTTP/1.0 200 OK\n";
-print "Content-type: text/html\n\n";
-print "&lt;b&gt;ERROR&lt;/b&gt;: No file given\n";
-exit(0);
+$QS_s = 1    if ( $QS_s eq '' );
+$QS_n = 3600 if ( $QS_n eq '' );
+if ( $QS_f eq '' ) {
+    print "HTTP/1.0 200 OK\n";
+    print "Content-type: text/html\n\n";
+    print "&lt;b&gt;ERROR&lt;/b&gt;: No file given\n";
+    exit(0);
 }
-if (! -f $QS_f) {
-print "HTTP/1.0 200 OK\n";
-print "Content-type: text/html\n\n";
-print "&lt;b&gt;ERROR&lt;/b&gt;: File $QS_f not found\n";
-exit(0);
+if ( !-f $QS_f ) {
+    print "HTTP/1.0 200 OK\n";
+    print "Content-type: text/html\n\n";
+    print "&lt;b&gt;ERROR&lt;/b&gt;: File $QS_f not found\n";
+    exit(0);
 }
 
 sub print_http_headers_multipart_begin {
-print "HTTP/1.0 200 OK\n";
-$bound = "ThisRandomString12345";
-print "Content-type: multipart/x-mixed-replace;boundary=$bound\n";
-&amp;print_http_headers_multipart_next;
+    print "HTTP/1.0 200 OK\n";
+    $bound = "ThisRandomString12345";
+    print "Content-type: multipart/x-mixed-replace;boundary=$bound\n";
+    &amp;print_http_headers_multipart_next;
 }
 
 sub print_http_headers_multipart_next {
-print "\n--$bound\n";
+    print "\n--$bound\n";
 }
 
 sub print_http_headers_multipart_end {
-print "\n--$bound--\n";
+    print "\n--$bound--\n";
 }
 
 sub displayhtml {
-local($buffer) = @_;
-$len = length($buffer);
-print "Content-type: text/html\n";
-print "Content-length: $len\n\n";
-print $buffer;
+    local ($buffer) = @_;
+    $len = length($buffer);
+    print "Content-type: text/html\n";
+    print "Content-length: $len\n\n";
+    print $buffer;
 }
 
 sub readfile {
-local($file) = @_;
-local(*FP, $size, $buffer, $bytes);
-($x, $x, $x, $x, $x, $x, $x, $size) = stat($file);
-$size = sprintf("%d", $size);
-open(FP, "&lt;$file");
-$bytes = sysread(FP, $buffer, $size);
-close(FP);
-return $buffer;
+    local ($file) = @_;
+    local ( *FP, $size, $buffer, $bytes );
+    ( $x, $x, $x, $x, $x, $x, $x, $size ) = stat($file);
+    $size = sprintf( "%d", $size );
+    open( FP, "&lt;$file" );
+    $bytes = sysread( FP, $buffer, $size );
+    close(FP);
+    return $buffer;
 }
 
 $buffer = &amp;readfile($QS_f);
@@ -315,30 +315,30 @@ $buffer = &amp;readfile($QS_f);
 &amp;displayhtml($buffer);
 
 sub mystat {
-local($file) = $_[0];
-local($time);
+    local ($file) = $_[0];
+    local ($time);
 
-($x, $x, $x, $x, $x, $x, $x, $x, $x, $mtime) = stat($file);
-return $mtime;
+    ( $x, $x, $x, $x, $x, $x, $x, $x, $x, $mtime ) = stat($file);
+    return $mtime;
 }
 
 $mtimeL = &amp;mystat($QS_f);
-$mtime = $mtime;
-for ($n = 0; $n &amp;lt; $QS_n; $n++) {
-while (1) {
-    $mtime = &amp;mystat($QS_f);
-    if ($mtime ne $mtimeL) {
-        $mtimeL = $mtime;
-        sleep(2);
-        $buffer = &amp;readfile($QS_f);
-        &amp;print_http_headers_multipart_next;
-        &amp;displayhtml($buffer);
-        sleep(5);
-        $mtimeL = &amp;mystat($QS_f);
-        last;
+$mtime  = $mtime;
+for ( $n = 0 ; $n &amp; lt ; $QS_n ; $n++ ) {
+    while (1) {
+        $mtime = &amp;mystat($QS_f);
+        if ( $mtime ne $mtimeL ) {
+            $mtimeL = $mtime;
+            sleep(2);
+            $buffer = &amp;readfile($QS_f);
+            &amp;print_http_headers_multipart_next;
+            &amp;displayhtml($buffer);
+            sleep(5);
+            $mtimeL = &amp;mystat($QS_f);
+            last;
+        }
+        sleep($QS_s);
     }
-    sleep($QS_s);
-}
 }
 
 &amp;print_http_headers_multipart_end;
