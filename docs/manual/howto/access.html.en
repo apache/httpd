@@ -135,7 +135,7 @@ Require not gov
     following:</p>
 
     <pre class="prettyprint lang-config">
-&lt;If "%{HTTP_USER_AGENT} = 'BadBot'"&gt;
+&lt;If "%{HTTP_USER_AGENT} == 'BadBot'"&gt;
     Require All Denied
 &lt;/If&gt;
     </pre>
@@ -164,7 +164,7 @@ Require not gov
 
     <pre class="prettyprint lang-config">
 RewriteEngine On
-RewriteCond %{TIME_HOUR} &gt;20 [OR]
+RewriteCond %{TIME_HOUR} &gt;=20 [OR]
 RewriteCond %{TIME_HOUR} &lt;07
 RewriteRule ^/fridge - [F]
     </pre>
