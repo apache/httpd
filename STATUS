@@ -138,7 +138,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs.cgi?rev=1333969&view=rev
       Backport version for 2.4.x of patch:
          Trunk version of patch works
-      +1: rpluem,
+      +1: rpluem, druggeri
 
 PATCHES/ISSUES THAT ARE STALLED
 
