@@ -244,19 +244,7 @@ var disqus_identifier = 'http://httpd.apache.org/docs/2.4/rewrite/avoid.html.en'
         d.write('<div id="disqus_thread">Comments have been disabled for offline viewing.<\/div>');
     }
 })(window, document);
-//--><!]]></script></div><script type="text/javascript"><!--//--><![CDATA[//><!--
-
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-31727287-1']);
-  _gaq.push(['_trackPageview']);
-if (window.location.hostname.toLowerCase() == "httpd.apache.org") {
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-}
-//--><!]]></script><div id="footer">
+//--><!]]></script></div><div id="footer">
 <p class="apache">Copyright 2012 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
