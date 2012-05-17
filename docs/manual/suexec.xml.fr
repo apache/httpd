@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1328589:1330883 (outdated) -->
+<!-- English Revision: 1330883 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -501,10 +501,10 @@
     <p>Si, par exemple, votre serveur web est configur&eacute; pour
     s'ex&eacute;cuter en tant que :</p>
 
-<example>
-    User www<br />
-    Group webgroup<br />
-</example>
+<highlight language="config">
+User www
+Group webgroup
+      </highlight>
 
     <p>et <program>suexec</program> se trouve &agrave;
     "/usr/local/apache2/bin/suexec", vous devez ex&eacute;cuter les

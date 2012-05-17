@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1328334:1333317 (outdated) -->
+<!-- English Revision : 1333317 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -265,15 +265,11 @@ DocumentRoot /www/htdocs
       Il y a cependant un cas dans lequel vous pouvez acc&eacute;l&eacute;rer le serveur.
       Au lieu d'utiliser une directive g&eacute;n&eacute;rique comme :</p>
 
-      <highlight language="config">
-        DirectoryIndex index
-      </highlight>
+      <highlight language="config">DirectoryIndex index</highlight>
 
       <p>utilisez une liste explicite d'options :</p>
 
-      <highlight language="config">
-        DirectoryIndex index.cgi index.pl index.shtml index.html
-      </highlight>
+      <highlight language="config">DirectoryIndex index.cgi index.pl index.shtml index.html</highlight>
 
       <p>o&ugrave; vous placez le choix courant en premi&egrave;re position.</p>
 
@@ -467,6 +463,12 @@ DocumentRoot /www/htdocs
 	serveurs pr&eacute;sentant un traffic important car il poss&egrave;de une empreinte
 	m&eacute;moire plus petite que le MPM prefork.</li>
 
+	<li>Comme le MPM Worker, le MPM <module>event</module> utilise
+	les threads, mais il a &eacute;t&eacute; con&ccedil;u pour traiter davantage de
+	requ&ecirc;tes simultan&eacute;ment en confiant une partie du travail &agrave; des
+	threads de support, ce qui permet aux threads principaux de
+	traiter de nouvelles requ&ecirc;tes.</li>
+
         <li>Le MPM <module>prefork</module> utilise plusieurs processus enfants
 	poss&eacute;dant chacun un seul thread. Chaque processus g&egrave;re une seule
 	connexion &agrave; la fois. Sur de nombreux syst&egrave;mes, prefork est comparable
@@ -619,27 +621,27 @@ DocumentRoot /www/htdocs
       propos&eacute;s qu'&agrave; des fins p&eacute;dagogiques) :</p>
 
       <highlight language="c">
-for (;;) {
-  for (;;) {
-    fd_set accept_fds;
-    
-    FD_ZERO (&amp;accept_fds);
-    for (i = first_socket; i &lt;= last_socket; ++i) {
-      FD_SET (i, &amp;accept_fds);
-    }
-    rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);
-    if (rc &lt; 1) continue;
-    new_connection = -1;
-    for (i = first_socket; i &lt;= last_socket; ++i) {
-      if (FD_ISSET (i, &amp;accept_fds)) {
-        new_connection = accept (i, NULL, NULL);
-        if (new_connection != -1) break;
-      }
-    }
-    if (new_connection != -1) break;
-  }
-  process the new_connection;
-}
+        for (;;) {
+          for (;;) {
+            fd_set accept_fds;
+
+            FD_ZERO (&amp;accept_fds);
+            for (i = first_socket; i &lt;= last_socket; ++i) {
+              FD_SET (i, &amp;accept_fds);
+            }
+            rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);
+            if (rc &lt; 1) continue;
+            new_connection = -1;
+            for (i = first_socket; i &lt;= last_socket; ++i) {
+              if (FD_ISSET (i, &amp;accept_fds)) {
+                new_connection = accept (i, NULL, NULL);
+                if (new_connection != -1) break;
+              }
+            }
+            if (new_connection != -1) break;
+          }
+          process_the(new_connection);
+        }
       </highlight>
 
       <p>Mais cette impl&eacute;mentation rudimentaire pr&eacute;sente une s&eacute;rieuse lacune.
@@ -680,29 +682,29 @@ for (;;) {
       diff&eacute;rences sont mises en surbrillance) :</p>
 
       <highlight language="c">
-for (;;) {
-  <strong>accept_mutex_on ();</strong>
-  for (;;) {
-    fd_set accept_fds;
-
-    FD_ZERO (&amp;accept_fds);
-    for (i = first_socket; i &lt;= last_socket; ++i) {
-      FD_SET (i, &amp;accept_fds);
-    }
-    rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);
-    if (rc &lt; 1) continue;
-    new_connection = -1;
-    for (i = first_socket; i &lt;= last_socket; ++i) {
-      if (FD_ISSET (i, &amp;accept_fds)) {
-        new_connection = accept (i, NULL, NULL);
-        if (new_connection != -1) break;
-      }
-    }
-    if (new_connection != -1) break;
-  }
-  <strong>accept_mutex_off ();</strong>
-  process the new_connection;
-}
+        for (;;) {
+          <strong>accept_mutex_on ();</strong>
+          for (;;) {
+            fd_set accept_fds;
+            
+            FD_ZERO (&amp;accept_fds);
+            for (i = first_socket; i &lt;= last_socket; ++i) {
+              FD_SET (i, &amp;accept_fds);
+            }
+            rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);
+            if (rc &lt; 1) continue;
+            new_connection = -1;
+            for (i = first_socket; i &lt;= last_socket; ++i) {
+              if (FD_ISSET (i, &amp;accept_fds)) {
+                new_connection = accept (i, NULL, NULL);
+                if (new_connection != -1) break;
+              }
+            }
+            if (new_connection != -1) break;
+          }
+          <strong>accept_mutex_off ();</strong>
+          process the new_connection;
+        }
       </highlight>
 
       <p><a id="serialize" name="serialize">Les fonctions</a>
@@ -817,29 +819,29 @@ for (;;) {
       ceci :</p>
 
       <highlight language="c">
-void lingering_close (int s)
-{
-  char junk_buffer[2048];
+        void lingering_close (int s)
+        {
+          char junk_buffer[2048];
+          
+          /* shutdown the sending side */
+          shutdown (s, 1);
 
-  /* shutdown the sending side */
-  shutdown (s, 1);
+          signal (SIGALRM, lingering_death);
+          alarm (30);
 
-  signal (SIGALRM, lingering_death);
-  alarm (30);
-
-  for (;;) {
-    select (s for reading, 2 second timeout);
-    if (error) break;
-    if (s is ready for reading) {
-      if (read (s, junk_buffer, sizeof (junk_buffer)) &lt;= 0) {
-        break;
-      }
-      /* just toss away whatever is here */
-    }
-  }
- 
-  close (s);
-}
+          for (;;) {
+            select (s for reading, 2 second timeout);
+            if (error) break;
+            if (s is ready for reading) {
+              if (read (s, junk_buffer, sizeof (junk_buffer)) &lt;= 0) {
+                break;
+              }
+              /* just toss away whatever is here */
+            }
+          }
+          
+          close (s);
+        }
       </highlight>
 
       <p>Ceci ajoute naturellement un peu de charge &agrave; la fin d'une connexion,

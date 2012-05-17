@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1300924:1330882 (outdated) -->
+<!-- English revision : 1330882 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -337,8 +337,8 @@
     <p>Ajoutez dans le fichier de configuration du serveur</p>
 
     <highlight language="config">
-&lt;Directory /&gt; 
-  AllowOverride None 
+&lt;Directory /&gt;
+    AllowOverride None
 &lt;/Directory&gt;
     </highlight>
 
@@ -371,8 +371,8 @@
 
     <highlight language="config">
 &lt;Directory /&gt;
-Order Deny,Allow 
-Deny from all 
+    Order Deny,Allow
+    Deny from all
 &lt;/Directory&gt;
     </highlight>
 
@@ -383,12 +383,12 @@ Deny from all
 
     <highlight language="config">
 &lt;Directory /usr/users/*/public_html&gt;
-  Order Deny,Allow 
-  Allow from all 
-&lt;/Directory&gt; 
-&lt;Directory /usr/local/httpd&gt; 
-  Order Deny,Allow 
-  Allow from all 
+    Order Deny,Allow
+    Allow from all
+&lt;/Directory&gt;
+&lt;Directory /usr/local/httpd&gt;
+    Order Deny,Allow
+    Allow from all
 &lt;/Directory&gt;
     </highlight>
 
@@ -405,9 +405,7 @@ Deny from all
     fortement d'inclure la ligne suivante dans le fichier de configuration de
     votre serveur :</p>
 
-    <highlight language="config">
-      UserDir disabled root
-    </highlight>
+    <highlight language="config">UserDir disabled root</highlight>
 
   </section>
 
@@ -455,8 +453,8 @@ Deny from all
 
     <highlight language="config">
 &lt;Files ".ht*"&gt;
-  Order allow,deny 
-  Deny from all
+    Order allow,deny
+    Deny from all
 &lt;/Files&gt;
     </highlight>
 

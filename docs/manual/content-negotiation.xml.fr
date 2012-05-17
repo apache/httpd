@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1174747:1331584 (outdated) -->
+<!-- English Revision : 1331584 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -130,7 +130,7 @@
     gestionnaire qui associe un suffixe de fichier &agrave; une <code>type-map</code>;
     ce qui se fait simplement en ajoutant</p>
 
-<example>AddHandler type-map .var</example>
+<highlight language="config">AddHandler type-map .var</highlight>
 
     <p>dans le fichier de configuration du serveur.</p>
 
@@ -239,7 +239,7 @@
     nomm&eacute; par la directive <directive
     module="mod_dir">DirectoryIndex</directive>, si le serveur tente d'indexer
     un r&eacute;pertoire. Si les fichiers de configuration sp&eacute;cifient</p>
-<example>DirectoryIndex index</example>
+<highlight language="config">DirectoryIndex index</highlight>
     <p>le serveur va choisir entre <code>index.html</code>
     et <code>index.html3</code> si les deux fichiers sont pr&eacute;sents. Si aucun
     n'est pr&eacute;sent, mais <code>index.cgi</code> existe,
@@ -537,8 +537,10 @@ langage</title>
     variante, le processus normal de n&eacute;gociation sera lanc&eacute;.</p>
 
     <example><title>Exemple</title>
-      SetEnvIf Cookie "language=(.+)" prefer-language=$1<br />
-      Header append Vary cookie
+      <highlight language="config">
+SetEnvIf Cookie "language=(.+)" prefer-language=$1
+Header append Vary cookie
+    </highlight>
     </example>
 </section>
 </section>

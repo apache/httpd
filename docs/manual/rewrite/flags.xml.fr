@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1311806:1332585 (outdated) -->
+<!-- English Revision : 1332585 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -49,9 +49,7 @@ correspondance</a></seealso>
 module="mod_rewrite">RewriteRule</directive> peut &ecirc;tre modifi&eacute; par un ou
 plusieurs drapeaux. Les drapeaux sont situ&eacute;s en fin de r&egrave;gle, entour&eacute;s
 de crochets, et s&eacute;par&eacute;s le cas &eacute;ch&eacute;ant par des virgules.</p>
-<example>
-RewriteRule mod&egrave;le cible [drapeau1,drapeau2,drapeau3]
-</example>
+<highlight language="config">RewriteRule pattern target [Flag1,Flag2,Flag3]</highlight>
 
 <p>Les drapeaux ont tous une forme courte, comme <code>CO</code>, ainsi
 qu'une forme longue, comme <code>cookie</code>. Certains drapeaux
@@ -86,9 +84,7 @@ ces derni&egrave;res sont appliqu&eacute;es. Avec le drapeau B, les caract&egrav
 non-alphanum&eacute;riques des r&eacute;f&eacute;rences arri&egrave;res seront &eacute;chapp&eacute;s. Consid&eacute;rons
 par exemple cette r&egrave;gle :</p>
 
-<highlight language="config">
-RewriteRule ^search/(.*)$ /search.php?term=$1
-</highlight>
+<highlight language="config">RewriteRule ^search/(.*)$ /search.php?term=$1</highlight>
 
 <p>Soit le terme de recherche 'x &amp; y/z' ; un navigateur va le coder
 en 'x%20%26%20y%2Fz', transformant la requ&ecirc;te en
@@ -183,7 +179,7 @@ fonctionnalit&eacute;.</dd>
 <p>Voici un exemple :</p>
 
 <highlight language="config">
-RewriteEngine On<br />
+RewriteEngine On
 RewriteRule ^/index\.html - [CO=frontdoor:yes:.example.org:1440:/]
 </highlight>
 
@@ -272,10 +268,10 @@ avec une valeur de '1' si l'URI de la requ&ecirc;te correspond &agrave; un fichi
 image. Cette variable d'environnement est ensuite utilis&eacute;e pour exclure
 une telle requ&ecirc;te du journal des acc&egrave;s.</p>
 
-<highlight language="config">
-RewriteRule \.(png|gif|jpg) - [E=image:1]
+<example>
+RewriteRule \.(png|gif|jpg) - [E=image:1]<br />
 CustomLog logs/access_log combined env=!image
-</highlight>
+</example>
 
 <p>Notez que le m&ecirc;me effet peut &ecirc;tre obtenu &agrave; l'aide de la directive
 <directive module="mod_setenvif">SetEnvIf</directive>. Cette technique
@@ -302,9 +298,7 @@ Forbidden.</p>
 <p>La r&egrave;gle suivante va interdire la t&eacute;l&eacute;chargement de fichiers
 <code>.exe</code> depuis votre serveur.</p>
 
-<highlight language="config">
-RewriteRule \.exe - [F]
-</highlight>
+<highlight language="config">RewriteRule \.exe - [F]</highlight>
 
 <p>Cet exemple utilise la syntaxe "-" pour la cible de r&eacute;&eacute;criture, ce
 qui signifie que l'URI de la requ&ecirc;te n'est pas modifi&eacute;. Il n'y a aucune
@@ -324,9 +318,7 @@ disponible auparavant ne l'est plus actuellement.</p>
 <p>Comme dans le cas du drapeau [F], on utilise en g&eacute;n&eacute;ral la syntaxe
 "-" pour la cible de r&eacute;&eacute;criture lorsqu'on utilise le drapeau [G] :</p>
 
-<highlight language="config">
-RewriteRule ancienne-ressource - [G,NC]
-</highlight>
+<highlight language="config">RewriteRule oldproduct - [G,NC]</highlight>
 
 <p>Lorsqu'on utilise [G], [L] est implicite - c'est &agrave; dire que la
 r&eacute;ponse est renvoy&eacute;e imm&eacute;diatement, et aucune autre r&egrave;gle n'est &eacute;valu&eacute;e.</p>
@@ -339,9 +331,8 @@ sp&eacute;cifi&eacute;. Par exemple, on peut utiliser ce drapeau pour forcer
 l'interpr&eacute;tation de tous les fichiers sans extension par le gestionnaire
 php :</p>
 
-<highlight language="config">
-RewriteRule !\. - [H=application/x-httpd-php]
-</highlight>
+<highlight language="config">RewriteRule !\. -
+[H=application/x-httpd-php]</highlight>
 
 <p>
 L'expression rationnelle ci-dessus - <code>!\.</code> - correspond &agrave;
@@ -436,9 +427,7 @@ suivant, chaque occurence de A sera remplac&eacute;e par B dans la requ&ecirc;te
 ceci jusqu'il n'y ait plus de A &agrave; remplacer.
 </p>
 
-<highlight language="config">
-RewriteRule (.*)A(.*) $1B$2 [N]
-</highlight>
+<highlight language="config">RewriteRule (.*)A(.*) $1B$2 [N]</highlight>
 
 <p>Vous pouvez vous repr&eacute;senter ce traitement comme une boucle
 <code>while</code> : tant que le mod&egrave;le de la r&egrave;gle correspond (c'est &agrave;
@@ -460,9 +449,7 @@ transmise par Apache &agrave; votre serveur d'images d&eacute;di&eacute;. La cor
 insensible &agrave; la casse, si bien que par exemple, <code>.jpg</code> aussi
 bien que <code>.JPG</code> seront accept&eacute;s.</p>
 
-<highlight language="config">
-RewriteRule (.*\.(jpg|gif|png))$ http://images.example.com$1 [P,NC]
-</highlight>
+<highlight language="config">RewriteRule (.*\.(jpg|gif|png))$ http://images.example.com$1 [P,NC]</highlight>
 </section>
 
 <section id="flag_ne"><title>NE|noescape</title>
@@ -471,9 +458,7 @@ RewriteRule (.*\.(jpg|gif|png))$ http://images.example.com$1 [P,NC]
 hexad&eacute;cimal. Le drapeau [NE] permet d'&eacute;viter cette conversion.
 </p>
 
-<highlight language="config">
-RewriteRule ^/ancre/(.+) /grosse-page.html#$1 [NE,R]
-</highlight>
+<highlight language="config">RewriteRule ^/anchor/(.+) /bigpage.html#$1 [NE,R]</highlight>
 
 <p>
 Dans l'exemple ci-dessus, <code>/anchor/xyz</code> est r&eacute;&eacute;crit en
@@ -518,9 +503,7 @@ mandataire. Par exemple, si vous voulez que toutes les requ&ecirc;tes d'images
 soient trait&eacute;es par un serveur d'images annexe, vous pouvez utiliser
 une r&egrave;gle de ce style :</p>
 
-<highlight language="config">
-RewriteRule /(.*)\.(jpg|gif|png) http://images.example.com/$1.$2 [P]
-</highlight>
+<highlight language="config">RewriteRule /(.*)\.(jpg|gif|png)$ http://images.example.com/$1.$2 [P]</highlight>
 
 <p>L'utilisation du drapeau [P] provoque aussi l'effet du drapeau [L] -
 autrement dit, la requ&ecirc;te est imm&eacute;diatement envoy&eacute;e au mandataire, et
@@ -577,8 +560,8 @@ module="mod_alias">Alias</directive> sera bien &eacute;valu&eacute;.
 </p>
 
 <highlight language="config">
-Alias /icons /usr/local/apache/icons<br />
-RewriteRule /pics/(.+)\.jpg /icons/$1.gif [PT]
+Alias /icons /usr/local/apache/icons
+RewriteRule /pics/(.+)\.jpg$ /icons/$1.gif [PT]
 </highlight>
 
 <p>
@@ -611,9 +594,8 @@ Avec le drapeau [QSA], les cha&icirc;nes de requ&ecirc;te peuvent &ecirc;tre com
 
 <p>Consid&eacute;rons la r&egrave;gle suivante :</p>
 
-<highlight language="config">
-RewriteRule /pages/(.+) /page.php?page=$1 [QSA]
-</highlight>
+<highlight language="config">RewriteRule /pages/(.+) /page.php?page=$1
+[QSA]</highlight>
 
 <p>Avec le drapeau [QSA], une requ&ecirc;te pour
 <code>/pages/123?one=two</code> sera r&eacute;&eacute;crite en
@@ -694,7 +676,6 @@ Ceci peut s'interpr&eacute;ter comme une instruction
 l'exemple suivant, nous ne voulons ex&eacute;cuter la r&egrave;gle <directive
 module="mod_rewrite">RewriteRule</directive> que si l'URI demand&eacute; ne
 correspond pas &agrave; un fichier existant.</p>
-
 <highlight language="config">
 # La requ&ecirc;te concerne-t-elle un fichier qui n'existe pas ?
 RewriteCond %{REQUEST_FILENAME} !-f
@@ -705,6 +686,8 @@ RewriteRule .? - [S=2]
 RewriteRule (.*\.gif) images.php?$1
 RewriteRule (.*\.html) docs.php?$1
 </highlight>
+
+
 
 <p>Cette technique trouve son utilit&eacute; dans le fait qu'une directive
 <directive module="mod_rewrite">RewriteCond</directive> ne s'applique
@@ -719,17 +702,16 @@ contenues dans le bloc else :</p>
 # Est-ce que le fichier existe ?
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-<!-- A traduire pour qui y comprend quelquechose -->
-# Create an if-then-else construct by skipping 3 lines if we meant to go to the &quot;else&quot; stanza.<br />
+# Create an if-then-else construct by skipping 3 lines if we meant to go to the &quot;else&quot; stanza.
 RewriteRule .? - [S=3]
 
 # Si le fichier existe, alors :
-	RewriteRule (.*\.gif) images.php?$1
-	RewriteRule (.*\.html) docs.php?$1
-	# Skip past the &quot;else&quot; stanza.
-	RewriteRule .? - [S=1]
+RewriteRule (.*\.gif) images.php?$1
+    RewriteRule (.*\.html) docs.php?$1
+    # Skip past the &quot;else&quot; stanza.
+    RewriteRule .? - [S=1]
 # ELSE...
-	RewriteRule (.*) 404.php?file=$1
+RewriteRule (.*) 404.php?file=$1
 # END
 </highlight>
 
@@ -759,7 +741,7 @@ images jpeg sans extension, vous pouvez forcer le renvoi de ces images
 avec le type MIME correct en se basant sur le nom du fichier :</p>
 
 <highlight language="config">
-# Les fichiers dont le nom contient 'IMG' sont des images jpg.<br />
+# Les fichiers dont le nom contient 'IMG' sont des images jpg.
 RewriteRule IMG - [T=image/jpg]
 </highlight>
 

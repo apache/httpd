@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1304985:1333469 (outdated) -->
+<!-- English Revision : 1333469 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -141,23 +141,31 @@ n&eacute;cessiter une mise &agrave; jour des fichiers de configuration de la ver
       <p>Dans cet exemple, toutes les requ&ecirc;tes sont rejet&eacute;es :</p>
       <example>
         <title>version 2.2 :</title>
-        Order deny,allow<br />
-        Deny from all
+        <highlight language="config">
+Order deny,allow
+Deny from all
+        </highlight>
       </example>
       <example>
         <title>version 2.4 :</title>
+	<highlight language="config">
         Require all denied
+	</highlight>
       </example>
 
       <p>Dans cet exemple, toutes les requ&ecirc;tes sont accept&eacute;es :</p>
       <example>
         <title>version 2.2 :</title>
-        Order allow,deny<br />
-        Allow from all
+        <highlight language="config">
+Order allow,deny
+Allow from all
+        </highlight>
       </example>
       <example>
         <title>version 2.4 :</title>
+	<highlight language="config">
         Require all granted
+	</highlight>
       </example>
 
       <p>Dans l'exemple suivant, tous les h&ocirc;tes du domaine example.org
@@ -165,13 +173,17 @@ n&eacute;cessiter une mise &agrave; jour des fichiers de configuration de la ver
 
       <example>
         <title>version 2.2 :</title>
-        Order Deny,Allow<br />
-        Deny from all<br />
-        Allow from example.org
+        <highlight language="config">
+Order Deny,Allow
+Deny from all
+Allow from example.org
+        </highlight>
       </example>
       <example>
         <title>version 2.4 :</title>
+	<highlight language="config">
         Require host example.org
+	</highlight>
       </example>
     </section>
 
@@ -346,6 +358,12 @@ n&eacute;cessiter une mise &agrave; jour des fichiers de configuration de la ver
       du module <module>mod_include</module>, ou si la directive
       <directive module="mod_include">SSILegacyExprParser</directive> a
       &eacute;t&eacute; activ&eacute;e pour le r&eacute;pertoire contenant les pages d'erreur.
+      </li>
+
+      <li>La fonctionnalit&eacute; fournie par <code>mod_authn_alias</code>
+      dans les pr&eacute;c&eacute;dentes versions (en fait la directive
+      <directive module="mod_authn_core">AuthnProviderAlias</directive>)
+      est maintenant fournie par <module>mod_authn_core</module>.  
       </li>
     </ul>
 

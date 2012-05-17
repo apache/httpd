@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1328589:1330881 (outdated) -->
+<!-- English revision : 1330881 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -185,11 +185,11 @@ HTTPS dans les hyperliens relatifs ?</title>
 hyperliens pleinement qualifi&eacute;s (car vous devez modifier le sch&eacute;ma de l'URL).
 Cependant, &agrave; l'aide du module <module>mod_rewrite</module>, vous pouvez
 manipuler des hyperliens relatifs, pour obtenir le m&ecirc;me effet.</p>
-    <example>
-    RewriteEngine on<br />
-    RewriteRule   ^/(.*)_SSL$   https://%{SERVER_NAME}/$1 [R,L]<br />
-    RewriteRule   ^/(.*)_NOSSL$ http://%{SERVER_NAME}/$1  [R,L]
-    </example>
+    <highlight language="config">
+RewriteEngine on
+RewriteRule   ^/(.*)_SSL$   https://%{SERVER_NAME}/$1 [R,L]
+RewriteRule   ^/(.*)_NOSSL$ http://%{SERVER_NAME}/$1  [R,L]
+    </highlight>
 
     <p>Ce jeu de r&egrave;gles rewrite vous permet d'utiliser des hyperliens de la
     forme <code>&lt;a href="document.html_SSL"&gt;</code> pour passer en HTTPS
@@ -269,10 +269,10 @@ fins de test ?</title>
 			-keyout server.key</strong></code><br />
 	Ces fichiers seront utilis&eacute;s comme suit dans votre
 	<code>httpd.conf</code> :
-        <pre>
-             SSLCertificateFile    /chemin/vers/server.crt
-             SSLCertificateKeyFile /chemin/vers/server.key
-	</pre>
+        <highlight language="config">
+SSLCertificateFile    /path/to/this/server.crt
+SSLCertificateKeyFile /path/to/this/server.key
+        </highlight>
     </li>
     <li>Il est important de savoir que le fichier <code>server.key</code> n'a
     <em>pas</em> de mot de passe. Pour ajouter un mot de passe &agrave; la cl&eacute;, vous
@@ -352,10 +352,10 @@ fins de test ?</title>
     <li>Vous devez maintenant disposer de deux fichiers :
     <code>server.key</code> et <code>server.crt</code>. Ils sont pr&eacute;cis&eacute;s dans
     votre fichier <code>httpd.conf</code> comme suit :
-       <pre>
-       SSLCertificateFile    /chemin/vers/server.crt
-       SSLCertificateKeyFile /chemin vers/server.key
-       </pre>
+       <highlight language="config">
+SSLCertificateFile    /path/to/this/server.crt
+SSLCertificateKeyFile /path/to/this/server.key
+       </highlight>
        Le fichier <code>server.csr</code> n'est plus n&eacute;cessaire.
     </li>
 
@@ -705,9 +705,9 @@ pour diff&eacute;rencier plusieurs h&ocirc;tes virtuels ?</title>
     (sur le port 443). Mais dans ce cas, vous devez d&eacute;finir le num&eacute;ro de port
     non-SSL &agrave; l'aide de la directive NameVirtualHost dans ce style :</p>
 
-    <example>
+    <highlight language="config">
       NameVirtualHost 192.168.1.1:80
-    </example>
+    </highlight>
 
     <p>il existe d'autres solutions alternatives comme :</p>
 
@@ -764,11 +764,11 @@ versions de MSIE. Vous pouvez contourner ces probl&egrave;mes en interdisant
 ou l'envoi de messages de notification de fermeture de session SSL aux
 clients MSIE. Pour cela, vous pouvez utiliser la directive suivante
 dans votre section d'h&ocirc;te virtuel avec support SSL :</p>
-    <example>
-    SetEnvIf User-Agent "MSIE [2-5]" \<br />
-             nokeepalive ssl-unclean-shutdown \<br />
-             downgrade-1.0 force-response-1.0
-    </example>
+    <highlight language="config">
+SetEnvIf User-Agent "MSIE [2-5]" \
+         nokeepalive ssl-unclean-shutdown \
+         downgrade-1.0 force-response-1.0
+    </highlight>
     <p>En outre, certaines versions de MSIE ont des probl&egrave;mes avec des
     algorithmes de chiffrement particuliers. H&eacute;las, il n'est pas
     possible d'apporter une solution sp&eacute;cifique &agrave; MSIE pour ces
