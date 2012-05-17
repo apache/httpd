@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1332592 -->
+<!-- English Revision : 1332592 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -206,12 +206,17 @@ transform&eacute;e;</li>
 <li><var>[drapeaux]</var>: options affectant la requ&ecirc;te r&eacute;&eacute;crite.</li>
 </ol>
 
-<p>Le <var>Mod&egrave;le</var> est toujours une <a href="#regex">expression
-rationnelle</a> compar&eacute;e au chemin de l'URL de la requ&ecirc;te entrante (la
+<p>Le <var>Mod&egrave;le</var> est une <a href="#regex">expression
+rationnelle</a>. Au sein de la premi&egrave;re r&egrave;gle de r&eacute;&eacute;criture, ou jusqu'&agrave;
+ce qu'une substitution survienne, elle est compar&eacute;e au chemin de
+l'URL de la requ&ecirc;te entrante (la
 partie situ&eacute;e apr&egrave;s le nom d'h&ocirc;te mais avant tout point d'interrogation
 qui indique le d&eacute;but d'une cha&icirc;ne de param&egrave;tres de
 requ&ecirc;te) ou, dans un contexte de r&eacute;pertoire, au chemin de la
-requ&ecirc;te relativement au r&eacute;pertoire pour lequel la r&egrave;gle est d&eacute;finie..</p>
+requ&ecirc;te relativement au r&eacute;pertoire pour lequel la
+r&egrave;gle est d&eacute;finie. Lorsqu'une substitution a eu lieu, les
+r&egrave;gles suivantes effectuent leurs comparaisons par rapport &agrave; la valeur
+substitu&eacute;e.</p>
 
 <p class="figure">
       <img src="../images/syntax_rewriterule.png"
@@ -225,9 +230,9 @@ trois types :</p>
 <dl>
 <dt>Un chemin complet du syst&egrave;me de fichiers vers une ressource</dt>
 <dd>
-<example>
+<highlight language="config">
 RewriteRule ^/jeux /usr/local/jeux/web
-</example>
+</highlight>
 <p>Ceci peut faire correspondre une requ&ecirc;te &agrave; toute localisation voulue de
 votre syst&egrave;me de fichiers, un peu comme la directive <directive
 module="mod_alias">Alias</directive>.</p>
@@ -235,9 +240,9 @@ module="mod_alias">Alias</directive>.</p>
 
 <dt>Un chemin web vers une ressource</dt>
 <dd>
-<example>
+<highlight language="config">
 RewriteRule ^/foo$ /bar
-</example>
+</highlight>
 <p>Si la directive <directive module="core">DocumentRoot</directive> a
 pour valeur <code>/usr/local/apache2/htdocs</code>, cette r&egrave;gle va faire
 correspondre les requ&ecirc;tes pour <code>http://example.com/foo</code> au
@@ -246,9 +251,9 @@ chemin <code>/usr/local/apache2/htdocs/bar</code>.</p>
 
 <dt>Une URL absolue</dt>
 <dd>
-<example>
+<highlight language="config">
 RewriteRule ^/produits/vues$ http://site2.example.com/voirproduits.html [R]
-</example>
+</highlight>
 <p>Ceci informe le client qu'il doit effectuer une nouvelle requ&ecirc;te vers
 l'URL sp&eacute;cifi&eacute;e.</p>
 </dd>

@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1310494:1330883 (outdated) -->
+<!-- English Revision: 1330883 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -123,7 +123,7 @@ l'arborescence DocumentRoot</title>
     module="mod_alias">Alias</directive> pour rattacher toute portion
     du syst&egrave;me de fichiers &agrave; l'arborescence du site web. Par exemple, avec</p>
 
-<example>Alias /docs /var/web</example>
+<highlight language="config">Alias /docs /var/web</highlight>
 
     <p>l'URL <code>http://www.example.com/docs/dir/file.html</code>
     correspondra au fichier <code>/var/web/dir/file.html</code>. La
@@ -140,8 +140,9 @@ l'arborescence DocumentRoot</title>
     sur les <glossary ref="regex">expressions rationnelles</glossary>.
     Par exemple,</p>
 
-<example>ScriptAliasMatch ^/~([a-zA-Z0-9]+)/cgi-bin/(.+)
-      /home/$1/cgi-bin/$2</example>
+<highlight language="config">
+    ScriptAliasMatch ^/~([a-zA-Z0-9]+)/cgi-bin/(.+)   /home/$1/cgi-bin/$2
+    </highlight>
 
     <p>fera correspondre une requ&ecirc;te du style
     <code>http://example.com/~user/cgi-bin/script.cgi</code> au chemin
@@ -189,8 +190,9 @@ l'arborescence DocumentRoot</title>
     <code>/home/user/public_html/file.html</code>, utilisez la directive
     <code>AliasMatch</code> suivante :</p>
 
-<example>AliasMatch ^/upages/([a-zA-Z0-9]+)(/(.*))?$
-      /home/$1/public_html/$3</example>
+<highlight language="config">
+    AliasMatch ^/upages/([a-zA-Z0-9]+)(/(.*))?$   /home/$1/public_html/$3
+    </highlight>
 </section>
 
 <section id="redirect"><title>Redirection d'URL</title>
@@ -209,7 +211,9 @@ l'arborescence DocumentRoot</title>
     nouveau r&eacute;pertoire <code>/bar/</code>, vous pouvez demander aux clients
     de le requ&eacute;rir &agrave; sa nouvelle localisation comme suit :</p>
 
-<example>Redirect permanent /foo/ http://www.example.com/bar/</example>
+<highlight language="config">
+    Redirect permanent /foo/   http://www.example.com/bar/
+    </highlight>
 
     <p>Ceci aura pour effet de rediriger tout chemin d'URL commen&ccedil;ant par
     <code>/foo/</code> vers le m&ecirc;me chemin d'URL sur le serveur
@@ -224,14 +228,16 @@ l'arborescence DocumentRoot</title>
     laisser toutes les autres requ&ecirc;tes inchang&eacute;es, utilisez la
     configuration suivante :</p>
 
-<example>RedirectMatch permanent ^/$
-      http://www.example.com/startpage.html</example>
+<highlight language="config">
+   RedirectMatch permanent ^/$    http://www.example.com/startpage.html
+    </highlight>
 
     <p>De m&ecirc;me, pour rediriger temporairement toutes les pages d'un site
     vers une page particuli&egrave;re d'un autre site, utilisez ce qui suit :</p>
 
-<example>RedirectMatch temp .*
-      http://othersite.example.com/startpage.html</example>
+<highlight language="config">
+    RedirectMatch temp .*  http://othersite.example.com/startpage.html
+    </highlight>
 </section>
 
 <section id="proxy"><title>Mandataire inverse (Reverse Proxy)</title>
@@ -250,12 +256,12 @@ dans le r&eacute;pertoire
 <code>/bar/</code> sur <code>internal.example.com</code>
 et les renvoie au client comme s'ils appartenaient au serveur local.</p>
 
-<example>
+<highlight language="config">
 ProxyPass /foo/ http://internal.example.com/bar/<br />
 ProxyPassReverse /foo/ http://internal.example.com/bar/<br />
 ProxyPassReverseCookieDomain internal.example.com public.example.com<br />
 ProxyPassReverseCookiePath /foo/ /bar/
-</example>
+</highlight>
 
 <p>La directive <directive module="mod_proxy">ProxyPass</directive> configure
 le serveur pour rapatrier les documents appropri&eacute;s, alors que la directive
@@ -274,9 +280,9 @@ du serveur mandataire et effectuer sa requ&ecirc;te directement sur
 d'utres contenus) situ&eacute;s dans la page au moment o&ugrave; elle est envoy&eacute;e au
 client en utilisant le module <module>mod_substitute</module>.</p>
 
-<example>
+<highlight language="config">
 Substitute s/internal\.example\.com/www.example.com/i
-</example>
+</highlight>
 
 <p>Le module <module>mod_proxy_html</module> rend possible une r&eacute;&eacute;criture plus
 &eacute;labor&eacute;e des liens en HTML et XHTML. Il permet de cr&eacute;er des listes
