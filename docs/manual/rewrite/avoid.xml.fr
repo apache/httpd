@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1328305:1333985 (outdated) -->
+<!-- English Revision : 1333985 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -99,25 +99,22 @@ rediriger toutes les URLs de niveaux inf&eacute;rieurs comme
 <p>Pour rediriger les URLs sous <code>/un</code> vers
 <code>http://un.example.com/</code>, utilisez cette d&eacute;finition :</p>
 
-<example>
-Redirect /un/ http://un.example.com/
-</example>
+<highlight language="config">Redirect /one/ http://one.example.com/</highlight>
 
 <p>Pour rediriger les URLs <code>http</code> vers <code>https</code>,
 utilisez cette d&eacute;finition :</p>
 
-<example>
+<highlight language="config">
 &lt;VirtualHost *:80&gt;
-ServerName www.example.com<br />
-Redirect / https://www.example.com/<br />
+ServerName www.example.com
+Redirect / https://www.example.com/
 &lt;/VirtualHost &gt;
-<br />
+
 &lt;VirtualHost *:443&gt;
-ServerName www.example.com<br />
-<br />
-# ... ins&eacute;rer ici la configuration SSL<br />
+ServerName www.example.com
+#  ... ins&eacute;rer ici la configuration SSL
 &lt;/VirtualHost &gt;
-</example>
+</highlight>
 
 <p>L'utilisation de la directive <code>RewriteRule</code> pour accomplir
 cette t&acirc;che peut se justifier s'il existe d'autres directives
@@ -144,7 +141,8 @@ possible d'effectuer cette mise en correspondance avec
 <code>Alias</code> pour des raisons de simplicit&eacute; et de performances.</p>
 
 <example><title>Utilisation de la directive Alias</title>
-Alias /chats /var/www/virtualhosts/felin/htdocs
+<highlight language="config">Alias /cats
+/var/www/virtualhosts/felines/htdocs</highlight>
 </example>
 
 <p>
@@ -176,7 +174,7 @@ cr&eacute;er un grand nombre de serveurs virtuels dynamiquement.</p>
 <p>L'utilisation de <module>mod_rewrite</module> pour la cr&eacute;ation de
 serveurs virtuels peut se r&eacute;v&eacute;ler appropri&eacute;e si votre service
 d'h&eacute;bergement ne vous permet pas d'acc&eacute;der aux fichiers de configuration
-du serveur, et que vous vous trouvez par cons&eacute;quent oblig&eacute; de passer par les
+du serveur, et que vous soyez par cons&eacute;quent oblig&eacute; de passer par les
 fichiers <code>.htaccess</code>.</p>
 
 <p>Voir le document <a href="vhosts.html">cr&eacute;ation de serveurs virtuels
@@ -191,9 +189,9 @@ cela semble &ecirc;tre tout de m&ecirc;me la meilleure approche.</p>
 href="flags.html#flag_p">[P]</a> qui permet de faire passer les URIs
 r&eacute;&eacute;crits par <module>mod_proxy</module>.</p>
 
-<example>
+<highlight language="config">
 RewriteRule ^/?images(.*) http://serveur-images.local/images$1 [P]
-</example>
+</highlight>
 
 <p>Cependant, dans les nombreux cas o&ugrave; aucune correspondance au mod&egrave;le
 n'est vraiment n&eacute;cessaire, comme dans l'exemple ci-dessus, il est
@@ -201,9 +199,9 @@ pr&eacute;f&eacute;rable d'utiliser la directive <directive
 module="mod_proxy">ProxyPass</directive>. L'exemple pr&eacute;c&eacute;dent pourrait
 &ecirc;tre remplac&eacute; par :</p>
 
-<example>
+<highlight language="config">
 ProxyPass /images/ http://serveur-images.local/images/
-</example>
+</highlight>
 
 <p>Que vous utilisiez <directive
 module="mod_rewrite">RewriteRule</directive> ou <directive
@@ -212,9 +210,9 @@ utiliser aussi la directive <directive
 module="mod_proxy">ProxyPassReverse</directive> pour intercepter les
 redirections en provenance du serveur d'arri&egrave;re-plan :</p>
 
-<example>
+<highlight language="config">
 ProxyPassReverse /images/ http://serveur-images.local/images/
-</example>
+</highlight>
 
 <p>Vous devrez cependant tout de m&ecirc;me utiliser <code>RewriteRule</code>
 lorsque d'autres <code>RewriteRule</code>s se trouvent dans la m&ecirc;me port&eacute;e,
@@ -238,14 +236,14 @@ d'h&ocirc;te canonique, tel que <code>www.example.com</code> au lieu de
 directive <directive module="core" type="section">If</directive> comme
 suit :</p>
 
-<example>
-&lt;If "$req{Host} != 'www.example.com'"&gt;<br />
-RedirectMatch (.*) http://www.example.com$1<br />
+<highlight language="config">
+&lt;If "req('Host') != 'www.example.com'"&gt;
+    Redirect / http://www.example.com
 &lt;/If&gt;
-</example>
+</highlight>
 
-<p>On peut utiliser cette technique dans de nombreux sc&eacute;narios courants
-en remplacement de <module>mod_rewrite</module> pour effectuer des actions
+<p>On peut utiliser cette technique dans de nombreux sc&eacute;narios courant
+pour remplacer <module>mod_rewrite</module> pour effectuer des actions
 en fonction d'en-t&ecirc;tes de requ&ecirc;tes ou de r&eacute;ponses, ou de variables
 d'environnement.</p>
 
