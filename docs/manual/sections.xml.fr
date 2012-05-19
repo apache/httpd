@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1300910:1337465 (outdated) -->
+<!-- English Revision : 1337465 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -80,11 +80,11 @@ avec la configuration suivante, toutes les requ&ecirc;tes seront redirig&eacute;
 un autre site si le serveur est d&eacute;marr&eacute; en utilisant la ligne de commande :
 <code>httpd -DClosedForNow</code>:</p>
 
-<example>
-&lt;IfDefine ClosedForNow&gt;<br />
-Redirect / http://otherserver.example.com/<br />
+<highlight language="config">
+&lt;IfDefine ClosedForNow&gt;
+    Redirect / http://otherserver.example.com/
 &lt;/IfDefine&gt;
-</example>
+</highlight>
 
 <p>Le conteneur <directive type="section" module="core">IfModule</directive>
 est similaire; les directives qu'il contient ne s'appliqueront que si
@@ -103,11 +103,11 @@ syst&eacute;matiquement, car vous pouvez perdre ainsi de pr&eacute;cieux message
 module="mod_mime_magic">MimeMagicFile</directive> ne s'appliquera que si le
 module <module>mod_mime_magic</module> est disponible.</p>
 
-<example>
-&lt;IfModule mod_mime_magic.c&gt;<br />
-MimeMagicFile conf/magic<br />
+<highlight language="config">
+&lt;IfModule mod_mime_magic.c&gt;
+    MimeMagicFile conf/magic
 &lt;/IfModule&gt;
-</example>
+</highlight>
 
 <p>Le conteneur
 <directive type="section" module="mod_version">IfVersion</directive>
@@ -119,14 +119,12 @@ conteneur a &eacute;t&eacute; con&ccedil;u pour une utilisation dans les suites 
 et les grands r&eacute;seaux qui doivent prendre en compte diff&eacute;rentes versions
 et configurations de httpd.</p>
 
-<example>
-  &lt;IfVersion >= 2.1&gt;<br />
-  <indent>
+<highlight language="config">
+&lt;IfVersion >= 2.4&gt;
     # les directives situ&eacute;es ici ne s'appliquent que si la version <br />
-    # est sup&eacute;rieure ou &eacute;gale &agrave; 2.1.0.<br />
-  </indent>
-  &lt;/IfVersion&gt;
-</example>
+    # est sup&eacute;rieure ou &eacute;gale &agrave; 2.4.0.
+&lt;/IfVersion&gt;
+</highlight>
 
 <p><directive type="section" module="core">IfDefine</directive>,
 <directive type="section" module="core">IfModule</directive>, et
@@ -177,11 +175,11 @@ href="howto/htaccess.html">fichiers .htaccess</a>.  Par exemple, avec la
 configuration suivante, l'indexation sera activ&eacute;e pour le r&eacute;pertoire
 <code>/var/web/dir1</code> et tous ses sous-r&eacute;pertoires.</p>
 
-<example>
-&lt;Directory /var/web/dir1&gt;<br />
-Options +Indexes<br />
+<highlight language="config">
+&lt;Directory /var/web/dir1&gt;
+    Options +Indexes
 &lt;/Directory&gt;
-</example>
+</highlight>
 
 <p>Les directives contenues dans une section <directive type="section"
 module="core">Files</directive> s'appliquent &agrave; tout fichier
@@ -191,12 +189,11 @@ plac&eacute;es dans la section principale du fichier de configuration, vont inte
 l'acc&egrave;s &agrave; tout fichier nomm&eacute; <code>private.html</code> quel que soit
 l'endroit o&ugrave; il se trouve.</p>
 
-<example>
-&lt;Files private.html&gt;<br />
-Order allow,deny<br />
-Deny from all<br />
+<highlight language="config">
+&lt;Files private.html&gt;
+    Require all denied
 &lt;/Files&gt;
-</example>
+</highlight>
 
 <p>Pour faire r&eacute;f&eacute;rence &agrave; des fichiers qui se trouvent en des points
 particuliers du syst&egrave;me de fichiers, les sections
@@ -209,14 +206,13 @@ l'acc&egrave;s &agrave; <code>/var/web/dir1/private.html</code>,
 <code>private.html</code> qui se trouve dans l'arborescence
 <code>/var/web/dir1/</code>.</p>
 
-<example>
-&lt;Directory /var/web/dir1&gt;<br />
-&lt;Files private.html&gt;<br />
-Order allow,deny<br />
-Deny from all<br />
-&lt;/Files&gt;<br />
+<highlight language="config">
+&lt;Directory /var/web/dir1&gt;
+    &lt;Files private.html&gt;
+        Require all denied
+    &lt;/Files&gt;
 &lt;/Directory&gt;
-</example>
+</highlight>
 </section>
 
 <section id="webspace"><title>Conteneurs de l'arborescence du site web</title>
@@ -233,12 +229,11 @@ En particulier, l'interdiction s'appliquera aux requ&ecirc;tes pour :
 <code>http://yoursite.example.com/private/dir/file.html</code> ainsi qu'&agrave;
 toute requ&ecirc;te commen&ccedil;ant par la cha&icirc;ne de caract&egrave;res <code>/private</code>.</p>
 
-<example>
-&lt;LocationMatch ^/private&gt;<br />
-Order Allow,Deny<br />
-Deny from all<br />
+<highlight language="config">
+&lt;LocationMatch ^/private&gt;
+    Require all denied
 &lt;/Location&gt;
-</example>
+</highlight>
 
 <p>Le conteneur <directive type="section" module="core">Location</directive>
 n'a pas besoin de faire r&eacute;f&eacute;rence &agrave; un &eacute;l&eacute;ment du syst&egrave;me de fichiers.
@@ -248,11 +243,11 @@ particuli&egrave;re vers un gestionnaire interne du serveur HTTP Apache fourni p
 Il n'est pas n&eacute;cessaire de trouver un fichier nomm&eacute; <code>server-status</code>
 dans le syst&egrave;me de fichiers.</p>
 
-<example>
-&lt;Location /server-status&gt;<br />
-SetHandler server-status<br />
+<highlight language="config">
+&lt;Location /server-status&gt;
+    SetHandler server-status
 &lt;/Location&gt;
-</example>
+</highlight>
 </section>
 
 <section id="overlapping-webspace"><title>Espace web imbriqu&eacute;</title>
@@ -260,24 +255,24 @@ SetHandler server-status<br />
 dans lequel certaines sections ou directives sont &eacute;valu&eacute;es. Pour
 <directive type="section" module="core">Location</directive>, on doit
 avoir :</p>
-<example>
-&lt;Location /foo&gt;<br />
-&lt;/Location&gt;<br />
-&lt;Location /foo/bar&gt;<br />
+<highlight language="config">
+&lt;Location /foo&gt;
+&lt;/Location&gt;
+&lt;Location /foo/bar&gt;
 &lt;/Location>
-</example>
+</highlight>
 <p>Les directives <directive type="section"
 module="mod_alias">Alias</directive>, quant &agrave; elles, sont &eacute;valu&eacute;es vice-versa :</p>
-<example>
-Alias /foo/bar /srv/www/uncommon/bar<br />
-Alias /foo /srv/www/common/foo<br />
-</example>
+<highlight language="config">
+Alias /foo/bar /srv/www/uncommon/bar
+Alias /foo /srv/www/common/foo
+</highlight>
 <p>Ceci est aussi vrai pour les directives <directive
 module="mod_proxy">ProxyPass</directive> :</p>
-<example>
-ProxyPass /special-area http://special.example.com smax=5 max=10<br />
+<highlight language="config">
+ProxyPass /special-area http://special.example.com smax=5 max=10
 ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On
-</example>
+</highlight>
 </section>
 
 
@@ -315,21 +310,20 @@ r&eacute;pertoires utilisateurs &agrave; l'aide de caract&egrave;res de remplace
 mais sans utiliser
 les expressions rationnelles pourrait ressembler &agrave; ceci :</p>
 
-<example>
-&lt;Directory /home/*/public_html&gt;<br />
-Options Indexes<br />
+<highlight language="config">
+&lt;Directory /home/*/public_html&gt;
+    Options Indexes
 &lt;/Directory&gt;
-</example>
+</highlight>
 
 <p>Avec les conteneurs utilisant les expressions rationnelles,
 on peut interdire l'acc&egrave;s &agrave; de nombreux types de fichiers d'images
 simultan&eacute;ment :</p>
-<example>
-&lt;FilesMatch \.(?i:gif|jpe?g|png)$&gt;<br />
-Order allow,deny<br />
-Deny from all<br />
+<highlight language="config">
++&lt;FilesMatch \.(?i:gif|jpe?g|png)$&gt;
+    Require all denied
 &lt;/FilesMatch&gt;
-</example>
+</highlight>
 
 </section>
 
@@ -339,11 +333,11 @@ permet de modifier la configuration en fonction d'une condition qui peut
 &ecirc;tre d&eacute;finie sous la forme d'une expression bool&eacute;enne. Dans l'exemple
 suivant, l'acc&egrave;s est interdit si l'en-t&ecirc;te HTTP Referer ne commence pas
 par "http://www.example.com/".</p>
-<example>
-&lt;If "!(%{HTTP_REFERER} -strmatch 'http://www.example.com/*')"&gt;<br />
-Require all denied<br />
+<highlight language="config">
+&lt;If "!(%{HTTP_REFERER} -strmatch 'http://www.example.com/*')"&gt;
+    Require all denied
 &lt;/If&gt;
-</example>
+</highlight>
 
 </section>
 
@@ -366,12 +360,11 @@ l'arborescence du site web (URLs) peuvent correspondre &agrave; la m&ecirc;me lo
 du syst&egrave;me de fichier, ce qui peut permettre de contourner vos restrictions.
 Par exemple, imaginez la configuration suivante :</p>
 
-<example>
-&lt;Location /dir/&gt;<br />
-Order allow,deny<br />
-Deny from all<br />
+<highlight language="config">
+&lt;Location /dir/&gt;
+    Require all denied
 &lt;/Location&gt;
-</example>
+</highlight>
 
 <p>Elle fonctionne correctement si la requ&ecirc;te appelle
 <code>http://yoursite.example.com/dir/</code>.  Mais que va-t-il se passer si
@@ -447,12 +440,11 @@ Par exemple, la configuration suivante
 va interdire l'utilisation du serveur proxy pour acc&eacute;der au site
 <code>www.example.com</code>.</p>
 
-<example>
-&lt;Proxy http://www.example.com/*&gt;<br />
-Order allow,deny<br />
-Deny from all<br />
+<highlight language="config">
+&lt;Proxy http://www.example.com/*&gt;
+    Require all granted
 &lt;/Proxy&gt;
-</example>
+</highlight>
 </section>
 
 <section id="whatwhere"><title>Quelles sont les directives autoris&eacute;es ?</title>
@@ -490,7 +482,7 @@ et <directive type="section" module="core">FilesMatch</directive>.</li>
 </ul>
 </section>
 
-<section id="mergin"><title>Comment les sections sont combin&eacute;es entre elles</title>
+<section id="merging"><title>Comment les sections sont combin&eacute;es entre elles</title>
 
 <p>Les sections de configuration sont appliqu&eacute;es dans un ordre tr&egrave;s particulier.
 Il est important de savoir comment cet ordre est d&eacute;fini car il peut avoir
@@ -583,30 +575,30 @@ En supposant qu'elles s'appliquent toutes &agrave; la requ&ecirc;te, les directi
 cet exemple seront appliqu&eacute;es dans l'ordre suivant : A &gt; B &gt; C &gt; D &gt;
 E.</p>
 
-<example>
-&lt;Location /&gt;<br />
-E<br />
-&lt;/Location&gt;<br />
-<br />
-&lt;Files f.html&gt;<br />
-D<br />
-&lt;/Files&gt;<br />
-<br />
-&lt;VirtualHost *&gt;<br />
-&lt;Directory /a/b&gt;<br />
-B<br />
-&lt;/Directory&gt;<br />
-&lt;/VirtualHost&gt;<br />
-<br />
-&lt;DirectoryMatch "^.*b$"&gt;<br />
-C<br />
-&lt;/DirectoryMatch&gt;<br />
-<br />
-&lt;Directory /a/b&gt;<br />
-A<br />
-&lt;/Directory&gt;<br />
-<br />
-</example>
+<highlight language="config">
+&lt;Location /&gt;
+    E
+&lt;/Location&gt;
+
+&lt;Files f.html&gt;
+    D
+&lt;/Files&gt;
+
+&lt;VirtualHost *&gt;
+&lt;Directory /a/b&gt;
+    B
+&lt;/Directory&gt;
+&lt;/VirtualHost&gt;
+
+&lt;DirectoryMatch "^.*b$"&gt;
+    C
+&lt;/DirectoryMatch&gt;
+
+&lt;Directory /a/b&gt;
+    A
+&lt;/Directory&gt;
+
+</highlight>
 
 <p>Pour un exemple plus concret, consid&eacute;rez ce qui suit.  Sans tenir compte
 de toute restriction d'acc&egrave;s plac&eacute;e dans les sections <directive module="core"
@@ -616,20 +608,19 @@ module="core" type="section">Location</directive> sera
 En d'autres termes, l'ordre de la combinaison des sections est important,
 soyez donc prudent !</p>
 
-<example>
-&lt;Location /&gt;<br />
-Order deny,allow<br />
-Allow from all<br />
-&lt;/Location&gt;<br />
-<br />:if expand("%") == ""|browse confirm w|else|confirm w|endif
+<highlight language="config">
+&lt;Location /&gt;
+    Require all granted
+&lt;/Location&gt;
 
-# Arrghs!  Cette section &lt;Directory&gt; n'aura aucun effet<br />
-&lt;Directory /&gt;<br />
-Order allow,deny<br />
-Allow from all<br />
-Deny from badguy.example.com<br />
+# Arrghs!  Cette section &lt;Directory&gt; n'aura aucun effet
+&lt;Directory /&gt;
+    &lt;RequireAll&gt;
+        Require all granted
+        Require not host badguy.example.com
+    &lt;/RequireAll&gt;
 &lt;/Directory&gt;
-</example>
+</highlight>
 
 </section>
 
