@@ -52,10 +52,10 @@
     que plusieurs processus <program>httpd</program> s'ex&eacute;cutent sur votre
     syst&egrave;me, mais il vous suffit d'envoyer les signaux au processus parent,
     dont le PID est enregistr&eacute; dans le fichier pr&eacute;cis&eacute; par la directive
-    <directive module="mpm_common">PidFile</directive>. C'est &agrave; dire que vous
-    n'aurez jamais besoin d'envoyer des signaux &agrave; aucun de ces processus,
-    sauf au processus parent. Trois types de signaux peuvent &ecirc;tre envoy&eacute;s
-    au processus parent :
+    <directive module="mpm_common">PidFile</directive>. Autrement dit, vous
+    n'aurez jamais besoin d'envoyer des signaux &agrave; aucun des
+    processus enfants, mais seulement au processus parent. Trois types
+    de signaux peuvent &ecirc;tre envoy&eacute;s au processus parent :
     <code><a href="#term">TERM</a></code>,
     <code><a href="#graceful">USR1</a></code>,
     <code><a href="#hup">HUP</a></code>, et
@@ -93,8 +93,8 @@
 <dd><code>apachectl -k stop</code></dd>
 </dl>
 
-    <p>L'envoi du signal <code>TERM</code> ou <code>stop</code> au
-    processus parent induit chez celui-ci une tentative imm&eacute;diate
+    <p>A la r&eacute;ception du signal <code>TERM</code> ou <code>stop</code>,
+    le processus parent tente imm&eacute;diatement
     de tuer tous ses processus enfants. Cela peut durer plusieurs secondes.
     Apr&egrave;s cela, le processus parent lui-m&ecirc;me se termine. Toutes les requ&ecirc;tes
     en cours sont termin&eacute;es, et plus aucune autre n'est trait&eacute;e.</p>
@@ -106,8 +106,9 @@
 <dd><code>apachectl -k graceful</code></dd>
 </dl>
 
-    <p>L'envoi du signal <code>USR1</code> ou <code>graceful</code> au
-    processus parent lui fait envoyer aux processus enfants
+    <p>A la r&eacute;ception du signal <code>USR1</code> ou
+    <code>graceful</code>, le
+    processus parent envoie aux processus enfants
     <em>l'ordre</em> de se terminer une fois leur requ&ecirc;te courante
     trait&eacute;e (ou de se terminer imm&eacute;diatement s'ils n'ont plus rien &agrave; traiter).
     Le processus parent relit ses fichiers de configuration et
@@ -139,7 +140,7 @@
     serveur ne peut pas traiter de nouvelles requ&ecirc;tes (elle sont mises en
     file d'attente par le syst&egrave;me d'exploitation, et ne sont ainsi jamais
     perdues) et pour respecter vos param&egrave;tres de personnalisation.
-    Afin d'accomplir ceci, il doit conserver le
+    Pour y parvenir, il doit conserver le
     <em>tableau</em> utilis&eacute; pour garder la trace de tous les processus
     enfants au cours des diff&eacute;rentes g&eacute;n&eacute;rations.</p>
 
@@ -188,8 +189,9 @@
 <dd><code>apachectl -k restart</code></dd>
 </dl>
 
-    <p>L'envoi du signal <code>HUP</code> ou <code>restart</code> au
-    processus parent lui fait tuer ses processus enfants comme pour le signal
+    <p>A la r&eacute;ception du signal <code>HUP</code> ou
+    <code>restart</code>, le
+    processus parent tue ses processus enfants comme pour le signal
     <code>TERM</code>, mais le processus parent ne se termine pas.
     Il relit ses fichiers de configuration, et r&eacute;ouvre ses fichiers de log.
     Puis il donne naissance &agrave; un nouveau jeu de processus enfants
@@ -212,8 +214,9 @@ vous recevrez un message concernant ces erreurs.</note>
 <dd><code>apachectl -k graceful-stop</code></dd>
 </dl>
 
-    <p>L'envoi du signal <code>WINCH</code> ou <code>graceful-stop</code>
-    au processus parent lui fait <em>aviser</em> les processus enfants
+    <p>A la r&eacute;ception du signal <code>WINCH</code> ou
+    <code>graceful-stop</code>, le
+    processus parent <em>avise</em> ses processus enfants
     de s'arr&ecirc;ter apr&egrave;s le traitement de leur requ&ecirc;te en cours
     (ou de s'arr&ecirc;ter imm&eacute;diatement s'ils n'ont plus de requ&ecirc;te &agrave; traiter).
     Le processus parent va alors supprimer son fichier
