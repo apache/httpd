@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1291840:1331581 (outdated) -->
+<!-- English Revision : 1331581 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -474,12 +474,12 @@ Vary: negotiate,accept-language,accept-charset
 
       <p>En g&eacute;n&eacute;ral, le module se configure comme suit :</p>
 
-      <example>    
-CacheRoot   /var/cache/apache/<br />
-CacheEnable disk /<br />
-CacheDirLevels 2<br />
+      <highlight language="config">
+CacheRoot   "/var/cache/apache/"
+CacheEnable disk /
+CacheDirLevels 2
 CacheDirLength 1
-    </example>
+    </highlight>
 
     <p>Il est important de savoir que, les fichiers mis en cache &eacute;tant stock&eacute;s
     localement, la mise en cache par l'interm&eacute;diaire du syst&egrave;me d'exploitation
@@ -727,9 +727,9 @@ CacheDirLength 1
 	r&eacute;utiliser le descripteur de fichier mis en cache pour tous les
 	acc&egrave;s futurs &agrave; ce fichier.</p>
 
-        <example>
+        <highlight language="config">
         CacheFile /usr/local/apache2/htdocs/index.html
-        </example>
+        </highlight>
 
         <p>Si vous d&eacute;sirez mettre en cache un grand nombre de fichiers
 	de cette mani&egrave;re, vous devez vous assurer que le nombre maximal
@@ -835,9 +835,9 @@ sys     0m0.000s</pre>
       utilisera le contenu charg&eacute; en m&eacute;moire pour satisfaire ult&eacute;rieurement
       toutes les demandes d'acc&egrave;s &agrave; ce fichier.</p>
 
-        <example>
+        <highlight language="config">
         MMapFile /usr/local/apache2/htdocs/index.html
-        </example>
+        </highlight>
 
       <p>Comme dans le cas de la directive
       <directive module="mod_file_cache">CacheFile</directive>, toute

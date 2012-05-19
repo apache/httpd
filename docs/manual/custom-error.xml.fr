@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1328589:1330883 (outdated) -->
+<!-- English Revision : 1330883 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -58,19 +58,19 @@
     .htaccess si <directive module="core">AllowOverride</directive> est
     d&eacute;finie &agrave; FileInfo.</p>
 
-    <example>
-      ErrorDocument 500 "D&eacute;sol&eacute;, notre script s'est crash&eacute; ; comme c'est
-      dommage !"<br />
-      ErrorDocument 500 /cgi-bin/crash-recover<br />
-      ErrorDocument 500 http://erreur.example.com/erreur_serveur.html<br />
-      ErrorDocument 404 /erreurs/non_trouve.html <br />
-      ErrorDocument 401 /inscription/comment_s_inscrire.html
-    </example>
+    <highlight language="config">
+ErrorDocument 500 "D&eacute;sol&eacute;, notre script s'est
+crash&eacute; ; comme c'est dommage !"<br />
+ErrorDocument 500 /cgi-bin/crash-recover<br />
+ErrorDocument 500 http://error.example.com/server_error.html<br />
+ErrorDocument 404 /errors/not_found.html <br />
+ErrorDocument 401 /subscription/how_to_subscribe.html
+    </highlight>
 
 <p>La syntaxe de la directive <code>ErrorDocument</code> est :</p>
-      <example>
+      <highlight language="config">
       ErrorDocument &lt;code_3_chiffres&gt; &lt;action&gt;
-    </example>
+    </highlight>
       <p>o&ugrave; action peut &ecirc;tre trait&eacute;e comme :</p>
         <ol>
       <li>Une URL de redirection local (si l'action commence par un "/").</li>

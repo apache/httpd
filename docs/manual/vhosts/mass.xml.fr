@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1138405:1330878 (outdated) -->
+<!-- English Revision : 1330878 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -43,8 +43,7 @@
     <code>&lt;VirtualHost&gt;</code> tr&egrave;s semblables,
     dans le style :</p>
 
-<example>
-<pre>
+<highlight language="config">
 &lt;VirtualHost 111.22.33.44&gt;
     ServerName                 customer-1.example.com
     DocumentRoot        /www/hosts/customer-1.example.com/docs
@@ -62,8 +61,7 @@
     DocumentRoot        /www/hosts/customer-N.example.com/docs
     ScriptAlias  /cgi-bin/  /www/hosts/customer-N.example.com/cgi-bin
 &lt;/VirtualHost&gt;
-</pre>
-</example>
+</highlight>
 
     <p>Nous voulons remplacer toutes les configurations
     <code>&lt;VirtualHost&gt;</code> par un m&eacute;canisme qui les g&eacute;n&egrave;re
@@ -156,20 +154,20 @@ dynamique avec mod_vhost_alias</title>
     href="#motivation">&Agrave; qui ce document est-il destin&eacute; ?</a> ci-dessus
     en utilisant <module>mod_vhost_alias</module>.</p>
 
-<example>
-# extrait le nom du serveur de l'en-t&ecirc;te Host:<br />
-UseCanonicalName Off<br />
-<br />
+<highlight language="config">
+# extrait le nom du serveur de l'en-t&ecirc;te Host:
+UseCanonicalName Off
+
 # ce format de journal peut &ecirc;tre &eacute;clat&eacute; en journaux par serveur virtuel
-# &agrave; l'aide du premier champ via l'utilitaire split-logfile<br />
-LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon<br />
-CustomLog logs/access_log vcommon<br />
-<br />
+# &agrave; l'aide du premier champ via l'utilitaire split-logfile
+LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
+CustomLog logs/access_log vcommon
+
 # inclut le nom du serveur dans les noms de fichiers ressources
-# n&eacute;cessaires aux traitements des requ&ecirc;tes<br />
-VirtualDocumentRoot /www/hosts/%0/docs<br />
+# n&eacute;cessaires aux traitements des requ&ecirc;tes
+VirtualDocumentRoot /www/hosts/%0/docs
 VirtualScriptAlias  /www/hosts/%0/cgi-bin
-</example>
+</highlight>
 
     <p>Pour changer cette configuration en solution de serveur virtuel
     par IP, il suffit de remplacer <code>UseCanonicalName
@@ -196,18 +194,18 @@ simplifi&eacute;</title>
     <code>cgi-bin</code> suffit pour l'ensemble des
     serveurs virtuels.</p>
 
-<example>
-UseCanonicalName Off<br />
-<br />
-LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon<br />
-CustomLog logs/access_log vcommon<br />
-<br />
-# insertion d'une partie du nom du serveur dans les noms de fichiers<br />
-VirtualDocumentRoot /home/%2/www<br />
-<br />
-# r&eacute;pertoire cgi-bin unique<br />
-ScriptAlias  /cgi-bin/  /www/std-cgi/<br />
-</example>
+<highlight language="config">
+UseCanonicalName Off
+
+LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
+CustomLog logs/access_log vcommon
+
+# insertion d'une partie du nom du serveur dans les noms de fichiers
+VirtualDocumentRoot /home/%2/www
+
+# r&eacute;pertoire cgi-bin unique
+ScriptAlias  /cgi-bin/  /www/std-cgi/
+</highlight>
 
     <p>Vous trouverez des exemples plus &eacute;labor&eacute;s d'utilisation de la
     directive <code>VirtualDocumentRoot</code> dans la documentation du
@@ -228,47 +226,39 @@ d'h&eacute;bergement virtuel sur le m&ecirc;me serveur</title>
     <code>&lt;VirtualHost&gt;</code> conventionnelles, comme indiqu&eacute;
     plus loin.</p>
 
-<example>
-UseCanonicalName Off<br />
-<br />
-LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon<br />
-<br />
-&lt;Directory /www/commercial&gt;<br />
-<indent>
-    Options FollowSymLinks<br />
-    AllowOverride All<br />
-</indent>
-&lt;/Directory&gt;<br />
-<br />
-&lt;Directory /www/homepages&gt;<br />
-<indent>
-    Options FollowSymLinks<br />
-    AllowOverride None<br />
-</indent>
-&lt;/Directory&gt;<br />
-<br />
-&lt;VirtualHost 111.22.33.44&gt;<br />
-<indent>
-    ServerName www.commercial.example.com<br />
-    <br />
-    CustomLog logs/access_log.commercial vcommon<br />
-    <br />
-    VirtualDocumentRoot /www/commercial/%0/docs<br />
-    VirtualScriptAlias  /www/commercial/%0/cgi-bin<br />
-</indent>
-&lt;/VirtualHost&gt;<br />
-<br />
-&lt;VirtualHost 111.22.33.45&gt;<br />
-<indent>
-    ServerName www.homepages.example.com<br />
-    <br />
-    CustomLog logs/access_log.homepages vcommon<br />
-    <br />
-    VirtualDocumentRoot /www/homepages/%0/docs<br />
-    ScriptAlias         /cgi-bin/ /www/std-cgi/<br />
-</indent>
+<highlight language="config">
+UseCanonicalName Off
+
+LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
+
+&lt;Directory /www/commercial&gt;
+    Options FollowSymLinks
+    AllowOverride All
+&lt;/Directory&gt;
+
+&lt;Directory /www/homepages&gt;
+    Options FollowSymLinks
+    AllowOverride None
+&lt;/Directory&gt;
+
+&lt;VirtualHost 111.22.33.44&gt;
+    ServerName www.commercial.example.com
+    
+    CustomLog logs/access_log.commercial vcommon
+    
+    VirtualDocumentRoot /www/commercial/%0/docs
+    VirtualScriptAlias  /www/commercial/%0/cgi-bin
 &lt;/VirtualHost&gt;
-</example>
+
+&lt;VirtualHost 111.22.33.45&gt;
+    ServerName www.homepages.example.com
+    
+    CustomLog logs/access_log.homepages vcommon
+    
+    VirtualDocumentRoot /www/homepages/%0/docs
+    ScriptAlias         /cgi-bin/ /www/std-cgi/
+&lt;/VirtualHost&gt;
+</highlight>
 
 <note>
 	<title>Note</title>
@@ -295,26 +285,26 @@ efficace</title>
     la-m&ecirc;me la n&eacute;cessit&eacute; d'une recherche DNS. La journalisation doit
     aussi &ecirc;tre adapt&eacute;e pour fonctionner sur un tel syst&egrave;me.</p>
 
-<example>
+<highlight language="config">
 # obtention du nom du serveur par recherche DNS inverse
-# sur l'adresse IP<br />
-UseCanonicalName DNS<br />
-<br />
+# sur l'adresse IP
+UseCanonicalName DNS
+
 # insertion de l'adresse IP dans les journaux afin de pouvoir les
-# &eacute;clater<br />
-LogFormat "%A %h %l %u %t \"%r\" %s %b" vcommon<br />
-CustomLog logs/access_log vcommon<br />
-<br />
-# insertion de l'adresse IP dans les noms de fichiers<br />
-VirtualDocumentRootIP /www/hosts/%0/docs<br />
-VirtualScriptAliasIP  /www/hosts/%0/cgi-bin<br />
-</example>
+# &eacute;clater
+LogFormat "%A %h %l %u %t \"%r\" %s %b" vcommon
+CustomLog logs/access_log vcommon
+
+# insertion de l'adresse IP dans les noms de fichiers
+VirtualDocumentRootIP /www/hosts/%0/docs
+VirtualScriptAliasIP  /www/hosts/%0/cgi-bin
+</highlight>
 
 </section>
 
 <section id="rewrite"><title>H&eacute;bergement virtuel de masse avec
 mod_rewrite</title>
- 
+
 <p>
 L'h&eacute;bergement virtuel de masse peut aussi &ecirc;tre effectu&eacute; en utilisant
 <module>mod_rewrite</module>, soit &agrave; l'aide de simples directives <directive

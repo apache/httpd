@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1328350:1330883 (outdated) -->
+<!-- English Revision: 1330883 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -108,10 +108,10 @@
       des fichiers poss&eacute;dant une extension <code>html</code> d&eacute;clenchent
       l'ex&eacute;cution du script CGI <code>footer.pl</code>.</p>
 
-      <example>
-        Action add-footer /cgi-bin/footer.pl<br/>
-        AddHandler add-footer .html
-      </example>
+      <highlight language="config">
+Action add-footer /cgi-bin/footer.pl
+AddHandler add-footer .html
+      </highlight>
 
       <p>&Agrave; ce moment-l&agrave;, le script CGI se charge d'envoyer le document
       initialement demand&eacute; (r&eacute;f&eacute;renc&eacute; par la variable d'environnement
@@ -129,11 +129,11 @@
       <code>send-as-is</code>, sans tenir compte de l'extension
       de leur nom de fichier.</p>
 
-      <example>
-        &lt;Directory /web/htdocs/asis&gt;<br/>
-        <indent>SetHandler send-as-is<br/></indent>
-        &lt;/Directory&gt;
-      </example>
+      <highlight language="config">
+&lt;Directory /web/htdocs/asis&gt;
+    SetHandler send-as-is
+&lt;/Directory&gt;
+      </highlight>
 
     </section>
   </section>
@@ -147,9 +147,9 @@
     Plus pr&eacute;cis&eacute;ment, un nouvel enregistrement a &eacute;t&eacute; ajout&eacute; &agrave; la structure
     <code>request_rec</code> :</p>
 
-    <example>
+    <highlight language="c">
       char *handler
-    </example>
+    </highlight>
 
     <p>Si vous voulez que votre module d&eacute;clenche l'utilisation d'un
     gestionnaire, il vous suffit de d&eacute;finir <code>r-&gt;handler</code> avec

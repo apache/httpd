@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- English Revision: 1300910:1330878 (outdated) -->
+<!-- English Revision : 1330878 -->
 <!-- French translation by alain B, review by Vincent Deffontaines -->
 <!-- Updated by Lucien Gentis -->
 
@@ -102,9 +102,9 @@
     de configuration pour définir l'adresse IP (ou serveur virtuel)
     que le processus résident doit gérer. Par exemple&nbsp;:</p>
 
-    <example>
+    <highlight language="config">
     Listen 192.0.2.100:80
-    </example>
+    </highlight>
 
     <p>Il est recommandé d'utiliser une adresse IP plutôt qu'un nom
     de domaine (consultez <a href="../dns-caveats.html">Problèmes DNS
@@ -128,23 +128,23 @@ résident pour des serveurs virtuels</title>
     <directive module="mod_log_config">CustomLog</directive> avec des
     valeurs différentes pour chaque serveur virtuel. Par exemple&nbsp;:</p>
 
-    <example>
-    &lt;VirtualHost 172.20.30.40:80&gt;<br />
-    ServerAdmin webmaster@www1.example.com<br />
-    DocumentRoot /www/vhosts/www1<br />
-    ServerName www1.example.com<br />
-    ErrorLog /www/logs/www1/error_log<br />
-    CustomLog /www/logs/www1/access_log combined<br />
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.50:80&gt;<br />
-    ServerAdmin webmaster@www2.example.org<br />
-    DocumentRoot /www/vhosts/www2<br />
-    ServerName www2.example.org<br />
-    ErrorLog /www/logs/www2/error_log<br />
-    CustomLog /www/logs/www2/access_log combined<br />
-    &lt;/VirtualHost&gt;
-    </example>
+    <highlight language="config">
+&lt;VirtualHost 172.20.30.40:80&gt;
+    ServerAdmin webmaster@www1.example.com
+    DocumentRoot /www/vhosts/www1
+    ServerName www1.example.com
+    ErrorLog /www/logs/www1/error_log
+    CustomLog /www/logs/www1/access_log combined
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.50:80&gt;
+    ServerAdmin webmaster@www2.example.org
+    DocumentRoot /www/vhosts/www2
+    ServerName www2.example.org
+    ErrorLog /www/logs/www2/error_log
+    CustomLog /www/logs/www2/access_log combined
+&lt;/VirtualHost&gt;
+    </highlight>
 
     <p>Il est recommandé d'utiliser une adresse IP plutôt qu'un nom
     de domaine comme argument à la directive &lt;VirtualHost&gt;
