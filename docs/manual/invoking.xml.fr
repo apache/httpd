@@ -119,7 +119,7 @@
 
 <section id="boot"><title>Lancement au d&eacute;marrage du syst&egrave;me</title>
 
-    <p>Si vous souhaitez que votre serveur continue de fonctionner apr&egrave;s
+    <p>Si vous souhaitez que votre serveur fonctionne apr&egrave;s
     un red&eacute;marrage du syst&egrave;me, vous devez ajouter un appel &agrave;
     <program>apachectl</program> &agrave; vos
     fichiers de d&eacute;marrage syst&egrave;me (en g&eacute;n&eacute;ral <code>rc.local</code> ou un
