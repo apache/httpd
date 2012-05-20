@@ -301,7 +301,8 @@ to last beyond the testing phase of this system, nor do we in any way guarantee 
 var disqus_shortname = 'httpd';
 var disqus_identifier = 'http://httpd.apache.org/docs/]]></xsl:text>&httpd.disqus;<xsl:value-of select="concat($metafile/path, $metafile/basename, '.html.', $doclang)" disable-output-escaping="yes" /><xsl:text disable-output-escaping="yes"><![CDATA[';
 (function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
+    var disabled = true;
+    if (w.location.hostname.toLowerCase() == "httpd.apache.org" && disabled !== true) {
         d.write('<div id="disqus_thread"><\/div>');
         var s = d.createElement('script');
         s.type = 'text/javascript';
@@ -310,7 +311,7 @@ var disqus_identifier = 'http://httpd.apache.org/docs/]]></xsl:text>&httpd.disqu
         (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
     }
     else {
-        d.write('<div id="disqus_thread">Comments have been disabled for offline viewing.<\/div>');
+        d.write('<div id="disqus_thread">Comments are disabled for this page at the moment.<\/div>');
     }
 })(window, document);
 //--><!]]]]>></xsl:text></script>
