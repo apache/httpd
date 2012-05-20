@@ -27,8 +27,6 @@
 <a href="./ko/urlmapping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/urlmapping.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Ce document explique comment le serveur HTTP Apache utilise l'URL contenue dans une
     requête pour déterminer le noeud du système de fichier à partir duquel le
@@ -103,7 +101,8 @@ l'arborescence DocumentRoot</a></h2>
     <p>Une autre méthode consiste à utiliser la directive <code class="directive"><a href="./mod/mod_alias.html#alias">Alias</a></code> pour rattacher toute portion
     du système de fichiers à l'arborescence du site web. Par exemple, avec</p>
 
-<div class="example"><p><code>Alias /docs /var/web</code></p></div>
+<pre class="prettyprint lang-config">Alias /docs /var/web</pre>
+
 
     <p>l'URL <code>http://www.example.com/docs/dir/file.html</code>
     correspondra au fichier <code>/var/web/dir/file.html</code>. La
@@ -119,8 +118,10 @@ l'arborescence DocumentRoot</a></h2>
     sur les <a class="glossarylink" href="./glossary.html#regex" title="voir glossaire">expressions rationnelles</a>.
     Par exemple,</p>
 
-<div class="example"><p><code>ScriptAliasMatch ^/~([a-zA-Z0-9]+)/cgi-bin/(.+)
-      /home/$1/cgi-bin/$2</code></p></div>
+<pre class="prettyprint lang-config">
+    ScriptAliasMatch ^/~([a-zA-Z0-9]+)/cgi-bin/(.+)   /home/$1/cgi-bin/$2
+    </pre>
+
 
     <p>fera correspondre une requête du style
     <code>http://example.com/~user/cgi-bin/script.cgi</code> au chemin
@@ -168,8 +169,10 @@ l'arborescence DocumentRoot</a></h2>
     <code>/home/user/public_html/file.html</code>, utilisez la directive
     <code>AliasMatch</code> suivante :</p>
 
-<div class="example"><p><code>AliasMatch ^/upages/([a-zA-Z0-9]+)(/(.*))?$
-      /home/$1/public_html/$3</code></p></div>
+<pre class="prettyprint lang-config">
+    AliasMatch ^/upages/([a-zA-Z0-9]+)(/(.*))?$   /home/$1/public_html/$3
+    </pre>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="redirect" id="redirect">Redirection d'URL</a></h2>
@@ -188,7 +191,10 @@ l'arborescence DocumentRoot</a></h2>
     nouveau répertoire <code>/bar/</code>, vous pouvez demander aux clients
     de le requérir à sa nouvelle localisation comme suit :</p>
 
-<div class="example"><p><code>Redirect permanent /foo/ http://www.example.com/bar/</code></p></div>
+<pre class="prettyprint lang-config">
+    Redirect permanent /foo/   http://www.example.com/bar/
+    </pre>
+
 
     <p>Ceci aura pour effet de rediriger tout chemin d'URL commençant par
     <code>/foo/</code> vers le même chemin d'URL sur le serveur
@@ -202,14 +208,18 @@ l'arborescence DocumentRoot</a></h2>
     laisser toutes les autres requêtes inchangées, utilisez la
     configuration suivante :</p>
 
-<div class="example"><p><code>RedirectMatch permanent ^/$
-      http://www.example.com/startpage.html</code></p></div>
+<pre class="prettyprint lang-config">
+   RedirectMatch permanent ^/$    http://www.example.com/startpage.html
+    </pre>
+
 
     <p>De même, pour rediriger temporairement toutes les pages d'un site
     vers une page particulière d'un autre site, utilisez ce qui suit :</p>
 
-<div class="example"><p><code>RedirectMatch temp .*
-      http://othersite.example.com/startpage.html</code></p></div>
+<pre class="prettyprint lang-config">
+    RedirectMatch temp .*  http://othersite.example.com/startpage.html
+    </pre>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="proxy" id="proxy">Mandataire inverse (Reverse Proxy)</a></h2>
@@ -228,12 +238,13 @@ dans le répertoire
 <code>/bar/</code> sur <code>internal.example.com</code>
 et les renvoie au client comme s'ils appartenaient au serveur local.</p>
 
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
 ProxyPass /foo/ http://internal.example.com/bar/<br />
 ProxyPassReverse /foo/ http://internal.example.com/bar/<br />
 ProxyPassReverseCookieDomain internal.example.com public.example.com<br />
 ProxyPassReverseCookiePath /foo/ /bar/
-</code></p></div>
+</pre>
+
 
 <p>La directive <code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code> configure
 le serveur pour rapatrier les documents appropriés, alors que la directive
@@ -252,9 +263,10 @@ du serveur mandataire et effectuer sa requête directement sur
 d'utres contenus) situés dans la page au moment où elle est envoyée au
 client en utilisant le module <code class="module"><a href="./mod/mod_substitute.html">mod_substitute</a></code>.</p>
 
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
 Substitute s/internal\.example\.com/www.example.com/i
-</code></p></div>
+</pre>
+
 
 <p>Le module <code class="module"><a href="./mod/mod_proxy_html.html">mod_proxy_html</a></code> rend possible une réécriture plus
 élaborée des liens en HTML et XHTML. Il permet de créer des listes
@@ -360,7 +372,8 @@ to last beyond the testing phase of this system, nor do we in any way guarantee 
 var disqus_shortname = 'httpd';
 var disqus_identifier = 'http://httpd.apache.org/docs/2.4/urlmapping.html.fr';
 (function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
+    var disabled = true;
+    if (w.location.hostname.toLowerCase() == "httpd.apache.org" && disabled !== true) {
         d.write('<div id="disqus_thread"><\/div>');
         var s = d.createElement('script');
         s.type = 'text/javascript';
@@ -369,7 +382,7 @@ var disqus_identifier = 'http://httpd.apache.org/docs/2.4/urlmapping.html.fr';
         (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
     }
     else {
-        d.write('<div id="disqus_thread">Comments have been disabled for offline viewing.<\/div>');
+        d.write('<div id="disqus_thread">Comments are disabled for this page at the moment.<\/div>');
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">

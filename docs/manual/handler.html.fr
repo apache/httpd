@@ -29,8 +29,6 @@
 <a href="./tr/handler.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/handler.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Ce document décrit l'utilisation des gestionnaires d'Apache (handlers).</p>
   </div>
@@ -101,10 +99,11 @@
       des fichiers possédant une extension <code>html</code> déclenchent
       l'exécution du script CGI <code>footer.pl</code>.</p>
 
-      <div class="example"><p><code>
-        Action add-footer /cgi-bin/footer.pl<br />
-        AddHandler add-footer .html
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+Action add-footer /cgi-bin/footer.pl
+AddHandler add-footer .html
+      </pre>
+
 
       <p>À ce moment-là, le script CGI se charge d'envoyer le document
       initialement demandé (référencé par la variable d'environnement
@@ -122,11 +121,12 @@
       <code>send-as-is</code>, sans tenir compte de l'extension
       de leur nom de fichier.</p>
 
-      <div class="example"><p><code>
-        &lt;Directory /web/htdocs/asis&gt;<br />
-        <span class="indent">SetHandler send-as-is<br /></span>
-        &lt;/Directory&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+&lt;Directory /web/htdocs/asis&gt;
+    SetHandler send-as-is
+&lt;/Directory&gt;
+      </pre>
+
 
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -141,9 +141,10 @@
     Plus précisément, un nouvel enregistrement a été ajouté à la structure
     <code>request_rec</code> :</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-c">
       char *handler
-    </code></p></div>
+    </pre>
+
 
     <p>Si vous voulez que votre module déclenche l'utilisation d'un
     gestionnaire, il vous suffit de définir <code>r-&gt;handler</code> avec
@@ -170,7 +171,8 @@ to last beyond the testing phase of this system, nor do we in any way guarantee 
 var disqus_shortname = 'httpd';
 var disqus_identifier = 'http://httpd.apache.org/docs/2.4/handler.html.fr';
 (function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
+    var disabled = true;
+    if (w.location.hostname.toLowerCase() == "httpd.apache.org" && disabled !== true) {
         d.write('<div id="disqus_thread"><\/div>');
         var s = d.createElement('script');
         s.type = 'text/javascript';
@@ -179,7 +181,7 @@ var disqus_identifier = 'http://httpd.apache.org/docs/2.4/handler.html.fr';
         (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
     }
     else {
-        d.write('<div id="disqus_thread">Comments have been disabled for offline viewing.<\/div>');
+        d.write('<div id="disqus_thread">Comments are disabled for this page at the moment.<\/div>');
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">

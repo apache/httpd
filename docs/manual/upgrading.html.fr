@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/upgrading.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
   <p>Afin d'assister les utilisateurs lors de leurs opérations de mise à
   jour, nous maintenons un document
@@ -138,40 +136,40 @@ nécessiter une mise à jour des fichiers de configuration de la version
       la nouvelle méthode :</p>
 
       <p>Dans cet exemple, toutes les requêtes sont rejetées :</p>
-      <div class="example"><h3>version 2.2 :</h3><p><code>
-        
-        Order deny,allow<br />
-        Deny from all
-      </code></p></div>
-      <div class="example"><h3>version 2.4 :</h3><p><code>
-        
+      <div class="example"><h3>version 2.2 :</h3><pre class="prettyprint lang-config">
+Order deny,allow
+Deny from all
+        </pre>
+</div>
+      <div class="example"><h3>version 2.4 :</h3><pre class="prettyprint lang-config">
         Require all denied
-      </code></p></div>
+	</pre>
+</div>
 
       <p>Dans cet exemple, toutes les requêtes sont acceptées :</p>
-      <div class="example"><h3>version 2.2 :</h3><p><code>
-        
-        Order allow,deny<br />
-        Allow from all
-      </code></p></div>
-      <div class="example"><h3>version 2.4 :</h3><p><code>
-        
+      <div class="example"><h3>version 2.2 :</h3><pre class="prettyprint lang-config">
+Order allow,deny
+Allow from all
+        </pre>
+</div>
+      <div class="example"><h3>version 2.4 :</h3><pre class="prettyprint lang-config">
         Require all granted
-      </code></p></div>
+	</pre>
+</div>
 
       <p>Dans l'exemple suivant, tous les hôtes du domaine example.org
       ont l'autorisation d'accès, tous les autres sont rejetés :</p>
 
-      <div class="example"><h3>version 2.2 :</h3><p><code>
-        
-        Order Deny,Allow<br />
-        Deny from all<br />
-        Allow from example.org
-      </code></p></div>
-      <div class="example"><h3>version 2.4 :</h3><p><code>
-        
+      <div class="example"><h3>version 2.2 :</h3><pre class="prettyprint lang-config">
+Order Deny,Allow
+Deny from all
+Allow from example.org
+        </pre>
+</div>
+      <div class="example"><h3>version 2.4 :</h3><pre class="prettyprint lang-config">
         Require host example.org
-      </code></p></div>
+	</pre>
+</div>
     
 
     
@@ -329,6 +327,12 @@ nécessiter une mise à jour des fichiers de configuration de la version
       <code class="directive"><a href="./mod/mod_include.html#ssilegacyexprparser">SSILegacyExprParser</a></code> a
       été activée pour le répertoire contenant les pages d'erreur.
       </li>
+
+      <li>La fonctionnalité fournie par <code>mod_authn_alias</code>
+      dans les précédentes versions (en fait la directive
+      <code class="directive"><a href="./mod/mod_authn_core.html#authnprovideralias">AuthnProviderAlias</a></code>)
+      est maintenant fournie par <code class="module"><a href="./mod/mod_authn_core.html">mod_authn_core</a></code>.  
+      </li>
     </ul>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -396,7 +400,8 @@ to last beyond the testing phase of this system, nor do we in any way guarantee 
 var disqus_shortname = 'httpd';
 var disqus_identifier = 'http://httpd.apache.org/docs/2.4/upgrading.html.fr';
 (function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
+    var disabled = true;
+    if (w.location.hostname.toLowerCase() == "httpd.apache.org" && disabled !== true) {
         d.write('<div id="disqus_thread"><\/div>');
         var s = d.createElement('script');
         s.type = 'text/javascript';
@@ -405,7 +410,7 @@ var disqus_identifier = 'http://httpd.apache.org/docs/2.4/upgrading.html.fr';
         (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
     }
     else {
-        d.write('<div id="disqus_thread">Comments have been disabled for offline viewing.<\/div>');
+        d.write('<div id="disqus_thread">Comments are disabled for this page at the moment.<\/div>');
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">

@@ -27,8 +27,6 @@
 <a href="../ko/vhosts/ip-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/ip-based.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#requirements">Système requis</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#howto">Comment configurer Apache</a></li>
@@ -112,9 +110,10 @@ résident pour des serveurs virtuels</a></li>
     de configuration pour définir l'adresse IP (ou serveur virtuel)
     que le processus résident doit gérer. Par exemple&nbsp;:</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
     Listen 192.0.2.100:80
-    </code></p></div>
+    </pre>
+
 
     <p>Il est recommandé d'utiliser une adresse IP plutôt qu'un nom
     de domaine (consultez <a href="../dns-caveats.html">Problèmes DNS
@@ -138,23 +137,24 @@ résident pour des serveurs virtuels</a></h2>
     <code class="directive"><a href="../mod/mod_log_config.html#customlog">CustomLog</a></code> avec des
     valeurs différentes pour chaque serveur virtuel. Par exemple&nbsp;:</p>
 
-    <div class="example"><p><code>
-    &lt;VirtualHost 172.20.30.40:80&gt;<br />
-    ServerAdmin webmaster@www1.example.com<br />
-    DocumentRoot /www/vhosts/www1<br />
-    ServerName www1.example.com<br />
-    ErrorLog /www/logs/www1/error_log<br />
-    CustomLog /www/logs/www1/access_log combined<br />
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.50:80&gt;<br />
-    ServerAdmin webmaster@www2.example.org<br />
-    DocumentRoot /www/vhosts/www2<br />
-    ServerName www2.example.org<br />
-    ErrorLog /www/logs/www2/error_log<br />
-    CustomLog /www/logs/www2/access_log combined<br />
-    &lt;/VirtualHost&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;VirtualHost 172.20.30.40:80&gt;
+    ServerAdmin webmaster@www1.example.com
+    DocumentRoot /www/vhosts/www1
+    ServerName www1.example.com
+    ErrorLog /www/logs/www1/error_log
+    CustomLog /www/logs/www1/access_log combined
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.50:80&gt;
+    ServerAdmin webmaster@www2.example.org
+    DocumentRoot /www/vhosts/www2
+    ServerName www2.example.org
+    ErrorLog /www/logs/www2/error_log
+    CustomLog /www/logs/www2/access_log combined
+&lt;/VirtualHost&gt;
+    </pre>
+
 
     <p>Il est recommandé d'utiliser une adresse IP plutôt qu'un nom
     de domaine comme argument à la directive &lt;VirtualHost&gt;
@@ -194,7 +194,8 @@ to last beyond the testing phase of this system, nor do we in any way guarantee 
 var disqus_shortname = 'httpd';
 var disqus_identifier = 'http://httpd.apache.org/docs/2.4/vhosts/ip-based.html.fr';
 (function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
+    var disabled = true;
+    if (w.location.hostname.toLowerCase() == "httpd.apache.org" && disabled !== true) {
         d.write('<div id="disqus_thread"><\/div>');
         var s = d.createElement('script');
         s.type = 'text/javascript';
@@ -203,7 +204,7 @@ var disqus_identifier = 'http://httpd.apache.org/docs/2.4/vhosts/ip-based.html.f
         (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
     }
     else {
-        d.write('<div id="disqus_thread">Comments have been disabled for offline viewing.<\/div>');
+        d.write('<div id="disqus_thread">Comments are disabled for this page at the moment.<\/div>');
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">

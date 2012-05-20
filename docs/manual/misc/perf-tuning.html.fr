@@ -26,8 +26,6 @@
 <a href="../ko/misc/perf-tuning.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/misc/perf-tuning.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Apache 2.x est un serveur web à usage général, conçu dans un but
@@ -258,16 +256,12 @@ DocumentRoot /www/htdocs
       Il y a cependant un cas dans lequel vous pouvez accélérer le serveur.
       Au lieu d'utiliser une directive générique comme :</p>
 
-      <pre class="prettyprint lang-config">
-        DirectoryIndex index
-      </pre>
+      <pre class="prettyprint lang-config">DirectoryIndex index</pre>
 
 
       <p>utilisez une liste explicite d'options :</p>
 
-      <pre class="prettyprint lang-config">
-        DirectoryIndex index.cgi index.pl index.shtml index.html
-      </pre>
+      <pre class="prettyprint lang-config">DirectoryIndex index.cgi index.pl index.shtml index.html</pre>
 
 
       <p>où vous placez le choix courant en première position.</p>
@@ -462,6 +456,12 @@ DocumentRoot /www/htdocs
 	serveurs présentant un traffic important car il possède une empreinte
 	mémoire plus petite que le MPM prefork.</li>
 
+	<li>Comme le MPM Worker, le MPM <code class="module"><a href="../mod/event.html">event</a></code> utilise
+	les threads, mais il a été conçu pour traiter davantage de
+	requêtes simultanément en confiant une partie du travail à des
+	threads de support, ce qui permet aux threads principaux de
+	traiter de nouvelles requêtes.</li>
+
         <li>Le MPM <code class="module"><a href="../mod/prefork.html">prefork</a></code> utilise plusieurs processus enfants
 	possédant chacun un seul thread. Chaque processus gère une seule
 	connexion à la fois. Sur de nombreux systèmes, prefork est comparable
@@ -614,27 +614,27 @@ DocumentRoot /www/htdocs
       proposés qu'à des fins pédagogiques) :</p>
 
       <pre class="prettyprint lang-c">
-for (;;) {
-  for (;;) {
-    fd_set accept_fds;
-    
-    FD_ZERO (&amp;accept_fds);
-    for (i = first_socket; i &lt;= last_socket; ++i) {
-      FD_SET (i, &amp;accept_fds);
-    }
-    rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);
-    if (rc &lt; 1) continue;
-    new_connection = -1;
-    for (i = first_socket; i &lt;= last_socket; ++i) {
-      if (FD_ISSET (i, &amp;accept_fds)) {
-        new_connection = accept (i, NULL, NULL);
-        if (new_connection != -1) break;
-      }
-    }
-    if (new_connection != -1) break;
-  }
-  process the new_connection;
-}
+        for (;;) {
+          for (;;) {
+            fd_set accept_fds;
+
+            FD_ZERO (&amp;accept_fds);
+            for (i = first_socket; i &lt;= last_socket; ++i) {
+              FD_SET (i, &amp;accept_fds);
+            }
+            rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);
+            if (rc &lt; 1) continue;
+            new_connection = -1;
+            for (i = first_socket; i &lt;= last_socket; ++i) {
+              if (FD_ISSET (i, &amp;accept_fds)) {
+                new_connection = accept (i, NULL, NULL);
+                if (new_connection != -1) break;
+              }
+            }
+            if (new_connection != -1) break;
+          }
+          process_the(new_connection);
+        }
       </pre>
 
 
@@ -676,29 +676,29 @@ for (;;) {
       différences sont mises en surbrillance) :</p>
 
       <pre class="prettyprint lang-c">
-for (;;) {
-  <strong>accept_mutex_on ();</strong>
-  for (;;) {
-    fd_set accept_fds;
-
-    FD_ZERO (&amp;accept_fds);
-    for (i = first_socket; i &lt;= last_socket; ++i) {
-      FD_SET (i, &amp;accept_fds);
-    }
-    rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);
-    if (rc &lt; 1) continue;
-    new_connection = -1;
-    for (i = first_socket; i &lt;= last_socket; ++i) {
-      if (FD_ISSET (i, &amp;accept_fds)) {
-        new_connection = accept (i, NULL, NULL);
-        if (new_connection != -1) break;
-      }
-    }
-    if (new_connection != -1) break;
-  }
-  <strong>accept_mutex_off ();</strong>
-  process the new_connection;
-}
+        for (;;) {
+          <strong>accept_mutex_on ();</strong>
+          for (;;) {
+            fd_set accept_fds;
+            
+            FD_ZERO (&amp;accept_fds);
+            for (i = first_socket; i &lt;= last_socket; ++i) {
+              FD_SET (i, &amp;accept_fds);
+            }
+            rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);
+            if (rc &lt; 1) continue;
+            new_connection = -1;
+            for (i = first_socket; i &lt;= last_socket; ++i) {
+              if (FD_ISSET (i, &amp;accept_fds)) {
+                new_connection = accept (i, NULL, NULL);
+                if (new_connection != -1) break;
+              }
+            }
+            if (new_connection != -1) break;
+          }
+          <strong>accept_mutex_off ();</strong>
+          process the new_connection;
+        }
       </pre>
 
 
@@ -813,29 +813,29 @@ for (;;) {
       ceci :</p>
 
       <pre class="prettyprint lang-c">
-void lingering_close (int s)
-{
-  char junk_buffer[2048];
+        void lingering_close (int s)
+        {
+          char junk_buffer[2048];
+          
+          /* shutdown the sending side */
+          shutdown (s, 1);
 
-  /* shutdown the sending side */
-  shutdown (s, 1);
+          signal (SIGALRM, lingering_death);
+          alarm (30);
 
-  signal (SIGALRM, lingering_death);
-  alarm (30);
-
-  for (;;) {
-    select (s for reading, 2 second timeout);
-    if (error) break;
-    if (s is ready for reading) {
-      if (read (s, junk_buffer, sizeof (junk_buffer)) &lt;= 0) {
-        break;
-      }
-      /* just toss away whatever is here */
-    }
-  }
- 
-  close (s);
-}
+          for (;;) {
+            select (s for reading, 2 second timeout);
+            if (error) break;
+            if (s is ready for reading) {
+              if (read (s, junk_buffer, sizeof (junk_buffer)) &lt;= 0) {
+                break;
+              }
+              /* just toss away whatever is here */
+            }
+          }
+          
+          close (s);
+        }
       </pre>
 
 
@@ -1049,7 +1049,8 @@ to last beyond the testing phase of this system, nor do we in any way guarantee 
 var disqus_shortname = 'httpd';
 var disqus_identifier = 'http://httpd.apache.org/docs/2.4/misc/perf-tuning.html.fr';
 (function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
+    var disabled = true;
+    if (w.location.hostname.toLowerCase() == "httpd.apache.org" && disabled !== true) {
         d.write('<div id="disqus_thread"><\/div>');
         var s = d.createElement('script');
         s.type = 'text/javascript';
@@ -1058,7 +1059,7 @@ var disqus_identifier = 'http://httpd.apache.org/docs/2.4/misc/perf-tuning.html.
         (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
     }
     else {
-        d.write('<div id="disqus_thread">Comments have been disabled for offline viewing.<\/div>');
+        d.write('<div id="disqus_thread">Comments are disabled for this page at the moment.<\/div>');
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">

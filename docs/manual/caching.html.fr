@@ -25,8 +25,6 @@
 <a href="./fr/caching.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./tr/caching.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Ce document complète la documentation de référence des modules
     <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>, <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code>,
@@ -461,12 +459,13 @@ Vary: negotiate,accept-language,accept-charset
 
       <p>En général, le module se configure comme suit :</p>
 
-      <div class="example"><p><code>    
-CacheRoot   /var/cache/apache/<br />
-CacheEnable disk /<br />
-CacheDirLevels 2<br />
+      <pre class="prettyprint lang-config">
+CacheRoot   "/var/cache/apache/"
+CacheEnable disk /
+CacheDirLevels 2
 CacheDirLength 1
-    </code></p></div>
+    </pre>
+
 
     <p>Il est important de savoir que, les fichiers mis en cache étant stockés
     localement, la mise en cache par l'intermédiaire du système d'exploitation
@@ -671,9 +670,10 @@ CacheDirLength 1
 	réutiliser le descripteur de fichier mis en cache pour tous les
 	accès futurs à ce fichier.</p>
 
-        <div class="example"><p><code>
+        <pre class="prettyprint lang-config">
         CacheFile /usr/local/apache2/htdocs/index.html
-        </code></p></div>
+        </pre>
+
 
         <p>Si vous désirez mettre en cache un grand nombre de fichiers
 	de cette manière, vous devez vous assurer que le nombre maximal
@@ -777,9 +777,10 @@ sys     0m0.000s</pre></div>
       utilisera le contenu chargé en mémoire pour satisfaire ultérieurement
       toutes les demandes d'accès à ce fichier.</p>
 
-        <div class="example"><p><code>
+        <pre class="prettyprint lang-config">
         MMapFile /usr/local/apache2/htdocs/index.html
-        </code></p></div>
+        </pre>
+
 
       <p>Comme dans le cas de la directive
       <code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code>, toute
@@ -933,7 +934,8 @@ to last beyond the testing phase of this system, nor do we in any way guarantee 
 var disqus_shortname = 'httpd';
 var disqus_identifier = 'http://httpd.apache.org/docs/2.4/caching.html.fr';
 (function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
+    var disabled = true;
+    if (w.location.hostname.toLowerCase() == "httpd.apache.org" && disabled !== true) {
         d.write('<div id="disqus_thread"><\/div>');
         var s = d.createElement('script');
         s.type = 'text/javascript';
@@ -942,7 +944,7 @@ var disqus_identifier = 'http://httpd.apache.org/docs/2.4/caching.html.fr';
         (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
     }
     else {
-        d.write('<div id="disqus_thread">Comments have been disabled for offline viewing.<\/div>');
+        d.write('<div id="disqus_thread">Comments are disabled for this page at the moment.<\/div>');
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">

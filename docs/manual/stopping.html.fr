@@ -58,10 +58,10 @@
     que plusieurs processus <code class="program"><a href="./programs/httpd.html">httpd</a></code> s'exécutent sur votre
     système, mais il vous suffit d'envoyer les signaux au processus parent,
     dont le PID est enregistré dans le fichier précisé par la directive
-    <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code>. C'est à dire que vous
-    n'aurez jamais besoin d'envoyer des signaux à aucun de ces processus,
-    sauf au processus parent. Trois types de signaux peuvent être envoyés
-    au processus parent :
+    <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code>. Autrement dit, vous
+    n'aurez jamais besoin d'envoyer des signaux à aucun des
+    processus enfants, mais seulement au processus parent. Trois types
+    de signaux peuvent être envoyés au processus parent :
     <code><a href="#term">TERM</a></code>,
     <code><a href="#graceful">USR1</a></code>,
     <code><a href="#hup">HUP</a></code>, et
@@ -99,8 +99,8 @@
 <dd><code>apachectl -k stop</code></dd>
 </dl>
 
-    <p>L'envoi du signal <code>TERM</code> ou <code>stop</code> au
-    processus parent induit chez celui-ci une tentative immédiate
+    <p>A la réception du signal <code>TERM</code> ou <code>stop</code>,
+    le processus parent tente immédiatement
     de tuer tous ses processus enfants. Cela peut durer plusieurs secondes.
     Après cela, le processus parent lui-même se termine. Toutes les requêtes
     en cours sont terminées, et plus aucune autre n'est traitée.</p>
@@ -112,8 +112,9 @@
 <dd><code>apachectl -k graceful</code></dd>
 </dl>
 
-    <p>L'envoi du signal <code>USR1</code> ou <code>graceful</code> au
-    processus parent lui fait envoyer aux processus enfants
+    <p>A la réception du signal <code>USR1</code> ou
+    <code>graceful</code>, le
+    processus parent envoie aux processus enfants
     <em>l'ordre</em> de se terminer une fois leur requête courante
     traitée (ou de se terminer immédiatement s'ils n'ont plus rien à traiter).
     Le processus parent relit ses fichiers de configuration et
@@ -144,7 +145,7 @@
     serveur ne peut pas traiter de nouvelles requêtes (elle sont mises en
     file d'attente par le système d'exploitation, et ne sont ainsi jamais
     perdues) et pour respecter vos paramètres de personnalisation.
-    Afin d'accomplir ceci, il doit conserver le
+    Pour y parvenir, il doit conserver le
     <em>tableau</em> utilisé pour garder la trace de tous les processus
     enfants au cours des différentes générations.</p>
 
@@ -193,8 +194,9 @@
 <dd><code>apachectl -k restart</code></dd>
 </dl>
 
-    <p>L'envoi du signal <code>HUP</code> ou <code>restart</code> au
-    processus parent lui fait tuer ses processus enfants comme pour le signal
+    <p>A la réception du signal <code>HUP</code> ou
+    <code>restart</code>, le
+    processus parent tue ses processus enfants comme pour le signal
     <code>TERM</code>, mais le processus parent ne se termine pas.
     Il relit ses fichiers de configuration, et réouvre ses fichiers de log.
     Puis il donne naissance à un nouveau jeu de processus enfants
@@ -217,8 +219,9 @@ vous recevrez un message concernant ces erreurs.</div>
 <dd><code>apachectl -k graceful-stop</code></dd>
 </dl>
 
-    <p>L'envoi du signal <code>WINCH</code> ou <code>graceful-stop</code>
-    au processus parent lui fait <em>aviser</em> les processus enfants
+    <p>A la réception du signal <code>WINCH</code> ou
+    <code>graceful-stop</code>, le
+    processus parent <em>avise</em> ses processus enfants
     de s'arrêter après le traitement de leur requête en cours
     (ou de s'arrêter immédiatement s'ils n'ont plus de requête à traiter).
     Le processus parent va alors supprimer son fichier
@@ -277,7 +280,8 @@ to last beyond the testing phase of this system, nor do we in any way guarantee 
 var disqus_shortname = 'httpd';
 var disqus_identifier = 'http://httpd.apache.org/docs/2.4/stopping.html.fr';
 (function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
+    var disabled = true;
+    if (w.location.hostname.toLowerCase() == "httpd.apache.org" && disabled !== true) {
         d.write('<div id="disqus_thread"><\/div>');
         var s = d.createElement('script');
         s.type = 'text/javascript';
@@ -286,7 +290,7 @@ var disqus_identifier = 'http://httpd.apache.org/docs/2.4/stopping.html.fr';
         (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
     }
     else {
-        d.write('<div id="disqus_thread">Comments have been disabled for offline viewing.<\/div>');
+        d.write('<div id="disqus_thread">Comments are disabled for this page at the moment.<\/div>');
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
