@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/flags.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/flags.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Ce document décrit les drapeaux disponibles dans la directive
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>, en fournissant
@@ -61,9 +59,8 @@ correspondance</a></li><li><a href="access.html">Contrôle d'accès</a></li><li><a
 <p>Le comportement d'une directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> peut être modifié par un ou
 plusieurs drapeaux. Les drapeaux sont situés en fin de règle, entourés
 de crochets, et séparés le cas échéant par des virgules.</p>
-<div class="example"><p><code>
-RewriteRule modèle cible [drapeau1,drapeau2,drapeau3]
-</code></p></div>
+<pre class="prettyprint lang-config">RewriteRule pattern target [Flag1,Flag2,Flag3]</pre>
+
 
 <p>Les drapeaux ont tous une forme courte, comme <code>CO</code>, ainsi
 qu'une forme longue, comme <code>cookie</code>. Certains drapeaux
@@ -97,9 +94,7 @@ ces dernières sont appliquées. Avec le drapeau B, les caractères
 non-alphanumériques des références arrières seront échappés. Considérons
 par exemple cette règle :</p>
 
-<pre class="prettyprint lang-config">
-RewriteRule ^search/(.*)$ /search.php?term=$1
-</pre>
+<pre class="prettyprint lang-config">RewriteRule ^search/(.*)$ /search.php?term=$1</pre>
 
 
 <p>Soit le terme de recherche 'x &amp; y/z' ; un navigateur va le coder
@@ -194,7 +189,7 @@ fonctionnalité.</dd>
 <p>Voici un exemple :</p>
 
 <pre class="prettyprint lang-config">
-RewriteEngine On<br />
+RewriteEngine On
 RewriteRule ^/index\.html - [CO=frontdoor:yes:.example.org:1440:/]
 </pre>
 
@@ -284,11 +279,10 @@ avec une valeur de '1' si l'URI de la requête correspond à un fichier
 image. Cette variable d'environnement est ensuite utilisée pour exclure
 une telle requête du journal des accès.</p>
 
-<pre class="prettyprint lang-config">
-RewriteRule \.(png|gif|jpg) - [E=image:1]
+<div class="example"><p><code>
+RewriteRule \.(png|gif|jpg) - [E=image:1]<br />
 CustomLog logs/access_log combined env=!image
-</pre>
-
+</code></p></div>
 
 <p>Notez que le même effet peut être obtenu à l'aide de la directive
 <code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code>. Cette technique
@@ -315,9 +309,7 @@ Forbidden.</p>
 <p>La règle suivante va interdire la téléchargement de fichiers
 <code>.exe</code> depuis votre serveur.</p>
 
-<pre class="prettyprint lang-config">
-RewriteRule \.exe - [F]
-</pre>
+<pre class="prettyprint lang-config">RewriteRule \.exe - [F]</pre>
 
 
 <p>Cet exemple utilise la syntaxe "-" pour la cible de réécriture, ce
@@ -338,9 +330,7 @@ disponible auparavant ne l'est plus actuellement.</p>
 <p>Comme dans le cas du drapeau [F], on utilise en général la syntaxe
 "-" pour la cible de réécriture lorsqu'on utilise le drapeau [G] :</p>
 
-<pre class="prettyprint lang-config">
-RewriteRule ancienne-ressource - [G,NC]
-</pre>
+<pre class="prettyprint lang-config">RewriteRule oldproduct - [G,NC]</pre>
 
 
 <p>Lorsqu'on utilise [G], [L] est implicite - c'est à dire que la
@@ -354,9 +344,8 @@ spécifié. Par exemple, on peut utiliser ce drapeau pour forcer
 l'interprétation de tous les fichiers sans extension par le gestionnaire
 php :</p>
 
-<pre class="prettyprint lang-config">
-RewriteRule !\. - [H=application/x-httpd-php]
-</pre>
+<pre class="prettyprint lang-config">RewriteRule !\. -
+[H=application/x-httpd-php]</pre>
 
 
 <p>
@@ -448,9 +437,7 @@ suivant, chaque occurence de A sera remplacée par B dans la requête, et
 ceci jusqu'il n'y ait plus de A à remplacer.
 </p>
 
-<pre class="prettyprint lang-config">
-RewriteRule (.*)A(.*) $1B$2 [N]
-</pre>
+<pre class="prettyprint lang-config">RewriteRule (.*)A(.*) $1B$2 [N]</pre>
 
 
 <p>Vous pouvez vous représenter ce traitement comme une boucle
@@ -472,9 +459,7 @@ transmise par Apache à votre serveur d'images dédié. La correspondance est
 insensible à la casse, si bien que par exemple, <code>.jpg</code> aussi
 bien que <code>.JPG</code> seront acceptés.</p>
 
-<pre class="prettyprint lang-config">
-RewriteRule (.*\.(jpg|gif|png))$ http://images.example.com$1 [P,NC]
-</pre>
+<pre class="prettyprint lang-config">RewriteRule (.*\.(jpg|gif|png))$ http://images.example.com$1 [P,NC]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -484,9 +469,7 @@ RewriteRule (.*\.(jpg|gif|png))$ http://images.example.com$1 [P,NC]
 hexadécimal. Le drapeau [NE] permet d'éviter cette conversion.
 </p>
 
-<pre class="prettyprint lang-config">
-RewriteRule ^/ancre/(.+) /grosse-page.html#$1 [NE,R]
-</pre>
+<pre class="prettyprint lang-config">RewriteRule ^/anchor/(.+) /bigpage.html#$1 [NE,R]</pre>
 
 
 <p>
@@ -532,9 +515,7 @@ mandataire. Par exemple, si vous voulez que toutes les requêtes d'images
 soient traitées par un serveur d'images annexe, vous pouvez utiliser
 une règle de ce style :</p>
 
-<pre class="prettyprint lang-config">
-RewriteRule /(.*)\.(jpg|gif|png) http://images.example.com/$1.$2 [P]
-</pre>
+<pre class="prettyprint lang-config">RewriteRule /(.*)\.(jpg|gif|png)$ http://images.example.com/$1.$2 [P]</pre>
 
 
 <p>L'utilisation du drapeau [P] provoque aussi l'effet du drapeau [L] -
@@ -585,8 +566,8 @@ vous devez utiliser le drapeau [PT] pour être sûr que l'<code class="directive">
 </p>
 
 <pre class="prettyprint lang-config">
-Alias /icons /usr/local/apache/icons<br />
-RewriteRule /pics/(.+)\.jpg /icons/$1.gif [PT]
+Alias /icons /usr/local/apache/icons
+RewriteRule /pics/(.+)\.jpg$ /icons/$1.gif [PT]
 </pre>
 
 
@@ -618,9 +599,8 @@ Avec le drapeau [QSA], les chaînes de requête peuvent être combinées.
 
 <p>Considérons la règle suivante :</p>
 
-<pre class="prettyprint lang-config">
-RewriteRule /pages/(.+) /page.php?page=$1 [QSA]
-</pre>
+<pre class="prettyprint lang-config">RewriteRule /pages/(.+) /page.php?page=$1
+[QSA]</pre>
 
 
 <p>Avec le drapeau [QSA], une requête pour
@@ -700,7 +680,6 @@ Ceci peut s'interpréter comme une instruction
 <code>goto</code>  dans votre jeu de règles de réécriture. Dans
 l'exemple suivant, nous ne voulons exécuter la règle <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> que si l'URI demandé ne
 correspond pas à un fichier existant.</p>
-
 <pre class="prettyprint lang-config">
 # La requête concerne-t-elle un fichier qui n'existe pas ?
 RewriteCond %{REQUEST_FILENAME} !-f
@@ -711,6 +690,8 @@ RewriteRule .? - [S=2]
 RewriteRule (.*\.gif) images.php?$1
 RewriteRule (.*\.html) docs.php?$1
 </pre>
+
+
 
 
 <p>Cette technique trouve son utilité dans le fait qu'une directive
@@ -726,17 +707,16 @@ contenues dans le bloc else :</p>
 # Est-ce que le fichier existe ?
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-
-# Create an if-then-else construct by skipping 3 lines if we meant to go to the "else" stanza.<br />
+# Create an if-then-else construct by skipping 3 lines if we meant to go to the "else" stanza.
 RewriteRule .? - [S=3]
 
 # Si le fichier existe, alors :
-	RewriteRule (.*\.gif) images.php?$1
-	RewriteRule (.*\.html) docs.php?$1
-	# Skip past the "else" stanza.
-	RewriteRule .? - [S=1]
+RewriteRule (.*\.gif) images.php?$1
+    RewriteRule (.*\.html) docs.php?$1
+    # Skip past the "else" stanza.
+    RewriteRule .? - [S=1]
 # ELSE...
-	RewriteRule (.*) 404.php?file=$1
+RewriteRule (.*) 404.php?file=$1
 # END
 </pre>
 
@@ -765,7 +745,7 @@ images jpeg sans extension, vous pouvez forcer le renvoi de ces images
 avec le type MIME correct en se basant sur le nom du fichier :</p>
 
 <pre class="prettyprint lang-config">
-# Les fichiers dont le nom contient 'IMG' sont des images jpg.<br />
+# Les fichiers dont le nom contient 'IMG' sont des images jpg.
 RewriteRule IMG - [T=image/jpg]
 </pre>
 
@@ -795,7 +775,8 @@ to last beyond the testing phase of this system, nor do we in any way guarantee 
 var disqus_shortname = 'httpd';
 var disqus_identifier = 'http://httpd.apache.org/docs/2.4/rewrite/flags.html.fr';
 (function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
+    var disabled = true;
+    if (w.location.hostname.toLowerCase() == "httpd.apache.org" && disabled !== true) {
         d.write('<div id="disqus_thread"><\/div>');
         var s = d.createElement('script');
         s.type = 'text/javascript';
@@ -804,7 +785,7 @@ var disqus_identifier = 'http://httpd.apache.org/docs/2.4/rewrite/flags.html.fr'
         (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
     }
     else {
-        d.write('<div id="disqus_thread">Comments have been disabled for offline viewing.<\/div>');
+        d.write('<div id="disqus_thread">Comments are disabled for this page at the moment.<\/div>');
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">

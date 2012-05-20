@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/ssl/ssl_howto.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/ssl/ssl_howto.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
 <p>Ce document doit vous permettre de démarrer et de faire fonctionner
@@ -51,17 +49,16 @@ accéder à une URL particulière ?</a></li>
 <p>Votre configuration SSL doit comporter au moins les directives
 suivantes :</p>
 
-<div class="example"><p><code>
-   Listen 443
-   &lt;VirtualHost *:443&gt;<br />
-   <span class="indent">
-        ServerName www.example.com<br />
-        SSLEngine on<br />
-        SSLCertificateFile /chemin/vers/www.example.com.cert<br />
-        SSLCertificateKeyFile /chemin/vers/www.example.com.key<br />
-   </span>
-   &lt;/VirtualHost&gt;
-</code></p></div>
+<pre class="prettyprint lang-config">
+Listen 443
+&lt;VirtualHost *:443&gt;
+    ServerName www.example.com
+    SSLEngine on
+    SSLCertificateFile /path/to/www.example.com.cert
+    SSLCertificateKeyFile /path/to/www.example.com.key
+&lt;/VirtualHost&gt;
+</pre>
+
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -82,9 +79,10 @@ que le chiffrement fort ?</a></h3>
 
     <p>Les directives suivantes ne permettent que les
     chiffrements de plus haut niveau :</p>
-    <div class="example"><h3>httpd.conf</h3><p><code>
-      SSLCipherSuite HIGH:!aNULL:!MD5<br />
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+      SSLCipherSuite HIGH:!aNULL:!MD5
+    </pre>
+
 
 
 
@@ -93,10 +91,11 @@ que le chiffrement fort ?</a></h3>
  rapidité (le choix final sera opéré par mod_ssl, dans la mesure ou le
  client les supporte) :</p>
 
-    <div class="example"><h3>httpd.conf</h3><p><code>
-      SSLCipherSuite RC4-SHA:AES128-SHA:HIGH:!aNULL:!MD5<br />
-      SSLHonorCipherOrder on
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+SSLCipherSuite RC4-SHA:AES128-SHA:HIGH:!aNULL:!MD5
+SSLHonorCipherOrder on
+    </pre>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="strongurl" id="strongurl">Comment créer un serveur qui accepte tous les types de
@@ -111,16 +110,17 @@ accéder à une URL particulière ?</a></h2>
     <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> peut alors forcer automatiquement une
     renégociation des paramètres SSL pour parvenir au but recherché.
     Cette configuration peut se présenter comme suit :</p>
-    <div class="example"><p><code>
-      # soyons très tolérant a priori<br />
-      SSLCipherSuite ALL:!aNULL:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP:+eNULL<br />
-      <br />
-      &lt;Location /strong/area&gt;<br />
-      # sauf pour https://hostname/strong/area/ et ses sous-répertoires<br />
-      # qui exigent des chiffrements forts<br />
-      SSLCipherSuite HIGH:!aNULL:!MD5<br />
-      &lt;/Location&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+# soyons très tolérant a priori
+SSLCipherSuite ALL:!aNULL:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP:+eNULL
+
+&lt;Location /strong/area&gt;
+# sauf pour https://hostname/strong/area/ et ses sous-répertoires
+# qui exigent des chiffrements forts
+SSLCipherSuite HIGH:!aNULL:!MD5
+&lt;/Location&gt;
+    </pre>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="accesscontrol" id="accesscontrol">Authentification du client et contrôle d'accès</a></h2>
@@ -153,13 +153,14 @@ provenance de l'Internet ?</a></li>
     le certificat de votre propre autorité de certification
     (<code>ca.crt</code>), et d'authentifier les clients à l'aide de ces
     certificats.</p>
-    <div class="example"><h3>httpd.conf</h3><p><code>
-      # exige un certificat client signé par le certificat de votre CA<br />
-      # contenu dans ca.crt<br />
-      SSLVerifyClient require<br />
-      SSLVerifyDepth 1<br />
-      SSLCACertificateFile conf/ssl.crt/ca.crt
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+# exige un certificat client signé par le certificat de votre CA
+# contenu dans ca.crt
+SSLVerifyClient require
+SSLVerifyDepth 1
+SSLCACertificateFile conf/ssl.crt/ca.crt
+    </pre>
+
 
 
 <h3><a name="arbitraryclients" id="arbitraryclients">Comment forcer les clients
@@ -172,15 +173,16 @@ mais autoriser quand-même tout client anonyme
 URL particulière, vous pouvez utiliser les fonctionnalités de reconfiguration
 de <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> en fonction du répertoire :</p>
 
-    <div class="example"><h3>httpd.conf</h3><p><code>
-    SSLVerifyClient none<br />
-    SSLCACertificateFile conf/ssl.crt/ca.crt<br />
-    <br />
-    &lt;Location /secure/area&gt;<br />
-    SSLVerifyClient require<br />
-    SSLVerifyDepth 1<br />
-    &lt;/Location&gt;<br />
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+SSLVerifyClient none
+SSLCACertificateFile conf/ssl.crt/ca.crt
+
+&lt;Location /secure/area&gt;
+SSLVerifyClient require
+SSLVerifyDepth 1
+&lt;/Location&gt;
+    </pre>
+
 
 
 <h3><a name="certauthenticate" id="certauthenticate">Comment n'autoriser l'accès à une URL
@@ -202,22 +204,24 @@ l'accès au reste du serveur à tous les clients ?</a></h3>
     de données de mots de passe contenant <em>tous</em> les clients
     autorisés, comme suit :</p>
 
-    <div class="example"><h3>httpd.conf</h3><pre>
+    <pre class="prettyprint lang-config">
 SSLVerifyClient      none
 &lt;Directory /usr/local/apache2/htdocs/secure/area&gt;
-
 SSLVerifyClient      require
-SSLVerifyDepth       5
-SSLCACertificateFile conf/ssl.crt/ca.crt
-SSLCACertificatePath conf/ssl.crt
-SSLOptions           +FakeBasicAuth
-SSLRequireSSL
-AuthName             "Snake Oil Authentication"
-AuthType             Basic
-AuthBasicProvider    file
-AuthUserFile         /usr/local/apache2/conf/httpd.passwd
-Require              valid-user
-&lt;/Directory&gt;</pre></div>
+    SSLVerifyDepth       5
+    SSLCACertificateFile conf/ssl.crt/ca.crt
+    SSLCACertificatePath conf/ssl.crt
+    SSLOptions           +FakeBasicAuth
+    SSLRequireSSL
+    AuthName             "Snake Oil Authentication"
+    AuthType             Basic
+    AuthBasicProvider    file
+    AuthUserFile         /usr/local/apache2/conf/httpd.passwd
+    Require              valid-user
+&lt;/Directory&gt;
+    </pre>
+
+    
 
     <p>Le mot de passe utilisé dans cet exemple correspond à la chaîne de
     caractères "password" chiffrée en DES. Voir la documentation de la
@@ -234,10 +238,9 @@ Require              valid-user
     utilisant la directive <code class="directive"><a href="../mod/mod_ssl.html#sslrequire">SSLRequire</a></code>, comme suit :</p>
 
 
-    <div class="example"><h3>httpd.conf</h3><pre>
+    <pre class="prettyprint lang-config">
 SSLVerifyClient      none
 &lt;Directory /usr/local/apache2/htdocs/secure/area&gt;
-
   SSLVerifyClient      require
   SSLVerifyDepth       5
   SSLCACertificateFile conf/ssl.crt/ca.crt
@@ -246,7 +249,9 @@ SSLVerifyClient      none
   SSLRequireSSL
   SSLRequire       %{SSL_CLIENT_S_DN_O}  eq "Snake Oil, Ltd." \
                and %{SSL_CLIENT_S_DN_OU} in {"Staff", "CA", "Dev"}
-&lt;/Directory&gt;</pre></div>
+&lt;/Directory&gt;
+    </pre>
+
 
 
 <h3><a name="intranet" id="intranet">Comment imposer HTTPS avec chiffrements forts,
@@ -263,51 +268,53 @@ aux clients de l'intranet.</a></h3>
    doivent se trouver en dehors de votre hôte virtuel HTTPS, afin qu'elles
    s'appliquent à la fois à HTTP et HTTPS.</p>
 
-    <div class="example"><h3>httpd.conf</h3><pre>
+    <pre class="prettyprint lang-config">
 SSLCACertificateFile conf/ssl.crt/company-ca.crt
 
 &lt;Directory /usr/local/apache2/htdocs&gt;
-#   En dehors de subarea, seul l'accès depuis l'intranet est autorisé
-Order                deny,allow
-Deny                 from all
-Allow                from 192.168.1.0/24
+#   En dehors de subarea, seul l'accès depuis l'intranet est
+#   autorisé
+    Order                deny,allow
+    Deny                 from all
+    Allow                from 192.168.1.0/24
 &lt;/Directory&gt;
 
 &lt;Directory /usr/local/apache2/htdocs/subarea&gt;
 #   Dans subarea, tout accès depuis l'intranet est autorisé
-#   mais depuis l'Internet, seul l'accès par HTTPS + chiffrement fort
- + Mot de passe
+#   mais depuis l'Internet, seul l'accès par HTTPS + chiffrement fort + Mot de passe
 #   ou HTTPS + chiffrement fort + certificat client n'est autorisé.
 
 #   Si HTTPS est utilisé, on s'assure que le niveau de chiffrement est fort.
 #   Autorise en plus les certificats clients comme une alternative à
 #   l'authentification basique.
-SSLVerifyClient      optional
-SSLVerifyDepth       1
-SSLOptions           +FakeBasicAuth +StrictRequire
-SSLRequire           %{SSL_CIPHER_USEKEYSIZE} &gt;= 128
+    SSLVerifyClient      optional
+    SSLVerifyDepth       1
+    SSLOptions           +FakeBasicAuth +StrictRequire
+    SSLRequire           %{SSL_CIPHER_USEKEYSIZE} &gt;= 128
+    
+    #   ON oblige les clients venant d'Internet à utiliser HTTPS
+    RewriteEngine        on
+    RewriteCond          %{REMOTE_ADDR} !^192\.168\.1\.[0-9]+$
+    RewriteCond          %{HTTPS} !=on
+    RewriteRule          . - [F]
+    
+    #   On permet l'accès soit sur les critères réseaux, soit par authentification Basique
+    Satisfy              any
+    
+    #   Contrôle d'accès réseau
+    Order                deny,allow
+    Deny                 from all
+    Allow                192.168.1.0/24
+    
+    #   Configuration de l'authentification HTTP Basique
+    AuthType             basic
+    AuthName             "Protected Intranet Area"
+    AuthBasicProvider    file
+    AuthUserFile         conf/protected.passwd
+    Require              valid-user
+&lt;/Directory&gt;
+    </pre>
 
-#   ON oblige les clients venant d'Internet à utiliser HTTPS
-RewriteEngine        on
-RewriteCond          %{REMOTE_ADDR} !^192\.168\.1\.[0-9]+$
-RewriteCond          %{HTTPS} !=on
-RewriteRule          . - [F]
-
-#   On permet l'accès soit sur les critères réseaux, soit par authentification Basique
-Satisfy              any
-
-#   Contrôle d'accès réseau
-Order                deny,allow
-Deny                 from all
-Allow                192.168.1.0/24
-
-#   Configuration de l'authentification HTTP Basique
-AuthType             basic
-AuthName             "Protected Intranet Area"
-AuthBasicProvider    file
-AuthUserFile         conf/protected.passwd
-Require              valid-user
-&lt;/Directory&gt;</pre></div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -332,7 +339,8 @@ to last beyond the testing phase of this system, nor do we in any way guarantee 
 var disqus_shortname = 'httpd';
 var disqus_identifier = 'http://httpd.apache.org/docs/2.4/ssl/ssl_howto.html.fr';
 (function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
+    var disabled = true;
+    if (w.location.hostname.toLowerCase() == "httpd.apache.org" && disabled !== true) {
         d.write('<div id="disqus_thread"><\/div>');
         var s = d.createElement('script');
         s.type = 'text/javascript';
@@ -341,7 +349,7 @@ var disqus_identifier = 'http://httpd.apache.org/docs/2.4/ssl/ssl_howto.html.fr'
         (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
     }
     else {
-        d.write('<div id="disqus_thread">Comments have been disabled for offline viewing.<\/div>');
+        d.write('<div id="disqus_thread">Comments are disabled for this page at the moment.<\/div>');
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">

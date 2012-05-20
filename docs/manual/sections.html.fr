@@ -27,8 +27,6 @@
 <a href="./ko/sections.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/sections.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
  <p>Les directives des <a href="configuring.html">fichiers de configuration</a> peuvent s'appliquer
 au serveur dans son ensemble, ou seulement à des répertoires, fichiers, hôtes,
 ou URLs particuliers.  Ce document décrit comment utiliser les conteneurs de
@@ -42,7 +40,7 @@ arborescence du site web et expressions booléennes</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">Hôtes virtuels</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#proxy">Mandataire</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#whatwhere">Quelles sont les directives autorisées ?</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#mergin">Comment les sections sont combinées entre elles</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#merging">Comment les sections sont combinées entre elles</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -70,11 +68,12 @@ avec la configuration suivante, toutes les requêtes seront redirigées vers
 un autre site si le serveur est démarré en utilisant la ligne de commande :
 <code>httpd -DClosedForNow</code>:</p>
 
-<div class="example"><p><code>
-&lt;IfDefine ClosedForNow&gt;<br />
-Redirect / http://otherserver.example.com/<br />
+<pre class="prettyprint lang-config">
+&lt;IfDefine ClosedForNow&gt;
+    Redirect / http://otherserver.example.com/
 &lt;/IfDefine&gt;
-</code></p></div>
+</pre>
+
 
 <p>Le conteneur <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code>
 est similaire; les directives qu'il contient ne s'appliqueront que si
@@ -91,11 +90,12 @@ systématiquement, car vous pouvez perdre ainsi de précieux messages d'erreur
 <p>Dans l'exemple suivant, la directive <code class="directive"><a href="./mod/mod_mime_magic.html#mimemagicfile">MimeMagicFile</a></code> ne s'appliquera que si le
 module <code class="module"><a href="./mod/mod_mime_magic.html">mod_mime_magic</a></code> est disponible.</p>
 
-<div class="example"><p><code>
-&lt;IfModule mod_mime_magic.c&gt;<br />
-MimeMagicFile conf/magic<br />
+<pre class="prettyprint lang-config">
+&lt;IfModule mod_mime_magic.c&gt;
+    MimeMagicFile conf/magic
 &lt;/IfModule&gt;
-</code></p></div>
+</pre>
+
 
 <p>Le conteneur
 <code class="directive"><a href="./mod/mod_version.html#ifversion">&lt;IfVersion&gt;</a></code>
@@ -105,14 +105,13 @@ conteneur a été conçu pour une utilisation dans les suites de tests
 et les grands réseaux qui doivent prendre en compte différentes versions
 et configurations de httpd.</p>
 
-<div class="example"><p><code>
-  &lt;IfVersion &gt;= 2.1&gt;<br />
-  <span class="indent">
+<pre class="prettyprint lang-config">
+&lt;IfVersion &gt;= 2.4&gt;
     # les directives situées ici ne s'appliquent que si la version <br />
-    # est supérieure ou égale à 2.1.0.<br />
-  </span>
-  &lt;/IfVersion&gt;
-</code></p></div>
+    # est supérieure ou égale à 2.4.0.
+&lt;/IfVersion&gt;
+</pre>
+
 
 <p><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code>,
 <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code>, et
@@ -161,11 +160,12 @@ Le même effet peut être obtenu en utilisant les <a href="howto/htaccess.html">fi
 configuration suivante, l'indexation sera activée pour le répertoire
 <code>/var/web/dir1</code> et tous ses sous-répertoires.</p>
 
-<div class="example"><p><code>
-&lt;Directory /var/web/dir1&gt;<br />
-Options +Indexes<br />
+<pre class="prettyprint lang-config">
+&lt;Directory /var/web/dir1&gt;
+    Options +Indexes
 &lt;/Directory&gt;
-</code></p></div>
+</pre>
+
 
 <p>Les directives contenues dans une section <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> s'appliquent à tout fichier
 avec le nom spécifié, quel que soit le répertoire dans lequel il se trouve.
@@ -174,12 +174,12 @@ placées dans la section principale du fichier de configuration, vont interdire
 l'accès à tout fichier nommé <code>private.html</code> quel que soit
 l'endroit où il se trouve.</p>
 
-<div class="example"><p><code>
-&lt;Files private.html&gt;<br />
-Order allow,deny<br />
-Deny from all<br />
+<pre class="prettyprint lang-config">
+&lt;Files private.html&gt;
+    Require all denied
 &lt;/Files&gt;
-</code></p></div>
+</pre>
+
 
 <p>Pour faire référence à des fichiers qui se trouvent en des points
 particuliers du système de fichiers, les sections
@@ -192,14 +192,14 @@ l'accès à <code>/var/web/dir1/private.html</code>,
 <code>private.html</code> qui se trouve dans l'arborescence
 <code>/var/web/dir1/</code>.</p>
 
-<div class="example"><p><code>
-&lt;Directory /var/web/dir1&gt;<br />
-&lt;Files private.html&gt;<br />
-Order allow,deny<br />
-Deny from all<br />
-&lt;/Files&gt;<br />
+<pre class="prettyprint lang-config">
+&lt;Directory /var/web/dir1&gt;
+    &lt;Files private.html&gt;
+        Require all denied
+    &lt;/Files&gt;
 &lt;/Directory&gt;
-</code></p></div>
+</pre>
+
 
 
 <h3><a name="webspace" id="webspace">Conteneurs de l'arborescence du site web</a></h3>
@@ -216,12 +216,12 @@ En particulier, l'interdiction s'appliquera aux requêtes pour :
 <code>http://yoursite.example.com/private/dir/file.html</code> ainsi qu'à
 toute requête commençant par la chaîne de caractères <code>/private</code>.</p>
 
-<div class="example"><p><code>
-&lt;LocationMatch ^/private&gt;<br />
-Order Allow,Deny<br />
-Deny from all<br />
+<pre class="prettyprint lang-config">
+&lt;LocationMatch ^/private&gt;
+    Require all denied
 &lt;/Location&gt;
-</code></p></div>
+</pre>
+
 
 <p>Le conteneur <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
 n'a pas besoin de faire référence à un élément du système de fichiers.
@@ -231,11 +231,12 @@ particulière vers un gestionnaire interne du serveur HTTP Apache fourni par le m
 Il n'est pas nécessaire de trouver un fichier nommé <code>server-status</code>
 dans le système de fichiers.</p>
 
-<div class="example"><p><code>
-&lt;Location /server-status&gt;<br />
-SetHandler server-status<br />
+<pre class="prettyprint lang-config">
+&lt;Location /server-status&gt;
+    SetHandler server-status
 &lt;/Location&gt;
-</code></p></div>
+</pre>
+
 
 
 <h3><a name="overlapping-webspace" id="overlapping-webspace">Espace web imbriqué</a></h3>
@@ -243,22 +244,25 @@ SetHandler server-status<br />
 dans lequel certaines sections ou directives sont évaluées. Pour
 <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>, on doit
 avoir :</p>
-<div class="example"><p><code>
-&lt;Location /foo&gt;<br />
-&lt;/Location&gt;<br />
-&lt;Location /foo/bar&gt;<br />
+<pre class="prettyprint lang-config">
+&lt;Location /foo&gt;
 &lt;/Location&gt;
-</code></p></div>
+&lt;Location /foo/bar&gt;
+&lt;/Location&gt;
+</pre>
+
 <p>Les directives <code class="directive"><a href="./mod/mod_alias.html#alias">&lt;Alias&gt;</a></code>, quant à elles, sont évaluées vice-versa :</p>
-<div class="example"><p><code>
-Alias /foo/bar /srv/www/uncommon/bar<br />
-Alias /foo /srv/www/common/foo<br />
-</code></p></div>
+<pre class="prettyprint lang-config">
+Alias /foo/bar /srv/www/uncommon/bar
+Alias /foo /srv/www/common/foo
+</pre>
+
 <p>Ceci est aussi vrai pour les directives <code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code> :</p>
-<div class="example"><p><code>
-ProxyPass /special-area http://special.example.com smax=5 max=10<br />
+<pre class="prettyprint lang-config">
+ProxyPass /special-area http://special.example.com smax=5 max=10
 ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On
-</code></p></div>
+</pre>
+
 
 
 
@@ -293,21 +297,22 @@ répertoires utilisateurs à l'aide de caractères de remplacement
 mais sans utiliser
 les expressions rationnelles pourrait ressembler à ceci :</p>
 
-<div class="example"><p><code>
-&lt;Directory /home/*/public_html&gt;<br />
-Options Indexes<br />
+<pre class="prettyprint lang-config">
+&lt;Directory /home/*/public_html&gt;
+    Options Indexes
 &lt;/Directory&gt;
-</code></p></div>
+</pre>
+
 
 <p>Avec les conteneurs utilisant les expressions rationnelles,
 on peut interdire l'accès à de nombreux types de fichiers d'images
 simultanément :</p>
-<div class="example"><p><code>
-&lt;FilesMatch \.(?i:gif|jpe?g|png)$&gt;<br />
-Order allow,deny<br />
-Deny from all<br />
+<pre class="prettyprint lang-config">
++&lt;FilesMatch \.(?i:gif|jpe?g|png)$&gt;
+    Require all denied
 &lt;/FilesMatch&gt;
-</code></p></div>
+</pre>
+
 
 
 
@@ -317,11 +322,12 @@ permet de modifier la configuration en fonction d'une condition qui peut
 être définie sous la forme d'une expression booléenne. Dans l'exemple
 suivant, l'accès est interdit si l'en-tête HTTP Referer ne commence pas
 par "http://www.example.com/".</p>
-<div class="example"><p><code>
-&lt;If "!(%{HTTP_REFERER} -strmatch 'http://www.example.com/*')"&gt;<br />
-Require all denied<br />
+<pre class="prettyprint lang-config">
+&lt;If "!(%{HTTP_REFERER} -strmatch 'http://www.example.com/*')"&gt;
+    Require all denied
 &lt;/If&gt;
-</code></p></div>
+</pre>
+
 
 
 
@@ -340,12 +346,12 @@ l'arborescence du site web (URLs) peuvent correspondre à la même localisation
 du système de fichier, ce qui peut permettre de contourner vos restrictions.
 Par exemple, imaginez la configuration suivante :</p>
 
-<div class="example"><p><code>
-&lt;Location /dir/&gt;<br />
-Order allow,deny<br />
-Deny from all<br />
+<pre class="prettyprint lang-config">
+&lt;Location /dir/&gt;
+    Require all denied
 &lt;/Location&gt;
-</code></p></div>
+</pre>
+
 
 <p>Elle fonctionne correctement si la requête appelle
 <code>http://yoursite.example.com/dir/</code>.  Mais que va-t-il se passer si
@@ -415,12 +421,12 @@ Par exemple, la configuration suivante
 va interdire l'utilisation du serveur proxy pour accéder au site
 <code>www.example.com</code>.</p>
 
-<div class="example"><p><code>
-&lt;Proxy http://www.example.com/*&gt;<br />
-Order allow,deny<br />
-Deny from all<br />
+<pre class="prettyprint lang-config">
+&lt;Proxy http://www.example.com/*&gt;
+    Require all granted
 &lt;/Proxy&gt;
-</code></p></div>
+</pre>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="whatwhere" id="whatwhere">Quelles sont les directives autorisées ?</a></h2>
@@ -456,7 +462,7 @@ et <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&g
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="mergin" id="mergin">Comment les sections sont combinées entre elles</a></h2>
+<h2><a name="merging" id="merging">Comment les sections sont combinées entre elles</a></h2>
 
 <p>Les sections de configuration sont appliquées dans un ordre très particulier.
 Il est important de savoir comment cet ordre est défini car il peut avoir
@@ -539,30 +545,31 @@ En supposant qu'elles s'appliquent toutes à la requête, les directives de
 cet exemple seront appliquées dans l'ordre suivant : A &gt; B &gt; C &gt; D &gt;
 E.</p>
 
-<div class="example"><p><code>
-&lt;Location /&gt;<br />
-E<br />
-&lt;/Location&gt;<br />
-<br />
-&lt;Files f.html&gt;<br />
-D<br />
-&lt;/Files&gt;<br />
-<br />
-&lt;VirtualHost *&gt;<br />
-&lt;Directory /a/b&gt;<br />
-B<br />
-&lt;/Directory&gt;<br />
-&lt;/VirtualHost&gt;<br />
-<br />
-&lt;DirectoryMatch "^.*b$"&gt;<br />
-C<br />
-&lt;/DirectoryMatch&gt;<br />
-<br />
-&lt;Directory /a/b&gt;<br />
-A<br />
-&lt;/Directory&gt;<br />
-<br />
-</code></p></div>
+<pre class="prettyprint lang-config">
+&lt;Location /&gt;
+    E
+&lt;/Location&gt;
+
+&lt;Files f.html&gt;
+    D
+&lt;/Files&gt;
+
+&lt;VirtualHost *&gt;
+&lt;Directory /a/b&gt;
+    B
+&lt;/Directory&gt;
+&lt;/VirtualHost&gt;
+
+&lt;DirectoryMatch "^.*b$"&gt;
+    C
+&lt;/DirectoryMatch&gt;
+
+&lt;Directory /a/b&gt;
+    A
+&lt;/Directory&gt;
+
+</pre>
+
 
 <p>Pour un exemple plus concret, considérez ce qui suit.  Sans tenir compte
 de toute restriction d'accès placée dans les sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, la section <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> sera
@@ -570,20 +577,20 @@ de toute restriction d'accès placée dans les sections <code class="directive"><a
 En d'autres termes, l'ordre de la combinaison des sections est important,
 soyez donc prudent !</p>
 
-<div class="example"><p><code>
-&lt;Location /&gt;<br />
-Order deny,allow<br />
-Allow from all<br />
-&lt;/Location&gt;<br />
-<br />:if expand("%") == ""|browse confirm w|else|confirm w|endif
+<pre class="prettyprint lang-config">
+&lt;Location /&gt;
+    Require all granted
+&lt;/Location&gt;
 
-# Arrghs!  Cette section &lt;Directory&gt; n'aura aucun effet<br />
-&lt;Directory /&gt;<br />
-Order allow,deny<br />
-Allow from all<br />
-Deny from badguy.example.com<br />
+# Arrghs!  Cette section &lt;Directory&gt; n'aura aucun effet
+&lt;Directory /&gt;
+    &lt;RequireAll&gt;
+        Require all granted
+        Require not host badguy.example.com
+    &lt;/RequireAll&gt;
 &lt;/Directory&gt;
-</code></p></div>
+</pre>
+
 
 
 
@@ -600,7 +607,8 @@ to last beyond the testing phase of this system, nor do we in any way guarantee 
 var disqus_shortname = 'httpd';
 var disqus_identifier = 'http://httpd.apache.org/docs/2.4/sections.html.fr';
 (function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
+    var disabled = true;
+    if (w.location.hostname.toLowerCase() == "httpd.apache.org" && disabled !== true) {
         d.write('<div id="disqus_thread"><\/div>');
         var s = d.createElement('script');
         s.type = 'text/javascript';
@@ -609,7 +617,7 @@ var disqus_identifier = 'http://httpd.apache.org/docs/2.4/sections.html.fr';
         (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
     }
     else {
-        d.write('<div id="disqus_thread">Comments have been disabled for offline viewing.<\/div>');
+        d.write('<div id="disqus_thread">Comments are disabled for this page at the moment.<\/div>');
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">

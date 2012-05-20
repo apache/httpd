@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/ssl/ssl_faq.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/ssl/ssl_faq.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <blockquote>
 <p>Le sage n'apporte pas de bonnes réponses, il pose les bonnes questions</p>
@@ -189,11 +187,12 @@ HTTPS dans les hyperliens relatifs ?</a></h3>
 hyperliens pleinement qualifiés (car vous devez modifier le schéma de l'URL).
 Cependant, à l'aide du module <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, vous pouvez
 manipuler des hyperliens relatifs, pour obtenir le même effet.</p>
-    <div class="example"><p><code>
-    RewriteEngine on<br />
-    RewriteRule   ^/(.*)_SSL$   https://%{SERVER_NAME}/$1 [R,L]<br />
-    RewriteRule   ^/(.*)_NOSSL$ http://%{SERVER_NAME}/$1  [R,L]
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+RewriteEngine on
+RewriteRule   ^/(.*)_SSL$   https://%{SERVER_NAME}/$1 [R,L]
+RewriteRule   ^/(.*)_NOSSL$ http://%{SERVER_NAME}/$1  [R,L]
+    </pre>
+
 
     <p>Ce jeu de règles rewrite vous permet d'utiliser des hyperliens de la
     forme <code>&lt;a href="document.html_SSL"&gt;</code> pour passer en HTTPS
@@ -272,10 +271,11 @@ fins de test ?</a></h3>
 			-keyout server.key</strong></code><br />
 	Ces fichiers seront utilisés comme suit dans votre
 	<code>httpd.conf</code> :
-        <pre>
-             SSLCertificateFile    /chemin/vers/server.crt
-             SSLCertificateKeyFile /chemin/vers/server.key
-	</pre>
+        <pre class="prettyprint lang-config">
+SSLCertificateFile    /path/to/this/server.crt
+SSLCertificateKeyFile /path/to/this/server.key
+        </pre>
+
     </li>
     <li>Il est important de savoir que le fichier <code>server.key</code> n'a
     <em>pas</em> de mot de passe. Pour ajouter un mot de passe à la clé, vous
@@ -355,10 +355,11 @@ fins de test ?</a></h3>
     <li>Vous devez maintenant disposer de deux fichiers :
     <code>server.key</code> et <code>server.crt</code>. Ils sont précisés dans
     votre fichier <code>httpd.conf</code> comme suit :
-       <pre>
-       SSLCertificateFile    /chemin/vers/server.crt
-       SSLCertificateKeyFile /chemin vers/server.key
+       <pre class="prettyprint lang-config">
+SSLCertificateFile    /path/to/this/server.crt
+SSLCertificateKeyFile /path/to/this/server.key
        </pre>
+
        Le fichier <code>server.csr</code> n'est plus nécessaire.
     </li>
 
@@ -706,9 +707,10 @@ pour différencier plusieurs hôtes virtuels ?</a></h3>
     (sur le port 443). Mais dans ce cas, vous devez définir le numéro de port
     non-SSL à l'aide de la directive NameVirtualHost dans ce style :</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       NameVirtualHost 192.168.1.1:80
-    </code></p></div>
+    </pre>
+
 
     <p>il existe d'autres solutions alternatives comme :</p>
 
@@ -765,11 +767,12 @@ versions de MSIE. Vous pouvez contourner ces problèmes en interdisant
 ou l'envoi de messages de notification de fermeture de session SSL aux
 clients MSIE. Pour cela, vous pouvez utiliser la directive suivante
 dans votre section d'hôte virtuel avec support SSL :</p>
-    <div class="example"><p><code>
-    SetEnvIf User-Agent "MSIE [2-5]" \<br />
-             nokeepalive ssl-unclean-shutdown \<br />
-             downgrade-1.0 force-response-1.0
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+SetEnvIf User-Agent "MSIE [2-5]" \
+         nokeepalive ssl-unclean-shutdown \
+         downgrade-1.0 force-response-1.0
+    </pre>
+
     <p>En outre, certaines versions de MSIE ont des problèmes avec des
     algorithmes de chiffrement particuliers. Hélas, il n'est pas
     possible d'apporter une solution spécifique à MSIE pour ces
@@ -954,7 +957,8 @@ to last beyond the testing phase of this system, nor do we in any way guarantee 
 var disqus_shortname = 'httpd';
 var disqus_identifier = 'http://httpd.apache.org/docs/2.4/ssl/ssl_faq.html.fr';
 (function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
+    var disabled = true;
+    if (w.location.hostname.toLowerCase() == "httpd.apache.org" && disabled !== true) {
         d.write('<div id="disqus_thread"><\/div>');
         var s = d.createElement('script');
         s.type = 'text/javascript';
@@ -963,7 +967,7 @@ var disqus_identifier = 'http://httpd.apache.org/docs/2.4/ssl/ssl_faq.html.fr';
         (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
     }
     else {
-        d.write('<div id="disqus_thread">Comments have been disabled for offline viewing.<\/div>');
+        d.write('<div id="disqus_thread">Comments are disabled for this page at the moment.<\/div>');
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">

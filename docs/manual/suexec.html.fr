@@ -27,8 +27,6 @@
 <a href="./ko/suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/suexec.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>La fonctionnalité <strong>suEXEC</strong> permet
     l'exécution des programmes <strong>CGI</strong> et
@@ -511,10 +509,11 @@ de suEXEC</a></li>
     <p>Si, par exemple, votre serveur web est configuré pour
     s'exécuter en tant que :</p>
 
-<div class="example"><p><code>
-    User www<br />
-    Group webgroup<br />
-</code></p></div>
+<pre class="prettyprint lang-config">
+User www
+Group webgroup
+      </pre>
+
 
     <p>et <code class="program"><a href="./programs/suexec.html">suexec</a></code> se trouve à
     "/usr/local/apache2/bin/suexec", vous devez exécuter les
@@ -669,7 +668,8 @@ to last beyond the testing phase of this system, nor do we in any way guarantee 
 var disqus_shortname = 'httpd';
 var disqus_identifier = 'http://httpd.apache.org/docs/2.4/suexec.html.fr';
 (function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
+    var disabled = true;
+    if (w.location.hostname.toLowerCase() == "httpd.apache.org" && disabled !== true) {
         d.write('<div id="disqus_thread"><\/div>');
         var s = d.createElement('script');
         s.type = 'text/javascript';
@@ -678,7 +678,7 @@ var disqus_identifier = 'http://httpd.apache.org/docs/2.4/suexec.html.fr';
         (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
     }
     else {
-        d.write('<div id="disqus_thread">Comments have been disabled for offline viewing.<\/div>');
+        d.write('<div id="disqus_thread">Comments are disabled for this page at the moment.<\/div>');
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
