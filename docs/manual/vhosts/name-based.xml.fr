@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1301398:1334406 (outdated) -->
+<!-- English Revision: 1334406 -->
 <!-- French translation by alain B, review by Vincent Deffontaines 
 	updated by Lucien GENTIS -->
 
@@ -154,23 +154,20 @@ virtuel basé sur le nom approprié</title>
     la même adresse IP. Il vous suffit d'ajouter la configuration 
     suivante à <code>httpd.conf</code>&nbsp;:</p>
 
-    <example>
-        &lt;VirtualHost *:80&gt;<br />
-        <indent>
-            # Le premier serveur virtuel de la liste est aussi le
-	    # serveur par défaut pour *:80
-            ServerName www.example.com<br />
-            ServerAlias example.com <br />
-            DocumentRoot /www/domain<br />
-        </indent>
-        &lt;/VirtualHost&gt;<br />
-        <br />
-        &lt;VirtualHost *:80&gt;<br />
-        <indent>ServerName other.example.com<br />
-            DocumentRoot /www/otherdomain<br />
-        </indent>
-        &lt;/VirtualHost&gt;<br />
-    </example>
+    <highlight language="config">
+&lt;VirtualHost *:80&gt;
+    # Le premier serveur virtuel de la liste est aussi le
+    # serveur par défaut pour *:80
+    ServerName www.example.com
+    ServerAlias example.com 
+    DocumentRoot /www/domain
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost *:80&gt;
+    ServerName other.example.com
+    DocumentRoot /www/otherdomain
+&lt;/VirtualHost&gt;
+    </highlight>
 
     <p>Autrement, vous pouvez spécifiez une adresse IP explicite 
     à la place de <code>*</code> dans la directive
@@ -190,9 +187,9 @@ virtuel basé sur le nom approprié</title>
     indique aux utilisateurs les autres noms permis pour accéder au 
     même site Web&nbsp;:</p>
 
-    <example>
+    <highlight language="config">
         ServerAlias example.com *.example.com
-    </example>
+    </highlight>
 
     <p>ainsi, toutes les requêtes portant sur un domaine 
     <code>example.com</code> seront servies par le serveur virtuel 

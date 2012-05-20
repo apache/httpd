@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1174747:1332626 (outdated) -->
+<!-- English Revision : 1332626 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -41,14 +41,14 @@
   <section id="example">
     <title>Un exemple simple</title>
 
-    <example>
-      # Cet exemple de configuration est invalide, ne l'utilisez pas comme base
-      # de configuration
-      &lt;VirtualHost www.example.dom&gt; <br />
-      ServerAdmin webgirl@example.dom <br />
-      DocumentRoot /www/example <br />
-      &lt;/VirtualHost&gt;
-    </example>
+    <highlight language="config">
+# Ceci est un exemple de mauvaise configuration ; ne l'utilisez pas comme base
+# de configuration
+&lt;VirtualHost www.example.dom&gt;
+  ServerAdmin webgirl@example.dom
+  DocumentRoot /www/example
+&lt;/VirtualHost&gt;
+    </highlight>
 
     <p>Pour fonctionner correctement, le serveur a absolument besoin de deux
     informations &agrave; propos de chaque serveur virtuel : le nom du serveur
@@ -66,14 +66,14 @@
     <p>Supposons que l'adresse de <code>www.example.dom</code> soit
     192.0.2.1, et examinons cet extrait de configuration :</p>
 
-    <example>
-      # Cet exemple de configuration est invalide, ne l'utilisez pas comme base
-      # de configuration
-      &lt;VirtualHost 192.0.2.1&gt; <br />
-      ServerAdmin webgirl@example.dom <br />
-      DocumentRoot /www/example <br />
-      &lt;/VirtualHost&gt;
-    </example>
+    <highlight language="config">
+# Ceci est un exemple de mauvaise configuration ; ne l'utilisez pas comme base
+# de configuration
+&lt;VirtualHost 192.0.2.1&gt;
+  ServerAdmin webgirl@example.dom
+  DocumentRoot /www/example
+&lt;/VirtualHost&gt;
+    </highlight>
 
     <p>Cette fois, httpd doit effectuer une recherche DNS inverse pour
     trouver le nom <code>ServerName</code> de ce serveur virtuel. Si
@@ -88,13 +88,13 @@
     <p>Voici un extrait de configuration qui permet d'&eacute;viter ces deux
     types de probl&egrave;mes :</p>
 
-    <example>
-      &lt;VirtualHost 192.0.2.1&gt; <br />
-      ServerName www.example.dom <br />
-      ServerAdmin webgirl@example.dom <br />
-      DocumentRoot /www/example <br />
-      &lt;/VirtualHost&gt;
-    </example>
+    <highlight language="config">
+&lt;VirtualHost 192.0.2.1&gt;
+  ServerName www.example.dom
+  ServerAdmin webgirl@example.dom
+  DocumentRoot /www/example
+&lt;/VirtualHost&gt;
+    </highlight>
   </section>
 
   <section id="denial">
@@ -102,21 +102,16 @@
 
     <p>Consid&eacute;rons cet extrait de configuration :</p>
 
-    <example>
-      &lt;VirtualHost www.example1.dom&gt;<br />
-      <indent>
-        ServerAdmin webgirl@example1.dom<br />
-        DocumentRoot /www/example1<br />
-      </indent>
-      &lt;/VirtualHost&gt;<br />
-      <br />
-      &lt;VirtualHost www.example2.dom&gt;<br />
-      <indent>
-        ServerAdmin webguy@example2.dom<br />
-        DocumentRoot /www/example2<br />
-      </indent>
-      &lt;/VirtualHost&gt;
-    </example>
+    <highlight language="config">
+&lt;VirtualHost www.example1.dom&gt;
+  ServerAdmin webgirl@example1.dom
+  DocumentRoot /www/example1
+&lt;/VirtualHost&gt;
+&lt;VirtualHost www.example2.dom&gt;
+  ServerAdmin webguy@example2.dom
+  DocumentRoot /www/example2
+&lt;/VirtualHost&gt;
+    </highlight>
 
     <p>Supposons que vous ayez assign&eacute; 192.0.2.1 &agrave;
     <code>www.example1.dom</code> et 192.0.2.2 &agrave; <code>www.example2.dom</code>. En

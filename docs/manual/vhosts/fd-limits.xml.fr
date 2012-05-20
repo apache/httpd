@@ -1,8 +1,9 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1174747:1330878 (outdated) -->
+<!-- English Revision : 1330878 -->
 <!-- French translation by Vincent Deffontaines, review by alain B -->
+<!-- Updated by Lucien Gentis -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -106,10 +107,10 @@ entrée du journal. Ceci se paramètre au moyen de la directive
 variable <code>%v</code>. Ajoutez cette variable au début de la chaîne
 de définition du format de journalisations&nbsp;:</p>
 
-<example>
-LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost<br />
+<highlight language="config">
+LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost
 CustomLog logs/multiple_vhost_log vhost
-</example>
+</highlight>
 
 <p>Cette configuration va provoquer la création d'un fichier de
 journalisation au format standard (CLF&nbsp;: 'Common Log Format'), mais dont
