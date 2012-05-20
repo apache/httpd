@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1174747:1331693 (outdated) -->
+<!-- English Revision : 1331693 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -50,8 +50,7 @@
     </dd>
 
     <dt><a name="apr" id="apr">APR</a></dt>
-    <dd>Voir <a href="#apacheportableruntime">"
-    Biblioth&egrave;ques pour la portabilit&eacute; d'Apache"</a>
+    <dd>Voir "Biblioth&egrave;ques pour la portabilit&eacute; d'Apache"
     </dd>
 
     <dt><a name="tarball" id="tarball">Archive Tar (Tarball)</a></dt>
@@ -81,7 +80,8 @@
 
     <dt><a name="apacheportableruntime"
        id="apacheportableruntime">Biblioth&egrave;ques pour la portabilit&eacute; d'Apache
-       (Apache Portable Runtime, APR)</a></dt>
+       (Apache Portable Runtime)</a> <a
+       name="apr" id="apr">(APR)</a></dt>
     <dd>Un jeu de biblioth&egrave;ques qui fournit la plupart des interfaces de base
       entre le serveur et le syst&egrave;me d'exploitation.  APR est d&eacute;velopp&eacute;
       parall&egrave;lement au serveur HTTP Apache comme projet ind&eacute;pendant.<br />

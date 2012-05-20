@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1300924:1330883 (outdated) -->
+<!-- English Revision : 1330883 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -180,9 +180,9 @@
     <p>Pour ce faire, vous devez sp&eacute;cifier le nom du module dans votre
     directive <directive>LogLevel</directive> :</p>
 
-    <example>
+    <highlight language="config">
     LogLevel info rewrite:trace5
-    </example>
+    </highlight>
 
     <p>Dans cet exemple, le niveau de journalisation g&eacute;n&eacute;ral est d&eacute;fini
     &agrave; info, et &agrave; <code>trace5</code> pour <module>mod_rewrite</module>.</p>
@@ -249,10 +249,10 @@
 
       <p>Voici une configuration typique pour le journal des acc&egrave;s :</p>
 
-      <example>
-        LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br />
-         CustomLog logs/access_log common
-      </example>
+      <highlight language="config">
+LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
+CustomLog logs/access_log common
+      </highlight>
 
       <p>Ici est d&eacute;finie l'<em>identit&eacute;</em> <code>common</code> qui est
       ensuite associ&eacute;e &agrave; une cha&icirc;ne de format de journalisation particuli&egrave;re.
@@ -402,11 +402,10 @@
       "Combined Log Format" (Format de journalisation combin&eacute;). Il s'utilise
       comme suit :</p>
 
-      <example>
-        LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\"
-        \"%{User-agent}i\"" combined<br />
-         CustomLog log/access_log combined
-      </example>
+      <highlight language="config">
+LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\"" combined
+CustomLog log/access_log combined
+      </highlight>
 
       <p>Ce format est identique au Common Log Format, avec deux champs
       suppl&eacute;mentaires. Chacun de ces deux champs utilise la directive
@@ -455,12 +454,12 @@
       comment simuler les effets des directives <code>ReferLog</code> et
       <code>AgentLog</code>.</p>
 
-      <example>
-        LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br />
-        CustomLog logs/access_log common<br />
-        CustomLog logs/referer_log "%{Referer}i -&gt; %U"<br />
-        CustomLog logs/agent_log "%{User-agent}i"
-      </example>
+      <highlight language="config">
+LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
+CustomLog logs/access_log common
+CustomLog logs/referer_log "%{Referer}i -&gt; %U"
+CustomLog logs/agent_log "%{User-agent}i"
+      </highlight>
 
       <p>Cet exemple montre aussi qu'il n'est pas obligatoire d'associer
       une cha&icirc;ne de format &agrave; un alias au moyen de la directive
@@ -485,34 +484,34 @@
       la variable d'environnement est d&eacute;finie.
       Quelques exemples :</p>
 
-      <example>
-        # Marque les requ&ecirc;tes en provenance de l'interface loop-back<br />
-        SetEnvIf Remote_Addr "127\.0\.0\.1" dontlog<br />
-        # Marque les requ&ecirc;tes pour le fichier robots.txt<br />
-        SetEnvIf Request_URI "^/robots\.txt$" dontlog<br />
-        # Journalise toutes les autres requ&ecirc;tes<br />
-        CustomLog logs/access_log common env=!dontlog
-      </example>
+      <highlight language="config">
+# Marque les requ&ecirc;tes en provenance de l'interface loop-back
+SetEnvIf Remote_Addr "127\.0\.0\.1" dontlog
+# Marque les requ&ecirc;tes pour le fichier robots.txt
+SetEnvIf Request_URI "^/robots\.txt$" dontlog
+# Journalise toutes les autres requ&ecirc;tes
+CustomLog logs/access_log common env=!dontlog
+      </highlight>
 
       <p>Autre exemple, imaginons l'enregistrement des requ&ecirc;tes en provenance
       d'utilisateurs de langue anglaise dans un journal, et celles des autres
       utilisateurs dans un autre journal.</p>
 
-      <example>
+      <highlight language="config">
         SetEnvIf Accept-Language "en" english<br />
         CustomLog logs/english_log common env=english<br />
         CustomLog logs/non_english_log common env=!english
-      </example>
+      </highlight>
 
 	<p>Dans le contexte d'une mise en cache, il peut &ecirc;tre
 	int&eacute;ressant de conna&icirc;tre l'efficacit&eacute; du cache. Pour y parvenir,
 	on pourrait utiliser cette m&eacute;thode simple :</p>
 
-      <example>
-        SetEnv CACHE_MISS 1<br />
-        LogFormat "%h %l %u %t "%r " %>s %b %{CACHE_MISS}e" common-cache<br />
-        CustomLog logs/access_log common-cache
-      </example>
+      <highlight language="config">
+SetEnv CACHE_MISS 1
+LogFormat "%h %l %u %t "%r " %>s %b %{CACHE_MISS}e" common-cache
+CustomLog logs/access_log common-cache
+      </highlight>
 
       <p><module>mod_cache</module> va s'ex&eacute;cuter avant
       <module>mod_env</module>, et si son action est couronn&eacute;e de
@@ -526,10 +525,10 @@
       valeurs de journalisation conditionnelles bas&eacute;es sur le code de la
       r&eacute;ponse HTTP :</p>
 
-      <example>
-      LogFormat "%400,501{User-agent}i" browserlog<br />
-      LogFormat "%!200,304,302{Referer}i" refererlog
-      </example>
+      <highlight language="config">
+LogFormat "%400,501{User-agent}i" browserlog
+LogFormat "%!200,304,302{Referer}i" refererlog
+      </highlight>
 
       <p>Dans le premier exemple, le <code>User-agent</code> sera
       enregistr&eacute; si le code d'&eacute;tat HTTP est 400 ou 501. Dans le cas
@@ -621,10 +620,9 @@
     appel&eacute; <program>rotatelogs</program>. Par exemple, pour une rotation des
     journaux toutes les 24 heures, ajoutez ces lignes :</p>
 
-    <example>
-      CustomLog "|/usr/local/apache/bin/rotatelogs
-      /var/log/access_log 86400" common
-    </example>
+    <highlight language="config">
+      CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/access_log 86400" common
+    </highlight>
 
     <p>Notez que l'ensemble de la commande qui sera appel&eacute;e par le tube de
     communication a &eacute;t&eacute; plac&eacute;e entre guillemets. Bien que cet exemple
@@ -645,11 +643,11 @@
   au lieu de "<code>|</code>" (en g&eacute;n&eacute;ral avec <code>/bin/sh -c</code>)
   :</p>
 
-    <example>
-      # Invocation de "rotatelogs" en utilisant un shell<br />
-      CustomLog "|$/usr/local/apache/bin/rotatelogs
-      /var/log/access_log 86400" common
-    </example>
+    <highlight language="config">
+# Invocation de "rotatelogs" en utilisant un shell
+CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" common
+    </highlight>
+
 
     <p>Il s'agissait du comportement par d&eacute;faut sous Apache 2.2. Selon
     les sp&eacute;cificit&eacute;s du shell, ceci peut g&eacute;n&eacute;rer un processus shell
@@ -693,11 +691,10 @@
     journal, puis de s&eacute;parer ult&eacute;rieurement le journal en plusieurs journaux
     individuels. Consid&eacute;rons par exemple les directives suivantes :</p>
 
-    <example>
-      LogFormat "%v %l %u %t \"%r\" %&gt;s %b"
-      comonvhost<br />
-      CustomLog logs/access_log comonvhost
-    </example>
+    <highlight language="config">
+LogFormat "%v %l %u %t \"%r\" %&gt;s %b" comonvhost
+CustomLog logs/access_log comonvhost
+    </highlight>
 
     <p>Le champ <code>%v</code> sert &agrave; enregistrer le nom de l'h&ocirc;te virtuel qui
     traite la requ&ecirc;te. Un programme tel que <a
@@ -770,6 +767,18 @@
       documentation du module <a href="mod/mod_cgi.html">mod_cgi</a>.</p>
     </section>
 
+    <section id="rewritelog">
+      <title>Journal de r&eacute;&eacute;criture</title>
+
+      <p>Lorsqu'on utilise les fonctionnalit&eacute;s puissantes et complexes du
+      module <a href="mod/mod_rewrite.html">mod_rewrite</a>, il est presque
+      toujours n&eacute;cessaire d'utiliser la directive
+      <directive module="mod_rewrite">RewriteLog</directive> afin de
+      faciliter le d&eacute;bogage. Ce fichier journal fournit une analyse d&eacute;taill&eacute;e
+      de la transformation des requ&ecirc;tes par le moteur de r&eacute;&eacute;criture. Le niveau
+      de d&eacute;tail est contr&ocirc;l&eacute; par la directive
+      <directive module="mod_rewrite">RewriteLogLevel</directive>.</p>
+    </section>
   </section>
 </manualpage>
 

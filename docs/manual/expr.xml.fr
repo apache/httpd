@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1308400:1334066 (outdated) -->
+<!-- English Revision : 1334066 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -505,29 +505,25 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 	<p>Les exemples suivants montent comment utiliser les
 	expressions pour &eacute;valuer les requ&ecirc;tes :</p>
 	<!-- This section should probably be extended with more, useful examples -->
-	<example>
-	# Comparer le nom d'h&ocirc;te avec example.com et rediriger vers
-	# www.example.com si le nom d'h&ocirc;te correspond<br />
-	&lt;If "%{HTTP_HOST} == 'example.com'"&gt;<br />
-	<indent>
-		Redirect permanent / http://www.example.com<br />
-	</indent>
-	&lt;/If&gt;<br /><br />
-	# Forcer le type text/plain si un fichier fait l'objet d'une
-	# requ&ecirc;te dont la cha&icirc;ne de param&egrave;tres contient 'forcetext'<br />
-	&lt;If "%{QUERY_STRING} =~ /forcetext/"&gt;<br />
-	<indent>
-		ForceType text/plain<br />
-	</indent>
-	&lt;/If&gt;<br /><br />
-	# N'autoriser l'acc&egrave;s &agrave; ce contenu que pendant les heures de
-	# travail<br />
-	&lt;Directory "/foo/bar/business"&gt;<br />
-	<indent>
-		Require expr %{TIME_HOUR} &gt;= 9 &amp;&amp; %{TIME_HOUR} &lt;= 17 <br />
-	</indent>
-	&lt;/Directory&gt;	
-	</example>
+	<highlight language="config">
+# Comparer le nom d'h&ocirc;te avec example.com et rediriger vers
+# www.example.com si le nom d'h&ocirc;te correspond
+&lt;If "%{HTTP_HOST} == 'example.com'"&gt;
+    Redirect permanent / http://www.example.com
+&lt;/If&gt;
+
+# Forcer le type text/plain si un fichier fait l'objet d'une
+# requ&ecirc;te dont la cha&icirc;ne de param&egrave;tres contient 'forcetext'
+&lt;If "%{QUERY_STRING} =~ /forcetext/"&gt;
+    ForceType text/plain
+&lt;/If&gt;
+
+# N'autoriser l'acc&egrave;s &agrave; ce contenu que pendant les heures de
+# travail
+&lt;Directory "/foo/bar/business"&gt;
+    Require expr %{TIME_HOUR} &gt;= 9 &amp;&amp; %{TIME_HOUR} &lt;= 17 
+&lt;/Directory&gt;	
+	</highlight>
 </section>
 
 <section id="other">
