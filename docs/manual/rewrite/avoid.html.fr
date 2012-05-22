@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/avoid.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/avoid.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
 <p>Ce document est un complément à la <a href="../mod/mod_rewrite.html">Documentation de référence</a> de
@@ -93,25 +91,24 @@ rediriger toutes les URLs de niveaux inférieurs comme
 <p>Pour rediriger les URLs sous <code>/un</code> vers
 <code>http://un.example.com/</code>, utilisez cette définition :</p>
 
-<div class="example"><p><code>
-Redirect /un/ http://un.example.com/
-</code></p></div>
+<pre class="prettyprint lang-config">Redirect /one/ http://one.example.com/</pre>
+
 
 <p>Pour rediriger les URLs <code>http</code> vers <code>https</code>,
 utilisez cette définition :</p>
 
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
 &lt;VirtualHost *:80&gt;
-ServerName www.example.com<br />
-Redirect / https://www.example.com/<br />
+ServerName www.example.com
+Redirect / https://www.example.com/
 &lt;/VirtualHost &gt;
-<br />
+
 &lt;VirtualHost *:443&gt;
-ServerName www.example.com<br />
-<br />
-# ... insérer ici la configuration SSL<br />
+ServerName www.example.com
+#  ... insérer ici la configuration SSL
 &lt;/VirtualHost &gt;
-</code></p></div>
+</pre>
+
 
 <p>L'utilisation de la directive <code>RewriteRule</code> pour accomplir
 cette tâche peut se justifier s'il existe d'autres directives
@@ -137,9 +134,9 @@ possible d'effectuer cette mise en correspondance avec
 <code>mod_rewrite</code>, il est préférable d'utiliser la directive
 <code>Alias</code> pour des raisons de simplicité et de performances.</p>
 
-<div class="example"><h3>Utilisation de la directive Alias</h3><p><code>
-Alias /chats /var/www/virtualhosts/felin/htdocs
-</code></p></div>
+<div class="example"><h3>Utilisation de la directive Alias</h3><pre class="prettyprint lang-config">Alias /cats
+/var/www/virtualhosts/felines/htdocs</pre>
+</div>
 
 <p>
 Pour effectuer cette mise en correspondance, <code>mod_rewrite</code>
@@ -169,7 +166,7 @@ créer un grand nombre de serveurs virtuels dynamiquement.</p>
 <p>L'utilisation de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> pour la création de
 serveurs virtuels peut se révéler appropriée si votre service
 d'hébergement ne vous permet pas d'accéder aux fichiers de configuration
-du serveur, et que vous vous trouvez par conséquent obligé de passer par les
+du serveur, et que vous soyez par conséquent obligé de passer par les
 fichiers <code>.htaccess</code>.</p>
 
 <p>Voir le document <a href="vhosts.html">création de serveurs virtuels
@@ -183,26 +180,29 @@ cela semble être tout de même la meilleure approche.</p>
 <p>La directive <code>RewriteRule</code> fournit le drapeau <a href="flags.html#flag_p">[P]</a> qui permet de faire passer les URIs
 réécrits par <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>.</p>
 
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
 RewriteRule ^/?images(.*) http://serveur-images.local/images$1 [P]
-</code></p></div>
+</pre>
+
 
 <p>Cependant, dans les nombreux cas où aucune correspondance au modèle
 n'est vraiment nécessaire, comme dans l'exemple ci-dessus, il est
 préférable d'utiliser la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>. L'exemple précédent pourrait
 être remplacé par :</p>
 
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
 ProxyPass /images/ http://serveur-images.local/images/
-</code></p></div>
+</pre>
+
 
 <p>Que vous utilisiez <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> ou <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>, vous devrez dans tous les cas
 utiliser aussi la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code> pour intercepter les
 redirections en provenance du serveur d'arrière-plan :</p>
 
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
 ProxyPassReverse /images/ http://serveur-images.local/images/
-</code></p></div>
+</pre>
+
 
 <p>Vous devrez cependant tout de même utiliser <code>RewriteRule</code>
 lorsque d'autres <code>RewriteRule</code>s se trouvent dans la même portée,
@@ -225,14 +225,15 @@ d'hôte canonique, tel que <code>www.example.com</code> au lieu de
 directive <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> comme
 suit :</p>
 
-<div class="example"><p><code>
-&lt;If "$req{Host} != 'www.example.com'"&gt;<br />
-RedirectMatch (.*) http://www.example.com$1<br />
+<pre class="prettyprint lang-config">
+&lt;If "req('Host') != 'www.example.com'"&gt;
+    Redirect / http://www.example.com
 &lt;/If&gt;
-</code></p></div>
+</pre>
 
-<p>On peut utiliser cette technique dans de nombreux scénarios courants
-en remplacement de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> pour effectuer des actions
+
+<p>On peut utiliser cette technique dans de nombreux scénarios courant
+pour remplacer <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> pour effectuer des actions
 en fonction d'en-têtes de requêtes ou de réponses, ou de variables
 d'environnement.</p>
 

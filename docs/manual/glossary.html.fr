@@ -29,8 +29,6 @@
 <a href="./ko/glossary.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/glossary.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Ce glossaire définit la terminologie courante relative à Apache en
     particulier, et aux serveurs web en général. Vous trouverez plus
@@ -56,8 +54,7 @@
     </dd>
 
     <dt><a name="apr" id="apr">APR</a></dt>
-    <dd>Voir <a href="#apacheportableruntime">"
-    Bibliothèques pour la portabilité d'Apache"</a>
+    <dd>Voir "Bibliothèques pour la portabilité d'Apache"
     </dd>
 
     <dt><a name="tarball" id="tarball">Archive Tar (Tarball)</a></dt>
@@ -85,7 +82,7 @@
     </dd>
 
     <dt><a name="apacheportableruntime" id="apacheportableruntime">Bibliothèques pour la portabilité d'Apache
-       (Apache Portable Runtime, APR)</a></dt>
+       (Apache Portable Runtime)</a> <a name="apr" id="apr">(APR)</a></dt>
     <dd>Un jeu de bibliothèques qui fournit la plupart des interfaces de base
       entre le serveur et le système d'exploitation.  APR est développé
       parallèlement au serveur HTTP Apache comme projet indépendant.<br />

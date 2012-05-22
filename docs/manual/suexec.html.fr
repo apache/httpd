@@ -27,8 +27,6 @@
 <a href="./ko/suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/suexec.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>La fonctionnalité <strong>suEXEC</strong> permet
     l'exécution des programmes <strong>CGI</strong> et
@@ -511,10 +509,11 @@ de suEXEC</a></li>
     <p>Si, par exemple, votre serveur web est configuré pour
     s'exécuter en tant que :</p>
 
-<div class="example"><p><code>
-    User www<br />
-    Group webgroup<br />
-</code></p></div>
+<pre class="prettyprint lang-config">
+User www
+Group webgroup
+      </pre>
+
 
     <p>et <code class="program"><a href="./programs/suexec.html">suexec</a></code> se trouve à
     "/usr/local/apache2/bin/suexec", vous devez exécuter les

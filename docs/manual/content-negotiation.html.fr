@@ -27,8 +27,6 @@
 <a href="./ko/content-negotiation.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/content-negotiation.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Apache HTTPD supporte la négociation de
@@ -144,7 +142,8 @@ conventions de nommage</a></li>
     gestionnaire qui associe un suffixe de fichier à une <code>type-map</code>;
     ce qui se fait simplement en ajoutant</p>
 
-<div class="example"><p><code>AddHandler type-map .var</code></p></div>
+<pre class="prettyprint lang-config">AddHandler type-map .var</pre>
+
 
     <p>dans le fichier de configuration du serveur.</p>
 
@@ -247,7 +246,8 @@ conventions de nommage</a></li>
     <p><code>MultiViews</code> peut aussi s'appliquer à la recherche du fichier
     nommé par la directive <code class="directive"><a href="./mod/mod_dir.html#directoryindex">DirectoryIndex</a></code>, si le serveur tente d'indexer
     un répertoire. Si les fichiers de configuration spécifient</p>
-<div class="example"><p><code>DirectoryIndex index</code></p></div>
+<pre class="prettyprint lang-config">DirectoryIndex index</pre>
+
     <p>le serveur va choisir entre <code>index.html</code>
     et <code>index.html3</code> si les deux fichiers sont présents. Si aucun
     n'est présent, mais <code>index.cgi</code> existe,
@@ -541,10 +541,11 @@ langage</a></h3>
     de sélectionner une variante correspondante. S'il n'existe pas de telle
     variante, le processus normal de négociation sera lancé.</p>
 
-    <div class="example"><h3>Exemple</h3><p><code>
-      SetEnvIf Cookie "language=(.+)" prefer-language=$1<br />
-      Header append Vary cookie
-    </code></p></div>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
+SetEnvIf Cookie "language=(.+)" prefer-language=$1
+Header append Vary cookie
+    </pre>
+</div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">

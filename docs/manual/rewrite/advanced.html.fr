@@ -5,7 +5,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Techniques avancées de réécriture avec mod_rewrite - Serveur Apache HTTP</title>
+<title>Advanced Techniques with mod_rewrite - Serveur Apache HTTP</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -19,13 +19,11 @@
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Techniques avancées de réécriture avec mod_rewrite</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Advanced Techniques with mod_rewrite</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/avoid.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/avoid.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
 <p>Ce document complète la <a href="../mod/mod_rewrite.html">documentation de référence</a> du
@@ -103,14 +101,12 @@ http://serveur_physique_utilisateur1/u/utilisateur/chemin
       serveur par défaut qui sera utilisé lorsqu'un utilisateur ne
       possèdera pas d'entrée dans la table de correspondances :</p>
 
-<div class="example"><p><code>
-RewriteEngine on<br />
-<br />
-RewriteMap      utilisateurs-serveurs
-txt:/chemin/vers/correspondances-utilisateurs-serveurs<br />
-<br />
-RewriteRule   ^/u/<strong>([^/]+)</strong>/?(.*)   http://<strong>${utilisateurs-serveurs:$1|server0}</strong>/u/$1/$2
-</code></p></div>
+<pre class="prettyprint lang-config">
+RewriteEngine on
+RewriteMap      users-to-hosts   txt:/path/to/map.users-to-hosts
+RewriteRule   ^/u/([^/]+)/?(.*)   http://${users-to-hosts:$1|server0}/u/$1/$2
+</pre>
+
     </dd>
   </dl>
 
@@ -138,13 +134,14 @@ RewriteRule   ^/u/<strong>([^/]+)</strong>/?(.*)   http://<strong>${utilisateurs
     <dt>Solution :</dt>
 
     <dd>
-      À cet effet, on utilise le jeu de règles suivant :
+      A cet effet, on utilise le jeu de règles suivant :
 
-<div class="example"><p><code>
-# Cet exemple n'est valable que dans un contexte de répertoire<br />
-RewriteCond %{REQUEST_URI}   <strong>!-U</strong><br />
+<pre class="prettyprint lang-config">
+# Cet exemple n'est valable que dans un contexte de répertoire
+RewriteCond %{REQUEST_URI}   !-U
 RewriteRule ^(.+)\.html$          /regenerate_page.cgi   [PT,L]
-</code></p></div>
+</pre>
+
 
       <p>L'opérateur <code>-U</code> permet de déterminer si la chaîne
       de test (dans ce cas <code>REQUEST_URI</code>) est une URL valide.
@@ -184,12 +181,12 @@ RewriteRule ^(.+)\.html$          /regenerate_page.cgi   [PT,L]
       <p>Pour y parvenir, nous allons utiliser la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> et une liste de
       serveurs.</p>
 
-<div class="example"><p><code>
-RewriteEngine on<br />
-RewriteMap lb rnd:/chemin/vers/liste-serveurs.txt<br />
-<br />
+<pre class="prettyprint lang-config">
+RewriteEngine on
+RewriteMap lb rnd:/path/to/serverlist.txt
 RewriteRule ^/(.*) http://${lb:serveurs}/$1 [P,L]
-</code></p></div>
+</pre>
+
 
 <p><code>liste-serveurs.txt</code> contiendra la liste des serveurs :</p>
 
@@ -242,9 +239,10 @@ plus de fonctionnalités dans ce domaine que mod_rewrite.</p>
 	  actualisée chaque fois que la ressource est mise à jour dans
 	  le système de fichiers.</p>
 
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
 RewriteRule   ^(/[uge]/[^/]+/?.*):refresh  /interne/cgi/apache/nph-refresh?f=$
-</code></p></div>
+</pre>
+
 
       <p>Nous appelons maintenant cette URL</p>
 
@@ -262,7 +260,7 @@ RewriteRule   ^(/[uge]/[^/]+/?.*):refresh  /interne/cgi/apache/nph-refresh?f=$
 	  écrive habituellement dans ces cas "laissé à la charge du
 	  lecteur à titre d'exercice", ;-) je vous l'offre, aussi.</p>
 
-<div class="example"><pre>
+<pre class="prettyprint lang-perl">
 #!/sw/bin/perl
 ##
 ##  nph-refresh -- script NPH/CGI pour l'actualisation automatique de
@@ -272,61 +270,61 @@ RewriteRule   ^(/[uge]/[^/]+/?.*):refresh  /interne/cgi/apache/nph-refresh?f=$
 $| = 1;
 
 #   éclate la variable QUERY_STRING
-@pairs = split(/&amp;/, $ENV{'QUERY_STRING'});
+@pairs = split( /&amp;/, $ENV{'QUERY_STRING'} );
 foreach $pair (@pairs) {
-($name, $value) = split(/=/, $pair);
-$name =~ tr/A-Z/a-z/;
-$name = 'QS_' . $name;
-$value =~ s/%([a-fA-F0-9][a-fA-F0-9])/pack("C", hex($1))/eg;
-eval "\$$name = \"$value\"";
+    ( $name, $value ) = split( /=/, $pair );
+    $name =~ tr/A-Z/a-z/;
+    $name = 'QS_' . $name;
+    $value =~ s/%([a-fA-F0-9][a-fA-F0-9])/pack("C", hex($1))/eg;
+    eval "\$$name = \"$value\"";
 }
-$QS_s = 1 if ($QS_s eq '');
-$QS_n = 3600 if ($QS_n eq '');
-if ($QS_f eq '') {
-print "HTTP/1.0 200 OK\n";
-print "Content-type: text/html\n\n";
-print "&amp;lt;b&amp;gt;ERREUR&amp;lt;/b&amp;gt;: Aucun fichier fourni\n";
-exit(0);
+$QS_s = 1    if ( $QS_s eq '' );
+$QS_n = 3600 if ( $QS_n eq '' );
+if ( $QS_f eq '' ) {
+    print "HTTP/1.0 200 OK\n";
+    print "Content-type: text/html\n\n";
+    print "&lt;b&gt;ERROR&lt;/b&gt;: No file given\n";
+    exit(0);
 }
-if (! -f $QS_f) {
-print "HTTP/1.0 200 OK\n";
-print "Content-type: text/html\n\n";
-print "&amp;lt;b&amp;gt;ERREUR&amp;lt;/b&amp;gt;: Fichier $QS_f non trouvé\n";
-exit(0);
+if ( !-f $QS_f ) {
+    print "HTTP/1.0 200 OK\n";
+    print "Content-type: text/html\n\n";
+    print "&lt;b&gt;ERROR&lt;/b&gt;: File $QS_f not found\n";
+    exit(0);
 }
 
 sub print_http_headers_multipart_begin {
-print "HTTP/1.0 200 OK\n";
-$bound = "ThisRandomString12345";
-print "Content-type: multipart/x-mixed-replace;boundary=$bound\n";
-&amp;print_http_headers_multipart_next;
+    print "HTTP/1.0 200 OK\n";
+    $bound = "ThisRandomString12345";
+    print "Content-type: multipart/x-mixed-replace;boundary=$bound\n";
+    &amp;print_http_headers_multipart_next;
 }
 
 sub print_http_headers_multipart_next {
-print "\n--$bound\n";
+    print "\n--$bound\n";
 }
 
 sub print_http_headers_multipart_end {
-print "\n--$bound--\n";
+    print "\n--$bound--\n";
 }
 
 sub displayhtml {
-local($buffer) = @_;
-$len = length($buffer);
-print "Content-type: text/html\n";
-print "Content-length: $len\n\n";
-print $buffer;
+    local ($buffer) = @_;
+    $len = length($buffer);
+    print "Content-type: text/html\n";
+    print "Content-length: $len\n\n";
+    print $buffer;
 }
 
 sub readfile {
-local($file) = @_;
-local(*FP, $size, $buffer, $bytes);
-($x, $x, $x, $x, $x, $x, $x, $size) = stat($file);
-$size = sprintf("%d", $size);
-open(FP, "&amp;lt;$file");
-$bytes = sysread(FP, $buffer, $size);
-close(FP);
-return $buffer;
+    local ($file) = @_;
+    local ( *FP, $size, $buffer, $bytes );
+    ( $x, $x, $x, $x, $x, $x, $x, $size ) = stat($file);
+    $size = sprintf( "%d", $size );
+    open( FP, "&lt;$file" );
+    $bytes = sysread( FP, $buffer, $size );
+    close(FP);
+    return $buffer;
 }
 
 $buffer = &amp;readfile($QS_f);
@@ -334,30 +332,30 @@ $buffer = &amp;readfile($QS_f);
 &amp;displayhtml($buffer);
 
 sub mystat {
-local($file) = $_[0];
-local($time);
+    local ($file) = $_[0];
+    local ($time);
 
-($x, $x, $x, $x, $x, $x, $x, $x, $x, $mtime) = stat($file);
-return $mtime;
+    ( $x, $x, $x, $x, $x, $x, $x, $x, $x, $mtime ) = stat($file);
+    return $mtime;
 }
 
 $mtimeL = &amp;mystat($QS_f);
-$mtime = $mtime;
-for ($n = 0; $n &amp;lt; $QS_n; $n++) {
-while (1) {
-    $mtime = &amp;mystat($QS_f);
-    if ($mtime ne $mtimeL) {
-        $mtimeL = $mtime;
-        sleep(2);
-        $buffer = &amp;readfile($QS_f);
-        &amp;print_http_headers_multipart_next;
-        &amp;displayhtml($buffer);
-        sleep(5);
-        $mtimeL = &amp;mystat($QS_f);
-        last;
+$mtime  = $mtime;
+for ( $n = 0 ; $n &amp; lt ; $QS_n ; $n++ ) {
+    while (1) {
+        $mtime = &amp;mystat($QS_f);
+        if ( $mtime ne $mtimeL ) {
+            $mtimeL = $mtime;
+            sleep(2);
+            $buffer = &amp;readfile($QS_f);
+            &amp;print_http_headers_multipart_next;
+            &amp;displayhtml($buffer);
+            sleep(5);
+            $mtimeL = &amp;mystat($QS_f);
+            last;
+        }
+        sleep($QS_s);
     }
-    sleep($QS_s);
-}
 }
 
 &amp;print_http_headers_multipart_end;
@@ -365,7 +363,8 @@ while (1) {
 exit(0);
 
 ##EOF##
-</pre></div>
+</pre>
+
     </dd>
   </dl>
 
@@ -396,10 +395,11 @@ exit(0);
       <p>On utilise le jeu de règles suivant pour développer les
 	  URLs avec tilde selon l'organisation structurée précédente.</p>
 
-<div class="example"><p><code>
-RewriteEngine on<br />
+<pre class="prettyprint lang-config">
+RewriteEngine on
 RewriteRule   ^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)  /home/<strong>$2</strong>/$1/public_html$3
-</code></p></div>
+</pre>
+
     </dd>
   </dl>
 
@@ -458,13 +458,13 @@ RewriteRule   ^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)  /home/<strong>$2</stro
 	  permettent d'effectuer des redirections dépendant de
 	  l'heure :</p>
 
-<div class="example"><p><code>
-RewriteEngine on<br />
-RewriteCond   %{TIME_HOUR}%{TIME_MIN} &gt;0700<br />
-RewriteCond   %{TIME_HOUR}%{TIME_MIN} &lt;1900<br />
-RewriteRule   ^foo\.html$             foo.jour.html [L]<br />
-RewriteRule   ^foo\.html$             foo.nuit.html
-</code></p></div>
+<pre class="prettyprint lang-config">
++RewriteEngine on
++RewriteCond   %{TIME_HOUR}%{TIME_MIN} &gt;0700
++RewriteCond   %{TIME_HOUR}%{TIME_MIN} &lt;1900
++RewriteRule   ^foo\.html$             foo.day.html [L]
+</pre>
+
 
       <p>Avec cet exemple, l'URL <code>foo.html</code> renvoie
 	  le contenu de <code>foo.jour.html</code> durant le
@@ -477,7 +477,8 @@ RewriteRule   ^foo\.html$             foo.nuit.html
 	la fenêtre de temps configurée. On peut utiliser
 	<code class="module"><a href="../mod/mod_expires.html">mod_expires</a></code> pour contourner ce problème. Il est
 	cependant bien plus commode de servir un contenu dynamique, et
-	de le personnaliser en fonction de l'heure du jour.</div> </dd>
+	de le personnaliser en fonction de l'heure du jour.</div>
+    </dd>
   </dl>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -505,18 +506,20 @@ RewriteRule   ^foo\.html$             foo.nuit.html
       <p>Utiliser le drapeau [E] pour définir une variable
       d'environnement.</p>
 
-<div class="example"><p><code>
-RewriteEngine on<br />
+<pre class="prettyprint lang-config">
+RewriteEngine on
 RewriteRule   ^/cheval/(.*)   /poney/$1 [E=<strong>rewritten:1</strong>]
-</code></p></div>
+</pre>
+
 
     <p>Plus loin dans votre jeu de règles, vous pouvez vérifier le
     contenu de cette variable d'environnement via une directive
     RewriteCond :</p>
 
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
 RewriteCond %{ENV:rewritten} =1
-</code></p></div>
+</pre>
+
 
     </dd>
   </dl>

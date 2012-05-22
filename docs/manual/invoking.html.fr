@@ -122,7 +122,7 @@
 <div class="section">
 <h2><a name="boot" id="boot">Lancement au démarrage du système</a></h2>
 
-    <p>Si vous souhaitez que votre serveur continue de fonctionner après
+    <p>Si vous souhaitez que votre serveur web fonctionne après
     un redémarrage du système, vous devez ajouter un appel à
     <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> à vos
     fichiers de démarrage système (en général <code>rc.local</code> ou un
