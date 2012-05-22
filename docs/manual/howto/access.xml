@@ -113,7 +113,7 @@ Require ip ip.address
     <highlight language="config">
 Require not ip 192.168.205
 Require not host phishers.example.com moreidiots.example
-Require not gov
+Require not host gov
     </highlight>
 
     <p>Use of the <directive
