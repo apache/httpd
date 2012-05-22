@@ -114,13 +114,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       +1: rjung, rpluem, jorton
       -1:
 
-  * SECURITY: CVE-2012-0883 (cve.mitre.org)
-    envvars: Fix handling of empty LD_LIBRARY_PATH. 
-    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1296428
-    2.2.x patch: Trunk patch works
-    +1: sf, wrowe, covener
-
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
