@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/access.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/access.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
 <p>Ce document est un complément à la <a href="../mod/mod_rewrite.html">documentation de référence</a> de
@@ -82,30 +80,33 @@ correspondance</a></li><li><a href="vhosts.html">Serveurs virtuels</a></li><li><
 
 
 
-<div class="example"><p><code>
-RewriteCond %{HTTP_REFERER} <strong>!^$</strong><br />
-RewriteCond %{HTTP_REFERER} !www.example.com [NC]<br />
-RewriteRule <strong>\.(gif|jpg|png)$</strong>    -   [F,NC]
-</code></p></div>
+<pre class="prettyprint lang-config">
+RewriteCond %{HTTP_REFERER} !^$
+RewriteCond %{HTTP_REFERER} !www.example.com [NC]
+RewriteRule \.(gif|jpg|png)$    -   [F,NC]
+</pre>
+
 
 	<p>Dans le second exemple, plutôt que de rejeter la requête,
 	nous affichons une autre image à la place.</p>
 
-<div class="example"><p><code>
-RewriteCond %{HTTP_REFERER} <strong>!^$</strong><br />
-RewriteCond %{HTTP_REFERER} !www.example.com [NC]<br />
-RewriteRule <strong>\.(gif|jpg|png)$</strong>    /images/go-away.png   [R,NC]
-</code></p></div>
+<pre class="prettyprint lang-config">
+RewriteCond %{HTTP_REFERER} !^$
+RewriteCond %{HTTP_REFERER} !www.example.com [NC]
+RewriteRule \.(gif|jpg|png)$    /images/go-away.png   [R,NC]
+</pre>
+
 
 	<p>Dans le troisième exemple, nous redirigeons la requête vers
 	une image appartenant à un autre site.</p>
 
+<pre class="prettyprint lang-config">
+RewriteCond %{HTTP_REFERER} !^$
+RewriteCond %{HTTP_REFERER} !www.example.com [NC]
+RewriteRule \.(gif|jpg|png)$ http://other.example.com/image.gif   [R,NC]
+</pre>
 
-<div class="example"><p><code>
-RewriteCond %{HTTP_REFERER} <strong>!^$</strong><br />
-RewriteCond %{HTTP_REFERER} !www.example.com [NC]<br />
-RewriteRule <strong>\.(gif|jpg|png)$</strong> http://other.example.com/image.gif   [R,NC]
-</code></p></div>
+
 	<p>De tous ces exemples, les deux derniers semblent les plus
 	efficaces pour faire en sorte que les gens arrêtent de
 	référencer vos images à chaud, car il ne verront pas les images
@@ -120,14 +121,13 @@ RewriteRule <strong>\.(gif|jpg|png)$</strong> http://other.example.com/image.gif
 	simplement interdire l'accès à la ressource, vous pouvez y
 	parvenir sans utiliser mod_rewrite :</p>
 
-        <div class="example"><p><code>
-        SetEnvIf Referer exemple\.com localreferer<br />
-        &lt;FilesMatch \.(jpg|png|gif)$&gt;<br />
-        Order deny,allow<br />
-        Deny from all<br />
-        Allow from env=localreferer<br />
-        &lt;/FilesMatch&gt;
-        </code></p></div>
+        <pre class="prettyprint lang-config">
+SetEnvIf Referer example\.com localreferer
+&lt;FilesMatch \.(jpg|png|gif)$&gt;
+    Require env localreferer
+&lt;/FilesMatch&gt;
+        </pre>
+
         </dd>
       </dl>
 
@@ -156,8 +156,7 @@ RewriteRule <strong>\.(gif|jpg|png)$</strong> http://other.example.com/image.gif
         <p>Notez qu'il existe des méthodes d'exclusion qui n'utilisent
 	pas mod_rewrite. Notez aussi que toute technique qui repose sur
 	le contenu de la chaîne client <code>USER_AGENT</code> peut être
-	contournée très facilement car cette chaîne de caractères peut
-        être modifiée.</p>
+	contournée très facilement car cette chaîne peut être modifiée.</p>
         </dd>
 
         <dt>Solution :</dt>
@@ -165,7 +164,7 @@ RewriteRule <strong>\.(gif|jpg|png)$</strong> http://other.example.com/image.gif
         <dd>
         <p>On utilise un jeu de règles qui spécifie le répertoire à
 	protéger, ainsi que la chaîne client <code>USER_AGENT</code> qui
-	identifie le robot indésirable ou envahissant.</p>
+	identifie le robot malin ou envahissant.</p>
 
         <p>Dans cet exemple, nous bloquons un robot nommé
 	<code>Vilain_Robot</code> pour le répertoire
@@ -173,11 +172,12 @@ RewriteRule <strong>\.(gif|jpg|png)$</strong> http://other.example.com/image.gif
 	seulement depuis une source particulière, vous pouvez aussi
 	spécifier un intervalle d'adresses IP.</p>
 
-<div class="example"><p><code>
-RewriteCond %{HTTP_USER_AGENT}   ^<strong>Vilain_Robot</strong><br />
-RewriteCond %{REMOTE_ADDR}       =<strong>123\.45\.67\.[8-9]</strong><br />
-RewriteRule ^<strong>/secret/fichiers/</strong>   -   [<strong>F</strong>]
-</code></p></div>
+<pre class="prettyprint lang-config">
+RewriteCond %{HTTP_USER_AGENT}   ^NameOfBadRobot
+RewriteCond %{REMOTE_ADDR}       =123\.45\.67\.[8-9]
+RewriteRule ^/secret/files/   -   [F]
+</pre>
+
         </dd>
 
       <dt>Discussion :</dt>
@@ -187,14 +187,16 @@ RewriteRule ^<strong>/secret/fichiers/</strong>   -   [<strong>F</strong>]
         Vous pouvez cependant parvenir au même résultat sans utiliser
 	mod_rewrite via la méthode alternative suivante :
       </p>
-      <div class="example"><p><code>
-      SetEnvIfNoCase User-Agent ^Vilain_Robot interdit<br />
-      &lt;Location /secret/fichiers&gt;<br />
-      Order allow,deny<br />
-      Allow from all<br />
-      Deny from env=interdit<br />
-      &lt;/Location&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+SetEnvIfNoCase User-Agent ^NameOfBadRobot goaway
+&lt;Location /secret/files&gt;
+    &lt;RequireAll&gt;
+        Require all granted
+        Require not env goaway
+    &lt;/RequireAll&gt;
+&lt;/Location&gt;
+      </pre>
+
       <p>
       Comme indiqué plus haut, il est aisé de contourner cette
       technique, simplement en modifiant le contenu de l'en-tête
@@ -225,13 +227,14 @@ RewriteRule ^<strong>/secret/fichiers/</strong>   -   [<strong>F</strong>]
     <dt>Solution :</dt>
 
     <dd>
-<div class="example"><p><code>
-RewriteEngine on<br />
-RewriteMap    hosts-deny  txt:/chemin/vers/hosts.deny<br />
-RewriteCond   ${hosts-deny:%{REMOTE_ADDR}|NOT-FOUND} !=NOT-FOUND [OR]<br />
-RewriteCond   ${hosts-deny:%{REMOTE_HOST}|NOT-FOUND} !=NOT-FOUND<br />
+<pre class="prettyprint lang-config">
+RewriteEngine on
+RewriteMap    hosts-deny  txt:/path/to/hosts.deny
+RewriteCond   ${hosts-deny:%{REMOTE_ADDR}|NOT-FOUND} !=NOT-FOUND [OR]
+RewriteCond   ${hosts-deny:%{REMOTE_HOST}|NOT-FOUND} !=NOT-FOUND
 RewriteRule   ^  -  [F]
-</code></p></div>
+</pre>
+
 
 <div class="example"><p><code>
 ##<br />
@@ -281,24 +284,25 @@ bsdti1.sdm.de  -<br />
   <p>Le jeu de règles suivant utilise un fichier de correspondances pour
   associer chaque Referer à une cible de redirection.</p>
 
-<div class="example"><p><code>
-RewriteMap  deflector txt:/chemin/vers/deflector.map<br />
-<br />
-RewriteCond %{HTTP_REFERER} !=""<br />
-RewriteCond ${deflector:%{HTTP_REFERER}} =-<br />
-RewriteRule ^ %{HTTP_REFERER} [R,L]<br />
-<br />
-RewriteCond %{HTTP_REFERER} !=""<br />
-RewriteCond ${deflector:%{HTTP_REFERER}|NOT-FOUND} !=NOT-FOUND<br />
+<pre class="prettyprint lang-config">
+RewriteMap  deflector txt:/path/to/deflector.map
+
+RewriteCond %{HTTP_REFERER} !=""
+RewriteCond ${deflector:%{HTTP_REFERER}} =-
+RewriteRule ^ %{HTTP_REFERER} [R,L]
+
+RewriteCond %{HTTP_REFERER} !=""
+RewriteCond ${deflector:%{HTTP_REFERER}|NOT-FOUND} !=NOT-FOUND
 RewriteRule ^ ${deflector:%{HTTP_REFERER}} [R,L]
-</code></p></div>
+</pre>
+
 
       <p>Le fichier de correspondances contient les cibles de
       redirection associées à chaque Referer, ou, si nous voulons
       simplement rediriger les requêtes vers leur Referer, un "-" est
       inscrit dans le fichier de correspondances :</p>
 
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
 ##<br />
 ##  deflector.map<br />
 ##<br />
@@ -306,7 +310,8 @@ RewriteRule ^ ${deflector:%{HTTP_REFERER}} [R,L]
 http://www.mauvais-gars.example.com/mauvais/index.html    -<br />
 http://www.mauvais-gars.example.com/mauvais/index2.html   -<br />
 http://www.mauvais-gars.example.com/mauvais/index3.html   http://quelque-part.example.com/
-</code></p></div>
+</pre>
+
 
     </dd>
   </dl>

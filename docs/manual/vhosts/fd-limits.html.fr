@@ -27,8 +27,6 @@
 <a href="../ko/vhosts/fd-limits.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/fd-limits.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Quand de nombreux serveurs virtuels sont créés, Apache peut
@@ -105,10 +103,11 @@ entrée du journal. Ceci se paramètre au moyen de la directive
 variable <code>%v</code>. Ajoutez cette variable au début de la chaîne
 de définition du format de journalisations&nbsp;:</p>
 
-<div class="example"><p><code>
-LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost<br />
+<pre class="prettyprint lang-config">
+LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost
 CustomLog logs/multiple_vhost_log vhost
-</code></p></div>
+</pre>
+
 
 <p>Cette configuration va provoquer la création d'un fichier de
 journalisation au format standard (CLF&nbsp;: 'Common Log Format'), mais dont
