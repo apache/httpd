@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.23
 
+  *) SECURITY: CVE-2012-0883 (cve.mitre.org)
+     envvars: Fix insecure handling of LD_LIBRARY_PATH that could lead to the
+     current working directory to be searched for DSOs. [Stefan Fritsch]
+
   *) core: Fix building against PCRE 8.30 by switching from the obsolete
      pcre_info() to pcre_fullinfo(). PR 52623 [Ruediger Pluem, Rainer Jung]
 
