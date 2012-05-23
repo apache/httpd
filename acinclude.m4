@@ -106,7 +106,7 @@ AC_DEFUN(APACHE_GEN_CONFIG_VARS,[
 
   abs_srcdir="`(cd $srcdir && pwd)`"
 
-  echo creating config_vars.mk
+  AC_MSG_NOTICE([creating config_vars.mk])
   test -d build || $mkdir_p build
   > build/config_vars.mk
   for i in $APACHE_VAR_SUBST; do
