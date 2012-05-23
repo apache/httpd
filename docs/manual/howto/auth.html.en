@@ -561,11 +561,9 @@ Require group GroupName
         <pre class="prettyprint lang-config">
 &lt;RequireAll&gt;
     Require all granted
-    &lt;RequireNone&gt;
-        Require ip 192.168.205
-        Require host phishers.example.com moreidiots.example
-        Require host ke
-    &lt;/RequireNone&gt; 
+    Require not ip 192.168.205
+    Require not host phishers.example.com moreidiots.example
+    Require not host ke
 &lt;/RequireAll&gt;
         </pre>
 
