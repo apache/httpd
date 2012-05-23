@@ -372,6 +372,21 @@
       together with the <code>--enable-suexec</code> option to let
       APACI accept your request for using the suEXEC feature.</dd>
 
+      <dt><code>--enable-suexec-capabilities</code></dt>
+
+      <dd><strong>Linux specific:</strong> Normally,
+      the <code>suexec</code> binary is installed "setuid/setgid
+      root", which allows it to run with the full privileges of the
+      root user.  If this option is used, the <code>suexec</code>
+      binary will instead be installed with only the setuid/setgid
+      "capability" bits set, which is the subset of full root
+      priviliges required for suexec operation.  Note that
+      the <code>suexec</code> binary may not be able to write to a log
+      file in this mode; it is recommended that the
+      <code>--with-suexec-syslog --without-suexec-logfile</code>
+      options are used in conjunction with this mode, so that syslog
+      logging is used instead.</dd>
+
       <dt><code>--with-suexec-bin=<em>PATH</em></code></dt>
 
       <dd>The path to the <code>suexec</code> binary must be hard-coded

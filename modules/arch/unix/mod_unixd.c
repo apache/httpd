@@ -284,6 +284,13 @@ unixd_set_suexec(cmd_parms *cmd, void *dummy, int arg)
     return NULL;
 }
 
+#ifdef AP_SUEXEC_CAPABILITIES
+/* If suexec is using capabilities, don't test for the setuid bit. */
+#define SETUID_TEST(finfo) (1)
+#else
+#define SETUID_TEST(finfo) (finfo.protection & APR_USETID)
+#endif
+
 static int
 unixd_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                  apr_pool_t *ptemp)
@@ -300,7 +307,7 @@ unixd_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     ap_unixd_config.suexec_enabled = 0;
     if ((apr_stat(&wrapper, SUEXEC_BIN, APR_FINFO_NORM, ptemp))
          == APR_SUCCESS) {
-        if ((wrapper.protection & APR_USETID) && wrapper.user == 0
+        if (SETUID_TEST(wrapper) && wrapper.user == 0
             && (access(SUEXEC_BIN, R_OK|X_OK) == 0)) {
             ap_unixd_config.suexec_enabled = 1;
             ap_unixd_config.suexec_disabled_reason = "";

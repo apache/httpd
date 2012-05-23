@@ -738,6 +738,15 @@ AC_ARG_WITH(suexec-umask,
 APACHE_HELP_STRING(--with-suexec-umask,umask for suexec'd process),[
   AC_DEFINE_UNQUOTED(AP_SUEXEC_UMASK, 0$withval, [umask for suexec'd process] ) ] )
 
+INSTALL_SUEXEC=setuid
+AC_ARG_ENABLE([suexec-capabilities], 
+APACHE_HELP_STRING(--enable-suexec-capabilities,Use Linux capability bits not setuid root suexec), [
+INSTALL_SUEXEC=caps
+AC_DEFINE(AP_SUEXEC_CAPABILITIES, 1, 
+          [Enable if suexec is installed with Linux capabilities, not setuid])
+])
+APACHE_SUBST(INSTALL_SUEXEC)
+
 dnl APR should go after the other libs, so the right symbols can be picked up
 if test x${apu_found} != xobsolete; then
   AP_LIBS="$AP_LIBS `$apu_config --avoid-ldap --link-libtool --libs`"
