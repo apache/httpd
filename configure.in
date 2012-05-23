@@ -80,7 +80,9 @@ AC_CANONICAL_SYSTEM
 
 orig_prefix="$prefix"
 
-echo $ac_n "${nl}Configuring Apache Portable Runtime library ...${nl}"
+AC_MSG_NOTICE([])
+AC_MSG_NOTICE([Configuring Apache Portable Runtime library...])
+AC_MSG_NOTICE([])
 
 AC_ARG_WITH(included-apr,
 APACHE_HELP_STRING(--with-included-apr,Use bundled copies of APR/APR-Util))
@@ -130,7 +132,9 @@ APR_VERSION=`$apr_config --version`
 apr_major_version=`echo ${APR_VERSION} | sed 's,\..*,,'`
 APR_CONFIG="$APR_BINDIR/apr-${apr_major_version}-config"
 
-echo $ac_n "${nl}Configuring Apache Portable Runtime Utility library...${nl}"
+AC_MSG_NOTICE([])
+AC_MSG_NOTICE([Configuring Apache Portable Runtime Utility library...])
+AC_MSG_NOTICE([])
 
 if test "x${apr_major_version}" = "x2"; then
   apu_found=obsolete
@@ -229,7 +233,9 @@ else
 fi
 APACHE_SUBST(PCRE_LIBS)
 
-echo $ac_n "${nl}Configuring Apache httpd ...${nl}"
+AC_MSG_NOTICE([])
+AC_MSG_NOTICE([Configuring Apache httpd...])
+AC_MSG_NOTICE([])
 
 dnl If the source dir is not equal to the build dir, 
 dnl then we are running in VPATH mode.
@@ -251,7 +257,9 @@ APR_ADDTO(INCLUDES, $APU_INCLUDES)
 dnl Add in path to PCRE includes
 APR_ADDTO(INCLUDES, $PCRE_INCLUDES)
 
-echo $ac_n "${nl}Applying OS-specific hints for httpd ...${nl}"
+AC_MSG_NOTICE([])
+AC_MSG_NOTICE([Applying OS-specific hints for httpd...])
+AC_MSG_NOTICE([])
 
 case $host in
   *os2*)
@@ -787,7 +795,9 @@ if test -d ./test; then
 fi
 
 dnl ## Finalize the variables
-echo $ac_n "${nl}Restore user-defined environment settings...${nl}"
+AC_MSG_NOTICE([])
+AC_MSG_NOTICE([Restore user-defined environment settings...])
+AC_MSG_NOTICE([])
 
 APR_RESTORE_THE_ENVIRONMENT(CPPFLAGS, EXTRA_)
 APR_RESTORE_THE_ENVIRONMENT(CFLAGS, EXTRA_)
@@ -796,7 +806,9 @@ APR_RESTORE_THE_ENVIRONMENT(LDFLAGS, EXTRA_)
 APR_RESTORE_THE_ENVIRONMENT(LIBS, EXTRA_)
 APR_RESTORE_THE_ENVIRONMENT(INCLUDES, EXTRA_)
 
-echo $ac_n "${nl}Construct makefiles and header files...${nl}"
+AC_MSG_NOTICE([])
+AC_MSG_NOTICE([Construct makefiles and header files...])
+AC_MSG_NOTICE([])
 
 APACHE_GEN_CONFIG_VARS
 
