@@ -27,8 +27,6 @@
 <a href="./ko/logs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/logs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Pour véritablement gérer un serveur web,
     il est nécessaire de disposer d'un
@@ -179,9 +177,10 @@
     <p>Pour ce faire, vous devez spécifier le nom du module dans votre
     directive <code class="directive">LogLevel</code> :</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
     LogLevel info rewrite:trace5
-    </code></p></div>
+    </pre>
+
 
     <p>Dans cet exemple, le niveau de journalisation général est défini
     à info, et à <code>trace5</code> pour <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
@@ -235,10 +234,11 @@
 
       <p>Voici une configuration typique pour le journal des accès :</p>
 
-      <div class="example"><p><code>
-        LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br />
-         CustomLog logs/access_log common
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
+CustomLog logs/access_log common
+      </pre>
+
 
       <p>Ici est définie l'<em>identité</em> <code>common</code> qui est
       ensuite associée à une chaîne de format de journalisation particulière.
@@ -386,11 +386,11 @@
       "Combined Log Format" (Format de journalisation combiné). Il s'utilise
       comme suit :</p>
 
-      <div class="example"><p><code>
-        LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\"
-        \"%{User-agent}i\"" combined<br />
-         CustomLog log/access_log combined
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\"" combined
+CustomLog log/access_log combined
+      </pre>
+
 
       <p>Ce format est identique au Common Log Format, avec deux champs
       supplémentaires. Chacun de ces deux champs utilise la directive
@@ -439,12 +439,13 @@
       comment simuler les effets des directives <code>ReferLog</code> et
       <code>AgentLog</code>.</p>
 
-      <div class="example"><p><code>
-        LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br />
-        CustomLog logs/access_log common<br />
-        CustomLog logs/referer_log "%{Referer}i -&gt; %U"<br />
-        CustomLog logs/agent_log "%{User-agent}i"
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
+CustomLog logs/access_log common
+CustomLog logs/referer_log "%{Referer}i -&gt; %U"
+CustomLog logs/agent_log "%{User-agent}i"
+      </pre>
+
 
       <p>Cet exemple montre aussi qu'il n'est pas obligatoire d'associer
       une chaîne de format à un alias au moyen de la directive
@@ -469,34 +470,37 @@
       la variable d'environnement est définie.
       Quelques exemples :</p>
 
-      <div class="example"><p><code>
-        # Marque les requêtes en provenance de l'interface loop-back<br />
-        SetEnvIf Remote_Addr "127\.0\.0\.1" dontlog<br />
-        # Marque les requêtes pour le fichier robots.txt<br />
-        SetEnvIf Request_URI "^/robots\.txt$" dontlog<br />
-        # Journalise toutes les autres requêtes<br />
-        CustomLog logs/access_log common env=!dontlog
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+# Marque les requêtes en provenance de l'interface loop-back
+SetEnvIf Remote_Addr "127\.0\.0\.1" dontlog
+# Marque les requêtes pour le fichier robots.txt
+SetEnvIf Request_URI "^/robots\.txt$" dontlog
+# Journalise toutes les autres requêtes
+CustomLog logs/access_log common env=!dontlog
+      </pre>
+
 
       <p>Autre exemple, imaginons l'enregistrement des requêtes en provenance
       d'utilisateurs de langue anglaise dans un journal, et celles des autres
       utilisateurs dans un autre journal.</p>
 
-      <div class="example"><p><code>
+      <pre class="prettyprint lang-config">
         SetEnvIf Accept-Language "en" english<br />
         CustomLog logs/english_log common env=english<br />
         CustomLog logs/non_english_log common env=!english
-      </code></p></div>
+      </pre>
+
 
 	<p>Dans le contexte d'une mise en cache, il peut être
 	intéressant de connaître l'efficacité du cache. Pour y parvenir,
 	on pourrait utiliser cette méthode simple :</p>
 
-      <div class="example"><p><code>
-        SetEnv CACHE_MISS 1<br />
-        LogFormat "%h %l %u %t "%r " %&gt;s %b %{CACHE_MISS}e" common-cache<br />
-        CustomLog logs/access_log common-cache
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+SetEnv CACHE_MISS 1
+LogFormat "%h %l %u %t "%r " %&gt;s %b %{CACHE_MISS}e" common-cache
+CustomLog logs/access_log common-cache
+      </pre>
+
 
       <p><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> va s'exécuter avant
       <code class="module"><a href="./mod/mod_env.html">mod_env</a></code>, et si son action est couronnée de
@@ -509,10 +513,11 @@
       valeurs de journalisation conditionnelles basées sur le code de la
       réponse HTTP :</p>
 
-      <div class="example"><p><code>
-      LogFormat "%400,501{User-agent}i" browserlog<br />
-      LogFormat "%!200,304,302{Referer}i" refererlog
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+LogFormat "%400,501{User-agent}i" browserlog
+LogFormat "%!200,304,302{Referer}i" refererlog
+      </pre>
+
 
       <p>Dans le premier exemple, le <code>User-agent</code> sera
       enregistré si le code d'état HTTP est 400 ou 501. Dans le cas
@@ -604,10 +609,10 @@
     appelé <code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code>. Par exemple, pour une rotation des
     journaux toutes les 24 heures, ajoutez ces lignes :</p>
 
-    <div class="example"><p><code>
-      CustomLog "|/usr/local/apache/bin/rotatelogs
-      /var/log/access_log 86400" common
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+      CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/access_log 86400" common
+    </pre>
+
 
     <p>Notez que l'ensemble de la commande qui sera appelée par le tube de
     communication a été placée entre guillemets. Bien que cet exemple
@@ -628,11 +633,12 @@
   au lieu de "<code>|</code>" (en général avec <code>/bin/sh -c</code>)
   :</p>
 
-    <div class="example"><p><code>
-      # Invocation de "rotatelogs" en utilisant un shell<br />
-      CustomLog "|$/usr/local/apache/bin/rotatelogs
-      /var/log/access_log 86400" common
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+# Invocation de "rotatelogs" en utilisant un shell
+CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" common
+    </pre>
+
+
 
     <p>Il s'agissait du comportement par défaut sous Apache 2.2. Selon
     les spécificités du shell, ceci peut générer un processus shell
@@ -673,11 +679,11 @@
     journal, puis de séparer ultérieurement le journal en plusieurs journaux
     individuels. Considérons par exemple les directives suivantes :</p>
 
-    <div class="example"><p><code>
-      LogFormat "%v %l %u %t \"%r\" %&gt;s %b"
-      comonvhost<br />
-      CustomLog logs/access_log comonvhost
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+LogFormat "%v %l %u %t \"%r\" %&gt;s %b" comonvhost
+CustomLog logs/access_log comonvhost
+    </pre>
+
 
     <p>Le champ <code>%v</code> sert à enregistrer le nom de l'hôte virtuel qui
     traite la requête. Un programme tel que <a href="programs/other.html">split-logfile</a> peut ensuite être utilisé
@@ -733,6 +739,18 @@
       documentation du module <a href="mod/mod_cgi.html">mod_cgi</a>.</p>
     
 
+    <h3><a name="rewritelog" id="rewritelog">Journal de réécriture</a></h3>
+      
+
+      <p>Lorsqu'on utilise les fonctionnalités puissantes et complexes du
+      module <a href="mod/mod_rewrite.html">mod_rewrite</a>, il est presque
+      toujours nécessaire d'utiliser la directive
+      <code class="directive"><a href="./mod/mod_rewrite.html#rewritelog">RewriteLog</a></code> afin de
+      faciliter le débogage. Ce fichier journal fournit une analyse détaillée
+      de la transformation des requêtes par le moteur de réécriture. Le niveau
+      de détail est contrôlé par la directive
+      <code class="directive"><a href="./mod/mod_rewrite.html#rewriteloglevel">RewriteLogLevel</a></code>.</p>
+    
   </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="./en/logs.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -740,23 +758,22 @@
 <a href="./ja/logs.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/logs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/logs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>This section is experimental!</strong><br />Comments placed here should not be expected 
-to last beyond the testing phase of this system, nor do we in any way guarantee that we'll read them.</div>
+</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
-var disqus_shortname = 'httpd';
-var disqus_identifier = 'http://httpd.apache.org/docs/2.4/logs.html.fr';
+var comments_shortname = 'httpd';
+var comments_identifier = 'http://httpd.apache.org/docs/2.4/logs.html.fr';
 (function(w, d) {
-    var disabled = true;
+    var disabled = false;
     if (w.location.hostname.toLowerCase() == "httpd.apache.org" && disabled !== true) {
-        d.write('<div id="disqus_thread"><\/div>');
+        d.write('<div id="comments_thread"><\/div>');
         var s = d.createElement('script');
         s.type = 'text/javascript';
         s.async = true;
-        s.src = 'http' + '://' + disqus_shortname + '.disqus.com/embed.js';
+        s.src = 'http://c.apaste.info/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
         (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
     }
     else {
-        d.write('<div id="disqus_thread">Comments are disabled for this page at the moment.<\/div>');
+        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">

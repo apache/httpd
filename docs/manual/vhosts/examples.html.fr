@@ -27,8 +27,6 @@
 <a href="../ko/vhosts/examples.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/examples.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Le but de ce document est d'essayer de répondre aux questions 
@@ -82,33 +80,25 @@
     que sur la machine possédant ces entrées.</p>
     </div>
 
-    <div class="example"><h3>Configuration du serveur</h3><p><code>
-    
+    <pre class="prettyprint lang-config">
+# Apache doit écouter sur le port 80
+Listen 80
+&lt;VirtualHost *:80&gt;
+    DocumentRoot /www/example1
+    ServerName www.example.com
+  
+    # Autres directives ici
+&lt;/VirtualHost&gt;
 
-    # Apache doit écouter sur le port 80<br />
-    Listen 80<br />
-    <br />
-    <br />
-    &lt;VirtualHost *:80&gt;<br />
-    <span class="indent">
-      DocumentRoot /www/example.com<br />
-      ServerName www.example1.com<br />
-      <br />
-      # Autres directives ici<br />
-      <br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost *:80&gt;<br />
-    <span class="indent">
-      DocumentRoot /www/example.org<br />
-      ServerName www.example2.org<br />
-      <br />
-      # Autres directives ici<br />
-      <br />
-    </span>
-    &lt;/VirtualHost&gt;
-    </code></p></div>
+&lt;VirtualHost *:80&gt;
+    DocumentRoot /www/example2
+    ServerName www.example.org
+
+    # Autres directives ici
+&lt;/VirtualHost&gt;
+    </pre>
+
+   
 
     <p>Les astérisques correspondent à toutes les adresses, si bien que 
     le serveur principal ne répondra jamais à aucune requête. Comme le
@@ -160,35 +150,28 @@
     (<code>172.20.30.50</code>), deux serveurs virtuels (ou plus) 
     répondront.</p>
 
-    <div class="example"><h3>Configuration du serveur</h3><p><code>
-    
+    <pre class="prettyprint lang-config">
+Listen 80
 
-    Listen 80<br />
-        <br />
-    # Serveur "principal" sur 172.20.30.40<br />
-    ServerName server.example.com<br />
-    DocumentRoot /www/mainserver<br />
-        <br />
-    &lt;VirtualHost 172.20.30.50&gt;<br />
-    <span class="indent">
-        DocumentRoot /www/example.com<br />
-        ServerName www.example.com<br />
-   	        <br />
-        # D'autres directives ici ...<br />
-                   <br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-        <br />
-    &lt;VirtualHost 172.20.30.50&gt;<br />
-    <span class="indent">
-        DocumentRoot /www/example.org<br />
-        ServerName www.example.org<br />
-                <br />
-        # D'autres directives ici ...<br />
-                <br />
-    </span>
-    &lt;/VirtualHost&gt;
-    </code></p></div>
+# Serveur "principal" sur 172.20.30.40
+ServerName server.example.com
+DocumentRoot /www/mainserver
+
+&lt;VirtualHost 172.20.30.50&gt;
+    DocumentRoot /www/example1
+    ServerName www.example.com
+    
+    # D'autres directives ici ...
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.50&gt;
+    DocumentRoot /www/example2
+    ServerName www.example.org
+    
+    # D'autres directives ici ...
+&lt;/VirtualHost&gt;
+    </pre>
+
 
     <p>Toute requête arrivant sur une autre adresse que 
     <code>172.20.30.50</code> sera servie par le serveur principal. 
@@ -214,18 +197,14 @@
     aux requêtes internes et externes, au moyen d'une seule section 
     <code>VirtualHost</code>.</p>
 
-    <div class="example"><h3>Configuration du serveur</h3><p><code>
-    
+    <pre class="prettyprint lang-config">
+&lt;VirtualHost 192.168.1.1 172.20.30.40&gt;
+    DocumentRoot /www/server1
+    ServerName server.example.com
+    ServerAlias server
+&lt;/VirtualHost&gt;
+    </pre>
 
-    <br />
-    &lt;VirtualHost 192.168.1.1 172.20.30.40&gt;<br />
-    <span class="indent">
-        DocumentRoot /www/server1<br />
-        ServerName server.example.com<br />
-        ServerAlias server<br />
-    </span>
-    &lt;/VirtualHost&gt;
-    </code></p></div>
 
     <p>Ainsi, les requêtes en provenance de chacun des deux réseaux 
     seront servies par le même <code>VirtualHost</code>.</p>
@@ -252,40 +231,31 @@
     la sélection de la meilleure correspondance du point de vue adresse
     IP/port.</p>
 
-    <div class="example"><h3>Configuration du serveur</h3><p><code>
-    
+    <pre class="prettyprint lang-config">
+Listen 80
+Listen 8080
 
-    Listen 80<br />
-    Listen 8080<br />
-		<br />
-    &lt;VirtualHost 172.20.30.40:80&gt;<br />
-    <span class="indent">
-        ServerName www.example.com<br />
-        DocumentRoot /www/domain-80<br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-		<br />
-    &lt;VirtualHost 172.20.30.40:8080&gt;<br />
-    <span class="indent">
-        ServerName www.example.com<br />
-        DocumentRoot /www/domain-8080<br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-		<br />
-    &lt;VirtualHost 172.20.30.40:80&gt;<br />
-    <span class="indent">
-        ServerName www.example.org<br />
-        DocumentRoot /www/otherdomain-80<br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-		<br />
-    &lt;VirtualHost 172.20.30.40:8080&gt;<br />
-    <span class="indent">
-        ServerName www.example.org<br />
-        DocumentRoot /www/otherdomain-8080<br />
-    </span>
-    &lt;/VirtualHost&gt;
-    </code></p></div>
+&lt;VirtualHost 172.20.30.40:80&gt;
+    ServerName www.example.com
+    DocumentRoot /www/domain-80
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.40:8080&gt;
+    ServerName www.example.com
+    DocumentRoot /www/domain-8080
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.40:80&gt;
+    ServerName www.example.org
+    DocumentRoot /www/otherdomain-80
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.40:8080&gt;
+    ServerName www.example.org
+    DocumentRoot /www/otherdomain-8080
+&lt;/VirtualHost&gt;
+    </pre>
+
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -295,25 +265,20 @@
     et <code>172.20.30.50</code>) correspondant respectivement aux noms 
     <code>www.example.com</code> et <code>www.example.org</code>.</p>
 
-    <div class="example"><h3>Configuration du serveur</h3><p><code>
-    
+    <pre class="prettyprint lang-config">
+Listen 80
 
-    Listen 80<br />
-		<br />
-    &lt;VirtualHost 172.20.30.40&gt;<br />
-    <span class="indent">
-        DocumentRoot /www/example.com<br />
-        ServerName www.example1.com<br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-		<br />
-    &lt;VirtualHost 172.20.30.50&gt;<br />
-    <span class="indent">
-        DocumentRoot /www/example.org<br />
-        ServerName www.example2.org<br />
-    </span>
-    &lt;/VirtualHost&gt;
-    </code></p></div>
+&lt;VirtualHost 172.20.30.40&gt;
+    DocumentRoot /www/example1
+    ServerName www.example.com
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.50&gt;
+    DocumentRoot /www/example2
+    ServerName www.example.org
+&lt;/VirtualHost&gt;
+    </pre>
+
 
     <p>Les requêtes provenant d'adresses non spécifiées dans l'une des 
     directives <code>&lt;VirtualHost&gt;</code> (comme pour 
@@ -331,42 +296,33 @@
     Pour chacun d'eux, nous voulons un hébergement sur les ports 80 
     et 8080.</p>
 
-    <div class="example"><h3>Configuration du serveur</h3><p><code>
-    
+    <pre class="prettyprint lang-config">
+Listen 172.20.30.40:80
+Listen 172.20.30.40:8080
+Listen 172.20.30.50:80
+Listen 172.20.30.50:8080
 
-    Listen 172.20.30.40:80<br />
-    Listen 172.20.30.40:8080<br />
-    Listen 172.20.30.50:80<br />
-    Listen 172.20.30.50:8080<br />
-		<br />
-    &lt;VirtualHost 172.20.30.40:80&gt;<br />
-    <span class="indent">
-        DocumentRoot /www/example.com-80<br />
-        ServerName www.example.com<br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-		<br />
-    &lt;VirtualHost 172.20.30.40:8080&gt;<br />
-    <span class="indent">
-        DocumentRoot /www/example.com-8080<br />
-        ServerName www.example.com<br />
-		</span>
-    &lt;/VirtualHost&gt;<br />
-		<br />
-    &lt;VirtualHost 172.20.30.50:80&gt;<br />
-    <span class="indent">
-        DocumentRoot /www/example.org-80<br />
-        ServerName www.example.org<br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-		<br />
-    &lt;VirtualHost 172.20.30.50:8080&gt;<br />
-    <span class="indent">
-        DocumentRoot /www/example.org-8080<br />
-        ServerName www.example.org<br />
-    </span>
-    &lt;/VirtualHost&gt;
-    </code></p></div>
+&lt;VirtualHost 172.20.30.40:80&gt;
+    DocumentRoot /www/example1-80
+    ServerName www.example.com
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.40:8080&gt;
+    DocumentRoot /www/example1-8080
+    ServerName www.example.com
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.50:80&gt;
+    DocumentRoot /www/example2-80
+    ServerName www.example.org
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.50:8080&gt;
+    DocumentRoot /www/example2-8080
+    ServerName www.example.org
+&lt;/VirtualHost&gt;
+    </pre>
+
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -378,46 +334,35 @@
     section un serveur virtuel sélectionnable uniquement en fonction de
     son adresse IP.</p>
 
-    <div class="example"><h3>Configuration du serveur</h3><p><code>
-    
+    <pre class="prettyprint lang-config">
+Listen 80
+&lt;VirtualHost 172.20.30.40&gt;
+    DocumentRoot /www/example1
+    ServerName www.example.com
+&lt;/VirtualHost&gt;
 
-    Listen 80<br />
-    &lt;VirtualHost 172.20.30.40&gt;<br />
-    <span class="indent">
-        DocumentRoot /www/example1<br />
-        ServerName www.example.com<br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-		<br />
-    &lt;VirtualHost 172.20.30.40&gt;<br />
-    <span class="indent">
-        DocumentRoot /www/example2<br />
-        ServerName www.example.org<br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-		<br />
-    &lt;VirtualHost 172.20.30.40&gt;<br />
-    <span class="indent">
-        DocumentRoot /www/example3<br />
-        ServerName www.example.net<br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-		<br />
-    # "par-IP"<br />
-    &lt;VirtualHost 172.20.30.50&gt;<br />
-    <span class="indent">
-        DocumentRoot /www/example4<br />
-        ServerName www.example.edu<br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-		<br />
-    &lt;VirtualHost 172.20.30.60&gt;<br />
-    <span class="indent">
-        DocumentRoot /www/example5<br />
-        ServerName www.example.gov<br />
-    </span>
-    &lt;/VirtualHost&gt;
-    </code></p></div>
+&lt;VirtualHost 172.20.30.40&gt;
+    DocumentRoot /www/example2
+    ServerName www.example.org
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.40&gt;
+    DocumentRoot /www/example3
+    ServerName www.example.net
+&lt;/VirtualHost&gt;
+
+# IP-based
+&lt;VirtualHost 172.20.30.50&gt;
+    DocumentRoot /www/example4
+    ServerName www.example.edu
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.60&gt;
+    DocumentRoot /www/example5
+    ServerName www.example.gov
+&lt;/VirtualHost&gt;
+    </pre>
+
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -433,14 +378,15 @@
     transfert, au cas où plusieurs noms de domaines cohabitent sur 
     une même machine.</p>
 
-    <div class="example"><p><code>
-    &lt;VirtualHost *:*&gt;<br />
-        ProxyPreserveHost On<br />
-        ProxyPass / http://192.168.111.2<br />
-        ProxyPassReverse / http://192.168.111.2/<br />
-        ServerName hostname.example.com<br />
-    &lt;/VirtualHost&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;VirtualHost *:*&gt;
+    ProxyPreserveHost On
+    ProxyPass / http://192.168.111.2/
+    ProxyPassReverse / http://192.168.111.2/
+    ServerName hostname.example.com
+&lt;/VirtualHost&gt;
+    </pre>
+
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -454,15 +400,12 @@
     d'adresses IP ou de ports non connus, <em>c'est-à-dire</em>, d'un 
     couple adresse/port non traité par aucun autre serveur virtuel.</p>
 
-    <div class="example"><h3>Configuration du serveur</h3><p><code>
-    
+    <pre class="prettyprint lang-config">
+&lt;VirtualHost _default_:*&gt;
+    DocumentRoot /www/default
+&lt;/VirtualHost&gt;
+    </pre>
 
-    &lt;VirtualHost _default_:*&gt;<br />
-    <span class="indent">
-        DocumentRoot /www/default<br />
-    </span>
-    &lt;/VirtualHost&gt;
-    </code></p></div>
 
     <p>L'utilisation d'un tel serveur virtuel avec un joker pour le 
     port empêche de manière efficace qu'une requête n'atteigne le 
@@ -490,23 +433,18 @@
     le serveur écoute sur plusieurs ports et un second serveur virtuel 
     <code>_default_</code> pour le port 80 est ajouté.</p>
 
-    <div class="example"><h3>Configuration du serveur</h3><p><code>
-    
+    <pre class="prettyprint lang-config">
+&lt;VirtualHost _default_:80&gt;
+    DocumentRoot /www/default80
+    # ...
+&lt;/VirtualHost&gt;
 
-    &lt;VirtualHost _default_:80&gt;<br />
-    <span class="indent">
-        DocumentRoot /www/default80<br />
-        # ...<br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-		<br />
-    &lt;VirtualHost _default_:*&gt;<br />
-    <span class="indent">
-        DocumentRoot /www/default<br />
-        # ...<br />
-    </span>
-    &lt;/VirtualHost&gt;
-    </code></p></div>
+&lt;VirtualHost _default_:*&gt;
+    DocumentRoot /www/default
+    # ...
+&lt;/VirtualHost&gt;
+    </pre>
+
 
     <p>Le serveur virtuel par défaut défini pour le port 80 (il doit 
     impérativement être placé avant un autre serveur virtuel par 
@@ -521,14 +459,13 @@
     <p>Nous voulons créer un serveur virtuel par défaut seulement 
     pour le port 80.</p>
 
-    <div class="example"><h3>Configuration du serveur</h3><p><code>
-    
+    <pre class="prettyprint lang-config">
+&lt;VirtualHost _default_:80&gt;
+DocumentRoot /www/default
+...
+&lt;/VirtualHost&gt;
+    </pre>
 
-    &lt;VirtualHost _default_:80&gt;<br />
-    DocumentRoot /www/default<br />
-    ...<br />
-    &lt;/VirtualHost&gt;
-    </code></p></div>
 
     <p>Une requête vers une adresse non spécifiée sur le port 80 
     sera servie par le serveur virtuel par défaut, et toute autre 
@@ -555,30 +492,25 @@
     adresse IP (<code>172.20.30.50</code>) dans la directive 
     <code>VirtualHost</code>.</p>
 
-    <div class="example"><h3>Configuration du serveur</h3><p><code>
-    
+    <pre class="prettyprint lang-config">
+Listen 80
+ServerName www.example.com
+DocumentRoot /www/example1
 
-    Listen 80<br />
-    ServerName www.example.com<br />
-    DocumentRoot /www/example.com<br />
-		<br />
-    &lt;VirtualHost 172.20.30.40 172.20.30.50&gt;<br />
-    <span class="indent">
-        DocumentRoot /www/example.org<br />
-        ServerName www.example.org<br />
-        # ...<br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-		<br />
-    &lt;VirtualHost 172.20.30.40&gt;<br />
-    <span class="indent">
-        DocumentRoot /www/example.net<br />
-        ServerName www.example.net<br />
-        ServerAlias *.example.net<br />
-        # ...<br />
-    </span>
-    &lt;/VirtualHost&gt;
-    </code></p></div>
+&lt;VirtualHost 172.20.30.40 172.20.30.50&gt;
+    DocumentRoot /www/example2
+    ServerName www.example.org
+    # ...
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.40&gt;
+    DocumentRoot /www/example3
+    ServerName www.example.net
+    ServerAlias *.example.net
+    # ...
+&lt;/VirtualHost&gt;
+    </pre>
+
 
     <p>Le serveur virtuel peut maintenant être joint par la nouvelle 
     adresse (comme un serveur virtuel par IP) et par l'ancienne 
@@ -600,41 +532,34 @@
     des liens dont les URLs auront un préfixe identifiant les serveurs 
     virtuels par nom.</p>
 
-    <div class="example"><h3>Configuration du serveur</h3><p><code>
-    
+    <pre class="prettyprint lang-config">
+&lt;VirtualHost 172.20.30.40&gt;
+    # serveur virtuel primaire
+    DocumentRoot /www/subdomain
+    RewriteEngine On
+    RewriteRule . /www/subdomain/index.html
+    # ...
+&lt;/VirtualHost&gt;
 
-    &lt;VirtualHost 172.20.30.40&gt;<br />
-    <span class="indent">
-        # Serveur virtuel primaire<br />
-        DocumentRoot /www/subdomain<br />
-        RewriteEngine On<br />
-        RewriteRule . /www/subdomain/index.html<br />
-        # ...<br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-		<br />
-    &lt;VirtualHost 172.20.30.40&gt;<br />
-    DocumentRoot /www/subdomain/sub1<br />
-    <span class="indent">
-        ServerName www.sub1.domain.tld<br />
-        ServerPath /sub1/<br />
-        RewriteEngine On<br />
-        RewriteRule ^(/sub1/.*) /www/subdomain$1<br />
-        # ...<br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-		<br />
-    &lt;VirtualHost 172.20.30.40&gt;<br />
-    <span class="indent">
-        DocumentRoot /www/subdomain/sub2<br />
-        ServerName www.sub2.domain.tld<br />
-        ServerPath /sub2/<br />
-        RewriteEngine On<br />
-        RewriteRule ^(/sub2/.*) /www/subdomain$1<br />
-        # ...<br />
-    </span>
-    &lt;/VirtualHost&gt;
-    </code></p></div>
+&lt;VirtualHost 172.20.30.40&gt;
+DocumentRoot /www/subdomain/sub1
+    ServerName www.sub1.domain.tld
+    ServerPath /sub1/
+    RewriteEngine On
+    RewriteRule ^(/sub1/.*) /www/subdomain$1
+    # ...
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.40&gt;
+    DocumentRoot /www/subdomain/sub2
+    ServerName www.sub2.domain.tld
+    ServerPath /sub2/
+    RewriteEngine On
+    RewriteRule ^(/sub2/.*) /www/subdomain$1
+    # ...
+&lt;/VirtualHost&gt;
+    </pre>
+
 
     <p>À cause de la directive 
     <code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code>, une requête sur 
@@ -660,23 +585,22 @@
 <a href="../ja/vhosts/examples.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/examples.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/examples.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>This section is experimental!</strong><br />Comments placed here should not be expected 
-to last beyond the testing phase of this system, nor do we in any way guarantee that we'll read them.</div>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
-var disqus_shortname = 'httpd';
-var disqus_identifier = 'http://httpd.apache.org/docs/2.4/vhosts/examples.html.fr';
+var comments_shortname = 'httpd';
+var comments_identifier = 'http://httpd.apache.org/docs/2.4/vhosts/examples.html.fr';
 (function(w, d) {
-    var disabled = true;
+    var disabled = false;
     if (w.location.hostname.toLowerCase() == "httpd.apache.org" && disabled !== true) {
-        d.write('<div id="disqus_thread"><\/div>');
+        d.write('<div id="comments_thread"><\/div>');
         var s = d.createElement('script');
         s.type = 'text/javascript';
         s.async = true;
-        s.src = 'http' + '://' + disqus_shortname + '.disqus.com/embed.js';
+        s.src = 'http://c.apaste.info/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
         (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
     }
     else {
-        d.write('<div id="disqus_thread">Comments are disabled for this page at the moment.<\/div>');
+        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
