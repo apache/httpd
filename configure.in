@@ -703,7 +703,24 @@ APACHE_HELP_STRING(--with-suexec-gidmin,Minimal allowed GID),[
 
 AC_ARG_WITH(suexec-logfile,
 APACHE_HELP_STRING(--with-suexec-logfile,Set the logfile),[
-  AC_DEFINE_UNQUOTED(AP_LOG_EXEC, "$withval", [SuExec log file] ) ] )
+  if test "x$withval" = "xyes"; then
+    AC_DEFINE_UNQUOTED(AP_LOG_EXEC, "$withval", [SuExec log file])
+  fi
+])
+
+AC_ARG_WITH(suexec-syslog,
+APACHE_HELP_STRING(--with-suexec-syslog,Set the logfile),[
+  if test $withval = "yes"; then
+    if test "x${with_suexec_logfile}" != "xno"; then
+      AC_MSG_NOTICE([hint: use "--without-suexec-logfile --with-suexec-syslog"])
+      AC_MSG_ERROR([suexec does not support both logging to file and syslog])
+    fi
+    AC_CHECK_FUNCS([vsyslog], [], [
+       AC_MSG_ERROR([cannot support syslog from suexec without vsyslog()])])
+    AC_DEFINE(AP_LOG_SYSLOG, 1, [SuExec log to syslog])
+  fi    
+])
+
 
 AC_ARG_WITH(suexec-safepath,
 APACHE_HELP_STRING(--with-suexec-safepath,Set the safepath),[
