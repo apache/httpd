@@ -233,11 +233,22 @@ install-man:
 	  cd $(DESTDIR)$(manualdir) && find . -name ".svn" -type d -print | xargs rm -rf 2>/dev/null || true; \
 	fi
 
-install-suexec:
+install-suexec: install-suexec-binary install-suexec-$(INSTALL_SUEXEC)
+
+install-suexec-binary:
 	@if test -f $(builddir)/support/suexec; then \
             test -d $(DESTDIR)$(sbindir) || $(MKINSTALLDIRS) $(DESTDIR)$(sbindir); \
             $(INSTALL_PROGRAM) $(top_builddir)/support/suexec $(DESTDIR)$(sbindir); \
-            chmod 4755 $(DESTDIR)$(sbindir)/suexec; \
+	fi
+
+install-suexec-setuid:
+	@if test -f $(builddir)/support/suexec; then \
+	    chmod 4755 $(DESTDIR)$(sbindir)/suexec; \
+	fi
+
+install-suexec-caps:
+	@if test -f $(builddir)/support/suexec; then \
+            setcap 'cap_setuid,cap_setgid+pe' $(DESTDIR)$(sbindir)/suexec; \
 	fi
 
 suexec:
