@@ -294,24 +294,23 @@
 <div class="top"><a href="#page-header"><img alt="top" src="{$path}/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="comments_section" id="comments_section"><xsl:value-of select="$message[@id='comments']" /></a></h2>
-<div class="warning"><strong>This section is experimental!</strong><br/>Comments placed here should not be expected 
-to last beyond the testing phase of this system, nor do we in any way guarantee that we'll read them.</div>&lf;
+<div class="warning"><strong>Notice:</strong><br/>This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>&lf;
 <script type="text/javascript">
 <xsl:text disable-output-escaping="yes"><![CDATA[<!--//--><![CDATA[//><!--
-var disqus_shortname = 'httpd';
-var disqus_identifier = 'http://httpd.apache.org/docs/]]></xsl:text>&httpd.disqus;<xsl:value-of select="concat($metafile/path, $metafile/basename, '.html.', $doclang)" disable-output-escaping="yes" /><xsl:text disable-output-escaping="yes"><![CDATA[';
+var comments_shortname = 'httpd';
+var comments_identifier = 'http://httpd.apache.org/docs/]]></xsl:text>&httpd.disqus;<xsl:value-of select="concat($metafile/path, $metafile/basename, '.html.', $doclang)" disable-output-escaping="yes" /><xsl:text disable-output-escaping="yes"><![CDATA[';
 (function(w, d) {
-    var disabled = true;
+    var disabled = false;
     if (w.location.hostname.toLowerCase() == "httpd.apache.org" && disabled !== true) {
-        d.write('<div id="disqus_thread"><\/div>');
+        d.write('<div id="comments_thread"><\/div>');
         var s = d.createElement('script');
         s.type = 'text/javascript';
         s.async = true;
-        s.src = 'http' + '://' + disqus_shortname + '.disqus.com/embed.js';
+        s.src = 'http://c.apaste.info/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
         (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
     }
     else {
-        d.write('<div id="disqus_thread">Comments are disabled for this page at the moment.<\/div>');
+        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
     }
 })(window, document);
 //--><!]]]]>></xsl:text></script>
