@@ -433,6 +433,12 @@
       "<code>suexec_log</code>" and located in your standard logfile
       directory (<code>--logfiledir</code>).</dd>
 
+      <dt><code>--with-suexec-syslog</code></dt>
+
+      <dd>If defined, suexec will log notices and errors to syslog
+      instead of a logfile.  This option must be combined
+      with <code>--without-suexec-logfile</code>.</dd>
+
       <dt><code>--with-suexec-safepath=<em>PATH</em></code></dt>
 
       <dd>Define a safe PATH environment to pass to CGI
@@ -550,9 +556,12 @@ Group webgroup
 
     <p>The suEXEC wrapper will write log information
     to the file defined with the <code>--with-suexec-logfile</code>
-    option as indicated above. If you feel you have configured and
-    installed the wrapper properly, have a look at this log and the
-    error_log for the server to see where you may have gone astray.</p>
+    option as indicated above, or to syslog if <code>--with-suexec-syslog</code>
+    is used. If you feel you have configured and
+    installed the wrapper properly, have a look at the log and the
+    error_log for the server to see where you may have gone astray. 
+    The output of <code>"suexec -V"</code> will show the options
+    used to compile suexec, if using a binary distribution.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
