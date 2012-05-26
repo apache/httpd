@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1330911:1336426 (outdated) -->
+<!-- English Revision : 1336426 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -112,7 +112,7 @@ Alias /secure /webpages/secure
     AuthBasicProvider ldap-other-alias  ldap-alias1
     
     AuthType Basic
-    AuthName LDAP_Protected_Place
+    AuthName LDAP_Protected Place
     Require valid-user
 &lt;/Directory&gt;
           </highlight>

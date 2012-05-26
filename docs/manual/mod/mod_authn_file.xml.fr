@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1174747:1336869 (outdated) -->
+<!-- English Revision : 1336869 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -84,12 +84,12 @@ passe</description>
 
      <p>Le format du mot de passe chiffr&eacute; d&eacute;pend du frontal
      d'authentification utilis&eacute; (par exemple
-     <module>mod_authn_basic</module> ou
-     <module>mod_authn_digest</module>). Voir la documentation sur les
+     <module>mod_auth_basic</module> ou
+     <module>mod_auth_digest</module>). Voir la documentation sur les
      <a href="../misc/password_encryptions.html">Formats de mots de
      passe</a> pour plus de d&eacute;tails.</p>
 
-    <p>Pour <module>mod_authn_basic</module>, utilisez le programme
+    <p>Pour <module>mod_auth_basic</module>, utilisez le programme
     <program>htpasswd</program> fourni avec la distribution binaire,
     mais que vous trouverez aussi dans le r&eacute;pertoire
     <code>src/support</code> de l'arborescence des sources. Voir sa <a
@@ -116,7 +116,7 @@ passe</description>
     avec la directive <directive
     module="mod_authn_dbm">AuthDBMUserFile</directive>.</p>
 
-    <p>Pour <module>mod_authn_digest</module>, vous devez utiliser
+    <p>Pour <module>mod_auth_digest</module>, vous devez utiliser
     le programme <program>htdigest</program>.
     Notez que vous ne pouvez pas m&eacute;langer des donn&eacute;es utilisateur pour
     l'Authentification HTTP &agrave; base de condens&eacute; et des donn&eacute;es pour
