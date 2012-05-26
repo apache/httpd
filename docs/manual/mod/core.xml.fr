@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1332627:1336979 (outdated) -->
+<!-- English Revision : 1336979-->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -4359,6 +4359,16 @@ host</context>
 &lt;Location "/status"&gt;
   SetHandler server-status
 &lt;/Location&gt;
+    </highlight>
+
+    <p>Vous pouvez aussi utiliser cette directive pour associer un
+    gestionnaire &agrave; des fichiers poss&egrave;dant une extension de nom de
+    fichier particuli&egrave;re. Par exemple :</p>
+
+    <highlight language="config">
+&lt;FilesMatch \.php$&gt;
+    SetHandler application/x-httpd-php
+&lt;/FilesMatch&gt;
     </highlight>
 
     <p>Vous pouvez &eacute;craser la d&eacute;finition ant&eacute;rieure d'une directive

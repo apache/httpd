@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1331576:1336196 (outdated) -->
+<!-- English Revision : 1336196 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -527,8 +527,11 @@ print "Hello, World.";
 
       <highlight language="perl">
 #!/usr/bin/perl
+use strict;
+use warnings;
+
 print "Content-type: text/html\n\n";
-foreach $key (keys %ENV) {
+foreach my $key (keys %ENV) {
     print "$key --&gt; $ENV{$key}&lt;br&gt;";
 }
       </highlight>

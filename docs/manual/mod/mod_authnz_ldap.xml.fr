@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1330921:1337035 (outdated) -->
+<!-- English Revision : 1337035 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -460,7 +460,7 @@ uniqueMember: cn=Elliot Rhodes, o=Example
     :</p>
 <highlight language="config">
 Require ldap-group cn=Employees, o-Example
-AuthLDAPSubGroupDepth 1
+AuthLDAPMaxSubGroupDepth 1
 </highlight>
 
     <p>Le comportement de cette directive est modifié par les directives
@@ -768,9 +768,9 @@ AuthLDAPURL ldap://10.0.0.1:3268/?userPrincipalName?sub
     à <em>chaque</em> fichier <code>.htaccess</code> qui sera créé dans
     le site web :</p>
 <highlight language="config">
-AuthLDAPURL            "l'url"
-AuthGroupFile <em>mon-fichier-de-groupes</em>
-Require group <em>mon-fichier-de-groupes</em>
+AuthLDAPURL       "the url"
+AuthGroupFile     mygroupfile
+Require group     mygroupfile
 </highlight>
 
 <section id="howitworks"><title>Comment ça marche</title>
