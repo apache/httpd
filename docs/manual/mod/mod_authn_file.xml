@@ -104,7 +104,7 @@ passwords for authentication</description>
     module="mod_authn_dbm">AuthDBMUserFile</directive> should be used
     instead.</p>
 
-    <p>For <module>mod_authn_digest</module>, use <program>htdigest</program>
+    <p>For <module>mod_auth_digest</module>, use <program>htdigest</program>
     instead. Note that you cannot mix user data for Digest Authentication
     and Basic Authentication within the same file.</p>
 
