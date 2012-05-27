@@ -175,7 +175,7 @@ static int dying = 0;
 static int workers_may_exit = 0;
 static int start_thread_may_exit = 0;
 static int listener_may_exit = 0;
-static int requests_this_child;
+static int conns_this_child;
 static int num_listensocks = 0;
 static apr_uint32_t connection_count = 0;
 static int resource_shortage = 0;
@@ -1049,7 +1049,7 @@ read_request:
     return 1;
 }
 
-/* requests_this_child has gone to zero or below.  See if the admin coded
+/* conns_this_child has gone to zero or below.  See if the admin coded
    "MaxConnectionsPerChild 0", and keep going in that case.  Doing it this way
    simplifies the hot path in worker_thread */
 static void check_infinite_requests(void)
@@ -1058,7 +1058,7 @@ static void check_infinite_requests(void)
         signal_threads(ST_GRACEFUL);
     }
     else {
-        requests_this_child = INT_MAX;  /* keep going */
+        conns_this_child = INT_MAX;  /* keep going */
     }
 }
 
@@ -1447,7 +1447,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                 break;
         }
 
-        if (requests_this_child <= 0) {
+        if (conns_this_child <= 0) {
             check_infinite_requests();
         }
 
@@ -1850,7 +1850,7 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
             worker_sockets[thread_slot] = csd;
             rv = process_socket(thd, ptrans, csd, cs, process_slot, thread_slot);
             if (!rv) {
-                requests_this_child--;
+                conns_this_child--;
             }
             worker_sockets[thread_slot] = NULL;
         }
@@ -2148,11 +2148,11 @@ static void child_main(int child_num_arg)
     }
 
     if (ap_max_requests_per_child) {
-        requests_this_child = ap_max_requests_per_child;
+        conns_this_child = ap_max_requests_per_child;
     }
     else {
         /* coding a value of zero means infinity */
-        requests_this_child = INT_MAX;
+        conns_this_child = INT_MAX;
     }
 
     /* Setup worker threads */
