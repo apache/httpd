@@ -27,8 +27,6 @@
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>L'authentification est un processus qui vous permet de vérifier
     qu'une personne est bien celle qu'elle prétend être. L'autorisation
@@ -593,11 +591,9 @@ autorisation</a></h2>
         <pre class="prettyprint lang-config">
 &lt;RequireAll&gt;
     Require all granted
-    &lt;RequireNone&gt;
-        Require ip 192.168.205
-        Require host phishers.example.com moreidiots.example
-        Require host ke
-    &lt;/RequireNone&gt; 
+    Require not ip 192.168.205
+    Require not host phishers.example.com moreidiots.example
+    Require not host ke
 &lt;/RequireAll&gt;
         </pre>
 
