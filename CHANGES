@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mpm_event: Fix handling of MaxConnectionsPerChild. [Stefan Fritsch]
+
   *) suexec: Add --enable-suexec-capabilites support on Linux, to use
      setuid/setgid capability bits rather than a setuid root binary.
      [Joe Orton]
