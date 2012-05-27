@@ -123,6 +123,7 @@ AP_DECLARE(int) ap_regcomp(ap_regex_t * preg, const char *pattern, int cflags)
 {
     const char *errorptr;
     int erroffset;
+    int errcode = 0;
     int options = 0;
 
     if ((cflags & AP_REG_ICASE) != 0)
@@ -133,11 +134,18 @@ AP_DECLARE(int) ap_regcomp(ap_regex_t * preg, const char *pattern, int cflags)
         options |= PCRE_DOTALL;
 
     preg->re_pcre =
-        pcre_compile(pattern, options, &errorptr, &erroffset, NULL);
+        pcre_compile2(pattern, options, &errcode, &errorptr, &erroffset, NULL);
     preg->re_erroffset = erroffset;
 
-    if (preg->re_pcre == NULL)
+    if (preg->re_pcre == NULL) {
+        /*
+         * There doesn't seem to be constants defined for compile time error
+         * codes. 21 is "failed to get memory" according to pcreapi(3).
+         */
+        if (errcode == 21)
+            return AP_REG_ESPACE;
         return AP_REG_INVARG;
+    }
 
     pcre_fullinfo((const pcre *)preg->re_pcre, NULL,
                    PCRE_INFO_CAPTURECOUNT, &(preg->re_nsub));
