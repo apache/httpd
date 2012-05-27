@@ -389,6 +389,21 @@ de suEXEC</a></li>
       configuration de la compilation d'Apache) accepte votre demande
       d'utilisation de la fonctionnalité suEXEC.</dd>
 
+      <dt><code>--enable-suexec-capabilities</code></dt>
+
+      <dd><strong>Spécifique à Linux :</strong> Normalement, le binaire
+      <code>suexec</code> est installé en mode "setuid/setgid root", ce
+      qui lui permet de s'exécuter avec la totalité des privilèges de
+      l'utilisateur root. Avec cette option, le binaire
+      <code>suexec</code> sera installé avec seulement les bits
+      setuid/setgid "capability" définis, ce qui constitue un
+      sous-ensemble des provilèges de root pour les opérations de
+      suexec. Notez que dans ce mode, le binaire <code>suexec</code> ne
+      sera pas en mesure d'écrire dans un fichier journal ; il est donc
+      recommandé dans ce mode d'utiliser les options
+      <code>--with-suexec-syslog --without-suexec-logfile</code>, afin
+      d'utiliser la jounalisation syslog.</dd>
+
       <dt><code>--with-suexec-bin=<em>PATH</em></code></dt>
 
       <dd>Le chemin du binaire <code>suexec</code> doit être codé en
@@ -462,6 +477,13 @@ de suEXEC</a></li>
       journal se nomme "<code>suexec_log</code>" et se trouve dans votre
       répertoire standard des fichiers journaux défini par
       <code>--logfiledir</code></dd>
+
+      <dt><code>--with-suexec-syslog</code></dt>
+
+      <dd>Avec cette option, suexec enregistrera les messages d'erreurs
+      et d'informations dans le journal syslog. Cette option doit être
+      utilisée conjointement avec l'option
+      <code>--without-suexec-logfile</code>.</dd>
 
       <dt><code>--with-suexec-safepath=<em>PATH</em></code></dt>
 
@@ -592,10 +614,15 @@ de suEXEC</a></h2>
 
     <p>Le conteneur suEXEC va écrire ses informations de journalisation
     dans le fichier défini par l'option de compilation
-    <code>--with-suexec-logfile</code> comme indiqué plus haut. Si vous
+    <code>--with-suexec-logfile</code> comme indiqué plus haut,
+    ou vers syslog si l'option <code>--with-suexec-syslog</code> est
+    utilisée. Si vous
     pensez avoir configuré et installé correctement le conteneur,
     consultez ce journal, ainsi que le journal des erreurs du serveur
-    afin de déterminer l'endroit où vous avez fait fausse route.</p>
+    afin de déterminer l'endroit où vous avez fait fausse
+    route. Si vous utilisez une distribution binaire, la commande
+    <code>"suexec -V"</code> vous permet de déterminer quelles options
+    ont été utilisées pour compiler suexec.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
