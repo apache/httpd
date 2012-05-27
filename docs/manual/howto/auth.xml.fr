@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1331425:1341749 (outdated) -->
+<!-- English Revision : 1341749 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviwed by : Vincent Deffontaines -->
 
@@ -592,11 +592,9 @@ autorisation</title>
         <highlight language="config">
 &lt;RequireAll&gt;
     Require all granted
-    &lt;RequireNone&gt;
-        Require ip 192.168.205
-        Require host phishers.example.com moreidiots.example
-        Require host ke
-    &lt;/RequireNone&gt; 
+    Require not ip 192.168.205
+    Require not host phishers.example.com moreidiots.example
+    Require not host ke
 &lt;/RequireAll&gt;
         </highlight>
 
