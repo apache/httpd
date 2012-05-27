@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1330277:1337880 (outdated) -->
+<!-- English Revision : 1337880 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -244,8 +244,8 @@ modifier la configuration du serveur au niveau de chaque r&eacute;pertoire.</p>
     <example><title>Section de votre fichier
     <code>httpd.conf</code></title>
       <highlight language="config">
-&lt;Directory /www/htdocs/example&gt;<br />
-    AddType text/example .exm<br />
+&lt;Directory /www/htdocs/example&gt;
+    AddType text/example .exm
 &lt;/Directory&gt;
     </highlight>
     </example>
@@ -323,7 +323,7 @@ modifier la configuration du serveur au niveau de chaque r&eacute;pertoire.</p>
 
     <highlight language="config">
 &lt;Directory /www/htdocs&gt;
-    Allowoverride All
+    AllowOverride All
 &lt;/Directory&gt;
 
 &lt;Location /&gt;

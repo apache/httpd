@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1330883 -->
+<!-- English Revision: 1342078 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -379,6 +379,21 @@
       configuration de la compilation d'Apache) accepte votre demande
       d'utilisation de la fonctionnalit&eacute; suEXEC.</dd>
 
+      <dt><code>--enable-suexec-capabilities</code></dt>
+
+      <dd><strong>Sp&eacute;cifique &agrave; Linux :</strong> Normalement, le binaire
+      <code>suexec</code> est install&eacute; en mode "setuid/setgid root", ce
+      qui lui permet de s'ex&eacute;cuter avec la totalit&eacute; des privil&egrave;ges de
+      l'utilisateur root. Avec cette option, le binaire
+      <code>suexec</code> sera install&eacute; avec seulement les bits
+      setuid/setgid "capability" d&eacute;finis, ce qui constitue un
+      sous-ensemble des provil&egrave;ges de root pour les op&eacute;rations de
+      suexec. Notez que dans ce mode, le binaire <code>suexec</code> ne
+      sera pas en mesure d'&eacute;crire dans un fichier journal ; il est donc
+      recommand&eacute; dans ce mode d'utiliser les options
+      <code>--with-suexec-syslog --without-suexec-logfile</code>, afin
+      d'utiliser la jounalisation syslog.</dd>
+
       <dt><code>--with-suexec-bin=<em>PATH</em></code></dt>
 
       <dd>Le chemin du binaire <code>suexec</code> doit &ecirc;tre cod&eacute; en
@@ -454,6 +469,13 @@
       journal se nomme "<code>suexec_log</code>" et se trouve dans votre
       r&eacute;pertoire standard des fichiers journaux d&eacute;fini par
       <code>--logfiledir</code></dd>
+
+      <dt><code>--with-suexec-syslog</code></dt>
+
+      <dd>Avec cette option, suexec enregistrera les messages d'erreurs
+      et d'informations dans le journal syslog. Cette option doit &ecirc;tre
+      utilis&eacute;e conjointement avec l'option
+      <code>--without-suexec-logfile</code>.</dd>
 
       <dt><code>--with-suexec-safepath=<em>PATH</em></code></dt>
 
@@ -587,10 +609,15 @@ de suEXEC</title>
 
     <p>Le conteneur suEXEC va &eacute;crire ses informations de journalisation
     dans le fichier d&eacute;fini par l'option de compilation
-    <code>--with-suexec-logfile</code> comme indiqu&eacute; plus haut. Si vous
+    <code>--with-suexec-logfile</code> comme indiqu&eacute; plus haut,
+    ou vers syslog si l'option <code>--with-suexec-syslog</code> est
+    utilis&eacute;e. Si vous
     pensez avoir configur&eacute; et install&eacute; correctement le conteneur,
     consultez ce journal, ainsi que le journal des erreurs du serveur
-    afin de d&eacute;terminer l'endroit o&ugrave; vous avez fait fausse route.</p>
+    afin de d&eacute;terminer l'endroit o&ugrave; vous avez fait fausse
+    route. Si vous utilisez une distribution binaire, la commande
+    <code>"suexec -V"</code> vous permet de d&eacute;terminer quelles options
+    ont &eacute;t&eacute; utilis&eacute;es pour compiler suexec.</p>
 
 </section>
 
