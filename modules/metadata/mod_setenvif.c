@@ -165,17 +165,15 @@ static void *merge_setenvif_config(apr_pool_t *p, void *basev, void *overridesv)
 #define ICASE_MAGIC  ((void *)(&setenvif_module))
 #define SEI_MAGIC_HEIRLOOM "setenvif-phase-flag"
 
+static ap_regex_t *is_header_regex_regex;
+
 static int is_header_regex(apr_pool_t *p, const char* name)
 {
     /* If a Header name contains characters other than:
      *    -,_,[A-Z\, [a-z] and [0-9].
      * assume the header name is a regular expression.
      */
-    ap_regex_t *preg = ap_pregcomp(p, "^[-A-Za-z0-9_]*$",
-                                   (AP_REG_EXTENDED | AP_REG_NOSUB ));
-    ap_assert(preg != NULL);
-
-    if (ap_regexec(preg, name, 0, NULL, 0)) {
+    if (ap_regexec(is_header_regex_regex, name, 0, NULL, 0)) {
         return 1;
     }
 
@@ -633,6 +631,10 @@ static void register_hooks(apr_pool_t *p)
 {
     ap_hook_header_parser(match_headers, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_read_request(match_headers, NULL, NULL, APR_HOOK_MIDDLE);
+
+    is_header_regex_regex = ap_pregcomp(p, "^[-A-Za-z0-9_]*$",
+                                        (AP_REG_EXTENDED | AP_REG_NOSUB ));
+    ap_assert(is_header_regex_regex != NULL);
 }
 
 AP_DECLARE_MODULE(setenvif) =
