@@ -29,8 +29,6 @@
 <a href="../ja/mod/mod_echo.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_echo.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Un simple serveur d'écho pour illustrer les modules de
 protocole</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
@@ -64,9 +62,10 @@ d'Apache.</td></tr>
     <p>La directive <code class="directive">ProtocolEcho</code> permet d'activer
     ou de désactiver le serveur d'écho.</p>
 
-    <div class="example"><h3>Exemple</h3><p><code>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
       ProtocolEcho On
-    </code></p></div>
+      </pre>
+</div>
 
 </div>
 </div>

@@ -29,8 +29,6 @@
 <a href="../ja/mod/mod_asis.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_asis.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Envoie des fichiers contenant leurs propres en-têtes
 HTTP</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -68,7 +66,8 @@ d'Apache httpd</a></li>
     <p>Dans le fichier de configuration, associez les fichiers asis au
     gestionnaire <code>send-as-is</code> comme ceci :</p>
 
-    <div class="example"><p><code>AddHandler send-as-is asis</code></p></div>
+    <pre class="prettyprint lang-config">AddHandler send-as-is asis</pre>
+
 
     <p>Le contenu de tout fichier possédant l'extension
     <code>.asis</code> sera envoyé par Apache httpd au client pratiquement tel

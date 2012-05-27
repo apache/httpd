@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_lua.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_lua.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournit des points d'entrée Lua dans différentes parties du
 traitement des requêtes httpd</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
@@ -91,18 +89,20 @@ jour.</div>
 
 <p>La directive de base pour le chargement du module est</p>
 
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
     LoadModule lua_module modules/mod_lua.so
-</code></p></div>
+</pre>
+
 
 <p>
 <code>mod_lua</code> fournit un gestionnaire nommé
 <code>lua-script</code> qui peut être utilisé avec une directive
 <code>AddHandler</code> :</p>
 
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
 AddHandler lua-script .lua
-</code></p></div>
+</pre>
+
 
 <p>
 Ceci aura pour effet de faire traiter les requêtes pour les fichiers
@@ -126,7 +126,9 @@ gestionnaire.</p>
 gestionnaire, plutôt que de simplement évaluer le corps d'un script dans
 le style de CGI. Une fonction de gestionnaire se présente comme suit :</p>
 
-<div class="example"><h3>example.lua</h3><pre>
+
+<pre class="prettyprint lang-lua">
+<strong>example.lua</strong>
 -- exemple de gestionnaire
 
 require "string"
@@ -142,17 +144,18 @@ function handle(r)
 
     if r.method == 'GET' then
         for k, v in pairs( r:parseargs() ) do
-            r:puts( string.format("%s: %s", k, v) )
+            r:puts( string.format("%s: %s\n", k, v) )
         end
     elseif r.method == 'POST' then
         for k, v in pairs( r:parsebody() ) do
-            r:puts( string.format("%s: %s", k, v) )
+            r:puts( string.format("%s: %s\n", k, v) )
         end
     else
         r:puts("unknown HTTP method " .. r.method)
     end
 end
-</pre></div>
+</pre>
+
 
 <p>
 Ce gestionnaire se contente d'afficher les arguments codés d'un uri ou
@@ -184,7 +187,8 @@ code d'état HTTP ou des valeurs OK, DONE, ou DECLINED,
 que vous pouvez écrire dans lua sous la forme <code>apache2.OK</code>,
 <code>apache2.DONE</code>, ou <code>apache2.DECLINED</code>.</p>
 
-<div class="example"><h3>translate_name.lua</h3><pre>
+<pre class="prettyprint lang-lua">
+<strong>translate_name.lua</strong>
 -- exemple d'accroche qui réécrit un URI en chemin du système de
 fichiers.
 
@@ -198,9 +202,11 @@ function translate_name(r)
     -- on ne gère pas cette URL et on donne sa chance à un autre module
     return apache2.DECLINED
 end
-</pre></div>
+</pre>
 
-<div class="example"><h3>translate_name2.lua</h3><pre>
+
+<pre class="prettyprint lang-lua">
+<strong>translate_name2.lua</strong>
 --[[ exemple d'accroche qui réécrit un URI vers un autre URI. Il renvoie
 	un apache2.DECLINED pour permettre à un autre interpréteur d'URL de
 	travailler sur la substitution, y compris l'accroche translate_name
@@ -219,7 +225,8 @@ function translate_name(r)
     end
     return apache2.DECLINED
 end
-</pre></div>
+</pre>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="datastructures" id="datastructures">Structures de données</a></h2>
@@ -376,28 +383,31 @@ end
         <p>La structure request_rec possède (au minimum) les méthodes
 	suivantes :</p>
 
-        <div class="example"><p><code>
+        <pre class="prettyprint lang-lua">
         r:addoutputfilter(name|function) -- ajoute un filtre en sortie
-        </code></p></div>
+        </pre>
 
-        <div class="example"><p><code>
-	r:parseargs() -- renvoie une table lua contenant les arguments
-	de la chaîne de paramètres de la requête
-        </code></p></div>
 
-        <div class="example"><p><code>
-        r:parsebody() -- interprète le corps de la requête en tant que
-	méthode POST et renvoie une table lua
-        </code></p></div>
+        <pre class="prettyprint lang-lua">
+        r:parseargs() -- returns a lua table containing the request's query string arguments
+        </pre>
 
-        <div class="example"><p><code>
+
+        <pre class="prettyprint lang-lua">
+        r:parsebody() -- parse the request body as a POST and return  a lua table
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
         r:puts("bonjour", " le monde", "!") -- affichage dans le corps de la réponse
-        </code></p></div>
+        </pre>
 
-	<div class="example"><p><code>
+
+	<pre class="prettyprint lang-lua">
         r:write("une simple chaîne") -- affichage dans le
 	corps de la réponse
-        </code></p></div>
+        </pre>
+
         </dd>
     </dl>
 
@@ -405,7 +415,7 @@ end
 <div class="section">
 <h2><a name="logging" id="logging">Fonctions de journalisation</a></h2>
 
-<div class="example"><p><code>
+<pre class="prettyprint lang-lua">
 	-- exemples de messages de journalisation
 	r:trace1("Ceci est un message de journalisation de niveau
 	trace") -- les niveaux valides vont de trace1 à trace8 <br />
@@ -417,7 +427,8 @@ end
         r:alert("Ceci est un message de journalisation de niveau alert")<br />
         r:crit("Ceci est un message de journalisation de niveau crit")<br />
         r:emerg("Ceci est un message de journalisation de niveau emerg")<br />
-</code></p></div>
+</pre>
+
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -466,11 +477,12 @@ contenu suivant :</p>
     serveur en production, et les valeurs stat ou never pour un serveur
     en développement.</p>
 
-    <div class="example"><h3>Exemples :</h3><p><code>
-        LuaCodeCache stat<br />
-        LuaCodeCache forever<br />
-        LuaCodeCache never<br />
-    </code></p></div>
+    <div class="example"><h3>Exemples :</h3><pre class="prettyprint lang-config">
+LuaCodeCache stat
+LuaCodeCache forever
+LuaCodeCache never
+    </pre>
+</div>
 
 
 </div>
@@ -513,7 +525,7 @@ traitement de la requête. Cette directive peut s'utiliser pour
 implémenter une vérification arbitraire de l'authentification et de
 l'autorisation. Voici un exemple très simple :
 </p>
-<div class="example"><pre>
+<pre class="prettyprint lang-lua">
 require 'apache2'
 
 -- fonction d'accroche authcheck fictive
@@ -546,7 +558,8 @@ function authcheck_hook(r)
    end
    return apache2.OK
 end
-</pre></div>
+</pre>
+
 <div class="note"><h3>Ordonnancement</h3><p>Les arguments optionnels
    "early" ou "late" permettent de contrôler le moment auquel ce script
    s'exécute par rapport aux autres modules.</p></div>
@@ -640,10 +653,13 @@ version 2.3.15 du serveur HTTP Apache.</td></tr>
 
     <p>Exemple :</p>
 
-<div class="example"><pre>
+<pre class="prettyprint lang-config">
 # httpd.conf
 LuaHookTranslateName /scripts/conf/hooks.lua silly_mapper
+</pre>
 
+
+<pre class="prettyprint lang-lua">
 -- /scripts/conf/hooks.lua --
 require "apache2"
 function silly_mapper(r)
@@ -654,7 +670,8 @@ function silly_mapper(r)
         return apache2.DECLINED
     end
 end
-</pre></div>
+</pre>
+
 
    <div class="note"><h3>Contexte</h3><p>Cette directive ne peut être
    utilisée ni à l'intérieur d'une section <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, ni dans un fichier htaccess.</p></div>
@@ -718,17 +735,19 @@ parentes sont fusionnées dans les enfants</td></tr>
     d'interpolation dans le chemin du fichier et le nom de la fonction.
     Prenez garde aux problèmes de sécurité en écrivant vos expressions
     rationnelles.</p>
-   <div class="example"><h3>Exemples :</h3><p><code>
-    LuaMapHandler /(\w+)/(/w+) /scripts/$1.lua handle_$2
-   </code></p></div>
+   <div class="example"><h3>Exemples :</h3><pre class="prettyprint lang-config">
+    LuaMapHandler /(\w+)/(\w+) /scripts/$1.lua handle_$2
+    </pre>
+</div>
         <p>Cette directive va faire correspondre des uri comme
 	/photos/show?id=9 au fichier /scripts/photos.lua, et invoquera la
 	fonction de gestionnaire handle_show au niveau de la vm lua
 	après chargement de ce fichier.</p>
 
-<div class="example"><p><code>
+<pre class="prettyprint lang-config">
     LuaMapHandler /bingo /scripts/wombat.lua
-</code></p></div>
+</pre>
+
         <p>Cette directive invoquera la fonction "handle" qui est la
 	valeur par défaut si aucun nom de fonction spécifique n'est
 	spécifié.</p>
@@ -763,10 +782,11 @@ parentes sont fusionnées dans les enfants</td></tr>
     chemins de recherche du module lua. Elle suit les mêmes conventions
     que lua. Ceci modifie le package.path dans les vms lua.</p>
 
-    <div class="example"><h3>Exemples :</h3><p><code>
-        LuaPackagePath /scripts/lib/?.lua<br />
-        LuaPackagePath /scripts/lib/?/init.lua
-    </code></p></div>
+    <div class="example"><h3>Exemples :</h3><pre class="prettyprint lang-config">
+LuaPackagePath /scripts/lib/?.lua
+LuaPackagePath /scripts/lib/?/init.lua
+    </pre>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
