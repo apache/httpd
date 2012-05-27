@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1300936:1337105 (outdated) -->
+<!-- English Revision : 1337105 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -61,17 +61,17 @@ condens&eacute;s</title>
     texte) &agrave; l'aide de l'outil <program>htdigest</program>.</p>
 
     <example><title>Exemple :</title>
-      &lt;Location /private/&gt;<br />
-      <indent>
-        AuthType Digest<br />
-        AuthName "private area"<br />
-        AuthDigestDomain /private/ http://mirror.my.dom/private2/<br />
-        <br />
-        AuthDigestProvider file<br />
-        AuthUserFile /web/auth/.digest_pw<br />
-        Require valid-user<br />
-      </indent>
-      &lt;/Location&gt;
+      <highlight language="config">
+&lt;Location /private/&gt;
+    AuthType Digest
+    AuthName "private area"
+    AuthDigestDomain /private/ http://mirror.my.dom/private2/
+    
+    AuthDigestProvider file
+    AuthUserFile /web/auth/.digest_pw
+    Require valid-user
+&lt;/Location&gt;
+      </highlight>
     </example>
 
     <note><title>Note</title>
@@ -127,7 +127,9 @@ condens&eacute;s</title>
 
     <example><title>Utilisation de l'authentification &agrave; base de condens&eacute;
     avec MSIE :</title>
-    BrowserMatch "MSIE" AuthDigestEnableQueryStringHack=On
+    <highlight language="config">
+        BrowserMatch "MSIE" AuthDigestEnableQueryStringHack=On
+    </highlight>
     </example>
 
     <p>Cette correction n'est pas n&eacute;cessaire avec MSIE 7, bien que son
@@ -241,53 +243,6 @@ serveur (nonce)</description>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>AuthDigestNonceFormat</name>
-<description>D&eacute;termine la mani&egrave;re dont le nombre &agrave; valeur unique du
-serveur (nonce) est g&eacute;n&eacute;r&eacute;</description>
-<syntax>AuthDigestNonceFormat <var>format</var></syntax>
-<contextlist><context>directory</context><context>.htaccess</context>
-</contextlist>
-<override>AuthConfig</override>
-
-<usage>
-    <note>Non encore impl&eacute;ment&eacute;.</note>
-    <!-- La directive AuthDigestNonceFormat permet de d&eacute;terminer la
-    mani&egrave;re dont le nombre &agrave; valeur unique du serveur (nonce) est
-    g&eacute;n&eacute;r&eacute;. -->
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>AuthDigestNcCheck</name>
-<description>Active ou d&eacute;sactive la v&eacute;rification du nombre d'envois du
-nombre &agrave; valeur unique (nonce) par le serveur</description>
-<syntax>AuthDigestNcCheck On|Off</syntax>
-<default>AuthDigestNcCheck Off</default>
-<contextlist><context>server config</context></contextlist>
-
-<usage>
-    <note>
-      Non encore impl&eacute;ment&eacute;.
-    </note>
-    <!--
-    <p>La directive AuthDigestNcCheck permet d'activer ou de d&eacute;sactiver
-    la v&eacute;rification du nombre d'envois du nombre &agrave; valeur unique (nonce)
-    par le serveur.</p>
-
-    <p>Bien que la d&eacute;finition de cette directive &agrave; On soit recommand&eacute;e
-    du point de vue de la s&eacute;curit&eacute;, elle a des cons&eacute;quences importantes sur
-    les performances du serveur.  Pour v&eacute;rifier le nombre d'envois du nonce,
-    *toutes* les requ&ecirc;tes (du moins toutes celles qui poss&egrave;dent un
-    en-t&ecirc;te d'autorisation, qu'elles requi&egrave;rent ou non une
-    authentification &agrave; base de condens&eacute;) doivent &ecirc;tre s&eacute;rialis&eacute;es au
-    travers d'une section critique. Si le serveur traite un grand nombre
-    de requ&ecirc;tes qui poss&egrave;dent un en-t&ecirc;te d'autorisation, l'impact sur
-    les performances pourra se montrer sensible.</p>
-     -->
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>AuthDigestAlgorithm</name>
 <description>S&eacute;lectionne l'algorithme utilis&eacute; pour calculer les
 condens&eacute;s du d&eacute;fit et de sa r&eacute;ponse</description>
@@ -375,11 +330,11 @@ les informations &agrave; propos des clients</description>
     M&eacute;gaOctets. Par exemple, les directives qui suivent sont toutes
     &eacute;quivalentes :</p>
 
-    <example>
-      AuthDigestShmemSize 1048576<br />
-      AuthDigestShmemSize 1024K<br />
-      AuthDigestShmemSize 1M
-    </example>
+    <highlight language="config">
+AuthDigestShmemSize 1048576
+AuthDigestShmemSize 1024K
+AuthDigestShmemSize 1M
+    </highlight>
 </usage>
 </directivesynopsis>
 
