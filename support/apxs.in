@@ -39,6 +39,8 @@ my $CFG_TARGET     = get_vars("progname");
 my $CFG_SYSCONFDIR = get_vars("sysconfdir");
 my $CFG_CFLAGS     = join ' ', map { get_vars($_) }
   qw(SHLTCFLAGS CFLAGS NOTEST_CPPFLAGS EXTRA_CPPFLAGS EXTRA_CFLAGS);
+my $CFG_LDFLAGS    = join ' ', map { get_vars($_) }
+  qw(LDFLAGS NOTEST_LDFLAGS SH_LDFLAGS);
 my $includedir     = get_vars("includedir");
 my $CFG_INCLUDEDIR = eval qq("$includedir");
 my $CFG_CC         = get_vars("CC");
@@ -448,6 +450,7 @@ if ($opt_c) {
         $opt .= " -l$opt_l";
     }
 
+    my $ldflags = "$CFG_LDFLAGS";
     if ($opt_p == 1) {
         
         my $apr_libs=`$apr_config --cflags --ldflags --link-libtool --libs`;
@@ -466,7 +469,7 @@ if ($opt_c) {
         $opt .= " -rpath $CFG_LIBEXECDIR -module -avoid-version $apr_ldflags";
     }
 
-    push(@cmds, "$libtool $ltflags --mode=link $CFG_CC -o $dso_file $opt $lo");
+    push(@cmds, "$libtool $ltflags --mode=link $CFG_CC $ldflags -o $dso_file $opt $lo");
 
     #   execute the commands
     &execute_cmds(@cmds);

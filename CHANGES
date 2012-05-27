@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) apxs: Use LDFLAGS from config_vars.mk in addition to CFLAGS and CPPFLAGS.
+     [Stefan Fritsch]
+
   *) mpm_event: Fix handling of MaxConnectionsPerChild. [Stefan Fritsch]
 
   *) suexec: Add --enable-suexec-capabilites support on Linux, to use
