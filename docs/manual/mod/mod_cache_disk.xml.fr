@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1029833:1334011 (outdated) -->
+<!-- English Revision: 1334011 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -60,6 +60,7 @@ cache HTTP.</description>
       <module>mod_cache_disk</module> pour que ce dernier puisse
       fonctionner.</p>
     </note>
+    <note><title>Note :</title>
     <p>Lorsque la plate-forme la supporte, et si elle est activ&eacute;e via la
     directive <directive module="core">EnableSendfile</directive>,
     <module>mod_cache_disk</module> utilise la fonctionnalit&eacute; sendfile
@@ -69,7 +70,11 @@ cache HTTP.</description>
     un contexte de r&eacute;pertoire ou de fichier .htaccess, car le module ne
     dispose pas des d&eacute;finitions correspondantes lorsque la requ&ecirc;te est
     servie depuis le cache.</p>
+    </note>
 </summary>
+<seealso><module>mod_cache</module></seealso>
+<seealso><module>mod_cache_socache</module></seealso>
+<seealso><a href="../caching.html">Guide de la mise en cache</a></seealso>
 
 <directivesynopsis>
 <name>CacheRoot</name>
@@ -92,9 +97,9 @@ seront stock&eacute;s</description>
     d&eacute;finir la structure des sous-r&eacute;pertoires du r&eacute;pertoire racine
     sp&eacute;cifi&eacute;.</p>
 
-    <example>
+    <highlight language="config">
       CacheRoot c:/cacheroot
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -174,9 +179,9 @@ sous-r&eacute;pertoires</description>
     d&eacute;finir la taille minimale d'un document, en octets, pour que
     celui-ci puisse faire l'objet d'un stockage dans le cache.</p>
 
-    <example>
+    <highlight language="config">
       CacheMinFileSize 64
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -195,9 +200,9 @@ sous-r&eacute;pertoires</description>
     d&eacute;finir la taille maximale d'un document, en octets, pour que
     celui-ci puisse faire l'objet d'un stockage dans le cache.</p>
 
-    <example>
+    <highlight language="config">
       CacheMaxFileSize 64000
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 <directivesynopsis>
@@ -227,9 +232,9 @@ mettre en cache avant de les envoyer au client</description>
     enregistr&eacute;es dans le cache, et non lorsque les donn&eacute;es sont servies &agrave;
     partir du cache.</p>
   
-    <example>
+    <highlight language="config">
       CacheReadSize 102400
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -263,9 +268,9 @@ avant d'envoyer les donn&eacute;es au client</description>
     que le serveur n'effectue pas une mise en tampon excessive au cas
     o&ugrave; les donn&eacute;es arriveraient plus vite que pr&eacute;vu.</p>
 
-    <example>
+    <highlight language="config">
       CacheReadTime 1000
-    </example>
+    </highlight>
 </usage>
 </directivesynopsis>
 

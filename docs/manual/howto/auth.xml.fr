@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1331425:1333989 (outdated) -->
+<!-- English Revision : 1333989 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviwed by : Vincent Deffontaines -->
 
@@ -596,7 +596,7 @@ autorisation</title>
         Require ip 192.168.205
         Require host phishers.example.com moreidiots.example
         Require host ke
-    &lt;/RequireNone&gt; 
+    &lt;/RequireNone&gt;
 &lt;/RequireAll&gt;
         </highlight>
 
