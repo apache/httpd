@@ -548,11 +548,14 @@ POST data is four simple lines:
 
 <!-- BEGIN EXAMPLE CODE -->
 <highlight language="c">
-<a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__apr__tables.html#gad7ea82d6608a4a633fc3775694ab71e4">apr_table_t</a> *GET;
-<a href="http://ci.apache.org/projects/httpd/trunk/doxygen/structapr__array__header__t.html">apr_array_header_t</a> *POST;
-
-<a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__SCRIPT.html#gaed25877b529623a4d8f99f819ba1b7bd">ap_args_to_table</a>(r, &amp;GET);
-<a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__DAEMON.html#ga9d426b6382b49754d4f87c55f65af202">ap_parse_form_data</a>(r, NULL, &amp;POST, -1, 8192);
+<a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__apr__tables.html#gad7ea82d6608a4a633fc3775694ab71e4">apr_table_t</a> *GET; <em>
+</em><a href="http://ci.apache.org/projects/httpd/trunk/doxygen/structapr__array__header__t.html">apr_array_header_t</a>*POST; 
+<em>
+</em>
+<a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__SCRIPT.html#gaed25877b529623a4d8f99f819ba1b7bd">
+ap_args_to_table</a>(r, &amp;GET); <em>
+</em><a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__DAEMON.html#ga9d426b6382b49754d4f87c55f65af202">
+ap_parse_form_data</a>(r, NULL, &amp;POST, -1, 8192); 
 </highlight>
 <!-- END EXAMPLE CODE -->
 
