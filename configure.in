@@ -225,6 +225,11 @@ if test "$PCRE_CONFIG" != "false"; then
   if $PCRE_CONFIG --version >/dev/null 2>&1; then :; else
     AC_MSG_ERROR([Did not find pcre-config script at $PCRE_CONFIG])
   fi
+  case `$PCRE_CONFIG --version` in
+  [[1-5].*])
+    AC_MSG_ERROR([Need at least pcre version 6.0])
+    ;;
+  esac
   AC_MSG_NOTICE([Using external PCRE library from $PCRE_CONFIG])
   APR_ADDTO(PCRE_INCLUDES, [`$PCRE_CONFIG --cflags`])
   APR_ADDTO(PCRE_LIBS, [`$PCRE_CONFIG --libs`])

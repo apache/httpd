@@ -273,8 +273,10 @@ AP_DECLARE(ap_regex_t *) ap_pregcomp(apr_pool_t *p, const char *pattern,
                                      int cflags)
 {
     ap_regex_t *preg = apr_palloc(p, sizeof *preg);
-
-    if (ap_regcomp(preg, pattern, cflags)) {
+    int err = ap_regcomp(preg, pattern, cflags);
+    if (err) {
+        if (err == AP_REG_ESPACE)
+            ap_abort_on_oom();
         return NULL;
     }
 
