@@ -313,6 +313,14 @@ static int create_entity(cache_handle_t *h, cache_type_e type_e,
     cache_object_t *obj, *tmp_obj;
     mem_cache_object_t *mobj;
 
+    /* we don't support caching of range requests (yet) */
+    if (r->status == HTTP_PARTIAL_CONTENT) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "disk_cache: URL %s partial content response not cached",
+                     key);
+        return DECLINED;
+    }
+
     if (len == -1) {
         /* Caching a streaming response. Assume the response is
          * less than or equal to max_streaming_buffer_size. We will
