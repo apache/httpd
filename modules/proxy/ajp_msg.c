@@ -274,7 +274,7 @@ apr_status_t ajp_msg_append_uint8(ajp_msg_t *msg, apr_byte_t value)
 apr_status_t ajp_msg_append_string_ex(ajp_msg_t *msg, const char *value,
                                       int convert)
 {
-    size_t len;
+    apr_size_t len;
 
     if (value == NULL) {
         return(ajp_msg_append_uint16(msg, 0xFFFF));
