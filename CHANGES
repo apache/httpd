@@ -3,7 +3,7 @@ Changes with Apache 2.5.0
 
   *) core: Make ap_regcomp() return AP_REG_ESPACE if out of memory.  Make
      ap_pregcomp() abort if out of memory. This raises the minimum PCRE
-     requirement to version 6.0. [Stefan Fritsch]
+     requirement to version 6.0. PR 53284. [Stefan Fritsch]
 
   *) apxs: Use LDFLAGS from config_vars.mk in addition to CFLAGS and CPPFLAGS.
      [Stefan Fritsch]
