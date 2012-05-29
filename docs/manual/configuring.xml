@@ -111,7 +111,8 @@ Server.</p>
     variables resolved and all comments and non-matching
     <directive module="core" type="section">IfDefine</directive> and
     <directive module="core" type="section">IfModule</directive> sections
-    removed.</p>
+    removed. However, the output does not reflect the merging or overriding
+    that may happen for repeated directives.</p>
   </section>
 
   <section id="modules">
