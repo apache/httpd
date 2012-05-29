@@ -93,18 +93,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * configure: Using external apr and apu in non-default path
-    breaks configure, since checking for apu version does not
-    set up apr include path in CPPFLAGS.
-    CPP with gcc before 4.6.2 only outputs an error, but our check
-    still succeeds; gcc 4.6.2 aborts and our check fails.
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=1091330&view=rev
-      Backport for 2.4.x: change was applied before branching 2.4.x.
-      Backport version for 2.2.x of patch:
-         http://people.apache.org/~rjung/patches/apu-version-check-backport-r1091330-2_2_x.patch
-      +1: rjung, rpluem, jorton
-      -1:
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

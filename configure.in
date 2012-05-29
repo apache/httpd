@@ -361,7 +361,15 @@ fi
 
 if test "${apu_found}" = "yes"; then
   # Require APR-util 1.2.x otherwise fail
-  APACHE_CHECK_APxVER([apu], 1, 2)
+  if test "${apr_found}" = "yes"; then
+    # we need to add the APR includes to CPPFLAGS
+    apu_ckver_CPPFLAGS="$CPPFLAGS"
+    CPPFLAGS="$CPPFLAGS `$apr_config --includes`"
+    APACHE_CHECK_APxVER([apu], 1, 2)
+    CPPFLAGS="$apu_ckver_CPPFLAGS"
+  else
+    APACHE_CHECK_APxVER([apu], 1, 2)
+  fi
 fi
 
 dnl Check for what we can generate dependency files with
