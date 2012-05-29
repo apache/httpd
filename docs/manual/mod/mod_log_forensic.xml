@@ -93,6 +93,10 @@ version 2.1</compatibility>
     document for details on why your security could be compromised
     if the directory where logfiles are stored is writable by
     anyone other than the user that starts the server.</p>
+    <p>The log files may contain sensitive data such as the contents of 
+    <code>Authorization:</code> headers (which can contain passwords), so
+    they should not be readable by anyone except the user that starts the
+    server.</p>
 </section>
 
 <directivesynopsis>
@@ -136,7 +140,7 @@ version 2.1</compatibility>
       <note><title>Note</title>
         <p>When entering a file path on non-Unix platforms, care should be taken
         to make sure that only forward slashes are used even though the platform
-        may allow the use of back slashes. In general it is a good idea to always 
+        may allow the use of back slashes. In general it is a good idea to always
         use forward slashes throughout the configuration files.</p>
       </note></dd>
     </dl>
