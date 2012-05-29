@@ -5,6 +5,9 @@ Changes with Apache 2.2.23
      envvars: Fix insecure handling of LD_LIBRARY_PATH that could lead to the
      current working directory to be searched for DSOs. [Stefan Fritsch]
 
+  *) configure: Fix usage with external apr and apu in non-default paths
+     and recent gcc versions >= 4.6. [Jean-Frederic Clere]
+
   *) core: Fix building against PCRE 8.30 by switching from the obsolete
      pcre_info() to pcre_fullinfo(). PR 52623 [Ruediger Pluem, Rainer Jung]
 
