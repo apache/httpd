@@ -93,20 +93,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_cache: * Do not cache 206 responses in any case since we currently do not provide any
-    backends that are capable to cache partial responses. PR 49113.
-    Fixes regression of r724093.
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=933919&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem
-      minfrin: The r933919 patch is obsolete, as this trunk code no longer
-               exists. The fix you're after is r951222, backported to both
-               mod_disk_cache.c and mod_mem_cache.c.
-      rjung: I combined backports of r933919 and r951222:
-      http://people.apache.org/~rjung/patches/mod_cache_partial_content-2.2.x.patch
-      +1: rjung, wrowe, sf
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
