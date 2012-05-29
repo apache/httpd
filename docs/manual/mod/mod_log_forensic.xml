@@ -93,6 +93,10 @@ version 2.1</compatibility>
     document for details on why your security could be compromised
     if the directory where logfiles are stored is writable by
     anyone other than the user that starts the server.</p>
+    <p>The log files may contain sensitive data such as the contents of 
+    <code>Authorization:</code> headers (which can contain passwords), so
+    they should not be readable by anyone except the user that starts the
+    server.</p>
 </section>
 
 <directivesynopsis>
