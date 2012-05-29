@@ -8,7 +8,7 @@ Changes with Apache 2.2.23
   *) mod_disk_cache, mod_mem_cache: Decline the opportunity to cache if the
      response is a 206 Partial Content. This stops a reverse proxied partial
      response from becoming cached, and then being served in subsequent
-     responses. [Graham Leggett]
+     responses. PR 49113. [Graham Leggett]
 
   *) configure: Fix usage with external apr and apu in non-default paths
      and recent gcc versions >= 4.6. [Jean-Frederic Clere]
