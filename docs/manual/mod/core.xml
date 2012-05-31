@@ -3699,6 +3699,11 @@ to name-virtual hosts</description>
     module="core">ServerName</directive> or <directive module="core"
     >ServerAlias</directive> is used, with no different precedence for wildcards
     (nor for ServerName vs. ServerAlias).  </p>
+
+    <p>The complete list of names in the <directive>VirtualHost</directive>
+    directive are treated just like a (non wildcard) 
+    <directive>ServerAlias</directive>.</p>
+
 </usage>
 <seealso><directive module="core">UseCanonicalName</directive></seealso>
 <seealso><a href="../vhosts/">Apache HTTP Server Virtual Host documentation</a></seealso>
