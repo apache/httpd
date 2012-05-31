@@ -14,8 +14,8 @@ Changes with Apache 2.5.0
      setuid/setgid capability bits rather than a setuid root binary.
      [Joe Orton]
 
-  *) suexec: Add support for logging to syslog as an alternative to
-     logging to a file; use --without-suexec-logfile --with-suexec-syslog.  
+  *) suexec: Add support for logging to syslog as an alternative to logging
+     to a file; configure --without-suexec-logfile --with-suexec-syslog.  
      [Joe Orton]
 
   *) mod_proxy_ajp: Reduce memory usage in case of many keep-alive requests on
