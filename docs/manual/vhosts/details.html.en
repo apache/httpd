@@ -279,6 +279,10 @@
     matches against the real port to which the client sent the
     request.</p>
 
+    <p>The complete list of names in the <code>VirtualHost</code>
+    directive are treated just like a (non wildcard) <code>ServerAlias</code>
+    (but are not overridden by any <code>ServerAlias</code> statement).</p>
+
     <p>If the client submitted a HTTP/1.0 request without
     <code>Host:</code> header field we don't know to what server
     the client tried to connect and any existing
