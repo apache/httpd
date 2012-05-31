@@ -3788,6 +3788,11 @@ to name-virtual hosts</td></tr>
     in the order they appear in the configuration.  The first matching <code class="directive"><a href="#servername">ServerName</a></code> or <code class="directive"><a href="#serveralias">ServerAlias</a></code> is used, with no different precedence for wildcards
     (nor for ServerName vs. ServerAlias).  </p>
 
+    <p>The complete list of names in the <code class="directive">VirtualHost</code>
+    directive are treated just like a (non wildcard) 
+    <code class="directive">ServerAlias</code>.</p>
+
+
 <h3>See also</h3>
 <ul>
 <li><code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code></li>
