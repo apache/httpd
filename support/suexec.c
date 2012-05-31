@@ -75,8 +75,16 @@
 extern char **environ;
 
 #ifdef AP_LOG_SYSLOG
+/* Syslog support. */
+#if !defined(AP_LOG_FACILITY) && defined(LOG_AUTHPRIV)
+#define AP_LOG_FACILITY LOG_AUTHPRIV
+#elif !defined(AP_LOG_FACILITY)
+#define AP_LOG_FACILITY LOG_AUTH
+#endif
+
 static int log_open;
 #else
+/* Non-syslog support. */
 static FILE *log = NULL;
 #endif
 
@@ -148,7 +156,7 @@ static void err_output(int is_error, const char *fmt, va_list ap)
 {
 #if defined(AP_LOG_SYSLOG)
     if (!log_open) {
-        openlog("suexec", LOG_PID, LOG_DAEMON);
+        openlog("suexec", LOG_PID, AP_LOG_FACILITY);
         log_open = 1;
     }
 
