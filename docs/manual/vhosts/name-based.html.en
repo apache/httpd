@@ -159,6 +159,10 @@
     in the order they appear in the configuration.  The first matching <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> or <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code> is used, with no different precedence for wildcards
     (nor for ServerName vs. ServerAlias).  </p>
 
+    <p>The complete list of names in the <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code>
+    directive are treated just like a (non wildcard) 
+    <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code>.</p>
+
     <p>Finally, you can fine-tune the configuration of the virtual hosts
     by placing other directives inside the <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> containers. Most directives can be
     placed in these containers and will then change the configuration only of
