@@ -165,6 +165,10 @@
     first have your DNS server properly configured to map those names to an IP
     address associated with your server.</p>
 
+    <p>The complete list of names in the <directive module="core"
+    >VirtualHost</directive> directive are treated just like a (non wildcard) 
+    <directive module="core">ServerAlias</directive>.</p>
+
     <p>Finally, you can fine-tune the configuration of the virtual hosts
     by placing other directives inside the <directive type="section"
     module="core">VirtualHost</directive> containers. Most directives can be
