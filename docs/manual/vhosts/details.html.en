@@ -109,6 +109,10 @@
     ServerAlias.  It is also used for all SSL connections if the
     server does not support <a class="glossarylink" href="../glossary.html#servernameindication" title="see glossary">Server Name Indication</a>.</p>
 
+    <p>The complete list of names in the <code>VirtualHost</code>
+    directive are treated just like a (non wildcard) <code>ServerAlias</code> 
+    (but are not overridden by any <code>ServerAlias</code> statement).</p>
+
     <p>For every vhost various default values are set. In
     particular:</p>
 
