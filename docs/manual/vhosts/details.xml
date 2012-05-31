@@ -109,6 +109,10 @@
     server does not support <glossary
     ref="servernameindication">Server Name Indication</glossary>.</p>
 
+    <p>The complete list of names in the <code>VirtualHost</code>
+    directive are treated just like a (non wildcard) <code>ServerAlias</code> 
+    (but are not overridden by any <code>ServerAlias</code> statement).</p>
+
     <p>For every vhost various default values are set. In
     particular:</p>
 
