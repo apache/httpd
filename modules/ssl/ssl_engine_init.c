@@ -622,6 +622,20 @@ static void ssl_init_ctx_protocol(server_rec *s,
     }
 #endif
 
+#ifdef SSL_OP_NO_COMPRESSION
+    /* OpenSSL >= 1.0 only */
+    if (sc->compression == FALSE) {
+        SSL_CTX_set_options(ctx, SSL_OP_NO_COMPRESSION);
+    }
+#elif OPENSSL_VERSION_NUMBER >= 0x00908000L
+    /* workaround for OpenSSL 0.9.8 */
+    if (sc->compression == FALSE) {
+        STACK_OF(SSL_COMP)* comp_methods;
+        comp_methods = SSL_COMP_get_compression_methods();
+        sk_SSL_COMP_zero(comp_methods);
+    }
+#endif
+
 #ifdef SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION
     if (sc->insecure_reneg == TRUE) {
         SSL_CTX_set_options(ctx, SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION);

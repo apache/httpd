@@ -2382,4 +2382,20 @@ be protected with file permissions similar to those used for
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>SSLCompression</name>
+<description>Disallow compression on the SSL level</description>
+<syntax>SSLCompression on|off</syntax>
+<default>SSLCompression on</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.5.0 and later, if using OpenSSL 0.9.8 or later;
+virtual host scope available if using OpenSSL 1.0.0 or later</compatibility>
+
+<usage>
+<p>This directive allows to disable compression on the SSL level.</p>
+</usage>
+</directivesynopsis>
+
+
 </modulesynopsis>
