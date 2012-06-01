@@ -161,6 +161,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://www.links.org/files/npn-patch-2.2.patch
      +1: benl
 
+  * mod_cache: Allow providers to decide whether to cache responses with code
+    206.
+    Trunk version of patch:
+      http://svn.apache.org/viewvc?rev=952823&view=rev
+    Backport version for 2.2.x of patch:
+      Trunk version of patch works
+    +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
