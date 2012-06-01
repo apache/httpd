@@ -717,6 +717,8 @@ APACHE_HELP_STRING(--with-suexec-gidmin,Minimal allowed GID),[
 AC_ARG_WITH(suexec-logfile,
 APACHE_HELP_STRING(--with-suexec-logfile,Set the logfile),[
   if test "x$withval" = "xyes"; then
+    AC_MSG_ERROR([log filename required for --with-suexec-logfile option])
+  elif test "x$withval" != "xno"; then
     AC_DEFINE_UNQUOTED(AP_LOG_EXEC, "$withval", [SuExec log file])
   fi
 ])
