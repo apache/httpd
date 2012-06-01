@@ -560,6 +560,7 @@
 <li><a href="mod_ssl.html#sslcertificatefile">SSLCertificateFile</a></li>
 <li><a href="mod_ssl.html#sslcertificatekeyfile">SSLCertificateKeyFile</a></li>
 <li><a href="mod_ssl.html#sslciphersuite">SSLCipherSuite</a></li>
+<li><a href="mod_ssl.html#sslcompression">SSLCompression</a></li>
 <li><a href="mod_ssl.html#sslcryptodevice">SSLCryptoDevice</a></li>
 <li><a href="mod_ssl.html#sslengine">SSLEngine</a></li>
 <li><a href="mod_ssl.html#sslfips">SSLFIPS</a></li>

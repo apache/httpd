@@ -55,6 +55,7 @@ to provide the cryptography engine.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcertificatefile">SSLCertificateFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslciphersuite">SSLCipherSuite</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslcompression">SSLCompression</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcryptodevice">SSLCryptoDevice</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslengine">SSLEngine</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslfips">SSLFIPS</a></li>
@@ -760,6 +761,21 @@ SSLCipherSuite RSA:!EXP:!NULL:+HIGH:+MEDIUM:-LOW
 <tr><td><code>EXP-ADH-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH(512)</td> <td>None</td> <td>DES(40)</td> <td>SHA1</td> <td> export</td> </tr>
 <tr><td><code>EXP-ADH-RC4-MD5</code></td> <td>SSLv3</td> <td>DH(512)</td> <td>None</td> <td>RC4(40)</td> <td>MD5</td> <td>  export</td> </tr>
 </table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLCompression" id="SSLCompression">SSLCompression</a> <a name="sslcompression" id="sslcompression">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Disallow compression on the SSL level</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCompression on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLCompression on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.5.0 and later, if using OpenSSL 0.9.8 or later;
+virtual host scope available if using OpenSSL 1.0.0 or later</td></tr>
+</table>
+<p>This directive allows to disable compression on the SSL level.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
