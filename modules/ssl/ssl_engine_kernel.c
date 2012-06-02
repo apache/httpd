@@ -2189,7 +2189,7 @@ int ssl_callback_AdvertiseNextProtos(SSL *ssl, const unsigned char **data_out,
         /* If the protocol name is too long (the length must fit in one byte),
          * then log an error and skip it. */
         if (length > 255) {
-            ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
+            ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02307)
                           "SSL NPN protocol name too long (length=%u): %s",
                           length, string);
             continue;
@@ -2213,6 +2213,8 @@ int ssl_callback_AdvertiseNextProtos(SSL *ssl, const unsigned char **data_out,
     for (i = 0; i < num_protos; ++i) {
         const char *string = APR_ARRAY_IDX(protos, i, const char*);
         apr_size_t length = strlen(string);
+        if (length > 255)
+            continue;
         *start = (unsigned char)length;
         ++start;
         memcpy(start, string, length * sizeof(unsigned char));
