@@ -160,6 +160,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch:
        http://www.links.org/files/npn-patch-2.2.patch
      +1: benl
+     sf notes: needs the buffer overflow fix from r1345599, too
 
   * mod_cache: Allow providers to decide whether to cache responses with code
     206.
