@@ -1388,9 +1388,8 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
         SSL_get0_next_proto_negotiated(
             inctx->ssl, &next_proto, &next_proto_len);
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, f->c,
-                      "SSL NPN negotiated protocol: '%s'",
-                      apr_pstrmemdup(f->c->pool, (const char*)next_proto,
-                                     next_proto_len));
+                      APLOGNO(02306) "SSL NPN negotiated protocol: '%*s'",
+                      next_proto_len, (const char*)next_proto);
         modssl_run_npn_proto_negotiated_hook(
             f->c, (const char*)next_proto, next_proto_len);
         inctx->npn_finished = 1;
