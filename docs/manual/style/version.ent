@@ -23,5 +23,5 @@
 
 <!ENTITY httpd.docs "trunk">
 
-<!-- Version tag for disqus comments -->
-<!ENTITY httpd.disqus "2.4">
+<!-- Version tag for comments -->
+<!ENTITY httpd.comments "trunk">

@@ -298,10 +298,9 @@
 <script type="text/javascript">
 <xsl:text disable-output-escaping="yes"><![CDATA[<!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/]]></xsl:text>&httpd.disqus;<xsl:value-of select="concat($metafile/path, $metafile/basename, '.html.', $doclang)" disable-output-escaping="yes" /><xsl:text disable-output-escaping="yes"><![CDATA[';
+var comments_identifier = 'http://httpd.apache.org/docs/]]></xsl:text>&httpd.comments;<xsl:value-of select="concat($metafile/path, $metafile/basename, '.html')" disable-output-escaping="yes" /><xsl:text disable-output-escaping="yes"><![CDATA[';
 (function(w, d) {
-    var disabled = false;
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org" && disabled !== true) {
+    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
         var s = d.createElement('script');
         s.type = 'text/javascript';
