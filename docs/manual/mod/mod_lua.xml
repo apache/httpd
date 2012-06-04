@@ -105,13 +105,15 @@ function handle(r)
     if r.method == 'GET' then
         for k, v in pairs( r:parseargs() ) do
             r:puts( string.format("%s: %s\n", k, v) )
-        end
+        end<!--
+/* Not supported yet */
     elseif r.method == 'POST' then
         for k, v in pairs( r:parsebody() ) do
             r:puts( string.format("%s: %s\n", k, v) )
         end
+-->
     else
-        r:puts("unknown HTTP method " .. r.method)
+        r:puts("Unsupported HTTP method " .. r.method)
     end
 end
 </highlight>
@@ -339,11 +341,12 @@ end
         <highlight language="lua">
         r:parseargs() -- returns a lua table containing the request's query string arguments
         </highlight>
-
+<!--
+/* Not supported yet */
         <highlight language="lua">
-        r:parsebody() -- parse the request body as a POST and return  a lua table
+        r:parsebody() &dash;- parse the request body as a POST and return  a lua table
         </highlight>
-
+-->
         <highlight language="lua">
         r:puts("hello", " world", "!") -- print to response body
         </highlight>
