@@ -169,8 +169,6 @@ Require host .net example.edu
     </highlight>
 </section>
 
-</section>
-
 <section id="proxy"><title>Security Note</title>
 
     <p>If you are proxying content to your server, you need to be aware
@@ -182,9 +180,6 @@ Require host .net example.edu
 
 </section>
 
-</section>
-
- </modulesynopsis>
 </section>
 
 </modulesynopsis>
