@@ -4459,7 +4459,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/core.html';
         var s = d.createElement('script');
         s.type = 'text/javascript';
         s.async = true;
-        s.src = 'http://c.apaste.info/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
+        s.src = 'https://c.apaste.info/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
         (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
     }
     else {
