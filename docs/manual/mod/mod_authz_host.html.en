@@ -188,6 +188,17 @@ Require host .net example.edu
 
 
 
+<h3><a name="proxy" id="proxy">Security Note</a></h3>
+
+    <p>If you are proxying content to your server, you need to be aware
+    that the client address will be the address of your proxy server,
+    not the address of the client, and so using the <code>Require</code>
+    directive in this context may not do what you mean. See
+    <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> for one possible solution to this
+    problem.</p>
+
+
+
 </div>
 </div>
 <div class="bottomlang">
