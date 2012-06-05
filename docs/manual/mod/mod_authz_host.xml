@@ -167,6 +167,18 @@ Require host .net example.edu
     <highlight language="config">
     Require local
     </highlight>
+
+</section>
+
+<section id="proxy"><title>Security Note</title>
+
+    <p>If you are proxying content to your server, you need to be aware
+    that the client address will be the address of your proxy server,
+    not the address of the client, and so using the <code>Require</code>
+    directive in this context may not do what you mean. See
+    <module>mod_remoteip</module> for one possible solution to this
+    problem.</p>
+
 </section>
 
 </section>
