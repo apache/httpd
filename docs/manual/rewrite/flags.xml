@@ -597,10 +597,8 @@ will be used to generate the URL sent with the redirect.
 <em>Any</em> valid HTTP response  status code may be specified,
 using the syntax [R=305], with a 302 status code being used by
 default if none is specified. The status code specified need not
-necessarily be a redirect (3xx) status code.
-</p>
-
-<p>If a status code is outside the redirect range (300-399) then the
+necessarily be a redirect (3xx) status code. However, 
+if a status code is outside the redirect range (300-399) then the
 substitution string is dropped entirely, and rewriting is stopped as if
 the <code>L</code> were used.</p>
 
