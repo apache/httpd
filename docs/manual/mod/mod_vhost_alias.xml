@@ -252,7 +252,18 @@ for a given virtual host</description>
     cannot be used in the same context as <directive
     module="mod_vhost_alias">VirtualDocumentRootIP</directive>.</p>
 
+<note type="warning"><title>Note</title>
+<directive>VirtualDocumentRoot</directive> will override any <directive
+module="core">DocumentRoot</directive> directives you may have put in the same 
+context or child contexts. Putting a <directive>VirtualDocumentRoot</directive> 
+in the global server scope will effectively override <directive 
+module="core">DocumentRoot</directive> directives in any virtual hosts defined later 
+on, unless you set <directive>VirtualDocumentRoot</directive> to <code>None</code> 
+in each virtual host.
+</note>
+
 </usage>
+
 </directivesynopsis>
 
 <directivesynopsis>
