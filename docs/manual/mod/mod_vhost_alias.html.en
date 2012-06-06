@@ -273,6 +273,14 @@ for a given virtual host</td></tr>
     <code class="directive">VirtualDocumentRoot</code> is turned off. This directive
     cannot be used in the same context as <code class="directive"><a href="#virtualdocumentrootip">VirtualDocumentRootIP</a></code>.</p>
 
+<div class="warning"><h3>Note</h3>
+<code class="directive">VirtualDocumentRoot</code> will override any <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> directives you may have put in the same 
+context or child contexts. Putting a <code class="directive">VirtualDocumentRoot</code> 
+in the global server scope will effectively override <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> directives in any virtual hosts defined later 
+on, unless you set <code class="directive">VirtualDocumentRoot</code> to <code>None</code> 
+in each virtual host.
+</div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
