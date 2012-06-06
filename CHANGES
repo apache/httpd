@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) htdbm, htpasswd: Don't crash if crypt() fails (e.g. with FIPS enabled). 
+     [Paul Wouters <pwouters redhat.com>, Joe Orton]
+
   *) mod_ssl: Add new directive SSLCompression to disable TLS-level
      compression. PR 53219. [Björn Jacke <bjoern j3e de>, Stefan Fritsch]
 
