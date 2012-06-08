@@ -395,6 +395,18 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, request_rec *r,
 #endif
         result = apr_pstrdup(p, flag ? "true" : "false");
     }
+#ifndef OPENSSL_NO_SRP
+    else if (ssl != NULL && strcEQ(var, "SRP_USER")) {
+        if ((result = SSL_get_srp_username(ssl)) != NULL) {
+            result = apr_pstrdup(p, result);
+        }
+    }
+    else if (ssl != NULL && strcEQ(var, "SRP_USERINFO")) {
+        if ((result = SSL_get_srp_userinfo(ssl)) != NULL) {
+            result = apr_pstrdup(p, result);
+        }
+    }
+#endif
 
     return result;
 }

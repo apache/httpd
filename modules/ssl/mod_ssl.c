@@ -148,6 +148,15 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_SRV(StrictSNIVHostCheck, FLAG,
                 "Strict SNI virtual host checking")
 
+#ifndef OPENSSL_NO_SRP
+    SSL_CMD_SRV(SRPVerifierFile, TAKE1,
+                "SRP verifier file "
+                "('/path/to/file' - created by srptool)")
+    SSL_CMD_SRV(SRPUnknownUserSeed, TAKE1,
+                "SRP seed for unknown users (to avoid leaking a user's existence) "
+                "('some secret text')")
+#endif
+
     /*
      * Proxy configuration for remote SSL connections
      */

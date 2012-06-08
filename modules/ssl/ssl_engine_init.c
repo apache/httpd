@@ -526,6 +526,38 @@ static void ssl_init_ctx_tls_extensions(server_rec *s,
         modssl_init_stapling(s, p, ptemp, mctx);
     }
 #endif
+
+#ifndef OPENSSL_NO_SRP
+    /*
+     * TLS-SRP support
+     */
+    if (mctx->srp_vfile != NULL) {
+        int rv;
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02308)
+                     "Using SRP verifier file [%s]", mctx->srp_vfile);
+
+        if (!(mctx->srp_vbase = SRP_VBASE_new(mctx->srp_unknown_user_seed))) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02309)
+                         "Unable to initialize SRP verifier structure "
+                         "[%s seed]",
+                         mctx->srp_unknown_user_seed ? "with" : "without");
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+            ssl_die();
+        }
+
+        rv = SRP_VBASE_init(mctx->srp_vbase, mctx->srp_vfile);
+        if (rv != SRP_NO_ERROR) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02310)
+                         "Unable to load SRP verifier file [error %d]", rv);
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+            ssl_die();
+        }
+
+        SSL_CTX_set_srp_username_callback(mctx->ssl_ctx,
+                                          ssl_callback_SRPServerParams);
+        SSL_CTX_set_srp_cb_arg(mctx->ssl_ctx, mctx);
+    }
+#endif
 }
 #endif
 
@@ -1694,6 +1726,13 @@ void ssl_init_Child(apr_pool_t *p, server_rec *s)
 static void ssl_init_ctx_cleanup(modssl_ctx_t *mctx)
 {
     MODSSL_CFG_ITEM_FREE(SSL_CTX_free, mctx->ssl_ctx);
+
+#ifndef OPENSSL_NO_SRP
+    if (mctx->srp_vbase != NULL) {
+        SRP_VBASE_free(mctx->srp_vbase);
+        mctx->srp_vbase = NULL;
+    }
+#endif
 }
 
 static void ssl_init_ctx_cleanup_proxy(modssl_ctx_t *mctx)

@@ -96,6 +96,8 @@ compatibility variables.</p>
 <tr><td><code>SSL_SERVER_A_SIG</code></td>              <td>string</td>    <td>Algorithm used for the signature of server's certificate</td></tr>
 <tr><td><code>SSL_SERVER_A_KEY</code></td>              <td>string</td>    <td>Algorithm used for the public key of server's certificate</td></tr>
 <tr><td><code>SSL_SERVER_CERT</code></td>               <td>string</td>    <td>PEM-encoded server certificate</td></tr>
+<tr><td><code>SSL_SRP_USER</code></td>                  <td>string</td>    <td>SRP username</td></tr>
+<tr><td><code>SSL_SRP_USERINFO</code></td>              <td>string</td>    <td>SRP user info</td></tr>
 </table>
 
 <p><em>x509</em> specifies a component of an X.509 DN; one of
@@ -670,6 +672,7 @@ specify the preference and order for the ciphers (see <a href="#table1">Table
 <tr><td><code>kDHr</code></td>   <td>Diffie-Hellman key exchange with RSA key</td></tr>
 <tr><td><code>kDHd</code></td>   <td>Diffie-Hellman key exchange with DSA key</td></tr>
 <tr><td><code>kEDH</code></td>   <td>Ephemeral (temp.key) Diffie-Hellman key exchange (no cert)</td>   </tr>
+<tr><td><code>kSRP</code></td>   <td>Secure Remote Password (SRP) key exchange</td></tr>
 <tr><td colspan="2"><em>Authentication Algorithm:</em></td></tr>
 <tr><td><code>aNULL</code></td>  <td>No authentication</td></tr>
 <tr><td><code>aRSA</code></td>   <td>RSA authentication</td></tr>
@@ -700,6 +703,7 @@ specify the preference and order for the ciphers (see <a href="#table1">Table
 <tr><td><code>DH</code></td>     <td>all ciphers using Diffie-Hellman key exchange</td> </tr>
 <tr><td><code>EDH</code></td>    <td>all ciphers using Ephemeral Diffie-Hellman key exchange</td> </tr>
 <tr><td><code>ADH</code></td>    <td>all ciphers using Anonymous Diffie-Hellman key exchange</td> </tr>
+<tr><td><code>SRP</code></td>    <td>all ciphers using Secure Remote Password (SRP) key exchange</td> </tr>
 <tr><td><code>DSS</code></td>    <td>all ciphers using DSS authentication</td> </tr>
 <tr><td><code>NULL</code></td>   <td>all ciphers using no encryption</td> </tr>
 </table>
@@ -1176,6 +1180,44 @@ known to the server (i.e. the CA's certificate is under
 <highlight language="config">
 SSLVerifyDepth 10
 </highlight>
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLSRPVerifierFile</name>
+<description>Path to SRP verifier file</description>
+<syntax>SSLSRPVerifierFile <em>file-path</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+<p>
+This directive enables TLS-SRP and sets the path to the OpenSSL SRP (Secure
+Remote Password) verifier file containing TLS-SRP usernames, verifiers, salts,
+and group parameters.</p>
+<example><title>Example</title>
+SSLSRPVerifierFile "/path/to/file.srpv"
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLSRPUnknownUserSeed</name>
+<description>SRP unknown user seed</description>
+<syntax>SSLSRPUnknownUserSeed <em>secret-string</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+<p>
+This directive sets the seed used to fake SRP user parameters for unknown
+users, to avoid leaking whether a given user exists. Specify a secret
+string. If this directive is not used, then Apache will return the
+UNKNOWN_PSK_IDENTITY alert to clients who specify an unknown username.
+</p>
+<example><title>Example</title>
+SSLSRPUnknownUserSeed "secret"
 </example>
 </usage>
 </directivesynopsis>
