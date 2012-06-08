@@ -33,7 +33,7 @@
 <summary>
 <p>lbmethod=heartbeat uses the services of <module
 >mod_heartmonitor</module> to balance between origin servers that are providing
-heartbeat info via the <module>mod_heartbeat module</module>.</p>
+heartbeat info via the <module>mod_heartbeat</module> module.</p>
 
 <p> This modules load balancing algorithm favors servers with more ready (idle)
 capacity over time, but does not select the server with the most ready capacity 
