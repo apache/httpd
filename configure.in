@@ -93,7 +93,16 @@ if test "x$with_included_apr" = "xyes"; then
     AC_MSG_ERROR([Bundled APR requested but not found at ./srclib/. Download and unpack the corresponding apr and apr-util packages to ./srclib/.])
   fi
 else 
-  APR_FIND_APR("$srcdir/srclib/apr", "./srclib/apr", 1, 1 2)
+  APR_FIND_APR("$srcdir/srclib/apr", "./srclib/apr", 1, 1 2, [
+    version=`$apr_config --version`
+    case x${version} in
+    x1.[[0-3]].*) 
+      AC_MSG_WARN([APR version 1.4.0 or later is required, found $version])
+      apr_acceptable=no
+      ;;
+    esac
+    unset version
+   ])
 fi
 
 if test "$apr_found" = "no"; then
