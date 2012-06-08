@@ -49,17 +49,10 @@ Changes with Apache 2.5.0
      apr_file_write_full() to prevent incomplete writes. PR 53131.
      [Nicolas Viennot <apache viennot biz>, Stefan Fritsch]
 
-  *) core: Fix segfault in logging if r->useragent_addr or c->client_addr is
-     unset. [Stefan Fritsch]
-
   *) cross-compile: allow to provide CC_FOR_BUILD so that gen_test_char will
      be compiled by the build compiler instead of the host compiler.
      Also set CC_FOR_BUILD to 'cc' when cross-compilation is detected.
      PR 51257. [Guenter Knauf]
-
-  *) mod_ssl: Send the error message for speaking http to an https port using
-     HTTP/1.0 instead of HTTP/0.9, and omit the link that may be wrong when
-     using SNI. PR 50823. [Stefan Fritsch]
 
   *) mod_authz_core: Fix parsing of Require arguments in <AuthzProviderAlias>.
      PR 53048. [Stefan Fritsch]
@@ -74,15 +67,6 @@ Changes with Apache 2.5.0
   *) mod_rewrite: Fix RewriteCond integer checks to be parsed correctly.
      PR 53023. [Axel Reinhold <apache freakout.de>, André Malo]
 
-  *) mod_proxy: Add the forcerecovery balancer parameter that determines if
-     recovery for balancer workers is enforced. [Ruediger Pluem]
-
-  *) mod_proxy: Correctly set up reverse proxy worker. PR 52935.
-     [Petter Berntsen <petterb gmail.com>]
-
-  *) core: Add filesystem paths to access denied / access failed messages
-     AH00035 and AH00036. [Eric Covener]
-
   *) Fix MPM DSO load failure on AIX.  [Jeff Trawick]
 
   *) core: Add the port number to the vhost's name in the scoreboard.
@@ -95,9 +79,6 @@ Changes with Apache 2.5.0
      initializes the allocated memory with non-zero values, except if
      AP_DEBUG_NO_ALLOC_POISON is defined. [Stefan Fritsch]
 
-  *) mod_log_config: Check during config test that directories for access logs
-     exist. PR 29941. [Stefan Fritsch]
-
   *) mod_authnz_ldap: Don't try a potentially expensive nested groups
      search before exhausting all AuthLDAPGroupAttribute checks on the
      current group. PR52464 [Eric Covener]
@@ -109,8 +90,6 @@ Changes with Apache 2.5.0
   *) mod_firehose: Add a new debugging module able to record traffic
      passing through the server in such a way that connections and/or
      requests be reconstructed and replayed. [Graham Leggett]
-
-  *) Event MPM: Reduce locking by using a lock free circular queue.
 
   *) mod_noloris
 
