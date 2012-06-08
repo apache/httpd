@@ -157,6 +157,12 @@ SSLCertificateKeyFile "@exp_sysconfdir@/server.key"
 #SSLVerifyClient require
 #SSLVerifyDepth  10
 
+#   TLS-SRP mutual authentication:
+#   Enable TLS-SRP and set the path to the OpenSSL SRP verifier
+#   file (containing login information for SRP user accounts). See
+#   the mod_ssl FAQ for instructions on creating this file.
+#SSLSRPVerifierFile "@exp_sysconfdir@/passwd.srpv"
+
 #   Access Control:
 #   With SSLRequire you can do per-directory access control based
 #   on arbitrary complex boolean expressions containing server

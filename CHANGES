@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: Add support for TLS-SRP (Secure Remote Password key exchange
+     for TLS, RFC 5054). PR 51075. [Quinn Slack <sqs cs stanford edu>,
+     Christophe Renou, Peter Sylvester]
+
   *) htdbm, htpasswd: Don't crash if crypt() fails (e.g. with FIPS enabled). 
      [Paul Wouters <pwouters redhat.com>, Joe Orton]
 

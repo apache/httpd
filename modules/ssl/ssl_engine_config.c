@@ -149,6 +149,12 @@ static void modssl_ctx_init(modssl_ctx_t *mctx)
     mctx->stapling_responder_timeout = UNSET;
     mctx->stapling_force_url         = NULL;
 #endif
+
+#ifndef OPENSSL_NO_SRP
+    mctx->srp_vfile =             NULL;
+    mctx->srp_unknown_user_seed = NULL;
+    mctx->srp_vbase =             NULL;
+#endif
 }
 
 static void modssl_ctx_init_proxy(SSLSrvConfigRec *sc,
@@ -271,6 +277,11 @@ static void modssl_ctx_cfg_merge(modssl_ctx_t *base,
     cfgMergeInt(stapling_errcache_timeout);
     cfgMergeInt(stapling_responder_timeout);
     cfgMerge(stapling_force_url, NULL);
+#endif
+
+#ifndef OPENSSL_NO_SRP
+    cfgMergeString(srp_vfile);
+    cfgMergeString(srp_unknown_user_seed);
 #endif
 }
 
@@ -1777,6 +1788,32 @@ const char *ssl_cmd_SSLStaplingForceURL(cmd_parms *cmd, void *dcfg,
 }
 
 #endif /* HAVE_OCSP_STAPLING */
+
+#ifndef OPENSSL_NO_SRP
+
+const char *ssl_cmd_SSLSRPVerifierFile(cmd_parms *cmd, void *dcfg,
+                                       const char *arg)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    const char *err;
+
+    if ((err = ssl_cmd_check_file(cmd, &arg)))
+        return err;
+    /* SRP_VBASE_init takes char*, not const char*  */
+    sc->server->srp_vfile = apr_pstrdup(cmd->pool, arg);
+    return NULL;
+}
+
+const char *ssl_cmd_SSLSRPUnknownUserSeed(cmd_parms *cmd, void *dcfg,
+                                          const char *arg)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    /* SRP_VBASE_new takes char*, not const char*  */
+    sc->server->srp_unknown_user_seed = apr_pstrdup(cmd->pool, arg);
+    return NULL;
+}
+
+#endif /* OPENSSL_NO_SRP */
 
 void ssl_hook_ConfigTest(apr_pool_t *pconf, server_rec *s)
 {
