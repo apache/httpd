@@ -147,6 +147,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: jorton
 
+   * htdbm/htpasswd: fix handling of crypt() failures.
+     trunk patch: http://svn.apache.org/viewvc?rev=1346905&view=rev
+     2.4.x patch: trunk patch (ex CHANGES) works
+     +1: jorton
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * cross-compile: allow to provide CC_FOR_BUILD so that gen_test_char will be
