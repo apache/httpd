@@ -141,6 +141,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
       +1: rpluem, druggeri
 
+   * configure: Enforce 1.4.0 as minimum APR version requirement.
+     PR: 52748
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1347998
+     2.4.x patch: trunk patch works
+     +1: jorton
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * cross-compile: allow to provide CC_FOR_BUILD so that gen_test_char will be
