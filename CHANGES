@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ldap: Treat the "server unavailable" condition as a transient
+     error with all LDAP SDKs.  [Filip Valder <filip.valder vsb.cz>]
+
   *) mod_ssl: Add support for TLS-SRP (Secure Remote Password key exchange
      for TLS, RFC 5054). PR 51075. [Quinn Slack <sqs cs stanford edu>,
      Christophe Renou, Peter Sylvester]
