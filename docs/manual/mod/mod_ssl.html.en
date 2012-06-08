@@ -92,6 +92,8 @@ to provide the cryptography engine.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslsessioncache">SSLSessionCache</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslsessioncachetimeout">SSLSessionCacheTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslsessionticketkeyfile">SSLSessionTicketKeyFile</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslsrpunknownuserseed">SSLSRPUnknownUserSeed</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslsrpverifierfile">SSLSRPVerifierFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslstaplingcache">SSLStaplingCache</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslstaplingerrorcachetimeout">SSLStaplingErrorCacheTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslstaplingfaketrylater">SSLStaplingFakeTryLater</a></li>
@@ -170,6 +172,8 @@ compatibility variables.</p>
 <tr><td><code>SSL_SERVER_A_SIG</code></td>              <td>string</td>    <td>Algorithm used for the signature of server's certificate</td></tr>
 <tr><td><code>SSL_SERVER_A_KEY</code></td>              <td>string</td>    <td>Algorithm used for the public key of server's certificate</td></tr>
 <tr><td><code>SSL_SERVER_CERT</code></td>               <td>string</td>    <td>PEM-encoded server certificate</td></tr>
+<tr><td><code>SSL_SRP_USER</code></td>                  <td>string</td>    <td>SRP username</td></tr>
+<tr><td><code>SSL_SRP_USERINFO</code></td>              <td>string</td>    <td>SRP user info</td></tr>
 </table>
 
 <p><em>x509</em> specifies a component of an X.509 DN; one of
@@ -654,6 +658,7 @@ specify the preference and order for the ciphers (see <a href="#table1">Table
 <tr><td><code>kDHr</code></td>   <td>Diffie-Hellman key exchange with RSA key</td></tr>
 <tr><td><code>kDHd</code></td>   <td>Diffie-Hellman key exchange with DSA key</td></tr>
 <tr><td><code>kEDH</code></td>   <td>Ephemeral (temp.key) Diffie-Hellman key exchange (no cert)</td>   </tr>
+<tr><td><code>kSRP</code></td>   <td>Secure Remote Password (SRP) key exchange</td></tr>
 <tr><td colspan="2"><em>Authentication Algorithm:</em></td></tr>
 <tr><td><code>aNULL</code></td>  <td>No authentication</td></tr>
 <tr><td><code>aRSA</code></td>   <td>RSA authentication</td></tr>
@@ -684,6 +689,7 @@ specify the preference and order for the ciphers (see <a href="#table1">Table
 <tr><td><code>DH</code></td>     <td>all ciphers using Diffie-Hellman key exchange</td> </tr>
 <tr><td><code>EDH</code></td>    <td>all ciphers using Ephemeral Diffie-Hellman key exchange</td> </tr>
 <tr><td><code>ADH</code></td>    <td>all ciphers using Anonymous Diffie-Hellman key exchange</td> </tr>
+<tr><td><code>SRP</code></td>    <td>all ciphers using Secure Remote Password (SRP) key exchange</td> </tr>
 <tr><td><code>DSS</code></td>    <td>all ciphers using DSS authentication</td> </tr>
 <tr><td><code>NULL</code></td>   <td>all ciphers using no encryption</td> </tr>
 </table>
@@ -2076,6 +2082,44 @@ OpenSSL currently doesn't allow to specify a limit for ticket lifetimes.</p>
 be protected with file permissions similar to those used for
 <code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code>.</p>
 </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLSRPUnknownUserSeed" id="SSLSRPUnknownUserSeed">SSLSRPUnknownUserSeed</a> <a name="sslsrpunknownuserseed" id="sslsrpunknownuserseed">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>SRP unknown user seed</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLSRPUnknownUserSeed <em>secret-string</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+</table>
+<p>
+This directive sets the seed used to fake SRP user parameters for unknown
+users, to avoid leaking whether a given user exists. Specify a secret
+string. If this directive is not used, then Apache will return the
+UNKNOWN_PSK_IDENTITY alert to clients who specify an unknown username.
+</p>
+<div class="example"><h3>Example</h3><p><code>
+SSLSRPUnknownUserSeed "secret"
+</code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLSRPVerifierFile" id="SSLSRPVerifierFile">SSLSRPVerifierFile</a> <a name="sslsrpverifierfile" id="sslsrpverifierfile">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Path to SRP verifier file</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLSRPVerifierFile <em>file-path</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+</table>
+<p>
+This directive enables TLS-SRP and sets the path to the OpenSSL SRP (Secure
+Remote Password) verifier file containing TLS-SRP usernames, verifiers, salts,
+and group parameters.</p>
+<div class="example"><h3>Example</h3><p><code>
+SSLSRPVerifierFile "/path/to/file.srpv"
+</code></p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
