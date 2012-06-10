@@ -185,6 +185,11 @@
 #define HAVE_TLSV1_X
 #endif
 
+#if !defined(OPENSSL_NO_COMP) && !defined(SSL_OP_NO_COMPRESSION) \
+    && OPENSSL_VERSION_NUMBER < 0x00908000L
+#define OPENSSL_NO_COMP
+#endif
+
 /* SRP support came in OpenSSL 1.0.1 */
 #ifndef OPENSSL_NO_SRP
 #ifdef SSL_CTRL_SET_TLS_EXT_SRP_USERNAME_CB
@@ -693,7 +698,9 @@ struct SSLSrvConfigRec {
 #ifdef HAVE_FIPS
     BOOL             fips;
 #endif
+#ifndef OPENSSL_NO_COMP
     BOOL             compression;
+#endif
 };
 
 /**

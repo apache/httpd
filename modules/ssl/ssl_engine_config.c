@@ -213,7 +213,9 @@ static SSLSrvConfigRec *ssl_config_server_new(apr_pool_t *p)
 #ifdef HAVE_FIPS
     sc->fips                   = UNSET;
 #endif
+#ifndef OPENSSL_NO_COMP
     sc->compression            = UNSET;
+#endif
 
     modssl_ctx_init_proxy(sc, p);
 
@@ -340,7 +342,9 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
 #ifdef HAVE_FIPS
     cfgMergeBool(fips);
 #endif
+#ifndef OPENSSL_NO_COMP
     cfgMergeBool(compression);
+#endif
 
     modssl_ctx_cfg_merge_proxy(base->proxy, add->proxy, mrg->proxy);
 
@@ -678,7 +682,7 @@ static const char *ssl_cmd_check_file(cmd_parms *parms,
 
 const char *ssl_cmd_SSLCompression(cmd_parms *cmd, void *dcfg, int flag)
 {
-#if defined(SSL_OP_NO_COMPRESSION) || OPENSSL_VERSION_NUMBER >= 0x00908000L
+#if !defined(OPENSSL_NO_COMP)
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
 #ifndef SSL_OP_NO_COMPRESSION
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
