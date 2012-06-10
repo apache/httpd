@@ -944,7 +944,7 @@ int          ssl_stapling_mutex_reinit(server_rec *, apr_pool_t *);
 #define SSL_STAPLING_MUTEX_TYPE "ssl-stapling"
 
 /**  Logfile Support  */
-void         ssl_die(void);
+void         ssl_die(server_rec *);
 void         ssl_log_ssl_error(const char *, int, int, server_rec *);
 
 /* ssl_log_xerror, ssl_log_cxerror and ssl_log_rxerror are wrappers for the

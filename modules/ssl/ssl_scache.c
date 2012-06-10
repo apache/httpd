@@ -63,7 +63,7 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
         if (rv) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01872)
                          "Could not initialize stapling cache. Exiting.");
-            ssl_die();
+            ssl_die(s);
         }
     }
 #endif
@@ -88,7 +88,7 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
     if (rv) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01874)
                      "Could not initialize session cache. Exiting.");
-        ssl_die();
+        ssl_die(s);
     }
 }
 

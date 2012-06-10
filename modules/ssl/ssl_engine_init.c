@@ -349,7 +349,7 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
             else {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01885) "FIPS mode failed");
                 ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
-                ssl_die();
+                ssl_die(s);
             }
         }
     }
@@ -438,7 +438,7 @@ void ssl_init_Engine(server_rec *s, apr_pool_t *p)
                          "Init: Failed to load Crypto Device API `%s'",
                          mc->szCryptoDevice);
             ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
-            ssl_die();
+            ssl_die(s);
         }
 
         if (strEQ(mc->szCryptoDevice, "chil")) {
@@ -450,7 +450,7 @@ void ssl_init_Engine(server_rec *s, apr_pool_t *p)
                          "Init: Failed to enable Crypto Device API `%s'",
                          mc->szCryptoDevice);
             ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
-            ssl_die();
+            ssl_die(s);
         }
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(01890)
                      "Init: loaded Crypto Device API `%s'",
@@ -473,7 +473,7 @@ static void ssl_init_server_check(server_rec *s,
     if (!mctx->pks->cert_files[0] && !mctx->pkcs7) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01891)
                 "No SSL Certificate set [hint: SSLCertificateFile]");
-        ssl_die();
+        ssl_die(s);
     }
 
     /*
@@ -489,7 +489,7 @@ static void ssl_init_server_check(server_rec *s,
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01892)
                 "Illegal attempt to re-initialise SSL for server "
                 "(SSLEngine On should go in the VirtualHost, not in global scope.)");
-        ssl_die();
+        ssl_die(s);
     }
 }
 
@@ -515,7 +515,7 @@ static void ssl_init_ctx_tls_extensions(server_rec *s,
                      "Unable to initialize TLS servername extension "
                      "callback (incompatible OpenSSL version?)");
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
-        ssl_die();
+        ssl_die(s);
     }
 
 #ifdef HAVE_OCSP_STAPLING
@@ -542,7 +542,7 @@ static void ssl_init_ctx_tls_extensions(server_rec *s,
                          "[%s seed]",
                          mctx->srp_unknown_user_seed ? "with" : "without");
             ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
-            ssl_die();
+            ssl_die(s);
         }
 
         err = SRP_VBASE_init(mctx->srp_vbase, mctx->srp_vfile);
@@ -550,7 +550,7 @@ static void ssl_init_ctx_tls_extensions(server_rec *s,
             ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02310)
                          "Unable to load SRP verifier file [error %d]", err);
             ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
-            ssl_die();
+            ssl_die(s);
         }
 
         SSL_CTX_set_srp_username_callback(mctx->ssl_ctx,
@@ -578,7 +578,7 @@ static void ssl_init_ctx_protocol(server_rec *s,
     if (protocol == SSL_PROTOCOL_NONE) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02231)
                 "No SSL protocols available [hint: SSLProtocol]");
-        ssl_die();
+        ssl_die(s);
     }
 
     cp = apr_pstrcat(p,
@@ -780,7 +780,7 @@ static void ssl_init_ctx_verify(server_rec *s,
                     "Unable to configure verify locations "
                     "for client authentication");
             ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
-            ssl_die();
+            ssl_die(s);
         }
 
         if (mctx->pks && (mctx->pks->ca_name_file || mctx->pks->ca_name_path)) {
@@ -795,7 +795,7 @@ static void ssl_init_ctx_verify(server_rec *s,
             ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01896)
                     "Unable to determine list of acceptable "
                     "CA certificates for client authentication");
-            ssl_die();
+            ssl_die(s);
         }
 
         SSL_CTX_set_client_CA_list(ctx, ca_list);
@@ -840,7 +840,7 @@ static void ssl_init_ctx_cipher_suite(server_rec *s,
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01898)
                 "Unable to configure permitted SSL ciphers");
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
-        ssl_die();
+        ssl_die(s);
     }
 }
 
@@ -864,7 +864,7 @@ static void ssl_init_ctx_crl(server_rec *s,
                          "Host %s: CRL checking has been enabled, but "
                          "neither %sCARevocationFile nor %sCARevocationPath "
                          "is configured", mctx->sc->vhost_id, cfgp, cfgp);
-            ssl_die();
+            ssl_die(s);
         }
         return;
     }
@@ -878,7 +878,7 @@ static void ssl_init_ctx_crl(server_rec *s,
                      "Host %s: unable to configure X.509 CRL storage "
                      "for certificate revocation", mctx->sc->vhost_id);
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
-        ssl_die();
+        ssl_die(s);
     }
 
     switch (mctx->crl_check_mode) {
@@ -964,7 +964,7 @@ static void ssl_init_ctx_cert_chain(server_rec *s,
     if (n < 0) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01903)
                 "Failed to configure CA certificate chain!");
-        ssl_die();
+        ssl_die(s);
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01904)
@@ -1022,14 +1022,14 @@ static int ssl_server_import_cert(server_rec *s,
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02233)
                 "Unable to import %s server certificate", type);
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
-        ssl_die();
+        ssl_die(s);
     }
 
     if (SSL_CTX_use_certificate(mctx->ssl_ctx, cert) <= 0) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02234)
                 "Unable to configure %s server certificate", type);
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
-        ssl_die();
+        ssl_die(s);
     }
 
 #ifdef HAVE_OCSP_STAPLING
@@ -1078,14 +1078,14 @@ static int ssl_server_import_key(server_rec *s,
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02237)
                 "Unable to import %s server private key", type);
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
-        ssl_die();
+        ssl_die(s);
     }
 
     if (SSL_CTX_use_PrivateKey(mctx->ssl_ctx, pkey) <= 0) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02238)
                 "Unable to configure %s server private key", type);
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
-        ssl_die();
+        ssl_die(s);
     }
 
     /*
@@ -1237,7 +1237,7 @@ static void ssl_init_server_certs(server_rec *s,
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01910)
                 "Oops, no " KEYTYPES " server certificate found "
                 "for '%s:%d'?!", s->server_hostname, s->port);
-        ssl_die();
+        ssl_die(s);
     }
 
     for (i = 0; i < SSL_AIDX_MAX; i++) {
@@ -1257,7 +1257,7 @@ static void ssl_init_server_certs(server_rec *s,
           )) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01911)
                 "Oops, no " KEYTYPES " server private key found?!");
-        ssl_die();
+        ssl_die(s);
     }
 }
 
@@ -1287,7 +1287,7 @@ static void ssl_init_ticket_key(server_rec *s,
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02286)
                      "Failed to open ticket key file %s: (%d) %pm",
                      path, rv, &rv);
-        ssl_die();
+        ssl_die(s);
     }
 
     rv = apr_file_read_full(fp, &buf[0], TLSEXT_TICKET_KEY_LEN, &len);
@@ -1296,7 +1296,7 @@ static void ssl_init_ticket_key(server_rec *s,
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02287)
                      "Failed to read %d bytes from %s: (%d) %pm",
                      TLSEXT_TICKET_KEY_LEN, path, rv, &rv);
-        ssl_die();
+        ssl_die(s);
     }
 
     memcpy(ticket_key->key_name, buf, 16);
@@ -1309,7 +1309,7 @@ static void ssl_init_ticket_key(server_rec *s,
                      "Unable to initialize TLS session ticket key callback "
                      "(incompatible OpenSSL version?)");
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
-        ssl_die();
+        ssl_die(s);
     }
 
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(02288)
@@ -1364,7 +1364,7 @@ static void ssl_init_proxy_certs(server_rec *s,
             ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, s, APLOGNO(02252)
                          "incomplete client cert configured for SSL proxy "
                          "(missing or encrypted private key?)");
-            ssl_die();
+            ssl_die(s);
             return;
         }
     }
@@ -1387,7 +1387,7 @@ static void ssl_init_proxy_certs(server_rec *s,
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02208)
                      "SSL proxy client cert initialization failed");
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
-        ssl_die();
+        ssl_die(s);
     }
 
     X509_STORE_load_locations(store, pkp->ca_cert_file, NULL);
@@ -1677,7 +1677,7 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s,
             ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(02211)
                     "Failed to open Certificate Path `%s'",
                     ca_path);
-            ssl_die();
+            ssl_die(s);
         }
 
         while ((apr_dir_read(&direntry, finfo_flags, dir)) == APR_SUCCESS) {
