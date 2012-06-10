@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1330911:1346405 (outdated) -->
+<!-- English Revision : 1346405 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -176,6 +176,18 @@ Require host .net example.edu
     <highlight language="config">
     Require local
     </highlight>
+
+</section>
+
+<section id="proxy"><title>Note concernant la s&eacute;curit&eacute;</title>
+
+    <p>Si le contenu de votre serveur est mandat&eacute;, vous devez garder &agrave;
+    l'esprit que l'adresse client correspondra &agrave; l'adresse de votre
+    serveur mandataire et non &agrave; l'adresse du client, et l'utilisation de
+    la directive <code>Require</code> dans ce contexte ne provoquera pas
+    forc&eacute;ment l'effet d&eacute;sir&eacute;. Voir <module>mod_remoteip</module> pour
+    une solution possible &agrave; ce probl&egrave;me.</p>
+    
 </section>
 
 </section>

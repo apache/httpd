@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1330881:1347980 (outdated) -->
+<!-- English revision : 1347980 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -782,6 +782,29 @@ SetEnvIf User-Agent "MSIE [2-5]" \
     ils affecteront <em>tous</em> vos clients, ceux utilisant MSIE,
     mais aussi les autres.</p>
 
+</section>
+
+<section id="srp"><title>Comment activer TLS-SRP ?</title>
+    <p>TLS-SRP (Echange de clés avec mot de passe distant sécurisé,
+    défini dans la RFC 5054) peut compléter ou même remplacer les
+    certificats au cours de l'authentification d'une connexion SSL. Pour
+    utiliser TLS-SRP, affectez à la directive <directive
+    module="mod_ssl">SSLSRPVerifierFile</directive> un fichier de
+    vérification OpenSSL SRP. Pour créer ce fichier de vérification,
+    utilisez l'outil <code>openssl</code> :</p>
+    <example>
+    openssl srp -srpvfile passwd.srpv -add username
+    </example>
+    <p>Une fois ce fichier créé, spécifiez-le dans la configuration SSL
+    du serveur :</p>
+    <example>
+    SSLSRPVerifierFile /path/to/passwd.srpv
+    </example>
+    <p>Pour forcer les clients à utiliser des algorithmes de chiffrement
+    non basés sur les certificats, utilisez la directive suivante :</p>
+    <example>
+    SSLCipherSuite "!DSS:!aRSA:SRP"
+    </example>
 </section>
 
 </section>

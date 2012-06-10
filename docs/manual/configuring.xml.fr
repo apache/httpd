@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1213338:1343935 (outdated) -->
+<!-- English Revision : 1243935 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -126,7 +126,10 @@ le Serveur HTTP Apache.</p>
     les fichiers inclus et les variables d'environnement &eacute;valu&eacute;es, tous
     les commentaires et les sections <directive module="core"
     type="section">IfDefine</directive> et <directive module="core"
-    type="section">IfModule</directive> non actives ayant &eacute;t&eacute; supprim&eacute;s.</p>
+    type="section">IfModule</directive> non actives ayant
+    &eacute;t&eacute; supprim&eacute;s. Cependant, la sortie ne refl&egrave;te
+    pas les fusions ou &eacute;crasements pouvant intervenir en cas de
+    d&eacute;finitions multiples de directives.</p>
   </section>
 
   <section id="modules">

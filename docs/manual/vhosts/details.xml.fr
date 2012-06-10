@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1301735:1344666 (outdated) -->
+<!-- English Revision : 1344666 -->
 <!-- French translation by Vincent Deffontaines, review by alain B -->
 <!-- Updated by Lucien Gentis -->
 
@@ -117,6 +117,11 @@ dynamiquement</a></seealso>
     correspondant. Il sera aussi utilisé pour toutes les connexions SSL
     si le serveur ne supporte pas l'<glossary
     ref="servernameindication">Indication du nom du serveur</glossary>.</p>
+
+    <p>Tous les noms spécifiés au sein d'une section
+    <code>VirtualHost</code> sont traités comme un
+    <code>ServerAlias</code> (sans caractères génériques), mais ne sont
+    écrasés par aucune directive <code>ServerAlias</code>.</p>
 
     <p>Pour chaque serveur virtuel, diverses valeurs sont initialisées
     par défaut. En particulier&nbsp;:</p>

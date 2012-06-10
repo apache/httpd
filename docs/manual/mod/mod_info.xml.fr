@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1331006:1343935 (outdated) -->
+<!-- English Revision : 1343935 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -123,10 +123,20 @@ serveur</description>
 
 <section id="startup"><title>Affichage de la configuration au d&eacute;marrage</title>
     <p>Si la directive de configuration define
-    <code>-DDUMP_CONFIG</code> est d&eacute;finie, <module>mod_info</module> va
+    <code>-DDUMP_CONFIG</code> est utilis&eacute;e, <module>mod_info</module> va
     envoyer la configuration pr&eacute;interpr&eacute;t&eacute;e vers <code>stdout</code> au
-    cours du d&eacute;marrage du serveur. Ceci est pratiquement &eacute;quivalent au
-    param&egrave;tre de requ&ecirc;te <code>?config</code>.</p>
+    cours du d&eacute;marrage du serveur. "Pr&eacute;interpr&eacute;t&eacute;e" signifie que
+    les directives telles que <directive type="section"
+    module="core">IfDefine</directive> et <directive type="section"
+    module="core">IfModule</directive> sont &eacute;valu&eacute;es et les variables
+    d'environnement remplac&eacute;es par leurs valeurs. Cela ne repr&eacute;sente
+    cependant pas la configuration d&eacute;finitive. En particulier, les
+    fusions ou &eacute;crasementsde d&eacute;finitions en cas de directives multiples ne sont pas
+    repr&eacute;sent&eacute;s.</p>
+
+    <p>Le r&eacute;sultat est &eacute;quivalent &agrave; celui de la requ&ecirc;te
+    <code>?config</code>.</p>
+    
 </section>
 
 <section id="limitations"><title>Limitations connues</title>

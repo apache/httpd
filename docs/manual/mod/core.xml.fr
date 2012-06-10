@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1336979-->
+<!-- English Revision : 1344675 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -4059,6 +4059,11 @@ serveurs virtuels &agrave; base de nom</description>
     module="core">ServerAlias</directive> correspond est choisi, sans
     priorit&eacute; particuli&egrave;re si le nom contient des caract&egrave;res g&eacute;n&eacute;riques
     (que ce soit pour ServerName ou ServerAlias).</p>
+
+    <p>Tous les noms sp&eacute;cifi&eacute;s au sein d'une section
+    <directive>VirtualHost</directive> sont trait&eacute;s comme un
+    <directive>ServerAlias</directive> (sans caract&egrave;res g&eacute;n&eacute;riques).</p>
+
 </usage>
 <seealso><directive module="core">UseCanonicalName</directive></seealso>
 <seealso><a href="../vhosts/">Documentation sur les serveurs virtuels
