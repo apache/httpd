@@ -159,8 +159,10 @@ SSLCertificateKeyFile "@exp_sysconfdir@/server.key"
 
 #   TLS-SRP mutual authentication:
 #   Enable TLS-SRP and set the path to the OpenSSL SRP verifier
-#   file (containing login information for SRP user accounts). See
-#   the mod_ssl FAQ for instructions on creating this file.
+#   file (containing login information for SRP user accounts). 
+#   Requires OpenSSL 1.0.1 or newer. See the mod_ssl FAQ for
+#   detailed instructions on creating this file. Example:
+#   "openssl srp -srpvfile @exp_sysconfdir@/passwd.srpv -add username"
 #SSLSRPVerifierFile "@exp_sysconfdir@/passwd.srpv"
 
 #   Access Control:
