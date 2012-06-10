@@ -2254,7 +2254,8 @@ int ssl_callback_SRPServerParams(SSL *ssl, int *ad, void *arg)
     char *username = SSL_get_srp_username(ssl);
     SRP_user_pwd *u;
 
-    if ((u = SRP_VBASE_get_by_user(mctx->srp_vbase, username)) == NULL) {
+    if (username == NULL
+        || (u = SRP_VBASE_get_by_user(mctx->srp_vbase, username)) == NULL) {
         *ad = SSL_AD_UNKNOWN_PSK_IDENTITY;
         return SSL3_AL_FATAL;
     }

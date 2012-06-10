@@ -186,10 +186,12 @@
 #endif
 
 /* SRP support came in OpenSSL 1.0.1 */
-#if (OPENSSL_VERSION_NUMBER < 0x10001000)
-#define OPENSSL_NO_SRP
-#else
+#ifndef OPENSSL_NO_SRP
+#ifdef SSL_CTRL_SET_TLS_EXT_SRP_USERNAME_CB
 #include <openssl/srp.h>
+#else
+#define OPENSSL_NO_SRP
+#endif
 #endif
 
 /* mod_ssl headers */

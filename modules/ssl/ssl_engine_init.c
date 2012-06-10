@@ -532,7 +532,7 @@ static void ssl_init_ctx_tls_extensions(server_rec *s,
      * TLS-SRP support
      */
     if (mctx->srp_vfile != NULL) {
-        int rv;
+        int err;
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02308)
                      "Using SRP verifier file [%s]", mctx->srp_vfile);
 
@@ -545,10 +545,10 @@ static void ssl_init_ctx_tls_extensions(server_rec *s,
             ssl_die();
         }
 
-        rv = SRP_VBASE_init(mctx->srp_vbase, mctx->srp_vfile);
-        if (rv != SRP_NO_ERROR) {
+        err = SRP_VBASE_init(mctx->srp_vbase, mctx->srp_vfile);
+        if (err != SRP_NO_ERROR) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02310)
-                         "Unable to load SRP verifier file [error %d]", rv);
+                         "Unable to load SRP verifier file [error %d]", err);
             ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
             ssl_die();
         }
