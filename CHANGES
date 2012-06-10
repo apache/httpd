@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: If exiting during initialization because of a fatal error,
+     log a message to the main error log pointing to the appropriate
+     virtual host error log. [Stefan Fritsch]
+
   *) mod_ldap: Treat the "server unavailable" condition as a transient
      error with all LDAP SDKs.  [Filip Valder <filip.valder vsb.cz>]
 
