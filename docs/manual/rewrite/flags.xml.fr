@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1332585:1346288 (outdated) -->
+<!-- English Revision : 1346288 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -644,10 +644,8 @@ navigateur. Si une URL pleinement qualifi&eacute;e (FQDN - fully qualified domai
 <p><em>Tout</em> code de statut de r&eacute;ponse HTTP valide peut &ecirc;tre
 sp&eacute;cifi&eacute;, en utilisant la syntaxe [R=305], le code de statut 302 &eacute;tant
 utilis&eacute; par d&eacute;faut si aucun code n'est sp&eacute;cifi&eacute;. Le code de statut
-sp&eacute;cifi&eacute; n'est pas n&eacute;cessairement un code de statut de redirection (3xx).
-</p>
-
-<p>Si le code de statut est en dehors de la plage des codes de
+sp&eacute;cifi&eacute; n'est pas n&eacute;cessairement un code de statut
+de redirection (3xx). Cependant, si le code de statut est en dehors de la plage des codes de
 redirection (300-399), la cha&icirc;ne de substitution est enti&egrave;rement
 supprim&eacute;e, et la r&eacute;&eacute;criture s'arr&ecirc;te comme si le drapeau <code>L</code>
 &eacute;tait utilis&eacute;.</p>
