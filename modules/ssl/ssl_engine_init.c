@@ -654,17 +654,15 @@ static void ssl_init_ctx_protocol(server_rec *s,
     }
 #endif
 
+
+#ifndef OPENSSL_NO_COMP
+    if (sc->compression == FALSE) {
 #ifdef SSL_OP_NO_COMPRESSION
-    /* OpenSSL >= 1.0 only */
-    if (sc->compression == FALSE) {
+        /* OpenSSL >= 1.0 only */
         SSL_CTX_set_options(ctx, SSL_OP_NO_COMPRESSION);
-    }
 #elif OPENSSL_VERSION_NUMBER >= 0x00908000L
-    /* workaround for OpenSSL 0.9.8 */
-    if (sc->compression == FALSE) {
-        STACK_OF(SSL_COMP)* comp_methods;
-        comp_methods = SSL_COMP_get_compression_methods();
-        sk_SSL_COMP_zero(comp_methods);
+        sk_SSL_COMP_zero(SSL_COMP_get_compression_methods());
+#endif
     }
 #endif
 
