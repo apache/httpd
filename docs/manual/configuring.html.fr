@@ -120,7 +120,10 @@ le Serveur HTTP Apache.</p>
     <p>Vous pouvez utiliser la définition <code>-DDUMP_CONFIG</code> de
     <code class="module"><a href="./mod/mod_info.html">mod_info</a></code> pour afficher la configuration avec tous
     les fichiers inclus et les variables d'environnement évaluées, tous
-    les commentaires et les sections <code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code> et <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code> non actives ayant été supprimés.</p>
+    les commentaires et les sections <code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code> et <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code> non actives ayant
+    été supprimés. Cependant, la sortie ne reflète
+    pas les fusions ou écrasements pouvant intervenir en cas de
+    définitions multiples de directives.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="modules" id="modules">Modules</a></h2>
