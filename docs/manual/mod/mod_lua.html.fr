@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_lua.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_lua.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournit des points d'entrée Lua dans différentes parties du
 traitement des requêtes httpd</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
@@ -147,13 +145,9 @@ function handle(r)
     if r.method == 'GET' then
         for k, v in pairs( r:parseargs() ) do
             r:puts( string.format("%s: %s\n", k, v) )
-        end
-    elseif r.method == 'POST' then
-        for k, v in pairs( r:parsebody() ) do
-            r:puts( string.format("%s: %s\n", k, v) )
-        end
+        end	
     else
-        r:puts("unknown HTTP method " .. r.method)
+        r:puts("Unsupported HTTP method " .. r.method)
     end
 end
 </pre>
@@ -391,12 +385,8 @@ end
 
 
         <pre class="prettyprint lang-lua">
-        r:parseargs() -- returns a lua table containing the request's query string arguments
-        </pre>
-
-
-        <pre class="prettyprint lang-lua">
-        r:parsebody() -- parse the request body as a POST and return  a lua table
+        r:parseargs() -- renvoie une table lua contenant la chaîne
+	d'arguments de la requête
         </pre>
 
 

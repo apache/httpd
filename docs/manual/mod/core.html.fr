@@ -31,8 +31,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fonctionnalités de base du serveur HTTP Apache toujours
 disponibles</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Core</td></tr></table>
@@ -4054,6 +4052,11 @@ serveurs virtuels à base de nom</td></tr>
     configuration. Le premier serveur virtuel dont le <code class="directive"><a href="#servername">ServerName</a></code> ou le <code class="directive"><a href="#serveralias">ServerAlias</a></code> correspond est choisi, sans
     priorité particulière si le nom contient des caractères génériques
     (que ce soit pour ServerName ou ServerAlias).</p>
+
+    <p>Tous les noms spécifiés au sein d'une section
+    <code class="directive">VirtualHost</code> sont traités comme un
+    <code class="directive">ServerAlias</code> (sans caractères génériques).</p>
+
 
 <h3>Voir aussi</h3>
 <ul>

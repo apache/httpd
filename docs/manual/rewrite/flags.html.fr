@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/flags.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/flags.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Ce document décrit les drapeaux disponibles dans la directive
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>, en fournissant
@@ -651,10 +649,8 @@ navigateur. Si une URL pleinement qualifiée (FQDN - fully qualified domain name)
 <p><em>Tout</em> code de statut de réponse HTTP valide peut être
 spécifié, en utilisant la syntaxe [R=305], le code de statut 302 étant
 utilisé par défaut si aucun code n'est spécifié. Le code de statut
-spécifié n'est pas nécessairement un code de statut de redirection (3xx).
-</p>
-
-<p>Si le code de statut est en dehors de la plage des codes de
+spécifié n'est pas nécessairement un code de statut
+de redirection (3xx). Cependant, si le code de statut est en dehors de la plage des codes de
 redirection (300-399), la chaîne de substitution est entièrement
 supprimée, et la réécriture s'arrête comme si le drapeau <code>L</code>
 était utilisé.</p>
