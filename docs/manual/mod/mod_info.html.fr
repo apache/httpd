@@ -29,8 +29,6 @@
 <a href="../ja/mod/mod_info.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_info.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Affiche une présentation complète de la configuration du
 serveur</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -141,10 +139,18 @@ serveur</td></tr>
 <div class="section">
 <h2><a name="startup" id="startup">Affichage de la configuration au démarrage</a></h2>
     <p>Si la directive de configuration define
-    <code>-DDUMP_CONFIG</code> est définie, <code class="module"><a href="../mod/mod_info.html">mod_info</a></code> va
+    <code>-DDUMP_CONFIG</code> est utilisée, <code class="module"><a href="../mod/mod_info.html">mod_info</a></code> va
     envoyer la configuration préinterprétée vers <code>stdout</code> au
-    cours du démarrage du serveur. Ceci est pratiquement équivalent au
-    paramètre de requête <code>?config</code>.</p>
+    cours du démarrage du serveur. "Préinterprétée" signifie que
+    les directives telles que <code class="directive"><a href="../mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code> et <code class="directive"><a href="../mod/core.html#ifmodule">&lt;IfModule&gt;</a></code> sont évaluées et les variables
+    d'environnement remplacées par leurs valeurs. Cela ne représente
+    cependant pas la configuration définitive. En particulier, les
+    fusions ou écrasementsde définitions en cas de directives multiples ne sont pas
+    représentés.</p>
+
+    <p>Le résultat est équivalent à celui de la requête
+    <code>?config</code>.</p>
+    
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="limitations" id="limitations">Limitations connues</a></h2>

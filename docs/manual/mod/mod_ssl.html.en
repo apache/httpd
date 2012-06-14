@@ -2092,6 +2092,8 @@ be protected with file permissions similar to those used for
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.5.0 and later, if using OpenSSL 1.0.1 or
+later</td></tr>
 </table>
 <p>
 This directive sets the seed used to fake SRP user parameters for unknown
@@ -2112,6 +2114,8 @@ SSLSRPUnknownUserSeed "secret"
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.5.0 and later, if using OpenSSL 1.0.1 or
+later</td></tr>
 </table>
 <p>
 This directive enables TLS-SRP and sets the path to the OpenSSL SRP (Secure
@@ -2120,6 +2124,15 @@ and group parameters.</p>
 <div class="example"><h3>Example</h3><p><code>
 SSLSRPVerifierFile "/path/to/file.srpv"
 </code></p></div>
+<p>
+The verifier file can be created with the <code>openssl</code> command line
+utility:</p>
+<div class="example"><h3>Creating the SRP verifier file</h3><p><code>
+openssl srp -srpvfile passwd.srpv -userinfo "some info" -add username
+</code></p></div>
+<p> The value given with the optional <code>-userinfo</code> parameter is
+avalable in the <code>SSL_SRP_USERINFO</code> request environment variable.</p>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

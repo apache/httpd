@@ -4053,6 +4053,11 @@ serveurs virtuels à base de nom</td></tr>
     priorité particulière si le nom contient des caractères génériques
     (que ce soit pour ServerName ou ServerAlias).</p>
 
+    <p>Tous les noms spécifiés au sein d'une section
+    <code class="directive">VirtualHost</code> sont traités comme un
+    <code class="directive">ServerAlias</code> (sans caractères génériques).</p>
+
+
 <h3>Voir aussi</h3>
 <ul>
 <li><code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code></li>
