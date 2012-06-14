@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/ssl/ssl_faq.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/ssl/ssl_faq.html" title="FranÁais">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut Ítre pÈrimÈe. VÈrifiez la version
-            anglaise pour les changements rÈcents.</div>
 
 <blockquote>
 <p>Le sage n'apporte pas de bonnes rÈponses, il pose les bonnes questions</p>
@@ -788,6 +786,28 @@ SetEnvIf User-Agent "MSIE [2-5]" \
     ils affecteront <em>tous</em> vos clients, ceux utilisant MSIE,
     mais aussi les autres.</p>
 
+
+
+<h3><a name="srp" id="srp">Comment activer TLS-SRP ?</a></h3>
+    <p>TLS-SRP (Echange de cl√©s avec mot de passe distant s√©curis√©,
+    d√©fini dans la RFC 5054) peut compl√©ter ou m√™me remplacer les
+    certificats au cours de l'authentification d'une connexion SSL. Pour
+    utiliser TLS-SRP, affectez √&nbsp; la directive <code class="directive"><a href="../mod/mod_ssl.html#sslsrpverifierfile">SSLSRPVerifierFile</a></code> un fichier de
+    v√©rification OpenSSL SRP. Pour cr√©er ce fichier de v√©rification,
+    utilisez l'outil <code>openssl</code> :</p>
+    <div class="example"><p><code>
+    openssl srp -srpvfile passwd.srpv -add username
+    </code></p></div>
+    <p>Une fois ce fichier cr√©√©, sp√©cifiez-le dans la configuration SSL
+    du serveur :</p>
+    <div class="example"><p><code>
+    SSLSRPVerifierFile /path/to/passwd.srpv
+    </code></p></div>
+    <p>Pour forcer les clients √&nbsp; utiliser des algorithmes de chiffrement
+    non bas√©s sur les certificats, utilisez la directive suivante :</p>
+    <div class="example"><p><code>
+    SSLCipherSuite "!DSS:!aRSA:SRP"
+    </code></p></div>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

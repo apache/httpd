@@ -26,8 +26,6 @@
 <a href="../ko/vhosts/details.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/details.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Ce document vise à expliquer dans le détail comment le serveur
@@ -115,6 +113,11 @@ dynamiquement</a></li></ul><ul class="seealso"><li><a href="#comments_section">C
     serveur virtuel ne possède un ServerName ou un ServerAlias
     correspondant. Il sera aussi utilisé pour toutes les connexions SSL
     si le serveur ne supporte pas l'<a class="glossarylink" href="../glossary.html#servernameindication" title="voir glossaire">Indication du nom du serveur</a>.</p>
+
+    <p>Tous les noms spécifiés au sein d'une section
+    <code>VirtualHost</code> sont traités comme un
+    <code>ServerAlias</code> (sans caractères génériques), mais ne sont
+    écrasés par aucune directive <code>ServerAlias</code>.</p>
 
     <p>Pour chaque serveur virtuel, diverses valeurs sont initialisées
     par défaut. En particulier&nbsp;:</p>

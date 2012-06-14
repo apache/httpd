@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authz_host.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authz_host.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Autorisations de groupe basées sur l'hôte (nom ou adresse
 IP)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -191,6 +189,18 @@ Require host .net example.edu
     Require local
     </pre>
 
+
+
+
+<h3><a name="proxy" id="proxy">Note concernant la sécurité</a></h3>
+
+    <p>Si le contenu de votre serveur est mandaté, vous devez garder à
+    l'esprit que l'adresse client correspondra à l'adresse de votre
+    serveur mandataire et non à l'adresse du client, et l'utilisation de
+    la directive <code>Require</code> dans ce contexte ne provoquera pas
+    forcément l'effet désiré. Voir <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> pour
+    une solution possible à ce problème.</p>
+    
 
 
 </div>

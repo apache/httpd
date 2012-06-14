@@ -1190,6 +1190,8 @@ SSLVerifyDepth 10
 <syntax>SSLSRPVerifierFile <em>file-path</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.5.0 and later, if using OpenSSL 1.0.1 or
+later</compatibility>
 
 <usage>
 <p>
@@ -1199,6 +1201,15 @@ and group parameters.</p>
 <example><title>Example</title>
 SSLSRPVerifierFile "/path/to/file.srpv"
 </example>
+<p>
+The verifier file can be created with the <code>openssl</code> command line
+utility:</p>
+<example><title>Creating the SRP verifier file</title>
+openssl srp -srpvfile passwd.srpv -userinfo "some info" -add username
+</example>
+<p> The value given with the optional <code>-userinfo</code> parameter is
+avalable in the <code>SSL_SRP_USERINFO</code> request environment variable.</p>
+
 </usage>
 </directivesynopsis>
 
@@ -1208,6 +1219,8 @@ SSLSRPVerifierFile "/path/to/file.srpv"
 <syntax>SSLSRPUnknownUserSeed <em>secret-string</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.5.0 and later, if using OpenSSL 1.0.1 or
+later</compatibility>
 
 <usage>
 <p>
