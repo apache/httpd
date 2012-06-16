@@ -184,6 +184,7 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name, int ap
     if (hook_specs) {
         int i;
         for (i = 0; i < hook_specs->nelts; i++) {
+            char *file;
             ap_lua_mapped_handler_spec *hook_spec =
                 ((ap_lua_mapped_handler_spec **) hook_specs->elts)[i];
 
@@ -202,8 +203,9 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name, int ap
             spec->cb = &lua_open_callback;
             spec->cb_arg = NULL;
 
-            apr_filepath_merge(&spec->file, server_cfg->root_path,
+            apr_filepath_merge(&file, server_cfg->root_path,
                                spec->file, APR_FILEPATH_NOTRELATIVE, r->pool);
+            spec->file = file;
 
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01476)
                           "request details scope:%u, filename:%s, function:%s",

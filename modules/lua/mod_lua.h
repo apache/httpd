@@ -113,7 +113,7 @@ typedef struct
     apr_hash_t *hooks;          /* <wombat_hook_info> */
 
     /* the actual directory being configured */
-    char *dir;
+    const char *dir;
   
     /* Whether Lua scripts in a sub-dir are run before parents */
     ap_lua_inherit_t inherit;
@@ -131,7 +131,7 @@ typedef struct
 
 typedef struct
 {
-    char *function_name;
+    const char *function_name;
     ap_lua_vm_spec *spec;
 } mapped_request_details;
 
@@ -144,7 +144,7 @@ typedef struct
 typedef struct
 {
     lua_State *L;
-    char *function;
+    const char *function;
 } ap_lua_filter_ctx;
 
 extern module AP_MODULE_DECLARE_DATA lua_module;
