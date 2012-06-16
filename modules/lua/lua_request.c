@@ -452,49 +452,40 @@ static int req_log_at(lua_State *L, int level)
 /* r:debug(String) and friends which use apache logging */
 static int req_emerg(lua_State *L)
 {
-    req_log_at(L, APLOG_EMERG);
-    return 0;
+    return req_log_at(L, APLOG_EMERG);
 }
 static int req_alert(lua_State *L)
 {
-    req_log_at(L, APLOG_ALERT);
-    return 0;
+    return req_log_at(L, APLOG_ALERT);
 }
 static int req_crit(lua_State *L)
 {
-    req_log_at(L, APLOG_CRIT);
-    return 0;
+    return req_log_at(L, APLOG_CRIT);
 }
 static int req_err(lua_State *L)
 {
-    req_log_at(L, APLOG_ERR);
-    return 0;
+    return req_log_at(L, APLOG_ERR);
 }
 static int req_warn(lua_State *L)
 {
-    req_log_at(L, APLOG_WARNING);
-    return 0;
+    return req_log_at(L, APLOG_WARNING);
 }
 static int req_notice(lua_State *L)
 {
-    req_log_at(L, APLOG_NOTICE);
-    return 0;
+    return req_log_at(L, APLOG_NOTICE);
 }
 static int req_info(lua_State *L)
 {
-    req_log_at(L, APLOG_INFO);
-    return 0;
+    return req_log_at(L, APLOG_INFO);
 }
 static int req_debug(lua_State *L)
 {
-    req_log_at(L, APLOG_DEBUG);
-    return 0;
+    return req_log_at(L, APLOG_DEBUG);
 }
 
 #define APLUA_REQ_TRACE(lev) static int req_trace##lev(lua_State *L)  \
 {                                                               \
-    req_log_at(L, APLOG_TRACE##lev);                            \
-    return 0;                                                   \
+    return req_log_at(L, APLOG_TRACE##lev);                     \
 }
 
 APLUA_REQ_TRACE(1)
