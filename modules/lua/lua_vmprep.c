@@ -240,6 +240,7 @@ AP_LUA_DECLARE(void) ap_lua_load_apache2_lmodule(lua_State *L)
 /* callback for cleaning up a lua vm when pool is closed */
 static apr_status_t cleanup_lua(void *l)
 {
+    AP_DEBUG_ASSERT(l != NULL);
     lua_close((lua_State *) l);
     return APR_SUCCESS;
 }
@@ -319,7 +320,7 @@ static int loadjitmodule(lua_State *L, apr_pool_t *lifecycle_pool) {
 
 #endif
 
-static apr_status_t vm_construct(void **vm, void *params, apr_pool_t *lifecycle_pool)
+static apr_status_t vm_construct(lua_State **vm, void *params, apr_pool_t *lifecycle_pool)
 {
     lua_State* L;
 
@@ -393,7 +394,8 @@ AP_LUA_DECLARE(lua_State*)ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
                       "creating lua_State with file %s", spec->file);
         /* not available, so create */
         
-        if(!vm_construct((void **)&L, spec, lifecycle_pool)) {
+        if(!vm_construct(&L, spec, lifecycle_pool)) {
+          AP_DEBUG_ASSERT(L != NULL);
           apr_pool_userdata_set(L, 
                                 spec->file, 
                                 cleanup_lua,

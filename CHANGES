@@ -6,6 +6,9 @@ Changes with Apache 2.5.0
      possible XSS for a site where untrusted users can upload files to
      a location with MultiViews enabled. [Niels Heinen <heinenn google.com>]
 
+  *) mod_lua: Change prototype of vm_construct, to work around gcc bug which
+     causes a segfault. PR 52779. [Dick Snippe <Dick Snippe tech omroep nl>]
+
   *) mod_ssl: If exiting during initialization because of a fatal error,
      log a message to the main error log pointing to the appropriate
      virtual host error log. [Stefan Fritsch]
