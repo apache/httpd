@@ -127,6 +127,8 @@ typedef struct
 
     /* value of the LuaRoot directive */
     const char *root_path;
+
+    apr_hash_t *authz_providers;
 } ap_lua_server_cfg;
 
 typedef struct
