@@ -96,6 +96,8 @@ static void pstack_dump(lua_State *L, apr_pool_t *r, int level,
 
 /* BEGIN apache lmodule  */
 
+#define makeintegerfield(L, n) lua_pushinteger(L, n); lua_setfield(L, -2, #n)
+
 AP_LUA_DECLARE(void) ap_lua_load_apache2_lmodule(lua_State *L)
 {
     lua_getglobal(L, "package");
@@ -106,130 +108,69 @@ AP_LUA_DECLARE(void) ap_lua_load_apache2_lmodule(lua_State *L)
     lua_pop(L, 1);              /* empty stack */
 
     lua_getglobal(L, "apache2");
-    lua_pushinteger(L, OK);
-    lua_setfield(L, -2, "OK");
-
-    lua_pushinteger(L, DECLINED);
-    lua_setfield(L, -2, "DECLINED");
-
-    lua_pushinteger(L, DONE);
-    lua_setfield(L, -2, "DONE");
 
     lua_pushstring(L, ap_get_server_banner());
     lua_setfield(L, -2, "version");
 
-    lua_pushinteger(L, HTTP_MOVED_TEMPORARILY);
-    lua_setfield(L, -2, "HTTP_MOVED_TEMPORARILY");
-
-    lua_pushinteger(L, PROXYREQ_NONE);
-    lua_setfield(L, -2, "PROXYREQ_NONE");
-
-    lua_pushinteger(L, PROXYREQ_PROXY);
-    lua_setfield(L, -2, "PROXYREQ_PROXY");
-
-    lua_pushinteger(L, PROXYREQ_REVERSE);
-    lua_setfield(L, -2, "PROXYREQ_REVERSE");
-
-    lua_pushinteger(L, PROXYREQ_RESPONSE);
-    lua_setfield(L, -2, "PROXYREQ_RESPONSE");
+    makeintegerfield(L, OK);
+    makeintegerfield(L, DECLINED);
+    makeintegerfield(L, DONE);
+    makeintegerfield(L, HTTP_MOVED_TEMPORARILY);
+    makeintegerfield(L, PROXYREQ_NONE);
+    makeintegerfield(L, PROXYREQ_PROXY);
+    makeintegerfield(L, PROXYREQ_REVERSE);
+    makeintegerfield(L, PROXYREQ_RESPONSE);
+    makeintegerfield(L, PROXYREQ_RESPONSE);
 
     /*
-       lua_pushinteger(L, HTTP_CONTINUE);
-       lua_setfield(L, -2, "HTTP_CONTINUE");
-       lua_pushinteger(L, HTTP_SWITCHING_PROTOCOLS);
-       lua_setfield(L, -2, "HTTP_SWITCHING_PROTOCOLS");
-       lua_pushinteger(L, HTTP_PROCESSING);
-       lua_setfield(L, -2, "HTTP_PROCESSING");
-       lua_pushinteger(L, HTTP_OK);
-       lua_setfield(L, -2, "HTTP_OK");
-       lua_pushinteger(L, HTTP_CREATED);
-       lua_setfield(L, -2, "HTTP_CREATED");
-       lua_pushinteger(L, HTTP_ACCEPTED);
-       lua_setfield(L, -2, "HTTP_ACCEPTED");
-       lua_pushinteger(L, HTTP_NON_AUTHORITATIVE);
-       lua_setfield(L, -2, "HTTP_NON_AUTHORITATIVE");
-       lua_pushinteger(L, HTTP_NO_CONTENT);
-       lua_setfield(L, -2, "HTTP_NO_CONTENT");
-       lua_pushinteger(L, HTTP_RESET_CONTENT);
-       lua_setfield(L, -2, "HTTP_RESET_CONTENT");
-       lua_pushinteger(L, HTTP_PARTIAL_CONTENT);
-       lua_setfield(L, -2, "HTTP_PARTIAL_CONTENT");
-       lua_pushinteger(L, HTTP_MULTI_STATUS);
-       lua_setfield(L, -2, "HTTP_MULTI_STATUS");
-       lua_pushinteger(L, HTTP_MULTIPLE_CHOICES);
-       lua_setfield(L, -2, "HTTP_MULTIPLE_CHOICES");
-       lua_pushinteger(L, HTTP_MOVED_PERMANENTLY);
-       lua_setfield(L, -2, "HTTP_MOVED_PERMANENTLY");
-       lua_pushinteger(L, HTTP_SEE_OTHER);
-       lua_setfield(L, -2, "HTTP_SEE_OTHER");
-       lua_pushinteger(L, HTTP_NOT_MODIFIED);
-       lua_setfield(L, -2, "HTTP_NOT_MODIFIED");
-       lua_pushinteger(L, HTTP_USE_PROXY);
-       lua_setfield(L, -2, "HTTP_USE_PROXY");
-       lua_pushinteger(L, HTTP_TEMPORARY_REDIRECT);
-       lua_setfield(L, -2, "HTTP_TEMPORARY_REDIRECT");
-       lua_pushinteger(L, HTTP_BAD_REQUEST);
-       lua_setfield(L, -2, "HTTP_BAD_REQUEST");
-       lua_pushinteger(L, HTTP_UNAUTHORIZED);
-       lua_setfield(L, -2, "HTTP_UNAUTHORIZED");
-       lua_pushinteger(L, HTTP_PAYMENT_REQUIRED);
-       lua_setfield(L, -2, "HTTP_PAYMENT_REQUIRED");
-       lua_pushinteger(L, HTTP_FORBIDDEN);
-       lua_setfield(L, -2, "HTTP_FORBIDDEN");
-       lua_pushinteger(L, HTTP_NOT_FOUND);
-       lua_setfield(L, -2, "HTTP_NOT_FOUND");
-       lua_pushinteger(L, HTTP_METHOD_NOT_ALLOWED);
-       lua_setfield(L, -2, "HTTP_METHOD_NOT_ALLOWED");
-       lua_pushinteger(L, HTTP_NOT_ACCEPTABLE);
-       lua_setfield(L, -2, "HTTP_NOT_ACCEPTABLE");
-       lua_pushinteger(L, HTTP_PROXY_AUTHENTICATION_REQUIRED);
-       lua_setfield(L, -2, "HTTP_PROXY_AUTHENTICATION_REQUIRED");
-       lua_pushinteger(L, HTTP_REQUEST_TIME_OUT);
-       lua_setfield(L, -2, "HTTP_REQUEST_TIME_OUT");
-       lua_pushinteger(L, HTTP_CONFLICT);
-       lua_setfield(L, -2, "HTTP_CONFLICT");
-       lua_pushinteger(L, HTTP_GONE);
-       lua_setfield(L, -2, "HTTP_GONE");
-       lua_pushinteger(L, HTTP_LENGTH_REQUIRED);
-       lua_setfield(L, -2, "HTTP_LENGTH_REQUIRED");
-       lua_pushinteger(L, HTTP_PRECONDITION_FAILED);
-       lua_setfield(L, -2, "HTTP_PRECONDITION_FAILED");
-       lua_pushinteger(L, HTTP_REQUEST_ENTITY_TOO_LARGE);
-       lua_setfield(L, -2, "HTTP_REQUEST_ENTITY_TOO_LARGE");
-       lua_pushinteger(L, HTTP_REQUEST_URI_TOO_LARGE);
-       lua_setfield(L, -2, "HTTP_REQUEST_URI_TOO_LARGE");
-       lua_pushinteger(L, HTTP_UNSUPPORTED_MEDIA_TYPE);
-       lua_setfield(L, -2, "HTTP_UNSUPPORTED_MEDIA_TYPE");
-       lua_pushinteger(L, HTTP_RANGE_NOT_SATISFIABLE);
-       lua_setfield(L, -2, "HTTP_RANGE_NOT_SATISFIABLE");
-       lua_pushinteger(L, HTTP_EXPECTATION_FAILED);
-       lua_setfield(L, -2, "HTTP_EXPECTATION_FAILED");
-       lua_pushinteger(L, HTTP_UNPROCESSABLE_ENTITY);
-       lua_setfield(L, -2, "HTTP_UNPROCESSABLE_ENTITY");
-       lua_pushinteger(L, HTTP_LOCKED);
-       lua_setfield(L, -2, "HTTP_LOCKED");
-       lua_pushinteger(L, HTTP_FAILED_DEPENDENCY);
-       lua_setfield(L, -2, "HTTP_FAILED_DEPENDENCY");
-       lua_pushinteger(L, HTTP_UPGRADE_REQUIRED);
-       lua_setfield(L, -2, "HTTP_UPGRADE_REQUIRED");
-       lua_pushinteger(L, HTTP_INTERNAL_SERVER_ERROR);
-       lua_setfield(L, -2, "HTTP_INTERNAL_SERVER_ERROR");
-       lua_pushinteger(L, HTTP_NOT_IMPLEMENTED);
-       lua_setfield(L, -2, "HTTP_NOT_IMPLEMENTED");
-       lua_pushinteger(L, HTTP_BAD_GATEWAY);
-       lua_setfield(L, -2, "HTTP_BAD_GATEWAY");
-       lua_pushinteger(L, HTTP_SERVICE_UNAVAILABLE);
-       lua_setfield(L, -2, "HTTP_SERVICE_UNAVAILABLE");
-       lua_pushinteger(L, HTTP_GATEWAY_TIME_OUT);
-       lua_setfield(L, -2, "HTTP_GATEWAY_TIME_OUT");
-       lua_pushinteger(L, HTTP_VERSION_NOT_SUPPORTED);
-       lua_setfield(L, -2, "HTTP_VERSION_NOT_SUPPORTED");
-       lua_pushinteger(L, HTTP_VARIANT_ALSO_VARIES);
-       lua_setfield(L, -2, "HTTP_VARIANT_ALSO_VARIES");
-       lua_pushinteger(L, HTTP_INSUFFICIENT_STORAGE);
-       lua_setfield(L, -2, "HTTP_INSUFFICIENT_STORAGE");
-       lua_pushinteger(L, HTTP_NOT_EXTENDED);
-       lua_setfield(L, -2, "HTTP_NOT_EXTENDED");
+       makeintegerfield(L, HTTP_CONTINUE);
+       makeintegerfield(L, HTTP_SWITCHING_PROTOCOLS);
+       makeintegerfield(L, HTTP_PROCESSING);
+       makeintegerfield(L, HTTP_OK);
+       makeintegerfield(L, HTTP_CREATED);
+       makeintegerfield(L, HTTP_ACCEPTED);
+       makeintegerfield(L, HTTP_NON_AUTHORITATIVE);
+       makeintegerfield(L, HTTP_NO_CONTENT);
+       makeintegerfield(L, HTTP_RESET_CONTENT);
+       makeintegerfield(L, HTTP_PARTIAL_CONTENT);
+       makeintegerfield(L, HTTP_MULTI_STATUS);
+       makeintegerfield(L, HTTP_MULTIPLE_CHOICES);
+       makeintegerfield(L, HTTP_MOVED_PERMANENTLY);
+       makeintegerfield(L, HTTP_SEE_OTHER);
+       makeintegerfield(L, HTTP_NOT_MODIFIED);
+       makeintegerfield(L, HTTP_USE_PROXY);
+       makeintegerfield(L, HTTP_TEMPORARY_REDIRECT);
+       makeintegerfield(L, HTTP_BAD_REQUEST);
+       makeintegerfield(L, HTTP_UNAUTHORIZED);
+       makeintegerfield(L, HTTP_PAYMENT_REQUIRED);
+       makeintegerfield(L, HTTP_FORBIDDEN);
+       makeintegerfield(L, HTTP_NOT_FOUND);
+       makeintegerfield(L, HTTP_METHOD_NOT_ALLOWED);
+       makeintegerfield(L, HTTP_NOT_ACCEPTABLE);
+       makeintegerfield(L, HTTP_PROXY_AUTHENTICATION_REQUIRED);
+       makeintegerfield(L, HTTP_REQUEST_TIME_OUT);
+       makeintegerfield(L, HTTP_CONFLICT);
+       makeintegerfield(L, HTTP_GONE);
+       makeintegerfield(L, HTTP_LENGTH_REQUIRED);
+       makeintegerfield(L, HTTP_PRECONDITION_FAILED);
+       makeintegerfield(L, HTTP_REQUEST_ENTITY_TOO_LARGE);
+       makeintegerfield(L, HTTP_REQUEST_URI_TOO_LARGE);
+       makeintegerfield(L, HTTP_UNSUPPORTED_MEDIA_TYPE);
+       makeintegerfield(L, HTTP_RANGE_NOT_SATISFIABLE);
+       makeintegerfield(L, HTTP_EXPECTATION_FAILED);
+       makeintegerfield(L, HTTP_UNPROCESSABLE_ENTITY);
+       makeintegerfield(L, HTTP_LOCKED);
+       makeintegerfield(L, HTTP_FAILED_DEPENDENCY);
+       makeintegerfield(L, HTTP_UPGRADE_REQUIRED);
+       makeintegerfield(L, HTTP_INTERNAL_SERVER_ERROR);
+       makeintegerfield(L, HTTP_NOT_IMPLEMENTED);
+       makeintegerfield(L, HTTP_BAD_GATEWAY);
+       makeintegerfield(L, HTTP_SERVICE_UNAVAILABLE);
+       makeintegerfield(L, HTTP_GATEWAY_TIME_OUT);
+       makeintegerfield(L, HTTP_VERSION_NOT_SUPPORTED);
+       makeintegerfield(L, HTTP_VARIANT_ALSO_VARIES);
+       makeintegerfield(L, HTTP_INSUFFICIENT_STORAGE);
+       makeintegerfield(L, HTTP_NOT_EXTENDED);
      */
 }
 
