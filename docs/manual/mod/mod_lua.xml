@@ -130,6 +130,60 @@ handlers (or hooks, or filters) in the same script.
 
 </section>
 
+<section id="writingauthzproviders">
+<title>Writing Authorization Providers</title>
+
+<p><module>mod_authz_core</module> provides a high-level interface to
+authorization that is much easier to use than using into the relevant
+hooks directly. The first argument to the
+<directive module="mod_authz_core">Require</directive> directive gives
+the name of the responsible authorization provider. For any
+<directive module="mod_authz_core">Require</directive> line,
+<module>mod_authz_core</module> will call the authorization provider
+of the given name, passing the rest of the line as parameters. The
+provider will then check authorization and pass the result as return
+value.</p>
+
+<p>The authz provider is normally called before authentication. If it needs to
+know the authenticated user name (or if the user will be authenticated at
+all), the provider must return <code>apache2.AUTHZ_DENIED_NO_USER</code>.
+This will cause authentication to proceed and the authz provider to be
+called a second time.</p>
+
+<p>The following authz provider function takes two arguments, one ip
+address and one user name. It will allow access from the given ip address
+without authentication, or if the authenticated user matches the second
+argument:</p>
+
+<highlight language="lua">
+<strong>authz_provider.lua</strong>
+
+require 'apache2'
+
+function authz_check_foo(r, ip, user)
+    if r.useragent_ip == ip then
+        return apache2.AUTHZ_GRANTED
+    elseif r.user == nil then
+        return apache2.AUTHZ_DENIED_NO_USER
+    elseif r.user == user then
+        return apache2.AUTHZ_GRANTED
+    else
+        return apache2.AUTHZ_DENIED
+    end
+end
+</highlight>
+
+<p>The following configuration registers this function as provider
+<code>foo</code> and configures it for URL <code>/</code>:</p>
+<highlight language="config">
+LuaAuthzProvider foo authz_provider.lua authz_check_foo
+&lt;Location /&gt;
+  Require foo 10.1.2.3 john_doe
+&lt;/Location&gt;
+</highlight>
+
+</section>
+
 <section id="writinghooks"><title>Writing Hooks</title>
 
 <p>Hook functions are how modules (and Lua scripts) participate in the
@@ -794,5 +848,31 @@ hook function usually returns OK, DECLINED, or HTTP_FORBIDDEN.</p>
    context.</p></note>
 </usage>
 </directivesynopsis>
+
+<directivesynopsis>
+<name>LuaAuthzProvider</name>
+<description>Plug an authorization provider function into <module>mod_authz_core</module>
+</description>
+<syntax>LuaAuthzProvider provider_name /path/to/lua/script.lua function_name</syntax>
+<contextlist><context>server config</context> </contextlist>
+<compatibility>2.5.0 and later</compatibility>
+
+<usage>
+<p>After a lua function has been registered as authorization provider, it can be used
+with the <directive module="mod_authz_core">Require</directive> directive:</p>
+
+<example>
+<highlight language="config">
+LuaRoot /usr/local/apache2/lua
+LuaAuthzProvider foo authz.lua authz_check_foo
+&lt;Location /&gt;
+  Require foo bar
+&lt;/Location&gt;
+</highlight>
+</example>
+
+</usage>
+</directivesynopsis>
+
 
 </modulesynopsis>
