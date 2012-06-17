@@ -1045,11 +1045,18 @@ static authz_status expr_check_authorization(request_rec *r,
     const ap_expr_info_t *expr = parsed_require_line;
     int rc = ap_expr_exec(r, expr, &err);
 
-    if (rc <= 0)
-        /* XXX: real error handling? */
+    if (rc < 0) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02320)
+                      "Error evaluating expression in 'Require expr': %s",
+                      err);
+        return AUTHZ_GENERAL_ERROR;
+    }
+    else if (rc == 0) {
         return AUTHZ_DENIED;
-    else
+    }
+    else {
         return AUTHZ_GRANTED;
+    }
 }
 
 static const char *expr_parse_config(cmd_parms *cmd, const char *require_line,
