@@ -6,6 +6,10 @@ Changes with Apache 2.5.0
      possible XSS for a site where untrusted users can upload files to
      a location with MultiViews enabled. [Niels Heinen <heinenn google.com>]
 
+  *) mod_authz_core: If an expression in "Require expr" returns denied and
+     references %{REMOTE_USER}, trigger authentication and retry. PR 52892.
+     [Stefan Fritsch]
+
   *) mod_lua: Add new directive LuaAuthzProvider to allow implementing an
      authorization provider in lua. [Stefan Fritsch]
 
