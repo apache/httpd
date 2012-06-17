@@ -1071,7 +1071,9 @@ static const char *expr_parse_config(cmd_parms *cmd, const char *require_line,
                                    expr_lookup_fn);
 
     if (expr_err)
-        return "Cannot parse expression in require line";
+        return apr_pstrcat(cmd->temp_pool,
+                           "Cannot parse expression in require line: ",
+                           expr_err, NULL);
 
     *parsed_require_line = info;
 
