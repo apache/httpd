@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1345917:1351020 (outdated) -->
+<!-- English Revision : 1351020 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -136,6 +136,60 @@ gestionnaires (ou points d'entr&eacute;e, ou filtres) dans le m&ecirc;me script.
 </p>
 
 </section>
+<section id="writingauthzproviders">
+<title>Ecriture de fournisseurs d'autorisation</title>
+
+<p><module>mod_authz_core</module> fournit une interface d'autorisation
+de haut niveau bien plus facile &agrave; utiliser que dans les hooks
+correspondants. Le premier argument de la directive <directive
+module="mod_authz_core">Require</directive> permet de sp&eacute;cifier le
+fournisseur d'autorisation &agrave; utiliser. Pour chaque directive <directive
+module="mod_authz_core">Require</directive>,
+<module>mod_authz_core</module> appellera le fournisseur d'autorisation
+sp&eacute;cifi&eacute;, le reste de la ligne constituant les param&egrave;tres. Le
+fournisseur consid&eacute;r&eacute; va alors v&eacute;rifier les autorisations et fournir le
+r&eacute;sultat dans une valeur de retour.</p>
+
+<p>En g&eacute;n&eacute;ral, le fournisseur authz est appel&eacute; avant l'authentification.
+S'il doit conna&icirc;tre le nom d'utilisateur authentifi&eacute; (ou si
+l'utilisateur est appel&eacute; &agrave; &ecirc;tre authentifi&eacute;), le fournisseur doit
+renvoyer <code>apache2.AUTHZ_DENIED_NO_USER</code>, ce qui va
+d&eacute;clancher le processus d'authentification et un deuxi&egrave;me appel du
+fournisseur authz.</p>
+
+<p>La fonction du fournisseur authz ci-dessous accepte deux arguments,
+une adresse IP et un nom d'utilisateur. Elle autorise l'acc&egrave;s dans le
+cas o&ugrave; la requ&ecirc;te provient de l'adresse IP sp&eacute;cifi&eacute;e, ou si
+l'utilisateur authentifi&eacute; correspond au second argument :</p>
+
+<highlight language="lua">
+<strong>authz_provider.lua</strong>
+
+require 'apache2'
+
+function authz_check_foo(r, ip, user)
+    if r.useragent_ip == ip then
+        return apache2.AUTHZ_GRANTED
+    elseif r.user == nil then
+        return apache2.AUTHZ_DENIED_NO_USER
+    elseif r.user == user then
+        return apache2.AUTHZ_GRANTED
+    else
+        return apache2.AUTHZ_DENIED
+    end
+end
+</highlight>
+
+<p>La configuration suivante enregistre cette fonction en tant que
+fournisseur <code>foo</code>, et la configure por l'URL <code>/</code> :</p>
+<highlight language="config">
+LuaAuthzProvider foo authz_provider.lua authz_check_foo
+&lt;Location /&gt;
+  Require foo 10.1.2.3 john_doe
+&lt;/Location&gt;
+</highlight>
+
+</section>
 
 <section id="writinghooks"><title>Ecriture de fonctions d'accroche
 (hooks)</title>
@@ -249,6 +303,17 @@ end
           <td>oui</td>
         </tr>
 
+	<tr>
+          <td><code>context_prefix</code></td>
+          <td>string</td>
+          <td>non</td>
+        </tr>
+        <tr>
+          <td><code>context_document_root</code></td>
+          <td>string</td>
+          <td>non</td>
+        </tr>
+
         <tr>
           <td><code>document_root</code></td>
           <td>string</td>
@@ -281,6 +346,11 @@ end
         </tr>
         <tr>
           <td><code>hostname</code></td>
+          <td>string</td>
+          <td>non</td>
+        </tr>
+        <tr>
+	<td><code>log_id</code></td>
           <td>string</td>
           <td>non</td>
         </tr>
@@ -344,6 +414,11 @@ end
           <td>string</td>
           <td>oui</td>
         </tr>
+	<tr>
+          <td><code>useragent_ip</code></td>
+          <td>string</td>
+          <td>non</td>
+        </tr>
         </table>
 
         <p>La structure request_rec poss&egrave;de (au minimum) les m&eacute;thodes
@@ -354,8 +429,8 @@ end
         </highlight>
 
         <highlight language="lua">
-        r:parseargs() -- renvoie une table lua contenant la chaîne
-	d'arguments de la requête
+        r:parseargs() -- renvoie une table lua contenant la cha&icirc;ne
+	d'arguments de la requ&ecirc;te
         </highlight>
 <!--
 /* Not supported yet */
@@ -828,6 +903,33 @@ traitement de la requ&ecirc;te</description>
    module="core">Files</directive>, ni dans un fichier htaccess.</p></note>
 </usage>
 </directivesynopsis>
+
+<directivesynopsis>
+<name>LuaAuthzProvider</name>
+<description>Branche une fonction fournisseur d'autorisation dans <module>mod_authz_core</module>
+</description>
+<syntax>LuaAuthzProvider provider_name /path/to/lua/script.lua function_name</syntax>
+<contextlist><context>server config</context> </contextlist>
+<compatibility>Disponible depuis la version 2.5.0 du serveur HTTP Apache</compatibility>
+
+<usage>
+<p>Lorsqu'une fonction lua a &eacute;t&eacute; enregistr&eacute;e en tant que fournisseur
+d'autorisation, elle peut &ecirc;tre appel&eacute;e via la directive <directive
+module="mod_authz_core">Require</directive> :</p>
+
+<example>
+<highlight language="config">
+LuaRoot /usr/local/apache2/lua
+LuaAuthzProvider foo authz.lua authz_check_foo
+&lt;Location /&gt;
+  Require foo bar
+&lt;/Location&gt;
+</highlight>
+</example>
+
+</usage>
+</directivesynopsis>
+
 
 </modulesynopsis>
 

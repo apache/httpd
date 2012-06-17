@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1334406:1344675 (outdated) -->
+<!-- English Revision: 1334675 -->
 <!-- French translation by alain B, review by Vincent Deffontaines 
 	updated by Lucien GENTIS -->
 
@@ -210,6 +210,11 @@ virtuel basé sur le nom approprié</title>
     module="core">ServerAlias</directive> correspond est utilisé, sans
     priorité particulière en cas de présence de caractères génériques
     (que ce soit pour le ServerName ou le ServerAlias).</p>
+
+    <p>La liste complète des noms dans la section <directive
+    module="core">VirtualHost</directive> sont traités comme une
+    directive <directive module="core">ServerAlias</directive> sans
+    caractères génériques.</p>
 
     <p>Finalement, vous pouvez affiner la configuration des serveurs 
     virtuels en plaçant d'autres directives à l'intérieur des sections 
