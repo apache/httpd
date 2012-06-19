@@ -1186,8 +1186,10 @@ static void start_connect(struct connection * c)
     apr_err("socket", rv);
     }
 
-    if ((rv = apr_socket_bind(c->aprsock, mysa)) != APR_SUCCESS) {
-        apr_err("bind", rv);
+    if (myhost) {
+        if ((rv = apr_socket_bind(c->aprsock, mysa)) != APR_SUCCESS) {
+            apr_err("bind", rv);
+        }
     }
 
     c->pollfd.desc_type = APR_POLL_SOCKET;
@@ -1686,13 +1688,15 @@ static void test(void)
         exit(1);
     }
 #endif              /* NOT_ASCII */
-
-    /* This only needs to be done once */
-    if ((rv = apr_sockaddr_info_get(&mysa, myhost, APR_UNSPEC, 0, 0, cntxt)) != APR_SUCCESS) {
-        char buf[120];
-        apr_snprintf(buf, sizeof(buf),
-                 "apr_sockaddr_info_get() for %s", myhost);
-        apr_err(buf, rv);
+    
+    if (myhost) {
+        /* This only needs to be done once */
+        if ((rv = apr_sockaddr_info_get(&mysa, myhost, APR_UNSPEC, 0, 0, cntxt)) != APR_SUCCESS) {
+            char buf[120];
+            apr_snprintf(buf, sizeof(buf),
+                         "apr_sockaddr_info_get() for %s", myhost);
+            apr_err(buf, rv);
+        }
     }
 
     /* This too */
