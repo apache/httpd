@@ -2384,7 +2384,7 @@ will be accepted from the client</description>
      <note type="warning"><title>Warning</title>
      <p> When name-based virtual hosting is used, the value for this
      directive is taken from the default (first-listed) virtual host for the
-     local IP and port combination</p>.
+     local IP and port combination.</p>
      </note>
 
 </usage>
