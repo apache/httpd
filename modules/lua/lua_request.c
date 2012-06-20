@@ -164,6 +164,32 @@ static int req_parseargs(lua_State *L)
     return 2;                   /* [table<string, string>, table<string, array<string>>] */
 }
 
+/* r:parsebody() returning a lua table */
+static int req_parsebody(lua_State *L)
+{
+    apr_array_header_t          *pairs;
+    apr_off_t len;
+    int res;
+    apr_size_t size;
+    char *buffer;
+    request_rec *r = ap_lua_check_request_rec(L, 1);
+    lua_newtable(L);
+    lua_newtable(L);            /* [table, table] */
+    res = ap_parse_form_data(r, NULL, &pairs, -1, MAX_STRING_LEN); /*XXX: Maybe increase this value? */
+    if (res == OK) {
+        while(pairs && !apr_is_empty_array(pairs)) {
+            ap_form_pair_t *pair = (ap_form_pair_t *) apr_array_pop(pairs);
+            apr_brigade_length(pair->value, 1, &len);
+            size = (apr_size_t) len;
+            buffer = apr_palloc(r->pool, size + 1);
+            apr_brigade_flatten(pair->value, buffer, &size);
+            buffer[len] = 0;
+            req_aprtable2luatable_cb(L, pair->name, buffer);
+        }
+    }
+    return 2;                   /* [table<string, string>, table<string, array<string>>] */
+}
+
 /* wrap ap_rputs as r:puts(String) */
 static int req_puts(lua_State *L)
 {
@@ -625,6 +651,8 @@ AP_LUA_DECLARE(void) ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
                  makefun(&req_context_document_root, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "parseargs", APR_HASH_KEY_STRING,
                  makefun(&req_parseargs, APL_REQ_FUNTYPE_LUACFUN, p));
+    apr_hash_set(dispatch, "parsebody", APR_HASH_KEY_STRING,
+                 makefun(&req_parsebody, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "debug", APR_HASH_KEY_STRING,
                  makefun(&req_debug, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "info", APR_HASH_KEY_STRING,
