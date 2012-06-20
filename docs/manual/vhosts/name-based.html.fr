@@ -199,6 +199,10 @@ virtuel basé sur le nom approprié</a></h2>
     priorité particulière en cas de présence de caractères génériques
     (que ce soit pour le ServerName ou le ServerAlias).</p>
 
+    <p>La liste complète des noms dans la section <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code> sont traités comme une
+    directive <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code> sans
+    caractères génériques.</p>
+
     <p>Finalement, vous pouvez affiner la configuration des serveurs 
     virtuels en plaçant d'autres directives à l'intérieur des sections 
     <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>. 
