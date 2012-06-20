@@ -1611,34 +1611,56 @@ or check out the rest of our documentation for further tips.
 <div class="section">
 <h2><a name="snippets" id="snippets">Some useful snippets of code</a></h2>
 
-<h3><a name="get_post" id="get_post">Retrieve a variable from POST form data</a></h3>
+<h3><a name="get_post" id="get_post">Retrieve variables from POST form data</a></h3>
 
 
 
 <pre class="prettyprint lang-c">
-const char *read_post_value(const apr_array_header_t *fields, const char *key) 
-{
-    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-    int                         i;
-    apr_table_entry_t           *e = 0;
-    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-    e = (apr_table_entry_t *) fields-&gt;elts;
-    for(i = 0; i &lt; fields-&gt;nelts; i++) {
-        if(!strcmp(e[i].key, key)) return e[i].val;
+typedef struct {
+    const char* key;
+    const char* value;
+} keyValuePair;
+
+keyValuePair* readPost(request_req* r) {
+    apr_array_header_t *pairs = NULL;
+    apr_off_t len;
+    apr_size_t size;
+    int res;
+    int i = 0;
+    char *buffer;
+    keyValuePair* kvp;
+
+    res = ap_parse_form_data(r, NULL, &amp;pairs, -1, HUGE_STRING_LEN);
+    if (res != OK || !pairs) return NULL; /* Return NULL if we failed or if there are is no POST data */
+    kvp = apr_pcalloc(r-&gt;pool, sizeof(keyValuePair) * (pairs-&gt;nelts + 1));
+    while (pairs &amp;&amp; !apr_is_empty_array(pairs)) {
+        i++;
+        ap_form_pair_t *pair = (ap_form_pair_t *) apr_array_pop(pairs);
+        apr_brigade_length(pair-&gt;value, 1, &amp;len);
+        size = (apr_size_t) len;
+        buffer = apr_palloc(r-&gt;pool, size + 1);
+        apr_brigade_flatten(pair-&gt;value, buffer, &amp;size);
+        buffer[len] = 0;
+        kvp[i]-&gt;key = apr_pstrdup(r-&gt;pool, pair-&gt;name);
+        kvp[i]-&gt;value = buffer;
     }
-    return 0;
+    return kvp;    
 }
+
 static int example_handler(request_req *r) 
 {
     /*~~~~~~~~~~~~~~~~~~~~~~*/
-    apr_array_header_t *POST;
-    const char         *value;
-    /*~~~~~~~~~~~~~~~~~~~~~~*/
-    ap_parse_form_data(r, NULL, &amp;POST, -1, 8192);
     
-    value = read_post_value(POST, "valueA");
-    if (!value) value = "(undefined)";
-    ap_rprintf(r, "The value of valueA is: %s", value);
+    keyValuePair* formData;
+    /*~~~~~~~~~~~~~~~~~~~~~~*/
+
+    formData = readPost();
+    if (formData) {
+        int i;
+        for (i = 0; formData[i]; i++) {
+            ap_rprintf(r, "%s == %s\n", formData[i]-&gt;key, formData[i]-&gt;value);
+        }
+    }
     return OK;
 }
 </pre>
