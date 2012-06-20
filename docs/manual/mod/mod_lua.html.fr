@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_lua.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_lua.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournit des points d'entrée Lua dans différentes parties du
 traitement des requêtes httpd</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
@@ -80,6 +78,7 @@ jour.</div>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#basicconf">Configuration de base</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#writinghandlers">Ecrire des gestionnaires</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#writingauthzproviders">Ecriture de fournisseurs d'autorisation</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#writinghooks">Ecriture de fonctions d'accroche
 (hooks)</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#datastructures">Structures de données</a></li>
@@ -165,6 +164,61 @@ d'un formulaire dans un page au format texte.
 Cela signifie que vous pouvez (et êtes encouragé à) avoir plusieurs
 gestionnaires (ou points d'entrée, ou filtres) dans le même script.
 </p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="writingauthzproviders" id="writingauthzproviders">Ecriture de fournisseurs d'autorisation</a></h2>
+
+
+<p><code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code> fournit une interface d'autorisation
+de haut niveau bien plus facile à utiliser que dans les hooks
+correspondants. Le premier argument de la directive <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> permet de spécifier le
+fournisseur d'autorisation à utiliser. Pour chaque directive <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>,
+<code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code> appellera le fournisseur d'autorisation
+spécifié, le reste de la ligne constituant les paramètres. Le
+fournisseur considéré va alors vérifier les autorisations et fournir le
+résultat dans une valeur de retour.</p>
+
+<p>En général, le fournisseur authz est appelé avant l'authentification.
+S'il doit connaître le nom d'utilisateur authentifié (ou si
+l'utilisateur est appelé à être authentifié), le fournisseur doit
+renvoyer <code>apache2.AUTHZ_DENIED_NO_USER</code>, ce qui va
+déclancher le processus d'authentification et un deuxième appel du
+fournisseur authz.</p>
+
+<p>La fonction du fournisseur authz ci-dessous accepte deux arguments,
+une adresse IP et un nom d'utilisateur. Elle autorise l'accès dans le
+cas où la requête provient de l'adresse IP spécifiée, ou si
+l'utilisateur authentifié correspond au second argument :</p>
+
+<pre class="prettyprint lang-lua">
+<strong>authz_provider.lua</strong>
+
+require 'apache2'
+
+function authz_check_foo(r, ip, user)
+    if r.useragent_ip == ip then
+        return apache2.AUTHZ_GRANTED
+    elseif r.user == nil then
+        return apache2.AUTHZ_DENIED_NO_USER
+    elseif r.user == user then
+        return apache2.AUTHZ_GRANTED
+    else
+        return apache2.AUTHZ_DENIED
+    end
+end
+</pre>
+
+
+<p>La configuration suivante enregistre cette fonction en tant que
+fournisseur <code>foo</code>, et la configure por l'URL <code>/</code> :</p>
+<pre class="prettyprint lang-config">
+LuaAuthzProvider foo authz_provider.lua authz_check_foo
+&lt;Location /&gt;
+  Require foo 10.1.2.3 john_doe
+&lt;/Location&gt;
+</pre>
+
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -282,6 +336,17 @@ end
           <td>oui</td>
         </tr>
 
+	<tr>
+          <td><code>context_prefix</code></td>
+          <td>string</td>
+          <td>non</td>
+        </tr>
+        <tr>
+          <td><code>context_document_root</code></td>
+          <td>string</td>
+          <td>non</td>
+        </tr>
+
         <tr>
           <td><code>document_root</code></td>
           <td>string</td>
@@ -314,6 +379,11 @@ end
         </tr>
         <tr>
           <td><code>hostname</code></td>
+          <td>string</td>
+          <td>non</td>
+        </tr>
+        <tr>
+	<td><code>log_id</code></td>
           <td>string</td>
           <td>non</td>
         </tr>
@@ -376,6 +446,11 @@ end
           <td><code>user</code></td>
           <td>string</td>
           <td>oui</td>
+        </tr>
+	<tr>
+          <td><code>useragent_ip</code></td>
+          <td>string</td>
+          <td>non</td>
         </tr>
         </table>
 
@@ -451,16 +526,28 @@ contenu suivant :</p>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaAuthzProvider" id="LuaAuthzProvider">LuaAuthzProvider</a> <a name="luaauthzprovider" id="luaauthzprovider">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Plug an authorization provider function into <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Branche une fonction fournisseur d'autorisation dans <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaAuthzProvider provider_name /path/to/lua/script.lua function_name</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>2.5.0 and later</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.5.0 du serveur HTTP Apache</td></tr>
+</table>
+<p>Lorsqu'une fonction lua a été enregistrée en tant que fournisseur
+d'autorisation, elle peut être appelée via la directive <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> :</p>
+
+<div class="example"><pre class="prettyprint lang-config">
+LuaRoot /usr/local/apache2/lua
+LuaAuthzProvider foo authz.lua authz_check_foo
+&lt;Location /&gt;
+  Require foo bar
+&lt;/Location&gt;
+</pre>
+</div>
+
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaCodeCache" id="LuaCodeCache">LuaCodeCache</a> <a name="luacodecache" id="luacodecache">Directive</a></h2>
 <table class="directive">
