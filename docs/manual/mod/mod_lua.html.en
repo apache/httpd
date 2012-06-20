@@ -142,6 +142,10 @@ function handle(r)
         for k, v in pairs( r:parseargs() ) do
             r:puts( string.format("%s: %s\n", k, v) )
         end
+    elseif r.method == 'POST' then
+        for k, v in pairs( r:parsebody() ) do
+            r:puts( string.format("%s: %s\n", k, v) )
+        end
     else
         r:puts("Unsupported HTTP method " .. r.method)
     end
