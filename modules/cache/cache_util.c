@@ -172,7 +172,7 @@ cache_provider_list *cache_get_providers(request_rec *r,
         cache_server_conf *conf,
         apr_uri_t uri)
 {
-    cache_dir_conf *dconf = dconf = ap_get_module_config(r->per_dir_config, &cache_module);
+    cache_dir_conf *dconf = ap_get_module_config(r->per_dir_config, &cache_module);
     cache_provider_list *providers = NULL;
     int i;
 
