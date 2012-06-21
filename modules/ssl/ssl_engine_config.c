@@ -125,6 +125,10 @@ static void modssl_ctx_init(modssl_ctx_t *mctx)
     mctx->crl_file            = NULL;
     mctx->crl_check_mode      = SSL_CRLCHECK_UNSET;
 
+    mctx->rsa_authz_file      = NULL;
+    mctx->dsa_authz_file      = NULL;
+    mctx->ec_authz_file       = NULL;
+
     mctx->auth.ca_cert_path   = NULL;
     mctx->auth.ca_cert_file   = NULL;
     mctx->auth.cipher_suite   = NULL;
@@ -256,6 +260,10 @@ static void modssl_ctx_cfg_merge(modssl_ctx_t *base,
     cfgMerge(crl_path, NULL);
     cfgMerge(crl_file, NULL);
     cfgMerge(crl_check_mode, SSL_CRLCHECK_UNSET);
+
+    cfgMergeString(rsa_authz_file);
+    cfgMergeString(dsa_authz_file);
+    cfgMergeString(ec_authz_file);
 
     cfgMergeString(auth.ca_cert_path);
     cfgMergeString(auth.ca_cert_file);
@@ -836,6 +844,54 @@ const char *ssl_cmd_SSLPKCS7CertificateFile(cmd_parms *cmd,
     }
 
     sc->server->pkcs7 = arg;
+
+    return NULL;
+}
+
+const char *ssl_cmd_SSLRSAAuthzFile(cmd_parms *cmd,
+				    void *dcfg,
+				    const char *arg)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    const char *err;
+
+    if ((err = ssl_cmd_check_file(cmd, &arg))) {
+        return err;
+    }
+
+    sc->server->rsa_authz_file = arg;
+
+    return NULL;
+}
+
+const char *ssl_cmd_SSLDSAAuthzFile(cmd_parms *cmd,
+				    void *dcfg,
+				    const char *arg)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    const char *err;
+
+    if ((err = ssl_cmd_check_file(cmd, &arg))) {
+        return err;
+    }
+
+    sc->server->dsa_authz_file = arg;
+
+    return NULL;
+}
+
+const char *ssl_cmd_SSLECAuthzFile(cmd_parms *cmd,
+				   void *dcfg,
+				   const char *arg)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    const char *err;
+
+    if ((err = ssl_cmd_check_file(cmd, &arg))) {
+        return err;
+    }
+
+    sc->server->ec_authz_file = arg;
 
     return NULL;
 }
