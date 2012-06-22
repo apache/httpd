@@ -2497,8 +2497,7 @@ client</td></tr>
 
 
     <div class="note">Under normal conditions, the value should not be changed from
-    the default. Also, you can't set this higher than 8190 without
-    modifying the source code and rebuilding.</div>
+    the default.</div>
 
     <div class="warning"><h3>Warning</h3>
     <p> When name-based virtual hosting is used, the value for this
