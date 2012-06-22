@@ -123,6 +123,10 @@ Alias /secure /webpages/secure
     AuthType Basic
     AuthName LDAP_Protected Place
     Require valid-user
+    # Notez que Require ldap-* ne fonctionnerait pas ici, car
+    # AuthnProviderAlias ne fournit pas de configuration pour les
+    # fournisseurs d'autorisation implémentés dans le même module que le
+    # fournisseur d'authentification.
 &lt;/Directory&gt;
           </pre>
 </div>
