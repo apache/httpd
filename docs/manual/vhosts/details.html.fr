@@ -26,8 +26,6 @@
 <a href="../ko/vhosts/details.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/details.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Le code gérant les serveurs virtuels a été réécrit à partir de
@@ -295,6 +293,11 @@ de configuration</a></h2>
     servir la requête. Il est possible que le champ <code>Host:</code>
     contienne un numéro de port, mais Apache utilise toujours le
     port sur lequel il a effectivement reçu la requête.</p>
+
+    <p>La liste complète des noms dans la section
+    <code>VirtualHost</code> sont traités comme un
+    <code>ServerAlias</code> sans caractères génériques (mais ne sont
+    pas écrasés par une directive <code>ServerAlias</code>).</p>
 
     <p>Dans le cas où le client a envoyé une requête en HTTP/1.0 sans
     champ d'en-tête <code>Host:</code>, il est impossible de
