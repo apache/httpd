@@ -2421,8 +2421,7 @@ client</description>
     <highlight language="config">LimitRequestFieldSize 4094</highlight>
 
     <note>Under normal conditions, the value should not be changed from
-    the default. Also, you can't set this higher than 8190 without
-    modifying the source code and rebuilding.</note>
+    the default.</note>
 
     <note type="warning"><title>Warning</title>
     <p> When name-based virtual hosting is used, the value for this
