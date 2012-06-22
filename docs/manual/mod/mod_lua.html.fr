@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_lua.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_lua.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournit des points d'entrée Lua dans différentes parties du
 traitement des requêtes httpd</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
@@ -149,7 +147,11 @@ function handle(r)
     if r.method == 'GET' then
         for k, v in pairs( r:parseargs() ) do
             r:puts( string.format("%s: %s\n", k, v) )
-        end	
+        end
+    elseif r.method == 'POST' then
+        for k, v in pairs( r:parsebody() ) do
+            r:puts( string.format("%s: %s\n", k, v) )
+        end
     else
         r:puts("Unsupported HTTP method " .. r.method)
     end
