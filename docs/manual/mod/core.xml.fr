@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1351967:1352912 (outdated) -->
+<!-- English Revision : 1352912 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2658,9 +2658,7 @@ requ&ecirc;te HTTP</description>
     <highlight language="config">LimitRequestFieldSize 4094</highlight>
 
     <note>Dans des conditions normales, la valeur par d&eacute;faut de cette
-    directive ne doit pas &ecirc;tre modifi&eacute;e. En outre, vous ne
-    pouvez pas sp&eacute;cifier une valeur sup&eacute;rieure &agrave; 8190 sans modifier le
-    code source et recompiler.</note>
+    directive ne doit pas &ecirc;tre modifi&eacute;e.</note>
 
     <note type="warning"><title>Avertissement</title>
      <p>Dans le cas des serveurs virtuels &agrave; base de noms, la valeur de
