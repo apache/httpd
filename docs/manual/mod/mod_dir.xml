@@ -102,6 +102,22 @@ a directory</description>
     literally if it has any arguments before or after it, even if they are "disabled"
     as well.</p>
 
+    <p><strong>Note:</strong> Multiple <directive>DirectoryIndex</directive> 
+    directives within the <em>same context</em> will add to the list of resources to 
+    look for rather than replace:
+    </p>
+    <highlight language="config">
+# Set the index files to look for
+DirectoryIndex index.html index.htm
+
+# This will add dynamic files to the list rather than replace it
+DirectoryIndex index.php index.pl index.lua
+
+# To replace the list, we must first reset it, then set the new list
+DirectoryIndex disabled
+DirectoryIndex index.py
+    </highlight>
+
 </usage>
 </directivesynopsis>
 
