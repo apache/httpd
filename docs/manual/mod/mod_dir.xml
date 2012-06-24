@@ -103,19 +103,28 @@ a directory</description>
     as well.</p>
 
     <p><strong>Note:</strong> Multiple <directive>DirectoryIndex</directive> 
-    directives within the <em>same context</em> will add to the list of resources to 
-    look for rather than replace:
+    directives within the <a href="../sections.html"><em>same context</em></a> will add 
+    to the list of resources to look for rather than replace:
     </p>
     <highlight language="config">
-# Set the index files to look for
-DirectoryIndex index.html index.htm
+# Example A: Set index.html as an index page, then add index.php to that list as well.
+&lt;Directory /foo&gt;
+    DirectoryIndex index.html
+    DirectoryIndex index.php
+&lt;/Directory&gt;
 
-# This will add dynamic files to the list rather than replace it
-DirectoryIndex index.php index.pl index.lua
+# Example B: This is identical to example A, except it's done with a single directive.
+&lt;Directory /foo&gt;
+    DirectoryIndex index.html index.php
+&lt;/Directory&gt;
 
-# To replace the list, we must first reset it, then set the new list
-DirectoryIndex disabled
-DirectoryIndex index.py
+# Example C: To replace the list, you must explicitly do so:
+# In this example, only index.php will remain as an index resource.
+&lt;Directory /foo&gt;
+    DirectoryIndex index.html
+    DirectoryIndex disabled
+    DirectoryIndex index.php
+&lt;/Directory&gt;
     </highlight>
 
 </usage>
