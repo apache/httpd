@@ -94,6 +94,24 @@ a directory</description>
     <p>would cause the CGI script <code>/cgi-bin/index.pl</code> to be
     executed if neither <code>index.html</code> or <code>index.txt</code>
     existed in a directory.</p>
+
+    <p><strong>Note:</strong> Multiple <directive>DirectoryIndex</directive> 
+    directives within the <a href="../sections.html"><em>same context</em></a> will add 
+    to the list of resources to look for rather than replace:
+    </p>
+
+    <example>
+    <pre># Example A: Set index.html as an index page, then add index.php to that list as well.
+&lt;Directory /foo&gt;
+    DirectoryIndex index.html
+    DirectoryIndex index.php
+&lt;/Directory&gt;
+
+# Example B: This is identical to example A, except it's done with a single directive.
+&lt;Directory /foo&gt;
+    DirectoryIndex index.html index.php
+&lt;/Directory&gt;</pre>
+    </example>
 </usage>
 </directivesynopsis>
 
