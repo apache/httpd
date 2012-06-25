@@ -118,7 +118,7 @@ a directory</description>
     DirectoryIndex index.html index.php
 &lt;/Directory&gt;
 
-# Example C: To replace the list, you must explicitly do so:
+# Example C: To replace the list, you must explicitly reset it first:
 # In this example, only index.php will remain as an index resource.
 &lt;Directory /foo&gt;
     DirectoryIndex index.html
