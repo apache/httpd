@@ -10,6 +10,6 @@
     <variant>en</variant>
     <variant outdated="yes">ja</variant>
     <variant outdated="yes">ko</variant>
-    <variant>tr</variant>
+    <variant outdated="yes">tr</variant>
   </variants>
 </metafile>
