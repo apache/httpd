@@ -1672,6 +1672,9 @@ expressions</td></tr>
     need also <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> or <code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code>
     (or both) present in the server.</p>
 
+    <p>In order to get the functionality of proxying HTTPS sites, you
+    need <code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code> enabled in the server.</p>
+
     <div class="warning"><h3>Warning</h3>
       <p>Do not enable proxying with <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> until you have <a href="#access">secured your server</a>.  Open proxy servers are dangerous
       both to your network and to the Internet at large.</p>
