@@ -125,6 +125,27 @@ client envoie une requête pour un répertoire</td></tr>
     arguments sont présents avant ou après lui, même s'ils sont
     eux-mêmes des arguments "disabled".</p>
 
+    <p><strong>Note :</strong>La définition de plusieurs directives
+    <code class="directive">DirectoryIndex</code> au sein d'un <em>même
+    contexte</em> permet d'ajouter des ressources à rechercher plutôt
+    que de remplacer celle déjà définies :
+    </p>
+    <pre class="prettyprint lang-config">
+# Définition des fichiers d'index à rechercher
+DirectoryIndex index.html index.htm
+
+# Ajoute des fichiers dynamiques à la liste des fichiers à rechercher
+# sans réinitialiser cette dernière
+DirectoryIndex index.php index.pl index.lua
+
+# Pour réinitialiser la liste, il faut d'abord la supprimer, puis créer
+# une nouvelle liste
+DirectoryIndex disabled
+DirectoryIndex index.py
+    </pre>
+
+
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
