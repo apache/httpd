@@ -192,13 +192,13 @@ Intranet website, for clients coming from the Internet?</a></li>
     clients allowed, as follows:</p>
     
     <example><title>httpd.conf</title><pre>
-SSLVerifyClient      none
-&lt;Directory /usr/local/apache2/htdocs/secure/area&gt;
-
-SSLVerifyClient      require
-SSLVerifyDepth       5
 SSLCACertificateFile conf/ssl.crt/ca.crt
 SSLCACertificatePath conf/ssl.crt
+SSLVerifyClient      none
+
+&lt;Directory /usr/local/apache2/htdocs/secure/area&gt;
+SSLVerifyClient      require
+SSLVerifyDepth       5
 SSLOptions           +FakeBasicAuth
 SSLRequireSSL
 AuthName             "Snake Oil Authentication"
@@ -226,12 +226,12 @@ Require              valid-user
 
     <example><title>httpd.conf</title><pre>
 SSLVerifyClient      none
-&lt;Directory /usr/local/apache2/htdocs/secure/area&gt;
+SSLCACertificateFile conf/ssl.crt/ca.crt
+SSLCACertificatePath conf/ssl.crt
 
+&lt;Directory /usr/local/apache2/htdocs/secure/area&gt;
   SSLVerifyClient      require
   SSLVerifyDepth       5
-  SSLCACertificateFile conf/ssl.crt/ca.crt
-  SSLCACertificatePath conf/ssl.crt
   SSLOptions           +FakeBasicAuth
   SSLRequireSSL
   SSLRequire       %{SSL_CLIENT_S_DN_O}  eq "Snake Oil, Ltd." \
