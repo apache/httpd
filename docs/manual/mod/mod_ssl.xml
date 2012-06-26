@@ -1795,7 +1795,7 @@ disabled for proxy image both for the main server and all configured virtual hos
 
 <p>Note that the SSLProxyEngine directive should not, in
 general, be included in a virtual host that will be acting as a
-forward proxy (using <Proxy> or <ProxyRequest> directives.
+forward proxy (using &lt;Proxy&gt; or &lt;ProxyRequest&gt; directives.
 SSLProxyEngine is not required to enable a forward proxy server to
 proxy SSL/TLS requests.</p>
 
