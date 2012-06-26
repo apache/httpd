@@ -37,7 +37,7 @@ Server 2.4</p>
 <section id="introduction"><title>Introduction</title>
 <section id="what"><title>What we will be discussing in this document</title>
 <p>
-This document will discuss how you can easily create modules for the Apache 
+This document will discuss how you can create modules for the Apache 
 HTTP Server 2.4, by exploring an example module called 
 <code>mod_example</code>. In the first part of this document, the purpose 
 of this module will be to calculate and print out various digest values for 
@@ -238,6 +238,8 @@ can create. Some other ways of hooking are:
 <li><code>ap_hook_pre_config</code>: Place a hook that executes before any configuration data has been read (very early hook)</li>
 <li><code>ap_hook_post_config</code>: Place a hook that executes after configuration has been parsed, but before the server has forked</li>
 <li><code>ap_hook_translate_name</code>: Place a hook that executes when a URI needs to be translated into a filename on the server (think <code>mod_rewrite</code>)</li>
+<li><code>ap_hook_quick_handler</code>: Similar to <code>ap_hook_handler</code>, except it is run before any other request hooks (translation, auth, fixups etc)</li>
+<li><code>ap_hook_log_transaction</code>: Place a hook that executes when the server is about to add a log entry of the current request</li>
 </ul>
 
 </section>
@@ -314,9 +316,10 @@ request_req </code> structure are:
 <li><code>r-&gt;args (char*):</code> Contains the query string of the request, if any</li>
 <li><code>r-&gt;headers_in (apr_table_t*):</code> Contains all the headers sent by the client</li>
 <li><code>r-&gt;connection (conn_rec*):</code> A record containing information about the current connection</li>
+<li><code>r-&gt;user (char*):</code> If the URI requires authentication, this is set to the username provided</li>
 <li><code>r-&gt;useragent_ip (char*):</code> The IP address of the client connecting to us</li>
-<li><code>r-&gt;pool (apr_pool_t*)</code>: The memory pool of this request. We'll discuss this in the &quot;
-<a href="#memory">Memory management</a>&quot; chapter.</li>
+<li><code>r-&gt;pool (apr_pool_t*)</code>: The memory pool of this request. We'll discuss this in the 
+&quot;<a href="#memory">Memory management</a>&quot; chapter.</li>
 </ul>
 <p>
 A complete list of all the values contained with in the <code>request_req</code> structure can be found in 
@@ -1277,10 +1280,11 @@ two configurations and decide how they are to be merged:</p>
 <!-- BEGIN EXAMPLE CODE -->
 <highlight language="c">
 void* merge_dir_conf(apr_pool_t* pool, void* BASE, void* ADD) {
-    example_config* base = (example_config *) BASE ;
-    example_config* add = (example_config *) ADD ;
-    example_config* conf = (example_config *) create_dir_conf(pool, "Merged configuration");
+    example_config* base = (example_config *) BASE ; /* This is what was set in the parent context */
+    example_config* add = (example_config *) ADD ;   /* This is what is set in the new context */
+    example_config* conf = (example_config *) create_dir_conf(pool, "Merged configuration"); /* This will be the merged configuration */
     
+    /* Merge configurations */
     conf->enabled = ( add->enabled == 0 ) ? base->enabled : add->enabled ;
     conf->typeOfAction = add->typeOfAction ? add->typeOfAction : base->typeOfAction;
     strcpy(conf->path, strlen(add->path) ? add->path : base->path);
@@ -1619,7 +1623,7 @@ static int example_handler(request_req *r)
     if (formData) {
         int i;
         for (i = 0; formData[i]; i++) {
-            ap_rprintf(r, &quot;%s == %s\n&quot;, formData[i]->key, formData[i]->value);
+            ap_rprintf(r, &quot;%s = %s\n&quot;, formData[i]->key, formData[i]->value);
         }
     }
     return OK;
