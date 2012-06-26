@@ -178,11 +178,12 @@ SSLVerifyDepth 1
 
     <pre class="prettyprint lang-config">
 SSLVerifyClient      none
+SSLCACertificateFile conf/ssl.crt/ca.crt
+SSLCACertificatePath conf/ssl.crt
+
 &lt;Directory /usr/local/apache2/htdocs/secure/area&gt;
     SSLVerifyClient      require
     SSLVerifyDepth       5
-    SSLCACertificateFile conf/ssl.crt/ca.crt
-    SSLCACertificatePath conf/ssl.crt
     SSLOptions           +FakeBasicAuth
     SSLRequireSSL
     AuthName             "Snake Oil Authentication"
@@ -209,11 +210,12 @@ SSLVerifyClient      none
 
     <pre class="prettyprint lang-config">
 SSLVerifyClient      none
+SSLCACertificateFile conf/ssl.crt/ca.crt
+SSLCACertificatePath conf/ssl.crt
+
 &lt;Directory /usr/local/apache2/htdocs/secure/area&gt;
   SSLVerifyClient      require
   SSLVerifyDepth       5
-  SSLCACertificateFile conf/ssl.crt/ca.crt
-  SSLCACertificatePath conf/ssl.crt
   SSLOptions           +FakeBasicAuth
   SSLRequireSSL
   SSLRequire       %{SSL_CLIENT_S_DN_O}  eq "Snake Oil, Ltd." \
