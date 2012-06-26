@@ -1792,6 +1792,13 @@ is usually used inside a <directive module="core"
 type="section">VirtualHost</directive> section to enable SSL/TLS for proxy
 usage in a particular virtual host. By default the SSL/TLS Protocol Engine is
 disabled for proxy image both for the main server and all configured virtual hosts.</p>
+
+<p>Note that the SSLProxyEngine directive should not, in
+general, be included in a virtual host that will be acting as a
+forward proxy (using <Proxy> or <ProxyRequest> directives.
+SSLProxyEngine is not required to enable a forward proxy server to
+proxy SSL/TLS requests.</p>
+
 <example><title>Example</title>
 <highlight language="config">
 &lt;VirtualHost _default_:443&gt;
