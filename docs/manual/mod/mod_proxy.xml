@@ -562,7 +562,7 @@ context in 2.3.3 and later.</compatibility>
     need also <module>mod_proxy_http</module> or <module>mod_proxy_ftp</module>
     (or both) present in the server.</p>
 
-    <p>In order to get the functionality of proxying HTTPS sites, you
+    <p>In order to get the functionality of (forward) proxying HTTPS sites, you
     need <module>mod_proxy_connect</module> enabled in the server.</p>
 
     <note type="warning"><title>Warning</title>
