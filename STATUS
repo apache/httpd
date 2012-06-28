@@ -93,6 +93,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * core: NUL-terminate string returned by ap_scan_script_header_err*()
+    in error case.
+    Trunk patch:
+      http://svn.apache.org/viewvc?rev=1244211&view=rev
+    2.4.x patch:
+      http://svn.apache.org/viewvc?rev=1244213&view=rev
+    2.2.x patch:
+      Trunk version works
+    +1: sf, covener, wrowe
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -127,16 +136,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: igalic, jim
     rpluem says: The proposed patch contains tabs and indenting is not correct.
                  This should be fixed first.
-
-  * core: NUL-terminate string returned by ap_scan_script_header_err*()
-    in error case.
-    Trunk patch:
-      http://svn.apache.org/viewvc?rev=1244211&view=rev
-    2.4.x patch:
-      http://svn.apache.org/viewvc?rev=1244213&view=rev
-    2.2.x patch:
-      Trunk version works
-    +1: sf, covener, wrowe
 
   * mod_dumpio: Return an error code from a previous input filter
     PR 52914
