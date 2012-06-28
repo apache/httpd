@@ -136,7 +136,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=1244213&view=rev
     2.2.x patch:
       Trunk version works
-    +1: sf, covener
+    +1: sf, covener, wrowe
 
   * mod_dumpio: Return an error code from a previous input filter
     PR 52914
@@ -161,6 +161,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://www.links.org/files/npn-patch-2.2.patch
      +1: benl
      sf notes: needs the buffer overflow fix from r1345599, too
+     wrowe notes: also needs correction to
+       ssl_engine_kernel.c: In function 'ssl_callback_AdvertiseNextProtos':
+       ssl_engine_kernel.c:2140:5: warning: implicit declaration of function
+                                   'modssl_run_npn_advertise_protos_hook'
+                  Including mod_ssl.h after ssl_private.h seems to suffice. 
+                  The change introduces hard linkages from modules into
+                  mod_ssl.so (distinct from httpd), AP is the incorrect
+                  namespace, see mod_dav main hooks as an example.
+                  Prior to this patch all calls to mod_ssl were by way of
+                  registered functions through apr bindings.  Seems there
+                  aught to be a way to add an npn cooperating module when
+                  mod_ssl is not loaded, but right now it would fail.
+                  An mmn minor bump would also be required for API addition.
 
   * mod_cache: Allow providers to decide whether to cache responses with code
     206.
@@ -169,6 +182,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Backport version for 2.2.x of patch:
       Trunk version of patch works
     +1: rpluem,
+
+  * mod_ssl: when compiled against OpenSSL 1.0.1 or later, allow explicit
+    control of TLSv1.1 and TLSv1.2 through the SSLProtocol directive,
+    adding TLSv1.1 and TLSv1.2 support by default given 'SSLProtocol All'.
+    [Kaspar Brand, William Rowe]
+      http://svn.apache.org/viewvc?view=revision&revision=1222921
+      http://svn.apache.org/viewvc?view=revision&revision=1222930
+      http://svn.apache.org/viewvc?view=revision&revision=1225476
+      http://svn.apache.org/viewvc?view=revision&revision=1225792
+    Backport version for 2.2.x of the patches above:
+      http://people.apache.org/~wrowe/tls11-12-patch-2.2-kbrand-wrowe.patch
+    +1: wrowe, 
 
 PATCHES/ISSUES THAT ARE STALLED
 
