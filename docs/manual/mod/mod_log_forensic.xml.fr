@@ -1,0 +1,173 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1343880 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_log_forensic.xml.meta">
+
+<name>mod_log_forensic</name>
+<description>Journalisation légale des requêtes envoyées au
+serveur</description>
+<status>Extension</status>
+<sourcefile>mod_log_forensic.c</sourcefile>
+<identifier>log_forensic_module</identifier>
+<compatibility><module>mod_unique_id</module> n'est plus obligatoire
+depuis la version 2.1</compatibility>
+
+<summary>
+    <p>Ce module permet la journalisation légale des requêtes client. La
+    journalisation s'effectuant avant et après le traitement de la
+    requête, le journal légal contient deux lignes pour chaque requête.
+    Le processus de journalisation légale est très strict, à savoir
+    :</p>
+
+    <ul>
+    <li>Le format est figé. Vous ne pouvez pas modifier le format du
+    journal à l'exécution.</li>
+    <li>S'il ne peut pas enregistrer ses données, le processus enfant se
+    termine aussitôt, et peut éventuellement enregistrer un vidage
+    mémoire (selon la définition de la directive <directive
+    module="mpm_common">CoreDumpDirectory</directive>).</li>
+    </ul>
+
+    <p>Pour interpréter les données du journal légal, vous pouvez vous
+    aider du script <code>check_forensic</code> qui se trouve dans le
+    répertoire support de la distribution.</p>
+    <note>Note de traduction : le terme "légal" utilisé dans le présent document ne suggère aucunement que
+    ce module apporte une valeur juridique aux journaux. Il est à comprendre dans le contexte
+    similaire à ce que l'on trouve en analyse medico-légale. En d'autres termes, la finalité de ce module
+    est de simplifier les opérations d'investigation autour du traitement des requêtes par le serveur.</note>
+</summary>
+<seealso><a href="../logs.html">Les fichiers journaux
+d'Apache</a></seealso>
+<seealso><module>mod_log_config</module></seealso>
+
+<section id="formats"><title>Format du journal Forensic</title>
+    <p>Chaque requête fait l'objet d'une double journalisation. La
+    requête est journalisée une première fois avant son traitement
+    (c'est à dire après la réception des en-têtes). La deuxième entrée
+    du journal est écrite <em>après</em> le traitement de la requête, en
+    fait au moment de la journalisation habituelle.</p>
+
+    <p>Un identifiant unique est attribué à chaque requête afin de
+    pouvoir l'identifier. Cette identifiant légal peut faire l'objet
+    d'un enregistrement dans le journal standard en utilisant l'élément
+    de chaîne de format <code>%{forensic-id}n</code>. Si vous utilisez
+    <module>mod_unique_id</module>, c'est l'identifiant qu'il génère qui
+    sera utilisé.</p>
+
+    <p>La première partie de la journalisation de la requête enregistre
+    l'identifiant légal, la ligne de la requête et tous les en-têtes
+    reçus séparés par des caractères pipe (<code>|</code>). Voici à
+    titre d'exemple à quoi pourrait ressembler une telle entrée (tout
+    étant rassemblé sur une seule ligne) :</p>
+
+    <example>
+        +yQtJf8CoAB4AAFNXBIEAAAAA|GET /manual/de/images/down.gif
+        HTTP/1.1|Host:localhost%3a8080|User-Agent:Mozilla/5.0 (X11;
+        U; Linux i686; en-US; rv%3a1.6) Gecko/20040216
+        Firefox/0.8|Accept:image/png, <var>etc...</var>
+    </example>
+
+    <p>Le caractère plus ('+') de début indique qu'il s'agit de la
+    première entrée de journal pour cette requête. La seconde entrée ne
+    contiendra qu'un caractère moins ('-') suivi de l'identifiant :</p>
+
+    <example>
+      -yQtJf8CoAB4AAFNXBIEAAAAA
+    </example>
+
+    <p>Le script <code>check_forensic</code> prend comme argument le nom
+    du fichier journal. Il recherche ces paires d'identifiants
+    <code>+</code>/<code>-</code> et affiche un message d'erreur si la
+    journalisation d'une requête n'est pas complète.</p>
+</section>
+
+<section id="security"><title>Considérations à propos de
+sécurité</title>
+    <p>Voir le document <a
+    href="../misc/security_tips.html#serverroot">conseils en matière de
+    sécurité</a> pour des détails sur les raisons pour lesquelles votre
+    sécurité pourrait être compromise si le répertoire dans lequel les
+    fichiers journaux sont stockés sont inscriptibles par tout autre
+    utilisateur que celui qui démarre le serveur.</p>
+    <p>Les fichiers journaux peuvent contenir des données sensibles
+    comme le contenu des en-têtes <code>Authorization:</code> (qui
+    peuvent contenir des mots de passe) ; ils ne doivent donc être
+    lisibles que par l'utilisateur qui démarre le serveur.</p>
+</section>
+
+<directivesynopsis>
+<name>ForensicLog</name>
+<description>Définit le nom de fichier du journal légal</description>
+<syntax>ForensicLog <var>nom-fichier</var>|<var>pipe</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>ForensicLog</directive> permet de
+    contrôler la journalisation des requêtes à des fins d'analyse
+    légale. Chaque entrée du journal se voit assigner un identifiant
+    unique qui peut être associé à la requête en utilisant la directive
+    <directive module="mod_log_config">CustomLog</directive> habituelle.
+    <module>mod_log_forensic</module> crée un élément nommé
+    <code>forensic-id</code>, qui peut être ajouté au journal standard
+    en utilisant l'élément de format <code>%{forensic-id}n</code>.</p>
+
+    <p>L'argument, qui permet de spécifier l'emplacement vers lequel le
+    journal légal sera écrit, peut contenir les deux types de valeurs
+    suivants :</p>
+
+    <dl>
+      <dt><var>nom-fichier</var></dt>
+      <dd>Un nom de fichier relatif au répertoire défini par la
+      directive <directive module="core">ServerRoot</directive>.</dd>
+
+      <dt><var>pipe</var></dt>
+      <dd>Le caractère pipe "<code>|</code>", suivi du chemin vers un
+      programme qui recevra les informations de la journalisation sur
+      son entrée standard. Le nom du programme peut être relatif au
+      répertoire défini par la directive <directive
+      module="core">ServerRoot</directive>.
+
+      <note type="warning"><title>Sécurité :</title>
+      <p>Si les journaux sont redirigés vers un programme, ce dernier
+      s'exécutera sous l'utilisateur qui a démarré
+      <program>httpd</program>. Ce sera l'utilisateur root si le serveur
+      a été démarré par root ; vérifiez que le programme est
+      sécurisé ou passe sous le contrôle d'un utilisateur possédant des
+      droits restreints.</p>
+      </note>
+
+      <note><title>Note</title>
+        <p>Lors de la spécification d'un chemin de fichier sur les
+	plate-formes non-Unix, il faut prendre soin de ne pas oublier
+	que seuls les slashes directs doivent être utilisés, même si la
+	plate-forme autorise l'emploi d'anti-slashes. D'une manière
+	générale, c'est une bonne idée que de n'utiliser que des slashes
+	directs dans les fichiers de configuration.</p>
+      </note></dd>
+    </dl>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
