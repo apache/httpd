@@ -38,7 +38,7 @@ serveur HTTP Apache</title>
   <section id="core">
     <title>Am&eacute;liorations du noyau</title>
     <dl>
-      <dt>Modules multiprocessus (MPMs) chargeables à l'ex&eacute;cution</dt>
+      <dt>Modules multiprocessus (MPMs) chargeables &agrave; l'ex&eacute;cution</dt>
       <dd>On peut maintenant compiler plusieurs MPMs en tant que modules
       chargeables. Le choix du MPM &agrave; utiliser s'effectue &agrave;
       l'ex&eacute;cution.</dd>
