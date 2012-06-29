@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1291834:1291837 (outdated) -->
+<!-- English Revision: 1291837 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -107,7 +107,7 @@ serveur HTTP Apache</title>
 
   <section id="newmods">
     <title>Nouveau modules</title>
-    <dl>      
+    <dl>
 
       <dt><module>mod_proxy_fcgi</module></dt>
       <dd>Mise &agrave; disposition du protocole FastCGI pour
@@ -154,7 +154,7 @@ serveur HTTP Apache</title>
       <dt><module>mod_allowmethods</module></dt>
       <dd>Permet de restreindre l'utilisation de
       certaines m&eacute;thodes HTTP sans interf&eacute;rer avec l'authentification et
-      l'autorisation.</dd>      
+      l'autorisation.</dd>
 
       <dt><module>mod_lua</module></dt>
       <dd>Embarque le langage <a href="http://www.lua.org/">Lua</a> dans
@@ -182,7 +182,7 @@ serveur HTTP Apache</title>
       <dt><module>mod_reflector</module></dt>
       <dd>Permet de renvoyer comme r&eacute;ponse le corps de la requ&ecirc;te via la
       pile du filtre de sortie.</dd>
-      
+
       <dt><module>mod_slotmem_shm</module></dt>
       <dd>Met &agrave; disposition un fournisseur de m&eacute;moire partag&eacute;e &agrave; base de
       slots (du style tableau de bord).</dd>
@@ -301,7 +301,7 @@ serveur HTTP Apache</title>
       type="section">RequireAll</directive>, permettent de d&eacute;finir une
       logique d'autorisation avanc&eacute;e.</dd>
 
-      
+
 
       <dt><module>mod_rewrite</module></dt>
       <dd>La directive <directive
