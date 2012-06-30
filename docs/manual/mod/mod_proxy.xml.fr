@@ -69,16 +69,16 @@
         <tr><td>AJP13 (Protocole Apache JServe version
           1.3)</td><td><module>mod_proxy_ajp</module></td></tr>
         <tr><td>CONNECT (pour
-          SSL)</td><td><module>mod_proxy_connect</module></td></tr>
+          SSL)</td><td><module>mod_proxy_connect</module></td></tr> 
         <tr><td>FastCGI</td><td><module>mod_proxy_fcgi</module></td></tr>
         <tr><td>ftp</td><td><module>mod_proxy_ftp</module></td></tr>
         <tr><td>HTTP/0.9, HTTP/1.0, et
-          HTTP/1.1</td><td><module>mod_proxy_http</module></td></tr>
+          HTTP/1.1</td><td><module>mod_proxy_http</module></td></tr> 
         <tr><td>SCGI</td><td><module>mod_proxy_scgi</module></td></tr>
         </table>
       </li>
     </ul>
-
+    
     <p>En outre, d'autres modules fournissent des fonctionnalit&eacute;s
     &eacute;tendues. <module>mod_cache</module> et ses modules associ&eacute;s
     fournissent la mise en cache. Les directives <code>SSLProxy*</code>
@@ -633,8 +633,8 @@ direct</description>
     <module>mod_proxy_ftp</module> doivent &eacute;galement &ecirc;tre charg&eacute;s dans le
     serveur.</p>
 
-    <p>Pour activer la fonctionnalité de mandataire sur les sites chiffrés en HTTPS, le module
-    <module>mod_proxy_connect</module> doit également être chargé dans le serveur.</p>
+    <p><module>mod_proxy_connect</module> doit &ecirc;tre activ&eacute; pour pouvoir
+    mandater (en direct) des sites HTTPS.</p>
 
     <note type="warning"><title>Avertissement</title>
       <p>N'activez pas la fonctionnalit&eacute; de mandataire avec la directive
@@ -1073,7 +1073,7 @@ l'espace d'URLs du serveur local</description>
 	d&eacute;lai en secondes pour l'attente de la r&eacute;ponse. Cette
 	fonctionnalit&eacute; a &eacute;t&eacute; ajout&eacute;e pour &eacute;viter les probl&egrave;mes avec les
 	serveurs d'arri&egrave;re-plan bloqu&eacute;s ou surcharg&eacute;s.
-
+	
 	Le trafic
 	r&eacute;seau peut s'en trouver augment&eacute; en fonctionnement normal, ce
 	qui peut poser probl&egrave;me, mais peut s'en trouver diminu&eacute; dans les
@@ -1247,7 +1247,7 @@ l'espace d'URLs du serveur local</description>
         <td>0</td>
         <td>Nombre de membres suppl&eacute;mentaires que l'on peut ajouter &agrave; ce
 	r&eacute;partiteur en plus de ceux d&eacute;finis au niveau de la
-	configuration.
+	configuration. 
     </td></tr>
     <tr><td>forcerecovery</td>
         <td>On</td>
@@ -2031,7 +2031,7 @@ sortantes</description>
 <context>virtual host</context>
 </contextlist>
 <compatibility>Disponible depuis la version 2.3.9</compatibility>
-
+ 
 <usage>
     <p>Cette directive permet de d&eacute;finir une adresse IP locale
     sp&eacute;cifique &agrave; laquelle faire r&eacute;f&eacute;rence lors d'une connexion &agrave; un
