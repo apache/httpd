@@ -152,6 +152,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch (ex CHANGES) works
      +1: jorton
 
+   * mod_negotiation: CVE-2012-2687 XSS in mod_negotiation
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1349905
+     2.4.x patch: trunk works
+     +1 covener
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * cross-compile: allow to provide CC_FOR_BUILD so that gen_test_char will be
