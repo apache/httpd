@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1301748:1354090 (outdated) -->
+<!-- English Revision : 1354431 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -611,6 +611,9 @@ direct</description>
     HTTP et/ou FTP, les modules <module>mod_proxy_http</module> et/ou
     <module>mod_proxy_ftp</module> doivent aussi &ecirc;tre charg&eacute;s dans le
     serveur.</p>
+
+    <p><module>mod_proxy_connect</module> doit &ecirc;tre activ&eacute; pour pouvoir
+    mandater (en direct) des sites HTTPS.</p>
 
     <note type="warning"><title>Avertissement</title>
       <p>N'activez pas la fonctionnalit&eacute; de mandataire avec la directive
