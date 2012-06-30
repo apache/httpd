@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1353250-->
+<!-- English Revision : 1353503-->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -111,24 +111,31 @@ client envoie une requ&ecirc;te pour un r&eacute;pertoire</description>
     eux-m&ecirc;mes des arguments "disabled".</p>
 
     <p><strong>Note :</strong>La d&eacute;finition de plusieurs directives
-    <directive>DirectoryIndex</directive> au sein d'un <em>m&ecirc;me
-    contexte</em> permet d'ajouter des ressources &agrave; rechercher plut&ocirc;t
+    <directive>DirectoryIndex</directive> au sein d'un <a href="../sections.html"><em>m&ecirc;me
+    contexte</em></a> permet d'ajouter des ressources &agrave; rechercher plut&ocirc;t
     que de remplacer celle d&eacute;j&agrave; d&eacute;finies :
     </p>
     <highlight language="config">
-# D&eacute;finition des fichiers d'index &agrave; rechercher
-DirectoryIndex index.html index.htm
+# Exemple A: d&eacute;finit index.html comme page d'index, ainsi qu'index.php.
+&lt;Directory /foo&gt;
+    DirectoryIndex index.html
+    DirectoryIndex index.php
+&lt;/Directory&gt;
 
-# Ajoute des fichiers dynamiques &agrave; la liste des fichiers &agrave; rechercher
-# sans r&eacute;initialiser cette derni&egrave;re
-DirectoryIndex index.php index.pl index.lua
+# Exemple B: identique &agrave; l'exemple A, mais avec une seule directive.
+&lt;Directory /foo&gt;
+    DirectoryIndex index.html index.php
+&lt;/Directory&gt;
 
-# Pour r&eacute;initialiser la liste, il faut d'abord la supprimer, puis cr&eacute;er
-# une nouvelle liste
-DirectoryIndex disabled
-DirectoryIndex index.py
+# Exemple C: pour remplacer la liste des pages d'index par une autre,
+# vous devez tout d'abord supprimer la premi&egrave;re liste : dans l'exemple
+# suivant, il ne restera qu'index.php comme page d'index.
+&lt;Directory /foo&gt;
+    DirectoryIndex index.html
+    DirectoryIndex disabled
+    DirectoryIndex index.php
+&lt;/Directory&gt;
     </highlight>
-
 
 </usage>
 </directivesynopsis>
