@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1353508 -->
+<!-- English Revision : 1353508 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -110,23 +110,26 @@ client envoie une requ&ecirc;te pour un r&eacute;pertoire</description>
     arguments sont pr&eacute;sents avant ou apr&egrave;s lui, m&ecirc;me s'ils sont
     eux-m&ecirc;mes des arguments "disabled".</p>
 
-    <p><strong>Note:</strong> Positionner plusieurs directives <directive>DirectoryIndex</directive>
-    au coeur du <a href="../sections.html"><em>m&ecirc;me context</em></a> compl&egrave;te la liste des ressources et ne l'&eacute;crase pas :
+    <p><strong>Note :</strong>La d&eacute;finition de plusieurs directives
+    <directive>DirectoryIndex</directive> au sein d'un <a href="../sections.html"><em>m&ecirc;me
+    contexte</em></a> permet d'ajouter des ressources &agrave; rechercher plut&ocirc;t
+    que de remplacer celle d&eacute;j&agrave; d&eacute;finies :
     </p>
     <highlight language="config">
-# Exemple A: Positionner index.html en page d'index, puis ajouter index.php.
+# Exemple A: d&eacute;finit index.html comme page d'index, ainsi qu'index.php.
 &lt;Directory /foo&gt;
     DirectoryIndex index.html
     DirectoryIndex index.php
 &lt;/Directory&gt;
 
-# Exemple B: La m&ecirc;me chose que l'exemple A, mais r&eacute;alis&eacute; au moyen d'une seule directive.
+# Exemple B: identique &agrave; l'exemple A, mais avec une seule directive.
 &lt;Directory /foo&gt;
     DirectoryIndex index.html index.php
 &lt;/Directory&gt;
 
-# Exemple C: Pour remplacer la liste des ressources, il faut d'abord la vider :
-# Ici, seul index.php restera r&eacute;f&eacute;renc&eacute; comme ressource d'index.
+# Exemple C: pour remplacer la liste des pages d'index par une autre,
+# vous devez tout d'abord supprimer la premi&egrave;re liste : dans l'exemple
+# suivant, il ne restera qu'index.php comme page d'index.
 &lt;Directory /foo&gt;
     DirectoryIndex index.html
     DirectoryIndex disabled
