@@ -103,7 +103,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR: 53048
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1311183
     2.4 patch: Trunk patch works
-    +1: sf
+    +1: sf, covener
 
   * core: Use a TLS/10 close_notify for dummy connection to SSL listener.
     trunk patches: http://svn.apache.org/viewvc?rev=1327036&view=rev
@@ -115,7 +115,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patches: http://svn.apache.org/viewvc?rev=1225798&view=rev
                    http://svn.apache.org/viewvc?rev=1225799&view=rev
     2.4 patch: http://people.apache.org/~sf/mod_info-show-providers.diff
-    +1: sf, jorton
+    +1: sf, jorton, covener
 
   * mod_log_config: Fix %{abc}C truncating cookie values at first "=".
     PR 53104
@@ -123,7 +123,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4 patch: Trunk patch works, add CHANGES:
         mod_log_config: Fix %{abc}C truncating cookie values at first "=". PR
         53104. [Greg Ames]
-    +1: sf
+    +1: sf, covener
 
    * mod_ssl: Add support for Next Protocol Negotiation.
      Trunk patch:
@@ -139,18 +139,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs.cgi?rev=1333969&view=rev
       Backport version for 2.4.x of patch:
          Trunk version of patch works
-      +1: rpluem, druggeri
+      +1: rpluem, druggeri, covener
 
    * configure: Enforce 1.4.0 as minimum APR version requirement.
      PR: 52748
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1347998
      2.4.x patch: trunk patch works
-     +1: jorton
+     +1: jorton, covener
 
    * htdbm/htpasswd: fix handling of crypt() failures.
      trunk patch: http://svn.apache.org/viewvc?rev=1346905&view=rev
      2.4.x patch: trunk patch (ex CHANGES) works
-     +1: jorton
+     +1: jorton, covener
 
    * mod_negotiation: CVE-2012-2687 XSS in mod_negotiation
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1349905
