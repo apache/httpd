@@ -1589,7 +1589,7 @@ var REGEXP_PRECEDER_PATTERN = '(?:^^\\.?|[+-]|[!=]=?=?|\\#|%=?|&&?=?|\\(|\\*=?|[
          [PR['PR_TYPE'], /^nil|false|true/],
          // A long bracketed block not preceded by -- is a string.
          [PR['PR_STRING'],  /^\[(=*)\[[\s\S]*?(?:\]\1\]|$)/],
-         [PR['PR_KEYWORD'], /^(?:and|break|do|else|elseif|end|for|function|if|in|local|not|or|repeat|return|then|until|while)\b/, null],
+         [PR['PR_KEYWORD'], /^(?:and|break|do|else|elseif|end|for|function|if|in|local|not|or|repeat|require|return|then|until|while)\b/, null],
          // A number is a hex integer literal, a decimal real literal, or in
          // scientific notation.
          [PR['PR_LITERAL'],
