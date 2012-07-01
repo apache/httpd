@@ -453,7 +453,12 @@ end
 
 
         <pre class="prettyprint lang-lua">
-        r:parseargs() -- returns a lua table containing the request's query string arguments
+        r:parseargs() -- returns a Lua table containing the request's query string arguments
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+        r:parsebody() -- parse any POST data in the request and return it as a Lua table
         </pre>
 
 

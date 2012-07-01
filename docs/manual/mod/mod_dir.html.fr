@@ -126,24 +126,31 @@ client envoie une requête pour un répertoire</td></tr>
     eux-mêmes des arguments "disabled".</p>
 
     <p><strong>Note :</strong>La définition de plusieurs directives
-    <code class="directive">DirectoryIndex</code> au sein d'un <em>même
-    contexte</em> permet d'ajouter des ressources à rechercher plutôt
+    <code class="directive">DirectoryIndex</code> au sein d'un <a href="../sections.html"><em>même
+    contexte</em></a> permet d'ajouter des ressources à rechercher plutôt
     que de remplacer celle déjà définies :
     </p>
     <pre class="prettyprint lang-config">
-# Définition des fichiers d'index à rechercher
-DirectoryIndex index.html index.htm
+# Exemple A: définit index.html comme page d'index, ainsi qu'index.php.
+&lt;Directory /foo&gt;
+    DirectoryIndex index.html
+    DirectoryIndex index.php
+&lt;/Directory&gt;
 
-# Ajoute des fichiers dynamiques à la liste des fichiers à rechercher
-# sans réinitialiser cette dernière
-DirectoryIndex index.php index.pl index.lua
+# Exemple B: identique à l'exemple A, mais avec une seule directive.
+&lt;Directory /foo&gt;
+    DirectoryIndex index.html index.php
+&lt;/Directory&gt;
 
-# Pour réinitialiser la liste, il faut d'abord la supprimer, puis créer
-# une nouvelle liste
-DirectoryIndex disabled
-DirectoryIndex index.py
+# Exemple C: pour remplacer la liste des pages d'index par une autre,
+# vous devez tout d'abord supprimer la première liste : dans l'exemple
+# suivant, il ne restera qu'index.php comme page d'index.
+&lt;Directory /foo&gt;
+    DirectoryIndex index.html
+    DirectoryIndex disabled
+    DirectoryIndex index.php
+&lt;/Directory&gt;
     </pre>
-
 
 
 
