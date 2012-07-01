@@ -124,7 +124,7 @@ something like this:</p>
 
 
 <pre class="prettyprint lang-lua">
-<strong>example.lua</strong>
+<strong>example.lua</strong><br />
 -- example handler
 
 require "string"
@@ -191,7 +191,7 @@ without authentication, or if the authenticated user matches the second
 argument:</p>
 
 <pre class="prettyprint lang-lua">
-<strong>authz_provider.lua</strong>
+<strong>authz_provider.lua</strong><br />
 
 require 'apache2'
 
@@ -235,8 +235,9 @@ they'll return OK, DONE, or DECLINED, which you can write in lua as
 <code>apache2.OK</code>, <code>apache2.DONE</code>, or
 <code>apache2.DECLINED</code>, or else an HTTP status code.</p>
 
+
 <pre class="prettyprint lang-lua">
-<strong>translate_name.lua</strong>
+<strong>translate_name.lua</strong><br />
 -- example hook that rewrites the URI to a filesystem path.
 
 require 'apache2'
@@ -252,8 +253,9 @@ end
 </pre>
 
 
+
 <pre class="prettyprint lang-lua">
-<strong>translate_name2.lua</strong>
+<strong>translate_name2.lua</strong><br />
 --[[ example hook that rewrites one URI to another URI. It returns a
      apache2.DECLINED to give other URL mappers a chance to work on the
      substitution, including the core translate_name hook which maps based
