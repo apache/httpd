@@ -411,14 +411,13 @@ end
         </highlight>
 
         <highlight language="lua">
-        r:parseargs() -- returns a lua table containing the request's query string arguments
+        r:parseargs() -- returns a Lua table containing the request's query string arguments
         </highlight>
-<!--
-/* Not supported yet */
+
         <highlight language="lua">
-        r:parsebody() &dash;- parse the request body as a POST and return  a lua table
+        r:parsebody() -- parse any POST data in the request and return it as a Lua table
         </highlight>
--->
+
         <highlight language="lua">
         r:puts("hello", " world", "!") -- print to response body
         </highlight>
