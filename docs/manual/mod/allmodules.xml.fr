@@ -41,7 +41,7 @@
   <modulefile>mod_deflate.xml.fr</modulefile>
   <modulefile>mod_dialup.xml</modulefile>
   <modulefile>mod_dir.xml.fr</modulefile>
-  <modulefile>mod_dumpio.xml</modulefile>
+  <modulefile>mod_dumpio.xml.fr</modulefile>
   <modulefile>mod_echo.xml.fr</modulefile>
   <modulefile>mod_env.xml.fr</modulefile>
   <modulefile>mod_example.xml</modulefile>
@@ -64,7 +64,7 @@
   <modulefile>mod_ldap.xml.fr</modulefile>
   <modulefile>mod_log_config.xml</modulefile>
   <modulefile>mod_log_debug.xml</modulefile>
-  <modulefile>mod_log_forensic.xml</modulefile>
+  <modulefile>mod_log_forensic.xml.fr</modulefile>
   <modulefile>mod_logio.xml</modulefile>
   <modulefile>mod_lua.xml.fr</modulefile>
   <modulefile>mod_mime.xml</modulefile>

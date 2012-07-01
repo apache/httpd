@@ -27,8 +27,6 @@ serveur HTTP Apache</h1>
 <a href="./fr/new_features_2_4.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./tr/new_features_2_4.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
   <p>Ce document décrit les modifications majeures apportées par
   la version 2.4 du serveur HTTP Apache. Pour les nouvelles fonctionnalités
@@ -48,7 +46,7 @@ serveur HTTP Apache</h1>
 <h2><a name="core" id="core">Améliorations du noyau</a></h2>
     
     <dl>
-      <dt>Modules multiprocessus (MPMs) chargeables Ã&nbsp; l'exécution</dt>
+      <dt>Modules multiprocessus (MPMs) chargeables à l'exécution</dt>
       <dd>On peut maintenant compiler plusieurs MPMs en tant que modules
       chargeables. Le choix du MPM à utiliser s'effectue à
       l'exécution.</dd>
@@ -112,7 +110,7 @@ serveur HTTP Apache</h1>
 <div class="section">
 <h2><a name="newmods" id="newmods">Nouveau modules</a></h2>
     
-    <dl>      
+    <dl>
 
       <dt><code class="module"><a href="./mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code></dt>
       <dd>Mise à disposition du protocole FastCGI pour
@@ -159,7 +157,7 @@ serveur HTTP Apache</h1>
       <dt><code class="module"><a href="./mod/mod_allowmethods.html">mod_allowmethods</a></code></dt>
       <dd>Permet de restreindre l'utilisation de
       certaines méthodes HTTP sans interférer avec l'authentification et
-      l'autorisation.</dd>      
+      l'autorisation.</dd>
 
       <dt><code class="module"><a href="./mod/mod_lua.html">mod_lua</a></code></dt>
       <dd>Embarque le langage <a href="http://www.lua.org/">Lua</a> dans
@@ -187,7 +185,7 @@ serveur HTTP Apache</h1>
       <dt><code class="module"><a href="./mod/mod_reflector.html">mod_reflector</a></code></dt>
       <dd>Permet de renvoyer comme réponse le corps de la requête via la
       pile du filtre de sortie.</dd>
-      
+
       <dt><code class="module"><a href="./mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code></dt>
       <dd>Met à disposition un fournisseur de mémoire partagée à base de
       slots (du style tableau de bord).</dd>
@@ -300,7 +298,7 @@ serveur HTTP Apache</h1>
       conteneurs associées, comme <code class="directive"><a href="./mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code>, permettent de définir une
       logique d'autorisation avancée.</dd>
 
-      
+
 
       <dt><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code></dt>
       <dd>La directive <code class="directive"><a href="./mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> dispose maintenant

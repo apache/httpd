@@ -28,8 +28,6 @@
 <a href="../fr/mod/mod_proxy.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle multi-protocole</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_module</td></tr>
@@ -1868,6 +1866,9 @@ direct</td></tr>
     HTTP et/ou FTP, les modules <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> et/ou
     <code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code> doivent également être chargés dans le
     serveur.</p>
+
+    <p><code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code> doit être activé pour pouvoir
+    mandater (en direct) des sites HTTPS.</p>
 
     <div class="warning"><h3>Avertissement</h3>
       <p>N'activez pas la fonctionnalité de mandataire avec la directive

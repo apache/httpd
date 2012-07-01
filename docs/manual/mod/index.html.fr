@@ -124,7 +124,8 @@ client</dd>
 <dt><a href="mod_dir.html">mod_dir</a></dt><dd>Permet la redirection des adresses se terminant par un
 répertoire sans slash de fin et la mise à disposition des fichiers index
 de répertoire</dd>
-<dt><a href="mod_dumpio.html">mod_dumpio</a></dt><dd>Dumps all I/O to error log as desired.</dd>
+<dt><a href="mod_dumpio.html">mod_dumpio</a></dt><dd>Enregistre toutes les entrées/sorties dans le journal des
+erreurs de la manière souhaitée.</dd>
 <dt><a href="mod_echo.html" id="E" name="E">mod_echo</a></dt><dd>Un simple serveur d'écho pour illustrer les modules de
 protocole</dd>
 <dt><a href="mod_env.html">mod_env</a></dt><dd>Modifie l'environnement transmis aux scripts CGI et aux
@@ -156,7 +157,8 @@ serveur</dd>
 cache du résultat à destination des autres modules LDAP</dd>
 <dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>Logging of the requests made to the server</dd>
 <dt><a href="mod_log_debug.html">mod_log_debug</a></dt><dd>Additional configurable debug logging</dd>
-<dt><a href="mod_log_forensic.html">mod_log_forensic</a></dt><dd>Forensic Logging of the requests made to the server</dd>
+<dt><a href="mod_log_forensic.html">mod_log_forensic</a></dt><dd>Journalisation légale des requêtes envoyées au
+serveur</dd>
 <dt><a href="mod_logio.html">mod_logio</a></dt><dd>Logging of input and output bytes per request</dd>
 <dt><a href="mod_lua.html">mod_lua</a></dt><dd>Fournit des points d'entrée Lua dans différentes parties du
 traitement des requêtes httpd</dd>

@@ -30,8 +30,6 @@
 <a href="../ko/mod/mod_dir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_dir.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet la redirection des adresses se terminant par un
 répertoire sans slash de fin et la mise à disposition des fichiers index
 de répertoire</td></tr>
@@ -126,6 +124,34 @@ client envoie une requête pour un répertoire</td></tr>
     "disabled" sera interprété de manière littérale si d'autres
     arguments sont présents avant ou après lui, même s'ils sont
     eux-mêmes des arguments "disabled".</p>
+
+    <p><strong>Note :</strong>La définition de plusieurs directives
+    <code class="directive">DirectoryIndex</code> au sein d'un <a href="../sections.html"><em>même
+    contexte</em></a> permet d'ajouter des ressources à rechercher plutôt
+    que de remplacer celle déjà définies :
+    </p>
+    <pre class="prettyprint lang-config">
+# Exemple A: définit index.html comme page d'index, ainsi qu'index.php.
+&lt;Directory /foo&gt;
+    DirectoryIndex index.html
+    DirectoryIndex index.php
+&lt;/Directory&gt;
+
+# Exemple B: identique à l'exemple A, mais avec une seule directive.
+&lt;Directory /foo&gt;
+    DirectoryIndex index.html index.php
+&lt;/Directory&gt;
+
+# Exemple C: pour remplacer la liste des pages d'index par une autre,
+# vous devez tout d'abord supprimer la première liste : dans l'exemple
+# suivant, il ne restera qu'index.php comme page d'index.
+&lt;Directory /foo&gt;
+    DirectoryIndex index.html
+    DirectoryIndex disabled
+    DirectoryIndex index.php
+&lt;/Directory&gt;
+    </pre>
+
 
 
 </div>
