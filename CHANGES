@@ -6,6 +6,8 @@ Changes with Apache 2.5.0
      possible XSS for a site where untrusted users can upload files to
      a location with MultiViews enabled. [Niels Heinen <heinenn google.com>]
 
+  *) mod_rewrite: Add "AllowAnyURI" option. PR 52774. [Joe Orton]
+
   *) mod_ssl: Add RFC 5878 support. [Ben Laurie]
 
   *) mod_authz_core: If an expression in "Require expr" returns denied and
