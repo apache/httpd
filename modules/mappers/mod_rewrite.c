@@ -190,6 +190,7 @@ static const char* really_last_key = "rewrite_really_last";
 #define OPTION_INHERIT              1<<1
 #define OPTION_INHERIT_BEFORE       1<<2
 #define OPTION_NOSLASH              1<<3
+#define OPTION_ANYURI               1<<4
 
 #ifndef RAND_MAX
 #define RAND_MAX 32767
@@ -2895,6 +2896,9 @@ static const char *cmd_rewriteoptions(cmd_parms *cmd,
                          "LimitInternalRecursion directive and will be "
                          "ignored.");
         }
+        else if (!strcasecmp(w, "allowanyuri")) {
+            options |= OPTION_ANYURI;
+        }
         else {
             return apr_pstrcat(cmd->pool, "RewriteOptions: unknown option '",
                                w, "'", NULL);
@@ -4443,8 +4447,14 @@ static int hook_uri2file(request_rec *r)
         return DECLINED;
     }
 
-    if ((r->unparsed_uri[0] == '*' && r->unparsed_uri[1] == '\0')
-        || !r->uri || r->uri[0] != '/') {
+    /* Unless the anyuri option is set, ensure that the input to the
+     * first rule really is a URL-path, avoiding security issues with
+     * poorly configured rules.  See CVE-2011-3368, CVE-2011-4317. */
+    if ((dconf->options & OPTION_ANYURI) == 0
+        && ((r->unparsed_uri[0] == '*' && r->unparsed_uri[1] == '\0')
+            || !r->uri || r->uri[0] != '/')) {
+        rewritelog((r, 8, NULL, "Declining, request-URI '%s' is not a URL-path",
+                    r->uri));
         return DECLINED;
     }
 
