@@ -895,6 +895,35 @@ later</td></tr>
       later.</p>
       </dd>
 
+      <dt><code>AllowAnyURI</code></dt>
+      <dd>
+
+      <p>When <code class="directive"><a href="#rewriterule">RewriteRule</a></code>
+      is used in <code>VirtualHost</code> or server context with
+      version 2.2.22 or later of httpd, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+      will only process the rewrite rules if the request URI is a <a href="./directive-dict.html#Syntax">URL-path</a>.  This avoids
+      some security issues where particular rules could allow
+      "surprising" pattern expansions (see <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-3368">CVE-2011-3368</a>
+      and <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-4317">CVE-2011-4317</a>).
+      To lift the restriction on matching a URL-path, the
+      <code>AllowAnyURI</code> option can be enabled, and
+      <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> will apply the rule set to any
+      request URI string, regardless of whether that string matches
+      the URL-path grammar required by the HTTP specification.</p>
+
+      <div class="warning">
+      <h3>Security Warning</h3> 
+
+      <p>Enabling this option will make the server vulnerable to
+      security issues if used with rewrite rules which are not
+      carefully authored.  It is <strong>strongly recommended</strong>
+      that this option is not used.  In particular, beware of input
+      strings containing the '<code>@</code>' character which could
+      change the interpretation of the transformed URI, as per the
+      above CVE names.</p>
+      </div>
+      </dd>
+
       </dl>
 
 
