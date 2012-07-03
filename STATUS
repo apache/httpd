@@ -88,11 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_negotiation: CVE-2012-2687 XSS in mod_negotiation
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1349905
-    2.4.x patch: trunk works
-    +1: covener, jorton, sf
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

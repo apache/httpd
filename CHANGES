@@ -3,6 +3,11 @@
 
 Changes with Apache 2.4.3
 
+  *) SECURITY: CVE-2012-2687 (cve.mitre.org)
+     mod_negotiation: Escape filenames in variant list to prevent an
+     possible XSS for a site where untrusted users can upload files to
+     a location with MultiViews enabled. [Niels Heinen <heinenn google.com>]
+
   *) htdbm, htpasswd: Don't crash if crypt() fails (e.g. with FIPS enabled). 
      [Paul Wouters <pwouters redhat.com>, Joe Orton]
 
