@@ -160,6 +160,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?rev=1356115&view=rev
      2.4.x patch: trunk patch works
      +1: jorton, 
+     +1 covener (would prefer w/ expanded info in r1356813)
 
 PATCHES/ISSUES THAT ARE STALLED
 
