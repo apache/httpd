@@ -5,6 +5,9 @@ Changes with Apache 2.2.23
      envvars: Fix insecure handling of LD_LIBRARY_PATH that could lead to the
      current working directory to be searched for DSOs. [Stefan Fritsch]
 
+  *) core: Adjust ap_scan_script_header_err*() to prevent mod_cgi and mod_cgid
+     from logging bogus data in case of errors. [Stefan Fritsch]
+
   *) mod_disk_cache, mod_mem_cache: Decline the opportunity to cache if the
      response is a 206 Partial Content. This stops a reverse proxied partial
      response from becoming cached, and then being served in subsequent
