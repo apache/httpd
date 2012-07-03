@@ -4453,7 +4453,9 @@ static int hook_uri2file(request_rec *r)
     if ((dconf->options & OPTION_ANYURI) == 0
         && ((r->unparsed_uri[0] == '*' && r->unparsed_uri[1] == '\0')
             || !r->uri || r->uri[0] != '/')) {
-        rewritelog((r, 8, NULL, "Declining, request-URI '%s' is not a URL-path",
+        rewritelog((r, 8, NULL, "Declining, request-URI '%s' is not a URL-path. "
+                    "Consult the manual entry for the RewriteOptions directive "
+                    "for options and caveats about matching other strings.",
                     r->uri));
         return DECLINED;
     }
