@@ -138,7 +138,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch:
        Trunk patch works.
      +1: benl
-     sf says: Needs r1345599, too
+     sf says: Needs r1345599, too.
+              And wrowe's comment about the 2.2 patch is also valid for 2.4:
+              http://svn.apache.org/viewvc?view=revision&revision=1354823
 
    * configure: Enforce 1.4.0 as minimum APR version requirement.
      PR: 52748
@@ -149,12 +151,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * htdbm/htpasswd: fix handling of crypt() failures.
      trunk patch: http://svn.apache.org/viewvc?rev=1346905&view=rev
      2.4.x patch: trunk patch (ex CHANGES) works
-     +1: jorton, covener
+     +1: jorton, covener, sf
 
    * mod_negotiation: CVE-2012-2687 XSS in mod_negotiation
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1349905
      2.4.x patch: trunk works
-     +1: covener, jorton
+     +1: covener, jorton, sf
 
    * mod_rewrite: add "AllowAnyURI" option.
      trunk patch: http://svn.apache.org/viewvc?rev=1356115&view=rev
