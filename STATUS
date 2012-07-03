@@ -102,6 +102,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
       +1: rpluem, druggeri, covener
 
+  * core: Use a TLS/10 close_notify for dummy connection to SSL listener.
+    trunk patches: http://svn.apache.org/viewvc?rev=1327036&view=rev
+                   http://svn.apache.org/viewvc?rev=1327080&view=rev
+    2.4 patch: trunk works => http://people.apache.org/~jorton/httpd-2.4.2-dummytls.patch
+    +1: jorton, jim, covener
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -117,12 +123,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1311183
     2.4 patch: Trunk patch works
     +1: sf, covener
-
-  * core: Use a TLS/10 close_notify for dummy connection to SSL listener.
-    trunk patches: http://svn.apache.org/viewvc?rev=1327036&view=rev
-                   http://svn.apache.org/viewvc?rev=1327080&view=rev
-    2.4 patch: trunk works => http://people.apache.org/~jorton/httpd-2.4.2-dummytls.patch
-    +1: jorton, jim
 
   * mod_log_config: Fix %{abc}C truncating cookie values at first "=".
     PR 53104
