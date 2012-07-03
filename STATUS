@@ -88,12 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * core: Use a TLS/10 close_notify for dummy connection to SSL listener.
-    trunk patches: http://svn.apache.org/viewvc?rev=1327036&view=rev
-                   http://svn.apache.org/viewvc?rev=1327080&view=rev
-    2.4 patch: trunk works => http://people.apache.org/~jorton/httpd-2.4.2-dummytls.patch
-    +1: jorton, jim, covener
-
   * htdbm/htpasswd: fix handling of crypt() failures.
     trunk patch: http://svn.apache.org/viewvc?rev=1346905&view=rev
     2.4.x patch: trunk patch (ex CHANGES) works
