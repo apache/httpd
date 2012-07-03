@@ -3,6 +3,9 @@
 
 Changes with Apache 2.4.3
 
+  *) htdbm, htpasswd: Don't crash if crypt() fails (e.g. with FIPS enabled). 
+     [Paul Wouters <pwouters redhat.com>, Joe Orton]
+
   *) core: Use a TLS 1.0 close_notify alert for internal dummy connection if
      the chosen listener is configured for https. [Joe Orton]
 

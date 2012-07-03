@@ -88,11 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * htdbm/htpasswd: fix handling of crypt() failures.
-    trunk patch: http://svn.apache.org/viewvc?rev=1346905&view=rev
-    2.4.x patch: trunk patch (ex CHANGES) works
-    +1: jorton, covener, sf
-
   * mod_negotiation: CVE-2012-2687 XSS in mod_negotiation
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1349905
     2.4.x patch: trunk works
