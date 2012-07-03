@@ -88,12 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_info: Display registered providers.
-    trunk patches: http://svn.apache.org/viewvc?rev=1225798&view=rev
-                   http://svn.apache.org/viewvc?rev=1225799&view=rev
-    2.4 patch: http://people.apache.org/~sf/mod_info-show-providers.diff
-    +1: sf, jorton, covener
-
   * mod_proxy: Use the the same hostname for SNI as for the HTTP request when
      forwarding to SSL backends. PR 53134.
       Trunk version of patch:
