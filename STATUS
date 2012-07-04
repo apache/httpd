@@ -135,6 +135,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jorton, 
      +1 covener (would prefer w/ expanded info in r1356813)
 
+   * ldap: Treat LDAP_UNAVAILABLE as a transient error with non-MS
+           LDAP SDKs; seen with OpenLDAP against Novell eDirectory.
+     trunk patch: http://svn.apache.org/viewvc?rev=1348036&view=rev
+     2.4.x patch: trunk patch works
+     +1: jorton, 
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * cross-compile: allow to provide CC_FOR_BUILD so that gen_test_char will be
