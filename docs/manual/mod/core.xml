@@ -1657,6 +1657,15 @@ filenames</description>
     <p>The <var>filename</var> argument should include a filename, or
     a wild-card string, where <code>?</code> matches any single character,
     and <code>*</code> matches any sequences of characters.
+    <highlight language="config">
+&lt;Files "cat.html"&gt;
+    # Insert stuff that applies to cat.html here
+&lt;/Files&gt;
+
+&lt;Files "?at.*"&gt;
+    # This would apply to cat.html, bat.html, hat.php and so on.
+&lt;/Files&gt;
+</highlight>
     <glossary ref="regex">Regular expressions</glossary>
     can also be used, with the addition of the
     <code>~</code> character. For example:</p>
