@@ -131,9 +131,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
    * mod_rewrite: add "AllowAnyURI" option.
      trunk patch: http://svn.apache.org/viewvc?rev=1356115&view=rev
-     2.4.x patch: trunk patch works
-     +1: jorton, 
-     +1 covener (would prefer w/ expanded info in r1356813)
+                  http://svn.apache.org/viewvc?view=revision&revision=1356813
+     2.4.x patch: http://people.apache.org/~jorton/httpd-pr52774.patch
+     +1: jorton, covener
 
    * ldap: Treat LDAP_UNAVAILABLE as a transient error with non-MS
            LDAP SDKs; seen with OpenLDAP against Novell eDirectory.
