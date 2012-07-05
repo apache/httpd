@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ext_filter: Fix error_log spam when input filters are configured.  
+     [Joe Orton]
+
   *) mod_rewrite: Add "AllowAnyURI" option. PR 52774. [Joe Orton]
 
   *) mod_ssl: Add RFC 5878 support. [Ben Laurie]
