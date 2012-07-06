@@ -1057,7 +1057,6 @@ static int ssl_server_import_cert(server_rec *s,
 		     "Unable to initialize TLS authz extension: "
 		     "OpenSSL version too low");
 	ssl_die(s);
-#error xx
 #endif
     }
 
