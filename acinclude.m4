@@ -499,38 +499,51 @@ AC_DEFUN(APACHE_CHECK_OPENSSL,[
     saved_LDFLAGS="$LDFLAGS"
     SSL_LIBS=""
 
-    dnl Before doing anything else, load in pkg-config variables
-    if test -n "$PKGCONFIG"; then
-      saved_PKG_CONFIG_PATH="$PKG_CONFIG_PATH"
-      if test "x$ap_openssl_base" != "x" -a \
-              -f "${ap_openssl_base}/lib/pkgconfig/openssl.pc"; then
-        dnl Ensure that the given path is used by pkg-config too, otherwise
-        dnl the system openssl.pc might be picked up instead.
-        PKG_CONFIG_PATH="${ap_openssl_base}/lib/pkgconfig${PKG_CONFIG_PATH+:}${PKG_CONFIG_PATH}"
-        export PKG_CONFIG_PATH
-      fi
-      ap_openssl_libs="`$PKGCONFIG --libs-only-l openssl 2>&1`"
-      if test $? -eq 0; then
-        ap_openssl_found="yes"
-        pkglookup="`$PKGCONFIG --cflags-only-I openssl`"
-        APR_ADDTO(CPPFLAGS, [$pkglookup])
-        APR_ADDTO(INCLUDES, [$pkglookup])
-        pkglookup="`$PKGCONFIG --libs-only-L --libs-only-other openssl`"
-        APR_ADDTO(LDFLAGS, [$pkglookup])
-        APR_ADDTO(SSL_LIBS, [$pkglookup])
-      fi
-      PKG_CONFIG_PATH="$saved_PKG_CONFIG_PATH"
-    fi
+    dnl See if we've been given a development OpenSSL (lib does not exist)
+    if test ! -d "$ap_openssl_base/lib"; then
+      AC_MSG_WARN([Using development version of OpenSSL])
+      dnl we need to prepend the directories to override the system version
+      CPPFLAGS="-I$ap_openssl_base/include $CPPFLAGS"
+      INCLUDES="-I$ap_openssl_base/include $INCLUDES"
+      LDFLAGS="-L$ap_openssl_base $LDFLAGS"
+      dnl naughty, but easier than the alternatives
+      saved_LDFLAGS="$LDFLAGS"
+      SSL_LIBS="-L$ap_openssl_base"
+    else
 
-    dnl fall back to the user-supplied directory if not found via pkg-config
-    if test "x$ap_openssl_base" != "x" -a "x$ap_openssl_found" = "x"; then
-      APR_ADDTO(CPPFLAGS, [-I$ap_openssl_base/include])
-      APR_ADDTO(INCLUDES, [-I$ap_openssl_base/include])
-      APR_ADDTO(LDFLAGS, [-L$ap_openssl_base/lib])
-      APR_ADDTO(SSL_LIBS, [-L$ap_openssl_base/lib])
-      if test "x$ap_platform_runtime_link_flag" != "x"; then
-        APR_ADDTO(LDFLAGS, [$ap_platform_runtime_link_flag$ap_openssl_base/lib])
-        APR_ADDTO(SSL_LIBS, [$ap_platform_runtime_link_flag$ap_openssl_base/lib])
+      dnl Before doing anything else, load in pkg-config variables
+      if test -n "$PKGCONFIG"; then
+        saved_PKG_CONFIG_PATH="$PKG_CONFIG_PATH"
+        if test "x$ap_openssl_base" != "x" -a \
+                -f "${ap_openssl_base}/lib/pkgconfig/openssl.pc"; then
+          dnl Ensure that the given path is used by pkg-config too, otherwise
+          dnl the system openssl.pc might be picked up instead.
+          PKG_CONFIG_PATH="${ap_openssl_base}/lib/pkgconfig${PKG_CONFIG_PATH+:}${PKG_CONFIG_PATH}"
+          export PKG_CONFIG_PATH
+        fi
+        ap_openssl_libs="`$PKGCONFIG --libs-only-l openssl 2>&1`"
+        if test $? -eq 0; then
+          ap_openssl_found="yes"
+          pkglookup="`$PKGCONFIG --cflags-only-I openssl`"
+          APR_ADDTO(CPPFLAGS, [$pkglookup])
+          APR_ADDTO(INCLUDES, [$pkglookup])
+          pkglookup="`$PKGCONFIG --libs-only-L --libs-only-other openssl`"
+          APR_ADDTO(LDFLAGS, [$pkglookup])
+          APR_ADDTO(SSL_LIBS, [$pkglookup])
+        fi
+        PKG_CONFIG_PATH="$saved_PKG_CONFIG_PATH"
+      fi
+
+      dnl fall back to the user-supplied directory if not found via pkg-config
+      if test "x$ap_openssl_base" != "x" -a "x$ap_openssl_found" = "x"; then
+        APR_ADDTO(CPPFLAGS, [-I$ap_openssl_base/include])
+        APR_ADDTO(INCLUDES, [-I$ap_openssl_base/include])
+        APR_ADDTO(LDFLAGS, [-L$ap_openssl_base/lib])
+        APR_ADDTO(SSL_LIBS, [-L$ap_openssl_base/lib])
+        if test "x$ap_platform_runtime_link_flag" != "x"; then
+          APR_ADDTO(LDFLAGS, [$ap_platform_runtime_link_flag$ap_openssl_base/lib])
+          APR_ADDTO(SSL_LIBS, [$ap_platform_runtime_link_flag$ap_openssl_base/lib])
+        fi
       fi
     fi
 
