@@ -371,7 +371,7 @@ if test "x$ap_ssltk_configured" = "x"; then
   fi
   if test "x$ap_ssltk_type" = "x"; then
     AC_MSG_CHECKING([for OpenSSL version])
-    dnl First check for manditory headers
+    dnl First check for mandatory headers
     AC_CHECK_HEADERS([openssl/opensslv.h openssl/ssl.h], [ap_ssltk_type="openssl"], [])
     if test "$ap_ssltk_type" = "openssl"; then
       dnl so it's OpenSSL - test for a good version
