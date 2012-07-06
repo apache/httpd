@@ -141,6 +141,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: jorton, 
 
+   * mod_ssl: Add RFC 5878 support. This allows support of mechansisms
+              such as Certificate Transparency. Note that new
+              mechanisms are supported without software updates.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352596
+     2.4.x patch: http://people.apache.org/~ben/httpd-2.4-rfc5878.patch
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * cross-compile: allow to provide CC_FOR_BUILD so that gen_test_char will be
