@@ -184,6 +184,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://people.apache.org/~wrowe/tls11-12-patch-2.2-kbrand-wrowe.patch
     +1: wrowe, 
 
+   * mod_ssl: Add RFC 5878 support. This allows support of mechansisms
+              such as Certificate Transparency. Note that new
+              mechanisms are supported without software updates.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352596
+     2.2.x patch: http://people.apache.org/~ben/httpd-2.2-rfc5878.patch
+     +1: ben
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
