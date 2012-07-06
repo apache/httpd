@@ -111,7 +111,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4 patch: Trunk patch works, add CHANGES:
         mod_log_config: Fix %{abc}C truncating cookie values at first "=". PR
         53104. [Greg Ames]
-    +1: sf, covener
+    +1: sf, covener, druggeri
 
    * mod_ssl: Add support for Next Protocol Negotiation.
      Trunk patch:
@@ -133,7 +133,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?rev=1356115&view=rev
                   http://svn.apache.org/viewvc?view=revision&revision=1356813
      2.4.x patch: http://people.apache.org/~jorton/httpd-pr52774.patch
-     +1: jorton, covener
+     +1: jorton, covener, druggeri
 
    * ldap: Treat LDAP_UNAVAILABLE as a transient error with non-MS
            LDAP SDKs; seen with OpenLDAP against Novell eDirectory.
@@ -146,7 +146,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
               mechanisms are supported without software updates.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352596
      2.4.x patch: http://people.apache.org/~ben/httpd-2.4-rfc5878.patch
-     +1: ben
+     +1: ben, druggeri
+     druggeri note: Needs docs for new directive
 
 PATCHES/ISSUES THAT ARE STALLED
 
