@@ -118,7 +118,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=revision&revision=1332643
      2.4.x patch:
        Trunk patch works.
-     +1: benl
+     +1: ben
      sf says: Needs r1345599, too.
               And wrowe's comment about the 2.2 patch is also valid for 2.4:
               http://svn.apache.org/viewvc?view=revision&revision=1354823
@@ -146,6 +146,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
               mechanisms are supported without software updates.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352596
      2.4.x patch: http://people.apache.org/~ben/httpd-2.4-rfc5878.patch
+     +1: ben
 
 PATCHES/ISSUES THAT ARE STALLED
 
