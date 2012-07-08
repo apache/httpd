@@ -200,12 +200,13 @@ LDAPOpCacheTTL 600
 <section id="usingssltls"><title>Using SSL/TLS</title>
 
     <p>The ability to create an SSL and TLS connections to an LDAP server
-    is defined by the directives <directive module="mod_ldap">
-    LDAPTrustedGlobalCert</directive>, <directive module="mod_ldap">
-    LDAPTrustedClientCert</directive> and <directive module="mod_ldap">
-    LDAPTrustedMode</directive>. These directives specify the CA and
-    optional client certificates to be used, as well as the type of
-    encryption to be used on the connection (none, SSL or TLS/STARTTLS).</p>
+    is defined by the directives 
+    <directive module="mod_ldap">LDAPTrustedGlobalCert</directive>, 
+    <directive module="mod_ldap">LDAPTrustedClientCert</directive>
+     and <directive module="mod_ldap">LDAPTrustedMode</directive>. 
+    These directives specify the CA and optional client certificates to be used, 
+    as well as the type of encryption to be used on the connection (none, SSL or 
+    TLS/STARTTLS).</p>
 
     <highlight language="config">
 # Establish an SSL LDAP connection on port 636. Requires that 
