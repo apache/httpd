@@ -118,7 +118,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/viewvc?view=revision&revision=1175946
                  http://svn.apache.org/viewvc?view=revision&revision=1242089
     2.2.x patch: http://people.apache.org/~druggeri/patches/httpd-2.2-SSLProxyMachineCertificateChainFile.patch
-    +1: druggeri, kbrand (non-binding)
+    +1: druggeri, kbrand
 
   * mod_proxy_ajp: Missing support for ErrorOverride
     Trunk patch: http://svn.apache.org/viewvc?rev=1087864&view=rev
@@ -183,6 +183,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Backport version for 2.2.x of the patches above:
       http://people.apache.org/~wrowe/tls11-12-patch-2.2-kbrand-wrowe.patch
     +1: wrowe, 
+    kbrand: might want to add a reference to PR 53114 in CHANGES.
+            The #define HAVE_TLSV1_X stuff should go to ssl_toolkit_compat.h,
+            preferrably, and it would be good if mod_ssl.xml also includes
+            the change to the section about the SSLProtocol directive
+            (see r1222921).
 
    * mod_ssl: Add RFC 5878 support. This allows support of mechansisms
               such as Certificate Transparency. Note that new
@@ -191,6 +196,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~ben/httpd-2.2-rfc5878.patch
      +1: ben, druggeri
      druggeri note: Needs docs for new directive
+     kbrand: depends on an unreleased OpenSSL version (1.0.2), and
+             RFC 5878 is of "Category: Experimental". Seems premature
+             to me to consider for backporting to 2.4/2.2 at this point.
 
 PATCHES/ISSUES THAT ARE STALLED
 
