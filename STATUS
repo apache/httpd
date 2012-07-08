@@ -148,6 +148,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~ben/httpd-2.4-rfc5878.patch
      +1: ben, druggeri
      druggeri note: Needs docs for new directive
+     kbrand: depends on an unreleased OpenSSL version (1.0.2), and
+             RFC 5878 is of "Category: Experimental". Seems premature
+             to me to consider for backporting to 2.4/2.2 at this point.
 
 PATCHES/ISSUES THAT ARE STALLED
 
