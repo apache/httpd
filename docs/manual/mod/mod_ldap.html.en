@@ -145,10 +145,10 @@ LDAPOpCacheTTL 600
     credentials used when binding to an LDAP server. These
     credentials can be provided to LDAP servers that do not
     allow anonymous binds during referral chasing. To control
-    this feature, see the <code class="directive"><a href="#&#10;    ldapreferrals">
-    LDAPReferrals</a></code> and <code class="directive"><a href="#&#10;    ldapreferralhoplimit">
-    LDAPReferralHopLimit</a></code> directives. By default,
-    this feature is enabled.</p>
+    this feature, see the 
+    <code class="directive"><a href="#ldapreferrals">LDAPReferrals</a></code> and 
+    <code class="directive"><a href="#ldapreferralhoplimit">LDAPReferralHopLimit</a></code> 
+    directives. By default, this feature is enabled.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="cache" id="cache">LDAP Cache</a></h2>
