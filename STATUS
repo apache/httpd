@@ -151,6 +151,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      kbrand: depends on an unreleased OpenSSL version (1.0.2), and
              RFC 5878 is of "Category: Experimental". Seems premature
              to me to consider for backporting to 2.4/2.2 at this point.
+     ben: not correct that it depends on OpenSSL 1.0.2, it builds with
+          any version. Also, if you read my note to dev@ you will see
+          why it is not premature.
 
 PATCHES/ISSUES THAT ARE STALLED
 
