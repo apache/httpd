@@ -110,10 +110,10 @@ LDAPOpCacheTTL 600
     credentials used when binding to an LDAP server. These
     credentials can be provided to LDAP servers that do not
     allow anonymous binds during referral chasing. To control
-    this feature, see the <directive module="mod_ldap">
-    LDAPReferrals</directive> and <directive module="mod_ldap">
-    LDAPReferralHopLimit</directive> directives. By default,
-    this feature is enabled.</p>
+    this feature, see the 
+    <directive module="mod_ldap">LDAPReferrals</directive> and 
+    <directive module="mod_ldap">LDAPReferralHopLimit</directive> 
+    directives. By default, this feature is enabled.</p>
 </section>
 
 <section id="cache"><title>LDAP Cache</title>
