@@ -45,6 +45,7 @@
 #include "http_request.h"
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
+#include "mod_ssl.h"
 
 #include "zlib.h"
 
@@ -83,6 +84,7 @@ static const char deflate_magic[2] = { '\037', '\213' };
 #define DEFAULT_MEMLEVEL 9
 #define DEFAULT_BUFFERSIZE 8096
 
+static APR_OPTIONAL_FN_TYPE(ssl_var_lookup) *mod_deflate_ssl_var = NULL;
 
 /* Check whether a request is gzipped, so we can un-gzip it.
  * If a request has multiple encodings, we need the gzip
@@ -419,6 +421,18 @@ static void deflate_check_etag(request_rec *r, const char *transform)
     }
 }
 
+static int have_ssl_compression(request_rec *r)
+{
+    const char *comp;
+    if (mod_deflate_ssl_var == NULL)
+        return 0;
+    comp = mod_deflate_ssl_var(r->pool, r->server, r->connection, r,
+                               "SSL_COMPRESS_METHOD");
+    if (comp == NULL || *comp == '\0' || strcmp(comp, "NULL") == 0)
+        return 0;
+    return 1;
+}
+
 static apr_status_t deflate_out_filter(ap_filter_t *f,
                                        apr_bucket_brigade *bb)
 {
@@ -447,6 +461,14 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
     if (!ctx) {
         char *token;
         const char *encoding;
+
+        if (have_ssl_compression(r)) {
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
+                          "Compression enabled at SSL level; not compressing "
+                          "at HTTP level.");
+            ap_remove_output_filter(f);
+            return ap_pass_brigade(f->next, bb);
+        }
 
         /* We have checked above that bb is not empty */
         e = APR_BRIGADE_LAST(bb);
@@ -1474,6 +1496,14 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
     return APR_SUCCESS;
 }
 
+static int mod_deflate_post_config(apr_pool_t *pconf, apr_pool_t *plog,
+                                   apr_pool_t *ptemp, server_rec *s)
+{
+    mod_deflate_ssl_var = APR_RETRIEVE_OPTIONAL_FN(ssl_var_lookup);
+    return OK;
+}
+
+
 #define PROTO_FLAGS AP_FILTER_PROTO_CHANGE|AP_FILTER_PROTO_CHANGE_LENGTH
 static void register_hooks(apr_pool_t *p)
 {
@@ -1483,6 +1513,7 @@ static void register_hooks(apr_pool_t *p)
                               AP_FTYPE_RESOURCE-1);
     ap_register_input_filter(deflateFilterName, deflate_in_filter, NULL,
                               AP_FTYPE_CONTENT_SET);
+    ap_hook_post_config(mod_deflate_post_config, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 static const command_rec deflate_filter_cmds[] = {

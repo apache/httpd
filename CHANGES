@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_deflate: Skip compression if compression is enabled at SSL level.
+     [Stefan Fritsch]
+
   *) mod_ext_filter: Fix error_log spam when input filters are configured.  
      [Joe Orton]
 
