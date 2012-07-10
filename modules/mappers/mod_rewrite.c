@@ -3278,7 +3278,8 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
 
                 case 'g':
                     if (a2[2] == 't') {
-                        a2 += 3; newcond->ptype = CONDPAT_INT_GT;
+                        a2 += 3;
+                        newcond->ptype = CONDPAT_INT_GT;
                     }
                     else if (a2[2] == 'e') {
                         a2 += 3;
