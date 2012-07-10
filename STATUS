@@ -103,12 +103,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         53104. [Greg Ames]
     +1: sf, covener, druggeri, jim
 
-   * configure: Enforce 1.4.0 as minimum APR version requirement.
-     PR: 52748
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1347998
-     2.4.x patch: trunk patch works
-     +1: jorton, covener, jim
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
