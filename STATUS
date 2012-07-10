@@ -122,10 +122,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   * mod_proxy_ajp: Missing support for ErrorOverride
     Trunk patch: http://svn.apache.org/viewvc?rev=1087864&view=rev
-    2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=27976
+    2.2.x patch: http://people.apache.org/~jim/patches/mod_proxy_ajp-erroroverride.patch
     +1: igalic, jim
     rpluem says: The proposed patch contains tabs and indenting is not correct.
                  This should be fixed first.
+    jim sez:     Check out new patch
 
   * mod_dumpio: Return an error code from a previous input filter
     PR 52914
