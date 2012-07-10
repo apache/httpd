@@ -88,16 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
-  * mod_rewrite: Fix RewriteCond integer checks to be parsed correctly.
-    (PR 53023)
-    Patch: http://svn.apache.org/viewvc?view=revision&revision=1309602
-    (applies cleanly to 2.4.x)
-    +1: nd
-
   * mod_authz_core: Fix parsing of Require arguments in <AuthzProviderAlias>.
     Add some logging and an assert for a case that should not happen.
     PR: 53048
@@ -113,16 +103,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         53104. [Greg Ames]
     +1: sf, covener, druggeri, jim
 
-   * mod_ssl: Add support for Next Protocol Negotiation.
-     Trunk patch:
-       http://svn.apache.org/viewvc?view=revision&revision=1332643
-     2.4.x patch:
-       Trunk patch works.
-     +1: ben
-     sf says: Needs r1345599, too.
-              And wrowe's comment about the 2.2 patch is also valid for 2.4:
-              http://svn.apache.org/viewvc?view=revision&revision=1354823
-
    * configure: Enforce 1.4.0 as minimum APR version requirement.
      PR: 52748
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1347998
@@ -134,6 +114,26 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1356813
      2.4.x patch: http://people.apache.org/~jorton/httpd-pr52774.patch
      +1: jorton, covener, druggeri, jim
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+  * mod_rewrite: Fix RewriteCond integer checks to be parsed correctly.
+    (PR 53023)
+    Patch: http://svn.apache.org/viewvc?view=revision&revision=1309602
+    (applies cleanly to 2.4.x)
+    +1: nd
+
+   * mod_ssl: Add support for Next Protocol Negotiation.
+     Trunk patch:
+       http://svn.apache.org/viewvc?view=revision&revision=1332643
+     2.4.x patch:
+       Trunk patch works.
+     +1: ben
+     sf says: Needs r1345599, too.
+              And wrowe's comment about the 2.2 patch is also valid for 2.4:
+              http://svn.apache.org/viewvc?view=revision&revision=1354823
 
    * ldap: Treat LDAP_UNAVAILABLE as a transient error with non-MS
            LDAP SDKs; seen with OpenLDAP against Novell eDirectory.
