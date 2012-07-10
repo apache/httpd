@@ -103,7 +103,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR: 53048
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1311183
     2.4 patch: Trunk patch works
-    +1: sf, covener
+    +1: sf, covener, jim
 
   * mod_log_config: Fix %{abc}C truncating cookie values at first "=".
     PR 53104
@@ -111,7 +111,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4 patch: Trunk patch works, add CHANGES:
         mod_log_config: Fix %{abc}C truncating cookie values at first "=". PR
         53104. [Greg Ames]
-    +1: sf, covener, druggeri
+    +1: sf, covener, druggeri, jim
 
    * mod_ssl: Add support for Next Protocol Negotiation.
      Trunk patch:
@@ -127,13 +127,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR: 52748
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1347998
      2.4.x patch: trunk patch works
-     +1: jorton, covener
+     +1: jorton, covener, jim
 
    * mod_rewrite: add "AllowAnyURI" option.
      trunk patch: http://svn.apache.org/viewvc?rev=1356115&view=rev
                   http://svn.apache.org/viewvc?view=revision&revision=1356813
      2.4.x patch: http://people.apache.org/~jorton/httpd-pr52774.patch
-     +1: jorton, covener, druggeri
+     +1: jorton, covener, druggeri, jim
 
    * ldap: Treat LDAP_UNAVAILABLE as a transient error with non-MS
            LDAP SDKs; seen with OpenLDAP against Novell eDirectory.
