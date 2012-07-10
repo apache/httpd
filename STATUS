@@ -97,7 +97,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     (PR 53023)
     Patch: http://svn.apache.org/viewvc?view=revision&revision=1309602
     (applies cleanly to 2.4.x)
-    +1: nd
+    +1: nd, sf
 
    * mod_ssl: Add support for Next Protocol Negotiation.
      Trunk patch:
@@ -113,7 +113,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
            LDAP SDKs; seen with OpenLDAP against Novell eDirectory.
      trunk patch: http://svn.apache.org/viewvc?rev=1348036&view=rev
      2.4.x patch: trunk patch works
-     +1: jorton, 
+     +1: jorton, sf
 
    * mod_ssl: Add RFC 5878 support. This allows support of mechansisms
               such as Certificate Transparency. Note that new
