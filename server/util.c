@@ -427,7 +427,7 @@ static apr_status_t regsub_core(apr_pool_t *p, char **result,
         *result = dst = apr_palloc(p, len + 1);
     }
     else {
-        if (vb->buf && vb->strlen == AP_VARBUF_UNKNOWN)
+        if (vb->strlen == AP_VARBUF_UNKNOWN)
             vb->strlen = strlen(vb->buf);
         ap_varbuf_grow(vb, vb->strlen + len);
         dst = vb->buf + vb->strlen;
@@ -1095,11 +1095,22 @@ AP_DECLARE(apr_status_t) ap_varbuf_cfg_getline(struct ap_varbuf *vb,
                                                apr_size_t max_len)
 {
     apr_status_t rc;
+    apr_size_t new_len;
     vb->strlen = 0;
     *vb->buf = '\0';
 
+    if (vb->strlen == AP_VARBUF_UNKNOWN)
+        vb->strlen = strlen(vb->buf);
+    if (vb->avail - vb->strlen < 3) {
+        new_len = vb->avail * 2;
+        if (new_len > max_len)
+            new_len = max_len;
+        else if (new_len < 3)
+            new_len = 3;
+        ap_varbuf_grow(vb, new_len);
+    }
+
     for (;;) {
-        apr_size_t new_len;
         rc = ap_cfg_getline_core(vb->buf + vb->strlen, vb->avail - vb->strlen, cfp);
         if (rc == APR_ENOSPC || rc == APR_SUCCESS)
             vb->strlen += strlen(vb->buf + vb->strlen);
@@ -2585,6 +2596,8 @@ AP_DECLARE(void) ap_varbuf_grow(struct ap_varbuf *vb, apr_size_t new_len)
     struct ap_varbuf_info *new_info;
     char *new;
 
+    AP_DEBUG_ASSERT(vb->strlen == AP_VARBUF_UNKNOWN || vb->avail >= vb->strlen);
+
     if (new_len <= vb->avail)
         return;
 
@@ -2704,9 +2717,10 @@ AP_DECLARE(char *) ap_varbuf_pdup(apr_pool_t *p, struct ap_varbuf *buf,
         i++;
     }
     if (buf->avail && buf->strlen) {
+        if (buf->strlen == AP_VARBUF_UNKNOWN)
+            buf->strlen = strlen(buf->buf);
         vec[i].iov_base = (void *)buf->buf;
-        vec[i].iov_len = (buf->strlen == AP_VARBUF_UNKNOWN) ? buf->avail
-                                                            : buf->strlen;
+        vec[i].iov_len = buf->strlen;
         i++;
     }
     if (append) {
