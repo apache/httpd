@@ -109,12 +109,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: jorton, covener, jim
 
-   * mod_rewrite: add "AllowAnyURI" option.
-     trunk patch: http://svn.apache.org/viewvc?rev=1356115&view=rev
-                  http://svn.apache.org/viewvc?view=revision&revision=1356813
-     2.4.x patch: http://people.apache.org/~jorton/httpd-pr52774.patch
-     +1: jorton, covener, druggeri, jim
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

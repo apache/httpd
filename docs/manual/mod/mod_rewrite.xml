@@ -188,6 +188,38 @@ later</compatibility>
       later.</p>
       </dd>
 
+      <dt><code>AllowAnyURI</code></dt>
+      <dd>
+
+      <p>When <directive module="mod_rewrite">RewriteRule</directive>
+      is used in <code>VirtualHost</code> or server context with
+      version 2.2.22 or later of httpd, <module>mod_rewrite</module>
+      will only process the rewrite rules if the request URI is a <a
+      href="./directive-dict.html#Syntax">URL-path</a>.  This avoids
+      some security issues where particular rules could allow
+      "surprising" pattern expansions (see <a
+      href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-3368">CVE-2011-3368</a>
+      and <a
+      href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-4317">CVE-2011-4317</a>).
+      To lift the restriction on matching a URL-path, the
+      <code>AllowAnyURI</code> option can be enabled, and
+      <module>mod_rewrite</module> will apply the rule set to any
+      request URI string, regardless of whether that string matches
+      the URL-path grammar required by the HTTP specification.</p>
+
+      <note type="warning">
+      <title>Security Warning</title> 
+
+      <p>Enabling this option will make the server vulnerable to
+      security issues if used with rewrite rules which are not
+      carefully authored.  It is <strong>strongly recommended</strong>
+      that this option is not used.  In particular, beware of input
+      strings containing the '<code>@</code>' character which could
+      change the interpretation of the transformed URI, as per the
+      above CVE names.</p>
+      </note>
+      </dd>
+
       </dl>
 
 </usage>
