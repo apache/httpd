@@ -845,9 +845,11 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
     const char *errmsg = NULL;
 
     /** Have we been provided a list of acceptable directives? */
-    if(parms->override_list != NULL)
-         if(apr_table_get(parms->override_list, cmd->name) != NULL)
+    if (parms->override_list != NULL) { 
+         if (apr_table_get(parms->override_list, cmd->name) != NULL) { 
               override_list_ok = 1;
+         }
+    }
 
     if ((parms->override & cmd->req_override) == 0 && !override_list_ok) {
         if (parms->override & NONFATAL_OVERRIDE) {
