@@ -95,14 +95,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4 patch: Trunk patch works
     +1: sf, covener, jim
 
-  * mod_log_config: Fix %{abc}C truncating cookie values at first "=".
-    PR 53104
-    trunk patch: http://svn.apache.org/viewvc?rev=1328133&view=rev
-    2.4 patch: Trunk patch works, add CHANGES:
-        mod_log_config: Fix %{abc}C truncating cookie values at first "=". PR
-        53104. [Greg Ames]
-    +1: sf, covener, druggeri, jim
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
