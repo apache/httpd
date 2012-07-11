@@ -129,6 +129,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           any version. Also, if you read my note to dev@ you will see
           why it is not premature.
 
+   * core: "AllowOverride Options" inadvertently treated like
+           "AllowOverride Options=FollowSymlinks" after r1052419
+            PR53444
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1359976
+     2.4.x patch: trunk works (+ CHANGES)
+     +1: covener
+         
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * cross-compile: allow to provide CC_FOR_BUILD so that gen_test_char will be
