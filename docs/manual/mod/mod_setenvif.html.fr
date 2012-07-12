@@ -70,7 +70,7 @@ BrowserMatch MSIE !netscape
 <ul class="seealso">
 <li><a href="../env.html">Les variables d'environnement et le
 serveur HTTP Apache</a></li>
-</ul></div>
+</ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="BrowserMatch" id="BrowserMatch">BrowserMatch</a> <a name="browsermatch" id="browsermatch">Directive</a></h2>

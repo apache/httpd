@@ -78,7 +78,7 @@ Be sure to check the CHANGES file before upgrading.</div>
 <li><img alt="" src="../images/down.gif" /> <a href="#datastructures">Data Structures</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#logging">Logging Functions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#apache2">apache2 Package</a></li>
-</ul></div>
+</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="basicconf" id="basicconf">Basic Configuration</a></h2>

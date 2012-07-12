@@ -67,7 +67,7 @@ index 파일을 서비스한다</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#directoryslash">DirectorySlash</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#fallbackresource">FallbackResource</a></li>
 </ul>
-</div>
+<ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="DirectoryIndex" id="DirectoryIndex">DirectoryIndex</a> <a name="directoryindex" id="directoryindex">지시어</a></h2>

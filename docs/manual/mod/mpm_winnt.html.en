@@ -55,7 +55,7 @@ NT.</td></tr>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadstacksize">ThreadStackSize</a></li>
 </ul>
-</div>
+<ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 
 </div>
 <div class="bottomlang">

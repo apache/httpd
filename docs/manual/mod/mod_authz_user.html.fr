@@ -50,7 +50,7 @@ d'Apache</td></tr></table>
 <h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li>
-</ul></div>
+</ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 
 </div>
 <div class="bottomlang">
