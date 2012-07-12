@@ -70,7 +70,7 @@
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li>
 <li><a href="../suexec.html">CGI プログラムを違うユーザ ID で実行する</a></li>
-</ul></div>
+</ul><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ScriptSock" id="ScriptSock">ScriptSock</a> <a name="scriptsock" id="scriptsock">ディレクティブ</a></h2>

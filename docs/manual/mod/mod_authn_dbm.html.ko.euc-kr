@@ -62,7 +62,7 @@
 <li>
   <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code>
 </li>
-</ul></div>
+</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthDBMType" id="AuthDBMType">AuthDBMType</a> <a name="authdbmtype" id="authdbmtype">Áö½Ã¾î</a></h2>

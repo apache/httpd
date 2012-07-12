@@ -77,7 +77,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#security">Security Issues</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#queries">表示される情報の選択</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#limitations">既知の制限</a></li>
-</ul></div>
+</ul><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="security" id="security">Security Issues</a></h2>

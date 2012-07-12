@@ -51,7 +51,7 @@
 <h3>参照</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li>
-</ul></div>
+</ul><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthGroupFile" id="AuthGroupFile">AuthGroupFile</a> <a name="authgroupfile" id="authgroupfile">ディレクティブ</a></h2>

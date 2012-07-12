@@ -59,7 +59,7 @@ use <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</
 <li><img alt="" src="../images/down.gif" /> <a href="#heartbeatmaxservers">HeartbeatMaxServers</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#heartbeatstorage">HeartbeatStorage</a></li>
 </ul>
-</div>
+<ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="HeartbeatListen" id="HeartbeatListen">HeartbeatListen</a> <a name="heartbeatlisten" id="heartbeatlisten">Directive</a></h2>

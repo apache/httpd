@@ -57,7 +57,7 @@ extensive <a href="http://apache.webthing.com/mod_proxy_html/">documentation</a>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmlstripcomments">ProxyHTMLStripComments</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmlurlmap">ProxyHTMLURLMap</a></li>
 </ul>
-</div>
+<ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ProxyHTMLBufSize" id="ProxyHTMLBufSize">ProxyHTMLBufSize</a> <a name="proxyhtmlbufsize" id="proxyhtmlbufsize">Directive</a></h2>
