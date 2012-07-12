@@ -20,6 +20,8 @@
 <!DOCTYPE xsl:stylesheet [
     <!ENTITY nbsp SYSTEM "util/nbsp.xml">
     <!ENTITY lf SYSTEM "util/lf.xml">
+    <!ENTITY % HTTPD-VERSION SYSTEM "../version.ent">
+    %HTTPD-VERSION;
 ]>
 <xsl:stylesheet version="1.0"
               xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -169,7 +171,7 @@
            rel="stylesheet"
            href="{$path}/style/css/manual-print.css"/>
     <link href="{$path}/style/css/prettify.css" type="text/css" rel="stylesheet" />&lf;
-    <script type="text/javascript" src="{$path}/style/scripts/prettify.js">&lf; </script> &lf;
+    <script type="text/javascript" src="{$path}/style/scripts/prettify.js">&lf;</script>&lf;
     <!-- chm files do not need a favicon -->
     <xsl:if test="not($is-chm or $is-zip)">&lf;
         <link rel="shortcut icon" href="{$path}/images/favicon.ico" />
@@ -287,7 +289,33 @@
 <xsl:call-template name="langavail">
     <xsl:with-param name="position" select="'bottom'" />
 </xsl:call-template>
-
+<xsl:choose>
+<xsl:when test="not($is-chm or $is-zip or $metafile/basename = 'index')">
+<div class="top"><a href="#page-header"><img alt="top" src="{$path}/images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="comments_section" id="comments_section"><xsl:value-of select="$message[@id='comments']" /></a></h2>
+<div class="warning"><strong>Notice:</strong><br/>This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>&lf;
+<script type="text/javascript">
+<xsl:text disable-output-escaping="yes"><![CDATA[<!--//--><![CDATA[//><!--
+var comments_shortname = 'httpd';
+var comments_identifier = 'http://httpd.apache.org/docs/]]></xsl:text>&httpd.docs;<xsl:value-of select="concat($metafile/path, $metafile/basename, '.html')" disable-output-escaping="yes" /><xsl:text disable-output-escaping="yes"><![CDATA[';
+(function(w, d) {
+    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
+        d.write('<div id="comments_thread"><\/div>');
+        var s = d.createElement('script');
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
+        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
+    }
+    else { 
+        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
+    }
+})(window, document);
+//--><!]]]]>></xsl:text></script>
+</div>
+</xsl:when>
+</xsl:choose>
 <div id="footer">&lf;
     <p class="apache">
         <xsl:text>Copyright 2012 The Apache Software Foundation.</xsl:text><br />
@@ -314,11 +342,11 @@
 </div> <!-- /footer -->
 
 <script type="text/javascript">
-<xsl:text disable-output-escaping="yes"><![CDATA[<!--//--><![CDATA[//><!--]]></xsl:text><![CDATA[
-if (typeof(prettyPrint) !== undefined) {
+<xsl:text disable-output-escaping="yes"><![CDATA[<!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }
-]]><xsl:text disable-output-escaping="yes"><![CDATA[//--><!]]]]>></xsl:text></script>
+//--><!]]]]>></xsl:text></script>
 </xsl:template>
 <!-- /bottom -->
 
