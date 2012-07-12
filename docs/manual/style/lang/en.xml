@@ -118,6 +118,7 @@
         <message id="search">Google Search</message> <!-- search button -->
         <message id="index">Index</message> <!-- deprecated -->
         <message id="home">Home</message> <!-- deprecated -->
+        <message id="comments">Comments</message>
 
         <!-- breadcrumb links -->
         <message id="apache">Apache</message>
