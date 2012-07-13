@@ -91,7 +91,17 @@
                     <td>
                         <xsl:variable name="status" select="translate(
                             status, $uppercase, $lowercase)"/>
-                        <xsl:value-of select="$message[@id=$status]"/>
+                        <xsl:choose>
+                        <xsl:when test="status = 'External' and status/@href">
+                            <a href="{status/@href}">
+                                <xsl:value-of select="$message[@id=$status]"/>
+                            </a>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:value-of
+                                select="$message[@id=$status]"/>
+                        </xsl:otherwise>
+                        </xsl:choose>
                     </td>
                 </tr>
 
@@ -245,6 +255,13 @@
                             </li>&lf;
                         </xsl:for-each>
                         </ul>
+                    </xsl:if>
+                    <xsl:if test="not($is-chm or $is-zip or $metafile/basename = 'index')">
+                    <ul class="seealso">
+                        <li><a href="#comments_section"><xsl:value-of
+                                select="$message[@id='comments']" /></a>
+                        </li>
+                    </ul>
                     </xsl:if>
                 </div> <!-- /#quickview -->
             </xsl:if>&lf; <!-- have sidebar -->
