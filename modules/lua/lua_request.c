@@ -171,11 +171,13 @@ static int req_parsebody(lua_State *L)
     apr_off_t len;
     int res;
     apr_size_t size;
+    apr_size_t max_post_size;
     char *buffer;
     request_rec *r = ap_lua_check_request_rec(L, 1);
+    max_post_size = (apr_size_t) luaL_optint(L, 2, MAX_STRING_LEN);
     lua_newtable(L);
     lua_newtable(L);            /* [table, table] */
-    res = ap_parse_form_data(r, NULL, &pairs, -1, MAX_STRING_LEN); /*XXX: Maybe increase this value? */
+    res = ap_parse_form_data(r, NULL, &pairs, -1, max_post_size);
     if (res == OK) {
         while(pairs && !apr_is_empty_array(pairs)) {
             ap_form_pair_t *pair = (ap_form_pair_t *) apr_array_pop(pairs);
