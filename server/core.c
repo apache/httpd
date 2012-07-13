@@ -1612,7 +1612,7 @@ static const char *set_override(cmd_parms *cmd, void *d_, const char *l)
             if (v)
                 set_allow_opts(cmd, &(d->override_opts), v);
             else
-                d->override_opts = OPT_SYM_LINKS;
+                d->override_opts = OPT_ALL;
         }
         else if (!strcasecmp(w, "FileInfo")) {
             d->override |= OR_FILEINFO;
