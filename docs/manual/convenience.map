@@ -307,6 +307,7 @@ locationmatch	mod/core.html#locationmatch
 logformat	mod/mod_log_config.html#logformat
 loglevel	mod/core.html#loglevel
 logmessage	mod/mod_log_debug.html#logmessage
+luaauthzprovider	mod/mod_lua.html#luaauthzprovider
 luacodecache	mod/mod_lua.html#luacodecache
 luahookaccesschecker	mod/mod_lua.html#luahookaccesschecker
 luahookauthchecker	mod/mod_lua.html#luahookauthchecker
@@ -524,6 +525,7 @@ sslcertificatechainfile	mod/mod_ssl.html#sslcertificatechainfile
 sslcertificatefile	mod/mod_ssl.html#sslcertificatefile
 sslcertificatekeyfile	mod/mod_ssl.html#sslcertificatekeyfile
 sslciphersuite	mod/mod_ssl.html#sslciphersuite
+sslcompression	mod/mod_ssl.html#sslcompression
 sslcryptodevice	mod/mod_ssl.html#sslcryptodevice
 sslengine	mod/mod_ssl.html#sslengine
 sslfips	mod/mod_ssl.html#sslfips
@@ -560,6 +562,8 @@ sslrequiressl	mod/mod_ssl.html#sslrequiressl
 sslsessioncache	mod/mod_ssl.html#sslsessioncache
 sslsessioncachetimeout	mod/mod_ssl.html#sslsessioncachetimeout
 sslsessionticketkeyfile	mod/mod_ssl.html#sslsessionticketkeyfile
+sslsrpunknownuserseed	mod/mod_ssl.html#sslsrpunknownuserseed
+sslsrpverifierfile	mod/mod_ssl.html#sslsrpverifierfile
 sslstaplingcache	mod/mod_ssl.html#sslstaplingcache
 sslstaplingerrorcachetimeout	mod/mod_ssl.html#sslstaplingerrorcachetimeout
 sslstaplingfaketrylater	mod/mod_ssl.html#sslstaplingfaketrylater
