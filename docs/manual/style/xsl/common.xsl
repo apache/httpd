@@ -168,9 +168,10 @@
            rel="stylesheet"
            href="{$path}/style/css/manual-print.css"/>
 
-    <!-- chm files do not need a favicon -->
+    <!-- chm files do not need a favicon or a canonical link-->
     <xsl:if test="not($is-chm or $is-zip)">&lf;
         <link rel="shortcut icon" href="{$path}/images/favicon.ico" />
+        <link rel="canonical" href="http://httpd.apache.org/docs/2.2{concat($metafile/path, $metafile/basename, '.html')}"/>
     </xsl:if>
 </head>
 </xsl:template>
