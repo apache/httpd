@@ -87,6 +87,7 @@
         <message id="core" letter="C">Core</message>
         <message id="extension" letter="E">Extension</message>
         <message id="experimental" letter="X">Experimental</message>
+        <message id="external" letter="T">External</message>
 
         <!-- Used in directive context lists -->
         <message id="serverconfig" letter="s">주서버설정</message>
@@ -120,6 +121,7 @@
         <message id="search">Google 검색</message> <!-- search button -->
         <message id="index">Index</message> <!-- deprecated -->
         <message id="home">Home</message> <!-- deprecated -->
+        <message id="comments">Comments</message>
 
         <!-- breadcrumb links -->
         <message id="apache">Apache</message>

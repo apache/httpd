@@ -115,6 +115,7 @@
         <message id="search">Google 搜索</message> <!-- search button -->
         <message id="index">索引</message> <!-- deprecated -->
         <message id="home">主页</message> <!-- deprecated -->
+        <message id="comments">评论</message>
 
         <!-- breadcrumb links -->
         <message id="apache">Apache</message>
