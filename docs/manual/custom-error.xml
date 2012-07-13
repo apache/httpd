@@ -145,12 +145,12 @@ ErrorDocument 401 /subscription/how_to_subscribe.html
       caused it to be invoked. For instance, a Perl ErrorDocument
       script might include the following:</p>
 
-      <example>
-        ... <br />
+       <highlight language="perl">
+        ...
         print  "Content-type: text/html\n"; <br />
         printf "Status: %s Condition Intercepted\n", $ENV{"REDIRECT_STATUS"}; <br />
         ...
-      </example>
+      </highlight>
 
       <p>If the script is dedicated to handling a particular error
       condition, such as <code>404&nbsp;Not&nbsp;Found</code>, it can
@@ -174,10 +174,10 @@ ErrorDocument 401 /subscription/how_to_subscribe.html
 
     <p>In your server configuration file, you'll see a line such as:</p>
 
-    <example>
+    <highlight language="config">
     # Multi-language error messages<br />
     #Include conf/extra/httpd-multilang-errordoc.conf
-    </example>
+    </highlight>
 
     <p>Uncommenting this <code>Include</code> line will enable this
     feature, and provide language-negotiated error messages, based on
