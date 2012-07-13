@@ -32,7 +32,7 @@ Release history:
     [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
           while x.{even}.z versions are Stable/GA releases.]
 
-    2.4.3   : In development.
+    2.4.3   : In development. Jim proposes a T&R around July 25.
     2.4.2   : Tagged on April 5, 2012. Released Apr 17, 2012.
     2.4.1   : Tagged on February 13, 2012. Released Feb 21, 2012.
     2.4.0   : Tagged on January 16, 2012, not released.
@@ -97,7 +97,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     (PR 53023)
     Patch: http://svn.apache.org/viewvc?view=revision&revision=1309602
     (applies cleanly to 2.4.x)
-    +1: nd, sf
+    +1: nd, sf, jim
 
    * mod_ssl: Add support for Next Protocol Negotiation.
      Trunk patch:
@@ -134,7 +134,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             PR53444
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1359976
      2.4.x patch: trunk works (+ CHANGES)
-     +1: covener
+     +1: covener, jim
          
 
 PATCHES/ISSUES THAT ARE STALLED
