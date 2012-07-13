@@ -1686,6 +1686,9 @@ static void cache_insert_error_filter(request_rec *r)
 
             r->err_headers_out = cache->stale_handle->resp_hdrs;
 
+            ap_set_content_type(r, apr_table_get(
+                                cache->stale_handle->resp_hdrs, "Content-Type"));
+
             /* add a revalidation warning */
             warn_head = apr_table_get(r->err_headers_out, "Warning");
             if ((warn_head == NULL) || ((warn_head != NULL)
