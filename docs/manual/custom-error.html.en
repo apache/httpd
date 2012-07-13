@@ -157,10 +157,10 @@ ErrorDocument 401 /subscription/how_to_subscribe.html
       script might include the following:</p>
 
        <pre class="prettyprint lang-perl">
-        ...
-        print  "Content-type: text/html\n"; <br />
-        printf "Status: %s Condition Intercepted\n", $ENV{"REDIRECT_STATUS"}; <br />
-        ...
+...
+print  "Content-type: text/html\n"; <br />
+printf "Status: %s Condition Intercepted\n", $ENV{"REDIRECT_STATUS"}; <br />
+...
       </pre>
 
 
