@@ -88,13 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * core: "AllowOverride Options" inadvertently treated like
-           "AllowOverride Options=FollowSymlinks" after r1052419
-            PR53444
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1359976
-     2.4.x patch: trunk works (+ CHANGES)
-     +1: covener, jim, humbedooh
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 

@@ -8,6 +8,10 @@ Changes with Apache 2.4.3
      possible XSS for a site where untrusted users can upload files to
      a location with MultiViews enabled. [Niels Heinen <heinenn google.com>]
 
+  *) core: Fix spurious "not allowed here" error returned when the Options 
+     directive is used in .htaccess and "AllowOverride Options" (with no 
+     specific options restricted) is configured.  PR 53444. [Eric Covener]
+
   *) mod_authz_core: Fix parsing of Require arguments in <AuthzProviderAlias>.
      PR 53048. [Stefan Fritsch]
 
