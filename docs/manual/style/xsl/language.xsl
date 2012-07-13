@@ -146,6 +146,7 @@
     <target name="all"
             description="- builds all HTML files and nroff man pages">
         <xsl:attribute name="depends">
+            <xsl:text>validate-xml, </xsl:text>
             <xsl:for-each select="lang[document(concat('../lang/', .,
                                        '.xml'))/language/messages]">
                 <xsl:value-of select="." />
@@ -284,7 +285,7 @@
     <target name="validate-xml" description="- validates all XML source files">
         &lf;
         <xsl:text>    </xsl:text>
-        <xmlvalidate lenient="false" failonerror="false" warn="true">
+        <xmlvalidate lenient="false" failonerror="true" warn="true">
             &lf;
             <xsl:text>        </xsl:text>
             <xmlcatalog refid="w3c-catalog" />&lf;
