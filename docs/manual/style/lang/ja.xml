@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE language SYSTEM "../lang.dtd">
-<!-- English revision: 1044705 -->
+<!-- English revision: 1044715 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -81,6 +81,7 @@
         <message id="core" letter="C">Core</message>
         <message id="extension" letter="E">Extension</message>
         <message id="experimental" letter="X">Experimental</message>
+        <message id="external" letter="T">External</message>
 
         <!-- Used in directive context lists -->
         <message id="serverconfig" letter="s">サーバ設定ファイル</message>
@@ -114,6 +115,7 @@
         <message id="search">Google 検索</message> <!-- search button -->
         <message id="index">索引</message> <!-- deprecated -->
         <message id="home">ホーム</message> <!-- deprecated -->
+        <message id="comments">コメント</message>
 
         <!-- breadcrumb links -->
         <message id="apache">Apache</message>

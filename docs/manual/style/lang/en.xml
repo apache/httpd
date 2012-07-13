@@ -86,6 +86,7 @@
         <message id="core" letter="C">Core</message>
         <message id="extension" letter="E">Extension</message>
         <message id="experimental" letter="X">Experimental</message>
+        <message id="external" letter="T">External</message>
 
         <!-- Used in directive context lists -->
         <message id="serverconfig" letter="s">server config</message>
@@ -117,6 +118,7 @@
         <message id="search">Google Search</message> <!-- search button -->
         <message id="index">Index</message> <!-- deprecated -->
         <message id="home">Home</message> <!-- deprecated -->
+        <message id="comments">Comments</message>
 
         <!-- breadcrumb links -->
         <message id="apache">Apache</message>
@@ -134,7 +136,7 @@
         <message id="before-license">Licensed under the</message>
         <message id="after-license"></message>
         <message id="langavail">Available Languages</message>
- 
+
         <!-- not up to date -->
         <message id="outofdate">This translation may be out of date. Check the
             English version for recent changes.</message>

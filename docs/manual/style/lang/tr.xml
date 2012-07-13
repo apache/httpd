@@ -88,6 +88,7 @@
         <message id="core" letter="Ç">Çekirdek</message>
         <message id="extension" letter="E">Eklenti</message>
         <message id="experimental" letter="D">Deneysel</message>
+        <message id="external" letter="H">Harici</message>
 
         <!-- Used in directive context lists -->
         <message id="serverconfig" letter="s">sunucu geneli</message>
@@ -118,6 +119,7 @@
         <message id="search">Google’de Ara</message> <!-- search button -->
         <message id="index">Dizin</message> <!-- deprecated -->
         <message id="home">Baş Sayfa</message> <!-- deprecated -->
+        <message id="comments">Yorum</message>
 
         <!-- breadcrumb links -->
         <message id="apache">Apache</message>
