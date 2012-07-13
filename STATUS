@@ -128,7 +128,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             PR53444
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1359976
      2.4.x patch: trunk works (+ CHANGES)
-     +1: covener, jim
+     +1: covener, jim, humbedooh
          
 
 PATCHES/ISSUES THAT ARE STALLED
