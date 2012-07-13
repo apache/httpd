@@ -112,7 +112,7 @@ var prettyPrint;
       "debugger,eval,export,function,get,null,set,undefined,var,with," +
       "Infinity,NaN"];
   var PERL_KEYWORDS = "caller,delete,die,do,dump,else,elsif,eval,exit,foreach,for," +
-      "goto,if,import,last,local,my,next,no,our,print,package,redo,require," +
+      "goto,if,import,last,local,my,next,no,our,print,printf,package,redo,require," +
       "sub,undef,unless,until,use,wantarray,while,BEGIN,END";
   var PHP_KEYWORDS = "abstract,and,array,as,break,case,catch,cfunction,class," +
       "clone,const,continue,declare,default,do,else,elseif,enddeclare,endfor," + 
