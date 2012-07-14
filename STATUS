@@ -146,7 +146,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works (ex. CHANGES)
      +1: sf
 
-   * mpm_event: Fix lots staying in "L" state in the scoreboard
+   * mpm_event: Fix slots staying in "L" state in the scoreboard
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1294349
      2.4.x patch: trunk patch works (needs CHANGES entry)
      +1: sf
