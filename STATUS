@@ -121,6 +121,50 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           any version. Also, if you read my note to dev@ you will see
           why it is not premature.
 
+   * mod_deflate: Make mod_deflate skip compression if compression is enabled
+     at SSL level.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1359057
+     2.4.x patch: trunk patch works (ex. CHANGES)
+     +1: sf
+
+   * core: Always log if LimitRequestFieldSize triggers
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352911
+     2.4.x patch: trunk patch works
+     +1: sf
+
+   * mod_authz_core: Allow to use %{REMOTE_USER} in Require expr. Improve
+     logging.
+     PR: 52892
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1351071
+                  http://svn.apache.org/viewvc?view=revision&revision=1351072
+                  http://svn.apache.org/viewvc?view=revision&revision=1351074
+     2.4.x patch: trunk patch works (ex. CHANGES)
+     +1: sf
+
+   * mod_so: Optionally allow LoadModule+LoadFile to use the normal search path.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1332378
+     2.4.x patch: trunk patch works (ex. CHANGES)
+     +1: sf
+
+   * mpm_event: Fix lots staying in "L" state in the scoreboard
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1294349
+     2.4.x patch: trunk patch works (needs CHANGES entry)
+     +1: sf
+
+   * mpm_event: Don't call ap_start_lingering_close from the listener thread
+     because it may block
+     PR: 52229
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1294356
+     2.4.x patch: trunk patch works (needs CHANGES entry)
+     +1: sf
+
+   * mpm_event: Fix MaxConnectionsPerChild
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1343085
+                  http://svn.apache.org/viewvc?view=revision&revision=1343087
+     2.4.x patch: trunk patch works (ex. CHANGES)
+     +1: sf
+
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * cross-compile: allow to provide CC_FOR_BUILD so that gen_test_char will be
