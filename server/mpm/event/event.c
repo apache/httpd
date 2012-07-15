@@ -176,14 +176,9 @@ static int workers_may_exit = 0;
 static int start_thread_may_exit = 0;
 static int listener_may_exit = 0;
 static int num_listensocks = 0;
-/*
- * As we don't have APR atomic functions for apr_int32_t, we use apr_uint32_t
- * to actually store a signed value. This works as long as the platform uses
- * two's complement representation. This assumption is also made in other
- * parts of the code (e.g. fdqueue.c).
- */
-static apr_uint32_t conns_this_child;
-static apr_uint32_t connection_count = 0;
+static apr_int32_t conns_this_child;        /* MaxConnectionsPerChild, only access
+                                               in listener thread */
+static apr_uint32_t connection_count = 0;   /* Number of open connections */
 static int resource_shortage = 0;
 static fd_queue_t *worker_queue;
 static fd_queue_info_t *worker_queue_info;
@@ -615,7 +610,6 @@ static int volatile restart_pending;
 
 static apr_status_t decrement_connection_count(void *dummy) {
     apr_atomic_dec32(&connection_count);
-    apr_atomic_dec32(&conns_this_child);
     return APR_SUCCESS;
 }
 
@@ -901,7 +895,6 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
             apr_bucket_alloc_destroy(cs->bucket_alloc);
             apr_pool_clear(p);
             ap_push_pool(worker_queue_info, p);
-            apr_atomic_dec32(&conns_this_child);
             return;
         }
         apr_atomic_inc32(&connection_count);
@@ -1067,7 +1060,7 @@ static void check_infinite_requests(void)
     }
     else {
         /* keep going */
-        apr_atomic_set32(&conns_this_child, APR_INT32_MAX);
+        conns_this_child = APR_INT32_MAX;
     }
 }
 
@@ -1456,9 +1449,8 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                 break;
         }
 
-        if (((apr_int32_t)apr_atomic_read32(&conns_this_child)) <= 0) {
+        if (conns_this_child <= 0)
             check_infinite_requests();
-        }
 
         now = apr_time_now();
         if (APLOGtrace6(ap_server_conf)) {
@@ -1667,6 +1659,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                     }
 
                     if (csd != NULL) {
+                        conns_this_child--;
                         rc = ap_queue_push(worker_queue, csd, NULL, ptrans);
                         if (rc != APR_SUCCESS) {
                             /* trash the connection; we couldn't queue the connected
@@ -2154,11 +2147,11 @@ static void child_main(int child_num_arg)
     }
 
     if (ap_max_requests_per_child) {
-        apr_atomic_set32(&conns_this_child, (apr_uint32_t)ap_max_requests_per_child);
+        conns_this_child = ap_max_requests_per_child;
     }
     else {
         /* coding a value of zero means infinity */
-        apr_atomic_set32(&conns_this_child, APR_INT32_MAX);
+        conns_this_child = APR_INT32_MAX;
     }
 
     /* Setup worker threads */
