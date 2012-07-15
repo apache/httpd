@@ -140,12 +140,16 @@ AP_LUA_DECLARE(void) ap_lua_load_apache2_lmodule(lua_State *L)
        makeintegerfield(L, HTTP_RESET_CONTENT);
        makeintegerfield(L, HTTP_PARTIAL_CONTENT);
        makeintegerfield(L, HTTP_MULTI_STATUS);
+       makeintegerfield(L, HTTP_ALREADY_REPORTED);
+       makeintegerfield(L, HTTP_IM_USED);
        makeintegerfield(L, HTTP_MULTIPLE_CHOICES);
        makeintegerfield(L, HTTP_MOVED_PERMANENTLY);
+       makeintegerfield(L, HTTP_MOVED_TEMPORARILY);
        makeintegerfield(L, HTTP_SEE_OTHER);
        makeintegerfield(L, HTTP_NOT_MODIFIED);
        makeintegerfield(L, HTTP_USE_PROXY);
        makeintegerfield(L, HTTP_TEMPORARY_REDIRECT);
+       makeintegerfield(L, HTTP_PERMANENT_REDIRECT);
        makeintegerfield(L, HTTP_BAD_REQUEST);
        makeintegerfield(L, HTTP_UNAUTHORIZED);
        makeintegerfield(L, HTTP_PAYMENT_REQUIRED);
@@ -168,6 +172,9 @@ AP_LUA_DECLARE(void) ap_lua_load_apache2_lmodule(lua_State *L)
        makeintegerfield(L, HTTP_LOCKED);
        makeintegerfield(L, HTTP_FAILED_DEPENDENCY);
        makeintegerfield(L, HTTP_UPGRADE_REQUIRED);
+       makeintegerfield(L, HTTP_PRECONDITION_REQUIRED);
+       makeintegerfield(L, HTTP_TOO_MANY_REQUESTS);
+       makeintegerfield(L, HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE);
        makeintegerfield(L, HTTP_INTERNAL_SERVER_ERROR);
        makeintegerfield(L, HTTP_NOT_IMPLEMENTED);
        makeintegerfield(L, HTTP_BAD_GATEWAY);
@@ -176,7 +183,9 @@ AP_LUA_DECLARE(void) ap_lua_load_apache2_lmodule(lua_State *L)
        makeintegerfield(L, HTTP_VERSION_NOT_SUPPORTED);
        makeintegerfield(L, HTTP_VARIANT_ALSO_VARIES);
        makeintegerfield(L, HTTP_INSUFFICIENT_STORAGE);
+       makeintegerfield(L, HTTP_LOOP_DETECTED);
        makeintegerfield(L, HTTP_NOT_EXTENDED);
+       makeintegerfield(L, HTTP_NETWORK_AUTHENTICATION_REQUIRED);
      */
 }
 
