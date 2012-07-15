@@ -373,7 +373,7 @@ static apr_status_t session_identity_decode(request_rec * r, session_rec * z)
     }
 
     /* decode what we have */
-    encoded = apr_pstrcat(r->pool, z->encoded, NULL);
+    encoded = apr_pstrdup(r->pool, z->encoded);
     pair = apr_strtok(encoded, sep, &last);
     while (pair && pair[0]) {
         char *plast = NULL;

@@ -468,16 +468,15 @@ static const char *register_named_block_function_hook(const char *name,
 
     {
         cr_ctx ctx;
-        char buf[32];
         lua_State *lvm;
         char *tmp;
         int rv;
         ap_directive_t **current;
         hack_section_baton *baton;
 
-        apr_snprintf(buf, sizeof(buf), "%u", cmd->config_file->line_number);
-        spec->file_name = apr_pstrcat(cmd->pool, cmd->config_file->name, ":",
-                                      buf, NULL);
+        spec->file_name = apr_psprintf(cmd->pool, "%s:%u",
+                                       cmd->config_file->name,
+                                       cmd->config_file->line_number);
         if (function) {
             spec->function_name = (char *) function;
         }
