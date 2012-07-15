@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mpm_event: Don't count connections in lingering close state when
+     calculating how many additional connections may be accepted.
+     [Stefan Fritsch]
+
   *) mod_deflate: Skip compression if compression is enabled at SSL level.
      [Stefan Fritsch]
 
