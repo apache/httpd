@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1352912:1357168 (outdated) -->
+<!-- English Revision : 1357168 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1825,7 +1825,19 @@ host</context>
     <p>L'argument <var>filename</var> peut contenir un nom de fichier
     ou une cha&icirc;ne de caract&egrave;res avec caract&egrave;res g&eacute;n&eacute;riques, o&ugrave;
     <code>?</code> remplace un caract&egrave;re, et <code>*</code> toute cha&icirc;ne
-    de caract&egrave;res. On peut aussi utiliser les <glossary
+    de caract&egrave;res.</p>
+    <highlight language="config">
+&lt;Files "cat.html"&gt;
+    # Ins&eacute;rer ici des directives qui s'appliquent au fichier cat.html
+&lt;/Files&gt;
+
+&lt;Files "?at.*"&gt;
+    # Les directives ins&eacute;r&eacute;es ici s'appliqueront aux fichiers
+    # cat.html, bat.html, hat.php, et ainsi de suite.
+&lt;/Files&gt;
+</highlight>
+    
+    <p>On peut aussi utiliser les <glossary
     ref="regex">Expressions rationnelles</glossary> en ajoutant la
     caract&egrave;re <code>~</code>. Par exemple :</p>
 
