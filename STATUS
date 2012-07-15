@@ -164,6 +164,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works (ex. CHANGES)
      +1: sf
 
+   * mod_lua: - Add a parsebody function for retrieving POST data. PR: 53064
+              - Make mod_lua compatible with Lua 5.2
+     Trunk patch:
+       http://svn.apache.org/viewvc?view=revision&revision=1352047 and
+       http://svn.apache.org/viewvc?view=revision&revision=1361298
+     2.4.x patch:
+       http://www.humbedooh.com/mods/mod_lua.patch (+CHANGES)
+     +1: humbedooh
+
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
