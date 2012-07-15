@@ -799,11 +799,9 @@ AP_DECLARE(const char *) ap_get_status_line(int status)
 }
 
 /* Build the Allow field-value from the request handler method mask.
- * Note that we always allow TRACE, since it is handled below.
  */
 static char *make_allow(request_rec *r)
 {
-    char *list;
     apr_int64_t mask;
     apr_array_header_t *allow = apr_array_make(r->pool, 10, sizeof(char *));
     apr_hash_index_t *hi = apr_hash_first(r->pool, methods_registry);
@@ -831,25 +829,15 @@ static char *make_allow(request_rec *r)
     if (conf->trace_enable != AP_TRACE_DISABLE)
         *(const char **)apr_array_push(allow) = "TRACE";
 
-    list = apr_array_pstrcat(r->pool, allow, ',');
-
     /* ### this is rather annoying. we should enforce registration of
        ### these methods */
     if ((mask & (AP_METHOD_BIT << M_INVALID))
         && (r->allowed_methods->method_list != NULL)
         && (r->allowed_methods->method_list->nelts != 0)) {
-        int i;
-        char **xmethod = (char **) r->allowed_methods->method_list->elts;
-
-        /*
-         * Append all of the elements of r->allowed_methods->method_list
-         */
-        for (i = 0; i < r->allowed_methods->method_list->nelts; ++i) {
-            list = apr_pstrcat(r->pool, list, ",", xmethod[i], NULL);
-        }
+        apr_array_cat(allow, r->allowed_methods->method_list);
     }
 
-    return list;
+    return apr_array_pstrcat(r->pool, allow, ',');
 }
 
 AP_DECLARE(int) ap_send_http_options(request_rec *r)

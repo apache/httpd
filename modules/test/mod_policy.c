@@ -162,11 +162,10 @@ static void handle_policy(request_rec *r, policy_result result,
                 message, r->uri);
         apr_table_addn(r->err_headers_out, "Warning", apr_psprintf(r->pool,
                 "299 %s \"Rejected: %s\"", ap_get_server_name(r), message));
-        apr_table_setn(
-                r->notes, "error-notes",
-                    apr_pstrcat(r->pool, url ? apr_pstrcat(r->pool, "<a href=\"",
-                            url, "\">", NULL) : "", message, url ? "</a>" : "",
-                                    NULL));
+        apr_table_setn(r->notes, "error-notes",
+                       url ? apr_pstrcat(r->pool, "<a href=\"", url, "\">",
+                                         message, "</a>", NULL)
+                           : message);
 
         apr_brigade_cleanup(bb);
         e = ap_bucket_error_create(status, NULL, r->pool,
