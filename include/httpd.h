@@ -472,11 +472,12 @@ AP_DECLARE(const char *) ap_get_server_built(void);
  * @{
  */
 /**
- * The size of the static array in http_protocol.c for storing
- * all of the potential response status-lines (a sparse table).
+ * The size of the static status_lines array in http_protocol.c for
+ * storing all of the potential response status-lines (a sparse table).
+ * When adding a new code here add it to status_lines as well.
  * A future version should dynamically generate the apr_table_t at startup.
  */
-#define RESPONSE_CODES 57
+#define RESPONSE_CODES 83
 
 #define HTTP_CONTINUE                      100
 #define HTTP_SWITCHING_PROTOCOLS           101
@@ -489,6 +490,8 @@ AP_DECLARE(const char *) ap_get_server_built(void);
 #define HTTP_RESET_CONTENT                 205
 #define HTTP_PARTIAL_CONTENT               206
 #define HTTP_MULTI_STATUS                  207
+#define HTTP_ALREADY_REPORTED              208
+#define HTTP_IM_USED                       226
 #define HTTP_MULTIPLE_CHOICES              300
 #define HTTP_MOVED_PERMANENTLY             301
 #define HTTP_MOVED_TEMPORARILY             302
@@ -496,6 +499,7 @@ AP_DECLARE(const char *) ap_get_server_built(void);
 #define HTTP_NOT_MODIFIED                  304
 #define HTTP_USE_PROXY                     305
 #define HTTP_TEMPORARY_REDIRECT            307
+#define HTTP_PERMANENT_REDIRECT            308
 #define HTTP_BAD_REQUEST                   400
 #define HTTP_UNAUTHORIZED                  401
 #define HTTP_PAYMENT_REQUIRED              402
@@ -518,6 +522,9 @@ AP_DECLARE(const char *) ap_get_server_built(void);
 #define HTTP_LOCKED                        423
 #define HTTP_FAILED_DEPENDENCY             424
 #define HTTP_UPGRADE_REQUIRED              426
+#define HTTP_PRECONDITION_REQUIRED         428
+#define HTTP_TOO_MANY_REQUESTS             429
+#define HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE 431
 #define HTTP_INTERNAL_SERVER_ERROR         500
 #define HTTP_NOT_IMPLEMENTED               501
 #define HTTP_BAD_GATEWAY                   502
@@ -526,7 +533,9 @@ AP_DECLARE(const char *) ap_get_server_built(void);
 #define HTTP_VERSION_NOT_SUPPORTED         505
 #define HTTP_VARIANT_ALSO_VARIES           506
 #define HTTP_INSUFFICIENT_STORAGE          507
+#define HTTP_LOOP_DETECTED                 508
 #define HTTP_NOT_EXTENDED                  510
+#define HTTP_NETWORK_AUTHENTICATION_REQUIRED 511
 
 /** is the status code informational */
 #define ap_is_HTTP_INFO(x)         (((x) >= 100)&&((x) < 200))
