@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1334163:1356115 (outdated) -->
+<!-- English Revision : 1356115 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -209,6 +209,40 @@ la version version 2.1</compatibility>
       r&egrave;gles de r&eacute;&eacute;criture qui correspondent &agrave; un r&eacute;pertoire sans slash
       final au sein de fichiers .htaccess. Elle est disponible &agrave;
       partir de la version 2.4.0 du serveur HTTP Apache.</p>
+      </dd>
+
+      <dt><code>AllowAnyURI</code></dt>
+      <dd>
+
+      <p>A partir de la version 2.2.22 de httpd, lorsqu'une directive <directive
+      module="mod_rewrite">RewriteRule</directive> se situe dans un
+      contexte de <code>serveur virtuel</code> ou de serveur principal,
+      <module>mod_rewrite</module> ne traitera les r&egrave;gles de r&eacute;&eacute;criture
+      que si l'URI de la requ&ecirc;te respecte la syntaxe d'un <a
+      href="./directive-dict.html#Syntax">chemin URL</a>. Ceci permet
+      d'&eacute;viter certains probl&egrave;mes de s&eacute;curit&eacute; o&ugrave; des r&egrave;gles
+      particuli&egrave;res pourraient permettre  des d&eacute;veloppements de mod&egrave;les
+      inattendus (voir <a
+      href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-3368">CVE-2011-3368</a>
+      et <a
+      href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-4317">CVE-2011-4317</a>).
+      Pour s'affranchir de la restriction relative &agrave; la syntaxe des chemins URL, on peut
+      utiliser l'option <code>AllowAnyURI</code>, afin de permettre &agrave;
+      <module>mod_rewrite</module> d'appliquer le jeu de r&egrave;gles &agrave; toute
+      cha&icirc;ne de requ&ecirc;te URI, sans v&eacute;rifier si cette derni&egrave;re respecte la
+      grammaire des chemins URL d&eacute;finie dans la sp&eacute;cification HTTP.</p>
+
+      <note type="warning">
+      <title>Avertissement &agrave; propos de la s&eacute;curit&eacute;</title> 
+
+      <p>L'utilisation de cette option rendra le serveur vuln&eacute;rable &agrave;
+      certains probl&egrave;mes de s&eacute;curit&eacute; si les r&egrave;gles de r&eacute;&eacute;critures
+      concern&eacute;es n'ont pas &eacute;t&eacute; r&eacute;dig&eacute;es avec soin. Il est par cons&eacute;quent
+      <strong>fortement recommand&eacute;</strong> de ne pas utiliser cette
+      option. En particulier, pr&ecirc;tez attention aux cha&icirc;nes en entr&eacute;e contenant le
+      caract&egrave;re '<code>@</code>', qui peuvent modifier l'interpr&eacute;tation
+      de l'URI r&eacute;&eacute;crite, comme indiqu&eacute; dans les liens ci-dessus.</p>
+      </note>
       </dd>
 
       </dl>

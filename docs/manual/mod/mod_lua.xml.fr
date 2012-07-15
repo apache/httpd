@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1352048:1355934 (outdated) -->
+<!-- English Revision : 1355934 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -95,7 +95,7 @@ le style de CGI. Une fonction de gestionnaire se pr&eacute;sente comme suit :</p
 
 
 <highlight language="lua">
-<strong>example.lua</strong>
+<strong>example.lua</strong><br/>
 -- exemple de gestionnaire
 
 require "string"
@@ -161,7 +161,7 @@ cas o&ugrave; la requ&ecirc;te provient de l'adresse IP sp&eacute;cifi&eacute;e,
 l'utilisateur authentifi&eacute; correspond au second argument :</p>
 
 <highlight language="lua">
-<strong>authz_provider.lua</strong>
+<strong>authz_provider.lua</strong><br/>
 
 require 'apache2'
 
@@ -207,8 +207,9 @@ code d'&eacute;tat HTTP ou des valeurs OK, DONE, ou DECLINED,
 que vous pouvez &eacute;crire dans lua sous la forme <code>apache2.OK</code>,
 <code>apache2.DONE</code>, ou <code>apache2.DECLINED</code>.</p>
 
+
 <highlight language="lua">
-<strong>translate_name.lua</strong>
+<strong>translate_name.lua</strong><br/>
 -- exemple d'accroche qui r&eacute;&eacute;crit un URI en chemin du syst&egrave;me de
 fichiers.
 
@@ -224,8 +225,9 @@ function translate_name(r)
 end
 </highlight>
 
+
 <highlight language="lua">
-<strong>translate_name2.lua</strong>
+<strong>translate_name2.lua</strong><br/>
 --[[ exemple d'accroche qui r&eacute;&eacute;crit un URI vers un autre URI. Il renvoie
 	un apache2.DECLINED pour permettre &agrave; un autre interpr&eacute;teur d'URL de
 	travailler sur la substitution, y compris l'accroche translate_name
@@ -427,15 +429,17 @@ end
         </highlight>
 
         <highlight language="lua">
-        r:parseargs() -- renvoie une table lua contenant la cha&icirc;ne
+        r:parseargs() -- renvoie une table Lua contenant la cha&icirc;ne
 	d'arguments de la requ&ecirc;te
         </highlight>
-<!--
-/* Not supported yet */
+
+
         <highlight language="lua">
-        r:parsebody() &dash;- parse the request body as a POST and return  a lua table
+        r:parsebody() -- interpr&egrave;te toutes donn&eacute;es POST de la requ&ecirc;te et
+	les renvoie sous forme de table Lua
         </highlight>
--->
+
+
         <highlight language="lua">
         r:puts("bonjour", " le monde", "!") -- affichage dans le corps de la r&eacute;ponse
         </highlight>
