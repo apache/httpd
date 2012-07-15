@@ -179,6 +179,9 @@ static int num_listensocks = 0;
 static apr_int32_t conns_this_child;        /* MaxConnectionsPerChild, only access
                                                in listener thread */
 static apr_uint32_t connection_count = 0;   /* Number of open connections */
+static apr_uint32_t lingering_count = 0;    /* Number of connections in lingering close */
+static apr_uint32_t suspended_count = 0;    /* Number of suspended connections */
+static apr_uint32_t clogged_count = 0;      /* Number of threads processing ssl conns */
 static int resource_shortage = 0;
 static fd_queue_t *worker_queue;
 static fd_queue_info_t *worker_queue_info;
@@ -390,8 +393,12 @@ static void enable_listensocks(int process_slot)
     int i;
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(00457)
                  "Accepting new connections again: "
-                 "%u active conns, %u idle workers",
+                 "%u active conns (%u lingering/%u clogged/%u suspended), "
+                 "%u idle workers",
                  apr_atomic_read32(&connection_count),
+                 apr_atomic_read32(&lingering_count),
+                 apr_atomic_read32(&clogged_count),
+                 apr_atomic_read32(&suspended_count),
                  ap_queue_info_get_idlers(worker_queue_info));
     for (i = 0; i < num_listensocks; i++)
         apr_pollset_add(event_pollset, &listener_pollfd[i]);
@@ -608,7 +615,20 @@ static int child_fatal;
 static int volatile shutdown_pending;
 static int volatile restart_pending;
 
-static apr_status_t decrement_connection_count(void *dummy) {
+static apr_status_t decrement_connection_count(void *cs_)
+{
+    event_conn_state_t *cs = cs_;
+    switch (cs->pub.state) {
+        case CONN_STATE_LINGER_NORMAL:
+        case CONN_STATE_LINGER_SHORT:
+            apr_atomic_dec32(&lingering_count);
+            break;
+        case CONN_STATE_SUSPENDED:
+            apr_atomic_dec32(&suspended_count);
+            break;
+        default:
+            break;
+    }
     apr_atomic_dec32(&connection_count);
     return APR_SUCCESS;
 }
@@ -786,6 +806,7 @@ static int start_lingering_close_common(event_conn_state_t *cs)
         q = &linger_q;
         cs->pub.state = CONN_STATE_LINGER_NORMAL;
     }
+    apr_atomic_inc32(&lingering_count);
     apr_thread_mutex_lock(timeout_mutex);
     TO_QUEUE_APPEND(*q, cs);
     cs->pfd.reqevents = APR_POLLIN | APR_POLLHUP | APR_POLLERR;
@@ -898,7 +919,8 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
             return;
         }
         apr_atomic_inc32(&connection_count);
-        apr_pool_cleanup_register(c->pool, NULL, decrement_connection_count, apr_pool_cleanup_null);
+        apr_pool_cleanup_register(c->pool, cs, decrement_connection_count,
+                                  apr_pool_cleanup_null);
         c->current_thread = thd;
         cs->c = c;
         c->cs = &(cs->pub);
@@ -947,10 +969,12 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
          * like mod_ssl, lets just do the normal read from input filters,
          * like the Worker MPM does.
          */
+        apr_atomic_inc32(&clogged_count);
         ap_run_process_connection(c);
         if (cs->pub.state != CONN_STATE_SUSPENDED) {
             cs->pub.state = CONN_STATE_LINGER;
         }
+        apr_atomic_dec32(&clogged_count);
     }
 
 read_request:
@@ -1037,6 +1061,9 @@ read_request:
                          "process_socket: apr_pollset_add failure");
             AP_DEBUG_ASSERT(rc == APR_SUCCESS);
         }
+    }
+    else if (cs->pub.state == CONN_STATE_SUSPENDED) {
+        apr_atomic_inc32(&suspended_count);
     }
     /*
      * Prevent this connection from writing to our connection state after it
@@ -1459,11 +1486,14 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                 last_log = now;
                 apr_thread_mutex_lock(timeout_mutex);
                 ap_log_error(APLOG_MARK, APLOG_TRACE6, 0, ap_server_conf,
-                             "connections: %d (write-completion: %d "
-                             "keep-alive: %d lingering: %d)",
-                             connection_count, write_completion_q.count,
+                             "connections: %u (clogged: %u write-completion: %d "
+                             "keep-alive: %d lingering: %d suspended: %u)",
+                             apr_atomic_read32(&connection_count),
+                             apr_atomic_read32(&clogged_count),
+                             write_completion_q.count,
                              keepalive_q.count,
-                             linger_q.count + short_linger_q.count);
+                             apr_atomic_read32(&lingering_count),
+                             apr_atomic_read32(&suspended_count));
                 apr_thread_mutex_unlock(timeout_mutex);
             }
         }
@@ -1732,12 +1762,12 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
 
             ps = ap_get_scoreboard_process(process_slot);
             ps->write_completion = write_completion_q.count;
-            ps->lingering_close = linger_q.count + short_linger_q.count;
             ps->keep_alive = keepalive_q.count;
             apr_thread_mutex_unlock(timeout_mutex);
 
             ps->connections = apr_atomic_read32(&connection_count);
-            /* XXX: should count CONN_STATE_SUSPENDED and set ps->suspended */
+            ps->suspended = apr_atomic_read32(&suspended_count);
+            ps->lingering_close = apr_atomic_read32(&lingering_count);
         }
         if (listeners_disabled && !workers_were_busy &&
             (int)apr_atomic_read32(&connection_count) <
