@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1353830 -->
+<!-- English Revision : 1353830 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -210,7 +210,7 @@ SSLVerifyClient      require
     Require              valid-user
 &lt;/Directory&gt;
     </highlight>
-
+    
 
     <p>Le mot de passe utilis&eacute; dans cet exemple correspond &agrave; la cha&icirc;ne de
     caract&egrave;res "password" chiffr&eacute;e en DES. Voir la documentation de la
@@ -282,21 +282,21 @@ SSLCACertificateFile conf/ssl.crt/company-ca.crt
     SSLVerifyDepth       1
     SSLOptions           +FakeBasicAuth +StrictRequire
     SSLRequire           %{SSL_CIPHER_USEKEYSIZE} &gt;= 128
-
+    
     #   ON oblige les clients venant d'Internet &agrave; utiliser HTTPS
     RewriteEngine        on
     RewriteCond          %{REMOTE_ADDR} !^192\.168\.1\.[0-9]+$
     RewriteCond          %{HTTPS} !=on
     RewriteRule          . - [F]
-
+    
     #   On permet l'acc&egrave;s soit sur les crit&egrave;res r&eacute;seaux, soit par authentification Basique
     Satisfy              any
-
+    
     #   Contr&ocirc;le d'acc&egrave;s r&eacute;seau
     Order                deny,allow
     Deny                 from all
     Allow                192.168.1.0/24
-
+    
     #   Configuration de l'authentification HTTP Basique
     AuthType             basic
     AuthName             "Protected Intranet Area"
