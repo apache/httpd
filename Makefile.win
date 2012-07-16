@@ -925,10 +925,10 @@ BEGIN {
 <<
 	copy << "$(INSTDIR)\OPENSSL-NEWS.txt" <.y
 
- Apache HTTP Server 2.3 Limited OpenSSL Distribution
+ Apache HTTP Server 2.5 Limited OpenSSL Distribution
 
  This binary distribution includes the minimal components of OpenSSL required
- to support mod_ssl for Apache HTTP Server version 2.3 (details are listed 
+ to support mod_ssl for Apache HTTP Server version 2.5 (details are listed 
  in OPENSSL-README.txt.)  For the complete list of CHANGES to this and later 
  versions of OpenSSL, please refer to the definative source,
  <http://www.openssl.org/news/changelog.html>, or see the CHANGES file in the
@@ -944,7 +944,7 @@ BEGIN {
 	    + srclib\openssl\NEWS "$(INSTDIR)\OPENSSL-NEWS.txt"
 	copy << "$(INSTDIR)\OPENSSL-README.txt" <.y
 
- Apache HTTP Server 2.3 Limited OpenSSL Distribution
+ Apache HTTP Server 2.5 Limited OpenSSL Distribution
 
  This binary installation of OpenSSL is a limited distribution of the
  files derived from the OpenSSL project:
@@ -958,7 +958,7 @@ BEGIN {
    bin\openssl.exe
 
  These are the minimal libraries and tools required to use mod_ssl as 
- distributed with Apache HTTP Server version 2.3.  No library link files, 
+ distributed with Apache HTTP Server version 2.5.  No library link files, 
  headers or sources are distributed with this binary distribution.  Please 
  refer to the <http://www.openssl.org/> site for complete source or binary 
  distributions.
