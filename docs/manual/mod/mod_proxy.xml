@@ -841,7 +841,9 @@ ProxyPass /mirror/foo http://backend.example.com
     by configuration or MPM design.</p>
 
     <example><title>Example</title>
+        <highlight language="config">
         ProxyPass /example http://backend.example.com max=20 ttl=120 retry=300
+        </highlight>
     </example>
 
     <table border="2"><tr><th>BalancerMember parameters</th></tr></table>
