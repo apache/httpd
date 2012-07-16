@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_rewrite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_rewrite.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ce module fournit un moteur de réécriture à base de
 règles permettant de réécrire les URLs des requêtes
 à la volée</td></tr>
@@ -961,6 +959,36 @@ la version version 2.1</td></tr>
       règles de réécriture qui correspondent à un répertoire sans slash
       final au sein de fichiers .htaccess. Elle est disponible à
       partir de la version 2.4.0 du serveur HTTP Apache.</p>
+      </dd>
+
+      <dt><code>AllowAnyURI</code></dt>
+      <dd>
+
+      <p>A partir de la version 2.2.22 de httpd, lorsqu'une directive <code class="directive"><a href="#rewriterule">RewriteRule</a></code> se situe dans un
+      contexte de <code>serveur virtuel</code> ou de serveur principal,
+      <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> ne traitera les règles de réécriture
+      que si l'URI de la requête respecte la syntaxe d'un <a href="./directive-dict.html#Syntax">chemin URL</a>. Ceci permet
+      d'éviter certains problèmes de sécurité où des règles
+      particulières pourraient permettre  des développements de modèles
+      inattendus (voir <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-3368">CVE-2011-3368</a>
+      et <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-4317">CVE-2011-4317</a>).
+      Pour s'affranchir de la restriction relative à la syntaxe des chemins URL, on peut
+      utiliser l'option <code>AllowAnyURI</code>, afin de permettre à
+      <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> d'appliquer le jeu de règles à toute
+      chaîne de requête URI, sans vérifier si cette dernière respecte la
+      grammaire des chemins URL définie dans la spécification HTTP.</p>
+
+      <div class="warning">
+      <h3>Avertissement à propos de la sécurité</h3> 
+
+      <p>L'utilisation de cette option rendra le serveur vulnérable à
+      certains problèmes de sécurité si les règles de réécritures
+      concernées n'ont pas été rédigées avec soin. Il est par conséquent
+      <strong>fortement recommandé</strong> de ne pas utiliser cette
+      option. En particulier, prêtez attention aux chaînes en entrée contenant le
+      caractère '<code>@</code>', qui peuvent modifier l'interprétation
+      de l'URI réécrite, comme indiqué dans les liens ci-dessus.</p>
+      </div>
       </dd>
 
       </dl>

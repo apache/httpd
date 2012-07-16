@@ -222,7 +222,7 @@ SSLVerifyClient      require
 &lt;/Directory&gt;
     </pre>
 
-
+    
 
     <p>Le mot de passe utilisé dans cet exemple correspond à la chaîne de
     caractères "password" chiffrée en DES. Voir la documentation de la
@@ -293,21 +293,21 @@ SSLCACertificateFile conf/ssl.crt/company-ca.crt
     SSLVerifyDepth       1
     SSLOptions           +FakeBasicAuth +StrictRequire
     SSLRequire           %{SSL_CIPHER_USEKEYSIZE} &gt;= 128
-
+    
     #   ON oblige les clients venant d'Internet à utiliser HTTPS
     RewriteEngine        on
     RewriteCond          %{REMOTE_ADDR} !^192\.168\.1\.[0-9]+$
     RewriteCond          %{HTTPS} !=on
     RewriteRule          . - [F]
-
+    
     #   On permet l'accès soit sur les critères réseaux, soit par authentification Basique
     Satisfy              any
-
+    
     #   Contrôle d'accès réseau
     Order                deny,allow
     Deny                 from all
     Allow                192.168.1.0/24
-
+    
     #   Configuration de l'authentification HTTP Basique
     AuthType             basic
     AuthName             "Protected Intranet Area"
