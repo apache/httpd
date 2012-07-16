@@ -121,7 +121,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      at SSL level.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1359057
      2.4.x patch: trunk patch works (ex. CHANGES)
-     +1: sf, rjung
+     +1: sf, rjung, jorton
 
    * core: Always log if LimitRequestFieldSize triggers
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352911
@@ -174,7 +174,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?rev=1361791&view=rev
                   http://svn.apache.org/viewvc?rev=1362020&view=rev
      2.4.x patch: http://people.apache.org/~rjung/patches/httpd-2_4-status-codes-iana.patch
-     +1: rjung
+     +1: rjung, jorton, 
 
 
 PATCHES/ISSUES THAT ARE STALLED
