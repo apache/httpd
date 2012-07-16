@@ -140,7 +140,16 @@
   <p>The <code class="directive">ProxyExpressDBMType</code> directive
     controls the DBM type expected by the module. The default
     is the default DBM type created with <code>
-    <a href="../programs/httxt2dbm.html">httxt2dbm</a></code></p>
+    <a href="../programs/httxt2dbm.html">httxt2dbm</a></code>.</p>
+    <p>Possible values are (not all may be available at run time):</p>
+<table class="bordered"><tr class="header"><th>Value</th><th>Description</th></tr>
+<tr><td><code>db</code></td><td> Berkeley DB files</td></tr>
+<tr class="odd"><td><code>gdbm</code></td><td> GDBM files</td></tr>
+<tr><td><code>ndbm</code></td><td> NDBM files</td></tr>
+<tr class="odd"><td><code>sdbm</code></td><td> SDBM files (always available)</td></tr>
+<tr><td><code>default</code></td><td> default DBM type</td></tr>
+</table>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
