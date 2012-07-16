@@ -744,7 +744,6 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
             s = s->next;
             continue;
         }
-
         if (conf->balancers->nelts) {
             conf->max_balancers = conf->balancers->nelts + conf->bgrowth;
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01178) "Doing balancers create: %d, %d (%d)",
