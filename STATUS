@@ -176,6 +176,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~rjung/patches/httpd-2_4-status-codes-iana.patch
      +1: rjung, jorton, 
 
+   * mod_ssl: fix OCSP EOL handling
+     trunk patch: http://svn.apache.org/viewvc?rev=1358061&view=rev
+     2.4.x patch: trunk patch works
+     +1: jorton,
+   
+   * mod_ext_filter: fix error log spam with input filters
+     trunk patch: http://svn.apache.org/viewvc?rev=1357685&view=rev
+     2.4.x patch: trunk patch works
+     +1: jorton, 
 
 PATCHES/ISSUES THAT ARE STALLED
 
