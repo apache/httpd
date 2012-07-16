@@ -164,7 +164,8 @@ of consuming threads only for connections with active processing</td></tr>
 
     <p>This directive can be used to fine-tune the per-process connection
     limit. A process will only accept new connections if the current number of
-    connections is lower than:</p>
+    connections (not counting connections in the "closing" state) is lower
+    than:</p>
 
     <p class="indent"><strong>
         <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> +

@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/ssl/ssl_howto.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/ssl/ssl_howto.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
 <p>Ce document doit vous permettre de démarrer et de faire fonctionner
@@ -208,11 +206,12 @@ l'accès au reste du serveur à tous les clients ?</a></h3>
 
     <pre class="prettyprint lang-config">
 SSLVerifyClient      none
+SSLCACertificateFile conf/ssl.crt/ca.crt
+SSLCACertificatePath conf/ssl.crt
+
 &lt;Directory /usr/local/apache2/htdocs/secure/area&gt;
 SSLVerifyClient      require
     SSLVerifyDepth       5
-    SSLCACertificateFile conf/ssl.crt/ca.crt
-    SSLCACertificatePath conf/ssl.crt
     SSLOptions           +FakeBasicAuth
     SSLRequireSSL
     AuthName             "Snake Oil Authentication"
@@ -242,11 +241,12 @@ SSLVerifyClient      require
 
     <pre class="prettyprint lang-config">
 SSLVerifyClient      none
+SSLCACertificateFile conf/ssl.crt/ca.crt
+SSLCACertificatePath conf/ssl.crt
+
 &lt;Directory /usr/local/apache2/htdocs/secure/area&gt;
   SSLVerifyClient      require
   SSLVerifyDepth       5
-  SSLCACertificateFile conf/ssl.crt/ca.crt
-  SSLCACertificatePath conf/ssl.crt
   SSLOptions           +FakeBasicAuth
   SSLRequireSSL
   SSLRequire       %{SSL_CLIENT_S_DN_O}  eq "Snake Oil, Ltd." \
