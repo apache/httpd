@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_lua.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_lua.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournit des points d'entrée Lua dans différentes parties du
 traitement des requêtes httpd</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
@@ -132,7 +130,7 @@ le style de CGI. Une fonction de gestionnaire se présente comme suit :</p>
 
 
 <pre class="prettyprint lang-lua">
-<strong>example.lua</strong>
+<strong>example.lua</strong><br />
 -- exemple de gestionnaire
 
 require "string"
@@ -198,7 +196,7 @@ cas où la requête provient de l'adresse IP spécifiée, ou si
 l'utilisateur authentifié correspond au second argument :</p>
 
 <pre class="prettyprint lang-lua">
-<strong>authz_provider.lua</strong>
+<strong>authz_provider.lua</strong><br />
 
 require 'apache2'
 
@@ -246,8 +244,9 @@ code d'état HTTP ou des valeurs OK, DONE, ou DECLINED,
 que vous pouvez écrire dans lua sous la forme <code>apache2.OK</code>,
 <code>apache2.DONE</code>, ou <code>apache2.DECLINED</code>.</p>
 
+
 <pre class="prettyprint lang-lua">
-<strong>translate_name.lua</strong>
+<strong>translate_name.lua</strong><br />
 -- exemple d'accroche qui réécrit un URI en chemin du système de
 fichiers.
 
@@ -264,8 +263,9 @@ end
 </pre>
 
 
+
 <pre class="prettyprint lang-lua">
-<strong>translate_name2.lua</strong>
+<strong>translate_name2.lua</strong><br />
 --[[ exemple d'accroche qui réécrit un URI vers un autre URI. Il renvoie
 	un apache2.DECLINED pour permettre à un autre interpréteur d'URL de
 	travailler sur la substitution, y compris l'accroche translate_name
@@ -469,9 +469,17 @@ end
 
 
         <pre class="prettyprint lang-lua">
-        r:parseargs() -- renvoie une table lua contenant la chaîne
+        r:parseargs() -- renvoie une table Lua contenant la chaîne
 	d'arguments de la requête
         </pre>
+
+
+
+        <pre class="prettyprint lang-lua">
+        r:parsebody() -- interprète toutes données POST de la requête et
+	les renvoie sous forme de table Lua
+        </pre>
+
 
 
         <pre class="prettyprint lang-lua">
