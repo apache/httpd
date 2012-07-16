@@ -88,6 +88,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * ldap: Treat LDAP_UNAVAILABLE as a transient error with non-MS
+           LDAP SDKs; seen with OpenLDAP against Novell eDirectory.
+     trunk patch: http://svn.apache.org/viewvc?rev=1348036&view=rev
+     2.4.x patch: trunk patch works
+     +1: jorton, sf, rjung
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -100,12 +107,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      sf says: Needs r1345599, too.
               And wrowe's comment about the 2.2 patch is also valid for 2.4:
               http://svn.apache.org/viewvc?view=revision&revision=1354823
-
-   * ldap: Treat LDAP_UNAVAILABLE as a transient error with non-MS
-           LDAP SDKs; seen with OpenLDAP against Novell eDirectory.
-     trunk patch: http://svn.apache.org/viewvc?rev=1348036&view=rev
-     2.4.x patch: trunk patch works
-     +1: jorton, sf
 
    * mod_ssl: Add RFC 5878 support. This allows support of mechansisms
               such as Certificate Transparency. Note that new
@@ -125,12 +126,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      at SSL level.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1359057
      2.4.x patch: trunk patch works (ex. CHANGES)
-     +1: sf
+     +1: sf, rjung
 
    * core: Always log if LimitRequestFieldSize triggers
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352911
      2.4.x patch: trunk patch works
-     +1: sf
+     +1: sf, rjung
 
    * mod_authz_core: Allow to use %{REMOTE_USER} in Require expr. Improve
      logging.
@@ -139,30 +140,30 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1351072
                   http://svn.apache.org/viewvc?view=revision&revision=1351074
      2.4.x patch: trunk patch works (ex. CHANGES)
-     +1: sf
+     +1: sf, rjung
 
    * mod_so: Optionally allow LoadModule+LoadFile to use the normal search path.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1332378
      2.4.x patch: trunk patch works (ex. CHANGES)
-     +1: sf
+     +1: sf, rjung
 
    * mpm_event: Fix slots staying in "L" state in the scoreboard
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1294349
      2.4.x patch: trunk patch works (needs CHANGES entry)
-     +1: sf
+     +1: sf, rjung
 
    * mpm_event: Don't call ap_start_lingering_close from the listener thread
      because it may block
      PR: 52229
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1294356
      2.4.x patch: trunk patch works (needs CHANGES entry)
-     +1: sf
+     +1: sf, rjung
 
    * mpm_event: Fix MaxConnectionsPerChild
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1343085
                   http://svn.apache.org/viewvc?view=revision&revision=1343087
      2.4.x patch: trunk patch works (ex. CHANGES)
-     +1: sf, humbedooh
+     +1: sf, humbedooh, rjung
 
    * mod_lua: - Add a parsebody function for retrieving POST data. PR: 53064
               - Make mod_lua compatible with Lua 5.2
@@ -171,8 +172,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=revision&revision=1361298
      2.4.x patch:
        http://www.humbedooh.com/mods/mod_lua.patch (+CHANGES)
-     +1: humbedooh
+     +1: humbedooh, rjung
 
+   * core: Add missing HTTP status codes registered with IANA.
+     trunk patch: http://svn.apache.org/viewvc?rev=1361784&view=rev
+                  http://svn.apache.org/viewvc?rev=1361791&view=rev
+                  http://svn.apache.org/viewvc?rev=1362020&view=rev
+     2.4.x patch: http://people.apache.org/~rjung/patches/httpd-2_4-status-codes-iana.patch
+     +1: rjung
 
 
 PATCHES/ISSUES THAT ARE STALLED
