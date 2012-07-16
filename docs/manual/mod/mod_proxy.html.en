@@ -1007,9 +1007,10 @@ ProxyPass /mirror/foo http://backend.example.com
     among all child processes, except when only one child process is allowed
     by configuration or MPM design.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
         ProxyPass /example http://backend.example.com max=20 ttl=120 retry=300
-    </code></p></div>
+        </pre>
+</div>
 
     <table class="bordered"><tr><th>BalancerMember parameters</th></tr></table>
     <table>
