@@ -88,11 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * ldap: Treat LDAP_UNAVAILABLE as a transient error with non-MS
-           LDAP SDKs; seen with OpenLDAP against Novell eDirectory.
-     trunk patch: http://svn.apache.org/viewvc?rev=1348036&view=rev
-     2.4.x patch: trunk patch works
-     +1: jorton, sf, rjung
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
