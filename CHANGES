@@ -8,6 +8,9 @@ Changes with Apache 2.4.3
      possible XSS for a site where untrusted users can upload files to
      a location with MultiViews enabled. [Niels Heinen <heinenn google.com>]
 
+  *) mod_ldap: Treat the "server unavailable" condition as a transient
+     error with all LDAP SDKs.  [Filip Valder <filip.valder vsb.cz>]
+
   *) core: Fix spurious "not allowed here" error returned when the Options 
      directive is used in .htaccess and "AllowOverride Options" (with no 
      specific options restricted) is configured.  PR 53444. [Eric Covener]
