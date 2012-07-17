@@ -218,7 +218,7 @@ SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
   decisions on arbitrary expressions.</p>
 
     <highlight language="config">
-        Require expr %{TIME_HOUR} &gt;= 9 &amp;&amp; %{TIME_HOUR} &lt;= 17 
+        Require expr %{TIME_HOUR} -ge 9 &amp;&amp; %{TIME_HOUR} -le 17 
     </highlight>
 
   <p>The syntax is described in the <a href="../expr.html">ap_expr</a>
