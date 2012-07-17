@@ -267,7 +267,7 @@ Allow from example.org
 	configuration de la directive <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> au niveau répertoire.
         </li>
 
-        <li><code class="module"><a href="./mod/mod_ext-filter.html">mod_ext-filter</a></code> : l'option
+        <li><code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code> : l'option
 	<code>DebugLevel</code> a été supprimée en faveur d'une
 	configuration de la directive <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> au niveau répertoire.
         </li>
