@@ -1881,11 +1881,11 @@ both parsed and executed each time the .htaccess file is encountered during
 request processing.</p>
 
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
-SSLRequire (    %{SSL_CIPHER} !~ m/^(EXP|NULL)-/                \
-            and %{SSL_CLIENT_S_DN_O} eq "Snake Oil, Ltd."        \
-            and %{SSL_CLIENT_S_DN_OU} in {"Staff", "CA", "Dev"}  \
-            and %{TIME_WDAY} &gt;= 1 and %{TIME_WDAY} &lt;= 5          \
-            and %{TIME_HOUR} &gt;= 8 and %{TIME_HOUR} &lt;= 20       ) \
+SSLRequire (    %{SSL_CIPHER} !~ m/^(EXP|NULL)-/                   \
+            and %{SSL_CLIENT_S_DN_O} eq "Snake Oil, Ltd."          \
+            and %{SSL_CLIENT_S_DN_OU} in {"Staff", "CA", "Dev"}    \
+            and %{TIME_WDAY} -ge 1 and %{TIME_WDAY} -le 5          \
+            and %{TIME_HOUR} -ge 8 and %{TIME_HOUR} -le 20       ) \
            or %{REMOTE_ADDR} =~ m/^192\.76\.162\.[0-9]+$/
 </pre>
 </div>
