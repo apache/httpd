@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Log value of Status header line in script responses rather
+     than the fixed header name.  [Chris Darroch]
+
   *) mpm_event: Don't count connections in lingering close state when
      calculating how many additional connections may be accepted.
      [Stefan Fritsch]
