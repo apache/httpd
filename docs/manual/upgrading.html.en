@@ -251,7 +251,7 @@ Allow from example.org
         option has been removed in favour of per-module <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> configuration.
         </li>
 
-        <li><code class="module"><a href="./mod/mod_ext-filter.html">mod_ext-filter</a></code>: The <code>DebugLevel</code>
+        <li><code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code>: The <code>DebugLevel</code>
         option has been removed in favour of per-module <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> configuration.
         </li>
 

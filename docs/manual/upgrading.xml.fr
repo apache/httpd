@@ -294,7 +294,7 @@ Allow from example.org
 	module="core">LogLevel</directive> au niveau r&eacute;pertoire.
         </li>
 
-        <li><module>mod_ext-filter</module> : l'option
+        <li><module>mod_ext_filter</module> : l'option
 	<code>DebugLevel</code> a &eacute;t&eacute; supprim&eacute;e en faveur d'une
 	configuration de la directive <directive
 	module="core">LogLevel</directive> au niveau r&eacute;pertoire.
