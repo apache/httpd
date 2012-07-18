@@ -189,7 +189,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * core: log value of Status line in script responses instead of header name
      trunk patch: http://svn.apache.org/viewvc?rev=1362538&view=rev
      2.4.x patch: trunk patch works
-     +1: chrisd, 
+     +1: chrisd, rpluem
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
