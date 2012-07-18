@@ -261,7 +261,7 @@ module="mod_setenvif">SetEnvIf</directive>. This technique is offered as
 an example, not as a recommendation.</p>
 </section>
 
-<section id="flag_end"><title>END</title> 
+<section id="flag_end"><title>END</title>
 <p>Using the [END] flag terminates not only the current round of rewrite
 processing (like [L]) but also prevents any subsequent rewrite
 processing from occurring in per-directory (htaccess) context.</p>
@@ -489,6 +489,15 @@ and hostname part of the URL is either fixed, or does not allow the
 client undue influence.</p>
 </note>
 
+<note type="warning">
+<title>Performance warning</title>
+<p>Using this flag triggers the use of <module>mod_proxy</module>, without handling of persistent connections. This
+means the performance of your proxy will be better if you set it up with <directive>ProxyPass</directive> or
+<directive>ProxyPassMatch</directive></p>
+<p>This is because this flag triggers the use of the default worker, which does not handle connection pooling.</p>
+<p>Avoid using this flag and prefer those directives, whenever you can.</p>
+</note>
+
 <p>Note: <module>mod_proxy</module> must be enabled in order
 to use this flag.</p>
 
@@ -597,7 +606,7 @@ will be used to generate the URL sent with the redirect.
 <em>Any</em> valid HTTP response  status code may be specified,
 using the syntax [R=305], with a 302 status code being used by
 default if none is specified. The status code specified need not
-necessarily be a redirect (3xx) status code. However, 
+necessarily be a redirect (3xx) status code. However,
 if a status code is outside the redirect range (300-399) then the
 substitution string is dropped entirely, and rewriting is stopped as if
 the <code>L</code> were used.</p>
@@ -617,11 +626,11 @@ URI in request' warnings.
 </section>
 
 <section id="flag_s"><title>S|skip</title>
-<p>The [S] flag is used to skip rules that you don't want to run. The 
-syntax of the skip flag is [S=<em>N</em>], where <em>N</em> signifies 
-the number of rules to skip. This can be thought of as a <code>goto</code> 
-statement in your rewrite ruleset. In the following example, we only want 
-to run the <directive module="mod_rewrite">RewriteRule</directive> if the 
+<p>The [S] flag is used to skip rules that you don't want to run. The
+syntax of the skip flag is [S=<em>N</em>], where <em>N</em> signifies
+the number of rules to skip. This can be thought of as a <code>goto</code>
+statement in your rewrite ruleset. In the following example, we only want
+to run the <directive module="mod_rewrite">RewriteRule</directive> if the
 requested URI doesn't correspond with an actual file.</p>
 
 <highlight language="config">
