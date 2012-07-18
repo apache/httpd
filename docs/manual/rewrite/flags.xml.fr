@@ -531,9 +531,9 @@ local.</p>
 
 <note type="warning">
       <title>Avertissement au sujet des performances</title>
-      <p>Utiliser ce drapeau fait intervenir <module>mod_proxy</module></p> sans la gestion des connexions
+      <p>Utiliser ce drapeau fait intervenir <module>mod_proxy</module> sans la gestion des connexions
       persistantes, ce qui signifie que vous obtiendrez des performances meilleurs si vous utilisez
-      <directive module="mod_proxy">ProxyPass</directive> ou <directive module="mod_proxy">ProxyPassMatch</directive>.
+      <directive module="mod_proxy">ProxyPass</directive> ou <directive module="mod_proxy">ProxyPassMatch</directive>.</p>
       <p>Ceci est du au fait que ce drapeau induit l'utilisation du worker par d&eacute;faut, qui
       ne g&egrave;re pas la mise en commun des connexions.</p>
       <p>Partout o&ugrave; cela est possible, pr&eacute;f&eacute;rez l'utilisation de ces directives.</p>

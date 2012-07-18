@@ -544,9 +544,9 @@ local.</p>
 
 <div class="warning">
       <h3>Avertissement au sujet des performances</h3>
-      <p>Utiliser ce drapeau fait intervenir <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></p> sans la gestion des connexions
+      <p>Utiliser ce drapeau fait intervenir <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> sans la gestion des connexions
       persistantes, ce qui signifie que vous obtiendrez des performances meilleurs si vous utilisez
-      <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> ou <code class="directive"><a href="../mod/mod_proxy.html#proxypassmatch">ProxyPassMatch</a></code>.
+      <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> ou <code class="directive"><a href="../mod/mod_proxy.html#proxypassmatch">ProxyPassMatch</a></code>.</p>
       <p>Ceci est du au fait que ce drapeau induit l'utilisation du worker par défaut, qui
       ne gère pas la mise en commun des connexions.</p>
       <p>Partout où cela est possible, préférez l'utilisation de ces directives.</p>
