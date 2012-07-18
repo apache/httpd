@@ -351,6 +351,7 @@ case $host in
       ;;
   *mingw32*)
       APR_ADDTO(INTERNAL_CPPFLAGS, [-DAP_DECLARE_EXPORT])
+      APR_ADDTO(INTERNAL_CPPFLAGS, [-DAPREQ_DECLARE_EXPORT])
       APR_SETIFNULL(ac_cv_func_times, [no])
       APR_SETIFNULL(ac_cv_func_getpwnam, [no])
       APR_SETIFNULL(ac_cv_func_getgrnam, [no])
