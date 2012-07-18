@@ -492,8 +492,8 @@ client undue influence.</p>
 <note type="warning">
 <title>Performance warning</title>
 <p>Using this flag triggers the use of <module>mod_proxy</module>, without handling of persistent connections. This
-means the performance of your proxy will be better if you set it up with <directive>ProxyPass</directive> or
-<directive>ProxyPassMatch</directive></p>
+means the performance of your proxy will be better if you set it up with <directive module="mod_proxy">ProxyPass</directive> or
+<directive module="mod_proxy">ProxyPassMatch</directive></p>
 <p>This is because this flag triggers the use of the default worker, which does not handle connection pooling.</p>
 <p>Avoid using this flag and prefer those directives, whenever you can.</p>
 </note>
