@@ -678,7 +678,9 @@ int main(int argc, const char * const argv[])
         return 1;
     }
 
+#ifdef SIGPIPE
     apr_signal_block(SIGPIPE);
+#endif
 
     file = apr_pcalloc(pool, sizeof(file_rec));
     apr_file_open_stderr(&file->file_err, pool);
