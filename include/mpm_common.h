@@ -89,7 +89,7 @@ extern "C" {
 typedef void ap_reclaim_callback_fn_t(int childnum, pid_t pid,
                                       ap_generation_t gen);
 
-#ifndef NETWARE
+#if (!defined(WIN32) && !defined(NETWARE)) || defined(DOXYGEN)
 /**
  * Make sure all child processes that have been spawned by the parent process
  * have died.  This includes process registered as "other_children".
@@ -164,7 +164,8 @@ AP_DECLARE(int) ap_process_child_status(apr_proc_t *pid, apr_exit_why_e why, int
 
 AP_DECLARE(apr_status_t) ap_fatal_signal_setup(server_rec *s, apr_pool_t *in_pconf);
 AP_DECLARE(apr_status_t) ap_fatal_signal_child_setup(server_rec *s);
-#endif /* !NETWARE */
+
+#endif /* (!WIN32 && !NETWARE) || DOXYGEN */
 
 /**
  * Pool cleanup for end-generation hook implementation
