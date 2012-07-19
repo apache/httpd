@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mpm_prefork: Reduce spawn rate after a child process exits due to
+     unexpected poll or accept failure.  [Jeff Trawick]
+
   *) core: Log value of Status header line in script responses rather
      than the fixed header name.  [Chris Darroch]
 
