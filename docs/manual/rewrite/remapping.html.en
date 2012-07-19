@@ -76,7 +76,7 @@ configuration.</div>
 
 <div class="example"><p><code>
 RewriteEngine  on<br />
-RewriteRule    ^<strong>/old</strong>\.html$  <strong>/new</strong>.html [PT]
+RewriteRule    ^<strong>/foo</strong>\.html$  <strong>/bar</strong>.html [PT]
 </code></p></div>
     </dd>
   </dl>
