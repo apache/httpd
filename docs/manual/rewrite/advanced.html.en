@@ -25,8 +25,8 @@
 </div>
 
 
-<p>This document supplements the <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 
-<a href="../mod/mod_rewrite.html">reference documentation</a>. It provides 
+<p>This document supplements the <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+<a href="../mod/mod_rewrite.html">reference documentation</a>. It provides
 a few advanced techniques and tricks using mod_rewrite.</p>
 
 <div class="warning">Note that many of these examples won't work unchanged in your
@@ -54,8 +54,8 @@ configuration.</div>
     <dt>Description:</dt>
 
     <dd>
-      <p>A common technique for distributing the burden of 
-      server load or storage space is called "sharding". 
+      <p>A common technique for distributing the burden of
+      server load or storage space is called "sharding".
       When using this method, a front-end server will use the
       url to consistently "shard" users or objects to separate
       backend servers.</p>
@@ -101,6 +101,9 @@ RewriteRule   ^/u/<strong>([^/]+)</strong>/?(.*)   http://<strong>${users-to-hos
     </dd>
   </dl>
 
+  <p>See the <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
+  documentation for more discussion of the syntax of this directive.</p>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="on-the-fly-content" id="on-the-fly-content">On-the-fly Content-Regeneration</a></h2>
@@ -123,22 +126,25 @@ RewriteRule   ^/u/<strong>([^/]+)</strong>/?(.*)   http://<strong>${users-to-hos
     <dd>
       This is done via the following ruleset:
 
-<div class="example"><p><code>
-# This example is valid in per-directory context only<br />
-RewriteCond %{REQUEST_FILENAME}   <strong>!-s</strong><br />
-RewriteRule ^page\.<strong>html</strong>$          page.<strong>cgi</strong>   [T=application/x-httpd-cgi,L]
-</code></p></div>
+<pre class="prettyprint lang-config">
+# This example is valid in per-directory context only
+RewriteCond %{REQUEST_URI}   !-U
+RewriteRule ^(.+)\.html$          /regenerate_page.cgi   [PT,L]
+</pre>
 
-      <p>Here a request for <code>page.html</code> leads to an
-      internal run of a corresponding <code>page.cgi</code> if
-      <code>page.html</code> is missing or has filesize
-      null. The trick here is that <code>page.cgi</code> is a
-      CGI script which (additionally to its <code>STDOUT</code>)
-      writes its output to the file <code>page.html</code>.
-      Once it has completed, the server sends out
-      <code>page.html</code>. When the webmaster wants to force
-      a refresh of the contents, he just removes
-      <code>page.html</code> (typically from <code>cron</code>).</p>
+
+    <p>The <code>-U</code> operator determines whether the test string
+    (in this case, <code>REQUEST_URI</code>) is a valid URL. It does
+    this via a subrequest. In the event that this subrequest fails -
+    that is, the requested resource doesn't exist - this rule invokes
+    the CGI program <code>/regenerate_page.cgi</code>, which generates
+    the requested resource and saves it into the document directory, so
+    that the next time it is requested, a static copy can be served.</p>
+
+    <p>In this way, documents that are infrequently updated can be served in
+    static form. if documents need to be refreshed, they can be deleted
+    from the document directory, and they will then be regenerated the
+    next time they are requested.</p>
     </dd>
   </dl>
 
@@ -245,61 +251,61 @@ RewriteRule   ^(/[uge]/[^/]+/?.*):refresh  /internal/cgi/apache/nph-refresh?f=$1
 $| = 1;
 
 #   split the QUERY_STRING variable
-@pairs = split(/&amp;/, $ENV{'QUERY_STRING'});
+@pairs = split( /&amp;/, $ENV{'QUERY_STRING'} );
 foreach $pair (@pairs) {
-($name, $value) = split(/=/, $pair);
-$name =~ tr/A-Z/a-z/;
-$name = 'QS_' . $name;
-$value =~ s/%([a-fA-F0-9][a-fA-F0-9])/pack("C", hex($1))/eg;
-eval "\$$name = \"$value\"";
+    ( $name, $value ) = split( /=/, $pair );
+    $name =~ tr/A-Z/a-z/;
+    $name = 'QS_' . $name;
+    $value =~ s/%([a-fA-F0-9][a-fA-F0-9])/pack("C", hex($1))/eg;
+    eval "\$$name = \"$value\"";
 }
-$QS_s = 1 if ($QS_s eq '');
-$QS_n = 3600 if ($QS_n eq '');
-if ($QS_f eq '') {
-print "HTTP/1.0 200 OK\n";
-print "Content-type: text/html\n\n";
+$QS_s = 1    if ( $QS_s eq '' );
+$QS_n = 3600 if ( $QS_n eq '' );
+if ( $QS_f eq '' ) {
+    print "HTTP/1.0 200 OK\n";
+    print "Content-type: text/html\n\n";
 print "&amp;lt;b&amp;gt;ERROR&amp;lt;/b&amp;gt;: No file given\n";
-exit(0);
+    exit(0);
 }
-if (! -f $QS_f) {
-print "HTTP/1.0 200 OK\n";
-print "Content-type: text/html\n\n";
+if ( !-f $QS_f ) {
+    print "HTTP/1.0 200 OK\n";
+    print "Content-type: text/html\n\n";
 print "&amp;lt;b&amp;gt;ERROR&amp;lt;/b&amp;gt;: File $QS_f not found\n";
-exit(0);
+    exit(0);
 }
 
 sub print_http_headers_multipart_begin {
-print "HTTP/1.0 200 OK\n";
-$bound = "ThisRandomString12345";
-print "Content-type: multipart/x-mixed-replace;boundary=$bound\n";
-&amp;print_http_headers_multipart_next;
+    print "HTTP/1.0 200 OK\n";
+    $bound = "ThisRandomString12345";
+    print "Content-type: multipart/x-mixed-replace;boundary=$bound\n";
+    &amp;print_http_headers_multipart_next;
 }
 
 sub print_http_headers_multipart_next {
-print "\n--$bound\n";
+    print "\n--$bound\n";
 }
 
 sub print_http_headers_multipart_end {
-print "\n--$bound--\n";
+    print "\n--$bound--\n";
 }
 
 sub displayhtml {
-local($buffer) = @_;
-$len = length($buffer);
-print "Content-type: text/html\n";
-print "Content-length: $len\n\n";
-print $buffer;
+    local ($buffer) = @_;
+    $len = length($buffer);
+    print "Content-type: text/html\n";
+    print "Content-length: $len\n\n";
+    print $buffer;
 }
 
 sub readfile {
-local($file) = @_;
-local(*FP, $size, $buffer, $bytes);
-($x, $x, $x, $x, $x, $x, $x, $size) = stat($file);
-$size = sprintf("%d", $size);
+    local ($file) = @_;
+    local ( *FP, $size, $buffer, $bytes );
+    ( $x, $x, $x, $x, $x, $x, $x, $size ) = stat($file);
+    $size = sprintf( "%d", $size );
 open(FP, "&amp;lt;$file");
-$bytes = sysread(FP, $buffer, $size);
-close(FP);
-return $buffer;
+    $bytes = sysread( FP, $buffer, $size );
+    close(FP);
+    return $buffer;
 }
 
 $buffer = &amp;readfile($QS_f);
@@ -307,30 +313,30 @@ $buffer = &amp;readfile($QS_f);
 &amp;displayhtml($buffer);
 
 sub mystat {
-local($file) = $_[0];
-local($time);
+    local ($file) = $_[0];
+    local ($time);
 
-($x, $x, $x, $x, $x, $x, $x, $x, $x, $mtime) = stat($file);
-return $mtime;
+    ( $x, $x, $x, $x, $x, $x, $x, $x, $x, $mtime ) = stat($file);
+    return $mtime;
 }
 
 $mtimeL = &amp;mystat($QS_f);
-$mtime = $mtime;
-for ($n = 0; $n &amp;lt; $QS_n; $n++) {
-while (1) {
-    $mtime = &amp;mystat($QS_f);
-    if ($mtime ne $mtimeL) {
-        $mtimeL = $mtime;
-        sleep(2);
-        $buffer = &amp;readfile($QS_f);
-        &amp;print_http_headers_multipart_next;
-        &amp;displayhtml($buffer);
-        sleep(5);
-        $mtimeL = &amp;mystat($QS_f);
-        last;
+$mtime  = $mtime;
+for ( $n = 0 ; $n &amp; lt ; $QS_n ; $n++ ) {
+    while (1) {
+        $mtime = &amp;mystat($QS_f);
+        if ( $mtime ne $mtimeL ) {
+            $mtimeL = $mtime;
+            sleep(2);
+            $buffer = &amp;readfile($QS_f);
+            &amp;print_http_headers_multipart_next;
+            &amp;displayhtml($buffer);
+            sleep(5);
+            $mtimeL = &amp;mystat($QS_f);
+            last;
+        }
+        sleep($QS_s);
     }
-    sleep($QS_s);
-}
 }
 
 &amp;print_http_headers_multipart_end;
@@ -399,7 +405,7 @@ RewriteRule   ^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)  /home/<strong>$2</stro
     </dd>
 
     <dt>Discussion:</dt>
-    <dd>This technique will of course also work with other 
+    <dd>This technique will of course also work with other
     special characters that mod_rewrite, by default, URL-encodes.</dd>
   </dl>
 

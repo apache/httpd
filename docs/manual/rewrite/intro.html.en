@@ -39,7 +39,7 @@ but this doc should help the beginner get their feet wet.
 <li><img alt="" src="../images/down.gif" /> <a href="#rewritecond">Rewrite Conditions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rewritemap">Rewrite maps</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#htaccess">.htaccess files</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="access.html">Controlling access</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="proxy.html">Proxying</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="advanced.html">Advanced techniques and tricks</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li></ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="access.html">Controlling access</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="proxy.html">Proxying</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="advanced.html">Advanced techniques</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li></ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="introduction" id="introduction">Introduction</a></h2>
@@ -103,7 +103,7 @@ well as write your own.</p>
 character</td><td><code>c.t</code> will match <code>cat</code>,
 <code>cot</code>, <code>cut</code>, etc.</td></tr>
 <tr><td><code>+</code></td><td>Repeats the previous match one or more
-times</td><td><code>a+</code> matches <code>a</code>, <code>aa</code>, 
+times</td><td><code>a+</code> matches <code>a</code>, <code>aa</code>,
 <code>aaa</code>, etc</td></tr>
 <tr><td><code>*</code></td><td>Repeats the previous match zero or more
 times.</td><td><code>a*</code> matches all the same things
@@ -118,7 +118,7 @@ of the string</td><td><code>^a</code> matches a string that begins with
 the string.</td><td><code>a$</code> matches a string that ends with
 <code>a</code>.</td></tr>
 <tr><td><code>( )</code></td><td>Groups several characters into a single
-unit, and captures a match for use in a backreference.</td><td><code>(ab)+</code> 
+unit, and captures a match for use in a backreference.</td><td><code>(ab)+</code>
 matches <code>ababab</code> - that is, the <code>+</code> applies to the group.
 For more on backreferences see <a href="#InternalBackRefs">below</a>.</td></tr>
 <tr><td><code>[ ]</code></td><td>A character class - matches one of the
@@ -141,14 +141,19 @@ the expression.</p>
       <em>CondPattern</em>, back-references are internally created
       which can be used with the strings <code>$N</code> and
       <code>%N</code> (see below). These are available for creating
-      the strings <em>Substitution</em> and <em>TestString</em>.
-      Figure 1 shows to which locations the back-references are
-      transferred for expansion as well as illustrating the flow of the
-      RewriteRule, RewriteCond matching.</p>
+      the strings <em>Substitution</em> and <em>TestString</em> as 
+      outlined in the following chapters. Figure 1 shows to which 
+      locations the back-references are transferred for expansion as 
+      well as illustrating the flow of the RewriteRule, RewriteCond 
+      matching. In the next chapters, we will be exploring how to use 
+      these back-references, so do not fret if it seems a bit alien 
+      to you at first.
+      </p>
 
 <p class="figure">
-      <img src="../images/rewrite_rule_flow.png" alt="Flow of RewriteRule and RewriteCond matching" /><br />
-      <dfn>Figure 1:</dfn> The back-reference flow through a rule.
+      <img src="../images/rewrite_backreferences.png" alt="Flow of RewriteRule and RewriteCond matching" /><br />
+      <dfn>Figure 1:</dfn> The back-reference flow through a rule.<br />
+      In this example, a request for <code>/test/1234</code> would be transformed into <code>/admin.foo?page=test&amp;id=1234&amp;host=admin.example.com</code>.
 </p>
 
 
@@ -163,10 +168,15 @@ of three arguments separated by spaces. The arguments are</p>
 <li><var>[flags]</var>: options affecting the rewritten request.</li>
 </ol>
 
-<p>The <var>Pattern</var> is always a <a href="#regex">regular
-expression</a> matched against the URL-Path of the incoming request
-(the part after the hostname but before any question mark indicating
-the beginning of a query string).</p>
+<p>The <var>Pattern</var> is a <a href="#regex">regular expression</a>. 
+It is initially (for the first rewrite rule or until a substitution occurs) 
+matched against the URL-path of the incoming request (the part after the 
+hostname but before any question mark indicating the beginning of a query 
+string) or, in per-directory context, against the request's path relative 
+to the directory for which the rule is defined. Once a substitution has 
+occured, the rules that follow are matched against the substituted
+value.
+</p>
 
 <p class="figure">
       <img src="../images/syntax_rewriterule.png" alt="Syntax of the RewriteRule directive" /><br />
