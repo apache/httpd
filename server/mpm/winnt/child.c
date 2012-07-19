@@ -45,7 +45,22 @@
 
 #ifdef __MINGW32__
 #include <mswsock.h>
-#endif
+
+#ifndef WSAID_ACCEPTEX
+#define WSAID_ACCEPTEX \
+  {0xb5367df1, 0xcbac, 0x11cf, {0x95, 0xca, 0x00, 0x80, 0x5f, 0x48, 0xa1, 0x92}}
+typedef BOOL (WINAPI *LPFN_ACCEPTEX)(SOCKET, SOCKET, PVOID, DWORD, DWORD, DWORD, LPDWORD, LPOVERLAPPED);
+#endif /* WSAID_ACCEPTEX */
+
+#ifndef WSAID_GETACCEPTEXSOCKADDRS
+#define WSAID_GETACCEPTEXSOCKADDRS \
+  {0xb5367df2, 0xcbac, 0x11cf, {0x95, 0xca, 0x00, 0x80, 0x5f, 0x48, 0xa1, 0x92}}
+typedef VOID (WINAPI *LPFN_GETACCEPTEXSOCKADDRS)(PVOID, DWORD, DWORD, DWORD,
+                                                 struct sockaddr **, LPINT,
+                                                 struct sockaddr **, LPINT);
+#endif /* WSAID_GETACCEPTEXSOCKADDRS */
+
+#endif /* __MINGW32__ */
 
 /*
  * The Windows MPM uses a queue of completion contexts that it passes
@@ -281,6 +296,10 @@ static unsigned int __stdcall winnt_accept(void *lr_)
     winnt_conn_ctx_t *context = NULL;
     DWORD BytesRead;
     SOCKET nlsd;
+    LPFN_ACCEPTEX lpfnAcceptEx = NULL;
+    LPFN_GETACCEPTEXSOCKADDRS lpfnGetAcceptExSockaddrs = NULL;
+    GUID GuidAcceptEx = WSAID_ACCEPTEX;
+    GUID GuidGetAcceptExSockaddrs = WSAID_GETACCEPTEXSOCKADDRS;
     core_server_config *core_sconf;
     const char *accf_name;
     int rv;
@@ -325,6 +344,24 @@ static unsigned int __stdcall winnt_accept(void *lr_)
 
     if (accf > 0) /* 'data' or 'connect' */
     {
+        if (WSAIoctl(nlsd, SIO_GET_EXTENSION_FUNCTION_POINTER,
+                     &GuidAcceptEx, sizeof GuidAcceptEx, 
+                     &lpfnAcceptEx, sizeof lpfnAcceptEx, 
+                     &BytesRead, NULL, NULL) == SOCKET_ERROR) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_netos_error(),
+                         ap_server_conf, APLOGNO(02322)
+                         "winnt_accept: failed to retrieve AcceptEx, try 'AcceptFilter none'");
+            return 1;
+        }
+        if (WSAIoctl(nlsd, SIO_GET_EXTENSION_FUNCTION_POINTER,
+                     &GuidGetAcceptExSockaddrs, sizeof GuidGetAcceptExSockaddrs,
+                     &lpfnGetAcceptExSockaddrs, sizeof lpfnGetAcceptExSockaddrs,
+                     &BytesRead, NULL, NULL) == SOCKET_ERROR) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_netos_error(),
+                         ap_server_conf, APLOGNO(02323)
+                         "winnt_accept: failed to retrieve GetAcceptExSockaddrs, try 'AcceptFilter none'");
+            return 1;
+        }
         /* first, high priority event is an already accepted connection */
         events[1] = exit_event;
         events[2] = max_requests_per_child_event;
@@ -422,9 +459,9 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
             /* AcceptEx on the completion context. The completion context will be
              * signaled when a connection is accepted.
              */
-            if (!AcceptEx(nlsd, context->accept_socket, buf, len,
-                          PADDED_ADDR_SIZE, PADDED_ADDR_SIZE, &BytesRead,
-                          &context->overlapped)) {
+            if (!lpfnAcceptEx(nlsd, context->accept_socket, buf, len,
+                              PADDED_ADDR_SIZE, PADDED_ADDR_SIZE, &BytesRead,
+                              &context->overlapped)) {
                 rv = apr_get_netos_error();
                 if ((rv == APR_FROM_OS_ERROR(WSAECONNRESET)) ||
                     (rv == APR_FROM_OS_ERROR(WSAEACCES))) {
@@ -541,9 +578,9 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
             /* Get the local & remote address
              * TODO; error check
              */
-            GetAcceptExSockaddrs(buf, len, PADDED_ADDR_SIZE, PADDED_ADDR_SIZE,
-                                 &context->sa_server, &context->sa_server_len,
-                                 &context->sa_client, &context->sa_client_len);
+            lpfnGetAcceptExSockaddrs(buf, len, PADDED_ADDR_SIZE, PADDED_ADDR_SIZE,
+                                     &context->sa_server, &context->sa_server_len,
+                                     &context->sa_client, &context->sa_client_len);
 
             /* For 'data', craft a bucket for our data result
              * and pass to worker_main as context->overlapped.Pointer
