@@ -641,7 +641,7 @@ static void child_main(int child_num_arg)
                     ap_log_error(APLOG_MARK, APLOG_ERR, status,
                                  ap_server_conf, APLOGNO(00158) "apr_pollset_poll: (listen)");
                     SAFE_ACCEPT(accept_mutex_off());
-                    clean_child_exit(1);
+                    clean_child_exit(APEXIT_CHILDSICK);
                 }
 
                 /* We can always use pdesc[0], but sockets at position N
@@ -678,7 +678,7 @@ static void child_main(int child_num_arg)
 
         if (status == APR_EGENERAL) {
             /* resource shortage or should-not-occur occured */
-            clean_child_exit(1);
+            clean_child_exit(APEXIT_CHILDSICK);
         }
         else if (status != APR_SUCCESS) {
             continue;
