@@ -714,7 +714,7 @@ named file-system directory, sub-directories, and their contents</description>
     <code>~</code> character. For example:</p>
 
     <example>
-      &lt;Directory ~ "^/www/.*/[0-9]{3}"&gt;
+      &lt;Directory ~ "^/www/[0-9]{3}"&gt;
     </example>
 
     <p>would match directories in <code>/www/</code> that consisted of
