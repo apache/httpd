@@ -761,7 +761,7 @@ named file-system directory, sub-directories, and their contents</td></tr>
     <code>~</code> character. For example:</p>
 
     <div class="example"><p><code>
-      &lt;Directory ~ "^/www/.*/[0-9]{3}"&gt;
+      &lt;Directory ~ "^/www/[0-9]{3}"&gt;
     </code></p></div>
 
     <p>would match directories in <code>/www/</code> that consisted of
