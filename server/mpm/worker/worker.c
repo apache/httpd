@@ -1699,6 +1699,11 @@ static void server_main_loop(int remaining_children_to_start)
             else if (ap_unregister_extra_mpm_process(pid.pid, &old_gen) == 1) {
                 worker_note_child_killed(-1, /* already out of the scoreboard */
                                          pid.pid, old_gen);
+                if (processed_status == APEXIT_CHILDSICK
+                    && old_gen == retained->my_generation) {
+                    /* resource shortage, minimize the fork rate */
+                    retained->idle_spawn_rate = 1;
+                }
 #if APR_HAS_OTHER_CHILD
             }
             else if (apr_proc_other_child_alert(&pid, APR_OC_REASON_DEATH,
