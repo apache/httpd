@@ -827,7 +827,7 @@ named file-system directory, sub-directories, and their contents.</td></tr>
     <code>~</code> character. For example:</p>
 
     <pre class="prettyprint lang-config">
-&lt;Directory ~ "^/www/.*/[0-9]{3}"&gt;
+&lt;Directory ~ "^/www/[0-9]{3}"&gt;
 
 &lt;/Directory&gt;
 </pre>
