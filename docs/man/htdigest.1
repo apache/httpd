@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "HTDIGEST" 1 "2007-04-24" "Apache HTTP Server" "htdigest"
+.TH "HTDIGEST" 1 "2012-07-19" "Apache HTTP Server" "htdigest"
 
 .SH NAME
 htdigest \- manage user files for digest authentication
@@ -50,7 +50,7 @@ Create the \fIpasswdfile\fR\&. If \fIpasswdfile\fR already exists, it is deleted
 Name of the file to contain the username, realm and password\&. If -c is given, this file is created if it does not already exist, or deleted and recreated if it does exist\&.  
 .TP
 \fIrealm\fR
-The realm name to which the user name belongs\&.  
+The realm name to which the user name belongs\&. See http://tools\&.ietf\&.org/html/rfc2617#section-3\&.2\&.1 for more details\&.  
 .TP
 \fIusername\fR
 The user name to create or update in \fIpasswdfile\fR\&. If \fIusername\fR does not exist is this file, an entry is added\&. If it does exist, the password is changed\&.  
