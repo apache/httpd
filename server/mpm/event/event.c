@@ -183,6 +183,7 @@ static apr_uint32_t lingering_count = 0;    /* Number of connections in lingerin
 static apr_uint32_t suspended_count = 0;    /* Number of suspended connections */
 static apr_uint32_t clogged_count = 0;      /* Number of threads processing ssl conns */
 static int resource_shortage = 0;
+static int had_healthy_child = 0;
 static fd_queue_t *worker_queue;
 static fd_queue_info_t *worker_queue_info;
 static int mpm_state = AP_MPMQ_STARTING;
@@ -2403,6 +2404,7 @@ static void perform_idle_server_maintenance(void)
         int any_dying_threads = 0;
         int any_dead_threads = 0;
         int all_dead_threads = 1;
+        int child_threads_active = 0;
 
         if (i >= retained->max_daemons_limit
             && totally_free_length == retained->idle_spawn_rate)
@@ -2438,6 +2440,7 @@ static void perform_idle_server_maintenance(void)
                 }
                 if (status >= SERVER_READY && status < SERVER_GRACEFUL) {
                     ++active_thread_count;
+                    ++child_threads_active;
                 }
             }
         }
@@ -2464,6 +2467,9 @@ static void perform_idle_server_maintenance(void)
             }
             ++free_length;
         }
+        else if (child_threads_active == threads_per_child) {
+            had_healthy_child = 1;
+        }
         /* XXX if (!ps->quiescing)     is probably more reliable  GLA */
         if (!any_dying_threads) {
             last_non_dead = i;
@@ -2472,21 +2478,23 @@ static void perform_idle_server_maintenance(void)
     }
 
     if (retained->sick_child_detected) {
-        if (active_thread_count > 0) {
-            /* some child processes appear to be working.  don't kill the
-             * whole server.
+        if (had_healthy_child) {
+            /* Assume this is a transient error, even though it may not be.  Leave
+             * the server up in case it is able to serve some requests or the
+             * problem will be resolved.
              */
             retained->sick_child_detected = 0;
         }
         else {
-            /* looks like a basket case.  give up.
+            /* looks like a basket case, as no child ever fully initialized; give up.
              */
             shutdown_pending = 1;
             child_fatal = 1;
             ap_log_error(APLOG_MARK, APLOG_ALERT, 0,
-                         ap_server_conf, APLOGNO(00483)
-                         "No active workers found..."
-                         " Apache is exiting!");
+                         ap_server_conf, APLOGNO(02324)
+                         "A resource shortage or other unrecoverable failure "
+                         "was encountered before any child process initialized "
+                         "successfully... httpd is exiting!");
             /* the child already logged the failure details */
             return;
         }

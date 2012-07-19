@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mpm_event, mpm_worker: Remain active amidst prevalent child process
+     resource shortages.  [Jeff Trawick]
+
   *) mpm_event, mpm_worker: Fix cases where the spawn rate wasn't reduced
      after child process resource shortages.  [Jeff Trawick]
 
