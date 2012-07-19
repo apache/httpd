@@ -743,7 +743,7 @@ named file-system directory, sub-directories, and their contents.</description>
     <code>~</code> character. For example:</p>
 
     <highlight language="config">
-&lt;Directory ~ "^/www/.*/[0-9]{3}"&gt;
+&lt;Directory ~ "^/www/[0-9]{3}"&gt;
 
 &lt;/Directory&gt;
 </highlight>
