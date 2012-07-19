@@ -601,13 +601,13 @@ to run the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule"
 requested URI doesn't correspond with an actual file.</p>
 
 <div class="example"><p><code>
-# Is the request for a non-existent file?
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-# If so, skip these two RewriteRules
-RewriteRule .? - [S=2]
-RewriteRule (.*\.gif) images.php?$1
-RewriteRule (.*\.html) docs.php?$1
+# Is the request for a non-existent file?<br />
+RewriteCond %{REQUEST_FILENAME} !-f<br />
+RewriteCond %{REQUEST_FILENAME} !-d<br />
+# If so, skip these two RewriteRules<br />
+RewriteRule .? - [S=2]<br />
+RewriteRule (.*\.gif) images.php?$1<br />
+RewriteRule (.*\.html) docs.php?$1<br />
 </code></p></div>
 
 <p>This technique is useful because a <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> only applies to the
