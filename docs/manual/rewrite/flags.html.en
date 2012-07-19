@@ -600,7 +600,7 @@ statement in your rewrite ruleset. In the following example, we only want
 to run the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> if the 
 requested URI doesn't correspond with an actual file.</p>
 
-<pre class="prettyprint lang-config">
+<div class="example"><p><code>
 # Is the request for a non-existent file?
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
@@ -608,8 +608,7 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule .? - [S=2]
 RewriteRule (.*\.gif) images.php?$1
 RewriteRule (.*\.html) docs.php?$1
-</pre>
-
+</code></p></div>
 
 <p>This technique is useful because a <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> only applies to the
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> immediately
