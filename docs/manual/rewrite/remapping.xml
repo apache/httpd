@@ -73,7 +73,7 @@ configuration.</note>
 
 <highlight language="config">
 RewriteEngine  on
-RewriteRule    ^<strong>/old</strong>\.html$  <strong>/new</strong>.html [PT]
+RewriteRule    ^<strong>/foo</strong>\.html$  <strong>/bar</strong>.html [PT]
 </highlight>
     </dd>
   </dl>
