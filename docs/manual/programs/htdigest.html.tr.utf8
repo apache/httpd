@@ -25,6 +25,7 @@
 <a href="../ko/programs/htdigest.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/htdigest.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p><code><strong>htdigest</strong></code>, HTTP kullanıcılarının digest
     türü kimlik doğrulaması için kullanıcı isimlerinin ve parolalarının
