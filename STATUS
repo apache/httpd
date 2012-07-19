@@ -191,6 +191,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: chrisd, rpluem
 
+   * mpm_prefork: Reduce spawn rate after a child process exits due to
+     unexpected poll or accept failure.
+     trunk patch: http://svn.apache.org/viewvc?rev=1363183&view=rev
+     2.4.x patch: trunk patch works
+     +1: trawick
+
+   * mpm_event, mpm_worker: Fix cases where the spawn rate wasn't reduced
+     after child process resource shortages.
+     trunk patch: http://svn.apache.org/viewvc?rev=1363440&view=rev
+     2.4.x patch: trunk patch works
+     +1: trawick
+
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please add them here.
