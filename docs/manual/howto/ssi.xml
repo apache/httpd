@@ -367,15 +367,6 @@ modified?</title>
     the option of setting variables, and using those variables in
     comparisons and conditionals.</p>
 
-<section id="caveat"><title>Caveat</title>
-
-    <p>Most of the features discussed in this article are only
-    available to you if you are running Apache 1.2 or later. Of
-    course, if you are not running Apache 1.2 or later, you need to
-    upgrade immediately, if not sooner. Go on. Do it now. We'll
-    wait.</p>
-</section>
-
 <section id="variables"><title>Setting variables</title>
 
     <p>Using the <code>set</code> directive, you can set variables
