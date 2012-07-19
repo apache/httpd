@@ -489,6 +489,15 @@ and hostname part of the URL is either fixed, or does not allow the
 client undue influence.</p>
 </note>
 
+<note type="warning">
+<title>Performance warning</title>
+<p>Using this flag triggers the use of <module>mod_proxy</module>, without handling of persistent connections. This
+means the performance of your proxy will be better if you set it up with <directive module="mod_proxy">ProxyPass</directive> or
+<directive module="mod_proxy">ProxyPassMatch</directive></p>
+<p>This is because this flag triggers the use of the default worker, which does not handle connection pooling.</p>
+<p>Avoid using this flag and prefer those directives, whenever you can.</p>
+</note>
+
 <p>Note: <module>mod_proxy</module> must be enabled in order
 to use this flag.</p>
 
