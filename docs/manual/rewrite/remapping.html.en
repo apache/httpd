@@ -76,7 +76,7 @@ configuration.</div>
 
 <pre class="prettyprint lang-config">
 RewriteEngine  on
-RewriteRule    ^<strong>/old</strong>\.html$  <strong>/new</strong>.html [PT]
+RewriteRule    ^<strong>/foo</strong>\.html$  <strong>/bar</strong>.html [PT]
 </pre>
 
     </dd>
