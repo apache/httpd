@@ -32,12 +32,19 @@
     to a URL <code>http://example.com/~username/</code> will get content
     out of the home directory of the user "<code>username</code>", out of
     the subdirectory specified by the <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> directive.</p>
-
+<p>Note that, by default, access to these directories is <strong>not</strong>
+    enabled. You can enable access when using <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> by uncommenting the line</p>
+    <div class="example"><p><code>
+      #Include conf/extra/httpd-userdir.conf
+    </code></p></div>
+    <p>in the default config file, and adapting the <code>httpd-userdir.conf</code>
+    file as necessary, or by including the appropriate directives in a
+    <code>Directory</code> block within the main config file.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Per-user web directories</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#userdir">Setting the file path with UserDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#redirect">Redirecting to external URLs</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#enable">Restricting what users are permitted to use this 
+<li><img alt="" src="../images/down.gif" /> <a href="#enable">Restricting what users are permitted to use this
     feature</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgi">Enabling a cgi directory for each user</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#htaccess">Allowing users to alter configuration</a></li>
@@ -97,10 +104,10 @@
       UserDir public_html /var/html
     </code></p></div>
 
-    <p>For the URL <code>http://example.com/~rbowen/file.html</code>, 
-    Apache will search for <code>~rbowen</code>. If it isn't found, 
+    <p>For the URL <code>http://example.com/~rbowen/file.html</code>,
+    Apache will search for <code>~rbowen</code>. If it isn't found,
     Apache will search for <code>rbowen</code> in <code>/var/html</code>. If
-    found, the above URL will then be translated to the file path 
+    found, the above URL will then be translated to the file path
     <code>/var/html/rbowen/file.html</code></p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -109,17 +116,17 @@
     
     <p>The <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> directive can be
       used to redirect user directory requests to external URLs.</p>
-      
+
     <div class="example"><p><code>
       UserDir http://example.org/users/*/
     </code></p></div>
-    
+
     <p>The above example will redirect a request for
     <code>http://example.com/~bob/abc.html</code> to
     <code>http://example.org/users/bob/abc.html</code>.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="enable" id="enable">Restricting what users are permitted to use this 
+<h2><a name="enable" id="enable">Restricting what users are permitted to use this
     feature</a></h2>
     
 
@@ -157,7 +164,7 @@
       &lt;Directory /home/*/public_html/cgi-bin/&gt;<br />
        Options ExecCGI<br />
        SetHandler cgi-script<br />
-       &lt;/Directory&gt;
+&lt;/Directory&gt;
     </code></p></div>
 
     <p>Then, presuming that <code>UserDir</code> is set to
