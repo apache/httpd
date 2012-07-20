@@ -437,6 +437,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man8/apachectl.8*
 %{_mandir}/man8/httpd.8*
 %{_mandir}/man8/htcacheclean.8*
+%{_mandir}/man8/fcgistarter.8*
 
 %files manual
 %defattr(-,root,root)
