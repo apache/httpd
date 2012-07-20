@@ -5,7 +5,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Authentication, Authorization and Access Control - Apache HTTP Server</title>
+<title>Authentication and Authorization - Apache HTTP Server</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -19,7 +19,7 @@
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.2</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>Authentication, Authorization and Access Control</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.2</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>Authentication and Authorization</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/howto/auth.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/howto/auth.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
@@ -32,6 +32,9 @@
     someone is who they claim they are. Authorization is any
     process by which someone is allowed to be where they want to
     go, or to have information that they want to have.</p>
+
+    <p>For general access control, see the <a href="access.html">Access
+    Control How-To</a>.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Related Modules and Directives</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introduction</a></li>
@@ -54,30 +57,33 @@ module from each group.</p>
 
 <ul>
   <li>Authentication type (see the
-      <code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code> directive)
+      <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code> directive)
     <ul>
       <li><code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code></li>
       <li><code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code></li>
     </ul>
   </li>
-  <li>Authentication provider
+  <li>Authentication provider (see the
+  <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> and
+  <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code> directives)
+
     <ul>
-      <li><code class="module"><a href="../mod/mod_authn_alias.html">mod_authn_alias</a></code></li>
       <li><code class="module"><a href="../mod/mod_authn_anon.html">mod_authn_anon</a></code></li>
       <li><code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code></li>
       <li><code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code></li>
-      <li><code class="module"><a href="../mod/mod_authn_default.html">mod_authn_default</a></code></li>
       <li><code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code></li>
       <li><code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></li>
+      <li><code class="module"><a href="../mod/mod_authn_socache.html">mod_authn_socache</a></code></li>
     </ul>
   </li>
   <li>Authorization (see the
-      <code class="directive"><a href="../mod/core.html#require">Require</a></code> directive)
+      <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directive)
     <ul>
       <li><code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></li>
+      <li><code class="module"><a href="../mod/mod_authz_dbd.html">mod_authz_dbd</a></code></li>
       <li><code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code></li>
-      <li><code class="module"><a href="../mod/mod_authz_default.html">mod_authz_default</a></code></li>
       <li><code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code></li>
+      <li><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></li>
       <li><code class="module"><a href="../mod/mod_authz_owner.html">mod_authz_owner</a></code></li>
       <li><code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code></li>
     </ul>
@@ -144,6 +150,13 @@ module from each group.</p>
     structure of your server, in order to know where some files are
     kept. This should not be terribly difficult, and I'll try to
     make this clear when we come to that point.</p>
+
+    <p>You will also need to make sure that the modules
+    <code class="module"><a href="../mod/mod_authn_core.html">mod_authn_core</a></code> and <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>
+    have either been built into the httpd binary or loaded by the
+    httpd.conf configuration file. Both of these modules provide core
+    directives and functionality that are critical to the configuration
+    and use of authentication and authorization in the web server.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="gettingitworking" id="gettingitworking">Getting it working</a></h2>
@@ -205,7 +218,7 @@ module from each group.</p>
       # (Following line optional)<br />
       AuthBasicProvider file<br />
       AuthUserFile /usr/local/apache/passwd/passwords<br />
-      Require user rbowen
+Require user rbowen
     </code></p></div>
 
     <p>Let's examine each of those directives individually. The <code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code> directive selects
@@ -219,7 +232,7 @@ module from each group.</p>
     <code>AuthType Digest</code>. This method is implemented by <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> and is much more secure. Most recent
     browsers support Digest authentication.</p>
 
-    <p>The <code class="directive"><a href="../mod/core.html#authname">AuthName</a></code> directive sets
+    <p>The <code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code> directive sets
     the <dfn>Realm</dfn> to be used in the authentication. The realm serves
     two major functions. First, the client often presents this information to
     the user as part of the password dialog box. Second, it is used by the
@@ -254,7 +267,7 @@ module from each group.</p>
     party modules in the <a href="http://modules.apache.org/">Apache Modules
     Database</a>.</p>
 
-    <p>Finally, the <code class="directive"><a href="../mod/core.html#require">Require</a></code>
+    <p>Finally, the <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
     directive provides the authorization part of the process by
     setting the user that is allowed to access this region of the
     server. In the next section, we discuss various ways to use the
@@ -333,7 +346,7 @@ person in</a></h2>
       AuthBasicProvider file<br />
       AuthUserFile /usr/local/apache/passwd/passwords<br />
       AuthGroupFile /usr/local/apache/passwd/groups<br />
-      Require group GroupName
+Require group GroupName
     </code></p></div>
 
     <p>Now, anyone that is listed in the group <code>GroupName</code>,
@@ -399,7 +412,7 @@ person in</a></h2>
     AuthBasicProvider dbm<br />
     AuthDBMUserFile /www/passwords/passwd.dbm<br />
     Require valid-user<br />
-    &lt;/Directory&gt;
+&lt;/Directory&gt;
     </code></p></div>
 
     <p>Other options are available. Consult the
