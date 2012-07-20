@@ -206,6 +206,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: trawick
 
+   * ab failure: "Benchmarking 127.0.0.1 (be patient)...bind: An address
+     incompatible with the requested protocol was used.   (730047)"
+     trunk patch: http://svn.apache.org/viewvc?rev=1351737&view=rev
+     2.4.x patch: trunk patch works
+     +1: trawick (if CHANGES entry is added)
+
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please add them here.
