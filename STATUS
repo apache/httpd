@@ -114,12 +114,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works (ex. CHANGES)
      +1: sf, humbedooh, rjung
 
-   * core: Add missing HTTP status codes registered with IANA.
-     trunk patch: http://svn.apache.org/viewvc?rev=1361784&view=rev
-                  http://svn.apache.org/viewvc?rev=1361791&view=rev
-                  http://svn.apache.org/viewvc?rev=1362020&view=rev
-     2.4.x patch: http://people.apache.org/~rjung/patches/httpd-2_4-status-codes-iana.patch
-     +1: rjung, jorton, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
