@@ -62,8 +62,12 @@ APLOG_USE_MODULE(http);
 
 /* New Apache routine to map status codes into array indicies
  *  e.g.  100 -> 0,  101 -> 1,  200 -> 2 ...
- * The number of status lines must equal the value of RESPONSE_CODES (httpd.h)
- * and must be listed in order.
+ * The number of status lines must equal the value of
+ * RESPONSE_CODES (httpd.h) and must be listed in order.
+ * No gaps are allowed between X00 and the largest Xnn
+ * for any X (see ap_index_of_response).
+ * When adding a new code here, add a define to httpd.h
+ * as well.
  */
 
 static const char * const status_lines[RESPONSE_CODES] =
@@ -80,58 +84,81 @@ static const char * const status_lines[RESPONSE_CODES] =
     "205 Reset Content",
     "206 Partial Content",
     "207 Multi-Status",
-#define LEVEL_300 11
+    "208 Already Reported",
+    NULL, /* 209 */
+    NULL, /* 210 */
+    NULL, /* 211 */
+    NULL, /* 212 */
+    NULL, /* 213 */
+    NULL, /* 214 */
+    NULL, /* 215 */
+    NULL, /* 216 */
+    NULL, /* 217 */
+    NULL, /* 218 */
+    NULL, /* 219 */
+    NULL, /* 220 */
+    NULL, /* 221 */
+    NULL, /* 222 */
+    NULL, /* 223 */
+    NULL, /* 224 */
+    NULL, /* 225 */
+    "226 IM Used",
+#define LEVEL_300 30
     "300 Multiple Choices",
     "301 Moved Permanently",
     "302 Found",
     "303 See Other",
     "304 Not Modified",
     "305 Use Proxy",
-    "306 unused",
+    NULL, /* 306 */
     "307 Temporary Redirect",
-#define LEVEL_400 19
+    "308 Permanent Redirect",
+#define LEVEL_400 39
     "400 Bad Request",
-    "401 Authorization Required",
+    "401 Unauthorized",
     "402 Payment Required",
     "403 Forbidden",
     "404 Not Found",
     "405 Method Not Allowed",
     "406 Not Acceptable",
     "407 Proxy Authentication Required",
-    "408 Request Time-out",
+    "408 Request Timeout",
     "409 Conflict",
     "410 Gone",
     "411 Length Required",
     "412 Precondition Failed",
     "413 Request Entity Too Large",
-    "414 Request-URI Too Large",
+    "414 Request-URI Too Long",
     "415 Unsupported Media Type",
     "416 Requested Range Not Satisfiable",
     "417 Expectation Failed",
-    "418 unused",
-    "419 unused",
-    "420 unused",
-    "421 unused",
+    NULL, /* 418 */
+    NULL, /* 419 */
+    NULL, /* 420 */
+    NULL, /* 421 */
     "422 Unprocessable Entity",
     "423 Locked",
     "424 Failed Dependency",
-    /* This is a hack, but it is required for ap_index_of_response
-     * to work with 426.
-     */
-    "425 No code",
+    NULL, /* 425 */
     "426 Upgrade Required",
-#define LEVEL_500 46
+    NULL, /* 427 */
+    "428 Precondition Required",
+    "429 Too Many Requests",
+    NULL, /* 430 */
+    "431 Request Header Fields Too Large",
+#define LEVEL_500 71
     "500 Internal Server Error",
-    "501 Method Not Implemented",
+    "501 Not Implemented",
     "502 Bad Gateway",
-    "503 Service Temporarily Unavailable",
-    "504 Gateway Time-out",
+    "503 Service Unavailable",
+    "504 Gateway Timeout",
     "505 HTTP Version Not Supported",
     "506 Variant Also Negotiates",
     "507 Insufficient Storage",
-    "508 unused",
-    "509 unused",
-    "510 Not Extended"
+    "508 Loop Detected",
+    NULL, /* 509 */
+    "510 Not Extended",
+    "511 Network Authentication Required"
 };
 
 APR_HOOK_STRUCT(
@@ -739,6 +766,7 @@ AP_DECLARE(const char *) ap_method_name_of(apr_pool_t *p, int methnum)
  * decides to define a high-numbered code before the lower numbers.
  * If that sad event occurs, replace the code below with a linear search
  * from status_lines[shortcut[i]] to status_lines[shortcut[i+1]-1];
+ * or use NULL to fill the gaps.
  */
 AP_DECLARE(int) ap_index_of_response(int status)
 {
@@ -754,7 +782,7 @@ AP_DECLARE(int) ap_index_of_response(int status)
         status -= 100;
         if (status < 100) {
             pos = (status + shortcut[i]);
-            if (pos < shortcut[i + 1]) {
+            if (pos < shortcut[i + 1] && status_lines[pos] != NULL) {
                 return pos;
             }
             else {
@@ -887,6 +915,7 @@ static const char *get_canned_error_string(int status,
     case HTTP_MOVED_PERMANENTLY:
     case HTTP_MOVED_TEMPORARILY:
     case HTTP_TEMPORARY_REDIRECT:
+    case HTTP_PERMANENT_REDIRECT:
         return(apr_pstrcat(p,
                            "<p>The document has moved <a href=\"",
                            ap_escape_html(r->pool, location),
@@ -1048,6 +1077,14 @@ static const char *get_canned_error_string(int status,
                "connection to SSL, but your client doesn't support it.\n"
                "Either upgrade your client, or try requesting the page\n"
                "using https://\n");
+    case HTTP_PRECONDITION_REQUIRED:
+        return("<p>The request is required to be conditional.</p>\n");
+    case HTTP_TOO_MANY_REQUESTS:
+        return("<p>The user has sent too many requests\n"
+               "in a given amount of time.</p>\n");
+    case HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE:
+        return("<p>The server refused this request because\n"
+               "the request header fields are too large.</p>\n");
     case HTTP_INSUFFICIENT_STORAGE:
         return("<p>The method could not be performed on the resource\n"
                "because the server is unable to store the\n"
@@ -1061,9 +1098,15 @@ static const char *get_canned_error_string(int status,
     case HTTP_GATEWAY_TIME_OUT:
         return("<p>The gateway did not receive a timely response\n"
                "from the upstream server or application.</p>\n");
+    case HTTP_LOOP_DETECTED:
+        return("<p>The server terminated an operation because\n"
+               "it encountered an infinite loop.</p>\n");
     case HTTP_NOT_EXTENDED:
         return("<p>A mandatory extension policy in the request is not\n"
                "accepted by the server for this resource.</p>\n");
+    case HTTP_NETWORK_AUTHENTICATION_REQUIRED:
+        return("<p>The client needs to authenticate to gain\n"
+               "network access.</p>\n");
     default:                    /* HTTP_INTERNAL_SERVER_ERROR */
         /*
          * This comparison to expose error-notes could be modified to

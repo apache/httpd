@@ -393,7 +393,8 @@
  * 20120211.1 (2.4.2-dev)  Add AP_HAVE_C99
  * 20120211.2 (2.4.2-dev)  Add ap_runtime_dir_relative
  * 20120211.3 (2.4.2-dev)  Add forcerecovery to proxy_balancer_shared struct
- * 20120211.4 (2.4.2-dev)  Add ap_list_provider_groups()
+ * 20120211.4 (2.4.3-dev)  Add ap_list_provider_groups()
+ * 20120211.5 (2.4.3-dev)  Add missing HTTP status codes registered with IANA.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -401,7 +402,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 4                   /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 5                   /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

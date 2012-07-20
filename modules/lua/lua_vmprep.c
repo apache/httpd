@@ -156,10 +156,16 @@ AP_LUA_DECLARE(void) ap_lua_load_apache2_lmodule(lua_State *L)
        lua_setfield(L, -2, "HTTP_PARTIAL_CONTENT");
        lua_pushinteger(L, HTTP_MULTI_STATUS);
        lua_setfield(L, -2, "HTTP_MULTI_STATUS");
+       lua_pushinteger(L, HTTP_ALREADY_REPORTED);
+       lua_setfield(L, -2, "HTTP_ALREADY_REPORTED");
+       lua_pushinteger(L, HTTP_IM_USED);
+       lua_setfield(L, -2, "HTTP_IM_USED");
        lua_pushinteger(L, HTTP_MULTIPLE_CHOICES);
        lua_setfield(L, -2, "HTTP_MULTIPLE_CHOICES");
        lua_pushinteger(L, HTTP_MOVED_PERMANENTLY);
        lua_setfield(L, -2, "HTTP_MOVED_PERMANENTLY");
+       lua_pushinteger(L, HTTP_MOVED_TEMPORARILY);
+       lua_setfield(L, -2, "HTTP_MOVED_TEMPORARILY");
        lua_pushinteger(L, HTTP_SEE_OTHER);
        lua_setfield(L, -2, "HTTP_SEE_OTHER");
        lua_pushinteger(L, HTTP_NOT_MODIFIED);
@@ -168,6 +174,8 @@ AP_LUA_DECLARE(void) ap_lua_load_apache2_lmodule(lua_State *L)
        lua_setfield(L, -2, "HTTP_USE_PROXY");
        lua_pushinteger(L, HTTP_TEMPORARY_REDIRECT);
        lua_setfield(L, -2, "HTTP_TEMPORARY_REDIRECT");
+       lua_pushinteger(L, HTTP_PERMANENT_REDIRECT);
+       lua_setfield(L, -2, "HTTP_PERMANENT_REDIRECT");
        lua_pushinteger(L, HTTP_BAD_REQUEST);
        lua_setfield(L, -2, "HTTP_BAD_REQUEST");
        lua_pushinteger(L, HTTP_UNAUTHORIZED);
@@ -212,6 +220,12 @@ AP_LUA_DECLARE(void) ap_lua_load_apache2_lmodule(lua_State *L)
        lua_setfield(L, -2, "HTTP_FAILED_DEPENDENCY");
        lua_pushinteger(L, HTTP_UPGRADE_REQUIRED);
        lua_setfield(L, -2, "HTTP_UPGRADE_REQUIRED");
+       lua_pushinteger(L, HTTP_PRECONDITION_REQUIRED);
+       lua_setfield(L, -2, "HTTP_PRECONDITION_REQUIRED");
+       lua_pushinteger(L, HTTP_TOO_MANY_REQUESTS);
+       lua_setfield(L, -2, "HTTP_TOO_MANY_REQUESTS");
+       lua_pushinteger(L, HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE);
+       lua_setfield(L, -2, "HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE");
        lua_pushinteger(L, HTTP_INTERNAL_SERVER_ERROR);
        lua_setfield(L, -2, "HTTP_INTERNAL_SERVER_ERROR");
        lua_pushinteger(L, HTTP_NOT_IMPLEMENTED);
@@ -228,8 +242,12 @@ AP_LUA_DECLARE(void) ap_lua_load_apache2_lmodule(lua_State *L)
        lua_setfield(L, -2, "HTTP_VARIANT_ALSO_VARIES");
        lua_pushinteger(L, HTTP_INSUFFICIENT_STORAGE);
        lua_setfield(L, -2, "HTTP_INSUFFICIENT_STORAGE");
+       lua_pushinteger(L, HTTP_LOOP_DETECTED);
+       lua_setfield(L, -2, "HTTP_LOOP_DETECTED");
        lua_pushinteger(L, HTTP_NOT_EXTENDED);
        lua_setfield(L, -2, "HTTP_NOT_EXTENDED");
+       lua_pushinteger(L, HTTP_NETWORK_AUTHENTICATION_REQUIRED);
+       lua_setfield(L, -2, "HTTP_NETWORK_AUTHENTICATION_REQUIRED");
      */
 }
 
