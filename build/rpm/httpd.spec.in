@@ -50,7 +50,6 @@ Group: Documentation
 Summary: Documentation for the Apache HTTP server.
 Requires: httpd = %{epoch}:%{version}-%{release}
 Obsoletes: secureweb-manual, apache-manual
-BuildArch: noarch
 
 %description manual
 The httpd-manual package contains the complete manual and
