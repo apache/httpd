@@ -312,9 +312,9 @@ extern "C" {
 #define AP_MAX_SENDFILE 16777216  /* 2^24 */
 
 /**
- * Special Apache error codes. These are basically used
- *  in http_main.c so we can keep track of various errors.
- *
+ * MPM child process exit status values
+ * The MPM parent process may check the status to see if special
+ * error handling is required.
  */
 /** a normal exit */
 #define APEXIT_OK               0x0
