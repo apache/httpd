@@ -6,7 +6,6 @@ Summary: Apache HTTP Server
 Name: httpd
 Version: APACHE_VERSION
 Release: APACHE_RELEASE
-Epoch: APACHE_EPOCH00%{release}
 URL: http://httpd.apache.org/
 Vendor: Apache Software Foundation
 Source0: http://www.apache.org/dist/httpd/httpd-%{version}.tar.bz2
