@@ -201,6 +201,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: trawick
 
+   * Windows tweak to mpm_common.h to enable MinGW build
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1363035
+     2.4.x patch: trunk patch works
+     +1: trawick
+
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please add them here.
