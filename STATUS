@@ -114,6 +114,16 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works (ex. CHANGES)
      +1: sf, humbedooh, rjung
 
+   * mod_ssl: fix OCSP EOL handling
+     trunk patch: http://svn.apache.org/viewvc?rev=1358061&view=rev
+     2.4.x patch: trunk patch works
+     +1: jorton, trawick, rjung
+   
+   * core: log value of Status line in script responses instead of header name
+     trunk patch: http://svn.apache.org/viewvc?rev=1362538&view=rev
+     2.4.x patch: trunk patch works
+     +1: chrisd, rpluem, rjung
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -168,43 +178,34 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://www.humbedooh.com/mods/mod_lua.patch (+CHANGES)
      +1: humbedooh, rjung
 
-   * mod_ssl: fix OCSP EOL handling
-     trunk patch: http://svn.apache.org/viewvc?rev=1358061&view=rev
-     2.4.x patch: trunk patch works
-     +1: jorton, trawick
-   
    * mod_ext_filter: fix error log spam with input filters
      trunk patch: http://svn.apache.org/viewvc?rev=1357685&view=rev
      2.4.x patch: trunk patch works
      +1: jorton, trawick
 
-   * core: log value of Status line in script responses instead of header name
-     trunk patch: http://svn.apache.org/viewvc?rev=1362538&view=rev
-     2.4.x patch: trunk patch works
-     +1: chrisd, rpluem
-
    * mpm_prefork: Reduce spawn rate after a child process exits due to
      unexpected poll or accept failure.
      trunk patch: http://svn.apache.org/viewvc?rev=1363183&view=rev
      2.4.x patch: trunk patch works
-     +1: trawick
+     +1: trawick, rjung
 
    * mpm_event, mpm_worker: Fix cases where the spawn rate wasn't reduced
      after child process resource shortages.
      trunk patch: http://svn.apache.org/viewvc?rev=1363440&view=rev
      2.4.x patch: trunk patch works
-     +1: trawick
+     +1: trawick, rjung
 
    * Windows tweak to mpm_common.h to enable MinGW build
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1363035
      2.4.x patch: trunk patch works
-     +1: trawick
+     +1: trawick, rjung
 
    * ab failure: "Benchmarking 127.0.0.1 (be patient)...bind: An address
      incompatible with the requested protocol was used.   (730047)"
      trunk patch: http://svn.apache.org/viewvc?rev=1351737&view=rev
      2.4.x patch: trunk patch works
-     +1: trawick (if CHANGES entry is added)
+     +1: trawick, rjung
+     trawick, rjung: if CHANGES entry is added
 
    * mpm_event, mpm_worker: Remain active amidst prevalent child process
      resource shortages.
