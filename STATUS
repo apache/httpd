@@ -88,7 +88,38 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_deflate: Make mod_deflate skip compression if compression is enabled
+     at SSL level.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1359057
+     2.4.x patch: trunk patch works (ex. CHANGES)
+     +1: sf, rjung, jorton
 
+   * core: Always log if LimitRequestFieldSize triggers
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352911
+     2.4.x patch: trunk patch works
+     +1: sf, rjung, trawick
+
+   * mod_authz_core: Allow to use %{REMOTE_USER} in Require expr. Improve
+     logging.
+     PR: 52892
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1351071
+                  http://svn.apache.org/viewvc?view=revision&revision=1351072
+                  http://svn.apache.org/viewvc?view=revision&revision=1351074
+     2.4.x patch: trunk patch works (ex. CHANGES)
+     +1: sf, rjung, trawick
+
+   * mpm_event: Fix MaxConnectionsPerChild
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1343085
+                  http://svn.apache.org/viewvc?view=revision&revision=1343087
+     2.4.x patch: trunk patch works (ex. CHANGES)
+     +1: sf, humbedooh, rjung
+
+   * core: Add missing HTTP status codes registered with IANA.
+     trunk patch: http://svn.apache.org/viewvc?rev=1361784&view=rev
+                  http://svn.apache.org/viewvc?rev=1361791&view=rev
+                  http://svn.apache.org/viewvc?rev=1362020&view=rev
+     2.4.x patch: http://people.apache.org/~rjung/patches/httpd-2_4-status-codes-iana.patch
+     +1: rjung, jorton, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -117,26 +148,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           any version. Also, if you read my note to dev@ you will see
           why it is not premature.
 
-   * mod_deflate: Make mod_deflate skip compression if compression is enabled
-     at SSL level.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1359057
-     2.4.x patch: trunk patch works (ex. CHANGES)
-     +1: sf, rjung, jorton
-
-   * core: Always log if LimitRequestFieldSize triggers
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352911
-     2.4.x patch: trunk patch works
-     +1: sf, rjung
-
-   * mod_authz_core: Allow to use %{REMOTE_USER} in Require expr. Improve
-     logging.
-     PR: 52892
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1351071
-                  http://svn.apache.org/viewvc?view=revision&revision=1351072
-                  http://svn.apache.org/viewvc?view=revision&revision=1351074
-     2.4.x patch: trunk patch works (ex. CHANGES)
-     +1: sf, rjung
-
    * mod_so: Optionally allow LoadModule+LoadFile to use the normal search path.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1332378
      2.4.x patch: trunk patch works (ex. CHANGES)
@@ -154,12 +165,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works (needs CHANGES entry)
      +1: sf, rjung
 
-   * mpm_event: Fix MaxConnectionsPerChild
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1343085
-                  http://svn.apache.org/viewvc?view=revision&revision=1343087
-     2.4.x patch: trunk patch works (ex. CHANGES)
-     +1: sf, humbedooh, rjung
-
    * mod_lua: - Add a parsebody function for retrieving POST data. PR: 53064
               - Make mod_lua compatible with Lua 5.2
      Trunk patch:
@@ -169,22 +174,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://www.humbedooh.com/mods/mod_lua.patch (+CHANGES)
      +1: humbedooh, rjung
 
-   * core: Add missing HTTP status codes registered with IANA.
-     trunk patch: http://svn.apache.org/viewvc?rev=1361784&view=rev
-                  http://svn.apache.org/viewvc?rev=1361791&view=rev
-                  http://svn.apache.org/viewvc?rev=1362020&view=rev
-     2.4.x patch: http://people.apache.org/~rjung/patches/httpd-2_4-status-codes-iana.patch
-     +1: rjung, jorton, 
-
    * mod_ssl: fix OCSP EOL handling
      trunk patch: http://svn.apache.org/viewvc?rev=1358061&view=rev
      2.4.x patch: trunk patch works
-     +1: jorton,
+     +1: jorton, trawick
    
    * mod_ext_filter: fix error log spam with input filters
      trunk patch: http://svn.apache.org/viewvc?rev=1357685&view=rev
      2.4.x patch: trunk patch works
-     +1: jorton, 
+     +1: jorton, trawick
 
    * core: log value of Status line in script responses instead of header name
      trunk patch: http://svn.apache.org/viewvc?rev=1362538&view=rev
