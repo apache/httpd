@@ -1700,7 +1700,9 @@ static void test(void)
     }
 
     /* This too */
-    if ((rv = apr_sockaddr_info_get(&destsa, connecthost, APR_UNSPEC, connectport, 0, cntxt))
+    if ((rv = apr_sockaddr_info_get(&destsa, connecthost, 
+                                    myhost ? mysa->family : APR_UNSPEC,
+                                    connectport, 0, cntxt))
        != APR_SUCCESS) {
         char buf[120];
         apr_snprintf(buf, sizeof(buf),
