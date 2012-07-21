@@ -48,7 +48,7 @@ fi
 # Path to htcacheclean, server binary, and short-form for messages.
 htcacheclean=${HTTPD-/usr/sbin/htcacheclean}
 lockfile=${LOCKFILE-/var/lock/subsys/${prog}}
-pidfile=/var/log/httpd/${prog}.pid
+pidfile=/var/run/${prog}.pid
 interval=${INTERVAL-10}
 cachepath=${CACHEPATH-/var/cache/httpd/cache-root}
 limit=${LIMIT-100M}
