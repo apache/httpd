@@ -22,7 +22,7 @@
 # description: The Apache HTTP Server is an efficient and extensible  \
 #             server implementing the current HTTP standards.
 # processname: httpd
-# pidfile: /var/log/httpd/httpd.pid
+# pidfile: /var/run/httpd.pid
 # config: /etc/sysconfig/httpd
 #
 ### BEGIN INIT INFO
@@ -58,7 +58,7 @@ INITLOG_ARGS=""
 # work correctly with a thread-based MPM; notably PHP will refuse to start.
 
 httpd=${HTTPD-/usr/sbin/httpd}
-pidfile=${PIDFILE-/var/log/httpd/${prog}.pid}
+pidfile=${PIDFILE-/var/run/${prog}.pid}
 lockfile=${LOCKFILE-/var/lock/subsys/${prog}}
 RETVAL=0
 
