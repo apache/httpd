@@ -289,6 +289,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: rjung
      rjung: sf: you applied it to trunk, care to vote?
 
+   * mod_ssl: Pass the server_rec to ssl_die() and use it to log a message to
+     the main error log, pointing to the appropriate virtual host error log.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1348660
+     2.4.x patch: http://people.apache.org/~rjung/patches/ssl_die-improve_vhost-logging-2_4.patch
+     +1: rjung
+     rjung: sf: you applied it to trunk, care to vote?
+
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please add them here.
