@@ -170,8 +170,14 @@ static int dying = 0;
 static int workers_may_exit = 0;
 static int start_thread_may_exit = 0;
 static int listener_may_exit = 0;
-static int requests_this_child;
 static int num_listensocks = 0;
+/*
+ * As we don't have APR atomic functions for apr_int32_t, we use apr_uint32_t
+ * to actually store a signed value. This works as long as the platform uses
+ * two's complement representation. This assumption is also made in other
+ * parts of the code (e.g. fdqueue.c).
+ */
+static apr_uint32_t conns_this_child;
 static apr_uint32_t connection_count = 0;
 static int resource_shortage = 0;
 static fd_queue_t *worker_queue;
@@ -589,6 +595,7 @@ static int volatile restart_pending;
 
 static apr_status_t decrement_connection_count(void *dummy) {
     apr_atomic_dec32(&connection_count);
+    apr_atomic_dec32(&conns_this_child);
     return APR_SUCCESS;
 }
 
@@ -829,10 +836,8 @@ static int stop_lingering_close(event_conn_state_t *cs)
 
 /*
  * process one connection in the worker
- * return: 1 if the connection has been completed,
- *         0 if it is still open and waiting for some event
  */
-static int process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * sock,
+static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * sock,
                           event_conn_state_t * cs, int my_child_num,
                           int my_thread_num)
 {
@@ -853,7 +858,8 @@ static int process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * sock
             apr_bucket_alloc_destroy(cs->bucket_alloc);
             apr_pool_clear(p);
             ap_push_pool(worker_queue_info, p);
-            return 1;
+            apr_atomic_dec32(&conns_this_child);
+            return;
         }
         apr_atomic_inc32(&connection_count);
         apr_pool_cleanup_register(c->pool, NULL, decrement_connection_count, apr_pool_cleanup_null);
@@ -950,7 +956,7 @@ read_request:
             cs->pfd.reqevents = APR_POLLOUT | APR_POLLHUP | APR_POLLERR;
             rc = apr_pollset_add(event_pollset, &cs->pfd);
             apr_thread_mutex_unlock(timeout_mutex);
-            return 1;
+            return;
         }
         else if (c->keepalive != AP_CONN_KEEPALIVE || c->aborted ||
             listener_may_exit) {
@@ -967,7 +973,7 @@ read_request:
 
     if (cs->pub.state == CONN_STATE_LINGER) {
         if (!start_lingering_close(cs))
-            return 0;
+            return;
     }
     else if (cs->pub.state == CONN_STATE_CHECK_REQUEST_LINE_READABLE) {
         apr_status_t rc;
@@ -996,19 +1002,22 @@ read_request:
             AP_DEBUG_ASSERT(rc == APR_SUCCESS);
         }
     }
-    return 1;
+    return;
 }
 
-/* requests_this_child has gone to zero or below.  See if the admin coded
+/* conns_this_child has gone to zero or below.  See if the admin coded
    "MaxConnectionsPerChild 0", and keep going in that case.  Doing it this way
    simplifies the hot path in worker_thread */
 static void check_infinite_requests(void)
 {
     if (ap_max_requests_per_child) {
+        ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, ap_server_conf,
+                     "Stopping process due to MaxConnectionsPerChild");
         signal_threads(ST_GRACEFUL);
     }
     else {
-        requests_this_child = INT_MAX;  /* keep going */
+        /* keep going */
+        apr_atomic_set32(&conns_this_child, APR_INT32_MAX);
     }
 }
 
@@ -1354,7 +1363,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                 break;
         }
 
-        if (requests_this_child <= 0) {
+        if (((apr_int32_t)apr_atomic_read32(&conns_this_child)) <= 0) {
             check_infinite_requests();
         }
 
@@ -1741,10 +1750,7 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
         else {
             is_idle = 0;
             worker_sockets[thread_slot] = csd;
-            rv = process_socket(thd, ptrans, csd, cs, process_slot, thread_slot);
-            if (!rv) {
-                requests_this_child--;
-            }
+            process_socket(thd, ptrans, csd, cs, process_slot, thread_slot);
             worker_sockets[thread_slot] = NULL;
         }
     }
@@ -2041,11 +2047,11 @@ static void child_main(int child_num_arg)
     }
 
     if (ap_max_requests_per_child) {
-        requests_this_child = ap_max_requests_per_child;
+        apr_atomic_set32(&conns_this_child, (apr_uint32_t)ap_max_requests_per_child);
     }
     else {
         /* coding a value of zero means infinity */
-        requests_this_child = INT_MAX;
+        apr_atomic_set32(&conns_this_child, APR_INT32_MAX);
     }
 
     /* Setup worker threads */
