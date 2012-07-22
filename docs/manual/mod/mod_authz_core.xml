@@ -224,6 +224,11 @@ SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
   <p>The syntax is described in the <a href="../expr.html">ap_expr</a>
   documentation.</p>
 
+  <p>Normally, the expression is evaluated before authentication. However, if
+  the expression returns false and references the variable
+  <code>%{REMOTE_USER}</code>, authentication will be performed and
+  the expression will be re-evaluated.</p>
+
   </section>
 
 
