@@ -88,11 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_ssl: fix OCSP EOL handling
-     trunk patch: http://svn.apache.org/viewvc?rev=1358061&view=rev
-     2.4.x patch: trunk patch works
-     +1: jorton, trawick, rjung
-   
    * core: log value of Status line in script responses instead of header name
      trunk patch: http://svn.apache.org/viewvc?rev=1362538&view=rev
      2.4.x patch: trunk patch works
