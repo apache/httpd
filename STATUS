@@ -88,11 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * core: Always log if LimitRequestFieldSize triggers
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352911
-     2.4.x patch: trunk patch works
-     +1: sf, rjung, trawick
-
    * mod_authz_core: Allow to use %{REMOTE_USER} in Require expr. Improve
      logging.
      PR: 52892
