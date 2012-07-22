@@ -186,21 +186,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1306426 and
                   http://svn.apache.org/viewvc?view=revision&revision=1306841
      2.4.x patch: trunk patch works
-     +1: rjung
-     rjung: humbedooh: you applied it to trunk, care to vote?
+     +1: rjung, humbedooh
 
    * core config: Set Timeout in httpd-default.conf to same value as
      the code default (change from 300s to 60s)
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1306350
      2.4.x patch: trunk patch works
-     +1: rjung
+     +1: rjung, humbedooh
      rjung: igalic: you applied it to trunk, care to vote?
 
-   * docs+support: Encourage best practice in Perl scrpts (use strict, warnings).
+   * docs+support: Encourage best practice in Perl scripts (use strict, warnings).
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1335882 and
                   http://svn.apache.org/viewvc?view=revision&revision=1325724
      2.4.x patch: trunk patch works
-     +1: rjung
+     +1: rjung, humbedooh
      rjung: rbowen: you applied it to trunk, care to vote?
 
    * configure: Use AC_MSG_NOTICE so passing --silent works as advertised.
