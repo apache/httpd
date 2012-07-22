@@ -8,6 +8,9 @@ Changes with Apache 2.4.3
      possible XSS for a site where untrusted users can upload files to
      a location with MultiViews enabled. [Niels Heinen <heinenn google.com>]
 
+  *) core: Log value of Status header line in script responses rather
+     than the fixed header name.  [Chris Darroch]
+
   *) mpm_ssl: Fix handling of empty response from OCSP server.
      [Jim Meyering <meyering redhat.com>, Joe Orton]
 
