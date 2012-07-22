@@ -558,7 +558,7 @@ Alias /myapp /opt/myapp-1.2.3
 
                   <dt><code>REQUEST_SCHEME</code></dt>
 
-                  <dd>Will contain the scheme of the request (ususally
+                  <dd>Will contain the scheme of the request (usually
                   "http" or "https"). This value can be influenced with
                   <directive module="core">ServerName</directive>.</dd>
 
