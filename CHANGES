@@ -17,13 +17,8 @@ Changes with Apache 2.5.0
      calculating how many additional connections may be accepted.
      [Stefan Fritsch]
 
-  *) mod_deflate: Skip compression if compression is enabled at SSL level.
-     [Stefan Fritsch]
-
   *) mod_ext_filter: Fix error_log spam when input filters are configured.  
      [Joe Orton]
-
-  *) mod_rewrite: Add "AllowAnyURI" option. PR 52774. [Joe Orton]
 
   *) mod_ssl: Add RFC 5878 support. [Ben Laurie]
 
@@ -46,9 +41,6 @@ Changes with Apache 2.5.0
   *) mod_ssl: If exiting during initialization because of a fatal error,
      log a message to the main error log pointing to the appropriate
      virtual host error log. [Stefan Fritsch]
-
-  *) mod_ldap: Treat the "server unavailable" condition as a transient
-     error with all LDAP SDKs.  [Filip Valder <filip.valder vsb.cz>]
 
   *) mod_ssl: Add support for TLS-SRP (Secure Remote Password key exchange
      for TLS, RFC 5054). PR 51075. [Quinn Slack <sqs cs stanford edu>,
@@ -92,17 +84,6 @@ Changes with Apache 2.5.0
      be compiled by the build compiler instead of the host compiler.
      Also set CC_FOR_BUILD to 'cc' when cross-compilation is detected.
      PR 51257. [Guenter Knauf]
-
-  *) mod_authz_core: Fix parsing of Require arguments in <AuthzProviderAlias>.
-     PR 53048. [Stefan Fritsch]
-
-  *) mod_proxy_fcgi: If there is an error reading the headers from the
-     backend, send an error to the client. PR 52879. [Stefan Fritsch]
-
-  *) mod_rewrite: Fix RewriteCond integer checks to be parsed correctly.
-     PR 53023. [Axel Reinhold <apache freakout.de>, André Malo]
-
-  *) Fix MPM DSO load failure on AIX.  [Jeff Trawick]
 
   *) core: Add the port number to the vhost's name in the scoreboard.
      [Stefan Fritsch]
