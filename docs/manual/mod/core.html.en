@@ -1450,7 +1450,7 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
     format <code>[%t] [%l] [%a] %M&nbsp;</code> is not available, the surrounding
     brackets are not logged either.  Space characters can be escaped with a
     backslash to prevent them from delimiting a field.  The combination '%&nbsp;'
-    (percent space) is a zero-witdh field delimiter that does not produce any
+    (percent space) is a zero-width field delimiter that does not produce any
     output.</p>
 
     <p>The above behavior can be changed by adding modifiers to the format
@@ -3376,9 +3376,11 @@ directory</td></tr>
       <div class="note">
       <p>Even though the server follows the symlink it does <em>not</em>
       change the pathname used to match against <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> sections.</p>
-      <p>Note also, that this option <strong>gets ignored</strong> if set
-      inside a <code class="directive"><a href="#location">&lt;Location&gt;</a></code>
-      section.</p>
+
+      <p>The <code>FollowSymLinks</code> and
+      <code>SymLinksIfOwnerMatch</code> <code class="directive"><a href="#options">Options</a></code> work only in <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> sections or
+      <code>.htaccess</code> files.</p>
+
       <p>Omitting this option should not be considered a security restriction,
       since symlink testing is subject to race conditions that make it
       circumventable.</p>
@@ -3426,12 +3428,15 @@ directory</td></tr>
       target file or directory is owned by the same user id as the
       link.
 
-      <div class="note"><h3>Note</h3> <p>This option gets ignored if
-      set inside a <code class="directive"><a href="#location">&lt;Location&gt;</a></code> section.</p>
+      <div class="note"><h3>Note</h3>
+      <p>The <code>FollowSymLinks</code> and
+      <code>SymLinksIfOwnerMatch</code> <code class="directive"><a href="#options">Options</a></code> work only in <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> sections or
+      <code>.htaccess</code> files.</p>
+
       <p>This option should not be considered a security restriction,
       since symlink testing is subject to race conditions that make it
-      circumventable.</p></div>
-      </dd>
+      circumventable.</p>
+      </div> </dd>
     </dl>
 
     <p>Normally, if multiple <code class="directive">Options</code> could
