@@ -175,7 +175,7 @@ Changes with Apache 2.4.1
   *) Rewrite and proxy now decline what they don't support rather
      than fail the request. [Joe Orton]
 
-  *) Fix building against external apr plus ap-util if apr is not installed
+  *) Fix building against external apr plus apr-util if apr is not installed
      in a system default path. [Rainer Jung]
 
   *) Doxygen fixes and improvements. [Joe Orton, Igor Galić]
