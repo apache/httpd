@@ -183,8 +183,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      and built-in defaults. PR 52102.
      Changed values for MaxRequestWorkers, StartServers, MinSpareThreads
      and MaxSpareThreads in httpd-mpm.conf.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1306426
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1306841
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1306426 and
+                  http://svn.apache.org/viewvc?view=revision&revision=1306841
      2.4.x patch: trunk patch works
      +1: rjung
      rjung: humbedooh: you applied it to trunk, care to vote?
@@ -197,15 +197,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      rjung: igalic: you applied it to trunk, care to vote?
 
    * docs+support: Encourage best practice in Perl scrpts (use strict, warnings).
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1335882
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1325724
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1335882 and
+                  http://svn.apache.org/viewvc?view=revision&revision=1325724
      2.4.x patch: trunk patch works
      +1: rjung
      rjung: rbowen: you applied it to trunk, care to vote?
 
    * configure: Use AC_MSG_NOTICE so passing --silent works as advertised.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1341906
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1341913
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1341906 and
+                  http://svn.apache.org/viewvc?view=revision&revision=1341913
      2.4.x patch: trunk patch works
      +1: rjung
      rjung: jorton: you applied it to trunk, care to vote?
@@ -231,8 +231,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: rjung
      rjung: sf: you applied it to trunk, care to vote?
 
-   * core: For a local variable in a macro, use a name that is less likely to clash
-     with other variable names.
+   * core: For a local variable in a macro, use a name that is less likely to
+     clash with other variable names.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1327689
      2.4.x patch: trunk patch works
      +1: rjung
@@ -272,6 +272,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      during startup This should save some memory, especially with .htaccess
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1343099
      2.4.x patch: trunk patch works
+     +1: rjung
+     rjung: sf: you applied it to trunk, care to vote?
+
+   * mod_ssl: Add SSLCompression directive.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1345319
+                  http://svn.apache.org/viewvc?view=revision&revision=1348656
+     2.4.x patch: http://people.apache.org/~rjung/patches/ssl-compression-directive-2_4.patch
      +1: rjung
      rjung: sf: you applied it to trunk, care to vote?
 
