@@ -1347,7 +1347,7 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
     format <code>[%t] [%l] [%a] %M&nbsp;</code> is not available, the surrounding
     brackets are not logged either.  Space characters can be escaped with a
     backslash to prevent them from delimiting a field.  The combination '%&nbsp;'
-    (percent space) is a zero-witdh field delimiter that does not produce any
+    (percent space) is a zero-width field delimiter that does not produce any
     output.</p>
 
     <p>The above behavior can be changed by adding modifiers to the format
