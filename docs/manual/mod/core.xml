@@ -3298,9 +3298,13 @@ directory</description>
       <p>Even though the server follows the symlink it does <em>not</em>
       change the pathname used to match against <directive type="section"
       module="core">Directory</directive> sections.</p>
-      <p>Note also, that this option <strong>gets ignored</strong> if set
-      inside a <directive type="section" module="core">Location</directive>
-      section.</p>
+
+      <p>The <code>FollowSymLinks</code> and
+      <code>SymLinksIfOwnerMatch</code> <directive
+      module="core">Options</directive> work only in <directive
+      type="section" module="core">Directory</directive> sections or
+      <code>.htaccess</code> files.</p>
+
       <p>Omitting this option should not be considered a security restriction,
       since symlink testing is subject to race conditions that make it
       circumventable.</p>
@@ -3349,13 +3353,17 @@ directory</description>
       target file or directory is owned by the same user id as the
       link.
 
-      <note><title>Note</title> <p>This option gets ignored if
-      set inside a <directive module="core"
-      type="section">Location</directive> section.</p>
+      <note><title>Note</title>
+      <p>The <code>FollowSymLinks</code> and
+      <code>SymLinksIfOwnerMatch</code> <directive
+      module="core">Options</directive> work only in <directive
+      type="section" module="core">Directory</directive> sections or
+      <code>.htaccess</code> files.</p>
+
       <p>This option should not be considered a security restriction,
       since symlink testing is subject to race conditions that make it
-      circumventable.</p></note>
-      </dd>
+      circumventable.</p>
+      </note> </dd>
     </dl>
 
     <p>Normally, if multiple <directive>Options</directive> could
