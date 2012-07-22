@@ -179,6 +179,102 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: trawick
 
+   * core config: Update worker and event mpm defaults to match documentation
+     and built-in defaults. PR 52102.
+     Changed values for MaxRequestWorkers, StartServers, MinSpareThreads
+     and MaxSpareThreads in httpd-mpm.conf.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1306426
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1306841
+     2.4.x patch: trunk patch works
+     +1: rjung
+     rjung: humbedooh: you applied it to trunk, care to vote?
+
+   * core config: Set Timeout in httpd-default.conf to same value as
+     the code default (change from 300s to 60s)
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1306350
+     2.4.x patch: trunk patch works
+     +1: rjung
+     rjung: igalic: you applied it to trunk, care to vote?
+
+   * docs+support: Encourage best practice in Perl scrpts (use strict, warnings).
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1335882
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1325724
+     2.4.x patch: trunk patch works
+     +1: rjung
+     rjung: rbowen: you applied it to trunk, care to vote?
+
+   * configure: Use AC_MSG_NOTICE so passing --silent works as advertised.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1341906
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1341913
+     2.4.x patch: trunk patch works
+     +1: rjung
+     rjung: jorton: you applied it to trunk, care to vote?
+
+   * various: Move away from DEFAULT_REL_RUNTIMEDIR and use
+     ap_runtime_dir_relative() API.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1299718
+     2.4.x patch: trunk patch works
+     +1: rjung
+     rjung: jim: you applied it to trunk, care to vote?
+
+   * cache: Remove redundant double assignment, caught by Coverity.
+     No functional change.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352534
+     2.4.x patch: trunk patch works
+     +1: rjung
+     rjung: jorton: you applied it to trunk, care to vote?
+
+   * apxs: Make apxs use LDFLAGS from config_vars.mk in addition to
+     CFLAGS and CPPFLAGS.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1343094
+     2.4.x patch: trunk patch works
+     +1: rjung
+     rjung: sf: you applied it to trunk, care to vote?
+
+   * core: For a local variable in a macro, use a name that is less likely to clash
+     with other variable names.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1327689
+     2.4.x patch: trunk patch works
+     +1: rjung
+     rjung: sf: you applied it to trunk, care to vote?
+
+   * .gdbinit: improve dump_allocator, add dump_one_pool.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352909
+     2.4.x patch: trunk patch works
+     +1: rjung
+     rjung: sf: you applied it to trunk, care to vote?
+
+   * various: Code clean up (remove useless memory allocation).
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1361803
+     2.4.x patch: trunk patch works
+     +1: rjung
+     rjung: sf: you applied it to trunk, care to vote?
+
+   * proxy: Remove obsolete comment.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1345329
+     2.4.x patch: trunk patch works
+     +1: rjung
+     rjung: sf: you applied it to trunk, care to vote?
+
+   * scoreboard: Add the port number to the vhost's name.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1294358
+     2.4.x patch: trunk patch works
+     +1: rjung
+     rjung: sf: you applied it to trunk, care to vote?
+
+   * htpasswd: Note more prominently that SHA and crypt are insecure.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352910
+     2.4.x patch: trunk patch works
+     +1: rjung
+     rjung: sf: you applied it to trunk, care to vote?
+
+   * mod_setenvif: Compile the regex used by is_header_regex() only once
+     during startup This should save some memory, especially with .htaccess
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1343099
+     2.4.x patch: trunk patch works
+     +1: rjung
+     rjung: sf: you applied it to trunk, care to vote?
+
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please add them here.
