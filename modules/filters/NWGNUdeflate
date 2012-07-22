@@ -30,6 +30,7 @@ XINCDIRS	+= \
 			$(APR)/include \
 			$(APRUTIL)/include \
 			$(AP_WORK)/include \
+			$(STDMOD)/ssl \
 			$(NWOS) \
 			$(EOLIST)
 
