@@ -630,7 +630,7 @@ Virtual Hosting to identify different SSL virtual hosts?</a></h3>
     specification added, called Server Name Indication (SNI).</p>
 
     <p>Note that if you have a wildcard SSL certificate, or a
-    certificate that has multple hostnames on it using subjectAltName
+    certificate that has multiple hostnames on it using subjectAltName
     fields, you can use SSL on name-based virtual hosts without further
     workarounds.</p>
 
