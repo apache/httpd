@@ -88,12 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mpm_event: Fix MaxConnectionsPerChild
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1343085
-                  http://svn.apache.org/viewvc?view=revision&revision=1343087
-     2.4.x patch: trunk patch works (ex. CHANGES)
-     +1: sf, humbedooh, rjung
-
    * mod_ssl: fix OCSP EOL handling
      trunk patch: http://svn.apache.org/viewvc?rev=1358061&view=rev
      2.4.x patch: trunk patch works
