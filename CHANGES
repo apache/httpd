@@ -8,6 +8,8 @@ Changes with Apache 2.4.3
      possible XSS for a site where untrusted users can upload files to
      a location with MultiViews enabled. [Niels Heinen <heinenn google.com>]
 
+  *) core: Always log if LimitRequestFieldSize triggers.  [Stefan Fritsch]
+
   *) mod_deflate: Skip compression if compression is enabled at SSL level.
      [Stefan Fritsch]
 
