@@ -275,9 +275,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      rjung: sf: you applied it to trunk, care to vote?
 
    * mod_ssl: Add SSLCompression directive.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1345319
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1345319 and 
                   http://svn.apache.org/viewvc?view=revision&revision=1348656
      2.4.x patch: http://people.apache.org/~rjung/patches/ssl-compression-directive-2_4.patch
+     +1: rjung
+     rjung: sf: you applied it to trunk, care to vote?
+
+   * mod_ssl: Add support for TLS-SRP (Secure Remote Password key exchange
+     for TLS, RFC 5054).
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1347980 and 
+                  http://svn.apache.org/viewvc?view=revision&revision=1348653
+     2.4.x patch: http://people.apache.org/~rjung/patches/ssl-TLS-SRP-2_4.patch
      +1: rjung
      rjung: sf: you applied it to trunk, care to vote?
 
