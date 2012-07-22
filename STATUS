@@ -206,7 +206,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1341906 and
                   http://svn.apache.org/viewvc?view=revision&revision=1341913
      2.4.x patch: trunk patch works
-     +1: rjung
+     +1: rjung, humbedooh
      rjung: jorton: you applied it to trunk, care to vote?
 
    * various: Move away from DEFAULT_REL_RUNTIMEDIR and use
@@ -220,21 +220,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      No functional change.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352534
      2.4.x patch: trunk patch works
-     +1: rjung
+     +1: rjung, humbedooh
      rjung: jorton: you applied it to trunk, care to vote?
 
    * apxs: Make apxs use LDFLAGS from config_vars.mk in addition to
      CFLAGS and CPPFLAGS.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1343094
      2.4.x patch: trunk patch works
-     +1: rjung
+     +1: rjung, humbedooh
      rjung: sf: you applied it to trunk, care to vote?
 
    * core: For a local variable in a macro, use a name that is less likely to
      clash with other variable names.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1327689
      2.4.x patch: trunk patch works
-     +1: rjung
+     +1: rjung, humbedooh
      rjung: sf: you applied it to trunk, care to vote?
 
    * .gdbinit: improve dump_allocator, add dump_one_pool.
@@ -252,7 +252,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * proxy: Remove obsolete comment.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1345329
      2.4.x patch: trunk patch works
-     +1: rjung
+     +1: rjung, humbedooh
      rjung: sf: you applied it to trunk, care to vote?
 
    * scoreboard: Add the port number to the vhost's name.
@@ -264,7 +264,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * htpasswd: Note more prominently that SHA and crypt are insecure.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352910
      2.4.x patch: trunk patch works
-     +1: rjung
+     +1: rjung, humbedooh
      rjung: sf: you applied it to trunk, care to vote?
 
    * mod_setenvif: Compile the regex used by is_header_regex() only once
