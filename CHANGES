@@ -10,9 +10,6 @@ Changes with Apache 2.5.0
   *) mpm_prefork: Reduce spawn rate after a child process exits due to
      unexpected poll or accept failure.  [Jeff Trawick]
 
-  *) core: Log value of Status header line in script responses rather
-     than the fixed header name.  [Chris Darroch]
-
   *) mpm_event: Don't count connections in lingering close state when
      calculating how many additional connections may be accepted.
      [Stefan Fritsch]
@@ -21,10 +18,6 @@ Changes with Apache 2.5.0
      [Joe Orton]
 
   *) mod_ssl: Add RFC 5878 support. [Ben Laurie]
-
-  *) mod_authz_core: If an expression in "Require expr" returns denied and
-     references %{REMOTE_USER}, trigger authentication and retry. PR 52892.
-     [Stefan Fritsch]
 
   *) mod_lua: Add new directive LuaAuthzProvider to allow implementing an
      authorization provider in lua. [Stefan Fritsch]
@@ -55,8 +48,6 @@ Changes with Apache 2.5.0
 
   *) apxs: Use LDFLAGS from config_vars.mk in addition to CFLAGS and CPPFLAGS.
      [Stefan Fritsch]
-
-  *) mpm_event: Fix handling of MaxConnectionsPerChild. [Stefan Fritsch]
 
   *) suexec: Add --enable-suexec-capabilites support on Linux, to use
      setuid/setgid capability bits rather than a setuid root binary.
