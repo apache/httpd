@@ -8,6 +8,10 @@ Changes with Apache 2.4.3
      possible XSS for a site where untrusted users can upload files to
      a location with MultiViews enabled. [Niels Heinen <heinenn google.com>]
 
+  *) mod_authz_core: If an expression in "Require expr" returns denied and
+     references %{REMOTE_USER}, trigger authentication and retry. PR 52892.
+     [Stefan Fritsch]
+
   *) core: Always log if LimitRequestFieldSize triggers.  [Stefan Fritsch]
 
   *) mod_deflate: Skip compression if compression is enabled at SSL level.

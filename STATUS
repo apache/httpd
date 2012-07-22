@@ -88,15 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_authz_core: Allow to use %{REMOTE_USER} in Require expr. Improve
-     logging.
-     PR: 52892
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1351071
-                  http://svn.apache.org/viewvc?view=revision&revision=1351072
-                  http://svn.apache.org/viewvc?view=revision&revision=1351074
-     2.4.x patch: trunk patch works (ex. CHANGES)
-     +1: sf, rjung, trawick
-
    * mpm_event: Fix MaxConnectionsPerChild
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1343085
                   http://svn.apache.org/viewvc?view=revision&revision=1343087
