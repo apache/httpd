@@ -88,12 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_deflate: Make mod_deflate skip compression if compression is enabled
-     at SSL level.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1359057
-     2.4.x patch: trunk patch works (ex. CHANGES)
-     +1: sf, rjung, jorton
-
    * core: Always log if LimitRequestFieldSize triggers
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352911
      2.4.x patch: trunk patch works
