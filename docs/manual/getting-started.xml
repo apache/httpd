@@ -122,7 +122,7 @@ module="core">Include</directive> directive. The names or locations of
 these sub-files are not magical, and may vary greatly from one
 installation to another. Arrange and subdivide these files as
 makes the most sense to <strong>you</strong>. If the file arrangement
-you have by default doesn't make sense to you, feel free to rerrange it.</p>
+you have by default doesn't make sense to you, feel free to rearrange it.</p>
 
 <p>The server is configured by placing <a
 href="mod/quickreference.html">configuration directives</a> in these
@@ -160,7 +160,7 @@ divided into static and dynamic content.</p>
 and other files that reside in the filesystem. The <directive
 module="core">DocumentRoot</directive> directive specifies where in your
 filesystem you should place these files. This directive is either set
-globally, or per virual host. Look in your configuration file(s) to
+globally, or per virtual host. Look in your configuration file(s) to
 determine how this is set for your server.</p>
 
 <p>Typically, a document called <code>index.html</code> will be served
