@@ -100,6 +100,7 @@ static authn_status authn_dbd_password(request_rec *r, const char *user,
     apr_dbd_prepared_t *statement;
     apr_dbd_results_t *res = NULL;
     apr_dbd_row_t *row = NULL;
+    int ret;
 
     authn_dbd_conf *conf = ap_get_module_config(r->per_dir_config,
                                                 &authn_dbd_module);
@@ -124,11 +125,12 @@ static authn_status authn_dbd_password(request_rec *r, const char *user,
                       "AuthDBDUserPWQuery with the key '%s'", conf->user);
         return AUTH_GENERAL_ERROR;
     }
-    if (apr_dbd_pvselect(dbd->driver, r->pool, dbd->handle, &res, statement,
-                              0, user, NULL) != 0) {
+    if ((ret = apr_dbd_pvselect(dbd->driver, r->pool, dbd->handle, &res,
+                                statement, 0, user, NULL) != 0)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01656)
                       "Query execution error looking up '%s' "
-                      "in database", user);
+                      "in database [%s]",
+                      user, apr_dbd_error(dbd->driver, dbd->handle, ret));
         return AUTH_GENERAL_ERROR;
     }
     for (rv = apr_dbd_get_row(dbd->driver, r->pool, res, &row, -1);
@@ -193,6 +195,7 @@ static authn_status authn_dbd_realm(request_rec *r, const char *user,
     apr_dbd_prepared_t *statement;
     apr_dbd_results_t *res = NULL;
     apr_dbd_row_t *row = NULL;
+    int ret;
 
     authn_dbd_conf *conf = ap_get_module_config(r->per_dir_config,
                                                 &authn_dbd_module);
@@ -215,11 +218,13 @@ static authn_status authn_dbd_realm(request_rec *r, const char *user,
                       "AuthDBDUserRealmQuery with the key '%s'", conf->realm);
         return AUTH_GENERAL_ERROR;
     }
-    if (apr_dbd_pvselect(dbd->driver, r->pool, dbd->handle, &res, statement,
-                              0, user, realm, NULL) != 0) {
+    if ((ret = apr_dbd_pvselect(dbd->driver, r->pool, dbd->handle, &res,
+                                statement, 0, user, realm, NULL) != 0)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01661)
                       "Query execution error looking up '%s:%s' "
-                      "in database", user, realm);
+                      "in database [%s]",
+                      user, realm,
+                      apr_dbd_error(dbd->driver, dbd->handle, ret));
         return AUTH_GENERAL_ERROR;
     }
     for (rv = apr_dbd_get_row(dbd->driver, r->pool, res, &row, -1);
