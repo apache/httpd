@@ -66,7 +66,7 @@ typedef struct ef_ctx_t {
     apr_procattr_t *procattr;
     ef_dir_t *dc;
     ef_filter_t *filter;
-    int noop;
+    int noop, hit_eos;
 #if APR_FILES_AS_SOCKETS
     apr_pollset_t *pollset;
 #endif
@@ -827,6 +827,7 @@ static int ef_unified_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     if (eos) {
         b = apr_bucket_eos_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, b);
+        ctx->hit_eos = 1;
     }
 
     return APR_SUCCESS;
@@ -908,6 +909,14 @@ static apr_status_t ef_input_filter(ap_filter_t *f, apr_bucket_brigade *bb,
             }
         }
         ctx = f->ctx;
+    }
+
+    if (ctx->hit_eos) {
+        /* Match behaviour of HTTP_IN if filter is re-invoked after
+         * hitting EOS: give back another EOS. */
+        apr_bucket *e = apr_bucket_eos_create(f->c->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(bb, e);
+        return APR_SUCCESS;
     }
 
     if (ctx->noop) {

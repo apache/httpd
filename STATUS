@@ -100,11 +100,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works (needs CHANGES entry)
      +1: sf, rjung, jim
 
-   * mod_ext_filter: fix error log spam with input filters
-     trunk patch: http://svn.apache.org/viewvc?rev=1357685&view=rev
-     2.4.x patch: trunk patch works
-     +1: jorton, trawick, jim
-
    * mpm_prefork: Reduce spawn rate after a child process exits due to
      unexpected poll or accept failure.
      trunk patch: http://svn.apache.org/viewvc?rev=1363183&view=rev
