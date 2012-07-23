@@ -100,12 +100,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works (needs CHANGES entry)
      +1: sf, rjung, jim
 
-   * mpm_prefork: Reduce spawn rate after a child process exits due to
-     unexpected poll or accept failure.
-     trunk patch: http://svn.apache.org/viewvc?rev=1363183&view=rev
-     2.4.x patch: trunk patch works
-     +1: trawick, rjung, jim
-
    * mpm_event, mpm_worker: Fix cases where the spawn rate wasn't reduced
      after child process resource shortages.
      trunk patch: http://svn.apache.org/viewvc?rev=1363440&view=rev
