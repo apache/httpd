@@ -122,6 +122,7 @@ static int ap_daemons_limit = 0;
 static int max_workers = 0;
 static int server_limit = 0;
 static int thread_limit = 0;
+static int had_healthy_child = 0;
 static int dying = 0;
 static int workers_may_exit = 0;
 static int start_thread_may_exit = 0;
@@ -129,7 +130,6 @@ static int listener_may_exit = 0;
 static int requests_this_child;
 static int num_listensocks = 0;
 static int resource_shortage = 0;
-static int had_healthy_child = 0;
 static fd_queue_t *worker_queue;
 static fd_queue_info_t *worker_queue_info;
 static int mpm_state = AP_MPMQ_STARTING;
@@ -1508,11 +1508,11 @@ static void perform_idle_server_maintenance(void)
                     ++idle_thread_count;
                 }
                 if (status >= SERVER_READY && status < SERVER_GRACEFUL) {
-                    ++active_thread_count;
                     ++child_threads_active;
                 }
             }
         }
+        active_thread_count += child_threads_active;
         if (any_dead_threads && totally_free_length < retained->idle_spawn_rate
                 && free_length < MAX_SPAWN_RATE
                 && (!ps->pid               /* no process in the slot */
@@ -2028,6 +2028,7 @@ static int worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     ap_daemons_limit = server_limit;
     threads_per_child = DEFAULT_THREADS_PER_CHILD;
     max_workers = ap_daemons_limit * threads_per_child;
+    had_healthy_child = 0;
     ap_extended_status = 0;
 
     return OK;
