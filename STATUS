@@ -88,11 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_so: Optionally allow LoadModule+LoadFile to use the normal search path.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1332378
-     2.4.x patch: trunk patch works (ex. CHANGES)
-     +1: sf, rjung, jim
-
    * mpm_event: Fix slots staying in "L" state in the scoreboard
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1294349
      2.4.x patch: trunk patch works (needs CHANGES entry)
