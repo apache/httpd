@@ -137,7 +137,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?rev=1363557&view=rev
      trunk patch: http://svn.apache.org/viewvc?rev=1364601&view=rev
      2.4.x patch: trunk patch works
-     +1: trawick
+     +1: trawick, jorton
      +1 before r1364601 was added: jim
 
    * docs+support: Encourage best practice in Perl scripts (use strict, warnings).
@@ -158,7 +158,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      clash with other variable names.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1327689
      2.4.x patch: trunk patch works
-     +1: rjung, humbedooh
+     +1: rjung, humbedooh, jorton
      rjung: sf: you applied it to trunk, care to vote?
 
    * .gdbinit: improve dump_allocator, add dump_one_pool.
@@ -170,7 +170,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * various: Code clean up (remove useless memory allocation).
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1361803
      2.4.x patch: trunk patch works
-     +1: rjung, jim
+     +1: rjung, jim, jorton
      rjung: sf: you applied it to trunk, care to vote?
 
    * scoreboard: Add the port number to the vhost's name.
