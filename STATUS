@@ -142,13 +142,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: rjung, humbedooh, jim
 
-   * core config: Set Timeout in httpd-default.conf to same value as
-     the code default (change from 300s to 60s)
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1306350
-     2.4.x patch: trunk patch works
-     +1: rjung, humbedooh, jim
-     rjung: igalic: you applied it to trunk, care to vote?
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
