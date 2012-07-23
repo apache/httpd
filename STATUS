@@ -88,12 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mpm_event: Don't call ap_start_lingering_close from the listener thread
-     because it may block
-     PR: 52229
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1294356
-     2.4.x patch: trunk patch works (needs CHANGES entry)
-     +1: sf, rjung, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
