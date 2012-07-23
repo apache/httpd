@@ -88,11 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * various: Move away from DEFAULT_REL_RUNTIMEDIR and use
-     ap_runtime_dir_relative() API.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1299718
-     2.4.x patch: trunk patch works
-     +1: rjung, jim, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

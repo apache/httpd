@@ -180,7 +180,7 @@ static void chdir_for_gprof(void)
         }
     }
     else {
-        use_dir = ap_server_root_relative(pconf, DEFAULT_REL_RUNTIMEDIR);
+        use_dir = ap_runtime_dir_relative(pconf, "");
     }
 
     chdir(use_dir);

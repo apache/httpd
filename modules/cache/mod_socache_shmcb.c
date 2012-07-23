@@ -32,7 +32,7 @@
 
 #define SHMCB_MAX_SIZE (64 * 1024 * 1024)
 
-#define DEFAULT_SHMCB_PREFIX DEFAULT_REL_RUNTIMEDIR "/socache-shmcb-"
+#define DEFAULT_SHMCB_PREFIX "socache-shmcb-"
 
 #define DEFAULT_SHMCB_SUFFIX ".cache"
 
@@ -341,7 +341,7 @@ static apr_status_t socache_shmcb_init(ap_socache_instance_t *ctx,
         const char *path = apr_pstrcat(p, DEFAULT_SHMCB_PREFIX, namespace,
                                        DEFAULT_SHMCB_SUFFIX, NULL);
 
-        ctx->data_file = ap_server_root_relative(p, path);
+        ctx->data_file = ap_runtime_dir_relative(p, path);
     }
 
     /* Use anonymous shm by default, fall back on name-based. */

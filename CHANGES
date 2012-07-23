@@ -8,6 +8,9 @@ Changes with Apache 2.4.3
      possible XSS for a site where untrusted users can upload files to
      a location with MultiViews enabled. [Niels Heinen <heinenn google.com>]
 
+  *) Honor DefaultRuntimeDir for mutexes, socache and CGID socket.
+     [Jim Jagielski]
+
   *) ab: Fix bind() errors.  [Joe Orton]
 
   *) mpm_event: Don't do a blocking write when starting a lingering close
