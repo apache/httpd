@@ -135,7 +135,7 @@ static int is_scriptaliased(request_rec *r)
 
 #define DEFAULT_LOGBYTES 10385760
 #define DEFAULT_BUFBYTES 1024
-#define DEFAULT_SOCKET  DEFAULT_REL_RUNTIMEDIR "/cgisock"
+#define DEFAULT_SOCKET "cgisock"
 
 #define CGI_REQ    1
 #define SSI_REQ    2
@@ -910,6 +910,7 @@ static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
         procnew->err = procnew->in = procnew->out = NULL;
         apr_pool_userdata_set((const void *)procnew, userdata_key,
                      apr_pool_cleanup_null, main_server->process->pool);
+        return ret;
     }
     else {
         procnew = data;
@@ -922,7 +923,7 @@ static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
             total_modules++;
 
         parent_pid = getpid();
-        tmp_sockname = ap_server_root_relative(p, sockname);
+        tmp_sockname = ap_runtime_dir_relative(p, sockname);
         if (strlen(tmp_sockname) > sizeof(server_addr->sun_path) - 1) {
             tmp_sockname[sizeof(server_addr->sun_path)] = '\0';
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, main_server, APLOGNO(01254)
@@ -1016,7 +1017,7 @@ static const char *set_script_socket(cmd_parms *cmd, void *dummy, const char *ar
 
     /* Make sure the pid is appended to the sockname */
     sockname = ap_append_pid(cmd->pool, arg, ".");
-    sockname = ap_server_root_relative(cmd->pool, sockname);
+    sockname = ap_runtime_dir_relative(cmd->pool, sockname);
 
     if (!sockname) {
         return apr_pstrcat(cmd->pool, "Invalid ScriptSock path",
