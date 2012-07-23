@@ -134,7 +134,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      incompatible with the requested protocol was used.   (730047)"
      trunk patch: http://svn.apache.org/viewvc?rev=1351737&view=rev
      2.4.x patch: trunk patch works
-     +1: trawick, rjung
+     +1: trawick, rjung, jorton
      trawick, rjung: if CHANGES entry is added
 
    * mpm_event, mpm_worker: Remain active amidst prevalent child process
@@ -158,14 +158,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1341906 and
                   http://svn.apache.org/viewvc?view=revision&revision=1341913
      2.4.x patch: trunk patch works
-     +1: rjung, humbedooh
+     +1: rjung, humbedooh, jorton
      rjung: jorton: you applied it to trunk, care to vote?
 
    * cache: Remove redundant double assignment, caught by Coverity.
      No functional change.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352534
      2.4.x patch: trunk patch works
-     +1: rjung, humbedooh
+     +1: rjung, humbedooh, jorton
      rjung: jorton: you applied it to trunk, care to vote?
 
    * apxs: Make apxs use LDFLAGS from config_vars.mk in addition to
@@ -185,7 +185,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * .gdbinit: improve dump_allocator, add dump_one_pool.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352909
      2.4.x patch: trunk patch works
-     +1: rjung
+     +1: rjung, jorton
      rjung: sf: you applied it to trunk, care to vote?
 
    * various: Code clean up (remove useless memory allocation).
