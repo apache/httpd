@@ -12,6 +12,9 @@ Changes with Apache 2.4.3
      LoadModule and the file cannot be found in the server root directory,
      try to use the standard dlopen() search path. [Stefan Fritsch]
 
+  *) mpm_event, mpm_worker: Fix cases where the spawn rate wasn't reduced
+     after child process resource shortages.  [Jeff Trawick]
+
   *) mpm_prefork: Reduce spawn rate after a child process exits due to
      unexpected poll or accept failure.  [Jeff Trawick]
 
