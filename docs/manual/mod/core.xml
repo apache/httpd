@@ -763,7 +763,7 @@ named file-system directory, sub-directories, and their contents</description>
     configuration file. For example, with</p>
 
     <example>
-      &lt;Directory ~ abc$&gt;<br />
+      &lt;Directory ~ &quot;public_html/.*&quot;&gt;<br />
       <indent>
         # ... directives here ...<br />
       </indent>
