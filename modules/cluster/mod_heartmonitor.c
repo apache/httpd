@@ -792,7 +792,7 @@ static void *hm_create_config(apr_pool_t *p, server_rec *s)
     hm_ctx_t *ctx = (hm_ctx_t *) apr_palloc(p, sizeof(hm_ctx_t));
 
     ctx->active = 0;
-    ctx->storage_path = ap_server_root_relative(p, "logs/hb.dat");
+    ctx->storage_path = ap_runtime_dir_relative(p, DEFAULT_HEARTBEAT_STORAGE);
     /* TODO: Add directive for tuning the update interval
      */
     ctx->interval = apr_time_from_sec(HM_UPDATE_SEC);
@@ -816,7 +816,7 @@ static const char *cmd_hm_storage(cmd_parms *cmd,
         return err;
     }
 
-    ctx->storage_path = ap_server_root_relative(p, path);
+    ctx->storage_path = ap_runtime_dir_relative(p, path);
 
     return NULL;
 }
