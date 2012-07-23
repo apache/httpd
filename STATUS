@@ -171,8 +171,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        (1363440 should be a prereq to avoid unnecessarily rapid
        creation of child processes in some situations)
      trunk patch: http://svn.apache.org/viewvc?rev=1363557&view=rev
+     trunk patch: http://svn.apache.org/viewvc?rev=1364601&view=rev
      2.4.x patch: trunk patch works
-     +1: trawick, jim
+     +1: trawick
+     +1 before r1364601 was added: jim
 
    * docs+support: Encourage best practice in Perl scripts (use strict, warnings).
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1335882 and
