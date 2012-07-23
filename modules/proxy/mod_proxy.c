@@ -44,7 +44,6 @@ APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
  *                  can't trust directory_walk/file_walk since these are
  *                  not in our filesystem.  Prevents mod_http from serving
  *                  the TRACE request we will set aside to handle later.
- *  type_checker:   set type to PROXY_MAGIC_TYPE if filename begins proxy:
  *  fix_ups:        convert the URL stored in the filename to the
  *                  canonical form.
  *  handler:        handle proxy requests
