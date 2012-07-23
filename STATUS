@@ -139,8 +139,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1335882 and
                   http://svn.apache.org/viewvc?view=revision&revision=1325724
      2.4.x patch: trunk patch works
-     +1: rjung, humbedooh
-     rjung: rbowen: you applied it to trunk, care to vote?
+     +1: rjung, humbedooh, rbowen
 
    * apxs: Make apxs use LDFLAGS from config_vars.mk in addition to
      CFLAGS and CPPFLAGS.
