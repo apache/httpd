@@ -45,6 +45,9 @@ Changes with Apache 2.4.3
   *) mod_log_config: Fix %{abc}C truncating cookie values at first "=".
      PR 53104. [Greg Ames]
 
+  *) mod_ext_filter: Fix error_log spam when input filters are configured.  
+     [Joe Orton]
+
   *) mod_rewrite: Add "AllowAnyURI" option. PR 52774. [Joe Orton]
 
   *) htdbm, htpasswd: Don't crash if crypt() fails (e.g. with FIPS enabled). 
