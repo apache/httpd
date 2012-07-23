@@ -137,7 +137,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?rev=1363557&view=rev
      trunk patch: http://svn.apache.org/viewvc?rev=1364601&view=rev
      2.4.x patch: trunk patch works
-     +1: trawick, jorton
+     +1: trawick, jorton, rjung
      +1 before r1364601 was added: jim
 
    * docs+support: Encourage best practice in Perl scripts (use strict, warnings).
@@ -211,7 +211,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
-If you want to propose one of those, please add them here.
+If you want to propose one of those, please still add them here.
 
 PATCHES/ISSUES THAT ARE STALLED
 
