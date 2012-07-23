@@ -133,15 +133,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: rjung, humbedooh, jim
      rjung: sf: you applied it to trunk, care to vote?
 
-   * core config: Update worker and event mpm defaults to match documentation
-     and built-in defaults. PR 52102.
-     Changed values for MaxRequestWorkers, StartServers, MinSpareThreads
-     and MaxSpareThreads in httpd-mpm.conf.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1306426 and
-                  http://svn.apache.org/viewvc?view=revision&revision=1306841
-     2.4.x patch: trunk patch works
-     +1: rjung, humbedooh, jim
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
