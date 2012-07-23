@@ -808,7 +808,7 @@ named file-system directory, sub-directories, and their contents</td></tr>
     configuration file. For example, with</p>
 
     <div class="example"><p><code>
-      &lt;Directory ~ abc$&gt;<br />
+      &lt;Directory ~ "public_html/.*"&gt;<br />
       <span class="indent">
         # ... directives here ...<br />
       </span>
