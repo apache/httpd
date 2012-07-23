@@ -154,23 +154,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: rjung, humbedooh
      rjung: sf: you applied it to trunk, care to vote?
 
-   * core: For a local variable in a macro, use a name that is less likely to
-     clash with other variable names.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1327689
-     2.4.x patch: trunk patch works
-     +1: rjung, humbedooh, jorton
-     rjung: sf: you applied it to trunk, care to vote?
-
    * .gdbinit: improve dump_allocator, add dump_one_pool.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352909
      2.4.x patch: trunk patch works
      +1: rjung, jorton
-     rjung: sf: you applied it to trunk, care to vote?
-
-   * various: Code clean up (remove useless memory allocation).
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1361803
-     2.4.x patch: trunk patch works
-     +1: rjung, jim, jorton
      rjung: sf: you applied it to trunk, care to vote?
 
    * scoreboard: Add the port number to the vhost's name.
