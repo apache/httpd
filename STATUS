@@ -135,12 +135,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: trawick, jorton, rjung
      +1 before r1364601 was added: jim
 
-   * docs+support: Encourage best practice in Perl scripts (use strict, warnings).
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1335882 and
-                  http://svn.apache.org/viewvc?view=revision&revision=1325724
-     2.4.x patch: trunk patch works
-     +1: rjung, humbedooh, rbowen
-
    * apxs: Make apxs use LDFLAGS from config_vars.mk in addition to
      CFLAGS and CPPFLAGS.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1343094
