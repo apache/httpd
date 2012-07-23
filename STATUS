@@ -127,12 +127,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: trawick, rjung, jim
 
-   * proxy: Remove obsolete comment.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1345329
-     2.4.x patch: trunk patch works
-     +1: rjung, humbedooh, jim
-     rjung: sf: you applied it to trunk, care to vote?
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
