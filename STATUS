@@ -130,13 +130,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://www.humbedooh.com/mods/mod_lua.patch (+CHANGES)
      +1: humbedooh, rjung
 
-   * ab failure: "Benchmarking 127.0.0.1 (be patient)...bind: An address
-     incompatible with the requested protocol was used.   (730047)"
-     trunk patch: http://svn.apache.org/viewvc?rev=1351737&view=rev
-     2.4.x patch: trunk patch works
-     +1: trawick, rjung, jorton
-     trawick, rjung: if CHANGES entry is added
-
    * mpm_event, mpm_worker: Remain active amidst prevalent child process
      resource shortages.
        (1363440 should be a prereq to avoid unnecessarily rapid
@@ -153,20 +146,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: rjung, humbedooh
      rjung: rbowen: you applied it to trunk, care to vote?
-
-   * configure: Use AC_MSG_NOTICE so passing --silent works as advertised.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1341906 and
-                  http://svn.apache.org/viewvc?view=revision&revision=1341913
-     2.4.x patch: trunk patch works
-     +1: rjung, humbedooh, jorton
-     rjung: jorton: you applied it to trunk, care to vote?
-
-   * cache: Remove redundant double assignment, caught by Coverity.
-     No functional change.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352534
-     2.4.x patch: trunk patch works
-     +1: rjung, humbedooh, jorton
-     rjung: jorton: you applied it to trunk, care to vote?
 
    * apxs: Make apxs use LDFLAGS from config_vars.mk in addition to
      CFLAGS and CPPFLAGS.
