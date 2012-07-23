@@ -4,18 +4,9 @@ Changes with Apache 2.5.0
   *) mpm_event, mpm_worker: Remain active amidst prevalent child process
      resource shortages.  [Jeff Trawick]
 
-  *) mpm_event, mpm_worker: Fix cases where the spawn rate wasn't reduced
-     after child process resource shortages.  [Jeff Trawick]
-
-  *) mpm_prefork: Reduce spawn rate after a child process exits due to
-     unexpected poll or accept failure.  [Jeff Trawick]
-
   *) mpm_event: Don't count connections in lingering close state when
      calculating how many additional connections may be accepted.
      [Stefan Fritsch]
-
-  *) mod_ext_filter: Fix error_log spam when input filters are configured.  
-     [Joe Orton]
 
   *) mod_ssl: Add RFC 5878 support. [Ben Laurie]
 
@@ -63,10 +54,6 @@ Changes with Apache 2.5.0
   *) mod_ssl: Add support for TLS Next Protocol Negotiation.  PR 52210.
      [Matthew Steele <mdsteele google.com>]
 
-  *) mod_so: If a filename without slashes is specified for LoadFile or
-     LoadModule and the file cannot be found in the server root directory,
-     try to use the standard dlopen() search path. [Stefan Fritsch]
-
   *) various modules, rotatelogs: Replace use of apr_file_write() with
      apr_file_write_full() to prevent incomplete writes. PR 53131.
      [Nicolas Viennot <apache viennot biz>, Stefan Fritsch]
@@ -78,9 +65,6 @@ Changes with Apache 2.5.0
 
   *) core: Add the port number to the vhost's name in the scoreboard.
      [Stefan Fritsch]
-
-  *) mpm_event: Don't do a blocking write when starting a lingering close
-     from the listener thread. PR 52229. [Stefan Fritsch]
 
   *) core: In maintainer mode, replace apr_palloc with a version that
      initializes the allocated memory with non-zero values, except if
