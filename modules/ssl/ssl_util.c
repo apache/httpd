@@ -76,8 +76,7 @@ apr_file_t *ssl_util_ppopen(server_rec *s, apr_pool_t *p, const char *cmd,
         return NULL;
     if (apr_procattr_cmdtype_set(procattr, APR_PROGRAM) != APR_SUCCESS)
         return NULL;
-    if ((proc = (apr_proc_t *)apr_pcalloc(p, sizeof(apr_proc_t))) == NULL)
-        return NULL;
+    proc = apr_pcalloc(p, sizeof(apr_proc_t));
     if (apr_proc_create(proc, cmd, argv, NULL, procattr, p) != APR_SUCCESS)
         return NULL;
     return proc->out;
@@ -376,24 +375,11 @@ static struct CRYPTO_dynlock_value *ssl_dyn_create_function(const char *file,
      * allocated memory from a pool, create a subpool that we can blow
      * away in the destruction callback.
      */
-    rv = apr_pool_create(&p, dynlockpool);
-    if (rv != APR_SUCCESS) {
-        ap_log_perror(file, line, APLOG_MODULE_INDEX, APLOG_ERR, rv, dynlockpool,
-                      APLOGNO(02183) "Failed to create subpool for dynamic lock");
-        return NULL;
-    }
-
+    apr_pool_create(&p, dynlockpool);
     ap_log_perror(file, line, APLOG_MODULE_INDEX, APLOG_TRACE1, 0, p,
                   "Creating dynamic lock");
 
-    value = (struct CRYPTO_dynlock_value *)apr_palloc(p,
-                                                      sizeof(struct CRYPTO_dynlock_value));
-    if (!value) {
-        ap_log_perror(file, line, APLOG_MODULE_INDEX, APLOG_ERR, 0, p,
-                      APLOGNO(02185) "Failed to allocate dynamic lock structure");
-        return NULL;
-    }
-
+    value = apr_palloc(p, sizeof(struct CRYPTO_dynlock_value));
     value->pool = p;
     /* Keep our own copy of the place from which we were created,
        using our own pool. */

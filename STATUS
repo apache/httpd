@@ -303,12 +303,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: rjung
      rjung: ben: you applied it to trunk, care to vote?
 
-   * mod_ssl: Remove some checking for out-of-mem conditions that cannot be hit
-     because apr_pcalloc/apr_pool_create will call abort() anyway.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1361792
-     2.4.x patch: Trunk patch works.
-     +1: rjung, jim
-     rjung: sf: you applied it to trunk, care to vote?
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
