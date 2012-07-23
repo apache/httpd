@@ -197,7 +197,7 @@ AP_DECLARE(void) ap_die(int type, request_rec *r)
                                              "error-notes")) != NULL) {
                 apr_table_setn(r->subprocess_env, "ERROR_NOTES", error_notes);
             }
-            r->method = apr_pstrdup(r->pool, "GET");
+            r->method = "GET";
             r->method_number = M_GET;
             ap_internal_redirect(custom_response, r);
             return;

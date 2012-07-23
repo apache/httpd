@@ -894,7 +894,7 @@ static int APR_THREAD_FUNC regfnServerSupportFunction(isapi_cid    *cid,
         }
 
         /* Reset the method to GET */
-        r->method = apr_pstrdup(r->pool, "GET");
+        r->method = "GET";
         r->method_number = M_GET;
 
         /* Don't let anyone think there's still data */
