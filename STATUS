@@ -119,19 +119,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_so: Optionally allow LoadModule+LoadFile to use the normal search path.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1332378
      2.4.x patch: trunk patch works (ex. CHANGES)
-     +1: sf, rjung
+     +1: sf, rjung, jim
 
    * mpm_event: Fix slots staying in "L" state in the scoreboard
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1294349
      2.4.x patch: trunk patch works (needs CHANGES entry)
-     +1: sf, rjung
+     +1: sf, rjung, jim
 
    * mpm_event: Don't call ap_start_lingering_close from the listener thread
      because it may block
      PR: 52229
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1294356
      2.4.x patch: trunk patch works (needs CHANGES entry)
-     +1: sf, rjung
+     +1: sf, rjung, jim
 
    * mod_lua: - Add a parsebody function for retrieving POST data. PR: 53064
               - Make mod_lua compatible with Lua 5.2
@@ -145,24 +145,24 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_ext_filter: fix error log spam with input filters
      trunk patch: http://svn.apache.org/viewvc?rev=1357685&view=rev
      2.4.x patch: trunk patch works
-     +1: jorton, trawick
+     +1: jorton, trawick, jim
 
    * mpm_prefork: Reduce spawn rate after a child process exits due to
      unexpected poll or accept failure.
      trunk patch: http://svn.apache.org/viewvc?rev=1363183&view=rev
      2.4.x patch: trunk patch works
-     +1: trawick, rjung
+     +1: trawick, rjung, jim
 
    * mpm_event, mpm_worker: Fix cases where the spawn rate wasn't reduced
      after child process resource shortages.
      trunk patch: http://svn.apache.org/viewvc?rev=1363440&view=rev
      2.4.x patch: trunk patch works
-     +1: trawick, rjung
+     +1: trawick, rjung, jim
 
    * Windows tweak to mpm_common.h to enable MinGW build
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1363035
      2.4.x patch: trunk patch works
-     +1: trawick, rjung
+     +1: trawick, rjung, jim
 
    * ab failure: "Benchmarking 127.0.0.1 (be patient)...bind: An address
      incompatible with the requested protocol was used.   (730047)"
@@ -177,7 +177,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        creation of child processes in some situations)
      trunk patch: http://svn.apache.org/viewvc?rev=1363557&view=rev
      2.4.x patch: trunk patch works
-     +1: trawick
+     +1: trawick, jim
 
    * core config: Update worker and event mpm defaults to match documentation
      and built-in defaults. PR 52102.
@@ -186,13 +186,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1306426 and
                   http://svn.apache.org/viewvc?view=revision&revision=1306841
      2.4.x patch: trunk patch works
-     +1: rjung, humbedooh
+     +1: rjung, humbedooh, jim
 
    * core config: Set Timeout in httpd-default.conf to same value as
      the code default (change from 300s to 60s)
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1306350
      2.4.x patch: trunk patch works
-     +1: rjung, humbedooh
+     +1: rjung, humbedooh, jim
      rjung: igalic: you applied it to trunk, care to vote?
 
    * docs+support: Encourage best practice in Perl scripts (use strict, warnings).
@@ -213,7 +213,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ap_runtime_dir_relative() API.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1299718
      2.4.x patch: trunk patch works
-     +1: rjung
+     +1: rjung, jim
      rjung: jim: you applied it to trunk, care to vote?
 
    * cache: Remove redundant double assignment, caught by Coverity.
@@ -246,19 +246,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * various: Code clean up (remove useless memory allocation).
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1361803
      2.4.x patch: trunk patch works
-     +1: rjung
+     +1: rjung, jim
      rjung: sf: you applied it to trunk, care to vote?
 
    * proxy: Remove obsolete comment.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1345329
      2.4.x patch: trunk patch works
-     +1: rjung, humbedooh
+     +1: rjung, humbedooh, jim
      rjung: sf: you applied it to trunk, care to vote?
 
    * scoreboard: Add the port number to the vhost's name.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1294358
      2.4.x patch: trunk patch works
-     +1: rjung
+     +1: rjung, jim
      rjung: sf: you applied it to trunk, care to vote?
 
    * htpasswd: Note more prominently that SHA and crypt are insecure.
@@ -271,7 +271,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      during startup This should save some memory, especially with .htaccess
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1343099
      2.4.x patch: trunk patch works
-     +1: rjung
+     +1: rjung, jim
      rjung: sf: you applied it to trunk, care to vote?
 
    * mod_ssl: Add SSLCompression directive.
@@ -307,7 +307,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      because apr_pcalloc/apr_pool_create will call abort() anyway.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1361792
      2.4.x patch: Trunk patch works.
-     +1: rjung
+     +1: rjung, jim
      rjung: sf: you applied it to trunk, care to vote?
 
 A list of further possible backports can be found at:
