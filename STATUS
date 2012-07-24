@@ -125,16 +125,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://www.humbedooh.com/mods/mod_lua.patch (+CHANGES)
      +1: humbedooh, rjung
 
-   * mpm_event, mpm_worker: Remain active amidst prevalent child process
-     resource shortages.
-       (1363440 should be a prereq to avoid unnecessarily rapid
-       creation of child processes in some situations)
-     trunk patch: http://svn.apache.org/viewvc?rev=1363557&view=rev
-     trunk patch: http://svn.apache.org/viewvc?rev=1364601&view=rev
-     2.4.x patch: trunk patch works
-     +1: trawick, jorton, rjung
-     +1 before r1364601 was added: jim
-
    * apxs: Make apxs use LDFLAGS from config_vars.mk in addition to
      CFLAGS and CPPFLAGS.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1343094
