@@ -882,8 +882,8 @@ LuaPackagePath /scripts/lib/?/init.lua
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaScope" id="LuaScope">LuaScope</a> <a name="luascope" id="luascope">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>One of once, request, conn, server -- default is once</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaScope once|request|conn|server [max|min max]</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>One of once, request, conn -- default is once</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaScope once|request|conn [max|min max]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LuaScope once</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
@@ -902,12 +902,6 @@ LuaPackagePath /scripts/lib/?/init.lua
 
     <dt>conn:</dt> <dd>Same as request but attached to the connection_rec</dd>
 
-    <dt>server:</dt>  <dd>This one is different than others because the
-            server scope is quite long lived, and multiple threads
-            will have the same server_rec. To accommodate this
-            server scoped interpreter are stored in an apr
-            resource list. The min and max arguments are intended
-            to specify the pool size, but are unused at this time.</dd>
    </dl>
 
 </div>
