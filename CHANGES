@@ -10,9 +10,6 @@ Changes with Apache 2.5.0
   *) mod_lbmethod_heartbeat, mod_heartmonitor: Respect DefaultRuntimeDir/
      DEFAULT_REL_RUNTIMEDIR for the heartbeat storage file.  [Jeff Trawick]
 
-  *) mpm_event, mpm_worker: Remain active amidst prevalent child process
-     resource shortages.  [Jeff Trawick]
-
   *) mpm_event: Don't count connections in lingering close state when
      calculating how many additional connections may be accepted.
      [Stefan Fritsch]
