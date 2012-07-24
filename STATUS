@@ -205,7 +205,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      unexpected poll or accept failure.
      trunk patch: http://svn.apache.org/viewvc?rev=1363183&view=rev
      2.2.x patch: trunk patch works
-     +1: trawick
+     +1: trawick, jorton, 
 
 PATCHES/ISSUES THAT ARE STALLED
 
