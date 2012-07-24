@@ -533,7 +533,19 @@ PROXY_DECLARE(char *)ap_proxy_canonenc(apr_pool_t *p, const char *x, int len, en
 PROXY_DECLARE(char *)ap_proxy_canon_netloc(apr_pool_t *p, char **const urlp, char **userp,
                                            char **passwordp, char **hostp, apr_port_t *port);
 PROXY_DECLARE(int) ap_proxyerror(request_rec *r, int statuscode, const char *message);
-PROXY_DECLARE(int) ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *conf, apr_sockaddr_t *uri_addr);
+
+/** Test whether the hostname/address of the request are blocked by the ProxyBlock
+ * configuration.
+ * @param r         request
+ * @param conf      server configuration
+ * @param hostname  hostname from request URI
+ * @param addr      resolved address of hostname, or NULL if not known
+ * @return OK on success, or else an errro
+ */
+PROXY_DECLARE(int) ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *conf, 
+                                            const char *hostname, apr_sockaddr_t *addr);
+
+
 PROXY_DECLARE(int) ap_proxy_pre_http_request(conn_rec *c, request_rec *r);
 /* DEPRECATED (will be replaced with ap_proxy_connect_backend */
 PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **, const char *, apr_sockaddr_t *, const char *, proxy_server_conf *, request_rec *);

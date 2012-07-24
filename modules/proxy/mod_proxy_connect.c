@@ -205,7 +205,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
     conn_rec *backconn;
 
     apr_bucket_brigade *bb = apr_brigade_create(p, c->bucket_alloc);
-    apr_status_t err, rv;
+    apr_status_t rv;
     apr_size_t nbytes;
     char buffer[HUGE_STRING_LEN];
     apr_socket_t *client_socket = ap_get_conn_socket(c);
@@ -216,7 +216,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
     const apr_pollfd_t *signalled;
     apr_int32_t pollcnt, pi;
     apr_int16_t pollevent;
-    apr_sockaddr_t *uri_addr, *connect_addr;
+    apr_sockaddr_t *nexthop;
 
     apr_uri_t uri;
     const char *connectname;
@@ -246,36 +246,31 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01019)
                   "connecting %s to %s:%d", url, uri.hostname, uri.port);
 
-    /* do a DNS lookup for the destination host */
-    err = apr_sockaddr_info_get(&uri_addr, uri.hostname, APR_UNSPEC, uri.port,
-                                0, p);
-    if (APR_SUCCESS != err) {
+    /* Determine host/port of next hop; from request URI or of a proxy. */
+    connectname = proxyname ? proxyname : uri.hostname;
+    connectport = proxyname ? proxyport : uri.port;
+
+    /* Do a DNS lookup for the next hop */
+    rv = apr_sockaddr_info_get(&nexthop, connectname, APR_UNSPEC, 
+                               connectport, 0, p);
+    if (rv != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO()
+                      "failed to resolve hostname '%s'", connectname);
         return ap_proxyerror(r, HTTP_BAD_GATEWAY,
                              apr_pstrcat(p, "DNS lookup failure for: ",
-                                         uri.hostname, NULL));
+                                         connectname, NULL));
     }
 
-    /* are we connecting directly, or via a proxy? */
-    if (proxyname) {
-        connectname = proxyname;
-        connectport = proxyport;
-        err = apr_sockaddr_info_get(&connect_addr, proxyname, APR_UNSPEC,
-                                    proxyport, 0, p);
-    }
-    else {
-        connectname = uri.hostname;
-        connectport = uri.port;
-        connect_addr = uri_addr;
-    }
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
-                  "connecting to remote proxy %s on port %d",
-                  connectname, connectport);
-
-    /* check if ProxyBlock directive on this host */
-    if (OK != ap_proxy_checkproxyblock(r, conf, uri_addr)) {
+    /* Check ProxyBlock directive on the hostname/address.  */
+    if (ap_proxy_checkproxyblock(r, conf, uri.hostname, 
+                                 proxyname ? NULL : nexthop) != OK) {
         return ap_proxyerror(r, HTTP_FORBIDDEN,
                              "Connect to remote machine blocked");
     }
+
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
+                  "connecting to remote proxy %s on port %d",
+                  connectname, connectport);
 
     /* Check if it is an allowed port */
     if(!allowed_port(c_conf, uri.port)) {
@@ -289,15 +284,6 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
      * We have determined who to connect to. Now make the connection.
      */
 
-    /* get all the possible IP addresses for the destname and loop through them
-     * until we get a successful connection
-     */
-    if (APR_SUCCESS != err) {
-        return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-                             apr_pstrcat(p, "DNS lookup failure for: ",
-                                         connectname, NULL));
-    }
-
     /*
      * At this point we have a list of one or more IP addresses of
      * the machine to connect to. If configured, reorder this
@@ -308,7 +294,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
      * For now we do nothing, ie we get DNS round robin.
      * XXX FIXME
      */
-    failed = ap_proxy_connect_to_backend(&sock, "CONNECT", connect_addr,
+    failed = ap_proxy_connect_to_backend(&sock, "CONNECT", nexthop,
                                          connectname, conf, r);
 
     /* handle a permanent error from the above loop */
@@ -355,7 +341,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
         /* peer reset */
         ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01021)
                       "an error occurred creating a new connection "
-                      "to %pI (%s)", connect_addr, connectname);
+                      "to %pI (%s)", nexthop, connectname);
         apr_socket_close(sock);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -370,7 +356,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
 
     ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
                   "connection complete to %pI (%s)",
-                  connect_addr, connectname);
+                  nexthop, connectname);
     apr_table_setn(r->notes, "proxy-source-port", apr_psprintf(r->pool, "%hu",
                    backconn->local_addr->port));
 
