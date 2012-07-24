@@ -201,6 +201,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           any version. Also, if you read my note to dev@ you will see
           why it is not premature.
 
+   * mpm_prefork: Reduce spawn rate after a child process exits due to
+     unexpected poll or accept failure.
+     trunk patch: http://svn.apache.org/viewvc?rev=1363183&view=rev
+     2.2.x patch: trunk patch works
+     +1: trawick
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
