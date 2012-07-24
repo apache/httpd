@@ -769,13 +769,12 @@ PROXY_DECLARE(int) ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *c
     /* XXX FIXME: conf->noproxies->elts is part of an opaque structure */
     for (j = 0; j < conf->noproxies->nelts; j++) {
         struct noproxy_entry *npent = (struct noproxy_entry *) conf->noproxies->elts;
-        struct apr_sockaddr_t *conf_addr = npent[j].addr;
+        struct apr_sockaddr_t *conf_addr;
 
         ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                       "checking remote machine [%s] against [%s]",
                       hostname, npent[j].name);
-        if (ap_strstr_c(hostname, npent[j].name)
-            || npent[j].name[0] == '*') {
+        if (ap_strstr_c(hostname, npent[j].name) || npent[j].name[0] == '*') {
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(00916)
                           "connect to remote machine %s blocked: name %s "
                           "matched", hostname, npent[j].name);
@@ -788,28 +787,28 @@ PROXY_DECLARE(int) ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *c
         if (!addr)
             continue;
 
-        while (conf_addr) {
-            apr_sockaddr_t *uri_addr = addr;
+        for (conf_addr = npent[j].addr; conf_addr; conf_addr = conf_addr->next) {
             char caddr[MAX_IP_STR_LEN], uaddr[MAX_IP_STR_LEN];
+            apr_sockaddr_t *uri_addr;
 
-            apr_sockaddr_ip_getbuf(caddr, sizeof caddr, conf_addr);
+            if (apr_sockaddr_ip_getbuf(caddr, sizeof caddr, conf_addr))
+                continue;
 
-            while (uri_addr) {
-                apr_sockaddr_ip_getbuf(uaddr, sizeof uaddr, uri_addr);
+            for (uri_addr = addr; uri_addr; uri_addr = uri_addr->next) {
+                if (apr_sockaddr_ip_getbuf(uaddr, sizeof uaddr, uri_addr))
+                    continue;
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                              "ProxyBlock comparing %s and %s", caddr,
-                              uaddr);
+                              "ProxyBlock comparing %s and %s", caddr, uaddr);
                 if (!strcmp(caddr, uaddr)) {
                     ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(00917)
                                   "connect to remote machine %s blocked: "
                                   "IP %s matched", hostname, caddr);
                     return HTTP_FORBIDDEN;
                 }
-                uri_addr = uri_addr->next;
             }
-            conf_addr = conf_addr->next;
         }
     }
+
     return OK;
 }
 
