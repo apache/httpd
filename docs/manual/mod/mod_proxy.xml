@@ -1368,21 +1368,41 @@ will rewrite a cookie with backend path <code>/</code> (or
 
 <directivesynopsis>
 <name>ProxyBlock</name>
-<description>Words, hosts, or domains that are banned from being
-proxied</description>
-<syntax>ProxyBlock *|<var>word</var>|<var>host</var>|<var>domain</var>
-[<var>word</var>|<var>host</var>|<var>domain</var>] ...</syntax>
+<description>Disallow proxy requests to certain hosts</description>
+<syntax>ProxyBlock *|<var>hostname</var>|<var>partial-hostname</var> [<var>hostname</var>|<var>partial-hostname</var>]...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>The <directive>ProxyBlock</directive> directive specifies a list of
-    words, hosts and/or domains, separated by spaces.  HTTP, HTTPS, and
-    FTP document requests to sites whose names contain matched words,
-    hosts or domains are <em>blocked</em> by the proxy server. The proxy
-    module will also attempt to determine IP addresses of list items which
-    may be hostnames during startup, and cache them for match test as
-    well. That may slow down the startup time of the server.</p>
+    <p>The <directive>ProxyBlock</directive> directive can be used to
+    block FTP or HTTP access to certain hosts via the proxy, based on
+    a full or partial hostname match, or, if applicable, an IP address
+    comparison.</p>
+
+    <p>Each of the arguments to the <directive>ProxyBlock</directive>
+    directive can be either <code>*</code> or a alphanumeric string.
+    At startup, the module will attempt to resolve every alphanumeric
+    string from a DNS name to a set of IP addresses, but any DNS errors
+    are ignored.</p>
+
+    <p>If an asterisk "<code>*</code>" argument is specified,
+    <module>mod_proxy</module> will deny access to all FTP or HTTP
+    sites.</p>
+
+    <p>Otherwise, for any request for an HTTP or FTP resource via the
+    proxy, <module>mod_proxy</module> will check the hostname of the
+    request URI against each specified string.  If a partial string
+    match is found, access is denied.  If no matches against hostnames
+    are found, and a remote (forward) proxy is configured using
+    <directive>ProxyRemote</directive> or
+    <directive>ProxyRemoteMatch</directive>, access is allowed.  If no
+    remote (forward) proxy is configured, the IP address of the
+    hostname from the URI is compared against all resolved IP
+    addresses determined at startup.  Access is denied if any match is
+    found.</p>
+
+    <p>Note that the DNS lookups may slow down the startup time of the
+    server.</p>
 
     <example><title>Example</title>
     <highlight language="config">
