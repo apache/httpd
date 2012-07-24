@@ -759,6 +759,8 @@ static int proxy_match_word(struct dirconn_entry *This, request_rec *r)
     return host != NULL && ap_strstr_c(host, This->name) != NULL;
 }
 
+#define MAX_IP_STR_LEN (46)
+
 PROXY_DECLARE(int) ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *conf,
                                             const char *hostname, apr_sockaddr_t *addr)
 {
@@ -788,19 +790,19 @@ PROXY_DECLARE(int) ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *c
 
         while (conf_addr) {
             apr_sockaddr_t *uri_addr = addr;
+            char caddr[MAX_IP_STR_LEN], uaddr[MAX_IP_STR_LEN];
+
+            apr_sockaddr_ip_getbuf(caddr, sizeof caddr, conf_addr);
 
             while (uri_addr) {
-                char *conf_ip;
-                char *uri_ip;
-                apr_sockaddr_ip_get(&conf_ip, conf_addr);
-                apr_sockaddr_ip_get(&uri_ip, uri_addr);
+                apr_sockaddr_ip_getbuf(uaddr, sizeof uaddr, uri_addr);
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                              "ProxyBlock comparing %s and %s", conf_ip,
-                              uri_ip);
-                if (!apr_strnatcasecmp(conf_ip, uri_ip)) {
+                              "ProxyBlock comparing %s and %s", caddr,
+                              uaddr);
+                if (!strcmp(caddr, uaddr)) {
                     ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(00917)
                                   "connect to remote machine %s blocked: "
-                                  "IP %s matched", hostname, conf_ip);
+                                  "IP %s matched", hostname, caddr);
                     return HTTP_FORBIDDEN;
                 }
                 uri_addr = uri_addr->next;
