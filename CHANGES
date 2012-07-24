@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy: Check hostname from request URI against ProxyBlock list,
+     not forward proxy, if ProxyRemote* is configured.  [Joe Orton]
+
+  *) mod_proxy_connect: Avoid DNS lookup on hostname from request URI 
+     if ProxyRemote* is configured.  PR 43697.  [Joe Orton]
+
   *) mod_lbmethod_heartbeat, mod_heartmonitor: Respect DefaultRuntimeDir/
      DEFAULT_REL_RUNTIMEDIR for the heartbeat storage file.  [Jeff Trawick]
 

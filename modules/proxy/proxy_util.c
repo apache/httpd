@@ -759,29 +759,36 @@ static int proxy_match_word(struct dirconn_entry *This, request_rec *r)
     return host != NULL && ap_strstr_c(host, This->name) != NULL;
 }
 
-/* checks whether a host in uri_addr matches proxyblock */
 PROXY_DECLARE(int) ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *conf,
-                             apr_sockaddr_t *uri_addr)
+                                            const char *hostname, apr_sockaddr_t *addr)
 {
     int j;
-    apr_sockaddr_t * src_uri_addr = uri_addr;
+
     /* XXX FIXME: conf->noproxies->elts is part of an opaque structure */
     for (j = 0; j < conf->noproxies->nelts; j++) {
         struct noproxy_entry *npent = (struct noproxy_entry *) conf->noproxies->elts;
         struct apr_sockaddr_t *conf_addr = npent[j].addr;
-        uri_addr = src_uri_addr;
+
         ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                       "checking remote machine [%s] against [%s]",
-                      uri_addr->hostname, npent[j].name);
-        if (ap_strstr_c(uri_addr->hostname, npent[j].name)
+                      hostname, npent[j].name);
+        if (ap_strstr_c(hostname, npent[j].name)
             || npent[j].name[0] == '*') {
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(00916)
                           "connect to remote machine %s blocked: name %s "
-                          "matched", uri_addr->hostname, npent[j].name);
+                          "matched", hostname, npent[j].name);
             return HTTP_FORBIDDEN;
         }
+
+        /* No IP address checks if no IP address was passed in,
+         * i.e. the forward address proxy case, where this server does
+         * not resolve the hostname.  */
+        if (!addr)
+            continue;
+
         while (conf_addr) {
-            uri_addr = src_uri_addr;
+            apr_sockaddr_t *uri_addr = addr;
+
             while (uri_addr) {
                 char *conf_ip;
                 char *uri_ip;
@@ -792,8 +799,8 @@ PROXY_DECLARE(int) ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *c
                               uri_ip);
                 if (!apr_strnatcasecmp(conf_ip, uri_ip)) {
                     ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(00917)
-                                 "connect to remote machine %s blocked: "
-                                 "IP %s matched", uri_addr->hostname, conf_ip);
+                                  "connect to remote machine %s blocked: "
+                                  "IP %s matched", hostname, conf_ip);
                     return HTTP_FORBIDDEN;
                 }
                 uri_addr = uri_addr->next;
@@ -2128,7 +2135,8 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
         }
     }
     /* check if ProxyBlock directive on this host */
-    if (OK != ap_proxy_checkproxyblock(r, conf, conn->addr)) {
+    if (OK != ap_proxy_checkproxyblock(r, conf, uri->hostname, 
+                                       proxyname ? NULL : conn->addr)) {
         return ap_proxyerror(r, HTTP_FORBIDDEN,
                              "Connect to remote machine blocked");
     }

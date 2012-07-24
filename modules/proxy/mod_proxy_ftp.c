@@ -1143,7 +1143,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
     }
 
     /* check if ProxyBlock directive on this host */
-    if (OK != ap_proxy_checkproxyblock(r, conf, connect_addr)) {
+    if (OK != ap_proxy_checkproxyblock(r, conf, connectname, connect_addr)) {
         return ap_proxyerror(r, HTTP_FORBIDDEN,
                              "Connect to remote machine blocked");
     }
