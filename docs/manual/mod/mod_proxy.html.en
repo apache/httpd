@@ -730,21 +730,41 @@ response</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ProxyBlock" id="ProxyBlock">ProxyBlock</a> <a name="proxyblock" id="proxyblock">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Words, hosts, or domains that are banned from being
-proxied</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyBlock *|<var>word</var>|<var>host</var>|<var>domain</var>
-[<var>word</var>|<var>host</var>|<var>domain</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Disallow proxy requests to certain hosts</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyBlock *|<var>hostname</var>|<var>partial-hostname</var> [<var>hostname</var>|<var>partial-hostname</var>]...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
-    <p>The <code class="directive">ProxyBlock</code> directive specifies a list of
-    words, hosts and/or domains, separated by spaces.  HTTP, HTTPS, and
-    FTP document requests to sites whose names contain matched words,
-    hosts or domains are <em>blocked</em> by the proxy server. The proxy
-    module will also attempt to determine IP addresses of list items which
-    may be hostnames during startup, and cache them for match test as
-    well. That may slow down the startup time of the server.</p>
+    <p>The <code class="directive">ProxyBlock</code> directive can be used to
+    block FTP or HTTP access to certain hosts via the proxy, based on
+    a full or partial hostname match, or, if applicable, an IP address
+    comparison.</p>
+
+    <p>Each of the arguments to the <code class="directive">ProxyBlock</code>
+    directive can be either <code>*</code> or a alphanumeric string.
+    At startup, the module will attempt to resolve every alphanumeric
+    string from a DNS name to a set of IP addresses, but any DNS errors
+    are ignored.</p>
+
+    <p>If an asterisk "<code>*</code>" argument is specified,
+    <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> will deny access to all FTP or HTTP
+    sites.</p>
+
+    <p>Otherwise, for any request for an HTTP or FTP resource via the
+    proxy, <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> will check the hostname of the
+    request URI against each specified string.  If a partial string
+    match is found, access is denied.  If no matches against hostnames
+    are found, and a remote (forward) proxy is configured using
+    <code class="directive">ProxyRemote</code> or
+    <code class="directive">ProxyRemoteMatch</code>, access is allowed.  If no
+    remote (forward) proxy is configured, the IP address of the
+    hostname from the URI is compared against all resolved IP
+    addresses determined at startup.  Access is denied if any match is
+    found.</p>
+
+    <p>Note that the DNS lookups may slow down the startup time of the
+    server.</p>
 
     <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       ProxyBlock news.example.com auctions.example.com friends.example.com
