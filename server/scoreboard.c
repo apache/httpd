@@ -185,7 +185,7 @@ static apr_status_t open_scoreboard(apr_pool_t *pconf)
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
                      "Fatal error: unable to create global pool "
-                     "for use with by the scoreboard");
+                     "for use with the scoreboard");
         return rv;
     }
 
@@ -223,7 +223,7 @@ static apr_status_t open_scoreboard(apr_pool_t *pconf)
     return APR_SUCCESS;
 }
 
-/* If detach is non-zero, this is a seperate child process,
+/* If detach is non-zero, this is a separate child process,
  * if zero, it is a forked child.
  */
 apr_status_t ap_reopen_scoreboard(apr_pool_t *p, apr_shm_t **shm, int detached)
