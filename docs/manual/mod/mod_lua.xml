@@ -489,8 +489,8 @@ end
 
 <directivesynopsis>
 <name>LuaScope</name>
-<description>One of once, request, conn, server -- default is once</description>
-<syntax>LuaScope once|request|conn|server [max|min max]</syntax>
+<description>One of once, request, conn -- default is once</description>
+<syntax>LuaScope once|request|conn [max|min max]</syntax>
 <default>LuaScope once</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
@@ -509,13 +509,14 @@ end
              request scoped.</dd>
 
     <dt>conn:</dt> <dd>Same as request but attached to the connection_rec</dd>
-
+<!-- not implemented
     <dt>server:</dt>  <dd>This one is different than others because the
             server scope is quite long lived, and multiple threads
             will have the same server_rec. To accommodate this
             server scoped interpreter are stored in an apr
             resource list. The min and max arguments are intended
             to specify the pool size, but are unused at this time.</dd>
+-->
    </dl>
 </usage>
 </directivesynopsis>
