@@ -168,11 +168,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      rjung: Typo "Backwards-compatibile", minor MMN bump only in comment, but forgotten in define!
      jorton: fixed in -v2
 
-    * mod_proxy: fix ProxyPassReverse for balancer configs, PR 45434 regression
-      trunk patch: http://svn.apache.org/viewvc?rev=1365479&view=rev
-      2.4.x patch: trunk patch works
-      +1: jorton, jim, rjung
-
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
