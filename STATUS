@@ -88,11 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * scoreboard: Add the port number to the vhost's name.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1294358
-     2.4.x patch: trunk patch works
-     +1: rjung, jim, sf
-
    * mod_setenvif: Compile the regex used by is_header_regex() only once
      during startup This should save some memory, especially with .htaccess
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1343099
