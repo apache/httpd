@@ -163,9 +163,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?rev=1365001&view=rev and
                   http://svn.apache.org/viewvc?rev=1365020&view=rev and
                   http://svn.apache.org/viewvc?rev=1365029&view=rev
-     2.4.x patch: http://people.apache.org/~jorton/ap_proxyblock-24x-v1.diff [avoids major MMN bump]
+     2.4.x patch: http://people.apache.org/~jorton/ap_proxyblock-24x-v2.diff [avoids major MMN bump]
      +1: jorton, rjung
      rjung: Typo "Backwards-compatibile", minor MMN bump only in comment, but forgotten in define!
+     jorton: fixed in -v2
 
     * mod_proxy: fix ProxyPassReverse for balancer configs, PR 45434 regression
       trunk patch: http://svn.apache.org/viewvc?rev=1365479&view=rev
