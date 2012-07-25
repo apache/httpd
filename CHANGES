@@ -66,9 +66,6 @@ Changes with Apache 2.5.0
      Also set CC_FOR_BUILD to 'cc' when cross-compilation is detected.
      PR 51257. [Guenter Knauf]
 
-  *) core: Add the port number to the vhost's name in the scoreboard.
-     [Stefan Fritsch]
-
   *) core: In maintainer mode, replace apr_palloc with a version that
      initializes the allocated memory with non-zero values, except if
      AP_DEBUG_NO_ALLOC_POISON is defined. [Stefan Fritsch]
