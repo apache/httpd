@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy: Fix ProxyPassReverse for balancer configurations.
+     PR 45434.  [Joe Orton]
+
   *) mod_proxy: Fix memory leak or possible corruption in ProxyBlock
      implementation.  [Ruediger Pluem, Joe Orton]
 
