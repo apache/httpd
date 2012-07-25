@@ -88,6 +88,34 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_lua: - Add a parsebody function for retrieving POST data. PR: 53064
+              - Make mod_lua compatible with Lua 5.2
+     Trunk patch:
+       http://svn.apache.org/viewvc?view=revision&revision=1352047 and
+       http://svn.apache.org/viewvc?view=revision&revision=1361298
+     2.4.x patch:
+       http://www.humbedooh.com/mods/mod_lua.patch (+CHANGES)
+     +1: humbedooh, rjung, jim
+
+   * apxs: Make apxs use LDFLAGS from config_vars.mk in addition to
+     CFLAGS and CPPFLAGS.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1343094
+     2.4.x patch: trunk patch works
+     +1: rjung, humbedooh, jim
+     rjung: sf: you applied it to trunk, care to vote?
+
+   * .gdbinit: improve dump_allocator, add dump_one_pool.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352909
+     2.4.x patch: trunk patch works
+     +1: rjung, jorton, jim
+     rjung: sf: you applied it to trunk, care to vote?
+
+   * htpasswd: Note more prominently that SHA and crypt are insecure.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352910
+     2.4.x patch: trunk patch works
+     +1: rjung, humbedooh, jim
+     rjung: sf: you applied it to trunk, care to vote?
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -116,38 +144,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           any version. Also, if you read my note to dev@ you will see
           why it is not premature.
 
-   * mod_lua: - Add a parsebody function for retrieving POST data. PR: 53064
-              - Make mod_lua compatible with Lua 5.2
-     Trunk patch:
-       http://svn.apache.org/viewvc?view=revision&revision=1352047 and
-       http://svn.apache.org/viewvc?view=revision&revision=1361298
-     2.4.x patch:
-       http://www.humbedooh.com/mods/mod_lua.patch (+CHANGES)
-     +1: humbedooh, rjung, jim
-
-   * apxs: Make apxs use LDFLAGS from config_vars.mk in addition to
-     CFLAGS and CPPFLAGS.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1343094
-     2.4.x patch: trunk patch works
-     +1: rjung, humbedooh, jim
-     rjung: sf: you applied it to trunk, care to vote?
-
-   * .gdbinit: improve dump_allocator, add dump_one_pool.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352909
-     2.4.x patch: trunk patch works
-     +1: rjung, jorton, jim
-     rjung: sf: you applied it to trunk, care to vote?
-
    * scoreboard: Add the port number to the vhost's name.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1294358
      2.4.x patch: trunk patch works
      +1: rjung, jim
-     rjung: sf: you applied it to trunk, care to vote?
-
-   * htpasswd: Note more prominently that SHA and crypt are insecure.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352910
-     2.4.x patch: trunk patch works
-     +1: rjung, humbedooh, jim
      rjung: sf: you applied it to trunk, care to vote?
 
    * mod_setenvif: Compile the regex used by is_header_regex() only once
