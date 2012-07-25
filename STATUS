@@ -104,12 +104,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: rjung, humbedooh, jim
      rjung: sf: you applied it to trunk, care to vote?
 
-   * .gdbinit: improve dump_allocator, add dump_one_pool.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352909
-     2.4.x patch: trunk patch works
-     +1: rjung, jorton, jim
-     rjung: sf: you applied it to trunk, care to vote?
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
