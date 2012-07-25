@@ -31,9 +31,6 @@ Changes with Apache 2.5.0
   *) mod_lua: Change prototype of vm_construct, to work around gcc bug which
      causes a segfault. PR 52779. [Dick Snippe <Dick Snippe tech omroep nl>]
 
-  *) mod_lua: Add the parsebody function for parsing POST data. PR 53064.
-     [Daniel Gruno]
-
   *) mod_ssl: If exiting during initialization because of a fatal error,
      log a message to the main error log pointing to the appropriate
      virtual host error log. [Stefan Fritsch]
@@ -48,9 +45,6 @@ Changes with Apache 2.5.0
   *) core: Make ap_regcomp() return AP_REG_ESPACE if out of memory.  Make
      ap_pregcomp() abort if out of memory. This raises the minimum PCRE
      requirement to version 6.0. PR 53284. [Stefan Fritsch]
-
-  *) apxs: Use LDFLAGS from config_vars.mk in addition to CFLAGS and CPPFLAGS.
-     [Stefan Fritsch]
 
   *) suexec: Add --enable-suexec-capabilites support on Linux, to use
      setuid/setgid capability bits rather than a setuid root binary.
