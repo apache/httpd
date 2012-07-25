@@ -88,7 +88,16 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * scoreboard: Add the port number to the vhost's name.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1294358
+     2.4.x patch: trunk patch works
+     +1: rjung, jim, sf
 
+   * mod_setenvif: Compile the regex used by is_header_regex() only once
+     during startup This should save some memory, especially with .htaccess
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1343099
+     2.4.x patch: trunk patch works
+     +1: rjung, jim, sf
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -116,19 +125,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ben: not correct that it depends on OpenSSL 1.0.2, it builds with
           any version. Also, if you read my note to dev@ you will see
           why it is not premature.
-
-   * scoreboard: Add the port number to the vhost's name.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1294358
-     2.4.x patch: trunk patch works
-     +1: rjung, jim
-     rjung: sf: you applied it to trunk, care to vote?
-
-   * mod_setenvif: Compile the regex used by is_header_regex() only once
-     during startup This should save some memory, especially with .htaccess
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1343099
-     2.4.x patch: trunk patch works
-     +1: rjung, jim
-     rjung: sf: you applied it to trunk, care to vote?
 
    * mod_ssl: Add SSLCompression directive.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1345319 and 
