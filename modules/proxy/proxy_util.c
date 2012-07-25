@@ -860,7 +860,7 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
             (balancer = ap_proxy_get_balancer(r->pool, sconf, real, 1))) {
             int n, l3 = 0;
             proxy_worker **worker = (proxy_worker **)balancer->workers->elts;
-            const char *urlpart = ap_strchr_c(real, '/');
+            const char *urlpart = ap_strchr_c(real + sizeof(BALANCER_PREFIX) - 1, '/');
             if (urlpart) {
                 if (!urlpart[1])
                     urlpart = NULL;
