@@ -7,6 +7,9 @@ Changes with Apache 2.4.3
      possible XSS for a site where untrusted users can upload files to
      a location with MultiViews enabled. [Niels Heinen <heinenn google.com>]
 
+  *) mod_lua: Add the parsebody function for parsing POST data. PR 53064.
+     [Daniel Gruno]
+
   *) apxs: Use LDFLAGS from config_vars.mk in addition to CFLAGS and CPPFLAGS.
      [Stefan Fritsch]
 

@@ -44,6 +44,8 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
+/* Allow for Lua 5.2 backwards compatibility */
+#define LUA_COMPAT_ALL
 #if LUA_VERSION_NUM > 501
 /* Load mode for lua_load() */
 #define lua_load(a,b,c,d) lua_load(a,b,c,d,NULL)
