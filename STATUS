@@ -123,19 +123,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=revision&revision=1361298
      2.4.x patch:
        http://www.humbedooh.com/mods/mod_lua.patch (+CHANGES)
-     +1: humbedooh, rjung
+     +1: humbedooh, rjung, jim
 
    * apxs: Make apxs use LDFLAGS from config_vars.mk in addition to
      CFLAGS and CPPFLAGS.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1343094
      2.4.x patch: trunk patch works
-     +1: rjung, humbedooh
+     +1: rjung, humbedooh, jim
      rjung: sf: you applied it to trunk, care to vote?
 
    * .gdbinit: improve dump_allocator, add dump_one_pool.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352909
      2.4.x patch: trunk patch works
-     +1: rjung, jorton
+     +1: rjung, jorton, jim
      rjung: sf: you applied it to trunk, care to vote?
 
    * scoreboard: Add the port number to the vhost's name.
@@ -147,7 +147,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * htpasswd: Note more prominently that SHA and crypt are insecure.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352910
      2.4.x patch: trunk patch works
-     +1: rjung, humbedooh
+     +1: rjung, humbedooh, jim
      rjung: sf: you applied it to trunk, care to vote?
 
    * mod_setenvif: Compile the regex used by is_header_regex() only once
@@ -196,7 +196,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * mod_proxy: fix ProxyPassReverse for balancer configs, PR 45434 regression
       trunk patch: http://svn.apache.org/viewvc?rev=1365479&view=rev
       2.4.x patch: trunk patch works
-      +1: jorton, 
+      +1: jorton, jim
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
