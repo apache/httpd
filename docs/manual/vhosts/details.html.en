@@ -90,7 +90,7 @@
     <p>If you want Apache to <em>further</em> discriminate on the basis of the 
     HTTP <code>Host</code> header supplied by the client, the
     <code>NameVirtualHost</code> directive <em>must</em> appear
-    with the exact IP address (or wildcard) and port pair used in a correspnding
+    with the exact IP address (or wildcard) and port pair used in a corresponding
     set of <code>VirtualHost</code> directives.</p>
 
     <p>The name-based virtual host selection occurs only after a single IP-based

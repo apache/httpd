@@ -171,7 +171,7 @@ RewriteRule ^/?images(.*) http://imageserver.local/images$1 [P]
 </code></p></div>
 
 <p>However, in many cases, when there is no actual pattern matching
-meeded, as in the example shown above, the <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> directive is a better choice.
+needed, as in the example shown above, the <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> directive is a better choice.
 The example here could be rendered as:</p>
 
 <div class="example"><p><code>
