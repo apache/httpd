@@ -883,7 +883,7 @@ LuaPackagePath /scripts/lib/?/init.lua
 <div class="directive-section"><h2><a name="LuaScope" id="LuaScope">LuaScope</a> <a name="luascope" id="luascope">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>One of once, request, conn -- default is once</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaScope once|request|conn [max|min max]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaScope once|request|conn|thread [max|min max]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LuaScope once</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
@@ -901,6 +901,8 @@ LuaPackagePath /scripts/lib/?/init.lua
              request scoped.</dd>
 
     <dt>conn:</dt> <dd>Same as request but attached to the connection_rec</dd>
+    <dt>thread:</dt> <dd>Use the interpreter for the lifetime of the thread 
+            handling the request.</dd>
 
    </dl>
 
