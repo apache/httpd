@@ -443,7 +443,7 @@ consisting of OpenSSL cipher specifications to configure the Cipher Suite the
 client is permitted to negotiate in the SSL handshake phase. Notice that this
 directive can be used both in per-server and per-directory context. In
 per-server context it applies to the standard SSL handshake when a connection
-is established. In per-directory context it forces a SSL renegotation with the
+is established. In per-directory context it forces a SSL renegotiation with the
 reconfigured Cipher Suite after the HTTP request was read but before the HTTP
 response is sent.</p>
 <p>
@@ -1409,7 +1409,7 @@ The following <em>source</em> variants are available:</p>
     the first argument). Use this especially at startup time, for instance
     with an available <code>/dev/random</code> and/or
     <code>/dev/urandom</code> devices (which usually exist on modern Unix
-    derivates like FreeBSD and Linux).</p>
+    derivatives like FreeBSD and Linux).</p>
     <p>
     <em>But be careful</em>: Usually <code>/dev/random</code> provides only as
     much entropy data as it actually has, i.e. when you request 512 bytes of
@@ -1681,7 +1681,7 @@ OpenSSL already caches the SSL session information locally. But because modern
 clients request inlined images and other data via parallel requests (usually
 up to four parallel requests are common) those requests are served by
 <em>different</em> pre-forked server processes. Here an inter-process cache
-helps to avoid unneccessary session handshakes.</p>
+helps to avoid unnecessary session handshakes.</p>
 <p>
 The following four storage <em>type</em>s are currently supported:</p>
 <ul>
@@ -1825,7 +1825,7 @@ This directive sets the Certificate verification level for the Client
 Authentication. Notice that this directive can be used both in per-server and
 per-directory context. In per-server context it applies to the client
 authentication process used in the standard SSL handshake when a connection is
-established. In per-directory context it forces a SSL renegotation with the
+established. In per-directory context it forces a SSL renegotiation with the
 reconfigured client verification level after the HTTP request was read but
 before the HTTP response is sent.</p>
 <p>
