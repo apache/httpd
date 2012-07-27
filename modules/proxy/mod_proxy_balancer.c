@@ -437,6 +437,17 @@ static void force_recovery(proxy_balancer *balancer, server_rec *s)
     }
 }
 
+static apr_status_t decrement_busy_count(void *worker_)
+{
+    proxy_worker *worker = worker_;
+    
+    if (worker->s->busy) {
+        worker->s->busy--;
+    }
+
+    return APR_SUCCESS;
+}
+
 static int proxy_balancer_pre_request(proxy_worker **worker,
                                       proxy_balancer **balancer,
                                       request_rec *r,
@@ -570,6 +581,8 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
     }
 
     (*worker)->s->busy++;
+    apr_pool_cleanup_register(r->pool, *worker, decrement_busy_count,
+                              apr_pool_cleanup_null);
 
     /* Add balancer/worker info to env. */
     apr_table_setn(r->subprocess_env,
@@ -642,11 +655,7 @@ static int proxy_balancer_post_request(proxy_worker *worker,
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01176)
                   "proxy_balancer_post_request for (%s)", balancer->s->name);
 
-    if (worker && worker->s->busy)
-        worker->s->busy--;
-
     return OK;
-
 }
 
 static void recalc_factors(proxy_balancer *balancer)
