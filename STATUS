@@ -93,6 +93,22 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * mod_proxy: Add the forcerecovery balancer parameter that determines if
+     recovery for balancer workers is enforced.
+    Trunk version of patch:
+       http://svn.apache.org/viewvc?rev=1306409&view=rev
+    Backport version for 2.2.x of patch:
+       http://people.apache.org/~rpluem/patches/forcerecovery_2.2.diff
+    +1: rpluem, sf, rjung
+    sf notes: The docs should get a compatibility note once it is clear
+              in which 2.2.x version it gets introduced.
+
+   * mpm_prefork: Reduce spawn rate after a child process exits due to
+     unexpected poll or accept failure.
+     trunk patch: http://svn.apache.org/viewvc?rev=1363183&view=rev
+     2.2.x patch: trunk patch works
+     +1: trawick, jorton, rjung
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -130,16 +146,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patch: http://svn.apache.org/viewvc?rev=1301111&view=rev
     2.2.x patch: http://people.apache.org/~sf/PR52914-2.2.diff
     +1: sf
-
-  * mod_proxy: Add the forcerecovery balancer parameter that determines if
-     recovery for balancer workers is enforced.
-    Trunk version of patch:
-       http://svn.apache.org/viewvc?rev=1306409&view=rev
-    Backport version for 2.2.x of patch:
-       http://people.apache.org/~rpluem/patches/forcerecovery_2.2.diff
-    +1: rpluem, sf
-    sf notes: The docs should get a compatibility note once it is clear
-              in which 2.2.x version it gets introduced.
 
    * mod_ssl: Add support for Next Protocol Negotiation.
      Trunk patch:
@@ -187,7 +193,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             the change to the section about the SSLProtocol directive
             (see r1222921).
 
-   * mod_ssl: Add RFC 5878 support. This allows support of mechansisms
+   * mod_ssl: Add RFC 5878 support. This allows support of mechanisms
               such as Certificate Transparency. Note that new
               mechanisms are supported without software updates.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352596
@@ -201,12 +207,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           any version. Also, if you read my note to dev@ you will see
           why it is not premature.
 
-   * mpm_prefork: Reduce spawn rate after a child process exits due to
-     unexpected poll or accept failure.
-     trunk patch: http://svn.apache.org/viewvc?rev=1363183&view=rev
-     2.2.x patch: trunk patch works
-     +1: trawick, jorton, 
-
    * mpm_worker: Fix cases where the spawn rate wasn't reduced after
      child process resource shortages.
      (Note: mpm_event is omitted from this backport proposal because of
@@ -214,7 +214,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      described in the patch.)
      trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1363440
      2.2.x patch: http://people.apache.org/~trawick/r1363440-worker-only-2.2.x.txt
-     +1: trawick
+     +1: trawick, rjung
 
 PATCHES/ISSUES THAT ARE STALLED
 
