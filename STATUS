@@ -103,12 +103,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     sf notes: The docs should get a compatibility note once it is clear
               in which 2.2.x version it gets introduced.
 
-   * mpm_prefork: Reduce spawn rate after a child process exits due to
-     unexpected poll or accept failure.
-     trunk patch: http://svn.apache.org/viewvc?rev=1363183&view=rev
-     2.2.x patch: trunk patch works
-     +1: trawick, jorton, rjung
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
