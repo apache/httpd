@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_balancer: Restore balancing after a failed worker has
+     recovered when using lbmethod_bybusyness.  PR 48735.  [Jeff Trawick]
+
   *) mod_proxy: Fix memory leak or possible corruption in ProxyBlock
      implementation.  [Ruediger Pluem, Joe Orton]
 
