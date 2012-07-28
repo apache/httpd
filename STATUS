@@ -128,7 +128,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1347980 and 
                   http://svn.apache.org/viewvc?view=revision&revision=1348653
      2.4.x patch: http://people.apache.org/~rjung/patches/ssl-TLS-SRP-2_4.patch
-     +1: rjung
+     +1: rjung, covener
      rjung: sf: you applied it to trunk, care to vote?
 
    * mod_ssl: Pass the server_rec to ssl_die() and use it to log a message to
@@ -156,12 +156,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      recovered when using lbmethod_bybusyness.  PR 48735.
      trunk patch: http://svn.apache.org/viewvc?rev=1366344&view=rev
      2.4.x patch: trunk patch works
-     +1: trawick
+     +1: trawick, covener
 
     * mod_lua: Move LUA_COMPAT_ALL into the right position, before lua headers.
     trunk patch: http://svn.apache.org/viewvc?rev=1366621&view=rev
     2.4.x patch: trunk patch works.
-    +1: humbedooh
+    +1: humbedooh, covener
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
