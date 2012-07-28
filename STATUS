@@ -150,18 +150,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?rev=1365020&view=rev and
                   http://svn.apache.org/viewvc?rev=1365029&view=rev
      2.4.x patch: http://people.apache.org/~jorton/ap_proxyblock-24x-v2.diff [avoids major MMN bump]
-     +1: jorton, rjung
+     +1: jorton, rjung, jim
 
    * mod_proxy_balancer: Restore balancing after a failed worker has
      recovered when using lbmethod_bybusyness.  PR 48735.
      trunk patch: http://svn.apache.org/viewvc?rev=1366344&view=rev
      2.4.x patch: trunk patch works
-     +1: trawick, covener
+     +1: trawick, covener, jim
 
     * mod_lua: Move LUA_COMPAT_ALL into the right position, before lua headers.
     trunk patch: http://svn.apache.org/viewvc?rev=1366621&view=rev
     2.4.x patch: trunk patch works.
-    +1: humbedooh, covener
+    +1: humbedooh, covener, jim
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
