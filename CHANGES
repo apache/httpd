@@ -7,6 +7,9 @@ Changes with Apache 2.4.3
      possible XSS for a site where untrusted users can upload files to
      a location with MultiViews enabled. [Niels Heinen <heinenn google.com>]
 
+  *) mod_proxy_balancer: Restore balancing after a failed worker has
+     recovered when using lbmethod_bybusyness.  PR 48735.  [Jeff Trawick]
+
   *) mod_setenvif: Compile some global regex only once during startup.
      This should save some memory, especially with .htaccess.
      [Stefan Fritsch]
