@@ -595,7 +595,6 @@ LuaPackagePath /scripts/lib/?/init.lua
 </usage>
 </directivesynopsis>
 
-<!-- Not implemented yet 
 <directivesynopsis>
 <name>LuaCodeCache</name>
 <description>Configure the compiled code cache.</description>
@@ -628,7 +627,6 @@ LuaCodeCache never
 
 </usage>
 </directivesynopsis>
--->
 
 <directivesynopsis>
 <name>LuaHookTranslateName</name>
