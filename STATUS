@@ -139,7 +139,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR 52914
     Trunk patch: http://svn.apache.org/viewvc?rev=1301111&view=rev
     2.2.x patch: http://people.apache.org/~sf/PR52914-2.2.diff
-    +1: sf
+    +1: sf, rjung
 
    * mod_ssl: Add support for Next Protocol Negotiation.
      Trunk patch:
@@ -168,7 +168,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=952823&view=rev
     Backport version for 2.2.x of patch:
       Trunk version of patch works
-    +1: rpluem,
+    +1: rpluem, rjung
 
   * mod_ssl: when compiled against OpenSSL 1.0.1 or later, allow explicit
     control of TLSv1.1 and TLSv1.2 through the SSLProtocol directive,
