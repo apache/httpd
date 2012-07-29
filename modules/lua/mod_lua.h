@@ -120,6 +120,11 @@ typedef struct
   
     /* Whether Lua scripts in a sub-dir are run before parents */
     ap_lua_inherit_t inherit;
+    
+    /**
+     * AP_LUA_CACHE_NEVER | AP_LUA_CACHE_STAT | AP_LUA_CACHE_FOREVER
+     */
+    unsigned int codecache;
 
 } ap_lua_dir_cfg;
 

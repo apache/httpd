@@ -40,6 +40,11 @@
 #define AP_LUA_SCOPE_CONN          3
 #define AP_LUA_SCOPE_THREAD        4
 
+#define AP_LUA_CACHE_UNSET         0
+#define AP_LUA_CACHE_NEVER         1
+#define AP_LUA_CACHE_STAT          2
+#define AP_LUA_CACHE_FOREVER       3
+
 
 typedef void (*ap_lua_state_open_callback) (lua_State *L, apr_pool_t *p,
                                              void *ctx);
@@ -71,6 +76,8 @@ typedef struct
      */
     const char *bytecode;
     apr_size_t bytecode_len;
+    
+    int codecache;
 } ap_lua_vm_spec;
 
 typedef struct
@@ -81,6 +88,7 @@ typedef struct
     ap_regex_t *uri_pattern;
     const char *bytecode;
     apr_size_t bytecode_len;
+    int codecache;
 } ap_lua_mapped_handler_spec;
 
 /* remove and make static once out of mod_wombat.c */
