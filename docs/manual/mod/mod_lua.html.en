@@ -54,7 +54,6 @@ Be sure to check the CHANGES file before upgrading.</div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#luaauthzprovider">LuaAuthzProvider</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#luacodecache">LuaCodeCache</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahookaccesschecker">LuaHookAccessChecker</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahookauthchecker">LuaHookAuthChecker</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahookcheckuserid">LuaHookCheckUserID</a></li>
@@ -537,37 +536,6 @@ LuaAuthzProvider foo authz.lua authz_check_foo
   Require foo bar
 &lt;/Location&gt;
 </pre>
-</div>
-
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaCodeCache" id="LuaCodeCache">LuaCodeCache</a> <a name="luacodecache" id="luacodecache">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure the compiled code cache.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaCodeCache stat|forever|never</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LuaCodeCache stat</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
-</table><p>
-    Specify the behavior of the in-memory code cache. The default
-    is stat, which stats the top level script (not any included
-    ones) each time that file is needed, and reloads it if the
-    modified time indicates it is newer than the one it has
-    already loaded. The other values cause it to keep the file
-    cached forever (don't stat and replace) or to never cache the
-    file.</p>
-
-    <p>In general stat or forever is good for production, and stat or never
-    for development.</p>
-
-    <div class="example"><h3>Examples:</h3><pre class="prettyprint lang-config">
-LuaCodeCache stat
-LuaCodeCache forever
-LuaCodeCache never
-    </pre>
 </div>
 
 

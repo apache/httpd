@@ -348,7 +348,6 @@
 <li><a href="core.html#loglevel">LogLevel</a></li>
 <li><a href="mod_log_debug.html#logmessage">LogMessage</a></li>
 <li><a href="mod_lua.html#luaauthzprovider">LuaAuthzProvider</a></li>
-<li><a href="mod_lua.html#luacodecache">LuaCodeCache</a></li>
 <li><a href="mod_lua.html#luahookaccesschecker">LuaHookAccessChecker</a></li>
 <li><a href="mod_lua.html#luahookauthchecker">LuaHookAuthChecker</a></li>
 <li><a href="mod_lua.html#luahookcheckuserid">LuaHookCheckUserID</a></li>
