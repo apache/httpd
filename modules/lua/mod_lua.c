@@ -130,6 +130,7 @@ static ap_lua_vm_spec *create_vm_spec(apr_pool_t **lifecycle_pool,
     spec->cb_arg = NULL;
     spec->bytecode = bytecode;
     spec->bytecode_len = bytecode_len;
+    spec->codecache = (cfg->codecache == AP_LUA_CACHE_UNSET) ? AP_LUA_CACHE_STAT : cfg->codecache;
 
     if (filename) {
         char *file;
@@ -910,6 +911,29 @@ static const char *register_lua_inherit(cmd_parms *cmd,
     }
     return NULL;
 }
+static const char *register_lua_codecache(cmd_parms *cmd, 
+                                      void *_cfg,
+                                      const char *arg)
+{
+    ap_lua_dir_cfg *cfg = (ap_lua_dir_cfg *) _cfg;
+    
+    if (strcasecmp("never", arg) == 0) {
+        cfg->codecache = AP_LUA_CACHE_NEVER;
+    }
+    else if (strcasecmp("stat", arg) == 0) {
+        cfg->codecache = AP_LUA_CACHE_STAT;
+    }
+    else if (strcasecmp("forever", arg) == 0) {
+        cfg->codecache = AP_LUA_CACHE_FOREVER;
+    }
+    else { 
+        return apr_psprintf(cmd->pool,
+                            "LuaCodeCache type of '%s' not recognized, valid "
+                            "options are 'never', 'stat', and 'forever'", 
+                            arg);
+    }
+    return NULL;
+}
 static const char *register_lua_scope(cmd_parms *cmd, 
                                       void *_cfg,
                                       const char *scope, 
@@ -1184,6 +1208,10 @@ command_rec lua_commands[] = {
     AP_INIT_TAKE1("LuaInherit", register_lua_inherit, NULL, OR_ALL,
      "Controls how Lua scripts in parent contexts are merged with the current " 
      " context: none|parent-last|parent-first (default: parent-first) "),
+    
+    AP_INIT_TAKE1("LuaCodeCache", register_lua_codecache, NULL, OR_ALL,
+     "Controls the behavior of the in-memory code cache " 
+     " context: stat|forever|never (default: stat) "),
 
     AP_INIT_TAKE2("LuaQuickHandler", register_quick_hook, NULL, OR_ALL,
                   "Provide a hook for the quick handler of request processing"),
@@ -1270,6 +1298,7 @@ static void *merge_dir_config(apr_pool_t *p, void *basev, void *overridesv)
 
     a->vm_scope = (overrides->vm_scope == AP_LUA_SCOPE_UNSET) ? base->vm_scope: overrides->vm_scope;
     a->inherit = (overrides->inherit== AP_LUA_INHERIT_UNSET) ? base->inherit : overrides->inherit;
+    a->codecache = (overrides->codecache== AP_LUA_CACHE_UNSET) ? base->codecache : overrides->codecache;
 
     if (a->inherit == AP_LUA_INHERIT_UNSET || a->inherit == AP_LUA_INHERIT_PARENT_FIRST) { 
         a->package_paths = apr_array_append(p, base->package_paths, overrides->package_paths);
