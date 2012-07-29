@@ -195,8 +195,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      in the header.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1366319
      2.4.x patch: Trunk patch applies.
-     +1: rjung
-     rjung: humbedooh: you applied it to trunk, care to vote?
+     +1: rjung, humbedooh
 
 
 A list of further possible backports can be found at:
