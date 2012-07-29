@@ -821,7 +821,7 @@ LuaPackagePath /scripts/lib/?/init.lua
 <div class="directive-section"><h2><a name="LuaQuickHandler" id="LuaQuickHandler">LuaQuickHandler</a> <a name="luaquickhandler" id="luaquickhandler">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the quick handler of request processing</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaQuickHandler /path/to/script.lua hook_function_name</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
