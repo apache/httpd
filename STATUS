@@ -145,6 +145,52 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: rjung
      rjung: ben: you applied it to trunk, care to vote?
 
+   * configure: Add message about how to enable crypto support in APR.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1324760
+     2.4.x patch: Trunk patch applies.
+     +1: rjung
+     rjung: igalic: you applied it to trunk, care to vote?
+
+   * proxy: Treat EAGAIN as an error for a blocking read from the input filter
+     stack.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1242798
+     2.4.x patch: Trunk patch applies.
+     +1: rjung
+     rjung: jorton: you applied it to trunk, care to vote?
+
+   * authz: pass the provider name to parse_require_line as pool userdata
+     This allows a single C function to implement several authz providers.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1351016
+     2.4.x patch: Trunk patch applies.
+     +1: rjung
+     rjung: sf: you applied it to trunk, care to vote?
+
+   * event: Simplify handling of MaxConnectionsPerChild.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1361766
+     2.4.x patch: Trunk patch applies.
+     +1: rjung
+     rjung: sf: you applied it to trunk, care to vote?
+
+   * event: Keep track of the number of clogged, lingering, and suspended connections.
+     Don't count connections in lingering close state when calculating
+     how many additional connections may be accepted
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1361773 and
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1361778
+     2.4.x patch: Trunk patch applies.
+     +1: rjung
+     rjung: sf: you applied it to trunk, care to vote?
+
+   * proxy_ajp: Use short lived pool to avoid memory leaks.
+     Remove the comment about binding upstream and downstream connections. It
+     seems to be obsolete since r104604, r104605, r105108.
+     Also avoid allocating memory if we are not handling the connection.
+     PR 52275, submitted by Naohiro Ooiwa <naohiro ooiwa miraclelinux com>,
+     Stefan Fritsch.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1334343
+     2.4.x patch: Trunk patch applies.
+     +1: rjung
+     rjung: sf: you applied it to trunk, care to vote?
+
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
