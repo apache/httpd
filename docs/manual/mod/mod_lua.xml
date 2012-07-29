@@ -840,7 +840,7 @@ hook function usually returns OK, DECLINED, or HTTP_FORBIDDEN.</p>
 <directivesynopsis>
 <name>LuaQuickHandler</name>
 <description>Provide a hook for the quick handler of request processing</description>
-<syntax></syntax>
+<syntax>LuaQuickHandler /path/to/script.lua hook_function_name</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
