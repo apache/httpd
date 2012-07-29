@@ -59,7 +59,6 @@ jour.</div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#luaauthzprovider">LuaAuthzProvider</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#luacodecache">LuaCodeCache</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahookaccesschecker">LuaHookAccessChecker</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahookauthchecker">LuaHookAuthChecker</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahookcheckuserid">LuaHookCheckUserID</a></li>
@@ -560,39 +559,6 @@ LuaAuthzProvider foo authz.lua authz_check_foo
   Require foo bar
 &lt;/Location&gt;
 </pre>
-</div>
-
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaCodeCache" id="LuaCodeCache">LuaCodeCache</a> <a name="luacodecache" id="luacodecache">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure le cache de code compilé.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaCodeCache stat|forever|never</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LuaCodeCache stat</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
-</table><p>
-    Cette directive permet de définir le comportement du cache de code
-    en mémoire. La valeur par défaut est stat ; dans ce cas, le script
-    du niveau le plus haut (et pas les scripts inclus) est vérifié à
-    chaque fois que ce fichier est nécessaire, et est rechargé si la
-    date de modification est plus récente que celle du script déjà
-    chargé. Les autres valeurs permettent respectivement de garder le
-    fichier en cache perpétuellement (forever - jamais vérifié ni
-    remplacé), ou de ne jamais le mettre en cache (never).</p>
-
-    <p>En général, les valeurs stat et forever sont utilisées pour un
-    serveur en production, et les valeurs stat ou never pour un serveur
-    en développement.</p>
-
-    <div class="example"><h3>Exemples :</h3><pre class="prettyprint lang-config">
-LuaCodeCache stat
-LuaCodeCache forever
-LuaCodeCache never
-    </pre>
 </div>
 
 
