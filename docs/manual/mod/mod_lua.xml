@@ -50,7 +50,7 @@ Be sure to check the CHANGES file before upgrading.</note>
 <note type="warning"><title>Warning</title>
 <p>This module holds a great deal of power over httpd, which is both a 
 strength and a potential security risk. It is <strong>not</strong> recommended 
-that you use this module on server that is shared with users you do not 
+that you use this module on a server that is shared with users you do not 
 trust, as it can be abused to change the internal workings of httpd.</p>
 </note>
 
