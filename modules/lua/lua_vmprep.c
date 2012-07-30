@@ -344,7 +344,7 @@ AP_LUA_DECLARE(lua_State*)ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
     int tryCache = 0;
     if (apr_pool_userdata_get((void **)&L, spec->file,
                               lifecycle_pool) == APR_SUCCESS) {
-      
+        
       if(L==NULL) {
         ap_log_perror(APLOG_MARK, APLOG_DEBUG, 0, lifecycle_pool, APLOGNO(01483)
                       "creating lua_State with file %s", spec->file);
@@ -363,26 +363,37 @@ AP_LUA_DECLARE(lua_State*)ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
     if (spec->codecache == AP_LUA_CACHE_FOREVER || (spec->bytecode && spec->bytecode_len > 0)) {
         tryCache = 1;
     }
-    else if (spec->codecache == AP_LUA_CACHE_STAT) {
-        apr_time_t modified;
-        char* mkey = apr_psprintf(lifecycle_pool, "ap_lua_modified:%s", spec->file);
-        if (apr_pool_userdata_get((void **)&modified, mkey,
+    else {
+        ap_lua_finfo *cache_info;
+        char* mkey = apr_psprintf(lifecycle_pool, "ap_lua_modified:%s", spec->file); /* XXX: Change to a different pool? */
+        if (apr_pool_userdata_get((void **)&cache_info, mkey,
                               lifecycle_pool) == APR_SUCCESS) {
-            apr_finfo_t lua_finfo;
-            apr_stat(&lua_finfo, spec->file, APR_FINFO_MTIME, lifecycle_pool);
+            if (cache_info == NULL) {
+                cache_info = apr_pcalloc(lifecycle_pool, sizeof(ap_lua_finfo));
+            }
+            if (spec->codecache == AP_LUA_CACHE_STAT) {
+                apr_finfo_t lua_finfo;
+                apr_stat(&lua_finfo, spec->file, APR_FINFO_MTIME|APR_FINFO_SIZE, lifecycle_pool);
             
-            /* On first visit, modified will be zero, but that's fine - The file is 
-             loaded in the vm_construct function.
-             */
-            if (modified == lua_finfo.mtime || modified == 0) tryCache = 1;
-            modified = lua_finfo.mtime;
+                /* On first visit, modified will be zero, but that's fine - The file is 
+                loaded in the vm_construct function.
+                */
+                if ((cache_info->modified == lua_finfo.mtime && cache_info->size == lua_finfo.size) \
+                        || cache_info->modified == 0) tryCache = 1;
+                cache_info->modified = lua_finfo.mtime;
+                cache_info->size = lua_finfo.size;
+            }
+            else if (spec->codecache == AP_LUA_CACHE_NEVER) {
+                if (cache_info->runs == 0) tryCache = 1;
+            }
+            cache_info->runs++;
         }
         else {
             tryCache = 1;
         }
-        apr_pool_userdata_set((void*) modified, mkey, NULL, lifecycle_pool);
+        apr_pool_userdata_set((void*) cache_info, mkey, NULL, lifecycle_pool);
     }
-    if (tryCache == 0) {
+    if (tryCache == 0 && spec->scope != AP_LUA_SCOPE_ONCE) {
         int rc;
         ap_log_perror(APLOG_MARK, APLOG_DEBUG, 0, lifecycle_pool, APLOGNO(01481)
             "(re)loading lua file %s", spec->file);

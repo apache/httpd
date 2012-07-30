@@ -91,6 +91,12 @@ typedef struct
     int codecache;
 } ap_lua_mapped_handler_spec;
 
+typedef struct {
+    apr_size_t runs;
+    apr_time_t modified;
+    apr_size_t size;
+} ap_lua_finfo;
+
 /* remove and make static once out of mod_wombat.c */
 AP_LUA_DECLARE(void) ap_lua_openlibs(lua_State *L);
 
