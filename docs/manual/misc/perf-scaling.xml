@@ -869,7 +869,7 @@
         
         
         <section id="apache-configuration">
-            <title>Apache Configuration
+            <title>Httpd Configuration
             </title>
             <p>The Apache 2.2 httpd is by default a pre-forking web server.
                 When the server starts, the parent process spawns a number of
@@ -896,6 +896,12 @@
                 doesn't hit a hard limit beyond which clients will be
                 denied access. However, once requests start backing up, system
                 performance is likely to degrade. 
+            </p>
+			<p>Finally, if the httpd server in question is not executing any third-party
+               code, via <code>mod_php</code>, <code>mod_perl</code> or similar,
+               we recommend the use of <module>mpm_event</module>. This MPM is ideal
+               for situations where httpd serves as a thin layer between clients and
+               backend servers doing the real job, such as a proxy or cache.
             </p>
             
             
