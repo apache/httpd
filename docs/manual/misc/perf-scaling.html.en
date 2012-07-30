@@ -882,7 +882,7 @@
         
         
         
-        <h3><a name="apache-configuration" id="apache-configuration">Apache Configuration
+        <h3><a name="apache-configuration" id="apache-configuration">Httpd Configuration
             </a></h3>
             
             <p>The Apache 2.2 httpd is by default a pre-forking web server.
@@ -910,6 +910,12 @@
                 doesn't hit a hard limit beyond which clients will be
                 denied access. However, once requests start backing up, system
                 performance is likely to degrade. 
+            </p>
+			<p>Finally, if the httpd server in question is not executing any third-party
+               code, via <code>mod_php</code>, <code>mod_perl</code> or similar,
+               we recommend the use of <code class="module"><a href="../mod/mpm_event.html">mpm_event</a></code>. This MPM is ideal
+               for situations where httpd serves as a thin layer between clients and
+               backend servers doing the real job, such as a proxy or cache.
             </p>
             
             
