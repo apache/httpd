@@ -197,6 +197,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: Trunk patch applies.
      +1: rjung, humbedooh
 
+   * mod_lua: Add new directive, LuaCodeCache, for controlling in-memory caching
+     of lua scripts.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1366890
+                  http://svn.apache.org/viewvc?view=revision&revision=1367025
+                  http://svn.apache.org/viewvc?view=revision&revision=1367040
+                  http://svn.apache.org/viewvc?view=revision&revision=1367048
+    2.4.x patch:  http://people.apache.org/~humbedooh/LuaCodeCache.diff
+    +1: humbedooh
+    humbedooh: It might be easier to get a vote going on all the previous changes
+               to mod_lua, so we won't have to munge together odd looking patches 
+               for each change that was made.
+
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
