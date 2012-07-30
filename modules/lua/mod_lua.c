@@ -1236,6 +1236,7 @@ static void *create_dir_config(apr_pool_t *p, char *dir)
     cfg->hooks = apr_hash_make(p);
     cfg->dir = apr_pstrdup(p, dir);
     cfg->vm_scope = AP_LUA_SCOPE_UNSET;
+    cfg->codecache = AP_LUA_CACHE_UNSET;
 
     return cfg;
 }
