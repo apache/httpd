@@ -186,6 +186,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             preferrably, and it would be good if mod_ssl.xml also includes
             the change to the section about the SSLProtocol directive
             (see r1222921).
+    -1: sf:
+        - ssl_engine_init.c: misses two "ctx = SSL_CTX_new(method);" calls
+          (or move the existing ones after the if blocks).
+        - The handling of "SSLProtocol all -SSLv2" is broken,
+          resulting in a "No SSL protocols available" error.
+          This is due to the "thisopt = SSL_PROTOCOL_SSLV2" line being
+          removed in the OPENSSL_NO_TLSEXT case.
 
    * mod_ssl: Add RFC 5878 support. This allows support of mechanisms
               such as Certificate Transparency. Note that new
