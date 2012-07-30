@@ -2,10 +2,10 @@
 Changes with Apache 2.5.0
 
   *) mod_lua: Add new directive LuaCodeCache for controlling in-memory
-     caching of lua scripts.
+     caching of lua scripts. [Daniel Gruno]
 
   *) mod_lua: Move LUA_COMPAT_ALL into the right place, so it will
-     activate compatibility mode for Lua 5.2.
+     activate compatibility mode for Lua 5.2. [Daniel Gruno]
 
   *) mod_proxy_balancer: Restore balancing after a failed worker has
      recovered when using lbmethod_bybusyness.  PR 48735.  [Jeff Trawick]
