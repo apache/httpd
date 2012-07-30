@@ -338,7 +338,7 @@ static apr_status_t vm_construct(lua_State **vm, void *params, apr_pool_t *lifec
  * server in the appropriate scope.
  */
 AP_LUA_DECLARE(lua_State*)ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
-                                               ap_lua_vm_spec *spec)
+                                               ap_lua_vm_spec *spec, request_rec* r)
 {
     lua_State *L = NULL;
     int tryCache = 0;
@@ -365,7 +365,7 @@ AP_LUA_DECLARE(lua_State*)ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
     }
     else {
         ap_lua_finfo *cache_info;
-        char* mkey = apr_psprintf(lifecycle_pool, "ap_lua_modified:%s", spec->file); /* XXX: Change to a different pool? */
+        char* mkey = apr_psprintf(r->pool, "ap_lua_modified:%s", spec->file);
         if (apr_pool_userdata_get((void **)&cache_info, mkey,
                               lifecycle_pool) == APR_SUCCESS) {
             if (cache_info == NULL) {

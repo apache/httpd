@@ -191,7 +191,7 @@ static int lua_handler(request_rec *r)
         ap_lua_vm_spec *spec = create_vm_spec(&pool, r, cfg, NULL, NULL, NULL,
                                               0, "handle", "request handler");
 
-        L = ap_lua_get_lua_state(pool, spec);
+        L = ap_lua_get_lua_state(pool, spec, r);
         if (!L) {
             /* TODO annotate spec with failure reason */
             r->status = HTTP_INTERNAL_SERVER_ERROR;
@@ -250,7 +250,7 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name, int ap
                                   hook_spec->function_name,
                                   "request hook");
 
-            L = ap_lua_get_lua_state(pool, spec);
+            L = ap_lua_get_lua_state(pool, spec, r);
 
             if (!L) {
                 ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(01477)
@@ -1042,7 +1042,7 @@ static authz_status lua_authz_check(request_rec *r, const char *require_line,
     spec = create_vm_spec(&pool, r, cfg, server_cfg, prov_spec->file_name,
                           NULL, 0, prov_spec->function_name, "authz provider");
 
-    L = ap_lua_get_lua_state(pool, spec);
+    L = ap_lua_get_lua_state(pool, spec, r);
     if (L == NULL) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02314)
                       "Unable to compile VM for authz provider %s", prov_spec->name);

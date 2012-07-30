@@ -121,7 +121,7 @@ AP_LUA_DECLARE(void) ap_lua_load_apache2_lmodule(lua_State *L);
  * @ctx a baton passed to cb
  */
 AP_LUA_DECLARE(lua_State*) ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
-                                                ap_lua_vm_spec *spec);
+                                                ap_lua_vm_spec *spec, request_rec* r);
 
 
 
