@@ -610,6 +610,7 @@ LuaPackagePath /scripts/lib/?/init.lua
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
+<compatibility>2.5 and later</compatibility>
 <override>All</override>
 
 <usage><p>
@@ -692,7 +693,7 @@ end
 
 <directivesynopsis>
 <name>LuaHookFixups</name>
-<description>Provide a hook for the fixups phase of request
+<description>Provide a hook for the fixups phase of a request
 processing</description>
 <syntax>LuaHookFixups  /path/to/lua/script.lua hook_function_name</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -714,7 +715,46 @@ processing</description>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
-    <usage><p>...</p></usage>
+    <usage>
+    <p>Like <directive>LuaHookTranslateName</directive> but executed at the 
+    map-to-storage phase of a request. Modules like mod_cache run at this phase,
+    which makes for an interesting example on what to do here:
+    <highlight language="config">
+    LuaHookMapToStorage /path/to/lua/script.lua check_cache
+    </highlight>
+    <highlight language="lua">
+require"apache2"
+cached_files = {}
+
+function read_file(filename) 
+    local input = io.open(filename, "r")
+    if input then
+        local data = input:read("*a")
+        cached_files[filename] = data
+        file = cached_files[filename]
+        input:close()
+    end
+    return cached_files[filename]
+end
+
+function check_cache(r)
+    if r.filename:match("%.png$") then -- Only match PNG files
+        local file = cached_files[r.filename] -- Check cache entries
+        if not file then
+            file = read_file(r.filename)  -- Read file into cache
+        end
+        if file then -- If file exists, write it out
+            r.status = 200
+            r:write(file)
+            r:info(("Sent %s to client from cache"):format(r.filename))
+            return apache2.DONE -- skip default handler for PNG files
+        end
+    end
+    return apache2.DECLINED -- If we had nothing to do, let others serve this.
+end
+    </highlight>
+    </p>
+    </usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -870,15 +910,21 @@ hook function usually returns OK, DECLINED, or HTTP_FORBIDDEN.</p>
 <p>After a lua function has been registered as authorization provider, it can be used
 with the <directive module="mod_authz_core">Require</directive> directive:</p>
 
-<example>
 <highlight language="config">
 LuaRoot /usr/local/apache2/lua
 LuaAuthzProvider foo authz.lua authz_check_foo
 &lt;Location /&gt;
-  Require foo bar
+  Require foo johndoe
 &lt;/Location&gt;
 </highlight>
-</example>
+<highlight language="lua">
+require "apache2"
+function authz_check_foo(r, who)
+    if r.user ~= who then return apache2.AUTHZ_DENIED
+    return apache2.AUTHZ_GRANTED
+end
+</highlight>
+
 
 </usage>
 </directivesynopsis>
