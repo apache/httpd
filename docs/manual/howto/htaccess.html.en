@@ -110,7 +110,7 @@ changes on a per-directory basis.</p>
     you don't have access to the main server configuration file. There is,
     for example, a common misconception that user authentication should
     always be done in <code>.htaccess</code> files, and, in more recent years,
-    another miscomception that <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> directives
+    another misconception that <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> directives
     must go in <code>.htaccess</code> files. This is simply not the
     case. You can put user authentication configurations in the main server
     configuration, and this is, in fact, the preferred way to do
