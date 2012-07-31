@@ -607,10 +607,10 @@ LuaPackagePath /scripts/lib/?/init.lua
 <description>Configure the compiled code cache.</description>
 <syntax>LuaCodeCache stat|forever|never</syntax>
 <default>LuaCodeCache stat</default>
-<contextlist><context>server config</context><context>virtual host</context>
+<contextlist>
+<context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
-<compatibility>2.5 and later</compatibility>
 <override>All</override>
 
 <usage><p>
@@ -718,7 +718,7 @@ processing</description>
     <usage>
     <p>Like <directive>LuaHookTranslateName</directive> but executed at the 
     map-to-storage phase of a request. Modules like mod_cache run at this phase,
-    which makes for an interesting example on what to do here:
+    which makes for an interesting example on what to do here:</p>
     <highlight language="config">
     LuaHookMapToStorage /path/to/lua/script.lua check_cache
     </highlight>
@@ -753,7 +753,7 @@ function check_cache(r)
     return apache2.DECLINED -- If we had nothing to do, let others serve this.
 end
     </highlight>
-    </p>
+
     </usage>
 </directivesynopsis>
 
