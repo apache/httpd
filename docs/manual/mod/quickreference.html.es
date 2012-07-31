@@ -603,7 +603,7 @@ processing</td></tr>
 <tr><td><a href="mod_lua.html#luapackagepath">LuaPackagePath /path/to/include/?.lua</a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Add a directory to lua's package.path</td></tr>
 <tr class="odd"><td><a href="mod_lua.html#luaquickhandler">LuaQuickHandler /path/to/script.lua hook_function_name</a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Provide a hook for the quick handler of request processing</td></tr>
 <tr><td><a href="mod_lua.html#luaroot">LuaRoot /path/to/a/directory</a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Specify the base path for resolving relative paths for mod_lua directives</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luascope">LuaScope once|request|conn|thread [max|min max]</a></td><td> once </td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">One of once, request, conn -- default is once</td></tr>
+<tr class="odd"><td><a href="mod_lua.html#luascope">LuaScope once|request|conn|thread</a></td><td> once </td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">One of once, request, conn -- default is once</td></tr>
 <tr><td><a href="mpm_common.html#maxconnectionsperchild" id="M" name="M">MaxConnectionsPerChild <var>number</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Limit on the number of connections that an individual child server
 will handle during its life</td></tr>
 <tr class="odd"><td><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests <var>number</var></a></td><td> 100 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Number of requests allowed on a persistent
