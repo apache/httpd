@@ -26,13 +26,23 @@
 <a href="../ko/howto/public_html.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/public_html.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
   <p>Çok kullanıcılı sistemlerde, <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> yönergesi ile her kullanıcının kendi ev dizininde
     bir sitesi olması sağlanabilir.
     <code>http://example.com/~kullanıcı/</code> adresinin ziyaretçileri
     "kullanıcı" isimli kullanıcının ev dizininin içeriğini değil, <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> yönergesinde belirtilen alt
     dizinin içeriğini görürler.</p>
+
+  <p>Şuna dikkat edin: Öntanımlı olarak bu yönergelere erişim etkin
+    <strong>değildir</strong>.Öntanımlı yapılandırma dosyasında</p>
+  <div class="example"><p><code>
+    #Include conf/extra/httpd-userdir.conf
+  </code></p></div>
+  <p>satırını açıklama olmaktan çıkarıp etkin hale getirmekle <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> modülünü kullanıma sokarak ve
+    <code>httpd-userdir.conf</code> dosyasında gerekli değişiklikleri yaparak
+    veya ana yapılandırma dosyasındaki ilgili <code>Directory</code> bölümünün
+    içine uygun yönergeleri yerleştirerek bu yönergelere erişimi etkin
+    kılabilirsiniz.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Kullanıcı sayfaları dizinleri</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#userdir"><code>UserDir</code> ile dosya yolunun belirtilmesi</a></li>
