@@ -497,7 +497,7 @@ end
 <directivesynopsis>
 <name>LuaScope</name>
 <description>One of once, request, conn -- default is once</description>
-<syntax>LuaScope once|request|conn|thread [max|min max]</syntax>
+<syntax>LuaScope once|request|conn|thread</syntax>
 <default>LuaScope once</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
@@ -517,7 +517,7 @@ end
 
     <dt>conn:</dt> <dd>Same as request but attached to the connection_rec</dd>
     <dt>thread:</dt> <dd>Use the interpreter for the lifetime of the thread 
-            handling the request.</dd>
+            handling the request (only available with threaded MPMs).</dd>
 <!-- not implemented
     <dt>server:</dt>  <dd>This one is different than others because the
             server scope is quite long lived, and multiple threads
