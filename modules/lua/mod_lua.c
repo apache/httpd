@@ -170,6 +170,35 @@ static ap_lua_vm_spec *create_vm_spec(apr_pool_t **lifecycle_pool,
     return spec;
 }
 
+static const char* ap_lua_interpolate_string(apr_pool_t* pool, const char* string, const char** values)
+{
+    char *stringBetween;
+    const char* ret;
+    int srclen,x,y;
+    srclen = strlen(string);
+    ret = "";
+    y = 0;
+    for (x=0; x < srclen; x++) {
+        if (string[x] == '$' && x != srclen-1 && string[x+1] >= '0' && string[x+1] <= '9') {
+            if (x-y > 0) {
+                stringBetween = apr_pstrndup(pool, string+y, x-y);
+            }
+            else stringBetween = "";
+            int v = atoi(apr_pstrndup(pool,string+x+1, 1));
+            ret = apr_psprintf(pool, "%s%s%s", ret, stringBetween, values[v]);
+            y = ++x;
+        }
+    }
+    
+    if (x-y > 0 && y > 0) {
+        stringBetween = apr_pstrndup(pool, string+y+1, x-y);
+        ret = apr_psprintf(pool, "%s%s", ret, stringBetween);
+    }
+    else if (y==0) return string; /* If no replacement was made, just return the original str. */
+    return ret;
+}
+
+
 
 /**
  * "main"
@@ -266,6 +295,90 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name, int ap
                                   "lua: Unable to find function %s in %s",
                                   hook_spec->function_name,
                                   hook_spec->file_name);
+                    return HTTP_INTERNAL_SERVER_ERROR;
+                }
+
+                ap_lua_run_lua_request(L, r);
+            }
+            else {
+                int t;
+                ap_lua_run_lua_request(L, r);
+
+                t = lua_gettop(L);
+                lua_setglobal(L, "r");
+                lua_settop(L, t);
+            }
+
+            if (lua_pcall(L, 1, 1, 0)) {
+                report_lua_error(L, r);
+                return HTTP_INTERNAL_SERVER_ERROR;
+            }
+            rc = DECLINED;
+            if (lua_isnumber(L, -1)) {
+                rc = lua_tointeger(L, -1);
+            }
+            if (rc != DECLINED) {
+                return rc;
+            }
+        }
+    }
+    return DECLINED;
+}
+
+
+static int lua_map_handler(request_rec *r)
+{
+    int rc, n = 0;
+    apr_pool_t *pool;
+    lua_State *L;
+    const char *filename, *function_name;
+    const char *values[10];
+    ap_lua_vm_spec *spec;
+    ap_regmatch_t match[10];
+    ap_lua_server_cfg *server_cfg = ap_get_module_config(r->server->module_config,
+                                                         &lua_module);
+    const ap_lua_dir_cfg *cfg = ap_get_module_config(r->per_dir_config,
+                                                     &lua_module);
+    for (n = 0; n < cfg->mapped_handlers->nelts; n++) {
+        ap_lua_mapped_handler_spec *hook_spec =
+            ((ap_lua_mapped_handler_spec **) cfg->mapped_handlers->elts)[n];
+
+        if (hook_spec == NULL) {
+            continue;
+        }
+        if (!ap_regexec(hook_spec->uri_pattern, r->uri, 10, match, 0)) {
+            int i;
+            for (i=0;i<10;i++) {
+                if (match[i].rm_eo >= 0) {
+                    values[i] = apr_pstrndup(r->pool, r->uri+match[i].rm_so, match[i].rm_eo - match[i].rm_so);
+                }
+                else values[i] = "";
+            }
+            filename = ap_lua_interpolate_string(r->pool, hook_spec->file_name, values);
+            function_name = ap_lua_interpolate_string(r->pool, hook_spec->function_name, values);
+            spec = create_vm_spec(&pool, r, cfg, server_cfg,
+                                    filename,
+                                    hook_spec->bytecode,
+                                    hook_spec->bytecode_len,
+                                    function_name,
+                                    "mapped handler");
+
+            L = ap_lua_get_lua_state(pool, spec, r);
+
+            if (!L) {
+                ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(01477)
+                                "lua: Failed to obtain lua interpreter for %s %s",
+                                function_name, filename);
+                return HTTP_INTERNAL_SERVER_ERROR;
+            }
+
+            if (function_name != NULL) {
+                lua_getglobal(L, function_name);
+                if (!lua_isfunction(L, -1)) {
+                    ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(01478)
+                                    "lua: Unable to find function %s in %s",
+                                    function_name,
+                                    filename);
                     return HTTP_INTERNAL_SERVER_ERROR;
                 }
 
@@ -565,7 +678,28 @@ static const char *register_named_file_function_hook(const char *name,
     *(ap_lua_mapped_handler_spec **) apr_array_push(hook_specs) = spec;
     return NULL;
 }
+static const char *register_mapped_file_function_hook(const char *pattern,
+                                                     cmd_parms *cmd,
+                                                     void *_cfg,
+                                                     const char *file,
+                                                     const char *function)
+{
+    ap_lua_mapped_handler_spec *spec;
+    ap_lua_dir_cfg *cfg = (ap_lua_dir_cfg *) _cfg;
+    ap_regex_t *regex = apr_pcalloc(cmd->pool, sizeof(ap_regex_t));
+    if (ap_regcomp(regex, pattern,0)) {
+        return "Invalid regex pattern!";
+    }
 
+    spec = apr_pcalloc(cmd->pool, sizeof(ap_lua_mapped_handler_spec));
+    spec->file_name = apr_pstrdup(cmd->pool, file);
+    spec->function_name = apr_pstrdup(cmd->pool, function);
+    spec->scope = cfg->vm_scope;
+    spec->uri_pattern = regex;
+
+    *(ap_lua_mapped_handler_spec **) apr_array_push(cfg->mapped_handlers) = spec;
+    return NULL;
+}
 static int lua_check_user_id_harness_first(request_rec *r)
 {
     return lua_request_rec_hook_harness(r, "check_user_id", AP_LUA_HOOK_FIRST);
@@ -827,6 +961,18 @@ static const char *register_quick_hook(cmd_parms *cmd, void *_cfg,
     }
     return register_named_file_function_hook("quick", cmd, _cfg, file,
                                              function, APR_HOOK_MIDDLE);
+}
+static const char *register_map_handler(cmd_parms *cmd, void *_cfg,
+                                       const char* match, const char *file, const char *function)
+{
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIRECTORY|NOT_IN_FILES|
+                                                NOT_IN_HTACCESS);
+    if (err) {
+        return err;
+    }
+    if (!function) function = "handle";
+    return register_mapped_file_function_hook(match, cmd, _cfg, file,
+                                             function);
 }
 static const char *register_quick_block(cmd_parms *cmd, void *_cfg,
                                         const char *line)
@@ -1220,6 +1366,8 @@ command_rec lua_commands[] = {
     AP_INIT_RAW_ARGS("Lua_____ByteCodeHack", hack_section_handler, NULL,
                      OR_ALL,
                      "(internal) Byte code handler"),
+    AP_INIT_TAKE23("LuaMapHandler", register_map_handler, NULL, OR_ALL,
+                  "Maps a path to a lua handler"),
     {NULL}
 };
 
@@ -1375,7 +1523,7 @@ static void lua_register_hooks(apr_pool_t *p)
 
     APR_OPTIONAL_HOOK(ap_lua, lua_request, lua_request_hook, NULL, NULL,
                       APR_HOOK_REALLY_FIRST);
-
+    ap_hook_handler(lua_map_handler, NULL, NULL, AP_LUA_HOOK_FIRST);
     /* providers */
     lua_authz_providers = apr_hash_make(p);
 }
