@@ -29,7 +29,6 @@
 <a href="../ko/mod/mod_log_config.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_log_config.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Sunucuya yapılan isteklerin günlük kayıtlarının tutulması
 </td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
@@ -113,7 +112,13 @@
         <td>İstekle birlikte sunucuya gönderilen
           <code><var>Filanca</var>:</code> başlık satır(lar)ının
           içeriği. Diğer modüllerde (örn. <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code>)
-          yapılan değişikliklerden etkilenir.</td></tr>
+          yapılan değişikliklerden etkilenir. Çok sayıda modülün istek
+          başlığını değişikliğe uğrattığı durumda istek başlığında başta
+          neyin geldiği ile ilgileniyorsanız, başlığı
+          <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> ile bir ortam değişkenine kopyalayıp
+          yukarıda açıklandığı gibi <code>%{<var>FALANCA</var>}e</code> ile bu
+          değeri günlükte kullanabilirsiniz.
+          </td></tr>
 <tr><td><code>%k</code></td>
         <td>Bu bağlantıda işlenen isteklerin sayısı; yani örneğin,
         '1' değeri bağlantı kurulduktan sonraki ilk kalıcı bağlantıyı,

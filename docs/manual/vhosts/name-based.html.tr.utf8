@@ -28,7 +28,6 @@
 <a href="../ko/vhosts/name-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/name-based.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Bu belgede isme dayalı sanal konakların ne zaman, nasıl kullanılacakları
       açıklanmıştır.</p>
@@ -151,6 +150,10 @@ Barındırma</a></li><li><a href="examples.html">Çok kullanılan sanal konak ya
       erişilebilir kılamazsınız. Öncelikle, bu isimleri sunucunuzdaki IP
       adresleriyle eşlemek üzere yapılandıracağınız bir DNS sunucunuz
       olmalıdır.</p>
+
+    <p><code>VirtualHost</code> içindeki isimlerin tamamı (jokersiz) bir
+      <code>ServerAlias</code> gibi ele alınır (fakat başka bir
+      <code>ServerAlias</code> ile geçersiz kılınmazlar).</p>
 
     <p>Son olarak, sanal konak yapılandırmanıza, <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> bölümlerinin içine başka yönergeler
       yerleştirerek ince ayar çekebilirsiniz. Çoğu yönerge bu bölümlere

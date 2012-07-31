@@ -30,11 +30,10 @@
 <a href="../tr/vhosts/" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/vhosts/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
 
     <p><cite>Sanal Konak</cite> (Virtual Host) terimi tek bir makine üzerinde
-      birden fazla sitenin (www.sirket1.dom, www.sirket2.dom gibi) barındırılma
+      birden fazla sitenin (sirket1.example.com, sirket2.example.com gibi) barındırılma
       uygulamasını betimler. Sanal konaklar, "<a href="ip-based.html">IP’ye
       dayalı</a>" veya "<a href="name-based.html">isme dayalı</a>" olabilir;
       birincisinde, her site ayrı bir IP adresinden sunulurken, ikincisinde her
@@ -47,7 +46,7 @@
       bazen <em>konağa dayalı</em> sanal konaklar veya <em>IP’ye dayanmayan</em>
       sanal konaklar da denmektedir.</p>
 
-    <p>Aşağıda, Apache’nin 1.3 sürümü ve sonrası için sanal konak desteğini bütün
+    <p>Aşağıda, Apache HTTP Sunucusu için sanal konak desteğini bütün
       ayrıntıları ile açıklayan belgeler listelenmiştir.</p>
 
 </div>
@@ -77,8 +76,8 @@
 <h2><a name="directives" id="directives">Yapılandırma Yönergeleri</a></h2>
 
     <ul>
-      <li><code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li>
       <li><code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code></li>
+      <li><code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li>
       <li><code class="directive"><a href="../mod/core.html#servername">ServerName</a></code></li>
       <li><code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code></li>
       <li><code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code></li>

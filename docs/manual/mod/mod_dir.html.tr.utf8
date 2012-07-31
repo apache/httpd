@@ -29,7 +29,6 @@
 <a href="../ko/mod/mod_dir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_dir.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Bölü çizgisiyle biten yönlendirmeleri yapar ve dizin içeriği dosyalarını sunar.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>dir_module</td></tr>
@@ -105,6 +104,23 @@
     <p>Bu örnekte ise dizin içinde ne <code>index.html</code> ne de
       <code>index.txt</code> mevcut olduğunda <code>/cgi-bin/index.pl</code>
       CGI betiği çalıştırılacaktır.</p>
+
+    <p><strong>Ek Bilgi:</strong> <a href="../sections.html"><em>Aynı
+      bağlam</em></a> içinde çok sayıda <code class="directive">DirectoryIndex</code>
+      yönergesi varsa bunlar bir öncekini geçersiz kılmayacak, listeye
+      eklenecektir:
+    </p>
+
+    <div class="example"><pre># Örnek A: İlk sayfa index.html olsun buna index.php de eklensin.
+&lt;Directory /foo&gt;
+    DirectoryIndex index.html
+    DirectoryIndex index.php
+&lt;/Directory&gt;
+
+# Örnek B: Tek bir yönerge ile yapılması dışında Örnek A ile aynıdır.
+&lt;Directory /foo&gt;
+    DirectoryIndex index.html index.php
+&lt;/Directory&gt;</pre></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

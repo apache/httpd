@@ -30,7 +30,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Apache HTTP Sunucusunda daima mevcut olan çekirdek
  özellikler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr></table>
@@ -791,7 +790,7 @@ kullanımı önerilmemektedir.</td></tr>
       ifadeler</a> de kullanılabilir. Örnek:</p>
 
     <div class="example"><p><code>
-      &lt;Directory ~ "^/www/.*/[0-9]{3}"&gt;
+      &lt;Directory ~ "^/www/[0-9]{3}"&gt;
     </code></p></div>
 
     <p>yönergesi <code>/www/</code> içindeki üç rakamdan oluşan dizinlerle
@@ -837,7 +836,7 @@ kullanımı önerilmemektedir.</td></tr>
       görüldükleri sıraya göre sınanırlar. Örneğin,</p>
 
     <div class="example"><p><code>
-      &lt;Directory ~ abc$&gt;<br />
+      &lt;Directory ~ "public_html/.*"&gt;<br />
       <span class="indent">
         # ... yönergeler burada ...<br />
       </span>
@@ -1336,7 +1335,16 @@ oluşturmakta kullanılacak dosya özniteliklerini belirler.</td></tr>
     <p><var>dosya-adı</var> argümanının bir dosya ismi veya bir dosya ismi
       kalıbı içermesi gerekir. Bir dosya ismi kalıbındaki her <code>?</code>
       imi bir karakterle eşleştirilirken <code>*</code> imi karakter dizileri
-      ile eşleştirilir. <code>~</code> imine ek olarak <a class="glossarylink" href="../glossary.html#regex" title="sözlüğe bakınız">düzenli ifadeler</a> de kullanılabilir. Örneğin</p>
+      ile eşleştirilir:</p>
+    <div class="example"><pre>&lt;Files "cat.html"&gt;
+    # cat.html dosyasına uygulanacaklar buraya.
+&lt;/Files&gt;
+
+&lt;Files "?at.*"&gt;
+    # cat.html, bat.html, hat.php ve benzerlerine uygulanacaklar buraya.
+&lt;/Files&gt;</pre></div>
+
+    <p><code>~</code> imine ek olarak <a class="glossarylink" href="../glossary.html#regex" title="sözlüğe bakınız">düzenli ifadeler</a> de kullanılabilir. Örneğin</p>
 
     <div class="example"><p><code>
       &lt;Files ~ "\.(gif|jpe?g|png)$"&gt;
@@ -1969,9 +1977,7 @@ sınırlar.</td></tr>
       LimitRequestFieldSize 4094
     </code></p></div>
 
-    <div class="note">Normal şartlar altında öntanımlı değer değiştirilmemelidir. Ayrıca,
-      kaynak kodda değişiklik yapıp, yeniden derlemedikçe bu değerin azamisi
-      8190 olarak kalacaktır.</div>
+    <div class="note">Normal şartlar altında öntanımlı değer değiştirilmemelidir.</div>
 
     <div class="warning"><h3>Uyarı</h3>
       <p>İsme dayalı sanal konaklar kullanılıyorsa bu yönergenin değeri,
@@ -2487,8 +2493,9 @@ uygulanır.</td></tr>
       <div class="note">
       <p>Sembolik bağlar izlense bile <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> bölümleriyle eşleşen dosya yolları
         değiştirilmez.</p>
-      <p>Ayrıca, bu seçenek bir <code class="directive"><a href="#location">&lt;Location&gt;</a></code> bölümü içinde belirtildiği takdirde <strong>yok
-        sayılır</strong>.</p>
+      <p>The <code>FollowSymLinks</code> ve
+        <code>SymLinksIfOwnerMatch</code> <code class="directive"><a href="#options">Options</a></code> yönergeleri sadece <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> bölümlerinde veya
+        <code>.htaccess</code> dosyalarında çalışır.</p>
       <p>Sembolik bağ sınamaları, atlatılabilir yarış koşullarına konu
         olduğundan bu seçeneğin yokluğu bir güvenlik sınırlaması olarak
         değerlendirilmemelidir.</p>
@@ -2516,8 +2523,10 @@ uygulanır.</td></tr>
       <dd>Sunucu sembolik bağları sadece sembolik bağın hedefi ile bulunduğu
         dizinin sahibinin aynı kullanıcı olması halinde izleyecektir.
 
-      <div class="note"><h3>Ek Bilgi</h3> <p>Bu seçenek bir <code class="directive"><a href="#location">&lt;Location&gt;</a></code> bölümü içinde belirtildiğinde yok
-        sayılır.</p>
+      <div class="note"><h3>Ek Bilgi</h3>
+      <p>The <code>FollowSymLinks</code> ve
+        <code>SymLinksIfOwnerMatch</code> <code class="directive"><a href="#options">Options</a></code> yönergeleri sadece <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> bölümlerinde veya
+        <code>.htaccess</code> dosyalarında çalışır.</p>
       <p>Sembolik bağ sınamaları, atlatılabilir yarış koşullarına konu
         olduğundan bu seçenek bir güvenlik sınırlaması olarak
         değerlendirilmemelidir.</p></div>
@@ -2996,6 +3005,15 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
       # ...<br />
       &lt;/VirtualHost&gt;
     </code></p></div>
+
+    <p><code class="directive"><a href="#virtualhost">&lt;virtualhost&gt;</a></code>
+      bölümleriyle en iyi eşleşen isme dayalı sanal konaklar yapılandırmada
+      göründükleri sıraya göre işleme sokulur. İlk eşleşen <code class="directive"><a href="#servername">ServerName</a></code> veya <code class="directive"><a href="#serveralias">ServerAlias</a></code> kullanılır ve joker kullanımı halinde herhangi
+      bir öncelik söz konusu olmaz.</p>
+
+    <p><code class="directive">VirtualHost</code> içindeki isimlerin tamamı bir
+      (jokersiz) <code class="directive">ServerAlias</code> gibi ele alınır.</p>
+
 
 <h3>Ayrıca bakınız:</h3>
 <ul>
