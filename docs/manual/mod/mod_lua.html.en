@@ -537,14 +537,23 @@ end
 <p>After a lua function has been registered as authorization provider, it can be used
 with the <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directive:</p>
 
-<div class="example"><pre class="prettyprint lang-config">
+<pre class="prettyprint lang-config">
 LuaRoot /usr/local/apache2/lua
 LuaAuthzProvider foo authz.lua authz_check_foo
 &lt;Location /&gt;
-  Require foo bar
+  Require foo johndoe
 &lt;/Location&gt;
 </pre>
-</div>
+
+<pre class="prettyprint lang-lua">
+require "apache2"
+function authz_check_foo(r, who)
+    if r.user ~= who then return apache2.AUTHZ_DENIED
+    return apache2.AUTHZ_GRANTED
+end
+</pre>
+
+
 
 
 </div>
@@ -666,7 +675,7 @@ end
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaHookFixups" id="LuaHookFixups">LuaHookFixups</a> <a name="luahookfixups" id="luahookfixups">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the fixups phase of request
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the fixups phase of a request
 processing</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookFixups  /path/to/lua/script.lua hook_function_name</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
@@ -699,7 +708,48 @@ processing</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
-</table><p>...</p>
+</table>
+    <p>Like <code class="directive">LuaHookTranslateName</code> but executed at the 
+    map-to-storage phase of a request. Modules like mod_cache run at this phase,
+    which makes for an interesting example on what to do here:</p>
+    <pre class="prettyprint lang-config">
+    LuaHookMapToStorage /path/to/lua/script.lua check_cache
+    </pre>
+
+    <pre class="prettyprint lang-lua">
+require"apache2"
+cached_files = {}
+
+function read_file(filename) 
+    local input = io.open(filename, "r")
+    if input then
+        local data = input:read("*a")
+        cached_files[filename] = data
+        file = cached_files[filename]
+        input:close()
+    end
+    return cached_files[filename]
+end
+
+function check_cache(r)
+    if r.filename:match("%.png$") then -- Only match PNG files
+        local file = cached_files[r.filename] -- Check cache entries
+        if not file then
+            file = read_file(r.filename)  -- Read file into cache
+        end
+        if file then -- If file exists, write it out
+            r.status = 200
+            r:write(file)
+            r:info(("Sent %s to client from cache"):format(r.filename))
+            return apache2.DONE -- skip default handler for PNG files
+        end
+    end
+    return apache2.DECLINED -- If we had nothing to do, let others serve this.
+end
+    </pre>
+
+
+    
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaHookTranslateName" id="LuaHookTranslateName">LuaHookTranslateName</a> <a name="luahooktranslatename" id="luahooktranslatename">Directive</a></h2>
