@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_lua: Add new directive, LuaMapHandler, for dynamically mapping 
+     URIs to Lua scripts and functions using regular expressions.
+     [Daniel Gruno]
+
   *) mod_lua: Add new directive LuaCodeCache for controlling in-memory
      caching of lua scripts. [Daniel Gruno]
 
