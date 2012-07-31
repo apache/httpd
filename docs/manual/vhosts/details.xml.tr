@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1301748:1365935 (outdated) -->
+<!-- English Revision: 1365935 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -258,6 +258,10 @@
       <code>ServerAlias</code> ile ilk eşleşmenin sağlandığı sankondan
       sunulur. <code>Host:</code> alanında bir port belirtilebilirse de Apache
       daima istemcinin isteği gönderdiği portu gerçek port kabul eder.</p>
+
+    <p><code>VirtualHost</code> içindeki isimlerin tamamı (jokersiz) bir
+      <code>ServerAlias</code> gibi ele alınır (fakat başka bir
+      <code>ServerAlias</code> ile geçersiz kılınmazlar).</p>
 
     <p>Eğer istemci <code>Host:</code> başlık alanı bulunmayan bir HTTP/1.0
       isteği yapmışsa istemcinin hangi sankona bağlanmayı denediğini bilemeyiz

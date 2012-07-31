@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1066435:1344679 (outdated) -->
+<!-- English Revision: 1344679 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -173,6 +173,10 @@ Barındırma</a></seealso>
       erişilebilir kılamazsınız. Öncelikle, bu isimleri sunucunuzdaki IP
       adresleriyle eşlemek üzere yapılandıracağınız bir DNS sunucunuz
       olmalıdır.</p>
+
+    <p><code>VirtualHost</code> içindeki isimlerin tamamı (jokersiz) bir
+      <code>ServerAlias</code> gibi ele alınır (fakat başka bir
+      <code>ServerAlias</code> ile geçersiz kılınmazlar).</p>
 
     <p>Son olarak, sanal konak yapılandırmanıza, <directive type="section"
       module="core">VirtualHost</directive> bölümlerinin içine başka yönergeler

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 989598:1307398 (outdated) -->
+<!-- English Revision: 1307398 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -111,7 +111,13 @@
         <td>İstekle birlikte sunucuya gönderilen
           <code><var>Filanca</var>:</code> başlık satır(lar)ının
           içeriği. Diğer modüllerde (örn. <module>mod_headers</module>)
-          yapılan değişikliklerden etkilenir.</td></tr>
+          yapılan değişikliklerden etkilenir. Çok sayıda modülün istek
+          başlığını değişikliğe uğrattığı durumda istek başlığında başta
+          neyin geldiği ile ilgileniyorsanız, başlığı
+          <module>mod_setenvif</module> ile bir ortam değişkenine kopyalayıp
+          yukarıda açıklandığı gibi <code>%{<var>FALANCA</var>}e</code> ile bu
+          değeri günlükte kullanabilirsiniz.
+          </td></tr>
 
     <tr><td><code>%k</code></td>
         <td>Bu bağlantıda işlenen isteklerin sayısı; yani örneğin,

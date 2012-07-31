@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1067110:1363757 (outdated) -->
+<!-- English Revision: 1363757 -->
 <!-- =====================================================
  Translated by: Umut Samuk <umut belgeler.org>
    Reviewed by: Nilgün Belma Bugüner <nilgun belgeler.org>
@@ -33,7 +33,10 @@
     <p>Kimlik Doğrulama istediğiniz kişileri teyid etme işlemidir.
     Yetkilendirme ise kişilerin nereye gireceklerine ve hangi bilgiye
     ulaşacaklarına müsaade edilmesi işlemidir.</p>
-  </summary>
+
+    <p>Genel erişim denetimi için, <a href="access.html">Erişim Denetimi
+      Nasıl</a> belgesine bakınız.</p>
+</summary>
 
   <section id="related"><title>İlgili modüller ve Yönergeler</title>
 
@@ -41,7 +44,7 @@
     vardır. Genellikle her bir gruptan en az bir modül seçeceksiniz.</p>
 
     <ul>
-      <li>Kimlik Doğrulama türü (bkz. <directive module="core"
+      <li>Kimlik Doğrulama türü (bkz. <directive module="mod_authn_core"
       >AuthType</directive> yönergesi)
         <ul>
           <li><module>mod_auth_basic</module></li>
@@ -49,23 +52,27 @@
         </ul>
       </li>
 
-      <li>Kimlik Doğrulayıcı
+      <li>Kimlik Doğrulayıcı (bkz.
+      <directive module="mod_auth_basic">AuthBasicProvider</directive> ve
+      <directive module="mod_auth_digest">AuthDigestProvider</directive>
+      yönergeleri)
         <ul>
-          <li><module>mod_authn_alias</module></li>                                                                           <li><module>mod_authn_anon</module></li>
+          <li><module>mod_authn_anon</module></li>
           <li><module>mod_authn_dbd</module></li>
           <li><module>mod_authn_dbm</module></li>
-          <li><module>mod_authn_default</module></li>
           <li><module>mod_authn_file</module></li>
           <li><module>mod_authnz_ldap</module></li>
+          <li><module>mod_authn_socache</module></li>
         </ul>
       </li>
       <li>Yetkilendirme (bkz.
-          <directive module="core">Require</directive> yönergesi)
+          <directive module="mod_authz_core">Require</directive> yönergesi)
         <ul>
           <li><module>mod_authnz_ldap</module></li>
+          <li><module>mod_authz_dbd</module></li>
           <li><module>mod_authz_dbm</module></li>
-          <li><module>mod_authz_default</module></li>
           <li><module>mod_authz_groupfile</module></li>
+          <li><module>mod_authz_host</module></li>
           <li><module>mod_authz_owner</module></li>
           <li><module>mod_authz_user</module></li>
         </ul>
@@ -135,6 +142,12 @@
     zor olmamakla birlikte bu noktaya gelindiğinde konuyu
     netleştireceğiz.</p>
 
+    <p>Ayrıca, <module>mod_authn_core</module> ve
+    <module>mod_authz_core</module> modüllerinin ya httpd çalıştırılabilirinin
+    içinde derlenmiş ya da httpd.conf dosyası tarafından yüklenmiş olduğundan
+    emin olmalısınız. Bu modüllerin her ikisi de HTTP sunucusunda yetkilendirme
+    ve kimlik denetiminin kullanımı ile yapılandırmada kritik öneme sahip
+    işlevselliği ve temel yönergeleri sağlar.</p>
   </section>
 
   <section id="gettingitworking"><title>Çalışmaya Başlama</title>
@@ -213,7 +226,7 @@
     (<code>Digest</code>) kimlik doğrulama yöntemini
     desteklemektedir.</p>
 
-    <p><directive module="core">AuthName</directive> yönergesi
+    <p><directive module="mod_authn_core">AuthName</directive> yönergesi
     ile kimlik doğrulamada kullanılacak <dfn>Saha</dfn> da
     belirtilebilir. Saha kullanımının, başlıca iki işlevi vardır.
     Birincisi, istemci sıklıkla bu bilgiyi kullanıcıya parola diyalog
@@ -252,11 +265,11 @@
     Veritabanı</a> içindeki üçüncü parti modüllerinde çok sayıda
     başka kimlik doğrulama türü de vardır.</p>
 
-    <p>Son olarak <directive module="core">Require</directive>
+    <p>Son olarak <directive module="mod_authz_core">Require</directive>
     yönergesi, sunucunun bu bölgesine erişimine izin verilen
     kullanıcıları ayarlama işleminin kimlik doğrulamasıyla ilgili
     kısmını sağlar. Bir sonraki bölümde <directive
-    module="core">Require</directive> yönergesini kullanmanın
+    module="mod_authz_core">Require</directive> yönergesini kullanmanın
     çeşitli yoları üzerinde duracağız.</p>
   </section>
 
