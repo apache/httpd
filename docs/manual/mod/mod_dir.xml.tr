@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1147330:1353522 (outdated) -->
+<!-- English Revision: 1353522 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -94,6 +94,25 @@
     <p>Bu örnekte ise dizin içinde ne <code>index.html</code> ne de
       <code>index.txt</code> mevcut olduğunda <code>/cgi-bin/index.pl</code>
       CGI betiği çalıştırılacaktır.</p>
+
+    <p><strong>Ek Bilgi:</strong> <a href="../sections.html"><em>Aynı
+      bağlam</em></a> içinde çok sayıda <directive>DirectoryIndex</directive>
+      yönergesi varsa bunlar bir öncekini geçersiz kılmayacak, listeye
+      eklenecektir:
+    </p>
+
+    <example>
+    <pre># Örnek A: İlk sayfa index.html olsun buna index.php de eklensin.
+&lt;Directory /foo&gt;
+    DirectoryIndex index.html
+    DirectoryIndex index.php
+&lt;/Directory&gt;
+
+# Örnek B: Tek bir yönerge ile yapılması dışında Örnek A ile aynıdır.
+&lt;Directory /foo&gt;
+    DirectoryIndex index.html index.php
+&lt;/Directory&gt;</pre>
+    </example>
 </usage>
 </directivesynopsis>
 

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1301745:1364530 (outdated) -->
+<!-- English Revision: 1364530 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -723,7 +723,7 @@ kullanımı önerilmemektedir.</compatibility>
       ifadeler</glossary> de kullanılabilir. Örnek:</p>
 
     <example>
-      &lt;Directory ~ "^/www/.*/[0-9]{3}"&gt;
+      &lt;Directory ~ "^/www/[0-9]{3}"&gt;
     </example>
 
     <p>yönergesi <code>/www/</code> içindeki üç rakamdan oluşan dizinlerle
@@ -771,7 +771,7 @@ kullanımı önerilmemektedir.</compatibility>
       görüldükleri sıraya göre sınanırlar. Örneğin,</p>
 
     <example>
-      &lt;Directory ~ abc$&gt;<br />
+      &lt;Directory ~ &quot;public_html/.*&quot;&gt;<br />
       <indent>
         # ... yönergeler burada ...<br />
       </indent>
@@ -1278,7 +1278,16 @@ oluşturmakta kullanılacak dosya özniteliklerini belirler.</description>
     <p><var>dosya-adı</var> argümanının bir dosya ismi veya bir dosya ismi
       kalıbı içermesi gerekir. Bir dosya ismi kalıbındaki her <code>?</code>
       imi bir karakterle eşleştirilirken <code>*</code> imi karakter dizileri
-      ile eşleştirilir. <code>~</code> imine ek olarak <glossary
+      ile eşleştirilir:</p>
+    <example><pre>&lt;Files "cat.html"&gt;
+    # cat.html dosyasına uygulanacaklar buraya.
+&lt;/Files&gt;
+
+&lt;Files "?at.*"&gt;
+    # cat.html, bat.html, hat.php ve benzerlerine uygulanacaklar buraya.
+&lt;/Files&gt;</pre></example>
+
+    <p><code>~</code> imine ek olarak <glossary
       ref="regex">düzenli ifadeler</glossary> de kullanılabilir. Örneğin</p>
 
     <example>
@@ -1921,9 +1930,7 @@ sınırlar.</description>
       LimitRequestFieldSize 4094
     </example>
 
-    <note>Normal şartlar altında öntanımlı değer değiştirilmemelidir. Ayrıca,
-      kaynak kodda değişiklik yapıp, yeniden derlemedikçe bu değerin azamisi
-      8190 olarak kalacaktır.</note>
+    <note>Normal şartlar altında öntanımlı değer değiştirilmemelidir.</note>
 
     <note type="warning"><title>Uyarı</title>
       <p>İsme dayalı sanal konaklar kullanılıyorsa bu yönergenin değeri,
@@ -2449,9 +2456,11 @@ uygulanır.</description>
       <p>Sembolik bağlar izlense bile <directive type="section"
         module="core">Directory</directive> bölümleriyle eşleşen dosya yolları
         değiştirilmez.</p>
-      <p>Ayrıca, bu seçenek bir <directive type="section" module="core"
-        >Location</directive> bölümü içinde belirtildiği takdirde <strong>yok
-        sayılır</strong>.</p>
+      <p>The <code>FollowSymLinks</code> ve
+        <code>SymLinksIfOwnerMatch</code> <directive
+        module="core">Options</directive> yönergeleri sadece <directive
+        type="section" module="core">Directory</directive> bölümlerinde veya
+        <code>.htaccess</code> dosyalarında çalışır.</p>
       <p>Sembolik bağ sınamaları, atlatılabilir yarış koşullarına konu
         olduğundan bu seçeneğin yokluğu bir güvenlik sınırlaması olarak
         değerlendirilmemelidir.</p>
@@ -2482,9 +2491,12 @@ uygulanır.</description>
       <dd>Sunucu sembolik bağları sadece sembolik bağın hedefi ile bulunduğu
         dizinin sahibinin aynı kullanıcı olması halinde izleyecektir.
 
-      <note><title>Ek Bilgi</title> <p>Bu seçenek bir <directive module="core"
-        type="section">Location</directive> bölümü içinde belirtildiğinde yok
-        sayılır.</p>
+      <note><title>Ek Bilgi</title>
+      <p>The <code>FollowSymLinks</code> ve
+        <code>SymLinksIfOwnerMatch</code> <directive
+        module="core">Options</directive> yönergeleri sadece <directive
+        type="section" module="core">Directory</directive> bölümlerinde veya
+        <code>.htaccess</code> dosyalarında çalışır.</p>
       <p>Sembolik bağ sınamaları, atlatılabilir yarış koşullarına konu
         olduğundan bu seçenek bir güvenlik sınırlaması olarak
         değerlendirilmemelidir.</p></note>
@@ -2957,6 +2969,17 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
       # ...<br />
       &lt;/VirtualHost&gt;
     </example>
+
+    <p><directive type="section" module="core">virtualhost</directive>
+      bölümleriyle en iyi eşleşen isme dayalı sanal konaklar yapılandırmada
+      göründükleri sıraya göre işleme sokulur. İlk eşleşen <directive
+      module="core">ServerName</directive> veya <directive module="core"
+      >ServerAlias</directive> kullanılır ve joker kullanımı halinde herhangi
+      bir öncelik söz konusu olmaz.</p>
+
+    <p><directive>VirtualHost</directive> içindeki isimlerin tamamı bir
+      (jokersiz) <directive>ServerAlias</directive> gibi ele alınır.</p>
+
 </usage>
 <seealso><directive module="core">UseCanonicalName</directive></seealso>
 <seealso><a href="../vhosts/">Apache Sanal Konak Belgeleri</a></seealso>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 757187:1343883 (outdated) -->
+<!-- English Revision: 1343883 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -95,6 +95,10 @@
       güvenliğinizden nasıl feragat etmiş olacağınız <a
       href="../misc/security_tips.html#serverroot">güvenlik ipuçları</a>
       belgesinde açıklanmıştır.</p>
+
+    <p>Günlük dosyaları <code>Authorization:</code> başlıklarının içeriği (örn,
+     parolalar) gibi hassas veriler içerebilir, bu bakımdan sunucuyu başlatan
+     kullanıcı dışında hiç kimse bu dosyaları okuyamamalıdır.</p>
 </section>
 
 <directivesynopsis>
