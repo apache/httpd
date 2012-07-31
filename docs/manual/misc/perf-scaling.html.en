@@ -72,7 +72,7 @@
         </a></h2>
         
         <p>The session will focus on easily accessible configuration and tuning
-            options for Apache httpd 2.2 and 2.3 as well as monitoring tools.
+            options for Apache httpd 2.2 and 2.4 as well as monitoring tools.
             Monitoring tools will allow you to observe your web server to
             gather information about its performance, or lack thereof.
             We'll assume that you don't have an unlimited budget for
@@ -897,9 +897,9 @@
                 same pre-forking process model that Apache 1.3 uses. The Worker
                 MPM runs a smaller number of child processes, and spawns
                 multiple request handling threads within each child process. In
-                2.3+ MPMs are no longer hard-wired. They too can be exchanged
+                2.4 MPMs are no longer hard-wired. They too can be exchanged
 				via <code class="directive"><a href="../mod/core.html#loadmodule">LoadModule</a></code>.
-				The default MPM in 2.3 is the event MPM. 
+				The default MPM in 2.4 is the event MPM. 
             </p>
             <p>The maximum number of workers, be they pre-forked child
                 processes or threads within a process, is an indication of how
