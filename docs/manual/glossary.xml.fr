@@ -49,7 +49,7 @@
       Voir : <a href="ssl/">chiffrement SSL/TLS</a>
     </dd>
 
-    <dt><a name="apr" id="apr">APR</a></dt>
+    <dt>APR</dt>
     <dd>Voir "Biblioth&egrave;ques pour la portabilit&eacute; d'Apache"
     </dd>
 
