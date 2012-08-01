@@ -641,7 +641,6 @@ LuaCodeCache never
 <description>Provide a hook for the translate name phase of request processing</description>
 <syntax>LuaHookTranslateName  /path/to/lua/script.lua  hook_function_name [early|late]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context>
 </contextlist>
 <override>All</override>
 <compatibility>The optional third argument is supported in 2.3.15 and later</compatibility>
@@ -887,7 +886,6 @@ hook function usually returns OK, DECLINED, or HTTP_FORBIDDEN.</p>
 <description>Provide a hook for the quick handler of request processing</description>
 <syntax>LuaQuickHandler /path/to/script.lua hook_function_name</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
 <usage><p>...</p>
