@@ -761,7 +761,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
 
         /* Set aside path_info to merge back onto path_info later.
          * If r->filename is a directory, we must remerge the path_info,
-         * before we continue!  [Directories cannot, by defintion, have
+         * before we continue!  [Directories cannot, by definition, have
          * path info.  Either the next segment is not-found, or a file.]
          *
          * r->path_info tracks the unconsumed source path.
