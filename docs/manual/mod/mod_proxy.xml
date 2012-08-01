@@ -1259,6 +1259,7 @@ proxied server</description>
     This means that if the proxied content contains absolute URL
     references, they will by-pass the proxy. To rewrite HTML content to
     match the proxy, you must load and enable <module>mod_proxy_html</module>.
+    </p>
 
     <p><var>path</var> is the name of a local virtual path. <var>url</var> is a
     partial URL for the remote server - the same way they are used for the
