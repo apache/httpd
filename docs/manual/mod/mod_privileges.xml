@@ -26,6 +26,7 @@
 <description>Support for Solaris privileges and for running virtual hosts
 under different user IDs.</description>
 <status>Experimental</status>
+<sourcefile>mod_privileges.c</sourcefile>
 <identifier>privileges_module</identifier>
 <compatibility>Available in Apache 2.3 and up, on Solaris 10 and
 OpenSolaris platforms</compatibility>

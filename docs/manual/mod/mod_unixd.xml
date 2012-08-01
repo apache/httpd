@@ -25,6 +25,8 @@
 <name>mod_unixd</name>
 <description>Basic (required) security for Unix-family platforms.</description>
 <status>Base</status>
+<sourcefile>mod_unixd.c</sourcefile>
+<identifier>unixd_module</identifier>
 
 <seealso><a href="../suexec.html">suEXEC support</a></seealso>
 
