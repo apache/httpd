@@ -756,7 +756,7 @@ end
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the translate name phase of request processing</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookTranslateName  /path/to/lua/script.lua  hook_function_name [early|late]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
@@ -814,7 +814,29 @@ end
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
-</table><p>...</p>
+</table><p>
+    This directive provides a hook for the type_checker phase of the request processing. 
+    This phase is where requests are assigned a content type and a handler, and thus can 
+    be used to modify the type and handler based on input:
+    </p>
+    <pre class="prettyprint lang-config">
+    LuaHookTypeChecker /path/to/lua/script.lua type_checker
+    </pre>
+
+    <pre class="prettyprint lang-lua">
+    function type_checker(r)
+        if r.uri:match("%.to_gif$") then -- match foo.png.to_gif
+            r.content_type = "image/gif" -- assign it the image/gif type
+            r.handler = "gifWizard"      -- tell the gifWizard module to handle this
+            r.filename = r.uri:gsub("%.to_gif$", "") -- fix the filename requested
+            return apache2.OK
+        end
+
+        return apache2.DECLINED
+    end
+    </pre>
+
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaInherit" id="LuaInherit">LuaInherit</a> <a name="luainherit" id="luainherit">Directive</a></h2>
@@ -911,7 +933,7 @@ LuaPackagePath /scripts/lib/?/init.lua
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the quick handler of request processing</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaQuickHandler /path/to/script.lua hook_function_name</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
