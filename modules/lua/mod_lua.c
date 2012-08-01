@@ -180,13 +180,13 @@ static const char* ap_lua_interpolate_string(apr_pool_t* pool, const char* strin
     y = 0;
     for (x=0; x < srclen; x++) {
         if (string[x] == '$' && x != srclen-1 && string[x+1] >= '0' && string[x+1] <= '9') {
+            int v = *(string+x+1) - '0';
             if (x-y > 0) {
                 stringBetween = apr_pstrndup(pool, string+y, x-y);
             }
             else {
                 stringBetween = "";
             }
-            int v = *(string+x+1) - '0';
             ret = apr_pstrcat(pool, ret, stringBetween, values[v], NULL);
             y = ++x+1;
         }
