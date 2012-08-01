@@ -1466,11 +1466,11 @@ proxied server</td></tr>
 
     <p>Only the HTTP response headers specifically mentioned above
     will be rewritten. Apache httpd will not rewrite other response
-    headers, nor will it rewrite URL references inside HTML pages.
+    headers, nor will it by default rewrite URL references inside HTML pages.
     This means that if the proxied content contains absolute URL
-    references, they will by-pass the proxy.  A third-party module
-    that will look inside the HTML and rewrite URL references is Nick
-    Kew's <a href="http://apache.webthing.com/mod_proxy_html/">mod_proxy_html</a>.</p>
+    references, they will by-pass the proxy. To rewrite HTML content to
+    match the proxy, you must load and enable <code class="module"><a href="../mod/mod_proxy_html.html">mod_proxy_html</a></code>.
+    </p>
 
     <p><var>path</var> is the name of a local virtual path. <var>url</var> is a
     partial URL for the remote server - the same way they are used for the
