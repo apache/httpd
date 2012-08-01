@@ -394,7 +394,7 @@ dynamiquement au cours du traitement d'une requ&ecirc;te.
 </p>
 </usage>
 </directivesynopsis>
-i
+
 <directivesynopsis>
 <name>ProxyHTMLEvents</name>
 <description>Sp&eacute;cifie les attributs &agrave; traiter comme des &eacute;v&egrave;nements de
