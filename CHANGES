@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Add post_perdir_config hook.
+     [Steinar Gunderson <sgunderson bigfoot.com>]
+
   *) mod_lua: Add new directive, LuaMapHandler, for dynamically mapping 
      URIs to Lua scripts and functions using regular expressions.
      [Daniel Gruno]

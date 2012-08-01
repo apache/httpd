@@ -528,6 +528,16 @@ AP_DECLARE(void) ap_hook_check_authz(ap_HOOK_auth_checker_t *pf,
  */
 AP_DECLARE_HOOK(void,insert_filter,(request_rec *r))
 
+/**
+ * This hook allows modules to affect the request immediately after the
+ * per-directory configuration for the request has been generated.
+ * @param r The current request
+ * @return OK (allow acces), DECLINED (let later modules decide),
+ *         or HTTP_... (deny access)
+ * @ingroup hooks
+ */
+AP_DECLARE_HOOK(int,post_perdir_config,(request_rec *r))
+
 AP_DECLARE(int) ap_location_walk(request_rec *r);
 AP_DECLARE(int) ap_directory_walk(request_rec *r);
 AP_DECLARE(int) ap_file_walk(request_rec *r);
