@@ -194,6 +194,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: Trunk patch applies.
      +1: rjung, humbedooh
 
+   * mod_lua: resync 2.4.x with sf's refactoring/fixes in trunk (and Covener's notes)
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1201460
+                  http://svn.apache.org/viewvc?view=revision&revision=1351012
+                  http://svn.apache.org/viewvc?view=revision&revision=1351013
+                  http://svn.apache.org/viewvc?view=revision&revision=1351014
+                  http://svn.apache.org/viewvc?view=revision&revision=1351017
+                  http://svn.apache.org/viewvc?view=revision&revision=1351018
+                  http://svn.apache.org/viewvc?view=revision&revision=1351019
+     2.4.x patch: http://people.apache.org/~humbedooh/mod_lua.diff
+                  http://people.apache.org/~humbedooh/mod_lua_changes.diff
+     +1: humbedooh
+     humbedooh: sf, you made these improvements, care to vote?
+    
 
 
 A list of further possible backports can be found at:
