@@ -779,7 +779,27 @@ end
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
-    <usage><p>...</p></usage>
+    <usage><p>
+    This directive provides a hook for the type_checker phase of the request processing. 
+    This phase is where requests are assigned a content type and a handler, and thus can 
+    be used to modify the type and handler based on input:
+    </p>
+    <highlight language="config">
+    LuaHookTypeChecker /path/to/lua/script.lua type_checker
+    </highlight>
+    <highlight language="lua">
+    function type_checker(r)
+        if r.uri:match("%.to_gif$") then -- match foo.png.to_gif
+            r.content_type = "image/gif" -- assign it the image/gif type
+            r.handler = "gifWizard"      -- tell the gifWizard module to handle this
+            r.filename = r.uri:gsub("%.to_gif$", "") -- fix the filename requested
+            return apache2.OK
+        end
+
+        return apache2.DECLINED
+    end
+    </highlight>
+</usage>
 </directivesynopsis>
 
 <directivesynopsis>
