@@ -183,18 +183,23 @@ static const char* ap_lua_interpolate_string(apr_pool_t* pool, const char* strin
             if (x-y > 0) {
                 stringBetween = apr_pstrndup(pool, string+y, x-y);
             }
-            else stringBetween = "";
-            int v = atoi(apr_pstrndup(pool,string+x+1, 1));
-            ret = apr_psprintf(pool, "%s%s%s", ret, stringBetween, values[v]);
-            y = ++x;
+            else {
+                stringBetween = "";
+            }
+            int v = *(string+x+1) - '0';
+            ret = apr_pstrcat(pool, ret, stringBetween, values[v], NULL);
+            y = ++x+1;
         }
     }
     
     if (x-y > 0 && y > 0) {
-        stringBetween = apr_pstrndup(pool, string+y+1, x-y);
-        ret = apr_psprintf(pool, "%s%s", ret, stringBetween);
+        stringBetween = apr_pstrndup(pool, string+y, x-y);
+        ret = apr_pstrcat(pool, ret, stringBetween, NULL);
     }
-    else if (y==0) return string; /* If no replacement was made, just return the original str. */
+    /* If no replacement was made, just return the original string */
+    else if (y==0) {
+        return string;
+    }
     return ret;
 }
 
@@ -362,7 +367,6 @@ static int lua_map_handler(request_rec *r)
                                     hook_spec->bytecode_len,
                                     function_name,
                                     "mapped handler");
-
             L = ap_lua_get_lua_state(pool, spec, r);
 
             if (!L) {
