@@ -28,7 +28,9 @@
 <a href="../tr/mod/mod_unixd.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Basic (required) security for Unix-family platforms.</td></tr>
-<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr></table>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>unixd_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_unixd.c</td></tr></table>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
