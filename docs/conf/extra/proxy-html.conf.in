@@ -1,5 +1,10 @@
 # Configuration example.
 #
+# For detailed information about these directives see
+# <URL:http://httpd.apache.org/docs/trunk/mod/mod_proxy_html.html>
+# and for mod_xml2enc see
+# <URL:http://httpd.apache.org/docs/trunk/mod/mod_xml2enc.html>
+#
 # First, to load the module with its prerequisites.  Note: mod_xml2enc
 # is not always necessary, but without it mod_proxy_html is likely to
 # mangle pages in encodings other than ASCII or Unicode (utf-8).
