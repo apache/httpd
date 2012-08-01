@@ -28,15 +28,14 @@
         
         <p>The Performance Tuning page in the Apache 1.3 documentation says: 
         </p>
-        <ul>
-            <li>“Apache is a general webserver, which is designed to be
+        <blockquote><p>
+            “Apache is a general webserver, which is designed to be
                 correct first, and fast
                 second. Even so, its performance is quite satisfactory. Most
                 sites have less than 10Mbits of outgoing bandwidth, which
                 Apache can fill using only a low end Pentium-based
-                webserver.” 
-            </li>
-        </ul>
+                webserver.”</p>
+        </blockquote>
         <p>However, this sentence was written a few years ago, and in the
             meantime several things have happened. On one hand, web server
             hardware has become much faster. On the other hand, many sites now
@@ -91,7 +90,7 @@
                 <title>top
                 </title>
                 <p>The top tool ships with Linux and FreeBSD. Solaris offers
-                    `prstat'. It collects a number of statistics for the
+                    <code>prstat(1)</code>. It collects a number of statistics for the
                     system and for each running process, then displays them
                     interactively on your terminal. The data displayed is
                     refreshed every second and varies by platform, but
@@ -179,10 +178,8 @@
                     top ten CPU gluttons). It is indispensable in determining
                     the size of a running process, which comes in handy when
                     determining how many server processes you can run on your
-                    machine. How to do this is described in '<a href="/httpd/PerformanceScalingUp#S">
-                        sizing MaxClients
-                    </a>
-                    '. Top is, however, an interactive tool and running it
+                    machine. How to do this is described in <a href="#sizing-maxClients">sizing MaxClients</a>.
+                    Top is, however, an interactive tool and running it
                     continuously has few if any advantages. 
                 </p>
             </section>
@@ -194,10 +191,8 @@
                     memory as file system cache. The free command shows usage
                     both with and without this cache. The free command can be
                     used to find out how much memory the operating system is
-                    using, as described in the paragraph '<a href="/httpd/PerformanceScalingUp#S">
-                        Sizing MaxClients
-                    </a>
-                    '. The output of free looks like this: 
+                    using, as described in the paragraph <a href="#sizing-maxClients">sizing MaxClients</a>.
+                    The output of free looks like this: 
                 </p>
                 
                 <example>
@@ -217,9 +212,8 @@
                     displays a large number of operating system metrics. Run
                     without argument, it displays a status line for that
                     moment. When a numeric argument is added, the status is
-                    redisplayed at designated intervals. For example, <code>
-                        vmstat 5
-                    </code>
+                    redisplayed at designated intervals. For example,
+                    <code>vmstat 5</code>
                     causes the information to reappear every five seconds.
                     Vmstat displays the amount of virtual memory in use, how
                     much memory is swapped in and out each second, the number
@@ -228,9 +222,7 @@
                     percentages of the CPU. 
                 </p>
                 <p>
-                    The following is <code>vmstat
-                    </code>
-                    output of an idle server: 
+                    The following is <code>vmstat</code> output of an idle server: 
                 </p>
                 
                 
@@ -319,15 +311,11 @@
                     with, among others, the number of Apache processes running
                     and how many bytes each has served, and the CPU load caused
                     by httpd and the rest of the system. The Apache Software
-                    Foundation uses mod_status on its own <a href="http://apache.org/server-status">
-                        web site
-                    </a>
-                    .If you put the <code>ExtendedStatus On
-                    </code>
-                    directive in your <code>httpd.conf
-                    </code>
-                    ,the <code>mod_status
-                    </code>
+                    Foundation uses <module>mod_status</module> on its own
+                    <a href="http://apache.org/server-status">web site</a>.
+                    If you put the <code>ExtendedStatus On</code>
+                    directive in your <code>httpd.conf</code>,
+                    the <module>mod_status</module>
                     page will give you more information at the cost of a little
                     extra work per request. 
                 </p>
@@ -370,24 +358,20 @@
                     this error information will appear on your terminal and you
                     can use it directly to troubleshoot your server. If your
                     httpd is started by a startup script, the destination of
-                    early error messages depends on their design. The <code>
-                        /var/log/messages
-                    </code>
+                    early error messages depends on their design. The
+                    <code>/var/log/messages</code>
                     file is usually a good bet. On Windows, early error
                     messages are written to the Applications Event Log, which
                     can be viewed through the Event Viewer in Administrative
                     Tools. 
                 </p>
                 <p>
-                    The Error Log is configured through the <code>ErrorLog
-                    </code>
-                    and <code>LogLevel
-                    </code>
+                    The Error Log is configured through the <directive module="core">ErrorLog</directive>
+                    and <directive module="core">LogLevel</directive>
                     configuration directives. The error log of httpd’s main
                     server configuration receives the log messages that pertain
                     to the entire server: startup, shutdown, crashes, excessive
-                    process spawns, etc. The <code>ErrorLog
-                    </code>
+                    process spawns, etc. The <directive module="core">ErrorLog</directive>
                     directive can also be used in virtual host containers. The
                     error log of a virtual host receives only log messages
                     specific to that virtual host, such as authentication
@@ -400,118 +384,92 @@
                     attack scripts just throw everything they have at any open
                     port, regardless of which server is actually running or
                     what applications might be installed. You could block these
-                    attempts using a firewall or <a href="http://www.modsecurity.org/">
-                        mod_security
-                    </a>
-                    ,but this falls outside the scope of this discussion. 
+                    attempts using a firewall or <a href="http://www.modsecurity.org/">mod_security</a>,
+                    but this falls outside the scope of this discussion. 
                 </p>
                 <p>
-                    The <code>LogLevel
-                    </code>
+                    The <directive module="core">LogLevel</directive>
                     directive determines the level of detail included in the
                     logs. There are eight log levels as described here: 
                 </p>
                 <table>
                     <tr>
                         <td>
-                            <p>
-                                 <strong>Level
-                                </strong>
-                            </p>
+                            <p><strong>Level</strong></p>
                         </td>
                         <td>
-                            <p>
-                                 <strong>Description
-                                </strong>
-                            </p>
+                            <p><strong>Description</strong></p>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <p> emerg 
-                            </p>
+                            <p>emerg</p>
                         </td>
                         <td>
-                            <p> Emergencies - system is unusable. 
-                            </p>
+                            <p>Emergencies - system is unusable.</p>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <p> alert 
-                            </p>
+                            <p>alert</p>
                         </td>
                         <td>
-                            <p> Action must be taken immediately. 
-                            </p>
+                            <p>Action must be taken immediately.</p>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <p> crit 
-                            </p>
+                            <p>crit</p>
                         </td>
                         <td>
-                            <p> Critical Conditions. 
-                            </p>
+                            <p>Critical Conditions.</p>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <p> error 
-                            </p>
+                            <p>error</p>
                         </td>
                         <td>
-                            <p> Error conditions. 
-                            </p>
+                            <p>Error conditions.</p>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <p> warn 
-                            </p>
+                            <p>warn</p>
                         </td>
                         <td>
-                            <p> Warning conditions. 
-                            </p>
+                            <p>Warning conditions.</p>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <p> notice 
-                            </p>
+                            <p>notice</p>
                         </td>
                         <td>
-                            <p> Normal but significant condition. 
-                            </p>
+                            <p>Normal but significant condition.</p>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <p> info 
-                            </p>
+                            <p>info</p>
                         </td>
                         <td>
-                            <p> Informational. 
-                            </p>
+                            <p>Informational.</p>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <p> debug 
-                            </p>
+                            <p>debug</p>
                         </td>
                         <td>
-                            <p> Debug-level messages 
-                            </p>
+                            <p>Debug-level messages</p>
                         </td>
                     </tr>
                 </table>
                 <p>The default log level is warn. A production server should
                     not be run on debug, but increasing the level of detail in
                     the error log can be useful during troubleshooting.
-                    Starting with 2.3.8 <code>LogLevel
-                    </code>
+                    Starting with 2.3.8 <directive module="core">LogLevel</directive>
                     can be specified on a per module basis: 
                 </p>
                 
@@ -520,10 +478,8 @@
                 </example>
                 
                 <p>
-                    This puts all of the server in debug mode, except for <code>
-                        mod_ssl
-                    </code>
-                    ,which tends to be very noisy. 
+                  This puts all of the server in debug mode, except for
+                  <module>mod_ssl</module>, which tends to be very noisy. 
                 </p>
                 
                 
@@ -535,14 +491,10 @@
                     access log file. In addition to the time and nature of a
                     request, httpd can log the client IP address, date and time
                     of the request, the result and a host of other information.
-                    The various logging format features are documented in the <a href="http://httpd.apache.org/docs/current/mod/core.html#loglevel">
-                        manual
-                    </a>
-                    .This file exists by default for the main server and can be
-                    configured per virtual host by using the <code>TransferLog
-                    </code>
-                    or <code>CustomLog
-                    </code>
+                    The various logging format features are documented in the
+                    manual. This file exists by default for the main server and can be
+                    configured per virtual host by using the <directive module="mod_log_config">TransferLog</directive>
+                    or <directive module="mod_log_config">CustomLog</directive>
                     configuration directive. 
                 </p>
                 <p>The access logs can be analyzed with any of several free and
@@ -575,121 +527,90 @@
                 <table>
                     <tr>
                         <td>
-                            <p>
-                                 <strong>Field
-                                </strong>
-                            </p>
+                            <p><strong>Field</strong></p>
                         </td>
                         <td>
-                            <p>
-                                 <strong>Content
-                                </strong>
-                            </p>
+                            <p><strong>Content</strong></p>
                         </td>
                         <td>
-                            <p>
-                                 <strong>Explanation
-                                </strong>
-                            </p>
+                            <p><strong>Explanation</strong></p>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <p> Client IP 
-                            </p>
+                            <p>Client IP</p>
                         </td>
                         <td>
-                            <p> 195.54.228.42 
-                            </p>
+                            <p>195.54.228.42</p>
                         </td>
                         <td>
-                            <p> IP address where the request originated 
-                            </p>
+                            <p>IP address where the request originated</p>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <p> RFC 1413 ident 
-                            </p>
+                            <p>RFC 1413 ident</p>
                         </td>
                         <td>
-                            <p> -  
-                            </p>
+                            <p>-</p>
                         </td>
                         <td>
-                            <p> Remote user identity as reported by their
-                                identd 
-                            </p>
+                          <p>Remote user identity as reported by their identd</p>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <p> username 
-                            </p>
+                            <p>username</p>
                         </td>
                         <td>
-                            <p> -   
-                            </p>
+                            <p>-</p>
                         </td>
                         <td>
-                            <p> Remote username as authenticated by Apache 
-                            </p>
+                            <p>Remote username as authenticated by Apache</p>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <p> timestamp 
-                            </p>
+                            <p>timestamp</p>
                         </td>
                         <td>
-                            <p> [24/Mar/2007:23:05:11 -0400] 
-                            </p>
+                            <p>[24/Mar/2007:23:05:11 -0400]</p>
                         </td>
                         <td>
-                            <p> Date and time of request 
-                            </p>
+                            <p>Date and time of request</p>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <p> Request 
-                            </p>
+                            <p>Request</p>
                         </td>
                         <td>
-                            <p> &quot;GET /sander/feed/ HTTP/1.1&quot;  
-                            </p>
+                            <p>&quot;GET /sander/feed/ HTTP/1.1&quot;</p>
                         </td>
                         <td>
-                            <p> Request line 
-                            </p>
+                            <p>Request line</p>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <p> Status Code 
-                            </p>
+                            <p>Status Code</p>
                         </td>
                         <td>
-                            <p> 200  
-                            </p>
+                            <p>200</p>
                         </td>
                         <td>
-                            <p> Response code 
-                            </p>
+                            <p>Response code</p>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <p> Content Bytes 
-                            </p>
+                            <p>Content Bytes</p>
                         </td>
                         <td>
-                            <p> 9747 
-                            </p>
+                            <p>9747</p>
                         </td>
                         <td>
-                            <p> Bytes transferred w/o headers 
-                            </p>
+                            <p>Bytes transferred w/o headers</p>
                         </td>
                     </tr>
                 </table>
@@ -740,17 +661,13 @@
                     timing of your restarts. 
                 </p>
                 <p>
-                    A second approach is to use piped logs. From the <code>
-                        CustomLog
-                    </code>
-                    ,<code>TransferLog
-                    </code>
-                    or <code>ErrorLog
-                    </code>
+                  A second approach is to use piped logs. From the
+                  <directive module="mod_log_config">CustomLog</directive>,
+                    <directive module="mod_log_config">TransferLog</directive>
+                    or <directive module="core">ErrorLog
+                    </directive>
                     directives you can send the log data into any program using
-                    a pipe character (<code>|
-                    </code>
-                    ). For instance: 
+                    a pipe character (<code>|</code>). For instance: 
                 </p>
                 
                 <example>CustomLog "|/usr/local/apache2/bin/rotatelogs
@@ -783,10 +700,8 @@
                     disk sequentially. 
                 </p>
                 <p>
-                    Do not run a production server with your error <code>
-                        LogLevel
-                    </code>
-                    set to debug. This log level causes a vast amount of
+                  Do not run a production server with your error <directive module="core">LogLevel</directive>
+                  set to debug. This log level causes a vast amount of
                     information to be written to the error log, including, in
                     the case of SSL access, complete dumps of BIO read and
                     write operations. The performance implications are
@@ -807,8 +722,7 @@
                     under <code>support/split-logfile</code>.
                 </p>
                 <p>
-                    You can use the <code>BufferedLogs
-                    </code>
+                    You can use the <directive module="mod_log_config">BufferedLogs</directive>
                     directive to have Apache collect several log lines in
                     memory before writing them to disk. This might yield better
                     performance, but could affect the order in which the
@@ -960,8 +874,7 @@
                     that all the memory on your system is used, but no more. If
                     your system gets so overloaded that it needs to heavily
                     swap core memory out to disk, performance will degrade
-                    quickly. The formula for determining <code>MaxClients
-                    </code>
+                    quickly. The formula for determining <directive module="mpm_common">MaxClients</directive>
                     is fairly simple: 
                 </p>
                 
@@ -1280,21 +1193,15 @@
                     In FreeBSD's <code>/etc/login.conf
                     </code>
                     these resources can be limited or extended system wide,
-                    analogously to <code>limits.conf
-                    </code>
-                    .'Soft' limits can be specified with <code>-cur
-                    </code>
-                    and 'hard' limits with <code>-max
-                    </code>
-                    .
+                    analogously to <code>limits.conf</code>.
+                    'Soft' limits can be specified with <code>-cur</code>
+                    and 'hard' limits with <code>-max</code>.
                 </p>
                 <p>Solaris has a similar mechanism for manipulating limit
-                    values at boot time: In <code>/etc/system
-                    </code>
+                    values at boot time: In <code>/etc/system</code>
                     you can set kernel tunables valid for the entire system at
                     boot time. These are the same tunables that can be set with
-                    the <code>mdb
-                    </code>
+                    the <code>mdb</code>
                     kernel debugger during run time. The soft and hard limit
                     corresponding to ulimit -u can be set via: 
                 </p>
@@ -1305,12 +1212,9 @@
                 </example>
                 
                 <p>Solaris calculates the maximum number of allowed processes
-                    per user (<code>maxuprc
-                    </code>
-                    )based on the total amount available memory on the system (<code>
-                        maxusers
-                    </code>
-                    ). You can review the numbers with 
+                  per user (<code>maxuprc</code>) based on the total amount
+                  available memory on the system (<code>maxusers</code>).
+                  You can review the numbers with 
                 </p>
                 
                 <example>sysdef -i | grep maximum
@@ -1331,26 +1235,21 @@
                     etc. Turn them off. 
                 </p>
                 <p>On Red Hat Linux, the chkconfig tool will help you do this
-                    from the command line. On Solaris systems <code>svcs
-                    </code>
-                    and <code>svcadm
-                    </code>
+                    from the command line. On Solaris systems <code>svcs</code>
+                    and <code>svcadm</code>
                     will show which services are enabled and disable them
                     respectively. 
                 </p>
                 <p>In a similar fashion, cast a critical eye on the Apache
                     modules you load. Most binary distributions of Apache
                     httpd, and pre-installed versions that come with Linux
-                    distributions, have their modules enabled through the <code>
-                        LoadModule
-                    </code>
-                    directive. 
+                    distributions, have their modules enabled through the
+                    <directive>LoadModule</directive> directive. 
                 </p>
                 <p>Unused modules may be culled: if you don't rely on
                     their functionality and configuration directives, you can
-                    turn them off by commenting out the corresponding <code>
-                        LoadModule
-                    </code>
+                    turn them off by commenting out the corresponding
+                      <directive>LoadModule</directive>
                     lines. Read the documentation on each module’s
                     functionality before deciding whether to keep it enabled.
                     While the performance overhead of an unused module is
@@ -1401,12 +1300,9 @@
             <section id="example-a-statically-rendered-blog">
                 <title>Example: A Statically Rendered Blog
                 </title>
-                <p>
-                    <strong>'we should provide a more useful example here.
-                        One showing how to make Wordpress or Drupal suck less.
-                    </strong>
-                    ' 
-                </p>
+                    <!--we should provide a more useful example here.
+                        One showing how to make Wordpress or Drupal suck less. -->
+                    
                 <p>Blosxom is a lightweight web log package that runs as a CGI.
                     It is written in Perl and uses plain text files for entry
                     input. Besides running as CGI, Blosxom can be run from the
@@ -1417,8 +1313,7 @@
                 </p>
                 <p>To run blosxom for static page generation, edit the CGI
                     script according to the documentation. Set the $static dir
-                    variable to the <code>DocumentRoot
-                    </code>
+                    variable to the <directive>DocumentRoot</directive>
                     of the web server, and run the script from the command line
                     as follows: 
                 </p>
@@ -1431,11 +1326,9 @@
                     rendered pages for the dynamic content, we’ll use
                     mod_rewrite. This module is included with the Apache source
                     code, but is not compiled by default. It can be built with
-                    the server by passing the option <code>
-                        --enable-rewrite[=shared]
-                    </code>
+                    the server by passing the option <code>--enable-rewrite[=shared]</code>
                     to the configure command. Many binary distributions of
-                    Apache come with mod_rewrite included. The following is an
+                    Apache come with <module>mod_rewrite </module> included. The following is an
                     example of an Apache virtual host that takes advantage of
                     pre-rendered blog pages: 
                 </p>
@@ -1478,10 +1371,8 @@
                 </example>
                 
                 <p>
-                    The <code>RewriteCond
-                    </code>
-                    and <code>RewriteRule
-                    </code>
+                    The <directive>RewriteCond</directive>
+                    and <directive>RewriteRule</directive>
                     directives say that, if the requested resource does not
                     exist as a file or a directory, its path is passed to the
                     Blosxom CGI for rendering. Blosxom uses Path Info to
@@ -1520,34 +1411,26 @@
             <p>To enable efficient content caching and avoid presenting the
                 user with stale or invalid content, the application that
                 generates the actual content has to send the correct response
-                headers. Without headers like <code>Etag:
-                </code>
-                ,<code>Last-Modified:
-                </code>
-                or <code>Expires:
-                </code>
-                ,mod_cache can not make the right decision on whether to cache
+                headers. Without headers like <code>Etag:</code>, 
+                <code>Last-Modified:</code> or <code>Expires:</code>,
+                <module>mod_cache</module> can not make the right decision on whether to cache
                 the content, serve it from cache or leave it alone. When
                 testing content caching, you may find that you need to modify
                 your application or, if this is impossible, selectively disable
                 caching for URLs that cause problems. The mod_cache modules are
                 not compiled by default, but can be enabled by passing the
-                option <code>--enable-cache[=shared]
-                </code>
+                option <code>--enable-cache[=shared]</code>
                 to the configure script. If you use a binary distribution of
                 Apache httpd, or it came with your port or package collection,
-                it may have mod_cache already included. 
+                it may have <module>mod_cache</module> already included. 
             </p>
             
             
             <section id="example-wiki">
                 <title>Example: wiki.apache.org
                 </title>
-                <p>
-                    <strong>'Is this still the case? Maybe we should give
-                        a better example here too.
-                    </strong>
-                </p>
+                    <!-- Is this still the case? Maybe we should give
+                        a better example here too.-->
                 <p>
                     The Apache Software Foundation Wiki is served by MoinMoin.
 					MoinMoin is written in Python and runs as a CGI. To date, any
@@ -1563,9 +1446,7 @@
                     the corresponding Python modules were patched to send the
                     proper HTTP response headers. After this modification, the
                     cache in front of the Wiki was enabled with the following
-                    configuration snippet in <code>httpd.conf
-                    </code>
-                    :
+                    configuration snippet in <code>httpd.conf</code>:
                 </p>
                 
                 <example>
@@ -1579,29 +1460,22 @@
                 
                 <p>This configuration will try to cache any and all content
                     within its virtual host. It will never cache content for
-                    more than six hours (the <code>CacheMaxExpire
-                    </code>
-                    directive). If no <code>Expires:
-                    </code>
-                    header is present in the response, mod_cache will compute
-                    an expiration period from the <code>Last-Modified:
-                    </code>
-                    header. The computation using <code>CacheLastModifiedFactor
-                    </code>
+                    more than six hours (the <directive module="mod_cace">CacheMaxExpire</directive>
+                    directive). If no <code>Expires:</code>
+                    header is present in the response, <module>mod_cache</module> will compute
+                    an expiration period from the <code>Last-Modified:</code>
+                    header. The computation using <directive module="mod_cache">CacheLastModifiedFactor</directive>
                     is based on the assumption that if a page was recently
                     modified, it is likely to change again in the near future
                     and will have to be re-cached. 
                 </p>
                 <p>
-                    Do note that it can pay off to <em>disable
-                    </em>
-                    the <code>ETag:
-                    </code>
+                    Do note that it can pay off to <em>disable</em>
+                    the <code>ETag:</code>
                     header: For files smaller than 1k the server has to
-                    calculate the checksum (usually MD5) and then send out a <code>
-                        304 Not Modified
-                    </code>
-                    response, which will take waste some CPU and still saturate
+                    calculate the checksum (usually MD5) and then send out a
+                    <code>304 Not Modified</code>
+                    response, which will use up some CPU and still saturate
                     the same amount of network resources for the transfer (one
                     TCP packet). For resources larger than 1k it might prove
                     CPU expensive to calculate the header for each request.
@@ -1617,8 +1491,7 @@
                 </example>
                 
                 <p>
-                    This will disable the generation of the <code>ETag:
-                    </code>
+                    This will disable the generation of the <code>ETag:</code>
                     header for most static resources. The server does not
                     calculate these headers for dynamic resources. 
                 </p>
@@ -1631,14 +1504,10 @@
         <title>Further Considerations
         </title>
         <p>Armed with the knowledge of how to tune a sytem to deliver the
-            desired the performance, we will soon discover that <em>one
-            </em>
+            desired the performance, we will soon discover that <em>one</em>
             system might prove a bottleneck. How to make a system fit for
             growth, or how to put a number of systems into tune will be
-            discussed in <a href="/httpd/PerformanceScalingOut">
-                PerformanceScalingOut
-            </a>
-            .
+            discussed in <a href="http://wiki.apache.org/httpd/PerformanceScalingOut">PerformanceScalingOut</a>.
         </p>
     </section>
 </manualpage>
