@@ -94,13 +94,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: rjung, sf, jim
      rjung: igalic: you applied it to trunk, care to vote?
 
-   * proxy: Treat EAGAIN as an error for a blocking read from the input filter
-     stack.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1242798
-     2.4.x patch: Trunk patch applies.
-     +1: rjung, sf, jim
-     rjung: jorton: you applied it to trunk, care to vote?
-
    * authz: pass the provider name to parse_require_line as pool userdata
      This allows a single C function to implement several authz providers.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1351016
