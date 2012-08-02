@@ -88,11 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * headers: ap_str(case)cmp_match returns the opposite of what is advertized
-     in the header.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1366319
-     2.4.x patch: Trunk patch applies.
-     +1: rjung, humbedooh, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
