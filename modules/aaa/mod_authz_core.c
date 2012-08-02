@@ -413,8 +413,14 @@ static const char *add_authz_provider(cmd_parms *cmd, void *config,
     section->limited = cmd->limited;
 
     if (section->provider->parse_require_line) {
-        const char *err = section->provider->parse_require_line(cmd, args,
-                                                                &section->provider_parsed_args);
+        const char *err;
+        apr_pool_userdata_setn(section->provider_name,
+                               AUTHZ_PROVIDER_NAME_NOTE,
+                               apr_pool_cleanup_null,
+                               cmd->temp_pool);
+        err = section->provider->parse_require_line(cmd, args,
+                                              &section->provider_parsed_args);
+
         if (err)
             return err;
     }
