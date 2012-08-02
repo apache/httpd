@@ -88,6 +88,45 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * configure: Add message about how to enable crypto support in APR.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1324760
+     2.4.x patch: Trunk patch applies.
+     +1: rjung, sf, jim
+     rjung: igalic: you applied it to trunk, care to vote?
+
+   * proxy: Treat EAGAIN as an error for a blocking read from the input filter
+     stack.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1242798
+     2.4.x patch: Trunk patch applies.
+     +1: rjung, sf, jim
+     rjung: jorton: you applied it to trunk, care to vote?
+
+   * authz: pass the provider name to parse_require_line as pool userdata
+     This allows a single C function to implement several authz providers.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1351016
+     2.4.x patch: Trunk patch applies.
+     +1: rjung, sf, jim
+
+   * event: Simplify handling of MaxConnectionsPerChild.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1361766
+     2.4.x patch: Trunk patch applies.
+     +1: rjung, sf, jim
+
+   * proxy_ajp: Use short lived pool to avoid memory leaks.
+     Remove the comment about binding upstream and downstream connections. It
+     seems to be obsolete since r104604, r104605, r105108.
+     Also avoid allocating memory if we are not handling the connection.
+     PR 52275, submitted by Naohiro Ooiwa <naohiro ooiwa miraclelinux com>,
+     Stefan Fritsch.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1334343
+     2.4.x patch: Trunk patch applies.
+     +1: rjung, sf, jim
+
+   * headers: ap_str(case)cmp_match returns the opposite of what is advertized
+     in the header.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1366319
+     2.4.x patch: Trunk patch applies.
+     +1: rjung, humbedooh, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -145,30 +184,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: rjung
      rjung: ben: you applied it to trunk, care to vote?
 
-   * configure: Add message about how to enable crypto support in APR.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1324760
-     2.4.x patch: Trunk patch applies.
-     +1: rjung, sf, jim
-     rjung: igalic: you applied it to trunk, care to vote?
-
-   * proxy: Treat EAGAIN as an error for a blocking read from the input filter
-     stack.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1242798
-     2.4.x patch: Trunk patch applies.
-     +1: rjung, sf, jim
-     rjung: jorton: you applied it to trunk, care to vote?
-
-   * authz: pass the provider name to parse_require_line as pool userdata
-     This allows a single C function to implement several authz providers.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1351016
-     2.4.x patch: Trunk patch applies.
-     +1: rjung, sf, jim
-
-   * event: Simplify handling of MaxConnectionsPerChild.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1361766
-     2.4.x patch: Trunk patch applies.
-     +1: rjung, sf, jim
-
    * event: Keep track of the number of clogged, lingering, and suspended connections.
      Don't count connections in lingering close state when calculating
      how many additional connections may be accepted
@@ -177,22 +192,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: Trunk patch applies.
      +1: rjung, jim
      rjung: sf: you applied it to trunk, care to vote?
-
-   * proxy_ajp: Use short lived pool to avoid memory leaks.
-     Remove the comment about binding upstream and downstream connections. It
-     seems to be obsolete since r104604, r104605, r105108.
-     Also avoid allocating memory if we are not handling the connection.
-     PR 52275, submitted by Naohiro Ooiwa <naohiro ooiwa miraclelinux com>,
-     Stefan Fritsch.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1334343
-     2.4.x patch: Trunk patch applies.
-     +1: rjung, sf, jim
-
-   * headers: ap_str(case)cmp_match returns the opposite of what is advertized
-     in the header.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1366319
-     2.4.x patch: Trunk patch applies.
-     +1: rjung, humbedooh, jim
 
    * mod_lua: resync 2.4.x with sf's refactoring/fixes in trunk (and Covener's notes)
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1201460
