@@ -99,16 +99,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: Trunk patch applies.
      +1: rjung, sf, jim
 
-   * proxy_ajp: Use short lived pool to avoid memory leaks.
-     Remove the comment about binding upstream and downstream connections. It
-     seems to be obsolete since r104604, r104605, r105108.
-     Also avoid allocating memory if we are not handling the connection.
-     PR 52275, submitted by Naohiro Ooiwa <naohiro ooiwa miraclelinux com>,
-     Stefan Fritsch.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1334343
-     2.4.x patch: Trunk patch applies.
-     +1: rjung, sf, jim
-
    * headers: ap_str(case)cmp_match returns the opposite of what is advertized
      in the header.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1366319
