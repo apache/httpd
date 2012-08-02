@@ -233,8 +233,68 @@ LuaAuthzProvider foo authz_provider.lua authz_check_foo
 <p>Hook functions are how modules (and Lua scripts) participate in the
 processing of requests. Each type of hook exposed by the server exists for
 a specific purposes such as mapping requests to the filesystem,
-performing access control, or setting mimetypes.  General purpose hooks
-that simply run at handy times in the request lifecycle exist as well.</p>
+performing access control, or setting mimetypes:</p>
+
+<table class="bordered"><tr class="header">
+        <th>Hook phase</th>
+        <th>mod_lua directive</th>
+        <th>Description</th>
+    </tr>
+<tr>
+        <td>Quick handler</td>
+        <td><code class="directive"><a href="#luaquickhandler">LuaQuickHandler</a></code></td>
+        <td>This is the first hook that will be called after a request has 
+            been mapped to a host or virtual host</td>
+    </tr>
+<tr class="odd">
+        <td>Translate name</td>
+        <td><code class="directive"><a href="#luahooktranslatename">LuaHookTranslateName</a></code></td>
+        <td>This phase translates the requested URI into a filename on the 
+            system. Modules such as <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> and
+            <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> operate in this phase.</td>
+    </tr>
+<tr>
+        <td>Map to storage</td>
+        <td><code class="directive"><a href="#luahookmaptostorage">LuaHookMapToStorage</a></code></td>
+        <td>This phase maps files to their physical, cached or external/proxied storage. 
+            It can be used by proxy or caching modules</td>
+    </tr>
+<tr class="odd">
+        <td>Check Access</td>
+        <td><code class="directive"><a href="#luahookauthchecker">LuaHookAuthChecker</a></code> or <code class="directive"><a href="#luaauthzprovider">LuaAuthzProvider</a></code></td>
+        <td>This phase authenticates and grants or denies access to the 
+            requested resource</td>
+    </tr>
+<tr>
+        <td>Check User ID</td>
+        <td><code class="directive"><a href="#luahookcheckuserid">LuaHookCheckUserID</a></code></td>
+        <td>This phase it used to check the negotiated user ID</td>
+    </tr>
+<tr class="odd">
+        <td>Check Type</td>
+        <td><code class="directive"><a href="#luahooktypechecker">LuaHookTypeChecker</a></code></td>
+        <td>This phase checks the requested file and assigns a content type and 
+            a handler to it</td>
+    </tr>
+<tr>
+        <td>Fixups</td>
+        <td><code class="directive"><a href="#luahookfixups">LuaHookFixups</a></code></td>
+        <td>This is the final "fix anything" phase before the content handlers 
+            are run. Any last-minute changes to the request should be made here.</td>
+    </tr>
+<tr class="odd">
+        <td>Content handler</td>
+        <td>fx. <code>.lua</code> files or through <code class="directive"><a href="#luamaphandler">LuaMapHandler</a></code></td>
+        <td>This is where the content is handled. Files are read, parsed, some are run, 
+            and the result is sent to the client</td>
+    </tr>
+<tr>
+        <td>Logging</td>
+        <td>(none)</td>
+        <td>Once a request has been handled, it enters several logging phases, 
+            which logs the request in either the error or access log</td>
+    </tr>
+</table>
 
 <p>Hook functions are passed the request object as their only argument.
 They can return any value, depending on the hook, but most commonly
