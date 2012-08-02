@@ -14,15 +14,6 @@ Changes with Apache 2.5.0
   *) mod_lua: Move LUA_COMPAT_ALL into the right place, so it will
      activate compatibility mode for Lua 5.2. [Daniel Gruno]
 
-  *) mod_proxy: Fix memory leak or possible corruption in ProxyBlock
-     implementation.  [Ruediger Pluem, Joe Orton]
-
-  *) mod_proxy: Check hostname from request URI against ProxyBlock list,
-     not forward proxy, if ProxyRemote* is configured.  [Joe Orton]
-
-  *) mod_proxy_connect: Avoid DNS lookup on hostname from request URI 
-     if ProxyRemote* is configured.  PR 43697.  [Joe Orton]
-
   *) mod_lbmethod_heartbeat, mod_heartmonitor: Respect DefaultRuntimeDir/
      DEFAULT_REL_RUNTIMEDIR for the heartbeat storage file.  [Jeff Trawick]
 
