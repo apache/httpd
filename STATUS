@@ -88,11 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * event: Simplify handling of MaxConnectionsPerChild.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1361766
-     2.4.x patch: Trunk patch applies.
-     +1: rjung, sf, jim
-
    * headers: ap_str(case)cmp_match returns the opposite of what is advertized
      in the header.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1366319
