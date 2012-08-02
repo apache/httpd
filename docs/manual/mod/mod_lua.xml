@@ -588,6 +588,9 @@ end
   <dd>HTTP status code</dd>
   <dt>apache2.PROXYREQ_NONE, apache2.PROXYREQ_PROXY, apache2.PROXYREQ_REVERSE, apache2.PROXYREQ_RESPONSE</dt>
   <dd>internal constants used by <module>mod_proxy</module></dd>
+  <dt>apache2.AUTHZ_DENIED, apache2.AUTHZ_GRANTED, apache2.AUTHZ_NEUTRAL, apache2.AUTHZ_GENERAL_ERROR, apache2.AUTHZ_DENIED_NO_USER</dt>
+  <dd>internal constants used by <module>mod_authz_core</module></dd>
+
 </dl>
 <p>(Other HTTP status codes are not yet implemented.)</p>
 </section>
@@ -611,7 +614,7 @@ end
 
 <directivesynopsis>
 <name>LuaScope</name>
-<description>One of once, request, conn -- default is once</description>
+<description>One of once, request, conn, thread -- default is once</description>
 <syntax>LuaScope once|request|conn|thread</syntax>
 <default>LuaScope once</default>
 <contextlist><context>server config</context><context>virtual host</context>
