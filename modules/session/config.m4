@@ -47,7 +47,7 @@ if test "$session_mods_enable_crypto" != "no"; then
   ], [ap_HAVE_APR_CRYPTO="yes"], [ap_HAVE_APR_CRYPTO="no"])
   CPPFLAGS="$saved_CPPFLAGS"
   if test $ap_HAVE_APR_CRYPTO = "no"; then
-    AC_MSG_WARN([Your APR does not include SSL/EVP support.])
+    AC_MSG_WARN([Your APR does not include SSL/EVP support. To enable it: configure --with-crypto])
     if test "$enable_session_crypto" != "" -a "$enable_session_crypto" != "no"; then
         AC_MSG_ERROR([mod_session_crypto cannot be enabled])
     fi
