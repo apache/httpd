@@ -64,9 +64,6 @@ Changes with Apache 2.5.0
      to a file; configure --without-suexec-logfile --with-suexec-syslog.  
      [Joe Orton]
 
-  *) mod_proxy_ajp: Reduce memory usage in case of many keep-alive requests on
-     one connection. PR 52275. [Naohiro Ooiwa <naohiro ooiwa miraclelinux com>]
-
   *) mod_ssl: Add support for TLS Next Protocol Negotiation.  PR 52210.
      [Matthew Steele <mdsteele google.com>]
 
