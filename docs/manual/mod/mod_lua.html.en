@@ -629,6 +629,9 @@ end
   <dd>HTTP status code</dd>
   <dt>apache2.PROXYREQ_NONE, apache2.PROXYREQ_PROXY, apache2.PROXYREQ_REVERSE, apache2.PROXYREQ_RESPONSE</dt>
   <dd>internal constants used by <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
+  <dt>apache2.AUTHZ_DENIED, apache2.AUTHZ_GRANTED, apache2.AUTHZ_NEUTRAL, apache2.AUTHZ_GENERAL_ERROR, apache2.AUTHZ_DENIED_NO_USER</dt>
+  <dd>internal constants used by <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code></dd>
+
 </dl>
 <p>(Other HTTP status codes are not yet implemented.)</p>
 </div>
@@ -1070,7 +1073,7 @@ LuaPackagePath /scripts/lib/?/init.lua
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaScope" id="LuaScope">LuaScope</a> <a name="luascope" id="luascope">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>One of once, request, conn -- default is once</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>One of once, request, conn, thread -- default is once</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaScope once|request|conn|thread</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LuaScope once</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
