@@ -223,14 +223,22 @@ performing access control, or setting mimetypes:</p>
     </tr>
     <tr>
         <td>Check Access</td>
-        <td><directive module="mod_lua">LuaHookAuthChecker</directive> or <directive module="mod_lua">LuaAuthzProvider</directive></td>
-        <td>This phase authenticates and grants or denies access to the 
-            requested resource</td>
+        <td><directive module="mod_lua">LuaHookAccessChecker</directive></td>
+        <td>This phase checks whether a client has access to a resource. This 
+            phase is run before the user is authenticated, so beware.
     </tr>
     <tr>
         <td>Check User ID</td>
         <td><directive module="mod_lua">LuaHookCheckUserID</directive></td>
         <td>This phase it used to check the negotiated user ID</td>
+    </tr>
+    <tr>
+        <td>Check Authorization</td>
+        <td><directive module="mod_lua">LuaHookAuthChecker</directive> or 
+            <directive module="mod_lua">LuaAuthzProvider</directive></td>
+        <td>This phase authorizes a user based on the negotiated credentials, such as 
+            user ID, client certificate etc.
+        </td>
     </tr>
     <tr>
         <td>Check Type</td>
