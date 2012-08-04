@@ -817,7 +817,7 @@ by Apache httpd children</td></tr>
 processes launched by Apache httpd children</td></tr>
 <tr class="odd"><td><a href="mod_access_compat.html#satisfy" id="S" name="S">Satisfy Any|All</a></td><td> All </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Interaction between host-level access control and
 user authentication</td></tr>
-<tr><td><a href="mpm_common.html#scoreboardfile">ScoreBoardFile <var>file-path</var></a></td><td> logs/apache_status </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Location of the file used to store coordination data for
+<tr><td><a href="mpm_common.html#scoreboardfile">ScoreBoardFile <var>file-path</var></a></td><td> apache_runtime_stat +</td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Location of the file used to store coordination data for
 the child processes</td></tr>
 <tr class="odd"><td><a href="mod_actions.html#script">Script <var>method</var> <var>cgi-script</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Activates a CGI script for a particular request
 method.</td></tr>
