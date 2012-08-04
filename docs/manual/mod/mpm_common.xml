@@ -456,7 +456,7 @@ spikes</description>
 <description>Location of the file used to store coordination data for
 the child processes</description>
 <syntax>ScoreBoardFile <var>file-path</var></syntax>
-<default>ScoreBoardFile logs/apache_runtime_status</default>
+<default>ScoreBoardFile apache_runtime_status</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>event</module><module>mpm_winnt</module>
 <module>prefork</module><module>worker</module></modulelist>
@@ -469,6 +469,10 @@ the child processes</description>
     shared memory) and, failing that, will attempt to create the file on
     disk (using file-based shared memory). Specifying this directive causes
     Apache httpd to always create the file on the disk.</p>
+
+    <p>If <var>file-path</var> is not an absolute path, the location specified
+    will be relative to the value of 
+    <directive module="core">DefaultRuntimeDir</directive>.</p>
 
     <example><title>Example</title>
     <highlight language="config">
