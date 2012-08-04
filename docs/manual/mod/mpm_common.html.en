@@ -483,7 +483,7 @@ of the daemon</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Location of the file used to store coordination data for
 the child processes</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ScoreBoardFile <var>file-path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ScoreBoardFile logs/apache_status</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ScoreBoardFile apache_runtime_status</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
@@ -496,8 +496,12 @@ the child processes</td></tr>
     disk (using file-based shared memory). Specifying this directive causes
     Apache httpd to always create the file on the disk.</p>
 
+    <p>If <var>file-path</var> is not an absolute path, the location specified
+    will be relative to the value of 
+    <code class="directive"><a href="../mod/core.html#defaultruntimedir">DefaultRuntimeDir</a></code>.</p>
+
     <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
-      ScoreBoardFile /var/run/apache_status
+      ScoreBoardFile /var/run/apache_runtime_status
       </pre>
 </div>
 
