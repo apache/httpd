@@ -456,7 +456,7 @@ spikes</description>
 <description>Location of the file used to store coordination data for
 the child processes</description>
 <syntax>ScoreBoardFile <var>file-path</var></syntax>
-<default>ScoreBoardFile logs/apache_status</default>
+<default>ScoreBoardFile logs/apache_runtime_status</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>event</module><module>mpm_winnt</module>
 <module>prefork</module><module>worker</module></modulelist>
@@ -472,7 +472,7 @@ the child processes</description>
 
     <example><title>Example</title>
     <highlight language="config">
-      ScoreBoardFile /var/run/apache_status
+      ScoreBoardFile /var/run/apache_runtime_status
       </highlight>
     </example>
 
