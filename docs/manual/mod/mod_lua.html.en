@@ -261,9 +261,9 @@ performing access control, or setting mimetypes:</p>
     </tr>
 <tr class="odd">
         <td>Check Access</td>
-        <td><code class="directive"><a href="#luahookauthchecker">LuaHookAuthChecker</a></code> or <code class="directive"><a href="#luaauthzprovider">LuaAuthzProvider</a></code></td>
-        <td>This phase authenticates and grants or denies access to the 
-            requested resource</td>
+        <td><code class="directive"><a href="#luahookaccesschecker">LuaHookAccessChecker</a></code></td>
+        <td>This phase checks whether a client has access to a resource. This 
+            phase is run before the user is authenticated, so beware.</td>
     </tr>
 <tr>
         <td>Check User ID</td>
@@ -271,24 +271,32 @@ performing access control, or setting mimetypes:</p>
         <td>This phase it used to check the negotiated user ID</td>
     </tr>
 <tr class="odd">
+        <td>Check Authorization</td>
+        <td><code class="directive"><a href="#luahookauthchecker">LuaHookAuthChecker</a></code> or 
+            <code class="directive"><a href="#luaauthzprovider">LuaAuthzProvider</a></code></td>
+        <td>This phase authorizes a user based on the negotiated credentials, such as 
+            user ID, client certificate etc.
+        </td>
+    </tr>
+<tr>
         <td>Check Type</td>
         <td><code class="directive"><a href="#luahooktypechecker">LuaHookTypeChecker</a></code></td>
         <td>This phase checks the requested file and assigns a content type and 
             a handler to it</td>
     </tr>
-<tr>
+<tr class="odd">
         <td>Fixups</td>
         <td><code class="directive"><a href="#luahookfixups">LuaHookFixups</a></code></td>
         <td>This is the final "fix anything" phase before the content handlers 
             are run. Any last-minute changes to the request should be made here.</td>
     </tr>
-<tr class="odd">
+<tr>
         <td>Content handler</td>
         <td>fx. <code>.lua</code> files or through <code class="directive"><a href="#luamaphandler">LuaMapHandler</a></code></td>
         <td>This is where the content is handled. Files are read, parsed, some are run, 
             and the result is sent to the client</td>
     </tr>
-<tr>
+<tr class="odd">
         <td>Logging</td>
         <td>(none)</td>
         <td>Once a request has been handled, it enters several logging phases, 
