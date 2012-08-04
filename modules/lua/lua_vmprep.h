@@ -54,7 +54,7 @@ typedef struct
     apr_array_header_t *package_cpaths;
 
     /* name of base file to load in the vm */
-    char *file;
+    const char *file;
 
     /* APL_SCOPE_ONCE | APL_SCOPE_REQUEST | APL_SCOPE_CONN | APL_SCOPE_THREAD */
     int scope;
@@ -75,8 +75,8 @@ typedef struct
 
 typedef struct
 {
-    char *function_name;
-    char *file_name;
+    const char *function_name;
+    const char *file_name;
     int scope;
     ap_regex_t *uri_pattern;
     const char *bytecode;
