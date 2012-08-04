@@ -17,10 +17,6 @@ Changes with Apache 2.5.0
   *) mod_lbmethod_heartbeat, mod_heartmonitor: Respect DefaultRuntimeDir/
      DEFAULT_REL_RUNTIMEDIR for the heartbeat storage file.  [Jeff Trawick]
 
-  *) mpm_event: Don't count connections in lingering close state when
-     calculating how many additional connections may be accepted.
-     [Stefan Fritsch]
-
   *) mod_ssl: Add RFC 5878 support. [Ben Laurie]
 
   *) mod_lua: Add new directive LuaAuthzProvider to allow implementing an
@@ -31,10 +27,6 @@ Changes with Apache 2.5.0
 
   *) mod_lua: Change prototype of vm_construct, to work around gcc bug which
      causes a segfault. PR 52779. [Dick Snippe <Dick Snippe tech omroep nl>]
-
-  *) mod_ssl: If exiting during initialization because of a fatal error,
-     log a message to the main error log pointing to the appropriate
-     virtual host error log. [Stefan Fritsch]
 
   *) mod_ssl: Add support for TLS-SRP (Secure Remote Password key exchange
      for TLS, RFC 5054). PR 51075. [Quinn Slack <sqs cs stanford edu>,
