@@ -555,7 +555,7 @@
     etc.</dt>
     <dd>Use <code>ap_runtime_dir_relative()</code> so that the global
     configuration for the location of such files, either by the
-    DEFAULT_REL_RUNTIMEDIR compile setting or the
+    <code>DEFAULT_REL_RUNTIMEDIR</code> compile setting or the
     <directive module="core">DefaultRuntimeDir</directive> directive,
     will be respected.  <em>Apache httpd 2.4.2 and above.</em></dd>
 
