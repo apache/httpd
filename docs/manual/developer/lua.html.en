@@ -1,0 +1,2756 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Creating hooks and scripts with mod_lua - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<script src="../style/scripts/prettify.js" type="text/javascript">
+</script>
+
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.5</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Developer</a></div><div id="page-content"><div id="preamble"><h1>Creating hooks and scripts with mod_lua</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/developer/lua.html" title="English">&nbsp;en&nbsp;</a></p>
+</div>
+
+<p>This document expands on the <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code> documentation and explores
+ additional ways of using mod_lua for writing hooks and scripts.</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introduction</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#basic_remap">Example 1: A basic remapping module</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mass_vhost">Example 2: Mass virtual hosting</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#basic_auth">Example 3: A basic authorization hook</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#map_handler">Example 4: Authorization using LuaAuthzProvider</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#map_handler">Example 5: Overlays using LuaMapHandler</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mod_status_lua">Example 6: Basic Lua scripts</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#String_manipulation">HTTPd bindings: String manipulation</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#Request_handling">HTTPd bindings: Request handling</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#Parser_functions">HTTPd bindings: Parser functions</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#Server_settings">HTTPd bindings: Server settings</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#Database_connectivity">HTTPd bindings: Database connectivity</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#Miscellaneous">HTTPd bindings: Miscellaneous</a></li>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_lua.html">mod_lua</a></li><li><a href="modguide.html">Developing modules for Apache 2.4</a></li><li><a href="request.html">Request Processing in Apache 2.4</a></li><li><a href="hooks.html">Apache 2.x Hook Functions</a></li></ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="introduction" id="introduction">Introduction</a></h2>
+<h3><a name="what" id="what">What is mod_lua</a></h3>
+<p>
+Stuff about what <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code> is goes here.
+</p>
+
+<h3><a name="contents" id="contents">What we will be discussing in this document</a></h3>
+<p>
+This document will discuss how you can bla bla bla. 
+In the first chapter, we will bla bla
+</p>
+
+<p>
+In the second part of this document, we will be looking at bla bla bla
+</p>
+
+
+<h3><a name="prerequisites" id="prerequisites">Prerequisites</a></h3>
+<p>
+First and foremost, you are expected to have a basic knowledge of how the Lua 
+programming language works. In most cases, we will try to be as pedagogical 
+as possible and link to documents describing the functions used in the 
+examples, but there are also many cases where it is necessary to either 
+just assume that "it works" or do some digging yourself into what the hows 
+and whys of various function calls. 
+</p>
+
+
+
+<h3><a name="enabling" id="enabling">Enabling mod_lua</a></h3>
+
+<pre class="prettyprint lang-config">
+LoadModule lua_module modules/mod_lua.so
+</pre>
+
+
+
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="basic_remap" id="basic_remap">Example 1: A basic remapping module</a></h2>
+<p>
+
+</p>
+
+<pre class="prettyprint lang-config">
+LuaHookTranslateName /path/too/foo.lua remap
+</pre>
+
+
+
+
+<pre class="prettyprint lang-lua">
+--[[
+    Simple remap example.
+    This example will rewrite /foo/test.bar to the physical file
+    /internal/test, somewhat like how mod_alias works.
+]]--
+require 'apache2'
+require 'string'
+
+function remap(r)
+    -- Test if the URI matches our criteria
+    local barFile =  r.uri:match("/foo/([a-zA-Z0-9]+%.bar)")
+    if barFile then
+        r.filename = "/internal/" .. barFile
+    end
+    return apache2.OK
+end
+</pre>
+
+
+
+
+
+<pre class="prettyprint lang-lua">
+--[[
+    Advanced remap example.
+    This example will evaluate some conditions, and based on that, 
+    remap a file to one of two destinations, using a rewrite map.
+    
+]]--
+require 'apache2'
+require 'string'
+
+local map = {
+      photos = {   
+                   source = [[^/photos/(.+)\.png$]], 
+                   destination = [[/uploads/www/$1.png]],
+                   proxy = false
+                },
+      externals = {
+                   source = [[^/ext/(.*)$]],
+                   destination = [[http://www.example.com/$1]],
+                   proxy = true
+                }
+}
+
+function interpolateString(s,v)
+    return s:gsub("%$(%d+)", function(a) return v[tonumber(a)] end)
+end
+        
+function remap(r)
+    -- browse through the rewrite map
+    for key, entry in pairs(map) do
+        -- Match source regex against URI
+        local match = apache2.regex(r, entry.source, r.uri) then
+        if match and match[0] then
+            r.filename = interpolateString(entry.destination, match)
+            -- Is this a proxied remap?
+            if entry.proxy then
+                r.handler = "proxy-server" -- tell mod_proxy to handle this
+                r.proxyreq = apache2.PROXYREQ_REVERSE -- We'll want to do a reverse proxy
+                r.filename = "proxy:" .. r.filename -- Add the proxy scheme to the destination
+            end
+            return apache2.OK
+        end
+    end
+    return apache2.DECLINED
+end
+</pre>
+
+
+
+<p>
+bla bla
+</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="mass_vhost" id="mass_vhost">Example 2: Mass virtual hosting</a></h2>
+<p>
+
+</p>
+
+<pre class="prettyprint lang-config">
+LuaHookTranslateName /path/too/foo.lua mass_vhost
+</pre>
+
+
+
+
+<pre class="prettyprint lang-lua">
+--[[
+    Simple mass vhost script
+    This example will check a map for a virtual host and rewrite filename and 
+    document root accordingly.
+]]--
+require 'apache2'
+require 'string'
+
+local vhosts = {
+    { domain = "example.com", home = "/www/example.com" },
+    { domain = "example.org", home = "/nfs/ext1/example.org" }
+}
+
+function mass_vhost(r)
+    -- Match against our hostname
+    for key, entry in pairs(vhosts) do
+        -- match against either host or *.host:
+        if apache2.strcmp_match(r.hostname, entry.domain) or
+           apache2.strcmp_match(r.hostname, "*." .. entry.domain) then
+            -- If it matches, rewrite filename and set document root
+            local filename = r.filename:sub(r.document_root:len()+1)
+            r.filename = entry.home .. filename
+            apahce2.set_document_root(entry.home)
+            return apache2.OK
+        end
+    end
+    return apache2.DECLINED
+end
+</pre>
+
+
+
+
+
+<pre class="prettyprint lang-lua">
+--[[
+    Advanced mass virtual hosting
+    This example will query a database for vhost entries and save them for
+    60 seconds before checking for updates. For best performance, such scripts
+    should generally be run with LuaScope set to 'thread' or 'server'
+]]--
+require 'apache2'
+require 'string'
+
+local cached_vhosts = {}
+local timeout = 60
+
+-- Function for querying the database for saved vhost entries
+function query_vhosts(host)
+    if not cached_vhosts[host] or (cached_vhosts[host] and cached_vhosts[host].updated &lt; os.time() - timeout) then
+        local db = apache2.dbopen("mod_dbd")
+        local _host = db:escape(_host)
+        local res, err = db:query( ("SELECT `destination` FROM `vhosts` WHERE `hostname` = '%s' LIMIT 1"):format(_host) )
+        if res and #res == 1 then
+            cached_vhosts[host] = { updated = os.time(), destination = res[1][1] }
+        else
+            cached_vhosts[host] = nil
+        end
+        db:close()
+    end
+    if cached_vhosts[host] then 
+        return cached_vhosts[host].destination
+    else
+        return nil
+    end
+end
+        
+function mass_vhost(r)
+    -- Check whether the hostname is in our database
+    local destination = query_vhosts(r.hostname)
+    if destination then
+        -- If found, rewrite and change document root
+        local filename = r.filename:sub(r.document_root:len()+1)
+        r.filename = destination .. filename
+        apahce2.set_document_root(destination)
+        return apache2.OK
+    end
+    return apache2.DECLINED
+end
+</pre>
+
+
+
+<p>
+bla bla
+</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="basic_auth" id="basic_auth">Example 3: A basic authorization hook</a></h2>
+
+<pre class="prettyprint lang-config">
+LuaHookAuthChecker /path/too/foo.lua check_auth
+</pre>
+
+
+
+<pre class="prettyprint lang-lua">
+require 'apache2'
+require 'string'
+
+local accounts = {
+    bob  = 'somePassword',
+    jane = 'Iloveponies'
+}
+
+-- Function for parsing the Authorization header into a username and a password
+function parse_auth(str)
+    local user,pass = nil, nil
+    if str and str:len() &gt; 0 then
+        str = apache2.base64_decode(auth):sub(7));
+        user, pass = auth:match("([^:]+)%:([^:]+)")
+    end
+    return user, pass
+end
+
+-- The authentication hook
+function check_auth(r)
+    local user, pass = parse_auth(r.headers_in['Authorization'])
+    local authenticated = false
+    if user and pass then
+        if accounts[user] and accounts[user] == pass then
+            authenticated = true
+            r.user = user
+        end
+    end
+    r.headers_out["WWW-Authenticate"] = 'Basic realm="Super secret zone"'
+    if not authenticated then
+        return 401
+    else
+        return apache2.OK
+    end
+end
+</pre>
+
+
+
+
+
+<pre class="prettyprint lang-lua">
+-- An advanced authentication checker with a database backend,
+-- caching account entries for 1 minute
+require 'apache2'
+require 'string'
+
+local timeout = 60 -- Set account info to be refreshed every minute
+local accounts = {}
+
+-- Function for parsing the Authorization header into a username and a password
+function parse_auth(str)
+    local user,pass = nil, nil
+    if str and str:len() &gt; 0 then
+        str = apache2.base64_decode(auth):sub(7));
+        user, pass = auth:match("([^:]+)%:([^:]+)")
+    end
+    return user, pass
+end
+
+-- Function for querying the database for the account's password (stored as a salted SHA-1 hash)
+function fetch_password(user)
+    if not accounts[user] or (accounts[user] and accounts[user].updated &lt; os.time() - timeout) then
+        local db = apache2.dbopen("mod_dbd")
+        local usr = db:escape(user)
+        local res, err = db:query( ("SELECT `password` FROM `accounts` WHERE `user` = '%s' LIMIT 1"):format(usr) )
+        if res and #res == 1 then
+            accounts[user] = { updated = os.time(), password = res[1][1] }
+        else
+            accounts[user] = nil
+        end
+        db:close()
+    end
+    if accounts[user] then 
+        return accounts[user].password
+    else
+        return nil
+    end
+end
+    
+-- The authentication hook
+function check_auth(r)
+    local user, pass = parse_auth(r.headers_in['Authorization'])
+    local authenticated = false
+    if user and pass then
+        pass = apache2.sha1("addSomeSalt" .. pass)
+        local stored_pass = fetch_password(user)
+        if stored_pass and pass == stored_pass then
+            authenticated = true
+            r.user = user
+        end
+    end
+    r.headers_out["WWW-Authenticate"] = 'Basic realm="Super secret zone"'
+    if not authenticated then
+        return 401
+    else
+        return apache2.OK
+    end
+end
+</pre>
+
+
+
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="map_handler" id="map_handler">Example 4: Authorization using LuaAuthzProvider</a></h2>
+
+<pre class="prettyprint lang-config">
+LuaAuthzProvider rights /path/to/lua/script.lua rights_handler
+&lt;Directory /www/private&gt;
+    Require rights member
+&lt;/Directory&gt;
+&lt;Directory /www/admin&gt;
+    Require rights admin
+&lt;/Directory&gt;
+</pre>
+
+
+<pre class="prettyprint lang-lua">
+local members = { "rbowen", "humbedooh", "igalic", "covener" }
+local admins = { "humbedooh" }
+
+function rights_handler(r, what)
+    if r.user == nil then
+        return apache2.AUTHZ_AUTHZ_DENIED_NO_USER
+    end
+    if what == "member" then
+        for k, v in pairs(members) do
+            if r.user == v then
+                return apache2.AUTHZ_GRANTED
+            end
+        end
+    elseif what == "admin" then
+        for k, v in pairs(admins) do
+            if r.user == v then
+                return apache2.AUTHZ_GRANTED
+            end
+        end
+    end
+    return apache2.AUTHZ_DENIED
+end
+</pre>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="map_handler" id="map_handler">Example 5: Overlays using LuaMapHandler</a></h2>
+
+<pre class="prettyprint lang-config">
+LuaMaphandler ^/portal/([a-z]+)/   /path/to/lua/script.lua handle_$1
+</pre>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="mod_status_lua" id="mod_status_lua">Example 6: Basic Lua scripts</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="String_manipulation" id="String_manipulation">HTTPd bindings: String manipulation</a></h2>
+
+<a href="#apache2.base64_encode">apache2.base64_encode</a>
+<br />
+<a href="#apache2.base64_decode">apache2.base64_decode</a>
+<br />
+<a href="#apache2.escape">apache2.escape</a>
+<br />
+<a href="#apache2.unescape">apache2.unescape</a>
+<br />
+<a href="#apache2.escapehtml">apache2.escapehtml</a>
+<br />
+<a href="#apache2.md5">apache2.md5</a>
+<br />
+<a href="#apache2.sha1">apache2.sha1</a>
+<br />
+<a href="#apache2.os_escape_path">apache2.os_escape_path</a>
+<br />
+<a href="#apache2.escape_logitem">apache2.escape_logitem</a>
+<br />
+<h3><a name="apache2.base64_decode" id="apache2.base64_decode">apache2.base64_decode(
+    request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;string</em>
+    )
+    </a></h3>
+
+<p>
+Decodes a base64-encoded string
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+<tr>
+<td>string</td>
+<td>The string to decode</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+The base64-decoded string.
+        </p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+local str = "This is a test"
+local encoded = apache2.base64_encode(str)
+local decoded = apache2.base64_decode(encoded)
+        </pre>
+
+</p>
+<br />
+<br />
+
+<h3><a name="apache2.base64_encode" id="apache2.base64_encode">apache2.base64_encode(
+    request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;string</em>
+    )
+    </a></h3>
+
+<p>
+Encodes a string using the base64 encoding scheme.
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+<tr>
+<td>string</td>
+<td>The string to encode</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+local str = "This is a test"
+local encoded = apache2.base64_encode(str)
+local decoded = apache2.base64_decode(encoded)
+        </pre>
+
+</p>
+<br />
+<br />
+
+<h3><a name="apache2.escape" id="apache2.escape">apache2.escape(
+    request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;string</em>
+    )
+    </a></h3>
+
+<p>
+url-escapes a string
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+<tr>
+<td>string</td>
+<td>The string to escape</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+The URL-escaped string.
+        </p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+local str = "This is a test"
+local escaped = apache2.escape(str)
+print(escaped) -- prints "This+is+a+test"
+        </pre>
+
+</p>
+<br />
+<br />
+
+<h3><a name="apache2.escape_logitem" id="apache2.escape_logitem">apache2.escape_logitem(
+    request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;path</em>
+    )
+    </a></h3>
+
+<p>
+Escape a string for logging
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+<tr>
+<td>path</td>
+<td>The string to escape</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+The converted string
+        </p>
+<br />
+<br />
+
+<h3><a name="apache2.escapehtml" id="apache2.escapehtml">apache2.escapehtml(
+    request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;html</em>, &nbsp;boolean<em>&nbsp;toasc</em>
+    )
+    </a></h3>
+
+<p>
+Escapes HTML entities.
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+<tr>
+<td>html</td>
+<td>The HTML code to escape</td>
+</tr>
+<tr>
+<td>toasc</td>
+<td>Whether to escape all non-ASCI characters as &amp;#nnn;</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+The escaped HTML code.
+        </p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+local html = "&lt;b&gt;Testing!&lt;/b&gt;"
+local escaped = apache2.escapehtml(html)
+r:puts(escaped) -- prints "&amp;lt;b&amp;gt;Testing!&amp;lt;/b&amp;gt;"
+        </pre>
+
+</p>
+<br />
+<br />
+
+<h3><a name="apache2.md5" id="apache2.md5">apache2.md5(
+    request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;string</em>
+    )
+    </a></h3>
+
+<p>
+Computes an MD5 digest sum based on a string (binary safe)
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+<tr>
+<td>string</td>
+<td>The (binary) string to digest</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+The MD5 digest sum of the data provided
+        </p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+local text = "The quick brown fox jumps over the lazy dog"
+local md5 = apache2.md51(text)
+r:puts(md5) -- prints out "9e107d9d372bb6826bd81d3542a419d6"
+        </pre>
+
+</p>
+<br />
+<br />
+
+<h3><a name="apache2.os_escape_path" id="apache2.os_escape_path">apache2.os_escape_path(
+    request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;path</em>, &nbsp;boolean<em>&nbsp;partial</em>
+    )
+    </a></h3>
+
+<p>
+convert an OS path to a URL in an OS dependant way.
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+<tr>
+<td>path</td>
+<td>The path to convert</td>
+</tr>
+<tr>
+<td>partial</td>
+<td>partial if set, assume that the path will be appended to something with a '/' in it (and thus does not prefix "./")</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+The converted URL
+        </p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+local path = ap_os_escape_path("C:/foo/bar.txt")
+        </pre>
+
+</p>
+<br />
+<br />
+
+<h3><a name="apache2.sha1" id="apache2.sha1">apache2.sha1(
+    request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;string</em>
+    )
+    </a></h3>
+
+<p>
+Computes an SHA-1 digest sum based on a string (binary safe)
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+<tr>
+<td>string</td>
+<td>The (binary) string to digest</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+The SHA-1 digest sum of the data provided
+        </p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+local text = "The quick brown fox jumps over the lazy dog"
+local sha1 = apache2.sha1(text)
+r:puts(sha1) -- prints out "2fd4e1c67a2d28fced849ee1bb76e7391b93eb12"
+        </pre>
+
+</p>
+<br />
+<br />
+
+<h3><a name="apache2.unescape" id="apache2.unescape">apache2.unescape(
+    request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;string</em>
+    )
+    </a></h3>
+
+<p>
+unescapes an URL-escaped string
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+<tr>
+<td>string</td>
+<td>The string to unescape</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+The URL-unescaped string
+        </p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+local str = "This+is+a+test"
+local unescaped = apache2.unescape(str)
+print(unescaped) -- prints "This is a test"
+        </pre>
+
+</p>
+<br />
+<br />
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="Request_handling" id="Request_handling">HTTPd bindings: Request handling</a></h2>
+
+<a href="#apache2.sendfile">apache2.sendfile</a>
+<br />
+<a href="#apache2.port">apache2.port</a>
+<br />
+<a href="#apache2.getenv">apache2.getenv</a>
+<br />
+<a href="#apache2.setenv">apache2.setenv</a>
+<br />
+<a href="#apache2.options">apache2.options</a>
+<br />
+<a href="#apache2.allowoverrides">apache2.allowoverrides</a>
+<br />
+<a href="#apache2.requestbody">apache2.requestbody</a>
+<br />
+<a href="#apache2.add_input_filter">apache2.add_input_filter</a>
+<br />
+<a href="#apache2.add_output_filter">apache2.add_output_filter</a>
+<br />
+<a href="#apache2.get_basic_auth_pw">apache2.get_basic_auth_pw</a>
+<br />
+<a href="#apache2.get_limit_req_body">apache2.get_limit_req_body</a>
+<br />
+<a href="#apache2.request_has_body">apache2.request_has_body</a>
+<br />
+<a href="#apache2.set_document_root">apache2.set_document_root</a>
+<br />
+<a href="#apache2.some_auth_required">apache2.some_auth_required</a>
+<br />
+<a href="#apache2.context_document_root">apache2.context_document_root</a>
+<br />
+<a href="#apache2.context_prefix">apache2.context_prefix</a>
+<br />
+<a href="#apache2.set_context_prefix">apache2.set_context_prefix</a>
+<br />
+<a href="#apache2.set_keepalive">apache2.set_keepalive</a>
+<br />
+<a href="#apache2.make_etag">apache2.make_etag</a>
+<br />
+<a href="#apache2.flush">apache2.flush</a>
+<br />
+<a href="#apache2.send_interim_response">apache2.send_interim_response</a>
+<br />
+<a href="#apache2.get_server_name">apache2.get_server_name</a>
+<br />
+<a href="#apache2.auth_type">apache2.auth_type</a>
+<br />
+<a href="#apache2.auth_name">apache2.auth_name</a>
+<br />
+<a href="#apache2.satisfies">apache2.satisfies</a>
+<br />
+<h3><a name="apache2.add_input_filter" id="apache2.add_input_filter">apache2.add_input_filter(
+    request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;filter</em>
+    )
+    </a></h3>
+
+<p>
+Adds an input filter to the request
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+<tr>
+<td>filter</td>
+<td>The name of the filter handler to add</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+apache2.add_input_filter(r, "SPAM_FILTER") -- Check input for spam..?
+        </pre>
+
+</p>
+<br />
+<br />
+
+<h3><a name="apache2.add_output_filter" id="apache2.add_output_filter">apache2.add_output_filter(
+    request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;filter</em>
+    )
+    </a></h3>
+
+<p>
+Adds an output filter to the request
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+<tr>
+<td>filter</td>
+<td>The name of the filter handler to add</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+apache2.add_input_filter(r, "INCLUDES") -- Turn out output into an SSI-enabled document.
+        </pre>
+
+</p>
+<br />
+<br />
+
+<h3><a name="apache2.allowoverrides" id="apache2.allowoverrides">apache2.allowoverrides(
+    request_rec<em>&nbsp;r</em>
+    )
+    </a></h3>
+
+<p>
+Returns the currently allowed overrides for this context (AuthCfg, Options etc)
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+The currently allowed overrides for this context (AuthCfg, Options etc)
+        </p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+local ctx = apache2.allowoverrides(r)
+if ctx:match("AuthCfg") then
+    r:puts("You are allowed to override AuthCfg stuff in your .htaccess")
+end
+        </pre>
+
+</p>
+<br />
+<br />
+
+<h3><a name="apache2.auth_name" id="apache2.auth_name">apache2.auth_name(
+    request_rec<em>&nbsp;r</em>
+    )
+    </a></h3>
+
+<p>
+Returns the current Authorization realm
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+The current authorization realm
+        </p>
+<br />
+<br />
+
+<h3><a name="apache2.auth_type" id="apache2.auth_type">apache2.auth_type(
+    request_rec<em>&nbsp;r</em>
+    )
+    </a></h3>
+
+<p>
+Returns the current authentication type used in the request
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+The current Authorization type used in the request
+        </p>
+<br />
+<br />
+
+<h3><a name="apache2.context_document_root" id="apache2.context_document_root">apache2.context_document_root(
+    request_rec<em>&nbsp;r</em>
+    )
+    </a></h3>
+
+<p>
+Get the context_document_root for a request. This is a generalization of the document root, which is too limited in the presence of mappers like mod_userdir and mod_alias. The context_document_root is the directory on disk that maps to the context_prefix URI prefix.
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+</table>
+</p>
+<br />
+<br />
+
+<h3><a name="apache2.context_prefix" id="apache2.context_prefix">apache2.context_prefix(
+    request_rec<em>&nbsp;r</em>
+    )
+    </a></h3>
+
+<p>
+Get the context_prefix for a request. The context_prefix URI prefix maps to the context_document_root on disk.
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+</table>
+</p>
+<br />
+<br />
+
+<h3><a name="apache2.flush" id="apache2.flush">apache2.flush(
+    request_rec<em>&nbsp;r</em>
+    )
+    </a></h3>
+
+<p>
+Flushes the content buffer, writing everything to the client immediately.
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+r:puts("This is buffered")
+apache2.flush(r) -- now it's written to the client.
+        </pre>
+
+</p>
+<br />
+<br />
+
+<h3><a name="apache2.get_basic_auth_pw" id="apache2.get_basic_auth_pw">apache2.get_basic_auth_pw(
+    request_rec<em>&nbsp;r</em>
+    )
+    </a></h3>
+
+<p>
+Returns the password from a basic authorization request or nil if none was supplied
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+The password from a basic authorization request or nil if none was supplied
+        </p>
+<br />
+<br />
+
+<h3><a name="apache2.get_limit_req_body" id="apache2.get_limit_req_body">apache2.get_limit_req_body(
+    request_rec<em>&nbsp;r</em>
+    )
+    </a></h3>
+
+<p>
+Returns the current request body size limit
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+The current request body size limit
+        </p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+local limit = apache2.get_limit_req_body(r)
+r:puts("You can't upload files bigger than ", limit, " bytes!")
+        </pre>
+
+</p>
+<br />
+<br />
+
+<h3><a name="apache2.get_server_name" id="apache2.get_server_name">apache2.get_server_name(
+    
+    )
+    </a></h3>
+
+<p>
+Returns the current server name from the request
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+            None<br />
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+The server name
+        </p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+local name = apache2.get_server_name(r)
+r:puts("The ServerName is set to: ", name)
+        </pre>
+
+</p>
+<br />
+<br />
+
+<h3><a name="apache2.getenv" id="apache2.getenv">apache2.getenv(
+    request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;key</em>
+    )
+    </a></h3>
+
+<p>
+Returns the value of an environment variable
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+<tr>
+<td>key</td>
+<td>key</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+The queried value
+        </p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+local env = apache2.getenv("HTTP_HOST")
+if env and env:len() &gt; 0 then
+    r:puts("HTTP_HOST equals ", env)
+end
+        </pre>
+
+</p>
+<br />
+<br />
+
+<h3><a name="apache2.make_etag" id="apache2.make_etag">apache2.make_etag(
+    request_rec<em>&nbsp;r</em>, &nbsp;boolean<em>&nbsp;force_weak</em>
+    )
+    </a></h3>
+
+<p>
+Constructs an entity tag from the resource information.  If it's a real file, build in some of the file characteristics.
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+<tr>
+<td>force_weak</td>
+<td>force_weak Force the entity tag to be weak - it could be modified again in as short an interval.</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+The entity tag
+        </p>
+<br />
+<br />
+
+<h3><a name="apache2.options" id="apache2.options">apache2.options(
+    request_rec<em>&nbsp;r</em>
+    )
+    </a></h3>
+
+<p>
+Returns the currently allowed options for this context (Indexes, MultiViews etc)
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+The currently allowed options for this context.
+        </p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+local ctx = apache2.options(r)
+if ctx:match("MultiViews") then
+    r:puts("MultiViews is enabled!")
+end
+        </pre>
+
+</p>
+<br />
+<br />
+
+<h3><a name="apache2.port" id="apache2.port">apache2.port(
+    request_rec<em>&nbsp;r</em>
+    )
+    </a></h3>
+
+<p>
+Returns the port currently being used by the request
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+The current port used by the request
+        </p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+local port = apache2.port(r)
+r:puts("We are listening on port ", port)
+        </pre>
+
+</p>
+<br />
+<br />
+
+<h3><a name="apache2.request_has_body" id="apache2.request_has_body">apache2.request_has_body(
+    request_rec<em>&nbsp;r</em>
+    )
+    </a></h3>
+
+<p>
+Returns true if the request has a body(POST/PUT), false otherwise
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+True if the request has a body(POST/PUT), false otherwise
+        </p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+if apache2.request_has_body(r) then
+    -- do stuff with the req body
+end
+        </pre>
+
+</p>
+<br />
+<br />
+
+<h3><a name="apache2.requestbody" id="apache2.requestbody">apache2.requestbody(
+    request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;filename</em>
+    )
+    </a></h3>
+
+<p>
+Reads the request body. If a filename is specified, the request body will be written to that file and the number of bytes written returned, otherwise, the full request body will be returned as a string.
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+<tr>
+<td>filename</td>
+<td>filename</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+The number of bytes written if a filename was specified, otherwise it returns the entire request body as a string.
+        </p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+if tonumber(r.headers_in['Content-Length'] or 0) &lt; 10000 then
+    local smallfile = apache2.requestbody(r) -- fetch a small file into memory
+    r:puts("I saved the uploaded file in memory")
+else
+    local read = apache2.requestbody(r, "/path/to/tmp")
+    r:puts("I saved the uploaded file in a temp directory. Total bytes written was: ", read)
+end
+        </pre>
+
+</p>
+<br />
+<br />
+
+<h3><a name="apache2.satisfies" id="apache2.satisfies">apache2.satisfies(
+    request_rec<em>&nbsp;r</em>
+    )
+    </a></h3>
+
+<p>
+Returns how the requires lines must be met.
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+How the requirements must be met (SATISFY_ANY, SATISFY_ALL, SATISFY_NOSPEC).
+        </p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+local how = apache2.satisfies(r)
+if how == "SATISFY_ANY" then
+    -- ...
+end
+        </pre>
+
+</p>
+<br />
+<br />
+
+<h3><a name="apache2.send_interim_response" id="apache2.send_interim_response">apache2.send_interim_response(
+    request_rec<em>&nbsp;r</em>, &nbsp;boolean<em>&nbsp;send_headers</em>
+    )
+    </a></h3>
+
+<p>
+Sends an interim (HTTP 1xx) response immediately.
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+<tr>
+<td>send_headers</td>
+<td>send_headers Whether to send&amp;clear headers in r-&gt;headers_out</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+apache2.send_interim_response(r, false)
+        </pre>
+
+</p>
+<br />
+<br />
+
+<h3><a name="apache2.sendfile" id="apache2.sendfile">apache2.sendfile(
+    request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;filename</em>
+    )
+    </a></h3>
+
+<p>
+Sends a file to the client via sendfile() if possible.
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+<tr>
+<td>filename</td>
+<td>The file to send</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+apache2.sendfile(r, "/foo/bar/test.png") -- sends /foo/bar/test.png via sendfile
+        </pre>
+
+</p>
+<br />
+<br />
+
+<h3><a name="apache2.set_context_prefix" id="apache2.set_context_prefix">apache2.set_context_prefix(
+    request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;prefix</em>, &nbsp;string<em>&nbsp;document</em>
+    )
+    </a></h3>
+
+<p>
+Set context_prefix and context_document_root for a request.
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+<tr>
+<td>prefix</td>
+<td>The URI prefix, without trailing slash</td>
+</tr>
+<tr>
+<td>document</td>
+<td>The corresponding directory on disk, without trailing slash</td>
+</tr>
+</table>
+</p>
+<br />
+<br />
+
+<h3><a name="apache2.set_document_root" id="apache2.set_document_root">apache2.set_document_root(
+    request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;root</em>
+    )
+    </a></h3>
+
+<p>
+Sets the document root of the request.
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+<tr>
+<td>root</td>
+<td>root</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+-- Suppose our real document root is /var/bar, then...
+if r.hostname == "www.foo.com" then
+    apache2.set_document_root(r, "/www/foo") -- change document root on the fly
+end
+        </pre>
+
+</p>
+<br />
+<br />
+
+<h3><a name="apache2.set_keepalive" id="apache2.set_keepalive">apache2.set_keepalive(
+    request_rec<em>&nbsp;r</em>
+    )
+    </a></h3>
+
+<p>
+Sets the keepalive status for this request
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+True if keepalive can be set, false otherwise
+        </p>
+<br />
+<br />
+
+<h3><a name="apache2.setenv" id="apache2.setenv">apache2.setenv(
+    request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;key</em>, &nbsp;string<em>&nbsp;val</em>
+    )
+    </a></h3>
+
+<p>
+Sets the value of an environment variable
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+<tr>
+<td>key</td>
+<td>key</td>
+</tr>
+<tr>
+<td>val</td>
+<td>val</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+apache2.setenv("FOO_VAL", "bar and stuff")
+        </pre>
+
+</p>
+<br />
+<br />
+
+<h3><a name="apache2.some_auth_required" id="apache2.some_auth_required">apache2.some_auth_required(
+    request_rec<em>&nbsp;r</em>
+    )
+    </a></h3>
+
+<p>
+Returns true if authorization is required for this request
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+True if auth is required, false if not.
+        </p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+if apache2.some_auth_required(r) then
+    print("debug: auth is required for this request\n")
+end
+        </pre>
+
+</p>
+<br />
+<br />
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="Parser_functions" id="Parser_functions">HTTPd bindings: Parser functions</a></h2>
+
+<a href="#apache2.expr">apache2.expr</a>
+<br />
+<a href="#apache2.regex">apache2.regex</a>
+<br />
+<a href="#apache2.strcmp_match">apache2.strcmp_match</a>
+<br />
+<h3><a name="apache2.expr" id="apache2.expr">apache2.expr(
+    request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;expression</em>
+    )
+    </a></h3>
+
+<p>
+Evaluates an ap_expr (think &lt;If ...&gt;) expression and returns true if the expression is true, false otherwise. A second value containing an error string is returned if the expression is invalid.
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+<tr>
+<td>expression</td>
+<td>expression</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+True if the expression evaluates as true, false if the expression doesn't evaluate as true or if an error occurred. If an error occurred during parsing, a second value will be returned, containng the error string.
+        </p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+if apache2.expr("%{REQUEST_URI} =~ /force-gzip") then
+    apache2.add_output_filter(r, "DEFLATE")
+end
+        </pre>
+
+</p>
+<br />
+<br />
+
+<h3><a name="apache2.regex" id="apache2.regex">apache2.regex(
+    request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;expression</em>, &nbsp;string<em>&nbsp;source</em>
+    )
+    </a></h3>
+
+<p>
+Evaluates a regular expression and, if it matches the source string, captures the variables and returns the matches as a table. On error, it returns nil.
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+<tr>
+<td>expression</td>
+<td>expression to match for</td>
+</tr>
+<tr>
+<td>source</td>
+<td>the source string to capture from</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+True if the expression evaluates as true, false if the expression doesn't evaluate as true or if an error occurred. If an error occurred during parsing, a second value will be returned, containng the error string.
+        </p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+local matches = apache2.regex(r, [[(\S+) kitty]], "Hello kitty")
+if matches and matches[1] then 
+    r:puts("You said ", matches[1], " to kitty")
+end
+        </pre>
+
+</p>
+<br />
+<br />
+
+<h3><a name="apache2.strcmp_match" id="apache2.strcmp_match">apache2.strcmp_match(
+    string<em>&nbsp;str</em>, &nbsp;string<em>&nbsp;expexted</em>, &nbsp;boolean<em>&nbsp;ignoreCase</em>
+    )
+    </a></h3>
+
+<p>
+Determines if a string matches a pattern containing the wildcards '?' or '*'
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>str</td>
+<td>The string to check</td>
+</tr>
+<tr>
+<td>expexted</td>
+<td>The pattern to match against</td>
+</tr>
+<tr>
+<td>ignoreCase</td>
+<td>Whether to ignore case when matching</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+True if the two strings match, false otherwise.
+        </p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+if apache2.strcmp_match("foo.bar", "foo.*") then
+    r:puts("It matches!")
+end
+        </pre>
+
+</p>
+<br />
+<br />
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="Server_settings" id="Server_settings">HTTPd bindings: Server settings</a></h2>
+
+<a href="#apache2.add_version_component">apache2.add_version_component</a>
+<br />
+<a href="#apache2.banner">apache2.banner</a>
+<br />
+<a href="#apache2.mpm_query">apache2.mpm_query</a>
+<br />
+<a href="#apache2.terminate">apache2.terminate</a>
+<br />
+<a href="#apache2.scoreboard_process">apache2.scoreboard_process</a>
+<br />
+<a href="#apache2.scoreboard_worker">apache2.scoreboard_worker</a>
+<br />
+<a href="#apache2.started">apache2.started</a>
+<br />
+<a href="#apache2.module_info">apache2.module_info</a>
+<br />
+<a href="#apache2.get_server_built">apache2.get_server_built</a>
+<br />
+<a href="#apache2.is_initial_req">apache2.is_initial_req</a>
+<br />
+<a href="#apache2.loaded_modules">apache2.loaded_modules</a>
+<br />
+<a href="#apache2.runtime_dir_relative">apache2.runtime_dir_relative</a>
+<br />
+<a href="#apache2.server_info">apache2.server_info</a>
+<br />
+<a href="#apache2.state_query">apache2.state_query</a>
+<br />
+<a href="#apache2.custom_response">apache2.custom_response</a>
+<br />
+<a href="#apache2.exists_config_define">apache2.exists_config_define</a>
+<br />
+<h3><a name="apache2.add_version_component" id="apache2.add_version_component">apache2.add_version_component(
+    request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;component</em>
+    )
+    </a></h3>
+
+<p>
+Adds a component to the server description and banner strings
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+<tr>
+<td>component</td>
+<td>The component to add</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+if not apache2.banner():match("FooModule") then -- Make sure we haven't added it already
+    apache2.add_version_component(r, "FooModule/1.0")
+end
+        </pre>
+
+</p>
+<br />
+<br />
+
+<h3><a name="apache2.banner" id="apache2.banner">apache2.banner(
+    
+    )
+    </a></h3>
+
+<p>
+Returns the server banner
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+            None<br />
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+The server banner
+        </p>
+<br />
+<br />
+
+<h3><a name="apache2.custom_response" id="apache2.custom_response">apache2.custom_response(
+    request_rec<em>&nbsp;r</em>, &nbsp;number<em>&nbsp;status</em>, &nbsp;string<em>&nbsp;string</em>
+    )
+    </a></h3>
+
+<p>
+Install a custom response handler for a given status
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+<tr>
+<td>status</td>
+<td>The status for which the custom response should be used</td>
+</tr>
+<tr>
+<td>string</td>
+<td>The custom response.  This can be a static string, a file or a URL</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+apache2.custom_response(r, 404, "Not found!!")
+        </pre>
+
+</p>
+<br />
+<br />
+
+<h3><a name="apache2.exists_config_define" id="apache2.exists_config_define">apache2.exists_config_define(
+    string<em>&nbsp;name</em>
+    )
+    </a></h3>
+
+<p>
+Checks for a definition from the server command line
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>name</td>
+<td>The define to check for</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+if apache2.exists_config_define("FOO") then
+    r:puts("This server was started with -DFOO")
+end
+        </pre>
+
+</p>
+<br />
+<br />
+
+<h3><a name="apache2.get_server_built" id="apache2.get_server_built">apache2.get_server_built(
+    
+    )
+    </a></h3>
+
+<p>
+Returns the date the server was built
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+            None<br />
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+The date the server was built
+        </p>
+<br />
+<br />
+
+<h3><a name="apache2.is_initial_req" id="apache2.is_initial_req">apache2.is_initial_req(
+    request_rec<em>&nbsp;r</em>
+    )
+    </a></h3>
+
+<p>
+Returns true if this is the main request, false if it is a sub-request
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+True if this is the main request, false if it is a sub-request
+        </p>
+<br />
+<br />
+
+<h3><a name="apache2.loaded_modules" id="apache2.loaded_modules">apache2.loaded_modules(
+    
+    )
+    </a></h3>
+
+<p>
+Returns a table containing the name (c filename) of all loaded modules
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+            None<br />
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+A table containing the name (c filename) of all loaded modules
+        </p>
+<br />
+<br />
+
+<h3><a name="apache2.module_info" id="apache2.module_info">apache2.module_info(
+    string<em>&nbsp;c</em>, &nbsp;string<em>&nbsp;file</em>
+    )
+    </a></h3>
+
+<p>
+Returns information about a specific module (if loaded)
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>c</td>
+<td>c</td>
+</tr>
+<tr>
+<td>file</td>
+<td>file</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+The various commands available to this module as a table, or nil if the module wasn't found.
+        </p>
+<br />
+<br />
+
+<h3><a name="apache2.mpm_query" id="apache2.mpm_query">apache2.mpm_query(
+    number<em>&nbsp;i</em>
+    )
+    </a></h3>
+
+<p>
+Queries the MPM for a specific value
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>i</td>
+<td>i</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+The queried value
+        </p>
+<br />
+<br />
+
+<h3><a name="apache2.runtime_dir_relative" id="apache2.runtime_dir_relative">apache2.runtime_dir_relative(
+    request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;file</em>
+    )
+    </a></h3>
+
+<p>
+Returns the path of a file relative to the default runtime directory
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+<tr>
+<td>file</td>
+<td>file</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+The path of a file relative to the default runtime directory
+        </p>
+<br />
+<br />
+
+<h3><a name="apache2.scoreboard_process" id="apache2.scoreboard_process">apache2.scoreboard_process(
+    request_rec<em>&nbsp;r</em>, &nbsp;number<em>&nbsp;child</em>
+    )
+    </a></h3>
+
+<p>
+Returns the scoreboard for a server daemon as a table
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+<tr>
+<td>child</td>
+<td>The server child to query</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+The scoreboard for a server daemon as a table
+        </p>
+<br />
+<br />
+
+<h3><a name="apache2.scoreboard_worker" id="apache2.scoreboard_worker">apache2.scoreboard_worker(
+    request_rec<em>&nbsp;r</em>, &nbsp;number<em>&nbsp;child</em>, &nbsp;number<em>&nbsp;thread</em>
+    )
+    </a></h3>
+
+<p>
+Returns the scoreboard for a single thread as a table
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+<tr>
+<td>child</td>
+<td>The server child to query</td>
+</tr>
+<tr>
+<td>thread</td>
+<td>The thread to query</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+The scoreboard for a single thread as a table
+        </p>
+<br />
+<br />
+
+<h3><a name="apache2.server_info" id="apache2.server_info">apache2.server_info(
+    
+    )
+    </a></h3>
+
+<p>
+Returns a table with information about the server program
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+            None<br />
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+A table with information about the server program
+        </p>
+<br />
+<br />
+
+<h3><a name="apache2.started" id="apache2.started">apache2.started(
+    request_rec<em>&nbsp;r</em>
+    )
+    </a></h3>
+
+<p>
+Returns the time when the server was (re)started
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+The time when the server was (re)started
+        </p>
+<br />
+<br />
+
+<h3><a name="apache2.state_query" id="apache2.state_query">apache2.state_query(
+    number<em>&nbsp;field</em>
+    )
+    </a></h3>
+
+<p>
+Query the server for some state information
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>field</td>
+<td>Which information is requested</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+local gen = apache2.state_query(2)
+r:puts("This is generation no. " .. gen .. " of the top-level parent")
+        </pre>
+
+</p>
+<br />
+<br />
+
+<h3><a name="apache2.terminate" id="apache2.terminate">apache2.terminate(
+    
+    )
+    </a></h3>
+
+<p>
+Kills off a server process. This has no other use than to show how dangerous mod_lua can be ;)
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+            None<br />
+</p>
+<br />
+<br />
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="Database_connectivity" id="Database_connectivity">HTTPd bindings: Database connectivity</a></h2>
+
+<a href="#apache2.dbopen">apache2.dbopen</a>
+<br />
+<a href="#db:query">db:query</a>
+<br />
+<a href="#db:do">db:do</a>
+<br />
+<a href="#db:close">db:close</a>
+<br />
+<h3><a name="apache2.dbopen" id="apache2.dbopen">apache2.dbopen(
+    request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;dbtype</em>, &nbsp;string<em>&nbsp;conn_string</em>
+    )
+    </a></h3>
+
+<p>
+Opens up a new database connection. See the DB functions for mod_pLua for more info on this.
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+<tr>
+<td>dbtype</td>
+<td>dbtype</td>
+</tr>
+<tr>
+<td>conn_string</td>
+<td>connection string</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+The database connection as a table with functions, or nil if the connection failed. If a connection failed, a second argument (string) with the error code is returned.
+        </p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+local db, error = apache2.dbopen(r, "mod_dbd")
+if error then
+    r:puts("DB error: ", error)
+else
+    -- DB stuff here
+end
+        </pre>
+
+</p>
+<br />
+<br />
+
+<h3><a name="db:close" id="db:close">db:close(
+    request_rec<em>&nbsp;r</em>
+    )
+    </a></h3>
+
+<p>
+Closes a database connection
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+local db = apache2.dbopen(r, "mod_dbd") -- open a db connection
+db:close() -- close it down
+        </pre>
+
+</p>
+<br />
+<br />
+
+<h3><a name="db:do" id="db:do">db:do(
+    request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;query</em>
+    )
+    </a></h3>
+
+<p>
+Executes a statement that doesn't return a result set
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+<tr>
+<td>query</td>
+<td>The SQL statement to execute</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+If the statement is valid, a table of results are returned. If an error occurred, the first return value is false and the second return value is a string containing an error message.
+        </p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+local db = apache2.dbopen(r, "mod_dbd")
+local affected = db:do("DELETE FROM `table` WHERE 1")
+if affected then
+    r:puts("Affected ", affected, " rows")
+end
+        </pre>
+
+</p>
+<br />
+<br />
+
+<h3><a name="db:query" id="db:query">db:query(
+    request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;query</em>
+    )
+    </a></h3>
+
+<p>
+Queries the database for information using the specified statement.
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+<tr>
+<td>query</td>
+<td>The SQL statement to execute</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+If the statement is valid, a table of results are returned. If an error occurred, the first return value is false and the second return value is a string containing an error message.
+        </p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+local db = apache2.dbopen(r, "mod_dbd")
+local result, error = db:query("SELECT * FROM `table` WHERE 1")
+if result then
+    for key, value in pairs(result)
+        r:puts( ("row %s: %s\n"):format(key, table.concat(value, ", ")) )
+    end
+end
+        </pre>
+
+</p>
+<br />
+<br />
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="Miscellaneous" id="Miscellaneous">HTTPd bindings: Miscellaneous</a></h2>
+
+<a href="#apache2.clock">apache2.clock</a>
+<br />
+<a href="#apache2.sleep">apache2.sleep</a>
+<br />
+<h3><a name="apache2.clock" id="apache2.clock">apache2.clock(
+    
+    )
+    </a></h3>
+
+<p>
+Returns the current time in microseconds.
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+            None<br />
+</p>
+<p>
+<em>Return value(s):</em>
+<br />
+The current time in microseconds.
+        </p>
+<br />
+<br />
+
+<h3><a name="apache2.sleep" id="apache2.sleep">apache2.sleep(
+    number<em>&nbsp;seconds</em>
+    )
+    </a></h3>
+
+<p>
+Sleeps for a while. Floating point values can be used to sleep for less than a second.
+        </p>
+<p>
+<em>Arguments:</em>
+<br />
+<table class="bordered">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>seconds</td>
+<td>The number of seconds to sleep.</td>
+</tr>
+</table>
+</p>
+<p>
+<em>Example:</em>
+<br />
+<pre class="prettyprint lang-lua">
+r:puts("this is ")
+apache2.flush(r)
+apache2.sleep(0.25) -- sleep for a quarter second.
+r:puts("delayed")
+        </pre>
+
+</p>
+<br />
+<br />
+
+</div></div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/developer/lua.html" title="English">&nbsp;en&nbsp;</a></p>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+var comments_shortname = 'httpd';
+var comments_identifier = 'http://httpd.apache.org/docs/trunk/developer/lua.html';
+(function(w, d) {
+    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
+        d.write('<div id="comments_thread"><\/div>');
+        var s = d.createElement('script');
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
+        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
+    }
+    else {
+        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
+    }
+})(window, document);
+//--><!]]></script></div><div id="footer">
+<p class="apache">Copyright 2012 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+//--><!]]></script>
+</body></html>
