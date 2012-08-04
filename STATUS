@@ -164,7 +164,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1351019
      2.4.x patch: http://people.apache.org/~humbedooh/mod_lua.diff
                   http://people.apache.org/~humbedooh/mod_lua_changes.diff
-     +1: humbedooh
+     +1: humbedooh, covener
      humbedooh: sf, you made these improvements, care to vote?
     
 
