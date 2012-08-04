@@ -7,6 +7,10 @@ Changes with Apache 2.4.3
      possible XSS for a site where untrusted users can upload files to
      a location with MultiViews enabled. [Niels Heinen <heinenn google.com>]
 
+  *) mpm_event: Don't count connections in lingering close state when
+     calculating how many additional connections may be accepted.
+     [Stefan Fritsch]
+
   *) mod_ssl: If exiting during initialization because of a fatal error,
      log a message to the main error log pointing to the appropriate
      virtual host error log. [Stefan Fritsch]

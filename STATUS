@@ -88,14 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * event: Keep track of the number of clogged, lingering, and suspended connections.
-     Don't count connections in lingering close state when calculating
-     how many additional connections may be accepted
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1361773 and
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1361778
-     2.4.x patch: Trunk patch applies.
-     +1: rjung, jim, sf
-
    * mod_lua: resync 2.4.x with sf's refactoring/fixes in trunk (and Covener's notes)
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1201460
                   http://svn.apache.org/viewvc?view=revision&revision=1351012
