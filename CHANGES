@@ -14,8 +14,10 @@ Changes with Apache 2.5.0
   *) mod_lua: Move LUA_COMPAT_ALL into the right place, so it will
      activate compatibility mode for Lua 5.2. [Daniel Gruno]
 
-  *) mod_lbmethod_heartbeat, mod_heartmonitor: Respect DefaultRuntimeDir/
-     DEFAULT_REL_RUNTIMEDIR for the heartbeat storage file.  [Jeff Trawick]
+  *) core: Respect DefaultRuntimeDir/DEFAULT_REL_RUNTIMEDIR for the
+     scoreboard (ScoreBoardFile).  mod_lbmethod_heartbeat, mod_heartmonitor:
+     Respect DefaultRuntimeDir/DEFAULT_REL_RUNTIMEDIR for the heartbeat
+     storage file.  [Jeff Trawick]
 
   *) mod_ssl: Add RFC 5878 support. [Ben Laurie]
 
