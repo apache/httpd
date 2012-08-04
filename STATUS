@@ -88,6 +88,31 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_ssl: Pass the server_rec to ssl_die() and use it to log a message to
+     the main error log, pointing to the appropriate virtual host error log.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1348660
+     2.4.x patch: http://people.apache.org/~rjung/patches/ssl_die-improve_vhost-logging-2_4.patch
+     +1: rjung, covener, sf
+
+   * event: Keep track of the number of clogged, lingering, and suspended connections.
+     Don't count connections in lingering close state when calculating
+     how many additional connections may be accepted
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1361773 and
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1361778
+     2.4.x patch: Trunk patch applies.
+     +1: rjung, jim, sf
+
+   * mod_lua: resync 2.4.x with sf's refactoring/fixes in trunk (and Covener's notes)
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1201460
+                  http://svn.apache.org/viewvc?view=revision&revision=1351012
+                  http://svn.apache.org/viewvc?view=revision&revision=1351013
+                  http://svn.apache.org/viewvc?view=revision&revision=1351014
+                  http://svn.apache.org/viewvc?view=revision&revision=1351017
+                  http://svn.apache.org/viewvc?view=revision&revision=1351018
+                  http://svn.apache.org/viewvc?view=revision&revision=1351019
+     2.4.x patch: http://people.apache.org/~humbedooh/mod_lua.diff
+                  http://people.apache.org/~humbedooh/mod_lua_changes.diff
+     +1: humbedooh, covener, sf
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -131,42 +156,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: rjung, 
      rjung: sf: you applied it to trunk, care to vote?
 
-   * mod_ssl: Pass the server_rec to ssl_die() and use it to log a message to
-     the main error log, pointing to the appropriate virtual host error log.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1348660
-     2.4.x patch: http://people.apache.org/~rjung/patches/ssl_die-improve_vhost-logging-2_4.patch
-     +1: rjung, covener
-     rjung: sf: you applied it to trunk, care to vote?
-
    * mod_ssl: Work correctly with a development version of OpenSSL.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1358167 and 
                   http://svn.apache.org/viewvc?view=revision&revision=1358166
      2.4.x patch: http://people.apache.org/~rjung/patches/ssl-support-uninstalled-openssl-2_4.patch
      +1: rjung
      rjung: ben: you applied it to trunk, care to vote?
-
-   * event: Keep track of the number of clogged, lingering, and suspended connections.
-     Don't count connections in lingering close state when calculating
-     how many additional connections may be accepted
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1361773 and
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1361778
-     2.4.x patch: Trunk patch applies.
-     +1: rjung, jim
-     rjung: sf: you applied it to trunk, care to vote?
-
-   * mod_lua: resync 2.4.x with sf's refactoring/fixes in trunk (and Covener's notes)
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1201460
-                  http://svn.apache.org/viewvc?view=revision&revision=1351012
-                  http://svn.apache.org/viewvc?view=revision&revision=1351013
-                  http://svn.apache.org/viewvc?view=revision&revision=1351014
-                  http://svn.apache.org/viewvc?view=revision&revision=1351017
-                  http://svn.apache.org/viewvc?view=revision&revision=1351018
-                  http://svn.apache.org/viewvc?view=revision&revision=1351019
-     2.4.x patch: http://people.apache.org/~humbedooh/mod_lua.diff
-                  http://people.apache.org/~humbedooh/mod_lua_changes.diff
-     +1: humbedooh, covener
-     humbedooh: sf, you made these improvements, care to vote?
-    
 
 
 A list of further possible backports can be found at:
