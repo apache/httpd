@@ -11,9 +11,6 @@ Changes with Apache 2.5.0
   *) mod_lua: Add new directive LuaCodeCache for controlling in-memory
      caching of lua scripts. [Daniel Gruno]
 
-  *) mod_lua: Move LUA_COMPAT_ALL into the right place, so it will
-     activate compatibility mode for Lua 5.2. [Daniel Gruno]
-
   *) core: Respect DefaultRuntimeDir/DEFAULT_REL_RUNTIMEDIR for the
      scoreboard (ScoreBoardFile).  mod_lbmethod_heartbeat, mod_heartmonitor:
      Respect DefaultRuntimeDir/DEFAULT_REL_RUNTIMEDIR for the heartbeat
@@ -23,12 +20,6 @@ Changes with Apache 2.5.0
 
   *) mod_lua: Add new directive LuaAuthzProvider to allow implementing an
      authorization provider in lua. [Stefan Fritsch]
-
-  *) mod_lua: Add a few missing request_rec fields. Rename remote_ip to
-     client_ip to match conn_rec. [Stefan Fritsch]
-
-  *) mod_lua: Change prototype of vm_construct, to work around gcc bug which
-     causes a segfault. PR 52779. [Dick Snippe <Dick Snippe tech omroep nl>]
 
   *) mod_ssl: Add support for TLS-SRP (Secure Remote Password key exchange
      for TLS, RFC 5054). PR 51075. [Quinn Slack <sqs cs stanford edu>,
