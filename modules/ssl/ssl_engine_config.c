@@ -207,6 +207,9 @@ static SSLSrvConfigRec *ssl_config_server_new(apr_pool_t *p)
 #ifdef HAVE_FIPS
     sc->fips                   = UNSET;
 #endif
+#ifndef OPENSSL_NO_COMP
+    sc->compression            = UNSET;
+#endif
 
     modssl_ctx_init_proxy(sc, p);
 
@@ -327,6 +330,9 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
 #endif
 #ifdef HAVE_FIPS
     cfgMergeBool(fips);
+#endif
+#ifndef OPENSSL_NO_COMP
+    cfgMergeBool(compression);
 #endif
 
     modssl_ctx_cfg_merge_proxy(base->proxy, add->proxy, mrg->proxy);
@@ -661,6 +667,23 @@ static const char *ssl_cmd_check_file(cmd_parms *parms,
                        ": file '", *file,
                        "' does not exist or is empty", NULL);
 
+}
+
+const char *ssl_cmd_SSLCompression(cmd_parms *cmd, void *dcfg, int flag)
+{
+#if !defined(OPENSSL_NO_COMP)
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+#ifndef SSL_OP_NO_COMPRESSION
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err)
+        return "This version of openssl does not support configuring "
+               "compression within <VirtualHost> sections.";
+#endif
+    sc->compression = flag ? TRUE : FALSE;
+    return NULL;
+#else
+    return "Setting Compression mode unsupported; not implemented by the SSL library";
+#endif
 }
 
 const char *ssl_cmd_SSLHonorCipherOrder(cmd_parms *cmd, void *dcfg, int flag)
