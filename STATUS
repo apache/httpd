@@ -126,7 +126,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
    * mod_ssl: Work correctly with a development version of OpenSSL.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1358167 and 
-                  http://svn.apache.org/viewvc?view=revision&revision=1358166
+                  http://svn.apache.org/viewvc?view=revision&revision=1358168
      2.4.x patch: http://people.apache.org/~rjung/patches/ssl-support-uninstalled-openssl-2_4.patch
      +1: rjung
      rjung: ben: you applied it to trunk, care to vote?
