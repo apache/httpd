@@ -25,9 +25,6 @@ Changes with Apache 2.5.0
      for TLS, RFC 5054). PR 51075. [Quinn Slack <sqs cs stanford edu>,
      Christophe Renou, Peter Sylvester]
 
-  *) mod_ssl: Add new directive SSLCompression to disable TLS-level
-     compression. PR 53219. [Björn Jacke <bjoern j3e de>, Stefan Fritsch]
-
   *) core: Make ap_regcomp() return AP_REG_ESPACE if out of memory.  Make
      ap_pregcomp() abort if out of memory. This raises the minimum PCRE
      requirement to version 6.0. PR 53284. [Stefan Fritsch]
