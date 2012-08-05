@@ -77,7 +77,7 @@
 <description>The filename prefix of the socket to use for communication with
 the cgi daemon</description>
 <syntax>ScriptSock <var>file-path</var></syntax>
-<default>ScriptSock logs/cgisock</default>
+<default>ScriptSock cgisock</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
@@ -88,6 +88,10 @@ the cgi daemon</description>
     root). To maintain the security of communications with CGI
     scripts, it is important that no other user has permission to
     write in the directory where the socket is located.</p>
+
+    <p>If <var>file-path</var> is not an absolute path, the location specified
+    will be relative to the value of 
+    <directive module="core">DefaultRuntimeDir</directive>.</p>
 
     <example><title>Example</title>
     <highlight language="config">
