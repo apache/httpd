@@ -225,7 +225,8 @@ performing access control, or setting mimetypes:</p>
         <td>Check Access</td>
         <td><directive module="mod_lua">LuaHookAccessChecker</directive></td>
         <td>This phase checks whether a client has access to a resource. This 
-            phase is run before the user is authenticated, so beware.</td>
+            phase is run before the user is authenticated, so beware.
+        </td>
     </tr>
     <tr>
         <td>Check User ID</td>
@@ -623,7 +624,7 @@ end
 <directivesynopsis>
 <name>LuaScope</name>
 <description>One of once, request, conn, thread -- default is once</description>
-<syntax>LuaScope once|request|conn|thread</syntax>
+<syntax>LuaScope once|request|conn|thread|server [min] [max]</syntax>
 <default>LuaScope once</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
@@ -642,17 +643,30 @@ end
              request scoped.</dd>
 
     <dt>conn:</dt> <dd>Same as request but attached to the connection_rec</dd>
+
     <dt>thread:</dt> <dd>Use the interpreter for the lifetime of the thread 
             handling the request (only available with threaded MPMs).</dd>
-<!-- not implemented
+
     <dt>server:</dt>  <dd>This one is different than others because the
             server scope is quite long lived, and multiple threads
             will have the same server_rec. To accommodate this
             server scoped interpreter are stored in an apr
-            resource list. The min and max arguments are intended
-            to specify the pool size, but are unused at this time.</dd>
--->
+            resource list. The <code>min</code> and <code>max</code> arguments 
+            specify the minimum and maximum number of Lua states to keep in the 
+            pool.</dd>
    </dl>
+    <p>
+    Generally speaking, the <code>thread</code> and <code>server</code> scopes 
+    execute roughly 2-3 times faster than the rest, because they don't have to 
+    spawn new Lua states on every request (especially with the event MPM, as 
+    even keepalive requests will use a new thread for each request). If you are 
+    satisfied that your scripts will not have problems reusing a state, then 
+    the <code>thread</code> or <code>server</code> scopes should be used for 
+    maximum performance. While the <code>thread</code> scope will provide the 
+    fastest responses, the <code>server</code> scope will use less memory, as 
+    states are pooled, allowing f.x. 1000 threads to share only 100 Lua states, 
+    thus using only 10% of the memory requried by the <code>thread</code> scope.
+    </p>
 </usage>
 </directivesynopsis>
 
