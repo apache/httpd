@@ -255,7 +255,7 @@ LogLevel warn
     # ScriptSock: On threaded servers, designate the path to the UNIX
     # socket used to communicate with the CGI daemon of mod_cgid.
     #
-    #Scriptsock @rel_runtimedir@/cgisock
+    #Scriptsock cgisock
 </IfModule>
 
 #
