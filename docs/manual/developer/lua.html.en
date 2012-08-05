@@ -31,7 +31,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#basic_remap">Example 1: A basic remapping module</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mass_vhost">Example 2: Mass virtual hosting</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#basic_auth">Example 3: A basic authorization hook</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#map_handler">Example 4: Authorization using LuaAuthzProvider</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authz">Example 4: Authorization using LuaAuthzProvider</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#map_handler">Example 5: Overlays using LuaMapHandler</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mod_status_lua">Example 6: Basic Lua scripts</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#String_manipulation">HTTPd bindings: String manipulation</a></li>
@@ -235,7 +235,7 @@ local timeout = 60
 -- Function for querying the database for saved vhost entries
 function query_vhosts(host)
     if not cached_vhosts[host] or (cached_vhosts[host] and cached_vhosts[host].updated &lt; os.time() - timeout) then
-        local db = apache2.dbopen("mod_dbd")
+        local db = apache2.dbopen(r,"mod_dbd")
         local _host = db:escape(_host)
         local res, err = db:query( ("SELECT `destination` FROM `vhosts` WHERE `hostname` = '%s' LIMIT 1"):format(_host) )
         if res and #res == 1 then
@@ -345,7 +345,7 @@ end
 -- Function for querying the database for the account's password (stored as a salted SHA-1 hash)
 function fetch_password(user)
     if not accounts[user] or (accounts[user] and accounts[user].updated &lt; os.time() - timeout) then
-        local db = apache2.dbopen("mod_dbd")
+        local db = apache2.dbopen(r, "mod_dbd")
         local usr = db:escape(user)
         local res, err = db:query( ("SELECT `password` FROM `accounts` WHERE `user` = '%s' LIMIT 1"):format(usr) )
         if res and #res == 1 then
@@ -388,7 +388,7 @@ end
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="map_handler" id="map_handler">Example 4: Authorization using LuaAuthzProvider</a></h2>
+<h2><a name="authz" id="authz">Example 4: Authorization using LuaAuthzProvider</a></h2>
 
 <pre class="prettyprint lang-config">
 LuaAuthzProvider rights /path/to/lua/script.lua rights_handler
@@ -441,6 +441,7 @@ LuaMaphandler ^/portal/([a-z]+)/   /path/to/lua/script.lua handle_$1
 <div class="section">
 <h2><a name="String_manipulation" id="String_manipulation">HTTPd bindings: String manipulation</a></h2>
 
+<p>
 <a href="#apache2.base64_encode">apache2.base64_encode</a>
 <br />
 <a href="#apache2.base64_decode">apache2.base64_decode</a>
@@ -459,6 +460,7 @@ LuaMaphandler ^/portal/([a-z]+)/   /path/to/lua/script.lua handle_$1
 <br />
 <a href="#apache2.escape_logitem">apache2.escape_logitem</a>
 <br />
+</p>
 <h3><a name="apache2.base64_decode" id="apache2.base64_decode">apache2.base64_decode(
     request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;string</em>
     )
@@ -469,7 +471,7 @@ Decodes a base64-encoded string
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -484,7 +486,6 @@ Decodes a base64-encoded string
 <td>The string to decode</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
@@ -492,16 +493,14 @@ The base64-decoded string.
         </p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 local str = "This is a test"
 local encoded = apache2.base64_encode(str)
 local decoded = apache2.base64_decode(encoded)
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.base64_encode" id="apache2.base64_encode">apache2.base64_encode(
     request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;string</em>
@@ -513,7 +512,7 @@ Encodes a string using the base64 encoding scheme.
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -528,19 +527,16 @@ Encodes a string using the base64 encoding scheme.
 <td>The string to encode</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 local str = "This is a test"
 local encoded = apache2.base64_encode(str)
 local decoded = apache2.base64_decode(encoded)
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.escape" id="apache2.escape">apache2.escape(
     request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;string</em>
@@ -552,7 +548,7 @@ url-escapes a string
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -567,7 +563,6 @@ url-escapes a string
 <td>The string to escape</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
@@ -575,16 +570,14 @@ The URL-escaped string.
         </p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 local str = "This is a test"
 local escaped = apache2.escape(str)
 print(escaped) -- prints "This+is+a+test"
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.escape_logitem" id="apache2.escape_logitem">apache2.escape_logitem(
     request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;path</em>
@@ -596,7 +589,7 @@ Escape a string for logging
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -611,14 +604,12 @@ Escape a string for logging
 <td>The string to escape</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
 The converted string
         </p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.escapehtml" id="apache2.escapehtml">apache2.escapehtml(
     request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;html</em>, &nbsp;boolean<em>&nbsp;toasc</em>
@@ -630,7 +621,7 @@ Escapes HTML entities.
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -649,7 +640,6 @@ Escapes HTML entities.
 <td>Whether to escape all non-ASCI characters as &amp;#nnn;</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
@@ -657,16 +647,14 @@ The escaped HTML code.
         </p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 local html = "&lt;b&gt;Testing!&lt;/b&gt;"
 local escaped = apache2.escapehtml(html)
 r:puts(escaped) -- prints "&amp;lt;b&amp;gt;Testing!&amp;lt;/b&amp;gt;"
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.md5" id="apache2.md5">apache2.md5(
     request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;string</em>
@@ -678,7 +666,7 @@ Computes an MD5 digest sum based on a string (binary safe)
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -693,7 +681,6 @@ Computes an MD5 digest sum based on a string (binary safe)
 <td>The (binary) string to digest</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
@@ -701,16 +688,14 @@ The MD5 digest sum of the data provided
         </p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 local text = "The quick brown fox jumps over the lazy dog"
 local md5 = apache2.md51(text)
 r:puts(md5) -- prints out "9e107d9d372bb6826bd81d3542a419d6"
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.os_escape_path" id="apache2.os_escape_path">apache2.os_escape_path(
     request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;path</em>, &nbsp;boolean<em>&nbsp;partial</em>
@@ -722,7 +707,7 @@ convert an OS path to a URL in an OS dependant way.
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -741,7 +726,6 @@ convert an OS path to a URL in an OS dependant way.
 <td>partial if set, assume that the path will be appended to something with a '/' in it (and thus does not prefix "./")</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
@@ -749,14 +733,12 @@ The converted URL
         </p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 local path = ap_os_escape_path("C:/foo/bar.txt")
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.sha1" id="apache2.sha1">apache2.sha1(
     request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;string</em>
@@ -768,7 +750,7 @@ Computes an SHA-1 digest sum based on a string (binary safe)
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -783,7 +765,6 @@ Computes an SHA-1 digest sum based on a string (binary safe)
 <td>The (binary) string to digest</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
@@ -791,16 +772,14 @@ The SHA-1 digest sum of the data provided
         </p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 local text = "The quick brown fox jumps over the lazy dog"
 local sha1 = apache2.sha1(text)
 r:puts(sha1) -- prints out "2fd4e1c67a2d28fced849ee1bb76e7391b93eb12"
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.unescape" id="apache2.unescape">apache2.unescape(
     request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;string</em>
@@ -812,7 +791,7 @@ unescapes an URL-escaped string
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -827,7 +806,6 @@ unescapes an URL-escaped string
 <td>The string to unescape</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
@@ -835,21 +813,20 @@ The URL-unescaped string
         </p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 local str = "This+is+a+test"
 local unescaped = apache2.unescape(str)
 print(unescaped) -- prints "This is a test"
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="Request_handling" id="Request_handling">HTTPd bindings: Request handling</a></h2>
 
+<p>
 <a href="#apache2.sendfile">apache2.sendfile</a>
 <br />
 <a href="#apache2.port">apache2.port</a>
@@ -900,6 +877,7 @@ print(unescaped) -- prints "This is a test"
 <br />
 <a href="#apache2.satisfies">apache2.satisfies</a>
 <br />
+</p>
 <h3><a name="apache2.add_input_filter" id="apache2.add_input_filter">apache2.add_input_filter(
     request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;filter</em>
     )
@@ -910,7 +888,7 @@ Adds an input filter to the request
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -925,17 +903,14 @@ Adds an input filter to the request
 <td>The name of the filter handler to add</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 apache2.add_input_filter(r, "SPAM_FILTER") -- Check input for spam..?
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.add_output_filter" id="apache2.add_output_filter">apache2.add_output_filter(
     request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;filter</em>
@@ -947,7 +922,7 @@ Adds an output filter to the request
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -962,17 +937,14 @@ Adds an output filter to the request
 <td>The name of the filter handler to add</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 apache2.add_input_filter(r, "INCLUDES") -- Turn out output into an SSI-enabled document.
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.allowoverrides" id="apache2.allowoverrides">apache2.allowoverrides(
     request_rec<em>&nbsp;r</em>
@@ -984,7 +956,7 @@ Returns the currently allowed overrides for this context (AuthCfg, Options etc)
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -995,7 +967,6 @@ Returns the currently allowed overrides for this context (AuthCfg, Options etc)
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
@@ -1003,7 +974,7 @@ The currently allowed overrides for this context (AuthCfg, Options etc)
         </p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 local ctx = apache2.allowoverrides(r)
 if ctx:match("AuthCfg") then
@@ -1011,9 +982,7 @@ if ctx:match("AuthCfg") then
 end
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.auth_name" id="apache2.auth_name">apache2.auth_name(
     request_rec<em>&nbsp;r</em>
@@ -1025,7 +994,7 @@ Returns the current Authorization realm
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -1036,14 +1005,12 @@ Returns the current Authorization realm
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
 The current authorization realm
         </p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.auth_type" id="apache2.auth_type">apache2.auth_type(
     request_rec<em>&nbsp;r</em>
@@ -1055,7 +1022,7 @@ Returns the current authentication type used in the request
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -1066,14 +1033,12 @@ Returns the current authentication type used in the request
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
 The current Authorization type used in the request
         </p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.context_document_root" id="apache2.context_document_root">apache2.context_document_root(
     request_rec<em>&nbsp;r</em>
@@ -1085,7 +1050,7 @@ Get the context_document_root for a request. This is a generalization of the doc
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -1096,9 +1061,7 @@ Get the context_document_root for a request. This is a generalization of the doc
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.context_prefix" id="apache2.context_prefix">apache2.context_prefix(
     request_rec<em>&nbsp;r</em>
@@ -1110,7 +1073,7 @@ Get the context_prefix for a request. The context_prefix URI prefix maps to the 
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -1121,9 +1084,7 @@ Get the context_prefix for a request. The context_prefix URI prefix maps to the 
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.flush" id="apache2.flush">apache2.flush(
     request_rec<em>&nbsp;r</em>
@@ -1135,7 +1096,7 @@ Flushes the content buffer, writing everything to the client immediately.
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -1146,18 +1107,15 @@ Flushes the content buffer, writing everything to the client immediately.
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 r:puts("This is buffered")
 apache2.flush(r) -- now it's written to the client.
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.get_basic_auth_pw" id="apache2.get_basic_auth_pw">apache2.get_basic_auth_pw(
     request_rec<em>&nbsp;r</em>
@@ -1169,7 +1127,7 @@ Returns the password from a basic authorization request or nil if none was suppl
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -1180,14 +1138,12 @@ Returns the password from a basic authorization request or nil if none was suppl
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
 The password from a basic authorization request or nil if none was supplied
         </p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.get_limit_req_body" id="apache2.get_limit_req_body">apache2.get_limit_req_body(
     request_rec<em>&nbsp;r</em>
@@ -1199,7 +1155,7 @@ Returns the current request body size limit
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -1210,7 +1166,6 @@ Returns the current request body size limit
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
@@ -1218,15 +1173,13 @@ The current request body size limit
         </p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 local limit = apache2.get_limit_req_body(r)
 r:puts("You can't upload files bigger than ", limit, " bytes!")
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.get_server_name" id="apache2.get_server_name">apache2.get_server_name(
     
@@ -1238,9 +1191,8 @@ Returns the current server name from the request
         </p>
 <p>
 <em>Arguments:</em>
-<br />
-            None<br />
 </p>
+<p>None</p>
 <p>
 <em>Return value(s):</em>
 <br />
@@ -1248,15 +1200,13 @@ The server name
         </p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 local name = apache2.get_server_name(r)
 r:puts("The ServerName is set to: ", name)
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.getenv" id="apache2.getenv">apache2.getenv(
     request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;key</em>
@@ -1268,7 +1218,7 @@ Returns the value of an environment variable
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -1283,7 +1233,6 @@ Returns the value of an environment variable
 <td>key</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
@@ -1291,7 +1240,7 @@ The queried value
         </p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 local env = apache2.getenv("HTTP_HOST")
 if env and env:len() &gt; 0 then
@@ -1299,9 +1248,7 @@ if env and env:len() &gt; 0 then
 end
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.make_etag" id="apache2.make_etag">apache2.make_etag(
     request_rec<em>&nbsp;r</em>, &nbsp;boolean<em>&nbsp;force_weak</em>
@@ -1313,7 +1260,7 @@ Constructs an entity tag from the resource information.  If it's a real file, bu
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -1328,14 +1275,12 @@ Constructs an entity tag from the resource information.  If it's a real file, bu
 <td>force_weak Force the entity tag to be weak - it could be modified again in as short an interval.</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
 The entity tag
         </p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.options" id="apache2.options">apache2.options(
     request_rec<em>&nbsp;r</em>
@@ -1347,7 +1292,7 @@ Returns the currently allowed options for this context (Indexes, MultiViews etc)
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -1358,7 +1303,6 @@ Returns the currently allowed options for this context (Indexes, MultiViews etc)
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
@@ -1366,7 +1310,7 @@ The currently allowed options for this context.
         </p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 local ctx = apache2.options(r)
 if ctx:match("MultiViews") then
@@ -1374,9 +1318,7 @@ if ctx:match("MultiViews") then
 end
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.port" id="apache2.port">apache2.port(
     request_rec<em>&nbsp;r</em>
@@ -1388,7 +1330,7 @@ Returns the port currently being used by the request
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -1399,7 +1341,6 @@ Returns the port currently being used by the request
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
@@ -1407,15 +1348,13 @@ The current port used by the request
         </p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 local port = apache2.port(r)
 r:puts("We are listening on port ", port)
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.request_has_body" id="apache2.request_has_body">apache2.request_has_body(
     request_rec<em>&nbsp;r</em>
@@ -1427,7 +1366,7 @@ Returns true if the request has a body(POST/PUT), false otherwise
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -1438,7 +1377,6 @@ Returns true if the request has a body(POST/PUT), false otherwise
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
@@ -1446,16 +1384,14 @@ True if the request has a body(POST/PUT), false otherwise
         </p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 if apache2.request_has_body(r) then
     -- do stuff with the req body
 end
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.requestbody" id="apache2.requestbody">apache2.requestbody(
     request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;filename</em>
@@ -1467,7 +1403,7 @@ Reads the request body. If a filename is specified, the request body will be wri
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -1482,7 +1418,6 @@ Reads the request body. If a filename is specified, the request body will be wri
 <td>filename</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
@@ -1490,7 +1425,7 @@ The number of bytes written if a filename was specified, otherwise it returns th
         </p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 if tonumber(r.headers_in['Content-Length'] or 0) &lt; 10000 then
     local smallfile = apache2.requestbody(r) -- fetch a small file into memory
@@ -1501,9 +1436,7 @@ else
 end
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.satisfies" id="apache2.satisfies">apache2.satisfies(
     request_rec<em>&nbsp;r</em>
@@ -1515,7 +1448,7 @@ Returns how the requires lines must be met.
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -1526,7 +1459,6 @@ Returns how the requires lines must be met.
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
@@ -1534,7 +1466,7 @@ How the requirements must be met (SATISFY_ANY, SATISFY_ALL, SATISFY_NOSPEC).
         </p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 local how = apache2.satisfies(r)
 if how == "SATISFY_ANY" then
@@ -1542,9 +1474,7 @@ if how == "SATISFY_ANY" then
 end
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.send_interim_response" id="apache2.send_interim_response">apache2.send_interim_response(
     request_rec<em>&nbsp;r</em>, &nbsp;boolean<em>&nbsp;send_headers</em>
@@ -1556,7 +1486,7 @@ Sends an interim (HTTP 1xx) response immediately.
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -1571,17 +1501,14 @@ Sends an interim (HTTP 1xx) response immediately.
 <td>send_headers Whether to send&amp;clear headers in r-&gt;headers_out</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 apache2.send_interim_response(r, false)
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.sendfile" id="apache2.sendfile">apache2.sendfile(
     request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;filename</em>
@@ -1593,7 +1520,7 @@ Sends a file to the client via sendfile() if possible.
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -1608,17 +1535,14 @@ Sends a file to the client via sendfile() if possible.
 <td>The file to send</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 apache2.sendfile(r, "/foo/bar/test.png") -- sends /foo/bar/test.png via sendfile
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.set_context_prefix" id="apache2.set_context_prefix">apache2.set_context_prefix(
     request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;prefix</em>, &nbsp;string<em>&nbsp;document</em>
@@ -1630,7 +1554,7 @@ Set context_prefix and context_document_root for a request.
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -1649,9 +1573,7 @@ Set context_prefix and context_document_root for a request.
 <td>The corresponding directory on disk, without trailing slash</td>
 </tr>
 </table>
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.set_document_root" id="apache2.set_document_root">apache2.set_document_root(
     request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;root</em>
@@ -1663,7 +1585,7 @@ Sets the document root of the request.
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -1678,10 +1600,9 @@ Sets the document root of the request.
 <td>root</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 -- Suppose our real document root is /var/bar, then...
 if r.hostname == "www.foo.com" then
@@ -1689,9 +1610,7 @@ if r.hostname == "www.foo.com" then
 end
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.set_keepalive" id="apache2.set_keepalive">apache2.set_keepalive(
     request_rec<em>&nbsp;r</em>
@@ -1703,7 +1622,7 @@ Sets the keepalive status for this request
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -1714,14 +1633,12 @@ Sets the keepalive status for this request
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
 True if keepalive can be set, false otherwise
         </p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.setenv" id="apache2.setenv">apache2.setenv(
     request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;key</em>, &nbsp;string<em>&nbsp;val</em>
@@ -1733,7 +1650,7 @@ Sets the value of an environment variable
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -1752,17 +1669,14 @@ Sets the value of an environment variable
 <td>val</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 apache2.setenv("FOO_VAL", "bar and stuff")
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.some_auth_required" id="apache2.some_auth_required">apache2.some_auth_required(
     request_rec<em>&nbsp;r</em>
@@ -1774,7 +1688,7 @@ Returns true if authorization is required for this request
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -1785,7 +1699,6 @@ Returns true if authorization is required for this request
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
@@ -1793,27 +1706,27 @@ True if auth is required, false if not.
         </p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 if apache2.some_auth_required(r) then
     print("debug: auth is required for this request\n")
 end
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="Parser_functions" id="Parser_functions">HTTPd bindings: Parser functions</a></h2>
 
+<p>
 <a href="#apache2.expr">apache2.expr</a>
 <br />
 <a href="#apache2.regex">apache2.regex</a>
 <br />
 <a href="#apache2.strcmp_match">apache2.strcmp_match</a>
 <br />
+</p>
 <h3><a name="apache2.expr" id="apache2.expr">apache2.expr(
     request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;expression</em>
     )
@@ -1824,7 +1737,7 @@ Evaluates an ap_expr (think &lt;If ...&gt;) expression and returns true if the e
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -1839,7 +1752,6 @@ Evaluates an ap_expr (think &lt;If ...&gt;) expression and returns true if the e
 <td>expression</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
@@ -1847,16 +1759,14 @@ True if the expression evaluates as true, false if the expression doesn't evalua
         </p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 if apache2.expr("%{REQUEST_URI} =~ /force-gzip") then
     apache2.add_output_filter(r, "DEFLATE")
 end
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.regex" id="apache2.regex">apache2.regex(
     request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;expression</em>, &nbsp;string<em>&nbsp;source</em>
@@ -1868,7 +1778,7 @@ Evaluates a regular expression and, if it matches the source string, captures th
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -1887,7 +1797,6 @@ Evaluates a regular expression and, if it matches the source string, captures th
 <td>the source string to capture from</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
@@ -1895,7 +1804,7 @@ True if the expression evaluates as true, false if the expression doesn't evalua
         </p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 local matches = apache2.regex(r, [[(\S+) kitty]], "Hello kitty")
 if matches and matches[1] then 
@@ -1903,9 +1812,7 @@ if matches and matches[1] then
 end
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.strcmp_match" id="apache2.strcmp_match">apache2.strcmp_match(
     string<em>&nbsp;str</em>, &nbsp;string<em>&nbsp;expexted</em>, &nbsp;boolean<em>&nbsp;ignoreCase</em>
@@ -1917,7 +1824,7 @@ Determines if a string matches a pattern containing the wildcards '?' or '*'
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -1936,7 +1843,6 @@ Determines if a string matches a pattern containing the wildcards '?' or '*'
 <td>Whether to ignore case when matching</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
@@ -1944,21 +1850,20 @@ True if the two strings match, false otherwise.
         </p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 if apache2.strcmp_match("foo.bar", "foo.*") then
     r:puts("It matches!")
 end
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="Server_settings" id="Server_settings">HTTPd bindings: Server settings</a></h2>
 
+<p>
 <a href="#apache2.add_version_component">apache2.add_version_component</a>
 <br />
 <a href="#apache2.banner">apache2.banner</a>
@@ -1991,6 +1896,7 @@ end
 <br />
 <a href="#apache2.exists_config_define">apache2.exists_config_define</a>
 <br />
+</p>
 <h3><a name="apache2.add_version_component" id="apache2.add_version_component">apache2.add_version_component(
     request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;component</em>
     )
@@ -2001,7 +1907,7 @@ Adds a component to the server description and banner strings
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -2016,19 +1922,16 @@ Adds a component to the server description and banner strings
 <td>The component to add</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 if not apache2.banner():match("FooModule") then -- Make sure we haven't added it already
     apache2.add_version_component(r, "FooModule/1.0")
 end
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.banner" id="apache2.banner">apache2.banner(
     
@@ -2040,16 +1943,14 @@ Returns the server banner
         </p>
 <p>
 <em>Arguments:</em>
-<br />
-            None<br />
 </p>
+<p>None</p>
 <p>
 <em>Return value(s):</em>
 <br />
 The server banner
         </p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.custom_response" id="apache2.custom_response">apache2.custom_response(
     request_rec<em>&nbsp;r</em>, &nbsp;number<em>&nbsp;status</em>, &nbsp;string<em>&nbsp;string</em>
@@ -2061,7 +1962,7 @@ Install a custom response handler for a given status
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -2080,17 +1981,14 @@ Install a custom response handler for a given status
 <td>The custom response.  This can be a static string, a file or a URL</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 apache2.custom_response(r, 404, "Not found!!")
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.exists_config_define" id="apache2.exists_config_define">apache2.exists_config_define(
     string<em>&nbsp;name</em>
@@ -2102,7 +2000,7 @@ Checks for a definition from the server command line
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -2113,19 +2011,16 @@ Checks for a definition from the server command line
 <td>The define to check for</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 if apache2.exists_config_define("FOO") then
     r:puts("This server was started with -DFOO")
 end
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.get_server_built" id="apache2.get_server_built">apache2.get_server_built(
     
@@ -2137,16 +2032,14 @@ Returns the date the server was built
         </p>
 <p>
 <em>Arguments:</em>
-<br />
-            None<br />
 </p>
+<p>None</p>
 <p>
 <em>Return value(s):</em>
 <br />
 The date the server was built
         </p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.is_initial_req" id="apache2.is_initial_req">apache2.is_initial_req(
     request_rec<em>&nbsp;r</em>
@@ -2158,7 +2051,7 @@ Returns true if this is the main request, false if it is a sub-request
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -2169,14 +2062,12 @@ Returns true if this is the main request, false if it is a sub-request
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
 True if this is the main request, false if it is a sub-request
         </p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.loaded_modules" id="apache2.loaded_modules">apache2.loaded_modules(
     
@@ -2188,16 +2079,14 @@ Returns a table containing the name (c filename) of all loaded modules
         </p>
 <p>
 <em>Arguments:</em>
-<br />
-            None<br />
 </p>
+<p>None</p>
 <p>
 <em>Return value(s):</em>
 <br />
 A table containing the name (c filename) of all loaded modules
         </p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.module_info" id="apache2.module_info">apache2.module_info(
     string<em>&nbsp;c</em>, &nbsp;string<em>&nbsp;file</em>
@@ -2209,7 +2098,7 @@ Returns information about a specific module (if loaded)
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -2224,14 +2113,12 @@ Returns information about a specific module (if loaded)
 <td>file</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
 The various commands available to this module as a table, or nil if the module wasn't found.
         </p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.mpm_query" id="apache2.mpm_query">apache2.mpm_query(
     number<em>&nbsp;i</em>
@@ -2243,7 +2130,7 @@ Queries the MPM for a specific value
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -2254,14 +2141,12 @@ Queries the MPM for a specific value
 <td>i</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
 The queried value
         </p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.runtime_dir_relative" id="apache2.runtime_dir_relative">apache2.runtime_dir_relative(
     request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;file</em>
@@ -2273,7 +2158,7 @@ Returns the path of a file relative to the default runtime directory
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -2288,14 +2173,12 @@ Returns the path of a file relative to the default runtime directory
 <td>file</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
 The path of a file relative to the default runtime directory
         </p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.scoreboard_process" id="apache2.scoreboard_process">apache2.scoreboard_process(
     request_rec<em>&nbsp;r</em>, &nbsp;number<em>&nbsp;child</em>
@@ -2307,7 +2190,7 @@ Returns the scoreboard for a server daemon as a table
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -2322,14 +2205,12 @@ Returns the scoreboard for a server daemon as a table
 <td>The server child to query</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
 The scoreboard for a server daemon as a table
         </p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.scoreboard_worker" id="apache2.scoreboard_worker">apache2.scoreboard_worker(
     request_rec<em>&nbsp;r</em>, &nbsp;number<em>&nbsp;child</em>, &nbsp;number<em>&nbsp;thread</em>
@@ -2341,7 +2222,7 @@ Returns the scoreboard for a single thread as a table
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -2360,14 +2241,12 @@ Returns the scoreboard for a single thread as a table
 <td>The thread to query</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
 The scoreboard for a single thread as a table
         </p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.server_info" id="apache2.server_info">apache2.server_info(
     
@@ -2379,16 +2258,14 @@ Returns a table with information about the server program
         </p>
 <p>
 <em>Arguments:</em>
-<br />
-            None<br />
 </p>
+<p>None</p>
 <p>
 <em>Return value(s):</em>
 <br />
 A table with information about the server program
         </p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.started" id="apache2.started">apache2.started(
     request_rec<em>&nbsp;r</em>
@@ -2400,7 +2277,7 @@ Returns the time when the server was (re)started
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -2411,14 +2288,12 @@ Returns the time when the server was (re)started
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
 The time when the server was (re)started
         </p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.state_query" id="apache2.state_query">apache2.state_query(
     number<em>&nbsp;field</em>
@@ -2430,7 +2305,7 @@ Query the server for some state information
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -2441,18 +2316,15 @@ Query the server for some state information
 <td>Which information is requested</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 local gen = apache2.state_query(2)
 r:puts("This is generation no. " .. gen .. " of the top-level parent")
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.terminate" id="apache2.terminate">apache2.terminate(
     
@@ -2464,16 +2336,15 @@ Kills off a server process. This has no other use than to show how dangerous mod
         </p>
 <p>
 <em>Arguments:</em>
-<br />
-            None<br />
 </p>
-<br />
-<br />
+<p>None</p>
+<p>&nbsp;</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="Database_connectivity" id="Database_connectivity">HTTPd bindings: Database connectivity</a></h2>
 
+<p>
 <a href="#apache2.dbopen">apache2.dbopen</a>
 <br />
 <a href="#db:query">db:query</a>
@@ -2482,17 +2353,18 @@ Kills off a server process. This has no other use than to show how dangerous mod
 <br />
 <a href="#db:close">db:close</a>
 <br />
+</p>
 <h3><a name="apache2.dbopen" id="apache2.dbopen">apache2.dbopen(
     request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;dbtype</em>, &nbsp;string<em>&nbsp;conn_string</em>
     )
     </a></h3>
 
 <p>
-Opens up a new database connection. See the DB functions for mod_pLua for more info on this.
+Opens up a new database connection.
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -2511,7 +2383,6 @@ Opens up a new database connection. See the DB functions for mod_pLua for more i
 <td>connection string</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
@@ -2519,7 +2390,7 @@ The database connection as a table with functions, or nil if the connection fail
         </p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 local db, error = apache2.dbopen(r, "mod_dbd")
 if error then
@@ -2529,9 +2400,7 @@ else
 end
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="db:close" id="db:close">db:close(
     request_rec<em>&nbsp;r</em>
@@ -2543,7 +2412,7 @@ Closes a database connection
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -2554,18 +2423,15 @@ Closes a database connection
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 local db = apache2.dbopen(r, "mod_dbd") -- open a db connection
 db:close() -- close it down
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="db:do" id="db:do">db:do(
     request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;query</em>
@@ -2577,7 +2443,7 @@ Executes a statement that doesn't return a result set
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -2592,7 +2458,6 @@ Executes a statement that doesn't return a result set
 <td>The SQL statement to execute</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
@@ -2600,7 +2465,7 @@ If the statement is valid, a table of results are returned. If an error occurred
         </p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 local db = apache2.dbopen(r, "mod_dbd")
 local affected = db:do("DELETE FROM `table` WHERE 1")
@@ -2609,9 +2474,7 @@ if affected then
 end
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="db:query" id="db:query">db:query(
     request_rec<em>&nbsp;r</em>, &nbsp;string<em>&nbsp;query</em>
@@ -2623,7 +2486,7 @@ Queries the database for information using the specified statement.
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -2638,7 +2501,6 @@ Queries the database for information using the specified statement.
 <td>The SQL statement to execute</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br />
@@ -2646,7 +2508,7 @@ If the statement is valid, a table of results are returned. If an error occurred
         </p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 local db = apache2.dbopen(r, "mod_dbd")
 local result, error = db:query("SELECT * FROM `table` WHERE 1")
@@ -2657,18 +2519,18 @@ if result then
 end
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="Miscellaneous" id="Miscellaneous">HTTPd bindings: Miscellaneous</a></h2>
 
+<p>
 <a href="#apache2.clock">apache2.clock</a>
 <br />
 <a href="#apache2.sleep">apache2.sleep</a>
 <br />
+</p>
 <h3><a name="apache2.clock" id="apache2.clock">apache2.clock(
     
     )
@@ -2679,16 +2541,14 @@ Returns the current time in microseconds.
         </p>
 <p>
 <em>Arguments:</em>
-<br />
-            None<br />
 </p>
+<p>None</p>
 <p>
 <em>Return value(s):</em>
 <br />
 The current time in microseconds.
         </p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 <h3><a name="apache2.sleep" id="apache2.sleep">apache2.sleep(
     number<em>&nbsp;seconds</em>
@@ -2700,7 +2560,7 @@ Sleeps for a while. Floating point values can be used to sleep for less than a s
         </p>
 <p>
 <em>Arguments:</em>
-<br />
+</p>
 <table class="bordered">
 <tr>
 <th>Argument</th>
@@ -2711,10 +2571,9 @@ Sleeps for a while. Floating point values can be used to sleep for less than a s
 <td>The number of seconds to sleep.</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Example:</em>
-<br />
+</p>
 <pre class="prettyprint lang-lua">
 r:puts("this is ")
 apache2.flush(r)
@@ -2722,9 +2581,7 @@ apache2.sleep(0.25) -- sleep for a quarter second.
 r:puts("delayed")
         </pre>
 
-</p>
-<br />
-<br />
+<p>&nbsp;</p>
 
 </div></div>
 <div class="bottomlang">
