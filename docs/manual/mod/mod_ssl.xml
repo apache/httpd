@@ -2451,7 +2451,7 @@ be protected with file permissions similar to those used for
 <default>SSLCompression on</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Available in httpd 2.5.0 and later, if using OpenSSL 0.9.8 or later;
+<compatibility>Available in httpd 2.4.3 and later, if using OpenSSL 0.9.8 or later;
 virtual host scope available if using OpenSSL 1.0.0 or later</compatibility>
 
 <usage>
