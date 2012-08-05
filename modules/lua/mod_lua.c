@@ -65,7 +65,6 @@ static void report_lua_error(lua_State *L, request_rec *r)
     const char *lua_response;
     r->status = HTTP_INTERNAL_SERVER_ERROR;
     r->content_type = "text/html";
-
     ap_rputs("<b>Error!</b>\n", r);
     ap_rputs("<p>", r);
     lua_response = lua_tostring(L, -1);
@@ -109,6 +108,29 @@ static const char *scope_to_string(unsigned int scope)
     }
 }
 
+static void ap_lua_release_state(lua_State* L, ap_lua_vm_spec* spec, request_rec* r) {
+    char *hash;
+    apr_reslist_t* reslist = NULL;
+    if (spec->scope == AP_LUA_SCOPE_SERVER) {
+        ap_lua_server_spec* sspec = NULL;
+        lua_settop(L, 0);
+        lua_getfield(L, LUA_REGISTRYINDEX, "Apache2.Lua.server_spec");
+        sspec = (ap_lua_server_spec*) lua_touserdata(L, 1);
+        hash = apr_psprintf(r->pool, "reslist:%s", spec->file);
+        if (apr_pool_userdata_get((void **)&reslist, hash,
+                                r->server->process->pool) == APR_SUCCESS) {
+            AP_DEBUG_ASSERT(sspec != NULL);
+            if (reslist != NULL) {
+                apr_reslist_release(reslist, sspec);
+            }
+        }
+    }
+}
+
+#if APR_HAS_THREADS
+extern void ap_lua_init_mutex(apr_pool_t *pool, server_rec *s);
+#endif
+
 static ap_lua_vm_spec *create_vm_spec(apr_pool_t **lifecycle_pool,
                                       request_rec *r,
                                       const ap_lua_dir_cfg *cfg,
@@ -131,7 +153,9 @@ static ap_lua_vm_spec *create_vm_spec(apr_pool_t **lifecycle_pool,
     spec->bytecode = bytecode;
     spec->bytecode_len = bytecode_len;
     spec->codecache = (cfg->codecache == AP_LUA_CACHE_UNSET) ? AP_LUA_CACHE_STAT : cfg->codecache;
-
+    spec->vm_min = cfg->vm_min ? cfg->vm_min : 1;
+    spec->vm_max = cfg->vm_max ? cfg->vm_max : 1;
+    
     if (filename) {
         char *file;
         apr_filepath_merge(&file, server_cfg->root_path,
@@ -160,6 +184,9 @@ static ap_lua_vm_spec *create_vm_spec(apr_pool_t **lifecycle_pool,
 #if APR_HAS_THREADS
     case AP_LUA_SCOPE_THREAD:
         pool = apr_thread_pool_get(r->connection->current_thread);
+        break;
+    case AP_LUA_SCOPE_SERVER:
+        pool = r->server->process->pool;
         break;
 #endif
     default:
@@ -230,6 +257,7 @@ static int lua_handler(request_rec *r)
             /* TODO annotate spec with failure reason */
             r->status = HTTP_INTERNAL_SERVER_ERROR;
             ap_rputs("Unable to compile VM, see logs", r);
+            ap_lua_release_state(L, spec, r);
             return HTTP_INTERNAL_SERVER_ERROR;
         }
         ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r, APLOGNO(01474) "got a vm!");
@@ -239,12 +267,14 @@ static int lua_handler(request_rec *r)
                           "lua: Unable to find function %s in %s",
                           "handle",
                           spec->file);
+            ap_lua_release_state(L, spec, r);
             return HTTP_INTERNAL_SERVER_ERROR;
         }
         ap_lua_run_lua_request(L, r);
         if (lua_pcall(L, 1, 0, 0)) {
             report_lua_error(L, r);
         }
+        ap_lua_release_state(L, spec, r);
     }
     return OK;
 }
@@ -300,6 +330,7 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name, int ap
                                   "lua: Unable to find function %s in %s",
                                   hook_spec->function_name,
                                   hook_spec->file_name);
+                    ap_lua_release_state(L, spec, r);
                     return HTTP_INTERNAL_SERVER_ERROR;
                 }
 
@@ -316,6 +347,7 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name, int ap
 
             if (lua_pcall(L, 1, 1, 0)) {
                 report_lua_error(L, r);
+                ap_lua_release_state(L, spec, r);
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
             rc = DECLINED;
@@ -323,6 +355,7 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name, int ap
                 rc = lua_tointeger(L, -1);
             }
             if (rc != DECLINED) {
+                ap_lua_release_state(L, spec, r);
                 return rc;
             }
         }
@@ -373,6 +406,7 @@ static int lua_map_handler(request_rec *r)
                 ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(01477)
                                 "lua: Failed to obtain lua interpreter for %s %s",
                                 function_name, filename);
+                ap_lua_release_state(L, spec, r);
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
 
@@ -383,6 +417,7 @@ static int lua_map_handler(request_rec *r)
                                     "lua: Unable to find function %s in %s",
                                     function_name,
                                     filename);
+                    ap_lua_release_state(L, spec, r);
                     return HTTP_INTERNAL_SERVER_ERROR;
                 }
 
@@ -399,6 +434,7 @@ static int lua_map_handler(request_rec *r)
 
             if (lua_pcall(L, 1, 1, 0)) {
                 report_lua_error(L, r);
+                ap_lua_release_state(L, spec, r);
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
             rc = DECLINED;
@@ -406,6 +442,7 @@ static int lua_map_handler(request_rec *r)
                 rc = lua_tointeger(L, -1);
             }
             if (rc != DECLINED) {
+                ap_lua_release_state(L, spec, r);
                 return rc;
             }
         }
@@ -1110,12 +1147,33 @@ static const char *register_lua_scope(cmd_parms *cmd,
 #endif
         cfg->vm_scope = AP_LUA_SCOPE_THREAD;
     }
+    else if (strcmp("server", scope) == 0) {
+        unsigned int vmin, vmax;
+#if !APR_HAS_THREADS
+        return apr_psprintf(cmd->pool,
+                            "Scope type of '%s' cannot be used because this "
+                            "server does not have threading support "
+                            "(APR_HAS_THREADS)" 
+                            scope);
+#endif
+        cfg->vm_scope = AP_LUA_SCOPE_SERVER;
+        vmin = min ? atoi(min) : 1;
+        vmax = max ? atoi(max) : 1;
+        if (vmin == 0) {
+            vmin = 1;
+        }
+        if (vmax < vmin) {
+            vmax = vmin;
+        }
+        cfg->vm_min = vmin;
+        cfg->vm_max = vmax;
+    }
     else {
         return apr_psprintf(cmd->pool,
                             "Invalid value for LuaScope, '%s', acceptable "
-                            "values are: 'once', 'request', 'conn', 'server'"
+                            "values are: 'once', 'request', 'conn'"
 #if APR_HAS_THREADS
-                            ", 'thread'"
+                            ", 'thread', 'server'"
 #endif
                             ,scope);
     }
@@ -1203,6 +1261,7 @@ static authz_status lua_authz_check(request_rec *r, const char *require_line,
         ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(02319)
                       "Unable to find function %s in %s",
                       prov_spec->function_name, prov_spec->file_name);
+        ap_lua_release_state(L, spec, r);
         return AUTHZ_GENERAL_ERROR;
     }
     ap_lua_run_lua_request(L, r);
@@ -1211,6 +1270,7 @@ static authz_status lua_authz_check(request_rec *r, const char *require_line,
         if (!lua_checkstack(L, prov_spec->args->nelts)) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02315)
                           "Error: authz provider %s: too many arguments", prov_spec->name);
+            ap_lua_release_state(L, spec, r);
             return AUTHZ_GENERAL_ERROR;
         }
         for (i = 0; i < prov_spec->args->nelts; i++) {
@@ -1223,14 +1283,17 @@ static authz_status lua_authz_check(request_rec *r, const char *require_line,
         const char *err = lua_tostring(L, -1);
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02316)
                       "Error executing authz provider %s: %s", prov_spec->name, err);
+        ap_lua_release_state(L, spec, r);
         return AUTHZ_GENERAL_ERROR;
     }
     if (!lua_isnumber(L, -1)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02317)
                       "Error: authz provider %s did not return integer", prov_spec->name);
+        ap_lua_release_state(L, spec, r);
         return AUTHZ_GENERAL_ERROR;
     }
     result = lua_tointeger(L, -1);
+    ap_lua_release_state(L, spec, r);
     switch (result) {
         case AUTHZ_DENIED:
         case AUTHZ_GRANTED:
@@ -1389,6 +1452,8 @@ static void *create_dir_config(apr_pool_t *p, char *dir)
     cfg->dir = apr_pstrdup(p, dir);
     cfg->vm_scope = AP_LUA_SCOPE_UNSET;
     cfg->codecache = AP_LUA_CACHE_UNSET;
+    cfg->vm_min = 0;
+    cfg->vm_max = 0;
 
     return cfg;
 }
@@ -1452,6 +1517,9 @@ static void *merge_dir_config(apr_pool_t *p, void *basev, void *overridesv)
     a->vm_scope = (overrides->vm_scope == AP_LUA_SCOPE_UNSET) ? base->vm_scope: overrides->vm_scope;
     a->inherit = (overrides->inherit== AP_LUA_INHERIT_UNSET) ? base->inherit : overrides->inherit;
     a->codecache = (overrides->codecache== AP_LUA_CACHE_UNSET) ? base->codecache : overrides->codecache;
+    
+    a->vm_min = (overrides->vm_min== 0) ? base->vm_min : overrides->vm_min;
+    a->vm_max = (overrides->vm_max== 0) ? base->vm_max : overrides->vm_max;
 
     if (a->inherit == AP_LUA_INHERIT_UNSET || a->inherit == AP_LUA_INHERIT_PARENT_FIRST) { 
         a->package_paths = apr_array_append(p, base->package_paths, overrides->package_paths);
@@ -1529,6 +1597,9 @@ static void lua_register_hooks(apr_pool_t *p)
     APR_OPTIONAL_HOOK(ap_lua, lua_request, lua_request_hook, NULL, NULL,
                       APR_HOOK_REALLY_FIRST);
     ap_hook_handler(lua_map_handler, NULL, NULL, AP_LUA_HOOK_FIRST);
+#if APR_HAS_THREADS
+    ap_hook_child_init(ap_lua_init_mutex, NULL, NULL, APR_HOOK_MIDDLE);
+#endif
     /* providers */
     lua_authz_providers = apr_hash_make(p);
 }
