@@ -1381,7 +1381,7 @@ static const char *util_ldap_set_cache_file(cmd_parms *cmd, void *dummy,
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
-                 "LDAP cache: Setting shared memory cache file to %s bytes.",
+                 "LDAP cache: Setting shared memory cache file to %s.",
                  st->cache_file);
 
     return NULL;
