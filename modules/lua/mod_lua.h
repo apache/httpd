@@ -39,6 +39,7 @@
 #include "apr_file_info.h"
 #include "apr_time.h"
 #include "apr_hooks.h"
+#include "apr_reslist.h"
 
 /* Allow for Lua 5.2 backwards compatibility */
 #define LUA_COMPAT_ALL
@@ -111,6 +112,8 @@ typedef struct
      * AP_LUA_SCOPE_ONCE | AP_LUA_SCOPE_REQUEST | AP_LUA_SCOPE_CONN | AP_LUA_SCOPE_SERVER
      */
     unsigned int vm_scope;
+    unsigned int vm_min;
+    unsigned int vm_max;
 
     /* info for the hook harnesses */
     apr_hash_t *hooks;          /* <wombat_hook_info> */
