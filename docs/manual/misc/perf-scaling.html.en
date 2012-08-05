@@ -118,73 +118,40 @@
                     Linux (Xen) system: 
                 </p>
                 
-                <div class="example"><p><code>
-                    top - 23:10:58 up 71 days,  6:14,  4 users,  load average:
-                    0.25, 0.53, 0.47<br />
-                    Tasks: 163 total,   1 running, 162 sleeping,   0 stopped,  
-                    0 zombie<br />
-                    Cpu(s): 11.6%us,  0.7%sy,  0.0%ni, 87.3%id,  0.4%wa, 
-                    0.0%hi,  0.0%si,  0.0%st<br />
-                    Mem:   2621656k total,  2178684k used,   442972k free,  
-                    100500k buffers<br />
-                    Swap:  4194296k total,   860584k used,  3333712k free, 
-                    1157552k cached<br />
-                    <br />
-                    PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+ 
-                    COMMAND<br />
-                    16687 example_  20   0 1200m 547m 179m S   45 21.4  
-                    1:09.59 httpd-worker<br />
-                    15195 www       20   0  441m  33m 2468 S    0  1.3  
-                    0:41.41 httpd-worker<br />
-                    1 root      20   0 10312  328  308 S    0  0.0   0:33.17
-                    init<br />
-                    2 root      15  -5     0    0    0 S    0  0.0   0:00.00
-                    kthreadd<br />
-                    3 root      RT  -5     0    0    0 S    0  0.0   0:00.14
-                    migration/0<br />
-                    4 root      15  -5     0    0    0 S    0  0.0   0:04.58
-                    ksoftirqd/0<br />
-                    5 root      RT  -5     0    0    0 S    0  0.0   4:45.89
-                    watchdog/0<br />
-                    6 root      15  -5     0    0    0 S    0  0.0   1:42.52
-                    events/0<br />
-                    7 root      15  -5     0    0    0 S    0  0.0   0:00.00
-                    khelper<br />
-                    19 root      15  -5     0    0    0 S    0  0.0   0:00.00
-                    xenwatch<br />
-                    20 root      15  -5     0    0    0 S    0  0.0   0:00.00
-                    xenbus<br />
-                    28 root      RT  -5     0    0    0 S    0  0.0   0:00.14
-                    migration/1<br />
-                    29 root      15  -5     0    0    0 S    0  0.0   0:00.20
-                    ksoftirqd/1<br />
-                    30 root      RT  -5     0    0    0 S    0  0.0   0:05.96
-                    watchdog/1<br />
-                    31 root      15  -5     0    0    0 S    0  0.0   1:18.35
-                    events/1<br />
-                    32 root      RT  -5     0    0    0 S    0  0.0   0:00.08
-                    migration/2<br />
-                    33 root      15  -5     0    0    0 S    0  0.0   0:00.18
-                    ksoftirqd/2<br />
-                    34 root      RT  -5     0    0    0 S    0  0.0   0:06.00
-                    watchdog/2<br />
-                    35 root      15  -5     0    0    0 S    0  0.0   1:08.39
-                    events/2<br />
-                    36 root      RT  -5     0    0    0 S    0  0.0   0:00.10
-                    migration/3<br />
-                    37 root      15  -5     0    0    0 S    0  0.0   0:00.16
-                    ksoftirqd/3<br />
-                    38 root      RT  -5     0    0    0 S    0  0.0   0:06.08
-                    watchdog/3<br />
-                    39 root      15  -5     0    0    0 S    0  0.0   1:22.81
-                    events/3<br />
-                    68 root      15  -5     0    0    0 S    0  0.0   0:06.28
-                    kblockd/0<br />
-                    69 root      15  -5     0    0    0 S    0  0.0   0:00.04
-                    kblockd/1<br />
-                    70 root      15  -5     0    0    0 S    0  0.0   0:00.04
-                    kblockd/2
-                </code></p></div>
+                <div class="example"><pre>
+top - 23:10:58 up 71 days,  6:14,  4 users,  load average: 0.25, 0.53, 0.47
+Tasks: 163 total,   1 running, 162 sleeping,   0 stopped,   0 zombie
+Cpu(s): 11.6%us,  0.7%sy,  0.0%ni, 87.3%id,  0.4%wa,  0.0%hi,  0.0%si,  0.0%st
+Mem:   2621656k total,  2178684k used,   442972k free,   100500k buffers
+Swap:  4194296k total,   860584k used,  3333712k free,  1157552k cached
+
+  PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND
+16687 example_  20   0 1200m 547m 179m S   45 21.4   1:09.59 httpd-worker
+15195 www       20   0  441m  33m 2468 S    0  1.3   0:41.41 httpd-worker
+    1 root      20   0 10312  328  308 S    0  0.0   0:33.17 init
+    2 root      15  -5     0    0    0 S    0  0.0   0:00.00 kthreadd
+    3 root      RT  -5     0    0    0 S    0  0.0   0:00.14 migration/0
+    4 root      15  -5     0    0    0 S    0  0.0   0:04.58 ksoftirqd/0
+    5 root      RT  -5     0    0    0 S    0  0.0   4:45.89 watchdog/0
+    6 root      15  -5     0    0    0 S    0  0.0   1:42.52 events/0
+    7 root      15  -5     0    0    0 S    0  0.0   0:00.00 khelper
+   19 root      15  -5     0    0    0 S    0  0.0   0:00.00 xenwatch
+   20 root      15  -5     0    0    0 S    0  0.0   0:00.00 xenbus
+   28 root      RT  -5     0    0    0 S    0  0.0   0:00.14 migration/1
+   29 root      15  -5     0    0    0 S    0  0.0   0:00.20 ksoftirqd/1
+   30 root      RT  -5     0    0    0 S    0  0.0   0:05.96 watchdog/1
+   31 root      15  -5     0    0    0 S    0  0.0   1:18.35 events/1
+   32 root      RT  -5     0    0    0 S    0  0.0   0:00.08 migration/2
+   33 root      15  -5     0    0    0 S    0  0.0   0:00.18 ksoftirqd/2
+   34 root      RT  -5     0    0    0 S    0  0.0   0:06.00 watchdog/2
+   35 root      15  -5     0    0    0 S    0  0.0   1:08.39 events/2
+   36 root      RT  -5     0    0    0 S    0  0.0   0:00.10 migration/3
+   37 root      15  -5     0    0    0 S    0  0.0   0:00.16 ksoftirqd/3
+   38 root      RT  -5     0    0    0 S    0  0.0   0:06.08 watchdog/3
+   39 root      15  -5     0    0    0 S    0  0.0   1:22.81 events/3
+   68 root      15  -5     0    0    0 S    0  0.0   0:06.28 kblockd/0
+   69 root      15  -5     0    0    0 S    0  0.0   0:00.04 kblockd/1
+   70 root      15  -5     0    0    0 S    0  0.0   0:00.04 kblockd/2</pre></div>
                 
                 <p>Top is a wonderful tool even though it&#8217;s slightly resource
                     intensive (when running, its own process is usually in the
@@ -208,14 +175,13 @@
                     The output of free looks like this: 
                 </p>
                 
-                <div class="example"><p><code>
-                    sctemme@brutus:~$ free<br />
-                    total       used     free   shared    buffers    cached<br />
-                    Mem:        4026028    3901892   124136         0    253144
-                       841044<br />
-                    -/+ buffers/cache:     2807704  1218324<br />
-                    Swap:       3903784      12540  3891244
-                </code></p></div>
+                <div class="example"><pre>
+sctemme@brutus:~$ free
+              total       used     free   shared    buffers    cached
+Mem:        4026028    3901892   124136         0    253144    841044
+-/+ buffers/cache:     2807704  1218324
+Swap:       3903784      12540  3891244
+                </pre></div>
             
             
             <h4><a name="vmstat" id="vmstat">vmstat
@@ -239,37 +205,27 @@
                 </p>
                 
                 
-                <div class="example"><p><code>
-                    [sctemme@GayDeceiver sctemme]$ vmstat 5 3<br />
-                    procs                      memory     swap         io   
-                    system        cpu<br />
-                    r b w     swpd   free   buff cache si so       bi    bo in 
-                       cs us  sy i<br />
-                    0 0 0        0 186252   6688 37516    0    0   12     5 47 
-                      311  0   1 9<br />
-                    0 0 0        0 186244   6696 37516    0    0    0    16 41 
-                      314  0   0 10<br />
-                    0 0 0        0 186236   6704 37516    0    0    0     9 44 
-                      314  0   0 100
-                </code></p></div>
+                <div class="example"><pre>
+[sctemme@GayDeceiver sctemme]$ vmstat 5 3
+   procs                      memory     swap         io    system        cpu
+ r b w     swpd   free   buff cache si so       bi    bo in     cs us  sy id
+ 0 0 0        0 186252   6688 37516    0    0   12     5 47    311  0   1 99
+ 0 0 0        0 186244   6696 37516    0    0    0    16 41    314  0   0 100
+ 0 0 0        0 186236   6704 37516    0    0    0     9 44    314  0   0 100
+                  </pre></div>
                 
                 <p>And this is output of a server that is under a load of one
                     hundred simultaneous connections fetching static content: 
                 </p>
                 
-                <div class="example"><p><code>
-                    sctemme@GayDeceiver sctemme]$ vmstat 5 3<br />
-                    procs                      memory     swap    io     
-                    system       cpu<br />
-                    r b w     swpd   free   buff cache si so     bi bo   in    
-                    cs us sy  id<br />
-                    1 0 1        0 162580   6848 40056    0    0 11  5 150    
-                    324  1  1  98<br />
-                    6 0 1        0 163280   6856 40248    0    0  0 66 6384
-                    1117   42 25  32<br />
-                    11 0 0        0 162780   6864 40436    0    0  0 61 6309
-                    1165   33 28  40
-                </code></p></div>
+                <div class="example"><pre>
+[sctemme@GayDeceiver sctemme]$ vmstat 5 3
+   procs                      memory     swap    io      system       cpu
+ r b w     swpd   free   buff cache si so     bi bo   in     cs us sy  id
+ 1 0 1        0 162580   6848 40056    0    0 11  5 150     324  1  1  98
+ 6 0 1        0 163280   6856 40248    0    0  0 66 6384 1117   42 25  32
+11 0 0        0 162780   6864 40436    0    0  0 61 6309 1165   33 28  40
+                  </pre></div>
                 
                 <p>The first line gives averages since the last reboot. The
                     subsequent lines give information for five second
@@ -486,9 +442,10 @@
                     can be specified on a per module basis: 
                 </p>
                 
-                <div class="example"><p><code>
+                <pre class="prettyprint lang-config">
                     LogLevel debug mod_ssl:warn
-                </code></p></div>
+                </pre>
+
                 
                 <p>
                   This puts all of the server in debug mode, except for
@@ -520,22 +477,15 @@
                 </p>
                 
                 
-                <div class="example"><p><code>
-                    195.54.228.42 - - [24/Mar/2007:23:05:11 -0400] "GET
-                    /sander/feed/ HTTP/1.1" 200 9747<br />
-                    64.34.165.214 - - [24/Mar/2007:23:10:11 -0400] "GET
-                    /sander/feed/atom HTTP/1.1" 200 9068<br />
-                    60.28.164.72 - - [24/Mar/2007:23:11:41 -0400] "GET /
-                    HTTP/1.0" 200 618<br />
-                    85.140.155.56 - - [24/Mar/2007:23:14:12 -0400] "GET
-                    /sander/2006/09/27/44/ HTTP/1.1" 200 14172<br />
-                    85.140.155.56 - - [24/Mar/2007:23:14:15 -0400] "GET
-                    /sander/2006/09/21/gore-tax-pollution/ HTTP/1.1" 200 15147<br />
-                    74.6.72.187 - - [24/Mar/2007:23:18:11 -0400] "GET
-                    /sander/2006/09/27/44/ HTTP/1.0" 200 14172<br />
-                    74.6.72.229 - - [24/Mar/2007:23:24:22 -0400] "GET
-                    /sander/2006/11/21/os-java/ HTTP/1.0" 200 13457
-                </code></p></div>
+                <div class="example"><pre>
+195.54.228.42 - - [24/Mar/2007:23:05:11 -0400] "GET /sander/feed/ HTTP/1.1" 200 9747
+64.34.165.214 - - [24/Mar/2007:23:10:11 -0400] "GET /sander/feed/atom HTTP/1.1" 200 9068
+60.28.164.72 - - [24/Mar/2007:23:11:41 -0400] "GET / HTTP/1.0" 200 618
+85.140.155.56 - - [24/Mar/2007:23:14:12 -0400] "GET /sander/2006/09/27/44/ HTTP/1.1" 200 14172
+85.140.155.56 - - [24/Mar/2007:23:14:15 -0400] "GET /sander/2006/09/21/gore-tax-pollution/ HTTP/1.1" 200 15147
+74.6.72.187 - - [24/Mar/2007:23:18:11 -0400] "GET /sander/2006/09/27/44/ HTTP/1.0" 200 14172
+74.6.72.229 - - [24/Mar/2007:23:24:22 -0400] "GET /sander/2006/11/21/os-java/ HTTP/1.0" 200 13457
+                </pre></div>
                 
                 <table>
                     <tr>
@@ -1347,42 +1297,36 @@
                     pre-rendered blog pages: 
                 </p>
                 
-                <div class="example"><p><code>Listen *:8001<br />
-                    &lt;VirtualHost *:8001&gt;<br />
-                    <span class="indent">
-                        ServerName blog.sandla.org:8001<br />
-                        ServerAdmin sander@temme.net<br />
-                        DocumentRoot "/home/sctemme/inst/blog/httpd/htdocs"<br />
-                        &lt;Directory
-                        "/home/sctemme/inst/blog/httpd/htdocs"&gt;<br />
-                        <span class="indent">
-                            Options +Indexes<br />
-                            Order allow,deny<br />
-                            Allow from all<br />
-                            RewriteEngine on<br />
-                            RewriteCond %{REQUEST_FILENAME} !-f<br />
-                            RewriteCond %{REQUEST_FILENAME} !-d<br />
-                            RewriteRule ^(.*)$ /cgi-bin/blosxom.cgi/$1 [L,QSA]<br />
-                        </span>
-                        &lt;/Directory&gt;<br />
-                        RewriteLog
-                        /home/sctemme/inst/blog/httpd/logs/rewrite_log<br />
-                        RewriteLogLevel 9<br />
-                        ErrorLog /home/sctemme/inst/blog/httpd/logs/error_log<br />
-                        LogLevel debug<br />
-                        CustomLog /home/sctemme/inst/blog/httpd/logs/access_log
-                        common<br />
-                        ScriptAlias /cgi-bin/ /home/sctemme/inst/blog/bin/<br />
-                        &lt;Directory "/home/sctemme/inst/blog/bin"&gt;<br />
-                        <span class="indent">
-                            Options +ExecCGI<br />
-                            Order allow,deny<br />
-                            Allow from all<br />
-                        </span>
-                        &lt;/Directory&gt;<br />
-                    </span>
-                    &lt;/VirtualHost&gt;
-                </code></p></div>
+<pre class="prettyprint lang-config">
+Listen *:8001
+  &lt;VirtualHost *:8001&gt;
+      ServerName blog.sandla.org:8001
+      ServerAdmin sander@temme.net
+      DocumentRoot "/home/sctemme/inst/blog/httpd/htdocs"
+      &lt;Directory
+      "/home/sctemme/inst/blog/httpd/htdocs"&gt;
+          Options +Indexes
+          Order allow,deny
+          Allow from all
+          RewriteEngine on
+          RewriteCond %{REQUEST_FILENAME} !-f
+          RewriteCond %{REQUEST_FILENAME} !-d
+          RewriteRule ^(.*)$ /cgi-bin/blosxom.cgi/$1 [L,QSA]
+      &lt;/Directory&gt;
+      RewriteLog /home/sctemme/inst/blog/httpd/logs/rewrite_log
+      RewriteLogLevel 9
+      ErrorLog /home/sctemme/inst/blog/httpd/logs/error_log
+      LogLevel debug
+      CustomLog /home/sctemme/inst/blog/httpd/logs/access_log common
+      ScriptAlias /cgi-bin/ /home/sctemme/inst/blog/bin/
+      &lt;Directory "/home/sctemme/inst/blog/bin"&gt;
+          Options +ExecCGI
+          Order allow,deny
+          Allow from all
+      &lt;/Directory&gt;
+  &lt;/VirtualHost&gt;
+</pre>
+
                 
                 <p>
                     The <code class="directive">RewriteCond</code>
@@ -1462,14 +1406,15 @@
                     configuration snippet in <code>httpd.conf</code>:
                 </p>
                 
-                <div class="example"><p><code>
-                    CacheRoot /raid1/cacheroot<br />
-                    CacheEnable disk /<br />
-                    # A page modified 100 minutes ago will expire in 10 minutes<br />
-                    CacheLastModifiedFactor .1<br />
-                    # Always check again after 6 hours<br />
-                    CacheMaxExpire 21600
-                </code></p></div>
+<pre class="prettyprint lang-config">
+CacheRoot /raid1/cacheroot
+CacheEnable disk /
+# A page modified 100 minutes ago will expire in 10 minutes
+CacheLastModifiedFactor .1
+# Always check again after 6 hours
+CacheMaxExpire 21600
+</pre>
+
                 
                 <p>This configuration will try to cache any and all content
                     within its virtual host. It will never cache content for
@@ -1495,13 +1440,12 @@
                     Unfortunately there does currently not exist a way to cache
                     these headers. 
                 </p>
-                <div class="example"><p><code>
-                    &lt;FilesMatch \.(jpe?g|png|gif|js|css|x?html|xml)&gt;<br />
-                    <span class="indent">
-                        FileETag None<br />
-                    </span>
-                    &lt;/FilesMatch&gt;
-                </code></p></div>
+<pre class="prettyprint lang-config">
+&lt;FilesMatch \.(jpe?g|png|gif|js|css|x?html|xml)&gt;
+    FileETag None
+&lt;/FilesMatch&gt;
+</pre>
+
                 
                 <p>
                     This will disable the generation of the <code>ETag:</code>
