@@ -604,7 +604,7 @@ processing</td></tr>
 <tr><td><a href="mod_lua.html#luapackagepath">LuaPackagePath /path/to/include/?.lua</a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Add a directory to lua's package.path</td></tr>
 <tr class="odd"><td><a href="mod_lua.html#luaquickhandler">LuaQuickHandler /path/to/script.lua hook_function_name</a></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Provide a hook for the quick handler of request processing</td></tr>
 <tr><td><a href="mod_lua.html#luaroot">LuaRoot /path/to/a/directory</a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Specify the base path for resolving relative paths for mod_lua directives</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luascope">LuaScope once|request|conn|thread</a></td><td> once </td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">One of once, request, conn -- default is once</td></tr>
+<tr class="odd"><td><a href="mod_lua.html#luascope">LuaScope once|request|conn|thread|server [min] [max]</a></td><td> once </td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">One of once, request, conn, thread -- default is once</td></tr>
 <tr><td><a href="mpm_common.html#maxconnectionsperchild" id="M" name="M">MaxConnectionsPerChild <var>number</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Limit on the number of connections that an individual child server
 will handle during its life</td></tr>
 <tr class="odd"><td><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests <var>Anzahl</var></a></td><td> 100 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Anzahl der Anfragen, die bei einer persistenten Verbindung
@@ -845,7 +845,7 @@ CGI-Skripten</td></tr>
 <tr><td><a href="mod_cgi.html#scriptlogbuffer">ScriptLogBuffer <var>bytes</var></a></td><td> 1024 </td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Maximum amount of PUT or POST requests that will be recorded
 in the scriptlog</td></tr>
 <tr class="odd"><td><a href="mod_cgi.html#scriptloglength">ScriptLogLength <var>bytes</var></a></td><td> 10385760 </td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Size limit of the CGI script logfile</td></tr>
-<tr><td><a href="mod_cgid.html#scriptsock">ScriptSock <var>file-path</var></a></td><td> logs/cgisock </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">The filename prefix of the socket to use for communication with
+<tr><td><a href="mod_cgid.html#scriptsock">ScriptSock <var>file-path</var></a></td><td> cgisock </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">The filename prefix of the socket to use for communication with
 the cgi daemon</td></tr>
 <tr class="odd"><td><a href="mod_nw_ssl.html#securelisten">SecureListen [<var>IP-address</var>:]<var>portnumber</var>
 <var>Certificate-Name</var> [MUTUAL]</a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Enables SSL encryption for the specified port</td></tr>
