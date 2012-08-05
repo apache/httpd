@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) htpasswd: Use correct file mode for checking if file is writable.
+     PR 45923. [Stefan Fritsch]
+
   *) core: Add post_perdir_config hook.
      [Steinar Gunderson <sgunderson bigfoot.com>]
 
