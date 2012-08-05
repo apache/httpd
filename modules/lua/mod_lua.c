@@ -1156,7 +1156,8 @@ static const char *lua_authz_parse(cmd_parms *cmd, const char *require_line,
     const char *provider_name;
     lua_authz_provider_spec *spec;
 
-    provider_name = (const char*) ap_getword(cmd->temp_pool, &cmd->directive->args, ' ');
+    apr_pool_userdata_get((void**)&provider_name, AUTHZ_PROVIDER_NAME_NOTE,
+                          cmd->temp_pool);
     ap_assert(provider_name != NULL);
 
     spec = apr_hash_get(lua_authz_providers, provider_name, APR_HASH_KEY_STRING);
