@@ -225,7 +225,7 @@ local timeout = 60
 -- Function for querying the database for saved vhost entries
 function query_vhosts(host)
     if not cached_vhosts[host] or (cached_vhosts[host] and cached_vhosts[host].updated &lt; os.time() - timeout) then
-        local db = apache2.dbopen("mod_dbd")
+        local db = apache2.dbopen(r,"mod_dbd")
         local _host = db:escape(_host)
         local res, err = db:query( ("SELECT `destination` FROM `vhosts` WHERE `hostname` = '%s' LIMIT 1"):format(_host) )
         if res and #res == 1 then
@@ -335,7 +335,7 @@ end
 -- Function for querying the database for the account's password (stored as a salted SHA-1 hash)
 function fetch_password(user)
     if not accounts[user] or (accounts[user] and accounts[user].updated &lt; os.time() - timeout) then
-        local db = apache2.dbopen("mod_dbd")
+        local db = apache2.dbopen(r, "mod_dbd")
         local usr = db:escape(user)
         local res, err = db:query( ("SELECT `password` FROM `accounts` WHERE `user` = '%s' LIMIT 1"):format(usr) )
         if res and #res == 1 then
@@ -377,7 +377,7 @@ end
 
 </section>
 
-<section id="map_handler"><title>Example 4: Authorization using LuaAuthzProvider</title>
+<section id="authz"><title>Example 4: Authorization using LuaAuthzProvider</title>
 
 <highlight language="config">
 LuaAuthzProvider rights /path/to/lua/script.lua rights_handler
@@ -431,8 +431,12 @@ LuaMaphandler ^/portal/([a-z]+)/   /path/to/lua/script.lua handle_$1
 
 
 
+
+
+
 <section id="String_manipulation">
 <title>HTTPd bindings: String manipulation</title>
+<p>
 <a href="#apache2.base64_encode">apache2.base64_encode</a>
 <br/>
 <a href="#apache2.base64_decode">apache2.base64_decode</a>
@@ -451,6 +455,7 @@ LuaMaphandler ^/portal/([a-z]+)/   /path/to/lua/script.lua handle_$1
 <br/>
 <a href="#apache2.escape_logitem">apache2.escape_logitem</a>
 <br/>
+</p>
 <section id="apache2.base64_decode">
 <title>apache2.base64_decode(
     request_rec<em> r</em>,  string<em> string</em>
@@ -461,7 +466,7 @@ Decodes a base64-encoded string
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -476,7 +481,6 @@ Decodes a base64-encoded string
 <td>The string to decode</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
@@ -484,15 +488,13 @@ The base64-decoded string.
         </p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 local str = "This is a test"
 local encoded = apache2.base64_encode(str)
 local decoded = apache2.base64_decode(encoded)
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.base64_encode">
 <title>apache2.base64_encode(
@@ -504,7 +506,7 @@ Encodes a string using the base64 encoding scheme.
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -519,18 +521,15 @@ Encodes a string using the base64 encoding scheme.
 <td>The string to encode</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 local str = "This is a test"
 local encoded = apache2.base64_encode(str)
 local decoded = apache2.base64_decode(encoded)
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.escape">
 <title>apache2.escape(
@@ -542,7 +541,7 @@ url-escapes a string
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -557,7 +556,6 @@ url-escapes a string
 <td>The string to escape</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
@@ -565,15 +563,13 @@ The URL-escaped string.
         </p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 local str = "This is a test"
 local escaped = apache2.escape(str)
 print(escaped) -- prints "This+is+a+test"
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.escape_logitem">
 <title>apache2.escape_logitem(
@@ -585,7 +581,7 @@ Escape a string for logging
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -600,14 +596,12 @@ Escape a string for logging
 <td>The string to escape</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
 The converted string
         </p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.escapehtml">
 <title>apache2.escapehtml(
@@ -619,7 +613,7 @@ Escapes HTML entities.
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -638,7 +632,6 @@ Escapes HTML entities.
 <td>Whether to escape all non-ASCI characters as &amp;#nnn;</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
@@ -646,15 +639,13 @@ The escaped HTML code.
         </p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 local html = "&lt;b&gt;Testing!&lt;/b&gt;"
 local escaped = apache2.escapehtml(html)
 r:puts(escaped) -- prints "&amp;lt;b&amp;gt;Testing!&amp;lt;/b&amp;gt;"
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.md5">
 <title>apache2.md5(
@@ -666,7 +657,7 @@ Computes an MD5 digest sum based on a string (binary safe)
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -681,7 +672,6 @@ Computes an MD5 digest sum based on a string (binary safe)
 <td>The (binary) string to digest</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
@@ -689,15 +679,13 @@ The MD5 digest sum of the data provided
         </p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 local text = "The quick brown fox jumps over the lazy dog"
 local md5 = apache2.md51(text)
 r:puts(md5) -- prints out "9e107d9d372bb6826bd81d3542a419d6"
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.os_escape_path">
 <title>apache2.os_escape_path(
@@ -709,7 +697,7 @@ convert an OS path to a URL in an OS dependant way.
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -728,7 +716,6 @@ convert an OS path to a URL in an OS dependant way.
 <td>partial if set, assume that the path will be appended to something with a '/' in it (and thus does not prefix "./")</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
@@ -736,13 +723,11 @@ The converted URL
         </p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 local path = ap_os_escape_path("C:/foo/bar.txt")
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.sha1">
 <title>apache2.sha1(
@@ -754,7 +739,7 @@ Computes an SHA-1 digest sum based on a string (binary safe)
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -769,7 +754,6 @@ Computes an SHA-1 digest sum based on a string (binary safe)
 <td>The (binary) string to digest</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
@@ -777,15 +761,13 @@ The SHA-1 digest sum of the data provided
         </p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 local text = "The quick brown fox jumps over the lazy dog"
 local sha1 = apache2.sha1(text)
 r:puts(sha1) -- prints out "2fd4e1c67a2d28fced849ee1bb76e7391b93eb12"
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.unescape">
 <title>apache2.unescape(
@@ -797,7 +779,7 @@ unescapes an URL-escaped string
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -812,7 +794,6 @@ unescapes an URL-escaped string
 <td>The string to unescape</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
@@ -820,20 +801,19 @@ The URL-unescaped string
         </p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 local str = "This+is+a+test"
 local unescaped = apache2.unescape(str)
 print(unescaped) -- prints "This is a test"
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 </section>
 
 <section id="Request_handling">
 <title>HTTPd bindings: Request handling</title>
+<p>
 <a href="#apache2.sendfile">apache2.sendfile</a>
 <br/>
 <a href="#apache2.port">apache2.port</a>
@@ -884,6 +864,7 @@ print(unescaped) -- prints "This is a test"
 <br/>
 <a href="#apache2.satisfies">apache2.satisfies</a>
 <br/>
+</p>
 <section id="apache2.add_input_filter">
 <title>apache2.add_input_filter(
     request_rec<em> r</em>,  string<em> filter</em>
@@ -894,7 +875,7 @@ Adds an input filter to the request
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -909,16 +890,13 @@ Adds an input filter to the request
 <td>The name of the filter handler to add</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 apache2.add_input_filter(r, "SPAM_FILTER") -- Check input for spam..?
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.add_output_filter">
 <title>apache2.add_output_filter(
@@ -930,7 +908,7 @@ Adds an output filter to the request
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -945,16 +923,13 @@ Adds an output filter to the request
 <td>The name of the filter handler to add</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 apache2.add_input_filter(r, "INCLUDES") -- Turn out output into an SSI-enabled document.
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.allowoverrides">
 <title>apache2.allowoverrides(
@@ -966,7 +941,7 @@ Returns the currently allowed overrides for this context (AuthCfg, Options etc)
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -977,7 +952,6 @@ Returns the currently allowed overrides for this context (AuthCfg, Options etc)
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
@@ -985,16 +959,14 @@ The currently allowed overrides for this context (AuthCfg, Options etc)
         </p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 local ctx = apache2.allowoverrides(r)
 if ctx:match("AuthCfg") then
     r:puts("You are allowed to override AuthCfg stuff in your .htaccess")
 end
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.auth_name">
 <title>apache2.auth_name(
@@ -1006,7 +978,7 @@ Returns the current Authorization realm
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -1017,14 +989,12 @@ Returns the current Authorization realm
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
 The current authorization realm
         </p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.auth_type">
 <title>apache2.auth_type(
@@ -1036,7 +1006,7 @@ Returns the current authentication type used in the request
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -1047,14 +1017,12 @@ Returns the current authentication type used in the request
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
 The current Authorization type used in the request
         </p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.context_document_root">
 <title>apache2.context_document_root(
@@ -1066,7 +1034,7 @@ Get the context_document_root for a request. This is a generalization of the doc
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -1077,9 +1045,7 @@ Get the context_document_root for a request. This is a generalization of the doc
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.context_prefix">
 <title>apache2.context_prefix(
@@ -1091,7 +1057,7 @@ Get the context_prefix for a request. The context_prefix URI prefix maps to the 
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -1102,9 +1068,7 @@ Get the context_prefix for a request. The context_prefix URI prefix maps to the 
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.flush">
 <title>apache2.flush(
@@ -1116,7 +1080,7 @@ Flushes the content buffer, writing everything to the client immediately.
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -1127,17 +1091,14 @@ Flushes the content buffer, writing everything to the client immediately.
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 r:puts("This is buffered")
 apache2.flush(r) -- now it's written to the client.
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.get_basic_auth_pw">
 <title>apache2.get_basic_auth_pw(
@@ -1149,7 +1110,7 @@ Returns the password from a basic authorization request or nil if none was suppl
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -1160,14 +1121,12 @@ Returns the password from a basic authorization request or nil if none was suppl
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
 The password from a basic authorization request or nil if none was supplied
         </p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.get_limit_req_body">
 <title>apache2.get_limit_req_body(
@@ -1179,7 +1138,7 @@ Returns the current request body size limit
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -1190,7 +1149,6 @@ Returns the current request body size limit
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
@@ -1198,14 +1156,12 @@ The current request body size limit
         </p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 local limit = apache2.get_limit_req_body(r)
 r:puts("You can't upload files bigger than ", limit, " bytes!")
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.get_server_name">
 <title>apache2.get_server_name(
@@ -1217,9 +1173,8 @@ Returns the current server name from the request
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
-            None<br/>
 </p>
+<p>None</p>
 <p>
 <em>Return value(s):</em>
 <br/>
@@ -1227,14 +1182,12 @@ The server name
         </p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 local name = apache2.get_server_name(r)
 r:puts("The ServerName is set to: ", name)
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.getenv">
 <title>apache2.getenv(
@@ -1246,7 +1199,7 @@ Returns the value of an environment variable
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -1261,7 +1214,6 @@ Returns the value of an environment variable
 <td>key</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
@@ -1269,16 +1221,14 @@ The queried value
         </p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 local env = apache2.getenv("HTTP_HOST")
 if env and env:len() &gt; 0 then
     r:puts("HTTP_HOST equals ", env)
 end
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.make_etag">
 <title>apache2.make_etag(
@@ -1290,7 +1240,7 @@ Constructs an entity tag from the resource information.  If it's a real file, bu
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -1305,14 +1255,12 @@ Constructs an entity tag from the resource information.  If it's a real file, bu
 <td>force_weak Force the entity tag to be weak - it could be modified again in as short an interval.</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
 The entity tag
         </p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.options">
 <title>apache2.options(
@@ -1324,7 +1272,7 @@ Returns the currently allowed options for this context (Indexes, MultiViews etc)
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -1335,7 +1283,6 @@ Returns the currently allowed options for this context (Indexes, MultiViews etc)
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
@@ -1343,16 +1290,14 @@ The currently allowed options for this context.
         </p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 local ctx = apache2.options(r)
 if ctx:match("MultiViews") then
     r:puts("MultiViews is enabled!")
 end
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.port">
 <title>apache2.port(
@@ -1364,7 +1309,7 @@ Returns the port currently being used by the request
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -1375,7 +1320,6 @@ Returns the port currently being used by the request
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
@@ -1383,14 +1327,12 @@ The current port used by the request
         </p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 local port = apache2.port(r)
 r:puts("We are listening on port ", port)
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.request_has_body">
 <title>apache2.request_has_body(
@@ -1402,7 +1344,7 @@ Returns true if the request has a body(POST/PUT), false otherwise
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -1413,7 +1355,6 @@ Returns true if the request has a body(POST/PUT), false otherwise
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
@@ -1421,15 +1362,13 @@ True if the request has a body(POST/PUT), false otherwise
         </p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 if apache2.request_has_body(r) then
     -- do stuff with the req body
 end
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.requestbody">
 <title>apache2.requestbody(
@@ -1441,7 +1380,7 @@ Reads the request body. If a filename is specified, the request body will be wri
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -1456,7 +1395,6 @@ Reads the request body. If a filename is specified, the request body will be wri
 <td>filename</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
@@ -1464,7 +1402,7 @@ The number of bytes written if a filename was specified, otherwise it returns th
         </p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 if tonumber(r.headers_in['Content-Length'] or 0) &lt; 10000 then
     local smallfile = apache2.requestbody(r) -- fetch a small file into memory
@@ -1474,9 +1412,7 @@ else
     r:puts("I saved the uploaded file in a temp directory. Total bytes written was: ", read)
 end
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.satisfies">
 <title>apache2.satisfies(
@@ -1488,7 +1424,7 @@ Returns how the requires lines must be met.
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -1499,7 +1435,6 @@ Returns how the requires lines must be met.
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
@@ -1507,16 +1442,14 @@ How the requirements must be met (SATISFY_ANY, SATISFY_ALL, SATISFY_NOSPEC).
         </p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 local how = apache2.satisfies(r)
 if how == "SATISFY_ANY" then
     -- ...
 end
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.send_interim_response">
 <title>apache2.send_interim_response(
@@ -1528,7 +1461,7 @@ Sends an interim (HTTP 1xx) response immediately.
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -1543,16 +1476,13 @@ Sends an interim (HTTP 1xx) response immediately.
 <td>send_headers Whether to send&amp;clear headers in r-&gt;headers_out</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 apache2.send_interim_response(r, false)
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.sendfile">
 <title>apache2.sendfile(
@@ -1564,7 +1494,7 @@ Sends a file to the client via sendfile() if possible.
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -1579,16 +1509,13 @@ Sends a file to the client via sendfile() if possible.
 <td>The file to send</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 apache2.sendfile(r, "/foo/bar/test.png") -- sends /foo/bar/test.png via sendfile
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.set_context_prefix">
 <title>apache2.set_context_prefix(
@@ -1600,7 +1527,7 @@ Set context_prefix and context_document_root for a request.
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -1619,9 +1546,7 @@ Set context_prefix and context_document_root for a request.
 <td>The corresponding directory on disk, without trailing slash</td>
 </tr>
 </table>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.set_document_root">
 <title>apache2.set_document_root(
@@ -1633,7 +1558,7 @@ Sets the document root of the request.
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -1648,19 +1573,16 @@ Sets the document root of the request.
 <td>root</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 -- Suppose our real document root is /var/bar, then...
 if r.hostname == "www.foo.com" then
     apache2.set_document_root(r, "/www/foo") -- change document root on the fly
 end
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.set_keepalive">
 <title>apache2.set_keepalive(
@@ -1672,7 +1594,7 @@ Sets the keepalive status for this request
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -1683,14 +1605,12 @@ Sets the keepalive status for this request
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
 True if keepalive can be set, false otherwise
         </p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.setenv">
 <title>apache2.setenv(
@@ -1702,7 +1622,7 @@ Sets the value of an environment variable
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -1721,16 +1641,13 @@ Sets the value of an environment variable
 <td>val</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 apache2.setenv("FOO_VAL", "bar and stuff")
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.some_auth_required">
 <title>apache2.some_auth_required(
@@ -1742,7 +1659,7 @@ Returns true if authorization is required for this request
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -1753,7 +1670,6 @@ Returns true if authorization is required for this request
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
@@ -1761,26 +1677,26 @@ True if auth is required, false if not.
         </p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 if apache2.some_auth_required(r) then
     print("debug: auth is required for this request\n")
 end
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 </section>
 
 <section id="Parser_functions">
 <title>HTTPd bindings: Parser functions</title>
+<p>
 <a href="#apache2.expr">apache2.expr</a>
 <br/>
 <a href="#apache2.regex">apache2.regex</a>
 <br/>
 <a href="#apache2.strcmp_match">apache2.strcmp_match</a>
 <br/>
+</p>
 <section id="apache2.expr">
 <title>apache2.expr(
     request_rec<em> r</em>,  string<em> expression</em>
@@ -1791,7 +1707,7 @@ Evaluates an ap_expr (think &lt;If ...&gt;) expression and returns true if the e
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -1806,7 +1722,6 @@ Evaluates an ap_expr (think &lt;If ...&gt;) expression and returns true if the e
 <td>expression</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
@@ -1814,15 +1729,13 @@ True if the expression evaluates as true, false if the expression doesn't evalua
         </p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 if apache2.expr("%{REQUEST_URI} =~ /force-gzip") then
     apache2.add_output_filter(r, "DEFLATE")
 end
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.regex">
 <title>apache2.regex(
@@ -1834,7 +1747,7 @@ Evaluates a regular expression and, if it matches the source string, captures th
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -1853,7 +1766,6 @@ Evaluates a regular expression and, if it matches the source string, captures th
 <td>the source string to capture from</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
@@ -1861,16 +1773,14 @@ True if the expression evaluates as true, false if the expression doesn't evalua
         </p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 local matches = apache2.regex(r, [[(\S+) kitty]], "Hello kitty")
 if matches and matches[1] then 
     r:puts("You said ", matches[1], " to kitty")
 end
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.strcmp_match">
 <title>apache2.strcmp_match(
@@ -1882,7 +1792,7 @@ Determines if a string matches a pattern containing the wildcards '?' or '*'
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -1901,7 +1811,6 @@ Determines if a string matches a pattern containing the wildcards '?' or '*'
 <td>Whether to ignore case when matching</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
@@ -1909,20 +1818,19 @@ True if the two strings match, false otherwise.
         </p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 if apache2.strcmp_match("foo.bar", "foo.*") then
     r:puts("It matches!")
 end
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 </section>
 
 <section id="Server_settings">
 <title>HTTPd bindings: Server settings</title>
+<p>
 <a href="#apache2.add_version_component">apache2.add_version_component</a>
 <br/>
 <a href="#apache2.banner">apache2.banner</a>
@@ -1955,6 +1863,7 @@ end
 <br/>
 <a href="#apache2.exists_config_define">apache2.exists_config_define</a>
 <br/>
+</p>
 <section id="apache2.add_version_component">
 <title>apache2.add_version_component(
     request_rec<em> r</em>,  string<em> component</em>
@@ -1965,7 +1874,7 @@ Adds a component to the server description and banner strings
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -1980,18 +1889,15 @@ Adds a component to the server description and banner strings
 <td>The component to add</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 if not apache2.banner():match("FooModule") then -- Make sure we haven't added it already
     apache2.add_version_component(r, "FooModule/1.0")
 end
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.banner">
 <title>apache2.banner(
@@ -2003,16 +1909,14 @@ Returns the server banner
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
-            None<br/>
 </p>
+<p>None</p>
 <p>
 <em>Return value(s):</em>
 <br/>
 The server banner
         </p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.custom_response">
 <title>apache2.custom_response(
@@ -2024,7 +1928,7 @@ Install a custom response handler for a given status
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -2043,16 +1947,13 @@ Install a custom response handler for a given status
 <td>The custom response.  This can be a static string, a file or a URL</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 apache2.custom_response(r, 404, "Not found!!")
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.exists_config_define">
 <title>apache2.exists_config_define(
@@ -2064,7 +1965,7 @@ Checks for a definition from the server command line
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -2075,18 +1976,15 @@ Checks for a definition from the server command line
 <td>The define to check for</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 if apache2.exists_config_define("FOO") then
     r:puts("This server was started with -DFOO")
 end
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.get_server_built">
 <title>apache2.get_server_built(
@@ -2098,16 +1996,14 @@ Returns the date the server was built
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
-            None<br/>
 </p>
+<p>None</p>
 <p>
 <em>Return value(s):</em>
 <br/>
 The date the server was built
         </p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.is_initial_req">
 <title>apache2.is_initial_req(
@@ -2119,7 +2015,7 @@ Returns true if this is the main request, false if it is a sub-request
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -2130,14 +2026,12 @@ Returns true if this is the main request, false if it is a sub-request
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
 True if this is the main request, false if it is a sub-request
         </p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.loaded_modules">
 <title>apache2.loaded_modules(
@@ -2149,16 +2043,14 @@ Returns a table containing the name (c filename) of all loaded modules
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
-            None<br/>
 </p>
+<p>None</p>
 <p>
 <em>Return value(s):</em>
 <br/>
 A table containing the name (c filename) of all loaded modules
         </p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.module_info">
 <title>apache2.module_info(
@@ -2170,7 +2062,7 @@ Returns information about a specific module (if loaded)
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -2185,14 +2077,12 @@ Returns information about a specific module (if loaded)
 <td>file</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
 The various commands available to this module as a table, or nil if the module wasn't found.
         </p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.mpm_query">
 <title>apache2.mpm_query(
@@ -2204,7 +2094,7 @@ Queries the MPM for a specific value
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -2215,14 +2105,12 @@ Queries the MPM for a specific value
 <td>i</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
 The queried value
         </p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.runtime_dir_relative">
 <title>apache2.runtime_dir_relative(
@@ -2234,7 +2122,7 @@ Returns the path of a file relative to the default runtime directory
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -2249,14 +2137,12 @@ Returns the path of a file relative to the default runtime directory
 <td>file</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
 The path of a file relative to the default runtime directory
         </p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.scoreboard_process">
 <title>apache2.scoreboard_process(
@@ -2268,7 +2154,7 @@ Returns the scoreboard for a server daemon as a table
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -2283,14 +2169,12 @@ Returns the scoreboard for a server daemon as a table
 <td>The server child to query</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
 The scoreboard for a server daemon as a table
         </p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.scoreboard_worker">
 <title>apache2.scoreboard_worker(
@@ -2302,7 +2186,7 @@ Returns the scoreboard for a single thread as a table
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -2321,14 +2205,12 @@ Returns the scoreboard for a single thread as a table
 <td>The thread to query</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
 The scoreboard for a single thread as a table
         </p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.server_info">
 <title>apache2.server_info(
@@ -2340,16 +2222,14 @@ Returns a table with information about the server program
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
-            None<br/>
 </p>
+<p>None</p>
 <p>
 <em>Return value(s):</em>
 <br/>
 A table with information about the server program
         </p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.started">
 <title>apache2.started(
@@ -2361,7 +2241,7 @@ Returns the time when the server was (re)started
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -2372,14 +2252,12 @@ Returns the time when the server was (re)started
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
 The time when the server was (re)started
         </p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.state_query">
 <title>apache2.state_query(
@@ -2391,7 +2269,7 @@ Query the server for some state information
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -2402,17 +2280,14 @@ Query the server for some state information
 <td>Which information is requested</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 local gen = apache2.state_query(2)
 r:puts("This is generation no. " .. gen .. " of the top-level parent")
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.terminate">
 <title>apache2.terminate(
@@ -2424,15 +2299,14 @@ Kills off a server process. This has no other use than to show how dangerous mod
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
-            None<br/>
 </p>
-<br/>
-<br/>
+<p>None</p>
+<p> </p>
 </section>
 </section>
 <section id="Database_connectivity">
 <title>HTTPd bindings: Database connectivity</title>
+<p>
 <a href="#apache2.dbopen">apache2.dbopen</a>
 <br/>
 <a href="#db:query">db:query</a>
@@ -2441,17 +2315,18 @@ Kills off a server process. This has no other use than to show how dangerous mod
 <br/>
 <a href="#db:close">db:close</a>
 <br/>
+</p>
 <section id="apache2.dbopen">
 <title>apache2.dbopen(
     request_rec<em> r</em>,  string<em> dbtype</em>,  string<em> conn_string</em>
     )
     </title>
 <p>
-Opens up a new database connection. See the DB functions for mod_pLua for more info on this.
+Opens up a new database connection.
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -2470,7 +2345,6 @@ Opens up a new database connection. See the DB functions for mod_pLua for more i
 <td>connection string</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
@@ -2478,7 +2352,7 @@ The database connection as a table with functions, or nil if the connection fail
         </p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 local db, error = apache2.dbopen(r, "mod_dbd")
 if error then
@@ -2487,9 +2361,7 @@ else
     -- DB stuff here
 end
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="db:close">
 <title>db:close(
@@ -2501,7 +2373,7 @@ Closes a database connection
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -2512,17 +2384,14 @@ Closes a database connection
 <td>The mod_lua request handle</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 local db = apache2.dbopen(r, "mod_dbd") -- open a db connection
 db:close() -- close it down
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="db:do">
 <title>db:do(
@@ -2534,7 +2403,7 @@ Executes a statement that doesn't return a result set
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -2549,7 +2418,6 @@ Executes a statement that doesn't return a result set
 <td>The SQL statement to execute</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
@@ -2557,7 +2425,7 @@ If the statement is valid, a table of results are returned. If an error occurred
         </p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 local db = apache2.dbopen(r, "mod_dbd")
 local affected = db:do("DELETE FROM `table` WHERE 1")
@@ -2565,9 +2433,7 @@ if affected then
     r:puts("Affected ", affected, " rows")
 end
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="db:query">
 <title>db:query(
@@ -2579,7 +2445,7 @@ Queries the database for information using the specified statement.
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -2594,7 +2460,6 @@ Queries the database for information using the specified statement.
 <td>The SQL statement to execute</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Return value(s):</em>
 <br/>
@@ -2602,7 +2467,7 @@ If the statement is valid, a table of results are returned. If an error occurred
         </p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 local db = apache2.dbopen(r, "mod_dbd")
 local result, error = db:query("SELECT * FROM `table` WHERE 1")
@@ -2612,17 +2477,17 @@ if result then
     end
 end
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 </section>
 <section id="Miscellaneous">
 <title>HTTPd bindings: Miscellaneous</title>
+<p>
 <a href="#apache2.clock">apache2.clock</a>
 <br/>
 <a href="#apache2.sleep">apache2.sleep</a>
 <br/>
+</p>
 <section id="apache2.clock">
 <title>apache2.clock(
     
@@ -2633,16 +2498,14 @@ Returns the current time in microseconds.
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
-            None<br/>
 </p>
+<p>None</p>
 <p>
 <em>Return value(s):</em>
 <br/>
 The current time in microseconds.
         </p>
-<br/>
-<br/>
+<p> </p>
 </section>
 <section id="apache2.sleep">
 <title>apache2.sleep(
@@ -2654,7 +2517,7 @@ Sleeps for a while. Floating point values can be used to sleep for less than a s
         </p>
 <p>
 <em>Arguments:</em>
-<br/>
+</p>
 <table border="1">
 <tr>
 <th>Argument</th>
@@ -2665,19 +2528,16 @@ Sleeps for a while. Floating point values can be used to sleep for less than a s
 <td>The number of seconds to sleep.</td>
 </tr>
 </table>
-</p>
 <p>
 <em>Example:</em>
-<br/>
+</p>
 <highlight language="lua">
 r:puts("this is ")
 apache2.flush(r)
 apache2.sleep(0.25) -- sleep for a quarter second.
 r:puts("delayed")
         </highlight>
-</p>
-<br/>
-<br/>
+<p> </p>
 </section>
 </section>
 
