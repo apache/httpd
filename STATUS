@@ -143,6 +143,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1367025
                   http://svn.apache.org/viewvc?view=revision&revision=1367042 (CHANGES)
      2.4.x patch: Trunk patch works.
+     rjung: Shouldn't we also add r1367048?
      +1: humbedooh
 
 A list of further possible backports can be found at:
