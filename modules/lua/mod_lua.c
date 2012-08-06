@@ -127,10 +127,6 @@ static void ap_lua_release_state(lua_State* L, ap_lua_vm_spec* spec, request_rec
     }
 }
 
-#if APR_HAS_THREADS
-extern void ap_lua_init_mutex(apr_pool_t *pool, server_rec *s);
-#endif
-
 static ap_lua_vm_spec *create_vm_spec(apr_pool_t **lifecycle_pool,
                                       request_rec *r,
                                       const ap_lua_dir_cfg *cfg,
