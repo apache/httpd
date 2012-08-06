@@ -607,7 +607,7 @@ headers</description>
     <p>The <directive>DefaultRuntimeDir</directive> directive sets the
     directory in which the server will create various run-time files
     (shared memory, locks, etc.). If set as a relative path, the full path
-    will be relative to <directive>ServerRoot</directive></p>
+    will be relative to <directive>ServerRoot</directive>.</p>
 
     <p><strong>Example</strong></p>
    <highlight language="config">
