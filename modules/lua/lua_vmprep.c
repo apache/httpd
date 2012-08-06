@@ -352,7 +352,7 @@ static apr_status_t vm_construct(lua_State **vm, void *params, apr_pool_t *lifec
     return APR_SUCCESS;
 }
 
-ap_lua_vm_spec* copy_vm_spec(apr_pool_t* pool, ap_lua_vm_spec* spec) 
+static ap_lua_vm_spec* copy_vm_spec(apr_pool_t* pool, ap_lua_vm_spec* spec) 
 {
     ap_lua_vm_spec* copied_spec = apr_pcalloc(pool, sizeof(ap_lua_vm_spec));
     copied_spec->bytecode_len = spec->bytecode_len;
