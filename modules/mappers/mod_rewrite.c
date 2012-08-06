@@ -2938,8 +2938,7 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
 
     sconf = ap_get_module_config(cmd->server->module_config, &rewrite_module);
 
-    newmap = apr_palloc(cmd->pool, sizeof(rewritemap_entry));
-    newmap->func = NULL;
+    newmap = apr_pcalloc(cmd->pool, sizeof(rewritemap_entry));
 
     if (strncasecmp(a2, "txt:", 4) == 0) {
         if ((fname = ap_server_root_relative(cmd->pool, a2+4)) == NULL) {
@@ -2950,7 +2949,6 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
         newmap->type      = MAPTYPE_TXT;
         newmap->datafile  = fname;
         newmap->checkfile = fname;
-        newmap->checkfile2= NULL;
         newmap->cachename = apr_psprintf(cmd->pool, "%pp:%s",
                                          (void *)cmd->server, a1);
     }
@@ -2963,7 +2961,6 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
         newmap->type      = MAPTYPE_RND;
         newmap->datafile  = fname;
         newmap->checkfile = fname;
-        newmap->checkfile2= NULL;
         newmap->cachename = apr_psprintf(cmd->pool, "%pp:%s",
                                          (void *)cmd->server, a1);
     }
@@ -3013,6 +3010,7 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
         if (dbd_prepare == NULL) {
             return "RewriteMap types dbd and fastdbd require mod_dbd!";
         }
+        newmap->checkfile = NULL;
         if ((a2[0] == 'd') || (a2[0] == 'D')) {
             newmap->type = MAPTYPE_DBD;
             fname = a2+4;
@@ -3037,17 +3035,10 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
         }
 
         newmap->type      = MAPTYPE_PRG;
-        newmap->datafile  = NULL;
         newmap->checkfile = newmap->argv[0];
-        newmap->checkfile2= NULL;
-        newmap->cachename = NULL;
     }
     else if (strncasecmp(a2, "int:", 4) == 0) {
         newmap->type      = MAPTYPE_INT;
-        newmap->datafile  = NULL;
-        newmap->checkfile = NULL;
-        newmap->checkfile2= NULL;
-        newmap->cachename = NULL;
         newmap->func      = (char *(*)(request_rec *,char *))
                             apr_hash_get(mapfunc_hash, a2+4, strlen(a2+4));
         if (newmap->func == NULL) {
@@ -3064,12 +3055,9 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
         newmap->type      = MAPTYPE_TXT;
         newmap->datafile  = fname;
         newmap->checkfile = fname;
-        newmap->checkfile2= NULL;
         newmap->cachename = apr_psprintf(cmd->pool, "%pp:%s",
                                          (void *)cmd->server, a1);
     }
-    newmap->fpin  = NULL;
-    newmap->fpout = NULL;
 
     if (newmap->checkfile
         && (apr_stat(&st, newmap->checkfile, APR_FINFO_MIN,
