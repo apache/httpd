@@ -788,7 +788,7 @@ static const char* hb_config_check(void *baton,
     hb_table_baton_t b;
 
     if (apr_is_empty_table(params)) {
-        return "SerfCluster Heartbeat requires a path to the heartbat information.";
+        return "SerfCluster Heartbeat requires a path to the heartbeat information.";
     }
 
     b.p = cmd->pool;
