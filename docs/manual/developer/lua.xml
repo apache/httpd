@@ -418,7 +418,7 @@ end
 <section id="map_handler"><title>Example 5: Overlays using LuaMapHandler</title>
 
 <highlight language="config">
-LuaMaphandler ^/portal/([a-z]+)/   /path/to/lua/script.lua handle_$1
+LuaMapHandler ^/portal/([a-z]+)/   /path/to/lua/script.lua handle_$1
 </highlight>
 </section>
 
@@ -818,10 +818,6 @@ print(unescaped) -- prints "This is a test"
 <br/>
 <a href="#apache2.port">apache2.port</a>
 <br/>
-<a href="#apache2.getenv">apache2.getenv</a>
-<br/>
-<a href="#apache2.setenv">apache2.setenv</a>
-<br/>
 <a href="#apache2.options">apache2.options</a>
 <br/>
 <a href="#apache2.allowoverrides">apache2.allowoverrides</a>
@@ -829,8 +825,6 @@ print(unescaped) -- prints "This is a test"
 <a href="#apache2.requestbody">apache2.requestbody</a>
 <br/>
 <a href="#apache2.add_input_filter">apache2.add_input_filter</a>
-<br/>
-<a href="#apache2.add_output_filter">apache2.add_output_filter</a>
 <br/>
 <a href="#apache2.get_basic_auth_pw">apache2.get_basic_auth_pw</a>
 <br/>
@@ -842,11 +836,9 @@ print(unescaped) -- prints "This is a test"
 <br/>
 <a href="#apache2.some_auth_required">apache2.some_auth_required</a>
 <br/>
-<a href="#apache2.context_document_root">apache2.context_document_root</a>
-<br/>
-<a href="#apache2.context_prefix">apache2.context_prefix</a>
-<br/>
 <a href="#apache2.set_context_prefix">apache2.set_context_prefix</a>
+<br/>
+<a href="#apache2.get_server_name_for_url">apache2.get_server_name_for_url</a>
 <br/>
 <a href="#apache2.set_keepalive">apache2.set_keepalive</a>
 <br/>
@@ -895,39 +887,6 @@ Adds an input filter to the request
 </p>
 <highlight language="lua">
 apache2.add_input_filter(r, "SPAM_FILTER") -- Check input for spam..?
-        </highlight>
-<p> </p>
-</section>
-<section id="apache2.add_output_filter">
-<title>apache2.add_output_filter(
-    request_rec<em> r</em>,  string<em> filter</em>
-    )
-    </title>
-<p>
-Adds an output filter to the request
-        </p>
-<p>
-<em>Arguments:</em>
-</p>
-<table border="1">
-<tr>
-<th>Argument</th>
-<th>Description</th>
-</tr>
-<tr>
-<td>r</td>
-<td>The mod_lua request handle</td>
-</tr>
-<tr>
-<td>filter</td>
-<td>The name of the filter handler to add</td>
-</tr>
-</table>
-<p>
-<em>Example:</em>
-</p>
-<highlight language="lua">
-apache2.add_input_filter(r, "INCLUDES") -- Turn out output into an SSI-enabled document.
         </highlight>
 <p> </p>
 </section>
@@ -1022,52 +981,6 @@ Returns the current authentication type used in the request
 <br/>
 The current Authorization type used in the request
         </p>
-<p> </p>
-</section>
-<section id="apache2.context_document_root">
-<title>apache2.context_document_root(
-    request_rec<em> r</em>
-    )
-    </title>
-<p>
-Get the context_document_root for a request. This is a generalization of the document root, which is too limited in the presence of mappers like mod_userdir and mod_alias. The context_document_root is the directory on disk that maps to the context_prefix URI prefix.
-        </p>
-<p>
-<em>Arguments:</em>
-</p>
-<table border="1">
-<tr>
-<th>Argument</th>
-<th>Description</th>
-</tr>
-<tr>
-<td>r</td>
-<td>The mod_lua request handle</td>
-</tr>
-</table>
-<p> </p>
-</section>
-<section id="apache2.context_prefix">
-<title>apache2.context_prefix(
-    request_rec<em> r</em>
-    )
-    </title>
-<p>
-Get the context_prefix for a request. The context_prefix URI prefix maps to the context_document_root on disk.
-        </p>
-<p>
-<em>Arguments:</em>
-</p>
-<table border="1">
-<tr>
-<th>Argument</th>
-<th>Description</th>
-</tr>
-<tr>
-<td>r</td>
-<td>The mod_lua request handle</td>
-</tr>
-</table>
 <p> </p>
 </section>
 <section id="apache2.flush">
@@ -1165,7 +1078,7 @@ r:puts("You can't upload files bigger than ", limit, " bytes!")
 </section>
 <section id="apache2.get_server_name">
 <title>apache2.get_server_name(
-    
+    request_rec<em> r</em>
     )
     </title>
 <p>
@@ -1174,7 +1087,16 @@ Returns the current server name from the request
 <p>
 <em>Arguments:</em>
 </p>
-<p>None</p>
+<table border="1">
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>r</td>
+<td>The mod_lua request handle</td>
+</tr>
+</table>
 <p>
 <em>Return value(s):</em>
 <br/>
@@ -1189,13 +1111,14 @@ r:puts("The ServerName is set to: ", name)
         </highlight>
 <p> </p>
 </section>
-<section id="apache2.getenv">
-<title>apache2.getenv(
-    request_rec<em> r</em>,  string<em> key</em>
+<section id="apache2.get_server_name_for_url">
+<title>apache2.get_server_name_for_url(
+    request_rec<em> r</em>
     )
     </title>
 <p>
-Returns the value of an environment variable
+Get the current server name from the request for the purposes of using in a URL. 
+If the server name is an IPv6 literal address, it will be returned in URL format (e.g., "[fe80::1]").
         </p>
 <p>
 <em>Arguments:</em>
@@ -1209,25 +1132,7 @@ Returns the value of an environment variable
 <td>r</td>
 <td>The mod_lua request handle</td>
 </tr>
-<tr>
-<td>key</td>
-<td>key</td>
-</tr>
 </table>
-<p>
-<em>Return value(s):</em>
-<br/>
-The queried value
-        </p>
-<p>
-<em>Example:</em>
-</p>
-<highlight language="lua">
-local env = apache2.getenv("HTTP_HOST")
-if env and env:len() &gt; 0 then
-    r:puts("HTTP_HOST equals ", env)
-end
-        </highlight>
 <p> </p>
 </section>
 <section id="apache2.make_etag">
@@ -1372,7 +1277,7 @@ end
 </section>
 <section id="apache2.requestbody">
 <title>apache2.requestbody(
-    request_rec<em> r</em>,  string<em> filename</em>
+    request_rec<em> r</em>,  number<em> size</em>,  string<em> filename</em>
     )
     </title>
 <p>
@@ -1391,8 +1296,12 @@ Reads the request body. If a filename is specified, the request body will be wri
 <td>The mod_lua request handle</td>
 </tr>
 <tr>
+<td>size</td>
+<td>The maximum size allowed, or 0/nil for unlimited size</td>
+</tr>
+<tr>
 <td>filename</td>
-<td>filename</td>
+<td>The file to save the output to, or nil to return it as a string</td>
 </tr>
 </table>
 <p>
@@ -1405,10 +1314,10 @@ The number of bytes written if a filename was specified, otherwise it returns th
 </p>
 <highlight language="lua">
 if tonumber(r.headers_in['Content-Length'] or 0) &lt; 10000 then
-    local smallfile = apache2.requestbody(r) -- fetch a small file into memory
+    local smallfile = apache2.requestbody(r, 10000) -- fetch a small file into memory
     r:puts("I saved the uploaded file in memory")
 else
-    local read = apache2.requestbody(r, "/path/to/tmp")
+    local read = apache2.requestbody(r, 0, "/path/to/tmp")
     r:puts("I saved the uploaded file in a temp directory. Total bytes written was: ", read)
 end
         </highlight>
@@ -1612,43 +1521,6 @@ True if keepalive can be set, false otherwise
         </p>
 <p> </p>
 </section>
-<section id="apache2.setenv">
-<title>apache2.setenv(
-    request_rec<em> r</em>,  string<em> key</em>,  string<em> val</em>
-    )
-    </title>
-<p>
-Sets the value of an environment variable
-        </p>
-<p>
-<em>Arguments:</em>
-</p>
-<table border="1">
-<tr>
-<th>Argument</th>
-<th>Description</th>
-</tr>
-<tr>
-<td>r</td>
-<td>The mod_lua request handle</td>
-</tr>
-<tr>
-<td>key</td>
-<td>key</td>
-</tr>
-<tr>
-<td>val</td>
-<td>val</td>
-</tr>
-</table>
-<p>
-<em>Example:</em>
-</p>
-<highlight language="lua">
-apache2.setenv("FOO_VAL", "bar and stuff")
-        </highlight>
-<p> </p>
-</section>
 <section id="apache2.some_auth_required">
 <title>apache2.some_auth_required(
     request_rec<em> r</em>
@@ -1732,7 +1604,7 @@ True if the expression evaluates as true, false if the expression doesn't evalua
 </p>
 <highlight language="lua">
 if apache2.expr("%{REQUEST_URI} =~ /force-gzip") then
-    apache2.add_output_filter(r, "DEFLATE")
+    r:addoutputfilter("DEFLATE")
 end
         </highlight>
 <p> </p>
@@ -2322,7 +2194,7 @@ Kills off a server process. This has no other use than to show how dangerous mod
     )
     </title>
 <p>
-Opens up a new database connection.
+Opens up a new database connection. See the DB functions for mod_pLua for more info on this.
         </p>
 <p>
 <em>Arguments:</em>
@@ -2540,5 +2412,4 @@ r:puts("delayed")
 <p> </p>
 </section>
 </section>
-
 </manualpage>
