@@ -17,10 +17,11 @@ Changes with Apache 2.5.0
   *) mod_lua: Add new directive LuaCodeCache for controlling in-memory
      caching of lua scripts. [Daniel Gruno]
 
-  *) core: Respect DefaultRuntimeDir/DEFAULT_REL_RUNTIMEDIR for the
-     scoreboard (ScoreBoardFile).  mod_lbmethod_heartbeat, mod_heartmonitor:
-     Respect DefaultRuntimeDir/DEFAULT_REL_RUNTIMEDIR for the heartbeat
-     storage file.  [Jeff Trawick]
+  *) The following now respect DefaultRuntimeDir/DEFAULT_REL_RUNTIMEDIR:
+     - APIs: ap_log_pid(), ap_remove_pid, ap_read_pid()
+     - core: the scoreboard (ScoreBoardFile) and pid file (PidFile)
+     - mod_lbmethod_heartbeat, mod_heartmonitor: heartbeat storage file
+     [Jeff Trawick]
 
   *) mod_ssl: Add RFC 5878 support. [Ben Laurie]
 
