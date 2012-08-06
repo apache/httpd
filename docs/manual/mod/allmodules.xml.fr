@@ -90,7 +90,7 @@
   <modulefile>mod_request.xml</modulefile>
   <modulefile>mod_rewrite.xml.fr</modulefile>
   <modulefile>mod_sed.xml.fr</modulefile>
-  <modulefile>mod_session.xml</modulefile>
+  <modulefile>mod_session.xml.fr</modulefile>
   <modulefile>mod_session_cookie.xml</modulefile>
   <modulefile>mod_session_crypto.xml</modulefile>
   <modulefile>mod_session_dbd.xml</modulefile>

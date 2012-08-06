@@ -79,7 +79,7 @@
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The filename prefix of the socket to use for communication with
 the cgi daemon</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ScriptSock <var>file-path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ScriptSock logs/cgisock</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ScriptSock cgisock</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cgid</td></tr>
@@ -91,6 +91,10 @@ the cgi daemon</td></tr>
     root). To maintain the security of communications with CGI
     scripts, it is important that no other user has permission to
     write in the directory where the socket is located.</p>
+
+    <p>If <var>file-path</var> is not an absolute path, the location specified
+    will be relative to the value of 
+    <code class="directive"><a href="../mod/core.html#defaultruntimedir">DefaultRuntimeDir</a></code>.</p>
 
     <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       ScriptSock /var/run/cgid.sock
