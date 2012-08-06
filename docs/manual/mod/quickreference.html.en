@@ -648,7 +648,7 @@ evaluated.</td></tr>
 <tr class="odd"><td><a href="mod_sed.html#outputsed">OutputSed <var>sed-command</var></a></td><td></td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Sed command for filtering response content</td></tr>
 <tr><td><a href="mod_env.html#passenv" id="P" name="P">PassEnv <var>env-variable</var> [<var>env-variable</var>]
 ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Passes environment variables from the shell</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#pidfile">PidFile <var>filename</var></a></td><td> logs/httpd.pid </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">File where the server records the process ID
+<tr class="odd"><td><a href="mpm_common.html#pidfile">PidFile <var>filename</var></a></td><td> httpd.pid </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">File where the server records the process ID
 of the daemon</td></tr>
 <tr><td><a href="mod_policy.html#policyconditional">PolicyConditional <var>ignore|log|enforce</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable the conditional request policy.</td></tr>
 <tr class="odd"><td><a href="mod_policy.html#policyconditionalurl">PolicyConditionalURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL describing the conditional request policy.</td></tr>

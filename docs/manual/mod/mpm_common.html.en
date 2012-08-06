@@ -430,7 +430,7 @@ spikes</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File where the server records the process ID
 of the daemon</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PidFile <var>filename</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>PidFile logs/httpd.pid</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>PidFile httpd.pid</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
@@ -438,7 +438,7 @@ of the daemon</td></tr>
     <p>The <code class="directive">PidFile</code> directive sets the file to
     which the server records the process id of the daemon. If the
     filename is not absolute then it is assumed to be relative to the
-    <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.</p>
+    <code class="directive"><a href="../mod/core.html#defaultruntimedir">DefaultRuntimeDir</a></code>.</p>
 
     <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
       PidFile /var/run/apache.pid
