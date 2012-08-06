@@ -207,7 +207,7 @@ règles permettant de réécrire les URLs des requêtes
 à la volée</dd>
 <dt><a href="mod_sed.html" id="S" name="S">mod_sed</a></dt><dd>Filtre les contenus en entrée (requêtes) et en sortie
 (réponses) en utilisant la syntaxe de <code>sed</code></dd>
-<dt><a href="mod_session.html">mod_session</a></dt><dd>Session support</dd>
+<dt><a href="mod_session.html">mod_session</a></dt><dd>Support des sessions</dd>
 <dt><a href="mod_session_cookie.html">mod_session_cookie</a></dt><dd>Cookie based session support</dd>
 <dt><a href="mod_session_crypto.html">mod_session_crypto</a></dt><dd>Session encryption support</dd>
 <dt><a href="mod_session_dbd.html">mod_session_dbd</a></dt><dd>DBD/SQL based session support</dd>
