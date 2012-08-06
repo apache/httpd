@@ -3010,7 +3010,6 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
         if (dbd_prepare == NULL) {
             return "RewriteMap types dbd and fastdbd require mod_dbd!";
         }
-        newmap->checkfile = NULL;
         if ((a2[0] == 'd') || (a2[0] == 'D')) {
             newmap->type = MAPTYPE_DBD;
             fname = a2+4;
