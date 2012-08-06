@@ -130,7 +130,7 @@ will exit.</description>
 <description>File where the server records the process ID
 of the daemon</description>
 <syntax>PidFile <var>filename</var></syntax>
-<default>PidFile logs/httpd.pid</default>
+<default>PidFile httpd.pid</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>event</module><module>mpm_winnt</module>
 <module>mpmt_os2</module><module>prefork</module><module>worker</module>
@@ -140,7 +140,7 @@ of the daemon</description>
     <p>The <directive>PidFile</directive> directive sets the file to
     which the server records the process id of the daemon. If the
     filename is not absolute then it is assumed to be relative to the
-    <directive module="core">ServerRoot</directive>.</p>
+    <directive module="core">DefaultRuntimeDir</directive>.</p>
 
     <example><title>Example</title>
     <highlight language="config">

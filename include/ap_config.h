@@ -187,7 +187,7 @@
 
 /* Where the main/parent process's pid is logged */
 #ifndef DEFAULT_PIDLOG
-#define DEFAULT_PIDLOG DEFAULT_REL_RUNTIMEDIR "/httpd.pid"
+#define DEFAULT_PIDLOG "httpd.pid"
 #endif
 
 #if defined(NETWARE)
