@@ -268,7 +268,9 @@ performing access control, or setting mimetypes:</p>
 
 </table>
 
-<p>Hook functions are passed the request object as their only argument.
+<p>Hook functions are passed the request object as their only argument 
+(except for LuaAuthzProvider, which also gets passed the arguments from 
+the Require directive).
 They can return any value, depending on the hook, but most commonly
 they'll return OK, DONE, or DECLINED, which you can write in lua as
 <code>apache2.OK</code>, <code>apache2.DONE</code>, or
