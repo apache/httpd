@@ -130,6 +130,13 @@ AP_LUA_DECLARE(void) ap_lua_load_apache2_lmodule(lua_State *L);
 AP_LUA_DECLARE(lua_State*) ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
                                                 ap_lua_vm_spec *spec, request_rec* r);
 
-
+#if APR_HAS_THREADS || defined(DOXYGEN)
+/*
+ * Initialize mod_lua mutex.
+ * @pool pool for mutex
+ * @s server_rec for logging
+ */
+void ap_lua_init_mutex(apr_pool_t *pool, server_rec *s);
+#endif
 
 #endif
