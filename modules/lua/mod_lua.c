@@ -129,6 +129,7 @@ static void ap_lua_release_state(lua_State* L, ap_lua_vm_spec* spec, request_rec
 
 #if APR_HAS_THREADS
 extern void ap_lua_init_mutex(apr_pool_t *pool, server_rec *s);
+extern int ap_lua_register_mutex(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp);
 #endif
 
 static ap_lua_vm_spec *create_vm_spec(apr_pool_t **lifecycle_pool,
@@ -1598,6 +1599,7 @@ static void lua_register_hooks(apr_pool_t *p)
                       APR_HOOK_REALLY_FIRST);
     ap_hook_handler(lua_map_handler, NULL, NULL, AP_LUA_HOOK_FIRST);
 #if APR_HAS_THREADS
+    ap_hook_pre_config(ap_lua_register_mutex, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_child_init(ap_lua_init_mutex, NULL, NULL, APR_HOOK_MIDDLE);
 #endif
     /* providers */
