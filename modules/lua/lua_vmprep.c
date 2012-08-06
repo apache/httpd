@@ -14,30 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 #include "mod_lua.h"
 #include "http_log.h"
 #include "apr_uuid.h"
 #include "lua_config.h"
 #include "apr_file_info.h"
 #include "mod_auth.h"
-#include "util_mutex.h"
 
 APLOG_USE_MODULE(lua);
 
 #if APR_HAS_THREADS
-    apr_proc_mutex_t *ap_lua_mutex;
+    apr_thread_mutex_t *ap_lua_mutex;
     
-    
-int ap_lua_register_mutex(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp) 
-{
-    ap_mutex_register(p, "lua-shm", NULL, APR_LOCK_DEFAULT, 0);
-}
-
 void ap_lua_init_mutex(apr_pool_t *pool, server_rec *s) 
 {
-    ap_proc_mutex_create(&ap_lua_mutex, NULL, "lua-shm", NULL, s, pool, 0);
+    apr_thread_mutex_create(&ap_lua_mutex, APR_THREAD_MUTEX_DEFAULT, pool);
 }
 #endif
 
@@ -411,7 +402,7 @@ AP_LUA_DECLARE(lua_State*)ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
         ap_lua_server_spec* sspec = NULL;
         hash = apr_psprintf(r->pool, "reslist:%s", spec->file);
 #if APR_HAS_THREADS
-        apr_proc_mutex_lock(ap_lua_mutex);
+        apr_thread_mutex_lock(ap_lua_mutex);
 #endif
         if (apr_pool_userdata_get((void **)&reslist, hash,
                                   r->server->process->pool) == APR_SUCCESS) {
@@ -436,7 +427,7 @@ AP_LUA_DECLARE(lua_State*)ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
             }
         }
 #if APR_HAS_THREADS
-        apr_proc_mutex_unlock(ap_lua_mutex);
+        apr_thread_mutex_unlock(ap_lua_mutex);
 #endif
     }
     else {
