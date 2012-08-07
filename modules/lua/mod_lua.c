@@ -1324,7 +1324,7 @@ static const char *register_authz_provider(cmd_parms *cmd, void *_cfg,
                                            const char *function)
 {
     lua_authz_provider_spec *spec;
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err)
         return err;
 
