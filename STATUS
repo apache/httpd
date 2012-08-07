@@ -133,9 +133,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
    * mod_lua: Add a Lua authz provider.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1351020
+                  http://svn.apache.org/viewvc?view=revision&revision=1370466
      2.4.x patch: trunk patch works.
      +1: humbedooh
-     sf: needs r1370466, too
 
    * mod_lua: Add a new directive, LuaCodeCache, for controlling the in-memory 
               caching of scripts
