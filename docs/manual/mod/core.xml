@@ -3142,9 +3142,11 @@ or specified mutexes</description>
 
     <p>With the file-based mechanisms <em>fcntl</em> and <em>flock</em>,
     the path, if provided, is a directory where the lock file will be created.
-    The default directory is httpd's run-time file directory relative to
-    <directive module="core">ServerRoot</directive>.  Always use a local disk
-    filesystem for <code>/path/to/mutex</code> and never a directory residing
+    The default directory is httpd's run-time file directory,
+    <directive module="core">DefaultRuntimeDir</directive>.  If a relative
+    path is provided, it is relative to
+    <directive module="core">DefaultRuntimeDir</directive>.  Always use a local
+    disk filesystem for <code>/path/to/mutex</code> and never a directory residing
     on a NFS- or AFS-filesystem.  The basename of the file will be the mutex
     type, an optional instance string provided by the module, and unless the
     <code>OmitPID</code> keyword is specified, the process id of the httpd
