@@ -232,7 +232,7 @@ LuaAuthzProvider foo authz_provider.lua authz_check_foo
 
 <p>Hook functions are how modules (and Lua scripts) participate in the
 processing of requests. Each type of hook exposed by the server exists for
-a specific purposes such as mapping requests to the filesystem,
+a specific purpose, such as mapping requests to the filesystem,
 performing access control, or setting mimetypes:</p>
 
 <table class="bordered"><tr class="header">
