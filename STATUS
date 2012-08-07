@@ -135,7 +135,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1351020
      2.4.x patch: trunk patch works.
      +1: humbedooh
-     humbedooh: sf, you added this, care to vote?
+     sf: needs r1370466, too
 
    * mod_lua: Add a new directive, LuaCodeCache, for controlling the in-memory 
               caching of scripts
@@ -146,6 +146,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1367042 (CHANGES)
      2.4.x patch: Trunk patch works (*provided the authz provider gets backported)
      +1: humbedooh
+
+   * mod_rewrite: Avoid uninitialized value for dbd rewrite maps
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1369995
+                  http://svn.apache.org/viewvc?view=revision&revision=1369999
+                  http://svn.apache.org/viewvc?view=revision&revision=1370001
+     2.4.x patch: Trunk patch works
+     +1: sf
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
