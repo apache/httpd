@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_lua: Decline handling 'lua-script' if the file doesn't exist,
+     rather than throwing an internal server error. [Daniel Gruno]
+
   *) mod_lua: Add functions r:flush and r:sendfile as well as additional
      request information to the request_rec structure. [Daniel Gruno]
 
