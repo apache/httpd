@@ -18,6 +18,7 @@
 #include "mod_lua.h"
 #include "util_script.h"
 #include "lua_apr.h"
+#include "scoreboard.h"
 
 APLOG_USE_MODULE(lua);
 
@@ -371,6 +372,11 @@ static const char *req_useragent_ip_field(request_rec *r)
     return r->useragent_ip;
 }
 
+static int req_remaining_field(request_rec *r)
+{
+    return r->remaining;
+}
+
 static int req_status_field(request_rec *r)
 {
     return r->status;
@@ -411,7 +417,103 @@ static int req_ssl_is_https_field(request_rec *r)
     return ap_lua_ssl_is_https(r->connection);
 }
 
-/* END dispatch mathods for request_rec fields */
+static int lua_ap_rflush (lua_State *L) {
+
+    int returnValue;
+    request_rec *r;
+    luaL_checktype(L, 1, LUA_TUSERDATA);
+    r = ap_lua_check_request_rec(L, 1);
+    returnValue = ap_rflush(r);
+    lua_pushboolean(L, (returnValue == 0));
+    return 1;
+}
+
+static int lua_ap_port(request_rec* r) 
+{
+    return (int) ap_get_server_port(r);
+}
+
+static const char* lua_ap_options(request_rec* r) 
+{
+    int opts;
+    opts = ap_allow_options(r);
+    return apr_psprintf(r->pool, "%s %s %s %s %s %s", (opts&OPT_INDEXES) ? "Indexes" : "", (opts&OPT_INCLUDES) ? "Includes" : "", (opts&OPT_SYM_LINKS) ? "FollowSymLinks" : "", (opts&OPT_EXECCGI) ? "ExecCGI" : "", (opts&OPT_MULTI) ? "MultiViews" : "", (opts&OPT_ALL) == OPT_ALL ? "All" : "" );
+}
+
+static const char* lua_ap_allowoverrides(request_rec* r) 
+{
+    int opts;
+    opts = ap_allow_overrides(r);
+    return apr_psprintf(r->pool, "%s %s %s %s %s %s", (opts&OR_NONE) ? "None" : "", (opts&OR_LIMIT) ? "Limit" : "", (opts&OR_OPTIONS) ? "Options" : "", (opts&OR_FILEINFO) ? "FileInfo" : "", (opts&OR_AUTHCFG) ? "AuthCfg" : "", (opts&OR_INDEXES) ? "Indexes" : "" );
+}
+
+static int lua_ap_started(request_rec* r) 
+{
+    return ap_scoreboard_image->global->restart_time;
+}
+
+static const char* lua_ap_basic_auth_pw(request_rec* r) 
+{
+    const char* pw = NULL;
+    ap_get_basic_auth_pw(r, &pw);
+    return pw ? pw : "";
+}
+
+static int lua_ap_limit_req_body(request_rec* r) 
+{
+    return (int) ap_get_limit_req_body(r);
+}
+
+static int lua_ap_is_initial_req(request_rec *r)
+{
+    return ap_is_initial_req(r);
+}
+
+static int lua_ap_some_auth_required(request_rec *r)
+{
+    return ap_some_auth_required(r);
+}
+
+static int lua_ap_sendfile(lua_State *L)
+{
+
+    apr_finfo_t file_info;
+    const char  *filename;
+    request_rec *r;
+
+    luaL_checktype(L, 1, LUA_TUSERDATA);
+    luaL_checktype(L, 2, LUA_TSTRING);
+    r = ap_lua_check_request_rec(L, 1);
+    filename = lua_tostring(L, 2);
+    apr_stat(&file_info, filename, APR_FINFO_NORM, r->pool);
+    if (file_info.filetype == APR_NOFILE || file_info.filetype == APR_DIR) {
+        lua_pushboolean(L, 0);
+    }
+    else {
+        if (r) {
+            apr_size_t      sent;
+            apr_status_t    rc;
+            apr_file_t      *file;
+            
+            rc = apr_file_open(&file, filename, APR_READ, APR_OS_DEFAULT,
+                               r->pool);
+            if (rc == APR_SUCCESS) {
+                ap_send_fd(file, r, 0, file_info.size, &sent);
+                apr_file_close(file);
+                lua_pushinteger(L, sent);
+            }
+            else
+                lua_pushboolean(L, 0);
+        }
+        else
+            lua_pushboolean(L, 0);
+    }
+
+    return (1);
+}
+
+
+/* END dispatch methods for request_rec fields */
 
 static int req_dispatch(lua_State *L)
 {
@@ -751,7 +853,37 @@ AP_LUA_DECLARE(void) ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
                  makefun(&req_notes, APL_REQ_FUNTYPE_TABLE, p));
     apr_hash_set(dispatch, "subprocess_env", APR_HASH_KEY_STRING,
                  makefun(&req_subprocess_env, APL_REQ_FUNTYPE_TABLE, p));
-
+    apr_hash_set(dispatch, "flush", APR_HASH_KEY_STRING,
+                 makefun(&lua_ap_rflush, APL_REQ_FUNTYPE_LUACFUN, p));
+    apr_hash_set(dispatch, "port", APR_HASH_KEY_STRING,
+                 makefun(&lua_ap_port, APL_REQ_FUNTYPE_INT, p));
+    apr_hash_set(dispatch, "banner", APR_HASH_KEY_STRING,
+                 makefun(&ap_get_server_banner, APL_REQ_FUNTYPE_STRING, p));
+    apr_hash_set(dispatch, "options", APR_HASH_KEY_STRING,
+                 makefun(&lua_ap_options, APL_REQ_FUNTYPE_STRING, p));
+    apr_hash_set(dispatch, "allowoverrides", APR_HASH_KEY_STRING,
+                 makefun(&lua_ap_allowoverrides, APL_REQ_FUNTYPE_STRING, p));
+    apr_hash_set(dispatch, "started", APR_HASH_KEY_STRING,
+                 makefun(&lua_ap_started, APL_REQ_FUNTYPE_INT, p));
+    apr_hash_set(dispatch, "basic_auth_pw", APR_HASH_KEY_STRING,
+                 makefun(&lua_ap_basic_auth_pw, APL_REQ_FUNTYPE_STRING, p));
+    apr_hash_set(dispatch, "limit_req_body", APR_HASH_KEY_STRING,
+                 makefun(&lua_ap_limit_req_body, APL_REQ_FUNTYPE_INT, p));
+    apr_hash_set(dispatch, "server_built", APR_HASH_KEY_STRING,
+                 makefun(&ap_get_server_built, APL_REQ_FUNTYPE_STRING, p));
+    apr_hash_set(dispatch, "is_initial_req", APR_HASH_KEY_STRING,
+                 makefun(&lua_ap_is_initial_req, APL_REQ_FUNTYPE_BOOLEAN, p));
+    apr_hash_set(dispatch, "remaining", APR_HASH_KEY_STRING,
+                 makefun(&req_remaining_field, APL_REQ_FUNTYPE_INT, p));
+    apr_hash_set(dispatch, "some_auth_required", APR_HASH_KEY_STRING,
+                 makefun(&lua_ap_some_auth_required, APL_REQ_FUNTYPE_BOOLEAN, p));
+    apr_hash_set(dispatch, "server_name", APR_HASH_KEY_STRING,
+                 makefun(&ap_get_server_name, APL_REQ_FUNTYPE_STRING, p));
+    apr_hash_set(dispatch, "auth_name", APR_HASH_KEY_STRING,
+                 makefun(&ap_auth_name, APL_REQ_FUNTYPE_STRING, p));
+    apr_hash_set(dispatch, "sendfile", APR_HASH_KEY_STRING,
+                 makefun(&lua_ap_sendfile, APL_REQ_FUNTYPE_LUACFUN, p));
+    
 
     lua_pushlightuserdata(L, dispatch);
     lua_setfield(L, LUA_REGISTRYINDEX, "Apache2.Request.dispatch");
