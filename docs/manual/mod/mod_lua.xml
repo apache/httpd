@@ -337,6 +337,12 @@ end
           <th><strong>Description</strong></th>
         </tr>
         <tr>
+          <td><code>allowoverrides</code></td>
+          <td>string</td>
+          <td>no</td>
+          <td>The AllowOverride options applied to the current request.</td>
+        </tr>
+        <tr>
           <td><code>ap_auth_type</code></td>
           <td>string</td>
           <td>no</td>
@@ -357,7 +363,24 @@ end
           <td>Set to true if this is an HTTP/0.9 style request 
             (e.g. <code>GET /foo</code> (with no headers) )</td>
         </tr>
-
+        <tr>
+          <td><code>auth_name</code></td>
+          <td>string</td>
+          <td>no</td>
+          <td>The realm name used for authorization (if applicable).</td>
+        </tr>
+        <tr>
+          <td><code>banner</code></td>
+          <td>string</td>
+          <td>no</td>
+          <td>The server banner, f.x. <code>Apache HTTP Server/2.4.3 openssl/0.9.8c</code></td>
+        </tr>
+        <tr>
+          <td><code>basic_auth_pw</code></td>
+          <td>string</td>
+          <td>no</td>
+          <td>The basic auth password sent with this request, if any</td>
+        </tr>
         <tr>
           <td><code>canonical_filename</code></td>
           <td>string</td>
@@ -449,6 +472,18 @@ end
           <td>Whether or not this request is done via HTTPS</td>
         </tr>
         <tr>
+          <td><code>is_initial_req</code></td>
+          <td>boolean</td>
+          <td>no</td>
+          <td>Whether this request is the initial request or a sub-request</td>
+        </tr>
+        <tr>
+          <td><code>limit_req_body</code></td>
+          <td>number</td>
+          <td>no</td>
+          <td>The size limit of the request body for this request, or 0 if no limit.</td>
+        </tr>
+        <tr>
           <td><code>log_id</code></td>
           <td>string</td>
           <td>no</td>
@@ -467,10 +502,22 @@ end
           <td>A list of notes that can be passed on from one module to another.</td>
         </tr>
         <tr>
+          <td><code>options</code></td>
+          <td>string</td>
+          <td>no</td>
+          <td>The Options directive applied to the current request.</td>
+        </tr>
+        <tr>
           <td><code>path_info</code></td>
           <td>string</td>
           <td>no</td>
           <td>The PATH_INFO extracted from this request.</td>
+        </tr>
+        <tr>
+          <td><code>port</code></td>
+          <td>number</td>
+          <td>no</td>
+          <td>The server port used by the request.</td>
         </tr>
         <tr>
           <td><code>protocol</code></td>
@@ -492,10 +539,40 @@ end
           <td>The contents of the <code>Range:</code> header.</td>
         </tr>
         <tr>
+          <td><code>remaining</code></td>
+          <td>number</td>
+          <td>no</td>
+          <td>The number of bytes remaining to be read from the request body.</td>
+        </tr>
+        <tr>
+          <td><code>server_built</code></td>
+          <td>string</td>
+          <td>no</td>
+          <td>The time the server executable was built.</td>
+        </tr>
+        <tr>
+          <td><code>server_name</code></td>
+          <td>string</td>
+          <td>no</td>
+          <td>The server name for this request.</td>
+        </tr>
+        <tr>
+          <td><code>some_auth_required</code></td>
+          <td>boolean</td>
+          <td>no</td>
+          <td>Whether some authorization is/was required for this request.</td>
+        </tr>
+        <tr>
           <td><code>subprocess_env</code></td>
           <td>table</td>
           <td>yes</td>
           <td>The environment variables set for this request.</td>
+        </tr>
+        <tr>
+          <td><code>started</code></td>
+          <td>number</td>
+          <td>no</td>
+          <td>The time the server was (re)started, in seconds since the epoch (Jan 1st, 1970)</td>
         </tr>
         <tr>
           <td><code>status</code></td>
@@ -538,7 +615,15 @@ end
         <p>The request_rec has (at least) the following methods:</p>
 
         <highlight language="lua">
+        r:flush() -- flushes the output buffer
+        </highlight>
+
+        <highlight language="lua">
         r:addoutputfilter(name|function) -- add an output filter
+        </highlight>
+
+        <highlight language="lua">
+        r:sendfile(filename) -- sends an entire file to the client, using sendfile if supported by the current platform
         </highlight>
 
         <highlight language="lua">
