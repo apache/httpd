@@ -236,6 +236,14 @@ static int lua_handler(request_rec *r)
     if (strcmp(r->handler, "lua-script")) {
         return DECLINED;
     }
+    /* Decline the request if the script does not exist (or is a directory),
+     * rather than just returning internal server error */
+    if (
+            (r->finfo.filetype == APR_NOFILE)
+            || (r->finfo.filetype & APR_DIR)
+        ) {
+        return DECLINED;
+    }
     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(01472)
                   "handling [%s] in mod_lua", r->filename);
 
