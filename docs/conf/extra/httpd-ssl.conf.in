@@ -72,8 +72,8 @@ SSLPassPhraseDialog  builtin
 #   Inter-Process Session Cache:
 #   Configure the SSL Session Cache: First the mechanism 
 #   to use and second the expiring timeout (in seconds).
-#SSLSessionCache         "dbm:@exp_runtimedir@/ssl_scache"
-SSLSessionCache        "shmcb:@exp_runtimedir@/ssl_scache(512000)"
+#SSLSessionCache         "dbm:ssl_scache"
+SSLSessionCache        "shmcb:ssl_scache(512000)"
 SSLSessionCacheTimeout  300
 
 ##
