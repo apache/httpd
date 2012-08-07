@@ -230,7 +230,7 @@ endif
 # The default flags are as follows:
 #
 # -c                    compile only, no link
-# -nosyspath            treat #include <...> like #include "..."
+# -gccinc               search directory of referencing file first for #includes
 # -Cpp_exceptions off   disable C++ exceptions
 # -RTTI off             disable C++ run-time typing information
 # -align 4              align on 4 byte bounderies
@@ -238,7 +238,7 @@ endif
 # -proc PII             generate code base on Pentium II instruction set
 # -inst mmx             use MMX extensions (Not used)
 
-CFLAGS = -c -nosyspath -Cpp_exceptions off -RTTI off -align 4 -w nocmdline -proc PII
+CFLAGS = -c -w nocmdline -gccinc -Cpp_exceptions off -RTTI off -align 4 -proc PII
 
 ifeq "$(REQUIRE_PROTOTYPES)" "1"
 CFLAGS += -r
