@@ -41,6 +41,9 @@
     dbm:/path/to/datafile
     </code></p></div>
 
+    <p>If the path is not absolute then it is assumed to be relative to
+    the <code class="directive"><a href="../mod/core.html#defaultruntimedir">DefaultRuntimeDir</a></code>.</p>
+
     <p>Details of other shared object cache providers can be found
     <a href="../socache.html">here</a>.
     </p>
