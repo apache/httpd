@@ -38,6 +38,9 @@
     dbm:/path/to/datafile
     </example>
 
+    <p>If the path is not absolute then it is assumed to be relative to
+    the <directive module="core">DefaultRuntimeDir</directive>.</p>
+
     <p>Details of other shared object cache providers can be found
     <a href="../socache.html">here</a>.
     </p>
