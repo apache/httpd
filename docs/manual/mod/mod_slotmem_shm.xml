@@ -26,7 +26,7 @@
 <description>Slot-based shared memory provider.</description>
 <status>Extension</status>
 <sourcefile>mod_slotmem_shm.c</sourcefile>
-<identifier>mod_slotmem_shm_module</identifier>
+<identifier>slotmem_shm_module</identifier>
 
 <summary>
     <p><code>mod_slotmem_shm</code> is a memory provider which
