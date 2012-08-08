@@ -238,7 +238,13 @@ endif
 # -proc PII             generate code base on Pentium II instruction set
 # -inst mmx             use MMX extensions (Not used)
 
-CFLAGS = -c -w nocmdline -gccinc -Cpp_exceptions off -RTTI off -align 4 -proc PII
+CFLAGS += -c -w nocmdline -gccinc -Cpp_exceptions off -RTTI off -align 4 -proc PII
+
+ifdef CC_MAX_ERRORS
+CFLAGS += -maxerrors $(CC_MAX_ERRORS)
+else
+CFLAGS += -maxerrors 1
+endif
 
 ifeq "$(REQUIRE_PROTOTYPES)" "1"
 CFLAGS += -r
