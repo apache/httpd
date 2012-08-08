@@ -26,7 +26,7 @@
 <description>DBM based shared object cache provider.</description>
 <status>Extension</status>
 <sourcefile>mod_socache_dbm.c</sourcefile>
-<identifier>mod_socache_dbm_module</identifier>
+<identifier>socache_dbm_module</identifier>
 
 <summary>
     <p><code>mod_socache_dbm</code> is a shared object cache provider
