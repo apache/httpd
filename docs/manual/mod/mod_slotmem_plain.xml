@@ -26,7 +26,7 @@
 <description>Slot-based shared memory provider.</description>
 <status>Extension</status>
 <sourcefile>mod_slotmem_plain.c</sourcefile>
-<identifier>mod_slotmem_plain</identifier>
+<identifier>slotmem_plain_module</identifier>
 
 <summary>
     <p><code>mod_slotmem_plain</code> is a memory provider which
