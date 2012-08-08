@@ -44,13 +44,11 @@ Stuff about what <module>mod_lua</module> is goes here.
 </section>
 <section id="contents"><title>What we will be discussing in this document</title>
 <p>
-This document will discuss how you can bla bla bla. 
-In the first chapter, we will bla bla
+This document will discuss several cases where <module>mod_lua</module> can be used 
+to either ease up a phase of the request processing or create more transparency in 
+the logic behind a decision made in a phase.
 </p>
 
-<p>
-In the second part of this document, we will be looking at bla bla bla
-</p>
 </section>
 
 <section id="prerequisites"><title>Prerequisites</title>
@@ -65,12 +63,88 @@ and whys of various function calls.
 
 
 </section>
-<section id="enabling"><title>Enabling mod_lua</title>
+</section>
 
+<section id="enabling"><title>Optimizing mod_lua for production servers</title>
+
+<section><title>Setting a scope for Lua states</title>
+<p>
+Setting the right <directive module="mod_lua">LuaScope</directive> setting 
+for your Lua scripts can be essential to your server's 
+performance. By default, the scope is set to <code>once</code>, which means 
+that every call to a Lua script will spawn a new Lua state that handles that 
+script and is destroyed immediately after. This option keeps the memory 
+footprint of mod_lua low, but also affects the processing speed of a request. 
+If you have the memory to spare, you can set the scope to <code>thread</code>, 
+which will make mod_lua spawn a Lua state that lasts the entirity of a thread's 
+lifetime, speeding up request processing by 2-3 times. Since mod_lua will create 
+a state for each script, this may be an expensive move, memory-wise, so to 
+compromise between speed and memory usage, you can choose the <code>server</code> 
+option to create a pool of Lua states to be used. Each request for a Lua script or 
+a hook function will then acquire a state from the pool and release it back when it's 
+done using it, allowing you to still gain a significant performance increase, while 
+keeping your memory footprint low. Some examples of possible settings are:
+</p>
 <highlight language="config">
-LoadModule lua_module modules/mod_lua.so
+LuaScope once
+LuaScope thread
+LuaScope server 5 40
 </highlight>
+<p>
+As a general rule of thumb: If your server has none to low usage, use <code>once</code> 
+or <code>request</code>, if your server has low to medium usage, use the <code>server</code> 
+pool, and if it has high usage, use the <code>thread</code> setting. As your server's 
+load increases, so will the number of states being actively used, and having your scope 
+set to <code>once/request/conn</code> will stop being beneficial to your memory footprint.
+</p>
+<p>
+<strong>Note:</strong> The <code>min</code> and <code>max</code> settings for the 
+<code>server</code> scope denotes the minimum and maximum states to keep in a pool per 
+server <em>process</em>, so keep this below your <code>ThreadsPerChild</code> limit.
+</p>
+</section>
 
+<section><title>Using code caching</title>
+<p>
+By default, <module>mod_lua</module> stats each Lua script to determine whether a reload 
+(and thus, a re-interpretation and re-compilation) of a script is required. This is managed 
+through the <directive module="mod_lua">LuaCodeCache</directive> directive. If you are running 
+your scripts on a production server, and you do not need to update them regularly, it may be 
+advantageous to set this directive to the <code>forever</code> value, which will cause mod_lua 
+to skip the stat process and always reuse the compiled byte-code from the first access to the 
+script, thus speeding up the processing. For Lua hooks, this can prove to increase peformance, 
+while for scripts handled by the <code>lua-script</code> handler, the increase in performance 
+may be negligible, as files httpd will stat the files regardless.
+</p>
+</section>
+
+<section><title>Keeping the scope clean</title>
+<p>
+For maximum performance, it is generally recommended that any initialization of libraries, 
+constants and master tables be kept outside the handle's scope:
+</p>
+<highlight language="lua">
+--[[ This is good practice ]]--
+require "string"
+require "someLibrary"
+local masterTable = {}
+local constant = "Foo bar baz"
+
+function handle(r)
+    do_stuff()
+end
+</highlight>
+<highlight language="lua">
+--[[ This is bad practice ]]--
+require "string"
+
+function handle(r)
+    require "someLibrary"
+    local masterTable = {}
+    local constant = "Foo bar baz"
+    do_stuff()
+end
+</highlight>
 </section>
 
 </section>
@@ -92,8 +166,6 @@ LuaHookTranslateName /path/too/foo.lua remap
     This example will rewrite /foo/test.bar to the physical file
     /internal/test, somewhat like how mod_alias works.
 ]]--
-require 'apache2'
-require 'string'
 
 function remap(r)
     -- Test if the URI matches our criteria
@@ -115,8 +187,6 @@ end
     remap a file to one of two destinations, using a rewrite map.
     
 ]]--
-require 'apache2'
-require 'string'
 
 local map = {
       photos = {   
@@ -181,8 +251,6 @@ LuaHookTranslateName /path/too/foo.lua mass_vhost
     This example will check a map for a virtual host and rewrite filename and 
     document root accordingly.
 ]]--
-require 'apache2'
-require 'string'
 
 local vhosts = {
     { domain = "example.com", home = "/www/example.com" },
@@ -216,8 +284,6 @@ end
     60 seconds before checking for updates. For best performance, such scripts
     should generally be run with LuaScope set to 'thread' or 'server'
 ]]--
-require 'apache2'
-require 'string'
 
 local cached_vhosts = {}
 local timeout = 60
@@ -273,9 +339,10 @@ LuaHookAuthChecker /path/too/foo.lua check_auth
 
 <!-- BEGIN EXAMPLE CODE -->
 <highlight language="lua">
-require 'apache2'
-require 'string'
-
+--[[ 
+     A simple authentication hook that checks a table containing usernames and
+     passwords of two accounts.
+]]--
 local accounts = {
     bob  = 'somePassword',
     jane = 'Iloveponies'
@@ -314,10 +381,10 @@ end
 
 <!-- BEGIN EXAMPLE CODE -->
 <highlight language="lua">
--- An advanced authentication checker with a database backend,
--- caching account entries for 1 minute
-require 'apache2'
-require 'string'
+--[[ 
+     An advanced authentication checker with a database backend,
+     caching account entries for 1 minute
+]]--
 
 local timeout = 60 -- Set account info to be refreshed every minute
 local accounts = {}
@@ -390,6 +457,12 @@ LuaAuthzProvider rights /path/to/lua/script.lua rights_handler
 </highlight>
 
 <highlight language="lua">
+--[[ 
+     This script has two user groups; members and admins, and whichever 
+     is refered to by the "Require rights" directive is checked to see
+     if the authenticated user belongs to this group.
+]]--
+
 local members = { "rbowen", "humbedooh", "igalic", "covener" }
 local admins = { "humbedooh" }
 
@@ -424,9 +497,6 @@ LuaMapHandler ^/portal/([a-z]+)/   /path/to/lua/script.lua handle_$1
 
 <section id="mod_status_lua"><title>Example 6: Basic Lua scripts</title>
 </section>
-
-
-
 
 
 
@@ -814,27 +884,13 @@ print(unescaped) -- prints "This is a test"
 <section id="Request_handling">
 <title>HTTPd bindings: Request handling</title>
 <p>
-<a href="#apache2.sendfile">apache2.sendfile</a>
-<br/>
-<a href="#apache2.port">apache2.port</a>
-<br/>
-<a href="#apache2.options">apache2.options</a>
-<br/>
-<a href="#apache2.allowoverrides">apache2.allowoverrides</a>
-<br/>
 <a href="#apache2.requestbody">apache2.requestbody</a>
 <br/>
 <a href="#apache2.add_input_filter">apache2.add_input_filter</a>
 <br/>
 <a href="#apache2.get_basic_auth_pw">apache2.get_basic_auth_pw</a>
 <br/>
-<a href="#apache2.get_limit_req_body">apache2.get_limit_req_body</a>
-<br/>
-<a href="#apache2.request_has_body">apache2.request_has_body</a>
-<br/>
 <a href="#apache2.set_document_root">apache2.set_document_root</a>
-<br/>
-<a href="#apache2.some_auth_required">apache2.some_auth_required</a>
 <br/>
 <a href="#apache2.set_context_prefix">apache2.set_context_prefix</a>
 <br/>
@@ -844,17 +900,7 @@ print(unescaped) -- prints "This is a test"
 <br/>
 <a href="#apache2.make_etag">apache2.make_etag</a>
 <br/>
-<a href="#apache2.flush">apache2.flush</a>
-<br/>
 <a href="#apache2.send_interim_response">apache2.send_interim_response</a>
-<br/>
-<a href="#apache2.get_server_name">apache2.get_server_name</a>
-<br/>
-<a href="#apache2.auth_type">apache2.auth_type</a>
-<br/>
-<a href="#apache2.auth_name">apache2.auth_name</a>
-<br/>
-<a href="#apache2.satisfies">apache2.satisfies</a>
 <br/>
 </p>
 <section id="apache2.add_input_filter">
@@ -890,129 +936,6 @@ apache2.add_input_filter(r, "SPAM_FILTER") -- Check input for spam..?
         </highlight>
 <p> </p>
 </section>
-<section id="apache2.allowoverrides">
-<title>apache2.allowoverrides(
-    request_rec<em> r</em>
-    )
-    </title>
-<p>
-Returns the currently allowed overrides for this context (AuthCfg, Options etc)
-        </p>
-<p>
-<em>Arguments:</em>
-</p>
-<table border="1">
-<tr>
-<th>Argument</th>
-<th>Description</th>
-</tr>
-<tr>
-<td>r</td>
-<td>The mod_lua request handle</td>
-</tr>
-</table>
-<p>
-<em>Return value(s):</em>
-<br/>
-The currently allowed overrides for this context (AuthCfg, Options etc)
-        </p>
-<p>
-<em>Example:</em>
-</p>
-<highlight language="lua">
-local ctx = apache2.allowoverrides(r)
-if ctx:match("AuthCfg") then
-    r:puts("You are allowed to override AuthCfg stuff in your .htaccess")
-end
-        </highlight>
-<p> </p>
-</section>
-<section id="apache2.auth_name">
-<title>apache2.auth_name(
-    request_rec<em> r</em>
-    )
-    </title>
-<p>
-Returns the current Authorization realm
-        </p>
-<p>
-<em>Arguments:</em>
-</p>
-<table border="1">
-<tr>
-<th>Argument</th>
-<th>Description</th>
-</tr>
-<tr>
-<td>r</td>
-<td>The mod_lua request handle</td>
-</tr>
-</table>
-<p>
-<em>Return value(s):</em>
-<br/>
-The current authorization realm
-        </p>
-<p> </p>
-</section>
-<section id="apache2.auth_type">
-<title>apache2.auth_type(
-    request_rec<em> r</em>
-    )
-    </title>
-<p>
-Returns the current authentication type used in the request
-        </p>
-<p>
-<em>Arguments:</em>
-</p>
-<table border="1">
-<tr>
-<th>Argument</th>
-<th>Description</th>
-</tr>
-<tr>
-<td>r</td>
-<td>The mod_lua request handle</td>
-</tr>
-</table>
-<p>
-<em>Return value(s):</em>
-<br/>
-The current Authorization type used in the request
-        </p>
-<p> </p>
-</section>
-<section id="apache2.flush">
-<title>apache2.flush(
-    request_rec<em> r</em>
-    )
-    </title>
-<p>
-Flushes the content buffer, writing everything to the client immediately.
-        </p>
-<p>
-<em>Arguments:</em>
-</p>
-<table border="1">
-<tr>
-<th>Argument</th>
-<th>Description</th>
-</tr>
-<tr>
-<td>r</td>
-<td>The mod_lua request handle</td>
-</tr>
-</table>
-<p>
-<em>Example:</em>
-</p>
-<highlight language="lua">
-r:puts("This is buffered")
-apache2.flush(r) -- now it's written to the client.
-        </highlight>
-<p> </p>
-</section>
 <section id="apache2.get_basic_auth_pw">
 <title>apache2.get_basic_auth_pw(
     request_rec<em> r</em>
@@ -1039,76 +962,6 @@ Returns the password from a basic authorization request or nil if none was suppl
 <br/>
 The password from a basic authorization request or nil if none was supplied
         </p>
-<p> </p>
-</section>
-<section id="apache2.get_limit_req_body">
-<title>apache2.get_limit_req_body(
-    request_rec<em> r</em>
-    )
-    </title>
-<p>
-Returns the current request body size limit
-        </p>
-<p>
-<em>Arguments:</em>
-</p>
-<table border="1">
-<tr>
-<th>Argument</th>
-<th>Description</th>
-</tr>
-<tr>
-<td>r</td>
-<td>The mod_lua request handle</td>
-</tr>
-</table>
-<p>
-<em>Return value(s):</em>
-<br/>
-The current request body size limit
-        </p>
-<p>
-<em>Example:</em>
-</p>
-<highlight language="lua">
-local limit = apache2.get_limit_req_body(r)
-r:puts("You can't upload files bigger than ", limit, " bytes!")
-        </highlight>
-<p> </p>
-</section>
-<section id="apache2.get_server_name">
-<title>apache2.get_server_name(
-    request_rec<em> r</em>
-    )
-    </title>
-<p>
-Returns the current server name from the request
-        </p>
-<p>
-<em>Arguments:</em>
-</p>
-<table border="1">
-<tr>
-<th>Argument</th>
-<th>Description</th>
-</tr>
-<tr>
-<td>r</td>
-<td>The mod_lua request handle</td>
-</tr>
-</table>
-<p>
-<em>Return value(s):</em>
-<br/>
-The server name
-        </p>
-<p>
-<em>Example:</em>
-</p>
-<highlight language="lua">
-local name = apache2.get_server_name(r)
-r:puts("The ServerName is set to: ", name)
-        </highlight>
 <p> </p>
 </section>
 <section id="apache2.get_server_name_for_url">
@@ -1167,114 +1020,6 @@ The entity tag
         </p>
 <p> </p>
 </section>
-<section id="apache2.options">
-<title>apache2.options(
-    request_rec<em> r</em>
-    )
-    </title>
-<p>
-Returns the currently allowed options for this context (Indexes, MultiViews etc)
-        </p>
-<p>
-<em>Arguments:</em>
-</p>
-<table border="1">
-<tr>
-<th>Argument</th>
-<th>Description</th>
-</tr>
-<tr>
-<td>r</td>
-<td>The mod_lua request handle</td>
-</tr>
-</table>
-<p>
-<em>Return value(s):</em>
-<br/>
-The currently allowed options for this context.
-        </p>
-<p>
-<em>Example:</em>
-</p>
-<highlight language="lua">
-local ctx = apache2.options(r)
-if ctx:match("MultiViews") then
-    r:puts("MultiViews is enabled!")
-end
-        </highlight>
-<p> </p>
-</section>
-<section id="apache2.port">
-<title>apache2.port(
-    request_rec<em> r</em>
-    )
-    </title>
-<p>
-Returns the port currently being used by the request
-        </p>
-<p>
-<em>Arguments:</em>
-</p>
-<table border="1">
-<tr>
-<th>Argument</th>
-<th>Description</th>
-</tr>
-<tr>
-<td>r</td>
-<td>The mod_lua request handle</td>
-</tr>
-</table>
-<p>
-<em>Return value(s):</em>
-<br/>
-The current port used by the request
-        </p>
-<p>
-<em>Example:</em>
-</p>
-<highlight language="lua">
-local port = apache2.port(r)
-r:puts("We are listening on port ", port)
-        </highlight>
-<p> </p>
-</section>
-<section id="apache2.request_has_body">
-<title>apache2.request_has_body(
-    request_rec<em> r</em>
-    )
-    </title>
-<p>
-Returns true if the request has a body(POST/PUT), false otherwise
-        </p>
-<p>
-<em>Arguments:</em>
-</p>
-<table border="1">
-<tr>
-<th>Argument</th>
-<th>Description</th>
-</tr>
-<tr>
-<td>r</td>
-<td>The mod_lua request handle</td>
-</tr>
-</table>
-<p>
-<em>Return value(s):</em>
-<br/>
-True if the request has a body(POST/PUT), false otherwise
-        </p>
-<p>
-<em>Example:</em>
-</p>
-<highlight language="lua">
-if apache2.request_has_body(r) then
-    -- do stuff with the req body
-end
-        </highlight>
-<p> </p>
-</section>
 <section id="apache2.requestbody">
 <title>apache2.requestbody(
     request_rec<em> r</em>,  number<em> size</em>,  string<em> filename</em>
@@ -1323,43 +1068,6 @@ end
         </highlight>
 <p> </p>
 </section>
-<section id="apache2.satisfies">
-<title>apache2.satisfies(
-    request_rec<em> r</em>
-    )
-    </title>
-<p>
-Returns how the requires lines must be met.
-        </p>
-<p>
-<em>Arguments:</em>
-</p>
-<table border="1">
-<tr>
-<th>Argument</th>
-<th>Description</th>
-</tr>
-<tr>
-<td>r</td>
-<td>The mod_lua request handle</td>
-</tr>
-</table>
-<p>
-<em>Return value(s):</em>
-<br/>
-How the requirements must be met (SATISFY_ANY, SATISFY_ALL, SATISFY_NOSPEC).
-        </p>
-<p>
-<em>Example:</em>
-</p>
-<highlight language="lua">
-local how = apache2.satisfies(r)
-if how == "SATISFY_ANY" then
-    -- ...
-end
-        </highlight>
-<p> </p>
-</section>
 <section id="apache2.send_interim_response">
 <title>apache2.send_interim_response(
     request_rec<em> r</em>,  boolean<em> send_headers</em>
@@ -1390,39 +1098,6 @@ Sends an interim (HTTP 1xx) response immediately.
 </p>
 <highlight language="lua">
 apache2.send_interim_response(r, false)
-        </highlight>
-<p> </p>
-</section>
-<section id="apache2.sendfile">
-<title>apache2.sendfile(
-    request_rec<em> r</em>,  string<em> filename</em>
-    )
-    </title>
-<p>
-Sends a file to the client via sendfile() if possible.
-        </p>
-<p>
-<em>Arguments:</em>
-</p>
-<table border="1">
-<tr>
-<th>Argument</th>
-<th>Description</th>
-</tr>
-<tr>
-<td>r</td>
-<td>The mod_lua request handle</td>
-</tr>
-<tr>
-<td>filename</td>
-<td>The file to send</td>
-</tr>
-</table>
-<p>
-<em>Example:</em>
-</p>
-<highlight language="lua">
-apache2.sendfile(r, "/foo/bar/test.png") -- sends /foo/bar/test.png via sendfile
         </highlight>
 <p> </p>
 </section>
@@ -1519,42 +1194,6 @@ Sets the keepalive status for this request
 <br/>
 True if keepalive can be set, false otherwise
         </p>
-<p> </p>
-</section>
-<section id="apache2.some_auth_required">
-<title>apache2.some_auth_required(
-    request_rec<em> r</em>
-    )
-    </title>
-<p>
-Returns true if authorization is required for this request
-        </p>
-<p>
-<em>Arguments:</em>
-</p>
-<table border="1">
-<tr>
-<th>Argument</th>
-<th>Description</th>
-</tr>
-<tr>
-<td>r</td>
-<td>The mod_lua request handle</td>
-</tr>
-</table>
-<p>
-<em>Return value(s):</em>
-<br/>
-True if auth is required, false if not.
-        </p>
-<p>
-<em>Example:</em>
-</p>
-<highlight language="lua">
-if apache2.some_auth_required(r) then
-    print("debug: auth is required for this request\n")
-end
-        </highlight>
 <p> </p>
 </section>
 </section>
@@ -1705,8 +1344,6 @@ end
 <p>
 <a href="#apache2.add_version_component">apache2.add_version_component</a>
 <br/>
-<a href="#apache2.banner">apache2.banner</a>
-<br/>
 <a href="#apache2.mpm_query">apache2.mpm_query</a>
 <br/>
 <a href="#apache2.terminate">apache2.terminate</a>
@@ -1715,13 +1352,7 @@ end
 <br/>
 <a href="#apache2.scoreboard_worker">apache2.scoreboard_worker</a>
 <br/>
-<a href="#apache2.started">apache2.started</a>
-<br/>
 <a href="#apache2.module_info">apache2.module_info</a>
-<br/>
-<a href="#apache2.get_server_built">apache2.get_server_built</a>
-<br/>
-<a href="#apache2.is_initial_req">apache2.is_initial_req</a>
 <br/>
 <a href="#apache2.loaded_modules">apache2.loaded_modules</a>
 <br/>
@@ -1769,25 +1400,6 @@ if not apache2.banner():match("FooModule") then -- Make sure we haven't added it
     apache2.add_version_component(r, "FooModule/1.0")
 end
         </highlight>
-<p> </p>
-</section>
-<section id="apache2.banner">
-<title>apache2.banner(
-    
-    )
-    </title>
-<p>
-Returns the server banner
-        </p>
-<p>
-<em>Arguments:</em>
-</p>
-<p>None</p>
-<p>
-<em>Return value(s):</em>
-<br/>
-The server banner
-        </p>
 <p> </p>
 </section>
 <section id="apache2.custom_response">
@@ -1856,53 +1468,6 @@ if apache2.exists_config_define("FOO") then
     r:puts("This server was started with -DFOO")
 end
         </highlight>
-<p> </p>
-</section>
-<section id="apache2.get_server_built">
-<title>apache2.get_server_built(
-    
-    )
-    </title>
-<p>
-Returns the date the server was built
-        </p>
-<p>
-<em>Arguments:</em>
-</p>
-<p>None</p>
-<p>
-<em>Return value(s):</em>
-<br/>
-The date the server was built
-        </p>
-<p> </p>
-</section>
-<section id="apache2.is_initial_req">
-<title>apache2.is_initial_req(
-    request_rec<em> r</em>
-    )
-    </title>
-<p>
-Returns true if this is the main request, false if it is a sub-request
-        </p>
-<p>
-<em>Arguments:</em>
-</p>
-<table border="1">
-<tr>
-<th>Argument</th>
-<th>Description</th>
-</tr>
-<tr>
-<td>r</td>
-<td>The mod_lua request handle</td>
-</tr>
-</table>
-<p>
-<em>Return value(s):</em>
-<br/>
-True if this is the main request, false if it is a sub-request
-        </p>
 <p> </p>
 </section>
 <section id="apache2.loaded_modules">
@@ -2100,34 +1665,6 @@ Returns a table with information about the server program
 <em>Return value(s):</em>
 <br/>
 A table with information about the server program
-        </p>
-<p> </p>
-</section>
-<section id="apache2.started">
-<title>apache2.started(
-    request_rec<em> r</em>
-    )
-    </title>
-<p>
-Returns the time when the server was (re)started
-        </p>
-<p>
-<em>Arguments:</em>
-</p>
-<table border="1">
-<tr>
-<th>Argument</th>
-<th>Description</th>
-</tr>
-<tr>
-<td>r</td>
-<td>The mod_lua request handle</td>
-</tr>
-</table>
-<p>
-<em>Return value(s):</em>
-<br/>
-The time when the server was (re)started
         </p>
 <p> </p>
 </section>
@@ -2412,4 +1949,6 @@ r:puts("delayed")
 <p> </p>
 </section>
 </section>
+
+
 </manualpage>
