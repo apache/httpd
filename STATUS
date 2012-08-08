@@ -179,20 +179,25 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?view=revision&revision=1225476
       http://svn.apache.org/viewvc?view=revision&revision=1225792
     Backport version for 2.2.x of the patches above:
-      http://people.apache.org/~wrowe/tls11-12-patch-2.2-kbrand-wrowe.patch
+      http://people.apache.org/~wrowe/tls11-12-patch-2.2-kbrand-wrowe.1.patch
     +1: wrowe, 
     kbrand: might want to add a reference to PR 53114 in CHANGES.
+              [wrowe] agreed, changed in patch .1
             The #define HAVE_TLSV1_X stuff should go to ssl_toolkit_compat.h,
+              [wrowe] disagree, since that API was deprecated 
             preferrably, and it would be good if mod_ssl.xml also includes
             the change to the section about the SSLProtocol directive
             (see r1222921).
-    -1: sf:
+              [wrowe] missed that, thanks, changed in patch .1
+    sf:
         - ssl_engine_init.c: misses two "ctx = SSL_CTX_new(method);" calls
           (or move the existing ones after the if blocks).
+            [wrowe] nice catch, later option is simpler, changed in patch .1
         - The handling of "SSLProtocol all -SSLv2" is broken,
           resulting in a "No SSL protocols available" error.
           This is due to the "thisopt = SSL_PROTOCOL_SSLV2" line being
           removed in the OPENSSL_NO_TLSEXT case.
+            [wrowe] fixed in patch .1 to gracefully accept -SSLv2
 
    * mod_ssl: Add RFC 5878 support. This allows support of mechanisms
               such as Certificate Transparency. Note that new
