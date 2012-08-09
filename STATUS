@@ -88,6 +88,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * mod_rewrite: Avoid uninitialized value for dbd rewrite maps
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1369995
+                 http://svn.apache.org/viewvc?view=revision&revision=1369999
+                 http://svn.apache.org/viewvc?view=revision&revision=1370001
+    2.4.x patch: Trunk patch works
+    +1: sf, jorton, jim
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -146,13 +153,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1367042 (CHANGES)
      2.4.x patch: Trunk patch works (*provided the authz provider gets backported)
      +1: humbedooh
-
-   * mod_rewrite: Avoid uninitialized value for dbd rewrite maps
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1369995
-                  http://svn.apache.org/viewvc?view=revision&revision=1369999
-                  http://svn.apache.org/viewvc?view=revision&revision=1370001
-     2.4.x patch: Trunk patch works
-     +1: sf, jorton, jim
 
    * opinions on more complete DefaultRuntimeDir use in 2.4.x?
      o If a module has no config directive for a run-time file, merge
