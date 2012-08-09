@@ -656,7 +656,7 @@ a matching file with MultiViews</td></tr>
 
     <p>The <code>NegotiatedOnly</code> option provides that every extension
     following the base name must correlate to a recognized
-    <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> extension for content negotation, <em>e.g.</em>
+    <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> extension for content negotiation, <em>e.g.</em>
     Charset, Content-Type, Language, or Encoding.  This is the strictest
     implementation with the fewest unexpected side effects, and is the
     default behavior.</p>
@@ -673,7 +673,7 @@ a matching file with MultiViews</td></tr>
 
     <p>You may finally allow <code>Any</code> extensions to match, even if
     <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> doesn't recognize the extension. This was the
-    behavior in Apache 1.3, and can cause unpredicatable results, such as
+    behavior in Apache 1.3, and can cause unpredictable results, such as
     serving .old or .bak files the webmaster never expected to be served.</p>
 
     <p>For example, the following configuration will allow handlers
