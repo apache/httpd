@@ -1086,7 +1086,7 @@ in case of an error</description>
     href="http://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807"
     >Q294807</a>.</p>
 
-    <p>Although most error messages can be overriden, there are certain
+    <p>Although most error messages can be overridden, there are certain
     circumstances where the internal messages are used regardless of the
     setting of <directive module="core">ErrorDocument</directive>.  In
     particular, if a malformed request is detected, normal request processing
@@ -1383,7 +1383,7 @@ MIME content-type</description>
 </contextlist>
 
 <usage>
-    <p>When the server has been compiled with gprof profiling suppport,
+    <p>When the server has been compiled with gprof profiling support,
     <directive>GprofDir</directive> causes <code>gmon.out</code> files to
     be written to the specified directory when the process exits.  If the
     argument ends with a percent symbol ('%'), subdirectories are created
