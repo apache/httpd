@@ -655,7 +655,7 @@ a matching file with MultiViews</description>
 
     <p>You may finally allow <code>Any</code> extensions to match, even if
     <module>mod_mime</module> doesn't recognize the extension. This can cause
-    unpredicatable results, such as serving .old or .bak files the webmaster
+    unpredictable results, such as serving .old or .bak files the webmaster
     never expected to be served.</p>
 
     <p>For example, the following configuration will allow handlers
