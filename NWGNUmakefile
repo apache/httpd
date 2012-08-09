@@ -62,18 +62,10 @@ XINCDIRS	+= \
 			$(APR)/include \
 			$(APRUTIL)/include \
 			$(SRC)/include \
-			$(STDMOD)/aaa \
 			$(STDMOD)/core \
 			$(STDMOD)/filters \
 			$(STDMOD)/generators \
-			$(STDMOD)/http \
-			$(STDMOD)/loggers \
-			$(STDMOD)/mappers \
 			$(STDMOD)/proxy \
-			$(STDMOD)/ssl \
-			$(SERVER) \
-			$(SERVER)/mpm/netware \
-			$(PCRE) \
 			$(NWOS) \
 			$(EOLIST)
 

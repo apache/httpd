@@ -23,7 +23,7 @@ include $(AP_WORK)/build/NWGNUhead.inc
 XINCDIRS	+= \
 			$(NWOS) \
 			$(APR)/include \
-			$(AP_WORK)/include \
+			$(SRC)/include \
 			$(APRUTIL)/include \
 			$(EOLIST)
 
@@ -112,7 +112,7 @@ NLM_THREAD_NAME	= genchars
 
 #
 # If this is specified, it will override VERSION value in 
-# $(AP_WORK)\NWGNUNetWare.rul
+# $(AP_WORK)/build/NWGNUenvironment.inc
 #
 NLM_VERSION	= 1,0,0
 
