@@ -88,12 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_rewrite: Avoid uninitialized value for dbd rewrite maps
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1369995
-                 http://svn.apache.org/viewvc?view=revision&revision=1369999
-                 http://svn.apache.org/viewvc?view=revision&revision=1370001
-    2.4.x patch: Trunk patch works
-    +1: sf, jorton, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
