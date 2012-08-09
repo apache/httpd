@@ -55,7 +55,7 @@ MPM</description>
     <p>This MPM tries to fix the 'keep alive problem' in HTTP. After a client
     completes the first request, the client can keep the connection
     open, and send further requests using the same socket. This can
-    save signifigant overhead in creating TCP connections. However,
+    save significant overhead in creating TCP connections. However,
     Apache traditionally keeps an entire child process/thread waiting
     for data from the client, which brings its own disadvantages. To
     solve this problem, this MPM uses a dedicated thread to handle both
