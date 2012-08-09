@@ -19,6 +19,7 @@ XINCDIRS	+= \
 			$(APR)/include \
 			$(APRUTIL)/include \
 			$(AP_WORK)/include \
+			$(AP_WORK)/modules/proxy \
 			$(AP_WORK)/modules/http \
 			$(NWOS) \
 			$(EOLIST)
