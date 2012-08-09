@@ -66,7 +66,7 @@
 
 <section id="env"><title>CGI Environment variables</title>
     <p>The server will set the CGI environment variables as described
-    in the <a href="http://hoohoo.ncsa.uiuc.edu/cgi/">CGI
+    in the <a href="http://www.ietf.org/rfc/rfc3875">CGI
     specification</a>, with the following provisions:</p>
 
     <dl>
