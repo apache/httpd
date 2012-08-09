@@ -277,6 +277,7 @@ $(OBJDIR)/mod_proxy.imp:
 	@echo $(DL) ap_proxy_canon_netloc,$(DL)>> $@
 	@echo $(DL) ap_proxy_canonenc,$(DL)>> $@
 	@echo $(DL) ap_proxy_checkproxyblock,$(DL)>> $@
+	@echo $(DL) ap_proxy_checkproxyblock2,$(DL)>> $@
 	@echo $(DL) ap_proxy_conn_is_https,$(DL)>> $@
 	@echo $(DL) ap_proxy_connect_backend,$(DL)>> $@
 	@echo $(DL) ap_proxy_connect_to_backend,$(DL)>> $@
