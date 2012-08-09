@@ -27,6 +27,7 @@ Changes with Apache 2.5.0
      - APIs: ap_log_pid(), ap_remove_pid, ap_read_pid()
      - core: the scoreboard (ScoreBoardFile), pid file (PidFile), and
        mutexes (Mutex)
+     - mod_auth_digest: shared memory file
      - mod_lbmethod_heartbeat, mod_heartmonitor: heartbeat storage file
      - mod_socache_shmcb, mod_socache_dbm: shared memory or dbm for cache
      [Jeff Trawick]
