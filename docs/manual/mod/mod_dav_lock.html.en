@@ -39,7 +39,7 @@
     the service of <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>. But without a backend provider
     which makes use of it, it's useless and should not be loaded into the
     server. A sample backend module which actually utilizes
-    <code class="module"><a href="../mod/mod_dav_lock.html">mod_dav_lock</a></code> is <a href="http://subversion.tigris.org/">mod_dav_svn</a>, the subversion provider module.</p>
+    <code class="module"><a href="../mod/mod_dav_lock.html">mod_dav_lock</a></code> is <a href="http://subversion.apache.org/">mod_dav_svn</a>, the subversion provider module.</p>
 
     <p>Note that <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> does <em>not</em> need this
     generic locking module, because it uses its own more specialized

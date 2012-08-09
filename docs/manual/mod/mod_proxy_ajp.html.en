@@ -133,10 +133,10 @@ ProxyPassReverse /apps/foo http://www.example.com/foo
     the connection can be in one of the following states:</p>
     <ul>
     <li> Idle <br /> No request is being handled over this connection. </li>
-    <li> Assigned <br /> The connecton is handling a specific request.</li>
+    <li> Assigned <br /> The connection is handling a specific request.</li>
     </ul>
     <p>Once a connection is assigned to handle a particular request, the basic
-    request informaton (e.g. HTTP headers, etc) is sent over the connection in
+    request information (e.g. HTTP headers, etc) is sent over the connection in
     a highly condensed form (e.g. common strings are encoded as integers).
     Details of that format are below in Request Packet Structure. If there is a
     body to the request <code>(content-length &gt; 0)</code>, that is sent in a
@@ -152,7 +152,7 @@ ProxyPassReverse /apps/foo http://www.example.com/foo
     been transferred yet.  This is necessary because the packets have a fixed
     maximum size and arbitrary amounts of data can be included the body of a
     request (for uploaded files, for example).  (Note: this is unrelated to
-    HTTP chunked tranfer).</li>
+    HTTP chunked transfer).</li>
     <li>END_RESPONSE <br /> Finish the request-handling cycle.</li>
     </ul>
     <p>Each message is accompanied by a differently formatted packet of data.
@@ -290,7 +290,7 @@ ProxyPassReverse /apps/foo http://www.example.com/foo
     <p>To ensure some basic security, the container will only actually do the
     <code>Shutdown</code> if the request comes from the same machine on which
     it's hosted.</p>
-    <p>The first <code>Data</code> packet is send immediatly after the
+    <p>The first <code>Data</code> packet is send immediately after the
     <code>Forward Request</code> by the web server.</p>
     <p>The servlet container can send the following types of messages to the
     webserver:</p>
@@ -592,7 +592,7 @@ AJP13_GET_BODY_CHUNK :=
   <h3>Get Body Chunk</h3>
     <p>The container asks for more data from the request (If the body was
     too large to fit in the first packet sent over or when the request is
-    chuncked). The server will send a body packet back with an amount of data
+    chunked). The server will send a body packet back with an amount of data
     which is the minimum of the <code>request_length</code>, the maximum send
     body size <code>(8186 (8 Kbytes - 6))</code>, and the number of bytes
     actually left to send from the request body.<br />

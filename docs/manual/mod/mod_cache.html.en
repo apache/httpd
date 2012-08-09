@@ -198,7 +198,7 @@ LoadModule cache_module modules/mod_cache.so
   becomes stale, and the time the stale entity is fully refreshed. On a busy
   server, a significant number of requests might arrive during this time, and
   cause a <strong>thundering herd</strong> of requests to strike the backend
-  suddenly and unpredicably.</p>
+  suddenly and unpredictably.</p>
   <p>To keep the thundering herd at bay, the <code class="directive">CacheLock</code>
   directive can be used to define a directory in which locks are created for
   URLs <strong>in flight</strong>. The lock is used as a <strong>hint</strong>
