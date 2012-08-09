@@ -7,9 +7,6 @@ Changes with Apache 2.5.0
   *) mod_lua: Add functions r:flush and r:sendfile as well as additional
      request information to the request_rec structure. [Daniel Gruno]
 
-  *) mod_rewrite: Fix crash with dbd RewriteMaps. PR 53663. [Mikhail T.
-     <mi apache aldan algebra com>]
-
   *) mod_lua: Add a server scope for Lua states, which creates a pool of
      states with managable minimum and maximum size. [Daniel Gruno]
 
