@@ -20,7 +20,7 @@ XINCDIRS	+= \
 			$(APR)/include \
 			$(APRUTIL)/include \
 			$(APR)/misc/netware \
-			$(AP_WORK)/include \
+			$(SRC)/include \
 			$(EOLIST)
 
 #

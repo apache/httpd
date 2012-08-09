@@ -52,10 +52,10 @@ XINCDIRS	+= \
 			$(SSL_INC) \
 			$(APR)/include \
 			$(APRUTIL)/include \
-			$(AP_WORK)/include \
-			$(AP_WORK)/modules/cache \
-			$(AP_WORK)/modules/generators \
-			$(AP_WORK)/server/mpm/NetWare \
+			$(SRC)/include \
+			$(STDMOD)/cache \
+			$(STDMOD)/generators \
+			$(SERVER)/mpm/NetWare \
 			$(NWOS) \
 			$(EOLIST)
 
@@ -315,7 +315,7 @@ install :: nlms FORCE
 #
 # Any specialized rules here
 #
-vpath %.c $(AP_WORK)/modules/arch/netware
+vpath %.c $(STDMOD)/arch/netware
 
 #
 # Include the 'tail' makefile that has targets that depend on variables defined

@@ -19,7 +19,7 @@ XINCDIRS	+= \
 			$(STDMOD)/cache \
 			$(APR)/include \
 			$(APRUTIL)/include \
-			$(AP_WORK)/include \
+			$(SRC)/include \
 			$(APR)/misc/netware \
 			$(NWOS) \
 			$(EOLIST)
