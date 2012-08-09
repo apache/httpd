@@ -743,7 +743,7 @@ a matching file with MultiViews</td></tr>
 
     <p>You may finally allow <code>Any</code> extensions to match, even if
     <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> doesn't recognize the extension. This can cause
-    unpredicatable results, such as serving .old or .bak files the webmaster
+    unpredictable results, such as serving .old or .bak files the webmaster
     never expected to be served.</p>
 
     <p>For example, the following configuration will allow handlers
