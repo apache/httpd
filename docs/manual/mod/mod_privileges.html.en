@@ -37,7 +37,7 @@ OpenSolaris platforms</td></tr></table>
 
 <p>This module enables different Virtual Hosts to run with different
 Unix <var>User</var> and <var>Group</var> IDs, and with different
-<a href="http://www.sun.com/bigadmin/features/articles/least_privilege.jsp">Solaris Privileges</a>.  In particular, it offers a solution to the
+<a href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">Solaris Privileges</a>.  In particular, it offers a solution to the
 problem of privilege separation between different Virtual Hosts, first
 promised by the abandoned perchild MPM.  It also offers other security
 enhancements.</p>
@@ -147,8 +147,8 @@ request-processing cycle.</em></p>
 non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a></code> or custom MPM).</td></tr>
 </table>
     <p>This server-wide directive determines whether Apache will run with
-    the <a href="http://www.sun.com/bigadmin/features/articles/least_privilege.jsp">privileges</a> required to run
-    <a href="http://www.sun.com/bigadmin/content/dtrace/">dtrace</a>.
+    the <a href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">privileges</a> required to run
+    <a href="http://sosc-dr.sun.com/bigadmin/content/dtrace/">dtrace</a>.
     Note that <var>DTracePrivileges On</var> will not in itself
     activate DTrace, but <var>DTracePrivileges Off</var> will prevent
     it working.</p>
@@ -209,7 +209,7 @@ subprocesses, and the privileges available to subprocesses.</td></tr>
 non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a></code> or custom MPM).</td></tr>
 </table>
     <p>Determines whether the virtual host is allowed to run fork and exec,
-    the <a href="http://www.sun.com/bigadmin/features/articles/least_privilege.jsp">privileges</a> required to run subprocesses.  If this is set to
+    the <a href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">privileges</a> required to run subprocesses.  If this is set to
     <var>Off</var> the virtualhost is denied the privileges and will not
     be able to run traditional CGI programs or scripts under the traditional
     <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, nor similar external programs such as those
@@ -239,7 +239,7 @@ non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a
 and when <code class="module"><a href="../mod/mod_privileges.html">mod_privileges</a></code> is compiled with the
 <var>BIG_SECURITY_HOLE</var> compile-time option.</td></tr>
 </table>
-    <p><code class="directive">VHostCGIPrivs</code> can be used to assign arbitrary <a href="http://www.sun.com/bigadmin/features/articles/least_privilege.jsp">privileges</a> to subprocesses created by a virtual host, as discussed
+    <p><code class="directive">VHostCGIPrivs</code> can be used to assign arbitrary <a href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">privileges</a> to subprocesses created by a virtual host, as discussed
     under <code class="directive">VHostCGIMode</code>.  Each <var>privilege-name</var>
     is the name of a Solaris privilege, such as <var>file_setid</var>
     or <var>sys_nfs</var>.</p>
@@ -272,7 +272,7 @@ non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a
     <p>The <code class="directive">VHostGroup</code> directive sets the Unix group
     under which the server will process requests to a virtualhost.
     The group is set before the request is processed and reset afterwards
-    using <a href="http://www.sun.com/bigadmin/features/articles/least_privilege.jsp">Solaris Privileges</a>.  Since the setting applies to the
+    using <a href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">Solaris Privileges</a>.  Since the setting applies to the
     <em>process</em>, this is not compatible with threaded MPMs.</p>
     <p><var>Unix-group</var> is one of:</p>
     <dl>
@@ -309,7 +309,7 @@ non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a
 and when <code class="module"><a href="../mod/mod_privileges.html">mod_privileges</a></code> is compiled with the
 <var>BIG_SECURITY_HOLE</var> compile-time option.</td></tr>
 </table>
-    <p><code class="directive">VHostPrivs</code> can be used to assign arbitrary <a href="http://www.sun.com/bigadmin/features/articles/least_privilege.jsp">privileges</a> to a virtual host.  Each <var>privilege-name</var>
+    <p><code class="directive">VHostPrivs</code> can be used to assign arbitrary <a href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">privileges</a> to a virtual host.  Each <var>privilege-name</var>
     is the name of a Solaris privilege, such as <var>file_setid</var>
     or <var>sys_nfs</var>.</p>
 
@@ -339,7 +339,7 @@ for the virtualhost.</td></tr>
 non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a></code> or custom MPM).</td></tr>
 </table>
     <p>Determines whether the virtual host processes requests with
-    security enhanced by removal of <a href="http://www.sun.com/bigadmin/features/articles/least_privilege.jsp">Privileges</a> that are rarely needed in a webserver, but which are
+    security enhanced by removal of <a href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">Privileges</a> that are rarely needed in a webserver, but which are
     available by default to a normal Unix user and may therefore
     be required by modules and applications.  It is recommended that
     you retain the default (On) unless it prevents an application running.
@@ -367,7 +367,7 @@ non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a
     <p>The <code class="directive">VHostUser</code> directive sets the Unix userid
     under which the server will process requests to a virtualhost.
     The userid is set before the request is processed and reset afterwards
-    using <a href="http://www.sun.com/bigadmin/features/articles/least_privilege.jsp">Solaris Privileges</a>.  Since the setting applies to the
+    using <a href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">Solaris Privileges</a>.  Since the setting applies to the
     <em>process</em>, this is not compatible with threaded MPMs.</p>
     <p><var>Unix-userid</var> is one of:</p>
     <dl>
