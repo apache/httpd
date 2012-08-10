@@ -79,9 +79,8 @@
     for Mac OS X and Windows (although the Windows version fails when
     used with a query string -- see "<a href="#msie" >Working with MS
     Internet Explorer</a>" below for a workaround), <a
-    href="http://www.mozilla.org">Mozilla</a>, <a
-    href="http://channels.netscape.com/ns/browsers/download.jsp">
-    Netscape</a> 7, <a href="http://www.opera.com/">Opera</a>, and <a
+    href="http://www.mozilla.org">Mozilla</a>, Netscape 7, 
+    <a href="http://www.opera.com/">Opera</a>, and <a
     href="http://www.apple.com/safari/">Safari</a>. <a
     href="http://lynx.isc.org/">lynx</a> does <strong>not</strong>
     support digest authentication. Since digest authentication is not as

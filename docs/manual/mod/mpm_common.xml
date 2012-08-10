@@ -99,7 +99,7 @@ after a crash</description>
     <p>There are already two modules, <code>mod_whatkilledus</code> and
     <code>mod_backtrace</code> that make use of this hook. Please have a
     look at Jeff Trawick's <a
-    href="http://www.apache.org/~trawick/exception_hook.html"
+    href="http://people.apache.org/~trawick/exception_hook.html"
     >EnableExceptionHook site</a> for more information about these.</p>
 </usage>
 </directivesynopsis>

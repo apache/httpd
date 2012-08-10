@@ -171,8 +171,8 @@ information displayed by the server-info handler</description>
 
     <highlight language="config">
 AddModuleInfo mod_deflate.c 'See &lt;a \
-    href="http://www.apache.org/docs/&httpd.docs;/mod/mod_deflate.html"&gt;\
-    http://www.apache.org/docs/&httpd.docs;/mod/mod_deflate.html&lt;/a&gt;'
+    href="http://httpd.apache.org/docs/&httpd.docs;/mod/mod_deflate.html"&gt;\
+    http://httpd.apache.org/docs/&httpd.docs;/mod/mod_deflate.html&lt;/a&gt;'
     </highlight>
 </usage>
 
