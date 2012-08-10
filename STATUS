@@ -154,6 +154,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: trawick
 
+   * ab fixes:
+     o When -B is specified, search for a host address in the same
+       family as the specified outbound interface.
+     o Fix read failure when targeting SSL server.
+     trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1364133
+                    http://svn.apache.org/viewvc?view=revision&revision=1371791
+     2.4.x patch: trunk patches work
+     +1: trawick
+
    * opinion on more complete DefaultRuntimeDir use in 2.4.x?
      o If a module has a config directive for the run-time file that
        treats the configured path as relative to server root, preserve
