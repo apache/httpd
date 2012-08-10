@@ -62,7 +62,7 @@
 <seealso><directive module="mod_mime">AddHandler</directive></seealso>
 <seealso><a href="../suexec.html">Running CGI programs under different
     user IDs</a></seealso>
-<seealso><a href="http://hoohoo.ncsa.uiuc.edu/cgi/">CGI Specification</a></seealso>
+<seealso><a href="http://www.ietf.org/rfc/rfc3875">CGI Specification</a></seealso>
 
 <section id="env"><title>CGI Environment variables</title>
     <p>The server will set the CGI environment variables as described
