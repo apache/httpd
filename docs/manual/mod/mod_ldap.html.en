@@ -50,11 +50,9 @@ by other LDAP modules</td></tr>
     linked to <a class="glossarylink" href="../glossary.html#apr" title="see glossary">APR</a>. As of this writing, APR-util supports:
     <a href="http://www.openldap.org/">OpenLDAP SDK</a> (2.x or later),
     <a href="http://developer.novell.com/ndk/cldap.htm">Novell LDAP
-    SDK</a>, <a href="http://www.mozilla.org/directory/csdk.html">
-    Mozilla LDAP SDK</a>, native Solaris LDAP SDK (Mozilla based),
-    native Microsoft LDAP SDK, or the
-    <a href="http://www.iplanet.com/downloads/developer/">iPlanet
-    (Netscape)</a> SDK. See the <a href="http://apr.apache.org">APR</a>
+    SDK</a>, <a href="https://wiki.mozilla.org/LDAP_C_SDK">
+    Mozilla LDAP SDK</a>, native Solaris LDAP SDK (Mozilla based) or the
+    native Microsoft LDAP SDK. See the <a href="http://apr.apache.org">APR</a>
     website for details.</p>
 
 </div>
