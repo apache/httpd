@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) Windows: Fix SSL failures on windows with AcceptFilter https none.
+     PR: 52476.  [Jeff Trawick]
+
   *) ab: Fix read failure when targeting SSL server.  [Jeff Trawick]
 
   *) mod_lua: Decline handling 'lua-script' if the file doesn't exist,
