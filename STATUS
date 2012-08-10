@@ -148,12 +148,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: Trunk patch works (*provided the authz provider gets backported)
      +1: humbedooh
 
-   * opinions on more complete DefaultRuntimeDir use in 2.4.x?
-     o If a module has no config directive for a run-time file, merge
-       the fix from trunk (via voting on a patch) to respect DefaultRuntimeDir
-       instead of putting it wherever it does currently (generally
-       /tmp or relative to server root).
-       +1: trawick, jim
+   * mod_auth_digest: respect DefaultRuntimeDir for its
+                      unconfigurable shared memory file
+     trunk patch: http://svn.apache.org/viewvc?rev=1371387&view=rev
+     2.4.x patch: trunk patch works
+     +1: trawick
+
+   * opinion on more complete DefaultRuntimeDir use in 2.4.x?
      o If a module has a config directive for the run-time file that
        treats the configured path as relative to server root, preserve
        that behavior but change the location when not configured to
