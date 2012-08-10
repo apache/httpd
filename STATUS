@@ -163,6 +163,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patches work
      +1: trawick
 
+   * PR 52476: SSL failures on Windows with AcceptFilter https none
+     trunk patch: http://svn.apache.org/viewvc?rev=1371801&view=rev
+     2.4.x patch: trunk patch works
+     +1: trawick
+
    * opinion on more complete DefaultRuntimeDir use in 2.4.x?
      o If a module has a config directive for the run-time file that
        treats the configured path as relative to server root, preserve
