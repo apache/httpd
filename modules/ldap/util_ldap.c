@@ -2103,7 +2103,7 @@ static const char *util_ldap_set_cache_file(cmd_parms *cmd, void *dummy,
     }
 
     if (file) {
-        st->cache_file = ap_server_root_relative(st->pool, file);
+        st->cache_file = ap_runtime_dir_relative(st->pool, file);
     }
     else {
         st->cache_file = NULL;
