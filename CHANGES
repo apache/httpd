@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) ab: Fix read failure when targeting SSL server.  [Jeff Trawick]
+
   *) mod_lua: Decline handling 'lua-script' if the file doesn't exist,
      rather than throwing an internal server error. [Daniel Gruno]
 

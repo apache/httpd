@@ -1347,11 +1347,21 @@ static void read_connection(struct connection * c)
                 good++;
                 close_connection(c);
             }
+            else if (scode == SSL_ERROR_SYSCALL
+                     && status == 0
+                     && c->read != 0) {
+                /* connection closed, but in violation of the protocol, after
+                 * some data has already been read; this commonly happens, so
+                 * let the length check catch any response errors
+                 */
+                good++;
+                close_connection(c);
+            }
             else if (scode != SSL_ERROR_WANT_WRITE
                      && scode != SSL_ERROR_WANT_READ) {
                 /* some fatal error: */
                 c->read = 0;
-                BIO_printf(bio_err, "SSL read failed - closing connection\n");
+                BIO_printf(bio_err, "SSL read failed (%d) - closing connection\n", scode);
                 ERR_print_errors(bio_err);
                 close_connection(c);
             }
