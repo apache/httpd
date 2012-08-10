@@ -46,7 +46,7 @@ by other LDAP modules</description>
     linked to <glossary>APR</glossary>. As of this writing, APR-util supports:
     <a href="http://www.openldap.org/">OpenLDAP SDK</a> (2.x or later),
     <a href="http://developer.novell.com/ndk/cldap.htm">Novell LDAP
-    SDK</a>, <a href="http://www.mozilla.org/directory/csdk.html">
+    SDK</a>, <a href="https://wiki.mozilla.org/LDAP_C_SDK">
     Mozilla LDAP SDK</a>, native Solaris LDAP SDK (Mozilla based),
     native Microsoft LDAP SDK, or the
     <a href="http://www.iplanet.com/downloads/developer/">iPlanet
