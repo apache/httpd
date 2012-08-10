@@ -29,6 +29,7 @@ Changes with Apache 2.5.0
        mutexes (Mutex)
      - mod_auth_digest: shared memory file
      - mod_lbmethod_heartbeat, mod_heartmonitor: heartbeat storage file
+     - mod_ldap: shared memory cache
      - mod_socache_shmcb, mod_socache_dbm: shared memory or dbm for cache
      [Jeff Trawick]
 
