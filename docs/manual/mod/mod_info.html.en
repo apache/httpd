@@ -190,8 +190,8 @@ information displayed by the server-info handler</td></tr>
 
     <pre class="prettyprint lang-config">
 AddModuleInfo mod_deflate.c 'See &lt;a \
-    href="http://www.apache.org/docs/trunk/mod/mod_deflate.html"&gt;\
-    http://www.apache.org/docs/trunk/mod/mod_deflate.html&lt;/a&gt;'
+    href="http://httpd.apache.org/docs/trunk/mod/mod_deflate.html"&gt;\
+    http://httpd.apache.org/docs/trunk/mod/mod_deflate.html&lt;/a&gt;'
     </pre>
 
 
