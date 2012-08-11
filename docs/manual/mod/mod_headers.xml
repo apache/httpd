@@ -285,7 +285,8 @@ headers</description>
 <name>Header</name>
 <description>Configure HTTP response headers</description>
 <syntax>Header [<var>condition</var>] set|append|merge|add|unset|echo|edit
-<var>header</var> [<var>value</var>] [early|env=[!]<var>variable</var>]</syntax>
+<var>header</var> [<var>value</var>] [<var>replacement</var>]
+[early|env=[!]<var>variable</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
