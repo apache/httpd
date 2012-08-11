@@ -203,25 +203,25 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * Axe unnecessary trailing comma from server-status user output.
      trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1369904
      2.4.x patch: trunk patch works
-     +1: rjung
+     +1: rjung, trawick
 
    * Correctly log the error returned by apr_dbd_pvselect().
      trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1364229
      2.4.x patch: trunk patch works
-     +1: rjung
+     +1: rjung, trawick
 
    * mpm_winnt: Tweak a message added in r750567 so that the accept thread
      logs the physical address it listens on instead of hostname|*.
      trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1364138
      2.4.x patch: trunk patch works
-     +1: rjung
+     +1: rjung, trawick
 
    * htpasswd: Use correct file mode for checking if file is writable.
      Also switch to the non-deprecated APR_FOPEN_* flags.
      PR: 45923
      trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1369618
      2.4.x patch: trunk patch works
-     +1: rjung
+     +1: rjung, trawick
 
    * mod_cache: Set content type in case we return stale content.
      trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1361153
@@ -233,7 +233,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      (this doesn't address any known problem symptom)
      trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1367819
      2.4.x patch: trunk patch works
-     +1: rjung
+     +1: rjung, trawick
 
    * Various code clean up.
      Submitted by: Christophe JAILLET <christophe jaillet wanadoo fr>
