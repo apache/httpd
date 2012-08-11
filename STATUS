@@ -187,6 +187,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?rev=1371878&view=rev
      2.4.x patch: trunk patch works
        +1: fielding, gstein
+       rjung: What about not needing mod_setenvif:
+       RequestHeader unset DNT "expr=%{HTTP_USER_AGENT} -strmatch '*MSIE 10.0;*'"
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
