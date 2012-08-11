@@ -149,6 +149,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: Trunk patch works (*provided the authz provider gets backported)
      +1: humbedooh, rjung
      rjung: docs missing?
+     humbedooh: It's in the 2.4 docs already, but commented out, as with a lot 
+                of other functions that were never actually made. It's a mess ;)
 
    * mod_auth_digest: respect DefaultRuntimeDir for its
                       unconfigurable shared memory file
