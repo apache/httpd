@@ -184,7 +184,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        the browser is deliberately violating the standard under development.
      trunk patch: http://svn.apache.org/viewvc?rev=1371878&view=rev
      2.4.x patch: trunk patch works
-       +1: fielding
+       +1: fielding, gstein
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
