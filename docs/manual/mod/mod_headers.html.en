@@ -203,7 +203,8 @@ headers</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP response headers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Header [<var>condition</var>] set|append|merge|add|unset|echo|edit
-<var>header</var> [<var>value</var>] [early|env=[!]<var>variable</var>]</code></td></tr>
+<var>header</var> [<var>value</var>] [<var>replacement</var>]
+[early|env=[!]<var>variable</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
