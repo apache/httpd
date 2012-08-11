@@ -180,6 +180,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        DefaultRuntimeDir directive after an upgrade.
        +1: trawick, jim
 
+   * httpd.conf.in: remove DNT header field from MSIE 10.0 requests because
+       the browser is deliberately violating the standard under development.
+     trunk patch: http://svn.apache.org/viewvc?rev=1371878&view=rev
+     2.4.x patch: trunk patch works
+       +1: fielding
+
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
