@@ -183,6 +183,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        when some unconfigured run-time file starts respecting their 
        DefaultRuntimeDir directive after an upgrade.
        +1: trawick, jim, rjung
+       rjung: backport candidates are:
+          heartbeat          r1364695
+          scoreboard         r1369477
+          core/pid file      r1369808
+          core/mutex         r1370288
+          mod_socache_XXX    r1370225
+          mod_slotmem_plain  r1370763
+          mod_ldap           r1371684
 
    * httpd.conf.in: remove DNT header field from MSIE 10.0 requests because
        the browser is deliberately violating the standard under development.
@@ -191,6 +199,48 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        +1: fielding, gstein
        rjung: What about not needing mod_setenvif:
        RequestHeader unset DNT "expr=%{HTTP_USER_AGENT} -strmatch '*MSIE 10.0;*'"
+
+   * Axe unnecessary trailing comma from server-status user output.
+     trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1369904
+     2.4.x patch: trunk patch works
+     +1: rjung
+
+   * Correctly log the error returned by apr_dbd_pvselect().
+     trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1364229
+     2.4.x patch: trunk patch works
+     +1: rjung
+
+   * mpm_winnt: Tweak a message added in r750567 so that the accept thread
+     logs the physical address it listens on instead of hostname|*.
+     trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1364138
+     2.4.x patch: trunk patch works
+     +1: rjung
+
+   * htpasswd: Use correct file mode for checking if file is writable.
+     Also switch to the non-deprecated APR_FOPEN_* flags.
+     PR: 45923
+     trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1369618
+     2.4.x patch: trunk patch works
+     +1: rjung
+
+   * mod_cache: Set content type in case we return stale content.
+     trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1361153
+     2.4.x patch: trunk patch works
+     +1: rjung
+
+   * mpm_winnt: initialize the protocol field when manufacturing an apr socket
+     lest accidential autodata contents leak into the apr_socket_t.
+     (this doesn't address any known problem symptom)
+     trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1367819
+     2.4.x patch: trunk patch works
+     +1: rjung
+
+   * Various code clean up.
+     Submitted by: Christophe JAILLET <christophe jaillet wanadoo fr>
+     PR: 52893
+     trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1361801
+     2.4.x patch: trunk patch works, except for mod_policy (ignore)
+     +1: rjung
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
@@ -206,5 +256,3 @@ PATCHES/ISSUES THAT ARE STALLED
                    http://svn.apache.org/viewvc?view=revision&revision=1328714
     2.4 patch: http://people.apache.org/~fuankg/diffs/httpd-2.4.x-cross_compile.diff
     fuankg: on hold until we agree for a better and more simple solution ...
-
-
