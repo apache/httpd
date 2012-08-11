@@ -207,7 +207,7 @@ subprocesses, and the privileges available to subprocesses.</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_privileges</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available on Solaris 10 and OpenSolaris with
 non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a></code> or custom MPM).</td></tr>
-</table>m
+</table>
     <p>Determines whether the virtual host is allowed to run fork and exec,
     the <a href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">privileges</a> required to run subprocesses.  If this is set to
     <var>Off</var> the virtualhost is denied the privileges and will not
