@@ -137,6 +137,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1370466
      2.4.x patch: trunk patch works.
      +1: humbedooh
+     rjung: docs compatibility note 2.5 -> 2.4.3, drop message-tag file from patch
 
    * mod_lua: Add a new directive, LuaCodeCache, for controlling the in-memory 
               caching of scripts
@@ -146,13 +147,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1367048
                   http://svn.apache.org/viewvc?view=revision&revision=1367042 (CHANGES)
      2.4.x patch: Trunk patch works (*provided the authz provider gets backported)
-     +1: humbedooh
+     +1: humbedooh, rjung
+     rjung: docs missing?
 
    * mod_auth_digest: respect DefaultRuntimeDir for its
                       unconfigurable shared memory file
      trunk patch: http://svn.apache.org/viewvc?rev=1371387&view=rev
      2.4.x patch: trunk patch works
-     +1: trawick
+     +1: trawick, rjung
 
    * ab fixes:
      o When -B is specified, search for a host address in the same
@@ -161,7 +163,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1364133
                     http://svn.apache.org/viewvc?view=revision&revision=1371791
      2.4.x patch: trunk patches work
-     +1: trawick
+     +1: trawick, rjung
 
    * PR 52476: SSL failures on Windows with AcceptFilter https none
      trunk patch: http://svn.apache.org/viewvc?rev=1371801&view=rev
@@ -178,7 +180,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        BUT: Existing users of DefaultRuntimeDir might get a short-term scare
        when some unconfigured run-time file starts respecting their 
        DefaultRuntimeDir directive after an upgrade.
-       +1: trawick, jim
+       +1: trawick, jim, rjung
 
    * httpd.conf.in: remove DNT header field from MSIE 10.0 requests because
        the browser is deliberately violating the standard under development.
