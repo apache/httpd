@@ -459,8 +459,10 @@ media type in the HTTP Content-Type header field</td></tr>
 will exit.</td></tr>
 <tr class="odd"><td><a href="mod_unixd.html#group">Group <var>unix-group</var></a></td><td> #-1 </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Group under which the server will answer
 requests</td></tr>
-<tr><td><a href="mod_headers.html#header" id="H" name="H">Header [<var>condition</var>] add|append|echo|edit|merge|set|unset
-<var>header</var> [<var>value</var>] [early|env=[!]<var>variable</var>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure HTTP response headers</td></tr>
+<tr><td><a href="mod_headers.html#header" id="H" name="H">Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|unset
+<var>header</var> [<var>value</var>] [<var>replacement</var>]
+[early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
+</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure HTTP response headers</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#headername">HeaderName <var>filename</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Name of the file that will be inserted at the top
 of the index listing</td></tr>
 <tr><td><a href="mod_heartbeat.html#heartbeataddress">HeartbeatAddress <var>addr:port</var></a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Multicast address for heartbeat packets</td></tr>
@@ -537,7 +539,7 @@ valid</td></tr>
 <tr><td><a href="mod_ldap.html#ldapreferrals">LDAPReferrals <var>On|Off</var></a></td><td> On </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable referral chasing during queries to the LDAP server.</td></tr>
 <tr class="odd"><td><a href="mod_ldap.html#ldapretries">LDAPRetries <var>number-of-retries</var></a></td><td> 3 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configures the number of LDAP server retries.</td></tr>
 <tr><td><a href="mod_ldap.html#ldapretrydelay">LDAPRetryDelay <var>seconds</var></a></td><td> 0 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Configures the delay between LDAP server retries.</td></tr>
-<tr class="odd"><td><a href="mod_ldap.html#ldapsharedcachefile">LDAPSharedCacheFile <var>directory-path/filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the shared memory cache file</td></tr>
+<tr class="odd"><td><a href="mod_ldap.html#ldapsharedcachefile">LDAPSharedCacheFile <var>file-path</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the shared memory cache file</td></tr>
 <tr><td><a href="mod_ldap.html#ldapsharedcachesize">LDAPSharedCacheSize <var>bytes</var></a></td><td> 500000 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Size in bytes of the shared-memory cache</td></tr>
 <tr class="odd"><td><a href="mod_ldap.html#ldaptimeout">LDAPTimeout <var>seconds</var></a></td><td> 60 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specifies the timeout for LDAP search and bind operations, in seconds</td></tr>
 <tr><td><a href="mod_ldap.html#ldaptrustedclientcert">LDAPTrustedClientCert <var>type</var> <var>directory-path/filename/nickname</var> <var>[password]</var></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the file containing or nickname referring to a per
@@ -789,8 +791,10 @@ extensions</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#removetype">RemoveType <var>extension</var> [<var>extension</var>]
 ...</a></td><td></td><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes any content type associations for a set of file
 extensions</td></tr>
-<tr><td><a href="mod_headers.html#requestheader">RequestHeader add|append|edit|edit*|merge|set|unset <var>header</var>
-[<var>value</var>] [<var>replacement</var>] [early|env=[!]<var>variable</var>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure HTTP request headers</td></tr>
+<tr><td><a href="mod_headers.html#requestheader">RequestHeader add|append|edit|edit*|merge|set|unset
+<var>header</var> [<var>value</var>] [<var>replacement</var>]
+[early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
+</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure HTTP request headers</td></tr>
 <tr class="odd"><td><a href="mod_reqtimeout.html#requestreadtimeout">RequestReadTimeout
 [header=<var>timeout</var>[-<var>maxtimeout</var>][,MinRate=<var>rate</var>]
 [body=<var>timeout</var>[-<var>maxtimeout</var>][,MinRate=<var>rate</var>]
