@@ -375,7 +375,7 @@ AP_DECLARE_NONSTD(int) ap_rprintf(request_rec *r, const char *fmt,...)
 /**
  * Flush all of the data for the current request to the client
  * @param r The current request
- * @return The number of bytes sent
+ * @return 0 on success, -1 if an error occurred
  */
 AP_DECLARE(int) ap_rflush(request_rec *r);
 
