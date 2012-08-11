@@ -270,7 +270,7 @@ subprocesses, and the privileges available to subprocesses.</description>
 <compatibility>Available on Solaris 10 and OpenSolaris with
 non-threaded MPMs (<module>prefork</module> or custom MPM).</compatibility>
 
-<usage>m
+<usage>
     <p>Determines whether the virtual host is allowed to run fork and exec,
     the <a
     href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp"
