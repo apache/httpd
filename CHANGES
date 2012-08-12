@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Be less strict when checking whether Content-Type is set to 
+     "application/x-www-form-urlencoded" when parsing POST data, 
+     or we risk losing data with an appended charset. PR 53698
+     [Petter Berntsen <sluggr gmail.com>]
+
   *) Windows: Fix SSL failures on windows with AcceptFilter https none.
      PR: 52476.  [Jeff Trawick]
 
