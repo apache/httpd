@@ -198,7 +198,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
        +1: fielding, gstein
        rjung: What about not needing mod_setenvif:
-       RequestHeader unset DNT "expr=%{HTTP_USER_AGENT} -strmatch '*MSIE 10.0;*'"
+     RequestHeader unset DNT "expr=%{HTTP_USER_AGENT} -strmatch '*MSIE 10.0;*'"
+         -- fielding: I prefer the separate syntax.  I want the env variable
+               to be set for apps/logging, and it allows the same treatment
+               to be applied to other user agents that go bad.
 
    * Axe unnecessary trailing comma from server-status user output.
      trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1369904
