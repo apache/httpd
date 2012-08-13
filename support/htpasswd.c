@@ -520,7 +520,7 @@ int main(int argc, const char * const argv[])
             /*
              * Check that this existing file is readable and writable.
              */
-            if (!accessible(pool, pwfilename, APR_READ | APR_APPEND)) {
+            if (!accessible(pool, pwfilename, APR_FOPEN_READ|APR_FOPEN_WRITE)) {
                 apr_file_printf(errfile, "%s: cannot open file %s for "
                                 "read/write access" NL, argv[0], pwfilename);
                 exit(ERR_FILEPERM);
@@ -539,7 +539,7 @@ int main(int argc, const char * const argv[])
             /*
              * As it doesn't exist yet, verify that we can create it.
              */
-            if (!accessible(pool, pwfilename, APR_CREATE | APR_WRITE)) {
+            if (!accessible(pool, pwfilename, APR_FOPEN_WRITE|APR_FOPEN_CREATE)) {
                 apr_file_printf(errfile, "%s: cannot create file %s" NL,
                                 argv[0], pwfilename);
                 exit(ERR_FILEPERM);
