@@ -657,11 +657,11 @@ end
         r:trace1("This is a trace log message") -- trace1 through trace8 can be used <br />
         r:debug("This is a debug log message")<br />
         r:info("This is an info log message")<br />
-        r:notice("This is an notice log message")<br />
-        r:warn("This is an warn log message")<br />
+        r:notice("This is a notice log message")<br />
+        r:warn("This is a warn log message")<br />
         r:err("This is an err log message")<br />
         r:alert("This is an alert log message")<br />
-        r:crit("This is an crit log message")<br />
+        r:crit("This is a crit log message")<br />
         r:emerg("This is an emerg log message")<br />
 </highlight>
 
