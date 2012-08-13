@@ -251,6 +251,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1372054
                   http://svn.apache.org/viewvc?view=revision&revision=1372055
                   http://svn.apache.org/viewvc?view=revision&revision=1372305
+                  http://svn.apache.org/viewvc?view=revision&revision=1372349
      2.4.x patch: Trunk patch works.
      +1: humbedooh
 
