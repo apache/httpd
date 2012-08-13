@@ -88,12 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * htpasswd: Use correct file mode for checking if file is writable.
-     Also switch to the non-deprecated APR_FOPEN_* flags.
-     PR: 45923
-     trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1369618
-     2.4.x patch: trunk patch works
-     +1: rjung, trawick, humbedooh
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
