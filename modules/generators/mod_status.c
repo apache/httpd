@@ -582,7 +582,7 @@ static int status_handler(request_rec *r)
                  "\"<b><code>L</code></b>\" Logging, \n"
                  "\"<b><code>G</code></b>\" Gracefully finishing,<br /> \n"
                  "\"<b><code>I</code></b>\" Idle cleanup of worker, \n"
-                 "\"<b><code>.</code></b>\" Open slot with no current process,<br />\n"
+                 "\"<b><code>.</code></b>\" Open slot with no current process<br />\n"
                  "<p />\n", r);
         if (!ap_extended_status) {
             int j;
