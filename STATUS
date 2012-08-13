@@ -88,12 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mpm_winnt: Tweak a message added in r750567 so that the accept thread
-     logs the physical address it listens on instead of hostname|*.
-     trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1364138
-     2.4.x patch: trunk patch works
-     +1: rjung, trawick, humbedooh
-
    * htpasswd: Use correct file mode for checking if file is writable.
      Also switch to the non-deprecated APR_FOPEN_* flags.
      PR: 45923
