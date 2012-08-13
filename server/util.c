@@ -2406,7 +2406,7 @@ AP_DECLARE(int) ap_parse_form_data(request_rec *r, ap_filter_t *f,
 
     /* sanity check - we only support forms for now */
     ct = apr_table_get(r->headers_in, "Content-Type");
-    if (!ct || strncmp("application/x-www-form-urlencoded", ct, 33)) {
+    if (!ct || strncasecmp("application/x-www-form-urlencoded", ct, 33)) {
         return ap_discard_request_body(r);
     }
 
