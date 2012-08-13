@@ -88,7 +88,23 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+* Axe unnecessary trailing comma from server-status user output.
+     trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1369904
+     2.4.x patch: trunk patch works
+     +1: rjung, trawick, humbedooh
 
+   * mpm_winnt: Tweak a message added in r750567 so that the accept thread
+     logs the physical address it listens on instead of hostname|*.
+     trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1364138
+     2.4.x patch: trunk patch works
+     +1: rjung, trawick, humbedooh
+
+   * htpasswd: Use correct file mode for checking if file is writable.
+     Also switch to the non-deprecated APR_FOPEN_* flags.
+     PR: 45923
+     trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1369618
+     2.4.x patch: trunk patch works
+     +1: rjung, trawick, humbedooh
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -203,28 +219,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                to be set for apps/logging, and it allows the same treatment
                to be applied to other user agents that go bad.
 
-   * Axe unnecessary trailing comma from server-status user output.
-     trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1369904
-     2.4.x patch: trunk patch works
-     +1: rjung, trawick, humbedooh
-
    * Correctly log the error returned by apr_dbd_pvselect().
      trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1364229
      2.4.x patch: trunk patch works
      +1: rjung, trawick
-
-   * mpm_winnt: Tweak a message added in r750567 so that the accept thread
-     logs the physical address it listens on instead of hostname|*.
-     trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1364138
-     2.4.x patch: trunk patch works
-     +1: rjung, trawick, humbedooh
-
-   * htpasswd: Use correct file mode for checking if file is writable.
-     Also switch to the non-deprecated APR_FOPEN_* flags.
-     PR: 45923
-     trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1369618
-     2.4.x patch: trunk patch works
-     +1: rjung, trawick, humbedooh
 
    * mod_cache: Set content type in case we return stale content.
      trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1361153
