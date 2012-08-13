@@ -88,11 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-* Axe unnecessary trailing comma from server-status user output.
-     trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1369904
-     2.4.x patch: trunk patch works
-     +1: rjung, trawick, humbedooh
-
    * mpm_winnt: Tweak a message added in r750567 so that the accept thread
      logs the physical address it listens on instead of hostname|*.
      trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1364138
