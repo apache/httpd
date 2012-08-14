@@ -1135,7 +1135,16 @@ hook function usually returns OK, DECLINED, or HTTP_FORBIDDEN.</p>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 <override>All</override>
-<usage><p>...</p>
+<usage>
+    <p>
+    This phase is run immediately after the request has been mapped to a virtal host, 
+    and can be used to either do some request processing before the other phases kick 
+    in, or to serve a request without the need to translate, map to storage et cetera. 
+    As this phase is run before anything else, directives such as <directive
+   type="section" module="core">Location</directive> or <directive
+   type="section" module="core">Directory</directive> are void in this phase, just as 
+    URIs have not been properly parsed yet.
+    </p>
    <note><title>Context</title><p>This directive is not valid in <directive
    type="section" module="core">Directory</directive>, <directive
    type="section" module="core">Files</directive>, or htaccess
