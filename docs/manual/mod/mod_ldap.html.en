@@ -659,14 +659,17 @@ valid</td></tr>
 <div class="directive-section"><h2><a name="LDAPSharedCacheFile" id="LDAPSharedCacheFile">LDAPSharedCacheFile</a> <a name="ldapsharedcachefile" id="ldapsharedcachefile">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the shared memory cache file</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPSharedCacheFile <var>directory-path/filename</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPSharedCacheFile <var>file-path</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
-    <p>Specifies the directory path and file name of the shared memory
-    cache file. If not set, anonymous shared memory will be used if the
-    platform supports it.</p>
+    <p>Specifies the path of the shared memory cache file. If not set, 
+    anonymous shared memory will be used if the platform supports it.</p>
+
+    <p>If <var>file-path</var> is not an absolute path, the location specified
+    will be relative to the value of 
+    <code class="directive"><a href="../mod/core.html#defaultruntimedir">DefaultRuntimeDir</a></code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

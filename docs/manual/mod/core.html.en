@@ -462,7 +462,7 @@ NoDecode option available in 2.3.12 and later.</td></tr>
       <code class="directive"><a href="#setoutputfilter">SetOutputFilter</a></code>, and
       <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> Add* and Remove* directives),
       document meta data (<code class="directive"><a href="../mod/mod_headers.html#header">Header</a></code>, <code class="directive"><a href="../mod/mod_headers.html#requestheader">RequestHeader</a></code>, <code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code>, <code class="directive"><a href="../mod/mod_setenvif.html#setenvifnocase">SetEnvIfNoCase</a></code>, <code class="directive"><a href="../mod/mod_setenvif.html#browsermatch">BrowserMatch</a></code>, <code class="directive"><a href="../mod/mod_usertrack.html#cookieexpires">CookieExpires</a></code>, <code class="directive"><a href="../mod/mod_usertrack.html#cookiedomain">CookieDomain</a></code>, <code class="directive"><a href="../mod/mod_usertrack.html#cookiestyle">CookieStyle</a></code>, <code class="directive"><a href="../mod/mod_usertrack.html#cookietracking">CookieTracking</a></code>, <code class="directive"><a href="../mod/mod_usertrack.html#cookiename">CookieName</a></code>),
-      <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> directives <code class="directive"><a href="../mod/mod_rewrite.html#rewriteengine">RewriteEngine</a></code>, <code class="directive"><a href="../mod/mod_rewrite.html#rewriteoptions">RewriteOptions</a></code>, <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code>, <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>, <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>) and
+      <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> directives (<code class="directive"><a href="../mod/mod_rewrite.html#rewriteengine">RewriteEngine</a></code>, <code class="directive"><a href="../mod/mod_rewrite.html#rewriteoptions">RewriteOptions</a></code>, <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code>, <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>, <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>) and
       <code class="directive"><a href="../mod/mod_actions.html#action">Action</a></code> from
       <code class="module"><a href="../mod/mod_actions.html">mod_actions</a></code>.
       </dd>
@@ -3220,9 +3220,11 @@ or specified mutexes</td></tr>
 
     <p>With the file-based mechanisms <em>fcntl</em> and <em>flock</em>,
     the path, if provided, is a directory where the lock file will be created.
-    The default directory is httpd's run-time file directory relative to
-    <code class="directive"><a href="#serverroot">ServerRoot</a></code>.  Always use a local disk
-    filesystem for <code>/path/to/mutex</code> and never a directory residing
+    The default directory is httpd's run-time file directory,
+    <code class="directive"><a href="#defaultruntimedir">DefaultRuntimeDir</a></code>.  If a relative
+    path is provided, it is relative to
+    <code class="directive"><a href="#defaultruntimedir">DefaultRuntimeDir</a></code>.  Always use a local
+    disk filesystem for <code>/path/to/mutex</code> and never a directory residing
     on a NFS- or AFS-filesystem.  The basename of the file will be the mutex
     type, an optional instance string provided by the module, and unless the
     <code>OmitPID</code> keyword is specified, the process id of the httpd
