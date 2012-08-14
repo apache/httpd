@@ -1725,7 +1725,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
         if (len != 0)
             buf = apr_pstrcat(p, "LIST ", path, CRLF, NULL);
         else if (cwd == NULL || strchr(cwd, '/') != NULL)
-            buf = apr_pstrcat(p, "LIST -lag", CRLF, NULL);
+            buf = "LIST -lag" CRLF;
         else
             buf = "LIST" CRLF;
     }
