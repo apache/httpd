@@ -93,15 +93,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: rjung, humbedooh, trawick (needs CHANGES entry)
 
-   * ab fixes:
-     o When -B is specified, search for a host address in the same
-       family as the specified outbound interface.
-     o Fix read failure when targeting SSL server.
-     trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1364133
-                    http://svn.apache.org/viewvc?view=revision&revision=1371791
-     2.4.x patch: trunk patches work
-     +1: trawick, rjung, jim
-
    * httpd.conf.in: remove DNT header field from MSIE 10.0 requests because
        the browser is deliberately violating the standard under development.
      trunk patch: http://svn.apache.org/viewvc?rev=1371878&view=rev
