@@ -88,6 +88,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_cache: Set content type in case we return stale content.
+     trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1361153
+     2.4.x patch: trunk patch works
+     +1: rjung, humbedooh, trawick (needs CHANGES entry)
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -207,11 +211,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: rjung, trawick
 
-   * mod_cache: Set content type in case we return stale content.
-     trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1361153
-     2.4.x patch: trunk patch works
-     +1: rjung, humbedooh
-
    * mpm_winnt: initialize the protocol field when manufacturing an apr socket
      lest accidential autodata contents leak into the apr_socket_t.
      (this doesn't address any known problem symptom)
@@ -224,7 +223,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR: 52893
      trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1361801
      2.4.x patch: trunk patch works, except for mod_policy (ignore)
-     +1: rjung
+     +1: rjung, trawick
 
    * core: make ap_parse_form_data less strict when checking for a correct 
            Content-Type header when parsing POST, or we risk losing valid 
