@@ -93,17 +93,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: rjung, humbedooh, trawick (needs CHANGES entry)
 
-   * httpd.conf.in: remove DNT header field from MSIE 10.0 requests because
-       the browser is deliberately violating the standard under development.
-     trunk patch: http://svn.apache.org/viewvc?rev=1371878&view=rev
-     2.4.x patch: trunk patch works
-       +1: fielding, gstein, jim
-       rjung: What about not needing mod_setenvif:
-     RequestHeader unset DNT "expr=%{HTTP_USER_AGENT} -strmatch '*MSIE 10.0;*'"
-         -- fielding: I prefer the separate syntax.  I want the env variable
-               to be set for apps/logging, and it allows the same treatment
-               to be applied to other user agents that go bad.
-
    * Correctly log the error returned by apr_dbd_pvselect().
      trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1364229
      2.4.x patch: trunk patch works
