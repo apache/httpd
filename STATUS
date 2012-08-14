@@ -94,20 +94,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: rjung, humbedooh, trawick (needs CHANGES entry)
      -0: What should CHANGES say???
 
-   * PR 52476: SSL failures on Windows with AcceptFilter https none
-     trunk patch: http://svn.apache.org/viewvc?rev=1371801&view=rev
-     2.4.x patch: trunk patch works
-     Questions/explanations: http://mail-archives.apache.org/mod_mbox/httpd-dev/201208.mbox/%3C20120813123221.GA21932%40redhat.com%3E
-     +1: trawick, gsmith, jim
-
-   * mpm_winnt: initialize the protocol field when manufacturing an apr socket
-     lest accidential autodata contents leak into the apr_socket_t.
-     (this doesn't address any known problem symptom)
-     trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1367819
-     2.4.x patch: trunk patch works
-     +1: rjung, trawick, jim
-
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
