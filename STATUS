@@ -159,14 +159,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?rev=1371801&view=rev
      2.4.x patch: trunk patch works
      Questions/explanations: http://mail-archives.apache.org/mod_mbox/httpd-dev/201208.mbox/%3C20120813123221.GA21932%40redhat.com%3E
-     +1: trawick, gsmith
+     +1: trawick, gsmith, jim
 
    * mpm_winnt: initialize the protocol field when manufacturing an apr socket
      lest accidential autodata contents leak into the apr_socket_t.
      (this doesn't address any known problem symptom)
      trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1367819
      2.4.x patch: trunk patch works
-     +1: rjung, trawick
+     +1: rjung, trawick, jim
 
    * core: make ap_parse_form_data less strict when checking for a correct 
            Content-Type header when parsing POST, or we risk losing valid 
