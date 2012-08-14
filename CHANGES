@@ -6,11 +6,6 @@ Changes with Apache 2.5.0
      or we risk losing data with an appended charset. PR 53698
      [Petter Berntsen <petterb gmail.com>]
 
-  *) Windows: Fix SSL failures on windows with AcceptFilter https none.
-     PR: 52476.  [Jeff Trawick]
-
-  *) ab: Fix read failure when targeting SSL server.  [Jeff Trawick]
-
   *) mod_lua: Decline handling 'lua-script' if the file doesn't exist,
      rather than throwing an internal server error. [Daniel Gruno]
 
@@ -29,16 +24,6 @@ Changes with Apache 2.5.0
 
   *) mod_lua: Add new directive LuaCodeCache for controlling in-memory
      caching of lua scripts. [Daniel Gruno]
-
-  *) The following now respect DefaultRuntimeDir/DEFAULT_REL_RUNTIMEDIR:
-     - APIs: ap_log_pid(), ap_remove_pid, ap_read_pid()
-     - core: the scoreboard (ScoreBoardFile), pid file (PidFile), and
-       mutexes (Mutex)
-     - mod_auth_digest: shared memory file
-     - mod_lbmethod_heartbeat, mod_heartmonitor: heartbeat storage file
-     - mod_ldap: shared memory cache
-     - mod_socache_shmcb, mod_socache_dbm: shared memory or dbm for cache
-     [Jeff Trawick]
 
   *) mod_ssl: Add RFC 5878 support. [Ben Laurie]
 
