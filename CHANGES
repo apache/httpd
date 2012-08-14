@@ -7,6 +7,9 @@ Changes with Apache 2.4.3
      possible XSS for a site where untrusted users can upload files to
      a location with MultiViews enabled. [Niels Heinen <heinenn google.com>]
 
+  *) Windows: Fix SSL failures on windows with AcceptFilter https none.
+     PR: 52476.  [Jeff Trawick]
+
   *) ab: Fix read failure when targeting SSL server.  [Jeff Trawick]
 
   *) The following now respect DefaultRuntimeDir/DEFAULT_REL_RUNTIMEDIR:

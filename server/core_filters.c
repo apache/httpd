@@ -391,10 +391,6 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
     if (ctx == NULL) {
         ctx = apr_pcalloc(c->pool, sizeof(*ctx));
         net->out_ctx = (core_output_filter_ctx_t *)ctx;
-        rv = apr_socket_opt_set(net->client_socket, APR_SO_NONBLOCK, 1);
-        if (rv != APR_SUCCESS) {
-            return rv;
-        }
         /*
          * Need to create tmp brigade with correct lifetime. Passing
          * NULL to apr_brigade_split_ex would result in a brigade
