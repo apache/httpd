@@ -93,11 +93,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: rjung, humbedooh, trawick (needs CHANGES entry)
 
-   * Correctly log the error returned by apr_dbd_pvselect().
-     trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1364229
-     2.4.x patch: trunk patch works
-     +1: rjung, trawick, jim
-
    * Various code clean up.
      Submitted by: Christophe JAILLET <christophe jaillet wanadoo fr>
      PR: 52893
