@@ -159,7 +159,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                       unconfigurable shared memory file
      trunk patch: http://svn.apache.org/viewvc?rev=1371387&view=rev
      2.4.x patch: trunk patch works
-     +1: trawick, rjung
+     +1: trawick, rjung, jim
 
    * ab fixes:
      o When -B is specified, search for a host address in the same
@@ -168,7 +168,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1364133
                     http://svn.apache.org/viewvc?view=revision&revision=1371791
      2.4.x patch: trunk patches work
-     +1: trawick, rjung
+     +1: trawick, rjung, jim
 
    * PR 52476: SSL failures on Windows with AcceptFilter https none
      trunk patch: http://svn.apache.org/viewvc?rev=1371801&view=rev
@@ -199,7 +199,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        the browser is deliberately violating the standard under development.
      trunk patch: http://svn.apache.org/viewvc?rev=1371878&view=rev
      2.4.x patch: trunk patch works
-       +1: fielding, gstein
+       +1: fielding, gstein, jim
        rjung: What about not needing mod_setenvif:
      RequestHeader unset DNT "expr=%{HTTP_USER_AGENT} -strmatch '*MSIE 10.0;*'"
          -- fielding: I prefer the separate syntax.  I want the env variable
@@ -209,7 +209,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * Correctly log the error returned by apr_dbd_pvselect().
      trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1364229
      2.4.x patch: trunk patch works
-     +1: rjung, trawick
+     +1: rjung, trawick, jim
 
    * mpm_winnt: initialize the protocol field when manufacturing an apr socket
      lest accidential autodata contents leak into the apr_socket_t.
@@ -223,7 +223,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR: 52893
      trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1361801
      2.4.x patch: trunk patch works, except for mod_policy (ignore)
-     +1: rjung, trawick
+     +1: rjung, trawick, jim
 
    * core: make ap_parse_form_data less strict when checking for a correct 
            Content-Type header when parsing POST, or we risk losing valid 
