@@ -7,6 +7,10 @@ Changes with Apache 2.4.3
      possible XSS for a site where untrusted users can upload files to
      a location with MultiViews enabled. [Niels Heinen <heinenn google.com>]
 
+  *) The following now respect DefaultRuntimeDir/DEFAULT_REL_RUNTIMEDIR:
+     - mod_auth_digest: shared memory file
+     [Jeff Trawick]
+
   *) htpasswd: Use correct file mode for checking if file is writable.
      PR 45923. [Stefan Fritsch]
 
@@ -66,7 +70,9 @@ Changes with Apache 2.4.3
 
   *) Add "strict" and "warnings" pragmas to Perl scripts.  [Rich Bowen]
 
-  *) Honor DefaultRuntimeDir for mutexes, socache and CGID socket.
+  *) The following now respect DefaultRuntimeDir/DEFAULT_REL_RUNTIMEDIR:
+     - core: the scoreboard (ScoreBoardFile), pid file (PidFile), and
+       mutexes (Mutex)
      [Jim Jagielski]
 
   *) ab: Fix bind() errors.  [Joe Orton]
