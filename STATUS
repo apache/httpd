@@ -88,11 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_cache: Set content type in case we return stale content.
-     trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1361153
-     2.4.x patch: trunk patch works
-     +1: rjung, humbedooh, trawick (needs CHANGES entry)
-     -0: What should CHANGES say???
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
