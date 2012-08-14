@@ -117,7 +117,7 @@ AP_DECLARE(apr_status_t) ap_parse_mutex(const char *arg, apr_pool_t *pool,
      * are looking to use
      */
     if (file) {
-        *mutexfile = ap_server_root_relative(pool, file);
+        *mutexfile = ap_runtime_dir_relative(pool, file);
         if (!*mutexfile) {
             return APR_BADARG;
         }
@@ -304,7 +304,7 @@ static const char *get_mutex_filename(apr_pool_t *p, mutex_cfg_t *mxcfg,
     }
 #endif
 
-    return ap_server_root_relative(p,
+    return ap_runtime_dir_relative(p,
                                    apr_pstrcat(p,
                                                mxcfg->dir,
                                                "/",
@@ -552,7 +552,7 @@ AP_CORE_DECLARE(void) ap_dump_mutexes(apr_pool_t *p, server_rec *s, apr_file_t *
         }
 
         if (mxcfg->dir)
-            dir = ap_server_root_relative(p, mxcfg->dir);
+            dir = ap_runtime_dir_relative(p, mxcfg->dir);
 
         apr_file_printf(out, "Mutex %s: dir=\"%s\" mechanism=%s %s\n", name, dir, mech,
                         mxcfg->omit_pid ? "[OmitPid]" : "");

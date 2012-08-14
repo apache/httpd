@@ -285,7 +285,7 @@ static const char *socache_shmcb_create(ap_socache_instance_t **context,
         return NULL;
     }
 
-    ctx->data_file = path = ap_server_root_relative(p, arg);
+    ctx->data_file = path = ap_runtime_dir_relative(p, arg);
 
     cp = strrchr(path, '(');
     cp2 = path + strlen(path) - 1;

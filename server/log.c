@@ -1394,7 +1394,7 @@ AP_DECLARE(void) ap_log_command_line(apr_pool_t *plog, server_rec *s)
 AP_DECLARE(void) ap_remove_pid(apr_pool_t *p, const char *rel_fname)
 {
     apr_status_t rv;
-    const char *fname = ap_server_root_relative(p, rel_fname);
+    const char *fname = ap_runtime_dir_relative(p, rel_fname);
 
     if (fname != NULL) {
         rv = apr_file_remove(fname, p);
@@ -1423,7 +1423,7 @@ AP_DECLARE(void) ap_log_pid(apr_pool_t *p, const char *filename)
         return;
     }
 
-    fname = ap_server_root_relative(p, filename);
+    fname = ap_runtime_dir_relative(p, filename);
     if (!fname) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, APR_EBADPATH,
                      NULL, APLOGNO(00097) "Invalid PID file path %s, ignoring.", filename);
@@ -1476,7 +1476,7 @@ AP_DECLARE(apr_status_t) ap_read_pid(apr_pool_t *p, const char *filename,
         return APR_EGENERAL;
     }
 
-    fname = ap_server_root_relative(p, filename);
+    fname = ap_runtime_dir_relative(p, filename);
     if (!fname) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, APR_EBADPATH,
                      NULL, APLOGNO(00101) "Invalid PID file path %s, ignoring.", filename);

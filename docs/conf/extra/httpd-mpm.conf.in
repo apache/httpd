@@ -9,7 +9,7 @@
 # Note that this is the default PidFile for most MPMs.
 #
 <IfModule !mpm_netware_module>
-    PidFile "@rel_runtimedir@/httpd.pid"
+    PidFile "httpd.pid"
 </IfModule>
 
 #

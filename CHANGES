@@ -10,8 +10,14 @@ Changes with Apache 2.4.3
   *) ab: Fix read failure when targeting SSL server.  [Jeff Trawick]
 
   *) The following now respect DefaultRuntimeDir/DEFAULT_REL_RUNTIMEDIR:
+     - core: the scoreboard (ScoreBoardFile), pid file (PidFile), and
+       mutexes (Mutex)
      - mod_auth_digest: shared memory file
-     [Jeff Trawick]
+     - APIs: ap_log_pid(), ap_remove_pid, ap_read_pid()
+     - mod_lbmethod_heartbeat, mod_heartmonitor: heartbeat storage file
+     - mod_ldap: shared memory cache
+     - mod_socache_shmcb, mod_socache_dbm: shared memory or dbm for cache
+     [Jeff Trawick, Jim Jagielski]
 
   *) htpasswd: Use correct file mode for checking if file is writable.
      PR 45923. [Stefan Fritsch]
@@ -71,11 +77,6 @@ Changes with Apache 2.4.3
      resource shortages.  [Jeff Trawick]
 
   *) Add "strict" and "warnings" pragmas to Perl scripts.  [Rich Bowen]
-
-  *) The following now respect DefaultRuntimeDir/DEFAULT_REL_RUNTIMEDIR:
-     - core: the scoreboard (ScoreBoardFile), pid file (PidFile), and
-       mutexes (Mutex)
-     [Jim Jagielski]
 
   *) ab: Fix bind() errors.  [Joe Orton]
 

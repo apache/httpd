@@ -418,13 +418,16 @@ LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
 <directivesynopsis>
 <name>LDAPSharedCacheFile</name>
 <description>Sets the shared memory cache file</description>
-<syntax>LDAPSharedCacheFile <var>directory-path/filename</var></syntax>
+<syntax>LDAPSharedCacheFile <var>file-path</var></syntax>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>Specifies the directory path and file name of the shared memory
-    cache file. If not set, anonymous shared memory will be used if the
-    platform supports it.</p>
+    <p>Specifies the path of the shared memory cache file. If not set, 
+    anonymous shared memory will be used if the platform supports it.</p>
+
+    <p>If <var>file-path</var> is not an absolute path, the location specified
+    will be relative to the value of 
+    <directive module="core">DefaultRuntimeDir</directive>.</p>
 </usage>
 </directivesynopsis>
 

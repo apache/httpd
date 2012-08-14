@@ -93,27 +93,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: rjung, humbedooh, trawick (needs CHANGES entry)
 
-   * opinion on more complete DefaultRuntimeDir use in 2.4.x?
-     o If a module has a config directive for the run-time file that
-       treats the configured path as relative to server root, preserve
-       that behavior but change the location when not configured to
-       respect DefaultRuntimeDir.  With these changes, users with no 
-       per-runtime-file configuration directives can control
-       everything with DefaultRuntimeDir.
-       BUT: Existing users of DefaultRuntimeDir might get a short-term scare
-       when some unconfigured run-time file starts respecting their 
-       DefaultRuntimeDir directive after an upgrade.
-       +1: trawick, jim, rjung
-       rjung: backport candidates are:
-          heartbeat          r1364695
-          scoreboard         r1369477
-          core/pid file      r1369808
-          core/mutex         r1370288
-          mod_socache_XXX    r1370225
-          mod_slotmem_plain  r1370763
-          mod_ldap           r1371684
-
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
