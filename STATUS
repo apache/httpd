@@ -166,6 +166,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * PR 52476: SSL failures on Windows with AcceptFilter https none
      trunk patch: http://svn.apache.org/viewvc?rev=1371801&view=rev
      2.4.x patch: trunk patch works
+     Questions/explanations: http://mail-archives.apache.org/mod_mbox/httpd-dev/201208.mbox/%3C20120813123221.GA21932%40redhat.com%3E
      +1: trawick, gsmith
 
    * opinion on more complete DefaultRuntimeDir use in 2.4.x?
