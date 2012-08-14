@@ -11,7 +11,7 @@ Changes with Apache 2.4.3
      [Ruediger Pluem]
 
   *) Windows: Fix SSL failures on windows with AcceptFilter https none.
-     PR: 52476.  [Jeff Trawick]
+     PR 52476.  [Jeff Trawick]
 
   *) ab: Fix read failure when targeting SSL server.  [Jeff Trawick]
 
