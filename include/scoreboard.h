@@ -40,7 +40,7 @@ extern "C" {
 
 /* Scoreboard file, if there is one */
 #ifndef DEFAULT_SCOREBOARD
-#define DEFAULT_SCOREBOARD "logs/apache_runtime_status"
+#define DEFAULT_SCOREBOARD "apache_runtime_status" /* within DEFAULT_REL_RUNTIMEDIR */
 #endif
 
 /* Scoreboard info on a process is, for now, kept very brief ---

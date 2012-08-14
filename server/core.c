@@ -4799,7 +4799,7 @@ static void core_dump_config(apr_pool_t *p, server_rec *s)
         tmp = s->error_fname;
     apr_file_printf(out, "Main ErrorLog: \"%s\"\n", tmp);
     if (ap_scoreboard_fname) {
-        tmp = ap_server_root_relative(p, ap_scoreboard_fname);
+        tmp = ap_runtime_dir_relative(p, ap_scoreboard_fname);
         apr_file_printf(out, "ScoreBoardFile: \"%s\"\n", tmp);
     }
     ap_dump_mutexes(p, s, out);
