@@ -126,6 +126,7 @@ static int dumpio_input_filter (ap_filter_t *f, apr_bucket_brigade *bb,
     } else {
         ap_log_error(APLOG_MARK, ptr->loglevel, 0, c->base_server,
         "mod_dumpio: %s - %d", f->frec->name, ret) ;
+        return ret;
     }
 
     return APR_SUCCESS ;
