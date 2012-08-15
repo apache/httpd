@@ -7,6 +7,12 @@ Changes with Apache 2.4.3
      possible XSS for a site where untrusted users can upload files to
      a location with MultiViews enabled. [Niels Heinen <heinenn google.com>]
 
+  *) httpd.conf: Added configuration directives to set a bad_DNT environment
+     variable based on User-Agent and to remove the DNT header field from
+     incoming requests when a match occurs. This currently has the effect of
+     removing DNT from requests by MSIE 10.0 because it deliberately violates
+     the current specification of DNT semantics for HTTP. [Roy T. Fielding]
+
   *) mod_socache_shmcb: Fix bus error due to a misalignment
      in some 32 bit builds, especially on Solaris Sparc.
      PR 53040.  [Rainer Jung]
