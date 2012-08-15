@@ -191,7 +191,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      in some 64 bit builds, especially on Solaris Sparc.  PR 53040.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1373270
      2.4.x patch: trunk patch works.
-     +1: rjung
+     +1: rjung, rpluem
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
