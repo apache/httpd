@@ -100,7 +100,8 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        when some unconfigured run-time file starts respecting their 
        DefaultRuntimeDir directive after an upgrade.
        +1: trawick, jim, rjung
-       rjung: backport candidates are:
+       rjung: applicable trunk revisions WITHOUT the compatibility tweaks
+              described above:
           heartbeat          r1364695
           scoreboard         r1369477
           core/pid file      r1369808
