@@ -32,7 +32,7 @@ Release history:
     [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
           while x.{even}.z versions are Stable/GA releases.]
 
-    2.4.3   : In development. Jim proposes a T&R around Aug 10.
+    2.4.3   : In development. Jim proposes a T&R around Aug 17.
     2.4.2   : Tagged on April 5, 2012. Released Apr 17, 2012.
     2.4.1   : Tagged on February 13, 2012. Released Feb 21, 2012.
     2.4.0   : Tagged on January 16, 2012, not released.
@@ -150,14 +150,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1358167 and 
                   http://svn.apache.org/viewvc?view=revision&revision=1358168
      2.4.x patch: http://people.apache.org/~rjung/patches/ssl-support-uninstalled-openssl-2_4.patch
-     +1: rjung
-     rjung: ben: you applied it to trunk, care to vote?
+     +1: 
+     rjung: Revoked my vote due to ongoing discussion
 
    * mod_lua: Add a Lua authz provider.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1351020
                   http://svn.apache.org/viewvc?view=revision&revision=1370466
      2.4.x patch: trunk patch works.
-     +1: humbedooh
+     +1: humbedooh, rjung
      rjung: docs compatibility note 2.5 -> 2.4.3, drop message-tag file from patch
 
    * mod_lua: Add a new directive, LuaCodeCache, for controlling the in-memory 
@@ -186,6 +186,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1372419
      2.4.x patch: Trunk patch works.
      +1: humbedooh
+
+   * mod_socache_shmcb: Fix bus error due to a misalignment
+     in some 64 bit builds, especially on Solaris Sparc.  PR 53040.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1373270
+     2.4.x patch: trunk patch works.
+     +1: rjung
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
