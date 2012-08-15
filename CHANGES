@@ -22,6 +22,9 @@ Changes with Apache 2.2.23
   *) core: Fix building against PCRE 8.30 by switching from the obsolete
      pcre_info() to pcre_fullinfo(). PR 52623 [Ruediger Pluem, Rainer Jung]
 
+  *) mod_proxy: Add the forcerecovery balancer parameter that determines if
+     recovery for balancer workers is enforced. [Ruediger Pluem]
+
 Changes with Apache 2.2.22
 
   *) SECURITY: CVE-2011-3368 (cve.mitre.org)

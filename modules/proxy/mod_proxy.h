@@ -388,6 +388,7 @@ struct proxy_balancer {
     int             scolonsep;  /* true if ';' seps sticky session paths */
 
     apr_array_header_t *errstatuses; /* statuses to force members into error */
+    int forcerecovery; /* Force recovery if all workers are in error state */
 };
 
 struct proxy_balancer_method {
