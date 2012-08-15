@@ -134,12 +134,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/viewvc?view=revision&revision=1175946
                  http://svn.apache.org/viewvc?view=revision&revision=1242089
     2.2.x patch: http://people.apache.org/~druggeri/patches/httpd-2.2-SSLProxyMachineCertificateChainFile.patch
-    +1: druggeri, kbrand
+    +1: druggeri, kbrand, rpluem
 
   * mod_proxy_ajp: Missing support for ErrorOverride
     Trunk patch: http://svn.apache.org/viewvc?rev=1087864&view=rev
     2.2.x patch: http://people.apache.org/~jim/patches/mod_proxy_ajp-erroroverride.patch
-    +1: igalic, jim
+    +1: igalic, jim, rpluem
 
    * mod_ssl: Add support for Next Protocol Negotiation.
      Trunk patch:
@@ -220,19 +220,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      described in the patch.)
      trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1363440
      2.2.x patch: http://people.apache.org/~trawick/r1363440-worker-only-2.2.x.txt
-     +1: trawick, rjung
+     +1: trawick, rjung, rpluem
 
    * mod_proxy_balancer: Restore balancing after a failed worker has
      recovered when using lbmethod_bybusyness.  PR 48735.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1366344
      2.2.x patch: trunk patch works
-     +1: trawick, druggeri
+     +1: trawick, druggeri, rpluem
 
    * WinNT MPM: INVALID_SOCKET bogosity
      trunk/2.4.x patch: fixed long ago with a rewrite of the affected code
                         (axed in 730828, reimplemented later)
      2.2.x patch: http://people.apache.org/~trawick/winnt-2.2.x-INVALID_SOCKET.txt
-     +1: trawick, druggeri
+     +1: trawick, druggeri, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
