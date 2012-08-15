@@ -226,13 +226,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      recovered when using lbmethod_bybusyness.  PR 48735.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1366344
      2.2.x patch: trunk patch works
-     +1: trawick
+     +1: trawick, druggeri
 
    * WinNT MPM: INVALID_SOCKET bogosity
      trunk/2.4.x patch: fixed long ago with a rewrite of the affected code
                         (axed in 730828, reimplemented later)
      2.2.x patch: http://people.apache.org/~trawick/winnt-2.2.x-INVALID_SOCKET.txt
-     +1: trawick
+     +1: trawick, druggeri
 
 PATCHES/ISSUES THAT ARE STALLED
 
