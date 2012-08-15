@@ -604,6 +604,10 @@ static apr_status_t cache_out_filter(ap_filter_t *f, apr_bucket_brigade *in)
             apr_bucket_brigade *bb = apr_brigade_create(r->pool,
                     r->connection->bucket_alloc);
 
+            /* restore content type of cached response */
+            ap_set_content_type(r, apr_table_get(cache->handle->resp_hdrs,
+                                                 "Content-Type"));
+
             /* restore status of cached response */
             r->status = cache->handle->cache_obj->info.status;
 
@@ -1685,9 +1689,6 @@ static void cache_insert_error_filter(request_rec *r)
             r->output_filters = cache->save_filter;
 
             r->err_headers_out = cache->stale_handle->resp_hdrs;
-
-            ap_set_content_type(r, apr_table_get(
-                                cache->stale_handle->resp_hdrs, "Content-Type"));
 
             /* add a revalidation warning */
             warn_head = apr_table_get(r->err_headers_out, "Warning");
