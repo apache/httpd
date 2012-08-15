@@ -387,6 +387,14 @@ static const char *set_balancer_param(proxy_server_conf *conf,
         }
 
     }
+    else if (!strcasecmp(key, "forcerecovery")) {
+        if (!strcasecmp(val, "on"))
+            balancer->forcerecovery = 1;
+        else if (!strcasecmp(val, "off"))
+            balancer->forcerecovery = 0;
+        else
+            return "forcerecovery must be On|Off";
+    }
     else {
         return "unknown Balancer parameter";
     }

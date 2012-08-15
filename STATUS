@@ -93,16 +93,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_proxy: Add the forcerecovery balancer parameter that determines if
-     recovery for balancer workers is enforced.
-    Trunk version of patch:
-       http://svn.apache.org/viewvc?rev=1306409&view=rev
-    Backport version for 2.2.x of patch:
-       http://people.apache.org/~rpluem/patches/forcerecovery_2.2.diff
-    +1: rpluem, sf, rjung
-    sf notes: The docs should get a compatibility note once it is clear
-              in which 2.2.x version it gets introduced.
-
   * mod_dumpio: Return an error code from a previous input filter
     PR 52914
     Trunk patch: http://svn.apache.org/viewvc?rev=1301111&view=rev
