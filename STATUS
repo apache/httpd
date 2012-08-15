@@ -93,12 +93,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_dumpio: Return an error code from a previous input filter
-    PR 52914
-    Trunk patch: http://svn.apache.org/viewvc?rev=1301111&view=rev
-    2.2.x patch: http://people.apache.org/~sf/PR52914-2.2.diff
-    +1: sf, rjung, trawick
-
   * mod_ssl: Add SSLProxyMachineCertificateChainFile directive
     Uses openssl to construct a chain for each proxy cert. When a remote server requests
     a client certificate that is NOT the direct issuer of any available client
