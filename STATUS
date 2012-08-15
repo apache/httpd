@@ -88,11 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_socache_shmcb: Fix bus error due to a misalignment
-     in some 64 bit builds, especially on Solaris Sparc.  PR 53040.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1373270
-     2.4.x patch: trunk patch works.
-     +1: rjung, rpluem, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
