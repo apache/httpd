@@ -112,12 +112,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://people.apache.org/~jim/patches/mod_proxy_ajp-erroroverride.patch
     +1: igalic, jim, rpluem
 
-   * mod_proxy_balancer: Restore balancing after a failed worker has
-     recovered when using lbmethod_bybusyness.  PR 48735.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1366344
-     2.2.x patch: trunk patch works
-     +1: trawick, druggeri, rpluem
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
