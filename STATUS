@@ -109,19 +109,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://people.apache.org/~sf/PR52914-2.2.diff
     +1: sf, rjung, trawick
 
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
-  * mod_cache: Realign the cache_quick_handler() to behave identically
-    to the default_handler() when reacting to errors when writing to the
-    filter stack. Stops APR errors appearing in access_log as result codes.
-    Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1003913
-    2.2.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-errorfix-22.patch
-    +1: minfrin
-    trawick: any reason it shouldn't be completely aligned with default_handler's
-             choice to return OK vs. 500?
-    rpluem: Agreed with trawick. They should behave the same.
-
   * mod_ssl: Add SSLProxyMachineCertificateChainFile directive
     Uses openssl to construct a chain for each proxy cert. When a remote server requests
     a client certificate that is NOT the direct issuer of any available client
@@ -140,6 +127,40 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patch: http://svn.apache.org/viewvc?rev=1087864&view=rev
     2.2.x patch: http://people.apache.org/~jim/patches/mod_proxy_ajp-erroroverride.patch
     +1: igalic, jim, rpluem
+
+   * mpm_worker: Fix cases where the spawn rate wasn't reduced after
+     child process resource shortages.
+     (Note: mpm_event is omitted from this backport proposal because of
+     missing prerequisite fixes.  Even mpm_worker has a tiny issue,
+     described in the patch.)
+     trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1363440
+     2.2.x patch: http://people.apache.org/~trawick/r1363440-worker-only-2.2.x.txt
+     +1: trawick, rjung, rpluem
+
+   * mod_proxy_balancer: Restore balancing after a failed worker has
+     recovered when using lbmethod_bybusyness.  PR 48735.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1366344
+     2.2.x patch: trunk patch works
+     +1: trawick, druggeri, rpluem
+
+   * WinNT MPM: INVALID_SOCKET bogosity
+     trunk/2.4.x patch: fixed long ago with a rewrite of the affected code
+                        (axed in 730828, reimplemented later)
+     2.2.x patch: http://people.apache.org/~trawick/winnt-2.2.x-INVALID_SOCKET.txt
+     +1: trawick, druggeri, rpluem
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+  * mod_cache: Realign the cache_quick_handler() to behave identically
+    to the default_handler() when reacting to errors when writing to the
+    filter stack. Stops APR errors appearing in access_log as result codes.
+    Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1003913
+    2.2.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-errorfix-22.patch
+    +1: minfrin
+    trawick: any reason it shouldn't be completely aligned with default_handler's
+             choice to return OK vs. 500?
+    rpluem: Agreed with trawick. They should behave the same.
 
    * mod_ssl: Add support for Next Protocol Negotiation.
      Trunk patch:
@@ -212,27 +233,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ben: not correct that it depends on OpenSSL 1.0.2, it builds with
           any version. Also, if you read my note to dev@ you will see
           why it is not premature.
-
-   * mpm_worker: Fix cases where the spawn rate wasn't reduced after
-     child process resource shortages.
-     (Note: mpm_event is omitted from this backport proposal because of
-     missing prerequisite fixes.  Even mpm_worker has a tiny issue,
-     described in the patch.)
-     trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1363440
-     2.2.x patch: http://people.apache.org/~trawick/r1363440-worker-only-2.2.x.txt
-     +1: trawick, rjung, rpluem
-
-   * mod_proxy_balancer: Restore balancing after a failed worker has
-     recovered when using lbmethod_bybusyness.  PR 48735.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1366344
-     2.2.x patch: trunk patch works
-     +1: trawick, druggeri, rpluem
-
-   * WinNT MPM: INVALID_SOCKET bogosity
-     trunk/2.4.x patch: fixed long ago with a rewrite of the affected code
-                        (axed in 730828, reimplemented later)
-     2.2.x patch: http://people.apache.org/~trawick/winnt-2.2.x-INVALID_SOCKET.txt
-     +1: trawick, druggeri, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
