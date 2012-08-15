@@ -36,6 +36,10 @@
 
 #define DEFAULT_SHMCB_SUFFIX ".cache"
 
+#define ALIGNED_HEADER_SIZE APR_ALIGN_DEFAULT(sizeof(SHMCBHeader))
+#define ALIGNED_SUBCACHE_SIZE APR_ALIGN_DEFAULT(sizeof(SHMCBSubcache))
+#define ALIGNED_INDEX_SIZE APR_ALIGN_DEFAULT(sizeof(SHMCBIndex))
+
 /*
  * Header structure - the start of the shared-mem segment
  */
@@ -141,7 +145,7 @@ struct ap_socache_instance_t {
  * a pointer to the corresponding subcache. */
 #define SHMCB_SUBCACHE(pHeader, num) \
                 (SHMCBSubcache *)(((unsigned char *)(pHeader)) + \
-                        sizeof(SHMCBHeader) + \
+                        ALIGNED_HEADER_SIZE + \
                         (num) * ((pHeader)->subcache_size))
 
 /* This macro takes a pointer to the header and an id and returns a
@@ -157,8 +161,9 @@ struct ap_socache_instance_t {
 /* This macro takes a pointer to a subcache and a zero-based index and returns
  * a pointer to the corresponding SHMCBIndex. */
 #define SHMCB_INDEX(pSubcache, num) \
-                ((SHMCBIndex *)(((unsigned char *)pSubcache) + \
-                                sizeof(SHMCBSubcache)) + num)
+                (SHMCBIndex *)(((unsigned char *)pSubcache) + \
+                        ALIGNED_SUBCACHE_SIZE + \
+                        (num) * ALIGNED_INDEX_SIZE)
 
 /* This macro takes a pointer to the header and a subcache and returns a
  * pointer to the corresponding data area. */
@@ -194,7 +199,8 @@ static void shmcb_cyclic_ntoc_memcpy(unsigned int buf_size, unsigned char *data,
     }
 }
 
-/* A "cyclic-to-normal" memcpy. */static void shmcb_cyclic_cton_memcpy(unsigned int buf_size, unsigned char *dest,
+/* A "cyclic-to-normal" memcpy. */
+static void shmcb_cyclic_cton_memcpy(unsigned int buf_size, unsigned char *dest,
                                      const unsigned char *data, unsigned int src_offset,
                                      unsigned int src_len)
 {
@@ -373,7 +379,7 @@ static apr_status_t socache_shmcb_init(ap_socache_instance_t *ctx,
 
     shm_segment = apr_shm_baseaddr_get(ctx->shm);
     shm_segsize = apr_shm_size_get(ctx->shm);
-    if (shm_segsize < (5 * sizeof(SHMCBHeader))) {
+    if (shm_segsize < (5 * ALIGNED_HEADER_SIZE)) {
         /* the segment is ridiculously small, bail out */
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00820)
                      "shared memory segment too small");
@@ -384,7 +390,7 @@ static apr_status_t socache_shmcb_init(ap_socache_instance_t *ctx,
                  " bytes of shared memory",
                  shm_segsize);
     /* Discount the header */
-    shm_segsize -= sizeof(SHMCBHeader);
+    shm_segsize -= ALIGNED_HEADER_SIZE;
     /* Select index size based on average object size hints, if given. */
     avg_obj_size = hints && hints->avg_obj_size ? hints->avg_obj_size : 150;
     avg_id_len = hints && hints->avg_id_len ? hints->avg_id_len : 30;
@@ -397,7 +403,8 @@ static apr_status_t socache_shmcb_init(ap_socache_instance_t *ctx,
                  "for %" APR_SIZE_T_FMT " bytes (%" APR_SIZE_T_FMT
                  " including header), recommending %u subcaches, "
                  "%u indexes each", shm_segsize,
-                 shm_segsize + sizeof(SHMCBHeader), num_subcache, num_idx);
+                 shm_segsize + ALIGNED_HEADER_SIZE,
+                 num_subcache, num_idx);
     if (num_idx < 5) {
         /* we're still too small, bail out */
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00823)
@@ -416,13 +423,14 @@ static apr_status_t socache_shmcb_init(ap_socache_instance_t *ctx,
     header->stat_removes_miss = 0;
     header->subcache_num = num_subcache;
     /* Convert the subcache size (in bytes) to a value that is suitable for
-     * structure alignment on the host platform, by rounding down if necessary.
-     * This assumes that sizeof(unsigned long) provides an appropriate
-     * alignment unit.  */
-    header->subcache_size = ((size_t)(shm_segsize / num_subcache) &
-                             ~(size_t)(sizeof(unsigned long) - 1));
-    header->subcache_data_offset = sizeof(SHMCBSubcache) +
-                                   num_idx * sizeof(SHMCBIndex);
+     * structure alignment on the host platform, by rounding down if necessary. */
+    header->subcache_size = (size_t)(shm_segsize / num_subcache);
+    if (header->subcache_size != APR_ALIGN_DEFAULT(header->subcache_size)) {
+        header->subcache_size = APR_ALIGN_DEFAULT(header->subcache_size) -
+                                APR_ALIGN_DEFAULT(1);
+    }
+    header->subcache_data_offset = ALIGNED_SUBCACHE_SIZE +
+                                   num_idx * ALIGNED_INDEX_SIZE;
     header->subcache_data_size = header->subcache_size -
                                  header->subcache_data_offset;
     header->index_num = num_idx;

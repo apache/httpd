@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_socache_shmcb: Fix bus error due to a misalignment
+     in some 64 bit builds, especially on Solaris Sparc.
+     PR 53040.  [Rainer Jung]
+
   *) core: Be less strict when checking whether Content-Type is set to 
      "application/x-www-form-urlencoded" when parsing POST data, 
      or we risk losing data with an appended charset. PR 53698
