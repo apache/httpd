@@ -1623,6 +1623,15 @@ static void server_main_loop(int remaining_children_to_start)
             }
             else if (ap_unregister_extra_mpm_process(pid.pid) == 1) {
                 /* handled */
+                if (processed_status == APEXIT_CHILDSICK) {
+                    /* resource shortage, minimize the fork rate */
+                    /* 2.2.x note: Unlike 2.4+, there's no way to verify that 
+                     * this child was part of the current generation, so we 
+                     * can't leave the spawn rate alone for sick children of
+                     * previous generations.
+                     */
+                    idle_spawn_rate = 1;
+                }
 #if APR_HAS_OTHER_CHILD
             }
             else if (apr_proc_other_child_alert(&pid, APR_OC_REASON_DEATH,

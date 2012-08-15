@@ -118,15 +118,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://people.apache.org/~jim/patches/mod_proxy_ajp-erroroverride.patch
     +1: igalic, jim, rpluem
 
-   * mpm_worker: Fix cases where the spawn rate wasn't reduced after
-     child process resource shortages.
-     (Note: mpm_event is omitted from this backport proposal because of
-     missing prerequisite fixes.  Even mpm_worker has a tiny issue,
-     described in the patch.)
-     trunk patch: http://svn.apache.org/viewvc?view=rev&rev=1363440
-     2.2.x patch: http://people.apache.org/~trawick/r1363440-worker-only-2.2.x.txt
-     +1: trawick, rjung, rpluem
-
    * mod_proxy_balancer: Restore balancing after a failed worker has
      recovered when using lbmethod_bybusyness.  PR 48735.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1366344

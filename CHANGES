@@ -5,6 +5,9 @@ Changes with Apache 2.2.23
      envvars: Fix insecure handling of LD_LIBRARY_PATH that could lead to the
      current working directory to be searched for DSOs. [Stefan Fritsch]
 
+  *) mpm_worker: Fix cases where the spawn rate wasn't reduced after child
+     process resource shortages.  [Jeff Trawick]
+
   *) mpm_prefork: Reduce spawn rate after a child process exits due to
      unexpected poll or accept failure.  [Jeff Trawick]
 
