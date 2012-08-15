@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_cache: Wrong content type and character set when
+     mod_cache serves stale content because of a proxy error. 
+     PR 53539.  [Rainer Jung, Ruediger Pluem]
+
   *) core: Be less strict when checking whether Content-Type is set to 
      "application/x-www-form-urlencoded" when parsing POST data, 
      or we risk losing data with an appended charset. PR 53698
