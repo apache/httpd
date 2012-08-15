@@ -165,6 +165,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: Trunk patch works.
      +1: humbedooh
 
+   * mod_cache: Wrong content type and character set when
+     mod_cache serves stale content because of a proxy error.
+     PR 53539. Correction to r1361153.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1373447
+     2.4.x patch: trunk patch works.
+     +1: rjung
+
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
