@@ -162,8 +162,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1372305
                   http://svn.apache.org/viewvc?view=revision&revision=1372349
                   http://svn.apache.org/viewvc?view=revision&revision=1372419
-     2.4.x patch: Trunk patch works.
-     +1: humbedooh
+     2.4.x patch: http://people.apache.org/~rjung/patches/x-www-form-urlencoded-content-type-checking.patch
+     +1: humbedooh, rjung
+     rjung: I added a combined 2.4.x patch for convenience, because the change
+            is only one line
 
    * mod_cache: Wrong content type and character set when
      mod_cache serves stale content because of a proxy error.
