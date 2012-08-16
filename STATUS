@@ -171,6 +171,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1373447
      2.4.x patch: trunk patch works.
      +1: rjung
+ 
+   * mod_authnz_ldap: Don't try a potentially expensive nested groups
+     search before exhausting all AuthLDAPGroupAttribute checks on the
+     current group. PR52464
+     trunk patch: http://svn.apache.org/viewvc?rev=1231255&view=rev
+                  + whitespace change http://svn.apache.org/viewvc?rev=1231257&view=rev
+     2.4.x patch: trunk patch works
+     +1: covener
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
