@@ -29,7 +29,9 @@
               developer who will be linking your code with Apache or using
               a debugger to step through server code, as it removes the
               possibility of version or compile-option mismatches with APR
-              and APR-util code.
+              and APR-Util code. As a convenience, prepackaged source-code
+              bundles of APR and APR-Util are occasionally also provided
+              as a httpd-2.X.X-deps.tar.gz download.
 
             * If you are a developer building Apache directly from
               Subversion, you will need to run ./buildconf before running
