@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1354431:1371050 (outdated) -->
+<!-- English Revision : 1354431 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1128,6 +1128,19 @@ l'espace d'URLs du serveur local</description>
 	est le m&ecirc;me qu'avec les autres erreurs de worker.
 	Disponible &agrave; partir de la version 2.2.17 du serveur HTTP Apache.
     </td></tr>
+    <tr><td>forcerecovery</td>
+        <td>On</td>
+        <td>Force la r&eacute;cup&eacute;ration imm&eacute;diate de tous les membres du
+	r&eacute;partiteur sans tenir compte de leur param&egrave;tre de nouvel essai
+	si tous les membres du r&eacute;partiteur sont dans un &eacute;tat d'erreur.
+	Dans certains cas cependant, un serveur d'arri&egrave;re-plan d&eacute;j&agrave;
+	surcharg&eacute; peut voir ses probl&egrave;mes s'aggraver si la r&eacute;cup&eacute;ration
+	de tous les membres du r&eacute;partiteur est forc&eacute;e sans tenir compte
+	de leur param&egrave;tre de nouvel essai. Dans ce cas, d&eacute;finissez ce
+	param&egrave;tre &agrave; <code>Off</code>. Disponible depuis la version
+	2.2.23 du serveur HTTP Apache.
+    </td></tr>
+     
     </table>
     <p>Exemple de configuration d'un r&eacute;partiteur</p>
     <example>
