@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1354427:1367951 (outdated) -->
+<!-- English Revision: 1367951 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -950,7 +950,9 @@ l'espace d'URLs du serveur local</description>
     configuration ou la conception du module multi-processus (MPM).</p>
 
     <example><title>Exemple</title>
+        <highlight language="config">
         ProxyPass /example http://backend.example.com max=20 ttl=120 retry=300
+        </highlight>
     </example>
 
     <table border="2"><tr><th>Param&egrave;tres de BalancerMember</th></tr></table>
@@ -1433,14 +1435,14 @@ par un serveur mandat&eacute; en inverse</description>
     inverse.</p>
 
     <p>Seuls les en-t&ecirc;tes de r&eacute;ponse HTTP sp&eacute;cialement mentionn&eacute;s
-    ci-dessus seront r&eacute;&eacute;crits. Apache httpd ne r&eacute;&eacute;crira ni les autres en-t&ecirc;tes
-    de r&eacute;ponse, ni les r&eacute;f&eacute;rences d'URLs dans les pages HTML. Cela
+    ci-dessus seront r&eacute;&eacute;crits. Apache httpd ne
+r&eacute;&eacute;crira pas les autres en-t&ecirc;tes
+    de r&eacute;ponse, ni par d&eacute;faut les r&eacute;f&eacute;rences d'URLs dans les pages HTML. Cela
     signifie que dans le cas o&ugrave; un contenu mandat&eacute; contient des
     r&eacute;f&eacute;rences &agrave; des URLs absolues, elles court-circuiteront le
-    mandataire. Le module <a
-    href="http://apache.webthing.com/mod_proxy_html/">mod_proxy_html</a>
-    de Nick Kew est un module tiers qui parcourt le code HTML et r&eacute;&eacute;crit
-    les r&eacute;f&eacute;rences d'URL.</p>
+    mandataire. Pour r&eacute;&eacute;crire un contenu HTML afin qu'il puisse &ecirc;tre
+trait&eacute; par le mandataire, vous devez charger et activer le module
+<module>mod_proxy_html</module>.</p>
 
     <p><var>chemin</var> est le nom d'un chemin virtuel local.
     <var>url</var> est une URL partielle pour le serveur distant - ils
@@ -1559,24 +1561,43 @@ en <code>/mirror/foo/</code>..
 
 <directivesynopsis>
 <name>ProxyBlock</name>
-<description>Termes, serveurs ou domaines bloqu&eacute;s par le
-mandataire</description>
-<syntax>ProxyBlock *|<var>terme</var>|<var>serveur</var>|<var>domaine</var>
-[<var>terme</var>|<var>serveur</var>|<var>domaine</var>] ...</syntax>
+<description>Interdit les requ&ecirc;tes mandat&eacute;es vers certains h&ocirc;tes</description>
+<syntax>ProxyBlock *|<var>nom d'h&ocirc;te</var>|<var>nom d'h&ocirc;te partiel</var>
+[<var>nom d'h&ocirc;te</var>|<var>nom d'h&ocirc;te partiel</var>]...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>La directive <directive>ProxyBlock</directive> permet de
-    sp&eacute;cifier une liste de termes, serveurs et/ou domaines, s&eacute;par&eacute;s par
-    des espaces. Les requ&ecirc;tes de documents HTTP, HTTPS, FTP vers des
-    sites dont les noms contiennent des termes, noms de serveur ou
-    domaine correspondants seront <em>bloqu&eacute;s</em> par le serveur
-    mandataire. La module proxy va aussi tenter de d&eacute;terminer les
-    adresses IP des &eacute;l&eacute;ments de la liste qui peuvent correspondre &agrave; des
-    noms d'h&ocirc;tes au cours du d&eacute;marrage, et les mettra en cache &agrave; des
-    fins de comparaisons ult&eacute;rieures. Ceci peut ralentir le d&eacute;marrage du
-    serveur.</p>
+    <p>La directive <directive>ProxyBlock</directive> permet d'interdire
+    l'acc&egrave;s FTP ou HTTP via le mandataire &agrave; certains h&ocirc;tes en fonction
+    d'une correspondance exacte ou partielle avec un nom d'h&ocirc;te, ou dans
+    la mesure du possible en fonction d'une comparaison d'adresses IP.</p>
+
+    <p>Chaque param&egrave;tre de la directive
+    <directive>ProxyBlock</directive> accepte comme valeur soit
+    <code>*</code>, soit une cha&icirc;ne alphanum&eacute;rique. Au d&eacute;marrage, le
+    module tente de r&eacute;soudre toute cha&icirc;ne alphanum&eacute;rique depuis un nom
+    DNS vers un jeu d'adresses IP, mais toute erreur de DNS est ignor&eacute;e.</p>
+
+    <p>Si un param&egrave;tre a pour valeur "<code>*</code>",
+    <module>mod_proxy</module> interdira l'acc&egrave;s &agrave; tout site FTP ou
+    HTTP.</p>
+
+    <p>Dans le cas contraire, pour toute requ&ecirc;te vers une ressource FTP
+    ou HTTP via le mandataire, <module>mod_proxy</module> va comparer le
+    nom d'h&ocirc;te de l'URI de la requ&ecirc;te avec chaque cha&icirc;ne alphanum&eacute;rique
+    sp&eacute;cifi&eacute;e. Si une cha&icirc;ne correspond, m&ecirc;me partiellement, l'acc&egrave;s est
+    refus&eacute;. Si aucune cha&icirc;ne ne correspond, et si un mandataire distant
+    (forward) est configur&eacute; via la directive
+    <directive>ProxyRemote</directive> ou
+    <directive>ProxyRemoteMatch</directive>, l'acc&egrave;s est autoris&eacute;. Si
+    aucun mandataire distant (forward) n'est configur&eacute;, l'adresse IP
+    correspondant au nom d'h&ocirc;te de l'URI est compar&eacute;e &agrave; toutes les
+    adresses IP r&eacute;solues au d&eacute;marrage, et l'acc&egrave;s est refus&eacute; si une
+    correspondance est trouv&eacute;e.</p>
+
+    <p>Notez que les recherches DNS peuvent ralentir le processus de
+    d&eacute;marrage du serveur.</p>
 
     <example><title>Exemple</title>
       ProxyBlock news.example.com auctions.example.com friends.example.com
