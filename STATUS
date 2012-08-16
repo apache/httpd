@@ -203,7 +203,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?rev=1364601&view=rev
      2.4.x patch: trunk patch works
      2.2.x patch: http://people.apache.org/~trawick/r1363557_1364601_to_2.2.x.txt
-     +1: trawick
+     +1: trawick, wrowe
 
 PATCHES/ISSUES THAT ARE STALLED
 
