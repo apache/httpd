@@ -278,7 +278,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1348036
      2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1362056
      2.2.x patch: http://people.apache.org/~rjung/patches/treat_ldap_unavailable_transient-2_2.patch
-     +1: rjung
+     +1: rjung, fuankg
 
 PATCHES/ISSUES THAT ARE STALLED
 
