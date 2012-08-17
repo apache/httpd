@@ -88,11 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy_ajp/mod_proxy_http: Optimize bit field operations in mod_proxy.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1373955
-     2.4.x patch: trunk patch works.
-     +1: rjung, jim, trawick
- 
    * mod_proxy_balancer: Remove wrong error code parameter from log message.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1374157
      2.4.x patch: trunk patch works.
