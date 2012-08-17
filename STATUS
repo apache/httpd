@@ -273,7 +273,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1086662 and
                   http://svn.apache.org/viewvc?view=revision&revision=1032431
      2.2.x patch: http://people.apache.org/~rjung/patches/mod_rewrite-directory_conf-allowanyuri-2_2.patch
-     +1: rjung
+     +1: rjung, wrowe
 
    * mod_log_config: %{abc}C truncates cookies whose values contain '='
      PR 53104
