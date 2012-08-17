@@ -78,7 +78,7 @@ Changes with Apache 2.4.3
      [Stefan Fritsch]
 
   *) mod_proxy: Fix ProxyPassReverse for balancer configurations.
-     PR 45434.  [Joe Orton]
+     PR 51489.  [Joe Orton]
 
   *) mod_lua: Add the parsebody function for parsing POST data. PR 53064.
      [Daniel Gruno]
