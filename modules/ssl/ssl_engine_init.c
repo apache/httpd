@@ -1381,11 +1381,20 @@ static void ssl_init_proxy_certs(server_rec *s,
     for (n = 0; n < ncerts; n++) {
         X509_INFO *inf = sk_X509_INFO_value(sk, n);
 
-        if (!inf->x509 || !inf->x_pkey) {
+        if (!inf->x509 || !inf->x_pkey || !inf->x_pkey->dec_pkey) {
             sk_X509_INFO_free(sk);
             ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, s, APLOGNO(02252)
                          "incomplete client cert configured for SSL proxy "
                          "(missing or encrypted private key?)");
+            ssl_die(s);
+            return;
+        }
+        
+        if (X509_check_private_key(inf->x509, inf->x_pkey->dec_pkey) != 1) {
+            ssl_log_xerror(SSLLOG_MARK, APLOG_STARTUP, 0, ptemp, s, inf->x509,
+                           APLOGNO(02326) "proxy client certificate and "
+                           "private key do not match");
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
             ssl_die(s);
             return;
         }
@@ -1412,6 +1421,8 @@ static void ssl_init_proxy_certs(server_rec *s,
         ssl_die(s);
     }
 
+    /* ### Why is all the following done?  Why is it necessary or
+     * useful for the server to try to verify its own client cert? */
     X509_STORE_load_locations(store, pkp->ca_cert_file, NULL);
 
     for (n = 0; n < ncerts; n++) {
