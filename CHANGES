@@ -2,7 +2,7 @@
 Changes with Apache 2.5.0
 
   *) mod_ssl: Catch missing or mismatched client cert/key pairs with
-     SSLProxyCACertificateFile/Path directives.  PR 52212.  
+     SSLProxyMachineCertificateFile/Path directives.  PR 52212.  
      [Keith Burdis <keith burdis.org>, Joe Orton]
 
   *) mod_lua: Allow scripts handled by the lua-script handler to return 
