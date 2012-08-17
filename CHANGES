@@ -7,6 +7,10 @@ Changes with Apache 2.4.3
      possible XSS for a site where untrusted users can upload files to
      a location with MultiViews enabled. [Niels Heinen <heinenn google.com>]
 
+  *) mod_authnz_ldap: Don't try a potentially expensive nested groups
+     search before exhausting all AuthLDAPGroupAttribute checks on the
+     current group. PR52464 [Eric Covener]
+
   *) mod_lua: Add new directive LuaAuthzProvider to allow implementing an
      authorization provider in lua. [Stefan Fritsch]
 
