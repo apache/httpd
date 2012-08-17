@@ -356,6 +356,24 @@ static void post_rotate(apr_pool_t *pool, struct logfile *newlog,
     }
 }
 
+/* After a error, truncate the current file and write out an error
+ * message, which must be contained in status->errbuf.  The process is
+ * terminated on failure.  */
+static void truncate_and_write_error(rotate_status_t *status)
+{
+    apr_size_t buflen = strlen(status->errbuf);
+
+    if (apr_file_trunc(status->current.fd, 0) != APR_SUCCESS) {
+        fprintf(stderr, "Error truncating the file %s\n", status->current.name);
+        exit(2);
+    }
+    if (apr_file_write_full(status->current.fd, status->errbuf, buflen, NULL) != APR_SUCCESS) {
+        fprintf(stderr, "Error writing error (%s) to the file %s\n", 
+                status->errbuf, status->current.name);
+        exit(2);
+    }
+}
+
 /*
  * Open a new log file, and if successful
  * also close the old one.
@@ -432,7 +450,6 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
     }
     else {
         char error[120];
-        apr_size_t nWrite;
 
         apr_strerror(rv, error, sizeof error);
 
@@ -453,16 +470,8 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
                      "Resetting log file due to error opening "
                      "new log file, %10d messages lost: %-25.25s\n",
                      status->nMessCount, error);
-        nWrite = strlen(status->errbuf);
 
-        if (apr_file_trunc(status->current.fd, 0) != APR_SUCCESS) {
-            fprintf(stderr, "Error truncating the file %s\n", status->current.name);
-            exit(2);
-        }
-        if (apr_file_write_full(status->current.fd, status->errbuf, nWrite, NULL) != APR_SUCCESS) {
-            fprintf(stderr, "Error writing to the file %s\n", status->current.name);
-            exit(2);
-        }
+        truncate_and_write_error(status);
     }
 
     status->nMessCount = 0;
@@ -702,12 +711,8 @@ int main (int argc, const char * const argv[])
                          "Error %d writing to log file at offset %" APR_OFF_T_FMT ". "
                          "%10d messages lost (%s)\n",
                          rv, cur_offset, status.nMessCount, strerrbuf);
-            nWrite = strlen(status.errbuf);
-            apr_file_trunc(status.current.fd, 0);
-            if (apr_file_write_full(status.current.fd, status.errbuf, nWrite, NULL) != APR_SUCCESS) {
-                fprintf(stderr, "Error writing to the file %s\n", status.current.name);
-                exit(2);
-            }
+
+            truncate_and_write_error(&status);
         }
         else {
             status.nMessCount++;
