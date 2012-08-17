@@ -1,15 +1,31 @@
 #
-# Declare the sub-directories to be built here
-#
-# To build with exerimental modules set the environment 
-#  variable EXPERIMENTAL=1
+# To build with exerimental modules set the environment
+#  variable WITH_EXPERIMENTAL=1
 # To build with the mod_ssl module set the environment
-#  variable WITH_MOD_SSL=1
+#  variable WITH_SSL=1
+
+#
+# Check if LDAP is enabled in APR-UTIL
+#
+include $(AP_WORK)/build/NWGNUenvironment.inc
+ifeq "$(wildcard $(APRUTIL)/include/apr_ldap.h)" "$(APRUTIL)/include/apr_ldap.h"
+WITH_LDAP = $(shell $(AWK) '/^\#define APR_HAS_LDAP /{print $$3}' $(APRUTIL)/include/apr_ldap.h)
+else
+ifeq "$(MAKECMDGOALS)" "clean"
+WITH_LDAP = 1
+else
+WITH_LDAP = 0
+endif
+endif
 
 # If USE_STDSOCKETS is defined we allways build mod_ssl
 ifdef USE_STDSOCKETS
-WITH_MOD_SSL=1
+WITH_SSL = 1
 endif
+
+#
+# Declare the sub-directories to be built here
+#
 
 SUBDIRS = \
 	aaa \
@@ -27,38 +43,34 @@ SUBDIRS = \
 	database \
 	$(EOLIST) 
 
-# If LDAPSDK has been defined then build the util_ldap module
+# If WITH_LDAP and LDAPSDK have been defined then build the util_ldap module
+ifeq "$(WITH_LDAP)" "1"
 ifneq "$(LDAPSDK)" ""
-SUBDIRS += ldap \
-	$(EOLIST)
+SUBDIRS += ldap
+endif
 endif
 
-# If WITH_MOD_SSL and OSSLSDK have been defined then build the mod_ssl module
-ifdef WITH_MOD_SSL
+# If WITH_SSL and OSSLSDK have been defined then build the mod_ssl module
+ifeq "$(WITH_SSL)" "1"
 ifneq "$(OSSLSDK)" ""
-SUBDIRS += ssl \
-	$(EOLIST)
+SUBDIRS += ssl
 endif
 endif
 
-#If the mod_edir directory exists then build the mod_edir module
+# Allow the experimental modules to be built if WITH_EXPERIMENTAL is defined
+ifeq "$(WITH_EXPERIMENTAL)" "1"
+SUBDIRS += experimental
+endif
+
+# Allow the debugging modules to be built if WITH_DEBUGGING is defined
+ifeq "$(WITH_DEBUGGING)" "1"
+SUBDIRS += debug
+endif
+
+# If the mod_edir directory exists then build the mod_edir module
 ifeq "$(wildcard $(AP_WORK)\modules\mod_edir)" "$(AP_WORK)\modules\mod_edir"
-SUBDIRS += mod_edir \
-	$(EOLIST)
+SUBDIRS += mod_edir
 endif
-
-# Allow the experimental modules to be built if EXPERIMENTAL is defined
-ifdef EXPERIMENTAL
-SUBDIRS += experimental \
-	$(EOLIST)
-endif
-
-# Allow the debug modules to be built if DEBUG is defined
-ifdef DEBUG
-SUBDIRS += debug \
-	$(EOLIST)
-endif
-
 
 #
 # Get the 'head' of the build environment.  This includes default targets and
