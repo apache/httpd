@@ -13,7 +13,11 @@ include $(AP_WORK)/build/NWGNUenvironment.inc
 ifeq "$(wildcard $(APRUTIL)/include/apr_ldap.h)" "$(APRUTIL)/include/apr_ldap.h"
 WITH_LDAP = $(shell $(AWK) '/^\#define APR_HAS_LDAP /{print $$3}' $(APRUTIL)/include/apr_ldap.h)
 else
+ifeq "$(MAKECMDGOALS)" "clean"
+WITH_LDAP = 1
+else
 WITH_LDAP = 0
+endif
 endif
 
 # If USE_STDSOCKETS is defined we allways build mod_ssl
