@@ -5,6 +5,9 @@ Changes with Apache 2.2.23
      envvars: Fix insecure handling of LD_LIBRARY_PATH that could lead to the
      current working directory to be searched for DSOs. [Stefan Fritsch]
 
+  *) mpm_event, mpm_worker: Remain active amidst prevalent child process
+     resource shortages.  [Jeff Trawick]
+
   *) mod_proxy_balancer: Restore balancing after a failed worker has
      recovered when using lbmethod_bybusyness.  PR 48735.  [Jeff Trawick]
 
