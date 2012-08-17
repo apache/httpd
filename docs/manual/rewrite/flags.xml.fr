@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1346288:1363392 (outdated) -->
+<!-- English Revision: 1363392 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -527,6 +527,16 @@ local.</p>
       lesquelles votre serveur agira en tant que mandataire.
       Assurez-vous que la partie protocole://nom-serveur de l'URL soit
       fixe, ou ne permette pas au client de l'influencer induement.</p>
+</note>
+
+<note type="warning">
+      <title>Avertissement au sujet des performances</title>
+      <p>Utiliser ce drapeau fait intervenir <module>mod_proxy</module> sans la gestion des connexions
+      persistantes, ce qui signifie que vous obtiendrez des performances meilleurs si vous utilisez
+      <directive module="mod_proxy">ProxyPass</directive> ou <directive module="mod_proxy">ProxyPassMatch</directive>.</p>
+      <p>Ceci est du au fait que ce drapeau induit l'utilisation du worker par d&eacute;faut, qui
+      ne g&egrave;re pas la mise en commun des connexions.</p>
+      <p>Partout o&ugrave; cela est possible, pr&eacute;f&eacute;rez l'utilisation de ces directives.</p>
 </note>
 
 <p>Note: <module>mod_proxy</module> doit &ecirc;tre activ&eacute; pour pouvoir
