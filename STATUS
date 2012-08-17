@@ -193,6 +193,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works.
      +1: rjung
  
+   * mod_proxy_balancer: Remove wrong error code parameter from log message.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1374157
+     2.4.x patch: trunk patch works.
+     +1: rjung
+ 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
