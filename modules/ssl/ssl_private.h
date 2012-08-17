@@ -425,7 +425,11 @@ typedef struct {
     /** proxy can have any number of cert/key pairs */
     const char  *cert_file;
     const char  *cert_path;
-    STACK_OF(X509_INFO) *certs;
+    const char  *ca_cert_file;
+    STACK_OF(X509_INFO) *certs; /* Contains End Entity certs */
+    STACK_OF(X509) **ca_certs; /* Contains ONLY chain certs for
+                                * each item in certs.
+                                * (ptr to array of ptrs) */
 } modssl_pk_proxy_t;
 
 /** stuff related to authentication that can also be per-dir */
@@ -566,6 +570,7 @@ const char  *ssl_cmd_SSLProxyCARevocationPath(cmd_parms *, void *, const char *)
 const char  *ssl_cmd_SSLProxyCARevocationFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyMachineCertificatePath(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyMachineCertificateFile(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLProxyMachineCertificateChainFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyCheckPeerExpire(cmd_parms *cmd, void *dcfg, int flag);
 const char  *ssl_cmd_SSLProxyCheckPeerCN(cmd_parms *cmd, void *dcfg, int flag);
 

@@ -238,6 +238,7 @@ typedef void (*modssl_popfree_fn)(char *data);
 #define sk_X509_push sk_push
 #define sk_X509_pop_free(st, free) sk_pop_free((STACK*)(st), (modssl_popfree_fn)(free))
 #define sk_X509_value (X509 *)sk_value
+#define sk_X509_shift (X509 *)sk_shift
 #define sk_X509_INFO_free sk_free
 #define sk_X509_INFO_pop_free(st, free) sk_pop_free((STACK*)(st), (modssl_popfree_fn)(free))
 #define sk_X509_INFO_num sk_num

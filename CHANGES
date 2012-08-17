@@ -5,6 +5,10 @@ Changes with Apache 2.2.23
      envvars: Fix insecure handling of LD_LIBRARY_PATH that could lead to the
      current working directory to be searched for DSOs. [Stefan Fritsch]
 
+  *) Added SSLProxyMachineCertificateChainFile directive so the proxy client
+     can select the proper client certificate when using a chain and the
+     remote server only lists the root CA as allowed.
+
   *) mpm_event, mpm_worker: Remain active amidst prevalent child process
      resource shortages.  [Jeff Trawick]
 
