@@ -135,7 +135,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1351020
                   http://svn.apache.org/viewvc?view=revision&revision=1370466
      2.4.x patch: trunk patch works.
-     +1: humbedooh, rjung
+     +1: humbedooh, rjung, jim
      rjung: docs compatibility note 2.5 -> 2.4.3, drop message-tag file from patch
 
    * mod_lua: Add a new directive, LuaCodeCache, for controlling the in-memory 
@@ -163,7 +163,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1372349
                   http://svn.apache.org/viewvc?view=revision&revision=1372419
      2.4.x patch: http://people.apache.org/~rjung/patches/x-www-form-urlencoded-content-type-checking.patch
-     +1: humbedooh, rjung
+     +1: humbedooh, rjung, jim
      rjung: I added a combined 2.4.x patch for convenience, because the change
             is only one line
 
@@ -180,23 +180,23 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?rev=1231255&view=rev
                   + whitespace change http://svn.apache.org/viewvc?rev=1231257&view=rev
      2.4.x patch: trunk patch works
-     +1: covener, rjung
+     +1: covener, rjung, jim
 
    * mod_proxy_ajp: Fix crash in packet dump code when logging
      with LogLevel trace7 or trace8.  PR 53730.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1373898
      2.4.x patch: trunk patch works.
-     +1: rjung
+     +1: rjung, jim
  
    * mod_proxy_ajp/mod_proxy_http: Optimize bit field operations in mod_proxy.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1373955
      2.4.x patch: trunk patch works.
-     +1: rjung
+     +1: rjung, jim
  
    * mod_proxy_balancer: Remove wrong error code parameter from log message.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1374157
      2.4.x patch: trunk patch works.
-     +1: rjung
+     +1: rjung, jim
  
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
