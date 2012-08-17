@@ -157,7 +157,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1373898
      2.4.x patch: trunk patch works.
      +1: rjung, jim
- 
+
+   * Windows: Fix output of -M, -L, and similar command-line options
+     which display information about the server configuration.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1374428
+     2.4.x patch: trunk patch works.
+     +1: trawick
+
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
