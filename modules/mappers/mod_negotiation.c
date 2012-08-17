@@ -2658,9 +2658,9 @@ static char *make_variant_list(request_rec *r, negotiation_state *neg)
          * need to change the calculation of max_vlist_array above.
          */
         *((const char **) apr_array_push(arr)) = "<li><a href=\"";
-        *((const char **) apr_array_push(arr)) = filename;
+        *((const char **) apr_array_push(arr)) = ap_escape_path_segment(r->pool, filename);
         *((const char **) apr_array_push(arr)) = "\">";
-        *((const char **) apr_array_push(arr)) = filename;
+        *((const char **) apr_array_push(arr)) = ap_escape_html(r->pool, filename);
         *((const char **) apr_array_push(arr)) = "</a> ";
         *((const char **) apr_array_push(arr)) = description;
 

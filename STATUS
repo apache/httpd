@@ -93,15 +93,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_negotiation: Escape filenames in variant list to prevent an
-     possible XSS for a site where untrusted users can upload files to a
-     location with MultiViews enabled.
-     SECURITY: CVE-2012-2687 (cve.mitre.org):
-     Submitted by: Niels Heinen <heinenn google.com>
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1349905
-     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1356889
-     2.2.x patch: trunk patch applies
-     +1: rjung, trawick, wrowe
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
