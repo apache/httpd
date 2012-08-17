@@ -183,13 +183,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1299738
      2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1301194
      2.2.x patch: http://people.apache.org/~rjung/patches/mod_proxy_balancer-fix-error-message-2_2.patch
-     +1: rjung
+     +1: rjung, trawick
 
    * core: (dummy_connection): Destroy temp pool and return on connect() failure.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1300171
      2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1301649
      2.2.x patch: http://people.apache.org/~rjung/patches/dummy_connection-destroy-pool-and-return-on-failure-2_2.patch
-     +1: rjung
+     +1: rjung, trawick
 
    * core: add filesystem paths to some common error messages.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1301504
@@ -259,7 +259,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1349905
      2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1356889
      2.2.x patch: trunk patch applies
-     +1: rjung
+     +1: rjung, trawick
 
    * mod_rewrite: add "AllowAnyURI" option.
      Prerequisites:
@@ -281,7 +281,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1328133
      2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1359690
      2.2.x patch: trunk patch applies
-     +1: rjung
+     +1: rjung, trawick
 
    * include/util_ldap.h: Treat LDAP_UNAVAILABLE as a transient error
      with non-MS LDAP SDKs; seen with OpenLDAP against Novell eDirectory.
