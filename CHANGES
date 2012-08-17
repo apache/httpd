@@ -5,6 +5,9 @@ Changes with Apache 2.2.23
      envvars: Fix insecure handling of LD_LIBRARY_PATH that could lead to the
      current working directory to be searched for DSOs. [Stefan Fritsch]
 
+  *) mod_proxy_ajp: Add support for 'ProxyErrorOverride on'. PR 50945.
+     [Peter Pramberger <peter pramberger.at>, Jim Jagielski]
+
   *) Added SSLProxyMachineCertificateChainFile directive so the proxy client
      can select the proper client certificate when using a chain and the
      remote server only lists the root CA as allowed.

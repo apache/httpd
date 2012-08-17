@@ -191,6 +191,8 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     apr_size_t maxsize = AJP_MSG_BUFFER_SZ;
     int send_body = 0;
     apr_off_t content_length = 0;
+    int original_status = r->status;
+    const char *original_status_line = r->status_line;
 
     if (psf->io_buffer_size_set)
        maxsize = psf->io_buffer_size;
@@ -442,12 +444,27 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                 if (status != APR_SUCCESS) {
                     backend_failed = 1;
                 }
+                else if ((r->status == 401) && psf->error_override) {
+                    const char *buf;
+                    const char *wa = "WWW-Authenticate";
+                    if ((buf = apr_table_get(r->headers_out, wa))) {
+                        apr_table_set(r->err_headers_out, wa, buf);
+                    } else {
+                        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                                     "ap_proxy_ajp_request: origin server "
+                                     "sent 401 without WWW-Authenticate header");
+                    }
+                }
                 headers_sent = 1;
                 break;
             case CMD_AJP13_SEND_BODY_CHUNK:
                 /* AJP13_SEND_BODY_CHUNK: piece of data */
                 status = ajp_parse_data(r, conn->data, &size, &send_body_chunk_buff);
                 if (status == APR_SUCCESS) {
+                    /* If we are overriding the errors, we can't put the content
+                     * of the page into the brigade.
+                     */
+                    if (!psf->error_override || !ap_is_HTTP_ERROR(r->status)) {
                     /* AJP13_SEND_BODY_CHUNK with zero length
                      * is explicit flush message
                      */
@@ -464,8 +481,19 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                     else {
                         apr_status_t rv;
 
+                        /* Handle the case where the error document is itself reverse
+                         * proxied and was successful. We must maintain any previous
+                         * error status so that an underlying error (eg HTTP_NOT_FOUND)
+                         * doesn't become an HTTP_OK.
+                         */
+                        if (psf->error_override && !ap_is_HTTP_ERROR(r->status)
+                                && ap_is_HTTP_ERROR(original_status)) {
+                            r->status = original_status;
+                            r->status_line = original_status_line;
+                        }
+
                         e = apr_bucket_transient_create(send_body_chunk_buff, size,
-                                                    r->connection->bucket_alloc);
+                                                        r->connection->bucket_alloc);
                         APR_BRIGADE_INSERT_TAIL(output_brigade, e);
 
                         if ((conn->worker->flush_packets == flush_on) ||
@@ -494,6 +522,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                         apr_brigade_cleanup(output_brigade);
                     }
                 }
+            }
                 else {
                     backend_failed = 1;
                 }
@@ -503,16 +532,22 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                 if (status != APR_SUCCESS) {
                     backend_failed = 1;
                 }
-                e = apr_bucket_eos_create(r->connection->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(output_brigade, e);
-                if (ap_pass_brigade(r->output_filters,
-                                    output_brigade) != APR_SUCCESS) {
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                                  "proxy: error processing end");
-                    output_failed = 1;
+                /* If we are overriding the errors, we must not send anything to
+                 * the client, especially as the brigade already contains headers.
+                 * So do nothing here, and it will be cleaned up below.
+                 */
+                if (!psf->error_override || !ap_is_HTTP_ERROR(r->status)) {
+                    e = apr_bucket_eos_create(r->connection->bucket_alloc);
+                    APR_BRIGADE_INSERT_TAIL(output_brigade, e);
+                    if (ap_pass_brigade(r->output_filters,
+                                        output_brigade) != APR_SUCCESS) {
+                        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                                      "proxy: error processing end");
+                        output_failed = 1;
+                    }
+                    /* XXX: what about flush here? See mod_jk */
+                    data_sent = 1;
                 }
-                /* XXX: what about flush here? See mod_jk */
-                data_sent = 1;
                 request_ended = 1;
                 break;
             default:
@@ -591,7 +626,17 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                      "proxy: got response from %pI (%s)",
                      conn->worker->cp->addr,
                      conn->worker->hostname);
-        rv = OK;
+
+        if (psf->error_override && ap_is_HTTP_ERROR(r->status)) {
+            /* clear r->status for override error, otherwise ErrorDocument
+             * thinks that this is a recursive error, and doesn't find the
+             * custom error page
+             */
+            rv = r->status;
+            r->status = HTTP_OK;
+        } else {
+            rv = OK;
+        }
     }
 
     if (backend_failed) {
