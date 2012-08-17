@@ -19,6 +19,7 @@
 #include "apr_uuid.h"
 #include "lua_config.h"
 #include "apr_file_info.h"
+#include "mod_auth.h"
 
 APLOG_USE_MODULE(lua);
 
@@ -121,6 +122,11 @@ AP_LUA_DECLARE(void) ap_lua_load_apache2_lmodule(lua_State *L)
     makeintegerfield(L, PROXYREQ_REVERSE);
     makeintegerfield(L, PROXYREQ_RESPONSE);
     makeintegerfield(L, PROXYREQ_RESPONSE);
+    makeintegerfield(L, AUTHZ_DENIED);
+    makeintegerfield(L, AUTHZ_GRANTED);
+    makeintegerfield(L, AUTHZ_NEUTRAL);
+    makeintegerfield(L, AUTHZ_GENERAL_ERROR);
+    makeintegerfield(L, AUTHZ_DENIED_NO_USER);
 
     /*
        makeintegerfield(L, HTTP_CONTINUE);
