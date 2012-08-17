@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1307737:1363373 (outdated) -->
+<!-- English Revision : 1363373 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -41,7 +41,7 @@ correspondance</a></seealso>
 <seealso><a href="vhosts.html">Serveurs virtuels</a></seealso>
 <seealso><a href="proxy.html">Mise en cache</a></seealso>
 <seealso><a href="rewritemap.html">Utilisation de RewriteMap</a></seealso>
-<seealso><a href="advanced.html">Techniques avanc&eacute;es et astuces</a></seealso>
+<seealso><a href="advanced.html">Techniques avanc&eacute;es</a></seealso>
 <seealso><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></seealso>
 
 <section id="introduction"><title>Introduction</title>
@@ -86,16 +86,24 @@ ces derni&egrave;res sont appliqu&eacute;es. Avec le drapeau B, les caract&egrav
 non-alphanum&eacute;riques des r&eacute;f&eacute;rences arri&egrave;res seront &eacute;chapp&eacute;s. Consid&eacute;rons
 par exemple cette r&egrave;gle :</p>
 
-<example>
-RewriteRule ^(/.*)$ /index.php?show=$1
-</example>
+<highlight language="config">RewriteRule ^search/(.*)$ /search.php?term=$1</highlight>
 
-<p>Avec cet exemple, <code>/C++</code> sera r&eacute;&eacute;crit en
-<code>/index.php?show=/C++</code>. Mais <code>/C%2b%2b</code> sera lui
-aussi r&eacute;&eacute;crit en <code>/index.php?show=/C++</code>, car le caract&egrave;re
-<code>%2b</code> aura &eacute;t&eacute; "d&eacute;s&eacute;chapp&eacute;". Avec le drapeau B par contre,
-<code>/C%2b%2b</code> sera r&eacute;&eacute;crit en
-<code>/index.php?show=/C%2b%2b</code>.</p>
+<p>Soit la cha&icirc;ne 'x &amp; y/z' ; un navigateur va la coder en
+'x%20%26%20y%2Fz', transformant la requ&ecirc;te en 'search/x%20%26%20y%2Fz'.
+Sans le drapeau B, la r&egrave;gle va intercepter la cha&icirc;ne 'search.php?term=x
+&amp; y/z' qui n'est pas une URL valide, et la coder en
+<code>search.php?term=x%20&amp;y%2Fz=</code>, ce qui ne correspond pas
+au r&eacute;sultat attendu.</p>
+
+<p>Avec le drapeau B, la r&egrave;gle va r&eacute;encoder les param&egrave;tres avant de les
+passer &agrave; l'URL de sortie, ce qui va produire l'URL correcte
+<code>/search.php?term=x%20%26%20y%2Fz</code>.</p>
+
+<p>Notez que vous serez peut-&ecirc;tre amen&eacute; &agrave; d&eacute;finir la directive
+<directive module="core">AllowEncodedSlashes</directive> &agrave;
+<code>On</code> pour que cet exemple fonctionne, car httpd n'autorise
+pas les slashes encod&eacute;s dans les URLs et renvoie une erreur 404 s'il en
+rencontre un.</p>
 
 <p>Ce processus d'&eacute;chappement est en particulier n&eacute;cessaire dans le
 contexte d'un mandataire, o&ugrave; l'acc&egrave;s au serveur d'arri&egrave;re-plan &eacute;chouera
@@ -662,20 +670,21 @@ avertissements 'Invalid URI in request'.
 
 <section id="flag_s"><title>S|skip</title>
 <p>Le drapeau [S] sert &agrave; sauter des r&egrave;gles que vous ne voulez pas voir
-ex&eacute;cuter. Ceci peut s'interpr&eacute;ter comme une instruction
+ex&eacute;cuter. La syntaxe du drapeau skip est [S=<em>N</em>], o&ugrave;
+<em>N</em> correspond au nombre de r&egrave;gles &agrave; sauter.
+Ceci peut s'interpr&eacute;ter comme une instruction
 <code>goto</code>  dans votre jeu de r&egrave;gles de r&eacute;&eacute;criture. Dans
 l'exemple suivant, nous ne voulons ex&eacute;cuter la r&egrave;gle <directive
 module="mod_rewrite">RewriteRule</directive> que si l'URI demand&eacute; ne
 correspond pas &agrave; un fichier existant.</p>
 
 <example>
-# La requ&ecirc;te concerne-t-elle un fichier qui n'existe pas ?<br />
-RewriteCond %{REQUEST_FILENAME} !-f<br />
-RewriteCond %{REQUEST_FILENAME} !-d<br />
-# Si c'est la cas, on saute les deux r&egrave;gles de r&eacute;&eacute;criture suivantes<br />
-RewriteRule .? - [S=2]<br />
-<br />
-RewriteRule (.*\.gif) images.php?$1<br />
+# La requ&ecirc;te concerne-t-elle un fichier qui n'existe pas ?<br/>
+RewriteCond %{REQUEST_FILENAME} !-f<br/>
+RewriteCond %{REQUEST_FILENAME} !-d<br/>
+# Si c'est la cas, on saute les deux r&egrave;gles de r&eacute;&eacute;criture suivantes<br/>
+RewriteRule .? - [S=2]<br/>
+RewriteRule (.*\.gif) images.php?$1<br/>
 RewriteRule (.*\.html) docs.php?$1
 </example>
 
