@@ -2,6 +2,11 @@
 
 Changes with Apache 2.4.3
 
+  *) SECURITY: CVE-2012-3502  (cve.mitre.org)
+     mod_proxy_ajp, mod_proxy_http: Fix an issue in back end
+     connection closing which could lead to privacy issues due
+     to a response mixup. PR 53727. [Rainer Jung]
+
   *) SECURITY: CVE-2012-2687 (cve.mitre.org)
      mod_negotiation: Escape filenames in variant list to prevent an
      possible XSS for a site where untrusted users can upload files to
@@ -9,7 +14,7 @@ Changes with Apache 2.4.3
 
   *) mod_authnz_ldap: Don't try a potentially expensive nested groups
      search before exhausting all AuthLDAPGroupAttribute checks on the
-     current group. PR52464 [Eric Covener]
+     current group. PR 52464 [Eric Covener]
 
   *) mod_lua: Add new directive LuaAuthzProvider to allow implementing an
      authorization provider in lua. [Stefan Fritsch]
