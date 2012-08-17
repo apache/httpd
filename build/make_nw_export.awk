@@ -82,8 +82,8 @@ function add_symbol(sym_name) {
 }
 
 /^[ \t]*(extern[ \t]+)?AP[RU]?_DECLARE_DATA .*;/ {
-    gsub(/[*;\n\r]/, "", $NF)
-    gsub(/\[.*\]/, "", $NF)
+    gsub(/[*;\n\r]/, "")
+    gsub(/\[.*\]/, "")
     add_symbol($NF)
 }
 
