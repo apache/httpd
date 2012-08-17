@@ -88,6 +88,28 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_lua: Add a Lua authz provider.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1351020
+                  http://svn.apache.org/viewvc?view=revision&revision=1370466
+     2.4.x patch: trunk patch works.
+     +1: humbedooh, rjung, jim
+     rjung: docs compatibility note 2.5 -> 2.4.3, drop message-tag file from patch
+
+   * core: make ap_parse_form_data less strict when checking for a correct 
+           Content-Type header when parsing POST, or we risk losing valid 
+           data with an appended charset.
+     Submitted by: Petter Berntsen <petterb gmail com>
+     (Changed since the original commit, hence the long list of revisions)
+     PR: 53698
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1372054
+                  http://svn.apache.org/viewvc?view=revision&revision=1372055
+                  http://svn.apache.org/viewvc?view=revision&revision=1372305
+                  http://svn.apache.org/viewvc?view=revision&revision=1372349
+                  http://svn.apache.org/viewvc?view=revision&revision=1372419
+     2.4.x patch: http://people.apache.org/~rjung/patches/x-www-form-urlencoded-content-type-checking.patch
+     +1: humbedooh, rjung, jim
+     rjung: I added a combined 2.4.x patch for convenience, because the change
+            is only one line
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -131,13 +153,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: 
      rjung: Revoked my vote due to ongoing discussion
 
-   * mod_lua: Add a Lua authz provider.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1351020
-                  http://svn.apache.org/viewvc?view=revision&revision=1370466
-     2.4.x patch: trunk patch works.
-     +1: humbedooh, rjung, jim
-     rjung: docs compatibility note 2.5 -> 2.4.3, drop message-tag file from patch
-
    * mod_lua: Add a new directive, LuaCodeCache, for controlling the in-memory 
               caching of scripts
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1366890
@@ -150,22 +165,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      rjung: docs missing?
      humbedooh: It's in the 2.4 docs already, but commented out, as with a lot 
                 of other functions that were never actually made. It's a mess ;)
-
-   * core: make ap_parse_form_data less strict when checking for a correct 
-           Content-Type header when parsing POST, or we risk losing valid 
-           data with an appended charset.
-     Submitted by: Petter Berntsen <petterb gmail com>
-     (Changed since the original commit, hence the long list of revisions)
-     PR: 53698
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1372054
-                  http://svn.apache.org/viewvc?view=revision&revision=1372055
-                  http://svn.apache.org/viewvc?view=revision&revision=1372305
-                  http://svn.apache.org/viewvc?view=revision&revision=1372349
-                  http://svn.apache.org/viewvc?view=revision&revision=1372419
-     2.4.x patch: http://people.apache.org/~rjung/patches/x-www-form-urlencoded-content-type-checking.patch
-     +1: humbedooh, rjung, jim
-     rjung: I added a combined 2.4.x patch for convenience, because the change
-            is only one line
 
    * mod_cache: Wrong content type and character set when
      mod_cache serves stale content because of a proxy error.
