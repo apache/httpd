@@ -124,6 +124,7 @@ static int first_server_limit = 0;
 static int thread_limit = DEFAULT_THREAD_LIMIT;
 static int first_thread_limit = 0;
 static int changed_limit_at_restart;
+static int had_healthy_child = 0;
 static int dying = 0;
 static int workers_may_exit = 0;
 static int start_thread_may_exit = 0;
@@ -1419,6 +1420,7 @@ static void perform_idle_server_maintenance(void)
         int any_dying_threads = 0;
         int any_dead_threads = 0;
         int all_dead_threads = 1;
+        int child_threads_active = 0;
 
         if (i >= ap_max_daemons_limit && totally_free_length == idle_spawn_rate)
             break;
@@ -1449,10 +1451,11 @@ static void perform_idle_server_maintenance(void)
                     ++idle_thread_count;
                 }
                 if (status >= SERVER_READY && status < SERVER_GRACEFUL) {
-                    ++active_thread_count;
+                    ++child_threads_active;
                 }
             }
         }
+        active_thread_count += child_threads_active;
         if (any_dead_threads && totally_free_length < idle_spawn_rate
                 && free_length < MAX_SPAWN_RATE
                 && (!ps->pid               /* no process in the slot */
@@ -1475,6 +1478,9 @@ static void perform_idle_server_maintenance(void)
             }
             ++free_length;
         }
+        else if (child_threads_active == ap_threads_per_child) {
+            had_healthy_child = 1;
+        }
         /* XXX if (!ps->quiescing)     is probably more reliable  GLA */
         if (!any_dying_threads) {
             last_non_dead = i;
@@ -1483,21 +1489,23 @@ static void perform_idle_server_maintenance(void)
     }
 
     if (sick_child_detected) {
-        if (active_thread_count > 0) {
-            /* some child processes appear to be working.  don't kill the
-             * whole server.
+        if (had_healthy_child) {
+            /* Assume this is a transient error, even though it may not be.  Leave
+             * the server up in case it is able to serve some requests or the
+             * problem will be resolved.
              */
             sick_child_detected = 0;
         }
         else {
-            /* looks like a basket case.  give up.
+            /* looks like a basket case, as no child ever fully initialized; give up.
              */
             shutdown_pending = 1;
             child_fatal = 1;
             ap_log_error(APLOG_MARK, APLOG_ALERT, 0,
                          ap_server_conf,
-                         "No active workers found..."
-                         " Apache is exiting!");
+                         "A resource shortage or other unrecoverable failure "
+                         "was encountered before any child process initialized "
+                         "successfully... httpd is exiting!");
             /* the child already logged the failure details */
             return;
         }
@@ -2011,6 +2019,7 @@ static int worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     ap_pid_fname = DEFAULT_PIDLOG;
     ap_lock_fname = DEFAULT_LOCKFILE;
     ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
+    had_healthy_child = 0;
     ap_extended_status = 0;
 #ifdef AP_MPM_WANT_SET_MAX_MEM_FREE
         ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;
