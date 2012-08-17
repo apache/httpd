@@ -93,6 +93,24 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_proxy_balancer: fix error message implying recovery during a markdown
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1299738
+     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1301194
+     2.2.x patch: http://people.apache.org/~rjung/patches/mod_proxy_balancer-fix-error-message-2_2.patch
+     +1: rjung, trawick, wrowe
+
+   * core: (dummy_connection): Destroy tmp pool and return on connect() failure.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1300171
+     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1301649
+     2.2.x patch: http://people.apache.org/~rjung/patches/dummy_connection-destroy-pool-and-return-on-failure-2_2.patch
+     +1: rjung, trawick, wrowe
+
+   * mod_log_config: %{abc}C truncates cookies whose values contain '='
+     PR 53104
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1328133
+     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1359690
+     2.2.x patch: trunk patch applies
+     +1: rjung, trawick, wrowe
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -179,18 +197,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           any version. Also, if you read my note to dev@ you will see
           why it is not premature.
 
-   * mod_proxy_balancer: fix error message implying recovery during a markdown
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1299738
-     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1301194
-     2.2.x patch: http://people.apache.org/~rjung/patches/mod_proxy_balancer-fix-error-message-2_2.patch
-     +1: rjung, trawick
-
-   * core: (dummy_connection): Destroy temp pool and return on connect() failure.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1300171
-     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1301649
-     2.2.x patch: http://people.apache.org/~rjung/patches/dummy_connection-destroy-pool-and-return-on-failure-2_2.patch
-     +1: rjung, trawick
-
    * core: add filesystem paths to some common error messages.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1301504
      2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1302426
@@ -265,13 +271,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1032431
      2.2.x patch: http://people.apache.org/~rjung/patches/mod_rewrite-directory_conf-allowanyuri-2_2.patch
      +1: rjung, wrowe
-
-   * mod_log_config: %{abc}C truncates cookies whose values contain '='
-     PR 53104
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1328133
-     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1359690
-     2.2.x patch: trunk patch applies
-     +1: rjung, trawick
 
    * include/util_ldap.h: Treat LDAP_UNAVAILABLE as a transient error
      with non-MS LDAP SDKs; seen with OpenLDAP against Novell eDirectory.
