@@ -795,14 +795,14 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         }
         buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.0" CRLF, NULL);
         force10 = 1;
-        p_conn->close++;
+        p_conn->close = 1;
     } else {
         buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.1" CRLF, NULL);
         force10 = 0;
     }
     if (apr_table_get(r->subprocess_env, "proxy-nokeepalive")) {
         origin->keepalive = AP_CONN_CLOSE;
-        p_conn->close++;
+        p_conn->close = 1;
     }
     ap_xlate_proto_to_ascii(buf, strlen(buf));
     e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
@@ -1019,7 +1019,7 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
      */
     if (!r->kept_body && r->main) {
         /* XXX: Why DON'T sub-requests use keepalives? */
-        p_conn->close++;
+        p_conn->close = 1;
         if (old_cl_val) {
             old_cl_val = NULL;
             apr_table_unset(r->headers_in, "Content-Length");
@@ -1056,7 +1056,7 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         apr_table_unset(r->headers_in, "Content-Length");
         old_cl_val = NULL;
         origin->keepalive = AP_CONN_CLOSE;
-        p_conn->close++;
+        p_conn->close = 1;
     }
 
     /* Prefetch MAX_MEM_SPOOL bytes
@@ -1705,7 +1705,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                 ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01106)
                               "bad HTTP/%d.%d header returned by %s (%s)",
                               major, minor, r->uri, r->method);
-                backend->close += 1;
+                backend->close = 1;
                 /*
                  * ap_send_error relies on a headers_out to be present. we
                  * are in a bad position here.. so force everything we send out
@@ -1746,7 +1746,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                               "server %s:%d returned Transfer-Encoding"
                               " and Content-Length",
                               backend->hostname, backend->port);
-                backend->close += 1;
+                backend->close = 1;
             }
 
             /*
@@ -1755,8 +1755,9 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              */
             te = apr_table_get(r->headers_out, "Transfer-Encoding");
             /* strip connection listed hop-by-hop headers from response */
-            backend->close += ap_find_token(p,
-                    apr_table_get(r->headers_out, "Connection"), "close");
+            if (ap_find_token(p, apr_table_get(r->headers_out, "Connection"),
+                              "close"))
+                backend->close = 1;
             ap_proxy_clear_connection(p, r->headers_out);
             if ((buf = apr_table_get(r->headers_out, "Content-Type"))) {
                 ap_set_content_type(r, apr_pstrdup(p, buf));
@@ -1801,7 +1802,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 
             /* cancel keepalive if HTTP/1.0 or less */
             if ((major < 1) || (minor < 1)) {
-                backend->close += 1;
+                backend->close = 1;
                 origin->keepalive = AP_CONN_CLOSE;
             }
         } else {
@@ -1809,7 +1810,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             backasswards = 1;
             r->status = 200;
             r->status_line = "200 OK";
-            backend->close += 1;
+            backend->close = 1;
         }
 
         if (ap_is_HTTP_INFO(proxy_status)) {
