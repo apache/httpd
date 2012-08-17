@@ -85,6 +85,7 @@ int         SSL_X509_STORE_lookup(X509_STORE *, int, X509_NAME *, X509_OBJECT *)
 char       *SSL_make_ciphersuite(apr_pool_t *, SSL *);
 BOOL        SSL_X509_isSGC(X509 *);
 BOOL        SSL_X509_getBC(X509 *, int *, int *);
+char       *SSL_X509_NAME_to_string(apr_pool_t *, X509_NAME *, unsigned int);
 BOOL        SSL_X509_getCN(apr_pool_t *, X509 *, char **);
 BOOL        SSL_X509_INFO_load_file(apr_pool_t *, STACK_OF(X509_INFO) *, const char *);
 BOOL        SSL_X509_INFO_load_path(apr_pool_t *, STACK_OF(X509_INFO) *, const char *);
