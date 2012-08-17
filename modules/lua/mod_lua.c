@@ -454,6 +454,7 @@ static int lua_map_handler(request_rec *r)
                 ap_lua_release_state(L, spec, r);
                 return rc;
             }
+            ap_lua_release_state(L, spec, r);
         }
     }
     return DECLINED;
