@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1357168:1370288 (outdated) -->
+<!-- English Revision : 1372800 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -412,7 +412,7 @@ All pour les versions ant&eacute;rieures</default>
       module="mod_usertrack">CookieStyle</directive>, <directive
       module="mod_usertrack">CookieTracking</directive>, <directive
       module="mod_usertrack">CookieName</directive>), des directives du
-      module <module>mod_rewrite</module> <directive
+      <module>mod_rewrite</module> directives (<directive
       module="mod_rewrite">RewriteEngine</directive>, <directive
       module="mod_rewrite">RewriteOptions</directive>, <directive
       module="mod_rewrite">RewriteBase</directive>, <directive
@@ -818,7 +818,7 @@ host</context>
     <code>~</code>. Par exemple :</p>
 
     <highlight language="config">
-&lt;Directory ~ "^/www/.*/[0-9]{3}"&gt;
+&lt;Directory ~ "^/www/[0-9]{3}"&gt;
 
 &lt;/Directory&gt;
 </highlight>
@@ -3443,8 +3443,11 @@ verrou pour tous les mutex ou seulement les mutex sp&eacute;cifi&eacute;s</descr
     <p>Avec les m&eacute;canismes &agrave; base de fichier <em>fcntl</em> et
     <em>flock</em>, le chemin, s'il est fourni, est un r&eacute;pertoire dans
     lequel le fichier verrou sera cr&eacute;&eacute;. Le r&eacute;pertoire par d&eacute;faut est le
-    r&eacute;pertoire httpd d&eacute;fini par la directive <directive
-    module="core">ServerRoot</directive>. Utilisez toujours un syst&egrave;me
+    r&eacute;pertoire d'ex&eacute;cution httpd d&eacute;fini par la directive <directive
+    module="core">DefaultRuntimeDir</directive>. Si le r&eacute;pertoire
+    sp&eacute;cifi&eacute; est un chemin relatif, il est relatif au chemin d&eacute;fini par
+    la directive <directive module="core">DefaultRuntimeDir</directive>.
+    Utilisez toujours un syst&egrave;me
     de fichiers local sur disque pour <code>/chemin/vers/mutex</code> et
     jamais un r&eacute;pertoire se trouvant dans un syst&egrave;me de fichiers NFS ou
     AFS. Le nom de base du fichier se composera du type de mutex, d'une
@@ -3613,9 +3616,13 @@ host</context>
       <em>pas</em> le nom de chemin concern&eacute; d&eacute;fini par la section
       <directive type="section"
       module="core">Directory</directive>.</p>
-      <p>Notez aussi que cette option <strong>est ignor&eacute;e</strong> si
-      elle est d&eacute;finie dans une section <directive type="section"
-      module="core">Location</directive>.</p>
+      
+      <p>Les options <code>FollowSymLinks</code> et
+      <code>SymLinksIfOwnerMatch</code> ne fonctionnent que dans les
+      sections <directive type="section"
+      module="core">Directory</directive> ou les fichiers
+      <code>.htaccess</code>.</p>
+
       <p>Le fait d'omettre cette option ne doit pas &ecirc;tre consid&eacute;r&eacute; comme
       une mesure de s&eacute;curit&eacute; efficace, car il existe toujours une
       situation de comp&eacute;tition (race condition) entre l'instant o&ugrave; l'on
@@ -3669,15 +3676,19 @@ host</context>
       vers un fichier ou un r&eacute;pertoire dont le propri&eacute;taire est le m&ecirc;me
       que celui du lien.
 
-      <note><title>Note</title> <p>Cette option est ignor&eacute;e si elle est
-      d&eacute;finie dans une section <directive module="core"
-      type="section">Location</directive>.</p>
+      <note><title>Note</title>
+      <p>Les options <code>FollowSymLinks</code> et
+      <code>SymLinksIfOwnerMatch</code> ne fonctionnent que dans les
+      sections <directive type="section"
+      module="core">Directory</directive> ou les fichiers
+      <code>.htaccess</code>.</p>
+
       <p>Le fait d'omettre cette option ne doit pas &ecirc;tre consid&eacute;r&eacute; comme
       une mesure de s&eacute;curit&eacute; efficace, car il existe toujours une
       situation de comp&eacute;tition (race condition) entre l'instant o&ugrave; l'on
       v&eacute;rifie qu'un chemin n'est pas un lien symbolique, et l'instant o&ugrave;
-      l'on utilise effectivement ce chemin.</p></note>
-      </dd>
+      l'on utilise effectivement ce chemin.</p>
+      </note> </dd>
     </dl>
 
     <p>Normalement, si plusieurs directives

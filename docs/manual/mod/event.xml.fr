@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1228296:1361778 (outdated) -->
+<!-- English Revision : 1361778 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -182,7 +182,8 @@ mobiliser des threads que pour les connexions en cours de traitement</descriptio
 
     <p>Cette directive permet de personnaliser finement la limite du
     nombre de connexions par thread. Un processus n'acceptera de
-    nouvelles connexions que si le nombre actuel de connexions est
+    nouvelles connexions que si le nombre actuel de connexions (sans
+    compter les connexions à l'&eacute;tat "closing") est
     inf&eacute;rieur &agrave; :</p>
 
     <p class="indent"><strong>
