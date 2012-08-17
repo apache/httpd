@@ -88,13 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_authnz_ldap: Don't try a potentially expensive nested groups
-     search before exhausting all AuthLDAPGroupAttribute checks on the
-     current group. PR52464
-     trunk patch: http://svn.apache.org/viewvc?rev=1231255&view=rev
-                  + whitespace change http://svn.apache.org/viewvc?rev=1231257&view=rev
-     2.4.x patch: trunk patch works
-     +1: covener, rjung, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
