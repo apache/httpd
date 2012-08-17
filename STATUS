@@ -88,21 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * core: make ap_parse_form_data less strict when checking for a correct 
-           Content-Type header when parsing POST, or we risk losing valid 
-           data with an appended charset.
-     Submitted by: Petter Berntsen <petterb gmail com>
-     (Changed since the original commit, hence the long list of revisions)
-     PR: 53698
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1372054
-                  http://svn.apache.org/viewvc?view=revision&revision=1372055
-                  http://svn.apache.org/viewvc?view=revision&revision=1372305
-                  http://svn.apache.org/viewvc?view=revision&revision=1372349
-                  http://svn.apache.org/viewvc?view=revision&revision=1372419
-     2.4.x patch: http://people.apache.org/~rjung/patches/x-www-form-urlencoded-content-type-checking.patch
-     +1: humbedooh, rjung, jim
-     rjung: I added a combined 2.4.x patch for convenience, because the change
-            is only one line
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

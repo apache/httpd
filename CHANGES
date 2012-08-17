@@ -10,6 +10,11 @@ Changes with Apache 2.4.3
   *) mod_lua: Add new directive LuaAuthzProvider to allow implementing an
      authorization provider in lua. [Stefan Fritsch]
 
+  *) core: Be less strict when checking whether Content-Type is set to 
+     "application/x-www-form-urlencoded" when parsing POST data, 
+     or we risk losing data with an appended charset. PR 53698
+     [Petter Berntsen <petterb gmail.com>]
+
   *) httpd.conf: Added configuration directives to set a bad_DNT environment
      variable based on User-Agent and to remove the DNT header field from
      incoming requests when a match occurs. This currently has the effect of
