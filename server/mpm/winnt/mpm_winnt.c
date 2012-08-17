@@ -1372,7 +1372,8 @@ static int winnt_pre_config(apr_pool_t *pconf_, apr_pool_t *plog, apr_pool_t *pt
                      service_name);
         exit(APEXIT_INIT);
     }
-    else if (!one_process && !my_generation) {
+    else if (ap_state_query(AP_SQ_RUN_MODE) == AP_SQ_RM_NORMAL
+             && !one_process && !my_generation) {
         /* Open a null handle to soak stdout in this process.
          * We need to emulate apr_proc_detach, unix performs this
          * same check in the pre_config hook (although it is
