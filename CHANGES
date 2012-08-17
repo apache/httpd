@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_lua: Allow scripts handled by the lua-script handler to return 
+     a status code to the client (such as a 302 or a 500) [Daniel Gruno]
+
   *) mod_proxy_ajp: Fix crash in packet dump code when logging
      with LogLevel trace7 or trace8.  PR 53730.  [Rainer Jung]
 

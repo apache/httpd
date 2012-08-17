@@ -233,6 +233,7 @@ static const char* ap_lua_interpolate_string(apr_pool_t* pool, const char* strin
  */
 static int lua_handler(request_rec *r)
 {
+    int rc = OK;
     if (strcmp(r->handler, "lua-script")) {
         return DECLINED;
     }
@@ -275,12 +276,15 @@ static int lua_handler(request_rec *r)
             return HTTP_INTERNAL_SERVER_ERROR;
         }
         ap_lua_run_lua_request(L, r);
-        if (lua_pcall(L, 1, 0, 0)) {
+        if (lua_pcall(L, 1, 1, 0)) {
             report_lua_error(L, r);
+        }
+        if (lua_isnumber(L, -1)) {
+            rc = lua_tointeger(L, -1);
         }
         ap_lua_release_state(L, spec, r);
     }
-    return OK;
+    return rc;
 }
 
 
