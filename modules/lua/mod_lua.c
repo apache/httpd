@@ -366,6 +366,7 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name, int ap
                 ap_lua_release_state(L, spec, r);
                 return rc;
             }
+            ap_lua_release_state(L, spec, r);
         }
     }
     return DECLINED;
