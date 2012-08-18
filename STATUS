@@ -188,7 +188,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1301504
      2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1302426
      2.2.x patch: http://people.apache.org/~rjung/patches/improve-forbidden-error-message-2_2.patch
-     +1: rjung
+     +1: rjung, trawick
 
    * core: Fix error handling in ap_scan_script_header_err_brigade() if there
      is no EOS bucket in the brigade:
@@ -197,7 +197,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1311174
      2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1331414
      2.2.x patch: trunk patch applies
-     +1: rjung
+     +1: rjung, trawick
 
    * core: Bail out *before* signalling the server if the config is bad.
      (as per the claim in the docs!) Prevents "httpd -k restart" from
@@ -242,7 +242,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1346905
      2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1356887
      2.2.x patch: http://people.apache.org/~rjung/patches/htdbm-htpasswd-handling_crypt_failure-2_2.patch
-     +1: rjung
+     +1: rjung, trawick
 
    * mod_rewrite: add "AllowAnyURI" option.
      Prerequisites:
