@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1032347:1369730 (outdated) -->
+<!-- English Revision : 1369730 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -25,7 +25,7 @@
 <manualpage metafile="htaccess.xml.meta">
 <parentdocument href="./">Recettes / Tutoriels</parentdocument>
 
-<title>Tutoriel Apache : fichiers .htaccess</title>
+<title>Tutoriel du serveur HTTP Apache : fichiers .htaccess</title>
 
 <summary>
 <p>Les fichiers <code>.htaccess</code> fournissent une m&eacute;thode pour
@@ -62,7 +62,7 @@ modifier la configuration du serveur au niveau de chaque r&eacute;pertoire.</p>
     <note>Les fichiers <code>.htaccess</code> ne doivent &ecirc;tre utilis&eacute;s
     que si vous n'avez pas acc&egrave;s au fichier de configuration du serveur
     principal. L'utilisation des fichiers <code>.htaccess</code>
-    ralentit le fonctionnement de votre serveur Apache. Il est toujours
+    ralentit le fonctionnement de votre serveur http Apache. Il est toujours
     pr&eacute;f&eacute;rable de d&eacute;finir les directives que vous pouvez inclure dans un
     fichier <code>.htaccess</code> dans une section <directive
     module="core">Directory</directive>, car elles produiront le
@@ -142,13 +142,18 @@ modifier la configuration du serveur au niveau de chaque r&eacute;pertoire.</p>
 
     <p>En principe, vous ne devriez utiliser les fichiers
     <code>.htaccess</code> que si vous n'avez pas acc&egrave;s au fichier de
-    configuration du serveur principal. Par exemple, la fausse id&eacute;e
+    configuration du serveur principal. Par exemple, la fausse id&eacute;e 
     selon laquelle l'authentification de l'utilisateur devrait toujours
-    &ecirc;tre faite dans les fichiers <code>.htaccess</code> est tr&egrave;s
-    r&eacute;pandue. Ceci est tout simplement faux. Vous pouvez configurer
+    &ecirc;tre faite dans les fichiers <code>.htaccess</code>, et ces
+    derni&egrave;res ann&eacute;es celle selon laquelle les directives de
+    <module>mod_rewrite</module> doivent aussi &ecirc;tre d&eacute;finies dans ces
+    m&ecirc;me fichiers <code>.htaccess</code> sont tr&egrave;s
+    r&eacute;pandues. Ceci est tout simplement faux. Vous pouvez configurer
     l'authentification des utilisateurs au niveau de la configuration du
     serveur principal, et c'est en fait cette m&eacute;thode qui doit &ecirc;tre
-    privil&eacute;gi&eacute;e.</p>
+    privil&eacute;gi&eacute;e. De m&ecirc;me, les directives de
+    <code>mod_rewrite</code> fonctionnent de mani&egrave;re plus satisfaisante
+    &agrave; de nombreux &eacute;gards dans la configuration du serveur principal.</p>
 
     <p>Les fichiers <code>.htaccess</code> ne devraient &ecirc;tre utilis&eacute;s
     que dans le cas o&ugrave; les fournisseurs de contenu ont besoin de
@@ -177,20 +182,20 @@ modifier la configuration du serveur au niveau de chaque r&eacute;pertoire.</p>
     <p>La premi&egrave;re est li&eacute;e aux performances. Lorsque la directive
     <directive module="core">AllowOverride</directive> est d&eacute;finie de
     fa&ccedil;on &agrave; autoriser l'utilisation des fichiers <code>.htaccess</code>,
-    Apache va rechercher leur pr&eacute;sence dans chaque r&eacute;pertoire. Ainsi,
+    httpd va rechercher leur pr&eacute;sence dans chaque r&eacute;pertoire. Ainsi,
     permettre l'utilisation des fichiers <code>.htaccess</code> est d&eacute;j&agrave;
     en soi une cause de d&eacute;gradation des performances, que vous utilisiez
     effectivement ces fichiers ou non ! De plus, le fichier
     <code>.htaccess</code> est charg&eacute; en m&eacute;moire chaque fois qu'un
     document fait l'objet d'une requ&ecirc;te.</p>
 
-    <p>Notez aussi qu'Apache doit rechercher les fichiers
+    <p>Notez aussi que httpd doit rechercher les fichiers
     <code>.htaccess</code> dans tous les r&eacute;pertoires de niveau
     sup&eacute;rieur, afin de rassembler toutes les directives qui s'appliquent
     au r&eacute;pertoire courant (Voir la section <a href="#how">comment sont
     appliqu&eacute;es les directives</a>). Ainsi, si un fichier fait l'objet
     d'une requ&ecirc;te &agrave; partir d'un r&eacute;pertoire
-    <code>/www/htdocs/exemple</code>, Apache doit rechercher les
+    <code>/www/htdocs/exemple</code>, httpd doit rechercher les
     fichiers suivants :</p>
 
     <example>
@@ -207,6 +212,18 @@ modifier la configuration du serveur au niveau de chaque r&eacute;pertoire.</p>
     se produire que si les fichiers <code>.htaccess</code> ont &eacute;t&eacute;
     autoris&eacute;s pour le r&eacute;pertoire <code>/</code>, ce qui est rarement le
     cas.</p>
+
+    <p>Pour ce qui est des directives <directive
+    module="mod_rewrite">RewriteRule</directive> dans un contexte
+    <code>.htaccess</code>, les expressions rationnelles doivent &ecirc;tre
+    recompil&eacute;es &agrave; chaque requ&ecirc;te pour le r&eacute;pertoire concern&eacute;, alors que
+    dans le contexte de la configuration du serveur principal, elles ne
+    sont compil&eacute;es qu'une seule fois et mises en cache. De plus, les
+    r&egrave;gles en elles-m&ecirc;mes sont plus complexes, et il faut tenir compte
+    des restrictions inh&eacute;rentes &agrave; <code>mod_rewrite</code> dans le
+    contexte des r&eacute;pertoires. Voir le <a
+    href="../rewrite/intro.html#htaccess">Guide de r&eacute;&eacute;criture</a> pour
+    plus de d&eacute;tails &agrave; ce sujet.</p>
 
     <p>La seconde raison d'&eacute;viter l'utilisation des fichiers
     <code>.htaccess</code> est li&eacute;e &agrave; la s&eacute;curit&eacute;. Si vous permettez aux
@@ -233,7 +250,7 @@ modifier la configuration du serveur au niveau de chaque r&eacute;pertoire.</p>
 
     <example><title>Contenu du fichier .htaccess dans
     <code>/www/htdocs/exemple</code></title>
-    	AddType text/exemple .exm
+    	<highlight language="config">AddType text/example .exm</highlight>
     </example>
 
     <example><title>Section de votre fichier
@@ -444,16 +461,36 @@ Includes - SSI)</title>
     <code>AllowOverride None</code> n'affecte pas le r&eacute;pertoire o&ugrave; se
     trouve votre fichier. Un bon test consiste &agrave; mettre des directives
     dont la syntaxe est erron&eacute;e dans votre ficher <code>.htaccess</code>
-    et de red&eacute;marrer le serveur. Si aucune erreur n'est g&eacute;n&eacute;r&eacute;e par le
+    et de recharger la page. Si aucune erreur n'est g&eacute;n&eacute;r&eacute;e par le
     serveur, il est pratiquement certain qu'une directive
     <code>AllowOverride None</code> affecte votre r&eacute;pertoire.</p>
 
     <p>Par contre, si vous obtenez des erreurs de serveur lorsque vous
     tentez d'acc&eacute;der &agrave; des documents, consultez votre journal des
-    erreurs d'Apache. Il vous indiquera probablement que la directive
+    erreurs de httpd. Il vous indiquera probablement que la directive
     utilis&eacute;e dans votre fichier <code>.htaccess</code> n'est pas
-    permise. Il peut aussi vous indiquer une erreur de syntaxe qu'il
-    vous appartiendra de corriger.</p>
+    permise.</p>
+
+    <example>
+    [Fri Sep 17 18:43:16 2010] [alert] [client 192.168.200.51] /var/www/html/.htaccess: DirectoryIndex not allowed here
+    </example>
+
+    <p>Une ligne de ce style indique soit que vous avez utilis&eacute; une directive
+    jamais autoris&eacute;e dans les fichiers <code>.htaccess</code>, soit que
+    vous n'avez pas d&eacute;fini l'option <directive
+    module="core">AllowOverride</directive> &agrave; un niveau suffisant pour
+    la directive que vous avez utilis&eacute;e. Voir la documentation de la
+    directive concern&eacute;e pour r&eacute;soudre le probl&egrave;me.</p>
+
+    <p>Il se peut aussi que la d&eacute;finition de votre directive contienne
+    une erreur de syntaxe.</p>
+
+    <example>
+    [Sat Aug 09 16:22:34 2008] [alert] [client 192.168.200.51] /var/www/html/.htaccess: RewriteCond: bad flag delimiters
+    </example>
+
+    <p>Dans ce cas, le message d'erreur sera sp&eacute;cifique &agrave; l'erreur de
+    syntaxe que vous aurez introduite.</p>
 
 </section>
 
