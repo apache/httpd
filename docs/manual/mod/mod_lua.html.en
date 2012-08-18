@@ -1148,7 +1148,14 @@ LuaPackagePath /scripts/lib/?/init.lua
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
-</table><p>...</p>
+</table>
+    <p>
+    This phase is run immediately after the request has been mapped to a virtal host, 
+    and can be used to either do some request processing before the other phases kick 
+    in, or to serve a request without the need to translate, map to storage et cetera. 
+    As this phase is run before anything else, directives such as <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> or <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> are void in this phase, just as 
+    URIs have not been properly parsed yet.
+    </p>
    <div class="note"><h3>Context</h3><p>This directive is not valid in <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, or htaccess
    context.</p></div>
 

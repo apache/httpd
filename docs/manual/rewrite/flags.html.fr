@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/flags.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/flags.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Ce document décrit les drapeaux disponibles dans la directive
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>, en fournissant
@@ -542,6 +540,16 @@ local.</p>
       lesquelles votre serveur agira en tant que mandataire.
       Assurez-vous que la partie protocole://nom-serveur de l'URL soit
       fixe, ou ne permette pas au client de l'influencer induement.</p>
+</div>
+
+<div class="warning">
+      <h3>Avertissement au sujet des performances</h3>
+      <p>Utiliser ce drapeau fait intervenir <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> sans la gestion des connexions
+      persistantes, ce qui signifie que vous obtiendrez des performances meilleurs si vous utilisez
+      <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> ou <code class="directive"><a href="../mod/mod_proxy.html#proxypassmatch">ProxyPassMatch</a></code>.</p>
+      <p>Ceci est du au fait que ce drapeau induit l'utilisation du worker par défaut, qui
+      ne gère pas la mise en commun des connexions.</p>
+      <p>Partout où cela est possible, préférez l'utilisation de ces directives.</p>
 </div>
 
 <p>Note: <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> doit être activé pour pouvoir
