@@ -93,12 +93,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy_balancer: fix error message implying recovery during a markdown
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1299738
-     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1301194
-     2.2.x patch: http://people.apache.org/~rjung/patches/mod_proxy_balancer-fix-error-message-2_2.patch
-     +1: rjung, trawick, wrowe
-
    * core: (dummy_connection): Destroy tmp pool and return on connect() failure.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1300171
      2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1301649

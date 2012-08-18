@@ -617,8 +617,10 @@ static int proxy_balancer_post_request(proxy_worker *worker,
         for (i = 0; i < balancer->errstatuses->nelts; i++) {
             int val = ((int *)balancer->errstatuses->elts)[i];
             if (r->status == val) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
-                             "proxy: BALANCER: (%s).  Forcing recovery for worker (%s), failonstatus %d",
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                             "proxy: BALANCER: (%s).  Forcing worker (%s) into error state "
+                             "due to status code %d matching 'failonstatus' "
+                             "balancer parameter",
                              balancer->name, worker->name, val);
                 worker->s->status |= PROXY_WORKER_IN_ERROR;
                 worker->s->error_time = apr_time_now();
