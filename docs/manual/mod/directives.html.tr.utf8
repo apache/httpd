@@ -418,6 +418,7 @@
 <li><a href="mod_ssl.html#sslproxycheckpeerexpire">SSLProxyCheckPeerExpire</a></li>
 <li><a href="mod_ssl.html#sslproxyciphersuite">SSLProxyCipherSuite</a></li>
 <li><a href="mod_ssl.html#sslproxyengine">SSLProxyEngine</a></li>
+<li><a href="mod_ssl.html#sslproxymachinecertificatechainfile">SSLProxyMachineCertificateChainFile</a></li>
 <li><a href="mod_ssl.html#sslproxymachinecertificatefile">SSLProxyMachineCertificateFile</a></li>
 <li><a href="mod_ssl.html#sslproxymachinecertificatepath">SSLProxyMachineCertificatePath</a></li>
 <li><a href="mod_ssl.html#sslproxyprotocol">SSLProxyProtocol</a></li>

@@ -28,8 +28,6 @@
 <a href="../fr/mod/mod_proxy.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle HTTP/1.1</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_module</td></tr>
@@ -1295,6 +1293,19 @@ l'espace d'URLs du serveur local</td></tr>
 	est le même qu'avec les autres erreurs de worker.
 	Disponible à partir de la version 2.2.17 du serveur HTTP Apache.
     </td></tr>
+    <tr><td>forcerecovery</td>
+        <td>On</td>
+        <td>Force la récupération immédiate de tous les membres du
+	répartiteur sans tenir compte de leur paramètre de nouvel essai
+	si tous les membres du répartiteur sont dans un état d'erreur.
+	Dans certains cas cependant, un serveur d'arrière-plan déjà
+	surchargé peut voir ses problèmes s'aggraver si la récupération
+	de tous les membres du répartiteur est forcée sans tenir compte
+	de leur paramètre de nouvel essai. Dans ce cas, définissez ce
+	paramètre à <code>Off</code>. Disponible depuis la version
+	2.2.23 du serveur HTTP Apache.
+    </td></tr>
+     
     </table>
     <p>Exemple de configuration d'un répartiteur</p>
     <div class="example"><p><code>
