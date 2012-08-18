@@ -525,10 +525,10 @@ static const char *log_cookie(request_rec *r, char *a)
         while ((cookie = apr_strtok(cookies, ";", &last1))) {
             char *name = apr_strtok(cookie, "=", &last2);
             if (name) {
-                char *value;
+                char *value = name + strlen(name) + 1;
                 apr_collapse_spaces(name, name);
 
-                if (!strcasecmp(name, a) && (value = apr_strtok(NULL, "=", &last2))) {
+                if (!strcasecmp(name, a)) {
                     char *last;
                     value += strspn(value, " \t");  /* Move past leading WS */
                     last = value + strlen(value) - 1;
