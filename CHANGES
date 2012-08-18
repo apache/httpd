@@ -10,6 +10,9 @@ Changes with Apache 2.2.23
      possible XSS for a site where untrusted users can upload files to
      a location with MultiViews enabled. [Niels Heinen <heinenn google.com>]
 
+  *) Unix MPMs: Fix small memory leak in parent process if connect()
+     failed when waking up children.  [Joe Orton]
+
   *) mod_proxy_ajp: Add support for 'ProxyErrorOverride on'. PR 50945.
      [Peter Pramberger <peter pramberger.at>, Jim Jagielski]
 
