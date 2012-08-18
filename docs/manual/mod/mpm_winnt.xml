@@ -36,6 +36,8 @@ NT.</description>
     threads to handle requests</p>
 </summary>
 
+<seealso><a href="../platform/windows.html">Using Apache HTTP Server on Microsoft Windows</a></seealso>
+
 <directivesynopsis location="mpm_common"><name>CoreDumpDirectory</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>PidFile</name>
