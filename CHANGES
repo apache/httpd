@@ -10,6 +10,9 @@ Changes with Apache 2.2.23
      possible XSS for a site where untrusted users can upload files to
      a location with MultiViews enabled. [Niels Heinen <heinenn google.com>]
 
+  *) mod_log_config: Fix %{abc}C truncating cookie values at first "=".
+     PR 53104. [Greg Ames]
+
   *) Unix MPMs: Fix small memory leak in parent process if connect()
      failed when waking up children.  [Joe Orton]
 
