@@ -93,12 +93,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * core: (dummy_connection): Destroy tmp pool and return on connect() failure.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1300171
-     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1301649
-     2.2.x patch: http://people.apache.org/~rjung/patches/dummy_connection-destroy-pool-and-return-on-failure-2_2.patch
-     +1: rjung, trawick, wrowe
-
    * mod_log_config: %{abc}C truncates cookies whose values contain '='
      PR 53104
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1328133
