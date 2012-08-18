@@ -145,7 +145,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?view=revision&revision=1225476
       http://svn.apache.org/viewvc?view=revision&revision=1225792
     Backport version for 2.2.x of the patches above:
-      http://people.apache.org/~wrowe/tls11-12-patch-2.2-kbrand-wrowe.1.patch
+      http://people.apache.org/~wrowe/tls11-12-patch-2.2-kbrand-wrowe.2.patch
     +1: wrowe, 
     kbrand: The #define HAVE_TLSV1_X stuff should go to ssl_toolkit_compat.h,
               [wrowe] disagree, since that API was deprecated 
@@ -160,6 +160,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             to drop the #ifndef around SSL_PROTOCOL_SSLV2 in ssl_private.h,
             this should also make some of the other "#if[n]def OPENSSL_NO_SSL2"
             encapsulations unnecessary.
+              [wrowe] agreed the patch was wrong, the #ifdef needed to be moved
+                      up four lines.  Behavior is now correct in patch .2
+                      Diagree about retaining SSL_PROTOCOL_SSLV2; this is one
+                      of the most basic design patterns which exists to ensure
+                      that we don't have some lingering code which is still
+                      attempting to pursue SSLV2 games, not to mention that
+                      the various macros and functions in those blocks may
+                      simply disappear disappear inan OPENSSL_NO_SSL2 build.
+                      Bad idea, it helps us catch current and future problems.
     sf:
         - ssl_engine_init.c: misses two "ctx = SSL_CTX_new(method);" calls
           (or move the existing ones after the if blocks).
