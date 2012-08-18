@@ -28,8 +28,6 @@
 <a href="../fr/mod/mod_proxy.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle multi-protocole</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_module</td></tr>
@@ -813,24 +811,43 @@ incorrectes d'une réponse</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ProxyBlock" id="ProxyBlock">ProxyBlock</a> <a name="proxyblock" id="proxyblock">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Termes, serveurs ou domaines bloqués par le
-mandataire</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyBlock *|<var>terme</var>|<var>serveur</var>|<var>domaine</var>
-[<var>terme</var>|<var>serveur</var>|<var>domaine</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Interdit les requêtes mandatées vers certains hôtes</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyBlock *|<var>nom d'hôte</var>|<var>nom d'hôte partiel</var>
+[<var>nom d'hôte</var>|<var>nom d'hôte partiel</var>]...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
-    <p>La directive <code class="directive">ProxyBlock</code> permet de
-    spécifier une liste de termes, serveurs et/ou domaines, séparés par
-    des espaces. Les requêtes de documents HTTP, HTTPS, FTP vers des
-    sites dont les noms contiennent des termes, noms de serveur ou
-    domaine correspondants seront <em>bloqués</em> par le serveur
-    mandataire. La module proxy va aussi tenter de déterminer les
-    adresses IP des éléments de la liste qui peuvent correspondre à des
-    noms d'hôtes au cours du démarrage, et les mettra en cache à des
-    fins de comparaisons ultérieures. Ceci peut ralentir le démarrage du
-    serveur.</p>
+    <p>La directive <code class="directive">ProxyBlock</code> permet d'interdire
+    l'accès FTP ou HTTP via le mandataire à certains hôtes en fonction
+    d'une correspondance exacte ou partielle avec un nom d'hôte, ou dans
+    la mesure du possible en fonction d'une comparaison d'adresses IP.</p>
+
+    <p>Chaque paramètre de la directive
+    <code class="directive">ProxyBlock</code> accepte comme valeur soit
+    <code>*</code>, soit une chaîne alphanumérique. Au démarrage, le
+    module tente de résoudre toute chaîne alphanumérique depuis un nom
+    DNS vers un jeu d'adresses IP, mais toute erreur de DNS est ignorée.</p>
+
+    <p>Si un paramètre a pour valeur "<code>*</code>",
+    <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> interdira l'accès à tout site FTP ou
+    HTTP.</p>
+
+    <p>Dans le cas contraire, pour toute requête vers une ressource FTP
+    ou HTTP via le mandataire, <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> va comparer le
+    nom d'hôte de l'URI de la requête avec chaque chaîne alphanumérique
+    spécifiée. Si une chaîne correspond, même partiellement, l'accès est
+    refusé. Si aucune chaîne ne correspond, et si un mandataire distant
+    (forward) est configuré via la directive
+    <code class="directive">ProxyRemote</code> ou
+    <code class="directive">ProxyRemoteMatch</code>, l'accès est autorisé. Si
+    aucun mandataire distant (forward) n'est configuré, l'adresse IP
+    correspondant au nom d'hôte de l'URI est comparée à toutes les
+    adresses IP résolues au démarrage, et l'accès est refusé si une
+    correspondance est trouvée.</p>
+
+    <p>Notez que les recherches DNS peuvent ralentir le processus de
+    démarrage du serveur.</p>
 
     <div class="example"><h3>Exemple</h3><p><code>
       ProxyBlock news.example.com auctions.example.com friends.example.com
@@ -1114,9 +1131,10 @@ l'espace d'URLs du serveur local</td></tr>
     enfants, sauf si un seul processus enfant est autorisé par la
     configuration ou la conception du module multi-processus (MPM).</p>
 
-    <div class="example"><h3>Exemple</h3><p><code>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
         ProxyPass /example http://backend.example.com max=20 ttl=120 retry=300
-    </code></p></div>
+        </pre>
+</div>
 
     <table class="bordered"><tr><th>Paramètres de BalancerMember</th></tr></table>
     <table>
@@ -1621,13 +1639,14 @@ par un serveur mandaté en inverse</td></tr>
     inverse.</p>
 
     <p>Seuls les en-têtes de réponse HTTP spécialement mentionnés
-    ci-dessus seront réécrits. Apache httpd ne réécrira ni les autres en-têtes
-    de réponse, ni les références d'URLs dans les pages HTML. Cela
+    ci-dessus seront réécrits. Apache httpd ne
+réécrira pas les autres en-têtes
+    de réponse, ni par défaut les références d'URLs dans les pages HTML. Cela
     signifie que dans le cas où un contenu mandaté contient des
     références à des URLs absolues, elles court-circuiteront le
-    mandataire. Le module <a href="http://apache.webthing.com/mod_proxy_html/">mod_proxy_html</a>
-    de Nick Kew est un module tiers qui parcourt le code HTML et réécrit
-    les références d'URL.</p>
+    mandataire. Pour réécrire un contenu HTML afin qu'il puisse être
+traité par le mandataire, vous devez charger et activer le module
+<code class="module"><a href="../mod/mod_proxy_html.html">mod_proxy_html</a></code>.</p>
 
     <p><var>chemin</var> est le nom d'un chemin virtuel local.
     <var>url</var> est une URL partielle pour le serveur distant - ils
