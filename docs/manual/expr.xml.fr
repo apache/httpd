@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1334066:1362526 (outdated) -->
+<!-- English Revision : 1362526 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -521,7 +521,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 # N'autoriser l'acc&egrave;s &agrave; ce contenu que pendant les heures de
 # travail
 &lt;Directory "/foo/bar/business"&gt;
-    Require expr %{TIME_HOUR} &gt;= 9 &amp;&amp; %{TIME_HOUR} &lt;= 17 
+     Require expr %{TIME_HOUR} -gt 9 &amp;&amp; %{TIME_HOUR} -lt 17
 &lt;/Directory&gt;	
 	</highlight>
 </section>
