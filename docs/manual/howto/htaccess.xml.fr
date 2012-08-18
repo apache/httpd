@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1337880:1369729 (outdated) -->
+<!-- English Revision : 1369729 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -50,11 +50,11 @@ modifier la configuration du serveur au niveau de chaque r&eacute;pertoire.</p>
             <directive module="core">Options</directive>
             <directive module="mod_mime">AddHandler</directive>
             <directive module="core">SetHandler</directive>
-            <directive module="mod_authn_core">AuthType</directive>
-            <directive module="mod_authn_core">AuthName</directive>
+            <directive module="core">AuthType</directive>
+            <directive module="core">AuthName</directive>
             <directive module="mod_authn_file">AuthUserFile</directive>
             <directive module="mod_authz_groupfile">AuthGroupFile</directive>
-            <directive module="mod_authz_core">Require</directive>
+            <directive module="core">Require</directive>
         </directivelist>
 
     </related>
