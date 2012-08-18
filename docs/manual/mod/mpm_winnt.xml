@@ -34,8 +34,33 @@ NT.</description>
     Windows NT operating systems. It uses a single control process
     which launches a single child process which in turn creates
     threads to handle requests</p>
+
+    <p>Capacity is configured using the 
+    <directive module="mpm_common">ThreadsPerChild</directive> directive,
+    which sets the maximum number of concurrent client connections.</p>
+
+    <p>By default, this MPM uses advanced Windows APIs for accepting
+    new client connections.  In some configurations, third-party products
+    may interfere with this implementation, with the following messages
+    written to the web server log:</p>
+
+    <example>
+        Child: Encountered too many AcceptEx faults accepting client connections.<br />
+        winnt_mpm: falling back to 'AcceptFilter none'.
+    </example>
+
+    <p>The MPM falls back to a safer implementation, but some client requests
+    were not processed correctly.  In order to avoid this error, use
+    <directive module="core">AcceptFilter</directive> with accept filter 
+    <code>none</code>.  <em>In Apache httpd 2.0 and 2.2,
+    <directive>Win32DisableAcceptEx</directive> was used for this purpose.</em></p>
+
 </summary>
 
+<seealso><a href="../platform/windows.html">Using Apache HTTP Server on Microsoft Windows</a></seealso>
+
+<directivesynopsis location="core"><name>AcceptFilter</name>
+</directivesynopsis>
 <directivesynopsis location="mpm_common"><name>CoreDumpDirectory</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>PidFile</name>
