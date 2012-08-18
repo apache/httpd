@@ -205,7 +205,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1328345
      2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1331847
      2.2.x patch: trunk patch applies
-     +1: rjung
+     +1: rjung, trawick
 
    * mod_ssl: When receiving http on https, send the error response with http 1.0
      It is important that we send a proper error status, or search engines
