@@ -165,14 +165,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Backport version for 2.2.x of the patches above:
       http://people.apache.org/~wrowe/tls11-12-patch-2.2-kbrand-wrowe.1.patch
     +1: wrowe, 
-    kbrand: might want to add a reference to PR 53114 in CHANGES.
-              [wrowe] agreed, changed in patch .1
-            The #define HAVE_TLSV1_X stuff should go to ssl_toolkit_compat.h,
+    kbrand: The #define HAVE_TLSV1_X stuff should go to ssl_toolkit_compat.h,
               [wrowe] disagree, since that API was deprecated 
-            preferrably, and it would be good if mod_ssl.xml also includes
-            the change to the section about the SSLProtocol directive
-            (see r1222921).
-              [wrowe] missed that, thanks, changed in patch .1
+                kbrand: ok, won't insist on that, but as long as 2.2 still
+                        has ssl_toolkit_compat.h, I would prefer to see all
+                        OpenSSL version number checking etc. in a single place
+            patch .1 now has an issue with handling "SSLProtocol SSLv2"
+            or "SSLProtocol +SSLv2" (which are pretty nonsensical settings,
+            but nevertheless): ssl_cmd_protocol_parse will reject these
+            with "SSLv2 not supported by this version of OpenSSL", even
+            if OpenSSL hasn't been compiled with OPENSSL_NO_SSL2. I suggest
+            to drop the #ifndef around SSL_PROTOCOL_SSLV2 in ssl_private.h,
+            this should also make some of the other "#if[n]def OPENSSL_NO_SSL2"
+            encapsulations unnecessary.
     sf:
         - ssl_engine_init.c: misses two "ctx = SSL_CTX_new(method);" calls
           (or move the existing ones after the if blocks).
