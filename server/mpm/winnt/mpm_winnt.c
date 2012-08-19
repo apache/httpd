@@ -64,7 +64,7 @@
 extern apr_shm_t *ap_scoreboard_shm;
 
 /* my_generation is returned to the scoreboard code */
-static volatile ap_generation_t my_generation=0;
+volatile ap_generation_t my_generation=0;
 
 /* Definitions of WINNT MPM specific config globals */
 static HANDLE shutdown_event;  /* used to signal the parent to shutdown */

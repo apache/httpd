@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) WinNT MPM: Store pid and generation for each thread in scoreboard
+     to allow tracking of threads from exiting children via mod_status
+     or other such mechanisms.  [Jeff Trawick]
+
   *) Windows: Fix output of -M, -L, and similar command-line options
      which display information about the server configuration.
      [Jeff Trawick]
