@@ -136,10 +136,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
               caching of scripts
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1366890
                   http://svn.apache.org/viewvc?view=revision&revision=1367025
-                  http://svn.apache.org/viewvc?view=revision&revision=1367040 (*)
+                  http://svn.apache.org/viewvc?view=revision&revision=1367040
                   http://svn.apache.org/viewvc?view=revision&revision=1367048
                   http://svn.apache.org/viewvc?view=revision&revision=1367042 (CHANGES)
-     2.4.x patch: Trunk patch works (*provided the authz provider gets backported)
+     2.4.x patch: Trunk patch works
      +1: humbedooh, rjung
      rjung: docs missing?
      humbedooh: It's in the 2.4 docs already, but commented out, as with a lot 
