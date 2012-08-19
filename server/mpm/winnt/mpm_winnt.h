@@ -82,8 +82,6 @@ extern DWORD stack_res_flag;
 
 extern void clean_child_exit(int);
 
-void setup_signal_names(char *prefix);
-
 typedef enum {
     SIGNAL_PARENT_SHUTDOWN,
     SIGNAL_PARENT_RESTART,
