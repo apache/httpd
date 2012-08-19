@@ -1016,10 +1016,18 @@ void child_main(apr_pool_t *pconf)
     apr_thread_mutex_create(&child_lock, APR_THREAD_MUTEX_DEFAULT, pchild);
 
     while (1) {
+        int from_previous_generation = 0, starting_up = 0;
+
         for (i = 0; i < ap_threads_per_child; i++) {
             int *score_idx;
             int status = ap_scoreboard_image->servers[0][i].status;
             if (status != SERVER_GRACEFUL && status != SERVER_DEAD) {
+                if (ap_scoreboard_image->servers[0][i].generation != my_generation) {
+                    ++from_previous_generation;
+                }
+                else if (status == SERVER_STARTING) {
+                    ++starting_up;
+                }
                 continue;
             }
             ap_update_child_status_from_indexes(0, i, SERVER_STARTING, NULL);
@@ -1038,6 +1046,8 @@ void child_main(apr_pool_t *pconf)
                 ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
                 goto shutdown;
             }
+            ap_scoreboard_image->servers[0][i].pid = my_pid;
+            ap_scoreboard_image->servers[0][i].generation = my_generation;
             threads_created++;
             /* Save the score board index in ht keyed to the thread handle.
              * We need this when cleaning up threads down below...
@@ -1063,6 +1073,9 @@ void child_main(apr_pool_t *pconf)
         }
         /* wait for previous generation to clean up an entry in the scoreboard
          */
+        ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, ap_server_conf,
+                     "Child: %d threads starting up, %d remain from a prior generation",
+                     starting_up, from_previous_generation);
         apr_sleep(1 * APR_USEC_PER_SEC);
     }
 

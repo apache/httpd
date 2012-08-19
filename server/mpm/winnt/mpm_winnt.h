@@ -71,6 +71,7 @@ extern module AP_MODULE_DECLARE_DATA mpm_winnt_module;
 extern int ap_threads_per_child;
 
 extern DWORD my_pid;
+extern volatile ap_generation_t my_generation;
 extern apr_proc_mutex_t *start_mutex;
 extern HANDLE exit_event;
 
