@@ -146,29 +146,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?view=revision&revision=1225792
     Backport version for 2.2.x of the patches above:
       http://people.apache.org/~wrowe/tls11-12-patch-2.2-kbrand-wrowe.2.patch
-    +1: wrowe, sf
-    kbrand: The #define HAVE_TLSV1_X stuff should go to ssl_toolkit_compat.h,
-              [wrowe] disagree, since that API was deprecated 
-                kbrand: ok, won't insist on that, but as long as 2.2 still
-                        has ssl_toolkit_compat.h, I would prefer to see all
-                        OpenSSL version number checking etc. in a single place
-            patch .1 now has an issue with handling "SSLProtocol SSLv2"
-            or "SSLProtocol +SSLv2" (which are pretty nonsensical settings,
-            but nevertheless): ssl_cmd_protocol_parse will reject these
-            with "SSLv2 not supported by this version of OpenSSL", even
-            if OpenSSL hasn't been compiled with OPENSSL_NO_SSL2. I suggest
-            to drop the #ifndef around SSL_PROTOCOL_SSLV2 in ssl_private.h,
-            this should also make some of the other "#if[n]def OPENSSL_NO_SSL2"
-            encapsulations unnecessary.
-              [wrowe] agreed the patch was wrong, the #ifdef needed to be moved
-                      up four lines.  Behavior is now correct in patch .2
-                      Diagree about retaining SSL_PROTOCOL_SSLV2; this is one
-                      of the most basic design patterns which exists to ensure
-                      that we don't have some lingering code which is still
-                      attempting to pursue SSLV2 games, not to mention that
-                      the various macros and functions in those blocks may
-                      simply disappear disappear inan OPENSSL_NO_SSL2 build.
-                      Bad idea, it helps us catch current and future problems.
+    +1: wrowe, sf, kbrand
+    kbrand: explicitly including <openssl/opensslconf.h> in ssl_toolkit_compat.h
+            would make sense, since we're relying on OPENSSL_NO_SSL2 being
+            properly reported by OpenSSL (currently opensslconf.h is only
+            indirectly included, which seems somewhat brittle)
     sf: I would also have taken the approach suggested by kbrand,
         but I am OK with the approach from patch .2, too.
         Minor (CTR) issues:
