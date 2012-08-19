@@ -146,7 +146,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?view=revision&revision=1225792
     Backport version for 2.2.x of the patches above:
       http://people.apache.org/~wrowe/tls11-12-patch-2.2-kbrand-wrowe.2.patch
-    +1: wrowe, 
+    +1: wrowe, sf
     kbrand: The #define HAVE_TLSV1_X stuff should go to ssl_toolkit_compat.h,
               [wrowe] disagree, since that API was deprecated 
                 kbrand: ok, won't insist on that, but as long as 2.2 still
@@ -169,15 +169,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                       the various macros and functions in those blocks may
                       simply disappear disappear inan OPENSSL_NO_SSL2 build.
                       Bad idea, it helps us catch current and future problems.
-    sf:
-        - ssl_engine_init.c: misses two "ctx = SSL_CTX_new(method);" calls
-          (or move the existing ones after the if blocks).
-            [wrowe] nice catch, later option is simpler, changed in patch .1
-        - The handling of "SSLProtocol all -SSLv2" is broken,
-          resulting in a "No SSL protocols available" error.
-          This is due to the "thisopt = SSL_PROTOCOL_SSLV2" line being
-          removed in the OPENSSL_NO_TLSEXT case.
-            [wrowe] fixed in patch .1 to gracefully accept -SSLv2
+    sf: I would also have taken the approach suggested by kbrand,
+        but I am OK with the approach from patch .2, too.
+        Minor (CTR) issues:
+        - The "/* only SSLv2 is left */" comment is now obsolete.
+        - Needs CHANGES entry.
 
    * mod_ssl: Add RFC 5878 support. This allows support of mechanisms
               such as Certificate Transparency. Note that new
