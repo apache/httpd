@@ -27,6 +27,7 @@
 
 #include "apr_proc_mutex.h"
 #include "ap_listen.h"
+#include "scoreboard.h"
 
 /* From service.c: */
 
