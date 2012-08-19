@@ -798,7 +798,7 @@ apr_status_t winnt_insert_network_bucket(conn_rec *c,
  */
 static DWORD __stdcall worker_main(void *thread_num_val)
 {
-    apr_thread_t *thd = NULL;
+    apr_thread_t *thd;
     apr_os_thread_t osthd;
     static int requests_this_child = 0;
     winnt_conn_ctx_t *context = NULL;
@@ -810,7 +810,6 @@ static DWORD __stdcall worker_main(void *thread_num_val)
     apr_int32_t disconnected;
 
     osthd = apr_os_thread_current();
-    apr_os_thread_put(&thd, &osthd, pchild);
 
     while (1) {
 
@@ -848,6 +847,8 @@ static DWORD __stdcall worker_main(void *thread_num_val)
             continue;
         }
 
+        thd = NULL;
+        apr_os_thread_put(&thd, &osthd, context->ptrans);
         c->current_thread = thd;
 
         /* follow ap_process_connection(c, context->sock) logic
