@@ -95,9 +95,6 @@ int winnt_mpm_state = AP_MPMQ_STARTING;
  */
 apr_pool_t *pconf;
 
-/* definitions from child.c */
-void child_main(apr_pool_t *pconf);
-
 /* Only one of these, the pipe from our parent, meant only for
  * one child worker's consumption (not to be inherited!)
  * XXX: decorate this name for the trunk branch, was left simplified
@@ -189,10 +186,10 @@ static void winnt_note_child_killed(int slot)
  * signal_restart_name and signal_shutdown_name.
  */
 #define MAX_SIGNAL_NAME 30  /* Long enough for apPID_shutdown, where PID is an int */
-char signal_name_prefix[MAX_SIGNAL_NAME];
-char signal_restart_name[MAX_SIGNAL_NAME];
-char signal_shutdown_name[MAX_SIGNAL_NAME];
-void setup_signal_names(char *prefix)
+static char signal_name_prefix[MAX_SIGNAL_NAME];
+static char signal_restart_name[MAX_SIGNAL_NAME];
+static char signal_shutdown_name[MAX_SIGNAL_NAME];
+static void setup_signal_names(char *prefix)
 {
     apr_snprintf(signal_name_prefix, sizeof(signal_name_prefix), prefix);
     apr_snprintf(signal_shutdown_name, sizeof(signal_shutdown_name),
@@ -280,7 +277,7 @@ static void get_handles_from_parent(server_rec *s, HANDLE *child_exit_event,
     void *sb_shared;
     apr_status_t rv;
 
-    /* *** We now do this was back in winnt_rewrite_args
+    /* *** We now do this way back in winnt_rewrite_args
      * pipe = GetStdHandle(STD_INPUT_HANDLE);
      */
     if (!ReadFile(pipe, &ready_event, sizeof(HANDLE),
@@ -454,7 +451,7 @@ static void get_listeners_from_parent(server_rec *s)
     /* Open the pipe to the parent process to receive the inherited socket
      * data. The sockets have been set to listening in the parent process.
      *
-     * *** We now do this was back in winnt_rewrite_args
+     * *** We now do this way back in winnt_rewrite_args
      * pipe = GetStdHandle(STD_INPUT_HANDLE);
      */
     for (lr = ap_listeners; lr; lr = lr->next, ++lcnt) {
