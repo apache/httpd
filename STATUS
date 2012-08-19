@@ -146,7 +146,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?view=revision&revision=1225792
     Backport version for 2.2.x of the patches above:
       http://people.apache.org/~wrowe/tls11-12-patch-2.2-kbrand-wrowe.2.patch
-    +1: wrowe, sf, kbrand
+    +1: wrowe, sf, kbrand, rjung
     kbrand: explicitly including <openssl/opensslconf.h> in ssl_toolkit_compat.h
             would make sense, since we're relying on OPENSSL_NO_SSL2 being
             properly reported by OpenSSL (currently opensslconf.h is only
@@ -156,27 +156,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         Minor (CTR) issues:
         - The "/* only SSLv2 is left */" comment is now obsolete.
         - Needs CHANGES entry.
-    rjung: Doesn't the following block in modules/ssl/ssl_engine_init.c
-    switch SSLv2 *OFF*, but now only if Apache is compiled with SSLv2:
-        +#ifndef OPENSSL_NO_SSL2
-             if (!(protocol & SSL_PROTOCOL_SSLV2)) {
-                 SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2);
-             }
-        +#endif
-    But OpenSSL itself might well have SSLv2 support, so we should add
-    (taken from 2.4.x):
-        +#ifndef OPENSSL_NO_SSL2
-             if (!(protocol & SSL_PROTOCOL_SSLV2)) {
-                 SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2);
-             }
-        +#else
-             /* always disable SSLv2, as per RFC 6176 */
-             SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2);
-        +#endif
-    When testing your patch after compiling with OPENSSL_NO_SSL2 in fact
-    I can make a SSLv2 connect after setting the SSLProtocol and
-    SSLCipherSuite directives both to "All" resp. "ALL".
-    Apart from that the patch looks good (I would vote +1 with this fixed).
+    rjung: Voted on the basis, that OPENSSL_NO_SSL2 is not meant
+           to be set for the web server compile only but instead
+           would only be retrieved from OpenSSL. Otherwise
+           setting OPENSSL_NO_SSL2 only for the web server compile
+           does *not* disable SSLv2 (see r1374734).
 
    * mod_ssl: Add RFC 5878 support. This allows support of mechanisms
               such as Certificate Transparency. Note that new
