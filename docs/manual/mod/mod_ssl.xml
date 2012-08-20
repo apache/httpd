@@ -310,7 +310,7 @@ in the global server context because the PRNG is a global facility.</p>
 The following <em>source</em> variants are available:</p>
 <ul>
 <li><code>builtin</code>
-    <p> This is the always available builtin seeding source. It's usage
+    <p> This is the always available builtin seeding source. Its usage
     consumes minimum CPU cycles under runtime and hence can be always used
     without drawbacks. The source used for seeding the PRNG contains of the
     current time, the current process id and (when applicable) a randomly
@@ -345,9 +345,9 @@ The following <em>source</em> variants are available:</p>
     On some platforms like FreeBSD one can even control how the entropy is
     actually generated, i.e. by which system interrupts. More details one can
     find under <em>rndcontrol(8)</em> on those platforms. Alternatively, when
-    your system lacks such a random device, you can use tool
+    your system lacks such a random device, you can use a tool
     like <a href="http://www.lothar.com/tech/crypto/">EGD</a>
-    (Entropy Gathering Daemon) and run it's client program with the
+    (Entropy Gathering Daemon) and run its client program with the
     <code>exec:/path/to/program/</code> variant (see below) or use
     <code>egd:/path/to/egd-socket</code> (see below).</p></li>
 
@@ -550,7 +550,7 @@ The available (case-insensitive) <em>protocol</em>s are:</p>
 <li><code>SSLv2</code>
     <p>
     This is the Secure Sockets Layer (SSL) protocol, version 2.0. It is the
-    original SSL protocol as designed by Netscape Corporation.  Though it's
+    original SSL protocol as designed by Netscape Corporation.  Though its
     use has been deprecated, because of weaknesses in the security of the protocol.</p></li>
 
 <li><code>SSLv3</code>
