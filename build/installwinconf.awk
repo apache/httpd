@@ -225,7 +225,7 @@ BEGIN {
         print "Rewrote " srcfl "\n to " dstfl > tstfl;
         gsub(/\//, "\\", srcfl);
         if ( sourceroot != "docs/conf/" ) {
-          if (system("del \"" srcfl "\"")) {
+          if (system("del 2>NUL \"" srcfl "\"")) {
             print "Failed to remove " srcfl > tstfl;
           } else {
             print "Successfully removed " srcfl > tstfl;
@@ -260,7 +260,7 @@ BEGIN {
     if ( sourceroot != "docs/conf/" ) {
       srcfl = confdefault "installwinconf.awk";
       gsub(/\//, "\\", srcfl);
-      if (system("del \"" srcfl "\"")) {
+      if (system("del 2>NUL \"" srcfl "\"")) {
         print "Failed to remove " srcfl > tstfl;
       } else {
         print "Successfully removed " srcfl > tstfl;
