@@ -1280,8 +1280,11 @@ static const char *ssl_cmd_protocol_parse(cmd_parms *parms,
             if (action != '-') {
                 return "SSLv2 not supported by this version of OpenSSL";
             }
-#endif
+            /* Nothing to do, the flag is not present to be toggled */
+            continue;
+#else
             thisopt = SSL_PROTOCOL_SSLV2;
+#endif
         }
         else if (strcEQ(w, "SSLv3")) {
             thisopt = SSL_PROTOCOL_SSLV3;
@@ -1289,6 +1292,14 @@ static const char *ssl_cmd_protocol_parse(cmd_parms *parms,
         else if (strcEQ(w, "TLSv1")) {
             thisopt = SSL_PROTOCOL_TLSV1;
         }
+#ifdef HAVE_TLSV1_X
+        else if (strcEQ(w, "TLSv1.1")) {
+            thisopt = SSL_PROTOCOL_TLSV1_1;
+        }
+        else if (strcEQ(w, "TLSv1.2")) {
+            thisopt = SSL_PROTOCOL_TLSV1_2;
+        }
+#endif
         else if (strcEQ(w, "all")) {
             thisopt = SSL_PROTOCOL_ALL;
         }

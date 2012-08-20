@@ -59,6 +59,11 @@
 /** mod_ssl headers */
 #include "ssl_toolkit_compat.h"
 #include "ssl_expr.h"
+
+#ifdef SSL_OP_NO_TLSv1_2
+#define HAVE_TLSV1_X
+#endif
+
 #include "ssl_util_ssl.h"
 
 /** The #ifdef macros are only defined AFTER including the above
@@ -215,13 +220,22 @@ typedef int ssl_opt_t;
  * Define the SSL Protocol options
  */
 #define SSL_PROTOCOL_NONE  (0)
+#ifndef OPENSSL_NO_SSL2
 #define SSL_PROTOCOL_SSLV2 (1<<0)
+#endif
 #define SSL_PROTOCOL_SSLV3 (1<<1)
 #define SSL_PROTOCOL_TLSV1 (1<<2)
-#ifndef OPENSSL_NO_SSL2
-#define SSL_PROTOCOL_ALL   (SSL_PROTOCOL_SSLV2|SSL_PROTOCOL_SSLV3|SSL_PROTOCOL_TLSV1)
+#ifdef OPENSSL_NO_SSL2
+#define SSL_MOST_ALL SSL_PROTOCOL_SSLV3|SSL_PROTOCOL_TLSV1
 #else
-#define SSL_PROTOCOL_ALL   (SSL_PROTOCOL_SSLV3|SSL_PROTOCOL_TLSV1)
+#define SSL_MOST_ALL SSL_PROTOCOL_SSLV2|SSL_PROTOCOL_SSLV3|SSL_PROTOCOL_TLSV1
+#endif
+#ifdef HAVE_TLSV1_X
+#define SSL_PROTOCOL_TLSV1_1 (1<<3)
+#define SSL_PROTOCOL_TLSV1_2 (1<<4)
+#define SSL_PROTOCOL_ALL (SSL_MOST_ALL|SSL_PROTOCOL_TLSV1_1|SSL_PROTOCOL_TLSV1_2)
+#else
+#define SSL_PROTOCOL_ALL (SSL_MOST_ALL)
 #endif
 typedef int ssl_proto_t;
 
