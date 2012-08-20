@@ -5,7 +5,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Tutoriel Apache : fichiers .htaccess - Serveur Apache HTTP</title>
+<title>Tutoriel du serveur HTTP Apache : fichiers .htaccess - Serveur Apache HTTP</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -19,7 +19,7 @@
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.2</a> &gt; <a href="./">Recettes / Tutoriels</a></div><div id="page-content"><div id="preamble"><h1>Tutoriel Apache : fichiers .htaccess</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.2</a> &gt; <a href="./">Recettes / Tutoriels</a></div><div id="page-content"><div id="preamble"><h1>Tutoriel du serveur HTTP Apache : fichiers .htaccess</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/howto/htaccess.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/howto/htaccess.html" title="Français">&nbsp;fr&nbsp;</a> |
@@ -27,8 +27,6 @@
 <a href="../ko/howto/htaccess.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../pt-br/howto/htaccess.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Les fichiers <code>.htaccess</code> fournissent une méthode pour
 modifier la configuration du serveur au niveau de chaque répertoire.</p>
@@ -53,7 +51,7 @@ Includes - SSI)</a></li>
     <div class="note">Les fichiers <code>.htaccess</code> ne doivent être utilisés
     que si vous n'avez pas accès au fichier de configuration du serveur
     principal. L'utilisation des fichiers <code>.htaccess</code>
-    ralentit le fonctionnement de votre serveur Apache. Il est toujours
+    ralentit le fonctionnement de votre serveur http Apache. Il est toujours
     préférable de définir les directives que vous pouvez inclure dans un
     fichier <code>.htaccess</code> dans une section <code class="directive"><a href="../mod/core.html#directory">Directory</a></code>, car elles produiront le
     même effet avec de meilleures performances.</div>
@@ -125,13 +123,18 @@ Includes - SSI)</a></li>
 
     <p>En principe, vous ne devriez utiliser les fichiers
     <code>.htaccess</code> que si vous n'avez pas accès au fichier de
-    configuration du serveur principal. Par exemple, la fausse idée
+    configuration du serveur principal. Par exemple, la fausse idée 
     selon laquelle l'authentification de l'utilisateur devrait toujours
-    être faite dans les fichiers <code>.htaccess</code> est très
-    répandue. Ceci est tout simplement faux. Vous pouvez configurer
+    être faite dans les fichiers <code>.htaccess</code>, et ces
+    dernières années celle selon laquelle les directives de
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> doivent aussi être définies dans ces
+    même fichiers <code>.htaccess</code> sont très
+    répandues. Ceci est tout simplement faux. Vous pouvez configurer
     l'authentification des utilisateurs au niveau de la configuration du
     serveur principal, et c'est en fait cette méthode qui doit être
-    privilégiée.</p>
+    privilégiée. De même, les directives de
+    <code>mod_rewrite</code> fonctionnent de manière plus satisfaisante
+    à de nombreux égards dans la configuration du serveur principal.</p>
 
     <p>Les fichiers <code>.htaccess</code> ne devraient être utilisés
     que dans le cas où les fournisseurs de contenu ont besoin de
@@ -159,20 +162,20 @@ Includes - SSI)</a></li>
     <p>La première est liée aux performances. Lorsque la directive
     <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> est définie de
     façon à autoriser l'utilisation des fichiers <code>.htaccess</code>,
-    Apache va rechercher leur présence dans chaque répertoire. Ainsi,
+    httpd va rechercher leur présence dans chaque répertoire. Ainsi,
     permettre l'utilisation des fichiers <code>.htaccess</code> est déjà
     en soi une cause de dégradation des performances, que vous utilisiez
     effectivement ces fichiers ou non ! De plus, le fichier
     <code>.htaccess</code> est chargé en mémoire chaque fois qu'un
     document fait l'objet d'une requête.</p>
 
-    <p>Notez aussi qu'Apache doit rechercher les fichiers
+    <p>Notez aussi que httpd doit rechercher les fichiers
     <code>.htaccess</code> dans tous les répertoires de niveau
     supérieur, afin de rassembler toutes les directives qui s'appliquent
     au répertoire courant (Voir la section <a href="#how">comment sont
     appliquées les directives</a>). Ainsi, si un fichier fait l'objet
     d'une requête à partir d'un répertoire
-    <code>/www/htdocs/exemple</code>, Apache doit rechercher les
+    <code>/www/htdocs/exemple</code>, httpd doit rechercher les
     fichiers suivants :</p>
 
     <div class="example"><p><code>
@@ -189,6 +192,16 @@ Includes - SSI)</a></li>
     se produire que si les fichiers <code>.htaccess</code> ont été
     autorisés pour le répertoire <code>/</code>, ce qui est rarement le
     cas.</p>
+
+    <p>Pour ce qui est des directives <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> dans un contexte
+    <code>.htaccess</code>, les expressions rationnelles doivent être
+    recompilées à chaque requête pour le répertoire concerné, alors que
+    dans le contexte de la configuration du serveur principal, elles ne
+    sont compilées qu'une seule fois et mises en cache. De plus, les
+    règles en elles-mêmes sont plus complexes, et il faut tenir compte
+    des restrictions inhérentes à <code>mod_rewrite</code> dans le
+    contexte des répertoires. Voir le <a href="../rewrite/intro.html#htaccess">Guide de réécriture</a> pour
+    plus de détails à ce sujet.</p>
 
     <p>La seconde raison d'éviter l'utilisation des fichiers
     <code>.htaccess</code> est liée à la sécurité. Si vous permettez aux
@@ -214,9 +227,8 @@ Includes - SSI)</a></li>
     <code>/www/htdocs/exemple</code> :</p>
 
     <div class="example"><h3>Contenu du fichier .htaccess dans
-    <code>/www/htdocs/exemple</code></h3><p><code>
-    	AddType text/exemple .exm
-    </code></p></div>
+    <code>/www/htdocs/exemple</code></h3><pre class="prettyprint lang-config">AddType text/example .exm</pre>
+</div>
 
     <div class="example"><h3>Section de votre fichier
     <code>httpd.conf</code></h3><p><code>
@@ -421,16 +433,35 @@ Includes - SSI)</a></h2>
     <code>AllowOverride None</code> n'affecte pas le répertoire où se
     trouve votre fichier. Un bon test consiste à mettre des directives
     dont la syntaxe est erronée dans votre ficher <code>.htaccess</code>
-    et de redémarrer le serveur. Si aucune erreur n'est générée par le
+    et de recharger la page. Si aucune erreur n'est générée par le
     serveur, il est pratiquement certain qu'une directive
     <code>AllowOverride None</code> affecte votre répertoire.</p>
 
     <p>Par contre, si vous obtenez des erreurs de serveur lorsque vous
     tentez d'accéder à des documents, consultez votre journal des
-    erreurs d'Apache. Il vous indiquera probablement que la directive
+    erreurs de httpd. Il vous indiquera probablement que la directive
     utilisée dans votre fichier <code>.htaccess</code> n'est pas
-    permise. Il peut aussi vous indiquer une erreur de syntaxe qu'il
-    vous appartiendra de corriger.</p>
+    permise.</p>
+
+    <div class="example"><p><code>
+    [Fri Sep 17 18:43:16 2010] [alert] [client 192.168.200.51] /var/www/html/.htaccess: DirectoryIndex not allowed here
+    </code></p></div>
+
+    <p>Une ligne de ce style indique soit que vous avez utilisé une directive
+    jamais autorisée dans les fichiers <code>.htaccess</code>, soit que
+    vous n'avez pas défini l'option <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> à un niveau suffisant pour
+    la directive que vous avez utilisée. Voir la documentation de la
+    directive concernée pour résoudre le problème.</p>
+
+    <p>Il se peut aussi que la définition de votre directive contienne
+    une erreur de syntaxe.</p>
+
+    <div class="example"><p><code>
+    [Sat Aug 09 16:22:34 2008] [alert] [client 192.168.200.51] /var/www/html/.htaccess: RewriteCond: bad flag delimiters
+    </code></p></div>
+
+    <p>Dans ce cas, le message d'erreur sera spécifique à l'erreur de
+    syntaxe que vous aurez introduite.</p>
 
 </div></div>
 <div class="bottomlang">
