@@ -70,7 +70,7 @@ APR_DECLARE_OPTIONAL_FN(int, ssl_engine_disable, (conn_rec *));
  * pointing to null-terminated strings (such as "http/1.1" or "spdy/2") onto
  * the array and return OK, or do nothing and return DECLINED. */
 APR_DECLARE_EXTERNAL_HOOK(modssl, AP, int, npn_advertise_protos_hook,
-                          (conn_rec *connection, apr_array_header_t *protos));
+                          (conn_rec *connection, apr_array_header_t *protos))
 
 /** The npn_proto_negotiated optional hook allows other modules to discover the
  * name of the protocol that was chosen during the Next Protocol Negotiation
@@ -82,7 +82,7 @@ APR_DECLARE_EXTERNAL_HOOK(modssl, AP, int, npn_advertise_protos_hook,
  * remove filters) and return OK, or do nothing and return DECLINED. */
 APR_DECLARE_EXTERNAL_HOOK(modssl, AP, int, npn_proto_negotiated_hook,
                           (conn_rec *connection, const char *proto_name,
-                           apr_size_t proto_name_len));
+                           apr_size_t proto_name_len))
 
 #endif /* __MOD_SSL_H__ */
 /** @} */
