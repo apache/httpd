@@ -1402,12 +1402,12 @@ static int winnt_check_config(apr_pool_t *pconf, apr_pool_t *plog,
                               apr_pool_t *ptemp, server_rec* s)
 {
     int is_parent;
-    static int restart_num = 0;
     int startup = 0;
 
     /* We want this only in the parent and only the first time around */
     is_parent = (parent_pid == my_pid);
-    if (is_parent && restart_num++ == 0) {
+    if (is_parent &&
+        ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG) {
         startup = 1;
     }
 
@@ -1494,7 +1494,6 @@ static int winnt_check_config(apr_pool_t *pconf, apr_pool_t *plog,
 
 static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec* s)
 {
-    static int restart_num = 0;
     apr_status_t rv = 0;
 
     /* Handle the following SCM aspects in this phase:
@@ -1554,7 +1553,8 @@ static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
 
     if (parent_pid == my_pid)
     {
-        if (restart_num++ == 1)
+        if (ap_state_query(AP_SQ_MAIN_STATE) != AP_SQ_MS_CREATE_PRE_CONFIG
+            && ap_state_query(AP_SQ_CONFIG_GEN) == 1)
         {
             /* This code should be run once in the parent and not run
              * across a restart
