@@ -51,7 +51,7 @@ BEGIN {
     print " ServerName =    " servername >tstfl;
     print " ServerAdmin =   " serveradmin >tstfl;
     print " ServerPort =    " serverport >tstfl;
-    print " ServerSslPort = " serverport >tstfl;
+    print " ServerSslPort = " serversslport >tstfl;
     print " ServerRoot =    " serverroot >tstfl;
 
     filelist["httpd.conf"] = "httpd.conf.in";
