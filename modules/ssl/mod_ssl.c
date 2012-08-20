@@ -285,13 +285,13 @@ static const command_rec ssl_config_cmds[] = {
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(
     modssl, AP, int, npn_advertise_protos_hook,
     (conn_rec *connection, apr_array_header_t *protos),
-    (connection, protos), OK, DECLINED);
+    (connection, protos), OK, DECLINED)
 
 /* Implement 'modssl_run_npn_proto_negotiated_hook'. */
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(
     modssl, AP, int, npn_proto_negotiated_hook,
     (conn_rec *connection, const char *proto_name, apr_size_t proto_name_len),
-    (connection, proto_name, proto_name_len), OK, DECLINED);
+    (connection, proto_name, proto_name_len), OK, DECLINED)
 
 /*
  *  the various processing hooks
