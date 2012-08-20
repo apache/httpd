@@ -121,6 +121,7 @@ request-processing cycle.</em></p>
 <description>Trade off processing speed and efficiency vs security against
 malicious privileges-aware code.</description>
 <syntax>PrivilegesMode FAST|SECURE|SELECTIVE</syntax>
+<default>PrivilegesMode FAST</default>
 <contextlist>
 	<context>server config</context>
 	<context>virtual host</context>
