@@ -168,6 +168,7 @@
 
 #define OPTION_NONE                 1<<0
 #define OPTION_INHERIT              1<<1
+#define OPTION_ANYURI               1<<4
 
 #ifndef RAND_MAX
 #define RAND_MAX 32767
@@ -287,6 +288,8 @@ typedef struct {
     apr_array_header_t *rewriteconds; /* the RewriteCond entries (temp.)    */
     apr_array_header_t *rewriterules; /* the RewriteRule entries            */
     server_rec   *server;             /* the corresponding server indicator */
+    unsigned int state_set:1;
+    unsigned int options_set:1;
 } rewrite_server_conf;
 
 typedef struct {
@@ -296,6 +299,9 @@ typedef struct {
     apr_array_header_t *rewriterules; /* the RewriteRule entries           */
     char         *directory;          /* the directory where it applies    */
     const char   *baseurl;            /* the base-URL  where it applies    */
+    unsigned int state_set:1;
+    unsigned int options_set:1;
+    unsigned int baseurl_set:1;
 } rewrite_perdir_conf;
 
 /* the (per-child) cache structures.
@@ -2690,8 +2696,11 @@ static void *config_server_merge(apr_pool_t *p, void *basev, void *overridesv)
     base      = (rewrite_server_conf *)basev;
     overrides = (rewrite_server_conf *)overridesv;
 
-    a->state   = overrides->state;
-    a->options = overrides->options;
+    a->state = (overrides->state_set == 0) ? base->state : overrides->state;
+    a->state_set = overrides->state_set || base->state_set;
+    a->options = (overrides->options_set == 0) ? base->options : overrides->options;
+    a->options_set = overrides->options_set || base->options_set;
+
     a->server  = overrides->server;
 
     if (a->options & OPTION_INHERIT) {
@@ -2772,10 +2781,14 @@ static void *config_perdir_merge(apr_pool_t *p, void *basev, void *overridesv)
     base      = (rewrite_perdir_conf *)basev;
     overrides = (rewrite_perdir_conf *)overridesv;
 
-    a->state     = overrides->state;
-    a->options   = overrides->options;
-    a->directory = overrides->directory;
-    a->baseurl   = overrides->baseurl;
+    a->state = (overrides->state_set == 0) ? base->state : overrides->state;
+    a->state_set = overrides->state_set || base->state_set;
+    a->options = (overrides->options_set == 0) ? base->options : overrides->options;
+    a->options_set = overrides->options_set || base->options_set;
+    a->baseurl = (overrides->baseurl_set == 0) ? base->baseurl : overrides->baseurl;
+    a->baseurl_set = overrides->baseurl_set || base->baseurl_set;
+
+    a->directory  = overrides->directory;
 
     if (a->options & OPTION_INHERIT) {
         a->rewriteconds = apr_array_append(p, overrides->rewriteconds,
@@ -2799,11 +2812,17 @@ static const char *cmd_rewriteengine(cmd_parms *cmd,
 
     sconf = ap_get_module_config(cmd->server->module_config, &rewrite_module);
 
-    if (cmd->path == NULL) { /* is server command */
+    /* server command? set both global scope and base directory scope */
+    if (cmd->path == NULL) {
         sconf->state = (flag ? ENGINE_ENABLED : ENGINE_DISABLED);
+        sconf->state_set = 1;
+        dconf->state = sconf->state;
+        dconf->state_set = 1;
     }
-    else                   /* is per-directory command */ {
+    /* directory command? set directory scope only */
+    else {
         dconf->state = (flag ? ENGINE_ENABLED : ENGINE_DISABLED);
+        dconf->state_set = 1;
     }
 
     return NULL;
@@ -2828,24 +2847,33 @@ static const char *cmd_rewriteoptions(cmd_parms *cmd,
                          "LimitInternalRecursion directive and will be "
                          "ignored.");
         }
+        else if (!strcasecmp(w, "allowanyuri")) {
+            options |= OPTION_ANYURI;
+        }
         else {
             return apr_pstrcat(cmd->pool, "RewriteOptions: unknown option '",
                                w, "'", NULL);
         }
     }
 
-    /* put it into the appropriate config */
+    /* server command? set both global scope and base directory scope */
     if (cmd->path == NULL) { /* is server command */
-        rewrite_server_conf *conf =
+        rewrite_perdir_conf *dconf = in_dconf;
+        rewrite_server_conf *sconf =
             ap_get_module_config(cmd->server->module_config,
                                  &rewrite_module);
 
-        conf->options |= options;
+        sconf->options |= options;
+        sconf->options_set = 1;
+        dconf->options |= options;
+        dconf->options_set = 1;
     }
+    /* directory command? set directory scope only */
     else {                  /* is per-directory command */
-        rewrite_perdir_conf *conf = in_dconf;
+        rewrite_perdir_conf *dconf = in_dconf;
 
-        conf->options |= options;
+        dconf->options |= options;
+        dconf->options_set = 1;
     }
 
     return NULL;
@@ -3045,6 +3073,7 @@ static const char *cmd_rewritebase(cmd_parms *cmd, void *in_dconf,
     }
 
     dconf->baseurl = a1;
+    dconf->baseurl_set = 1;
 
     return NULL;
 }
@@ -4232,6 +4261,7 @@ static void init_child(apr_pool_t *p, server_rec *s)
  */
 static int hook_uri2file(request_rec *r)
 {
+    rewrite_perdir_conf *dconf;
     rewrite_server_conf *conf;
     const char *saved_rulestatus;
     const char *var;
@@ -4246,11 +4276,14 @@ static int hook_uri2file(request_rec *r)
      */
     conf = ap_get_module_config(r->server->module_config, &rewrite_module);
 
+    dconf = (rewrite_perdir_conf *)ap_get_module_config(r->per_dir_config,
+                                                        &rewrite_module);
+
     /*
      *  only do something under runtime if the engine is really enabled,
      *  else return immediately!
      */
-    if (conf->state == ENGINE_DISABLED) {
+    if (!dconf || dconf->state == ENGINE_DISABLED) {
         return DECLINED;
     }
 
@@ -4266,8 +4299,16 @@ static int hook_uri2file(request_rec *r)
         return DECLINED;
     }
 
-    if ((r->unparsed_uri[0] == '*' && r->unparsed_uri[1] == '\0')
-        || !r->uri || r->uri[0] != '/') {
+    /* Unless the anyuri option is set, ensure that the input to the
+     * first rule really is a URL-path, avoiding security issues with
+     * poorly configured rules.  See CVE-2011-3368, CVE-2011-4317. */
+    if ((dconf->options & OPTION_ANYURI) == 0
+        && ((r->unparsed_uri[0] == '*' && r->unparsed_uri[1] == '\0')
+            || !r->uri || r->uri[0] != '/')) {
+        rewritelog((r, 8, NULL, "Declining, request-URI '%s' is not a URL-path. "
+                    "Consult the manual entry for the RewriteOptions directive "
+                    "for options and caveats about matching other strings.",
+                    r->uri));
         return DECLINED;
     }
 
@@ -4560,7 +4601,7 @@ static int hook_fixup(request_rec *r)
      *  only do something under runtime if the engine is really enabled,
      *  for this directory, else return immediately!
      */
-    if (dconf->state == ENGINE_DISABLED) {
+    if (!dconf || dconf->state == ENGINE_DISABLED) {
         return DECLINED;
     }
 

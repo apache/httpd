@@ -93,21 +93,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_rewrite: add "AllowAnyURI" option.
-     Prerequisites:
-     - allow the user to configure which rules come first when RewriteRules
-       are merged with RewriteOptions Inherit. PR 39313
-     - change signed single-bit fields to unsigned
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1356115 and
-                  http://svn.apache.org/viewvc?view=revision&revision=1356813 and
-                  http://svn.apache.org/viewvc?view=revision&revision=1086662 and
-                  http://svn.apache.org/viewvc?view=revision&revision=1032431
-     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1359687 and
-                  http://svn.apache.org/viewvc?view=revision&revision=1086662 and
-                  http://svn.apache.org/viewvc?view=revision&revision=1032431
-     2.2.x patch: http://people.apache.org/~rjung/patches/mod_rewrite-directory_conf-allowanyuri-2_2.patch
-     +1: rjung, wrowe, trawick
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 

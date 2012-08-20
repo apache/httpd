@@ -31,6 +31,12 @@ Changes with Apache 2.2.23
   *) mpm_event, mpm_worker: Remain active amidst prevalent child process
      resource shortages.  [Jeff Trawick]
 
+  *) mod_rewrite: Add "AllowAnyURI" option. PR 52774. [Joe Orton]
+
+  *) mod_rewrite: Fix the RewriteEngine directive to work within a
+     location. Previously, once RewriteEngine was switched on globally,
+     it was impossible to switch off. [Graham Leggett]
+
   *) mod_proxy_balancer: Restore balancing after a failed worker has
      recovered when using lbmethod_bybusyness.  PR 48735.  [Jeff Trawick]
 
