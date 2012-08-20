@@ -223,8 +223,8 @@ BEGIN {
 
       if ( close(dstfl) >= 0 ) {
         print "Rewrote " srcfl "\n to " dstfl > tstfl;
-        gsub(/\//, "\\", srcfl);
         if ( sourceroot != "docs/conf/" ) {
+          gsub(/\//, "\\", srcfl);
           if (system("del 2>NUL \"" srcfl "\"")) {
             print "Failed to remove " srcfl > tstfl;
           } else {
