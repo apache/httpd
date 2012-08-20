@@ -84,7 +84,7 @@ static void *privileges_create_cfg(apr_pool_t *pool, server_rec *s)
     cfg->priv = priv_str_to_set("basic", ",", NULL);
     cfg->child_priv = priv_str_to_set("basic", ",", NULL);
 
-    /* By default, run in secure mode.
+    /* By default, run in secure vhost mode.
      * That means dropping basic privileges we don't usually need.
      */
     CR_CHECK(priv_delset(cfg->priv, PRIV_FILE_LINK_ANY));
