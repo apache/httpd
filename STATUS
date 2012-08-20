@@ -93,6 +93,31 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * mod_ssl: when compiled against OpenSSL 1.0.1 or later, allow explicit
+    control of TLSv1.1 and TLSv1.2 through the SSLProtocol directive,
+    adding TLSv1.1 and TLSv1.2 support by default given 'SSLProtocol All'.
+    [Kaspar Brand, William Rowe]
+      http://svn.apache.org/viewvc?view=revision&revision=1222921
+      http://svn.apache.org/viewvc?view=revision&revision=1222930
+      http://svn.apache.org/viewvc?view=revision&revision=1225476
+      http://svn.apache.org/viewvc?view=revision&revision=1225792
+    Backport version for 2.2.x of the patches above:
+      http://people.apache.org/~wrowe/tls11-12-patch-2.2-kbrand-wrowe.2.patch
+    +1: wrowe, sf, kbrand, rjung
+    kbrand: explicitly including <openssl/opensslconf.h> in ssl_toolkit_compat.h
+            would make sense, since we're relying on OPENSSL_NO_SSL2 being
+            properly reported by OpenSSL (currently opensslconf.h is only
+            indirectly included, which seems somewhat brittle)
+    sf: I would also have taken the approach suggested by kbrand,
+        but I am OK with the approach from patch .2, too.
+        Minor (CTR) issues:
+        - The "/* only SSLv2 is left */" comment is now obsolete.
+        - Needs CHANGES entry.
+    rjung: Voted on the basis, that OPENSSL_NO_SSL2 is not meant
+           to be set for the web server compile only but instead
+           would only be retrieved from OpenSSL. Otherwise
+           setting OPENSSL_NO_SSL2 only for the web server compile
+           does *not* disable SSLv2 (see r1374734).
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -135,32 +160,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Backport version for 2.2.x of patch:
       Trunk version of patch works
     +1: rpluem, rjung
-
-  * mod_ssl: when compiled against OpenSSL 1.0.1 or later, allow explicit
-    control of TLSv1.1 and TLSv1.2 through the SSLProtocol directive,
-    adding TLSv1.1 and TLSv1.2 support by default given 'SSLProtocol All'.
-    [Kaspar Brand, William Rowe]
-      http://svn.apache.org/viewvc?view=revision&revision=1222921
-      http://svn.apache.org/viewvc?view=revision&revision=1222930
-      http://svn.apache.org/viewvc?view=revision&revision=1225476
-      http://svn.apache.org/viewvc?view=revision&revision=1225792
-    Backport version for 2.2.x of the patches above:
-      http://people.apache.org/~wrowe/tls11-12-patch-2.2-kbrand-wrowe.2.patch
-    +1: wrowe, sf, kbrand, rjung
-    kbrand: explicitly including <openssl/opensslconf.h> in ssl_toolkit_compat.h
-            would make sense, since we're relying on OPENSSL_NO_SSL2 being
-            properly reported by OpenSSL (currently opensslconf.h is only
-            indirectly included, which seems somewhat brittle)
-    sf: I would also have taken the approach suggested by kbrand,
-        but I am OK with the approach from patch .2, too.
-        Minor (CTR) issues:
-        - The "/* only SSLv2 is left */" comment is now obsolete.
-        - Needs CHANGES entry.
-    rjung: Voted on the basis, that OPENSSL_NO_SSL2 is not meant
-           to be set for the web server compile only but instead
-           would only be retrieved from OpenSSL. Otherwise
-           setting OPENSSL_NO_SSL2 only for the web server compile
-           does *not* disable SSLv2 (see r1374734).
 
    * mod_ssl: Add RFC 5878 support. This allows support of mechanisms
               such as Certificate Transparency. Note that new
