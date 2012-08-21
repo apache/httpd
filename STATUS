@@ -93,6 +93,43 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * htdbm/htpasswd: fix handling of crypt() failures.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1346905
+     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1356887
+     2.2.x patch: http://people.apache.org/~rjung/patches/htdbm-htpasswd-handling_crypt_failure-2_2.patch
+     +1: rjung, trawick, wrowe
+
+   * include/util_ldap.h: Treat LDAP_UNAVAILABLE as a transient error
+     with non-MS LDAP SDKs; seen with OpenLDAP against Novell eDirectory.
+     Submitted by: Filip Valder <filip.valder vsb.cz> (via RH bugzilla)
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1348036
+     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1362056
+     2.2.x patch: http://people.apache.org/~rjung/patches/treat_ldap_unavailable_transient-2_2.patch
+     +1: rjung, fuankg, wrowe
+
+   * core: add filesystem paths to some common error messages.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1301504
+     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1302426
+     2.2.x patch: http://people.apache.org/~rjung/patches/improve-forbidden-error-message-2_2.patch
+     +1: rjung, trawick, wrowe
+
+   * core: Fix error handling in ap_scan_script_header_err_brigade() if there
+     is no EOS bucket in the brigade:
+     Also don't loop if there is a timeout when discarding the script output.
+     Thanks to Edgar Frank for the analysis.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1311174
+     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1331414
+     2.2.x patch: trunk patch applies
+     +1: rjung, trawick, wrowe
+
+   * core: Bail out *before* signalling the server if the config is bad.
+     (as per the claim in the docs!) Prevents "httpd -k restart" from
+     killing server in presence of config error.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1328345
+     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1331847
+     2.2.x patch: trunk patch applies
+     +1: rjung, trawick, wrowe
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -149,29 +186,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           any version. Also, if you read my note to dev@ you will see
           why it is not premature.
 
-   * core: add filesystem paths to some common error messages.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1301504
-     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1302426
-     2.2.x patch: http://people.apache.org/~rjung/patches/improve-forbidden-error-message-2_2.patch
-     +1: rjung, trawick
-
-   * core: Fix error handling in ap_scan_script_header_err_brigade() if there
-     is no EOS bucket in the brigade:
-     Also don't loop if there is a timeout when discarding the script output.
-     Thanks to Edgar Frank for the analysis.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1311174
-     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1331414
-     2.2.x patch: trunk patch applies
-     +1: rjung, trawick
-
-   * core: Bail out *before* signalling the server if the config is bad.
-     (as per the claim in the docs!) Prevents "httpd -k restart" from
-     killing server in presence of config error.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1328345
-     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1331847
-     2.2.x patch: trunk patch applies
-     +1: rjung, trawick
-
    * mod_ssl: When receiving http on https, send the error response with http 1.0
      It is important that we send a proper error status, or search engines
      may index the error message.
@@ -202,20 +216,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1356884
      2.2.x patch: http://people.apache.org/~rjung/patches/dummy_connection-https-tls-2_2.patch
      +1: rjung
-
-   * htdbm/htpasswd: fix handling of crypt() failures.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1346905
-     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1356887
-     2.2.x patch: http://people.apache.org/~rjung/patches/htdbm-htpasswd-handling_crypt_failure-2_2.patch
-     +1: rjung, trawick
-
-   * include/util_ldap.h: Treat LDAP_UNAVAILABLE as a transient error
-     with non-MS LDAP SDKs; seen with OpenLDAP against Novell eDirectory.
-     Submitted by: Filip Valder <filip.valder vsb.cz> (via RH bugzilla)
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1348036
-     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1362056
-     2.2.x patch: http://people.apache.org/~rjung/patches/treat_ldap_unavailable_transient-2_2.patch
-     +1: rjung, fuankg
 
 PATCHES/ISSUES THAT ARE STALLED
 
