@@ -113,15 +113,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~rjung/patches/improve-forbidden-error-message-2_2.patch
      +1: rjung, trawick, wrowe
 
-   * core: Fix error handling in ap_scan_script_header_err_brigade() if there
-     is no EOS bucket in the brigade:
-     Also don't loop if there is a timeout when discarding the script output.
-     Thanks to Edgar Frank for the analysis.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1311174
-     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1331414
-     2.2.x patch: trunk patch applies
-     +1: rjung, trawick, wrowe
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
