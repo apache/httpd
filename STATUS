@@ -93,11 +93,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * htdbm/htpasswd: fix handling of crypt() failures.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1346905
-     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1356887
-     2.2.x patch: http://people.apache.org/~rjung/patches/htdbm-htpasswd-handling_crypt_failure-2_2.patch
-     +1: rjung, trawick, wrowe
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

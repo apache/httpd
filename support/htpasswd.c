@@ -166,6 +166,9 @@ static int mkrecord(char *user, char *record, apr_size_t rlen, char *passwd,
     char pwv[MAX_STRING_LEN];
     char salt[9];
     apr_size_t bufsize;
+#if (!(defined(WIN32) || defined(NETWARE)))
+    char *cbuf;
+#endif
 
     if (passwd != NULL) {
         pw = passwd;
@@ -218,7 +221,16 @@ static int mkrecord(char *user, char *record, apr_size_t rlen, char *passwd,
         to64(&salt[0], rand(), 8);
         salt[8] = '\0';
 
-        apr_cpystrn(cpw, crypt(pw, salt), sizeof(cpw) - 1);
+        cbuf = crypt(pw, salt);
+        if (cbuf == NULL) {
+            char errbuf[128];
+
+            apr_snprintf(record, rlen-1, "crypt() failed: %s", 
+                         apr_strerror(errno, errbuf, sizeof errbuf));
+            return ERR_PWMISMATCH;
+        }
+
+        apr_cpystrn(cpw, cbuf, sizeof(cpw) - 1);
         if (strlen(pw) > 8) {
             char *truncpw = strdup(pw);
             truncpw[8] = '\0';

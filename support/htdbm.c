@@ -288,6 +288,9 @@ static apr_status_t htdbm_make(htdbm_t *htdbm)
 {
     char cpw[MAX_STRING_LEN];
     char salt[9];
+#if (!(defined(WIN32) || defined(NETWARE)))
+    char *cbuf;
+#endif
 
     switch (htdbm->alg) {
         case ALG_APSHA:
@@ -315,7 +318,15 @@ static apr_status_t htdbm_make(htdbm_t *htdbm)
             (void) srand((int) time((time_t *) NULL));
             to64(&salt[0], rand(), 8);
             salt[8] = '\0';
-            apr_cpystrn(cpw, (char *)crypt(htdbm->userpass, salt), sizeof(cpw) - 1);
+            cbuf = crypt(htdbm->userpass, salt);
+            if (cbuf == NULL) {
+                char errbuf[128];
+                
+                fprintf(stderr, "crypt() failed: %s\n", 
+                        apr_strerror(errno, errbuf, sizeof errbuf));
+                exit(ERR_PWMISMATCH);
+            }
+            apr_cpystrn(cpw, cbuf, sizeof(cpw) - 1);
             fprintf(stderr, "CRYPT is now deprecated, use MD5 instead!\n");
 #endif
         default:
