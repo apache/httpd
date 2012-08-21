@@ -254,7 +254,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
     rv = apr_sockaddr_info_get(&nexthop, connectname, APR_UNSPEC, 
                                connectport, 0, p);
     if (rv != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO()
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(02327)
                       "failed to resolve hostname '%s'", connectname);
         return ap_proxyerror(r, HTTP_BAD_GATEWAY,
                              apr_pstrcat(p, "DNS lookup failure for: ",
