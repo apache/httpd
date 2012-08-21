@@ -10,6 +10,9 @@ Changes with Apache 2.2.23
      possible XSS for a site where untrusted users can upload files to
      a location with MultiViews enabled. [Niels Heinen <heinenn google.com>]
 
+  *) core: Prevent "httpd -k restart" from killing server in presence of
+     config error. [Joe Orton]
+
   *) mod_ssl: when compiled against OpenSSL 1.0.1 or later, allow explicit
      control of TLSv1.1 and TLSv1.2 through the SSLProtocol directive,
      adding TLSv1.1 and TLSv1.2 support by default given 'SSLProtocol All'.

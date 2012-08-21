@@ -122,14 +122,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.2.x patch: trunk patch applies
      +1: rjung, trawick, wrowe
 
-   * core: Bail out *before* signalling the server if the config is bad.
-     (as per the claim in the docs!) Prevents "httpd -k restart" from
-     killing server in presence of config error.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1328345
-     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1331847
-     2.2.x patch: trunk patch applies
-     +1: rjung, trawick, wrowe
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
