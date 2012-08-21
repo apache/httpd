@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: Match wildcard SSL certificate names in proxy mode.  
+     PR 53006.  [Joe Orton]
+
   *) WinNT MPM: Store pid and generation for each thread in scoreboard
      to allow tracking of threads from exiting children via mod_status
      or other such mechanisms.  [Jeff Trawick]
