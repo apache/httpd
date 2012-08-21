@@ -1410,7 +1410,11 @@ static void ssl_init_proxy_certs(server_rec *s,
         return;
     }
 
-    /* Load all of the CA certs and construct a chain */
+    /* If SSLProxyMachineCertificateChainFile is configured, load all
+     * the CA certs and have OpenSSL attempt to construct a full chain
+     * from each configured end-entity cert up to a root.  This will
+     * allow selection of the correct cert given a list of root CA
+     * names in the certificate request from the server.  */
     pkp->ca_certs = (STACK_OF(X509) **) apr_pcalloc(p, ncerts * sizeof(sk));
     sctx = X509_STORE_CTX_new();
 
@@ -1421,8 +1425,6 @@ static void ssl_init_proxy_certs(server_rec *s,
         ssl_die(s);
     }
 
-    /* ### Why is all the following done?  Why is it necessary or
-     * useful for the server to try to verify its own client cert? */
     X509_STORE_load_locations(store, pkp->ca_cert_file, NULL);
 
     for (n = 0; n < ncerts; n++) {
