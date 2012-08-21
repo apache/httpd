@@ -99,14 +99,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~rjung/patches/htdbm-htpasswd-handling_crypt_failure-2_2.patch
      +1: rjung, trawick, wrowe
 
-   * include/util_ldap.h: Treat LDAP_UNAVAILABLE as a transient error
-     with non-MS LDAP SDKs; seen with OpenLDAP against Novell eDirectory.
-     Submitted by: Filip Valder <filip.valder vsb.cz> (via RH bugzilla)
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1348036
-     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1362056
-     2.2.x patch: http://people.apache.org/~rjung/patches/treat_ldap_unavailable_transient-2_2.patch
-     +1: rjung, fuankg, wrowe
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
