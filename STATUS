@@ -107,12 +107,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~rjung/patches/treat_ldap_unavailable_transient-2_2.patch
      +1: rjung, fuankg, wrowe
 
-   * core: add filesystem paths to some common error messages.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1301504
-     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1302426
-     2.2.x patch: http://people.apache.org/~rjung/patches/improve-forbidden-error-message-2_2.patch
-     +1: rjung, trawick, wrowe
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
