@@ -10,6 +10,9 @@ Changes with Apache 2.2.23
      possible XSS for a site where untrusted users can upload files to
      a location with MultiViews enabled. [Niels Heinen <heinenn google.com>]
 
+  *) htdbm, htpasswd: Don't crash if crypt() fails (e.g. with FIPS enabled). 
+     [Paul Wouters <pwouters redhat.com>, Joe Orton]
+
   *) mod_ldap: Treat the "server unavailable" condition as a transient
      error with all LDAP SDKs. [Filip Valder <filip.valder vsb.cz>]
 
