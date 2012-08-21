@@ -10,6 +10,9 @@ Changes with Apache 2.2.23
      possible XSS for a site where untrusted users can upload files to
      a location with MultiViews enabled. [Niels Heinen <heinenn google.com>]
 
+  *) core: Fix error handling in ap_scan_script_header_err_brigade() if there
+     is no EOS bucket in the brigade. PR 48272. [Stefan Fritsch]
+
   *) core: Prevent "httpd -k restart" from killing server in presence of
      config error. [Joe Orton]
 
