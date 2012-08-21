@@ -661,6 +661,11 @@ int main(int argc, const char * const argv[])
         }
     }
 
+    /* If our config failed, deal with that here. */
+    if (rv != OK) {
+        destroy_and_exit_process(process, 1);
+    }
+
     signal_server = APR_RETRIEVE_OPTIONAL_FN(ap_signal_server);
     if (signal_server) {
         int exit_status;
@@ -668,11 +673,6 @@ int main(int argc, const char * const argv[])
         if (signal_server(&exit_status, pconf) != 0) {
             destroy_and_exit_process(process, exit_status);
         }
-    }
-
-    /* If our config failed, deal with that here. */
-    if (rv != OK) {
-        destroy_and_exit_process(process, 1);
     }
 
     apr_pool_clear(plog);
