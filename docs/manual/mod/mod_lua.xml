@@ -521,6 +521,8 @@ r:parsebody([sizeLimit]) -- parse the request body as a POST and return  a lua t
 </usage>
 </directivesynopsis>
 
+<!--
+/* Not implemented in 2.4.x yet */
 <directivesynopsis>
 <name>LuaMapHandler</name>
 <description>Map a path to a lua handler</description>
@@ -554,6 +556,7 @@ r:parsebody([sizeLimit]) -- parse the request body as a POST and return  a lua t
         provided.</p>
 </usage>
 </directivesynopsis>
+-->
 
 <directivesynopsis>
 <name>LuaPackagePath</name>
