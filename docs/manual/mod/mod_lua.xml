@@ -631,9 +631,9 @@ end
         </highlight>
 
         <highlight language="lua">
-        r:parsebody([sizeLimit]) -- parse the request body as a POST and return  a lua table.
-                                 -- An optional number may be passed to specify the maximum number 
-                                 -- of bytes to parse. Default is 8192 bytes.
+r:parsebody([sizeLimit]) -- parse the request body as a POST and return a lua table.
+                         -- An optional number may be passed to specify the maximum number 
+                         -- of bytes to parse. Default is 8192 bytes.
         </highlight>
 
         <highlight language="lua">
@@ -1160,7 +1160,7 @@ hook function usually returns OK, DECLINED, or HTTP_FORBIDDEN.</p>
 </description>
 <syntax>LuaAuthzProvider provider_name /path/to/lua/script.lua function_name</syntax>
 <contextlist><context>server config</context> </contextlist>
-<compatibility>2.5.0 and later</compatibility>
+<compatibility>2.4.3 and later</compatibility>
 
 <usage>
 <p>After a lua function has been registered as authorization provider, it can be used
