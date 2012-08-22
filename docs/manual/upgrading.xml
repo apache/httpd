@@ -106,6 +106,15 @@
     which explains the new mechanisms for controlling the order in
     which the authorization directives are applied.</p>
 
+    <p>Directives that control how authorization modules respond when they don't match
+    the authenticated user have been removed: This includes 
+    AuthzLDAPAuthoritative, AuthzDBDAuthoritative, AuthzDBMAuthoritative, 
+    AuthzGroupFileAuthoritative, AuthzUserAuthoritative,
+    and AuthzOwnerAuthoritative.   These directives have been replaced by the
+    more expressive <directive module="mod_authz_core">RequireAny</directive>, 
+    <directive module="mod_authz_core">RequireNone</directive>, and
+    <directive module="mod_authz_core">RequireAall</directive>.</p>
+
     <section id="access">
       <title>Access control</title>
 
