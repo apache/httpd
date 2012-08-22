@@ -456,9 +456,9 @@ end
         </pre>
 
         <pre class="prettyprint lang-lua">
-        r:parsebody([sizeLimit]) -- parse the request body as a POST and return  a lua table.
-                                 -- An optional number may be passed to specify the maximum number 
-                                 -- of bytes to parse. Default is 8192 bytes.
+r:parsebody([sizeLimit]) -- parse the request body as a POST and return  a lua table.
+                         -- An optional number may be passed to specify the maximum number 
+                         -- of bytes to parse. Default is 8192 bytes.
         </pre>
 
         <pre class="prettyprint lang-lua">
@@ -522,7 +522,7 @@ end
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.5.0 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.4.3 and later</td></tr>
 </table>
 <p>After a lua function has been registered as authorization provider, it can be used
 with the <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directive:</p>
