@@ -631,7 +631,9 @@ end
         </highlight>
 
         <highlight language="lua">
-        r:parsebody() -- parse any POST data in the request and return it as a Lua table
+        r:parsebody([sizeLimit]) -- parse the request body as a POST and return  a lua table.
+                                 -- An optional number may be passed to specify the maximum number 
+                                 -- of bytes to parse. Default is 8192 bytes.
         </highlight>
 
         <highlight language="lua">
