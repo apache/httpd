@@ -160,6 +160,7 @@ non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Trade off processing speed and efficiency vs security against
 malicious privileges-aware code.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PrivilegesMode FAST|SECURE|SELECTIVE</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>PrivilegesMode FAST</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_privileges</td></tr>
