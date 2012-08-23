@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Apply length limit when logging Status header values.
+     [Jeff Trawick, Chris Darroch]
+
   *) mod_ssl: Match wildcard SSL certificate names in proxy mode.  
      PR 53006.  [Joe Orton]
 
