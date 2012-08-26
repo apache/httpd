@@ -102,6 +102,8 @@ static const char *scope_to_string(unsigned int scope)
 #if APR_HAS_THREADS
     case AP_LUA_SCOPE_THREAD:
         return "thread";
+    case AP_LUA_SCOPE_SERVER:
+        return "server";
 #endif
     default:
         ap_assert(0);
