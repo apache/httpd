@@ -1186,4 +1186,159 @@ end
 </directivesynopsis>
 
 
+<directivesynopsis>
+<name>LuaInputFilter</name>
+<description>Provide a Lua function for content input filtering</description>
+<syntax>LuaInputFilter filter_name /path/to/lua/script.lua function_name</syntax>
+<contextlist><context>server config</context> </contextlist>
+<compatibility>2.5.0 and later</compatibility>
+
+<usage>
+<p>Provides a means of adding a Lua function as an input filter. 
+As with output filters, input filters work as coroutines, 
+first yielding before buffers are sent, then yielding whenever 
+a bucket needs to be passed down the chain, and finally (optionally) 
+yielding anything that needs to be appended to the input data. The 
+global variable <code>bucket</code> holds the buckets as they are passed 
+onto the Lua script:
+</p>
+
+<highlight language="config">
+LuaInputFilter myInputFilter /www/filter.lua input_filter
+&lt;FilesMatch "\.lua&gt;
+  SetInputFilter myInputFilter
+&lt;/FilesMatch&gt;
+</highlight>
+<highlight language="lua">
+--[[
+    Example input filter that converts all POST data to uppercase.
+]]--
+function input_filter(r)
+    print("luaInputFilter called") -- debug print
+    coroutine.yield() -- Yield and wait for buckets
+    while bucket do -- For each bucket, do...
+        local output = string.upper(bucket) -- Convert all POST data to uppercase
+        coroutine.yield(output) -- Send converted data down the chain
+    end
+    -- No more buckets available.
+    coroutine.yield("&amp;filterSignature=1234") -- Append signature at the end
+end
+</highlight>
+<p>
+The input filter supports denying/skipping a filter if it is deemed unwanted:
+</p>
+<highlight language="lua">
+function input_filter(r)
+    if not good then
+        return -- Simply deny filtering, passing on the original content instead
+    end
+    coroutine.yield() -- wait for buckets
+    ... -- insert filter stuff here
+end
+</highlight>
+<p>
+See "<a href="#modifying_buckets">Modifying contents with Lua 
+filters</a>" for more information.
+</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LuaOutputFilter</name>
+<description>Provide a Lua function for content output filtering</description>
+<syntax>LuaOutputFilter filter_name /path/to/lua/script.lua function_name</syntax>
+<contextlist><context>server config</context> </contextlist>
+<compatibility>2.5.0 and later</compatibility>
+
+<usage>
+<p>Provides a means of adding a Lua function as an output filter. 
+As with input filters, output filters work as coroutines, 
+first yielding before buffers are sent, then yielding whenever 
+a bucket needs to be passed down the chain, and finally (optionally) 
+yielding anything that needs to be appended to the input data. The 
+global variable <code>bucket</code> holds the buckets as they are passed 
+onto the Lua script:
+</p>
+
+<highlight language="config">
+LuaOutputFilter myOutputFilter /www/filter.lua output_filter
+&lt;FilesMatch "\.lua&gt;
+  SetOutputFilter myOutputFilter
+&lt;/FilesMatch&gt;
+</highlight>
+<highlight language="lua">
+--[[
+    Example output filter that escapes all HTML entities in the output
+]]--
+function output_filter(r)
+    coroutine.yield("(Handled by myOutputFilter)&lt;br/&gt;\n") -- Prepend some data to the output,
+                                                          -- yield and wait for buckets.
+    while bucket do -- For each bucket, do...
+        local output = r:escape_html(bucket) -- Escape all output
+        coroutine.yield(output) -- Send converted data down the chain
+    end
+    -- No more buckets available.
+end
+</highlight>
+<p>
+As with the input filter, the output filter supports denying/skipping a filter 
+if it is deemed unwanted:
+</p>
+<highlight language="lua">
+function output_filter(r)
+    if not r.content_type:match("text/html") then
+        return -- Simply deny filtering, passing on the original content instead
+    end
+    coroutine.yield() -- wait for buckets
+    ... -- insert filter stuff here
+end
+</highlight>
+<p>
+See "<a href="#modifying_buckets">Modifying contents with Lua filters</a>" for more 
+information.
+</p>
+</usage>
+</directivesynopsis>
+
+<section id="modifying_buckets">
+    <title>Modifying contents with Lua filters</title>
+    <p>
+    Filter functions implemented via <directive module="mod_lua">LuaInputFilter</directive> 
+    or <directive module="mod_lua">LuaOutputFilter</directive> are designed as 
+    three-stage non-blocking functions using coroutines to suspend and resume a 
+    function as buckets are sent down the filter chain. The core structure of 
+    such a function is:
+    </p>
+    <highlight language="lua">
+function filter(r)
+    -- Our first yield is to signal that we are ready to receive buckets.
+    -- Before this yield, we can set up our environment, check for conditions,
+    -- and, if we deem it necessary, decline filtering a request alltogether:
+    if something_bad then
+        return -- This would skip this filter.
+    end
+    -- Regardless of whether we have data to prepend, a yield MUST be called here.
+    -- Note that only output filters can prepend data. Input filters must use the 
+    -- final stage to append data to the content.
+    coroutine.yield([optional header to be prepended to the content])
+    
+    -- After we have yielded, buckets will be sent to us, one by one, and we can 
+    -- do whatever we want with them and then pass on the result.
+    -- Buckets are stored in the global variable 'bucket', so we create a loop
+    -- that checks if 'bucket' is not nil:
+    while bucket ~= nil do
+        local output = mangle(bucket) -- Do some stuff to the content
+        coroutine.yield(output) -- Return our new content to the filter chain
+    end
+
+    -- Once the buckets are gone, 'bucket' is set to nil, which will exit the 
+    -- loop and land us here. Anything extra we want to append to the content
+    -- can be done by doing a final yield here. Both input and output filters 
+    -- can append data to the content in this phase.
+    coroutine.yield([optional footer to be appended to the content])
+end
+    </highlight>
+</section>
+
+
 </modulesynopsis>

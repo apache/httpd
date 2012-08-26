@@ -55,6 +55,14 @@ typedef struct {
 
 apr_hash_t *lua_authz_providers;
 
+typedef struct
+{
+    apr_bucket_brigade *tmpBucket;
+    lua_State *L;
+    ap_lua_vm_spec *spec;
+    int broken;
+} lua_filter_ctx;
+
 
 /**
  * error reporting if lua has an error.
@@ -289,6 +297,281 @@ static int lua_handler(request_rec *r)
     return rc;
 }
 
+
+/* ------------------- Input/output content filters ------------------- */
+
+
+static apr_status_t lua_setup_filter_ctx(ap_filter_t* f, request_rec* r, lua_filter_ctx** c) {
+    apr_pool_t *pool;
+    ap_lua_vm_spec *spec;
+    int n, rc;
+    lua_State *L;
+    lua_filter_ctx *ctx;    
+    ap_lua_server_cfg *server_cfg = ap_get_module_config(r->server->module_config,
+                                                        &lua_module);
+    const ap_lua_dir_cfg *cfg = ap_get_module_config(r->per_dir_config,
+                                                    &lua_module);
+    
+    ctx = apr_pcalloc(r->pool, sizeof(lua_filter_ctx));
+    ctx->broken = 0;
+    *c = ctx;
+    /* Find the filter that was called */
+    for (n = 0; n < cfg->mapped_filters->nelts; n++) {
+        ap_lua_filter_handler_spec *hook_spec =
+            ((ap_lua_filter_handler_spec **) cfg->mapped_filters->elts)[n];
+
+        if (hook_spec == NULL) {
+            continue;
+        }
+        if (!strcasecmp(hook_spec->filter_name, f->frec->name)) {
+            spec = create_vm_spec(&pool, r, cfg, server_cfg,
+                                    hook_spec->file_name,
+                                    NULL,
+                                    0,
+                                    hook_spec->function_name,
+                                    "filter");
+            L = ap_lua_get_lua_state(pool, spec, r);
+            if (L) {
+                L = lua_newthread(L);
+            }
+
+            if (!L) {
+                ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(01477)
+                                "lua: Failed to obtain lua interpreter for %s %s",
+                                hook_spec->function_name, hook_spec->file_name);
+                ap_lua_release_state(L, spec, r);
+                return APR_EGENERAL;
+            }
+            if (hook_spec->function_name != NULL) {
+                lua_getglobal(L, hook_spec->function_name);
+                if (!lua_isfunction(L, -1)) {
+                    ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(01478)
+                                    "lua: Unable to find function %s in %s",
+                                    hook_spec->function_name,
+                                    hook_spec->file_name);
+                    ap_lua_release_state(L, spec, r);
+                    return APR_EGENERAL;
+                }
+
+                ap_lua_run_lua_request(L, r);
+            }
+            else {
+                int t;
+                ap_lua_run_lua_request(L, r);
+
+                t = lua_gettop(L);
+                lua_setglobal(L, "r");
+                lua_settop(L, t);
+            }
+            ctx->L = L;
+            ctx->spec = spec;
+            
+            /* If a Lua filter is interested in filtering a request, it must first do a yield, 
+             * otherwise we'll assume that it's not interested and pretend we didn't find it.
+             */
+            rc = lua_resume(L, 1);
+            if (rc == LUA_YIELD) {
+                return OK;
+            }
+            else {
+                ap_lua_release_state(L, spec, r);
+                return APR_ENOENT;
+            }
+        }
+    }
+    return APR_ENOENT;
+}
+
+static apr_status_t lua_output_filter_handle(ap_filter_t *f, apr_bucket_brigade *pbbIn) {
+    apr_bucket *e;
+    request_rec *r = f->r;
+    int rc;
+    lua_State *L;
+    lua_filter_ctx* ctx;
+    conn_rec *c = r->connection;
+    apr_bucket *pbktIn;
+    apr_bucket_brigade *pbbOut = NULL;
+    
+    /* Set up the initial filter context and acquire the function.
+     * The corresponding Lua function should yield here.
+     */
+    if (!f->ctx) {
+        rc = lua_setup_filter_ctx(f,r,&ctx);
+        if (rc == APR_EGENERAL) {
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
+        if (rc == APR_ENOENT) {
+            /* No filter entry found (or the script declined to filter), just pass on the buckets */
+            return ap_pass_brigade(f->next,pbbIn);
+        }
+        f->ctx = ctx;
+    }
+    ctx = (lua_filter_ctx*) f->ctx;
+    L = ctx->L;
+    /* While the Lua function is still yielding, pass in buckets to the coroutine */
+    if (!ctx->broken) {
+        pbbOut=apr_brigade_create(r->pool, c->bucket_alloc);
+        for (pbktIn = APR_BRIGADE_FIRST(pbbIn);
+            pbktIn != APR_BRIGADE_SENTINEL(pbbIn);
+            pbktIn = APR_BUCKET_NEXT(pbktIn))
+            {
+            const char *data;
+            apr_size_t len;
+            apr_bucket *pbktOut;
+
+            /* read the bucket */
+            apr_bucket_read(pbktIn,&data,&len,APR_BLOCK_READ);
+
+            /* Push the bucket onto the Lua stack as a global var */
+            lua_pushlstring(L, data, len);
+            lua_setglobal(L, "bucket");
+            
+            /* If Lua yielded, it means we have something to pass on */
+            if (lua_resume(L, 0) == LUA_YIELD) {
+                size_t olen;
+                const char* output = lua_tolstring(L, 1, &olen);
+                pbktOut = apr_bucket_heap_create(output, olen, NULL,
+                                        c->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(pbbOut,pbktOut);
+            }
+            else {
+                ctx->broken = 1;
+                ap_lua_release_state(L, ctx->spec, r);
+                return HTTP_INTERNAL_SERVER_ERROR;
+            }
+        }
+        /* If we've safely reached the end, do a final call to Lua to allow for any 
+        finishing moves by the script, such as appending a tail. */
+        if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(pbbIn))) {
+            apr_bucket *pbktEOS;
+            lua_pushnil(L);
+            lua_setglobal(L, "bucket");
+            if (lua_resume(L, 0) == LUA_YIELD) {
+                apr_bucket *pbktOut;
+                size_t olen;
+                const char* output = lua_tolstring(L, 1, &olen);
+                pbktOut = apr_bucket_heap_create(output, olen, NULL,
+                                        c->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(pbbOut,pbktOut);
+            }
+            pbktEOS=apr_bucket_eos_create(c->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(pbbOut,pbktEOS);
+            ap_lua_release_state(L, ctx->spec, r);
+        }
+    }
+    /* Clean up and pass on the brigade to the next filter in the chain */
+    apr_brigade_cleanup(pbbIn);
+    if (pbbOut) {
+        return ap_pass_brigade(f->next,pbbOut);
+    }
+    else {
+        return ap_pass_brigade(f->next,pbbIn);
+    }
+}
+
+
+
+static apr_status_t lua_input_filter_handle(ap_filter_t *f,
+                                       apr_bucket_brigade *pbbOut,
+                                       ap_input_mode_t eMode,
+                                       apr_read_type_e eBlock,
+                                       apr_off_t nBytes) 
+{
+    request_rec *r = f->r;
+    int rc, lastCall = 0;
+    lua_State *L;
+    lua_filter_ctx* ctx;
+    conn_rec *c = r->connection;
+    apr_status_t ret;
+    
+    /* Set up the initial filter context and acquire the function.
+     * The corresponding Lua function should yield here.
+     */
+    if (!f->ctx) {
+        rc = lua_setup_filter_ctx(f,r,&ctx);
+        f->ctx = ctx;
+        ctx->tmpBucket = apr_brigade_create(r->pool, c->bucket_alloc);
+        if (rc == APR_EGENERAL) {
+            ctx->broken = 1;
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
+        if (rc == APR_ENOENT ) {
+            ctx->broken = 1;
+        }
+    }
+    ctx = (lua_filter_ctx*) f->ctx;
+    L = ctx->L;
+    /* If the Lua script broke or denied serving the request, just pass the buckets through */
+    if (ctx->broken) {
+        return ap_get_brigade(f->next, pbbOut, eMode, eBlock, nBytes);
+    }
+    
+    if (APR_BRIGADE_EMPTY(ctx->tmpBucket)) {
+        ret = ap_get_brigade(f->next, ctx->tmpBucket, eMode, eBlock, nBytes);
+
+        if (eMode == AP_MODE_EATCRLF || ret != APR_SUCCESS)
+            return ret;
+    }
+    
+    /* While the Lua function is still yielding, pass buckets to the coroutine */
+    if (!ctx->broken) {
+        lastCall = 0;
+        while(!APR_BRIGADE_EMPTY(ctx->tmpBucket)) {
+            apr_bucket *pbktIn = APR_BRIGADE_FIRST(ctx->tmpBucket);
+            apr_bucket *pbktOut;
+            const char *data;
+            apr_size_t len;
+            
+            if(APR_BUCKET_IS_EOS(pbktIn)) {
+                APR_BUCKET_REMOVE(pbktIn);
+                break;
+            }
+
+            /* read the bucket */
+            ret=apr_bucket_read(pbktIn, &data, &len, eBlock);
+            if(ret != APR_SUCCESS) {
+                return ret;
+            }
+
+            /* Push the bucket onto the Lua stack as a global var */
+            lastCall++;
+            lua_pushlstring(L, data, len);
+            lua_setglobal(L, "bucket");
+            
+            /* If Lua yielded, it means we have something to pass on */
+            if (lua_resume(L, 0) == LUA_YIELD) {
+                size_t olen;
+                const char* output = lua_tolstring(L, 1, &olen);
+                pbktOut = apr_bucket_heap_create(output, olen, 0, c->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(pbbOut, pbktOut);
+                apr_bucket_delete(pbktIn);
+            }
+            else {
+                ctx->broken = 1;
+                ap_lua_release_state(L, ctx->spec, r);
+                return HTTP_INTERNAL_SERVER_ERROR;
+            }
+        }
+        /* If we've safely reached the end, do a final call to Lua to allow for any 
+        finishing moves by the script, such as appending a tail. */
+        if (lastCall == 0) {
+            apr_bucket *pbktEOS = apr_bucket_eos_create(c->bucket_alloc);
+            lua_pushnil(L);
+            lua_setglobal(L, "bucket");
+            if (lua_resume(L, 0) == LUA_YIELD) {
+                apr_bucket *pbktOut;
+                size_t olen;
+                const char* output = lua_tolstring(L, 1, &olen);
+                pbktOut = apr_bucket_heap_create(output, olen, 0, c->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(pbbOut, pbktOut);
+            }
+            APR_BRIGADE_INSERT_TAIL(pbbOut,pbktEOS);
+            ap_lua_release_state(L, ctx->spec, r);
+        }
+    }
+    /* Clean up and pass on the brigade to the next filter in the chain */
+    return APR_SUCCESS;
+}
 
 
 /* ---------------- Configury stuff --------------- */
@@ -753,6 +1036,33 @@ static const char *register_mapped_file_function_hook(const char *pattern,
     *(ap_lua_mapped_handler_spec **) apr_array_push(cfg->mapped_handlers) = spec;
     return NULL;
 }
+static const char *register_filter_function_hook(const char *filter,
+                                                     cmd_parms *cmd,
+                                                     void *_cfg,
+                                                     const char *file,
+                                                     const char *function,
+                                                     int direction)
+{
+    ap_lua_filter_handler_spec *spec;
+    ap_lua_dir_cfg *cfg = (ap_lua_dir_cfg *) _cfg;
+   
+    spec = apr_pcalloc(cmd->pool, sizeof(ap_lua_filter_handler_spec));
+    spec->file_name = apr_pstrdup(cmd->pool, file);
+    spec->function_name = apr_pstrdup(cmd->pool, function);
+    spec->filter_name = filter;
+
+    *(ap_lua_filter_handler_spec **) apr_array_push(cfg->mapped_filters) = spec;
+    /* TODO: Make it work on other types than just AP_FTYPE_RESOURCE? */
+    if (direction == AP_LUA_FILTER_OUTPUT) {
+        spec->direction = AP_LUA_FILTER_OUTPUT;
+        ap_register_output_filter(filter, lua_output_filter_handle, NULL, AP_FTYPE_RESOURCE);
+    }
+    else {
+        spec->direction = AP_LUA_FILTER_INPUT;
+        ap_register_input_filter(filter, lua_input_filter_handle, NULL, AP_FTYPE_RESOURCE);
+    }
+    return NULL;
+}
 static int lua_check_user_id_harness_first(request_rec *r)
 {
     return lua_request_rec_hook_harness(r, "check_user_id", AP_LUA_HOOK_FIRST);
@@ -1026,6 +1336,30 @@ static const char *register_map_handler(cmd_parms *cmd, void *_cfg,
     if (!function) function = "handle";
     return register_mapped_file_function_hook(match, cmd, _cfg, file,
                                              function);
+}
+static const char *register_output_filter(cmd_parms *cmd, void *_cfg,
+                                       const char* filter, const char *file, const char *function)
+{
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIRECTORY|NOT_IN_FILES|
+                                                NOT_IN_HTACCESS);
+    if (err) {
+        return err;
+    }
+    if (!function) function = "handle";
+    return register_filter_function_hook(filter, cmd, _cfg, file,
+                                             function, AP_LUA_FILTER_OUTPUT);
+}
+static const char *register_input_filter(cmd_parms *cmd, void *_cfg,
+                                       const char* filter, const char *file, const char *function)
+{
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIRECTORY|NOT_IN_FILES|
+                                                NOT_IN_HTACCESS);
+    if (err) {
+        return err;
+    }
+    if (!function) function = "handle";
+    return register_filter_function_hook(filter, cmd, _cfg, file,
+                                             function, AP_LUA_FILTER_INPUT);
 }
 static const char *register_quick_block(cmd_parms *cmd, void *_cfg,
                                         const char *line)
@@ -1448,6 +1782,10 @@ command_rec lua_commands[] = {
                      "(internal) Byte code handler"),
     AP_INIT_TAKE23("LuaMapHandler", register_map_handler, NULL, OR_ALL,
                   "Maps a path to a lua handler"),
+    AP_INIT_TAKE3("LuaOutputFilter", register_output_filter, NULL, OR_ALL,
+                  "Registers a Lua function as an output filter"),
+    AP_INIT_TAKE3("LuaInputFilter", register_input_filter, NULL, OR_ALL,
+                  "Registers a Lua function as an input filter"),
     {NULL}
 };
 
@@ -1459,6 +1797,8 @@ static void *create_dir_config(apr_pool_t *p, char *dir)
     cfg->package_cpaths = apr_array_make(p, 2, sizeof(char *));
     cfg->mapped_handlers =
         apr_array_make(p, 1, sizeof(ap_lua_mapped_handler_spec *));
+    cfg->mapped_filters =
+        apr_array_make(p, 1, sizeof(ap_lua_filter_handler_spec *));
     cfg->pool = p;
     cfg->hooks = apr_hash_make(p);
     cfg->dir = apr_pstrdup(p, dir);
@@ -1537,18 +1877,21 @@ static void *merge_dir_config(apr_pool_t *p, void *basev, void *overridesv)
         a->package_paths = apr_array_append(p, base->package_paths, overrides->package_paths);
         a->package_cpaths = apr_array_append(p, base->package_cpaths, overrides->package_cpaths);
         a->mapped_handlers = apr_array_append(p, base->mapped_handlers, overrides->mapped_handlers);
+        a->mapped_filters = apr_array_append(p, base->mapped_filters, overrides->mapped_filters);
         a->hooks = apr_hash_merge(p, overrides->hooks, base->hooks, overlay_hook_specs, NULL);
     }
     else if (a->inherit == AP_LUA_INHERIT_PARENT_LAST) { 
         a->package_paths = apr_array_append(p, overrides->package_paths, base->package_paths);
         a->package_cpaths = apr_array_append(p, overrides->package_cpaths, base->package_cpaths);
         a->mapped_handlers = apr_array_append(p, overrides->mapped_handlers, base->mapped_handlers);
+        a->mapped_filters = apr_array_append(p, overrides->mapped_filters, base->mapped_filters);
         a->hooks = apr_hash_merge(p, base->hooks, overrides->hooks, overlay_hook_specs, NULL);
     }
     else { 
         a->package_paths = overrides->package_paths;
         a->package_cpaths = overrides->package_cpaths;
         a->mapped_handlers= overrides->mapped_handlers;
+        a->mapped_filters= overrides->mapped_filters;
         a->hooks= overrides->hooks;
     }
 

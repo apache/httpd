@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_lua: Add LuaInputFilter/LuaOutputFilter for creating content
+     filters in Lua [Daniel Gruno]
+
   *) core: Apply length limit when logging Status header values.
      [Jeff Trawick, Chris Darroch]
 
