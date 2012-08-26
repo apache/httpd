@@ -51,6 +51,7 @@
 #if LUA_VERSION_NUM > 501
 /* Load mode for lua_load() */
 #define lua_load(a,b,c,d) lua_load(a,b,c,d,NULL)
+#define lua_resume(a,b)   lua_resume(a, NULL, b)
 #endif
 
 /* Create a set of AP_LUA_DECLARE(type), AP_LUA_DECLARE_NONSTD(type) and
@@ -102,9 +103,10 @@ typedef struct
     apr_array_header_t *package_cpaths;
 
     /**
-     * mapped handlers
+     * mapped handlers/filters
      */
     apr_array_header_t *mapped_handlers;
+    apr_array_header_t *mapped_filters;
 
     apr_pool_t *pool;
 

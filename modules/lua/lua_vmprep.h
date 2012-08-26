@@ -47,6 +47,9 @@
 #define AP_LUA_CACHE_STAT          2
 #define AP_LUA_CACHE_FOREVER       3
 
+#define AP_LUA_FILTER_INPUT        1
+#define AP_LUA_FILTER_OUTPUT       2
+
 typedef void (*ap_lua_state_open_callback) (lua_State *L, apr_pool_t *p,
                                              void *ctx);
 /**
@@ -92,6 +95,14 @@ typedef struct
     apr_size_t bytecode_len;
     int codecache;
 } ap_lua_mapped_handler_spec;
+
+typedef struct
+{
+    const char *function_name;
+    const char *file_name;
+    const char* filter_name;
+    int         direction; /* AP_LUA_FILTER_INPUT | AP_LUA_FILTER_OUTPUT */
+} ap_lua_filter_handler_spec;
 
 typedef struct {
     apr_size_t runs;
