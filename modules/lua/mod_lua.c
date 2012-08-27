@@ -390,6 +390,7 @@ static apr_status_t lua_output_filter_handle(ap_filter_t *f, apr_bucket_brigade 
     lua_filter_ctx* ctx;
     conn_rec *c = r->connection;
     apr_bucket *pbktIn;
+    apr_status_t rv;
     
     /* Set up the initial filter context and acquire the function.
      * The corresponding Lua function should yield here.
@@ -433,8 +434,11 @@ static apr_status_t lua_output_filter_handle(ap_filter_t *f, apr_bucket_brigade 
                 pbktOut = apr_bucket_heap_create(output, olen, NULL,
                                         c->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(ctx->tmpBucket, pbktOut);
-                ap_pass_brigade(f->next, ctx->tmpBucket);
+                rv = ap_pass_brigade(f->next, ctx->tmpBucket);
                 apr_brigade_cleanup(ctx->tmpBucket);
+                if (rv != APR_SUCCESS) {
+                    return rv;
+                }
             }
             else {
                 ctx->broken = 1;
@@ -462,7 +466,11 @@ static apr_status_t lua_output_filter_handle(ap_filter_t *f, apr_bucket_brigade 
             pbktEOS = apr_bucket_eos_create(c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(ctx->tmpBucket, pbktEOS);
             ap_lua_release_state(L, ctx->spec, r);
-            ap_pass_brigade(f->next, ctx->tmpBucket);
+            rv = ap_pass_brigade(f->next, ctx->tmpBucket);
+            apr_brigade_cleanup(ctx->tmpBucket);
+            if (rv != APR_SUCCESS) {
+                return rv;
+            }
         }
     }
     /* Clean up */
@@ -549,6 +557,7 @@ static apr_status_t lua_input_filter_handle(ap_filter_t *f,
                 pbktOut = apr_bucket_heap_create(output, olen, 0, c->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(pbbOut, pbktOut);
                 apr_bucket_delete(pbktIn);
+                return APR_SUCCESS;
             }
             else {
                 ctx->broken = 1;
