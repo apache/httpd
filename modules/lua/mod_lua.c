@@ -390,7 +390,6 @@ static apr_status_t lua_output_filter_handle(ap_filter_t *f, apr_bucket_brigade 
     lua_filter_ctx* ctx;
     conn_rec *c = r->connection;
     apr_bucket *pbktIn;
-    apr_bucket_brigade *pbbOut = NULL;
     
     /* Set up the initial filter context and acquire the function.
      * The corresponding Lua function should yield here.
@@ -402,15 +401,16 @@ static apr_status_t lua_output_filter_handle(ap_filter_t *f, apr_bucket_brigade 
         }
         if (rc == APR_ENOENT) {
             /* No filter entry found (or the script declined to filter), just pass on the buckets */
+            ap_remove_output_filter(f);
             return ap_pass_brigade(f->next,pbbIn);
         }
         f->ctx = ctx;
+        ctx->tmpBucket = apr_brigade_create(r->pool, c->bucket_alloc);
     }
     ctx = (lua_filter_ctx*) f->ctx;
     L = ctx->L;
     /* While the Lua function is still yielding, pass in buckets to the coroutine */
     if (!ctx->broken) {
-        pbbOut=apr_brigade_create(r->pool, c->bucket_alloc);
         for (pbktIn = APR_BRIGADE_FIRST(pbbIn);
             pbktIn != APR_BRIGADE_SENTINEL(pbbIn);
             pbktIn = APR_BUCKET_NEXT(pbktIn))
@@ -432,11 +432,16 @@ static apr_status_t lua_output_filter_handle(ap_filter_t *f, apr_bucket_brigade 
                 const char* output = lua_tolstring(L, 1, &olen);
                 pbktOut = apr_bucket_heap_create(output, olen, NULL,
                                         c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(pbbOut,pbktOut);
+                APR_BRIGADE_INSERT_TAIL(ctx->tmpBucket, pbktOut);
+                ap_pass_brigade(f->next, ctx->tmpBucket);
+                apr_brigade_cleanup(ctx->tmpBucket);
             }
             else {
                 ctx->broken = 1;
                 ap_lua_release_state(L, ctx->spec, r);
+                ap_remove_output_filter(f);
+                apr_brigade_cleanup(pbbIn);
+                apr_brigade_cleanup(ctx->tmpBucket);
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
         }
@@ -452,21 +457,17 @@ static apr_status_t lua_output_filter_handle(ap_filter_t *f, apr_bucket_brigade 
                 const char* output = lua_tolstring(L, 1, &olen);
                 pbktOut = apr_bucket_heap_create(output, olen, NULL,
                                         c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(pbbOut,pbktOut);
+                APR_BRIGADE_INSERT_TAIL(ctx->tmpBucket, pbktOut);
             }
-            pbktEOS=apr_bucket_eos_create(c->bucket_alloc);
-            APR_BRIGADE_INSERT_TAIL(pbbOut,pbktEOS);
+            pbktEOS = apr_bucket_eos_create(c->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(ctx->tmpBucket, pbktEOS);
             ap_lua_release_state(L, ctx->spec, r);
+            ap_pass_brigade(f->next, ctx->tmpBucket);
         }
     }
-    /* Clean up and pass on the brigade to the next filter in the chain */
+    /* Clean up */
     apr_brigade_cleanup(pbbIn);
-    if (pbbOut) {
-        return ap_pass_brigade(f->next,pbbOut);
-    }
-    else {
-        return ap_pass_brigade(f->next,pbbIn);
-    }
+    return APR_SUCCESS;    
 }
 
 
@@ -490,13 +491,17 @@ static apr_status_t lua_input_filter_handle(ap_filter_t *f,
     if (!f->ctx) {
         rc = lua_setup_filter_ctx(f,r,&ctx);
         f->ctx = ctx;
-        ctx->tmpBucket = apr_brigade_create(r->pool, c->bucket_alloc);
         if (rc == APR_EGENERAL) {
             ctx->broken = 1;
+            ap_remove_input_filter(f); 
             return HTTP_INTERNAL_SERVER_ERROR;
         }
         if (rc == APR_ENOENT ) {
+            ap_remove_input_filter(f);
             ctx->broken = 1;
+        }
+        if (rc == APR_SUCCESS) {
+            ctx->tmpBucket = apr_brigade_create(r->pool, c->bucket_alloc);
         }
     }
     ctx = (lua_filter_ctx*) f->ctx;
@@ -508,7 +513,6 @@ static apr_status_t lua_input_filter_handle(ap_filter_t *f,
     
     if (APR_BRIGADE_EMPTY(ctx->tmpBucket)) {
         ret = ap_get_brigade(f->next, ctx->tmpBucket, eMode, eBlock, nBytes);
-
         if (eMode == AP_MODE_EATCRLF || ret != APR_SUCCESS)
             return ret;
     }
@@ -528,7 +532,7 @@ static apr_status_t lua_input_filter_handle(ap_filter_t *f,
             }
 
             /* read the bucket */
-            ret=apr_bucket_read(pbktIn, &data, &len, eBlock);
+            ret = apr_bucket_read(pbktIn, &data, &len, eBlock);
             if(ret != APR_SUCCESS) {
                 return ret;
             }
@@ -549,6 +553,8 @@ static apr_status_t lua_input_filter_handle(ap_filter_t *f,
             else {
                 ctx->broken = 1;
                 ap_lua_release_state(L, ctx->spec, r);
+                ap_remove_input_filter(f); 
+                apr_bucket_delete(pbktIn);
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
         }
