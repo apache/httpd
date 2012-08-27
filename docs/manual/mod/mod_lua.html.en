@@ -71,7 +71,9 @@ trust, as it can be abused to change the internal workings of httpd.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahooktranslatename">LuaHookTranslateName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahooktypechecker">LuaHookTypeChecker</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luainherit">LuaInherit</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#luainputfilter">LuaInputFilter</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luamaphandler">LuaMapHandler</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#luaoutputfilter">LuaOutputFilter</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luapackagecpath">LuaPackageCPath</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luapackagepath">LuaPackagePath</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luaquickhandler">LuaQuickHandler</a></li>
@@ -87,6 +89,7 @@ trust, as it can be abused to change the internal workings of httpd.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#datastructures">Data Structures</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#logging">Logging Functions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#apache2">apache2 Package</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#modifying_buckets">Modifying contents with Lua filters</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -670,7 +673,9 @@ end
 
 
         <pre class="prettyprint lang-lua">
-        r:parsebody() -- parse any POST data in the request and return it as a Lua table
+r:parsebody([sizeLimit]) -- parse the request body as a POST and return a lua table.
+                         -- An optional number may be passed to specify the maximum number 
+                         -- of bytes to parse. Default is 8192 bytes.
         </pre>
 
 
@@ -733,6 +738,47 @@ end
 
 </dl>
 <p>(Other HTTP status codes are not yet implemented.)</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="modifying_buckets" id="modifying_buckets">Modifying contents with Lua filters</a></h2>
+    
+    <p>
+    Filter functions implemented via <code class="directive"><a href="#luainputfilter">LuaInputFilter</a></code> 
+    or <code class="directive"><a href="#luaoutputfilter">LuaOutputFilter</a></code> are designed as 
+    three-stage non-blocking functions using coroutines to suspend and resume a 
+    function as buckets are sent down the filter chain. The core structure of 
+    such a function is:
+    </p>
+    <pre class="prettyprint lang-lua">
+function filter(r)
+    -- Our first yield is to signal that we are ready to receive buckets.
+    -- Before this yield, we can set up our environment, check for conditions,
+    -- and, if we deem it necessary, decline filtering a request alltogether:
+    if something_bad then
+        return -- This would skip this filter.
+    end
+    -- Regardless of whether we have data to prepend, a yield MUST be called here.
+    -- Note that only output filters can prepend data. Input filters must use the 
+    -- final stage to append data to the content.
+    coroutine.yield([optional header to be prepended to the content])
+    
+    -- After we have yielded, buckets will be sent to us, one by one, and we can 
+    -- do whatever we want with them and then pass on the result.
+    -- Buckets are stored in the global variable 'bucket', so we create a loop
+    -- that checks if 'bucket' is not nil:
+    while bucket ~= nil do
+        local output = mangle(bucket) -- Do some stuff to the content
+        coroutine.yield(output) -- Return our new content to the filter chain
+    end
+
+    -- Once the buckets are gone, 'bucket' is set to nil, which will exit the 
+    -- loop and land us here. Anything extra we want to append to the content
+    -- can be done by doing a final yield here. Both input and output filters 
+    -- can append data to the content in this phase.
+    coroutine.yield([optional footer to be appended to the content])
+end
+    </pre>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaAuthzProvider" id="LuaAuthzProvider">LuaAuthzProvider</a> <a name="luaauthzprovider" id="luaauthzprovider">Directive</a></h2>
@@ -743,7 +789,7 @@ end
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.5.0 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.4.3 and later</td></tr>
 </table>
 <p>After a lua function has been registered as authorization provider, it can be used
 with the <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directive:</p>
@@ -1070,6 +1116,67 @@ end
     directives from parent configuration sections.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LuaInputFilter" id="LuaInputFilter">LuaInputFilter</a> <a name="luainputfilter" id="luainputfilter">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a Lua function for content input filtering</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaInputFilter filter_name /path/to/lua/script.lua function_name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.5.0 and later</td></tr>
+</table>
+<p>Provides a means of adding a Lua function as an input filter. 
+As with output filters, input filters work as coroutines, 
+first yielding before buffers are sent, then yielding whenever 
+a bucket needs to be passed down the chain, and finally (optionally) 
+yielding anything that needs to be appended to the input data. The 
+global variable <code>bucket</code> holds the buckets as they are passed 
+onto the Lua script:
+</p>
+
+<pre class="prettyprint lang-config">
+LuaInputFilter myInputFilter /www/filter.lua input_filter
+&lt;FilesMatch "\.lua&gt;
+  SetInputFilter myInputFilter
+&lt;/FilesMatch&gt;
+</pre>
+
+<pre class="prettyprint lang-lua">
+--[[
+    Example input filter that converts all POST data to uppercase.
+]]--
+function input_filter(r)
+    print("luaInputFilter called") -- debug print
+    coroutine.yield() -- Yield and wait for buckets
+    while bucket do -- For each bucket, do...
+        local output = string.upper(bucket) -- Convert all POST data to uppercase
+        coroutine.yield(output) -- Send converted data down the chain
+    end
+    -- No more buckets available.
+    coroutine.yield("&amp;filterSignature=1234") -- Append signature at the end
+end
+</pre>
+
+<p>
+The input filter supports denying/skipping a filter if it is deemed unwanted:
+</p>
+<pre class="prettyprint lang-lua">
+function input_filter(r)
+    if not good then
+        return -- Simply deny filtering, passing on the original content instead
+    end
+    coroutine.yield() -- wait for buckets
+    ... -- insert filter stuff here
+end
+</pre>
+
+<p>
+See "<a href="#modifying_buckets">Modifying contents with Lua 
+filters</a>" for more information.
+</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaMapHandler" id="LuaMapHandler">LuaMapHandler</a> <a name="luamaphandler" id="luamaphandler">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Map a path to a lua handler</td></tr>
@@ -1101,6 +1208,67 @@ end
         <p>This would invoke the "handle" function, which
         is the default if no specific function name is
         provided.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LuaOutputFilter" id="LuaOutputFilter">LuaOutputFilter</a> <a name="luaoutputfilter" id="luaoutputfilter">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a Lua function for content output filtering</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaOutputFilter filter_name /path/to/lua/script.lua function_name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.5.0 and later</td></tr>
+</table>
+<p>Provides a means of adding a Lua function as an output filter. 
+As with input filters, output filters work as coroutines, 
+first yielding before buffers are sent, then yielding whenever 
+a bucket needs to be passed down the chain, and finally (optionally) 
+yielding anything that needs to be appended to the input data. The 
+global variable <code>bucket</code> holds the buckets as they are passed 
+onto the Lua script:
+</p>
+
+<pre class="prettyprint lang-config">
+LuaOutputFilter myOutputFilter /www/filter.lua output_filter
+&lt;FilesMatch "\.lua&gt;
+  SetOutputFilter myOutputFilter
+&lt;/FilesMatch&gt;
+</pre>
+
+<pre class="prettyprint lang-lua">
+--[[
+    Example output filter that escapes all HTML entities in the output
+]]--
+function output_filter(r)
+    coroutine.yield("(Handled by myOutputFilter)&lt;br/&gt;\n") -- Prepend some data to the output,
+                                                          -- yield and wait for buckets.
+    while bucket do -- For each bucket, do...
+        local output = r:escape_html(bucket) -- Escape all output
+        coroutine.yield(output) -- Send converted data down the chain
+    end
+    -- No more buckets available.
+end
+</pre>
+
+<p>
+As with the input filter, the output filter supports denying/skipping a filter 
+if it is deemed unwanted:
+</p>
+<pre class="prettyprint lang-lua">
+function output_filter(r)
+    if not r.content_type:match("text/html") then
+        return -- Simply deny filtering, passing on the original content instead
+    end
+    coroutine.yield() -- wait for buckets
+    ... -- insert filter stuff here
+end
+</pre>
+
+<p>
+See "<a href="#modifying_buckets">Modifying contents with Lua filters</a>" for more 
+information.
+</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
