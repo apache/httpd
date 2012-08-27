@@ -693,6 +693,46 @@ r:parsebody([sizeLimit]) -- parse the request body as a POST and return a lua ta
 <p>(Other HTTP status codes are not yet implemented.)</p>
 </section>
 
+<section id="modifying_buckets">
+    <title>Modifying contents with Lua filters</title>
+    <p>
+    Filter functions implemented via <directive module="mod_lua">LuaInputFilter</directive> 
+    or <directive module="mod_lua">LuaOutputFilter</directive> are designed as 
+    three-stage non-blocking functions using coroutines to suspend and resume a 
+    function as buckets are sent down the filter chain. The core structure of 
+    such a function is:
+    </p>
+    <highlight language="lua">
+function filter(r)
+    -- Our first yield is to signal that we are ready to receive buckets.
+    -- Before this yield, we can set up our environment, check for conditions,
+    -- and, if we deem it necessary, decline filtering a request alltogether:
+    if something_bad then
+        return -- This would skip this filter.
+    end
+    -- Regardless of whether we have data to prepend, a yield MUST be called here.
+    -- Note that only output filters can prepend data. Input filters must use the 
+    -- final stage to append data to the content.
+    coroutine.yield([optional header to be prepended to the content])
+    
+    -- After we have yielded, buckets will be sent to us, one by one, and we can 
+    -- do whatever we want with them and then pass on the result.
+    -- Buckets are stored in the global variable 'bucket', so we create a loop
+    -- that checks if 'bucket' is not nil:
+    while bucket ~= nil do
+        local output = mangle(bucket) -- Do some stuff to the content
+        coroutine.yield(output) -- Return our new content to the filter chain
+    end
+
+    -- Once the buckets are gone, 'bucket' is set to nil, which will exit the 
+    -- loop and land us here. Anything extra we want to append to the content
+    -- can be done by doing a final yield here. Both input and output filters 
+    -- can append data to the content in this phase.
+    coroutine.yield([optional footer to be appended to the content])
+end
+    </highlight>
+</section>
+
 <directivesynopsis>
 <name>LuaRoot</name>
 <description>Specify the base path for resolving relative paths for mod_lua directives</description>
@@ -1300,45 +1340,6 @@ information.
 </usage>
 </directivesynopsis>
 
-<section id="modifying_buckets">
-    <title>Modifying contents with Lua filters</title>
-    <p>
-    Filter functions implemented via <directive module="mod_lua">LuaInputFilter</directive> 
-    or <directive module="mod_lua">LuaOutputFilter</directive> are designed as 
-    three-stage non-blocking functions using coroutines to suspend and resume a 
-    function as buckets are sent down the filter chain. The core structure of 
-    such a function is:
-    </p>
-    <highlight language="lua">
-function filter(r)
-    -- Our first yield is to signal that we are ready to receive buckets.
-    -- Before this yield, we can set up our environment, check for conditions,
-    -- and, if we deem it necessary, decline filtering a request alltogether:
-    if something_bad then
-        return -- This would skip this filter.
-    end
-    -- Regardless of whether we have data to prepend, a yield MUST be called here.
-    -- Note that only output filters can prepend data. Input filters must use the 
-    -- final stage to append data to the content.
-    coroutine.yield([optional header to be prepended to the content])
-    
-    -- After we have yielded, buckets will be sent to us, one by one, and we can 
-    -- do whatever we want with them and then pass on the result.
-    -- Buckets are stored in the global variable 'bucket', so we create a loop
-    -- that checks if 'bucket' is not nil:
-    while bucket ~= nil do
-        local output = mangle(bucket) -- Do some stuff to the content
-        coroutine.yield(output) -- Return our new content to the filter chain
-    end
-
-    -- Once the buckets are gone, 'bucket' is set to nil, which will exit the 
-    -- loop and land us here. Anything extra we want to append to the content
-    -- can be done by doing a final yield here. Both input and output filters 
-    -- can append data to the content in this phase.
-    coroutine.yield([optional footer to be appended to the content])
-end
-    </highlight>
-</section>
 
 
 </modulesynopsis>
