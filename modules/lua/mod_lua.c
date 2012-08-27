@@ -569,7 +569,6 @@ static apr_status_t lua_input_filter_handle(ap_filter_t *f,
             ap_lua_release_state(L, ctx->spec, r);
         }
     }
-    /* Clean up and pass on the brigade to the next filter in the chain */
     return APR_SUCCESS;
 }
 
