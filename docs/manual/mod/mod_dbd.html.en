@@ -109,7 +109,7 @@ AP_DECLARE(ap_dbd_t*) ap_dbd_acquire(request_rec*);
 /* acquire a connection that will have the lifetime of a connection
  * and MUST NOT be explicitly closed.  Return NULL on error.
  */
-AP_DECLARE(ap_dbd_t*) ap_dbd_cacquire(request_rec*);
+AP_DECLARE(ap_dbd_t*) ap_dbd_cacquire(conn_rec*);
 
 /* Prepare a statement for use by a client module */
 AP_DECLARE(void) ap_dbd_prepare(server_rec*, const char*, const char*);
