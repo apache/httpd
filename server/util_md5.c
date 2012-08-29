@@ -55,7 +55,7 @@ AP_DECLARE(char *) ap_md5_binary(apr_pool_t *p, const unsigned char *buf, int le
     const char *hex = "0123456789abcdef";
     apr_md5_ctx_t my_md5;
     unsigned char hash[APR_MD5_DIGESTSIZE];
-    char *r, result[33]; /* (MD5_DIGESTSIZE * 2) + 1 */
+    char *r, result[2*APR_MD5_DIGESTSIZE+1];
     int i;
 
     /*
