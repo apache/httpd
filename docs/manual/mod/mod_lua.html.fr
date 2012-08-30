@@ -55,6 +55,15 @@ ce qu'il passe au stade stable, et ce même entre deux versions stables
 2.4.x. N'oublez pas de consulter le fichier CHANGES avant toute mise à
 jour.</div>
 
+<div class="warning"><h3>Avertissement</h3>
+<p>Ce module possède une grande capacité d'action sur le fonctrionnement
+de httpd, ce qui lui confère une grande puissance, mais peut aussi
+induire un risque de sécurité. Il est déconseillé d'utiliser ce module
+sur un serveur partagé avec des utilisateurs auxquels vous ne pouvez pas
+accorder une confiance absolue, car il peut permettre de modifier le
+fonctionnement interne de httpd.</p>
+</div>
+
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -69,7 +78,9 @@ jour.</div>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahooktranslatename">LuaHookTranslateName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahooktypechecker">LuaHookTypeChecker</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luainherit">LuaInherit</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#luainputfilter">LuaInputFilter</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luamaphandler">LuaMapHandler</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#luaoutputfilter">LuaOutputFilter</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luapackagecpath">LuaPackageCPath</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luapackagepath">LuaPackagePath</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luaquickhandler">LuaQuickHandler</a></li>
@@ -235,13 +246,91 @@ LuaAuthzProvider foo authz_provider.lua authz_check_foo
 les scripts Lua) participent au traitement des requêtes. Chaque type
 d'accroche proposé par le serveur a un rôle spécifique, comme
 l'association de requêtes au système de fichiers, le contrôle d'accès,
-ou la définition de types MIME. Il existe aussi des accroches à usage
-général qui s'exécutent simplement à des moments opportuns du cycle
-de vie de la requête.</p>
+ou la définition de types MIME : </p>
 
-<p>Les fonctions d'accroche acceptent l'objet de la requête comme seul
-et unique argument. Elles peuvent renvoyer une valeur, selon la
-fonction, mais il s'agit en général d'un
+<table class="bordered"><tr class="header">
+        <th>Phase d'accroche</th>
+        <th>Directive mod_lua</th>
+        <th>Description</th>
+    </tr>
+<tr>
+        <td>Gestionnaire rapide</td>
+        <td><code class="directive"><a href="#luaquickhandler">LuaQuickHandler</a></code></td>
+        <td>Il s'agit de la première accroche appelée lorsqu'une requête
+	a été associée à un serveur ou un serveur virtuel.</td>
+    </tr>
+<tr class="odd">
+        <td>Phase de traduction</td>
+        <td><code class="directive"><a href="#luahooktranslatename">LuaHookTranslateName</a></code></td>
+        <td>Cette phase traduit l'URI de la requête en nom de fichier
+	sur le système. Ce sont des modules comme
+	<code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> et <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> qui
+	interviennent au cours de cette phase.</td>
+    </tr>
+<tr>
+        <td>Choix du lieu de stockage de la ressource</td>
+        <td><code class="directive"><a href="#luahookmaptostorage">LuaHookMapToStorage</a></code></td>
+        <td>Cette phase définit le lieu de stockage de la ressource :
+	physique, en cache ou externe/mandaté. Elle est assurée par les
+	modules de mandat ou de mise en cache.</td>
+    </tr>
+<tr class="odd">
+        <td>Autorisation d'accès</td>
+        <td><code class="directive"><a href="#luahookaccesschecker">LuaHookAccessChecker</a></code></td>
+        <td>Cette phase vérifie si un client a l'autorisation d'accès à
+	la ressource. Elle s'exécute avant l'authentification de
+	l'utisateur ; il faut donc être prudent.
+        </td>
+    </tr>
+<tr>
+        <td>Vérification de l'identifiant utilisateur</td>
+        <td><code class="directive"><a href="#luahookcheckuserid">LuaHookCheckUserID</a></code></td>
+        <td>Cette phase vérifie l'identifiant de l'utilisateur ayant
+	fait l'objet d'une négociation.</td>
+    </tr>
+<tr class="odd">
+        <td>Vérification de l'autorisation d'accès</td>
+        <td><code class="directive"><a href="#luahookauthchecker">LuaHookAuthChecker</a></code>
+	ou
+            <code class="directive"><a href="#luaauthzprovider">LuaAuthzProvider</a></code></td>
+        <td>Cette phase vérifie l'autorisation d'accès d'un utilisateur
+	en fonction des ses paramètres de connexion, comme
+	l'identifiant, le certificat, etc...
+        </td>
+    </tr>
+<tr>
+        <td>Vérification du type de la ressource</td>
+        <td><code class="directive"><a href="#luahooktypechecker">LuaHookTypeChecker</a></code></td>
+        <td>Cette phase assigne un type de contenu et un gestionnaire à
+	la ressource.</td>
+    </tr>
+<tr class="odd">
+        <td>Derniers réglages</td>
+        <td><code class="directive"><a href="#luahookfixups">LuaHookFixups</a></code></td>
+        <td>C'est la dernière phase avant l'activation des gestionnaires
+	de contenu. Toute modification de dernière minute à la requête
+	doit être effectuée ici.</td>
+    </tr>
+<tr>
+        <td>Gestionnaire de contenu</td>
+        <td>fichiers fx. <code>.lua</code> ou directive <code class="directive"><a href="#luamaphandler">LuaMapHandler</a></code></td>
+        <td>C'est durant cette phase que le contenu est traité. Les
+	fichiers sont lus, interprétés, certains sont exécutés, et le
+	résultat obtenu est envoyé au client.</td>
+    </tr>
+<tr class="odd">
+        <td>Journalisation</td>
+        <td>aucune</td>
+        <td>Lorsqu'une requête a été traitée, plusieurs phases de
+	journalisation interviennent, et enregistrent leurs résultats
+	dans les fichiers d'erreur ou d'accès.</td>
+    </tr>
+</table>
+
+<p>Les fonctions d'accroche reçoivent l'objet de la requête comme seul
+argument (sauf LuaAuthzProvider qui reçoit aussi des arguments en
+provenance de la directive Require). Elles peuvent renvoyer une valeur,
+selon la fonction, mais il s'agit en général d'un
 code d'état HTTP ou des valeurs OK, DONE, ou DECLINED,
 que vous pouvez écrire dans lua sous la forme <code>apache2.OK</code>,
 <code>apache2.DONE</code>, ou <code>apache2.DECLINED</code>.</p>
@@ -273,8 +362,8 @@ end
 	travailler sur la substitution, y compris l'accroche translate_name
 	de base dont les tables de correspondances se basent sur DocumentRoot.
 
-     Note: actuellement, il est impossible de prévoir si cette action
-     s'exécute avant ou après mod_alias.
+     Note: utilisez le drapeau early/late de la directive pour
+     l'exécuter avant ou après mod_alias.
 --]]
 
 require 'apache2'
@@ -298,175 +387,332 @@ end
         <p>request_rec est considérée en tant que donnée utilisateur.
 	Elle possède une métatable qui vous permet d'accomplir des
 	choses intéressantes. Pour la plus grande partie, elle possède
-	les mêmes champs que la structure request_rec (voir httpd.h en
-	attendant que cette documentation soit plus complète), la
+	les mêmes champs que la structure request_rec, la
 	plupart d'entre eux étant accessibles en lecture et écriture (le
 	contenu des champs de la table peut être modifié, mais les
 	champs eux-mêmes ne peuvent pas être établis en tant que tables
 	distinctes).</p>
 
-	<table class="bordered">
-
-        <tr>
+	<table class="bordered"><tr class="header">
           <th><strong>Nom</strong></th>
           <th><strong>Type Lua</strong></th>
           <th><strong>Modifiable</strong></th>
+	  <th><strong>Description</strong></th>
         </tr>
-        <tr>
+<tr>
+          <td><code>allowoverrides</code></td>
+          <td>string</td>
+          <td>non</td>
+          <td>L'option AllowOverride s'applique à la requête courante.</td>
+        </tr>
+<tr class="odd">
           <td><code>ap_auth_type</code></td>
           <td>string</td>
           <td>non</td>
+	  <td>Ce champ contient le type d'authentification effectuée
+	  (par exemple <code>basic</code>)</td>
         </tr>
-        <tr>
+<tr>
           <td><code>args</code></td>
           <td>string</td>
           <td>oui</td>
+	  <td>La chaîne de paramètres de la requête (par exemple
+	  <code>foo=bar&amp;name=johnsmith</code>)</td>
         </tr>
-        <tr>
+<tr class="odd">
           <td><code>assbackwards</code></td>
           <td>boolean</td>
           <td>non</td>
+	  <td>contient true s'il s'agit d'une requête de style HTTP/0.9
+	  (par exemple <code>GET /foo</code> (sans champs d'en-tête) )</td>
         </tr>
-
-        <tr>
+<tr>
+          <td><code>auth_name</code></td>
+          <td>string</td>
+          <td>non</td>
+          <td>La chaîne d'identification utilisée pour la vérification
+	  de l'autorisation d'accès (si elle est disponible).</td>
+        </tr>
+<tr class="odd">
+          <td><code>banner</code></td>
+          <td>string</td>
+          <td>non</td>
+          <td>La bannière du serveur, par exemple <code>Apache HTTP
+	  Server/2.4.3 openssl/0.9.8c</code></td>
+        </tr>
+<tr>
+          <td><code>basic_auth_pw</code></td>
+          <td>string</td>
+          <td>non</td>
+          <td>Le mot de passe pour l'authentification de base envoyé
+	  avec la requête, s'il existe</td>
+        </tr>
+<tr class="odd">
           <td><code>canonical_filename</code></td>
           <td>string</td>
           <td>non</td>
+	  <td>Le nom de fichier canonique de la requête</td>
         </tr>
-        <tr>
+<tr>
           <td><code>content_encoding</code></td>
           <td>string</td>
           <td>non</td>
+	  <td>Le type de codage du contenu de la requête courante</td>
         </tr>
-        <tr>
+<tr class="odd">
           <td><code>content_type</code></td>
           <td>string</td>
           <td>oui</td>
+	  <td>Le type de contenu de la requête courante, tel qu'il a été
+	  déterminé au cours de la phase type_check (par exemple
+	  <code>image/gif</code> ou <code>text/html</code>)</td>
         </tr>
-
-	<tr>
+<tr>
           <td><code>context_prefix</code></td>
           <td>string</td>
           <td>non</td>
+	  <td />
         </tr>
-        <tr>
+<tr class="odd">
           <td><code>context_document_root</code></td>
           <td>string</td>
           <td>non</td>
+	  <td />
         </tr>
-
-        <tr>
+<tr>
           <td><code>document_root</code></td>
           <td>string</td>
           <td>non</td>
+	  <td>La racine des documents du serveur</td>
         </tr>
-        <tr>
+<tr class="odd">
           <td><code>err_headers_out</code></td>
           <td>table</td>
           <td>non</td>
+	  <td>L'en-tête MIME de l'environnement pour la réponse, écrit
+	  même en cas d'erreur et conservé pendant les redirections
+	  internes</td>
         </tr>
-        <tr>
+<tr>
           <td><code>filename</code></td>
           <td>string</td>
           <td>oui</td>
+	  <td>Le nom de fichier correspondant à la requête, par exemple
+	  /www/example.com/foo.txt. Il peut être modifié au cours des
+	  phases translate-name ou map-to-storage du traitement de la
+	  requête pour permettre au gestionnaire par défaut (ou aux
+	  gestionnaires de script) de servir une version du fichier
+	  autre que celle demandée.</td>
         </tr>
-        <tr>
+<tr class="odd">
           <td><code>handler</code></td>
           <td>string</td>
           <td>oui</td>
+	  <td>Le nom du <a href="../handler.html">gestionnaire</a> qui
+	  doit traiter la requête, par exemple <code>lua-script</code>
+	  si elle doit être traitée par mod_lua. Cette valeur est en
+	  général définie via les directives <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> ou <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code>, mais peut aussi l'être
+	  via mod_lua pour permettre à un autre gestionnaire de traiter
+	  une requête spécifique qui ne serait pas traitée par défaut
+	  par ce dernier.
+            </td>
         </tr>
-        <tr>
+<tr>
 	  <td><code>headers_in</code></td>
           <td>table</td>
           <td>oui</td>
+	  <td>Les en-têtes MIME de l'environnement de la requête. Il
+	  s'agit des en-têtes comme <code>Host, User-Agent,
+	  Referer</code>, etc...</td>
         </tr>
-        <tr>
+<tr class="odd">
           <td><code>headers_out</code></td>
           <td>table</td>
           <td>oui</td>
+	  <td>Les en-têtes MIME de l'environnement de la réponse.</td>
         </tr>
-        <tr>
+<tr>
           <td><code>hostname</code></td>
           <td>string</td>
           <td>non</td>
+	  <td>Le nom d'hôte, tel que défini par l'en-tête
+	  <code>Host:</code> ou par un URI complet.</td>
         </tr>
-        <tr>
+<tr class="odd">
+          <td><code>is_https</code></td>
+          <td>boolean</td>
+          <td>non</td>
+          <td>Indique si la requête à été faite via HTTPS</td>
+        </tr>
+<tr>
+          <td><code>is_initial_req</code></td>
+          <td>boolean</td>
+          <td>non</td>
+          <td>Indique si la requête courante est la requête initiale ou
+	  une sous-requête.</td>
+        </tr>
+<tr class="odd">
+          <td><code>limit_req_body</code></td>
+          <td>number</td>
+          <td>non</td>
+          <td>La taille maximale du corps de la requête, ou 0 si aucune
+	  limite.</td>
+        </tr>
+<tr>
 	<td><code>log_id</code></td>
           <td>string</td>
           <td>non</td>
+	  <td>L'identifiant de la requête dans les journaux d'accès ou
+	  d'erreur.</td>
         </tr>
-        <tr>
+<tr class="odd">
           <td><code>method</code></td>
           <td>string</td>
           <td>non</td>
+	  <td>La méthode de la requête, par exemple <code>GET</code> ou
+	  <code>POST</code>.</td>
         </tr>
-        <tr>
+<tr>
           <td><code>notes</code></td>
           <td>table</td>
           <td>oui</td>
+	  <td>Une liste de notes qui peuvent être transmises d'un module
+	  à l'autre.</td>
         </tr>
-        <tr>
+<tr class="odd">
+          <td><code>options</code></td>
+          <td>string</td>
+          <td>non</td>
+          <td>La valeur de la directive Options pour la requête
+	  courante.</td>
+        </tr>
+<tr>
           <td><code>path_info</code></td>
           <td>string</td>
           <td>non</td>
+	  <td>La valeur de PATH_INFO extraite de la requête.</td>
         </tr>
-        <tr>
+<tr class="odd">
+          <td><code>port</code></td>
+          <td>number</td>
+          <td>non</td>
+          <td>Le port du serveur utilisé par la requête.</td>
+        </tr>
+<tr>
           <td><code>protocol</code></td>
           <td>string</td>
           <td>non</td>
+	  <td>Le protocole utilisé, par exemple <code>HTTP/1.1</code></td>
         </tr>
-        <tr>
+<tr class="odd">
           <td><code>proxyreq</code></td>
           <td>string</td>
           <td>oui</td>
+	  <td>Indique s'il s'agit d'une requête mandatée ou non. Cette
+	  valeur est en général définie au cours de la phase
+	  post_read_request/translate_name du traitement de la requête.</td>
         </tr>
-        <tr>
+<tr>
 	  <td><code>range</code></td>
           <td>string</td>
           <td>non</td>
+	  <td>Le contenu de l'en-tête <code>Range:</code>.</td>
         </tr>
-        <tr>
+<tr class="odd">
+          <td><code>remaining</code></td>
+          <td>number</td>
+          <td>non</td>
+          <td>Le nombre d'octets du corps de la requête restant à lire.</td>
+        </tr>
+<tr>
+          <td><code>server_built</code></td>
+          <td>string</td>
+          <td>non</td>
+          <td>La date de compilation du serveur.</td>
+        </tr>
+<tr class="odd">
+          <td><code>server_name</code></td>
+          <td>string</td>
+          <td>non</td>
+          <td>Le nom du serveur pour cette requête.</td>
+        </tr>
+<tr>
+          <td><code>some_auth_required</code></td>
+          <td>boolean</td>
+          <td>non</td>
+          <td>Indique si une autorisation est/était requise pour cette
+	  requête.</td>
+        </tr>
+<tr class="odd">
           <td><code>subprocess_env</code></td>
           <td>table</td>
           <td>oui</td>
+	  <td>Le jeu de variables d'environnement pour cette requête.</td>
         </tr>
-        <tr>
+<tr>
+          <td><code>started</code></td>
+          <td>number</td>
+          <td>non</td>
+          <td>Le moment où le serveur a été (re)démarré, en secondes
+	  depuis epoch (1er janvier 1970)</td>
+        </tr>
+<tr class="odd">
 	  <td><code>status</code></td>
           <td>number</td>
           <td>oui</td>
+	  <td>Le code de retour (courant) pour cette requête, par
+	  exemple <code>200</code> ou <code>404</code>.</td>
         </tr>
-        <tr>
+<tr>
           <td><code>the_request</code></td>
           <td>string</td>
           <td>non</td>
+	  <td>La chaîne de la requête telle qu'elle a été envoyée par le
+	  client, par exemple <code>GET /foo/bar HTTP/1.1</code>.</td>
         </tr>
-        <tr>
+<tr class="odd">
           <td><code>unparsed_uri</code></td>
           <td>string</td>
           <td>non</td>
+	  <td>La partie URI non interprétée de la requête</td>
         </tr>
-        <tr>
+<tr>
           <td><code>uri</code></td>
           <td>string</td>
           <td>oui</td>
+	  <td>L'URI après interprétation par httpd</td>
         </tr>
-        <tr>
+<tr class="odd">
           <td><code>user</code></td>
           <td>string</td>
           <td>oui</td>
+	  <td>Si une authentification a été effectuée, nom de
+	  l'utilisateur authentifié.</td>
         </tr>
-	<tr>
+<tr>
           <td><code>useragent_ip</code></td>
           <td>string</td>
           <td>non</td>
+	  <td>L'adresse IP de l'agent qui a envoyé la requête</td>
         </tr>
-        </table>
+</table>
 
         <p>La structure request_rec possède (au minimum) les méthodes
 	suivantes :</p>
 
         <pre class="prettyprint lang-lua">
+	r:flush() -- vide le tampon de sortie
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
         r:addoutputfilter(name|function) -- ajoute un filtre en sortie
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+	r:sendfile(filename) -- envoie un fichier entier au client en
+	utilisant sendfile s'il est supporté par la plateforme
         </pre>
 
 
@@ -478,8 +724,10 @@ end
 
 
         <pre class="prettyprint lang-lua">
-        r:parsebody() -- interprète toutes données POST de la requête et
-	les renvoie sous forme de table Lua
+        r:parsebody()([sizeLimit]) -- interprète le corps de la requête
+	en tant que POST et renvoie une table lua. Un nombre optionnel
+	peut être fourni pour spécifier le nombre maximal d'octets à
+	interpréter. La valeur par défaut est 8192.
         </pre>
 
 
@@ -492,6 +740,12 @@ end
 	<pre class="prettyprint lang-lua">
         r:write("une simple chaîne") -- affichage dans le
 	corps de la réponse
+        </pre>
+
+
+	<pre class="prettyprint lang-lua">
+        r:escape_html("&lt;html&gt;test&lt;/html&gt;") -- Echappe le
+	code HTML et renvoie le résultat
         </pre>
 
         </dd>
@@ -536,6 +790,9 @@ contenu suivant :</p>
   <dd>Code d'état HTTP</dd>
   <dt>apache2.PROXYREQ_NONE, apache2.PROXYREQ_PROXY, apache2.PROXYREQ_REVERSE, apache2.PROXYREQ_RESPONSE</dt>
   <dd>Constantes internes utilisées par <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
+  <dt>apache2.AUTHZ_DENIED, apache2.AUTHZ_GRANTED, apache2.AUTHZ_NEUTRAL, apache2.AUTHZ_GENERAL_ERROR, apache2.AUTHZ_DENIED_NO_USER</dt>
+  <dd>constantes internes utilisées par <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code></dd>
+
 </dl>
 <p>Les autres codes d'état HTTP ne sont pas encore implémentés.</p>
 </div>
@@ -548,19 +805,28 @@ contenu suivant :</p>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.5.0 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.4.3 du serveur HTTP Apache</td></tr>
 </table>
 <p>Lorsqu'une fonction lua a été enregistrée en tant que fournisseur
 d'autorisation, elle peut être appelée via la directive <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> :</p>
 
-<div class="example"><pre class="prettyprint lang-config">
+
+<pre class="prettyprint lang-config">
 LuaRoot /usr/local/apache2/lua
 LuaAuthzProvider foo authz.lua authz_check_foo
 &lt;Location /&gt;
-  Require foo bar
+  Require foo johndoe
 &lt;/Location&gt;
 </pre>
-</div>
+
+<pre class="prettyprint lang-lua">
+require "apache2"
+function authz_check_foo(r, who)
+    if r.user ~= who then return apache2.AUTHZ_DENIED
+    return apache2.AUTHZ_GRANTED
+end
+</pre>
+
 
 
 </div>
@@ -733,7 +999,50 @@ traitement de la requête</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
-</table><p>...</p>
+</table>
+    <p>Identique à la directive
+    <code class="directive">LuaHookTranslateName</code>, mais s'exécute à la
+    phase map-to-storage du traitement de la requête. Les modules comme
+    mod_cache agissent pendant cette phase, ce qui permet de présenter
+    un exemple intéressant de ce que l'on peut faire ici :</p>
+    <pre class="prettyprint lang-config">
+    LuaHookMapToStorage /path/to/lua/script.lua check_cache
+    </pre>
+
+    <pre class="prettyprint lang-lua">
+require"apache2"
+cached_files = {}
+
+function read_file(filename) 
+    local input = io.open(filename, "r")
+    if input then
+        local data = input:read("*a")
+        cached_files[filename] = data
+        file = cached_files[filename]
+        input:close()
+    end
+    return cached_files[filename]
+end
+
+function check_cache(r)
+    if r.filename:match("%.png$") then -- Only match PNG files
+        local file = cached_files[r.filename] -- Check cache entries
+        if not file then
+            file = read_file(r.filename)  -- Read file into cache
+        end
+        if file then -- If file exists, write it out
+            r.status = 200
+            r:write(file)
+            r:info(("Sent %s to client from cache"):format(r.filename))
+            return apache2.DONE -- skip default handler for PNG files
+        end
+    end
+    return apache2.DECLINED -- If we had nothing to do, let others serve this.
+end
+    </pre>
+
+
+    
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaHookTranslateName" id="LuaHookTranslateName">LuaHookTranslateName</a> <a name="luahooktranslatename" id="luahooktranslatename">Directive</a></h2>
@@ -741,7 +1050,7 @@ traitement de la requête</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un point d'entrée à la phase du nom de
 traduction du traitement de la requête</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookTranslateName  /chemin/vers/lua/script.lua  nom_fonction_hook [early|late]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
@@ -829,6 +1138,18 @@ parentes sont fusionnées dans les enfants</td></tr>
     configuration parentes.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LuaInputFilter" id="LuaInputFilter">LuaInputFilter</a> <a name="luainputfilter" id="luainputfilter">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a Lua function for content input filtering</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaInputFilter filter_name /path/to/lua/script.lua function_name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>2.5.0 and later</td></tr>
+</table><p>La documentation de cette directive
+	n'a pas encore t traduite. Veuillez vous reporter  la version
+	en langue anglaise.</p></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaMapHandler" id="LuaMapHandler">LuaMapHandler</a> <a name="luamaphandler" id="luamaphandler">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Met en correspondance un chemin avec un gestionnaire lua</td></tr>
@@ -864,6 +1185,18 @@ parentes sont fusionnées dans les enfants</td></tr>
 	spécifié.</p>
 
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LuaOutputFilter" id="LuaOutputFilter">LuaOutputFilter</a> <a name="luaoutputfilter" id="luaoutputfilter">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a Lua function for content output filtering</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaOutputFilter filter_name /path/to/lua/script.lua function_name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>2.5.0 and later</td></tr>
+</table><p>La documentation de cette directive
+	n'a pas encore t traduite. Veuillez vous reporter  la version
+	en langue anglaise.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaPackageCPath" id="LuaPackageCPath">LuaPackageCPath</a> <a name="luapackagecpath" id="luapackagecpath">Directive</a></h2>
 <table class="directive">
@@ -905,12 +1238,22 @@ LuaPackagePath /scripts/lib/?/init.lua
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un point d'entrée pour la gestion rapide du
 traitement de la requête</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaQuickHandler /path/to/script.lua hook_function_name</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
-</table><p>...</p>
+</table>
+    <p>Cette phase s'exécute juste après l'attribution de la requête à
+    un serveur virtuel, et permet d'effectuer certains traitements avant
+    le déroulement des autres phases, ou de servir une requête sans
+    avoir à la traduire, l'associer à un espace de stockage, etc...
+    Comme cette phase s'exécute avant toute autre, les directives telles
+    que <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> ou
+    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> ne
+    sont pas encore prises en compte, car Les URI n'ont pas encore été
+    entièrement interprétés.
+    </p>
    <div class="note"><h3>Contexte</h3><p>Cette directive ne peut être
    utilisée ni à l'intérieur d'une section <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, ni dans un fichier htaccess.</p></div>
 
@@ -936,9 +1279,9 @@ relatifs dans les directives de mod_lua</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaScope" id="LuaScope">LuaScope</a> <a name="luascope" id="luascope">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Une valeur parmi once, request, conn, server -- la valeur
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Une valeur parmi once, request, conn, thread -- la valeur
 par défaut est once</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaScope once|request|conn|server [max|min max]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaScope once|request|conn|thread|server [min] [max]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LuaScope once</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
@@ -958,13 +1301,32 @@ par défaut est once</td></tr>
 
     <dt>conn:</dt> <dd>idem request, mais attaché à connection_rec</dd>
 
+    <dt>thread:</dt> <dd>Utilise l'interpréteur pendant toute la durée
+    de vie du thread qui traite la requête (disponible seulement avec
+    les MPMs threadés).</dd>
+
     <dt>server:</dt>  <dd>Le comportement est ici différent, car la
     portée du serveur présente une durée de vie assez longue, et
     plusieurs threads vont partager le même server_rec. Pour gérer tout
-    ceci, les interpréteurs sont stockés dans une liste de ressources
-    apr. Les arguments min et max ont été prévus pour spécifier une
-    taille de jeu, mais sont inutilisés pour le moment.</dd>
+    ceci, les états lua du serveur sont stockés dans une liste de ressources
+    apr. Les arguments <code>min</code> et <code>max</code> permettent
+    de spécifier les nombres minimaux et maximaux d'états lua à stocker
+    dans la liste.</dd>
    </dl>
+   <p>En général, les portées <code>thread</code> et <code>server</code>
+   sont 2 à 3 fois plus rapides que les autres, car elles n'ont pas besoin
+   de régénérer de nouveaux états Lua à chaque requête (comme c'est le
+   cas avec le MPM event, où même les connexions persistantes utilisent un
+   nouveau thread pour chaque requête). Si vous pensez que vos scripts
+   n'auront pas de problème s'il réutilisent un état, alors les portées
+   <code>thread</code> ou <code>server</code> doivent être utilisées car
+   elles présenteront de meilleures performances. Alors que la portée
+   <code>thread</code> fournira les réponses les plus rapides, la portée
+   <code>server</code> utilisera moins de mémoire car les états sont
+   rassemblés dans des jeux, permettant par exemple à 1000 threads de
+   partager 100 états Lua, ne nécessitant ainsi que 10% de la mémoire
+   requise par la portée <code>thread</code>.
+    </p>
 
 </div>
 </div>

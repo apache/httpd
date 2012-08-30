@@ -353,7 +353,9 @@
 <li><a href="mod_lua.html#luahooktranslatename">LuaHookTranslateName</a></li>
 <li><a href="mod_lua.html#luahooktypechecker">LuaHookTypeChecker</a></li>
 <li><a href="mod_lua.html#luainherit">LuaInherit</a></li>
+<li><a href="mod_lua.html#luainputfilter">LuaInputFilter</a></li>
 <li><a href="mod_lua.html#luamaphandler">LuaMapHandler</a></li>
+<li><a href="mod_lua.html#luaoutputfilter">LuaOutputFilter</a></li>
 <li><a href="mod_lua.html#luapackagecpath">LuaPackageCPath</a></li>
 <li><a href="mod_lua.html#luapackagepath">LuaPackagePath</a></li>
 <li><a href="mod_lua.html#luaquickhandler">LuaQuickHandler</a></li>
