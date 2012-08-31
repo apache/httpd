@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="./en/expr.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/expr.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Historiquement, il existe de nombreuses variantes dans la syntaxe
     des expressions permettant d'exprimer une condition dans les
@@ -486,7 +484,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 # N'autoriser l'accès à ce contenu que pendant les heures de
 # travail
 &lt;Directory "/foo/bar/business"&gt;
-    Require expr %{TIME_HOUR} &gt;= 9 &amp;&amp; %{TIME_HOUR} &lt;= 17 
+     Require expr %{TIME_HOUR} -gt 9 &amp;&amp; %{TIME_HOUR} -lt 17
 &lt;/Directory&gt;	
 	</pre>
 
