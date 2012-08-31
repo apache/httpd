@@ -170,7 +170,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1333969
      2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1356881
      2.2.x patch: http://people.apache.org/~rjung/patches/mod_proxy_http-fix-hostname-ssl-2_2.patch
-     +1: rjung
+     +1: rjung, covener
 
    * server/mpm_unix.c (dummy_connection): Use a TLS 1.0 close_notify
      alert if the chosen listener is configured for https; not perfect
@@ -180,7 +180,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1327080
      2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1356884
      2.2.x patch: http://people.apache.org/~rjung/patches/dummy_connection-https-tls-2_2.patch
-     +1: rjung
+     +1: rjung, covener
 
    * byterange filter: Remove apr 1.3 dependency by dropping apr_array_clear
      trunk patch: n/a
