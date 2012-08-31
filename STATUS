@@ -162,7 +162,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      which display information about the server configuration.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1374428
      2.4.x patch: trunk patch works.
-     +1: trawick
+     +1: trawick, gsmith
 
    * mod_ssl: Add wildcard CN match for mod_proxy.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1375584
