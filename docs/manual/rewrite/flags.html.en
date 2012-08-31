@@ -640,7 +640,8 @@ URI in request' warnings.
 <h2><a name="flag_s" id="flag_s">S|skip</a></h2>
 <p>The [S] flag is used to skip rules that you don't want to run. The 
 syntax of the skip flag is [S=<em>N</em>], where <em>N</em> signifies 
-the number of rules to skip. This can be thought of as a <code>goto</code> 
+the number of rules to skip (provided the <code class="directive"><a href="../mod/mod_rewrite.html#&#10;rewriterule">
+RewriteRule</a></code> matches). This can be thought of as a <code>goto</code> 
 statement in your rewrite ruleset. In the following example, we only want 
 to run the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> if the 
 requested URI doesn't correspond with an actual file.</p>
