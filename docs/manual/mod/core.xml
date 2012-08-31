@@ -376,7 +376,12 @@ NoDecode option available in 2.3.12 and later.</compatibility>
       module="mod_rewrite">RewriteOptions</directive>, <directive
       module="mod_rewrite">RewriteBase</directive>, <directive
       module="mod_rewrite">RewriteCond</directive>, <directive
-      module="mod_rewrite">RewriteRule</directive>) and
+      module="mod_rewrite">RewriteRule</directive>),
+      <module>mod_alias</module> directives (<directive
+      module="mod_alias">Redirect</directive>, <directive
+      module="mod_alias">RedirectTemp</directive>, <directive
+      module="mod_alias">RedirectPermanent</directive>, <directive
+      module="mod_alias">RedirectMatch</directive>), and
       <directive module="mod_actions">Action</directive> from
       <module>mod_actions</module>.
       </dd>
