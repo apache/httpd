@@ -1727,7 +1727,7 @@ bestimmte HTTP-Methoden</description>
     <note type="warning">
       Wenn es um Zugriffsbeschr&auml;nkungen geht, sollte
       ein <directive module="core" type="section"
-      >LimitExcept</directive>-Container sollte immmer einem <directive
+      >LimitExcept</directive>-Container sollte immer einem <directive
       module="core" type="section">Limit</directive>-Container vorgezogen
       werden, da <directive module="core" type="section">LimitExcept</directive>
       einen Schutz gegen beliebige Methoden bietet.
