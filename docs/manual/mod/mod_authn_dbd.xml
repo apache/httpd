@@ -165,7 +165,8 @@ AuthDBDUserPWQuery "SELECT password FROM authn WHERE user = %s"
 
 <usage>
     <p>The <directive>AuthDBDUserRealmQuery</directive> specifies an
-    SQL query to look up a password for a specified user and realm.
+    SQL query to look up a password for a specified user and realm in a 
+    digest authentication process.
     The user's ID and the realm, in that order, will be passed as string
     parameters when the SQL query is executed.  They may be referenced
     within the query statement using <code>%s</code> format specifiers.</p>
