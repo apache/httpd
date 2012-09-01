@@ -191,7 +191,7 @@ En Windows desde Apache httpd 2.3.3 y posteriores.</td></tr>
        transmitidos como se comentaba anteriormente, y el buffer inicial de datos y las
        direcciones de red son recuperadas a partir de una única llamada AcceptEx().
        <code>connect</code> utiliza la API AcceptEx() API, y recupera también
-       las direccciones de red, pero a diferencia de <code>none</code> 
+       las direcciones de red, pero a diferencia de <code>none</code> 
        la opción <code>connect</code> no espera a la transmisión inicial de los datos.</p>
 
     <p>Sobre Windows, <code>none</code> prefiere accept() antes que AcceptEx()
