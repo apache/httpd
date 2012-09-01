@@ -1051,7 +1051,9 @@ cannot use <code>$N</code> in the substitution string!
         you specify a <em>Substitution</em> string of
         <code>/www/file.html</code>, then this will be treated as a
         URL-path <em>unless</em> a directory named <code>www</code>
-        exists at the root or your file-system, in which case it will
+        exists at the root or your file-system (or, in the case of 
+        using rewrites in a <code>.htaccess</code> file, relative to
+        your document root), in which case it will
         be treated as a file-system path. If you wish other
         URL-mapping directives (such as <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>) to be applied to the
         resulting URL-path, use the <code>[PT]</code> flag as
