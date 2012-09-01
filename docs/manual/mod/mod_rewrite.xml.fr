@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1331582:1379702 (outdated) -->
+<!-- English Revision : 1379702 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -202,8 +202,44 @@ la version version 2.1</compatibility>
       <strong>after</strong> apr&egrave;s les r&egrave;gles sp&eacute;cifi&eacute;es dans le niveau
       enfant.
       </note>
+
       </dd>
-      </dl>
+
+      <dt><code>AllowAnyURI</code></dt>
+      <dd>
+
+      <p>A partir de la version 2.2.22 de httpd, lorsqu'une directive
+      <directive module="mod_rewrite">RewriteRule</directive> est
+      utilis&eacute;e dans un contexte de <code>serveur virtuel</code> ou de
+      serveur principal, <module>mod_rewrite</module> ne la traitera que
+      si l'URI de la requ&ecirc;te correspond &agrave; un <a
+      href="./directive-dict.html#Syntax">chemin d'URL</a>. Ceci permet
+      d'&eacute;viter certains probl&egrave;mes de s&eacute;curit&eacute; o&ugrave; certaines r&egrave;gles
+      peuvent permettre l'expansion de mod&egrave;les inattendus (voir <a
+      href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-3368">CVE-2011-3368</a>
+      et <a
+      href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-4317">CVE-2011-4317</a>).
+      Pour lever cette restriction, on peut activer l'option
+      <code>AllowAnyURI</code>, et <module>mod_rewrite</module> va alors
+      appliquer le jeu de r&egrave;gles &agrave; tout URI de requ&ecirc;te, sans v&eacute;rifier si
+      la cha&icirc;ne respecte la grammaire des chemins d'URL d&eacute;finie dans la
+      sp&eacute;cification HTTP.</p>
+
+      <note type="warning">
+      <title>Avertissement en mati&egrave;re de s&eacute;curit&eacute;</title> 
+
+      <p>L'activation de cette option expose le serveur &agrave; des
+      probl&egrave;mes de s&eacute;curit&eacute; si les r&egrave;gles de r&eacute;&eacute;criture n'ont pas &eacute;t&eacute;
+      r&eacute;dig&eacute;es avec soin. Il est donc <strong>fortement
+      recommand&eacute;</strong> de ne pas utiliser cette option. En
+      particulier, prenez garde aux cha&icirc;nes d'entr&eacute;e contenant le
+      caract&egrave;re '<code>@</code>' qui peut modifier l'interpr&eacute;tation de
+      l'URI transform&eacute;, comme indiqu&eacute; dans les CVE ci-dessus.</p>
+      </note>
+      </dd>
+
+     </dl>
+
 </usage>
 
 </directivesynopsis>
@@ -245,7 +281,7 @@ des traitements du moteur de r&eacute;&eacute;criture</description>
 <tr>
 <td>Adresse IP de l'h&ocirc;te distant</td>
 <td>192.168.200.166</td></tr>
-<tr><td>Nom de login distant</td><td>en g&eacute;n&eacute;ral "-"</td></tr>
+<tr><td>Nom de login didtant</td><td>en g&eacute;n&eacute;ral "-"</td></tr>
 <tr><td>nom d'authentification de l'utilisateur HTTP</td><td>nom
 d'utilisateur, ou "-" si non authentifi&eacute;</td></tr>
 <tr><td>Date et heure de la requ&ecirc;te</td><td>[28/Aug/2009:13:09:09 --0400]</td></tr>
@@ -1311,7 +1347,9 @@ substitution !
 	<em>Substitution</em> <code>/www/file.html</code>, cette
 	derni&egrave;re sera trait&eacute;e comme un chemin d'URL <em>&agrave; moins</em>
 	qu'un r&eacute;pertoire nomm&eacute; <code>www</code> n'existe &agrave; la racine
-	de votre syst&egrave;me de fichiers, auquel cas la cha&icirc;ne de
+	de votre syst&egrave;me de fichiers (ou dans le cas d'une
+	r&eacute;&eacute;criture au sein d'un fichier <code>.htaccess</code>,
+	relativement &agrave; la racine des documents), auquel cas la cha&icirc;ne de
 	substitution sera trait&eacute;e comme un chemin du syst&egrave;me de
 	fichiers. Si vous d&eacute;sirez que d'autres directives de
 	correspondance d'URL (comme la directive <directive
