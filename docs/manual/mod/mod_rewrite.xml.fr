@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1356115:1379321 (outdated) -->
+<!-- English Revision : 1379321 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1155,7 +1155,9 @@ substitution !
 	<em>Substitution</em> <code>/www/file.html</code>, cette
 	derni&egrave;re sera trait&eacute;e comme un chemin d'URL <em>&agrave; moins</em>
 	qu'un r&eacute;pertoire nomm&eacute; <code>www</code> n'existe &agrave; la racine
-	de votre syst&egrave;me de fichiers, auquel cas la cha&icirc;ne de
+	de votre syst&egrave;me de fichiers (ou dans le cas d'une
+	r&eacute;&eacute;criture au sein d'un fichier <code>.htaccess</code>,
+	relativement &agrave; la racine des documents), auquel cas la cha&icirc;ne de
 	substitution sera trait&eacute;e comme un chemin du syst&egrave;me de
 	fichiers. Si vous d&eacute;sirez que d'autres directives de
 	correspondance d'URL (comme la directive <directive
