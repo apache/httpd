@@ -281,7 +281,7 @@ des traitements du moteur de r&eacute;&eacute;criture</description>
 <tr>
 <td>Adresse IP de l'h&ocirc;te distant</td>
 <td>192.168.200.166</td></tr>
-<tr><td>Nom de login didtant</td><td>en g&eacute;n&eacute;ral "-"</td></tr>
+<tr><td>Nom de login distant</td><td>en g&eacute;n&eacute;ral "-"</td></tr>
 <tr><td>nom d'authentification de l'utilisateur HTTP</td><td>nom
 d'utilisateur, ou "-" si non authentifi&eacute;</td></tr>
 <tr><td>Date et heure de la requ&ecirc;te</td><td>[28/Aug/2009:13:09:09 --0400]</td></tr>
