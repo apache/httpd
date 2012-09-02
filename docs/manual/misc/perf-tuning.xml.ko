@@ -208,7 +208,7 @@
 
     </section>
 
-    <section id="htacess">
+    <section id="htaccess">
 
       <title>AllowOverride</title>
 
