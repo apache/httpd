@@ -191,7 +191,7 @@ En Windows desde Apache httpd 2.3.3 y posteriores.</td></tr>
        transmitidos como se comentaba anteriormente, y el buffer inicial de datos y las
        direcciones de red son recuperadas a partir de una única llamada AcceptEx().
        <code>connect</code> utiliza la API AcceptEx() API, y recupera también
-       las direccciones de red, pero a diferencia de <code>none</code> 
+       las direcciones de red, pero a diferencia de <code>none</code> 
        la opción <code>connect</code> no espera a la transmisión inicial de los datos.</p>
 
     <p>Sobre Windows, <code>none</code> prefiere accept() antes que AcceptEx()
@@ -1634,7 +1634,7 @@ media type in the HTTP Content-Type header field</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 </table>
-    <p>When the server has been compiled with gprof profiling suppport,
+    <p>When the server has been compiled with gprof profiling support,
     <code class="directive">GprofDir</code> causes <code>gmon.out</code> files to
     be written to the specified directory when the process exits.  If the
     argument ends with a percent symbol ('%'), subdirectories are created

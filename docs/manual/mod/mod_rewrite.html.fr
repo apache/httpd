@@ -1143,7 +1143,9 @@ substitution !
 	<em>Substitution</em> <code>/www/file.html</code>, cette
 	dernière sera traitée comme un chemin d'URL <em>à moins</em>
 	qu'un répertoire nommé <code>www</code> n'existe à la racine
-	de votre système de fichiers, auquel cas la chaîne de
+	de votre système de fichiers (ou dans le cas d'une
+	réécriture au sein d'un fichier <code>.htaccess</code>,
+	relativement à la racine des documents), auquel cas la chaîne de
 	substitution sera traitée comme un chemin du système de
 	fichiers. Si vous désirez que d'autres directives de
 	correspondance d'URL (comme la directive <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>) soient appliquées au
@@ -1451,7 +1453,7 @@ redondant)</td>
 
       <p><strong>Dans une configuration de niveau répertoire pour
       <code>/chemin</code><br />
-       (<code>/chemin/physique/vers/chemin/.htacccess</code>, avec
+       (<code>/chemin/physique/vers/chemin/.htaccess</code>, avec
       <code>RewriteBase /chemin</code>)<br />
        pour la requête ``<code>GET
       /chemin/chemin-local/infochemin</code>'':</strong><br />
