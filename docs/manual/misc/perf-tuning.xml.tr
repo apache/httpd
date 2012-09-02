@@ -231,7 +231,7 @@
 
     </section>
 
-    <section id="htacess">
+    <section id="htaccess">
 
       <title><code>AllowOverride</code></title>
 
