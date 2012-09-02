@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1330911:1371585 (outdated) -->
+<!-- English Revision : 1371585 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -86,9 +86,8 @@ condens&eacute;s</title>
     la requ&ecirc;te comporte une cha&icirc;ne d'arguments -- voir plus loin "<a
     href="#msie">Travailler avec MS Internet Explorer</a>" pour
     contourner ce probl&egrave;me), <a
-    href="http://www.mozilla.org">Mozilla</a>, <a
-    href="http://channels.netscape.com/ns/browsers/download.jsp">
-    Netscape</a> 7, <a href="http://www.opera.com/">Opera</a>, et <a
+    href="http://www.mozilla.org">Mozilla</a>, Netscape 7, 
+    <a href="http://www.opera.com/">Opera</a>, et <a
     href="http://www.apple.com/safari/">Safari</a>. <a
     href="http://lynx.isc.org/">lynx</a> ne supporte
     <strong>pas</strong> l'authentification &agrave; base de condens&eacute;s MD5.
