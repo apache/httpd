@@ -514,7 +514,7 @@ AddOutputFilter INCLUDES .shtml
     <code>include</code>, <code>echo</code>, and <code>set</code>
     directives. If <directive module="mod_include"
     >SSILegacyExprParser</directive> is set to <code>on</code>,
-    substitution also occures in the arguments to conditional operators.
+    substitution also occurs in the arguments to conditional operators.
     You can insert a literal dollar sign into the string using backslash
     quoting:</p>
 
