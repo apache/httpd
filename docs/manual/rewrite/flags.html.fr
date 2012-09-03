@@ -24,6 +24,8 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/flags.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/flags.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
 <p>Ce document décrit les drapeaux disponibles dans la directive
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>, en fournissant
@@ -433,7 +435,7 @@ car il peut provoquer un bouclage infini.
 Le drapeau [Next] peut servir, par exemple,
 à remplacer de manière répétitive
 une chaîne de caractère ou une lettre dans une requête. Dans l'exemple
-suivant, chaque occurence de A sera remplacée par B dans la requête, et
+suivant, chaque occurrence de A sera remplacée par B dans la requête, et
 ceci jusqu'il n'y ait plus de A à remplacer.
 </p>
 

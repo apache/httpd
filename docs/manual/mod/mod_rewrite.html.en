@@ -1346,7 +1346,7 @@ directive.</p>
 
       <p><strong>Inside per-directory configuration for
       <code>/somepath</code><br />
-       (<code>/physical/path/to/somepath/.htacccess</code>, with
+       (<code>/physical/path/to/somepath/.htaccess</code>, with
       <code>RewriteBase /somepath</code>)<br />
        for request ``<code>GET
       /somepath/localpath/pathinfo</code>'':</strong><br />

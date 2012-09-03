@@ -1818,7 +1818,7 @@ bestimmte HTTP-Methoden</td></tr>
 
     <div class="warning">
       Wenn es um Zugriffsbeschränkungen geht, sollte
-      ein <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code>-Container sollte immmer einem <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code>-Container vorgezogen
+      ein <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code>-Container sollte immer einem <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code>-Container vorgezogen
       werden, da <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code>
       einen Schutz gegen beliebige Methoden bietet.
     </div>
