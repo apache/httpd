@@ -423,7 +423,7 @@ car il peut provoquer un bouclage infini.
 Le drapeau [Next] peut servir, par exemple,
 &agrave; remplacer de mani&egrave;re r&eacute;p&eacute;titive
 une cha&icirc;ne de caract&egrave;re ou une lettre dans une requ&ecirc;te. Dans l'exemple
-suivant, chaque occurence de A sera remplac&eacute;e par B dans la requ&ecirc;te, et
+suivant, chaque occurrence de A sera remplac&eacute;e par B dans la requ&ecirc;te, et
 ceci jusqu'il n'y ait plus de A &agrave; remplacer.
 </p>
 
