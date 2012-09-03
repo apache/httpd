@@ -28,8 +28,6 @@
 <a href="../fr/mod/mod_auth_digest.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/mod/mod_auth_digest.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Authentification utilisateur utilisant les condensés
 MD5</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -100,8 +98,8 @@ condensés</a></h2>
     supportant l'authentification à base de condensés MD5 incluaient <a href="http://www.w3.org/Amaya/">Amaya</a>, <a href="http://konqueror.kde.org/">Konqueror</a>, <a href="http://www.microsoft.com/windows/ie/">MS Internet Explorer</a>
     pour Mac OS X et Windows (bien que la version Windows échoue lorsque
     la requête comporte une chaîne d'arguments -- voir plus loin "<a href="#msie">Travailler avec MS Internet Explorer</a>" pour
-    contourner ce problème), <a href="http://www.mozilla.org">Mozilla</a>, <a href="http://channels.netscape.com/ns/browsers/download.jsp">
-    Netscape</a> 7, <a href="http://www.opera.com/">Opera</a>, et <a href="http://www.apple.com/safari/">Safari</a>. <a href="http://lynx.isc.org/">lynx</a> ne supporte
+    contourner ce problème), <a href="http://www.mozilla.org">Mozilla</a>, Netscape 7, 
+    <a href="http://www.opera.com/">Opera</a>, et <a href="http://www.apple.com/safari/">Safari</a>. <a href="http://lynx.isc.org/">lynx</a> ne supporte
     <strong>pas</strong> l'authentification à base de condensés MD5.
     Comme l'authentification à base de condensés MD5 est moins répandue
     que l'authentification Basic, vous ne devez l'utiliser que dans des
