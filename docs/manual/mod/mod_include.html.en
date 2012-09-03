@@ -532,7 +532,7 @@ AddOutputFilter INCLUDES .shtml
     <code>exec</code>, <code>flastmod</code>, <code>fsize</code>,
     <code>include</code>, <code>echo</code>, and <code>set</code>
     directives. If <code class="directive"><a href="#ssilegacyexprparser">SSILegacyExprParser</a></code> is set to <code>on</code>,
-    substitution also occures in the arguments to conditional operators.
+    substitution also occurs in the arguments to conditional operators.
     You can insert a literal dollar sign into the string using backslash
     quoting:</p>
 
