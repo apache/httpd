@@ -233,9 +233,7 @@ SSLCACertificateFile conf/ssl.crt/company-ca.crt
 
 &lt;Directory /usr/local/apache2/htdocs&gt;
     #   Outside the subarea only Intranet access is granted
-    Order                deny,allow
-    Deny                 from all
-    Allow                from 192.168.1.0/24
+    Require              ip 192.168.1.0/24
 &lt;/Directory&gt;
 
 &lt;Directory /usr/local/apache2/htdocs/subarea&gt;
