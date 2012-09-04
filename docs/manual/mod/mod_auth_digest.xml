@@ -325,7 +325,7 @@ of clients</description>
     the amount of shared memory, that will be allocated at the server
     startup for keeping track of clients. Note that the shared memory
     segment cannot be set less than the space that is necessary for
-    tracking at least <em>one</em> client. This value is dependant on your
+    tracking at least <em>one</em> client. This value is dependent on your
     system. If you want to find out the exact value, you may simply
     set <directive>AuthDigestShmemSize</directive> to the value of
     <code>0</code> and read the error message after trying to start the
