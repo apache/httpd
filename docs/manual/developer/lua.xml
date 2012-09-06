@@ -151,7 +151,11 @@ end
 
 <section id="basic_remap"><title>Example 1: A basic remapping module</title>
 <p>
-
+    These first examples show how mod_lua can be used to rewrite URIs in the same 
+    way that one could do using <directive module="mod_alias">Alias</directive> or 
+    <directive module="mod_rewrite">RewriteRule</directive>, but with more clarity 
+    on how the decision-making takes place, as well as allowing for more complex 
+    decisions than would otherwise be allowed with said directives.
 </p>
 
 <highlight language="config">
@@ -169,7 +173,7 @@ LuaHookTranslateName /path/too/foo.lua remap
 
 function remap(r)
     -- Test if the URI matches our criteria
-    local barFile =  r.uri:match("/foo/([a-zA-Z0-9]+%.bar)")
+    local barFile =  r.uri:match("/foo/([a-zA-Z0-9]+)%.bar")
     if barFile then
         r.filename = "/internal/" .. barFile
     end
@@ -185,7 +189,12 @@ end
     Advanced remap example.
     This example will evaluate some conditions, and based on that, 
     remap a file to one of two destinations, using a rewrite map.
-    
+    This is similar to mixing AliasMatch and ProxyPass, but 
+    without them clashing in any way. Assuming we are on example.com, then:
+
+    http://example.com/photos/test.png will be rewritten as /uploads/www/test.png
+    http://example.com/ext/foo.html will be proxied to http://www.external.com/foo.html
+    URIs that do not match, will be served by their respective default handlers
 ]]--
 
 local map = {
@@ -196,7 +205,7 @@ local map = {
                 },
       externals = {
                    source = [[^/ext/(.*)$]],
-                   destination = [[http://www.example.com/$1]],
+                   destination = [[http://www.external.com/$1]],
                    proxy = true
                 }
 }
@@ -236,7 +245,12 @@ bla bla
 
 <section id="mass_vhost"><title>Example 2: Mass virtual hosting</title>
 <p>
-
+    As with simple and advanced rewriting, you can use mod_lua for dynamically 
+    assigning a hostname to a specific document root, much like 
+    <module>mod_vhost_alias</module> does, but with more control over what goes 
+    where. This could be as simple as a table holding the information about which 
+    host goes into which folder, or more advanced, using a database holding the 
+    document roots of each hostname.
 </p>
 
 <highlight language="config">
@@ -289,15 +303,16 @@ local cached_vhosts = {}
 local timeout = 60
 
 -- Function for querying the database for saved vhost entries
-function query_vhosts(host)
+function query_vhosts(r)
+    local host = r.hostname
     if not cached_vhosts[host] or (cached_vhosts[host] and cached_vhosts[host].updated &lt; os.time() - timeout) then
-        local db = apache2.dbopen(r,"mod_dbd")
-        local _host = db:escape(_host)
-        local res, err = db:query( ("SELECT `destination` FROM `vhosts` WHERE `hostname` = '%s' LIMIT 1"):format(_host) )
+        local db,err = ap.dbopen(r,"mod_dbd")
+        local _host = db:escape(r,host)
+        local res, err = db:query(r, ("SELECT `destination` FROM `vhosts` WHERE `hostname` = '%s' LIMIT 1"):format(_host) )
         if res and #res == 1 then
             cached_vhosts[host] = { updated = os.time(), destination = res[1][1] }
         else
-            cached_vhosts[host] = nil
+            cached_vhosts[host] = { updated = os.time(), destination = nil } -- don't re-query whenever there's no result, wait a while.
         end
         db:close()
     end
@@ -310,12 +325,12 @@ end
         
 function mass_vhost(r)
     -- Check whether the hostname is in our database
-    local destination = query_vhosts(r.hostname)
+    local destination = query_vhosts(r)
     if destination then
         -- If found, rewrite and change document root
         local filename = r.filename:sub(r.document_root:len()+1)
         r.filename = destination .. filename
-        apahce2.set_document_root(destination)
+        ap.set_document_root(r,destination)
         return apache2.OK
     end
     return apache2.DECLINED
@@ -324,7 +339,7 @@ end
 <!-- END EXAMPLE CODE -->
 
 <p>
-bla bla
+
 </p>
 </section>
 
@@ -332,7 +347,11 @@ bla bla
 
 
 <section id="basic_auth"><title>Example 3: A basic authorization hook</title>
-
+<p>
+    With the authorization hooks, you can add custom auth phases to your request 
+    processing, allowing you to either add new requirements that were not previously 
+    supported by httpd, or tweaking existing ones to accommodate your needs. 
+</p>
 <highlight language="config">
 LuaHookAuthChecker /path/too/foo.lua check_auth
 </highlight>
@@ -445,7 +464,12 @@ end
 </section>
 
 <section id="authz"><title>Example 4: Authorization using LuaAuthzProvider</title>
-
+<p>
+    If you require even more advanced control over your authorization phases, 
+    you can add custom authz providers to help you manage your server. The 
+    example below shows you how you can split a single htpasswd file into 
+    groups with different permissions:
+</p>
 <highlight language="config">
 LuaAuthzProvider rights /path/to/lua/script.lua rights_handler
 &lt;Directory /www/private&gt;
@@ -489,13 +513,18 @@ end
 </section>
 
 <section id="map_handler"><title>Example 5: Overlays using LuaMapHandler</title>
-
+<p>
+Coming soon!
+</p>
 <highlight language="config">
 LuaMapHandler ^/portal/([a-z]+)/   /path/to/lua/script.lua handle_$1
 </highlight>
 </section>
 
 <section id="mod_status_lua"><title>Example 6: Basic Lua scripts</title>
+<p>
+Also coming soon
+</p>
 </section>
 
 
@@ -763,7 +792,7 @@ r:puts(md5) -- prints out "9e107d9d372bb6826bd81d3542a419d6"
     )
     </title>
 <p>
-convert an OS path to a URL in an OS dependant way.
+convert an OS path to a URL in an OS dependent way.
         </p>
 <p>
 <em>Arguments:</em>
