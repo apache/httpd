@@ -149,13 +149,14 @@ SessionCryptoPassphrase secret
       directive. Typically this login page will contain an HTML form, asking the user to
       provide their usename and password.</p>
 
-      <div class="example"><h3>Example login form</h3><p><code>
-        &lt;form method="POST" action="/dologin.html"&gt;<br />
-        Username: &lt;input type="text" name="httpd_username" value="" /&gt;<br />
-        Password: &lt;input type="password" name="httpd_password" value="" /&gt;<br />
-        &lt;input type="submit" name="login" value="Login" /&gt;<br />
-        &lt;/form&gt;<br />
-      </code></p></div>
+      <div class="example"><h3>Example login form</h3><pre class="prettyprint lang-html">
+&lt;form method="POST" action="/dologin.html"&gt;
+  Username: &lt;input type="text" name="httpd_username" value="" /&gt;
+  Password: &lt;input type="password" name="httpd_password" value="" /&gt;
+  &lt;input type="submit" name="login" value="Login" /&gt;
+&lt;/form&gt;
+        </pre>
+</div>
 
       <p>The part that does the actual login is handled by the <var>form-login-handler</var>.
       The action of the form should point at this handler, which is configured within
@@ -187,16 +188,15 @@ SessionCryptoPassphrase secret
       form, as in the example below. As a result, the same <var>form-login-handler</var> can be
       reused for different areas of a website.</p>
 
-      <div class="example"><h3>Example login form with location</h3><p><code>
-        &lt;form method="POST" action="/dologin.html"&gt;<br />
-        <span class="indent">
-          Username: &lt;input type="text" name="httpd_username" value="" /&gt;<br />
-          Password: &lt;input type="password" name="httpd_password" value="" /&gt;<br />
-          &lt;input type="submit" name="login" value="Login" /&gt;<br />
-          &lt;input type="hidden" name="httpd_location" value="http://example.com/success.html" /&gt;<br />
-        </span>
-        &lt;/form&gt;<br />
-      </code></p></div>
+      <div class="example"><h3>Example login form with location</h3><pre class="prettyprint lang-html">
+&lt;form method="POST" action="/dologin.html"&gt;
+  Username: &lt;input type="text" name="httpd_username" value="" /&gt;
+  Password: &lt;input type="password" name="httpd_password" value="" /&gt;
+  &lt;input type="submit" name="login" value="Login" /&gt;
+  &lt;input type="hidden" name="httpd_location" value="http://example.com/success.html" /&gt;
+&lt;/form&gt;
+        </pre>
+</div>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -245,15 +245,14 @@ SessionCryptoPassphrase secret
       the original protected URL, without the page having to know what that
       URL is.</p>
 
-      <div class="example"><h3>Example inline login form</h3><p><code>
-        &lt;form method="POST" <strong>action=""</strong>&gt;<br />
-        <span class="indent">
-          Username: &lt;input type="text" name="httpd_username" value="" /&gt;<br />
-          Password: &lt;input type="password" name="httpd_password" value="" /&gt;<br />
-          &lt;input type="submit" name="login" value="Login" /&gt;<br />
-        </span>
-        &lt;/form&gt;<br />
-      </code></p></div>
+      <div class="example"><h3>Example inline login form</h3><pre class="prettyprint lang-html">
+&lt;form method="POST" <strong>action=""</strong>&gt;
+  Username: &lt;input type="text" name="httpd_username" value="" /&gt;
+  Password: &lt;input type="password" name="httpd_password" value="" /&gt;
+  &lt;input type="submit" name="login" value="Login" /&gt;
+&lt;/form&gt;
+</pre>
+</div>
 
       <p>When the end user has filled in their login details, the form will make
       an HTTP POST request to the original password protected URL.
@@ -281,18 +280,17 @@ SessionCryptoPassphrase secret
       <p>To enable body preservation, add three additional fields to the login form as
       per the example below.</p>
 
-      <div class="example"><h3>Example with body preservation</h3><p><code>
-        &lt;form method="POST" action=""&gt;<br />
-        <span class="indent">
-          Username: &lt;input type="text" name="httpd_username" value="" /&gt;<br />
-          Password: &lt;input type="password" name="httpd_password" value="" /&gt;<br />
-          &lt;input type="submit" name="login" value="Login" /&gt;<br />
-          <strong>&lt;input type="hidden" name="httpd_method" value="POST" /&gt;<br />
-          &lt;input type="hidden" name="httpd_mimetype" value="application/x-www-form-urlencoded" /&gt;<br />
-          &lt;input type="hidden" name="httpd_body" value="name1=value1&amp;name2=value2" /&gt;</strong><br />
-        </span>
-        &lt;/form&gt;
-      </code></p></div>
+      <div class="example"><h3>Example with body preservation</h3><pre class="prettyprint lang-html">
+&lt;form method="POST" action=""&gt;
+  Username: &lt;input type="text" name="httpd_username" value="" /&gt;
+  Password: &lt;input type="password" name="httpd_password" value="" /&gt;
+  &lt;input type="submit" name="login" value="Login" /&gt;
+  <br />  <strong>&lt;input type="hidden" name="httpd_method" value="POST" /&gt;
+  &lt;input type="hidden" name="httpd_mimetype" value="application/x-www-form-urlencoded" /&gt;
+  &lt;input type="hidden" name="httpd_body" value="name1=value1&amp;name2=value2" /&gt;</strong><br />
+&lt;/form&gt;
+        </pre>
+</div>
 
       <p>How the method, mimetype and body of the original request are embedded within the
       login form will depend on the platform and technology being used within the website.
