@@ -118,11 +118,13 @@ SessionCryptoPassphrase secret
       provide their usename and password.</p>
 
       <example><title>Example login form</title>
-        &lt;form method="POST" action="/dologin.html"&gt;<br />
-        Username: &lt;input type="text" name="httpd_username" value="" /&gt;<br />
-        Password: &lt;input type="password" name="httpd_password" value="" /&gt;<br />
-        &lt;input type="submit" name="login" value="Login" /&gt;<br />
-        &lt;/form&gt;<br />
+        <highlight language="html">
+&lt;form method="POST" action="/dologin.html"&gt;
+  Username: &lt;input type="text" name="httpd_username" value="" /&gt;
+  Password: &lt;input type="password" name="httpd_password" value="" /&gt;
+  &lt;input type="submit" name="login" value="Login" /&gt;
+&lt;/form&gt;
+        </highlight>
       </example>
 
       <p>The part that does the actual login is handled by the <var>form-login-handler</var>.
@@ -157,14 +159,14 @@ SessionCryptoPassphrase secret
       reused for different areas of a website.</p>
 
       <example><title>Example login form with location</title>
-        &lt;form method="POST" action="/dologin.html"&gt;<br />
-        <indent>
-          Username: &lt;input type="text" name="httpd_username" value="" /&gt;<br />
-          Password: &lt;input type="password" name="httpd_password" value="" /&gt;<br />
-          &lt;input type="submit" name="login" value="Login" /&gt;<br />
-          &lt;input type="hidden" name="httpd_location" value="http://example.com/success.html" /&gt;<br />
-        </indent>
-        &lt;/form&gt;<br />
+        <highlight language="html">
+&lt;form method="POST" action="/dologin.html"&gt;
+  Username: &lt;input type="text" name="httpd_username" value="" /&gt;
+  Password: &lt;input type="password" name="httpd_password" value="" /&gt;
+  &lt;input type="submit" name="login" value="Login" /&gt;
+  &lt;input type="hidden" name="httpd_location" value="http://example.com/success.html" /&gt;
+&lt;/form&gt;
+        </highlight>
       </example>
 
     </section>
@@ -216,13 +218,13 @@ SessionCryptoPassphrase secret
       URL is.</p>
 
       <example><title>Example inline login form</title>
-        &lt;form method="POST" <strong>action=""</strong>&gt;<br />
-        <indent>
-          Username: &lt;input type="text" name="httpd_username" value="" /&gt;<br />
-          Password: &lt;input type="password" name="httpd_password" value="" /&gt;<br />
-          &lt;input type="submit" name="login" value="Login" /&gt;<br />
-        </indent>
-        &lt;/form&gt;<br />
+<highlight language="html">
+&lt;form method="POST" <strong>action=""</strong>&gt;
+  Username: &lt;input type="text" name="httpd_username" value="" /&gt;
+  Password: &lt;input type="password" name="httpd_password" value="" /&gt;
+  &lt;input type="submit" name="login" value="Login" /&gt;
+&lt;/form&gt;
+</highlight>
       </example>
 
       <p>When the end user has filled in their login details, the form will make
@@ -252,16 +254,16 @@ SessionCryptoPassphrase secret
       per the example below.</p>
 
       <example><title>Example with body preservation</title>
-        &lt;form method="POST" action=""&gt;<br />
-        <indent>
-          Username: &lt;input type="text" name="httpd_username" value="" /&gt;<br />
-          Password: &lt;input type="password" name="httpd_password" value="" /&gt;<br />
-          &lt;input type="submit" name="login" value="Login" /&gt;<br />
-          <strong>&lt;input type="hidden" name="httpd_method" value="POST" /&gt;<br />
-          &lt;input type="hidden" name="httpd_mimetype" value="application/x-www-form-urlencoded" /&gt;<br />
-          &lt;input type="hidden" name="httpd_body" value="name1=value1&amp;name2=value2" /&gt;</strong><br />
-        </indent>
-        &lt;/form&gt;
+        <highlight language="html">
+&lt;form method="POST" action=""&gt;
+  Username: &lt;input type="text" name="httpd_username" value="" /&gt;
+  Password: &lt;input type="password" name="httpd_password" value="" /&gt;
+  &lt;input type="submit" name="login" value="Login" /&gt;
+  <br/>  <strong>&lt;input type="hidden" name="httpd_method" value="POST" /&gt;
+  &lt;input type="hidden" name="httpd_mimetype" value="application/x-www-form-urlencoded" /&gt;
+  &lt;input type="hidden" name="httpd_body" value="name1=value1&amp;name2=value2" /&gt;</strong><br/>
+&lt;/form&gt;
+        </highlight>
       </example>
 
       <p>How the method, mimetype and body of the original request are embedded within the
