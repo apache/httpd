@@ -727,7 +727,7 @@ connection client certificates.</td></tr>
     <p>It specifies the directory path, file name or nickname of a
     per connection client certificate used when establishing an SSL
     or TLS connection to an LDAP server. Different locations or
-    directories may have their own independant client certificate
+    directories may have their own independent client certificate
     settings. Some LDAP toolkits (notably Novell)
     do not support per connection client certificates, and will throw an
     error on LDAP server connection if you try to use this directive
