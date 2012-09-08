@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1343935:1371585 (outdated) -->
+<!-- English Revision : 1371585 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -188,8 +188,8 @@ module affich&eacute;es par le gestionnaire server-info</description>
 
     <highlight language="config">
 AddModuleInfo mod_deflate.c 'See &lt;a \
-    href="http://www.apache.org/docs/&httpd.docs;/mod/mod_deflate.html"&gt;\
-    http://www.apache.org/docs/&httpd.docs;/mod/mod_deflate.html&lt;/a&gt;'
+    href="http://httpd.apache.org/docs/&httpd.docs;/mod/mod_deflate.html"&gt;\
+    http://httpd.apache.org/docs/&httpd.docs;/mod/mod_deflate.html&lt;/a&gt;'
     </highlight>
 </usage>
 
