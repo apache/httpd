@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1358946:1380533 (outdated) -->
+<!-- English Revision : 1380533 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -52,11 +52,9 @@ d'Apache</compatibility>
     href="http://www.openldap.org/">OpenLDAP SDK</a> (version 2.x ou
     sup&eacute;rieure), <a
     href="http://developer.novell.com/ndk/cldap.htm">Novell LDAP
-    SDK</a>, <a href="http://www.mozilla.org/directory/csdk.html">
-    Mozilla LDAP SDK</a>, le SDK LDAP propre &agrave; Solaris (bas&eacute; sur
-    Mozilla), le SDK LDAP propre &agrave; Microsoft, ou le SDK <a
-    href="http://www.iplanet.com/downloads/developer/">iPlanet
-    (Netscape)</a>. Voir le site web <a
+    SDK</a>, <a href="https://wiki.mozilla.org/LDAP_C_SDK">
+    Mozilla LDAP SDK</a>, le SDK LDAP Solaris natif (bas&eacute; sur Mozilla)
+    ou le SDK LDAP Microsoft natif. Voir le site web <a
     href="http://apr.apache.org">APR</a> pour plus de d&eacute;tails.</p>
 
 </summary>
@@ -457,14 +455,18 @@ LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
 <name>LDAPSharedCacheFile</name>
 <description>D&eacute;finit le fichier du cache en m&eacute;moire
 partag&eacute;e</description>
-<syntax>LDAPSharedCacheFile <var>chemin/nom-fichier</var></syntax>
+<syntax>LDAPSharedCacheFile <var>chemin-fichier</var></syntax>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>Cette directive permet de sp&eacute;cifier le chemin et le nom du
+    <p>Cette directive permet de sp&eacute;cifier le chemin du
     fichier du cache en m&eacute;moire partag&eacute;e. Si elle n'est pas d&eacute;finie, la
     m&eacute;moire partag&eacute;e anonyme sera utilis&eacute;e si la plate-forme la
     supporte.</p>
+
+    <p>Si <var>chemin-fichier</var> n'est pas un chemin absolu, il sera
+    relatif au r&eacute;pertoire d&eacute;fini via la directive <directive
+    module="core">DefaultRuntimeDir</directive>.</p>
 </usage>
 </directivesynopsis>
 

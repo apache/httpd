@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1331006:1371903 (outdated) -->
+<!-- English Revision : 1371903 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -211,8 +211,10 @@ Header merge Cache-Control no-store env=NO_STORE
 <directivesynopsis>
 <name>RequestHeader</name>
 <description>Configure les en-t&ecirc;tes d'une requ&ecirc;te HTTP</description>
-<syntax>RequestHeader add|append|edit|edit*|merge|set|unset <var>en-t&ecirc;te</var>
-[<var>valeur</var>] [<var>remplacement</var>] [early|env=[!]<var>variable</var>]</syntax>
+<syntax>RequestHeader add|append|edit|edit*|merge|set|unset
+<var>en-t&ecirc;te</var> [<var>valeur</var>] [<var>remplacement</var>]
+[early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
+</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
@@ -323,8 +325,10 @@ Header merge Cache-Control no-store env=NO_STORE
 <directivesynopsis>
 <name>Header</name>
 <description>Configure les en-t&ecirc;tes d'une r&eacute;ponse HTTP</description>
-<syntax>Header [<var>condition</var>] add|append|echo|edit|merge|set|unset
-<var>en-t&ecirc;te</var> [<var>valeur</var>] [early|env=[!]<var>variable</var>]</syntax>
+<syntax>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|unset
+<var>en-t&ecirc;te</var> [<var>valeur</var>] [<var>remplacement</var>]
+[early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
+</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
@@ -397,12 +401,17 @@ Header merge Cache-Control no-store env=NO_STORE
     <var>valeur</var> ne doit pas &ecirc;tre pr&eacute;sent.</dd>
 
     <dt><code>edit</code></dt>
+    <dt><code>edit*</code></dt>
     <dd>Si l'en-t&ecirc;te existe, sa valeur est modifi&eacute;e en fonction d'une
     <glossary ref="regex">expression rationnelle</glossary> de type
     recherche/remplacement. L'argument <var>valeur</var> est une
     <glossary ref="regex">expression rationnelle</glossary>, et
     l'argument <var>remplacement</var> une cha&icirc;ne de caract&egrave;res de
-    remplacement qui peut contenir des r&eacute;f&eacute;rences arri&egrave;res.</dd>
+    remplacement qui peut contenir des r&eacute;f&eacute;rences
+    arri&egrave;res. La forme <code>edit</code> n'effectuera une
+    recherche/remplacement qu'une seule fois dans la valeur de
+    l'en-t&ecirc;te, alors que la forme <code>edit*</code> en effectuera autant
+    que le nombre d'apparition de la cha&icirc;ne &agrave; remplacer.</dd>
 
     <dt><code>merge</code></dt>
     <dd>La valeur d'en-t&ecirc;te est ajout&eacute;e &agrave; tout en-t&ecirc;te de m&ecirc;me nom, sauf
