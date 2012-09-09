@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1372800:1379335 (outdated) -->
+<!-- English Revision : 1379335 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -412,12 +412,17 @@ All pour les versions ant&eacute;rieures</default>
       module="mod_usertrack">CookieStyle</directive>, <directive
       module="mod_usertrack">CookieTracking</directive>, <directive
       module="mod_usertrack">CookieName</directive>), des directives du
-      <module>mod_rewrite</module> directives (<directive
+      module <module>mod_rewrite</module> directives (<directive
       module="mod_rewrite">RewriteEngine</directive>, <directive
       module="mod_rewrite">RewriteOptions</directive>, <directive
       module="mod_rewrite">RewriteBase</directive>, <directive
       module="mod_rewrite">RewriteCond</directive>, <directive
-      module="mod_rewrite">RewriteRule</directive>) et de la directive
+      module="mod_rewrite">RewriteRule</directive>), des directives du
+      module <module>mod_alias</module> directives (<directive
+      module="mod_alias">Redirect</directive>, <directive
+      module="mod_alias">RedirectTemp</directive>, <directive
+      module="mod_alias">RedirectPermanent</directive>, <directive
+      module="mod_alias">RedirectMatch</directive>), et de la directive
       <directive module="mod_actions">Action</directive> du module
       <module>mod_actions</module>.
       </dd>
