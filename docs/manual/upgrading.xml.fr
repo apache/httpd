@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1362707:1375996 (outdated) -->
+<!-- English Revision : 1375996 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -115,6 +115,17 @@ n&eacute;cessiter une mise &agrave; jour des fichiers de configuration de la ver
     autorisation</a> qui explique les nouveaux m&eacute;canismes permettant de
     contr&ocirc;ler l'ordre dans lequel les directives d'autorisation sont
     appliqu&eacute;es.</p>
+
+    <p>Les directives qui contr&ocirc;lent la mani&egrave;re dont les modules
+    d'autorisation r&eacute;agissent lorsqu'ils ne reconnaissent pas
+    l'utilisateur authentifi&eacute; ont &eacute;t&eacute; supprim&eacute;es : elles comprennent les
+    directives AuthzLDAPAuthoritative, AuthzDBDAuthoritative,
+    AuthzDBMAuthoritative, AuthzGroupFileAuthoritative,
+    AuthzUserAuthoritative et AuthzOwnerAuthoritative. Ces directives
+    ont &eacute;t&eacute; remplac&eacute;es par les directives plus explicites <directive
+    module="mod_authz_core">RequireAny</directive>, <directive
+    module="mod_authz_core">RequireNone</directive>, et <directive
+    module="mod_authz_core">RequireAall</directive>.</p>
 
     <section id="access">
       <title>Contr&ocirc;le d'acc&egrave;s</title>
