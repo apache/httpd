@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1372802:1379697 (outdated) -->
+<!-- English Revision : 1379697 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -463,7 +463,12 @@ ult&eacute;rieures. L'option NoDecode est disponible depuis la version
       module="mod_rewrite">RewriteOptions</directive>, <directive
       module="mod_rewrite">RewriteBase</directive>, <directive
       module="mod_rewrite">RewriteCond</directive>, <directive
-      module="mod_rewrite">RewriteRule</directive>) et de la directive
+      module="mod_rewrite">RewriteRule</directive>), des directives du
+      module <module>mod_alias</module> directives (<directive
+      module="mod_alias">Redirect</directive>, <directive
+      module="mod_alias">RedirectTemp</directive>, <directive
+      module="mod_alias">RedirectPermanent</directive>, <directive
+      module="mod_alias">RedirectMatch</directive>), et de la directive
       <directive module="mod_actions">Action</directive> du module
       <module>mod_actions</module>.
       </dd>
@@ -3772,7 +3777,7 @@ et son port</description>
     l'authentification, ceci va obliger l'utilisateur &agrave; s'authentifier
     deux fois (une premi&egrave;re fois pour <code>www</code> et une seconde
     fois pour <code>www.domain.com</code> -- voir <a
-    href="http://httpd.apache.org/docs/misc/FAQ.html#prompted-twice">la
+    href="http://wiki.apache.org/httpd/FAQ#Why_does_Apache_ask_for_my_password_twice_before_serving_a_file.3F">la
     foire aux questions sur ce sujet pour plus d'informations</a>). Par
     contre, si <directive>UseCanonicalName</directive> est d&eacute;finie &agrave;
     <code>Off</code>, Apache redirigera l'utilisateur vers
