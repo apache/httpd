@@ -467,7 +467,7 @@ AP_LUA_DECLARE(lua_State*)ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
             /* On first visit, modified will be zero, but that's fine - The file is 
             loaded in the vm_construct function.
             */
-            if ((cache_info->modified == lua_finfo.mtime && cache_info->size == lua_finfo.size) \
+            if ((cache_info->modified == lua_finfo.mtime && cache_info->size == lua_finfo.size)
                     || cache_info->modified == 0) {
                 tryCache = 1;
             }
