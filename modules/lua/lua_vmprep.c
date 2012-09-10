@@ -460,6 +460,7 @@ AP_LUA_DECLARE(lua_State*)ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
             apr_pool_userdata_get((void **)&cache_info, mkey, lifecycle_pool);
             if (cache_info == NULL) {
                 cache_info = apr_pcalloc(lifecycle_pool, sizeof(ap_lua_finfo));
+                apr_pool_userdata_set((void*) cache_info, mkey, NULL, lifecycle_pool);
             }
         }
         if (spec->codecache == AP_LUA_CACHE_STAT) {
@@ -480,9 +481,6 @@ AP_LUA_DECLARE(lua_State*)ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
             if (cache_info->runs == 0) tryCache = 1;
         }
         cache_info->runs++;
-        if (spec->scope != AP_LUA_SCOPE_SERVER) {
-            apr_pool_userdata_set((void*) cache_info, mkey, NULL, lifecycle_pool);
-        }
     }
     if (tryCache == 0 && spec->scope != AP_LUA_SCOPE_ONCE) {
         int rc;
