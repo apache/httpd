@@ -383,7 +383,6 @@ static apr_status_t lua_setup_filter_ctx(ap_filter_t* f, request_rec* r, lua_fil
 }
 
 static apr_status_t lua_output_filter_handle(ap_filter_t *f, apr_bucket_brigade *pbbIn) {
-    apr_bucket *e;
     request_rec *r = f->r;
     int rc;
     lua_State *L;
