@@ -230,7 +230,7 @@ static const char* ap_lua_interpolate_string(apr_pool_t* pool, const char* strin
         ret = apr_pstrcat(pool, ret, stringBetween, NULL);
     }
     /* If no replacement was made, just return the original string */
-    else if (y==0) {
+    else if (y == 0) {
         return string;
     }
     return ret;
@@ -533,16 +533,15 @@ static apr_status_t lua_input_filter_handle(ap_filter_t *f,
             const char *data;
             apr_size_t len;
             
-            if(APR_BUCKET_IS_EOS(pbktIn)) {
+            if (APR_BUCKET_IS_EOS(pbktIn)) {
                 APR_BUCKET_REMOVE(pbktIn);
                 break;
             }
 
             /* read the bucket */
             ret = apr_bucket_read(pbktIn, &data, &len, eBlock);
-            if(ret != APR_SUCCESS) {
+            if (ret != APR_SUCCESS)
                 return ret;
-            }
 
             /* Push the bucket onto the Lua stack as a global var */
             lastCall++;
@@ -693,7 +692,7 @@ static int lua_map_handler(request_rec *r)
         }
         if (!ap_regexec(hook_spec->uri_pattern, r->uri, 10, match, 0)) {
             int i;
-            for (i=0;i<10;i++) {
+            for (i=0 ; i < 10; i++) {
                 if (match[i].rm_eo >= 0) {
                     values[i] = apr_pstrndup(r->pool, r->uri+match[i].rm_so, match[i].rm_eo - match[i].rm_so);
                 }
@@ -1880,11 +1879,11 @@ static void *merge_dir_config(apr_pool_t *p, void *basev, void *overridesv)
     a->dir = apr_pstrdup(p, overrides->dir);
 
     a->vm_scope = (overrides->vm_scope == AP_LUA_SCOPE_UNSET) ? base->vm_scope: overrides->vm_scope;
-    a->inherit = (overrides->inherit== AP_LUA_INHERIT_UNSET) ? base->inherit : overrides->inherit;
-    a->codecache = (overrides->codecache== AP_LUA_CACHE_UNSET) ? base->codecache : overrides->codecache;
+    a->inherit = (overrides->inherit == AP_LUA_INHERIT_UNSET) ? base->inherit : overrides->inherit;
+    a->codecache = (overrides->codecache == AP_LUA_CACHE_UNSET) ? base->codecache : overrides->codecache;
     
-    a->vm_min = (overrides->vm_min== 0) ? base->vm_min : overrides->vm_min;
-    a->vm_max = (overrides->vm_max== 0) ? base->vm_max : overrides->vm_max;
+    a->vm_min = (overrides->vm_min == 0) ? base->vm_min : overrides->vm_min;
+    a->vm_max = (overrides->vm_max == 0) ? base->vm_max : overrides->vm_max;
 
     if (a->inherit == AP_LUA_INHERIT_UNSET || a->inherit == AP_LUA_INHERIT_PARENT_FIRST) { 
         a->package_paths = apr_array_append(p, base->package_paths, overrides->package_paths);
