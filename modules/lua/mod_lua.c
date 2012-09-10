@@ -336,7 +336,7 @@ static apr_status_t lua_setup_filter_ctx(ap_filter_t* f, request_rec* r, lua_fil
             }
 
             if (!L) {
-                ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(01477)
+                ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(02328)
                                 "lua: Failed to obtain lua interpreter for %s %s",
                                 hook_spec->function_name, hook_spec->file_name);
                 ap_lua_release_state(L, spec, r);
@@ -345,7 +345,7 @@ static apr_status_t lua_setup_filter_ctx(ap_filter_t* f, request_rec* r, lua_fil
             if (hook_spec->function_name != NULL) {
                 lua_getglobal(L, hook_spec->function_name);
                 if (!lua_isfunction(L, -1)) {
-                    ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(01478)
+                    ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(02329)
                                     "lua: Unable to find function %s in %s",
                                     hook_spec->function_name,
                                     hook_spec->file_name);
@@ -711,7 +711,7 @@ static int lua_map_handler(request_rec *r)
             L = ap_lua_get_lua_state(pool, spec, r);
 
             if (!L) {
-                ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(01477)
+                ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(02330)
                                 "lua: Failed to obtain lua interpreter for %s %s",
                                 function_name, filename);
                 ap_lua_release_state(L, spec, r);
@@ -721,7 +721,7 @@ static int lua_map_handler(request_rec *r)
             if (function_name != NULL) {
                 lua_getglobal(L, function_name);
                 if (!lua_isfunction(L, -1)) {
-                    ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(01478)
+                    ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(02331)
                                     "lua: Unable to find function %s in %s",
                                     function_name,
                                     filename);
