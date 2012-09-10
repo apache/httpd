@@ -172,13 +172,26 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_proxy: fix missing APLOGNO() argument.
      trunk patch: http://svn.apache.org/viewvc?rev=1375407&view=rev
      2.4.x patch: trunk patch works
-     +1: jorton,
+     +1: jorton, fuankg
 
    * core: Apply length limit when logging Status header values.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1376695
                   http://svn.apache.org/viewvc?view=revision&revision=1376700
      2.4.x patch: trunk patch works
      +1: chrisd
+
+   * headers: Move *_DECLARE_* macros to beginning of line in headers.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1374963
+     2.4.x patch: http://people.apache.org/~fuankg/diffs/httpd-2.4.x_headers.diff
+     +1: fuankg
+
+   * installwinconf.awk: install.log output tweaks; reduced path convertion
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1375041
+                  http://svn.apache.org/viewvc?view=revision&revision=1375071
+                  http://svn.apache.org/viewvc?view=revision&revision=1375097
+                  http://svn.apache.org/viewvc?view=revision&revision=1375099
+     2.4.x patch: http://people.apache.org/~fuankg/diffs/httpd-2.4.x_installwinconf.diff
+     +1: fuankg
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
