@@ -203,6 +203,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~fuankg/diffs/httpd-2.4.x_installwinconf.diff
      +1: fuankg
 
+   * mod_proxy: Obtain UUID for balancer manager nonce only if we're using the
+     default and as late as possible.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1383490
+     2.4.x patch: trunk patch works (minus CHANGES and w/ fuzz)
+     +1: jim
+
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
