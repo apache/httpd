@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/intro.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/intro.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Ce document est un complément à la <a href="../mod/mod_rewrite.html">documentation de référence</a> du module
 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Il décrit les concepts de base dont la
@@ -44,7 +42,7 @@ pieds.
 <li><img alt="" src="../images/down.gif" /> <a href="#htaccess">Fichiers .htaccess</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentation du
 module mod_rewrite</a></li><li><a href="remapping.html">Redirection and remise en
-correspondance</a></li><li><a href="access.html">Contrôle d'accès</a></li><li><a href="vhosts.html">Serveurs virtuels</a></li><li><a href="proxy.html">Mise en cache</a></li><li><a href="rewritemap.html">Utilisation de RewriteMap</a></li><li><a href="advanced.html">Techniques avancées et conseils</a></li><li><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></li></ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
+correspondance</a></li><li><a href="access.html">Contrôle d'accès</a></li><li><a href="vhosts.html">Serveurs virtuels</a></li><li><a href="proxy.html">Mise en cache</a></li><li><a href="rewritemap.html">Utilisation de RewriteMap</a></li><li><a href="advanced.html">Techniques avancées</a></li><li><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></li></ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="introduction" id="introduction">Introduction</a></h2>
@@ -160,16 +158,22 @@ arrières dans les expressions rationnelles</a></h3>
       sont créées en interne et peuvent être rappelées via les chaînes
       <code>$N</code> et <code>%N</code> (voir ci-dessous). Ces
       références sont disponibles lors de la création des chaînes de
-      <em>Substitution</em> et des <em>Chaînes de test</em>. La
-      figure 1
+      <em>Substitution</em> et des <em>Chaînes de test</em> comme indiqué dans les chapitres suivants. 
+      La figure 1
       montre à quels endroits les références arrières sont suceptibles
       d'être développées, et illustre le flux des comparaisons
-      effectuées par les règles RewriteRule et RewriteCond.</p>
+      effectuées par les règles RewriteRule et
+      RewriteCond. Nous verrons comment utiliser ces références arrières
+      dans les chapitres suivant, donc ne vous effrayez pas si cela vous
+      paraît un peu compliqué au premier abord.</p>
 
 <p class="figure">
-      <img src="../images/rewrite_rule_flow.png" alt="Flux des comparaisons effectuées par les règles RewriteRule       et RewriteCond" /><br />
+       <img src="../images/rewrite_backreferences.png" alt="Flux des comparaisons effectuées par les règles RewriteRule       et RewriteCond" /><br />
       <dfn>Figure 1 :</dfn> Le cheminement d'une référence arrière à
-      travers une règle.
+      travers une règle.<br />
+      Dans cet exemple, une requête pour <code>/test/1234</code> sera
+      traduite en
+      <code>/admin.foo?page=test&amp;id=1234&amp;host=admin.example.com</code>.
 </p>
 
 
@@ -186,10 +190,16 @@ transformée;</li>
 <li><var>[drapeaux]</var>: options affectant la requête réécrite.</li>
 </ol>
 
-<p>Le <var>Modèle</var> est toujours une <a href="#regex">expression
-rationnelle</a> comparée au chemin de l'URL de la requête entrante (la
+<p>Le <var>Modèle</var> est une <a href="#regex">expression
+rationnelle</a>. Pour la première règle de réécriture ou jusqu'à ce
+qu'une substitution intervienne, elle est tout d'abord comparée
+au chemin de l'URL de la requête entrante (la
 partie située après le nom d'hôte mais avant tout point d'interrogation
-qui indique le début d'une chaîne de requête).</p>
+qui indique le début d'une chaîne de requête), ou
+dans un contexte de répertoire, au chemin de la requête relatif au
+répertoire pour lequel la règle a été définie. Lorsqu'une substitution a
+été effectuée, les règles suivantes s'appliquent à la valeur de
+substitution.</p>
 
 <p class="figure">
       <img src="../images/syntax_rewriterule.png" alt="Syntaxe de la directive RewriteRule" /><br />
