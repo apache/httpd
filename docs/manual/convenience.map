@@ -293,6 +293,7 @@ locationmatch	mod/core.html#locationmatch
 logformat	mod/mod_log_config.html#logformat
 loglevel	mod/core.html#loglevel
 logmessage	mod/mod_log_debug.html#logmessage
+luaauthzprovider	mod/mod_lua.html#luaauthzprovider
 luahookaccesschecker	mod/mod_lua.html#luahookaccesschecker
 luahookauthchecker	mod/mod_lua.html#luahookauthchecker
 luahookcheckuserid	mod/mod_lua.html#luahookcheckuserid
@@ -302,7 +303,6 @@ luahookmaptostorage	mod/mod_lua.html#luahookmaptostorage
 luahooktranslatename	mod/mod_lua.html#luahooktranslatename
 luahooktypechecker	mod/mod_lua.html#luahooktypechecker
 luainherit	mod/mod_lua.html#luainherit
-luamaphandler	mod/mod_lua.html#luamaphandler
 luapackagecpath	mod/mod_lua.html#luapackagecpath
 luapackagepath	mod/mod_lua.html#luapackagepath
 luaquickhandler	mod/mod_lua.html#luaquickhandler

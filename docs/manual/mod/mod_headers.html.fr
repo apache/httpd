@@ -29,8 +29,6 @@
 <a href="../ja/mod/mod_headers.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_headers.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Personnalisation des en-têtes de requêtes et de réponses
 HTTP</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -235,8 +233,10 @@ Header merge Cache-Control no-store env=NO_STORE
 <div class="directive-section"><h2><a name="Header" id="Header">Header</a> <a name="header" id="header">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure les en-têtes d'une réponse HTTP</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Header [<var>condition</var>] add|append|echo|edit|merge|set|unset
-<var>en-tête</var> [<var>valeur</var>] [early|env=[!]<var>variable</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|unset
+<var>en-tête</var> [<var>valeur</var>] [<var>remplacement</var>]
+[early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
+</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -309,12 +309,17 @@ Header merge Cache-Control no-store env=NO_STORE
     <var>valeur</var> ne doit pas être présent.</dd>
 
     <dt><code>edit</code></dt>
+    <dt><code>edit*</code></dt>
     <dd>Si l'en-tête existe, sa valeur est modifiée en fonction d'une
     <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression rationnelle</a> de type
     recherche/remplacement. L'argument <var>valeur</var> est une
     <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression rationnelle</a>, et
     l'argument <var>remplacement</var> une chaîne de caractères de
-    remplacement qui peut contenir des références arrières.</dd>
+    remplacement qui peut contenir des références
+    arrières. La forme <code>edit</code> n'effectuera une
+    recherche/remplacement qu'une seule fois dans la valeur de
+    l'en-tête, alors que la forme <code>edit*</code> en effectuera autant
+    que le nombre d'apparition de la chaîne à remplacer.</dd>
 
     <dt><code>merge</code></dt>
     <dd>La valeur d'en-tête est ajoutée à tout en-tête de même nom, sauf
@@ -420,8 +425,10 @@ Header merge Cache-Control no-store env=NO_STORE
 <div class="directive-section"><h2><a name="RequestHeader" id="RequestHeader">RequestHeader</a> <a name="requestheader" id="requestheader">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure les en-têtes d'une requête HTTP</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RequestHeader add|append|edit|edit*|merge|set|unset <var>en-tête</var>
-[<var>valeur</var>] [<var>remplacement</var>] [early|env=[!]<var>variable</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RequestHeader add|append|edit|edit*|merge|set|unset
+<var>en-tête</var> [<var>valeur</var>] [<var>remplacement</var>]
+[early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
+</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>

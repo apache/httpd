@@ -88,7 +88,7 @@ passe</td></tr>
     <p>Chaque ligne du fichier des utilisateurs se compose du nom de
     l'utilisateur, du caractère ':' et du mot de passe chiffré. Si le
     même identifiant utilisateur est référencé plusieurs fois,
-    <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> utilisera la première occurence pour
+    <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> utilisera la première occurrence pour
     vérifier le mot de passe.</p>
 
      <p>Le format du mot de passe chiffré dépend du frontal
