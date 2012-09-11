@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_balancer: The nonce is only derived from the UUID iff
+     not set via the 'nonce' balancer param. [Jim Jagielski]
+
   *) mod_lua: Add LuaInputFilter/LuaOutputFilter for creating content
      filters in Lua [Daniel Gruno]
 
