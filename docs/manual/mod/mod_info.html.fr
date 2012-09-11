@@ -29,8 +29,6 @@
 <a href="../ja/mod/mod_info.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_info.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Affiche une présentation complète de la configuration du
 serveur</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -199,8 +197,8 @@ module affichées par le gestionnaire server-info</td></tr>
 
     <pre class="prettyprint lang-config">
 AddModuleInfo mod_deflate.c 'See &lt;a \
-    href="http://www.apache.org/docs/trunk/mod/mod_deflate.html"&gt;\
-    http://www.apache.org/docs/trunk/mod/mod_deflate.html&lt;/a&gt;'
+    href="http://httpd.apache.org/docs/trunk/mod/mod_deflate.html"&gt;\
+    http://httpd.apache.org/docs/trunk/mod/mod_deflate.html&lt;/a&gt;'
     </pre>
 
 

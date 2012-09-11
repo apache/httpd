@@ -60,6 +60,40 @@ NT.</td></tr>
     <code>none</code>.  <em>In Apache httpd 2.0 and 2.2,
     <code class="directive">Win32DisableAcceptEx</code> was used for this purpose.</em></p>
 
+    <p>The WinNT MPM differs from the Unix MPMs such as worker and event
+    in several areas:</p>
+
+    <ul>
+      <li>When a child process is exiting due to shutdown, restart, or
+      <code class="directive"><a href="../mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code>,
+      active requests in the exiting process have
+      <code class="directive"><a href="../mod/core.html#timeout">TimeOut</a></code> seconds to finish before
+      processing is aborted.  Alternate types of restart and shutdown are not
+      implemented.</li>
+
+      <li>New child processes read the configuration files instead of
+      inheriting the configuration from the parent.  The behavior will
+      be the same as on Unix if the child process is created at startup
+      or restart, but if a child process is created because the prior
+      one crashed or reached 
+      <code class="directive"><a href="../mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code>,
+      any pending changes to the configuration will become active in the
+      child at that point, and the parent and child will be using a
+      different configuration.  If planned configuration changes have been
+      partially implemented and the current configuration cannot be
+      parsed, the replacement child process cannot start up and the server 
+      will halt.  Because of this behavior, configuration files should not
+      be changed until the time of a server restart.</li>
+
+      <li>The <code>monitor</code> and <code>fatal_exception</code> hooks
+      are not currently implemented.</li>
+
+      <li><code class="directive">AcceptFilter</code> is implemented in the MPM
+      and has a different type of control over handling of new connections.
+      (Refer to the <code class="directive"><a href="../mod/core.html#acceptfilter">AcceptFilter</a></code>
+      documentation for details.)</li>
+    </ul>
+
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">

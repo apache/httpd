@@ -318,7 +318,9 @@ luahookmaptostorage	mod/mod_lua.html#luahookmaptostorage
 luahooktranslatename	mod/mod_lua.html#luahooktranslatename
 luahooktypechecker	mod/mod_lua.html#luahooktypechecker
 luainherit	mod/mod_lua.html#luainherit
+luainputfilter	mod/mod_lua.html#luainputfilter
 luamaphandler	mod/mod_lua.html#luamaphandler
+luaoutputfilter	mod/mod_lua.html#luaoutputfilter
 luapackagecpath	mod/mod_lua.html#luapackagecpath
 luapackagepath	mod/mod_lua.html#luapackagepath
 luaquickhandler	mod/mod_lua.html#luaquickhandler
