@@ -16,7 +16,12 @@
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.0</a> &gt; <a href="./">Sanal Konaklar</a></div><div id="page-content"><div id="preamble"><h1>İsme Dayalı Sanal Konaklar</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.0</a> &gt; <a href="./">Sanal Konaklar</a></div><div style="width: 90%;" class="outofdate"><h4>Please note</h4>
+    This document refers to the 2.0 version of Apache httpd, which is no longer recommended.<br />
+    If you are using the current versions of httpd (2.2 or 2.4), please visit their documentations instead:<br /><ul><li><a href="http://httpd.apache.org/docs/2.2/">Apache HTTP Server 2.2 documentation</a></li><li><a href="http://httpd.apache.org/docs/2.4/">Apache HTTP Server 2.4 documentation</a></li></ul>
+    You may follow <a href="http://httpd.apache.org/docs/2.2/vhosts/name-based.html">this link</a> to 
+    go to the 2.2 version of this document.
+</div><div id="page-content"><div id="preamble"><h1>İsme Dayalı Sanal Konaklar</h1>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../de/vhosts/name-based.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/vhosts/name-based.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
