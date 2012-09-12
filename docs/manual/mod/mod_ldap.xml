@@ -42,7 +42,7 @@ by other LDAP modules</description>
     flag to the <program>configure</program> script when building
     Apache.</p>
 
-    <p>SSL/TLS support is dependant on which LDAP toolkit has been
+    <p>SSL/TLS support is dependent on which LDAP toolkit has been
     linked to <glossary>APR</glossary>. As of this writing, APR-util supports:
     <a href="http://www.openldap.org/">OpenLDAP SDK</a> (2.x or later),
     <a href="http://developer.novell.com/ndk/cldap.htm">Novell LDAP
@@ -518,7 +518,7 @@ connection client certificates.</description>
     <p>It specifies the directory path, file name or nickname of a
     per connection client certificate used when establishing an SSL
     or TLS connection to an LDAP server. Different locations or
-    directories may have their own independant client certificate
+    directories may have their own independent client certificate
     settings. Some LDAP toolkits (notably Novell)
     do not support per connection client certificates, and will throw an
     error on LDAP server connection if you try to use this directive
