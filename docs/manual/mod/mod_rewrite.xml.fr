@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1379702:1379930 (outdated) -->
+<!-- English Revision : 1379930 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -281,7 +281,7 @@ des traitements du moteur de r&eacute;&eacute;criture</description>
 <tr>
 <td>Adresse IP de l'h&ocirc;te distant</td>
 <td>192.168.200.166</td></tr>
-<tr><td>Nom de login distant</td><td>en g&eacute;n&eacute;ral "-"</td></tr>
+<tr><td>Nom de login didtant</td><td>en g&eacute;n&eacute;ral "-"</td></tr>
 <tr><td>nom d'authentification de l'utilisateur HTTP</td><td>nom
 d'utilisateur, ou "-" si non authentifi&eacute;</td></tr>
 <tr><td>Date et heure de la requ&ecirc;te</td><td>[28/Aug/2009:13:09:09 --0400]</td></tr>
@@ -1043,7 +1043,7 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 	    <em>cha&icirc;ne de test</em> est sup&eacute;rieure au sens
 	    lexicographique &agrave; l'<em>expression</em>.</li>
 
-            <li>'<strong>=expression</strong>' (&eacute;gal au sens
+            <li>'<strong>&gt;expression</strong>' (&eacute;gal au sens
 	    lexicographique)<br />
 	    Traite l'<em>expression</em> comme une cha&icirc;ne de
 	    caract&egrave;res et la compare lexicographiquement &agrave;
@@ -1643,7 +1643,7 @@ utilis&eacute; dans la directive <directive module="mod_rewrite">RewriteRule</di
 
       <p><strong>Dans une configuration de niveau r&eacute;pertoire pour
       <code>/chemin</code><br />
-       (<code>/chemin/physique/vers/chemin/.htaccess</code>, avec
+       (<code>/chemin/physique/vers/chemin/.htacccess</code>, avec
       <code>RewriteBase /chemin</code>)<br />
        pour la requ&ecirc;te ``<code>GET
       /chemin/chemin-local/infochemin</code>'':</strong><br />
