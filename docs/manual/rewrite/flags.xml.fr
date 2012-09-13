@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1363392:1379311 (outdated) -->
+<!-- English Revision: 1379311 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -423,7 +423,7 @@ car il peut provoquer un bouclage infini.
 Le drapeau [Next] peut servir, par exemple,
 &agrave; remplacer de mani&egrave;re r&eacute;p&eacute;titive
 une cha&icirc;ne de caract&egrave;re ou une lettre dans une requ&ecirc;te. Dans l'exemple
-suivant, chaque occurrence de A sera remplac&eacute;e par B dans la requ&ecirc;te, et
+suivant, chaque occurence de A sera remplac&eacute;e par B dans la requ&ecirc;te, et
 ceci jusqu'il n'y ait plus de A &agrave; remplacer.
 </p>
 
@@ -678,7 +678,9 @@ avertissements 'Invalid URI in request'.
 <section id="flag_s"><title>S|skip</title>
 <p>Le drapeau [S] sert &agrave; sauter des r&egrave;gles que vous ne voulez pas voir
 ex&eacute;cuter. La syntaxe du drapeau [S] est [S=<em>N</em>], o&ugrave;
-<em>N</em> correspond au nombre de r&egrave;gles &agrave; sauter.
+<em>N</em> correspond au nombre de r&egrave;gles &agrave; sauter (sous
+r&eacute;serve que la r&egrave;gle <directive
+module="mod_rewrite">RewriteRule</directive> corresponde). 
 Ceci peut s'interpr&eacute;ter comme une instruction
 <code>goto</code>  dans votre jeu de r&egrave;gles de r&eacute;&eacute;criture. Dans
 l'exemple suivant, nous ne voulons ex&eacute;cuter la r&egrave;gle <directive
