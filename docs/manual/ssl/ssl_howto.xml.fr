@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1353828:1380242 (outdated) -->
+<!-- English Revision : 1380242 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -265,9 +265,7 @@ SSLCACertificateFile conf/ssl.crt/company-ca.crt
 &lt;Directory /usr/local/apache2/htdocs&gt;
 #   En dehors de subarea, seul l'acc&egrave;s depuis l'intranet est
 #   autoris&eacute;
-    Order                deny,allow
-    Deny                 from all
-    Allow                from 192.168.1.0/24
+    Require              ip 192.168.1.0/24
 &lt;/Directory&gt;
 
 &lt;Directory /usr/local/apache2/htdocs/subarea&gt;
@@ -293,9 +291,7 @@ SSLCACertificateFile conf/ssl.crt/company-ca.crt
     Satisfy              any
     
     #   Contr&ocirc;le d'acc&egrave;s r&eacute;seau
-    Order                deny,allow
-    Deny                 from all
-    Allow                192.168.1.0/24
+    Require              ip 192.168.1.0/24
     
     #   Configuration de l'authentification HTTP Basique
     AuthType             basic

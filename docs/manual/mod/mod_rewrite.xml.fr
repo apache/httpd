@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1379321:1379836 (outdated) -->
+<!-- English Revision : 1379836 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1487,7 +1487,7 @@ redondant)</td>
 
       <p><strong>Dans une configuration de niveau r&eacute;pertoire pour
       <code>/chemin</code><br />
-       (<code>/chemin/physique/vers/chemin/.htaccess</code>, avec
+       (<code>/chemin/physique/vers/chemin/.htacccess</code>, avec
       <code>RewriteBase /chemin</code>)<br />
        pour la requ&ecirc;te ``<code>GET
       /chemin/chemin-local/infochemin</code>'':</strong><br />
