@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/ssl/ssl_howto.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/ssl/ssl_howto.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
 <p>Ce document doit vous permettre de démarrer et de faire fonctionner
@@ -278,9 +276,7 @@ SSLCACertificateFile conf/ssl.crt/company-ca.crt
 &lt;Directory /usr/local/apache2/htdocs&gt;
 #   En dehors de subarea, seul l'accès depuis l'intranet est
 #   autorisé
-    Order                deny,allow
-    Deny                 from all
-    Allow                from 192.168.1.0/24
+    Require              ip 192.168.1.0/24
 &lt;/Directory&gt;
 
 &lt;Directory /usr/local/apache2/htdocs/subarea&gt;
@@ -306,9 +302,7 @@ SSLCACertificateFile conf/ssl.crt/company-ca.crt
     Satisfy              any
     
     #   Contrôle d'accès réseau
-    Order                deny,allow
-    Deny                 from all
-    Allow                192.168.1.0/24
+    Require              ip 192.168.1.0/24
     
     #   Configuration de l'authentification HTTP Basique
     AuthType             basic
