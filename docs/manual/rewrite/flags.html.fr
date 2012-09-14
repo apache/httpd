@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/flags.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/flags.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Ce document décrit les drapeaux disponibles dans la directive
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>, en fournissant
@@ -435,7 +433,7 @@ car il peut provoquer un bouclage infini.
 Le drapeau [Next] peut servir, par exemple,
 à remplacer de manière répétitive
 une chaîne de caractère ou une lettre dans une requête. Dans l'exemple
-suivant, chaque occurrence de A sera remplacée par B dans la requête, et
+suivant, chaque occurence de A sera remplacée par B dans la requête, et
 ceci jusqu'il n'y ait plus de A à remplacer.
 </p>
 
@@ -685,7 +683,8 @@ avertissements 'Invalid URI in request'.
 <h2><a name="flag_s" id="flag_s">S|skip</a></h2>
 <p>Le drapeau [S] sert à sauter des règles que vous ne voulez pas voir
 exécuter. La syntaxe du drapeau [S] est [S=<em>N</em>], où
-<em>N</em> correspond au nombre de règles à sauter.
+<em>N</em> correspond au nombre de règles à sauter (sous
+réserve que la règle <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> corresponde). 
 Ceci peut s'interpréter comme une instruction
 <code>goto</code>  dans votre jeu de règles de réécriture. Dans
 l'exemple suivant, nous ne voulons exécuter la règle <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> que si l'URI demandé ne
