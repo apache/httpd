@@ -1579,7 +1579,9 @@ AP_DECLARE(char *) ap_escape_path_segment_buffer(char *c, const char *s);
  * @param p The pool to allocate from
  * @param path The path to convert
  * @param partial if set, assume that the path will be appended to something
- *        with a '/' in it (and thus does not prefix "./")
+ *        with a '/' in it (and thus does not prefix "./").
+ *        If not set, there will be one byte of additional space after the
+ *        NUL, to allow the caller to append a '/'.
  * @return The converted URL
  */
 AP_DECLARE(char *) ap_os_escape_path(apr_pool_t *p, const char *path, int partial);
@@ -1692,7 +1694,8 @@ AP_DECLARE(char *) ap_make_dirstr_parent(apr_pool_t *p, const char *s);
  * @param a The pool to allocate from
  * @param dir The directory name
  * @param f The filename
- * @return A copy of the full path
+ * @return A copy of the full path, with one byte of extra space after the NUL
+ *         to allow the caller to add a trailing '/'.
  * @note Never consider using this function if you are dealing with filesystem
  * names that need to remain canonical, unless you are merging an apr_dir_read
  * path and returned filename.  Otherwise, the result is not canonical.
