@@ -215,7 +215,7 @@ as any other requests starting with the <code>/private</code> string.</p>
 <highlight language="config">
 &lt;LocationMatch ^/private&gt;
     Require all denied
-&lt;/Location&gt;
+&lt;/LocationMatch&gt;
 </highlight>
 
 <p>The <directive type="section" module="core">Location</directive>
