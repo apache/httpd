@@ -318,6 +318,7 @@ static apr_status_t filter_harness(ap_filter_t *f, apr_bucket_brigade *bb)
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
+        AP_DEBUG_ASSERT(ctx->func != NULL);
     }
 
     /* call the content filter with its own context, then restore our
