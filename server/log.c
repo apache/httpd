@@ -1015,6 +1015,7 @@ static int do_errorlog_format(apr_array_header_t *fmt, ap_errorlog_info *info,
     int skipping = 0;
     ap_errorlog_format_item *items = (ap_errorlog_format_item *)fmt->elts;
 
+    AP_DEBUG_ASSERT(fmt->nelts > 0);
     for (i = 0; i < fmt->nelts; ++i) {
         ap_errorlog_format_item *item = &items[i];
         if (item->flags & AP_ERRORLOG_FLAG_FIELD_SEP) {
@@ -1112,7 +1113,8 @@ static void log_error_core(const char *file, int line, int module_index,
     int done = 0;
     int line_number = 0;
 
-    if (r && r->connection) {
+    if (r) {
+        AP_DEBUG_ASSERT(r->connection != NULL);
         c = r->connection;
     }
 
