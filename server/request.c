@@ -2160,7 +2160,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
     }
 
     if (rnew->finfo.filetype == APR_DIR) {
-        /* ap_make_full_path overallocated the buffers
+        /* ap_make_full_path and ap_escape_uri overallocated the buffers
          * by one character to help us out here.
          */
         strcat(rnew->filename, "/");
