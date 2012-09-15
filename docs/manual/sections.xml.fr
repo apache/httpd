@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1364306:1384856 (outdated) -->
+<!-- English Revision : 1384856 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -232,7 +232,7 @@ toute requ&ecirc;te commen&ccedil;ant par la cha&icirc;ne de caract&egrave;res <
 <highlight language="config">
 &lt;LocationMatch ^/private&gt;
     Require all denied
-&lt;/Location&gt;
+&lt;/LocationMatch&gt;
 </highlight>
 
 <p>Le conteneur <directive type="section" module="core">Location</directive>
