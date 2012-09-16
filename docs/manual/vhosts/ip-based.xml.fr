@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1309686:1363767 (outdated) -->
+<!-- English Revision: 1363767 -->
 <!-- French translation by alain B, review by Vincent Deffontaines -->
 <!-- Maintained by Lucien Gentis -->
 
@@ -30,16 +30,37 @@
 <a href="name-based.html">Support Apache des serveurs virtuels par nom</a>
 </seealso>
 
+<section id="explanation"><title>Qu'est-ce que l'hébergement virtuel
+basé sur IP</title>
+<p>L'hébergement virtuel basé sur IP est une méthode permettant
+d'appliquer certaines directives en fonction de l'adresse IP et du port
+sur lesquels la requête est reçue. En général, il s'agit de servir
+différents sites web sur des ports ou interfaces différents.</p>
+
+<p>Dans de nombreux cas, l'<a href="name-based.html">hébergement virtuel
+basé sur le nom</a> est plus adapté car il permet à plusieurs serveurs
+virtuels de partager la même adresse/port. Voir le document <a
+href="name-based.html#namevip">Hébergement virtuel basé sur IP ou sur le
+nom</a> pour prendre votre décision.</p>
+</section>
+
+
+
 <section id="requirements"><title>Système requis</title>
 
     <p>Comme l'indique le terme <cite>par IP</cite>, le serveur 
-    <strong>doit disposer de différentes adresses IP pour chaque 
+    <strong>doit disposer de couples adresses IP/port différents pour chaque 
     serveur virtuel par IP</strong>. La machine peut posséder 
     plusieurs connexions physiques au réseau, ou utiliser des 
     interfaces virtuelles qui sont supportées par la plupart des 
     systèmes d'exploitation modernes (Consultez la documentation des 
     systèmes d'exploitation pour plus de détails, notamment les "alias 
-    IP" et la commande "ifconfig" pour les activer).</p>
+    IP" et la commande "ifconfig" pour les activer), et/ou utiliser
+    plusieurs ports.</p>
+
+    <p>Dans la terminologie du serveur HTTP Apache, l'utilisation de
+    plusieurs ports TCP pour une seule adresse IP se nomme aussi
+    hébergement virtuel basé sur IP.</p>
 
 </section>
 
@@ -143,8 +164,13 @@ résident pour des serveurs virtuels</title>
 		</example>
 
     <p>Il est recommandé d'utiliser une adresse IP plutôt qu'un nom 
-    de domaine (consultez <a href="../dns-caveats.html">Problèmes DNS 
-    avec Apache</a>).</p>
+    de domaine dans la définition du  &lt;VirtualHost&gt; (consultez <a
+    href="../dns-caveats.html">Problèmes DNS avec Apache</a>).</p>
+
+    <p>Les adresses IP et ports explicites l'emportent sur leurs
+    équivalents avec caractères génériques, et tout serveur virtuel qui
+    correspond à la requête l'emporte sur la configuration du serveur de
+    base.</p>
 
     <p>Presque <strong>toutes</strong> les directives de configuration 
     peuvent être employées dans une directive VirtualHost, à l'exception 
