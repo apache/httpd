@@ -1,8 +1,9 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 421100:1363767 (outdated) -->
+<!-- English Revision: 1363767 -->
 <!-- french translation by alain B, review by Vincent Deffontaines -->
+<!-- reviewed by Lucien Gentis -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -30,7 +31,7 @@
 
     <p>Le principe des <cite>Serveurs Virtuels</cite> consiste à 
     faire fonctionner un ou plusieurs serveurs Web (comme 
-    <code>www.company1.com</code> et <code>www.company2.com</code>) 
+    <code>company1.example.com</code> and <code>company2.example.com</code>) 
     sur une même machine. Les serveurs virtuels peuvent être soit 
     "<a href="ip-based.html">par-IP</a>" où une adresse IP est 
     attribuée pour chaque serveur Web, soit "<a href="name-based.html"
@@ -40,14 +41,14 @@
 
     <p>Apache a été le précurseur des serveurs proposant cette 
     méthode de serveurs virtuels basés sur les adresses IP. Ses 
-    versions 1.1 et suivantes ont toujours proposées ces deux 
-    méthodes de serveurs virtuels par-IP et par-nom. Cette 
+    versions 1.1 et suivantes proposent les deux 
+    méthodes de serveurs virtuels : par-IP et par-nom. Cette 
     deuxième méthode est parfois également appelée <em>host-based</em> 
     ou <em>serveur virtuel non-IP</em>.</p>
 
     <p>Vous trouverez ci-dessous une liste documentaire qui vous 
     expliquera en détails le fonctionnement des serveurs virtuels 
-    sous Apache 1.3 et ses versions suivantes.</p>
+    au sein du serveur HTTP Apache :</p>
 
 </summary>
 
@@ -81,9 +82,9 @@
 <section id="directives"><title>Directives de configuration</title>
 
     <ul>
+      <li><directive module="core">NameVirtualHost</directive></li>
       <li><directive type="section"
            module="core">VirtualHost</directive></li>
-      <li><directive module="core">NameVirtualHost</directive></li>
       <li><directive module="core">ServerName</directive></li>
       <li><directive module="core">ServerAlias</directive></li>
       <li><directive module="core">ServerPath</directive></li>
