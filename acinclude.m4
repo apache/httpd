@@ -149,12 +149,20 @@ AC_DEFUN(APACHE_TYPE_RLIM_T, [
   fi
 ])
 
+dnl the list of build variables which are available for customization on a
+dnl per module subdir basis (to be inserted into modules.mk with a "MOD_"
+dnl prefix, i.e. MOD_CFLAGS etc.). Used in APACHE_MODPATH_{INIT,FINISH}.
+define(mod_buildvars, [CFLAGS CXXFLAGS CPPFLAGS LDFLAGS LIBS INCLUDES])
+dnl
 dnl APACHE_MODPATH_INIT(modpath)
 AC_DEFUN(APACHE_MODPATH_INIT,[
   current_dir=$1
   modpath_current=modules/$1
   modpath_static=
   modpath_shared=
+  for var in mod_buildvars; do
+    eval MOD_$var=
+  done
   test -d $1 || $srcdir/build/mkdir.sh $modpath_current
   > $modpath_current/modules.mk
 ])dnl
@@ -163,6 +171,11 @@ AC_DEFUN(APACHE_MODPATH_FINISH,[
   echo "DISTCLEAN_TARGETS = modules.mk" >> $modpath_current/modules.mk
   echo "static = $modpath_static" >> $modpath_current/modules.mk
   echo "shared = $modpath_shared" >> $modpath_current/modules.mk
+  for var in mod_buildvars; do
+    if eval val=\"\$MOD_$var\"; test -n "$val"; then
+      echo "MOD_$var = $val" >> $modpath_current/modules.mk
+    fi
+  done
   if test ! -z "$modpath_static" -o ! -z "$modpath_shared"; then
     MODULE_DIRS="$MODULE_DIRS $current_dir"
   else
@@ -480,7 +493,7 @@ AC_DEFUN(APACHE_CHECK_OPENSSL,[
 
     dnl Determine the OpenSSL base directory, if any
     AC_MSG_CHECKING([for user-provided OpenSSL base directory])
-    AC_ARG_WITH(ssl, APACHE_HELP_STRING(--with-ssl=DIR,OpenSSL base directory), [
+    AC_ARG_WITH(ssl, APACHE_HELP_STRING(--with-ssl=PATH,OpenSSL installation directory), [
       dnl If --with-ssl specifies a directory, we use that directory
       if test "x$withval" != "xyes" -a "x$withval" != "x"; then
         dnl This ensures $withval is actually a directory and that it is absolute
@@ -497,7 +510,6 @@ AC_DEFUN(APACHE_CHECK_OPENSSL,[
     saved_CPPFLAGS="$CPPFLAGS"
     saved_LIBS="$LIBS"
     saved_LDFLAGS="$LDFLAGS"
-    SSL_LIBS=""
 
     dnl Before doing anything else, load in pkg-config variables
     if test -n "$PKGCONFIG"; then
@@ -514,10 +526,11 @@ AC_DEFUN(APACHE_CHECK_OPENSSL,[
         ap_openssl_found="yes"
         pkglookup="`$PKGCONFIG --cflags-only-I openssl`"
         APR_ADDTO(CPPFLAGS, [$pkglookup])
-        APR_ADDTO(INCLUDES, [$pkglookup])
+        APR_ADDTO(MOD_CFLAGS, [$pkglookup])
+        APR_ADDTO(ab_CFLAGS, [$pkglookup])
         pkglookup="`$PKGCONFIG --libs-only-L --libs-only-other openssl`"
         APR_ADDTO(LDFLAGS, [$pkglookup])
-        APR_ADDTO(SSL_LIBS, [$pkglookup])
+        APR_ADDTO(MOD_LDFLAGS, [$pkglookup])
       fi
       PKG_CONFIG_PATH="$saved_PKG_CONFIG_PATH"
     fi
@@ -525,12 +538,13 @@ AC_DEFUN(APACHE_CHECK_OPENSSL,[
     dnl fall back to the user-supplied directory if not found via pkg-config
     if test "x$ap_openssl_base" != "x" -a "x$ap_openssl_found" = "x"; then
       APR_ADDTO(CPPFLAGS, [-I$ap_openssl_base/include])
-      APR_ADDTO(INCLUDES, [-I$ap_openssl_base/include])
+      APR_ADDTO(MOD_CFLAGS, [-I$ap_openssl_base/include])
+      APR_ADDTO(ab_CFLAGS, [-I$ap_openssl_base/include])
       APR_ADDTO(LDFLAGS, [-L$ap_openssl_base/lib])
-      APR_ADDTO(SSL_LIBS, [-L$ap_openssl_base/lib])
+      APR_ADDTO(MOD_LDFLAGS, [-L$ap_openssl_base/lib])
       if test "x$ap_platform_runtime_link_flag" != "x"; then
         APR_ADDTO(LDFLAGS, [$ap_platform_runtime_link_flag$ap_openssl_base/lib])
-        APR_ADDTO(SSL_LIBS, [$ap_platform_runtime_link_flag$ap_openssl_base/lib])
+        APR_ADDTO(MOD_LDFLAGS, [$ap_platform_runtime_link_flag$ap_openssl_base/lib])
       fi
     fi
 
@@ -548,9 +562,11 @@ AC_DEFUN(APACHE_CHECK_OPENSSL,[
 
     if test "x$ac_cv_openssl" = "xyes"; then
       ap_openssl_libs="-lssl -lcrypto `$apr_config --libs`"
-      APR_ADDTO(SSL_LIBS, [$ap_openssl_libs])
+      APR_ADDTO(MOD_LDFLAGS, [$ap_openssl_libs])
       APR_ADDTO(LIBS, [$ap_openssl_libs])
-      APACHE_SUBST(SSL_LIBS)
+      APR_SETVAR(ab_LDFLAGS, [$MOD_LDFLAGS])
+      APACHE_SUBST(ab_CFLAGS)
+      APACHE_SUBST(ab_LDFLAGS)
 
       dnl Run library and function checks
       liberrors=""
@@ -585,7 +601,7 @@ AC_DEFUN([APACHE_CHECK_SERF], [
     ac_cv_serf=no
     serf_prefix=/usr
     SERF_LIBS=""
-    AC_ARG_WITH(serf, APACHE_HELP_STRING([--with-serf=PREFIX],
+    AC_ARG_WITH(serf, APACHE_HELP_STRING([--with-serf=PATH],
                                     [Serf client library]),
     [
         if test "$withval" = "yes" ; then
@@ -611,7 +627,7 @@ AC_DEFUN([APACHE_CHECK_SERF], [
   if test "$ac_cv_serf" = "yes"; then
     AC_DEFINE(HAVE_SERF, 1, [Define if libserf is available])
     APR_SETVAR(SERF_LIBS, [-L$serf_prefix/lib -lserf-0])
-    APR_ADDTO(INCLUDES, [-I$serf_prefix/include/serf-0])
+    APR_ADDTO(MOD_INCLUDES, [-I$serf_prefix/include/serf-0])
   fi
 ])
 
