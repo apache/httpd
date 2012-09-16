@@ -128,7 +128,7 @@ else
   AC_MSG_NOTICE([using '${LUA_LIBS}' for Lua Library])
   AC_ARG_ENABLE(luajit,
     APACHE_HELP_STRING(--enable-luajit,Enable LuaJit Support),
-    APR_ADDTO(MOD_CPPFLAGS, ["-DAP_ENABLE_LUAJIT"]))
+    APR_ADDTO(CPPFLAGS, ["-DAP_ENABLE_LUAJIT"]))
   ifelse([$1], , , $1) 
 fi 
 ])
@@ -138,7 +138,7 @@ lua_objects="lua_apr.lo lua_config.lo mod_lua.lo lua_request.lo lua_vmprep.lo"
 APACHE_MODULE(lua, Apache Lua Framework, $lua_objects, , , [
   CHECK_LUA()
   if test "x$enable_lua" != "xno" ; then
-    APR_ADDTO(MOD_INCLUDES, [$LUA_CFLAGS])
+    APR_ADDTO(INCLUDES, [$LUA_CFLAGS])
     APR_ADDTO(MOD_LUA_LDADD, [$LUA_LIBS])
   fi
 ])

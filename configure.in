@@ -644,8 +644,8 @@ if test "$enable_pie" = "yes"; then
      AC_ERROR([--enable-pie requested but $CC failed using PIE flags])
    fi
 fi
-APACHE_SUBST(PICFLAGS)
-APACHE_SUBST(PILDFLAGS)
+AC_SUBST(PICFLAGS)
+AC_SUBST(PILDFLAGS)
 
 prefix="$orig_prefix"
 APACHE_ENABLE_MODULES
