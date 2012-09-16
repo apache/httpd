@@ -34,7 +34,7 @@ fi
 
 
 APACHE_MODULE(deflate, Deflate transfer encoding support, , , most, [
-  AC_ARG_WITH(z, APACHE_HELP_STRING(--with-z=PATH,use a specific zlib library),
+  AC_ARG_WITH(z, APACHE_HELP_STRING(--with-z=DIR,use a specific zlib library),
   [
     if test "x$withval" != "xyes" && test "x$withval" != "x"; then
       ap_zlib_base="$withval"
@@ -66,7 +66,6 @@ APACHE_MODULE(deflate, Deflate transfer encoding support, , , most, [
     ap_zlib_ldflags=""
     if test "$ap_zlib_base" != "/usr"; then
       APR_ADDTO(INCLUDES, [-I${ap_zlib_base}/include])
-      APR_ADDTO(MOD_INCLUDES, [-I${ap_zlib_base}/include])
       dnl put in CPPFLAGS temporarily so that AC_TRY_LINK below will work
       CPPFLAGS="$CPPFLAGS $INCLUDES"
       APR_ADDTO(LDFLAGS, [-L${ap_zlib_base}/lib])
@@ -83,13 +82,13 @@ APACHE_MODULE(deflate, Deflate transfer encoding support, , , most, [
        APR_ADDTO(MOD_DEFLATE_LDADD, [$ap_zlib_ldflags -lz])],
       [AC_MSG_RESULT(not found)
        enable_deflate=no
+       INCLUDES=$ap_save_includes
        if test "x$ap_zlib_with" = "x"; then
          AC_MSG_WARN([... Error, zlib was missing or unusable])
        else
          AC_MSG_ERROR([... Error, zlib was missing or unusable])
        fi
       ])
-    INCLUDES=$ap_save_includes
     LDFLAGS=$ap_save_ldflags
     CPPFLAGS=$ap_save_cppflags
     APR_REMOVEFROM(LIBS, [-lz])
@@ -99,7 +98,7 @@ APACHE_MODULE(deflate, Deflate transfer encoding support, , , most, [
 AC_DEFUN(FIND_LIBXML2, [
   AC_CACHE_CHECK([for libxml2], [ac_cv_libxml2], [
     AC_ARG_WITH(libxml2,
-      [APACHE_HELP_STRING(--with-libxml2=PATH,location for libxml2)],
+      [APACHE_HELP_STRING(--with-libxml2,location for libxml2)],
       [test_paths="${with_libxml2}"],
       [test_paths="/usr/include/libxml2 /usr/local/include/libxml2 /usr/include /usr/local/include"]
     )
@@ -123,7 +122,7 @@ AC_DEFUN(FIND_LIBXML2, [
 APACHE_MODULE(xml2enc, i18n support for markup filters, , , , [
   FIND_LIBXML2
   if test "$ac_cv_libxml2" = "yes" ; then
-    APR_ADDTO(MOD_CFLAGS, [-I${XML2_INCLUDES}])
+    APR_ADDTO(CFLAGS, [-I${XML2_INCLUDES}])
     APR_ADDTO(MOD_XML2ENC_LDADD, [-lxml2])
   else
     enable_xml2enc=no
@@ -132,7 +131,7 @@ APACHE_MODULE(xml2enc, i18n support for markup filters, , , , [
 APACHE_MODULE(proxy_html, Fix HTML Links in a Reverse Proxy, , , , [
   FIND_LIBXML2
   if test "$ac_cv_libxml2" = "yes" ; then
-    APR_ADDTO(MOD_CFLAGS, [-I${XML2_INCLUDES}])
+    APR_ADDTO(CFLAGS, [-I${XML2_INCLUDES}])
     APR_ADDTO(MOD_PROXY_HTML_LDADD, [-lxml2])
   else
     enable_proxy_html=no
