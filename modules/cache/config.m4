@@ -42,7 +42,7 @@ if test "x$ap_distcache_configured" = "x"; then
 
   dnl Determine the distcache base directory, if any
   AC_MSG_CHECKING([for user-provided distcache base])
-  AC_ARG_WITH(distcache, APACHE_HELP_STRING(--with-distcache=DIR, Distcache installation directory), [
+  AC_ARG_WITH(distcache, APACHE_HELP_STRING(--with-distcache=PATH, Distcache installation directory), [
     dnl If --with-distcache specifies a directory, we use that directory or fail
     if test "x$withval" != "xyes" -a "x$withval" != "x"; then
       dnl This ensures $withval is actually a directory and that it is absolute
@@ -63,7 +63,7 @@ if test "x$ap_distcache_configured" = "x"; then
 
   if test "x$ap_distcache_base" != "x"; then
     APR_ADDTO(CPPFLAGS, [-I$ap_distcache_base/include])
-    APR_ADDTO(INCLUDES, [-I$ap_distcache_base/include])
+    APR_ADDTO(MOD_INCLUDES, [-I$ap_distcache_base/include])
     APR_ADDTO(LDFLAGS, [-L$ap_distcache_base/lib])
     APR_ADDTO(ap_distcache_ldflags, [-L$ap_distcache_base/lib])
     if test "x$ap_platform_runtime_link_flag" != "x"; then
