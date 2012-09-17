@@ -144,6 +144,11 @@ static const char *slotmem_filename(apr_pool_t *pool, const char *slotmemname)
     return fname;
 }
 
+static const char *storemem_filename(apr_pool_t *pool, const char *name)
+{
+    return apr_pstrcat(pool, name, ".persist", NULL);
+}
+
 static void store_slotmem(ap_slotmem_instance_t *slotmem)
 {
     apr_file_t *fp;
@@ -151,7 +156,10 @@ static void store_slotmem(ap_slotmem_instance_t *slotmem)
     apr_size_t nbytes;
     const char *storename;
 
-    storename = slotmem_filename(slotmem->gpool, slotmem->name);
+    storename = storemem_filename(slotmem->gpool, slotmem->name);
+
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02334)
+                 "storing %s", storename);
 
     if (storename) {
         rv = apr_file_open(&fp, storename, APR_CREATE | APR_READ | APR_WRITE,
@@ -166,7 +174,7 @@ static void store_slotmem(ap_slotmem_instance_t *slotmem)
         }
         nbytes = (slotmem->desc.size * slotmem->desc.num) +
                  (slotmem->desc.num * sizeof(char)) + AP_UNSIGNEDINT_OFFSET;
-	/* XXX: Error handling */
+        /* XXX: Error handling */
         apr_file_write_full(fp, slotmem->persist, nbytes, NULL);
         apr_file_close(fp);
     }
@@ -181,7 +189,10 @@ static void restore_slotmem(void *ptr, const char *name, apr_size_t size,
     apr_size_t nbytes = size;
     apr_status_t rv;
 
-    storename = slotmem_filename(pool, name);
+    storename = storemem_filename(pool, name);
+
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02335)
+                 "restoring %s", storename);
 
     if (storename) {
         rv = apr_file_open(&fp, storename, APR_READ | APR_WRITE, APR_OS_DEFAULT,
@@ -683,4 +694,3 @@ AP_DECLARE_MODULE(slotmem_shm) = {
     NULL,                       /* command apr_table_t */
     ap_slotmem_shm_register_hook  /* register hooks */
 };
-
