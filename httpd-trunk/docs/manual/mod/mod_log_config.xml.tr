@@ -1,0 +1,543 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 1310330:1331035 (outdated) -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_log_config.xml.meta">
+
+<name>mod_log_config</name>
+<description>Sunucuya yapılan isteklerin günlük kayıtlarının tutulması
+</description>
+<status>Base</status>
+<sourcefile>mod_log_config.c</sourcefile>
+<identifier>log_config_module</identifier>
+
+<summary>
+    <p>Bu modül istemci isteklerinin esnek şekilde günlüklenmesi ile
+      ilgilidir. Günlükler kişiselleştirilebilir biçemdedir ve doğrudan bir
+      dosyaya yazılabileceği gibi boru üzerinden harici bir sürece de
+      yazılabilir. İsteğin özelliklerine bağlı olarak bazı isteklerin
+      günlüklere kaydedilmesi veya kaydedilmemesi mümkün kılınmıştır.</p>
+
+    <p>Bu modül üç yönerge içermektedir: Bir günlük dosyası oluşturmak için
+      <directive module="mod_log_config">TransferLog</directive>, günlük
+      biçemini kişiselleştirmek için <directive
+      module="mod_log_config">LogFormat</directive> ve tek başına bir günlük
+      dosyasını hem tanımlayıp hem de biçemleyen <directive
+      module="mod_log_config" >CustomLog</directive> yönergesi. Her isteğin
+      çok sayıda dosyaya günlüklenmesini sağlamak için yapılandırma dosyasında
+      her sunucu için birden fazla  <directive>TransferLog</directive> ve
+      <directive >CustomLog</directive> yönergesi belirtilebilir.</p>
+</summary>
+<seealso><a href="../logs.html">Apache Günlük Dosyaları</a></seealso>
+
+<section id="formats"><title>Günlük Girdilerinin Kişiselleştirilmesi</title>
+
+    <p><directive module="mod_log_config" >LogFormat</directive> ve <directive
+      module="mod_log_config" >CustomLog</directive> yönergelerinin biçem
+      argümanı bir dizgedir. Bu dizge her isteği günlük dosyasına günlüklemek
+      için kullanılır. Doğrudan günlük dosyalarına kopyalanmak üzere dizgesel
+      sabitler içerebileceği gibi satırsonu ve sekme karakterleri olarak C
+      tarzı "\n" ve "\t" denetim karakterlerini de içerebilir. Dizgesel sabit
+      olarak kullanılan tırnak ve tersbölü imlerinin tersbölü ile öncelenmesi
+      gerekir.</p>
+
+    <p>İstek özellikleri biçem dizgesine “<code>%</code>” imli belirteçler
+      yerleştirilerek günlüklenir. Bu belirteçler ve anlamları:</p>
+
+    <table border="1" style="zebra">
+    <columnspec><column width=".2"/><column width=".8"/></columnspec>
+    <tr><th>Belirteç</th>
+        <th>Açıklama</th></tr>
+
+    <tr><td><code>%%</code></td>
+        <td>Yüzde imi.</td></tr>
+
+    <tr><td><code>%a</code></td>
+        <td>Uzak IP adresi ve isteğin portu.</td></tr>
+
+    <tr><td><code>%{c}a</code></td>
+        <td>bağlantının emsal IP adresi and portu
+        (<module>mod_remoteip</module> modülüne bakın).</td></tr>
+
+    <tr><td><code>%A</code></td>
+        <td>Yerel IP adresi.</td></tr>
+
+    <tr><td><code>%B</code></td>
+        <td>HTTP başlıkları hariç, yanıtın bayt cinsinden uzunluğu.</td></tr>
+
+    <tr><td><code>%b</code></td>
+        <td>HTTP başlıkları hariç, yanıtın bayt cinsinden uzunluğu. OGB
+          biçeminde hiç bayt gönderilmemişse günlüğe '<code>-</code>' yerine
+          '<code>0</code>' çıktılanır.</td></tr>
+
+    <tr><td><code>%{<var>DEĞİŞKEN</var>}C</code></td>
+        <td>İstek içinde sunucuya gönderilen <var>DEĞİŞKEN</var> çerezinin
+          içeriği. Sadece 0 sürümlü çerezler tam olarak desteklenir.</td></tr>
+
+    <tr><td><code>%D</code></td>
+        <td>Mikrosaniye cinsinden isteği sunmak için harcanan zaman.</td></tr>
+
+    <tr><td><code>%{<var>DEĞİŞKEN</var>}e</code></td>
+        <td><var>DEĞİŞKEN</var> ortam değişkeninin içeriği.</td></tr>
+
+    <tr><td><code>%f</code></td>
+        <td>Dosya ismi.</td></tr>
+
+    <tr><td><code>%h</code></td>
+        <td>Uzak konak ismi. <directive module="core"
+          >HostnameLookups</directive> yönergesine öntanımlı olan
+          <code>Off</code> değeri atanmışsa, IP adresi günlüğe kaydedilir. Bir
+          kaç konak için konak ismi de günlüğe kaydoluyorsa muhtemelen onların
+          isimlerini içeren erişim denetim yönergelerine sahipsinizdir. Bak: <a
+          href="mod_authz_host.html#reqhost">Require host</a>.</td></tr>
+
+    <tr><td><code>%H</code></td>
+        <td>İstek Protokolü.</td></tr>
+
+    <tr><td><code>%{<var>DEĞİŞKEN</var>}i</code></td>
+        <td>İstekle birlikte sunucuya gönderilen
+          <code><var>DEĞİŞKEN</var>:</code> başlık satır(lar)ının
+          içeriği. Diğer modüllerde (örn. <module>mod_headers</module>)
+          yapılan değişikliklerden etkilenir. Modüllerin çoğu bunu
+          değiştirdiğinde önceki istek başlık isminin ne olduğuyla
+          ilgileniyorsanız, başlığı bir ortam değişkenine kaydetmek için
+          <module>mod_setenvif</module> modülünü kullanın ve yukarıda
+          açıklandığı gibi bu değeri <code>%{<var>DEĞİŞKEN</var>}e</code> ile
+          günlüğe kaydedin.</td></tr>
+
+    <tr><td><code>%k</code></td>
+        <td>Bu bağlantıda işlenen isteklerin sayısı; yani örneğin,
+    	  '1' değeri bağlantı kurulduktan sonraki ilk kalıcı bağlantıyı,
+    	  '2', ikinci bağlantıyı, ..., vb. gösterir;
+          <directive module="core">KeepAlive</directive> kullanılmışsa
+          değer anlamlıdır; aksi takdirde değer daima 0’dır.</td></tr>
+
+    <tr><td><code>%l</code></td>
+        <td>Uzak kullanıcı kimliği (sağlanmışsa, identd üzerinden).
+          <module>mod_ident</module> modülü mevcut ve <directive
+          module="mod_ident">IdentityCheck</directive> yönergesine değer
+          olarak <code>On</code> atanmış olmadıkça bu belirteç için günlüğe
+          tire imi yazılır.</td></tr>
+
+    <tr><td><code>%L</code></td>
+        <td>Hata günlüğündeki istek günlük kimliği (veya bu istek için hata
+          günlüğüne hiçbir şey kaydedilmemise '-'). Bu hataya neyin sebep
+          olduğunu öğrenmek için ilgili hata günlüğü satırına bakın.</td></tr>
+
+    <tr><td><code>%m</code></td>
+        <td>İstek yöntemi.</td></tr>
+
+    <tr><td><code>%{<var>DEĞİŞKEN</var>}n</code></td>
+        <td>Diğer modüldeki <var>DEĞİŞKEN</var> bilgisinin içeriği.</td></tr>
+
+    <tr><td><code>%{<var>DEĞİŞKEN</var>}o</code></td>
+        <td>Yanıttaki <code><var>DEĞİŞKEN</var>:</code> başlık satır(lar)ının
+          içeriği.</td></tr>
+
+    <tr><td><code>%p</code></td>
+        <td>Sunucunun isteği sunduğu meşru port.</td></tr>
+
+    <tr><td><code>%{<var>biçem</var>}p</code></td>
+        <td>Sunucunun veya istemcinin gerçek portu veya sunucunun isteği
+          sunduğu meşru port. Geçerli biçemler: <code>canonical</code>,
+          <code>local</code> ve <code>remote</code> (anlamları sırasıyla:
+          meşru, yerel ve uzak).</td></tr>
+
+    <tr><td><code>%P</code></td>
+        <td>İsteği sunan çocuk sürecin süreç kimliği.</td></tr>
+
+    <tr><td><code>%{<var>biçem</var>}P</code></td>
+        <td>İsteği sunan çocuk sürecin süreç kimliği (<code>pid</code>) veya
+          evre kimliği (<code>tid</code>). Geçerli biçemler: <code>pid</code>,
+          <code>tid</code>, <code>hextid</code>. <code>hextid</code> için APR
+          1.2.0 veya üstü gerekir.</td></tr>
+
+    <tr><td><code>%q</code></td>
+        <td>Sorgu dizgesi (bir sorgu dizgesi mevcutsa önüne bir <code>?</code>
+          eklenir yoksa hiçbir şey eklenmez).</td></tr>
+
+    <tr><td><code>%r</code></td>
+        <td>İsteğin ilk satırı.</td></tr>
+
+    <tr><td><code>%s</code></td>
+        <td>Durum. Dahili olarak yönlendirilmiş istekler için isteğin
+          <em>özgün</em>  durumudur. İsteğin son durumu için
+          <code>%&gt;s</code> kullanınız.</td></tr>
+
+    <tr><td><code>%t</code></td>
+        <td><code>[18/Sep/2011:19:18:28 -0400]</code> biçeminde isteğin
+          alındığı tarih ve saat. Sondaki sayı zaman diliminin GMT'ye
+          uzaklığıdır.</td></tr>
+
+    <tr><td><code>%{<var>biçem</var>}t</code></td>
+        <td>İsteğin alındığı tarih ve saat; <var>biçem</var>
+          uzatılmış <code>strftime(3)</code> biçeminde belirtilmelidir (genelde
+          yerelleştirme amaçlı). <code>begin:</code> (öntanımlı) ile başlayan
+          biçemlerde süre isteğin başlangıcına göredir. <code>end:</code> ile
+          başlayan biçemlerde ise süre isteğin işlenmesinin bi,tmesine yakın,
+          günlük girdisinin yazılmaya başladığı ana göredir.
+          <code>strftime(3)</code> tarafından desteklenen biçemlere ek olarak
+          aşağıdaki biçem dizgecikleri de desteklenmektedir:
+          <table>
+          <tr><td><code>sec</code></td><td>Mutlak zaman başlangıcından (epoch)
+            beri geçen saniye sayısı</td></tr>
+          <tr><td><code>msec</code></td><td>Mutlak zaman başlangıcından beri
+            geçen milisaniye sayısı</td></tr>
+          <tr><td><code>usec</code></td><td>Mutlak zaman başlangıcından beri
+            geçen mikrosaniye sayısı</td></tr>
+          <tr><td><code>msec_frac</code></td><td>milisaniyelik kesir</td></tr>
+          <tr><td><code>usec_frac</code></td><td>mikrosaniyelik kesir</td></tr>
+          </table>
+          Bu dizgecikler, aynı biçem dizgesi içinde bir diğeriyle birlikte veya
+          <code>strftime(3)</code> biçemlemesiyle birlikte yer alamazlar fakat
+          çok sayıda  <code>%{<var>biçem</var>}t</code> kullanılabilir.
+        </td></tr>
+
+    <tr><td><code>%T</code></td>
+        <td>Saniye cinsinden, isteği sunmak için harcanan zaman.</td></tr>
+
+    <tr><td><code>%u</code></td>
+        <td>Uzak kullanıcı (kimlik doğrulaması istenmişse vardır; durum kodu
+          (<code>%s</code>) 401 ise yanlış olabilir).</td></tr>
+
+    <tr><td><code>%U</code></td>
+        <td>Herhangi bir sorgu dizgesi içermeksizin istenen URL yolu.</td></tr>
+
+    <tr><td><code>%v</code></td>
+        <td>İsteği sunan sunucunun meşru sunucu ismi (<directive
+          module="core">ServerName</directive>).</td></tr>
+
+    <tr><td><code>%V</code></td>
+        <td><directive module="core" >UseCanonicalName</directive> ayarı ile
+          ilgili sunucu ismi.</td></tr>
+
+    <tr><td><code>%X</code></td>
+        <td>Yanıt tamamlandığında bağlantı durumu:
+
+        <table>
+        <columnspec><column width=".2"/><column width=".6"/></columnspec>
+        <tr><td><code>X</code> =</td>
+            <td>Yanıt tamamlanmadan bağlantı koptu.</td></tr>
+        <tr><td><code>+</code> =</td>
+            <td>Yanıt gönderildikten sonra bağlantı canlı kalabilir.</td></tr>
+        <tr><td><code>-</code> = </td>
+            <td>Yanıt gönderildikten sonra bağlantı kapatılacak.</td></tr>
+        </table></td></tr>
+
+    <tr><td><code>%I</code></td>
+        <td>İstek ve başlıklar dahil alınan bayt sayısı. Sıfır olamaz. Bunu
+          kullanmak için <module>mod_logio</module> etkin olmalıdır.</td></tr>
+
+    <tr><td><code>%O</code></td>
+        <td>Başlıklar dahil gönderilen bayt sayısı. Sıfır olamaz. Bunu
+          kullanmak için <module>mod_logio</module> etkin olmalıdır.</td></tr>
+    </table>
+
+    <section id="modifiers"><title>Değiştiriciler</title>
+
+      <p>Belli öğelerin sadece belli durum kodlarıyla ilgili yanıtlarla
+        basılabilmesi için bu durum kodları % iminden hemen sonra virgüllerle
+        ayrılmış olarak yazılabilir. Olumsuzlama belirtmek için durum kodu listesinin önüne bir "<code>!</code>" konabilir.</p>
+
+      <table border="1" style="zebra">
+      <columnspec><column width=".2"/><column width=".8"/></columnspec>
+
+      <tr><th>Biçem Dizgesi</th>
+      <th>Anlamı</th></tr>
+
+      <tr><td><code>%400,501{User-agent}i</code></td>
+      <td>Sadece 400 ve 501 hatalarında <code>User-agent</code> günlüğe
+        kaydedilir. Diğer durum kodları için günlüğe <code>"-"</code> yazılır.
+      </td></tr>
+
+      <tr><td><code>%!200,304,302{Referer}i</code></td>
+      <td>200,304,302 durum kodlarından biriyle dönmeyen tüm istekler için
+        <code>Referer</code> başlığı durum koduyla birlikte günlüğe
+        kaydedilir. Aksi takdirde günlüğe "<code>-</code>" yazılır.
+      </td></tr>
+      </table>
+
+      <p>İsteğin dahili olarak yönlendirilmesinde özgün durumunun mu yoksa son
+        durumunun mu hesaba katılacağı "&lt;" ve "&gt;" değiştiricileri ile
+        belirtilebilir. Öntanımlı olarak <code>%s, %U, %T, %D,</code> ve
+        <code>%r</code> belirteçleri isteğin özgün durumuna bakarken diğerleri
+        son durumuna bakarlar. Bu bakımdan örneğin, <code>%&gt;s</code>
+        belirteci, özgün istekteki kimliği doğrulanmış kullanıcının, dahili
+        olarak kimlik doğrulaması gerekmeyen bir özkaynağa yönlendirilmesi
+        halinde isteğin son durumunu kaydetmekte kullanılabilir.</p>
+
+    </section>
+
+    <section id="format-notes"><title>Bazı Bilgiler</title>
+
+      <p>Güvenlik nedeniyle, 2.0.46 sürümünden itibaren <code>%r</code>,
+        <code>%i</code> ve <code>%o</code> belirteçlerinde basılamayan
+        karakterler ve diğer özel karakterler <code>\x<var>hh</var></code>
+        dizilimleri biçeminde öncelenmektedir. Burada <var>hh</var> yerine
+        karakter numarasının onaltılık gösterimi yazılır. Bir tersbölü ile
+        öncelenmesi gereken <code>"</code> ve <code>\</code> ile
+        <code>\n</code>, <code>\t</code> gibi C tarzı gösterimler bu kuralın
+        dışındadır. 2.0.46 sürümünün öncesinde bu dizgeler öncelenmezdi ve ham
+        günlük dosyalarıyla çalışırken dikkatli olmak gerekirdi.</p>
+
+      <p>2.0 sürümünde 1.3 sürümünün aksine <code>%b</code> ve
+        <code>%B</code> biçem belirteçleri, istemciye gönderilen bayt sayısını
+        değil, HTTP yanıtının bayt sayısını ifade ederdi (bu yanıt, örneğin,
+        SSL kullanıldığında veya bağlantı koptuğunda farklı uzunlukta olur).
+        Artık, ağa gönderilen gerçek bayt sayısını günlüğe kaydetmek için
+        <module>mod_logio</module> modülü tarafından sağlanan <code>%O</code>
+        biçem belirteci kullanılmaktadır.</p>
+
+      <note>
+      <p>Ek bilgi: <module>mod_cache</module> standat bir eylemci olarak değil
+        hızlı bir eylemci olarak gerçeklenmiştir. Bu nedenle, içerik
+        arabelleklemesi sözkonusu olduğunda <code>%R</code> biçem dizgesi
+        herhangi bir eylemci bilgisi döndürmeyecektir.</p>
+      </note>
+
+    </section>
+
+    <section id="examples"><title>Örnekler</title>
+
+      <p>Genelde herkesçe kullanılan günlük kaydı biçemleme dizgelerinden
+        bazıları:</p>
+
+      <dl>
+        <dt>Ortak Günlük Biçemi (OGB)</dt>
+        <dd><code>"%h %l %u %t \"%r\" %&gt;s %b"</code></dd>
+
+        <dt>Sanal Konaklı Ortak Günlük Biçemi</dt>
+        <dd><code>"%v %h %l %u %t \"%r\" %&gt;s %b"</code></dd>
+
+        <dt>NCSA uzun/birleşik günlük biçemi</dt>
+        <dd><code>"%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\"
+        \"%{User-agent}i\""</code></dd>
+
+        <dt>Referer başlığını içeren günlük biçemi</dt>
+        <dd><code>"%{Referer}i -&gt; %U"</code></dd>
+
+        <dt>User-agent başlığını içeren günlük biçemi</dt>
+        <dd><code>"%{User-agent}i"</code></dd>
+      </dl>
+
+      <p><code>msec_frac</code> gibi ek biçem dizgeciklerini kullanan bir zaman
+        biçemi belirtmek isterseniz <code>%{format}t</code> biçem dizgesini
+        defalarca kullanabilirsiniz:</p>
+      <dl>
+        <dt>Milisaniyeleri de içeren bir zaman damgası</dt>
+        <dd><code>"%{%d/%b/%Y %T}t.%{msec_frac}t %{%z}t"</code></dd>
+      </dl>
+    </section>
+</section>
+
+<section id="security"><title>Güvenlik Kaygıları</title>
+    <p>Günlük dosyarının kaydedildiği dizine sunucuyu başlatan kullanıcı
+      dışında diğer kullanıcılar tarafından yazılabiliyor olması halinde
+      güvenliğinizden nasıl feragat etmiş olacağınız <a
+      href="../misc/security_tips.html#serverroot">güvenlik ipuçları</a>
+      belgesinde açıklanmıştır.</p>
+</section>
+
+<directivesynopsis>
+<name>BufferedLogs</name>
+<description>Günlük girdilerini diske yazmadan önce bellekte tamponlar
+</description>
+<syntax>BufferedLogs On|Off</syntax>
+<default>BufferedLogs Off</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>2.0.41 ve sonrasında mevcuttur.</compatibility>
+
+<usage>
+    <p><directive>BufferedLogs</directive> yönergesi,
+      <module>mod_log_config</module> modülünün çeşitli günlük girdilerini her
+      isteğin hemen ardından tek tek değil, bir bütün halinde diske yazılmak
+      üzere bellekte saklanmasını sağlar. Bu, bazı sistemlerde daha verimli
+      disk erişimi, dolayısıyla daha yüksek başarım sağlayabilir. Sadece
+      sunucu geneli için belirtilebilir, sanal konaklar için ayrı ayrı
+      yapılandırılamaz.</p>
+
+    <note>Bir çökme günlük verisi kaybına sebep olacağından bu yönerge
+      dikkatli kullanılmalıdır.</note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CustomLog</name>
+<description>Günlük dosyasın ismini ve girdi biçemini belirler.</description>
+<syntax>CustomLog  <var>dosya</var>|<var>borulu-süreç</var>
+<var>biçem</var>|<var>takma-ad</var>
+[env=[!]<var>ortam-değişkeni</var>]|
+expr=<var>ifade</var>]</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p><directive>CustomLog</directive> yönergesi istekleri günlüğe kaydetmek
+      için kullanılır. Yönerge ile bir günlük biçemi belirtilebilir ve günlük
+      kaydı isteğin özelliklerine bağlı olarak ortam değişkenleri vasıtasıyla
+      şarta bağlı kılınabilir.</p>
+
+    <p>İlk argümanda günlüğün yazılacağı yer belirtilir. İki tür yer
+      belirtilebilir:</p>
+
+    <dl>
+      <dt><var>dosya</var></dt>
+      <dd><directive module="core" >ServerRoot</directive> yönergesinin
+        değerine göreli bir dosya ismi.</dd>
+
+      <dt><var>borulu-süreç</var></dt>
+      <dd>"<code>|</code>" boru karakteri ile öncelenmiş olarak günlük
+        bilgisini standart girdisinden kabul edecek sürecin ismi (veya komut
+        satırı) Daha fazla bilgi için <a href="../logs.html#piped">borulu
+        günlükler</a>e bakınız.
+
+      <note type="warning"><title>Güvenlik:</title>
+      <p>Bir borulu süreç kullanılmışsa, süreç <program>httpd</program>’yi
+        başlatan kullanıcı tarafından başlatılacaktır. Sunucu root tarafından
+        başlatılıyorsa bu root olacaktır; bu bakımdan günlük kaydını alacak
+        programın güvenilir olması önemlidir.</p>
+      </note>
+      <note type="warning"><title>Bilginize</title>
+        <p>Dosya yolunu belirtirken tersbölü çizgisi kullanılan Unix dışı
+          platformlarda bile yapılandırma dosyasında bu amaçla normal bölü
+          çizgilerini kullanmaya özen gösterilmelidir.</p>
+      </note></dd>
+    </dl>
+
+    <p>İkinci argümanda günlüğe ne yazılacağı belirtilir. Ya evvelce
+      <directive module="mod_log_config">LogFormat</directive> yönergesi ile
+      tanımlanmış bir <var>takma-ad</var> ya da içeriği <a
+      href="#formats">Günlük Girdilerinin Kişiselleştirilmesi</a> bölümünde
+      açıklanmış bir <var>biçem</var> dizgesi olabilir.</p>
+
+    <p>Örneğin, aşağıdaki iki yönerge kümesi aynı etkiye sahiptir:</p>
+
+    <example>
+      # Biçem dizgesi yerine takma ad içeren CustomLog<br />
+      LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br />
+      CustomLog logs/access_log common<br />
+      <br />
+      # Biçem dizgesinin kendisini içeren CustomLog<br />
+      CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"
+    </example>
+
+    <p>Üçüncü argüman isteğe bağlı olup,belli bir isteğin günlüğe kaydedilip
+      kaydedilmeyeceğini belirler. Koşul, sunucu <a
+      href="../env.html">ortamında</a> belli bir değişkenin varlığı veya
+      yokluğu olabilir (bir '<code>env=!<var>isim</var></code>' durumu).
+      İstenirse koşul keyfi bir mantıksal <a href="../expr.html">ifade</a>
+      olarak da belirtilebilir. Eğer koşul sağlanmazsa istek günlüğe
+      kaydedilmez.</p>
+
+    <p>Ortam değişkenleri <module>mod_setenvif</module>
+      ve/veya <module>mod_rewrite</module> modülleri kullanılarak her istek
+      için ayrı ayrı atanabilir. Örneğin, GIF biçemli resimler için yapılan
+      istekleri ana günlük dosyasına değil de başka bir dosyaya kaydetmek
+      isterseniz:</p>
+
+    <example>
+      SetEnvIf Request_URI \.gif$ gif-image<br />
+      CustomLog gif-requests.log common env=gif-image<br />
+      CustomLog nongif-requests.log common env=!gif-image
+    </example>
+
+    <p>Veya eski <code>RefererIgnore</code> yönergesinin davranışını taklit
+      etmek isterseniz:</p>
+
+    <example>
+    SetEnvIf Referer example\.com yerel-atif<br />
+    CustomLog referer.log referer env=!yerel-atif
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LogFormat</name>
+<description>Bir günlük dosyasında kullanılmak üzere girdi biçemi tanımlar.
+</description>
+<syntax>LogFormat <var>biçem</var>|<var>takma-ad</var>
+[<var>takma-ad</var>]</syntax>
+<default>LogFormat "%h %l %u %t \"%r\" %>s %b"</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Bu yönerge erişim günlüğü dosyasının girdi biçemini belirler.</p>
+
+    <p><directive>LogFormat</directive> yönergesi iki şekilde kullanılabilir.
+      Tek argüman belirtilebilen ilkinde daha sonra
+      <directive>TransferLog</directive> yönergelerinde belirtilen günlüklerde
+      kullanılmak üzere günlük biçemini belirler. Bu günlük biçemi yukarıda
+      açıklanan <a href="#formats"><var>biçem</var></a> belirteçlerinden
+      oluşur. Bu tek argüman yerine aşağıda açıklandığı gibi önceki bir
+      <directive>LogFormat</directive> yönergesinde tanımlanmış bir günlük
+      biçemine atıf yapan bir <var>takma-ad</var> da belirtilebilir.</p>
+
+    <p><directive>LogFormat</directive> yönergesinin ikinci kullanım şeklinde
+      <var>biçem</var> bir <var>takma-ad</var> için tanımlanır. Bu takma ad
+      daha sonraki <directive >LogFormat</directive> veya <directive
+      module="mod_log_config" >CustomLog</directive> yönergelerinde aynı biçem
+      dizgesini uzun uzadıya yazmamak için <var>takma-ad</var> olarak
+      kullanılır. Bir <directive>LogFormat</directive> yönergesi bir takma ad
+      tanımlamaktan <strong>başka bir şey yapmaz</strong>; yani, yaptığı iş
+      sadece bir takma ad tanımlamaktan ibarettir, biçemi uygulamaz veya
+      biçemi öntanımlı hale getirmez. Bu bakımdan sonraki <directive
+      module="mod_log_config">TransferLog</directive> yönergelerini de
+      etkilemeyecektir. Ayrıca, <directive>LogFormat</directive> yönergesi bir
+      takma ada başka bir takma ad tanımlamakta da kullanılamaz. Bir takma
+      adın yüzde imi (<code>%</code>) içeremeyeceğine de dikkat ediniz.</p>
+
+    <example><title>Örnek</title>
+      LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost_common
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>TransferLog</name>
+<description>Bir günlük dosyasının yerini belirtir.</description>
+<syntax>TransferLog <var>dosya</var>|<var>borulu-süreç</var>
+[<var>takma-ad</var>]</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Bir günlük biçemi tanımlanmasını ve şarta bağlı günlük kaydını mümkün
+      kılmaması haricinde <directive module="mod_log_config"
+      >CustomLog</directive> yönergesi gibidir. Günlük biçemi yerine kendinden
+      önce yer alan bir <directive
+      module="mod_log_config">LogFormat</directive> yönergesinde tanımlanan
+      bir takma ad kullanılır. Açıkça bir günlük biçemi takma adı
+      belirtilmedikçe Ortak Günlük Biçemi öntanımlıdır.</p>
+
+    <example><title>Örnek</title>
+      LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\"
+      \"%{User-agent}i\""<br />
+      TransferLog logs/access_log
+    </example>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

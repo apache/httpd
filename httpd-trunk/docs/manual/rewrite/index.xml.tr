@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 1174747:1328303 (outdated) -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="index.xml.meta">
+<parentdocument href="../"/>
+
+  <title>Apache mod_rewrite</title>
+
+<summary>
+    <p><module>mod_rewrite</module> modülü gelen URL isteklerinde değişiklik
+      yapabilmek için <a href="intro.html#regex">düzenli ifade</a> kurallarına
+      dayalı, devingen bir yol sunar. Böylece, keyfi URL'leri dahili URL
+      yapınızla kolayca eşleyebilirsiniz.</p>
+
+    <p>Gerçekten esnek ve güçlü bir URL kurgulama mekanizması oluşturmak için
+      sınısız sayıda kural ve her kural için de sınırsız sayıda koşul destekler.
+      URL değişiklikleri çeşitli sınamalara dayanır; sunucu değişkenleri, HTTP
+      başlıkları, ortam değişkenleri, zaman damgaları hatta çeşitli biçimlerde
+      harici veritabanı sorguları bile bu amaçla kullanılabilir.</p>
+
+    <p>Yeniden yazma kuralları URL’lerin tamamında (path-info kısmı ve sorgu
+      dizgesi dahil) hem sunucu bağlamında (<code>httpd.conf</code>) hem sanal
+      konaklar bağlamında (<directive type="section" module="core"
+      >VirtualHost</directive> bölümleri), hem de dizin bağlamında
+      (<code>.htaccess</code> dosyaları ve <code>&lt;Directory&gt;</code>
+      bölümleri) çalışır ve URL üzerinde sorgu dizgesi bölümleri bile
+      oluşturabilir. Kurallara atadığınız <a href="flags.html">seçeneklere</a>
+      bağlı olarak, yeniden yazılan URL sonuçta dahili işlemlerde, harici
+      yönlendirmelerde ve vekalet işlemlerinde kullanılabilir.</p>
+
+    <p><module>mod_rewrite</module> modülü çok güçlü olduğundan, gerçekten çok
+      karmaşık olabilir. Bu belge, <a href="../mod/mod_rewrite.html">başvuru
+      belgeleri</a>nin tamamlayıcısı olup karmaşıklığı biraz azaltmaya çalışır
+      ve <module>mod_rewrite</module> ile elde edilebilen ortak senaryoların
+      oldukça açıklamalı örneklerini sağlar. Fakat ayrıca,
+      <module>mod_rewrite</module> modülünü kullanmamanız, yerine standart
+      Apache özelliklerini kullanmanız gereken durumları da göstermeye,
+      böylece gereksiz karmaşıklıktan kurtulmanızı sağlamaya çalıştık.</p>
+
+<ul>
+<li><a href="../mod/mod_rewrite.html">mod_rewrite başvuru belgesi</a></li>
+<li><a href="intro.html">mod_rewrite ve düzenli ifadelere giriş</a></li>
+<li><a href="remapping.html">URL yönlendirme ve yeniden eşlemede mod_rewrite kullanımı</a></li>
+<li><a href="access.html">Erişimi denetlemekte mod_rewrite kullanımı</a></li>
+<li><a href="vhosts.html">mod_rewrite ile devingen sanal konaklar</a></li>
+<li><a href="proxy.html">mod_rewrite ile devingen vekalet</a></li>
+<li><a href="rewritemap.html">RewriteMap kullanımı</a></li>
+<li><a href="advanced.html">İleri teknikler</a></li>
+<li><a href="avoid.html">mod_rewrite ne zaman kullanıl<strong>maMA</strong>lı</a></li>
+<li><a href="flags.html">RewriteRule seçenekleri</a></li>
+<li><a href="tech.html">Teknik ayrıntılar</a></li>
+</ul>
+</summary>
+
+<seealso><a href="../mod/mod_rewrite.html">mod_rewrite başvuru belgesi</a>
+</seealso><seealso><a href="../urlmapping.html">URL’lerin Dosya Sistemine Eşlenmesi</a></seealso>
+<seealso><a href="http://wiki.apache.org/httpd/Rewrite">mod_rewrite wiki</a>
+</seealso><seealso><a href="../glossary.html">Terimler</a></seealso>
+
+</manualpage>
+
+

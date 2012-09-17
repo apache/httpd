@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 1044380 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="invoking.xml.meta">
+
+  <title>Starting Apache</title>
+
+<summary>
+    <p>On Windows, Apache is normally run as a service on Windows
+    NT, 2000 and XP, or as a console application on Windows 9x and
+    ME. For details, see <a
+    href="platform/windows.html#winsvc">Running Apache as a Service</a>
+    and <a href="platform/windows.html#wincons">Running Apache as a
+    Console Application</a>.</p>
+
+    <p>On Unix, the <program>httpd</program> program
+    is run as a daemon that executes continuously in the
+    background to handle requests.  This document describes how
+    to invoke <program>httpd</program>.</p>
+</summary>
+
+<seealso><a href="stopping.html">Stopping and Restarting</a></seealso>
+<seealso><program>httpd</program></seealso>
+<seealso><program>apachectl</program></seealso>
+
+<section id="startup"><title>How Apache Starts</title>
+
+    <p>If the <directive module="mpm_common">Listen</directive>
+    specified in the configuration file is default of 80 (or any other
+    port below 1024), then it is necessary to have root privileges in
+    order to start apache, so that it can bind to this privileged
+    port. Once the server has started and performed a few preliminary
+    activities such as opening its log files, it will launch several
+    <em>child</em> processes which do the work of listening for and
+    answering requests from clients. The main <code>httpd</code>
+    process continues to run as the root user, but the child processes
+    run as a less privileged user. This is controlled by the selected
+    <a href="mpm.html">Multi-Processing Module</a>.</p>
+
+    <p>The recommended method of invoking the <program>httpd</program>
+    executable is to use the <program>apachectl</program> control script. This
+    script sets certain environment variables that are necessary for
+    <program>httpd</program> to function correctly under some operating
+    systems, and then invokes the <program>httpd</program> binary.
+    <program>apachectl</program> will pass through any command line
+    arguments, so any <program>httpd</program> options may also be used with
+    <program>apachectl</program>.  You may also directly edit the
+    <program>apachectl</program> script by changing the <code>HTTPD</code>
+    variable near the top to specify the correct location of the
+    <program>httpd</program> binary and any command-line arguments that you
+    wish to be <em>always</em> present.</p>
+
+    <p>The first thing that <program>httpd</program> does when it is
+    invoked is to locate and read the <a
+    href="configuring.html">configuration file</a>
+    <code>httpd.conf</code>. The location of this file is set at
+    compile-time, but it is possible to specify its location at run
+    time using the <code>-f</code> command-line option as in</p>
+
+<example>/usr/local/apache2/bin/apachectl -f
+      /usr/local/apache2/conf/httpd.conf</example>
+
+    <p>If all goes well during startup, the server will detach from
+    the terminal and the command prompt will return almost
+    immediately. This indicates that the server is up and running.
+    You can then use your browser to connect to the server and view
+    the test page in the <directive
+    module="core">DocumentRoot</directive> directory.</p>
+</section>
+
+<section id="errors"><title>Errors During Start-up</title>
+
+    <p>If Apache suffers a fatal problem during startup, it will
+    write a message describing the problem either to the console or
+    to the <directive module="core">ErrorLog</directive> before
+    exiting. One of the most common error messages is "<code>Unable
+    to bind to Port ...</code>". This message is usually caused by
+    either:</p>
+
+    <ul>
+      <li>Trying to start the server on a privileged port when not
+      logged in as the root user; or</li>
+
+      <li>Trying to start the server when there is another instance
+      of Apache or some other web server already bound to the same
+      Port.</li>
+    </ul>
+
+    <p>For further trouble-shooting instructions, consult the
+    Apache <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a>.</p>
+</section>
+
+<section id="boot"><title>Starting at Boot-Time</title>
+
+    <p>If you want your server to continue running after a system
+    reboot, you should add a call to <program>apachectl</program> to your
+    system startup files (typically <code>rc.local</code> or a file in
+    an <code>rc.N</code> directory). This will start Apache as
+    root. Before doing this ensure that your server is properly
+    configured for security and access restrictions.</p>
+
+    <p>The <program>apachectl</program> script is designed to act like a
+    standard SysV init script; it can take the arguments
+    <code>start</code>, <code>restart</code>, and <code>stop</code>
+    and translate them into the appropriate signals to
+    <program>httpd</program>.  So you can often simply link
+    <program>apachectl</program> into the appropriate init directory. But be
+    sure to check the exact requirements of your system.</p>
+</section>
+
+<section id="info"><title>Additional Information</title>
+
+    <p>Additional information about the command-line options of <program>
+    httpd</program> and <program>apachectl</program> as well as other support
+    programs included with the server is available on the
+    <a href="programs/">Server and Supporting Programs</a> page.
+    There is also documentation on all the <a
+    href="mod/">modules</a> included with the Apache distribution
+    and the <a href="mod/directives.html">directives</a> that they
+    provide.</p>
+</section>
+
+</manualpage>

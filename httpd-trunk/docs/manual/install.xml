@@ -1,0 +1,439 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 1328589 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="install.xml.meta">
+
+  <title>Compiling and Installing</title>
+
+<summary>
+
+    <p>This document covers compilation and installation of the Apache HTTP Server
+    on Unix and Unix-like systems only. For compiling and
+    installation on Windows, see <a
+    href="platform/windows.html">Using Apache HTTP Server with Microsoft
+    Windows</a>. For other platforms, see the <a
+    href="platform/">platform</a> documentation.</p>
+
+    <p>Apache httpd uses <code>libtool</code> and <code>autoconf</code>
+    to create a build environment that looks like many other Open Source
+    projects.</p>
+
+    <p>If you are upgrading from one minor version to the next (for
+    example, 2.2.50 to 2.2.51), please skip down to the <a
+    href="#upgrading">upgrading</a> section.</p>
+
+</summary>
+
+<seealso><a href="programs/configure.html">Configure the source tree</a></seealso>
+<seealso><a href="invoking.html">Starting Apache httpd</a></seealso>
+<seealso><a href="stopping.html">Stopping and Restarting</a></seealso>
+
+<section id="overview"><title>Overview for the
+    impatient</title>
+
+    <table>
+      <columnspec><column width=".13"/><column width=".80"/></columnspec>
+      <tr>
+        <td><a href="#download">Download</a></td>
+
+        <td><code>$ lynx http://httpd.apache.org/download.cgi</code>
+        </td>
+      </tr>
+
+      <tr>
+        <td><a href="#extract">Extract</a></td>
+
+        <td><code>$ gzip -d httpd-<em>NN</em>.tar.gz<br />
+         $ tar xvf httpd-<em>NN</em>.tar<br />
+         $ cd httpd-<em>NN</em></code></td>
+      </tr>
+
+      <tr>
+        <td><a href="#configure">Configure</a></td>
+
+        <td><code>$ ./configure --prefix=<em>PREFIX</em></code>
+        </td>
+      </tr>
+
+      <tr>
+        <td><a href="#compile">Compile</a></td>
+
+        <td><code>$ make</code> </td>
+      </tr>
+
+      <tr>
+        <td><a href="#install">Install</a></td>
+
+        <td><code>$ make install</code> </td>
+      </tr>
+
+      <tr>
+        <td><a href="#customize">Customize</a></td>
+
+        <td><code>$ vi <em>PREFIX</em>/conf/httpd.conf</code> </td>
+      </tr>
+
+      <tr>
+        <td><a href="#test">Test</a></td>
+
+        <td><code>$ <em>PREFIX</em>/bin/apachectl -k start</code>
+        </td>
+      </tr>
+    </table>
+
+    <p><em>NN</em> must be replaced with the current version
+    number, and <em>PREFIX</em> must be replaced with the
+    filesystem path under which the server should be installed. If
+    <em>PREFIX</em> is not specified, it defaults to
+    <code>/usr/local/apache2</code>.</p>
+
+    <p>Each section of the compilation and installation process is
+    described in more detail below, beginning with the requirements
+    for compiling and installing Apache httpd.</p>
+</section>
+
+<section id="requirements"><title>Requirements</title>
+
+    <p>The following requirements exist for building Apache httpd:</p>
+
+    <dl>
+      <dt>APR and APR-Util</dt>
+      <dd>Make sure you have APR and APR-Util already installed on
+      your system. If you don't, or prefer to not use the system-provided
+      versions, download the latest versions of both APR and APR-Util
+      from <a href="http://apr.apache.org/">Apache APR</a>, unpack
+      them into <code>./srclib/apr</code> and <code>./srclib/apr-util</code>
+      (be sure the domain names do not have version numbers; for example,
+      the APR distribution must be under ./srclib/apr/) and use
+      <code>./configure</code>'s <code>--with-included-apr</code>
+      option.  On some platforms, you may have to install the 
+      corresponding <code>-dev</code> packages to allow httpd to build 
+      against your installed copy of APR and APR-Util.</dd>
+
+      <dt>Perl-Compatible Regular Expressions Library (PCRE)</dt>
+      <dd>This library is required but not longer bundled with httpd.  
+      Download the source code from <a href="http://www.pcre.org/">http://www.pcre.org</a>, 
+      or install a Port or Package.  If your build system can't find
+      the pcre-config script installed by the PCRE build, point to it
+      using the <code>--with-pcre</code> parameter.  On some platforms, 
+      you may have to install the corresponding <code>-dev</code> 
+      package to allow httpd to build against your installed copy 
+      of PCRE.</dd>
+      
+      <dt>Disk Space</dt>
+      <dd>Make sure you have at least 50 MB of temporary free disk
+      space available. After installation the server occupies
+      approximately 10 MB of disk space. The actual disk space
+      requirements will vary considerably based on your chosen
+      configuration options, any third-party modules, and, of course,
+      the size of the web site or sites that you have on the server.</dd>
+
+      <dt>ANSI-C Compiler and Build System</dt>
+      <dd>Make sure you have an ANSI-C compiler installed. The <a
+      href="http://gcc.gnu.org/">GNU C
+      compiler (GCC)</a> from the <a
+      href="http://www.gnu.org/">Free Software Foundation (FSF)</a>
+      is recommended. If you don't have GCC
+      then at least make sure your vendor's compiler is ANSI
+      compliant. In addition, your <code>PATH</code> must contain
+      basic build tools such as <code>make</code>.</dd>
+
+      <dt>Accurate time keeping</dt>
+      <dd>Elements of the HTTP protocol are expressed as the time of
+      day. So, it's time to investigate setting some time
+      synchronization facility on your system. Usually the
+      <code>ntpdate</code> or <code>xntpd</code> programs are used for
+      this purpose which are based on the Network Time Protocol (NTP).
+      See the <a href="http://www.ntp.org">NTP
+      homepage</a> for more details about NTP software and public
+      time servers.</dd>
+
+      <dt><a href="http://www.perl.org/">Perl 5</a>
+      [OPTIONAL]</dt>
+      <dd>For some of the support scripts like <program>
+      apxs</program> or <program>dbmmanage</program> (which are
+      written in Perl) the Perl 5 interpreter is required (versions
+      5.003 or newer are sufficient). If you have multiple Perl
+      interpreters (for example, a systemwide install of Perl 4, and
+      your own install of Perl 5), you are advised to use the
+      <code>--with-perl</code> option (see below) to make sure the
+      correct one is used by <program>configure</program>.
+      If no Perl 5 interpreter is found by the
+      <program>configure</program> script, you will not be able to use
+      the affected support scripts. Of course, you will still be able to
+      build and use Apache httpd.</dd>
+    </dl>
+</section>
+
+<section id="download"><title>Download</title>
+
+    <p>The Apache HTTP Server can be downloaded from the <a
+    href="http://httpd.apache.org/download.cgi">Apache HTTP Server
+    download site</a>, which lists several mirrors.  Most users of
+    Apache on unix-like systems will be better off downloading and
+    compiling a source version.  The build process (described below) is
+    easy, and it allows you to customize your server to suit your needs.
+    In addition, binary releases are often not up to date with the latest
+    source releases.  If you do download a binary, follow the instructions
+    in the <code>INSTALL.bindist</code> file inside the distribution.</p>
+
+    <p>After downloading, it is important to verify that you have a
+    complete and unmodified version of the Apache HTTP Server. This
+    can be accomplished by testing the downloaded tarball against the
+    PGP signature.  Details on how to do this are available on the <a
+    href="http://httpd.apache.org/download.cgi#verify">download
+    page</a> and an extended example is available describing the <a
+    href="http://httpd.apache.org/dev/verification.html">use of
+    PGP</a>.</p>
+
+</section>
+
+<section id="extract"><title>Extract</title>
+
+    <p>Extracting the source from the Apache HTTP Server tarball is a
+    simple matter of uncompressing, and then untarring:</p>
+
+<example>
+$ gzip -d httpd-<em>NN</em>.tar.gz<br />
+$ tar xvf httpd-<em>NN</em>.tar
+</example>
+
+    <p>This will create a new directory under the current directory
+    containing the source code for the distribution. You should
+    <code>cd</code> into that directory before proceeding with
+    compiling the server.</p>
+</section>
+
+<section id="configure"><title>Configuring the source tree</title>
+
+    <p>The next step is to configure the Apache source tree for your
+    particular platform and personal requirements. This is done using
+    the script <program>configure</program> included in
+    the root directory of the distribution. (Developers downloading
+    an unreleased version of the Apache source tree will need to have
+    <code>autoconf</code> and <code>libtool</code> installed and will
+    need to run <code>buildconf</code> before proceeding with the next
+    steps. This is not necessary for official releases.)</p>
+
+    <p>To configure the source tree using all the default options,
+    simply type <code>./configure</code>. To change the default
+    options, <program>configure</program> accepts a variety of variables
+    and command line options.</p>
+
+    <p>The most important option is the location <code>--prefix</code>
+    where Apache is to be installed later, because Apache has to be
+    configured for this location to work correctly.  More fine-tuned
+    control of the location of files is possible with additional <a
+    href="programs/configure.html#installationdirectories">configure
+    options</a>.</p>
+
+    <p>Also at this point, you can specify which <a
+    href="programs/configure.html#optionalfeatures">features</a> you
+    want included in Apache by enabling and disabling <a
+    href="mod/">modules</a>.  Apache comes with a wide range of modules
+    included by default.  They will be compiled as
+    <a href="dso.html">shared objects (DSOs)</a> which can be loaded
+    or unloaded at runtime.
+    You can also choose to compile modules statically by using the option
+    <code>--enable-<var>module</var>=static</code>.</p>
+
+    <p>Additional modules are enabled using the
+    <code>--enable-<var>module</var></code> option, where
+    <var>module</var> is the name of the module with the
+    <code>mod_</code> string removed and with any underscore converted
+    to a dash.  Similarly, you can disable modules with the
+    <code>--disable-<var>module</var></code> option.  Be careful when
+    using these options, since <program>configure</program> cannot warn you
+    if the module you specify does not exist; it will simply ignore the
+    option.</p>
+
+    <p>In addition, it is sometimes necessary to provide the
+    <program>configure</program> script with extra information about the
+    location of your compiler, libraries, or header files.  This is
+    done by passing either environment variables or command line
+    options to <program>configure</program>.  For more information, see the
+    <program>configure</program> manual page. Or invoke
+    <program>configure</program> using the <code>--help</code> option.</p>
+
+    <p>For a short impression of what possibilities you have, here
+    is a typical example which compiles Apache for the installation
+    tree <code>/sw/pkg/apache</code> with a particular compiler and flags
+    plus the two additional modules <module>mod_ldap</module> and
+    <module>mod_lua</module>:</p>
+
+<example>
+      $ CC="pgcc" CFLAGS="-O2" \<br />
+       ./configure --prefix=/sw/pkg/apache \<br />
+       --enable-ldap=shared \<br />
+       --enable-lua=shared
+</example>
+
+    <p>When <program>configure</program> is run it will take several minutes to
+    test for the availability of features on your system and build
+    Makefiles which will later be used to compile the server.</p>
+
+    <p>Details on all the different <program>configure</program> options are
+    available on the <program>configure</program> manual page.</p>
+</section>
+
+<section id="compile"><title>Build</title>
+
+    <p>Now you can build the various parts which form the Apache
+    package by simply running the command:</p>
+
+<example>$ make</example>
+
+    <p>Please be patient here, since a base configuration takes
+    several minutes to compile and the time will vary widely
+    depending on your hardware and the number of modules that you
+    have enabled.</p>
+</section>
+
+<section id="install"><title>Install</title>
+
+    <p>Now it's time to install the package under the configured
+    installation <em>PREFIX</em> (see <code>--prefix</code> option
+    above) by running:</p>
+
+<example>$ make install</example>
+
+    <p>This step will typically require root privileges, since
+    <em>PREFIX</em> is usually a directory with restricted write
+    permissions.</p>
+
+    <p>If you are upgrading, the installation will not overwrite
+    your configuration files or documents.</p>
+</section>
+
+<section id="customize"><title>Customize</title>
+
+    <p>Next, you can customize your Apache HTTP server by editing
+    the <a href="configuring.html">configuration files</a> under
+    <code><em>PREFIX</em>/conf/</code>.</p>
+
+<example>$ vi <em>PREFIX</em>/conf/httpd.conf</example>
+
+    <p>Have a look at the Apache manual under
+    <code><em>PREFIX</em>/docs/manual/</code> or consult <a
+    href="http://httpd.apache.org/docs/&httpd.docs;/"
+    >http://httpd.apache.org/docs/&httpd.docs;/</a> for the most recent
+    version of this manual and a complete reference of available <a
+    href="mod/directives.html">configuration directives</a>.</p>
+</section>
+
+<section id="test"><title>Test</title>
+
+    <p>Now you can <a href="invoking.html">start</a> your Apache
+    HTTP server by immediately running:</p>
+
+<example>$ <em>PREFIX</em>/bin/apachectl -k start</example>
+
+    <p>You should then be able to request your first document
+    via the URL <code>http://localhost/</code>. The web page you see is located
+    under the <directive module="core">DocumentRoot</directive>,
+    which will usually be <code><em>PREFIX</em>/htdocs/</code>.
+    Then <a href="stopping.html">stop</a> the server again by
+    running:</p>
+
+<example>$ <em>PREFIX</em>/bin/apachectl -k stop</example>
+</section>
+<section id="upgrading"><title>Upgrading</title>
+
+    <p>The first step in upgrading is to read the release announcement
+    and the file <code>CHANGES</code> in the source distribution to
+    find any changes that may affect your site.  When changing between
+    major releases (for example, from 2.0 to 2.2 or from 2.2 to 2.3),
+    there will likely be major differences in the compile-time and
+    run-time configuration that will require manual adjustments.  All
+    modules will also need to be upgraded to accommodate changes in the
+    module API.</p>
+
+    <p>Upgrading from one minor version to the next (for example, from
+    2.2.55 to 2.2.57) is easier.  The <code>make install</code>
+    process will not overwrite any of your existing documents, log
+    files, or configuration files.  In addition, the developers make
+    every effort to avoid incompatible changes in the
+    <program>configure</program> options, run-time configuration, or the
+    module API between minor versions.  In most cases you should be able to
+    use an identical <program>configure</program> command line, an identical
+    configuration file, and all of your modules should continue to
+    work.</p>
+
+    <p>To upgrade across minor versions, start by finding the file
+    <code>config.nice</code> in the <code>build</code> directory of
+    your installed server or at the root of the source tree for your
+    old install.  This will contain the exact
+    <program>configure</program> command line that you used to
+    configure the source tree.  Then to upgrade from one version to
+    the next, you need only copy the <code>config.nice</code> file to
+    the source tree of the new version, edit it to make any desired
+    changes, and then run:</p>
+
+    <example>
+    $ ./config.nice<br />
+    $ make<br />
+    $ make install<br />
+    $ <em>PREFIX</em>/bin/apachectl -k graceful-stop<br />
+    $ <em>PREFIX</em>/bin/apachectl -k start<br />
+    </example>
+
+    <note type="warning">You should always test any new version in your
+    environment before putting it into production.  For example, you
+    can install and run the new version along side the old one by
+    using a different <code>--prefix</code> and a
+    different port (by adjusting the <directive
+    module="mpm_common">Listen</directive> directive) to test for any
+    incompatibilities before doing the final upgrade.</note>
+
+    <p>You can pass additional arguments to <code>config.nice</code>,
+    which will be appended to your original <program>configure</program>
+    options:</p>
+
+    <example>
+    $ ./config.nice --prefix=/home/test/apache --with-port=90
+    </example>
+</section>
+<section id="thirdp"><title>Third-party packages</title>
+
+    <p>A large number of third parties provide their own packaged
+    distributions of the Apache HTTP Server for installation on
+    particular platforms. This includes the various Linux distributions,
+    various third-party Windows packages, Mac OS X, Solaris, and many
+    more.</p>
+
+    <p>Our software license not only permits, but encourages, this kind
+    of redistribution. However, it does result in a situation where the
+    configuration layout and defaults on your installation of the server
+    may differ from what is stated in the documentation. While
+    unfortunate, this situation is not likely to change any time
+    soon.</p>
+
+    <p>A <a
+    href="http://wiki.apache.org/httpd/DistrosDefaultLayout">description
+    of these third-party distrubutions</a> is maintained in the HTTP
+    Server wiki, and should reflect the current state of these
+    third-party distributions. However, you will need to familiarize
+    yourself with your particular platform's package management and
+    installation procedures.</p>
+
+</section>
+</manualpage>

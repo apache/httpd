@@ -1,0 +1,489 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 1330911 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_access_compat.xml.meta">
+
+<name>mod_access_compat</name>
+<description>Group authorizations based on host (name or IP
+address)</description>
+<status>Extension</status>
+<sourcefile>mod_access_compat.c</sourcefile>
+<identifier>access_compat_module</identifier>
+<compatibility>Available in Apache HTTP Server 2.3 as a compatibility module with
+previous versions of Apache httpd 2.x.  The directives provided by this module
+have been deprecated by the new authz refactoring.  Please see
+<module>mod_authz_host</module></compatibility>
+
+<summary>
+    <p>The directives provided by <module>mod_access_compat</module> are
+    used in <directive module="core" type="section">Directory</directive>,
+    <directive module="core" type="section">Files</directive>, and
+    <directive module="core" type="section">Location</directive> sections
+    as well as <code><a href="core.html#accessfilename">.htaccess</a>
+    </code> files to control access to particular parts of the server.
+    Access can be controlled based on the client hostname, IP address, or
+    other characteristics of the client request, as captured in <a
+    href="../env.html">environment variables</a>. The <directive
+    module="mod_access_compat">Allow</directive> and <directive
+    module="mod_access_compat">Deny</directive> directives are used to
+    specify which clients are or are not allowed access to the server,
+    while the <directive module="mod_access_compat">Order</directive>
+    directive sets the default access state, and configures how the
+    <directive module="mod_access_compat">Allow</directive> and <directive
+    module="mod_access_compat">Deny</directive> directives interact with each
+    other.</p>
+
+    <p>Both host-based access restrictions and password-based
+    authentication may be implemented simultaneously. In that case,
+    the <directive module="mod_access_compat">Satisfy</directive> directive is used
+    to determine how the two sets of restrictions interact.</p>
+
+    <note type="warning"><title>Note</title>
+      <p>The directives provided by <module>mod_access_compat</module> have
+      been deprecated by the new authz refactoring. Please see
+      <module>mod_authz_host</module>.</p>
+    </note>
+
+    <p>In general, access restriction directives apply to all
+    access methods (<code>GET</code>, <code>PUT</code>,
+    <code>POST</code>, etc). This is the desired behavior in most
+    cases. However, it is possible to restrict some methods, while
+    leaving other methods unrestricted, by enclosing the directives
+    in a <directive module="core" type="section">Limit</directive> section.</p>
+
+    <note> <title>Merging of configuration sections</title>
+      <p>When any directive provided by this module is used in a new 
+      configuration section, no directives provided by this module are
+      inherited from previous configuration sections.</p>
+    </note>
+
+</summary>
+
+<seealso><directive module="mod_authz_core">Require</directive></seealso>
+<seealso><module>mod_authz_host</module></seealso>
+<seealso><module>mod_authz_core</module></seealso>
+
+<directivesynopsis>
+<name>Allow</name>
+<description>Controls which hosts can access an area of the
+server</description>
+<syntax> Allow from all|<var>host</var>|env=[!]<var>env-variable</var>
+[<var>host</var>|env=[!]<var>env-variable</var>] ...</syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Limit</override>
+
+<usage>
+    <p>The <directive>Allow</directive> directive affects which hosts can
+    access an area of the server. Access can be controlled by
+    hostname, IP address, IP address range, or by other
+    characteristics of the client request captured in environment
+    variables.</p>
+
+    <p>The first argument to this directive is always
+    <code>from</code>. The subsequent arguments can take three
+    different forms. If <code>Allow from all</code> is specified, then
+    all hosts are allowed access, subject to the configuration of the
+    <directive module="mod_access_compat">Deny</directive> and <directive
+    module="mod_access_compat">Order</directive> directives as discussed
+    below. To allow only particular hosts or groups of hosts to access
+    the server, the <em>host</em> can be specified in any of the
+    following formats:</p>
+
+    <dl>
+      <dt>A (partial) domain-name</dt>
+
+      <dd>
+      <highlight language="config">
+Allow from example.org
+Allow from .net example.edu
+      </highlight>
+      <p>Hosts whose names match, or end in, this string are allowed
+      access. Only complete components are matched, so the above
+      example will match <code>foo.example.org</code> but it will not
+      match <code>fooexample.org</code>. This configuration will cause
+      Apache httpd to perform a double DNS lookup on the client IP
+      address, regardless of the setting of the <directive
+      module="core">HostnameLookups</directive> directive.  It will do
+      a reverse DNS lookup on the IP address to find the associated
+      hostname, and then do a forward lookup on the hostname to assure
+      that it matches the original IP address.  Only if the forward
+      and reverse DNS are consistent and the hostname matches will
+      access be allowed.</p></dd>
+
+      <dt>A full IP address</dt>
+
+      <dd>
+      <highlight language="config">
+Allow from 10.1.2.3
+Allow from 192.168.1.104 192.168.1.205
+      </highlight>
+      <p>An IP address of a host allowed access</p></dd>
+
+      <dt>A partial IP address</dt>
+
+      <dd>
+      <highlight language="config">
+Allow from 10.1
+Allow from 10 172.20 192.168.2
+      </highlight>
+      <p>The first 1 to 3 bytes of an IP address, for subnet
+      restriction.</p></dd>
+
+      <dt>A network/netmask pair</dt>
+
+      <dd>
+      <highlight language="config">
+        Allow from 10.1.0.0/255.255.0.0
+      </highlight>
+      <p>A network a.b.c.d, and a netmask w.x.y.z. For more
+      fine-grained subnet restriction.</p></dd>
+
+      <dt>A network/nnn CIDR specification</dt>
+
+      <dd>
+      <highlight language="config">
+        Allow from 10.1.0.0/16
+      </highlight>
+      <p>Similar to the previous case, except the netmask consists of
+      nnn high-order 1 bits.</p></dd>
+    </dl>
+
+    <p>Note that the last three examples above match exactly the
+    same set of hosts.</p>
+
+    <p>IPv6 addresses and IPv6 subnets can be specified as shown
+    below:</p>
+
+    <highlight language="config">
+Allow from 2001:db8::a00:20ff:fea7:ccea
+Allow from 2001:db8::a00:20ff:fea7:ccea/10
+    </highlight>
+
+    <p>The third format of the arguments to the
+    <directive>Allow</directive> directive allows access to the server
+    to be controlled based on the existence of an <a
+    href="../env.html">environment variable</a>. When <code>Allow from
+    env=<var>env-variable</var></code> is specified, then the request is
+    allowed access if the environment variable <var>env-variable</var>
+    exists. When <code>Allow from env=!<var>env-variable</var></code> is
+    specified, then the request is allowed access if the environment
+    variable <var>env-variable</var> doesn't exist.
+    The server provides the ability to set environment
+    variables in a flexible way based on characteristics of the client
+    request using the directives provided by
+    <module>mod_setenvif</module>. Therefore, this directive can be
+    used to allow access based on such factors as the clients
+    <code>User-Agent</code> (browser type), <code>Referer</code>, or
+    other HTTP request header fields.</p>
+
+    <highlight language="config">
+SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
+&lt;Directory /docroot&gt;
+    Order Deny,Allow
+    Deny from all
+    Allow from env=let_me_in
+&lt;/Directory&gt;
+    </highlight>
+
+    <p>In this case, browsers with a user-agent string beginning
+    with <code>KnockKnock/2.0</code> will be allowed access, and all
+    others will be denied.</p>
+
+    <note> <title>Merging of configuration sections</title>
+      <p>When any directive provided by this module is used in a new 
+      configuration section, no directives provided by this module are
+      inherited from previous configuration sections.</p>
+    </note>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Deny</name>
+<description>Controls which hosts are denied access to the
+server</description>
+<syntax> Deny from all|<var>host</var>|env=[!]<var>env-variable</var>
+[<var>host</var>|env=[!]<var>env-variable</var>] ...</syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Limit</override>
+
+<usage>
+    <p>This directive allows access to the server to be restricted
+    based on hostname, IP address, or environment variables. The
+    arguments for the <directive>Deny</directive> directive are
+    identical to the arguments for the <directive
+    module="mod_access_compat">Allow</directive> directive.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Order</name>
+<description>Controls the default access state and the order in which
+<directive>Allow</directive> and <directive>Deny</directive> are
+evaluated.</description>
+<syntax> Order <var>ordering</var></syntax>
+<default>Order Deny,Allow</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Limit</override>
+
+<usage>
+
+    <p>The <directive>Order</directive> directive, along with the
+    <directive module="mod_access_compat">Allow</directive> and
+    <directive module="mod_access_compat">Deny</directive> directives,
+    controls a three-pass access control system. The first pass
+    processes either all <directive
+    module="mod_access_compat">Allow</directive> or all <directive
+    module="mod_access_compat">Deny</directive> directives, as specified
+    by the <directive module="mod_access_compat">Order</directive>
+    directive. The second pass parses the rest of the directives
+    (<directive module="mod_access_compat">Deny</directive> or
+    <directive module="mod_access_compat">Allow</directive>). The third
+    pass applies to all requests which do not match either of the first
+    two.</p>
+
+    <p>Note that all <directive
+    module="mod_access_compat">Allow</directive> and <directive
+    module="mod_access_compat">Deny</directive> directives are
+    processed, unlike a typical firewall, where only the first match is
+    used. The last match is effective (also unlike a typical firewall).
+    Additionally, the order in which lines appear in the configuration
+    files is not significant -- all <directive
+    module="mod_access_compat">Allow</directive> lines are processed as
+    one group, all <directive
+    module="mod_access_compat">Deny</directive> lines are considered as
+    another, and the default state is considered by itself.</p>
+
+    <p><em>Ordering</em> is one of:</p>
+
+    <dl>
+      <dt><code>Allow,Deny</code></dt>
+
+      <dd>First, all <directive
+      module="mod_access_compat">Allow</directive> directives are
+      evaluated; at least one must match, or the request is rejected.
+      Next, all <directive module="mod_access_compat">Deny</directive>
+      directives are evaluated. If any matches, the request is rejected.
+      Last, any requests which do not match an <directive
+      module="mod_access_compat">Allow</directive> or a <directive
+      module="mod_access_compat">Deny</directive> directive are denied
+      by default.</dd>
+
+      <dt><code>Deny,Allow</code></dt>
+
+      <dd>First, all <directive
+      module="mod_access_compat">Deny</directive> directives are
+      evaluated; if any match, the request is denied
+      <strong>unless</strong> it also matches an <directive
+      module="mod_access_compat">Allow</directive> directive. Any
+      requests which do not match any <directive
+      module="mod_access_compat">Allow</directive> or <directive
+      module="mod_access_compat">Deny</directive> directives are
+      permitted.</dd>
+
+      <dt><code>Mutual-failure</code></dt>
+
+      <dd>This order has the same effect as <code>Order
+      Allow,Deny</code> and is deprecated in its favor.</dd>
+    </dl>
+
+    <p>Keywords may only be separated by a comma; <em>no whitespace</em>
+    is allowed between them.</p>
+
+    <table border="1">
+      <tr>
+        <th>Match</th>
+        <th>Allow,Deny result</th>
+        <th>Deny,Allow result</th>
+      </tr><tr>
+        <th>Match Allow only</th>
+        <td>Request allowed</td>
+        <td>Request allowed</td>
+      </tr><tr>
+        <th>Match Deny only</th>
+        <td>Request denied</td>
+        <td>Request denied</td>
+      </tr><tr>
+        <th>No match</th>
+        <td>Default to second directive: Denied</td>
+        <td>Default to second directive: Allowed</td>
+      </tr><tr>
+        <th>Match both Allow &amp; Deny</th>
+        <td>Final match controls: Denied</td>
+        <td>Final match controls: Allowed</td>
+      </tr>
+    </table>
+
+    <p>In the following example, all hosts in the example.org domain
+    are allowed access; all other hosts are denied access.</p>
+
+    <highlight language="config">
+Order Deny,Allow
+Deny from all
+Allow from example.org
+    </highlight>
+
+    <p>In the next example, all hosts in the example.org domain are
+    allowed access, except for the hosts which are in the
+    foo.example.org subdomain, who are denied access. All hosts not
+    in the example.org domain are denied access because the default
+    state is to <directive module="mod_access_compat">Deny</directive>
+    access to the server.</p>
+
+    <highlight language="config">
+Order Allow,Deny
+Allow from example.org
+Deny from foo.example.org
+    </highlight>
+
+    <p>On the other hand, if the <directive>Order</directive> in the
+    last example is changed to <code>Deny,Allow</code>, all hosts will
+    be allowed access. This happens because, regardless of the actual
+    ordering of the directives in the configuration file, the
+    <code>Allow from example.org</code> will be evaluated last and will
+    override the <code>Deny from foo.example.org</code>. All hosts not in
+    the <code>example.org</code> domain will also be allowed access
+    because the default state is <directive
+    module="mod_access_compat">Allow</directive>.</p>
+
+    <p>The presence of an <directive>Order</directive> directive can
+    affect access to a part of the server even in the absence of
+    accompanying <directive module="mod_access_compat">Allow</directive>
+    and <directive module="mod_access_compat">Deny</directive>
+    directives because of its effect on the default access state. For
+    example,</p>
+
+    <highlight language="config">
+&lt;Directory /www&gt;
+    Order Allow,Deny
+&lt;/Directory&gt;
+    </highlight>
+
+    <p>will Deny all access to the <code>/www</code> directory
+    because the default access state is set to
+    <directive module="mod_access_compat">Deny</directive>.</p>
+
+    <p>The <directive>Order</directive> directive controls the order of access
+    directive processing only within each phase of the server's
+    configuration processing. This implies, for example, that an
+    <directive module="mod_access_compat">Allow</directive> or <directive
+    module="mod_access_compat">Deny</directive> directive occurring in a
+    <directive module="core" type="section">Location</directive> section will
+    always be evaluated after an <directive
+    module="mod_access_compat">Allow</directive> or <directive
+    module="mod_access_compat">Deny</directive> directive occurring in a
+    <directive module="core" type="section">Directory</directive> section or
+    <code>.htaccess</code> file, regardless of the setting of the
+    <directive>Order</directive> directive. For details on the merging
+    of configuration sections, see the documentation on <a
+    href="../sections.html">How Directory, Location and Files sections
+    work</a>.</p>
+
+    <note> <title>Merging of configuration sections</title>
+      <p>When any directive provided by this module is used in a new 
+      configuration section, no directives provided by this module are
+      inherited from previous configuration sections.</p>
+    </note>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Satisfy</name>
+<description>Interaction between host-level access control and
+user authentication</description>
+<syntax>Satisfy Any|All</syntax>
+<default>Satisfy All</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+<compatibility>Influenced by <directive module="core" type="section"
+>Limit</directive> and <directive module="core"
+type="section">LimitExcept</directive> in version 2.0.51 and
+later</compatibility>
+
+<usage>
+    <p>Access policy if both <directive
+    module="mod_access_compat">Allow</directive> and <directive
+    module="mod_authz_core">Require</directive> used. The parameter can be
+    either <code>All</code> or <code>Any</code>. This directive is only
+    useful if access to a particular area is being restricted by both
+    username/password <em>and</em> client host address. In this case
+    the default behavior (<code>All</code>) is to require that the client
+    passes the address access restriction <em>and</em> enters a valid
+    username and password. With the <code>Any</code> option the client will be
+    granted access if they either pass the host restriction or enter a
+    valid username and password. This can be used to password restrict
+    an area, but to let clients from particular addresses in without
+    prompting for a password.</p>
+
+    <p>For example, if you wanted to let people on your network have
+    unrestricted access to a portion of your website, but require that
+    people outside of your network provide a password, you could use a
+    configuration similar to the following:</p>
+
+    <highlight language="config">
+Require valid-user
+Allow from 192.168.1
+Satisfy Any
+    </highlight>
+
+    <p>
+    Another frequent use of the <directive>Satisfy</directive> directive
+    is to relax access restrictions for a subdirectory:
+    </p>
+
+    <highlight language="config">
+&lt;Directory /var/www/private&gt;
+    Require valid-user
+&lt;/Directory&gt;
+
+&lt;Directory /var/www/private/public&gt;
+    Allow from all
+    Satisfy Any
+&lt;/Directory&gt;
+    </highlight>
+
+    <p>In the above example, authentication will be required for the
+    <code>/var/www/private</code> directory, but will not be required
+    for the <code>/var/www/private/public</code> directory.</p>
+
+    <p>Since version 2.0.51 <directive>Satisfy</directive> directives can
+    be restricted to particular methods by <directive module="core"
+    type="section">Limit</directive> and <directive module="core" type="section"
+    >LimitExcept</directive> sections.</p>
+
+    <note> <title>Merging of configuration sections</title>
+      <p>When any directive provided by this module is used in a new 
+      configuration section, no directives provided by this module are
+      inherited from previous configuration sections.</p>
+    </note>
+
+</usage>
+   <seealso><directive module="mod_access_compat">Allow</directive></seealso>
+   <seealso><directive module="mod_authz_core">Require</directive></seealso>
+</directivesynopsis>
+
+</modulesynopsis>

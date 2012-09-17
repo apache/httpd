@@ -1,0 +1,572 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
+<!-- English Revision : 1362526 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="expr.xml.meta">
+
+  <title>Les expressions dans le serveur HTTP Apache</title>
+
+  <summary>
+    <p>Historiquement, il existe de nombreuses variantes dans la syntaxe
+    des expressions permettant d'exprimer une condition dans les
+    diff&eacute;rents modules du serveur HTTP Apache. &Agrave; ce titre, des travaux sont
+    en cours pour n'utiliser qu'une seule variante nomm&eacute;e
+    <em>ap_expr</em>, pour toutes les directives de configuration. Ce
+    document d&eacute;crit l'interpr&eacute;teur d'expressions <em>ap_expr</em>.
+    </p>
+    <p>Le type d'expression <em>ap_expr</em> est appel&eacute; &agrave; remplacer la
+    plupart des autres types d'expressions dans HTTPD. Par exemple, la
+    directive obsol&egrave;te <directive
+    module="mod_ssl">SSLRequire</directive> peut &ecirc;tre remplac&eacute;e par la
+    directive <a href="mod/mod_authz_core.html#reqexpr">Require
+    expr</a>.
+    </p>
+  </summary>
+
+<seealso><directive module="core">If</directive></seealso>
+<seealso><directive module="core" type="section">If</directive></seealso>
+<seealso><directive module="core" type="section">ElseIf</directive></seealso>
+<seealso><directive module="core" type="section">Else</directive></seealso>
+<seealso><directive module="mod_rewrite">RewriteCond</directive></seealso>
+<seealso><directive module="mod_setenvif">SetEnvIfExpr</directive></seealso>
+<seealso><directive module="mod_headers">Header</directive></seealso>
+<seealso><directive module="mod_headers">RequestHeader</directive></seealso>
+<seealso><directive module="mod_filter">FilterProvider</directive></seealso>
+<seealso><a href="mod/mod_authz_core.html#reqexpr">Require expr</a></seealso>
+<seealso><directive module="mod_ssl">SSLRequire</directive></seealso>
+<seealso><directive module="mod_log_debug">LogMessage</directive></seealso>
+<seealso><module>mod_include</module></seealso>
+
+  <section id="grammar">
+    <title>Syntaxe en Forme de Backus-Naur</title>
+      <p>La <a href="http://fr.wikipedia.org/wiki/Forme_de_Backus-Naur">Forme de Backus-Naur</a>
+      (souvent abr&eacute;g&eacute;e en BNF, de l'anglais Backus-Naur Form) est une notation permettant de d&eacute;crire
+      les r&egrave;gles syntaxiques des langages de programmation.
+      </p>
+<blockquote>
+<pre>
+expr        ::= "<strong>true</strong>" | "<strong>false</strong>"
+              | "<strong>!</strong>" expr
+              | expr "<strong>&amp;&amp;</strong>" expr
+              | expr "<strong>||</strong>" expr
+              | "<strong>(</strong>" expr "<strong>)</strong>"
+              | comp
+
+comp        ::= stringcomp
+              | integercomp
+              | unaryop word
+              | word binaryop word
+              | word "<strong>in</strong>" "<strong>{</strong>" wordlist "<strong>}</strong>"
+              | word "<strong>in</strong>" listfunction
+              | word "<strong>=~</strong>" regex
+              | word "<strong>!~</strong>" regex
+
+
+stringcomp  ::= word "<strong>==</strong>" word
+              | word "<strong>!=</strong>" word
+              | word "<strong>&lt;</strong>"  word
+              | word "<strong>&lt;=</strong>" word
+              | word "<strong>&gt;</strong>"  word
+              | word "<strong>&gt;=</strong>" word
+
+integercomp ::= word "<strong>-eq</strong>" word | word "<strong>eq</strong>" word
+              | word "<strong>-ne</strong>" word | word "<strong>ne</strong>" word
+              | word "<strong>-lt</strong>" word | word "<strong>lt</strong>" word
+              | word "<strong>-le</strong>" word | word "<strong>le</strong>" word
+              | word "<strong>-gt</strong>" word | word "<strong>gt</strong>" word
+              | word "<strong>-ge</strong>" word | word "<strong>ge</strong>" word
+
+wordlist    ::= word
+              | wordlist "<strong>,</strong>" word
+
+word        ::= word "<strong>.</strong>" word
+              | digit
+              | "<strong>'</strong>" string "<strong>'</strong>"
+              | "<strong>"</strong>" string "<strong>"</strong>"
+              | variable
+	      | rebackref
+              | function
+
+string      ::= stringpart
+              | string stringpart
+
+stringpart  ::= cstring
+              | variable
+	      | rebackref
+
+cstring     ::= ...
+digit       ::= [0-9]+
+
+variable    ::= "<strong>%{</strong>" varname "<strong>}</strong>"
+              | "<strong>%{</strong>" funcname "<strong>:</strong>" funcargs "<strong>}</strong>"
+
+rebackref   ::= "<strong>$</strong>" [0-9]
+
+function     ::= funcname "<strong>(</strong>" word "<strong>)</strong>"
+
+listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
+</pre>
+</blockquote>
+
+</section>
+
+<section id="vars">
+    <title>Variables</title>
+
+    <p>L'interpr&eacute;teur d'expressions fournit plusieurs variables de la
+    forme <code>%{HTTP_HOST}</code>. Notez que la valeur d'une variable
+    peut d&eacute;pendre de la phase du traitement de la requ&ecirc;te au cours de
+    laquelle elle est &eacute;valu&eacute;e. Par exemple, une expression utilis&eacute;e dans
+    une directive <directive>&lt;If &gt;</directive> sera &eacute;valu&eacute;e avant
+    la phase d'authentification. Par cons&eacute;quent, la variable
+    <code>%{REMOTE_USER}</code> ne sera pas encore d&eacute;finie &agrave; ce stade.</p>
+
+    <p>Les variables suivantes contiennent la valeur de l'en-t&ecirc;te de
+    requ&ecirc;te HTTP correspondant. La <a href="#functions">fonction</a>
+    <code>req</code> permet d'extraire les valeurs des autres en-t&ecirc;tes.</p>
+
+    <table border="1" style="zebra">
+    <columnspec><column width="1"/></columnspec>
+
+    <tr><th>Nom</th></tr>
+    <tr><td><code>HTTP_ACCEPT</code></td></tr>
+    <tr><td><code>HTTP_FORWARDED</code></td></tr>
+    <tr><td><code>HTTP_HOST</code></td></tr>
+    <tr><td><code>HTTP_PROXY_CONNECTION</code></td></tr>
+    <tr><td><code>HTTP_REFERER</code></td></tr>
+    <tr><td><code>HTTP_USER_AGENT</code></td></tr>
+
+    </table>
+
+    <p>Autres variables li&eacute;es aux requ&ecirc;tes</p>
+
+    <table border="1" style="zebra">
+    <columnspec><column width=".4"/><column width=".6"/></columnspec>
+
+    <tr><th>Nom</th><th>Description</th></tr>
+    <tr><td><code>REQUEST_METHOD</code></td>
+        <td>La m&eacute;thode HTTP de la requ&ecirc;te entrante (par exemple
+	<code>GET</code>)</td></tr>
+    <tr><td><code>REQUEST_SCHEME</code></td>
+        <td>Le protocole associ&eacute; &agrave; l'URI de la requ&ecirc;te</td></tr>
+    <tr><td><code>REQUEST_URI</code></td>
+        <td>La partie chemin de l'URI de la requ&ecirc;te</td></tr>
+    <tr><td><code>DOCUMENT_URI</code></td>
+        <td>Idem REQUEST_URI</td></tr>
+    <tr><td><code>REQUEST_FILENAME</code></td>
+        <td>Le chemin complet dans le syst&egrave;me de fichiers local du
+	fichier ou du script correspondant &agrave; la requ&ecirc;te, si le serveur
+	l'a d&egrave;j&agrave; d&eacute;termin&eacute; &agrave; l'instant o&ugrave; <code>REQUEST_FILENAME</code>
+	est r&eacute;f&eacute;renc&eacute;e. Dans le cas contraire, comme dans un
+	contexte de serveur virtuel, m&ecirc;me valeur que <code>REQUEST_URI</code> </td></tr>	
+    <tr><td><code>SCRIPT_FILENAME</code></td>
+        <td>Identique &agrave; <code>REQUEST_FILENAME</code></td></tr>
+    <tr><td><code>LAST_MODIFIED</code></td>
+        <td>La date et heure de derni&egrave;re modification du fichier au
+	format <code>20101231235959</code>, si elle est d&eacute;j&agrave; connue du
+	serveur au moment o&ugrave; <code>LAST_MODIFIED</code> est r&eacute;f&eacute;renc&eacute;.
+        </td></tr>
+    <tr><td><code>SCRIPT_USER</code></td>
+        <td>Le nom d'utilisateur du propri&eacute;taire du script.</td></tr>
+    <tr><td><code>SCRIPT_GROUP</code></td>
+        <td>Le nom du groupe auquel appartient le script.</td></tr>
+    <tr><td><code>PATH_INFO</code></td>
+        <td>L'information relative au nom de chemin situ&eacute;e en fin, voir
+	la directive <directive module="core">AcceptPathInfo</directive></td></tr>
+    <tr><td><code>QUERY_STRING</code></td>
+        <td>La cha&icirc;ne de param&egrave;tres de la requ&ecirc;te courante</td></tr>
+    <tr><td><code>IS_SUBREQ</code></td>
+        <td>"<code>true</code>" si la requ&ecirc;te courante est une
+	sous-requ&ecirc;te, "<code>false</code>" dans le cas contraire</td></tr>
+    <tr><td><code>THE_REQUEST</code></td>
+        <td>La requ&ecirc;te compl&egrave;te (par exemple "<code>GET /index.html
+	HTTP/1.1</code>")</td></tr>
+    <tr><td><code>REMOTE_ADDR</code></td>
+        <td>L'adresse IP de l'h&ocirc;te distant</td></tr>
+    <tr><td><code>REMOTE_HOST</code></td>
+        <td>Le nom d'h&ocirc;te de l'h&ocirc;te distant</td></tr>
+    <tr><td><code>REMOTE_USER</code></td>
+        <td>Le nom de l'utilisateur authentifi&eacute; (s'il existe)</td></tr>
+    <tr><td><code>REMOTE_IDENT</code></td>
+        <td>Le nom de l'utilisateur d&eacute;fini par <module>mod_ident</module></td></tr>
+    <tr><td><code>SERVER_NAME</code></td>
+        <td>La valeur de la directive <directive
+	module="core">ServerName</directive> du serveur virtuel courant</td></tr>
+    <tr><td><code>SERVER_PORT</code></td>
+        <td>Le port associ&eacute; au serveur virtuel courant ; voir la
+	directive <directive module="core">ServerName</directive></td></tr>
+    <tr><td><code>SERVER_ADMIN</code></td>
+        <td>La valeur de la directive <directive
+	module="core">ServerAdmin</directive> du serveur virtuel courant</td></tr>
+    <tr><td><code>SERVER_PROTOCOL</code></td>
+        <td>Le protocole utilis&eacute; par la requ&ecirc;te</td></tr>
+    <tr><td><code>DOCUMENT_ROOT</code></td>
+        <td>La valeur de la directive <directive
+	module="core">DocumentRoot</directive> du serveur virtuel
+	courant</td></tr>
+    <tr><td><code>AUTH_TYPE</code></td>
+        <td>La valeur de la directive <directive
+	module="mod_authn_core">AuthType</directive> (par exemple
+	"<code>basic</code>")</td></tr>
+    <tr><td><code>CONTENT_TYPE</code></td>
+        <td>Le type de contenu de la r&eacute;ponse</td></tr>
+    <tr><td><code>HANDLER</code></td>
+        <td>Le nom du <a href="handler.html">gestionnaire</a> qui a
+	g&eacute;n&eacute;r&eacute; la r&eacute;ponse</td></tr>
+    <tr><td><code>HTTPS</code></td>
+        <td>"<code>on</code>" si la requ&ecirc;te utilise https,
+	"<code>off</code>" dans le cas contraire</td></tr>
+    <tr><td><code>IPV6</code></td>
+        <td>"<code>on</code>" si la connexion utilise IPv6,
+	"<code>off</code>" dans le cas contraire</td></tr>
+    <tr><td><code>REQUEST_STATUS</code></td>
+        <td>Le code d'erreur HTTP de la requ&ecirc;te</td></tr>
+    <tr><td><code>REQUEST_LOG_ID</code></td>
+        <td>L'identifiant du message d'erreur associ&eacute; &agrave; la requ&ecirc;te (voir
+	la directive <directive
+	module="core">ErrorLogFormat</directive>)</td></tr>
+    <tr><td><code>CONN_LOG_ID</code></td>
+        <td>L'identifiant du message d'erreur associ&eacute; &agrave; la connexion
+	(voir la directive <directive
+	module="core">ErrorLogFormat</directive>)</td></tr>
+    <tr><td><code>CONN_REMOTE_ADDR</code></td>
+        <td>L'adresse IP du correspondant pour la connexion (voir le module
+	<module>mod_remoteip</module>)</td></tr>
+
+    </table>
+
+    <p>Variables diverses</p>
+
+    <table border="1" style="zebra">
+    <columnspec><column width=".4"/><column width=".6"/></columnspec>
+
+    <tr><th>Nom</th><th>Description</th></tr>
+    <tr><td><code>TIME_YEAR</code></td>
+        <td>L'ann&eacute;e courante (par exemple <code>2010</code>)</td></tr>
+    <tr><td><code>TIME_MON</code></td>
+        <td>Le mois courant (<code>1</code>, ..., <code>12</code>)</td></tr>
+    <tr><td><code>TIME_DAY</code></td>
+        <td>Le jour courant dans le mois</td></tr>
+    <tr><td><code>TIME_HOUR</code></td>
+        <td>Les heures de la date courante (<code>0</code>, ...,
+	<code>23</code>)</td></tr>
+    <tr><td><code>TIME_MIN</code></td>
+        <td>Les minutes de la date courante</td></tr>
+    <tr><td><code>TIME_SEC</code></td>
+        <td>Les secondes de la date courante</td></tr>
+    <tr><td><code>TIME_WDAY</code></td>
+        <td>Le jour de la semaine (&agrave; partir de <code>0</code> pour
+	dimanche)</td></tr>
+    <tr><td><code>TIME</code></td>
+        <td>La date et heure au format <code>20101231235959</code></td></tr>
+    <tr><td><code>SERVER_SOFTWARE</code></td>
+        <td>La cha&icirc;ne contenant la version du serveur</td></tr>
+    <tr><td><code>API_VERSION</code></td>
+        <td>La date de la version de l'API (module magic number)</td></tr>
+    </table>
+
+    <p>Certains modules, comme <module>mod_ssl</module>, d&eacute;finissent des
+    variables suppl&eacute;mentaires.</p>
+
+</section>
+
+<section id="binop">
+    <title>Op&eacute;rateurs binaires</title>
+
+    <p>&Agrave; l'exception de quelques op&eacute;rateurs de comparaison internes, les
+    op&eacute;rateurs binaires sont de la forme
+    "<code>-[a-zA-Z][a-zA-Z0-9_]+</code>", autrement dit un signe moins
+    et au moins deux caract&egrave;res. Le nom est insensible &agrave; la casse. Les
+    modules peuvent fournir des op&eacute;rateurs binaires suppl&eacute;mentaires.</p>
+
+    <section id="comp">
+    <title>Op&eacute;rateurs de comparaison</title>
+
+    <table border="1" style="zebra">
+    <columnspec><column width=".2"/><column width=".2"/><column width=".6"/></columnspec>
+
+    <tr><th>Nom</th><th>Alternative</th> <th>Description</th></tr>
+    <tr><td><code>==</code></td>
+        <td><code>=</code></td>
+        <td>Egalit&eacute; de cha&icirc;nes</td></tr>
+    <tr><td><code>!=</code></td>
+        <td></td>
+        <td>In&eacute;galit&eacute; de cha&icirc;nes</td></tr>
+    <tr><td><code>&lt;</code></td>
+        <td></td>
+        <td>Cha&icirc;ne inf&eacute;rieure &agrave;</td></tr>
+    <tr><td><code>&lt;=</code></td>
+        <td></td>
+        <td>Cha&icirc;ne inf&eacute;rieure ou &eacute;gale &agrave;</td></tr>
+    <tr><td><code>&gt;</code></td>
+        <td></td>
+        <td>Cha&icirc;ne sup&eacute;rieure &agrave;</td></tr>
+    <tr><td><code>&gt;=</code></td>
+        <td></td>
+        <td>Cha&icirc;ne sup&eacute;rieure ou &eacute;gale &agrave;</td></tr>
+    <tr><td><code>-eq</code></td>
+        <td><code>eq</code></td>
+        <td>Egalit&eacute; d'entiers</td></tr>
+    <tr><td><code>-ne</code></td>
+        <td><code>ne</code></td>
+        <td>In&eacute;galit&eacute; d'entiers</td></tr>
+    <tr><td><code>-lt</code></td>
+        <td><code>lt</code></td>
+        <td>Entier inf&eacute;rieur &agrave;</td></tr>
+    <tr><td><code>-le</code></td>
+        <td><code>le</code></td>
+        <td>Entier inf&eacute;rieur ou &eacute;gal &agrave;</td></tr>
+    <tr><td><code>-gt</code></td>
+        <td><code>gt</code></td>
+        <td>Entier sup&eacute;rieur &agrave;</td></tr>
+    <tr><td><code>-ge</code></td>
+        <td><code>ge</code></td>
+        <td>Entier sup&eacute;rieur ou &eacute;gal &agrave;</td></tr>
+    </table>
+    </section>
+
+    <section id="binaryother">
+    <title>Autres op&eacute;rateurs binaires</title>
+
+    <table border="1" style="zebra">
+    <columnspec><column width=".2"/><column width=".8"/></columnspec>
+
+    <tr><th>Nom</th><th>Description</th></tr>
+    <tr><td><code>-ipmatch</code></td>
+        <td>L'adresse IP correspond &agrave; adresse/masque</td></tr>
+    <tr><td><code>-strmatch</code></td>
+        <td>la cha&icirc;ne de gauche correspond au mod&egrave;le constitu&eacute; par la
+	cha&icirc;ne de droite (contenant des caract&egrave;res g&eacute;n&eacute;riques *, ?, [])</td></tr>
+    <tr><td><code>-strcmatch</code></td>
+        <td>idem <code>-strmatch</code>, mais insensible &agrave; la casse</td></tr>
+    <tr><td><code>-fnmatch</code></td>
+        <td>idem <code>-strmatch</code>, mais les slashes ne sont pas
+	pris en compte par les caract&egrave;res g&eacute;n&eacute;riques</td></tr>
+    </table>
+    </section>
+
+</section>
+
+<section id="unnop">
+    <title>Op&eacute;rateurs unaires</title>
+
+    <p>Les op&eacute;rateurs unaires acceptent un seul argument et sont
+    de la forme "<code>-[a-zA-Z]</code>",
+    autrement dit le signe moins et un caract&egrave;re. Le nom <em>est</em>
+    sensible &agrave; la casse. Les modules peuvent fournir des op&eacute;rateurs
+    unaires suppl&eacute;mentaires.</p>
+
+    <table border="1" style="zebra">
+    <columnspec><column width=".2"/><column width=".2"/><column width=".6"/></columnspec>
+
+    <tr><th>Nom</th><th>Description</th><th>Restreint</th></tr>
+    <tr><td><code>-d</code></td>
+        <td>L'argument est trait&eacute; comme un nom de fichier. 
+	Vrai si le fichier existe et correspond &agrave; un
+	r&eacute;pertoire</td><td>oui</td></tr>
+    <tr><td><code>-e</code></td>
+        <td>L'argument est trait&eacute; comme un nom de fichier. Vrai si le
+	fichier (ou dir ou special) existe</td><td>oui</td></tr>
+    <tr><td><code>-f</code></td>
+        <td>L'argument est trait&eacute; comme un nom de fichier. Vrai si le
+	fichier existe et correspond &agrave; un fichier
+	r&eacute;gulier</td><td>oui</td></tr>
+    <tr><td><code>-s</code></td>
+        <td>L'argument est trait&eacute; comme un nom de fichier. Vrai si le
+	fichier existe et n'est pas vide</td><td>oui</td></tr>
+    <tr><td><code>-L</code></td>
+        <td>L'argument est trait&eacute; comme un nom de fichier. Vrai si le
+	fichier existe et correspond &agrave; un lien
+	symbolique</td><td>oui</td></tr>
+    <tr><td><code>-h</code></td>
+        <td>L'argument est trait&eacute; comme un nom de fichier. Vrai si le
+	fichier existe et correspond &agrave; un lien symbolique
+	(identique &agrave; <code>-L</code>)</td><td>oui</td></tr>
+    <tr><td><code>-F</code></td>
+        <td>Vrai si la cha&icirc;ne correspond a un fichier valide, accessible
+	avec tous les contr&ocirc;les d'acc&egrave;s configur&eacute;s pour ce chemin. A
+	cette fin, une sous-requ&ecirc;te effectue la v&eacute;rification, et vous
+	devez utiliser ce drapeau avec soin car il peut impacter les
+	performances de votre serveur !</td><td></td></tr>
+    <tr><td><code>-U</code></td>
+        <td>Vrai si la cha&icirc;ne correspond a une URL valide, accessible
+	avec tous les contr&ocirc;les d'acc&egrave;s configur&eacute;s pour ce chemin. A
+	cette fin, une sous-requ&ecirc;te effectue la v&eacute;rification, et vous
+	devez utiliser ce drapeau avec soin car il peut impacter les
+	performances de votre serveur !</td><td></td></tr>
+    <tr><td><code>-A</code></td>
+        <td>Alias pour <code>-U</code></td><td></td></tr>
+    <tr><td><code>-n</code></td>
+        <td>Vrai si la cha&icirc;ne n'est pas vide</td><td></td></tr>
+    <tr><td><code>-z</code></td>
+        <td>Vrai si la cha&icirc;ne est vide</td><td></td></tr>
+    <tr><td><code>-T</code></td>
+        <td>Faux si la cha&icirc;ne est vide, "<code>0</code>",
+	"<code>off</code>", "<code>false</code>", ou "<code>no</code>"
+	(insensibilit&eacute; &agrave; la casse). Vrai dans le cas contraire.</td><td></td></tr>
+    <tr><td><code>-R</code></td>
+        <td>Idem "<code>%{REMOTE_ADDR} -ipmatch ...</code>", en plus
+	efficace
+        </td><td></td></tr>
+    </table>
+
+    <p>Les op&eacute;rateurs marqu&eacute;s comme "restreints" ne sont pas disponibles
+    avec certains modules comme <module>mod_include</module>.</p>
+
+</section>
+
+<section id="functions">
+    <title>Fonctions</title>
+
+    <p>Normalement, les fonctions dont la valeur est une cha&icirc;ne acceptent une cha&icirc;ne
+    comme argument et renvoient une cha&icirc;ne. Les noms de fonctions sont
+    insensibles &agrave; la casse. Les modules peuvent fournir des fonctions
+    suppl&eacute;mentaires.</p>
+
+    <table border="1" style="zebra">
+    <columnspec><column width=".2"/><column width=".8"/></columnspec>
+
+    <tr><th>Nom</th><th>Description</th><th>Restreint</th></tr>
+    <tr><td><code>req</code>, <code>http</code></td>
+        <td>Lit l'en-t&ecirc;te de requ&ecirc;te HTTP</td><td></td></tr>
+    <tr><td><code>resp</code></td>
+        <td>Lit l'en-t&ecirc;te de r&eacute;ponse HTTP</td><td></td></tr>
+    <tr><td><code>reqenv</code></td>
+        <td>Recherche une variable d'environnement de requ&ecirc;te</td><td></td></tr>
+    <tr><td><code>osenv</code></td>
+        <td>Recherche une variable d'environnement du syst&egrave;me
+	d'exploitation</td><td></td></tr>
+    <tr><td><code>note</code></td>
+        <td>Recherche une note de requ&ecirc;te</td><td></td></tr>
+    <tr><td><code>env</code></td>
+        <td>Renvoie le premier r&eacute;sultat positif de <code>note</code>,
+	<code>reqenv</code>, <code>osenv</code></td><td></td></tr>
+    <tr><td><code>tolower</code></td>
+        <td>Convertit une cha&icirc;ne en minuscules</td><td></td></tr>
+    <tr><td><code>toupper</code></td>
+        <td>Convertit une cha&icirc;ne en majuscules</td><td></td></tr>
+    <tr><td><code>escape</code></td>
+        <td>Echappe les caract&egrave;res sp&eacute;ciaux en codage hexad&eacute;cimal</td><td></td></tr>
+    <tr><td><code>unescape</code></td>
+        <td>"D&eacute;s&eacute;chappe" les cha&icirc;nes cod&eacute;es
+	en hexad&eacute;cimal, en ne gardant encod&eacute;s que les slashes; renvoie la cha&icirc;ne vide
+	si la s&eacute;quence %00 est rencontr&eacute;e</td><td></td></tr>
+    <tr><td><code>file</code></td>
+        <td>Lit le contenu d'un fichier</td><td>oui</td></tr>
+    <tr><td><code>filesize</code></td>
+        <td>Renvoie la taille d'un fichier (ou 0 si le fichier n'existe
+	pas ou ne correspond pas &agrave; un fichier r&eacute;gulier)</td><td>oui</td></tr>
+
+    </table>
+
+    <p>Les fonctions marqu&eacute;es comme "restreints" ne sont pas disponibles
+    avec certains modules comme <module>mod_include</module>.</p>
+
+    <p>En plus des fonctions dont la valeur est une cha&icirc;ne, il existe
+    aussi des fonctions dont la valeur est une liste, qui acceptent une
+    cha&icirc;ne comme argument, et renvoient une liste de mots, autrement dit
+    une liste de cha&icirc;nes. La liste de mot peut &ecirc;tre utilis&eacute;e avec
+    l'op&eacute;rateur sp&eacute;cial <code>-in</code>. Les noms de fonctions sont
+    insensibles &agrave; la casse. Les modules peuvent fournir des fonctions
+    suppl&eacute;mentaires.</p>
+
+    <p>Il n'existe pas de fonctions internes dont la valeur est une
+    liste. Le module <module>mod_ssl</module> fournit la fonction
+    <code>PeerExtList</code>. Voir la description de la directive
+    <directive module="mod_ssl">SSLRequire</directive> pour plus de
+    d&eacute;tails (notez que la fonction <code>PeerExtList</code> peut aussi
+    &ecirc;tre utilis&eacute;e en dehors de la directive <directive
+    module="mod_ssl">SSLRequire</directive>).</p>
+
+</section>
+<section id="examples">
+    
+	<title>Exemples d'expressions</title>
+	<p>Les exemples suivants montent comment utiliser les
+	expressions pour &eacute;valuer les requ&ecirc;tes :</p>
+	<!-- This section should probably be extended with more, useful examples -->
+	<highlight language="config">
+# Comparer le nom d'h&ocirc;te avec example.com et rediriger vers
+# www.example.com si le nom d'h&ocirc;te correspond
+&lt;If "%{HTTP_HOST} == 'example.com'"&gt;
+    Redirect permanent / http://www.example.com
+&lt;/If&gt;
+
+# Forcer le type text/plain si un fichier fait l'objet d'une
+# requ&ecirc;te dont la cha&icirc;ne de param&egrave;tres contient 'forcetext'
+&lt;If "%{QUERY_STRING} =~ /forcetext/"&gt;
+    ForceType text/plain
+&lt;/If&gt;
+
+# N'autoriser l'acc&egrave;s &agrave; ce contenu que pendant les heures de
+# travail
+&lt;Directory "/foo/bar/business"&gt;
+     Require expr %{TIME_HOUR} -gt 9 &amp;&amp; %{TIME_HOUR} -lt 17
+&lt;/Directory&gt;	
+	</highlight>
+</section>
+
+<section id="other">
+    <title>Autres</title>
+
+    <table border="1" style="zebra">
+    <columnspec><column width=".2"/><column width=".2"/><column width=".6"/></columnspec>
+
+    <tr><th>Nom</th><th>Alternative</th> <th>Description</th></tr>
+    <tr><td><code>-in</code></td>
+        <td><code>in</code></td>
+        <td>cha&icirc;ne contenue dans une liste de cha&icirc;nes</td></tr>
+    <tr><td><code>/regexp/</code></td>
+        <td><code>m#regexp#</code></td>
+        <td>Expression rationnelle (la seconde forme permet de sp&eacute;cifier
+	des d&eacute;limiteurs autres que /)</td></tr>
+    <tr><td><code>/regexp/i</code></td>
+        <td><code>m#regexp#i</code></td>
+        <td>Expression rationnelle insensible &agrave; la casse</td></tr>
+    <tr><td><code>$0 ... $9</code></td>
+        <td></td>
+        <td>R&eacute;f&eacute;rences arri&egrave;res dans les expressions rationnelles</td></tr>
+    </table>
+
+    <section id="rebackref">
+        <title>R&eacute;f&eacute;rences arri&egrave;res dans les expressions rationnelles</title>
+        <p>Les cha&icirc;nes <code>$0</code> ... <code>$9</code> permettent de
+	r&eacute;f&eacute;rencer les groupes de capture en provenance d'expressions
+	rationnelles pr&eacute;c&eacute;demment ex&eacute;cut&eacute;es et mises en correspondance avec
+	succ&egrave;s. Elles ne peuvent normalement &ecirc;tre utilis&eacute;es que dans la
+	m&ecirc;me expression que celle mise en correspondance, mais certains
+	modules permettent de les utiliser de mani&egrave;re sp&eacute;ciale.</p>
+    </section>
+
+</section>
+
+<section id="sslrequire">
+    <title>Comparaison avec SSLRequire</title>
+    <p>La syntaxe <em>ap_expr</em> consiste principalement en une
+    surcouche de la syntaxe de la directive obsol&egrave;te <directive
+    module="mod_ssl">SSLRequire</directive>. Vous pouvez consulter la
+    liste de leur diff&eacute;rences dans la documentation de la directive
+    <directive module="mod_ssl">SSLRequire</directive>.</p>
+</section>
+
+</manualpage>

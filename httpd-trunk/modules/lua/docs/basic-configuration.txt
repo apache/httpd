@@ -1,0 +1,141 @@
+See sample_httpd.conf for examples
+
+The basic module loading directive is
+    LoadModule lua_module modules/mod_lua.so
+
+The handler name is "lua-script" so you can use the normal
+AddHandler directive, such as "AddHandler lua-script .lua" to
+set anything ending in .lua to use mod_lua to evaluate
+
+mod_lua exports several additional directives:
+
+    LuaRoot /path/to/a/directory
+        Specify the base path which will be used to evaluate all
+        relative paths within mod_lua. If not specified they
+        will be resolved relative to the current working directory,
+        which may not always work well for a server.
+
+    LuaScope once|request|conn|server [max|min max]
+        Specify the lifecycle scope of the Lua interpreter which will
+        be used by handlers in this "Directory." The default is "once"
+        
+        once: use the interpreter once and throw it away.
+        
+        request: use the interpreter to handle anything based on 
+                 the same file within this request, which is also 
+                 request scoped.
+                 
+        conn: Same as request but attached to the connection_rec
+        
+        server: This one is different than others because the
+                server scope is quite long lived, and multiple threads
+                will have the same server_rec. To accommodate this
+                server scoped interpreter are stored in an apr
+                resource list. The min and max arguments are intended
+                to specify the pool size, but are unused at this time.
+
+    LuaMapHandler uri-pattern /path/to/lua/script.lua [function-name]
+        This directive matches a uri pattern to invoke a specific
+        handler function in a specific file. It uses PCRE regular
+        expressions to match the uri, and supports interpolating
+        match groups into both the file path and the function name
+        be careful writing your regular expressions to avoid security
+        issues.
+        
+        Examples:
+            LuaMapHandler /(\w+)/(/w+) /scripts/$1.lua handle_$2
+                This would match uri's such as /photos/show?id=9
+                to the file /scripts/photos.lua and invoke the
+                handler function handle_show on the lua vm after
+                loading that file.
+                
+            LuaMapHandler /bingo /scripts/wombat.lua
+                This would invoke the "handle" function, which
+                is the default if no specific function name is
+                provided.
+    
+    LuaPackagePath /path/to/include/?.lua
+        Add a path to lua's module search path. Follows the same
+        conventions as lua. This just munges the package.path in the 
+        lua vms.
+        
+        Examples:
+            LuaPackagePath /scripts/lib/?.lua
+            LuaPackagePath /scripts/lib/?/init.lua
+
+    LuaPackageCPath /path/to/include/?.soa
+        Add a path to lua's shared library search path. Follows the same
+        conventions as lua. This just munges the package.cpath in the 
+        lua vms.
+        
+        Examples:
+            LuaPackagePath /scripts/lib/?.so
+
+    LuaCodeCache stat|forever|never
+        Specify the behavior of the in-memory code cache. The default
+        is stat, which stats the top level script (not any included
+        ones) each time that file is needed, and reloads it if the
+        modified time indicates it is newer than the one it has
+        already loaded. The other values cause it to keep the file
+        cached forever (don't stat and replace) or to never cache the 
+        file.
+        
+        In general stat or forever is good production and stat or never
+        for development.
+        
+        Examples:
+            LuaCodeCache stat
+            LuaCodeCache forever
+            LuaCodeCache never
+    
+    LuaHookTranslateName  /path/to/lua/script.lua  hook_function_name
+        Add a hook (at APR_HOOK_MIDDLE) to the translate name phase of
+        request processing. The hook function receives a single
+        argument, the request_rec, and should return a status code, 
+        which is either an HTTP error code, or the constants defined
+        in the apache2 module: apache2.OK, apache2.DECLINED, or
+        apache2.DONE. 
+
+        For those new to hooks, basically each hook will be invoked
+        until one of them returns apache2.OK. If your hook doesn't
+        want to do the translation it should just return
+        apache2.DECLINED. If the request should stop processing, then
+        return apache2.DONE.
+
+        Example:
+            LuaHookTranslateName /scripts/conf/hooks.lua silly_mapper
+
+            -- /scripts/conf/hooks.lua --
+            function silly_mapper(r)
+                if r.uri == "/" then
+                    r.file = "/var/www/home.lua"
+                    return apache2.OK
+                else
+                    return apache2.DECLINED
+                end
+            end
+
+    LuaHookFixups  /path/to/lua/script.lua  hook_function_name
+        Just like LuaHookTranslateName, but executed at the fixups phase
+
+    LuaHookMapToStorage  /path/to/lua/script.lua  hook_function_name
+        ...
+
+    LuaHookCheckUserID  /path/to/lua/script.lua  hook_function_name
+        ...
+
+    LuaHookTypeChecker  /path/to/lua/script.lua  hook_function_name
+        ...
+
+    LuaHookAuthChecker  /path/to/lua/script.lua  hook_function_name
+        ...
+
+    LuaHookAccessChecker  /path/to/lua/script.lua  hook_function_name
+        ...
+
+    LuaHookAuthChecker  /path/to/lua/script.lua  hook_function_name
+        ...
+
+    LuaHookInsertFilter  /path/to/lua/script.lua  hook_function_name
+        Not Yet Implemented
+ 

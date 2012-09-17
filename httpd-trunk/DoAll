@@ -1,0 +1,4 @@
+make extraclean
+./buildconf
+./DoIt "$@"
+make

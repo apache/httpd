@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="KOI8-R"?>
+<!DOCTYPE language SYSTEM "../lang.dtd">
+<!-- English revision: 106753 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<language id="ru">
+    <name>Russian</name>
+    <charset>KOI8-R</charset>
+    <source-ext>.xml.ru</source-ext>
+    <target-ext>.html.ru.koi8-r</target-ext>
+
+<!-- No CHM so far (no sitemap)
+    <chm>
+        <lang>0x419 Russian</lang>
+        <toc-font>,8,204</toc-font>
+        <charset>windows-1251</charset>
+        <settings>Russian</settings>
+    </chm>
+-->
+
+    <!-- Some strings might be used in other contexts, than stated in the -->
+    <!-- comments...                                                      -->
+    <messages>
+        <!-- language link titles -->
+        <message id="nativename">Russian</message>
+
+        <!-- Used for the moduleindex -->
+        <message id="corefeatures">Особенности ядра и мульти-процессные
+            модули</message>
+        <message id="othermodules">Другие модули</message>
+        <message id="obsoletemodules">Obsolete Modules</message>
+
+        <!-- Used for the modulesynopsis and sitemap -->
+        <message id="obsoleteapachemodule">Obsolete Apache Module</message>
+        <message id="apachemodule">Модуль Apache</message>
+        <message id="apachecore">Особенности ядра Apache</message>
+        <message id="apachempmcommon">Общие для всех МП-модулей директивы
+            Apache</message>
+        <message id="apachempm">Мульти-процессные модули Apache</message>
+
+        <!-- Used in description box for modulesynopsis -->
+        <message id="description">Описание</message>
+        <message id="seealso">См. также</message>
+        <message id="topics">Темы</message>
+        <message id="status">Статус</message>
+        <message id="moduleidentifier">Идентификатор&nbsp;модуля</message>
+        <message id="sourcefile">Исходный&nbsp;код</message>
+        <message id="compatibility">Совместимость</message>
+
+        <!-- Used in manualpage -->
+        <message id="relatedmodules">Смотрите также модули</message>
+        <message id="relateddirectives">Смотрите также директивы</message>
+        <message id="lowercase">abcdefghijklmnopqrstuvwxyz</message>
+        <message id="uppercase">ABCDEFGHIJKLMNOPQRSTUVWXYZ</message>
+        <message id="name-section">NAME</message>
+        <message id="hyphenation"></message>
+
+        <!-- Used in description box for directives -->
+        <message id="syntax">Синтаксис</message>
+        <message id="default">Значение по умолчанию</message>
+        <message id="context">Контекст</message>
+        <message id="override">Разрешение</message>
+        <message id="status">Статус</message>
+        <message id="module">Модуль</message>
+
+        <!-- Status descriptions -->
+        <message id="base" letter="B">Base</message>
+        <message id="mpm" letter="M">MPM</message>
+        <message id="core" letter="C">Core</message>
+        <message id="extension" letter="E">Extension</message>
+        <message id="experimental" letter="X">Experimental</message>
+        <message id="external" letter="T">External</message>
+
+        <!-- Used in directive context lists -->
+        <message id="serverconfig" letter="s">server config</message>
+        <message id="virtualhost" letter="v">virtual host</message>
+        <message id="directory" letter="d">directory</message>
+        <message id="htaccess" letter="h">.htaccess</message>
+
+        <!-- Used for directive lists -->
+        <message id="directives">Директивы</message>
+        <message id="directive">Директива</message>
+        <message id="nodirectives">Этот модуль не предоставляет никаких
+            директив.</message>
+
+        <!-- Used in summaries -->
+        <message id="summary">Резюме</message>
+
+        <!-- Used for glossary link titles -->
+        <message id="glossarylink">see glossary</message>
+
+        <!-- Used in headers and footers -->
+        <message id="apachetitle">- HTTP сервер Apache</message>
+        <message id="apachehttpserver">HTTP сервер Apache Версия
+            &httpd.major;.&httpd.minor;</message>
+        <message id="apachedocalt">[ДОКУМЕНТАЦИЯ APACHE]</message>
+        <message id="search">Google Search</message> <!-- search button -->
+        <message id="index">Оглавление</message> <!-- deprecated -->
+        <message id="home">На главную страницу</message> <!-- deprecated -->
+        <message id="comments">Comments</message>
+
+        <!-- breadcrumb links -->
+        <message id="apache">Apache</message>
+        <message id="http-server">HTTP сервер</message>
+        <message id="documentation">Документация</message>
+        <message id="version">Версия &httpd.major;.&httpd.minor;</message>
+
+        <!-- super menu -->
+        <message id="modules">Модули</message>
+        <message id="faq">FAQ</message>
+        <message id="glossary">Глоссарий</message>
+        <message id="sitemap">Карта сайта</message>
+
+        <!-- footer line -->
+        <message id="before-license">Licensed under the</message>
+        <message id="after-license"></message>
+        <message id="langavail">Available Languages</message>
+
+        <!-- not up to date -->
+        <message id="outofdate">This translation may be out of date. Check the
+            English version for recent changes.</message>
+        <!-- directive not translated yet -->
+        <message id="nottranslated">The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</message>
+    </messages>
+</language>

@@ -1,0 +1,47 @@
+Quick installation instructions (UNIX):
+
+- Building on generic Unix:
+
+  Add generic ldap support and the TWO ldap modules to the build, like this:
+
+  ./configure --with-ldap --enable-ldap --enable-authnz-ldap
+
+  The --with-ldap switches on LDAP library linking in apr-util. Make
+  sure that you have an LDAP client library available such as those
+  from Netscape/iPlanet/Sun One or the OpenLDAP project.
+
+  The --enable-ldap option switches on the LDAP caching module. This
+  module is a support module for other LDAP modules, and is not useful
+  on its own.  This module is required, but caching can be disabled
+  via the configuration directive LDAPCacheEntries.
+
+  The --enable-auth-ldap option switches on the LDAP authentication
+  module.
+
+- Building on AIX:
+
+  The following ./configure line is reported to work for AIX:
+
+    CC=cc_r; export CC
+    CPPFLAGS=-qcpluscmt;export CPPFLAGS
+    ./configure --with-mpm=worker --prefix=/usr/local/apache \
+      --enable-dav=static --enable-dav_fs=static --enable-ssl=static
+      --with-ldap=yes --with-ldap-include=/usr/local/include
+      --with-ldap-lib=/usr/local/lib --enable-ldap=static
+      --enable-authnz-ldap=static
+
+
+Quick installation instructions (win32):
+
+1. copy the file srclib\apr-util\include\apr_ldap.hw to apr_ldap.h
+2. the netscape/iplanet ldap libraries are installed in srclib\ldap
+3. Compile the two modules util_ldap and mod_authnz_ldap using the dsp files
+4. You get a mod_authnz_ldap.so and a mod_ldap.so module
+5. Put them in the modules directory, don't forget to copy the
+   nsldap32v50.dll somewhere where httpd.exe will find it
+6. Load the two modules in your httpd.conf, like below:
+   LoadModule ldap_module modules/mod_ldap.so
+   LoadModule authnz_ldap_module modules/mod_authnz_ldap.so
+7. Configure the directories as described in the docus.
+
+

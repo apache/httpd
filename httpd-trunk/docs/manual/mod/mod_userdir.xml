@@ -1,0 +1,175 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 1331229 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_userdir.xml.meta">
+
+<name>mod_userdir</name>
+<description>User-specific directories</description>
+<status>Base</status>
+<sourcefile>mod_userdir.c</sourcefile>
+<identifier>userdir_module</identifier>
+
+<summary>
+<p>This module allows user-specific directories to be accessed using the
+<code>http://example.com/~user/</code> syntax.</p>
+</summary>
+
+<seealso><a href="../urlmapping.html">Mapping URLs to the
+Filesystem</a></seealso>
+<seealso><a href="../howto/public_html.html">public_html
+tutorial</a></seealso>
+
+<directivesynopsis>
+
+<name>UserDir</name>
+<description>Location of the user-specific directories</description>
+<syntax>UserDir <em>directory-filename</em> [<em>directory-filename</em>] ...
+</syntax>
+<contextlist><context>server config</context> <context>virtual
+host</context></contextlist>
+
+<usage>
+
+    <p>The <directive>UserDir</directive> directive sets the real
+    directory in a user's home directory to use when a request for a
+    document for a user is received. <em>Directory-filename</em> is
+    one of the following:</p>
+
+    <ul>
+      <li>The name of a directory or a pattern such as those shown
+      below.</li>
+
+      <li>The keyword <code>disabled</code>. This turns off
+      <em>all</em> username-to-directory translations except those
+      explicitly named with the <code>enabled</code> keyword (see
+      below).</li>
+
+      <li>The keyword <code>disabled</code> followed by a
+      space-delimited list of usernames. Usernames that appear in
+      such a list will <em>never</em> have directory translation
+      performed, even if they appear in an <code>enabled</code>
+      clause.</li>
+
+      <li>The keyword <code>enabled</code> followed by a
+      space-delimited list of usernames. These usernames will have
+      directory translation performed even if a global disable is
+      in effect, but not if they also appear in a
+      <code>disabled</code> clause.</li>
+    </ul>
+
+    <p>If neither the <code>enabled</code> nor the
+    <code>disabled</code> keywords appear in the
+    <code>Userdir</code> directive, the argument is treated as a
+    filename pattern, and is used to turn the name into a directory
+    specification. A request for
+    <code>http://www.example.com/~bob/one/two.html</code> will be
+    translated to:</p>
+
+    <table>
+      <tr><th>UserDir directive used</th>
+          <th>Translated path</th></tr>
+      <tr><td>UserDir public_html</td>
+          <td>~bob/public_html/one/two.html</td></tr>
+      <tr><td>UserDir /usr/web</td>
+          <td>/usr/web/bob/one/two.html</td></tr>
+      <tr><td>UserDir /home/*/www</td>
+          <td>/home/bob/www/one/two.html</td></tr>
+    </table>
+
+    <p>The following directives will send redirects to the client:</p>
+
+    <table>
+      <tr><th>UserDir directive used</th>
+          <th>Translated path</th></tr>
+      <tr><td>UserDir http://www.example.com/users</td>
+          <td>http://www.example.com/users/bob/one/two.html</td></tr>
+      <tr><td>UserDir http://www.example.com/*/usr</td>
+          <td>http://www.example.com/bob/usr/one/two.html</td></tr>
+      <tr><td>UserDir http://www.example.com/~*/</td>
+          <td>http://www.example.com/~bob/one/two.html</td></tr>
+    </table>
+
+    <note>
+      <strong>Be careful when using this directive; for instance,
+      <code>"UserDir ./"</code> would map <code>"/~root"</code> to
+      <code>"/"</code> - which is probably undesirable. It is strongly
+      recommended that your configuration include a "<code>UserDir
+      disabled root</code>" declaration.  See also the <directive
+      module="core">Directory</directive> directive and the <a
+      href="../misc/security_tips.html">Security Tips</a> page for
+      more information.</strong>
+    </note>
+
+    <p>Additional examples:</p>
+
+    <p>To allow a few users to have <code>UserDir</code> directories, but
+    not anyone else, use the following:</p>
+
+    <highlight language="config">
+UserDir disabled
+UserDir enabled user1 user2 user3
+    </highlight>
+
+    <p>To allow most users to have <code>UserDir</code> directories, but
+    deny this to a few, use the following:</p>
+
+    <highlight language="config">
+      UserDir disabled user4 user5 user6
+    </highlight>
+
+    <p>It is also possible to specify alternative user directories.
+    If you use a command like:</p>
+
+    <highlight language="config">
+      UserDir public_html /usr/web http://www.example.com/
+    </highlight>
+
+    <p>With a request for
+    <code>http://www.example.com/~bob/one/two.html</code>, will try to
+    find the page at <code>~bob/public_html/one/two.html</code> first, then
+    <code>/usr/web/bob/one/two.html</code>, and finally it will send a
+    redirect to <code>http://www.example.com/bob/one/two.html</code>.</p>
+
+    <p>If you add a redirect, it must be the last alternative in the list.
+    Apache httpd cannot determine if the redirect succeeded or not, so if you have
+    the redirect earlier in the list, that will always be the alternative
+    that is used.</p>
+
+    <p>User directory substitution is not active by default in versions
+    2.1.4 and later.  In earlier versions, <code>UserDir public_html</code>
+    was assumed if no <directive module="mod_userdir">UserDir</directive>
+    directive was present.</p>
+
+    <note><title>Merging details</title>
+    <p> Lists of specific enabled and disabled users are replaced, not merged,
+    from global to virtual host scope</p></note>
+
+</usage>
+
+<seealso>
+  <a href="../howto/public_html.html">Per-user web directories tutorial</a>
+</seealso>
+
+</directivesynopsis>
+</modulesynopsis>
+
+

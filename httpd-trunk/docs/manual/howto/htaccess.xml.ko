@@ -1,0 +1,351 @@
+<?xml version='1.0' encoding='EUC-KR' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English Revision: 151408:1369729 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="htaccess.xml.meta">
+<parentdocument href="./">How-To / Tutorials</parentdocument>
+
+<title>아파치 투토리얼: .htaccess 파일</title>
+
+<summary>
+<p><code>.htaccess</code> 파일을 사용하여 디렉토리별로 설정을
+변경할 수 있다.</p>
+</summary>
+
+<section id="related"><title>.htaccess 파일</title>
+    <related>
+        <modulelist>
+            <module>core</module>
+            <module>mod_authn_file</module>
+            <module>mod_authz_groupfile</module>
+            <module>mod_cgi</module>
+            <module>mod_include</module>
+            <module>mod_mime</module>
+        </modulelist>
+
+        <directivelist>
+            <directive module="core">AccessFileName</directive>
+            <directive module="core">AllowOverride</directive>
+            <directive module="core">Options</directive>
+            <directive module="mod_mime">AddHandler</directive>
+            <directive module="core">SetHandler</directive>
+            <directive module="core">AuthType</directive>
+            <directive module="core">AuthName</directive>
+            <directive module="mod_authn_file">AuthUserFile</directive>
+            <directive module="mod_authz_groupfile">AuthGroupFile</directive>
+            <directive module="core">Require</directive>
+        </directivelist>
+
+    </related>
+</section>
+
+<section id="what">
+<title>무엇이며/어떻게 사용하는가</title>
+
+    <p><code>.htaccess</code> 파일(혹은 "분산 설정파일")을
+    사용하면 디렉토리별로 설정을 변경할 수 있다. 여러 설정 지시어가
+    있는 파일을 특정 문서 디렉토리에 두면, 그 디렉토리와 모든
+    하위디렉토리에 지시어를 적용한다.</p>
+
+    <note><title>주의:</title>
+      <p><code>.htaccess</code> 파일명을 다르게 사용하고 싶다면,
+      <directive module="core">AccessFileName</directive> 지시어를
+      사용하여 변경할 수 있다. 예를 들어, <code>.config</code>
+      파일명을 사용하려면 서버 설정파일에 다음과 같이 추가한다.</p>
+
+      <example>
+        AccessFileName .config
+      </example>
+    </note>
+
+    <p>일반적으로 <code>.htaccess</code> 파일은 <a
+    href="../configuring.html#syntax">주설정파일</a>과 문법이
+    같다. <directive module="core">AllowOverride</directive>
+    지시어가 이 파일에 나올 수 있는 내용을 결정한다. 이 지시어는
+    <code>.htaccess</code> 파일에서 허용하는 지시어 분류를 지정한다.
+    지시어를 <code>.htaccess</code> 파일에서 사용할 수 있다면,
+    해당 지시어 문서의 Override 항목은 지시어를 허용하기위해
+    <directive module="core">AllowOverride</directive>에 사용할
+    값을 알려준다.</p>
+
+    <p>예를 들어, <directive module="core">AddDefaultCharset</directive>
+    지시어 문서를 보면 이 지시어를 <code>.htaccess</code> 파일에서
+    사용할 수 있다. (지시어 요약에서 사용장소 항목을 보라.)
+    <a href="../mod/directive-dict.html#Context">Override</a>
+    줄에 <code>FileInfo</code>가 있다. 그래서 이 지시어를
+    <code>.htaccess</code> 파일에서 사용하기위해서는 최소한
+    <code>AllowOverride FileInfo</code>가 필요하다.</p>
+
+    <example><title>예제:</title>
+      <table>
+        <tr>
+          <td><a
+          href="../mod/directive-dict.html#Context">사용장소:</a></td>
+          <td>주서버설정, 가상호스트, directory, .htaccess</td>
+        </tr>
+
+        <tr>
+          <td><a
+          href="../mod/directive-dict.html#Override">Override:</a></td>
+          <td>FileInfo</td>
+        </tr>
+      </table>
+    </example>
+
+    <p>특정 지시어를 <code>.htaccess</code> 파일에서 사용할
+    수 있는지 궁금하면 지시어 문서의 사용장소 항목에 ".htaccess"가
+    있는지 확인한다.</p>
+    </section>
+
+    <section id="when"><title>언제 .htaccess 파일을 사용하나
+    (혹은 사용하지 않나)</title>
+
+    <p>일반적으로 주서버파일에 접근할 수 없는 경우가 아니라면
+    <code>.htaccess</code> 파일을 사용하면 안된다. 예를 들어,
+    사용자 인증이 항상 <code>.htaccess</code> 파일에 있어야
+    한다는 것은 잘못 알려진 오해다. 이는 사실이 아니다. 주서버설정에
+    사용자 인증 설정을 적을 수 있고, 사실 이러길 권한다.</p>
+
+    <p><code>.htaccess</code> 파일은 컨텐츠 제공자가 디렉토리별로
+    서버 설정을 다르게하고 싶지만 서버 시스템에 root 권한이
+    없는 경우에 사용한다. 서버 관리자가 설정을 자주 변경하고
+    싶지 않은 경우 일반 사용자가 직접 <code>.htaccess</code>
+    파일을 수정하도록 허용하는 것이 바람직하다. 예를 들어, 한
+    컴퓨터에 여러 사용자 사이트를 서비스하는 ISP에서 사용자가
+    자신의 설정을 변경하고 싶은 경우가 그러하다.</p>
+
+    <p>그러나 일반적으로 <code>.htaccess</code> 파일은 가급적
+    피해야 한다. <code>.htaccess</code> 파일에서 허용하는 지시어는
+    주설정파일의 <directive module="core"
+    type="section">Directory</directive> 섹션과 같은 효과가
+    있다.</p>
+
+    <p>다음 두가지 큰 이유때문에 <code>.htaccess</code> 파일
+    사용을 피해야 한다.</p>
+
+    <p>첫번째는 성능이다. <directive
+    module="core">AllowOverride</directive>가 <code>.htaccess</code>
+    파일을 사용하도록 허용하면, 아파치는 디렉토리마다
+    <code>.htaccess</code> 파일을 찾는다. 그래서
+    <code>.htaccess</code> 파일을 허용하면 실제로 파일을 사용하지
+    않는 경우에도 성능이 떨어진다! 또, <code>.htaccess</code>
+    파일은 문서를 요청할때마다 읽어들인다.</p>
+
+    <p>게다가 적용해야 하는 전체 지시어를 모으기위해 아파치는
+    모든 상위 디렉토리에서 <code>.htaccess</code> 파일을 찾는다.
+    (<a href="#how">어떻게 지시어를 적용하나</a> 절을 참고.)
+    그래서 <code>/www/htdocs/example</code> 디렉토리에 있는
+    파일을 요청하면, 아파치는 다음 파일들을 찾아야 한다.</p>
+
+    <example>
+      /.htaccess<br />
+      /www/.htaccess<br />
+      /www/htdocs/.htaccess<br />
+      /www/htdocs/example/.htaccess
+    </example>
+
+    <p>그래서 그 디렉토리에 있는 파일을 접근할 때마다 설정파일이
+    전혀 없어도 파일시스템을 4번 더 접근해야 한다.
+    (<code>/</code>에서도 <code>.htaccess</code> 파일을 허용한
+    경우를 말한다. 보통은 허용하지 않는다.)</p>
+
+    <p>두번째 이유는 보안이다. 사용자에게 서버설정 변경 권한을
+    주면 당신이 감당할 수 없는 변화가 일어날 수 있다. 사용자에게
+    이런 권한을 줄지 곰곰이 생각하라. 또, 사용자가 원하는 것보다
+    적은 권한을 주면 기술지원요청이 들어온다. 사용자에게 가능한
+    권한 수준을 명확히 알려라. 사용자에게 <directive
+    module="core">AllowOverride</directive>를 어떻게 설정하였는지
+    정확히 알리고 관련 문서를 제공하면 앞으로 혼란을 피할 수
+    있다.</p>
+
+    <p>지시어를 <code>/www/htdocs/example</code> 디렉토리의
+    <code>.htaccess</code> 파일을 두는 것과 주서버설정의
+    <code>&lt;Directory /www/htdocs/example&gt;</code> Directory
+    설정에 두는 것은 완전히 같다.</p>
+
+    <p><code>/www/htdocs/example</code>에 있는
+    <code>.htaccess</code> 섹션:</p>
+
+    <example><title><code>/www/htdocs/example</code>에 있는
+    .htaccess 파일 내용</title>
+        AddType text/example .exm
+    </example>
+
+    <example><title><code>httpd.conf</code> 파일에 있는 섹션</title>
+      &lt;Directory /www/htdocs/example&gt;<br />
+      <indent>
+        AddType text/example .exm<br />
+      </indent>
+      &lt;/Directory&gt;
+    </example>
+
+    <p>그러나 파일을 요청할 때마다 설정을 읽지않고 아파치가
+    시작할때 한번만 설정을 읽기때문에 같은 설정을 서버설정파일에
+    사용하면 성능이 더 빠르다.</p>
+
+    <p><directive module="core">AllowOverride</directive> 지시어를
+    <code>none</code>으로 설정하면 <code>.htaccess</code> 파일을
+    완전히 사용할 수 없다.</p>
+
+    <example>
+      AllowOverride None
+    </example>
+</section>
+
+<section id="how"><title>어떻게 지시어를 적용하나</title>
+
+    <p><code>.htaccess</code> 파일을 발견한 디렉토리와 그 디렉토리의
+    모든 하위디렉토리에 <code>.htaccess</code> 파일에 있는 설정
+    지시어를 적용한다. 그래서 상위디렉토리의 <code>.htaccess</code>
+    파일을 주의해야 한다. 발견한 순서로 지시어를 적용한다. 특정
+    디렉토리에 있는 <code>.htaccess</code> 파일은 상위디렉토리에
+    있는 <code>.htaccess</code> 파일의 지시어를 무효로 만들
+    수 있고, 상위디렉토리에 있는 지시어는 더 상위디렉토리 혹은
+    주설정파일에 있는 지시어를 무효로 만들 수 있다.</p>
+
+    <p>예제:</p>
+
+    <p><code>/www/htdocs/example1</code> 디렉토리에 다음과 같은
+    <code>.htaccess</code> 파일이 있다.</p>
+
+    <example>
+       Options +ExecCGI
+    </example>
+
+    <p>(주의: <code>.htaccess</code> 파일에 "<directive
+    module="core">Options</directive>" 지시어를 사용하려면
+    "<code>AllowOverride Options</code>"가 필요하다.)</p>
+
+    <p><code>/www/htdocs/example1/example2</code> 디렉토리에는
+    다음과 같은 <code>.htaccess</code> 파일이 있다.</p>
+
+    <example>
+       Options Includes
+    </example>
+
+    <p>이 두번째 <code>.htaccess</code> 파일의
+    <code>Options Includes</code>가 이전 설정을 완전히 무효로
+    만들기때문에 <code>/www/htdocs/example1/example2</code>
+    디렉토리는 CGI 실행을 허용하지 않는다.</p>
+</section>
+
+<section id="auth"><title>인증 예제</title>
+
+    <p>인증 방법을 알기위해 바로 이곳부터 읽는다면 주의할 것이
+    있다. 암호 인증을 하려면 <code>.htaccess</code> 파일이
+    필요하다는 오해가 널리 퍼져있다. 이는 사실이 아니다.
+    주설정파일의 <directive module="core"
+    type="section">Directory</directive> 섹션에 인증 지시어를
+    두는 것이 더 권장하는 방법이고, 서버의 주설정파일을 수정할
+    수 없는 경우에만 <code>.htaccess</code> 파일을 사용해야
+    한다. 언제 <code>.htaccess</code> 파일을 사용해야 하는지와
+    사용하지 말아야 하는지는 <a href="#when">위에서</a>
+    설명하였다.</p>
+
+    <p>앞에서 말했지만 아직도 <code>.htaccess</code> 파일이
+    필요하다고 생각되면 아래 설정이 도움이 될 것이다.</p>
+
+    <p><code>.htaccess</code> 파일 내용.</p>
+
+    <example>
+      AuthType Basic<br />
+      AuthName "Password Required"<br />
+      AuthUserFile /www/passwords/password.file<br />
+      AuthGroupFile /www/passwords/group.file<br />
+      Require Group admins
+    </example>
+
+    <p>이 지시어가 동작하기위해서는
+    <code>AllowOverride AuthConfig</code> 지시어가 필요함을
+    명심하라.</p>
+
+    <p>인증과 권한부여에 대한 자세한 설명은 <a href="auth.html">인증
+    투토리얼</a>을 보길 바란다.</p>
+</section>
+
+<section id="ssi"><title>Server Side Includes 예제</title>
+
+    <p>또다른 일반적인 <code>.htaccess</code> 파일의 용도는
+    특정 디렉토리에서 Server Side Includes를 가능하게 만드는
+    것이다. 원하는 디렉토리의 <code>.htaccess</code> 파일에
+    다음과 같은 설정 지시어를 사용하면 된다.</p>
+
+    <example>
+       Options +Includes<br />
+       AddType text/html shtml<br />
+       AddHandler server-parsed shtml
+    </example>
+
+    <p>이 지시어가 동작하려면 <code>AllowOverride Options</code>와
+    <code>AllowOverride FileInfo</code>가 모두 필요함을 명심하라.</p>
+
+    <p>server-side includes에 대한 자세한 설명은 <a
+    href="ssi.html">SSI 투토리얼</a>을 보길 바란다.</p>
+</section>
+
+<section id="cgi"><title>CGI 예제</title>
+
+    <p>마지막으로 <code>.htaccess</code> 파일을 사용하여 특정
+    디렉토리에서 CGI 프로그램 실행을 허용하고 싶다면, 다음과
+    같은 설정을 사용한다.</p>
+
+    <example>
+       Options +ExecCGI<br />
+       AddHandler cgi-script cgi pl
+    </example>
+
+    <p>혹은 이 디렉토리에 있는 모든 파일을 CGI 프로그램으로
+    처리하고 싶다면 다음과 같은 설정도 가능하다.</p>
+
+    <example>
+       Options +ExecCGI<br />
+       SetHandler cgi-script
+    </example>
+
+    <p>이 지시어가 동작하려면 <code>AllowOverride Options</code>와
+    <code>AllowOverride FileInfo</code>가 모두 필요함을 명심하라.</p>
+
+    <p>CGI 프로그래밍과 설정에 대한 자세한 설명은 <a
+    href="cgi.html">CGI 투토리얼</a>을 보길 바란다.</p>
+
+</section>
+
+<section id="troubleshoot"><title>문제해결</title>
+
+    <p><code>.htaccess</code> 파일에 둔 설정 지시어가 원하는
+    기능을 하지 않는 경우 여러가지 이유가 있을 수 있다.</p>
+
+    <p>가장 일반적인 문제는 설정 지시어를 가능하게 만드는 <directive
+    module="core">AllowOverride</directive>를 설정하지 않은
+    경우다. 문제가 되는 파일 영역에 <code>AllowOverride None</code>이
+    없는지 확인한다. <code>.htaccess</code> 파일을 아무렇게나 
+    적은 다음 페이지를 다시 접근하여 쉽게 검사해볼 수 있다.
+    서버 오류가 나오지 않으면 거의 확실히
+    <code>AllowOverride None</code>을 사용한 경우다.</p>
+
+    <p>반대로 문서에 접근할때 서버 오류가 발생하면 아파치 오류로그를
+    살펴봐라. 아마도 <code>.htaccess</code> 파일에 있는 지시어를
+    허용하지 않는다고 할 것이다. 아니고 문법 오류가 있다면 오류를
+    고친다.</p>
+
+</section>
+
+</manualpage>

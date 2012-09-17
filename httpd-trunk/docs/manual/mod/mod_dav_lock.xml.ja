@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English Revision: 662627:1370907 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_dav_lock.xml.meta">
+
+<name>mod_dav_lock</name> 
+<description><module>mod_dav</module> 用の汎用ロックモジュール</description>
+<status>Extension</status>
+<sourcefile>mod_dav_lock.c</sourcefile>
+<identifier>dav_lock_module</identifier>
+  <compatibility>バージョン 2.1 以降</compatibility>
+
+<summary>
+    <p>このモジュールは <module>mod_dav</module> のどのバックエンド
+    からでも使える汎用ロック API を提供します。
+    使用には最低限 <module>mod_dav</module>
+    を必要としますが、これを利用するバックエンドが存在しないと役に立たないので、
+    そのような場合はサーバに読み込むべきではありません。
+    <module>mod_dav_lock</module>
+    を実際に利用するバックエンドモジュールの例としては subversion
+    プロバイダモジュールの <a href="http://subversion.tigris.org/"
+    >mod_dav_svn</a> があります。</p>
+
+    <p><module>mod_dav_fs</module> は特化された専用のバージョンを
+    使うため、この汎用モジュールは<em>必要ない</em>ことに注意して
+    ください。</p>
+
+    <p><module>mod_dav_lock</module> を機能させるには、
+    以下で説明されている <directive
+    module="mod_dav_lock">DavGenericLockDB</directive> を使って
+    ロックデータベースの場所を指定するだけです。</p>
+
+    <note><title>開発者向けのメモ</title>
+      <p>ロックを提供している関数へのポインタを取得するためには、
+      <code>ap_lookup_provider</code> API を、引数 <code>dav-lock</code>,
+      <code>generic</code>, <code>0</code> を指定して使う必要が
+      あります。</p>
+    </note>
+</summary>
+<seealso><module>mod_dav</module></seealso>
+
+<directivesynopsis>
+<name>DavGenericLockDB</name>
+<description>DAV ロックデータベースの場所</description>
+<syntax>DavGenericLockDB <var>file-path</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
+</contextlist>
+
+<usage>
+    <p><directive>DavGenericLockDB</directive> ディレクティブを
+    使って、拡張子を除いたロックデータベースへのフルパスを
+    指定します。絶対パスでないときは <directive
+    module="core">ServerRoot</directive> からの相対パスとして
+    扱われます。<module>mod_dav_lock</module> の実装ではユーザの
+    ロックを追跡するのに SDBM データベースを使います。</p>
+
+    <example><title>例</title>
+      DavGenericLockDB var/DavLock
+    </example>
+
+    <p>ロックデータベースファイルのあるディレクトリは
+    Apache が実行されている <directive module="mpm_common">User</directive>
+    と <directive module="mpm_common" >Group</directive> によって
+    書き込み可能でなければなりません。セキュリティ上の理由から、
+    既存のディレクトリのパーミッションを変更するのではなく、
+    専用のディレクトリを作るのが良いでしょう。上の例では、
+    Apache は <directive
+    module="core">ServerRoot</directive> の下の <code>var/</code>
+    ディレクトリに、ファイル名の本体が <code>DavLock</code> で
+    サーバが追加する拡張子を持つファイルを作成します。</p>
+
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
+

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English Revision: 533344:1343877 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_log_forensic.xml.meta">
+
+<name>mod_log_forensic</name>
+<description>サーバに送られたリクエストの forensic ロギング</description>
+<status>Extension</status>
+<sourcefile>mod_log_forensic.c</sourcefile>
+<identifier>log_forensic_module</identifier>
+<compatibility><module>mod_unique_id</module> はバージョン 2.1 からは必須では
+なくなった</compatibility>
+
+<summary>
+    <p>このモジュールはクライアントリクエストの forensic ロギングを
+    行ないます。ログ収集はリクエストの処理の前と後に行なわれますので、
+    forensic ログは各リクエストに対して二行ログ収集します。
+    Forensic ロガーは非常に厳密です。これは以下のことを意味します:</p>
+
+    <ul>
+    <li>フォーマットは固定です。実行時にロギングフォーマットを変更することは
+    できません。</li>
+    <li>データを書けない場合は子プロセスはその場で終了し、さらにコアを
+    ダンプするかもしれません (<directive module="mpm_common"
+    >CoreDumpDirectory</directive> ディレクティブの設定に依ります)。</li>
+    </ul>
+
+    <p>Forensic ログの出力を検査するためには、
+    配布物の support ディレクトリにある <code>check_forensic</code> 
+    スクリプトが役に立つでしょう。</p>
+</summary>
+<seealso><a href="../logs.html">Apache ログファイル</a></seealso>
+<seealso><module>mod_log_config</module></seealso>
+
+<section id="formats"><title>Forensic ログフォーマット</title>
+    <p>各リクエストは2回ログ収集されます。最初はリクエストが処理される
+    <em>前</em> (つまり、ヘッダを受け取った後) です。2度目のログは
+    リクエストが処理された<em>後</em>、通常のログ収集と同じときに
+    行なわれます。</p>
+
+    <p>各リクエストを識別するために、リクエストには
+    一意なリクエスト ID が割り当てられます。この forensic ID は
+    フォーマット文字列 <code>%{forensic-id}n</code> を使うことで
+    通常の transfer ログにログ収集することもできます。
+    <module>mod_unique_id</module> を使っている場合は、それが生成する
+    ID が使われます。</p>
+
+    <p>最初の行は forensic ID、リクエスト行と受け取ったすべてのヘッダを
+    パイプ文字 (<code>|</code>) で分離してログ収集します。
+    例えば以下のようになります (実際はすべて同じ行になります):</p>
+
+    <example>
+        +yQtJf8CoAB4AAFNXBIEAAAAA|GET /manual/de/images/down.gif
+        HTTP/1.1|Host:localhost%3a8080|User-Agent:Mozilla/5.0 (X11;
+        U; Linux i686; en-US; rv%3a1.6) Gecko/20040216
+        Firefox/0.8|Accept:image/png, <var>etc...</var>
+    </example>
+
+    <p>最初のプラス文字がこのログは最初のログであることを示します。
+    二番目の行はマイナス文字と ID のみです:</p>
+
+    <example>
+      -yQtJf8CoAB4AAFNXBIEAAAAA
+    </example>
+
+    <p><code>check_forensic</code> スクリプトは引数としてログファイルの名前を
+    取ります。<code>+</code>/<code>-</code> の ID の組を調べ、完了していない
+    リクエストがある場合は警告を発します。</p>
+</section>
+
+<section id="security"><title>セキュリティの問題</title>
+    <p>ログファイルが保存されるディレクトリがサーバを起動したユーザ
+    以外で書き込み可能になっているときにセキュリティが破られる可能性が
+    あることについての詳細は<a
+    href="../misc/security_tips.html#serverroot">セキュリティのこつ</a>を
+    参照してください。</p>
+</section>
+
+<directivesynopsis>
+<name>ForensicLog</name>
+<description>Forensic ログのファイル名を設定する</description>
+<syntax>ForensicLog <var>filename</var>|<var>pipe</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p><directive>ForensicLog</directive> ディレクティブは forensic 解析のための
+    サーバへのリクエストをログ収集に使います。
+    各ログエントリには、普通の <directive module="mod_log_config"
+    >CustomLog</directive> ディレクティブを使ってリクエストと関連付けることの
+    できる
+    一意な ID が割り当てられます。<module>mod_log_forensic</module> は
+    <code>forensic-id</code> というトークンを作成し、フォーマット文字列
+    <code>%{forensic-id}n</code> を使うことでそのトークンを transfer ログに
+    追加することができます。</p>
+
+    <p>引数はログが書き出される位置を指定し、以下の 2種類の値のどちらかを
+    取ることができます:</p>
+
+    <dl>
+      <dt><var>filename</var></dt>
+      <dd><directive module="core">ServerRoot</directive> からの
+      相対ファイル名</dd>
+
+      <dt><var>pipe</var></dt>
+      <dd>パイプ文字 "<code>|</code>" と、その後にログ情報を標準入力から
+      受け取るプログラム。プログラム名は <directive
+      module="core">ServerRoot</directive> からの相対パスとしても
+      指定できます。
+
+      <note type="warning"><title>セキュリティ:</title>
+      <p>プログラムを使う場合、そのプログラムは <program>httpd</program> を起動したユーザで
+      実行されます。つまり、サーバが root で実行された場合は root で
+      実行されるということです。プログラムが安全であるか、より権限の少ない
+      ユーザに切り替えるようになっていることを確かめてください。</p>
+      </note>
+
+      <note><title>注</title>
+        <p>Unix 以外のプラットフォームでファイル名を入力するときは、
+        プラットフォームがバックスラッシュの使用を許可している場合でも、
+        スラッシュのみが使われるように気をつけてください。
+        普通は設定ファイルすべてにおいて、スラッシュの方を使用するように
+        してください。</p>
+      </note></dd>
+    </dl>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

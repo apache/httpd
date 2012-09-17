@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
+<!-- English Revision: 1301743:1330883 (outdated) -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="bind.xml.meta">
+
+  <title>Adresleri ve Portları Dinleme</title>
+
+  <summary>
+    <p>Apache HTTPD sunucusunun belli adresleri ve portları dinlemek üzere
+    yapılandırılması.</p>
+  </summary>
+
+  <seealso><a href="vhosts/">Sanal Konaklar</a></seealso>
+  <seealso><a href="dns-caveats.html">DNS Konuları</a></seealso>
+
+  <section id="overview">
+    <title>Genel Bakış</title>
+
+    <related>
+      <modulelist>
+        <module>core</module>
+        <module>mpm_common</module>
+      </modulelist>
+      <directivelist>
+        <directive module="core" type="section">VirtualHost</directive>
+        <directive module="mpm_common">Listen</directive>
+      </directivelist>
+    </related>
+
+
+    <p>httpd başlatıldığında yerel makinedeki bazı adres ve portları kendine
+      bağlar ve gelecek istekleri bekler. Öntanımlı olarak makine üzerindeki
+      tüm adresleri dinler. Bununla birlikte, belli portları veya sadece
+      seçilmiş bazı adresleri ya da her ikisini de dinlemesi için bunun
+      belirtilmesi gerekebilir. Bu çoğunlukla, httpd’nin farklı IP
+      adreslerine, konak isimlerine ve portlarına nasıl yanıt vereceğinin
+      belirlendiği <a href="vhosts">sanal konak</a> özelliği ile birlikte
+      yürür.</p>
+
+    <p><directive module="mpm_common">Listen</directive> yönergesi sunucuya
+      gelen istekleri sadece belli port(lar)dan veya belli adres ve port
+      birleşimlerinden kabul etmesini söyler. <directive
+      module="mpm_common">Listen</directive> yönergesinde sadece port
+      numarası belirtilmişse sunucu tüm arabirimlerin belirtilen portunu
+      dinleyecektir. Portla birlikte bir IP adresi de belirtilmişse sunucu
+      belirtilen portu ve arabirimi dinleyecektir. Çok sayıda adres ve portu
+      dinlemek için çok sayıda <directive
+      module="mpm_common">Listen</directive> yönergesi kullanılabilir. Sunucu
+      böyle bir durumda belirtilen bütün adres ve portlardan gelen isteklere
+      yanıt verecektir.</p>
+
+    <p>Örneğin, sunucunun hem 80 portundan hem de 8000 portundan gelen
+      bağlantıları kabul etmesini sağlamak için,</p>
+
+    <example>
+      Listen 80<br />
+      Listen 8000
+    </example>
+
+    <p>yapılandırmasını kullanabilirsiniz. Sunucunun 80 portuna gelen
+      bağlantıları bir arabirimden 8000 portuna gelenleri ise başka bir
+      arabirimden kabul etmesini sağlamak için ise,</p>
+
+    <example>
+      Listen 192.0.2.1:80<br />
+      Listen 192.0.2.5:8000
+    </example>
+
+    <p>yapılandırmasını kullanabilirsiniz. IPv6 adresleri aşağıdaki örnekteki
+      gibi köşeli ayraçlar içine alınarak belirtilmelidir:</p>
+
+    <example>
+      Listen [2001:db8::a00:20ff:fea7:ccea]:80
+    </example>
+
+    <note type="warning">
+      <p>Bir <directive module="mpm_common">Listen</directive> yönergesinin
+      aynısının tekrarı sunucunun başlatılmasını engelleyen ölümcül bir hatayla
+      sonuçlanacaktır.</p>
+
+      <example>
+      (48)Address already in use: make_sock: could not bind to address [::]:80
+      </example>
+    </note>
+
+</section>
+
+  <section id="ipv6">
+    <title>IPv6 Adreslerin Durumu</title>
+
+    <p>IPv6’yı gerçekleyen platformların sayısı giderek artmaktadır. Bu
+      platformların çoğunda <glossary>APR</glossary>, httpd’nin IPv6
+      soketleri ayırmasını mümkün kılarak IPv6’yı desteklemekte ve IPv6
+      üzerinden gönderilmiş istekleri elde etmektedir.</p>
+
+    <p>httpd yöneticilerinin kafasını karıştırıran tek şey IPv6 soketlerin
+      hem IPv4 hem de IPv6 bağlantılarını kabul edip etmeyeceğidir. IPv4
+      bağlantılarını kabul eden IPv6 soketleri IPv4 eşlemli IPv6 adresleri
+      kullanırlar. Bu çoğu sistemde öntanımlı olarak böyleyken, FreeBSD,
+      NetBSD ve OpenBSD’de sistem geneline uygulanan kurallar gereğince
+      öntanımlı olarak buna izin verilmez; bu sistemlerde özel bir
+      <program>configure</program> parametresi ile <code>httpd</code>’nin
+      davranışı değiştirilebilir.</p>
+
+    <p>Diğer taraftan, Linux ve Tru64 gibi bazı platformlarda hem IPv4 hem de
+      IPv6 adresleri kabul etmenin <strong>tek yolu</strong> eşlemli adresler
+      kullanmaktır. <code>httpd</code>’nin IPv4 ve IPv6 adresleri, IPv4 eşlemli
+      IPv6 adreslerin kullanımını gerektiren en az sayıda soketle kabul etmesini
+      istiyorsanız, <program>configure</program> betiğine
+      <code>--enable-v4-mapped</code> seçeneğini belirtiniz.</p>
+
+    <p><code>--enable-v4-mapped</code> seçeneği, FreeBSD, NetBSD ve OpenBSD
+      hariç tüm platformlarda öntanımlıdır. Muhtemelen siz de
+      <code>httpd</code>’nin böyle derlenmesini isterdiniz.</p>
+
+    <p>Platformunuzun ve APR’nin neyi desteklediğine bakmaksızın
+      <code>httpd</code>’nin sadece IPv4 adresleri kabul etmesini istiyorsanız,
+      tüm <directive module="mpm_common">Listen</directive> yönergelerinde
+      örnekteki gibi IPv4 adresleri belirtiniz:</p>
+
+    <example>
+      Listen 0.0.0.0:80<br />
+      Listen 192.0.2.1:80
+    </example>
+
+    <p>Platformunuz IPv4 ve IPv6 adresleri ayrı soketlerden kabul ediyorsa ve
+      <code>httpd</code>’nin de buna uygun davranmasını (yani IPv4 eşlemli IPv6
+      adreslerin iptalini)  istiyorsanız <program>configure</program>
+      betiğine <code>--disable-v4-mapped</code> seçeneğini belirtiniz. Bu
+      seçenek FreeBSD, NetBSD ve OpenBSD’de öntanımlıdır.</p>
+  </section>
+
+  <section id="protocol">
+    <title>Protokolü Listen ile Belirtme</title>
+    <p><directive module="mpm_common">Listen</directive> yönergesinin isteğe
+      bağlı ikinci değiştirgesi <var>protokol</var> çoğu yapılandırmada gerekli
+      olmaz. Belirtilmediği takdirde, <code>https</code> için 443,
+      <code>http</code> için ise diğer bütün portlar öntanımlıdır. Protokol,
+      isteğin hangi modül tarafından işleneceğini ve <directive
+      module="core">AcceptFilter</directive> yönergesi ile uygulanacak
+      protokole özgü en iyilemeleri belirlemekte kullanılır.</p>
+
+    <p>Sadece standartdışı bir port kullanmak isterseniz protokolü belirtmeniz
+      gerekir. Örneğin, bir<code>https</code> sitesini port 8443 üzerinde
+      çalıştırmak isterseniz:</p>
+
+    <example>
+      Listen 192.170.2.1:8443 https
+    </example>
+  </section>
+
+  <section id="virtualhost">
+    <title>Sanal Konaklarla Nasıl Çalışır?</title>
+
+    <p><directive module="mpm_common">Listen</directive> yönergesi sanal
+      konaklar için gerçeklenmemiştir; sadece ana sunucuya hangi adresleri ve
+      portları dinleyeceğini söyler. Hiç <directive module="core"
+      type="section">VirtualHost</directive> yönergesi kullanılmamışsa sunucu
+      kabul edilen tüm isteklere aynı şekilde davranacaktır. Eğer bir veya
+      daha fazla adres ve port için farklı bir davranış belirtmek
+      istiyorsanız <directive module="core"
+      type="section">VirtualHost</directive> kullanabilirsiniz. Bir sanal
+      konağı gerçeklemek için önce sunucunun sanal konak için kullanacağı
+      adres ve portu dinleyeceğini belirtmek gerekir. Bundan sonra bu sanal
+      konağın davranışını ayarlamak üzere belirtilen adres ve port için bir
+      <directive module="core" type="section">VirtualHost</directive> bölümü
+      oluşturulmalıdır. Yalnız dikkat edin, eğer <directive module="core"
+      type="section">VirtualHost</directive> için belirtilen adres ve port
+      sunucu tarafından dinlenmiyorsa ona erişemezsiniz.</p>
+  </section>
+</manualpage>
+

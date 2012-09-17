@@ -1,0 +1,225 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 1364306 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="getting-started.xml.meta">
+
+  <title>Getting Started</title>
+
+<summary>
+<p>If you're completely new to the Apache HTTP Server, or even to running
+a website at all, you might not know where to start, or what questions to
+ask. This document walks you through the basics.</p>
+</summary>
+
+<section id="clientserver">
+<title>Clients, Servers, and URLs</title>
+
+<p>
+Addresses on the Web are expressed with URLs - Uniform Resource Locators
+- which specify a protocol (e.g. <code>http</code>), a servername (e.g.
+<code>www.apache.org</code>), a URL-path (e.g.
+<code>/docs/current/getting-started.html</code>), and possibly a query
+string (e.g. <code>?arg=value</code>) used to pass additional
+arguments to the server. 
+</p>
+
+<p>A client (e.g., a web browser) connects to a server (e.g., your Apache HTTP Server), 
+with the specified protocol, and makes a <strong>request</strong> for a resource using the
+URL-path.</p>
+
+<p>The URL-path may represent any number of things on the server. It may
+be a file (like <code>getting-started.html</code>) a handler (like <a
+href="mod/mod_status.html">server-status</a>) or some kind of program
+file (like <code>index.php</code>). We'll discuss this more below in
+the <a href="#content">Web Site Content</a> section.</p>
+
+<p>
+The server will send a <strong>response</strong> consisting of a status
+code and, optionally, a response body.
+The status code indicates whether the request was successful, and, if not, what
+kind of error condition there was. This tells the client what it should
+do with the response. You can read about the possible response codes in
+<a href="http://wiki.apache.org/httpd/CommonHTTPStatusCodes">HTTP Server
+wiki</a>.</p>
+
+<p>Details of the transaction, and any error conditions, are written to
+log files. This is discussed in greater detail below in the <a
+href="#logs">Logs Files and Troubleshooting</a> section.</p>
+
+</section>
+
+<section id="dns">
+<title>Hostnames and DNS</title>
+
+<p>In order to connect to a server, the client will first have to resolve
+the servername to an IP address - the location on the Internet where the
+server resides. Thus, in order for your web server to be reachable, it
+is necessary that the servername be in DNS.</p>
+
+<p>More than one hostname may point to the same IP address, and more
+than one IP address can be attached to the same physical server. Thus, you
+can run more than one web site on the same physical server, using a
+feature called <a href="vhosts/">virtual hosts</a>.</p>
+
+<p>If you don't know how to do this, you'll need to contact your network
+administrator, or Internet service provider, to perform this step for
+you.</p>
+
+<p>If you are testing a server that is not Internet-accessible, you
+can put host names in your hosts file in order to do local resolution.
+For example, you might want to put a record in your hosts file to map a
+request for <code>www.example.com</code> to your local system, for
+testing purposes. This entry would look like:</p>
+
+<example>
+127.0.0.1 www.example.com
+</example>
+
+<p>A hosts file will probably be located at <code>/etc/hosts</code> or
+<code>C:\Windows\system32\drivers\etc\hosts</code>.</p>
+
+<p>You can read more about the hosts file at <a
+href="http://en.wikipedia.org/wiki/Hosts_(file)">Wikipedia.org/wiki/Hosts_(file)</a>, and
+more about DNS at <a
+href="http://en.wikipedia.org/wiki/Domain_Name_System">Wikipedia.org/wiki/Domain_Name_System</a>.</p>
+</section>
+
+<section id="configuration">
+<title>Configuration Files and Directives</title>
+
+<p>The Apache HTTP Server is configured via simple text files.
+These files may be located any of a variety of places, depending on how
+exactly you installed the server. Common locations for these files may
+be found <a href="http://wiki.apache.org/httpd/DistrosDefaultLayout">in
+the httpd wiki</a>. If you installed httpd from source, the default
+location of the configuration files is
+<code>/usr/local/apache2/conf</code>. The default configuration file is
+usually called <code>httpd.conf</code>. This, too, can vary in
+third-party distributions of the server.</p>
+
+<p>The configuration is frequently broken into multiple smaller files,
+for ease of management. These files are loaded via the <directive
+module="core">Include</directive> directive. The names or locations of
+these sub-files are not magical, and may vary greatly from one
+installation to another. Arrange and subdivide these files as
+makes the most sense to <strong>you</strong>. If the file arrangement
+you have by default doesn't make sense to you, feel free to rearrange it.</p>
+
+<p>The server is configured by placing <a
+href="mod/quickreference.html">configuration directives</a> in these
+configuration files. A directive is a keyword followed by one or more
+arguments that set its value.</p>
+
+<p>The question of "<em>Where should I put that
+directive?</em>" is generally answered by considering where you want a
+directive to be effective. If it is a global setting, it should appear
+in the configuration file, outside of any <directive
+type="section">Directory</directive>, <directive
+type="section">Location</directive>, <directive
+type="section">VirtualHost</directive>, or other section. If it is to
+apply only to a particular directory, then it should go inside a
+<directive type="section">Directory</directive> section referring to
+that directory, and so on. See the <a href="sections.html">Configuration
+Sections</a> document for further discussion of these sections.</p>
+
+<p>In addition to the main configuration files, certain directives may go in
+<code>.htaccess</code> files located in the content directories.
+<code>.htaccess</code> files are primarily for people who do not have
+access to the main server configuration file(s). You can read more about
+<code>.htaccess</code> files in the <a
+href="howto/htaccess.html"><code>.htaccess</code> howto</a>.</p>
+
+</section>
+
+<section id="content">
+<title>Web Site Content</title>
+
+<p>Web site content can take many different forms, but may be broadly
+divided into static and dynamic content.</p>
+
+<p>Static content is things like HTML files, image files, CSS files,
+and other files that reside in the filesystem. The <directive
+module="core">DocumentRoot</directive> directive specifies where in your
+filesystem you should place these files. This directive is either set
+globally, or per virtual host. Look in your configuration file(s) to
+determine how this is set for your server.</p>
+
+<p>Typically, a document called <code>index.html</code> will be served
+when a directory is requested without a file name being specified. For
+example, if <code>DocumentRoot</code> is set to
+<code>/var/www/html</code> and a request is made for
+<code>http://www.example.com/work/</code>, the file
+<code>/var/www/html/work/index.html</code> will be served to the
+client.</p>
+
+<p>Dynamic content is anything that is generated at request
+time, and may change from one request to another. There are numerous
+ways that dynamic content may be generated. Various <a
+href="handler.html">handlers</a> are available to generate content. <a
+href="howto/cgi.html">CGI programs</a> may be written to generate
+content for your site.</p>
+
+<p>Third-party modules like mod_php may be used to write code that does a
+variety of things. Many third-party applications, written using a
+variety of languages and tools, are available for download and
+installation on your Apache HTTP Server. Support of these third-party
+things is beyond the scope of this documentation, and you should find
+their documentation or other support forums to answer your questions
+about them.</p>
+</section>
+
+<section id="logs">
+<title>Log Files and Troubleshooting</title>
+<p>As an Apache HTTP Server administrator, your most valuable assets are
+the log files, and, in particular, the error log. Troubleshooting any
+problem without the error log is like driving with your eyes closed.</p>
+
+<p>The location of the error log is defined by the <directive
+module="core">ErrorLog</directive> directive, which may be set globally,
+or per virtual host. Entries in the error log tell you what went wrong,
+and when. They often also tell you how to fix it. Each error log message
+contains a error code, which you can search for online for even more
+detailed descriptions of how to address the problem. You can also
+configure your error log to contain a log ID which you can then
+correlate to an access log entry, so that you can determine what request
+caused the error condition.</p>
+
+<p>You can read more about logging in the <a href="logs.html">logs
+documentation</a>.</p>
+</section>
+
+<section id="other">
+<title>What Else Do I Need To Know?</title>
+<p>This document covers only the bare basics. We hope that this gets you
+started, but there are many other things that you might need to know.
+Here's a partial list of what you might be looking for:</p>
+
+<ul>
+<li><a href="howto/auth.html">Authentication and Authorization (password protecting resources)</a></li>
+<li><a href="howto/access.html">Access Control</a></li>
+<li><a href="ssl/ssl_howto.html">Setting up SSL</a></li>
+<li><a href="http://wiki.apache.org/httpd/FAQ">Frequently Asked Questions</a></li>
+</ul>
+
+</section>
+
+</manualpage>

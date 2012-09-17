@@ -1,0 +1,43 @@
+This directory contains all libraries required for building the httpd
+documentation. The licenses are summarized in the LICENSE file.
+
+In particular:
+
+allmodules.pl
+    Description: maintenance script for mod/allmodules.xml*
+
+ant.jar
+ant-apache-oro.jar
+ant-bootstrap.jar
+ant-launcher.jar
+ant-nodeps.jar
+ant-trax.jar
+(lcp.bat)
+    Description: ant, version 1.6.5
+    URL: http://ant.apache.org/
+
+ant-contrib.jar
+    Description: ant-contrib (ant add-on), version 1.0b2
+    URL: http://sourceforge.net/projects/ant-contrib/
+
+DocUtil.pm
+    Description: utils for allmodules.pl and metafile.pl
+
+metafile.pl
+    Description: maintenance script for *.xml.meta files
+
+jakarta-oro.jar
+    Description: Regex engine (and more), Version 2.0.8
+    URL: http://jakarta.apache.org/oro/
+
+xalan.jar
+    Description: xalan (xslt processor), version 2.5.2 + patch
+    patch taken from https://issues.apache.org/jira/browse/XALANJ-1710
+      (second one:
+       https://issues.apache.org/jira/secure/attachment/17150/apache.patch.24279.txt )
+    URL: http://xml.apache.org/xalan-j/
+
+xercesImpl.jar
+xml-apis.jar
+    Description: xerces XML parser, version 2.7.0
+    URL: http://xml.apache.org/xerces2-j/

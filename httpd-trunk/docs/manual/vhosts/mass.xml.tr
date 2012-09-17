@@ -1,0 +1,304 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 1174747:1330878 (outdated) -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="mass.xml.meta">
+<parentdocument href="./">Sanal Konaklar</parentdocument>
+   <title>Devingen olarak Yapılandırılan Kitlesel Sanal Barındırma</title>
+
+<summary>
+
+    <p>Bu belgede sanal konakların sonu belirsiz bir şekilde artışı karşısında
+      Apache HTTP Sunucusunun nasıl daha verimli kullanılacağı açıklanmıştır.
+      Devingen kitlesel konakları oluşturmak için <module>mod_rewrite</module>
+      modülünün kullanımını açıklayan <a href="../rewrite/vhosts.html">ayrı bir
+      belge</a> de mevcuttur.
+    </p>
+
+</summary>
+
+<section id="motivation"><title>Amaç</title>
+
+    <p>Burada açıklanan teknikler, <code>httpd.conf</code> dosyanızın
+      örnekteki gibi, aslında hemen hemen birbirinin aynı çok sayıda
+      <code>&lt;VirtualHost&gt;</code> bölümü içereceği zaman yapılacaklar ile
+      ilgilidir.</p>
+
+<pre>
+&lt;VirtualHost 111.22.33.44&gt;
+    ServerName                 musteri-1.example.com
+    DocumentRoot        /siteler/musteri-1/belgeler
+    ScriptAlias  /cgi-bin/  /siteler/musteri-1/cgi-bin
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 111.22.33.44&gt;
+    ServerName                 musteri-2.example.com
+    DocumentRoot        /siteler/musteri-2/belgeler
+    ScriptAlias  /cgi-bin/  /siteler/musteri-2/cgi-bin
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 111.22.33.44&gt;
+    ServerName                 musteri-N.example.com
+    DocumentRoot        /siteler/musteri-N/belgeler
+    ScriptAlias  /cgi-bin/  /siteler/musteri-N/cgi-bin
+&lt;/VirtualHost&gt;
+</pre>
+
+    <p>İsteğimiz çok sayıda <code>&lt;VirtualHost&gt;</code> bölümünü devingen
+      olarak çalışan tek bir <code>&lt;VirtualHost&gt;</code> bölümüyle
+      değiştirmektir. Bunun elbette bazı getirileri olacaktır:</p>
+
+    <ol>
+      <li>Yapılandırma dosyanız küçüleceği için Apache daha çabuk
+        başlatılabilecek ve daha az bellek harcayacaktır. Muhtemelen daha da
+        önemlisi, küçülmüş bir yapılandırmanın bakımı da kolaylaşacağı için
+        hatalar da azalacaktır.</li>
+
+      <li>Yeni sanal konakların eklenmesi, DNS’de yeni girdiler oluşturmak ve
+        dosya sisteminde bununla ilgili dizinleri açmak dışında biraz daha
+        basit olacaktır; en azından Apache’yi yeniden yapılandırmak ve yeniden
+        başlatmak zorunda kalmayacaksınız.</li>
+    </ol>
+
+    <p>Ana götürüsü ise her sanal konak için ayrı birer günlük dosyasına sahip
+      olamayacak olmanızdır. Öte yandan, <a href="fd-limits.html">dosya
+      tanıtıcılarının sınırlı olması</a>  nedeniyle bunu yapmayı zaten
+      istemezsiniz. Günlük kayıtları için bir <a href="../logs.html#piped">fifo
+      veya bir boru hattı</a> oluşturmak ve diğer uçta çalışan bir süreç
+      vasıtasıyla günlükleri müşterilere paylaştırmak daha iyidir. Böyle bir
+      işlemle ilgili bir örneği <a href="../programs/other.html#split-logfile"
+      >split-logfile</a> aracının belgesinde bulabilirsiniz.</p>
+
+</section>
+
+<section id="overview"><title>Genel Bakış</title>
+
+    <p>Bir sanal konak iki bilgiye bakarak belirlenir: IP adresi ve HTTP
+      isteğindeki <code>Host:</code> başlığının içeriği. Devingen sanal
+      barındırma tekniği, isteği yerine getirmek için kullanılacak dosya
+      yoluna bu bilgiyi kendiliğinden girmek esasına dayanır. Bu, Apache httpd
+      ile <module>mod_vhost_alias</module> modülünü kullanarak oldukça kolay
+      yapılabileceği gibi <a href="../rewrite/vhosts.html">mod_rewrite modülü
+      de kullanılabilir</a>.</p>
+
+    <p>Bu modüllerin her ikisi de öntanımlı olarak devre dışıdır. Bu tekniği
+      kullanmak isterseniz  Apache httpd'yi yeniden yapılandırıp derleyerek bu
+      iki modülü etkin duruma getirmeniz gerekir.</p>
+
+    <p>Devingen sanal konağı normal bir sanal konak gibi göstermek için
+      bazı bilgileri istekten saptamak gerekir. Bunlardan en önemlisi,
+      httpd tarafından göreli URL’lerden normal URL’leri ve benzerlerini
+      üretmek için kullanılan sunucu ismidir. Sunucu ismi
+      <code>ServerName</code> yönergesi ile yapılandırılır ve CGI’ler
+      tarafından <code>SERVER_NAME</code> ortam değişkeni üzerinden
+      kullanılır. Çalışma anındaki asıl değer <directive module="core"
+      >UseCanonicalName</directive> yönergesi tarafından denetlenir.
+      <code>UseCanonicalName Off</code> olduğunda sunucu ismi isteğin
+      <code>Host:</code> başlık alanından elde edilir. <code>UseCanonicalName
+      DNS</code> belirtilmişse, sunucu ismi, sanal konağın IP adresinden
+      tersine DNS sorgusu yapılarak elde edilir. Birincisi isme dayalı sanal
+      konaklar tarafından ikincisi ise IP’ye dayalı sanal konaklar tarafından
+      kullanılır. Eğer httpd, istekte <code>Host:</code> başlığının olmayışı
+      veya DNS sorgusunun başarısız olması sebebiyle sunucu ismini elde
+      edemezse son çare olarak <code>ServerName</code> yönergesinde yazılı
+      değeri kullanır.</p>
+
+    <p>Saptanan bilgilerden biri de <code>DocumentRoot</code>
+      yönergesi ile yapılandırılan belge kök dizini olup CGI’ler tarafından
+      <code>DOCUMENT_ROOT</code> ortam değişkeni üzerinden kullanılır. Normal
+      yapılandırmada <module>core</module> modülü tarafından dosya isimlerini
+      URI’lere eşlerken kullanılır. Fakat sunucu devingen sanal konakları
+      kullanmak üzere yapılandırıldığında, eşleştirmeyi farklı yollardan yapan
+      başka bir modül devreye girer (<module>mod_vhost_alias</module> veya
+      <module>mod_rewrite</module>). <code>DOCUMENT_ROOT</code> ortam
+      değişkenine değerini atamaktan sorumlu olan bu iki modülden biri
+      kullanılmazsa CGI veya SSI belgeleri yanlış değerlerle üretilirler.</p>
+
+</section>
+
+<section id="simple"><title>mod_vhost_alias ile Kitlesel Sanal Konaklar</title>
+
+    <p>Yukarıda <a href="#motivation">Amaç</a> bölümünde özetlenen sanal konak
+      düzenlemesinin <code>mod_vhost_alias</code> kullanarak gerçekleştirilmiş
+      halini içeren <code>httpd.conf</code> bölümü aşağıdadır.</p>
+
+<example>
+# sunucu ismini Host: başlığından elde edelim<br />
+UseCanonicalName Off<br />
+<br />
+# Bu günlükleme biçiminde split-logfile aracı kullanılarak<br />
+# ilk alana dayalı sanal konak günlükleri ayrıştırılabilir<br />
+LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon<br />
+CustomLog logs/access_log vcommon<br />
+<br />
+# istekleri yerine getirmek için kullanılacak<br />
+# dosya isimlerine sunucu ismini ekleyelim<br />
+VirtualDocumentRoot /siteler/%0/belgeler<br />
+VirtualScriptAlias  /siteler/%0/cgi-bin
+</example>
+
+    <p>Bu yapılandırmayı IP’ye dayalı sanal konaklar için kullanmak isterseniz
+      <code>UseCanonicalName Off</code> yerine <code>UseCanonicalName
+      DNS</code> yazmanız yeterlidir. Böylece dosya ismine eklenecek konak
+      ismi sanal konağın IP adresinden türetilir. <code>%0</code> değişkeni,
+      <code>Host:</code> başlığı ile belirlenen istekteki sunucu isminin
+      ifadesidir.</p>
+
+    <p>Kullanım örnekleri için <module>mod_vhost_alias</module>modülünün
+      belgesine bakınız.</p>
+
+</section>
+
+<section id="homepages"><title>Basitleştirilmiş Kitlesel Sanal Konaklar</title>
+
+    <p>Bu sistem, yukarıdaki yapılandırmanın bir ISS’nin sunucusuna
+      uyarlanmasından başka bir şey değildir. <code>%2</code> değişkenini
+      kullanarak, dosya isminde kullanmak üzere sunucu isminin alt dizgelerini
+      seçebiliriz, böylece, örneğin <code>www.user.example.com</code> belgeleri
+      <code>/home/user/www</code> dizininde bulunabilir. Farklı olarak her
+      sanal konak için bir tane değil hepsi için bir tane <code>cgi-bin</code>
+      olacaktır.</p>
+
+    <example>
+      UseCanonicalName Off<br />
+      <br />
+      LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon<br />
+      CustomLog logs/access_log vcommon<br />
+      <br />
+      # sunucu ismini içerecek dosya isimlerini oluşturalım<br />
+      VirtualDocumentRoot /home/%2/www<br />
+      <br />
+      # ortak cgi-bin dizini<br />
+      ScriptAlias  /cgi-bin/  /siteler/std-cgi/<br />
+    </example>
+
+    <p><module>mod_vhost_alias</module> belgesinde daha karmaşık
+      <code>VirtualDocumentRoot</code> örnekleri vardır.</p>
+
+</section>
+
+<section id="combinations"><title>Aynı Sunucuda Kişisel ve Kurumsal Sanal Konaklar</title>
+
+    <p>Daha karmaşık ayarlamalar yaparak httpd’nin normal
+      <code>&lt;VirtualHost&gt;</code> bölümlerini farklı kitlesel sanal konak
+      yapılandırmaları için kullanabilirsiniz. Örneğin, bireysel
+      müşterileriniz için bir IP adresiniz, kurumsal müşterileriniz için de
+      başka bir IP adresiniz olsun. Her biri için ayrı ayrı sanal konaklar
+      ayarlamak yerine aşağıdaki gibi bir yapılandırma kullanabilirsiniz:</p>
+
+<example>
+UseCanonicalName Off<br />
+<br />
+LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon<br />
+<br />
+&lt;Directory /siteler/kurumsal&gt;<br />
+<indent>
+    Options FollowSymLinks<br />
+    AllowOverride All<br />
+</indent>
+&lt;/Directory&gt;<br />
+<br />
+&lt;Directory /siteler/bireysel&gt;<br />
+<indent>
+    Options FollowSymLinks<br />
+    AllowOverride None<br />
+</indent>
+&lt;/Directory&gt;<br />
+<br />
+&lt;VirtualHost 111.22.33.44&gt;<br />
+<indent>
+    ServerName kurumsal.example.com<br />
+    <br />
+    CustomLog logs/access_log.kurumsal vcommon<br />
+    <br />
+    VirtualDocumentRoot /siteler/kurumsal/%0/belgeler<br />
+    VirtualScriptAlias  /siteler/kurumsal/%0/cgi-bin<br />
+</indent>
+&lt;/VirtualHost&gt;<br />
+<br />
+&lt;VirtualHost 111.22.33.45&gt;<br />
+<indent>
+    ServerName bireysel.example.com<br />
+    <br />
+    CustomLog logs/access_log.bireysel vcommon<br />
+    <br />
+    VirtualDocumentRoot /siteler/bireysel/%0/belgeler<br />
+    ScriptAlias         /cgi-bin/ /siteler/std-cgi/<br />
+</indent>
+&lt;/VirtualHost&gt;
+</example>
+
+    <note><title>Bilginize</title>
+      <p>Eğer ilk <code>&lt;VirtualHost&gt;</code> bölümü bir <directive
+        module="core">ServerName</directive> yönergesi içermezse ilgili IP
+        için ters DNS sorgusu yapılır. Eğer sorgudan elde edilen isim
+        sunucunun ismi değilse bu istenmeyen duruma bir çözüm olarak bir
+        bilgilendirme bölümü (örn, <code>ServerName bilgi.example.com</code>)
+        eklenebilir.</p>
+    </note>
+
+</section>
+
+<section id="ipbased">
+    <title>IP’ye dayalı sanal konakları daha verimli kılmak</title>
+
+    <p><a href="#simple">İlk örnekte</a> IP’ye dayalı sanal konaklar için
+      kullanılmak istenirse yapılandırmada neyin nasıl değiştirileceği
+      belirtilmişti. Her istek için ayrı bir DNS sorgusu gerekeceğinden bu
+      başarım düşmesine yol açar. DNS sorgusu ihtiyacını ortadan kaldırmak
+      için, bir çözüm olarak dosya sistemi, konak isimleri yerine IP
+      adreslerine göre düzenlenebilir. Günlük kayıtları da IP adreslerine göre
+      ayrıştırılacak şekilde ayarlanabilir.</p>
+
+<example>
+# Sunucu ismini IP adresinden ters DNS sorgusu ile elde edelim<br />
+UseCanonicalName DNS<br />
+<br />
+# Günlük kayıtları IP adreslerine göre ayrıştırılabilsin<br />
+LogFormat "%A %h %l %u %t \"%r\" %s %b" vcommon<br />
+CustomLog logs/access_log vcommon<br />
+<br />
+# dosya isimleri IP adreslerini içersin<br />
+VirtualDocumentRootIP /siteler/%0/belgeler<br />
+VirtualScriptAliasIP  /siteler/%0/cgi-bin<br />
+</example>
+
+</section>
+
+<section id="simple.rewrite">
+    <title><code>mod_rewrite</code> ile Kitlesel Sanal Konaklar</title>
+
+    <p>Kitlesel sanal barındırma <module>mod_rewrite</module> modülü kullanarak
+      da gerçeklenebilir. Ya basitçe <directive module="mod_rewrite"
+      >RewriteRule</directive> yönergelerini kullanırsınız ya da daha karmaşık
+      olarak sanal konak tanımlarınızı harici bir yerde tutar ve bunlara
+      <directive module="mod_rewrite">RewriteMap</directive> yönergesini
+      kullanarak erişirsiniz. Bu teknikler ayrıntılı olarak
+      <a href="../rewrite/vhosts.html">rewrite belgelerinde</a>
+      açıklanmıştır.</p>
+
+</section>
+
+</manualpage>

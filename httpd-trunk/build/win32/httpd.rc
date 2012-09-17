@@ -1,0 +1,88 @@
+/* Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#include "ap_release.h"
+
+#define AP_SERVER_LICENSE_RCSTR \
+  "Licensed under the Apache License, Version 2.0 (the ""License""); " \
+  "you may not use this file except in compliance with the License. " \
+  "You may obtain a copy of the License at\r\n" \
+  "\r\n" \
+  "http://www.apache.org/licenses/LICENSE-2.0\r\n" \
+  "\r\n" \
+  "Unless required by applicable law or agreed to in writing, software " \
+  "distributed under the License is distributed on an ""AS IS"" BASIS, " \
+  "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. " \
+  "See the License for the specific language governing permissions and " \
+  "limitations under the License."
+
+
+#ifdef ICON_FILE
+1 ICON DISCARDABLE ICON_FILE
+#endif
+
+#define LONG_NAME_STR APR_STRINGIFY(LONG_NAME)
+#define BIN_NAME_STR APR_STRINGIFY(BIN_NAME)
+
+1 VERSIONINFO
+ FILEVERSION AP_SERVER_PATCHLEVEL_CSV,0
+ PRODUCTVERSION AP_SERVER_PATCHLEVEL_CSV,0
+ FILEFLAGSMASK 0x3fL
+#if AP_SERVER_DEVBUILD_BOOLEAN
+#if defined(_DEBUG)
+ FILEFLAGS 0x03L
+#else
+ FILEFLAGS 0x02L
+#endif
+#else
+#if defined(_DEBUG)
+ FILEFLAGS 0x01L
+#else
+ FILEFLAGS 0x00L
+#endif
+#endif
+#if defined(WINNT) || defined(WIN64)
+ FILEOS 0x40004L
+#else
+ FILEOS 0x4L
+#endif
+#if defined(APP_FILE)
+ FILETYPE 0x1L
+#else
+ FILETYPE 0x2L
+#endif
+ FILESUBTYPE 0x0L
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904b0"
+    BEGIN
+      VALUE "Comments", AP_SERVER_LICENSE_RCSTR "\0"
+      VALUE "CompanyName", AP_SERVER_BASEVENDOR "\0"
+      VALUE "FileDescription", LONG_NAME_STR "\0"
+      VALUE "FileVersion", AP_SERVER_BASEREVISION "\0"
+      VALUE "InternalName", BIN_NAME_STR "\0"
+      VALUE "LegalCopyright", AP_SERVER_COPYRIGHT "\0"
+      VALUE "OriginalFilename", BIN_NAME_STR "\0"
+      VALUE "ProductName", "Apache HTTP Server\0"
+      VALUE "ProductVersion", AP_SERVER_BASEREVISION "\0"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x409, 1200
+  END
+END

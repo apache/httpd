@@ -1,0 +1,372 @@
+##
+##  config.layout -- Pre-defined Installation Path Layouts
+##
+##  Hints:
+##  - layouts can be loaded with configure's --enable-layout=ID option
+##  - when no --enable-layout option is given, the default layout is `Apache'
+##  - a trailing plus character (`+') on paths is replaced with a 
+##    `/<target>' suffix where <target> is currently hardcoded to 'apache2'.
+##    (This may become a configurable parameter at some point.)
+##
+
+#   Classical Apache path layout.
+<Layout Apache>
+    prefix:        /usr/local/apache2
+    exec_prefix:   ${prefix}
+    bindir:        ${exec_prefix}/bin
+    sbindir:       ${exec_prefix}/bin
+    libdir:        ${exec_prefix}/lib
+    libexecdir:    ${exec_prefix}/modules
+    mandir:        ${prefix}/man
+    sysconfdir:    ${prefix}/conf
+    datadir:       ${prefix}
+    installbuilddir: ${datadir}/build
+    errordir:      ${datadir}/error
+    iconsdir:      ${datadir}/icons
+    htdocsdir:     ${datadir}/htdocs
+    manualdir:     ${datadir}/manual
+    cgidir:        ${datadir}/cgi-bin
+    includedir:    ${prefix}/include
+    localstatedir: ${prefix}
+    runtimedir:    ${localstatedir}/logs
+    logfiledir:    ${localstatedir}/logs
+    proxycachedir: ${localstatedir}/proxy
+</Layout>
+
+#   GNU standards conforming path layout.
+#   See FSF's GNU project `make-stds' document for details.
+<Layout GNU>
+    prefix:        /usr/local
+    exec_prefix:   ${prefix}
+    bindir:        ${exec_prefix}/bin
+    sbindir:       ${exec_prefix}/sbin
+    libdir:        ${exec_prefix}/lib
+    libexecdir:    ${exec_prefix}/libexec
+    mandir:        ${prefix}/man
+    sysconfdir:    ${prefix}/etc+
+    datadir:       ${prefix}/share+
+    installbuilddir: ${datadir}/build
+    errordir:      ${datadir}/error
+    iconsdir:      ${datadir}/icons
+    htdocsdir:     ${datadir}/htdocs
+    manualdir:     ${datadir}/manual
+    cgidir:        ${datadir}/cgi-bin
+    includedir:    ${prefix}/include+
+    localstatedir: ${prefix}/var+
+    runtimedir:    ${localstatedir}/run
+    logfiledir:    ${localstatedir}/log
+    proxycachedir: ${localstatedir}/proxy
+</Layout>
+
+#   Mac OS X Server (Rhapsody)
+<Layout Mac OS X Server>
+    prefix:        /Local/Library/WebServer
+    exec_prefix:   /usr
+    bindir:        ${exec_prefix}/bin
+    sbindir:       ${exec_prefix}/sbin
+    libdir:        ${exec_prefix}/lib
+    libexecdir:    /System/Library/Apache/Modules
+    mandir:        ${exec_prefix}/share/man
+    sysconfdir:    ${prefix}/Configuration
+    datadir:       ${prefix}
+    installbuilddir: /System/Library/Apache/Build
+    errordir:      /System/Library/Apache/Error
+    iconsdir:      /System/Library/Apache/Icons
+    manualdir:     /System/Library/Apache/Manual
+    htdocsdir:     ${datadir}/Documents
+    cgidir:        ${datadir}/CGI-Executables
+    includedir:    /System/Library/Frameworks/Apache.framework/Versions/2.0/Headers
+    localstatedir: /var
+    runtimedir:    ${prefix}/Logs
+    logfiledir:    ${prefix}/Logs
+    proxycachedir: ${prefix}/ProxyCache
+</Layout>
+
+#   Darwin/Mac OS Layout
+<Layout Darwin>
+    prefix:        /usr
+    exec_prefix:   ${prefix}
+    bindir:        ${exec_prefix}/bin
+    sbindir:       ${exec_prefix}/sbin
+    libdir:        ${exec_prefix}/lib
+    libexecdir:    ${exec_prefix}/libexec+
+    mandir:        ${prefix}/share/man
+    datadir:       /Library/WebServer
+    sysconfdir:    /etc+
+    installbuilddir: ${prefix}/share/httpd/build
+    errordir:      ${prefix}/share/httpd/error
+    iconsdir:      ${prefix}/share/httpd/icons
+    htdocsdir:     ${datadir}/Documents
+    manualdir:     ${datadir}/share/httpd/manual
+    cgidir:        ${datadir}/CGI-Executables
+    includedir:    ${prefix}/include+
+    localstatedir: /var
+    runtimedir:    ${localstatedir}/run
+    logfiledir:    ${localstatedir}/log+
+    proxycachedir: ${runtimedir}/proxy
+</Layout>
+
+#   Red Hat Linux 7.x layout
+<Layout RedHat>
+    prefix:        /usr
+    exec_prefix:   ${prefix}
+    bindir:        ${prefix}/bin
+    sbindir:       ${prefix}/sbin
+    libdir:        ${prefix}/lib
+    libexecdir:    ${prefix}/lib/apache
+    mandir:        ${prefix}/man
+    sysconfdir:    /etc/httpd/conf
+    datadir:       /var/www
+    installbuilddir: ${datadir}/build
+    errordir:      ${datadir}/error
+    iconsdir:      ${datadir}/icons
+    htdocsdir:     ${datadir}/html
+    manualdir:     ${datadir}/manual
+    cgidir:        ${datadir}/cgi-bin
+    includedir:    ${prefix}/include/apache
+    localstatedir: /var
+    runtimedir:    ${localstatedir}/run
+    logfiledir:    ${localstatedir}/log/httpd
+    proxycachedir: ${localstatedir}/cache/httpd
+</Layout>     
+
+#   According to the /opt filesystem conventions
+<Layout opt>
+    prefix:        /opt/apache
+    exec_prefix:   ${prefix}
+    bindir:        ${exec_prefix}/bin
+    sbindir:       ${exec_prefix}/sbin
+    libdir:        ${exec_prefix}/lib
+    libexecdir:    ${exec_prefix}/libexec
+    mandir:        ${prefix}/man
+    sysconfdir:    /etc${prefix}
+    datadir:       ${prefix}/share
+    installbuilddir: ${datadir}/build
+    errordir:      ${datadir}/error
+    iconsdir:      ${datadir}/icons
+    htdocsdir:     ${datadir}/htdocs
+    manualdir:     ${datadir}/manual
+    cgidir:        ${datadir}/cgi-bin
+    includedir:    ${prefix}/include
+    localstatedir: /var${prefix}
+    runtimedir:    ${localstatedir}/run
+    logfiledir:    ${localstatedir}/logs
+    proxycachedir: ${localstatedir}/proxy
+</Layout>
+
+#   SuSE 6.x layout
+<Layout SuSE>
+    prefix:        /usr
+    exec_prefix:   ${prefix}
+    bindir:        ${prefix}/bin
+    sbindir:       ${prefix}/sbin
+    libdir:        ${prefix}/lib
+    libexecdir:    ${prefix}/lib/apache
+    mandir:        ${prefix}/share/man
+    sysconfdir:    /etc/httpd
+    datadir:       /usr/local/httpd
+    installbuilddir: ${datadir}/build
+    errordir:      ${datadir}/error
+    iconsdir:      ${datadir}/icons
+    htdocsdir:     ${datadir}/htdocs
+    manualdir:     ${datadir}/manual
+    cgidir:        ${datadir}/cgi-bin
+    includedir:    ${prefix}/include/apache
+    localstatedir: /var/lib/httpd
+    runtimedir:    /var/run
+    logfiledir:    /var/log/httpd
+    proxycachedir: /var/cache/httpd
+</Layout>
+
+#   BSD/OS layout
+<Layout BSDI>
+    prefix:        /var/www
+    exec_prefix:   /usr/contrib
+    bindir:        ${exec_prefix}/bin
+    sbindir:       ${exec_prefix}/bin
+    libdir:        ${exec_prefix}/lib
+    libexecdir:    ${exec_prefix}/libexec/apache
+    mandir:        ${exec_prefix}/man
+    sysconfdir:    ${prefix}/conf
+    datadir:       ${prefix}
+    installbuilddir: ${datadir}/build
+    errordir:      ${datadir}/error
+    iconsdir:      ${datadir}/icons
+    htdocsdir:     ${datadir}/htdocs
+    manualdir:     ${datadir}/manual
+    cgidir:        ${datadir}/cgi-bin
+    includedir:    ${exec_prefix}/include/apache
+    localstatedir: /var
+    runtimedir:    ${localstatedir}/run
+    logfiledir:    ${localstatedir}/log/httpd
+    proxycachedir: ${localstatedir}/proxy
+</Layout>
+
+#   Solaris 8 Layout
+<Layout Solaris>
+    prefix:        /usr/apache
+    exec_prefix:   ${prefix}
+    bindir:        ${exec_prefix}/bin
+    sbindir:       ${exec_prefix}/bin
+    libdir:        ${exec_prefix}/lib
+    libexecdir:    ${exec_prefix}/libexec
+    mandir:        ${exec_prefix}/man
+    sysconfdir:    /etc/apache
+    datadir:       /var/apache
+    installbuilddir: ${datadir}/build
+    errordir:      ${datadir}/error
+    iconsdir:      ${datadir}/icons
+    htdocsdir:     ${datadir}/htdocs
+    manualdir:     ${datadir}/manual
+    cgidir:        ${datadir}/cgi-bin
+    includedir:    ${exec_prefix}/include
+    localstatedir: ${prefix}
+    runtimedir:    /var/run
+    logfiledir:    ${datadir}/logs
+    proxycachedir: ${datadir}/proxy
+</Layout>
+
+#   OpenBSD Layout
+<Layout OpenBSD>
+    prefix:        /var/www
+    exec_prefix:   /usr
+    bindir:        ${exec_prefix}/bin
+    sbindir:       ${exec_prefix}/sbin
+    libdir:        ${exec_prefix}/lib
+    libexecdir:    ${exec_prefix}/lib/apache/modules
+    mandir:        ${exec_prefix}/share/man
+    sysconfdir:    ${prefix}/conf
+    datadir:       ${prefix}
+    installbuilddir: ${prefix}/build
+    errordir:      ${prefix}/error
+    iconsdir:      ${prefix}/icons
+    htdocsdir:     ${prefix}/htdocs
+    manualdir:     ${datadir}/manual
+    cgidir:        ${prefix}/cgi-bin
+    includedir:    ${exec_prefix}/lib/apache/include
+    localstatedir: ${prefix}
+    runtimedir:    ${prefix}/logs
+    logfiledir:    ${prefix}/logs
+    proxycachedir: ${prefix}/proxy
+</Layout>
+
+# FreeBSD Layout
+<Layout FreeBSD>
+  prefix:        /usr/local
+  exec_prefix:   ${prefix}
+  bindir:        ${exec_prefix}/bin
+  sbindir:       ${exec_prefix}/sbin
+  libdir:        ${exec_prefix}/lib
+  libexecdir:    ${exec_prefix}/libexec/apache2
+  mandir:        ${prefix}/man
+  sysconfdir:    ${prefix}/etc/apache2
+  datadir:       ${prefix}/www
+  installbuilddir: ${prefix}/share/apache2/build
+  errordir:      ${datadir}/error
+  iconsdir:      ${datadir}/icons
+  htdocsdir:     ${datadir}/data
+  manualdir:     ${prefix}/share/doc/apache2
+  cgidir:        ${datadir}/cgi-bin
+  includedir:    ${prefix}/include/apache2
+  localstatedir: /var
+  runtimedir:    ${localstatedir}/run
+  logfiledir:    ${localstatedir}/log
+  proxycachedir: ${datadir}/proxy
+</Layout>
+
+# Debian layout
+<Layout Debian>
+    prefix:        
+    exec_prefix:   ${prefix}/usr
+    bindir:        ${exec_prefix}/bin
+    sbindir:       ${exec_prefix}/sbin
+    libdir:        ${exec_prefix}/lib
+    libexecdir:    ${exec_prefix}/lib/apache2/modules
+    mandir:        ${exec_prefix}/share/man
+    sysconfdir:    ${prefix}/etc/apache2
+    datadir:       ${exec_prefix}/share/apache2
+    iconsdir:      ${datadir}/icons
+    htdocsdir:     ${prefix}/usr/share/apache2/default-site/htdocs
+    manualdir:     ${htdocsdir}/manual
+    cgidir:        ${prefix}/usr/lib/cgi-bin
+    includedir:    ${exec_prefix}/include/apache2
+    localstatedir: ${prefix}/var/lock/apache2
+    runtimedir:    ${prefix}/var/run/apache2
+    logfiledir:    ${prefix}/var/log/apache2
+    proxycachedir: ${prefix}/var/cache/apache2/proxy
+    infodir:       ${exec_prefix}/share/info
+    installbuilddir: ${prefix}/usr/share/apache2/build
+    errordir:      ${datadir}/error
+</Layout>
+
+# Generic RPM layout
+<Layout RPM>
+    prefix:        /usr
+    exec_prefix:   ${prefix}
+    bindir:        ${prefix}/bin
+    sbindir:       ${prefix}/sbin
+    libdir:        ${prefix}/lib
+    libexecdir:    ${libdir}/httpd/modules
+    mandir:        ${prefix}/share/man
+    sysconfdir:    /etc/httpd/conf
+    installbuilddir: ${libdir}/httpd/build
+    includedir:    ${prefix}/include/httpd
+    localstatedir: /var
+    datadir:       ${localstatedir}/www
+    errordir:      ${datadir}/error
+    iconsdir:      ${datadir}/icons
+    htdocsdir:     ${datadir}/html
+    manualdir:     ${datadir}/manual
+    cgidir:        ${datadir}/cgi-bin
+    runtimedir:    ${localstatedir}/run
+    logfiledir:    ${localstatedir}/log/httpd
+    proxycachedir: ${localstatedir}/cache/httpd/cache-root
+</Layout>
+
+# AIX layout
+<Layout AIX>
+    prefix:        /opt/httpd
+    exec_prefix:   /opt/httpd
+    bindir:        ${exec_prefix}/bin
+    sbindir:       ${exec_prefix}/sbin
+    libdir:        ${exec_prefix}/lib
+    libexecdir:    ${exec_prefix}/libexec
+    mandir:        /usr/share/man
+    sysconfdir:    /etc/httpd
+    datadir:       /var/httpd
+    installbuilddir: ${datadir}/build
+    errordir:      ${datadir}/error
+    htdocsdir:     ${datadir}/htdocs
+    cgidir:        ${datadir}/cgi-bin
+    iconsdir:      ${prefix}/icons
+    manualdir:     ${prefix}/manual
+    includedir:    ${prefix}/include
+    localstatedir: /var/httpd
+    runtimedir:    ${localstatedir}/run
+    logfiledir:    ${localstatedir}/logs
+    proxycachedir: ${localstatedir}/proxy
+</Layout>
+
+# FHS layout
+<Layout Slackware-FHS>
+    prefix:          /usr
+    exec_prefix:     ${prefix}
+    bindir:          ${prefix}/bin
+    sbindir:         ${prefix}/sbin
+    libdir:          ${prefix}/lib/httpd
+    libexecdir:      ${prefix}/lib/httpd/modules
+    installbuilddir: ${prefix}/lib/httpd/build
+    mandir:          ${prefix}/man
+    sysconfdir:      /etc/httpd
+    datadir:         /srv/httpd
+    iconsdir:        ${datadir}/icons
+    htdocsdir:       ${datadir}/htdocs
+    manualdir:       ${htdocsdir}/manual
+    cgidir:          ${datadir}/cgi-bin
+    errordir:        ${datadir}/error
+    includedir:      ${prefix}/include/httpd
+    localstatedir:   /var
+    runtimedir:      ${localstatedir}/run/httpd
+    logfiledir:      ${localstatedir}/log/httpd
+    proxycachedir:   ${localstatedir}/cache/httpd
+</Layout>

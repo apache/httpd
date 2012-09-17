@@ -1,0 +1,253 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 1200006 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="ssl_compat.xml.meta">
+<parentdocument href="./">SSL/TLS</parentdocument>
+
+  <title>SSL/TLS Strong Encryption: Compatibility</title>
+
+<summary>
+<p>
+This page covers backwards compatibility between mod_ssl and other
+SSL solutions.  mod_ssl is not the only SSL solution for Apache; four
+additional products are (or were) also available: Ben Laurie's freely
+available <a href="http://www.apache-ssl.org/">Apache-SSL</a> (from
+where mod_ssl were originally derived in 1998), Red Hat's commercial
+Secure Web Server (which was based on mod_ssl), Covalent's commercial
+Raven SSL Module (also based on
+mod_ssl) and finally C2Net's (now Red Hat's) commercial product <a
+href="http://www.redhat.com/explore/stronghold/">Stronghold</a> (based
+on a different evolution branch, named Sioux up to Stronghold 2.x, and
+based on mod_ssl since Stronghold 3.x).</p>
+
+<p>
+mod_ssl mostly provides a superset of the functionality of all the other
+solutions, so it's simple to migrate from one of the older modules to
+mod_ssl. The configuration directives and environment variable names
+used by the older SSL solutions vary from those used in mod_ssl;
+mapping tables are included here to give the equivalents used by mod_ssl.</p>
+</summary>
+
+<section id="configuration"><title>Configuration Directives</title>
+<p>The mapping between configuration directives used by Apache-SSL
+1.x and mod_ssl 2.0.x is given in <a href="#table1">Table
+1</a>. The mapping from Sioux 1.x and Stronghold 2.x is only partial
+because of special functionality in these interfaces which mod_ssl
+doesn't provide.</p>
+
+
+<section id="table1">
+<title>Table 1: Configuration Directive Mapping</title>
+<table style="zebra">
+<columnspec><column width=".32"/><column width=".32"/>
+<column width=".32"/></columnspec>
+<tr><th>Old Directive</th><th>mod_ssl Directive</th><th>Comment</th></tr>
+
+<tr><th colspan="3">Apache-SSL 1.x &amp; mod_ssl 2.0.x compatibility:</th></tr>
+<tr><td><code>SSLEnable</code></td><td><code>SSLEngine on</code></td><td>compactified</td></tr>
+<tr><td><code>SSLDisable</code></td><td><code>SSLEngine off</code></td><td>compactified</td></tr>
+<tr><td><code>SSLLogFile</code> <em>file</em></td><td><code></code></td><td>Use per-module <directive module="core">LogLevel</directive> setting instead.</td></tr>
+
+<tr><td><code>SSLRequiredCiphers</code> <em>spec</em></td><td><code>SSLCipherSuite</code> <em>spec</em></td><td>renamed</td></tr>
+<tr><td><code>SSLRequireCipher</code> <em>c1</em> ...</td><td><code>SSLRequire %{SSL_CIPHER} in {"</code><em>c1</em><code>",
+...}</code></td><td>generalized</td></tr>
+
+<tr><td><code>SSLBanCipher</code> <em>c1</em> ...</td><td><code>SSLRequire not (%{SSL_CIPHER} in {"</code><em>c1</em><code>",
+...})</code></td><td>generalized</td></tr>
+<tr><td><code>SSLFakeBasicAuth</code></td><td><code>SSLOptions +FakeBasicAuth</code></td><td>merged</td></tr>
+<tr><td><code>SSLCacheServerPath</code> <em>dir</em></td><td>-</td><td>functionality removed</td></tr>
+
+<tr><td><code>SSLCacheServerPort</code> <em>integer</em></td><td>-</td><td>functionality removed</td></tr>
+<tr><th colspan="3">Apache-SSL 1.x compatibility:</th></tr>
+<tr><td><code>SSLExportClientCertificates</code></td><td><code>SSLOptions +ExportCertData</code></td><td>merged</td></tr>
+<tr><td><code>SSLCacheServerRunDir</code> <em>dir</em></td><td>-</td><td>functionality not supported</td></tr>
+
+<tr><th colspan="3">Sioux 1.x compatibility:</th></tr>
+<tr><td><code>SSL_CertFile</code> <em>file</em></td><td><code>SSLCertificateFile</code> <em>file</em></td><td>renamed</td></tr>
+<tr><td><code>SSL_KeyFile</code> <em>file</em></td><td><code>SSLCertificateKeyFile</code> <em>file</em></td><td>renamed</td></tr>
+
+<tr><td><code>SSL_CipherSuite</code> <em>arg</em></td><td><code>SSLCipherSuite</code> <em>arg</em></td><td>renamed</td></tr>
+<tr><td><code>SSL_X509VerifyDir</code> <em>arg</em></td><td><code>SSLCACertificatePath</code> <em>arg</em></td><td>renamed</td></tr>
+<tr><td><code>SSL_Log</code> <em>file</em></td><td><code>-</code></td><td>Use per-module <directive module="core">LogLevel</directive> setting instead.</td></tr>
+
+<tr><td><code>SSL_Connect</code> <em>flag</em></td><td><code>SSLEngine</code> <em>flag</em></td><td>renamed</td></tr>
+<tr><td><code>SSL_ClientAuth</code> <em>arg</em></td><td><code>SSLVerifyClient</code> <em>arg</em></td><td>renamed</td></tr>
+<tr><td><code>SSL_X509VerifyDepth</code> <em>arg</em></td><td><code>SSLVerifyDepth</code> <em>arg</em></td><td>renamed</td></tr>
+
+<tr><td><code>SSL_FetchKeyPhraseFrom</code> <em>arg</em></td><td>-</td><td>not directly mappable; use SSLPassPhraseDialog</td></tr>
+<tr><td><code>SSL_SessionDir</code> <em>dir</em></td><td>-</td><td>not directly mappable; use SSLSessionCache</td></tr>
+<tr><td><code>SSL_Require</code> <em>expr</em></td><td>-</td><td>not directly mappable; use SSLRequire</td></tr>
+
+<tr><td><code>SSL_CertFileType</code> <em>arg</em></td><td>-</td><td>functionality not supported</td></tr>
+<tr><td><code>SSL_KeyFileType</code> <em>arg</em></td><td>-</td><td>functionality not supported</td></tr>
+<tr><td><code>SSL_X509VerifyPolicy</code> <em>arg</em></td><td>-</td><td>functionality not supported</td></tr>
+
+<tr><td><code>SSL_LogX509Attributes</code> <em>arg</em></td><td>-</td><td>functionality not supported</td></tr>
+<tr><th colspan="3">Stronghold 2.x compatibility:</th></tr>
+<tr><td><code>StrongholdAccelerator</code> <em>engine</em></td><td><code>SSLCryptoDevice</code> <em>engine</em></td><td>renamed</td></tr>
+<tr><td><code>StrongholdKey</code> <em>dir</em></td><td>-</td><td>functionality not needed</td></tr>
+
+<tr><td><code>StrongholdLicenseFile</code> <em>dir</em></td><td>-</td><td>functionality not needed</td></tr>
+<tr><td><code>SSLFlag</code> <em>flag</em></td><td><code>SSLEngine</code> <em>flag</em></td><td>renamed</td></tr>
+<tr><td><code>SSLSessionLockFile</code> <em>file</em></td><td><code>SSLMutex</code> <em>file</em></td><td>renamed</td></tr>
+
+<tr><td><code>SSLCipherList</code> <em>spec</em></td><td><code>SSLCipherSuite</code> <em>spec</em></td><td>renamed</td></tr>
+<tr><td><code>RequireSSL</code></td><td><code>SSLRequireSSL</code></td><td>renamed</td></tr>
+<tr><td><code>SSLErrorFile</code> <em>file</em></td><td>-</td><td>functionality not supported</td></tr>
+
+<tr><td><code>SSLRoot</code> <em>dir</em></td><td>-</td><td>functionality not supported</td></tr>
+<tr><td><code>SSL_CertificateLogDir</code> <em>dir</em></td><td>-</td><td>functionality not supported</td></tr>
+<tr><td><code>AuthCertDir</code> <em>dir</em></td><td>-</td><td>functionality not supported</td></tr>
+
+<tr><td><code>SSL_Group</code> <em>name</em></td><td>-</td><td>functionality not supported</td></tr>
+<tr><td><code>SSLProxyMachineCertPath</code> <em>dir</em></td><td><code>SSLProxyMachineCertificatePath</code> <em>dir</em></td><td>renamed</td></tr>
+<tr><td><code>SSLProxyMachineCertFile</code> <em>file</em></td><td><code>SSLProxyMachineCertificateFile</code> <em>file</em></td><td>renamed</td></tr>
+
+<tr><td><code>SSLProxyCipherList</code> <em>spec</em></td><td><code>SSLProxyCipherSpec</code> <em>spec</em></td><td>renamed</td></tr>
+</table>
+</section>
+</section>
+
+<section id="variables"><title>Environment Variables</title>
+
+<p>The mapping between environment variable names used by the older
+SSL solutions and the names used by mod_ssl is given in <a
+href="#table2">Table 2</a>.</p>
+
+<section id="table2">
+<title>Table 2: Environment Variable Derivation</title>
+<table style="zebra">
+<columnspec><column width=".38"/><column width=".38"/>
+<column width=".2"/></columnspec>
+<tr><th>Old Variable</th><th>mod_ssl Variable</th><th>Comment</th></tr>
+
+<tr><td><code>SSL_PROTOCOL_VERSION</code></td><td><code>SSL_PROTOCOL</code></td><td>renamed</td></tr>
+<tr><td><code>SSLEAY_VERSION</code></td><td><code>SSL_VERSION_LIBRARY</code></td><td>renamed</td></tr>
+<tr><td><code>HTTPS_SECRETKEYSIZE</code></td><td><code>SSL_CIPHER_USEKEYSIZE</code></td><td>renamed</td></tr>
+<tr><td><code>HTTPS_KEYSIZE</code></td><td><code>SSL_CIPHER_ALGKEYSIZE</code></td><td>renamed</td></tr>
+<tr><td><code>HTTPS_CIPHER</code></td><td><code>SSL_CIPHER</code></td><td>renamed</td></tr>
+
+<tr><td><code>HTTPS_EXPORT</code></td><td><code>SSL_CIPHER_EXPORT</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_SERVER_KEY_SIZE</code></td><td><code>SSL_CIPHER_ALGKEYSIZE</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_SERVER_CERTIFICATE</code></td><td><code>SSL_SERVER_CERT</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_SERVER_CERT_START</code></td><td><code>SSL_SERVER_V_START</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_SERVER_CERT_END</code></td><td><code>SSL_SERVER_V_END</code></td><td>renamed</td></tr>
+
+<tr><td><code>SSL_SERVER_CERT_SERIAL</code></td><td><code>SSL_SERVER_M_SERIAL</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_SERVER_SIGNATURE_ALGORITHM</code></td><td><code>SSL_SERVER_A_SIG</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_SERVER_DN</code></td><td><code>SSL_SERVER_S_DN</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_SERVER_CN</code></td><td><code>SSL_SERVER_S_DN_CN</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_SERVER_EMAIL</code></td><td><code>SSL_SERVER_S_DN_Email</code></td><td>renamed</td></tr>
+
+<tr><td><code>SSL_SERVER_O</code></td><td><code>SSL_SERVER_S_DN_O</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_SERVER_OU</code></td><td><code>SSL_SERVER_S_DN_OU</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_SERVER_C</code></td><td><code>SSL_SERVER_S_DN_C</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_SERVER_SP</code></td><td><code>SSL_SERVER_S_DN_SP</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_SERVER_L</code></td><td><code>SSL_SERVER_S_DN_L</code></td><td>renamed</td></tr>
+
+<tr><td><code>SSL_SERVER_IDN</code></td><td><code>SSL_SERVER_I_DN</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_SERVER_ICN</code></td><td><code>SSL_SERVER_I_DN_CN</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_SERVER_IEMAIL</code></td><td><code>SSL_SERVER_I_DN_Email</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_SERVER_IO</code></td><td><code>SSL_SERVER_I_DN_O</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_SERVER_IOU</code></td><td><code>SSL_SERVER_I_DN_OU</code></td><td>renamed</td></tr>
+
+<tr><td><code>SSL_SERVER_IC</code></td><td><code>SSL_SERVER_I_DN_C</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_SERVER_ISP</code></td><td><code>SSL_SERVER_I_DN_SP</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_SERVER_IL</code></td><td><code>SSL_SERVER_I_DN_L</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_CLIENT_CERTIFICATE</code></td><td><code>SSL_CLIENT_CERT</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_CLIENT_CERT_START</code></td><td><code>SSL_CLIENT_V_START</code></td><td>renamed</td></tr>
+
+<tr><td><code>SSL_CLIENT_CERT_END</code></td><td><code>SSL_CLIENT_V_END</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_CLIENT_CERT_SERIAL</code></td><td><code>SSL_CLIENT_M_SERIAL</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_CLIENT_SIGNATURE_ALGORITHM</code></td><td><code>SSL_CLIENT_A_SIG</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_CLIENT_DN</code></td><td><code>SSL_CLIENT_S_DN</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_CLIENT_CN</code></td><td><code>SSL_CLIENT_S_DN_CN</code></td><td>renamed</td></tr>
+
+<tr><td><code>SSL_CLIENT_EMAIL</code></td><td><code>SSL_CLIENT_S_DN_Email</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_CLIENT_O</code></td><td><code>SSL_CLIENT_S_DN_O</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_CLIENT_OU</code></td><td><code>SSL_CLIENT_S_DN_OU</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_CLIENT_C</code></td><td><code>SSL_CLIENT_S_DN_C</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_CLIENT_SP</code></td><td><code>SSL_CLIENT_S_DN_SP</code></td><td>renamed</td></tr>
+
+<tr><td><code>SSL_CLIENT_L</code></td><td><code>SSL_CLIENT_S_DN_L</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_CLIENT_IDN</code></td><td><code>SSL_CLIENT_I_DN</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_CLIENT_ICN</code></td><td><code>SSL_CLIENT_I_DN_CN</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_CLIENT_IEMAIL</code></td><td><code>SSL_CLIENT_I_DN_Email</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_CLIENT_IO</code></td><td><code>SSL_CLIENT_I_DN_O</code></td><td>renamed</td></tr>
+
+<tr><td><code>SSL_CLIENT_IOU</code></td><td><code>SSL_CLIENT_I_DN_OU</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_CLIENT_IC</code></td><td><code>SSL_CLIENT_I_DN_C</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_CLIENT_ISP</code></td><td><code>SSL_CLIENT_I_DN_SP</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_CLIENT_IL</code></td><td><code>SSL_CLIENT_I_DN_L</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_EXPORT</code></td><td><code>SSL_CIPHER_EXPORT</code></td><td>renamed</td></tr>
+
+<tr><td><code>SSL_KEYSIZE</code></td><td><code>SSL_CIPHER_ALGKEYSIZE</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_SECKEYSIZE</code></td><td><code>SSL_CIPHER_USEKEYSIZE</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_SSLEAY_VERSION</code></td><td><code>SSL_VERSION_LIBRARY</code></td><td>renamed</td></tr>
+<tr><td><code>SSL_STRONG_CRYPTO</code></td><td><code>-</code></td><td>Not supported by mod_ssl</td></tr>
+<tr><td><code>SSL_SERVER_KEY_EXP</code></td><td><code>-</code></td><td>Not supported by mod_ssl</td></tr>
+
+<tr><td><code>SSL_SERVER_KEY_ALGORITHM</code></td><td><code>-</code></td><td>Not supported by mod_ssl</td></tr>
+<tr><td><code>SSL_SERVER_KEY_SIZE</code></td><td><code>-</code></td><td>Not supported by mod_ssl</td></tr>
+<tr><td><code>SSL_SERVER_SESSIONDIR</code></td><td><code>-</code></td><td>Not supported by mod_ssl</td></tr>
+<tr><td><code>SSL_SERVER_CERTIFICATELOGDIR</code></td><td><code>-</code></td><td>Not supported by mod_ssl</td></tr>
+<tr><td><code>SSL_SERVER_CERTFILE</code></td><td><code>-</code></td><td>Not supported by mod_ssl</td></tr>
+
+<tr><td><code>SSL_SERVER_KEYFILE</code></td><td><code>-</code></td><td>Not supported by mod_ssl</td></tr>
+<tr><td><code>SSL_SERVER_KEYFILETYPE</code></td><td><code>-</code></td><td>Not supported by mod_ssl</td></tr>
+<tr><td><code>SSL_CLIENT_KEY_EXP</code></td><td><code>-</code></td><td>Not supported by mod_ssl</td></tr>
+<tr><td><code>SSL_CLIENT_KEY_ALGORITHM</code></td><td><code>-</code></td><td>Not supported by mod_ssl</td></tr>
+<tr><td><code>SSL_CLIENT_KEY_SIZE</code></td><td><code>-</code></td><td>Not supported by mod_ssl</td></tr>
+</table>
+</section>
+</section>
+
+<section id="customlog"><title>Custom Log Functions</title>
+<p>
+When mod_ssl is enabled, additional functions exist for the <a
+href="../mod/mod_log_config.html#formats">Custom Log Format</a> of
+<module>mod_log_config</module> as documented in the Reference
+Chapter. Beside the ``<code>%{</code><em>varname</em><code>}x</code>''
+eXtension format function which can be used to expand any variables provided
+by any module, an additional Cryptography
+``<code>%{</code><em>name</em><code>}c</code>'' cryptography format function
+exists for backward compatibility. The currently implemented function calls
+are listed in <a href="#table3">Table 3</a>.</p>
+
+<section id="table3">
+<title>Table 3: Custom Log Cryptography Function</title>
+<table>
+<columnspec><column width=".2"/><column width=".4"/></columnspec>
+<tr><th>Function Call</th><th>Description</th></tr>
+
+<tr><td><code>%...{version}c</code></td>   <td>SSL protocol version</td></tr>
+<tr><td><code>%...{cipher}c</code></td>    <td>SSL cipher</td></tr>
+<tr><td><code>%...{subjectdn}c</code></td> <td>Client Certificate Subject Distinguished Name</td></tr>
+<tr><td><code>%...{issuerdn}c</code></td>  <td>Client Certificate Issuer Distinguished Name</td></tr>
+<tr><td><code>%...{errcode}c</code></td>   <td>Certificate Verification Error (numerical)</td></tr>
+
+<tr><td><code>%...{errstr}c</code></td>    <td>Certificate Verification Error (string)</td></tr>
+</table>
+</section>
+</section>
+
+</manualpage>

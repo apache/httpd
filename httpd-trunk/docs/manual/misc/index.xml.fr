@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 636430 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="index.xml.meta">
+  <parentdocument href="../"/>
+
+  <title>Documentations diverses sur Apache</title>
+
+  <summary>
+
+    <p>Vous trouverez plus loin une liste de pages de documentation
+    additionnelles concernant le projet de d&eacute;veloppement du serveur web
+    Apache.</p>
+
+    <note type="warning"><title>Avertissement</title>
+    <p>La mise &agrave; jour des documents ci-dessous permettant de prendre en
+    compte les modifications apport&eacute;es par la version 2.1 du serveur
+    HTTP Apache n'a pas &eacute;t&eacute; enti&egrave;rement men&eacute;e &agrave; bien. Certaines
+    informations sont probablement encore pertinentes, mais utilisez-les tout de m&ecirc;me avec
+    pr&eacute;cautions.</p>
+    </note>
+
+    <dl>
+      <dt><a href="perf-tuning.html">Notes &agrave; propos des performances -
+      R&eacute;glages fins d'Apache</a></dt>
+
+      <dd>
+        <p>Notes &agrave; propos de la configuration d'Apache pour de plus
+	hautes performances (&agrave; l'ex&eacute;cution et &agrave; la compilation). Notes
+	expliquant pourquoi Apache accomplit certaines choses et
+	n'en accomplit pas certaines autres (les premi&egrave;res l'acc&eacute;l&eacute;rant
+	et les deuxi&egrave;mes le ralentissant).</p>
+      </dd>
+
+      <dt><a href="security_tips.html">Conseils concernant la
+      s&eacute;curit&eacute;</a></dt>
+
+      <dd>
+        <p>Quelques conseils de type "faites" ou "ne faites pas" pour
+	que votre site web Apache reste s&eacute;curis&eacute;.</p>
+      </dd>
+
+      <dt><a href="relevant_standards.html">Standards concern&eacute;s</a></dt>
+
+      <dd>
+        <p>Ce document constitue une page de r&eacute;f&eacute;rence pour la plupart
+	des standards concern&eacute;s par Apache.</p>
+      </dd>
+
+      <dt><a href="password_encryptions.html">Formats de chiffrement des
+      mots de passe</a></dt>
+
+      <dd>
+        <p>Discussion &agrave; propos des divers algorithmes de chiffrement
+	support&eacute;s par Apache &agrave; des fins d'authentification.</p>
+      </dd>
+    </dl>
+
+  </summary>
+
+</manualpage>

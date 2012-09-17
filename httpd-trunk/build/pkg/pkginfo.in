@@ -1,0 +1,11 @@
+PKG="ASFhttpd"
+NAME="httpd"
+ARCH="@target_cpu@"
+VERSION="@HTTPD_VERSION@"
+CATEGORY="application"
+VENDOR="Apache Software Foundation"
+EMAIL="dev@httpd.apache.org"
+PSTAMP="dev@httpd.apache.org"
+BASEDIR="@prefix@"
+CLASSES="none"
+

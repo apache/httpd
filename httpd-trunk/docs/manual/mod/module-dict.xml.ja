@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English Revision: 420990 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="module-dict.xml.meta">
+
+  <title>Apache モジュールの解説で使用する用語</title>
+
+<summary>
+    <p>この文書は Apache の各 <a href="./">モジュール</a> を説明するために
+    使われている用語を説明します。</p>
+</summary>
+
+<section id="Description"><title>説明</title>
+
+<p>モジュールの目的の短い説明。</p>
+</section>
+
+<section id="Status"><title>ステータス</title>
+
+    <p>これは、そのモジュールが Apache
+    ウェブサーバにどれくらい密接に組み込まれているかを示します。
+    言い換えれば、モジュールを組み込み、その機能を利用するために、
+    サーバを再コンパイルする必要があるかもしれないということを示します。
+    この属性が取り得る値は以下のものです:</p>
+    <dl>
+      <dt>MPM</dt>
+
+      <dd>ステータスが "MPM" のモジュールは<a
+      href="../mpm.html">マルチプロセッシングモジュール</a>です。
+      他の種類のモジュールとは違って、Apache は常に MPM を一つだけ
+      使用し続けます。この種類のモジュールは基本的なリクエストの扱いと
+      ディスパッチを行ないます。</dd>
+
+      <dt>Base</dt>
+
+      <dd>ステータスが &quot;Base&quot;
+      のモジュールは、デフォルトでコンパイルされてわざわざ設定から
+      モジュールを削除していない限り、通常は利用可能です。
+      </dd>
+
+      <dt>Extension</dt>
+
+      <dd>ステータスが &quot;Extension&quot; のモジュールは、
+      デフォルトではコンパイルされず、サーバにも読み込まれません。
+      そのモジュールとその機能を有効にするには、
+      サーバをビルドするための設定を変更して、Apache
+      を再コンパイルする必要があります。</dd>
+      <dt>Experimental</dt>
+
+      <dd>ステータスが &quot;Experimental&quot; のモジュールは、
+      Apache 配布物に同梱されていますが、
+      使用する場合は自己責任で行なう必要があります。
+      そのモジュールは、ドキュメントも完成に向けて作成中ですし、
+      サポートされるているとは限りません。</dd>
+      <dt>External</dt>
+
+      <dd>ステータスが &quot;External&quot; のモジュールは、基本 Apache
+      配布に同梱されません (&quot;サードパーティーモジュール&quot;)。
+      そのため、我々に責任はありませんし、
+      そのモジュールのサポートもしていません。</dd>
+    </dl>
+</section>
+
+<section id="SourceFile"><title>ソースファイル</title>
+
+    <p>これは単純に、
+    そのモジュールに必要なコードを含むソースファイルの名前を列挙したものです。
+    これは、<directive module="core" type="section">IfModule</directive>
+    ディレクティブで使用される名前でもあります。
+    </p>
+</section>
+
+<section id="ModuleIdentifier"><title>モジュール識別子</title>
+
+    <p>この文字列は、モジュールの動的読み込みを行なうときに使用する <directive
+    module="mod_so">LoadModule</directive>
+    ディレクティブにおいて使用されるモジュールの識別子です。
+    詳しく書くと、ソースファイル内の module タイプの外部変数の名前です。
+    </p>
+</section>
+
+<section id="Compatibility"><title>互換性</title>
+
+    <p>あるモジュールが Apache バージョン 2
+    の配布に含まれていなかった場合、
+    そのモジュールが導入されたバージョンがここに書かれています。
+    また、モジュールが特定のプラットフォームにのみ存在するときも
+    詳細はここに書かれています。</p>
+</section>
+</manualpage>

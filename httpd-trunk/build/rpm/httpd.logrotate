@@ -1,0 +1,8 @@
+/var/log/httpd/*log {
+    missingok
+    notifempty
+    sharedscripts
+    postrotate
+	/sbin/service httpd graceful 2> /dev/null || true
+    endscript
+}

@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
+<!-- English Revision: 507346:1332626 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="dns-caveats.xml.meta">
+
+  <title>DNS と Apache にまつわる注意事項</title>
+
+  <summary>
+    <p>本文書の内容は次の一言に尽きます。「Apache が設定ファイルを読み込むときに
+    DNS を使用する必要がないようにして下さい」。Apache が設定ファイルを
+    読み込むときに DNS を使用する必要がある場合、信頼性の問題
+    (起動しないかもしれません) やサービス拒否や盗用アタック
+    (他のユーザからヒットを盗むことを含みます)
+    の問題に直面するかもしれません。</p>
+  </summary>
+
+  <section id="example">
+    <title>簡単な例</title>
+
+    <example>
+      &lt;VirtualHost www.abc.dom&gt; <br />
+      ServerAdmin webgirl@abc.dom <br />
+      DocumentRoot /www/abc <br />
+      &lt;/VirtualHost&gt;
+    </example>
+
+    <p>Apache が正常に機能するには、バーチャルホスト毎に必ず二つの
+    情報が必要になります。それは、
+    <directive module="core">ServerName</directive>
+    と、そのサーバが応答するための IP (最低一つ) です。
+    上記例では IP アドレスを含んでいませんので、Apache は DNS
+    を使用して <code>www.abc.dom</code> を見つけなければなりません。
+    何らかの理由で設定ファイルを読み込んでいるときに DNS 
+    が利用できなかった場合、
+    バーチャルホストは<strong>設定されません</strong>。
+    そして、そのバーチャルホストに対するヒットには応答がなされません
+    (Apache 1.2 以前では起動すらしません)。</p>
+
+    <p><code>www.abc.dom</code> のアドレスが 192.0.2.1
+    だとします。では、次の設定について考えてみましょう。</p>
+
+    <example>
+      &lt;VirtualHost 192.0.2.1&gt; <br />
+      ServerAdmin webgirl@abc.dom <br />
+      DocumentRoot /www/abc <br />
+      &lt;/VirtualHost&gt;
+    </example>
+
+    <p>現在のリリースでは Apache は DNS 逆引きを使用して
+    このバーチャルホストの <directive module="core">ServerName</directive>
+    を見つけます。
+    その逆引きが失敗した場合は部分的にバーチャルホストを無効にします
+    (Apache 1.2 より前では起動すらしません)。
+    バーチャルホストが名前ベースであれば完全に無効になりますが、
+    IP ベースであれば概ね動作します。しかしながら、サーバ名を
+    含む完全な URL を生成しなければならない場合は、正しい URL
+    の生成ができません。</p>
+
+    <p>次の例は上記の問題を解決しています。</p>
+
+    <example>
+      &lt;VirtualHost 192.0.2.1&gt; <br />
+      ServerName www.abc.dom <br />
+      ServerAdmin webgirl@abc.dom <br />
+      DocumentRoot /www/abc <br />
+      &lt;/VirtualHost&gt;
+    </example>
+  </section>
+
+  <section id="denial">
+    <title>サービス拒否</title>
+
+    <p>サービス拒否が起こる場合、(少なくとも) 二つのケースがあります。
+    Apache 1.2 より前を実行している場合、バーチャルホストのための
+    上記の二つの DNS 検索のうち一つ失敗すれば起動すらしません。
+    そしてこの DNS 検索が自分の制御下にすらない場合もありえます。
+    例えば、<code>abc.dom</code> が顧客のサーバの一つで、
+    DNS は顧客自身で管理している場合、単に
+    <code>www.abc.dom</code> レコードを削除するだけで、
+    (1.2 より前の) サーバを起動不能にすることができます。</p>
+
+    <p>もう一つのケースは、より気付きにくいものです。
+    次の設定について考えてみましょう。</p>
+
+    <example>
+      &lt;VirtualHost www.abc.dom&gt; <br />
+      <indent>
+        ServerAdmin webgirl@abc.dom <br />
+        DocumentRoot /www/abc <br />
+      </indent>
+      &lt;/VirtualHost&gt; <br />
+      <br />
+      &lt;VirtualHost www.def.dom&gt; <br />
+      <indent>
+        ServerAdmin webguy@def.dom <br />
+        DocumentRoot /www/def <br />
+      </indent>
+      &lt;/VirtualHost&gt;
+    </example>
+
+    <p>192.0.2.1 を <code>www.abc.dom</code> に、
+    192.0.2.2 を <code>www.def.dom</code> に割り当てているとします。
+    また、<code>def.dom</code> は顧客自身の DNS
+    の制御下にあるとします。この設定で、<code>abc.dom</code>
+    に向けられたトラフィック全てを奪うことができる位置に
+    <code>def.dom</code> を設置できています。後は単に 
+    <code>www.def.dom</code> が 192.0.2.1 を参照するように
+    設定するだけです。DNS は顧客側の DNS でコントロールされているので、
+    <code>www.def.dom</code> レコードが好きな場所を指すように
+    設定できてしまうのを止めさせることができません。</p>
+
+    <p>192.0.2.1 に対するリクエスト
+    (<code>http://www.abc.dom/whatever</code> 形式の URL 
+    を入力したユーザからのもの全てを含みます) 
+    は、<code>def.dom</code> バーチャルホストで応答されます。
+    このようなことが何故起こるかもっと良く知るためには、
+    応答の必要なバーチャルホストへのリクエストに対して、
+    Apache がどのように整合性を確保するかについて、
+    深い議論が必要になります。おおざっぱな説明は<a
+    href="vhosts/details.html">こちら</a>に記述されています。</p>
+  </section>
+
+  <section id="main">
+    <title>「主サーバ」アドレス</title>
+
+    <p>Apache 1.1 での <a href="vhost/name-based.html"
+    >名前ベースのバーチャルホストのサポート</a> 追加の際に、
+    Apache は <program>httpd</program> の実行されているホストの IP
+    アドレスを知る必要が出てきました。このアドレスを得るために、
+    (もしあれば) グローバルな
+    <directive module="core">ServerName</directive> を使用するか、
+    C 言語の関数 <code>gethostname</code> (コマンドプロンプトで
+    <code>hostname</code> とタイプしたときと同じものを返します)
+    を呼び出すかをします。
+    その後、得られたアドレスで DNS 検索を行ないます。
+    現在のところ、この DNS 検索を回避する方法はありません。</p>
+
+    <p>DNS サーバがダウンして、この検索ができない事態が起こることを
+    恐れているのであれば、<code>/etc/hosts</code>
+    にホスト名を記述しておくことができます
+    (マシンが正常に起動するように既に設定されているかもしれません)。
+    その場合、DNS 参照が失敗した場合にマシンが <code>/etc/hosts</code>
+    を使用するように設定していることを確認してください。
+    その方法は、どの OS を使用しているかに依存しますが、
+    <code>/etc/resolv.conf</code> か <code>/etc/nsswitch.conf</code>
+    を編集することで設定できます。</p>
+
+    <p>もし他の理由で DNS を利用する必要がない場合は、
+    <code>HOSTRESORDER</code> 環境変数を「 <code>local</code>
+    」に設定することでそのようにできます。以上これらの事柄は、どんな
+    OS 、レゾルバライブラリを使用しているかに依存します。また、
+    <module>mod_env</module> を使用して環境変数を制御しない限り、
+    CGI にも影響を与えます。man ページや使用している OS
+    の FAQ で調べると良いでしょう。</p>
+  </section>
+
+  <section id="tips">
+    <title>以上の問題を解決する方法</title>
+
+    <ul>
+      <li>
+        <directive module="core">VirtualHost</directive>
+        で IP アドレスを使用する。
+      </li>
+
+      <li>
+        <directive module="mpm_common">Listen</directive>
+        で IP アドレスを使用する。
+      </li>
+
+      <li>
+        全てのバーチャルホストが明示的に
+        <directive module="core">ServerName</directive>
+        を持つようにする。
+      </li>
+
+      <li>何も応答しない
+      <code>&lt;VirtualHost _default_:*&gt;</code>
+      サーバを作る。</li>
+    </ul>
+  </section>
+
+  <section id="appendix">
+    <title>付録: 将来的な方向性</title>
+
+    <p>DNS に関して、現状は全く宜しくありません。Apache 1.2 で、
+    DNS のイベントが失敗しても少なくとも起動プロセスが続くようにしましたが、
+    これが最高の解決方法ではないでしょう。アドレスの再割り当てが必要不可避
+    となっている今日のインターネットにおいては、
+    設定ファイルの中で明示的な IP アドレスを要求する仕様は、
+    全く宜しくありません。</p>
+
+    <p>盗用のサービスアタックに関して行なうべき事は、
+    DNS 順引きを行なって得られたアドレスに対する DNS 
+    逆引きを行なって、二つの名前を比較することです。
+    この二つが一致しなければバーチャルホストは無効になるようにします。
+    こうするためには逆引き DNS が適切に設定されている必要があります
+    (FTP サーバや TCP ラッパーのおかげで「二重逆引き」DNS は一般的に
+    なっていますので、管理者にはお馴染みものでしょう)。</p>
+
+    <p>IP アドレスが使用されていなくて DNS が失敗した場合は、
+    どうしてもバーチャルホストウェブサーバを信頼性を確保して
+    起動させることは不可能のようです。
+    設定の一部を無効にするというような部分的な解決では、
+    サーバが何をするようにするかにもよりますが、
+    そのサーバが起動しないより確実に悪い状況になるでしょう。</p>
+
+    <p>HTTP/1.1 が開発され、ブラウザやプロキシが <code>Host</code>
+    ヘッダを発行するようになったので、IP ベースのバーチャルホストを
+    全く使用しなくても済むようになるかもしれません。
+    この場合、ウェブサーバは設定中に DNS 参照をしなくても済みます。
+    しかし 1997 年 3 月時点の状況では、
+    商用レベルのウェブサーバで使用できるほどには、
+    これらの機能は広く開発が進んでいません。</p>
+  </section>
+</manualpage>

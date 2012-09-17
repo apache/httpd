@@ -1,0 +1,266 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 1223048 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="new_features_2_2.xml.meta">
+
+<title>Overview of new features in Apache HTTP Server 2.2</title>
+
+<summary>
+  <p>This document describes some of the major changes between the
+     2.0 and 2.2 versions of the Apache HTTP Server. For new features since
+     version 1.3, see the <a href="new_features_2_0.html">2.0 new features</a>
+     document.</p>
+</summary>
+
+  <section id="core">
+    <title>Core Enhancements</title>
+    <dl>
+
+      <dt>Authn/Authz</dt>
+      <dd>The bundled authentication and authorization modules have
+          been refactored.  The new mod_authn_alias(already removed from 2.3/2.4)
+          module can greatly simplify certain authentication configurations.
+          See <a href="#module">module name changes</a>, and
+          <a href="#developer">the developer changes</a> for more
+          information about how these changes affects users and module
+          writers.</dd>
+
+      <dt>Caching</dt>
+      <dd><module>mod_cache</module>, <module>mod_cache_disk</module>, and
+          mod_mem_cache(already removed from 2.3/2.4) have undergone a lot of changes, and
+          are now considered production-quality. <program>htcacheclean</program>
+          has been introduced to clean up <module>mod_cache_disk</module>
+          setups.</dd>
+
+      <dt>Configuration</dt>
+      <dd>The default configuration layout has been simplified and
+          modularised. Configuration snippets which can be used to
+          enable commonly-used features are now bundled with Apache, and
+          can be easily added to the main server config.</dd>
+
+      <dt>Graceful stop</dt>
+      <dd>The <module>prefork</module>, <module>worker</module> and
+          <module>event</module>  MPMs now allow <program>httpd</program>
+          to be shutdown gracefully via the
+          <a href="stopping.html#gracefulstop"><code>graceful-stop</code></a>
+          signal. The <directive
+          module="mpm_common">GracefulShutdownTimeout</directive> directive
+          has been added to specify an optional timeout, after which
+          <program>httpd</program> will terminate regardless of the status
+          of any requests being served.</dd>
+
+      <dt>Proxying</dt>
+      <dd>The new <module>mod_proxy_balancer</module> module provides
+          load balancing services for <module>mod_proxy</module>.
+          The new <module>mod_proxy_ajp</module> module adds support for the
+          <code>Apache JServ Protocol version 1.3</code> used by
+          <a href="http://tomcat.apache.org/">Apache Tomcat</a>.</dd>
+
+      <dt>Regular Expression Library Updated</dt>
+      <dd>Version 5.0 of the
+          <a href="http://www.pcre.org/">Perl Compatible Regular Expression
+          Library</a> (PCRE) is now included.  <program>httpd</program> can be
+          configured to use a system installation of PCRE by passing the
+          <code>--with-pcre</code> flag to configure.</dd>
+
+      <dt>Smart Filtering</dt>
+      <dd><module>mod_filter</module> introduces dynamic configuration
+          to the output filter chain.  It enables filters to be conditionally
+          inserted, based on any Request or Response header or environment
+          variable, and dispenses with the more problematic dependencies and
+          ordering problems in the 2.0 architecture.</dd>
+
+      <dt>Large File Support</dt>
+      <dd><program>httpd</program> is now built with support for files larger
+          than 2GB on modern 32-bit Unix systems.  Support for handling
+          &gt;2GB request bodies has also been added.</dd>
+
+      <dt>Event MPM</dt>
+      <dd>The <module>event</module> MPM uses a separate thread to handle
+          Keep Alive requests and accepting connections.  Keep Alive requests
+          have traditionally required httpd to dedicate a worker to handle it.
+          This dedicated worker could not be used again until the Keep Alive
+          timeout was reached.</dd>
+
+      <dt>SQL Database Support</dt>
+      <dd><module>mod_dbd</module>, together with the <code>apr_dbd</code>
+          framework, brings direct SQL support to modules that need it.
+          Supports connection pooling in threaded MPMs.</dd>
+
+    </dl>
+  </section>
+
+  <section id="module">
+    <title>Module Enhancements</title>
+    <dl>
+      <dt>Authn/Authz</dt>
+      <dd>Modules in the aaa directory have been renamed and offer
+          better support for digest authentication.  For example,
+          <code>mod_auth</code> is now split into
+          <module>mod_auth_basic</module> and
+          <module>mod_authn_file</module>; <code>mod_auth_dbm</code> is now
+          called <module>mod_authn_dbm</module>; <code>mod_access</code> has
+          been renamed <module>mod_authz_host</module>.  There is also a new
+          mod_authn_alias(already removed from 2.3/2.4) module for simplifying
+          certain authentication configurations.
+      </dd>
+
+      <dt><module>mod_authnz_ldap</module></dt>
+      <dd>This module is a port of the 2.0
+          <code>mod_auth_ldap</code> module to the 2.2 <code>Authn/Authz</code>
+          framework.  New features include using LDAP attribute values and
+          complicated search filters in the
+          <directive module="mod_authz_core">Require</directive> directive.</dd>
+
+      <dt><module>mod_authz_owner</module></dt>
+      <dd>A new module that authorizes access to files based
+          on the owner of the file on the file system</dd>
+
+      <dt><module>mod_version</module></dt>
+      <dd>A new module that allows configuration blocks to be enabled based on the
+          version number of the running server.</dd>
+
+      <dt><module>mod_info</module></dt>
+      <dd>Added a new <code>?config</code> argument which will show
+          the configuration directives as parsed by Apache, including
+          their file name and line number.  The module also
+          shows the order of all request hooks and additional
+          build information, similar to <code>httpd -V</code>.</dd>
+
+      <dt><module>mod_ssl</module></dt>
+      <!-- Need Info on SSLEngine Support? -->
+      <dd>Added a support for
+         <a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>, which
+         allows connections to upgrade from clear text to TLS encryption.</dd>
+
+      <dt><module>mod_imagemap</module></dt>
+      <dd><code>mod_imap</code> has been renamed to
+          <module>mod_imagemap</module> to avoid user confusion.</dd>
+    </dl>
+
+  </section>
+
+  <section id="programs">
+    <title>Program Enhancements</title>
+    <dl>
+      <dt><program>httpd</program></dt>
+      <dd>A new command line option <code>-M</code> has been added that
+      lists all modules that are loaded based on the current
+      configuration. Unlike the <code>-l</code> option, this list
+      includes DSOs loaded via <module>mod_so</module>.</dd>
+
+      <dt><program>httxt2dbm</program></dt>
+      <dd>A new program used to generate dbm files from text input,
+          for use in <directive module="mod_rewrite">RewriteMap</directive>
+          with the <code>dbm</code> map type.</dd>
+    </dl>
+  </section>
+
+  <section id="developer">
+    <title>Module Developer Changes</title>
+    <dl>
+      <dt><glossary>APR</glossary> 1.0 API</dt>
+
+      <dd>Apache 2.2 uses the APR 1.0 API.  All deprecated functions and
+          symbols have been removed from <code>APR</code> and
+          <code>APR-Util</code>. For details, see the
+          <a href="http://apr.apache.org/">APR Website</a>.</dd>
+
+      <dt>Authn/Authz</dt>
+      <dd>The bundled authentication and authorization modules have
+          been renamed along the following lines:
+          <ul>
+          <li><code>mod_auth_*</code>  -> Modules that implement an HTTP
+          authentication mechanism</li>
+          <li><code>mod_authn_*</code> -> Modules that provide a backend
+          authentication provider</li>
+          <li><code>mod_authz_*</code> -> Modules that implement
+          authorization (or access)</li>
+          <li><code>mod_authnz_*</code> -> Module that implements both
+          authentication &amp; authorization</li>
+          </ul>
+          There is a new authentication backend provider
+          scheme which greatly eases the construction of new authentication
+          backends.</dd>
+
+      <dt>Connection Error Logging</dt>
+
+      <dd>A new function, <code>ap_log_cerror</code> has been added to log
+          errors that occur with the client's connection.  When logged,
+          the message includes the client IP address.</dd>
+
+      <dt>Test Configuration Hook Added</dt>
+
+      <dd>A new hook, <code>test_config</code> has been added to aid
+          modules that want to execute special code only when the user passes
+          <code>-t</code> to <program>httpd</program>.</dd>
+
+      <dt>Set Threaded MPM's Stacksize</dt>
+
+      <dd>A new directive, <directive module="mpm_common"
+          >ThreadStackSize</directive> has been added to
+          set the stack size on all threaded MPMs.  This is required
+          for some third-party modules on platforms with small default
+          thread stack size.</dd>
+
+      <dt>Protocol handling for output filters</dt>
+
+      <dd>In the past, every filter has been responsible for ensuring
+          that it generates the correct response headers where it affects
+          them.  Filters can now delegate common protocol management to
+          <module>mod_filter</module>, using the
+          <code>ap_register_output_filter_protocol</code> or
+          <code>ap_filter_protocol</code> calls.</dd>
+
+      <dt>Monitor hook added</dt>
+      <dd>Monitor hook enables modules to run regular/scheduled jobs
+          in the parent (root) process.</dd>
+
+      <dt>Regular expression API changes</dt>
+
+      <dd>The <code>pcreposix.h</code> header is no longer available;
+      it is replaced by the new <code>ap_regex.h</code> header.  The
+      POSIX.2 <code>regex.h</code> implementation exposed by the old
+      header is now available under the <code>ap_</code> namespace
+      from <code>ap_regex.h</code>.  Calls to <code>regcomp</code>,
+      <code>regexec</code> and so on can be replaced by calls to
+      <code>ap_regcomp</code>, <code>ap_regexec</code>.</dd>
+
+      <dt>DBD Framework (SQL Database API)</dt>
+
+      <dd><p>With Apache 1.x and 2.0, modules requiring an SQL backend
+      had to take responsibility for managing it themselves.  Apart
+      from reinventing the wheel, this can be very inefficient, for
+      example when several modules each maintain their own connections.</p>
+
+      <p>Apache 2.1 and later provides the <code>ap_dbd</code> API for
+      managing database connections (including optimised strategies
+      for threaded and unthreaded MPMs), while APR 1.2 and later provides
+      the <code>apr_dbd</code> API for interacting with the database.</p>
+
+      <p>New modules SHOULD now use these APIs for all SQL database
+      operations.  Existing applications SHOULD be upgraded to use it
+      where feasible, either transparently or as a recommended option
+      to their users.</p></dd>
+    </dl>
+  </section>
+</manualpage>

@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+<!-- English Revision: 1330883 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="urlmapping.xml.meta">
+
+  <title> Mise en correspondance des URLs avec le syst&egrave;me de fichiers</title>
+
+  <summary>
+    <p>Ce document explique comment le serveur HTTP Apache utilise l'URL contenue dans une
+    requ&ecirc;te pour d&eacute;terminer le noeud du syst&egrave;me de fichier &agrave; partir duquel le
+    fichier devra &ecirc;tre servi.</p>
+  </summary>
+
+<section id="related"><title>Modules et directives concern&eacute;s</title>
+
+<related>
+<modulelist>
+<module>mod_actions</module>
+<module>mod_alias</module>
+<module>mod_dir</module>
+<module>mod_imagemap</module>
+<module>mod_negotiation</module>
+<module>mod_proxy</module>
+<module>mod_rewrite</module>
+<module>mod_speling</module>
+<module>mod_userdir</module>
+<module>mod_vhost_alias</module>
+</modulelist>
+<directivelist>
+<directive module="mod_alias">Alias</directive>
+<directive module="mod_alias">AliasMatch</directive>
+<directive module="mod_speling">CheckSpelling</directive>
+<directive module="core">DocumentRoot</directive>
+<directive module="core">ErrorDocument</directive>
+<directive module="core">Options</directive>
+<directive module="mod_proxy">ProxyPass</directive>
+<directive module="mod_proxy">ProxyPassReverse</directive>
+<directive module="mod_proxy">ProxyPassReverseCookieDomain</directive>
+<directive module="mod_proxy">ProxyPassReverseCookiePath</directive>
+<directive module="mod_alias">Redirect</directive>
+<directive module="mod_alias">RedirectMatch</directive>
+<directive module="mod_rewrite">RewriteCond</directive>
+<directive module="mod_rewrite">RewriteRule</directive>
+<directive module="mod_alias">ScriptAlias</directive>
+<directive module="mod_alias">ScriptAliasMatch</directive>
+<directive module="mod_userdir">UserDir</directive>
+</directivelist>
+</related>
+</section>
+
+<section id="documentroot"><title>Racine des documents (DocumentRoot)</title>
+
+    <p>La m&eacute;thode par d&eacute;faut de httpd pour d&eacute;terminer quel fichier servir pour
+    une requ&ecirc;te donn&eacute;e, consiste &agrave; extraire le chemin du fichier de la requ&ecirc;te
+    (la partie de l'URL qui suit le nom d'h&ocirc;te et le port), puis de l'ajouter
+    &agrave; la fin de la valeur de la directive
+    <directive module="core">DocumentRoot</directive> d&eacute;finie dans vos fichiers
+    de configuration.
+    Ainsi, les fichiers et r&eacute;pertoires
+    situ&eacute;s en dessous de <directive module="core">DocumentRoot</directive>
+    constituent l'arborescence de base des documents qui seront visibles
+    depuis le web.</p>
+
+    <p>Par exemple, si la directive
+    <directive module="core">DocumentRoot</directive> contient
+    <code>/var/www/html</code>, une requ&ecirc;te pour
+    <code>http://www.example.com/fish/guppies.html</code> retournera le
+    fichier <code>/var/www/html/fish/guppies.html</code> au client.</p>
+
+    <p>httpd supporte aussi les <a href="vhosts/">H&ocirc;tes virtuels</a>,
+    ce qui lui permet de traiter des requ&ecirc;tes pour plusieurs h&ocirc;tes.
+    Dans ce cas, un <directive module="core">DocumentRoot</directive>
+    diff&eacute;rent peut &ecirc;tre d&eacute;fini pour chaque h&ocirc;te virtuel;
+    les directives fournies par le module
+    <module>mod_vhost_alias</module> peuvent aussi &ecirc;tre utilis&eacute;es afin de
+    d&eacute;terminer dynamiquement le noeud appropri&eacute; du syst&egrave;me de fichiers
+    &agrave; partir duquel servir un contenu en fonction de l'adresse IP
+    ou du nom d'h&ocirc;te.</p>
+
+    <p>La directive <directive module="core">DocumentRoot</directive>  est
+    d&eacute;finie dans le fichier de configuration de votre serveur principal
+    (<code>httpd.conf</code>), mais peut aussi &ecirc;tre red&eacute;finie pour chaque
+    <a href="vhosts/">H&ocirc;te virtuel</a> suppl&eacute;mentaire que vous avez cr&eacute;&eacute;.</p>
+</section>
+
+<section id="outside"><title>Fichiers situ&eacute;s en dehors de
+l'arborescence DocumentRoot</title>
+
+    <p>Il existe de nombreuses circonstances pour lesquelles il est n&eacute;cessaire
+    d'autoriser l'acc&egrave;s web &agrave; des portions du syst&egrave;me de fichiers qui ne se
+    trouvent pas dans l'arborescence <directive
+    module="core">DocumentRoot</directive>.  httpd propose de nombreuses
+    solutions pour r&eacute;aliser cela. Sur les syst&egrave;mes Unix, les liens
+    symboliques permettent de rattacher d'autres portions du syst&egrave;me de
+    fichiers au <directive
+    module="core">DocumentRoot</directive>. Pour des raisons de s&eacute;curit&eacute;,
+    httpd ne suivra les liens symboliques que si les <directive
+    module="core">Options</directive> pour le r&eacute;pertoire concern&eacute; contiennent
+    <code>FollowSymLinks</code> ou <code>SymLinksIfOwnerMatch</code>.</p>
+
+    <p>Une autre m&eacute;thode consiste &agrave; utiliser la directive <directive
+    module="mod_alias">Alias</directive> pour rattacher toute portion
+    du syst&egrave;me de fichiers &agrave; l'arborescence du site web. Par exemple, avec</p>
+
+<highlight language="config">Alias /docs /var/web</highlight>
+
+    <p>l'URL <code>http://www.example.com/docs/dir/file.html</code>
+    correspondra au fichier <code>/var/web/dir/file.html</code>. La
+    directive
+    <directive module="mod_alias">ScriptAlias</directive>
+    fonctionne de la m&ecirc;me mani&egrave;re, except&eacute; que tout contenu localis&eacute; dans le
+    chemin cible sera trait&eacute; comme un script <glossary ref="cgi"
+    >CGI</glossary>.</p>
+
+    <p>Pour les situations qui n&eacute;cessitent plus de flexibilit&eacute;, vous disposez
+    des directives <directive module="mod_alias">AliasMatch</directive>
+    et <directive module="mod_alias">ScriptAliasMatch</directive>
+    qui permettent des substitutions et comparaisons puissantes bas&eacute;es
+    sur les <glossary ref="regex">expressions rationnelles</glossary>.
+    Par exemple,</p>
+
+<highlight language="config">
+    ScriptAliasMatch ^/~([a-zA-Z0-9]+)/cgi-bin/(.+)   /home/$1/cgi-bin/$2
+    </highlight>
+
+    <p>fera correspondre une requ&ecirc;te du style
+    <code>http://example.com/~user/cgi-bin/script.cgi</code> au chemin
+    <code>/home/user/cgi-bin/script.cgi</code>, et traitera le fichier r&eacute;sultant
+    comme un script CGI.</p>
+</section>
+
+<section id="user"><title>R&eacute;pertoires des utilisateurs</title>
+
+    <p>Sur les syst&egrave;mes Unix, on peut traditionnellement faire r&eacute;f&eacute;rence
+    au r&eacute;pertoire personnel d'un <em>utilisateur</em> particulier &agrave; l'aide de
+    l'expression <code>~user/</code>.
+    Le module <module>mod_userdir</module>
+    &eacute;tend cette id&eacute;e au web en autorisant l'acc&egrave;s aux fichiers situ&eacute;s dans les
+    r&eacute;pertoires home des utilisateurs &agrave; l'aide d'URLs
+    comme dans ce qui suit :</p>
+
+<example>http://www.example.com/~user/file.html</example>
+
+    <p>Pour des raisons de s&eacute;curit&eacute;, il est d&eacute;conseill&eacute; de permettre un acc&egrave;s
+    direct &agrave; un r&eacute;pertoire home d'utilisateur depuis le web. A cet effet, la
+    directive <directive module="mod_userdir">UserDir</directive>
+    sp&eacute;cifie un r&eacute;pertoire o&ugrave; sont situ&eacute;s les fichiers accessibles depuis le web
+    dans le r&eacute;pertoire home de l'utilisateur.
+    Avec la configuration par d&eacute;faut
+    <code>Userdir public_html</code>, l'URL ci-dessus correspondra &agrave; un fichier
+    dont le chemin sera du style
+    <code>/home/user/public_html/file.html</code> o&ugrave;
+    <code>/home/user/</code> est le r&eacute;pertoire home de l'utilisateur tel qu'il
+    est d&eacute;fini dans <code>/etc/passwd</code>.</p>
+
+    <p>La directive <code>Userdir</code> met &agrave; votre disposition de nombreuses
+    formes diff&eacute;rentes pour les syst&egrave;mes o&ugrave; <code>/etc/passwd</code> ne
+    sp&eacute;cifie pas la localisation du r&eacute;pertoire home.</p>
+
+    <p>Certains jugent le symbole "~" (dont le code sur le web est souvent
+    <code>%7e</code>) inappropri&eacute; et pr&eacute;f&egrave;rent utiliser une cha&icirc;ne de
+    caract&egrave;res diff&eacute;rente pour repr&eacute;senter les r&eacute;pertoires utilisateurs.
+    mod_userdir ne supporte pas cette fonctionnalit&eacute;. Cependant, si les
+    r&eacute;pertoires home des utilisateurs sont structur&eacute;s de mani&egrave;re rationnelle,
+    il est possible d'utiliser la directive
+    <directive module="mod_alias">AliasMatch</directive>
+    pour obtenir l'effet d&eacute;sir&eacute;. Par exemple, pour faire correspondre
+    <code>http://www.example.com/upages/user/file.html</code> &agrave;
+    <code>/home/user/public_html/file.html</code>, utilisez la directive
+    <code>AliasMatch</code> suivante :</p>
+
+<highlight language="config">
+    AliasMatch ^/upages/([a-zA-Z0-9]+)(/(.*))?$   /home/$1/public_html/$3
+    </highlight>
+</section>
+
+<section id="redirect"><title>Redirection d'URL</title>
+
+    <p>Les directives de configuration d&eacute;crites dans les sections pr&eacute;c&eacute;dentes
+    demandent &agrave; httpd d'extraire un contenu depuis un emplacement sp&eacute;cifique
+    du syst&egrave;me de fichiers
+    et de la retourner au client. Il est cependant parfois
+    souhaitable d'informer le
+    client que le contenu demand&eacute; est localis&eacute; &agrave; une URL diff&eacute;rente, et de
+    demander au client d'&eacute;laborer une nouvelle requ&ecirc;te avec la nouvelle URL.
+    Ce processus se nomme <em>redirection</em> et est impl&eacute;ment&eacute; par la
+    directive <directive module="mod_alias">Redirect</directive>.
+    Par exemple, si le contenu du r&eacute;pertoire <code>/foo/</code> sous
+    <directive module="core">DocumentRoot</directive> est d&eacute;plac&eacute; vers le
+    nouveau r&eacute;pertoire <code>/bar/</code>, vous pouvez demander aux clients
+    de le requ&eacute;rir &agrave; sa nouvelle localisation comme suit :</p>
+
+<highlight language="config">
+    Redirect permanent /foo/   http://www.example.com/bar/
+    </highlight>
+
+    <p>Ceci aura pour effet de rediriger tout chemin d'URL commen&ccedil;ant par
+    <code>/foo/</code> vers le m&ecirc;me chemin d'URL sur le serveur
+    <code>www.example.com</code> en rempla&ccedil;ant <code>/foo/</code> par
+    <code>/bar/</code>. Vous pouvez rediriger les clients non seulement sur le
+    serveur d'origine, mais aussi vers n'importe quel autre serveur.</p>
+
+    <p>httpd propose aussi la directive <directive
+    module="mod_alias">RedirectMatch</directive> pour traiter les probl&egrave;mes
+    de r&eacute;&eacute;criture d'une plus grande complexit&eacute;. Par exemple, afin de rediriger
+    les requ&ecirc;tes pour la page d'accueil du site vers un site diff&eacute;rent, mais
+    laisser toutes les autres requ&ecirc;tes inchang&eacute;es, utilisez la
+    configuration suivante :</p>
+
+<highlight language="config">
+   RedirectMatch permanent ^/$    http://www.example.com/startpage.html
+    </highlight>
+
+    <p>De m&ecirc;me, pour rediriger temporairement toutes les pages d'un site
+    vers une page particuli&egrave;re d'un autre site, utilisez ce qui suit :</p>
+
+<highlight language="config">
+    RedirectMatch temp .*  http://othersite.example.com/startpage.html
+    </highlight>
+</section>
+
+<section id="proxy"><title>Mandataire inverse (Reverse Proxy)</title>
+
+<p>httpd vous permet aussi de rapatrier des documents distants
+dans l'espace des URL du serveur local.
+Cette technique est appel&eacute;e <em>mandataire inverse ou reverse
+proxying</em> car le serveur web agit comme un serveur mandataire en
+rapatriant les documents depuis un serveur distant puis les renvoyant
+au client. Ceci diff&egrave;re d'un service de mandataire usuel (direct) car, pour le client,
+les documents semblent appartenir au serveur mandataire inverse.</p>
+
+<p>Dans l'exemple suivant, quand les clients demandent des documents situ&eacute;s
+dans le r&eacute;pertoire
+<code>/foo/</code>, le serveur rapatrie ces documents depuis le r&eacute;pertoire
+<code>/bar/</code> sur <code>internal.example.com</code>
+et les renvoie au client comme s'ils appartenaient au serveur local.</p>
+
+<highlight language="config">
+ProxyPass /foo/ http://internal.example.com/bar/<br />
+ProxyPassReverse /foo/ http://internal.example.com/bar/<br />
+ProxyPassReverseCookieDomain internal.example.com public.example.com<br />
+ProxyPassReverseCookiePath /foo/ /bar/
+</highlight>
+
+<p>La directive <directive module="mod_proxy">ProxyPass</directive> configure
+le serveur pour rapatrier les documents appropri&eacute;s, alors que la directive
+<directive module="mod_proxy">ProxyPassReverse</directive>
+r&eacute;&eacute;crit les redirections provenant de
+<code>internal.example.com</code> de telle mani&egrave;re qu'elles ciblent le
+r&eacute;pertoire appropri&eacute; sur le serveur local. De mani&egrave;re similaire, les directives
+<directive module="mod_proxy">ProxyPassReverseCookieDomain</directive>
+et <directive module="mod_proxy">ProxyPassReverseCookiePath</directive>
+r&eacute;&eacute;crivent les cookies &eacute;labor&eacute;s par le serveur d'arri&egrave;re-plan.</p>
+<p>Il est important de noter cependant, que les liens situ&eacute;s dans les documents
+ne seront pas r&eacute;&eacute;crits.  Ainsi, tout lien absolu sur
+<code>internal.example.com</code> fera d&eacute;crocher le client
+du serveur mandataire et effectuer sa requ&ecirc;te directement sur
+<code>internal.example.com</code>. Vous pouvez modifier ces liens (et
+d'utres contenus) situ&eacute;s dans la page au moment o&ugrave; elle est envoy&eacute;e au
+client en utilisant le module <module>mod_substitute</module>.</p>
+
+<highlight language="config">
+Substitute s/internal\.example\.com/www.example.com/i
+</highlight>
+
+<p>Le module <module>mod_proxy_html</module> rend possible une r&eacute;&eacute;criture plus
+&eacute;labor&eacute;e des liens en HTML et XHTML. Il permet de cr&eacute;er des listes
+d'URLs et de leurs r&eacute;&eacute;critures, de fa&ccedil;on &agrave; pouvoir g&eacute;rer des sc&eacute;narios
+de r&eacute;&eacute;criture complexes.</p>
+</section>
+
+<section id="rewrite"><title>Moteur de r&eacute;&eacute;criture</title>
+
+    <p>Le moteur de r&eacute;&eacute;criture <module>mod_rewrite</module> peut s'av&eacute;rer
+    utile lorsqu'une substitution plus puissante est n&eacute;cessaire.
+    Les directives fournies par ce module peuvent utiliser des caract&eacute;ristiques de la
+    requ&ecirc;te comme le type de navigateur ou l'adresse IP source afin de d&eacute;cider
+    depuis o&ugrave; servir le contenu. En outre, mod_rewrite peut utiliser des
+    fichiers ou programmes de bases de donn&eacute;es externes pour d&eacute;terminer comment
+    traiter une requ&ecirc;te. Le moteur de r&eacute;&eacute;criture peut effectuer les trois types
+    de mise en correspondance discut&eacute;s plus haut :
+    redirections internes (aliases), redirections externes, et services mandataires.
+    De nombreux exemples pratiques utilisant mod_rewrite sont discut&eacute;s dans la
+    <a href="rewrite/">documentation d&eacute;taill&eacute;e de mod_rewrite</a>.</p>
+</section>
+
+<section id="notfound"><title>Fichier non trouv&eacute; (File Not Found)</title>
+
+    <p>In&eacute;vitablement, appara&icirc;tront des URLs qui ne correspondront &agrave; aucun
+    fichier du syst&egrave;me de fichiers.
+    Ceci peut arriver pour de nombreuses raisons.
+    Il peut s'agir du d&eacute;placement de documents d'une
+    localisation vers une autre. Dans ce cas, le mieux est d'utiliser la
+    <a href="#redirect">redirection d'URL</a> pour informer les clients de la
+    nouvelle localisation de la ressource. De cette fa&ccedil;on, vous &ecirc;tes sur que
+    les anciens signets et liens continueront de fonctionner, m&ecirc;me si la
+    ressource est d&eacute;plac&eacute;e.</p>
+
+    <p>Une autre cause fr&eacute;quente d'erreurs "File Not Found" est l'erreur de
+    frappe accidentelle dans les URLs, soit directement dans le navigateur,
+    soit dans les liens HTML. httpd propose le module
+    <module>mod_speling</module> (sic) pour tenter de r&eacute;soudre ce probl&egrave;me.
+    Lorsque ce module est activ&eacute;, il intercepte les erreurs
+    "File Not Found" et recherche une ressource poss&eacute;dant un nom de fichier
+    similaire. Si un tel fichier est trouv&eacute;, mod_speling va envoyer une
+    redirection HTTP au client pour lui communiquer l'URL correcte.
+    Si plusieurs fichiers proches sont trouv&eacute;s, une liste des alternatives
+    possibles sera pr&eacute;sent&eacute;e au client.</p>
+
+    <p>mod_speling poss&egrave;de une fonctionnalit&eacute; particuli&egrave;rement utile :
+    il compare les noms de fichiers sans tenir compte de la casse.
+    Ceci peut aider les syst&egrave;mes o&ugrave; les utilisateurs ne connaissent pas la
+    sensibilit&eacute; des URLs &agrave; la casse et bien s&ucirc;r les syst&egrave;mes de fichiers unix.
+    Mais l'utilisation de mod_speling pour toute autre chose que la correction
+    occasionnelle d'URLs peut augmenter la charge du serveur, car chaque
+    requ&ecirc;te "incorrecte" entra&icirc;ne une redirection d'URL et une nouvelle requ&ecirc;te
+    de la part du client.</p>
+
+    <p><module>mod_dir</module> fournit la directive <directive
+    module="mod_dir">FallbackResource</directive> qui permet d'associer
+    des URIs virtuels &agrave; une ressource r&eacute;elle qui peut ainsi les servir.
+    Cette directive remplace avantageusement
+    <module>mod_rewrite</module> lors de l'impl&eacute;mentation d'un
+    "contr&ocirc;leur frontal".</p>
+
+    <p>Si toutes les tentatives pour localiser le contenu
+    &eacute;chouent, httpd
+    retourne une page d'erreur avec le code de statut HTTP 404
+    (file not found). L'apparence de cette page est contr&ocirc;l&eacute;e &agrave; l'aide de la
+    directive <directive module="core">ErrorDocument</directive>
+    et peut &ecirc;tre personnalis&eacute;e de mani&egrave;re tr&egrave;s flexible comme discut&eacute; dans le
+    document
+    <a href="custom-error.html">R&eacute;ponses personnalis&eacute;es aux erreurs</a>.</p>
+</section>
+
+<section id="other"><title>Autres modules de mise en correspondance des
+URLs</title>
+
+<!-- TODO Flesh out each of the items in the list below. -->
+
+    <p>Les autres modules disponibles pour la mise en correspondance des
+    URLs sont :</p>
+    <ul>
+    <li><module>mod_actions</module> - Met une URL en correspondance
+    avec un script CGI en fonction de la m&eacute;thode de la requ&ecirc;te, ou du
+    type MIME de la ressource.</li>
+    <li><module>mod_dir</module> - Permet une mise en correspondance
+    basique d'un slash terminal dans un fichier index comme
+    <code>index.html</code>.</li>
+    <li><module>mod_imagemap</module> - Met en correspondance une
+    requ&ecirc;te avec une URL en fonction de la zone d'une image int&eacute;gr&eacute;e &agrave;
+    un document HTML dans laquelle un utilisateur clique.</li>
+    <li><module>mod_negotiation</module> - S&eacute;lectionne le document
+    appropri&eacute; en fonction de pr&eacute;f&eacute;rences du client telles que la langue
+    ou la compression du contenu.</li>
+    </ul>
+    
+</section>
+
+</manualpage>

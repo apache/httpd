@@ -1,0 +1,6 @@
+translated=core.xml \
+	mod_actions.xml \
+	mpm_common.xml \
+	mpm_winnt.xml \
+	prefork.xml \
+	worker.xml

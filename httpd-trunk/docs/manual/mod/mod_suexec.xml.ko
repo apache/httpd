@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English Revision: 105989:1331227 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_suexec.xml.meta">
+
+<name>mod_suexec</name>
+<description>CGI 스크립트를 특정 사용자와 그룹 권한으로 실행한다</description>
+<status>Extension</status>
+<sourcefile>mod_suexec.c</sourcefile>
+<identifier>suexec_module</identifier>
+<compatibility>아파치 2.0 이후부터</compatibility>
+
+
+<summary>
+    <p>이 모듈은 <a href="../programs/suexec.html">suexec 지원
+    프로그램</a>을 사용하여 CGI 스크립트를 특정 사용자와 그룹
+    권한으로 실행한다.</p>
+</summary>
+
+<seealso><a href="../suexec.html">SuEXEC 지원</a></seealso>
+
+<directivesynopsis>
+
+<name>SuexecUserGroup</name>
+<description>CGI 프로그램이 사용할 사용자와 그룹 권한</description>
+<syntax>SuexecUserGroup <em>User Group</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>SuexecUserGroup은 2.0 이후에만 있다.</compatibility>
+
+<usage>
+    <p><directive>SuexecUserGroup</directive> 지시어는 CGI 프로그램이
+    사용할 사용자와 그룹을 설정한다. CGI가 아닌 요청은 계속
+    User 지시어로 지정한 사용자가 처리한다. 이 지시어는 아파치
+    1.3에서 VirtualHost 안에 사용한 User와 Group 지시어를
+    대체한다.</p>
+
+    <example>
+    <title>예제</title>
+    SuexecUserGroup nobody nogroup
+    </example>
+
+</usage>
+
+</directivesynopsis>
+</modulesynopsis>
+

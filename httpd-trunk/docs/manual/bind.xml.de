@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
+<!-- English Revision: 420990:1330883 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="bind.xml.meta">
+
+  <title>Anbindung</title>
+
+  <summary>
+    <p>Konfiguration der vom Apache verwendeten Adressen und Ports.</p>
+  </summary>
+
+  <seealso><a href="vhosts/">Virtuelle Hosts</a></seealso>
+  <seealso><a href="dns-caveats.html">Probleme bez&#252;glich DNS und
+    Apache</a></seealso>
+
+  <section id="overview">
+    <title>&Uuml;berblick</title>
+
+    <related>
+      <modulelist>
+        <module>core</module>
+        <module>mpm_common</module>
+      </modulelist>
+      <directivelist>
+        <directive module="core" type="section">VirtualHost</directive>
+        <directive module="mpm_common">Listen</directive>
+      </directivelist>
+    </related>
+
+    <p>Beim Start bindet sich der Apache an bestimmte Adressen und Ports
+      der lokalen Maschine und wartet auf eingehende Anfragen.
+      Standardm&auml;&szlig;ig lauscht er an allen Adressen des Systems.
+      Es kann jeodch notwendig sein, ihm mit zuteilen, nur an bestimmten Ports
+      zu lauschen oder nur an ausgew&auml;hlten Adressen, bzw. einer
+      Kombination aus beidem. Dies wird oft mit der Funktionalit&auml;t
+      virtueller Hosts kombiniert, die bestimmt, wie der Apache auf
+      verschiedene IP-Adressen, Hostnamen und Ports reagiert.</p>
+
+    <p>Die Direktive <directive module="mpm_common">Listen</directive>
+      weist den Server an, eingehende Anfragen nur an bestimmten Ports oder
+      Adress/Port-Kombinationen zu akzeptieren. Wenn bei der <directive 
+        module="mpm_common">Listen</directive>-Direktive nur eine Portnummer
+      angegeben wird, dann lauscht der Server auf allen Netzwerkinterfaces an
+      dem angegebenen Port. Ist auch eine IP-Adresse angegeben, dann lauscht der
+      Server an der angegebenen Schnittstelle auf dem angegebenen Port.  Es
+      k&ouml;nnen mehrere <directive
+        module="mpm_common">Listen</directive>-Anweisungen verwendet werden, um
+      eine Reihe von Adressen und Ports anzugeben, an denen gelauscht werden
+      soll. Der Server wird dann auf Anfragen an jeder der abgeh&ouml;rten
+      Adressen und Ports antworten.</p>
+
+    <p>Um beispielsweise den Server zu veranlassen, auf allen
+    Netzwerkinterfaces sowohl an Port 80, als auch an Port 8000 Verbindungen
+    zu akzeptieren, geben Sie an:</p>
+
+    <example>
+      Listen 80<br />
+      Listen 8000
+    </example>
+
+    <p>Um den Server Verbindungen an Port 80 auf einem Netzwerkinterface
+    akzeptieren zu lassen und an Port 8080 auf einem anderen Interface, geben
+    Sie an:</p>
+      
+    <example>
+      Listen 192.0.2.1:80<br />
+      Listen 192.0.2.5:8000
+    </example>
+
+    <p>IPv6-Adressen m&uuml;ssen wie im folgenden Beispiel in eckigen
+      Klammern angegeben werden:</p>
+
+    <example>
+      Listen [2001:db8::a00:20ff:fea7:ccea]:80
+    </example>
+  </section>
+
+  <section id="ipv6">
+    <title>Betrachtung von IPv6-Besonderheiten</title>
+
+    <p>Eine wachsende Anzahl von Plattformen implementiert IPv6. Die
+      <glossary>APR</glossary>
+      unterst&uuml;tzt IPv6 auf den meisten dieser Plattformen und
+      erm&ouml;glicht dem Apache, IPv6-Sockets zu verwenden und &uuml;ber IPv6
+      gesendete Anfragen zu behandeln.</p>
+
+    <p>F&uuml;r Apache-Administratoren kommt erschwerend die Frage hinzu, ob
+      IPv6-Sockets sowohl IPv4- als auch IPv6-Verbindungen
+      handhaben k&ouml;nnen. Zum Betrieb von IPv4-Verbindungen an
+      IPv6-Sockets werden auf IPv6 abgebildete IPv4-Adressen
+      <transnote>so genannete IPv4-gemappte IPv6-Adressen</transnote>
+      verwendet, welche standardm&auml;&szlig;ig auf den meisten Plattformen
+      erlaubt sind.  Unter FreeBSD, NetBSD und OpenBSD jedoch sind sie
+      standardm&auml;&szlig;ig deaktiviert, um den Systemgrunds&auml;tzen dieser
+      Plattformen zu entsprechen. Auf Systemen, wo dies
+      standardm&auml;&szlig;ig dekativiert ist, kann dieses Verhalten mit einem
+      speziellen <program>configure</program>-Parameter f&uuml;r den Apache
+      ge&auml;ndert werden.</p>
+
+    <p>Auf der anderen Seite ist die Verwendung von gemappten Adressen bei
+      einigen Plattformen wie Linux und True64 der <strong>einzige</strong>
+      Weg, sowohl IPv4 wie auch IPv6 zu verwenden. Wenn Sie m&ouml;chten, dass
+      der Apache IPv4- und IPv6-Verbindungen mit einem Minimum an Sockets
+      behandelt, was die Verwendung von IPv4-gemappten IPv6-Adressen
+      erfordert, dann m&uuml;ssen Sie die <program>
+      configure</program>-Option <code>--enable-v4-mapped</code> angeben.</p>
+
+    <p><code>--enable-v4-mapped</code> ist die Voreinstellung auf allen
+      Plattformen au&szlig;er FreeBSD, NetBSD und OpenBSD, so dass Ihr Apache
+      wahrscheinlich so &uuml;bersetzt wurde.</p>
+
+    <p>Geben Sie wie in dem folgenden Beispiel bei allen <directive
+        module="mpm_common">Listen</directive>-Anweisungen eine IPv4-Adresse
+      an, wenn Sie m&ouml;chten, dass Ihr Apache lediglich IPv4-Adressen
+      behandelt, unabh&auml;ngig davon, was Ihre Plattform und die APR
+      unterst&uuml;tzen:</p>
+
+    <example>
+      Listen 0.0.0.0:80<br />
+      Listen 192.0.2.1:80
+    </example>
+
+    <p>Wenn Sie m&ouml;chten, dass der Apache IPv4- und IPv6-Verbindungen an
+      separaten Sockets behandelt (d.h. IPv4-gemappte Adressen deaktiviert
+      werden sollen) und Ihre Plattform es unterst&uuml;tzt, dann m&uuml;ssen
+      Sie die <program>configure</program>-Option 
+      <code>--disable-v4-mapped</code> angeben.
+      Unter FreeBSD, NetBSD und OpenBSD ist <code>--disable-v4-mapped</code>
+      voreingestellt.</p>
+  </section>
+
+  <section id="virtualhost">
+    <title>Das Zusammenspiel mit virtuellen Hosts</title>
+
+    <p>Die Direktive <directive module="mpm_common">Listen</directive>
+    implementiert keine virtuellen Hosts - sie teilt dem Hauptserver lediglich
+    mit, an welchen Adressen und Ports er zu lauschen hat. Werden keine
+    <directive module="core" type="section">VirtualHost</directive>-Container
+    verwendet, dann verh&auml;lt sich der Server bei allen angenommenen
+    Anfragen gleich.  <directive module="core"
+    type="section">VirtualHost</directive>-Abschnitte k&ouml;nnen jedoch dazu
+    verwendet werden, ein unterschiedliches Verhalten f&uuml;r eine oder
+    mehrere Adressen und Ports festzulegen. Um einen virtuellen Host
+    einzurichten, muss dem Server zun&auml;chst mitgeteilt werden, an den
+    betreffenden Adressen oder Ports zu lauschen. Dann sollte ein <directive
+    module="core" type="section">VirtualHost</directive>-Abschnitt f&uuml;r
+    die angebene Adresse und den angegebenen Port erstellt werden, um das
+    Verhalten dieses virtuellen Hosts festzulegen. Beachten Sie bitte, dass
+    auf einen <directive module="core" type="section">VirtualHost</directive>
+    nicht zugegriffen werden kann, wenn er f&uuml;r eine Adresse und einen
+    Port eingerichtet wurde, an dem der Server nicht lauscht.</p>
+  </section>
+</manualpage>
+

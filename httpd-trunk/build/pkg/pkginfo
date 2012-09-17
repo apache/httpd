@@ -1,0 +1,11 @@
+PKG="ASFhttpd"
+NAME="httpd"
+ARCH="x86_64"
+VERSION="2.5.0"
+CATEGORY="application"
+VENDOR="Apache Software Foundation"
+EMAIL="dev@httpd.apache.org"
+PSTAMP="dev@httpd.apache.org"
+BASEDIR="/usr/local2/apache2"
+CLASSES="none"
+

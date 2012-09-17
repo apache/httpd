@@ -1,0 +1,12 @@
+#! /bin/sh
+#
+# Created by configure
+
+CC="/usr/bin/gcc"; export CC
+CFLAGS="-g3 -gdwarf-2"; export CFLAGS
+"./configure" \
+"CC=/usr/bin/gcc" \
+"CXX=/usr/bin/g++" \
+"CFLAGS=-g3 -gdwarf-2" \
+"CXXFLAGS=-g3 -gdwarf-2" \
+"$@"

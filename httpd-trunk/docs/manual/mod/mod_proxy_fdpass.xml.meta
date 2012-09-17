@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- GENERATED FROM XML: DO NOT EDIT -->
+
+<metafile reference="mod_proxy_fdpass.xml">
+  <basename>mod_proxy_fdpass</basename>
+  <path>/mod/</path>
+  <relpath>..</relpath>
+
+  <variants>
+    <variant>en</variant>
+  </variants>
+</metafile>

@@ -1,0 +1,202 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 1330964 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_charset_lite.xml.meta">
+
+<name>mod_charset_lite</name>
+<description>Specify character set translation or recoding</description>
+<status>Extension</status>
+<sourcefile>mod_charset_lite.c</sourcefile>
+<identifier>charset_lite_module</identifier>
+
+<summary>
+    <p><module>mod_charset_lite</module> allows the server to change
+    the character set of responses before sending them to the client.
+    In an EBCDIC environment, Apache always translates HTTP protocol
+    content (e.g. response headers) from the code page of the Apache
+    process locale to ISO-8859-1, but not the body of responses.  In
+    any environment, <module>mod_charset_lite</module> can be used to
+    specify that response bodies should be translated.  For example,
+    if files are stored in EBCDIC, then
+    <module>mod_charset_lite</module> can translate them to
+    ISO-8859-1 before sending them to the client.</p>
+
+    <p>This module provides a small subset of configuration
+    mechanisms implemented by Russian Apache and its associated
+    <code>mod_charset</code>.</p>
+</summary>
+
+<section id="problems"><title>Common Problems</title>
+
+    <section><title>Invalid character set names</title>
+
+      <p>The character set name parameters of <directive
+      module="mod_charset_lite">CharsetSourceEnc</directive> and
+      <directive module="mod_charset_lite">CharsetDefault</directive>
+      must be acceptable to the translation mechanism used by
+      <glossary>APR</glossary> on the system where
+      <module>mod_charset_lite</module> is deployed.  These character
+      set names are not standardized and are usually not the same as
+      the corresponding values used in http headers.  Currently, APR
+      can only use iconv(3), so you can easily test your character set
+      names using the iconv(1) program, as follows:</p>
+
+      <example>
+        iconv -f charsetsourceenc-value -t charsetdefault-value
+      </example>
+    </section>
+
+    <section><title>Mismatch between character set of content and translation
+    rules</title>
+
+      <p>If the translation rules don't make sense for the content,
+      translation can fail in various ways, including:</p>
+
+      <ul>
+      <li>The translation mechanism may return a bad return code,
+      and the connection will be aborted.</li>
+
+      <li>The translation mechanism may silently place special
+      characters (e.g., question marks) in the output buffer when
+      it cannot translate the input buffer.</li>
+      </ul>
+    </section>
+</section>
+
+<directivesynopsis>
+<name>CharsetSourceEnc</name>
+<description>Source charset of files</description>
+<syntax>CharsetSourceEnc <var>charset</var></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>The <directive>CharsetSourceEnc</directive> directive specifies the
+    source charset of files in the associated container.</p>
+
+    <p>The value of the <var>charset</var> argument must be accepted
+    as a valid character set name by the character set support in
+    <glossary>APR</glossary>. Generally, this means that it must be
+    supported by iconv.</p>
+
+    <example><title>Example</title>
+    <highlight language="config">
+&lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;
+    CharsetSourceEnc  UTF-16BE
+    CharsetDefault    ISO-8859-1
+&lt;/Directory&gt;
+      </highlight>
+    </example>
+
+    <p>The character set names in this example work with the iconv
+    translation support in Solaris 8.</p>
+
+     <note>
+     Specifying the same charset for both <directive module="mod_charset_lite">CharsetSourceEnc</directive>
+     and <directive module="mod_charset_lite">CharsetDefault</directive> disables translation. The charset
+     need not match the charset of the response, but it must be a valid charset on the system.
+     </note>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CharsetDefault</name>
+<description>Charset to translate into</description>
+<syntax>CharsetDefault <var>charset</var></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>The <directive>CharsetDefault</directive> directive specifies the
+    charset that content in the associated container should be
+    translated to.</p>
+
+    <p>The value of the <var>charset</var> argument must be accepted
+    as a valid character set name by the character set support in
+    <glossary>APR</glossary>. Generally, this means that it must be
+    supported by iconv.</p>
+
+    <example><title>Example</title>
+    <highlight language="config">
+&lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;
+    CharsetSourceEnc  UTF-16BE
+    CharsetDefault    ISO-8859-1
+&lt;/Directory&gt;
+      </highlight>
+    </example>
+
+     <note>
+     Specifying the same charset for both <directive module="mod_charset_lite">CharsetSourceEnc</directive>
+     and <directive module="mod_charset_lite">CharsetDefault</directive> disables translation. The charset
+     need not match the charset of the response, but it must be a valid charset on the system.
+     </note>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CharsetOptions</name>
+<description>Configures charset translation behavior</description>
+<syntax>CharsetOptions <var>option</var> [<var>option</var>] ...</syntax>
+<default>CharsetOptions ImplicitAdd</default>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>The <directive>CharsetOptions</directive> directive configures certain
+    behaviors of <module>mod_charset_lite</module>. <var>Option</var> can
+    be one of</p>
+
+    <dl>
+      <dt><code>ImplicitAdd | NoImplicitAdd</code></dt>
+
+      <dd>The <code>ImplicitAdd</code> keyword specifies that
+      <module>mod_charset_lite</module> should implicitly insert its
+      filter when the configuration specifies that the character
+      set of content should be translated. If the filter chain is
+      explicitly configured using the <directive module="mod_mime"
+      >AddOutputFilter</directive> directive, <code>NoImplicitAdd</code>
+      should be specified so that <module>mod_charset_lite</module>
+      doesn't add its filter.</dd>
+
+      <dt><code>TranslateAllMimeTypes | NoTranslateAllMimeTypes</code></dt>
+      <dd>Normally, <module>mod_charset_lite</module> will only perform
+      translation on a small subset of possible mimetypes.  When the
+      <code>TranslateAllMimeTypes</code> keyword is specified for a given
+      configuration section, translation is performed without regard for
+      mimetype.</dd>
+
+    </dl>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

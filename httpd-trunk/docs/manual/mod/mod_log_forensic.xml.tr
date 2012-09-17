@@ -1,0 +1,149 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 1174747:1343877 (outdated) -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_log_forensic.xml.meta">
+
+<name>mod_log_forensic</name>
+<description>Sunucuya yapılan isteklerin adli günlük kayıtlarının tutulması</description>
+<status>Extension</status>
+<sourcefile>mod_log_forensic.c</sourcefile>
+<identifier>log_forensic_module</identifier>
+<compatibility>2.1 sürümünden beri <module>mod_unique_id</module> gerekmemektedir.</compatibility>
+
+<summary>
+    <p>Bu modül istemci isteklerinin adli günlük kayıtlarının tutulmasını
+      sağlar. Günlük kaydı bir istek işlenmeden önce ve sonra olmak üzere iki
+      kere yapılır, böylece günlükte her istek için iki girdi bulunur. Adli
+      günlükleyici çok sıkı kurallara tabidir, yani:</p>
+
+    <ul>
+    <li>Biçem sabittir. Günlük kayıt biçemi çalışma anında değiştirilemez.</li>
+    <li>Veriyi yazamadığı takdirde çocuk süreç beklemeksizin çıkar ve
+      (<directive module="mpm_common" >CoreDumpDirectory</directive>
+      yapılandırmasına bağlı olarak) bir core dosyası dökümler.</li>
+    </ul>
+
+    <p>Dağıtımın <code>support</code> dizininde bulunan
+      <code>check_forensic</code> betiği adli günlük dosyalarının
+      değerlendirilmesinde yardımcı olabilir.</p>
+</summary>
+<seealso><a href="../logs.html">Apache Günlük Dosyaları</a></seealso>
+<seealso><module>mod_log_config</module></seealso>
+
+<section id="formats"><title>Adli Günlük Biçemi</title>
+    <p>Her istek günlüğe iki defa kaydedilir. İlki, işlemin başlangıcında
+      (yani, başlıklar alındıktan hemen sonra), ikincisi ise istek işlem
+      gördükten sonra normal günlüklemenin yapıldığı sırada yapılır.</p>
+
+    <p>Her isteği betimlemek için eşsiz bir istek kimliği atanır. Bu adli
+      kimliğin normal günlüğe de yazılması istenirse bu
+      <code>%{forensic-id}n</code> biçem dizgesi ile yapılabilir.
+      <module>mod_unique_id</module> kullanılıyorsa, onun ürettiği kimlik
+      kullanılır.</p>
+
+    <p>İlk satır günlüğe, adli kimliği, istek satırını ve alınan tüm
+      başlıkları boru karakterleri (<code>|</code>) ile ayrılmış olarak
+      kaydeder. Aşağıda bir örneğe yer verilmiştir (hepsi bir satırdadır):</p>
+
+    <example>
+        +yQtJf8CoAB4AAFNXBIEAAAAA|GET /manual/de/images/down.gif
+        HTTP/1.1|Host:localhost%3a8080|User-Agent:Mozilla/5.0 (X11;
+        U; Linux i686; en-US; rv%3a1.6) Gecko/20040216
+        Firefox/0.8|Accept:image/png, <var>etc...</var>
+    </example>
+
+    <p>Başlangıçtaki artı imi bu günlük satırının istekle ilgili ilk günlük
+      kaydı olduğunu belirtir. İkinci satırda bunun yerini bir eksi imi
+      alır:</p>
+
+    <example>
+      -yQtJf8CoAB4AAFNXBIEAAAAA
+    </example>
+
+    <p><code>check_forensic</code> betiği komut satırı argümanı olarak günlük
+      dosyasının ismini alır. Bu <code>+</code>/<code>-</code> kimlik
+      çiftlerine bakarak tamamlanmamış istekler varsa bunlar hakkında
+      uyarır.</p>
+</section>
+
+<section id="security"><title>Güvenlik Kaygıları</title>
+    <p>Günlük dosyarının kaydedildiği dizine sunucuyu başlatan kullanıcı
+      dışında diğer kullanıcılar tarafından yazılabiliyor olması halinde
+      güvenliğinizden nasıl feragat etmiş olacağınız <a
+      href="../misc/security_tips.html#serverroot">güvenlik ipuçları</a>
+      belgesinde açıklanmıştır.</p>
+</section>
+
+<directivesynopsis>
+<name>ForensicLog</name>
+<description>Adli günlük için dosya ismini belirler.</description>
+<syntax>ForensicLog <var>dosya-adı</var>|<var>borulu-süreç</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p><directive>ForensicLog</directive> yönergesi adli inceleme için
+      sunucuya yapılan istekleri günlüğe kaydetmekte kullanılır. Her günlük
+      girdisine, normal <directive module="mod_log_config"
+      >CustomLog</directive> yönergesinde kullanılarak istekle
+      ilişkilendirilebilen eşsiz bir kimlik atanır.
+      <module>mod_log_forensic</module> modülü, aktarım günlüğünün biçem
+      dizgesinde <code>%{forensic-id}n</code> şeklinde kullanılmak üzere
+      <code>forensic-id</code> adı verilen bir dizgecik oluşturur.</p>
+
+    <p>Günlüğün yazılacağı yeri belirleyen argüman şu iki değerden birini
+      alabilir:</p>
+
+    <dl>
+      <dt><var>dosya-adı</var></dt>
+      <dd><directive module="core" >ServerRoot</directive> yönergesinin
+        değerine göreli bir dosya ismi.</dd>
+
+      <dt><var>borulu-süreç</var></dt>
+      <dd>"<code>|</code>" boru karakteri ile öncelenmiş olarak günlük
+        bilgisini standart girdisinden kabul edecek sürecin ismi (veya komut
+        satırı). Program adının <directive module="core"
+        >ServerRoot</directive> yönergesinin değerine göre belirtildiği
+        varsayılır.
+
+      <note type="warning"><title>Güvenlik:</title>
+      <p>Bir borulu süreç kullanılmışsa, süreç <program>httpd</program>’yi
+        başlatan kullanıcı tarafından başlatılacaktır. Sunucu root tarafından
+        başlatılıyorsa bu root olacaktır; bu bakımdan günlük kaydını alacak
+        programın güvenilir olması veya daha az yetkili bir kullanıcıya geçiş
+        yapması önemlidir.</p>
+      </note>
+
+      <note type="warning"><title>Bilginize</title>
+        <p>Dosya yolunu belirtirken tersbölü çizgisi kullanılan Unix dışı
+          platformlarda bile yapılandırma dosyasında bu amaçla normal bölü
+          çizgilerini kullanmaya özen gösterilmelidir.</p>
+      </note></dd>
+    </dl>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

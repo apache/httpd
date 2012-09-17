@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English Revision: 151408:1330911 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_auth_basic.xml.meta">
+
+<name>mod_auth_basic</name>
+<description>Basic authentication</description>
+<status>Base</status>
+<sourcefile>mod_auth_basic.c</sourcefile>
+<identifier>auth_basic_module</identifier>
+<compatibility>아파치 2.1 이후부터</compatibility>
+
+<summary>
+    <p>이 모듈은 해당 제공자(provider)를 사용하여 사용자별로
+    접근을 제한하는 HTTP Basic Authentication을 제공한다.
+    HTTP Digest Authentication은 <module>mod_auth_digest</module>가
+    제공한다.</p>
+</summary>
+<seealso><directive module="core">AuthName</directive></seealso>
+<seealso><directive module="core">AuthType</directive></seealso>
+
+<directivesynopsis>
+<name>AuthBasicProvider</name>
+<description>이 위치에 대한 인증제공자를 지정한다</description>
+<syntax>AuthBasicProvider On|Off|<var>provider-name</var>
+[<var>provider-name</var>] ...</syntax>
+<default>AuthBasicProvider On</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p><directive>AuthBasicProvider</directive> 지시어는 이
+    위치에서 사용자를 인증할 제공자를 지정한다. 값이
+    <code>On</code>이면 기본제공자(<code>file</code>)를 선택한다.
+    <module>mod_authn_file</module> 모듈이 <code>file</code>
+    제공자를 구현하기때문에 서버에 이 모듈이 있는지 확인해야
+    한다.</p>
+
+    <example><title>예제</title>
+      &lt;Location /secure&gt;<br />
+      <indent>
+        AuthBasicProvider  dbm<br />
+        AuthDBMType        SDBM<br />
+        AuthDBMUserFile    /www/etc/dbmpasswd<br />
+        Require            valid-user<br />
+      </indent>
+      &lt;/Location&gt;
+    </example>
+
+    <p>제공자는 <module>mod_authn_dbm</module>과
+    <module>mod_authn_file</module>을 참고하라.</p>
+
+    <p>값이 <code>Off</code>이면 제공자 목록을 지우고 기본상태로
+    돌아간다.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthBasicAuthoritative</name>
+<description>인증과 권한부여를 저수준 모듈에 넘겨줄지 결정한다</description>
+<syntax>AuthBasicAuthoritative On|Off</syntax>
+<default>AuthBasicAuthoritative On</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p><directive>AuthBasicAuthoritative</directive> 지시어를
+    <code>Off</code>로 설정하면 주어진 사용자 아이디에 해당하는
+    <strong>사용자 아이디</strong>나 <strong>규칙</strong>을
+    찾을 수 없는 경우 인증과 권한부여 모두를 (<code>modules.c</code>
+    파일에서 정의한) 저수준 모듈로 넘겨준다. 주어진 사용자
+    아이디나 규칙을 찾았다면 보통때와 같이 암호와 접근허용여부를
+    검사하고, 실패하면 "Authentication Required (인증 필요)"
+    응답을 한다.</p>
+
+    <p>그래서 여러 모듈의 데이터베이스에 사용자 아이디가 있거나
+    유효한 <directive module="core">Require</directive> 지시어를
+    여러 모듈에 적용하면, 첫번째 모듈이 사용자를 검사하고,
+    <directive>AuthBasicAuthoritative</directive> 설정과 관계없이
+    접근을 넘기지않는다.</p>
+
+    <p>기본적으로 제어를 넘기지않고, 모르는 사용자 아이디와
+    규칙인 경우 "Authentication Required (인증 필요)" 응답을
+    한다. 이 지시어를 설정하지않으면 시스템이 안전하게 유지되며,
+    NCSA 웹서버와 같이 동작한다.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

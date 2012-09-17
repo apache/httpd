@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 1332581 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="avoid.xml.meta">
+  <parentdocument href="./">Rewrite</parentdocument>
+
+<title>When not to use mod_rewrite</title>
+
+<summary>
+
+<p>This document supplements the <module>mod_rewrite</module>
+<a href="../mod/mod_rewrite.html">reference documentation</a>. It describes
+perhaps one of the most important concepts about mod_rewrite - namely,
+when to avoid using it.</p>
+
+<p>mod_rewrite should be considered a last resort, when other
+alternatives are found wanting. Using it when there are simpler
+alternatives leads to configurations which are confusing, fragile, and
+hard to maintain. Understanding what other alternatives are available is
+a very important step towards mod_rewrite mastery.</p>
+
+<p>Note that many of these examples won't work unchanged in your
+particular server configuration, so it's important that you understand
+them, rather than merely cutting and pasting the examples into your
+configuration.</p>
+
+<p>The most common situation in which <module>mod_rewrite</module> is
+the right tool is when the very best solution requires access to the
+server configuration files, and you don't have that access. Some
+configuration directives are only available in the server configuration
+file. So if you are in a hosting situation where you only have .htaccess
+files to work with, you may need to resort to
+<module>mod_rewrite</module>.</p>
+
+</summary>
+<seealso><a href="../mod/mod_rewrite.html">Module documentation</a></seealso>
+<seealso><a href="intro.html">mod_rewrite introduction</a></seealso>
+<seealso><a href="remapping.html">Redirection and remapping</a></seealso>
+<seealso><a href="access.html">Controlling access</a></seealso>
+<seealso><a href="vhosts.html">Virtual hosts</a></seealso>
+<seealso><a href="proxy.html">Proxying</a></seealso>
+<seealso><a href="rewritemap.html">Using RewriteMap</a></seealso>
+<seealso><a href="advanced.html">Advanced techniques</a></seealso>
+<!--<seealso><a href="avoid.html">When not to use mod_rewrite</a></seealso>-->
+
+<section id="redirect">
+<title>Simple Redirection</title>
+
+<p><module>mod_alias</module> provides the <directive
+module="mod_alias">Redirect</directive> and <directive
+module="mod_alias">RedirectMatch</directive> directives, which provide a
+means to redirect one URL to another. This kind of simple redirection of
+one URL, or a class of URLs, to somewhere else, should be accomplished
+using these directives rather than <directive
+module="mod_rewrite">RewriteRule</directive>. <code>RedirectMatch</code>
+allows you to include a regular expression in your redirection criteria,
+providing many of the benefits of using <code>RewriteRule</code>.</p>
+
+<p>A common use for <code>RewriteRule</code> is to redirect an entire
+class of URLs. For example, all URLs in the <code>/one</code> directory
+must be redirected to <code>http://one.example.com/</code>, or perhaps
+all <code>http</code> requests must be redirected to
+<code>https</code>.</p>
+
+<p>These situations are better handled by the <code>Redirect</code>
+directive. Remember that <code>Redirect</code> preserves path
+information. That is to say, a redirect for a URL <code>/one</code> will
+also redirect all URLs under that, such as <code>/one/two.html</code>
+and <code>/one/three/four.html</code>.</p>
+
+<p>To redirect URLs under <code>/one</code> to
+<code>http://one.example.com</code>, do the following:</p>
+
+<highlight language="config">Redirect /one/ http://one.example.com/</highlight>
+
+<p>To redirect <code>http</code> URLs to <code>https</code>, do the
+following:</p>
+
+<highlight language="config">
+&lt;VirtualHost *:80&gt;
+    ServerName www.example.com
+    Redirect / https://www.example.com/
+&lt;/VirtualHost &gt;
+
+&lt;VirtualHost *:443&gt;
+    ServerName www.example.com
+    # ... SSL configuration goes here
+&lt;/VirtualHost &gt;
+</highlight>
+
+<p>The use of <code>RewriteRule</code> to perform this task may be
+appropriate if there are other <code>RewriteRule</code> directives in
+the same scope. This is because, when there are <code>Redirect</code>
+and <code>RewriteRule</code> directives in the same scope, the
+<code>RewriteRule</code> directives will run first, regardless of the
+order of appearance in the configuration file.</p>
+
+<p>In the case of the <em>http-to-https</em> redirection, the use of
+<code>RewriteRule</code> would be appropriate if you don't have access
+to the main server configuration file, and are obliged to perform this
+task in a <code>.htaccess</code> file instead.</p>
+
+</section>
+
+<section id="alias"><title>URL Aliasing</title>
+<p>The <directive module="mod_alias">Alias</directive> directive
+provides mapping from a URI to a directory - usually a directory outside
+of your <directive module="core">DocumentRoot</directive>. Although it
+is possible to perform this mapping with <code>mod_rewrite</code>,
+<code>Alias</code> is the preferred method, for reasons of simplicity
+and performance.</p>
+
+<example><title>Using Alias</title>
+<highlight language="config">Alias /cats /var/www/virtualhosts/felines/htdocs</highlight>
+</example>
+
+<p>
+The use of <code>mod_rewrite</code> to perform this mapping may be
+appropriate when you do not have access to the server configuration
+files. Alias may only be used in server or virtualhost context, and not
+in a <code>.htaccess</code> file.
+</p>
+
+<p>Symbolic links would be another way to accomplish the same thing, if
+you have <code>Options FollowSymLinks</code> enabled on your
+server.</p>
+</section>
+
+<section id="vhosts"><title>Virtual Hosting</title>
+<p>Although it is possible to handle <a href="vhosts.html">virtual hosts
+with mod_rewrite</a>, it is seldom the right way. Creating individual
+&lt;VirtualHost&gt; blocks is almost always the right way to go. In the
+event that you have an enormous number of virtual hosts, consider using
+<module>mod_vhost_alias</module> to create these hosts automatically.</p>
+
+<p>Third-party modules such as <a href="http://www.cri.ensmp.fr/~coelho/mod_macro/">mod_macro</a> are
+also useful for creating a large number of virtual hosts dynamically.</p>
+
+<p>Using <module>mod_rewrite</module> for vitualhost creation may be
+appropriate if you are using a hosting service that does not provide
+you access to the server configuration files, and you are therefore
+restricted to configuration using <code>.htaccess</code> files.</p>
+
+<p>See the <a href="vhosts.html">virtual hosts with mod_rewrite</a>
+document for more details on how you might accomplish this if it still
+seems like the right approach.</p>
+
+</section>
+
+<section id="proxy"><title>Simple Proxying</title>
+
+<p><code>RewriteRule</code> provides the <a
+href="flags.html#flag_p">[P]</a> flag to pass rewritten URIs through
+<module>mod_proxy</module>.</p>
+
+<highlight language="config">
+RewriteRule ^/?images(.*) http://imageserver.local/images$1 [P]
+</highlight>
+
+<p>However, in many cases, when there is no actual pattern matching
+needed, as in the example shown above, the <directive
+module="mod_proxy">ProxyPass</directive> directive is a better choice.
+The example here could be rendered as:</p>
+
+<highlight language="config">
+ProxyPass /images/ http://imageserver.local/images/
+</highlight>
+
+<p>Note that whether you use <directive
+module="mod_rewrite">RewriteRule</directive> or <directive
+module="mod_proxy">ProxyPass</directive>, you'll still need to use the
+<directive module="mod_proxy">ProxyPassReverse</directive> directive to
+catch redirects issued from the back-end server:</p>
+
+<highlight language="config">
+ProxyPassReverse /images/ http://imageserver.local/images/
+</highlight>
+
+<p>You may need to use <code>RewriteRule</code> instead when there are
+other <code>RewriteRule</code>s in effect in the same scope, as a
+<code>RewriteRule</code> will usually take effect before a
+<code>ProxyPass</code>, and so may preempt what you're trying to
+accomplish.</p>
+
+</section>
+
+<section id="setenv"><title>Environment Variable Testing</title>
+
+<p><module>mod_rewrite</module> is frequently used to take a particular
+action based on the presence or absence of a particular environment
+variable or request header. This can be done more efficiently using the
+<directive module="core" type="section">If</directive>.</p>
+
+<p>Consider, for example, the common scenario where
+<directive>RewriteRule</directive> is used to enforce a canonical
+hostname, such as <code>www.example.com</code> instead of
+<code>example.com</code>. This can be done using the <directive
+module="core" type="section">If</directive> directive, as shown here:</p>
+
+<highlight language="config">
+&lt;If "req('Host') != 'www.example.com'"&gt;
+    Redirect / http://www.example.com/
+&lt;/If&gt;
+</highlight>
+
+<p>This technique can be used to take actions based on any request
+header, response header, or environment variable, replacing
+<module>mod_rewrite</module> in many common scenarios.</p>
+
+<p>See especially the <a href="../expr.html">expression evaluation
+documentation</a> for a overview of what types of expressions you can
+use in &lt;If&gt; sections, and in certain other directives.</p>
+
+</section>
+
+</manualpage>
+

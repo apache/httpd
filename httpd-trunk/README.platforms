@@ -1,0 +1,133 @@
+
+                          Apache HTTP Server
+
+  Platform specific notes:
+  ------------------------
+
+================
+  Darwin (OS X):
+   Apache 2 relies heavily on the use of autoconf and libtool to
+   provide a build environment.  Darwin provides these tools as part
+   of the Developers Tools package. Under Darwin, however, GNUlibtool
+   is installed as 'glibtool' to avoid conflicting with the Darwin
+   'libtool' program.  Apache 2 knows about this so that's not a
+   problem.
+
+   As of OS X 10.2 (Jaguar), the bundled versions work perfectly. Partly
+   this is due to the fact that /bin/sh is now 'bash' and not 'zsh' as
+   well as the fact that the bundled versions are up-to-date: 
+   autoconf 2.52 and (g)libtool 1.4.2.
+
+   Earlier versions of OS X are not so fortunate, and the bundled tools
+   are not only older versions, but also, for the most part, do not work
+   well.  If you are interested in developing under Darwin, we
+   recommend that you obtain and install replacement versions of what
+   are normally installed on Darwin (and OS X, as of v10.1.5).  If
+   you build your own versions of autoconf 2.52 and libtool 1.4.2, be
+   aware that there are some Darwin specific patches to the official
+   code that still must be applied for them to fully work.  A useful
+   page to check out is:
+
+      http://fink.sourceforge.net/doc/porting/libtool.php
+
+   Pier Fumagalli also provides pre-built Darwin packages of the
+   patched autoconf and libtool suites, available at:
+
+      http://www.apache.org/~pier/macosx/
+
+   You will note that GNU libtool should actually be installed as
+   glibtool, to avoid conflict with a Darwin program of the same
+   name.  Pier's packages have this change already.  All files are
+   installed under /usr/local/ so to use these versions, and be sure
+   that /usr/local/bin is earlier in your PATH.
+
+   There have been some reports that autoconf 2.52 prevents Apache's
+   build system from correctly handling passing multi-value envvars
+   to the build system (eg: CFLAGS="-g -O3" ./configure),  causing
+   errors.  Use of bash does not seem to help in this situation.  If
+   this affects you, downgrading to autoconf 2.13 (which is installed
+   on Darwin) will help.
+
+   With Leopard (at least up to 10.5.2), when running configure
+   you will likely see errors such as:
+
+      rm: conftest.dSYM: is a directory
+
+   This is a known issue and will be fixed in a later version of the
+   autoconf suite. These errors can be safely ignored.
+
+   With Darwin 10, the default C compiler (gcc) will try to build
+   multi-architecture bundles. This causes problems with APR, which
+   needs to know various data-type sizes which it assumes are universal
+   for platforms. Until this is fully fixed, we recommend using the
+   '-arch i386' gcc option when building both Apache and APR.
+   
+==========
+  FreeBSD:
+   autoconf 2.52 creates scripts that are incompatible with the Posix
+   shell implementation (/bin/sh) on FreeBSD.  Be sure to use v2.13
+   of autoconf.
+
+   Threaded MPMs are not supported on FreeBSD 4.x.  Current releases of
+   FreeBSD 5.x (5.2 or later) support threaded MPMs correctly.  You must pass
+   '--enable-threads=yes' to APR's configure in order to enable threads.
+   Additionally, you must use libthr or libkse via libmap.conf as the default
+   libc_r is still broken as of this writing.  Please consult the man page for
+   libmap.conf for more details about configuring libthr or libkse.
+================
+  HP-UX:
+   The dlopen() system call in HP-UX has problems when loading/unloading
+   C++ modules. The problem can be resolved by using shl_load() instead
+   of dlopen(). This is fixed in the Apache 2.0.44 release.
+   To enable loading of C++ modules, the httpd binary has to be linked with
+   the following libraries :
+
+   HP-UX (11.0 / 11i):
+      When using shl_load        : "cpprt0_stub.s -lcl"
+      When using dlopen          : "cpprt0_stub.s -lcl -lCsup"
+
+   HP-UX (11i version 1.5 and greater):
+      When using dlopen/shl_load : "cpprt0_stub.s -lcl -lunwind"
+
+   The cpprt0_stub.s can be downloaded from the web site :
+      http://h21007.www2.hp.com/hpux-devtools/CXX/hpux-devtools.0107/0083.html
+
+   Compile cpprt0_stub.s with the PIC option
+     cc -c +z cpprt0_stub.s
+       - OR -
+     gcc -c -fPIC cpprt0_stub.s
+================
+  AIX, using the vendor C compiler with optimization:
+    There is an issue with compiling server/core.c with optimization enabled
+    which has been seen with C for AIX 5.0.2.3 and above.  (5.0.2.0, 5.0.2.1,
+    and 5.0.2.2 have an additional problem with Apache 2.0.x, so either upgrade 
+    the compiler or don't use optimization in order to avoid it.)
+
+    cc_r works fine with -O2 but xlc_r does not.  In order to use xlc_r with
+    -O2, apply the patch at 
+
+    http://www.apache.org/dist/httpd/patches/apply_to_2.0.49/aix_xlc_optimization.patch
+
+    (That patch works with many recent levels of Apache 2+.)
+
+================
+  Solaris:
+
+    On Solaris, better performance may be achieved by using the Sun Studio
+    compiler instead of gcc.  As of version 11, it is now free (registration
+    required).  Download the compiler from:
+
+    http://developers.sun.com/prodtech/cc/downloads/index.jsp
+
+    If you use Sun Studio, the following compiler flags (CFLAGS) are
+    recommended:
+
+      -XO4 -xchip=generic
+
+================
+  Ubuntu:
+
+    You will need to ensure that you have either libtool 1.5.6
+    or 2.2.6b, or later. Expat 2.0.1 and PCRE 8.02 are also
+    recommended to be installed. If building PCRE from source,
+    you'll also need g++.

@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 1370907 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_dav_lock.xml.meta">
+
+<name>mod_dav_lock</name>
+<description>generic locking module for <module>mod_dav</module></description>
+<status>Extension</status>
+<sourcefile>mod_dav_lock.c</sourcefile>
+<identifier>dav_lock_module</identifier>
+<compatibility>Available in version 2.1 and later</compatibility>
+
+<summary>
+    <p>This module implements a generic locking API which can be used by any
+    backend provider of <module>mod_dav</module>. It <em>requires</em> at least
+    the service of <module>mod_dav</module>. But without a backend provider
+    which makes use of it, it's useless and should not be loaded into the
+    server. A sample backend module which actually utilizes
+    <module>mod_dav_lock</module> is <a href="http://subversion.apache.org/"
+    >mod_dav_svn</a>, the subversion provider module.</p>
+
+    <p>Note that <module>mod_dav_fs</module> does <em>not</em> need this
+    generic locking module, because it uses its own more specialized
+    version.</p>
+
+    <p>In order to make <module>mod_dav_lock</module> functional, you just have
+    to specify the location of the lock database using the <directive
+    module="mod_dav_lock">DavGenericLockDB</directive> directive described
+    below.</p>
+
+    <note><title>Developer's Note</title>
+      <p>In order to retrieve the pointer to the locking provider function, you
+      have to use the <code>ap_lookup_provider</code> API with the arguments
+      <code>dav-lock</code>, <code>generic</code>, and <code>0</code>.</p>
+    </note>
+</summary>
+<seealso><module>mod_dav</module></seealso>
+
+<directivesynopsis>
+<name>DavGenericLockDB</name>
+<description>Location of the DAV lock database</description>
+<syntax>DavGenericLockDB <var>file-path</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
+</contextlist>
+
+<usage>
+    <p>Use the <directive>DavGenericLockDB</directive> directive to specify
+    the full path to the lock database, excluding an extension. If
+    the path is not absolute, it will be interpreted relative to <directive
+    module="core">ServerRoot</directive>. The implementation of
+    <module>mod_dav_lock</module> uses a SDBM database to track user
+    locks.</p>
+
+    <example><title>Example</title>
+    <highlight language="config">
+      DavGenericLockDB var/DavLock
+      </highlight>
+    </example>
+
+    <p>The directory containing the lock database file must be
+    writable by the <directive module="mod_unixd">User</directive>
+    and <directive module="mod_unixd" >Group</directive> under which
+    Apache is running.  For security reasons, you should create a
+    directory for this purpose rather than changing the permissions on
+    an existing directory.  In the above example, Apache will create
+    files in the <code>var/</code> directory under the <directive
+    module="core">ServerRoot</directive> with the base filename
+    <code>DavLock</code> and an extension added by the server.</p>
+
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
+

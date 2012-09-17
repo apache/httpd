@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 1331035 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_log_debug.xml.meta">
+
+<name>mod_log_debug</name>
+<description>Additional configurable debug logging</description>
+<status>Experimental</status>
+<sourcefile>mod_log_debug.c</sourcefile>
+<identifier>log_debug_module</identifier>
+<compatibility>Available in Apache 2.3.14 and later</compatibility>
+
+<section id="examples"><title>Examples</title>
+
+    <ol>
+      <li>
+        Log message after request to /foo/* is processed:
+
+        <highlight language="config">
+&lt;Location /foo/&gt;
+&nbsp;&nbsp;LogMessage "/foo/ has been requested"
+&lt;/Location&gt;
+        </highlight>
+      </li>
+
+      <li>
+        Log message if request to /foo/* is processed in a sub-request:
+        <highlight language="config">
+&lt;Location /foo/&gt;
+&nbsp;&nbsp;LogMessage "subrequest to /foo/" hook=type_checker expr=%{IS_SUBREQ}
+&lt;/Location&gt;
+        </highlight>
+
+        The default log_transaction hook is not executed for sub-requests,
+        therefore we have to use a different hook.
+      </li>
+
+
+      <li>
+        Log message if an IPv6 client causes a request timeout:
+        <highlight language="config">
+            LogMessage "IPv6 timeout from %{REMOTE_ADDR}" "expr=-T %{IPV6} &amp;&amp; %{REQUEST_STATUS} = 408"
+        </highlight>
+        Note the placing of the double quotes for the <code>expr=</code> argument.
+      </li>
+
+      <li>
+        Log the value of the "X-Foo" request environment variable in each
+        stage of the request:
+        <highlight language="config">
+&lt;Location /&gt;
+&nbsp;&nbsp;LogMessage "%{reqenv:X-Foo}" hook=all
+&lt;/Location&gt;
+        </highlight>
+        Together with microsecond time stamps in the error log,
+        <code>hook=all</code> also allows to determine the times spent
+        in the different parts of the request processing.
+      </li>
+
+    </ol>
+</section>
+
+<directivesynopsis>
+<name>LogMessage</name>
+<description>Log userdefined message to error log
+</description>
+<syntax>LogMessage <var>message</var>
+[hook=<var>hook</var>] [expr=<var>expression</var>]
+</syntax>
+<default>Unset</default>
+<contextlist><context>directory</context>
+</contextlist>
+
+<usage>
+    <p>This directive causes a user defined message to be logged to the
+    error log. The message can use variables and functions from the
+    <a href="../expr.html">ap_expr syntax</a>. The messages are logged at
+    loglevel info.</p>
+
+    <p>The hook specifies before which phase of request procesing the message
+    will be logged. The following hooks are supported:</p>
+
+    <table border="1" style="zebra">
+    <columnspec><column width="1"/></columnspec>
+    <tr><th>Name</th></tr>
+    <tr><td><code>translate_name</code></td></tr>
+    <tr><td><code>type_checker</code></td></tr>
+    <tr><td><code>quick_handler</code></td></tr>
+    <tr><td><code>map_to_storage</code></td></tr>
+    <tr><td><code>check_access</code></td></tr>
+    <tr><td><code>check_access_ex</code></td></tr>
+    <tr><td><code>insert_filter</code></td></tr>
+    <tr><td><code>check_authn</code></td></tr>
+    <tr><td><code>check_authz</code></td></tr>
+    <tr><td><code>fixups</code></td></tr>
+    <tr><td><code>handler</code></td></tr>
+    <tr><td><code>log_transaction</code></td></tr>
+    </table>
+
+    <p>The default is <code>log_transaction</code>. The special value
+    <code>all</code> is also supported, causing a message to be logged at each
+    phase. Not all hooks are executed for every request.</p>
+
+    <p>The optional expression allows to restrict the message if a
+    condition is met. The details of the expression syntax are described in
+    the <a href="../expr.html">ap_expr documentation</a>.</p>
+
+</usage>
+
+</directivesynopsis>
+
+</modulesynopsis>

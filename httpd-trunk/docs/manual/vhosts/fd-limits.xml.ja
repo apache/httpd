@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English Revision: 659902:1330878 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="fd-limits.xml.meta">
+<parentdocument href="./">バーチャルホスト</parentdocument>
+  <title>ファイル記述子の限界</title>
+
+<summary>
+
+    <p>たくさんのバーチャルホストを運用する場合、もし、
+    各バーチャルホストごとに異なるログファイルが指定してあると、
+    Apache がファイル記述子 (<cite>ファイルハンドル</cite>とも呼ばれます)
+    を使い切ってしまうことがあります。Apache が使用するファイル
+    記述子の数は、各エラーログファイルにつき 1 つ、他のログファイルの
+    ディレクティブにつき 1 つ、さらに内部で使用する 10 から 20、
+    の合計になります。Unix オペレーティングシステムではプロセスごとに
+    使用可能なファイル記述子の数を制限しています。たいていの場合は 64 で、
+    普通は大きな値のハードリミットまで増やすことができます。</p>
+
+    <p>Apache は必要に応じて上限を拡大しようと試みますが、
+    以下のような場合にはうまくいかないかもしれません。</p>
+
+    <ol>
+      <li>利用しているシステムで <code>setrlimit()</code>
+      システムコールが提供されていない。</li>
+
+      <li>システム上で <code>setrlimit</code>(RLIMIT_NOFILE) が動作しない
+      (たとえば Solaris 2.3 のように)。</li>
+
+      <li>要求されるファイル記述子の数が
+      ハードリミットを超えてしまう。</li>
+      
+      <li>システムにファイル記述子に関して別の制限が存在してしまっている。
+      たとえば、stdio ストリームではファイル記述子を 256 以上使えない
+      (Solaris 2)、など。</li>
+    </ol>
+
+    <p>問題が発生した時に取り得る対処方法は次のとおり:</p>
+
+    <ul>
+      <li>ログファイルの数を減らす。<directive type="section"
+      module="core">VirtualHost</directive>
+      セクションでログファイルを指定せず、メインのログファイルにのみ記録する。
+      (これに関する詳しい情報は以下の<a
+      href="#splitlogs">ログファイルの分割</a>を読んでください。)</li>
+
+      <li>
+        もし、前述の 1 または 2 の場合であれば、
+        Apache を起動する前にファイル記述子を増やします。
+        たとえば次のようなスクリプトを使います。
+
+        <example>
+          <code>#!/bin/sh<br />
+           ulimit -S -n 100<br />
+           exec httpd</code>
+        </example>
+      </li>
+    </ul>
+</summary>
+
+<section id="splitlogs"><title>ログファイルの分割</title>
+
+<p>複数のバーチャルホストのログを同じログファイルに収集しようとしているときには、
+各バーチャルホストについて統計的な解析を実行するために後でログファイルを
+分割したくなるかもしれません。これは以下のようにして実現できます。</p>
+
+<p>まず、バーチャルホストの情報をログのエントリに追加する必要があります。
+これは <directive module="mod_log_config">LogFormat</directive>
+ディレクティブの <code>%v</code> 変数を使うことでできます。
+これをログのフォーマット文字列の先頭に追加します:</p>
+
+<example>
+LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost<br />
+CustomLog logs/multiple_vhost_log vhost
+</example>
+
+<p>これは common log format のログを作成しますが、それぞれの行の先頭に
+正規化されたバーチャルホストの名前
+(<directive module="core">ServerName</directive>
+ディレクティブに書かれているもの) が付加されます。
+(ログファイルのカスタマイズの詳細については <a 
+href="../mod/mod_log_config.html#formats">Custom Log Formats</a> を
+読んでください。)</p>
+
+<p>ログファイルを各部分 (バーチャルホスト毎に 1 ファイル) に分けたいときは、
+<code><a href="../programs/other.html">split-logfile</a></code>
+を使って行なうことができます。プログラムは Apache 配布の 
+<code>support</code> ディレクトリにあります。</p>
+
+<p>以下のようなコマンドでこのプログラムを実行します:</p>
+
+<example>
+split-logfile &lt; /logs/multiple_vhost_log
+</example>
+
+<p>このプログラムはバーチャルホストのログファイルの名前とともに実行され、
+ログファイルに現れるそれぞれのバーチャルホスト毎に一つのファイルを作成します。
+それぞれのファイルは <code>ホスト名.log</code> という名前になります。</p>
+
+</section>
+</manualpage>
+

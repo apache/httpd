@@ -1,0 +1,62 @@
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.\" DO NOT EDIT! Generated from XML source.
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.de Sh \" Subsection
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp \" Vertical space (when we can't use .PP)
+.if t .sp .5v
+.if n .sp
+..
+.de Ip \" List item
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.TH "HTDIGEST" 1 "2012-07-19" "Apache HTTP Server" "htdigest"
+
+.SH NAME
+htdigest \- manage user files for digest authentication
+
+.SH "SYNOPSIS"
+ 
+.PP
+\fBhtdigest\fR [ -\fBc\fR ] \fIpasswdfile\fR \fIrealm\fR \fIusername\fR
+ 
+
+.SH "SUMMARY"
+ 
+.PP
+htdigest is used to create and update the flat-files used to store usernames, realm and password for digest authentication of HTTP users\&. Resources available from the Apache HTTP server can be restricted to just the users listed in the files created by htdigest\&.
+ 
+.PP
+This manual page only lists the command line arguments\&. For details of the directives necessary to configure digest authentication in httpd see the Apache manual, which is part of the Apache distribution or can be found at http://httpd\&.apache\&.org/\&.
+ 
+
+.SH "OPTIONS"
+ 
+ 
+.TP
+-c
+Create the \fIpasswdfile\fR\&. If \fIpasswdfile\fR already exists, it is deleted first\&.  
+.TP
+\fIpasswdfile\fR
+Name of the file to contain the username, realm and password\&. If -c is given, this file is created if it does not already exist, or deleted and recreated if it does exist\&.  
+.TP
+\fIrealm\fR
+The realm name to which the user name belongs\&. See http://tools\&.ietf\&.org/html/rfc2617#section-3\&.2\&.1 for more details\&.  
+.TP
+\fIusername\fR
+The user name to create or update in \fIpasswdfile\fR\&. If \fIusername\fR does not exist is this file, an entry is added\&. If it does exist, the password is changed\&.  
+ 
+.SH "SECURITY CONSIDERATIONS"
+ 
+.PP
+This program is not safe as a setuid executable\&. Do \fInot\fR make it setuid\&.
+ 
