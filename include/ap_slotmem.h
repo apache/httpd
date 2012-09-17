@@ -175,6 +175,13 @@ struct ap_slotmem_provider_t {
      * @return APR_SUCCESS if all went well
      */
     apr_status_t (* release)(ap_slotmem_instance_t *s, unsigned int item_id);
+    /**
+     * forced grab (or alloc) a slot associated with this item_id
+     * @param s ap_slotmem_instance_t to use.
+     * @param item_id to the specified slot id and marked as in-use
+     * @return APR_SUCCESS if all went well
+     */
+    apr_status_t (* fgrab)(ap_slotmem_instance_t *s, unsigned int item_id);
 };
 
 typedef struct ap_slotmem_provider_t ap_slotmem_provider_t;

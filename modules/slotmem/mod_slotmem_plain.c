@@ -154,7 +154,7 @@ static apr_status_t slotmem_dptr(ap_slotmem_instance_t *score, unsigned int id, 
     if (!score)
         return APR_ENOSHMAVAIL;
     if (id >= score->num)
-        return APR_ENOSHMAVAIL;
+        return APR_EINVAL;
 
     ptr = (char *)score->base + score->size * id;
     if (!ptr)
@@ -174,7 +174,10 @@ static apr_status_t slotmem_get(ap_slotmem_instance_t *slot, unsigned int id, un
     }
 
     inuse = slot->inuse + id;
-    if (id >= slot->num || (AP_SLOTMEM_IS_PREGRAB(slot) && !*inuse)) {
+    if (id >= slot->num) {
+        return APR_EINVAL;
+    }
+    if (AP_SLOTMEM_IS_PREGRAB(slot) && !*inuse) {
         return APR_NOTFOUND;
     }
     ret = slotmem_dptr(slot, id, &ptr);
@@ -197,7 +200,10 @@ static apr_status_t slotmem_put(ap_slotmem_instance_t *slot, unsigned int id, un
     }
 
     inuse = slot->inuse + id;
-    if (id >= slot->num || (AP_SLOTMEM_IS_PREGRAB(slot) && !*inuse)) {
+    if (id >= slot->num) {
+        return APR_EINVAL;
+    }
+    if (AP_SLOTMEM_IS_PREGRAB(slot) && !*inuse) {
         return APR_NOTFOUND;
     }
     ret = slotmem_dptr(slot, id, &ptr);
@@ -251,10 +257,28 @@ static apr_status_t slotmem_grab(ap_slotmem_instance_t *slot, unsigned int *id)
         }
     }
     if (i >= slot->num) {
-        return APR_ENOSHMAVAIL;
+        return APR_EINVAL;
     }
     *inuse = 1;
     *id = i;
+    return APR_SUCCESS;
+}
+
+*/
+static apr_status_t slotmem_fgrab(ap_slotmem_instance_t *slot, unsigned int id)
+{
+    unsigned int i;
+    char *inuse;
+    
+    if (!slot) {
+        return APR_ENOSHMAVAIL;
+    }
+    
+    if (id >= slot->num) {
+        return APR_EINVAL;
+    }
+    inuse = slot->inuse + id;
+    *inuse = 1;
     return APR_SUCCESS;
 }
 
@@ -268,7 +292,10 @@ static apr_status_t slotmem_release(ap_slotmem_instance_t *slot, unsigned int id
 
     inuse = slot->inuse;
 
-    if (id >= slot->num || !inuse[id] ) {
+    if (id >= slot->num) {
+        return APR_EINVAL;
+    }
+    if (!inuse[id] ) {
         return APR_NOTFOUND;
     }
     inuse[id] = 0;
@@ -287,7 +314,8 @@ static const ap_slotmem_provider_t storage = {
     &slotmem_num_free_slots,
     &slotmem_slot_size,
     &slotmem_grab,
-    &slotmem_release
+    &slotmem_release,
+    &slotmem_fgrab
 };
 
 static int pre_config(apr_pool_t *p, apr_pool_t *plog,
