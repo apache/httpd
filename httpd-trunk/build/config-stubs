@@ -1,0 +1,27 @@
+#!/bin/sh
+
+#
+# Find all config files (config*.m4) and map them into lines with the
+# form: NUM? '0' ' ' PATH
+#
+# For example:
+#
+#  50 ./modules/generators/config5.m4
+#  0 ./modules/aaa/config.m4
+#  10 ./example/config1.m4
+#
+# These lines are sorted, then the first field is removed. Thus, we
+# have a set of paths sorted on the config-number (if present). All
+# config files without a number are sorted before those with a number.
+#
+
+configfiles=`find . -name "config*.m4" | \
+	sed 's#\(.*/config\)\(.*\).m4#\20 \1\2.m4#' | \
+	sort | \
+	sed 's#.* ##'`
+
+for configfile in $configfiles; do
+    if [ -r $configfile ]; then
+        echo "sinclude($configfile)"
+    fi
+done

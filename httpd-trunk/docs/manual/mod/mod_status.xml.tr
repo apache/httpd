@@ -1,0 +1,158 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 1174747:1331227 (outdated) -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_status.xml.meta">
+
+<name>mod_status</name>
+<description>Sunucu etkinliği ve başarımı hakkında bilgi sağlar.</description>
+<status>Base</status>
+<sourcefile>mod_status.c</sourcefile>
+<identifier>status_module</identifier>
+
+
+<summary>
+    <p><code>mod_status</code> modülü, sunucu yöneticisinin, HTTP sunucusunun
+      ne kadar başarılı olduğu hakkında bilgi edinmesini sağlar. Bilgiler,
+      kolayca okunabilen bir HTML sayfası olarak sunulur ve o anki sunucu
+      istatistiklerinden oluşur. Gerekirse sayfa kendiliğinden tazelenebilir
+      (uyumlu bir tarayıcı gerekir). Diğer sayfa o anki sunucu durumunu makine
+      tarafından okunabilen biçimde listeler.</p>
+
+    <p>Sunulan bilgiler şunlardır:</p>
+
+    <ul>
+      <li>İstekleri sunan çocuk süreç sayısı</li>
+
+      <li>Boştaki çocuk süreçlerin sayısı</li>
+
+      <li>Her çocuk sürecin durumu, çocuk sürecin işleme tabi tuttuğu istek
+        sayısı ve sunduğu bayt sayısı (*)</li>
+
+      <li>Toplam erişim sayısı ve sunulan toplam bayt sayısı (*)</li>
+
+      <li>Sunucunun kaç kere başlatıldığı/yeniden başlatıldığı ve ne kadar
+        zamandır çalışmakta olduğu</li>
+
+      <li>Saniyedeki ortalama istek sayısı, saniyedeki bayt sayısı ve istek
+        başına ortalama bayt sayısı (*)</li>
+
+      <li>Birlikte tüm çocuk süreçler tarafınan toplamda ve her çocuk süreç
+        tarafından ayrı ayrı kullanılan o anki işlemci zamanı yüzdesi (*)</li>
+
+      <li>O an işlem görmekte olan konakların ve isteklerin sayısı (*)</li>
+    </ul>
+
+    <p>"(*)" imli bilgiler sadece <directive module="core"
+      >ExtendedStatus</directive> yönergesinin değeri <code>On</code> olduğu
+      takdirde mevcuttur. 2.3.6 sürümünde, bu modulün yüklenmesi öntanımlı
+      olarak <directive module="core">ExtendedStatus</directive> yönergesinin
+      değerini <code>On</code> yapacaktır.</p>
+</summary>
+
+<section id="enable">
+    <title>Durum Bilgisi Desteğinin Etkinleştirilmesi</title>
+
+    <p>Durum raporları, sadece example.com alanından ve sadece tarayıcılar için
+      etkin kılınmak istenirse <code>httpd.conf</code> dosyasına şu satırlar
+      eklenebilir:</p>
+
+    <example>
+      &lt;Location /server-status&gt;<br />
+      <indent>
+        SetHandler server-status<br />
+        <br />
+        Require host example.com<br />
+      </indent>
+      &lt;/Location&gt;
+    </example>
+
+    <p>Sunucu istatistiklerine tarayıcınızla erişmek isterseniz,
+      <code>http://sunucunuzun.ismi.buraya/server-status</code>
+      şeklinde bir istek yapabilirsiniz.</p>
+</section>
+
+<section id="autoupdate">
+
+    <title>Sayfanın Tazelenmesi</title>
+    <p>Tarayıcınız “tazeleme” yeteneğine sahipse durum sayfası düzenli
+      aralıklarla güncellenecektir. Sayfanın N saniyede bir güncellenmesini
+      isterseniz isteği şöyle yapabilirsiniz:<br />
+      <code>http://sunucunuzun.ismi.buraya/server-status?refresh=N</code></p>
+
+</section>
+
+<section id="machinereadable">
+
+    <title>Makine Tarafından Okunabilen Durum Dosyası</title>
+    <p>Durum dosyasının makine tarafından okunabilen sürümüne
+      <code>http://sunucunuzun.ismi.buraya/server-status?auto</code>
+      şeklinde bir istek yaparak erişebilirsiniz. Bu, kendiliğinden çalıştığı
+      takdirde yararlıdır; Apache HTTP Sunucusu kurulumunuzun
+      <code>/support</code> dizininde bulunan <code>log_server_status</code>
+      isimli Perl betiğine bakınız.</p>
+
+    <note><title>Güvenlik</title>
+      <module>mod_status</module> sunucuya yüklendiği takdirde
+       istatistikleri raporlama yeteneği dizin içi yapılandırma dosyaları
+       (<code>.htaccess</code> gibi) dahil <em>tüm</em> yapılandırma dosyaları
+       için kullanılabilir olacaktır. Bu durum güvenlik ile ilgili olarak
+       siteniz için içinden çıkılması güç durumlara yol açabilir (çapanoğlu
+       durumu).</note>
+
+</section>
+
+<section id="troubleshoot">
+    <title>Sorun gidermek için server-status kullanımı</title>
+
+    <p>Sunucunuzun kullanılabilir tüm özkaynakları (işlemci veya bellek)
+      sömürdüğü ve sizin de bu soruna hangi istemcilerin veya isteklerin yol
+      açtığını saptamak istediğiniz durumda sorunu gidermek için başlangıç yeri
+      olarak  <code>server-status</code> sayfası kullanılabilir.</p>
+
+    <p>Önce <directive module="core">ExtendedStatus</directive> yönergesine On
+      atadığınızsan emin olun. Böylece her çocuk süreç veya evre için tüm istek
+      ve istemci bilgilerini görebilirsiniz.</p>
+
+    <p>(<code>top</code> veya benzeri bir süreç izleme aracı kullanarak) Artık
+      kendi süreç listenize  ana zanlılar olan süreçleri bulmak için
+      bakabilirsiniz. Sorunun çeşidine bağlı olarak <code>top</code> çıktısını
+      işlemci kullanımına veya bellek kullanımına göre sıralatabilirsiniz.</p>
+
+  <p><code>server-status</code> sayfasını yeniden yükleyip bu süreç
+    kimliklerine bakın. Böylece, bu süreçler tarafından hangi isteklerin hangi
+    istemcilere sunulduğunu görebilirsiniz. İstekler kısa sürelerle görünürler,
+    bu bakımdan iş üstünde yakalamak için çeşitli denemeler yapmanız
+    gerekebilir.</p>
+
+    <p>Bu işlem, yük sorununuzdan birinci derecede sorumlu istek türleri veya
+      istemciler hakkında bir fikir verecektir. Çoğu durumda belli bir HTTP
+      uygulamasının yanlış davrandığını veya belli bir istemcinin sitenize
+      saldırmakta olduğunu farkedersiniz.</p>
+
+</section>
+
+</modulesynopsis>
+

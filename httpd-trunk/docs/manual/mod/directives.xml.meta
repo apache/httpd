@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- GENERATED FROM XML: DO NOT EDIT -->
+
+<metafile reference="directives.xml">
+  <basename>directives</basename>
+  <path>/mod/</path>
+  <relpath>..</relpath>
+
+  <variants>
+    <variant>de</variant>
+    <variant>en</variant>
+    <variant>es</variant>
+    <variant>ja</variant>
+    <variant>ko</variant>
+    <variant>tr</variant>
+    <variant>zh-cn</variant>
+  </variants>
+</metafile>

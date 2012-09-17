@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 1330911 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_auth_basic.xml.meta">
+
+<name>mod_auth_basic</name>
+<description>Basic authentication</description>
+<status>Base</status>
+<sourcefile>mod_auth_basic.c</sourcefile>
+<identifier>auth_basic_module</identifier>
+<compatibility>Available in Apache 2.1 and later</compatibility>
+
+<summary>
+    <p>This module allows the use of HTTP Basic Authentication to
+    restrict access by looking up users in the given providers.
+    HTTP Digest Authentication is provided by
+    <module>mod_auth_digest</module>.  This module should
+    usually be combined with at least one authentication module
+    such as <module>mod_authn_file</module> and one authorization
+    module such as <module>mod_authz_user</module>.</p>
+</summary>
+<seealso><directive module="mod_authn_core">AuthName</directive></seealso>
+<seealso><directive module="mod_authn_core">AuthType</directive></seealso>
+<seealso><directive module="mod_authz_core">Require</directive></seealso>
+<seealso><a href="../howto/auth.html">Authentication howto</a></seealso>
+
+<directivesynopsis>
+<name>AuthBasicProvider</name>
+<description>Sets the authentication provider(s) for this location</description>
+<syntax>AuthBasicProvider <var>provider-name</var>
+[<var>provider-name</var>] ...</syntax>
+<default>AuthBasicProvider file</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>The <directive>AuthBasicProvider</directive> directive sets
+    which provider is used to authenticate the users for this location.
+    The default <code>file</code> provider is implemented
+    by the <module>mod_authn_file</module> module.  Make sure
+    that the chosen provider module is present in the server.</p>
+    <example><title>Example</title>
+    <highlight language="config">
+&lt;Location /secure&gt;
+    AuthType basic
+    AuthName "private area"
+    AuthBasicProvider  dbm
+    AuthDBMType        SDBM
+    AuthDBMUserFile    /www/etc/dbmpasswd
+    Require            valid-user
+&lt;/Location&gt;
+    </highlight>
+    </example>
+    <p> Providers are queried in order until a provider finds a match
+    for the requested username, at which point this sole provider will
+    attempt to check the password.  A failure to verify the password does
+    not result in control being passed on to subsequent providers.</p>
+
+    <p>Providers are implemented by <module>mod_authn_dbm</module>,
+    <module>mod_authn_file</module>, <module>mod_authn_dbd</module>,
+    <module>mod_authnz_ldap</module> and <module>mod_authn_socache</module>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthBasicAuthoritative</name>
+<description>Sets whether authorization and authentication are passed to
+lower level modules</description>
+<syntax>AuthBasicAuthoritative On|Off</syntax>
+<default>AuthBasicAuthoritative On</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Normally, each authorization module listed in <directive
+    module="mod_auth_basic">AuthBasicProvider</directive> will attempt
+    to verify the user, and if the user is not found in any provider,
+    access will be denied. Setting the
+    <directive>AuthBasicAuthoritative</directive> directive explicitly
+    to <code>Off</code> allows for both authentication and
+    authorization to be passed on to other non-provider-based modules
+    if there is <strong>no userID</strong> or <strong>rule</strong>
+    matching the supplied userID.  This should only be necessary when
+    combining <module>mod_auth_basic</module> with third-party modules
+    that are not configured with the <directive
+    module="mod_auth_basic">AuthBasicProvider</directive>
+    directive.  When using such modules, the order of processing
+    is determined in the modules' source code and is not configurable.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

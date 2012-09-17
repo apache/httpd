@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 1242907 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="firehose.xml.meta">
+<parentdocument href="./">Programs</parentdocument>
+
+<title>firehose - Demultiplex a firehose stream</title>
+
+<summary>
+    <p><code>firehose</code> demultiplexes the given stream of multiplexed
+    connections, and writes each connection to an individual file.</p>
+
+    <p>When writing to files, each connection is placed into a dedicated file
+    named after the UUID of the connection within the stream. Separate files
+    will be created if requests and responses are found in the stream.</p>
+
+    <p>If  an  optional  prefix  is specified as a parameter, connections that
+    start with the given prefix will be included. The prefix needs to fit
+    completely within the first fragment for a successful match to occur.</p>
+
+</summary>
+<seealso><module>mod_firehose</module></seealso>
+
+<section id="synopsis"><title>Synopsis</title>
+    <p><code><strong>firehose</strong>
+    [ -<strong>f</strong> <var>input</var> ]
+    [ -<strong>o</strong> <var>output-directory</var> ]
+    [ -<strong>u</strong> <var>uuid</var> ]
+    [ -<strong>h</strong> ]
+    [ --<strong>version</strong> ]
+    [<var>prefix1</var> [...]]</code></p>
+
+</section>
+
+<section id="options"><title>Options</title>
+    <dl>
+    <dt><code>--file, -f <var>filename</var></code></dt>
+    <dd>File to read the firehose from. Defaults to stdin.</dd>
+
+    <dt><code>--output-directory, -o </code> <var>output-directory</var></dt>
+    <dd>Directory to write demultiplexed connections to.</dd>
+
+    <dt><code>--uuid, -u</code> <var>uuid</var></dt>
+    <dd>The UUID of the connection to demultiplex. Can be specified more
+    than once. If not specified, all UUIDs will be demultiplexed.</dd>
+
+    <dt><code>--help, -h</code></dt>
+    <dd>This help text.</dd>
+
+    <dt><code>--version</code></dt>
+    <dd>Display the version of the program.</dd>
+    </dl>
+
+</section>
+
+</manualpage>

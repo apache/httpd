@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed By : Vincent Deffontaines -->
+<!-- English Revision: 1044380 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="invoking.xml.meta">
+
+  <title>D&eacute;marrage d'Apache</title>
+
+<summary>
+    <p>Apache est habituellement lanc&eacute; en tant que service
+    sous Windows NT, 2000 et XP, ou comme application en mode console sous
+    Windows 9x et ME. Pour plus de d&eacute;tails, voir <a
+    href="platform/windows.html#winsvc">D&eacute;marrer Apache en tant que service</a>
+    et <a href="platform/windows.html#wincons">D&eacute;marrer Apache comme
+    Application en mode console</a>.</p>
+
+    <p>Sous Unix, le programme <program>httpd</program>
+    est lanc&eacute; en mode d&eacute;mon et s'ex&eacute;cute de mani&egrave;re permanente en
+    arri&egrave;re-plan pour g&eacute;rer les requ&ecirc;tes.  Ce document d&eacute;crit comment invoquer
+     <program>httpd</program>.</p>
+</summary>
+
+<seealso><a href="stopping.html">Arr&ecirc;t et red&eacute;marrage</a></seealso>
+<seealso><program>httpd</program></seealso>
+<seealso><program>apachectl</program></seealso>
+
+<section id="startup"><title>Comment Apache d&eacute;marre</title>
+
+    <p>Si la directive <directive module="mpm_common">Listen</directive>
+    sp&eacute;cifi&eacute;e dans le fichier de configuration est &agrave; sa valeur par d&eacute;faut
+    de 80 (ou tout autre port inf&eacute;rieur &agrave; 1024), il est n&eacute;cessaire de
+    poss&eacute;der les privil&egrave;ges root pour pouvoir d&eacute;marrer apache, et lui
+    permettre d'&ecirc;tre associ&eacute; &agrave; ce port privil&eacute;gi&eacute;. Lorsque le serveur est
+    d&eacute;marr&eacute;, apr&egrave;s avoir effectu&eacute; quelques op&eacute;rations pr&eacute;liminaires
+    comme ouvrir ses fichiers de log, il lance plusieurs processus
+    <em>enfants</em> qui ont pour r&ocirc;le d'&eacute;couter et de r&eacute;pondre aux
+    requ&ecirc;tes des clients. Le processus <code>httpd</code> principal
+    continue &agrave; s'ex&eacute;cuter sous l'utilisateur root, tandis que les processus
+    enfants s'ex&eacute;cutent sous un utilisateur aux privil&egrave;ges restreints.
+    Ceci s'effectue par la voie du
+    <a href="mpm.html">Module Multi-Processus (MPM)</a>.</p>
+
+    <p>Il est recommand&eacute; d'utiliser le script de contr&ocirc;le
+    <program>apachectl</program> pour invoquer l'ex&eacute;cutable
+    <program>httpd</program>. Avant d'invoquer le binaire
+    <program>httpd</program>, ce script d&eacute;finit certaines variables
+    d'environnement n&eacute;cessaires pour permettre &agrave;
+    <program>httpd</program> de fonctionner correctement sous certains syst&egrave;mes
+    d'exploitation.
+    <program>apachectl</program> accepte des arguments de ligne de
+    commande ;
+    ainsi toute option de <program>httpd</program> peut aussi &ecirc;tre utilis&eacute;e avec
+    <program>apachectl</program>.  Vous pouvez aussi &eacute;diter directement le
+    script <program>apachectl</program> en modifiant la variable
+    <code>HTTPD</code> situ&eacute;e en d&eacute;but de script pour sp&eacute;cifier la
+    localisation du binaire <program>httpd</program> et tout argument de ligne
+    de commande que vous souhaitez voir <em>syst&eacute;matiquement</em> pr&eacute;sent.</p>
+
+    <p>La premi&egrave;re chose qu'effectue <program>httpd</program> quand il est
+    invoqu&eacute; est de localiser et lire le <a
+    href="configuring.html">fichier de configuration</a>
+    <code>httpd.conf</code>. La localisation de ce fichier est d&eacute;finie &agrave; la
+    compilation, mais il est possible d'en sp&eacute;cifier une autre &agrave;
+    l'ex&eacute;cution en utilisant l'option de ligne de commande <code>-f</code> comme suit:</p>
+
+<example>/usr/local/apache2/bin/apachectl -f
+      /usr/local/apache2/conf/httpd.conf</example>
+
+    <p>Si tout se passe bien pendant le d&eacute;marrage, le serveur va se dissocier
+    du terminal et l'invite de commande r&eacute;appara&icirc;tra presque imm&eacute;diatement.
+    Ceci indique que le serveur a d&eacute;marr&eacute; et est en cours d'ex&eacute;cution.
+    &Agrave; partir de ce moment, vous pouvez utiliser votre navigateur pour vous connecter
+    au serveur et afficher la page de test situ&eacute;e dans le r&eacute;pertoire d&eacute;fini
+    par la directive <directive module="core">DocumentRoot</directive></p>
+</section>
+
+<section id="errors"><title>Erreurs en cours de d&eacute;marrage</title>
+
+    <p>Si un probl&egrave;me fatal survient pendant le d&eacute;marrage
+    d'Apache, ce dernier va
+    afficher un message d&eacute;crivant le probl&egrave;me sur la console ou
+    enregistrer ces informations dans le fichier d&eacute;fini par la directive
+    <directive module="core">ErrorLog</directive> avant de quitter.
+    Un des messages d'erreur les plus courants est "<code>Unable
+    to bind to Port ...</code>". Ce message d'erreur est habituellement
+    provoqu&eacute; par :</p>
+
+    <ul>
+      <li>Une tentative de d&eacute;marrage du serveur avec un port privil&eacute;gi&eacute; sans
+      &ecirc;tre connect&eacute; root</li>
+
+      <li>Une tentative de d&eacute;marrage du serveur alors qu'une autre instance
+      d'Apache ou un autre serveur web est d&eacute;j&agrave; associ&eacute; au m&ecirc;me port.</li>
+    </ul>
+
+    <p>Pour plus d'instructions de d&eacute;pannage, consultez la
+    <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> Apache.</p>
+</section>
+
+<section id="boot"><title>Lancement au d&eacute;marrage du syst&egrave;me</title>
+
+    <p>Si vous souhaitez que votre serveur fonctionne apr&egrave;s
+    un red&eacute;marrage du syst&egrave;me, vous devez ajouter un appel &agrave;
+    <program>apachectl</program> &agrave; vos
+    fichiers de d&eacute;marrage syst&egrave;me (en g&eacute;n&eacute;ral <code>rc.local</code> ou un
+    fichier dans un r&eacute;pertoire <code>rc.N</code>), ce qui d&eacute;marrera Apache sous
+    l'utilisateur root. Avant de faire ceci, assurez-vous que votre serveur
+    est correctement configur&eacute; en ce qui concerne la s&eacute;curit&eacute; et les
+    restrictions d'acc&egrave;s.</p>
+
+    <p>Le script <program>apachectl</program> est con&ccedil;u pour fonctionner
+    comme un script d'initialisation SysV standard ; il accepte les arguments
+    <code>start</code>, <code>restart</code>, et <code>stop</code>
+    et les traduit en signaux appropri&eacute;s pour
+    <program>httpd</program>, et il suffit en g&eacute;n&eacute;ral d'installer
+    un lien vers
+    <program>apachectl</program> dans le r&eacute;pertoire d'initialisation appropri&eacute;.
+    Mais prenez soin de v&eacute;rifier les besoins exacts de votre syst&egrave;me
+    en la mati&egrave;re.</p>
+</section>
+
+<section id="info"><title>Informations suppl&eacute;mentaires</title>
+
+    <p>Des informations suppl&eacute;mentaires &agrave; propos des options en ligne de
+    commande de <program>httpd</program> et <program>apachectl</program>
+    ainsi que d'autres programmes support inclus dans la distribution
+    sont disponibles sur la page
+    <a href="programs/">Le serveur et ses programmes support</a>.
+    Il existe aussi une documentation sur tous les <a
+    href="mod/">modules</a> inclus dans la distribution Apache
+    et les <a href="mod/directives.html">directives</a>
+    qu'ils supportent.</p>
+</section>
+
+</manualpage>

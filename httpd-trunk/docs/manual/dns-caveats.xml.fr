@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
+<!-- English Revision : 1332626 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="dns-caveats.xml.meta">
+
+  <title>Probl&egrave;mes li&eacute;s au DNS avec le serveur HTTP Apache</title>
+
+  <summary>
+    <p>Cette page pourrait se r&eacute;sumer ainsi : configurez le
+    serveur HTTP Apache de fa&ccedil;on
+    &agrave; ce qu'il n'ait pas besoin de r&eacute;solution DNS pour interpr&eacute;ter les
+    fichiers de configuration. Si httpd doit effectuer des r&eacute;solutions
+    DNS pour interpr&eacute;ter les fichiers de configuration, votre serveur
+    pourra pr&eacute;senter des probl&egrave;mes de fiabilit&eacute; (en d'autres termes,
+    il est possible qu'il refuse de d&eacute;marrer), ou d'attaques par d&eacute;ni ou
+    usurpation de service (y compris l'attribution de requ&ecirc;tes &agrave; un
+    serveur virtuel autre que le serveur virtuel voulu).</p>
+  </summary>
+
+  <section id="example">
+    <title>Un exemple simple</title>
+
+    <highlight language="config">
+# Ceci est un exemple de mauvaise configuration ; ne l'utilisez pas comme base
+# de configuration
+&lt;VirtualHost www.example.dom&gt;
+  ServerAdmin webgirl@example.dom
+  DocumentRoot /www/example
+&lt;/VirtualHost&gt;
+    </highlight>
+
+    <p>Pour fonctionner correctement, le serveur a absolument besoin de deux
+    informations &agrave; propos de chaque serveur virtuel : le nom du serveur
+    d&eacute;fini par la directive <directive
+    module="core">ServerName</directive>, et au moins une adresse IP &agrave;
+    laquelle le serveur va se rattacher et r&eacute;pondre. L'exemple ci-dessus
+    ne comporte pas d'adresse IP, si bien que httpd devra utiliser le
+    DNS pour trouver l'adresse IP de <code>www.example.dom</code>. Si pour
+    une raison quelconque, le DNS n'est pas disponible au moment o&ugrave;
+    votre serveur interpr&egrave;te son fichier de configuration, ce serveur
+    virtuel <strong>ne sera pas pris en compte dans la
+    configuration</strong>. Il sera incapable de
+    r&eacute;pondre &agrave; toute requ&ecirc;te pour ce serveur virtuel.</p>
+
+    <p>Supposons que l'adresse de <code>www.example.dom</code> soit
+    192.0.2.1, et examinons cet extrait de configuration :</p>
+
+    <highlight language="config">
+# Ceci est un exemple de mauvaise configuration ; ne l'utilisez pas comme base
+# de configuration
+&lt;VirtualHost 192.0.2.1&gt;
+  ServerAdmin webgirl@example.dom
+  DocumentRoot /www/example
+&lt;/VirtualHost&gt;
+    </highlight>
+
+    <p>Cette fois, httpd doit effectuer une recherche DNS inverse pour
+    trouver le nom <code>ServerName</code> de ce serveur virtuel. Si
+    cette recherche inverse &eacute;choue, le serveur virtuel sera
+    partiellement d&eacute;sactiv&eacute;. Si le serveur
+    virtuel est &agrave; base de nom, il sera en fait totalement d&eacute;sactiv&eacute;,
+    mais s'il est &agrave; base d'adresse IP, il fonctionnera probablement.
+    Cependant, httpd &eacute;chouera s'il doit g&eacute;n&eacute;rer une URL compl&egrave;te pour
+    le serveur qui inclut ce nom de serveur (comme dans le cas d'une
+    redirection).</p>
+
+    <p>Voici un extrait de configuration qui permet d'&eacute;viter ces deux
+    types de probl&egrave;mes :</p>
+
+    <highlight language="config">
+&lt;VirtualHost 192.0.2.1&gt;
+  ServerName www.example.dom
+  ServerAdmin webgirl@example.dom
+  DocumentRoot /www/example
+&lt;/VirtualHost&gt;
+    </highlight>
+  </section>
+
+  <section id="denial">
+    <title>D&eacute;ni de service</title>
+
+    <p>Consid&eacute;rons cet extrait de configuration :</p>
+
+    <highlight language="config">
+&lt;VirtualHost www.example1.dom&gt;
+  ServerAdmin webgirl@example1.dom
+  DocumentRoot /www/example1
+&lt;/VirtualHost&gt;
+&lt;VirtualHost www.example2.dom&gt;
+  ServerAdmin webguy@example2.dom
+  DocumentRoot /www/example2
+&lt;/VirtualHost&gt;
+    </highlight>
+
+    <p>Supposons que vous ayez assign&eacute; 192.0.2.1 &agrave;
+    <code>www.example1.dom</code> et 192.0.2.2 &agrave; <code>www.example2.dom</code>. En
+    outre, supposons que <code>example1.dom</code> g&egrave;re son propre DNS. Avec
+    cette configuration, <code>example1.dom</code> sera en mesure de
+    d&eacute;tourner tout trafic destin&eacute; &agrave; <code>example2.dom</code>. Pour y
+    parvenir, tout ce qu'ils ont &agrave; faire consiste &agrave;
+    assigner 192.0.2.2 &agrave;
+    <code>www.example1.dom</code>. Comme ils g&egrave;rent leur propre DNS, vous ne
+    pouvez pas les emp&ecirc;cher de faire pointer l'enregistrement
+    <code>www.example1.dom</code> vers l'adresse qu'ils veulent.</p>
+
+    <p>Les requ&ecirc;tes &agrave; destination de 192.0.2.2 (y compris toutes celles
+    o&ugrave; l'utilisateur &agrave; tap&eacute; une URL de la forme
+    <code>http://www.example2.dom/quelquepart</code>), seront toutes servies
+    par le serveur virtuel <code>example1.dom</code>. Une meilleur
+    compr&eacute;hension de la raison pour laquelle ceci peut se produire
+    n&eacute;cessite une discussion plus approfondie &agrave; propos de la mani&egrave;re
+    dont httpd associe les requ&ecirc;tes entrantes aux diff&eacute;rents serveurs
+    virtuels qui vont les servir. Un document de base d&eacute;crivant ceci <a
+    href="vhosts/details.html">est disponible</a>.</p>
+  </section>
+
+  <section id="main">
+    <title>L'adresse du "serveur principal"</title>
+
+    <p><a href="vhosts/name-based.html">Le support des
+    serveurs virtuels &agrave; base de nom</a> oblige httpd &agrave;
+    conna&icirc;tre la/les adresse(s) IP de l'h&ocirc;te sur
+    lequel <program>httpd</program> s'ex&eacute;cute. Pour obtenir cette
+    adresse, soit il utilise la directive <directive
+    module="core">ServerName</directive> globale (si elle est pr&eacute;sente),
+    soit il fait appel &agrave; la fonction C <code>gethostname</code> (qui
+    doit renvoyer le m&ecirc;me nom que la commande shell "hostname"). Il
+    effectue ensuite une recherche DNS sur cette adresse. Pour le
+    moment, il n'existe aucun moyen d'&eacute;viter cette recherche DNS.</p>
+
+    <p>Si vous craignez que cette recherche DNS &eacute;choue parce que votre
+    serveur DNS est arr&ecirc;t&eacute;, vous pouvez ins&eacute;rer le nom d'h&ocirc;te dans le
+    fichier <code>/etc/hosts</code> (o&ugrave; il est probablement d&eacute;j&agrave;
+    enregistr&eacute; afin que la machine d&eacute;marre correctement). Assurez-vous
+    ensuite que la machine est configur&eacute;e pour utiliser
+    <code>/etc/hosts</code> dans le cas o&ugrave; la recherche DNS &eacute;choue.
+    Suivant le syst&egrave;me d'exploitation que vous utilisez, vous y
+    parviendrez en &eacute;ditant <code>/etc/resolv.conf</code>, ou
+    <code>/etc/nsswitch.conf</code>.</p>
+
+    <p>Si votre serveur n'a aucune autre raison d'effectuer des
+    recherches DNS, vous pouvez d&eacute;finir la variable d'environnement
+    <code>HOSTRESORDER</code> &agrave; "local", et vous serez alors en mesure
+    d'ex&eacute;cuter httpd. Tout d&eacute;pend du syst&egrave;me d'exploitation et des
+    biblioth&egrave;ques de r&eacute;solution de noms que vous utilisez. Elle affecte
+    aussi les programmes CGI, &agrave; moins que vous n'utilisiez
+    <module>mod_env</module> pour contr&ocirc;ler l'environnement. Il est
+    conseill&eacute; de consulter les pages de manuel ou les FAQs de votre
+    syst&egrave;me d'exploitation.</p>
+  </section>
+
+  <section id="tips">
+    <title>Conseils pour &eacute;viter ce genre de probl&egrave;me</title>
+
+    <ul>
+      <li>
+        utilisez des adresses IP au sein des <directive
+	module="core">VirtualHost</directive>
+      </li>
+
+      <li>
+        utilisez des adresses IP avec la directive <directive
+	module="mpm_common">Listen</directive>
+      </li>
+
+      <li>
+        v&eacute;rifiez que tous les serveurs virtuels poss&egrave;dent un nom
+	<directive module="core">ServerName</directive>	explicite
+      </li>
+
+      <li>cr&eacute;ez un serveur virtuel <code>&lt;VirtualHost
+      _default_:*&gt;</code> qui n'a aucune page &agrave; servir</li>
+    </ul>
+  </section>
+
+</manualpage>

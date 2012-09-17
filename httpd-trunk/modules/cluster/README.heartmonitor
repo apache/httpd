@@ -1,0 +1,30 @@
+mod_heartmonitor
+
+Collects the Apache Connection status data over multicast.
+
+Example Configuration:
+  # First parameter is the interface to listen on
+  HeartbeatListen 239.0.0.1:27999
+  # Absolute path, or relative path to ServerRoot
+  HeartbeatStorage logs/hb.dat
+
+Dependencies:
+  Due to a bug in APR's apr_socket_recvfrom, version 1.2.12 or newer must be
+  used:
+    <http://svn.apache.org/viewvc?view=rev&revision=467600>
+
+Consuming:
+  This module atomically writes to the configured path, a list of servers, 
+  along with metadata about them.
+  
+  Included data about each server:
+    - IP Address
+    - Busy Slots
+    - Open Slots
+    - Last Seen
+
+  Every 5 seconds, this file will be updated with the current status of the 
+  cluster.
+
+  
+

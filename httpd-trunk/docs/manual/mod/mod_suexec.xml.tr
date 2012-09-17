@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 1041030:1331227 (outdated) -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_suexec.xml.meta">
+
+<name>mod_suexec</name>
+<description>CGI betiklerinin belli bir kullanıcı ve grubun aidiyetinde
+çalışmasını mümkün kılar.</description>
+<status>Extension</status>
+<sourcefile>mod_suexec.c</sourcefile>
+<identifier>suexec_module</identifier>
+<compatibility>Apache 2.0 ve sonrasında mevcuttur.</compatibility>
+
+
+<summary>
+    <p>Bu modül <program>suexec</program> programı ile birlikte CGI
+      betiklerinin belli bir kullanıcı ve grubun aidiyetinde çalışmasını
+      mümkün kılar.</p>
+</summary>
+
+<seealso><a href="../suexec.html">SuEXEC Desteği</a></seealso>
+
+<directivesynopsis>
+
+<name>SuexecUserGroup</name>
+<description>CGI betiklerini çalıştıracak kullanıcı ve grup belirtilir.
+</description>
+<syntax>SuexecUserGroup <em>Kullanıcı Grup</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Apache 2.0 ve sonrasında mevcuttur.</compatibility>
+
+<usage>
+    <p><directive>SuexecUserGroup</directive> yönergesi CGI programlarını
+      çalıştıracak kullanıcı ve grubu belirtmeye yarar. CGI harici istekler
+      hala <directive module="mod_unixd">User</directive> yönergesinde
+      belirtilen kullanıcı tarafından yerine getirilir.</p>
+
+    <example>
+    <title>Örnek</title>
+    SuexecUserGroup nobody nogroup
+    </example>
+
+    <p>Apache HTTP Sunucusunun 2.3.9 ve sonraki sürümlerinde, bu yönerge
+      belirtildiği halde <directive module="mod_unixd">Suexec</directive>
+      özelliği etkinleştirilmemişse Apache httpd başlatılamaz.</p>
+</usage>
+<seealso><directive module="mod_unixd">Suexec</directive></seealso>
+</directivesynopsis>
+
+</modulesynopsis>
+

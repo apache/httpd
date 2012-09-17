@@ -1,0 +1,599 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+<!-- English Revision : 1331693 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="glossary.xml.meta">
+
+  <title>Glossaire</title>
+
+  <summary>
+    <p>Ce glossaire d&eacute;finit la terminologie courante relative &agrave; Apache en
+    particulier, et aux serveurs web en g&eacute;n&eacute;ral. Vous trouverez plus
+    d'informations sur chaque concept dans les liens fournis.</p>
+  </summary>
+
+<section id="definitions"><title>D&eacute;finitions</title>
+<dl>
+<dt><a name="algorithm" id="algorithm">Algorithme</a></dt>
+
+    <dd>Une formule sans ambiguit&eacute; ou un jeu de r&egrave;gles destin&eacute;es &agrave;
+    r&eacute;soudre un probl&egrave;me en un nombre fini d'&eacute;tapes. Les algorithmes de
+    chiffrement sont en g&eacute;n&eacute;ral appel&eacute;s
+      <dfn>Ciphers</dfn>.
+    </dd>
+
+    <dt><a name="cipher" id="cipher">Algorithme de chiffrement
+    (Cipher)</a></dt>
+    <dd>Un algorithme ou un syst&egrave;me de chiffrement des donn&eacute;es.
+    Quelques exemples : DES, IDEA, RC4, etc.<br />
+      Voir : <a href="ssl/">chiffrement SSL/TLS</a>
+    </dd>
+
+    <dt>APR</dt>
+    <dd>Voir "Biblioth&egrave;ques pour la portabilit&eacute; d'Apache"
+    </dd>
+
+    <dt><a name="tarball" id="tarball">Archive Tar (Tarball)</a></dt>
+  <dd>Un paquetage de fichiers rassembl&eacute;s dans une archive
+  &agrave; l'aide de l'utilitaire <code>tar</code>.
+    Les distributions d'Apache sont stock&eacute;es dans des Archives Tar compress&eacute;es
+    ou en utilisant pkzip.
+  </dd>
+
+    <dt><a name="authentication" id="authentication">Authentification </a></dt>
+    <dd>L'identification formelle d'une entit&eacute; du r&eacute;seau comme un serveur, un
+    client, ou un utilisateur.<br />
+      Voir : <a href="howto/auth.html">Authentification, Autorisation, et
+      contr&ocirc;le d'acc&egrave;s</a>
+    </dd>
+
+    <dt><a name="certificationauthority"
+        id="certificationauthority">Autorit&eacute; de Certification
+	(Certification Authority)</a>
+      <a name="ca" id="ca">(CA)</a></dt>
+    <dd>Un tiers de confiance habilit&eacute; &agrave; signer des certificats pour des entit&eacute;s
+    du r&eacute;seau qu'il a authentifi&eacute;es selon des crit&egrave;res bas&eacute;s sur la s&eacute;curit&eacute;.
+    Les autres entit&eacute;s du r&eacute;seau peuvent alors utiliser la signature pour
+    v&eacute;rifier qu'une CA a authentifi&eacute; le porteur du certificat.<br />
+      Voir : <a href="ssl/">chiffrement SSL/TLS</a>
+    </dd>
+
+    <dt><a name="apacheportableruntime"
+       id="apacheportableruntime">Biblioth&egrave;ques pour la portabilit&eacute; d'Apache
+       (Apache Portable Runtime)</a> <a
+       name="apr" id="apr">(APR)</a></dt>
+    <dd>Un jeu de biblioth&egrave;ques qui fournit la plupart des interfaces de base
+      entre le serveur et le syst&egrave;me d'exploitation.  APR est d&eacute;velopp&eacute;
+      parall&egrave;lement au serveur HTTP Apache comme projet ind&eacute;pendant.<br />
+      Voir : <a href="http://apr.apache.org/">Apache Portable Runtime
+      Project</a>
+    </dd>
+
+
+<dt><a name="certificate" id="certificate">Certificat (Certificate)</a></dt>
+    <dd>Un ensemble de donn&eacute;es servant &agrave; authentifier des entit&eacute;s du
+    r&eacute;seau comme un serveur ou un client. Un certificat contient des ensembles
+    d'informations X509 &agrave; propos de son propri&eacute;taire (appel&eacute; sujet/subject)
+    et de l'<glossary
+      ref="certificationauthority">Autorit&eacute; de Certification
+      (Certification Authority) ou CA</glossary> signataire (appel&eacute;e
+      le fournisseur/issuer), ainsi que la
+      <glossary ref="publickey">cl&eacute; publique (public
+      key)</glossary> du propri&eacute;taire et la
+      signature de la CA. Les entit&eacute;s du r&eacute;seau v&eacute;rifient ces signatures
+      en utilisant les certificats des Autorit&eacute;s de Certification.<br />
+      Voir : <a href="ssl/">chiffrement SSL/TLS</a>
+    </dd>
+
+    <dt><a name="publickeycryptography"
+      id="publickeycryptography">Chiffrement &agrave; Cl&eacute; Publique
+      (Public Key Cryptography)</a></dt>
+    <dd>L'&eacute;tude et l'application des syst&egrave;mes de chiffrement asym&eacute;triques,
+    qui utilisent une cl&eacute; pour le chiffrement et une autre pour le
+    d&eacute;chiffrement. Les deux cl&eacute;s correspondantes constituent une paire de cl&eacute;s.
+    Appel&eacute; aussi chiffrement asym&eacute;trique.
+      <br />
+      Voir : <a href="ssl/">chiffrement SSL/TLS</a>
+    </dd>
+
+    <dt><a name="privatekey" id="privatekey">Cl&eacute; Priv&eacute;e (Private Key)</a></dt>
+    <dd>La cl&eacute; secr&egrave;te dans un syst&egrave;me de
+    <glossary ref="publickeycryptography">chiffrement &agrave; cl&eacute; publique</glossary>,
+    utilis&eacute;e pour d&eacute;chiffrer les messages entrants et signer
+    les messages sortants.<br />
+      Voir : <a href="ssl/">chiffrement SSL/TLS</a>
+    </dd>
+
+<dt><a name="publickey" id="publickey">Cl&eacute; Publique (Public Key)</a></dt>
+    <dd>La cl&eacute; accessible au public dans un syst&egrave;me de <glossary
+      ref="publickeycryptography">Chiffrement &agrave; cl&eacute; publique</glossary>,
+      utilis&eacute;e pour chiffrer les messages destin&eacute;s uniquement &agrave; son
+      propri&eacute;taire et d&eacute;chiffrer les signatures
+      faites par son propri&eacute;taire.<br />
+      Voir : <a href="ssl/">chiffrement SSL/TLS</a>
+    </dd>
+
+<dt><a name="connect" id="connect">CONNECT</a></dt>
+    <dd>Une <glossary ref="method">m&eacute;thode</glossary> HTTP pour encapsuler
+    des donn&eacute;es brutes dans HTTP. Elle peut aussi &ecirc;tre utilis&eacute;e pour encapsuler
+    d'autres protocoles, comme le protocole SSL.
+    </dd>
+
+    <dt><a name="context" id="context">Contexte (Context)</a></dt>
+    <dd>Une portion des <glossary ref="configurationfile">
+    fichiers de configuration</glossary> dans laquelle certains types de
+    <glossary ref="directive">directives</glossary> sont autoris&eacute;s.<br />
+      Voir : <a href="mod/directive-dict.html#Context">Termes utilis&eacute;s
+      pour d&eacute;crire les directives d'Apache</a>
+    </dd>
+
+    <dt><a name="accesscontrol" id="accesscontrol">Contr&ocirc;le d'acc&egrave;s
+    (Access Control)</a></dt>
+    <dd>La restriction d'acc&egrave;s &agrave; des zones du r&eacute;seau. Habituellement
+    dans un contexte Apache,
+      la restriction d'acc&egrave;s &agrave; certaines <em>URLs</em>.<br />
+      Voir :  <a
+      href="howto/auth.html">Authentification, Autorisation et
+      Contr&ocirc;le d'acc&egrave;s</a>
+    </dd>
+
+    <dt><a name="securesocketslayer" id="securesocketslayer">
+    Couche des Points de connexion S&eacute;curis&eacute;s
+    (Secure Sockets Layer)
+      </a> <a name="ssl" id="ssl">(SSL)</a></dt>
+  <dd>Un protocole cr&eacute;&eacute; par Netscape Communications Corporation pour
+  l'authentification et le chiffrement g&eacute;n&eacute;raux des communications dans les
+  r&eacute;seaux TCP/IP.  L'utilisation la plus connue est <em>HTTPS</em>, autrement dit
+  le Protocole de Transfert Hypertexte (HTTP) au dessus de SSL.<br />
+    Voir : <a href="ssl/">chiffrement SSL/TLS</a>
+  </dd>
+
+  <dt><a name="symmetriccryptophraphy" id="symmetriccryptophraphy">
+  Cryptographie Sym&eacute;trique (Symmetric Cryptography)</a></dt>
+  <dd>L'&eacute;tude et l'application des <em>Algorithmes de chiffrement</em> qui
+  utilisent une cl&eacute; secr&egrave;te unique pour les op&eacute;rations de chiffrement et de
+  d&eacute;chiffrement.<br />
+    Voir : <a href="ssl/">chiffrement SSL/TLS</a>
+  </dd>
+
+
+    <dt><a name="export-crippled" id="export-crippled">
+    D&eacute;grad&eacute; pour l'exportation
+    (Export-Crippled)</a></dt>
+    <dd>Diminu&eacute; en terme de puissance cryptographique (et de s&eacute;curit&eacute;)
+    afin de respecter les R&egrave;gles de l'Administration des Exportations
+     des Etats-Unis (Export Administration Regulations ou EAR).
+      Les logiciels de cryptographie d&eacute;grad&eacute;s pour l'exportation sont limit&eacute;s
+      &agrave; une cl&eacute; de petite taille, et produisent un
+      <em>Texte crypt&eacute;</em> qui peut en g&eacute;n&eacute;ral &ecirc;tre d&eacute;crypt&eacute;
+      par force brute.<br />
+      Voir : <a href="ssl/">chiffrement SSL/TLS</a>
+    </dd>
+
+
+    <dt><a name="certificatsigningrequest"
+      id="certificatsigningrequest">Demande de signature de certificat
+      (Certificate Signing Request)</a>
+      <a name="csr" id="csr">(CSR)</a></dt>
+    <dd>La soumission d'un <glossary ref="certificate">certificat</glossary>
+    non sign&eacute; &agrave; une <glossary ref="certificationauthority">Autorit&eacute; de
+    certification</glossary>, qui le signe avec la <glossary
+      ref="privatekey">Cl&eacute; priv&eacute;e</glossary> de leur
+      <em>Certificat</em> de CA. Une fois le CSR sign&eacute;, il devient un vrai
+      certificat.<br />
+      Voir : <a href="ssl/">chiffrement SSL/TLS</a>
+    </dd>
+
+    <dt><a name="directive" id="directive">Directive</a></dt>
+    <dd>Une commande de configuration qui contr&ocirc;le un ou plusieurs aspects du
+    comportement d'Apache.  Les directives sont plac&eacute;es dans le <glossary
+      ref="configurationfile">Fichier de configuration</glossary><br />
+    Voir : <a href="mod/directives.html">Index des directives</a>
+    </dd>
+
+<dt><a name="configurationdirective"
+        id="configurationdirective">Directive de configuration
+	(Configuration Directive)</a></dt>
+    <dd>Voir : <glossary ref="directive">Directive</glossary></dd>
+
+    <dt><a name="header" id="header">En-t&ecirc;te (Header)</a></dt>
+    <dd>La partie de la requ&ecirc;te et de la r&eacute;ponse
+    <glossary ref="http">HTTP</glossary> qui est envoy&eacute;e avant le contenu
+    proprement dit, et contient des m&eacute;ta-informations d&eacute;crivant le contenu.
+    </dd>
+
+    <dt><a name="regularexpresion" id="regularexpresion">Expression Rationnelle
+    (Regular Expression)</a>
+      <a name="regex" id="regex">(Regex)</a></dt>
+    <dd>Une m&eacute;thode pour d&eacute;crire un mod&egrave;le sous forme de texte - par exemple,
+    "tous les mots qui commencent par la lettre A" ou "tous les num&eacute;ros de
+    t&eacute;l&eacute;phone &agrave; 10 chiffres" ou encore "Toutes les phrases contenant 2 virgules,
+    et aucun Q majuscule". Les expressions rationnelles sont tr&egrave;s utiles dans
+    Apache car elles vous permettent d'appliquer certains attributs &agrave; des
+    ensembles de fichiers ou ressources avec une grande flexibilit&eacute;
+      - par exemple, tous les fichiers .gif et .jpg situ&eacute;s dans tout r&eacute;pertoire
+      nomm&eacute; "images", pourraient &ecirc;tre enregistr&eacute;s comme
+      "<code>/images/.*(jpg|gif)$</code>".  Lorsque l'on utilise des
+      expressions rationnelles pour la substitution de cha&icirc;nes, les
+      variables sp&eacute;ciales $1 ... $9 contiennent des r&eacute;f&eacute;rences arri&egrave;res
+      vers les parties regroup&eacute;es (entre parenth&egrave;ses) de l'expression
+      qui correspond. La variable sp&eacute;ciale $0 contient une r&eacute;f&eacute;rence
+      arri&egrave;re vers l'ensemble de l'expression qui correspond. Pour
+      ins&eacute;rer un caract&egrave;re litt&eacute;ral "dollar" dans la cha&icirc;ne de
+      remplacement, il faut l'&eacute;chapper avec un anti-slash. Pour des
+      raisons historiques, la variable &amp; peut &ecirc;tre utilis&eacute;e en tant
+      qu'alias de $0 dans certains cas, mais ceci n'est plus possible
+      depuis la version 2.3.6. Apache utilise les Expressions
+      Rationnelles Compatibles avec Perl fournies par la librairie <a
+      href="http://www.pcre.org/">PCRE</a>. Vous trouverez plus
+      d'information &agrave; propos de la syntaxe des expressions rationnelles
+      PCRE sur ce site, ou dans le <a
+      href="http://en.wikipedia.org/wiki/PCRE">Wikipedia de la PCRE</a>.
+  </dd>
+
+    <dt><a name="configurationfile" id="configurationfile">
+    Fichier de configuration
+    (Configuration File)</a></dt>
+    <dd>Un fichier texte contenant des
+    <glossary ref="directive">Directives</glossary>
+      qui contr&ocirc;lent la configuration d'Apache.<br />
+      Voir : <a href="configuring.html">Fichiers de configuration</a>
+    </dd>
+
+    <dt><a name="filter" id="filter">Filtre (Filter)</a></dt>
+    <dd>Un traitement appliqu&eacute; aux donn&eacute;es envoy&eacute;es ou re&ccedil;ues par le serveur.
+      Les filtres en entr&eacute;e traitent les donn&eacute;es envoy&eacute;es au serveur par le
+      client, alors que les filtres en sortie traitent les documents sur le
+      serveur avant qu'ils soient envoy&eacute;s au client.
+      Par exemple, le filtre en sortie
+      <code>INCLUDES</code>
+      traite les documents pour les
+      <glossary ref="ssi">Server Side Includes (Inclusions c&ocirc;t&eacute; Serveur)
+      </glossary>.<br />
+      Voir : <a href="filter.html">Filtres</a>
+    </dd>
+
+<dt><a name="handler" id="handler">Gestionnaire (Handler)</a></dt>
+    <dd>Une repr&eacute;sentation interne &agrave; Apache de l'action &agrave; entreprendre
+    quand un fichier est appel&eacute;. En g&eacute;n&eacute;ral, les fichiers ont des gestionnaires
+    implicites, bas&eacute;s sur le type de fichier. Normalement, tous les
+    fichiers sont directement servis par le serveur, mais certains
+    types de fichiers sont "g&eacute;r&eacute;s" s&eacute;par&eacute;ment.  Par exemple, le gestionnaire
+      <code>cgi-script</code> d&eacute;signe les fichiers qui doivent &ecirc;tre trait&eacute;s
+      comme <glossary ref="cgi">CGIs</glossary>.<br />
+      Voir : <a href="handler.html">Utilisation des gestionnaires d'Apache</a>
+    </dd>
+
+    <dt><a name="hash" id="hash">Hachage (Hash)</a></dt>
+    <dd>Un algorithme math&eacute;matique &agrave; sens unique, irr&eacute;versible, g&eacute;n&eacute;rant une
+    cha&icirc;ne de longueur fixe &agrave; partir d'une autre cha&icirc;ne de longueur quelconque.
+    Des cha&icirc;nes diff&eacute;rentes en entr&eacute;e vont normalement produire des cha&icirc;nes
+    diff&eacute;rentes en sortie (selon la fonction de hachage).
+    </dd>
+
+    <dt><a name="virtualhosting" id="virtualhosting">H&eacute;bergement Virtuel
+    (Virtual Hosting)</a></dt>
+  <dd>Servir des sites web multiples en utilisant une seule instance d'Apache.
+  Les <em>H&ocirc;tes virtuels bas&eacute;s sur IP</em> diff&eacute;rencient les sites web en se
+  basant sur leur adresse IP, alors que les
+  <em>H&ocirc;tes virtuels bas&eacute;s sur le nom</em> utilisent uniquement le nom d'h&ocirc;te
+  et peuvent en cons&eacute;quence h&eacute;berger de nombreux sites avec la m&ecirc;me
+  adresse IP.<br />
+    Voir la <a href="vhosts/">Documentation des H&ocirc;tes Virtuels d'Apache</a>
+  </dd>
+
+
+    <dt><a name="htaccess" id="htaccess">.htaccess</a></dt>
+    <dd>Un <glossary ref="configurationfile">fichier de configuration</glossary>
+    plac&eacute; &agrave; un certain niveau de l'arborescence du site web, et appliquant des
+    <glossary ref="directive">directives</glossary> de configuration au
+    r&eacute;pertoire dans lequel il est plac&eacute;, ainsi qu'&agrave; tous ses sous-r&eacute;pertoires.
+    En d&eacute;pit de son nom, ce fichier peut contenir pratiquement tout type de
+    directive, et pas seulement des directives de contr&ocirc;le d'acc&egrave;s.<br />
+      Voir : <a href="configuring.html">Fichiers de configuration</a>
+    </dd>
+
+<dt><a name="httpd.conf" id="httpd.conf">httpd.conf</a></dt>
+    <dd>Le <glossary ref="configurationfile">fichier de configuration
+    </glossary> principal d'Apache.  Sa localisation par d&eacute;faut est
+      <code>/usr/local/apache2/conf/httpd.conf</code>, mais ceci peut &ecirc;tre
+      chang&eacute; en utilisant des options de compilation ou d'ex&eacute;cution.<br />
+      Voir : <a href="configuring.html">Fichiers de configuration</a>
+    </dd>
+
+     <dt><a name="https" id="https">HTTPS</a></dt>
+    <dd>Le Protocole de Transfert Hypertexte (S&eacute;curis&eacute;), le m&eacute;canisme de
+    communication crypt&eacute;e standard sur le World Wide Web.
+    Il s'agit en fait de HTTP au dessus de
+    <glossary ref="ssl">SSL</glossary>.<br />
+      Voir : <a href="ssl/">chiffrement SSL/TLS</a>
+    </dd>
+
+    <dt><a name="uniformresourceidentifier"
+    id="uniformresourceidentifier">Identificateur de Ressource Uniformis&eacute;
+    (Uniform Resource Identifier)</a>
+    <a name="URI" id="URI">(URI)</a></dt>
+  <dd>Une cha&icirc;ne de caract&egrave;res compacte servant &agrave; identifier une ressource
+  abstraite ou physique.  Elle est formellement d&eacute;finie par la <a
+      href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>.  Les URIs
+      utilis&eacute;es sur le world-wide web sont souvent appel&eacute;es <glossary
+      ref="url">URLs</glossary>.
+  </dd>
+
+    <dt><a name="serversideincludes" id="serversideincludes">
+    Inclusions C&ocirc;t&eacute; Serveur
+    (Server Side Includes)</a> <a name="ssi" id="ssi">(SSI)
+      </a></dt>
+  <dd>Une technique permettant d'englober des directives de traitement dans
+  des fichiers HTML.<br />
+    Voir : <a href="howto/ssi.html">Introduction aux Inclusions C&ocirc;t&eacute; Serveur</a>
+  </dd>
+
+  <dt><a name="servernameindication"
+  id="servernameindication">Indication du nom du serveur</a> <a
+  name="sni" id="sni">(SNI)</a></dt>
+    <dd>Une fonctionnalit&eacute; SSL permettant de sp&eacute;cifier le
+    nom du serveur d&eacute;sir&eacute; dans le message initial de la
+    n&eacute;gociation SSL, de fa&ccedil;on &agrave; ce que le serveur web
+    puisse choisir la bonne configuration de serveur virtuel &agrave;
+    utiliser pendant le d&eacute;roulement de la n&eacute;gociation SSL.
+    Cette fonctionnalit&eacute; a &eacute;t&eacute; ajout&eacute;e
+    &agrave; SSL lorsque sont apparues les extensions TLS, RFC 3546.<br />
+      Voir <a href="ssl/ssl_faq.html">la FAQ SSL</a>
+      et <a href="http://www.ietf.org/rfc/rfc3546.txt">la RFC 3546</a>
+    </dd>
+
+
+
+<dt><a name="commongatewayinterface" id="commongatewayinterface">
+Interface commune avec les programmes externes
+(Common Gateway Interface)</a>
+	 <a name="cgi" id="cgi">(CGI)</a></dt>
+    <dd>La d&eacute;finition standard d'une interface entre un serveur web et un
+    programme externe pour permettre &agrave; ce dernier de traiter des requ&ecirc;tes.
+     Il existe une <a href="http://www.ietf.org/rfc/rfc3875">RFC
+     informationnelle</a> qui en couvre les sp&eacute;cificit&eacute;s.<br />
+      Voir : <a href="howto/cgi.html">Contenu dynamique avec CGI</a>
+    </dd>
+
+
+
+<dt><a name="uniformresourcelocator" id="uniformresourcelocator">
+Localisation de Ressource Uniformis&eacute;e
+(Uniform Resource Locator)
+      </a> <a name="url" id="url">(URL)</a></dt>
+  <dd>Le nom/adresse d'une ressource sur l'Internet.  Il s'agit du terme
+  informel commun pour ce qui est formellement d&eacute;fini comme <glossary
+      ref="uniformresourceidentifier">
+      Identificateur de Ressource Uniformis&eacute;</glossary>.
+    Les URLs sont g&eacute;n&eacute;ralement construites selon un sch&eacute;ma, comme
+    <code>http</code> ou
+    <code>https</code>, un nom d'h&ocirc;te, et un chemin.  Une URL pour cette page
+    pourrait &ecirc;tre
+    <code>http://httpd.apache.org/docs/&httpd.docs;/glossary.html</code>.
+  </dd>
+
+
+    <dt><a name="proxy" id="proxy">Mandataire (Proxy)</a></dt>
+    <dd>Un serveur interm&eacute;diaire qui se situe entre le client et le
+    <em>serveur d'origine</em>.
+    Il prend en compte les requ&ecirc;tes des clients, les transmet au serveur
+    d'origine, puis renvoie la r&eacute;ponse du serveur d'origine au client.
+    Si plusieurs clients demandent le m&ecirc;me contenu, le mandataire peut l'extraire
+    de son cache, plut&ocirc;t que le demander au serveur d'origine
+    &agrave; chaque fois, ce qui r&eacute;duit le temps de r&eacute;ponse.<br />
+      Voir : <a href="mod/mod_proxy.html">mod_proxy</a>
+    </dd>
+
+    <dt><a name="reverseproxy" id="reverseproxy">Mandataire inverse
+    (Reverse Proxy)</a></dt>
+  <dd>Un serveur <glossary ref="proxy">mandataire</glossary> qui est vu du client
+    comme un <em>serveur d'origine</em>.  Ceci peut s'av&eacute;rer utile pour
+    dissimuler le serveur d'origine r&eacute;el au client pour des raisons de s&eacute;curit&eacute;,
+    ou pour r&eacute;partir la charge.
+  </dd>
+
+    <dt><a name="method" id="method">M&eacute;thode (Method)</a></dt>
+    <dd>Dans le contexte <glossary ref="http">HTTP</glossary>, une action &agrave;
+      effectuer sur une ressource sp&eacute;cifi&eacute;e dans la ligne de requ&ecirc;te
+      par le client.  Parmi les m&eacute;thodes disponibles dans HTTP, on trouve
+      <code>GET</code>, <code>POST</code>,
+      et <code>PUT</code>.
+    </dd>
+
+    <dt><a name="module" id="module">Module</a></dt>
+    <dd>Une partie ind&eacute;pendante d'un programme.  De nombreuses fonctionnalit&eacute;s
+    d'Apache sont fournies par des modules que vous pouvez choisir d'inclure
+    ou d'exclure.  Les modules qui sont compil&eacute;s dans le binaire
+    <program>httpd</program> sont appel&eacute;s <dfn>modules statiques</dfn>, alors
+    que les modules qui existent s&eacute;par&eacute;ment et peuvent &ecirc;tre charg&eacute;s
+    optionnellement &agrave; l'ex&eacute;cution sont appel&eacute;s
+      <dfn>modules dynamiques</dfn> ou <glossary ref="dso">DSOs</glossary>.
+      Les modules qui sont inclus par d&eacute;faut sont appel&eacute;s
+      <dfn>modules de base</dfn>. De nombreux modules disponibles pour Apache
+      ne se trouvent pas dans l'<glossary ref="tarball">archive</glossary>
+      du Serveur HTTP Apache .  Il sont appel&eacute;s
+      <dfn>modules tiers</dfn>.<br />
+      Voir : <a href="mod/">Index des modules</a>
+    </dd>
+
+<dt><a name="passphrase" id="passphrase">Mot de Passe (Pass Phrase)</a></dt>
+    <dd>Le mot ou la phrase qui prot&egrave;ge les fichiers de cl&eacute;s priv&eacute;es.
+    Il emp&ecirc;che les utilisateurs non autoris&eacute;s de les d&eacute;chiffrer. En g&eacute;n&eacute;ral,
+    il s'agit simplement de la cl&eacute; secr&egrave;te de chiffrement/d&eacute;chiffrement
+      utilis&eacute;e pour les <glossary
+      ref="cipher">Algorithmes de chiffrement</glossary>.<br />
+      Voir : <a href="ssl/">chiffrement SSL/TLS</a>
+    </dd>
+
+    <dt><a name="fully-qualifieddomain-name"
+        id="fully-qualifieddomain-name">Nom de domaine enti&egrave;rement qualifi&eacute;
+	(Fully-Qualified Domain-Name)</a>
+      <a name="fqdn" id="fqdn">(FQDN)</a></dt>
+    <dd>Le nom unique d'une entit&eacute; du r&eacute;seau, comprenant un nom d'h&ocirc;te et un
+    nom de domaine qui peuvent &ecirc;tre r&eacute;solus en une adresse IP. Par exemple,
+      <code>www</code> est un nom d'h&ocirc;te, <code>example.com</code> est un nom
+      de domaine, et <code>www.example.com</code> est un nom de domaine
+      enti&egrave;rement qualifi&eacute;.
+    </dd>
+
+    <dt><a name="modulemagicnumber" id="modulemagicnumber">
+    Nombre Magique des Modules
+    (Module Magic Number)</a>
+      (<a name="mmn" id="mmn">MMN</a>)</dt>
+    <dd>Le Nombre Magique des Modules est une constante d&eacute;finie dans le code
+    source d'Apache et associ&eacute;e &agrave; la compatibilit&eacute; binaire des modules.
+    Sa valeur est modifi&eacute;e quand des structures internes d'Apache, des appels
+    de fonctions et d'autres parties significatives de l'API sont modifi&eacute;es
+    de telle fa&ccedil;on que la compatibilit&eacute; binaire ne peut plus &ecirc;tre garantie.
+    En cas de changement de MMN, tous les modules tiers doivent &ecirc;tre au
+    moins recompil&eacute;s, et parfois m&ecirc;me l&eacute;g&egrave;rement modifi&eacute;s afin de pouvoir
+    fonctionner avec la nouvelle version d'Apache.
+    </dd>
+
+    <dt><a name="dynamicsharedobject" id="dynamicsharedobject">
+    Objet Dynamique Partag&eacute; (Dynamic Shared Object)
+	</a> <a name="dso" id="dso">(DSO)</a></dt>
+    <dd><glossary ref="module">Modules</glossary> compil&eacute;s en dehors du binaire
+      Apache <program>httpd</program> et qui peuvent &ecirc;tre
+      charg&eacute;s &agrave; la demande.<br />
+      Voir : <a href="dso.html">Support des objets dynamiques partag&eacute;s</a>
+    </dd>
+
+<dt><a name="openssl" id="openssl">OpenSSL</a></dt>
+    <dd>L'ensemble d'outils Open Source pour SSL/TLS<br />
+      Voir <a href="http://www.openssl.org/">http://www.openssl.org/</a>#
+    </dd>
+
+<dt><a name="apacheextensiontool" id="apacheextensiontool">
+    Outil de gestion des extensions Apache
+    (APache eXtension Tool)</a>
+    <a name="apxs" id="apxs">(apxs)</a></dt>
+    <dd>Un script Perl qui aide &agrave; la compilation des sources de <glossary
+      ref="module">module</glossary> sous forme d'Objets Dynamiques Partag&eacute;s
+      (Dynamic Shared Objects ou
+      <glossary ref="dso">DSO</glossary>s) et facilite leur installation
+      dans le serveur Web Apache.<br />
+      Voir : Page de manuel : <program>apxs</program>
+    </dd>
+
+<dt><a name="plaintext" id="plaintext">Plein Texte (Plaintext)</a></dt>
+    <dd>Le texte non chiffr&eacute;.</dd>
+
+
+
+    <dt><a name="hypertexttransferprotocol"
+      id="hypertexttransferprotocol">Protocole de Transfert Hypertexte
+      (HyperText Transfer Protocol)</a>
+      <a name="http" id="hhtp">(HTTP)</a></dt>
+    <dd>Le protocole de transmission standard utilis&eacute; sur le World Wide Web.
+    Apache impl&eacute;mente la version 1.1 du protocole, r&eacute;f&eacute;renc&eacute;e comme HTTP/1.1 et
+      d&eacute;finie par la
+      <a href="http://ietf.org/rfc/rfc2616.txt">RFC 2616</a>.
+    </dd>
+
+    <dt><a name="messagedigest" id="messagedigest">R&eacute;sum&eacute; de message
+    (Message Digest)</a></dt>
+    <dd>Un hachage du message, qui peut &ecirc;tre utilis&eacute; pour v&eacute;rifier
+    que son contenu n'a pas &eacute;t&eacute; alt&eacute;r&eacute; durant le transfert.<br />
+      Voir : <a href="ssl/">chiffrement SSL/TLS</a>
+    </dd>
+
+    <dt><a name="transportlayersecurity" id="transportlayersecurity">
+    S&eacute;curit&eacute; de la couche Transport
+    (Transport Layer Security)
+      </a> <a name="tls" id="tls">(TLS)</a></dt>
+  <dd>Le protocole successeur de SSL, cr&eacute;&eacute; par l'Internet Engineering Task
+    Force (IETF) pour l'authentification et le chiffrement g&eacute;n&eacute;raux des
+    communications dans les r&eacute;seaux TCP/IP. TLS version 1 est pratiquement
+    identique &agrave; SSL version 3.<br />
+    Voir : <a href="ssl/">chiffrement SSL/TLS</a>
+  </dd>
+
+    <dt><a name="session" id="session">Session</a></dt>
+  <dd>Les informations sur le contexte d'une communication en g&eacute;n&eacute;ral.</dd>
+
+    <dt><a name="digitalsignature" id="digitalsignature">Signature num&eacute;rique
+    (Digital Signature)</a></dt>
+    <dd>Un bloc de texte crypt&eacute; qui valide un certificat ou un autre fichier.
+    Une <glossary ref="certificationauthority">Autorit&eacute; de certification</glossary>
+      cr&eacute;e une signature en g&eacute;n&eacute;rant une empreinte de la <em>Cl&eacute; publique</em>
+      fournie avec le <em>Certificat</em>; la CA chiffre ensuite l'empreinte
+      avec sa propre <em>Cl&eacute; priv&eacute;e</em>. Seule la cl&eacute; publique de la CA
+      peut d&eacute;crypter la signature, ce qui permet de v&eacute;rifier que la CA a bien
+      authentifi&eacute; l'entit&eacute; du r&eacute;seau qui poss&egrave;de le
+      <em>Certificat</em>.<br />
+      Voir : <a href="ssl/">chiffrement SSL/TLS</a>
+    </dd>
+
+<dt><a name="ssleay" id="ssleay">SSLeay</a></dt>
+  <dd>La biblioth&egrave;que originelle d'impl&eacute;mentation de SSL/TLS d&eacute;velopp&eacute;e par
+  Eric A. Young
+  </dd>
+
+<dt><a name="ciphertext" id="ciphertext">Texte crypt&eacute;
+(Ciphertext)</a></dt>
+    <dd>Le r&eacute;sultat du passage d'un document
+    <glossary ref="plaintext">Plaintext</glossary> (Plein texte) par un
+    <glossary ref="cipher">Cipher</glossary>.<br />
+    Voir : <a href="ssl/">chiffrement SSL/TLS</a>
+    </dd>
+
+    <dt><a name="mime-type" id="mime-type">Type MIME (MIME-type)</a></dt>
+    <dd>Une m&eacute;thode pour d&eacute;crire le type de document transmis.  Son nom
+    vient du fait que son format est issu des Multipurpose
+      Internet Mail Extensions (Extensions Multi-usages de la
+      Messagerie par Internet) .  Il comprend un type majeur et un type
+      mineur, s&eacute;par&eacute;s par un slash (barre oblique).  On trouve
+      entre autres types <code>text/html</code>,
+      <code>image/gif</code>, et <code>application/octet-stream</code>. Dans
+      HTTP, le type MIME est transmis dans l'
+      <glossary ref="header">en-t&ecirc;te</glossary> <code>Content-Type</code>.<br />
+      Voir : <a href="mod/mod_mime.html">mod_mime</a>
+    </dd>
+
+
+    <dt><a name="environmentvariable" id="environmentvariable">
+    Variable d'environnement
+    (Environment Variable)</a> <a name="env-variable"
+        id="env-variable">(env-variable)</a></dt>
+    <dd>Ce sont des variables nomm&eacute;es g&eacute;r&eacute;es par le shell du syst&egrave;me
+    d'exploitation, et servant au stockage d'informations et &agrave; la
+    communication entre les programmes. Apache poss&egrave;de aussi des variables
+    internes consid&eacute;r&eacute;es comme variables d'environnement, mais stock&eacute;es dans
+    des structures internes &agrave; Apache, et non dans l'environnement
+    du shell.<br />
+      Voir : <a href="env.html">Les variables d'environnement dans Apache</a>
+    </dd>
+
+     <dt><a name="x.509" id="x.509">X.509</a></dt>
+  <dd>Une norme de certificat d'authentification recommand&eacute;e par l'International
+    Telecommunication Union (ITU-T) et utilis&eacute;e pour
+    l'authentification SSL/TLS.<br
+    /> Voir : <a href="ssl/">chiffrement SSL/TLS</a>
+  </dd>
+</dl>
+</section>
+</manualpage>
+
+

@@ -1,0 +1,787 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+<!-- English Revision : 1330883 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="logs.xml.meta">
+
+  <title>Fichiers journaux</title>
+
+  <summary>
+    <p>Pour v&eacute;ritablement g&eacute;rer un serveur web,
+    il est n&eacute;cessaire de disposer d'un
+    retour d'informations &agrave; propos de l'activit&eacute; et des performances du
+    serveur, ainsi que de tout probl&egrave;me qui pourrait survenir. Le serveur HTTP
+    Apache propose des fonctionnalit&eacute;s de journalisation souples et tr&egrave;s
+    compl&egrave;tes. Ce document d&eacute;crit comment configurer ces fonctionnalit&eacute;s de
+    journalisation et interpr&eacute;ter le contenu des journaux.</p>
+  </summary>
+
+  <section id="overview">
+    <title>Vue d'ensemble</title>
+
+  <related>
+      <modulelist>
+        <module>mod_log_config</module>
+        <module>mod_log_forensic</module>
+        <module>mod_logio</module>
+        <module>mod_cgi</module>
+      </modulelist>
+  </related>
+
+  <p>
+  Le serveur HTTP Apache fournit toute une vari&eacute;t&eacute; de m&eacute;canismes
+  diff&eacute;rents pour la journalisation de tout ce qui peut se passer au
+  sein de votre serveur, depuis la requ&ecirc;te initiale, en passant par le
+  processus de mise en correspondance des URLs, et jusqu'&agrave; la fermeture
+  de la connexion, y compris toute erreur pouvant survenir au cours du
+  traitement. De plus, certains modules tiers fournissent des
+  fonctionnalit&eacute;s de journalisation ou ins&egrave;rent des entr&eacute;es dans les
+  fichiers journaux existants, et les applications comme les programmes
+  CGI, les scripts PHP ou autres gestionnaires peuvent envoyer des
+  messages vers le journal des erreurs du serveur.
+  </p>
+
+  <p>
+  Ce document d&eacute;crit le fonctionnement des modules de journalisation
+  fournis en standard avec le serveur httpd.
+  </p>
+
+  </section>
+
+  <section id="security">
+    <title>Avertissement &agrave; propos de la s&eacute;curit&eacute;</title>
+
+    <p>Tout utilisateur qui a les droits en &eacute;criture sur le r&eacute;pertoire dans
+    lequel Apache httpd &eacute;crit ses journaux pourra quasi
+    certainement avoir acc&egrave;s &agrave; l'uid sous lequel le serveur est d&eacute;marr&eacute;, en
+    l'occurrence habituellement root. N'accordez <em>PAS</em> aux utilisateurs
+    l'acc&egrave;s en &eacute;criture au r&eacute;pertoire dans lequel les journaux sont stock&eacute;s
+    sans savoir exactement quelles en seraient les cons&eacute;quences ; voir le
+    document <a href="misc/security_tips.html">conseils sur la s&eacute;curit&eacute;</a>
+    pour plus de d&eacute;tails.</p>
+
+    <p>En outre, les journaux peuvent contenir des informations fournies
+    directement par un client, sans caract&egrave;res d'&eacute;chappement. Des clients mal
+    intentionn&eacute;s peuvent donc ins&eacute;rer des caract&egrave;res de contr&ocirc;le dans les
+    journaux, et il convient par cons&eacute;quent d'&ecirc;tre tr&egrave;s prudent lors de la
+    manipulation des journaux bruts.</p>
+  </section>
+
+  <section id="errorlog">
+    <title>Journal des erreurs</title>
+
+    <related>
+      <modulelist>
+        <module>core</module>
+      </modulelist>
+      <directivelist>
+        <directive module="core">ErrorLog</directive>
+        <directive module="core">LogLevel</directive>
+      </directivelist>
+    </related>
+
+    <p>Le journal des erreurs du serveur, dont le nom et la localisation sont
+    d&eacute;finis par la directive <directive module="core">ErrorLog</directive>,
+    est le journal le plus important. C'est dans celui-ci
+    que le d&eacute;mon Apache httpd va envoyer les informations de diagnostic et
+    enregistrer toutes les erreurs qui surviennent lors du traitement des
+    requ&ecirc;tes. Lorsqu'un probl&egrave;me survient au d&eacute;marrage du serveur ou pendant
+    son fonctionnement, la premi&egrave;re chose &agrave; faire est de regarder dans ce
+    journal, car il vous renseignera souvent sur le probl&egrave;me rencontr&eacute; et
+    la mani&egrave;re d'y rem&eacute;dier.</p>
+
+    <p>Le journal des erreurs est habituellement enregistr&eacute; dans un fichier
+    (en g&eacute;n&eacute;ral <code>error_log</code> sur les syst&egrave;mes de type Unix et
+    <code>error.log</code> sur Windows et OS/2). Sur les syst&egrave;mes de type Unix,
+    le serveur peut aussi enregistrer ses erreurs dans
+    <code>syslog</code> ou les
+    <a href="#piped">rediriger vers un programme</a> par l'interm&eacute;diaire d'un
+    tube de communication (pipe).</p>
+
+    <p>Le format par d&eacute;faut du journal des erreurs est descriptif et de forme
+    relativement libre. Certaines informations apparaissent cependant dans la
+    plupart des entr&eacute;es du journal. Voici un message typique
+    &agrave; titre d'exemple : </p>
+
+    <example>
+      [Wed Oct 11 14:32:52 2000] [error] [client 127.0.0.1]
+      client denied by server configuration:
+      /export/home/live/ap/htdocs/test
+    </example>
+
+    <p>Le premier champ de l'entr&eacute;e du journal est la date et l'heure du
+    message. Le second champ indique la s&eacute;v&eacute;rit&eacute; de l'erreur rapport&eacute;e. La
+    directive <directive module="core">LogLevel</directive> permet de
+    restreindre le type des erreurs qui doivent &ecirc;tre enregistr&eacute;es
+    dans le journal des erreurs en d&eacute;finissant leur niveau de s&eacute;v&eacute;rit&eacute;. Le
+    troisi&egrave;me champ contient l'adresse IP du client qui a g&eacute;n&eacute;r&eacute; l'erreur.
+    Vient ensuite le message proprement dit, qui indique dans ce cas que le
+    serveur a &eacute;t&eacute; configur&eacute; pour interdire l'acc&egrave;s au client. Le serveur
+    indique le chemin syst&egrave;me du document requis (et non
+    son chemin web).</p>
+
+    <p>Une grande vari&eacute;t&eacute; de messages diff&eacute;rents peuvent appara&icirc;tre dans le
+    journal des erreurs. La plupart d'entre eux sont similaires &agrave; l'exemple
+    ci-dessus. Le journal des erreurs peut aussi contenir des informations de
+    d&eacute;bogage en provenance de scripts CGI. Toute information qu'un script CGI
+    &eacute;crit sur la sortie d'erreurs standard <code>stderr</code> sera recopi&eacute;e
+    telle quelle dans le journal des erreurs.</p>
+
+    <p>La directive <directive module="core">ErrorLogFormat</directive>
+    vous permet de personnaliser le format du journal des erreurs, et de
+    d&eacute;finir les informations &agrave; journaliser. Si
+    <module>mod_unique_id</module> est pr&eacute;sent, vous pouvez utiliser le
+    drapeau <code>%L</code> &agrave; la fois dans le journal des erreurs et
+    dans le
+    journal des acc&egrave;s, ce qui aura pour effet de g&eacute;n&eacute;rer un identifiant
+    d'entr&eacute;e qui vous permettra de corr&eacute;ler les entr&eacute;es du journal des
+    erreurs avec celles du journal des acc&egrave;s.</p>
+
+    <p>Pendant la phase de test, il est souvent utile de visualiser en continu
+    le journal des erreurs afin de d&eacute;tecter tout probl&egrave;me &eacute;ventuel. Sur les
+    syst&egrave;mes de type Unix, ceci s'effectue &agrave; l'aide de la commande :</p>
+
+    <example>
+      tail -f error_log
+    </example>
+  </section>
+
+  <section id="permodule">
+    <title>Journalisation par module</title>
+
+    <p>La directive <directive module="core">LogLevel</directive> permet
+    de sp&eacute;cifier un niveau de s&eacute;v&eacute;rit&eacute; de journalisation pour chaque
+    module. Vous pouvez ainsi r&eacute;soudre un probl&egrave;me propre &agrave; un module particulier
+    en augmentant son volume de journalisation sans augmenter ce volume
+    pour les autres modules. Ceci est particuli&egrave;rement utile lorsque
+    vous voulez obtenir des d&eacute;tails sur le fonctionnement de modules
+    comme <module>mod_proxy</module> ou <module>mod_rewrite</module>.</p>
+
+    <p>Pour ce faire, vous devez sp&eacute;cifier le nom du module dans votre
+    directive <directive>LogLevel</directive> :</p>
+
+    <highlight language="config">
+    LogLevel info rewrite:trace5
+    </highlight>
+
+    <p>Dans cet exemple, le niveau de journalisation g&eacute;n&eacute;ral est d&eacute;fini
+    &agrave; info, et &agrave; <code>trace5</code> pour <module>mod_rewrite</module>.</p>
+
+    <note>Cette directive remplace les directives de journalisation par
+    module des versions pr&eacute;c&eacute;dentes du serveur, comme
+    <code>RewriteLog</code>.</note>
+ </section>
+
+
+  <section id="accesslog">
+    <title>Journal des acc&egrave;s</title>
+
+    <related>
+      <modulelist>
+        <module>mod_log_config</module>
+        <module>mod_setenvif</module>
+      </modulelist>
+      <directivelist>
+        <directive module="mod_log_config">CustomLog</directive>
+        <directive module="mod_log_config">LogFormat</directive>
+        <directive module="mod_setenvif">SetEnvIf</directive>
+      </directivelist>
+    </related>
+
+    <p>Le journal des acc&egrave;s au serveur
+    enregistre toutes les requ&ecirc;tes que traite
+    ce dernier. La localisation et le contenu du journal des acc&egrave;s sont d&eacute;finis
+    par la directive <directive module="mod_log_config">CustomLog</directive>.
+    La directive <directive module="mod_log_config">LogFormat</directive>
+    permet de simplifier la s&eacute;lection du contenu du journal. Cette section
+    d&eacute;crit comment configurer le serveur pour l'enregistrement des informations
+    dans le journal des acc&egrave;s.</p>
+
+    <p>Bien &eacute;videmment, le stockage d'informations dans le journal des acc&egrave;s
+    n'est que le point de d&eacute;part de la gestion de la journalisation. L'&eacute;tape
+    suivante consiste &agrave; analyser ces informations de fa&ccedil;on &agrave; pouvoir en
+    extraire des statistiques utiles. L'analyse de journaux en g&eacute;n&eacute;ral est en
+    dehors du sujet de ce document et ne fait pas vraiment partie int&eacute;grante
+    du travail du serveur web lui-m&ecirc;me. Pour plus d'informations &agrave; propos de ce
+    sujet et des applications d&eacute;di&eacute;es &agrave; l'analyse de journaux, vous pouvez vous
+    r&eacute;f&eacute;rer &agrave; <a href="http://dmoz.org/Computers/Software/Internet/
+    Site_Management/Log_analysis/">Open Directory</a> ou
+    <a href="http://dir.yahoo.com/Computers_and_Internet/Software/
+    Internet/World_Wide_Web/Servers/Log_Analysis_Tools/">Yahoo</a>.</p>
+
+    <p>Diff&eacute;rentes versions du d&eacute;mon Apache httpd utilisaient d'autres modules
+    et directives pour contr&ocirc;ler la journalisation des acc&egrave;s, &agrave; l'instar de
+    mod_log_referer, mod_log_agent, et de la directive
+    <code>TransferLog</code>. La directive
+    <directive	module="mod_log_config">CustomLog</directive> rassemble
+    d&eacute;sormais les fonctionnalit&eacute;s de toutes les anciennes directives.</p>
+
+    <p>Le format du journal des acc&egrave;s est hautement configurable. Il est
+    d&eacute;fini &agrave; l'aide d'une cha&icirc;ne de format qui ressemble sensiblement &agrave; la
+    cha&icirc;ne de format de style langage C de printf(1). Vous trouverez quelques
+    exemples dans les sections suivantes. Pour une liste exhaustive de ce que
+    peut contenir une cha&icirc;ne de format, vous pouvez vous r&eacute;f&eacute;rer au chapitre
+    <a href="mod/mod_log_config.html#formats">cha&icirc;nes de format</a> de la
+    documentation du module <module>mod_log_config</module>.</p>
+
+    <section id="common">
+      <title>Format habituel du journal</title>
+
+      <p>Voici une configuration typique pour le journal des acc&egrave;s :</p>
+
+      <highlight language="config">
+LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
+CustomLog logs/access_log common
+      </highlight>
+
+      <p>Ici est d&eacute;finie l'<em>identit&eacute;</em> <code>common</code> qui est
+      ensuite associ&eacute;e &agrave; une cha&icirc;ne de format de journalisation particuli&egrave;re.
+      La cha&icirc;ne de format est constitu&eacute;e de directives d&eacute;butant par le
+      caract&egrave;re %, chacune d'entre elles indiquant au serveur d'enregistrer
+      un &eacute;l&eacute;ment particulier d'information. Des caract&egrave;res litt&eacute;raux peuvent
+      aussi &ecirc;tre ins&eacute;r&eacute;s dans la cha&icirc;ne de format ; il seront copi&eacute;s tels
+      quels dans le flux de sortie destin&eacute; &agrave; la journalisation.
+      Les guillemets (<code>"</code>) doivent &ecirc;tre &eacute;chapp&eacute;es en les faisant
+      pr&eacute;c&eacute;der d'un anti-slash (<code>\</code>) afin qu'elles ne soient pas
+      interpr&eacute;t&eacute;es comme la fin de la cha&icirc;ne de format. La cha&icirc;ne de format
+      peut aussi contenir les caract&egrave;res de contr&ocirc;le sp&eacute;ciaux
+      "<code>\n</code>" et "<code>\t</code>" pour ins&eacute;rer respectivement
+      un passage &agrave; la ligne et une tabulation.</p>
+
+      <p>La directive <directive module="mod_log_config">CustomLog</directive>
+      d&eacute;finit un nouveau fichier journal en l'associant &agrave; l'identit&eacute;
+      pr&eacute;c&eacute;demment d&eacute;finie. Le chemin du nom de fichier associ&eacute; au journal
+      des acc&egrave;s est relatif au chemin d&eacute;fini par la directive
+      <directive module="core">ServerRoot</directive>, sauf s'il
+      d&eacute;bute par un slash.</p>
+
+      <p>La configuration ci-dessus va enregistrer les entr&eacute;es de
+      journalisation selon un format connu sous le nom de
+      Common Log Format (CLF) pour "Format de journalisation standard".
+      Ce format standard peut &ecirc;tre produit par de nombreux serveurs web
+      diff&eacute;rents et lu par de nombreux programmes d'analyse de journaux.
+      Les entr&eacute;es de fichier journal g&eacute;n&eacute;r&eacute;es selon le format CLF
+      ressemblent &agrave; ceci :</p>
+
+      <example>
+        127.0.0.1 - frank [10/Oct/2000:13:55:36 -0700] "GET
+        /apache_pb.gif HTTP/1.0" 200 2326
+      </example>
+
+      <p>Chaque partie de cette entr&eacute;e de journal est d&eacute;crite
+      dans ce qui suit.</p>
+
+      <dl>
+        <dt><code>127.0.0.1</code> (<code>%h</code>)</dt>
+
+        <dd>Il s'agit de l'adresse IP du client (l'h&ocirc;te distant) qui a envoy&eacute;
+	la requ&ecirc;te au serveur. Si la directive
+	<directive module="core">HostnameLookups</directive> est positionn&eacute;e &agrave;
+	<code>On</code>, le serveur va essayer de d&eacute;terminer le nom de l'h&ocirc;te
+	et de l'enregistrer &agrave; la place de l'adresse IP. Cette configuration
+	n'est cependant pas recommand&eacute;e car elle peut ralentir le serveur de
+	mani&egrave;re significative. Il est par cons&eacute;quent pr&eacute;f&eacute;rable d'utiliser un
+	processeur d'analyse de journaux a posteriori
+	tel que <program>logresolve</program>
+	pour d&eacute;terminer les noms d'h&ocirc;te. L'adresse IP indiqu&eacute;e ici n'est pas
+	n&eacute;cessairement l'adresse IP de la machine devant laquelle se trouve
+	l'utilisateur. Si un serveur mandataire s'intercale entre le serveur
+	et l'utilisateur, l'adresse indiqu&eacute;e sera celle du mandataire et non
+	celle de la machine &agrave; l'origine de la requ&ecirc;te.</dd>
+
+        <dt><code>-</code> (<code>%l</code>)</dt>
+
+        <dd>Le "trait d'union" indique que la portion d'information
+	correspondante n'est pas disponible. Dans le cas pr&eacute;sent, l'information
+	non disponible est l'identit&eacute; (RFC 1413) du client telle que d&eacute;termin&eacute;e
+	par <code>identd</code> sur la machine cliente. Cette information est
+	tr&egrave;s peu fiable et ne devrait jamais &ecirc;tre utilis&eacute;e, sauf dans le cas
+	de r&eacute;seaux internes &eacute;troitement contr&ocirc;l&eacute;s. Le d&eacute;mon httpd ne cherchera
+	d'ailleurs &agrave; obtenir cette information que si la directive
+	<directive module="mod_ident">IdentityCheck</directive> est positionn&eacute;e
+	&agrave; <code>On</code>.</dd>
+
+        <dt><code>frank</code> (<code>%u</code>)</dt>
+
+        <dd>Il s'agit de l'identifiant utilisateur de la personne qui a
+	demand&eacute; le document, issu d'une authentification HTTP.
+	Ce m&ecirc;me identifiant est en g&eacute;n&eacute;ral fourni aux scripts CGI par
+	l'interm&eacute;diaire de la valeur de la variable d'environnement
+	<code>REMOTE_USER</code>. Si le statut de la requ&ecirc;te (voir plus loin)
+	est 401, cette identifiant n'est pas fiable car l'utilisateur n'est
+	pas encore authentifi&eacute;. Si le document n'est pas prot&eacute;g&eacute; par
+	mot de passe, cette partie d'information sera repr&eacute;sent&eacute;e par
+	"<code>-</code>", comme la partie pr&eacute;c&eacute;dente.</dd>
+
+        <dt><code>[10/Oct/2000:13:55:36 -0700]</code>
+        (<code>%t</code>)</dt>
+
+        <dd>
+          L'heure &agrave; laquelle la requ&ecirc;te a &eacute;t&eacute; re&ccedil;ue.
+          Le format est le suivant :
+
+          <p class="indent">
+            <code>[jour/mois/ann&eacute;e:heure:minutes:secondes zone]<br />
+             jour = 2*chiffre<br />
+             mois = 3*lettre<br />
+             ann&eacute;e = 4*chiffre<br />
+             heure = 2*chiffre<br />
+             minutes = 2*chiffre<br />
+             secondes = 2*chiffre<br />
+             zone = (`+' | `-') 4*chiffre</code>
+          </p>Il est possible de modifier le format d'affichage de l'heure
+	  en sp&eacute;cifiant <code>%{format}t</code> dans la cha&icirc;ne de format du
+	  journal, o&ugrave; <code>format</code> est une cha&icirc;ne de format
+	  de la forme de celle de la fonction <code>strftime(3)</code>
+	  de la biblioth&egrave;que C standard, ou choisie parmi les
+	  formats sp&eacute;ciaux support&eacute;s. Pour plus de d&eacute;tails,
+	  reportez-vous aux. <a
+	  href="mod/mod_log_config.html#formats">cha&icirc;nes de format</a>
+	  de <module>mod_log_config</module>.
+        </dd>
+
+        <dt><code>"GET /apache_pb.gif HTTP/1.0"</code>
+        (<code>\"%r\"</code>)</dt>
+
+        <dd>La ligne de la requ&ecirc;te du client est plac&eacute;e entre guillemets.
+	Elle contient de nombreuses informations utiles. Tout d'abord, la
+	m&eacute;thode utilis&eacute;e par le client est <code>GET</code>. Ensuite, le
+	client a demand&eacute; la ressource <code>/apache_pb.gif</code>, et enfin,
+	le client a utilis&eacute; le protocole <code>HTTP/1.0</code>. Il est aussi
+	possible d'enregistrer s&eacute;par&eacute;ment une ou plusieurs parties de la
+	requ&ecirc;te. Par exemple, la cha&icirc;ne de format "<code>%m %U %q %H</code>"
+	va enregistrer la m&eacute;thode, le chemin, la cha&icirc;ne de la requ&ecirc;te et le
+	protocole, ce qui donnera le m&ecirc;me r&eacute;sultat que
+	"<code>%r</code>".</dd>
+
+        <dt><code>200</code> (<code>%&gt;s</code>)</dt>
+
+        <dd>C'est le code de statut que le serveur retourne au client. Cette
+	information est tr&egrave;s importante car elle indique si la requ&ecirc;te a fait
+	l'objet d'une r&eacute;ponse positive (codes commen&ccedil;ant par 2), une
+	redirection (codes commen&ccedil;ant par 3), une erreur due au client (codes
+	commen&ccedil;ant par 4), ou une erreur due au serveur (codes commen&ccedil;ant
+	par 5). Vous trouverez la liste compl&egrave;te des codes de statut possibles
+	dans la <a href="http://www.w3.org/Protocols/rfc2616/
+	rfc2616.txt">specification HTTP</a> (RFC2616 section 10).</dd>
+
+        <dt><code>2326</code> (<code>%b</code>)</dt>
+
+        <dd>La derni&egrave;re partie indique la taille de l'objet retourn&eacute; au client,
+	en-t&ecirc;tes non compris. Si aucun contenu n'a &eacute;t&eacute; retourn&eacute; au client, cette
+	partie contiendra "<code>-</code>". Pour indiquer l'absence de contenu
+	par "<code>0</code>", utilisez <code>%B</code> au lieu de
+	<code>%b</code>.</dd>
+      </dl>
+    </section>
+
+    <section id="combined">
+      <title>Combined Log Format (Format de journalisation combin&eacute;)</title>
+
+      <p>Une autre cha&icirc;ne de format couramment utilis&eacute;e est le
+      "Combined Log Format" (Format de journalisation combin&eacute;). Il s'utilise
+      comme suit :</p>
+
+      <highlight language="config">
+LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\"" combined
+CustomLog log/access_log combined
+      </highlight>
+
+      <p>Ce format est identique au Common Log Format, avec deux champs
+      suppl&eacute;mentaires. Chacun de ces deux champs utilise la directive
+      commen&ccedil;ant par le caract&egrave;re "%" <code>%{<em>header</em>}i</code>,
+      o&ugrave; <em>header</em> peut &ecirc;tre n'importe quel en-t&ecirc;te de requ&ecirc;te HTTP.
+      Avec ce format, le journal des acc&egrave;s se pr&eacute;sentera comme suit :</p>
+
+      <example>
+        127.0.0.1 - frank [10/Oct/2000:13:55:36 -0700] "GET
+        /apache_pb.gif HTTP/1.0" 200 2326
+        "http://www.example.com/start.html" "Mozilla/4.08 [en]
+        (Win98; I ;Nav)"
+      </example>
+
+      <p>Les champs suppl&eacute;mentaires sont :</p>
+
+      <dl>
+        <dt><code>"http://www.example.com/start.html"</code>
+        (<code>\"%{Referer}i\"</code>)</dt>
+
+        <dd>L'en-t&ecirc;te "Referer" (sic) de la requ&ecirc;te HTTP. Il indique le site
+	depuis lequel le client pr&eacute;tend avoir lanc&eacute; sa requ&ecirc;te. (Ce doit &ecirc;tre
+	la page qui contient un lien vers <code>/apache_pb.gif</code> ou
+	inclut ce dernier fichier).</dd>
+
+        <dt><code>"Mozilla/4.08 [en] (Win98; I ;Nav)"</code>
+        (<code>\"%{User-agent}i\"</code>)</dt>
+
+        <dd>L'en-t&ecirc;te User-Agent de la requ&ecirc;te HTTP. C'est une information
+	d'identification que le navigateur du client envoie &agrave; propos
+	de lui-m&ecirc;me.</dd>
+      </dl>
+    </section>
+
+    <section id="multiple">
+      <title>Journaux d'acc&egrave;s multiples</title>
+
+      <p>Plusieurs journaux d'acc&egrave;s peuvent &ecirc;tre cr&eacute;&eacute;s en sp&eacute;cifiant tout
+      simplement plusieurs directives
+      <directive module="mod_log_config">CustomLog</directive> dans le
+      fichier de configuration. Par exemple, les directives suivantes vont
+      cr&eacute;er trois journaux d'acc&egrave;s. Le premier contiendra les informations
+      de base CLF, le second les informations du Referer, et le troisi&egrave;me
+      les informations sur le navigateur. Les deux derni&egrave;res directives
+      <directive module="mod_log_config">CustomLog</directive> montrent
+      comment simuler les effets des directives <code>ReferLog</code> et
+      <code>AgentLog</code>.</p>
+
+      <highlight language="config">
+LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
+CustomLog logs/access_log common
+CustomLog logs/referer_log "%{Referer}i -&gt; %U"
+CustomLog logs/agent_log "%{User-agent}i"
+      </highlight>
+
+      <p>Cet exemple montre aussi qu'il n'est pas obligatoire d'associer
+      une cha&icirc;ne de format &agrave; un alias au moyen de la directive
+      <directive module="mod_log_config">LogFormat</directive>. Elle peut
+      &ecirc;tre d&eacute;finie directement dans la ligne de la directive
+      <directive module="mod_log_config">CustomLog</directive>.</p>
+    </section>
+
+    <section id="conditional">
+      <title>Journalisation conditionnelle</title>
+
+      <p>Il est parfois souhaitable d'exclure certaines entr&eacute;es des journaux
+      d'acc&egrave;s en fonction des caract&eacute;ristiques de la requ&ecirc;te du client. On
+      peut ais&eacute;ment accomplir ceci &agrave; l'aide des
+      <a href="env.html">variables d'environnement</a>. Tout d'abord, une
+      variable d'environnement doit &ecirc;tre d&eacute;finie pour indiquer que la
+      requ&ecirc;te remplit certaines conditions. Pour ceci, on utilise en g&eacute;n&eacute;ral
+      la directive <directive module="mod_setenvif">SetEnvIf</directive>,
+      puis la clause <code>env=</code> de la directive
+      <directive module="mod_log_config">CustomLog</directive> pour inclure
+      ou exclure les requ&ecirc;tes pour lesquelles
+      la variable d'environnement est d&eacute;finie.
+      Quelques exemples :</p>
+
+      <highlight language="config">
+# Marque les requ&ecirc;tes en provenance de l'interface loop-back
+SetEnvIf Remote_Addr "127\.0\.0\.1" dontlog
+# Marque les requ&ecirc;tes pour le fichier robots.txt
+SetEnvIf Request_URI "^/robots\.txt$" dontlog
+# Journalise toutes les autres requ&ecirc;tes
+CustomLog logs/access_log common env=!dontlog
+      </highlight>
+
+      <p>Autre exemple, imaginons l'enregistrement des requ&ecirc;tes en provenance
+      d'utilisateurs de langue anglaise dans un journal, et celles des autres
+      utilisateurs dans un autre journal.</p>
+
+      <highlight language="config">
+        SetEnvIf Accept-Language "en" english<br />
+        CustomLog logs/english_log common env=english<br />
+        CustomLog logs/non_english_log common env=!english
+      </highlight>
+
+	<p>Dans le contexte d'une mise en cache, il peut &ecirc;tre
+	int&eacute;ressant de conna&icirc;tre l'efficacit&eacute; du cache. Pour y parvenir,
+	on pourrait utiliser cette m&eacute;thode simple :</p>
+
+      <highlight language="config">
+SetEnv CACHE_MISS 1
+LogFormat "%h %l %u %t "%r " %>s %b %{CACHE_MISS}e" common-cache
+CustomLog logs/access_log common-cache
+      </highlight>
+
+      <p><module>mod_cache</module> va s'ex&eacute;cuter avant
+      <module>mod_env</module>, et si son action est couronn&eacute;e de
+      succ&egrave;s, il d&eacute;livrera le contenu sans faire appel &agrave; ce dernier. Si
+      l'URL se trouve dans le cache, la valeur journalis&eacute;e sera alors
+      <code>-</code>, tandis que dans le cas contraire elle sera
+      <code>1</code>.</p>
+
+      <p>En plus de la syntaxe <code>env=</code>, la directive <directive
+      module="mod_log_config">LogFormat</directive> supporte les
+      valeurs de journalisation conditionnelles bas&eacute;es sur le code de la
+      r&eacute;ponse HTTP :</p>
+
+      <highlight language="config">
+LogFormat "%400,501{User-agent}i" browserlog
+LogFormat "%!200,304,302{Referer}i" refererlog
+      </highlight>
+
+      <p>Dans le premier exemple, le <code>User-agent</code> sera
+      enregistr&eacute; si le code d'&eacute;tat HTTP est 400 ou 501. Dans le cas
+      contraire, c'est un caract&egrave;re "-" qui sera enregistr&eacute; &agrave; la place.
+      Dans le second exemple, le <code>Referer</code> sera enregistr&eacute; si
+      le code d'&eacute;tat HTTP n'est <strong>pas</strong> 200, 204, ou 302
+      (remarquez le caract&egrave;re "!" avant les codes d'&eacute;tat).</p>
+
+      <p>Bien que nous venions de montrer que la journalisation conditionnelle
+      est souple et tr&egrave;s puissante, cette m&eacute;thode de contr&ocirc;le du contenu des
+      journaux n'est pas la seule. Les fichiers journaux sont plus utiles
+      quand ils contiennent un enregistrement complet de l'activit&eacute; du serveur,
+      et il est souvent plus ais&eacute; de simplement traiter &agrave; posteriori les fichiers
+      journaux pour supprimer les requ&ecirc;tes que vous ne voulez pas y voir
+      appara&icirc;tre.</p>
+    </section>
+  </section>
+
+  <section id="rotation">
+    <title>Rotation des journaux</title>
+
+    <p>M&ecirc;me dans le cas d'un serveur mod&eacute;r&eacute;ment sollicit&eacute;, la quantit&eacute;
+    d'informations stock&eacute;es dans les fichiers journaux est tr&egrave;s importante.
+    Le fichier journal des acc&egrave;s grossit en g&eacute;n&eacute;ral d'1 Mo ou plus toutes
+    les 10000 requ&ecirc;tes. Il est par cons&eacute;quent n&eacute;cessaire d'effectuer
+    p&eacute;riodiquement la rotation des journaux en d&eacute;pla&ccedil;ant ou supprimant les
+    fichiers correspondants. On ne peut pas le faire pendant que le serveur
+    est en cours d'ex&eacute;cution, car Apache httpd va continuer &agrave; &eacute;crire dans l'ancien
+    fichier journal aussi longtemps qu'il le maintiendra ouvert.
+    C'est pourquoi le serveur doit &ecirc;tre
+    <a href="stopping.html">red&eacute;marr&eacute;</a> apr&egrave;s le d&eacute;placement ou la
+    suppression des fichiers journaux de fa&ccedil;on &agrave; ce qu'il en ouvre
+    de nouveaux.</p>
+
+    <p>Avec un red&eacute;marrage <em>graceful</em>, on peut faire en sorte que le
+    serveur ouvre de nouveaux fichiers journaux sans perdre de connexions
+    existantes ou en cours avec les clients. Cependant, pour que ceci soit
+    possible, le serveur doit continuer &agrave; &eacute;crire dans les anciens fichiers
+    journaux pendant qu'il termine le traitement des requ&ecirc;tes en cours.
+    Il est donc n&eacute;cessaire d'attendre un certain temps apr&egrave;s le r&eacute;d&eacute;marrage
+    avant d'effectuer tout traitement sur les fichiers journaux. Voici un
+    sc&eacute;nario typique dans lequel on effectue une simple rotation des
+    journaux en compressant les anciens fichiers correspondants afin
+    de gagner de l'espace disque :</p>
+
+    <example>
+      mv access_log access_log.old<br />
+      mv error_log error_log.old<br />
+      apachectl graceful<br />
+      sleep 600<br />
+      gzip access_log.old error_log.old
+    </example>
+
+    <p>La section suivante pr&eacute;sente une autre m&eacute;thode de rotation des journaux
+    qui consiste &agrave; utiliser les
+    <a href="#piped">journaux redirig&eacute;s</a>.</p>
+  </section>
+
+  <section id="piped">
+    <title>Journaux redirig&eacute;s</title>
+
+    <p>Nous avons vu que le d&eacute;mon httpd &eacute;crivait les informations de
+    journalisation des erreurs et des acc&egrave;s dans un fichier journal ;
+    il peut aussi
+    rediriger ces informations vers un autre processus par l'interm&eacute;diaire d'un
+    tube de communication (pipe). Cette fonctionnalit&eacute; am&eacute;liore
+    consid&eacute;rablement la souplesse de la journalisation, sans ajouter de code
+    au serveur principal. Pour rediriger les informations de journalisation
+    vers un tube de communication, remplacez simplement le nom de fichier
+    journal par
+    le caract&egrave;re pipe "<code>|</code>", suivi du nom de l'ex&eacute;cutable qui va
+    recueillir les entr&eacute;es de journal sur son entr&eacute;e
+    standard. Le serveur va
+    lancer le processus de redirection des journaux au moment du d&eacute;marrage du
+    serveur, et le relancera s'il cesse de fonctionner
+    pendant l'ex&eacute;cution du serveur.
+    (Nous d&eacute;nommons cette technique "journalisation
+    redirig&eacute;e fiable" gr&acirc;ce &agrave; cette derni&egrave;re fonctionnalit&eacute;.)</p>
+
+    <p>Les processus de journalisation redirig&eacute;e sont lanc&eacute;s par le processus
+    httpd parent, et h&eacute;ritent de l'UID de ce dernier. Cela signifie que les
+    programmes de journalisation dirig&eacute;e s'ex&eacute;cutent g&eacute;n&eacute;ralement en tant que
+    root. Il est donc tr&egrave;s important que ces programmes soient simples et
+    s&eacute;curis&eacute;s.</p>
+
+    <p>Un des grands avantages de la journalisation redirig&eacute;e est la possibilit&eacute;
+    d'effectuer la rotation des journaux sans avoir &agrave; red&eacute;marrer le serveur. Pour
+    accomplir cette t&acirc;che, le serveur HTTP Apache fournit un programme simple
+    appel&eacute; <program>rotatelogs</program>. Par exemple, pour une rotation des
+    journaux toutes les 24 heures, ajoutez ces lignes :</p>
+
+    <highlight language="config">
+      CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/access_log 86400" common
+    </highlight>
+
+    <p>Notez que l'ensemble de la commande qui sera appel&eacute;e par le tube de
+    communication a &eacute;t&eacute; plac&eacute;e entre guillemets. Bien que cet exemple
+    concerne le journal des acc&egrave;s, la m&ecirc;me technique peut &ecirc;tre utilis&eacute;e
+    pour le journal des erreurs.</p>
+
+    <p>Il existe un autre programme de rotation des journaux similaire mais
+    beaucoup plus souple : il s'agit de "cronolog", non fourni par Apache,
+    mais disponible <a href="http://www.cronolog.org/">ici</a>.</p>
+
+    <p>Comme la journalisation conditionnelle, la journalisation redirig&eacute;e est
+    un outil tr&egrave;s puissant, mais si elle existe, il est pr&eacute;f&eacute;rable d'utiliser
+    une solution plus simple comme le traitement &agrave; posteriori hors ligne.</p>
+
+
+  <p>Par d&eacute;faut, le processus de redirection du journal est lanc&eacute; sans
+  invoquer un shell. Pour invoquer un shell, utilisez "<code>|$</code>"
+  au lieu de "<code>|</code>" (en g&eacute;n&eacute;ral avec <code>/bin/sh -c</code>)
+  :</p>
+
+    <highlight language="config">
+# Invocation de "rotatelogs" en utilisant un shell
+CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" common
+    </highlight>
+
+
+    <p>Il s'agissait du comportement par d&eacute;faut sous Apache 2.2. Selon
+    les sp&eacute;cificit&eacute;s du shell, ceci peut g&eacute;n&eacute;rer un processus shell
+    suppl&eacute;mentaire pour toute la dur&eacute;e du programme de redirection du
+    journal, et induire des probl&egrave;mes de gestion de signaux au cours du
+    red&eacute;marrage. La notation "<code>||</code>" est aussi support&eacute;e pour
+    des raisons de compatibilit&eacute; avec Apache 2.2 et est &eacute;quivalente &agrave;
+    "<code>|</code>".</p>
+    </section>
+
+  <section id="virtualhost">
+    <title>H&ocirc;tes virtuels</title>
+
+    <p>Lorsqu'un serveur poss&egrave;de plusieurs <a href
+    ="vhosts/">h&ocirc;tes virtuels</a>, il existe de nombreuses solutions pour g&eacute;rer
+    les fichiers journaux. Par exemple, on peut utiliser les journaux comme
+    s'il s'agissait d'un serveur avec un seul h&ocirc;te. Il suffit pour cela de
+    placer les directives de journalisation en dehors des sections
+    <directive module="core" type="section">VirtualHost</directive> au niveau
+    du serveur principal, ce qui a pour effet de journaliser toutes les
+    requ&ecirc;tes dans le m&ecirc;me journal des acc&egrave;s et des erreurs. Cette technique
+    est cependant inappropri&eacute;e pour recueillir des statistiques sur chaque
+    h&ocirc;te virtuel individuellement.</p>
+
+    <p>Si des directives <directive module=
+    "mod_log_config">CustomLog</directive> ou
+    <directive module="core">ErrorLog</directive> sont plac&eacute;es dans une section
+    <directive module="core" type="section">VirtualHost</directive>, toutes les
+    requ&ecirc;tes ou erreurs pour cet h&ocirc;te virtuel ne seront enregistr&eacute;es que dans
+    le fichier sp&eacute;cifi&eacute;. Tout h&ocirc;te virtuel qui ne poss&egrave;de pas de directives de
+    journalisation verra ses requ&ecirc;tes enregistr&eacute;es dans le journal du serveur
+    principal. Cette technique est appropri&eacute;e pour un petit nombre d'h&ocirc;tes
+    virtuels, mais si ce nombre est important, elle peut devenir compliqu&eacute;e &agrave;
+    g&eacute;rer. En outre, des probl&egrave;mes de <a
+    href="vhosts/fd-limits.html">nombre de descripteurs
+    de fichiers insuffisant</a> peuvent rapidement appara&icirc;tre.</p>
+
+    <p>Il existe un tr&egrave;s bon compromis pour le journal des acc&egrave;s. En int&eacute;grant
+    les informations &agrave; propos de l'h&ocirc;te virtuel &agrave; la cha&icirc;ne de format du
+    journal, il est possible de journaliser tous les h&ocirc;tes dans le m&ecirc;me
+    journal, puis de s&eacute;parer ult&eacute;rieurement le journal en plusieurs journaux
+    individuels. Consid&eacute;rons par exemple les directives suivantes :</p>
+
+    <highlight language="config">
+LogFormat "%v %l %u %t \"%r\" %&gt;s %b" comonvhost
+CustomLog logs/access_log comonvhost
+    </highlight>
+
+    <p>Le champ <code>%v</code> sert &agrave; enregistrer le nom de l'h&ocirc;te virtuel qui
+    traite la requ&ecirc;te. Un programme tel que <a
+    href="programs/other.html">split-logfile</a> peut ensuite &ecirc;tre utilis&eacute;
+    pour g&eacute;n&eacute;rer "&agrave; froid" autant de journaux que d'h&ocirc;tes virtuels.</p>
+  </section>
+
+  <section id="other">
+    <title>Autres fichiers journaux</title>
+
+    <related>
+      <modulelist>
+        <module>mod_logio</module>
+	<module>mod_log_config</module>
+        <module>mod_log_forensic</module>
+        <module>mod_cgi</module>
+      </modulelist>
+      <directivelist>
+        <directive module="mod_log_config">LogFormat</directive>
+	<directive module="mod_log_config">BufferedLogs</directive>
+        <directive module="mod_log_forensic">ForensicLog</directive>
+        <directive module="mpm_common">PidFile</directive>
+        <directive module="mod_cgi">ScriptLog</directive>
+        <directive module="mod_cgi">ScriptLogBuffer</directive>
+        <directive module="mod_cgi">ScriptLogLength</directive>
+      </directivelist>
+    </related>
+
+    <section>
+      <title>Enregistrement du nombre r&eacute;el d'octets envoy&eacute;s et re&ccedil;us</title>
+
+      <p>Le module <module>mod_logio</module> fournit deux champs
+      <directive module="mod_log_config">LogFormat</directive> suppl&eacute;mentaires
+      (%I et %O) qui permettent d'enregistrer le nombre r&eacute;el d'octets re&ccedil;us et
+      envoy&eacute;s sur le r&eacute;seau.</p>
+    </section>
+
+    <section>
+      <title>Journalisation de style investigation judiciaire (forensic logging)</title>
+
+      <p>Le module <module>mod_log_forensic</module> permet la journalisation
+      &agrave; des fins d'investigation judiciaire des requ&ecirc;tes des clients. La
+      journalisation est effectu&eacute;e avant et apr&egrave;s le traitement de la requ&ecirc;te,
+      qui fait donc l'objet de deux entr&eacute;es dans le journal. Le g&eacute;n&eacute;rateur de
+      journaux d'investigation est tr&egrave;s strict et ne permet aucune
+      personnalisation. C'est un inestimable outil de d&eacute;bogage et de s&eacute;curit&eacute;.</p>
+    </section>
+
+    <section id="pidfile">
+      <title>Fichier PID</title>
+
+      <p>Au d&eacute;marrage, le d&eacute;mon httpd Apache enregistre l'identifiant du
+      processus httpd parent dans le fichier <code>logs/httpd.pid</code>.
+      Le nom de ce fichier peut &ecirc;tre modifi&eacute; &agrave; l'aide de la directive
+      <directive module="mpm_common">PidFile</directive>. Cet identifiant
+      permet &agrave; l'administrateur de red&eacute;marrer et arr&ecirc;ter le d&eacute;mon en
+      envoyant des signaux au processus parent ; sous Windows, vous devez
+      utiliser l'option de ligne de commande -k. Pour plus de d&eacute;tails,
+      consulter la page <a href="stopping.html">Arr&ecirc;t et red&eacute;marrage</a>.</p>
+    </section>
+
+    <section id="scriptlog">
+      <title>Journal des scripts</title>
+
+      <p>Afin de faciliter le d&eacute;bogage, la directive
+      <directive module="mod_cgi">ScriptLog</directive> vous permet
+      d'enregistrer les entr&eacute;es et sorties des scripts CGI. Elle ne doit &ecirc;tre
+      utilis&eacute;e que pendant la phase de test, et en aucun cas sur un
+      serveur en production. Vous trouverez plus d'informations dans la
+      documentation du module <a href="mod/mod_cgi.html">mod_cgi</a>.</p>
+    </section>
+
+    <section id="rewritelog">
+      <title>Journal de r&eacute;&eacute;criture</title>
+
+      <p>Lorsqu'on utilise les fonctionnalit&eacute;s puissantes et complexes du
+      module <a href="mod/mod_rewrite.html">mod_rewrite</a>, il est presque
+      toujours n&eacute;cessaire d'utiliser la directive
+      <directive module="mod_rewrite">RewriteLog</directive> afin de
+      faciliter le d&eacute;bogage. Ce fichier journal fournit une analyse d&eacute;taill&eacute;e
+      de la transformation des requ&ecirc;tes par le moteur de r&eacute;&eacute;criture. Le niveau
+      de d&eacute;tail est contr&ocirc;l&eacute; par la directive
+      <directive module="mod_rewrite">RewriteLogLevel</directive>.</p>
+    </section>
+  </section>
+</manualpage>
+
+
+
+

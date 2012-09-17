@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 1174747:1330988 (outdated) -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_env.xml.meta">
+
+<name>mod_env</name>
+<description>CGI betiklerine ve SSI sayfalarına aktarılan değişkenlere müdahale
+etmek için kullanılır.</description>
+<status>Base</status>
+<sourcefile>mod_env.c</sourcefile>
+<identifier>env_module</identifier>
+<summary>
+    <p>Bu modül Apache HTTP Sunucusunun çeşitli modülleri tarafınan kullanılan
+      dahili ortam değişkenlerime müdahale etmeyi mümkün kılar. bu değişkenler
+      ayrıca, CGI betiklerine yerel ortam değişkenleri olarak sunulur ve SSI
+      sayfalarında da kullanılabilir. Ortam değişkenleri
+      <program>httpd</program> süreci başlatılırken kabuktan aktarılabilir.
+      Bundan başka, yapılandırma
+      sürecinde tanımlı veya tanımsız yapılabilirler.</p>
+</summary>
+<seealso><a href="../env.html">Ortam Değişkenleri</a></seealso>
+<seealso><directive module="mod_setenvif">SetEnvIf</directive></seealso>
+
+<directivesynopsis>
+<name>PassEnv</name>
+<description>Ortam değişkenlerini kabuktan aktarır.</description>
+<syntax>PassEnv <var>ortam-değişkeni</var> [<var>ortam-değişkeni</var>]
+...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>Dahili ortam değişkenleri olarak kullanılmak üzere sistem ortam
+      değişkenlerini içeri aktarmak için kullanılır. Bunlar daha sonra Apache
+      HTTP Sunucusunun modüllerinden kullanılabilir, CGI betiklerine ve SSI
+      sayfalarında aktarılabilir. Değerler <program>httpd</program> süreci
+      başlatılırken kabuğun işletim sistemi ortamından gelir.</p>
+
+    <example><title>Örnek</title>
+      PassEnv LD_LIBRARY_PATH
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SetEnv</name>
+<description>Ortam değişkenlerini tanımlar.</description>
+<syntax>SetEnv <var>ortam-değişkeni</var> <var>değer</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>CGI betiklerine ve SSI sayfalarına aktarılmak ve Apache HTTP Sunucusu
+      modüllerinde kullanılmak üzere bir dahili ortam değişkeni tanımlanmasını
+      sağlar.</p>
+
+    <example><title>Örnek</title>
+      SetEnv SPECIAL_PATH /foo/bin
+    </example>
+
+    <note><p>Bu yönerge tarafından atanan dahili ortam değişkenleri, en başta
+      işleme sokulan, ereşem denetimi, URI-dosya ismi eşleştirmesi gibi istek
+      işleme yönergelerinden sonra işleme sokulur. Eğer atadığınız ortam değişkeni,
+      bir <directive module="mod_rewrite">RewriteRule</directive> yönergesindeki
+      gibi erken işlem aşamalarına girdi sağlıyorsa, bu durumda ortam değişkenini
+     <directive module="mod_setenvif"> SetEnvIf</directive> ile atamalısınız.</p>
+    </note>
+
+</usage>
+<seealso><a href="../env.html">Environment Variables</a></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>UnsetEnv</name>
+<description>Ortamdaki değişkenleri tanımsız hale getirir.</description>
+<syntax>UnsetEnv <var>ortam-değişkeni</var> [<var>ortam-değişkeni</var>]
+...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>CGI betiklerine ve SSI sayfalarına bir daha aktarılmamak üzere bir
+      dahili ortam değişkenini siler.</p>
+
+    <example><title>Örnek</title>
+      UnsetEnv LD_LIBRARY_PATH
+    </example>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
+

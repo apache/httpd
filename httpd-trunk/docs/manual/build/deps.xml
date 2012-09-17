@@ -1,0 +1,491 @@
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<!-- this file contains dependency target(s) and will be included into    -->
+<!-- build.xml                                                            -->
+<!-- ==================================================================== -->
+<project name="deps">
+
+<!-- Create the distribution directory                                    -->
+<!--                                                                      -->
+<macrodef name="dependencies.distdir">
+    <sequential>
+        <property name="distdir" value="../_dist" />
+        <mkdir dir="${distdir}" />
+    </sequential>
+</macrodef>
+
+
+<!-- check for perl in path                                               -->
+<!--                                                                      -->
+<macrodef name="dependencies.perlcheck">
+    <sequential>
+        <exec executable="perl" failifexecutionfails="false"
+              outputproperty="perl.available">
+            <arg value="-e" />
+            <arg value="print 'yes'" />
+        </exec>
+    </sequential>
+</macrodef>
+
+
+<!-- for HTML generation -->
+<macrodef name="dependencies.html">
+  <attribute name="lang"/>
+
+  <sequential>
+    <if><available file="../mod/.translated.@{lang}" /><then>
+        <property prefix="ap.modules.@{lang}" file="../mod/.translated.@{lang}" />
+    </then></if>
+
+    <!-- mod/*.xml -> *.html.* generated from these.                      -->
+    <!-- we depend currently on the english versions (additionally),      -->
+    <!-- because they're not all translated yet                           -->
+    <dependset>
+        <srcfileset dir="../mod/"
+               includes="*.xml"
+               excludes="index.xml*
+                         *-dict.xml*
+                         *.xml.meta" />
+
+        <targetfileset dir="../"
+                  includes="mod/index${outputext.@{lang}}
+                            mod/directives${outputext.@{lang}}
+                            mod/quickreference${outputext.@{lang}}
+                            sitemap${outputext.@{lang}}"
+                  excludes="${ap.noxml.@{lang}}" />
+    </dependset>
+    <dependset>
+        <srcfileset dir="../mod/"
+               includes="*${inputext.@{lang}}"
+               excludes="index.xml*
+                         *-dict.xml*
+                         *.xml.meta" />
+
+        <targetfileset dir="../"
+                  includes="mod/index${outputext.@{lang}}
+                            mod/directives${outputext.@{lang}}
+                            mod/quickreference${outputext.@{lang}}
+                            sitemap${outputext.@{lang}}"
+                  excludes="${ap.noxml.@{lang}}" />
+    </dependset>
+    <dependset>
+        <srcfileset    dir="../faq/"
+                  includes="*.xml"
+                  excludes="index.xml*
+                            all_in_one.xml*" />
+        <targetfileset dir="../faq"
+                  includes="index${outputext.@{lang}}
+                            all_in_one${outputext.@{lang}}"
+                  excludes="${ap.noxml.@{lang}}" />
+    </dependset>
+    <dependset>
+        <srcfileset    dir="../faq/"
+                  includes="*${inputext.@{lang}}"
+                  excludes="index.xml*
+                            all_in_one.xml*" />
+        <targetfileset dir="../faq"
+                  includes="index${outputext.@{lang}}
+                            all_in_one${outputext.@{lang}}"
+                  excludes="${ap.noxml.@{lang}}" />
+    </dependset>
+
+    <!-- xsl -> html.* dependencies. -->
+    <!-- all files -->
+    <dependset>
+        <srcfileset    dir="../style/"
+                  includes="manual.@{lang}.xsl
+                            xsl/common.xsl
+                            xsl/util/*.xml
+                            xsl/util/*.xsl
+                            lang/@{lang}.xml
+                            version.ent"
+                  excludes="xsl/util/designations.xml
+                            xsl/util/allmodules.xml" />
+        <targetfileset dir="../"
+                  includes="**/*${outputext.@{lang}}"
+                  excludes="${ap.noxml.@{lang}}" />
+    </dependset>
+
+    <!-- directive index -->
+    <dependset>
+        <srcfileset    dir="../style/xsl"
+                  includes="directiveindex.xsl" />
+        <targetfileset dir="../"
+                  includes="mod/directives${outputext.@{lang}}"
+                  excludes="${ap.noxml.@{lang}}" />
+    </dependset>
+
+    <!-- index page -->
+    <dependset>
+        <srcfileset    dir="../style/xsl"
+                  includes="indexpage.xsl" />
+        <targetfileset dir="../"
+                  includes="index${outputext.@{lang}}"
+                  excludes="${ap.noxml.@{lang}}" />
+    </dependset>
+
+    <!-- manual pages -->
+    <dependset>
+        <srcfileset    dir="../style/xsl/"
+                  includes="manualpage.xsl" />
+        <targetfileset dir="../"
+                  includes="**/*${outputext.@{lang}}"
+                  excludes="mod/*${outputext.@{lang}}
+                            faq/*${outputext.@{lang}}
+                            index${outputext.@{lang}}
+                            sitemap${outputext.@{lang}}
+                            ${ap.noxml.@{lang}}" />
+        <targetfileset dir="../"
+                  includes="mod/*-dict${outputext.@{lang}}"
+                  excludes="${ap.noxml.@{lang}}" />
+    </dependset>
+
+    <!-- module index -->
+    <dependset>
+        <srcfileset    dir="../style/xsl"
+                  includes="moduleindex.xsl" />
+        <targetfileset dir="../"
+                  includes="mod/index${outputext.@{lang}}"
+                  excludes="${ap.noxml.@{lang}}" />
+    </dependset>
+
+    <!-- quick reference -->
+    <dependset>
+        <srcfileset    dir="../style/xsl"
+                  includes="quickreference.xsl" />
+        <targetfileset dir="../"
+                  includes="mod/quickreference${outputext.@{lang}}"
+                  excludes="${ap.noxml.@{lang}}" />
+    </dependset>
+
+    <!-- FAQ -->
+    <dependset>
+        <srcfileset    dir="../style/xsl"
+                  includes="faq.xsl" />
+        <targetfileset dir="../"
+                  includes="faq/*${outputext.@{lang}}"
+                  excludes="${ap.noxml.@{lang}}" />
+    </dependset>
+
+    <!-- sitemap -->
+    <dependset>
+        <srcfileset    dir="../style/xsl"
+                  includes="sitemap.xsl" />
+        <targetfileset dir="../"
+                  includes="sitemap${outputext.@{lang}}"
+                  excludes="${ap.noxml.@{lang}}" />
+    </dependset>
+
+    <!-- module descriptions -->
+    <dependset>
+        <srcfileset    dir="../style/xsl"
+                  includes="synopsis.xsl" />
+        <targetfileset dir="../"
+                  includes="mod/*${outputext.@{lang}}"
+                  excludes="mod/*-dict${outputext.@{lang}}
+                            mod/index${outputext.@{lang}}
+                            mod/directives${outputext.@{lang}}
+                            mod/quickreference${outputext.@{lang}}
+                            ${ap.noxml.@{lang}}" />
+    </dependset>
+  </sequential>
+</macrodef>
+
+
+<!-- for nroff generation -->
+<macrodef name="dependencies.nroff">
+    <attribute name="lang" />
+
+    <sequential>
+        <!-- generate language specific style -->
+        <xslt in="../style/lang/@{lang}.xml"
+             out="../style/_generated/man.@{lang}.xsl"
+           style="../style/xsl/language.xsl">
+            <param name="type" expression="man" />
+        </xslt>
+
+        <!-- helper files date comparison -->
+        <copy todir="../../man" overwrite="true" preservelastmodified="true">
+            <fileset dir="../../man">
+                <include name="*.?" />
+            </fileset>
+            <mapper type="glob" from="*" to="*.tmp" />
+        </copy>
+
+        <!-- xsl => manpage dependencies. -->
+        <dependset>
+            <srcfileset    dir="../style/"
+                      includes="xsl/nroff.xsl
+                                xsl/util/*.xml
+                                lang/@{lang}.xml
+                                version.ent"
+                      excludes="xsl/util/designations.xml
+                                xsl/util/allmodules.xml" />
+            <targetfileset dir="../../man"
+                      includes="*.?"
+                      excludes="${ap.noxml.@{lang}}" />
+        </dependset>
+
+        <tstamp>
+            <format property="nroff.date" pattern="yyyy-MM-dd" timezone="UTC" />
+        </tstamp>
+    </sequential>
+</macrodef>
+
+
+<!-- for CHM generation -->
+<macrodef name="dependencies.chm">
+    <attribute name="lang" />
+
+    <sequential>
+        <!-- create distribution directory -->
+        <dependencies.distdir />
+
+        <!-- build fresh, no real dependency checking intended -->
+        <delete dir="../_chm/@{lang}" />
+
+        <!-- generate styles -->
+        <if><not><equals arg1="@{lang}" arg2="en"/></not>
+        <then>
+            <xslt in="../style/lang/en.xml"
+                 out="../style/_generated/chm.en.xsl"
+               style="../style/xsl/language.xsl">
+                <param name="type" expression="chm" />
+            </xslt>
+        </then></if>
+
+        <!-- generate language specific styles -->
+        <xslt in="../style/lang/@{lang}.xml"
+             out="../style/_generated/chm.@{lang}.xsl"
+           style="../style/xsl/language.xsl">
+            <param name="type" expression="chm" />
+        </xslt>
+        <xslt in="../style/lang/@{lang}.xml"
+             out="../style/_generated/hhc.@{lang}.xsl"
+           style="../style/xsl/language.xsl">
+            <param name="type" expression="hhc" />
+        </xslt>
+        <xslt in="../style/lang/@{lang}.xml"
+             out="../style/_generated/hhp.@{lang}.xsl"
+           style="../style/xsl/language.xsl">
+            <param name="type" expression="hhp" />
+        </xslt>
+
+        <!-- translated documents and metafiles -->
+        <copy todir="../_chm/@{lang}">
+            <fileset dir="../">
+                <depth min="0" max="1" />
+                <include name="**/*${inputext.@{lang}}" />
+                <include name="**/*.xml.meta" />
+                <include name="**/*${inputext.en}" />
+
+                <patternset refid="scratch" />
+                <patternset refid="excludes" />
+            </fileset>
+        </copy>
+        <copy todir="../_chm/@{lang}/mod">
+            <fileset dir="../mod/">
+                <include name="allmodules${inputext.@{lang}}" />
+                <include name="allmodules${inputext.en}" />
+            </fileset>
+        </copy>
+        <copy todir="../_chm/@{lang}/faq">
+            <fileset dir="../faq/">
+                <include name="categories${inputext.@{lang}}" />
+                <include name="categories${inputext.en}" />
+            </fileset>
+        </copy>
+
+        <!-- not yet translated and/or converted (en only [charset issues]) -->
+        <copy todir="../_chm/@{lang}">
+            <fileset dir="../">
+                <depth min="0" max="1" />
+                <include name="**/*${inputext.en}" />
+                <include name="**/*${outputext.en}" />
+
+                <patternset refid="scratch" />
+                <patternset refid="excludes" />
+            </fileset>
+            <mapper type="glob" from="*${outputext.en}" to="*.html" />
+        </copy>
+
+        <!-- need styles for converting -->
+        <copy todir="../_chm/@{lang}/style">
+            <fileset dir="../style" />
+        </copy>
+
+        <!-- need images ... -->
+        <copy todir="../_chm/@{lang}/images">
+            <fileset dir="../images" />
+        </copy>
+        <copy todir="../_chm/@{lang}/ssl">
+            <fileset dir="../ssl" includes="*.gif" />
+        </copy>
+    </sequential>
+</macrodef>
+
+
+<!-- for build tools package -->
+<macrodef name="dependencies.tools">
+    <sequential>
+        <!-- create distribution directory -->
+        <dependencies.distdir />
+
+        <!-- build fresh, no real dependency checking intended -->
+        <delete dir="../_tools" />
+
+        <!-- translated documents and metafiles -->
+        <copy todir="../_tools">
+            <fileset dir=".">
+                <depth min="0" max="1" />
+
+                <exclude name="**/CVS" />
+                <exclude name="**/CVS/*" />
+                <!-- exclude some special patterns -->
+                <exclude name="**/.*" />
+                <exclude name="**/*~" />
+                <exclude name="**/*.bak" />
+            </fileset>
+        </copy>
+    </sequential>
+</macrodef>
+
+
+<!-- for offline generation -->
+<macrodef name="dependencies.offline">
+    <attribute name="lang" />
+    <attribute name="dir" />
+    <attribute name="style" />
+
+    <sequential>
+        <!-- create distribution directory -->
+        <dependencies.distdir />
+
+        <!-- build fresh, no real dependency checking intended -->
+        <delete dir="../@{dir}/@{lang}" />
+
+        <!-- generate styles -->
+        <if><not><equals arg1="@{lang}" arg2="en"/></not>
+        <then>
+            <xslt in="../style/lang/en.xml"
+                 out="../style/_generated/@{style}.en.xsl"
+               style="../style/xsl/language.xsl">
+                <param name="type" expression="@{style}" />
+            </xslt>
+        </then></if>
+
+        <!-- generate language specific styles -->
+        <xslt in="../style/lang/@{lang}.xml"
+             out="../style/_generated/@{style}.@{lang}.xsl"
+           style="../style/xsl/language.xsl">
+            <param name="type" expression="@{style}" />
+        </xslt>
+
+        <!-- translated documents and metafiles -->
+        <copy todir="../@{dir}/@{lang}">
+            <fileset dir="../">
+                <depth min="0" max="1" />
+                <include name="**/*${inputext.@{lang}}" />
+                <include name="**/*.xml.meta" />
+                <include name="**/*.xml" />
+
+                <patternset refid="scratch" />
+                <patternset refid="excludes" />
+            </fileset>
+        </copy>
+        <copy todir="../@{dir}/@{lang}/mod">
+            <fileset dir="../mod/">
+                <include name="allmodules${inputext.@{lang}}" />
+                <include name="allmodules${inputext.en}" />
+            </fileset>
+        </copy>
+        <copy todir="../@{dir}/@{lang}/faq">
+            <fileset dir="../faq/">
+                <include name="categories${inputext.@{lang}}" />
+                <include name="categories${inputext.en}" />
+            </fileset>
+        </copy>
+
+        <!-- not yet translated and/or converted (en only) -->
+        <copy todir="../@{dir}/@{lang}">
+            <fileset dir="../">
+                <depth min="0" max="1" />
+                <include name="**/*${inputext.en}" />
+                <include name="**/*${outputext.en}" />
+
+                <patternset refid="scratch" />
+                <patternset refid="excludes" />
+            </fileset>
+            <mapper type="glob" from="*${outputext.en}" to="*.html" />
+        </copy>
+
+        <!-- need styles -->
+        <copy todir="../@{dir}/@{lang}/style">
+            <fileset dir="../style" />
+        </copy>
+
+        <!-- need images -->
+        <copy todir="../@{dir}/@{lang}/images">
+            <fileset dir="../images" />
+        </copy>
+        <copy todir="../@{dir}/@{lang}/ssl">
+            <fileset dir="../ssl" includes="*.gif" />
+        </copy>
+    </sequential>
+</macrodef>
+
+
+<!-- for typemap generation -->
+<macrodef name="dependencies.typemaps">
+    <sequential>
+
+        <!-- xsl => typemap dependency. -->
+        <dependset>
+            <srcfileset    dir="../style/"
+                      includes="xsl/util/*.xml
+                                xsl/typemap.xsl"
+                      excludes="xsl/util/allmodules.xml" />
+            <targetfileset dir="../"
+                      includes="**/*.html">
+                <patternset refid="scratch" />
+            </targetfileset>
+        </dependset>
+    </sequential>
+</macrodef>
+
+
+<!-- for language bootstrapping -->
+<macrodef name="dependencies.bootstrap">
+    <sequential>
+
+        <!-- xsl => style dependency. -->
+        <dependset>
+            <srcfileset    dir="../style/"
+                      includes="xsl/util/*.xml
+                                xsl/language.xsl"
+                      excludes="xsl/util/designations.xml
+                                xsl/util/allmodules.xml" />
+            <targetfileset dir="../style/"
+                      includes="manual.*.xsl
+                                xsl/util/designations.xml
+                                xsl/util/allmodules.xml" />
+        </dependset>
+    </sequential>
+</macrodef>
+
+</project>

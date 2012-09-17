@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 1331547 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="other.xml.meta">
+<parentdocument href="./">Programs</parentdocument>
+
+<title>log_server_status - Log periodic status summaries</title>
+
+<summary>
+    <p>This perl script is designed to be run at a frequent interval by
+    something like cron. It connects to the server and downloads the status
+    information. It reformats the information to a single line and logs it to
+    a file. Adjust the variables at the top of the script to specify the
+    location of the resulting logfile. <module>mod_status</module> will
+    need to be loaded and configured in order for this script to do its
+    job.</p>
+</summary>
+
+<section id="configure"><title>Usage</title>
+
+<p>The script contains the following section.</p>
+
+<highlight language="perl">
+my $wherelog = "/usr/local/apache2/logs/";  # Logs will be like "/usr/local/apache2/logs/19960312"
+my $server   = "localhost";        # Name of server, could be "www.foo.com"
+my $port     = "80";               # Port on server
+my $request = "/server-status/?auto";    # Request to send
+</highlight>
+
+<p>You'll need to ensure that these variables have the correct values,
+and you'll need to have the <code>/server-status</code> handler
+configured at the location specified, and the specified log location
+needs to be writable by the user which will run the script.</p>
+
+<p>Run the script periodically via cron to produce a daily log file,
+which can then be used for statistical analysis.</p>
+
+</section>
+
+</manualpage>

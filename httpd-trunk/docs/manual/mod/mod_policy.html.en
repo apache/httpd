@@ -1,0 +1,713 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_policy - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<script src="../style/scripts/prettify.js" type="text/javascript">
+</script>
+
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.5</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_policy</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_policy.html" title="English">&nbsp;en&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>HTTP protocol compliance enforcement.</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>policy_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_policy.c</td></tr></table>
+<h3>Summary</h3>
+
+    <p>The HTTP protocol recommends that clients should be "liberal in
+    what they accept", and servers "strict with what they send". In some
+    cases it can be difficult to detect when a server or an application
+    has been misconfigured, is serving uncacheable content or is behaving
+    suboptimally, as an HTTP client might be compensating for the server.
+    These problems can potentially lead to excessive bandwidth
+    consumption, or a server outage under load.</p>
+
+    <p>The <code class="module"><a href="../mod/mod_policy.html">mod_policy</a></code> module consists of a set of
+    filters that test servers for HTTP protocol compliance. These
+    tests allow the server administrator to log violations of, or
+    outright reject responses where certain defined conditions exist.</p>
+
+    <p>This could be used as a way to set minimum HTTP protocol compliance
+    criteria for a restful application. Alternatively, a reverse proxy or
+    cache could be configured to protect itself from misconfigured origin
+    servers or unexpectedly uncacheable content, or as a mechanism to
+    detect configuration mistakes within the server itself.</p>
+
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#policyconditional">PolicyConditional</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#policyconditionalurl">PolicyConditionalURL</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#policyenvironment">PolicyEnvironment</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#policyfilter">PolicyFilter</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#policykeepalive">PolicyKeepalive</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#policykeepaliveurl">PolicyKeepaliveURL</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#policylength">PolicyLength</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#policylengthurl">PolicyLengthURL</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#policymaxage">PolicyMaxage</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#policymaxageurl">PolicyMaxageURL</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#policynocache">PolicyNocache</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#policynocacheurl">PolicyNocacheURL</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#policytype">PolicyType</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#policytypeurl">PolicyTypeURL</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#policyvalidation">PolicyValidation</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#policyvalidationurl">PolicyValidationURL</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#policyvary">PolicyVary</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#policyvaryurl">PolicyVaryURL</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#policyversion">PolicyVersion</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#policyversionurl">PolicyVersionURL</a></li>
+</ul>
+<h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#actions">Actions</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#tests">Policy Tests</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#example">Example Configuration</a></li>
+</ul><h3>See also</h3>
+<ul class="seealso">
+<li><a href="../filter.html">Filters</a></li>
+<li><a href="../compliance.html">HTTP Protocol Compliance</a></li>
+</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="actions" id="actions">Actions</a></h2>
+    
+
+    <p>If a policy is violated, one of the following actions can be
+    taken:</p>
+
+    <dl>
+    <dt><strong>ignore</strong></dt>
+    <dd>The policy check will be ignored for the given URL space, even
+    if the filter is present.</dd>
+
+    <dt><strong>log</strong></dt>
+    <dd>The policy check will be executed, and if a violation is detected
+    a warning will be logged to the server error_log, and a
+    <code>Warning</code> header added to the response for the benefit of
+    the client.</dd>
+
+    <dt><strong>enforce</strong></dt>
+    <dd>The policy check will be executed, and if a violation is detected
+    an error will be logged to the server error_log, a
+    <code>Warning</code> header added to the response, and a <code>502
+    Bad Gateway</code> will be returned to the client. Optional links to
+    explanatory documentation can be added to each error message,
+    detailing the origin of each policy.</dd>
+
+    </dl>
+
+    <p>It is also possible to selectively disable all policies for a
+    given URL space, should the need arise, using the
+    <code class="directive"><a href="#policyfilter">PolicyFilter</a></code> directive.</p>
+
+    <p>Alternatively, the
+    <code class="directive"><a href="#policyenvironment">PolicyEnvironment</a></code>
+    directive can be used to specify an environment variable, which if
+    present, will cause the policies to be selectively downgraded or
+    bypassed.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="tests" id="tests">Policy Tests</a></h2>
+    
+
+    <p>The following policy filters are available:</p>
+
+    <dl>
+    <dt><strong><a href="../compliance.html#policytype">POLICY_TYPE</a>
+    </strong>: Enforce valid content types</dt>
+    <dd>Content types that are syntactically invalid or blank can be detected
+	and the request rejected. Types can be restricted to a specific list
+	containing optional wildcards ? and *.</dd>
+    
+    <dt><strong><a href="../compliance.html#policylength">POLICY_LENGTH</a>
+    </strong>: Enforce the presence of a Content-Length</dt>
+    <dd>The length of responses can be specified in one of three ways, by
+    specifying an explicit length in advance, using chunked encoding to set
+    the length, or by setting no length at all and terminating the request
+    when complete. The absence of a specific content length can affect the
+    cacheability of the response, and prevents the use of keepalive during
+    HTTP/1.0 requests. This policy enforces the presence of an explicit
+    content length on the response.</dd>
+
+    <dt><strong><a href="../compliance.html#policykeepalive">POLICY_KEEPALIVE
+    </a></strong>: Enforce the option to keepalive</dt>
+    <dd>Less restrictive than the POLICY_LENGTH test, this policy enforces the
+    possibility that the response can be kept alive. If the response doesn't
+    have a protocol defined zero length, and the response isn't already an
+    error, and the response has neither a Content-Length or is declared
+    HTTP/1.1 and lacks Content-Encoding: chunked, then this response will be
+    rejected.</dd>
+
+    <dt><strong><a href="../compliance.html#policyvary">POLICY_VARY</a>
+    </strong>: Enforce the absence of certain headers within Vary headers</dt>
+    <dd>If the Vary header contains any of the headers specified, this policy
+    will reject the request. The typical case is the presence of the User-Agent
+    within Vary, which is likely to cause a denial of service condition to a
+    cache.</dd>
+
+    <dt><strong><a href="../compliance.html#policyvalidation">
+    POLICY_VALIDATION</a></strong>: Enforce the presence of Etag and/or
+    Last-Modified</dt>
+    <dd>The ability for a cache to determine whether a cached entity can be
+    refreshed is dependent on whether a valid Etag and/or Last-Modified header
+    is present to revalidate against. The absence of both headers, or the
+    invalid syntax of a header will cause this policy to be rejected.</dd>
+
+    <dt><strong><a href="../compliance.html#policyconditional">
+    POLICY_CONDITIONAL</a></strong>: Enforce correct operation of conditional
+    requests</dt>
+    <dd>When conditional headers are present in the request, a server should
+    respond with a <code>304 Not Modified</code> or <code>412 Precondition
+    Failed</code> response where appropriate. A server may ignore conditional
+    headers, and this affects the efficiency of the HTTP caching mechanism.
+    This policy rejects requests where a conditional header is present, and
+    a 304 or 412 response code was expected, but a 2xx response was seen
+    instead.</dd>
+
+    <dt><strong><a href="../compliance.html#policynocache">POLICY_NOCACHE</a>
+    </strong>: Enforce cacheable responses</dt>
+    <dd>When a response is encountered that declares itself explicitly
+    uncacheable, the request is rejected. A response is considered
+    uncacheable if it specifies any of the following:
+    <ul><li><code>Cache-Control: no-cache</code></li>
+    <li><code>Pragma: no-cache</code></li>
+    <li><code>Cache-Control: no-store</code></li>
+    <li><code>Cache-Control: private</code></li>
+    </ul></dd>
+
+    <dt><strong><a href="../compliance.html#policymaxage">POLICY_MAXAGE</a>
+    </strong>: Enforce a minimum maxage</dt>
+    <dd>When a response is encountered where the freshness lifetime is less
+    than the given value, or the freshness lifetime is heuristic, the request
+    is rejected. A response is checked in the following order:
+    <ul><li>If <code>s-maxage</code> is present but too small; or</li>
+    <li>If <code>max-age</code> is present but too small; or</li>
+    <li>If <code>Expires</code> is present and invalid; or</li>
+    <li><code>Date</code> is present and invalid; or</li>
+    <li><code>Expires</code> minus Date is too small; or</li>
+    <li>No <code>s-maxage</code>, <code>maxage</code>, or
+    <code>Expires</code>/<code>Date</code> declared at all</li>
+    </ul></dd>
+
+    <dt><strong><a href="../compliance.html#policyversion">POLICY_VERSION</a>
+    </strong>: Enforce a minimum HTTP version within a request</dt>
+    <dd>When a request is encountered with an HTTP version number less than
+    the required minimum version, the request is rejected. The following
+    version numbers are recognised:
+    <ul><li><code>HTTP/1.1</code></li>
+    <li><code>HTTP/1.0</code></li>
+    <li><code>HTTP/0.9</code></li>
+    </ul></dd>
+
+    </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="example" id="example">Example Configuration</a></h2>
+    
+
+    <p>A typical configuration protecting a server serving static content
+    might be as follows:</p>
+
+    <pre class="prettyprint lang-config">
+&lt;Location /&gt;
+  SetOutputFilter POLICY_TYPE;POLICY_LENGTH;POLICY_KEEPALIVE;POLICY_VARY;POLICY_VALIDATION; \
+    POLICY_CONDITIONAL;POLICY_NOCACHE;POLICY_MAXAGE;POLICY_VERSION
+  
+  # content type must be present and valid, but can be anything
+  PolicyType enforce */*
+  
+  # reject if no explicitly declared content length
+  PolicyLength enforce
+  
+  # covered by the policy length filter
+  PolicyKeepalive ignore
+  
+  # reject if User-Agent appears within Vary headers
+  PolicyVary enforce User-Agent
+  
+  # we want to enforce validation
+  PolicyValidation enforce
+  
+  # non-functional conditional responses should be rejected
+  PolicyConditional enforce
+  
+  # no-cache responses should be rejected
+  PolicyNocache enforce
+  
+  # maxage must be at least a day
+  PolicyMaxage enforce 86400
+  
+  # request version can be anything
+  PolicyVersion ignore HTTP/1.1
+&lt;/Location&gt;
+
+# suppress policy protection for server-status
+&lt;Location /server-status&gt;
+  PolicyFilter off
+&lt;/Location&gt;
+    </pre>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="PolicyConditional" id="PolicyConditional">PolicyConditional</a> <a name="policyconditional" id="policyconditional">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable the conditional request policy.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyConditional <var>ignore|log|enforce</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ignore</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>PolicyConditional is only available in Apache 2.5.0 and
+later.</td></tr>
+</table>
+    <p>When logged or enforced, a response that should have been conditional
+    but wasn't will be rejected.</p>
+
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
+# non-functional conditional responses should be rejected
+PolicyConditional enforce
+    </pre>
+</div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="PolicyConditionalURL" id="PolicyConditionalURL">PolicyConditionalURL</a> <a name="policyconditionalurl" id="policyconditionalurl">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URL describing the conditional request policy.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyConditionalURL <var>url</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>PolicyConditionalURL is only available in Apache 2.5.0 and
+later.</td></tr>
+</table>
+    <p>Specify the URL of the documentation describing the conditional
+    request policy, to appear within error messages.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="PolicyEnvironment" id="PolicyEnvironment">PolicyEnvironment</a> <a name="policyenvironment" id="policyenvironment">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Override policies based on an environment variable.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyEnvironment <var>variable</var> <var>log-value</var> <var>ignore-value</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>PolicyEnvironment is only available in Apache 2.5.0 and
+later.</td></tr>
+</table>
+    <p>Downgrade policies to logging only or ignored based on the presence
+    of an environment variable. If the given variable is present and equal
+    to the log-value, enforced policies will be logged instead. If the given
+    variable is present and equal to the ignore-value, all policies will
+    be ignored.</p>
+
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
+# downgrade if POLICY_CONTROL was present
+PolicyEnvironment POLICY_CONTROL log ignore
+    </pre>
+</div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="PolicyFilter" id="PolicyFilter">PolicyFilter</a> <a name="policyfilter" id="policyfilter">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable or disable policies for the given URL space.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyFilter <var>on|off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>PolicyFilter is only available in Apache 2.5.0 and
+later.</td></tr>
+</table>
+    <p>Master switch to enable or disable policies for a given URL space.</p>
+
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
+# enabled by default
+&lt;Location /&gt;
+  PolicyFilter on
+&lt;/Location&gt;
+
+# suppress policy protection for server-status
+&lt;Location /server-status&gt;
+  PolicyFilter off
+&lt;/Location&gt;
+</pre>
+</div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="PolicyKeepalive" id="PolicyKeepalive">PolicyKeepalive</a> <a name="policykeepalive" id="policykeepalive">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable the keepalive policy.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyKeepalive <var>ignore|log|enforce</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ignore</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>PolicyKeepalive is only available in Apache 2.5.0 and
+later.</td></tr>
+</table>
+    <p>When logged or enforced, a response that lacks both an explicit
+    <code>Content-Length</code> header and a <code>Transfer-Encoding</code>
+    of <code>chunked</code> will be rejected.</p>
+
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
+# missing Content-Length or Transfer-Encoding should be rejected
+PolicyKeepalive enforce
+</pre>
+</div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="PolicyKeepaliveURL" id="PolicyKeepaliveURL">PolicyKeepaliveURL</a> <a name="policykeepaliveurl" id="policykeepaliveurl">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URL describing the keepalive policy.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyKeepaliveURL <var>url</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>PolicyKeepaliveURL is only available in Apache 2.5.0 and
+later.</td></tr>
+</table>
+    <p>Specify the URL of the documentation describing the keepalive
+    policy, to appear within error messages.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="PolicyLength" id="PolicyLength">PolicyLength</a> <a name="policylength" id="policylength">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable the content length policy.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyLength <var>ignore|log|enforce</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ignore</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>PolicyLength is only available in Apache 2.5.0 and
+later.</td></tr>
+</table>
+    <p>When logged or enforced, a response that lacks an explicit
+    <code>Content-Length</code> header will be rejected.</p>
+
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
+# missing Content-Length header should be rejected
+PolicyLength enforce
+    </pre>
+</div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="PolicyLengthURL" id="PolicyLengthURL">PolicyLengthURL</a> <a name="policylengthurl" id="policylengthurl">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URL describing the content length policy.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyLengthURL <var>url</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>PolicyLengthURL is only available in Apache 2.5.0 and
+later.</td></tr>
+</table>
+    <p>Specify the URL of the documentation describing the content length
+    policy, to appear within error messages.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="PolicyMaxage" id="PolicyMaxage">PolicyMaxage</a> <a name="policymaxage" id="policymaxage">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable the caching minimum max-age policy.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyMaxage <var>ignore|log|enforce</var> <var>age</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ignore</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>PolicyMaxage is only available in Apache 2.5.0 and
+later.</td></tr>
+</table>
+    <p>When logged or enforced, a response that lacks an explicit freshness
+    lifetime defined with <code>max-age</code>, <code>s-maxage</code> or an
+    <code>Expires</code> header, or where the explicit freshness lifetime is
+    smaller than the given value, will be rejected.</p>
+
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
+# reject responses with a freshness lifetime shorter than a day
+PolicyMaxage enforce 86400
+    </pre>
+</div>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="PolicyMaxageURL" id="PolicyMaxageURL">PolicyMaxageURL</a> <a name="policymaxageurl" id="policymaxageurl">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URL describing the caching minimum freshness lifetime policy.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyMaxageURL <var>url</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>PolicyMaxageURL is only available in Apache 2.5.0 and
+later.</td></tr>
+</table>
+    <p>Specify the URL of the documentation describing the caching minimum
+    freshness lifetime policy, to appear within error messages.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="PolicyNocache" id="PolicyNocache">PolicyNocache</a> <a name="policynocache" id="policynocache">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable the caching no-cache policy.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyNocache <var>ignore|log|enforce</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ignore</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>PolicyNocache is only available in Apache 2.5.0 and
+later.</td></tr>
+</table>
+    <p>When logged or enforced, a response that defines itself uncacheable
+    using the <code>Cache-Control</code> or <code>Pragma</code> headers will
+    be rejected.</p>
+
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
+# Cache-Control: no-cache will be rejected
+PolicyNocache enforce
+    </pre>
+</div>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="PolicyNocacheURL" id="PolicyNocacheURL">PolicyNocacheURL</a> <a name="policynocacheurl" id="policynocacheurl">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URL describing the caching no-cache policy.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyNocacheURL <var>url</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>PolicyNocacheURL is only available in Apache 2.5.0 and
+later.</td></tr>
+</table>
+    <p>Specify the URL of the documentation describing the caching no-cache
+    policy, to appear within error messages.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="PolicyType" id="PolicyType">PolicyType</a> <a name="policytype" id="policytype">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable the content type policy.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyType <var>ignore|log|enforce</var> <var>type</var> [ <var>type</var> [ ... ]]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ignore</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>PolicyType is only available in Apache 2.5.0 and
+later.</td></tr>
+</table>
+    <p>When logged or enforced, a response that lacks a <code>Content-Type</code>
+    header, where the <code>Content-Type</code> header is malformed, or where the
+    header does not match the given pattern or patterns will be rejected.</p>
+
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
+# enforce json or XML
+PolicyType enforce application/json text/xml
+    </pre>
+</div>
+
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
+# malformed content type should be rejected
+PolicyType enforce */*
+    </pre>
+</div>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="PolicyTypeURL" id="PolicyTypeURL">PolicyTypeURL</a> <a name="policytypeurl" id="policytypeurl">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URL describing the content type policy.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyTypeURL <var>url</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>PolicyTypeURL is only available in Apache 2.5.0 and
+later.</td></tr>
+</table>
+    <p>Specify the URL of the documentation describing the content type
+    policy, to appear within error messages.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="PolicyValidation" id="PolicyValidation">PolicyValidation</a> <a name="policyvalidation" id="policyvalidation">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable the validation policy.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyValidation <var>ignore|log|enforce</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ignore</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>PolicyValidation is only available in Apache 2.5.0 and
+later.</td></tr>
+</table>
+    <p>When logged or enforced, a response that lacks either a valid
+    <code>ETag</code> header or a <code>Last-Modified</code> header, or where
+    either header is syntactically incorrect, will be rejected.</p>
+
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
+# no ETag or Last-Modified will be rejected
+PolicyValidation enforce
+    </pre>
+</div>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="PolicyValidationURL" id="PolicyValidationURL">PolicyValidationURL</a> <a name="policyvalidationurl" id="policyvalidationurl">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URL describing the content type policy.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyValidationURL <var>url</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>PolicyValidationURL is only available in Apache 2.5.0 and
+later.</td></tr>
+</table>
+    <p>Specify the URL of the documentation describing the validation policy, to
+    appear within error messages.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="PolicyVary" id="PolicyVary">PolicyVary</a> <a name="policyvary" id="policyvary">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable the Vary policy.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyVary <var>ignore|log|enforce</var> <var>header</var> [ <var>header</var> [ ... ]]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ignore</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>PolicyVary is only available in Apache 2.5.0 and
+later.</td></tr>
+</table>
+    <p>When logged or enforced, a response that contains a <code>Vary</code>
+    header which in turn contains one of the headers listed, will be
+    rejected.</p>
+
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
+# reject reponses with "User-Agent" listed in the Vary header
+PolicyVary enforce User-Agent
+    </pre>
+</div>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="PolicyVaryURL" id="PolicyVaryURL">PolicyVaryURL</a> <a name="policyvaryurl" id="policyvaryurl">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URL describing the content type policy.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyVaryURL <var>url</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>PolicyVaryURL is only available in Apache 2.5.0 and
+later.</td></tr>
+</table>
+    <p>Specify the URL of the documentation describing the vary policy, to
+    appear within error messages.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="PolicyVersion" id="PolicyVersion">PolicyVersion</a> <a name="policyversion" id="policyversion">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable the version policy.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyVersion <var>ignore|log|enforce</var> <var>HTTP/0.9|HTTP/1.0|HTTP/1.1</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ignore</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>PolicyVersion is only available in Apache 2.5.0 and
+later.</td></tr>
+</table>
+    <p>When logged or enforced, a request with a version lower than specified
+    will be rejected.</p>
+
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
+# reject requests with an HTTP version older than HTTP/1.1
+PolicyVersion enforce HTTP/1.1
+    </pre>
+</div>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="PolicyVersionURL" id="PolicyVersionURL">PolicyVersionURL</a> <a name="policyversionurl" id="policyversionurl">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URL describing the minimum request HTTP version policy.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyVersionURL <var>url</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>PolicyVersionURL is only available in Apache 2.5.0 and
+later.</td></tr>
+</table>
+    <p>Specify the URL of the documentation describing the minimum request
+    HTTP version policy, to appear within error messages.</p>
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_policy.html" title="English">&nbsp;en&nbsp;</a></p>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+var comments_shortname = 'httpd';
+var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_policy.html';
+(function(w, d) {
+    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
+        d.write('<div id="comments_thread"><\/div>');
+        var s = d.createElement('script');
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
+        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
+    }
+    else {
+        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
+    }
+})(window, document);
+//--><!]]></script></div><div id="footer">
+<p class="apache">Copyright 2012 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+//--><!]]></script>
+</body></html>

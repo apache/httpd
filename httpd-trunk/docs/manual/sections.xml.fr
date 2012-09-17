@@ -1,0 +1,628 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+<!-- English Revision : 1384856 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="sections.xml.meta">
+
+<title>Sections de configuration</title>
+
+<summary> <p>Les directives des <a
+href="configuring.html">fichiers de configuration</a> peuvent s'appliquer
+au serveur dans son ensemble, ou seulement &agrave; des r&eacute;pertoires, fichiers, h&ocirc;tes,
+ou URLs particuliers.  Ce document d&eacute;crit comment utiliser les conteneurs de
+sections de configuration ou les fichiers <code>.htaccess</code> pour
+modifier la port&eacute;e des directives de configuration.</p>
+</summary>
+
+<section id="types"><title>Types de conteneurs de sections de
+configuration</title>
+
+<related>
+<modulelist>
+<module>core</module>
+<module>mod_version</module>
+<module>mod_proxy</module>
+</modulelist>
+<directivelist>
+<directive type="section" module="core">Directory</directive>
+<directive type="section" module="core">DirectoryMatch</directive>
+<directive type="section" module="core">Files</directive>
+<directive type="section" module="core">FilesMatch</directive>
+<directive type="section" module="core">If</directive>
+<directive type="section" module="core">IfDefine</directive>
+<directive type="section" module="core">IfModule</directive>
+<directive type="section" module="mod_version">IfVersion</directive>
+<directive type="section" module="core">Location</directive>
+<directive type="section" module="core">LocationMatch</directive>
+<directive type="section" module="mod_proxy">Proxy</directive>
+<directive type="section" module="mod_proxy">ProxyMatch</directive>
+<directive type="section" module="core">VirtualHost</directive>
+</directivelist>
+</related>
+
+<p>Il existe deux grands types de conteneurs.  La plupart des conteneurs sont
+&eacute;valu&eacute;s pour chaque requ&ecirc;te.  Les directives qu'ils contiennent s'appliquent
+seulement aux requ&ecirc;tes qui sont concern&eacute;es par le conteneur.  En revanche,
+les conteneurs
+<directive type="section" module="core">IfDefine</directive>, <directive
+type="section" module="core">IfModule</directive>, et
+<directive type="section" module="mod_version">IfVersion</directive> sont
+&eacute;valu&eacute;s seulement au d&eacute;marrage et au red&eacute;marrage du serveur.
+Si leurs conditions sont v&eacute;rifi&eacute;es au d&eacute;marrage, les directives qu'ils contiennent
+s'appliqueront &agrave; toutes les requ&ecirc;tes.  Si leurs conditions ne sont pas v&eacute;rifi&eacute;es, les
+directives qu'ils contiennent seront ignor&eacute;es.</p>
+
+<p>Le conteneur <directive type="section" module="core">IfDefine</directive>
+contient des directives qui ne seront appliqu&eacute;es que si un param&egrave;tre
+appropri&eacute; a &eacute;t&eacute; d&eacute;fini dans la ligne de commande de <program>httpd</program>.
+Par exemple,
+avec la configuration suivante, toutes les requ&ecirc;tes seront redirig&eacute;es vers
+un autre site si le serveur est d&eacute;marr&eacute; en utilisant la ligne de commande :
+<code>httpd -DClosedForNow</code>:</p>
+
+<highlight language="config">
+&lt;IfDefine ClosedForNow&gt;
+    Redirect / http://otherserver.example.com/
+&lt;/IfDefine&gt;
+</highlight>
+
+<p>Le conteneur <directive type="section" module="core">IfModule</directive>
+est similaire; les directives qu'il contient ne s'appliqueront que si
+un module particulier est disponible au niveau du serveur.
+Le module doit &ecirc;tre soit compil&eacute; statiquement dans le serveur, soit
+dynamiquement et dans ce cas, la ligne <directive
+module="mod_so">LoadModule</directive> correspondante doit appara&icirc;tre
+plus haut dans le fichier de configuration.  Ce conteneur ne doit &ecirc;tre
+utilis&eacute; que dans le cas o&ugrave; votre fichier de configuration doit fonctionner
+ind&eacute;pendamment de la pr&eacute;sence ou de l'absence de certains modules.
+Il ne doit pas contenir de directives que vous souhaitez voir s'appliquer
+syst&eacute;matiquement, car vous pouvez perdre ainsi de pr&eacute;cieux messages d'erreur
+&agrave; propos de modules manquants.</p>
+
+<p>Dans l'exemple suivant, la directive <directive
+module="mod_mime_magic">MimeMagicFile</directive> ne s'appliquera que si le
+module <module>mod_mime_magic</module> est disponible.</p>
+
+<highlight language="config">
+&lt;IfModule mod_mime_magic.c&gt;
+    MimeMagicFile conf/magic
+&lt;/IfModule&gt;
+</highlight>
+
+<p>Le conteneur
+<directive type="section" module="mod_version">IfVersion</directive>
+est similaire aux conteneurs <directive type="section"
+module="core">IfDefine</directive> et <directive type="section"
+module="core">IfModule</directive>; les directives qu'il contient ne
+s'appliqueront que si une version particuli&egrave;re du serveur s'ex&eacute;cute.  Ce
+conteneur a &eacute;t&eacute; con&ccedil;u pour une utilisation dans les suites de tests
+et les grands r&eacute;seaux qui doivent prendre en compte diff&eacute;rentes versions
+et configurations de httpd.</p>
+
+<highlight language="config">
+&lt;IfVersion >= 2.4&gt;
+    # les directives situ&eacute;es ici ne s'appliquent que si la version <br />
+    # est sup&eacute;rieure ou &eacute;gale &agrave; 2.4.0.
+&lt;/IfVersion&gt;
+</highlight>
+
+<p><directive type="section" module="core">IfDefine</directive>,
+<directive type="section" module="core">IfModule</directive>, et
+<directive type="section" module="mod_version">IfVersion</directive>
+peuvent inverser leur test conditionnel en le faisant pr&eacute;c&eacute;der d'un "!".
+De plus, ces sections peuvent &ecirc;tre imbriqu&eacute;es afin de d&eacute;finir des restrictions
+plus complexes.</p>
+</section>
+
+<section id="file-and-web"><title>Syst&egrave;me de fichiers,
+arborescence du site web et expressions bool&eacute;ennes</title>
+
+<p>Les conteneurs de sections de configuration les plus couramment utilis&eacute;s
+sont ceux qui modifient la configuration de points particuliers du syst&egrave;me de
+fichiers ou de l'arborescence du site web.  Tout d'abord, il est important de
+comprendre la diff&eacute;rence entre les deux.  Le syst&egrave;me de fichiers est une vue
+de vos disques tels qu'ils sont per&ccedil;us par votre syst&egrave;me d'exploitation.
+Par exemple, avec une installation par d&eacute;faut,
+Apache httpd est situ&eacute; dans <code>/usr/local/apache2</code> pour le syst&egrave;me de
+fichiers UNIX, ou <code>"c:/Program Files/Apache Group/Apache2"</code> pour
+le syst&egrave;me de fichiers Windows.  (Notez que des slashes directs doivent
+toujours &ecirc;tre utilis&eacute;s comme s&eacute;parateur de chemin
+dans les fichiers de configuration d'Apache httpd, m&ecirc;me sous
+Windows.)  Quant &agrave;
+l'arborescence du site web, il s'agit d'une vue de votre site
+tel que pr&eacute;sent&eacute; par le
+serveur web et per&ccedil;ue par le client.  Ainsi le chemin <code>/dir/</code> dans
+l'arborescence du site web correspond au chemin
+<code>/usr/local/apache2/htdocs/dir/</code> dans le syst&egrave;me de fichiers pour
+une installation d'Apache httpd par d&eacute;faut sous UNIX.
+En outre, l'arborescence du site web n'a pas besoin de correspondre en permanence au
+syst&egrave;me de fichiers, car les pages web peuvent &ecirc;tre g&eacute;n&eacute;r&eacute;es dynamiquement
+&agrave; partir de bases de donn&eacute;es ou d'autres emplacements.</p>
+
+<section id="filesystem"><title>Conteneurs de syst&egrave;me de fichiers</title>
+
+<p>Les conteneurs <directive type="section" module="core">Directory</directive>
+et <directive type="section" module="core">Files</directive>,
+ainsi que leurs &eacute;quivalents acceptant les
+<glossary ref="regex">expressions rationnelles</glossary>,
+appliquent des directives &agrave; certaines parties du syst&egrave;me de fichiers.
+Les directives contenues dans une section <directive
+type="section" module="core">Directory</directive> s'appliquent au r&eacute;pertoire
+pr&eacute;cis&eacute;, ainsi qu'&agrave; tous ses sous-r&eacute;pertoires et aux fichiers que ces
+derniers contiennent.
+Le m&ecirc;me effet peut &ecirc;tre obtenu en utilisant les <a
+href="howto/htaccess.html">fichiers .htaccess</a>.  Par exemple, avec la
+configuration suivante, l'indexation sera activ&eacute;e pour le r&eacute;pertoire
+<code>/var/web/dir1</code> et tous ses sous-r&eacute;pertoires.</p>
+
+<highlight language="config">
+&lt;Directory /var/web/dir1&gt;
+    Options +Indexes
+&lt;/Directory&gt;
+</highlight>
+
+<p>Les directives contenues dans une section <directive type="section"
+module="core">Files</directive> s'appliquent &agrave; tout fichier
+avec le nom sp&eacute;cifi&eacute;, quel que soit le r&eacute;pertoire dans lequel il se trouve.
+Ainsi par exemple, les directives de configuration suivantes, si elles sont
+plac&eacute;es dans la section principale du fichier de configuration, vont interdire
+l'acc&egrave;s &agrave; tout fichier nomm&eacute; <code>private.html</code> quel que soit
+l'endroit o&ugrave; il se trouve.</p>
+
+<highlight language="config">
+&lt;Files private.html&gt;
+    Require all denied
+&lt;/Files&gt;
+</highlight>
+
+<p>Pour faire r&eacute;f&eacute;rence &agrave; des fichiers qui se trouvent en des points
+particuliers du syst&egrave;me de fichiers, les sections
+<directive type="section" module="core">Files</directive> et
+<directive type="section" module="core">Directory</directive>
+peuvent &ecirc;tre combin&eacute;es.  Par exemple, la configuration suivante va interdire
+l'acc&egrave;s &agrave; <code>/var/web/dir1/private.html</code>,
+<code>/var/web/dir1/subdir2/private.html</code>,
+<code>/var/web/dir1/subdir3/private.html</code>, ainsi que toute instance de
+<code>private.html</code> qui se trouve dans l'arborescence
+<code>/var/web/dir1/</code>.</p>
+
+<highlight language="config">
+&lt;Directory /var/web/dir1&gt;
+    &lt;Files private.html&gt;
+        Require all denied
+    &lt;/Files&gt;
+&lt;/Directory&gt;
+</highlight>
+</section>
+
+<section id="webspace"><title>Conteneurs de l'arborescence du site web</title>
+
+<p>le conteneur <directive type="section" module="core">Location</directive>
+et son &eacute;quivalent acceptant les
+<glossary ref="regex">expressions rationnelles</glossary>, modifient quant &agrave; eux la
+configuration de parties de l'arborescence du site web.  Par exemple, la
+configuration suivante interdit l'acc&egrave;s &agrave; toute URL dont la partie chemin
+commence par /private.
+En particulier, l'interdiction s'appliquera aux requ&ecirc;tes pour :
+<code>http://yoursite.example.com/private</code>,
+<code>http://yoursite.example.com/private123</code>, et
+<code>http://yoursite.example.com/private/dir/file.html</code> ainsi qu'&agrave;
+toute requ&ecirc;te commen&ccedil;ant par la cha&icirc;ne de caract&egrave;res <code>/private</code>.</p>
+
+<highlight language="config">
+&lt;LocationMatch ^/private&gt;
+    Require all denied
+&lt;/LocationMatch&gt;
+</highlight>
+
+<p>Le conteneur <directive type="section" module="core">Location</directive>
+n'a pas besoin de faire r&eacute;f&eacute;rence &agrave; un &eacute;l&eacute;ment du syst&egrave;me de fichiers.
+Par exemple, l'exemple suivant montre comment faire r&eacute;f&eacute;rence &agrave; une URL
+particuli&egrave;re vers un gestionnaire interne du serveur HTTP Apache fourni par le module
+<module>mod_status</module>.
+Il n'est pas n&eacute;cessaire de trouver un fichier nomm&eacute; <code>server-status</code>
+dans le syst&egrave;me de fichiers.</p>
+
+<highlight language="config">
+&lt;Location /server-status&gt;
+    SetHandler server-status
+&lt;/Location&gt;
+</highlight>
+</section>
+
+<section id="overlapping-webspace"><title>Espace web imbriqu&eacute;</title>
+<p>Pour contr&ocirc;ler deux URLs imbriqu&eacute;es, on doit tenir compte de l'ordre
+dans lequel certaines sections ou directives sont &eacute;valu&eacute;es. Pour
+<directive type="section" module="core">Location</directive>, on doit
+avoir :</p>
+<highlight language="config">
+&lt;Location /foo&gt;
+&lt;/Location&gt;
+&lt;Location /foo/bar&gt;
+&lt;/Location>
+</highlight>
+<p>Les directives <directive type="section"
+module="mod_alias">Alias</directive>, quant &agrave; elles, sont &eacute;valu&eacute;es vice-versa :</p>
+<highlight language="config">
+Alias /foo/bar /srv/www/uncommon/bar
+Alias /foo /srv/www/common/foo
+</highlight>
+<p>Ceci est aussi vrai pour les directives <directive
+module="mod_proxy">ProxyPass</directive> :</p>
+<highlight language="config">
+ProxyPass /special-area http://special.example.com smax=5 max=10
+ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On
+</highlight>
+</section>
+
+
+<section id="wildcards"><title>Caract&egrave;res de remplacement
+et expressions rationnelles</title>
+
+<p>Les conteneurs
+<directive type="section" module="core">Directory</directive>,
+<directive type="section" module="core">Files</directive>, et
+<directive type="section" module="core">Location</directive>
+peuvent utiliser des caract&egrave;res de remplacement de style shell comme dans
+la fonction <code>fnmatch</code> de la biblioth&egrave;que C standard.
+Le caract&egrave;re "*"
+correspond &agrave; toute s&eacute;quence de caract&egrave;res, "?" &agrave; un caract&egrave;re seul,
+et "[<em>seq</em>]" &agrave; tout caract&egrave;re contenu dans <em>seq</em>.
+Le caract&egrave;re "/"
+ne peut pas faire l'objet d'un remplacement;
+il doit &ecirc;tre sp&eacute;cifi&eacute; explicitement.</p>
+
+<p>Si une d&eacute;finition des crit&egrave;res de correspondance
+encore plus souple est n&eacute;cessaire, chaque conteneur
+poss&egrave;de son &eacute;quivalent acceptant les expressions rationnelles : <directive
+type="section" module="core">DirectoryMatch</directive>, <directive
+type="section" module="core">FilesMatch</directive>, et <directive
+type="section" module="core">LocationMatch</directive> acceptent les
+<glossary ref="regex">expressions rationnelles</glossary> compatibles Perl
+pour d&eacute;finir les crit&egrave;res de correspondance.  Mais voyez plus loin la section
+&agrave; propos de la combinaison des sections de configuration
+pour comprendre comment l'utilisation de
+conteneurs avec des expressions rationnelles va modifier la mani&egrave;re
+dont les directives sont appliqu&eacute;es.</p>
+
+<p>Un conteneur qui modifie la configuration de tous les
+r&eacute;pertoires utilisateurs &agrave; l'aide de caract&egrave;res de remplacement
+mais sans utiliser
+les expressions rationnelles pourrait ressembler &agrave; ceci :</p>
+
+<highlight language="config">
+&lt;Directory /home/*/public_html&gt;
+    Options Indexes
+&lt;/Directory&gt;
+</highlight>
+
+<p>Avec les conteneurs utilisant les expressions rationnelles,
+on peut interdire l'acc&egrave;s &agrave; de nombreux types de fichiers d'images
+simultan&eacute;ment :</p>
+<highlight language="config">
++&lt;FilesMatch \.(?i:gif|jpe?g|png)$&gt;
+    Require all denied
+&lt;/FilesMatch&gt;
+</highlight>
+
+</section>
+
+<section id="expressions"><title>Expressions bool&eacute;ennes</title>
+<p>La directive <directive type="section" module="core">If</directive>
+permet de modifier la configuration en fonction d'une condition qui peut
+&ecirc;tre d&eacute;finie sous la forme d'une expression bool&eacute;enne. Dans l'exemple
+suivant, l'acc&egrave;s est interdit si l'en-t&ecirc;te HTTP Referer ne commence pas
+par "http://www.example.com/".</p>
+<highlight language="config">
+&lt;If "!(%{HTTP_REFERER} -strmatch 'http://www.example.com/*')"&gt;
+    Require all denied
+&lt;/If&gt;
+</highlight>
+
+</section>
+
+<section id="whichwhen"><title>Que faut-il utiliser et quand ?</title>
+
+<p>Choisir entre des conteneurs de syst&egrave;me de fichiers et des conteneurs
+d'arborescence du site web est vraiment tr&egrave;s simple.
+Pour appliquer des directives &agrave; des objets qui r&eacute;sident dans le syst&egrave;me de
+fichiers, utilisez toujours un conteneur <directive type="section"
+module="core">Directory</directive> ou <directive type="section"
+module="core">Files</directive>.  Pour appliquer des directives &agrave; des objets
+qui ne r&eacute;sident pas dans le syst&egrave;me de fichiers (comme une page web g&eacute;n&eacute;r&eacute;e
+par une base de donn&eacute;es), utilisez un conteneur <directive type="section"
+module="core">Location</directive>.</p>
+
+<p>Il ne faut jamais utiliser un conteneur <directive type="section"
+module="core">Location</directive> pour restreindre l'acc&egrave;s &agrave; des
+objets du syst&egrave;me de fichiers, car plusieurs localisations de
+l'arborescence du site web (URLs) peuvent correspondre &agrave; la m&ecirc;me localisation
+du syst&egrave;me de fichier, ce qui peut permettre de contourner vos restrictions.
+Par exemple, imaginez la configuration suivante :</p>
+
+<highlight language="config">
+&lt;Location /dir/&gt;
+    Require all denied
+&lt;/Location&gt;
+</highlight>
+
+<p>Elle fonctionne correctement si la requ&ecirc;te appelle
+<code>http://yoursite.example.com/dir/</code>.  Mais que va-t-il se passer si
+votre syst&egrave;me de fichiers est insensible &agrave; la casse ?
+Votre restriction va pouvoir &ecirc;tre tout simplement contourn&eacute;e en envoyant une
+requ&ecirc;te sur
+<code>http://yoursite.example.com/DIR/</code>.  Le conteneur <directive
+type="section" module="core">Directory</directive>, quant &agrave; lui, s'appliquera
+&agrave; tout contenu servi &agrave; partir de cette localisation,
+sans tenir compte de la mani&egrave;re dont il est appel&eacute;.
+(Les liens du syst&egrave;me de fichiers constituent une exception.
+Le m&ecirc;me r&eacute;pertoire peut &ecirc;tre plac&eacute; dans plusieurs parties du syst&egrave;me de
+fichiers en utilisant des liens symboliques.  Le conteneur
+<directive type="section" module="core">Directory</directive> va suivre le
+lien symbolique sans modifier le nom du chemin.  Par cons&eacute;quent, pour plus de
+s&eacute;curit&eacute;, les liens symboliques doivent &ecirc;tre d&eacute;sactiv&eacute;s &agrave; l'aide de la
+directive
+<directive module="core">Options</directive> appropri&eacute;e.)</p>
+
+<p>Si vous pensez que vous n'&ecirc;tes pas concern&eacute; par ce probl&egrave;me
+parceque vous utilisez un syst&egrave;me de fichiers sensible &agrave; la casse,
+gardez &agrave; l'esprit qu'il y a de nombreuses autres mani&egrave;res pour faire
+correspondre plusieurs localisations de l'arborescence du site web &agrave; la m&ecirc;me
+localisation du syst&egrave;me de fichiers.  C'est pourquoi vous devez autant que
+possible toujours utiliser les conteneurs de syst&egrave;me de fichiers.
+Il y a cependant une exception &agrave; cette r&egrave;gle.  Placer des restrictions de
+configuration dans un conteneur <code>&lt;Location
+/&gt;</code> est tout &agrave; fait sans rique car ce conteneur va s'appliquer &agrave;
+toutes les requ&ecirc;tes sans tenir compte de l'URL sp&eacute;cifique.</p>
+</section>
+
+<section id="nesting"><title>Imbrication des sections</title>
+
+<p>Certains types de sections peuvent &ecirc;tre imbriqu&eacute;s : d'une part, on
+peut utiliser les sections <directive type="section"
+module="core">Files</directive> &agrave; l'int&eacute;rieur des sections <directive
+type="section" module="core">Directory</directive>, d'autre part, on
+peut utiliser les
+directives <directive type="section" module="core">If</directive> &agrave;
+l'int&eacute;rieur des sections <directive type="section"
+module="core">Directory</directive>, <directive type="section"
+module="core">Location</directive> et <directive type="section"
+module="core">Files</directive>. Les valeurs des expressions
+rationnelles correspondant aux sections nomm&eacute;es se comportent de mani&egrave;re
+identique.</p>
+
+<p>Les sections imbriqu&eacute;es sont fusionn&eacute;es apr&egrave;s les sections
+non-imbriqu&eacute;es de m&ecirc;me type.</p>
+
+</section>
+
+</section>
+
+<section id="virtualhost"><title>H&ocirc;tes virtuels</title>
+
+<p>Le conteneur <directive type="section" module="core">VirtualHost</directive>
+contient des directives qui s'appliquent &agrave; des h&ocirc;tes sp&eacute;cifiques.
+Ceci s'av&egrave;re utile pour servir des h&ocirc;tes multiples &agrave; partir de la m&ecirc;me machine,
+chacun d'entre eux poss&eacute;dant une configuration diff&eacute;rente.  Pour de plus amples
+informations,
+voir la <a href="vhosts/">Documentation sur les h&ocirc;tes virtuels</a>.</p>
+</section>
+
+<section id="proxy"><title>Mandataire</title>
+
+<p>Les conteneurs
+<directive type="section" module="mod_proxy">Proxy</directive>
+et <directive type="section" module="mod_proxy">ProxyMatch</directive>
+appliquent les directives de configuration qu'ils contiennent uniquement aux
+sites qui correspondent &agrave; l'URL sp&eacute;cifi&eacute;e et auxquels on a
+acc&eacute;d&eacute; via le serveur mandataire du module <module>mod_proxy</module>.
+Par exemple, la configuration suivante
+va interdire l'utilisation du serveur proxy pour acc&eacute;der au site
+<code>www.example.com</code>.</p>
+
+<highlight language="config">
+&lt;Proxy http://www.example.com/*&gt;
+    Require all granted
+&lt;/Proxy&gt;
+</highlight>
+</section>
+
+<section id="whatwhere"><title>Quelles sont les directives autoris&eacute;es ?</title>
+
+<p>Pour d&eacute;terminer quelles sont les directives autoris&eacute;es pour tel type de
+section de configuration, v&eacute;rifiez le <a
+href="mod/directive-dict.html#Context">Contexte</a> de la directive.
+Tout ce qui est autoris&eacute; dans les sections
+<directive type="section" module="core">Directory</directive>
+l'est aussi d'un point de vue syntaxique dans les sections
+<directive type="section" module="core">DirectoryMatch</directive>,
+<directive type="section" module="core">Files</directive>,
+<directive type="section" module="core">FilesMatch</directive>,
+<directive type="section" module="core">Location</directive>,
+<directive type="section" module="core">LocationMatch</directive>,
+<directive type="section" module="mod_proxy">Proxy</directive>,
+et <directive type="section" module="mod_proxy">ProxyMatch</directive>.
+Il y a cependant quelques exceptions :</p>
+
+<ul>
+<li>La directive <directive module="core">AllowOverride</directive>
+ne fonctionne que dans les sections
+<directive type="section" module="core">Directory</directive>.</li>
+
+<li>Les <directive
+module="core">Options</directive> <code>FollowSymLinks</code> et
+<code>SymLinksIfOwnerMatch</code>  ne fonctionnent que dans les sections
+<directive type="section" module="core">Directory</directive> ou les fichiers
+<code>.htaccess</code>.</li>
+
+<li>La directive <directive module="core">Options</directive> ne peut pas &ecirc;tre
+utilis&eacute;e dans les sections
+<directive type="section" module="core">Files</directive>
+et <directive type="section" module="core">FilesMatch</directive>.</li>
+</ul>
+</section>
+
+<section id="merging"><title>Comment les sections sont combin&eacute;es entre elles</title>
+
+<p>Les sections de configuration sont appliqu&eacute;es dans un ordre tr&egrave;s particulier.
+Il est important de savoir comment cet ordre est d&eacute;fini car il peut avoir
+des effets importants sur la mani&egrave;re dont les directives de configuration
+sont interpr&eacute;t&eacute;es.</p>
+
+    <p>L'ordre dans lequel les sections sont combin&eacute;es est :</p>
+
+    <ol>
+      <li> Les sections <directive type="section"
+      module="core">Directory</directive> (&agrave; l'exception des
+      expressions rationnelles)
+      et les fichiers <code>.htaccess</code> sont appliqu&eacute;s simultan&eacute;ment (avec
+      la possibilit&eacute; pour <code>.htaccess</code>, s'il y est autoris&eacute;, de
+      pr&eacute;valoir sur
+      <directive type="section" module="core">Directory</directive>)</li>
+
+      <li>Les sections
+      <directive type="section" module="core">DirectoryMatch</directive>
+      (et <code>&lt;Directory ~&gt;</code>)</li>
+
+      <li>Les sections <directive type="section"
+      module="core">Files</directive> et <directive
+      type="section" module="core">FilesMatch</directive> sont appliqu&eacute;es
+      simultan&eacute;ment</li>
+
+      <li>Les sections
+      <directive type="section" module="core">Location</directive>
+      et <directive type="section"
+      module="core">LocationMatch</directive> sont appliqu&eacute;es
+      simultan&eacute;ment</li>
+
+      <li>Les directives <directive type="section" module="core">If</directive>
+      </li>
+    </ol>
+
+    <p>Mises &agrave; part les sections <directive type="section"
+    module="core">Directory</directive>, chaque groupe est trait&eacute; selon
+    l'ordre dans lequel il appara&icirc;t dans les fichiers de configuration.
+    Les sections <directive
+    type="section" module="core">Directory</directive> (groupe 1 ci-dessus)
+    sont trait&eacute;es dans l'ordre du r&eacute;pertoire le plus court vers le plus long.
+    Par exemple, <code>&lt;Directory /var/web/dir&gt;</code> sera
+    trait&eacute; avant <code>&lt;Directory
+    /var/web/dir/subdir&gt;</code>.  Si plusieurs sections <directive
+    type="section" module="core">Directory</directive> s'appliquent au m&ecirc;me
+    r&eacute;pertoire, elles sont trait&eacute;es selon l'ordre dans lequel elles
+    apparaissent dans le fichier de configuration.
+    Les sections de configuration incluses via la directive <directive
+    module="core">Include</directive> sont trait&eacute;es comme si elles se
+    trouvaient r&eacute;ellement dans le fichier qui les inclut &agrave; la position de la
+    directive
+    <directive module="core">Include</directive>.</p>
+
+    <p>Les sections situ&eacute;es &agrave; l'int&eacute;rieur de sections <directive type="section"
+    module="core">VirtualHost</directive>
+    sont appliqu&eacute;es <em>apr&egrave;s</em> les sections correspondantes situ&eacute;es en
+    dehors de la d&eacute;finition de l'h&ocirc;te virtuel, ce qui permet &agrave; l'h&ocirc;te virtuel
+    de pr&eacute;valoir sur la configuration du serveur principal.</p>
+
+    <p>Quand la requ&ecirc;te est servie par le module <module>mod_proxy</module>,
+    le conteneur <directive module="mod_proxy" type="section">Proxy</directive>
+    prend la place du conteneur <directive module="core"
+    type="section">Directory</directive> dans l'ordre de traitement.</p>
+
+    <p>Les sections situ&eacute;es plus loin dans le fichier de configuration pr&eacute;valent
+    sur celles qui les pr&eacute;c&egrave;dent ; cependant, chaque
+    module est responsable de la d&eacute;finition de la forme que doit prendre
+    cette pr&eacute;valence. Une section de configuration ult&eacute;rieure contenant
+    des directives d'un certain module peut &ecirc;tre &agrave; l'origine d'une
+    fusion conceptuelle de certaines directives, de toutes les
+    directives, ou un remplacement complet de la configuration du module
+    par ses valeurs par d&eacute;faut et les directives explicitement d&eacute;finies
+    dans cette section ult&eacute;rieure.</p>
+
+<note><title>Note technique</title>
+	Une s&eacute;quence
+	<code>&lt;Location&gt;</code>/<code>&lt;LocationMatch&gt;</code>
+	est r&eacute;ellement trait&eacute;e juste avant la phase de traduction du nom
+	(o&ugrave; <code>Aliases</code> et <code>DocumentRoots</code>
+      sont utilis&eacute;s pour faire correspondre les URLs aux noms de fichiers).
+      Les effets de cette s&eacute;quence disparaissent totalement lorsque
+      la traduction est termin&eacute;e.
+</note>
+
+<section id="merge-examples"><title>Quelques exemples</title>
+
+<p>Voici un exemple imaginaire qui montre l'ordre de combinaison des sections.
+En supposant qu'elles s'appliquent toutes &agrave; la requ&ecirc;te, les directives de
+cet exemple seront appliqu&eacute;es dans l'ordre suivant : A &gt; B &gt; C &gt; D &gt;
+E.</p>
+
+<highlight language="config">
+&lt;Location /&gt;
+    E
+&lt;/Location&gt;
+
+&lt;Files f.html&gt;
+    D
+&lt;/Files&gt;
+
+&lt;VirtualHost *&gt;
+&lt;Directory /a/b&gt;
+    B
+&lt;/Directory&gt;
+&lt;/VirtualHost&gt;
+
+&lt;DirectoryMatch "^.*b$"&gt;
+    C
+&lt;/DirectoryMatch&gt;
+
+&lt;Directory /a/b&gt;
+    A
+&lt;/Directory&gt;
+
+</highlight>
+
+<p>Pour un exemple plus concret, consid&eacute;rez ce qui suit.  Sans tenir compte
+de toute restriction d'acc&egrave;s plac&eacute;e dans les sections <directive module="core"
+type="section">Directory</directive>, la section <directive
+module="core" type="section">Location</directive> sera
+&eacute;valu&eacute;e en dernier et permettra un acc&egrave;s au serveur sans aucune restriction.
+En d'autres termes, l'ordre de la combinaison des sections est important,
+soyez donc prudent !</p>
+
+<highlight language="config">
+&lt;Location /&gt;
+    Require all granted
+&lt;/Location&gt;
+
+# Arrghs!  Cette section &lt;Directory&gt; n'aura aucun effet
+&lt;Directory /&gt;
+    &lt;RequireAll&gt;
+        Require all granted
+        Require not host badguy.example.com
+    &lt;/RequireAll&gt;
+&lt;/Directory&gt;
+</highlight>
+
+</section>
+
+</section>
+</manualpage>

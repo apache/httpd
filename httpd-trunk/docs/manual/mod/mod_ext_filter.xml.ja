@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English Revision: 420990:1330988 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_ext_filter.xml.meta">
+
+<name>mod_ext_filter</name>
+<description>レスポンスのボディをクライアントに送る前に外部プログラムで処理する</description>
+<status>Extension</status>
+<sourcefile>mod_ext_filter.c</sourcefile>
+<identifier>ext_filter_module</identifier>
+
+<summary>
+    <p><module>mod_ext_filter</module> では <a href="../filter.html">フィルタ</a>
+    の慣れ親しんだ単純なプログラミングモデルが提供されます。このモジュールを
+    使えば、標準入力から読み込んで、標準出力に書き出すプログラム
+    (すなわち Unix 形式のフィルタコマンド) を Apache のフィルタにすることが
+    できます。このフィルタの機構は、Apache API 向けに書かれた Apache
+    サーバプロセス内で実行される専用のフィルタよりもずっと遅いですが、
+    以下のような利点もあります。</p>
+
+    <ul>
+      <li>ずっとシンプルなプログラミングモデル</li>
+
+      <li>プログラムが標準入力から読んで標準出力に書くものである限り、
+      どんなプログラム言語やスクリプト言語でも使うことができる</li>
+
+      <li>既存のプログラムを変更することなく Apache のフィルタとして
+      使うことができる</li>
+    </ul>
+
+    <p>性能の問題により実運用に適さないとしても、フィルタのプロトタイプ用の
+    環境としては <module>mod_ext_filter</module> は使えます。</p>
+
+</summary>
+<seealso><a href="../filter.html">フィルタ</a></seealso>
+
+<section id="examples"><title>例</title>
+
+    <section><title>他のタイプのレスポンスから HTML を生成する</title>
+      <example>
+        # mod_ext_filter directive to define a filter<br />
+        # to HTML-ize text/c files using the external<br />
+        # program /usr/bin/enscript, with the type of<br />
+        # the result set to text/html<br />
+        ExtFilterDefine c-to-html mode=output \<br />
+        <indent>
+          intype=text/c outtype=text/html \<br />
+          cmd="/usr/bin/enscript --color -W html -Ec -o - -"<br />
+        </indent>
+        <br />
+        &lt;Directory "/export/home/trawick/apacheinst/htdocs/c"&gt;<br />
+        <indent>
+          # core directive to cause the new filter to<br />
+          # be run on output<br />
+          SetOutputFilter c-to-html<br />
+          <br />
+          # mod_mime directive to set the type of .c<br />
+          # files to text/c<br />
+          AddType text/c .c<br />
+          <br />
+          # mod_ext_filter directive to set the debug<br />
+          # level just high enough to see a log message<br />
+          # per request showing the configuration in force<br />
+          ExtFilterOptions DebugLevel=1<br />
+        </indent>
+        &lt;/Directory&gt;
+      </example>
+    </section>
+
+    <section><title>コンテントエンコーディングのフィルタを実装する</title>
+      <p>注: この gzip の例はデモ用です。実用的な実装は
+      <module>mod_deflate</module> を参照してください。</p>
+
+      <example>
+        # mod_ext_filter directive to define the external filter<br />
+        ExtFilterDefine gzip mode=output cmd=/bin/gzip<br />
+        <br />
+        &lt;Location /gzipped&gt;<br />
+        <indent>
+          # core directive to cause the gzip filter to be<br />
+          # run on output<br />
+          SetOutputFilter gzip<br />
+          <br />
+          # mod_header directive to add<br />
+          # "Content-Encoding: gzip" header field<br />
+          Header set Content-Encoding gzip<br />
+        </indent>
+        &lt;/Location&gt;
+      </example>
+    </section>
+
+    <section><title>サーバを遅くする</title>
+      <example>
+        # mod_ext_filter directive to define a filter<br />
+        # which runs everything through cat; cat doesn't<br />
+        # modify anything; it just introduces extra pathlength<br />
+        # and consumes more resources<br />
+        ExtFilterDefine slowdown mode=output cmd=/bin/cat \<br />
+        <indent>
+          preservescontentlength<br />
+        </indent>
+        <br />
+        &lt;Location /&gt;<br />
+        <indent>
+          # core directive to cause the slowdown filter to<br />
+          # be run several times on output<br />
+          #<br />
+          SetOutputFilter slowdown;slowdown;slowdown<br />
+        </indent>
+        &lt;/Location&gt;
+      </example>
+    </section>
+
+    <section><title>sed を使って応答中のテキストを置換する</title>
+      <example>
+        # mod_ext_filter directive to define a filter which<br />
+        # replaces text in the response<br />
+        #<br />
+        ExtFilterDefine fixtext mode=output intype=text/html \<br />
+        <indent>
+          cmd="/bin/sed s/verdana/arial/g"<br />
+        </indent>
+        <br />
+        &lt;Location /&gt;<br />
+        <indent>
+          # core directive to cause the fixtext filter to<br />
+          # be run on output<br />
+          SetOutputFilter fixtext<br />
+        </indent>
+        &lt;/Location&gt;
+      </example>
+    </section>
+
+    <section><title>別のフィルタのトレース</title>
+      <example>
+        # Trace the data read and written by mod_deflate<br />
+        # for a particular client (IP 192.168.1.31)<br />
+        # experiencing compression problems.<br />
+        # This filter will trace what goes into mod_deflate.<br />
+        ExtFilterDefine tracebefore \<br />
+        <indent>
+          cmd="/bin/tracefilter.pl /tmp/tracebefore" \<br />
+          EnableEnv=trace_this_client<br />
+        </indent>
+        <br />
+        # This filter will trace what goes after mod_deflate.<br />
+        # Note that without the ftype parameter, the default<br />
+        # filter type of AP_FTYPE_RESOURCE would cause the<br />
+        # filter to be placed *before* mod_deflate in the filter<br />
+        # chain.  Giving it a numeric value slightly higher than<br />
+        # AP_FTYPE_CONTENT_SET will ensure that it is placed<br />
+        # after mod_deflate.<br />
+        ExtFilterDefine traceafter \<br />
+        <indent>
+          cmd="/bin/tracefilter.pl /tmp/traceafter" \<br />
+          EnableEnv=trace_this_client ftype=21<br />
+        </indent>
+        <br />
+        &lt;Directory /usr/local/docs&gt;<br />
+        <indent>
+          SetEnvIf Remote_Addr 192.168.1.31 trace_this_client<br />
+          SetOutputFilter tracebefore;deflate;traceafter<br />
+        </indent>
+        &lt;/Directory&gt;
+      </example>
+
+      <example><title>データをトレースするフィルタ:</title>
+        #!/usr/local/bin/perl -w<br />
+        use strict;<br />
+        <br />
+        open(SAVE, "&gt;$ARGV[0]")<br />
+        <indent>
+          or die "can't open $ARGV[0]: $?";<br />
+        </indent>
+        <br />
+        while (&lt;STDIN&gt;) {<br />
+        <indent>
+          print SAVE $_;<br />
+          print $_;<br />
+        </indent>
+        }<br />
+        <br />
+        close(SAVE);
+      </example>
+    </section>
+</section> <!-- /Examples -->
+
+<directivesynopsis>
+<name>ExtFilterDefine</name>
+<description>外部フィルタを定義</description>
+<syntax>ExtFilterDefine <var>filtername</var> <var>parameters</var></syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p><directive>ExtFilterDefine</directive> は、実行するプログラムや
+    引数など、外部フィルタの特性を定義します。</p>
+
+    <p><var>filtername</var> は定義するフィルタの名前を指定します。
+    この名前は後で <directive module="core">SetOutputFilter</directive>
+    ディレクティブで指定できます。名前は登録されるすべてのフィルタで
+    一意でなくてはなりません。<em>現時点では、フィルタの登録 API からは
+    エラーは報告されません。ですから、重複する名前を使ってしまったときでも
+    ユーザにはそのことは報告されません。</em></p>
+
+    <p>続くパラメータの順番は関係無く、それらは実行する外部コマンドと、
+    他の特性を定義します。<code>cmd=</code> だけが必須のパラメータです。
+    指定可能なパラメータは:</p>
+
+    <dl>
+      <dt><code>cmd=<var>cmdline</var></code></dt>
+
+      <dd><code>cmd=</code> キーワードは実行する外部コマンドを指定します。
+      プログラム名の後に引数がある場合は、コマンド行は引用符で囲む
+      必要があります (<em>例えば</em>、<code>cmd="<var>/bin/mypgm</var>
+      <var>arg1</var> <var>arg2</var>"</code> のように)。プログラムは
+      シェル経由でなく、直接実行されますので、通常のシェル用の
+      エスケープは必要ありません。プログラムの引数は空白で区切られます。
+      プログラムの引数の一部となる必要のある空白はバックスペースでエスケープ
+      できます。引数の一部になるバックスラッシュはバックスラッシュで
+      エスケープする必要があります。標準の CGI 環境変数に加えて、
+      環境変数 DOCUMENT_URI, DOCUMENT_PATH_INFO, and 
+      QUERY_STRING_UNESCAPED がプログラムのために設定されます。</dd>
+
+      <dt><code>mode=<var>mode</var></code></dt>
+
+      <dd>応答を処理するフィルタには <code>mode=output</code> (デフォルト)
+      を使います。リクエストを処理するフィルタには <code>mode=input</code>
+      を使います。<code>mode=input</code> は Apache 2.1 以降で利用可能です。</dd>
+
+      <dt><code>intype=<var>imt</var></code></dt>
+
+      <dd>このパラメータはフィルタされるべきドキュメントの
+      インターネットメディアタイプ (<em>すなわち</em>、MIME タイプ) を
+      指定します。デフォルトではすべてのドキュメントがフィルタされます。
+      <code>intype=</code> が指定されていれば、フィルタは指定されていない
+      ドキュメントには適用されなくなります。</dd>
+
+      <dt><code>outtype=<var>imt</var></code></dt>
+
+      <dd>このパラメータはフィルタされたドキュメントの
+      インターネットメディアタイプ (<em>すなわち</em>、MIME タイプ) を
+      指定します。フィルタ動作にともなってインターネットメディアタイプが
+      変わる場合に有用です。デフォルトではインターネットメディアタイプは
+      変更されません。</dd>
+
+      <dt><code>PreservesContentLength</code></dt>
+
+      <dd><code>PreservesContentLength</code> キーワードはフィルタが
+      content length <transnote>コンテントの長さ</transnote>
+      を変更しないということを指定します。ほとんどのフィルタは
+      content length を変更するため、これはデフォルトではありません。
+      フィルタが長さを変えないときは、このキーワードを指定すると
+      よいでしょう。</dd>
+
+      <dt><code>ftype=<var>filtertype</var></code></dt>
+
+      <dd>このパラメータはフィルタが登録されるべきフィルタタイプの
+      数値を指定します。ほとんどの場合は、デフォルトの AP_FTYPE_RESOURCE で
+      十分です。フィルタがフィルタチェーンの別の場所で動作する必要がある
+      場合は、このパラメータを指定する必要があります。指定可能な値は
+      util_filter.h の AP_FTYPE_foo 定義を参照してください。</dd>
+
+      <dt><code>disableenv=<var>env</var></code></dt>
+
+      <dd>設定されていた場合にフィルタを無効にするための環境変数を
+      指定します。</dd>
+
+      <dt><code>enableenv=<var>env</var></code></dt>
+
+      <dd>このパラメータはフィルタが有効になるために設定されていなければ
+      ならない環境変数を指定します。</dd>
+    </dl>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ExtFilterOptions</name>
+<description><module>mod_ext_filter</module> のオプションを設定</description>
+<syntax>ExtFilterOptions <var>option</var> [<var>option</var>] ...</syntax>
+<default>ExtFilterOptions DebugLevel=0 NoLogStderr</default>
+<contextlist><context>directory</context></contextlist>
+
+<usage>
+    <p><directive>ExtFilterOptions</directive> ディレクティブは
+    <module>mod_ext_filter</module> の特別な処理用のオプションを
+    指定します。<var>Option</var> には以下のどれかを指定します。</p>
+
+    <dl>
+      <dt><code>DebugLevel=<var>n</var></code></dt>
+
+      <dd>
+        <code>DebugLevel</code> で <module>mod_ext_filter</module> 
+        の生成するデバッグメッセージのレベルを設定できます。
+        デフォルトでは、デバッグメッセージは生成されません。
+        これは <code>DebugLevel=0</code> と設定するのと同じです。
+        数字が大きくなればなるほど、より多くのデバッグメッセージが
+        生成され、サーバの性能は落ちます。数値の実際の意味は
+        <code>mod_ext_filter.c</code> の先頭近くの DBGLVL_ 定数の
+        定義で説明されています。
+
+        <p>注: デバッグメッセージを Apache のエラーログに
+        保存するようにするためには、core のディレクティブ 
+        <directive module="core">LogLevel</directive> 
+        を使う必要があります。</p>
+      </dd>
+
+      <dt><code>LogStderr | NoLogStderr</code></dt>
+
+      <dd><code>LogStderr</code> キーワードは外部フィルタプログラムにより
+      標準エラー <transnote>stderr</transnote> に書かれたメッセージを
+      Apache のエラーログに保存するようにします。<code>NoLogStderr</code> は
+      逆に保存しないようにします。</dd>
+    </dl>
+
+    <example><title>例</title>
+      ExtFilterOptions LogStderr DebugLevel=0
+    </example>
+
+    <p>この例では、フィルタの標準出力に書かれたメッセージは
+    Apache のエラーログに保存されます。<module>mod_ext_filter</module> からは
+    デバッグメッセージは生成されません。</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

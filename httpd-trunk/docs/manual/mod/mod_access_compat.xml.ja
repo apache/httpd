@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English Revision: 675568:1330911 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_access_compat.xml.meta">
+
+<name>mod_access_compat</name> 
+<description>ホスト (名前もしくは IP アドレス) に基づいたグループ承認</description>
+<status>Extension</status>
+<sourcefile>mod_access_compat.c</sourcefile>
+<identifier>access_compat_module</identifier>
+<compatibility>Apache 2.3 (Apache 2.x の以前のバージョンとの互換性のためのモジュールとして)。
+このモジュールで提供するディレクティブは、承認の仕組みの一新に伴い、非推奨になったものです。
+<module>mod_authz_host</module> も見てください。</compatibility>
+
+<summary>
+    <p><module>mod_access_compat</module> により提供されるディレクティブは
+    サーバの特定の部分への
+    アクセスを制御するために <directive module="core" type="section"
+    >Directory</directive>, <directive module="core"
+    type="section">Files</directive>, <directive module="core"
+    type="section">Location</directive>
+    と <code><a href="core.html#accessfilename">.htaccess</a
+    ></code> ファイルで使用されます。クライアントのホスト名、IP
+    アドレスや、<a href="../env.html">環境変数</a
+    >などのリクエストの特徴に基づいて
+    アクセス制御を行なうことができます。<directive
+    module="mod_access_compat">Allow</directive> と
+    <directive module="mod_access_compat">Deny</directive> ディレクティブを使って、
+    どのようなクライアントにアクセスを
+    許可する、しないを指定します。また
+    <directive module="mod_access_compat">Order</directive> ディレクティブを使って、
+    デフォルトのアクセス状態と、
+    <directive module="mod_access_compat">Allow</directive> ディレクティブと
+    <directive module="mod_access_compat">Deny</directive>
+    ディレクティブとのお互いへの影響の仕方を設定します。
+    </p>
+
+    <p>ホストによるアクセス制限とパスワードによる認証を、
+    同時に組み合わせて使うこともできます。
+    この場合、その二つの制限の関係を指定するために
+    <directive module="mod_access_compat">Satisfy</directive>
+    ディレクティブを使用します。</p>
+
+    <note type="warning"><title>Note</title>
+      <p><module>mod_access_compat</module>が提供するディレクティブは、
+      承認の仕組みの一新に伴い、非推奨になったものです。
+      <module>mod_authz_host</module> も見てください。
+      デフォルトの承認の取り扱い機能を使用するために
+      <module>mod_authz_default</module>
+      モジュールもロードされなければなりません。</p>
+    </note>
+
+    <p>一般的には、アクセス制限ディレクティブはすべてのアクセスメソッド
+    (<code>GET</code>, <code>PUT</code>, <code>POST</code> など)
+    に適用されます。そして、ほとんどの場合これが望ましい動作です。
+    しかし、<directive module="core" type="section">Limit</directive>
+    セクションの中にディレクティブを書くことで、
+    一部のメソッドにのみ制限をかけることもできます。</p>
+</summary>
+
+<seealso><directive module="mod_authz_core">Require</directive></seealso>
+<seealso><module>mod_authz_host</module></seealso>
+<seealso><module>mod_authz_core</module></seealso>
+
+<directivesynopsis>
+<name>Allow</name>
+<description>サーバのある領域にアクセスできるホストを制御する</description>
+<syntax> Allow from all|<var>host</var>|env=[!]<var>env-variable</var>
+[<var>host</var>|env=[!]<var>env-variable</var>] ...</syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Limit</override>
+
+<usage>
+    <p><directive>Allow</directive> ディレクティブは、どのホストが
+    サーバのある領域にアクセスできるかに影響を与えます。
+    アクセスはホスト名、IP アドレス、IP アドレスの範囲や、
+    環境変数などのクライアントのリクエストの
+    特徴に基づいてアクセス制御することができます。</p> 
+
+    <p>このディレクティブの最初の引数は常に <code>from</code> です。
+    それに続く引数は三つの違った形式があります。<code>Allow from
+    all</code> が指定されていれば、すべてのホストにアクセスを許可し、
+    アクセス制限は下で説明されているように、
+    <directive module="mod_access_compat">Deny</directive>
+    ディレクティブと <directive module="mod_access_compat">Order</directive>
+    ディレクティブの設定で決まります。
+    特定のホストやホスト群にのみサーバへのアクセスを許可するためには、
+    以下のどれかの形式で <em>host</em> を指定することができます:</p>
+
+    <dl>
+      <dt>ドメイン名 (の一部)</dt>
+
+      <dd>
+      <example><title>例</title>
+        Allow from apache.org<br />
+        Allow from .net example.edu
+      </example>
+      <p>この文字列に合うか、これで終わる名前のホストのアクセスが許可されます。
+      各部分が完全に合うものだけに適用されますので、上の例は
+      <code>foo.apache.org</code> にはマッチしますが、
+      <code>fooapache.org</code> にはマッチしません。
+      この設定をすると、Apache は
+      <directive module="core">HostnameLookups</directive>
+      の設定に関わらず、クライアントの IP アドレスに対して
+      DNS の 2 重逆引きを行ないます。
+      ホスト名からオリジナルの IP アドレスを順引きします。
+      順引きと逆引きが一致し、ホスト名が該当した場合にのみ、
+      アクセスが許可されます。</p></dd>
+
+      <dt>完全な IP アドレス</dt>
+
+      <dd>
+      <example><title>例</title>
+        Allow from 10.1.2.3<br />
+        Allow from 192.168.1.104 192.168.1.205
+      </example>
+      <p>アクセスを許可する IP アドレスです。</p></dd>
+
+      <dt>IP アドレスの一部</dt>
+
+      <dd>
+      <example><title>例</title>
+        Allow from 10.1<br />
+        Allow from 10 172.20 192.168.2
+      </example>
+      <p>サブネットの制限用の、IP
+      アドレスの最初の一つから三つまでのバイトです。</p></dd>
+
+      <dt>ネットワーク/ネットマスク の対</dt>
+
+      <dd>
+      <example><title>例</title>
+        Allow from 10.1.0.0/255.255.0.0
+      </example>
+      <p>ネットワーク a.b.c.d とネットマスク w.x.y.z です。
+      より細粒度のサブネット制限用です。</p></dd>
+
+      <dt>ネットワーク/nnn CIDR 指定</dt>
+
+      <dd>
+      <example><title>例</title>
+        Allow from 10.1.0.0/16
+      </example>
+      <p>ネットマスクが nnn の上位ビットが 1
+      となっているものからなること以外は前のものと同じです。</p></dd>
+    </dl>
+
+    <p>注: 最後の三つの例はまったく同じホストに合います。</p>
+
+
+    <p>IPv6 アドレスと IPv6 のサブネットは以下のように指定できます:</p>
+
+    <example>
+       Allow from 2001:db8::a00:20ff:fea7:ccea<br />
+       Allow from 2001:db8::a00:20ff:fea7:ccea/10
+    </example>
+
+    <p><directive>Allow</directive> ディレクティブの引数の三つ目の形式は、
+    <a href="../env.html">環境変数</a>
+    の存在によりアクセスの制御を行なえるようにするものです。
+    <code>Allow from env=<var>env-variable</var></code>
+    が指定されていると、環境変数 <var>env-variable</var>
+    が存在した場合にリクエストはアクセスを許可されます。
+    <code>Allow from env=!<var>env-variable</var></code>
+    が指定されていると、環境変数 <var>env-variable</var>
+    が存在しない場合にアクセス許可されます。
+    サーバは <module>mod_setenvif</module>
+    のディレクティブにより、クライアントのリクエスト
+    の特徴に基づいて柔軟に環境変数を設定する機能を提供します。
+    ですから、このディレクティブはクライアントの
+    <code>User-Agent</code> (ブラウザの種類)、<code>Referer</code>
+    や他の HTTP リクエストのヘッダフィールドなどに基づいて
+    アクセス許可をするために使うことができます。
+    </p>
+
+    <example><title>Example:</title>
+      SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in<br />
+      &lt;Directory /docroot&gt;<br />
+      <indent>
+        Order Deny,Allow<br />
+        Deny from all<br />
+        Allow from env=let_me_in<br />
+      </indent>
+      &lt;/Directory&gt;
+    </example>
+
+    <p>この場合、user-agent の文字列が <code>KnockKnock/2.0</code>
+    で始まるブラウザのみがアクセスが許可され、
+    他のものはアクセスが拒否されます。</p>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Deny</name>
+<description>サーバがアクセスを拒否するホストを制御する</description>
+<syntax> Deny from all|<var>host</var>|env=[!]<var>env-variable</var>
+[<var>host</var>|env=[!]<var>env-variable</var>] ...</syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Limit</override>
+<usage>
+    <p>このディレクティブはホスト名、IP
+    アドレス、環境変数に基づいてサーバへのアクセスを制限します。
+    <directive>Deny</directive> ディレクティブの引数は <directive
+    module="mod_access_compat">Allow</directive>
+    ディレクティブとまったく同じです。</p>
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Order</name>
+<description>デフォルトのアクセス可能な状態と、<directive>Allow</directive> と
+<directive>Deny</directive> が評価される順番を制御する</description>
+<syntax> Order <var>ordering</var></syntax>
+<default>Order Deny,Allow</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Limit</override>
+
+<usage>
+
+    <p><directive>Order</directive> ディレクティブは <directive 
+    module="mod_access_compat">Allow</directive> ディレクティブと<directive
+    module="mod_access_compat">Deny</directive> と共に"3段階アクセス制御システム"
+    を制御します。第1段階目では <directive>Order</directive> ディレクティブで1番目に
+    指定したディレクティブ(<directive module="mod_access_compat">Allow</directive> 
+    または <directive module="mod_access_compat">Deny</directive>)を全て処理します。
+    第2段階目で、残りのディレクティブ(<directive
+    module="mod_access_compat">Deny</directive> または <directive
+    module="mod_access_compat">Allow</directive>)
+    を全て処理します。第3段階目で、第1段階目と第2段階目で
+    マッチしなかったリクエストを処理します。</p>
+
+    <p>全ての <directive module="mod_access_compat">Allow</directive> と <directive
+    module="mod_access_compat">Deny</directive> が処理され、結局のところ最後にマッチ
+    した条件が有効となることに注意してください。これは最初にマッチした条件だけが有効
+    となる、典型的なファイアウォールの動作とは異なっています。
+    また、設定ファイルに書く順番には意味はありません。<directive
+    module="mod_access_compat">Allow</directive> 行は全部一つのグループとして扱われ、
+    <directive module="mod_access_compat">Deny</directive> 行はもう一つのグループとみなされます。
+    またデフォルト状態は単独で一つのグループとみなされます。</p>
+
+    <p><em>Order</em> 設定は以下のどれかです。</p>
+
+    <dl>
+      <dt><code>Allow,Deny</code></dt>
+
+      <dd>まず <directive module="mod_access_compat">Allow</directive> 
+      ディレクティブが適用されます。どれにもマッチしなかった場合、この時点で
+      リクエストは拒否されます。次に、全ての <directive module="mod_access_compat">
+      Deny</directive> ディレクティブが適用されます。どれか一つでもマッチした場合は、
+      リクエストは拒否されます。
+      最後に、 <directive module="mod_access_compat">Allow</directive> にも <directive
+      module="mod_access_compat">Deny</directive> にもマッチしなかったリクエストは
+      デフォルト設定が適用されるので拒否されます。</dd>
+
+      <dt><code>Deny,Allow</code></dt>
+
+      <dd>まず <directive module="mod_access_compat">Deny</directive> 
+      ディレクティブが適用されます。どれか一つでもマッチした場合は、
+      <directive module="mod_access_compat">Allow</directive> のどれにも
+      マッチ<strong>しなければ</strong>、アクセスは拒否されます。
+      どの <directive module="mod_access_compat">Allow</directive> にも <directive
+      module="mod_access_compat">Deny</directive> にもマッチしないリクエストは
+      許可されます。</dd>
+
+      <dt><code>Mutual-failure</code></dt>
+
+      <dd>これは <code>Order Allow,Deny</code> と全く同じ効果を持ち、 
+      そのため非推奨となっています。
+      </dd>
+    </dl>
+
+    <p>キーワードの間に置けるのはコンマだけです。
+    間に<em>空白があってはいけません</em>。</p>
+
+    <table border="1">
+      <tr>
+        <th>マッチ</th>
+        <th>Allow,Deny 時の結果</th>
+        <th>Deny,Allow 時の結果</th>
+      </tr><tr>
+        <th>Allow だけにマッチ</th>
+        <td>許可</td>
+        <td>許可</td>
+      </tr><tr>
+        <th>Deny だけにマッチ</th>
+        <td>拒否</td>
+        <td>拒否</td>
+      </tr><tr>
+        <th>どちらにもマッチしない</th>
+        <td>2番目のディレクティブがデフォルト: 拒否</td>
+        <td>2番目のディレクティブがデフォルト: 許可</td>
+      </tr><tr>
+        <th>Allow と Deny 両方にマッチ</th>
+        <td>最後にマッチしたほう: 拒否</td>
+        <td>最後にマッチしたほう: 許可</td>
+      </tr>
+    </table>
+
+    <p>以下の例では、apache.org
+    ドメインのすべてのホストはアクセスを許可されます。
+    他のすべてのホストはアクセスを拒否されます。</p>
+
+    <example>
+      Order Deny,Allow<br />
+      Deny from all<br />
+      Allow from apache.org
+    </example>
+
+    <p>次の例では、foo.apache.org サブドメインにあるホスト以外の、
+    apache.org ドメインのすべてのホストがアクセスを許可されます。
+    apache.org
+    ドメインでないホストは、デフォルトの状態が <directive
+    module="mod_access_compat">Deny</directive> のため、
+    サーバへのアクセスを拒否されます。</p>
+
+    <example>
+      Order Allow,Deny<br />
+      Allow from apache.org<br />
+      Deny from foo.apache.org
+    </example>
+
+    <p>一方、上の例の <directive>Order</directive> が <code>Deny,Allow</code>
+    に変わっていれば、すべのホストにアクセスが許可されます。
+    これは、設定ファイル中の実際の順番に関わらず、
+    <code>Allow from apache.org</code> が最後に評価されて、
+    <code>Deny from foo.apache.org</code> を上書きするからです。
+    <code>apache.org</code>
+    ドメインにないホストも、デフォルトの状態が <directive
+    module="mod_access_compat">Allow</directive>
+    なので、アクセスを許可されます。
+    </p>
+
+    <p><directive>Order</directive>
+    ディレクティブはデフォルトのアクセスの状態に影響を与えるので、
+    <directive module="mod_authz_host">Allow</directive> ディレクティブと
+    <directive module="mod_authz_host">Deny</directive>
+    ディレクティブが無くても、サーバのアクセスに影響を与えることができます。
+    たとえば、</p>
+
+    <example>
+      &lt;Directory /www&gt;<br />
+      <indent>
+        Order Allow,Deny<br />
+      </indent>
+      &lt;/Directory&gt;
+    </example>
+
+    <p>はデフォルトのアクセス状態が 
+    <directive module="mod_access_compat">Deny</directive> になるため、
+    <code>/www</code> ディレクトリへのすべてのアクセスを拒否します。
+    </p>
+
+    <p><directive>Order</directive>
+    ディレクティブはサーバの設定処理の各段階でだけ
+    アクセスディレクティブの処理の順番を変更します。これは、たとえば、
+    <directive>Order</directive> ディレクティブの設定に関わらず、
+    <directive module="core" type="section">Location</directive> セクションの
+    <directive module="mod_access_compat">Allow</directive> ディレクティブや
+    <directive module="mod_access_compat">Deny</directive> ディレクティブは、
+    <directive module="core" type="sectino">Directory</directive> セクションや
+    <code>.htaccess</code> ファイルの <directive
+    module="mod_access_compat">Allow</directive>
+    ディレクティブや <directive module="mod_access_compat">Deny</directive>
+    ディレクティブよりも常に後に評価されるということを意味します。
+    設定セクションのマージの詳細については、
+    <a href="../sections.html">Directory,Location, Files
+    セクションの動作方法</a> を参照してください。</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Satisfy</name>
+<description>ホストレベルのアクセス制御とユーザ認証との相互作用を指定</description>
+<syntax>Satisfy Any|All</syntax>
+<default>Satisfy All</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+<compatibility>バージョン 2.0.51 以降では <directive module="core" type="section"
+	>Limit</directive> ディレクティブと <directive module="core"
+	type="section">LimitExcept</directive> ディレクティブの影響を受ける
+</compatibility>
+
+<usage>
+    <p><directive module="mod_access_compat">Allow</directive> と
+    <directive module="mod_authz_core">Require</directive> の両方が使われているときの
+    アクセスポリシーを設定します。パラメータは <code>All</code> か <code>Any</code>
+    です。このディレクティブはある場所へのアクセスがユーザ名/パスワード
+    <em>と</em>クライアントのホストのアドレスで制限されているときにのみ
+    役立ちます。デフォルトの動作 (<code>All</code>) はクライアントがアドレスによる
+    アクセス制限を満たし、<em>かつ</em>正しいユーザ名とパスワードを入力することを
+    要求します。<code>Any</code> では、クライアントはホストの制限を満たすか、
+    正しいユーザ名とパスワードの入力をするかをすればアクセスを許可されます。
+    これは、ある場所をパスワードで保護するけれど、特定のアドレスからの
+    クライアントにはパスワードの入力を要求せずにアクセスを許可する、
+    というようなときに使用できます。</p>
+
+    <p>例えば、同じネットワーク上にいる人にはウェブサイトのある部分について
+    無制限のアクセスを許したいけれど、外のネットワークの人には
+    パスワードを提供させるようにするためには、次のような設定をすることが
+    できます:</p>
+
+    <example>
+    Require valid-user<br />
+    Allow from 192.168.1<br />
+    Satisfy Any
+    </example>
+   
+    <p>バージョン 2.0.51 からは
+    <directive module="core"
+    type="section">Limit</directive> セクションと
+    <directive module="core" type="section"
+    >LimitExcept</directive> セクションを使用することで
+    <directive>Satisfy</directive> ディレクティブが
+    適用されるメソッドを制限することが
+    できるようになりました。</p>
+</usage>
+   <seealso><directive module="mod_access_compat">Allow</directive></seealso>
+   <seealso><directive module="mod_authz_core">Require</directive></seealso>
+</directivesynopsis>
+
+</modulesynopsis>

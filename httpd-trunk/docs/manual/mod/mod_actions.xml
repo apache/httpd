@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 1330911 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_actions.xml.meta">
+
+<name>mod_actions</name>
+
+<description>This module provides for executing CGI scripts based on
+media type or request method.</description>
+
+<status>Base</status>
+<sourcefile>mod_actions.c</sourcefile>
+<identifier>actions_module</identifier>
+
+<summary>
+    <p>This module has two directives. The <directive
+    module="mod_actions">Action</directive> directive lets you run CGI
+    scripts whenever a file of a certain <glossary
+    ref="mime-type">MIME content type</glossary> is requested. The
+    <directive module="mod_actions">Script</directive> directive lets
+    you run CGI scripts whenever a particular method is used in a
+    request. This makes it much easier to execute scripts that process
+    files.</p> </summary>
+
+<seealso><module>mod_cgi</module></seealso>
+<seealso><a href="../howto/cgi.html">Dynamic Content with CGI</a></seealso>
+<seealso><a href="../handler.html">Apache httpd's Handler Use</a></seealso>
+
+<directivesynopsis>
+<name>Action</name>
+<description>Activates a CGI script for a particular handler or
+content-type</description>
+<syntax>Action <var>action-type</var> <var>cgi-script</var> [virtual]</syntax>
+<contextlist>
+<context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+<compatibility>The <code>virtual</code> modifier and handler passing were
+introduced in Apache 2.1</compatibility>
+
+<usage>
+    <p>This directive adds an action, which will activate
+    <var>cgi-script</var> when <var>action-type</var> is triggered by
+    the request.  The <var>cgi-script</var> is the URL-path to a
+    resource that has been designated as a CGI script using <directive
+    module="mod_alias">ScriptAlias</directive> or <directive
+    module="mod_mime">AddHandler</directive>.  The
+    <var>action-type</var> can be either a <a
+    href="../handler.html">handler</a> or a <glossary
+    ref="mime-type">MIME content type</glossary>. It sends the URL and
+    file path of the requested document using the standard CGI
+    <code>PATH_INFO</code> and <code>PATH_TRANSLATED</code>
+    environment variables. The handler used for the particular request
+    is passed using the <code>REDIRECT_HANDLER</code> variable.</p>
+
+    <example><title>Example: MIME type</title>
+    <highlight language="config">
+# Requests for files of a particular MIME content type:
+Action image/gif /cgi-bin/images.cgi
+    </highlight>
+    </example>
+
+    <p>In this example, requests for files with a MIME content
+    type of <code>image/gif</code> will be handled by the
+    specified cgi script <code>/cgi-bin/images.cgi</code>.</p>
+
+    <example>
+        <title>Example: File extension</title>
+    <highlight language="config">
+# Files of a particular file extension
+AddHandler my-file-type .xyz
+Action my-file-type /cgi-bin/program.cgi
+    </highlight>
+    </example>
+    <p>In this example, requests for files with a file extension of
+    <code>.xyz</code> are handled by the specified cgi script
+    <code>/cgi-bin/program.cgi</code>.</p>
+
+    <p>The optional <code>virtual</code> modifier turns off the check
+    whether the requested file really exists. This is useful, for example,
+    if you want to use the <directive>Action</directive> directive in
+    virtual locations.</p>
+
+    <highlight language="config">
+&lt;Location /news&gt;
+    SetHandler news-handler
+    Action news-handler /cgi-bin/news.cgi virtual
+&lt;/Location&gt;
+    </highlight>
+</usage>
+
+<seealso><directive module="mod_mime">AddHandler</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Script</name>
+<description>Activates a CGI script for a particular request
+method.</description>
+<syntax>Script <var>method</var> <var>cgi-script</var></syntax>
+<contextlist>
+<context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<usage>
+    <p>This directive adds an action, which will activate
+    <var>cgi-script</var> when a file is requested using the method of
+    <var>method</var>. The <var>cgi-script</var> is the URL-path to a
+    resource that has been designated as a CGI script using <directive
+    module="mod_alias">ScriptAlias</directive> or <directive
+    module="mod_mime">AddHandler</directive>.  The URL and
+    file path of the requested document is sent using the standard CGI
+    <code>PATH_INFO</code> and <code>PATH_TRANSLATED</code> environment
+    variables.</p>
+
+    <note>
+      Any arbitrary method name may be used. <strong>Method names are
+      case-sensitive</strong>, so <code>Script PUT</code> and
+      <code>Script put</code> have two entirely different
+      effects.
+    </note>
+
+    <p>Note that the <directive>Script</directive> command defines default
+    actions only. If a CGI script is called, or some other resource that is
+    capable of handling the requested method internally, it will do
+    so. Also note that <directive>Script</directive> with a method of
+    <code>GET</code> will only be called if there are query arguments present
+    (<em>e.g.</em>, foo.html?hi). Otherwise, the request will
+    proceed normally.</p>
+
+    <highlight language="config">
+# All GET requests go here
+Script GET /cgi-bin/search
+
+# A CGI PUT handler
+Script PUT /~bob/put.cgi
+    </highlight>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

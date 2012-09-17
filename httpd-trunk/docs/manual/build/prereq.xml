@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<!DOCTYPE project [
+    <!ENTITY % HTTPD-VERSION SYSTEM "../style/version.ent">
+    %HTTPD-VERSION;
+]>
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<!-- this file contains prerequisites and will be included into build.xml -->
+<!-- ==================================================================== -->
+<project name="prereq">
+
+<!-- include the additional tasks from ant-contrib.                       -->
+<!-- we need for example the <for> task.                                  -->
+<!--                                                                      -->
+<taskdef resource="net/sf/antcontrib/antlib.xml" />
+
+<!-- Catalog of public W3C resources and their local copies.              -->
+<!-- These entitity definitions will magically injected into              -->
+<!-- xslt transformation and validation processes.                        -->
+<!--                                                                      -->
+<xmlcatalog id="w3c-catalog">
+    <entity publicId="-//W3C//DTD XHTML 1.0 Transitional//EN"
+            location="lib/xhtml1-transitional.dtd" />
+    <entity publicId="-//W3C//DTD XHTML 1.0 Strict//EN"
+            location="lib/xhtml1-strict.dtd" />
+    <entity publicId="-//W3C//ENTITIES Latin 1 for XHTML//EN"
+            location="lib/xhtml-lat1.ent" />
+    <entity publicId="-//W3C//ENTITIES Symbols for XHTML//EN"
+            location="lib/xhtml-symbol.ent" />
+    <entity publicId="-//W3C//ENTITIES Special for XHTML//EN"
+            location="lib/xhtml-special.ent" />
+</xmlcatalog>
+
+
+<!-- There are some files that are not intended to be modified or         -->
+<!-- transformed by the build process in any way.                         -->
+<!--                                                                      -->
+<patternset id="excludes">
+    <exclude name="build/*.xml" />
+    <exclude name="mod/allmodules.xml*" />
+    <exclude name="faq/categories.xml*" />
+    <exclude name="style/*.xml" />
+    <exclude name="style/lang/*.xml" />
+    <exclude name="style/xsl/util/*.xml" />
+    <exclude name="style/_generated/*.xml" />
+
+    <!-- for chm build -->
+    <exclude name="_chm/*/mod/allmodules.xml*" />
+    <exclude name="_chm/*/faq/categories.xml*" />
+    <exclude name="_chm/*/style/*.xml" />
+    <exclude name="_chm/*/style/lang/*.xml" />
+    <exclude name="_chm/*/style/xsl/util/*.xml" />
+    <exclude name="_chm/*/style/_generated/*.xml" />
+
+    <!-- for offline build -->
+    <exclude name="_off/*/mod/allmodules.xml*" />
+    <exclude name="_off/*/faq/categories.xml*" />
+    <exclude name="_off/*/style/*.xml" />
+    <exclude name="_off/*/style/lang/*.xml" />
+    <exclude name="_off/*/style/xsl/util/*.xml" />
+    <exclude name="_off/*/style/_generated/*.xml" />
+</patternset>
+
+
+<!-- Exclude scratch directories as well                                  -->
+<!--                                                                      -->
+<patternset id="scratch">
+    <exclude name="_chm/**/*" />
+    <exclude name="_chm" />
+    <exclude name="_off/**/*" />
+    <exclude name="_off" />
+    <exclude name="_tools/**/*" />
+    <exclude name="_tools" />
+    <exclude name="_dist/**/*" />
+    <exclude name="_dist" />
+    <exclude name="style/_generated/**/*" />
+    <exclude name="style/_generated" />
+</patternset>
+
+
+<!-- Exclude helper and non-xml directories                               -->
+<!--                                                                      -->
+<patternset id="baddirs">
+    <exclude name="build/**" />
+    <exclude name="style/**" />
+    <exclude name="images/**" />
+</patternset>
+
+
+<!-- load version dependent properties -->
+<property name="ap.httpd.version"
+         value="&httpd.major;.&httpd.minor;.&httpd.patch;" />
+<property prefix="ap" file="../style/build.properties" />
+
+</project>

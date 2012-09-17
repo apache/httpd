@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE language SYSTEM "../lang.dtd">
+<!-- English revision: 1044715 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<language id="ja">
+    <name>Japanese</name>
+    <charset>UTF-8</charset>
+    <source-ext>.xml.ja</source-ext>
+    <target-ext>.html.ja.utf8</target-ext>
+
+    <chm>
+        <lang>0x411 Japanese</lang>
+        <toc-font>MS UI Gothic,10,128</toc-font>
+        <charset>SHIFT_JIS</charset>
+        <settings>Japanese</settings>
+    </chm>
+
+    <!-- Some strings might be used in other contexts, than stated in the -->
+    <!-- comments...                                                      -->
+    <messages>
+        <!-- language link titles -->
+        <message id="nativename">Japanese</message>
+
+        <!-- Used for the moduleindex -->
+        <message id="corefeatures">コア機能と MPM</message>
+        <message id="othermodules">他のモジュール</message>
+        <message id="obsoletemodules">旧式のモジュール</message>
+
+        <!-- Used for the modulesynopsis and sitemap -->
+        <message id="obsoleteapachemodule">旧式の Apache Module</message>
+        <message id="apachemodule">Apache モジュール</message>
+        <message id="apachecore">Apache コア機能</message>
+        <message id="apachempmcommon">Apache MPM 共通ディレクティブ</message>
+        <message id="apachempm">Apache MPM</message>
+
+        <!-- Used in description box for modulesynopsis -->
+        <message id="description">説明</message>
+        <message id="seealso">参照</message>
+        <message id="topics">トピック</message>
+        <message id="status">ステータス</message>
+        <message id="moduleidentifier">モジュール識別子</message>
+        <message id="sourcefile">ソースファイル</message>
+        <message id="compatibility">互換性</message>
+
+        <!-- Used in manualpage -->
+        <message id="relatedmodules">関連モジュール</message>
+        <message id="relateddirectives">関連ディレクティブ</message>
+        <message id="lowercase">abcdefghijklmnopqrstuvwxyz</message>
+        <message id="uppercase">ABCDEFGHIJKLMNOPQRSTUVWXYZ</message>
+        <message id="name-section">NAME</message>
+        <message id="hyphenation"></message>
+
+        <!-- Used in description box for directives -->
+        <message id="syntax">構文</message>
+        <message id="default">デフォルト</message>
+        <message id="context">コンテキスト</message>
+        <message id="override">上書き</message>
+        <message id="status">ステータス</message>
+        <message id="module">モジュール</message>
+
+        <!-- Status descriptions -->
+        <message id="base" letter="B">Base</message>
+        <message id="mpm" letter="M">MPM</message>
+        <message id="core" letter="C">Core</message>
+        <message id="extension" letter="E">Extension</message>
+        <message id="experimental" letter="X">Experimental</message>
+        <message id="external" letter="T">External</message>
+
+        <!-- Used in directive context lists -->
+        <message id="serverconfig" letter="s">サーバ設定ファイル</message>
+        <message id="virtualhost" letter="v">バーチャルホスト</message>
+        <message id="directory" letter="d">ディレクトリ</message>
+        <message id="htaccess" letter="h">.htaccess</message>
+
+        <!-- Used for directive lists -->
+        <message id="directives">ディレクティブ</message>
+        <!-- the optional attribute replace-space-with takes a string.
+             if present, the space between <directive name> and 'Directive'
+             in directivesynopsis headings will be replaced by the given string.
+             (see de.xml for an example) -->
+        <message id="directive">ディレクティブ</message>
+        <message id="nodirectives">このモジュールにディレクティブはありません。</message>
+
+        <!-- Used in summaries -->
+        <message id="summary">概要</message>
+
+        <!-- Used for translation notes -->
+        <message id="transnote">訳注:</message>
+
+        <!-- Used for glossary link titles -->
+        <message id="glossarylink">用語集を参照</message>
+
+        <!-- Used in headers and footers -->
+        <message id="apachetitle">- Apache HTTP サーバ</message>
+        <message id="apachehttpserver">Apache HTTP サーバ
+            バージョン &httpd.major;.&httpd.minor;</message>
+        <message id="apachedocalt">[APACHE DOCUMENTATION]</message>
+        <message id="search">Google 検索</message> <!-- search button -->
+        <message id="index">索引</message> <!-- deprecated -->
+        <message id="home">ホーム</message> <!-- deprecated -->
+        <message id="comments">コメント</message>
+
+        <!-- breadcrumb links -->
+        <message id="apache">Apache</message>
+        <message id="http-server">HTTP サーバ</message>
+        <message id="documentation">ドキュメンテーション</message>
+        <message id="version">バージョン &httpd.major;.&httpd.minor;</message>
+
+        <!-- super menu -->
+        <message id="modules">モジュール</message>
+        <message id="faq">FAQ</message>
+        <message id="glossary">用語</message>
+        <message id="sitemap">サイトマップ</message>
+
+        <!-- footer line -->
+        <message id="before-license">この文書は</message>
+        <message id="after-license">のライセンスで提供されています。</message>
+        <message id="langavail">翻訳済み言語</message>
+
+        <!-- not up to date -->
+        <message id="outofdate">この日本語訳はすでに古くなっている
+            可能性があります。
+            最近更新された内容を見るには英語版をご覧下さい。
+        </message>
+        <!-- directive not translated yet -->
+        <message id="nottranslated">このディレクティブの解説文書は
+            まだ翻訳されていません。英語版をご覧ください。
+            </message>
+    </messages>
+</language>

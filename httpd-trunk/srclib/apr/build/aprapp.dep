@@ -1,0 +1,10 @@
+# Microsoft Developer Studio Generated Dependency File, included by aprapp.mak
+
+..\misc\win32\apr_app.c : \
+	"..\include\apr_getopt.h"\
+	"..\include\apr_lib.h"\
+	"..\include\apr_poll.h"\
+	"..\include\apr_portable.h"\
+	"..\include\arch\win32\apr_arch_file_io.h"\
+	"..\include\arch\win32\apr_arch_utf8.h"\
+	

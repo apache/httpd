@@ -1,0 +1,194 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 1242483 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="httpd.xml.meta">
+<parentdocument href="./">Programlar</parentdocument>
+
+  <title>httpd - Apache Hiper Metin Aktarım Protokolü Sunucusu</title>
+
+<summary>
+     <p><strong><code>httpd</code></strong>, Apache Hiper Metin Aktarım
+      Protokolü (HTTP) sunucusu programıdır. Tek başına çalışan bir artalan
+      süreci olarak tasarlanmıştır. Bu tarz kullanıldığında istekleri işleme
+      sokmak için çocuk süreçlerden ve evrelerden oluşan bir havuz
+      oluşturur.</p>
+
+     <p>Genelde, <strong><code>httpd</code></strong>'nin doğrudan çağrılmaması
+      gerekir. Unix ve benzerlerinde <program>apachectl</program>
+      aracılığıyla, <a href="../platform/windows.html#winsvc">Windows NT, 2000
+      ve XP</a>'de bir hizmet olarak,  <a
+      href="../platform/windows.html#wincons">Windows 9x ve ME</a>'de ise bir
+      konsol uygulaması olarak çalıştırılır.</p>
+</summary>
+
+<seealso><a href="../invoking.html">Apache httpd'nin Başlatılması</a></seealso>
+<seealso><a href="../stopping.html">Apache httpd'nin Durdurulması</a></seealso>
+<seealso><a href="../configuring.html">Yapılandırma Dosyaları</a></seealso>
+<seealso><a href="../platform/">Platforma Özgü Belgeler</a></seealso>
+<seealso><program>apachectl</program></seealso>
+
+<section id="synopsis"><title>Kullanım</title>
+     <p><code><strong>httpd</strong> [ -<strong>d</strong>
+     <var>sunucu-kök-dizini</var> ] [ -<strong>f</strong>
+     <var>yapılandırma-dosyası</var> ]
+     [ -<strong>C</strong> <var>yönerge</var> ] [ -<strong>c</strong>
+     <var>yönerge</var> ] [ -<strong>D</strong> <var>parametre</var> ]
+     [ -<strong>e</strong> <var>seviye</var> ] [ -<strong>E</strong>
+     <var>dosya</var> ]
+     [ <strong>-k</strong> start | restart | graceful | stop | graceful-stop ]
+     [ -<strong>h</strong> ]
+     [ -<strong>l</strong> ] [ -<strong>L</strong> ] [ -<strong>S</strong> ]
+     [ -<strong>t</strong> ] [ -<strong>v</strong> ] [ -<strong>V</strong> ]
+     [ -<strong>X</strong> ] [ -<strong>M</strong> ] [ -<strong>T</strong> ]
+     </code></p>
+
+     <p><a href="../platform/windows.html">Windows sistemlerinde</a>, ek
+      olarak şunlar vardır:</p>
+
+     <p><code><strong>httpd</strong> [ -<strong>k</strong> install | config |
+      uninstall ] [ -<strong>n</strong> <var>isim</var> ]
+     [ -<strong>w</strong> ]</code></p>
+</section>
+
+<section id="options"><title>Seçenekler</title>
+
+  <dl>
+    <dt><code><strong>-d</strong> <var>sunucu-kök-dizini</var></code></dt>
+      <dd><var>sunucu-kök-dizini</var>'ni <directive module="core"
+      >ServerRoot</directive> yönergesine ilk değer olarak atar. Yapılandırma
+      dosyasındaki bir <directive module="core">ServerRoot</directive>
+      yönergesiyle bu atama geçersiz kılınabilir. Bu seçenek belirtilmediği
+      takdirde <code>/usr/local/apache2</code> dizini öntanımlıdır.</dd>
+
+    <dt><code><strong>-f</strong> <var>yapılandırma-dosyası</var></code></dt>
+      <dd>Başlatma sırasında <var>yapılandırma-dosyası</var>'ndaki yönergeler
+      kullanılır. Eğer <var>yapılandırma-dosyası</var> bir / ile başlamıyorsa
+      dosyanın <directive module="core" >ServerRoot</directive> yönergesinin
+      değerine göreli olduğu varsayılır. Seçenek belirtilmediği takdirde
+      <code>conf/httpd.conf</code> öntanımlı değerdir.</dd>
+
+    <dt><code><strong>-k</strong> <code>start | restart | graceful | stop |
+      graceful-stop</code></code></dt>
+    <dd><strong><code>httpd</code></strong>'yi başlatmak, durdurmak ve yeniden
+      başlatmak için sinyal gönderir. Daha ayrıntılı bilgi edinmek için <a
+      href="../stopping.html">Apache httpd'nin Durdurulması</a> belgesine
+      bakınız.</dd>
+
+    <dt><code><strong>-C</strong> <var>yönerge</var></code></dt>
+    <dd>Yapılandırma <var>yönerge</var>'sini yapılandırma dosyalarını okumadan
+      önce işleme sokar.</dd>
+
+    <dt><code><strong>-c</strong> <var>yönerge</var></code></dt>
+    <dd>Yapılandırma <var>yönerge</var>'sini yapılandırma dosyalarını
+      okuduktan sonra işleme sokar.</dd>
+
+    <dt><code><strong>-D</strong> <var>parametre</var></code></dt>
+    <dd>Sunucu başlatılırken veya yeniden başlatılırken komutları şarta bağlı
+      olarak işleme sokmak veya atlamak için yapılandırma dosyalarında
+      kullanılan <directive type="section" module="core">IfDefine</directive>
+      bölümlerinde kullanılmak üzere bir yapılandırma <var>parametre</var>'si
+      tanımlar. Ayrıca, <code>-DNO_DETACH</code> (ana sürecin çatallanmasını
+      engellemek için), <code>-DFOREGROUND</code> (ana sürecin
+      <code>setsid()</code> ve benzerlerinden çağrılmasını engellemek için)
+      gibi daha az bilinen bazı başlatma parametrelerini atamakta da
+      kullanılabilir.</dd>
+
+    <dt><code><strong>-e</strong> <var>seviye</var></code></dt>
+    <dd>Hata günlüğü seviyesi olarak <directive module="core"
+      >LogLevel</directive> yönergesine sunucu başlatılırken <var>seviye</var>
+      değerini atar. Bu seçenek, başlatma sırasındaki sorunları saptamak
+      amacıyla hata iletilerinin ayrıntı seviyesini geçici olarak arttırmak
+      için kullanılır.</dd>
+
+    <dt><code><strong>-E</strong> <var>dosya</var></code></dt>
+    <dd>Sunucunun başlatılması sırasında hata iletilerinin belirtilen
+      <var>dosya</var>'ya gönderilmesini sağlar.</dd>
+
+    <dt><code><strong>-h</strong></code></dt>
+    <dd>Mevcut komut satırı seçeneklerinin kısa bir özetini çıktılar.</dd>
+
+    <dt><code><strong>-l</strong></code></dt>
+    <dd>Sunucunun içinde derlenmiş modüllerin listesini çıktılar. Bu liste
+      <directive module="mod_so">LoadModule</directive> yönergesi kullanılarak
+      devingen olarak yüklenen modülleri içermez.</dd>
+
+    <dt><code><strong>-L</strong></code></dt>
+    <dd>Durağan modüllerce sağlanmış yönergeleri olası değerleriyle geçerli
+      konumlarına yerleştirerek listeler. Paylaşımlı modüllerce sağlanan
+      yönergeleri listelemez.</dd>
+
+    <dt><code><strong>-M</strong></code></dt>
+    <dd>Yüklü durağan ve paylaşımlı modülleri listeler.</dd>
+
+    <dt><code><strong>-S</strong></code></dt>
+    <dd>Yapılandırma dosyasından çözümlenmiş haliyle ayarları gösterir (şu an
+      sadece sanal konak ayarları gösterilmektedir).</dd>
+
+    <dt><code><strong>-T</strong></code> (2.3.8 ve sonrasında
+    kullanılabilmektedir)</dt>
+    <dd>Başlatma ve yeniden başlatma sırasında belge kökü sınanmadan
+      geçilir.</dd>
+
+    <dt><code><strong>-t</strong></code></dt>
+    <dd>Yapılandırma dosyasını sözdizimi hatalarına karşı denetler. Program
+      sözdizimini denetledikten sonra sözdizimi geçerliyse 0 ile, değilse
+      sıfırdan farklı bir değerle çıkar.
+      <code><strong>-D</strong>DUMP_VHOSTS</code> seçeneği ile birlikte
+      kullanılmışsa ek olarak sanal konak ayrıntıları da basılır.
+      <code><strong>-D</strong>DUMP_MODULES</code> seçeneği ile ise ek olarak
+      tüm modüller listelenir.</dd>
+
+    <dt><code><strong>-v</strong></code></dt>
+    <dd><strong><code>httpd</code></strong> sürümünü basar ve çıkar.</dd>
+
+    <dt><code><strong>-V</strong></code></dt>
+    <dd>Sürümü ve <strong><code>httpd</code></strong> kurulum parametrelerini
+      basar ve çıkar.</dd>
+
+    <dt><code><strong>-X</strong></code></dt>
+    <dd><strong><code>httpd</code></strong> hata ayıklama kipinde çalışır. Tek
+      çocuk süreç başlatılır ve sunucu konsolu terketmez.</dd>
+  </dl>
+
+  <p>Aşağıdaki seçenekler sadece <a href="../platform/windows.html">Windows
+    platformunda geçerlidir</a>:</p>
+
+  <dl>
+    <dt><code><strong>-k</strong> install | config | uninstall</code></dt>
+    <dd>Parametreler bakımından sırasıyla: Apache httpd bir Windows NT hizmeti
+      haline getirilir; başlatma seçenekleri Apache httpd hizmeti için
+      değiştirilir; ve Apache httpd hizmeti sistemden kaldırılır.</dd>
+
+    <dt><code><strong>-n</strong> <var>isim</var></code></dt>
+    <dd>Sinyal gönderilecek Apache httpd hizmetinin <var>ismi</var>.</dd>
+
+    <dt><code><strong>-w</strong></code></dt>
+    <dd>Hata durumunda konsol penceresi açık tutularak hata iletilerinin
+      okunması sağlanır.</dd>
+  </dl>
+
+</section>
+
+</manualpage>

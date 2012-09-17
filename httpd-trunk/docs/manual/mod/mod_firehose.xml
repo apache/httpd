@@ -1,0 +1,283 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 1330994 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_firehose.xml.meta">
+
+<name>mod_firehose</name>
+<description>Multiplexes all I/O to a given file or pipe.</description>
+<status>Extension</status>
+<sourcefile>mod_firehose.c</sourcefile>
+<identifier>firehose_module</identifier>
+
+<summary>
+    <p><code>mod_firehose</code> provides a mechanism to record data
+    being passed between the httpd server and the client at the raw
+    connection level to either a file or a pipe in such a way that the
+    data can be analysed or played back to the server at a future date.
+    It can be thought of as "tcpdump for httpd".</p>
+
+    <p>Connections are recorded after the SSL has been stripped, and can
+    be used for forensic debugging.</p>
+
+    <p>The <program>firehose</program> tool can be used to demultiplex
+    the recorded stream back into individual files for analysis, or
+    playback using a tool like <code>netcat</code>.</p>
+
+    <note><title>WARNING</title>This module IGNORES all request level
+    mechanisms to keep data private. It is the responsibility of the
+    administrator to ensure that private data is not inadvertently
+    exposed using this module.
+    </note>
+
+</summary>
+<seealso><program>firehose</program></seealso>
+
+<section id="enable">
+    <title>Enabling a Firehose</title>
+
+    <p>To enable the module, it should be compiled and loaded
+    in to your running Apache configuration, and the directives below
+    used to record the data you are interested in.</p>
+    
+    <p>It is possible to record both incoming and outgoing data to
+    the same filename if desired, as the direction of flow is recorded
+    within each fragment.</p>
+
+    <p>It is possible to write to both normal files and fifos (pipes).
+    In the case of fifos, mod_firehose ensures that the packet size is
+    no larger than PIPE_BUF to ensure writes are atomic.</p>
+
+    <p>If a pipe is being used, something must be reading from the pipe
+    before httpd is started for the pipe to be successfully opened for
+    write. If the request to open the pipe fails, mod_firehose will
+    silently stand down and not record anything, and the server will
+    keep running as normal.</p>
+
+    <p>By default, all attempts to write will block the server. If the
+    webserver has been built against APR v2.0 or later, and an optional
+    "nonblock" parameter is specified all file writes will be non
+    blocking, and buffer overflows will cause debugging data to be lost.
+    In this case it is possible to prioritise the running of the server
+    over the recording of firehose data.</p>
+
+</section>
+
+<section id="format">
+    <title>Stream Format</title>
+
+    <p>The server typically serves multiple connections simultaneously,
+    and as a result requests and responses need to be multiplexed before
+    being written to the firehose.</p>
+    
+    <p>The fragment format is designed as clear text, so that a firehose
+    can be opened with and inspected by a normal text editor.
+    Alternatively, the <program>firehose</program> tool can be used to
+    demultiplex the firehose back into individual requests or
+    connections.</p>
+
+    <p>The size of the multiplexed fragments is governed by PIPE_BUF,
+    the maximum size of write the system is prepared to perform
+    atomically. By keeping the multiplexed fragments below PIPE_BUF in
+    size, the module guarantees that data from different fragments does
+    not interleave. The size of PIPE_BUF varies on different operating
+    systems.</p>
+
+    <p>The BNF for the fragment format is as follows:</p>
+
+    <pre>
+ stream = 0*(fragment)
+
+ fragment = header CRLF body CRLF
+
+ header = length SPC timestamp SPC ( request | response ) SPC uuid SPC count
+
+ length = &lt;up to 16 byte hex fragment length>
+ timestamp = &lt;up to 16 byte hex timestamp microseconds since 1970>
+ request = "&lt;"
+ response = ">"
+ uuid = &lt;formatted uuid of the connection>
+ count = &lt;hex fragment number in the connection>
+
+ body = &lt;the binary content of the fragment>
+
+ SPC = &lt;a single space>
+ CRLF = &lt;a carriage return, followed by a line feed>
+    </pre>
+
+    <p>All fragments for a connection or a request will share the same
+    UUID, depending on whether connections or requests are being recorded.
+    If connections are being recorded, multiple requests may appear within
+    a connection. A fragment with a zero length indicates the end of the
+    connection.</p>
+
+    <p>Fragments may go missing or be dropped if the process reading the
+    fragments is too slow. If this happens, gaps will exist in the
+    connection counter numbering. A warning will be logged in the error
+    log to indicate the UUID and counter of the dropped fragment, so it
+    can be confirmed the fragment was dropped.</p>
+
+    <p>It is possible that the terminating empty fragment may not appear,
+    caused by the httpd process crashing, or being terminated ungracefully.
+    The terminating fragment may be dropped if the process reading the
+    fragments is not fast enough.</p>
+
+</section>
+
+<directivesynopsis>
+
+<name>FirehoseConnectionInput</name>
+<description>Capture traffic coming into the server on each connection</description>
+<syntax>FirehoseConnectionInput <var>[ block | nonblock ]</var> <var>filename</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>FirehoseConnectionInput is only available in Apache 2.5.0 and
+later.</compatibility>
+
+<usage>
+    <p>Capture traffic coming into the server on each connection. Multiple
+    requests will be captured within the same connection if keepalive is
+    present.</p>
+
+    <example><title>Example</title>
+    <highlight language="config">
+      FirehoseConnectionInput connection-input.firehose
+      </highlight>
+    </example>
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>FirehoseConnectionOutput</name>
+<description>Capture traffic going out of the server on each connection</description>
+<syntax>FirehoseConnectionOutput <var>[ block | nonblock ]</var> <var>filename</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>FirehoseConnectionOutput is only available in Apache 2.5.0 and
+later.</compatibility>
+
+<usage>
+    <p>Capture traffic going out of the server on each connection.
+    Multiple requests will be captured within the same connection if
+    keepalive is present.</p>
+
+    <example><title>Example</title>
+    <highlight language="config">
+      FirehoseConnectionOutput connection-output.firehose
+      </highlight>
+    </example>
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>FirehoseRequestInput</name>
+<description>Capture traffic coming into the server on each request</description>
+<syntax>FirehoseRequestInput <var>[ block | nonblock ]</var> <var>filename</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>FirehoseRequestInput is only available in Apache 2.5.0 and
+later.</compatibility>
+
+<usage>
+    <p>Capture traffic coming into the server on each request. Requests
+    will be captured separately, regardless of the presence of keepalive.</p>
+
+    <example><title>Example</title>
+    <highlight language="config">
+      FirehoseRequestInput request-input.firehose
+      </highlight>
+    </example>
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>FirehoseRequestOutput</name>
+<description>Capture traffic going out of the server on each request</description>
+<syntax>FirehoseRequestOutput <var>[ block | nonblock ]</var> <var>filename</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>FirehoseRequestOutput is only available in Apache 2.5.0 and
+later.</compatibility>
+
+<usage>
+    <p>Capture traffic going out of the server on each request. Requests
+    will be captured separately, regardless of the presence of keepalive.</p>
+
+    <example><title>Example</title>
+    <highlight language="config">
+      FirehoseRequestOutput request-output.firehose
+      </highlight>
+    </example>
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>FirehoseProxyConnectionInput</name>
+<description>Capture traffic coming into the back of mod_proxy</description>
+<syntax>FirehoseProxyConnectionInput <var>[ block | nonblock ]</var> <var>filename</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>FirehoseProxyConnectionInput is only available in Apache 2.5.0 and
+later.</compatibility>
+
+<usage>
+    <p>Capture traffic being received by mod_proxy.</p>
+
+    <example><title>Example</title>
+    <highlight language="config">
+      FirehoseProxyConnectionInput proxy-input.firehose
+      </highlight>
+    </example>
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>FirehoseProxyConnectionOutput</name>
+<description>Capture traffic sent out from the back of mod_proxy</description>
+<syntax>FirehoseProxyConnectionOutput <var>[ block | nonblock ]</var> <var>filename</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>FirehoseProxyConnectionOutput is only available in Apache 2.5.0 and
+later.</compatibility>
+
+<usage>
+    <p>Capture traffic being sent out by mod_proxy.</p>
+
+    <example><title>Example</title>
+    <highlight language="config">
+      FirehoseProxyConnectionOutput proxy-output.firehose
+      </highlight>
+    </example>
+</usage>
+
+</directivesynopsis>
+
+</modulesynopsis>

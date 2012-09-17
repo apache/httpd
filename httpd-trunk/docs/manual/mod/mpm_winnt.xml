@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 1375006 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mpm_winnt.xml.meta">
+
+<name>mpm_winnt</name>
+<description>This Multi-Processing Module is optimized for Windows
+NT.</description>
+<status>MPM</status>
+<sourcefile>mpm_winnt.c</sourcefile>
+<identifier>mpm_winnt_module</identifier>
+
+<summary>
+    <p>This Multi-Processing Module (MPM) is the default for the
+    Windows NT operating systems. It uses a single control process
+    which launches a single child process which in turn creates
+    threads to handle requests</p>
+
+    <p>Capacity is configured using the 
+    <directive module="mpm_common">ThreadsPerChild</directive> directive,
+    which sets the maximum number of concurrent client connections.</p>
+
+    <p>By default, this MPM uses advanced Windows APIs for accepting
+    new client connections.  In some configurations, third-party products
+    may interfere with this implementation, with the following messages
+    written to the web server log:</p>
+
+    <example>
+        Child: Encountered too many AcceptEx faults accepting client connections.<br />
+        winnt_mpm: falling back to 'AcceptFilter none'.
+    </example>
+
+    <p>The MPM falls back to a safer implementation, but some client requests
+    were not processed correctly.  In order to avoid this error, use
+    <directive module="core">AcceptFilter</directive> with accept filter 
+    <code>none</code>.  <em>In Apache httpd 2.0 and 2.2,
+    <directive>Win32DisableAcceptEx</directive> was used for this purpose.</em></p>
+
+    <p>The WinNT MPM differs from the Unix MPMs such as worker and event
+    in several areas:</p>
+
+    <ul>
+      <li>When a child process is exiting due to shutdown, restart, or
+      <directive module="mpm_common">MaxConnectionsPerChild</directive>,
+      active requests in the exiting process have
+      <directive module="core">TimeOut</directive> seconds to finish before
+      processing is aborted.  Alternate types of restart and shutdown are not
+      implemented.</li>
+
+      <li>New child processes read the configuration files instead of
+      inheriting the configuration from the parent.  The behavior will
+      be the same as on Unix if the child process is created at startup
+      or restart, but if a child process is created because the prior
+      one crashed or reached 
+      <directive module="mpm_common">MaxConnectionsPerChild</directive>,
+      any pending changes to the configuration will become active in the
+      child at that point, and the parent and child will be using a
+      different configuration.  If planned configuration changes have been
+      partially implemented and the current configuration cannot be
+      parsed, the replacement child process cannot start up and the server 
+      will halt.  Because of this behavior, configuration files should not
+      be changed until the time of a server restart.</li>
+
+      <li>The <code>monitor</code> and <code>fatal_exception</code> hooks
+      are not currently implemented.</li>
+
+      <li><directive>AcceptFilter</directive> is implemented in the MPM
+      and has a different type of control over handling of new connections.
+      (Refer to the <directive module="core">AcceptFilter</directive>
+      documentation for details.)</li>
+    </ul>
+
+</summary>
+
+<seealso><a href="../platform/windows.html">Using Apache HTTP Server on Microsoft Windows</a></seealso>
+
+<directivesynopsis location="core"><name>AcceptFilter</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>CoreDumpDirectory</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>PidFile</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>Listen</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ListenBacklog</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxConnectionsPerChild</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxMemFree</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ScoreBoardFile</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ReceiveBufferSize</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>SendBufferSize</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ThreadLimit</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ThreadsPerChild</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ThreadStackSize</name>
+</directivesynopsis>
+
+</modulesynopsis>

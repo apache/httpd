@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
+<!-- English Revision: 587444:1329362 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<sitemap metafile="sitemap.xml.meta">
+
+  <title>Site Map</title>
+
+<summary>
+<p>このページは現時点で利用可能な
+<a href="./">Apache HTTP サーババージョン &httpd.major;.&httpd.minor; のドキュメンテーション</a>
+の一覧です。</p>
+</summary>
+
+<category id="release">
+<title>リリースのメモ</title>
+<page href="upgrading.html">2.2 から 2.4 へのアップグレード</page>
+<page href="new_features_2_4.html">Apache 2.3/2.4 の新機能</page>
+<page href="new_features_2_2.html">Apache 2.1/2.2 の新機能</page>
+<page href="new_features_2_0.html">Apache 2.0 の新機能</page>
+<page href="license.html">Apache License</page>
+</category>
+
+<category id="using">
+<title>Apache HTTP サーバの使用</title>
+<page href="install.html">Apache のコンパイルとインストール</page>
+<page href="invoking.html">Apache の起動</page>
+<page href="stopping.html">サーバの停止と再起動</page>
+<page href="configuring.html">設定ファイル</page>
+<page href="sections.html">Directory, Location, Files セクションの動作方法</page>
+<page href="caching.html">Content Caching</page>
+<page href="server-wide.html">サーバ全体の設定</page>
+<page href="logs.html">ログファイル</page>
+<page href="urlmapping.html">URL からファイルシステム上の位置へのマップ</page>
+<page href="misc/security_tips.html">セキュリティのコツ</page>
+<page href="dso.html">動的共有オブジェクト (DSO) サポート</page>
+<page href="content-negotiation.html">コンテントネゴシエーション</page>
+<page href="custom-error.html">カスタムエラーレスポンス</page>
+<page href="bind.html">Apache が使用するアドレスとポートの設定</page>
+<page href="mpm.html">マルチプロセッシングモジュール (MPM)</page>
+<page href="env.html">Apache における環境変数</page>
+<page href="handler.html">Apache のハンドラの使用</page>
+<page href="filter.html">フィルタ</page>
+<page href="suexec.html">suEXEC サポート</page>
+<page href="misc/perf-tuning.html">性能に関するヒント</page>
+<page href="misc/rewriteguide.html">URL リライトガイド</page>
+</category>
+
+<category id="vhosts">
+<title>Apache バーチャルホストドキュメント</title>
+<page separate="yes" href="vhosts/">概略</page>
+<page href="vhosts/name-based.html">名前ベースのバーチャルホスト</page>
+<page href="vhosts/ip-based.html">IP ベースのバーチャルホストのサポート</page>
+<page href="vhosts/mass.html">動的に設定された大規模バーチャルホスト</page>
+<page href="vhosts/examples.html">VirtualHost の例</page>
+<page href="vhosts/details.html">バーチャルホストのマッチングの詳しい説明</page>
+<page href="vhosts/fd-limits.html">ファイル記述子の限界</page>
+<page href="dns-caveats.html">DNS と Apache とに関係する問題</page>
+</category>
+
+<category id="faq">
+<title>Apache サーバのよくある質問</title>
+<page href="faq/">概略</page>
+<page href="faq/background.html">背景の説明</page>
+<page href="faq/support.html">サポート</page>
+<page href="faq/error.html">エラーメッセージ</page>
+</category>
+
+<category id="ssl">
+<title>Apache の SSL/TLS 暗号化</title>
+<page separate="yes" href="ssl/">概略</page>
+<page href="ssl/ssl_intro.html">SSL/TLS 暗号化: 入門</page>
+<page href="ssl/ssl_compat.html">SSL/TLS 暗号化: 互換性</page>
+<page href="ssl/ssl_howto.html">SSL/TLS 暗号化: ハウツー</page>
+<page href="ssl/ssl_faq.html">SSL/TLS 暗号化: FAQ</page>
+</category>
+
+<category id="howto">
+<title>ガイド、チュートリアル、ハウツー</title>
+<page separate="yes" href="howto/">概略</page>
+<page href="howto/auth.html">認証</page>
+<page href="howto/cgi.html">CGI による動的コンテンツ</page>
+<page href="howto/ssi.html">Server Side Includes 入門</page>
+<page href="howto/htaccess.html">.htaccess ファイル</page>
+<page href="howto/public_html.html">ユーザ毎のウェブディレクトリ</page>
+</category>
+
+<category id="platform">
+<title>プラットフォーム固有の情報</title>
+<page separate="yes" href="platform/">概略</page>
+<page href="platform/windows.html">Microsoft Windows での Apache の使用</page>
+<page href="platform/win_compiling.html">Microsoft Windows での Apache
+のコンパイル</page>
+<page href="platform/netware.html">Novell NetWare で Apache を使う</page>
+<page href="platform/perf-hp.html">HPUX で高性能ウェブサーバを実行する</page>
+</category>
+
+<category id="programs">
+<title>Apache HTTP サーバとサポートプログラム</title>
+<page separate="yes" href="programs/">概略</page>
+<page href="programs/httpd.html">マニュアルページ: httpd</page>
+<page href="programs/ab.html">マニュアルページ: ab</page>
+<page href="programs/apachectl.html">マニュアルページ: apachectl</page>
+<page href="programs/apxs.html">マニュアルページ: apxs</page>
+<page href="programs/configure.html">マニュアルページ: configure</page>
+<page href="programs/dbmmanage.html">マニュアルページ: dbmmanage</page>
+<page href="programs/htcacheclean.html">マニュアルページ: htcacheclean</page>
+<page href="programs/htdbm.html">マニュアルページ: htdbm</page>
+<page href="programs/htdigest.html">マニュアルページ: htdigest</page>
+<page href="programs/htpasswd.html">マニュアルページ: htpasswd</page>
+<page href="programs/logresolve.html">マニュアルページ: logresolve</page>
+<page href="programs/rotatelogs.html">マニュアルページ: rotatelogs</page>
+<page href="programs/suexec.html">マニュアルページ: suexec</page>
+<page href="programs/other.html">他のプログラム</page>
+</category>
+
+<category id="misc">
+<title>Apache その他</title>
+<page separate="yes" href="misc/">概略</page>
+<page href="misc/relevant_standards.html">関連する標準規格</page>
+</category>
+
+<category id="modules">
+<title>Apache モジュール</title>
+<page href="mod/module-dict.html">Apache ディレクティブの説明に使われる用語</page>
+<page href="mod/directive-dict.html">Apache ディレクティブを説明に使われる用語</page>
+</category>
+
+<category id="developer">
+<title>開発者のためのドキュメント</title>
+<page separate="yes" href="developer/">概略</page>
+<page href="developer/API.html">Apache API メモ</page>
+<page href="developer/debugging.html">APR
+のメモリアロケーションのデバッグ</page>
+<page href="developer/documenting.html">Apache 2.0 の説明を書く</page>
+<page href="developer/hooks.html">Apache 2.0 フック関数</page>
+<page href="developer/modules.html">Apache 1.3 から Apache 2.0 にモジュールを
+移植する</page>
+<page href="developer/request.html">Apache 2.0 のリクエスト処理</page>
+<page href="developer/filters.html">Apache 2.0 のフィルタの動作の仕方</page>
+</category>
+
+<category id="index">
+<title>用語集と索引</title>
+<page href="glossary.html">用語集</page>
+<page href="mod/">モジュール索引</page>
+<page href="mod/directives.html">ディレクティブ索引</page>
+<page href="mod/quickreference.html">ディレクティブ クイックリファレンス</page>
+</category>
+
+</sitemap>

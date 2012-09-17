@@ -1,0 +1,76 @@
+#!@perlbin@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+#
+# Log Server Status
+# Mark J Cox, UK Web Ltd 1996, mark ukweb.com
+#
+# This script is designed to be run at a frequent interval by something
+# like cron.  It connects to the server and downloads the status
+# information.  It reformats the information to a single line and logs
+# it to a file.  Make sure the directory $wherelog is writable by the
+# user who runs this script.
+#
+use IO::Socket;
+use strict;
+use warnings;
+
+my $wherelog = "@exp_logfiledir@/";  # Logs will be like "@exp_logfiledir@/19960312"
+my $server   = "localhost";        # Name of server, could be "www.foo.com"
+my $port     = "@PORT@";               # Port on server
+my $request = "/server-status/?auto";    # Request to send
+
+my @ltime = localtime(time);
+
+my $day =
+    $ltime[5] + 1900
+  . sprintf( "%02d", $ltime[4] + 1 )
+  . sprintf( "%02d", $ltime[3] );
+
+my $time =
+    sprintf( "%02d", $ltime[2] )
+  . sprintf( "%02d", $ltime[1] )
+  . sprintf( "%02d", $ltime[0] );
+
+open(OUT,">>$wherelog$day");
+
+my $socket = new IO::Socket::INET(
+    PeerAddr => $server,
+    PeerPort => $port,
+    Proto    => "tcp",
+    Type     => SOCK_STREAM
+  )
+  or do {
+    print OUT "$time:-1:-1:-1:-1:$@\n";
+    close OUT;
+    die "Couldn't connect to $server:$port : $@\n";
+  };
+$| = 1;
+
+print $socket
+  "GET $request HTTP/1.1\r\nHost: $server\r\nConnection: close\r\n\r\n\r\n";
+
+my ( $requests, $idle, $number, $cpu );
+while (<$socket>) {
+    $requests = $1 if (m|^BusyWorkers:\ (\S+)|);
+    $idle     = $1 if (m|^IdleWorkers:\ (\S+)|);
+    $number   = $1 if (m|sses:\ (\S+)|);
+    $cpu      = $1 if (m|^CPULoad:\ (\S+)|);
+}
+print OUT "$time:$requests:$idle:$number:$cpu\n";
+close OUT;
+

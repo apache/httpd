@@ -1,0 +1,26 @@
+#! /bin/sh
+#
+# Created by configure
+
+CC="gcc "; export CC
+"/Users/jim/src/asf/code/dev/httpd-trunk/srclib/apr/configure" \
+"--disable-option-checking" \
+"--enable-mods-static=most" \
+"--enable-proxy" \
+"--enable-proxy-fcgi" \
+"--enable-maintainer-mode" \
+"--with-included-apr" \
+"--enable-substitute" \
+"--enable-version" \
+"--with-mpm=event" \
+"CC=gcc" \
+"--cache-file=/dev/null" \
+"--srcdir=/Users/jim/src/asf/code/dev/httpd-trunk/srclib/apr" \
+"--prefix=/usr/local2/apache2" \
+"--exec-prefix=/usr/local2/apache2" \
+"--libdir=/usr/local2/apache2/lib" \
+"--includedir=/usr/local2/apache2/include" \
+"--bindir=/usr/local2/apache2/bin" \
+"--datadir=/usr/local2/apache2" \
+"--with-installbuilddir=/usr/local2/apache2/build" \
+"$@"

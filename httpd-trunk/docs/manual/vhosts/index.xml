@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 1053231 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="index.xml.meta">
+<parentdocument href="../"/>
+
+   <title>Apache Virtual Host documentation</title>
+
+<summary>
+
+    <p>The term <cite>Virtual Host</cite> refers to the practice of
+    running more than one web site (such as
+    <code>company1.example.com</code> and <code>company2.example.com</code>)
+    on a single machine. Virtual hosts can be "<a
+    href="ip-based.html">IP-based</a>", meaning that you have a
+    different IP address for every web site, or "<a
+    href="name-based.html">name-based</a>", meaning that you have
+    multiple names running on each IP address. The fact that they
+    are running on the same physical server is not apparent to the
+    end user.</p>
+
+    <p>Apache was one of the first servers to support IP-based
+    virtual hosts right out of the box. Versions 1.1 and later of
+    Apache support both IP-based and name-based virtual hosts
+    (vhosts). The latter variant of virtual hosts is sometimes also
+    called <em>host-based</em> or <em>non-IP virtual hosts</em>.</p>
+
+    <p>Below is a list of documentation pages which explain all
+    details of virtual host support in Apache HTTP Server:</p>
+
+</summary>
+
+<seealso><module>mod_vhost_alias</module></seealso>
+<seealso><a href="name-based.html">Name-based virtual
+hosts</a></seealso>
+<seealso><a href="ip-based.html">IP-based virtual hosts</a></seealso>
+<seealso><a href="examples.html">Virtual host examples</a></seealso>
+<seealso><a href="fd-limits.html">File descriptor limits</a></seealso>
+<seealso><a href="mass.html">Mass virtual hosting</a></seealso>
+<seealso><a href="details.html">Details of host matching</a></seealso>
+
+<section id="support"><title>Virtual Host Support</title>
+
+    <ul>
+      <li><a href="name-based.html">Name-based Virtual Hosts</a> (More
+      than one web site per IP address)</li>
+      <li><a href="ip-based.html">IP-based Virtual Hosts</a> (An IP
+      address for each web site)</li>
+      <li><a href="examples.html">Virtual Host examples for common
+      setups</a></li>
+      <li><a href="fd-limits.html">File Descriptor Limits</a> (or,
+      <em>Too many log files</em>)</li>
+      <li><a href="mass.html">Dynamically Configured Mass Virtual
+      Hosting</a></li>
+      <li><a href="details.html">In-Depth Discussion of Virtual Host
+      Matching</a></li>
+    </ul>
+
+</section>
+
+<section id="directives"><title>Configuration directives</title>
+
+    <ul>
+      <li><directive type="section"
+           module="core">VirtualHost</directive></li>
+      <li><directive module="core">ServerName</directive></li>
+      <li><directive module="core">ServerAlias</directive></li>
+      <li><directive module="core">ServerPath</directive></li>
+    </ul>
+
+    <p>If you are trying to debug your virtual host configuration, you
+    may find the Apache <code>-S</code> command line switch
+    useful. That is, type the following command:</p>
+
+    <example>
+    /usr/local/apache2/bin/httpd -S
+    </example>
+
+    <p>This command will dump out a description of how Apache parsed
+    the configuration file. Careful examination of the IP addresses and
+    server names may help uncover configuration mistakes. (See
+    the docs for the <program>httpd</program> program for
+    other command line options)</p>
+
+</section>
+</manualpage>

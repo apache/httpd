@@ -1,0 +1,10 @@
+configuring.xml.fr
+misc/perf-tuning.xml.fr
+mod/mod_auth_digest.xml.fr
+mod/mod_authz_user.xml.fr
+mod/mod_env.xml.fr
+mod/mod_lua.xml.fr
+mod/mod_rewrite.xml.fr
+rewrite/flags.xml.fr
+ssl/ssl_howto.xml.fr
+vhosts/name-based.xml.fr

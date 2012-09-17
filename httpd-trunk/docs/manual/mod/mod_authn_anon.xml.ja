@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English Revision: 659902:1331460 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_authn_anon.xml.meta">
+
+<name>mod_authn_anon</name>
+<description>認証が必要な領域への "anonymous" ユーザのアクセスを許可する
+</description>
+<status>Extension</status>
+<sourcefile>mod_authn_anon.c</sourcefile>
+<identifier>authn_anon_module</identifier>
+<compatibility>Apache 2.1 以降</compatibility>
+
+<summary>
+    <p>このモジュールは <module>mod_auth_basic</module> のような
+    認証フロントエンドとして、anonymous-ftp サイトのような、「魔法の」ユーザ ID
+    'anonymous' と電子メールアドレスをパスワードにしたユーザ認証を
+    行なう機能を提供します。この電子メールアドレスはログ収集することが
+    できます。</p>
+
+    <p>他の (データベースによる) アクセス制御方法と組み合わせることで、
+    「未登録」ユーザに対してサイトを公開しつつ、効率よくユーザ追跡したり、
+    ユーザのプロファイルに応じたカスタマイズをしたりできます。
+    このような認証に基づいたユーザ追跡の利点の一つは、
+    マジッククッキーに基づくユーザ追跡方法や、
+    珍妙な URL の接頭辞や接尾辞を利用したユーザ追跡方法とは異なり、
+    完全にブラウザ非依存であり、ユーザ間で URL を共有することができるという
+    点です。</p>
+
+    <p><module>mod_auth_basic</module> を使用している場合は、このモジュールは
+    <directive module="mod_auth_basic">AuthBasicProvider</directive> に
+    <code>anon</code> という値を設定することで起動されます。</p>
+</summary>
+
+<section id="example"><title>例</title>
+    <p>以下の例は「普通」の htpasswd ファイルに基づいた認証と組み合わされて
+    おり、以下の要件を見たすユーザを「ゲスト」として許可します:</p>
+
+    <ul>
+      <li>ユーザは userID を入力しなければなりません。
+      (<directive module="mod_authn_anon"
+      >Anonymous_NoUserID</directive>)</li>
+
+      <li>ユーザはパスワードを入力しなければなりません。
+      (<directive module="mod_authn_anon"
+      >Anonymous_MustGiveEmail</directive>)</li>
+
+      <li>入力されたパスワードは有効な電子メールアドレスでなければ
+      なりません。<em>すなわち</em>、少くとも一つの '@' と '.' が
+      含まれている必要があります。
+      (<directive module="mod_authn_anon"
+      >Anonymous_VerifyEmail</directive>)</li>
+
+      <li>userID は <code>anonymous guest www test
+      welcome</code> のどれかでなければなりません。
+      ユーザ名の比較は大文字小文字を区別<strong>しません。</strong></li>
+
+      <li>パスワード欄に入力された電子メールアドレスはエラーログファイルに
+      ロギングされます。
+      (<directive module="mod_authn_anon"
+      >Anonymous_LogEmail</directive>)</li>
+    </ul>
+
+    <example><title>例</title>
+      &lt;Directory /foo&gt;
+      <indent>
+        AuthName "Use 'anonymous' &amp; Email address for guest entry"<br />
+        AuthType Basic<br />
+        AuthBasicProvider file anon<br />
+        AuthUserFile /path/to/your/.htpasswd<br />
+        <br />
+        Anonymous_NoUserID off<br />
+        Anonymous_MustGiveEmail on<br />
+        Anonymous_VerifyEmail on<br />
+        Anonymous_LogEmail on<br />
+        Anonymous anonymous guest www test welcome<br />
+        <br />
+        Order Deny,Allow<br />
+        Allow from all<br />
+        <br />
+        Require valid-user<br />
+      </indent>
+      &lt;/Directory&gt;
+    </example>
+</section>
+
+<directivesynopsis>
+<name>Anonymous</name>
+<description>パスワードの検査無しでアクセスを許可する userID を指定する
+</description>
+<syntax>Anonymous <var>user</var> [<var>user</var>] ...</syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>パスワードの検査をしないでアクセスを許可する「魔法の」 userID を
+    設定します。userID 中に空白を使えるようにするため、
+    エスケープ文字 \ による方法と、引用符 ' と " によるクオーティング
+    を使うことができます。</p>
+
+    <p>ユーザ名の比較は<strong>大文字小文字を区別しない</strong>ことに
+    注意してください。<br />
+    魔法のユーザ名 '<code>anonymous</code>' が許可されている userID に
+    含むようにすることは強く推奨されています。</p>
+
+    <example><title>例:</title>
+      Anonymous anonymous "Not Registered" "I don't know"
+    </example>
+
+    <p>これは、userID "anonymous",
+    "AnonyMous", "Not Registered", "I Don't Know" のどれかを使っても
+    パスワード無しでユーザがサイトに入れるようにします。</p>
+
+    <p>Apache 2.1 では userID に "<code>*</code>" を指定することができます。
+    この場合、<em>すべての</em>userID を許可します。</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Anonymous_LogEmail</name>
+<description>入力されたパスワードがエラーログにロギングされるかどうかを
+設定する</description>
+<syntax>Anonymous_LogEmail On|Off</syntax>
+<default>Anonymous_LogEmail On</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>デフォルトの <code>On</code> に設定された場合は、
+    入力された (まっとうな電子メールアドレスであることが
+    期待される) 「パスワード」がエラーログにロギングされます。</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Anonymous_MustGiveEmail</name>
+<description>空パスワードを許可するかどうかを指定する</description>
+<syntax>Anonymous_MustGiveEmail On|Off</syntax>
+<default>Anonymous_MustGiveEmail On</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>ユーザがパスワードとして電子メールアドレスを指定する必要があるかどうかを
+    設定します。これは空パスワードを禁止します。</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Anonymous_NoUserID</name>
+<description>空 userID を許可するかを指定する</description>
+<syntax>Anonymous_NoUserID On|Off</syntax>
+<default>Anonymous_NoUserID Off</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p><code>On</code> に設定すると、ユーザは userID (とおそらくは
+    パスワード欄も) 空にすることができます。これは単にリターンキーを
+    叩いたり OK ボタンを直接クリックしたりする MS-Explorer ユーザには
+    非常に便利です。そのような操作はごくごく自然なものでしょう。</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Anonymous_VerifyEmail</name>
+<description>パスワード欄が正しい形式の電子メールアドレスであることを
+調べるかどうかを設定する</description>
+<syntax>Anonymous_VerifyEmail On|Off</syntax>
+<default>Anonymous_VerifyEmail Off</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p><code>On</code> に設定されている場合、ユーザが有効な電子メール
+    アドレスを入力することを推奨するため、入力された「パスワード」は
+    少なくとも一つの '@' と '.' を含んでいるかどうかを調べます
+    (上の <directive
+    module="mod_authn_anon">Anonymous_LogEmail</directive> 参照)。</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

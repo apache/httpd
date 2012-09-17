@@ -1,0 +1,64 @@
+The directory structure for this level is as follows:
+
+aaa/
+  This directory contains modules dealing with authorization and
+  authentication.
+
+arch/
+
+cache/
+  This directory houses modules that implement file and data caching
+  capability.
+
+database/
+  The apache DBD framework manages connections to SQL backends efficiently.
+
+cluster/
+  Modules for working with multiple servers.
+
+dav/
+  This directory houses modules that implement WebDAV functionality.
+
+echo/
+
+examples/
+  This directory contains some sample code that should help you on your
+  way to develop your own Apache modules.  
+
+experimental/
+  In this directory we've placed some modules which we think
+  provide some pretty interesting functionality, but which
+  are still in the early stages of development and could
+  evolve radically in the future.  This code isn't supported
+  officially.
+
+filters/
+  This directory houses modules that perform general inline data filtering.
+
+generators/
+  This directory houses modules that perform data generation functions.
+
+http/
+  This directory houses modules that basic HTTP protocol implementation.
+
+loggers/
+  This directory houses modules that handle logging functions.
+
+mappers/
+  This directory houses modules that handle URL mapping and
+  rewriting.
+
+metadata/
+  This directory houses modules that deal with Header metadata.
+
+proxy/
+  This houses the code for the proxy module for Apache.
+
+ssl/
+  This directory houses code for OpenSSL functionality.
+
+test/
+  This directory houses modules which test various components 
+  of Apache.  You should not compile these into a production
+  server.  
+

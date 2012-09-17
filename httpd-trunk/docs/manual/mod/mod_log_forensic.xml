@@ -1,0 +1,150 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 1343877 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_log_forensic.xml.meta">
+
+<name>mod_log_forensic</name>
+<description>Forensic Logging of the requests made to the server</description>
+<status>Extension</status>
+<sourcefile>mod_log_forensic.c</sourcefile>
+<identifier>log_forensic_module</identifier>
+<compatibility><module>mod_unique_id</module> is no longer required since
+version 2.1</compatibility>
+
+<summary>
+    <p>This module provides for forensic logging of client
+    requests. Logging is done before and after processing a request, so the
+    forensic log contains two log lines for each request.
+    The forensic logger is very strict, which means:</p>
+
+    <ul>
+    <li>The format is fixed. You cannot modify the logging format at
+    runtime.</li>
+    <li>If it cannot write its data, the child process
+    exits immediately and may dump core (depending on your
+    <directive module="mpm_common">CoreDumpDirectory</directive>
+    configuration).</li>
+    </ul>
+
+    <p>The <code>check_forensic</code> script, which can be found in the
+    distribution's support directory, may be helpful in evaluating the
+    forensic log output.</p>
+</summary>
+<seealso><a href="../logs.html">Apache Log Files</a></seealso>
+<seealso><module>mod_log_config</module></seealso>
+
+<section id="formats"><title>Forensic Log Format</title>
+    <p>Each request is logged two times. The first time is <em>before</em> it's
+    processed further (that is, after receiving the headers). The second log
+    entry is written <em>after</em> the request processing at the same time
+    where normal logging occurs.</p>
+
+    <p>In order to identify each request, a unique request ID is assigned.
+    This forensic ID can be cross logged in the normal transfer log using the
+    <code>%{forensic-id}n</code> format string. If you're using
+    <module>mod_unique_id</module>, its generated ID will be used.</p>
+
+    <p>The first line logs the forensic ID, the request line and all received
+    headers, separated by pipe characters (<code>|</code>). A sample line
+    looks like the following (all on one line):</p>
+
+    <example>
+        +yQtJf8CoAB4AAFNXBIEAAAAA|GET /manual/de/images/down.gif
+        HTTP/1.1|Host:localhost%3a8080|User-Agent:Mozilla/5.0 (X11;
+        U; Linux i686; en-US; rv%3a1.6) Gecko/20040216
+        Firefox/0.8|Accept:image/png, <var>etc...</var>
+    </example>
+
+    <p>The plus character at the beginning indicates that this is the first log
+    line of this request. The second line just contains a minus character and
+    the ID again:</p>
+
+    <example>
+      -yQtJf8CoAB4AAFNXBIEAAAAA
+    </example>
+
+    <p>The <code>check_forensic</code> script takes as its argument the name
+    of the logfile. It looks for those <code>+</code>/<code>-</code> ID pairs
+    and complains if a request was not completed.</p>
+</section>
+
+<section id="security"><title>Security Considerations</title>
+    <p>See the <a
+    href="../misc/security_tips.html#serverroot">security tips</a>
+    document for details on why your security could be compromised
+    if the directory where logfiles are stored is writable by
+    anyone other than the user that starts the server.</p>
+    <p>The log files may contain sensitive data such as the contents of 
+    <code>Authorization:</code> headers (which can contain passwords), so
+    they should not be readable by anyone except the user that starts the
+    server.</p>
+</section>
+
+<directivesynopsis>
+<name>ForensicLog</name>
+<description>Sets filename of the forensic log</description>
+<syntax>ForensicLog <var>filename</var>|<var>pipe</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>ForensicLog</directive> directive is used to
+    log requests to the server for forensic analysis. Each log entry
+    is assigned a unique ID which can be associated with the request
+    using the normal <directive module="mod_log_config">CustomLog</directive>
+    directive. <module>mod_log_forensic</module> creates a token called
+    <code>forensic-id</code>, which can be added to the transfer log
+    using the <code>%{forensic-id}n</code> format string.</p>
+
+    <p>The argument, which specifies the location to which
+    the logs will be written, can take one of the following two
+    types of values:</p>
+
+    <dl>
+      <dt><var>filename</var></dt>
+      <dd>A filename, relative to the <directive module="core"
+      >ServerRoot</directive>.</dd>
+
+      <dt><var>pipe</var></dt>
+      <dd>The pipe character "<code>|</code>", followed by the path
+      to a program to receive the log information on its standard
+      input. The program name can be specified relative to the <directive
+      module="core">ServerRoot</directive> directive.
+
+      <note type="warning"><title>Security:</title>
+      <p>If a program is used, then it will be run as the user who
+      started <program>httpd</program>. This will be root if the server was
+      started by root; be sure that the program is secure or switches to a
+      less privileged user.</p>
+      </note>
+
+      <note><title>Note</title>
+        <p>When entering a file path on non-Unix platforms, care should be taken
+        to make sure that only forward slashes are used even though the platform
+        may allow the use of back slashes. In general it is a good idea to always
+        use forward slashes throughout the configuration files.</p>
+      </note></dd>
+    </dl>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

@@ -1,0 +1,13 @@
+prefix=/usr/local2/apache2
+exec_prefix=/usr/local2/apache2
+libdir=${prefix}/lib
+APRUTIL_MAJOR_VERSION=1
+includedir=/usr/local2/apache2/include
+
+Name: APR Utils
+Description: Companion library for APR
+Version: 1.4.3
+# assume that apr-util requires libapr of same major version
+Requires: apr-1
+Libs: -L${libdir} -laprutil-${APRUTIL_MAJOR_VERSION}  -lexpat
+Cflags: -I${includedir}

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- GENERATED FROM XML: DO NOT EDIT -->
+
+<metafile reference="advanced.xml">
+  <basename>advanced</basename>
+  <path>/rewrite/</path>
+  <relpath>..</relpath>
+
+  <variants>
+    <variant>en</variant>
+  </variants>
+</metafile>

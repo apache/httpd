@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.pt-br.xsl"?>
+<!-- English Revision: 151408:1223048 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="new_features_2_2.xml.meta">
+
+<title>Descri&#231;&#227;o das novas funcionalidades do Apache 2.2</title>
+
+<summary>
+  <p>Esse documento descreve algumas das principais mudan&#231;as
+     entre as vers&#245;es 2.0 e 2.2 do Servidor HTTP Apache.
+     Para a lista de mudan&#231;as desde a vers&#227;o 1.3, veja a p&#225;gina
+     de documenta&#231;&#227;o <a href="new_features_2_0.html">novas funcionalidades
+     do Apache 2.0</a>.</p>
+</summary>
+
+  <section id="core">
+    <title>Principais Melhorias</title>
+    <dl>
+
+      <dt>Authn/Authz</dt>
+      <dd>...</dd>
+
+      <dt>Caching</dt>
+      <dd>...</dd>
+
+      <dt>Proxying</dt>
+      <dd>O novo m&#243;dulo <module>mod_proxy_balancer</module> fornece
+          servi&#231;os de carregamento de balenceamento para <module
+          >mod_proxy</module>. O novo m&#243;dulo <module>mod_proxy_ajp</module
+          > oferece suporte para o <code>Protocolo Apache JServ
+          vers&#227;o 1.3</code>, usado pelo <a
+          href="http://tomcat.apache.org/">Apache Tomcat</a>.</dd>
+
+      <dt>Filtragem Inteligente (Smart Filtering)</dt>
+      <dd>O <module>mod_filter</module> introduz configura&#231;&#227;o din&#226;mica para
+          o filtro de sa&#237;da de dados. Permitindo que os filtros sejam
+	  condicionalmente inseridos, baseando-se nos cabe&#231;alhos <em
+	  >Request</em> ou <em>Response</em> ou em vari&#225;veis do
+	  ambiente, ele acaba com os problemas de depend&#234;ncias e pedidos
+          da arquitetura 2.0.</dd>
+
+    </dl>
+  </section>
+
+  <section id="module">
+    <title>Melhorias nos M&#243;dulos</title>
+    <dl>
+      <dt><module>mod_authnz_ldap</module></dt>
+      <dd>Este m&#243;dulo &#233; uma migra&#231;&#227;o do <code>mod_auth_ldap</code>,
+          da vers&#227;o 2.0 para a estrutura 2.2 de <code>Authn/Authz</code>.
+	  As novas funcionalidades incluem o uso de atributos LDAP e
+	  filtros de procura complexos na diretriz <directive module="mod_authz_core"
+          >Require</directive>.</dd>
+
+      <dt><module>mod_info</module></dt>
+      <dd>Adicionado um novo argumento <code>?config</code> que
+          mostra a configura&#231;&#227;o das diretrizes analisadas pelo
+	  Apache, incluindo o nome do arquivo e o n&#250;mero da linha.
+	  Esse m&#243;dulo tamb&#233;m mostra a ordem de todos os ganchos de
+          pedidos (request hooks) e informa&#231;&#245;es adicionais sobre
+          a compila&#231;&#227;o, similar ao comando <code>httpd -V</code>.</dd>
+    </dl>
+  </section>
+
+  <section id="developer">
+    <title>Mudan&#231;as ao Desenvolvedor de M&#243;dulos</title>
+    <dl>
+      <dt>API do APR 1.0</dt>
+
+      <dd>O Apache 2.2 utiliza a API do APR 1.0. Todas as fun&#231;&#245;es e
+          s&#237;mbolos antigos foram removidos do <code>APR</code> e
+	  <code>APR-Util</code>. Para mais detalhes, visite o
+          <a href="http://apr.apache.org/">Website do APR</a>.</dd>
+
+      <dt>Registros de Erros de Conex&#227;o (logs)</dt>
+
+      <dd>Uma nova fun&#231;&#227;o <code>ap_log_cerror</code>, foi adicionada
+          para registrar erros que ocorrem na conex&#227;o do cliente.
+	  Quando documentado no di&#225;rio de log, a mensagem inclui o
+	  endere&#231;o IP do cliente.</dd>
+
+      <dt>Adicionado Gancho de Teste de Configura&#231;&#227;o</dt>
+
+      <dd>Um novo gancho (hook), <code>test_config</code> foi
+          adicionado para auxiliar m&#243;dulos que querem executar
+	  c&#243;digos especiais apenas quando o usu&#225;rio passa o
+	  par&#226;metro <code>-t</code> para o httpd.</dd>
+
+      <dt>Ajustar o Stacksize dos "Threaded MPM's"</dt>
+
+      <dd>Uma nova diretriz chamada <code>ThreadStackSize</code>,
+          foi adicionada para ajustar o tamanho das stacks em todos
+          os threadeds MPMs. Essa &#233; uma pr&#225;tica necess&#225;rio para alguns
+	  m&#243;dulos de terceiros em plataformas com tamanhos de stacks
+	  pequenos por padr&#227;o.</dd>
+
+      <dt>Negocia&#231;&#227;o de Protocolo para filtros de sa&#237;da</dt>
+
+      <dd>No passado, todo filtro era respons&#225;vel por garantir
+          a gera&#231;&#227;o de cabe&#231;alhos de resposta correto que os afetava.
+	  Os filtros agora podem delegar o gerenciamento de protocolos
+	  comuns para <module>mod_filter</module>, usando chamadas
+	  de <code>ap_register_output_filter_protocol</code> ou
+          <code>ap_filter_protocol</code>.</dd>
+
+    </dl>
+
+  </section>
+</manualpage>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- GENERATED FROM XML: DO NOT EDIT -->
+
+<metafile reference="httxt2dbm.xml">
+  <basename>httxt2dbm</basename>
+  <path>/programs/</path>
+  <relpath>..</relpath>
+
+  <variants>
+    <variant>en</variant>
+    <variant>tr</variant>
+  </variants>
+</metafile>

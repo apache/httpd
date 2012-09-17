@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 420993  -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="suexec.xml.meta">
+<parentdocument href="./">Programlar</parentdocument>
+
+<title>suexec - harici programları çalıştırmadan önce kullanıcıyı değiştirir</title>
+
+<summary>
+    <p><code><strong>suexec</strong></code>, CGI programlarını çalıştırmadan
+    önce Apache HTTP Sunucusu tarafından kullanıcı değiştirmek için kullanılır.
+    Bunu yapabilmek için sunucunun <code>root</code> tarafından çalıştırılmış
+    olması gerekir. HTTP artalan süreci normalde <code>root</code> aidiyetinde
+    çalışmadığından <code><strong>suexec</strong></code>'in çalıştırılabilir
+    dosyasının sahibi <code>root</code> olmalı, setuid biti etkin
+    (<code>u+s</code>) olmalı ve dosyaya <code>root</code> dışında hiç kimse
+    yazamamalıdır.</p>
+
+    <p><code><strong>suexec</strong></code> güvenlik modeli ve kavramlar
+    hakkında bilgi edinmek için suexec belgesine (<a href="../suexec.html"
+    >http://httpd.apache.org/docs/&httpd.docs;/suexec.html</a>) bakınız.</p>
+</summary>
+
+<section id="synopsis"><title>Kullanım</title>
+    <p><code><strong>suexec</strong> -<strong>V</strong></code></p>
+</section>
+
+<section id="options"><title>Seçenekler</title>
+  <dl>
+    <dt><code><strong>-V</strong></code></dt>
+    <dd><code>root</code> iseniz, bu seçenek
+      <code><strong>suexec</strong></code>
+    derleme seçeneklerini gösterir. Güvenlik sebebiyle tüm yapılandırma
+    seçenekleri sadece derleme sırasında değiştirilebilir.</dd>
+  </dl>
+</section>
+
+</manualpage>

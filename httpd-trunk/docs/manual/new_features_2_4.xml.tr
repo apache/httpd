@@ -1,0 +1,408 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
+<!-- English Revision: 1291834 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="new_features_2_4.xml.meta">
+
+<title>Apache HTTP Sunucusu 2.4'te Yeni olan Özellikler</title>
+
+<summary>
+  <p>Bu belgede Apache HTTP Sunucusunun 2.2 ve 2.4 sürümleri arasındaki
+    başlıca farklara değinilmiştir. 2.0 sürümüne göre yeni özellikler için <a
+    href="new_features_2_2.html">Apache 2.2’de Yeni olan Özellikler</a>
+    belgesine bakınız.</p>
+</summary>
+
+  <section id="core">
+    <title>Çekirdekteki Gelişmeler</title>
+    <dl>
+      <dt>Çalışma anında yüklenebilen MPM'ler</dt>
+      <dd>Çok sayıda MPM artık yüklenebilir modül olarak derlenebilmektedir.
+        Kullanılacak MPM'in seçimi çalışma anında yapılabilmektedir.</dd>
+
+      <dt>Event MPM</dt>
+      <dd>Event MPM artık deneysel değil, ancak tam olarak desteklenmiyor.</dd>
+
+      <dt>Eşzamansıza destek</dt>
+      <dd>MPM'leri ve platformları desteklemek için eşzamansız okuma/yazmaya
+        destek iyileştirildi.</dd>
+
+      <dt>Modul bazında ve dizin bazına LogLevel yapılandırması</dt>
+      <dd><directive module="core">LogLevel</directive> artık her modül ve her
+          dizin için yapılandırılabilmektedir. <code>debug</code> log
+          seviyesinin üstüne <code>trace1</code>'den <code>trace8</code>'e
+          kadar yeni log seviyeleri eklendi.</dd>
+
+      <dt>İstek bazında yapılandırma bölümleri</dt>
+      <dd><directive module="core" type="section">If</directive>,
+          <directive module="core" type="section">ElseIf</directive>,
+          ve <directive module="core" type="section">Else</directive> bölümleri
+          artık HTTP isteklerine dayalı olarak yapılandırılabilmektedir.</dd>
+
+      <dt>Genel amaçlı ifade çözümleyici</dt>
+      <dd>Yeni ifade çözümleyici
+          <directive module="mod_setenvif">SetEnvIfExpr</directive>,
+          <directive module="mod_rewrite">RewriteCond</directive>,
+          <directive module="mod_headers">Header</directive>,
+          <directive module="core" type="section">If</directive> ve
+          benzeri yönergelerde ortak bir sözdizimi kullanarak <a
+          href="expr.html">karmaşık durumlar</a> belirtmeyi mümkün kılmaktadır.
+      </dd>
+
+      <dt>Milisaniye cinsinden KeepAliveTimeout</dt>
+      <dd><directive module="core">KeepAliveTimeout</directive> milisaniye
+        cinsinden belirtmek artık mümkündür.</dd>
+
+      <dt>NameVirtualHost yönergesi</dt>
+      <dd>Artık gerekmemekte ve kullanımı önerilmemektedir.</dd>
+
+      <dt>Yapılandırma geçersizleştirme</dt>
+      <dd>Yeni <directive module="core">AllowOverrideList</directive>
+          yönergesi <code>.htaccess</code> dosyalarında kullanılabilen
+          yönergelerde daha ince ayarlara izin vermektedir.</dd>
+
+      <dt>Yapılandırma dosyası değişkenleri</dt>
+      <dd>Yapılandırmada değişkenler <directive module="core"
+          >Define</directive> yönergesi ile tanımlanabilmekte, böylece aynı
+          değer yapılandırmada bir çok yerde kullanılıyorsa daha temiz bir
+          görünüm elde edilebilmektedir.</dd>
+
+      <dt>Azaltılmış bellek kullanımı</dt>
+      <dd>Bir çok yeni özelliğe karşın, 2.4.x'te 2.2.x'e nazaran bellek
+        kullanımı azaltılmıştır.</dd>
+    </dl>
+  </section>
+
+  <section id="newmods">
+    <title>Yeni Modüller</title>
+    <dl>
+      <dt><module>mod_proxy_fcgi</module></dt>
+      <dd><module>mod_proxy</module> için FastCGI Protokolü sağlayıcısı</dd>
+
+      <dt><module>mod_proxy_scgi</module></dt>
+      <dd><module>mod_proxy</module> için SCGI Protokolü sağlayıcısı</dd>
+
+      <dt><module>mod_proxy_express</module></dt>
+      <dd><module>mod_proxy</module> için devingen olarak yapılandırılmış tam
+        tersinir vekiller sağlar.</dd>
+
+      <dt><module>mod_remoteip</module></dt>
+      <dd>İstek başlıklarında bir yük dengeleyici veya bir vekil tarafından
+        sunulan IP adres listeli bir istek için görünen istemci IP adresi ve
+        konak adını değiştirir.</dd>
+
+      <dt><module>mod_heartmonitor</module>,
+          <module>mod_lbmethod_heartbeat</module></dt>
+      <dd><module>mod_proxy_balancer</module> modülünün arka sunuculardaki
+        etkin bağlantı sayısı üzerindeki yük dengeleme kararlarına dayalı işlem
+        yapmasını sağlar.</dd>
+
+      <dt><module>mod_proxy_html</module></dt>
+      <dd>Başta bir üçüncü parti modüldü. Arka plandaki sağlayıcının vekil
+        istemcileri için geçersiz URL'ler ürettiği tersinir vekil durumlarında
+        HTML bağlarının düzeltilmesini sağlar.</dd>
+
+      <dt><module>mod_sed</module></dt>
+      <dd><module>mod_substitute</module> modülünün geliştirilmiş hali olup
+        yanıt gövdesinin sed'in tüm gücü ile yeniden düzenlenebilmesini
+        sağlar.</dd>
+
+      <dt><module>mod_auth_form</module></dt>
+      <dd>Formlara dayalı kimlik kanıtlamaya izin verir.</dd>
+
+      <dt><module>mod_session</module></dt>
+      <dd>Çerezleri ve veritabanı deposunu kullanarak istemciler için oturum
+        durumunun saklanmasını sağlar.</dd>
+
+      <dt><module>mod_allowmethods</module></dt>
+      <dd>Kimlik Doğrulama ve Yetkilendirme ile etkileşmeyen belli HTTP
+        yöntemlerine sınır koymak için yeni bir modül.</dd>
+
+      <dt><module>mod_lua</module></dt>
+      <dd>Küçük iş mantıksal işlevleri ve yapılandırması için httpd içine <a
+        href="http://www.lua.org/">Lua</a> dilini gömer.</dd>
+
+      <dt><module>mod_log_debug</module></dt>
+      <dd>İstek işlemlerinin farklı aşamalarına özelleştirilebilir hata
+        ayıklama günlüğü eklenmesini sağlar.</dd>
+
+      <dt><module>mod_buffer</module></dt>
+      <dd>Girdi ve çıktı süzgeç yığıtlarına tampon bellek sağlar.</dd>
+
+      <dt><module>mod_data</module></dt>
+      <dd>Yanıt gövdesini bir RFC2397 veri URL'sine dönüştürür.</dd>
+
+      <dt><module>mod_ratelimit</module></dt>
+      <dd>İstemciler için band genişliği oranında sınırlama sağlar.</dd>
+
+      <dt><module>mod_request</module></dt>
+      <dd>Kullanılabilir HTTP istek gövdelerini yapmak ve elde etmek için
+        Süzgeçleri sağlar.</dd>
+
+      <dt><module>mod_reflector</module></dt>
+      <dd>Çıktı süzgeci yığıtı üzerinden bir yanıt olarak bir istek gövdesinin
+        yansısını sağlar.</dd>
+
+      <dt><module>mod_slotmem_shm</module></dt>
+      <dd>Yuva temelli bir paylaşımlı bellek sağlayıcı sağlar (scoreboard
+        olarak da bilinir).</dd>
+
+      <dt><module>mod_xml2enc</module></dt>
+      <dd>Başta bir üçüncü parti modüldü. libxml2 temelli süzgeç modüllerinde
+        i18n'i destekler.</dd>
+    </dl>
+  </section>
+
+  <section id="module">
+    <title>Modüllerdeki Gelişmeler</title>
+    <dl>
+      <dt><module>mod_ssl</module></dt>
+
+      <dd><module>mod_ssl</module> bir istemci sertifikasının doğrulama
+        durumunu sınamak için bir OCSP sunucusunu kullanmak üzere
+        yapılandırılabilir. Öntanımlı yanıtlayıcı, istemci sertifikasının
+        kendisinde tasarlanmış yanıtlayıcının tercih edilip edilmeyeceği
+        kararına bağlı olarak yapılandırılabilir.</dd>
+
+      <dd><module>mod_ssl</module>, ayrıca, sunucunun istemciyle anlaşma
+        sırasında kendi sertifikasının OCSP doğrulamasını umursamazca sağlayıp
+        aktardığı durumda OCSP zımbalamasını da destekler.</dd>
+
+      <dd><module>mod_ssl</module>, sunucular arasında SSL Oturumu verisini
+        memcached üzerinden paylaşmak üzere yapılandırılabilir.</dd>
+
+      <dd>RSA ve DSA'ya ek olarak EC anahtarları da artık desteklenmektedir.
+      </dd>
+
+      <dt><module>mod_proxy</module></dt>
+
+      <dd><directive module="mod_proxy">ProxyPass</directive> yönergesi bir
+        <directive module="core">Location</directive> veya
+        <directive module="core">LocationMatch</directive> bloku içinde en
+        verimli şekilde yapılandırılabilir ve büyük sayıların varlığı durumunda
+        geleneksel iki değiştirgeli sözdiziminin de üzerinde belirgin bir
+        başarım artışı sağlar.</dd>
+
+      <dd>Vekil istekleri için kullanılan kaynak adresi artık
+        yapılandırılabilmektedir.</dd>
+
+      <dt><module>mod_proxy_balancer</module></dt>
+
+      <dd>Dengeleme yöneticisi üzerinden BalancerMembers için daha fazla
+        çalışma anı yapılandırması</dd>
+
+      <dd>Çalışma anında dengeleme yöneticisi üzerinden başka BalancerMembers
+        eklenebilir.</dd>
+
+      <dd>Çalışma anı yapılandırmasına yönelik dengeleyici değiştirgeleri</dd>
+
+      <dd>BalancerMembers için 'Drain' değeri belirtilebilir; böylece sadece
+        mevcut yapışık oturumlara yanıt verirler ve bunların güzellikle hattan
+        alınması mümkün olur.</dd>
+
+      <dd>Balancer ayarları sunucu yeniden başlatılssa bile kalıcı olabilir.
+        </dd>
+
+      <dt><module>mod_cache</module></dt>
+
+      <dd><module>mod_cache</module> CACHE süzgeci, arabellekleme üzerinde daha
+        hassas denetim sağlamak için istenirse süzgeç zincirinin belli bir
+        noktasına yerleştirilebilmektedir.</dd>
+
+      <dd><module>mod_cache</module> artık HEAD isteklerini
+        arabellekleyebiliyor.</dd>
+
+      <dd>Mümkün olduğunda, <module>mod_cache</module> yönergeleri sunucu
+        bazında değil, dizin bazında belirtilebiliyor.</dd>
+
+      <dd>Arabellekli URL'lerin temel URL'si özelleştirilebiliyor; böylece
+         arabelleğin bir bölümü aynı uç URL önekini paylaşabiliyor.</dd>
+
+      <dd><module>mod_cache</module>, ardalanda bir sağlayıcının olmadığı
+        durumda (5xx hatası), arabelleklenmiş bayat içeriği sunabiliyor.</dd>
+
+      <dd><module>mod_cache</module> artık bir X-Cache başlığına bir
+        HIT/MISS/REVALIDATE yerleştirebiliyor.</dd>
+
+      <dt><module>mod_include</module></dt>
+      <dd>Bir hata durumunda öntanımlı hata dizgisi yerine bir hata sayfası
+        sunmayı sağlayan 'onerror' özniteliği için 'include' elemanı içinde
+        destek.</dd>
+
+      <dt><module>mod_cgi</module>, <module>mod_include</module>,
+          <module>mod_isapi</module>, ...</dt>
+      <dd>Başlıkların ortam değişkenlerine dönüşümü, başlık zerki yoluyla bazı
+        olası karşı-site-betik saldırılarının hafifletilmesinden önce daha
+        hızlı ve doğru yapılmaktadır. Geçersiz karakterler (altçizgiler dahil)
+        içeren başlıklar artık sessizce bırakılmaktadır.<a
+        href="env.html">Apache'deki Ortam değişkenleri</a>, böyle başlıkları
+        gerektiren bozulmuş meşru istemcilerin çevresinden dolanabilen
+        göstericilere sahiptir. (Bu durum, bu değişkenleri kullanan tüm
+        modülleri etkiler.)</dd>
+
+      <dt><module>mod_authz_core</module> Yetkilendirme Kuralları
+        Taşıyıcıları</dt>
+
+      <dd>Gelişkin yetkilendirme kuralları artık <directive
+        module="mod_authz_core">Require</directive> yönergesi ve <directive
+        module="mod_authz_core" type="section">RequireAll</directive> gibi
+        ilgili taşıyıcı yönergeler kullanılarak belirtilebilmektedir.</dd>
+
+      <dt><module>mod_rewrite</module></dt>
+      <dd><module>mod_rewrite</module> bildik yeniden yazma senaryolarını
+        basitleştirmek için <directive
+        module="mod_rewrite">RewriteRule</directive> yönergesine
+        <code>[QSD]</code> (Query String Discard=sorgu dizgisini iptal) ve
+        <code>[END]</code> seçeneklerini sağlamaktadır.</dd>
+      <dd><directive module="mod_rewrite">RewriteCond</directive> içinde
+        karmaşık mantıksal ifadeler kullanımını mümkün kılmaktadır.</dd>
+      <dd>llows to use SQL queries as SQL sorgularının <directive
+          module="mod_rewrite">RewriteMap</directive> işlevleri olarak
+          kullanılması sağlanmıştır.</dd>
+
+      <dt><module>mod_ldap</module>, <module>mod_authnz_ldap</module></dt>
+      <dd><module>mod_authnz_ldap</module> kümelenmiş gruplara destek sağlar.
+      </dd>
+      <dd><module>mod_ldap</module> zaman aşımlarını işleme sokabilmek için
+          <directive module="mod_ldap">LDAPConnectionPoolTTL</directive>,
+          <directive module="mod_ldap">LDAPTimeout</directive> ve birtakım
+          başka geliştirmeler sahiptir. Özellikle, bir LDAP sunucusunun boşta
+          kalmış bağlantılarını bıraktıran bir durumsal güvenlik duvarı
+          varlığında gerekli ayarlamaları yapmak için kullanışlıdır.</dd>
+      <dd><module>mod_ldap</module>, artık, LDAP araç kiti kullanarak sağlanan
+        hata ayıklama bilgisini günlüklemek için <directive
+        module="mod_ldap">LDAPLibraryDebug</directive> yönergesini
+        içermektedir.</dd>
+
+      <dt><module>mod_info</module></dt>
+      <dd><module>mod_info</module> önceden çözümlenmiş yapılandırmayı artık
+        sunucunun başlatılması sırasında standart çıktıya
+        dökümleyebilmektedir.</dd>
+    </dl>
+  </section>
+
+  <section id="programs">
+    <title>Programlardaki Gelişmeler</title>
+    <dl>
+        <dt>fcgistarter</dt>
+        <dd>Yeni FastCGI artalan sunucusu başlatma aracı</dd>
+
+        <dt>htcacheclean</dt>
+        <dd>Arabellekli URL'ler, istenirse metadata'yı da dahil ederek
+          listelenebilmektedir.</dd>
+        <dd>Bazı URL'ler arabellekten tek tek silinebilmektedir.</dd>
+        <dd>Dosya boyutları belirtilen blok boyutuna yukarı doğru
+          yuvarlanabilmekte, böylece dosya boyutu sınırları diskteki gerçek
+          boyutlarla daha iyi eşlenebilmektedir.</dd>
+        <dd>Arabellek boyutu artık, diskteki dosyaların boyutuna göre bir
+          sınıra ek olarak veya bunun yerine dosya düğümü sayısı ile
+          sınırlanabilmektedir.</dd>
+
+        <dt>rotatelogs</dt>
+        <dd>Artık geçerli günlük dosyasına bir bağ oluşturulabiliyor.</dd>
+        <dd>Artık özel bir döndürme sonrası betiği çalıştırılabiliyor.</dd>
+    </dl>
+  </section>
+
+  <section id="documentation">
+    <title>Belgelendirme</title>
+    <dl>
+        <dt>mod_rewrite</dt>
+        <dd><module>mod_rewrite</module> belgeleri, yeniden düzenlenerek,
+          genel kullanıma ve örneklere odaklı olarak ve diğer çözümlerin hangi
+          durumlarda daha uygun olduğu da gösterilerek hemen hemen tamamen
+          yeniden yazıldı. <a href="rewrite/">Yeniden Yazma Kılavuzu</a> artık
+          bir sayfa olmaktan çıkıp, çok daha ayrıntılı ve daha iyi düzenlenmiş
+          bir bölüm haline geldi.</dd>
+
+        <dt>mod_ssl</dt>
+        <dd><module>mod_ssl</module> belgeleri, evvelki teknik ayrıntılara ek
+          olarak başlarken seviyesinde daha fazla örnekle büyük oranda
+          genişletildi.</dd>
+
+        <dt>Önbellek Kullanım Kılavuzu</dt>
+        <dd><a href="caching.html">Önbellek Kullanım Kılavuzu</a>
+          <module>mod_cache</module> tarafından sağlanan RFC2616 HTTP/1.1
+          önbellekleme özellikleri arasıda daha iyi ayrım yapılabilmesi için ve
+          <a href="socache.html">socache</a> arayüzü ile sağlanan soysal
+          anahtar/değer önbelleklemesi yanında <module>mod_file_cache</module>
+          gibi mekanizmalarla sağlanan özelleştirilebilir arabelleklemeyi de
+          kapsamak üzere yeniden yazıldı.</dd>
+
+    </dl>
+  </section>
+
+  <section id="developer">
+    <title>Modül Geliştirici Değişiklikleri</title>
+    <dl>
+      <dt>Yapılandırma Denetleme Kancası Eklendi</dt>
+
+      <dd>Yeni bir kanca, <code>check_config</code> kancası,
+        <code>pre_config</code> ve <code>open_logs</code> kancaları arasında
+        çalışmak üzere eklendi. Ayrıca, <program>httpd</program>'ye
+        <code>-t</code> seçeneği verildiğinde <code>test_config</code>
+        kancasından önce çalışır. <code>check_config</code> kancası, modüllerin
+        karşılıklı bağımlı yapılandırma yönergesi değerlerini yeniden
+        yoklamasını ve iletiler konsola hala günlüklenebiliyorken bunların
+        ayarlanabilmesini sağlar. Temel <code>open_logs</code> kanca işlevi
+        konsol çıktısını hata günlüğüne yönlendirmeden önce hatalı yapılandırma
+        sorunlarına karşı kullanıcı uyarılabilir.</dd>
+
+      <dt>İfade Çözümleyici Eklendi</dt>
+
+      <dd>Artık genel amaçlı bir ifade çözümleyicimiz var. API
+        <var>ap_expr.h</var> içinde incelenebilir. Evvelce
+        <module>mod_ssl</module> içinde gerçeklenmiş olan ifade çözümleyiciden
+        esinlenildi.</dd>
+
+      <dt>Yetkilendirme Kuralları Taşıyıcıları</dt>
+
+      <dd>Yetkilendirme modülleri, <directive module="mod_authz_core"
+        type="section">RequireAll</directive> gibi gelişmiş yetkilendirme
+        kuralı taşıyıcılarını desteklemek için ap_register_auth_provider()
+        üzerinden artık bir sağlayıcı olarak çalıştırılabilmektedir.</dd>
+
+      <dt>Küçük Nesne Arabellekleme Arayüzü</dt>
+
+      <dd><var>ap_socache.h</var>, evvelki <module>mod_ssl</module> oturum
+        arabelleği gerçeklenimine dayalı olarak küçük veri nesnelerini
+        arabelleklemek için sağlayıcı temelli bir arayüz ortaya koyar.
+        Paylaşımlı bellek çevrimsel tamponu kullanan sağlayıcılar, disk bazlı
+        dbm dosyaları ve memcache ile dağıtılan arabellekler şu an
+        desteklenmektedir.</dd>
+
+      <dt>Arabellek Durum Kancası Eklendi</dt>
+
+      <dd><module>mod_cache</module> modülü artık, arabellekleme kararı bilinir
+        olduğunda çağrılan yeni bir <code>cache_status</code> kancası içeriyor.
+        Öntanımlı gerçeklenim, yanıta istemlik bir <code>X-Cache</code> ve
+        <code>X-Cache-Detail</code> ekleyebilmektedir.</dd>
+    </dl>
+
+    <p>Geliştirici belgeleri <a href="developer/new_api_2_4.html">API
+      değişikliklerinin ayrıntılı bir listesini</a> içermektedir.</p>
+  </section>
+
+</manualpage>
