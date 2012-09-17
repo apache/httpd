@@ -489,7 +489,7 @@ static apr_status_t slotmem_dptr(ap_slotmem_instance_t *slot,
         return APR_ENOSHMAVAIL;
     }
     if (id >= slot->desc.num) {
-        return APR_ENOSHMAVAIL;
+        return APR_EINVAL;
     }
 
     ptr = (char *)slot->base + slot->desc.size * id;
@@ -512,7 +512,10 @@ static apr_status_t slotmem_get(ap_slotmem_instance_t *slot, unsigned int id,
     }
 
     inuse = slot->inuse + id;
-    if (id >= slot->desc.num || (AP_SLOTMEM_IS_PREGRAB(slot) && !*inuse)) {
+    if (id >= slot->desc.num) {
+        return APR_EINVAL;
+    }
+    if (AP_SLOTMEM_IS_PREGRAB(slot) && !*inuse) {
         return APR_NOTFOUND;
     }
     ret = slotmem_dptr(slot, id, &ptr);
@@ -536,7 +539,10 @@ static apr_status_t slotmem_put(ap_slotmem_instance_t *slot, unsigned int id,
     }
 
     inuse = slot->inuse + id;
-    if (id >= slot->desc.num || (AP_SLOTMEM_IS_PREGRAB(slot) && !*inuse)) {
+    if (id >= slot->desc.num) {
+        return APR_EINVAL;
+    }
+    if (AP_SLOTMEM_IS_PREGRAB(slot) && !*inuse) {
         return APR_NOTFOUND;
     }
     ret = slotmem_dptr(slot, id, &ptr);
@@ -618,7 +624,11 @@ static apr_status_t slotmem_release(ap_slotmem_instance_t *slot,
                      "slotmem(%s) release failed. Num %u/inuse[%u] %d",
                      slot->name, slotmem_num_slots(slot),
                      id, (int)inuse[id]);
-        return APR_NOTFOUND;
+        if (id >= slot->desc.num) {
+            return APR_EINVAL;
+        } else {
+            return APR_NOTFOUND;
+        }
     }
     inuse[id] = 0;
     (*slot->num_free)++;
