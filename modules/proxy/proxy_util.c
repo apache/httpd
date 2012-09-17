@@ -859,7 +859,6 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
         if (ap_proxy_valid_balancer_name((char *)real, 0) &&
             (balancer = ap_proxy_get_balancer(r->pool, sconf, real, 1))) {
             int n, l3 = 0;
-            int fake_endwslash = (ent[i].fake[strlen(ent[i].fake)-1] == '/');
             proxy_worker **worker = (proxy_worker **)balancer->workers->elts;
             const char *urlpart = ap_strchr_c(real + sizeof(BALANCER_PREFIX) - 1, '/');
             if (urlpart) {
@@ -882,21 +881,18 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
                     if (l1 >= l2 + l3
                             && strncasecmp((*worker)->s->name, url, l2) == 0
                             && strncmp(urlpart, url + l2, l3) == 0) {
-                        /* Avoid double-slash when concatting */
-                        if (fake_endwslash && (url[l2 + l3] == '/')) {
-                            l2++;
-                        }
                         u = apr_pstrcat(r->pool, ent[i].fake, &url[l2 + l3],
                                         NULL);
                         return ap_is_url(u) ? u : ap_construct_url(r->pool, u, r);
                     }
                 }
                 else if (l1 >= l2 && strncasecmp((*worker)->s->name, url, l2) == 0) {
-                    /* Avoid double-slash when concatting */
-                    if (fake_endwslash && (url[l2] == '/')) {
-                        l2++;
+                    /* edge case where fake is just "/"... avoid double slash */
+                    if ((ent[i].fake[0] == '/') && (ent[i].fake[1] == 0) && (url[l2] == '/')) {
+                        u = apr_pstrdup(r->pool, &url[l2]);
+                    } else {
+                        u = apr_pstrcat(r->pool, ent[i].fake, &url[l2], NULL);
                     }
-                    u = apr_pstrcat(r->pool, ent[i].fake, &url[l2], NULL);
                     return ap_is_url(u) ? u : ap_construct_url(r->pool, u, r);
                 }
                 worker++;
