@@ -1142,12 +1142,16 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->forward = NULL;
     ps->reverse = NULL;
     ps->domain = NULL;
-#if 0
-    id = ap_proxy_hashfunc(apr_psprintf(p, "%pp-%" APR_TIME_T_FMT, ps, apr_time_now()), PROXY_HASHFUNC_DEFAULT);
-#else
-    id = ap_proxy_hashfunc(apr_psprintf(p, "%pp", s), PROXY_HASHFUNC_DEFAULT);
-#endif
-    ps->id = apr_psprintf(p, "s%x", id);
+    /* yeah, ugly, but we need this both unique but consistent */
+    id = ap_proxy_hashfunc(apr_psprintf(p, "%s.%s.%d.%s.%s.%s",
+                                        (s->server_scheme ? s->server_scheme : "????"),
+                                        (s->server_hostname ? s->server_hostname : "???"),
+                                        (int)s->port,
+                                        (s->server_admin ? s->server_admin : "??"),
+                                        (s->defn_name ? s->defn_name : "?"),
+                                        (s->error_fname ? s->error_fname : DEFAULT_ERRORLOG))
+                           , PROXY_HASHFUNC_DEFAULT);
+    ps->id = apr_psprintf(p, "p%x", id);
     ps->viaopt = via_off; /* initially backward compatible with 1.3.1 */
     ps->viaopt_set = 0; /* 0 means default */
     ps->req = 0;
