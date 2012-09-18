@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy: Allow for persistence of local changes (via the
+     balancer-manager) between graceful and normal restarts.
+     [Jim Jagielski]
+
   *) mod_slotmem: New provider function, fgrab(), which forces an
      allocation of a slot. [Jim Jagielski]
 

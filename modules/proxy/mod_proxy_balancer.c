@@ -744,6 +744,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     while (s) {
         int i,j;
         proxy_balancer *balancer;
+        ap_slotmem_type_t type;
         sconf = s->module_config;
         conf = (proxy_server_conf *)ap_get_module_config(sconf, &proxy_module);
 
@@ -753,6 +754,11 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
             s = s->next;
             continue;
         }
+        if (conf->bal_persist) {
+            type = AP_SLOTMEM_TYPE_PREGRAB | AP_SLOTMEM_TYPE_PERSIST;
+        } else {
+            type = AP_SLOTMEM_TYPE_PREGRAB;
+        }
         if (conf->balancers->nelts) {
             conf->max_balancers = conf->balancers->nelts + conf->bgrowth;
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01178) "Doing balancers create: %d, %d (%d)",
@@ -761,7 +767,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
 
             rv = storage->create(&new, conf->id,
                                  ALIGNED_PROXY_BALANCER_SHARED_SIZE,
-                                 conf->max_balancers, AP_SLOTMEM_TYPE_PREGRAB, pconf);
+                                 conf->max_balancers, type, pconf);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01179) "balancer slotmem_create failed");
                 return !OK;
@@ -776,7 +782,6 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
             proxy_worker **workers;
             proxy_worker *worker;
             proxy_balancer_shared *bshm;
-            unsigned int index;
 
             balancer->max_workers = balancer->workers->nelts + balancer->growth;
 
@@ -794,29 +799,29 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                                       apr_pool_cleanup_null);
 
             /* setup shm for balancers */
-            if ((rv = storage->grab(conf->bslot, &index)) != APR_SUCCESS) {
+            if ((rv = storage->fgrab(conf->bslot, i)) != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01181) "balancer slotmem_grab failed");
                 return !OK;
 
             }
-            if ((rv = storage->dptr(conf->bslot, index, (void *)&bshm)) != APR_SUCCESS) {
+            if ((rv = storage->dptr(conf->bslot, i, (void *)&bshm)) != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01182) "balancer slotmem_dptr failed");
                 return !OK;
             }
-            if ((rv = ap_proxy_share_balancer(balancer, bshm, index)) != APR_SUCCESS) {
+            if ((rv = ap_proxy_share_balancer(balancer, bshm, i)) != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01183) "Cannot share balancer");
                 return !OK;
             }
 
             /* create slotmem slots for workers */
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01184) "Doing workers create: %s (%s), %d, %d",
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01184) "Doing workers create: %s (%s), %d, %d [%u]",
                          balancer->s->name, balancer->s->sname,
                          (int)ALIGNED_PROXY_WORKER_SHARED_SIZE,
-                         (int)balancer->max_workers);
+                         (int)balancer->max_workers, i);
 
             rv = storage->create(&new, balancer->s->sname,
                                  ALIGNED_PROXY_WORKER_SHARED_SIZE,
-                                 balancer->max_workers, AP_SLOTMEM_TYPE_PREGRAB, pconf);
+                                 balancer->max_workers, type, pconf);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01185) "worker slotmem_create failed");
                 return !OK;
@@ -833,20 +838,25 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                 proxy_worker_shared *shm;
 
                 worker = *workers;
-                if ((rv = storage->grab(balancer->wslot, &index)) != APR_SUCCESS) {
+                if ((rv = storage->fgrab(balancer->wslot, j)) != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01186) "worker slotmem_grab failed");
                     return !OK;
 
                 }
-                if ((rv = storage->dptr(balancer->wslot, index, (void *)&shm)) != APR_SUCCESS) {
+                if ((rv = storage->dptr(balancer->wslot, j, (void *)&shm)) != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01187) "worker slotmem_dptr failed");
                     return !OK;
                 }
-                if ((rv = ap_proxy_share_worker(worker, shm, index)) != APR_SUCCESS) {
+                if ((rv = ap_proxy_share_worker(worker, shm, j)) != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01188) "Cannot share worker");
                     return !OK;
                 }
                 worker->s->updated = tstamp;
+            }
+            if (conf->bal_persist) {
+                /* We could have just read-in a persisted config. Force a sync. */
+                balancer->wupdated--;
+                ap_proxy_sync_balancer(balancer, s, conf);
             }
         }
         s = s->next;

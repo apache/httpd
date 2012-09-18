@@ -1145,13 +1145,14 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
 #if 0
     id = ap_proxy_hashfunc(apr_psprintf(p, "%pp-%" APR_TIME_T_FMT, ps, apr_time_now()), PROXY_HASHFUNC_DEFAULT);
 #else
-    id = ap_proxy_hashfunc(apr_psprintf(p, "%pp", ps), PROXY_HASHFUNC_DEFAULT);
+    id = ap_proxy_hashfunc(apr_psprintf(p, "%pp", s), PROXY_HASHFUNC_DEFAULT);
 #endif
     ps->id = apr_psprintf(p, "s%x", id);
     ps->viaopt = via_off; /* initially backward compatible with 1.3.1 */
     ps->viaopt_set = 0; /* 0 means default */
     ps->req = 0;
     ps->max_balancers = 0;
+    ps->bal_persist = 0;
     ps->bgrowth = 5;
     ps->bgrowth_set = 0;
     ps->req_set = 0;
@@ -1197,6 +1198,7 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->bgrowth = (overrides->bgrowth_set == 0) ? base->bgrowth : overrides->bgrowth;
     ps->bgrowth_set = overrides->bgrowth_set || base->bgrowth_set;
     ps->max_balancers = overrides->max_balancers || base->max_balancers;
+    ps->bal_persist = overrides->bal_persist || base->bal_persist;
     ps->recv_buffer_size = (overrides->recv_buffer_size_set == 0) ? base->recv_buffer_size : overrides->recv_buffer_size;
     ps->recv_buffer_size_set = overrides->recv_buffer_size_set || base->recv_buffer_size_set;
     ps->io_buffer_size = (overrides->io_buffer_size_set == 0) ? base->io_buffer_size : overrides->io_buffer_size;
@@ -1872,6 +1874,15 @@ static const char *set_bgrowth(cmd_parms *parms, void *dummy, const char *arg)
     return NULL;
 }
 
+static const char *set_persist(cmd_parms *parms, void *dummy, int flag)
+{
+    proxy_server_conf *psf =
+    ap_get_module_config(parms->server->module_config, &proxy_module);
+
+    psf->bal_persist = flag;
+    return NULL;
+}
+
 static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
 {
     server_rec *s = cmd->server;
@@ -2259,6 +2270,8 @@ static const command_rec proxy_cmds[] =
      "A balancer name and scheme with list of params"),
     AP_INIT_TAKE1("BalancerGrowth", set_bgrowth, NULL, RSRC_CONF,
      "Number of additional Balancers that can be added post-config"),
+    AP_INIT_FLAG("BalancerPersist", set_persist, NULL, RSRC_CONF,
+     "on if the balancer should persist changes on reboot/restart made via the Balancer Manager"),
     AP_INIT_TAKE1("ProxyStatus", set_status_opt, NULL, RSRC_CONF,
      "Configure Status: proxy status to one of: on | off | full"),
     AP_INIT_RAW_ARGS("ProxySet", set_proxy_param, NULL, RSRC_CONF|ACCESS_CONF,
