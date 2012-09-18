@@ -87,6 +87,7 @@
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#balancergrowth">BalancerGrowth</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#balancermember">BalancerMember</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#balancerpersist">BalancerPersist</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#noproxy">NoProxy</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxy">&lt;Proxy&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyaddheaders">ProxyAddHeaders</a></li>
@@ -508,6 +509,24 @@ ProxyPass /examples http://backend.example.com/examples timeout=10
         <p>The balancerurl is only needed when not in <code>&lt;Proxy <var>balancer://</var>...&gt;</code>
             container directive. It corresponds to the url of a balancer defined in
             <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive.</p>
+    
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="BalancerPersist" id="BalancerPersist">BalancerPersist</a> <a name="balancerpersist" id="balancerpersist">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Attempt to persist changes made by the Balancer Manager across restarts.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>BalancerPersist On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>BalancerPersist Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>BalancerPersist is only available in Apache HTTP Server 2.5.0
+        and later.</td></tr>
+</table>
+        <p>This directive will cause the shared memory storage associated
+        with the balancers and balancer members to be persisted across
+        restarts. This allows these local changes to not be lost during the
+        normal restart/graceful state transitions.</p>
     
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
