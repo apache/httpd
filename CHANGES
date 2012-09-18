@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_slotmem: New provider function, fgrab(), which forces an
+     allocation of a slot. [Jim Jagielski]
+
   *) mod_proxy_balancer: The nonce is only derived from the UUID iff
      not set via the 'nonce' balancer param. [Jim Jagielski]
 
