@@ -663,9 +663,6 @@ expressions</description>
         restarts. This allows these local changes to not be lost during the
         normal restart/graceful state transitions.</p>
     </usage>
-    <note type="warning"><title>Warning</title>
-        <p>Data is not persisted across a stop/start cycle.</p>
-    </note>
 </directivesynopsis>
     
 
