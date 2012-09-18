@@ -1198,9 +1198,12 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_balancer(proxy_balancer *balancer,
     if (!shm || !balancer->s)
         return APR_EINVAL;
 
-    memcpy(shm, balancer->s, sizeof(proxy_balancer_shared));
-    if (balancer->s->was_malloced)
-        free(balancer->s);
+    if ((balancer->s->hash.def != shm->hash.def) ||
+        (balancer->s->hash.fnv != shm->hash.fnv)) {
+        memcpy(shm, balancer->s, sizeof(proxy_balancer_shared));
+        if (balancer->s->was_malloced)
+            free(balancer->s);
+    }
     balancer->s = shm;
     balancer->s->index = i;
     /* the below should always succeed */
@@ -1637,9 +1640,13 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_worker(proxy_worker *worker, proxy_wo
     if (!shm || !worker->s)
         return APR_EINVAL;
 
-    memcpy(shm, worker->s, sizeof(proxy_worker_shared));
-    if (worker->s->was_malloced)
-        free(worker->s); /* was malloced in ap_proxy_define_worker */
+    if ((worker->s->hash.def != shm->hash.def) ||
+        (worker->s->hash.fnv != shm->hash.fnv)) {
+        memcpy(shm, worker->s, sizeof(proxy_worker_shared));
+        if (worker->s->was_malloced)
+            free(worker->s); /* was malloced in ap_proxy_define_worker */
+    }
+
     worker->s = shm;
     worker->s->index = i;
     return APR_SUCCESS;

@@ -650,6 +650,26 @@ expressions</description>
 </directivesynopsis>
 
 <directivesynopsis>
+    <name>BalancerPersist</name>
+    <description>Attempt to persist changes made by the Balancer Manager across restarts.</description>
+    <syntax>BalancerPersist On|Off</syntax>
+    <default>BalancerPersist Off</default>
+    <contextlist><context>server config</context><context>virtual host</context></contextlist>
+    <compatibility>BalancerPersist is only available in Apache HTTP Server 2.5.0
+        and later.</compatibility>
+    <usage>
+        <p>This directive will cause the shared memory storage associated
+        with the balancers and balancer members to be persisted across
+        restarts. This allows these local changes to not be lost during the
+        normal restart/graceful state transitions.</p>
+    </usage>
+    <note type="warning"><title>Warning</title>
+        <p>Data is not persisted across a stop/start cycle.</p>
+    </note>
+</directivesynopsis>
+    
+
+<directivesynopsis>
     <name>BalancerMember</name>
     <description>Add a member to a load balancing group</description>
     <syntax>BalancerMember [<var>balancerurl</var>] <var>url</var> [<var

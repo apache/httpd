@@ -400,6 +400,7 @@
  * 20120724.0 (2.5.0-dev)  Add hostname argument to ap_proxy_checkproxyblock.
  * 20120724.1 (2.5.0-dev)  Add post_perdir_config hook.
  * 20120724.2 (2.5.0-dev)  Add fgrab slotmem function to struct
+ * 20120724.3 (2.5.0-dev)  Add bal_persist to proxy_server_conf
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -407,7 +408,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120724
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 2                   /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 3                   /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
