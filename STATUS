@@ -89,12 +89,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * Windows: Fix output of -M, -L, and similar command-line options
-     which display information about the server configuration.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1374428
-     2.4.x patch: trunk patch works.
-     +1: trawick, gsmith, fuankg
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
