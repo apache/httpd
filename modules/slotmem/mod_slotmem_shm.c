@@ -83,6 +83,7 @@ static apr_pool_t *gpool = NULL;
 
 #define DEFAULT_SLOTMEM_PREFIX "slotmem-shm-"
 #define DEFAULT_SLOTMEM_SUFFIX ".shm"
+#define DEFAULT_SLOTMEM_PERSIST_SUFFIX ".persist"
 
 /* apr:shmem/unix/shm.c */
 static apr_status_t unixd_set_shm_perms(const char *fname)
@@ -127,7 +128,8 @@ static apr_status_t unixd_set_shm_perms(const char *fname)
  *
  */
 
-static const char *slotmem_filename(apr_pool_t *pool, const char *slotmemname)
+static const char *slotmem_filename(apr_pool_t *pool, const char *slotmemname,
+                                    int persist)
 {
     const char *fname;
     if (!slotmemname || strcasecmp(slotmemname, "none") == 0) {
@@ -135,18 +137,19 @@ static const char *slotmem_filename(apr_pool_t *pool, const char *slotmemname)
     }
     else if (slotmemname[0] != '/') {
         const char *filenm = apr_pstrcat(pool, DEFAULT_SLOTMEM_PREFIX,
-                                       slotmemname, DEFAULT_SLOTMEM_SUFFIX, NULL);
+                                         slotmemname, DEFAULT_SLOTMEM_SUFFIX,
+                                         NULL);
         fname = ap_runtime_dir_relative(pool, filenm);
     }
     else {
         fname = slotmemname;
     }
-    return fname;
-}
 
-static const char *storemem_filename(apr_pool_t *pool, const char *name)
-{
-    return apr_pstrcat(pool, name, ".persist", NULL);
+    if (persist) {
+        return apr_pstrcat(pool, fname, DEFAULT_SLOTMEM_PERSIST_SUFFIX,
+                           NULL);
+    }
+    return fname;
 }
 
 static void store_slotmem(ap_slotmem_instance_t *slotmem)
@@ -156,7 +159,7 @@ static void store_slotmem(ap_slotmem_instance_t *slotmem)
     apr_size_t nbytes;
     const char *storename;
 
-    storename = storemem_filename(slotmem->gpool, slotmem->name);
+    storename = slotmem_filename(slotmem->gpool, slotmem->name, 1);
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02334)
                  "storing %s", storename);
@@ -189,7 +192,7 @@ static void restore_slotmem(void *ptr, const char *name, apr_size_t size,
     apr_size_t nbytes = size;
     apr_status_t rv;
 
-    storename = storemem_filename(pool, name);
+    storename = slotmem_filename(pool, name, 1);
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02335)
                  "restoring %s", storename);
@@ -284,7 +287,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
     if (gpool == NULL) {
         return APR_ENOSHMAVAIL;
     }
-    fname = slotmem_filename(pool, name);
+    fname = slotmem_filename(pool, name, 0);
     if (fname) {
         /* first try to attach to existing slotmem */
         if (next) {
@@ -409,7 +412,7 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new,
     if (gpool == NULL) {
         return APR_ENOSHMAVAIL;
     }
-    fname = slotmem_filename(pool, name);
+    fname = slotmem_filename(pool, name, 0);
     if (!fname) {
         return APR_ENOSHMAVAIL;
     }
