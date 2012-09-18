@@ -43,8 +43,9 @@
 #endif
 #endif
 
-#define AP_SLOTMEM_IS_PREGRAB(t) (t->desc.type & AP_SLOTMEM_TYPE_PREGRAB)
-#define AP_SLOTMEM_IS_PERSIST(t) (t->desc.type & AP_SLOTMEM_TYPE_PERSIST)
+#define AP_SLOTMEM_IS_PREGRAB(t)    (t->desc.type & AP_SLOTMEM_TYPE_PREGRAB)
+#define AP_SLOTMEM_IS_PERSIST(t)    (t->desc.type & AP_SLOTMEM_TYPE_PERSIST)
+#define AP_SLOTMEM_IS_CLEARINUSE(t) (t->desc.type & AP_SLOTMEM_TYPE_CLEARINUSE)
 
 /* The description of the slots to reuse the slotmem */
 typedef struct {
@@ -152,6 +153,25 @@ static const char *slotmem_filename(apr_pool_t *pool, const char *slotmemname,
     return fname;
 }
 
+static void slotmem_clearinuse(ap_slotmem_instance_t *slot)
+{
+    unsigned int i;
+    char *inuse;
+    
+    if (!slot) {
+        return;
+    }
+    
+    inuse = slot->inuse;
+    
+    for (i = 0; i < slot->desc.num; i++, inuse++) {
+        if (*inuse) {
+            *inuse = 0;
+            (*slot->num_free)++;
+        }
+    }
+}
+
 static void store_slotmem(ap_slotmem_instance_t *slotmem)
 {
     apr_file_t *fp;
@@ -174,6 +194,9 @@ static void store_slotmem(ap_slotmem_instance_t *slotmem)
         }
         if (rv != APR_SUCCESS) {
             return;
+        }
+        if (AP_SLOTMEM_IS_CLEARINUSE(slotmem)) {
+            slotmem_clearinuse(slotmem);
         }
         nbytes = (slotmem->desc.size * slotmem->desc.num) +
                  (slotmem->desc.num * sizeof(char)) + AP_UNSIGNEDINT_OFFSET;
