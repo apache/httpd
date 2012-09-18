@@ -17,10 +17,6 @@ Changes with Apache 2.5.0
      to allow tracking of threads from exiting children via mod_status
      or other such mechanisms.  [Jeff Trawick]
 
-  *) Windows: Fix output of -M, -L, and similar command-line options
-     which display information about the server configuration.
-     [Jeff Trawick]
-
   *) mod_ssl: Catch missing or mismatched client cert/key pairs with
      SSLProxyMachineCertificateFile/Path directives.  PR 52212.  
      [Keith Burdis <keith burdis.org>, Joe Orton]
