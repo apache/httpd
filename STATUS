@@ -89,11 +89,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy: fix missing APLOGNO() argument.
-     trunk patch: http://svn.apache.org/viewvc?rev=1375407&view=rev
-     2.4.x patch: trunk patch works
-     +1: jorton, fuankg, sf
-
    * Windows: Fix output of -M, -L, and similar command-line options
      which display information about the server configuration.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1374428
