@@ -62,10 +62,14 @@ typedef unsigned int ap_slotmem_type_t;
  * AP_SLOTMEM_TYPE_NOTMPSAFE:
  *
  * AP_SLOTMEM_TYPE_PREALLOC: Access to slots require they be grabbed 1st
+ *
+ * AP_SLOTMEM_TYPE_CLEARINUSE: If persisting, clear 'inuse' array before
+ *    storing
  */
-#define AP_SLOTMEM_TYPE_PERSIST   (1 << 0)
-#define AP_SLOTMEM_TYPE_NOTMPSAFE (1 << 1)
-#define AP_SLOTMEM_TYPE_PREGRAB   (1 << 2)
+#define AP_SLOTMEM_TYPE_PERSIST      (1 << 0)
+#define AP_SLOTMEM_TYPE_NOTMPSAFE    (1 << 1)
+#define AP_SLOTMEM_TYPE_PREGRAB      (1 << 2)
+#define AP_SLOTMEM_TYPE_CLEARINUSE   (1 << 3)
 
 typedef struct ap_slotmem_instance_t ap_slotmem_instance_t;
 
