@@ -1287,7 +1287,7 @@ static int balancer_handler(request_rec *r)
                       balancer->s->name + sizeof(BALANCER_PREFIX) - 1,
                       "&nonce=", balancer->s->nonce,
                       "'>", NULL);
-            ap_rvputs(r, balancer->s->name, "</a></h3>\n", NULL);
+            ap_rvputs(r, balancer->s->name, "</a> [",balancer->s->sname, "]</h3>\n", NULL);
             ap_rputs("\n\n<table><tr>"
                 "<th>MaxMembers</th><th>StickySession</th><th>DisableFailover</th><th>Timeout</th><th>FailoverAttempts</th><th>Method</th>"
                 "<th>Path</th><th>Active</th></tr>\n<tr>", r);
