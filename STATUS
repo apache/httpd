@@ -217,6 +217,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://people.apache.org/~kbrand/MOD_flags-2.4.x.patch
      +1: kbrand
 
+   * mod_proxy: Make balancers server-specific, as they should have
+     been. Inheritance causes too many behind-the-scene interactions
+     to be reliable in a dynamic environ.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387603
+     2.4.x patch: trunk patch works
+     +1: jim
+
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
