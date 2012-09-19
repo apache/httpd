@@ -43,7 +43,7 @@ APACHE_MODULE(ssl, [SSL/TLS support (mod_ssl)], $ssl_objs, , most, [
         if test "x$enable_ssl" = "xshared"; then
            # The only symbol which needs to be exported is the module
            # structure, so ask libtool to hide everything else:
-           APR_ADDTO(MOD_LDFLAGS, [-export-symbols-regex ssl_module])
+           APR_ADDTO(MOD_SSL_LDADD, [-export-symbols-regex ssl_module])
         fi
     else
         enable_ssl=no
