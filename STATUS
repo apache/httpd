@@ -216,6 +216,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/viewvc?view=revision&revision=r1387610
      2.4.x patch: https://people.apache.org/~kbrand/MOD_flags-2.4.x.patch
      +1: kbrand
+  
+   * default conf: Remove the default configuration stanza that removes DNT
+                   request headers from IE10 clients (revert r1371878).  PR53845
+                   <CALK=YjMGPNHBqNiad-ghzcEzxDovQgYOpjpSSyXmN=r74v43qg@mail.gmail.com>
+     trunk patch: http://svn.apache.org/viewvc?rev=1386913&view=rev
+     2.4.x patch: trunk works + CHANGES.
+     +1 covener 
 
    * mod_proxy: Make balancers server-specific, as they should have
      been. Inheritance causes too many behind-the-scene interactions
