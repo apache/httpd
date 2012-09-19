@@ -743,11 +743,25 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
      */
     while (s) {
         int i,j;
+        char *id;
         proxy_balancer *balancer;
         ap_slotmem_type_t type;
         sconf = s->module_config;
         conf = (proxy_server_conf *)ap_get_module_config(sconf, &proxy_module);
-
+        /*
+         * During create_proxy_config() we created a dummy id. Now that
+         * we have identifying info, we can create the real id
+         */
+        id = apr_psprintf(pconf, "%s.%s.%d.%s.%s.%u.%s",
+                          (s->server_scheme ? s->server_scheme : "????"),
+                          (s->server_hostname ? s->server_hostname : "???"),
+                          (int)s->port,
+                          (s->server_admin ? s->server_admin : "??"),
+                          (s->defn_name ? s->defn_name : "?"),
+                          s->defn_line_number,
+                          (s->error_fname ? s->error_fname : DEFAULT_ERRORLOG));
+        conf->id = apr_psprintf(pconf, "p%x",
+                                ap_proxy_hashfunc(id, PROXY_HASHFUNC_DEFAULT));
         if (conf->bslot) {
             /* Shared memory already created for this proxy_server_conf.
              */
@@ -782,6 +796,13 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
             proxy_worker **workers;
             proxy_worker *worker;
             proxy_balancer_shared *bshm;
+            const char *sname;
+
+            /* now that we have the right id, we need to redo the sname field */
+            ap_pstr2_alnum(pconf, balancer->s->name + sizeof(BALANCER_PREFIX) - 1,
+                           &sname);
+            sname = apr_pstrcat(pconf, conf->id, "_", sname, NULL);
+            PROXY_STRNCPY(balancer->s->sname, sname); /* We know this will succeed */
 
             balancer->max_workers = balancer->workers->nelts + balancer->growth;
 
