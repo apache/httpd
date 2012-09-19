@@ -190,7 +190,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1375097
                   http://svn.apache.org/viewvc?view=revision&revision=1375099
      2.4.x patch: http://people.apache.org/~fuankg/diffs/httpd-2.4.x_installwinconf.diff
-     +1: fuankg
+     +1: fuankg, gsmith
 
    * mod_proxy: Obtain UUID for balancer manager nonce only if we're using the
      default and as late as possible.
