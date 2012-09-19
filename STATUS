@@ -215,6 +215,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/viewvc?view=revision&revision=r1385216
                   https://svn.apache.org/viewvc?view=revision&revision=r1387610
      2.4.x patch: https://people.apache.org/~kbrand/MOD_flags-2.4.x.patch
+     +1: kbrand
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
