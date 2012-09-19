@@ -172,13 +172,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_ssl: Add wildcard CN match for mod_proxy.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1375584
      2.4.x patch: trunk patch works
-     +1: jorton, 
+     +1: jorton, covener 
 
    * core: Apply length limit when logging Status header values.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1376695
                   http://svn.apache.org/viewvc?view=revision&revision=1376700
      2.4.x patch: trunk patch works
-     +1: chrisd
+     +1: chrisd, covener
 
    * headers: Move *_DECLARE_* macros to beginning of line in headers.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1374963
@@ -197,7 +197,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      default and as late as possible.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1383490
      2.4.x patch: trunk patch works (minus CHANGES and w/ fuzz)
-     +1: jim
+     +1: jim, covener
 
    * mod_proxy: Avoid double slash with "ProxyPassReverse / ..." cases
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1386576
