@@ -1192,7 +1192,7 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->bgrowth = (overrides->bgrowth_set == 0) ? base->bgrowth : overrides->bgrowth;
     ps->bgrowth_set = overrides->bgrowth_set || base->bgrowth_set;
     ps->max_balancers = overrides->max_balancers || base->max_balancers;
-    ps->bal_persist = base->bal_persist || overrides->bal_persist;
+    ps->bal_persist = overrides->bal_persist;
     ps->recv_buffer_size = (overrides->recv_buffer_size_set == 0) ? base->recv_buffer_size : overrides->recv_buffer_size;
     ps->recv_buffer_size_set = overrides->recv_buffer_size_set || base->recv_buffer_size_set;
     ps->io_buffer_size = (overrides->io_buffer_size_set == 0) ? base->io_buffer_size : overrides->io_buffer_size;
