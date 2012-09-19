@@ -129,6 +129,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1358168
      2.4.x patch: http://people.apache.org/~rjung/patches/ssl-support-uninstalled-openssl-2_4.patch
      +1: 
+     -1: kbrand: breaks OS X builds, superseded by approach based on MOD_CFLAGS etc.
      rjung: Revoked my vote due to ongoing discussion
 
    * mod_lua: Add a new directive, LuaCodeCache, for controlling the in-memory 
@@ -209,6 +210,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1370763
      2.4.x patch: trunk patch works
      +1: jim
+
+   * build: introduce per-module-directory compile/link flags (MOD_CFLAGS etc.)
+     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=r1385216
+                  https://svn.apache.org/viewvc?view=revision&revision=r1387610
+     2.4.x patch: https://people.apache.org/~kbrand/MOD_flags-2.4.x.patch
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
