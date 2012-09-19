@@ -1167,6 +1167,10 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
     if (PROXY_STRNCPY(bshared->name, uri) != APR_SUCCESS) {
         return apr_psprintf(p, "balancer name (%s) too long", uri);
     }
+    /*
+     * We do the below for verification. The real sname will be
+     * done post_config
+     */
     ap_pstr2_alnum(p, bshared->name + sizeof(BALANCER_PREFIX) - 1,
                    &sname);
     sname = apr_pstrcat(p, conf->id, "_", sname, NULL);
