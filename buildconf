@@ -118,7 +118,7 @@ if [ $apr_major_version -lt 2 ] ; then
         echo "or specify the location of the source with "
         echo "--with-apr-util=[path to apr-util]:"
         echo ""
-        echo "   svn co http://svn.apache.org/repos/asf/apr/apr-util/trunk srclib/apr-util"
+        echo "   svn co http://svn.apache.org/repos/asf/apr/apr-util/branches/1.5.x srclib/apr-util"
         echo ""
         should_exit=1
     fi
