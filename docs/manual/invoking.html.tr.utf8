@@ -29,6 +29,7 @@
 <a href="./ko/invoking.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/invoking.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Apache normal olarak, Windows NT, 2000 ve XP'de bir hizmet olarak,
       Windows 9x ve ME’de ise bir konsol uygulaması olarak çalışır. Ayrıntılı
