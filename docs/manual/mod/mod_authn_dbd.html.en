@@ -76,7 +76,7 @@
 <div class="section">
 <h2><a name="socache" id="socache">Performance and Cacheing</a></h2>
 
-<p>Some users of DBD authentication in HTTPD 2.2 have reported that it
+<p>Some users of DBD authentication in HTTPD 2.2/2.4 have reported that it
 imposes a problematic load on the database.  This is most likely where
 an HTML page contains hundreds of objects (e.g. images, scripts, etc)
 each of which requires authentication.  Users affected (or concerned)
