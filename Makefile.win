@@ -1040,6 +1040,7 @@ BEGIN {
 		INSTALL_DIR="$(INSTDIR)\bin\iconv"
 	cd ..\..
 !ENDIF
+	copy docs\cgi-examples\printenv.vbs "$(INSTDIR)\cgi-bin\printenv.vbs" <.y
 	copy docs\cgi-examples\printenv "$(INSTDIR)\cgi-bin\printenv.pl" <.y
 	-awk -f <<script.awk "docs/cgi-examples/printenv" > "$(INSTDIR)\cgi-bin\printenv.pl"
     BEGIN { 
