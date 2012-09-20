@@ -400,7 +400,7 @@
  * 20120724.0 (2.5.0-dev)  Add hostname argument to ap_proxy_checkproxyblock.
  * 20120724.1 (2.5.0-dev)  Add post_perdir_config hook.
  * 20120724.2 (2.5.0-dev)  Add fgrab slotmem function to struct
- * 20120724.3 (2.5.0-dev)  Add bal_persist to proxy_server_conf
+ * 20120724.3 (2.5.0-dev)  Add bal_persist, inherit to proxy_server_conf
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */

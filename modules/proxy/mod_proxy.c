@@ -1173,13 +1173,24 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     proxy_server_conf *base = (proxy_server_conf *) basev;
     proxy_server_conf *overrides = (proxy_server_conf *) overridesv;
 
-    ps->proxies = overrides->proxies;
-    ps->sec_proxy = overrides->sec_proxy;
-    ps->aliases = overrides->aliases;
-    ps->noproxies = overrides->noproxies;
-    ps->dirconn = overrides->dirconn;
-    ps->workers = overrides->workers;
-    ps->balancers = overrides->balancers;
+    if (overrides->inherit || base->inherit) {
+        ps->proxies = apr_array_append(p, base->proxies, overrides->proxies);
+        ps->sec_proxy = apr_array_append(p, base->sec_proxy, overrides->sec_proxy);
+        ps->aliases = apr_array_append(p, base->aliases, overrides->aliases);
+        ps->noproxies = apr_array_append(p, base->noproxies, overrides->noproxies);
+        ps->dirconn = apr_array_append(p, base->dirconn, overrides->dirconn);
+        ps->workers = apr_array_append(p, base->workers, overrides->workers);
+        ps->balancers = apr_array_append(p, base->balancers, overrides->balancers);
+    }
+    else {
+        ps->proxies = overrides->proxies;
+        ps->sec_proxy = overrides->sec_proxy;
+        ps->aliases = overrides->aliases;
+        ps->noproxies = overrides->noproxies;
+        ps->dirconn = overrides->dirconn;
+        ps->workers = overrides->workers;
+        ps->balancers = overrides->balancers;
+    }
     ps->forward = overrides->forward ? overrides->forward : base->forward;
     ps->reverse = overrides->reverse ? overrides->reverse : base->reverse;
 
@@ -1877,6 +1888,15 @@ static const char *set_persist(cmd_parms *parms, void *dummy, int flag)
     return NULL;
 }
 
+static const char *set_inherit(cmd_parms *parms, void *dummy, int flag)
+{
+    proxy_server_conf *psf =
+    ap_get_module_config(parms->server->module_config, &proxy_module);
+
+    psf->inherit = flag;
+    return NULL;
+}
+
 static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
 {
     server_rec *s = cmd->server;
@@ -2266,6 +2286,9 @@ static const command_rec proxy_cmds[] =
      "Number of additional Balancers that can be added post-config"),
     AP_INIT_FLAG("BalancerPersist", set_persist, NULL, RSRC_CONF,
      "on if the balancer should persist changes on reboot/restart made via the Balancer Manager"),
+    AP_INIT_FLAG("BalancerInherit", set_persist, NULL, RSRC_CONF,
+     "on if this server should inherit Balancers defined in the main server "
+     "(Not recommended if using the Balancer Manager)"),
     AP_INIT_TAKE1("ProxyStatus", set_status_opt, NULL, RSRC_CONF,
      "Configure Status: proxy status to one of: on | off | full"),
     AP_INIT_RAW_ARGS("ProxySet", set_proxy_param, NULL, RSRC_CONF|ACCESS_CONF,
