@@ -228,7 +228,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      been. Inheritance causes too many behind-the-scene interactions
      to be reliable in a dynamic environ.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387603
-     2.4.x patch: trunk patch works
+                  http://svn.apache.org/viewvc?view=revision&revision=1388029
+     2.4.x patch: trunk patch works (minus ap_mmn.h change)
      +1: jim
 
    * prefork: Reduce some possible error log spam during graceful-stop.
