@@ -215,7 +215,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/viewvc?view=revision&revision=r1385216
                   https://svn.apache.org/viewvc?view=revision&revision=r1387610
      2.4.x patch: https://people.apache.org/~kbrand/MOD_flags-2.4.x.patch
-     +1: kbrand
+     +1: kbrand, jorton
   
    * default conf: Remove the default configuration stanza that removes DNT
                    request headers from IE10 clients (revert r1371878).  PR53845
@@ -230,6 +230,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387603
      2.4.x patch: trunk patch works
      +1: jim
+
+   * prefork: Reduce some possible error log spam during graceful-stop.
+     trunk patch: http://svn.apache.org/viewvc?rev=1387633&view=rev
+     2.4.x patch: trunk patch works
+     +1: jorton
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
