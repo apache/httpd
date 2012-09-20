@@ -702,7 +702,6 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                          apr_pool_t *ptemp, server_rec *s)
 {
     apr_status_t rv;
-    void *sconf = s->module_config;
     proxy_server_conf *conf;
     ap_slotmem_instance_t *new = NULL;
     apr_time_t tstamp;
@@ -746,7 +745,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
         char *id;
         proxy_balancer *balancer;
         ap_slotmem_type_t type;
-        sconf = s->module_config;
+        void *sconf = s->module_config;
         conf = (proxy_server_conf *)ap_get_module_config(sconf, &proxy_module);
         /*
          * During create_proxy_config() we created a dummy id. Now that
