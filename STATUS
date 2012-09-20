@@ -172,7 +172,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_ssl: Add wildcard CN match for mod_proxy.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1375584
      2.4.x patch: trunk patch works
-     +1: jorton, covener 
+     +1: jorton, covener, druggeri
 
    * core: Apply length limit when logging Status header values.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1376695
@@ -197,13 +197,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      default and as late as possible.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1383490
      2.4.x patch: trunk patch works (minus CHANGES and w/ fuzz)
-     +1: jim, covener
+     +1: jim, covener, druggeri
 
    * mod_proxy: Avoid double slash with "ProxyPassReverse / ..." cases
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1386576
                   http://svn.apache.org/viewvc?view=revision&revision=1386578
      2.4.x patch: trunk patch works
-     +1: jim
+     +1: jim, druggeri
 
    * mod_slotmem_plain: honor DefaultRuntimeDir (below doesn't apply since
      there is no config directive to speak of)
@@ -230,7 +230,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387603
                   http://svn.apache.org/viewvc?view=revision&revision=1388029
      2.4.x patch: trunk patch works (minus ap_mmn.h change)
-     +1: jim
+     +1: jim, druggeri
 
    * prefork: Reduce some possible error log spam during graceful-stop.
      trunk patch: http://svn.apache.org/viewvc?rev=1387633&view=rev
