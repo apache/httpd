@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_auth_form: Support the expr parser in the
+     AuthFormLoginRequiredLocation, AuthFormLoginSuccessLocation and
+     AuthFormLogoutLocation directives. [Graham Leggett]
+
   *) core: Add dirwalk_stat hook.  [Jeff Trawick]
 
   *) mod_proxy: Allow for persistence of local changes (via the
