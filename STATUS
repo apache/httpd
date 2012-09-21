@@ -270,6 +270,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~jim/patches/proxy-persist.diff
      +1:
 
+   * mod_auth_form: Support the expr parser in the
+     AuthFormLoginRequiredLocation, AuthFormLoginSuccessLocation and
+     AuthFormLogoutLocation directives.
+     trunk patch: http://svn.apache.org/viewvc?rev=1388648&view=rev
+     2.4.x patch: trunk patch works (minus next-number, CHANGES)
+     +1: minfrin
+
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
