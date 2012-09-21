@@ -64,10 +64,10 @@
       This is declared as follows:</p>
 
       <pre class="prettyprint lang-c">
-        APR_HOOK_STRUCT(
-          APR_HOOK_LINK(do_something)
-          ...
-        )
+APR_HOOK_STRUCT(
+  APR_HOOK_LINK(do_something)
+  ...
+)
       </pre>
 
     
@@ -93,11 +93,11 @@
         something like this:</p>
 
         <pre class="prettyprint lang-c">
-          void ap_run_do_something(request_rec *r, int n)
-          {
-            ...
-            do_something(r, n);
-          }
+void ap_run_do_something(request_rec *r, int n)
+{
+...
+do_something(r, n);
+}
         </pre>
 
       
@@ -139,10 +139,10 @@
       like so:</p>
 
       <pre class="prettyprint lang-c">
-        int n, ret;
-        request_rec *r;
+int n, ret;
+request_rec *r;
 
-        ret=ap_run_do_something(r, n);
+ret=ap_run_do_something(r, n);
       </pre>
 
     
@@ -157,11 +157,11 @@
       of the correct type:</p>
 
       <pre class="prettyprint lang-c">
-        static int my_something_doer(request_rec *r, int n)<br />
-        {
-          ...
-          return OK;
-        }
+static int my_something_doer(request_rec *r, int n)<br />
+{
+    ...
+    return OK;
+}
       </pre>
 
     
@@ -172,16 +172,16 @@
       structure:</p>
 
       <pre class="prettyprint lang-c">
-        static void my_register_hooks()
-        {
-          ap_hook_do_something(my_something_doer, NULL, NULL, APR_HOOK_MIDDLE);
-        }
+static void my_register_hooks()
+{
+    ap_hook_do_something(my_something_doer, NULL, NULL, APR_HOOK_MIDDLE);
+}
 
-        mode MODULE_VAR_EXPORT my_module =
-        {
-          ...
-          my_register_hooks       /* register hooks */
-        };
+mode MODULE_VAR_EXPORT my_module =
+{
+    ...
+    my_register_hooks       /* register hooks */
+};
       </pre>
 
     
@@ -216,12 +216,12 @@
       before we do, then we'd hook as follows:</p>
 
       <pre class="prettyprint lang-c">
-        static void register_hooks()
-        {
-          static const char * const aszPre[] = { "mod_xyz.c", "mod_abc.c", NULL };
+static void register_hooks()
+{
+    static const char * const aszPre[] = { "mod_xyz.c", "mod_abc.c", NULL };
 
-          ap_hook_do_something(my_something_doer, aszPre, NULL, APR_HOOK_MIDDLE);
-        }
+    ap_hook_do_something(my_something_doer, aszPre, NULL, APR_HOOK_MIDDLE);
+}
       </pre>
 
 
