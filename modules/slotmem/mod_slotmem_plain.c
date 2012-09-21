@@ -266,7 +266,6 @@ static apr_status_t slotmem_grab(ap_slotmem_instance_t *slot, unsigned int *id)
 
 static apr_status_t slotmem_fgrab(ap_slotmem_instance_t *slot, unsigned int id)
 {
-    unsigned int i;
     char *inuse;
     
     if (!slot) {
