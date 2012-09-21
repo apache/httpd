@@ -70,6 +70,7 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(insert_filter)
     APR_HOOK_LINK(create_request)
     APR_HOOK_LINK(post_perdir_config)
+    APR_HOOK_LINK(dirwalk_stat)
 )
 
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,translate_name,
@@ -93,6 +94,9 @@ AP_IMPLEMENT_HOOK_RUN_ALL(int, create_request,
                           (request_rec *r), (r), OK, DECLINED)
 AP_IMPLEMENT_HOOK_RUN_ALL(int, post_perdir_config,
                           (request_rec *r), (r), OK, DECLINED)
+AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t,dirwalk_stat,
+                            (apr_finfo_t *finfo, request_rec *r, apr_int32_t wanted),
+                            (finfo, r, wanted), AP_DECLINED)
 
 static int auth_internal_per_conf = 0;
 static int auth_internal_per_conf_hooks = 0;
@@ -609,7 +613,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
      * with APR_ENOENT, knowing that the path is good.
      */
     if (r->finfo.filetype == APR_NOFILE || r->finfo.filetype == APR_LNK) {
-        rv = apr_stat(&r->finfo, r->filename, APR_FINFO_MIN, r->pool);
+        rv = ap_run_dirwalk_stat(&r->finfo, r, APR_FINFO_MIN);
 
         /* some OSs will return APR_SUCCESS/APR_REG if we stat
          * a regular file but we have '/' at the end of the name;
@@ -675,9 +679,8 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
              * check.
              */
             if (!(opts & OPT_SYM_LINKS)) {
-                rv = apr_stat(&thisinfo, r->filename,
-                              APR_FINFO_MIN | APR_FINFO_NAME | APR_FINFO_LINK,
-                              r->pool);
+                rv = ap_run_dirwalk_stat(&thisinfo, r,
+                                         APR_FINFO_MIN | APR_FINFO_NAME | APR_FINFO_LINK);
                 /*
                  * APR_INCOMPLETE is as fine as result as APR_SUCCESS as we
                  * have added APR_FINFO_NAME to the wanted parameter of
@@ -1092,9 +1095,8 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
              * the name of its target, if we are fixing the filename
              * case/resolving aliases.
              */
-            rv = apr_stat(&thisinfo, r->filename,
-                          APR_FINFO_MIN | APR_FINFO_NAME | APR_FINFO_LINK,
-                          r->pool);
+            rv = ap_run_dirwalk_stat(&thisinfo, r,
+                                     APR_FINFO_MIN | APR_FINFO_NAME | APR_FINFO_LINK);
 
             if (APR_STATUS_IS_ENOENT(rv)) {
                 /* Nothing?  That could be nice.  But our directory

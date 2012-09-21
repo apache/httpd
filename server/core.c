@@ -4779,6 +4779,12 @@ static apr_status_t core_insert_network_bucket(conn_rec *c,
     return APR_SUCCESS;
 }
 
+static apr_status_t core_dirwalk_stat(apr_finfo_t *finfo, request_rec *r,
+                                      apr_int32_t wanted) 
+{
+    return apr_stat(finfo, r->filename, wanted, r->pool);
+}
+
 static void core_dump_config(apr_pool_t *p, server_rec *s)
 {
     core_server_config *sconf = ap_get_core_module_config(s->module_config);
@@ -4855,7 +4861,8 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_child_status(ap_core_child_status, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_insert_network_bucket(core_insert_network_bucket, NULL, NULL,
                                   APR_HOOK_REALLY_LAST);
-
+    ap_hook_dirwalk_stat(core_dirwalk_stat, NULL, NULL, APR_HOOK_REALLY_LAST);
+    
     /* register the core's insert_filter hook and register core-provided
      * filters
      */

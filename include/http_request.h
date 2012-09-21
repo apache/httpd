@@ -538,6 +538,15 @@ AP_DECLARE_HOOK(void,insert_filter,(request_rec *r))
  */
 AP_DECLARE_HOOK(int,post_perdir_config,(request_rec *r))
 
+/**
+ * This hook allows modules to handle/emulate the apr_stat() calls
+ * needed for directory walk.
+ * @param r The current request
+ * @return apr_status_t or AP_DECLINED (let later modules decide)
+ * @ingroup hooks
+ */
+AP_DECLARE_HOOK(apr_status_t,dirwalk_stat,(apr_finfo_t *finfo, request_rec *r, apr_int32_t wanted))
+
 AP_DECLARE(int) ap_location_walk(request_rec *r);
 AP_DECLARE(int) ap_directory_walk(request_rec *r);
 AP_DECLARE(int) ap_file_walk(request_rec *r);
