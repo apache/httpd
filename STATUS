@@ -257,6 +257,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk patch works
      +1: jim
 
+   * mod_proxy: Persist balancer and worker data across restarts and stop/start.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387110
+                  http://svn.apache.org/viewvc?view=revision&revision=1387444
+                  http://svn.apache.org/viewvc?view=revision&revision=1387603
+                  http://svn.apache.org/viewvc?view=revision&revision=1387684
+                  http://svn.apache.org/viewvc?view=revision&revision=1387691
+                  http://svn.apache.org/viewvc?view=revision&revision=1387693
+                  http://svn.apache.org/viewvc?view=revision&revision=1388029
+                  http://svn.apache.org/viewvc?view=revision&revision=1388444
+                  http://svn.apache.org/viewvc?view=revision&revision=1388603
+     2.4.x patch: http://people.apache.org/~jim/patches/proxy-persist.diff
+     +1:
+
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
