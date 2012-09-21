@@ -89,11 +89,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy: Obtain UUID for balancer manager nonce only if we're using the
-     default and as late as possible.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1383490
-     2.4.x patch: trunk patch works (minus CHANGES and w/ fuzz)
-     +1: jim, covener, druggeri
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
