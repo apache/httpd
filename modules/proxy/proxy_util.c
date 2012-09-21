@@ -1116,6 +1116,8 @@ PROXY_DECLARE(char *) ap_proxy_update_balancer(apr_pool_t *p,
     return NULL;
 }
 
+#define PROXY_UNSET_NONCE '\n'
+
 PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
                                                proxy_balancer **balancer,
                                                proxy_server_conf *conf,
@@ -1123,9 +1125,7 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
                                                const char *alias,
                                                int do_malloc)
 {
-    char nonce[APR_UUID_FORMATTED_LENGTH + 1];
     proxy_balancer_method *lbmethod;
-    apr_uuid_t uuid;
     proxy_balancer_shared *bshared;
     char *c, *q, *uri = apr_pstrdup(p, url);
     const char *sname;
@@ -1180,14 +1180,7 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
     (*balancer)->hash = bshared->hash;
 
     bshared->forcerecovery = 1;
-
-    /* Retrieve a UUID and store the nonce for the lifetime of
-     * the process. */
-    apr_uuid_get(&uuid);
-    apr_uuid_format(nonce, &uuid);
-    if (PROXY_STRNCPY(bshared->nonce, nonce) != APR_SUCCESS) {
-        return apr_psprintf(p, "balancer nonce (%s) too long", nonce);
-    }
+    *bshared->nonce = PROXY_UNSET_NONCE;  /* impossible valid input */
 
     (*balancer)->s = bshared;
     (*balancer)->sconf = conf;
@@ -1202,6 +1195,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_balancer(proxy_balancer *balancer,
                                                     proxy_balancer_shared *shm,
                                                     int i)
 {
+    apr_status_t rv = APR_SUCCESS;
     proxy_balancer_method *lbmethod;
     if (!shm || !balancer->s)
         return APR_EINVAL;
@@ -1215,7 +1209,18 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_balancer(proxy_balancer *balancer,
     lbmethod = ap_lookup_provider(PROXY_LBMETHOD, balancer->s->lbpname, "0");
     if (lbmethod)
         balancer->lbmethod = lbmethod;
-    return APR_SUCCESS;
+
+    if (*balancer->s->nonce == PROXY_UNSET_NONCE) {
+        char nonce[APR_UUID_FORMATTED_LENGTH + 1];
+        apr_uuid_t uuid;
+        /* Retrieve a UUID and store the nonce for the lifetime of
+         * the process.
+         */
+        apr_uuid_get(&uuid);
+        apr_uuid_format(nonce, &uuid);
+        rv = PROXY_STRNCPY(balancer->s->nonce, nonce);
+    }
+    return rv;
 }
 
 PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balancer, server_rec *s, apr_pool_t *p)
