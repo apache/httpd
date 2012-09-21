@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Add dirwalk_stat hook.  [Jeff Trawick]
+
   *) mod_proxy: Allow for persistence of local changes (via the
      balancer-manager) between graceful and normal restarts.
      [Jim Jagielski]
