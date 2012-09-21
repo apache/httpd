@@ -2286,8 +2286,8 @@ static const command_rec proxy_cmds[] =
      "Number of additional Balancers that can be added post-config"),
     AP_INIT_FLAG("BalancerPersist", set_persist, NULL, RSRC_CONF,
      "on if the balancer should persist changes on reboot/restart made via the Balancer Manager"),
-    AP_INIT_FLAG("BalancerInherit", set_persist, NULL, RSRC_CONF,
-     "on if this server should inherit Balancers defined in the main server "
+    AP_INIT_FLAG("BalancerInherit", set_inherit, NULL, RSRC_CONF,
+     "on if this server should inherit balancers defined in the main server "
      "(Not recommended if using the Balancer Manager)"),
     AP_INIT_TAKE1("ProxyStatus", set_status_opt, NULL, RSRC_CONF,
      "Configure Status: proxy status to one of: on | off | full"),
