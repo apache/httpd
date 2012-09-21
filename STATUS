@@ -89,6 +89,17 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_ssl: Add wildcard CN match for mod_proxy.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1375584
+     2.4.x patch: trunk patch works
+     +1: jorton, covener, druggeri
+
+   * mod_proxy: Obtain UUID for balancer manager nonce only if we're using the
+     default and as late as possible.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1383490
+     2.4.x patch: trunk patch works (minus CHANGES and w/ fuzz)
+     +1: jim, covener, druggeri
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -169,11 +180,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works.
      +1: rjung, jim
 
-   * mod_ssl: Add wildcard CN match for mod_proxy.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1375584
-     2.4.x patch: trunk patch works
-     +1: jorton, covener, druggeri
-
    * core: Apply length limit when logging Status header values.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1376695
                   http://svn.apache.org/viewvc?view=revision&revision=1376700
@@ -192,12 +198,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1375099
      2.4.x patch: http://people.apache.org/~fuankg/diffs/httpd-2.4.x_installwinconf.diff
      +1: fuankg, gsmith
-
-   * mod_proxy: Obtain UUID for balancer manager nonce only if we're using the
-     default and as late as possible.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1383490
-     2.4.x patch: trunk patch works (minus CHANGES and w/ fuzz)
-     +1: jim, covener, druggeri
 
    * mod_proxy: Avoid double slash with "ProxyPassReverse / ..." cases
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1386576
