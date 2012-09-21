@@ -227,6 +227,36 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: jorton
 
+   * mod_slotmem_shm: Add debugging output during persist
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1386726
+     2.4.x patch: trunk patch works (minus next-number)
+     +1: jim
+
+   * mod_slotmem_shm: Consistent and logical return errors
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1386822
+      2.4.x patch: trunk patch works
+     +1: jim
+   
+   * mod_slotmem_*: Add in new fgrab() function which forces a grab and
+     slot allocation on a specified slot. Allow for clearing of inuse
+     array.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1386880
+                  http://svn.apache.org/viewvc?view=revision&revision=1387389
+                  http://svn.apache.org/viewvc?view=revision&revision=1388445
+      2.4.x patch: trunk patch works
+     +1: jim
+
+   * mod_slotmem_shm: Fix handling of persist shm data file naming
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387085
+      2.4.x patch: trunk patch works
+     +1: jim
+
+   * mod_slotmem_shm: New slotmem_shm type CLEARINUSE which clears this
+     table before persisting:
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387088
+      2.4.x patch: trunk patch works
+     +1: jim
+
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
