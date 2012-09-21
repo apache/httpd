@@ -558,9 +558,10 @@ lower level modules</description>
 
 <usage>
     <p>The <directive module="mod_auth_form">AuthFormLoginRequiredLocation</directive> directive
-    specifies the URL to redirect to should the user not be authorised to view a page. By default,
-    if a user is not authorised to view a page, the HTTP response code <code>HTTP_UNAUTHORIZED</code>
-    will be returned with the page specified by the
+    specifies the URL to redirect to should the user not be authorised to view a page. The value
+    is parsed using the <a href="../expr.html">ap_expr</a> parser before being sent to the client.
+    By default, if a user is not authorised to view a page, the HTTP response code
+    <code>HTTP_UNAUTHORIZED</code> will be returned with the page specified by the
     <directive module="core">ErrorDocument</directive> directive. This directive overrides this
     default.</p>
 
@@ -580,9 +581,10 @@ lower level modules</description>
 
 <usage>
     <p>The <directive module="mod_auth_form">AuthFormLoginSuccessLocation</directive> directive
-    specifies the URL to redirect to should the user have logged in successfully. This directive
-    can be overridden if a form field has been defined containing another URL using the
-    <directive module="mod_auth_form">AuthFormLocation</directive> directive.</p>
+    specifies the URL to redirect to should the user have logged in successfully. The value is
+    parsed using the <a href="../expr.html">ap_expr</a> parser before being sent to the client.
+    This directive can be overridden if a form field has been defined containing another URL
+    using the <directive module="mod_auth_form">AuthFormLocation</directive> directive.</p>
 
     <p>Use this directive if you have a dedicated login URL, and you have not embedded the
     destination page in the login form.</p>
@@ -620,7 +622,9 @@ lower level modules</description>
 
 <usage>
     <p>The <directive module="mod_auth_form">AuthFormLogoutLocation</directive> directive
-    specifies the URL of a page on the server to redirect to should the user attempt to log out.</p>
+    specifies the URL of a page on the server to redirect to should the user attempt to log
+    out. The value is parsed using the <a href="../expr.html">ap_expr</a> parser before
+    being sent to the client.</p>
 
     <p>When a URI is accessed that is served by the handler <code>form-logout-handler</code>,
     the page specified by this directive will be shown to the end user. For example:</p>

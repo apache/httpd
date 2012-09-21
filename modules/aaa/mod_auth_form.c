@@ -30,6 +30,7 @@
 #include "http_request.h"
 #include "ap_provider.h"
 #include "util_md5.h"
+#include "ap_expr.h"
 
 #include "mod_auth.h"
 #include "mod_session.h"
@@ -73,11 +74,11 @@ typedef struct {
     int body_set;
     int disable_no_store;
     int disable_no_store_set;
-    const char *loginsuccess;
+    ap_expr_info_t *loginsuccess;
     int loginsuccess_set;
-    const char *loginrequired;
+    ap_expr_info_t *loginrequired;
     int loginrequired_set;
-    const char *logout;
+    ap_expr_info_t *logout;
     int logout_set;
 } auth_form_config_rec;
 
@@ -289,24 +290,51 @@ static const char *set_cookie_form_size(cmd_parms * cmd, void *config,
 static const char *set_login_required_location(cmd_parms * cmd, void *config, const char *loginrequired)
 {
     auth_form_config_rec *conf = (auth_form_config_rec *) config;
-    conf->loginrequired = loginrequired;
+    const char *err;
+
+    conf->loginrequired = ap_expr_parse_cmd(cmd, loginrequired, AP_EXPR_FLAG_STRING_RESULT,
+                                        &err, NULL);
+    if (err) {
+        return apr_psprintf(cmd->pool,
+                            "Could not parse login required expression '%s': %s",
+                            loginrequired, err);
+    }
     conf->loginrequired_set = 1;
+
     return NULL;
 }
 
 static const char *set_login_success_location(cmd_parms * cmd, void *config, const char *loginsuccess)
 {
     auth_form_config_rec *conf = (auth_form_config_rec *) config;
-    conf->loginsuccess = loginsuccess;
+    const char *err;
+
+    conf->loginsuccess = ap_expr_parse_cmd(cmd, loginsuccess, AP_EXPR_FLAG_STRING_RESULT,
+                                        &err, NULL);
+    if (err) {
+        return apr_psprintf(cmd->pool,
+                            "Could not parse login success expression '%s': %s",
+                            loginsuccess, err);
+    }
     conf->loginsuccess_set = 1;
+
     return NULL;
 }
 
 static const char *set_logout_location(cmd_parms * cmd, void *config, const char *logout)
 {
     auth_form_config_rec *conf = (auth_form_config_rec *) config;
-    conf->logout = logout;
+    const char *err;
+
+    conf->logout = ap_expr_parse_cmd(cmd, logout, AP_EXPR_FLAG_STRING_RESULT,
+                                        &err, NULL);
+    if (err) {
+        return apr_psprintf(cmd->pool,
+                            "Could not parse logout required expression '%s': %s",
+                            logout, err);
+    }
     conf->logout_set = 1;
+
     return NULL;
 }
 
@@ -851,6 +879,7 @@ static int authenticate_form_authn(request_rec * r)
     const char *sent_user = NULL, *sent_pw = NULL, *sent_hash = NULL;
     const char *sent_loc = NULL, *sent_method = "GET", *sent_mimetype = NULL;
     const char *current_auth = NULL;
+    const char *err;
     apr_status_t res;
     int rv = HTTP_UNAUTHORIZED;
 
@@ -1001,7 +1030,15 @@ static int authenticate_form_authn(request_rec * r)
                     return HTTP_MOVED_TEMPORARILY;
                 }
                 if (conf->loginsuccess) {
-                    apr_table_set(r->headers_out, "Location", conf->loginsuccess);
+                    const char *loginsuccess = ap_expr_str_exec(r,
+                            conf->loginsuccess, &err);
+                    if (!err) {
+                        apr_table_set(r->headers_out, "Location", loginsuccess);
+                    }
+                    else {
+                        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02339)
+                                      "Can't evaluate login success expression: %s", err);
+                    }
                     return HTTP_MOVED_TEMPORARILY;
                 }
             }
@@ -1014,7 +1051,15 @@ static int authenticate_form_authn(request_rec * r)
      * instead?
      */
     if (HTTP_UNAUTHORIZED == rv && conf->loginrequired) {
-        apr_table_set(r->headers_out, "Location", conf->loginrequired);
+        const char *loginrequired = ap_expr_str_exec(r,
+                conf->loginrequired, &err);
+        if (!err) {
+            apr_table_set(r->headers_out, "Location", loginrequired);
+        }
+        else {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02340)
+                          "Can't evaluate login required expression: %s", err);
+        }
         return HTTP_MOVED_TEMPORARILY;
     }
 
@@ -1059,6 +1104,7 @@ static int authenticate_form_authn(request_rec * r)
 static int authenticate_form_login_handler(request_rec * r)
 {
     auth_form_config_rec *conf;
+    const char *err;
 
     const char *sent_user = NULL, *sent_pw = NULL, *sent_loc = NULL;
     int rv;
@@ -1089,7 +1135,15 @@ static int authenticate_form_login_handler(request_rec * r)
                 return HTTP_MOVED_TEMPORARILY;
             }
             if (conf->loginsuccess) {
-                apr_table_set(r->headers_out, "Location", conf->loginsuccess);
+                const char *loginsuccess = ap_expr_str_exec(r,
+                        conf->loginsuccess, &err);
+                if (!err) {
+                    apr_table_set(r->headers_out, "Location", loginsuccess);
+                }
+                else {
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02341)
+                                  "Can't evaluate login success expression: %s", err);
+                }
                 return HTTP_MOVED_TEMPORARILY;
             }
             return HTTP_OK;
@@ -1098,7 +1152,15 @@ static int authenticate_form_login_handler(request_rec * r)
 
     /* did we prefer to be redirected to the login page on failure instead? */
     if (HTTP_UNAUTHORIZED == rv && conf->loginrequired) {
-        apr_table_set(r->headers_out, "Location", conf->loginrequired);
+        const char *loginrequired = ap_expr_str_exec(r,
+                conf->loginrequired, &err);
+        if (!err) {
+            apr_table_set(r->headers_out, "Location", loginrequired);
+        }
+        else {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02342)
+                          "Can't evaluate login required expression: %s", err);
+        }
         return HTTP_MOVED_TEMPORARILY;
     }
 
@@ -1120,6 +1182,7 @@ static int authenticate_form_login_handler(request_rec * r)
 static int authenticate_form_logout_handler(request_rec * r)
 {
     auth_form_config_rec *conf;
+    const char *err;
 
     if (strcmp(r->handler, FORM_LOGOUT_HANDLER)) {
         return DECLINED;
@@ -1139,7 +1202,15 @@ static int authenticate_form_logout_handler(request_rec * r)
 
     /* if set, internal redirect to the logout page */
     if (conf->logout) {
-        apr_table_addn(r->headers_out, "Location", conf->logout);
+        const char *logout = ap_expr_str_exec(r,
+                conf->logout, &err);
+        if (!err) {
+            apr_table_addn(r->headers_out, "Location", logout);
+        }
+        else {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02343)
+                          "Can't evaluate logout expression: %s", err);
+        }
         return HTTP_TEMPORARY_REDIRECT;
     }
 
