@@ -174,12 +174,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1376695
                   http://svn.apache.org/viewvc?view=revision&revision=1376700
      2.4.x patch: trunk patch works
-     +1: chrisd, covener
+     +1: chrisd, covener, humbedooh
 
    * headers: Move *_DECLARE_* macros to beginning of line in headers.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1374963
      2.4.x patch: http://people.apache.org/~fuankg/diffs/httpd-2.4.x_headers.diff
-     +1: fuankg
+     +1: fuankg, humbedooh
 
    * installwinconf.awk: install.log output tweaks; reduced path convertion
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1375041
@@ -213,7 +213,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?rev=1386913&view=rev
                   http://svn.apache.org/viewvc?rev=1388825&view=rev
      2.4.x patch: trunk works + CHANGES.
-     +1 covener
+     +1 covener, humbedooh
 
    * mod_proxy: Make balancers server-specific, as they should have
      been. Inheritance causes too many behind-the-scene interactions
@@ -236,7 +236,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_slotmem_shm: Consistent and logical return errors
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1386822
       2.4.x patch: trunk patch works
-     +1: jim
+     +1: jim, humbedooh
    
    * mod_slotmem_*: Add in new fgrab() function which forces a grab and
      slot allocation on a specified slot. Allow for clearing of inuse
@@ -256,7 +256,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      table before persisting:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387088
       2.4.x patch: trunk patch works
-     +1: jim
+     +1: jim, humbedooh
 
    * mod_proxy: Persist balancer and worker data across restarts and stop/start.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387110
