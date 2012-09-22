@@ -119,3 +119,4 @@ mod_proxy_html.so           0x6F730000    0x00010000
 mod_xml2enc.so              0x6F720000    0x00010000
 mod_data.so                 0x6F710000    0x00010000
 mod_allowmethods.so         0x6F700000    0x00010000
+mod_cache_socache.so        0x6F6F0000    0x00010000

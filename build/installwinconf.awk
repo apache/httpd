@@ -118,6 +118,7 @@ BEGIN {
           print "#LoadModule buffer_module modules/mod_buffer.so" > dstfl;
           print "#LoadModule cache_module modules/mod_cache.so" > dstfl;
           print "#LoadModule cache_disk_module modules/mod_cache_disk.so" > dstfl;
+          print "#LoadModule cache_socache_module modules/mod_cache_socache.so" > dstfl;
           print "#LoadModule cern_meta_module modules/mod_cern_meta.so" > dstfl;
           print "LoadModule cgi_module modules/mod_cgi.so" > dstfl;
           print "#LoadModule charset_lite_module modules/mod_charset_lite.so" > dstfl;
