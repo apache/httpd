@@ -409,3 +409,15 @@ Include @rel_sysconfdir@/extra/proxy-html.conf
 SSLRandomSeed startup builtin
 SSLRandomSeed connect builtin
 </IfModule>
+#
+# uncomment out the below to deal with user agents that deliberately
+# violate open standards by misusing DNT (DNT *must* be a specific
+# end-user choice)
+#
+#<IfModule setenvif_module>
+#BrowserMatch "MSIE 10.0;" bad_DNT
+#</IfModule>
+#<IfModule headers_module>
+#RequestHeader unset DNT env=bad_DNT
+#</IfModule>
+
