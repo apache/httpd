@@ -89,6 +89,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * core: Apply length limit when logging Status header values.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1376695
+                  http://svn.apache.org/viewvc?view=revision&revision=1376700
+     2.4.x patch: trunk patch works
+     +1: chrisd, covener, humbedooh
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -169,12 +175,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1373898
      2.4.x patch: trunk patch works.
      +1: rjung, jim
-
-   * core: Apply length limit when logging Status header values.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1376695
-                  http://svn.apache.org/viewvc?view=revision&revision=1376700
-     2.4.x patch: trunk patch works
-     +1: chrisd, covener, humbedooh
 
    * headers: Move *_DECLARE_* macros to beginning of line in headers.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1374963
