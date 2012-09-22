@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1384408:1388029 (outdated) -->
+<!-- English Revision: 1388029 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -726,6 +726,43 @@ serveur HTTP Apache</compatibility>
     serveur virtuel. Elle n'est active que si le groupe a &eacute;t&eacute;
     pr&eacute;configur&eacute; avec un membre au minimum.</p>
 </usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>BalancerPersist</name>
+    <description>Tente de conserver les changements effectu&eacute;s par le
+    gestionnaire de r&eacute;partition de charge apr&egrave;s un red&eacute;marrage du
+    serveur.</description>
+    <syntax>BalancerPersist On|Off</syntax>
+    <default>BalancerPersist Off</default>
+    <contextlist><context>server config</context><context>virtual host</context></contextlist>
+    <compatibility>BalancerPersist n'est disponible qu'&agrave; partir de la
+    version 2.5.0 du serveur HTTP Apache.</compatibility>
+    <usage>
+        <p>Cette directive permet de conserver le contenu de l'espace
+	m&eacute;moire partag&eacute; associ&eacute; aux r&eacute;partiteurs de charge et &agrave; leurs
+	membres apr&egrave;s un red&eacute;marrage du serveur. Ces modifications
+	locales ne sont ainsi pas perdues lors des transitions d'&eacute;tat
+	dues &agrave; un red&eacute;marrage.</p>
+    </usage>
+</directivesynopsis>
+    
+<directivesynopsis>
+    <name>BalancerInherit</name>
+    <description>H&eacute;ritage des r&eacute;partiteurs de charge du serveur
+    principal</description>
+    <syntax>BalancerInherit On|Off</syntax>
+    <default>BalancerInherit Off</default>
+    <contextlist><context>server config</context><context>virtual host</context></contextlist>
+    <compatibility>BalancerInherit n'est disponible qu'&agrave; partir de la
+    version 2.5.0 du serveur HTTP Apache.</compatibility>
+    <usage>
+        <p>Cette directive permet au serveur virtuel courant d'"h&eacute;riter"
+	des r&eacute;partiteurs de charge d&eacute;finis au niveau du serveur
+	principal. Des probl&egrave;mes et des comportements inattendus sont
+	cependant &agrave; pr&eacute;voir si on utilise le gestionnaire de r&eacute;partition
+	de charge, et cette directive est donc d&eacute;sactiv&eacute;e par d&eacute;faut.</p>
+    </usage>
 </directivesynopsis>
 
 <directivesynopsis>

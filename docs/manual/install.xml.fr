@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1328589:1387657 (outdated) -->
+<!-- English Revision : 1387657 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -383,7 +383,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     sortie de la nouvelle version et le fichier <code>CHANGES</code>
     dans la distribution des sources afin de d&eacute;celer toutes les modifications
     qui pourraient affecter votre site. Lors d'un changement majeur de version
-    (par exemple de 2.0 &agrave; 2.2 ou de 2.2 &agrave; 2.3),
+    (par exemple de 2.0 &agrave; 2.2 ou de 2.2 &agrave; 2.4),
     il y aura certainement des diff&eacute;rences importantes quant &agrave; la
     configuration de la compilation et de l'ex&eacute;cution qui n&eacute;cessiteront des
     ajustements manuels.  Tous les
