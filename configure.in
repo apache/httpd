@@ -90,7 +90,7 @@ APACHE_HELP_STRING(--with-included-apr,Use bundled copies of APR/APR-Util))
 if test "x$with_included_apr" = "xyes"; then
   apr_found=reconfig
   if test ! -d srclib/apr && test ! -d $srcdir/srclib/apr; then
-    AC_MSG_ERROR([Bundled APR requested but not found at ./srclib/. Download and unpack the corresponding apr and apr-util packages to ./srclib/.])
+    AC_MSG_ERROR([Bundled APR requested but not found at ./srclib/. Please refer to the documentation on APR in the httpd INSTALL file.])
   fi
 else 
   APR_FIND_APR("$srcdir/srclib/apr", "./srclib/apr", 1, 1 2, [
@@ -106,7 +106,7 @@ else
 fi
 
 if test "$apr_found" = "no"; then
-  AC_MSG_ERROR([APR not found.  Please read the documentation.])
+  AC_MSG_ERROR([APR not found.  Please refer to the documentation on APR in the httpd INSTALL file.])
 fi
 
 if test "$apr_found" = "reconfig"; then
@@ -150,7 +150,7 @@ if test "x${apr_major_version}" = "x2"; then
 elif test "x$with_included_apr" = "xyes"; then
   apu_found=reconfig
   if test ! -d srclib/apr-util && test ! -d $srcdir/srclib/apr-util; then
-    AC_MSG_ERROR([Bundled APR-Util requested but not found at ./srclib/. Download and unpack the corresponding apr and apr-util packages to ./srclib/.])
+    AC_MSG_ERROR([Bundled APR-Util requested but not found at ./srclib/.  Please refer to the documentation on APR in the httpd INSTALL file.])
   fi
 else 
    dnl If httpd is buildconf'ed against an apr 2.x tree, then 1.x
@@ -162,7 +162,7 @@ else
 fi
 
 if test "$apu_found" = "no"; then
-  AC_MSG_ERROR([APR-util not found.  Please read the documentation.])
+  AC_MSG_ERROR([APR-util not found.  Please refer to the documentation on APR in the httpd INSTALL file.])
 fi
 
 # Catch some misconfigurations:

@@ -81,12 +81,9 @@ done
 
 if [ $apr_found -lt 1 ]; then
     echo ""
-    echo "You don't have a copy of the apr source in srclib/apr. "
-    echo "Please get the source using the following instructions," 
-    echo "or specify the location of the source with " 
-    echo "--with-apr=[path to apr] :"
+    echo "APR could not be found automatically."
     echo ""
-    echo "   svn co http://svn.apache.org/repos/asf/apr/apr/trunk srclib/apr"
+    echo "Please refer to the documentation on APR in the httpd INSTALL file."
     echo ""
     should_exit=1
 else
@@ -113,12 +110,9 @@ if [ $apr_major_version -lt 2 ] ; then
 
     if [ $apu_found -lt 1 ]; then
         echo ""
-        echo "You don't have a copy of the apr-util source in srclib/apr-util. "
-        echo "Please get one the source using the following instructions, "
-        echo "or specify the location of the source with "
-        echo "--with-apr-util=[path to apr-util]:"
+        echo "You are using APR 1.x but APR-util 1.x was not found."
         echo ""
-        echo "   svn co http://svn.apache.org/repos/asf/apr/apr-util/branches/1.5.x srclib/apr-util"
+        echo "Please refer to the documentation on APR in the httpd INSTALL file."
         echo ""
         should_exit=1
     fi
