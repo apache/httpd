@@ -1304,8 +1304,8 @@ struct server_rec {
  */
 typedef struct ap_sload_t ap_sload_t;
 struct ap_sload_t {
-    /* 1 min loadavg, ala getloadavg() */
-    float loadavg1;
+    /* current loadavg, ala getloadavg() */
+    float loadavg;
     /* 5 min loadavg */
     float loadavg5;
     /* 15 min loadavg */
