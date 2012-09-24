@@ -151,17 +151,17 @@
     <p>Needs Documentation. Code is:</p>
 
     <pre class="prettyprint lang-c">
-        if ((access_status = ap_run_access_checker(r)) != 0) {
-            return decl_die(access_status, "check access", r);
-        }
+if ((access_status = ap_run_access_checker(r)) != 0) {
+    return decl_die(access_status, "check access", r);
+}
 
-        if ((access_status = ap_run_check_user_id(r)) != 0) {
-            return decl_die(access_status, "check user", r);
-        }
+if ((access_status = ap_run_check_user_id(r)) != 0) {
+    return decl_die(access_status, "check user", r);
+}
 
-        if ((access_status = ap_run_auth_checker(r)) != 0) {
-            return decl_die(access_status, "check authorization", r);
-        }
+if ((access_status = ap_run_auth_checker(r)) != 0) {
+    return decl_die(access_status, "check authorization", r);
+}
     </pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
