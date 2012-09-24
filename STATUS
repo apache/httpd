@@ -260,6 +260,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works (minus next-number, CHANGES)
      +1: minfrin, jim
 
+   * WinNT MPM: Pick up some minor improvements from trunk
+     trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1374877
+                    http://svn.apache.org/viewvc?view=revision&revision=1374880
+                    http://svn.apache.org/viewvc?view=revision&revision=1375013
+                    http://svn.apache.org/viewvc?view=revision&revision=1389316
+     2.4.x patch: trunk patch works, but here's a consolidated patch:
+                  http://people.apache.org/~trawick/winnt-cleanups-from-trunk-20120924.txt
+     +1: trawick
+
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
