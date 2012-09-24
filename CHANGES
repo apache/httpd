@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.4
 
+  *) httpd.conf: Removed the configuration directives setting a bad_DNT
+     environment introduced in 2.4.3. The actual directives are commented
+     out in the default conf file.
+
   *) core: Apply length limit when logging Status header values.
      [Jeff Trawick, Chris Darroch]
 
