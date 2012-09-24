@@ -89,6 +89,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * headers: Move *_DECLARE_* macros to beginning of line in headers.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1374963
+     2.4.x patch: http://people.apache.org/~fuankg/diffs/httpd-2.4.x_headers.diff
+     +1: fuankg, humbedooh, jim
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -169,11 +174,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1373898
      2.4.x patch: trunk patch works.
      +1: rjung, jim
-
-   * headers: Move *_DECLARE_* macros to beginning of line in headers.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1374963
-     2.4.x patch: http://people.apache.org/~fuankg/diffs/httpd-2.4.x_headers.diff
-     +1: fuankg, humbedooh, jim
 
    * installwinconf.awk: install.log output tweaks; reduced path convertion
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1375041
