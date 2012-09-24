@@ -263,7 +263,7 @@ static int * const aplog_module_index;
 #define APLOGctrace7(c)             APLOG_C_IS_LEVEL(c,APLOG_TRACE7)
 #define APLOGctrace8(c)             APLOG_C_IS_LEVEL(c,APLOG_TRACE8)
 
-extern int AP_DECLARE_DATA ap_default_loglevel;
+AP_DECLARE_DATA extern int ap_default_loglevel;
 
 /**
  * APLOG_MARK is a convenience macro for use as the first three parameters in

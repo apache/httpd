@@ -741,10 +741,10 @@ typedef struct {
 } ap_mgmt_item_t;
 
 /* Handles for core filters */
-extern AP_DECLARE_DATA ap_filter_rec_t *ap_subreq_core_filter_handle;
-extern AP_DECLARE_DATA ap_filter_rec_t *ap_core_output_filter_handle;
-extern AP_DECLARE_DATA ap_filter_rec_t *ap_content_length_filter_handle;
-extern AP_DECLARE_DATA ap_filter_rec_t *ap_core_input_filter_handle;
+AP_DECLARE_DATA extern ap_filter_rec_t *ap_subreq_core_filter_handle;
+AP_DECLARE_DATA extern ap_filter_rec_t *ap_core_output_filter_handle;
+AP_DECLARE_DATA extern ap_filter_rec_t *ap_content_length_filter_handle;
+AP_DECLARE_DATA extern ap_filter_rec_t *ap_core_input_filter_handle;
 
 /**
  * This hook provdes a way for modules to provide metrics/statistics about
