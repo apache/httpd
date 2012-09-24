@@ -1322,6 +1322,15 @@ AP_DECLARE_HOOK(int,quick_handler,(request_rec *r, int lookup_uri))
 AP_DECLARE_HOOK(void,optional_fn_retrieve,(void))
 
 /**
+ * Allow modules to perform a check immediately prior to opening htaccess.
+ * @param r The current request
+ * @param filename The htaccess file which will be processed
+ * @return HTTP status code to fail the operation, or DECLINED to let later
+ * modules decide
+ */
+AP_DECLARE_HOOK(int,pre_htaccess,(request_rec *r, const char *filename))
+
+/**
  * A generic pool cleanup that will reset a pointer to NULL. For use with
  * apr_pool_cleanup_register.
  * @param data The address of the pointer

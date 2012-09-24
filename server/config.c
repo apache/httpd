@@ -80,6 +80,7 @@ APR_HOOK_STRUCT(
            APR_HOOK_LINK(quick_handler)
            APR_HOOK_LINK(optional_fn_retrieve)
            APR_HOOK_LINK(test_config)
+           APR_HOOK_LINK(pre_htaccess)
 )
 
 AP_IMPLEMENT_HOOK_RUN_ALL(int, header_parser,
@@ -170,6 +171,9 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(int, handler, (request_rec *r),
 
 AP_IMPLEMENT_HOOK_RUN_FIRST(int, quick_handler, (request_rec *r, int lookup),
                             (r, lookup), DECLINED)
+
+AP_IMPLEMENT_HOOK_RUN_FIRST(int, pre_htaccess, (request_rec *r, const char *filename),
+                            (r, filename), DECLINED)
 
 /* hooks with no args are implemented last, after disabling APR hook probes */
 #if defined(APR_HOOK_PROBES_ENABLED)
@@ -2078,6 +2082,7 @@ AP_CORE_DECLARE(int) ap_parse_htaccess(ap_conf_vector_t **result,
     struct htaccess_result *new;
     ap_conf_vector_t *dc = NULL;
     apr_status_t status;
+    int rc;
 
     /* firstly, search cache */
     for (cache = r->htaccess; cache != NULL; cache = cache->next) {
@@ -2104,6 +2109,10 @@ AP_CORE_DECLARE(int) ap_parse_htaccess(ap_conf_vector_t **result,
          */
         filename = ap_make_full_path(r->pool, d,
                                      ap_getword_conf(r->pool, &access_name));
+        rc = ap_run_pre_htaccess(r, filename);
+        if (rc != DECLINED && rc != OK) {
+            return rc;
+        }
         status = ap_pcfg_openfile(&f, r->pool, filename);
 
         if (status == APR_SUCCESS) {
