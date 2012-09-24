@@ -9,7 +9,8 @@ Changes with Apache 2.5.0
      AuthFormLoginRequiredLocation, AuthFormLoginSuccessLocation and
      AuthFormLogoutLocation directives. [Graham Leggett]
 
-  *) core: Add dirwalk_stat hook.  [Jeff Trawick]
+  *) core: Add dirwalk_stat and pre_htaccess hooks, allowing mpm-itk
+     to be used without patches to httpd core.  [Jeff Trawick]
 
   *) mod_proxy: Allow for persistence of local changes (via the
      balancer-manager) between graceful and normal restarts.
