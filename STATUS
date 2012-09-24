@@ -89,12 +89,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * core: Apply length limit when logging Status header values.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1376695
-                  http://svn.apache.org/viewvc?view=revision&revision=1376700
-     2.4.x patch: trunk patch works
-     +1: chrisd, covener, humbedooh
-
    * default conf: Comment out the default configuration stanza that removes DNT
                    request headers from IE10 clients (revert r1371878).  PR53845
                    <CALK=YjMGPNHBqNiad-ghzcEzxDovQgYOpjpSSyXmN=r74v43qg@mail.gmail.com>
