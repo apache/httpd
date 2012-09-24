@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: New functions to obtain load parameters: ap_get_sload()
+     and ap_get_loadavg(). [Jim Jagielski]
+
   *) mod_cache_socache: New cache implementation backed by mod_socache
      that replaces mod_mem_cache removed from httpd v2.2. [Graham
      Leggett]
