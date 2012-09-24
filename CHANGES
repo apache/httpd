@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_headers: New params: %l for load averages, %i for an
+     idle percentage rating of httpd, and %b for a busy percentage
+     rating. [Jim Jagielski]
+
   *) core: New functions to obtain load parameters: ap_get_sload()
      and ap_get_loadavg(). [Jim Jagielski]
 
