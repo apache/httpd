@@ -42,7 +42,7 @@ by other LDAP modules</description>
     flag to the <program>configure</program> script when building
     Apache.</p>
 
-    <p>SSL/TLS support is dependant on which LDAP toolkit has been
+    <p>SSL/TLS support is dependent on which LDAP toolkit has been
     linked to <glossary>APR</glossary>. As of this writing, APR-util supports:
     <a href="http://www.openldap.org/">OpenLDAP SDK</a> (2.x or later),
     <a href="http://developer.novell.com/ndk/cldap.htm">Novell LDAP
