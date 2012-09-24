@@ -423,7 +423,7 @@ static int status_handler(request_rec *r)
         ap_rputs("</dt>\n", r);
         ap_get_sload(&t);
         ap_rprintf(r, "<dt>Server load: %.2f %.2f %.2f [%d:%d]</dt>\n",
-                   t.loadavg1, t.loadavg5, t.loadavg15, t.idle, t.busy);
+                   t.loadavg, t.loadavg5, t.loadavg15, t.idle, t.busy);
     }
 
     if (ap_extended_status) {

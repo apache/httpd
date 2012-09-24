@@ -2801,7 +2801,7 @@ AP_DECLARE(void) ap_get_sload(ap_sload_t *ld)
     ap_generation_t mpm_generation;
 
     /* preload errored fields, we overwrite */
-    ld->loadavg1 = -1.0;
+    ld->loadavg = -1.0;
     ld->loadavg5 = -1.0;
     ld->loadavg15 = -1.0;
     ld->idle = -1;
@@ -2810,7 +2810,7 @@ AP_DECLARE(void) ap_get_sload(ap_sload_t *ld)
 #if HAVE_GETLOADAVG
     num = getloadavg(la, 3);
     if (num > 0) {
-        ld->loadavg1 = (float)la[0];
+        ld->loadavg = (float)la[0];
     }
     if (num > 1) {
         ld->loadavg5 = (float)la[1];
