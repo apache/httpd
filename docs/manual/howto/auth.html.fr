@@ -5,7 +5,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Authentification, autorisation et contrôle d'accès - Serveur Apache HTTP</title>
+<title>Authentification et autorisation - Serveur Apache HTTP</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -19,7 +19,7 @@
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.2</a> &gt; <a href="./">Recettes / Tutoriels</a></div><div id="page-content"><div id="preamble"><h1>Authentification, autorisation et contrôle d'accès</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.2</a> &gt; <a href="./">Recettes / Tutoriels</a></div><div id="page-content"><div id="preamble"><h1>Authentification et autorisation</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/howto/auth.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/howto/auth.html" title="Français">&nbsp;fr&nbsp;</a> |
@@ -27,13 +27,15 @@
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>L'authentification est un processus qui vous permet de vérifier
     qu'une personne est bien celle qu'elle prétend être. L'autorisation
     est un processus qui permet à une personne d'aller là où elle veut
     aller, ou d'obtenir les informations qu'elle désire.</p>
+
+    <p>Pour le contrÃ´le d'accÃ¨s en gÃ©nÃ©ral, voir le document <a href="access.html">Tutoriel du contrÃ´le d'accÃ¨s</a>.</p>
+
+
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Modules et directives concernés</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introduction</a></li>
@@ -56,29 +58,29 @@ d'authentification et d'autorisation. Vous devrez utiliser au moins un
 module de chaque groupe.</p>
 
 <ul>
-  <li>Type d'authentification (voir la directive <code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code>)
+  <li>Type d'authentification (voir la directive <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code>)
     <ul>
       <li><code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code></li>
       <li><code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code></li>
     </ul>
   </li>
-  <li>Fournisseur d'authentification
+  <li>Fournisseur d'authentification (voir les directives <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> et <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code>)
     <ul>
-      <li><code class="module"><a href="../mod/mod_authn_alias.html">mod_authn_alias</a></code></li>
       <li><code class="module"><a href="../mod/mod_authn_anon.html">mod_authn_anon</a></code></li>
       <li><code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code></li>
       <li><code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code></li>
-      <li><code class="module"><a href="../mod/mod_authn_default.html">mod_authn_default</a></code></li>
       <li><code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code></li>
       <li><code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></li>
+      <li><code class="module"><a href="../mod/mod_authn_socache.html">mod_authn_socache</a></code></li>
     </ul>
   </li>
-  <li>Autorisation (voir la directive <code class="directive"><a href="../mod/core.html#require">Require</a></code>)
+  <li>Autorisation (voir la directive <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>)
     <ul>
       <li><code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></li>
+      <li><code class="module"><a href="../mod/mod_authz_dbd.html">mod_authz_dbd</a></code></li>
       <li><code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code></li>
-      <li><code class="module"><a href="../mod/mod_authz_default.html">mod_authz_default</a></code></li>
       <li><code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code></li>
+      <li><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></li>
       <li><code class="module"><a href="../mod/mod_authz_owner.html">mod_authz_owner</a></code></li>
       <li><code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code></li>
     </ul>
@@ -149,6 +151,14 @@ module de chaque groupe.</p>
     trouvent certains fichiers. Cela ne devrait pas présenter de grandes
     difficultés, et j'essaierai de clarifier tout ça lorsque le besoin
     s'en fera sentir.</p>
+
+    <p>Vous devrez aussi vous assurer que les modules
+    <code class="module"><a href="../mod/mod_authn_core.html">mod_authn_core</a></code> et <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>
+    ont Ã©tÃ© soit compilÃ©s avec le binaire httpd, soit chargÃ©s par le
+    fichier de configuration httpd.conf. Ces deux modules fournissent
+    des directives et fonctionnalitÃ©s essentielles pour la configuration
+    et la mise en oeuvre de l'authentification et de l'autorisation au
+    sein du serveur web.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -228,7 +238,7 @@ module de chaque groupe.</p>
     Digest</code>. Cette méthode est implémentée par le module <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> et est beaucoup plus sécurisée. La plupart
     des navigateurs récents supportent l'authentification Digest.</p>
 
-    <p>La directive <code class="directive"><a href="../mod/core.html#authname">AuthName</a></code> définit
+    <p>La directive <code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code> définit
     l'<dfn>Identificateur</dfn> (Realm) à utiliser avec
     l'authentification. L'identificateur possède deux fonctions. Tout
     d'abord, le client présente en général cette information à
@@ -266,7 +276,7 @@ module de chaque groupe.</p>
     fournies par des modules tiers dans la <a href="http://modules.apache.org/">Base de données des modules
     d'Apache</a>.</p>
 
-    <p>Enfin, la directive <code class="directive"><a href="../mod/core.html#require">Require</a></code>
+    <p>Enfin, la directive <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
     implémente la partie
     autorisation du processus en définissant l'utilisateur autorisé à
     accéder à cette zone du serveur. Dans la section suivante, nous
