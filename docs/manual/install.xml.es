@@ -366,7 +366,7 @@ funciona</title>
 <example>$ <em>PREFIX</em>/bin/apachectl stop</example>
 </section>
 <section id="upgrading"><title>Actualizar una instalaci&#243;n
-prrevia</title>
+previa</title>
 
     <p>El primer paso para actualizar una instalaci&#243;n anterior es
     leer las especificaciones de la versi&#243;n y el fichero
