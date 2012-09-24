@@ -478,7 +478,7 @@ lower level modules</td></tr>
 </table>
     <p>The <code class="directive"><a href="#authformloginrequiredlocation">AuthFormLoginRequiredLocation</a></code> directive
     specifies the URL to redirect to should the user not be authorised to view a page. The value
-    is parsed using the <a href="../expr.html">ap_expr</a> syntax before being sent to the client.
+    is parsed using the <a href="../expr.html">ap_expr</a> parser before being sent to the client.
     By default, if a user is not authorised to view a page, the HTTP response code
     <code>HTTP_UNAUTHORIZED</code> will be returned with the page specified by the
     <code class="directive"><a href="../mod/core.html#errordocument">ErrorDocument</a></code> directive. This directive overrides this
@@ -501,7 +501,7 @@ lower level modules</td></tr>
 </table>
     <p>The <code class="directive"><a href="#authformloginsuccesslocation">AuthFormLoginSuccessLocation</a></code> directive
     specifies the URL to redirect to should the user have logged in successfully. The value is
-    parsed using the <a href="../expr.html">ap_expr</a> syntax before being sent to the client.
+    parsed using the <a href="../expr.html">ap_expr</a> parser before being sent to the client.
     This directive can be overridden if a form field has been defined containing another URL
     using the <code class="directive"><a href="#authformlocation">AuthFormLocation</a></code> directive.</p>
 
@@ -523,7 +523,7 @@ lower level modules</td></tr>
 </table>
     <p>The <code class="directive"><a href="#authformlogoutlocation">AuthFormLogoutLocation</a></code> directive
     specifies the URL of a page on the server to redirect to should the user attempt to log
-    out. The value is parsed using the <a href="../expr.html">ap_expr</a> syntax before
+    out. The value is parsed using the <a href="../expr.html">ap_expr</a> parser before
     being sent to the client.</p>
 
     <p>When a URI is accessed that is served by the handler <code>form-logout-handler</code>,

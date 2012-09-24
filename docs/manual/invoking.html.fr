@@ -29,14 +29,10 @@
 <a href="./ko/invoking.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/invoking.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Apache est habituellement lancé en tant que service
-    sous Windows NT, 2000 et XP, ou comme application en mode console sous
-    Windows 9x et ME. Pour plus de détails, voir <a href="platform/windows.html#winsvc">Démarrer Apache en tant que service</a>
-    et <a href="platform/windows.html#wincons">Démarrer Apache comme
-    Application en mode console</a>.</p>
+    sous Windows NT, 2000 et XP. Pour plus de détails, voir <a href="platform/windows.html#winsvc">Démarrer Apache en tant
+    que service</a>.</p>
 
     <p>Sous Unix, le programme <code class="program"><a href="./programs/httpd.html">httpd</a></code>
     est lancé en mode démon et s'exécute de manière permanente en

@@ -147,6 +147,7 @@
 <li><a href="mod_authz_core.html#authzprovideralias">&lt;AuthzProviderAlias&gt;</a></li>
 <li><a href="mod_authz_core.html#authzsendforbiddenonfailure">AuthzSendForbiddenOnFailure</a></li>
 <li><a href="mod_proxy.html#balancergrowth" id="B" name="B">BalancerGrowth</a></li>
+<li><a href="mod_proxy.html#balancerinherit">BalancerInherit</a></li>
 <li><a href="mod_proxy.html#balancermember">BalancerMember</a></li>
 <li><a href="mod_proxy.html#balancerpersist">BalancerPersist</a></li>
 <li><a href="mod_setenvif.html#browsermatch">BrowserMatch</a></li>
