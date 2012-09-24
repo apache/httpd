@@ -483,7 +483,8 @@ bindprocessor \
 prctl \
 timegm \
 getpgid \
-fopen64
+fopen64 \
+getloadavg
 )
 
 dnl confirm that a void pointer is large enough to store a long integer

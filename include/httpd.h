@@ -1299,6 +1299,24 @@ struct server_rec {
 };
 
 /**
+ * @struct server_load_rec
+ * @brief  A structure to hold various server load params
+ */
+typedef struct ap_sload_t ap_sload_t;
+struct ap_sload_t {
+    /* 1 min loadavg, ala getloadavg() */
+    float loadavg1;
+    /* 5 min loadavg */
+    float loadavg5;
+    /* 15 min loadavg */
+    float loadavg15;
+    /* percentage of process/threads ready/idle (0->100)*/
+    int idle;
+    /* percentage of process/threads busy (0->100) */
+    int busy;
+};
+
+/**
  * Get the context_document_root for a request. This is a generalization of
  * the document root, which is too limited in the presence of mappers like
  * mod_userdir and mod_alias. The context_document_root is the directory
@@ -2187,6 +2205,11 @@ AP_DECLARE(void *) ap_realloc(void *ptr, size_t size)
                    AP_FN_ATTR_WARN_UNUSED_RESULT
                    AP_FN_ATTR_ALLOC_SIZE(2);
 
+/**
+ * Get server load params
+ * @param ld struct to populate: -1 in fields means error
+ */
+AP_DECLARE(void) ap_get_sload(ap_sload_t *ld);
 
 #define AP_NORESTART APR_OS_START_USEERR + 1
 

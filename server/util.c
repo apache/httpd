@@ -63,6 +63,8 @@
 #include <grp.h>
 #endif
 
+#include "ap_mpm.h"
+
 /* A bunch of functions in util.c scan strings looking for certain characters.
  * To make that more efficient we encode a lookup table.  The test_char_table
  * is generated automatically by gen_test_char.c.
@@ -2787,4 +2789,64 @@ AP_DECLARE(void *) ap_realloc(void *ptr, size_t size)
     if (p == NULL && size != 0)
         ap_abort_on_oom();
     return p;
+}
+
+AP_DECLARE(void) ap_get_sload(ap_sload_t *ld)
+{
+    double la[3];
+    int i, j, num, server_limit, thread_limit;
+    int ready = 0;
+    int busy = 0;
+    int total;
+    ap_generation_t mpm_generation;
+
+    /* preload errored fields, we overwrite */
+    ld->loadavg1 = -1.0;
+    ld->loadavg5 = -1.0;
+    ld->loadavg15 = -1.0;
+    ld->idle = -1;
+    ld->busy = -1;
+
+#if HAVE_GETLOADAVG
+    num = getloadavg(la, 3);
+    if (num > 0) {
+        ld->loadavg1 = (float)la[0];
+    }
+    if (num > 1) {
+        ld->loadavg5 = (float)la[1];
+    }
+    if (num > 2) {
+        ld->loadavg15 = (float)la[2];
+    }
+#endif
+    ap_mpm_query(AP_MPMQ_GENERATION, &mpm_generation);
+    ap_mpm_query(AP_MPMQ_HARD_LIMIT_THREADS, &thread_limit);
+    ap_mpm_query(AP_MPMQ_HARD_LIMIT_DAEMONS, &server_limit);
+
+    for (i = 0; i < server_limit; i++) {
+        process_score *ps;
+        ps = ap_get_scoreboard_process(i);
+
+        for (j = 0; j < thread_limit; j++) {
+            int res;
+            worker_score *ws = NULL;
+            ws = &ap_scoreboard_image->servers[i][j];
+            res = ws->status;
+
+            if (res == SERVER_READY && ps->generation == mpm_generation) {
+                ready++;
+            }
+            else if (res != SERVER_DEAD &&
+                     res != SERVER_STARTING && res != SERVER_IDLE_KILL &&
+                     ps->generation == mpm_generation) {
+                busy++;
+            }
+        }
+    }
+    total = busy + ready;
+    if (total) {
+        ld->idle = ready * 100 / total;
+        ld->busy = busy * 100 / total;
+    }
+
 }
