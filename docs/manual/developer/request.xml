@@ -149,17 +149,17 @@
     <p>Needs Documentation. Code is:</p>
 
     <highlight language="c">
-        if ((access_status = ap_run_access_checker(r)) != 0) {
-            return decl_die(access_status, "check access", r);
-        }
+if ((access_status = ap_run_access_checker(r)) != 0) {
+    return decl_die(access_status, "check access", r);
+}
 
-        if ((access_status = ap_run_check_user_id(r)) != 0) {
-            return decl_die(access_status, "check user", r);
-        }
+if ((access_status = ap_run_check_user_id(r)) != 0) {
+    return decl_die(access_status, "check user", r);
+}
 
-        if ((access_status = ap_run_auth_checker(r)) != 0) {
-            return decl_die(access_status, "check authorization", r);
-        }
+if ((access_status = ap_run_auth_checker(r)) != 0) {
+    return decl_die(access_status, "check authorization", r);
+}
     </highlight>
 </section>
 
