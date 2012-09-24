@@ -220,6 +220,27 @@ static const char *header_request_ssl_var(request_rec *r, char *name)
     }
 }
 
+static const char *header_request_loadavg(request_rec *r, char *a)
+{
+    ap_loadavg_t t;
+    ap_get_loadavg(&t);
+    return apr_psprintf(r->pool, "l=%.2f", t.loadavg);
+}
+
+static const char *header_request_idle(request_rec *r, char *a)
+{
+    ap_sload_t t;
+    ap_get_sload(&t);
+    return apr_psprintf(r->pool, "i=%d", t.idle);
+}
+
+static const char *header_request_busy(request_rec *r, char *a)
+{
+    ap_sload_t t;
+    ap_get_sload(&t);
+    return apr_psprintf(r->pool, "b=%d", t.busy);
+}
+
 /*
  * Config routines
  */
@@ -905,6 +926,9 @@ static int header_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
     register_format_tag_handler("t", header_request_time);
     register_format_tag_handler("e", header_request_env_var);
     register_format_tag_handler("s", header_request_ssl_var);
+    register_format_tag_handler("l", header_request_loadavg);
+    register_format_tag_handler("i", header_request_idle);
+    register_format_tag_handler("b", header_request_busy);
 
     return OK;
 }
