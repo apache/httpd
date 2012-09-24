@@ -2793,32 +2793,16 @@ AP_DECLARE(void *) ap_realloc(void *ptr, size_t size)
 
 AP_DECLARE(void) ap_get_sload(ap_sload_t *ld)
 {
-    double la[3];
-    int i, j, num, server_limit, thread_limit;
+    int i, j, server_limit, thread_limit;
     int ready = 0;
     int busy = 0;
     int total;
     ap_generation_t mpm_generation;
 
     /* preload errored fields, we overwrite */
-    ld->loadavg = -1.0;
-    ld->loadavg5 = -1.0;
-    ld->loadavg15 = -1.0;
     ld->idle = -1;
     ld->busy = -1;
 
-#if HAVE_GETLOADAVG
-    num = getloadavg(la, 3);
-    if (num > 0) {
-        ld->loadavg = (float)la[0];
-    }
-    if (num > 1) {
-        ld->loadavg5 = (float)la[1];
-    }
-    if (num > 2) {
-        ld->loadavg15 = (float)la[2];
-    }
-#endif
     ap_mpm_query(AP_MPMQ_GENERATION, &mpm_generation);
     ap_mpm_query(AP_MPMQ_HARD_LIMIT_THREADS, &thread_limit);
     ap_mpm_query(AP_MPMQ_HARD_LIMIT_DAEMONS, &server_limit);
@@ -2848,5 +2832,28 @@ AP_DECLARE(void) ap_get_sload(ap_sload_t *ld)
         ld->idle = ready * 100 / total;
         ld->busy = busy * 100 / total;
     }
+}
 
+AP_DECLARE(void) ap_get_loadavg(ap_loadavg_t *ld)
+{
+    double la[3];
+    int num;
+
+    /* preload errored fields, we overwrite */
+    ld->loadavg = -1.0;
+    ld->loadavg5 = -1.0;
+    ld->loadavg15 = -1.0;
+
+#if HAVE_GETLOADAVG
+    num = getloadavg(la, 3);
+    if (num > 0) {
+        ld->loadavg = (float)la[0];
+    }
+    if (num > 1) {
+        ld->loadavg5 = (float)la[1];
+    }
+    if (num > 2) {
+        ld->loadavg15 = (float)la[2];
+    }
+#endif
 }

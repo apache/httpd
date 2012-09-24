@@ -393,7 +393,7 @@ static int status_handler(request_rec *r)
                                ap_scoreboard_image->global->restart_time);
 
     if (!short_report) {
-        ap_sload_t t;
+        ap_loadavg_t t;
 
         ap_rputs(DOCTYPE_HTML_3_2
                  "<html><head>\n"
@@ -421,9 +421,9 @@ static int status_handler(request_rec *r)
         ap_rputs("<dt>Server uptime: ", r);
         show_time(r, up_time);
         ap_rputs("</dt>\n", r);
-        ap_get_sload(&t);
-        ap_rprintf(r, "<dt>Server load: %.2f %.2f %.2f [%d:%d]</dt>\n",
-                   t.loadavg, t.loadavg5, t.loadavg15, t.idle, t.busy);
+        ap_get_loadavg(&t);
+        ap_rprintf(r, "<dt>Server load: %.2f %.2f %.2f</dt>\n",
+                   t.loadavg, t.loadavg5, t.loadavg15);
     }
 
     if (ap_extended_status) {

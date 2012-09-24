@@ -1299,21 +1299,29 @@ struct server_rec {
 };
 
 /**
- * @struct server_load_rec
- * @brief  A structure to hold various server load params
+ * @struct ap_sload_t
+ * @brief  A structure to hold server load params
  */
 typedef struct ap_sload_t ap_sload_t;
 struct ap_sload_t {
+    /* percentage of process/threads ready/idle (0->100)*/
+    int idle;
+    /* percentage of process/threads busy (0->100) */
+    int busy;
+};
+
+/**
+ * @struct ap_loadavg_t
+ * @brief  A structure to hold various server loadavg
+ */
+typedef struct ap_loadavg_t ap_loadavg_t;
+struct ap_loadavg_t {
     /* current loadavg, ala getloadavg() */
     float loadavg;
     /* 5 min loadavg */
     float loadavg5;
     /* 15 min loadavg */
     float loadavg15;
-    /* percentage of process/threads ready/idle (0->100)*/
-    int idle;
-    /* percentage of process/threads busy (0->100) */
-    int busy;
 };
 
 /**
@@ -2210,6 +2218,13 @@ AP_DECLARE(void *) ap_realloc(void *ptr, size_t size)
  * @param ld struct to populate: -1 in fields means error
  */
 AP_DECLARE(void) ap_get_sload(ap_sload_t *ld);
+
+/**
+ * Get server load averages (ala getloadavg)
+ * @param ld struct to populate: -1 in fields means error
+ */
+AP_DECLARE(void) ap_get_loadavg(ap_loadavg_t *ld);
+
 
 #define AP_NORESTART APR_OS_START_USEERR + 1
 
