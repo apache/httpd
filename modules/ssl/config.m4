@@ -40,7 +40,6 @@ dnl #  hook module into the Autoconf mechanism (--enable-ssl option)
 APACHE_MODULE(ssl, [SSL/TLS support (mod_ssl)], $ssl_objs, , most, [
     APACHE_CHECK_OPENSSL
     if test "$ac_cv_openssl" = "yes" ; then
-        APR_ADDTO(MOD_SSL_LDADD, [\$(SSL_LIBS)])
         if test "x$enable_ssl" = "xshared"; then
            # The only symbol which needs to be exported is the module
            # structure, so ask libtool to hide everything else:
