@@ -2817,13 +2817,15 @@ AP_DECLARE(void) ap_get_sload(ap_sload_t *ld)
             ws = &ap_scoreboard_image->servers[i][j];
             res = ws->status;
 
-            if (res == SERVER_READY && ps->generation == mpm_generation) {
-                ready++;
-            }
-            else if (res != SERVER_DEAD &&
-                     res != SERVER_STARTING && res != SERVER_IDLE_KILL &&
-                     ps->generation == mpm_generation) {
-                busy++;
+            if (!ps->quiescing && ps->pid) {
+                if (res == SERVER_READY && ps->generation == mpm_generation) {
+                    ready++;
+                }
+                else if (res != SERVER_DEAD &&
+                         res != SERVER_STARTING && res != SERVER_IDLE_KILL &&
+                         ps->generation == mpm_generation) {
+                    busy++;
+                }   
             }
         }
     }
