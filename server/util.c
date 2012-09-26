@@ -2838,24 +2838,26 @@ AP_DECLARE(void) ap_get_sload(ap_sload_t *ld)
 
 AP_DECLARE(void) ap_get_loadavg(ap_loadavg_t *ld)
 {
-    double la[3];
-    int num;
-
     /* preload errored fields, we overwrite */
     ld->loadavg = -1.0;
     ld->loadavg5 = -1.0;
     ld->loadavg15 = -1.0;
 
 #if HAVE_GETLOADAVG
-    num = getloadavg(la, 3);
-    if (num > 0) {
-        ld->loadavg = (float)la[0];
-    }
-    if (num > 1) {
-        ld->loadavg5 = (float)la[1];
-    }
-    if (num > 2) {
-        ld->loadavg15 = (float)la[2];
-    }
+    do {
+        double la[3];
+        int num;
+
+        num = getloadavg(la, 3);
+        if (num > 0) {
+            ld->loadavg = (float)la[0];
+        }
+        if (num > 1) {
+            ld->loadavg5 = (float)la[1];
+        }
+        if (num > 2) {
+            ld->loadavg15 = (float)la[2];
+        }
+    } while(0);
 #endif
 }
