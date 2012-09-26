@@ -88,12 +88,6 @@ RELEASE SHOWSTOPPERS:
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
-
-   * build: introduce per-module-directory compile/link flags (MOD_CFLAGS etc.)
-     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=r1385216
-                  https://svn.apache.org/viewvc?view=revision&revision=r1387610
-     2.4.x patch: https://people.apache.org/~kbrand/MOD_flags-2.4.x.patch
-     +1: kbrand, jorton, jim
   
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
