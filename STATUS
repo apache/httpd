@@ -187,7 +187,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * prefork: Reduce some possible error log spam during graceful-stop.
      trunk patch: http://svn.apache.org/viewvc?rev=1387633&view=rev
      2.4.x patch: trunk patch works
-     +1: jorton
+     +1: jorton, jim
 
    * mod_slotmem_shm: Add debugging output during persist
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1386726
