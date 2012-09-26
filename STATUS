@@ -89,6 +89,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * build: introduce per-module-directory compile/link flags (MOD_CFLAGS etc.)
+     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=r1385216
+                  https://svn.apache.org/viewvc?view=revision&revision=r1387610
+     2.4.x patch: https://people.apache.org/~kbrand/MOD_flags-2.4.x.patch
+     +1: kbrand, jorton, jim
+  
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -176,12 +182,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: jim
 
-   * build: introduce per-module-directory compile/link flags (MOD_CFLAGS etc.)
-     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=r1385216
-                  https://svn.apache.org/viewvc?view=revision&revision=r1387610
-     2.4.x patch: https://people.apache.org/~kbrand/MOD_flags-2.4.x.patch
-     +1: kbrand, jorton, jim
-  
    * mod_proxy: Make balancers server-specific, as they should have
      been. Inheritance causes too many behind-the-scene interactions
      to be reliable in a dynamic environ.
