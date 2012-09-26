@@ -133,30 +133,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      -1: kbrand: breaks OS X builds, superseded by approach based on MOD_CFLAGS etc.
      rjung: Revoked my vote due to ongoing discussion
 
-   * mod_lua: Add a new directive, LuaCodeCache, for controlling the in-memory 
-              caching of scripts
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1366890
-                  http://svn.apache.org/viewvc?view=revision&revision=1367025
-                  http://svn.apache.org/viewvc?view=revision&revision=1367040
-                  http://svn.apache.org/viewvc?view=revision&revision=1367048
-                  http://svn.apache.org/viewvc?view=revision&revision=1367042 (CHANGES)
-     2.4.x patch: Trunk patch works
-     +1: humbedooh, rjung
-     rjung: docs missing?
-     humbedooh: It's in the 2.4 docs already, but commented out, as with a lot 
-                of other functions that were never actually made. It's a mess ;)
-     -1: sf
-     sf: * If you copy'n'paste code, you need to assign new APLOGNOs.
-           See r1383013 and docs/log-message-tags/README.
-         * The code did not compile without warning, see r1383022.
-         * If you have a request_rec, use ap_log_rerror to get the most
-           specific log config. ap_log_perror always uses the global server
-           log config.
-         * Now that you have the request pool, don't you want to use it for
-           the apr_stat() call instead of lifecycle_pool?
-         * Try to not introduce new coding style issues. See r1383024,
-           r1383028, r1383037.
-
    * mod_cache: Wrong content type and character set when
      mod_cache serves stale content because of a proxy error.
      PR 53539. Correction to r1361153.
@@ -285,3 +261,27 @@ PATCHES/ISSUES THAT ARE STALLED
                    http://svn.apache.org/viewvc?view=revision&revision=1328714
     2.4 patch: http://people.apache.org/~fuankg/diffs/httpd-2.4.x-cross_compile.diff
     fuankg: on hold until we agree for a better and more simple solution ...
+
+   * mod_lua: Add a new directive, LuaCodeCache, for controlling the in-memory 
+              caching of scripts
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1366890
+                  http://svn.apache.org/viewvc?view=revision&revision=1367025
+                  http://svn.apache.org/viewvc?view=revision&revision=1367040
+                  http://svn.apache.org/viewvc?view=revision&revision=1367048
+                  http://svn.apache.org/viewvc?view=revision&revision=1367042 (CHANGES)
+     2.4.x patch: Trunk patch works
+     +1: humbedooh, rjung
+     rjung: docs missing?
+     humbedooh: It's in the 2.4 docs already, but commented out, as with a lot 
+                of other functions that were never actually made. It's a mess ;)
+     -1: sf
+     sf: * If you copy'n'paste code, you need to assign new APLOGNOs.
+           See r1383013 and docs/log-message-tags/README.
+         * The code did not compile without warning, see r1383022.
+         * If you have a request_rec, use ap_log_rerror to get the most
+           specific log config. ap_log_perror always uses the global server
+           log config.
+         * Now that you have the request pool, don't you want to use it for
+           the apr_stat() call instead of lifecycle_pool?
+         * Try to not introduce new coding style issues. See r1383024,
+           r1383028, r1383037.
