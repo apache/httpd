@@ -89,12 +89,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy_ajp: Fix crash in packet dump code when logging
-     with LogLevel trace7 or trace8.  PR 53730.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1373898
-     2.4.x patch: trunk patch works.
-     +1: rjung, jim, trawick
-
    * installwinconf.awk: install.log output tweaks; reduced path convertion
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1375041
                   http://svn.apache.org/viewvc?view=revision&revision=1375071

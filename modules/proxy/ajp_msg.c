@@ -21,9 +21,11 @@ APLOG_USE_MODULE(proxy_ajp);
 #define AJP_MSG_DUMP_BYTES_PER_LINE 16
 /* 2 hex digits plus space plus one char per dumped byte */
 /* plus prefix plus separator plus '\0' */
-#define AJP_MSG_DUMP_LINE_LENGTH    (strlen("XX .") + \
-                                     strlen("XXXX    ") + \
-                                     strlen(" - ") + 1)
+#define AJP_MSG_DUMP_PREFIX_LENGTH  strlen("XXXX    ")
+#define AJP_MSG_DUMP_LINE_LENGTH    ((AJP_MSG_DUMP_BYTES_PER_LINE * \
+                                    strlen("XX .")) + \
+                                    AJP_MSG_DUMP_PREFIX_LENGTH + \
+                                    strlen(" - ") + 1)
 
 static char *hex_table = "0123456789ABCDEF";
 
@@ -70,6 +72,7 @@ apr_status_t ajp_msg_dump(apr_pool_t *pool, ajp_msg_t *msg, char *err,
             return APR_ENOMEM;
         }
         apr_snprintf(current, rl, "%.4lx    ", (unsigned long)i);
+        current += AJP_MSG_DUMP_PREFIX_LENGTH;
         line_len = len - i;
         if (line_len > AJP_MSG_DUMP_BYTES_PER_LINE) {
             line_len = AJP_MSG_DUMP_BYTES_PER_LINE;
