@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.4
 
+  *) mod_proxy_ajp: Fix crash in packet dump code when logging
+     with LogLevel trace7 or trace8.  PR 53730.  [Rainer Jung]
+
   *) httpd.conf: Removed the configuration directives setting a bad_DNT
      environment introduced in 2.4.3. The actual directives are commented
      out in the default conf file.
