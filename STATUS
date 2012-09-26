@@ -267,7 +267,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                     http://svn.apache.org/viewvc?view=revision&revision=1389316
      2.4.x patch: trunk patch works, but here's a consolidated patch:
                   http://people.apache.org/~trawick/winnt-cleanups-from-trunk-20120924.txt
-     +1: trawick
+     +1: trawick, gsmith
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
