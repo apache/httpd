@@ -208,7 +208,7 @@ static apr_status_t read_table(cache_handle_t *handle, request_rec *r,
                 return APR_SUCCESS;
             }
             if (!colon || buffer[colon++] != ':') {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(XXXXX)
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02344)
                         "Premature end of cache headers.");
                 return APR_EGENERAL;
             }
@@ -363,7 +363,7 @@ static int create_entity(cache_handle_t *h, request_rec *r, const char *key,
     /* we don't support caching of range requests (yet) */
     /* TODO: but we could */
     if (r->status == HTTP_PARTIAL_CONTENT) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(XXXXX)
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02345)
                 "URL %s partial content response not cached",
                 key);
         return DECLINED;
@@ -383,12 +383,12 @@ static int create_entity(cache_handle_t *h, request_rec *r, const char *key,
      * with a small margin just to be sure.
      */
     if (len < 0) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(XXXXX)
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02346)
                 "URL '%s' had no explicit size, ignoring", key);
         return DECLINED;
     }
     if (len > dconf->max) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(XXXXX)
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02347)
                 "URL '%s' body larger than limit, ignoring "
                 "(%" APR_OFF_T_FMT " > %" APR_OFF_T_FMT ")",
                 key, len, dconf->max);
@@ -400,7 +400,7 @@ static int create_entity(cache_handle_t *h, request_rec *r, const char *key,
     if (APR_SUCCESS != store_table(r->headers_out, NULL, dconf->max, &total)
             || APR_SUCCESS != store_table(r->headers_in, NULL, dconf->max,
                     &total)) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(XXXXX)
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02348)
                 "URL '%s' estimated headers size larger than limit, ignoring "
                 "(%" APR_SIZE_T_FMT " > %" APR_OFF_T_FMT ")",
                 key, total, dconf->max);
@@ -408,7 +408,7 @@ static int create_entity(cache_handle_t *h, request_rec *r, const char *key,
     }
 
     if (total >= dconf->max) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(XXXXX)
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02349)
                 "URL '%s' body and headers larger than limit, ignoring "
                 "(%" APR_OFF_T_FMT " > %" APR_OFF_T_FMT ")",
                 key, len, dconf->max);
@@ -467,7 +467,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
     if (socache_mutex) {
         apr_status_t status = apr_global_mutex_lock(socache_mutex);
         if (status != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(XXXXX)
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(02350)
                     "could not acquire lock, ignoring: %s", obj->key);
             apr_pool_destroy(sobj->pool);
             sobj->pool = NULL;
@@ -481,7 +481,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
     if (socache_mutex) {
         apr_status_t status = apr_global_mutex_unlock(socache_mutex);
         if (status != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(XXXXX)
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(02351)
                     "could not release lock, ignoring: %s", obj->key);
             apr_pool_destroy(sobj->pool);
             sobj->pool = NULL;
@@ -489,14 +489,14 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
         }
     }
     if (rc != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rc, r, APLOGNO(XXXXX)
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rc, r, APLOGNO(02352)
                 "Key not found in cache: %s", key);
         apr_pool_destroy(sobj->pool);
         sobj->pool = NULL;
         return DECLINED;
     }
     if (buffer_len >= sobj->buffer_len) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rc, r, APLOGNO(XXXXX)
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rc, r, APLOGNO(02353)
                 "Key found in cache but too big, ignoring: %s", key);
         apr_pool_destroy(sobj->pool);
         sobj->pool = NULL;
@@ -517,7 +517,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
         varray = apr_array_make(r->pool, 5, sizeof(char*));
         rc = read_array(r, varray, sobj->buffer, buffer_len, &slider);
         if (rc != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r, APLOGNO(XXXXX)
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r, APLOGNO(02354)
                     "Cannot parse vary entry for key: %s", key);
             apr_pool_destroy(sobj->pool);
             sobj->pool = NULL;
@@ -530,7 +530,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
         if (socache_mutex) {
             apr_status_t status = apr_global_mutex_lock(socache_mutex);
             if (status != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(XXXXX)
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(02355)
                         "could not acquire lock, ignoring: %s", obj->key);
                 apr_pool_destroy(sobj->pool);
                 sobj->pool = NULL;
@@ -545,7 +545,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
         if (socache_mutex) {
             apr_status_t status = apr_global_mutex_unlock(socache_mutex);
             if (status != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(XXXXX)
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(02356)
                         "could not release lock, ignoring: %s", obj->key);
                 apr_pool_destroy(sobj->pool);
                 sobj->pool = NULL;
@@ -553,21 +553,21 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
             }
         }
         if (rc != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rc, r, APLOGNO(XXXXX)
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rc, r, APLOGNO(02357)
                     "Key not found in cache: %s", key);
             apr_pool_destroy(sobj->pool);
             sobj->pool = NULL;
             return DECLINED;
         }
         if (buffer_len >= sobj->buffer_len) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rc, r, APLOGNO(XXXXX)
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rc, r, APLOGNO(02358)
                     "Key found in cache but too big, ignoring: %s", key);
             goto fail;
         }
 
     }
     else if (format != CACHE_SOCACHE_DISK_FORMAT_VERSION) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(XXXXX)
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02359)
                 "Key '%s' found in cache has version %d, expected %d, ignoring",
                 key, format, CACHE_SOCACHE_DISK_FORMAT_VERSION);
         goto fail;
@@ -584,7 +584,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
         memcpy(&sobj->socache_info, sobj->buffer, sizeof(cache_socache_info_t));
     }
     else {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r, APLOGNO(XXXXX)
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r, APLOGNO(02360)
                 "Cache entry for key '%s' too short, removing", nkey);
         goto fail;
     }
@@ -602,7 +602,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
     if (sobj->socache_info.name_len <= buffer_len - slider) {
         if (strncmp((const char *) sobj->buffer + slider, sobj->name,
                 sobj->socache_info.name_len)) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r, APLOGNO(XXXXX)
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r, APLOGNO(02361)
                     "Cache entry for key '%s' URL mismatch, ignoring", nkey);
             apr_pool_destroy(sobj->pool);
             sobj->pool = NULL;
@@ -611,14 +611,14 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
         slider += sobj->socache_info.name_len;
     }
     else {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r, APLOGNO(XXXXX)
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r, APLOGNO(02362)
                 "Cache entry for key '%s' too short, removing", nkey);
         goto fail;
     }
 
     /* Is this a cached HEAD request? */
     if (sobj->socache_info.header_only && !r->header_only) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO(XXXXX)
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO(02363)
                 "HEAD request cached, non-HEAD requested, ignoring: %s",
                 sobj->key);
         apr_pool_destroy(sobj->pool);
@@ -632,13 +632,13 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
     /* Call routine to read the header lines/status line */
     if (APR_SUCCESS != read_table(h, r, h->resp_hdrs, sobj->buffer, buffer_len,
             &slider)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r, APLOGNO(XXXXX)
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r, APLOGNO(02364)
                 "Cache entry for key '%s' response headers unreadable, removing", nkey);
         goto fail;
     }
     if (APR_SUCCESS != read_table(h, r, h->req_hdrs, sobj->buffer, buffer_len,
             &slider)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r, APLOGNO(XXXXX)
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r, APLOGNO(02365)
                 "Cache entry for key '%s' request headers unreadable, removing", nkey);
         goto fail;
     }
@@ -685,7 +685,7 @@ fail:
     if (socache_mutex) {
         apr_status_t status = apr_global_mutex_lock(socache_mutex);
         if (status != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(XXXXX)
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(02366)
                     "could not acquire lock, ignoring: %s", obj->key);
             apr_pool_destroy(sobj->pool);
             sobj->pool = NULL;
@@ -698,7 +698,7 @@ fail:
     if (socache_mutex) {
         apr_status_t status = apr_global_mutex_unlock(socache_mutex);
         if (status != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(XXXXX)
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(02367)
                     "could not release lock, ignoring: %s", obj->key);
         }
     }
@@ -729,7 +729,7 @@ static int remove_url(cache_handle_t *h, request_rec *r)
     if (socache_mutex) {
         apr_status_t status = apr_global_mutex_lock(socache_mutex);
         if (status != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(XXXXX)
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(02368)
                     "could not acquire lock, ignoring: %s", sobj->key);
             apr_pool_destroy(sobj->pool);
             sobj->pool = NULL;
@@ -741,7 +741,7 @@ static int remove_url(cache_handle_t *h, request_rec *r)
     if (socache_mutex) {
         apr_status_t status = apr_global_mutex_unlock(socache_mutex);
         if (status != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(XXXXX)
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(02369)
                     "could not release lock, ignoring: %s", sobj->key);
             apr_pool_destroy(sobj->pool);
             sobj->pool = NULL;
@@ -829,7 +829,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r,
 
             if (APR_SUCCESS != (rv = store_array(varray, sobj->buffer,
                     sobj->buffer_len, &slider))) {
-                ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(XXXXX)
+                ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(02370)
                         "buffer too small for Vary array, caching aborted: %s",
                         obj->key);
                 apr_pool_destroy(sobj->pool);
@@ -839,7 +839,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r,
             if (socache_mutex) {
                 apr_status_t status = apr_global_mutex_lock(socache_mutex);
                 if (status != APR_SUCCESS) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(XXXXX)
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(02371)
                             "could not acquire lock, ignoring: %s", obj->key);
                     apr_pool_destroy(sobj->pool);
                     sobj->pool = NULL;
@@ -852,17 +852,14 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r,
                     (unsigned char *) sobj->buffer, (unsigned int) slider,
                     sobj->pool);
             if (socache_mutex) {
-                rv = apr_global_mutex_unlock(socache_mutex);
-                if (rv != APR_SUCCESS) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(XXXXX)
+                apr_status_t status = apr_global_mutex_unlock(socache_mutex);
+                if (status != APR_SUCCESS) {
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(02372)
                             "could not release lock, ignoring: %s", obj->key);
-                    apr_pool_destroy(sobj->pool);
-                    sobj->pool = NULL;
-                    return rv;
                 }
             }
             if (rv != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO(XXXXX)
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO(02373)
                         "Vary not written to cache, ignoring: %s", obj->key);
                 apr_pool_destroy(sobj->pool);
                 sobj->pool = NULL;
@@ -889,7 +886,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r,
     slider = sizeof(cache_socache_info_t);
 
     if (slider + socache_info->name_len >= sobj->buffer_len) {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(XXXXX)
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(02374)
                 "cache buffer too small for name: %s",
                 sobj->name);
         apr_pool_destroy(sobj->pool);
@@ -902,7 +899,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r,
     if (sobj->headers_out) {
         if (APR_SUCCESS != store_table(sobj->headers_out, sobj->buffer,
                 sobj->buffer_len, &slider)) {
-            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(XXXXX)
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(02375)
                     "out-headers didn't fit in buffer: %s", sobj->name);
             apr_pool_destroy(sobj->pool);
             sobj->pool = NULL;
@@ -915,7 +912,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r,
     if (sobj->headers_in) {
         if (APR_SUCCESS != store_table(sobj->headers_in, sobj->buffer,
                 sobj->buffer_len, &slider)) {
-            ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r, APLOGNO(XXXXX)
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r, APLOGNO(02376)
                     "in-headers didn't fit in buffer %s",
                     sobj->key);
             apr_pool_destroy(sobj->pool);
@@ -1002,7 +999,7 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
         APR_BUCKET_REMOVE(e);
         APR_BRIGADE_INSERT_TAIL(out, e);
         if (rv != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(XXXXX)
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02377)
                     "Error when reading bucket for URL %s",
                     h->cache_obj->key);
             /* Remove the intermediate cache file and return non-APR_SUCCESS */
@@ -1018,7 +1015,7 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
 
         sobj->file_size += length;
         if (sobj->file_size >= sobj->buffer_len - sobj->body_offset) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(XXXXX)
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02378)
                     "URL %s failed the buffer size check "
                     "(%" APR_OFF_T_FMT ">=%" APR_SIZE_T_FMT ")",
                     h->cache_obj->key, sobj->file_size, sobj->buffer_len - sobj->body_offset);
@@ -1029,7 +1026,7 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
 
         rv = apr_bucket_copy(e, &e);
         if (rv != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(XXXXX)
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(02379)
                     "Error when copying bucket for URL %s",
                     h->cache_obj->key);
             apr_pool_destroy(sobj->pool);
@@ -1061,7 +1058,7 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
         const char *cl_header = apr_table_get(r->headers_out, "Content-Length");
 
         if (r->connection->aborted || r->no_cache) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(XXXXX)
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02380)
                     "Discarding body for URL %s "
                     "because connection has been aborted.",
                     h->cache_obj->key);
@@ -1072,7 +1069,7 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
         if (cl_header) {
             apr_int64_t cl = apr_atoi64(cl_header);
             if ((errno == 0) && (sobj->file_size != cl)) {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(XXXXX)
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02381)
                         "URL %s didn't receive complete response, not caching",
                         h->cache_obj->key);
                 apr_pool_destroy(sobj->pool);
@@ -1102,14 +1099,14 @@ static apr_status_t commit_entity(cache_handle_t *h, request_rec *r)
     rv = apr_brigade_flatten(sobj->body, (char *) sobj->buffer
             + sobj->body_offset, &len);
     if (APR_SUCCESS != rv) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(XXXXX)
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(02382)
                 "could not flatten brigade, not caching: %s",
                 sobj->key);
         goto fail;
     }
     apr_brigade_cleanup(sobj->body);
     if (len >= sobj->buffer_len - sobj->body_offset) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(XXXXX)
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(02383)
                 "body too big for the cache buffer, not caching: %s",
                 h->cache_obj->key);
         goto fail;
@@ -1118,7 +1115,7 @@ static apr_status_t commit_entity(cache_handle_t *h, request_rec *r)
     if (socache_mutex) {
         apr_status_t status = apr_global_mutex_lock(socache_mutex);
         if (status != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(XXXXX)
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(02384)
                     "could not acquire lock, ignoring: %s", obj->key);
             apr_pool_destroy(sobj->pool);
             sobj->pool = NULL;
@@ -1132,7 +1129,7 @@ static apr_status_t commit_entity(cache_handle_t *h, request_rec *r)
     if (socache_mutex) {
         apr_status_t status = apr_global_mutex_unlock(socache_mutex);
         if (status != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(XXXXX)
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(02385)
                     "could not release lock, ignoring: %s", obj->key);
             apr_pool_destroy(sobj->pool);
             sobj->pool = NULL;
@@ -1140,12 +1137,12 @@ static apr_status_t commit_entity(cache_handle_t *h, request_rec *r)
         }
     }
     if (rv != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r, APLOGNO(XXXXX)
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r, APLOGNO(02386)
                 "could not write to cache, ignoring: %s", sobj->key);
         goto fail;
     }
 
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(XXXXX)
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02387)
             "commit_entity: Headers and body for URL %s cached for maximum of %d seconds.",
             sobj->name, (apr_uint32_t)apr_time_sec(sobj->expire - r->request_time));
 
@@ -1161,7 +1158,7 @@ fail:
     if (socache_mutex) {
         apr_status_t status = apr_global_mutex_lock(socache_mutex);
         if (status != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(XXXXX)
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(02388)
                     "could not acquire lock, ignoring: %s", obj->key);
             apr_pool_destroy(sobj->pool);
             sobj->pool = NULL;
@@ -1173,7 +1170,7 @@ fail:
     if (socache_mutex) {
         apr_status_t status = apr_global_mutex_unlock(socache_mutex);
         if (status != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(XXXXX)
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(02389)
                     "could not release lock, ignoring: %s", obj->key);
         }
     }
@@ -1372,7 +1369,7 @@ static int socache_precfg(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptmp)
     apr_status_t rv = ap_mutex_register(pconf, cache_socache_id, NULL,
             APR_LOCK_DEFAULT, 0);
     if (rv != APR_SUCCESS) {
-        ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, plog, APLOGNO(XXXXX)
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, plog, APLOGNO(02390)
         "failed to register %s mutex", cache_socache_id);
         return 500; /* An HTTP status would be a misnomer! */
     }
@@ -1402,7 +1399,7 @@ static int socache_post_config(apr_pool_t *pconf, apr_pool_t *plog,
             rv = ap_global_mutex_create(&socache_mutex, NULL, cache_socache_id,
                     NULL, s, pconf, 0);
             if (rv != APR_SUCCESS) {
-                ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, plog, APLOGNO(XXXXX)
+                ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, plog, APLOGNO(02391)
                 "failed to create %s mutex", cache_socache_id);
                 return 500; /* An HTTP status would be a misnomer! */
             }
@@ -1415,7 +1412,7 @@ static int socache_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                 pconf);
         if (errmsg) {
             ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, plog,
-                    APLOGNO(XXXXX) "%s", errmsg);
+                    APLOGNO(02392) "%s", errmsg);
             return 500; /* An HTTP status would be a misnomer! */
         }
 
@@ -1423,7 +1420,7 @@ static int socache_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                 conf->provider->socache_instance, cache_socache_id,
                 &socache_hints, s, pconf);
         if (rv != APR_SUCCESS) {
-            ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, plog, APLOGNO(XXXXX)
+            ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, plog, APLOGNO(02393)
             "failed to initialise %s cache", cache_socache_id);
             return 500; /* An HTTP status would be a misnomer! */
         }
@@ -1445,7 +1442,7 @@ static void socache_child_init(apr_pool_t *p, server_rec *s)
     lock = apr_global_mutex_lockfile(socache_mutex);
     rv = apr_global_mutex_child_init(&socache_mutex, lock, p);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(XXXXX)
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(02394)
                 "failed to initialise mutex in child_init");
     }
 }
