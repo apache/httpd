@@ -827,8 +827,8 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r,
             varray = apr_array_make(r->pool, 6, sizeof(char*));
             tokens_to_array(r->pool, vary, varray);
 
-            if (APR_SUCCESS != store_array(varray, sobj->buffer,
-                    sobj->buffer_len, &slider)) {
+            if (APR_SUCCESS != (rv = store_array(varray, sobj->buffer,
+                    sobj->buffer_len, &slider))) {
                 ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(XXXXX)
                         "buffer too small for Vary array, caching aborted: %s",
                         obj->key);
@@ -843,7 +843,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r,
                             "could not acquire lock, ignoring: %s", obj->key);
                     apr_pool_destroy(sobj->pool);
                     sobj->pool = NULL;
-                    return DECLINED;
+                    return status;
                 }
             }
             rv = conf->provider->socache_provider->store(
@@ -858,7 +858,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r,
                             "could not release lock, ignoring: %s", obj->key);
                     apr_pool_destroy(sobj->pool);
                     sobj->pool = NULL;
-                    return DECLINED;
+                    return rv;
                 }
             }
             if (rv != APR_SUCCESS) {
@@ -866,7 +866,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r,
                         "Vary not written to cache, ignoring: %s", obj->key);
                 apr_pool_destroy(sobj->pool);
                 sobj->pool = NULL;
-                return DECLINED;
+                return rv;
             }
 
             obj->key = sobj->key = regen_key(r->pool, sobj->headers_in, varray,
