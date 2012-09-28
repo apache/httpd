@@ -334,6 +334,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/httpd/modules/mod_bucketeer.so
 %{_libdir}/httpd/modules/mod_buffer.so
 %{_libdir}/httpd/modules/mod_cache_disk.so
+%{_libdir}/httpd/modules/mod_cache_socache.so
 %{_libdir}/httpd/modules/mod_cache.so
 %{_libdir}/httpd/modules/mod_case_filter.so
 %{_libdir}/httpd/modules/mod_case_filter_in.so
