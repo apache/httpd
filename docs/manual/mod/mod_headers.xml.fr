@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1371903:1389569 (outdated) -->
+<!-- English Revision : 1389569 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -469,6 +469,26 @@ Header merge Cache-Control no-store env=NO_STORE
 	des en-t&ecirc;tes sur le r&eacute;seau. Il s'agit de la dur&eacute;e de traitement
 	de la requ&ecirc;te. La valeur est pr&eacute;c&eacute;d&eacute;e de <code>D=</code>. La
 	valeur est exprim&eacute;e en microsecondes.</td></tr>
+
+    <tr><td><code>%l</code></td>
+        <td>La charge moyenne courante du serveur proprement dit. Ce
+	sont les valeurs obtenues par <code>getloadavg()</code> qui
+	repr&eacute;sentent la charge moyenne courante, sur 5 minutes et sur 15
+	minutes. Chaque valeur est pr&eacute;c&eacute;d&eacute;e de <code>l=</code> et
+	s&eacute;par&eacute;e de la suivante par un <code>/</code>.
+        </td></tr>
+
+    <tr><td><code>%i</code></td>
+        <td>Le pourcentage courant de httpd au repos (de 0 &agrave; 100)
+	en se basant sur le nombre de processus et threads disponibles.
+	La valeur est pr&eacute;c&eacute;d&eacute;e de <code>i=</code>.
+        </td></tr>
+
+    <tr><td><code>%b</code></td>
+        <td>Le pourcentage courant de httpd utilis&eacute; (de 0 &agrave; 100)
+	en se basant sur le nombre de processus et threads disponibles.
+	La valeur est pr&eacute;c&eacute;d&eacute;e de <code>b=</code>.
+        </td></tr>
 
     <tr><td><code>%{NOM_VARIABLE}e</code></td>
         <td>Le contenu de la <a href="../env.html">variable
