@@ -12,21 +12,18 @@
 ''
 Option Explicit
 
-Dim objShell, objArray, str, env
+Dim objShell, objArray, str, envvar, envval
 Set objShell = CreateObject("WScript.Shell")
 Set objArray = CreateObject("System.Collections.ArrayList")
 
-Wscript.Echo "Content-type: text/plain; charset=iso-8859-1" & vbLF
+WScript.StdOut.WriteLine "Content-type: text/plain; charset=iso-8859-1" & vbLF
 For Each str In objShell.Environment("PROCESS")
-  env = Split(str, "=", 2)
-  env(1) = Replace(env(1), vbLF, "\n")
-  objArray.Add env(0) & "=" & Chr(34) & env(1) & Chr(34)
+  objArray.Add str
 Next
 objArray.Sort()
 For Each str In objArray
-  WScript.Echo str
+  envvar = Left(str, InStr(str, "="))
+  envval = Replace(Mid(str, InStr(str, "=") + 1), vbLF, "\n")
+  WScript.StdOut.WriteLine envvar & Chr(34) & envval & Chr(34)
 Next
-
-'WScript.Echo ScriptEngine & " Version=" & ScriptEngineMajorVersion & "." & _
-'             ScriptEngineMinorVersion & "." & ScriptEngineBuildVersion
 
