@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1380774 -->
+<!-- English Revision : 1388315 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -455,14 +455,15 @@ LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
 <name>LDAPSharedCacheFile</name>
 <description>D&eacute;finit le fichier du cache en m&eacute;moire
 partag&eacute;e</description>
-<syntax>LDAPSharedCacheFile <var>chemin/nom-fichier</var></syntax>
+<syntax>LDAPSharedCacheFile <var>chemin/fichier</var></syntax>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>Cette directive permet de sp&eacute;cifier le chemin et le nom du
+    <p>Cette directive permet de sp&eacute;cifier le chemin du
     fichier du cache en m&eacute;moire partag&eacute;e. Si elle n'est pas d&eacute;finie, la
     m&eacute;moire partag&eacute;e anonyme sera utilis&eacute;e si la plate-forme la
     supporte.</p>
+
 </usage>
 </directivesynopsis>
 
