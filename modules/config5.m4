@@ -3,7 +3,7 @@ AC_ARG_WITH(module,
   APACHE_HELP_STRING(--with-module=module-type:module-file,
                      Enable module-file in the modules/<module-type> directory.),
   [
-    withval=`echo $withval | sed -e 's/,/ /'`
+    withval=`echo $withval | sed -e 's/,/ /g'`
     for mod in $withval
     do
       modtype=`echo $mod | sed -e's/\(.*\):.*/\1/'`
