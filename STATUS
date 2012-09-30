@@ -127,6 +127,7 @@ RELEASE SHOWSTOPPERS:
      rjung: mod_proxy_ajp and mod_reqtimeout don't apply for 2.0.x
             I checked proxy_http and could not find a code path to fix.
             More eyes welcome.
+     jim: not a showstopper, imo
 
   *) SECURITY: CVE-2011-4317 (cve.mitre.org)
      Resolve additional cases of URL rewriting with ProxyPassMatch or
@@ -169,7 +170,7 @@ RELEASE SHOWSTOPPERS:
      From 2.2.x: http://svn.apache.org/viewvc?view=revision&revision=1235443
         Individual patches apply with offsets; here's a clean all-in-one:
         http://people.apache.org/~trawick/2.0-CVE-2011-4317-r1235443.patch
-       +1: trawick
+       +1: trawick, jim
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
