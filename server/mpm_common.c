@@ -453,7 +453,7 @@ int initgroups(const char *name, gid_t basegid)
     return setgroups(index, groups);
 #endif /* def QNX */
 }
-#endif /* def NEED_INITGROUPS */
+#endif /* ndef HAVE_INITGROUPS */
 
 #ifdef AP_MPM_USES_POD
 
