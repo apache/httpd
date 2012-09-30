@@ -171,14 +171,6 @@ RELEASE SHOWSTOPPERS:
         http://people.apache.org/~trawick/2.0-CVE-2011-4317-r1235443.patch
        +1: trawick
 
-  *) SECURITY: CVE-2012-0053 (cve.mitre.org)
-     Fix an issue in error responses that could expose "httpOnly" cookies
-     when no custom ErrorDocument is specified for status code 400.
-     [Eric Covener]
-
-     r1234837 on 2.0.x:
-       http://people.apache.org/~trawick/2.0-CVE-2012-0053-r1234837.patch
-     +1: trawick, rjung
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
