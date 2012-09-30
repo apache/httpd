@@ -184,6 +184,13 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
+  * mpm_common.h: Add prototype for initgroups().
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1082250
+    2.2.x patch: http://svn.apache.org/viewvc/httpd/httpd/branches/2.2.x/include/mpm_common.h?r1=556936&r2=1092275  
+    2.0.x patch: http://people.apache.org/~fuankg/diffs/2.0.x-mpm_common.diff
+    +1 fuankg, rjung, jim
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
     identify exactly what the proposed changes are!  Add all new
@@ -242,12 +249,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/viewvc?view=revision&revision=966160
     Backport: http://people.apache.org/~rjung/patches/sslhonorcipher-2.0.patch
     +1: rjung
-
-  * mpm_common.h: Add prototype for initgroups().
-    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1082250
-    2.2.x patch: http://svn.apache.org/viewvc/httpd/httpd/branches/2.2.x/include/mpm_common.h?r1=556936&r2=1092275  
-    2.0.x patch: http://people.apache.org/~fuankg/diffs/2.0.x-mpm_common.diff
-    +1 fuankg, rjung, jim
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
