@@ -3,7 +3,7 @@ AC_ARG_WITH(module,
   APACHE_HELP_STRING(--with-module=module-type:module-file,
                      Enable module-file in the modules/<module-type> directory.),
   [
-    as_save_IFS="$IFS"; IFS=","
+    withval=`echo $withval | sed -e 's/,/ /'`
     for mod in $withval
     do
       modtype=`echo $mod | sed -e's/\(.*\):.*/\1/'`
@@ -51,7 +51,6 @@ EOF
     if test ! -z "$EXTRA_MODLIST"; then
       AC_MSG_RESULT(added:$EXTRA_MODLIST)
     fi
-    IFS="$as_save_IFS"
   ],
   [ AC_MSG_RESULT(none) 
   ])
