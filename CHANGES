@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.65
 
+  *) SECURITY: CVE-2012-0031 (cve.mitre.org)
+     Fix scoreboard issue which could allow an unprivileged child process 
+     could cause the parent to crash at shutdown rather than terminate 
+     cleanly.  [Joe Orton]
+
   *) SECURITY: CVE-2011-3607 (cve.mitre.org)
      core: Fix integer overflow in ap_pregsub. This can be triggered e.g.
      with mod_setenvif via a malicious .htaccess. [Stefan Fritsch]
