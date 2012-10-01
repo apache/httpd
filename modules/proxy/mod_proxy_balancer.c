@@ -990,7 +990,7 @@ static int balancer_handler(request_rec *r)
     }
 
     if (r->args && (r->method_number == M_GET)) {
-        const char *allowed[] = { "w", "b", "nonce", NULL };
+        const char *allowed[] = { "w", "b", "nonce", "xml", NULL };
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01191) "parsing r->args");
 
         push2table(r->args, params, allowed, r->pool);
