@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) --with-module: Fix failure to integrate them into some existing
+     module directories.  PR 40097.  [Jeff Trawick]
+
   *) mod_headers: New params: %l for load averages, %i for an
      idle percentage rating of httpd, and %b for a busy percentage
      rating. [Jim Jagielski]
