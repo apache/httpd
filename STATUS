@@ -170,8 +170,8 @@ RELEASE SHOWSTOPPERS:
      From 2.2.x: http://svn.apache.org/viewvc?view=revision&revision=1235443
         Individual patches apply with offsets; here's a clean all-in-one:
         http://people.apache.org/~trawick/2.0-CVE-2011-4317-r1235443.patch
-       +1: trawick, jim
-
+       +1: jim
+       trawick: 2.2/2.4 now have a different solution (AllowAnyURI).
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
