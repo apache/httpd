@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: ErrorDocument now works for requests without a Host header.
+     PR 48357.  [Jeff Trawick]
+
   *) --with-module: Fix failure to integrate them into some existing
      module directories.  PR 40097.  [Jeff Trawick]
 
