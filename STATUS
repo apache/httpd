@@ -89,10 +89,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
   
-   * mod_slotmem_shm: Consistent and logical return errors
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1386822
-      2.4.x patch: trunk patch works
-     +1: jim, humbedooh, trawick
    
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
