@@ -89,7 +89,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
   
-
+   * mod_slotmem_shm: Consistent and logical return errors
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1386822
+      2.4.x patch: trunk patch works
+     +1: jim, humbedooh, trawick
+   
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -171,11 +175,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works (minus next-number)
      +1: jim
 
-   * mod_slotmem_shm: Consistent and logical return errors
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1386822
-      2.4.x patch: trunk patch works
-     +1: jim, humbedooh
-   
    * mod_slotmem_*: Add in new fgrab() function which forces a grab and
      slot allocation on a specified slot. Allow for clearing of inuse
      array.
