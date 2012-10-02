@@ -89,13 +89,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
   
-   * mod_cache: Wrong content type and character set when
-     mod_cache serves stale content because of a proxy error.
-     PR 53539. Correction to r1361153.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1373447
-     2.4.x patch: trunk patch works.
-     +1: rjung, jim, minfrin
-
    * mod_proxy: Avoid double slash with "ProxyPassReverse / ..." cases
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1386576
                   http://svn.apache.org/viewvc?view=revision&revision=1386578

@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.4
 
+  *) mod_cache: Wrong content type and character set when
+     mod_cache serves stale content because of a proxy error. 
+     PR 53539.  [Rainer Jung, Ruediger Pluem]
+
   *) mod_proxy_ajp: Fix crash in packet dump code when logging
      with LogLevel trace7 or trace8.  PR 53730.  [Rainer Jung]
 
