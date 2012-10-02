@@ -164,6 +164,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?rev=1387633&view=rev
      2.4.x patch: trunk patch works
      +1: jorton, jim
+     +1 with 1392850: trawick
 
    * mod_slotmem_shm: Add debugging output during persist
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1386726
