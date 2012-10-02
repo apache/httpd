@@ -3819,7 +3819,7 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
     if (!(ap_allow_options(r) & OPT_INCLUDES)) {
         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01374)
                       "mod_include: Options +Includes (or IncludesNoExec) "
-                      "wasn't set, INCLUDES filter removed");
+                      "wasn't set, INCLUDES filter removed: %s", r->uri);
         ap_remove_output_filter(f);
         return ap_pass_brigade(f->next, b);
     }
