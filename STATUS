@@ -89,12 +89,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
   
-   * mod_proxy: Avoid double slash with "ProxyPassReverse / ..." cases
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1386576
-                  http://svn.apache.org/viewvc?view=revision&revision=1386578
-     2.4.x patch: trunk patch works
-     +1: jim, druggeri, minfrin
-
    
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

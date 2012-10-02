@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.4
 
+  *) mod_proxy: When concatting for PPR, avoid cases where we
+     concat ".../" and "/..." to create "...//..." [Jim Jagielski]
+
   *) mod_cache: Wrong content type and character set when
      mod_cache serves stale content because of a proxy error. 
      PR 53539.  [Rainer Jung, Ruediger Pluem]
