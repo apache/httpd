@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 814805:1308465 (outdated) -->
+<!-- English Revision: 1308465 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -226,6 +226,94 @@
     <dd>SSL/TLS şifre kümesi belirtilir (<code><strong>openssl</strong></code>(1) şifrelerine bakınız).</dd>
     </dl>
 </section>
+
+<section id="output"><title>Çıktı</title>
+    <p>Aşağıdaki listede <code><strong>ab</strong></code> çıktısındaki değerler
+    açıklanmıştır:
+    </p>
+
+    <dl>
+        <dt>Server Software</dt>
+        <dd>Varsa, bu değer başarılı ilk yanıtın <var>server</var> HTTP
+        başlığında döner. Bu değer, başlıktan saptanan, başlangıçtan 32 onluk
+        değerli karaktere (gerçekte, bir boşluk veya CR/LF) kadar olan tüm
+        karakterleri içerir.</dd>
+
+        <dt>Server Hostname</dt>
+        <dd>Komut satırında belirtilen DNS veya IP adresi.</dd>
+
+        <dt>Server Port</dt>
+        <dd><code><strong>ab</strong></code>'nin bağlandığı port. Komut
+        satırında bir port belirtilmemişse http için 80, https için
+        443 öntanımlıdır.</dd>
+
+        <dt>SSL/TLS Protocol</dt>
+        <dd>İstemci ile sunucu arasında alıp verilen protokol değerleri. Bu
+        sadece SSL kullanılıyorsa çıktılanır.</dd>
+
+        <dt>Document Path</dt>
+        <dd>Komut satırından elde edilen istek URI'si.</dd>
+
+        <dt>Document Length</dt>
+        <dd>Başarıyla dönen ilk belgenin bayt cinsinden uzunluğu. Eğer belge
+        uzunluğu sınama sırasında değişirse yanıt bir hata olarak ele
+        alınır.</dd>
+
+        <dt>Concurrency Level</dt>
+        <dd>Sınama sırasında eşzamanlanan istemci sayısı.</dd>
+
+        <dt>Time taken for tests</dt>
+        <dd>İlk soket bağlantısının kurulduğu andan son yanıtın alındığı ana
+        kadar geçen süre.</dd>
+
+        <dt>Complete requests</dt>
+        <dd>Alınan başarılı yanıtların sayısı.</dd>
+
+        <dt>Failed requests</dt>
+        <dd>Başarısız olarak kabul edilen istek sayısı. Bu sayı sıfırdan
+        farklıysa, ayrı bir satırda, bağlantıdan, okumadan, yanlış içerik
+        uzunluğundan veya istisnalardan kaynaklanan başarısızlık sayıları da
+        gösterilir.</dd>
+
+        <dt>Write errors</dt>
+        <dd>Yazma sırasında oluşan hata (kırık boru) sayısı.</dd>
+
+        <dt>Non-2xx responses</dt>
+        <dd>200 serisinden olmayan yanıt kodlarının sayısı. Tüm yanıtlar 200
+        kodlu ise bu alan çıktılanmaz.</dd>
+
+        <dt>Keep-Alive requests</dt>
+        <dd>Keep-Alive isteklerinde sonuçlanan bağlantı sayısı.</dd>
+
+        <dt>Total body sent</dt>
+        <dd>Yapılandırılmışsa, sınamanın bir parçası olarak gönderilecek toplam
+        veri miktarı (bayt). Sınama sırasında gönderi bir veri gövdesi
+        içermiyorsa bu alan çıktılanmaz.</dd>
+
+        <dt>Total transferred</dt>
+        <dd>Sunucudan alınan toplam bayt sayısı. Bu sayı aslında hattan
+        gönderilen bayt miktarıdır.</dd>
+
+        <dt>HTML transferred</dt>
+        <dd>Sunucudan alınan toplam belge baytı miktarı. Bu miktar HTTP
+        başlıklarındaki baytları içermez.</dd>
+
+        <dt>Requests per second</dt>
+        <dd>Saniyedeki istek sayısı. Toplam istek sayısının isteklerin toplam
+        zamanına oranıdır.</dd>
+
+        <dt>Time per request</dt>
+        <dd>İstek başına harcanan ortalama zaman. İlk değerin formülü:
+        <code>eşzamanlananİstemciSayısı * geçenSüre * 1000 /
+        tamamlananİstekSayısı</code>, ikinci değerin formülü:
+        <code>geçenSüre * 1000 / tamamlananİstekSayısı</code></dd>
+
+        <dt>Transfer rate</dt>
+        <dd><code>okunanToplam / 1024 / geçenSüre</code> formülü ile
+        hesaplanan aktarım hızı.</dd>
+    </dl>
+</section>
+
 
 <section id="bugs"><title>Börtü böcek</title>
     <p>Duruk bildirimli sabit uzunlukta çeşitli tamponlar vardır.

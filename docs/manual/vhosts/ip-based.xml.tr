@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 421100:1363767 (outdated) -->
+<!-- English Revision: 1363767 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -32,17 +32,34 @@
 <a href="name-based.html">İsme Dayalı Sanal Konak Desteği</a>
 </seealso>
 
+<section id="explanation"><title>IP'ye dayalı sanal konak desteği nedir</title>
+    <p>IP'ye dayalı sanal konak desteği, bir isteğin alındığı IP adresi ve
+      porta bağlı olarak farklı yönergeleri uygulamak için bir yoldur. Özetle,
+      farklı siteleri farklı portlardan ve arayüzlerden sunmakta
+      kullanılır.</p>
+
+     <p>Çoğu durumda, <a href="name-based.html">isme dayalı sanal konaklar</a>
+       birçok sanal konağın tek bir IP adresi/port çiftini paylaşmasını
+       sağladığından daha kullanışlıdır. Neyi kullanacağınıza karar vermek için
+       <a href="name-based.html#namevip">İsme dayalı ve IP’ye dayalı Sanal
+       Konaklar</a> bölümüne bakınız.</p>
+</section>
+
 <section id="requirements"><title>Sistem gereksinimleri</title>
 
     <p><cite>IP’ye dayalı</cite> deyince, sunucunun <strong>her IP’ye dayalı
-      sanal konak için ayrı bir IP adresi</strong>ne sahip olduğunu anlıyoruz.
-      Bunun olması için, makine ya çok sayıda ağ bağlantısına sahiptir ya da
-      makinede, günümüzde çoğu işletim sistemi tarafından desteklenen sanal
-      arabirimler kullanılıyordur. (Sanal arabirimlerle ilgili ayrıntılar için
-      sistem belgelerinize bakınız; bu konu genellikle IP rumuzları (ip aliases)
+      sanal konak için ayrı bir IP adresi/port çifti</strong>ne sahip olduğunu
+      anlıyoruz. Bunun olması için, makine ya çok sayıda ağ bağlantısına
+      sahiptir ya da makinede, günümüzde çoğu işletim sistemi tarafından
+      desteklenen sanal arabirimler ve/veya çok sayıda port kullanılıyordur.
+      (Sanal arabirimlerle ilgili ayrıntılar için sistem belgelerinize bakınız;
+      bu konu genellikle çoklu port kullanımı ve/veya IP rumuzları (ip aliases)
       olarak geçer ve ayarlamak için genellikle "ifconfig" komutu
       kullanılır.)</p>
 
+    <p>Apache HTTP Sunucusu terminolojisinde, tek bir IP adresinin çok sayıda
+      TCP portuyla kullanımı IP'ye dayalı sanal konak desteği olarak
+      bilinir.</p>
 </section>
 
 <section id="howto"><title>Apache nasıl ayarlanır?</title>
@@ -94,7 +111,7 @@
       yönergesi kullanılır. Örnek:</p>
 
     <example>
-    Listen www.birkobi.dom:80
+    Listen 192.168.0.1:80
     </example>
 
     <p>Burada konak ismi yerine IP adresi kullanmanız önerilir (ayrıntılar için
@@ -103,7 +120,7 @@
 
 </section>
 
-<section id="single"><title>Sanal konaklar tek bir sürecin yapılandırılması</title>
+<section id="single"><title>Sanal konaklarla tek bir sürecin yapılandırılması</title>
 
     <p>Bu durum için, ana sunucu ve sanal konakların tümüne gelen istekler tek
       bir <program>httpd</program> süreci tarafından karşılanır. Yapılandırma
@@ -118,30 +135,35 @@
       oluşturulur. Örnek:</p>
 
     <example>
-    &lt;VirtualHost www.birkobi.dom&gt;
+    &lt;VirtualHost 192.168.0.1:80&gt;
     <indent>
-      ServerAdmin bilgi@posta.birkobi.dom<br />
+      ServerAdmin bilgi@posta.birkobi.example.com<br />
       DocumentRoot /gruplar/birkobi/belgeler<br />
-      ServerName www.birkobi.dom<br />
+      ServerName birkobi.example.com<br />
       ErrorLog /gruplar/birkobi/günlükler/hatalar.log<br />
       TransferLog /gruplar/birkobi/günlükler/erisim.log
     </indent>
     &lt;/VirtualHost&gt;<br />
     <br />
-    &lt;VirtualHost www.digerkobi.dom&gt;
+    &lt;VirtualHost 192.168.0.2:80&gt;
     <indent>
-      ServerAdmin bilgi@posta.digerkobi.dom<br />
+      ServerAdmin bilgi@posta.digerkobi.example.com<br />
       DocumentRoot /gruplar/digerkobi/belgeler<br />
-      ServerName www.digerkobi.dom<br />
+      ServerName digerkobi.example.com<br />
       ErrorLog /gruplar/digerkobi/günlükler/hatalar.log<br />
       TransferLog /gruplar/digerkobi/günlükler/erisim.log
     </indent>
     &lt;/VirtualHost&gt;
     </example>
 
-    <p>Burada konak isimlerinin yerlerine IP adreslerini kullanmanız önerilir
-      (ayrıntılar için <a href="../dns-caveats.html">DNS ile ilgili konular</a>
+    <p>&lt;VirtualHost&gt; yönergelerinde konak isimlerinin yerlerine IP
+      adreslerini kullanmanız önerilir (ayrıntılar için
+      <a href="../dns-caveats.html">DNS ile ilgili konular</a>
       belgesine bakınız).</p>
+
+    <p>Belli bir IP adresi veya port kullanımı bunların joker eşdeğerlerine
+      göre daha yüksek öncelik sağlar ve eşleşen bir sanal konak da genel
+      sunucuya göre öncelik alır.</p>
 
     <p>Süreç oluşturmayı denetleyen yönergeler ve bir kaç başka yönerge dışında
       hemen hemen tüm yapılandırma yönergeleri <directive

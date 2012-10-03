@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1364530:1379697 (outdated) -->
+<!-- English Revision: 1379697 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -437,7 +437,12 @@ kullanımı önerilmemektedir.</compatibility>
         <directive module="mod_rewrite">RewriteBase</directive>,
         <directive module="mod_rewrite">RewriteCond</directive>,
         <directive module="mod_rewrite">RewriteRule</directive>
-        yönergelerinin ve <module>mod_actions</module> modülündeki
+        yönergelerinin, <module>mod_alias</module> modülündeki
+        <directive module="mod_alias">Redirect</directive>,
+        <directive module="mod_alias">RedirectTemp</directive>,
+        <directive module="mod_alias">RedirectPermanent</directive>,
+        <directive module="mod_alias">RedirectMatch</directive>)
+        ve <module>mod_actions</module> modülündeki
         <directive module="mod_actions">Action</directive>
         yönergesinin kullanımına izin verilir.
       </dd>
@@ -3402,9 +3407,10 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
       kullanıcının iki defa kimlik doğrulamasına sokulmasına sebep olacaktır
       (bir kere <code>www</code> için bir kere de <code>www.mesela.dom</code>
       için; daha ayrıntılı bilgi için <a
-      href="http://httpd.apache.org/docs/misc/FAQ.html#prompted-twice">SSS</a>’y
-      e bakınız). Fakat <directive>UseCanonicalName Off</directive> olsaydı
-      Apache isteği <code>http://www/splat/</code> adresine yönlendirecekti.</p>
+      href="http://wiki.apache.org/httpd/FAQ#Why_does_Apache_ask_for_my_password_twice_before_serving_a_file.3F"
+      >SSS</a>’ye bakınız). Fakat <directive>UseCanonicalName Off</directive>
+      olsaydı Apache isteği <code>http://www/splat/</code> adresine
+      yönlendirecekti.</p>
 
     <p><code>UseCanonicalName DNS</code> diye üçüncü bir seçenek daha vardır ve
       istek yaparken <code>Host:</code> başlığını kullanmayan eski istemcileri
