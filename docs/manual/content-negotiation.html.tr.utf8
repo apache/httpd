@@ -27,7 +27,6 @@
 <a href="./ko/content-negotiation.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/content-negotiation.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
 
     <p>Apache, içerik uzlaşımını HTTP/1.1 belirtiminde bahsedildiği şekliyle
@@ -183,7 +182,7 @@
       göre öncelikli olacaktır. Bu nedenle <code>qs</code> değeri özkaynağın
       doğasına bakarak belirlenir.</p>
 
-    <p>Tanınan başlıkların tam listesini <a href="mod/mod_negotiation.html#typemaps">mod_negotation</a> modülünün
+    <p>Tanınan başlıkların tam listesini <a href="mod/mod_negotiation.html#typemaps">mod_negotiation</a> modülünün
       belgesinde bulabilirsiniz.</p>
   
 

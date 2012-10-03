@@ -639,7 +639,7 @@ tüketimine sınırlama getirir.</td></tr>
 <tr><td><a href="core.html#rlimitnproc">RLimitNPROC <var>sayı</var>|max [<var>sayı</var>|max]</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Apache alt süreçleri tarafından çalıştırılabilecek süreç sayısına
 sınırlama getirir.</td></tr>
 <tr class="odd"><td><a href="core.html#satisfy" id="S" name="S">Satisfy Any|All</a></td><td> All </td><td>dh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Konak seviyesinde erişim denetimi ile kullanıcı kimlik doğrulaması arasındaki etkileşim</td></tr>
-<tr><td><a href="mpm_common.html#scoreboardfile">ScoreBoardFile <var>dosya-yolu</var></a></td><td> logs/apache_status </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Çocuk süreçler için eşgüdüm verisini saklamakta kullanılan
+<tr><td><a href="mpm_common.html#scoreboardfile">ScoreBoardFile <var>dosya-yolu</var></a></td><td> logs/apache_runtime +</td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Çocuk süreçler için eşgüdüm verisini saklamakta kullanılan
   dosyanın yerini belirler.</td></tr>
 <tr class="odd"><td><a href="mod_actions.html#script">Script <var>method</var> <var>cgi-script</var></a></td><td></td><td>skd</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Activates a CGI script for a particular request
 method.</td></tr>
