@@ -410,8 +410,6 @@ AP_DECLARE(char *) ap_pregsub(apr_pool_t *p, const char *input,
             len++;
         }
         else if (no < nmatch && pmatch[no].rm_so < pmatch[no].rm_eo) {
-            if (APR_SIZE_MAX - len <= pmatch[no].rm_eo - pmatch[no].rm_so)
-                return APR_ENOMEM;
             len += pmatch[no].rm_eo - pmatch[no].rm_so;
         }
 
