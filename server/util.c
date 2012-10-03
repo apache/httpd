@@ -2802,6 +2802,8 @@ AP_DECLARE(void) ap_get_sload(ap_sload_t *ld)
     /* preload errored fields, we overwrite */
     ld->idle = -1;
     ld->busy = -1;
+    ld->bytes_served = 0;
+    ld->access_count = 0;
 
     ap_mpm_query(AP_MPMQ_GENERATION, &mpm_generation);
     ap_mpm_query(AP_MPMQ_HARD_LIMIT_THREADS, &thread_limit);
@@ -2826,6 +2828,14 @@ AP_DECLARE(void) ap_get_sload(ap_sload_t *ld)
                          ps->generation == mpm_generation) {
                     busy++;
                 }   
+            }
+
+            if (ap_extended_status && !ps->quiescing && ps->pid) {
+                if (ws->access_count != 0 
+                    || (res != SERVER_READY && res != SERVER_DEAD)) {
+                    ld->access_count += ws->access_count;
+                    ld->bytes_served += ws->bytes_served;
+                }
             }
         }
     }
