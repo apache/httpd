@@ -97,7 +97,7 @@ du serveur</td></tr>
     appartenent au domaine example.com, ajoutez ces lignes à votre
     fichier de configuration <code>httpd.conf</code> :</p>
 <pre class="prettyprint lang-config">
-&lt;Location /server-status&gt;
+&lt;Location /etat-serveur&gt;
     SetHandler server-status
     Require host example.com
 &lt;/Location&gt;
