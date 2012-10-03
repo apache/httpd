@@ -226,6 +226,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: minfrin
      rjung: it seems the new variable "status" is never set except for the initial
             value "0".
+     minfrin: New variable status is set on this line:
+              if (!error_fmt && ((status = ap_run_sub_req(rr)))) {
 
    * mod_auth_form: Make sure that get_notes_auth() sets the user as does
      get_form_auth() and get_session_auth(). Makes sure that REMOTE_USER
