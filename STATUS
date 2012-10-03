@@ -120,12 +120,13 @@ RELEASE SHOWSTOPPERS:
      trawick: I assume the former is reflected in the fixes below.
               I don't see mod_rewrite example fixes, but maybe I'm searching
               ineffectively.  Hints?
+     rjung: Same here.
 
   *) SECURITY: CVE-2010-2068 (cve.mitre.org)
      mod_proxy_ajp, mod_proxy_http, mod_reqtimeout: Fix timeout detection
      for platforms Windows, Netware and OS2.  PR: 49417. [Rainer Jung]
      rjung: mod_proxy_ajp and mod_reqtimeout don't apply for 2.0.x
-            I checked proxy_http and could not find a code path to fix.
+            I checked proxy_http and could not find a buggy code path.
             More eyes welcome.
      jim: not a showstopper, imo
 
@@ -170,8 +171,26 @@ RELEASE SHOWSTOPPERS:
      From 2.2.x: http://svn.apache.org/viewvc?view=revision&revision=1235443
         Individual patches apply with offsets; here's a clean all-in-one:
         http://people.apache.org/~trawick/2.0-CVE-2011-4317-r1235443.patch
-       +1: jim
+       +1: jim, rjung
        trawick: 2.2/2.4 now have a different solution (AllowAnyURI).
+       rjung: I added the AllowAnyURI patch below. It must be applied
+              on top of 2.0-CVE-2011-4317-r1235443.patch.
+
+   * Add AllowAnyURI, fix mod_rewrite configuration in Location.
+     Patch must be applied on top of the CVE-2011-4317 patch above.
+     Note that I added a minor MMN bump, since in 2.0 the structure definitions
+     are in mod_rewrite.h and not in mod_rewrite.c, so the needed change IMHO
+     is public and needs a bump.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1356115 and
+                  http://svn.apache.org/viewvc?view=revision&revision=1356813 and
+                  http://svn.apache.org/viewvc?view=revision&revision=1086662 and
+                  http://svn.apache.org/viewvc?view=revision&revision=1032431
+     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1359687 and
+                  http://svn.apache.org/viewvc?view=revision&revision=1086662 and
+                  http://svn.apache.org/viewvc?view=revision&revision=1032431
+     2.2.x patch: http://svn.apache.org/viewvc?rev=1375113&view=rev
+     2.0.x patch: http://people.apache.org/~rjung/patches/2.0-AllowAnyURI.patch
+     +1: rjung
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
