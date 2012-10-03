@@ -132,13 +132,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~rjung/patches/ssl-support-uninstalled-openssl-2_4.patch
      +1: 
      -1: kbrand: breaks OS X builds, superseded by approach based on MOD_CFLAGS etc.
-     rjung: Revoked my vote due to ongoing discussion
 
    * mod_slotmem_plain: honor DefaultRuntimeDir (below doesn't apply since
      there is no config directive to speak of)
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1370763
      2.4.x patch: trunk patch works
-     +1: jim
+     +1: jim, rjung
 
    * mod_proxy: Make balancers server-specific, as they should have
      been. Inheritance causes too many behind-the-scene interactions
@@ -151,7 +150,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_slotmem_shm: Add debugging output during persist
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1386726
      2.4.x patch: trunk patch works (minus next-number)
-     +1: jim
+     +1: jim, rjung
 
    * mod_slotmem_*: Add in new fgrab() function which forces a grab and
      slot allocation on a specified slot. Allow for clearing of inuse
@@ -160,18 +159,22 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1387389
                   http://svn.apache.org/viewvc?view=revision&revision=1388445
       2.4.x patch: trunk patch works
-     +1: jim
+     +1: jim, rjung
+     rjung: We could be more explicit in docs about the difference between grab
+            and forced grab, like e.g. "grab or allocate some unused slot and
+            mark as in-use" versus "grab or allocate a given slot and mark
+            as in-use if not already used.".
 
    * mod_slotmem_shm: Fix handling of persist shm data file naming
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387085
       2.4.x patch: trunk patch works
-     +1: jim
+     +1: jim, rjung
 
    * mod_slotmem_shm: New slotmem_shm type CLEARINUSE which clears this
      table before persisting:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387088
       2.4.x patch: trunk patch works
-     +1: jim, humbedooh
+     +1: jim, humbedooh, rjung
 
    * mod_proxy: Persist balancer and worker data across restarts and stop/start.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387110
@@ -192,6 +195,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?rev=1388648&view=rev
      2.4.x patch: trunk patch works (minus next-number, CHANGES)
      +1: minfrin, jim
+     rjung: Should we realy return HTTP_MOVED_TEMPORARILY even if we can't
+            set the Location header?
 
    * WinNT MPM: Pick up some minor improvements from trunk
      trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1374877
@@ -200,7 +205,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                     http://svn.apache.org/viewvc?view=revision&revision=1389316
      2.4.x patch: trunk patch works, but here's a consolidated patch:
                   http://people.apache.org/~trawick/winnt-cleanups-from-trunk-20120924.txt
-     +1: trawick, gsmith
+     +1: trawick, gsmith, rjung
 
    * core: ErrorDocument now works for requests without a Host header.
      (PR 48357)
@@ -212,13 +217,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      the administrator where this happened.
      trunk patch: http://svn.apache.org/viewvc?rev=1393033&view=rev
      2.4.x patch: trunk patch works
-     +1: minfrin
+     +1: minfrin, rjung
 
    * mod_include: When an include file or virtual path fails, include the result
      code that tells us why.
      trunk patch: http://svn.apache.org/viewvc?rev=1393058&view=rev
      2.4.x patch: trunk patch works
      +1: minfrin
+     rjung: it seems the new variable "status" is never set except for the initial
+            value "0".
 
    * mod_auth_form: Make sure that get_notes_auth() sets the user as does
      get_form_auth() and get_session_auth(). Makes sure that REMOTE_USER
