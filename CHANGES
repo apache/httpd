@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 
 Changes with Apache 2.4.4
+ 
+  *) prefork: Avoid logging harmless errors during graceful stop.
+     [Joe Orton, Jeff Trawick]
 
   *) mod_proxy: When concatting for PPR, avoid cases where we
      concat ".../" and "/..." to create "...//..." [Jim Jagielski]
