@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 675627:1371056 (outdated) -->
+<!-- English Revision: 1371056 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -175,7 +175,7 @@
       doğasına bakarak belirlenir.</p>
 
     <p>Tanınan başlıkların tam listesini <a
-      href="mod/mod_negotiation.html#typemaps" >mod_negotation</a> modülünün
+      href="mod/mod_negotiation.html#typemaps">mod_negotiation</a> modülünün
       belgesinde bulabilirsiniz.</p>
   </section>
 

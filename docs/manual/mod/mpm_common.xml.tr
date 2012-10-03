@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1099787:1369437 (outdated) -->
+<!-- English Revision: 1369437 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -626,7 +626,7 @@
 <description>Çocuk süreçler için eşgüdüm verisini saklamakta kullanılan
   dosyanın yerini belirler.</description>
 <syntax>ScoreBoardFile <var>dosya-yolu</var></syntax>
-<default>ScoreBoardFile logs/apache_status</default>
+<default>ScoreBoardFile logs/apache_runtime_status</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>beos</module>
 <module>mpm_winnt</module><module>prefork</module>
@@ -642,7 +642,7 @@
       dosyayı daima diskte oluşturmasına sebep olur.</p>
 
     <example><title>Örnek</title>
-      ScoreBoardFile /var/run/apache_status
+      ScoreBoardFile /var/run/apache_runtime_status
     </example>
 
     <p>Paylaşımlı belleğe eşlemli dosya, çeteleye doğrudan erişmesi gereken
