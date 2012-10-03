@@ -1451,7 +1451,7 @@ redondant)</td>
 
       <p><strong>Dans une configuration de niveau répertoire pour
       <code>/chemin</code><br />
-       (<code>/chemin/physique/vers/chemin/.htacccess</code>, avec
+       (<code>/chemin/physique/vers/chemin/.htaccess</code>, avec
       <code>RewriteBase /chemin</code>)<br />
        pour la requête ``<code>GET
       /chemin/chemin-local/infochemin</code>'':</strong><br />
