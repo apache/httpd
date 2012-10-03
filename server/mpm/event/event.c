@@ -19,10 +19,10 @@
  *
  * After a client completes the first request, the client can keep the
  * connection open to send more requests with the same socket.  This can save
- * signifigant overhead in creating TCP connections.  However, the major
+ * significant overhead in creating TCP connections.  However, the major
  * disadvantage is that Apache traditionally keeps an entire child
  * process/thread waiting for data from the client.  To solve this problem,
- * this MPM has a dedicated thread for handling both the Listenting sockets,
+ * this MPM has a dedicated thread for handling both the Listening sockets,
  * and all sockets that are in a Keep Alive status.
  *
  * The MPM assumes the underlying apr_pollset implementation is somewhat
@@ -30,7 +30,7 @@
  * enables the MPM to avoid extra high level locking or having to wake up the
  * listener thread when a keep-alive socket needs to be sent to it.
  *
- * This MPM not preform well on older platforms that do not have very good
+ * This MPM does not perform well on older platforms that do not have very good
  * threading, like Linux with a 2.4 kernel, but this does not matter, since we
  * require EPoll or KQueue.
  *
