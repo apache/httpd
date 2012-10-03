@@ -1308,6 +1308,10 @@ struct ap_sload_t {
     int idle;
     /* percentage of process/threads busy (0->100) */
     int busy;
+    /* total bytes served */
+    apr_off_t bytes_served;
+    /* total access count */
+    unsigned long access_count;
 };
 
 /**
