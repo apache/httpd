@@ -223,11 +223,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      code that tells us why.
      trunk patch: http://svn.apache.org/viewvc?rev=1393058&view=rev
      2.4.x patch: trunk patch works
-     +1: minfrin
-     rjung: it seems the new variable "status" is never set except for the initial
-            value "0".
-     minfrin: New variable status is set on this line:
-              if (!error_fmt && ((status = ap_run_sub_req(rr)))) {
+     +1: minfrin, rjung
 
    * mod_auth_form: Make sure that get_notes_auth() sets the user as does
      get_form_auth() and get_session_auth(). Makes sure that REMOTE_USER
