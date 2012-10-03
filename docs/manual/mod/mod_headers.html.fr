@@ -29,8 +29,6 @@
 <a href="../ja/mod/mod_headers.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_headers.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Personnalisation des en-têtes de requêtes et de réponses
 HTTP</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -374,10 +372,27 @@ Header merge Cache-Control no-store env=NO_STORE
 	des en-têtes sur le réseau. Il s'agit de la durée de traitement
 	de la requête. La valeur est précédée de <code>D=</code>. La
 	valeur est exprimée en microsecondes.</td></tr>
-<tr class="odd"><td><code>%{NOM_VARIABLE}e</code></td>
+<tr class="odd"><td><code>%l</code></td>
+        <td>La charge moyenne courante du serveur proprement dit. Ce
+	sont les valeurs obtenues par <code>getloadavg()</code> qui
+	représentent la charge moyenne courante, sur 5 minutes et sur 15
+	minutes. Chaque valeur est précédée de <code>l=</code> et
+	séparée de la suivante par un <code>/</code>.
+        </td></tr>
+<tr><td><code>%i</code></td>
+        <td>Le pourcentage courant de httpd au repos (de 0 à 100)
+	en se basant sur le nombre de processus et threads disponibles.
+	La valeur est précédée de <code>i=</code>.
+        </td></tr>
+<tr class="odd"><td><code>%b</code></td>
+        <td>Le pourcentage courant de httpd utilisé (de 0 à 100)
+	en se basant sur le nombre de processus et threads disponibles.
+	La valeur est précédée de <code>b=</code>.
+        </td></tr>
+<tr><td><code>%{NOM_VARIABLE}e</code></td>
         <td>Le contenu de la <a href="../env.html">variable
 	d'environnement</a> <code>NOM_VARIABLE</code>.</td></tr>
-<tr><td><code>%{NOM_VARIABLE}s</code></td>
+<tr class="odd"><td><code>%{NOM_VARIABLE}s</code></td>
         <td>Le contenu de la <a href="../env.html">variable
 	d'environnement SSL</a> <code>NOM_VARIABLE</code>, si
 	<code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> est activé.</td></tr>

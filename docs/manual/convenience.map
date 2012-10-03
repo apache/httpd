@@ -108,7 +108,9 @@ authzdbmtype	mod/mod_authz_dbm.html#authzdbmtype
 authzprovideralias	mod/mod_authz_core.html#authzprovideralias
 authzsendforbiddenonfailure	mod/mod_authz_core.html#authzsendforbiddenonfailure
 balancergrowth	mod/mod_proxy.html#balancergrowth
+balancerinherit	mod/mod_proxy.html#balancerinherit
 balancermember	mod/mod_proxy.html#balancermember
+balancerpersist	mod/mod_proxy.html#balancerpersist
 browsermatch	mod/mod_setenvif.html#browsermatch
 browsermatchnocase	mod/mod_setenvif.html#browsermatchnocase
 bufferedlogs	mod/mod_log_config.html#bufferedlogs
