@@ -186,7 +186,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: n/a
      2.4.x patch: n/a
      2.2.x patch: http://people.apache.org/~covener/patches/2.2.x-byterange-table_clear.diff
-     +1: covener
+     +1: covener, rjung
 
    * mod_ssl: Add SSLCompression directive to control TLS compression
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1345319 
@@ -194,7 +194,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1369585
      2.2.x patch: http://people.apache.org/~covener/patches/2.2.x-sslcompression.diff 
                   (minor ssl_private.h merge problem)
-     +1 covener
+     +1 covener, rjung
      
 
 PATCHES/ISSUES THAT ARE STALLED
