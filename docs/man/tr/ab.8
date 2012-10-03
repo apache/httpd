@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "AB" 8 "2009-09-18" "Apache HTTP Sunucusu" "ab"
+.TH "AB" 8 "2012-10-03" "Apache HTTP Sunucusu" "ab"
 .nh
 .SH İSİM
 ab \- Apache HTTP sunucusu başarım ölçme aracı
@@ -129,6 +129,70 @@ Sonuçları HTML tabloları olarak basar\&. Öntanımlı tablo, beyaz artalanlı
 .TP
 -Z \fIşifre-kümesi\fR
 SSL/TLS şifre kümesi belirtilir (\fBopenssl\fR(1) şifrelerine bakınız)\&.  
+ 
+.SH "ÇIKTI"
+ 
+.PP
+Aşağıdaki listede \fBab\fR çıktısındaki değerler açıklanmıştır:
+ 
+ 
+.TP
+Server Software
+Varsa, bu değer başarılı ilk yanıtın \fIserver\fR HTTP başlığında döner\&. Bu değer, başlıktan saptanan, başlangıçtan 32 onluk değerli karaktere (gerçekte, bir boşluk veya CR/LF) kadar olan tüm karakterleri içerir\&.  
+.TP
+Server Hostname
+Komut satırında belirtilen DNS veya IP adresi\&.  
+.TP
+Server Port
+\fBab\fR'nin bağlandığı port\&. Komut satırında bir port belirtilmemişse http için 80, https için 443 öntanımlıdır\&.  
+.TP
+SSL/TLS Protocol
+İstemci ile sunucu arasında alıp verilen protokol değerleri\&. Bu sadece SSL kullanılıyorsa çıktılanır\&.  
+.TP
+Document Path
+Komut satırından elde edilen istek URI'si\&.  
+.TP
+Document Length
+Başarıyla dönen ilk belgenin bayt cinsinden uzunluğu\&. Eğer belge uzunluğu sınama sırasında değişirse yanıt bir hata olarak ele alınır\&.  
+.TP
+Concurrency Level
+Sınama sırasında eşzamanlanan istemci sayısı\&.  
+.TP
+Time taken for tests
+İlk soket bağlantısının kurulduğu andan son yanıtın alındığı ana kadar geçen süre\&.  
+.TP
+Complete requests
+Alınan başarılı yanıtların sayısı\&.  
+.TP
+Failed requests
+Başarısız olarak kabul edilen istek sayısı\&. Bu sayı sıfırdan farklıysa, ayrı bir satırda, bağlantıdan, okumadan, yanlış içerik uzunluğundan veya istisnalardan kaynaklanan başarısızlık sayıları da gösterilir\&.  
+.TP
+Write errors
+Yazma sırasında oluşan hata (kırık boru) sayısı\&.  
+.TP
+Non-2xx responses
+200 serisinden olmayan yanıt kodlarının sayısı\&. Tüm yanıtlar 200 kodlu ise bu alan çıktılanmaz\&.  
+.TP
+Keep-Alive requests
+Keep-Alive isteklerinde sonuçlanan bağlantı sayısı\&.  
+.TP
+Total body sent
+Yapılandırılmışsa, sınamanın bir parçası olarak gönderilecek toplam veri miktarı (bayt)\&. Sınama sırasında gönderi bir veri gövdesi içermiyorsa bu alan çıktılanmaz\&.  
+.TP
+Total transferred
+Sunucudan alınan toplam bayt sayısı\&. Bu sayı aslında hattan gönderilen bayt miktarıdır\&.  
+.TP
+HTML transferred
+Sunucudan alınan toplam belge baytı miktarı\&. Bu miktar HTTP başlıklarındaki baytları içermez\&.  
+.TP
+Requests per second
+Saniyedeki istek sayısı\&. Toplam istek sayısının isteklerin toplam zamanına oranıdır\&.  
+.TP
+Time per request
+İstek başına harcanan ortalama zaman\&. İlk değerin formülü: eşzamanlananİstemciSayısı * geçenSüre * 1000 / tamamlananİstekSayısı, ikinci değerin formülü: geçenSüre * 1000 / tamamlananİstekSayısı  
+.TP
+Transfer rate
+okunanToplam / 1024 / geçenSüre formülü ile hesaplanan aktarım hızı\&.  
  
 .SH "BÖRTÜ BÖCEK"
  

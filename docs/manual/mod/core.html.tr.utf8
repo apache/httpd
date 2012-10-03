@@ -30,7 +30,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Apache HTTP Sunucusunda daima mevcut olan çekirdek
  özellikler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr></table>
@@ -506,7 +505,12 @@ kullanımı önerilmemektedir.</td></tr>
         <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code>,
         <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>,
         <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
-        yönergelerinin ve <code class="module"><a href="../mod/mod_actions.html">mod_actions</a></code> modülündeki
+        yönergelerinin, <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> modülündeki
+        <code class="directive"><a href="../mod/mod_alias.html#redirect">Redirect</a></code>,
+        <code class="directive"><a href="../mod/mod_alias.html#redirecttemp">RedirectTemp</a></code>,
+        <code class="directive"><a href="../mod/mod_alias.html#redirectpermanent">RedirectPermanent</a></code>,
+        <code class="directive"><a href="../mod/mod_alias.html#redirectmatch">RedirectMatch</a></code>)
+        ve <code class="module"><a href="../mod/mod_actions.html">mod_actions</a></code> modülündeki
         <code class="directive"><a href="../mod/mod_actions.html#action">Action</a></code>
         yönergesinin kullanımına izin verilir.
       </dd>
@@ -3449,9 +3453,9 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</td></tr>
       adresine yönlendirecektir. Eğer kimlik doğrulama da etkinse bu
       kullanıcının iki defa kimlik doğrulamasına sokulmasına sebep olacaktır
       (bir kere <code>www</code> için bir kere de <code>www.mesela.dom</code>
-      için; daha ayrıntılı bilgi için <a href="http://httpd.apache.org/docs/misc/FAQ.html#prompted-twice">SSS</a>’y
-      e bakınız). Fakat <code class="directive">UseCanonicalName Off</code> olsaydı
-      Apache isteği <code>http://www/splat/</code> adresine yönlendirecekti.</p>
+      için; daha ayrıntılı bilgi için <a href="http://wiki.apache.org/httpd/FAQ#Why_does_Apache_ask_for_my_password_twice_before_serving_a_file.3F">SSS</a>’ye bakınız). Fakat <code class="directive">UseCanonicalName Off</code>
+      olsaydı Apache isteği <code>http://www/splat/</code> adresine
+      yönlendirecekti.</p>
 
     <p><code>UseCanonicalName DNS</code> diye üçüncü bir seçenek daha vardır ve
       istek yaparken <code>Host:</code> başlığını kullanmayan eski istemcileri
