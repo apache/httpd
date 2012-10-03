@@ -23,6 +23,11 @@ Changes with Apache 2.0.65
      PR 51714. [Jeff Trawick, Stefan Fritsch, Jim Jagielski, Ruediger Pluem,
      Eric Covener, <lowprio20 gmail.com>]
 
+  *) SECURITY: CVE-2011-3607 (cve.mitre.org)
+     Fix integer overflow in ap_pregsub() which, when the mod_setenvif module
+     is enabled, could allow local users to gain privileges via a .htaccess
+     file. [Stefan Fritsch, Greg Ames]
+
 Changes with Apache 2.0.64
 
   *) SECURITY: CVE-2010-1452 (cve.mitre.org)

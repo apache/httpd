@@ -129,13 +129,6 @@ RELEASE SHOWSTOPPERS:
             More eyes welcome.
      jim: not a showstopper, imo
 
-  *) SECURITY: CVE-2011-3607 (cve.mitre.org)
-     Fix integer overflow in ap_pregsub() which, when the mod_setenvif module
-     is enabled, could allow local users to gain privileges via a .htaccess
-     file. [Stefan Fritsch, Greg Ames]
-     From 2.2.x; http://svn.apache.org/viewvc?view=revision&revision=1227280
-       +1: gregames, wrowe, trawick
-
   *) SECURITY: CVE-2011-4317 (cve.mitre.org)
      Resolve additional cases of URL rewriting with ProxyPassMatch or
      RewriteRule, where particular request-URIs could result in undesired
