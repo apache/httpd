@@ -198,15 +198,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      rjung: Should we realy return HTTP_MOVED_TEMPORARILY even if we can't
             set the Location header?
 
-   * WinNT MPM: Pick up some minor improvements from trunk
-     trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1374877
-                    http://svn.apache.org/viewvc?view=revision&revision=1374880
-                    http://svn.apache.org/viewvc?view=revision&revision=1375013
-                    http://svn.apache.org/viewvc?view=revision&revision=1389316
-     2.4.x patch: trunk patch works, but here's a consolidated patch:
-                  http://people.apache.org/~trawick/winnt-cleanups-from-trunk-20120924.txt
-     +1: trawick, gsmith, rjung
-
    * core: ErrorDocument now works for requests without a Host header.
      (PR 48357)
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1392347
