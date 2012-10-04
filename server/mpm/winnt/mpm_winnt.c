@@ -95,9 +95,6 @@ int winnt_mpm_state = AP_MPMQ_STARTING;
  */
 apr_pool_t *pconf;
 
-/* definitions from child.c */
-void child_main(apr_pool_t *pconf);
-
 /* Only one of these, the pipe from our parent, meant only for
  * one child worker's consumption (not to be inherited!)
  * XXX: decorate this name for the trunk branch, was left simplified
@@ -189,10 +186,10 @@ static void winnt_note_child_killed(int slot)
  * signal_restart_name and signal_shutdown_name.
  */
 #define MAX_SIGNAL_NAME 30  /* Long enough for apPID_shutdown, where PID is an int */
-char signal_name_prefix[MAX_SIGNAL_NAME];
-char signal_restart_name[MAX_SIGNAL_NAME];
-char signal_shutdown_name[MAX_SIGNAL_NAME];
-void setup_signal_names(char *prefix)
+static char signal_name_prefix[MAX_SIGNAL_NAME];
+static char signal_restart_name[MAX_SIGNAL_NAME];
+static char signal_shutdown_name[MAX_SIGNAL_NAME];
+static void setup_signal_names(char *prefix)
 {
     apr_snprintf(signal_name_prefix, sizeof(signal_name_prefix), prefix);
     apr_snprintf(signal_shutdown_name, sizeof(signal_shutdown_name),
@@ -280,7 +277,7 @@ static void get_handles_from_parent(server_rec *s, HANDLE *child_exit_event,
     void *sb_shared;
     apr_status_t rv;
 
-    /* *** We now do this was back in winnt_rewrite_args
+    /* *** We now do this way back in winnt_rewrite_args
      * pipe = GetStdHandle(STD_INPUT_HANDLE);
      */
     if (!ReadFile(pipe, &ready_event, sizeof(HANDLE),
@@ -454,7 +451,7 @@ static void get_listeners_from_parent(server_rec *s)
     /* Open the pipe to the parent process to receive the inherited socket
      * data. The sockets have been set to listening in the parent process.
      *
-     * *** We now do this was back in winnt_rewrite_args
+     * *** We now do this way back in winnt_rewrite_args
      * pipe = GetStdHandle(STD_INPUT_HANDLE);
      */
     for (lr = ap_listeners; lr; lr = lr->next, ++lcnt) {
@@ -824,7 +821,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
         }
         if (SetEvent(child_exit_event) == 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), s, APLOGNO(00426)
-                         "Parent: SetEvent for child process %pp failed.",
+                         "Parent: SetEvent for child process event %pp failed.",
                          event_handles[CHILD_HANDLE]);
         }
         /* Don't wait to verify that the child process really exits,
@@ -844,14 +841,16 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
             || exitcode == APEXIT_CHILDINIT
             || exitcode == APEXIT_INIT) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, 0, ap_server_conf, APLOGNO(00427)
-                         "Parent: child process exited with status %lu -- Aborting.", exitcode);
+                         "Parent: child process %lu exited with status %lu -- Aborting.",
+                         child_pid, exitcode);
             shutdown_pending = 1;
         }
         else {
             int i;
             restart_pending = 1;
             ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf, APLOGNO(00428)
-                         "Parent: child process exited with status %lu -- Restarting.", exitcode);
+                         "Parent: child process %lu exited with status %lu -- Restarting.",
+                         child_pid, exitcode);
             for (i = 0; i < ap_threads_per_child; i++) {
                 ap_update_child_status_from_indexes(0, i, SERVER_DEAD, NULL);
             }
@@ -886,21 +885,21 @@ die_now:
         /* Signal the child processes to exit */
         if (SetEvent(child_exit_event) == 0) {
                 ap_log_error(APLOG_MARK,APLOG_ERR, apr_get_os_error(), ap_server_conf, APLOGNO(00429)
-                             "Parent: SetEvent for child process %pp failed",
+                             "Parent: SetEvent for child process event %pp failed",
                              event_handles[CHILD_HANDLE]);
         }
         if (event_handles[CHILD_HANDLE]) {
             rv = WaitForSingleObject(event_handles[CHILD_HANDLE], timeout);
             if (rv == WAIT_OBJECT_0) {
                 ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf, APLOGNO(00430)
-                             "Parent: Child process exited successfully.");
+                             "Parent: Child process %lu exited successfully.", child_pid);
                 CloseHandle(event_handles[CHILD_HANDLE]);
                 event_handles[CHILD_HANDLE] = NULL;
             }
             else {
                 ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf, APLOGNO(00431)
-                             "Parent: Forcing termination of child process %pp",
-                             event_handles[CHILD_HANDLE]);
+                             "Parent: Forcing termination of child process %lu",
+                             child_pid);
                 TerminateProcess(event_handles[CHILD_HANDLE], 1);
                 CloseHandle(event_handles[CHILD_HANDLE]);
                 event_handles[CHILD_HANDLE] = NULL;
@@ -1405,12 +1404,12 @@ static int winnt_check_config(apr_pool_t *pconf, apr_pool_t *plog,
                               apr_pool_t *ptemp, server_rec* s)
 {
     int is_parent;
-    static int restart_num = 0;
     int startup = 0;
 
     /* We want this only in the parent and only the first time around */
     is_parent = (parent_pid == my_pid);
-    if (is_parent && restart_num++ == 0) {
+    if (is_parent &&
+        ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG) {
         startup = 1;
     }
 
@@ -1497,7 +1496,6 @@ static int winnt_check_config(apr_pool_t *pconf, apr_pool_t *plog,
 
 static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec* s)
 {
-    static int restart_num = 0;
     apr_status_t rv = 0;
 
     /* Handle the following SCM aspects in this phase:
@@ -1557,7 +1555,8 @@ static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
 
     if (parent_pid == my_pid)
     {
-        if (restart_num++ == 1)
+        if (ap_state_query(AP_SQ_MAIN_STATE) != AP_SQ_MS_CREATE_PRE_CONFIG
+            && ap_state_query(AP_SQ_CONFIG_GEN) == 1)
         {
             /* This code should be run once in the parent and not run
              * across a restart
