@@ -158,6 +158,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1386880
                   http://svn.apache.org/viewvc?view=revision&revision=1387389
                   http://svn.apache.org/viewvc?view=revision&revision=1388445
+                  http://svn.apache.org/viewvc?view=revision&revision=1394079
       2.4.x patch: trunk patch works
      +1: jim, rjung
      rjung: We could be more explicit in docs about the difference between grab
@@ -165,7 +166,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             mark as in-use" versus "grab or allocate a given slot and mark
             as in-use if not already used.".
        jim: Sounds good... We can adjust trunk as needed and then backport
-            since docs are CTR on the branch
+            since docs are CTR on the branch (Added r1394079)
 
    * mod_slotmem_shm: Fix handling of persist shm data file naming
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387085
