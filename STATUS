@@ -89,12 +89,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
   
-   * mod_include: When +Includes is not set and we disable mod_include, tell
-     the administrator where this happened.
-     trunk patch: http://svn.apache.org/viewvc?rev=1393033&view=rev
-     2.4.x patch: trunk patch works
-     +1: minfrin, rjung, jim
-
    * mod_include: When an include file or virtual path fails, include the result
      code that tells us why.
      trunk patch: http://svn.apache.org/viewvc?rev=1393058&view=rev
