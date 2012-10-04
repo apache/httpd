@@ -89,6 +89,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
   
+   * core: ErrorDocument now works for requests without a Host header.
+     (PR 48357)
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1392347
+     2.4.x patch: trunk patch works (minus CHANGES)
+     +1: trawick, minfrin, jim
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -193,12 +199,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: minfrin, jim
      rjung: Should we realy return HTTP_MOVED_TEMPORARILY even if we can't
             set the Location header?
-
-   * core: ErrorDocument now works for requests without a Host header.
-     (PR 48357)
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1392347
-     2.4.x patch: trunk patch works (minus CHANGES)
-     +1: trawick, minfrin, jim
 
    * mod_auth_form: Make sure that get_notes_auth() sets the user as does
      get_form_auth() and get_session_auth(). Makes sure that REMOTE_USER
