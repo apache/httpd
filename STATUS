@@ -164,6 +164,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             and forced grab, like e.g. "grab or allocate some unused slot and
             mark as in-use" versus "grab or allocate a given slot and mark
             as in-use if not already used.".
+        jj: Sounds good... We can adjust trunk as needed and then backport
+            since docs are CTR on the branch
 
    * mod_slotmem_shm: Fix handling of persist shm data file naming
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387085
