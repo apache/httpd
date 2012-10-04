@@ -164,7 +164,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             and forced grab, like e.g. "grab or allocate some unused slot and
             mark as in-use" versus "grab or allocate a given slot and mark
             as in-use if not already used.".
-        jj: Sounds good... We can adjust trunk as needed and then backport
+       jim: Sounds good... We can adjust trunk as needed and then backport
             since docs are CTR on the branch
 
    * mod_slotmem_shm: Fix handling of persist shm data file naming
@@ -198,7 +198,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      (PR 48357)
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1392347
      2.4.x patch: trunk patch works (minus CHANGES)
-     +1: trawick, minfrin
+     +1: trawick, minfrin, jim
 
    * mod_auth_form: Make sure that get_notes_auth() sets the user as does
      get_form_auth() and get_session_auth(). Makes sure that REMOTE_USER
