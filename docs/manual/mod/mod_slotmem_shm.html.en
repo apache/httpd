@@ -84,10 +84,10 @@
       <dd>return the total data size, in bytes, of a slot in the segment</dd>
 
       <dt>apr_status_t grab(ap_slotmem_instance_t *s, unsigned int *item_id);</dt>
-      <dd>grab or allocate a slot and mark as in-use (does not do any data copying)</dd>
+      <dd>grab or allocate the first free slot and mark as in-use (does not do any data copying)</dd>
 
-      <dt>apr_status_t grab(ap_slotmem_instance_t *s, unsigned int item_id);</dt>
-      <dd>forced grab or allocate a slot and mark as in-use (does not do any data copying)</dd>
+      <dt>apr_status_t fgrab(ap_slotmem_instance_t *s, unsigned int item_id);</dt>
+      <dd>forced grab or allocate the specified slot and mark as in-use (does not do any data copying)</dd>
 
       <dt>apr_status_t release(ap_slotmem_instance_t *s, unsigned int item_id);</dt>
       <dd>release or free a slot and mark as not in-use (does not do any data copying)</dd>
