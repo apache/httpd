@@ -121,6 +121,8 @@ RELEASE SHOWSTOPPERS:
               I don't see mod_rewrite example fixes, but maybe I'm searching
               ineffectively.  Hints?
      rjung: Same here.
+     covener: Cannot find bad exmaples.  I recall the bad examples were 
+     relatively recent additions so likely not backported to 2.0. 
 
   *) SECURITY: CVE-2010-2068 (cve.mitre.org)
      mod_proxy_ajp, mod_proxy_http, mod_reqtimeout: Fix timeout detection
