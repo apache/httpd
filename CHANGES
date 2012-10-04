@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_systemd: New module, for integration with systemd on Linux.
+     [Jan Kaluza <jkaluza redhat.com>]
+
   *) core: ErrorDocument now works for requests without a Host header.
      PR 48357.  [Jeff Trawick]
 
