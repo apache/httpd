@@ -89,7 +89,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
   
-   
+   * mod_slotmem_shm: New slotmem_shm type CLEARINUSE which clears this
+     table before persisting:
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387088
+      2.4.x patch: trunk patch works
+     +1: jim, humbedooh, rjung
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -169,12 +174,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387085
       2.4.x patch: trunk patch works
      +1: jim, rjung
-
-   * mod_slotmem_shm: New slotmem_shm type CLEARINUSE which clears this
-     table before persisting:
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387088
-      2.4.x patch: trunk patch works
-     +1: jim, humbedooh, rjung
 
    * mod_proxy: Persist balancer and worker data across restarts and stop/start.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387110
