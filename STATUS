@@ -223,6 +223,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: minfrin
 
+   * WinNT MPM thread-safety issue at child startup
+     trunk patch: http://svn.apache.org/viewvc?view=revision&sortby=date&revision=1374874
+     2.4.x patch: trunk patch works
+     +1: trawick
+
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
