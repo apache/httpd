@@ -89,6 +89,18 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
   
+   * mod_include: When +Includes is not set and we disable mod_include, tell
+     the administrator where this happened.
+     trunk patch: http://svn.apache.org/viewvc?rev=1393033&view=rev
+     2.4.x patch: trunk patch works
+     +1: minfrin, rjung, jim
+
+   * mod_include: When an include file or virtual path fails, include the result
+     code that tells us why.
+     trunk patch: http://svn.apache.org/viewvc?rev=1393058&view=rev
+     2.4.x patch: trunk patch works
+     +1: minfrin, rjung, jim
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -199,18 +211,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1392347
      2.4.x patch: trunk patch works (minus CHANGES)
      +1: trawick, minfrin
-
-   * mod_include: When +Includes is not set and we disable mod_include, tell
-     the administrator where this happened.
-     trunk patch: http://svn.apache.org/viewvc?rev=1393033&view=rev
-     2.4.x patch: trunk patch works
-     +1: minfrin, rjung, jim
-
-   * mod_include: When an include file or virtual path fails, include the result
-     code that tells us why.
-     trunk patch: http://svn.apache.org/viewvc?rev=1393058&view=rev
-     2.4.x patch: trunk patch works
-     +1: minfrin, rjung, jim
 
    * mod_auth_form: Make sure that get_notes_auth() sets the user as does
      get_form_auth() and get_session_auth(). Makes sure that REMOTE_USER
