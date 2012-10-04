@@ -37,15 +37,12 @@
 static int systemd_pre_mpm(apr_pool_t *p, ap_scoreboard_e sb_type)
 {
     int rv;
-    pid_t pid;
-    pid = getpid();
 
     ap_extended_status = 1;
 
     rv = sd_notifyf(0, "READY=1\n"
                     "STATUS=Processing requests...\n"
-                    "MAINPID=%lu",
-                    (unsigned long) pid);
+                    "MAINPID=%" APR_PID_T_FMT, getpid());
     if (rv < 0) {
         ap_log_perror(APLOG_MARK, APLOG_ERR, 0, p, APLOGNO(02395)
                      "sd_notifyf returned an error %d", rv);
@@ -91,8 +88,7 @@ static void systemd_register_hooks(apr_pool_t *p)
     ap_hook_monitor(systemd_monitor, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA systemd_module =
-{
+AP_DECLARE_MODULE(systemd) = {
     STANDARD20_MODULE_STUFF,
     NULL,
     NULL,
