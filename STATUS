@@ -193,6 +193,8 @@ RELEASE SHOWSTOPPERS:
      2.2.x patch: http://svn.apache.org/viewvc?rev=1375113&view=rev
      2.0.x patch: http://people.apache.org/~rjung/patches/2.0-AllowAnyURI.patch
      +1: rjung
+     -1: covener needs to have the baseurl merge ripped out for 2.0.x, behavior change
+         already noted in PR53963
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
