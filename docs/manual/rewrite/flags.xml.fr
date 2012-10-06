@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1379311:1394837 (outdated) -->
+<!-- English Revision: 1394837 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -680,7 +680,9 @@ avertissements 'Invalid URI in request'.
 ex&eacute;cuter. La syntaxe du drapeau [S] est [S=<em>N</em>], o&ugrave;
 <em>N</em> correspond au nombre de r&egrave;gles &agrave; sauter (sous
 r&eacute;serve que la r&egrave;gle <directive
-module="mod_rewrite">RewriteRule</directive> corresponde). 
+module="mod_rewrite">RewriteRule</directive> corresponde et qu'au moins
+une condition <directive module="mod_rewrite">RewriteCond</directive>
+pr&eacute;alable soit v&eacute;rifi&eacute;e). 
 Ceci peut s'interpr&eacute;ter comme une instruction
 <code>goto</code>  dans votre jeu de r&egrave;gles de r&eacute;&eacute;criture. Dans
 l'exemple suivant, nous ne voulons ex&eacute;cuter la r&egrave;gle <directive
