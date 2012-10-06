@@ -379,7 +379,7 @@ werden dürfen</td></tr>
 erlaubt sind.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AllowOverride All|None|<var>Direktiven-Typ</var>
 [<var>Direktiven-Typ</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>AllowOverride All</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>AllowOverride None (2.3.9 und später), AllowOverride All (2.3.8 und früher)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Verzeichnis</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
