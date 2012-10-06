@@ -363,7 +363,7 @@ werden d&uuml;rfen</description>
 erlaubt sind.</description>
 <syntax>AllowOverride All|None|<var>Direktiven-Typ</var>
 [<var>Direktiven-Typ</var>] ...</syntax>
-<default>AllowOverride All</default>
+<default>AllowOverride None (2.3.9 und später), AllowOverride All (2.3.8 und früher)</default>
 <contextlist><context>directory</context></contextlist>
 
 <usage>
