@@ -1,8 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.24
 
- *) mod_ssl: Add new directive SSLCompression to disable TLS-level
-    compression. PR 53219. [Björn Jacke <bjoern j3e de>, Stefan Fritsch]
+  *) mod_ssl: Add new directive SSLCompression to disable TLS-level
+     compression. PR 53219. [Björn Jacke <bjoern j3e de>, Stefan Fritsch]
 
 Changes with Apache 2.2.23
 
