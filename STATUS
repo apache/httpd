@@ -94,13 +94,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_ssl: Add SSLCompression directive to control TLS compression
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1345319 
-                  http://svn.apache.org/viewvc?view=revision&revision=1348656
-     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1369585
-     2.2.x patch: http://people.apache.org/~covener/patches/2.2.x-sslcompression.diff 
-                  (minor ssl_private.h merge problem)
-     +1 covener, rjung, kbrand
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
