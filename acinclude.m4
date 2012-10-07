@@ -217,6 +217,27 @@ EOF
     fi
   fi
 ])dnl
+dnl Same as APACHE_MODPATH_INIT/FINISH but for MPMs
+dnl APACHE_MPMPATH_INIT(mpmpath)
+AC_DEFUN(APACHE_MPMPATH_INIT,[
+  current_dir=$1
+  modpath_current=server/mpm/$1
+  modpath_static=
+  modpath_shared=
+  for var in mod_buildvars; do
+    eval MOD_$var=
+  done
+  test -d $1 || $srcdir/build/mkdir.sh $modpath_current
+  > $modpath_current/modules.mk
+])dnl
+dnl
+AC_DEFUN(APACHE_MPMPATH_FINISH,[
+  for var in mod_buildvars; do
+    if eval val=\"\$MOD_$var\"; test -n "$val"; then
+      echo "MOD_$var = $val" >> $modpath_current/modules.mk
+    fi
+  done
+])dnl
 
 dnl
 dnl APACHE_MPM_MODULE(name[, shared[, objects[, config[, path[, libs]]]]])
@@ -253,7 +274,7 @@ AC_DEFUN(APACHE_MPM_MODULE,[
         if test -z "$2"; then
             APR_ADDTO(AP_LIBS, [$6])
             libname="lib$1.la"
-            cat >$mpmpath/modules.mk<<EOF
+            cat >>$mpmpath/modules.mk<<EOF
 $libname: $objects
 	\$(MOD_LINK) $objects
 DISTCLEAN_TARGETS = modules.mk
@@ -264,7 +285,7 @@ EOF
             apache_need_shared=yes
             libname="mod_mpm_$1.la"
             shobjects=`echo $objects | sed 's/\.lo/.slo/g'`
-            cat >$mpmpath/modules.mk<<EOF
+            cat >>$mpmpath/modules.mk<<EOF
 $libname: $shobjects
 	\$(SH_LINK) -rpath \$(libexecdir) -module -avoid-version $objects $6
 DISTCLEAN_TARGETS = modules.mk
