@@ -109,10 +109,22 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352596
      2.4.x patch: http://people.apache.org/~ben/httpd-2.4-rfc5878.patch
      +1: ben, druggeri
+     -1: kbrand
      druggeri note: Needs docs for new directive
      kbrand: depends on an unreleased OpenSSL version (1.0.2), and
              RFC 5878 is of "Category: Experimental". Seems premature
              to me to consider for backporting to 2.4/2.2 at this point.
+             The API in the OpenSSL implementation from May 2012
+             (http://cvs.openssl.org/chngview?cn=22601) only covers the
+             privately-defined TLSEXT_AUTHZDATAFORMAT_audit_proof, there's
+             no support for x509_attr_cert (section 3.3.1 in RFC 5878) or
+             saml_assertion (3.3.2). SSL_CTX_use_authz_file doesn't have
+             any docs in OpenSSL, either, and there's no "openssl foo ..."
+             command or similar to create/manage such files. Trunk is
+             the right place where it can grow.
+             Finally, httpd-2.4-rfc5878.patch includes a build-system change
+             which is unrelated to this feature (see separate proposal from
+             rjung below, ssl-support-uninstalled-openssl-2_4.patch).
      ben: not correct that it depends on OpenSSL 1.0.2, it builds with
           any version. Also, if you read my note to dev@ you will see
           why it is not premature.
@@ -206,6 +218,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&sortby=date&revision=1374874
      2.4.x patch: trunk patch works
      +1: trawick
+
+   * ab: add TLS1.1/TLS1.2 options to -f switch, and adapt output
+     to more accurately report the negotiated protocol. PR 53916.
+     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1395225
+     2.4.x patch: trunk patch works (modulo CHANGES)
+     +1: kbrand
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
