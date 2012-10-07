@@ -64,6 +64,11 @@
 #define HAVE_TLSV1_X
 #endif
 
+#if !defined(OPENSSL_NO_COMP) && !defined(SSL_OP_NO_COMPRESSION) \
+    && OPENSSL_VERSION_NUMBER < 0x00908000L
+#define OPENSSL_NO_COMP
+#endif
+
 #include "ssl_util_ssl.h"
 
 /** The #ifdef macros are only defined AFTER including the above
@@ -504,6 +509,9 @@ struct SSLSrvConfigRec {
 #ifdef HAVE_FIPS
     BOOL             fips;
 #endif
+#ifndef OPENSSL_NO_COMP
+    BOOL             compression;
+#endif
 };
 
 /**
@@ -560,6 +568,7 @@ const char  *ssl_cmd_SSLCADNRequestFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCARevocationPath(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCARevocationFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLHonorCipherOrder(cmd_parms *cmd, void *dcfg, int flag);
+const char  *ssl_cmd_SSLCompression(cmd_parms *, void *, int flag);
 const char  *ssl_cmd_SSLVerifyClient(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLVerifyDepth(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLSessionCache(cmd_parms *, void *, const char *);
