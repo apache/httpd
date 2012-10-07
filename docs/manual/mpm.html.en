@@ -99,6 +99,28 @@ choice at compile-time.</p>
     <code class="module"><a href="./mod/event.html">event</a></code>, depending on platform capabilities</td></tr>
 <tr class="odd"><td>Windows</td><td><code class="module"><a href="./mod/mpm_winnt.html">mpm_winnt</a></code></td></tr>
 </table>
+
+<div class="note"><p>Here, 'Unix' is used to mean Unix-like operating systems, such as
+Linux, BSD, Solaris, Mac OS X, etc.</p></div>
+
+<p>In the case of Unix, the decision as to which MPM is installed is
+based on two questions:</p>
+<p>1. Does the system support <a href="http://en.wikipedia.org/wiki/Threads_(computer_science)">threads</a>?</p>
+<p>2. Does the system support <a href="http://en.wikipedia.org/wiki/Polling_(computer_science)">polling</a>?</p>
+
+<p>If the answer to both questions is 'yes', the default MPM is
+<code class="module"><a href="./mod/event.html">event</a></code>.</p>
+
+<p>If The answer to #1 is 'yes', but the answer to #2 is 'no', the
+default will be <code class="module"><a href="./mod/worker.html">worker</a></code>.</p>
+
+<p>If the answer to both questions is 'no', then the default MPM will be
+<code class="module"><a href="./mod/prefork.html">prefork</a></code>.</p>
+
+<p>In practical terms, this means that the default will almost always be
+<code class="module"><a href="./mod/event.html">event</a></code>, as all modern operating systems support these
+two features.</p>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="static" id="static">Building an MPM as a static module</a></h2>
