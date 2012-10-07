@@ -169,6 +169,7 @@ TARGET_lib = \
 #
 FILES_nlm_objs = \
 	$(OBJDIR)/htdbm.o \
+	$(OBJDIR)/passwd_common.o \
 	$(EOLIST)
 
 #

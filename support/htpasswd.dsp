@@ -100,6 +100,10 @@ SOURCE=.\htpasswd.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\passwd_common.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\build\win32\httpd.rc
 # End Source File
 # End Target
