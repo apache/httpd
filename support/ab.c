@@ -183,6 +183,9 @@ typedef STACK_OF(X509) X509_STACK_TYPE;
 #else
 #define AB_SSL_CIPHER_CONST
 #endif
+#ifdef SSL_OP_NO_TLSv1_2
+#define HAVE_TLSV1_X
+#endif
 #endif
 
 #include <math.h>
@@ -525,6 +528,8 @@ static int ssl_print_connection_info(BIO *bio, SSL *ssl)
     AB_SSL_CIPHER_CONST SSL_CIPHER *c;
     int alg_bits,bits;
 
+    BIO_printf(bio,"Transport Protocol      :%s\n", SSL_get_version(ssl));
+
     c = SSL_get_current_cipher(ssl);
     BIO_printf(bio,"Cipher Suite Protocol   :%s\n", SSL_CIPHER_get_version(c));
     BIO_printf(bio,"Cipher Suite Name       :%s\n",SSL_CIPHER_get_name(c));
@@ -623,7 +628,7 @@ static void ssl_proceed_handshake(struct connection *c)
 
                 ssl_info = malloc(128);
                 apr_snprintf(ssl_info, 128, "%s,%s,%d,%d",
-                             SSL_CIPHER_get_version(ci),
+                             SSL_get_version(c->ssl),
                              SSL_CIPHER_get_name(ci),
                              pk_bits, sk_bits);
             }
@@ -1899,12 +1904,22 @@ static void usage(const char *progname)
     fprintf(stderr, "    -r              Don't exit on socket receive errors.\n");
     fprintf(stderr, "    -h              Display usage information (this message)\n");
 #ifdef USE_SSL
-    fprintf(stderr, "    -Z ciphersuite  Specify SSL/TLS cipher suite (See openssl ciphers)\n");
+
 #ifndef OPENSSL_NO_SSL2
-    fprintf(stderr, "    -f protocol     Specify SSL/TLS protocol (SSL2, SSL3, TLS1, or ALL)\n");
+#define SSL2_HELP_MSG "SSL2, "
 #else
-    fprintf(stderr, "    -f protocol     Specify SSL/TLS protocol (SSL3, TLS1, or ALL)\n");
+#define SSL2_HELP_MSG ""
 #endif
+
+#ifdef HAVE_TLSV1_X
+#define TLS1_X_HELP_MSG ", TLS1.1, TLS1.2"
+#else
+#define TLS1_X_HELP_MSG ""
+#endif
+
+    fprintf(stderr, "    -Z ciphersuite  Specify SSL/TLS cipher suite (See openssl ciphers)\n");
+    fprintf(stderr, "    -f protocol     Specify SSL/TLS protocol\n"); 
+    fprintf(stderr, "                    (" SSL2_HELP_MSG "SSL3, TLS1" TLS1_X_HELP_MSG " or ALL)\n");
 #endif
     exit(EINVAL);
 }
@@ -2244,6 +2259,12 @@ int main(int argc, const char * const argv[])
 #endif
                 } else if (strncasecmp(opt_arg, "SSL3", 4) == 0) {
                     meth = SSLv3_client_method();
+#ifdef HAVE_TLSV1_X
+                } else if (strncasecmp(opt_arg, "TLS1.1", 6) == 0) {
+                    meth = TLSv1_1_client_method();
+                } else if (strncasecmp(opt_arg, "TLS1.2", 6) == 0) {
+                    meth = TLSv1_2_client_method();
+#endif
                 } else if (strncasecmp(opt_arg, "TLS1", 4) == 0) {
                     meth = TLSv1_client_method();
                 }
