@@ -89,6 +89,30 @@ choice at compile-time.</p>
     <module>event</module>, depending on platform capabilities</td></tr>
 <tr><td>Windows</td><td><module>mpm_winnt</module></td></tr>
 </table>
+
+<note><p>Here, 'Unix' is used to mean Unix-like operating systems, such as
+Linux, BSD, Solaris, Mac OS X, etc.</p></note>
+
+<p>In the case of Unix, the decision as to which MPM is installed is
+based on two questions:</p>
+<p>1. Does the system support <a
+href="http://en.wikipedia.org/wiki/Threads_(computer_science)">threads</a>?</p>
+<p>2. Does the system support <a
+href="http://en.wikipedia.org/wiki/Polling_(computer_science)">polling</a>?</p>
+
+<p>If the answer to both questions is 'yes', the default MPM is
+<module>event</module>.</p>
+
+<p>If The answer to #1 is 'yes', but the answer to #2 is 'no', the
+default will be <module>worker</module>.</p>
+
+<p>If the answer to both questions is 'no', then the default MPM will be
+<module>prefork</module>.</p>
+
+<p>In practical terms, this means that the default will almost always be
+<module>event</module>, as all modern operating systems support these
+two features.</p>
+
 </section>
 
 <section id="static"><title>Building an MPM as a static module</title>
