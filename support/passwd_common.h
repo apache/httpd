@@ -79,7 +79,8 @@ struct passwd_ctx {
     int             cost;
     enum {
         PW_PROMPT = 0,
-        PW_ARG
+        PW_ARG,
+        PW_STDIN
     } passwd_src;
 };
 
