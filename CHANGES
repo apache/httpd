@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) htpasswd, htdbm: Optionally read passwords from stdin, as more
+     secure alternative to -b.  PR 40243. [Adomas Paltanavicius <adomas
+     paltanavicius gmail com>, Stefan Fritsch]
+
   *) htpasswd, htdbm: Add support for bcrypt algorithm (requires
      apr-util 1.5 or higher). PR 49288. [Stefan Fritsch]
 

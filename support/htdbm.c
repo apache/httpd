@@ -276,11 +276,11 @@ static void htdbm_usage(void)
 {
     fprintf(stderr,
         "htdbm -- program for manipulating DBM password databases.\n\n"
-        "Usage: htdbm    [-cmBdpstvx] [-Ccost] [-TDBTYPE] database username\n"
+        "Usage: htdbm   [-cimBdpstvx] [-Ccost] [-TDBTYPE] database username\n"
         "                -b[cmBdptsv] [-Ccost] [-TDBTYPE] database username password\n"
-        "                -n[mBdpst]   [-Ccost] username\n"
+        "                -n[imBdpst]  [-Ccost] username\n"
         "                -nb[mBdpst]  [-Ccost] username password\n"
-        "                -v[mBdps]    [-Ccost] [-TDBTYPE] database username\n"
+        "                -v[imBdps]   [-Ccost] [-TDBTYPE] database username\n"
         "                -vb[mBdps]   [-Ccost] [-TDBTYPE] database username password\n"
         "                -x           [-Ccost] [-TDBTYPE] database username\n"
         "                -l           [-Ccost] [-TDBTYPE] database\n"
@@ -288,6 +288,7 @@ static void htdbm_usage(void)
         "   -b   Use the password from the command line rather than prompting for it.\n"
         "   -c   Create a new database.\n"
         "   -n   Don't update database; display results on stdout.\n"
+        "   -i   Read password from stdin without verification (for script usage)\n"
         "   -m   Force MD5 encryption of the password (default).\n"
         "   -B   Force BCRYPT encryption of the password (very secure).\n"
         "   -d   Force CRYPT encryption of the password (8 chars max, insecure).\n"

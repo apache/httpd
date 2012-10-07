@@ -92,13 +92,14 @@ static int mkrecord(struct passwd_ctx *ctx, char *user)
 static void usage(void)
 {
     apr_file_printf(errfile, "Usage:" NL
-        "\thtpasswd [-cmBdpsD]  [-C cost] passwordfile username" NL
+        "\thtpasswd [-cimBdpsD] [-C cost] passwordfile username" NL
         "\thtpasswd -b[cmBdpsD] [-C cost] passwordfile username password" NL
         NL
-        "\thtpasswd -n[mBdps]  [-C cost] username" NL
+        "\thtpasswd -n[imBdps] [-C cost] username" NL
         "\thtpasswd -nb[mBdps] [-C cost] username password" NL
         " -c  Create a new file." NL
         " -n  Don't update file; display results on stdout." NL
+        " -i  Read password from stdin without verification (for script usage)" NL
         " -m  Force MD5 encryption of the password (default)." NL
         " -B  Force bcrypt encryption of the password (very secure)." NL
         " -C  Set the computing time used for the bcrypt algorithm" NL
