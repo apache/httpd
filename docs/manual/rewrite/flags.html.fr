@@ -684,7 +684,9 @@ avertissements 'Invalid URI in request'.
 <p>Le drapeau [S] sert à sauter des règles que vous ne voulez pas voir
 exécuter. La syntaxe du drapeau [S] est [S=<em>N</em>], où
 <em>N</em> correspond au nombre de règles à sauter (sous
-réserve que la règle <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> corresponde). 
+réserve que la règle <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> corresponde et qu'au moins
+une condition <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>
+préalable soit vérifiée). 
 Ceci peut s'interpréter comme une instruction
 <code>goto</code>  dans votre jeu de règles de réécriture. Dans
 l'exemple suivant, nous ne voulons exécuter la règle <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> que si l'URI demandé ne
