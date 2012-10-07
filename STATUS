@@ -94,6 +94,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_ssl: Add SSLCompression directive to control TLS compression
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1345319 
+                  http://svn.apache.org/viewvc?view=revision&revision=1348656
+     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1369585
+     2.2.x patch: http://people.apache.org/~covener/patches/2.2.x-sslcompression.diff 
+                  (minor ssl_private.h merge problem)
+     +1 covener, rjung, kbrand
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -143,10 +150,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352596
      2.2.x patch: http://people.apache.org/~ben/httpd-2.2-rfc5878.patch
      +1: ben, druggeri
+     -1: kbrand
      druggeri note: Needs docs for new directive
      kbrand: depends on an unreleased OpenSSL version (1.0.2), and
              RFC 5878 is of "Category: Experimental". Seems premature
              to me to consider for backporting to 2.4/2.2 at this point.
+             The API in the OpenSSL implementation from May 2012
+             (http://cvs.openssl.org/chngview?cn=22601) only covers the
+             privately-defined TLSEXT_AUTHZDATAFORMAT_audit_proof, there's
+             no support for x509_attr_cert (section 3.3.1 in RFC 5878) or
+             saml_assertion (3.3.2). SSL_CTX_use_authz_file doesn't have
+             any docs in OpenSSL, either, and there's no "openssl foo ..."
+             command or similar to create/manage such files. Trunk is
+             the right place where it can grow.
      ben: not correct that it depends on OpenSSL 1.0.2, it builds with
           any version. Also, if you read my note to dev@ you will see
           why it is not premature.
@@ -171,6 +187,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1356881
      2.2.x patch: http://people.apache.org/~rjung/patches/mod_proxy_http-fix-hostname-ssl-2_2.patch
      +1: rjung, covener
+     kbrand: only has an effect if r1175416 is backported, too (see note at
+             https://issues.apache.org/bugzilla/show_bug.cgi?id=53134#c10
+             by the patch author)
 
    * server/mpm_unix.c (dummy_connection): Use a TLS 1.0 close_notify
      alert if the chosen listener is configured for https; not perfect
@@ -188,13 +207,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~covener/patches/2.2.x-byterange-table_clear.diff
      +1: covener, rjung
 
-   * mod_ssl: Add SSLCompression directive to control TLS compression
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1345319 
-                  http://svn.apache.org/viewvc?view=revision&revision=1348656
-     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1369585
-     2.2.x patch: http://people.apache.org/~covener/patches/2.2.x-sslcompression.diff 
-                  (minor ssl_private.h merge problem)
-     +1 covener, rjung
+   * ab: add TLS1.1/TLS1.2 options to -f switch, and adapt output
+     to more accurately report the negotiated protocol. PR 53916.
+     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1395225
+     2.2.x patch: https://people.apache.org/~kbrand/ab-tlsv1_x-2.2.x.patch
+     +1: kbrand
      
 
 PATCHES/ISSUES THAT ARE STALLED
