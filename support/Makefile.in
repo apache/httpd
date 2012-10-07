@@ -36,7 +36,9 @@ install:
 	    fi ; \
 	fi
 
-htpasswd_OBJECTS = htpasswd.lo
+htpasswd.lo: passwd_common.h
+passwd_common.lo: passwd_common.h
+htpasswd_OBJECTS = htpasswd.lo passwd_common.lo
 htpasswd: $(htpasswd_OBJECTS)
 	$(LINK) $(htpasswd_LTFLAGS) $(htpasswd_OBJECTS) $(PROGRAM_LDADD) $(CRYPT_LIBS)
 
@@ -52,7 +54,8 @@ logresolve_OBJECTS = logresolve.lo
 logresolve: $(logresolve_OBJECTS)
 	$(LINK) $(logresolve_LTFLAGS) $(logresolve_OBJECTS) $(PROGRAM_LDADD)
 
-htdbm_OBJECTS = htdbm.lo
+htdbm.lo: passwd_common.h
+htdbm_OBJECTS = htdbm.lo passwd_common.lo
 htdbm: $(htdbm_OBJECTS)
 	$(LINK) $(htdbm_LTFLAGS) $(htdbm_OBJECTS) $(PROGRAM_LDADD) $(CRYPT_LIBS)
 

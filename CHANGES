@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) htpasswd, htdbm: Put full 48bit of entropy into salt, improve
+     error handling. Add some of htpasswd's improvements to htdbm,
+     e.g. warn if password is truncated by crypt(). [Stefan Fritsch]
+
   *) ab: add TLS1.1/TLS1.2 options to -f switch, and adapt output
      to more accurately report the negotiated protocol. PR 53916.
      [Nicolás Pernas Maradei <nico emutex com>, Kaspar Brand]
