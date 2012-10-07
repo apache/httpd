@@ -21,6 +21,9 @@
 #include "apr_file_io.h"
 #include "apr_general.h"
 #include "apr_version.h"
+#if !APR_VERSION_AT_LEAST(2,0,0)
+#include "apu_version.h"
+#endif
 
 #define MAX_STRING_LEN 256
 
@@ -28,6 +31,9 @@
 #define ALG_CRYPT 1
 #define ALG_APMD5 2
 #define ALG_APSHA 3
+#define ALG_BCRYPT 4
+
+#define BCRYPT_DEFAULT_COST 5
 
 #define ERR_FILEPERM 1
 #define ERR_SYNTAX 2
@@ -50,6 +56,13 @@
 #define PLAIN_ALGO_SUPPORTED 0
 #endif
 
+#if APR_VERSION_AT_LEAST(2,0,0) || \
+    (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 5)
+#define BCRYPT_ALGO_SUPPORTED 1
+#else
+#define BCRYPT_ALGO_SUPPORTED 0
+#endif
+
 /*
  * Must be initialized with apr_file_open_stderr() before using any of the
  * below functions.
@@ -63,6 +76,7 @@ struct passwd_ctx {
     apr_size_t      out_len;
     char            *passwd;
     int             alg;
+    int             cost;
     enum {
         PW_PROMPT = 0,
         PW_ARG
