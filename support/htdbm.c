@@ -276,29 +276,33 @@ static void htdbm_usage(void)
 {
     fprintf(stderr,
         "htdbm -- program for manipulating DBM password databases.\n\n"
-        "Usage: htdbm    [-cmdpstvx] [-TDBTYPE] database username\n"
-        "                -b[cmdptsv] [-TDBTYPE] database username password\n"
-        "                -n[mdpst]   username\n"
-        "                -nb[mdpst]  username password\n"
-        "                -v[mdps]    [-TDBTYPE] database username\n"
-        "                -vb[mdps]   [-TDBTYPE] database username password\n"
-        "                -x          [-TDBTYPE] database username\n"
-        "                -l          [-TDBTYPE] database\n"
+        "Usage: htdbm    [-cmBdpstvx] [-Ccost] [-TDBTYPE] database username\n"
+        "                -b[cmBdptsv] [-Ccost] [-TDBTYPE] database username password\n"
+        "                -n[mBdpst]   [-Ccost] username\n"
+        "                -nb[mBdpst]  [-Ccost] username password\n"
+        "                -v[mBdps]    [-Ccost] [-TDBTYPE] database username\n"
+        "                -vb[mBdps]   [-Ccost] [-TDBTYPE] database username password\n"
+        "                -x           [-Ccost] [-TDBTYPE] database username\n"
+        "                -l           [-Ccost] [-TDBTYPE] database\n"
         "Options:\n"
         "   -b   Use the password from the command line rather than prompting for it.\n"
         "   -c   Create a new database.\n"
         "   -n   Don't update database; display results on stdout.\n"
         "   -m   Force MD5 encryption of the password (default).\n"
+        "   -B   Force BCRYPT encryption of the password (very secure).\n"
         "   -d   Force CRYPT encryption of the password (8 chars max, insecure).\n"
         "   -p   Do not encrypt the password (plaintext).\n"
         "   -s   Force SHA encryption of the password (insecure).\n"
+        "   -C   Set the computing time used for the bcrypt algorithm.\n"
+        "        (higher is more secure but slower, default: %d, valid: 4 to 31)\n"
         "   -T   DBM Type (SDBM|GDBM|DB|default).\n"
         "   -l   Display usernames from database on stdout.\n"
         "   -t   The last param is username comment.\n"
         "   -v   Verify the username/password.\n"
         "   -x   Remove the username record from database.\n"
         "The SHA algorithm does not use a salt and is less secure than the "
-        "MD5 algorithm.\n");
+        "MD5 algorithm.\n",
+        BCRYPT_DEFAULT_COST);
     exit(ERR_SYNTAX);
 }
 

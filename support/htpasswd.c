@@ -92,14 +92,17 @@ static int mkrecord(struct passwd_ctx *ctx, char *user)
 static void usage(void)
 {
     apr_file_printf(errfile, "Usage:" NL
-        "\thtpasswd [-cmdpsD] passwordfile username" NL
-        "\thtpasswd -b[cmdpsD] passwordfile username password" NL
+        "\thtpasswd [-cmBdpsD]  [-C cost] passwordfile username" NL
+        "\thtpasswd -b[cmBdpsD] [-C cost] passwordfile username password" NL
         NL
-        "\thtpasswd -n[mdps] username" NL
-        "\thtpasswd -nb[mdps] username password" NL
+        "\thtpasswd -n[mBdps]  [-C cost] username" NL
+        "\thtpasswd -nb[mBdps] [-C cost] username password" NL
         " -c  Create a new file." NL
         " -n  Don't update file; display results on stdout." NL
         " -m  Force MD5 encryption of the password (default)." NL
+        " -B  Force bcrypt encryption of the password (very secure)." NL
+        " -C  Set the computing time used for the bcrypt algorithm" NL
+        "     (higher is more secure but slower, default: %d, valid: 4 to 31)" NL
         " -d  Force CRYPT encryption of the password (8 chars max, "
             "insecure)." NL
         " -p  Do not encrypt the password (plaintext, insecure)." NL
@@ -110,7 +113,8 @@ static void usage(void)
         "On other systems than Windows and NetWare the '-p' flag will "
             "probably not work." NL
         "The SHA algorithm does not use a salt and is less secure than the "
-            "MD5 algorithm." NL
+            "MD5 algorithm." NL,
+        BCRYPT_DEFAULT_COST
     );
     exit(ERR_SYNTAX);
 }

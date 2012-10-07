@@ -131,6 +131,11 @@ int mkhash(struct passwd_ctx *ctx)
     char *cbuf;
 #endif
 
+    if (ctx->cost != 0 && ctx->alg != ALG_BCRYPT) {
+        apr_file_printf(errfile,
+                        "Warning: Ignoring -C argument for this algorithm." NL);
+    }
+
     if (ctx->passwd != NULL) {
         pw = ctx->passwd;
     }
@@ -189,6 +194,30 @@ int mkhash(struct passwd_ctx *ctx)
         }
         break;
 #endif /* CRYPT_ALGO_SUPPORTED */
+
+#if BCRYPT_ALGO_SUPPORTED
+    case ALG_BCRYPT:
+        rv = apr_generate_random_bytes((unsigned char*)salt, 16);
+        if (rv != APR_SUCCESS) {
+            ctx->errstr = apr_psprintf(ctx->pool, "Unable to generate random "
+                                       "bytes: %pm", &rv);
+            ret = ERR_RANDOM;
+            break;
+        }
+
+        if (ctx->cost == 0)
+            ctx->cost = BCRYPT_DEFAULT_COST;
+        rv = apr_bcrypt_encode(pw, ctx->cost, (unsigned char*)salt, 16,
+                               ctx->out, ctx->out_len);
+        if (rv != APR_SUCCESS) {
+            ctx->errstr = apr_psprintf(ctx->pool, "Unable to encode with "
+                                       "bcrypt: %pm", &rv);
+            ret = ERR_PWMISMATCH;
+            break;
+        }
+        break;
+#endif /* BCRYPT_ALGO_SUPPORTED */
+
     default:
         apr_file_printf(errfile, "%s: BUG: invalid algorithm %d", __func__,
                         ctx->alg);
@@ -232,6 +261,25 @@ int parse_common_options(struct passwd_ctx *ctx, char opt,
         ctx->alg = ALG_APMD5;
 #endif
         break;
+    case 'B':
+#if BCRYPT_ALGO_SUPPORTED
+        ctx->alg = ALG_BCRYPT;
+#else
+        /* Don't fall back to something less secure */
+        ctx->errstr = "BCRYPT algorithm not supported on this platform";
+        return ERR_ALG_NOT_SUPP;
+#endif
+        break;
+    case 'C': {
+            char *endptr;
+            long num = strtol(opt_arg, &endptr, 10);
+            if (*endptr != '\0' || num <= 0) {
+                ctx->errstr = "argument to -C must be a positive integer";
+                return ERR_SYNTAX;
+            }
+            ctx->cost = num;
+            break;
+        }
     default:
         apr_file_printf(errfile, "%s: BUG: invalid option %c", __func__, opt);
         abort();
