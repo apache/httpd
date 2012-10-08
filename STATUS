@@ -217,7 +217,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * WinNT MPM thread-safety issue at child startup
      trunk patch: http://svn.apache.org/viewvc?view=revision&sortby=date&revision=1374874
      2.4.x patch: trunk patch works
-     +1: trawick
+     +1: trawick, gsmith
 
    * ab: add TLS1.1/TLS1.2 options to -f switch, and adapt output
      to more accurately report the negotiated protocol. PR 53916.
