@@ -396,7 +396,8 @@ NoDecode option available in 2.3.12 and later.</compatibility>
       module="mod_autoindex">AddIconByEncoding</directive>,
       <directive module="mod_autoindex">AddIconByType</directive>,
       <directive module="mod_autoindex">DefaultIcon</directive>, <directive
-      module="mod_dir">DirectoryIndex</directive>, <a href="mod_autoindex.html#indexoptions.fancyindexing"
+      module="mod_dir">DirectoryIndex</directive>, , <directive
+      module="mod_dir">FallbackResource</directive>,<a href="mod_autoindex.html#indexoptions.fancyindexing"
       ><code>FancyIndexing</code></a>, <directive
       module="mod_autoindex">HeaderName</directive>, <directive
       module="mod_autoindex">IndexIgnore</directive>, <directive
