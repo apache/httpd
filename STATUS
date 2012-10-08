@@ -212,7 +212,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      does not vanish during mod_include driven subrequests.
      trunk patch: http://svn.apache.org/viewvc?rev=1393152&view=rev
      2.4.x patch: trunk patch works
-     +1: minfrin
+     +1: minfrin, jim
 
    * WinNT MPM thread-safety issue at child startup
      trunk patch: http://svn.apache.org/viewvc?view=revision&sortby=date&revision=1374874
