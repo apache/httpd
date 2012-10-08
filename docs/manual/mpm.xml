@@ -95,10 +95,9 @@ Linux, BSD, Solaris, Mac OS X, etc.</p></note>
 
 <p>In the case of Unix, the decision as to which MPM is installed is
 based on two questions:</p>
-<p>1. Does the system support <a
-href="http://en.wikipedia.org/wiki/Threads_(computer_science)">threads</a>?</p>
-<p>2. Does the system support <a
-href="http://en.wikipedia.org/wiki/Polling_(computer_science)">polling</a>?</p>
+<p>1. Does the system support threads?</p>
+<p>2. Does the system support thread-safe polling (Specifically, the
+kqueue and epoll functions)?</p>
 
 <p>If the answer to both questions is 'yes', the default MPM is
 <module>event</module>.</p>
