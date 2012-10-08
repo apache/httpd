@@ -1057,7 +1057,7 @@ later</td></tr>
 
       <p>When <code class="directive"><a href="#rewriterule">RewriteRule</a></code>
       is used in <code>VirtualHost</code> or server context with
-      version 2.2.22 or later of httpd, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+      version 2.2.23 or later of httpd, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
       will only process the rewrite rules if the request URI is a <a href="./directive-dict.html#Syntax">URL-path</a>.  This avoids
       some security issues where particular rules could allow
       "surprising" pattern expansions (see <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-3368">CVE-2011-3368</a>
