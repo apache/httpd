@@ -58,7 +58,7 @@ static int generate_salt(char *s, size_t size, const char **errstr,
 
     n = (size * 6 + 7)/8;
     if (n > sizeof(rnd)) {
-        apr_file_printf(errfile, "%s: BUG: Buffer too small", __func__);
+        apr_file_printf(errfile, "generate_salt(): BUG: Buffer too small");
         abort();
     }
     rv = apr_generate_random_bytes(rnd, n);
@@ -242,7 +242,7 @@ int mkhash(struct passwd_ctx *ctx)
 #endif /* BCRYPT_ALGO_SUPPORTED */
 
     default:
-        apr_file_printf(errfile, "%s: BUG: invalid algorithm %d", __func__,
+        apr_file_printf(errfile, "mkhash(): BUG: invalid algorithm %d",
                         ctx->alg);
         abort();
     }
@@ -307,7 +307,9 @@ int parse_common_options(struct passwd_ctx *ctx, char opt,
             break;
         }
     default:
-        apr_file_printf(errfile, "%s: BUG: invalid option %c", __func__, opt);
+        apr_file_printf(errfile, 
+                        "parse_common_options(): BUG: invalid option %c",
+                        opt);
         abort();
     }
     return 0;
