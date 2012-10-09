@@ -734,10 +734,10 @@ the user that starts the server.
 </div>
 
 <div class="example"><h3>Example</h3><p><code>
-# Log to a file:
-RewriteLog "/usr/local/var/apache/logs/rewrite.log"
-
-# Log to a pipe:
+# Log to a file:<br />
+RewriteLog "/usr/local/var/apache/logs/rewrite.log"<br />
+<br />
+# Log to a pipe:<br />
 RewriteLog "|/path/to/parser.pl"
 </code></p></div>
 
