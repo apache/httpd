@@ -229,7 +229,7 @@ later</compatibility>
 <name>RewriteLog</name>
 <description>Sets the name of the file used for logging rewrite engine
 processing</description>
-<syntax>RewriteLog <em>file-path</em></syntax>
+<syntax>RewriteLog <em>file-path|pipe</em></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
@@ -278,7 +278,11 @@ the user that starts the server.
 </note>
 
 <example><title>Example</title>
+# Log to a file:
 RewriteLog "/usr/local/var/apache/logs/rewrite.log"
+
+# Log to a pipe:
+RewriteLog "|/path/to/parser.pl"
 </example>
 
 </usage>
