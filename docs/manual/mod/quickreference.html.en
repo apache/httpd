@@ -610,7 +610,7 @@ a resource</td></tr>
 <tr class="odd"><td><a href="mod_rewrite.html#rewriteengine">RewriteEngine on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables or disables runtime rewriting engine</td></tr>
 <tr><td><a href="mod_rewrite.html#rewritelock">RewriteLock <em>file-path</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the name of the lock file used for <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
 synchronization</td></tr>
-<tr class="odd"><td><a href="mod_rewrite.html#rewritelog">RewriteLog <em>file-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the name of the file used for logging rewrite engine
+<tr class="odd"><td><a href="mod_rewrite.html#rewritelog">RewriteLog <em>file-path|pipe</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the name of the file used for logging rewrite engine
 processing</td></tr>
 <tr><td><a href="mod_rewrite.html#rewriteloglevel">RewriteLogLevel <em>Level</em></a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the verbosity of the log file used by the rewrite
 engine</td></tr>

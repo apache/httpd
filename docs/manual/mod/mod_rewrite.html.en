@@ -685,7 +685,7 @@ synchronization</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the name of the file used for logging rewrite engine
 processing</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RewriteLog <em>file-path</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RewriteLog <em>file-path|pipe</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_rewrite</td></tr>
@@ -734,7 +734,11 @@ the user that starts the server.
 </div>
 
 <div class="example"><h3>Example</h3><p><code>
+# Log to a file:
 RewriteLog "/usr/local/var/apache/logs/rewrite.log"
+
+# Log to a pipe:
+RewriteLog "|/path/to/parser.pl"
 </code></p></div>
 
 
