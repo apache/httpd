@@ -19,8 +19,7 @@ APACHE_MODULE(privileges, Per-virtualhost Unix UserIDs and enhanced security for
   fi
 ])
 
-
-APACHE_MODULE(systemd, Systemd support, , , $unixd_mods_enabled, [
+APACHE_MODULE(systemd, Systemd support, , , $unixd_mods_enable, [
   AC_CHECK_LIB(systemd-daemon, sd_notify, SYSTEMD_LIBS="-lsystemd-daemon")
   AC_CHECK_HEADERS(systemd/sd-daemon.h, [ap_HAVE_SD_DAEMON_H="yes"], [ap_HAVE_SD_DAEMON_H="no"])
   if test $ap_HAVE_SD_DAEMON_H = "no" || test -z "${SYSTEMD_LIBS}"; then
