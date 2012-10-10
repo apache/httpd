@@ -52,7 +52,13 @@ NT.</description>
     <p>The MPM falls back to a safer implementation, but some client requests
     were not processed correctly.  In order to avoid this error, use
     <directive module="core">AcceptFilter</directive> with accept filter 
-    <code>none</code>.  <em>In Apache httpd 2.0 and 2.2,
+    <code>none</code>.</p>
+
+    <example>
+        AcceptFiler none
+    </example>
+    
+    <p><em>In Apache httpd 2.0 and 2.2,
     <directive>Win32DisableAcceptEx</directive> was used for this purpose.</em></p>
 
     <p>The WinNT MPM differs from the Unix MPMs such as worker and event
