@@ -335,22 +335,15 @@ AC_DEFUN(APACHE_MODULE,[
   AC_ARG_ENABLE(translit($1,_,-),APACHE_HELP_STRING(optname(),$2),force_$1=$enableval,enable_$1=ifelse($5,,maybe-all,$5))
   undefine([optname])dnl
   _apmod_extra_msg=""
-  dnl When --enable-modules=most or --enable-modules=(really)all is set and the
-  dnl module was not explicitly requested, allow a module to disable itself if
+  dnl If the module was not explicitly requested, allow it to disable itself if
   dnl its pre-reqs fail.
   case "$enable_$1" in
     yes|static|shared)
       _apmod_required="yes"
       ;;
     *)
-      case "$module_selection" in
-      reallyall|all|most)
-        _apmod_required="no"
-        ;;
-      *)
-        _apmod_required="yes"
-        ;;
-      esac
+      _apmod_required="no"
+      ;;
   esac
   if test "$enable_$1" = "static"; then
     enable_$1=static
