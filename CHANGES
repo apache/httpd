@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) "Iterate" directives: Report an error if no arguments are provided.
+     [Jeff Trawick]
+
   *) htpasswd, htdbm: Optionally read passwords from stdin, as more
      secure alternative to -b.  PR 40243. [Adomas Paltanavicius <adomas
      paltanavicius gmail com>, Stefan Fritsch]
