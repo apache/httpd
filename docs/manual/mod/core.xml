@@ -457,7 +457,7 @@ NoDecode option available in 2.3.12 and later.</compatibility>
       </p></note>
 
       <example>
-      AllowOverride Options=Idexes,MultiViews
+      AllowOverride Options=Indexes,MultiViews
       </example>
       </dd>
     </dl>
