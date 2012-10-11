@@ -37,7 +37,7 @@ On Windows from Apache httpd 2.3.3 and later.</compatibility>
 
 <usage>
     <p>This directive enables operating system specific optimizations for a
-       listening socket by the <directive>Protocol</directive>type.
+       listening socket by the <directive>Protocol</directive> type.
        The basic premise is for the kernel to not send a socket to the server
        process until either data is received or an entire HTTP Request is buffered.
        Only <a href="http://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;sektion=9">
