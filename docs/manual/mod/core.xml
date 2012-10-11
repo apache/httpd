@@ -455,6 +455,10 @@ NoDecode option available in 2.3.12 and later.</compatibility>
          syntax.  In other words, this mechanism cannot force a specific option
          to remain <em>set</em> while allowing any others to be set.
       </p></note>
+
+      <example>
+      AllowOverride Options=Idexes,MultiViews
+      </example>
       </dd>
     </dl>
 
