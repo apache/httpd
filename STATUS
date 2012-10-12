@@ -89,6 +89,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
   
+   * mod_slotmem_plain: honor DefaultRuntimeDir (below doesn't apply since
+     there is no config directive to speak of)
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1370763
+     2.4.x patch: trunk patch works
+     +1: jim, rjung, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -144,12 +149,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~rjung/patches/ssl-support-uninstalled-openssl-2_4.patch
      +1: 
      -1: kbrand: breaks OS X builds, superseded by approach based on MOD_CFLAGS etc.
-
-   * mod_slotmem_plain: honor DefaultRuntimeDir (below doesn't apply since
-     there is no config directive to speak of)
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1370763
-     2.4.x patch: trunk patch works
-     +1: jim, rjung
 
    * mod_proxy: Make balancers server-specific, as they should have
      been. Inheritance causes too many behind-the-scene interactions
@@ -223,7 +222,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      to more accurately report the negotiated protocol. PR 53916.
      trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1395225
      2.4.x patch: trunk patch works (modulo CHANGES)
-     +1: kbrand
+     +1: kbrand, trawick
+
+   * "Iterate" directives: Report an error if no arguments are provided.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1397172
+     2.4.x patch: trunk patch works
+     +1: trawick
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
