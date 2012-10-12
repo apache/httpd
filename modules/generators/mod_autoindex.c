@@ -694,7 +694,7 @@ static void *merge_autoindex_configs(apr_pool_t *p, void *basev, void *addv)
              * There are local nonincremental settings, which clear
              * all inheritance from above.  They *are* the new base settings.
              */
-            new->opts = add->opts;;
+            new->opts = add->opts;
         }
         /*
          * We're guaranteed that there'll be no overlap between
