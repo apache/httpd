@@ -449,7 +449,8 @@ strings.h \
 sys/prctl.h \
 sys/processor.h \
 sys/sem.h \
-sys/sdt.h
+sys/sdt.h \
+sys/loadavg.h
 )
 AC_HEADER_SYS_WAIT
 
