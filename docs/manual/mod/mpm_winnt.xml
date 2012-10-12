@@ -55,7 +55,8 @@ NT.</description>
     <code>none</code>.</p>
 
     <example>
-        AcceptFiler none
+        AcceptFilter http none
+        AcceptFilter https none
     </example>
     
     <p><em>In Apache httpd 2.0 and 2.2,
