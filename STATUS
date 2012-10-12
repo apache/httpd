@@ -94,6 +94,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * byterange filter: Remove apr 1.3 dependency by dropping apr_array_clear
+     trunk patch: n/a
+     2.4.x patch: n/a
+     2.2.x patch: http://people.apache.org/~covener/patches/2.2.x-byterange-table_clear.diff
+     +1: covener, rjung, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -193,12 +198,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1356884
      2.2.x patch: http://people.apache.org/~rjung/patches/dummy_connection-https-tls-2_2.patch
      +1: rjung, covener
-
-   * byterange filter: Remove apr 1.3 dependency by dropping apr_array_clear
-     trunk patch: n/a
-     2.4.x patch: n/a
-     2.2.x patch: http://people.apache.org/~covener/patches/2.2.x-byterange-table_clear.diff
-     +1: covener, rjung
 
    * ab: add TLS1.1/TLS1.2 options to -f switch, and adapt output
      to more accurately report the negotiated protocol. PR 53916.
