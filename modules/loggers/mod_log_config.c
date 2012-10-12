@@ -1552,7 +1552,7 @@ static void *ap_default_log_writer_init(apr_pool_t *p, server_rec *s,
 
         pl = ap_open_piped_log(p, name + 1);
         if (pl == NULL) {
-           return NULL;;
+           return NULL;
         }
         return ap_piped_log_write_fd(pl);
     }
