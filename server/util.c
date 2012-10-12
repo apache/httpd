@@ -2854,7 +2854,7 @@ AP_DECLARE(void) ap_get_loadavg(ap_loadavg_t *ld)
     ld->loadavg15 = -1.0;
 
 #if HAVE_GETLOADAVG
-    do {
+    {
         double la[3];
         int num;
 
@@ -2868,6 +2868,6 @@ AP_DECLARE(void) ap_get_loadavg(ap_loadavg_t *ld)
         if (num > 2) {
             ld->loadavg15 = (float)la[2];
         }
-    } while(0);
+    }
 #endif
 }
