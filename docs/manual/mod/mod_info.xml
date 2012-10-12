@@ -39,7 +39,7 @@ configuration</description>
 &lt;/Location&gt;
     </highlight>
 
-    <p>You may wish to use <module>mod_access</module> inside the
+    <p>You may wish to use <module>mod_authz_host</module> inside the
     <directive type="section" module="core">Location</directive>
     directive to limit access to your server configuration
     information:</p>
