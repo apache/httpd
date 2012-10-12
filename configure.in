@@ -546,8 +546,10 @@ DTRACE=true
 AC_ARG_ENABLE(dtrace,APACHE_HELP_STRING(--enable-dtrace,Enable DTrace probes),
 [
   enable_dtrace=$enableval
-  APR_ADDTO(CPPFLAGS, -DAPR_DTRACE_PROVIDER)
-  AC_MSG_ERROR('DTrace Support in the build system is not complete. Patches Welcome!')
+  if test "$enableval" = "yes"; then
+    APR_ADDTO(CPPFLAGS, -DAPR_DTRACE_PROVIDER)
+    AC_MSG_ERROR('DTrace Support in the build system is not complete. Patches Welcome!')
+  fi
 ],
 [
   enable_dtrace=no
@@ -571,15 +573,19 @@ APACHE_SUBST(DTRACE)
 
 AC_ARG_ENABLE(hook-probes,APACHE_HELP_STRING(--enable-hook-probes,Enable APR hook probes),
 [
-    AC_DEFINE(AP_HOOK_PROBES_ENABLED, 1,
-        [Enable the APR hook probes capability, reading from ap_hook_probes.h])
-    APR_ADDTO(INTERNAL_CPPFLAGS, -DAP_HOOK_PROBES_ENABLED)
+    if test "$enableval" = "yes"; then
+        AC_DEFINE(AP_HOOK_PROBES_ENABLED, 1,
+                  [Enable the APR hook probes capability, reading from ap_hook_probes.h])
+        APR_ADDTO(INTERNAL_CPPFLAGS, -DAP_HOOK_PROBES_ENABLED)
+    fi
 ])dnl
 
 AC_ARG_ENABLE(exception-hook,APACHE_HELP_STRING(--enable-exception-hook,Enable fatal exception hook),
 [
-    AC_DEFINE(AP_ENABLE_EXCEPTION_HOOK, 1,
-              [Allow modules to run hook after a fatal exception])
+    if test "$enableval" = "yes"; then
+        AC_DEFINE(AP_ENABLE_EXCEPTION_HOOK, 1,
+                  [Allow modules to run hook after a fatal exception])
+    fi
 ])dnl
 
 AC_ARG_ENABLE(load-all-modules,APACHE_HELP_STRING(--enable-load-all-modules,Load all modules),
@@ -593,35 +599,39 @@ AC_ARG_ENABLE(load-all-modules,APACHE_HELP_STRING(--enable-load-all-modules,Load
 
 AC_ARG_ENABLE(maintainer-mode,APACHE_HELP_STRING(--enable-maintainer-mode,Turn on debugging and compile time warnings and load all compiled modules),
 [
-  APR_ADDTO(CPPFLAGS, -DAP_DEBUG)
-  if test "$GCC" = "yes"; then
-    APR_ADDTO(CFLAGS,[-Wall -Wmissing-prototypes -Wstrict-prototypes -Wmissing-declarations -Wpointer-arith])
-    APACHE_ADD_GCC_CFLAG([-Wdeclaration-after-statement])
-    APACHE_ADD_GCC_CFLAG([-Werror=declaration-after-statement])
-    APACHE_ADD_GCC_CFLAG([-Wformat])
-    APACHE_ADD_GCC_CFLAG([-Wformat-security])
-    APACHE_ADD_GCC_CFLAG([-Werror=format-security])
-  elif test "$AIX_XLC" = "yes"; then
-    APR_ADDTO(CFLAGS,-qfullpath -qinitauto=FE -qcheck=all -qinfo=pro)
-  fi
-  if test "x$enable_load_all_modules" = "x"; then
-    LOAD_ALL_MODULES=yes
-    AC_MSG_NOTICE([Maintainer mode setting "LOAD_ALL_MODULES" to $LOAD_ALL_MODULES])
+  if test "$enableval" = "yes"; then
+    APR_ADDTO(CPPFLAGS, -DAP_DEBUG)
+    if test "$GCC" = "yes"; then
+      APR_ADDTO(CFLAGS,[-Wall -Wmissing-prototypes -Wstrict-prototypes -Wmissing-declarations -Wpointer-arith])
+      APACHE_ADD_GCC_CFLAG([-Wdeclaration-after-statement])
+      APACHE_ADD_GCC_CFLAG([-Werror=declaration-after-statement])
+      APACHE_ADD_GCC_CFLAG([-Wformat])
+      APACHE_ADD_GCC_CFLAG([-Wformat-security])
+      APACHE_ADD_GCC_CFLAG([-Werror=format-security])
+    elif test "$AIX_XLC" = "yes"; then
+      APR_ADDTO(CFLAGS,-qfullpath -qinitauto=FE -qcheck=all -qinfo=pro)
+    fi
+    if test "x$enable_load_all_modules" = "x"; then
+      LOAD_ALL_MODULES=yes
+      AC_MSG_NOTICE([Maintainer mode setting "LOAD_ALL_MODULES" to $LOAD_ALL_MODULES])
+    fi
   fi
 ])dnl
 
 AC_ARG_ENABLE(debugger-mode,APACHE_HELP_STRING(--enable-debugger-mode,Turn on debugging and compile time warnings and turn off optimization),
 [
-  APR_ADDTO(CPPFLAGS, -DAP_DEBUG)
-  if test "$GCC" = "yes"; then
-    APR_ADDTO(CFLAGS,[-Wall -Wmissing-prototypes -Wstrict-prototypes -Wmissing-declarations -Wpointer-arith -O0])
-    APACHE_ADD_GCC_CFLAG([-Wdeclaration-after-statement])
-    APACHE_ADD_GCC_CFLAG([-Werror=declaration-after-statement])
-    APACHE_ADD_GCC_CFLAG([-Wformat])
-    APACHE_ADD_GCC_CFLAG([-Wformat-security])
-    APACHE_ADD_GCC_CFLAG([-Werror=format-security])
-  elif test "$AIX_XLC" = "yes"; then
-    APR_ADDTO(CFLAGS,-qfullpath -qinitauto=FE -qcheck=all -qinfo=pro)
+  if test "$enableval" = "yes"; then
+    APR_ADDTO(CPPFLAGS, -DAP_DEBUG)
+    if test "$GCC" = "yes"; then
+      APR_ADDTO(CFLAGS,[-Wall -Wmissing-prototypes -Wstrict-prototypes -Wmissing-declarations -Wpointer-arith -O0])
+      APACHE_ADD_GCC_CFLAG([-Wdeclaration-after-statement])
+      APACHE_ADD_GCC_CFLAG([-Werror=declaration-after-statement])
+      APACHE_ADD_GCC_CFLAG([-Wformat])
+      APACHE_ADD_GCC_CFLAG([-Wformat-security])
+      APACHE_ADD_GCC_CFLAG([-Werror=format-security])
+    elif test "$AIX_XLC" = "yes"; then
+      APR_ADDTO(CFLAGS,-qfullpath -qinitauto=FE -qcheck=all -qinfo=pro)
+    fi
   fi
 ])dnl
 
@@ -759,9 +769,11 @@ APACHE_HELP_STRING(--with-suexec-umask,umask for suexec'd process),[
 INSTALL_SUEXEC=setuid
 AC_ARG_ENABLE([suexec-capabilities], 
 APACHE_HELP_STRING(--enable-suexec-capabilities,Use Linux capability bits not setuid root suexec), [
-INSTALL_SUEXEC=caps
-AC_DEFINE(AP_SUEXEC_CAPABILITIES, 1, 
-          [Enable if suexec is installed with Linux capabilities, not setuid])
+  if test "$enableval" = "yes"; then
+    INSTALL_SUEXEC=caps
+    AC_DEFINE(AP_SUEXEC_CAPABILITIES, 1, 
+              [Enable if suexec is installed with Linux capabilities, not setuid])
+  fi
 ])
 APACHE_SUBST(INSTALL_SUEXEC)
 

@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) configure: Fix processing of --disable-FEATURE for various features.
+     [Jeff Trawick]
+
   *) "Iterate" directives: Report an error if no arguments are provided.
      [Jeff Trawick]
 
