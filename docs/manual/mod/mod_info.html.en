@@ -46,7 +46,7 @@ configuration</td></tr>
     </pre>
 
 
-    <p>You may wish to use <code class="module"><a href="../mod/mod_access.html">mod_access</a></code> inside the
+    <p>You may wish to use <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> inside the
     <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
     directive to limit access to your server configuration
     information:</p>
