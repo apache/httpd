@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1379930:1395981 (outdated) -->
+<!-- English Revision : 1395981 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -208,7 +208,7 @@ la version version 2.1</compatibility>
       <dt><code>AllowAnyURI</code></dt>
       <dd>
 
-      <p>A partir de la version 2.2.22 de httpd, lorsqu'une directive
+      <p>A partir de la version 2.2.23 de httpd, lorsqu'une directive
       <directive module="mod_rewrite">RewriteRule</directive> est
       utilis&eacute;e dans un contexte de <code>serveur virtuel</code> ou de
       serveur principal, <module>mod_rewrite</module> ne la traitera que
@@ -248,7 +248,7 @@ la version version 2.1</compatibility>
 <name>RewriteLog</name>
 <description>D&eacute;finit le nom du fichier utilis&eacute; pour la journalisation
 des traitements du moteur de r&eacute;&eacute;criture</description>
-<syntax>RewriteLog <em>chemin du fichier journal</em></syntax>
+<syntax>RewriteLog <em>chemin du fichier journal|redirection vers un pipe</em></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
@@ -304,7 +304,11 @@ autre que l'utilisateur qui d&eacute;marre le serveur.
 </note>
 
 <example><title>Exemple</title>
-RewriteLog "/usr/local/var/apache/logs/rewrite.log"
+# Journalisation dans un fichier :<br/>
+RewriteLog "/usr/local/var/apache/logs/rewrite.log"<br/>
+<br/>
+# Journalisation redirigée vers un pipe:<br/>
+RewriteLog "|/path/to/parser.pl"
 </example>
 
 </usage>
