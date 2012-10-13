@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1371585 -->
+<!-- English Revision : 1397681 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -41,7 +41,7 @@ serveur</description>
 &lt;/Location&gt;
     </highlight>
 
-    <p>Il est recommand&eacute; d'utiliser <module>mod_access</module> &agrave;
+    <p>Il est recommand&eacute; d'utiliser <module>mod_authz_host</module> &agrave;
     l'int&eacute;rieur de la section <directive type="section"
     module="core">Location</directive> afin de restreindre l'acc&egrave;s aux
     informations de configuration de votre serveur :</p>

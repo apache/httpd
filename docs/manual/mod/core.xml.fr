@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1379335:1395610 (outdated) -->
+<!-- English Revision : 1396993 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -437,7 +437,8 @@ All pour les versions ant&eacute;rieures</default>
       module="mod_autoindex">AddIconByEncoding</directive>,
       <directive module="mod_autoindex">AddIconByType</directive>,
       <directive module="mod_autoindex">DefaultIcon</directive>, <directive
-      module="mod_dir">DirectoryIndex</directive>, <a
+      module="mod_dir">DirectoryIndex</directive>, <directive
+      module="mod_dir">FallbackResource</directive>, <a
       href="mod_autoindex.html#indexoptions.fancyindexing"><code>FancyIndexing</code></a>,
       <directive
       module="mod_autoindex">HeaderName</directive>, <directive
@@ -505,6 +506,10 @@ All pour les versions ant&eacute;rieures</default>
       <em>activ&eacute;e</em> tout en permettant &agrave; toute autre option d'&ecirc;tre
       activ&eacute;e.
       </p></note>
+
+      <example>
+      AllowOverride Options=Indexes,MultiViews
+      </example>
       
       </dd>
     </dl>

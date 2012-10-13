@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1174747:1395555 (outdated) -->
+<!-- English Revision : 1395555 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -97,6 +97,29 @@ vous n'en sp&eacute;cifiez pas un autre &agrave; la compilation.</p>
 ou <module>event</module>, selon les possibilit&eacute;s de la plate-forme</td></tr>
 <tr><td>Windows</td><td><module>mpm_winnt</module></td></tr>
 </table>
+
+<note><p>Ici, 'Unix' sous-entend les syst&egrave;mes d'exploitation de type
+Unix, comme Linux, BSD, Solaris, Mac OS X, etc...</p></note>
+
+<p>Dans le cas des syst&egrave;mes d'exploitation de type Unix, le choix du MPM
+&agrave; installer est orient&eacute; par deux questions :</p>
+<p>1. Est-ce que le syst&egrave;me supporte les threads ?</p>
+<p>2. Est-ce que le syst&egrave;me supporte le polling thread-safe (et en
+particulier les fonctions kqueue et epoll) ?</p>
+
+<p>Si la r&eacute;ponse aux deux questions est 'oui', le MPM par d&eacute;faut sera
+<module>event</module>.</p>
+
+<p>Si la r&eacute;ponse &agrave; la premi&egrave;re question est 'oui', et la r&eacute;ponse &agrave; la
+deuxi&egrave;me 'non', le MPM par d&eacute;faut sera <module>worker</module>.</p>
+
+<p>Si la r&eacute;ponse aux deux questions est 'non', le MPM par d&eacute;faut sera
+<module>prefork</module>.</p>
+
+<p>En pratique, cela signifie que le MPM par d&eacute;faut sera presque
+toujours <module>event</module> car tous les syst&egrave;mes d'exploitation
+modernes satisfont aux deux conditions.</p>
+
 </section>
 
 <section id="static"><title>Compiler un module MPM en tant que module
