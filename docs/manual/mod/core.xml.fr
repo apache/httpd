@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1379696 -->
+<!-- English Revision : 1396994 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -505,6 +505,10 @@ All pour les versions ant&eacute;rieures</default>
       <em>activ&eacute;e</em> tout en permettant &agrave; toute autre option d'&ecirc;tre
       activ&eacute;e.
       </p></note>
+
+      <example>
+      AllowOverride Options=Indexes,MultiViews
+      </example>
       
       </dd>
     </dl>
