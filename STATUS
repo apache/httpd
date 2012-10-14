@@ -124,7 +124,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        ssl_engine_kernel.c: In function 'ssl_callback_AdvertiseNextProtos':
        ssl_engine_kernel.c:2140:5: warning: implicit declaration of function
                                    'modssl_run_npn_advertise_protos_hook'
-                  Including mod_ssl.h after ssl_private.h seems to suffice. 
+                  Including mod_ssl.h after ssl_private.h seems to suffice.
                   The change introduces hard linkages from modules into
                   mod_ssl.so (distinct from httpd), AP is the incorrect
                   namespace, see mod_dav main hooks as an example.
@@ -204,7 +204,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1395225
      2.2.x patch: https://people.apache.org/~kbrand/ab-tlsv1_x-2.2.x.patch
      +1: kbrand
-     
+
+   * mod_dir: Support for the 'disabled' FallbackResource argument
+     trunk patch : https://svn.apache.org/viewvc?view=revision&revision=1398066
+     Also suggested for backport to 2.4
+     2.2.x patch: trunk patch works
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
