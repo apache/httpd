@@ -508,7 +508,7 @@ static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs,
         result = ssl_var_lookup_ssl_cert_PEM(p, xs);
     }
 
-    if (result != NULL && resdup)
+    if (resdup)
         result = apr_pstrdup(p, result);
     return result;
 }
