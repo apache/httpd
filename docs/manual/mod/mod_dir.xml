@@ -102,8 +102,8 @@ a directory</description>
     literally if it has any arguments before or after it, even if they are "disabled"
     as well.</p>
 
-    <p><strong>Note:</strong> Multiple <directive>DirectoryIndex</directive> 
-    directives within the <a href="../sections.html"><em>same context</em></a> will add 
+    <p><strong>Note:</strong> Multiple <directive>DirectoryIndex</directive>
+    directives within the <a href="../sections.html"><em>same context</em></a> will add
     to the list of resources to look for rather than replace:
     </p>
     <highlight language="config">
@@ -215,15 +215,15 @@ a directory</description>
     <code>index.html</code> file. <strong>But a request without trailing slash
     would list the directory contents</strong>.</p>
     </note>
-	<p>Also note that some browsers may erroneously change POST requests into GET 
+	<p>Also note that some browsers may erroneously change POST requests into GET
 	(thus discarding POST data) when a redirect is issued.</p>
 </usage>
 </directivesynopsis>
 <directivesynopsis>
 <name>FallbackResource</name>
 <description>Define a default URL for requests that don't map to a file</description>
-<syntax>FallbackResource <var>local-url</var></syntax>
-<default>None - httpd will return 404 (Not Found)</default>
+<syntax>FallbackResource disabled | <var>local-url</var></syntax>
+<default>disabled - httpd will return 404 (Not Found)</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Indexes</override>
@@ -250,11 +250,16 @@ a directory</description>
     </highlight>
     <p>Existing files, such as images, css files, and so on, will be
     served normally.</p>
+    <p>Use the <code>disabled</code> argument to disable that feature
+    if inheritance from a parent directory is not desired.</p>
     <p>In a sub-URI, such as <em>http://example.com/blog/</em> this
     <em>sub-URI</em> has to be supplied as <var>local-url</var>:</p>
     <highlight language="config">
 &lt;Directory /web/example.com/htdocs/blog&gt;
     FallbackResource /blog/index.php
+&lt;/Directory&gt;
+&lt;Directory /web/example.com/htdocs/blog/images&gt;
+    FallbackResource disabled
 &lt;/Directory&gt;
     </highlight>
 </usage>
