@@ -118,8 +118,8 @@ a directory</td></tr>
     literally if it has any arguments before or after it, even if they are "disabled"
     as well.</p>
 
-    <p><strong>Note:</strong> Multiple <code class="directive">DirectoryIndex</code> 
-    directives within the <a href="../sections.html"><em>same context</em></a> will add 
+    <p><strong>Note:</strong> Multiple <code class="directive">DirectoryIndex</code>
+    directives within the <a href="../sections.html"><em>same context</em></a> will add
     to the list of resources to look for rather than replace:
     </p>
     <pre class="prettyprint lang-config">
@@ -228,7 +228,7 @@ a directory</td></tr>
     <code>index.html</code> file. <strong>But a request without trailing slash
     would list the directory contents</strong>.</p>
     </div>
-	<p>Also note that some browsers may erroneously change POST requests into GET 
+	<p>Also note that some browsers may erroneously change POST requests into GET
 	(thus discarding POST data) when a redirect is issued.</p>
 
 </div>
@@ -236,8 +236,8 @@ a directory</td></tr>
 <div class="directive-section"><h2><a name="FallbackResource" id="FallbackResource">FallbackResource</a> <a name="fallbackresource" id="fallbackresource">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define a default URL for requests that don't map to a file</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FallbackResource <var>local-url</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>None - httpd will return 404 (Not Found)</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FallbackResource disabled | <var>local-url</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>disabled - httpd will return 404 (Not Found)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
@@ -267,11 +267,16 @@ a directory</td></tr>
 
     <p>Existing files, such as images, css files, and so on, will be
     served normally.</p>
+    <p>Use the <code>disabled</code> argument to disable that feature
+    if inheritance from a parent directory is not desired.</p>
     <p>In a sub-URI, such as <em>http://example.com/blog/</em> this
     <em>sub-URI</em> has to be supplied as <var>local-url</var>:</p>
     <pre class="prettyprint lang-config">
 &lt;Directory /web/example.com/htdocs/blog&gt;
     FallbackResource /blog/index.php
+&lt;/Directory&gt;
+&lt;Directory /web/example.com/htdocs/blog/images&gt;
+    FallbackResource disabled
 &lt;/Directory&gt;
     </pre>
 
