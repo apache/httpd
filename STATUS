@@ -88,7 +88,7 @@ RELEASE SHOWSTOPPERS:
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
-  
+
    * mod_slotmem_plain: honor DefaultRuntimeDir (below doesn't apply since
      there is no config directive to speak of)
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1370763
@@ -137,17 +137,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
    * mod_ssl: Add support for TLS-SRP (Secure Remote Password key exchange
      for TLS, RFC 5054).
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1347980 and 
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1347980 and
                   http://svn.apache.org/viewvc?view=revision&revision=1348653
      2.4.x patch: http://people.apache.org/~rjung/patches/ssl-TLS-SRP-2_4.patch
-     +1: rjung, 
+     +1: rjung,
      rjung: sf: you applied it to trunk, care to vote?
 
    * mod_ssl: Work correctly with a development version of OpenSSL.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1358167 and 
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1358167 and
                   http://svn.apache.org/viewvc?view=revision&revision=1358168
      2.4.x patch: http://people.apache.org/~rjung/patches/ssl-support-uninstalled-openssl-2_4.patch
-     +1: 
+     +1:
      -1: kbrand: breaks OS X builds, superseded by approach based on MOD_CFLAGS etc.
 
    * mod_proxy: Make balancers server-specific, as they should have
@@ -229,6 +229,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: trawick
 
+   * mod_dir: Support for the 'disabled' FallbackResource argument
+     trunk patch : https://svn.apache.org/viewvc?view=revision&revision=1398066
+     2.4.x patch: trunk patch works
+
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
@@ -239,11 +243,11 @@ OTHER PROPOSALS
      o If a module has a config directive for the run-time file that
        treats the configured path as relative to server root, preserve
        that behavior but change the location when not configured to
-       respect DefaultRuntimeDir.  With these changes, users with no 
+       respect DefaultRuntimeDir.  With these changes, users with no
        per-runtime-file configuration directives can control
        everything with DefaultRuntimeDir.
        BUT: Existing users of DefaultRuntimeDir might get a short-term scare
-       when some unconfigured run-time file starts respecting their 
+       when some unconfigured run-time file starts respecting their
        DefaultRuntimeDir directive after an upgrade.
        +1: trawick, jim, rjung
        rjung: applicable trunk revisions WITHOUT the compatibility tweaks
@@ -267,7 +271,7 @@ PATCHES/ISSUES THAT ARE STALLED
     2.4 patch: http://people.apache.org/~fuankg/diffs/httpd-2.4.x-cross_compile.diff
     fuankg: on hold until we agree for a better and more simple solution ...
 
-   * mod_lua: Add a new directive, LuaCodeCache, for controlling the in-memory 
+   * mod_lua: Add a new directive, LuaCodeCache, for controlling the in-memory
               caching of scripts
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1366890
                   http://svn.apache.org/viewvc?view=revision&revision=1367025
@@ -277,7 +281,7 @@ PATCHES/ISSUES THAT ARE STALLED
      2.4.x patch: Trunk patch works
      +1: humbedooh, rjung
      rjung: docs missing?
-     humbedooh: It's in the 2.4 docs already, but commented out, as with a lot 
+     humbedooh: It's in the 2.4 docs already, but commented out, as with a lot
                 of other functions that were never actually made. It's a mess ;)
      -1: sf
      sf: * If you copy'n'paste code, you need to assign new APLOGNOs.
