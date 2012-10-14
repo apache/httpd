@@ -66,7 +66,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#directoryslash">DirectorySlash</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#fallbackresource">FallbackResource</a></li>
 </ul>
-<ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+</div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="DirectoryIndex" id="DirectoryIndex">DirectoryIndex</a> <a name="directoryindex" id="directoryindex">Directive</a></h2>
@@ -117,32 +117,6 @@ a directory</td></tr>
     searching for an index.  An argument of "disabled" will be interpreted
     literally if it has any arguments before or after it, even if they are "disabled"
     as well.</p>
-
-    <p><strong>Note:</strong> Multiple <code class="directive">DirectoryIndex</code>
-    directives within the <a href="../sections.html"><em>same context</em></a> will add
-    to the list of resources to look for rather than replace:
-    </p>
-    <pre class="prettyprint lang-config">
-# Example A: Set index.html as an index page, then add index.php to that list as well.
-&lt;Directory /foo&gt;
-    DirectoryIndex index.html
-    DirectoryIndex index.php
-&lt;/Directory&gt;
-
-# Example B: This is identical to example A, except it's done with a single directive.
-&lt;Directory /foo&gt;
-    DirectoryIndex index.html index.php
-&lt;/Directory&gt;
-
-# Example C: To replace the list, you must explicitly reset it first:
-# In this example, only index.php will remain as an index resource.
-&lt;Directory /foo&gt;
-    DirectoryIndex index.html
-    DirectoryIndex disabled
-    DirectoryIndex index.php
-&lt;/Directory&gt;
-    </pre>
-
 
 
 </div>
@@ -228,7 +202,7 @@ a directory</td></tr>
     <code>index.html</code> file. <strong>But a request without trailing slash
     would list the directory contents</strong>.</p>
     </div>
-	<p>Also note that some browsers may erroneously change POST requests into GET
+	<p>Also note that some browsers may erroneously change POST requests into GET 
 	(thus discarding POST data) when a redirect is issued.</p>
 
 </div>
@@ -236,14 +210,12 @@ a directory</td></tr>
 <div class="directive-section"><h2><a name="FallbackResource" id="FallbackResource">FallbackResource</a> <a name="fallbackresource" id="fallbackresource">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define a default URL for requests that don't map to a file</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FallbackResource disabled | <var>local-url</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>disabled - httpd will return 404 (Not Found)</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FallbackResource <var>local-url</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>None - httpd will return 404 (Not Found)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dir</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The <code>disabled</code> argument is available in version
-2.4.4 and later.</td></tr>
 </table>
     <p>Use this to set a handler for any URL that doesn't map to anything
     in your filesystem, and would otherwise return HTTP 404 (Not Found).
@@ -269,16 +241,11 @@ a directory</td></tr>
 
     <p>Existing files, such as images, css files, and so on, will be
     served normally.</p>
-    <p>Use the <code>disabled</code> argument to disable that feature
-    if inheritance from a parent directory is not desired.</p>
     <p>In a sub-URI, such as <em>http://example.com/blog/</em> this
     <em>sub-URI</em> has to be supplied as <var>local-url</var>:</p>
     <pre class="prettyprint lang-config">
 &lt;Directory /web/example.com/htdocs/blog&gt;
     FallbackResource /blog/index.php
-&lt;/Directory&gt;
-&lt;Directory /web/example.com/htdocs/blog/images&gt;
-    FallbackResource disabled
 &lt;/Directory&gt;
     </pre>
 
@@ -291,27 +258,10 @@ a directory</td></tr>
 <a href="../ja/mod/mod_dir.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_dir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_dir.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_dir.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else { 
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
+</div><div id="footer">
 <p class="apache">Copyright 2012 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
-if (typeof(prettyPrint) !== 'undefined') {
+if (typeof(prettyPrint) !== undefined) {
     prettyPrint();
 }
 //--><!]]></script>
