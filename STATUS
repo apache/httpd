@@ -209,6 +209,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch : https://svn.apache.org/viewvc?view=revision&revision=1398066
      Also suggested for backport to 2.4
      2.2.x patch: trunk patch works
+     +1: gryzor
 
 
 PATCHES/ISSUES THAT ARE STALLED
