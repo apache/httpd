@@ -657,7 +657,16 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
              */
             rv = HTTP_SERVICE_UNAVAILABLE;
         } else {
-            rv = HTTP_INTERNAL_SERVER_ERROR;
+            /* If we had a successful cping/cpong and then a timeout
+             * we assume it is a request that cause a back-end timeout,
+             * but doesn't affect the whole worker.
+             */
+            if (APR_STATUS_IS_TIMEUP(status) && conn->worker->s->ping_timeout_set) {
+                rv = HTTP_GATEWAY_TIME_OUT;
+            }
+            else {
+                rv = HTTP_INTERNAL_SERVER_ERROR;
+            }
         }
     }
 
