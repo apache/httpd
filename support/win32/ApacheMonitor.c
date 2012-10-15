@@ -542,7 +542,6 @@ BOOL ApacheManageService(LPCTSTR szServiceName, LPCTSTR szImagePath,
 {
     TCHAR szMsg[MAX_PATH];
     BOOL retValue;
-    BOOL serviceFlag = TRUE;
     SC_HANDLE schService;
     SC_HANDLE schSCManager;
     SERVICE_STATUS schSStatus;
