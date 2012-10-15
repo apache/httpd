@@ -232,6 +232,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_dir: Support for the 'disabled' FallbackResource argument
      trunk patch : https://svn.apache.org/viewvc?view=revision&revision=1398066
      2.4.x patch: trunk patch works
+     +1: gryzor
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
