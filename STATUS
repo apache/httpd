@@ -234,6 +234,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: gryzor
 
+   * mod_xml2enc: Export mod_xml2enc.h so that others can use the module.
+     trunk patch: http://svn.apache.org/viewvc?rev=1399413&view=rev
+     2.4.x patch: trunk patch works
+     +1: minfrin
+
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
