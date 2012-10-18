@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) syslog logging: Remove stray ", referer" at the end of some messages.
+     [Jeff Trawick]
+
   *) configure: Fix processing of --disable-FEATURE for various features.
      [Jeff Trawick]
 

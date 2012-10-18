@@ -1088,7 +1088,8 @@ static void write_logline(char *errstr, apr_size_t len, apr_file_t *logf,
     }
 #ifdef HAVE_SYSLOG
     else {
-        syslog(level < LOG_PRIMASK ? level : APLOG_DEBUG, "%s", errstr);
+        syslog(level < LOG_PRIMASK ? level : APLOG_DEBUG, "%.*s",
+               (int)len, errstr);
     }
 #endif
 }
