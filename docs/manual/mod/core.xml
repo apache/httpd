@@ -413,6 +413,9 @@ NoDecode option available in 2.3.12 and later.</compatibility>
       module="mod_access_compat">Deny</directive> and <directive
       module="mod_access_compat">Order</directive>).</dd>
 
+<!-- TODO - Update this for 2.4 syntax -->
+
+
       <dt>Nonfatal=[Override|Unknown|All]</dt>
 
       <dd>
