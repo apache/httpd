@@ -1264,8 +1264,7 @@ static void log_error_core(const char *file, int line, int module_index,
                                        &errstr_start, &errstr_end, fmt, args);
         }
 
-        if (!*errstr)
-        {
+        if (!*errstr) {
             /*
              * Don't log empty lines. This can happen with once-per-conn/req
              * info if an item with AP_ERRORLOG_FLAG_REQUIRED is NULL.
