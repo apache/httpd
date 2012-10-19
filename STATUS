@@ -101,6 +101,16 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works (modulo CHANGES)
      +1: kbrand, trawick, gsmith
 
+   * mod_slotmem_shm: Add debugging output during persist
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1386726
+     2.4.x patch: trunk patch works (minus next-number)
+     +1: jim, rjung, trawick
+
+   * mod_slotmem_shm: Fix handling of persist shm data file naming
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387085
+      2.4.x patch: trunk patch works
+     +1: jim, rjung, trawick
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -149,13 +159,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: rjung,
      rjung: sf: you applied it to trunk, care to vote?
 
-   * mod_ssl: Work correctly with a development version of OpenSSL.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1358167 and
-                  http://svn.apache.org/viewvc?view=revision&revision=1358168
-     2.4.x patch: http://people.apache.org/~rjung/patches/ssl-support-uninstalled-openssl-2_4.patch
-     +1:
-     -1: kbrand: breaks OS X builds, superseded by approach based on MOD_CFLAGS etc.
-
    * mod_proxy: Make balancers server-specific, as they should have
      been. Inheritance causes too many behind-the-scene interactions
      to be reliable in a dynamic environ.
@@ -163,11 +166,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1388029
      2.4.x patch: trunk patch works (minus ap_mmn.h change)
      +1: jim, druggeri
-
-   * mod_slotmem_shm: Add debugging output during persist
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1386726
-     2.4.x patch: trunk patch works (minus next-number)
-     +1: jim, rjung
 
    * mod_slotmem_*: Add in new fgrab() function which forces a grab and
      slot allocation on a specified slot. Allow for clearing of inuse
@@ -184,11 +182,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             as in-use if not already used.".
        jim: Sounds good... We can adjust trunk as needed and then backport
             since docs are CTR on the branch (Added r1394079)
-
-   * mod_slotmem_shm: Fix handling of persist shm data file naming
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387085
-      2.4.x patch: trunk patch works
-     +1: jim, rjung
 
    * mod_proxy: Persist balancer and worker data across restarts and stop/start.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387110
@@ -237,7 +230,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_xml2enc: Export mod_xml2enc.h so that others can use the module.
      trunk patch: http://svn.apache.org/viewvc?rev=1399413&view=rev
      2.4.x patch: trunk patch works
-     +1: minfrin
+     +1: minfrin, trawick
+
+   * syslog logging: Remove stray ", referer" at the end of some messages.
+     trunk patch: http://svn.apache.org/viewvc?rev=1399708&view=rev
+     2.4.x patch: trunk patch works:
+     +1: trawick
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
