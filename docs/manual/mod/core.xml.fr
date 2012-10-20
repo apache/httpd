@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1396993 -->
+<!-- English Revision : 1399903 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -455,6 +455,11 @@ All pour les versions ant&eacute;rieures</default>
       module="mod_access_compat">Allow</directive>, <directive
       module="mod_access_compat">Deny</directive> et <directive
       module="mod_access_compat">Order</directive>).</dd>
+
+<!-- TODO - Update this for 2.4 syntax -->
+
+
+
 
       <dt>Nonfatal=[Override|Unknown|All]</dt>
 
