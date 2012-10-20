@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1353503-->
+<!-- English Revision : 1398068-->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -248,8 +248,8 @@ d'Apache</compatibility>
 <name>FallbackResource</name>
 <description>D&eacute;finit une URL par d&eacute;faut pour les requ&ecirc;tes qui ne ciblent
 aucun fichier</description>
-<syntax>FallbackResource <var>url-locale</var></syntax>
-<default>Aucune - httpd renvoie un code d'erreur 404 (Not Found)</default>
+<syntax>FallbackResource disabled | <var>url-locale</var></syntax>
+<default>D&eacute;sactiv&eacute; - httpd renvoie un code d'erreur 404 (Not Found)</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Indexes</override>
@@ -280,12 +280,18 @@ aucun fichier</description>
     </highlight>
     <p>Les fichiers existants comme des images, des fichiers css, etc...
     seront trait&eacute;s normalement.</p>
+    <p>Utilisez l'argument <code>disabled</code> pour d&eacute;sactiver cette
+    fonctionnalit&eacute; si l'h&eacute;ritage d'un r&eacute;pertoire parent n'est pas
+    souhait&eacute;.</p>
     <p>Pour un URI interm&eacute;diaire tel que
     <em>http://example.com/blog/</em>, cet URI interm&eacute;diaire doit &ecirc;tre
     sp&eacute;cifi&eacute; en tant que <var>url-locale</var> :</p>
     <highlight language="config">
 &lt;Directory /web/example.com/htdocs/blog&gt;
     FallbackResource /blog/index.php
+&lt;/Directory&gt;
+&lt;Directory /web/example.com/htdocs/blog/images&gt;
+    FallbackResource disabled
 &lt;/Directory&gt;
     </highlight>
 </usage>
