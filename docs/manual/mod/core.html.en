@@ -129,7 +129,7 @@ available</td></tr>
 On Windows from Apache httpd 2.3.3 and later.</td></tr>
 </table>
     <p>This directive enables operating system specific optimizations for a
-       listening socket by the <code class="directive">Protocol</code>type.
+       listening socket by the <code class="directive">Protocol</code> type.
        The basic premise is for the kernel to not send a socket to the server
        process until either data is received or an entire HTTP Request is buffered.
        Only <a href="http://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;sektion=9">
@@ -483,6 +483,9 @@ NoDecode option available in 2.3.12 and later.</td></tr>
       <dd>
       Allow use of the directives controlling host access (<code class="directive"><a href="../mod/mod_access_compat.html#allow">Allow</a></code>, <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code> and <code class="directive"><a href="../mod/mod_access_compat.html#order">Order</a></code>).</dd>
 
+
+
+
       <dt>Nonfatal=[Override|Unknown|All]</dt>
 
       <dd>
@@ -523,6 +526,10 @@ NoDecode option available in 2.3.12 and later.</td></tr>
          syntax.  In other words, this mechanism cannot force a specific option
          to remain <em>set</em> while allowing any others to be set.
       </p></div>
+
+      <div class="example"><p><code>
+      AllowOverride Options=Indexes,MultiViews
+      </code></p></div>
       </dd>
     </dl>
 
@@ -603,7 +610,7 @@ AllowOverrideList CookieTracking CookieName
     <p>In the example above <code class="directive"><a href="#allowoverride&#10;    ">AllowOverride
     </a></code> grants permission to the <code>AuthConfig</code>
     directive grouping and <code class="directive">AllowOverrideList</code> grants
-    permission to only two directves from the <code>FileInfo</code> directive
+    permission to only two directives from the <code>FileInfo</code> directive
     grouping. All others will cause an internal server error.</p>
 
 <h3>See also</h3>
