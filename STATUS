@@ -177,7 +177,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~rjung/patches/improve-speaking-http-on-https-message-2_2.patch
      +1: rjung
 
-   * mod_proxy_http: Use the the same hostname for SNI as for the HTTP request when
+   * mod_proxy_http: Use the same hostname for SNI as for the HTTP request when
      forwarding to SSL backends.
      PR: 53134
      Based on a patch from: Michael Weiser <michael weiser.dinsnail.net>
@@ -210,6 +210,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Also suggested for backport to 2.4
      2.2.x patch: trunk patch works
      +1: gryzor
+
+   * modules/ldap/util_ldap.c: Correct erroneous messages
+     PR: 53402
+     trunk and 2.4.x: Erroneous message about LDAPSharedCacheSize
+                  http://svn.apache.org/viewvc?view=revision&sortby=date&revision=1096577
+     trunk and 2.4.x: Erroneous order for the parameters
+                  http://svn.apache.org/viewvc?view=revision&sortby=date&revision=627637
+     2.2.x patch: attached in PR 53402 (https://issues.apache.org/bugzilla/attachment.cgi?id=29502)
+     +1: jailletc36
 
 
 PATCHES/ISSUES THAT ARE STALLED
