@@ -60,7 +60,8 @@ NT.</td></tr>
     <code>none</code>.</p>
 
     <div class="example"><p><code>
-        AcceptFiler none
+        AcceptFilter http none
+        AcceptFilter https none
     </code></p></div>
     
     <p><em>In Apache httpd 2.0 and 2.2,
