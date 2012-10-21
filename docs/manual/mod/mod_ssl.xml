@@ -2446,16 +2446,21 @@ be protected with file permissions similar to those used for
 
 <directivesynopsis>
 <name>SSLCompression</name>
-<description>Disallow compression on the SSL level</description>
+<description>Enable compression on the SSL level</description>
 <syntax>SSLCompression on|off</syntax>
-<default>SSLCompression on</default>
+<default>SSLCompression off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Available in httpd 2.4.3 and later, if using OpenSSL 0.9.8 or later;
-virtual host scope available if using OpenSSL 1.0.0 or later</compatibility>
+virtual host scope available if using OpenSSL 1.0.0 or later.
+The default used to be <code>on</code> in version 2.4.3.</compatibility>
 
 <usage>
-<p>This directive allows to disable compression on the SSL level.</p>
+<p>This directive allows to enable compression on the SSL level.</p>
+<note type="warning">
+<p>Enabling compression causes security issues in most setups (the so called
+CRIME attack).</p>
+</note>
 </usage>
 </directivesynopsis>
 

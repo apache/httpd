@@ -656,7 +656,7 @@ static void ssl_init_ctx_protocol(server_rec *s,
 
 
 #ifndef OPENSSL_NO_COMP
-    if (sc->compression == FALSE) {
+    if (sc->compression != TRUE) {
 #ifdef SSL_OP_NO_COMPRESSION
         /* OpenSSL >= 1.0 only */
         SSL_CTX_set_options(ctx, SSL_OP_NO_COMPRESSION);

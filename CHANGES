@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: Change default for SSLCompression to off, as compression
+     causes security issues in most setups. (The so called "CRIME" attack).
+     [Stefan Fritsch]
+
   *) syslog logging: Remove stray ", referer" at the end of some messages.
      [Jeff Trawick]
 
