@@ -89,11 +89,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_xml2enc: Export mod_xml2enc.h so that others can use the module.
-     trunk patch: http://svn.apache.org/viewvc?rev=1399413&view=rev
-     2.4.x patch: trunk patch works
-     +1: minfrin, trawick, jim
-
    * mod_ssl: Change default for SSLCompression to off.
      trunk patch: http://svn.apache.org/viewvc?rev=1400700&view=rev
      2.4.x patch: trunk patch works (except CHANGES)
