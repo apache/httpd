@@ -172,11 +172,6 @@ static void slotmem_clearinuse(ap_slotmem_instance_t *slot)
     }
 }
 
-static const char *storemem_filename(apr_pool_t *pool, const char *name)
-{
-    return apr_pstrcat(pool, name, ".persist", NULL);
-}
-
 static void store_slotmem(ap_slotmem_instance_t *slotmem)
 {
     apr_file_t *fp;
