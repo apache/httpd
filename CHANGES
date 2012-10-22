@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.4
  
+  *) ab: add TLS1.1/TLS1.2 options to -f switch, and adapt output
+     to more accurately report the negotiated protocol. PR 53916.
+     [Nicolás Pernas Maradei <nico emutex com>, Kaspar Brand]
+
   *) core: ErrorDocument now works for requests without a Host header.
      PR 48357.  [Jeff Trawick]
 
