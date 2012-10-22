@@ -129,8 +129,10 @@ ServerAdmin you@example.com
 # documents. By default, all requests are taken from this directory, but
 # symbolic links and aliases may be used to point to other locations.
 #
-DocumentRoot "@exp_htdocsdir@"
-<Directory "@exp_htdocsdir@">
+
+Define DOCROOT "@exp_htdocsdir@"
+DocumentRoot "${DOCROOT"}
+<Directory "${DOCROOT}">
     #
     # Possible values for the Options directive are "None", "All",
     # or any combination of:
