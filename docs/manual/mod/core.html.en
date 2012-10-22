@@ -781,6 +781,8 @@ which no other media type configuration could be found.
   Define servername www.example.com
   Define SSL
 &lt;/IfDefine&gt;
+
+    DocumentRoot /var/www/${servername}/htdocs
     </pre>
 
 
