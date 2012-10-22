@@ -159,8 +159,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             and forced grab, like e.g. "grab or allocate some unused slot and
             mark as in-use" versus "grab or allocate a given slot and mark
             as in-use if not already used.".
-       jim: Sounds good... We can adjust trunk as needed and then backport
-            since docs are CTR on the branch (Added r1394079)
+       jim: Added in r1394079
 
    * mod_proxy: Persist balancer and worker data across restarts and stop/start.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387110
