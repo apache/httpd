@@ -198,7 +198,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * "Iterate" directives: Report an error if no arguments are provided.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1397172
      2.4.x patch: trunk patch works
-     +1: trawick
+     +1: trawick, jim
 
    * mod_dir: Support for the 'disabled' FallbackResource argument
      trunk patch : https://svn.apache.org/viewvc?view=revision&revision=1398066
@@ -207,21 +207,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: gryzor
      covener: pls add doc revision incl compatibility.
 
-
    * mod_xml2enc: Export mod_xml2enc.h so that others can use the module.
      trunk patch: http://svn.apache.org/viewvc?rev=1399413&view=rev
      2.4.x patch: trunk patch works
-     +1: minfrin, trawick
+     +1: minfrin, trawick, jim
 
    * syslog logging: Remove stray ", referer" at the end of some messages.
      trunk patch: http://svn.apache.org/viewvc?rev=1399708&view=rev
      2.4.x patch: trunk patch works:
-     +1: trawick
+     +1: trawick, jim
 
    * mod_ssl: Change default for SSLCompression to off.
      trunk patch: http://svn.apache.org/viewvc?rev=1400700&view=rev
      2.4.x patch: trunk patch works (except CHANGES)
-     +1: sf, covener
+     +1: sf, covener, jim
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
