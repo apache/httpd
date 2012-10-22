@@ -89,10 +89,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_ssl: Change default for SSLCompression to off.
-     trunk patch: http://svn.apache.org/viewvc?rev=1400700&view=rev
-     2.4.x patch: trunk patch works (except CHANGES)
-     +1: sf, covener, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
