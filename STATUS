@@ -89,12 +89,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * ab: add TLS1.1/TLS1.2 options to -f switch, and adapt output
-     to more accurately report the negotiated protocol. PR 53916.
-     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1395225
-     2.4.x patch: trunk patch works (modulo CHANGES)
-     +1: kbrand, trawick, gsmith
-
    * mod_slotmem_shm: Add debugging output during persist
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1386726
      2.4.x patch: trunk patch works (minus next-number)
