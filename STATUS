@@ -89,12 +89,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_slotmem_plain: honor DefaultRuntimeDir (below doesn't apply since
-     there is no config directive to speak of)
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1370763
-     2.4.x patch: trunk patch works
-     +1: jim, rjung, trawick
-
    * ab: add TLS1.1/TLS1.2 options to -f switch, and adapt output
      to more accurately report the negotiated protocol. PR 53916.
      trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1395225

@@ -75,7 +75,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new, const char *name
         if (name[0] == ':')
             fname = name;
         else
-            fname = ap_server_root_relative(pool, name);
+            fname = ap_runtime_dir_relative(pool, name);
 
         /* first try to attach to existing slotmem */
         if (next) {
@@ -126,7 +126,7 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new, const char *name
         if (name[0] == ':')
             fname = name;
         else
-            fname = ap_server_root_relative(pool, name);
+            fname = ap_runtime_dir_relative(pool, name);
     }
     else
         return APR_ENOSHMAVAIL;
