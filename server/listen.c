@@ -213,8 +213,7 @@ static void ap_apply_accept_filter(apr_pool_t *p, ap_listen_rec *lis,
 
     if (accf) {
 #if APR_HAS_SO_ACCEPTFILTER
-        rv = apr_socket_accept_filter(s, apr_pstrdup(p, accf),
-                                      apr_pstrdup(p,""));
+        rv = apr_socket_accept_filter(s, accf, "");
         if (rv != APR_SUCCESS && !APR_STATUS_IS_ENOTIMPL(rv)) {
             ap_log_perror(APLOG_MARK, APLOG_WARNING, rv, p, APLOGNO(00075)
                           "Failed to enable the '%s' Accept Filter",
