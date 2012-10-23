@@ -131,7 +131,7 @@ ServerAdmin you@example.com
 #
 
 Define DOCROOT "@exp_htdocsdir@"
-DocumentRoot "${DOCROOT"}
+DocumentRoot "${DOCROOT}"
 <Directory "${DOCROOT}">
     #
     # Possible values for the Options directive are "None", "All",
