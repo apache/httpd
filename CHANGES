@@ -626,6 +626,9 @@ Changes with Apache 2.2.12
      different security issues which may affect particular configurations
      and third-party modules.
 
+  *) mod_headers: Make 'Header set Content-Type' effective on responses
+     that already have a Content-Type.  [Issac Goldstand]
+
   *) mod_include: fix potential segfault when handling back references
      on an empty SSI variable. [Ruediger Pluem, Lars Eilebrecht, Nick Kew]
 
