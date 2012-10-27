@@ -46,7 +46,7 @@ serveur</td></tr>
     </pre>
 
 
-    <p>Il est recommandé d'utiliser <code class="module"><a href="../mod/mod_access.html">mod_access</a></code> à
+    <p>Il est recommandé d'utiliser <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> à
     l'intérieur de la section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> afin de restreindre l'accès aux
     informations de configuration de votre serveur :</p>
 
