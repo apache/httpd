@@ -549,6 +549,10 @@ All pour les versions antérieures</code></td></tr>
       <em>activée</em> tout en permettant à toute autre option d'être
       activée.
       </p></div>
+
+      <div class="example"><p><code>
+      AllowOverride Options=Indexes,MultiViews
+      </code></p></div>
       
       </dd>
     </dl>

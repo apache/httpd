@@ -125,26 +125,23 @@ client envoie une requête pour un répertoire</td></tr>
     arguments sont présents avant ou après lui, même s'ils sont
     eux-mêmes des arguments "disabled".</p>
 
-    <p><strong>Note :</strong>La définition de plusieurs directives
-    <code class="directive">DirectoryIndex</code> au sein d'un <a href="../sections.html"><em>même
-    contexte</em></a> permet d'ajouter des ressources à rechercher plutôt
-    que de remplacer celle déjà définies :
+    <p><strong>Note:</strong> Positionner plusieurs directives <code class="directive">DirectoryIndex</code>
+    au coeur du <a href="../sections.html"><em>même context</em></a> complète la liste des ressources et ne l'écrase pas :
     </p>
     <pre class="prettyprint lang-config">
-# Exemple A: définit index.html comme page d'index, ainsi qu'index.php.
+# Exemple A: Positionner index.html en page d'index, puis ajouter index.php.
 &lt;Directory /foo&gt;
     DirectoryIndex index.html
     DirectoryIndex index.php
 &lt;/Directory&gt;
 
-# Exemple B: identique à l'exemple A, mais avec une seule directive.
+# Exemple B: La même chose que l'exemple A, mais réalisé au moyen d'une seule directive.
 &lt;Directory /foo&gt;
     DirectoryIndex index.html index.php
 &lt;/Directory&gt;
 
-# Exemple C: pour remplacer la liste des pages d'index par une autre,
-# vous devez tout d'abord supprimer la première liste : dans l'exemple
-# suivant, il ne restera qu'index.php comme page d'index.
+# Exemple C: Pour remplacer la liste des ressources, il faut d'abord la vider :
+# Ici, seul index.php restera référencé comme ressource d'index.
 &lt;Directory /foo&gt;
     DirectoryIndex index.html
     DirectoryIndex disabled
