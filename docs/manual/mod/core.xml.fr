@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1399903:1401124 (outdated) -->
+<!-- English Revision : 1401124 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -774,6 +774,8 @@ DESACTIV&Eacute;S &agrave; partir des version 2.3.x.</compatibility>
   Define servername www.example.com
   Define SSL
 &lt;/IfDefine&gt;
+
+    DocumentRoot /var/www/${servername}/htdocs
     </highlight>
 
     <p>Le caract&egrave;re ":" est interdit dans les noms de variables afin
