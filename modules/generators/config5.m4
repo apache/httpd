@@ -6,6 +6,7 @@ APACHE_MODPATH_INIT(generators)
 
 APACHE_MODULE(status, process/thread monitoring, , , yes)
 APACHE_MODULE(autoindex, directory listing, , , yes)
+APACHE_MODULE(autoindex, FastCGI, , , yes)
 APACHE_MODULE(asis, as-is filetypes, , , )
 APACHE_MODULE(info, server information, , , most)
 APACHE_MODULE(suexec, set uid and gid for spawned processes, , , no, [

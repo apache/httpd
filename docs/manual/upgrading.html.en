@@ -116,7 +116,7 @@
     and AuthzOwnerAuthoritative.   These directives have been replaced by the
     more expressive <code class="directive"><a href="./mod/mod_authz_core.html#requireany">RequireAny</a></code>, 
     <code class="directive"><a href="./mod/mod_authz_core.html#requirenone">RequireNone</a></code>, and
-    <code class="directive"><a href="./mod/mod_authz_core.html#requireaall">RequireAall</a></code>.</p>
+    <code class="directive"><a href="./mod/mod_authz_core.html#requireall">RequireAll</a></code>.</p>
 
     <h4><a name="access" id="access">Access control</a></h4>
       
