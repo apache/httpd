@@ -113,7 +113,7 @@
     and AuthzOwnerAuthoritative.   These directives have been replaced by the
     more expressive <directive module="mod_authz_core">RequireAny</directive>, 
     <directive module="mod_authz_core">RequireNone</directive>, and
-    <directive module="mod_authz_core">RequireAall</directive>.</p>
+    <directive module="mod_authz_core">RequireAll</directive>.</p>
 
     <section id="access">
       <title>Access control</title>
