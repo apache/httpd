@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) ap_expr: Add req_novary function that allows HTTP header lookups
+     without adding the name to the Vary header. [Stefan Fritsch]
+
   *) mod_ssl: Change default for SSLCompression to off, as compression
      causes security issues in most setups. (The so called "CRIME" attack).
      [Stefan Fritsch]
