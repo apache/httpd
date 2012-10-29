@@ -567,9 +567,11 @@ Alias /myapp /opt/myapp-1.2.3
         </li>
       </ul>
 
-      <p>If the <em>TestString</em> has the special value <code>expr</code>, the
-      <em>CondPattern</em> will be treated as an
-      <a href="../expr.html">ap_expr</a>.</p>
+      <p>If the <em>TestString</em> has the special value <code>expr</code>,
+      the <em>CondPattern</em> will be treated as an
+      <a href="../expr.html">ap_expr</a>. HTTP headers referenced in the
+      expression will be added to the Vary header if the <code>novary</code>
+      flag is not given.</p>
 
       <p>Other things you should be aware of:</p>
 
