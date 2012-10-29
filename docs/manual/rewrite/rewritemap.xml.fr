@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1338147 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : VIncent Deffontaines -->
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<manualpage metafile="rewritemap.xml.meta">
+  <parentdocument href="./">Rewrite</parentdocument>
+  <title>Utilisation de RewriteMap</title>
+  <summary>
+
+    <p>Ce document est un compl&eacute;ment &agrave; la <a
+    href="../mod/mod_rewrite.html">documentation de r&eacute;f&eacute;rence</a> du
+    module <module>mod_rewrite</module>. Il d&eacute;crit l'utilisation de la
+    directive <directive module="mod_rewrite">RewriteMap</directive>, et
+    fournit des exemples pour chacun des diff&eacute;rents types de
+    <code>RewriteMap</code>.</p>
+
+    <note type="warning">Notez que la plupart de ces exemples ne
+    fonctionneront pas en l'&eacute;tat dans le contexte de votre configuration
+    particuli&egrave;re ; vous devez donc vous attacher &agrave; les
+    comprendre, plut&ocirc;t que de simplement les ins&eacute;rer dans votre
+    configuration par copier/coller.</note>
+
+  </summary>
+  <seealso><a href="../mod/mod_rewrite.html">Documentation du module
+  mod_rewrite</a></seealso>
+  <seealso><a href="intro.html">Introduction &agrave; mod_rewrite</a></seealso>
+  <seealso><a href="remapping.html">Redirection et remise en
+  correspondance</a></seealso>
+  <seealso><a href="access.html">Contr&ocirc;le d'acc&egrave;s</a></seealso>
+  <seealso><a href="vhosts.html">Serveurs virtuels</a></seealso>
+  <seealso><a href="proxy.html">Mise en cache</a></seealso>
+  <seealso><a href="advanced.html">Techniques avanc&eacute;es</a></seealso>
+  <seealso><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></seealso>
+
+  <section id="introduction">
+    <title>Introduction</title>
+
+   <p>
+   La directive <directive module="mod_rewrite">RewriteMap</directive>
+   d&eacute;finit une fonction externe qui peut &ecirc;tre appel&eacute;e depuis une
+   directive <directive module="mod_rewrite">RewriteRule</directive> ou
+   <directive module="mod_rewrite">RewriteCond</directive> pour
+   accomplir une r&eacute;&eacute;criture trop compliqu&eacute;e, ou trop sp&eacute;cialis&eacute;e pour
+   &ecirc;tre effectu&eacute;e &agrave; partir d'expressions rationnelles. Vous trouverez
+   ci-dessous les diff&eacute;rents types disponibles pour la source de
+   donn&eacute;es, ceux-ci &eacute;tant par ailleurs &eacute;num&eacute;r&eacute;s dans la documentation de
+   r&eacute;f&eacute;rence de <directive module="mod_rewrite">RewriteMap</directive>.</p>
+
+   <p>La syntaxe de la directive <code>RewriteMap</code> est la suivante
+   :</p>
+
+<highlight language="config">RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em></highlight>
+
+    <p>L'argument <a id="mapfunc" name="mapfunc"><em>MapName</em></a>
+    est un nom arbitraire que vous associez &agrave; la table de
+    correspondances, et que vous
+    pourrez utilisez par la suite dans les directives de r&eacute;&eacute;criture. Les
+    recherches dans la table de correspondance s'effectuent en
+    respectant cette syntaxe :</p>
+
+    <p class="indent">
+      <strong>
+        <code>${</code> <em>nom-map</em> <code>:</code>
+	<em>cl&eacute;-recherche</em>
+        <code>}</code> <br/> <code>${</code> <em>nom-map</em> <code>:</code>
+        <em>cl&eacute;-recherche</em> <code>|</code> <em>DefaultValue</em> <code>}</code>
+      </strong>
+    </p>
+
+    <p>Lorsque cette syntaxe est employ&eacute;e, la table de correspondances
+    <em>nom-map</em> est consult&eacute;e et la cl&eacute; <em>cl&eacute;-recherche</em>
+    recherch&eacute;e. Si la cl&eacute; est trouv&eacute;e, la fonction de recherche dans la
+    table de correspondance est remplac&eacute;e par <em>SubstValue</em>, ou
+    par <em>DefaultValue</em> dans le cas contraire, ou par la cha&icirc;ne
+    vide si aucune <em>DefaultValue</em> n'a &eacute;t&eacute; sp&eacute;cifi&eacute;e.</p>
+
+    <p>Par exemple, vous pouvez d&eacute;finir une directive
+    <directive>RewriteMap</directive> comme suit :</p>
+    <highlight language="config">RewriteMap examplemap txt:/path/to/file/map.txt</highlight>
+    <p>Vous pourrez par la suite utiliser cette table de correspondances
+    dans une directive <directive>RewriteRule</directive> comme suit :</p>
+<highlight language="config">RewriteRule ^/ex/(.*) ${examplemap:$1}</highlight>
+
+<p>Il est possible de sp&eacute;cifier une valeur par d&eacute;faut qui sera utilis&eacute;e
+si la recherche dans la table de correspondances est infructueuse :</p>
+
+<highlight language="config">RewriteRule ^/ex/(.*) ${examplemap:$1|/not_found.html}</highlight>
+
+<note><title>Contexte de r&eacute;pertoire et fichiers.htaccess</title>
+<p>
+Vous ne pouvez utiliser la directive <code>RewriteMap</code> ni dans
+les sections &lt;Directory&gt;, ni dans les fichiers
+<code>.htaccess</code>. Vous devez d&eacute;clarer la table de correspondances
+au niveau du serveur principal ou dans un contexte de serveur virtuel.
+En revanche, si vous ne pouvez pas d&eacute;clarer la table dans une section
+&lt;Directory&gt; ou dans un fichier <code>.htaccess</code>, vous
+pourrez y faire r&eacute;f&eacute;rence dans ces contextes, une fois cette table
+cr&eacute;&eacute;e.
+</p>
+</note>
+
+<p>Les sections suivantes d&eacute;crivent les diff&eacute;rents types de tables de
+correspondances <em>type-map</em> disponibles, et fournissent des
+exemples pour chacun d'entre eux.</p>
+  </section>
+
+  <section id="txt">
+    <title>txt: tables de correspondances au format texte</title>
+
+    <p>Lorsqu'un type-map <code>txt</code> est utilis&eacute;, la source-map
+    est un chemin du syst&egrave;me de fichiers vers un fichier de
+    correspondances au format texte, contenant sur chaque ligne une
+    paire cl&eacute;/valeur s&eacute;par&eacute;es par un espace. Il est possible d'ins&eacute;rer
+    des commentaires sous la forme de cha&icirc;nes commen&ccedil;ant par le caract&egrave;re
+    '#'.</p>
+
+    <p>Voici un exemple d'entr&eacute;es valides dans un fichier de
+    correspondances :</p>
+
+    <p class="indent">
+      # Ligne de commentaires<br />
+      <strong><em>cl&eacute;</em> <em>valeur-substitution</em></strong><br />
+      <strong><em>cl&eacute;</em> <em>valeur-substitution</em></strong> # commentaire<br />
+    </p>
+
+    <p>Lorsque la table de correspondance fait l'objet d'une recherche,
+    la valeur sp&eacute;cifi&eacute;e est recherch&eacute;e dans le premier champ, et si elle
+    est trouv&eacute;e, la valeur de substitution est renvoy&eacute;e.</p>
+
+    <p>Par exemple, nous pourrions utiliser un fichier de
+    correspondances pour traduire des noms de produits en identifiants
+    produits pour obtenir des URLs plus simples &agrave; m&eacute;moriser, en
+    utilisant la recette suivante :</p>
+
+    <p><strong>Product to ID configuration</strong></p>
+    <highlight language="config">
+RewriteMap product2id txt:/etc/apache2/productmap.txt
+RewriteRule ^/product/(.*) /prods.php?id=${product2id:$1|NOTFOUND} [PT]
+    </highlight>
+
+    <p>Nous supposons ici que le script <code>prods.php</code> sait quoi
+    faire lorsqu'il re&ccedil;oit un argument <code>id=NON-TROUVE</code>, dans
+    le cas o&ugrave; le produit ne se trouve pas dans la table de
+    correspondances.</p>
+
+    <p>Le fichier <code>/etc/apache2/map-produit.txt</code> contient ce
+    qui suit :</p>
+
+    <example><title>Fichier de correspondances Produit - Identifiant</title>
+##<br />
+##  map-produit.txt - Fichier de correspondances Produit - Identifiant<br />
+##<br />
+<br />
+TELEVISION 993<br />
+STEREO     198<br />
+CANNE-A-PECHE 043<br />
+BALLON-BASKET 418<br />
+TELEPHONE  328
+    </example>
+
+    <p>Ainsi, lorsqu'une requ&ecirc;te pour
+    <code>http://example.com/produit/TELEVISION</code> arrive, elle est
+    transform&eacute;e en interne en <code>/prods.php?id=993</code>.</p>
+
+    <note><title>Note: fichiers .htaccess</title>
+    L'exemple donn&eacute; est con&ccedil;u pour &ecirc;tre utilis&eacute; dans un contexte de
+    serveur principal ou de serveur virtuel. Si vous voulez l'utiliser
+    dans un fichier <code>.htaccess</code>, vous devrez supprimer le
+    slash de d&eacute;but dans le mod&egrave;le de r&eacute;&eacute;criture afin que ce dernier
+    puisse correspondre &agrave; toute URL :
+    <highlight language="config">RewriteRule ^product/(.*) /prods.php?id=${product2id:$1|NOTFOUND} [PT]</highlight>
+    </note>
+
+    <note><title>Recherches mises en cache</title>
+    <p>
+    Les cl&eacute;s de recherche sont mises en cache par httpd jusqu'&agrave; ce que
+    le <code>mtime</code> (date de modification) du fichier de
+    correspondances soit modifi&eacute;, ou que le serveur httpd soit
+    red&eacute;marr&eacute;, ce qui am&eacute;liore les performances pour les tables de
+    correspondances consult&eacute;es par de nombreuses requ&ecirc;tes.
+    </p>
+    </note>
+
+  </section>
+  <section id="rnd">
+    <title>rnd: Fichier texte &agrave; valeurs de substitution multiples
+    choisies de mani&egrave;re al&eacute;atoire</title>
+
+    <p>Lorsque le type-map sp&eacute;cifi&eacute; est <code>rnd</code>, la source est
+    un chemin du syst&egrave;me de fichiers vers un fichier de correspondances
+    au format texte dont chaque ligne contient une cl&eacute;, et une ou
+    plusieurs valeurs s&eacute;par&eacute;es par le caract&egrave;re <code>|</code>. Si une
+    cl&eacute; convient, une des valeurs correspondantes sera choisie de
+    mani&egrave;re al&eacute;atoire.</p>
+
+    <p>Par exemple, vous pouvez utiliser le fichier de correspondances
+    et les directives suivants pour impl&eacute;menter une r&eacute;partition de
+    charge al&eacute;atoire entre plusieurs serveurs d'arri&egrave;re-plan, par
+    l'interm&eacute;diaire d'un mandataire inverse. Les images sont envoy&eacute;es
+    vers un des serveurs de l'ensemble 'statique', tandis que tout le
+    reste est envoy&eacute; vers un des serveurs de l'ensemble 'dynamique'.</p>
+
+    <example><title>Fichier de correspondances</title>
+##<br />
+##  map.txt -- table de r&eacute;&eacute;criture<br />
+##<br />
+<br />
+statique   www1|www2|www3|www4<br />
+dynamique  www5|www6
+    </example>
+<p><strong>Directives de configuration</strong></p>
+    <highlight language="config">
+RewriteMap servers rnd:/path/to/file/map.txt
+
+RewriteRule ^/(.*\.(png|gif|jpg)) http://${servers:static}/$1 [NC,P,L]
+RewriteRule ^/(.*) http://${servers:dynamic}/$1 [P,L]
+    </highlight>
+
+
+    <p>Ainsi, lorsqu'une image est demand&eacute;e et que la premi&egrave;re r&egrave;gle
+    convient, <code>RewriteMap</code> recherche la cha&icirc;ne
+    <code>statique</code> dans le fichier de correspondances qui
+    renvoie un des noms de serveurs sp&eacute;cifi&eacute;s de mani&egrave;re al&eacute;atoire,
+    ce dernier &eacute;tant utilis&eacute; dans la cible de la r&egrave;gle
+    <code>RewriteRule</code>.</p>
+
+    <p>Si vous voulez qu'un des serveurs soit plus souvent sollicit&eacute; que
+    les autres (par exemple s'il poss&egrave;de plus de m&eacute;moire, et peut donc
+    traiter d'avantage de requ&ecirc;tes), sp&eacute;cifiez-le plusieurs fois dans la
+    liste des serveurs.</p>
+
+    <example>
+statique   www1|www1|www2|www3|www4
+    </example>
+
+  </section>
+
+  <section id="dbm">
+    <title>dbm: Fichier condens&eacute; DBM</title>
+
+    <p>Lorsque le type-map <code>dbm</code> est utilis&eacute;, la source est
+    un chemin du syst&egrave;me de fichiers vers un fichier de donn&eacute;es DBM
+    contenant des paires cl&eacute;/valeur permettant d'effectuer la
+    correspondance. Le fonctionnement est identique &agrave; celui du type-map
+    <code>txt</code>, mais beaucoup plus rapide car un fichier DBM est
+    index&eacute;, alors qu'un fichier texte ne l'est pas. L'acc&egrave;s &agrave; la cl&eacute;
+    recherch&eacute;e est donc plus rapide.</p>
+
+    <p>Vous pouvez &eacute;ventuellement sp&eacute;cifier un type dbm particulier :</p>
+
+ <highlight language="config">
+RewriteMap examplemap dbm=sdbm:/etc/apache/mapfile.dbm
+ </highlight>
+
+    <p>Ce type peut &ecirc;tre choisi parmi sdbm, gdbm, ndbm ou db. Il est
+    cependant recommand&eacute; d'utiliser l'utilitaire <a
+    href="../programs/httxt2dbm.html">httxt2dbm</a> fourni avec le
+    serveur HTTP Apache, car il utilise la biblioth&egrave;que DBM appropri&eacute;e,
+    &agrave; savoir celle qui a &eacute;t&eacute; utilis&eacute;e lors de la compilation de httpd.</p>
+
+    <p>Pour cr&eacute;er un fichier dbm, cr&eacute;ez tout d'abord un fichier de
+    correspondances au format texte comme d&eacute;crit dans la section <a
+    href="#txt">txt</a>. Traitez ensuite ce fichier avec
+    <code>httxt2dbm</code> :</p>
+
+<example>
+$ httxt2dbm -i fichier-map.txt -o fichier-map.map
+</example>
+
+<p>Vous pouvez alors faire r&eacute;f&eacute;rence au fichier obtenu dans votre
+directive <code>RewriteMap</code> :</p>
+<highlight language="config">
+RewriteMap mapname dbm:/etc/apache/mapfile.map
+</highlight>
+
+<note>
+<p>Notez qu'avec certains types dbm, plusieurs fichiers poss&eacute;dant le
+m&ecirc;me nom de base sont cr&eacute;&eacute;s. Par exemple, vous pouvez obtenir deux
+fichiers nomm&eacute;s <code>fichier-map.map.dir</code> et
+<code>fichier-map.map.pag</code>. Ceci est tout &agrave; fait normal, et vous
+ne devez utiliser que le nom de base <code>fichier-map.map</code> dans votre
+directive <code>RewriteMap</code>.</p>
+</note>
+
+<note><title>Mise en cache des recherches</title>
+<p>
+    Les cl&eacute;s de recherche sont mises en cache par httpd jusqu'&agrave; ce que
+    le <code>mtime</code> (date de modification) du fichier de
+    correspondances soit modifi&eacute;, ou que le serveur httpd soit
+    red&eacute;marr&eacute;, ce qui am&eacute;liore les performances pour les tables de
+    correspondances consult&eacute;es par de nombreuses requ&ecirc;tes.
+</p>
+</note>
+
+  </section>
+
+  <section id="int">
+    <title>int: Fonction interne</title>
+
+    <p>Lorsque le type-map <code>int</code> est sp&eacute;cifi&eacute;, la source est
+    une des fonctions RewriteMap internes disponibles. Les d&eacute;veloppeurs
+    de modules peuvent fournir des fonctions internes suppl&eacute;mentaires en
+    les enregistrant via l'API <code>ap_register_rewrite_mapfunc</code>.
+    Les fonctions fournies par d&eacute;faut sont :
+    </p>
+
+    <ul>
+      <li><strong>toupper</strong>:<br/>
+             Met tous les caract&egrave;res de la cl&eacute; en majuscules.</li>
+      <li><strong>tolower</strong>:<br/>
+             Met tous les caract&egrave;res de la cl&eacute; en minuscules.</li>
+      <li><strong>escape</strong>:<br/>
+             Prot&egrave;ge les caract&egrave;res sp&eacute;ciaux de la cl&eacute; en les
+	     transformant en leur code hexad&eacute;cimal.</li>
+      <li><strong>unescape</strong>:<br/>
+             Retraduit les codes hexad&eacute;cimaux de la cl&eacute; en caract&egrave;res
+	     sp&eacute;ciaux.</li>
+    </ul>
+
+    <p>
+    Pour utiliser une de ces fonctions, cr&eacute;ez une
+    <code>RewriteMap</code> faisant r&eacute;f&eacute;rence &agrave; cette fonction int, et
+    utilisez-la dans votre r&egrave;gle <code>RewriteRule</code> :
+    </p>
+
+    <p> <strong>Redirige un URI vers son &eacute;quivalent en minuscules</strong></p>
+    <highlight language="config">
+
+RewriteMap lc int:tolower
+RewriteRule (.*?[A-Z]+.*) ${lc:$1} [R]
+    </highlight>
+
+    <note>
+    <p>Notez que cet exemple n'est fourni qu'&agrave; titre d'illustration,
+    et ne constitue en aucun cas une recommandation. Si vous voulez
+    rendre des URLs insensibles &agrave; la casse, vous devez plut&ocirc;t vous
+    tourner vers <module>mod_speling</module>.
+    </p>
+    </note>
+
+  </section>
+
+  <section id="prg"><title>prg: Programme de r&eacute;&eacute;criture externe</title>
+
+    <p>Lorque le type-map <code>prg</code> est sp&eacute;cifi&eacute;, la source est
+    un chemin du syst&egrave;me de fichiers vers un programme ex&eacute;cutable
+    destin&eacute; &agrave; effectuer la mise en correspondance. Il peut s'agir d'un
+    fichier binaire compil&eacute;, ou d'un programme en langage interpr&eacute;t&eacute;
+    comme Perl ou Python.</p>
+
+    <p>Ce programme est lanc&eacute; une fois au d&eacute;marrage du serveur HTTP
+    Apache, puis communique avec le moteur de r&eacute;&eacute;criture via
+    <code>STDIN</code> et <code>STDOUT</code>. En d'autres termes, pour
+    chaque recherche de correspondance, il re&ccedil;oit un argument via
+    <code>STDIN</code>, et doit renvoyer en guise de r&eacute;ponse une cha&icirc;ne
+    termin&eacute;e par un caract&egrave;re nouvelle-ligne sur <code>STDOUT</code>. Si
+    la recherche de correspondance est infructueuse, le programme doit
+    l'indiquer en retournant la cha&icirc;ne de quatre caract&egrave;res
+    "<code>NULL</code>".</p>
+
+    <p>Les programmes de r&eacute;&eacute;criture externes ne sont pas lanc&eacute;s s'il
+    n'ont pas &eacute;t&eacute; d&eacute;finis dans un contexte o&ugrave; la directive <directive
+    module="mod_rewrite">RewriteEngine</directive> est d&eacute;finie &agrave;
+    <code>on</code>.</p>
+
+    <p>Cette fonctionnalit&eacute; utilise le mutex <code>rewrite-map</code>
+    n&eacute;cessaire &agrave; la fiabilit&eacute; des communications avec le programme. Le
+    m&eacute;canisme de mutex et le fichier verrou peuvent &ecirc;tre d&eacute;finis via la
+    directive <directive module="core">Mutex</directive>.</p>
+
+    <p>Voici un exemple simple qui remplace tous les tirets par des
+    caract&egrave;res de soulignement dans l'URI de la requ&ecirc;te.</p>
+
+    <p><strong>Configuration de la r&eacute;&eacute;criture</strong></p>
+    <highlight language="config">
+
+RewriteMap d2u prg:/www/bin/dash2under.pl<br />
+RewriteRule - ${d2u:%{REQUEST_URI}}
+    </highlight>
+
+    <p><strong>dash2under.pl</strong></p>
+    <highlight language="perl">
+    #!/usr/bin/perl
+    $| = 1; # Turn off I/O buffering
+    while (&lt;STDIN&gt;) {
+        s/-/_/g; # Remplace tous les tirets par des caract&egrave;res de soulignement
+        print $_;
+    }
+    </highlight>
+
+<note><title>Mises en garde !</title>
+<ul>
+<li>Votre programme doit &ecirc;tre le plus
+simple possible. Si le programme se bloque, httpd va attendre
+ind&eacute;finiment une r&eacute;ponse de sa part, et par cons&eacute;quent ne r&eacute;pondra plus
+aux requ&ecirc;tes.</li>
+<li>Assurez-vous de bien d&eacute;sactiver la mise en tampon dans votre
+programme. En Perl, ceci est effectu&eacute; &agrave; la seconde ligne du script de
+l'exemple - <code>$| = 1;</code> - La syntaxe sera bien entendu
+diff&eacute;rente dans
+d'autres langages. Si les entr&eacute;es/sorties sont mises en tampon, httpd va
+attendre une sortie, et va par cons&eacute;quent se bloquer.</li>
+<li>Rappelez-vous qu'il n'existe qu'une copie du programme lanc&eacute; au
+d&eacute;marrage du serveur, et que toutes les requ&ecirc;tes vont devoir passer par
+ce goulot d'&eacute;tranglement. Ceci peut provoquer des ralentissements
+significatifs si de nombreuses requ&ecirc;tes doivent &ecirc;tre trait&eacute;es, ou si le
+script lui-m&ecirc;me est tr&egrave;s lent.</li>
+</ul>
+</note>
+
+</section>
+
+
+  <section id="dbd">
+    <title>dbd ou fastdbd: requ&ecirc;te SQL</title>
+
+    <p>Lorsque le type-map <code>dbd</code> ou <code>fastdbd</code> est
+    sp&eacute;cifi&eacute;, la source est une requ&ecirc;te SQL SELECT qui re&ccedil;oit un
+    argument et renvoie une seule valeur.</p>
+
+    <p>Pour que cette requ&ecirc;te puisse &ecirc;tre ex&eacute;cut&eacute;e,
+    <module>mod_dbd</module> doit &ecirc;tre configur&eacute; pour attaquer la base
+    de donn&eacute;es concern&eacute;e.</p>
+
+    <p>Ce type-map existe sous deux formes. Avec le type-map
+    <code>dbd</code>, la requ&ecirc;te est ex&eacute;cut&eacute;e &agrave; chaque demande, tandis
+    qu'avec le type-map <code>fastdbd</code>, les recherches dans la
+    base de donn&eacute;es sont mises en cache en interne. <code>fastdbd</code>
+    est donc plus efficace et donc plus rapide ; par contre, il ne
+    tiendra pas compte des modifications apport&eacute;es &agrave; la base de donn&eacute;es
+    jusqu'&agrave; ce que le serveur soit red&eacute;marr&eacute;.</p>
+
+    <p>Si une requ&ecirc;te renvoie plusieurs enregistrements, un de ceux-ci
+    sera s&eacute;lectionn&eacute; al&eacute;atoirement.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+RewriteMap ma-requete "fastdbd:SELECT destination FROM rewrite WHERE source = %s"
+    </highlight>
+    </example>
+
+  </section>
+  <section id="summary">
+    <title>R&eacute;sum&eacute;</title>
+
+    <p>La directive <directive>RewriteMap</directive> peut appara&icirc;tre
+    plusieurs fois. Utilisez une directive
+    <directive>RewriteMap</directive> pour chaque fonction de mise en
+    correspondance pour d&eacute;clarer son fichier de correspondances.</p>
+
+    <p>Bien que l'on ne puisse pas <strong>d&eacute;clarer</strong> de fonction
+    de mise en correspondance dans un contexte de r&eacute;pertoire (fichier
+    <code>.htaccess</code> ou section &lt;Directory&gt;), il est
+    possible d'utiliser cette fonction dans un tel contexte.</p>
+
+  </section>
+</manualpage>
