@@ -110,8 +110,9 @@
 </table>
     <p>This directive causes a user defined message to be logged to the
     error log. The message can use variables and functions from the
-    <a href="../expr.html">ap_expr syntax</a>. The messages are logged at
-    loglevel info.</p>
+    <a href="../expr.html">ap_expr syntax</a>. References to HTTP headers
+    will not cause header names to be added to the Vary header. The
+    messages are logged at loglevel info.</p>
 
     <p>The hook specifies before which phase of request procesing the message
     will be logged. The following hooks are supported:</p>
@@ -137,7 +138,8 @@
 
     <p>The optional expression allows to restrict the message if a
     condition is met. The details of the expression syntax are described in
-    the <a href="../expr.html">ap_expr documentation</a>.</p>
+    the <a href="../expr.html">ap_expr documentation</a>. References to HTTP
+    headers will not cause the header names to be added to the Vary header.</p>
 
 
 </div>
