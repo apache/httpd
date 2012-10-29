@@ -428,7 +428,8 @@ CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"
     clause) of a particular variable in the server
     <a href="../env.html">environment</a>. Alternatively, the condition
     can be expressed as arbitrary boolean <a href="../expr.html">expression</a>. If the condition is not satisfied, the request
-    will not be logged.</p>
+    will not be logged. References to HTTP headers  in the expression
+    will not cause the header names to be added to the Vary header.</p>
 
     <p>Environment variables can be set on a per-request
     basis using the <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>
