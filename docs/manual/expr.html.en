@@ -55,7 +55,7 @@
       In most cases, expressions are used to express boolean values.
       For these, the starting boint in the BNF is <code>expr</code>. However, a few directives
       like <code class="directive"><a href="./mod/mod_log_debug.html#logmessage">LogMessage</a></code> accept expressions
-      that evaluate to a string value. For those, the starting boint in the BNF is <code>code</code>.
+      that evaluate to a string value. For those, the starting boint in the BNF is <code>string</code>.
       </p>
 <blockquote>
 <pre>
