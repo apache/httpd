@@ -120,7 +120,8 @@ Changes with Apache 2.2.22
      when no custom ErrorDocument is specified for status code 400.
      [Eric Covener]
 
-  *) mod_proxy_ajp: Try to prevent a single long request from marking a worker
+  *) SECURITY: CVE-2012-4557 (cve.mitre.org)
+     mod_proxy_ajp: Try to prevent a single long request from marking a worker
      in error. [Jean-Frederic Clere]
 
   *) config: Update the default mod_ssl configuration: Disable SSLv2, only
