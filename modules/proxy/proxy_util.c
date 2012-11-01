@@ -1182,6 +1182,7 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
     (*balancer)->hash = bshared->hash;
 
     bshared->forcerecovery = 1;
+    bshared->sticky_separator = '.';
     *bshared->nonce = PROXY_UNSET_NONCE;  /* impossible valid input */
 
     (*balancer)->s = bshared;
