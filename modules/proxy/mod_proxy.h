@@ -419,6 +419,7 @@ typedef struct {
     int             max_attempts;     /* Number of attempts before failing */
     int             index;      /* shm array index */
     proxy_hashes hash;
+    char      sticky_separator;                                /* separator for sessionid/route */
     unsigned int    sticky_force:1;   /* Disable failover for sticky sessions */
     unsigned int    scolonsep:1;      /* true if ';' seps sticky session paths */
     unsigned int    max_attempts_set:1;

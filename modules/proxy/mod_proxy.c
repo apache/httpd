@@ -287,6 +287,19 @@ static const char *set_balancer_param(proxy_server_conf *conf,
             PROXY_STRNCPY(balancer->s->sticky_path, path);
         }
     }
+    else if (!strcasecmp(key, "stickysessionsep")) {
+        /* separator/delimiter for sessionid and route,
+         * normally '.'
+         */
+        if (strlen(val) != 1) {
+            if (!strcasecmp(val, "off"))
+                balancer->s->sticky_separator = 0;
+            else      
+                return "stickysessionsep must be a single character or Off";
+        }
+        else
+            balancer->s->sticky_separator = *val;
+    }
     else if (!strcasecmp(key, "nofailover")) {
         /* If set to 'on' the session will break
          * if the worker is in error state or
