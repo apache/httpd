@@ -1411,7 +1411,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
                               "EPSV contacting remote host on port %d", data_port);
 
-                if ((rv = apr_socket_create(&data_sock, connect_addr->family, SOCK_STREAM, 0, r->pool)) != APR_SUCCESS) {
+                if ((rv = apr_socket_create(&data_sock, origin->client_addr->family, SOCK_STREAM, 0, r->pool)) != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01040)
                                   "error creating EPSV socket");
                     proxy_ftp_cleanup(r, backend);
@@ -1436,8 +1436,13 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                 /* make the connection */
                 apr_socket_addr_get(&data_addr, APR_REMOTE, sock);
                 apr_sockaddr_ip_get(&data_ip, data_addr);
-                apr_sockaddr_info_get(&epsv_addr, data_ip, connect_addr->family, data_port, 0, p);
-                rv = apr_socket_connect(data_sock, epsv_addr);
+                apr_sockaddr_info_get(&epsv_addr, data_ip, origin->client_addr->family, data_port, 0, p);
+                if (!data_sock)
+                    rv = APR_ENOSOCKET;
+                else if (!epsv_addr)
+                    rv = APR_EBADIP;
+                else
+                    rv = apr_socket_connect(data_sock, epsv_addr);
                 if (rv != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01043)
                                   "EPSV attempt to connect to %pI failed - "

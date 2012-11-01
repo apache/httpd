@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_ftp: Fix segfaults on IPv4 requests to hosts with DNS AAAA records.
+     PR  40841. [Andrew Rucker Jones <arjones simultan dyndns org>,
+     <ast domdv de>, Jim Jagielski]
+
   *) ap_expr: Add req_novary function that allows HTTP header lookups
      without adding the name to the Vary header. [Stefan Fritsch]
 
