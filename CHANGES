@@ -1,5 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
+ 
+  *) mod_cache_disk: Resolve errors while revalidating disk-cached files on 
+     Windows ("...rename tempfile to datafile failed..."). PR 38827
+     [Eric Covener]
 
   *) mod_proxy: Add ability to configure the sticky session separator.
      PR 53893. [<inu inusasha de>, Jim Jagielski]
