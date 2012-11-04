@@ -596,6 +596,11 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
 
 static int remove_entity(cache_handle_t *h)
 {
+    disk_cache_object_t *dobj = (disk_cache_object_t *) h->cache_obj->vobj;
+    if (dobj->fd != NULL) {
+        apr_file_close(dobj->fd);
+    }
+
     /* Null out the cache object pointer so next time we start from scratch  */
     h->cache_obj = NULL;
     return OK;
