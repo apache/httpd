@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1379836:1403476 (outdated) -->
+<!-- English Revision : 1403476 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -620,7 +620,10 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
       <p>Si la <em>cha&icirc;ne de test</em> contient la valeur sp&eacute;ciale
       <code>expr</code>, <em>expression de comparaison</em> sera trait&eacute;
       en tant qu'expression rationnelle de type <a
-      href="../expr.html">ap_expr</a>.</p>
+      href="../expr.html">ap_expr</a>. Si des en-t&ecirc;tes HTTP sont
+      r&eacute;f&eacute;renc&eacute;s dans l'expression rationnelle, et si le drapeau
+      <code>novary</code> n'est pas activ&eacute;, ils seront ajout&eacute;s &agrave;
+      l'en-t&ecirc;te Vary.</p>
 
       <p>Autres points &agrave; conna&icirc;tre ::</p>
       <ol>
@@ -1487,7 +1490,7 @@ redondant)</td>
 
       <p><strong>Dans une configuration de niveau r&eacute;pertoire pour
       <code>/chemin</code><br />
-       (<code>/chemin/physique/vers/chemin/.htaccess</code>, avec
+       (<code>/chemin/physique/vers/chemin/.htacccess</code>, avec
       <code>RewriteBase /chemin</code>)<br />
        pour la requ&ecirc;te ``<code>GET
       /chemin/chemin-local/infochemin</code>'':</strong><br />

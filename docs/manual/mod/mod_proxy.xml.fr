@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1388029 -->
+<!-- English Revision: 1404653 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1235,6 +1235,16 @@ ProxyPass /mirror/foo http://backend.example.com
 	les cookies et les identifiants cod&eacute;s d'URL (comme les
 	conteneurs de servlet), s&eacute;parez-les par le caract&egrave;re '|'. La
 	premi&egrave;re partie contient le cookie et la seconde le chemin.
+    </td></tr>
+    <tr><td>stickysessionsep</td>
+        <td>"."</td>
+        <td>Permet de d&eacute;finir le caract&egrave;re de s&eacute;paration dans le cookie
+	de session. En effet, certains serveurs d'application d'arri&egrave;re-plan
+	n'utilisent pas le '.' comme caract&egrave;re de s&eacute;paration. Par
+	exemple, le serveur Oracle Weblogic utilise le caract&egrave;re '!'.
+	Cette option permet donc de d&eacute;finir le caract&egrave;re de s&eacute;paration &agrave;
+	une valeur appropri&eacute;e. Si elle est d&eacute;finie &agrave; 'Off', aucun
+	caract&egrave;re de s&eacute;paration ne sera utilis&eacute;.
     </td></tr>
     <tr><td>scolonpathdelim</td>
         <td>Off</td>
