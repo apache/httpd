@@ -594,12 +594,25 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
     return DECLINED;
 }
 
+static void close_disk_cache_fd(disk_cache_file_t *file)
+{
+   if (file->fd != NULL) {
+       apr_file_close(file->fd);
+       file->fd = NULL;
+   }
+   if (file->tempfd != NULL) {
+       apr_file_close(file->tempfd);
+       file->tempfd = NULL;
+   }
+}
+
 static int remove_entity(cache_handle_t *h)
 {
     disk_cache_object_t *dobj = (disk_cache_object_t *) h->cache_obj->vobj;
-    if (dobj->fd != NULL) {
-        apr_file_close(dobj->fd);
-    }
+
+    close_disk_cache_fd(&(dobj->hdrs));
+    close_disk_cache_fd(&(dobj->vary));
+    close_disk_cache_fd(&(dobj->data));
 
     /* Null out the cache object pointer so next time we start from scratch  */
     h->cache_obj = NULL;
