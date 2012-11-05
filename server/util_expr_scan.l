@@ -42,6 +42,8 @@
 %{
 #include "util_expr_private.h"
 #include "util_expr_parse.h"
+#include "http_main.h"
+#include "http_log.h"
 
 #undef  YY_INPUT
 #define YY_INPUT(buf,result,max_size)                       \
@@ -57,6 +59,19 @@
         yyextra->inputptr += result;                        \
     }                                                       \
 }
+
+/*
+ * XXX: It would be nice if we could recover somehow, e.g. via
+ * XXX: longjmp. It is not clear if the scanner is in any state
+ * XXX: to be cleaned up, though.
+ */
+#define YY_FATAL_ERROR(msg)                                     \
+    do {                                                        \
+        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, ap_server_conf, \
+                      "expr parser fatal error (BUG?): "        \
+                      "%s, exiting", msg);                      \
+         abort();                                               \
+    } while (0)
 
 #define YY_EXTRA_TYPE ap_expr_parse_ctx_t*
 
