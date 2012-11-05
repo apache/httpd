@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1362526:1403483 (outdated) -->
+<!-- English Revision : 1403492 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -61,7 +61,14 @@
     <title>Syntaxe en Forme de Backus-Naur</title>
       <p>La <a href="http://fr.wikipedia.org/wiki/Forme_de_Backus-Naur">Forme de Backus-Naur</a>
       (souvent abr&eacute;g&eacute;e en BNF, de l'anglais Backus-Naur Form) est une notation permettant de d&eacute;crire
-      les r&egrave;gles syntaxiques des langages de programmation.
+      les r&egrave;gles syntaxiques des langages de programmation. En
+      g&eacute;n&eacute;ral, les expressions repr&eacute;sentent des valeurs bool&eacute;ennes. Dans
+      ce cas, le point de d&eacute;part de la BNF est <code>expr</code>.
+      Cependant, certaines directives comme <directive
+      module="mod_log_debug">LogMessage</directive> utilisent comme
+      param&egrave;tres des expressions qui repr&eacute;sentent des cha&icirc;nes de
+      caract&egrave;res. Dans ce cas, le point de d&eacute;part de la BNF est
+      <code>string</code>.
       </p>
 <blockquote>
 <pre>
@@ -143,7 +150,13 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 
     <p>Les variables suivantes contiennent la valeur de l'en-t&ecirc;te de
     requ&ecirc;te HTTP correspondant. La <a href="#functions">fonction</a>
-    <code>req</code> permet d'extraire les valeurs des autres en-t&ecirc;tes.</p>
+    <code>req</code> permet d'extraire les valeurs des autres
+    en-t&ecirc;tes. L'utilisation de ces variables peut provoquer
+    l'ajout du nom d'en-t&ecirc;te correspondant &agrave; l'en-t&ecirc;te Vary de la
+    r&eacute;ponse HTTP, sauf sp&eacute;cification contraire pour la directive
+    qui accepte l'expression comme param&egrave;tre. La <a
+    href="#functions">function</a> <code>req_novary</code> permet de
+    modifier ce comportement.</p>
 
     <table border="1" style="zebra">
     <columnspec><column width="1"/></columnspec>
@@ -448,7 +461,12 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 
     <tr><th>Nom</th><th>Description</th><th>Restreint</th></tr>
     <tr><td><code>req</code>, <code>http</code></td>
-        <td>Lit l'en-t&ecirc;te de requ&ecirc;te HTTP</td><td></td></tr>
+        <td>Lit l'en-t&ecirc;te de requ&ecirc;te HTTP ; les noms
+	d'en-t&ecirc;te correspondants peuvent &ecirc;tre ajout&eacute;s &agrave; l'en-t&ecirc;te Vary,
+	voir ci-dessous</td><td></td></tr>
+    <tr><td><code>req_novary</code></td>
+        <td>Identique &agrave; <code>req</code>, mais les noms
+	d'en-t&ecirc;te correspondants ne seront pas ajout&eacute;s &agrave; l'en-t&ecirc;te Vary</td><td></td></tr>
     <tr><td><code>resp</code></td>
         <td>Lit l'en-t&ecirc;te de r&eacute;ponse HTTP</td><td></td></tr>
     <tr><td><code>reqenv</code></td>
@@ -481,6 +499,12 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 
     <p>Les fonctions marqu&eacute;es comme "restreints" ne sont pas disponibles
     avec certains modules comme <module>mod_include</module>.</p>
+
+    <p>Lorsque les fonctions <code>req</code> ou <code>http</code> sont
+    utilis&eacute;es, le nom d'en-t&ecirc;te sera automatiquement ajout&eacute; &agrave; l'en-t&ecirc;te
+    Vary de la r&eacute;ponse HTTP, sauf sp&eacute;cification contraire pour la
+    directive qui accepte l'expression comme param&egrave;tre. La fonction
+    <code>req_novary</code> permet d'emp&ecirc;cher cet ajout.</p>
 
     <p>En plus des fonctions dont la valeur est une cha&icirc;ne, il existe
     aussi des fonctions dont la valeur est une liste, qui acceptent une

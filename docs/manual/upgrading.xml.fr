@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1375996:1403041 (outdated) -->
+<!-- English Revision : 1403041 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -125,7 +125,7 @@ n&eacute;cessiter une mise &agrave; jour des fichiers de configuration de la ver
     ont &eacute;t&eacute; remplac&eacute;es par les directives plus explicites <directive
     module="mod_authz_core">RequireAny</directive>, <directive
     module="mod_authz_core">RequireNone</directive>, et <directive
-    module="mod_authz_core">RequireAall</directive>.</p>
+    module="mod_authz_core">RequireAll</directive>.</p>
 
     <section id="access">
       <title>Contr&ocirc;le d'acc&egrave;s</title>
