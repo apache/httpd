@@ -127,6 +127,10 @@ sub note_tag
     if (exists $tags{$tag}) {
         print STDERR "WARNING: Duplicate tag $tag at $tags{$tag}->{file}:$tags{$tag}->{line} and $file:$lineno\n";
     }
+    if ($tag >= $serial) {
+        print STDERR "WARNING: next-number $serial inconsistent with tag $tag at $file:$lineno, adjusting\n";
+        $serial = $tag + 1;
+    }
     $tags{$tag} = { file => $file, line => $lineno, msg => $oneline };
 }
 
