@@ -254,6 +254,8 @@ a different URL</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
+<compatibility>Support for specifying a URL-path as the final argument was 
+added in Apache HTTP Server 2.2.6</compatibility>
 
 <usage>
     <p>The Redirect directive maps an old URL into a new one by asking
@@ -262,9 +264,9 @@ a different URL</description>
     <p>The old <em>URL-path</em> is a case-sensitive (%-decoded) path
     beginning with a slash.  A relative path is not allowed.  The new
     <em>URL</em> should be an absolute URL beginning with a scheme and
-    hostname, but a URL-path beginning with a slash may also be used,
-    in which case the scheme and hostname of the current server will
-    be added.</p>
+    hostname.  In Apache HTTP Server 2.2.6 and later, a URL-path beginning 
+    with a slash may also be used, in which case the scheme and hostname 
+    of the current server will be added.</p>
 
     <p>Then any request beginning with <em>URL-path</em> will return a
     redirect request to the client at the location of the target
