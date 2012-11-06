@@ -136,11 +136,9 @@ uses</a></li>
     the following:</p>
 
     <ul>
-      <li>set the value of <code class="directive"><a href="../mod/mpm_common.html#&#10;      maxrequestsperchild">
-      MaxRequestsPerChild</a></code> to zero</li>
+      <li>set the value of <code class="directive"><a href="../mod/mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></code> to zero</li>
 
-      <li>set the value of <code class="directive"><a href="../mod/mpm_common.html#&#10;      maxsparethreads">
-      MaxSpareThreads</a></code> to the same value as
+      <li>set the value of <code class="directive"><a href="../mod/mpm_common.html#maxsparethreads">MaxSpareThreads</a></code> to the same value as
       <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code></li>
     </ul>
 
