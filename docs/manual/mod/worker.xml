@@ -102,11 +102,11 @@ uses</a></seealso>
     the following:</p>
 
     <ul>
-      <li>set the value of <directive module="mpm_common">
-      MaxRequestsPerChild</directive> to zero</li>
+      <li>set the value of <directive module="mpm_common"
+      >MaxRequestsPerChild</directive> to zero</li>
 
-      <li>set the value of <directive module="mpm_common">
-      MaxSpareThreads</directive> to the same value as
+      <li>set the value of <directive module="mpm_common"
+      >MaxSpareThreads</directive> to the same value as
       <directive module="mpm_common">MaxClients</directive></li>
     </ul>
 
