@@ -98,7 +98,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LogMessage" id="LogMessage">LogMessage</a> <a name="logmessage" id="logmessage">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Log userdefined message to error log
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Log user-defined message to error log
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LogMessage <var>message</var>
 [hook=<var>hook</var>] [expr=<var>expression</var>]
