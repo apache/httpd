@@ -794,7 +794,7 @@ typedef struct ap_errorlog_info {
     const server_rec *s;
 
     /** current conn_rec.
-     *  Should be preferred over r->connecction
+     *  Should be preferred over r->connection
      */
     const conn_rec *c;
 
