@@ -2354,7 +2354,11 @@ static const char *ifsection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     arg = apr_pstrndup(cmd->temp_pool, arg, endp - arg);
 
-
+    /*
+     * Set a dummy value so that other directives notice that they are inside
+     * a config section.
+     */
+    cmd->path = "*If";
     /* Only if not an .htaccess file */
     if (!old_path) {
         cmd->override = OR_ALL|ACCESS_CONF;
