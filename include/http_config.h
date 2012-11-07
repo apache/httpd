@@ -901,11 +901,11 @@ AP_DECLARE(const char *) ap_check_cmd_context(cmd_parms *cmd,
 #define  NOT_IN_LIMIT           0x02 /**< Forbidden in &lt;Limit&gt; */
 #define  NOT_IN_DIRECTORY       0x04 /**< Forbidden in &lt;Directory&gt; */
 #define  NOT_IN_LOCATION        0x08 /**< Forbidden in &lt;Location&gt; */
-#define  NOT_IN_FILES           0x10 /**< Forbidden in &lt;Files&gt; */
+#define  NOT_IN_FILES           0x10 /**< Forbidden in &lt;Files&gt; or &lt;If&gt;*/
 #define  NOT_IN_HTACCESS        0x20 /**< Forbidden in .htaccess files */
-/** Forbidden in &lt;Directory&gt;/&lt;Location&gt;/&lt;Files&gt;*/
+/** Forbidden in &lt;Directory&gt;/&lt;Location&gt;/&lt;Files&gt;&lt;If&gt;*/
 #define  NOT_IN_DIR_LOC_FILE    (NOT_IN_DIRECTORY|NOT_IN_LOCATION|NOT_IN_FILES)
-/** Forbidden in &lt;VirtualHost&gt;/&lt;Limit&gt;/&lt;Directory&gt;/&lt;Location&gt;/&lt;Files&gt; */
+/** Forbidden in &lt;VirtualHost&gt;/&lt;Limit&gt;/&lt;Directory&gt;/&lt;Location&gt;/&lt;Files&gt;/&lt;If&gt; */
 #define  GLOBAL_ONLY            (NOT_IN_VIRTUALHOST|NOT_IN_LIMIT|NOT_IN_DIR_LOC_FILE)
 
 /** @} */
