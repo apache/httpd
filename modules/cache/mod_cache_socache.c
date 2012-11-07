@@ -442,6 +442,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
     cache_socache_object_t *sobj;
     apr_size_t len;
 
+    nkey = NULL;
     h->cache_obj = NULL;
 
     if (!conf->provider || !conf->provider->socache_instance) {
