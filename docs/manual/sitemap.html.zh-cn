@@ -170,6 +170,7 @@
 </ul><ul><li><a href="mod/mod_access_compat.html">Apache 模块 mod_access_compat</a></li>
 <li><a href="mod/mod_actions.html">Apache 模块 mod_actions</a></li>
 <li><a href="mod/mod_alias.html">Apache 模块 mod_alias</a></li>
+<li><a href="mod/mod_allowhandlers.html">Apache 模块 mod_allowhandlers</a></li>
 <li><a href="mod/mod_allowmethods.html">Apache 模块 mod_allowmethods</a></li>
 <li><a href="mod/mod_asis.html">Apache 模块 mod_asis</a></li>
 <li><a href="mod/mod_auth_basic.html">Apache 模块 mod_auth_basic</a></li>

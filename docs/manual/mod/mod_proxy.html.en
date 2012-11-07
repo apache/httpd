@@ -1284,6 +1284,13 @@ ProxyPass /mirror/foo http://backend.example.com
         and url encoded id (like servlet containers) use | to to separate them.
         The first part is for the cookie the second for the path.
     </td></tr>
+    <tr><td>stickysessionsep</td>
+        <td>"."</td>
+        <td>Sets the separation symbol in the session cookie. Some backend application servers
+        do not use the '.' as the symbol. For example the Oracle Weblogic server uses 
+        '!'. The correct symbol can be set using this option. The setting of 'Off'
+        signifies that no symbol is used.
+    </td></tr>
     <tr><td>scolonpathdelim</td>
         <td>Off</td>
         <td>If set to <code>On</code> the semi-colon character ';' will be
