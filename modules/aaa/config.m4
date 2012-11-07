@@ -74,6 +74,7 @@ APACHE_MODULE(auth_digest, RFC2617 Digest authentication, , , most, [
 ])
 
 APACHE_MODULE(allowmethods, restrict allowed HTTP methods, , , most)
+APACHE_MODULE(allowhandlers, restrict allowed handlers, , , most)
 
 APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
 

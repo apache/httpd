@@ -1,7 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) Be more correct about rejecting directives that cannot work in <If>
+  *) mod_allowhandlers: New module to forbid specific handlers for specific
+     directories. [Stefan Fritsch]
+
+  *) core: Be more correct about rejecting directives that cannot work in <If>
      sections. [Stefan Fritsch]
 
   *) core: Fix directives like LogLevel that need to know if they are invoked
