@@ -81,7 +81,7 @@
 
 <directivesynopsis>
 <name>LogMessage</name>
-<description>Log userdefined message to error log
+<description>Log user-defined message to error log
 </description>
 <syntax>LogMessage <var>message</var>
 [hook=<var>hook</var>] [expr=<var>expression</var>]
