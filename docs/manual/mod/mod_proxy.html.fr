@@ -1435,6 +1435,16 @@ ProxyPass /mirror/foo http://backend.example.com
 	conteneurs de servlet), séparez-les par le caractère '|'. La
 	première partie contient le cookie et la seconde le chemin.
     </td></tr>
+    <tr><td>stickysessionsep</td>
+        <td>"."</td>
+        <td>Permet de définir le caractère de séparation dans le cookie
+	de session. En effet, certains serveurs d'application d'arrière-plan
+	n'utilisent pas le '.' comme caractère de séparation. Par
+	exemple, le serveur Oracle Weblogic utilise le caractère '!'.
+	Cette option permet donc de définir le caractère de séparation à
+	une valeur appropriée. Si elle est définie à 'Off', aucun
+	caractère de séparation ne sera utilisé.
+    </td></tr>
     <tr><td>scolonpathdelim</td>
         <td>Off</td>
         <td>Si ce paramètre est défini à <code>On</code>, le caractère

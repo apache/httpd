@@ -175,6 +175,7 @@ Server on HPUX</a></li>
 </ul><ul><li><a href="mod/mod_access_compat.html">Apache Module mod_access_compat</a></li>
 <li><a href="mod/mod_actions.html">Apache Module mod_actions</a></li>
 <li><a href="mod/mod_alias.html">Apache Module mod_alias</a></li>
+<li><a href="mod/mod_allowhandlers.html">Apache Module mod_allowhandlers</a></li>
 <li><a href="mod/mod_allowmethods.html">Apache Module mod_allowmethods</a></li>
 <li><a href="mod/mod_asis.html">Apache Module mod_asis</a></li>
 <li><a href="mod/mod_auth_basic.html">Apache Module mod_auth_basic</a></li>

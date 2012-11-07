@@ -170,6 +170,7 @@ usados para describir las directivas de Apache</a></li>
 </ul><ul><li><a href="mod/mod_access_compat.html">Módulo Apache mod_access_compat</a></li>
 <li><a href="mod/mod_actions.html">Módulo Apache mod_actions</a></li>
 <li><a href="mod/mod_alias.html">Módulo Apache mod_alias</a></li>
+<li><a href="mod/mod_allowhandlers.html">Módulo Apache mod_allowhandlers</a></li>
 <li><a href="mod/mod_allowmethods.html">Módulo Apache mod_allowmethods</a></li>
 <li><a href="mod/mod_asis.html">Módulo Apache mod_asis</a></li>
 <li><a href="mod/mod_auth_basic.html">Módulo Apache mod_auth_basic</a></li>

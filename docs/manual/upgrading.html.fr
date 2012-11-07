@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/upgrading.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
   <p>Afin d'assister les utilisateurs lors de leurs opérations de mise à
   jour, nous maintenons un document
@@ -125,7 +123,7 @@ nécessiter une mise à jour des fichiers de configuration de la version
     directives AuthzLDAPAuthoritative, AuthzDBDAuthoritative,
     AuthzDBMAuthoritative, AuthzGroupFileAuthoritative,
     AuthzUserAuthoritative et AuthzOwnerAuthoritative. Ces directives
-    ont été remplacées par les directives plus explicites <code class="directive"><a href="./mod/mod_authz_core.html#requireany">RequireAny</a></code>, <code class="directive"><a href="./mod/mod_authz_core.html#requirenone">RequireNone</a></code>, et <code class="directive"><a href="./mod/mod_authz_core.html#requireaall">RequireAall</a></code>.</p>
+    ont été remplacées par les directives plus explicites <code class="directive"><a href="./mod/mod_authz_core.html#requireany">RequireAny</a></code>, <code class="directive"><a href="./mod/mod_authz_core.html#requirenone">RequireNone</a></code>, et <code class="directive"><a href="./mod/mod_authz_core.html#requireall">RequireAll</a></code>.</p>
 
     <h4><a name="access" id="access">Contrôle d'accès</a></h4>
       

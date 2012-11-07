@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="./en/expr.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/expr.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Historiquement, il existe de nombreuses variantes dans la syntaxe
     des expressions permettant d'exprimer une condition dans les
@@ -56,7 +54,13 @@
     
       <p>La <a href="http://fr.wikipedia.org/wiki/Forme_de_Backus-Naur">Forme de Backus-Naur</a>
       (souvent abrégée en BNF, de l'anglais Backus-Naur Form) est une notation permettant de décrire
-      les règles syntaxiques des langages de programmation.
+      les règles syntaxiques des langages de programmation. En
+      général, les expressions représentent des valeurs booléennes. Dans
+      ce cas, le point de départ de la BNF est <code>expr</code>.
+      Cependant, certaines directives comme <code class="directive"><a href="./mod/mod_log_debug.html#logmessage">LogMessage</a></code> utilisent comme
+      paramètres des expressions qui représentent des chaînes de
+      caractères. Dans ce cas, le point de départ de la BNF est
+      <code>string</code>.
       </p>
 <blockquote>
 <pre>
@@ -138,7 +142,12 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 
     <p>Les variables suivantes contiennent la valeur de l'en-tête de
     requête HTTP correspondant. La <a href="#functions">fonction</a>
-    <code>req</code> permet d'extraire les valeurs des autres en-têtes.</p>
+    <code>req</code> permet d'extraire les valeurs des autres
+    en-têtes. L'utilisation de ces variables peut provoquer
+    l'ajout du nom d'en-tête correspondant à l'en-tête Vary de la
+    réponse HTTP, sauf spécification contraire pour la directive
+    qui accepte l'expression comme paramètre. La <a href="#functions">function</a> <code>req_novary</code> permet de
+    modifier ce comportement.</p>
 
     <table class="bordered"><tr class="header"><th>Nom</th></tr>
 <tr><td><code>HTTP_ACCEPT</code></td></tr>
@@ -414,38 +423,49 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 
     <table class="bordered"><tr class="header"><th>Nom</th><th>Description</th><th>Restreint</th></tr>
 <tr><td><code>req</code>, <code>http</code></td>
-        <td>Lit l'en-tête de requête HTTP</td><td /></tr>
-<tr class="odd"><td><code>resp</code></td>
+        <td>Lit l'en-tête de requête HTTP ; les noms
+	d'en-tête correspondants peuvent être ajoutés à l'en-tête Vary,
+	voir ci-dessous</td><td /></tr>
+<tr class="odd"><td><code>req_novary</code></td>
+        <td>Identique à <code>req</code>, mais les noms
+	d'en-tête correspondants ne seront pas ajoutés à l'en-tête Vary</td><td /></tr>
+<tr><td><code>resp</code></td>
         <td>Lit l'en-tête de réponse HTTP</td><td /></tr>
-<tr><td><code>reqenv</code></td>
+<tr class="odd"><td><code>reqenv</code></td>
         <td>Recherche une variable d'environnement de requête</td><td /></tr>
-<tr class="odd"><td><code>osenv</code></td>
+<tr><td><code>osenv</code></td>
         <td>Recherche une variable d'environnement du système
 	d'exploitation</td><td /></tr>
-<tr><td><code>note</code></td>
+<tr class="odd"><td><code>note</code></td>
         <td>Recherche une note de requête</td><td /></tr>
-<tr class="odd"><td><code>env</code></td>
+<tr><td><code>env</code></td>
         <td>Renvoie le premier résultat positif de <code>note</code>,
 	<code>reqenv</code>, <code>osenv</code></td><td /></tr>
-<tr><td><code>tolower</code></td>
+<tr class="odd"><td><code>tolower</code></td>
         <td>Convertit une chaîne en minuscules</td><td /></tr>
-<tr class="odd"><td><code>toupper</code></td>
+<tr><td><code>toupper</code></td>
         <td>Convertit une chaîne en majuscules</td><td /></tr>
-<tr><td><code>escape</code></td>
+<tr class="odd"><td><code>escape</code></td>
         <td>Echappe les caractères spéciaux en codage hexadécimal</td><td /></tr>
-<tr class="odd"><td><code>unescape</code></td>
+<tr><td><code>unescape</code></td>
         <td>"Déséchappe" les chaînes codées
 	en hexadécimal, en ne gardant encodés que les slashes; renvoie la chaîne vide
 	si la séquence %00 est rencontrée</td><td /></tr>
-<tr><td><code>file</code></td>
+<tr class="odd"><td><code>file</code></td>
         <td>Lit le contenu d'un fichier</td><td>oui</td></tr>
-<tr class="odd"><td><code>filesize</code></td>
+<tr><td><code>filesize</code></td>
         <td>Renvoie la taille d'un fichier (ou 0 si le fichier n'existe
 	pas ou ne correspond pas à un fichier régulier)</td><td>oui</td></tr>
 </table>
 
     <p>Les fonctions marquées comme "restreints" ne sont pas disponibles
     avec certains modules comme <code class="module"><a href="./mod/mod_include.html">mod_include</a></code>.</p>
+
+    <p>Lorsque les fonctions <code>req</code> ou <code>http</code> sont
+    utilisées, le nom d'en-tête sera automatiquement ajouté à l'en-tête
+    Vary de la réponse HTTP, sauf spécification contraire pour la
+    directive qui accepte l'expression comme paramètre. La fonction
+    <code>req_novary</code> permet d'empêcher cet ajout.</p>
 
     <p>En plus des fonctions dont la valeur est une chaîne, il existe
     aussi des fonctions dont la valeur est une liste, qui acceptent une

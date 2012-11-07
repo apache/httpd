@@ -170,6 +170,7 @@
 </ul><ul><li><a href="mod/mod_access_compat.html">Apache モジュール mod_access_compat</a></li>
 <li><a href="mod/mod_actions.html">Apache モジュール mod_actions</a></li>
 <li><a href="mod/mod_alias.html">Apache モジュール mod_alias</a></li>
+<li><a href="mod/mod_allowhandlers.html">Apache モジュール mod_allowhandlers</a></li>
 <li><a href="mod/mod_allowmethods.html">Apache モジュール mod_allowmethods</a></li>
 <li><a href="mod/mod_asis.html">Apache モジュール mod_asis</a></li>
 <li><a href="mod/mod_auth_basic.html">Apache モジュール mod_auth_basic</a></li>

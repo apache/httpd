@@ -188,6 +188,7 @@ pour décrire les directives Apache</a></li>
 </ul><ul><li><a href="mod/mod_access_compat.html">Module Apache mod_access_compat</a></li>
 <li><a href="mod/mod_actions.html">Module Apache mod_actions</a></li>
 <li><a href="mod/mod_alias.html">Module Apache mod_alias</a></li>
+<li><a href="mod/mod_allowhandlers.html">Module Apache mod_allowhandlers</a></li>
 <li><a href="mod/mod_allowmethods.html">Module Apache mod_allowmethods</a></li>
 <li><a href="mod/mod_asis.html">Module Apache mod_asis</a></li>
 <li><a href="mod/mod_auth_basic.html">Module Apache mod_auth_basic</a></li>
