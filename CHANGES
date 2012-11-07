@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: New directive HttpProtocol which allows to disable HTTP/0.9
+     support. [Stefan Fritsch]
+
   *) mod_allowhandlers: New module to forbid specific handlers for specific
      directories. [Stefan Fritsch]
 
