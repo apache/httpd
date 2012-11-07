@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) Be more correct about rejecting directives that cannot work in <If>
+     sections. [Stefan Fritsch]
+
   *) core: Fix directives like LogLevel that need to know if they are invoked
      at virtual host context or in Directory/Files/Location/If sections to
      work properly in If sections that are not in a Directory/Files/Location.

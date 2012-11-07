@@ -1144,7 +1144,10 @@ AP_DECLARE(const char *) ap_check_cmd_context(cmd_parms *cmd,
                 || (found = find_parent(cmd->directive, "<LocationMatch"))))
         || ((forbidden & NOT_IN_FILES)
             && ((found = find_parent(cmd->directive, "<Files"))
-                || (found = find_parent(cmd->directive, "<FilesMatch"))))) {
+                || (found = find_parent(cmd->directive, "<FilesMatch"))
+                || (found = find_parent(cmd->directive, "<If"))
+                || (found = find_parent(cmd->directive, "<ElseIf"))
+                || (found = find_parent(cmd->directive, "<Else"))))) {
         return apr_pstrcat(cmd->pool, cmd->cmd->name, gt,
                            " cannot occur within ", found->directive,
                            "> section", NULL);
