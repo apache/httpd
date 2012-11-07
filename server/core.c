@@ -502,6 +502,9 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
     if (virt->trace_enable != AP_TRACE_UNSET)
         conf->trace_enable = virt->trace_enable;
 
+    if (virt->http09_enable != AP_HTTP09_UNSET)
+        conf->http09_enable = virt->http09_enable;
+
     /* no action for virt->accf_map, not allowed per-vhost */
 
     if (virt->protocol)
@@ -3611,6 +3614,25 @@ static const char *set_trace_enable(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
+static const char *set_http_protocol(cmd_parms *cmd, void *dummy,
+                                     const char *arg1)
+{
+    core_server_config *conf =
+        ap_get_core_module_config(cmd->server->module_config);
+
+    if (strcmp(arg1, "+0.9") == 0) {
+        conf->http09_enable = AP_HTTP09_ENABLE;
+    }
+    else if (strcmp(arg1, "-0.9") == 0) {
+        conf->http09_enable = AP_HTTP09_DISABLE;
+    }
+    else {
+        return "HttpProtocol must be one of '+0.9' and '-0.9'";
+    }
+
+    return NULL;
+}
+
 static apr_hash_t *errorlog_hash;
 
 static int log_constant_item(const ap_errorlog_info *info, const char *arg,
@@ -4110,6 +4132,8 @@ AP_INIT_TAKE1("EnableExceptionHook", ap_mpm_set_exception_hook, NULL, RSRC_CONF,
 #endif
 AP_INIT_TAKE1("TraceEnable", set_trace_enable, NULL, RSRC_CONF,
               "'on' (default), 'off' or 'extended' to trace request body content"),
+AP_INIT_TAKE1("HttpProtocol", set_http_protocol, NULL, RSRC_CONF,
+              "'+0.9' (default) or '-0.9' to allow/deny HTTP/0.9"),
 { NULL }
 };
 

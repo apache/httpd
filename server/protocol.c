@@ -657,9 +657,19 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
         pro = ll;
         len = strlen(ll);
     } else {
+        core_server_config *conf;
+        conf = ap_get_core_module_config(r->server->module_config);
         r->assbackwards = 1;
         pro = "HTTP/0.9";
         len = 8;
+        if (conf->http09_enable == AP_HTTP09_DISABLE) {
+                r->status = HTTP_VERSION_NOT_SUPPORTED;
+                r->protocol = apr_pstrmemdup(r->pool, pro, len);
+                r->proto_num = HTTP_VERSION(0, 9);
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02401)
+                              "HTTP/0.9 denied by server configuration");
+                return 0;
+        }
     }
     r->protocol = apr_pstrmemdup(r->pool, pro, len);
 
@@ -976,7 +986,8 @@ request_rec *ap_read_request(conn_rec *conn)
     /* Get the request... */
     if (!read_request_line(r, tmp_bb)) {
         if (r->status == HTTP_REQUEST_URI_TOO_LARGE
-            || r->status == HTTP_BAD_REQUEST) {
+            || r->status == HTTP_BAD_REQUEST
+            || r->status == HTTP_VERSION_NOT_SUPPORTED) {
             if (r->status == HTTP_REQUEST_URI_TOO_LARGE) {
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00565)
                               "request failed: URI too long (longer than %d)",
