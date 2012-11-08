@@ -150,7 +150,7 @@ DocumentRoot "${DOCROOT}"
     #
     # AllowOverride controls what directives may be placed in .htaccess files.
     # It can be "All", "None", or any combination of the keywords:
-    #   Options FileInfo AuthConfig Limit
+    #   AllowOverride FileInfo AuthConfig Limit
     #
     AllowOverride None
 
