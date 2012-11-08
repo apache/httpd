@@ -1200,7 +1200,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_balancer(proxy_balancer *balancer,
 {
     apr_status_t rv = APR_SUCCESS;
     proxy_balancer_method *lbmethod;
-    char *ptr = "";
+    char *action = "copying";
     if (!shm || !balancer->s)
         return APR_EINVAL;
 
@@ -1210,10 +1210,11 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_balancer(proxy_balancer *balancer,
         if (balancer->s->was_malloced)
             free(balancer->s);
     } else {
-        ptr = "not ";
+        action = "re-using";
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02337)
-                 "%scopying shm for %s", ptr, balancer->s->name);
+                 "%s shm[%d] (0x%pp) for %s", action, i, (void *)shm,
+                 balancer->s->name);
     balancer->s = shm;
     balancer->s->index = i;
     /* the below should always succeed */
@@ -1647,7 +1648,7 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
 PROXY_DECLARE(apr_status_t) ap_proxy_share_worker(proxy_worker *worker, proxy_worker_shared *shm,
                                                   int i)
 {
-    char *ptr = "";
+    char *action = "copying";
     if (!shm || !worker->s)
         return APR_EINVAL;
 
@@ -1657,10 +1658,11 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_worker(proxy_worker *worker, proxy_wo
         if (worker->s->was_malloced)
             free(worker->s); /* was malloced in ap_proxy_define_worker */
     } else {
-        ptr = "not ";
+        action = "re-using";
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02338)
-                 "%scopying shm for worker: %s", ptr, worker->s->name);
+                 "%s shm[%d] (0x%pp) for worker: %s", action, i, (void *)shm,
+                 worker->s->name);
 
     worker->s = shm;
     worker->s->index = i;
@@ -2743,6 +2745,9 @@ PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b, server_rec
             proxy_worker *worker = *workers;
             if (worker->hash.def == shm->hash.def && worker->hash.fnv == shm->hash.fnv) {
                 found = 1;
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02402)
+                             "re-grabbing shm[%d] (0x%pp) for worker: %s", i, (void *)shm,
+                             worker->s->name);
                 break;
             }
         }
@@ -2760,6 +2765,9 @@ PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b, server_rec
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(00966) "Cannot init worker");
                 return rv;
             }
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02403)
+                         "grabbing shm[%d] (0x%pp) for worker: %s", i, (void *)shm,
+                         (*runtime)->s->name);
         }
     }
     if (b->s->need_reset) {
