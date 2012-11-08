@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_xml2enc: Fix problems with charset conversion altering the
+     Content-Length. [Micha Lenk <micha lenk info>]
+
   *) core: New directive HttpProtocol which allows to disable HTTP/0.9
      support. [Stefan Fritsch]
 
