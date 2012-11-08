@@ -1,27 +1,14 @@
 #
-# Declare the sub-directories to be built here
-#
-
-SUBDIRS = \
-	$(EOLIST)
-
-#
-# Get the 'head' of the build environment.  This includes default targets and
-# paths to tools
-#
-
-include $(AP_WORK)/build/NWGNUhead.inc
-
-#
-# build this level's files
-
-#
 # Make sure all needed macro's are defined
 #
-ifeq "$(wildcard $(APRUTIL)/include/apr_ldap.h)" "$(APRUTIL)/include/apr_ldap.h"
-WITH_LDAP = $(shell $(AWK) '/^\#define APR_HAS_LDAP /{print $$3}' $(APRUTIL)/include/apr_ldap.h)
-else
-WITH_LDAP = 0
+
+#
+# Get the 'head' of the build environment if necessary.  This includes default
+# targets and paths to tools
+#
+
+ifndef EnvironmentDefined
+include $(AP_WORK)/build/NWGNUhead.inc
 endif
 
 #
@@ -29,6 +16,10 @@ endif
 # INCDIRS
 #
 XINCDIRS	+= \
+			$(APR)/include \
+			$(APRUTIL)/include \
+			$(SRC)/include \
+			$(NWOS) \
 			$(EOLIST)
 
 #
@@ -100,19 +91,19 @@ endif
 # This is used by the link 'name' directive to name the nlm.  If left blank
 # TARGET_nlm (see below) will be used.
 #
-NLM_NAME	=
+NLM_NAME	= allowhandlers
 
 #
 # This is used by the link '-desc ' directive.
 # If left blank, NLM_NAME will be used.
 #
-NLM_DESCRIPTION	=
+NLM_DESCRIPTION	= Apache $(VERSION_STR) Handler Restriction Module
 
 #
 # This is used by the '-threadname' directive.  If left blank,
 # NLM_NAME Thread will be used.
 #
-NLM_THREAD_NAME	=
+NLM_THREAD_NAME	= Allowhandlers Module
 
 #
 # If this is specified, it will override VERSION value in
@@ -123,7 +114,7 @@ NLM_VERSION	=
 #
 # If this is specified, it will override the default of 64K
 #
-NLM_STACK_SIZE	=
+NLM_STACK_SIZE	= 8192
 
 
 #
@@ -157,29 +148,8 @@ XDCDATA		=
 # If there is an NLM target, put it here
 #
 TARGET_nlm = \
-	$(OBJDIR)/authbasc.nlm \
-	$(OBJDIR)/authdigt.nlm \
-	$(OBJDIR)/authform.nlm \
-	$(OBJDIR)/authnano.nlm \
-	$(OBJDIR)/authndbd.nlm \
-	$(OBJDIR)/authndbm.nlm \
-	$(OBJDIR)/authnfil.nlm \
-	$(OBJDIR)/authnsocache.nlm \
-	$(OBJDIR)/authzdbd.nlm \
-	$(OBJDIR)/authzdbm.nlm \
-	$(OBJDIR)/authzgrp.nlm \
-	$(OBJDIR)/authzusr.nlm \
 	$(OBJDIR)/allowhandlers.nlm \
-	$(OBJDIR)/allowmethods.nlm \
-	$(OBJDIR)/accesscompat.nlm \
 	$(EOLIST)
-
-# If WITH_LDAP and LDAPSDK have been defined then build the authnz_ldap module
-ifeq "$(WITH_LDAP)" "1"
-ifneq "$(LDAPSDK)" ""
-TARGET_nlm += $(OBJDIR)/authnzldap.nlm
-endif
-endif
 
 #
 # If there is an LIB target, put it here
@@ -192,6 +162,7 @@ TARGET_lib = \
 # Paths must all use the '/' character
 #
 FILES_nlm_objs = \
+	$(OBJDIR)/mod_allowhandlers.o \
 	$(EOLIST)
 
 #
@@ -199,6 +170,7 @@ FILES_nlm_objs = \
 # These will be added as a library command in the link.opt file.
 #
 FILES_nlm_libs = \
+	$(PRELUDE) \
 	$(EOLIST)
 
 #
@@ -206,6 +178,8 @@ FILES_nlm_libs = \
 # These will be added as a module command in the link.opt file.
 #
 FILES_nlm_modules = \
+	aprlib \
+	libc \
 	$(EOLIST)
 
 #
@@ -227,12 +201,16 @@ FILE_nlm_copyright =
 # Any additional imports go here
 #
 FILES_nlm_Ximports = \
+	@aprlib.imp \
+	@httpd.imp \
+	@libc.imp \
 	$(EOLIST)
 
 #
 # Any symbols exported to here
 #
 FILES_nlm_exports = \
+	allowhandlers_module \
 	$(EOLIST)
 
 #
@@ -255,7 +233,6 @@ nlms :: libs $(TARGET_nlm)
 # correct place.  (See $(AP_WORK)/build/NWGNUhead.inc for examples)
 #
 install :: nlms FORCE
-	$(call COPY,$(OBJDIR)/*.nlm, $(INSTALLBASE)/modules/)
 
 #
 # Any specialized rules here
