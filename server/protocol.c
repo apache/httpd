@@ -624,8 +624,6 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
                       ap_escape_logitem(r->pool, r->the_request));
     }
 
-    /* we've probably got something to do, ignore graceful restart requests */
-
     r->request_time = apr_time_now();
     ll = r->the_request;
     r->method = ap_getword_white(r->pool, &ll);
