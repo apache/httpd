@@ -396,8 +396,9 @@ static int check_speling(request_rec *r)
             ap_log_rerror(APLOG_MARK, APLOG_INFO, APR_SUCCESS,
                           r,
                           ref ? "Fixed spelling: %s to %s from %s"
-                              : "Fixed spelling: %s to %s",
-                          r->uri, nuri, ref);
+                              : "Fixed spelling: %s to %s%s",
+                          r->uri, nuri,
+                          (ref ? ref : ""));
 
             return HTTP_MOVED_PERMANENTLY;
         }
@@ -504,8 +505,9 @@ static int check_speling(request_rec *r)
 
             ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
                          ref ? "Spelling fix: %s: %d candidates from %s"
-                             : "Spelling fix: %s: %d candidates",
-                         r->uri, candidates->nelts, ref);
+                             : "Spelling fix: %s: %d candidates%s",
+                         r->uri, candidates->nelts,
+                         (ref ? ref : ""));
 
             return HTTP_MULTIPLE_CHOICES;
         }
