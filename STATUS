@@ -272,8 +272,9 @@ OTHER PROPOSALS
           scoreboard         r1369477
           core/pid file      r1369808
           core/mutex         r1370288
-          mod_socache_XXX    r1370225
+          mod_socache_XXX    r1370225, r1407385
           mod_ldap           r1371684
+          mod_cache          r1407381
 
 PATCHES/ISSUES THAT ARE STALLED
 
