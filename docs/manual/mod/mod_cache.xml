@@ -855,13 +855,15 @@ LastModified date.</description>
   for the given URL space.</p>
 
   <p>In a minimal configuration the following directive is all that is needed to
-  enable the thundering herd lock in the default system temp directory.</p>
+  enable the thundering herd lock in the default run-time file directory.</p>
 
   <highlight language="config">
 # Enable cache lock
 CacheLock on
   </highlight>
 
+  <p>Locks consist of empty files that only exist for stale URLs in flight, so this
+  is significantly less resource intensive than the traditional disk cache.</p>
 </usage>
 </directivesynopsis>
 
@@ -869,17 +871,15 @@ CacheLock on
 <name>CacheLockPath</name>
 <description>Set the lock path directory.</description>
 <syntax>CacheLockPath <var>directory</var></syntax>
-<default>CacheLockPath /tmp/mod_cache-lock</default>
+<default>CacheLockPath mod_cache-lock</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
   <p>The <directive>CacheLockPath</directive> directive allows you to specify the
-  directory in which the locks are created. By default, the system's temporary
-  folder is used. Locks consist of empty files that only exist for stale URLs
-  in flight, so is significantly less resource intensive than the traditional
-  disk cache.</p>
-
+  directory in which the locks are created.  If <var>directory</var> is not an absolute
+  path, the location specified will be relative to the value of 
+  <directive module="core">DefaultRuntimeDir</directive>.</p>
 </usage>
 </directivesynopsis>
 
