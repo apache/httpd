@@ -847,7 +847,7 @@ LastModified date.</td></tr>
   for the given URL space.</p>
 
   <p>In a minimal configuration the following directive is all that is needed to
-  enable the thundering herd lock in the default system temp directory.</p>
+  enable the thundering herd lock in the default run-time file directory.</p>
 
   <pre class="prettyprint lang-config">
 # Enable cache lock
@@ -855,6 +855,8 @@ CacheLock on
   </pre>
 
 
+  <p>Locks consist of empty files that only exist for stale URLs in flight, so this
+  is significantly less resource intensive than the traditional disk cache.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -882,17 +884,15 @@ CacheLock on
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set the lock path directory.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheLockPath <var>directory</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheLockPath /tmp/mod_cache-lock</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheLockPath mod_cache-lock</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
   <p>The <code class="directive">CacheLockPath</code> directive allows you to specify the
-  directory in which the locks are created. By default, the system's temporary
-  folder is used. Locks consist of empty files that only exist for stale URLs
-  in flight, so is significantly less resource intensive than the traditional
-  disk cache.</p>
-
+  directory in which the locks are created.  If <var>directory</var> is not an absolute
+  path, the location specified will be relative to the value of 
+  <code class="directive"><a href="../mod/core.html#defaultruntimedir">DefaultRuntimeDir</a></code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
