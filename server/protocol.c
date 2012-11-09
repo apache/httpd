@@ -566,6 +566,8 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     apr_size_t len;
     int num_blank_lines = 0;
     int max_blank_lines = r->server->limit_req_fields;
+    core_server_config *conf =
+        ap_get_core_module_config(r->server->module_config);
 
     if (max_blank_lines <= 0) {
         max_blank_lines = DEFAULT_LIMIT_REQUEST_FIELDS;
@@ -644,19 +646,9 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
         pro = ll;
         len = strlen(ll);
     } else {
-        core_server_config *conf;
-        conf = ap_get_core_module_config(r->server->module_config);
         r->assbackwards = 1;
         pro = "HTTP/0.9";
         len = 8;
-        if (conf->http09_enable == AP_HTTP09_DISABLE) {
-                r->status = HTTP_VERSION_NOT_SUPPORTED;
-                r->protocol = apr_pstrmemdup(r->pool, pro, len);
-                r->proto_num = HTTP_VERSION(0, 9);
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02401)
-                              "HTTP/0.9 denied by server configuration");
-                return 0;
-        }
     }
     r->protocol = apr_pstrmemdup(r->pool, pro, len);
 
@@ -673,6 +665,21 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
         r->proto_num = HTTP_VERSION(major, minor);
     else
         r->proto_num = HTTP_VERSION(1, 0);
+
+    if (conf->min_http_version != AP_HTTP_VERSION_UNSET
+        && (   conf->min_http_version > r->proto_num
+            || conf->max_http_version < r->proto_num)) {
+        r->status = HTTP_VERSION_NOT_SUPPORTED;
+        if (r->proto_num == HTTP_VERSION(0, 9)) {
+            /* If we deny 0.9, send error message with 1.x */
+            r->assbackwards = 0;
+        }
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02401)
+                      "HTTP/%d.%d denied by server configuration",
+                      HTTP_VERSION_MAJOR(r->proto_num),
+                      HTTP_VERSION_MINOR(r->proto_num));
+        return 0;
+    }
 
     return 1;
 }
