@@ -354,7 +354,7 @@ static apr_status_t socache_shmcb_init(ap_socache_instance_t *ctx,
     rv = apr_shm_create(&ctx->shm, ctx->shm_size, NULL, p);
     if (APR_STATUS_IS_ENOTIMPL(rv)) {
         /* If anon shm isn't supported, fail if no named file was
-         * configured successfully; the ap_server_root_relative call
+         * configured successfully; the ap_runtime_dir_relative call
          * above will return NULL for invalid paths. */
         if (ctx->data_file == NULL) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00818)
