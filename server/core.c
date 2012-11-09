@@ -3633,6 +3633,15 @@ static const char *set_http_protocol(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
+static const char *set_http_method(cmd_parms *cmd, void *conf, const char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL)
+        return err;
+    ap_method_register(cmd->pool, arg);
+    return NULL;
+}
+
 static apr_hash_t *errorlog_hash;
 
 static int log_constant_item(const ap_errorlog_info *info, const char *arg,
@@ -4134,6 +4143,8 @@ AP_INIT_TAKE1("TraceEnable", set_trace_enable, NULL, RSRC_CONF,
               "'on' (default), 'off' or 'extended' to trace request body content"),
 AP_INIT_TAKE1("HttpProtocol", set_http_protocol, NULL, RSRC_CONF,
               "'+0.9' (default) or '-0.9' to allow/deny HTTP/0.9"),
+AP_INIT_ITERATE("RegisterHttpMethod", set_http_method, NULL, RSRC_CONF,
+                "Registers non-standard HTTP methods"),
 { NULL }
 };
 
