@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: New directive RegisterHttpMethod for registering non-standard
+     HTTP methods. [Stefan Fritsch]
+
   *) mod_xml2enc: Fix problems with charset conversion altering the
      Content-Length. [Micha Lenk <micha lenk info>]
 
