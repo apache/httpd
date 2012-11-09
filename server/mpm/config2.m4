@@ -1,7 +1,7 @@
 AC_MSG_CHECKING(which MPM to use by default)
 AC_ARG_WITH(mpm,
 APACHE_HELP_STRING(--with-mpm=MPM,Choose the process model for Apache to use by default.
-                          MPM={simple|event|worker|prefork|winnt}
+                          MPM={simple|eventopt|event|worker|prefork|winnt}
                           This will be statically linked as the only available MPM unless
                           --enable-mpms-shared is also specified.
 ),[
