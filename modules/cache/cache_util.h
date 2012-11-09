@@ -95,7 +95,7 @@ extern "C" {
 #define DEFAULT_X_CACHE         0
 #define DEFAULT_X_CACHE_DETAIL  0
 #define DEFAULT_CACHE_STALE_ON_ERROR 1
-#define DEFAULT_CACHE_LOCKPATH "/mod_cache-lock"
+#define DEFAULT_CACHE_LOCKPATH "mod_cache-lock"
 #define CACHE_LOCKNAME_KEY "mod_cache-lockname"
 #define CACHE_LOCKFILE_KEY "mod_cache-lockfile"
 #define CACHE_CTX_KEY "mod_cache-ctx"
