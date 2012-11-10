@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1371058:1407381 (outdated) -->
+<!-- English Revision : 1407381 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -950,13 +950,18 @@ l'ent&ecirc;te Cache-Control: a pour valeur no-store.</description>
   contre les temp&ecirc;tes de requ&ecirc;tes pour l'espace d'adressage donn&eacute;.</p>
 
   <p>La configuration minimale pour activer le verrouillage contre les
-  temp&ecirc;tes de requ&ecirc;tes dans le r&eacute;pertoire temp par d&eacute;faut du syst&egrave;me est
+  temp&ecirc;tes de requ&ecirc;tes dans le r&eacute;pertoire par
+  d&eacute;faut des fichiers run-time est
   la suivante :</p>
 
   <highlight language="config">
 # Active le verrouillage du cache
 CacheLock on
   </highlight>
+
+  <p>Les verrous sont des fichiers vides qui n'existent que pour les
+  URLs pr&eacute;sentes dont le contenu est p&eacute;rim&eacute; ; ils consomment dont bien
+  moins de ressources que le cache disque traditionnel.</p>
 
 </usage>
 </directivesynopsis>
@@ -965,17 +970,16 @@ CacheLock on
 <name>CacheLockPath</name>
 <description>D&eacute;finit le r&eacute;pertoire des verrous.</description>
 <syntax>CacheLockPath <var>r&eacute;pertoire</var></syntax>
-<default>CacheLockPath /tmp/mod_cache-lock</default>
+<default>CacheLockPath mod_cache-lock</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
   <p>La directive <directive>CacheLockPath</directive> permet de
-  sp&eacute;cifier le r&eacute;pertoire dans lequel les verrous sont cr&eacute;&eacute;s. Par
-  d&eacute;faut, c'est le r&eacute;pertoire temporaire du syst&egrave;me qui est utilis&eacute;. Les
-  verrous sont des fichiers vides qui n'existent que pour les URLs
-  p&eacute;rim&eacute;es en cours de mise &agrave; jour, et consomment donc bien moins de
-  ressources que le traditionnel cache sur disque.</p>
+  sp&eacute;cifier le r&eacute;pertoire dans lequel les verrous sont
+  cr&eacute;&eacute;s. Si <var>r&eacute;pertoire</var> n'est pas un
+  chemin absolu, il sera relatif au r&eacute;pertoire d&eacute;fini par la directive
+  <directive module="core">DefaultRuntimeDir</directive>.</p>
 
 </usage>
 </directivesynopsis>

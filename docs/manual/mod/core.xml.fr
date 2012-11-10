@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1401124:1407599 (outdated) -->
+<!-- English Revision : 1407599 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -4836,5 +4836,23 @@ qu'utilise le serveur HTTP Apache</a></seealso>
 explication de la mani&egrave;re dont ces diff&eacute;rentes sections se combinent
 entre elles &agrave; la r&eacute;ception d'une requ&ecirc;te</seealso>
 </directivesynopsis>
+
+<directivesynopsis>
+<name>RegisterHttpMethod</name>
+<description>Enregistrement de m&eacute;thodes HTTP non standards</description>
+<syntax>RegisterHttpMethod <var>m&eacute;thode</var> [<var>m&eacute;thode</var> [...]]</syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+<p>Normalement, les m&eacute;thodes HTTP non conformes aux RFCs correspondantes
+sont rejet&eacute;es au cours du traitement de la requ&ecirc;te par HTTPD. Pour
+&eacute;viter ceci, les modules peuvent enregistrer les m&eacute;thodes HTTP non
+standards qu'ils supportent. La directive
+<directive>RegisterHttpMethod</directive> permet d'enregistrer de telles
+m&eacute;thodes manuellement. Ceci peut s'av&eacute;rer utile si de telle m&eacute;thodes
+doivent &ecirc;tre utilis&eacute;es dans un traitement externe, comme un script CGI.</p>
+</usage>
+</directivesynopsis>
+
 
 </modulesynopsis>
