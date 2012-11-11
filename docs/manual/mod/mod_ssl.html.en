@@ -33,8 +33,8 @@ Layer (SSL) and Transport Layer Security (TLS) protocols</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_ssl.c</td></tr></table>
 <h3>Summary</h3>
 
-<p>This module provides SSL v2/v3 and TLS v1 support for the Apache
-HTTP Server.</p>
+<p>This module provides SSL v3 and TLS v1.x support for the Apache
+HTTP Server. SSL v2 is no longer supported.</p>
 
 <p>This module relies on <a href="http://www.openssl.org/">OpenSSL</a>
 to provide the cryptography engine.</p>
@@ -632,23 +632,24 @@ An SSL cipher specification in <em>cipher-spec</em> is composed of 4 major
 attributes plus a few extra minor ones:</p>
 <ul>
 <li><em>Key Exchange Algorithm</em>:<br />
-    RSA or Diffie-Hellman variants.
+    RSA, Diffie-Hellman, Elliptic Curve Diffie-Hellman, Secure Remote Password
 </li>
 <li><em>Authentication Algorithm</em>:<br />
-    RSA, Diffie-Hellman, DSS or none.
+    RSA, Diffie-Hellman, DSS, ECDSA, or none.
 </li>
 <li><em>Cipher/Encryption Algorithm</em>:<br />
-    DES, Triple-DES, RC4, RC2, IDEA or none.
+    AES, DES, Triple-DES, RC4, RC2, IDEA, etc.
 </li>
 <li><em>MAC Digest Algorithm</em>:<br />
-    MD5, SHA or SHA1.
+    MD5, SHA or SHA1, SHA256, SHA384.
 </li>
 </ul>
-<p>An SSL cipher can also be an export cipher and is either an SSLv2 or SSLv3/TLSv1
-cipher (here TLSv1 is equivalent to SSLv3). To specify which ciphers to use,
-one can either specify all the Ciphers, one at a time, or use aliases to
-specify the preference and order for the ciphers (see <a href="#table1">Table
-1</a>).</p>
+<p>An SSL cipher can also be an export cipher. SSLv2 ciphers are no longer
+supported. To specify which ciphers to use, one can either specify all the
+Ciphers, one at a time, or use aliases to specify the preference and order
+for the ciphers (see <a href="#table1">Table
+1</a>). The actually available ciphers and aliases depends on the used
+openssl version. Newer openssl versions may include additional ciphers.</p>
 
 <table class="bordered">
 
@@ -665,18 +666,21 @@ specify the preference and order for the ciphers (see <a href="#table1">Table
 <tr><td><code>aDSS</code></td>   <td>DSS authentication</td> </tr>
 <tr><td><code>aDH</code></td>    <td>Diffie-Hellman authentication</td></tr>
 <tr><td colspan="2"><em>Cipher Encoding Algorithm:</em></td></tr>
-<tr><td><code>eNULL</code></td>  <td>No encoding</td>         </tr>
-<tr><td><code>DES</code></td>    <td>DES encoding</td>        </tr>
-<tr><td><code>3DES</code></td>   <td>Triple-DES encoding</td> </tr>
-<tr><td><code>RC4</code></td>    <td>RC4 encoding</td>       </tr>
-<tr><td><code>RC2</code></td>    <td>RC2 encoding</td>       </tr>
-<tr><td><code>IDEA</code></td>   <td>IDEA encoding</td>       </tr>
+<tr><td><code>eNULL</code></td>  <td>No encryption</td>         </tr>
+<tr><td><code>NULL</code></td>   <td>alias for eNULL</td>         </tr>
+<tr><td><code>AES</code></td>    <td>AES encryption</td>        </tr>
+<tr><td><code>DES</code></td>    <td>DES encryption</td>        </tr>
+<tr><td><code>3DES</code></td>   <td>Triple-DES encryption</td> </tr>
+<tr><td><code>RC4</code></td>    <td>RC4 encryption</td>       </tr>
+<tr><td><code>RC2</code></td>    <td>RC2 encryption</td>       </tr>
+<tr><td><code>IDEA</code></td>   <td>IDEA encryption</td>       </tr>
 <tr><td colspan="2"><em>MAC Digest Algorithm</em>:</td></tr>
 <tr><td><code>MD5</code></td>    <td>MD5 hash function</td></tr>
 <tr><td><code>SHA1</code></td>   <td>SHA1 hash function</td></tr>
-<tr><td><code>SHA</code></td>    <td>SHA hash function</td> </tr>
+<tr><td><code>SHA</code></td>    <td>alias for SHA1</td> </tr>
+<tr><td><code>SHA256</code></td> <td>SHA256 hash function</td> </tr>
+<tr><td><code>SHA384</code></td> <td>SHA384 hash function</td> </tr>
 <tr><td colspan="2"><em>Aliases:</em></td></tr>
-<tr><td><code>SSLv2</code></td>  <td>all SSL version 2.0 ciphers</td></tr>
 <tr><td><code>SSLv3</code></td>  <td>all SSL version 3.0 ciphers</td> </tr>
 <tr><td><code>TLSv1</code></td>  <td>all TLS version 1.0 ciphers</td> </tr>
 <tr><td><code>EXP</code></td>    <td>all export ciphers</td>  </tr>
@@ -688,15 +692,18 @@ specify the preference and order for the ciphers (see <a href="#table1">Table
 <tr><td><code>RSA</code></td>    <td>all ciphers using RSA key exchange</td> </tr>
 <tr><td><code>DH</code></td>     <td>all ciphers using Diffie-Hellman key exchange</td> </tr>
 <tr><td><code>EDH</code></td>    <td>all ciphers using Ephemeral Diffie-Hellman key exchange</td> </tr>
+<tr><td><code>ECDH</code></td>   <td>Elliptic Curve Diffie-Hellman key exchange</td>   </tr>
 <tr><td><code>ADH</code></td>    <td>all ciphers using Anonymous Diffie-Hellman key exchange</td> </tr>
+<tr><td><code>AECDH</code></td>    <td>all ciphers using Anonymous Elliptic Curve Diffie-Hellman key exchange</td> </tr>
 <tr><td><code>SRP</code></td>    <td>all ciphers using Secure Remote Password (SRP) key exchange</td> </tr>
 <tr><td><code>DSS</code></td>    <td>all ciphers using DSS authentication</td> </tr>
-<tr><td><code>NULL</code></td>   <td>all ciphers using no encryption</td> </tr>
+<tr><td><code>ECDSA</code></td>    <td>all ciphers using ECDSA authentication</td> </tr>
+<tr><td><code>aNULL</code></td>   <td>all ciphers using no authentication</td> </tr>
 </table>
 <p>
 Now where this becomes interesting is that these can be put together
 to specify the order and ciphers you wish to use. To speed this up
-there are also aliases (<code>SSLv2, SSLv3, TLSv1, EXP, LOW, MEDIUM,
+there are also aliases (<code>SSLv3, TLSv1, EXP, LOW, MEDIUM,
 HIGH</code>) for certain groups of ciphers. These tags can be joined
 together with prefixes to form the <em>cipher-spec</em>. Available
 prefixes are:</p>
@@ -737,21 +744,13 @@ SSLCipherSuite RSA:!EXP:!NULL:+HIGH:+MEDIUM:-LOW
 <tr><th><a name="table2">Cipher-Tag</a></th> <th>Protocol</th> <th>Key Ex.</th> <th>Auth.</th> <th>Enc.</th> <th>MAC</th> <th>Type</th> </tr>
 <tr><td colspan="7"><em>RSA Ciphers:</em></td></tr>
 <tr><td><code>DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>3DES(168)</td> <td>SHA1</td> <td /> </tr>
-<tr><td><code>DES-CBC3-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>3DES(168)</td> <td>MD5</td> <td /> </tr>
 <tr><td><code>IDEA-CBC-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>IDEA(128)</td> <td>SHA1</td> <td /> </tr>
 <tr><td><code>RC4-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>RC4(128)</td> <td>SHA1</td> <td /> </tr>
 <tr><td><code>RC4-MD5</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>RC4(128)</td> <td>MD5</td> <td /> </tr>
-<tr><td><code>IDEA-CBC-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>IDEA(128)</td> <td>MD5</td> <td /> </tr>
-<tr><td><code>RC2-CBC-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>RC2(128)</td> <td>MD5</td> <td /> </tr>
-<tr><td><code>RC4-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>RC4(128)</td> <td>MD5</td> <td /> </tr>
 <tr><td><code>DES-CBC-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>DES(56)</td> <td>SHA1</td> <td /> </tr>
-<tr><td><code>RC4-64-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>RC4(64)</td> <td>MD5</td> <td /> </tr>
-<tr><td><code>DES-CBC-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>DES(56)</td> <td>MD5</td> <td /> </tr>
 <tr><td><code>EXP-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>RSA(512)</td> <td>RSA</td> <td>DES(40)</td> <td>SHA1</td> <td> export</td> </tr>
 <tr><td><code>EXP-RC2-CBC-MD5</code></td> <td>SSLv3</td> <td>RSA(512)</td> <td>RSA</td> <td>RC2(40)</td> <td>MD5</td> <td>  export</td> </tr>
 <tr><td><code>EXP-RC4-MD5</code></td> <td>SSLv3</td> <td>RSA(512)</td> <td>RSA</td> <td>RC4(40)</td> <td>MD5</td> <td>  export</td> </tr>
-<tr><td><code>EXP-RC2-CBC-MD5</code></td> <td>SSLv2</td> <td>RSA(512)</td> <td>RSA</td> <td>RC2(40)</td> <td>MD5</td> <td>  export</td> </tr>
-<tr><td><code>EXP-RC4-MD5</code></td> <td>SSLv2</td> <td>RSA(512)</td> <td>RSA</td> <td>RC4(40)</td> <td>MD5</td> <td>  export</td> </tr>
 <tr><td><code>NULL-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>None</td> <td>SHA1</td> <td /> </tr>
 <tr><td><code>NULL-MD5</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>None</td> <td>MD5</td> <td /> </tr>
 <tr><td colspan="7"><em>Diffie-Hellman Ciphers:</em></td></tr>
@@ -1248,14 +1247,14 @@ The available (case-insensitive) <em>protocol</em>s are:</p>
     <p>
     This is the Secure Sockets Layer (SSL) protocol, version 3.0, from
     the Netscape Corporation.
-    It is the successor to SSLv2 and the predecessor to TLSv1. It's supported by
-    almost all popular browsers.</p></li>
+    It is the successor to SSLv2 and the predecessor to TLSv1.</p></li>
 
 <li><code>TLSv1</code>
     <p>
     This is the Transport Layer Security (TLS) protocol, version 1.0.
     It is the successor to SSLv3 and is defined in
-    <a href="http://www.ietf.org/rfc/rfc2246.txt">RFC 2246</a>.</p></li>
+    <a href="http://www.ietf.org/rfc/rfc2246.txt">RFC 2246</a>.
+    It is supported by nearly every client.</p></li>
 
 <li><code>TLSv1.1</code> (when using OpenSSL 1.0.1 and later)
     <p>
@@ -1466,7 +1465,7 @@ SSLProxyCheckPeerExpire on
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Cipher Suite available for negotiation in SSL
 proxy handshake</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyCipherSuite <em>cipher-spec</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLProxyCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLProxyCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
