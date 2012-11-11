@@ -247,6 +247,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      http://svn.apache.org/viewvc?view=revision&revision=1397716
      2.4.x patch: http://people.apache.org/~jim/patches/server-load-2.4.patch
      +1: jim
+     
+   * mod_cgi: RLimitNPROC doesn't work: wrong #if RLIMIT_NPROC
+     PR 54133.
+     trunk patch: http://svn.apache.org/viewvc?rev=1404625&view=rev
+     2.4.x patch: trunk patch works (minus CHANGES):
+     +1: jailletc36
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
