@@ -250,7 +250,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      
    * mod_cgi: RLimitNPROC doesn't work: wrong #if RLIMIT_NPROC
      PR 54133.
-     trunk patch: http://svn.apache.org/viewvc?rev=1404625&view=rev
+     trunk patch: http://svn.apache.org/viewvc?rev=1407965&view=rev
      2.4.x patch: trunk patch works (minus CHANGES):
      +1: jailletc36
 
