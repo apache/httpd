@@ -224,13 +224,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works (minus CHANGES and ap_mmn.h):
      +1:
 
-   * mod_proxy_balancer: Restore balancing after a failed worker has
-     recovered when using lbmethod_bybusyness.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1366344
-     2.4.x patch: trunk patch works (minus CHANGES):
-     +1: jim
-     ALREADY IN 2.4.X (r1366691)
-
    * mod_proxy_balancer: Bring XML output up to date.
      http://svn.apache.org/viewvc?view=revision&revision=1392345
      http://svn.apache.org/viewvc?view=revision&revision=1392346
@@ -253,7 +246,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR 54133.
      trunk patch: http://svn.apache.org/viewvc?rev=1407965&view=rev
      2.4.x patch: trunk patch works (minus CHANGES):
-     +1: jailletc36, trawick
+     +1: jailletc36, trawick, jim
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
