@@ -241,7 +241,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      http://svn.apache.org/viewvc?view=revision&revision=1397716
      2.4.x patch: http://people.apache.org/~jim/patches/server-load-2.4.patch
      +1: jim, jorton
-     
+
+   * mod_ldap: restore LDAP_UNAVAILABLE for windows SDK (PR 54140)
+       trunk patch: http://svn.apache.org/viewvc?rev=1408402&view=rev
+       2.4.x patch: trunk applies (+ CHANGES))
+     +1: covener
+
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
