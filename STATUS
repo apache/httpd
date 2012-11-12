@@ -247,7 +247,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      http://svn.apache.org/viewvc?view=revision&revision=1397710
      http://svn.apache.org/viewvc?view=revision&revision=1397716
      2.4.x patch: http://people.apache.org/~jim/patches/server-load-2.4.patch
-     +1: jim
+     +1: jim, jorton
      
    * mod_cgi: RLimitNPROC doesn't work: wrong #if RLIMIT_NPROC
      PR 54133.
