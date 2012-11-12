@@ -45,7 +45,7 @@
 /* this whole thing disappears if LDAP is not enabled */
 #if APR_HAS_LDAP
 
-#ifdef LDAP_UNAVAILABLE
+#if defined(LDAP_UNAVAILABLE) || APR_HAS_MICROSOFT_LDAPSDK
 #define AP_LDAP_IS_SERVER_DOWN(s)                ((s) == LDAP_SERVER_DOWN \
                 ||(s) == LDAP_UNAVAILABLE)
 #else
