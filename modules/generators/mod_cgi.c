@@ -436,7 +436,7 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
         ((rc = apr_procattr_limit_set(procattr, APR_LIMIT_MEM,
                                       conf->limit_mem)) != APR_SUCCESS) ||
 #endif
-#if RLIMIT_NPROC && defined(AP_CGI_USE_RLIMIT)
+#if defined(RLIMIT_NPROC) && defined(AP_CGI_USE_RLIMIT)
         ((rc = apr_procattr_limit_set(procattr, APR_LIMIT_NPROC,
                                       conf->limit_nproc)) != APR_SUCCESS) ||
 #endif
