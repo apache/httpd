@@ -172,7 +172,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1388444
                   http://svn.apache.org/viewvc?view=revision&revision=1388603
      2.4.x patch: http://people.apache.org/~jim/patches/proxy-persist.diff
-     +1:, jim
+     +1: jim
 
    * mod_auth_form: Support the expr parser in the
      AuthFormLoginRequiredLocation, AuthFormLoginSuccessLocation and
@@ -229,6 +229,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1366344
      2.4.x patch: trunk patch works (minus CHANGES):
      +1: jim
+     ALREADY IN 2.4.X (r1366691)
 
    * mod_proxy_balancer: Bring XML output up to date.
      http://svn.apache.org/viewvc?view=revision&revision=1392345
@@ -252,7 +253,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR 54133.
      trunk patch: http://svn.apache.org/viewvc?rev=1407965&view=rev
      2.4.x patch: trunk patch works (minus CHANGES):
-     +1: jailletc36
+     +1: jailletc36, trawick
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
