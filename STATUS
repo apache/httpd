@@ -89,6 +89,16 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * "Iterate" directives: Report an error if no arguments are provided.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1397172
+     2.4.x patch: trunk patch works
+     +1: trawick, jim, jailletc36
+
+   * syslog logging: Remove stray ", referer" at the end of some messages.
+     trunk patch: http://svn.apache.org/viewvc?rev=1399708&view=rev
+     2.4.x patch: trunk patch works:
+     +1: trawick, jim, jailletc36
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -195,22 +205,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: trawick, gsmith
 
-   * "Iterate" directives: Report an error if no arguments are provided.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1397172
-     2.4.x patch: trunk patch works
-     +1: trawick, jim
-
    * mod_dir: Support for the 'disabled' FallbackResource argument
      trunk patch : https://svn.apache.org/viewvc?view=revision&revision=1398066
      2.4.x src patch: trunk patch works
      documentation patch : http://apache-doc-fr.gryzor.com/fallbackresource_disabled_2.4_doc.patch
      +1: gryzor
      covener: pls add doc revision incl compatibility.
-
-   * syslog logging: Remove stray ", referer" at the end of some messages.
-     trunk patch: http://svn.apache.org/viewvc?rev=1399708&view=rev
-     2.4.x patch: trunk patch works:
-     +1: trawick, jim
 
    * mod_proxy_ftp: Fix segfaults on IPv4 requests to hosts with DNS AAAA records.
      PR 40841.
