@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.4
  
+  *) syslog logging: Remove stray ", referer" at the end of some messages.
+     [Jeff Trawick]
+
   *) "Iterate" directives: Report an error if no arguments are provided.
      [Jeff Trawick]
 
