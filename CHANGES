@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.4
  
+  *) "Iterate" directives: Report an error if no arguments are provided.
+     [Jeff Trawick]
+
   *) mod_ssl: Change default for SSLCompression to off, as compression
      causes security issues in most setups. (The so called "CRIME" attack).
      [Stefan Fritsch]
