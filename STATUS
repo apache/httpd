@@ -89,10 +89,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * "Iterate" directives: Report an error if no arguments are provided.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1397172
-     2.4.x patch: trunk patch works
-     +1: trawick, jim, jailletc36
 
    * syslog logging: Remove stray ", referer" at the end of some messages.
      trunk patch: http://svn.apache.org/viewvc?rev=1399708&view=rev
