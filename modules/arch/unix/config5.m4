@@ -4,6 +4,7 @@ APACHE_MODPATH_INIT(arch/unix)
 if ap_mpm_is_enabled "simple" \
    || ap_mpm_is_enabled "worker" \
    || ap_mpm_is_enabled "event" \
+   || ap_mpm_is_enabled "eventopt" \
    || ap_mpm_is_enabled "prefork"; then
     unixd_mods_enable=yes
 else
