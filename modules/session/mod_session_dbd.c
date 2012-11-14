@@ -348,8 +348,8 @@ static apr_status_t dbd_remove(request_rec * r, const char *key)
 
     rv = dbd_init(r, conf->deletelabel, &dbd, &statement);
     if (rv != APR_SUCCESS) {
-        // No need to do additional error logging here, it has already
-        // been done in dbd_init if needed
+        /* No need to do additional error logging here, it has already
+           been done in dbd_init if needed */
         return rv;
     }
 
