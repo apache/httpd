@@ -548,7 +548,7 @@ AP_DECLARE(apr_status_t) ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb);
  * @param str The string to write
  */
 #define ap_fputs(f, bb, str) \
-        apr_brigade_puts(bb, ap_filter_flush, f, str)
+        apr_brigade_write(bb, ap_filter_flush, f, str, strlen(str))
 
 /**
  * Write a character for the current filter, buffering if possible.
