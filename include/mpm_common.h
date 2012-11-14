@@ -278,6 +278,50 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_signal(ap_pod_t *pod);
  */
 AP_DECLARE(void) ap_mpm_pod_killpg(ap_pod_t *pod, int num);
 
+    
+#define AP_MPM_PODX_RESTART_CHAR '$'
+#define AP_MPM_PODX_GRACEFUL_CHAR '!'
+    
+typedef enum { AP_MPM_PODX_NORESTART, AP_MPM_PODX_RESTART, AP_MPM_PODX_GRACEFUL } ap_podx_restart_t;
+    
+/**
+ * Open the extended pipe-of-death.
+ * @param p The pool to use for allocating the pipe
+ * @param pod the pipe-of-death that is created.
+ */
+AP_DECLARE(apr_status_t) ap_mpm_podx_open(apr_pool_t *p, ap_pod_t **pod);
+
+/**
+ * Check the extended pipe to determine if the process has been signalled to die.
+ */
+AP_DECLARE(int) ap_mpm_podx_check(ap_pod_t *pod);
+
+/**
+ * Close the pipe-of-death
+ *
+ * @param extended pod the pipe-of-death to close.
+ */
+AP_DECLARE(apr_status_t) ap_mpm_podx_close(ap_pod_t *pod);
+
+/**
+ * Write data to the extended pipe-of-death, signalling that one child process
+ * should die.
+ * @param pod the pipe-of-death to write to.
+ * @param graceful restart-type
+ */
+AP_DECLARE(apr_status_t) ap_mpm_podx_signal(ap_pod_t *pod,
+                                            ap_podx_restart_t graceful);
+
+/**
+ * Write data to the extended pipe-of-death, signalling that all child process
+ * should die.
+ * @param pod The pipe-of-death to write to.
+ * @param num The number of child processes to kill
+ * @param graceful restart-type
+ */
+AP_DECLARE(void) ap_mpm_podx_killpg(ap_pod_t *pod, int num,
+                                    ap_podx_restart_t graceful);
+
 #endif /* !WIN32 || DOXYGEN */
 
 /**
