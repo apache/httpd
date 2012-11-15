@@ -1299,6 +1299,36 @@ struct server_rec {
 };
 
 /**
+ * @struct ap_sload_t
+ * @brief  A structure to hold server load params
+ */
+typedef struct ap_sload_t ap_sload_t;
+struct ap_sload_t {
+    /* percentage of process/threads ready/idle (0->100)*/
+    int idle;
+    /* percentage of process/threads busy (0->100) */
+    int busy;
+    /* total bytes served */
+    apr_off_t bytes_served;
+    /* total access count */
+    unsigned long access_count;
+};
+
+/**
+ * @struct ap_loadavg_t
+ * @brief  A structure to hold various server loadavg
+ */
+typedef struct ap_loadavg_t ap_loadavg_t;
+struct ap_loadavg_t {
+    /* current loadavg, ala getloadavg() */
+    float loadavg;
+    /* 5 min loadavg */
+    float loadavg5;
+    /* 15 min loadavg */
+    float loadavg15;
+};
+
+/**
  * Get the context_document_root for a request. This is a generalization of
  * the document root, which is too limited in the presence of mappers like
  * mod_userdir and mod_alias. The context_document_root is the directory
@@ -2166,6 +2196,18 @@ AP_DECLARE(void *) ap_calloc(size_t nelem, size_t size)
 AP_DECLARE(void *) ap_realloc(void *ptr, size_t size)
                    AP_FN_ATTR_WARN_UNUSED_RESULT
                    AP_FN_ATTR_ALLOC_SIZE(2);
+
+/**
+ * Get server load params
+ * @param ld struct to populate: -1 in fields means error
+ */
+AP_DECLARE(void) ap_get_sload(ap_sload_t *ld);
+
+/**
+ * Get server load averages (ala getloadavg)
+ * @param ld struct to populate: -1 in fields means error
+ */
+AP_DECLARE(void) ap_get_loadavg(ap_loadavg_t *ld);
 
 
 #define AP_NORESTART APR_OS_START_USEERR + 1

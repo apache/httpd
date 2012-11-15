@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.4
 
+  *) core: Functions to provide server load values: ap_get_sload() and
+     ap_get_loadavg(). [Jim Jagielski, Jan Kaluza <jkaluza redhat.com>,
+     Jeff Trawick]
+
   *) mod_ldap: Fix regression in handling "server unavailable" errors on 
      Windows.  PR 54140.  [Eric Covener]
  
