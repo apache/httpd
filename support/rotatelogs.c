@@ -336,7 +336,7 @@ static void post_rotate(apr_pool_t *pool, struct logfile *newlog,
 
     argv[0] = config->postrotate_prog;
     argv[1] = newlog->name;
-    if (status->current.name) {
+    if (status->current.fd) {
         argv[2] = status->current.name;
         argv[3] = NULL;
     }
