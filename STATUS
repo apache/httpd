@@ -226,6 +226,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        2.4.x patch: trunk patch applies
      +1: jorton, 
 
+   * core: Make ap_regcomp() return AP_REG_ESPACE if out of memory.
+     Make ap_pregcomp() abort if out of memory. This raises the minimum
+     PCRE requirement to version 6.0, released in 2005.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1343109
+     2.4.x patch: trunk patch works
+     +1:
+
+   * util: make varbuf functions treat AP_VARBUF_UNKNOWN consistently
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1359884
+     2.4.x patch: trunk patch works
+     +1: 
+
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
