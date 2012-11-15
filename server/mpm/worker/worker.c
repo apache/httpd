@@ -1341,7 +1341,7 @@ static void child_main(int child_num_arg)
                     break;
                 }
             }
-            if (rv == AP_GRACEFUL || rv == AP_RESTART) {
+            if (rv == AP_MPM_PODX_GRACEFUL || rv == AP_MPM_PODX_RESTART) {
                 /* make sure the start thread has finished;
                  * signal_threads() and join_workers depend on that
                  */
