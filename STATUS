@@ -203,7 +203,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      to more accurately report the negotiated protocol. PR 53916.
      trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1395225
      2.2.x patch: https://people.apache.org/~kbrand/ab-tlsv1_x-2.2.x.patch
-     +1: kbrand
+     +1: kbrand, covener
 
    * mod_dir: Support for the 'disabled' FallbackResource argument
      trunk patch : https://svn.apache.org/viewvc?view=revision&revision=1398066
@@ -219,7 +219,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk and 2.4.x: Erroneous order for the parameters
                   http://svn.apache.org/viewvc?view=revision&sortby=date&revision=627637
      2.2.x patch: attached in PR 53402 (https://issues.apache.org/bugzilla/attachment.cgi?id=29502)
-     +1: jailletc36
+     +1: jailletc36, covener
 
    * mod_ldap: restore LDAP_UNAVAILABLE for windows SDK (PR 54140)
      trunk patch: http://svn.apache.org/viewvc?rev=1408402&view=rev
