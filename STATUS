@@ -221,6 +221,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: attached in PR 53402 (https://issues.apache.org/bugzilla/attachment.cgi?id=29502)
      +1: jailletc36
 
+   * mod_ldap: restore LDAP_UNAVAILABLE for windows SDK (PR 54140)
+     trunk patch: http://svn.apache.org/viewvc?rev=1408402&view=rev
+     2.4.x patch: http://svn.apache.org/viewvc?rev=1409773&view=rev
+     2.2.x patch: http://people.apache.org/~covener/patches/httpd-2.2.x-ldap_unavailable.diff 
+                 (just context conflicts)
+     +1: covener
 
 PATCHES/ISSUES THAT ARE STALLED
 
