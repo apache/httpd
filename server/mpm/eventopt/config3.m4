@@ -1,3 +1,5 @@
+APACHE_MPMPATH_INIT(eventopt)
+
 dnl ## XXX - Need a more thorough check of the proper flags to use
 
 APACHE_CHECK_SERF
@@ -9,3 +11,5 @@ APACHE_SUBST(MOD_MPM_EVENTOPT_LDADD)
 APACHE_MPM_MODULE(eventopt, $enable_mpm_eventopt, eventopt.lo fdqueue.lo equeue.lo,[
     AC_CHECK_FUNCS(pthread_kill)
 ], , [\$(MOD_MPM_EVENTOPT_LDADD)])
+
+APACHE_MPMPATH_FINISH
