@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 
 Changes with Apache 2.4.4
+
+  *) mod_ldap: Fix regression in handling "server unavailable" errors on 
+     Windows.  PR 54140.  [Eric Covener]
  
   *) syslog logging: Remove stray ", referer" at the end of some messages.
      [Jeff Trawick]
