@@ -89,6 +89,17 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * core: Add in ap_get_sload() and ap_get_loadavg().
+     http://svn.apache.org/viewvc?view=revision&revision=1389481
+     http://svn.apache.org/viewvc?view=revision&revision=1389506
+     http://svn.apache.org/viewvc?view=revision&revision=1389564
+     http://svn.apache.org/viewvc?view=revision&revision=1390562
+     http://svn.apache.org/viewvc?view=revision&revision=1390564
+     http://svn.apache.org/viewvc?view=revision&revision=1393338
+     http://svn.apache.org/viewvc?view=revision&revision=1397710
+     http://svn.apache.org/viewvc?view=revision&revision=1397716
+     2.4.x patch: http://people.apache.org/~jim/patches/server-load-2.4.patch
+     +1: jim, jorton, igalic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -220,18 +231,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      http://svn.apache.org/viewvc?view=revision&revision=1392346
      2.4.x patch: http://people.apache.org/~jim/patches/bal-man-xml-2.4.patch
      +1: jim
-
-   * core: Add in ap_get_sload() and ap_get_loadavg().
-     http://svn.apache.org/viewvc?view=revision&revision=1389481
-     http://svn.apache.org/viewvc?view=revision&revision=1389506
-     http://svn.apache.org/viewvc?view=revision&revision=1389564
-     http://svn.apache.org/viewvc?view=revision&revision=1390562
-     http://svn.apache.org/viewvc?view=revision&revision=1390564
-     http://svn.apache.org/viewvc?view=revision&revision=1393338
-     http://svn.apache.org/viewvc?view=revision&revision=1397710
-     http://svn.apache.org/viewvc?view=revision&revision=1397716
-     2.4.x patch: http://people.apache.org/~jim/patches/server-load-2.4.patch
-     +1: jim, jorton, igalic
 
    * rotatelogs: fix argument handling to exactly match docs with -p 
        trunk patch: http://svn.apache.org/viewvc?rev=1409726&view=rev
