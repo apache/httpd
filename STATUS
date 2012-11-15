@@ -233,10 +233,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~jim/patches/server-load-2.4.patch
      +1: jim, jorton, igalic
 
-   * mod_ldap: restore LDAP_UNAVAILABLE for windows SDK (PR 54140)
-       trunk patch: http://svn.apache.org/viewvc?rev=1408402&view=rev
-       2.4.x patch: trunk applies (+ CHANGES))
-     +1: covener, trawick, igalic
+   * rotatelogs: fix argument handling to exactly match docs with -p 
+       trunk patch: http://svn.apache.org/viewvc?rev=1409726&view=rev
+       2.4.x patch: trunk patch applies
+     +1: jorton, 
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
