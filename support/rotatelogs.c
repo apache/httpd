@@ -14,31 +14,6 @@
  * limitations under the License.
  */
 
-/*
- * Simple program to rotate Apache logs without having to kill the server.
- *
- * Contributed by Ben Laurie <ben algroup.co.uk>
- *
- * 12 Mar 1996
- *
- * Ported to APR by Mladen Turk <mturk mappingsoft.com>
- *
- * 23 Sep 2001
- *
- * -l option added 2004-06-11
- *
- * -l causes the use of local time rather than GMT as the base for the
- * interval.  NB: Using -l in an environment which changes the GMT offset
- * (such as for BST or DST) can lead to unpredictable results!
- *
- * -f option added Feb, 2008. This causes rotatelog to open/create
- *    the logfile as soon as it's started, not as soon as it sees
- *    data.
- *
- * -v option added Feb, 2008. Verbose output of command line parsing.
- */
-
-
 #include "apr.h"
 #include "apr_lib.h"
 #include "apr_strings.h"
@@ -62,17 +37,13 @@
 #define BUFSIZE         65536
 #define ERRMSGSZ        256
 
-#ifndef MAX_PATH
-#define MAX_PATH        1024
-#endif
-
 #define ROTATE_NONE     0
 #define ROTATE_NEW      1
 #define ROTATE_TIME     2
 #define ROTATE_SIZE     3
 #define ROTATE_FORCE    4
 
-static const char *ROTATE_REASONS[] = {
+static const char *const ROTATE_REASONS[] = {
     "None",
     "Open a new file",
     "Time interval expired",
@@ -108,7 +79,7 @@ typedef struct rotate_status rotate_status_t;
 struct logfile {
     apr_pool_t *pool;
     apr_file_t *fd;
-    char name[MAX_PATH];
+    char name[APR_PATH_MAX];
 };
 
 struct rotate_status {
