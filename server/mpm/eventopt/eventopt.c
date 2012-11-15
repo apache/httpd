@@ -1940,6 +1940,7 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
     int loops;
     int prev_threads_created;
     int max_recycled_pools = -1;
+    int good_methods[] = {APR_POLLSET_KQUEUE, APR_POLLSET_PORT, APR_POLLSET_EPOLL};
 
     /* We must create the fd queues before we start up the listener
      * and worker threads. */
@@ -1967,17 +1968,34 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
     }
 
     /* Create the main pollset */
-    rv = apr_pollset_create(&event_pollset,
-                            threads_per_child, /* XXX don't we need more, to handle
+    for (i = 0; i < sizeof(good_methods) / sizeof(void*); i++) {
+        rv = apr_pollset_create_ex(&event_pollset,
+                            threads_per_child*2, /* XXX don't we need more, to handle
+                                                * connections in K-A or lingering
+                                                * close?
+                                                */
+                            pchild, APR_POLLSET_WAKEABLE|APR_POLLSET_NOCOPY|APR_POLLSET_NODEFAULT,
+                            good_methods[i]);
+        if (rv == APR_SUCCESS) {
+            break;
+        }
+    }
+    if (rv != APR_SUCCESS) {
+        rv = apr_pollset_create(&event_pollset,
+                            threads_per_child*2, /* XXX don't we need more, to handle
                                                 * connections in K-A or lingering
                                                 * close?
                                                 */
                             pchild, APR_POLLSET_WAKEABLE|APR_POLLSET_NOCOPY);
+    }
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
                      "apr_pollset_create failed; check system or user limits");
         clean_child_exit(APEXIT_CHILDFATAL);
     }
+
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO()
+                 "start_threads: Using %s", apr_pollset_method_name(event_pollset));
 
     worker_sockets = apr_pcalloc(pchild, threads_per_child
                                  * sizeof(apr_socket_t *));
