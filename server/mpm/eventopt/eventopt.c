@@ -2922,6 +2922,18 @@ static int event_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
     }
     ++retained->module_loads;
     if (retained->module_loads == 2) {
+        int i;
+        static apr_uint32_t foo = 0;
+
+        apr_atomic_inc32(&foo);
+        apr_atomic_dec32(&foo);
+        apr_atomic_dec32(&foo);
+        i = apr_atomic_dec32(&foo);
+        if (i >= 0) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, 0, NULL, APLOGNO(02406)
+                         "atomics not working as expected");
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
         rv = apr_pollset_create(&event_pollset, 1, plog,
                                 APR_POLLSET_WAKEABLE|APR_POLLSET_NOCOPY);
         if (rv != APR_SUCCESS) {
