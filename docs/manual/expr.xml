@@ -220,7 +220,20 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td>The <directive module="core">ServerAdmin</directive> of
             the current vhost</td></tr>
     <tr><td><code>SERVER_PROTOCOL</code></td>
-        <td>The protocol used by the request</td></tr>
+        <td>The protocol used by the request (e.g. HTTP/1.1). In some types of
+            internal subrequests, this variable has the value
+            <code>INCLUDED</code>.</td></tr>
+    <tr><td><code>SERVER_PROTOCOL_VERSION</code></td>
+        <td>A number that encodes the HTTP version of the request:
+            <code>1000 * major + minor</code>. For example, <code>1001</code>
+            corresponds to HTTP/1.1 and <code>9</code> corresponds
+            to HTTP/0.9</td></tr>
+    <tr><td><code>SERVER_PROTOCOL_VERSION_MAJOR</code></td>
+        <td>A major version part of the HTTP version of the request,
+            e.g. <code>1</code> for HTTP/1.0</td></tr>
+    <tr><td><code>SERVER_PROTOCOL_VERSION_MINOR</code></td>
+        <td>A minor version part of the HTTP version of the request,
+            e.g. <code>0</code> for HTTP/1.0</td></tr>
     <tr><td><code>DOCUMENT_ROOT</code></td>
         <td>The <directive module="core">DocumentRoot</directive> of
             the current vhost</td></tr>
