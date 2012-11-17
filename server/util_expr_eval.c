@@ -1380,7 +1380,10 @@ static const char *const request_var_names[] = {
     "CONTEXT_DOCUMENT_ROOT",    /* 26 */
     "REQUEST_STATUS",           /* 27 */
     "REMOTE_ADDR",              /* 28 */
-    "REMOTE_PORT",              /* 29 */
+    "SERVER_PROTOCOL_VERSION",  /* 29 */
+    "SERVER_PROTOCOL_VERSION_MAJOR",  /* 30 */
+    "SERVER_PROTOCOL_VERSION_MINOR",  /* 31 */
+    "REMOTE_PORT",              /* 32 */
     NULL
 };
 
@@ -1471,6 +1474,26 @@ static const char *request_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
     case 28:
         return r->useragent_ip;
     case 29:
+        switch (r->proto_num) {
+        case 1001:  return "1001";   /* 1.1 */
+        case 1000:  return "1000";   /* 1.0 */
+        case 9:     return "9";      /* 0.9 */
+        }
+        return apr_psprintf(ctx->p, "%d", r->proto_num);
+    case 30:
+        switch (HTTP_VERSION_MAJOR(r->proto_num)) {
+        case 0:     return "0";
+        case 1:     return "1";
+        }
+        return apr_psprintf(ctx->p, "%d", HTTP_VERSION_MAJOR(r->proto_num));
+    case 31:
+        switch (HTTP_VERSION_MINOR(r->proto_num)) {
+        case 0:     return "0";
+        case 1:     return "1";
+        case 9:     return "9";
+        }
+        return apr_psprintf(ctx->p, "%d", HTTP_VERSION_MINOR(r->proto_num));
+    case 32:
         return apr_psprintf(ctx->p, "%u", ctx->c->client_addr->port);
     default:
         ap_assert(0);
