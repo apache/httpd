@@ -210,33 +210,46 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td>The <code class="directive"><a href="./mod/core.html#serveradmin">ServerAdmin</a></code> of
             the current vhost</td></tr>
 <tr><td><code>SERVER_PROTOCOL</code></td>
-        <td>The protocol used by the request</td></tr>
-<tr class="odd"><td><code>DOCUMENT_ROOT</code></td>
+        <td>The protocol used by the request (e.g. HTTP/1.1). In some types of
+            internal subrequests, this variable has the value
+            <code>INCLUDED</code>.</td></tr>
+<tr class="odd"><td><code>SERVER_PROTOCOL_VERSION</code></td>
+        <td>A number that encodes the HTTP version of the request:
+            <code>1000 * major + minor</code>. For example, <code>1001</code>
+            corresponds to HTTP/1.1 and <code>9</code> corresponds
+            to HTTP/0.9</td></tr>
+<tr><td><code>SERVER_PROTOCOL_VERSION_MAJOR</code></td>
+        <td>The major version part of the HTTP version of the request,
+            e.g. <code>1</code> for HTTP/1.0</td></tr>
+<tr class="odd"><td><code>SERVER_PROTOCOL_VERSION_MINOR</code></td>
+        <td>The minor version part of the HTTP version of the request,
+            e.g. <code>0</code> for HTTP/1.0</td></tr>
+<tr><td><code>DOCUMENT_ROOT</code></td>
         <td>The <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> of
             the current vhost</td></tr>
-<tr><td><code>AUTH_TYPE</code></td>
+<tr class="odd"><td><code>AUTH_TYPE</code></td>
         <td>The configured <code class="directive"><a href="./mod/mod_authn_core.html#authtype">AuthType</a></code>
             (e.g. "<code>basic</code>")</td></tr>
-<tr class="odd"><td><code>CONTENT_TYPE</code></td>
+<tr><td><code>CONTENT_TYPE</code></td>
         <td>The content type of the response</td></tr>
-<tr><td><code>HANDLER</code></td>
+<tr class="odd"><td><code>HANDLER</code></td>
         <td>The name of the <a href="handler.html">handler</a> creating
             the response</td></tr>
-<tr class="odd"><td><code>HTTPS</code></td>
+<tr><td><code>HTTPS</code></td>
         <td>"<code>on</code>" if the request uses https,
             "<code>off</code>" otherwise</td></tr>
-<tr><td><code>IPV6</code></td>
+<tr class="odd"><td><code>IPV6</code></td>
         <td>"<code>on</code>" if the connection uses IPv6,
             "<code>off</code>" otherwise</td></tr>
-<tr class="odd"><td><code>REQUEST_STATUS</code></td>
+<tr><td><code>REQUEST_STATUS</code></td>
         <td>The HTTP error status of the request</td></tr>
-<tr><td><code>REQUEST_LOG_ID</code></td>
+<tr class="odd"><td><code>REQUEST_LOG_ID</code></td>
         <td>The error log id of the request (see
             <code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code>)</td></tr>
-<tr class="odd"><td><code>CONN_LOG_ID</code></td>
+<tr><td><code>CONN_LOG_ID</code></td>
         <td>The error log id of the connection (see
             <code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code>)</td></tr>
-<tr><td><code>CONN_REMOTE_ADDR</code></td>
+<tr class="odd"><td><code>CONN_REMOTE_ADDR</code></td>
         <td>The peer IP address of the connection (see the
             <code class="module"><a href="./mod/mod_remoteip.html">mod_remoteip</a></code> module)</td></tr>
 </table>
