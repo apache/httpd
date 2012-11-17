@@ -300,8 +300,9 @@ person in</title>
     (It's the <code>-c</code> that makes it create a new password
     file).</p>
 
-    <p>Now, you need to modify your <code>.htaccess</code> file to
-    look like the following:</p>
+    <p>Now, you need to modify your <code>.htaccess</code> file or
+    <directive module="core" type="section">Directory</directive> block
+    to look like the following:</p>
 
     <highlight language="config">
 AuthType Basic
@@ -325,13 +326,7 @@ Require group GroupName
 
     <p>Using that rather than the <code>Require user rbowen</code>
     line will allow anyone in that is listed in the password file,
-    and who correctly enters their password. You can even emulate
-    the group behavior here, by just keeping a separate password
-    file for each group. The advantage of this approach is that
-    Apache only has to check one file, rather than two. The
-    disadvantage is that you have to maintain a bunch of password
-    files, and remember to reference the right one in the
-    <directive module="mod_authn_file">AuthUserFile</directive> directive.</p>
+    and who correctly enters their password.</p>
 </section>
 
 <section id="possibleproblems"><title>Possible problems</title>
@@ -370,11 +365,13 @@ Require group GroupName
 
     <highlight language="config">
 &lt;Directory /www/docs/private&gt;
+<indent>
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider dbm
     AuthDBMUserFile /www/passwords/passwd.dbm
     Require valid-user
+</indent>
 &lt;/Directory&gt;
     </highlight>
 
@@ -393,12 +390,14 @@ Require group GroupName
 
     <highlight language="config">
 &lt;Directory /www/docs/private&gt;
+<indent>
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider file ldap
     AuthUserFile /usr/local/apache/passwd/passwords
     AuthLDAPURL ldap://ldaphost/o=yourorg
     Require valid-user
+</indent>
 &lt;/Directory&gt;
     </highlight>
 
@@ -417,6 +416,7 @@ Require group GroupName
 
     <highlight language="config">
 &lt;Directory /www/docs/private&gt;
+<indent>
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider file
@@ -425,6 +425,7 @@ Require group GroupName
     AuthGroupFile /usr/local/apache/passwd/groups
     Require group GroupName
     Require ldap-group cn=mygroup,o=yourorg
+</indent>
 &lt;/Directory&gt;
     </highlight>
 
