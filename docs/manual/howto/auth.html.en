@@ -290,14 +290,16 @@ by using the Satisfy directive, as shown below.</p>
 
 <div class="example"><p><code>
 &lt;Directory /usr/local/apache/htdocs/sekrit&gt;<br />
-  AuthType Basic<br />
-  AuthName intranet<br />
-  AuthUserFile /www/passwd/users<br />
-  AuthGroupFile /www/passwd/groups<br />
-  Require group customers<br />
-  Order allow,deny<br />
-  Allow from internal.com<br />
-  Satisfy any<br />
+    <span class="indent">
+      AuthType Basic<br />
+      AuthName intranet<br />
+      AuthUserFile /www/passwd/users<br />
+      AuthGroupFile /www/passwd/groups<br />
+      Require group customers<br />
+      Order allow,deny<br />
+      Allow from internal.com<br />
+      Satisfy any<br />
+    </span>
 &lt;/Directory&gt;
 </code></p></div>
 
@@ -402,11 +404,11 @@ Require group GroupName
     <div class="example"><p><code>
     &lt;Directory /www/docs/private&gt;<br />
     <span class="indent">
-    AuthName "Private"<br />
-    AuthType Basic<br />
-    AuthBasicProvider dbm<br />
-    AuthDBMUserFile /www/passwords/passwd.dbm<br />
-    Require valid-user<br />
+        AuthName "Private"<br />
+        AuthType Basic<br />
+        AuthBasicProvider dbm<br />
+        AuthDBMUserFile /www/passwords/passwd.dbm<br />
+        Require valid-user<br />
     </span>
 &lt;/Directory&gt;
     </code></p></div>
