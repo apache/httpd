@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) ap_expr: Add SERVER_PROTOCOL_VERSION, ..._MAJOR, and ..._MINOR
+     variables. [Stefan Fritsch]
+
   *) mod_rewrite: Stop mergeing RewriteBase down to subdirectories
      unless new option 'RewriteOptions MergeBase' is configured.
      PR 53963. [Eric Covener]
