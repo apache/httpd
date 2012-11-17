@@ -220,6 +220,15 @@ later</compatibility>
       </note>
       </dd>
 
+      <dt><code>MergeBase</code></dt>
+      <dd>
+
+      <p>With this option, the value of <directive module="mod_rewrite"
+      >RewriteBase</directive> is copied from where it's explicitly defined
+      into any sub-directory or sub-location that doesn't define its own
+      <directive module="mod_rewrite">RewriteBase</directive>. Available in 
+      Apache HTTP Server 2.5 and later only.</p>
+      </dd>
       </dl>
 
 </usage>
