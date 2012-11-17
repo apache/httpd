@@ -363,13 +363,7 @@ Require group GroupName
 
     <p>Using that rather than the <code>Require user rbowen</code>
     line will allow anyone in that is listed in the password file,
-    and who correctly enters their password. You can even emulate
-    the group behavior here, by just keeping a separate password
-    file for each group. The advantage of this approach is that
-    Apache only has to check one file, rather than two. The
-    disadvantage is that you have to maintain a bunch of password
-    files, and remember to reference the right one in the
-    <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code> directive.</p>
+    and who correctly enters their password.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="possibleproblems" id="possibleproblems">Possible problems</a></h2>
