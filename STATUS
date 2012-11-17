@@ -236,6 +236,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: 
 
+   * mod_rewrite: PR53963: Ad an opt-in RewriteOption to control merging of RewriteBase
+                  (This merge started happening in 2.4.3/2.2.23)
+     trunk patch: http://svn.apache.org/viewvc?rev=1410681&view=rev
+     2.4.x patch: trunk works
+     +1 covener
+
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
