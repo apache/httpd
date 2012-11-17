@@ -335,8 +335,9 @@ person in</a></h2>
     (It's the <code>-c</code> that makes it create a new password
     file).</p>
 
-    <p>Now, you need to modify your <code>.htaccess</code> file to
-    look like the following:</p>
+    <p>Now, you need to modify your <code>.htaccess</code> file or
+    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
+    block to look like the following:</p>
 
     <div class="example"><p><code>
       AuthType Basic<br />
@@ -406,11 +407,13 @@ Require group GroupName
 
     <div class="example"><p><code>
     &lt;Directory /www/docs/private&gt;<br />
+    <span class="indent">
     AuthName "Private"<br />
     AuthType Basic<br />
     AuthBasicProvider dbm<br />
     AuthDBMUserFile /www/passwords/passwd.dbm<br />
     Require valid-user<br />
+    </span>
 &lt;/Directory&gt;
     </code></p></div>
 
