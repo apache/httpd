@@ -103,6 +103,7 @@ apr_status_t ap_queue_info_set_idle(fd_queue_info_t * queue_info,
      * TODO: The atomics expect unsigned whereas we're using signed.
      *       Need to double check that they work as expected or else
      *       rework how we determine blocked.
+     * UPDATE: Correct operation is performed during open_logs()
      */
     prev_idlers = apr_atomic_inc32((apr_uint32_t *)&(queue_info->idlers));
 
