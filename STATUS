@@ -268,7 +268,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?view=revision&revision=1398040
       2.4.x patch:
          http://people.apache.org/~jailletc36/backport.patch
-     
+      +1: jailletc36
+
+    * mod_session_dbd: fix a segmentation fault in the function dbd_remove.
+      PR 53452
+      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1408958
+                   http://svn.apache.org/viewvc?view=revision&revision=1408961 (style issue)
+                   http://svn.apache.org/viewvc?view=revision&revision=1409170 (style issue)
+      2.4.x patch: http://people.apache.org/~jailletc36/backport_mod_session_dbd.patch
+      +1: jailletc36
+
+
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
