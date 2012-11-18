@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1403476:1410681 (outdated) -->
+<!-- English Revision : 1410681 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -243,6 +243,17 @@ la version version 2.1</compatibility>
       caract&egrave;re '<code>@</code>', qui peuvent modifier l'interpr&eacute;tation
       de l'URI r&eacute;&eacute;crite, comme indiqu&eacute; dans les liens ci-dessus.</p>
       </note>
+      </dd>
+
+      <dt><code>MergeBase</code></dt>
+      <dd>
+
+      <p>Avec cette option, la valeur de la directive <directive
+      module="mod_rewrite">RewriteBase</directive> est recopi&eacute;e depuis
+      une valeur explicitement d&eacute;finie dans tout sous-r&eacute;pertoire qui ne
+      d&eacute;finit pas sa propre directive <directive
+      module="mod_rewrite">RewriteBase</directive>. Disponible &agrave; partir
+      de la version 2.5 du serveur HTTP Apache.</p>
       </dd>
 
       </dl>

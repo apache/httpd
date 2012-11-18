@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1403492:1410756 (outdated) -->
+<!-- English Revision : 1410756 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -232,7 +232,20 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td>La valeur de la directive <directive
 	module="core">ServerAdmin</directive> du serveur virtuel courant</td></tr>
     <tr><td><code>SERVER_PROTOCOL</code></td>
-        <td>Le protocole utilis&eacute; par la requ&ecirc;te</td></tr>
+        <td>Le protocole utilis&eacute; par la requ&ecirc;te (par
+	exemple HTTP/1.1). Avec certains types de sous-requ&ecirc;tes
+	internes, cette variable prend la valeur <code>INCLUDED</code>.</td></tr>
+    <tr><td><code>SERVER_PROTOCOL_VERSION</code></td>
+        <td>Un nombre qui repr&eacute;sente la version HTTP de la requ&ecirc;te :
+	<code>1000 * major + minor</code>. Par exemple,
+	<code>1001</code> correspond &agrave; HTTP/1.1 et <code>9</code> &agrave;
+	HTTP/0.9.</td></tr>
+    <tr><td><code>SERVER_PROTOCOL_VERSION_MAJOR</code></td>
+        <td>La partie majeure de la version HTTP de la requ&ecirc;te, par
+	exemple <code>1</code> pour HTTP/1.0.</td></tr>
+    <tr><td><code>SERVER_PROTOCOL_VERSION_MINOR</code></td>
+        <td>La partie mineure de la version HTTP de la requ&ecirc;te, par
+	exemple <code>0</code> pour HTTP/1.0.</td></tr>
     <tr><td><code>DOCUMENT_ROOT</code></td>
         <td>La valeur de la directive <directive
 	module="core">DocumentRoot</directive> du serveur virtuel
