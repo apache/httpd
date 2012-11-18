@@ -242,6 +242,34 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1 covener
 
+    * proposal 1/x: try to keep 2.4.x in line with trunk.
+      Only small and trivial patches. No CHANGES needed IMO (maybe needed for 1407006 ?).
+      I will propose other ones the same way if you find it interesting.
+         1407004: Remove unused code. "Next week" hasn't happened in the last 10 years or so.
+         1407528: remove obsolete comment from 1.3 days
+         1407088: remove some more old unused code
+         1397636: s/;;/;/
+         1378178: remove an unnecessary check in a nest loop of ap_create_environment()
+         1407006: log client error at level debug, log broken Host header value
+         1337344: support/suexec.c: Add gcc format-string attributes to logging functions.
+         1398481: cppCheck: unreadVariable - 'serviceFlag' is not used in the function, so remove it
+         1398025: No need to test for NULL before calling apr_pstrdup.
+         1398040: No need it apr_pcalloc here, the memory is fully initialized the line just after
+      trunk patches:
+         http://svn.apache.org/viewvc?view=revision&revision=1407004
+         http://svn.apache.org/viewvc?view=revision&revision=1407528
+         http://svn.apache.org/viewvc?view=revision&revision=1407088
+         http://svn.apache.org/viewvc?view=revision&revision=1397636
+         http://svn.apache.org/viewvc?view=revision&revision=1378178
+         http://svn.apache.org/viewvc?view=revision&revision=1407006
+         http://svn.apache.org/viewvc?view=revision&revision=1337344
+         http://svn.apache.org/viewvc?view=revision&revision=1398481
+         http://svn.apache.org/viewvc?view=revision&revision=1398025
+         http://svn.apache.org/viewvc?view=revision&revision=1398040
+      2.4.x patch:
+         http://people.apache.org/~jailletc36/backport.patch
+     
+
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
