@@ -1151,7 +1151,7 @@ struct conn_rec {
 
     /** This points to the current thread being used to process this request,
      * over the lifetime of a request, the value may change. Users of the connection
-     * record should not rely upon it staying the same between calls that invole
+     * record should not rely upon it staying the same between calls that involve
      * the MPM.
      */
 #if APR_HAS_THREADS
