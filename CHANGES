@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_log_forensic: Don't log a spurious "-" if a request has been rejected
+     before mod_log_forensic could attach its id to it. [Stefan Fritsch]
+
   *) ap_expr: Add SERVER_PROTOCOL_VERSION, ..._MAJOR, and ..._MINOR
      variables. [Stefan Fritsch]
 

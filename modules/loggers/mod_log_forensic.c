@@ -240,7 +240,7 @@ static int log_after(request_rec *r)
     apr_size_t l, n;
     apr_status_t rv;
 
-    if (!cfg->fd) {
+    if (!cfg->fd || id == NULL) {
         return DECLINED;
     }
 
