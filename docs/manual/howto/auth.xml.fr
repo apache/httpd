@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1363816:1410676 (outdated) -->
+<!-- English Revision : 1410676 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviwed by : Vincent Deffontaines -->
 
@@ -321,7 +321,8 @@ plusieurs personnes</title>
     mots de passe)..</p>
 
     <p>Maintenant, vous devez modifier votre fichier
-    <code>.htaccess</code> comme suit :</p>
+    <code>.htaccess</code> ou la section <directive module="core"
+    type="section">Directory</directive> comme suit :</p>
 
     <highlight language="config">
 AuthType Basic
@@ -347,14 +348,7 @@ Require group GroupName
     <p>Le remplacement de la ligne <code>Require user rbowen</code> par
     la ligne <code>Require valid-user</code> autorisera l'acc&egrave;s &agrave;
     quiconque poss&eacute;dant une entr&eacute;e dans le fichier password, et ayant
-    tap&eacute; le bon mot de passe. Vous pouvez m&ecirc;me simuler le comportement
-    des groupes en associant un fichier de mots de passe diff&eacute;rent pour
-    chaque groupe. L'avantage de cette approche r&eacute;side dans le fait
-    qu'Apache ne doit consulter qu'un fichier au lieu de deux. Par
-    contre, vous devez maintenir un nombre plus ou moins important de
-    fichiers de mots de passe, et vous assurer de faire r&eacute;f&eacute;rence au bon
-    fichier dans la directive <directive
-    module="mod_authn_file">AuthUserFile</directive>.</p>
+    tap&eacute; le bon mot de passe.</p>
 </section>
 
 <section id="possibleproblems"><title>Probl&egrave;mes possibles</title>
@@ -397,11 +391,13 @@ passe</title>
 
     <highlight language="config">
 &lt;Directory /www/docs/private&gt;
+<indent>
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider dbm
     AuthDBMUserFile /www/passwords/passwd.dbm
     Require valid-user
+</indent>
 &lt;/Directory&gt;
     </highlight>
 
@@ -423,12 +419,14 @@ d'authentification</title>
 
     <highlight language="config">
 &lt;Directory /www/docs/private&gt;
+<indent>
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider file ldap
     AuthUserFile /usr/local/apache/passwd/passwords
     AuthLDAPURL ldap://ldaphost/o=yourorg
     Require valid-user
+</indent>
 &lt;/Directory&gt;
     </highlight>
 
@@ -450,6 +448,7 @@ d'authentification</title>
 
     <highlight language="config">
 &lt;Directory /www/docs/private&gt;
+<indent>
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider file
@@ -458,6 +457,7 @@ d'authentification</title>
     AuthGroupFile /usr/local/apache/passwd/groups
     Require group GroupName
     Require ldap-group cn=mygroup,o=yourorg
+</indent>
 &lt;/Directory&gt;
     </highlight>
 
