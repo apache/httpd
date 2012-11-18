@@ -249,4 +249,17 @@
 #define AP_FN_ATTR_ALLOC_SIZE2(x,y)
 #endif
 
+#if ( defined(__GNUC__) &&                                        \
+      (__GNUC__ >= 4 || ( __GNUC__ == 3 && __GNUC_MINOR__ >= 3))) \
+    || __has_attribute(nonnull)
+/* all pointer arguments */
+#define AP_FN_ATTR_NONNULL_ALL  __attribute__((nonnull))
+/* listed arguments, use with double braces: AP_FN_ATTR_NONNULL((1,3,6)) */
+#define AP_FN_ATTR_NONNULL(x)   __attribute__((nonnull x))
+#else
+#define AP_FN_ATTR_NONNULL_ALL
+#define AP_FN_ATTR_NONNULL(x)
+#endif
+
+
 #endif /* AP_CONFIG_H */
