@@ -1698,7 +1698,7 @@ AP_DECLARE(char *) ap_construct_server(apr_pool_t *p, const char *hostname,
  * @return The escaped shell command
  */
 AP_DECLARE(char *) ap_escape_shell_cmd(apr_pool_t *p, const char *s)
-                   AP_FN_ATTR_NONNULL_ALL;;
+                   AP_FN_ATTR_NONNULL_ALL;
 
 /**
  * Count the number of directories in a path
