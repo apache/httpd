@@ -1579,14 +1579,16 @@ AP_DECLARE(int) ap_unescape_urlencoded(char *query);
  * Convert all double slashes to single slashes
  * @param name The string to convert
  */
-AP_DECLARE(void) ap_no2slash(char *name);
+AP_DECLARE(void) ap_no2slash(char *name)
+                 AP_FN_ATTR_NONNULL_ALL;
 
 /**
  * Remove all ./ and xx/../ substrings from a file name. Also remove
  * any leading ../ or /../ substrings.
  * @param name the file name to parse
  */
-AP_DECLARE(void) ap_getparents(char *name);
+AP_DECLARE(void) ap_getparents(char *name)
+                 AP_FN_ATTR_NONNULL_ALL;
 
 /**
  * Escape a path segment, as defined in RFC 1808
@@ -1594,7 +1596,8 @@ AP_DECLARE(void) ap_getparents(char *name);
  * @param s The path to convert
  * @return The converted URL
  */
-AP_DECLARE(char *) ap_escape_path_segment(apr_pool_t *p, const char *s);
+AP_DECLARE(char *) ap_escape_path_segment(apr_pool_t *p, const char *s)
+                   AP_FN_ATTR_NONNULL_ALL;
 
 /**
  * Escape a path segment, as defined in RFC 1808, to a preallocated buffer.
@@ -1602,7 +1605,8 @@ AP_DECLARE(char *) ap_escape_path_segment(apr_pool_t *p, const char *s);
  * @param s The path to convert
  * @return The converted URL (c)
  */
-AP_DECLARE(char *) ap_escape_path_segment_buffer(char *c, const char *s);
+AP_DECLARE(char *) ap_escape_path_segment_buffer(char *c, const char *s)
+                   AP_FN_ATTR_NONNULL_ALL;
 
 /**
  * convert an OS path to a URL in an OS dependent way.
@@ -1614,7 +1618,8 @@ AP_DECLARE(char *) ap_escape_path_segment_buffer(char *c, const char *s);
  *        NUL, to allow the caller to append a '/'.
  * @return The converted URL
  */
-AP_DECLARE(char *) ap_os_escape_path(apr_pool_t *p, const char *path, int partial);
+AP_DECLARE(char *) ap_os_escape_path(apr_pool_t *p, const char *path, int partial)
+                   AP_FN_ATTR_NONNULL_ALL;
 
 /** @see ap_os_escape_path */
 #define ap_escape_uri(ppool,path) ap_os_escape_path(ppool,path,1)
@@ -1625,7 +1630,8 @@ AP_DECLARE(char *) ap_os_escape_path(apr_pool_t *p, const char *path, int partia
  * @param s The path to convert
  * @return The converted URL
  */
-AP_DECLARE(char *) ap_escape_urlencoded(apr_pool_t *p, const char *s);
+AP_DECLARE(char *) ap_escape_urlencoded(apr_pool_t *p, const char *s)
+                   AP_FN_ATTR_NONNULL_ALL;
 
 /**
  * Escape a string as application/x-www-form-urlencoded, to a preallocated buffer
@@ -1633,7 +1639,8 @@ AP_DECLARE(char *) ap_escape_urlencoded(apr_pool_t *p, const char *s);
  * @param s The path to convert
  * @return The converted URL (c)
  */
-AP_DECLARE(char *) ap_escape_urlencoded_buffer(char *c, const char *s);
+AP_DECLARE(char *) ap_escape_urlencoded_buffer(char *c, const char *s)
+                   AP_FN_ATTR_NONNULL_ALL;
 
 /**
  * Escape an html string
@@ -1649,7 +1656,8 @@ AP_DECLARE(char *) ap_escape_urlencoded_buffer(char *c, const char *s);
  * @param toasc Whether to escape all non-ASCII chars to \&\#nnn;
  * @return The escaped string
  */
-AP_DECLARE(char *) ap_escape_html2(apr_pool_t *p, const char *s, int toasc);
+AP_DECLARE(char *) ap_escape_html2(apr_pool_t *p, const char *s, int toasc)
+                   AP_FN_ATTR_NONNULL_ALL;
 
 /**
  * Escape a string for logging
@@ -1657,7 +1665,8 @@ AP_DECLARE(char *) ap_escape_html2(apr_pool_t *p, const char *s, int toasc);
  * @param str The string to escape
  * @return The escaped string
  */
-AP_DECLARE(char *) ap_escape_logitem(apr_pool_t *p, const char *str);
+AP_DECLARE(char *) ap_escape_logitem(apr_pool_t *p, const char *str)
+                   AP_FN_ATTR_NONNULL((1));
 
 /**
  * Escape a string for logging into the error log (without a pool)
@@ -1667,7 +1676,8 @@ AP_DECLARE(char *) ap_escape_logitem(apr_pool_t *p, const char *str);
  * @return The len of the escaped string (always < maxlen)
  */
 AP_DECLARE(apr_size_t) ap_escape_errorlog_item(char *dest, const char *source,
-                                               apr_size_t buflen);
+                                               apr_size_t buflen)
+                       AP_FN_ATTR_NONNULL((1));
 
 /**
  * Construct a full hostname
@@ -1678,7 +1688,8 @@ AP_DECLARE(apr_size_t) ap_escape_errorlog_item(char *dest, const char *source,
  * @return The server's hostname
  */
 AP_DECLARE(char *) ap_construct_server(apr_pool_t *p, const char *hostname,
-                                    apr_port_t port, const request_rec *r);
+                                    apr_port_t port, const request_rec *r)
+                   AP_FN_ATTR_NONNULL((1,4));
 
 /**
  * Escape a shell command
@@ -1686,14 +1697,16 @@ AP_DECLARE(char *) ap_construct_server(apr_pool_t *p, const char *hostname,
  * @param s The command to escape
  * @return The escaped shell command
  */
-AP_DECLARE(char *) ap_escape_shell_cmd(apr_pool_t *p, const char *s);
+AP_DECLARE(char *) ap_escape_shell_cmd(apr_pool_t *p, const char *s)
+                   AP_FN_ATTR_NONNULL_ALL;;
 
 /**
  * Count the number of directories in a path
  * @param path The path to count
  * @return The number of directories
  */
-AP_DECLARE(int) ap_count_dirs(const char *path);
+AP_DECLARE(int) ap_count_dirs(const char *path)
+                AP_FN_ATTR_NONNULL_ALL;
 
 /**
  * Copy at most @a n leading directories of @a s into @a d. @a d
@@ -1706,7 +1719,8 @@ AP_DECLARE(int) ap_count_dirs(const char *path);
  * @note on platforms with drive letters, n = 0 returns the "/" root,
  * whereas n = 1 returns the "d:/" root.  On all other platforms, n = 0
  * returns the empty string.  */
-AP_DECLARE(char *) ap_make_dirstr_prefix(char *d, const char *s, int n);
+AP_DECLARE(char *) ap_make_dirstr_prefix(char *d, const char *s, int n)
+                   AP_FN_ATTR_NONNULL_ALL;
 
 /**
  * Return the parent directory name (including trailing /) of the file
@@ -1715,7 +1729,8 @@ AP_DECLARE(char *) ap_make_dirstr_prefix(char *d, const char *s, int n);
  * @param s The file to get the parent of
  * @return A copy of the file's parent directory
  */
-AP_DECLARE(char *) ap_make_dirstr_parent(apr_pool_t *p, const char *s);
+AP_DECLARE(char *) ap_make_dirstr_parent(apr_pool_t *p, const char *s)
+                   AP_FN_ATTR_NONNULL_ALL;
 
 /**
  * Given a directory and filename, create a single path from them.  This
@@ -1730,7 +1745,8 @@ AP_DECLARE(char *) ap_make_dirstr_parent(apr_pool_t *p, const char *s);
  * names that need to remain canonical, unless you are merging an apr_dir_read
  * path and returned filename.  Otherwise, the result is not canonical.
  */
-AP_DECLARE(char *) ap_make_full_path(apr_pool_t *a, const char *dir, const char *f);
+AP_DECLARE(char *) ap_make_full_path(apr_pool_t *a, const char *dir, const char *f)
+                   AP_FN_ATTR_NONNULL_ALL;
 
 /**
  * Test if the given path has an an absolute path.
@@ -1740,7 +1756,8 @@ AP_DECLARE(char *) ap_make_full_path(apr_pool_t *a, const char *dir, const char 
  * multiple forms of absolute paths.  This only reports if the path is absolute
  * in a canonical sense.
  */
-AP_DECLARE(int) ap_os_is_path_absolute(apr_pool_t *p, const char *dir);
+AP_DECLARE(int) ap_os_is_path_absolute(apr_pool_t *p, const char *dir)
+                AP_FN_ATTR_NONNULL_ALL;
 
 /**
  * Does the provided string contain wildcard characters?  This is useful
@@ -1749,7 +1766,8 @@ AP_DECLARE(int) ap_os_is_path_absolute(apr_pool_t *p, const char *dir);
  * @param str The string to check
  * @return 1 if the string has wildcards, 0 otherwise
  */
-AP_DECLARE(int) ap_is_matchexp(const char *str);
+AP_DECLARE(int) ap_is_matchexp(const char *str)
+                AP_FN_ATTR_NONNULL_ALL;
 
 /**
  * Determine if a string matches a patterm containing the wildcards '?' or '*'
@@ -1757,7 +1775,8 @@ AP_DECLARE(int) ap_is_matchexp(const char *str);
  * @param expected The pattern to match against
  * @return 0 if the two strings match, 1 otherwise
  */
-AP_DECLARE(int) ap_strcmp_match(const char *str, const char *expected);
+AP_DECLARE(int) ap_strcmp_match(const char *str, const char *expected)
+                AP_FN_ATTR_NONNULL_ALL;
 
 /**
  * Determine if a string matches a patterm containing the wildcards '?' or '*',
@@ -1766,7 +1785,8 @@ AP_DECLARE(int) ap_strcmp_match(const char *str, const char *expected);
  * @param expected The pattern to match against
  * @return 0 if the two strings match, 1 otherwise
  */
-AP_DECLARE(int) ap_strcasecmp_match(const char *str, const char *expected);
+AP_DECLARE(int) ap_strcasecmp_match(const char *str, const char *expected)
+                AP_FN_ATTR_NONNULL_ALL;
 
 /**
  * Find the first occurrence of the substring s2 in s1, regardless of case
@@ -1775,7 +1795,8 @@ AP_DECLARE(int) ap_strcasecmp_match(const char *str, const char *expected);
  * @return A pointer to the beginning of the substring
  * @remark See apr_strmatch() for a faster alternative
  */
-AP_DECLARE(char *) ap_strcasestr(const char *s1, const char *s2);
+AP_DECLARE(char *) ap_strcasestr(const char *s1, const char *s2)
+                   AP_FN_ATTR_NONNULL_ALL;
 
 /**
  * Return a pointer to the location inside of bigstring immediately after prefix
@@ -1784,7 +1805,8 @@ AP_DECLARE(char *) ap_strcasestr(const char *s1, const char *s2);
  * @return A pointer relative to bigstring after prefix
  */
 AP_DECLARE(const char *) ap_stripprefix(const char *bigstring,
-                                        const char *prefix);
+                                        const char *prefix)
+                         AP_FN_ATTR_NONNULL_ALL;
 
 /**
  * Decode a base64 encoded string into memory allocated from a pool
