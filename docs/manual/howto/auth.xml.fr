@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1363757:1410688 (outdated) -->
+<!-- English Revision : 1410688 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -62,14 +62,12 @@ module de chaque groupe.</p>
       <li><module>mod_authn_dbm</module></li>
       <li><module>mod_authn_file</module></li>
       <li><module>mod_authnz_ldap</module></li>
-      <li><module>mod_authn_socache</module></li>
     </ul>
   </li>
   <li>Autorisation (voir la directive <directive
   module="mod_authz_core">Require</directive>)
     <ul>
       <li><module>mod_authnz_ldap</module></li>
-      <li><module>mod_authz_dbd</module></li>
       <li><module>mod_authz_dbm</module></li>
       <li><module>mod_authz_groupfile</module></li>
       <li><module>mod_authz_host</module></li>
@@ -307,14 +305,16 @@ utilisant la directive Satisfy :</p>
 
 <example>
 &lt;Directory /usr/local/apache/htdocs/sekrit&gt;<br />
-  AuthType Basic<br />
-  AuthName intranet<br />
-  AuthUserFile /www/passwd/users<br />
-  AuthGroupFile /www/passwd/groups<br />
-  Require group customers<br />
-  Order allow,deny<br />
-  Allow from internal.com<br />
-  Satisfy any<br />
+ <indent>
+      AuthType Basic<br />
+      AuthName intranet<br />
+      AuthUserFile /www/passwd/users<br />
+      AuthGroupFile /www/passwd/groups<br />
+      Require group customers<br />
+      Order allow,deny<br />
+      Allow from internal.com<br />
+      Satisfy any<br />
+    </indent>
 &lt;/Directory&gt;
 </example>
 
@@ -355,7 +355,8 @@ plusieurs personnes</title>
     mots de passe)..</p>
 
     <p>Maintenant, vous devez modifier votre fichier
-    <code>.htaccess</code> comme suit :</p>
+    <code>.htaccess</code> ou la directive <directive module="core"
+    type="section">Directory</directive> comme suit :</p>
 
     <example>
       AuthType Basic<br />
@@ -383,14 +384,7 @@ plusieurs personnes</title>
     <p>Le remplacement de la ligne <code>Require user rbowen</code> par
     la ligne <code>Require valid-user</code> autorisera l'acc&egrave;s &agrave;
     quiconque poss&eacute;dant une entr&eacute;e dans le fichier password, et ayant
-    tap&eacute; le bon mot de passe. Vous pouvez m&ecirc;me simuler le comportement
-    des groupes en associant un fichier de mots de passe diff&eacute;rent pour
-    chaque groupe. L'avantage de cette approche r&eacute;side dans le fait
-    qu'Apache ne doit consulter qu'un fichier au lieu de deux. Par
-    contre, vous devez maintenir un nombre plus ou moins important de
-    fichiers de mots de passe, et vous assurer de faire r&eacute;f&eacute;rence au bon
-    fichier dans la directive <directive
-    module="mod_authn_file">AuthUserFile</directive>.</p>
+    tap&eacute; le bon mot de passe.</p>
 </section>
 
 <section id="possibleproblems"><title>Probl&egrave;mes possibles</title>
@@ -433,11 +427,13 @@ passe</title>
 
     <example>
     &lt;Directory /www/docs/private&gt;<br />
-    AuthName "Private"<br />
-    AuthType Basic<br />
-    AuthBasicProvider dbm<br />
-    AuthDBMUserFile /www/passwords/passwd.dbm<br />
-    Require valid-user<br />
+    <indent>
+        AuthName "Private"<br />
+        AuthType Basic<br />
+        AuthBasicProvider dbm<br />
+        AuthDBMUserFile /www/passwords/passwd.dbm<br />
+        Require valid-user<br />
+    </indent>
     &lt;/Directory&gt;
     </example>
 
