@@ -281,7 +281,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * mod_log_forensic: Don't log spurious "-" characters.
       trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1410954
       2.4.x patch: trunk patch works (modulo CHANGES)
-      +1: sf
+      +1: sf, jailletc36
 
 
 A list of further possible backports can be found at:
