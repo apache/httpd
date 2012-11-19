@@ -190,9 +190,7 @@ static int skiplisti_find_compare(Skiplist *sl, void *data,
     m = sl->top;
     while (m) {
         int compared;
-        if (m->next) {
-            compared = comp(data, m->next->data);
-        }
+        compared = (m->next) ? comp(data, m->next->data) : -1;
         if (compared == 0) {
             m = m->next;
             while (m->down) {
@@ -202,10 +200,12 @@ static int skiplisti_find_compare(Skiplist *sl, void *data,
             return count;
         }
         if ((m->next == NULL) || (compared < 0)) {
-            m = m->down, count++;
+            m = m->down;
+            count++;
         }
         else {
-            m = m->next, count++;
+            m = m->next;
+            count++;
         }
     }
     *ret = NULL;
@@ -557,10 +557,6 @@ static int skiplisti_remove(Skiplist *sl, skiplistnode *m, FreeFunc myfree)
     if (m->nextindex) {
         skiplisti_remove(m->nextindex->sl, m->nextindex, NULL);
     }
-    else {
-        sl->size--;
-    }
-
     while (m->up) {
         m = m->up;
     }
@@ -577,6 +573,7 @@ static int skiplisti_remove(Skiplist *sl, skiplistnode *m, FreeFunc myfree)
         }
         skiplist_free(sl, p);
     }
+    sl->size--;
     while (sl->top && sl->top->next == NULL) {
         /* While the row is empty and we are not on the bottom row */
         p = sl->top;
@@ -591,7 +588,7 @@ static int skiplisti_remove(Skiplist *sl, skiplistnode *m, FreeFunc myfree)
         sl->bottom = NULL;
     }
     AP_DEBUG_ASSERT(sl->height >= 0);
-    return sl->height;
+    return sl->height;  /* return 1; ?? */
 }
 
 int skiplist_remove_compare(Skiplist *sli,
