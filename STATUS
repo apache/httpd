@@ -276,8 +276,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/viewvc?view=revision&revision=1408961 (style issue)
                    http://svn.apache.org/viewvc?view=revision&revision=1409170 (style issue)
       2.4.x patch: http://people.apache.org/~jailletc36/backport_mod_session_dbd.patch
-      +1: jailletc36
+      +1: jailletc36, sf
 
+    * mod_log_forensic: Don't log spurious "-" characters.
+      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1410954
+      2.4.x patch: trunk patch works (modulo CHANGES)
+      +1: sf
 
 
 A list of further possible backports can be found at:
