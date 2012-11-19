@@ -1513,11 +1513,11 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                 break;
         }
 
-        now = apr_time_now();
+        now = apr_time_now() + EVENT_FUDGE_FACTOR;
         apr_thread_mutex_lock(g_timer_skiplist_mtx);
         ep = skiplist_peek(timer_skiplist);
         while (ep) {
-            if (ep->when < now + EVENT_FUDGE_FACTOR) {
+            if (ep->when < now) {
                 skiplist_pop(timer_skiplist, NULL);
                 push_timer2worker(ep);
             }
