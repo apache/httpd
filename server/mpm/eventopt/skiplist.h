@@ -87,8 +87,6 @@ skiplistnode *skiplist_insert_compare(Skiplist *sl,
 
 skiplistnode *skiplist_insert(Skiplist* sl, void *data);
 
-skiplistnode *skiplist_append(Skiplist *sl, void *data);
-
 int skiplist_remove_compare(Skiplist *sl, void *data,
                             FreeFunc myfree, SkiplistComparator comp);
 
@@ -112,7 +110,11 @@ void *skiplist_pop(Skiplist *a, FreeFunc myfree);
 
 void *skiplist_peek(Skiplist *a);
 
+/* Below 2 are buggy */
+#if 0
 Skiplist *skiplist_concat(Skiplist *sl1, Skiplist *sl2);
+skiplistnode *skiplist_append(Skiplist *sl, void *data);
+#endif
 
 Skiplist *skiplist_merge(Skiplist *sl1, Skiplist *sl2);
 

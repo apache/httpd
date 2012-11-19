@@ -378,6 +378,7 @@ skiplistnode *skiplist_insert_compare(Skiplist *sl, void *data,
     return ret;
 }
 
+#if 0
 /*
  * There are reports of skiplist_append() being buggy.
  * Use at own risk
@@ -518,6 +519,7 @@ Skiplist *skiplist_concat(Skiplist *sl1, Skiplist *sl2)
     skiplist_remove_all(sl2, NULL);
     return sl1;
 }
+#endif
 
 int skiplist_remove(Skiplist *sl, void *data, FreeFunc myfree)
 {
