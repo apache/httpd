@@ -98,6 +98,8 @@ int skiplisti_remove(Skiplist *sl, skiplistnode *m, FreeFunc myfree);
 
 void skiplist_remove_all(Skiplist *sl, FreeFunc myfree);
 
+void skiplist_destroy(Skiplist *sl, FreeFunc myfree);
+
 #if 0
 int skiplisti_find_compare(Skiplist *sl,
                            void *data,

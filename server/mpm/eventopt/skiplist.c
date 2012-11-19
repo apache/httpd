@@ -663,6 +663,19 @@ void *skiplist_peek(Skiplist *a)
     return data;
 }
 
+static void skiplisti_destroy(void *vsl)
+{
+    skiplist_destroy((Skiplist *) vsl, NULL);
+    skiplist_free((Skiplist *) vsl, vsl);
+}
+
+void skiplist_destroy(Skiplist *sl, FreeFunc myfree)
+{
+    while (skiplist_pop(sl->index, skiplisti_destroy) != NULL)
+        ;
+    skiplist_remove_all(sl, myfree);
+}
+
 Skiplist *skiplist_merge(Skiplist *sl1, Skiplist *sl2)
 {
     /* Check integrity! */
