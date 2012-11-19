@@ -47,7 +47,7 @@ void *skiplist_alloc(Skiplist *sl, size_t size)
         return apr_palloc(sl->pool, size);
     }
     else {
-        return ap_malloc(size);
+        return ap_calloc(1, size);
     }
 }
 
@@ -65,8 +65,9 @@ static apr_status_t skiplisti_init(Skiplist **s, apr_pool_t *p)
         sl = apr_palloc(p, sizeof(Skiplist));
     }
     else {
-        sl = ap_malloc(sizeof(Skiplist));
+        sl = ap_calloc(1, sizeof(Skiplist));
     }
+#if 0
     sl->compare = (SkiplistComparator) NULL;
     sl->comparek = (SkiplistComparator) NULL;
     sl->height = 0;
@@ -75,6 +76,7 @@ static apr_status_t skiplisti_init(Skiplist **s, apr_pool_t *p)
     sl->top = NULL;
     sl->bottom = NULL;
     sl->index = NULL;
+#endif
     sl->pool = p;
     *s = sl;
     return APR_SUCCESS;
@@ -267,6 +269,7 @@ skiplistnode *skiplist_insert_compare(Skiplist *sl, void *data,
         sl->topend = sl->bottomend = sl->top = sl->bottom =
             (skiplistnode *)skiplist_alloc(sl, sizeof(skiplistnode));
         AP_DEBUG_ASSERT(sl->top);
+#if 0
         sl->top->next = (skiplistnode *)NULL;
         sl->top->data = (skiplistnode *)NULL;
         sl->top->prev = (skiplistnode *)NULL;
@@ -274,6 +277,7 @@ skiplistnode *skiplist_insert_compare(Skiplist *sl, void *data,
         sl->top->down = (skiplistnode *)NULL;
         sl->top->nextindex = (skiplistnode *)NULL;
         sl->top->previndex = (skiplistnode *)NULL;
+#endif
         sl->top->sl = sl;
     }
     if (sl->preheight) {
@@ -297,9 +301,11 @@ skiplistnode *skiplist_insert_compare(Skiplist *sl, void *data,
         AP_DEBUG_ASSERT(sl->top->up);
         sl->top->up->down = sl->top;
         sl->top = sl->topend = sl->top->up;
+#if 0
         sl->top->prev = sl->top->next = sl->top->nextindex =
             sl->top->previndex = sl->top->up = NULL;
         sl->top->data = NULL;
+#endif
         sl->top->sl = sl;
     }
     ch = sl->height;
@@ -699,4 +705,3 @@ Skiplist *skiplist_merge(Skiplist *sl1, Skiplist *sl2)
     skiplist_remove_all(sl2, NULL);
     return sl1;
 }
-
