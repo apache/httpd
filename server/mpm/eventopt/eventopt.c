@@ -97,6 +97,7 @@
 
 
 #include "equeue.h"
+#include "skiplist.h"
 
 #if HAVE_SERF
 #include "mod_serf.h"
@@ -1266,34 +1267,44 @@ static void get_worker(int *have_idle_worker_p, int blocking, int *all_busy)
     }
 }
 
-/* XXXXXX: Convert to skiplist or other better data structure
- * (yes, this is VERY VERY VERY VERY BAD)
- */
-
 /* Structures to reuse */
 static APR_RING_HEAD(timer_free_ring_t, timer_event_t) timer_free_ring;
-/* Active timers */
-static APR_RING_HEAD(timer_ring_t, timer_event_t) timer_ring;
 
-static apr_thread_mutex_t *g_timer_ring_mtx;
+static Skiplist *timer_skiplist;
+
+static int indexing_comp(void *a, void *b)
+{
+    apr_time_t t1 = (apr_time_t) (((timer_event_t *) a)->when);
+    apr_time_t t2 = (apr_time_t) (((timer_event_t *) b)->when);
+    AP_DEBUG_ASSERT(t1);
+    AP_DEBUG_ASSERT(t2);
+    return ((t1 < t2) ? -1 : ((t1 > t2) ? 1 : 0));
+}
+
+static int indexing_compk(void *ac, void *b)
+{
+    apr_time_t *t1 = (apr_time_t *) ac;
+    apr_time_t t2 = (apr_time_t) (((timer_event_t *) b)->when);
+    AP_DEBUG_ASSERT(t2);
+    return ((*t1 < t2) ? -1 : ((*t1 > t2) ? 1 : 0));
+}
+
+static apr_thread_mutex_t *g_timer_skiplist_mtx;
 
 static apr_status_t event_register_timed_callback(apr_time_t t,
                                                   ap_mpm_callback_fn_t *cbfn,
                                                   void *baton)
 {
-    int inserted = 0;
-    timer_event_t *ep;
     timer_event_t *te;
     /* oh yeah, and make locking smarter/fine grained. */
-    apr_thread_mutex_lock(g_timer_ring_mtx);
+    apr_thread_mutex_lock(g_timer_skiplist_mtx);
 
     if (!APR_RING_EMPTY(&timer_free_ring, timer_event_t, link)) {
         te = APR_RING_FIRST(&timer_free_ring);
         APR_RING_REMOVE(te, link);
     }
     else {
-        /* XXXXX: lol, pool allocation without a context from any thread.Yeah. Right. MPMs Suck. */
-        te = ap_malloc(sizeof(timer_event_t));
+        te = skiplist_alloc(timer_skiplist, sizeof(timer_event_t));
         APR_RING_ELEM_INIT(te, link);
     }
 
@@ -1303,23 +1314,9 @@ static apr_status_t event_register_timed_callback(apr_time_t t,
     te->when = t + apr_time_now();
 
     /* Okay, insert sorted by when.. */
-    for (ep = APR_RING_FIRST(&timer_ring);
-         ep != APR_RING_SENTINEL(&timer_ring,
-                                 timer_event_t, link);
-         ep = APR_RING_NEXT(ep, link))
-    {
-        if (ep->when > te->when) {
-            inserted = 1;
-            APR_RING_INSERT_BEFORE(ep, te, link);
-            break;
-        }
-    }
+    skiplist_insert(timer_skiplist, (void *)te);
 
-    if (!inserted) {
-        APR_RING_INSERT_TAIL(&timer_ring, te, timer_event_t, link);
-    }
-
-    apr_thread_mutex_unlock(g_timer_ring_mtx);
+    apr_thread_mutex_unlock(g_timer_skiplist_mtx);
 
     return APR_SUCCESS;
 }
@@ -1478,9 +1475,9 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
             }
         }
 
-        apr_thread_mutex_lock(g_timer_ring_mtx);
-        if (!APR_RING_EMPTY(&timer_ring, timer_event_t, link)) {
-            te = APR_RING_FIRST(&timer_ring);
+        apr_thread_mutex_lock(g_timer_skiplist_mtx);
+        te = skiplist_peek(timer_skiplist);
+        if (te) {
             if (te->when > now) {
                 timeout_interval = te->when - now;
             }
@@ -1491,7 +1488,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
         else {
             timeout_interval = apr_time_from_msec(100);
         }
-        apr_thread_mutex_unlock(g_timer_ring_mtx);
+        apr_thread_mutex_unlock(g_timer_skiplist_mtx);
 
 #if HAVE_SERF
         rc = serf_context_prerun(g_serf);
@@ -1517,21 +1514,19 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
         }
 
         now = apr_time_now();
-        apr_thread_mutex_lock(g_timer_ring_mtx);
-        for (ep = APR_RING_FIRST(&timer_ring);
-             ep != APR_RING_SENTINEL(&timer_ring,
-                                     timer_event_t, link);
-             ep = APR_RING_FIRST(&timer_ring))
-        {
+        apr_thread_mutex_lock(g_timer_skiplist_mtx);
+        ep = skiplist_peek(timer_skiplist);
+        while (ep) {
             if (ep->when < now + EVENT_FUDGE_FACTOR) {
-                APR_RING_REMOVE(ep, link);
+                skiplist_pop(timer_skiplist, NULL);
                 push_timer2worker(ep);
             }
             else {
                 break;
             }
+            ep = skiplist_peek(timer_skiplist);
         }
-        apr_thread_mutex_unlock(g_timer_ring_mtx);
+        apr_thread_mutex_unlock(g_timer_skiplist_mtx);
 
         while (num) {
             pt = (listener_poll_type *) out_pfd->client_data;
@@ -1857,9 +1852,9 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
             te->cbfunc(te->baton);
 
             {
-                apr_thread_mutex_lock(g_timer_ring_mtx);
+                apr_thread_mutex_lock(g_timer_skiplist_mtx);
                 APR_RING_INSERT_TAIL(&timer_free_ring, te, timer_event_t, link);
-                apr_thread_mutex_unlock(g_timer_ring_mtx);
+                apr_thread_mutex_unlock(g_timer_skiplist_mtx);
             }
         }
         else {
@@ -2184,9 +2179,10 @@ static void child_main(int child_num_arg)
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
-    apr_thread_mutex_create(&g_timer_ring_mtx, APR_THREAD_MUTEX_DEFAULT, pchild);
+    apr_thread_mutex_create(&g_timer_skiplist_mtx, APR_THREAD_MUTEX_DEFAULT, pchild);
     APR_RING_INIT(&timer_free_ring, timer_event_t, link);
-    APR_RING_INIT(&timer_ring, timer_event_t, link);
+    skiplist_init(&timer_skiplist, pchild);
+    skiplist_set_compare(timer_skiplist, indexing_comp, indexing_compk);
     ap_run_child_init(pchild, ap_server_conf);
 
     /* done with init critical section */
@@ -2889,6 +2885,8 @@ static int event_open_logs(apr_pool_t * p, apr_pool_t * plog,
             return DONE;
         }
     }
+    /* for skiplist */
+    srand((unsigned int)apr_time_now());
     return OK;
 }
 

@@ -8,7 +8,7 @@ if test "$ac_cv_serf" = yes ; then
 fi
 APACHE_SUBST(MOD_MPM_EVENTOPT_LDADD)
 
-APACHE_MPM_MODULE(eventopt, $enable_mpm_eventopt, eventopt.lo fdqueue.lo equeue.lo,[
+APACHE_MPM_MODULE(eventopt, $enable_mpm_eventopt, eventopt.lo fdqueue.lo equeue.lo skiplist.lo,[
     AC_CHECK_FUNCS(pthread_kill)
 ], , [\$(MOD_MPM_EVENTOPT_LDADD)])
 
