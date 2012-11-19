@@ -544,4 +544,24 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+for the server/mpm/eventopt/skiplist.? component:
+
+/* ======================================================================
+ * Copyright (c) 2000,2006 Theo Schlossnagle
+ * All rights reserved.
+ * The following code was written by Theo Schlossnagle for use in the
+ * Backhand project at The Center for Networking and Distributed Systems
+ * at The Johns Hopkins University.
+ *
+ * This is a skiplist implementation to be used for abstract structures
+ * and is release under the LGPL license version 2.1 or later.  A copy
+ * of this license can be found file LGPL.
+ *
+ * Alternatively, this file may be licensed under the new BSD license.
+ * A copy of this license can be found file BSD.
+ *
+ * ======================================================================
+ */
+
+
 ====================================================================
