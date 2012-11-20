@@ -40,6 +40,8 @@ before progressing to the advanced techniques.</p>
 following directives.</p>
 
 <highlight language="config">
+LoadModule ssl_module modules/mod_ssl.so
+
 Listen 443
 &lt;VirtualHost *:443&gt;
     ServerName www.example.com
