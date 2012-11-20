@@ -44,7 +44,7 @@ static int get_b_rand(void)
 void *skiplist_alloc(Skiplist *sl, size_t size)
 {
     if (sl->pool) {
-        return apr_palloc(sl->pool, size);
+        return apr_pcalloc(sl->pool, size);
     }
     else {
         return ap_calloc(1, size);
@@ -62,7 +62,7 @@ static apr_status_t skiplisti_init(Skiplist **s, apr_pool_t *p)
 {
     Skiplist *sl;
     if (p) {
-        sl = apr_palloc(p, sizeof(Skiplist));
+        sl = apr_pcalloc(p, sizeof(Skiplist));
     }
     else {
         sl = ap_calloc(1, sizeof(Skiplist));
