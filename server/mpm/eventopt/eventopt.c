@@ -1725,8 +1725,11 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                              "All workers are busy, will close %d keep-alive "
                              "connections",
                              keepalive_q.count);
+                /* add in an extra 2sec fudge factor */
                 process_timeout_queue(&keepalive_q,
-                                      timeout_time + ap_server_conf->keep_alive_timeout,
+                                      timeout_time +
+                                      ap_server_conf->keep_alive_timeout +
+                                      apr_time_from_sec(2),
                                       start_lingering_close);
             }
             else {
