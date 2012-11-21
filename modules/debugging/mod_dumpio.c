@@ -45,7 +45,7 @@ typedef struct dumpio_conf_t {
  * line length of all \xNN sequences; log_error cannot record more
  * than MAX_STRING_LEN characters.
  */
-#define dumpio_MAX_STRING_LEN MAX_STRING_LEN / 4 - 80
+#define dumpio_MAX_STRING_LEN (MAX_STRING_LEN / 4 - 80)
 
 /*
  * Workhorse function: simply log to the current error_log
@@ -102,8 +102,10 @@ static void dumpit(ap_filter_t *f, apr_bucket *b, dumpio_conf_t *ptr)
                               (APR_BUCKET_IS_METADATA(b)) ? "metadata" : "data",
                               b->type->name, (int)logbytes, buf);
 #endif
+                buf += logbytes;
             }
-        } else {
+        }
+        else {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE7, rv, c,
                           "mod_dumpio:  %s (%s-%s): %s", f->frec->name,
                           (APR_BUCKET_IS_METADATA(b)) ? "metadata" : "data",
@@ -135,7 +137,7 @@ static int dumpio_input_filter (ap_filter_t *f, apr_bucket_brigade *bb,
                   f->frec->name,
                   whichmode(mode),
                   ((block) == APR_BLOCK_READ) ? "blocking" : "nonblocking",
-                  readbytes) ;
+                  readbytes);
 
     ret = ap_get_brigade(f->next, bb, mode, block, readbytes);
 
@@ -143,7 +145,8 @@ static int dumpio_input_filter (ap_filter_t *f, apr_bucket_brigade *bb,
         for (b = APR_BRIGADE_FIRST(bb); b != APR_BRIGADE_SENTINEL(bb); b = APR_BUCKET_NEXT(b)) {
           dumpit(f, b, ptr);
         }
-    } else {
+    }
+    else {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE7, 0, c,
                       "mod_dumpio: %s - %d", f->frec->name, ret) ;
         return ret;
@@ -205,15 +208,15 @@ static void dumpio_register_hooks(apr_pool_t *p)
 static void *dumpio_create_sconfig(apr_pool_t *p, server_rec *s)
 {
     dumpio_conf_t *ptr = apr_pcalloc(p, sizeof *ptr);
-    ptr->enable_input = ptr->enable_output = 0;
+    ptr->enable_input = 0;
+    ptr->enable_output = 0;
     return ptr;
 }
 
 static const char *dumpio_enable_input(cmd_parms *cmd, void *dummy, int arg)
 {
-    dumpio_conf_t *ptr =
-    (dumpio_conf_t *) ap_get_module_config(cmd->server->module_config,
-                                           &dumpio_module);
+    dumpio_conf_t *ptr = ap_get_module_config(cmd->server->module_config,
+                                              &dumpio_module);
 
     ptr->enable_input = arg;
     return NULL;
@@ -221,9 +224,8 @@ static const char *dumpio_enable_input(cmd_parms *cmd, void *dummy, int arg)
 
 static const char *dumpio_enable_output(cmd_parms *cmd, void *dummy, int arg)
 {
-    dumpio_conf_t *ptr =
-    (dumpio_conf_t *) ap_get_module_config(cmd->server->module_config,
-                                           &dumpio_module);
+    dumpio_conf_t *ptr = ap_get_module_config(cmd->server->module_config,
+                                              &dumpio_module);
 
     ptr->enable_output = arg;
     return NULL;
@@ -239,10 +241,10 @@ static const command_rec dumpio_cmds[] = {
 
 AP_DECLARE_MODULE(dumpio) = {
         STANDARD20_MODULE_STUFF,
-        NULL,
-        NULL,
-        dumpio_create_sconfig,
-        NULL,
-        dumpio_cmds,
-        dumpio_register_hooks
+        NULL,                   /* create per-dir    config structures */
+        NULL,                   /* merge  per-dir    config structures */
+        dumpio_create_sconfig,  /* create per-server config structures */
+        NULL,                   /* merge  per-server config structures */
+        dumpio_cmds,            /* table of config file commands       */
+        dumpio_register_hooks   /* register hooks                      */
 };
