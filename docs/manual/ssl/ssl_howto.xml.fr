@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1380243:1411510 (outdated) -->
+<!-- English Revision : 1411510 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -43,6 +43,8 @@ mani&egrave;re plus approfondie.</p>
 suivantes :</p>
 
 <highlight language="config">
+LoadModule ssl_module modules/mod_ssl.so
+
 Listen 443
 &lt;VirtualHost *:443&gt;
     ServerName www.example.com
