@@ -338,7 +338,7 @@ static char *imap_url(request_rec *r, const char *base, const char *value)
     if (!strcasecmp(value, "referer")) {
         referer = apr_table_get(r->headers_in, "Referer");
         if (referer && *referer) {
-            return ap_escape_html(r->pool, referer);
+            return referer;
         }
         else {
             /* XXX:  This used to do *value = '\0'; ... which is totally bogus
@@ -521,40 +521,50 @@ static void menu_comment(request_rec *r, char *menu, char *comment)
 
 static void menu_default(request_rec *r, char *menu, char *href, char *text)
 {
+    char *ehref, *etext;
     if (!strcasecmp(href, "error") || !strcasecmp(href, "nocontent")) {
         return;                 /* don't print such lines, these aren't
                                    really href's */
     }
+
+    ehref = ap_escape_uri(r->pool, href);
+    etext = ap_escape_html(r->pool, text);
+
     if (!strcasecmp(menu, "formatted")) {
-        ap_rvputs(r, "<pre>(Default) <a href=\"", href, "\">", text,
-               "</a></pre>\n", NULL);
+        ap_rvputs(r, "<pre>(Default) <a href=\"", ehref, "\">", etext,
+                     "</a></pre>\n", NULL);
     }
     else if (!strcasecmp(menu, "semiformatted")) {
-        ap_rvputs(r, "<pre>(Default) <a href=\"", href, "\">", text,
+        ap_rvputs(r, "<pre>(Default) <a href=\"", ehref, "\">", etext,
                "</a></pre>\n", NULL);
     }
     else if (!strcasecmp(menu, "unformatted")) {
-        ap_rvputs(r, "<a href=\"", href, "\">", text, "</a>", NULL);
+        ap_rvputs(r, "<a href=\"", ehref, "\">", etext, "</a>", NULL);
     }
     return;
 }
 
 static void menu_directive(request_rec *r, char *menu, char *href, char *text)
 {
+    char *ehref, *etext;
     if (!strcasecmp(href, "error") || !strcasecmp(href, "nocontent")) {
         return;                 /* don't print such lines, as this isn't
                                    really an href */
     }
+
+    ehref = ap_escape_uri(r->pool, href);
+    etext = ap_escape_html(r->pool, text);
+
     if (!strcasecmp(menu, "formatted")) {
-        ap_rvputs(r, "<pre>          <a href=\"", href, "\">", text,
+        ap_rvputs(r, "<pre>          <a href=\"", ehref, "\">", etext,
                "</a></pre>\n", NULL);
     }
     else if (!strcasecmp(menu, "semiformatted")) {
-        ap_rvputs(r, "<pre>          <a href=\"", href, "\">", text,
+        ap_rvputs(r, "<pre>          <a href=\"", ehref, "\">", etext,
                "</a></pre>\n", NULL);
     }
     else if (!strcasecmp(menu, "unformatted")) {
-        ap_rvputs(r, "<a href=\"", href, "\">", text, "</a>", NULL);
+        ap_rvputs(r, "<a href=\"", ehref, "\">", etext, "</a>", NULL);
     }
     return;
 }
