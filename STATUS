@@ -283,6 +283,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk patch works (modulo CHANGES)
       +1: sf, jailletc36
 
+    * mod_dumpio: Correctly log large messages
+      PR 54179 
+      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1412278
+      2.4.x patch: http://people.apache.org/~jailletc36/backport_mod_dumpio.patch
+      +1: jailletc36
+      
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
