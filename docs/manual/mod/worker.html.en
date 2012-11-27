@@ -93,7 +93,7 @@
     idle server threads, which stand ready to serve incoming
     requests. In this way, clients do not need to wait for a new
     threads or processes to be created before their requests can be
-    served. The number of processes that will initially launched is
+    served. The number of processes that will initially launch is
     set by the <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code>
     directive. During operation, the server assesses the total number
     of idle threads in all processes, and forks or kills processes to
