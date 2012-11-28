@@ -89,10 +89,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * WinNT MPM thread-safety issue at child startup
-     trunk patch: http://svn.apache.org/viewvc?view=revision&sortby=date&revision=1374874
-     2.4.x patch: trunk patch works
-     +1: trawick, gsmith, covener
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
