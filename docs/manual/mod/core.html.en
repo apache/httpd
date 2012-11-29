@@ -2344,8 +2344,8 @@ resource </td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.2.21 and later</td></tr>
 </table>
     <p>The <code class="directive">MaxRanges</code> directive
-    limits the number of HTTP ranges the server is willing to 
-    return to the client.  If more ranges then permitted are requested, 
+    limits the number of HTTP ranges the server is willing to
+    return to the client. If more ranges than permitted are requested,
     the complete resource is returned instead.</p>
 
     <dl>  

@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_rewrite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_rewrite.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ce module fournit un moteur de réécriture à base de
 règles permettant de réécrire les URLs des requêtes
 à la volée</td></tr>
@@ -728,7 +726,7 @@ synchronisation de <code class="directive"><a href="#rewritemap">RewriteMap</a><
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le nom du fichier utilisé pour la journalisation
 des traitements du moteur de réécriture</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RewriteLog <em>chemin du fichier journal</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RewriteLog <em>chemin du fichier journal|redirection vers un pipe</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_rewrite</td></tr>
@@ -784,7 +782,11 @@ autre que l'utilisateur qui démarre le serveur.
 </div>
 
 <div class="example"><h3>Exemple</h3><p><code>
-RewriteLog "/usr/local/var/apache/logs/rewrite.log"
+# Journalisation dans un fichier :<br />
+RewriteLog "/usr/local/var/apache/logs/rewrite.log"<br />
+<br />
+# Journalisation redirigée vers un pipe:<br />
+RewriteLog "|/path/to/parser.pl"
 </code></p></div>
 
 
@@ -1151,7 +1153,7 @@ la version version 2.1</td></tr>
       <dt><code>AllowAnyURI</code></dt>
       <dd>
 
-      <p>A partir de la version 2.2.22 de httpd, lorsqu'une directive
+      <p>A partir de la version 2.2.23 de httpd, lorsqu'une directive
       <code class="directive"><a href="#rewriterule">RewriteRule</a></code> est
       utilisée dans un contexte de <code>serveur virtuel</code> ou de
       serveur principal, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> ne la traitera que
