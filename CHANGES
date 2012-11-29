@@ -2,10 +2,10 @@
 Changes with Apache 2.5.0
 
   *) core: Don't fail at startup with AH00554 when Include points to 
-     a directory without any wildcard character. [Eric Covener]
+     a directory without any wildcard character. PR 54223 [Eric Covener]
 
-  *) core: Fail startup if the argument to ServerTokens is unrecognized.
-     [Jackie Zhang  <jackie.qq.zhang gmail.com>]
+  *) core: Fail startup if the argument to ServerTokens is unrecognized.  
+     PR 54222 [Jackie Zhang  <jackie.qq.zhang gmail.com>]
 
   *) mod_log_forensic: Don't log a spurious "-" if a request has been rejected
      before mod_log_forensic could attach its id to it. [Stefan Fritsch]
