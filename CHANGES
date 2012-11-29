@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Don't fail at startup with AH00554 when Include points to 
+     a directory without any wildcard character. [Eric Covener]
+
   *) core: Fail startup if the argument to ServerTokens is unrecognized.
      [Jackie Zhang  <jackie.qq.zhang gmail.com>]
 
