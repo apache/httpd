@@ -2025,7 +2025,7 @@ AP_DECLARE(const char *) ap_process_fnmatch_configs(server_rec *s,
     }
 
     if (!apr_fnmatch_test(fname)) {
-        return ap_process_resource_config(s, fname, conftree, p, ptemp);
+        return process_resource_config_nofnmatch(s, fname, conftree, p, ptemp, 0, optional);
     }
     else {
         apr_status_t status;
