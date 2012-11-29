@@ -25,8 +25,6 @@
 <a href="./fr/caching.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./tr/caching.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Ce document complète la documentation de référence des modules
     <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>,
@@ -265,14 +263,17 @@
 	contenir une option "s-maxage", "must-revalidate" ou "public"
 	dans l'en-tête "Cache-Control:".</li>
 
-        <li>Si l'URL contenait une requête sous forme de chaîne de caractères
+        <li>Si l'URL contient une chaîne de paramètres
 	(provenant par exemple d'une méthode GET de formulaire HTML), elle ne
-	sera pas mise en cache à moins que la réponse ne contienne un en-tête
-        "Expires:", comme précisé dans la RFC2616 section 13.9.</li>
+	sera pas mise en cache à moins que la réponse ne spécifie une
+	condition d'expiration explicite via un en-tête "Expires:" ou la
+	directive max-age ou s-maxage de l'en-tête "Cache-Control:",
+	comme préconisé dans la RFC2616, sections 13.9 et 13.2.1.</li>
 
         <li>Si la réponse a un statut de 200 (OK), elle doit aussi contenir
 	au moins un des en-têtes "Etag", "Last-Modified" ou
-        "Expires", à moins que la directive
+        "Expires", ou la directive max-age ou s-maxage de l'en-tête
+	"Cache-Control:", à moins que la directive
         <code class="directive"><a href="./mod/mod_cache.html#cacheignorenolastmod">CacheIgnoreNoLastMod</a></code>
         ne précise d'autres contraintes.</li>
 
