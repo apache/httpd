@@ -289,6 +289,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/viewvc?rev=1415008&view=rev
       2.4.x patch: trunk works
       +1: covener
+          Is fail startup okay? What about warn and set to PROD? 
  
     * core: Accept "Include /some/dir" without wildcards as documented, 
             regression from 2.2.x.  PR54223
