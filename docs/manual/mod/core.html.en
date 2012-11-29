@@ -3080,7 +3080,7 @@ resource </td></tr>
 </table>
     <p>The <code class="directive">MaxRanges</code> directive
     limits the number of HTTP ranges the server is willing to
-    return to the client.  If more ranges then permitted are requested,
+    return to the client. If more ranges than permitted are requested,
     the complete resource is returned instead.</p>
 
     <dl>
