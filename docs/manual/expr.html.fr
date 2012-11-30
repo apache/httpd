@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="./en/expr.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/expr.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Historiquement, il existe de nombreuses variantes dans la syntaxe
     des expressions permettant d'exprimer une condition dans les
@@ -216,33 +214,46 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 <tr class="odd"><td><code>SERVER_ADMIN</code></td>
         <td>La valeur de la directive <code class="directive"><a href="./mod/core.html#serveradmin">ServerAdmin</a></code> du serveur virtuel courant</td></tr>
 <tr><td><code>SERVER_PROTOCOL</code></td>
-        <td>Le protocole utilisé par la requête</td></tr>
-<tr class="odd"><td><code>DOCUMENT_ROOT</code></td>
+        <td>Le protocole utilisé par la requête (par
+	exemple HTTP/1.1). Avec certains types de sous-requêtes
+	internes, cette variable prend la valeur <code>INCLUDED</code>.</td></tr>
+<tr class="odd"><td><code>SERVER_PROTOCOL_VERSION</code></td>
+        <td>Un nombre qui représente la version HTTP de la requête :
+	<code>1000 * major + minor</code>. Par exemple,
+	<code>1001</code> correspond à HTTP/1.1 et <code>9</code> à
+	HTTP/0.9.</td></tr>
+<tr><td><code>SERVER_PROTOCOL_VERSION_MAJOR</code></td>
+        <td>La partie majeure de la version HTTP de la requête, par
+	exemple <code>1</code> pour HTTP/1.0.</td></tr>
+<tr class="odd"><td><code>SERVER_PROTOCOL_VERSION_MINOR</code></td>
+        <td>La partie mineure de la version HTTP de la requête, par
+	exemple <code>0</code> pour HTTP/1.0.</td></tr>
+<tr><td><code>DOCUMENT_ROOT</code></td>
         <td>La valeur de la directive <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> du serveur virtuel
 	courant</td></tr>
-<tr><td><code>AUTH_TYPE</code></td>
+<tr class="odd"><td><code>AUTH_TYPE</code></td>
         <td>La valeur de la directive <code class="directive"><a href="./mod/mod_authn_core.html#authtype">AuthType</a></code> (par exemple
 	"<code>basic</code>")</td></tr>
-<tr class="odd"><td><code>CONTENT_TYPE</code></td>
+<tr><td><code>CONTENT_TYPE</code></td>
         <td>Le type de contenu de la réponse</td></tr>
-<tr><td><code>HANDLER</code></td>
+<tr class="odd"><td><code>HANDLER</code></td>
         <td>Le nom du <a href="handler.html">gestionnaire</a> qui a
 	généré la réponse</td></tr>
-<tr class="odd"><td><code>HTTPS</code></td>
+<tr><td><code>HTTPS</code></td>
         <td>"<code>on</code>" si la requête utilise https,
 	"<code>off</code>" dans le cas contraire</td></tr>
-<tr><td><code>IPV6</code></td>
+<tr class="odd"><td><code>IPV6</code></td>
         <td>"<code>on</code>" si la connexion utilise IPv6,
 	"<code>off</code>" dans le cas contraire</td></tr>
-<tr class="odd"><td><code>REQUEST_STATUS</code></td>
+<tr><td><code>REQUEST_STATUS</code></td>
         <td>Le code d'erreur HTTP de la requête</td></tr>
-<tr><td><code>REQUEST_LOG_ID</code></td>
+<tr class="odd"><td><code>REQUEST_LOG_ID</code></td>
         <td>L'identifiant du message d'erreur associé à la requête (voir
 	la directive <code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code>)</td></tr>
-<tr class="odd"><td><code>CONN_LOG_ID</code></td>
+<tr><td><code>CONN_LOG_ID</code></td>
         <td>L'identifiant du message d'erreur associé à la connexion
 	(voir la directive <code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code>)</td></tr>
-<tr><td><code>CONN_REMOTE_ADDR</code></td>
+<tr class="odd"><td><code>CONN_REMOTE_ADDR</code></td>
         <td>L'adresse IP du correspondant pour la connexion (voir le module
 	<code class="module"><a href="./mod/mod_remoteip.html">mod_remoteip</a></code>)</td></tr>
 </table>
