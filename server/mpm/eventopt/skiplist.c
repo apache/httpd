@@ -661,9 +661,11 @@ void *skiplist_pop(Skiplist *a, FreeFunc myfree)
 void *skiplist_peek(Skiplist *a)
 {
     skiplistnode *sln;
-    void *data = NULL;
     sln = skiplist_getlist(a);
-    return data;
+    if (sln) {
+        return sln->data;
+    }
+    return NULL;
 }
 
 static void skiplisti_destroy(void *vsl)
