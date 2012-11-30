@@ -2972,7 +2972,7 @@ resource </description>
     <usage>
         <p>The <directive>MaxRangeOverlaps</directive> directive
             limits the number of overlapping HTTP ranges the server is willing to
-            return to the client.  If more overlapping ranges then permitted are requested,
+            return to the client. If more overlapping ranges than permitted are requested,
             the complete resource is returned instead.</p>
 
         <dl>
@@ -3007,7 +3007,7 @@ resource </description>
     <usage>
         <p>The <directive>MaxRangeReversals</directive> directive
             limits the number of HTTP Range reversals the server is willing to
-            return to the client.  If more ranges reversals then permitted are requested,
+            return to the client. If more ranges reversals than permitted are requested,
             the complete resource is returned instead.</p>
 
         <dl>
