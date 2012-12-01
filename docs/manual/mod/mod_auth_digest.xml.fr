@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1380533:1415960 (outdated) -->
+<!-- English Revision : 1415960 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -77,70 +77,12 @@ condens&eacute;s</title>
     <note><title>Note</title>
     <p>L'authentification &agrave; base de condens&eacute;s MD5 est plus s&eacute;curis&eacute;e que
     l'authentification Basic, mais ne fonctionne qu'avec les navigateurs
-    qui la supportent. En septembre 2004, les principaux navigateurs
-    supportant l'authentification &agrave; base de condens&eacute;s MD5 incluaient <a
-    href="http://www.w3.org/Amaya/">Amaya</a>, <a
-    href="http://konqueror.kde.org/">Konqueror</a>, <a
-    href="http://www.microsoft.com/windows/ie/">MS Internet Explorer</a>
-    pour Mac OS X et Windows (bien que la version Windows &eacute;choue lorsque
-    la requ&ecirc;te comporte une cha&icirc;ne d'arguments -- voir plus loin "<a
-    href="#msie">Travailler avec MS Internet Explorer</a>" pour
-    contourner ce probl&egrave;me), <a
-    href="http://www.mozilla.org">Mozilla</a>, Netscape 7, 
-    <a href="http://www.opera.com/">Opera</a>, et <a
-    href="http://www.apple.com/safari/">Safari</a>. <a
-    href="http://lynx.isc.org/">lynx</a> ne supporte
-    <strong>pas</strong> l'authentification &agrave; base de condens&eacute;s MD5.
-    Comme l'authentification &agrave; base de condens&eacute;s MD5 est moins r&eacute;pandue
-    que l'authentification Basic, vous ne devez l'utiliser que dans des
-    environnements o&ugrave; tous les utilisateurs disposeront d'un navigateur
-    la supportant.</p>
+    qui la supportent. Au moment où ces lignes sont écrites (Décembre
+    2012), c'est le cas des principaux navigateurs.</p>
     <p><module>mod_auth_digest</module> ne fonctionne correctement que
     sur les plates-formes o&ugrave; APR supporte la m&eacute;moire partag&eacute;e.</p>
     </note>
 </section>
-
-<section id="msie"><title>Travailler avec MS Internet Explorer</title>
-    <p>L'impl&eacute;mentation de l'authentification &agrave; base de condens&eacute; dans
-    les versions pr&eacute;c&eacute;dentes d'Internet Explorer pour Windows (5 et 6)
-    posait probl&egrave;me, car les requ&ecirc;tes de type <code>GET</code>
-    comportant une cha&icirc;ne d'arguments (query string) ne respectaient pas les RFC. Il y
-    a plusieurs mani&egrave;res de contourner ce probl&egrave;me.</p>
-
-    <p>
-    La premi&egrave;re m&eacute;thode consiste &agrave; utiliser des requ&ecirc;tes de type
-    <code>POST</code> plut&ocirc;t que <code>GET</code> pour transmettre les
-    donn&eacute;es &agrave; votre programme. Cette m&eacute;thode constitue l'approche la
-    plus simple dans le cas o&ugrave; votre application peut fonctionner avec
-    cette limitation.
-    </p>
-
-    <p>Depuis la version 2.0.51, Apache propose aussi de contourner le
-    probl&egrave;me &agrave; l'aide de la variable d'environnement
-    <code>AuthDigestEnableQueryStringHack</code>. Si
-    <code>AuthDigestEnableQueryStringHack</code> est d&eacute;finie pour la
-    requ&ecirc;te, Apache va prendre des mesures pour contourner la bogue MSIE
-    et en particulier va exclure la cha&icirc;ne d'arguments de la comparaison
-    des condens&eacute;s. L'utilisation de cette m&eacute;thode peut se traduire par
-    ceci :</p>
-
-    <example><title>Utilisation de l'authentification &agrave; base de condens&eacute;
-    avec MSIE :</title>
-    <highlight language="config">
-        BrowserMatch "MSIE" AuthDigestEnableQueryStringHack=On
-    </highlight>
-    </example>
-
-    <p>Cette correction n'est pas n&eacute;cessaire avec MSIE 7, bien que son
-    activation ne pose pas de probl&egrave;me de compatibilit&eacute; ou de surcharge
-    significative.</p>
-
-    <p>Voir la directive <directive
-    module="mod_setenvif">BrowserMatch</directive> pour plus de d&eacute;tails
-    &agrave; propos de la d&eacute;finition conditionnelle des variables
-    d'environnement.</p>
-</section>
-
 
 <directivesynopsis>
 <name>AuthDigestProvider</name>
