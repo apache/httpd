@@ -74,6 +74,11 @@
       &lt;/Location&gt;
     </example>
 
+    <p> Providers are queried in order until a provider finds a match
+    for the requested username, at which point this sole provider will 
+    attempt to check the password.  A failure to verify the password does
+    not result in control being passed on to subsequent providers.</p>
+
     <p>Providers are implemented by <module>mod_authn_dbm</module>,
     <module>mod_authn_file</module>, <module>mod_authn_dbd</module>,
     and <module>mod_authnz_ldap</module>.</p>
