@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 421100:1415956 (outdated) -->
+<!-- English Revision : 1415956 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -55,7 +55,7 @@ cette zone du site web</description>
 <syntax>AuthBasicProvider <var>nom fournisseur</var>
 [<var>nom fournisseur</var>] ...</syntax>
 <default>AuthBasicProvider file</default>
-<contextlist><context>directory</context><context>.htaccess</context>
+<contextlist><context>r&eacute;pertoire</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
@@ -81,6 +81,13 @@ cette zone du site web</description>
       &lt;/Location&gt;
     </example>
 
+    <p>Les fournisseurs sont sollicités selon l'ordre de leur
+    spécification jusqu'à ce que l'un d'eux trouve une correspondance
+    pour le nom d'utilisateur demandé ; à partir de ce moment, seul ce
+    fournisseur tentera de vérifier le mot de passe. Si la vérification
+    du mot de passe échoue, le contrôle n'est pas transmis aux
+    fournisseurs suivants.</p>
+
     <p>Les diff&eacute;rents fournisseurs disponibles sont impl&eacute;ment&eacute;s par les
     modules <module>mod_authn_dbm</module>,
     <module>mod_authn_file</module>, <module>mod_authn_dbd</module>, et
@@ -95,7 +102,7 @@ d'authentification peuvent &ecirc;tre confi&eacute;s &agrave; des modules de plu
 niveau</description>
 <syntax>AuthBasicAuthoritative On|Off</syntax>
 <default>AuthBasicAuthoritative On</default>
-<contextlist><context>directory</context><context>.htaccess</context>
+<contextlist><context>r&eacute;pertoire</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
