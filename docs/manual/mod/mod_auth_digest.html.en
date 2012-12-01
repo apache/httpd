@@ -53,7 +53,6 @@
 <h3>Topics</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#using">Using Digest Authentication</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#msie">Working with MS Internet Explorer</a></li>
 </ul><h3>See also</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code></li>
@@ -92,51 +91,11 @@
 
     <div class="note"><h3>Note</h3>
     <p>Digest authentication is more secure than Basic authentication,
-    but only works with supporting browsers. As of September 2004, major
-    browsers that support digest authentication include <a href="http://www.w3.org/Amaya/">Amaya</a>, <a href="http://konqueror.kde.org/">Konqueror</a>, <a href="http://www.microsoft.com/windows/ie/">MS Internet Explorer</a>
-    for Mac OS X and Windows (although the Windows version fails when
-    used with a query string -- see "<a href="#msie">Working with MS
-    Internet Explorer</a>" below for a workaround), <a href="http://www.mozilla.org">Mozilla</a>, Netscape 7, 
-    <a href="http://www.opera.com/">Opera</a>, and <a href="http://www.apple.com/safari/">Safari</a>. <a href="http://lynx.isc.org/">lynx</a> does <strong>not</strong>
-    support digest authentication. Since digest authentication is not as
-    widely implemented as basic authentication, you should use it only
-    in environments where all users will have supporting browsers.</p>
+    but only works with supporting browsers. As of this writing (December
+    2012) all major browsers support digest authentication.</p>
     <p><code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> only works properly on platforms
       where APR supports shared memory.</p>
     </div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="msie" id="msie">Working with MS Internet Explorer</a></h2>
-    <p>The Digest authentication implementation in previous Internet
-    Explorer for Windows versions (5 and 6) had issues, namely that
-    <code>GET</code> requests with a query string were not RFC compliant.
-    There are a few ways to work around this issue.</p>
-
-    <p>
-    The first way is to use <code>POST</code> requests instead of
-    <code>GET</code> requests to pass data to your program.  This method
-    is the simplest approach if your application can work with this
-    limitation.
-    </p>
-
-    <p>Since version 2.0.51 Apache also provides a workaround in the
-    <code>AuthDigestEnableQueryStringHack</code> environment variable.
-    If <code>AuthDigestEnableQueryStringHack</code> is set for the
-    request, Apache will take steps to work around the MSIE bug and
-    remove the query string from the digest comparison.  Using this
-    method would look similar to the following.</p>
-
-    <div class="example"><h3>Using Digest Authentication with MSIE:</h3><pre class="prettyprint lang-config">
-        BrowserMatch "MSIE" AuthDigestEnableQueryStringHack=On
-    </pre>
-</div>
-
-    <p>This workaround is not necessary for MSIE 7, though enabling it does
-    not cause any compatibility issues or significant overhead.</p>
-
-    <p>See the <code class="directive"><a href="../mod/mod_setenvif.html#browsermatch">BrowserMatch</a></code>
-    directive for more details on conditionally setting environment
-    variables.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthDigestAlgorithm" id="AuthDigestAlgorithm">AuthDigestAlgorithm</a> <a name="authdigestalgorithm" id="authdigestalgorithm">Directive</a></h2>
