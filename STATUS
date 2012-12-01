@@ -225,12 +225,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PCRE requirement to version 6.0, released in 2005.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1343109
      2.4.x patch: trunk patch works
-     +1: jim
+     +1: jim, sf
 
    * util: make varbuf functions treat AP_VARBUF_UNKNOWN consistently
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1359884
      2.4.x patch: trunk patch works
-     +1: jim
+     +1: jim, sf
 
    * mod_rewrite: PR53963: Ad an opt-in RewriteOption to control merging of RewriteBase
                   (This merge started happening in 2.4.3/2.2.23)
