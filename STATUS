@@ -288,13 +288,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      
     * core: fail startup if ServerTokens arg is unrecognized, PR54222
       trunk patch: http://svn.apache.org/viewvc?rev=1415008&view=rev
+                   http://svn.apache.org/viewvc?rev=1416150&view=rev
       2.4.x patch: trunk works
       +1: covener, sf
           Is fail startup okay? What about warn and set to PROD? 
       sf: I think that's ok. It will be immediately obvious after upgrade and
           is easy to fix in the configuration.
-          I would add http://svn.apache.org/viewvc?rev=1416150&view=rev
-          too. I am +1 either way.
  
     * core: Accept "Include /some/dir" without wildcards as documented, 
             regression from 2.2.x.  PR54223
