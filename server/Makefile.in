@@ -70,7 +70,7 @@ export_files:
 	  for dir in $(EXPORT_DIRS_APR); do \
 	      ls $$dir/ap[ru].h $$dir/ap[ru]_*.h 2>/dev/null; \
 	  done; \
-	) | sort -u > $@
+	) | sed -e s,//,/,g | sort -u > $@
 
 exports.c: export_files
 	$(AWK) -f $(top_srcdir)/build/make_exports.awk `cat $?` > $@
