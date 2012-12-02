@@ -3234,11 +3234,11 @@ static const char *set_serv_tokens(cmd_parms *cmd, void *dummy,
     else if (!strcasecmp(arg1, "Prod") || !strcasecmp(arg1, "ProductOnly")) {
         ap_server_tokens = SrvTk_PRODUCT_ONLY;
     }
-    else if (!strcasecmp(arg1, "Full")) { 
+    else if (!strcasecmp(arg1, "Full")) {
         ap_server_tokens = SrvTk_FULL;
     }
-    else { 
-        return "ServerTokens takes 1 argument, 'Min', 'Major', 'Minor', 'Prod', or 'Full'";
+    else {
+        return "ServerTokens takes 1 argument, 'Prod', 'Major', 'Minor', 'Min', 'OS', or 'Full'";
     }
 
     return NULL;
