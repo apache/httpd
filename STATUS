@@ -89,6 +89,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * rotatelogs: fix argument handling to exactly match docs with -p 
+       trunk patch: http://svn.apache.org/viewvc?rev=1409726&view=rev
+       2.4.x patch: trunk patch applies
+     +1: jorton, jim, sf
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -214,11 +218,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      http://svn.apache.org/viewvc?view=revision&revision=1392346
      2.4.x patch: http://people.apache.org/~jim/patches/bal-man-xml-2.4.patch
      +1: jim
-
-   * rotatelogs: fix argument handling to exactly match docs with -p 
-       trunk patch: http://svn.apache.org/viewvc?rev=1409726&view=rev
-       2.4.x patch: trunk patch applies
-     +1: jorton, jim, sf
 
    * core: Make ap_regcomp() return AP_REG_ESPACE if out of memory.
      Make ap_pregcomp() abort if out of memory. This raises the minimum
