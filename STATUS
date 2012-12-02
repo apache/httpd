@@ -141,7 +141,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1348653
      2.4.x patch: http://people.apache.org/~rjung/patches/ssl-TLS-SRP-2_4.patch
      +1: rjung,
-     rjung: sf: you applied it to trunk, care to vote?
+     sf: 2.4 patch is outdated. New patch:
+         http://people.apache.org/~sf/ssl-TLS-SRP-2_4-v2.patch
+     +1: sf,
 
    * mod_proxy: Make balancers server-specific, as they should have
      been. Inheritance causes too many behind-the-scene interactions
