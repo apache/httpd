@@ -218,7 +218,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * rotatelogs: fix argument handling to exactly match docs with -p 
        trunk patch: http://svn.apache.org/viewvc?rev=1409726&view=rev
        2.4.x patch: trunk patch applies
-     +1: jorton, jim
+     +1: jorton, jim, sf
 
    * core: Make ap_regcomp() return AP_REG_ESPACE if out of memory.
      Make ap_pregcomp() abort if out of memory. This raises the minimum
@@ -264,7 +264,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?view=revision&revision=1398040
       2.4.x patch:
          http://people.apache.org/~jailletc36/backport.patch
-      +1: jailletc36
+      +1: jailletc36, sf
 
     * mod_session_dbd: fix a segmentation fault in the function dbd_remove.
       PR 53452
@@ -283,13 +283,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       PR 54179 
       trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1412278
       2.4.x patch: http://people.apache.org/~jailletc36/backport_mod_dumpio.patch
-      +1: jailletc36
+      +1: jailletc36, sf
      
     * core: fail startup if ServerTokens arg is unrecognized, PR54222
       trunk patch: http://svn.apache.org/viewvc?rev=1415008&view=rev
       2.4.x patch: trunk works
-      +1: covener
+      +1: covener, sf
           Is fail startup okay? What about warn and set to PROD? 
+      sf: I think that's ok. It will be immediately obvious after upgrade and
+          is easy to fix in the configuration.
+          I would add http://svn.apache.org/viewvc?rev=1416150&view=rev
+          too. I am +1 either way.
  
     * core: Accept "Include /some/dir" without wildcards as documented, 
             regression from 2.2.x.  PR54223
