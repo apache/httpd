@@ -94,12 +94,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        2.4.x patch: trunk patch applies
      +1: jorton, jim, sf
 
-   * mod_proxy: Allow for setting of sticky session split char...
-     PR 53893.
-     trunk patch: http://svn.apache.org/viewvc?rev=1404653&view=rev
-     2.4.x patch: trunk patch works (minus CHANGES and ap_mmn.h):
-     +1: jim, covener, sf
-
    * mod_dir: Support for the 'disabled' FallbackResource argument
      trunk patch : https://svn.apache.org/viewvc?view=revision&revision=1398066
      2.4.x src patch: trunk patch works
@@ -214,6 +208,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?rev=1404625&view=rev
      2.4.x patch: trunk patch works:
      +1: jim
+
+   * mod_proxy: Allow for setting of sticky session split char...
+     PR 53893.
+     trunk patch: http://svn.apache.org/viewvc?rev=1404653&view=rev
+     2.4.x patch: trunk patch works (minus CHANGES and ap_mmn.h):
+     +1: jim, covener
+     sf: doesn't the new element in proxy_balancer_shared need to be at the
+         end of the struct?
 
    * mod_proxy_balancer: Bring XML output up to date.
      http://svn.apache.org/viewvc?view=revision&revision=1392345
