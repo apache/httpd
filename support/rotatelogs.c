@@ -268,7 +268,6 @@ static void post_rotate(apr_pool_t *pool, struct logfile *newlog,
         }
         rv = apr_file_link(newlog->name, config->linkfile);
         if (rv != APR_SUCCESS) {
-            char error[120];
             apr_strerror(rv, error, sizeof error);
             fprintf(stderr, "Error linking file %s to %s (%s)\n",
                     newlog->name, config->linkfile, error);
