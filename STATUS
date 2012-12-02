@@ -94,6 +94,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        2.4.x patch: trunk patch applies
      +1: jorton, jim, sf
 
+   * mod_proxy: Allow for setting of sticky session split char...
+     PR 53893.
+     trunk patch: http://svn.apache.org/viewvc?rev=1404653&view=rev
+     2.4.x patch: trunk patch works (minus CHANGES and ap_mmn.h):
+     +1: jim, covener, sf
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -208,12 +214,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?rev=1404625&view=rev
      2.4.x patch: trunk patch works:
      +1: jim
-
-   * mod_proxy: Allow for setting of sticky session split char...
-     PR 53893.
-     trunk patch: http://svn.apache.org/viewvc?rev=1404653&view=rev
-     2.4.x patch: trunk patch works (minus CHANGES and ap_mmn.h):
-     +1: jim, covener
 
    * mod_proxy_balancer: Bring XML output up to date.
      http://svn.apache.org/viewvc?view=revision&revision=1392345
