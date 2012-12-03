@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.4
 
+  *) rotatelogs: Omit the second argument for the first invocation of
+     a post-rotate program when -p is used, per the documentation.
+     [Joe Orton]
+
   *) core: Functions to provide server load values: ap_get_sload() and
      ap_get_loadavg(). [Jim Jagielski, Jan Kaluza <jkaluza redhat.com>,
      Jeff Trawick]
