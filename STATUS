@@ -89,11 +89,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * rotatelogs: fix argument handling to exactly match docs with -p 
-       trunk patch: http://svn.apache.org/viewvc?rev=1409726&view=rev
-       2.4.x patch: trunk patch applies
-     +1: jorton, jim, sf
-
    * mod_dir: Support for the 'disabled' FallbackResource argument
      trunk patch : https://svn.apache.org/viewvc?view=revision&revision=1398066
      2.4.x src patch: trunk patch works
