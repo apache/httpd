@@ -264,7 +264,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?view=revision&revision=1398040
       2.4.x patch:
          http://people.apache.org/~jailletc36/backport.patch
-      +1: jailletc36, sf
+      +1: jailletc36, sf, jim
 
     * mod_session_dbd: fix a segmentation fault in the function dbd_remove.
       PR 53452
@@ -272,12 +272,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/viewvc?view=revision&revision=1408961 (style issue)
                    http://svn.apache.org/viewvc?view=revision&revision=1409170 (style issue)
       2.4.x patch: http://people.apache.org/~jailletc36/backport_mod_session_dbd.patch
-      +1: jailletc36, sf
+      +1: jailletc36, sf, jim
 
     * mod_log_forensic: Don't log spurious "-" characters.
       trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1410954
       2.4.x patch: trunk patch works (modulo CHANGES)
-      +1: sf, jailletc36
+      +1: sf, jailletc36, jim
 
     * mod_dumpio: Correctly log large messages
       PR 54179 
@@ -298,7 +298,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             regression from 2.2.x.  PR54223
       trunk patch: http://svn.apache.org/viewvc?rev=1415023&view=rev
       2.4.x patch: 2.4.x works
-      +1: covener      
+      +1: covener, jim
  
 
 A list of further possible backports can be found at:
