@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.4
 
+  *) mod_log_forensic: Don't log a spurious "-" if a request has been rejected
+     before mod_log_forensic could attach its id to it. [Stefan Fritsch]
+
   *) rotatelogs: Omit the second argument for the first invocation of
      a post-rotate program when -p is used, per the documentation.
      [Joe Orton]
