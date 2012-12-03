@@ -869,7 +869,9 @@ static apr_status_t ssl_io_filter_error(ap_filter_t *f,
             break;
 
     case MODSSL_ERROR_BAD_GATEWAY:
-        bucket = ap_bucket_error_create(HTTP_BAD_REQUEST, NULL,
+        /* Send an error bucket, though the proxy currently has no
+         * special handling for error buckets and ignores this. */
+        bucket = ap_bucket_error_create(HTTP_BAD_GATEWAY, NULL,
                                         f->c->pool,
                                         f->c->bucket_alloc);
         ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, f->c, APLOGNO(01997)
