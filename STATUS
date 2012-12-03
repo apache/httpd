@@ -252,7 +252,31 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/viewvc?rev=1415023&view=rev
       2.4.x patch: 2.4.x works
       +1: covener, jim
- 
+      
+    * mod_headers: Allow for exposure of loadavg and server load via mod_headers
+      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1389565
+                   http://svn.apache.org/viewvc?view=revision&revision=1389566
+                   http://svn.apache.org/viewvc?view=revision&revision=1389569 (doc)
+      2.4.x patch: http://people.apache.org/~jailletc36/backport_mod_header.patch
+      +1: jailletc36
+      
+    * (2/x) backport some easy patch to keep 2.4.x in line with trunk as much as possible
+         1398970: Use 'ap_strcasestr' instead of a strdup/str_tolower/strstr sequence
+         1407853: cppCheck:  Suspicious condition.
+         1398480: cppcheck: arrayIndexThenCheck - change the order of the tests in
+                  order to avoid a potential out-of-bound access.
+         1398478: ccpcheck: duplicateExpression - 'vary_by_language' is tested twice
+         1411862: Use apr_is_empty_table() instead of getting a table and checking the
+                  value of the 'nelts' field.
+         1397320: remove extra ';'
+      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1398970
+                   http://svn.apache.org/viewvc?view=revision&revision=1407853
+                   http://svn.apache.org/viewvc?view=revision&revision=1398480
+                   http://svn.apache.org/viewvc?view=revision&revision=1398478
+                   http://svn.apache.org/viewvc?view=revision&revision=1411862
+                   http://svn.apache.org/viewvc?view=revision&revision=1397320
+       2.4.c patch: http://people.apache.org/~jailletc36/backport2.patch
+       +1: jailletc36
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
