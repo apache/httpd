@@ -561,9 +561,6 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     const char *uri;
     const char *pro;
 
-#if 0
-    conn_rec *conn = r->connection;
-#endif
     int major = 1, minor = 0;   /* Assume HTTP/1.0 if non-"HTTP" protocol */
     char http[5];
     apr_size_t len;
@@ -627,19 +624,9 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
                       ap_escape_logitem(r->pool, r->the_request));
     }
 
-    /* we've probably got something to do, ignore graceful restart requests */
-
     r->request_time = apr_time_now();
     ll = r->the_request;
     r->method = ap_getword_white(r->pool, &ll);
-
-#if 0
-/* XXX If we want to keep track of the Method, the protocol module should do
- * it.  That support isn't in the scoreboard yet.  Hopefully next week
- * sometime.   rbb */
-    ap_update_connection_status(AP_CHILD_THREAD_FROM_ID(conn->id), "Method",
-                                r->method);
-#endif
 
     uri = ap_getword_white(r->pool, &ll);
 
@@ -662,8 +649,6 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
         len = 8;
     }
     r->protocol = apr_pstrmemdup(r->pool, pro, len);
-
-    /* XXX ap_update_connection_status(conn->id, "Protocol", r->protocol); */
 
     /* Avoid sscanf in the common case */
     if (len == 8

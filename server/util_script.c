@@ -122,7 +122,7 @@ AP_DECLARE(char **) ap_create_environment(apr_pool_t *p, apr_table_t *t)
             *whack++ = '_';
         }
         while (*whack != '=') {
-            if (!apr_isalnum(*whack) && *whack != '_') {
+            if (!apr_isalnum(*whack)) {
                 *whack = '_';
             }
             ++whack;
