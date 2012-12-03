@@ -1647,7 +1647,7 @@ static int uldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
                 *binddn = apr_pstrdup(r->pool, search_nodep->dn);
                 if (attrs) {
                     int i;
-                    *retvals = apr_pcalloc(r->pool, sizeof(char *) * search_nodep->numvals);
+                    *retvals = apr_palloc(r->pool, sizeof(char *) * search_nodep->numvals);
                     for (i = 0; i < search_nodep->numvals; i++) {
                         (*retvals)[i] = apr_pstrdup(r->pool, search_nodep->vals[i]);
                     }

@@ -128,6 +128,12 @@ static const char *const safe_env_lst[] =
     NULL
 };
 
+static void log_err(const char *fmt,...) 
+    __attribute__((format(printf,1,2)));
+static void log_no_err(const char *fmt,...)  
+    __attribute__((format(printf,1,2)));
+static void err_output(int is_error, const char *fmt, va_list ap) 
+    __attribute__((format(printf,2,0)));
 
 static void err_output(int is_error, const char *fmt, va_list ap)
 {
@@ -263,7 +269,7 @@ int main(int argc, char *argv[])
      */
     uid = getuid();
     if ((pw = getpwuid(uid)) == NULL) {
-        log_err("crit: invalid uid: (%ld)\n", uid);
+        log_err("crit: invalid uid: (%lu)\n", (unsigned long)uid);
         exit(102);
     }
     /*
@@ -440,7 +446,7 @@ int main(int argc, char *argv[])
      * a UID less than AP_UID_MIN.  Tsk tsk.
      */
     if ((uid == 0) || (uid < AP_UID_MIN)) {
-        log_err("cannot run as forbidden uid (%d/%s)\n", uid, cmd);
+        log_err("cannot run as forbidden uid (%lu/%s)\n", (unsigned long)uid, cmd);
         exit(107);
     }
 
@@ -449,7 +455,7 @@ int main(int argc, char *argv[])
      * or as a GID less than AP_GID_MIN.  Tsk tsk.
      */
     if ((gid == 0) || (gid < AP_GID_MIN)) {
-        log_err("cannot run as forbidden gid (%d/%s)\n", gid, cmd);
+        log_err("cannot run as forbidden gid (%lu/%s)\n", (unsigned long)gid, cmd);
         exit(108);
     }
 
@@ -460,7 +466,7 @@ int main(int argc, char *argv[])
      * and setgid() to the target group. If unsuccessful, error out.
      */
     if (((setgid(gid)) != 0) || (initgroups(actual_uname, gid) != 0)) {
-        log_err("failed to setgid (%ld: %s)\n", gid, cmd);
+        log_err("failed to setgid (%lu: %s)\n", (unsigned long)gid, cmd);
         exit(109);
     }
 
@@ -468,7 +474,7 @@ int main(int argc, char *argv[])
      * setuid() to the target user.  Error out on fail.
      */
     if ((setuid(uid)) != 0) {
-        log_err("failed to setuid (%ld: %s)\n", uid, cmd);
+        log_err("failed to setuid (%lu: %s)\n", (unsigned long)uid, cmd);
         exit(110);
     }
 
@@ -556,11 +562,11 @@ int main(int argc, char *argv[])
         (gid != dir_info.st_gid) ||
         (uid != prg_info.st_uid) ||
         (gid != prg_info.st_gid)) {
-        log_err("target uid/gid (%ld/%ld) mismatch "
-                "with directory (%ld/%ld) or program (%ld/%ld)\n",
-                uid, gid,
-                dir_info.st_uid, dir_info.st_gid,
-                prg_info.st_uid, prg_info.st_gid);
+        log_err("target uid/gid (%lu/%lu) mismatch "
+                "with directory (%lu/%lu) or program (%lu/%lu)\n",
+                (unsigned long)uid, (unsigned long)gid,
+                (unsigned long)dir_info.st_uid, (unsigned long)dir_info.st_gid,
+                (unsigned long)prg_info.st_uid, (unsigned long)prg_info.st_gid);
         exit(120);
     }
     /*

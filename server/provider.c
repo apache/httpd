@@ -42,7 +42,7 @@ AP_DECLARE(apr_status_t) ap_register_provider(apr_pool_t *pool,
 
     if (global_providers == NULL) {
         global_providers = apr_hash_make(pool);
-        global_providers_names = apr_hash_make(pool);;
+        global_providers_names = apr_hash_make(pool);
         apr_pool_cleanup_register(pool, NULL, cleanup_global_providers,
                                   apr_pool_cleanup_null);
     }

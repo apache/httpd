@@ -207,7 +207,7 @@ static void push_item(apr_array_header_t *arr, char *type, const char *to,
     }
 
     p->type = type;
-    p->data = data ? apr_pstrdup(arr->pool, data) : NULL;
+    p->data = apr_pstrdup(arr->pool, data);
     p->apply_path = apr_pstrcat(arr->pool, path, "*", NULL);
 
     if ((type == BY_PATH) && (!ap_is_matchexp(to))) {
@@ -694,7 +694,7 @@ static void *merge_autoindex_configs(apr_pool_t *p, void *basev, void *addv)
              * There are local nonincremental settings, which clear
              * all inheritance from above.  They *are* the new base settings.
              */
-            new->opts = add->opts;;
+            new->opts = add->opts;
         }
         /*
          * We're guaranteed that there'll be no overlap between
