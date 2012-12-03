@@ -97,6 +97,47 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      documentation patch : http://apache-doc-fr.gryzor.com/fallbackresource_disabled_2.4_doc.patch
      +1: gryzor, covener, sf
 
+    * proposal 1/x: try to keep 2.4.x in line with trunk.
+      Only small and trivial patches. No CHANGES needed IMO (maybe needed for 1407006 ?).
+      I will propose other ones the same way if you find it interesting.
+         1407004: Remove unused code. "Next week" hasn't happened in the last 10 years or so.
+         1407528: remove obsolete comment from 1.3 days
+         1407088: remove some more old unused code
+         1397636: s/;;/;/
+         1378178: remove an unnecessary check in a nest loop of ap_create_environment()
+         1407006: log client error at level debug, log broken Host header value
+         1337344: support/suexec.c: Add gcc format-string attributes to logging functions.
+         1398481: cppCheck: unreadVariable - 'serviceFlag' is not used in the function, so remove it
+         1398025: No need to test for NULL before calling apr_pstrdup.
+         1398040: No need it apr_pcalloc here, the memory is fully initialized the line just after
+      trunk patches:
+         http://svn.apache.org/viewvc?view=revision&revision=1407004
+         http://svn.apache.org/viewvc?view=revision&revision=1407528
+         http://svn.apache.org/viewvc?view=revision&revision=1407088
+         http://svn.apache.org/viewvc?view=revision&revision=1397636
+         http://svn.apache.org/viewvc?view=revision&revision=1378178
+         http://svn.apache.org/viewvc?view=revision&revision=1407006
+         http://svn.apache.org/viewvc?view=revision&revision=1337344
+         http://svn.apache.org/viewvc?view=revision&revision=1398481
+         http://svn.apache.org/viewvc?view=revision&revision=1398025
+         http://svn.apache.org/viewvc?view=revision&revision=1398040
+      2.4.x patch:
+         http://people.apache.org/~jailletc36/backport.patch
+      +1: jailletc36, sf, jim
+
+    * mod_session_dbd: fix a segmentation fault in the function dbd_remove.
+      PR 53452
+      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1408958
+                   http://svn.apache.org/viewvc?view=revision&revision=1408961 (style issue)
+                   http://svn.apache.org/viewvc?view=revision&revision=1409170 (style issue)
+      2.4.x patch: http://people.apache.org/~jailletc36/backport_mod_session_dbd.patch
+      +1: jailletc36, sf, jim
+
+    * mod_log_forensic: Don't log spurious "-" characters.
+      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1410954
+      2.4.x patch: trunk patch works (modulo CHANGES)
+      +1: sf, jailletc36, jim
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -237,47 +278,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?rev=1410681&view=rev
      2.4.x patch: trunk works
      +1 covener
-
-    * proposal 1/x: try to keep 2.4.x in line with trunk.
-      Only small and trivial patches. No CHANGES needed IMO (maybe needed for 1407006 ?).
-      I will propose other ones the same way if you find it interesting.
-         1407004: Remove unused code. "Next week" hasn't happened in the last 10 years or so.
-         1407528: remove obsolete comment from 1.3 days
-         1407088: remove some more old unused code
-         1397636: s/;;/;/
-         1378178: remove an unnecessary check in a nest loop of ap_create_environment()
-         1407006: log client error at level debug, log broken Host header value
-         1337344: support/suexec.c: Add gcc format-string attributes to logging functions.
-         1398481: cppCheck: unreadVariable - 'serviceFlag' is not used in the function, so remove it
-         1398025: No need to test for NULL before calling apr_pstrdup.
-         1398040: No need it apr_pcalloc here, the memory is fully initialized the line just after
-      trunk patches:
-         http://svn.apache.org/viewvc?view=revision&revision=1407004
-         http://svn.apache.org/viewvc?view=revision&revision=1407528
-         http://svn.apache.org/viewvc?view=revision&revision=1407088
-         http://svn.apache.org/viewvc?view=revision&revision=1397636
-         http://svn.apache.org/viewvc?view=revision&revision=1378178
-         http://svn.apache.org/viewvc?view=revision&revision=1407006
-         http://svn.apache.org/viewvc?view=revision&revision=1337344
-         http://svn.apache.org/viewvc?view=revision&revision=1398481
-         http://svn.apache.org/viewvc?view=revision&revision=1398025
-         http://svn.apache.org/viewvc?view=revision&revision=1398040
-      2.4.x patch:
-         http://people.apache.org/~jailletc36/backport.patch
-      +1: jailletc36, sf, jim
-
-    * mod_session_dbd: fix a segmentation fault in the function dbd_remove.
-      PR 53452
-      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1408958
-                   http://svn.apache.org/viewvc?view=revision&revision=1408961 (style issue)
-                   http://svn.apache.org/viewvc?view=revision&revision=1409170 (style issue)
-      2.4.x patch: http://people.apache.org/~jailletc36/backport_mod_session_dbd.patch
-      +1: jailletc36, sf, jim
-
-    * mod_log_forensic: Don't log spurious "-" characters.
-      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1410954
-      2.4.x patch: trunk patch works (modulo CHANGES)
-      +1: sf, jailletc36, jim
 
     * mod_dumpio: Correctly log large messages
       PR 54179 
