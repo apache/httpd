@@ -6,6 +6,9 @@ Changes with Apache 2.4.4
      a post-rotate program when -p is used, per the documentation.
      [Joe Orton]
 
+  *) mod_session_dbd: fix a segmentation fault in the function dbd_remove.
+    PR 53452. [<rebanerebane gmail com>, Reimo Rebane]
+
   *) core: Functions to provide server load values: ap_get_sload() and
      ap_get_loadavg(). [Jim Jagielski, Jan Kaluza <jkaluza redhat.com>,
      Jeff Trawick]
