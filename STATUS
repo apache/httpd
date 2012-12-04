@@ -97,15 +97,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       2.4.x patch: http://people.apache.org/~jailletc36/backport_mod_dumpio.patch
       +1: jailletc36, sf, druggeri
      
-    * core: fail startup if ServerTokens arg is unrecognized, PR54222
-      trunk patch: http://svn.apache.org/viewvc?rev=1415008&view=rev
-                   http://svn.apache.org/viewvc?rev=1416150&view=rev
-      2.4.x patch: trunk works
-      +1: covener, sf, druggeri
-          Is fail startup okay? What about warn and set to PROD? 
-      sf: I think that's ok. It will be immediately obvious after upgrade and
-          is easy to fix in the configuration.
- 
     * core: Accept "Include /some/dir" without wildcards as documented, 
             regression from 2.2.x.  PR54223
       trunk patch: http://svn.apache.org/viewvc?rev=1415023&view=rev
