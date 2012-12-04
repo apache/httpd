@@ -323,7 +323,7 @@ static char *imap_url(request_rec *r, const char *base, const char *value)
     char *string_pos = NULL;
     const char *string_pos_const = NULL;
     char *directory = NULL;
-    const char *referer = NULL;
+    char *referer = NULL;
     char *my_base;
 
     if (!strcasecmp(value, "map") || !strcasecmp(value, "menu")) {
@@ -336,7 +336,7 @@ static char *imap_url(request_rec *r, const char *base, const char *value)
     }
 
     if (!strcasecmp(value, "referer")) {
-        referer = apr_table_get(r->headers_in, "Referer");
+        referer = (char *)apr_table_get(r->headers_in, "Referer");
         if (referer && *referer) {
             return referer;
         }
