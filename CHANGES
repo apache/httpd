@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.4
 
+  *) mod_dumpio: Correctly log large messages
+     PR 54179 [Marek Wianecki <mieszek2 interia pl>]
+
   *) core: Don't fail at startup with AH00554 when Include points to 
      a directory without any wildcard character. [Eric Covener]
 
