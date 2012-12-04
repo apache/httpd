@@ -97,13 +97,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       2.4.x patch: http://people.apache.org/~jailletc36/backport_mod_dumpio.patch
       +1: jailletc36, sf, druggeri
      
-    * core: Accept "Include /some/dir" without wildcards as documented, 
-            regression from 2.2.x.  PR54223
-      trunk patch: http://svn.apache.org/viewvc?rev=1415023&view=rev
-      2.4.x patch: 2.4.x works
-      +1: covener, jim, druggeri
-      
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
