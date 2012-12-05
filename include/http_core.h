@@ -665,8 +665,8 @@ typedef struct {
     int trace_enable;
 
 #define AP_HTTP_VERSION_UNSET   0
-    uint16_t min_http_version;
-    uint16_t max_http_version;
+    apr_uint16_t min_http_version;
+    apr_uint16_t max_http_version;
 
 } core_server_config;
 
