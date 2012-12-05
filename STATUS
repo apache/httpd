@@ -198,15 +198,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?rev=1404625&view=rev
      2.4.x patch: trunk patch works:
      +1: jim, druggeri
+     sf notes: The if (!epsv_addr) check is wrong: the return value of
+               apr_sockaddr_info_get() should be checked instead, or
+               epsv_addr needs to be initialized to NULL.
+               The if (!data_sock) case can never be hit because
+               apr_socket_create() never returns a NULL socket when it also
+               returns APR_SUCCESS.  And if data_sock were NULL, the
+               apr_socket_opt_set() call would segfault before the check is
+               hit.
+     -1: sf (until at least the epsv_addr check is fixed)
 
    * mod_proxy: Allow for setting of sticky session split char...
      PR 53893.
      trunk patch: http://svn.apache.org/viewvc?rev=1404653&view=rev
      2.4.x patch: http://people.apache.org/~jim/patches/sticky-sep-2.4.patch
-     +1: jim, covener
-     sf: doesn't the new element in proxy_balancer_shared need to be at the
-         end of the struct? (druggeri agrees)
-     jim: Fixed in 2.4 specific patch (*sob*... bitfields no longer at end)
+     +1: jim, covener, sf
 
    * mod_proxy_balancer: Bring XML output up to date.
      http://svn.apache.org/viewvc?view=revision&revision=1392345
