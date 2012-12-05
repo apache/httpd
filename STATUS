@@ -264,6 +264,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        2.4.c patch: http://people.apache.org/~jailletc36/backport2.patch
        +1: jailletc36
 
+    * htpasswd/htdbm: Refactor, add bcrypt support, add -i option.
+      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1395253
+                   http://svn.apache.org/viewvc?view=revision&revision=1395254
+                   http://svn.apache.org/viewvc?view=revision&revision=1395255
+                   http://svn.apache.org/viewvc?view=revision&revision=1395256
+                   http://svn.apache.org/viewvc?view=revision&revision=1395792
+      2.4.x patch: trunk patches work
+      +1: sf
+
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
