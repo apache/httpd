@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_status: Print out list of times since a Vhost was last used.
+     [Jim Jagielski]
+
   *) core: Don't fail at startup with AH00554 when Include points to 
      a directory without any wildcard character. PR 54223 [Eric Covener]
 
