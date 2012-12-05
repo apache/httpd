@@ -471,7 +471,6 @@ static int update_child_status_internal(int child_num,
     }
 
     if (ap_extended_status) {
-        ws->last_used = apr_time_now();
         if (status == SERVER_READY || status == SERVER_DEAD) {
             /*
              * Reset individual counters
@@ -482,6 +481,7 @@ static int update_child_status_internal(int child_num,
             }
             ws->conn_count = 0;
             ws->conn_bytes = 0;
+            ws->last_used = apr_time_now();
         }
         if (r) {
             apr_cpystrn(ws->client, ap_get_remote_host(c, r->per_dir_config,
@@ -554,10 +554,10 @@ AP_DECLARE(void) ap_time_process_request(ap_sb_handle_t *sbh, int status)
     ws = &ap_scoreboard_image->servers[sbh->child_num][sbh->thread_num];
 
     if (status == START_PREQUEST) {
-        ws->start_time = apr_time_now();
+        ws->start_time = ws->last_used = apr_time_now();
     }
     else if (status == STOP_PREQUEST) {
-        ws->stop_time = apr_time_now();
+        ws->stop_time = ws->last_used = apr_time_now();
     }
 }
 
