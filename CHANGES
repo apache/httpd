@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.4
 
+  *) mod_proxy: Add ability to configure the sticky session separator.
+     PR 53893. [<inu inusasha de>, Jim Jagielski]
+
   *) mod_dumpio: Correctly log large messages
      PR 54179 [Marek Wianecki <mieszek2 interia pl>]
 

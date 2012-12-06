@@ -425,6 +425,7 @@ typedef struct {
     unsigned int    vhosted:1;
     unsigned int    inactive:1;
     unsigned int    forcerecovery:1;
+    char      sticky_separator;                                /* separator for sessionid/route */
 } proxy_balancer_shared;
 
 #define ALIGNED_PROXY_BALANCER_SHARED_SIZE (APR_ALIGN_DEFAULT(sizeof(proxy_balancer_shared)))
