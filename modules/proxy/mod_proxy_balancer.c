@@ -1549,7 +1549,7 @@ static int balancer_handler(request_rec *r)
                       "'>\n", NULL);
             ap_rvputs(r, "<input type=hidden name='nonce' id='nonce' value='",
                       bsel->s->nonce, "'>\n", NULL);
-            ap_rvputs(r, "</form>\n", NULL);
+            ap_rputs("</form>\n", r);
             ap_rputs("<hr />\n", r);
         } else if (bsel) {
             const apr_array_header_t *provs;
@@ -1599,7 +1599,7 @@ static int balancer_handler(request_rec *r)
                       "'>\n", NULL);
             ap_rvputs(r, "<input type=hidden name='nonce' id='nonce' value='",
                       bsel->s->nonce, "'>\n", NULL);
-            ap_rvputs(r, "</form>\n", NULL);
+            ap_rputs("</form>\n", r);
             ap_rputs("<hr />\n", r);
         }
         ap_rputs(ap_psignature("",r), r);
