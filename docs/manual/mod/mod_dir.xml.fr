@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1398071 -->
+<!-- English Revision: 1416585 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -245,11 +245,13 @@ d'Apache</compatibility>
 <name>FallbackResource</name>
 <description>D&eacute;finit une URL par d&eacute;faut pour les requ&ecirc;tes qui ne ciblent
 aucun fichier</description>
-<syntax>FallbackResource <var>url-locale</var></syntax>
+<syntax>FallbackResource disabled <var>url-locale</var></syntax>
 <default>Aucune - httpd renvoie un code d'erreur 404 (Not Found)</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Indexes</override>
+<compatibility>L'argument <code>disabled</code> est disponible à partir
+de la version 2.4.4 du serveur HTTP Apache.</compatibility>
 <usage>
     <p>Cette directive permet de d&eacute;finir un traitement pour toute URL
     qui ne correspond &agrave; aucune ressource de votre syst&egrave;me de fichiers,
@@ -277,12 +279,18 @@ aucun fichier</description>
     </highlight>
     <p>Les fichiers existants comme des images, des fichiers css, etc...
     seront trait&eacute;s normalement.</p>
+    <p>L'argument <code>disabled</code> permet de désactiver cette
+    fonctionnalité dans le cas où l'héritage d'un répertoire parent
+    n'est pas souhaité.</p>
     <p>Pour un URI interm&eacute;diaire tel que
     <em>http://example.com/blog/</em>, cet URI interm&eacute;diaire doit &ecirc;tre
     sp&eacute;cifi&eacute; en tant que <var>url-locale</var> :</p>
     <highlight language="config">
 &lt;Directory /web/example.com/htdocs/blog&gt;
     FallbackResource /blog/index.php
+&lt;/Directory&gt;
+&lt;Directory /web/example.com/htdocs/blog/images&gt;
+    FallbackResource disabled
 &lt;/Directory&gt;
     </highlight>
 </usage>

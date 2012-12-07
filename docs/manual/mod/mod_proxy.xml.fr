@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1384410 -->
+<!-- English Revision: 1417892 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1198,6 +1198,16 @@ ProxyPass /mirror/foo http://backend.example.com
 	les cookies et les identifiants cod&eacute;s d'URL (comme les
 	conteneurs de servlet), s&eacute;parez-les par le caract&egrave;re '|'. La
 	premi&egrave;re partie contient le cookie et la seconde le chemin.
+    </td></tr>
+    <tr><td>stickysessionsep</td>
+        <td>"."</td>
+        <td>Définit le caractère de séparation dans le cookie de
+	session. Certains serveurs d'application d'arrière-plan
+	n'utilisent pas le caractère '.' comme séparateur. Par exemple
+	le serveur Oracle Weblogic utilise le caractère '!'. Cette
+	option permet d'attribuer au caractère de séparation la valeur
+	appropriée. Si elle est définie à 'Off', aucun caractère de
+	séparation n'est utilisé.
     </td></tr>
     <tr><td>scolonpathdelim</td>
         <td>Off</td>
