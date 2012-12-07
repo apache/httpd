@@ -275,7 +275,7 @@ comploop:
         }
 
         if(p > &commands->respace[RESIZE-1]) {
-            command_errf(commands, SEDERR_TMMES);
+            command_errf(commands, SEDERR_TMMES, commands->linebuf);
             return -1;
         }
 
