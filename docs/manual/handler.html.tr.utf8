@@ -29,7 +29,6 @@
 <a href="./tr/handler.html" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/handler.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Bu belgede Apache Eylemcilerinin kullanımı açıklanmıştır.</p>
   </div>
@@ -97,10 +96,11 @@
         için yapılan istekler <code>footer.pl</code> CGI betiğininin
         çalıştırılmasına sebep olacaktır.</p>
 
-      <div class="example"><p><code>
-        Action add-footer /cgi-bin/footer.pl<br />
-        AddHandler add-footer .html
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+Action add-footer /cgi-bin/footer.pl
+AddHandler add-footer .html
+      </pre>
+
 
       <p>Bu yapılandırmayla, istenen belgenin özgün haliyle mi (yeri
         <code>PATH_TRANSLATED</code> ortam değişkenindedir) yoksa istenen
@@ -117,11 +117,12 @@
         dosyalar dosya ismi uzantılarına bakılmaksızın <code>send-as-is</code>
         eylemcisi tarafından işleme sokulacaktır.</p>
 
-      <div class="example"><p><code>
-        &lt;Directory /siteler/htdocs/asis&gt;<br />
-        <span class="indent">SetHandler send-as-is</span>
-        &lt;/Directory&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+&lt;Directory /web/htdocs/asis&gt;
+    SetHandler send-as-is
+&lt;/Directory&gt;
+      </pre>
+
 
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -133,9 +134,8 @@
       Özellikle de, <code>request_rec</code> yapısına yeni bir kayıt
       eklenmiştir:</p>
 
-    <div class="example"><p><code>
-      char *handler
-    </code></p></div>
+    <pre class="prettyprint lang-c">char *handler</pre>
+
 
     <p>Modülünüzün bir eylemciyi devreye sokmasını isterseniz, tek yapacağınız
       isteğin <code>invoke_handler</code> aşamasının hemen öncesinde

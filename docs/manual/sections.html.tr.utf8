@@ -27,7 +27,6 @@
 <a href="./ko/sections.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/sections.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p><a href="configuring.html">Yapılandırma dosyaları</a>ndaki
        yönergeler sunucunun tamamına uygulanacağı gibi sadece belli dizinler,
@@ -42,7 +41,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">Sanal Konaklar</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#proxy">Vekil</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#whatwhere">Hangi Yönergelere İzin Veriliyor?</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#mergin">Bölümler Nasıl Katıştırılır?</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#merging">Bölümler Nasıl Katıştırılır?</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Yorum</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -68,13 +67,12 @@
       sunucu <code>httpd -DClosedForNow</code> komut satırı ile başlatıldığı
       takdirde mümkün olur:</p>
 
-    <div class="example"><p><code>
-      &lt;IfDefine ClosedForNow&gt;<br />
-      <span class="indent">
-        Redirect / http://otherserver.example.com/<br />
-      </span>
-      &lt;/IfDefine&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;IfDefine ClosedForNow&gt;
+  Redirect / http://otherserver.example.com/
+&lt;/IfDefine&gt;
+    </pre>
+
 
     <p><code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code> yönergesi
       sadece belli bir modülün sunucuda kullanılabilir durumda olması halinde
@@ -90,13 +88,12 @@
     <p>Aşağıdaki örnekte, <code class="directive"><a href="./mod/mod_mime_magic.html#mimemagicfile">MimeMagicFile</a></code> yönergesi sadece
       <code class="module"><a href="./mod/mod_mime_magic.html">mod_mime_magic</a></code> modülü mevcutsa uygulanacaktır.</p>
 
-    <div class="example"><p><code>
-      &lt;IfModule mod_mime_magic.c&gt;<br />
-      <span class="indent">
-        MimeMagicFile conf/magic<br />
-      </span>
-      &lt;/IfModule&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;IfModule mod_mime_magic.c&gt;
+  MimeMagicFile conf/magic
+&lt;/IfModule&gt;
+    </pre>
+
 
     <p><code class="directive"><a href="./mod/mod_version.html#ifversion">&lt;IfVersion&gt;</a></code>
       yönergesi sunucunun belli bir sürümünün çalıştırılması halinde
@@ -105,14 +102,13 @@
       yapılandırmalarla büyük ağlarda çalışmayı mümkün kılmak veya sürüm
       denemeleri yapabilmek amacıyla tasarlanmıştır.</p>
 
-    <div class="example"><p><code>
-      &lt;IfVersion &gt;= 2.1&gt;<br />
-      <span class="indent">
-        # burası sadece 2.1.0 veya daha üstü sürümlerde<br />
-        # iş görür.<br />
-      </span>
-      &lt;/IfVersion&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;IfVersion &gt;= 2.4&gt;
+  # burası sadece 2.4.0 veya daha üstü sürümlerde
+  # iş görür.
+&lt;/IfVersion&gt;
+    </pre>
+
 
     <p><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code>,
       <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code> ve
@@ -156,13 +152,12 @@
       yapılandırmada, <code>/var/web/dir1</code> dizini ve alt dizinlerinde
       dizin içeriğinin listelenmesi etkin kılınmaktadır.</p>
 
-    <div class="example"><p><code>
-      &lt;Directory /var/web/dir1&gt;<br />
-      <span class="indent">
-        Options +Indexes<br />
-      </span>
-      &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Directory /var/web/dir1&gt;
+  Options +Indexes
+&lt;/Directory&gt;
+    </pre>
+
 
     <p>Bir <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> bölümü
       içindeki yönergeler, hangi dizinde bulunduğuna bakılmaksızın ismi
@@ -171,14 +166,12 @@
       <code>gizli.html</code> isimli dosyalara nerede bulunursa bulunsun
       erişime izin vermeyecektir.</p>
 
-    <div class="example"><p><code>
-      &lt;Files gizli.html&gt;<br />
-      <span class="indent">
-        Order allow,deny<br />
-        Deny from all<br />
-      </span>
-      &lt;/Files&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Files gizli.html&gt;
+  Require all denied
+&lt;/Files&gt;
+    </pre>
+
 
     <p>Dosya sisteminin belli bir yerindeki belli dosyalarla ilgili yaptırımlar
       için <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> ve
@@ -190,18 +183,14 @@
       <code>/var/web/dir1/</code> altında bulunabilecek diğer tüm
       <code>gizli.html</code> dosyalarına erişimi yasaklar.</p>
 
-    <div class="example"><p><code>
-      &lt;Directory /var/web/dir1&gt;<br />
-      <span class="indent">
-        &lt;Files gizli.html&gt;<br />
-        <span class="indent">
-          Order allow,deny<br />
-          Deny from all<br />
-        </span>
-        &lt;/Files&gt;<br />
-      </span>
-      &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Directory /var/web/dir1&gt;<br />
+  &lt;Files gizli.html&gt;<br />
+    Require all denied
+  &lt;/Files&gt;<br />
+&lt;/Directory&gt;
+    </pre>
+
   
 
   <h3><a name="webspace" id="webspace">Site Alanı Taşıyıcıları</a></h3>
@@ -216,14 +205,12 @@
       istekleri yanında <code>/gizli</code> ile başlayan diğer isteklere de
       uygulanır.</p>
 
-    <div class="example"><p><code>
-      &lt;LocationMatch ^/gizli&gt;<br />
-      <span class="indent">
-        Order Allow,Deny<br />
-        Deny from all<br />
-      </span>
-      &lt;/LocationMatch&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;LocationMatch ^/gizli&gt;
+    Require all denied
+&lt;/LocationMatch&gt;
+    </pre>
+
 
     <p>Dosya sistemi ile etkileşime girmeyen herşey için
       <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
@@ -233,41 +220,43 @@
       için dosya sisteminde <code>server-status</code> adında bir dosya
       veya dizin bulunması gerekli değildir.</p>
 
-    <div class="example"><p><code>
-      &lt;Location /server-status&gt;<br />
-      <span class="indent">
-        SetHandler server-status<br />
-      </span>
-      &lt;/Location&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Location /server-status&gt;
+    SetHandler server-status
+&lt;/Location&gt;
+    </pre>
+
   
 
   <h3><a name="overlapping-webspace" id="overlapping-webspace">Site Alanında Çakışma</a></h3>
     <p>Belli bölümler ve yönergeler değerlendirilirken çakışan iki URL bir URL
     olarak dikkate alınır. <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> yönergesi için bu şöyle olurdu:</p>
 
-    <div class="example"><p><code>
-      &lt;Location /foo&gt;<br />
-      &lt;/Location&gt;<br />
-      &lt;Location /foo/bar&gt;<br />
-      &lt;/Location&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Location /foo&gt;
+&lt;/Location&gt;
+&lt;Location /foo/bar&gt;
+&lt;/Location&gt;
+    </pre>
+
 
     <p>Diğer yandan <code class="directive"><a href="./mod/mod_alias.html#takma&#10;      adlar">&lt;Takma
       adlar&gt;</a></code> tam tersi eşlenir:</p>
 
-    <div class="example"><p><code>
-      Alias /foo/bar /srv/www/uncommon/bar<br />
-      Alias /foo /srv/www/common/foo<br />
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Alias /foo/bar /srv/www/uncommon/bar
+Alias /foo /srv/www/common/foo
+    </pre>
+
 
     <p>Aynısı <code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code>
       yönergeleri için de geçerlidir:</p>
 
-    <div class="example"><p><code>
-      ProxyPass /special-area http://special.example.com smax=5 max=10<br />
-      ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+ProxyPass /special-area http://special.example.com smax=5 max=10
+ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On
+    </pre>
+
   
 
   <h3><a name="wildcards" id="wildcards">Dosya Adı Şablonları ve Düzenli İfadeler</a></h3>
@@ -294,25 +283,22 @@
     <p>Tüm kullanıcı dizinlerine ilişkin yapılandırmayı değiştirmek için dosya
       ismi kalıpları şöyle kullanılabilirdi:</p>
 
-    <div class="example"><p><code>
-      &lt;Directory /home/*/public_html&gt;<br />
-      <span class="indent">
-        Options Indexes<br />
-      </span>
-      &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Directory /home/*/public_html&gt;
+    Options Indexes
+&lt;/Directory&gt;
+    </pre>
+
 
     <p>Düzenli ifade bölümleri kullanarak çeşitli türlerdeki resim dosyalarına
       erişimi bir defada yasaklayabiliriz:</p>
 
-    <div class="example"><p><code>
-      &lt;FilesMatch \.(?i:gif|jpe?g|png)$&gt;<br />
-      <span class="indent">
-        Order allow,deny<br />
-        Deny from all<br />
-      </span>
-      &lt;/FilesMatch&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;FilesMatch \.(?i:gif|jpe?g|png)$&gt;
+    Require all denied
+&lt;/FilesMatch&gt;
+    </pre>
+
   
 
   <h3><a name="expressions" id="expressions">Mantıksal İfadeler</a></h3>
@@ -322,13 +308,12 @@
       <code>HTTP Referer</code> başlığı "http://www.example.com/" ile
       başlamıyorsa erişimi yasaklar.</p>
 
-    <div class="example"><p><code>
-    &lt;If "!(%{HTTP_REFERER} -strmatch 'http://www.example.com/*')"&gt;<br />
-    <span class="indent">
-      Require all denied<br />
-    </span>
-    &lt;/If&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;If "!(%{HTTP_REFERER} -strmatch 'http://www.example.com/*')"&gt;
+    Require all denied
+&lt;/If&gt;
+    </pre>
+
   
 
   <h3><a name="whichwhen" id="whichwhen">Ne, Ne Zaman Kullanılır?</a></h3>
@@ -345,14 +330,12 @@
       kısıtlamalarınızın etrafından dolaşılabilmesine izin vermesidir.
       Örneğin, aşağıdaki yapılandırmayı ele alalım:</p>
 
-    <div class="example"><p><code>
-      &lt;Location /dir/&gt;<br />
-      <span class="indent">
-        Order allow,deny<br />
-        Deny from all<br />
-      </span>
-      &lt;/Location&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Location /dir/&gt;
+    Require all denied
+&lt;/Location&gt;
+    </pre>
+
 
     <p><code>http://siteniz.mesela.dom/dir/</code> için bir istek yapılmışsa
       bu doğru çalışacaktır. Fakat dosya sistemi harf büyüklüğüne duyarsızsa
@@ -409,14 +392,12 @@
       <code>example.com</code> sitesine erişim için vekil sunucunun
       kullanılmasını engelleyecektir.</p>
 
-    <div class="example"><p><code>
-      &lt;Proxy http://example.com/*&gt;<br />
-      <span class="indent">
-        Order allow,deny<br />
-        Deny from all<br />
-      </span>
-      &lt;/Proxy&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Proxy http://www.example.com/*&gt;
+    Require all granted
+&lt;/Proxy&gt;
+    </pre>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="whatwhere" id="whatwhere">Hangi Yönergelere İzin Veriliyor?</a></h2>
@@ -450,7 +431,7 @@
     </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="mergin" id="mergin">Bölümler Nasıl Katıştırılır?</a></h2>
+<h2><a name="merging" id="merging">Bölümler Nasıl Katıştırılır?</a></h2>
 
     <p>Yapılandırma bölümleri belli bir sıra ile uygulanır. Yapılandırma
       yönergelerinin yorumlanışı üzerinde önemli etkilere sahip olabilmesi
@@ -520,30 +501,30 @@
       isteğe uygulandığı varsayımıyla, bu örnekteki yönergeler A &gt; B &gt; C
       &gt; D &gt; E sırasıyla uygulanacaktır.</p>
 
-    <div class="example"><p><code>
-      &lt;Location /&gt;<br />
-      E<br />
-      &lt;/Location&gt;<br />
-      <br />
-      &lt;Files f.html&gt;<br />
-      D<br />
-      &lt;/Files&gt;<br />
-      <br />
-      &lt;VirtualHost *&gt;<br />
-      &lt;Directory /a/b&gt;<br />
-      B<br />
-      &lt;/Directory&gt;<br />
-      &lt;/VirtualHost&gt;<br />
-      <br />
-      &lt;DirectoryMatch "^.*b$"&gt;<br />
-      C<br />
-      &lt;/DirectoryMatch&gt;<br />
-      <br />
-      &lt;Directory /a/b&gt;<br />
-      A<br />
-      &lt;/Directory&gt;<br />
-      <br />
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Location /&gt;
+    E
+&lt;/Location&gt;
+
+&lt;Files f.html&gt;
+    D
+&lt;/Files&gt;
+
+&lt;VirtualHost *&gt;
+&lt;Directory /a/b&gt;
+    B
+&lt;/Directory&gt;
+&lt;/VirtualHost&gt;
+
+&lt;DirectoryMatch "^.*b$"&gt;
+    C
+&lt;/DirectoryMatch&gt;
+
+&lt;Directory /a/b&gt;
+    A
+&lt;/Directory&gt;
+    </pre>
+
 
     <p>Daha somut bir örnek olarak aşağıdakini ele alalım.
       <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>
@@ -552,23 +533,21 @@
       Başka bir deyişle, katıştırma sırası önemlidir, bu nedenle dikkatli
       olmalısınız!</p>
 
-    <div class="example"><p><code>
-    &lt;Location /&gt;<br />
-    <span class="indent">
-      Order deny,allow<br />
-      Allow from all<br />
-    </span>
-    &lt;/Location&gt;<br />
-    <br />
-    # Alooo!  Bu &lt;Directory&gt; bölümünün hiçbir hükmü yok.<br />
-    &lt;Directory /&gt;<br />
-    <span class="indent">
-      Order allow,deny<br />
-      Allow from all<br />
-      Deny from kkadam.mesela.dom<br />
-    </span>
-    &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Location /&gt;
+    Require all granted
+&lt;/Location&gt;
+
+# Alooo!  Bu &lt;Directory&gt; bölümünün hiçbir hükmü yok.
+&lt;Directory /&gt;
+    &lt;RequireAll&gt;
+        Require all granted
+        Require not host kkadam.example.com
+    &lt;/RequireAll&gt;
+&lt;/Directory&gt;
+    </pre>
+
+
   
 
 </div></div>
