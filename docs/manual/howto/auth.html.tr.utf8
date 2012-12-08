@@ -27,7 +27,6 @@
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/auth.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Kimlik Doğrulama istediğiniz kişileri teyid etme işlemidir.
     Yetkilendirme ise kişilerin nereye gireceklerine ve hangi bilgiye
@@ -71,14 +70,12 @@
           <li><code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code></li>
           <li><code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code></li>
           <li><code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></li>
-          <li><code class="module"><a href="../mod/mod_authn_socache.html">mod_authn_socache</a></code></li>
         </ul>
       </li>
       <li>Yetkilendirme (bkz.
           <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> yönergesi)
         <ul>
           <li><code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></li>
-          <li><code class="module"><a href="../mod/mod_authz_dbd.html">mod_authz_dbd</a></code></li>
           <li><code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code></li>
           <li><code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code></li>
           <li><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></li>
@@ -294,6 +291,7 @@
 
     <div class="example"><p><code>
     &lt;Directory /usr/local/apache/htdocs/sekrit&gt;<br />
+    <span class="indent">
       AuthType Basic<br />
       AuthName intranet<br />
       AuthUserFile /www/passwd/users<br />
@@ -302,6 +300,7 @@
       Order allow,deny<br />
       Allow from internal.com<br />
       Satisfy any<br />
+    </span>
     &lt;/Directory&gt;
     </code></p></div>
 
@@ -339,8 +338,9 @@
     (Yeni bir parola dosyası oluşturmak için <code>-c</code> seçeneği
     kullanılır).</p>
 
-    <p>Şimdi, <code>.htaccess</code> dosyanızı aşağıda görüldüğü şekilde
-    değiştirebilirsiniz:</p>
+    <p>Şimdi, <code>.htaccess</code> dosyanızı veya
+    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
+    bölümünüzü aşağıda görüldüğü şekilde değiştirebilirsiniz:</p>
 
     <div class="example"><p><code>
       AuthType Basic<br />
@@ -366,13 +366,7 @@
 
     <p><code>Require user umut</code> satırı ile parola dosyasında
     listelenmiş ve parolayı doğru olarak giren herhangi bir kişiye izin
-    vermektense, her grup için ayrı bir parola dosyası tutarak grup
-    davranışını taklit edebilirsiniz. Bu yaklaşımın getirisi:
-    Apache iki dosya yerine sadece bir dosyaya bakar.
-    Götürüsü ise parola dosyalarından oluşan bir dosya demeti sağlamak
-    ve <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>
-    yönergesinde doğru dosyayı belirtmeyi unutmamak zorunda
-    kalmanızdır.</p>
+    vermektense bunu kullanabilirsiniz.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -410,11 +404,13 @@
 
     <div class="example"><p><code>
     &lt;Directory /www/docs/private&gt;<br />
-    AuthName "Private"<br />
-    AuthType Basic<br />
-    AuthBasicProvider dbm<br />
-    AuthDBMUserFile /www/passwords/passwd.dbm<br />
-    Require valid-user<br />
+    <span class="indent">
+        AuthName "Private"<br />
+        AuthType Basic<br />
+        AuthBasicProvider dbm<br />
+        AuthDBMUserFile /www/passwords/passwd.dbm<br />
+        Require valid-user<br />
+    </span>
     &lt;/Directory&gt;
     </code></p></div>
 
