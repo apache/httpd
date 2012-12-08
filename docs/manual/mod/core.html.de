@@ -88,6 +88,7 @@ Servers</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#location">&lt;Location&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#locationmatch">&lt;LocationMatch&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#loglevel">LogLevel</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#logleveloverride">LogLevelOverride</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxkeepaliverequests">MaxKeepAliveRequests</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxrangeoverlaps">MaxRangeOverlaps</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxrangereversals">MaxRangeReversals</a></li>
@@ -118,6 +119,7 @@ Servers</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#usecanonicalname">UseCanonicalName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#virtualhost">&lt;VirtualHost&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#warning">Warning</a></li>
 </ul>
 <ul class="seealso"><li><a href="#comments_section">Kommentare</a></li></ul></div>
 
@@ -2366,6 +2368,25 @@ reguläre Ausdrücke passen</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LogLevelOverride" id="LogLevelOverride">LogLevelOverride</a>-<a name="logleveloverride" id="logleveloverride">Direktive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Override the verbosity of the ErrorLog for certain clients</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LogLevel <var>ipaddress</var>[/<var>prefixlen</var>]
+    [<var>module</var>:]<var>level</var> [<var>module</var>:<var>level</var>] ...
+</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>unset</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Available in Apache HTTP Server 2.5.0 and later</td></tr>
+</table><p>Die Dokumentation zu dieser Direktive wurde
+            noch nicht übersetzt. Bitte schauen Sie in die englische
+            Version.</p><h3>Siehe auch</h3>
+<ul>
+<li><code class="directive"><a href="#loglevel">LogLevel</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MaxKeepAliveRequests" id="MaxKeepAliveRequests">MaxKeepAliveRequests</a>-<a name="maxkeepaliverequests" id="maxkeepaliverequests">Direktive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Anzahl der Anfragen, die bei einer persistenten Verbindung
@@ -3600,6 +3621,18 @@ IP-Adressen angewendet werden</td></tr>
     kombiniert werden, wenn eine Anfrage empfangen wird</li>
 </ul>
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Warning" id="Warning">Warning</a>-<a name="warning" id="warning">Direktive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Warn from configuration parsing with a custom message</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Warning <var>message</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host, Verzeichnis, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>2.5 and later</td></tr>
+</table><p>Die Dokumentation zu dieser Direktive wurde
+            noch nicht übersetzt. Bitte schauen Sie in die englische
+            Version.</p></div>
 </div>
 <div class="bottomlang">
 <p><span>Verfügbare Sprachen: </span><a href="../de/mod/core.html" title="Deutsch">&nbsp;de&nbsp;</a> |

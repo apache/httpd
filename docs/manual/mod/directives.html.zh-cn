@@ -344,6 +344,7 @@
 <li><a href="core.html#locationmatch">&lt;LocationMatch&gt;</a></li>
 <li><a href="mod_log_config.html#logformat">LogFormat</a></li>
 <li><a href="core.html#loglevel">LogLevel</a></li>
+<li><a href="core.html#logleveloverride">LogLevelOverride</a></li>
 <li><a href="mod_log_debug.html#logmessage">LogMessage</a></li>
 <li><a href="mod_lua.html#luaauthzprovider">LuaAuthzProvider</a></li>
 <li><a href="mod_lua.html#luacodecache">LuaCodeCache</a></li>
@@ -648,7 +649,8 @@
 <li><a href="core.html#virtualhost">&lt;VirtualHost&gt;</a></li>
 <li><a href="mod_vhost_alias.html#virtualscriptalias">VirtualScriptAlias</a></li>
 <li><a href="mod_vhost_alias.html#virtualscriptaliasip">VirtualScriptAliasIP</a></li>
-<li><a href="mod_watchdog.html#watchdoginterval" id="W" name="W">WatchdogInterval</a></li>
+<li><a href="core.html#warning" id="W" name="W">Warning</a></li>
+<li><a href="mod_watchdog.html#watchdoginterval">WatchdogInterval</a></li>
 <li><a href="mod_include.html#xbithack" id="X" name="X">XBitHack</a></li>
 <li><a href="mod_xml2enc.html#xml2encalias">xml2EncAlias</a></li>
 <li><a href="mod_xml2enc.html#xml2encdefault">xml2EncDefault</a></li>
