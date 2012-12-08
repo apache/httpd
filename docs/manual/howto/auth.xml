@@ -365,13 +365,11 @@ Require group GroupName
 
     <highlight language="config">
 &lt;Directory /www/docs/private&gt;
-<indent>
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider dbm
     AuthDBMUserFile /www/passwords/passwd.dbm
     Require valid-user
-</indent>
 &lt;/Directory&gt;
     </highlight>
 
@@ -390,14 +388,12 @@ Require group GroupName
 
     <highlight language="config">
 &lt;Directory /www/docs/private&gt;
-<indent>
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider file ldap
     AuthUserFile /usr/local/apache/passwd/passwords
     AuthLDAPURL ldap://ldaphost/o=yourorg
     Require valid-user
-</indent>
 &lt;/Directory&gt;
     </highlight>
 
@@ -416,7 +412,6 @@ Require group GroupName
 
     <highlight language="config">
 &lt;Directory /www/docs/private&gt;
-<indent>
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider file
@@ -425,7 +420,6 @@ Require group GroupName
     AuthGroupFile /usr/local/apache/passwd/groups
     Require group GroupName
     Require ldap-group cn=mygroup,o=yourorg
-</indent>
 &lt;/Directory&gt;
     </highlight>
 
