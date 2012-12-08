@@ -1105,7 +1105,6 @@ static apr_status_t commit_entity(cache_handle_t *h, request_rec *r)
                 sobj->key);
         goto fail;
     }
-    apr_brigade_cleanup(sobj->body);
     if (len >= sobj->buffer_len - sobj->body_offset) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(02383)
                 "body too big for the cache buffer, not caching: %s",
