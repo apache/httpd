@@ -28,8 +28,6 @@
 <a href="../fr/mod/mod_auth_digest.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/mod/mod_auth_digest.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Authentification utilisateur utilisant les condensés
 MD5</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -57,7 +55,6 @@ MD5</td></tr>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#using">Utilisation de l'authentification à base de
 condensés</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#msie">Travailler avec MS Internet Explorer</a></li>
 </ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code></li>
@@ -96,59 +93,11 @@ condensés</a></h2>
     <div class="note"><h3>Note</h3>
     <p>L'authentification à base de condensés MD5 est plus sécurisée que
     l'authentification Basic, mais ne fonctionne qu'avec les navigateurs
-    qui la supportent. En septembre 2004, les principaux navigateurs
-    supportant l'authentification à base de condensés MD5 incluaient <a href="http://www.w3.org/Amaya/">Amaya</a>, <a href="http://konqueror.kde.org/">Konqueror</a>, <a href="http://www.microsoft.com/windows/ie/">MS Internet Explorer</a>
-    pour Mac OS X et Windows (bien que la version Windows échoue lorsque
-    la requête comporte une chaîne d'arguments -- voir plus loin "<a href="#msie">Travailler avec MS Internet Explorer</a>" pour
-    contourner ce problème), <a href="http://www.mozilla.org">Mozilla</a>, Netscape 7, 
-    <a href="http://www.opera.com/">Opera</a>, et <a href="http://www.apple.com/safari/">Safari</a>. <a href="http://lynx.isc.org/">lynx</a> ne supporte
-    <strong>pas</strong> l'authentification à base de condensés MD5.
-    Comme l'authentification à base de condensés MD5 est moins répandue
-    que l'authentification Basic, vous ne devez l'utiliser que dans des
-    environnements où tous les utilisateurs disposeront d'un navigateur
-    la supportant.</p>
+    qui la supportent. Au moment où ces lignes sont écrites (Décembre
+    2012), c'est le cas des principaux navigateurs.</p>
     <p><code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> ne fonctionne correctement que
     sur les plates-formes où APR supporte la mémoire partagée.</p>
     </div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="msie" id="msie">Travailler avec MS Internet Explorer</a></h2>
-    <p>L'implémentation de l'authentification à base de condensé dans
-    les versions précédentes d'Internet Explorer pour Windows (5 et 6)
-    posait problème, car les requêtes de type <code>GET</code>
-    comportant une chaîne d'arguments (query string) ne respectaient pas les RFC. Il y
-    a plusieurs manières de contourner ce problème.</p>
-
-    <p>
-    La première méthode consiste à utiliser des requêtes de type
-    <code>POST</code> plutôt que <code>GET</code> pour transmettre les
-    données à votre programme. Cette méthode constitue l'approche la
-    plus simple dans le cas où votre application peut fonctionner avec
-    cette limitation.
-    </p>
-
-    <p>Depuis la version 2.0.51, Apache propose aussi de contourner le
-    problème à l'aide de la variable d'environnement
-    <code>AuthDigestEnableQueryStringHack</code>. Si
-    <code>AuthDigestEnableQueryStringHack</code> est définie pour la
-    requête, Apache va prendre des mesures pour contourner la bogue MSIE
-    et en particulier va exclure la chaîne d'arguments de la comparaison
-    des condensés. L'utilisation de cette méthode peut se traduire par
-    ceci :</p>
-
-    <div class="example"><h3>Utilisation de l'authentification à base de condensé
-    avec MSIE :</h3><pre class="prettyprint lang-config">
-        BrowserMatch "MSIE" AuthDigestEnableQueryStringHack=On
-    </pre>
-</div>
-
-    <p>Cette correction n'est pas nécessaire avec MSIE 7, bien que son
-    activation ne pose pas de problème de compatibilité ou de surcharge
-    significative.</p>
-
-    <p>Voir la directive <code class="directive"><a href="../mod/mod_setenvif.html#browsermatch">BrowserMatch</a></code> pour plus de détails
-    à propos de la définition conditionnelle des variables
-    d'environnement.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthDigestAlgorithm" id="AuthDigestAlgorithm">AuthDigestAlgorithm</a> <a name="authdigestalgorithm" id="authdigestalgorithm">Directive</a></h2>

@@ -88,6 +88,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#location">&lt;Location&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#locationmatch">&lt;LocationMatch&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#loglevel">LogLevel</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#logleveloverride">LogLevelOverride</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxkeepaliverequests">MaxKeepAliveRequests</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxrangeoverlaps">MaxRangeOverlaps</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxrangereversals">MaxRangeReversals</a></li>
@@ -118,6 +119,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#usecanonicalname">UseCanonicalName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#virtualhost">&lt;VirtualHost&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#warning">Warning</a></li>
 </ul>
 <ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
 
@@ -2308,6 +2310,25 @@ the server configuration files</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LogLevelOverride" id="LogLevelOverride">LogLevelOverride</a> <a name="logleveloverride" id="logleveloverride">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Override the verbosity of the ErrorLog for certain clients</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>LogLevel <var>ipaddress</var>[/<var>prefixlen</var>]
+    [<var>module</var>:]<var>level</var> [<var>module</var>:<var>level</var>] ...
+</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>unset</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Available in Apache HTTP Server 2.5.0 and later</td></tr>
+</table><p>このディレクティブの解説文書は
+            まだ翻訳されていません。英語版をご覧ください。
+            </p><h3>参照</h3>
+<ul>
+<li><code class="directive"><a href="#loglevel">LogLevel</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MaxKeepAliveRequests" id="MaxKeepAliveRequests">MaxKeepAliveRequests</a> <a name="maxkeepaliverequests" id="maxkeepaliverequests">ディレクティブ</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>持続的な接続上で許可されるリクエストの数</td></tr>
@@ -3515,6 +3536,18 @@ of a request or the last 63, assuming the request itself is greater than
     &lt;Directory&gt;, &lt;Location&gt;, &lt;Files&gt; セクションの動作法</a></li>
 </ul>
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Warning" id="Warning">Warning</a> <a name="warning" id="warning">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Warn from configuration parsing with a custom message</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>Warning <var>message</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.5 and later</td></tr>
+</table><p>このディレクティブの解説文書は
+            まだ翻訳されていません。英語版をご覧ください。
+            </p></div>
 </div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../de/mod/core.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |

@@ -85,6 +85,7 @@ available</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#location">&lt;Location&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#locationmatch">&lt;LocationMatch&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#loglevel">LogLevel</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#logleveloverride">LogLevelOverride</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxkeepaliverequests">MaxKeepAliveRequests</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxrangeoverlaps">MaxRangeOverlaps</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxrangereversals">MaxRangeReversals</a></li>
@@ -115,6 +116,7 @@ available</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#usecanonicalname">UseCanonicalName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#virtualhost">&lt;VirtualHost&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#warning">Warning</a></li>
 </ul>
 <ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 
@@ -2968,11 +2970,72 @@ LogLevel info
 
     <div class="note">
         Per directory loglevel configuration only affects messages that are
-	logged after the request has been parsed and that are associated with
-	the request. Log messages which are associated with the connection or
-	the server are not affected.
+        logged after the request has been parsed and that are associated with
+        the request. Log messages which are associated with the server or
+        the connection are not affected. The latter can be influenced by the
+        <code class="directive"><a href="#logleveloverride">LogLevelOverride</a></code> directive,
+        though.
     </div>
 
+<h3>See also</h3>
+<ul>
+<li><code class="directive"><a href="#errorlog">ErrorLog</a></code></li>
+<li><code class="directive"><a href="#errorlogformat">ErrorLogFormat</a></code></li>
+<li><code class="directive"><a href="#logleveloverride">LogLevelOverride</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LogLevelOverride" id="LogLevelOverride">LogLevelOverride</a> <a name="logleveloverride" id="logleveloverride">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Override the verbosity of the ErrorLog for certain clients</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LogLevel <var>ipaddress</var>[/<var>prefixlen</var>]
+    [<var>module</var>:]<var>level</var> [<var>module</var>:<var>level</var>] ...
+</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>unset</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.5.0 and later</td></tr>
+</table>
+    <p><code class="directive">LogLevelOverride</code> adjusts the
+    <code class="directive"><a href="#loglevel">LogLevel</a></code> for requests coming from
+    certain client IP addresses.
+    This allows to enable verbose logging only for certain test clients.
+    The IP address is checked at a very early state in the connection
+    processing.  Therefore, <code class="directive">LogLevelOverride</code> allows to
+    change the log level for things like the SSL handshake which happen before
+    a <code class="directive"><a href="#loglevel">LogLevel</a></code> directive in an
+    <code class="directive"><a href="#if">&lt;If&gt;</a></code> container would
+    be evaluated.</p>
+
+    <p><code class="directive">LogLevelOverride</code> accepts either a single
+    IP-address or a CIDR IP-address/len subnet specification.
+    For the syntax of the loglevel specification, see the
+    <code class="directive"><a href="#loglevel">LogLevel</a></code> directive.</p>
+
+    <p>For requests that match a <code class="directive">LogLevelOverride</code>
+    directive, per-directory specifications of
+    <code class="directive"><a href="#loglevel">LogLevel</a></code> are ignored.</p>
+
+    <p>Examples:</p>
+
+    <pre class="prettyprint lang-config">
+        LogLevelOverride 192.0.2.0/24 ssl:trace6
+        LogLevelOverride 192.0.2.7 ssl:trace8
+    </pre>
+
+
+    <div class="note">
+        <code class="directive"><a href="#logleveloverride">LogLevelOverride</a></code> only affects
+        log messages that are associated with the request or the connection.
+        Log messages which are associated with the server not affected.
+    </div>
+
+
+<h3>See also</h3>
+<ul>
+<li><code class="directive"><a href="#loglevel">LogLevel</a></code></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MaxKeepAliveRequests" id="MaxKeepAliveRequests">MaxKeepAliveRequests</a> <a name="maxkeepaliverequests" id="maxkeepaliverequests">Directive</a></h2>
@@ -4531,6 +4594,36 @@ hostname or IP address</td></tr>
     and &lt;Files&gt; sections work</a> for an explanation of how these
     different sections are combined when a request is received</li>
 </ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Warning" id="Warning">Warning</a> <a name="warning" id="warning">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Warn from configuration parsing with a custom message</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Warning <var>message</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.5 and later</td></tr>
+</table>
+    <p>If an issue can be detected from within the configuration, this
+    directive can be used to generate a custom warning message. The
+    configuration parsing is not halted. The typical use it to check
+    whether some user define options are set, and warn if not.</p>
+
+    <pre class="prettyprint lang-config">
+# Example
+# tell when ReverseProxy is not set
+&lt;IfDefine !ReverseProxy&gt;
+  Warning "reverse proxy is not started, hope this is okay!"
+&lt;/IfDefine&gt;
+
+&lt;IfDefine ReverseProxy&gt;
+  # define custom proxy configuration
+&lt;/IfDefine&gt;
+    </pre>
+
+
+
 </div>
 </div>
 <div class="bottomlang">
