@@ -1011,7 +1011,8 @@ static const char *set_type_url(cmd_parms *cmd, void *dconf, const char *url)
 {
     policy_conf *conf = dconf;
 
-    conf->type_url = url;
+    /* url is only used inside <a href="...">, escape accordingly */
+    conf->type_url = ap_escape_html(cmd->pool, url);
     conf->type_url_set = 1;
 
     return NULL;
