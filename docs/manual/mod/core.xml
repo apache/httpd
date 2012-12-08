@@ -2893,11 +2893,65 @@ LogLevel info
 
     <note>
         Per directory loglevel configuration only affects messages that are
-	logged after the request has been parsed and that are associated with
-	the request. Log messages which are associated with the connection or
-	the server are not affected.
+        logged after the request has been parsed and that are associated with
+        the request. Log messages which are associated with the server or
+        the connection are not affected. The latter can be influenced by the
+        <directive module="core">LogLevelOverride</directive> directive,
+        though.
     </note>
 </usage>
+<seealso><directive module="core">ErrorLog</directive></seealso>
+<seealso><directive module="core">ErrorLogFormat</directive></seealso>
+<seealso><directive module="core">LogLevelOverride</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LogLevelOverride</name>
+<description>Override the verbosity of the ErrorLog for certain clients</description>
+<syntax>LogLevel <var>ipaddress</var>[/<var>prefixlen</var>]
+    [<var>module</var>:]<var>level</var> [<var>module</var>:<var>level</var>] ...
+</syntax>
+<default>unset</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>Available in Apache HTTP Server 2.5.0 and later</compatibility>
+
+<usage>
+    <p><directive>LogLevelOverride</directive> adjusts the
+    <directive module="core">LogLevel</directive> for requests coming from
+    certain client IP addresses.
+    This allows to enable verbose logging only for certain test clients.
+    The IP address is checked at a very early state in the connection
+    processing.  Therefore, <directive>LogLevelOverride</directive> allows to
+    change the log level for things like the SSL handshake which happen before
+    a <directive module="core">LogLevel</directive> directive in an
+    <directive type="section" module="core">If</directive> container would
+    be evaluated.</p>
+
+    <p><directive>LogLevelOverride</directive> accepts either a single
+    IP-address or a CIDR IP-address/len subnet specification.
+    For the syntax of the loglevel specification, see the
+    <directive module="core">LogLevel</directive> directive.</p>
+
+    <p>For requests that match a <directive>LogLevelOverride</directive>
+    directive, per-directory specifications of
+    <directive module="core">LogLevel</directive> are ignored.</p>
+
+    <p>Examples:</p>
+
+    <highlight language="config">
+        LogLevelOverride 192.0.2.0/24 ssl:trace6
+        LogLevelOverride 192.0.2.7 ssl:trace8
+    </highlight>
+
+    <note>
+        <directive module="core">LogLevelOverride</directive> only affects
+        log messages that are associated with the request or the connection.
+        Log messages which are associated with the server not affected.
+    </note>
+
+</usage>
+<seealso><directive module="core">LogLevel</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>

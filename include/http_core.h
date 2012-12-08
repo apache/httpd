@@ -668,6 +668,8 @@ typedef struct {
     apr_uint16_t min_http_version;
     apr_uint16_t max_http_version;
 
+    apr_array_header_t *conn_log_level;
+
 } core_server_config;
 
 /* for AddOutputFiltersByType in core.c */

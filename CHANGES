@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Add LogLevelOverride directive that allows to override the
+     loglevel for clients from certain IPs. This also works for things
+     like the SSL handshake where <If> LogLevel ... </If> is evaluated
+     too late. [Stefan Fritsch]
+
   *) mod_status: Print out list of times since a Vhost was last used.
      [Jim Jagielski]
 
