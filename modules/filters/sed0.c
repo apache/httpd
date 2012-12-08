@@ -745,7 +745,7 @@ static int rline(sed_commands_t *commands, apr_file_t *fin,
 
         out1:
             if (p == lbend) {
-                command_errf(commands, SEDERR_CLTL, commands->linebuf);
+                command_errf(commands, SEDERR_CLTL);
                 return -1;
             }
             *p = '\0';
@@ -773,7 +773,7 @@ static int rline(sed_commands_t *commands, apr_file_t *fin,
 
     out2:
         if (p == lbend) {
-            command_errf(commands, SEDERR_CLTL, commands->linebuf);
+            command_errf(commands, SEDERR_CLTL);
             return -1;
         }
         *p = '\0';
@@ -785,7 +785,7 @@ static int rline(sed_commands_t *commands, apr_file_t *fin,
     while (apr_file_read(fin, &t, &bytes_read) != APR_SUCCESS) {
         if(t == '\n') {
             if (p == lbend) {
-                command_errf(commands, SEDERR_CLTL, commands->linebuf);
+                command_errf(commands, SEDERR_CLTL);
                 return -1;
             }
             *p = '\0';
@@ -852,7 +852,7 @@ static char *address(sed_commands_t *commands, char *expbuf,
         *expbuf++ = commands->nlno;
         commands->tlno[commands->nlno++] = lno;
         if(commands->nlno >= SED_NLINES) {
-            command_errf(commands, SEDERR_TMLNMES, commands->linebuf);
+            command_errf(commands, SEDERR_TMLNMES);
             *status = APR_EGENERAL;
             return NULL;
         }
