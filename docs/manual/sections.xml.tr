@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1300911:1384858 (outdated) -->
+<!-- English Revision: 1384858 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -82,13 +82,11 @@
       sunucu <code>httpd -DClosedForNow</code> komut satırı ile başlatıldığı
       takdirde mümkün olur:</p>
 
-    <example>
-      &lt;IfDefine ClosedForNow&gt;<br />
-      <indent>
-        Redirect / http://otherserver.example.com/<br />
-      </indent>
-      &lt;/IfDefine&gt;
-    </example>
+    <highlight language="config">
+&lt;IfDefine ClosedForNow&gt;
+  Redirect / http://otherserver.example.com/
+&lt;/IfDefine&gt;
+    </highlight>
 
     <p><directive type="section" module="core">IfModule</directive> yönergesi
       sadece belli bir modülün sunucuda kullanılabilir durumda olması halinde
@@ -106,13 +104,11 @@
       >MimeMagicFile</directive> yönergesi sadece
       <module>mod_mime_magic</module> modülü mevcutsa uygulanacaktır.</p>
 
-    <example>
-      &lt;IfModule mod_mime_magic.c&gt;<br />
-      <indent>
-        MimeMagicFile conf/magic<br />
-      </indent>
-      &lt;/IfModule&gt;
-    </example>
+    <highlight language="config">
+&lt;IfModule mod_mime_magic.c&gt;
+  MimeMagicFile conf/magic
+&lt;/IfModule&gt;
+    </highlight>
 
     <p><directive type="section" module="mod_version">IfVersion</directive>
       yönergesi sunucunun belli bir sürümünün çalıştırılması halinde
@@ -123,14 +119,12 @@
       yapılandırmalarla büyük ağlarda çalışmayı mümkün kılmak veya sürüm
       denemeleri yapabilmek amacıyla tasarlanmıştır.</p>
 
-    <example>
-      &lt;IfVersion >= 2.1&gt;<br />
-      <indent>
-        # burası sadece 2.1.0 veya daha üstü sürümlerde<br />
-        # iş görür.<br />
-      </indent>
-      &lt;/IfVersion&gt;
-    </example>
+    <highlight language="config">
+&lt;IfVersion >= 2.4&gt;
+  # burası sadece 2.4.0 veya daha üstü sürümlerde
+  # iş görür.
+&lt;/IfVersion&gt;
+    </highlight>
 
     <p><directive type="section" module="core">IfDefine</directive>,
       <directive type="section" module="core">IfModule</directive> ve
@@ -174,13 +168,11 @@
       yapılandırmada, <code>/var/web/dir1</code> dizini ve alt dizinlerinde
       dizin içeriğinin listelenmesi etkin kılınmaktadır.</p>
 
-    <example>
-      &lt;Directory /var/web/dir1&gt;<br />
-      <indent>
-        Options +Indexes<br />
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory /var/web/dir1&gt;
+  Options +Indexes
+&lt;/Directory&gt;
+    </highlight>
 
     <p>Bir <directive type="section" module="core">Files</directive> bölümü
       içindeki yönergeler, hangi dizinde bulunduğuna bakılmaksızın ismi
@@ -189,14 +181,11 @@
       <code>gizli.html</code> isimli dosyalara nerede bulunursa bulunsun
       erişime izin vermeyecektir.</p>
 
-    <example>
-      &lt;Files gizli.html&gt;<br />
-      <indent>
-        Order allow,deny<br />
-        Deny from all<br />
-      </indent>
-      &lt;/Files&gt;
-    </example>
+    <highlight language="config">
+&lt;Files gizli.html&gt;
+  Require all denied
+&lt;/Files&gt;
+    </highlight>
 
     <p>Dosya sisteminin belli bir yerindeki belli dosyalarla ilgili yaptırımlar
       için <directive type="section" module="core">Files</directive> ve
@@ -208,18 +197,13 @@
       <code>/var/web/dir1/</code> altında bulunabilecek diğer tüm
       <code>gizli.html</code> dosyalarına erişimi yasaklar.</p>
 
-    <example>
-      &lt;Directory /var/web/dir1&gt;<br />
-      <indent>
-        &lt;Files gizli.html&gt;<br />
-        <indent>
-          Order allow,deny<br />
-          Deny from all<br />
-        </indent>
-        &lt;/Files&gt;<br />
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory /var/web/dir1&gt;<br />
+  &lt;Files gizli.html&gt;<br />
+    Require all denied
+  &lt;/Files&gt;<br />
+&lt;/Directory&gt;
+    </highlight>
   </section>
 
   <section id="webspace"><title>Site Alanı Taşıyıcıları</title>
@@ -234,14 +218,11 @@
       istekleri yanında <code>/gizli</code> ile başlayan diğer isteklere de
       uygulanır.</p>
 
-    <example>
-      &lt;LocationMatch ^/gizli&gt;<br />
-      <indent>
-        Order Allow,Deny<br />
-        Deny from all<br />
-      </indent>
-      &lt;/LocationMatch&gt;
-    </example>
+    <highlight language="config">
+&lt;LocationMatch ^/gizli&gt;
+    Require all denied
+&lt;/LocationMatch&gt;
+    </highlight>
 
     <p>Dosya sistemi ile etkileşime girmeyen herşey için
       <directive type="section" module="core">Location</directive>
@@ -251,13 +232,11 @@
       için dosya sisteminde <code>server-status</code> adında bir dosya
       veya dizin bulunması gerekli değildir.</p>
 
-    <example>
-      &lt;Location /server-status&gt;<br />
-      <indent>
-        SetHandler server-status<br />
-      </indent>
-      &lt;/Location&gt;
-    </example>
+    <highlight language="config">
+&lt;Location /server-status&gt;
+    SetHandler server-status
+&lt;/Location&gt;
+    </highlight>
   </section>
 
   <section id="overlapping-webspace"><title>Site Alanında Çakışma</title>
@@ -265,28 +244,28 @@
     olarak dikkate alınır. <directive type="section" module="core"
     >Location</directive> yönergesi için bu şöyle olurdu:</p>
 
-    <example>
-      &lt;Location /foo&gt;<br />
-      &lt;/Location&gt;<br />
-      &lt;Location /foo/bar&gt;<br />
-      &lt;/Location>
-    </example>
+    <highlight language="config">
+&lt;Location /foo&gt;
+&lt;/Location&gt;
+&lt;Location /foo/bar&gt;
+&lt;/Location>
+    </highlight>
 
     <p>Diğer yandan <directive type="section" module="mod_alias">Takma
       adlar</directive> tam tersi eşlenir:</p>
 
-    <example>
-      Alias /foo/bar /srv/www/uncommon/bar<br />
-      Alias /foo /srv/www/common/foo<br />
-    </example>
+    <highlight language="config">
+Alias /foo/bar /srv/www/uncommon/bar
+Alias /foo /srv/www/common/foo
+    </highlight>
 
     <p>Aynısı <directive module="mod_proxy">ProxyPass</directive>
       yönergeleri için de geçerlidir:</p>
 
-    <example>
-      ProxyPass /special-area http://special.example.com smax=5 max=10<br />
-      ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On
-    </example>
+    <highlight language="config">
+ProxyPass /special-area http://special.example.com smax=5 max=10
+ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On
+    </highlight>
   </section>
 
   <section id="wildcards">
@@ -316,25 +295,20 @@
     <p>Tüm kullanıcı dizinlerine ilişkin yapılandırmayı değiştirmek için dosya
       ismi kalıpları şöyle kullanılabilirdi:</p>
 
-    <example>
-      &lt;Directory /home/*/public_html&gt;<br />
-      <indent>
-        Options Indexes<br />
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory /home/*/public_html&gt;
+    Options Indexes
+&lt;/Directory&gt;
+    </highlight>
 
     <p>Düzenli ifade bölümleri kullanarak çeşitli türlerdeki resim dosyalarına
       erişimi bir defada yasaklayabiliriz:</p>
 
-    <example>
-      &lt;FilesMatch \.(?i:gif|jpe?g|png)$&gt;<br />
-      <indent>
-        Order allow,deny<br />
-        Deny from all<br />
-      </indent>
-      &lt;/FilesMatch&gt;
-    </example>
+    <highlight language="config">
+&lt;FilesMatch \.(?i:gif|jpe?g|png)$&gt;
+    Require all denied
+&lt;/FilesMatch&gt;
+    </highlight>
   </section>
 
   <section id="expressions"><title>Mantıksal İfadeler</title>
@@ -344,13 +318,11 @@
       <code>HTTP Referer</code> başlığı "http://www.example.com/" ile
       başlamıyorsa erişimi yasaklar.</p>
 
-    <example>
-    &lt;If "!(%{HTTP_REFERER} -strmatch 'http://www.example.com/*')"&gt;<br />
-    <indent>
-      Require all denied<br />
-    </indent>
-    &lt;/If&gt;
-    </example>
+    <highlight language="config">
+&lt;If "!(%{HTTP_REFERER} -strmatch 'http://www.example.com/*')"&gt;
+    Require all denied
+&lt;/If&gt;
+    </highlight>
   </section>
 
   <section id="whichwhen"><title>Ne, Ne Zaman Kullanılır?</title>
@@ -370,14 +342,11 @@
       kısıtlamalarınızın etrafından dolaşılabilmesine izin vermesidir.
       Örneğin, aşağıdaki yapılandırmayı ele alalım:</p>
 
-    <example>
-      &lt;Location /dir/&gt;<br />
-      <indent>
-        Order allow,deny<br />
-        Deny from all<br />
-      </indent>
-      &lt;/Location&gt;
-    </example>
+    <highlight language="config">
+&lt;Location /dir/&gt;
+    Require all denied
+&lt;/Location&gt;
+    </highlight>
 
     <p><code>http://siteniz.mesela.dom/dir/</code> için bir istek yapılmışsa
       bu doğru çalışacaktır. Fakat dosya sistemi harf büyüklüğüne duyarsızsa
@@ -440,14 +409,11 @@
       <code>example.com</code> sitesine erişim için vekil sunucunun
       kullanılmasını engelleyecektir.</p>
 
-    <example>
-      &lt;Proxy http://example.com/*&gt;<br />
-      <indent>
-        Order allow,deny<br />
-        Deny from all<br />
-      </indent>
-      &lt;/Proxy&gt;
-    </example>
+    <highlight language="config">
+&lt;Proxy http://www.example.com/*&gt;
+    Require all granted
+&lt;/Proxy&gt;
+    </highlight>
 </section>
 
 <section id="whatwhere"><title>Hangi Yönergelere İzin Veriliyor?</title>
@@ -484,7 +450,7 @@
     </ul>
 </section>
 
-<section id="mergin"><title>Bölümler Nasıl Katıştırılır?</title>
+<section id="merging"><title>Bölümler Nasıl Katıştırılır?</title>
 
     <p>Yapılandırma bölümleri belli bir sıra ile uygulanır. Yapılandırma
       yönergelerinin yorumlanışı üzerinde önemli etkilere sahip olabilmesi
@@ -560,30 +526,29 @@
       isteğe uygulandığı varsayımıyla, bu örnekteki yönergeler A &gt; B &gt; C
       &gt; D &gt; E sırasıyla uygulanacaktır.</p>
 
-    <example>
-      &lt;Location /&gt;<br />
-      E<br />
-      &lt;/Location&gt;<br />
-      <br />
-      &lt;Files f.html&gt;<br />
-      D<br />
-      &lt;/Files&gt;<br />
-      <br />
-      &lt;VirtualHost *&gt;<br />
-      &lt;Directory /a/b&gt;<br />
-      B<br />
-      &lt;/Directory&gt;<br />
-      &lt;/VirtualHost&gt;<br />
-      <br />
-      &lt;DirectoryMatch "^.*b$"&gt;<br />
-      C<br />
-      &lt;/DirectoryMatch&gt;<br />
-      <br />
-      &lt;Directory /a/b&gt;<br />
-      A<br />
-      &lt;/Directory&gt;<br />
-      <br />
-    </example>
+    <highlight language="config">
+&lt;Location /&gt;
+    E
+&lt;/Location&gt;
+
+&lt;Files f.html&gt;
+    D
+&lt;/Files&gt;
+
+&lt;VirtualHost *&gt;
+&lt;Directory /a/b&gt;
+    B
+&lt;/Directory&gt;
+&lt;/VirtualHost&gt;
+
+&lt;DirectoryMatch "^.*b$"&gt;
+    C
+&lt;/DirectoryMatch&gt;
+
+&lt;Directory /a/b&gt;
+    A
+&lt;/Directory&gt;
+    </highlight>
 
     <p>Daha somut bir örnek olarak aşağıdakini ele alalım.
       <directive module="core" type="section">Directory</directive>
@@ -593,23 +558,20 @@
       Başka bir deyişle, katıştırma sırası önemlidir, bu nedenle dikkatli
       olmalısınız!</p>
 
-    <example>
-    &lt;Location /&gt;<br />
-    <indent>
-      Order deny,allow<br />
-      Allow from all<br />
-    </indent>
-    &lt;/Location&gt;<br />
-    <br />
-    # Alooo!  Bu &lt;Directory&gt; bölümünün hiçbir hükmü yok.<br />
-    &lt;Directory /&gt;<br />
-    <indent>
-      Order allow,deny<br />
-      Allow from all<br />
-      Deny from kkadam.mesela.dom<br />
-    </indent>
-    &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Location /&gt;
+    Require all granted
+&lt;/Location&gt;
+
+# Alooo!  Bu &lt;Directory&gt; bölümünün hiçbir hükmü yok.
+&lt;Directory /&gt;
+    &lt;RequireAll&gt;
+        Require all granted
+        Require not host kkadam.example.com
+    &lt;/RequireAll&gt;
+&lt;/Directory&gt;
+    </highlight>
+
   </section>
 
 </section>

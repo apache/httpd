@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1174747:1334033 (outdated) -->
+<!-- English Revision: 1334033 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -41,15 +41,13 @@
   <section id="example">
     <title>Basit Bir Örnek</title>
 
-    <example>
-      # Bu yetersiz bir yapılandırma örneğidir, sunucunuzda kullanmayın. <br />
-      &lt;VirtualHost falan.fesmekan.dom&gt;
-      <indent>
-        ServerAdmin filanca@fesmekan.dom <br />
-        DocumentRoot /siteler/fesmekan
-      </indent>
-      &lt;/VirtualHost&gt;
-    </example>
+    <highlight language="config">
+# Bu yetersiz bir yapılandırma örneğidir, sunucunuzda kullanmayın.
+&lt;VirtualHost falan.fesmekan.dom&gt;
+  ServerAdmin filanca@fesmekan.dom
+  DocumentRoot /siteler/fesmekan
+&lt;/VirtualHost&gt;
+    </highlight>
 
     <p>httpd’nin beklendiği gibi işlemesi için her sanal konak için iki
       veriye mutlaka ihtiyacı vardır: <directive module="core"
@@ -64,15 +62,13 @@
     <p><code>falan.fesmekan.dom</code>’un 192.168.2.1 IP adresine sahip
       olduğunu varsayarsak yapılandırma şöyle olurdu:</p>
 
-    <example>
-      # Bu yetersiz bir yapılandırma örneğidir, sunucunuzda kullanmayın. <br />
-      &lt;VirtualHost 192.168.2.1&gt; <br />
-      <indent>
-        ServerAdmin filanca@fesmekan.dom <br />
-        DocumentRoot /siteler/fesmekan
-      </indent>
-      &lt;/VirtualHost&gt;
-    </example>
+    <highlight language="config">
+# Bu yetersiz bir yapılandırma örneğidir, sunucunuzda kullanmayın.
+&lt;VirtualHost 192.168.2.1&gt;
+  ServerAdmin filanca@fesmekan.dom
+  DocumentRoot /siteler/fesmekan
+&lt;/VirtualHost&gt;
+    </highlight>
 
     <p>Ancak, bu sefer de bu sanal konağın sunucu ismini öğrenmek için
       httpd’nin bir ters DNS sorgusu yapması gerekecektir. Eğer bu sorgu
@@ -85,15 +81,13 @@
 
     <p>Her iki sorunu da çözen yapılandırma şöyle olurdu:</p>
 
-    <example>
-      &lt;VirtualHost 192.168.2.1&gt; <br />
-      <indent>
-        ServerName falan.fesmekan.dom <br />
-        ServerAdmin filanca@fesmekan.dom <br />
-        DocumentRoot /siteler/fesmekan
-      </indent>
-      &lt;/VirtualHost&gt;
-    </example>
+    <highlight language="config">
+&lt;VirtualHost 192.168.2.1&gt;
+  ServerName falan.fesmekan.dom
+  ServerAdmin filanca@fesmekan.dom
+  DocumentRoot /siteler/fesmekan
+&lt;/VirtualHost&gt;
+    </highlight>
   </section>
 
   <section id="denial">
@@ -101,21 +95,17 @@
 
     <p>Şöyle bir yapılandırmanız olsun:</p>
 
-    <example>
-      &lt;VirtualHost falan.fesmekan.dom&gt;<br />
-      <indent>
-        ServerAdmin filanca@fesmekan.dom <br />
-        DocumentRoot /siteler/fesmekan
-      </indent>
-      &lt;/VirtualHost&gt;<br />
-      <br />
-      &lt;VirtualHost misal.mesela.dom&gt;<br />
-      <indent>
-        ServerAdmin falanca@mesela.dom<br />
-        DocumentRoot /siteler/mesela<br />
-      </indent>
-      &lt;/VirtualHost&gt;
-    </example>
+    <highlight language="config">
+&lt;VirtualHost falan.fesmekan.dom&gt;
+  ServerAdmin filanca@fesmekan.dom
+  DocumentRoot /siteler/fesmekan
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost misal.mesela.dom&gt;
+  ServerAdmin falanca@mesela.dom
+  DocumentRoot /siteler/mesela
+&lt;/VirtualHost&gt;
+    </highlight>
 
     <p><code>falan.fesmekan.dom</code>’a 192.168.2.1,
       <code>misal.mesela.dom</code>’a 192.168.2.2 atadığınızı fakat,

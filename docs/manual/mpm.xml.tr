@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1174747:1395561 (outdated) -->
+<!-- English Revision: 1395561 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -94,6 +94,29 @@
         <module>event</module></td></tr>
       <tr><td>Windows</td><td><module>mpm_winnt</module></td></tr>
     </table>
+
+    <note><p>'Unix' burada Unix benzeri işletim sistemleri anlamında
+      kullanılmıştır (örn, Linux, BSD, Solaris, Mac OS X, vb.</p></note>
+
+    <p>Unix durumunda, hangi MPM'nin kurulacağı kararı şu 2 soruya verilecek
+      yanıta bağlıdır:</p>
+    <p>1. Sistem evreleri destekliyor mu?</p>
+    <p>2. Sistem evreleri "thread-safe polling" anlamında destekliyor mu
+      (özellikle kqueue ve epoll işlevlerini)?</p>
+
+    <p>Her iki soruya da verilen yanıt 'evet' ise, öntanımlı MPM'niz
+      <module>event</module> modülüdür.</p>
+
+    <p>Birincinin yanıtı 'evet' ikincinin 'hayır' ise öntanımlı MPM'niz
+      <module>worker</module> modülüdür.</p>
+
+    <p>Yanıtların her ikisi de 'hayır' ise öntanımlı MPM'niz
+      <module>prefork</module> modülüdür.</p>
+
+    <p>Uygulamada, günümüzdeki işletim sistemlerinin tümü bu iki özelliği
+      desteklediğinden öntanımlı MPM'niz hemen hemen daima
+      <module>event</module> modülü olacaktır.</p>
+
 </section>
 
 <section id="static"><title>Bir MPM'i bir duruk modül olarak derlemek</title>

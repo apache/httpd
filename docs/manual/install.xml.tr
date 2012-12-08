@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1296736:1387659 (outdated) -->
+<!-- English Revision: 1387659 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -362,7 +362,7 @@
     <p>Sürüm yükseltme işleminin ilk adımı, sitenizi etkileyen değişiklikleri
       öğrenmek için dağıtım duyurusunu ve kaynak paketindeki
       <code>CHANGES</code> dosyasını okumaktır. Ana sürümlerden yükseltme
-      yapıyorsanız (2.0’ten 2.2’ye veya 2.2’daen 2.3’e gibi), derleme anı ve
+      yapıyorsanız (2.0’ten 2.2’ye veya 2.2’den 2.4’e gibi), derleme anı ve
       çalışma anı yapılandırmalarındaki ana farklılıklar elle ayarlamalar
       yapmanızı gerektirecektir. Ayrıca, tüm modüllerin de modül API’sindeki
       değişikliklere uyum sağlaması için yükseltilmesi gerekecektir.</p>

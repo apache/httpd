@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="style/manual.tr.xsl"?>
-<!-- English Revision: 1291841:1334033 (outdated) -->
+<!-- English Revision: 1334033 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -413,12 +413,12 @@
 
       <p>Tipik olarak modül şöyle yapılandırılır:</p>
 
-      <example>
-CacheRoot   /var/cache/apache/<br />
-CacheEnable disk /<br />
-CacheDirLevels 2<br />
+      <highlight language="config">
+CacheRoot   "/var/cache/apache/"
+CacheEnable disk /
+CacheDirLevels 2
 CacheDirLength 1
-      </example>
+      </highlight>
 
       <p>En önemlisi önbelleklenen dosyaların yerel olarak saklanması olup
         işletim sisteminin sağladığı bellekiçi önbelleklemeden de ayrıca
@@ -642,9 +642,9 @@ CacheDirLength 1
           yapılan sonraki her istekte bu dosya tanıtıcısının kullanılmasını
           sağlar.</p>
 
-        <example>
-          CacheFile /usr/local/apache2/htdocs/index.html
-        </example>
+        <highlight language="config">
+CacheFile /usr/local/apache2/htdocs/index.html
+        </highlight>
 
         <p>Büyük miktarda dosyayı bu anlamda önbelleklemeyi tasarlıyorsanız
           işletim sisteminizin açık dosya tanıtıcılarının sayısı ile ilgili
@@ -737,9 +737,9 @@ CacheDirLength 1
           httpd bu dosyaya gelecek sonraki istekler için dosyanın bellekiçi
           içeriğini kullanacaktır.</p>
 
-        <example>
-          MMapFile /usr/local/apache2/htdocs/index.html
-        </example>
+        <highlight language="config">
+MMapFile /usr/local/apache2/htdocs/index.html
+        </highlight>
 
         <p><directive module="mod_file_cache">CacheFile</directive>
           yönergesinde olduğu gibi bu dosyalarda httpd başlatıldıktan sonra

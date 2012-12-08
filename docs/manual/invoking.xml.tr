@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1044380:1387618 (outdated) -->
+<!-- English Revision: 1387618 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -29,12 +29,10 @@
   <title>Apache HTTPd’nin başlatılması</title>
 
 <summary>
-    <p>Apache normal olarak, Windows NT, 2000 ve XP'de bir hizmet olarak,
-      Windows 9x ve ME’de ise bir konsol uygulaması olarak çalışır. Ayrıntılı
-      bilgi için <a href="platform/windows.html#winsvc">Apache HTTPd’nin bir
-      hizmet olarak çalıştırılması</a> ve <a
-      href="platform/windows.html#wincons">Apache HTTPd’nin bir konsol
-      uygulaması olarak çalıştırılması</a> bölümlerine bakınız.</p>
+    <p>Apache normal olarak, Windows NT, 2000 ve XP, Vista ve 7'de bir hizmet
+      olarak çalışır. Ayrıntılı bilgi için
+      <a href="platform/windows.html#winsvc">Apache HTTPD’nin bir hizmet olarak
+      çalıştırılması</a> bölümüne bakınız.</p>
 
     <p>Unix’te ise artalanda isteklere yanıt vermek için sürekli çalışan bir
       artalan sürecidir. Bu belgede <program>httpd</program>’nin nasıl

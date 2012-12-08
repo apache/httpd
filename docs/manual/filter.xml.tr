@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1189549:1334033 (outdated) -->
+<!-- English Revision: 1334033 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -50,6 +50,7 @@
         <module>mod_substitute</module>
         <module>mod_xml2enc</module>
         <module>mod_proxy_html</module>
+        <module>mod_policy</module>
       </modulelist>
       <directivelist>
         <directive module="mod_filter">FilterChain</directive>

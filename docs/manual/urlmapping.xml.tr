@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1310495:1334033 (outdated) -->
+<!-- English Revision: 1334033 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -83,7 +83,7 @@
 
     <p>Örneğin, <directive module="core">DocumentRoot</directive> yönergesine
       <code>/var/http/html</code> atanmış olsun.
-      <code>http://mesela.dom/balıklar/zargana.html</code> şeklindeki bir
+      <code>http://example.com/balıklar/zargana.html</code> şeklindeki bir
       istek için istemciye <code>/var/http/html/balıklar/zargana.html</code>
       dosyası sunulur.</p>
 
@@ -118,10 +118,10 @@
       altında göstermek için <directive module="mod_alias">Alias</directive>
       yönergesi de kullanılabilir. Örneğin,</p>
 
-    <example>Alias /belgeler /var/http</example>
+    <highlight language="config">Alias /belgeler /var/http</highlight>
 
     <p>yapılandırması ile
-      <code>http://mesela.dom/belgeler/dizin/dosya.html</code> URL’si için
+      <code>http://example.com/belgeler/dizin/dosya.html</code> URL’si için
       dosya sistemindeki <code>/var/http/dizin/dosya.html</code> dosyası
       sunulacaktır. Hedef dizindeki dosyaları birer <glossary ref="cgi"
       >CGI</glossary> betiği olarak imlemesi dışında <directive
@@ -134,10 +134,11 @@
       module="mod_alias" >ScriptAliasMatch</directive> yönergelerinin gücünden
       yararlanılabilir. Örneğin,</p>
 
-    <example>ScriptAliasMatch ^/~([a-zA-Z0-9]+)/cgi-bin/(.+)
-      /home/$1/cgi-bin/$2</example>
+    <highlight language="config">
+ScriptAliasMatch ^/~([a-zA-Z0-9]+)/cgi-bin/(.+) /home/$1/cgi-bin/$2
+    </highlight>
 
-    <p>satırı sayesinde <code>http://mesela.dom/~user/cgi-bin/betik.cgi</code>
+    <p>satırı sayesinde <code>http://example.com/~user/cgi-bin/betik.cgi</code>
       URL’si <code>/home/user/cgi-bin/betik.cgi</code> dosyası ile
       eşleştirilir ve dosya bir CGI betiği olarak çalıştırılırdı.</p>
 </section>
@@ -150,7 +151,7 @@
       üzerinden kullanıcıların ev dizinlerindeki dosyaları kişisel sayfalar
       olarak sunmalarını sağlamak üzere kullanır. Örnek:</p>
 
-    <example>http://mesela.dom/~birisi/dosya.html</example>
+    <example>http://example.com/~birisi/dosya.html</example>
 
     <p>Güvenlik sebebiyle kullanıcıların ev dizinlerine doğrudan HTTP erişimi
       vermek uygun olmaz. Bu bakımdan, kullanıcının ev dizini altında HTTP
@@ -173,13 +174,14 @@
       desteklenmemektedir. Ancak, kullanıcı dizinleri düzgün şekilde
       yapılandırılmışsa istenen etki <directive
       module="mod_alias">AliasMatch</directive> yönergesi ile sağlanabilir.
-      Örneğin, <code>http://mesela.dom/sayfalar/birisi/dosya.html</code>
+      Örneğin, <code>http://example.com/sayfalar/birisi/dosya.html</code>
       URL’si ile <code>/home/birisi/public_html/dosya.html</code> dosyasını
       eşlemek için <code>AliasMatch</code> yönergesi şöyle
       kullanılabilirdi:</p>
 
-    <example>AliasMatch ^/sayfalar/([a-zA-Z0-9]+)(/(.*))?$
-          /home/$1/public_html/$3</example>
+    <highlight language="config">
+AliasMatch ^/sayfalar/([a-zA-Z0-9]+)(/(.*))?$ /home/$1/public_html/$3
+    </highlight>
 </section>
 
 <section id="redirect"><title>URL Yönlendirme</title>
@@ -195,11 +197,12 @@
       adında yeni bir dizine taşınması halinde istemciye yeni konumun
       bildirilmesi şöyle sağlanabilirdi:</p>
 
-    <example>Redirect permanent /foo/
-      http://mesela.dom/bar/</example>
+    <highlight language="config">
+Redirect permanent /foo/ http://example.com/bar/
+    </highlight>
 
     <p>Bu atama sayesinde <code>/foo/</code> ile başlayan URL yolları
-      <code>mesela.dom</code> sunucundaki <code>/bar/</code> dizini altındaki
+      <code>example.com</code> sunucundaki <code>/bar/</code> dizini altındaki
       içeriğe yönlendirilmektedir. Yönlendirmeyi aynı sunucu üzerinde yapmak
       zorunda değilsiniz, bu yönerge ile başka bir sunucuya da yönlendirme
       yapabilirsiniz.</p>
@@ -210,14 +213,16 @@
       ayrı olarak farklı bir siteye yönlendirmek için yönergeyi şöyle
       kullanabilirsiniz:</p>
 
-    <example>RedirectMatch permanent ^/$
-      http://misal.dom/ilksayfa.html</example>
+    <highlight language="config">
+RedirectMatch permanent ^/$ http://example.com/ilksayfa.html
+    </highlight>
 
     <p>Bundan başka, bir sitedeki tüm sayfalara yapılan istekleri başka bir
       siteye geçici olarak yönlendirmek için şöyle bir şey yapabilirsiniz:</p>
 
-    <example>RedirectMatch temp .*
-      http://mesela.misal.dom/ilksayfa.html</example>
+    <highlight language="config">
+RedirectMatch temp .* http://mesela.example.com/ilksayfa.html
+    </highlight>
 </section>
 
 <section id="proxy"><title>Karşı Vekil</title>
@@ -231,20 +236,20 @@
       gibi sunulması nedeniyle bu işlem normal vekaletten farklıdır.</p>
 
     <p>Aşağıdaki örnekte, istemci <code>/foo/</code> dizini altından bir belge
-      istemekte, sunucu ise bu belgeyi <code>dahili.mesela.dom</code>
+      istemekte, sunucu ise bu belgeyi <code>dahili.example.com</code>
       üzerindeki <code>/bar/</code> dizininden alıp istemciye yerel sunucudan
       geliyormuş gibi sunmaktadır:</p>
 
-    <example>
-      ProxyPass /foo/ http://dahili.mesela.dom/bar/<br />
-      ProxyPassReverse /foo/ http://dahili.mesela.dom/bar/<br />
-      ProxyPassReverseCookieDomain dahili.mesela.dom harici.mesela.dom<br />
-      ProxyPassReverseCookiePath /foo/ /bar/
-    </example>
+    <highlight language="config">
+ProxyPass /foo/ http://dahili.example.com/bar/
+ProxyPassReverse /foo/ http://dahili.example.com/bar/
+ProxyPassReverseCookieDomain dahili.example.com harici.example.com
+ProxyPassReverseCookiePath /foo/ /bar/
+    </highlight>
 
     <p><directive module="mod_proxy">ProxyPass</directive> sunucuyu uygun
       belgeleri alması için yapılandırırken <directive module="mod_proxy"
-      >ProxyPassReverse</directive> yönergesi <code>dahili.mesela.dom</code>
+      >ProxyPassReverse</directive> yönergesi <code>dahili.example.com</code>
       sunucusundan kaynaklanan yönlendirmeleri yeniden yazar, böylece bunların
       yerel sunucudaki yerleri belirlenmiş olur. Benzer şekilde,  <directive
       module="mod_proxy">ProxyPassReverseCookieDomain</directive> ve
@@ -253,15 +258,15 @@
 
     <p>Yalnız, belgelerin içindeki hiperbağların yeniden yazılmayacağına
       dikkat ediniz. Dolayısıyla, belge içinde
-      <code>dahili.mesela.dom</code>’u ismiyle hedef alan mutlak hiperbağlar
+      <code>dahili.example.com</code>’u ismiyle hedef alan mutlak hiperbağlar
       varsa bunlar istemci tarafından vekil sunucudan değil doğrudan
-      <code>dahili.mesela.dom</code>’dan istenecektir. Bir sayfanın içindeki bu
+      <code>dahili.example.com</code>’dan istenecektir. Bir sayfanın içindeki bu
       bağları (ve diğer içeriği) <module>mod_substitute</module> modülü
       kullanılarak istemciye sunuluyormuşçasına değiştirebilirsiniz.</p>
 
-    <example>
-      Substitute s/dahili\.mesela\.dom/harici.mesela.dom/i
-    </example>
+    <highlight language="config">
+Substitute s/dahili\.example\.com/harici.example.com/i
+    </highlight>
 
      <p>HTML ve XHTML’de hiperbağları daha bilgece yeniden yazabilen
       <module>mod_proxy_html</module> modülü de kullanılabilir. Yeniden
