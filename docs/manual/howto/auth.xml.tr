@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1363757:1410688 (outdated) -->
+<!-- English Revision: 1410688 -->
 <!-- =====================================================
  Translated by: Umut Samuk <umut belgeler.org>
    Reviewed by: Nilgün Belma Bugüner <nilgun belgeler.org>
@@ -62,14 +62,12 @@
           <li><module>mod_authn_dbm</module></li>
           <li><module>mod_authn_file</module></li>
           <li><module>mod_authnz_ldap</module></li>
-          <li><module>mod_authn_socache</module></li>
         </ul>
       </li>
       <li>Yetkilendirme (bkz.
           <directive module="mod_authz_core">Require</directive> yönergesi)
         <ul>
           <li><module>mod_authnz_ldap</module></li>
-          <li><module>mod_authz_dbd</module></li>
           <li><module>mod_authz_dbm</module></li>
           <li><module>mod_authz_groupfile</module></li>
           <li><module>mod_authz_host</module></li>
@@ -290,6 +288,7 @@
 
     <example>
     &lt;Directory /usr/local/apache/htdocs/sekrit&gt;<br />
+    <indent>
       AuthType Basic<br />
       AuthName intranet<br />
       AuthUserFile /www/passwd/users<br />
@@ -298,6 +297,7 @@
       Order allow,deny<br />
       Allow from internal.com<br />
       Satisfy any<br />
+    </indent>
     &lt;/Directory&gt;
     </example>
 
@@ -336,8 +336,9 @@
     (Yeni bir parola dosyası oluşturmak için <code>-c</code> seçeneği
     kullanılır).</p>
 
-    <p>Şimdi, <code>.htaccess</code> dosyanızı aşağıda görüldüğü şekilde
-    değiştirebilirsiniz:</p>
+    <p>Şimdi, <code>.htaccess</code> dosyanızı veya
+    <directive module="core" type="section">Directory</directive>
+    bölümünüzü aşağıda görüldüğü şekilde değiştirebilirsiniz:</p>
 
     <example>
       AuthType Basic<br />
@@ -363,13 +364,7 @@
 
     <p><code>Require user umut</code> satırı ile parola dosyasında
     listelenmiş ve parolayı doğru olarak giren herhangi bir kişiye izin
-    vermektense, her grup için ayrı bir parola dosyası tutarak grup
-    davranışını taklit edebilirsiniz. Bu yaklaşımın getirisi:
-    Apache iki dosya yerine sadece bir dosyaya bakar.
-    Götürüsü ise parola dosyalarından oluşan bir dosya demeti sağlamak
-    ve <directive module="mod_authn_file">AuthUserFile</directive>
-    yönergesinde doğru dosyayı belirtmeyi unutmamak zorunda
-    kalmanızdır.</p>
+    vermektense bunu kullanabilirsiniz.</p>
 
   </section>
 
@@ -408,11 +403,13 @@
 
     <example>
     &lt;Directory /www/docs/private&gt;<br />
-    AuthName "Private"<br />
-    AuthType Basic<br />
-    AuthBasicProvider dbm<br />
-    AuthDBMUserFile /www/passwords/passwd.dbm<br />
-    Require valid-user<br />
+    <indent>
+        AuthName "Private"<br />
+        AuthType Basic<br />
+        AuthBasicProvider dbm<br />
+        AuthDBMUserFile /www/passwords/passwd.dbm<br />
+        Require valid-user<br />
+    </indent>
     &lt;/Directory&gt;
     </example>
 
