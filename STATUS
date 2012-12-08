@@ -98,6 +98,11 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: jim, sf, minfrin
 
+   * util: make varbuf functions treat AP_VARBUF_UNKNOWN consistently
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1359884
+     2.4.x patch: trunk patch works
+     +1: jim, sf, minfrin
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -221,11 +226,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~jim/patches/bal-man-xml-2.4.patch
      +1: jim, druggeri
      druggeri note: Docs notes on new elements would be nice for quick reference
-
-   * util: make varbuf functions treat AP_VARBUF_UNKNOWN consistently
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1359884
-     2.4.x patch: trunk patch works
-     +1: jim, sf
 
    * mod_rewrite: PR53963: Ad an opt-in RewriteOption to control merging of RewriteBase
                   (This merge started happening in 2.4.3/2.2.23)
