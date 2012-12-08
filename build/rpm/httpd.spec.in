@@ -33,7 +33,7 @@ Group: Development/Libraries
 Summary: Development tools for the Apache HTTP server.
 Obsoletes: secureweb-devel, apache-devel
 Requires: apr-devel, apr-util-devel, pkgconfig, libtool
-Requires: httpd = %{epoch}:%{version}-%{release}
+Requires: httpd = %{version}-%{release}
 
 %description devel
 The httpd-devel package contains the APXS binary and other files
@@ -47,7 +47,7 @@ to install this package.
 %package manual
 Group: Documentation
 Summary: Documentation for the Apache HTTP server.
-Requires: httpd = %{epoch}:%{version}-%{release}
+Requires: httpd = :%{version}-%{release}
 Obsoletes: secureweb-manual, apache-manual
 
 %description manual
@@ -67,7 +67,7 @@ the Apache HTTP Server.
 Group: System Environment/Daemons
 Summary: LDAP modules for the Apache HTTP server
 BuildRequires: openldap-devel
-Requires: httpd = %{epoch}:%{version}-%{release}, httpd-mmn = %{mmn}
+Requires: httpd = %{version}-%{release}, httpd-mmn = %{mmn}
 
 %description -n mod_authnz_ldap
 The mod_authnz_ldap module for the Apache HTTP server provides
@@ -78,7 +78,7 @@ mod_ldap provides an LDAP cache.
 Group: System Environment/Daemons
 Summary: Lua language module for the Apache HTTP server
 BuildRequires: lua-devel
-Requires: httpd = %{epoch}:%{version}-%{release}, httpd-mmn = %{mmn}
+Requires: httpd = %{version}-%{release}, httpd-mmn = %{mmn}
 
 %description -n mod_lua
 The mod_lua module for the Apache HTTP server allows the server to be
@@ -88,7 +88,7 @@ extended with scripts written in the Lua programming language.
 Group: System Environment/Daemons
 Summary: Proxy HTML filter modules for the Apache HTTP server
 BuildRequires: libxml2-devel
-Requires: httpd = %{epoch}:%{version}-%{release}, httpd-mmn = %{mmn}
+Requires: httpd = %{version}-%{release}, httpd-mmn = %{mmn}
 
 %description -n mod_proxy_html
 The mod_proxy_html module for the Apache HTTP server provides
@@ -100,7 +100,7 @@ enhanced charset/internationalisation support for mod_proxy_html.
 Group: System Environment/Daemons
 Summary: Distcache shared object cache module for the Apache HTTP server
 BuildRequires: distcache-devel
-Requires: httpd = %{epoch}:%{version}-%{release}, httpd-mmn = %{mmn}
+Requires: httpd = %{version}-%{release}, httpd-mmn = %{mmn}
 
 %description -n mod_socache_dc
 The mod_socache_dc module for the Apache HTTP server allows the shared
@@ -112,7 +112,7 @@ Summary: SSL/TLS module for the Apache HTTP server
 BuildRequires: openssl-devel
 Requires(post): openssl, /bin/cat
 Requires(pre): httpd
-Requires: httpd = %{epoch}:%{version}-%{release}, httpd-mmn = %{mmn}
+Requires: httpd = %{version}-%{release}, httpd-mmn = %{mmn}
 
 %description -n mod_ssl
 The mod_ssl module provides strong cryptography for the Apache Web
