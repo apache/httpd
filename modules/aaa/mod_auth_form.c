@@ -1040,12 +1040,13 @@ static int authenticate_form_authn(request_rec * r)
                             conf->loginsuccess, &err);
                     if (!err) {
                         apr_table_set(r->headers_out, "Location", loginsuccess);
+                        return HTTP_MOVED_TEMPORARILY;
                     }
                     else {
                         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02339)
                                       "Can't evaluate login success expression: %s", err);
+                        return HTTP_INTERNAL_SERVER_ERROR;
                     }
-                    return HTTP_MOVED_TEMPORARILY;
                 }
             }
         }
@@ -1061,12 +1062,13 @@ static int authenticate_form_authn(request_rec * r)
                 conf->loginrequired, &err);
         if (!err) {
             apr_table_set(r->headers_out, "Location", loginrequired);
+            return HTTP_MOVED_TEMPORARILY;
         }
         else {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02340)
                           "Can't evaluate login required expression: %s", err);
+            return HTTP_INTERNAL_SERVER_ERROR;
         }
-        return HTTP_MOVED_TEMPORARILY;
     }
 
     /* did the user ask to be redirected on login success? */
@@ -1145,12 +1147,13 @@ static int authenticate_form_login_handler(request_rec * r)
                         conf->loginsuccess, &err);
                 if (!err) {
                     apr_table_set(r->headers_out, "Location", loginsuccess);
+                    return HTTP_MOVED_TEMPORARILY;
                 }
                 else {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02341)
                                   "Can't evaluate login success expression: %s", err);
+                    return HTTP_INTERNAL_SERVER_ERROR;
                 }
-                return HTTP_MOVED_TEMPORARILY;
             }
             return HTTP_OK;
         }
@@ -1162,12 +1165,13 @@ static int authenticate_form_login_handler(request_rec * r)
                 conf->loginrequired, &err);
         if (!err) {
             apr_table_set(r->headers_out, "Location", loginrequired);
+            return HTTP_MOVED_TEMPORARILY;
         }
         else {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02342)
                           "Can't evaluate login required expression: %s", err);
+            return HTTP_INTERNAL_SERVER_ERROR;
         }
-        return HTTP_MOVED_TEMPORARILY;
     }
 
     return rv;
@@ -1212,12 +1216,13 @@ static int authenticate_form_logout_handler(request_rec * r)
                 conf->logout, &err);
         if (!err) {
             apr_table_addn(r->headers_out, "Location", logout);
+            return HTTP_TEMPORARY_REDIRECT;
         }
         else {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02343)
                           "Can't evaluate logout expression: %s", err);
+            return HTTP_INTERNAL_SERVER_ERROR;
         }
-        return HTTP_TEMPORARY_REDIRECT;
     }
 
     return HTTP_OK;
