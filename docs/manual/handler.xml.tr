@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1174747:1334033 (outdated) -->
+<!-- English Revision: 1334033 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -107,10 +107,10 @@
         için yapılan istekler <code>footer.pl</code> CGI betiğininin
         çalıştırılmasına sebep olacaktır.</p>
 
-      <example>
-        Action add-footer /cgi-bin/footer.pl<br/>
-        AddHandler add-footer .html
-      </example>
+      <highlight language="config">
+Action add-footer /cgi-bin/footer.pl
+AddHandler add-footer .html
+      </highlight>
 
       <p>Bu yapılandırmayla, istenen belgenin özgün haliyle mi (yeri
         <code>PATH_TRANSLATED</code> ortam değişkenindedir) yoksa istenen
@@ -127,11 +127,11 @@
         dosyalar dosya ismi uzantılarına bakılmaksızın <code>send-as-is</code>
         eylemcisi tarafından işleme sokulacaktır.</p>
 
-      <example>
-        &lt;Directory /siteler/htdocs/asis&gt;<br/>
-        <indent>SetHandler send-as-is</indent>
-        &lt;/Directory&gt;
-      </example>
+      <highlight language="config">
+&lt;Directory /web/htdocs/asis&gt;
+    SetHandler send-as-is
+&lt;/Directory&gt;
+      </highlight>
 
     </section>
   </section>
@@ -143,9 +143,7 @@
       Özellikle de, <code>request_rec</code> yapısına yeni bir kayıt
       eklenmiştir:</p>
 
-    <example>
-      char *handler
-    </example>
+    <highlight language="c">char *handler</highlight>
 
     <p>Modülünüzün bir eylemciyi devreye sokmasını isterseniz, tek yapacağınız
       isteğin <code>invoke_handler</code> aşamasının hemen öncesinde

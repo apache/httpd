@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1174747:1334033 (outdated) -->
+<!-- English Revision: 1334033 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -118,7 +118,7 @@
       eylemcisi tanımlamalısınız. Bu, sunucu yapılandırma dosyasında en iyi
       şöyle yapılabilir:</p>
 
-    <example>AddHandler type-map .var</example>
+    <highlight language="config">AddHandler type-map .var</highlight>
 
     <p>Türeşlem dosyaları kendilerini tanımlayan özkaynak ile aynı isimde
       olmalı ve isim bir <code>.var</code> uzantısı içermelidir. Aşağıdaki
@@ -213,7 +213,7 @@
       >DirectoryIndex</directive> yönergesi ile belirtilen dosya için de bir
       arama tertipleyebilir. Eğer yapılandırma dosyalarında</p>
 
-    <example>DirectoryIndex index</example>
+    <highlight language="config">DirectoryIndex index</highlight>
 
     <p>şeklinde bir atama varsa ve dizinde <code>index.html</code> ve
       <code>index.html3</code> dosyaları varsa sunucu bunlar arasından hakem
@@ -491,8 +491,10 @@
       uygulanacaktır.</p>
 
     <example><title>Örnek</title>
-      SetEnvIf Cookie "language=(.+)" prefer-language=$1<br />
-      Header append Vary cookie
+    <highlight language="config">
+SetEnvIf Cookie "language=(.+)" prefer-language=$1
+Header append Vary cookie
+    </highlight>
     </example>
   </section>
 </section>

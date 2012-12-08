@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1187986:1361160 (outdated) -->
+<!-- English Revision: 1361160 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -59,19 +59,19 @@
       module="core">AllowOverride</directive> yönergesine <code>FileInfo</code>
       atanarak <code>.htaccess</code> dosyalarında da kullanılabilir.</p>
 
-    <example>
-      ErrorDocument 500 "Pardon, galiba bizim betik hata verdi." <br />
-      ErrorDocument 500 /cgi-bin/hata-kurtarma<br />
-      ErrorDocument 500 http://error.example.com/server_error.html<br />
-      ErrorDocument 404 /ozuru_kabahatinden_buyuk/yok.html <br />
-      ErrorDocument 401 /Uyeler/NASIL_uye_olunur.html
-    </example>
+    <highlight language="config">
+ErrorDocument 500 "Pardon, galiba bizim betik hata verdi."
+ErrorDocument 500 /cgi-bin/hata-kurtarma
+ErrorDocument 500 http://error.example.com/server_error.html
+ErrorDocument 404 /ozuru_kabahatinden_buyuk/yok.html
+ErrorDocument 401 /Uyeler/NASIL_uye_olunur.html
+    </highlight>
 
     <p><code>ErrorDocument</code> yönergesinin sözdizimi:</p>
 
-    <example>
-      ErrorDocument &lt;3-rakamlı-kod&gt; &lt;eylem&gt;
-    </example>
+    <highlight language="config">
+ErrorDocument &lt;3-rakamlı-kod&gt; &lt;eylem&gt;
+    </highlight>
 
     <p><var>eylem</var> şunlardan biri olabilir:</p>
 
@@ -147,12 +147,12 @@
         "<code>Status:</code>" başlık alanına yer verilmelidir. Örneğin, bir
         Perl betiği şunları içerebilirdi:</p>
 
-      <example>
-        ... <br />
-        print  "Content-type: text/html\n"; <br />
-        printf "Status: %s durumu saptandı.\n", $ENV{"REDIRECT_STATUS"}; <br />
-        ...
-      </example>
+      <highlight language="perl">
+...
+print  "Content-type: text/html\n";
+printf "Status: %s durumu saptandı.\n", $ENV{"REDIRECT_STATUS"};
+...
+      </highlight>
 
       <p>Eğer betik, <code>404&nbsp;Not&nbsp;Found</code> gibi, belli bir hata
         durumunu ele almaya adanmışsa duruma özel kod ve hata metni
@@ -176,10 +176,10 @@
 
     <p>Sunucu yapılandırma dosyanızda şöyle satırlar görebilirsiniz:</p>
 
-    <example>
-    # Multi-language error messages<br />
-    #Include conf/extra/httpd-multilang-errordoc.conf
-    </example>
+    <highlight language="config">
+# Multi-language error messages
+#Include conf/extra/httpd-multilang-errordoc.conf
+    </highlight>
 
     <p>Bu <code>Include</code> satırını açıklama olmaktan çıkarırsanız
       bu özelliği etkinleştirmiş olursunuz. Böylece, istemcinin tarayıcısında

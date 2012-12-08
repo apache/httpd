@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1213344:1343937 (outdated) -->
+<!-- English Revision: 1343937 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -112,7 +112,8 @@ açıklanmıştır.</p>
     kaldırılmış, tüm açıklamalar, çözümlenmiş ortam değişkenleri ve içerilmiş
     tüm dosyalar dahil yapılandırmanın bir dökümünü almak için
     <module>mod_info</module>'nun <code>-DDUMP_CONFIG</code> seçeneğini
-    kullanabilirsiniz.</p>
+    kullanabilirsiniz. Ancak, çıktı yinelenen yönergeler için katıştırılan veya
+    geçersiz kılınanları yansıtmayacaktır.</p>
   </section>
 
   <section id="modules">

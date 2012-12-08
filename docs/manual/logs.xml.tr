@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1300926:1334033 (outdated) -->
+<!-- English Revision: 1334033 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -161,9 +161,9 @@
     <p>Bunu <directive>LogLevel</directive> yönergesinde modülün ismini
       belirterek yapabilirsiniz:</p>
 
-    <example>
-    LogLevel info rewrite:trace5
-    </example>
+    <highlight language="config">
+LogLevel info rewrite:trace5
+    </highlight>
 
     <p>Bu satırla ana <directive>LogLevel</directive> info'ya ayarlanırken
       <module>mod_rewrite</module> için musluk <code>trace5</code> seviyesine
@@ -228,10 +228,10 @@
 
       <p>Erişim günlüğü için sıklıkla kullanılan bir yapılandırma:</p>
 
-      <example>
-        LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br />
-        CustomLog logs/access_log common
-      </example>
+      <highlight language="config">
+LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
+CustomLog logs/access_log common
+      </highlight>
 
       <p>İlk satırda belli bir biçem dizgesi için <code>common</code> diye bir
         <em>takma ad</em> tanımlanmaktadır. Biçem dizgesi, sunucuya hangi
@@ -364,11 +364,10 @@
       <p>Sıklıkla kullanılan diğer bir biçem dizgesi Birleşik Günlük Biçemi
         (Combined Log Format) olup şöyle kullanılabilir:</p>
 
-      <example>
-        LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\"
-        \"%{User-agent}i\"" combined<br />
-         CustomLog log/access_log combined
-      </example>
+      <highlight language="config">
+LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\"" combined
+CustomLog log/access_log combined
+      </highlight>
 
       <p>Bu biçem ilaveten 2 alan içermesi dışında Ortak Günlük Biçemi ile
         aynıdır. İlave alanların ikisi de <code>%{<em>başlık</em>}i</code>
@@ -415,12 +414,12 @@
         <code>AgentLog</code> yönergelerinin etkilerinin nasıl taklit
         edileceğini de göstermektedir.</p>
 
-      <example>
-        LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br />
-        CustomLog logs/access_log common<br />
-        CustomLog logs/referer_log "%{Referer}i -&gt; %U"<br />
-        CustomLog logs/agent_log "%{User-agent}i"
-      </example>
+      <highlight language="config">
+LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
+CustomLog logs/access_log common
+CustomLog logs/referer_log "%{Referer}i -&gt; %U"
+CustomLog logs/agent_log "%{User-agent}i"
+      </highlight>
 
       <p>Bu örnek ayrıca, <directive module="mod_log_config"
         >LogFormat</directive> yönergesi ile bir takma ad tanımlamanın şart
@@ -443,32 +442,32 @@
         module="mod_log_config">CustomLog</directive> yönergesinin
         <code>env=</code> deyimi kullanılarak belirtilir. Bazı örnekler:</p>
 
-      <example>
-        # yerel konaktan kaynaklanan istekleri imleyelim<br />
-        SetEnvIf Remote_Addr "127\.0\.0\.1" kaydetme<br />
-        # robots.txt dosyası isteklerini imleyelim<br />
-        SetEnvIf Request_URI "^/robots\.txt$" kaydetme<br />
-        # Kalanları günlüğe kaydedelim<br />
-        CustomLog logs/access_log common env=!kaydetme
-      </example>
+      <highlight language="config">
+# yerel konaktan kaynaklanan istekleri imleyelim
+SetEnvIf Remote_Addr "127\.0\.0\.1" kaydetme
+# robots.txt dosyası isteklerini imleyelim
+SetEnvIf Request_URI "^/robots\.txt$" kaydetme
+# Kalanları günlüğe kaydedelim
+CustomLog logs/access_log common env=!kaydetme
+      </highlight>
 
       <p>Başka bir örnek olarak, Türkçe belge isteklerini bir dosyaya diğer
         dillerdeki istekleri başka bir dosyaya kaydedelim.</p>
 
-      <example>
-        SetEnvIf Accept-Language "tr" turkce<br />
-        CustomLog logs/turkce_log common env=turkce<br />
-        CustomLog logs/diger_diller_log common env=!turkce
-      </example>
+      <highlight language="config">
+SetEnvIf Accept-Language "tr" turkce
+CustomLog logs/turkce_log common env=turkce
+CustomLog logs/diger_diller_log common env=!turkce
+      </highlight>
 
-      <p>Bir arabellkleme senaryosuna arabelleğin verimli kullanılıp
+      <p>Bir arabellekleme senaryosuna arabelleğin verimli kullanılıp
         kullanılmadığını bilmek isteyelim. Bu basitçe şöyle yapılabilir:</p>
 
-      <example>
-        SetEnv CACHE_MISS 1<br />
-        LogFormat "%h %l %u %t "%r " %>s %b %{CACHE_MISS}e" common-cache<br />
-        CustomLog logs/access_log common-cache
-      </example>
+      <highlight language="config">
+SetEnv CACHE_MISS 1
+LogFormat "%h %l %u %t "%r " %>s %b %{CACHE_MISS}e" common-cache
+CustomLog logs/access_log common-cache
+      </highlight>
 
       <p><module>mod_cache</module> önce <module>mod_env</module> modülünü
         çalıştıracak ve başarılı olunduğu takdirde içeriği onsuz teslim
@@ -480,10 +479,10 @@
         module="mod_log_config">LogFormat</directive> HTTP yanıt kodudaki koşul
         değerlerini günlüklemeyi de destekler:</p>
 
-      <example>
-      LogFormat "%400,501{User-agent}i" browserlog<br />
-      LogFormat "%!200,304,302{Referer}i" refererlog
-      </example>
+      <highlight language="config">
+LogFormat "%400,501{User-agent}i" browserlog
+LogFormat "%!200,304,302{Referer}i" refererlog
+      </highlight>
 
       <p>Bu örnekte, HTTP durum kodu 400 veya 501 ise <code>User-agent</code>
         başlığı günlüklenecektir. Aksi takdirde, günlüğe bir "-" yazılacaktır.
@@ -561,10 +560,9 @@
       günlükleri 24 saatte bir döndürmek isterseniz bunu şöyle
       yapabilirsiniz:</p>
 
-    <example>
-      CustomLog "|/usr/local/apache/bin/rotatelogs
-      /var/log/access_log 86400" common
-    </example>
+    <highlight language="config">
+CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/access_log 86400" common
+    </highlight>
 
     <p>Borunun diğer ucundaki süreci başlatacak komutun tırnak içine
       alındığına dikkat ediniz. Bu örnekler erişim günlüğü için verilmişse de
@@ -583,11 +581,10 @@
       yapılmak istenirse "<code>|</code>" yerine "<code>|$</code>"
       kullanılır:</p>
 
-    <example>
-      # Kabu kullanarak "rotatelogs" çalıştırmak<br />
-      CustomLog "|$/usr/local/apache/bin/rotatelogs
-      /var/log/access_log 86400" common
-    </example>
+    <highlight language="config">
+# Kabuk kullanarak "rotatelogs" çalıştırmak
+CustomLog "|$/usr/local/apache/bin/rotatelogs /var/log/access_log 86400" common
+    </highlight>
 
     <p>Bu, Apache 2.2 için öntanımlı davranıştı. Kabuk özelliklerine bağlı
       olarak, yeniden başlatma sırasındaki sinyal işleme sorunları ve günlük
@@ -629,11 +626,10 @@
       ayrıştırılabilir. Örneğin, bu işlem için şu yönergeler kullanılıyor
       olsun:</p>
 
-    <example>
-      LogFormat "%v %l %u %t \"%r\" %&gt;s %b"
-      ortaksankon<br />
-      CustomLog logs/access_log ortaksankon
-    </example>
+    <highlight language="config">
+LogFormat "%v %l %u %t \"%r\" %&gt;s %b" ortaksankon
+CustomLog logs/access_log ortaksankon
+    </highlight>
 
     <p><code>%v</code> belirteci isteği sunan sanal konağın ismini günlüğe
       yazmak için kullanılır. Daha sonra <a
