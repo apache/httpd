@@ -91,6 +91,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * core: Make ap_regcomp() return AP_REG_ESPACE if out of memory.
+     Make ap_pregcomp() abort if out of memory. This raises the minimum
+     PCRE requirement to version 6.0, released in 2005.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1343109
+     2.4.x patch: trunk patch works
+     +1: jim, sf, minfrin
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -214,13 +221,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~jim/patches/bal-man-xml-2.4.patch
      +1: jim, druggeri
      druggeri note: Docs notes on new elements would be nice for quick reference
-
-   * core: Make ap_regcomp() return AP_REG_ESPACE if out of memory.
-     Make ap_pregcomp() abort if out of memory. This raises the minimum
-     PCRE requirement to version 6.0, released in 2005.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1343109
-     2.4.x patch: trunk patch works
-     +1: jim, sf
 
    * util: make varbuf functions treat AP_VARBUF_UNKNOWN consistently
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1359884
