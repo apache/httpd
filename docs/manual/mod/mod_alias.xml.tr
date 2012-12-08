@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1327382:1406262 (outdated) -->
+<!-- English Revision: 1406262 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -255,6 +255,8 @@ yönlendirir.</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
+<compatibility>URL-yolu'nun son bileşen olarak belirtilebilmesi desteği Apache
+HTTP Sucusunun 2.2.6 sürümü ile eklendi.</compatibility>
 
   <usage>
     <p><directive>Redirect</directive> yönergesi istemciye bir yönlendirme
@@ -264,9 +266,9 @@ yönlendirir.</description>
       büyüklüğüne duyarlıdır (% imlemesi çözüldükten sonra).
       <code><em>URL-yolu</em></code> olarak göreli yollara izin verilmez.
       <code><em>URL</em></code> ise ya bir şema ve konak ismi ile başlayan bir
-      mutlak URL ya da bir bölü çizgisi ile başlayan bir URL yolu olmalıdır.
-      İkinci durumda URL yolunun başına geçerli sunucu ismi ve şemayı sunucu
-      ekler.</p>
+      mutlak URL olmalıdır. Apache HTTP Sucusu 2.2.6 ve sonrasında bir bölü
+      çizgisi ile başlayan bir URL yolu belirtilebilmektedir; bu durumda URL
+      yolunun başına geçerli sunucu ismi ve şemayı sunucu ekler.</p>
 
     <p><code><em>URL-yolu</em></code> ile başlayan istekler istemciye hedef
       <code><em>URL</em></code> konumuna bir yönlendirme isteği olarak
