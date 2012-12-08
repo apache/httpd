@@ -256,7 +256,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/viewvc?view=revision&revision=1411862
                    http://svn.apache.org/viewvc?view=revision&revision=1397320
        2.4.c patch: http://people.apache.org/~jailletc36/backport2.patch
-       +1: jailletc36
+       +1: jailletc36, minfrin
 
     * htpasswd/htdbm: Refactor, add bcrypt support, add -i option.
       trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1395253
