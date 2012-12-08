@@ -1950,9 +1950,8 @@ void ssl_io_filter_register(apr_pool_t *p)
 
 #define DUMP_WIDTH 16
 
-static void ssl_io_data_dump(server_rec *s,
-                             const char *b,
-                             long len)
+static void ssl_io_data_dump(conn_rec *c, server_rec *s,
+                             const char *b, long len)
 {
     char buf[256];
     char tmp[64];
@@ -1965,7 +1964,7 @@ static void ssl_io_data_dump(server_rec *s,
     rows = (len / DUMP_WIDTH);
     if ((rows * DUMP_WIDTH) < len)
         rows++;
-    ap_log_error(APLOG_MARK, APLOG_TRACE7, 0, s,
+    ap_log_cserror(APLOG_MARK, APLOG_TRACE7, 0, c, s,
             "+-------------------------------------------------------------------------+");
     for(i = 0 ; i< rows; i++) {
 #if APR_CHARSET_EBCDIC
@@ -2004,12 +2003,12 @@ static void ssl_io_data_dump(server_rec *s,
             }
         }
         apr_cpystrn(buf+strlen(buf), " |", sizeof(buf)-strlen(buf));
-        ap_log_error(APLOG_MARK, APLOG_TRACE7, 0, s, "%s", buf);
+        ap_log_cserror(APLOG_MARK, APLOG_TRACE7, 0, c, s, "%s", buf);
     }
     if (trunc > 0)
-        ap_log_error(APLOG_MARK, APLOG_TRACE7, 0, s,
+        ap_log_cserror(APLOG_MARK, APLOG_TRACE7, 0, c, s,
                 "| %04ld - <SPACES/NULS>", len + trunc);
-    ap_log_error(APLOG_MARK, APLOG_TRACE7, 0, s,
+    ap_log_cserror(APLOG_MARK, APLOG_TRACE7, 0, c, s,
             "+-------------------------------------------------------------------------+");
     return;
 }
@@ -2045,7 +2044,7 @@ long ssl_io_data_cb(BIO *bio, int cmd,
                     rc, argi, (cmd == (BIO_CB_WRITE|BIO_CB_RETURN) ? "to" : "from"),
                     bio, argp, dump);
             if (*dump != '\0' && argp != NULL)
-                ssl_io_data_dump(s, argp, rc);
+                ssl_io_data_dump(c, s, argp, rc);
         }
         else {
             ap_log_cserror(APLOG_MARK, APLOG_TRACE4, 0, c, s,
