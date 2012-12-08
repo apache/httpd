@@ -1349,6 +1349,12 @@ static const char *generate_message(cmd_parms *cmd, void *dummy,
 {
     /* cast with 64-bit warning avoidance */
     int level = (cmd->info==(void*)APLOG_ERR)? APLOG_ERR: APLOG_WARNING;
+    char * msg;
+
+    /* get position information from wherever we can? */
+    ap_configfile_t * cf = cmd->config_file;
+    ap_directive_t const * ed1 = cmd->directive;
+    ap_directive_t const * ed2 = cmd->err_directive;
 
     /* expect an argument */
     if (!arg || !*arg) {
@@ -1356,7 +1362,7 @@ static const char *generate_message(cmd_parms *cmd, void *dummy,
     }
 
     /* set message, strip off quotes if necessary */
-    char * msg = (char *)arg;
+    msg = (char *)arg;
     if (*arg == '"' || *arg == '\'') {
         apr_size_t len = strlen(arg);
         char last = *(arg + len - 1);
@@ -1365,11 +1371,6 @@ static const char *generate_message(cmd_parms *cmd, void *dummy,
             msg = apr_pstrndup(cmd->pool, arg + 1, len - 2);
         }
     }
-
-    /* get position information from wherever we can? */
-    ap_configfile_t * cf = cmd->config_file;
-    ap_directive_t const * ed1 = cmd->directive;
-    ap_directive_t const * ed2 = cmd->err_directive;
 
     /* generate error or warning with a configuration file position.
      * the log is displayed on the terminal as no log file is opened yet.
