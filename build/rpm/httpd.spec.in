@@ -311,6 +311,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/httpd/modules/mod_access_compat.so
 %{_libdir}/httpd/modules/mod_actions.so
 %{_libdir}/httpd/modules/mod_alias.so
+%{_libdir}/httpd/modules/mod_allowhandlers.so
 %{_libdir}/httpd/modules/mod_allowmethods.so
 %{_libdir}/httpd/modules/mod_apreq.so
 %{_libdir}/httpd/modules/mod_asis.so
@@ -372,6 +373,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/httpd/modules/mod_mime_magic.so
 %{_libdir}/httpd/modules/mod_mime.so
 %{_libdir}/httpd/modules/mod_mpm_event.so
+%{_libdir}/httpd/modules/mod_mpm_eventopt.so
 %{_libdir}/httpd/modules/mod_mpm_prefork.so
 %{_libdir}/httpd/modules/mod_mpm_simple.so
 %{_libdir}/httpd/modules/mod_mpm_worker.so
