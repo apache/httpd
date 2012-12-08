@@ -182,10 +182,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      AuthFormLoginRequiredLocation, AuthFormLoginSuccessLocation and
      AuthFormLogoutLocation directives.
      trunk patch: http://svn.apache.org/viewvc?rev=1388648&view=rev
-     2.4.x patch: trunk patch works (minus next-number, CHANGES)
-     +1: minfrin, jim
-     rjung: Should we realy return HTTP_MOVED_TEMPORARILY even if we can't
-            set the Location header?
+                  http://svn.apache.org/viewvc?rev=1418721&view=rev
+     2.4.x patch: trunk patches work (minus next-number, CHANGES)
+     +1: minfrin
 
    * mod_auth_form: Make sure that get_notes_auth() sets the user as does
      get_form_auth() and get_session_auth(). Makes sure that REMOTE_USER
