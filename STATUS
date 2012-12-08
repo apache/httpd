@@ -277,7 +277,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1413732
                    http://svn.apache.org/viewvc?view=revision&revision=1418752
       2.4.x patch: trunk works sans mod_policy
-      +1 covener
+      +1 covener, minfrin
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
