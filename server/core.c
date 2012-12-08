@@ -1344,23 +1344,48 @@ static const char *unset_define(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-static const char *generate_error(cmd_parms *cmd, void *dummy,
-                                  const char *arg)
+static const char *generate_message(cmd_parms *cmd, void *dummy,
+                                    const char *arg)
 {
+    /* cast with 64-bit warning avoidance */
+    int level = (cmd->info==(void*)APLOG_ERR)? APLOG_ERR: APLOG_WARNING;
+
+    /* expect an argument */
     if (!arg || !*arg) {
-        return "The Error directive was used with no message.";
+        return "The Error or Warning directive was used with no message.";
     }
 
-    if (*arg == '"' || *arg == '\'') { /* strip off quotes */
+    /* set message, strip off quotes if necessary */
+    char * msg = (char *)arg;
+    if (*arg == '"' || *arg == '\'') {
         apr_size_t len = strlen(arg);
         char last = *(arg + len - 1);
 
         if (*arg == last) {
-            return apr_pstrndup(cmd->pool, arg + 1, len - 2);
+            msg = apr_pstrndup(cmd->pool, arg + 1, len - 2);
         }
     }
 
-    return arg;
+    /* get position information from wherever we can? */
+    ap_configfile_t * cf = cmd->config_file;
+    ap_directive_t const * ed1 = cmd->directive;
+    ap_directive_t const * ed2 = cmd->err_directive;
+
+    /* generate error or warning with a configuration file position.
+     * the log is displayed on the terminal as no log file is opened yet.
+     */
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|level, 0, NULL,
+		 "%s on line %d of %s", msg,
+		 cf? cf->line_number:
+		   ed1? ed1->line_num:
+		     ed2? ed2->line_num: -1,
+		 cf? cf->name:
+		   ed1? ed1->filename:
+		     ed2? ed2->filename: "<UNKNOWN>");
+
+    /* message displayed above, return will stop configuration processing */
+    return level==APLOG_ERR?
+        "Configuration processing stopped by Error directive": NULL;
 }
 
 #ifdef GPROF
@@ -3973,8 +3998,10 @@ AP_INIT_TAKE12("Define", set_define, NULL, EXEC_ON_READ|ACCESS_CONF|RSRC_CONF,
               "Define a variable, optionally to a value.  Same as passing -D to the command line."),
 AP_INIT_TAKE1("UnDefine", unset_define, NULL, EXEC_ON_READ|ACCESS_CONF|RSRC_CONF,
               "Undefine the existence of a variable. Undo a Define."),
-AP_INIT_RAW_ARGS("Error", generate_error, NULL, OR_ALL,
-                 "Generate error message from within configuration"),
+AP_INIT_RAW_ARGS("Error", generate_message, (void*) APLOG_ERR, OR_ALL,
+                 "Generate error message from within configuration."),
+AP_INIT_RAW_ARGS("Warning", generate_message, (void*) APLOG_WARNING, OR_ALL,
+                 "Generate warning message from within configuration."),
 AP_INIT_RAW_ARGS("<If", ifsection, COND_IF, OR_ALL,
   "Container for directives to be conditionally applied"),
 AP_INIT_RAW_ARGS("<ElseIf", ifsection, COND_ELSEIF, OR_ALL,

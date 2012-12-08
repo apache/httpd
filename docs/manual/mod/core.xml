@@ -4419,4 +4419,34 @@ for external processing, e.g. to a CGI script.</p>
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>Warning</name>
+<description>Warn from configuration parsing with a custom message</description>
+<syntax>Warning <var>message</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<compatibility>2.5 and later</compatibility>
+
+<usage>
+    <p>If an issue can be detected from within the configuration, this
+    directive can be used to generate a custom warning message. The
+    configuration parsing is not halted. The typical use it to check
+    whether some user define options are set, and warn if not.</p>
+
+    <highlight language="config">
+# Example
+# tell when ReverseProxy is not set
+&lt;IfDefine !ReverseProxy&gt;
+  Warning "reverse proxy is not started, hope this is okay!"
+&lt;/IfDefine&gt;
+
+&lt;IfDefine ReverseProxy&gt;
+  # define custom proxy configuration
+&lt;/IfDefine&gt;
+    </highlight>
+
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>

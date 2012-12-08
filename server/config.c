@@ -1811,6 +1811,9 @@ AP_DECLARE(const char *) ap_process_resource_config(server_rec *s,
 
     if (error) {
         if (parms.err_directive)
+            /* note: this may not be a 'syntactic' error per se.
+             * should it rather be "Configuration error ..."?
+             */
             return apr_psprintf(p, "Syntax error on line %d of %s: %s",
                                 parms.err_directive->line_num,
                                 parms.err_directive->filename, error);
