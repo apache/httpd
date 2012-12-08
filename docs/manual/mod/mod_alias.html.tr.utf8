@@ -29,7 +29,6 @@
 <a href="../ko/mod/mod_alias.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_alias.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Belge ağacının parçalarının dosya sisteminin parçalarıyla
 eşlenmesini sağlar ve URL yönlendirmesi yapar.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
@@ -260,6 +259,8 @@ yönlendirir.</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_alias</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>URL-yolu'nun son bileşen olarak belirtilebilmesi desteği Apache
+HTTP Sucusunun 2.2.6 sürümü ile eklendi.</td></tr>
 </table>
     <p><code class="directive">Redirect</code> yönergesi istemciye bir yönlendirme
       isteği döndürerek eski URL’yi yenisiyle eşler.</p>
@@ -268,9 +269,9 @@ yönlendirir.</td></tr>
       büyüklüğüne duyarlıdır (% imlemesi çözüldükten sonra).
       <code><em>URL-yolu</em></code> olarak göreli yollara izin verilmez.
       <code><em>URL</em></code> ise ya bir şema ve konak ismi ile başlayan bir
-      mutlak URL ya da bir bölü çizgisi ile başlayan bir URL yolu olmalıdır.
-      İkinci durumda URL yolunun başına geçerli sunucu ismi ve şemayı sunucu
-      ekler.</p>
+      mutlak URL olmalıdır. Apache HTTP Sucusu 2.2.6 ve sonrasında bir bölü
+      çizgisi ile başlayan bir URL yolu belirtilebilmektedir; bu durumda URL
+      yolunun başına geçerli sunucu ismi ve şemayı sunucu ekler.</p>
 
     <p><code><em>URL-yolu</em></code> ile başlayan istekler istemciye hedef
       <code><em>URL</em></code> konumuna bir yönlendirme isteği olarak
