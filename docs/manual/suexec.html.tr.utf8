@@ -27,7 +27,6 @@
 <a href="./ko/suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/suexec.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p><strong>SuEXEC</strong> özelliği, Apache HTTP Sunucusu kullanıcılarına
       <strong>CGI</strong> ve <strong>SSI</strong> programlarını sunucunun
@@ -427,10 +426,11 @@
 
       <p>Örneğin, sunucunuz şöyle yapılandırılmışsa:</p>
 
-      <div class="example"><p><code>
-          User apache<br />
-          Group apache-grup<br />
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+User www
+Group webgroup
+      </pre>
+
 
       <p>Ve <code class="program"><a href="./programs/suexec.html">suexec</a></code> çalıştırılabilir de
         <code>/usr/local/apache2/bin/</code> dizinine kurulmuşsa şu komutları

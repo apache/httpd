@@ -25,7 +25,6 @@
 <a href="./fr/caching.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./tr/caching.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Bu belge <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>,
       <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code>, <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code>
@@ -396,12 +395,13 @@
 
       <p>Tipik olarak modül şöyle yapılandırılır:</p>
 
-      <div class="example"><p><code>
-CacheRoot   /var/cache/apache/<br />
-CacheEnable disk /<br />
-CacheDirLevels 2<br />
+      <pre class="prettyprint lang-config">
+CacheRoot   "/var/cache/apache/"
+CacheEnable disk /
+CacheDirLevels 2
 CacheDirLength 1
-      </code></p></div>
+      </pre>
+
 
       <p>En önemlisi önbelleklenen dosyaların yerel olarak saklanması olup
         işletim sisteminin sağladığı bellekiçi önbelleklemeden de ayrıca
@@ -582,9 +582,10 @@ CacheDirLength 1
           yapılan sonraki her istekte bu dosya tanıtıcısının kullanılmasını
           sağlar.</p>
 
-        <div class="example"><p><code>
-          CacheFile /usr/local/apache2/htdocs/index.html
-        </code></p></div>
+        <pre class="prettyprint lang-config">
+CacheFile /usr/local/apache2/htdocs/index.html
+        </pre>
+
 
         <p>Büyük miktarda dosyayı bu anlamda önbelleklemeyi tasarlıyorsanız
           işletim sisteminizin açık dosya tanıtıcılarının sayısı ile ilgili
@@ -676,9 +677,10 @@ CacheDirLength 1
           httpd bu dosyaya gelecek sonraki istekler için dosyanın bellekiçi
           içeriğini kullanacaktır.</p>
 
-        <div class="example"><p><code>
-          MMapFile /usr/local/apache2/htdocs/index.html
-        </code></p></div>
+        <pre class="prettyprint lang-config">
+MMapFile /usr/local/apache2/htdocs/index.html
+        </pre>
+
 
         <p><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code>
           yönergesinde olduğu gibi bu dosyalarda httpd başlatıldıktan sonra

@@ -28,7 +28,6 @@
 <a href="./ko/custom-error.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/custom-error.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
 
     <p>Apache HTTP Sunucusu 4xx veya 5xx HTTP durum kodları ile ilgili
@@ -63,19 +62,21 @@
       bağlamlarında da kullanılabilir. <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> yönergesine <code>FileInfo</code>
       atanarak <code>.htaccess</code> dosyalarında da kullanılabilir.</p>
 
-    <div class="example"><p><code>
-      ErrorDocument 500 "Pardon, galiba bizim betik hata verdi." <br />
-      ErrorDocument 500 /cgi-bin/hata-kurtarma<br />
-      ErrorDocument 500 http://error.example.com/server_error.html<br />
-      ErrorDocument 404 /ozuru_kabahatinden_buyuk/yok.html <br />
-      ErrorDocument 401 /Uyeler/NASIL_uye_olunur.html
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+ErrorDocument 500 "Pardon, galiba bizim betik hata verdi."
+ErrorDocument 500 /cgi-bin/hata-kurtarma
+ErrorDocument 500 http://error.example.com/server_error.html
+ErrorDocument 404 /ozuru_kabahatinden_buyuk/yok.html
+ErrorDocument 401 /Uyeler/NASIL_uye_olunur.html
+    </pre>
+
 
     <p><code>ErrorDocument</code> yönergesinin sözdizimi:</p>
 
-    <div class="example"><p><code>
-      ErrorDocument &lt;3-rakamlı-kod&gt; &lt;eylem&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+ErrorDocument &lt;3-rakamlı-kod&gt; &lt;eylem&gt;
+    </pre>
+
 
     <p><var>eylem</var> şunlardan biri olabilir:</p>
 
@@ -151,12 +152,13 @@
         "<code>Status:</code>" başlık alanına yer verilmelidir. Örneğin, bir
         Perl betiği şunları içerebilirdi:</p>
 
-      <div class="example"><p><code>
-        ... <br />
-        print  "Content-type: text/html\n"; <br />
-        printf "Status: %s durumu saptandı.\n", $ENV{"REDIRECT_STATUS"}; <br />
-        ...
-      </code></p></div>
+      <pre class="prettyprint lang-perl">
+...
+print  "Content-type: text/html\n";
+printf "Status: %s durumu saptandı.\n", $ENV{"REDIRECT_STATUS"};
+...
+      </pre>
+
 
       <p>Eğer betik, <code>404&nbsp;Not&nbsp;Found</code> gibi, belli bir hata
         durumunu ele almaya adanmışsa duruma özel kod ve hata metni
@@ -180,10 +182,11 @@
 
     <p>Sunucu yapılandırma dosyanızda şöyle satırlar görebilirsiniz:</p>
 
-    <div class="example"><p><code>
-    # Multi-language error messages<br />
-    #Include conf/extra/httpd-multilang-errordoc.conf
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+# Multi-language error messages
+#Include conf/extra/httpd-multilang-errordoc.conf
+    </pre>
+
 
     <p>Bu <code>Include</code> satırını açıklama olmaktan çıkarırsanız
       bu özelliği etkinleştirmiş olursunuz. Böylece, istemcinin tarayıcısında
