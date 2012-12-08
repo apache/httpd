@@ -165,9 +165,11 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
             return access_status;
         }
 
-        d = ap_get_core_module_config(r->per_dir_config);
-        if (d->log) {
-            r->log = d->log;
+        /* Don't set per-dir loglevel if LogLevelOverride is set */
+        if (!r->connection->log) {
+            d = ap_get_core_module_config(r->per_dir_config);
+            if (d->log)
+                r->log = d->log;
         }
 
         if ((access_status = ap_run_translate_name(r))) {
@@ -193,9 +195,11 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
         return access_status;
     }
 
-    d = ap_get_core_module_config(r->per_dir_config);
-    if (d->log) {
-        r->log = d->log;
+    /* Don't set per-dir loglevel if LogLevelOverride is set */
+    if (!r->connection->log) {
+        d = ap_get_core_module_config(r->per_dir_config);
+        if (d->log)
+            r->log = d->log;
     }
 
     if ((access_status = ap_run_post_perdir_config(r))) {

@@ -128,6 +128,11 @@ AP_DECLARE_DATA int ap_main_state = AP_SQ_MS_INITIAL_STARTUP;
 AP_DECLARE_DATA int ap_run_mode = AP_SQ_RM_UNKNOWN;
 AP_DECLARE_DATA int ap_config_generation = 0;
 
+typedef struct {
+    apr_ipsubnet_t *subnet;
+    struct ap_logconf log;
+} conn_log_config;
+
 static void *create_core_dir_config(apr_pool_t *a, char *dir)
 {
     core_dir_config *conf;
@@ -523,6 +528,17 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
 
     if (virt->error_log_req)
         conf->error_log_req = virt->error_log_req;
+
+    if (virt->conn_log_level) {
+        if (!conf->conn_log_level) {
+            conf->conn_log_level = virt->conn_log_level;
+        }
+        else {
+            /* apr_array_append actually creates a new array */
+            conf->conn_log_level = apr_array_append(p, conf->conn_log_level,
+                                                    virt->conn_log_level);
+        }
+    }
 
     return conf;
 }
@@ -3032,30 +3048,14 @@ static const char *include_config (cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-static const char *set_loglevel(cmd_parms *cmd, void *config_, const char *arg_)
+static const char *update_loglevel(cmd_parms *cmd, struct ap_logconf *log,
+                                   const char *arg)
 {
-    char *level_str;
-    int level;
+    const char *level_str, *err;
     module *module;
-    char *arg = apr_pstrdup(cmd->temp_pool, arg_);
-    struct ap_logconf *log;
-    const char *err;
+    int level;
 
-    if (cmd->path) {
-        core_dir_config *dconf = config_;
-        if (!dconf->log) {
-            dconf->log = ap_new_log_config(cmd->pool, NULL);
-        }
-        log = dconf->log;
-    }
-    else {
-        log = &cmd->server->log;
-    }
-
-    if (arg == NULL)
-        return "LogLevel requires level keyword or module loglevel specifier";
-
-    level_str = ap_strrchr(arg, ':');
+    level_str = ap_strrchr_c(arg, ':');
 
     if (level_str == NULL) {
         err = ap_parse_log_level(arg, &log->level);
@@ -3063,11 +3063,12 @@ static const char *set_loglevel(cmd_parms *cmd, void *config_, const char *arg_)
             return err;
         ap_reset_module_loglevels(log, APLOG_NO_MODULE);
         ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, cmd->server,
-                     "Setting LogLevel for all modules to %s", arg);
+                     "Setting %s for all modules to %s", cmd->cmd->name, arg);
         return NULL;
     }
 
-    *level_str++ = '\0';
+    arg = apr_pstrmemdup(cmd->temp_pool, arg, level_str - arg);
+    level_str++;
     if (!*level_str) {
         return apr_psprintf(cmd->temp_pool, "Module specifier '%s' must be "
                             "followed by a log level keyword", arg);
@@ -3090,9 +3091,64 @@ static const char *set_loglevel(cmd_parms *cmd, void *config_, const char *arg_)
 
     ap_set_module_loglevel(cmd->pool, log, module->module_index, level);
     ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, cmd->server,
-                 "Setting LogLevel for module %s to %s", module->name,
-                 level_str);
+                 "Setting %s for module %s to %s", cmd->cmd->name,
+                 module->name, level_str);
 
+    return NULL;
+}
+
+static const char *set_loglevel(cmd_parms *cmd, void *config_, const char *arg)
+{
+    struct ap_logconf *log;
+
+    if (cmd->path) {
+        core_dir_config *dconf = config_;
+        if (!dconf->log) {
+            dconf->log = ap_new_log_config(cmd->pool, NULL);
+        }
+        log = dconf->log;
+    }
+    else {
+        log = &cmd->server->log;
+    }
+
+    if (arg == NULL)
+        return "LogLevel requires level keyword or module loglevel specifier";
+
+    return update_loglevel(cmd, log, arg);
+}
+
+static const char *set_loglevel_override(cmd_parms *cmd, void *d_, int argc,
+                                         char *const argv[])
+{
+    core_server_config *sconf;
+    conn_log_config *entry;
+    int ret, i;
+    const char *addr, *mask, *err;
+
+    if (argc < 2)
+        return "LogLevelOverride requires at least two arguments";
+
+    entry = apr_pcalloc(cmd->pool, sizeof(conn_log_config));
+    sconf = ap_get_core_module_config(cmd->server->module_config);
+    if (!sconf->conn_log_level)
+        sconf->conn_log_level = apr_array_make(cmd->pool, 4, sizeof(entry));
+    APR_ARRAY_PUSH(sconf->conn_log_level, conn_log_config *) = entry;
+
+    addr = argv[0];
+    mask = ap_strchr_c(addr, '/');
+    if (mask) {
+        addr = apr_pstrmemdup(cmd->temp_pool, addr, mask - addr);
+        mask++;
+    }
+    ret = apr_ipsubnet_create(&entry->subnet, addr, mask, cmd->pool);
+    if (ret != APR_SUCCESS)
+        return "parsing of subnet/netmask failed";
+
+    for (i = 1; i < argc; i++) {
+        if ((err = update_loglevel(cmd, &entry->log, argv[i])) != NULL)
+            return err;
+    }
     return NULL;
 }
 
@@ -4089,6 +4145,8 @@ AP_INIT_TAKE1("IncludeOptional", include_config, (void*)1,
   "does not exist or the pattern does not match any files"),
 AP_INIT_ITERATE("LogLevel", set_loglevel, NULL, RSRC_CONF|ACCESS_CONF,
   "Level of verbosity in error logging"),
+AP_INIT_TAKE_ARGV("LogLevelOverride", set_loglevel_override, NULL, RSRC_CONF,
+  "Override LogLevel for clients with certain IPs"),
 AP_INIT_TAKE1("NameVirtualHost", ap_set_name_virtual_host, NULL, RSRC_CONF,
   "A numeric IP address:port, or the name of a host"),
 AP_INIT_TAKE12("ServerTokens", set_serv_tokens, NULL, RSRC_CONF,
@@ -4661,12 +4719,13 @@ static int core_create_proxy_req(request_rec *r, request_rec *pr)
     return core_create_req(pr);
 }
 
-static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *server,
+static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *s,
                                   apr_socket_t *csd, long id, void *sbh,
                                   apr_bucket_alloc_t *alloc)
 {
     apr_status_t rv;
     conn_rec *c = (conn_rec *) apr_pcalloc(ptrans, sizeof(conn_rec));
+    core_server_config *sconf = ap_get_core_module_config(s->module_config);
 
     c->sbh = sbh;
     (void)ap_update_child_status(c->sbh, SERVER_BUSY_READ, (request_rec *)NULL);
@@ -4680,7 +4739,7 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *server,
     c->pool = ptrans;
     if ((rv = apr_socket_addr_get(&c->local_addr, APR_LOCAL, csd))
         != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_INFO, rv, server, APLOGNO(00137)
+        ap_log_error(APLOG_MARK, APLOG_INFO, rv, s, APLOGNO(00137)
                      "apr_socket_addr_get(APR_LOCAL)");
         apr_socket_close(csd);
         return NULL;
@@ -4689,19 +4748,37 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *server,
     apr_sockaddr_ip_get(&c->local_ip, c->local_addr);
     if ((rv = apr_socket_addr_get(&c->client_addr, APR_REMOTE, csd))
         != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_INFO, rv, server, APLOGNO(00138)
+        ap_log_error(APLOG_MARK, APLOG_INFO, rv, s, APLOGNO(00138)
                      "apr_socket_addr_get(APR_REMOTE)");
         apr_socket_close(csd);
         return NULL;
     }
 
     apr_sockaddr_ip_get(&c->client_ip, c->client_addr);
-    c->base_server = server;
+    c->base_server = s;
 
     c->id = id;
     c->bucket_alloc = alloc;
 
     c->clogging_input_filters = 0;
+
+    if (sconf->conn_log_level) {
+        int i;
+        conn_log_config *conf;
+        const struct ap_logconf *log = NULL;
+        struct ap_logconf *merged;
+
+        for (i = 0; i < sconf->conn_log_level->nelts; i++) {
+            conf = APR_ARRAY_IDX(sconf->conn_log_level, i, conn_log_config *);
+            if (apr_ipsubnet_test(conf->subnet, c->client_addr))
+                log = &conf->log;
+        }
+        if (log) {
+            merged = ap_new_log_config(c->pool, log);
+            ap_merge_log_config(&s->log, merged);
+            c->log = merged;
+        }
+    }
 
     return c;
 }
