@@ -435,7 +435,7 @@ static int session_crypto_init(apr_pool_t *p, apr_pool_t *plog,
         }
         if (APR_SUCCESS != rv && err) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(01845)
-                    "%s", err->msg);
+                    "The crypto library '%s' could not be loaded: %s (%s: %d)", conf->library, err->msg, err->reason, err->rc);
             return rv;
         }
         if (APR_ENOTIMPL == rv) {
