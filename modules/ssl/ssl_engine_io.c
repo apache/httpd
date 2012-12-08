@@ -2032,14 +2032,20 @@ long ssl_io_data_cb(BIO *bio, int cmd,
     if (   cmd == (BIO_CB_WRITE|BIO_CB_RETURN)
         || cmd == (BIO_CB_READ |BIO_CB_RETURN) ) {
         if (rc >= 0) {
+            const char *dump = "";
+            if (APLOG_CS_IS_LEVEL(c, s, APLOG_TRACE7)) {
+                if (argp != NULL)
+                    dump = "(BIO dump follows)";
+                else
+                    dump = "(Oops, no memory buffer?)";
+            }
             ap_log_cserror(APLOG_MARK, APLOG_TRACE4, 0, c, s,
                     "%s: %s %ld/%d bytes %s BIO#%pp [mem: %pp] %s",
                     SSL_LIBRARY_NAME,
                     (cmd == (BIO_CB_WRITE|BIO_CB_RETURN) ? "write" : "read"),
                     rc, argi, (cmd == (BIO_CB_WRITE|BIO_CB_RETURN) ? "to" : "from"),
-                    bio, argp,
-                    (argp != NULL ? "(BIO dump follows)" : "(Oops, no memory buffer?)"));
-            if ((argp != NULL) && APLOG_CS_IS_LEVEL(c, s, APLOG_TRACE7))
+                    bio, argp, dump);
+            if (*dump != '\0' && argp != NULL)
                 ssl_io_data_dump(s, argp, rc);
         }
         else {
