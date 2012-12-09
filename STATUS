@@ -116,6 +116,24 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk works sans mod_policy
       +1 covener, minfrin, sf
 
+    * (2/x) backport some easy patch to keep 2.4.x in line with trunk as much as possible
+         1398970: Use 'ap_strcasestr' instead of a strdup/str_tolower/strstr sequence
+         1407853: cppCheck:  Suspicious condition.
+         1398480: cppcheck: arrayIndexThenCheck - change the order of the tests in
+                  order to avoid a potential out-of-bound access.
+         1398478: ccpcheck: duplicateExpression - 'vary_by_language' is tested twice
+         1411862: Use apr_is_empty_table() instead of getting a table and checking the
+                  value of the 'nelts' field.
+         1397320: remove extra ';'
+      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1398970
+                   http://svn.apache.org/viewvc?view=revision&revision=1407853
+                   http://svn.apache.org/viewvc?view=revision&revision=1398480
+                   http://svn.apache.org/viewvc?view=revision&revision=1398478
+                   http://svn.apache.org/viewvc?view=revision&revision=1411862
+                   http://svn.apache.org/viewvc?view=revision&revision=1397320
+       2.4.c patch: http://people.apache.org/~jailletc36/backport2.patch
+       +1: jailletc36, minfrin, sf
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -209,7 +227,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?rev=1388648&view=rev
                   http://svn.apache.org/viewvc?rev=1418721&view=rev
      2.4.x patch: trunk patches work (minus next-number, CHANGES)
-     +1: minfrin
+     +1: minfrin, sf
 
    * mod_auth_form: Make sure that get_notes_auth() sets the user as does
      get_form_auth() and get_session_auth(). Makes sure that REMOTE_USER
@@ -248,24 +266,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      minfrin: docs didn't apply clean and referred to v2.5.0, when fixed, +1.
      covener: corrected docs and emphasized 2.4.3-to-2.4.4 change.
 
-    * (2/x) backport some easy patch to keep 2.4.x in line with trunk as much as possible
-         1398970: Use 'ap_strcasestr' instead of a strdup/str_tolower/strstr sequence
-         1407853: cppCheck:  Suspicious condition.
-         1398480: cppcheck: arrayIndexThenCheck - change the order of the tests in
-                  order to avoid a potential out-of-bound access.
-         1398478: ccpcheck: duplicateExpression - 'vary_by_language' is tested twice
-         1411862: Use apr_is_empty_table() instead of getting a table and checking the
-                  value of the 'nelts' field.
-         1397320: remove extra ';'
-      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1398970
-                   http://svn.apache.org/viewvc?view=revision&revision=1407853
-                   http://svn.apache.org/viewvc?view=revision&revision=1398480
-                   http://svn.apache.org/viewvc?view=revision&revision=1398478
-                   http://svn.apache.org/viewvc?view=revision&revision=1411862
-                   http://svn.apache.org/viewvc?view=revision&revision=1397320
-       2.4.c patch: http://people.apache.org/~jailletc36/backport2.patch
-       +1: jailletc36, minfrin
-
     * htpasswd/htdbm: Refactor, add bcrypt support, add -i option.
       trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1395253
                    http://svn.apache.org/viewvc?view=revision&revision=1395254
@@ -279,7 +279,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       fail to load without providing an error message of their own.
       trunk patch: http://svn.apache.org/viewvc?rev=1418655&view=rev
       2.4.x patch: trunk patch works
-      +1: minfrin
+      +1: minfrin, sf
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
