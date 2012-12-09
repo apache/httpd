@@ -40,9 +40,6 @@ Changes with Apache 2.5.0
      Windows ("...rename tempfile to datafile failed..."). PR 38827
      [Eric Covener]
 
-  *) mod_proxy: Add ability to configure the sticky session separator.
-     PR 53893. [<inu inusasha de>, Jim Jagielski]
-
   *) mod_proxy_ftp: Fix segfaults on IPv4 requests to hosts with DNS AAAA records.
      PR 40841. [Andrew Rucker Jones <arjones simultan dyndns org>,
      <ast domdv de>, Jim Jagielski]
@@ -63,10 +60,6 @@ Changes with Apache 2.5.0
   *) htpasswd, htdbm: Put full 48bit of entropy into salt, improve
      error handling. Add some of htpasswd's improvements to htdbm,
      e.g. warn if password is truncated by crypt(). [Stefan Fritsch]
-
-  *) ab: add TLS1.1/TLS1.2 options to -f switch, and adapt output
-     to more accurately report the negotiated protocol. PR 53916.
-     [Nicolás Pernas Maradei <nico emutex com>, Kaspar Brand]
 
   *) mod_systemd: New module, for integration with systemd on Linux.
      [Jan Kaluza <jkaluza redhat.com>]
