@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.4
 
+  *) mod_header: Allow for exposure of loadavg and server load using new 
+     format specifiers %l, %i, %b [Jim Jagielski]
+  
   *) core: Make ap_regcomp() return AP_REG_ESPACE if out of memory.  Make
      ap_pregcomp() abort if out of memory. This raises the minimum PCRE
      requirement to version 6.0. [Stefan Fritsch]

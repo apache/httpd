@@ -427,6 +427,24 @@ Header merge Cache-Control no-store env=NO_STORE
         of the request. The value is preceded by <code>D=</code>.
         The value is measured in microseconds.</td></tr>
 
+    <tr><td><code>%l</code></td>
+        <td>The current load averages of the actual server itself. It is
+        designed to expose the values obtained by <code>getloadavg()</code>
+        and this represents the current load average, the 5 minute average, and
+        the 15 minute average. The value is preceded by <code>l=</code> with each
+        average separated by <code>/</code>.
+        </td></tr>
+
+    <tr><td><code>%i</code></td>
+        <td>The current idle percentage of httpd (0 to 100) based on available
+        processes and threads. The value is preceded by <code>i=</code>.
+        </td></tr>
+
+    <tr><td><code>%b</code></td>
+        <td>The current busy percentage of httpd (0 to 100) based on available
+        processes and threads. The value is preceded by <code>b=</code>.
+        </td></tr>
+
     <tr><td><code>%{VARNAME}e</code></td>
         <td>The contents of the <a href="../env.html">environment
         variable</a> <code>VARNAME</code>.</td></tr>
