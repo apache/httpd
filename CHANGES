@@ -16,10 +16,6 @@ Changes with Apache 2.5.0
   *) ap_expr: Add SERVER_PROTOCOL_VERSION, ..._MAJOR, and ..._MINOR
      variables. [Stefan Fritsch]
 
-  *) mod_rewrite: Stop mergeing RewriteBase down to subdirectories
-     unless new option 'RewriteOptions MergeBase' is configured.
-     PR 53963. [Eric Covener]
-
   *) core: New directive RegisterHttpMethod for registering non-standard
      HTTP methods. [Stefan Fritsch]
 
@@ -77,13 +73,6 @@ Changes with Apache 2.5.0
 
   *) --with-module: Fix failure to integrate them into some existing
      module directories.  PR 40097.  [Jeff Trawick]
-
-  *) mod_headers: New params: %l for load averages, %i for an
-     idle percentage rating of httpd, and %b for a busy percentage
-     rating. [Jim Jagielski]
-
-  *) core: New functions to obtain load parameters: ap_get_sload()
-     and ap_get_loadavg(). [Jim Jagielski]
 
   *) mod_cache_socache: New cache implementation backed by mod_socache
      that replaces mod_mem_cache removed from httpd v2.2. [Graham
@@ -151,10 +140,6 @@ Changes with Apache 2.5.0
   *) mod_ssl: Add support for TLS-SRP (Secure Remote Password key exchange
      for TLS, RFC 5054). PR 51075. [Quinn Slack <sqs cs stanford edu>,
      Christophe Renou, Peter Sylvester]
-
-  *) core: Make ap_regcomp() return AP_REG_ESPACE if out of memory.  Make
-     ap_pregcomp() abort if out of memory. This raises the minimum PCRE
-     requirement to version 6.0. PR 53284. [Stefan Fritsch]
 
   *) suexec: Add --enable-suexec-capabilites support on Linux, to use
      setuid/setgid capability bits rather than a setuid root binary.
