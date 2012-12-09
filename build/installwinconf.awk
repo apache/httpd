@@ -97,7 +97,7 @@ BEGIN {
           print "LoadModule actions_module modules/mod_actions.so" > dstfl;
           print "LoadModule alias_module modules/mod_alias.so" > dstfl;
           print "#LoadModule allowhandlers_module modules/mod_allowhandlers.so" > dstfl;
-          print "LoadModule allowmethods_module modules/mod_allowmethods.so" > dstfl;
+          print "#LoadModule allowmethods_module modules/mod_allowmethods.so" > dstfl;
           print "LoadModule asis_module modules/mod_asis.so" > dstfl;
           print "LoadModule auth_basic_module modules/mod_auth_basic.so" > dstfl;
           print "#LoadModule auth_digest_module modules/mod_auth_digest.so" > dstfl;
