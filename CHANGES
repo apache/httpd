@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.4
 
+  *) mod_rewrite: Stop mergeing RewriteBase down to subdirectories
+     unless new option 'RewriteOptions MergeBase' is configured.
+     PR 53963. [Eric Covener]
+
   *) mod_status, mod_info, mod_proxy_ftp, mod_proxy_balancer, mod_imagemap,
      mod_ldap: Improve escaping of hostname and URIs HTML output.
      [Jim Jagielski, Stefan Fritsch]
