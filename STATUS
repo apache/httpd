@@ -110,6 +110,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       2.4.x patch: http://people.apache.org/~jailletc36/backport_mod_header.patch
       +1: jailletc36, druggeri, minfrin
 
+    * various mods: host and URI escaping
+      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1413732
+                   http://svn.apache.org/viewvc?view=revision&revision=1418752
+      2.4.x patch: trunk works sans mod_policy
+      +1 covener, minfrin, sf
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -274,12 +280,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/viewvc?rev=1418655&view=rev
       2.4.x patch: trunk patch works
       +1: minfrin
-
-    * various mods: host and URI escaping
-      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1413732
-                   http://svn.apache.org/viewvc?view=revision&revision=1418752
-      2.4.x patch: trunk works sans mod_policy
-      +1 covener, minfrin
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
