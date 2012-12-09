@@ -176,7 +176,7 @@ static authz_status group_check_authorization(request_rec *r,
         return AUTHZ_DENIED;
     }
 
-    if (apr_table_elts(grpstatus)->nelts == 0) {
+    if (apr_is_empty_table(grpstatus)) {
         /* no groups available, so exit immediately */
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01666)
                       "Authorization of user %s to access %s failed, reason: "
@@ -235,7 +235,7 @@ static authz_status filegroup_check_authorization(request_rec *r,
         return AUTHZ_DENIED;
     }
 
-    if (apr_table_elts(grpstatus)->nelts == 0) {
+    if (apr_is_empty_table(grpstatus)) {
         /* no groups available, so exit immediately */
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01670)
                         "Authorization of user %s to access %s failed, reason: "

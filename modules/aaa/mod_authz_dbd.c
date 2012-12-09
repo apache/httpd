@@ -163,7 +163,7 @@ static int authz_dbd_login(request_rec *r, authz_dbd_cfg *cfg,
             /* OK, this is non-critical; we can just not-redirect */
         }
         else if ((rv = apr_dbd_pvselect(dbd->driver, r->pool, dbd->handle,
-                                        &res, query, 0, r->user, NULL) == 0)) {
+                                        &res, query, 0, r->user, NULL)) == 0) {
             for (rv = apr_dbd_get_row(dbd->driver, r->pool, res, &row, -1);
                  rv != -1;
                  rv = apr_dbd_get_row(dbd->driver, r->pool, res, &row, -1)) {

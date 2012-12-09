@@ -176,7 +176,7 @@ static int pointinpoly(const double point[2], double pgon[MAXVERTS][2])
     int i, numverts, crossings = 0;
     double x = point[X], y = point[Y];
 
-    for (numverts = 0; pgon[numverts][X] != -1 && numverts < MAXVERTS;
+    for (numverts = 0; numverts < MAXVERTS && pgon[numverts][X] != -1;
         numverts++) {
         /* just counting the vertexes */
     }
