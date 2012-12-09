@@ -91,12 +91,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * various mods: host and URI escaping
-      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1413732
-                   http://svn.apache.org/viewvc?view=revision&revision=1418752
-      2.4.x patch: trunk works sans mod_policy
-      +1 covener, minfrin, sf
-
     * (2/x) backport some easy patch to keep 2.4.x in line with trunk as much as possible
          1398970: Use 'ap_strcasestr' instead of a strdup/str_tolower/strstr sequence
          1407853: cppCheck:  Suspicious condition.
