@@ -2606,7 +2606,7 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
     }
 
     if (neg->is_transparent || vary_by_type || vary_by_language ||
-        vary_by_language || vary_by_charset || vary_by_encoding) {
+        vary_by_charset || vary_by_encoding) {
 
         apr_table_mergen(hdrs, "Vary", 2 + apr_pstrcat(r->pool,
             neg->is_transparent ? ", negotiate"       : "",

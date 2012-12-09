@@ -1578,7 +1578,7 @@ DAV_DECLARE(dav_error *) dav_validate_request(request_rec *r,
 
         err = (*repos_hooks->walk)(&ctx.w, DAV_INFINITY, &multi_status);
         if (err == NULL) {
-            *response = multi_status;;
+            *response = multi_status;
         }
         /* else: implies a 5xx status code occurred. */
     }

@@ -221,9 +221,7 @@ static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
                     const char *str = apr_table_get(r->headers_out,
                                                     "Cache-Control");
                     if (str) {
-                        char *str1 = apr_pstrdup(r->pool, str);
-                        ap_str_tolower(str1);
-                        if (strstr(str1, "no-transform")) {
+                        if (ap_strcasestr(str, "no-transform")) {
                             /* can't use this provider; try next */
                             continue;
                         }
@@ -278,7 +276,6 @@ static apr_status_t filter_harness(ap_filter_t *f, apr_bucket_brigade *bb)
     apr_status_t ret;
 #ifndef NO_PROTOCOL
     const char *cachecontrol;
-    char *str;
 #endif
     harness_ctx *ctx = f->ctx;
     ap_filter_rec_t *filter = f->frec;
@@ -304,9 +301,7 @@ static apr_status_t filter_harness(ap_filter_t *f, apr_bucket_brigade *bb)
                 cachecontrol = apr_table_get(f->r->headers_out,
                                              "Cache-Control");
                 if (cachecontrol) {
-                    str = apr_pstrdup(f->r->pool,  cachecontrol);
-                    ap_str_tolower(str);
-                    if (strstr(str, "no-transform")) {
+                    if (ap_strcasestr(cachecontrol, "no-transform")) {
                         ap_remove_output_filter(f);
                         return ap_pass_brigade(f->next, bb);
                     }
