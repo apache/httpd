@@ -6,6 +6,10 @@ Changes with Apache 2.5.0
      like the SSL handshake where <If> LogLevel ... </If> is evaluated
      too late. [Stefan Fritsch]
 
+  *) core: Add new directive Warning to issue warnings from a configuration
+     file. Both Warning and Error now generate a timestamped log message.
+     [Fabien Coelho] 
+
   *) mod_status: Print out list of times since a Vhost was last used.
      [Jim Jagielski]
 
