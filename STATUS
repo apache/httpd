@@ -237,9 +237,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_rewrite: PR53963: Ad an opt-in RewriteOption to control merging of RewriteBase
                   (This merge started happening in 2.4.3/2.2.23)
      trunk patch: http://svn.apache.org/viewvc?rev=1410681&view=rev
-     2.4.x patch: trunk works
+     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-rewritebase_optional.diff
      +1 covener
      minfrin: docs didn't apply clean and referred to v2.5.0, when fixed, +1.
+     covener: corrected docs and emphasized 2.4.3-to-2.4.4 change.
 
     * (2/x) backport some easy patch to keep 2.4.x in line with trunk as much as possible
          1398970: Use 'ap_strcasestr' instead of a strdup/str_tolower/strstr sequence
