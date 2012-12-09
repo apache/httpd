@@ -30,7 +30,7 @@ Changes with Apache 2.5.0
      PR 53963. [Eric Covener]
 
   *) mod_session_dbd: fix a segmentation fault in the function dbd_remove.
-    PR 53452. [<rebanerebane gmail com>, Reimo Rebane]
+     PR 53452. [<rebanerebane gmail com>, Reimo Rebane]
   
   *) core: New directive RegisterHttpMethod for registering non-standard
      HTTP methods. [Stefan Fritsch]
