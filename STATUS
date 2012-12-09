@@ -91,6 +91,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_rewrite: PR53963: Ad an opt-in RewriteOption to control merging of RewriteBase
+                  (This merge started happening in 2.4.3/2.2.23)
+     trunk patch: http://svn.apache.org/viewvc?rev=1410681&view=rev
+     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-rewritebase_optional.diff
+     +1 covener, minfrin, sf
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -214,12 +220,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~jim/patches/bal-man-xml-2.4.patch
      +1: jim, druggeri
      druggeri note: Docs notes on new elements would be nice for quick reference
-
-   * mod_rewrite: PR53963: Ad an opt-in RewriteOption to control merging of RewriteBase
-                  (This merge started happening in 2.4.3/2.2.23)
-     trunk patch: http://svn.apache.org/viewvc?rev=1410681&view=rev
-     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-rewritebase_optional.diff
-     +1 covener, minfrin
 
     * htpasswd/htdbm: Refactor, add bcrypt support, add -i option.
       trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1395253
