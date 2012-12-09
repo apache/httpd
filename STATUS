@@ -91,13 +91,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_headers: Allow for exposure of loadavg and server load via mod_headers
-      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1389565
-                   http://svn.apache.org/viewvc?view=revision&revision=1389566
-                   http://svn.apache.org/viewvc?view=revision&revision=1389569 (doc)
-      2.4.x patch: http://people.apache.org/~jailletc36/backport_mod_header.patch
-      +1: jailletc36, druggeri, minfrin
-
     * various mods: host and URI escaping
       trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1413732
                    http://svn.apache.org/viewvc?view=revision&revision=1418752
