@@ -17,6 +17,14 @@
 /**
  * @file util_varbuf.h
  * @brief Apache resizable variable length buffer library
+ *
+ * This set of functions provides resizable buffers. While the primary
+ * usage is with NUL-terminated strings, most functions also work with
+ * arbitrary binary data.
+ *
+ * @defgroup APACHE_CORE_VARBUF
+ * @ingroup APACHE_CORE
+ * @{
  */
 
 #ifndef AP_VARBUF_H
@@ -36,7 +44,8 @@ struct ap_varbuf_info;
 
 /** A resizable buffer */
 struct ap_varbuf {
-    /** the actual buffer; will point to a const '\0' if avail == 0 */
+    /** the actual buffer; will point to a const '\0' if avail == 0 and
+     *  to memory of the same lifetime as the pool otherwise */
     char *buf;
 
     /** allocated size of the buffer (minus one for the final \0);
@@ -49,7 +58,7 @@ struct ap_varbuf {
     apr_size_t strlen;
 
     /** the pool for memory allocations and for registering the cleanup;
-     *  the buffer memory will be released when this pool is destroyed */
+     *  the buffer memory will be released when this pool is cleared */
     apr_pool_t *pool;
 
     /** opaque info for memory allocation */
@@ -58,7 +67,8 @@ struct ap_varbuf {
 
 /** initialize a resizable buffer. It is safe to re-initialize a prevously
  *  used ap_varbuf. The old buffer will be released when the corresponding
- *  pool is destroyed.
+ *  pool is cleared. The buffer remains usable until the pool is cleared,
+ *  even if the ap_varbuf was located on the stack and has gone out of scope.
  * @param pool the pool to allocate small buffers from and to register the
  *        cleanup with
  * @param vb pointer to the ap_varbuf struct
@@ -68,8 +78,8 @@ AP_DECLARE(void) ap_varbuf_init(apr_pool_t *pool, struct ap_varbuf *vb,
                                 apr_size_t init_size);
 
 /** grow a resizable buffer. If the vb->buf cannot be grown in place, it will
- *  be reallocated and up to vb->strlen + 1 bytes of memory will be copied to
- *  the new location. If vb->strlen == AP_VARBUF_UNKNOWN, the whole buffer
+ *  be reallocated and the first vb->strlen + 1 bytes of memory will be copied
+ *  to the new location. If vb->strlen == AP_VARBUF_UNKNOWN, the whole buffer
  *  is copied.
  * @param vb pointer to the ap_varbuf struct
  * @param new_size the minimum new size of the buffer
@@ -83,19 +93,22 @@ AP_DECLARE(void) ap_varbuf_grow(struct ap_varbuf *vb, apr_size_t new_size);
 
 /** Release memory from a ap_varbuf immediately, if possible.
  *  This allows to free large buffers before the corresponding pool is
- *  destroyed. Only larger allocations using mem nodes will be freed.
+ *  cleared. Only larger allocations using mem nodes will be freed.
  * @param vb pointer to the ap_varbuf struct
  * @note After ap_varbuf_free(), vb must not be used unless ap_varbuf_init()
  *       is called again.
  */
 AP_DECLARE(void) ap_varbuf_free(struct ap_varbuf *vb);
 
-/** Concatenate a string to an ap_varbuf
+/** Concatenate a string to an ap_varbuf. vb->strlen determines where
+ * the string is appended in the buffer. If vb->strlen == AP_VARBUF_UNKNOWN,
+ * the string will be appended at the first NUL byte in the buffer.
+ * If len == 0, ap_varbuf_strmemcat() does nothing.
  * @param vb pointer to the ap_varbuf struct
  * @param str the string to append; must be at least len bytes long
  * @param len the number of characters of *str to concatenate to the buf
  * @note vb->strlen will be set to the length of the new string
- * @note vb->buf will be null-terminated
+ * @note if len != 0, vb->buf will always be NUL-terminated
  */
 AP_DECLARE(void) ap_varbuf_strmemcat(struct ap_varbuf *vb, const char *str,
                                      int len);
@@ -112,7 +125,9 @@ AP_DECLARE(void) ap_varbuf_strmemcat(struct ap_varbuf *vb, const char *str,
  * @return the new string
  * @note ap_varbuf_pdup() uses vb->strlen to determine how much memory to
  *       copy. It works even if 0-bytes are embedded in vb->buf, prepend, or
- *       append
+ *       append.
+ * @note If vb->strlen equals AP_VARBUF_UNKNOWN, it will be set to
+ *       strlen(vb->buf).
  */
 AP_DECLARE(char *) ap_varbuf_pdup(apr_pool_t *p, struct ap_varbuf *vb,
                                   const char *prepend, apr_size_t prepend_len,
@@ -141,6 +156,8 @@ AP_DECLARE(char *) ap_varbuf_pdup(apr_pool_t *p, struct ap_varbuf *vb,
  * @note Just like ap_pregsub(), this function does not copy the part of
  *       *source before the matching part (i.e. the first pmatch[0].rm_so
  *       characters).
+ * @note If vb->strlen equals AP_VARBUF_UNKNOWN, it will be set to
+ *       strlen(vb->buf) first.
  */
 AP_DECLARE(apr_status_t) ap_varbuf_regsub(struct ap_varbuf *vb,
                                           const char *input,
@@ -149,12 +166,14 @@ AP_DECLARE(apr_status_t) ap_varbuf_regsub(struct ap_varbuf *vb,
                                           ap_regmatch_t pmatch[],
                                           apr_size_t maxlen);
 
-/** Read a line from an ap_configfile_t into an ap_varbuf.
+/** Read a line from an ap_configfile_t and append it to an ap_varbuf.
  * @param vb pointer to the ap_varbuf struct
  * @param cfg pointer to the ap_configfile_t
  * @param max_len maximum line length, including leading/trailing whitespace
  * @return see ap_cfg_getline()
  * @note vb->strlen will be set to the length of the line
+ * @note If vb->strlen equals AP_VARBUF_UNKNOWN, it will be set to
+ *       strlen(vb->buf) first.
  */
 AP_DECLARE(apr_status_t) ap_varbuf_cfg_getline(struct ap_varbuf *vb,
                                                ap_configfile_t *cfp,
@@ -165,3 +184,4 @@ AP_DECLARE(apr_status_t) ap_varbuf_cfg_getline(struct ap_varbuf *vb,
 #endif
 
 #endif  /* !AP_VARBUF_H */
+/** @} */
