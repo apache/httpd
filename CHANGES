@@ -13,15 +13,6 @@ Changes with Apache 2.5.0
   *) mod_status: Print out list of times since a Vhost was last used.
      [Jim Jagielski]
 
-  *) core: Don't fail at startup with AH00554 when Include points to 
-     a directory without any wildcard character. PR 54223 [Eric Covener]
-
-  *) core: Fail startup if the argument to ServerTokens is unrecognized.  
-     PR 54222 [Jackie Zhang  <jackie.qq.zhang gmail.com>]
-
-  *) mod_log_forensic: Don't log a spurious "-" if a request has been rejected
-     before mod_log_forensic could attach its id to it. [Stefan Fritsch]
-
   *) ap_expr: Add SERVER_PROTOCOL_VERSION, ..._MAJOR, and ..._MINOR
      variables. [Stefan Fritsch]
 
@@ -29,9 +20,6 @@ Changes with Apache 2.5.0
      unless new option 'RewriteOptions MergeBase' is configured.
      PR 53963. [Eric Covener]
 
-  *) mod_session_dbd: fix a segmentation fault in the function dbd_remove.
-     PR 53452. [<rebanerebane gmail com>, Reimo Rebane]
-  
   *) core: New directive RegisterHttpMethod for registering non-standard
      HTTP methods. [Stefan Fritsch]
 
@@ -66,17 +54,7 @@ Changes with Apache 2.5.0
   *) ap_expr: Add req_novary function that allows HTTP header lookups
      without adding the name to the Vary header. [Stefan Fritsch]
 
-  *) mod_ssl: Change default for SSLCompression to off, as compression
-     causes security issues in most setups. (The so called "CRIME" attack).
-     [Stefan Fritsch]
-
-  *) syslog logging: Remove stray ", referer" at the end of some messages.
-     [Jeff Trawick]
-
   *) configure: Fix processing of --disable-FEATURE for various features.
-     [Jeff Trawick]
-
-  *) "Iterate" directives: Report an error if no arguments are provided.
      [Jeff Trawick]
 
   *) htpasswd, htdbm: Optionally read passwords from stdin, as more
@@ -96,9 +74,6 @@ Changes with Apache 2.5.0
 
   *) mod_systemd: New module, for integration with systemd on Linux.
      [Jan Kaluza <jkaluza redhat.com>]
-
-  *) core: ErrorDocument now works for requests without a Host header.
-     PR 48357.  [Jeff Trawick]
 
   *) --with-module: Fix failure to integrate them into some existing
      module directories.  PR 40097.  [Jeff Trawick]
@@ -128,17 +103,8 @@ Changes with Apache 2.5.0
   *) mod_slotmem: New provider function, fgrab(), which forces an
      allocation of a slot. [Jim Jagielski]
 
-  *) mod_proxy_balancer: The nonce is only derived from the UUID iff
-     not set via the 'nonce' balancer param. [Jim Jagielski]
-
   *) mod_lua: Add LuaInputFilter/LuaOutputFilter for creating content
      filters in Lua [Daniel Gruno]
-
-  *) core: Apply length limit when logging Status header values.
-     [Jeff Trawick, Chris Darroch]
-
-  *) mod_ssl: Match wildcard SSL certificate names in proxy mode.  
-     PR 53006.  [Joe Orton]
 
   *) WinNT MPM: Store pid and generation for each thread in scoreboard
      to allow tracking of threads from exiting children via mod_status
@@ -150,13 +116,6 @@ Changes with Apache 2.5.0
 
   *) mod_lua: Allow scripts handled by the lua-script handler to return 
      a status code to the client (such as a 302 or a 500) [Daniel Gruno]
-
-  *) mod_proxy_ajp: Fix crash in packet dump code when logging
-     with LogLevel trace7 or trace8.  PR 53730.  [Rainer Jung]
-
-  *) mod_cache: Wrong content type and character set when
-     mod_cache serves stale content because of a proxy error. 
-     PR 53539.  [Rainer Jung, Ruediger Pluem]
 
   *) mod_lua: Decline handling 'lua-script' if the file doesn't exist,
      rather than throwing an internal server error. [Daniel Gruno]
