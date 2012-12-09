@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.4
 
+  *) core: Make ap_regcomp() return AP_REG_ESPACE if out of memory.  Make
+     ap_pregcomp() abort if out of memory. This raises the minimum PCRE
+     requirement to version 6.0. [Stefan Fritsch]
+
   *) mod_proxy: Add ability to configure the sticky session separator.
      PR 53893. [<inu inusasha de>, Jim Jagielski]
 
