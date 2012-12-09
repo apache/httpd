@@ -91,11 +91,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * util: make varbuf functions treat AP_VARBUF_UNKNOWN consistently
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1359884
-     2.4.x patch: trunk patch works
-     +1: jim, sf, minfrin
-
     * mod_headers: Allow for exposure of loadavg and server load via mod_headers
       trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1389565
                    http://svn.apache.org/viewvc?view=revision&revision=1389566
