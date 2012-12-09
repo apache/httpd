@@ -255,9 +255,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (This merge started happening in 2.4.3/2.2.23)
      trunk patch: http://svn.apache.org/viewvc?rev=1410681&view=rev
      2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-rewritebase_optional.diff
-     +1 covener
-     minfrin: docs didn't apply clean and referred to v2.5.0, when fixed, +1.
-     covener: corrected docs and emphasized 2.4.3-to-2.4.4 change.
+     +1 covener, minfrin
 
     * htpasswd/htdbm: Refactor, add bcrypt support, add -i option.
       trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1395253
