@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_balancer: Improve output
+     PR 52478 [Danijel <dt-ng rbfh de>]
+  
   *) core: Add LogLevelOverride directive that allows to override the
      loglevel for clients from certain IPs. This also works for things
      like the SSL handshake where <If> LogLevel ... </If> is evaluated

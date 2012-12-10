@@ -1535,7 +1535,11 @@ static int balancer_handler(request_rec *r)
                       NULL);
             ap_rputs("\"></td></tr>\n", r);
             ap_rputs("<tr><td>Status:</td>", r);
-            ap_rputs("<td><table><tr><th>Ign</th><th>Drn</th><th>Dis</th><th>Stby</th></tr>\n<tr>", r);
+            ap_rputs("<td><table><tr>"
+                     "<th>Ignore Errors</th>"
+                     "<th>Draining Mode</th>"
+                     "<th>Disabled</th>"
+                     "<th>Hot Standby</th></tr>\n<tr>", r);
             create_radio("w_status_I", (PROXY_WORKER_IGNORE_ERRORS & wsel->s->status), r);
             create_radio("w_status_N", (PROXY_WORKER_DRAIN & wsel->s->status), r);
             create_radio("w_status_D", (PROXY_WORKER_DISABLED & wsel->s->status), r);
