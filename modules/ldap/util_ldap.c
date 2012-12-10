@@ -1290,8 +1290,8 @@ start_over:
         int sgindex;
         char **group;
         res = apr_pcalloc(r->pool, sizeof(util_compare_subgroup_t));
-        res->subgroupDNs  = apr_pcalloc(r->pool,
-                                        sizeof(char *) * (subgroups->nelts));
+        res->subgroupDNs  = apr_palloc(r->pool,
+                                       sizeof(char *) * (subgroups->nelts));
         for (sgindex = 0; (group = apr_array_pop(subgroups)); sgindex++) {
             res->subgroupDNs[sgindex] = apr_pstrdup(r->pool, *group);
         }
@@ -1435,8 +1435,8 @@ static int uldap_cache_check_subgroups(request_rec *r,
                                                 sizeof(util_compare_subgroup_t));
                     tmp_local_sgl->len = compare_nodep->subgroupList->len;
                     tmp_local_sgl->subgroupDNs =
-                        apr_pcalloc(r->pool,
-                                    sizeof(char *) * compare_nodep->subgroupList->len);
+                        apr_palloc(r->pool,
+                                   sizeof(char *) * compare_nodep->subgroupList->len);
                     for (i = 0; i < compare_nodep->subgroupList->len; i++) {
                         tmp_local_sgl->subgroupDNs[i] =
                             apr_pstrdup(r->pool,
@@ -1905,7 +1905,7 @@ static int uldap_cache_getuserdn(request_rec *r, util_ldap_connection_t *ldc,
                 *binddn = apr_pstrdup(r->pool, search_nodep->dn);
                 if (attrs) {
                     int i;
-                    *retvals = apr_pcalloc(r->pool, sizeof(char *) * search_nodep->numvals);
+                    *retvals = apr_palloc(r->pool, sizeof(char *) * search_nodep->numvals);
                     for (i = 0; i < search_nodep->numvals; i++) {
                         (*retvals)[i] = apr_pstrdup(r->pool, search_nodep->vals[i]);
                     }
