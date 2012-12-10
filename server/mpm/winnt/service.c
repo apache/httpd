@@ -593,7 +593,7 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
         schService = OpenService(schSCManager, mpm_service_name,
                                  SERVICE_CHANGE_CONFIG);
         if (!schService) {
-            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_ERR,
+            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP,
                          apr_get_os_error(), NULL,
                          "OpenService failed");
         }
@@ -605,7 +605,7 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
                                       launch_cmd, NULL, NULL,
                                       "Tcpip\0Afd\0", NULL, NULL,
                                       mpm_display_name)) {
-            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_ERR,
+            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP,
                          apr_get_os_error(), NULL,
                          "ChangeServiceConfig failed");
 
