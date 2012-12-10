@@ -214,6 +214,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1388603
      2.4.x patch: http://people.apache.org/~jim/patches/proxy-persist.diff
      +1: jim
+     rjung: the combined 2.4 patch contains lots of unwanted "inherit" changes.
 
    * mod_auth_form: Make sure that get_notes_auth() sets the user as does
      get_form_auth() and get_session_auth(). Makes sure that REMOTE_USER
