@@ -91,6 +91,66 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_ssl: Add support for TLS-SRP (Secure Remote Password key exchange
+     for TLS, RFC 5054).
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1347980 and
+                  http://svn.apache.org/viewvc?view=revision&revision=1348653
+     2.4.x patch: http://people.apache.org/~sf/ssl-TLS-SRP-2_4-v2.patch
+     +1: sf, minfrin, rjung
+     rjung: Please add docs compatibility note for 2.4.4.
+            There is another docs block missing from the backport about
+            how to create the verifier file using the openssl commandline tool.
+
+   * mod_proxy: Make balancers server-specific, as they should have
+     been. Inheritance causes too many behind-the-scene interactions
+     to be reliable in a dynamic environ.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387603
+                  http://svn.apache.org/viewvc?view=revision&revision=1388029
+     2.4.x patch: trunk patch works (minus ap_mmn.h change)
+     +1: jim, druggeri
+     rjung: +1 if fixing copy-and-paste error set_persist -> set_inherit
+     rjung: Please adjust compatibility note.
+            Because of the config incompatibility I suggest we add
+            a note either to the release announcement or CHANGES.
+            When we did the same change for mod_jk years ago it took
+            very long for users to understand that workers defined in the global
+            server where no longer working in their vhosts (and yes, there was
+            a switch there to force old behavior too).
+
+   * mod_auth_form: Support the expr parser in the
+     AuthFormLoginRequiredLocation, AuthFormLoginSuccessLocation and
+     AuthFormLogoutLocation directives.
+     trunk patch: http://svn.apache.org/viewvc?rev=1388648&view=rev
+                  http://svn.apache.org/viewvc?rev=1418721&view=rev
+     2.4.x patch: trunk patches work (minus next-number, CHANGES)
+     +1: minfrin, sf, rjung
+     rjung: please add compatibility note to docs about expr only supported
+            since 2.4.4.
+
+   * mod_proxy_balancer: Bring XML output up to date.
+     http://svn.apache.org/viewvc?view=revision&revision=1392345
+     http://svn.apache.org/viewvc?view=revision&revision=1392346
+     2.4.x patch: http://people.apache.org/~jim/patches/bal-man-xml-2.4.patch
+     +1: jim, druggeri, rjung
+     druggeri note: Docs notes on new elements would be nice for quick reference
+
+   * htpasswd/htdbm: Refactor, add bcrypt support, add -i option.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1395253
+                  http://svn.apache.org/viewvc?view=revision&revision=1395254
+                  http://svn.apache.org/viewvc?view=revision&revision=1395255
+                  http://svn.apache.org/viewvc?view=revision&revision=1395256
+                  http://svn.apache.org/viewvc?view=revision&revision=1395792
+     2.4.x patch: trunk patches work
+     +1: sf
+     +1 gsmith, rjung: provided you also include this fix for Windows
+                http://svn.apache.org/viewvc?view=revision&revision=1419084
+
+   * mod_session_crypto: Protect ourselves against underlying libraries who
+     fail to load without providing an error message of their own.
+     trunk patch: http://svn.apache.org/viewvc?rev=1418655&view=rev
+     2.4.x patch: trunk patch works
+     +1: minfrin, sf, rjung
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -132,24 +192,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           why it is not premature.
      minfrin: once this gets docs, +1.
 
-   * mod_ssl: Add support for TLS-SRP (Secure Remote Password key exchange
-     for TLS, RFC 5054).
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1347980 and
-                  http://svn.apache.org/viewvc?view=revision&revision=1348653
-     2.4.x patch: http://people.apache.org/~rjung/patches/ssl-TLS-SRP-2_4.patch
-     +1: rjung,
-     sf: 2.4 patch is outdated. New patch:
-         http://people.apache.org/~sf/ssl-TLS-SRP-2_4-v2.patch
-     +1: sf, minfrin
-
-   * mod_proxy: Make balancers server-specific, as they should have
-     been. Inheritance causes too many behind-the-scene interactions
-     to be reliable in a dynamic environ.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387603
-                  http://svn.apache.org/viewvc?view=revision&revision=1388029
-     2.4.x patch: trunk patch works (minus ap_mmn.h change)
-     +1: jim, druggeri
-
    * mod_slotmem_*: Add in new fgrab() function which forces a grab and
      slot allocation on a specified slot. Allow for clearing of inuse
      array.
@@ -159,11 +201,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1394079
       2.4.x patch: trunk patch works
      +1: jim, rjung
-     rjung: We could be more explicit in docs about the difference between grab
-            and forced grab, like e.g. "grab or allocate some unused slot and
-            mark as in-use" versus "grab or allocate a given slot and mark
-            as in-use if not already used.".
-       jim: Added in r1394079
 
    * mod_proxy: Persist balancer and worker data across restarts and stop/start.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387110
@@ -177,14 +214,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1388603
      2.4.x patch: http://people.apache.org/~jim/patches/proxy-persist.diff
      +1: jim
-
-   * mod_auth_form: Support the expr parser in the
-     AuthFormLoginRequiredLocation, AuthFormLoginSuccessLocation and
-     AuthFormLogoutLocation directives.
-     trunk patch: http://svn.apache.org/viewvc?rev=1388648&view=rev
-                  http://svn.apache.org/viewvc?rev=1418721&view=rev
-     2.4.x patch: trunk patches work (minus next-number, CHANGES)
-     +1: minfrin, sf
 
    * mod_auth_form: Make sure that get_notes_auth() sets the user as does
      get_form_auth() and get_session_auth(). Makes sure that REMOTE_USER
@@ -207,30 +236,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                apr_socket_opt_set() call would segfault before the check is
                hit.
      -1: sf (until at least the epsv_addr check is fixed)
-
-   * mod_proxy_balancer: Bring XML output up to date.
-     http://svn.apache.org/viewvc?view=revision&revision=1392345
-     http://svn.apache.org/viewvc?view=revision&revision=1392346
-     2.4.x patch: http://people.apache.org/~jim/patches/bal-man-xml-2.4.patch
-     +1: jim, druggeri
-     druggeri note: Docs notes on new elements would be nice for quick reference
-
-    * htpasswd/htdbm: Refactor, add bcrypt support, add -i option.
-      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1395253
-                   http://svn.apache.org/viewvc?view=revision&revision=1395254
-                   http://svn.apache.org/viewvc?view=revision&revision=1395255
-                   http://svn.apache.org/viewvc?view=revision&revision=1395256
-                   http://svn.apache.org/viewvc?view=revision&revision=1395792
-      2.4.x patch: trunk patches work
-      +1: sf
-      +1 gsmith: provided you also include this fix for Windows
-                 http://svn.apache.org/viewvc?view=revision&revision=1419084
-
-    * mod_session_crypto: Protect ourselves against underlying libraries who
-      fail to load without providing an error message of their own.
-      trunk patch: http://svn.apache.org/viewvc?rev=1418655&view=rev
-      2.4.x patch: trunk patch works
-      +1: minfrin, sf
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
