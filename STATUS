@@ -223,6 +223,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/viewvc?view=revision&revision=1395792
       2.4.x patch: trunk patches work
       +1: sf
+      +1 gsmith: provided you also include this fix for Windows
+                 http://svn.apache.org/viewvc?view=revision&revision=1419084
 
     * mod_session_crypto: Protect ourselves against underlying libraries who
       fail to load without providing an error message of their own.
