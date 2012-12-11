@@ -145,16 +145,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_proxy: Persist balancer and worker data across restarts and stop/start.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387110
                   http://svn.apache.org/viewvc?view=revision&revision=1387444
-                  http://svn.apache.org/viewvc?view=revision&revision=1387603
-                  http://svn.apache.org/viewvc?view=revision&revision=1387684
-                  http://svn.apache.org/viewvc?view=revision&revision=1387691
                   http://svn.apache.org/viewvc?view=revision&revision=1387693
-                  http://svn.apache.org/viewvc?view=revision&revision=1388029
-                  http://svn.apache.org/viewvc?view=revision&revision=1388444
-                  http://svn.apache.org/viewvc?view=revision&revision=1388603
-     2.4.x patch: http://people.apache.org/~jim/patches/proxy-persist.diff
+     2.4.x patch: http://people.apache.org/~jim/patches/proxy-persist2.diff
      +1: jim
-     rjung: the combined 2.4 patch contains lots of unwanted "inherit" changes.
 
    * mod_proxy: Allow balancers to be server-specific, as they should have
      been. Inheritance causes too many behind-the-scene interactions
