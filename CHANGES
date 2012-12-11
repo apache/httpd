@@ -2,6 +2,8 @@
 
 Changes with Apache 2.4.4
 
+  *) mod_proxy_balancer: Bring XML output up to date. [Jim Jagielski]
+
   *) htpasswd, htdbm: Optionally read passwords from stdin, as more
      secure alternative to -b.  PR 40243. [Adomas Paltanavicius <adomas
      paltanavicius gmail com>, Stefan Fritsch]
