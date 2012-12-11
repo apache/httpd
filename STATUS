@@ -91,16 +91,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_ssl: Add support for TLS-SRP (Secure Remote Password key exchange
-     for TLS, RFC 5054).
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1347980 and
-                  http://svn.apache.org/viewvc?view=revision&revision=1348653
-     2.4.x patch: http://people.apache.org/~sf/ssl-TLS-SRP-2_4-v2.patch
-     +1: sf, minfrin, rjung
-     rjung: Please add docs compatibility note for 2.4.4.
-            There is another docs block missing from the backport about
-            how to create the verifier file using the openssl commandline tool.
-
    * mod_proxy: Make balancers server-specific, as they should have
      been. Inheritance causes too many behind-the-scene interactions
      to be reliable in a dynamic environ.
