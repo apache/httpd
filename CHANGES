@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) EventOpt MPM
+
   *) mod_proxy_balancer: Improve output
      PR 52478 [Danijel <dt-ng rbfh de>]
   
@@ -53,17 +55,6 @@ Changes with Apache 2.5.0
   *) configure: Fix processing of --disable-FEATURE for various features.
      [Jeff Trawick]
 
-  *) htpasswd, htdbm: Optionally read passwords from stdin, as more
-     secure alternative to -b.  PR 40243. [Adomas Paltanavicius <adomas
-     paltanavicius gmail com>, Stefan Fritsch]
-
-  *) htpasswd, htdbm: Add support for bcrypt algorithm (requires
-     apr-util 1.5 or higher). PR 49288. [Stefan Fritsch]
-
-  *) htpasswd, htdbm: Put full 48bit of entropy into salt, improve
-     error handling. Add some of htpasswd's improvements to htdbm,
-     e.g. warn if password is truncated by crypt(). [Stefan Fritsch]
-
   *) mod_systemd: New module, for integration with systemd on Linux.
      [Jan Kaluza <jkaluza redhat.com>]
 
@@ -73,10 +64,6 @@ Changes with Apache 2.5.0
   *) mod_cache_socache: New cache implementation backed by mod_socache
      that replaces mod_mem_cache removed from httpd v2.2. [Graham
      Leggett]
-
-  *) mod_auth_form: Support the expr parser in the
-     AuthFormLoginRequiredLocation, AuthFormLoginSuccessLocation and
-     AuthFormLogoutLocation directives. [Graham Leggett]
 
   *) core: Add dirwalk_stat and pre_htaccess hooks, allowing mpm-itk
      to be used without patches to httpd core.  [Jeff Trawick]
@@ -132,10 +119,6 @@ Changes with Apache 2.5.0
      [Jeff Trawick]
 
   *) mod_ssl: Add RFC 5878 support. [Ben Laurie]
-
-  *) mod_ssl: Add support for TLS-SRP (Secure Remote Password key exchange
-     for TLS, RFC 5054). PR 51075. [Quinn Slack <sqs cs stanford edu>,
-     Christophe Renou, Peter Sylvester]
 
   *) suexec: Add --enable-suexec-capabilites support on Linux, to use
      setuid/setgid capability bits rather than a setuid root binary.
