@@ -185,6 +185,15 @@
 #define OPENSSL_NO_COMP
 #endif
 
+/* SRP support came in OpenSSL 1.0.1 */
+#ifndef OPENSSL_NO_SRP
+#ifdef SSL_CTRL_SET_TLS_EXT_SRP_USERNAME_CB
+#include <openssl/srp.h>
+#else
+#define OPENSSL_NO_SRP
+#endif
+#endif
+
 /* mod_ssl headers */
 #include "ssl_util_ssl.h"
 
@@ -647,6 +656,12 @@ typedef struct {
     const char *stapling_force_url;
 #endif
 
+#ifndef OPENSSL_NO_SRP
+    char *srp_vfile;
+    char *srp_unknown_user_seed;
+    SRP_VBASE  *srp_vbase;
+#endif
+
     modssl_auth_ctx_t auth;
 
     BOOL ocsp_enabled; /* true if OCSP verification enabled */
@@ -775,6 +790,11 @@ const char *ssl_cmd_SSLOCSPResponseMaxAge(cmd_parms *cmd, void *dcfg, const char
 const char *ssl_cmd_SSLOCSPResponderTimeout(cmd_parms *cmd, void *dcfg, const char *arg);
 const char *ssl_cmd_SSLOCSPEnable(cmd_parms *cmd, void *dcfg, int flag);
 
+#ifndef OPENSSL_NO_SRP
+const char *ssl_cmd_SSLSRPVerifierFile(cmd_parms *cmd, void *dcfg, const char *arg);
+const char *ssl_cmd_SSLSRPUnknownUserSeed(cmd_parms *cmd, void *dcfg, const char *arg);
+#endif
+
 const char *ssl_cmd_SSLFIPS(cmd_parms *cmd, void *dcfg, int flag);
 
 /**  module initialization  */
@@ -850,6 +870,9 @@ const char  *ssl_cmd_SSLStaplingForceURL(cmd_parms *, void *, const char *);
 void         modssl_init_stapling(server_rec *, apr_pool_t *, apr_pool_t *, modssl_ctx_t *);
 void         ssl_stapling_ex_init(void);
 int          ssl_stapling_init_cert(server_rec *s, modssl_ctx_t *mctx, X509 *x);
+#endif
+#ifndef OPENSSL_NO_SRP
+int          ssl_callback_SRPServerParams(SSL *, int *, void *);
 #endif
 
 /**  I/O  */

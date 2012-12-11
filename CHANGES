@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.4
 
+  *) mod_ssl: Add support for TLS-SRP (Secure Remote Password key exchange
+     for TLS, RFC 5054). PR 51075. [Quinn Slack <sqs cs stanford edu>,
+     Christophe Renou, Peter Sylvester]
+
   *) mod_rewrite: Stop mergeing RewriteBase down to subdirectories
      unless new option 'RewriteOptions MergeBase' is configured.
      PR 53963. [Eric Covener]
