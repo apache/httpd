@@ -91,16 +91,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_auth_form: Support the expr parser in the
-     AuthFormLoginRequiredLocation, AuthFormLoginSuccessLocation and
-     AuthFormLogoutLocation directives.
-     trunk patch: http://svn.apache.org/viewvc?rev=1388648&view=rev
-                  http://svn.apache.org/viewvc?rev=1418721&view=rev
-     2.4.x patch: trunk patches work (minus next-number, CHANGES)
-     +1: minfrin, sf, rjung
-     rjung: please add compatibility note to docs about expr only supported
-            since 2.4.4.
-
    * mod_proxy_balancer: Bring XML output up to date.
      http://svn.apache.org/viewvc?view=revision&revision=1392345
      http://svn.apache.org/viewvc?view=revision&revision=1392346
