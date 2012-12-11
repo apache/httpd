@@ -1,8 +1,8 @@
 #
 
 # To permit this cgi, replace # on the first line above with the
-# appropriate #!/path/to/perl shebang, and set this script executable
-# with chmod 755.
+# appropriate #!/path/to/perl shebang, and on Unix / Linux also
+# set this script executable with chmod 755.
 #
 # Note that it is subject to cross site scripting attacks on MS IE
 # and any other browser which fails to honor RFC2616, so never use
