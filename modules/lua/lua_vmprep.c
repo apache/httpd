@@ -372,6 +372,7 @@ static apr_status_t server_vm_construct(lua_State **resource, void *params, apr_
 {
     lua_State* L;
     ap_lua_server_spec* spec = apr_pcalloc(pool, sizeof(ap_lua_server_spec));
+    *resource = NULL;
     if (vm_construct(&L, params, pool) == APR_SUCCESS) {
         spec->finfo = apr_pcalloc(pool, sizeof(ap_lua_finfo));
         if (L != NULL) {
@@ -415,15 +416,18 @@ AP_LUA_DECLARE(lua_State*)ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
         }
         if (L == NULL) {
             ap_lua_vm_spec* server_spec = copy_vm_spec(r->server->process->pool, spec);
-            apr_reslist_create(&reslist, spec->vm_min, spec->vm_max, spec->vm_max, 0, 
+            if (
+                    apr_reslist_create(&reslist, spec->vm_min, spec->vm_max, spec->vm_max, 0, 
                                 (apr_reslist_constructor) server_vm_construct, 
                                 (apr_reslist_destructor) server_cleanup_lua, 
-                                server_spec, r->server->process->pool);
-            apr_pool_userdata_set(reslist, hash, NULL,
-                                        r->server->process->pool);
-            if (apr_reslist_acquire(reslist, (void**) &sspec) == APR_SUCCESS) {
-                L = sspec->L;
-                cache_info = sspec->finfo;
+                                server_spec, r->server->process->pool)
+                    == APR_SUCCESS && reslist != NULL) {
+                apr_pool_userdata_set(reslist, hash, NULL,
+                                            r->server->process->pool);
+                if (apr_reslist_acquire(reslist, (void**) &sspec) == APR_SUCCESS) {
+                    L = sspec->L;
+                    cache_info = sspec->finfo;
+                }
             }
         }
 #if APR_HAS_THREADS
