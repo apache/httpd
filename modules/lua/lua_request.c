@@ -21,6 +21,7 @@
 #include "scoreboard.h"
 
 APLOG_USE_MODULE(lua);
+#define POST_MAX_VARS 500
 
 typedef char *(*req_field_string_f) (request_rec * r);
 typedef int (*req_field_int_f) (request_rec * r);
@@ -151,6 +152,46 @@ static int req_aprtable2luatable_cb(void *l, const char *key,
     return 1;
 }
 
+
+/*
+ =======================================================================================================================
+    lua_read_body(request_rec *r, const char **rbuf, apr_off_t *size): Reads any additional form data sent in POST/PUT
+    requests. Used for multipart POST data.
+ =======================================================================================================================
+ */
+static int lua_read_body(request_rec *r, const char **rbuf, apr_off_t *size)
+{
+    int rc = OK;
+
+    if ((rc = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR))) {
+        return (rc);
+    }
+    if (ap_should_client_block(r)) {
+
+        /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+        char         argsbuffer[HUGE_STRING_LEN];
+        apr_off_t    rsize, len_read, rpos = 0;
+        apr_off_t length = r->remaining;
+        /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+        *rbuf = (const char *) apr_pcalloc(r->pool, (apr_size_t) (length + 1));
+        *size = length;
+        while ((len_read = ap_get_client_block(r, argsbuffer, sizeof(argsbuffer))) > 0) {
+            if ((rpos + len_read) > length) {
+                rsize = length - rpos;
+            }
+            else {
+                rsize = len_read;
+            }
+
+            memcpy((char *) *rbuf + rpos, argsbuffer, (size_t) rsize);
+            rpos += rsize;
+        }
+    }
+
+    return (rc);
+}
+
 /* r:parseargs() returning a lua table */
 static int req_parseargs(lua_State *L)
 {
@@ -163,7 +204,7 @@ static int req_parseargs(lua_State *L)
     return 2;                   /* [table<string, string>, table<string, array<string>>] */
 }
 
-/* r:parsebody() returning a lua table */
+/* r:parsebody(): Parses regular (url-enocded) or multipart POST data and returns two tables*/
 static int req_parsebody(lua_State *L)
 {
     apr_array_header_t          *pairs;
@@ -171,21 +212,64 @@ static int req_parsebody(lua_State *L)
     int res;
     apr_size_t size;
     apr_size_t max_post_size;
-    char *buffer;
+    char *multipart;
+    const char *contentType;
     request_rec *r = ap_lua_check_request_rec(L, 1);
     max_post_size = (apr_size_t) luaL_optint(L, 2, MAX_STRING_LEN);
+    multipart = apr_pcalloc(r->pool, 256);
+    contentType = apr_table_get(r->headers_in, "Content-Type");
     lua_newtable(L);
-    lua_newtable(L);            /* [table, table] */
-    res = ap_parse_form_data(r, NULL, &pairs, -1, max_post_size);
-    if (res == OK) {
-        while(pairs && !apr_is_empty_array(pairs)) {
-            ap_form_pair_t *pair = (ap_form_pair_t *) apr_array_pop(pairs);
-            apr_brigade_length(pair->value, 1, &len);
-            size = (apr_size_t) len;
-            buffer = apr_palloc(r->pool, size + 1);
-            apr_brigade_flatten(pair->value, buffer, &size);
-            buffer[len] = 0;
-            req_aprtable2luatable_cb(L, pair->name, buffer);
+    lua_newtable(L);            /* [table, table] */    
+    if (contentType != NULL && (sscanf(contentType, "multipart/form-data; boundary=%250c", multipart) == 1)) {
+        char        *buffer, *key, *filename;
+        char        *start = 0, *end = 0, *crlf = 0;
+        const char  *data;
+        int         i, z;
+        size_t      vlen = 0;
+        size_t      len = 0;
+        if (lua_read_body(r, &data, &size) != OK) {
+            return 2;
+        }
+        len = strlen(multipart);
+        i = 0;
+        for
+        (
+            start = strstr((char *) data, multipart);
+            start != start + size;
+            start = end
+        ) {
+            i++;
+            if (i == POST_MAX_VARS) break;
+            end = strstr((char *) (start + 1), multipart);
+            if (!end) end = start + size;
+            crlf = strstr((char *) start, "\r\n\r\n");
+            if (!crlf) break;
+            key = (char *) apr_pcalloc(r->pool, 256);
+            filename = (char *) apr_pcalloc(r->pool, 256);
+            buffer = (char *) apr_palloc(r->pool, end - crlf);
+            vlen = end - crlf - 8;
+            memcpy(buffer, crlf + 4, vlen);
+            sscanf(start + len + 2,
+                "Content-Disposition: form-data; name=\"%255[^\"]\"; filename=\"%255[^\"]\"",
+                key, filename);
+            if (strlen(key)) {
+                req_aprtable2luatable_cb(L, key, buffer);
+            }
+        }
+    }
+    else {
+        char *buffer;
+        res = ap_parse_form_data(r, NULL, &pairs, -1, max_post_size);
+        if (res == OK) {
+            while(pairs && !apr_is_empty_array(pairs)) {
+                ap_form_pair_t *pair = (ap_form_pair_t *) apr_array_pop(pairs);
+                apr_brigade_length(pair->value, 1, &len);
+                size = (apr_size_t) len;
+                buffer = apr_palloc(r->pool, size + 1);
+                apr_brigade_flatten(pair->value, buffer, &size);
+                buffer[len] = 0;
+                req_aprtable2luatable_cb(L, pair->name, buffer);
+            }
         }
     }
     return 2;                   /* [table<string, string>, table<string, array<string>>] */
