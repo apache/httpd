@@ -254,7 +254,7 @@ Require user rbowen
     The <module>mod_authn_dbm</module> module provides the <directive
     module="mod_authn_dbm">AuthDBMUserFile</directive> directive. These
     files can be created and manipulated with the <program>
-    dbmmanage</program> program. Many
+    dbmmanage</program> and <program>htdbm</program> programs. Many
     other types of authentication options are available from third
     party modules in the <a
     href="http://modules.apache.org/">Apache Modules
@@ -366,7 +366,7 @@ Require group GroupName
     you can choose <code>dbm</code> or <code>dbd</code> as your storage
     format.</p>
 
-    <p>To select a dbd file rather than a text file, for example:</p>
+    <p>To select a dbm file rather than a text file, for example:</p>
 
     <highlight language="config">
 &lt;Directory /www/docs/private&gt;
