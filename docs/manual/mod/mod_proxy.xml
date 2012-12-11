@@ -666,22 +666,6 @@ expressions</description>
 </directivesynopsis>
     
 <directivesynopsis>
-    <name>BalancerInherit</name>
-    <description>Inherit Balancers from the main server</description>
-    <syntax>BalancerInherit On|Off</syntax>
-    <default>BalancerInherit Off</default>
-    <contextlist><context>server config</context><context>virtual host</context></contextlist>
-    <compatibility>BalancerInherit is only available in Apache HTTP Server 2.5.0
-        and later.</compatibility>
-    <usage>
-        <p>This directive will cause the current server/vhost to "inherit" Balancers
-            defined in the main server. This can cause issues and inconsistent
-            behavior if using the Balancer Manager and so is disabled
-            by default.</p>
-    </usage>
-</directivesynopsis>
-
-<directivesynopsis>
     <name>BalancerMember</name>
     <description>Add a member to a load balancing group</description>
     <syntax>BalancerMember [<var>balancerurl</var>] <var>url</var> [<var
@@ -1209,6 +1193,22 @@ ProxyPass / balancer://hotcluster/
     <code>[P]</code> flag.</p>
 
 </usage>
+</directivesynopsis>
+
+<directivesynopsis>
+    <name>ProxyPassInherit</name>
+    <description>Inherit ProxyPass Balancers/Workers from the main server</description>
+    <syntax>ProxyPassInherit On|Off</syntax>
+    <default>ProxyPassInherit On</default>
+    <contextlist><context>server config</context><context>virtual host</context></contextlist>
+    <compatibility>ProxyPassInherit is only available in Apache HTTP Server 2.5.0
+        and later.</compatibility>
+    <usage>
+        <p>This directive will cause the current server/vhost to "inherit" ProxyPass
+            Balancers and Workers defined in the main server. This can cause issues and
+            inconsistent behavior if using the Balancer Manager and so should be disabled
+            if using that feature.</p>
+    </usage>
 </directivesynopsis>
 
 <directivesynopsis>
