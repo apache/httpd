@@ -16,6 +16,7 @@
 
 /* FTP routines for Apache proxy */
 
+#define APR_WANT_BYTEFUNC
 #include "mod_proxy.h"
 #if APR_HAVE_TIME_H
 #include <time.h>
@@ -1377,8 +1378,6 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
 
     /* set up data connection - EPSV */
     {
-        apr_sockaddr_t *data_addr;
-        char *data_ip;
         apr_port_t data_port;
 
         /*
@@ -1408,14 +1407,36 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
             data_port = parse_epsv_reply(ftpmessage);
 
             if (data_port) {
-                apr_sockaddr_t *epsv_addr;
+                apr_sockaddr_t *remote_addr, epsv_addr;
 
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
                               "EPSV contacting remote host on port %d", data_port);
 
-                if ((rv = apr_socket_create(&data_sock, origin->client_addr->family, SOCK_STREAM, 0, r->pool)) != APR_SUCCESS) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01040)
-                                  "error creating EPSV socket");
+                /* Retrieve the client's address. */
+                rv = apr_socket_addr_get(&remote_addr, APR_REMOTE, sock);
+                if (rv == APR_SUCCESS) {
+                    /* Take a shallow copy of the server address to
+                     * modify; the _addr_get function gives back a
+                     * pointer to the socket's internal structure.
+                     * This is awkward given current APR network
+                     * interfaces. */
+                    epsv_addr = *remote_addr;
+                    epsv_addr.port = data_port;
+#if APR_HAVE_IPV6
+                    if (epsv_addr.family == APR_INET6) {
+                        epsv_addr.sa.sin6.sin6_port = htons(data_port);
+                    }
+                    else
+#endif
+                    {
+                        epsv_addr.sa.sin.sin_port = htons(data_port);
+                    }
+                    rv = apr_socket_create(&data_sock, epsv_addr.family, SOCK_STREAM, 0, r->pool);
+                }
+
+                if (rv != APR_SUCCESS) {
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01040) 
+                                  "could not establish socket for client data connection");
                     proxy_ftp_cleanup(r, backend);
                     return HTTP_INTERNAL_SERVER_ERROR;
                 }
@@ -1435,24 +1456,17 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                                   "Failed to set");
                 }
 
-                /* make the connection */
-                apr_socket_addr_get(&data_addr, APR_REMOTE, sock);
-                apr_sockaddr_ip_get(&data_ip, data_addr);
-                apr_sockaddr_info_get(&epsv_addr, data_ip, origin->client_addr->family, data_port, 0, p);
-                if (!data_sock)
-                    rv = APR_ENOSOCKET;
-                else if (!epsv_addr)
-                    rv = APR_EBADIP;
-                else
-                    rv = apr_socket_connect(data_sock, epsv_addr);
+                rv = apr_socket_connect(data_sock, &epsv_addr);
                 if (rv != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01043)
                                   "EPSV attempt to connect to %pI failed - "
-                                  "Firewall/NAT?", epsv_addr);
+                                  "Firewall/NAT?", &epsv_addr);
                     return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY, apr_psprintf(r->pool,
-                                                                           "EPSV attempt to connect to %pI failed - firewall/NAT?", epsv_addr));
+                                                                           "EPSV attempt to connect to %pI failed - firewall/NAT?", &epsv_addr));
                 }
                 else {
+                    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO()
+                                  "connected data socket to %pI", &epsv_addr);
                     connect = 1;
                 }
             }
