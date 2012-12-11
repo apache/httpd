@@ -1189,8 +1189,6 @@ SSLVerifyDepth 10
 <syntax>SSLSRPVerifierFile <em>file-path</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Available in httpd 2.5.0 and later, if using OpenSSL 1.0.1 or
-later</compatibility>
 
 <usage>
 <p>
@@ -1218,8 +1216,6 @@ avalable in the <code>SSL_SRP_USERINFO</code> request environment variable.</p>
 <syntax>SSLSRPUnknownUserSeed <em>secret-string</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Available in httpd 2.5.0 and later, if using OpenSSL 1.0.1 or
-later</compatibility>
 
 <usage>
 <p>
