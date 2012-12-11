@@ -91,13 +91,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy_balancer: Bring XML output up to date.
-     http://svn.apache.org/viewvc?view=revision&revision=1392345
-     http://svn.apache.org/viewvc?view=revision&revision=1392346
-     2.4.x patch: http://people.apache.org/~jim/patches/bal-man-xml-2.4.patch
-     +1: jim, druggeri, rjung
-     druggeri note: Docs notes on new elements would be nice for quick reference
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
