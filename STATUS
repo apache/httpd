@@ -109,12 +109,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1 gsmith, rjung: provided you also include this fix for Windows
                 http://svn.apache.org/viewvc?view=revision&revision=1419084
 
-   * mod_session_crypto: Protect ourselves against underlying libraries who
-     fail to load without providing an error message of their own.
-     trunk patch: http://svn.apache.org/viewvc?rev=1418655&view=rev
-     2.4.x patch: trunk patch works
-     +1: minfrin, sf, rjung
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
