@@ -30,9 +30,7 @@ void ap_lua_rstack_dump(lua_State *L, request_rec *r, const char *msg)
 {
     int i;
     int top = lua_gettop(L);
-
     ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01484) "Lua Stack Dump: [%s]", msg);
-
     for (i = 1; i <= top; i++) {
         int t = lua_type(L, i);
         switch (t) {
@@ -212,10 +210,12 @@ static int req_write(lua_State *L)
 {
     request_rec *r = ap_lua_check_request_rec(L, 1);
     size_t n;
+    int rv;
     const char *buf = luaL_checklstring(L, 2, &n);
 
-    ap_rwrite((void *) buf, n, r);
-    return 0;
+    rv = ap_rwrite((void *) buf, n, r);
+    lua_pushinteger(L, rv);
+    return 1;
 }
 
 /* r:addoutputfilter(name|function) */
