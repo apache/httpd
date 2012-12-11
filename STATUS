@@ -143,6 +143,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jim, rjung
 
    * mod_proxy: Persist balancer and worker data across restarts and stop/start.
+                NOTE: Assumes mod_slotmem patch which adds fgrab()
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387110
                   http://svn.apache.org/viewvc?view=revision&revision=1387444
                   http://svn.apache.org/viewvc?view=revision&revision=1387693
