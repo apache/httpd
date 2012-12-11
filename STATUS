@@ -163,26 +163,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jim
      rjung: the combined 2.4 patch contains lots of unwanted "inherit" changes.
 
-   * mod_proxy: Make balancers server-specific, as they should have
+   * mod_proxy: Allow balancers to be server-specific, as they should have
      been. Inheritance causes too many behind-the-scene interactions
-     to be reliable in a dynamic environ.
+     to be reliable in a dynamic environ. We maintain the old-default
+     of inheritance.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387603
                   http://svn.apache.org/viewvc?view=revision&revision=1388029
-     2.4.x patch: trunk patch works (minus ap_mmn.h change)
+                  http://svn.apache.org/viewvc?view=revision&revision=1420124
+     2.4.x patch: http://people.apache.org/~jim/patches/proxypassinherit.patch
      +1: jim, druggeri
-     -1: rjung
-     rjung: This is about balancers *and* workers: doesn't the change also influence
-            the inheritance of simple workers defined via ProxyPass? So I'd prefer
-            WorkersInherit as the name instead of BalancersInherit or something
-            more neutral (plus docs adjustment).
-     rjung: also needs fixing copy-and-paste error set_persist -> set_inherit
-     rjung: Please adjust compatibility note.
-            Because of the config incompatibility I suggest we add
-            a note either to the release announcement or CHANGES.
-            When we did the same change for mod_jk years ago it took
-            very long for users to understand that workers defined in the global
-            server where no longer working in their vhosts (and yes, there was
-            a switch there to force old behavior too).
 
    * mod_auth_form: Make sure that get_notes_auth() sets the user as does
      get_form_auth() and get_session_auth(). Makes sure that REMOTE_USER
