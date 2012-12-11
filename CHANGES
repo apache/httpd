@@ -2,6 +2,17 @@
 
 Changes with Apache 2.4.4
 
+  *) htpasswd, htdbm: Optionally read passwords from stdin, as more
+     secure alternative to -b.  PR 40243. [Adomas Paltanavicius <adomas
+     paltanavicius gmail com>, Stefan Fritsch]
+
+  *) htpasswd, htdbm: Add support for bcrypt algorithm (requires
+     apr-util 1.5 or higher). PR 49288. [Stefan Fritsch]
+
+  *) htpasswd, htdbm: Put full 48bit of entropy into salt, improve
+     error handling. Add some of htpasswd's improvements to htdbm,
+     e.g. warn if password is truncated by crypt(). [Stefan Fritsch]
+
   *) mod_auth_form: Support the expr parser in the
      AuthFormLoginRequiredLocation, AuthFormLoginSuccessLocation and
      AuthFormLogoutLocation directives. [Graham Leggett]

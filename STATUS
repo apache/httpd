@@ -98,17 +98,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: jim, druggeri, rjung
      druggeri note: Docs notes on new elements would be nice for quick reference
 
-   * htpasswd/htdbm: Refactor, add bcrypt support, add -i option.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1395253
-                  http://svn.apache.org/viewvc?view=revision&revision=1395254
-                  http://svn.apache.org/viewvc?view=revision&revision=1395255
-                  http://svn.apache.org/viewvc?view=revision&revision=1395256
-                  http://svn.apache.org/viewvc?view=revision&revision=1395792
-     2.4.x patch: trunk patches work
-     +1: sf
-     +1 gsmith, rjung: provided you also include this fix for Windows
-                http://svn.apache.org/viewvc?view=revision&revision=1419084
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
