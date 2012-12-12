@@ -135,6 +135,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
               revision r1387290, which refers to the code change r1387287
               which itself doesn't seem to be part of this backport. It was
               later changed by r1387444 which is part of the backport.
+              Note that adding the warning note will introduce an XML validation
+              error ;)
 
    * mod_proxy: Allow balancers to be server-specific, as they should have
      been. Inheritance causes too many behind-the-scene interactions
