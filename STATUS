@@ -91,6 +91,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * htpasswd, htdbm: Fix incomplete getopts, adjust and sync Usage.
+     Followup to recent updates for htpasswd and htdbm.
+     trunk patch: http://svn.apache.org/viewvc?rev=1420644&view=rev
+     2.4.x patch: Trunk patch works.
+     +1 rjung, jim, gsmith
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -173,12 +178,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works, or
                   http://people.apache.org/~jorton/proxyftpepsv-24.patch
      +1: jorton, jim
-
-   * htpasswd, htdbm: Fix incomplete getopts, adjust and sync Usage.
-     Followup to recent updates for htpasswd and htdbm.
-     trunk patch: http://svn.apache.org/viewvc?rev=1420644&view=rev
-     2.4.x patch: Trunk patch works.
-     +1 rjung, jim
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
