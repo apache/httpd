@@ -173,7 +173,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?rev=1420223&view=rev
      2.4.x patch: trunk patch works, or
                   http://people.apache.org/~jorton/proxyftpepsv-24.patch
-     +1: jorton, 
+     +1: jorton, jim
 
      * (3/x) various. Backport some easy patches to keep 2.4.x as much as
      possible in line with trunk.
