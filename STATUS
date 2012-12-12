@@ -177,13 +177,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                      PR38827.
      trunk patch: http://svn.apache.org/viewvc?rev=1405856&view=rev
      2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-disk-cache-win.diff
-     +1 covener, rjung
+     +1 covener, rjung, jim
 
    * htpasswd, htdbm: Fix incomplete getopts, adjust and sync Usage.
      Followup to recent updates for htpasswd and htdbm.
      trunk patch: http://svn.apache.org/viewvc?rev=1420644&view=rev
      2.4.x patch: Trunk patch works.
-     +1 rjung
+     +1 rjung, jim
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
