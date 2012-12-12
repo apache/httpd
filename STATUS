@@ -113,6 +113,28 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1387693
      2.4.x patch: http://people.apache.org/~jim/patches/proxy-persist2.diff
      +1: jim
+     rjung: - 2.4 patch also contains small parts of r1387684. Intentional?
+              What about the rest of that revision?
+            - ap_mmn.h: "  fields" -> " field"
+            - ap_mmn.h: 2.4.3-dev -> 2.4.4-dev in comment
+            - No merging of persist flag, intentional?
+            - r1387979 is also (correctly) backported here and part of
+              the combined 2.4 patch
+            - r1387607 is also included in the 2.4 patch, but that revision
+              was later replaced by r1407085, so I suggest either to remove
+              r1387607 or use r1387607 plus r1407085.
+            - Description of "BalancerPersist" is a bit hard to understand:
+              "on if the balancer should persist changes on reboot/restart made via the Balancer Manager".
+              Maybe use similar to the docs:
+              "on if the changes made via the Balancer Manager should be persisted acros restarts".
+            - What is meant by "restart": Directive text says "reboot/restart",
+              docs "restart/graceful". Do changes survive a full stop and start,
+              or only "apachectl restart"?
+            - Should the start/stop warning in the BalancerPersist docs of
+              r1387110 be added back? In trunk it was removed by docs
+              revision r1387290, which refers to the code change r1387287
+              which itself doesn't seem to be part of this backport. It was
+              later changed by r1387444 which is part of the backport.
 
    * mod_proxy: Allow balancers to be server-specific, as they should have
      been. Inheritance causes too many behind-the-scene interactions
@@ -143,7 +165,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                      PR38827.
      trunk patch: http://svn.apache.org/viewvc?rev=1405856&view=rev
      2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-disk-cache-win.diff
-     +1 covener
+     +1 covener, rjung
 
    * htpasswd, htdbm: Fix incomplete getopts, adjust and sync Usage.
      Followup to recent updates for htpasswd and htdbm.
