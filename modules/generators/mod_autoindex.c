@@ -191,7 +191,7 @@ static void emit_preamble(request_rec *r, int xhtml, const char *title)
     if (d->head_insert != NULL) {
         ap_rputs(d->head_insert, r);
     }
-    ap_rvputs(r, " </head>\n <body>\n", NULL);
+    ap_rputs(" </head>\n <body>\n", r);
 }
 
 static void push_item(apr_array_header_t *arr, char *type, const char *to,
