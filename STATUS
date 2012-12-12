@@ -95,42 +95,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
-   * mod_ssl: Add support for Next Protocol Negotiation.
-     Trunk patch:
-       http://svn.apache.org/viewvc?view=revision&revision=1332643
-     2.4.x patch:
-       Trunk patch works.
-     +1: ben
-     sf says: Needs r1345599, too.
-              And wrowe's comment about the 2.2 patch is also valid for 2.4:
-              http://svn.apache.org/viewvc?view=revision&revision=1354823
-
-   * mod_ssl: Add RFC 5878 support. This allows support of mechansisms
-              such as Certificate Transparency. Note that new
-              mechanisms are supported without software updates.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352596
-     2.4.x patch: http://people.apache.org/~ben/httpd-2.4-rfc5878.patch
-     +1: ben, druggeri
-     -1: kbrand
-     druggeri note: Needs docs for new directive
-     kbrand: depends on an unreleased OpenSSL version (1.0.2), and
-             RFC 5878 is of "Category: Experimental". Seems premature
-             to me to consider for backporting to 2.4/2.2 at this point.
-             The API in the OpenSSL implementation from May 2012
-             (http://cvs.openssl.org/chngview?cn=22601) only covers the
-             privately-defined TLSEXT_AUTHZDATAFORMAT_audit_proof, there's
-             no support for x509_attr_cert (section 3.3.1 in RFC 5878) or
-             saml_assertion (3.3.2). SSL_CTX_use_authz_file doesn't have
-             any docs in OpenSSL, either, and there's no "openssl foo ..."
-             command or similar to create/manage such files. Trunk is
-             the right place where it can grow.
-             Finally, httpd-2.4-rfc5878.patch includes a build-system change
-             which is unrelated to this feature (see separate proposal from
-             rjung below, ssl-support-uninstalled-openssl-2_4.patch).
-     ben: not correct that it depends on OpenSSL 1.0.2, it builds with
-          any version. Also, if you read my note to dev@ you will see
-          why it is not premature.
-     minfrin: once this gets docs, +1.
 
    * mod_slotmem_*: Add in new fgrab() function which forces a grab and
      slot allocation on a specified slot. Allow for clearing of inuse
@@ -264,3 +228,41 @@ PATCHES/ISSUES THAT ARE STALLED
            the apr_stat() call instead of lifecycle_pool?
          * Try to not introduce new coding style issues. See r1383024,
            r1383028, r1383037.
+
+   * mod_ssl: Add support for Next Protocol Negotiation.
+     Trunk patch:
+       http://svn.apache.org/viewvc?view=revision&revision=1332643
+     2.4.x patch:
+       Trunk patch works.
+     +1: ben
+     sf says: Needs r1345599, too.
+              And wrowe's comment about the 2.2 patch is also valid for 2.4:
+              http://svn.apache.org/viewvc?view=revision&revision=1354823
+
+   * mod_ssl: Add RFC 5878 support. This allows support of mechansisms
+              such as Certificate Transparency. Note that new
+              mechanisms are supported without software updates.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352596
+     2.4.x patch: http://people.apache.org/~ben/httpd-2.4-rfc5878.patch
+     +1: ben, druggeri
+     -1: kbrand
+     druggeri note: Needs docs for new directive
+     kbrand: depends on an unreleased OpenSSL version (1.0.2), and
+             RFC 5878 is of "Category: Experimental". Seems premature
+             to me to consider for backporting to 2.4/2.2 at this point.
+             The API in the OpenSSL implementation from May 2012
+             (http://cvs.openssl.org/chngview?cn=22601) only covers the
+             privately-defined TLSEXT_AUTHZDATAFORMAT_audit_proof, there's
+             no support for x509_attr_cert (section 3.3.1 in RFC 5878) or
+             saml_assertion (3.3.2). SSL_CTX_use_authz_file doesn't have
+             any docs in OpenSSL, either, and there's no "openssl foo ..."
+             command or similar to create/manage such files. Trunk is
+             the right place where it can grow.
+             Finally, httpd-2.4-rfc5878.patch includes a build-system change
+             which is unrelated to this feature (see separate proposal from
+             rjung below, ssl-support-uninstalled-openssl-2_4.patch).
+     ben: not correct that it depends on OpenSSL 1.0.2, it builds with
+          any version. Also, if you read my note to dev@ you will see
+          why it is not premature.
+     minfrin: once this gets docs, +1.
+
