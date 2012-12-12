@@ -1000,7 +1000,7 @@ environment variable</description>
     during authorization regardless of whether or not LDAP-specific requirements
     are present. To ignore the failures to map a username to a DN during
     authorization, set <directive module="mod_authnz_ldap">
-    AuthzLDAPAutoritative</directive> to "off".</p>
+    AuthzLDAPAuthoritative</directive> to "off".</p>
 </usage>
 </directivesynopsis>
 
