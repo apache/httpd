@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "DBMMANAGE" 1 "2004-12-10" "Apache HTTP Server" "dbmmanage"
+.TH "DBMMANAGE" 1 "2012-12-12" "Apache HTTP Server" "dbmmanage"
 
 .SH NAME
 dbmmanage \- Manage user authentication files in DBM format
@@ -40,6 +40,9 @@ dbmmanage \- Manage user authentication files in DBM format
  
 .PP
 dbmmanage is used to create and update the DBM format files used to store usernames and password for basic authentication of HTTP users via mod_authn_dbm\&. Resources available from the Apache HTTP server can be restricted to just the users listed in the files created by dbmmanage\&. This program can only be used when the usernames are stored in a DBM file\&. To use a flat-file database see htpasswd\&.
+ 
+.PP
+Another tool to maintain a DBM password database is htdbm\&.
  
 .PP
 This manual page only lists the command line arguments\&. For details of the directives necessary to configure user authentication in httpd see the httpd manual, which is part of the Apache distribution or can be found at http://httpd\&.apache\&.org/\&.
