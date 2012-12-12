@@ -91,31 +91,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-     * (3/x) various. Backport some easy patches to keep 2.4.x as much as
-     possible in line with trunk.
-        1407459: remove warnings
-        1407460: remove warnings
-        1419781: Use 'apr_is_empty_table()' instead of testing against 'apr_table_elts(...)->nelts'
-        1418524: Use ap_rputs instead of ap_rvputs where applicable.
-        1401448 & 1405407: just add a comment
-        1405973: kill two warnings about incorrect printf parameters.
-        1419726: cppCheck: same expression on both side of '|'.
-                 Fix it the same way other messages are managed in the function.
-        1418769: Fix a few 'too many arguments for format' warnings
-        1417197: cppCheck: kill a unread variable warning
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1407459
-                  http://svn.apache.org/viewvc?view=revision&revision=1407460
-                  http://svn.apache.org/viewvc?view=revision&revision=1419781
-                  http://svn.apache.org/viewvc?view=revision&revision=1418524
-                  http://svn.apache.org/viewvc?view=revision&revision=1401448
-                  http://svn.apache.org/viewvc?view=revision&revision=1405407
-                  http://svn.apache.org/viewvc?view=revision&revision=1405973
-                  http://svn.apache.org/viewvc?view=revision&revision=1419726
-                  http://svn.apache.org/viewvc?view=revision&revision=1418769
-                  http://svn.apache.org/viewvc?view=revision&revision=1417197
-     2.4.x patch: http://people.apache.org/~jailletc36/backport3.patch
-     +1: jailletc36, covener, jim
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

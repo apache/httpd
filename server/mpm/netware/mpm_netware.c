@@ -942,7 +942,7 @@ static int netware_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
             "caught SIGTERM, shutting down");
 
         while (worker_thread_count > 0) {
-            printf ("\rShutdown pending. Waiting for %d thread(s) to terminate...",
+            printf ("\rShutdown pending. Waiting for %u thread(s) to terminate...",
                     worker_thread_count);
             apr_thread_yield();
         }
@@ -963,7 +963,7 @@ static int netware_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
         /* Wait for all of the threads to terminate before initiating the restart */
         while (worker_thread_count > 0) {
-            printf ("\rRestart pending. Waiting for %d thread(s) to terminate...",
+            printf ("\rRestart pending. Waiting for %u thread(s) to terminate...",
                     worker_thread_count);
             apr_thread_yield();
         }
