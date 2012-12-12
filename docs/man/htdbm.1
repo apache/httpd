@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "HTDBM" 1 "2009-03-27" "Apache HTTP Server" "htdbm"
+.TH "HTDBM" 1 "2012-12-12" "Apache HTTP Server" "htdbm"
 
 .SH NAME
 htdbm \- Manipulate DBM password databases
@@ -27,25 +27,25 @@ htdbm \- Manipulate DBM password databases
 .SH "SYNOPSIS"
  
 .PP
-\fBhtdbm\fR [ -\fBT\fR\fIDBTYPE\fR ] [ -\fBc\fR ] [ -\fBm\fR | -\fBd\fR | -\fBp\fR | -\fBs\fR ] [ -\fBt\fR ] [ -\fBv\fR ] [ -\fBx\fR ] \fIfilename\fR \fIusername\fR
+\fBhtdbm\fR [ -\fBT\fR\fIDBTYPE\fR ] [ -\fBi\fR ] [ -\fBc\fR ] [ -\fBm\fR | -\fBB\fR | -\fBd\fR | -\fBs\fR | -\fBp\fR ] [ -\fBC\fR \fIcost\fR ] [ -\fBt\fR ] [ -\fBv\fR ] \fIfilename\fR \fIusername\fR
  
 .PP
-\fBhtdbm\fR -\fBb\fR [ -\fBT\fR\fIDBTYPE\fR ] [ -\fBc\fR ] [ -\fBm\fR | -\fBd\fR | -\fBp\fR | -\fBs\fR ] [ -\fBt\fR ] [ -\fBv\fR ] \fIfilename\fR \fIusername\fR \fIpassword\fR
+\fBhtdbm\fR -\fBb\fR [ -\fBT\fR\fIDBTYPE\fR ] [ -\fBc\fR ] [ -\fBm\fR | -\fBB\fR | -\fBd\fR | -\fBs\fR | -\fBp\fR ] [ -\fBC\fR \fIcost\fR ] [ -\fBt\fR ] [ -\fBv\fR ] \fIfilename\fR \fIusername\fR \fIpassword\fR
  
 .PP
-\fBhtdbm\fR -\fBn\fR [ -\fBc\fR ] [ -\fBm\fR | -\fBd\fR | -\fBp\fR | -\fBs\fR ] [ -\fBt\fR ] [ -\fBv\fR ] \fIusername\fR
+\fBhtdbm\fR -\fBn\fR [ -\fBi\fR ] [ -\fBc\fR ] [ -\fBm\fR | -\fBB\fR | -\fBd\fR | -\fBs\fR | -\fBp\fR ] [ -\fBC\fR \fIcost\fR ] [ -\fBt\fR ] [ -\fBv\fR ] \fIusername\fR
  
 .PP
-\fBhtdbm\fR -\fBnb\fR [ -\fBc\fR ] [ -\fBm\fR | -\fBd\fR | -\fBp\fR | -\fBs\fR ] [ -\fBt\fR ] [ -\fBv\fR ] \fIusername\fR \fIpassword\fR
+\fBhtdbm\fR -\fBnb\fR [ -\fBc\fR ] [ -\fBm\fR | -\fBB\fR | -\fBd\fR | -\fBs\fR | -\fBp\fR ] [ -\fBC\fR \fIcost\fR ] [ -\fBt\fR ] [ -\fBv\fR ] \fIusername\fR \fIpassword\fR
  
 .PP
-\fBhtdbm\fR -\fBv\fR [ -\fBT\fR\fIDBTYPE\fR ] [ -\fBc\fR ] [ -\fBm\fR | -\fBd\fR | -\fBp\fR | -\fBs\fR ] [ -\fBt\fR ] [ -\fBv\fR ] \fIfilename\fR \fIusername\fR
+\fBhtdbm\fR -\fBv\fR [ -\fBT\fR\fIDBTYPE\fR ] [ -\fBi\fR ] [ -\fBc\fR ] [ -\fBm\fR | -\fBB\fR | -\fBd\fR | -\fBs\fR | -\fBp\fR ] [ -\fBC\fR \fIcost\fR ] [ -\fBt\fR ] [ -\fBv\fR ] \fIfilename\fR \fIusername\fR
  
 .PP
-\fBhtdbm\fR -\fBvb\fR [ -\fBT\fR\fIDBTYPE\fR ] [ -\fBc\fR ] [ -\fBm\fR | -\fBd\fR | -\fBp\fR | -\fBs\fR ] [ -\fBt\fR ] [ -\fBv\fR ] \fIfilename\fR \fIusername\fR \fIpassword\fR
+\fBhtdbm\fR -\fBvb\fR [ -\fBT\fR\fIDBTYPE\fR ] [ -\fBc\fR ] [ -\fBm\fR | -\fBB\fR | -\fBd\fR | -\fBs\fR | -\fBp\fR ] [ -\fBC\fR \fIcost\fR ] [ -\fBt\fR ] [ -\fBv\fR ] \fIfilename\fR \fIusername\fR \fIpassword\fR
  
 .PP
-\fBhtdbm\fR -\fBx\fR [ -\fBT\fR\fIDBTYPE\fR ] [ -\fBm\fR | -\fBd\fR | -\fBp\fR | -\fBs\fR ] \fIfilename\fR \fIusername\fR
+\fBhtdbm\fR -\fBx\fR [ -\fBT\fR\fIDBTYPE\fR ] \fIfilename\fR \fIusername\fR
  
 .PP
 \fBhtdbm\fR -\fBl\fR [ -\fBT\fR\fIDBTYPE\fR ]
@@ -62,7 +62,10 @@ htdbm is used to manipulate the DBM format files used to store usernames and pas
  
 .TP
 -b
-Use batch mode; \fIi\&.e\&.\fR, get the password from the command line rather than prompting for it\&. This option should be used with extreme care, since \fBthe password is clearly visible\fR on the command line\&.  
+Use batch mode; \fIi\&.e\&.\fR, get the password from the command line rather than prompting for it\&. This option should be used with extreme care, since \fBthe password is clearly visible\fR on the command line\&. For script use see the -i option\&.  
+.TP
+-i
+Read the password from stdin without verification (for script usage)\&.  
 .TP
 -c
 Create the \fIpasswdfile\fR\&. If \fIpasswdfile\fR already exists, it is rewritten and truncated\&. This option cannot be combined with the -n option\&.  
@@ -73,11 +76,17 @@ Display the results on standard output rather than updating a database\&. This o
 -m
 Use MD5 encryption for passwords\&. On Windows and Netware, this is the default\&.  
 .TP
+-B
+Use bcrypt encryption for passwords\&. This is currently considered to be very secure\&.  
+.TP
+-C
+This flag is only allowed in combination with -B (bcrypt encryption)\&. It sets the computing time used for the bcrypt algorithm (higher is more secure but slower, default: 5, valid: 4 to 31)\&.  
+.TP
 -d
-Use crypt() encryption for passwords\&. The default on all platforms but Windows and Netware\&. Though possibly supported by htdbm on all platforms, it is not supported by the httpd server on Windows and Netware\&.  
+Use crypt() encryption for passwords\&. The default on all platforms but Windows and Netware\&. Though possibly supported by htdbm on all platforms, it is not supported by the httpd server on Windows and Netware\&. This algorithm is \fBinsecure\fR by today's standards\&.  
 .TP
 -s
-Use SHA encryption for passwords\&. Facilitates migration from/to Netscape servers using the LDAP Directory Interchange Format (ldif)\&.  
+Use SHA encryption for passwords\&. Facilitates migration from/to Netscape servers using the LDAP Directory Interchange Format (ldif)\&. This algorithm is \fBinsecure\fR by today's standards\&.  
 .TP
 -p
 Use plaintext passwords\&. Though htdbm will support creation on all platforms, the httpd daemon will only accept plain text passwords on Windows and Netware\&.  
@@ -85,14 +94,14 @@ Use plaintext passwords\&. Though htdbm will support creation on all platforms, 
 -l
 Print each of the usernames and comments from the database on stdout\&.  
 .TP
--t
-Interpret the final parameter as a comment\&. When this option is specified, an additional string can be appended to the command line; this string will be stored in the "Comment" field of the database, associated with the specified username\&.  
-.TP
 -v
 Verify the username and password\&. The program will print a message indicating whether the supplied password is valid\&. If the password is invalid, the program exits with error code 3\&.  
 .TP
 -x
 Delete user\&. If the username exists in the specified DBM file, it will be deleted\&.  
+.TP
+-t
+Interpret the final parameter as a comment\&. When this option is specified, an additional string can be appended to the command line; this string will be stored in the "Comment" field of the database, associated with the specified username\&.  
 .TP
 \fIfilename\fR
 The filename of the DBM format file\&. Usually without the extension \&.db, \&.pag, or \&.dir\&. If -c is given, the DBM file is created if it does not already exist, or updated if it does exist\&.  
@@ -155,6 +164,15 @@ Web password files such as those managed by htdbm should \fInot\fR be within the
  
 .PP
 The use of the -b option is discouraged, since when it is used the unencrypted password appears on the command line\&.
+ 
+.PP
+When using the crypt() algorithm, note that only the first 8 characters of the password are used to form the password\&. If the supplied password is longer, the extra characters will be silently discarded\&.
+ 
+.PP
+The SHA encryption format does not use salting: for a given password, there is only one encrypted representation\&. The crypt() and MD5 formats permute the representation by prepending a random salt string, to make dictionary attacks against the passwords more difficult\&.
+ 
+.PP
+The SHA and crypt() formats are insecure by today's standards\&.
  
 .SH "RESTRICTIONS"
  

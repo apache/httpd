@@ -32,6 +32,7 @@ aliasmatch	mod/mod_alias.html#aliasmatch
 allow	mod/mod_access_compat.html#allow
 allowconnect	mod/mod_proxy_connect.html#allowconnect
 allowencodedslashes	mod/core.html#allowencodedslashes
+allowhandlers	mod/mod_allowhandlers.html#allowhandlers
 allowmethods	mod/mod_allowmethods.html#allowmethods
 allowoverride	mod/core.html#allowoverride
 allowoverridelist	mod/core.html#allowoverridelist
@@ -108,7 +109,6 @@ authzdbmtype	mod/mod_authz_dbm.html#authzdbmtype
 authzprovideralias	mod/mod_authz_core.html#authzprovideralias
 authzsendforbiddenonfailure	mod/mod_authz_core.html#authzsendforbiddenonfailure
 balancergrowth	mod/mod_proxy.html#balancergrowth
-balancerinherit	mod/mod_proxy.html#balancerinherit
 balancermember	mod/mod_proxy.html#balancermember
 balancerpersist	mod/mod_proxy.html#balancerpersist
 browsermatch	mod/mod_setenvif.html#browsermatch
@@ -308,6 +308,7 @@ location	mod/core.html#location
 locationmatch	mod/core.html#locationmatch
 logformat	mod/mod_log_config.html#logformat
 loglevel	mod/core.html#loglevel
+logleveloverride	mod/core.html#logleveloverride
 logmessage	mod/mod_log_debug.html#logmessage
 luaauthzprovider	mod/mod_lua.html#luaauthzprovider
 luacodecache	mod/mod_lua.html#luacodecache
@@ -409,6 +410,7 @@ proxyiobuffersize	mod/mod_proxy.html#proxyiobuffersize
 proxymatch	mod/mod_proxy.html#proxymatch
 proxymaxforwards	mod/mod_proxy.html#proxymaxforwards
 proxypass	mod/mod_proxy.html#proxypass
+proxypassinherit	mod/mod_proxy.html#proxypassinherit
 proxypassinterpolateenv	mod/mod_proxy.html#proxypassinterpolateenv
 proxypassmatch	mod/mod_proxy.html#proxypassmatch
 proxypassreverse	mod/mod_proxy.html#proxypassreverse
@@ -433,6 +435,7 @@ redirectmatch	mod/mod_alias.html#redirectmatch
 redirectpermanent	mod/mod_alias.html#redirectpermanent
 redirecttemp	mod/mod_alias.html#redirecttemp
 reflectorheader	mod/mod_reflector.html#reflectorheader
+registerhttpmethod	mod/core.html#registerhttpmethod
 remoteipheader	mod/mod_remoteip.html#remoteipheader
 remoteipinternalproxy	mod/mod_remoteip.html#remoteipinternalproxy
 remoteipinternalproxylist	mod/mod_remoteip.html#remoteipinternalproxylist
@@ -611,6 +614,7 @@ virtualdocumentrootip	mod/mod_vhost_alias.html#virtualdocumentrootip
 virtualhost	mod/core.html#virtualhost
 virtualscriptalias	mod/mod_vhost_alias.html#virtualscriptalias
 virtualscriptaliasip	mod/mod_vhost_alias.html#virtualscriptaliasip
+warning	mod/core.html#warning
 watchdoginterval	mod/mod_watchdog.html#watchdoginterval
 xbithack	mod/mod_include.html#xbithack
 xml2encalias	mod/mod_xml2enc.html#xml2encalias
