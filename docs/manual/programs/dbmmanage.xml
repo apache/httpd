@@ -34,6 +34,9 @@
     program can only be used when the usernames are stored in a DBM file. To
     use a flat-file database see <program>htpasswd</program>.</p>
 
+    <p>Another tool to maintain a DBM password database is
+    <program>htdbm</program>.</p>
+
     <p>This manual page only lists the command line arguments. For details of
     the directives necessary to configure user authentication in
     <program>httpd</program> see the httpd manual, which is part of
@@ -41,6 +44,7 @@
     href="http://httpd.apache.org/">http://httpd.apache.org/</a>.</p>
 </summary>
 <seealso><program>httpd</program></seealso>
+<seealso><program>htdbm</program></seealso>
 <seealso><module>mod_authn_dbm</module></seealso>
 <seealso><module>mod_authz_dbm</module></seealso>
 
