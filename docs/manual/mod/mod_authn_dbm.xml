@@ -51,6 +51,8 @@
 <seealso>
   <directive module="mod_auth_digest">AuthDigestProvider</directive>
 </seealso>
+<seealso><program>htpasswd</program></seealso>
+<seealso><program>htdbm</program></seealso>
 <seealso><a href="../misc/password_encryptions.html">Password Formats</a></seealso>
 
 <directivesynopsis>
@@ -98,7 +100,9 @@ passwords for authentication</description>
     <p>A perl script called
     <program>dbmmanage</program> is included with
     Apache. This program can be used to create and update DBM
-    format password files for use with this module.</p>
+    format password files for use with this module. Another
+    tool for maintaining the DBM files is the included program
+    <program>htdbm</program>.</p>
 </usage>
 </directivesynopsis>
 
