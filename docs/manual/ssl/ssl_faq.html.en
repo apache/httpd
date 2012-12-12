@@ -725,6 +725,27 @@ SetEnvIf User-Agent "MSIE [2-5]" \
     or otherwise.</p>
 
 
+<h3><a name="srp" id="srp">How do I enable TLS-SRP?</a></h3>
+    <p>TLS-SRP (Secure Remote Password key exchange for TLS, specified in RFC 5054)
+    can supplement or replace certificates in authenticating an SSL connection.
+    To use TLS-SRP, set the
+    <code class="directive"><a href="../mod/mod_ssl.html#sslsrpverifierfile">SSLSRPVerifierFile</a></code> directive to
+    point to an OpenSSL SRP verifier file. To create the verifier file, use the
+    <code>openssl</code> tool:</p>
+    <div class="example"><p><code>
+    openssl srp -srpvfile passwd.srpv -add username
+    </code></p></div>
+    <p>After creating this file, specify it in the SSL server configuration:</p>
+    <div class="example"><p><code>
+    SSLSRPVerifierFile /path/to/passwd.srpv
+    </code></p></div>
+    <p>To force clients to use non-certificate TLS-SRP cipher suites, use the
+    following directive:</p>
+    <div class="example"><p><code>
+    SSLCipherSuite "!DSS:!aRSA:SRP"
+    </code></p></div>
+
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="support" id="support">mod_ssl Support</a></h2>

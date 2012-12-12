@@ -266,7 +266,7 @@ Require user rbowen
     file to authenticate the user on each request. Apache also has
     the ability to store user information in fast database files.
     The <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> module provides the <code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code> directive. These
-    files can be created and manipulated with the <code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code> program. Many
+    files can be created and manipulated with the <code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code> and <code class="program"><a href="../programs/htdbm.html">htdbm</a></code> programs. Many
     other types of authentication options are available from third
     party modules in the <a href="http://modules.apache.org/">Apache Modules
     Database</a>.</p>
@@ -372,17 +372,15 @@ Require group GroupName
     you can choose <code>dbm</code> or <code>dbd</code> as your storage
     format.</p>
 
-    <p>To select a dbd file rather than a text file, for example:</p>
+    <p>To select a dbm file rather than a text file, for example:</p>
 
     <pre class="prettyprint lang-config">
 &lt;Directory /www/docs/private&gt;
-<span class="indent">
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider dbm
     AuthDBMUserFile /www/passwords/passwd.dbm
     Require valid-user
-</span>
 &lt;/Directory&gt;
     </pre>
 
@@ -402,14 +400,12 @@ Require group GroupName
 
     <pre class="prettyprint lang-config">
 &lt;Directory /www/docs/private&gt;
-<span class="indent">
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider file ldap
     AuthUserFile /usr/local/apache/passwd/passwords
     AuthLDAPURL ldap://ldaphost/o=yourorg
     Require valid-user
-</span>
 &lt;/Directory&gt;
     </pre>
 
@@ -429,7 +425,6 @@ Require group GroupName
 
     <pre class="prettyprint lang-config">
 &lt;Directory /www/docs/private&gt;
-<span class="indent">
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider file
@@ -438,7 +433,6 @@ Require group GroupName
     AuthGroupFile /usr/local/apache/passwd/groups
     Require group GroupName
     Require ldap-group cn=mygroup,o=yourorg
-</span>
 &lt;/Directory&gt;
     </pre>
 

@@ -926,6 +926,15 @@ later</td></tr>
       </div>
       </dd>
 
+      <dt><code>MergeBase</code></dt>
+      <dd>
+
+      <p>With this option, the value of <code class="directive"><a href="#rewritebase">RewriteBase</a></code> is copied from where it's explicitly defined
+      into any sub-directory or sub-location that doesn't define its own
+      <code class="directive"><a href="#rewritebase">RewriteBase</a></code>. This was the
+      default behavior in 2.4.0 thorugh 2.4.3, and the flag to restore it is
+      available Apache HTTP Server 2.4.4 and later.</p>
+      </dd>
       </dl>
 
 
