@@ -11,7 +11,7 @@ CFG=mod_substitute - Win32 Debug
 !MESSAGE NMAKE /f "mod_substitute.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
-!MESSAGE by defining the macro CFG on the command line. For substitute:
+!MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
 !MESSAGE NMAKE /f "mod_substitute.mak" CFG="mod_substitute - Win32 Debug"
 !MESSAGE 
