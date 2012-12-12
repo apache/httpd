@@ -46,7 +46,7 @@ extensive <a href="http://apache.webthing.com/mod_proxy_html/"
 <description>Turns on or off extra pre-parsing of metadata in HTML
 <code>&lt;head&gt;</code> sections.</description>
 <syntax>ProxyHTMLMeta <var>On|Off</var></syntax>
-<default>ProxyHTMLMeta <var>Off</var></default>
+<default>ProxyHTMLMeta Off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 </contextlist>
@@ -83,7 +83,7 @@ module for earlier 2.x versions.</compatibility>
 <name>ProxyHTMLEnable</name>
 <description>Turns the proxy_html filter on or off.</description>
 <syntax>ProxyHTMLEnable <var>On|Off</var></syntax>
-<default>ProxyHTMLEnable <var>Off</var></default>
+<default>ProxyHTMLEnable Off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 </contextlist>
@@ -194,7 +194,7 @@ in mod_proxy_html 3.x for HTTPD 2.0 and 2.2 is also supported.</p>
 <description>Enables per-request interpolation of
 <directive>ProxyHTMLURLMap</directive> rules.</description>
 <syntax>ProxyHTMLInterp <var>On|Off</var></syntax>
-<default>ProxyHTMLInterp <var>Off</var></default>
+<default>ProxyHTMLInterp Off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 </contextlist>
@@ -271,7 +271,7 @@ Only use them if you know you have a broken backend server.</p>
 <description>Determines whether to fix links in inline scripts, stylesheets,
 and scripting events.</description>
 <syntax>ProxyHTMLExtended <var>On|Off</var></syntax>
-<default>ProxyHTMLExtended <var>Off</var></default>
+<default>ProxyHTMLExtended Off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 </contextlist>
@@ -299,7 +299,7 @@ false matches.
 <name>ProxyHTMLStripComments</name>
 <description>Determines whether to strip HTML comments.</description>
 <syntax>ProxyHTMLStripComments <var>On|Off</var></syntax>
-<default>ProxyHTMLStripComments <var>Off</var></default>
+<default>ProxyHTMLStripComments Off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 </contextlist>
