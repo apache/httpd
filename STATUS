@@ -91,11 +91,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_cache_disk: Fix "...rename tempfile to datafile failed...") on Windows.
-                     PR38827.
-     trunk patch: http://svn.apache.org/viewvc?rev=1405856&view=rev
-     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-disk-cache-win.diff
-     +1 covener, rjung, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
