@@ -28,6 +28,8 @@ utilisateurs au format DBM</h1>
 <a href="../ko/programs/dbmmanage.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/dbmmanage.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
     <p><code>dbmmanage</code> permet de créer et de maintenir les
     fichiers au format DBM où sont stockés les noms d'utilisateurs et
