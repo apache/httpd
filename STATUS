@@ -118,35 +118,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jim
      rjung: - 2.4 patch also contains small parts of r1387684. Intentional?
               What about the rest of that revision?
-            - ap_mmn.h: "  fields" -> " field"
-              jim: typo. Fixed in proxy-persist3.diff
-            - ap_mmn.h: 2.4.3-dev -> 2.4.4-dev in comment
-              jim: ditto
             - No merging of persist flag, intentional?
               jim: yes
-            - r1387979 is also (correctly) backported here and part of
-              the combined 2.4 patch
-            - r1387607 is also included in the 2.4 patch, but that revision
-              was later replaced by r1407085, so I suggest either to remove
-              r1387607 or use r1387607 plus r1407085.
-              jim: Updated with proxy-persist3.diff
-            - Description of "BalancerPersist" is a bit hard to understand:
-              "on if the balancer should persist changes on reboot/restart made via the Balancer Manager".
-              Maybe use similar to the docs:
-              "on if the changes made via the Balancer Manager should be persisted acros restarts".
-            - What is meant by "restart": Directive text says "reboot/restart",
-              docs "restart/graceful". Do changes survive a full stop and start,
-              or only "apachectl restart"?
-              jim: Yes, changes survive full stop and start (reboot).
-            - Should the start/stop warning in the BalancerPersist docs of
-              r1387110 be added back? In trunk it was removed by docs
-              revision r1387290, which refers to the code change r1387287
-              which itself doesn't seem to be part of this backport. It was
-              later changed by r1387444 which is part of the backport.
-              Note that adding the warning note will introduce an XML validation
-              error ;)
-              jim: Any docco changes, imo, can be made post-commit (as well as
-                   be added to trunk).
 
    * mod_proxy: Allow balancers to be server-specific, as they should have
      been. Inheritance causes too many behind-the-scene interactions
@@ -157,6 +130,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1420124
      2.4.x patch: http://people.apache.org/~jim/patches/proxypassinherit.patch
      +1: jim, druggeri
+     rjung: - IMHO "inherit" also needs to be set in overrides while merging.
+            - I would also simplify the inheritance check during merge to
+              "if (overrides->inherit)", otherwise you would have to always
+              disable in base and every vhost.
+            - It would be even nicer if we did a three state merge, so that
+              a global off and no explicit config in a vhost would switch it off,
+              but could be overwritten per vhost. I think that behavior is not
+              possible with only two states (without UNSET). But the perfect
+              is the enemy of the good.
 
    * mod_auth_form: Make sure that get_notes_auth() sets the user as does
      get_form_auth() and get_session_auth(). Makes sure that REMOTE_USER
