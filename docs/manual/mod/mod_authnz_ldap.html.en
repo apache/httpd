@@ -985,8 +985,8 @@ environment variable</td></tr>
     authentication for the request, the server will try to map the username to a DN
     during authorization regardless of whether or not LDAP-specific requirements
     are present. To ignore the failures to map a username to a DN during
-    authorization, set <code class="directive"><a href="#&#10;    authzldapautoritative">
-    AuthzLDAPAutoritative</a></code> to "off".</p>
+    authorization, set <code class="directive"><a href="#&#10;    authzldapauthoritative">
+    AuthzLDAPAuthoritative</a></code> to "off".</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
