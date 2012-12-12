@@ -110,19 +110,26 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 NOTE: Assumes mod_slotmem patch which adds fgrab()
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387110
                   http://svn.apache.org/viewvc?view=revision&revision=1387444
+                  http://svn.apache.org/viewvc?view=revision&revision=1387979
+                  http://svn.apache.org/viewvc?view=revision&revision=1387607
+                  http://svn.apache.org/viewvc?view=revision&revision=1407085
                   http://svn.apache.org/viewvc?view=revision&revision=1387693
-     2.4.x patch: http://people.apache.org/~jim/patches/proxy-persist2.diff
+     2.4.x patch: http://people.apache.org/~jim/patches/proxy-persist3.diff
      +1: jim
      rjung: - 2.4 patch also contains small parts of r1387684. Intentional?
               What about the rest of that revision?
             - ap_mmn.h: "  fields" -> " field"
+              jim: typo. Fixed in proxy-persist3.diff
             - ap_mmn.h: 2.4.3-dev -> 2.4.4-dev in comment
+              jim: ditto
             - No merging of persist flag, intentional?
+              jim: yes
             - r1387979 is also (correctly) backported here and part of
               the combined 2.4 patch
             - r1387607 is also included in the 2.4 patch, but that revision
               was later replaced by r1407085, so I suggest either to remove
               r1387607 or use r1387607 plus r1407085.
+              jim: Updated with proxy-persist3.diff
             - Description of "BalancerPersist" is a bit hard to understand:
               "on if the balancer should persist changes on reboot/restart made via the Balancer Manager".
               Maybe use similar to the docs:
@@ -130,6 +137,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             - What is meant by "restart": Directive text says "reboot/restart",
               docs "restart/graceful". Do changes survive a full stop and start,
               or only "apachectl restart"?
+              jim: Yes, changes survive full stop and start (reboot).
             - Should the start/stop warning in the BalancerPersist docs of
               r1387110 be added back? In trunk it was removed by docs
               revision r1387290, which refers to the code change r1387287
@@ -137,6 +145,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
               later changed by r1387444 which is part of the backport.
               Note that adding the warning note will introduce an XML validation
               error ;)
+              jim: Any docco changes, imo, can be made post-commit (as well as
+                   be added to trunk).
 
    * mod_proxy: Allow balancers to be server-specific, as they should have
      been. Inheritance causes too many behind-the-scene interactions
