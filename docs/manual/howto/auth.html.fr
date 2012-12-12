@@ -27,6 +27,8 @@
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
     <p>L'authentification est un processus qui vous permet de vérifier
     qu'une personne est bien celle qu'elle prétend être. L'autorisation
@@ -393,13 +395,11 @@ passe</a></h2>
 
     <pre class="prettyprint lang-config">
 &lt;Directory /www/docs/private&gt;
-<span class="indent">
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider dbm
     AuthDBMUserFile /www/passwords/passwd.dbm
     Require valid-user
-</span>
 &lt;/Directory&gt;
     </pre>
 
@@ -422,14 +422,12 @@ d'authentification</a></h2>
 
     <pre class="prettyprint lang-config">
 &lt;Directory /www/docs/private&gt;
-<span class="indent">
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider file ldap
     AuthUserFile /usr/local/apache/passwd/passwords
     AuthLDAPURL ldap://ldaphost/o=yourorg
     Require valid-user
-</span>
 &lt;/Directory&gt;
     </pre>
 
@@ -452,7 +450,6 @@ d'authentification</a></h2>
 
     <pre class="prettyprint lang-config">
 &lt;Directory /www/docs/private&gt;
-<span class="indent">
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider file
@@ -461,7 +458,6 @@ d'authentification</a></h2>
     AuthGroupFile /usr/local/apache/passwd/groups
     Require group GroupName
     Require ldap-group cn=mygroup,o=yourorg
-</span>
 &lt;/Directory&gt;
     </pre>
 

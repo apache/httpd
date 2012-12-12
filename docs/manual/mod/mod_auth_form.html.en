@@ -476,12 +476,14 @@ lower level modules</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.0 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.0 and later. The use of the expression
+parser hass been added in 2.4.4.</td></tr>
 </table>
     <p>The <code class="directive"><a href="#authformloginrequiredlocation">AuthFormLoginRequiredLocation</a></code> directive
-    specifies the URL to redirect to should the user not be authorised to view a page. By default,
-    if a user is not authorised to view a page, the HTTP response code <code>HTTP_UNAUTHORIZED</code>
-    will be returned with the page specified by the
+    specifies the URL to redirect to should the user not be authorised to view a page. The value
+    is parsed using the <a href="../expr.html">ap_expr</a> parser before being sent to the client.
+    By default, if a user is not authorised to view a page, the HTTP response code
+    <code>HTTP_UNAUTHORIZED</code> will be returned with the page specified by the
     <code class="directive"><a href="../mod/core.html#errordocument">ErrorDocument</a></code> directive. This directive overrides this
     default.</p>
 
@@ -498,12 +500,14 @@ lower level modules</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.0 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.0 and later. The use of the expression
+parser hass been added in 2.4.4.</td></tr>
 </table>
     <p>The <code class="directive"><a href="#authformloginsuccesslocation">AuthFormLoginSuccessLocation</a></code> directive
-    specifies the URL to redirect to should the user have logged in successfully. This directive
-    can be overridden if a form field has been defined containing another URL using the
-    <code class="directive"><a href="#authformlocation">AuthFormLocation</a></code> directive.</p>
+    specifies the URL to redirect to should the user have logged in successfully. The value is
+    parsed using the <a href="../expr.html">ap_expr</a> parser before being sent to the client.
+    This directive can be overridden if a form field has been defined containing another URL
+    using the <code class="directive"><a href="#authformlocation">AuthFormLocation</a></code> directive.</p>
 
     <p>Use this directive if you have a dedicated login URL, and you have not embedded the
     destination page in the login form.</p>
@@ -519,10 +523,13 @@ lower level modules</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.0 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.0 and later. The use of the expression
+parser hass been added in 2.4.4.</td></tr>
 </table>
     <p>The <code class="directive"><a href="#authformlogoutlocation">AuthFormLogoutLocation</a></code> directive
-    specifies the URL of a page on the server to redirect to should the user attempt to log out.</p>
+    specifies the URL of a page on the server to redirect to should the user attempt to log
+    out. The value is parsed using the <a href="../expr.html">ap_expr</a> parser before
+    being sent to the client.</p>
 
     <p>When a URI is accessed that is served by the handler <code>form-logout-handler</code>,
     the page specified by this directive will be shown to the end user. For example:</p>
