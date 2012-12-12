@@ -62,6 +62,8 @@
 <li>
   <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code>
 </li>
+<li><code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code></li>
+<li><code class="program"><a href="../programs/htdbm.html">htdbm</a></code></li>
 <li><a href="../misc/password_encryptions.html">Password Formats</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 
@@ -131,7 +133,9 @@ passwords for authentication</td></tr>
     <p>A perl script called
     <code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code> is included with
     Apache. This program can be used to create and update DBM
-    format password files for use with this module.</p>
+    format password files for use with this module. Another
+    tool for maintaining the DBM files is the included program
+    <code class="program"><a href="../programs/htdbm.html">htdbm</a></code>.</p>
 
 </div>
 </div>

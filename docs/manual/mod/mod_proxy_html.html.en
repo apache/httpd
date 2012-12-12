@@ -71,12 +71,13 @@ stylesheets.</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Version 2.4 and later; available as a third-party
 for earlier 2.x versions</td></tr>
 </table>
-<p>In order to parse non-HTML content (stylesheets and scripts), mod_proxy_html
+<p>In order to parse non-HTML content (stylesheets and scripts) embedded
+in HTML documents, mod_proxy_html
 has to read the entire script or stylesheet into a buffer.  This buffer will
 be expanded as necessary to hold the largest script or stylesheet in a page,
-in increments of [nnnn] as set by this directive.</p>
+in increments of <var>bytes</var> as set by this directive.</p>
 <p>The default is 8192, and will work well for almost all pages.  However,
-if you know you're proxying a lot of pages containing stylesheets and/or
+if you know you're proxying pages containing stylesheets and/or
 scripts bigger than 8K (that is, for a single script or stylesheet,
 NOT in total), it will be more efficient to set a larger buffer
 size and avoid the need to resize the buffer dynamically during a request.
@@ -138,6 +139,7 @@ It will also optionally log other errors at <code class="directive"><a href="../
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Turns the proxy_html filter on or off.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHTMLEnable <var>On|Off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProxyHTMLEnable Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_html</td></tr>
@@ -165,11 +167,14 @@ module for earlier 2.x versions.</td></tr>
 for earlier 2.x versions</td></tr>
 </table>
 <p>Specifies one or more attributes to treat as scripting events and
-apply <code class="directive">ProxyHTMLURLMap</code>s to where appropriate.
+apply <code class="directive">ProxyHTMLURLMap</code>s to where enabled.
 You can specify any number of attributes in one or more
 <code>ProxyHTMLEvents</code> directives.</p>
-<p>The default configuration defines the events in standard HTML 4
-and XHTML 1.</p>
+<p>Normally you'll set this globally.  If you set ProxyHTMLEvents in more than
+one scope so that one overrides the other, you'll need to specify a complete
+set in each of those scopes.</p>
+<p>A default configuration is supplied in <var>proxy-html.conf</var>
+and defines the events in standard HTML 4 and XHTML 1.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -178,19 +183,27 @@ and XHTML 1.</p>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines whether to fix links in inline scripts, stylesheets,
 and scripting events.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHTMLExtended <var>On|Off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProxyHTMLExtended Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_html</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Version 2.4 and later; available as a third-party
 for earlier 2.x versions</td></tr>
 </table>
-<p>Set to <code>Off</code>, HTML links are rewritten according
+<p>Set to <code>Off</code>, HTML links are rewritten according to the
 <code class="directive">ProxyHTMLURLMap</code> directives, but links appearing
 in Javascript and CSS are ignored.</p>
-<p>Set to <code>On</code>, all scripting events and embedded scripts or
+<p>Set to <code>On</code>, all scripting events (as determined by
+<code class="directive">ProxyHTMLEvents</code>) and embedded scripts or
 stylesheets are also processed by the <code class="directive">ProxyHTMLURLMap</code>
 rules, according to the flags set for each rule.  Since this requires more
-parsing, performance will be best if you only enable it when strictly necessary.</p>
+parsing, performance will be best if you only enable it when strictly necessary.
+</p><p>
+You'll also need to take care over patterns matched, since the parser has no
+knowledge of what is a URL within an embedded script or stylesheet.
+In particular, extended matching of <code>/</code> is likely to lead to
+false matches.
+</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -221,6 +234,7 @@ Only use them if you know you have a broken backend server.</p>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables per-request interpolation of
 <code class="directive">ProxyHTMLURLMap</code> rules.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHTMLInterp <var>On|Off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProxyHTMLInterp Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_html</td></tr>
@@ -249,8 +263,11 @@ for earlier 2.x versions</td></tr>
 <p>Specifies elements that have URL attributes that should be rewritten
 using standard <code class="directive">ProxyHTMLURLMap</code>s.  You will need one
 ProxyHTMLLinks directive per element, but it can have any number of attributes.</p>
-<p>The default configuration defines the HTML links for standard HTML 4
-and XHTML 1.</p>
+<p>Normally you'll set this globally.  If you set ProxyHTMLLinks in more than
+one scope so that one overrides the other, you'll need to specify a complete
+set in each of those scopes.</p>
+<p>A default configuration is supplied in <var>proxy-html.conf</var>
+and defines the HTML links for standard HTML 4 and XHTML 1.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -259,6 +276,7 @@ and XHTML 1.</p>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Turns on or off extra pre-parsing of metadata in HTML
 <code>&lt;head&gt;</code> sections.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHTMLMeta <var>On|Off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProxyHTMLMeta Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_html</td></tr>
@@ -293,6 +311,7 @@ module for earlier 2.x versions.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines whether to strip HTML comments.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHTMLStripComments <var>On|Off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProxyHTMLStripComments Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_html</td></tr>
@@ -322,7 +341,8 @@ module for earlier 2.x versions.</td></tr>
 <p>This is the key directive for rewriting HTML links.  When parsing a document,
 whenever a link target matches <var>from-pattern</var>, the matching
 portion will be rewritten to <var>to-pattern</var>, as modified by any
-flags supplied.</p>
+flags supplied and by the <code class="directive">ProxyHTMLExtended</code>
+directive.</p>
 
 <p>The optional third argument may define any of the following
 <strong>Flags</strong>.  Flags are case-sensitive.</p>
