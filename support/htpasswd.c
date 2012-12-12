@@ -99,17 +99,16 @@ static void usage(void)
         "\thtpasswd -nb[mBdps] [-C cost] username password" NL
         " -c  Create a new file." NL
         " -n  Don't update file; display results on stdout." NL
-        " -i  Read password from stdin without verification (for script usage)" NL
+        " -b  Use the password from the command line rather than prompting "
+            "for it." NL
+        " -i  Read password from stdin without verification (for script usage)." NL
         " -m  Force MD5 encryption of the password (default)." NL
         " -B  Force bcrypt encryption of the password (very secure)." NL
         " -C  Set the computing time used for the bcrypt algorithm" NL
-        "     (higher is more secure but slower, default: %d, valid: 4 to 31)" NL
-        " -d  Force CRYPT encryption of the password (8 chars max, "
-            "insecure)." NL
-        " -p  Do not encrypt the password (plaintext, insecure)." NL
+        "     (higher is more secure but slower, default: %d, valid: 4 to 31)." NL
+        " -d  Force CRYPT encryption of the password (8 chars max, insecure)." NL
         " -s  Force SHA encryption of the password (insecure)." NL
-        " -b  Use the password from the command line rather than prompting "
-            "for it." NL
+        " -p  Do not encrypt the password (plaintext, insecure)." NL
         " -D  Delete the specified user." NL
         "On other systems than Windows and NetWare the '-p' flag will "
             "probably not work." NL

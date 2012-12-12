@@ -91,12 +91,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * htpasswd, htdbm: Fix incomplete getopts, adjust and sync Usage.
-     Followup to recent updates for htpasswd and htdbm.
-     trunk patch: http://svn.apache.org/viewvc?rev=1420644&view=rev
-     2.4.x patch: Trunk patch works.
-     +1 rjung, jim, gsmith
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
