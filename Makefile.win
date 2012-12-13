@@ -1044,21 +1044,9 @@ BEGIN {
 		INSTALL_DIR="$(INSTDIR)\bin\iconv"
 	cd ..\..
 !ENDIF
-	copy docs\cgi-examples\printenv.vbs "$(INSTDIR)\cgi-bin\printenv.vbs" <.y
 	copy docs\cgi-examples\printenv "$(INSTDIR)\cgi-bin\printenv.pl" <.y
-	-awk -f <<script.awk "docs/cgi-examples/printenv" > "$(INSTDIR)\cgi-bin\printenv.pl"
-    BEGIN { 
-	if ( "perl -e \"print $$^X;\"" | getline perlroot ) {
-	    gsub( /\\/, "/", perlroot );
-	    print "#!" perlroot;
-	}
-    }
-    {
-	if ( $$0 !~ /^#!/ ) {
-	    print $$0;
-	}
-    }
-<<
+	copy docs\cgi-examples\printenv.vbs "$(INSTDIR)\cgi-bin\printenv.vbs" <.y
+	copy docs\cgi-examples\printenv.wsf "$(INSTDIR)\cgi-bin\printenv.wsf" <.y
 	xcopy docs\error 	"$(INSTDIR)\error" /s /d < .a
 	xcopy docs\docroot 	"$(INSTDIR)\htdocs" /d < .a
 	xcopy docs\icons 	"$(INSTDIR)\icons" /s /d < .a
@@ -1131,3 +1119,44 @@ BEGIN {
 <<
 	del .y
 	del .a
+
+_fixshebang: _install
+	-awk -f <<script.awk "docs/cgi-examples/printenv" > "$(INSTDIR)\cgi-bin\printenv.pl"
+    BEGIN { 
+	if ( "perl -e \"print $$^X;\"" | getline perlroot ) {
+	    gsub( /\\/, "/", perlroot );
+	    print "#!" perlroot;
+	}
+    }
+    {
+	if ( $$0 !~ /^#!/ ) {
+	    print $$0;
+	}
+    }
+<<
+	-cscript -nologo <<script.vbs "docs/cgi-examples/printenv.vbs" "$(INSTDIR)\cgi-bin\printenv.vbs"
+    Dim fso, f, c
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    Set f = fso.OpenTextFile(WScript.Arguments(0), 1)
+    f.SkipLine
+    c = f.ReadAll
+    f.Close
+    Set f = fso.OpenTextFile(WScript.Arguments(1), 2, TRUE)
+    f.WriteLine "'!" & Replace(WScript.FullName, "\", "/") & " -nologo"
+    f.Write c
+    f.Close
+<<
+	-cscript -nologo <<script.vbs "docs/cgi-examples/printenv.wsf" "$(INSTDIR)\cgi-bin\printenv.wsf"
+    Dim fso, f, c
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    Set f = fso.OpenTextFile(WScript.Arguments(0), 1)
+    f.SkipLine
+    c = f.ReadAll
+    f.Close
+    Set f = fso.OpenTextFile(WScript.Arguments(1), 2, TRUE)
+    f.WriteLine "'!" & Replace(WScript.FullName, "\", "/") & " -nologo"
+    f.Write c
+    f.Close
+<<
+
+
