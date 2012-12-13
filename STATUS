@@ -118,6 +118,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jim
      rjung: - 2.4 patch also contains small parts of r1387684. Intentional?
               What about the rest of that revision?
+              jim: yes and n/a
             - No merging of persist flag, intentional?
               jim: yes
 
