@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: Add support for OpenSSL configuration commands [Stephen Henson]
+
   *) EventOpt MPM
 
   *) mod_proxy_balancer: Improve output

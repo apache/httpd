@@ -272,6 +272,11 @@ static const command_rec ssl_config_cmds[] = {
                 "SSL stapling option to Force the OCSP Stapling URL")
 #endif
 
+#ifdef HAVE_SSL_CONF_CMD
+    SSL_CMD_SRV(OpenSSLConfCmd, TAKE2,
+		"OpenSSL configuration command")
+#endif
+
     /* Deprecated directives. */
     AP_INIT_RAW_ARGS("SSLLog", ap_set_deprecated, NULL, OR_ALL,
       "SSLLog directive is no longer supported - use ErrorLog."),

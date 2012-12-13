@@ -687,6 +687,26 @@ static void ssl_init_ctx_protocol(server_rec *s,
     SSL_CTX_set_options(ctx, SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION);
 #endif
 
+#ifdef HAVE_SSL_CONF_CMD
+{
+    ssl_ctx_param_t *param = (ssl_ctx_param_t *)mctx->ssl_ctx_param->elts;
+    SSL_CONF_CTX *cctx;
+    int i;
+    cctx = SSL_CONF_CTX_new();
+    SSL_CONF_CTX_set_flags(cctx, SSL_CONF_FLAG_FILE|SSL_CONF_FLAG_SERVER);
+    SSL_CONF_CTX_set_ssl_ctx(cctx, ctx);
+    for (i = 0; i < mctx->ssl_ctx_param->nelts; i++, param++) {
+        if (SSL_CONF_cmd(cctx, param->name, param->value) <= 0) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02407)
+                    "Error SSL_CONF_cmd(%s,%s)", param->name, param->value);
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+            ssl_die(s);
+        }    
+    }
+    SSL_CONF_CTX_free(cctx);
+}
+#endif
+
 #ifdef SSL_MODE_RELEASE_BUFFERS
     /* If httpd is configured to reduce mem usage, ask openssl to do so, too */
     if (ap_max_mem_free != APR_ALLOCATOR_MAX_FREE_UNLIMITED)

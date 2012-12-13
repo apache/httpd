@@ -100,7 +100,7 @@ BOOL ssl_config_global_isfixed(SSLModConfigRec *mc)
 **  _________________________________________________________________
 */
 
-static void modssl_ctx_init(modssl_ctx_t *mctx)
+static void modssl_ctx_init(modssl_ctx_t *mctx, apr_pool_t *p)
 {
     mctx->sc                  = NULL; /* set during module init */
 
@@ -159,6 +159,9 @@ static void modssl_ctx_init(modssl_ctx_t *mctx)
     mctx->srp_unknown_user_seed = NULL;
     mctx->srp_vbase =             NULL;
 #endif
+#ifdef HAVE_SSL_CONF_CMD
+    mctx->ssl_ctx_param = apr_array_make(p, 10, sizeof(ssl_ctx_param_t));
+#endif
 }
 
 static void modssl_ctx_init_proxy(SSLSrvConfigRec *sc,
@@ -168,7 +171,7 @@ static void modssl_ctx_init_proxy(SSLSrvConfigRec *sc,
 
     mctx = sc->proxy = apr_palloc(p, sizeof(*sc->proxy));
 
-    modssl_ctx_init(mctx);
+    modssl_ctx_init(mctx, p);
 
     mctx->pkp = apr_palloc(p, sizeof(*mctx->pkp));
 
@@ -186,7 +189,7 @@ static void modssl_ctx_init_server(SSLSrvConfigRec *sc,
 
     mctx = sc->server = apr_palloc(p, sizeof(*sc->server));
 
-    modssl_ctx_init(mctx);
+    modssl_ctx_init(mctx, p);
 
     mctx->pks = apr_pcalloc(p, sizeof(*mctx->pks));
 
@@ -292,6 +295,11 @@ static void modssl_ctx_cfg_merge(modssl_ctx_t *base,
 #ifndef OPENSSL_NO_SRP
     cfgMergeString(srp_vfile);
     cfgMergeString(srp_unknown_user_seed);
+#endif
+
+#ifdef HAVE_SSL_CONF_CMD
+    apr_array_cat(mrg->ssl_ctx_param,  base->ssl_ctx_param);
+    apr_array_cat(mrg->ssl_ctx_param,  add->ssl_ctx_param);
 #endif
 }
 
@@ -1848,7 +1856,18 @@ const char *ssl_cmd_SSLStaplingForceURL(cmd_parms *cmd, void *dcfg,
 }
 
 #endif /* HAVE_OCSP_STAPLING */
-
+#ifdef HAVE_SSL_CONF_CMD
+const char *ssl_cmd_SSLOpenSSLConfCmd(cmd_parms *cmd, void *dcfg,
+					const char *arg1, const char *arg2)
+{
+    ssl_ctx_param_t *param;
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    param = apr_array_push(sc->server->ssl_ctx_param);
+    param->name = arg1;
+    param->value = arg2;
+    return NULL;
+}
+#endif
 #ifndef OPENSSL_NO_SRP
 
 const char *ssl_cmd_SSLSRPVerifierFile(cmd_parms *cmd, void *dcfg,
