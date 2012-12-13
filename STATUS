@@ -128,7 +128,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387603
                   http://svn.apache.org/viewvc?view=revision&revision=1388029
                   http://svn.apache.org/viewvc?view=revision&revision=1420124
-     2.4.x patch: http://people.apache.org/~jim/patches/proxypassinherit.patch
+                  http://svn.apache.org/viewvc?view=revision&revision=1421288
+     2.4.x patch: http://people.apache.org/~jim/patches/proxypassinherit2.patch
      +1: jim, druggeri
      rjung: - IMHO "inherit" also needs to be set in overrides while merging.
             - I would also simplify the inheritance check during merge to
