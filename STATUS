@@ -155,6 +155,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://people.apache.org/~jorton/proxyftpepsv-24.patch
      +1: jorton, jim
 
+   * mod_imagemap: Fix type mismatch.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1416889
+     2.4.x patch: trunk patch works
+     +1: fuankg
+
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
