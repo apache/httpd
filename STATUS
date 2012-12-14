@@ -91,6 +91,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * Windows build: Fix various clone/edit and search/replace errors
+     in MSVC project files.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1420975
+     2.4.x patch: trunk patch works
+     +1: gsmith, fuankg, rjung
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -161,12 +167,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1416889
      2.4.x patch: trunk patch works
      +1: fuankg
-
-   * Windows build: Fix various clone/edit and search/replace errors
-     in MSVC project files.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1420975
-     2.4.x patch: trunk patch works
-     +1: gsmith, fuankg
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
