@@ -1208,6 +1208,7 @@ ProxyPass / balancer://hotcluster/
             Balancers and Workers defined in the main server. This can cause issues and
             inconsistent behavior if using the Balancer Manager and so should be disabled
             if using that feature.</p>
+        <p>The setting in the global server defines the default for all vhosts.</p>
     </usage>
 </directivesynopsis>
 
