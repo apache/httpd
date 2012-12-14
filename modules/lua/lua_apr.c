@@ -260,13 +260,13 @@ static int lua_apr_md5(lua_State *L)
     /*~~~~~~~~~~~~~~~~*/
     union {
         unsigned char      chr[16];
-        uint32_t  num[4];
+        apr_uint32_t   num[4];
     } digest;
     apr_md5_ctx_t md5;
     const char* buffer;
     char* result;
     char Rmd5[16];
-    uint32_t *md5X;
+    apr_uint32_t   *md5X;
     size_t x,y;
     request_rec *r;
     /*~~~~~~~~~~~~~~~~*/
@@ -285,7 +285,7 @@ static int lua_apr_md5(lua_State *L)
         Rmd5[x + 3] = digest.chr[x];
     }
 
-    md5X = (uint32_t *) Rmd5;
+    md5X = (apr_uint32_t  *) Rmd5;
     sprintf(result, "%08x%08x%08x%08x", md5X[0], md5X[1], md5X[2], md5X[3]);
     lua_pushstring(L, result);
     return 1;
@@ -297,13 +297,13 @@ static int lua_apr_sha1(lua_State *L)
     /*~~~~~~~~~~~~~~~~*/
     union {
         unsigned char      chr[16];
-        uint32_t  num[4];
+        apr_uint32_t   num[4];
     } digest;
     apr_sha1_ctx_t sha1;
     const char* buffer;
     char* result;
     unsigned char Rsha1[20];
-    uint32_t *sha1X;
+    apr_uint32_t  *sha1X;
     size_t x,y;
     request_rec *r;
     /*~~~~~~~~~~~~~~~~*/
@@ -323,7 +323,7 @@ static int lua_apr_sha1(lua_State *L)
         Rsha1[x + 3] = digest.chr[x];
     }
 
-    sha1X = (uint32_t *) Rsha1;
+    sha1X = (apr_uint32_t  *) Rsha1;
     sprintf(result, "%08x%08x%08x%08x%08x", sha1X[0], sha1X[1], sha1X[2], sha1X[3], sha1X[4]);
     lua_pushstring(L, result);
     return 1;
@@ -564,13 +564,14 @@ static int lua_ap_scoreboard_worker(lua_State *L)
         lua_settable(L, -3);
         
         lua_pushstring(L, "tid");
-        lua_pushnumber(L, ws_record->tid);
+
+        lua_pushinteger(L, (lua_Integer) ws_record->tid);
         lua_settable(L, -3);
         
         lua_pushstring(L, "vhost");
         lua_pushstring(L, ws_record->vhost);
         lua_settable(L, -3);
-        
+#ifdef HAVE_TIMES
         lua_pushstring(L, "stimes");
         lua_pushnumber(L, ws_record->times.tms_stime);
         lua_settable(L, -3);
@@ -578,7 +579,7 @@ static int lua_ap_scoreboard_worker(lua_State *L)
         lua_pushstring(L, "utimes");
         lua_pushnumber(L, ws_record->times.tms_utime);
         lua_settable(L, -3);
-        
+#endif
         return 1;
     }
     return 0;
