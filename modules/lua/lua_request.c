@@ -227,7 +227,7 @@ static int req_parsebody(lua_State *L)
         int         i, z;
         size_t      vlen = 0;
         size_t      len = 0;
-        if (lua_read_body(r, &data, &size) != OK) {
+        if (lua_read_body(r, &data, (apr_off_t*) &size) != OK) {
             return 2;
         }
         len = strlen(multipart);
@@ -574,23 +574,20 @@ static int lua_ap_sendfile(lua_State *L)
         lua_pushboolean(L, 0);
     }
     else {
-        if (r) {
-            apr_size_t      sent;
-            apr_status_t    rc;
-            apr_file_t      *file;
-            
-            rc = apr_file_open(&file, filename, APR_READ, APR_OS_DEFAULT,
-                               r->pool);
-            if (rc == APR_SUCCESS) {
-                ap_send_fd(file, r, 0, file_info.size, &sent);
-                apr_file_close(file);
-                lua_pushinteger(L, sent);
-            }
-            else
-                lua_pushboolean(L, 0);
+        apr_size_t      sent;
+        apr_status_t    rc;
+        apr_file_t      *file;
+
+        rc = apr_file_open(&file, filename, APR_READ, APR_OS_DEFAULT,
+                            r->pool);
+        if (rc == APR_SUCCESS) {
+            ap_send_fd(file, r, 0, file_info.size, &sent);
+            apr_file_close(file);
+            lua_pushinteger(L, sent);
         }
-        else
+        else {
             lua_pushboolean(L, 0);
+        }
     }
 
     return (1);
