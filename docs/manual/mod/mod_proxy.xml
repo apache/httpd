@@ -476,7 +476,6 @@ response</description>
 <default>ProxyBadHeader IsError</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Available in Apache HTTP Server 2.0.44 and later</compatibility>
 
 <usage>
     <p>The <directive>ProxyBadHeader</directive> directive determines the
@@ -526,7 +525,7 @@ request</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
-<compatibility>Available in Apache HTTP Server 2.0.31 and later. Usable in directory
+<compatibility>Usable in directory
 context in 2.3.3 and later.</compatibility>
 
 <usage>
@@ -1469,8 +1468,7 @@ through</description>
 <default>ProxyMaxForwards -1</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Available in Apache HTTP Server 2.0 and later;
-	default behaviour changed in 2.2.7/2.3</compatibility>
+<compatibility>Default behaviour changed in 2.2.7</compatibility>
 
 <usage>
     <p>The <directive>ProxyMaxForwards</directive> directive specifies the
@@ -1627,7 +1625,6 @@ NoProxy         .example.com 192.168.112.0/21
 <default>Value of <directive module="core">Timeout</directive></default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Available in Apache HTTP Server 2.0.31 and later</compatibility>
 
 <usage>
     <p>This directive allows a user to specifiy a timeout on proxy requests.
@@ -1705,7 +1702,6 @@ header for proxied requests</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
-<compatibility>Available in version 2.0 and later</compatibility>
 
 <usage>
     <p>This directive is useful for reverse-proxy setups, where you want to

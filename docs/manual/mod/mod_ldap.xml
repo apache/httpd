@@ -28,7 +28,6 @@ by other LDAP modules</description>
 <status>Extension</status>
 <sourcefile>util_ldap.c</sourcefile>
 <identifier>ldap_module</identifier>
-<compatibility>Available in version 2.0.41 and later</compatibility>
 
 <summary>
     <p>This module was created to improve the performance of

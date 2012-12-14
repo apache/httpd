@@ -1999,7 +1999,6 @@ SSLProxyCARevocationCheck chain
 <context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>AuthConfig</override>
-<compatibility>Available in Apache 2.0.51 and later</compatibility>
 
 <usage>
 <p>

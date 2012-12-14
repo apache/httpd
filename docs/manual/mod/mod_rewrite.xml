@@ -243,8 +243,6 @@ later</compatibility>
 </syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>The choice of different dbm types is available in
-Apache HTTP Server 2.0.41 and later</compatibility>
 
 <usage>
       <p>The <directive>RewriteMap</directive> directive defines a
