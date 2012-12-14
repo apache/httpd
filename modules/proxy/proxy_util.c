@@ -2779,6 +2779,48 @@ PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b, server_rec
     return APR_SUCCESS;
 }
 
+PROXY_DECLARE(proxy_worker_shared *) ap_proxy_find_workershm(ap_slotmem_provider_t *storage,
+                                                               ap_slotmem_instance_t *slot,
+                                                               proxy_worker *worker,
+                                                               unsigned int *index)
+{
+    proxy_worker_shared *shm;
+    unsigned int i, limit;
+    limit = storage->num_slots(slot);
+    for (i = 0; i < limit; i++) {
+        if (storage->dptr(slot, i, (void *)&shm) != APR_SUCCESS) {
+            return NULL;
+        }
+        if ((worker->s->hash.def == shm->hash.def) &&
+            (worker->s->hash.fnv == shm->hash.fnv)) {
+            *index = i;
+            return shm;
+        }
+    }
+    return NULL;
+}
+
+PROXY_DECLARE(proxy_balancer_shared *) ap_proxy_find_balancershm(ap_slotmem_provider_t *storage,
+                                                                 ap_slotmem_instance_t *slot,
+                                                                 proxy_balancer *balancer,
+                                                                 unsigned int *index)
+{
+    proxy_balancer_shared *shm;
+    unsigned int i, limit;
+    limit = storage->num_slots(slot);
+    for (i = 0; i < limit; i++) {
+        if (storage->dptr(slot, i, (void *)&shm) != APR_SUCCESS) {
+            return NULL;
+        }
+        if ((balancer->s->hash.def == shm->hash.def) &&
+            (balancer->s->hash.fnv == shm->hash.fnv)) {
+            *index = i;
+            return shm;
+        }
+    }
+    return NULL;
+}
+
 void proxy_util_register_hooks(apr_pool_t *p)
 {
     APR_REGISTER_OPTIONAL_FN(ap_proxy_retry_worker);
