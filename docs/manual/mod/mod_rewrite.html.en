@@ -749,8 +749,6 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_rewrite</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The choice of different dbm types is available in
-Apache HTTP Server 2.0.41 and later</td></tr>
 </table>
       <p>The <code class="directive">RewriteMap</code> directive defines a
       <em>Rewriting Map</em> which can be used inside rule
@@ -932,7 +930,7 @@ later</td></tr>
       <p>With this option, the value of <code class="directive"><a href="#rewritebase">RewriteBase</a></code> is copied from where it's explicitly defined
       into any sub-directory or sub-location that doesn't define its own
       <code class="directive"><a href="#rewritebase">RewriteBase</a></code>. This was the
-      default behavior in 2.4.0 thorugh 2.4.3, and the flag to restore it is
+      default behavior in 2.4.0 through 2.4.3, and the flag to restore it is
       available Apache HTTP Server 2.4.4 and later.</p>
       </dd>
       </dl>
