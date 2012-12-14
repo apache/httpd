@@ -146,6 +146,78 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: fuankg
 
+   * mod_xml2enc: Fix problems with charset conversion altering the
+     Content-Length. [Micha Lenk <micha lenk info>]
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1407248
+     2.4.x patch: Trunk patch works.
+     +1: rjung
+
+   * <If>:
+     - Make <If> sections in virtual host context fill in cmd->path so that
+       other directive notice that they are in a config section.
+       Fixes directives like LogLevel that need to know if they are invoked
+       at virtual host context or in Directory/Files/Location/If sections to
+       work properly in If sections that are not in a Directory/Files/Location.
+     - Make ap_check_cmd_context() treat <If> sections like <File> sections.
+       This is necessary to properly disallow directives that don't work in
+       <If>.
+       A separate NOT_IN_IF flag may be nicer, but would create much more
+       hassle when being backported to 2.4.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1406493
+                  http://svn.apache.org/viewvc?view=revision&revision=1406495
+     2.4.x patch: Trunk patchs work.
+     +1: rjung
+
+   * configure --disable-FEATURE: Fix processing for various features
+     (dtrace, hook-probes, exception-hook, maintainer-mode, debugger-mode, luajit).
+     "If" branch of AC_ARG_ENABLE is executed if enable or disable are
+     explicitely set, so need to check enableval to detect explicit disable case.
+     Not critical, because those features are disabled by default, so an explicit
+     disable is unlikely.
+     Easy to vote but not critical for 2.4.4.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1397687
+     2.4.x patch: http://people.apache.org/~rjung/patches/configure-disable-feature.patch
+                  If suexec-capabilities is backported first, then trunk patch works.
+     +1: rjung
+
+   * configure --with-modules:
+     - Fix shell errors when trying to AC_MSG_RESULT().
+       (The change to IFS hosed any AC_MSG_foo() invocations.)
+       It is easy enough to reorder the reset of IFS and the AC_MSG_RESULT()
+       invocation, but there's a big stretch of shell code where AC_MSG_foo()
+       might be useful someday, so get rid of the commas at the start and
+       leave IFS alone and AC_MSG_foo() at will.
+     - Fix failure to integrate them into some existing module directories.
+       modules/config?.m4 needs to run after the modules/*/config?.m4.
+       Otherwise, modules.mk as created for --with-module gets wiped
+       out first.
+       This is r1392150, a rename of modules/config5.m4 to modules/config7.m4.
+       PR: 40097
+     Not critical for 2.4.4.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1392120
+                  http://svn.apache.org/viewvc?view=revision&revision=1392122
+                  http://svn.apache.org/viewvc?view=revision&revision=1392150
+     2.4.x patch: Trunk patch works.
+     +1: rjung
+
+   * Replace use of apr_file_write() with apr_file_write_full() to prevent
+     incomplete writes.
+     Add comments in some places where error handling/logging is missing.
+     PR: 53131.
+     Submitted by: Nicolas Viennot <apache viennot biz>, Stefan Fritsch
+     Not critical for 2.4.4.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1331110
+     2.4.x patch: Trunk patch works except for modules/slotmem/mod_slotmem_shm.c
+                  which should be ommitted (already done in r1400951).
+     +1: rjung
+
+   * ap_expr: Add req_novary function that allows HTTP header lookups
+     without adding the name to the Vary header
+     Not critical for 2.4.4.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1403483
+     2.4.x patch: Trunk patch works.
+     +1: rjung
+
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
