@@ -33,8 +33,7 @@
 and Group</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>suexec_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_suexec.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.0 and later</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_suexec.c</td></tr></table>
 <h3>Summary</h3>
 
     <p>This module, in combination with the <code class="program"><a href="../programs/suexec.html">suexec</a></code> support program allows
@@ -57,8 +56,6 @@ and Group</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_suexec</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>SuexecUserGroup is only available in 2.0 and
-later.</td></tr>
 </table>
     <p>The <code class="directive">SuexecUserGroup</code> directive allows you
     to specify a user and group for CGI programs to run as. Non-CGI

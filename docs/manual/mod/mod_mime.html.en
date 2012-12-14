@@ -396,8 +396,6 @@ client requests</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>AddInputFilter is only available in Apache 2.0.26 and
-later.</td></tr>
 </table>
     <p><code class="directive">AddInputFilter</code> maps the filename extension
     <var>extension</var> to the <a href="../filter.html">filters</a> which
@@ -494,8 +492,6 @@ responses from the server</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>AddOutputFilter is only available in Apache 2.0.26 and
-later.</td></tr>
 </table>
     <p>The <code class="directive">AddOutputFilter</code> directive maps the
     filename extension <var>extension</var> to the <a href="../filter.html">filters</a> which will process responses
@@ -673,7 +669,6 @@ components as part of the filename</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.0.41 and later</td></tr>
 </table>
     <p>The <code class="directive">ModMimeUsePathInfo</code> directive is used to
     combine the filename with the <code>path_info</code> URL component to
@@ -714,7 +709,6 @@ a matching file with MultiViews</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.0.26 and later.</td></tr>
 </table>
     <p><code class="directive">MultiviewsMatch</code> permits three different
     behaviors for <a href="mod_negotiation.html">mod_negotiation</a>'s
@@ -776,8 +770,6 @@ extensions</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>RemoveCharset is only available in Apache 2.0.24 and
-later.</td></tr>
 </table>
     <p>The <code class="directive">RemoveCharset</code> directive removes any
     character set associations for files with the given extensions.
@@ -883,8 +875,6 @@ extensions</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>RemoveInputFilter is only available in Apache 2.0.26 and
-later.</td></tr>
 </table>
     <p>The <code class="directive">RemoveInputFilter</code> directive removes any
     input <a href="../filter.html">filter</a> associations for files with
@@ -913,8 +903,6 @@ extensions</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>RemoveLanguage is only available in Apache 2.0.24 and
-later.</td></tr>
 </table>
     <p>The <code class="directive">RemoveLanguage</code> directive removes any
     language associations for files with the given extensions. This
@@ -937,8 +925,6 @@ extensions</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>RemoveOutputFilter is only available in Apache 2.0.26 and
-later.</td></tr>
 </table>
     <p>The <code class="directive">RemoveOutputFilter</code> directive removes any
     output <a href="../filter.html">filter</a> associations for files with

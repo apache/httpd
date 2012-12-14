@@ -345,7 +345,6 @@
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_log_config</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in versions 2.0.41 and later.</td></tr>
 </table>
     <p>The <code class="directive">BufferedLogs</code> directive causes
     <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> to store several log entries in

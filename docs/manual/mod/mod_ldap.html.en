@@ -31,8 +31,7 @@
 by other LDAP modules</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>ldap_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>util_ldap.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.0.41 and later</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>util_ldap.c</td></tr></table>
 <h3>Summary</h3>
 
     <p>This module was created to improve the performance of
