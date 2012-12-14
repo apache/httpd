@@ -224,7 +224,7 @@ static int req_parsebody(lua_State *L)
         char        *buffer, *key, *filename;
         char        *start = 0, *end = 0, *crlf = 0;
         const char  *data;
-        int         i, z;
+        int         i;
         size_t      vlen = 0;
         size_t      len = 0;
         if (lua_read_body(r, &data, (apr_off_t*) &size) != OK) {
