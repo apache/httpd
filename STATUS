@@ -107,22 +107,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk patch works
      +1: jim, rjung
 
-   * mod_proxy: Persist balancer and worker data across restarts and stop/start.
-                NOTE: Assumes mod_slotmem patch which adds fgrab()
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387110
-                  http://svn.apache.org/viewvc?view=revision&revision=1387444
-                  http://svn.apache.org/viewvc?view=revision&revision=1387979
-                  http://svn.apache.org/viewvc?view=revision&revision=1387607
-                  http://svn.apache.org/viewvc?view=revision&revision=1407085
-                  http://svn.apache.org/viewvc?view=revision&revision=1387693
-     2.4.x patch: http://people.apache.org/~jim/patches/proxy-persist3.diff
-     +1: jim
-     rjung: - 2.4 patch also contains small parts of r1387684. Intentional?
-              What about the rest of that revision?
-              jim: yes and n/a
-            - No merging of persist flag, intentional?
-              jim: yes
-
    * mod_proxy: Allow balancers to be server-specific, as they should have
      been. Inheritance causes too many behind-the-scene interactions
      to be reliable in a dynamic environ. We maintain the old-default
