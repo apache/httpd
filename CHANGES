@@ -43,10 +43,6 @@ Changes with Apache 2.5.0
      work properly in If sections that are not in a Directory/Files/Location.
      [Stefan Fritsch]
  
-  *) mod_cache_disk: Resolve errors while revalidating disk-cached files on 
-     Windows ("...rename tempfile to datafile failed..."). PR 38827
-     [Eric Covener]
-
   *) mod_proxy_ftp: Fix segfaults on IPv4 requests to hosts with DNS AAAA records.
      PR 40841. [Andrew Rucker Jones <arjones simultan dyndns org>,
      <ast domdv de>, Jim Jagielski]
