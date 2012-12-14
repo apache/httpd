@@ -28,7 +28,6 @@
 <status>Extension</status>
 <sourcefile>mod_authn_anon.c</sourcefile>
 <identifier>authn_anon_module</identifier>
-<compatibility>Available in Apache 2.1 and later</compatibility>
 
 <summary>
     <p>This module provides authentication front-ends such as

@@ -27,8 +27,6 @@
 <status>Base</status>
 <sourcefile>mod_include.c</sourcefile>
 <identifier>include_module</identifier>
-<compatibility>Implemented as an output filter since Apache
-2.0</compatibility>
 
 <summary>
     <p>This module provides a filter which will process files
@@ -758,7 +756,6 @@ AddOutputFilter INCLUDES .shtml
 <default>SSIEndTag &quot;--&gt;&quot;</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Available in version 2.0.30 and later.</compatibility>
 
 <usage>
     <p>This directive changes the string that <module>mod_include</module>
@@ -780,7 +777,6 @@ AddOutputFilter INCLUDES .shtml
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>All</override>
-<compatibility>Available in version 2.0.34 and later.</compatibility>
 
 <usage>
     <p>This directive changes the string that <module>mod_include</module>
@@ -802,7 +798,6 @@ directive]&quot;</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>All</override>
-<compatibility>Available in version 2.0.30 and later.</compatibility>
 
 <usage>
     <p>The <directive>SSIErrorMsg</directive> directive changes the error
@@ -827,7 +822,6 @@ directive]&quot;</default>
 <default>SSIStartTag &quot;&lt;!--#&quot;</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Available in version 2.0.30 and later.</compatibility>
 
 <usage>
     <p>This directive changes the string that <module>mod_include</module>
@@ -864,7 +858,6 @@ displayed</description>
 <context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>All</override>
-<compatibility>Available in version 2.0.30 and later.</compatibility>
 
 <usage>
 <p>This directive changes the format in which date strings are displayed
@@ -890,7 +883,6 @@ displayed</description>
 <syntax>SSIETag on|off</syntax>
 <default>SSIETag off</default>
 <contextlist><context>directory</context><context>.htaccess</context></contextlist>
-<compatibility>Available in version 2.2.15 and later.</compatibility>
 
 <usage>
       <p>Under normal circumstances, a file filtered by <module>mod_include</module>
@@ -931,7 +923,6 @@ server.</description>
 <syntax>SSILastModified on|off</syntax>
 <default>SSILastModified off</default>
 <contextlist><context>directory</context><context>.htaccess</context></contextlist>
-<compatibility>Available in version 2.2.15 and later.</compatibility>
 
 <usage>
       <p>Under normal circumstances, a file filtered by <module>mod_include</module>

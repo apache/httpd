@@ -388,8 +388,6 @@ client requests</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>AddInputFilter is only available in Apache 2.0.26 and
-later.</compatibility>
 
 <usage>
     <p><directive>AddInputFilter</directive> maps the filename extension
@@ -482,8 +480,6 @@ responses from the server</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>AddOutputFilter is only available in Apache 2.0.26 and
-later.</compatibility>
 
 <usage>
     <p>The <directive>AddOutputFilter</directive> directive maps the
@@ -625,7 +621,6 @@ a matching file with MultiViews</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Available in Apache 2.0.26 and later.</compatibility>
 
 <usage>
     <p><directive>MultiviewsMatch</directive> permits three different
@@ -719,7 +714,6 @@ components as part of the filename</description>
 <syntax>ModMimeUsePathInfo On|Off</syntax>
 <default>ModMimeUsePathInfo Off</default>
 <contextlist><context>directory</context></contextlist>
-<compatibility>Available in Apache 2.0.41 and later</compatibility>
 
 <usage>
     <p>The <directive>ModMimeUsePathInfo</directive> directive is used to
@@ -758,8 +752,6 @@ extensions</description>
 <contextlist><context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>RemoveCharset is only available in Apache 2.0.24 and
-later.</compatibility>
 
 <usage>
     <p>The <directive>RemoveCharset</directive> directive removes any
@@ -870,8 +862,6 @@ extensions</description>
 <contextlist><context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>RemoveInputFilter is only available in Apache 2.0.26 and
-later.</compatibility>
 
 <usage>
     <p>The <directive>RemoveInputFilter</directive> directive removes any
@@ -897,8 +887,6 @@ extensions</description>
 <contextlist><context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>RemoveLanguage is only available in Apache 2.0.24 and
-later.</compatibility>
 
 <usage>
     <p>The <directive>RemoveLanguage</directive> directive removes any
@@ -921,8 +909,6 @@ extensions</description>
 <contextlist><context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>RemoveOutputFilter is only available in Apache 2.0.26 and
-later.</compatibility>
 
 <usage>
     <p>The <directive>RemoveOutputFilter</directive> directive removes any

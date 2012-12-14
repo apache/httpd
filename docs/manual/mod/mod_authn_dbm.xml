@@ -27,7 +27,6 @@
 <status>Extension</status>
 <sourcefile>mod_authn_dbm.c</sourcefile>
 <identifier>authn_dbm_module</identifier>
-<compatibility>Available in Apache 2.1 and later</compatibility>
 
 <summary>
     <p>This module provides authentication front-ends such as

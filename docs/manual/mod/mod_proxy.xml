@@ -476,7 +476,6 @@ response</description>
 <default>ProxyBadHeader IsError</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Available in Apache HTTP Server 2.0.44 and later</compatibility>
 
 <usage>
     <p>The <directive>ProxyBadHeader</directive> directive determines the
@@ -526,7 +525,7 @@ request</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
-<compatibility>Available in Apache HTTP Server 2.0.31 and later. Usable in directory
+<compatibility>Usable in directory
 context in 2.3.3 and later.</compatibility>
 
 <usage>
@@ -672,8 +671,6 @@ expressions</description>
         >key=value [key=value ...]]</var></syntax>
     <contextlist><context>directory</context>
     </contextlist>
-    <compatibility>BalancerMember is only available in Apache HTTP Server 2.2
-        and later.</compatibility>
     <usage>
         <p>This directive adds a member to a load balancing group. It could be used
             within a <code>&lt;Proxy <var>balancer://</var>...&gt;</code> container
@@ -696,8 +693,6 @@ expressions</description>
 <syntax>ProxySet <var>url</var> <var>key=value [key=value ...]</var></syntax>
 <contextlist><context>directory</context>
 </contextlist>
-<compatibility>ProxySet is only available in Apache HTTP Server 2.2
-  and later.</compatibility>
 <usage>
     <p>This directive is used as an alternate method of setting any of the
     parameters available to Proxy balancers and workers normally done via the
@@ -1521,8 +1516,6 @@ through</description>
 <default>ProxyMaxForwards -1</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Available in Apache HTTP Server 2.0 and later;
-	default behaviour changed in 2.2.7/2.3</compatibility>
 
 <usage>
     <p>The <directive>ProxyMaxForwards</directive> directive specifies the
@@ -1679,7 +1672,6 @@ NoProxy         .example.com 192.168.112.0/21
 <default>Value of <directive module="core">Timeout</directive></default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Available in Apache HTTP Server 2.0.31 and later</compatibility>
 
 <usage>
     <p>This directive allows a user to specifiy a timeout on proxy requests.
@@ -1757,7 +1749,6 @@ header for proxied requests</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
-<compatibility>Available in version 2.0 and later</compatibility>
 
 <usage>
     <p>This directive is useful for reverse-proxy setups, where you want to
@@ -1782,7 +1773,6 @@ header for proxied requests</description>
 <context>virtual host</context>
 <context>directory</context>
 </contextlist>
-<compatibility>Available in httpd 2.2.9 and later</compatibility>
 
 <usage>
     <p>This directive, together with the <var>interpolate</var> argument to
@@ -1811,7 +1801,6 @@ header for proxied requests</description>
 <contextlist><context>server config</context>
 <context>virtual host</context>
 </contextlist>
-<compatibility>Available in version 2.2 and later</compatibility>
 
 <usage>
     <p>This directive determines whether or not proxy

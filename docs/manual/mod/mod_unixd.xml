@@ -37,8 +37,6 @@ requests</description>
 <syntax>Group <var>unix-group</var></syntax>
 <default>Group #-1</default>
 <contextlist><context>server config</context></contextlist>
-<compatibility>Only valid in global server config since Apache
-2.0</compatibility>
 
 <usage>
     <p>The <directive>Group</directive> directive sets the group under
@@ -84,8 +82,6 @@ requests</description>
 <syntax>User <var>unix-userid</var></syntax>
 <default>User #-1</default>
 <contextlist><context>server config</context></contextlist>
-<compatibility>Only valid in global server config since Apache
-2.0</compatibility>
 
 <usage>
     <p>The <directive>User</directive> directive sets the user ID as
@@ -132,7 +128,6 @@ requests</description>
 <default>none</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>mod_unixd</module></modulelist>
-<compatibility>Available in Apache 2.2.10 and later</compatibility>
 
 <usage>
     <p>This directive tells the server to <var>chroot(8)</var> to the

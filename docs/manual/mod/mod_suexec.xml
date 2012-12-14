@@ -28,7 +28,6 @@ and Group</description>
 <status>Extension</status>
 <sourcefile>mod_suexec.c</sourcefile>
 <identifier>suexec_module</identifier>
-<compatibility>Available in Apache 2.0 and later</compatibility>
 
 
 <summary>
@@ -46,8 +45,6 @@ and Group</description>
 <syntax>SuexecUserGroup <em>User Group</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>SuexecUserGroup is only available in 2.0 and
-later.</compatibility>
 
 <usage>
     <p>The <directive>SuexecUserGroup</directive> directive allows you

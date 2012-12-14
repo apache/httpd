@@ -376,7 +376,6 @@
 <syntax>BufferedLogs On|Off</syntax>
 <default>BufferedLogs Off</default>
 <contextlist><context>server config</context></contextlist>
-<compatibility>Available in versions 2.0.41 and later.</compatibility>
 
 <usage>
     <p>The <directive>BufferedLogs</directive> directive causes

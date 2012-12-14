@@ -1545,7 +1545,6 @@ host.
 <default>SSLStrictSNIVHostCheck off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Available in Apache 2.2.12 and later</compatibility>
 
 <usage>
 <p>
@@ -1995,7 +1994,6 @@ SSLProxyCARevocationCheck chain
 <context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>AuthConfig</override>
-<compatibility>Available in Apache 2.0.51 and later</compatibility>
 
 <usage>
 <p>
@@ -2023,7 +2021,7 @@ SSLUserName SSL_CLIENT_S_DN_CN
 <syntax>SSLHonorCipherOrder <em>flag</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Available in Apache 2.1 and later, if using OpenSSL 0.9.7 or later</compatibility>
+<compatibility>Available if using OpenSSL 0.9.7 or later</compatibility>
 
 <usage>
 <p>When choosing a cipher during an SSLv3 or TLSv1 handshake, normally
@@ -2180,7 +2178,7 @@ which means that OCSP responses are considered valid as long as their
 <default>SSLInsecureRenegotiation off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Available in httpd 2.2.15 and later, if using OpenSSL 0.9.8m or later</compatibility>
+<compatibility>Available if using OpenSSL 0.9.8m or later</compatibility>
 
 <usage>
 <p>As originally specified, all versions of the SSL and TLS protocols

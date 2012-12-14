@@ -27,7 +27,6 @@
 <status>Extension</status>
 <sourcefile>mod_dbd.c</sourcefile>
 <identifier>dbd_module</identifier>
-<compatibility>Version 2.1 and later</compatibility>
 
 <summary>
     <p><module>mod_dbd</module> manages SQL database connections using
