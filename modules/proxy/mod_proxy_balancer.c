@@ -797,6 +797,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
             proxy_worker *worker;
             proxy_balancer_shared *bshm;
             const char *sname;
+            unsigned int index;
 
             /* now that we have the right id, we need to redo the sname field */
             ap_pstr2_alnum(pconf, balancer->s->name + sizeof(BALANCER_PREFIX) - 1,
@@ -820,16 +821,24 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                                       apr_pool_cleanup_null);
 
             /* setup shm for balancers */
-            if ((rv = storage->fgrab(conf->bslot, i)) != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01181) "balancer slotmem_grab failed");
-                return !OK;
-
+            bshm = ap_proxy_find_balancershm(storage, conf->bslot, balancer, &index);
+            if (bshm) {
+                if ((rv = storage->fgrab(conf->bslot, index)) != APR_SUCCESS) {
+                    ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(02408) "balancer slotmem_fgrab failed");
+                    return !OK;
+                }
             }
-            if ((rv = storage->dptr(conf->bslot, i, (void *)&bshm)) != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01182) "balancer slotmem_dptr failed");
-                return !OK;
+            else {
+                if ((rv = storage->grab(conf->bslot, &index)) != APR_SUCCESS) {
+                    ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01181) "balancer slotmem_grab failed");
+                    return !OK;
+                }
+                if ((rv = storage->dptr(conf->bslot, index, (void *)&bshm)) != APR_SUCCESS) {
+                    ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01182) "balancer slotmem_dptr failed");
+                    return !OK;
+                }
             }
-            if ((rv = ap_proxy_share_balancer(balancer, bshm, i)) != APR_SUCCESS) {
+            if ((rv = ap_proxy_share_balancer(balancer, bshm, index)) != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01183) "Cannot share balancer");
                 return !OK;
             }
@@ -859,16 +868,26 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                 proxy_worker_shared *shm;
 
                 worker = *workers;
-                if ((rv = storage->fgrab(balancer->wslot, j)) != APR_SUCCESS) {
-                    ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01186) "worker slotmem_grab failed");
-                    return !OK;
 
+                shm = ap_proxy_find_workershm(storage, balancer->wslot, worker, &index);
+                if (shm) {
+                    if ((rv = storage->fgrab(balancer->wslot, index)) != APR_SUCCESS) {
+                        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(02409) "worker slotmem_fgrab failed");
+                        return !OK;
+                    }
                 }
-                if ((rv = storage->dptr(balancer->wslot, j, (void *)&shm)) != APR_SUCCESS) {
-                    ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01187) "worker slotmem_dptr failed");
-                    return !OK;
+                else {
+                    if ((rv = storage->grab(balancer->wslot, &index)) != APR_SUCCESS) {
+                        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01186) "worker slotmem_grab failed");
+                        return !OK;
+
+                    }
+                    if ((rv = storage->dptr(balancer->wslot, index, (void *)&shm)) != APR_SUCCESS) {
+                        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01187) "worker slotmem_dptr failed");
+                        return !OK;
+                    }
                 }
-                if ((rv = ap_proxy_share_worker(worker, shm, j)) != APR_SUCCESS) {
+                if ((rv = ap_proxy_share_worker(worker, shm, index)) != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01188) "Cannot share worker");
                     return !OK;
                 }
