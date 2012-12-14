@@ -419,8 +419,6 @@ user authentication</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_access_compat</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Influenced by <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code> and <code class="directive"><a href="../mod/core.html#limitexcept">&lt;LimitExcept&gt;</a></code> in version 2.0.51 and
-later</td></tr>
 </table>
     <p>Access policy if both <code class="directive"><a href="#allow">Allow</a></code> and <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> used. The parameter can be
     either <code>All</code> or <code>Any</code>. This directive is only

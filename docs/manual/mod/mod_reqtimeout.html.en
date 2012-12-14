@@ -30,8 +30,7 @@
 </td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>reqtimeout_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_reqtimeout.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTPD 2.2.15 and later</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_reqtimeout.c</td></tr></table>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -107,7 +106,7 @@
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_reqtimeout</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.2.15 and later; defaulted to disabled in
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Defaulted to disabled in
 version 2.3.14 and earlier.</td></tr>
 </table>
     <p>This directive can set various timeouts for receiving the request headers

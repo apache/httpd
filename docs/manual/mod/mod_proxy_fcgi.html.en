@@ -101,8 +101,8 @@
     <div class="example"><h3>Balanced gateway to multiple application instances</h3><pre class="prettyprint lang-config">
 ProxyPass /myapp/ balancer://myappcluster/
 &lt;Proxy balancer://myappcluster/&gt;
-    BalancerMember fcgi://localhost:4000/
-    BalancerMember fcgi://localhost:4001/
+    BalancerMember fcgi://localhost:4000
+    BalancerMember fcgi://localhost:4001
 &lt;/Proxy&gt;
     </pre>
 </div>

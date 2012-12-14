@@ -879,7 +879,7 @@ by the applicable Security Policy.
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.1 and later, if using OpenSSL 0.9.7 or later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available if using OpenSSL 0.9.7 or later</td></tr>
 </table>
 <p>When choosing a cipher during an SSLv3 or TLSv1 handshake, normally
 the client's preference is used.  If this directive is enabled, the
@@ -899,7 +899,7 @@ SSLHonorCipherOrder on
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.2.15 and later, if using OpenSSL 0.9.8m or later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available if using OpenSSL 0.9.8m or later</td></tr>
 </table>
 <p>As originally specified, all versions of the SSL and TLS protocols
 (up to and including TLS/1.2) were vulnerable to a Man-in-the-Middle
@@ -2308,7 +2308,6 @@ host.
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.2.12 and later</td></tr>
 </table>
 <p>
 This directive sets whether a non-SNI client is allowed to access a name-based
@@ -2339,7 +2338,6 @@ SSLStrictSNIVHostCheck on
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.0.51 and later</td></tr>
 </table>
 <p>
 This directive sets the "user" field in the Apache request object.

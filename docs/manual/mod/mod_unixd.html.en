@@ -53,7 +53,6 @@
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mod_unixd.html">mod_unixd</a></code></td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.2.10 and later</td></tr>
 </table>
     <p>This directive tells the server to <var>chroot(8)</var> to the
     specified directory after startup, but before accepting requests
@@ -75,8 +74,6 @@ requests</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_unixd</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Only valid in global server config since Apache
-2.0</td></tr>
 </table>
     <p>The <code class="directive">Group</code> directive sets the group under
     which the server will answer requests. In order to use this
@@ -142,8 +139,6 @@ requests</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_unixd</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Only valid in global server config since Apache
-2.0</td></tr>
 </table>
     <p>The <code class="directive">User</code> directive sets the user ID as
     which the server will answer requests. In order to use this

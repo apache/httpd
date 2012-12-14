@@ -707,7 +707,6 @@ directive]"</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_include</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Available in version 2.2.15 and later.</td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
@@ -721,7 +720,6 @@ server.</td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_include</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Available in version 2.2.15 and later.</td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>

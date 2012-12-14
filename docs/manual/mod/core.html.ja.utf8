@@ -2647,8 +2647,7 @@ or specified mutexes</td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Available in Apache 2.1.5 and later.
-On Windows from Apache 2.3.3 and later.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>On Windows only available from Apache 2.3.3 and later.</td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p><h3>参照</h3>
@@ -2852,7 +2851,6 @@ of a request or the last 63, assuming the request itself is greater than
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Available in Apache httpd 2.2.7 and later.</td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>

@@ -29,6 +29,10 @@
 <a href="../ja/mod/mod_ident.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_ident.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">この日本語訳はすでに古くなっている
+            可能性があります。
+            最近更新された内容を見るには英語版をご覧下さい。
+        </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>RFC 1413 ident lookups</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>ident_module</td></tr>

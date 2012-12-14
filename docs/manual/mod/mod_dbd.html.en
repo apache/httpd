@@ -29,8 +29,7 @@
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Manages SQL database connections</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>dbd_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_dbd.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Version 2.1 and later</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_dbd.c</td></tr></table>
 <h3>Summary</h3>
 
     <p><code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code> manages SQL database connections using

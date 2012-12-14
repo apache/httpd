@@ -29,8 +29,7 @@
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Perform search and replace operations on response bodies</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>substitute_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_substitute.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.2.7 and later</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_substitute.c</td></tr></table>
 <h3>Summary</h3>
 
     <p><code class="module"><a href="../mod/mod_substitute.html">mod_substitute</a></code> provides a mechanism to perform
