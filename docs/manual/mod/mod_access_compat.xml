@@ -419,10 +419,6 @@ user authentication</description>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
-<compatibility>Influenced by <directive module="core" type="section"
->Limit</directive> and <directive module="core"
-type="section">LimitExcept</directive> in version 2.0.51 and
-later</compatibility>
 
 <usage>
     <p>Access policy if both <directive

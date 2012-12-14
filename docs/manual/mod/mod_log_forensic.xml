@@ -27,8 +27,6 @@
 <status>Extension</status>
 <sourcefile>mod_log_forensic.c</sourcefile>
 <identifier>log_forensic_module</identifier>
-<compatibility><module>mod_unique_id</module> is no longer required since
-version 2.1</compatibility>
 
 <summary>
     <p>This module provides for forensic logging of client

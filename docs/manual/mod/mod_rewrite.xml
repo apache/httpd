@@ -132,8 +132,6 @@ URLs on the fly</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility><code>MaxRedirects</code> is no longer available in version 2.1 and
-later</compatibility>
 <usage>
 
       <p>The <directive>RewriteOptions</directive> directive sets some
@@ -242,8 +240,6 @@ later</compatibility>
 </syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>The choice of different dbm types is available in
-Apache HTTP Server 2.0.41 and later</compatibility>
 
 <usage>
       <p>The <directive>RewriteMap</directive> directive defines a

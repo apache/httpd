@@ -28,7 +28,6 @@ for HTTP Basic authentication.</description>
 <status>Extension</status>
 <sourcefile>mod_authnz_ldap.c</sourcefile>
 <identifier>authnz_ldap_module</identifier>
-<compatibility>Available in version 2.1 and later</compatibility>
 
 <summary>
     <p>This module provides authentication front-ends such as

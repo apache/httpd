@@ -27,7 +27,6 @@
 <status>Base</status>
 <sourcefile>mod_authz_user.c</sourcefile>
 <identifier>authz_user_module</identifier>
-<compatibility>Available in Apache 2.1 and later</compatibility>
 
 <summary>
     <p>This module provides authorization capabilities so that

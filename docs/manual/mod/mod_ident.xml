@@ -27,7 +27,6 @@
 <status>Extension</status>
 <sourcefile>mod_ident.c</sourcefile>
 <identifier>ident_module</identifier>
-<compatibility>Available in Apache 2.1 and later</compatibility>
 
 <summary>
     <p>This module queries an <a href="http://www.ietf.org/rfc/rfc1413.txt"
@@ -44,7 +43,6 @@ user</description>
 <default>IdentityCheck Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context></contextlist>
-<compatibility>Moved out of core in Apache 2.1</compatibility>
 
 <usage>
     <p>This directive enables <a href="http://www.ietf.org/rfc/rfc1413.txt"

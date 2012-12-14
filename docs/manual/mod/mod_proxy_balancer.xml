@@ -27,7 +27,6 @@
 <status>Extension</status>
 <sourcefile>mod_proxy_balancer.c</sourcefile>
 <identifier>proxy_balancer_module</identifier>
-<compatibility>Available in version 2.1 and later</compatibility>
 
 <summary>
     <p>This module <em>requires</em> the service of <module

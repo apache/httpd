@@ -55,8 +55,6 @@ content-type</description>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility>The <code>virtual</code> modifier and handler passing were
-introduced in Apache 2.1</compatibility>
 
 <usage>
     <p>This directive adds an action, which will activate

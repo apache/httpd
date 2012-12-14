@@ -28,7 +28,6 @@
 <status>Extension</status>
 <sourcefile>mod_reqtimeout.c</sourcefile>
 <identifier>reqtimeout_module</identifier>
-<compatibility>Available in Apache HTTPD 2.2.15 and later</compatibility>
 
 <section id="examples"><title>Examples</title>
 
@@ -89,7 +88,7 @@
 <default>header=20-40,MinRate=500 body=20,MinRate=500</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Available in version 2.2.15 and later; defaulted to disabled in
+<compatibility>Defaulted to disabled in
 version 2.3.14 and earlier.</compatibility>
 
 <usage>

@@ -27,7 +27,6 @@
 <status>Extension</status>
 <sourcefile>mod_authz_dbm.c</sourcefile>
 <identifier>authz_dbm_module</identifier>
-<compatibility>Available in Apache 2.1 and later</compatibility>
 
 <summary>
     <p>This module provides authorization capabilities so that

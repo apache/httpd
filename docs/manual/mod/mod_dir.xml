@@ -172,7 +172,6 @@ a directory</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Indexes</override>
-<compatibility>Available in version 2.0.51 and later</compatibility>
 
 <usage>
     <p>The <directive>DirectorySlash</directive> directive determines whether
