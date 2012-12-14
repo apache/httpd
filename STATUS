@@ -91,11 +91,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * Windows build: Fix various clone/edit and search/replace errors
-     in MSVC project files.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1420975
-     2.4.x patch: trunk patch works
-     +1: gsmith, fuankg, rjung
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:

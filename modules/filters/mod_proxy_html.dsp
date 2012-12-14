@@ -47,7 +47,7 @@ RSC=rc.exe
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
-# ADD RSC /l 0x409 /d "NDEBUG" /i "../../include" /i "../../srclib/apr/include" /I "../../srclib/apr-util/include" /i "../../srclib/libxml2/include" 
+# ADD RSC /l 0x409 /d "NDEBUG" /i "../../include" /i "../../srclib/apr/include" /I "../../srclib/apr-util/include" /i "../../srclib/libxml2/include" /d BIN_NAME="mod_proxy_html.so" /d LONG_NAME="proxy_html_module for Apache"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -79,7 +79,7 @@ PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).ma
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
-# ADD RSC /l 0x409 /i /d "_DEBUG" "../../include" /i "../../srclib/apr/include" /I "../../srclib/apr-util/include" /i "../../srclib/libxml2/include" 
+# ADD RSC /l 0x409 /i /d "_DEBUG" "../../include" /i "../../srclib/apr/include" /I "../../srclib/apr-util/include" /i "../../srclib/libxml2/include" /d BIN_NAME="mod_proxy_html.so" /d LONG_NAME="proxy_html_module for Apache" 
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
