@@ -162,7 +162,7 @@
 <default>on</default>
 <contextlist><context>server config</context><context>virtual host</context>
   <context>directory</context></contextlist>
-<compatibility>Available in Apache xxx and later</compatibility>
+<compatibility>Available in Apache 2.3.3 and later</compatibility>
 
 <usage>
   <p>The <directive>ProxyFtpListOnWildcard</directive> directive
@@ -181,7 +181,7 @@
 <default>on</default>
 <contextlist><context>server config</context><context>virtual host</context>
   <context>directory</context></contextlist>
-<compatibility>Available in Apache xxx and later</compatibility>
+<compatibility>Available in Apache 2.3.3 and later</compatibility>
 
 <usage>
   <p>The <directive>ProxyFtpEscapeWildcards</directive> directive

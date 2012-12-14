@@ -253,7 +253,7 @@ FilterProvider repack png_pack "%{CONTENT_TYPE} = 'image/png'"
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Version 2.0.33 and later; had severe limitations before
+<compatibility>Had severe limitations before
 being moved to <module>mod_filter</module> in version 2.3.7</compatibility>
 
 <usage>
