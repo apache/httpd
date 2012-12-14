@@ -408,7 +408,7 @@ static int lua_ap_regex(lua_State *L)
 {
     /*~~~~~~~~~~~~~~~~~~*/
     request_rec *r;
-    int x = 0;
+    int x = 0, i;
     const char *pattern, *source, *err;
     ap_regex_t regex;
     ap_regmatch_t matches[10];
@@ -425,7 +425,6 @@ static int lua_ap_regex(lua_State *L)
         return 0;
     }
 
-    int i;
     x = ap_regexec(&regex, source, 10, matches, 0);
     if (x < 0) {
         lua_pushstring(L, err);
