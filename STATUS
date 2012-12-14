@@ -117,15 +117,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1421288
      2.4.x patch: http://people.apache.org/~jim/patches/proxypassinherit2.patch
      +1: jim, druggeri
-     rjung: - IMHO "inherit" also needs to be set in overrides while merging.
-            - I would also simplify the inheritance check during merge to
-              "if (overrides->inherit)", otherwise you would have to always
-              disable in base and every vhost.
-            - It would be even nicer if we did a three state merge, so that
-              a global off and no explicit config in a vhost would switch it off,
-              but could be overwritten per vhost. I think that behavior is not
-              possible with only two states (without UNSET). But the perfect
-              is the enemy of the good.
+     +1: rjung, if r1421912 is also added (see below)
+
+   * mod_proxy: Addition to the above "inheritance": allow the default
+     for all vhosts to be set in the global server. Otherwise one would
+     have to turn of inheritance in each vhost individually.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1421912
+     2.4.x patch: http://people.apache.org/~rjung/patches/proxypassinherit-config.patch
+     +1: rjung
 
    * mod_auth_form: Make sure that get_notes_auth() sets the user as does
      get_form_auth() and get_session_auth(). Makes sure that REMOTE_USER
