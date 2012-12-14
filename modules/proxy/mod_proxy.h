@@ -178,8 +178,8 @@ typedef struct {
     unsigned int proxy_status_set:1;
     unsigned int source_address_set:1;
     unsigned int bgrowth_set:1;
-    unsigned int bal_persist:1;
     unsigned int inherit:1;
+    unsigned int bal_persist:1;
 } proxy_server_conf;
 
 
