@@ -32,8 +32,7 @@
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>RFC 1413 ident lookups</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>ident_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_ident.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.1 and later</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_ident.c</td></tr></table>
 <h3>Summary</h3>
 
     <p>This module queries an <a href="http://www.ietf.org/rfc/rfc1413.txt">RFC 1413</a> compatible daemon on a remote host to look up the owner of
@@ -59,7 +58,6 @@ user</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ident</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Moved out of core in Apache 2.1</td></tr>
 </table>
     <p>This directive enables <a href="http://www.ietf.org/rfc/rfc1413.txt">RFC 1413</a>-compliant logging of the remote user name for each
     connection, where the client machine runs identd or something similar.

@@ -65,8 +65,6 @@ content-type</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_actions</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The <code>virtual</code> modifier and handler passing were
-introduced in Apache 2.1</td></tr>
 </table>
     <p>This directive adds an action, which will activate
     <var>cgi-script</var> when <var>action-type</var> is triggered by

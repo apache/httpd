@@ -256,7 +256,6 @@ found</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_negotiation</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.0.30 and later</td></tr>
 </table>
     <p>The <code class="directive">ForceLanguagePriority</code> directive uses
     the given <code class="directive"><a href="#languagepriority">LanguagePriority</a></code> to satisfy

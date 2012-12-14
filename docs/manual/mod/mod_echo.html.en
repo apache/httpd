@@ -33,8 +33,7 @@
 modules</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>echo_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_echo.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.0 and later</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_echo.c</td></tr></table>
 <h3>Summary</h3>
 
     <p>This module provides an example protocol module to illustrate the
@@ -56,8 +55,6 @@ modules</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_echo</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>ProtocolEcho is only available in 2.0 and
-later.</td></tr>
 </table>
     <p>The <code class="directive">ProtocolEcho</code> directive enables or
     disables the echo server.</p>

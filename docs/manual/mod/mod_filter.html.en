@@ -29,8 +29,7 @@
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Context-sensitive smart filter configuration module</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>filter_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_filter.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Version 2.1 and later</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_filter.c</td></tr></table>
 <h3>Summary</h3>
 
     <p>This module enables smart, context-sensitive configuration of
@@ -276,7 +275,7 @@ FilterProvider repack png_pack "%{CONTENT_TYPE} = 'image/png'"
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_filter</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Version 2.0.33 and later; had severe limitations before
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Had severe limitations before
 being moved to <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code> in version 2.3.7</td></tr>
 </table>
     <p>This directive activates a particular output <a href="../filter.html">filter</a> for a request depending on the

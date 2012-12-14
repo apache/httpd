@@ -32,8 +32,7 @@
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>User Authorization</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>authz_user_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_authz_user.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.1 and later</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_authz_user.c</td></tr></table>
 <h3>Summary</h3>
 
     <p>This module provides authorization capabilities so that
