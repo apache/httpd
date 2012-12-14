@@ -684,6 +684,11 @@ expressions</description>
         <p>The balancerurl is only needed when not in <code>&lt;Proxy <var>balancer://</var>...&gt;</code>
             container directive. It corresponds to the url of a balancer defined in
             <directive module="mod_proxy">ProxyPass</directive> directive.</p>
+        <p>The path component of the balancer URL in any
+            <code>&lt;Proxy <var>balancer://</var>...&gt;</code> container directive
+            is ignored.</p>
+        <p>Trailing slashes should typically be removed from the URL of a
+            <code>BalancerMember</code>.</p>
     </usage>
 </directivesynopsis>
 
@@ -707,8 +712,8 @@ expressions</description>
     <example>
         <highlight language="config">
 &lt;Proxy balancer://hotcluster&gt;
-    BalancerMember http://www2.example.com:8080/ loadfactor=1
-    BalancerMember http://www3.example.com:8080/ loadfactor=2
+    BalancerMember http://www2.example.com:8080 loadfactor=1
+    BalancerMember http://www3.example.com:8080 loadfactor=2
     ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;
       </highlight>
@@ -1032,7 +1037,7 @@ ProxyPass /mirror/foo http://backend.example.com
     </table>
 
     <p>If the Proxy directive scheme starts with the
-    <code>balancer://</code> (eg: <code>balancer://cluster/</code>,
+    <code>balancer://</code> (eg: <code>balancer://cluster</code>,
     any path information is ignored)  then a virtual worker that does not really
     communicate with the backend server will be created. Instead it is responsible
     for the management of several "real" workers. In that case the special set of
@@ -1129,22 +1134,22 @@ ProxyPass /mirror/foo http://backend.example.com
 ProxyPass /special-area http://special.example.com smax=5 max=10
 ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On
 &lt;Proxy balancer://mycluster&gt;
-    BalancerMember ajp://1.2.3.4:8009/
-    BalancerMember ajp://1.2.3.5:8009/ loadfactor=20
+    BalancerMember ajp://1.2.3.4:8009
+    BalancerMember ajp://1.2.3.5:8009 loadfactor=20
     # Less powerful server, don't send as many requests there,
-    BalancerMember ajp://1.2.3.6:8009/ loadfactor=5
+    BalancerMember ajp://1.2.3.6:8009 loadfactor=5
 &lt;/Proxy&gt;
     </highlight>
 
     <p>Setting up a hot-standby, that will only be used if no other
      members are available</p>
     <highlight language="config">
-ProxyPass / balancer://hotcluster/ 
+ProxyPass / balancer://hotcluster/
 &lt;Proxy balancer://hotcluster&gt;
-    BalancerMember ajp://1.2.3.4:8009/ loadfactor=1
-    BalancerMember ajp://1.2.3.5:8009/ loadfactor=2
+    BalancerMember ajp://1.2.3.4:8009 loadfactor=1
+    BalancerMember ajp://1.2.3.5:8009 loadfactor=2
     # The server below is on hot standby
-    BalancerMember ajp://1.2.3.6:8009/ status=+H
+    BalancerMember ajp://1.2.3.6:8009 status=+H
     ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;
     </highlight>
