@@ -1161,6 +1161,7 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->max_balancers = 0;
     ps->bal_persist = 0;
     ps->inherit = 1;
+    ps->inherit_set = 0;
     ps->bgrowth = 5;
     ps->bgrowth_set = 0;
     ps->req_set = 0;
@@ -1187,7 +1188,10 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     proxy_server_conf *base = (proxy_server_conf *) basev;
     proxy_server_conf *overrides = (proxy_server_conf *) overridesv;
 
-    if (overrides->inherit || base->inherit) {
+    ps->inherit = (overrides->inherit_set == 0) ? base->inherit : overrides->inherit;
+    ps->inherit_set = overrides->inherit_set || base->inherit_set;
+
+    if (ps->inherit) {
         ps->proxies = apr_array_append(p, base->proxies, overrides->proxies);
         ps->sec_proxy = apr_array_append(p, base->sec_proxy, overrides->sec_proxy);
         ps->aliases = apr_array_append(p, base->aliases, overrides->aliases);
@@ -1218,7 +1222,6 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->bgrowth_set = overrides->bgrowth_set || base->bgrowth_set;
     ps->max_balancers = overrides->max_balancers || base->max_balancers;
     ps->bal_persist = overrides->bal_persist;
-    ps->inherit = overrides->inherit || base->inherit;
     ps->recv_buffer_size = (overrides->recv_buffer_size_set == 0) ? base->recv_buffer_size : overrides->recv_buffer_size;
     ps->recv_buffer_size_set = overrides->recv_buffer_size_set || base->recv_buffer_size_set;
     ps->io_buffer_size = (overrides->io_buffer_size_set == 0) ? base->io_buffer_size : overrides->io_buffer_size;
@@ -1909,6 +1912,7 @@ static const char *set_inherit(cmd_parms *parms, void *dummy, int flag)
     ap_get_module_config(parms->server->module_config, &proxy_module);
 
     psf->inherit = flag;
+    psf->inherit_set = 1;
     return NULL;
 }
 
