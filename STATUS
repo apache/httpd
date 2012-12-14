@@ -124,7 +124,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      have to turn of inheritance in each vhost individually.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1421912
      2.4.x patch: http://people.apache.org/~rjung/patches/proxypassinherit-config.patch
-     +1: rjung
+     +1: rjung, jim
 
    * mod_auth_form: Make sure that get_notes_auth() sets the user as does
      get_form_auth() and get_session_auth(). Makes sure that REMOTE_USER
