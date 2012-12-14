@@ -83,7 +83,7 @@ typedef enum {
     AP_LUA_INHERIT_UNSET        = -1,
     AP_LUA_INHERIT_NONE         =  0,
     AP_LUA_INHERIT_PARENT_FIRST =  1,
-    AP_LUA_INHERIT_PARENT_LAST  =  2,
+    AP_LUA_INHERIT_PARENT_LAST  =  2
 } ap_lua_inherit_t;
 
 /**

@@ -233,8 +233,11 @@ static int lua_ap_unescape (lua_State *L) {
     plain = apr_pstrdup(r->pool, escaped);
     strncpy(plain, escaped, x);
     y = ap_unescape_urlencoded(plain);
-    lua_pushstring(L, plain);
-    return 1;
+    if (!y) {
+        lua_pushstring(L, plain);
+        return 1;
+    }
+    return 0;
 }
 
 /* lua_ap_escape; r:escape(string) - URL-escapes a string */
@@ -246,7 +249,6 @@ static int lua_ap_escape (lua_State *L) {
     r = ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TSTRING);
     plain = lua_tolstring(L, 2, &x);
-    escaped = apr_pcalloc(r->pool, x*3);
     escaped = ap_escape_urlencoded(r->pool, plain);
     lua_pushstring(L, escaped);
     return 1;
@@ -256,9 +258,8 @@ static int lua_ap_escape (lua_State *L) {
 static int lua_apr_md5(lua_State *L)
 {
     /*~~~~~~~~~~~~~~~~*/
-    int n;
     union {
-        char      chr[16];
+        unsigned char      chr[16];
         uint32_t  num[4];
     } digest;
     apr_md5_ctx_t md5;
@@ -294,15 +295,14 @@ static int lua_apr_md5(lua_State *L)
 static int lua_apr_sha1(lua_State *L)
 {
     /*~~~~~~~~~~~~~~~~*/
-    int n;
     union {
-        char      chr[16];
+        unsigned char      chr[16];
         uint32_t  num[4];
     } digest;
     apr_sha1_ctx_t sha1;
     const char* buffer;
     char* result;
-    char Rsha1[16];
+    unsigned char Rsha1[20];
     uint32_t *sha1X;
     size_t x,y;
     request_rec *r;
@@ -355,7 +355,6 @@ static int lua_ap_port(lua_State *L)
 static int lua_ap_mpm_query(lua_State *L) 
 {
     /*~~~~~~~~~~~~~~~~~~*/
-    request_rec *r;
     int x,y;
     /*~~~~~~~~~~~~~~~~~~*/
     x = lua_tonumber(L, 1);
@@ -425,30 +424,26 @@ static int lua_ap_regex(lua_State *L)
     if (ap_regcomp(&regex, pattern,0)) {
         return 0;
     }
-    
-    
-    if (!err) {
-        int i;
-        x = ap_regexec(&regex, source, 10, matches, 0);
-        if (x < 0) {
-            lua_pushstring(L, err);
-            return 1;
-        }
-        lua_newtable(L);
-        for (i=0;i<10;i++) {
-            lua_pushinteger(L, i);
-            if (matches[i].rm_so >= 0 && matches[i].rm_eo >= 0) {
-                lua_pushstring(L,apr_pstrndup(r->pool, source+matches[i].rm_so, matches[i].rm_eo - matches[i].rm_so));
-            }
-            else {
-                lua_pushnil(L);
-            }
-            lua_settable(L, -3);
-            
-        }
+
+    int i;
+    x = ap_regexec(&regex, source, 10, matches, 0);
+    if (x < 0) {
+        lua_pushstring(L, err);
         return 1;
     }
-    return 0;
+    lua_newtable(L);
+    for (i=0;i<10;i++) {
+        lua_pushinteger(L, i);
+        if (matches[i].rm_so >= 0 && matches[i].rm_eo >= 0) {
+            lua_pushstring(L,apr_pstrndup(r->pool, source+matches[i].rm_so, matches[i].rm_eo - matches[i].rm_so));
+        }
+        else {
+            lua_pushnil(L);
+        }
+        lua_settable(L, -3);
+
+    }
+    return 1;
 }
 
 
@@ -458,13 +453,11 @@ static int lua_ap_regex(lua_State *L)
 static int lua_ap_scoreboard_process(lua_State *L) 
 {
     /*~~~~~~~~~~~~~~~~~~*/
-    request_rec *r;
     int i;
     process_score* ps_record;
     /*~~~~~~~~~~~~~~~~~~*/
     luaL_checktype(L, 1, LUA_TUSERDATA);
     luaL_checktype(L, 2, LUA_TNUMBER);
-    r = ap_lua_check_request_rec(L, 1);
     i = lua_tonumber(L, 2);
     ps_record = ap_get_scoreboard_process(i);
     if (ps_record) {
@@ -511,14 +504,12 @@ static int lua_ap_scoreboard_process(lua_State *L)
 static int lua_ap_scoreboard_worker(lua_State *L) 
 {
     /*~~~~~~~~~~~~~~~~~~*/
-    request_rec *r;
     int i,j;
     worker_score* ws_record;
     /*~~~~~~~~~~~~~~~~~~*/
     luaL_checktype(L, 1, LUA_TUSERDATA);
     luaL_checktype(L, 2, LUA_TNUMBER);
     luaL_checktype(L, 3, LUA_TNUMBER);
-    r = ap_lua_check_request_rec(L, 1);
     i = lua_tonumber(L, 2);
     j = lua_tonumber(L, 3);
     ws_record = ap_get_scoreboard_worker_from_indexes(i, j);
@@ -618,7 +609,7 @@ static int lua_ap_requestbody(lua_State *L)
     request_rec* r;
     /*~~~~~~~~~~~~~~~~~~*/
 
-    r = r = ap_lua_check_request_rec(L, 1);
+    r = ap_lua_check_request_rec(L, 1);
     filename = luaL_optstring(L, 2, 0);
     
     if (r) {
@@ -703,7 +694,6 @@ static int lua_ap_add_input_filter(lua_State *L)
 static int lua_ap_module_info(lua_State *L) 
 {
     /*~~~~~~~~~~~~~~~~~~*/
-    request_rec *r;
     const char* moduleName;
     module* mod;
     /*~~~~~~~~~~~~~~~~~~*/
