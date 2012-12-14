@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) httxt2dbm: Correct length computation for the 'value' stored in the DBM file
+     PR 47650 [jon buckybox com]
+
   *) mod_ssl: Add support for OpenSSL configuration commands [Stephen Henson]
 
   *) EventOpt MPM
