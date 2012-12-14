@@ -68,9 +68,9 @@
     <example><title>Balanced gateway</title>
     <highlight language="config">
 ProxyPass /scgi-bin/ balancer://somecluster/
-&lt;Proxy balancer://somecluster/&gt;
-    BalancerMember scgi://localhost:4000/
-    BalancerMember scgi://localhost:4001/
+&lt;Proxy balancer://somecluster&gt;
+    BalancerMember scgi://localhost:4000
+    BalancerMember scgi://localhost:4001
 &lt;/Proxy&gt;
     </highlight>
     </example>
