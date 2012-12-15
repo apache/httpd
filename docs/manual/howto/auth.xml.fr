@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1341749:1420149 (outdated) -->
+<!-- English Revision : 1420149 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviwed by : Vincent Deffontaines -->
 
@@ -271,8 +271,9 @@ Require user rbowen
     stocker les donn&eacute;es relatives aux
     utilisateurs dans des bases de donn&eacute;es rapides. Le module
     <module>mod_authn_dbm</module> fournit la directive <directive
-    module="mod_authn_dbm">AuthDBMUserFile</directive>. Le programme <program>
-    dbmmanage</program> permet de cr&eacute;er et manipuler ces fichiers. Vous
+    module="mod_authn_dbm">AuthDBMUserFile</directive>. Les programmes <program>
+    dbmmanage</program> et <program>htdbm</program> permettent de
+    cr&eacute;er et manipuler ces fichiers. Vous
     trouverez de nombreuses options d'autres types d'authentification
     fournies par des modules tiers dans la <a
     href="http://modules.apache.org/">Base de donn&eacute;es des modules

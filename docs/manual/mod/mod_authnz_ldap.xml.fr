@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1337035:1421821 (outdated) -->
+<!-- English Revision : 1421821 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -30,8 +30,6 @@ HTTP de base.</description>
 <status>Extension</status>
 <sourcefile>mod_authnz_ldap.c</sourcefile>
 <identifier>authnz_ldap_module</identifier>
-<compatibility>Dosponible depuis les versions 2.1 et supérieures
-d'Apache</compatibility>
 
 <summary>
     <p>Ce module permet aux frontaux d'authentification comme
