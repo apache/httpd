@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1375917:1420377 (outdated) -->
+<!-- English Revision : 1420377 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -705,6 +705,185 @@ end
         r:escape_html("&lt;html&gt;test&lt;/html&gt;") -- Echappe le
 	code HTML et renvoie le r&eacute;sultat
         </highlight>
+
+	<highlight language="lua">
+        r:base64_encode(string) -- Encode une chaîne à l'aide du
+	standard de codage Base64.
+        </highlight>
+
+        <highlight language="lua">
+        r:base64_decode(string) -- Décode une chaîne codée en Base64.
+        </highlight>
+
+        <highlight language="lua">
+        r:md5(string) -- Calcule et renvoie le condensé MD5 d'une chaîne
+	en mode binaire (binary safe).
+        </highlight>
+
+        <highlight language="lua">
+        r:sha1(string) -- Calcule et renvoie le condensé SHA1 d'une chaîne
+	en mode binaire (binary safe).
+        </highlight>
+
+        <highlight language="lua">
+        r:escape(string) -- Echappe une chaîne de type URL.
+        </highlight>
+
+        <highlight language="lua">
+        r:unescape(string) -- Déséchappe une chaîne de type URL.
+        </highlight>
+
+        <highlight language="lua">
+        r:banner() -- Renvoie la bannière du serveur courant.
+        </highlight>
+
+        <highlight language="lua">
+        r:port() -- Renvoie le port du serveur courant utilisé pour la
+	requête.
+        </highlight>
+
+        <highlight language="lua">
+        r:mpm_query(number) -- Interroge le serveur à propos de son
+	module MPM via la requête ap_mpm_query.
+        </highlight>
+
+        <highlight language="lua">
+        r:expr(string) -- Evalue une chaîne de type <a
+	href="../expr.html">expr</a>.
+        </highlight>
+
+        <highlight language="lua">
+        r:scoreboard_process(a) -- Interroge le serveur à propos du
+	processus à la position <code>a</code>.
+        </highlight>
+
+        <highlight language="lua">
+        r:scoreboard_worker(a, b) -- Interroge le serveur à propos du
+	thread <code>b</code>, dans le processus <code>a</code>.
+        </highlight>
+
+        <highlight language="lua">
+        r:started() -- Renvoie l'heure du dernier (re)démarrage du
+	serveur.
+        </highlight>
+
+        <highlight language="lua">
+        r:clock() -- Renvoie l'heure courante avec une précision d'une
+	microseconde.
+        </highlight>
+
+        <highlight language="lua">
+r:requestbody(filename) -- Lit et renvoie le corps d'une requête. Si
+'filename' est spécifié, le corps de requête n'est pas renvoyé, mais
+sauvegardé dans le fichier correspondant.
+        </highlight>
+
+        <highlight language="lua">
+        r:add_input_filter(filter_name) -- Ajoute le filtre en entrée
+	'filter_name'.
+        </highlight>
+
+        <highlight language="lua">
+        r:module_info(module_name) -- Interroge le serveur à propos d'un
+	module.
+        </highlight>
+
+        <highlight language="lua">
+        r:loaded_modules() -- Renvoie une liste des modules chargés par
+	httpd.
+        </highlight>
+
+        <highlight language="lua">
+r:runtime_dir_relative(filename) -- Génère le nom d'un fichier run-time
+(par exemple la mémoire partagée "file") relativement au répertoire de
+run-time. 
+        </highlight>
+
+        <highlight language="lua">
+        r:server_info() -- Renvoie une table contenant des informations
+	à propos du serveur, comme le nom de l'exécutable httpd, le
+	module mpm utilisé, etc...
+        </highlight>
+
+        <highlight language="lua">
+        r:set_document_root(file_path) -- Définit la racine des
+	documents pour la requête à file_path.
+        </highlight>
+
+        <highlight language="lua">
+        r:add_version_component(component_string) -- Ajoute un élément à
+	la bannière du serveur.
+        </highlight>
+
+        <highlight language="lua">
+        r:set_context_info(prefix, docroot) -- Définit le préfixe et la
+	racine des documents du contexte pour une requête.
+        </highlight>
+
+        <highlight language="lua">
+        r:os_escape_path(file_path) -- Convertit un chemin du système de
+	fichiers en URL indépendamment du système d'exploitation.
+        </highlight>
+
+        <highlight language="lua">
+        r:escape_logitem(string) -- Echappe une chaîne pour
+	journalisation.
+        </highlight>
+
+        <highlight language="lua">
+r:strcmp_match(string, pattern) -- Vérifie si 'string' correspond à
+'pattern' via la fonction strcmp_match (GLOBs). Par exemple, est-ce que
+'www.example.com' correspond à '*.example.com' ?
+        </highlight>
+
+        <highlight language="lua">
+        r:set_keepalive() -- Définit l'état de persistance d'une
+	requête. Renvoie true dans la mesure du possible, false dans le
+	cas contraire.
+        </highlight>
+
+        <highlight language="lua">
+        r:make_etag() -- Génère et renvoie le etag pour la requête
+	courante.
+        </highlight>
+
+        <highlight language="lua">
+r:send_interim_response(clear) -- Renvoie une réponse d'intérim (1xx) au
+client. Si 'clear' est vrai, les en-têtes disponibles seront envoyés et
+effacés.
+        </highlight>
+
+        <highlight language="lua">
+r:custom_response(status_code, string) -- Génère et définit une réponse
+personnalisée pour un code d'état particulier. Le fonctionnement est
+très proche de celui de la directive ErrorDocument.
+        </highlight>
+
+        <highlight language="lua">
+        r:exists_config_define(string) -- Vérifie si une définition de
+	configuration existe.
+        </highlight>
+
+        <highlight language="lua">
+        r:state_query(string) -- Interroge le serveur à propos de son
+	état.
+        </highlight>
+
+        <highlight language="lua">
+        r:stat(filename) -- Exécute stat() sur un fichier, et renvoie
+	une table contenant des informations à propos de ce fichier.
+        </highlight>
+
+        <highlight language="lua">
+        r:regex(string, pattern) -- Exécute une recherche à base
+	d'expression rationnelle sur une chaîne, et renvoie les
+	éventuelles correspondances trouvées.
+        </highlight>
+
+        <highlight language="lua">
+        r:sleep(secondes) -- Interrompt l'exécution du script pendant le
+	nombre de secondes spécifié.
+        </highlight>
         </dd>
     </dl>
 
@@ -754,6 +933,51 @@ contenu suivant :</p>
 </section>
 
 
+<section id="modifying_buckets">
+    <title>Modification de contenu avec les filtres lua</title>
+    <p>
+    Les fonctions de filtrage implémentées via les directives <directive
+    module="mod_lua">LuaInputFilter</directive> ou <directive
+    module="mod_lua">LuaOutputFilter</directive> sont conçues comme des
+    fonctions de 3ème phase non blocantes utilisant des sous-routines
+    pour suspendre et reprendre l'exécution d'une fonction lorsque des
+    paquets de données sont envoyés à la chaîne de filtrage. La
+    structure de base d'une telle fonction est :
+    </p>
+    <highlight language="lua">
+function filter(r)
+    -- Nous indiquons tout d'abord que nous sommes prêts à recevoir des
+    -- blocs de données.
+    -- Avant ceci, nous pouvons définir notre environnement, tester
+    -- certaines conditions, et, si nous le jugeons nécessaire, refuser le
+    -- filtrage d'une requête :
+    if something_bad then
+        return -- Le filtrage est sauté
+    end
+    -- Sans se préoccuper des données que nous devons éventuellement ajouter, un arrêt est réalisé ici.
+    -- Noter que les filtres de sortie sont les seuls capables d'ajouter des éléments au début des données.
+    -- Les filtres en entrée peuvent ajouter des éléments à la fin des données au stade final.
+
+    coroutine.yield([optional header to be prepended to the content])
+
+    -- Après cet arrêt, nous allons recevoir d'autres blocs de données, un par un ;
+    -- nous pouvons les traiter comme il nous plaît et procéder à la réponse.
+    -- Ces blocs sont conservés dans la variable globale 'bucket', nous réalisons donc
+    -- une boucle pour vérifier que 'bucket' n'est pas vide :
+    while bucket ~= nil do
+        local output = mangle(bucket) -- Do some stuff to the content
+        coroutine.yield(output) -- Return our new content to the filter chain
+    end
+
+    -- Une fois les blocs de données épuisés, 'bucket' est positionné à une valeur vide ('nil'),
+    -- ce qui va nous faire sortir de cette boucle et nous amener à l'étape suivante.
+    -- On peut ajouter ce qu'on veut à la fin des données à cette étape, qui constitue le dernier
+    -- arrêt. Les filtres d'entrée comme de sortie peuvent servir à ajouter des éléments à la fin
+    --  des données à cette étape.
+    coroutine.yield([optional footer to be appended to the content])
+end
+    </highlight>
+</section>
 
 <directivesynopsis>
 <name>LuaRoot</name>
@@ -1034,7 +1258,7 @@ traitement de la requ&ecirc;te</description>
 require"apache2"
 cached_files = {}
 
-function read_file(filename) 
+function read_file(filename)
     local input = io.open(filename, "r")
     if input then
         local data = input:read("*a")
