@@ -145,6 +145,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1416889
      2.4.x patch: trunk patch works
      +1: fuankg
+     covener: okay with my backport below (keeping these const) instead?
 
    * mod_xml2enc: Fix problems with charset conversion altering the
      Content-Length. [Micha Lenk <micha lenk info>]
@@ -220,7 +221,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
    * mod_imagemap: const fixes (didn't compile on old XLC)
      trunk patch: http://svn.apache.org/viewvc?rev=1422234&view=rev
-     2.4.x patch: trunk works
+                  http://svn.apache.org/viewvc?rev=1416889&view=rev
+                  http://svn.apache.org/viewvc?rev=1422253&view=rev
+     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-mod_imap-const.diff
      +1 covener
 
 A list of further possible backports can be found at:
