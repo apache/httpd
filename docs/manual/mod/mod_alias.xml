@@ -242,6 +242,11 @@ expressions</description>
       AliasMatch ^/image/(.*)\.gif$ /files/gif.images/$1.gif
     </highlight>
 
+    <p>Multiple leading slashes in the requested URL are discarded
+       by the server before directives from this module compares
+       against the requested URL-path.
+    </p>
+
 </usage>
 </directivesynopsis>
 
