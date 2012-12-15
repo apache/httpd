@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1410676:1420151 (outdated) -->
+<!-- English Revision : 1420151 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviwed by : Vincent Deffontaines -->
 
@@ -271,8 +271,9 @@ Require user rbowen
     stocker les donn&eacute;es relatives aux
     utilisateurs dans des bases de donn&eacute;es rapides. Le module
     <module>mod_authn_dbm</module> fournit la directive <directive
-    module="mod_authn_dbm">AuthDBMUserFile</directive>. Le programme <program>
-    dbmmanage</program> permet de cr&eacute;er et manipuler ces fichiers. Vous
+    module="mod_authn_dbm">AuthDBMUserFile</directive>. Les programmes <program>
+    dbmmanage</program> et <program>htdbm</program> permettent de
+    cr&eacute;er et manipuler ces fichiers. Vous
     trouverez de nombreuses options d'autres types d'authentification
     fournies par des modules tiers dans la <a
     href="http://modules.apache.org/">Base de donn&eacute;es des modules
@@ -391,11 +392,13 @@ passe</title>
 
     <highlight language="config">
 &lt;Directory /www/docs/private&gt;
+
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider dbm
     AuthDBMUserFile /www/passwords/passwd.dbm
     Require valid-user
+
 &lt;/Directory&gt;
     </highlight>
 
@@ -417,12 +420,14 @@ d'authentification</title>
 
     <highlight language="config">
 &lt;Directory /www/docs/private&gt;
+
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider file ldap
     AuthUserFile /usr/local/apache/passwd/passwords
     AuthLDAPURL ldap://ldaphost/o=yourorg
     Require valid-user
+
 &lt;/Directory&gt;
     </highlight>
 
@@ -444,6 +449,7 @@ d'authentification</title>
 
     <highlight language="config">
 &lt;Directory /www/docs/private&gt;
+
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider file
@@ -452,6 +458,7 @@ d'authentification</title>
     AuthGroupFile /usr/local/apache/passwd/groups
     Require group GroupName
     Require ldap-group cn=mygroup,o=yourorg
+
 &lt;/Directory&gt;
     </highlight>
 
