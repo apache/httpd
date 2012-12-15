@@ -170,6 +170,9 @@ Alias /image /ftp/pub/image
     </pre>
 
 
+    <p>Any number slashes in the <var>URL-path</var> parameter 
+    matches any number of slashes in the requested URL-path.</p>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -260,6 +263,11 @@ expressions</td></tr>
       AliasMatch ^/image/(.*)\.gif$ /files/gif.images/$1.gif
     </pre>
 
+
+    <p>Multiple leading slashes in the requested URL are discarded
+       by the server before directives from this module compares
+       against the requested URL-path.
+    </p>
 
 
 </div>
