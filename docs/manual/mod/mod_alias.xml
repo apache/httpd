@@ -156,8 +156,8 @@ href="../URLmapping.html">Mapping URLs to the filesystem</a></seealso>
         &lt;/Directory&gt;
     </example>
 
-    <p>Any number of leading slashes in the <var>URL-path</var> parameter
-    matches any number of leading slashes in the requested URL-path.</p>
+    <p>Any number of slashes in the <var>URL-path</var> parameter
+    matches any number of slashes in the requested URL-path.</p>
 
 </usage>
 </directivesynopsis>
