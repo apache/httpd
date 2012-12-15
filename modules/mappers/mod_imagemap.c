@@ -316,7 +316,7 @@ static void read_quoted(char **string, char **quoted_part)
 /*
  * returns the mapped URL or NULL.
  */
-static char *imap_url(request_rec *r, const char *base, const char *value)
+static const char *imap_url(request_rec *r, const char *base, const char *value)
 {
 /* translates a value into a URL. */
     int slen, clen;
@@ -455,7 +455,7 @@ static char *imap_url(request_rec *r, const char *base, const char *value)
     return my_base;
 }
 
-static int imap_reply(request_rec *r, char *redirect)
+static int imap_reply(request_rec *r, const char *redirect)
 {
     if (!strcasecmp(redirect, "error")) {
         /* they actually requested an error! */
@@ -519,7 +519,7 @@ static void menu_comment(request_rec *r, char *menu, char *comment)
                                    'formatted' form */
 }
 
-static void menu_default(request_rec *r, char *menu, char *href, char *text)
+static void menu_default(request_rec *r, const char *menu, const char *href, const char *text)
 {
     char *ehref, *etext;
     if (!strcasecmp(href, "error") || !strcasecmp(href, "nocontent")) {
@@ -544,7 +544,7 @@ static void menu_default(request_rec *r, char *menu, char *href, char *text)
     return;
 }
 
-static void menu_directive(request_rec *r, char *menu, char *href, char *text)
+static void menu_directive(request_rec *r, const char *menu, const char *href, const char *text)
 {
     char *ehref, *etext;
     if (!strcasecmp(href, "error") || !strcasecmp(href, "nocontent")) {
@@ -580,9 +580,9 @@ static int imap_handler_internal(request_rec *r)
     char *directive;
     char *value;
     char *href_text;
-    char *base;
-    char *redirect;
-    char *mapdflt;
+    const char *base;
+    const char *redirect;
+    const char *mapdflt;
     char *closest = NULL;
     double closest_yet = -1;
     apr_status_t status;
