@@ -116,6 +116,7 @@ static const char *scope_to_string(unsigned int scope)
 #endif
     default:
         ap_assert(0);
+        return 0;
     }
 }
 
