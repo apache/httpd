@@ -408,8 +408,9 @@ static int lua_ap_regex(lua_State *L)
 {
     /*~~~~~~~~~~~~~~~~~~*/
     request_rec *r;
-    int x = 0, i;
-    const char *pattern, *source, *err;
+    int i, rv;
+    const char *pattern, *source;
+    char *err;
     ap_regex_t regex;
     ap_regmatch_t matches[10];
     /*~~~~~~~~~~~~~~~~~~*/
@@ -420,15 +421,22 @@ static int lua_ap_regex(lua_State *L)
     pattern = lua_tostring(L, 2);
     source = lua_tostring(L, 3);
     
-    
-    if (ap_regcomp(&regex, pattern,0)) {
-        return 0;
+    rv = ap_regcomp(&regex, pattern,0);
+    if (rv) {
+        lua_pushboolean(L, 0);
+        err = apr_palloc(r->pool, 256);
+        ap_regerror(rv, &regex, err, 256);
+        lua_pushstring(L, err);
+        return 2;
     }
 
-    x = ap_regexec(&regex, source, 10, matches, 0);
-    if (x < 0) {
+    rv = ap_regexec(&regex, source, 10, matches, 0);
+    if (rv < 0) {
+        lua_pushboolean(L, 0);
+        err = apr_palloc(r->pool, 256);
+        ap_regerror(rv, &regex, err, 256);
         lua_pushstring(L, err);
-        return 1;
+        return 2;
     }
     lua_newtable(L);
     for (i=0;i<10;i++) {
@@ -1121,5 +1129,5 @@ AP_LUA_DECLARE(int) ap_lua_load_httpd_functions(lua_State *L)
 {
     lua_getglobal(L, "apache2");
     luaL_register(L, NULL, httpd_functions);
-
+    return 0;
 }
