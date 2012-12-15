@@ -153,6 +153,9 @@ Alias /image /ftp/pub/image
 &lt;/Directory&gt;
     </highlight>
 
+    <p>Any number of leading slashes in the <var>URL-path</var> parameter 
+    matches any number of leading slashes in the requested URL-path.</p>
+
 </usage>
 </directivesynopsis>
 
