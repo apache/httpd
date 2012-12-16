@@ -45,6 +45,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#examples">Example expressions</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#other">Other</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#sslrequire">Comparison with SSLRequire</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#compatibility">Version History</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#elseif">&lt;ElseIf&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#else">&lt;Else&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewritecond">RewriteCond</a></code></li><li><code class="directive"><a href="./mod/mod_setenvif.html#setenvifexpr">SetEnvIfExpr</a></code></li><li><code class="directive"><a href="./mod/mod_headers.html#header">Header</a></code></li><li><code class="directive"><a href="./mod/mod_headers.html#requestheader">RequestHeader</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterprovider">FilterProvider</a></code></li><li><a href="mod/mod_authz_core.html#reqexpr">Require expr</a></li><li><code class="directive"><a href="./mod/mod_ssl.html#sslrequire">SSLRequire</a></code></li><li><code class="directive"><a href="./mod/mod_log_debug.html#logmessage">LogMessage</a></code></li><li><code class="module"><a href="./mod/mod_include.html">mod_include</a></code></li></ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -534,6 +535,17 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <p>The <em>ap_expr</em> syntax is mostly a superset of the syntax of the
     deprecated <code class="directive"><a href="./mod/mod_ssl.html#sslrequire">SSLRequire</a></code> directive.
     The differences are described in <code class="directive"><a href="./mod/mod_ssl.html#sslrequire">SSLRequire</a></code>'s documentation.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="compatibility" id="compatibility">Version History</a></h2>
+    
+    <p>The <code>req_novary</code> <a href="#functions">function</a>
+    is available for versions 2.4.4 and later.</p>
+    <p>The <code>SERVER_PROTOCOL_VERSION</code>,
+    <code>SERVER_PROTOCOL_VERSION_MAJOR</code> and
+    <code>SERVER_PROTOCOL_VERSION_MINOR</code>
+    <a href="#vars">variables</a>
+    are available for versions 2.5.0 and later.</p>
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="./en/expr.html" title="English">&nbsp;en&nbsp;</a> |
