@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.4
 
+  *) ap_expr: Add req_novary function that allows HTTP header lookups
+     without adding the name to the Vary header. [Stefan Fritsch]
+
   *) mod_slotmem_*: Add in new fgrab() function which forces a grab and
      slot allocation on a specified slot. Allow for clearing of inuse
      array. [Jim Jagielski]
