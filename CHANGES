@@ -46,13 +46,6 @@ Changes with Apache 2.5.0
      work properly in If sections that are not in a Directory/Files/Location.
      [Stefan Fritsch]
  
-  *) mod_proxy_ftp: Fix segfaults on IPv4 requests to hosts with DNS AAAA records.
-     PR 40841. [Andrew Rucker Jones <arjones simultan dyndns org>,
-     <ast domdv de>, Jim Jagielski]
-
-  *) ap_expr: Add req_novary function that allows HTTP header lookups
-     without adding the name to the Vary header. [Stefan Fritsch]
-
   *) configure: Fix processing of --disable-FEATURE for various features.
      [Jeff Trawick]
 
@@ -72,9 +65,6 @@ Changes with Apache 2.5.0
   *) mod_proxy: Allow for persistence of local changes (via the
      balancer-manager) between graceful and normal restarts.
      [Jim Jagielski]
-
-  *) mod_slotmem: New provider function, fgrab(), which forces an
-     allocation of a slot. [Jim Jagielski]
 
   *) mod_lua: Add LuaInputFilter/LuaOutputFilter for creating content
      filters in Lua [Daniel Gruno]
