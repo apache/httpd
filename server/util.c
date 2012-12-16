@@ -1961,14 +1961,13 @@ AP_DECLARE(apr_size_t) ap_escape_errorlog_item(char *dest, const char *source,
 AP_DECLARE(void) ap_bin2hex(const void *src, apr_size_t srclen, char *dest)
 {
     const unsigned char *in = src;
-    unsigned char *out = (unsigned char *)dest;
     apr_size_t i;
 
     for (i = 0; i < srclen; i++) {
-        *out++ = c2x_table[in[i] >> 4];
-        *out++ = c2x_table[in[i] & 0xf];
+        *dest++ = c2x_table[in[i] >> 4];
+        *dest++ = c2x_table[in[i] & 0xf];
     }
-    *out = '\0';
+    *dest = '\0';
 }
 
 AP_DECLARE(int) ap_is_directory(apr_pool_t *p, const char *path)
