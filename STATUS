@@ -118,6 +118,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~jim/patches/proxypassinherit2.patch
      +1: jim, druggeri
      +1: rjung, if r1421912 is also added (see below)
+     minfrin: In the current form, if inherit is disabled any attempt
+              at setting any directive silently unsets an arbitrary
+              selection of other proxy directives at the same time,
+              causing much confusion. Each override should have an
+              independent "_set" flag to indicate which are being
+              consciously overridden, and which aren't.
 
    * mod_proxy: Addition to the above "inheritance": allow the default
      for all vhosts to be set in the global server. Otherwise one would
