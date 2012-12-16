@@ -106,11 +106,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                   http://people.apache.org/~jorton/proxyftpepsv-24.patch
      +1: jorton, jim, minfrin
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
-
    * mod_slotmem_*: Add in new fgrab() function which forces a grab and
      slot allocation on a specified slot. Allow for clearing of inuse
      array.
@@ -120,6 +115,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1394079
       2.4.x patch: trunk patch works
      +1: jim, rjung
+     +1: minfrin (with MMN bump)
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
 
    * mod_proxy: Allow balancers to be server-specific, as they should have
      been. Inheritance causes too many behind-the-scene interactions
