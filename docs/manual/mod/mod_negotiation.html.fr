@@ -28,8 +28,6 @@
 <a href="../fr/mod/mod_negotiation.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_negotiation.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Effectue la <a href="../content-negotiation.html">négociation de
 contenu</a></td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -265,7 +263,6 @@ n'est pas trouvé</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_negotiation</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.0.30</td></tr>
 </table>
     <p>La directive <code class="directive">ForceLanguagePriority</code> utilise
     le langage défini par la directive <code class="directive"><a href="#languagepriority">LanguagePriority</a></code> pour terminer
