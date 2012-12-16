@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1301745:1420598 (outdated) -->
+<!-- English Revision : 1420598 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1119,7 +1119,7 @@ ldap2.example.com/dc=..."</example>
     pr&eacute;sents ou non. Pour ignorer les &eacute;checs de mise en correspondance
     d'un nom d'utilisateur avec un DN au cours du processus
     d'autorisation, d&eacute;finissez <directive module="mod_authnz_ldap">
-    AuthzLDAPAutoritative</directive> &agrave; "off".</p>
+    AuthzLDAPAuthoritative</directive> &agrave; "off".</p>
 
 </usage>
 </directivesynopsis>
