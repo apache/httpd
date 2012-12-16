@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1330911:1421821 (outdated) -->
+<!-- English Revision : 1421821 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -60,8 +60,6 @@ contenu particulier</description>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility>Le modificateur <code>virtual</code> et le passage de
-gestionnaire ont &eacute;t&eacute; introduits dans Apache 2.1</compatibility>
 
 <usage>
     <p>Cette directive ajoute une action qui va activer <var>script

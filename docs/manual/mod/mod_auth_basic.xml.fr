@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1330911:1421821 (outdated) -->
+<!-- English Revision : 1421821 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -29,7 +29,6 @@
 <status>Base</status>
 <sourcefile>mod_auth_basic.c</sourcefile>
 <identifier>auth_basic_module</identifier>
-<compatibility>Disponible depuis la version 2.1 d'Apache</compatibility>
 
 <summary>
     <p>Ce module permet d'utiliser l'authentification basique HTTP pour

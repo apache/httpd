@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1330980:1421821 (outdated) -->
+<!-- English Revision : 1421821 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -259,8 +259,6 @@ BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html
 <syntax>DeflateFilterNote [<var>type</var>] <var>nom de la note</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility><var>type</var> est disponible depuis la version 2.0.45
-d'Apache</compatibility>
 
 <usage>
     <p>La directive <directive>DeflateFilterNote</directive> permet de
@@ -373,8 +371,6 @@ sortie</description>
 <default>La valeur par d&eacute;faut de zlib</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Cette directive est disponible depuis la version 2.0.45
-d'Apache</compatibility>
 
 <usage>
     <p>La directive <directive>DeflateCompressionLevel</directive>

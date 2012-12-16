@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 420993:1421821 (outdated) -->
+<!-- English Revision : 1421821 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -30,7 +30,6 @@
 <status>Extension</status>
 <sourcefile>mod_ident.c</sourcefile>
 <identifier>ident_module</identifier>
-<compatibility>Disponible depuis la version 2.2 d'Apache</compatibility>
 
 <summary>
     <p>Ce module interroge un d&eacute;mon compatible <a
@@ -48,8 +47,6 @@ l'utilisateur distant</description>
 <default>IdentityCheck Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context></contextlist>
-<compatibility>Retir&eacute; du serveur de base depuis Apache
-2.1</compatibility>
 
 <usage>
     <p>Cette directive permet d'activer la journalisation compatible <a
