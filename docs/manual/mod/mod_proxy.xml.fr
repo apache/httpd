@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1404653:1421851 (outdated) -->
+<!-- English Revision: 1421912 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -536,7 +536,6 @@ incorrectes d'une r&eacute;ponse</description>
 <default>ProxyBadHeader IsError</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Disponible depuis la version 2.0.44 du serveur HTTP Apache</compatibility>
 
 <usage>
     <p>La directive <directive>ProxyBadHeader</directive> permet de
@@ -591,7 +590,7 @@ du mandataire</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
-<compatibility>Disponible depuis la version 2.0.31 du serveur HTTP Apache. Utilisable
+<compatibility>Utilisable
 dans un contexte de r&eacute;pertoire depuis la version 2.3.3.</compatibility>
 
 <usage>
@@ -748,24 +747,6 @@ serveur HTTP Apache</compatibility>
 </directivesynopsis>
     
 <directivesynopsis>
-    <name>BalancerInherit</name>
-    <description>H&eacute;ritage des r&eacute;partiteurs de charge du serveur
-    principal</description>
-    <syntax>BalancerInherit On|Off</syntax>
-    <default>BalancerInherit Off</default>
-    <contextlist><context>server config</context><context>virtual host</context></contextlist>
-    <compatibility>BalancerInherit n'est disponible qu'&agrave; partir de la
-    version 2.5.0 du serveur HTTP Apache.</compatibility>
-    <usage>
-        <p>Cette directive permet au serveur virtuel courant d'"h&eacute;riter"
-	des r&eacute;partiteurs de charge d&eacute;finis au niveau du serveur
-	principal. Des probl&egrave;mes et des comportements inattendus sont
-	cependant &agrave; pr&eacute;voir si on utilise le gestionnaire de r&eacute;partition
-	de charge, et cette directive est donc d&eacute;sactiv&eacute;e par d&eacute;faut.</p>
-    </usage>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>BalancerMember</name>
 <description>Ajoute un membre &agrave; un groupe de r&eacute;partition de
 charge</description>
@@ -773,9 +754,8 @@ charge</description>
   >cl&eacute;=valeur [cl&eacute;=valeur ...]]</var></syntax>
 <contextlist><context>directory</context>
 </contextlist>
-<compatibility>Disponible depuis la version 2.2 du serveur HTTP Apache.</compatibility>
 <usage>
-    <p>Cette directive parmet d'ajouter un membre &agrave; un groupe de
+    <p>Cette directive permet d'ajouter un membre &agrave; un groupe de
     r&eacute;partition de charge. Elle peut se trouver dans un conteneur
     <code>&lt;Proxy <var>balancer://</var>...&gt;</code>, et accepte
     tous les param&egrave;tres de paires cl&eacute;/valeur que supporte la directive
@@ -790,6 +770,11 @@ charge</description>
     <var>balancer://</var>...&gt;</code>. Il correspond &agrave; l'URL d'un
     r&eacute;partiteur de charge d&eacute;fini par une directive <directive
     module="mod_proxy">ProxyPass</directive>.</p>
+    <p>La partie chemin de l'URL du membre du groupe de répartition de
+    charge dans toute directive de conteneur <code>&lt;Proxy
+    <var>balancer://</var>...&gt;</code> est ignorée.</p>
+    <p>Les slashes de fin doivent normalement être supprimés de l'URL
+    d'un <code>BalancerMember</code>.</p>
 </usage>
 </directivesynopsis>
 
@@ -801,8 +786,6 @@ charge</description>
 <syntax>ProxySet <var>url</var> <var>cl&eacute;=valeur [cl&eacute;=valeur ...]</var></syntax>
 <contextlist><context>directory</context>
 </contextlist>
-<compatibility>ProxySet n'est disponible que depuis la version 2.2
-du serveur HTTP Apache.</compatibility>
 <usage>
     <p>Cette directive propose une m&eacute;thode alternative pour d&eacute;finir tout
     param&egrave;tre relatif aux r&eacute;partiteurs de charge et serveurs cibles de
@@ -819,8 +802,8 @@ du serveur HTTP Apache.</compatibility>
     <example>
       <highlight language="config">
 &lt;Proxy balancer://hotcluster&gt;
-    BalancerMember http://www2.example.com:8080/ loadfactor=1
-    BalancerMember http://www3.example.com:8080/ loadfactor=2
+    BalancerMember http://www2.example.com:8080 loadfactor=1
+    BalancerMember http://www3.example.com:8080 loadfactor=2
     ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;
       </highlight>
@@ -1187,7 +1170,7 @@ ProxyPass /mirror/foo http://backend.example.com
 
     <p>Si l'URL de la directive Proxy d&eacute;bute par
     <code>balancer://</code> (par exemple:
-    <code>balancer://cluster/</code>, toute information relative au
+    <code>balancer://cluster</code>, toute information relative au
     chemin est ignor&eacute;e), alors un serveur cible virtuel ne communiquant pas
     r&eacute;ellement avec le serveur d'arri&egrave;re-plan sera cr&eacute;&eacute;. Celui-ci sera
     en fait responsable de la gestion de plusieurs serveurs cibles "r&eacute;els". Dans
@@ -1307,10 +1290,10 @@ ProxyPass /mirror/foo http://backend.example.com
 ProxyPass /special-area http://special.example.com smax=5 max=10
 ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On
 &lt;Proxy balancer://mycluster&gt;
-    BalancerMember ajp://1.2.3.4:8009/
-    BalancerMember ajp://1.2.3.5:8009/ loadfactor=20
+    BalancerMember ajp://1.2.3.4:8009
+    BalancerMember ajp://1.2.3.5:8009 loadfactor=20
     # Less powerful server, don't send as many requests there,
-    BalancerMember ajp://1.2.3.6:8009/ loadfactor=5
+    BalancerMember ajp://1.2.3.6:8009 loadfactor=5
 &lt;/Proxy&gt;
     </highlight>
 
@@ -1319,10 +1302,10 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
     <highlight language="config">
 ProxyPass / balancer://hotcluster/ 
 &lt;Proxy balancer://hotcluster&gt;
-    BalancerMember ajp://1.2.3.4:8009/ loadfactor=1
-    BalancerMember ajp://1.2.3.5:8009/ loadfactor=2
+    BalancerMember ajp://1.2.3.4:8009 loadfactor=1
+    BalancerMember ajp://1.2.3.5:8009 loadfactor=2
     # The server below is on hot standby
-    BalancerMember ajp://1.2.3.6:8009/ status=+H
+    BalancerMember ajp://1.2.3.6:8009 status=+H
     ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;
     </highlight>
@@ -1374,6 +1357,27 @@ ProxyPass / balancer://hotcluster/
     <code>[P]</code>.</p>
 
 </usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyPassInherit</name>
+    <description>Héritage des membres du groupe de répartition de charge
+    du serveur principal via ProxyPass</description>
+    <syntax>ProxyPassInherit On|Off</syntax>
+    <default>ProxyPassInherit On</default>
+    <contextlist><context>server config</context><context>virtual host</context></contextlist>
+    <compatibility>ProxyPassInherit est disponible à partir de la
+    version 2.5.0 du serveur HTTP Apache.</compatibility>
+    <usage>
+        <p>Cette directive permet au serveur courant d'hériter des
+	membres du groupe de répartition de charge définis dans le
+	serveur principal via ProxyPass. Elle peut cependant causer des
+	problèmes et induire des comportements inappropriés si l'on
+	utilise le gestionnaire de répartition de chargeur, et doit donc
+	être désactivée dans ce cas.</p>
+        <p>Les réglages du serveur principal définissent le comportement
+	par défaut de tous les serveurs virtuels.</p>
+    </usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -1719,8 +1723,6 @@ requ&ecirc;te peut &ecirc;tre redirig&eacute;e</description>
 <default>ProxyMaxForwards -1</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Disponible depuis la version 2.0 du serveur HTTP Apache ; comportement par d&eacute;faut
-modifi&eacute; dans 2.2.7/2.3</compatibility>
 
 <usage>
     <p>La directive <directive>ProxyMaxForwards</directive> permet de
@@ -1904,7 +1906,6 @@ mandat&eacute;es</description>
 module="core">Timeout</directive></default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Disponible depuis la version 2.0.31 du serveur HTTP Apache</compatibility>
 
 <usage>
     <p>Cette directive permet &agrave; l'utilisateur de sp&eacute;cifier un d&eacute;lai pour
@@ -1991,7 +1992,6 @@ mandat&eacute;s</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
-<compatibility>Disponible depuis la version 2.0 d'Apache</compatibility>
 
 <usage>
     <p>Cette directive est utile pour les configurations de mandataires
@@ -2018,7 +2018,6 @@ les configurations de mandataires inverses</description>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>directory</context>
 </contextlist>
-<compatibility>Disponible depuis la version 2.2.9 d'Apache</compatibility>
 
 <usage>
     <p>Cette directive, ainsi que l'argument <var>interpolate</var> des
@@ -2051,7 +2050,6 @@ mod_status</description>
 <contextlist><context>server config</context>
 <context>virtual host</context>
 </contextlist>
-<compatibility>Disponible depuis la version 2.2 d'Apache</compatibility>
 
 <usage>
     <p>Cette directive permet de sp&eacute;cifier si les donn&eacute;es d'&eacute;tat du

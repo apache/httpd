@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1330988:1421821 (outdated) -->
+<!-- English Revision : 1421821 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -30,7 +30,6 @@ protocole</description>
 <status>Experimental</status>
 <sourcefile>mod_echo.c</sourcefile>
 <identifier>echo_module</identifier>
-<compatibility>Disponible depuis la version 2.0 d'Apache</compatibility>
 
 <summary>
     <p>Ce module est un module de protocole exemple permettant d'en
@@ -46,8 +45,6 @@ protocole</description>
 <default>ProtocolEcho Off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>ProtocolEcho est disponible depuis la version 2.0
-d'Apache.</compatibility>
 
 <usage>
     <p>La directive <directive>ProtocolEcho</directive> permet d'activer

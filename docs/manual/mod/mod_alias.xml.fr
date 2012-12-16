@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1330911 -->
+<!-- English Revision : 1422375 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -167,6 +167,9 @@ Alias /image /ftp/pub/image
 &lt;/Directory&gt;
     </highlight>
 
+    <p>Le nombre de slashes dans le paramètre <var>chemin URL</var> doit
+    correspondre au nombre de slashes dans le chemin URL de la requête.</p>
+
 </usage>
 </directivesynopsis>
 
@@ -257,6 +260,11 @@ en faisant intervenir les expressions rationnelles</description>
       AliasMatch ^/image/(.*)\.jpg$ /fichiers/jpg.images/$1.jpg<br/>
       AliasMatch ^/image/(.*)\.gif$ /fichiers/gif.images/$1.gif
     </highlight>
+
+    <p>Les éventuels slashes de tête multiples seront supprimés par le
+    serveur avant que les directives de ce module n'effectuent des
+    comparaisons avec le chemin URL de la requête.
+    </p>
 
 </usage>
 </directivesynopsis>
