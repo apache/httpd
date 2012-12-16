@@ -398,7 +398,7 @@
  * 20120211.6 (2.4.3-dev)  Add ap_proxy_checkproxyblock2.
  * 20120211.7 (2.4.3-dev)  Add ap_get_loadavg()
  * 20120211.8 (2.4.3-dev)  Add sticky_separator to proxy_balancer_shared struct.
- * 20120211.9 (2.4.3-dev)  Add fgrab() to ap_slotmem_provider_t.
+ * 20120211.9 (2.4.4-dev)  Add fgrab() to ap_slotmem_provider_t.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
