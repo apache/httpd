@@ -17,6 +17,7 @@
 
 #include "mod_lua.h"
 #include "lua_apr.h"
+#include "util_md5.h"
 
 
 /**
@@ -258,35 +259,15 @@ static int lua_ap_escape (lua_State *L) {
 static int lua_apr_md5(lua_State *L)
 {
     /*~~~~~~~~~~~~~~~~*/
-    union {
-        unsigned char      chr[16];
-        apr_uint32_t   num[4];
-    } digest;
-    apr_md5_ctx_t md5;
     const char* buffer;
     char* result;
-    char Rmd5[16];
-    apr_uint32_t   *md5X;
-    size_t x,y;
+    size_t len;
     request_rec *r;
     /*~~~~~~~~~~~~~~~~*/
     r = ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TSTRING);
-    result = apr_pcalloc(r->pool, (APR_MD5_DIGESTSIZE*2)+1);
-    buffer = lua_tolstring(L, 2, &y);
-    apr_md5_init(&md5);
-    apr_md5_update(&md5, buffer, y);
-    apr_md5_final(digest.chr, &md5);
-
-    for (x = 0; x < 16; x += 4) {
-        Rmd5[x] = digest.chr[x + 3];
-        Rmd5[x + 1] = digest.chr[x + 2];
-        Rmd5[x + 2] = digest.chr[x + 1];
-        Rmd5[x + 3] = digest.chr[x];
-    }
-
-    md5X = (apr_uint32_t  *) Rmd5;
-    sprintf(result, "%08x%08x%08x%08x", md5X[0], md5X[1], md5X[2], md5X[3]);
+    buffer = lua_tolstring(L, 2, &len);
+    result = ap_md5_binary(r->pool, (const unsigned char *)buffer, len);
     lua_pushstring(L, result);
     return 1;
 }
@@ -295,36 +276,22 @@ static int lua_apr_md5(lua_State *L)
 static int lua_apr_sha1(lua_State *L)
 {
     /*~~~~~~~~~~~~~~~~*/
-    union {
-        unsigned char      chr[16];
-        apr_uint32_t   num[4];
-    } digest;
+    unsigned char      digest[APR_SHA1_DIGESTSIZE];
     apr_sha1_ctx_t sha1;
     const char* buffer;
     char* result;
-    unsigned char Rsha1[20];
-    apr_uint32_t  *sha1X;
-    size_t x,y;
+    size_t len;
     request_rec *r;
     /*~~~~~~~~~~~~~~~~*/
     
     r = ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TSTRING);
-    result = apr_pcalloc(r->pool, (APR_SHA1_DIGESTSIZE*2)+1);
-    buffer = lua_tolstring(L, 2, &y);
+    result = apr_pcalloc(r->pool, sizeof(digest) * 2 + 1);
+    buffer = lua_tolstring(L, 2, &len);
     apr_sha1_init(&sha1);
-    apr_sha1_update(&sha1, buffer, y);
-    apr_sha1_final(digest.chr, &sha1);
-
-    for (x = 0; x < 20; x += 4) {
-        Rsha1[x] = digest.chr[x + 3];
-        Rsha1[x + 1] = digest.chr[x + 2];
-        Rsha1[x + 2] = digest.chr[x + 1];
-        Rsha1[x + 3] = digest.chr[x];
-    }
-
-    sha1X = (apr_uint32_t  *) Rsha1;
-    sprintf(result, "%08x%08x%08x%08x%08x", sha1X[0], sha1X[1], sha1X[2], sha1X[3], sha1X[4]);
+    apr_sha1_update(&sha1, buffer, len);
+    apr_sha1_final(digest, &sha1);
+    ap_bin2hex(digest, sizeof(digest), result);
     lua_pushstring(L, result);
     return 1;
 }
