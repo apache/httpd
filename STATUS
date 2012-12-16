@@ -91,17 +91,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_slotmem_*: Add in new fgrab() function which forces a grab and
-     slot allocation on a specified slot. Allow for clearing of inuse
-     array.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1386880
-                  http://svn.apache.org/viewvc?view=revision&revision=1387389
-                  http://svn.apache.org/viewvc?view=revision&revision=1388445
-                  http://svn.apache.org/viewvc?view=revision&revision=1394079
-      2.4.x patch: trunk patch works
-     +1: jim, rjung
-     +1: minfrin (with MMN bump)
-
    * ap_expr: Add req_novary function that allows HTTP header lookups
      without adding the name to the Vary header
      Not critical for 2.4.4.
