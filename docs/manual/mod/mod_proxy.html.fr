@@ -28,8 +28,6 @@
 <a href="../fr/mod/mod_proxy.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle multi-protocole</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_module</td></tr>
@@ -786,7 +784,6 @@ incorrectes d'une réponse</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.0.44 du serveur HTTP Apache</td></tr>
 </table>
     <p>La directive <code class="directive">ProxyBadHeader</code> permet de
     déterminer le comportement de <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> lorsqu'il
@@ -890,7 +887,6 @@ mandatés</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.0 d'Apache</td></tr>
 </table>
     <p>Cette directive est utile pour les configurations de mandataires
     inverses, lorsque vous souhaitez que les pages d'erreur envoyées
@@ -966,8 +962,8 @@ requête peut être redirigée</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.0 du serveur HTTP Apache ; comportement par défaut
-modifié dans 2.2.7/2.3</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Comportement par défaut
+modifié dans 2.2.7</td></tr>
 </table>
     <p>La directive <code class="directive">ProxyMaxForwards</code> permet de
     spécifier le nombre maximum de mandataires à travers lesquels une
@@ -1764,7 +1760,7 @@ du mandataire</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.0.31 du serveur HTTP Apache. Utilisable
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Utilisable
 dans un contexte de répertoire depuis la version 2.3.3.</td></tr>
 </table>
     <p>Lorsqu'elle est activée, cette directive va transmettre l'en-tête
@@ -2013,7 +2009,6 @@ mandatées</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.0.31 du serveur HTTP Apache</td></tr>
 </table>
     <p>Cette directive permet à l'utilisateur de spécifier un délai pour
     les requêtes mandatées. Ceci s'avère utile dans le cas d'un serveur
