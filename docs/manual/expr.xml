@@ -142,7 +142,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <code>req</code> <a href="#functions">function</a>. Using these
     variables may cause the header name to be added to the Vary
     header of the HTTP response, except where otherwise noted for the
-    directive accepting the expression.</p>
+    directive accepting the expression. The <code>req_novary</code>
+    <a href="#functions">function</a> may be used to circumvent this
+    behavior.</p>
 
     <table border="1" style="zebra">
     <columnspec><column width="1"/></columnspec>
@@ -434,6 +436,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>req</code>, <code>http</code></td>
         <td>Get HTTP request header; header names may be added to the Vary
             header, see below</td><td></td></tr>
+    <tr><td><code>req_novary</code></td>
+        <td>Same as <code>req</code>, but header names will not be added to the
+            Vary header</td><td></td></tr>
     <tr><td><code>resp</code></td>
         <td>Get HTTP response header</td><td></td></tr>
     <tr><td><code>reqenv</code></td>
@@ -468,7 +473,8 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <p>When the functions <code>req</code> or <code>http</code> are used,
     the header name will automatically be added to the Vary header of the
     HTTP response, except where otherwise noted for the directive accepting
-    the expression.</p>
+    the expression. The <code>req_novary</code> function can be used to
+    prevent names from being added to the Vary header.</p>
 
     <p>In addition to string-valued functions, there are also list-valued functions which
     take one string as argument and return a wordlist, i.e. a list of strings. The wordlist

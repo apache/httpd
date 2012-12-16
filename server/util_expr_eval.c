@@ -968,6 +968,8 @@ static const char *req_table_func(ap_expr_eval_ctx_t *ctx, const void *data,
         t = ctx->r->notes;
     else if (name[3] == 'e')        /* reqenv */
         t = ctx->r->subprocess_env;
+    else if (name[3] == '_')        /* req_novary */
+        t = ctx->r->headers_in;
     else {                          /* req, http */
         t = ctx->r->headers_in;
         add_vary(ctx, arg);
@@ -1566,6 +1568,7 @@ static const struct expr_provider_single string_func_providers[] = {
     { req_table_func,       "http",           NULL, 0 },
     { req_table_func,       "note",           NULL, 0 },
     { req_table_func,       "reqenv",         NULL, 0 },
+    { req_table_func,       "req_novary",     NULL, 0 },
     { tolower_func,         "tolower",        NULL, 0 },
     { toupper_func,         "toupper",        NULL, 0 },
     { escape_func,          "escape",         NULL, 0 },
