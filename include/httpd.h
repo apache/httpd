@@ -2251,6 +2251,14 @@ AP_DECLARE(void) ap_get_sload(ap_sload_t *ld);
  */
 AP_DECLARE(void) ap_get_loadavg(ap_loadavg_t *ld);
 
+/**
+ * Convert binary data into a hex string
+ * @param src pointer to the data
+ * @param srclen length of the data
+ * @param dest pointer to buffer of length (2 * srclen + 1). The resulting
+ *        string will be NUL-terminated.
+ */
+AP_DECLARE(void) ap_bin2hex(const void *src, apr_size_t srclen, char *dest);
 
 #define AP_NORESTART APR_OS_START_USEERR + 1
 
