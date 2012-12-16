@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.4
 
+  *) mod_proxy_ftp: Fix segfaults on IPv4 requests to hosts with DNS
+     AAAA records. PR  40841. [Andrew Rucker Jones <arjones simultan
+     dyndns org>, <ast domdv de>, Jim Jagielski]
+
   *) mod_auth_form: Make sure that get_notes_auth() sets the user as does
      get_form_auth() and get_session_auth(). Makes sure that REMOTE_USER
      does not vanish during mod_include driven subrequests. [Graham

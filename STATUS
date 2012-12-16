@@ -91,14 +91,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy_ftp: Fix segfaults on IPv4 requests to hosts with DNS AAAA records.
-     PR 40841.
-     trunk patch: http://svn.apache.org/viewvc?rev=1404625&view=rev
-                  http://svn.apache.org/viewvc?rev=1420223&view=rev
-     2.4.x patch: trunk patch works, or
-                  http://people.apache.org/~jorton/proxyftpepsv-24.patch
-     +1: jorton, jim, minfrin
-
    * mod_slotmem_*: Add in new fgrab() function which forces a grab and
      slot allocation on a specified slot. Allow for clearing of inuse
      array.
