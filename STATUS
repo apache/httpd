@@ -131,7 +131,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Content-Length. [Micha Lenk <micha lenk info>]
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1407248
      2.4.x patch: Trunk patch works.
-     +1: rjung
+     +1: rjung, sf
 
    * <If>:
      - Make <If> sections in virtual host context fill in cmd->path so that
@@ -147,7 +147,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1406493
                   http://svn.apache.org/viewvc?view=revision&revision=1406495
      2.4.x patch: Trunk patchs work.
-     +1: rjung
+     +1: rjung, sf
 
    * configure --disable-FEATURE: Fix processing for various features
      (dtrace, hook-probes, exception-hook, maintainer-mode, debugger-mode, luajit).
