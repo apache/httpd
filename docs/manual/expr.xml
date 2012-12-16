@@ -566,4 +566,15 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     module="mod_ssl">SSLRequire</directive>'s documentation.</p>
 </section>
 
+<section id="compatibility">
+    <title>Version History</title>
+    <p>The <code>req_novary</code> <a href="#functions">function</a>
+    is available for versions 2.4.4 and later.</p>
+    <p>The <code>SERVER_PROTOCOL_VERSION</code>,
+    <code>SERVER_PROTOCOL_VERSION_MAJOR</code> and
+    <code>SERVER_PROTOCOL_VERSION_MINOR</code>
+    <a href="#vars">variables</a>
+    are available for versions 2.5.0 and later.</p>
+</section>
+
 </manualpage>
