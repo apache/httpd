@@ -407,6 +407,7 @@
  * 20120724.7 (2.5.0-dev)  Add min_http_version/max_http_version to
  *                         core_server_config
  * 20120724.8 (2.5.0-dev)  Add conn_log_level to core_server_config
+ * 20120724.9 (2.5.0-dev)  Add ap_bin2hex()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -414,7 +415,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120724
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 8                   /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 9                   /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
