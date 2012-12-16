@@ -221,6 +221,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      jailletc36: IMO, a line in CHANGES should be added to reflect the new functionality
                  and maybe the doc should tell in which version of apache it has been
                  introduced
+     rjung: Will include a CHANGES item and a compatibility note in expr.xml.
 
    * mod_imagemap: const fixes (didn't compile on old XLC)
      trunk patch: http://svn.apache.org/viewvc?rev=1422234&view=rev
