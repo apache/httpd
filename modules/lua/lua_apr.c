@@ -709,7 +709,6 @@ static int lua_ap_module_info(lua_State *L)
     moduleName = lua_tostring(L, 1);
     mod = ap_find_linked_module(moduleName);
     if (mod) {
-        int i = 0;
         const command_rec *cmd;
         lua_newtable(L);
         lua_pushstring(L, "commands");
