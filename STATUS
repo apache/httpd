@@ -110,6 +110,17 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: jim, rjung
      +1: minfrin (with MMN bump)
 
+   * ap_expr: Add req_novary function that allows HTTP header lookups
+     without adding the name to the Vary header
+     Not critical for 2.4.4.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1403483
+     2.4.x patch: Trunk patch works.
+     +1: rjung, jailletc36, sf
+     jailletc36: IMO, a line in CHANGES should be added to reflect the new functionality
+                 and maybe the doc should tell in which version of apache it has been
+                 introduced
+     rjung: Will include a CHANGES item and a compatibility note in expr.xml.
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -204,17 +215,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: Trunk patch works except for modules/slotmem/mod_slotmem_shm.c
                   which should be ommitted (already done in r1400951).
      +1: rjung
-
-   * ap_expr: Add req_novary function that allows HTTP header lookups
-     without adding the name to the Vary header
-     Not critical for 2.4.4.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1403483
-     2.4.x patch: Trunk patch works.
-     +1: rjung, jailletc36
-     jailletc36: IMO, a line in CHANGES should be added to reflect the new functionality
-                 and maybe the doc should tell in which version of apache it has been
-                 introduced
-     rjung: Will include a CHANGES item and a compatibility note in expr.xml.
 
    * mod_imagemap: const fixes (didn't compile on old XLC)
      trunk patch: http://svn.apache.org/viewvc?rev=1422234&view=rev
