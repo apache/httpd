@@ -91,6 +91,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_auth_form: Make sure that get_notes_auth() sets the user as does
+     get_form_auth() and get_session_auth(). Makes sure that REMOTE_USER
+     does not vanish during mod_include driven subrequests.
+     trunk patch: http://svn.apache.org/viewvc?rev=1393152&view=rev
+     2.4.x patch: trunk patch works
+     +1: minfrin, jim, gsmith
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -125,13 +131,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1421912
      2.4.x patch: http://people.apache.org/~rjung/patches/proxypassinherit-config.patch
      +1: rjung, jim
-
-   * mod_auth_form: Make sure that get_notes_auth() sets the user as does
-     get_form_auth() and get_session_auth(). Makes sure that REMOTE_USER
-     does not vanish during mod_include driven subrequests.
-     trunk patch: http://svn.apache.org/viewvc?rev=1393152&view=rev
-     2.4.x patch: trunk patch works
-     +1: minfrin, jim
 
    * mod_proxy_ftp: Fix segfaults on IPv4 requests to hosts with DNS AAAA records.
      PR 40841.
