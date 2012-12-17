@@ -91,6 +91,33 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * mod_xml2enc: Fix problems with charset conversion altering the
+     Content-Length. [Micha Lenk <micha lenk info>]
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1407248
+     2.4.x patch: Trunk patch works.
+     +1: rjung, sf, jim
+
+   * <If>:
+     - Make <If> sections in virtual host context fill in cmd->path so that
+       other directive notice that they are in a config section.
+       Fixes directives like LogLevel that need to know if they are invoked
+       at virtual host context or in Directory/Files/Location/If sections to
+       work properly in If sections that are not in a Directory/Files/Location.
+     - Make ap_check_cmd_context() treat <If> sections like <File> sections.
+       This is necessary to properly disallow directives that don't work in
+       <If>.
+       A separate NOT_IN_IF flag may be nicer, but would create much more
+       hassle when being backported to 2.4.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1406493
+                  http://svn.apache.org/viewvc?view=revision&revision=1406495
+     2.4.x patch: Trunk patchs work.
+     +1: rjung, sf, jim
+
+   * mod_cache: Install cache_common.h as required by mod_cache.h. Allows
+     external modules to use mod_cache.
+     trunk patch: http://svn.apache.org/viewvc?rev=1422855&view=rev
+     2.4.x patch: trunk patch works.
+     +1: minfrin, humbedooh, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -120,29 +147,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~rjung/patches/proxypassinherit-config.patch
      +1: rjung, jim
 
-   * mod_xml2enc: Fix problems with charset conversion altering the
-     Content-Length. [Micha Lenk <micha lenk info>]
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1407248
-     2.4.x patch: Trunk patch works.
-     +1: rjung, sf, jim
-
-   * <If>:
-     - Make <If> sections in virtual host context fill in cmd->path so that
-       other directive notice that they are in a config section.
-       Fixes directives like LogLevel that need to know if they are invoked
-       at virtual host context or in Directory/Files/Location/If sections to
-       work properly in If sections that are not in a Directory/Files/Location.
-     - Make ap_check_cmd_context() treat <If> sections like <File> sections.
-       This is necessary to properly disallow directives that don't work in
-       <If>.
-       A separate NOT_IN_IF flag may be nicer, but would create much more
-       hassle when being backported to 2.4.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1406493
-                  http://svn.apache.org/viewvc?view=revision&revision=1406495
-     2.4.x patch: Trunk patchs work.
-     +1: rjung, sf, jim
-
-   * configure --disable-FEATURE: Fix processing for various features
+    * configure --disable-FEATURE: Fix processing for various features
      (dtrace, hook-probes, exception-hook, maintainer-mode, debugger-mode, luajit).
      "If" branch of AC_ARG_ENABLE is executed if enable or disable are
      explicitely set, so need to check enableval to detect explicit disable case.
@@ -192,11 +197,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-mod_imap-const.diff
      +1 covener, fuankg
 
-   * mod_cache: Install cache_common.h as required by mod_cache.h. Allows
-     external modules to use mod_cache.
-     trunk patch: http://svn.apache.org/viewvc?rev=1422855&view=rev
-     2.4.x patch: trunk patch works.
-     +1: minfrin, humbedooh, jim
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
