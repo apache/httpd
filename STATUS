@@ -202,7 +202,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      external modules to use mod_cache.
      trunk patch: http://svn.apache.org/viewvc?rev=1422855&view=rev
      2.4.x patch: trunk patch works.
-     +1: minfrin
+     +1: minfrin, humbedooh
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
