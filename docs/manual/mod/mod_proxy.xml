@@ -663,7 +663,24 @@ expressions</description>
         normal restart/graceful state transitions.</p>
     </usage>
 </directivesynopsis>
-    
+
+<directivesynopsis>
+    <name>BalancerInherit</name>
+    <description>Inherit ProxyPassed Balancers/Workers from the main server</description>
+    <syntax>ProxyPassInherit On|Off</syntax>
+    <default>ProxyPassInherit On</default>
+    <contextlist><context>server config</context><context>virtual host</context></contextlist>
+    <compatibility>ProxyPassInherit is only available in Apache HTTP Server 2.5.0
+        and later.</compatibility>
+    <usage>
+        <p>This directive will cause the current server/vhost to "inherit" ProxyPass
+            Balancers and Workers defined in the main server. This can cause issues and
+            inconsistent behavior if using the Balancer Manager and so should be disabled
+            if using that feature.</p>
+        <p>The setting in the global server defines the default for all vhosts.</p>
+    </usage>
+</directivesynopsis>
+
 <directivesynopsis>
     <name>BalancerMember</name>
     <description>Add a member to a load balancing group</description>
@@ -1193,23 +1210,6 @@ ProxyPass / balancer://hotcluster/
     <code>[P]</code> flag.</p>
 
 </usage>
-</directivesynopsis>
-
-<directivesynopsis>
-    <name>ProxyPassInherit</name>
-    <description>Inherit ProxyPass Balancers/Workers from the main server</description>
-    <syntax>ProxyPassInherit On|Off</syntax>
-    <default>ProxyPassInherit On</default>
-    <contextlist><context>server config</context><context>virtual host</context></contextlist>
-    <compatibility>ProxyPassInherit is only available in Apache HTTP Server 2.5.0
-        and later.</compatibility>
-    <usage>
-        <p>This directive will cause the current server/vhost to "inherit" ProxyPass
-            Balancers and Workers defined in the main server. This can cause issues and
-            inconsistent behavior if using the Balancer Manager and so should be disabled
-            if using that feature.</p>
-        <p>The setting in the global server defines the default for all vhosts.</p>
-    </usage>
 </directivesynopsis>
 
 <directivesynopsis>
