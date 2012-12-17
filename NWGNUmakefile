@@ -438,6 +438,7 @@ installdev :: FORCE
 	$(call COPY,$(STDMOD)/core/mod_so.h,                           $(INSTALLBASE)/include/)
 	$(call COPY,$(STDMOD)/core/mod_watchdog.h,                     $(INSTALLBASE)/include/)
 	$(call COPY,$(STDMOD)/cache/mod_cache.h,                       $(INSTALLBASE)/include/)
+	$(call COPY,$(STDMOD)/cache/cache_common.h,                    $(INSTALLBASE)/include/)
 	$(call COPY,$(STDMOD)/database/mod_dbd.h,                      $(INSTALLBASE)/include/)
 	$(call COPY,$(STDMOD)/dav/main/mod_dav.h,                      $(INSTALLBASE)/include/)
 	$(call COPY,$(STDMOD)/filters/mod_include.h,                   $(INSTALLBASE)/include/)
