@@ -184,6 +184,9 @@ Alias /image /ftp/pub/image
     </pre>
 
 
+    <p>Le nombre de slashes dans le paramètre <var>chemin URL</var> doit
+    correspondre au nombre de slashes dans le chemin URL de la requête.</p>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -270,6 +273,11 @@ en faisant intervenir les expressions rationnelles</td></tr>
       AliasMatch ^/image/(.*)\.gif$ /fichiers/gif.images/$1.gif
     </pre>
 
+
+    <p>Les éventuels slashes de tête multiples seront supprimés par le
+    serveur avant que les directives de ce module n'effectuent des
+    comparaisons avec le chemin URL de la requête.
+    </p>
 
 
 </div>
