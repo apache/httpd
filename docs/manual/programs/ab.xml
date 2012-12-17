@@ -54,7 +54,7 @@
     [ -<strong>P</strong> <var>proxy-auth-username</var>:<var>password</var> ]
     [ -<strong>q</strong> ]
     [ -<strong>r</strong> ]
-    [ -<strong>s</strong> ]
+    [ -<strong>s</strong> <var>timeout</var> ]
     [ -<strong>S</strong> ]
     [ -<strong>t</strong> <var>timelimit</var> ]
     [ -<strong>T</strong> <var>content-type</var> ]
@@ -150,11 +150,9 @@
     <dt><code>-r</code></dt>
     <dd>Don't exit on socket receive errors.</dd>
 
-   <dt><code>-s</code></dt>
-    <dd>When compiled in (<code>ab -h</code> will show you) use the SSL
-    protected <code>https</code> rather than the <code>http</code> protocol.
-    This feature is experimental and <em>very</em> rudimentary. You probably
-    do not want to use it.</dd>
+    <dt><code>-s <var>timeout</var></code></dt>
+    <dd>Maximum number of seconds to wait before the socket times out.
+    Default is 30 seconds.</dd>
 
     <dt><code>-S</code></dt>
     <dd>Do not display the median and standard deviation values, nor display
@@ -170,7 +168,7 @@
     <dt><code>-T <var>content-type</var></code></dt>
     <dd>Content-type header to use for POST/PUT data, eg.
     <code>application/x-www-form-urlencoded</code>.
-    Default: <code>text/plain</code>.</dd>
+    Default is <code>text/plain</code>.</dd>
 
     <dt><code>-u <var>PUT-file</var></code></dt>
     <dd>File containing data to PUT.  Remember to also set <code>-T</code>.</dd>
