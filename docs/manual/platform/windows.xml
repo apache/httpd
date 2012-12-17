@@ -27,7 +27,7 @@
 
   <summary>
     <p>This document explains how to install, configure and run
-    Apache 2.5 under Microsoft Windows.  If you have questions after
+    Apache 2.&httpd.minor; under Microsoft Windows.  If you have questions after
     reviewing the documentation (and any event and error logs), you
     should consult the peer-supported
     <a href="http://httpd.apache.org/userslist.html">users' mailing
@@ -43,7 +43,7 @@
   <section id="req">
     <title>Operating System Requirements</title>
 
-    <p>The primary Windows platform for running Apache 2.5 is Windows
+    <p>The primary Windows platform for running Apache 2.&httpd.minor; is Windows
     2000 or later. Always obtain and
     install the current service pack to avoid operating system bugs.</p>
 
@@ -54,10 +54,10 @@
   <section id="down">
     <title>Downloading Apache for Windows</title>
 
-    <p>The Apache Software Foundation itself does not provide binary releases of 
+    <p>The Apache HTTP Server Project itself does not provide binary releases of 
     software, only source code. If you cannot compile the Apache HTTP Server
-    yourself, you can obtain a binary package on numerous sites specialized 
-    in providing compiled versions of the Apache server for Windows.</p>
+    yourself, you can obtain a binary package from numerous binary distributions
+    available on the Internet.</p>
   </section>
 
   
