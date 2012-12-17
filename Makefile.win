@@ -1066,6 +1066,7 @@ BEGIN {
 		include\*.h \
 		os\win32\os.h \
 		modules\cache\mod_cache.h \
+		modules\cache\cache_common.h \
 		modules\core\mod_so.h \
 		modules\core\mod_watchdog.h \
 		modules\database\mod_dbd.h \
