@@ -145,6 +145,7 @@
 <li><a href="mod_authz_core.html#authzprovideralias">&lt;AuthzProviderAlias&gt;</a></li>
 <li><a href="mod_authz_core.html#authzsendforbiddenonfailure">AuthzSendForbiddenOnFailure</a></li>
 <li><a href="mod_proxy.html#balancergrowth" id="B" name="B">BalancerGrowth</a></li>
+<li><a href="mod_proxy.html#balancerinherit">BalancerInherit</a></li>
 <li><a href="mod_proxy.html#balancermember">BalancerMember</a></li>
 <li><a href="mod_proxy.html#balancerpersist">BalancerPersist</a></li>
 <li><a href="mod_setenvif.html#browsermatch">BrowserMatch</a></li>
@@ -446,7 +447,6 @@
 <li><a href="mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></li>
 <li><a href="mod_proxy.html#proxymaxforwards">ProxyMaxForwards</a></li>
 <li><a href="mod_proxy.html#proxypass">ProxyPass</a></li>
-<li><a href="mod_proxy.html#proxypassinherit">ProxyPassInherit</a></li>
 <li><a href="mod_proxy.html#proxypassinterpolateenv">ProxyPassInterpolateEnv</a></li>
 <li><a href="mod_proxy.html#proxypassmatch">ProxyPassMatch</a></li>
 <li><a href="mod_proxy.html#proxypassreverse">ProxyPassReverse</a></li>

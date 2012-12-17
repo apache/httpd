@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_lua.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_lua.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournit des points d'entrée Lua dans différentes parties du
 traitement des requêtes httpd</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
@@ -97,6 +95,7 @@ fonctionnement interne de httpd.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#datastructures">Structures de données</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#logging">Fonctions de journalisation</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#apache2">Paquet apache2</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#modifying_buckets">Modification de contenu avec les filtres lua</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -748,6 +747,219 @@ end
 	code HTML et renvoie le résultat
         </pre>
 
+
+	<pre class="prettyprint lang-lua">
+        r:base64_encode(string) -- Encode une chaîne à l'aide du
+	standard de codage Base64.
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+        r:base64_decode(string) -- Décode une chaîne codée en Base64.
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+        r:md5(string) -- Calcule et renvoie le condensé MD5 d'une chaîne
+	en mode binaire (binary safe).
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+        r:sha1(string) -- Calcule et renvoie le condensé SHA1 d'une chaîne
+	en mode binaire (binary safe).
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+        r:escape(string) -- Echappe une chaîne de type URL.
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+        r:unescape(string) -- Déséchappe une chaîne de type URL.
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+        r:banner() -- Renvoie la bannière du serveur courant.
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+        r:port() -- Renvoie le port du serveur courant utilisé pour la
+	requête.
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+        r:mpm_query(number) -- Interroge le serveur à propos de son
+	module MPM via la requête ap_mpm_query.
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+        r:expr(string) -- Evalue une chaîne de type <a href="../expr.html">expr</a>.
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+        r:scoreboard_process(a) -- Interroge le serveur à propos du
+	processus à la position <code>a</code>.
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+        r:scoreboard_worker(a, b) -- Interroge le serveur à propos du
+	thread <code>b</code>, dans le processus <code>a</code>.
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+        r:started() -- Renvoie l'heure du dernier (re)démarrage du
+	serveur.
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+        r:clock() -- Renvoie l'heure courante avec une précision d'une
+	microseconde.
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+r:requestbody(filename) -- Lit et renvoie le corps d'une requête. Si
+'filename' est spécifié, le corps de requête n'est pas renvoyé, mais
+sauvegardé dans le fichier correspondant.
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+        r:add_input_filter(filter_name) -- Ajoute le filtre en entrée
+	'filter_name'.
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+        r:module_info(module_name) -- Interroge le serveur à propos d'un
+	module.
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+        r:loaded_modules() -- Renvoie une liste des modules chargés par
+	httpd.
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+r:runtime_dir_relative(filename) -- Génère le nom d'un fichier run-time
+(par exemple la mémoire partagée "file") relativement au répertoire de
+run-time. 
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+        r:server_info() -- Renvoie une table contenant des informations
+	à propos du serveur, comme le nom de l'exécutable httpd, le
+	module mpm utilisé, etc...
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+        r:set_document_root(file_path) -- Définit la racine des
+	documents pour la requête à file_path.
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+        r:add_version_component(component_string) -- Ajoute un élément à
+	la bannière du serveur.
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+        r:set_context_info(prefix, docroot) -- Définit le préfixe et la
+	racine des documents du contexte pour une requête.
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+        r:os_escape_path(file_path) -- Convertit un chemin du système de
+	fichiers en URL indépendamment du système d'exploitation.
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+        r:escape_logitem(string) -- Echappe une chaîne pour
+	journalisation.
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+r:strcmp_match(string, pattern) -- Vérifie si 'string' correspond à
+'pattern' via la fonction strcmp_match (GLOBs). Par exemple, est-ce que
+'www.example.com' correspond à '*.example.com' ?
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+        r:set_keepalive() -- Définit l'état de persistance d'une
+	requête. Renvoie true dans la mesure du possible, false dans le
+	cas contraire.
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+        r:make_etag() -- Génère et renvoie le etag pour la requête
+	courante.
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+r:send_interim_response(clear) -- Renvoie une réponse d'intérim (1xx) au
+client. Si 'clear' est vrai, les en-têtes disponibles seront envoyés et
+effacés.
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+r:custom_response(status_code, string) -- Génère et définit une réponse
+personnalisée pour un code d'état particulier. Le fonctionnement est
+très proche de celui de la directive ErrorDocument.
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+        r:exists_config_define(string) -- Vérifie si une définition de
+	configuration existe.
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+        r:state_query(string) -- Interroge le serveur à propos de son
+	état.
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+        r:stat(filename) -- Exécute stat() sur un fichier, et renvoie
+	une table contenant des informations à propos de ce fichier.
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+        r:regex(string, pattern) -- Exécute une recherche à base
+	d'expression rationnelle sur une chaîne, et renvoie les
+	éventuelles correspondances trouvées.
+        </pre>
+
+
+        <pre class="prettyprint lang-lua">
+        r:sleep(secondes) -- Interrompt l'exécution du script pendant le
+	nombre de secondes spécifié.
+        </pre>
+
         </dd>
     </dl>
 
@@ -795,6 +1007,51 @@ contenu suivant :</p>
 
 </dl>
 <p>Les autres codes d'état HTTP ne sont pas encore implémentés.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="modifying_buckets" id="modifying_buckets">Modification de contenu avec les filtres lua</a></h2>
+    
+    <p>
+    Les fonctions de filtrage implémentées via les directives <code class="directive"><a href="#luainputfilter">LuaInputFilter</a></code> ou <code class="directive"><a href="#luaoutputfilter">LuaOutputFilter</a></code> sont conçues comme des
+    fonctions de 3ème phase non blocantes utilisant des sous-routines
+    pour suspendre et reprendre l'exécution d'une fonction lorsque des
+    paquets de données sont envoyés à la chaîne de filtrage. La
+    structure de base d'une telle fonction est :
+    </p>
+    <pre class="prettyprint lang-lua">
+function filter(r)
+    -- Nous indiquons tout d'abord que nous sommes prêts à recevoir des
+    -- blocs de données.
+    -- Avant ceci, nous pouvons définir notre environnement, tester
+    -- certaines conditions, et, si nous le jugeons nécessaire, refuser le
+    -- filtrage d'une requête :
+    if something_bad then
+        return -- Le filtrage est sauté
+    end
+    -- Sans se préoccuper des données que nous devons éventuellement ajouter, un arrêt est réalisé ici.
+    -- Noter que les filtres de sortie sont les seuls capables d'ajouter des éléments au début des données.
+    -- Les filtres en entrée peuvent ajouter des éléments à la fin des données au stade final.
+
+    coroutine.yield([optional header to be prepended to the content])
+
+    -- Après cet arrêt, nous allons recevoir d'autres blocs de données, un par un ;
+    -- nous pouvons les traiter comme il nous plaît et procéder à la réponse.
+    -- Ces blocs sont conservés dans la variable globale 'bucket', nous réalisons donc
+    -- une boucle pour vérifier que 'bucket' n'est pas vide :
+    while bucket ~= nil do
+        local output = mangle(bucket) -- Do some stuff to the content
+        coroutine.yield(output) -- Return our new content to the filter chain
+    end
+
+    -- Une fois les blocs de données épuisés, 'bucket' est positionné à une valeur vide ('nil'),
+    -- ce qui va nous faire sortir de cette boucle et nous amener à l'étape suivante.
+    -- On peut ajouter ce qu'on veut à la fin des données à cette étape, qui constitue le dernier
+    -- arrêt. Les filtres d'entrée comme de sortie peuvent servir à ajouter des éléments à la fin
+    --  des données à cette étape.
+    coroutine.yield([optional footer to be appended to the content])
+end
+    </pre>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaAuthzProvider" id="LuaAuthzProvider">LuaAuthzProvider</a> <a name="luaauthzprovider" id="luaauthzprovider">Directive</a></h2>
@@ -1013,7 +1270,7 @@ traitement de la requête</td></tr>
 require"apache2"
 cached_files = {}
 
-function read_file(filename) 
+function read_file(filename)
     local input = io.open(filename, "r")
     if input then
         local data = input:read("*a")

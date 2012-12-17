@@ -27,8 +27,6 @@
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>L'authentification est un processus qui vous permet de vérifier
     qu'une personne est bien celle qu'elle prétend être. L'autorisation
@@ -278,7 +276,8 @@ Require user rbowen
     rapidement, et pour pallier cet inconvénient, Apache peut aussi
     stocker les données relatives aux
     utilisateurs dans des bases de données rapides. Le module
-    <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> fournit la directive <code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code>. Le programme <code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code> permet de créer et manipuler ces fichiers. Vous
+    <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> fournit la directive <code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code>. Les programmes <code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code> et <code class="program"><a href="../programs/htdbm.html">htdbm</a></code> permettent de
+    créer et manipuler ces fichiers. Vous
     trouverez de nombreuses options d'autres types d'authentification
     fournies par des modules tiers dans la <a href="http://modules.apache.org/">Base de données des modules
     d'Apache</a>.</p>

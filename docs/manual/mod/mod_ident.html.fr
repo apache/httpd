@@ -29,14 +29,11 @@
 <a href="../ja/mod/mod_ident.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_ident.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Recherche d'identité conformément à la RFC
 1413</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>ident_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_ident.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.2 d'Apache</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_ident.c</td></tr></table>
 <h3>Sommaire</h3>
 
     <p>Ce module interroge un démon compatible <a href="http://www.ietf.org/rfc/rfc1413.txt">RFC 1413</a> sur un
@@ -63,8 +60,6 @@ l'utilisateur distant</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ident</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Retiré du serveur de base depuis Apache
-2.1</td></tr>
 </table>
     <p>Cette directive permet d'activer la journalisation compatible <a href="http://www.ietf.org/rfc/rfc1413.txt">RFC 1413</a> du nom de
     l'utilisateur distant pour chaque connexion, si la machine du client
