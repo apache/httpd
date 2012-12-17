@@ -29,9 +29,6 @@ Changes with Apache 2.5.0
   *) core: New directive RegisterHttpMethod for registering non-standard
      HTTP methods. [Stefan Fritsch]
 
-  *) mod_xml2enc: Fix problems with charset conversion altering the
-     Content-Length. [Micha Lenk <micha lenk info>]
-
   *) core: New directive HttpProtocol which allows to disable HTTP/0.9
      support. [Stefan Fritsch]
 
