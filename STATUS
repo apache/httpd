@@ -146,6 +146,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-mod_imap-const.diff
      +1 covener, fuankg
 
+   * Makefile.win: Added copying of .vbs / .swf CGIs to Windows install target.
+                   Moved fixing of shebang to separate target so that it is
+                   no longer executed by default and all CGIs remain inactive.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387984
+                  http://svn.apache.org/viewvc?view=revision&revision=1421203
+                  http://svn.apache.org/viewvc?view=revision&revision=1421591
+     2.4.x patch: http://people.apache.org/~fuankg/diffs/httpd-2.4.x-Makefile.win.diff
+     +1 fuankg
+
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
