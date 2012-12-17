@@ -91,11 +91,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_cache: Install cache_common.h as required by mod_cache.h. Allows
-     external modules to use mod_cache.
-     trunk patch: http://svn.apache.org/viewvc?rev=1422855&view=rev
-     2.4.x patch: trunk patch works.
-     +1: minfrin, humbedooh, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
