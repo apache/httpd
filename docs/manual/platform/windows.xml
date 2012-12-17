@@ -54,10 +54,10 @@
   <section id="down">
     <title>Downloading Apache for Windows</title>
 
-    <p>The Apache Software Foundation itself does not provide binary releases of 
+    <p>The Apache HTTP Server Project itself does not provide binary releases of 
     software, only source code. If you cannot compile the Apache HTTP Server
-    yourself, you can obtain a binary package on numerous sites specialized 
-    in providing compiled versions of the Apache server for Windows.</p>
+    yourself, you can obtain a binary package from numerous binary distributions
+    available on the Internet.</p>
   </section>
 
   
