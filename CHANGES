@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.4
 
+  *) mod_xml2enc: Fix problems with charset conversion altering the
+     Content-Length. [Micha Lenk <micha lenk info>]
+
   *) ap_expr: Add req_novary function that allows HTTP header lookups
      without adding the name to the Vary header. [Stefan Fritsch]
 

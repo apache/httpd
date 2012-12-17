@@ -370,6 +370,9 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
         /* nah, we only have one action here - call it inline */
         fix_skipto(f->r, ctx);
 
+        /* we might change the Content-Length, so let's force its re-calculation */
+        apr_table_unset(f->r->headers_out, "Content-Length");
+
         /* consume the data we just sniffed */
         /* we need to omit any <meta> we just invalidated */
         ctx->flags |= ENC_INITIALISED;

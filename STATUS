@@ -91,12 +91,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_xml2enc: Fix problems with charset conversion altering the
-     Content-Length. [Micha Lenk <micha lenk info>]
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1407248
-     2.4.x patch: Trunk patch works.
-     +1: rjung, sf, jim
-
    * <If>:
      - Make <If> sections in virtual host context fill in cmd->path so that
        other directive notice that they are in a config section.
