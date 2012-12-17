@@ -146,7 +146,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   which should be ommitted (already done in r1400951).
      +1: rjung, jim
 
-   * Makefile.win: Added copying of .vbs / .swf CGIs to Windows install target.
+   * Makefile.win: Added copying of .vbs / .wsf CGIs to Windows install target.
                    Moved fixing of shebang to separate target so that it is
                    no longer executed by default and all CGIs remain inactive.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387984
