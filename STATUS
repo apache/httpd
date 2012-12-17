@@ -91,6 +91,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_imagemap: const fixes (didn't compile on old XLC)
+     trunk patch: http://svn.apache.org/viewvc?rev=1422234&view=rev
+                  http://svn.apache.org/viewvc?rev=1416889&view=rev
+                  http://svn.apache.org/viewvc?rev=1422253&view=rev
+     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-mod_imap-const.diff
+     +1 covener, fuankg, gsmith
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -139,13 +146,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   which should be ommitted (already done in r1400951).
      +1: rjung, jim
 
-   * mod_imagemap: const fixes (didn't compile on old XLC)
-     trunk patch: http://svn.apache.org/viewvc?rev=1422234&view=rev
-                  http://svn.apache.org/viewvc?rev=1416889&view=rev
-                  http://svn.apache.org/viewvc?rev=1422253&view=rev
-     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-mod_imap-const.diff
-     +1 covener, fuankg
-
    * Makefile.win: Added copying of .vbs / .swf CGIs to Windows install target.
                    Moved fixing of shebang to separate target so that it is
                    no longer executed by default and all CGIs remain inactive.
@@ -153,7 +153,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1421203
                   http://svn.apache.org/viewvc?view=revision&revision=1421591
      2.4.x patch: http://people.apache.org/~fuankg/diffs/httpd-2.4.x-Makefile.win.diff
-     +1 fuankg
+     +1 fuankg, gsmith
 
 
 A list of further possible backports can be found at:
