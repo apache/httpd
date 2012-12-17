@@ -167,6 +167,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           of those two groups) who don't understand that these are information leaks
           once they are enabled, and the subtlety of the way they are disabled ("Apache
           messed up the first line; let me fix that") contributes to that.
+     fuankg notes: I've just added a big warning to all CGI scripts which should now
+          make alsolutely clear that these CGIs are for testing purpose only - so those
+          who enable those scripts with inserting the right shebang should be 100% aware
+          of any risks (this should cover your last point).
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
