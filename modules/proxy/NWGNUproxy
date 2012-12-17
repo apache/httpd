@@ -285,6 +285,8 @@ $(OBJDIR)/mod_proxy.imp:
 	@echo $(DL) ap_proxy_define_balancer,$(DL)>> $@
 	@echo $(DL) ap_proxy_define_worker,$(DL)>> $@
 	@echo $(DL) ap_proxy_determine_connection,$(DL)>> $@
+	@echo $(DL) ap_proxy_find_balancershm,$(DL)>> $@
+	@echo $(DL) ap_proxy_find_workershm,$(DL)>> $@
 	@echo $(DL) ap_proxy_get_balancer,$(DL)>> $@
 	@echo $(DL) ap_proxy_get_worker,$(DL)>> $@
 	@echo $(DL) ap_proxy_hashfunc,$(DL)>> $@
