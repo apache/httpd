@@ -120,12 +120,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~rjung/patches/proxypassinherit-config.patch
      +1: rjung, jim
 
-   * mod_imagemap: Fix type mismatch.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1416889
-     2.4.x patch: trunk patch works
-     +1: fuankg
-     covener: okay with my backport below (keeping these const) instead?
-
    * mod_xml2enc: Fix problems with charset conversion altering the
      Content-Length. [Micha Lenk <micha lenk info>]
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1407248
@@ -196,7 +190,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?rev=1416889&view=rev
                   http://svn.apache.org/viewvc?rev=1422253&view=rev
      2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-mod_imap-const.diff
-     +1 covener
+     +1 covener, fuankg
 
    * mod_cache: Install cache_common.h as required by mod_cache.h. Allows
      external modules to use mod_cache.
