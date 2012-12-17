@@ -96,30 +96,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
 
-   * mod_proxy: Allow balancers to be server-specific, as they should have
-     been. Inheritance causes too many behind-the-scene interactions
-     to be reliable in a dynamic environ. We maintain the old-default
-     of inheritance.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387603
-                  http://svn.apache.org/viewvc?view=revision&revision=1388029
-                  http://svn.apache.org/viewvc?view=revision&revision=1420124
-                  http://svn.apache.org/viewvc?view=revision&revision=1421288
-     2.4.x patch: http://people.apache.org/~jim/patches/proxypassinherit2.patch
-     +1: jim, druggeri
-     +1: rjung, if r1421912 is also added (see below)
-     minfrin: The docs need to define the exact directives affected by this
-              directive, "ProxyPass Balancers and Workers" is not accurate
-              enough. In addition, the docs need an accurate description of
-              the "issues and inconsistent behaviour" that the admin is
-              likely to experience if they don't turn this directive off.
-
-   * mod_proxy: Addition to the above "inheritance": allow the default
-     for all vhosts to be set in the global server. Otherwise one would
-     have to turn of inheritance in each vhost individually.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1421912
-     2.4.x patch: http://people.apache.org/~rjung/patches/proxypassinherit-config.patch
-     +1: rjung, jim
-
     * configure --disable-FEATURE: Fix processing for various features
      (dtrace, hook-probes, exception-hook, maintainer-mode, debugger-mode, luajit).
      "If" branch of AC_ARG_ENABLE is executed if enable or disable are
