@@ -154,7 +154,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1421591
      2.4.x patch: http://people.apache.org/~fuankg/diffs/httpd-2.4.x-Makefile.win.diff
      +1 fuankg, gsmith
-
+     -.8: trawick
+          This commit is essentially deciding that an httpd install on
+          Windows now has printenv/testcgi written in 2 more languages.
+          To the extent that the usefulness is that it shows how to make scripts
+          of these types executable by httpd, I believe that the documentation
+          is the proper place to solve that.  To the extent that the usefullness
+          is to show how to implement a CGI in these particular languages, I believe
+          that the httpd distribution and documentation in general is not the
+          place for that.  Historically these types of scripts have caused problems
+          for downstream vendorsas well as newbies (and sometimes the intersection
+          of those two groups) who don't understand that these are information leaks
+          once they are enabled, and the subtlety of the way they are disabled ("Apache
+          messed up the first line; let me fix that") contributes to that.
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
