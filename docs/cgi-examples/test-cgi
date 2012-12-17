@@ -4,9 +4,12 @@
 # appropriate #!/path/to/sh shebang, and set this script executable
 # with chmod 755.
 #
-# Note that it is subject to cross site scripting attacks on MS IE
-# and any other browser which fails to honor RFC2616, so never use
-# it in a live server environment, it is provided only for testing.
+# ***** !!! WARNING !!! *****
+# This script echoes the server environment variables and therefore
+# leaks information - so NEVER use it in a live server environment!
+# It is provided only for testing purpose.
+# Also note that it is subject to cross site scripting attacks on
+# MS IE and any other browser which fails to honor RFC2616. 
 
 # disable filename globbing
 set -f
