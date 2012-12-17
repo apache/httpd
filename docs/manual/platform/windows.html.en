@@ -40,8 +40,6 @@
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#req">Operating System Requirements</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#down">Downloading Apache for Windows</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#inst">Installing Apache for Windows</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#advinst">Advanced Installation Topics</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cust">Customizing Apache for Windows</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#winsvc">Running Apache as a Service</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#wincons">Running Apache as a Console Application</a></li>
@@ -54,8 +52,7 @@
     
 
     <p>The primary Windows platform for running Apache 2.5 is Windows
-    2000 or later.  The binary installer only works with the x86 family
-    of processors, such as Intel and AMD processors.  Always obtain and
+    2000 or later. Always obtain and
     install the current service pack to avoid operating system bugs.</p>
 
     <div class="note">Apache HTTP Server versions later than 2.2 will not run on any
@@ -65,170 +62,10 @@
 <h2><a name="down" id="down">Downloading Apache for Windows</a></h2>
     
 
-    <p>Information on the latest versions of Apache can be found on the
-    web site of the Apache web server at
-    <a href="http://httpd.apache.org/download.cgi">http://httpd.apache.org/download.cgi</a>.
-    There you will find the current release, as well as more recent alpha
-    or beta test versions, and a list of HTTP and FTP mirrors from which
-    you can download the Apache web server. Please use a mirror near to
-    you for a fast and reliable download.</p>
-
-    <p>For Windows installations you should download the version of
-    Apache for Windows with the <code>.msi</code> extension. This is a
-    single Microsoft Installer file, which contains a ready-to-run
-    build of Apache.  There is a separate <code>.zip</code> file,
-    which contains only the source code, see the summary above.</p>
-
-    <p>There is a choice between an *-openssl-*.msi flavor and
-    a *-no_ssl.msi flavor.  The *-openssl-*.msi flavor is distributed
-    by the Apache Software Foundation under ECCN 5D002 pursuant to
-    US Export Law license exception TSU.  This law may or may not
-    apply to your circumstance, please review the httpd README as
-    well as the <a href="http://www.apache.org/licenses/exports/">ASF
-    Export Classifications and Source Links</a> page.  The project
-    provides no further guidance to third parties in resolving the
-    legal circumstances which apply in each circumstance.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="inst" id="inst">Installing Apache for Windows</a></h2>
-    
-
-    <p>You need Microsoft Installer 2.0 or above for the installation
-    to work.  For Windows NT 4.0 and 2000 refer to Microsoft's article
-    <a href="http://support.microsoft.com/kb/292539/">KB 292539</a>.
-    Windows XP and later do not require this update.</p>
-
-    <p>Note that you cannot install two versions of Apache 2.5 on the
-    same computer with the binary installer. You can, however, install
-    a version of the 1.3 series <strong>and</strong> a version of the
-    2.5 series on the same computer without problems. If you need to
-    have two different 2.5 versions on the same computer, you have to
-    <a href="win_compiling.html">compile and install Apache from the
-    source</a>.</p>
-
-    <p>Run the Apache <code>.msi</code> file you downloaded above. The
-    installation will ask you for these things:</p>
-
-    <ol>
-      <li><p><strong>Network Domain.</strong> Enter the DNS domain in which
-      your server is or will be registered in. For example, if your
-      server's full DNS name is <code>server.example.net</code>, you would
-      type <code>example.net</code> here.</p></li>
-
-      <li><p><strong>Server Name.</strong> Your server's full DNS name.
-      From the example above, you would type <code>server.example.net</code>
-      here.</p></li>
-
-      <li><p><strong>Administrator's Email Address.</strong> Enter the
-      server administrator's or webmaster's email address here. This
-      address will be displayed along with error messages to the client
-      by default.</p></li>
-
-      <li><p><strong>For whom to install Apache</strong> Select <code>for
-      All Users, on Port 80, as a Service - Recommended</code> if you'd
-      like your new Apache to listen at port 80 for incoming traffic.
-      It will run as a service (that is, Apache will run even if no one
-      is logged in on the server at the moment) Select <code>only for
-      the Current User, on Port 8080, when started Manually</code> if
-      you'd like to install Apache for your personal experimenting or
-      if you already have another WWW server running on port 80.</p></li>
-
-      <li><p><strong>The installation type.</strong> Select <code>Typical</code>
-      for everything except the source code and libraries for module
-      development. With <code>Custom</code> you can specify what to
-      install. A full install will require about 13 megabytes of free
-      disk space. This does <em>not</em> include the size of your web
-      site(s).</p></li>
-
-      <li><p><strong>Where to install.</strong> The default path is
-      <code>C:\Program Files\Apache Software Foundation</code>
-      under which a directory called
-      <code>Apache2.3</code> will be created by default.</p></li>
-    </ol>
-
-    <p>During the installation, Apache will configure the files in the
-    <code>conf</code> subdirectory to reflect the chosen installation
-    directory. However, if any of the configuration files in this
-    directory already exist, they will not be overwritten. Instead, the
-    new copy of the corresponding file will be left with the extension
-    <code>.default</code>. So, for example, if <code>conf\httpd.conf</code>
-    already exists, it will be renamed as <code>conf\httpd.conf.default</code>.
-    After the installation you should manually check to see what new
-    settings are in the <code>.default</code> file, and if necessary,
-    update your existing configuration file.</p>
-
-    <p>Also, if you already have a file called <code>htdocs\index.html</code>,
-    it will not be overwritten (and no <code>index.html.default</code>
-    will be installed either). This means it should be safe to install
-    Apache over an existing installation, although you would have to
-    stop the existing running server before doing the installation, and
-    then start the new one after the installation is finished.</p>
-
-    <p>After installing Apache, you must edit the configuration files
-    in the <code>conf</code> subdirectory as required. These files
-    will be configured during the installation so that Apache is ready
-    to be run from the directory it was installed into, with the
-    documents server from the subdirectory <code>htdocs</code>. There
-    are lots of other options which you should set before you really
-    start using Apache. However, to get started quickly, the files
-    should work as installed.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="advinst" id="advinst">Advanced Installation Topics</a></h2>
-    
-
-    <p>One feature of the installer, "Build Headers and Libraries", can be
-    ignored by most users, but should be installed if compiling third party
-    modules.  The "APR Iconv Code Pages" can similarly be omitted by most
-    users, unless using <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> or a third party
-    module which relies on APR internationalization features.</p>
-
-    <p>There are requests to ship a .zip file from time to time.  There is
-    no point in the ASF consuming additional storage, mirroring and bandwidth
-    for this purpose, because the .msi installer allows the installation
-    artifacts to all be unpacked using the <code>msiexec /a</code> network
-    installation option.  Using this command against any .msi will result
-    in an exploded tree of all of the individual files and components.</p>
-
-    <p>The installation options above can be customized by users familiar
-    with msiexec.exe options and silent installation.  The actual installer
-    sources are available in the httpd/httpd/win32-msi/ tree of the httpd
-    project subversion respository.  For reference, some of the more common
-    variables which may be modified are;</p>
-
-    <ul>
-      <li><code>AgreeToLicense</code> (toggle to "Yes")</li>
-      <li><code>ALLUSERS</code> (choose between Null and "1")</li>
-      <li><code>ApplicationUsers</code> (toggle to "OnlyCurrentUser")</li>
-      <li><code>EXISTING_APACHE_SERVICE_PATH</code></li>
-      <li><code>INSTALLDIR</code> (default "ProgramFilesFolder\Apache Software Foundation\Apache2.5\")</li>
-      <li><code>INSTALLLEVEL</code> (default "100", refer to list below)</li>
-      <li><code>RESOLVED_WINSOCK2</code> (toggle to "1")</li>
-      <li><code>SERVERADMIN</code></li>
-      <li><code>SERVERDOMAIN</code></li>
-      <li><code>SERVERNAME</code></li>
-      <li><code>SERVERPORT</code> (default "80")</li>
-      <li><code>SERVERSSLPORT</code> (default "443")</li>
-      <li><code>SERVICEINTERNALNAME</code> (default "Apache2.5", no spaces!)</li>
-      <li><code>SERVICENAME</code> (default "Apache2.5", include spaces)</li>
-      <li><code>SetupType</code> (default "Typical")</li>
-    </ul>
-
-    <p>The installation level of various features, which may be individually
-    toggled, include;</p>
-
-    <ul>
-      <li>Apache (1, base Apache HTTP Server 2.5 feature)</li>
-      <li>ApacheDocs (11, Apache Documentation)</li>
-      <li>ApacheMonitoring (41, Apache Service Taskbar Icon)</li>
-      <li>ApacheRuntime (1, Apache Runtime)</li>
-      <li>BuildFiles (101, Build Headers and Libraries)</li>
-      <li>Iconv (21, APR Iconv Code Pages)</li>
-      <li>OpensslBin (31, OpenSSL Runtime)</li>
-      <li>SslBin (41, Ssl Binaries)</li>
-    </ul>
-
-
+    <p>The Apache Software Foundation itself does not provide binary releases of 
+    software, only source code. If you cannot compile the Apache HTTP Server
+    yourself, you can obtain a binary package on numerous sites specialized 
+    in providing compiled versions of the Apache server for Windows.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="cust" id="cust">Customizing Apache for Windows</a></h2>
@@ -359,13 +196,6 @@ RewriteRule (.*) ${lowercase:$1} [R,L]
 <div class="section">
 <h2><a name="winsvc" id="winsvc">Running Apache as a Service</a></h2>
     
-
-    <p>You can install Apache as a service automatically during the
-    installation. If you chose to install for all users, the
-    installation will create an Apache service for you. If you specify
-    to install for yourself only, you can manually register Apache as a
-    service after the installation. You have to be a member of the
-    Administrators group for the service installation to succeed.</p>
 
     <p>Apache comes with a utility called the Apache Service Monitor.
     With it you can see and manage the state of all installed Apache
@@ -598,8 +428,9 @@ RewriteRule (.*) ${lowercase:$1} [R,L]
     Programs. Change to the folder to which you installed Apache, type
     the command <code>httpd.exe</code>, and read the error message. Then
     change to the logs folder, and review the <code>error.log</code>
-    file for configuration mistakes. If you accepted the defaults when
-    you installed Apache, the commands would be:</p>
+    file for configuration mistakes. Assuming httpd was installed into 
+    <code>C:\Program Files\Apache Software Foundation\Apache2.5\</code>, 
+    you can do the following:</p>
 
     <div class="example"><p><code>
       c: <br />
@@ -675,32 +506,6 @@ RewriteRule (.*) ${lowercase:$1} [R,L]
       httpd.exe -V</code> and looking for a value labelled as
       <code>HTTPD_ROOT</code>.</li>
     </ol>
-
-    <p>During the installation, a version-specific registry key is
-    created in the Windows registry. The location of this key depends
-    on the type of the installation. If you chose to install Apache
-    for all users, the key is located under the
-    <code>HKEY_LOCAL_MACHINE</code> hive, like this (the version
-    numbers will of course vary between different versions of Apache:
-    </p>
-
-    <div class="example"><p><code>
-      HKEY_LOCAL_MACHINE\SOFTWARE\Apache Software Foundation\Apache\2.50
-    </code></p></div>
-
-    <p>Correspondingly, if you chose to install Apache for the current
-    user only, the key is located under the <code>HKEY_CURRENT_USER</code>
-    hive, the contents of which are dependent of the user currently
-    logged on:</p>
-
-    <div class="example"><p><code>
-      HKEY_CURRENT_USER\SOFTWARE\Apache Software Foundation\Apache\2.50
-    </code></p></div>
-
-    <p>This key is compiled into the server and can enable you to test
-    new versions without affecting the current version. Of course, you
-    must take care not to install the new version in the same
-    directory as another version.</p>
 
     <p>If you did not do a binary install, Apache will in some
     scenarios complain about the missing registry key. This warning can
