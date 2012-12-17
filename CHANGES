@@ -35,14 +35,6 @@ Changes with Apache 2.5.0
   *) mod_allowhandlers: New module to forbid specific handlers for specific
      directories. [Stefan Fritsch]
 
-  *) core: Be more correct about rejecting directives that cannot work in <If>
-     sections. [Stefan Fritsch]
-
-  *) core: Fix directives like LogLevel that need to know if they are invoked
-     at virtual host context or in Directory/Files/Location/If sections to
-     work properly in If sections that are not in a Directory/Files/Location.
-     [Stefan Fritsch]
- 
   *) configure: Fix processing of --disable-FEATURE for various features.
      [Jeff Trawick]
 
