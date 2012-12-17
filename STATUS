@@ -124,7 +124,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Content-Length. [Micha Lenk <micha lenk info>]
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1407248
      2.4.x patch: Trunk patch works.
-     +1: rjung, sf
+     +1: rjung, sf, jim
 
    * <If>:
      - Make <If> sections in virtual host context fill in cmd->path so that
@@ -140,7 +140,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1406493
                   http://svn.apache.org/viewvc?view=revision&revision=1406495
      2.4.x patch: Trunk patchs work.
-     +1: rjung, sf
+     +1: rjung, sf, jim
 
    * configure --disable-FEATURE: Fix processing for various features
      (dtrace, hook-probes, exception-hook, maintainer-mode, debugger-mode, luajit).
@@ -183,7 +183,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1331110
      2.4.x patch: Trunk patch works except for modules/slotmem/mod_slotmem_shm.c
                   which should be ommitted (already done in r1400951).
-     +1: rjung
+     +1: rjung, jim
 
    * mod_imagemap: const fixes (didn't compile on old XLC)
      trunk patch: http://svn.apache.org/viewvc?rev=1422234&view=rev
@@ -196,7 +196,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      external modules to use mod_cache.
      trunk patch: http://svn.apache.org/viewvc?rev=1422855&view=rev
      2.4.x patch: trunk patch works.
-     +1: minfrin, humbedooh
+     +1: minfrin, humbedooh, jim
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
