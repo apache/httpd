@@ -1465,7 +1465,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                                                                            "EPSV attempt to connect to %pI failed - firewall/NAT?", &epsv_addr));
                 }
                 else {
-                    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO()
+                    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(02410)
                                   "connected data socket to %pI", &epsv_addr);
                     connect = 1;
                 }
