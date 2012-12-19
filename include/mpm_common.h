@@ -233,7 +233,7 @@ AP_DECLARE(gid_t) ap_gname2id(const char *name);
 int initgroups(const char *name, gid_t basegid);
 #endif
 
-#if !defined(WIN32) || defined(DOXYGEN)
+#if (!defined(WIN32) && !defined(NETWARE)) || defined(DOXYGEN)
 
 typedef struct ap_pod_t ap_pod_t;
 
@@ -322,7 +322,7 @@ AP_DECLARE(apr_status_t) ap_mpm_podx_signal(ap_pod_t *pod,
 AP_DECLARE(void) ap_mpm_podx_killpg(ap_pod_t *pod, int num,
                                     ap_podx_restart_t graceful);
 
-#endif /* !WIN32 || DOXYGEN */
+#endif /* (!WIN32 && !NETWARE) || DOXYGEN */
 
 /**
  * Check that exactly one MPM is loaded
