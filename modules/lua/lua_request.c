@@ -19,6 +19,7 @@
 #include "util_script.h"
 #include "lua_apr.h"
 #include "scoreboard.h"
+#include "lua_dbd.h"
 
 APLOG_USE_MODULE(lua);
 #define POST_MAX_VARS 500
@@ -246,8 +247,8 @@ static int req_parsebody(lua_State *L)
             if (!crlf) break;
             key = (char *) apr_pcalloc(r->pool, 256);
             filename = (char *) apr_pcalloc(r->pool, 256);
-            buffer = (char *) apr_palloc(r->pool, end - crlf);
             vlen = end - crlf - 8;
+            buffer = (char *) apr_pcalloc(r->pool, vlen+1);
             memcpy(buffer, crlf + 4, vlen);
             sscanf(start + len + 2,
                 "Content-Disposition: form-data; name=\"%255[^\"]\"; filename=\"%255[^\"]\"",
