@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- English Revision : 1341451 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="access.xml.meta">
+<parentdocument href="./">How-To / Tutoriels</parentdocument>
+
+<title>Contr&ocirc;le d'acc&egrave;s</title>
+
+<summary>
+    <p>Le contr&ocirc;le d'acc&egrave;s fait r&eacute;f&eacute;rence &agrave; tout concept de contr&ocirc;le
+    d'acc&egrave;s &agrave; une ressource quelconque. Il est distinct du processus d'<a
+    href="auth.html">authentification et d'autorisation</a>.</p>
+</summary>
+
+<section id="related"><title>Modules et directives concern&eacute;s</title>
+
+    <p>Plusieurs modules peuvent intervenir dans le contr&ocirc;le d'acc&egrave;s.
+    Les plus importants sont <module>mod_authz_core</module> et
+    <module>mod_authz_host</module>. Ce document illustre aussi comment
+    utiliser <module>mod_rewrite</module> pour le contr&ocirc;le
+    d'acc&egrave;s.</p>
+
+</section>
+
+<section id="host"><title>Contr&ocirc;le d'acc&egrave;s en fonction de l'h&ocirc;te du
+client</title>
+    <p>
+    Si vous souhaitez restreindre l'acc&egrave;s &agrave; certaines parties de votre
+    site web en fonction de l'addresse de l'h&ocirc;te de vos visiteurs, le
+    plus simple pour y parvenir consiste &agrave; utiliser le module
+    <module>mod_authz_host</module>.
+    </p>
+
+    <p>La directive <directive
+    module="mod_authz_core">Require</directive> permet d'accorder ou
+    d'interdire l'acc&egrave;s &agrave; certaines ressources de diff&eacute;rentes mani&egrave;res.
+    Ces crit&egrave;res d'acc&egrave;s, en conjonction avec les directives <directive
+    module="mod_authz_core">RequireAll</directive>, <directive
+    module="mod_authz_core">RequireAny</directive>, et <directive
+    module="mod_authz_core">RequireNone</directive>, peuvent &ecirc;tre
+    combin&eacute;s d'une mani&egrave;re suffisamment complexe pour
+    satisfaire votre politique de contr&ocirc;le d'acc&egrave;s.</p>
+
+    <note type="warning"><p>
+    Les directives <directive
+    module="mod_access_compat">Allow</directive>, <directive
+    module="mod_access_compat">Deny</directive>, et <directive
+    module="mod_access_compat">Order</directive> fournies par le module
+    <module>mod_access_compat</module> sont obsol&egrave;tes, et sont appel&eacute;es &agrave;
+    dispara&icirc;tre dans les versions futures. Il est donc d&eacute;conseill&eacute; de
+    les utiliser, et de se fier aux tutoriels qui recommandent leur
+    utilisation.
+    </p></note>
+
+    <p>Les directives Require s'utilisent comme suit :</p>
+
+    <highlight language="config">
+Require host address
+Require ip ip.address
+    </highlight>
+
+    <p>Dans la premi&egrave;re forme, <var>nom-h&ocirc;te</var> est un nom de domaine
+    pleinement qualifi&eacute; (fqdn), ou un nom de domaine partiel ; vous
+    pouvez sp&eacute;cifier plusieurs noms de domaines, si vous le d&eacute;sirez.</p>
+
+    <p>Dans la seconde forme, <var>adresse-ip</var> est une adresse IP
+    compl&egrave;te, une adresse IP partielle, une paire r&eacute;seau/masque de
+    sous-r&eacute;seau ou une sp&eacute;cification CIDR de la forme r&eacute;seau/nnn. Il est
+    possible de sp&eacute;cifier des adresses IPv4 ou IPv6.</p>
+
+    <p>Voir <a href="../mod/mod_authz_host.html#requiredirectives">la
+    documentation de mod_authz_host</a> pour d'autres exemples de cette
+    syntaxe.</p>
+
+    <p>Vous pouvez ins&eacute;rer le mot-cl&eacute; <code>not</code> pour inverser un
+    crit&egrave;re particulier. Notez que le mot <code>not</code> &eacute;tant la
+    n&eacute;gation d'une valeur, il ne peut pas &ecirc;tre utilis&eacute; pour autoriser
+    ou interdire une requ&ecirc;te, car <em>non vrai</em> ne
+    sera pas interpret&eacute; par httpd comme <em>faux</em>. Ainsi, pour interdire la
+    visite d'une page &agrave; l'aide d'une n&eacute;gation, le bloc doit contenir un
+    &eacute;l&eacute;ment &eacute;valu&eacute; &agrave; vrai ou faux.
+    Par exemple, si quelqu'un est en train d'inonder
+    votre forum de messages ind&eacute;sirables, vous pouvez ajouter cette ligne pour lui refuser
+    l'acc&egrave;s :</p>
+
+    <highlight language="config">
+&lt;RequireAll&gt;
+    Require all granted
+    Require not ip 10.252.46.165
+&lt;/RequireAll&gt;
+</highlight>
+
+    <p>Les visiteurs poss&eacute;dant cette adresse (<code>10.252.46.165</code>) ne pourront pas voir le
+    contenu concern&eacute; par cette directive. Si vous voulez interdire
+    l'acc&egrave;s &agrave; une machine en fonction de son nom, vous pouvez ajouter
+    ceci :</p>
+
+    <highlight language="config">Require not host <var>host.example.com</var></highlight>
+
+    <p>Et si vous voulez interdire l'acc&egrave;s &agrave; un domaine particulier,
+    vous pouvez sp&eacute;cifier des adresses IP partielles ou des noms de
+    domaine, comme ceci :</p>
+
+    <highlight language="config">
+Require not ip 192.168.205
+Require not host phishers.example.com moreidiots.example
+Require not host gov
+    </highlight>
+
+    <p>Les directives <directive
+    module="mod_authz_core">RequireAll</directive>, <directive
+    module="mod_authz_core">RequireAny</directive>, et <directive
+    module="mod_authz_core">RequireNone</directive> permettent &eacute;galement de pr&eacute;ciser des
+    crit&egrave;res d'acc&egrave;s plus complexes.</p>
+
+</section>
+
+<section id="env"><title>Contr&ocirc;le d'acc&egrave;s en fonction de variables
+arbitraires</title>
+
+    <p>Vous pouvez accorder ou refuser l'acc&egrave;s en fonction de variables
+    d'environnement arbitraires ou de valeurs d'en-t&ecirc;tes de la requ&ecirc;te
+    en utilisant la directive <directive type="section"
+    module="core">If</directive>. Par exemple, pour interdire l'acc&egrave;s en
+    fonction du user-agent (le type de navigateur), vous pouvez
+    sp&eacute;cifier ceci :</p>
+
+    <highlight language="config">
+&lt;If "%{HTTP_USER_AGENT} == 'BadBot'"&gt;
+    Require All Denied
+&lt;/If&gt;
+    </highlight>
+
+    <note><title>Avertissement :</title>
+    <p>Contr&ocirc;ler l'acc&egrave;s en fonction de l'en-t&ecirc;te
+    <code>User-Agent</code> n'est pas une technique fiable, car cet
+    en-t&ecirc;te peut &ecirc;tre d&eacute;fini &agrave; une valeur quelconque, selon le bon
+    vouloir de l'utilisateur.</p>
+    </note>
+
+    <p>Voir le document &agrave; propos des <a
+    href="../expr.html">expressions</a> pour une description plus
+    approfondie des syntaxes d'expressions et des variables disponibles.</p>
+
+</section>
+
+<section id="rewrite"><title>Utilisation de mod_rewrite pour le contr&ocirc;le
+d'acc&egrave;s</title>
+
+    <p>Le drapeau <code>[F]</code> de la directive <directive
+    module="mod_rewrite">RewriteRule</directive> permet d'envoyer une
+    r&eacute;ponse de type 403 Forbidden. Il vous permet donc d'interdire
+    l'acc&egrave;s &agrave; une ressource en fonction d'un crit&egrave;re arbitraire.</p>
+
+    <p>Par exemple, pour bloquer l'acc&egrave;s &agrave; une ressources entre 20h et
+    6h du matin, vous pouvez utiliser <module>mod_rewrite</module> :</p>
+
+    <highlight language="config">
+RewriteEngine On
+RewriteCond %{TIME_HOUR} &gt;=20 [OR]
+RewriteCond %{TIME_HOUR} &lt;07
+RewriteRule ^/fridge - [F]
+    </highlight>
+
+    <p>Toute requ&ecirc;te arrivant apr&egrave;s 20h ou avant 7h du matin provoquera
+    l'envoi d'une r&eacute;ponse de type 403 Forbidden. Vous pouvez utiliser
+    cette technique pour v&eacute;rifier toutes sortes de crit&egrave;res. En outre,
+    si vous le pr&eacute;f&eacute;rez, vous pouvez rediriger ou r&eacute;&eacute;crire la requ&ecirc;te.</p>
+
+    <p>Notez que la directive <directive type="section"
+    module="core">If</directive>, introduite &agrave; partir de la version 2.4,
+    permet de remplacer le module <module>mod_rewrite</module> dans de
+    nombreuses situations o&ugrave; il &eacute;tait traditionnellement utilis&eacute;, et
+    il sera probablement pr&eacute;f&eacute;rable pour vous de tenter de l'utiliser
+    avant de vous tourner vers mod_rewrite.</p>
+
+</section>
+
+<section id="moreinformation"><title>Informations compl&eacute;mentaires</title>
+
+    <p>Le <a href="../expr.html">moteur d'expressions</a> vous fournit
+    une grande puissance d'action en fonction de variables du serveur
+    arbitraires, et il vous est conseill&eacute; de consulter le document
+    correspondant pour plus de d&eacute;tails.</p>
+
+    <p>De m&ecirc;me, vous devez lire la documentation du module
+    <module>mod_authz_core</module> pour des exemples de combinaison de
+    crit&egrave;res d'acc&egrave;s multiples, et en particulier la mani&egrave;re dont ces
+    derniers interagissent.</p>
+
+    <p>Voir aussi le How-To <a href="auth.html">Authentification and
+    autorisation</a>.</p>
+</section>
+
+</manualpage>
+
