@@ -38,6 +38,17 @@
     high-performance, distributed memory object caching system.
     </p>
 
+ 
+    <p>This shared object cache provider's "create" method requies a 
+       comma separated list of memcached host/port specifications. If using
+       this provider via another modules configuration (such as 
+       <code class="directive"><a href="../mod/mod_ssl.html#sslsessioncache">SSLSessionCache</a></code>), provide
+       the list of servers as the optional "arg" parameter.</p>
+
+     <div class="example"><p><code>
+         SSLSessionCache memcache:memcache.example.com:12345,memcache2.example.com:123455
+     </code></p></div>
+      
     <p>Details of other shared object cache providers can be found
     <a href="../socache.html">here</a>.
     </p>
