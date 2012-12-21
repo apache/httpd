@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- English Revision : 1070853 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="index.xml.meta">
+  <parentdocument href="../"/>
+
+  <title>How-To / Tutoriels</title>
+
+  <section id="howto">
+
+    <title>How-To / Tutoriels</title>
+
+    <dl>
+      <dt>Authentification et autorisation</dt>
+      <dd>
+        <p>L'authentification repr&eacute;sente tout processus par lequel vous
+	v&eacute;rifiez si quelqu'un correspond bien &agrave; la personne qu'il
+	pr&eacute;tend &ecirc;tre. L'autorisation repr&eacute;sente tout processus
+	permettant de savoir si une personne est autoris&eacute;e &agrave; aller l&agrave; o&ugrave;
+	elle veut aller, ou &agrave; obtenir les informations qu'elle demande.</p>
+
+        <p>Voir <a href="auth.html">Authentification, Autorisation</a></p>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt>Contr&ocirc;le d'acc&egrave;s</dt>
+      <dd>
+        <p>Le contr&ocirc;le d'acc&egrave;s se r&eacute;f&egrave;re au processus permettant
+	d'interdire ou d'accorder l'acc&egrave;s &agrave; une ressource en fonction de
+	certains crit&egrave;res, et il existe de nombreuses fa&ccedil;ons d'y
+	parvenir.</p>
+
+        <p>Voir <a href="access.html">Contr&ocirc;le d'acc&egrave;s</a></p>
+      </dd>
+    </dl>
+
+   <dl>
+      <dt>Contenu dynamique avec CGI</dt>
+      <dd>
+        <p>L'interface CGI (Common Gateway Interface)
+	fournit au serveur web une m&eacute;thode d'interaction avec des
+	programmes externes g&eacute;n&eacute;rateurs de contenu, souvent nomm&eacute;s
+	programmes CGI ou scripts CGI. Il s'agit de la m&eacute;thode la plus
+	simple (et la plus courante) permettant d'ajouter du contenu
+	dynamique &agrave; votre site web. Ce document se veut une introduction
+	&agrave; la configuration de CGI sur votre serveur web Apache et &agrave;
+	l'&eacute;criture de programmes CGI.</p>
+
+        <p>Voir <a href="cgi.html">CGI : contenu dynamique</a></p>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt>Fichiers <code>.htaccess</code></dt>
+      <dd>
+        <p>Les fichiers <code>.htaccess</code> permettent de modifier la
+	configuration du serveur au niveau de chaque r&eacute;pertoire. &Agrave; cet
+	effet, un fichier est plac&eacute; dans un r&eacute;pertoire particulier du site
+	web, et les directives de configuration qu'il contient s'appliquent &agrave; ce
+	r&eacute;pertoire et &agrave; tous ses sous-r&eacute;pertoires.</p>
+
+        <p>Voir <a href="htaccess.html">Fichiers <code>.htaccess</code></a></p>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt>Introduction au Inclusions c&ocirc;t&eacute; Serveur (Server Side Includes
+      ou SSI)</dt>
+      <dd>
+        <p>Les SSI sont des directives que l'on place dans des pages
+	HTML, et qui sont &eacute;valu&eacute;es par le serveur lorsque ces pages sont
+	servies. Elles vous permettent d'ajouter du contenu g&eacute;n&eacute;r&eacute;
+	dynamiquement &agrave; une page HTML existante, sans avoir &agrave; servir
+	l'int&eacute;gralit&eacute; de la page via un programme CGI, ou toute autre
+	technologie dynamique.</p>
+
+        <p>Voir <a href="ssi.html">Server Side Includes (SSI)</a></p>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt>R&eacute;pertoires web de l'utilisateur</dt>
+      <dd>
+        <p>Sur les syst&egrave;mes multi-utilisateurs, vous pouvez permettre &agrave;
+	chaque utilisateur d'avoir un site web dans son r&eacute;pertoire home
+	via la directive <directive
+	module="mod_userdir">UserDir</directive>. Les visiteurs de l'URL
+	<code>http://example.com/~nom-utilisateur/</code> vont recevoir
+	du contenu situ&eacute; dans le r&eacute;pertoire home de l'utilisateur
+	"<code>nom-utilisateur</code>", et dans le sous-r&eacute;pertoire
+	sp&eacute;cifi&eacute; par la directive <directive
+	module="mod_userdir">UserDir</directive>.</p>
+
+        <p>Voir <a href="public_html.html"
+        >R&eacute;pertoires web des utilisateurs (<code>public_html</code>)</a></p>
+      </dd>
+    </dl>
+
+  </section>
+
+</manualpage>
+
+
