@@ -394,7 +394,7 @@ AP_LUA_DECLARE(lua_State*)ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
                                                ap_lua_vm_spec *spec, request_rec* r)
 {
     lua_State *L = NULL;
-    ap_lua_finfo *cache_info;
+    ap_lua_finfo *cache_info = NULL;
     int tryCache = 0;
     
     if (spec->scope == AP_LUA_SCOPE_SERVER) {
@@ -427,6 +427,9 @@ AP_LUA_DECLARE(lua_State*)ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
                 if (apr_reslist_acquire(reslist, (void**) &sspec) == APR_SUCCESS) {
                     L = sspec->L;
                     cache_info = sspec->finfo;
+                }
+                else {
+                    return NULL;
                 }
             }
         }
