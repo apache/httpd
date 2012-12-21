@@ -19,7 +19,6 @@
 #include "util_script.h"
 #include "lua_apr.h"
 #include "scoreboard.h"
-#include "lua_dbd.h"
 
 APLOG_USE_MODULE(lua);
 #define POST_MAX_VARS 500
