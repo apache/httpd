@@ -27,7 +27,6 @@ function add_symbol(sym_name) {
 
 # List of functions that we don't support, yet??
 #/ap_some_name/{next}
-/ap_mpm_pod_/{next}
 
 /^[ \t]*(AP|DAV|CACHE)([RU]|REQ|_CORE)?_DECLARE[^(]*[(][^)]*[)]([^ ]* )*[^(]+[(]/ {
     sub("[ \t]*(AP|DAV|CACHE)([RU]|REQ|_CORE)?_DECLARE[^(]*[(][^)]*[)][ \t]*", "")
