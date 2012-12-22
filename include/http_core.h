@@ -664,11 +664,12 @@ typedef struct {
 #define AP_TRACE_EXTENDED  2
     int trace_enable;
 
-#define AP_HTTP_VERSION_UNSET   0
-    apr_uint16_t min_http_version;
-    apr_uint16_t max_http_version;
-
     apr_array_header_t *conn_log_level;
+
+#define AP_HTTP09_UNSET   0
+#define AP_HTTP09_ENABLE  1
+#define AP_HTTP09_DISABLE 2
+    char http09_enable;
 
 } core_server_config;
 

@@ -507,10 +507,8 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
     if (virt->trace_enable != AP_TRACE_UNSET)
         conf->trace_enable = virt->trace_enable;
 
-    if (virt->min_http_version != AP_HTTP_VERSION_UNSET) {
-        conf->min_http_version = virt->min_http_version;
-        conf->max_http_version = virt->max_http_version;
-    }
+    if (virt->http09_enable != AP_HTTP09_UNSET)
+        conf->http09_enable = virt->http09_enable;
 
     /* no action for virt->accf_map, not allowed per-vhost */
 
@@ -3704,44 +3702,20 @@ static const char *set_trace_enable(cmd_parms *cmd, void *dummy,
 static const char *set_http_protocol(cmd_parms *cmd, void *dummy,
                                      const char *arg)
 {
-    core_server_config *conf;
-    conf = ap_get_core_module_config(cmd->server->module_config);
-    if (apr_isdigit(arg[0])) {
-        unsigned short min_major, min_minor, max_major, max_minor;
-        unsigned int min, max;
-        char ch;
+    core_server_config *conf =
+        ap_get_core_module_config(cmd->server->module_config);
 
-        if (sscanf(arg, "%hu.%hu-%hu.%hu%c", &min_major, &min_minor,
-                   &max_major, &max_minor, &ch) == 4) {
-        }
-        else if (sscanf(arg, "%hu.%hu%c", &min_major, &min_minor, &ch) == 2) {
-            max_major = min_major;
-            max_minor = min_minor;
-        }
-        else {
-            return "Protocol version must be in format a.b or a.b-c.d";
-        }
-        if (   HTTP_VERSION(0, min_minor) >= HTTP_VERSION(1,0)
-            || HTTP_VERSION(0, max_minor) >= HTTP_VERSION(1,0)) {
-            return "HTTP minor version may not be more than 999";
-        }
-        min = HTTP_VERSION(min_major, min_minor);
-        max = HTTP_VERSION(max_major, max_minor);
-        if (min > APR_UINT16_MAX || max > APR_UINT16_MAX)
-            return "HTTP major version may not be more than 64";
-        if (min > max)
-            return "HTTP version range must be min-max";
-        /* 0 is used for "unset", so make sure the min is larger */
-        if (min < HTTP_VERSION(0,9))
-                min = HTTP_VERSION(0,9);
-        conf->min_http_version = min;
-        conf->max_http_version = max;
+    if (strncmp(arg, "min=", 4) == 0) {
+        arg += 4;
+        if (strcmp(arg, "0.9") == 0)
+            conf->http09_enable = AP_HTTP09_ENABLE;
+        else if (strcmp(arg, "1.0") == 0)
+            conf->http09_enable = AP_HTTP09_DISABLE;
+        else
+            return "HttpProtocol min must be one of '0.9' and '1.0'";
+	return NULL;
     }
-    else {
-        return "Valid arguments are a version number (e.g. '1.1')"
-               "or a version range (e.g. '1.0-9.9')";
-    }
-    return NULL;
+    return "HttpProtocol must be min=0.9|1.0";
 }
 
 static const char *set_http_method(cmd_parms *cmd, void *conf, const char *arg)
@@ -4256,8 +4230,8 @@ AP_INIT_TAKE1("EnableExceptionHook", ap_mpm_set_exception_hook, NULL, RSRC_CONF,
 #endif
 AP_INIT_TAKE1("TraceEnable", set_trace_enable, NULL, RSRC_CONF,
               "'on' (default), 'off' or 'extended' to trace request body content"),
-AP_INIT_ITERATE("HttpProtocol", set_http_protocol, NULL, RSRC_CONF,
-                "Allowed HTTP version or range (e.g. '1.1', '1.0-9.9'"),
+AP_INIT_TAKE1("HttpProtocol", set_http_protocol, NULL, RSRC_CONF,
+              "'min=0.9' (default) or 'min=1.0' to allow/deny HTTP/0.9"),
 AP_INIT_ITERATE("RegisterHttpMethod", set_http_method, NULL, RSRC_CONF,
                 "Registers non-standard HTTP methods"),
 { NULL }
