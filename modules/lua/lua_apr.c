@@ -19,7 +19,6 @@
 #include "lua_apr.h"
 #include "util_md5.h"
 
-
 /**
  * make a userdata out of a C pointer, and vice versa
  * instead of using lightuserdata
@@ -30,9 +29,9 @@
 #endif
 
 
-AP_LUA_DECLARE(apr_table_t*) ap_lua_check_apr_table(lua_State *L, int index)
+AP_LUA_DECLARE(apr_table_t *) ap_lua_check_apr_table(lua_State *L, int index)
 {
-    apr_table_t *t;
+    apr_table_t    *t;
     luaL_checkudata(L, index, "Apr.Table");
     t = (apr_table_t *) lua_unboxpointer(L, index);
     return t;
@@ -48,9 +47,9 @@ AP_LUA_DECLARE(void) ap_lua_push_apr_table(lua_State *L, apr_table_t *t)
 
 static int lua_table_set(lua_State *L)
 {
-    apr_table_t *t = ap_lua_check_apr_table(L, 1);
-    const char *key = luaL_checkstring(L, 2);
-    const char *val = luaL_checkstring(L, 3);
+    apr_table_t    *t = ap_lua_check_apr_table(L, 1);
+    const char     *key = luaL_checkstring(L, 2);
+    const char     *val = luaL_checkstring(L, 3);
 
     apr_table_set(t, key, val);
     return 0;
@@ -58,9 +57,9 @@ static int lua_table_set(lua_State *L)
 
 static int lua_table_get(lua_State *L)
 {
-    apr_table_t *t = ap_lua_check_apr_table(L, 1);
-    const char *key = luaL_checkstring(L, 2);
-    const char *val = apr_table_get(t, key);
+    apr_table_t    *t = ap_lua_check_apr_table(L, 1);
+    const char     *key = luaL_checkstring(L, 2);
+    const char     *val = apr_table_get(t, key);
     lua_pushstring(L, val);
     return 1;
 }
@@ -91,40 +90,35 @@ AP_LUA_DECLARE(int) ap_lua_init(lua_State *L, apr_pool_t *p)
 
 
 /*
- =======================================================================================================================
-    util_read(request_rec *r, const char **rbuf, apr_off_t *size): Reads any additional form data sent in POST/PUT
-    requests.
- =======================================================================================================================
+ * =======================================================================================================================
+ * util_read(request_rec *r, const char **rbuf, apr_off_t *size): Reads any additional form data sent in POST/PUT requests.
+ * =======================================================================================================================
  */
 static int util_read(request_rec *r, const char **rbuf, apr_off_t *size)
 {
-    /*~~~~~~~~*/
     int rc = OK;
-    /*~~~~~~~~*/
 
     if ((rc = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR))) {
         return (rc);
     }
-    
+
     if (ap_should_client_block(r)) {
-
-        /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-        char         argsbuffer[HUGE_STRING_LEN];
-        apr_off_t    rsize, len_read, rpos = 0;
+        char argsbuffer[HUGE_STRING_LEN];
+        apr_off_t rsize,
+                  len_read,
+                  rpos = 0;
         apr_off_t length = r->remaining;
-        /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-        *rbuf = (const char *) apr_pcalloc(r->pool, (apr_size_t) (length + 1));
+        *rbuf = (const char *)apr_pcalloc(r->pool, (apr_size_t) (length + 1));
         *size = length;
         while ((len_read = ap_get_client_block(r, argsbuffer, sizeof(argsbuffer))) > 0) {
             if ((rpos + len_read) > length) {
                 rsize = length - rpos;
-            }
-            else {
+            } else {
                 rsize = len_read;
             }
 
-            memcpy((char *) *rbuf + rpos, argsbuffer, (size_t) rsize);
+            memcpy((char *)*rbuf + rpos, argsbuffer, (size_t) rsize);
             rpos += rsize;
         }
     }
@@ -133,41 +127,38 @@ static int util_read(request_rec *r, const char **rbuf, apr_off_t *size)
 }
 
 /*
- =======================================================================================================================
-    util_write(request_rec *r, const char **rbuf, apr_off_t *size): Reads any additional form data sent in POST/PUT
-    requests and writes to a file.
- =======================================================================================================================
+ * =======================================================================================================================
+ * util_write(request_rec *r, const char **rbuf, apr_off_t *size): Reads any additional form data sent in POST/PUT requests
+ * and writes to a file.
+ * =======================================================================================================================
  */
 static int util_write(request_rec *r, apr_file_t *file, apr_off_t *size)
 {
-    /*~~~~~~~~*/
     int rc = OK;
-    /*~~~~~~~~*/
 
     if ((rc = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR))) {
         return (rc);
     }
-    
     if (ap_should_client_block(r)) {
-
-        /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-        char        argsbuffer[HUGE_STRING_LEN];
-        apr_off_t  rsize, len_read, rpos = 0;
-        apr_off_t   length = r->remaining;
-		apr_size_t  written;
-        /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+        char argsbuffer[HUGE_STRING_LEN];
+        apr_off_t rsize,
+                  len_read,
+                  rpos = 0;
+        apr_off_t length = r->remaining;
+        apr_size_t written;
 
         *size = length;
         while ((len_read = ap_get_client_block(r, argsbuffer, sizeof(argsbuffer))) > 0) {
             if ((rpos + len_read) > length) {
                 rsize = (apr_size_t) length - rpos;
-            }
-            else {
+            } else {
                 rsize = len_read;
             }
 
             rc = apr_file_write_full(file, argsbuffer, (apr_size_t) rsize, &written);
-            if (written != rsize) return -1;
+            if (written != rsize) {
+                return -1;
+            }
             rpos += rsize;
         }
     }
@@ -177,23 +168,29 @@ static int util_write(request_rec *r, apr_file_t *file, apr_off_t *size)
 
 static request_rec *ap_lua_check_request_rec(lua_State *L, int index)
 {
-    request_rec *r;
+    request_rec    *r;
     luaL_checkudata(L, index, "Apache2.Request");
-    r = (request_rec*) lua_unboxpointer(L, index);
+    r = (request_rec *) lua_unboxpointer(L, index);
     return r;
 }
 
-/* lua_apr_b64encode; r:encode_base64(string) - encodes a string to Base64 format */
-static int lua_apr_b64encode (lua_State *L) {
-    const char *plain;
-    char *encoded;
-    size_t x,y,z;
-    request_rec *r;
-    
+/*
+ * lua_apr_b64encode; r:encode_base64(string) - encodes a string to Base64
+ * format
+ */
+static int lua_apr_b64encode(lua_State *L)
+{
+    const char     *plain;
+    char           *encoded;
+    size_t x,
+           y,
+           z;
+    request_rec    *r;
+
     r = ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TSTRING);
     plain = lua_tolstring(L, 2, &x);
-    y = apr_base64_encode_len(x)+1;
+    y = apr_base64_encode_len(x) + 1;
     if (y) {
         encoded = apr_palloc(r->pool, y);
         z = apr_base64_encode(encoded, plain, x);
@@ -203,16 +200,21 @@ static int lua_apr_b64encode (lua_State *L) {
     return 0;
 }
 
-/* lua_apr_b64decode; r:decode_base64(string) - decodes a Base64 string*/
-static int lua_apr_b64decode (lua_State *L) {
-    const char *encoded;
-    char *plain;
-    size_t x,y,z;
-    request_rec *r;
+/*
+ * lua_apr_b64decode; r:decode_base64(string) - decodes a Base64 string
+ */
+static int lua_apr_b64decode(lua_State *L)
+{
+    const char     *encoded;
+    char           *plain;
+    size_t x,
+           y,
+           z;
+    request_rec    *r;
     r = ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TSTRING);
     encoded = lua_tolstring(L, 2, &x);
-    y = apr_base64_decode_len(encoded)+1;
+    y = apr_base64_decode_len(encoded) + 1;
     if (y) {
         plain = apr_palloc(r->pool, y);
         z = apr_base64_decode(plain, encoded);
@@ -222,12 +224,16 @@ static int lua_apr_b64decode (lua_State *L) {
     return 0;
 }
 
-/* lua_ap_unescape; r:unescape(string) - Unescapes an URL-encoded string */
-static int lua_ap_unescape (lua_State *L) {
-    const char *escaped;
-    char *plain;
-    size_t x,y;
-    request_rec *r;
+/*
+ * lua_ap_unescape; r:unescape(string) - Unescapes an URL-encoded string
+ */
+static int lua_ap_unescape(lua_State *L)
+{
+    const char     *escaped;
+    char           *plain;
+    size_t x,
+           y;
+    request_rec    *r;
     r = ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TSTRING);
     escaped = lua_tolstring(L, 2, &x);
@@ -241,12 +247,15 @@ static int lua_ap_unescape (lua_State *L) {
     return 0;
 }
 
-/* lua_ap_escape; r:escape(string) - URL-escapes a string */
-static int lua_ap_escape (lua_State *L) {
-    const char *plain;
-    char *escaped;
+/*
+ * lua_ap_escape; r:escape(string) - URL-escapes a string
+ */
+static int lua_ap_escape(lua_State *L)
+{
+    const char     *plain;
+    char           *escaped;
     size_t x;
-    request_rec *r;
+    request_rec    *r;
     r = ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TSTRING);
     plain = lua_tolstring(L, 2, &x);
@@ -255,15 +264,16 @@ static int lua_ap_escape (lua_State *L) {
     return 1;
 }
 
-/* lua_apr_md5; r:md5(string) - Calculates an MD5 digest of a string */
+/*
+ * lua_apr_md5; r:md5(string) - Calculates an MD5 digest of a string
+ */
 static int lua_apr_md5(lua_State *L)
 {
-    /*~~~~~~~~~~~~~~~~*/
-    const char* buffer;
-    char* result;
+    const char     *buffer;
+    char           *result;
     size_t len;
-    request_rec *r;
-    /*~~~~~~~~~~~~~~~~*/
+    request_rec    *r;
+
     r = ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TSTRING);
     buffer = lua_tolstring(L, 2, &len);
@@ -272,18 +282,18 @@ static int lua_apr_md5(lua_State *L)
     return 1;
 }
 
-/* lua_apr_sha1; r:sha1(string) - Calculates the SHA1 digest of a string */
+/*
+ * lua_apr_sha1; r:sha1(string) - Calculates the SHA1 digest of a string
+ */
 static int lua_apr_sha1(lua_State *L)
 {
-    /*~~~~~~~~~~~~~~~~*/
-    unsigned char      digest[APR_SHA1_DIGESTSIZE];
+    unsigned char digest[APR_SHA1_DIGESTSIZE];
     apr_sha1_ctx_t sha1;
-    const char* buffer;
-    char* result;
+    const char     *buffer;
+    char           *result;
     size_t len;
-    request_rec *r;
-    /*~~~~~~~~~~~~~~~~*/
-    
+    request_rec    *r;
+
     r = ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TSTRING);
     result = apr_pcalloc(r->pool, sizeof(digest) * 2 + 1);
@@ -298,58 +308,65 @@ static int lua_apr_sha1(lua_State *L)
 
 
 
-/* lua_ap_banner; r:banner() - Returns the current server banner */
-static int lua_ap_banner(lua_State *L) 
+/*
+ * lua_ap_banner; r:banner() - Returns the current server banner
+ */
+static int lua_ap_banner(lua_State *L)
 {
     lua_pushstring(L, ap_get_server_banner());
     return 1;
 }
 
-/* lua_ap_port; r:port() - Returns the port used by the request */
-static int lua_ap_port(lua_State *L) 
+/*
+ * lua_ap_port; r:port() - Returns the port used by the request
+ */
+static int lua_ap_port(lua_State *L)
 {
-    /*~~~~~~~~~~~~~~~~~~*/
-    request_rec *r;
+    request_rec    *r;
     apr_port_t port;
-    /*~~~~~~~~~~~~~~~~~~*/
+
     r = ap_lua_check_request_rec(L, 1);
     port = ap_get_server_port(r);
     lua_pushnumber(L, port);
     return 1;
 }
 
-/* lua_ap_mpm_query; r:mpm_query(info) - Queries for MPM info */
-static int lua_ap_mpm_query(lua_State *L) 
+/*
+ * lua_ap_mpm_query; r:mpm_query(info) - Queries for MPM info
+ */
+static int lua_ap_mpm_query(lua_State *L)
 {
-    /*~~~~~~~~~~~~~~~~~~*/
-    int x,y;
-    /*~~~~~~~~~~~~~~~~~~*/
+    int x,
+        y;
+
     x = lua_tonumber(L, 1);
     ap_mpm_query(x, &y);
     lua_pushnumber(L, y);
     return 1;
 }
 
-/* lua_ap_expr; r:expr(string) - Evaluates an expr statement. */
-static int lua_ap_expr(lua_State *L) 
+/*
+ * lua_ap_expr; r:expr(string) - Evaluates an expr statement.
+ */
+static int lua_ap_expr(lua_State *L)
 {
-    /*~~~~~~~~~~~~~~~~~~*/
-    request_rec *r;
+    request_rec    *r;
     int x = 0;
-    const char *expr, *err;
+    const char     *expr,
+    *err;
     ap_expr_info_t res;
-    /*~~~~~~~~~~~~~~~~~~*/
+
     luaL_checktype(L, 1, LUA_TUSERDATA);
     luaL_checktype(L, 2, LUA_TSTRING);
     r = ap_lua_check_request_rec(L, 1);
     expr = lua_tostring(L, 2);
-    
-    
+
+
     res.filename = NULL;
     res.flags = 0;
     res.line_number = 0;
     res.module_index = 0;
-   
+
     err = ap_expr_parse(r->pool, r->pool, &res, expr, NULL);
     if (!err) {
         x = ap_expr_exec(r, &res, &err);
@@ -359,8 +376,7 @@ static int lua_ap_expr(lua_State *L)
             return 2;
         }
         return 1;
-    }
-    else {
+    } else {
         lua_pushboolean(L, 0);
         lua_pushstring(L, err);
         return 2;
@@ -370,25 +386,29 @@ static int lua_ap_expr(lua_State *L)
 }
 
 
-/* lua_ap_regex; r:regex(string, pattern) - Evaluates a regex and returns captures if matched */
-static int lua_ap_regex(lua_State *L) 
+/*
+ * lua_ap_regex; r:regex(string, pattern) - Evaluates a regex and returns
+ * captures if matched
+ */
+static int lua_ap_regex(lua_State *L)
 {
-    /*~~~~~~~~~~~~~~~~~~*/
-    request_rec *r;
-    int i, rv;
-    const char *pattern, *source;
-    char *err;
+    request_rec    *r;
+    int i,
+        rv;
+    const char     *pattern,
+    *source;
+    char           *err;
     ap_regex_t regex;
     ap_regmatch_t matches[10];
-    /*~~~~~~~~~~~~~~~~~~*/
+
     luaL_checktype(L, 1, LUA_TUSERDATA);
     luaL_checktype(L, 2, LUA_TSTRING);
     luaL_checktype(L, 3, LUA_TSTRING);
     r = ap_lua_check_request_rec(L, 1);
     pattern = lua_tostring(L, 2);
     source = lua_tostring(L, 3);
-    
-    rv = ap_regcomp(&regex, pattern,0);
+
+    rv = ap_regcomp(&regex, pattern, 0);
     if (rv) {
         lua_pushboolean(L, 0);
         err = apr_palloc(r->pool, 256);
@@ -406,12 +426,13 @@ static int lua_ap_regex(lua_State *L)
         return 2;
     }
     lua_newtable(L);
-    for (i=0;i<10;i++) {
+    for (i = 0; i < 10; i++) {
         lua_pushinteger(L, i);
         if (matches[i].rm_so >= 0 && matches[i].rm_eo >= 0) {
-            lua_pushstring(L,apr_pstrndup(r->pool, source+matches[i].rm_so, matches[i].rm_eo - matches[i].rm_so));
-        }
-        else {
+            lua_pushstring(L,
+                           apr_pstrndup(r->pool, source + matches[i].rm_so,
+                                        matches[i].rm_eo - matches[i].rm_so));
+        } else {
             lua_pushnil(L);
         }
         lua_settable(L, -3);
@@ -423,64 +444,68 @@ static int lua_ap_regex(lua_State *L)
 
 
 
-/* lua_ap_scoreboard_process; r:scoreboard_process(a) - returns scoreboard info */
-static int lua_ap_scoreboard_process(lua_State *L) 
+/*
+ * lua_ap_scoreboard_process; r:scoreboard_process(a) - returns scoreboard info
+ */
+static int lua_ap_scoreboard_process(lua_State *L)
 {
-    /*~~~~~~~~~~~~~~~~~~*/
     int i;
-    process_score* ps_record;
-    /*~~~~~~~~~~~~~~~~~~*/
+    process_score  *ps_record;
+
     luaL_checktype(L, 1, LUA_TUSERDATA);
     luaL_checktype(L, 2, LUA_TNUMBER);
     i = lua_tonumber(L, 2);
     ps_record = ap_get_scoreboard_process(i);
     if (ps_record) {
         lua_newtable(L);
-        
+
         lua_pushstring(L, "connections");
         lua_pushnumber(L, ps_record->connections);
         lua_settable(L, -3);
-        
+
         lua_pushstring(L, "keepalive");
         lua_pushnumber(L, ps_record->keep_alive);
         lua_settable(L, -3);
-        
+
         lua_pushstring(L, "lingering_close");
         lua_pushnumber(L, ps_record->lingering_close);
         lua_settable(L, -3);
-        
+
         lua_pushstring(L, "pid");
         lua_pushnumber(L, ps_record->pid);
         lua_settable(L, -3);
-        
+
         lua_pushstring(L, "suspended");
         lua_pushnumber(L, ps_record->suspended);
         lua_settable(L, -3);
-        
+
         lua_pushstring(L, "write_completion");
         lua_pushnumber(L, ps_record->write_completion);
         lua_settable(L, -3);
-        
+
         lua_pushstring(L, "not_accepting");
         lua_pushnumber(L, ps_record->not_accepting);
         lua_settable(L, -3);
-        
+
         lua_pushstring(L, "quiescing");
         lua_pushnumber(L, ps_record->quiescing);
         lua_settable(L, -3);
-        
+
         return 1;
     }
     return 0;
 }
 
-/* lua_ap_scoreboard_worker; r:scoreboard_worker(proc, thread) - Returns thread info */
-static int lua_ap_scoreboard_worker(lua_State *L) 
+/*
+ * lua_ap_scoreboard_worker; r:scoreboard_worker(proc, thread) - Returns thread
+ * info
+ */
+static int lua_ap_scoreboard_worker(lua_State *L)
 {
-    /*~~~~~~~~~~~~~~~~~~*/
-    int i,j;
-    worker_score* ws_record;
-    /*~~~~~~~~~~~~~~~~~~*/
+    int i,
+        j;
+    worker_score   *ws_record;
+
     luaL_checktype(L, 1, LUA_TUSERDATA);
     luaL_checktype(L, 2, LUA_TNUMBER);
     luaL_checktype(L, 3, LUA_TNUMBER);
@@ -489,60 +514,60 @@ static int lua_ap_scoreboard_worker(lua_State *L)
     ws_record = ap_get_scoreboard_worker_from_indexes(i, j);
     if (ws_record) {
         lua_newtable(L);
-        
+
         lua_pushstring(L, "access_count");
         lua_pushnumber(L, ws_record->access_count);
         lua_settable(L, -3);
-        
+
         lua_pushstring(L, "bytes_served");
         lua_pushnumber(L, ws_record->bytes_served);
         lua_settable(L, -3);
-        
+
         lua_pushstring(L, "client");
         lua_pushstring(L, ws_record->client);
         lua_settable(L, -3);
-        
+
         lua_pushstring(L, "conn_bytes");
         lua_pushnumber(L, ws_record->conn_bytes);
         lua_settable(L, -3);
-        
+
         lua_pushstring(L, "conn_count");
         lua_pushnumber(L, ws_record->conn_count);
         lua_settable(L, -3);
-        
+
         lua_pushstring(L, "generation");
         lua_pushnumber(L, ws_record->generation);
         lua_settable(L, -3);
-        
+
         lua_pushstring(L, "last_used");
         lua_pushnumber(L, ws_record->last_used);
         lua_settable(L, -3);
-        
+
         lua_pushstring(L, "pid");
         lua_pushnumber(L, ws_record->pid);
         lua_settable(L, -3);
-        
+
         lua_pushstring(L, "request");
         lua_pushstring(L, ws_record->request);
         lua_settable(L, -3);
-        
+
         lua_pushstring(L, "start_time");
         lua_pushnumber(L, ws_record->start_time);
         lua_settable(L, -3);
-        
+
         lua_pushstring(L, "status");
         lua_pushnumber(L, ws_record->status);
         lua_settable(L, -3);
-        
+
         lua_pushstring(L, "stop_time");
         lua_pushnumber(L, ws_record->stop_time);
         lua_settable(L, -3);
-        
+
         lua_pushstring(L, "tid");
 
         lua_pushinteger(L, (lua_Integer) ws_record->tid);
         lua_settable(L, -3);
-        
+
         lua_pushstring(L, "vhost");
         lua_pushstring(L, ws_record->vhost);
         lua_settable(L, -3);
@@ -550,7 +575,7 @@ static int lua_ap_scoreboard_worker(lua_State *L)
         lua_pushstring(L, "stimes");
         lua_pushnumber(L, ws_record->times.tms_stime);
         lua_settable(L, -3);
-        
+
         lua_pushstring(L, "utimes");
         lua_pushnumber(L, ws_record->times.tms_utime);
         lua_settable(L, -3);
@@ -560,15 +585,21 @@ static int lua_ap_scoreboard_worker(lua_State *L)
     return 0;
 }
 
-/* lua_ap_restarted; r:started() - Returns the timestamp of last server (re)start */
-static int lua_ap_restarted(lua_State *L) 
+/*
+ * lua_ap_restarted; r:started() - Returns the timestamp of last server
+ * (re)start
+ */
+static int lua_ap_restarted(lua_State *L)
 {
-        lua_pushnumber(L, ap_scoreboard_image->global->restart_time);
-        return 1;
+    lua_pushnumber(L, ap_scoreboard_image->global->restart_time);
+    return 1;
 }
 
-/* lua_ap_clock; r:clock() - Returns timestamp with microsecond precision*/
-static int lua_ap_clock(lua_State *L)  {
+/*
+ * lua_ap_clock; r:clock() - Returns timestamp with microsecond precision
+ */
+static int lua_ap_clock(lua_State *L)
+{
     apr_time_t now;
     now = apr_time_now();
     lua_pushnumber(L, now);
@@ -576,33 +607,26 @@ static int lua_ap_clock(lua_State *L)  {
 }
 
 
-/* lua_ap_requestbody; r:requestbody([filename]) - Reads or stores the request body */
+/*
+ * lua_ap_requestbody; r:requestbody([filename]) - Reads or stores the request
+ * body
+ */
 static int lua_ap_requestbody(lua_State *L)
 {
-    /*~~~~~~~~~~~~~~~~~~*/
-    const char  *filename;
-    request_rec* r;
-    /*~~~~~~~~~~~~~~~~~~*/
+    const char     *filename;
+    request_rec    *r;
 
     r = ap_lua_check_request_rec(L, 1);
     filename = luaL_optstring(L, 2, 0);
-    
+
     if (r) {
+        apr_off_t size;
 
-        /*~~~~~~~~~~~~~*/
-        apr_off_t   size;
-        /*~~~~~~~~~~~~~*/
-
-        if
-        (
-            r->method_number != M_POST
-        &&  r->method_number != M_PUT
-        ) return (0);
+        if (r->method_number != M_POST && r->method_number != M_PUT) {
+            return (0);
+        }
         if (!filename) {
-
-            /*~~~~~~~~~~~~~~*/
-            const char  *data;
-            /*~~~~~~~~~~~~~~*/
+            const char     *data;
 
             if (util_read(r, &data, &size) != OK) {
                 return (0);
@@ -611,13 +635,9 @@ static int lua_ap_requestbody(lua_State *L)
             lua_pushlstring(L, data, (size_t) size);
             lua_pushinteger(L, (lua_Integer) size);
             return (2);
-        }
-        else {
-
-            /*~~~~~~~~~~~~~~~~~~*/
-            apr_status_t    rc;
-            apr_file_t      *file;
-            /*~~~~~~~~~~~~~~~~~~*/
+        } else {
+            apr_status_t rc;
+            apr_file_t     *file;
 
             rc = apr_file_open(&file, filename, APR_CREATE | APR_FOPEN_WRITE,
                                APR_FPROT_OS_DEFAULT, r->pool);
@@ -628,12 +648,11 @@ static int lua_ap_requestbody(lua_State *L)
                 if (rc == -1) {
                     return (0);
                 }
-
                 lua_pushinteger(L, (lua_Integer) size);
                 return (1);
-            }
-            else
+            } else {
                 lua_pushboolean(L, 0);
+            }
             return (1);
         }
     }
@@ -641,14 +660,16 @@ static int lua_ap_requestbody(lua_State *L)
     return (0);
 }
 
-/* lua_ap_add_input_filter; r:add_input_filter(name) - Adds an input filter to the chain */
-static int lua_ap_add_input_filter(lua_State *L) 
+/*
+ * lua_ap_add_input_filter; r:add_input_filter(name) - Adds an input filter to
+ * the chain
+ */
+static int lua_ap_add_input_filter(lua_State *L)
 {
-    /*~~~~~~~~~~~~~~~~~~*/
-    request_rec *r;
-    const char* filterName;
+    request_rec    *r;
+    const char     *filterName;
     ap_filter_rec_t *filter;
-    /*~~~~~~~~~~~~~~~~~~*/
+
     luaL_checktype(L, 1, LUA_TUSERDATA);
     luaL_checktype(L, 2, LUA_TSTRING);
     r = ap_lua_check_request_rec(L, 1);
@@ -657,21 +678,22 @@ static int lua_ap_add_input_filter(lua_State *L)
     if (filter) {
         ap_add_input_filter_handle(filter, NULL, r, r->connection);
         lua_pushboolean(L, 1);
-    }
-    else {
+    } else {
         lua_pushboolean(L, 0);
     }
     return 1;
 }
 
 
-/* lua_ap_module_info; r:module_info(mod_name) - Returns information about a loaded module */
-static int lua_ap_module_info(lua_State *L) 
+/*
+ * lua_ap_module_info; r:module_info(mod_name) - Returns information about a
+ * loaded module
+ */
+static int lua_ap_module_info(lua_State *L)
 {
-    /*~~~~~~~~~~~~~~~~~~*/
-    const char* moduleName;
-    module* mod;
-    /*~~~~~~~~~~~~~~~~~~*/
+    const char     *moduleName;
+    module         *mod;
+
     luaL_checktype(L, 1, LUA_TSTRING);
     moduleName = lua_tostring(L, 1);
     mod = ap_find_linked_module(moduleName);
@@ -691,13 +713,15 @@ static int lua_ap_module_info(lua_State *L)
     return 0;
 }
 
-/* lua_ap_runtime_dir_relative: r:runtime_dir_relative(file): Returns the filename as relative to the runtime dir*/
-static int lua_ap_runtime_dir_relative(lua_State *L) 
+/*
+ * lua_ap_runtime_dir_relative: r:runtime_dir_relative(file): Returns the
+ * filename as relative to the runtime dir
+ */
+static int lua_ap_runtime_dir_relative(lua_State *L)
 {
-    /*~~~~~~~~~~~~~~~~~~*/
-    request_rec *r;
-    const char* file;
-    /*~~~~~~~~~~~~~~~~~~*/
+    request_rec    *r;
+    const char     *file;
+
     luaL_checktype(L, 1, LUA_TUSERDATA);
     r = ap_lua_check_request_rec(L, 1);
     file = luaL_optstring(L, 2, ".");
@@ -705,13 +729,15 @@ static int lua_ap_runtime_dir_relative(lua_State *L)
     return 1;
 }
 
-/* lua_ap_set_document_root; r:set_document_root(path) - sets the current doc root for the request */
-static int lua_ap_set_document_root(lua_State *L) 
+/*
+ * lua_ap_set_document_root; r:set_document_root(path) - sets the current doc
+ * root for the request
+ */
+static int lua_ap_set_document_root(lua_State *L)
 {
-    /*~~~~~~~~~~~~~~~~~~*/
-    request_rec *r;
-    const char* root;
-    /*~~~~~~~~~~~~~~~~~~*/
+    request_rec    *r;
+    const char     *root;
+
     luaL_checktype(L, 1, LUA_TUSERDATA);
     luaL_checktype(L, 2, LUA_TSTRING);
     r = ap_lua_check_request_rec(L, 1);
@@ -720,94 +746,104 @@ static int lua_ap_set_document_root(lua_State *L)
     return 0;
 }
 
-/* lua_ap_stat; r:stat(filename) - Runs stat on a file and returns the file info as a table */
-static int lua_ap_stat(lua_State *L) 
+/*
+ * lua_ap_stat; r:stat(filename) - Runs stat on a file and returns the file
+ * info as a table
+ */
+static int lua_ap_stat(lua_State *L)
 {
-    /*~~~~~~~~~~~~~~~~~~*/
-    request_rec *r;
-    const char* filename;
+    request_rec    *r;
+    const char     *filename;
     apr_finfo_t file_info;
-    /*~~~~~~~~~~~~~~~~~~*/
+
     luaL_checktype(L, 1, LUA_TUSERDATA);
     luaL_checktype(L, 2, LUA_TSTRING);
     r = ap_lua_check_request_rec(L, 1);
     filename = lua_tostring(L, 2);
     apr_stat(&file_info, filename, APR_FINFO_NORM, r->pool);
     lua_newtable(L);
-    
+
     lua_pushstring(L, "mtime");
     lua_pushinteger(L, file_info.mtime);
     lua_settable(L, -3);
-    
+
     lua_pushstring(L, "atime");
     lua_pushinteger(L, file_info.atime);
     lua_settable(L, -3);
-    
+
     lua_pushstring(L, "ctime");
     lua_pushinteger(L, file_info.ctime);
     lua_settable(L, -3);
-    
+
     lua_pushstring(L, "size");
     lua_pushinteger(L, file_info.size);
     lua_settable(L, -3);
-    
+
     lua_pushstring(L, "filetype");
     lua_pushinteger(L, file_info.filetype);
     lua_settable(L, -3);
-    
+
     return 1;
 }
 
-/* lua_ap_loaded_modules; r:loaded_modules() - Returns a list of loaded modules */
-static int lua_ap_loaded_modules(lua_State *L) 
+/*
+ * lua_ap_loaded_modules; r:loaded_modules() - Returns a list of loaded modules
+ */
+static int lua_ap_loaded_modules(lua_State *L)
 {
     int i;
     lua_newtable(L);
     for (i = 0; ap_loaded_modules[i] && ap_loaded_modules[i]->name; i++) {
-        lua_pushinteger(L, i+1);
+        lua_pushinteger(L, i + 1);
         lua_pushstring(L, ap_loaded_modules[i]->name);
         lua_settable(L, -3);
     }
     return 1;
 }
 
-/* lua_ap_server_info; r:server_info() - Returns server info, such as the executable filename, server root, mpm etc*/
-static int lua_ap_server_info(lua_State *L) 
+/*
+ * lua_ap_server_info; r:server_info() - Returns server info, such as the
+ * executable filename, server root, mpm etc
+ */
+static int lua_ap_server_info(lua_State *L)
 {
     lua_newtable(L);
-    
+
     lua_pushstring(L, "server_executable");
     lua_pushstring(L, ap_server_argv0);
     lua_settable(L, -3);
-    
+
     lua_pushstring(L, "server_root");
     lua_pushstring(L, ap_server_root);
     lua_settable(L, -3);
-    
+
     lua_pushstring(L, "scoreboard_fname");
     lua_pushstring(L, ap_scoreboard_fname);
     lua_settable(L, -3);
-    
+
     lua_pushstring(L, "server_mpm");
     lua_pushstring(L, ap_show_mpm());
     lua_settable(L, -3);
-    
+
     return 1;
 }
 
 
-/* === Auto-scraped functions === */
+/*
+ * === Auto-scraped functions ===
+ */
 
-/** 
+/**
  * ap_add_version_component (apr_pool_t *pconf, const char *component)
  * Add a component to the server description and banner strings
  * @param pconf The pool to allocate the component from
  * @param component The string to add
-  */
-static int lua_ap_add_version_component (lua_State *L) {
+ */
+static int lua_ap_add_version_component(lua_State *L)
+{
 
-    request_rec *r;
-    const char* component;
+    request_rec    *r;
+    const char     *component;
     luaL_checktype(L, 1, LUA_TUSERDATA);
     r = ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TSTRING);
@@ -817,7 +853,7 @@ static int lua_ap_add_version_component (lua_State *L) {
 }
 
 
-/** 
+/**
  * ap_set_context_info (request_rec *r, const char *prefix,
                                      const char *document_root) Set context_prefix and context_document_root for a request.
  * @param r The request
@@ -826,12 +862,13 @@ static int lua_ap_add_version_component (lua_State *L) {
  * slash
  * @note If one of prefix of document_root is NULL, the corrsponding
  * property will not be changed.
-  */
-static int lua_ap_set_context_info (lua_State *L) {
+ */
+static int lua_ap_set_context_info(lua_State *L)
+{
 
-    request_rec *r;
-    const char* prefix;
-    const char* document_root;
+    request_rec    *r;
+    const char     *prefix;
+    const char     *document_root;
     luaL_checktype(L, 1, LUA_TUSERDATA);
     r = ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TSTRING);
@@ -843,7 +880,7 @@ static int lua_ap_set_context_info (lua_State *L) {
 }
 
 
-/** 
+/**
  * ap_os_escape_path (apr_pool_t *p, const char *path, int partial)
  * convert an OS path to a URL in an OS dependant way.
  * @param p The pool to allocate from
@@ -851,36 +888,40 @@ static int lua_ap_set_context_info (lua_State *L) {
  * @param partial if set, assume that the path will be appended to something
  *        with a '/' in it (and thus does not prefix "./")
  * @return The converted URL
-  */
-static int lua_ap_os_escape_path (lua_State *L) {
+ */
+static int lua_ap_os_escape_path(lua_State *L)
+{
 
-    char * returnValue;
-    request_rec *r;
-    const char* path;
+    char           *returnValue;
+    request_rec    *r;
+    const char     *path;
     int partial = 0;
     luaL_checktype(L, 1, LUA_TUSERDATA);
     r = ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TSTRING);
     path = lua_tostring(L, 2);
-    if ( lua_isboolean( L, 3 ) ) partial =  lua_toboolean( L, 3 );
+    if (lua_isboolean(L, 3)) {
+        partial = lua_toboolean(L, 3);
+    }
     returnValue = ap_os_escape_path(r->pool, path, partial);
     lua_pushstring(L, returnValue);
     return 1;
 }
 
 
-/** 
+/**
  * ap_escape_logitem (apr_pool_t *p, const char *str)
  * Escape a string for logging
  * @param p The pool to allocate from
  * @param str The string to escape
  * @return The escaped string
-  */
-static int lua_ap_escape_logitem (lua_State *L) {
+ */
+static int lua_ap_escape_logitem(lua_State *L)
+{
 
-    char * returnValue;
-    request_rec *r;
-    const char* str;
+    char           *returnValue;
+    request_rec    *r;
+    const char     *str;
     luaL_checktype(L, 1, LUA_TUSERDATA);
     r = ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TSTRING);
@@ -890,41 +931,49 @@ static int lua_ap_escape_logitem (lua_State *L) {
     return 1;
 }
 
-/** 
+/**
  * ap_strcmp_match (const char *str, const char *expected)
  * Determine if a string matches a patterm containing the wildcards '?' or '*'
  * @param str The string to check
  * @param expected The pattern to match against
  * @return 1 if the two strings match, 0 otherwise
-  */
-static int lua_ap_strcmp_match (lua_State *L) {
-    
+ */
+static int lua_ap_strcmp_match(lua_State *L)
+{
+
     int returnValue;
-    const char* str;
-    const char* expected;
+    const char     *str;
+    const char     *expected;
     int ignoreCase = 0;
     luaL_checktype(L, 1, LUA_TSTRING);
     str = lua_tostring(L, 1);
     luaL_checktype(L, 2, LUA_TSTRING);
     expected = lua_tostring(L, 2);
-    if ( lua_isboolean( L, 3 ) ) ignoreCase =  lua_toboolean( L, 3 );
-    if (!ignoreCase) returnValue = ap_strcmp_match(str, expected);
-    else returnValue = ap_strcasecmp_match(str, expected);
-    lua_pushboolean(L, (!returnValue)); /* Somehow, this doesn't match the docs */
+    if (lua_isboolean(L, 3)) {
+        ignoreCase = lua_toboolean(L, 3);
+    }
+    if (!ignoreCase) {
+        returnValue = ap_strcmp_match(str, expected);
+    }
+    else{
+        returnValue = ap_strcasecmp_match(str, expected);
+    }
+    lua_pushboolean(L, (!returnValue));
     return 1;
 }
 
 
-/** 
+/**
  * ap_set_keepalive (request_rec *r)
  * Set the keepalive status for this request
  * @param r The current request
  * @return 1 if keepalive can be set, 0 otherwise
-  */
-static int lua_ap_set_keepalive (lua_State *L) {
+ */
+static int lua_ap_set_keepalive(lua_State *L)
+{
 
     int returnValue;
-    request_rec *r;
+    request_rec    *r;
     luaL_checktype(L, 1, LUA_TUSERDATA);
     r = ap_lua_check_request_rec(L, 1);
     returnValue = ap_set_keepalive(r);
@@ -932,7 +981,7 @@ static int lua_ap_set_keepalive (lua_State *L) {
     return 1;
 }
 
-/** 
+/**
  * ap_make_etag (request_rec *r, int force_weak)
  * Construct an entity tag from the resource information.  If it's a real
  * file, build in some of the file characteristics.
@@ -940,11 +989,12 @@ static int lua_ap_set_keepalive (lua_State *L) {
  * @param force_weak Force the entity tag to be weak - it could be modified
  *                   again in as short an interval.
  * @return The entity tag
-  */
-static int lua_ap_make_etag (lua_State *L) {
+ */
+static int lua_ap_make_etag(lua_State *L)
+{
 
-    char * returnValue;
-    request_rec *r;
+    char           *returnValue;
+    request_rec    *r;
     int force_weak;
     luaL_checktype(L, 1, LUA_TUSERDATA);
     r = ap_lua_check_request_rec(L, 1);
@@ -957,37 +1007,41 @@ static int lua_ap_make_etag (lua_State *L) {
 
 
 
-/** 
+/**
  * ap_send_interim_response (request_rec *r, int send_headers)
  * Send an interim (HTTP 1xx) response immediately.
  * @param r The request
  * @param send_headers Whether to send&clear headers in r->headers_out
-  */
-static int lua_ap_send_interim_response (lua_State *L) {
+ */
+static int lua_ap_send_interim_response(lua_State *L)
+{
 
-    request_rec *r;
+    request_rec    *r;
     int send_headers = 0;
     luaL_checktype(L, 1, LUA_TUSERDATA);
     r = ap_lua_check_request_rec(L, 1);
-    if ( lua_isboolean( L, 2 ) ) send_headers =  lua_toboolean( L, 2 );
+    if (lua_isboolean(L, 2)) {
+        send_headers = lua_toboolean(L, 2);
+    }
     ap_send_interim_response(r, send_headers);
     return 0;
 }
 
 
-/** 
+/**
  * ap_custom_response (request_rec *r, int status, const char *string)
  * Install a custom response handler for a given status
  * @param r The current request
  * @param status The status for which the custom response should be used
  * @param string The custom response.  This can be a static string, a file
  *               or a URL
-  */
-static int lua_ap_custom_response (lua_State *L) {
+ */
+static int lua_ap_custom_response(lua_State *L)
+{
 
-    request_rec *r;
+    request_rec    *r;
     int status;
-    const char* string;
+    const char     *string;
     luaL_checktype(L, 1, LUA_TUSERDATA);
     r = ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TNUMBER);
@@ -999,16 +1053,17 @@ static int lua_ap_custom_response (lua_State *L) {
 }
 
 
-/** 
+/**
  * ap_exists_config_define (const char *name)
  * Check for a definition from the server command line
  * @param name The define to check for
  * @return 1 if defined, 0 otherwise
-  */
-static int lua_ap_exists_config_define (lua_State *L) {
+ */
+static int lua_ap_exists_config_define(lua_State *L)
+{
 
     int returnValue;
-    const char* name;
+    const char     *name;
     luaL_checktype(L, 1, LUA_TSTRING);
     name = lua_tostring(L, 1);
     returnValue = ap_exists_config_define(name);
@@ -1016,10 +1071,11 @@ static int lua_ap_exists_config_define (lua_State *L) {
     return 1;
 }
 
-static int lua_ap_get_server_name_for_url (lua_State *L) {
+static int lua_ap_get_server_name_for_url(lua_State *L)
+{
 
-    const char* servername;
-    request_rec *r;
+    const char     *servername;
+    request_rec    *r;
     luaL_checktype(L, 1, LUA_TUSERDATA);
     r = ap_lua_check_request_rec(L, 1);
     servername = ap_get_server_name_for_url(r);
@@ -1029,9 +1085,10 @@ static int lua_ap_get_server_name_for_url (lua_State *L) {
 
 
 
-/** 
+/**
  * ap_state_query (int query_code) item starts a new field  */
-static int lua_ap_state_query (lua_State *L) {
+static int lua_ap_state_query(lua_State *L)
+{
 
     int returnValue;
     int query_code;
@@ -1042,7 +1099,8 @@ static int lua_ap_state_query (lua_State *L) {
     return 1;
 }
 
-static int lua_ap_sleep (lua_State *L) {
+static int lua_ap_sleep(lua_State *L)
+{
 
     int msec;
     luaL_checktype(L, 1, LUA_TNUMBER);
@@ -1051,47 +1109,47 @@ static int lua_ap_sleep (lua_State *L) {
     return 0;
 }
 
-static const struct luaL_Reg httpd_functions [] = {
-      {"base64_encode",         lua_apr_b64encode},
-      {"base64_decode",         lua_apr_b64decode},
-      {"md5",                   lua_apr_md5},
-      {"sha1",                  lua_apr_sha1},
-      {"escape",                lua_ap_escape},
-      {"unescape",              lua_ap_unescape},
-      {"banner",                lua_ap_banner},
-      {"port",                  lua_ap_port},
-      {"mpm_query",             lua_ap_mpm_query},
-      {"expr",                  lua_ap_expr},
-      {"scoreboard_process",    lua_ap_scoreboard_process},
-      {"scoreboard_worker",     lua_ap_scoreboard_worker},
-      {"started",               lua_ap_restarted},
-      {"clock",                 lua_ap_clock},
-      {"requestbody",           lua_ap_requestbody},
-      {"add_input_filter",      lua_ap_add_input_filter},
-      {"module_info",           lua_ap_module_info},
-      {"loaded_modules",        lua_ap_loaded_modules},
-      {"runtime_dir_relative",  lua_ap_runtime_dir_relative},
-      {"server_info",           lua_ap_server_info},
-      {"set_document_root",     lua_ap_set_document_root},
-      {"add_version_component"         , lua_ap_add_version_component},
-      {"set_context_info"              , lua_ap_set_context_info},
-      {"os_escape_path"                , lua_ap_os_escape_path},
-      {"escape_logitem"                , lua_ap_escape_logitem},
-      {"strcmp_match"                  , lua_ap_strcmp_match},
-      {"set_keepalive"                 , lua_ap_set_keepalive},
-      {"make_etag"                     , lua_ap_make_etag},     
-      {"send_interim_response"         , lua_ap_send_interim_response},
-      {"custom_response"               , lua_ap_custom_response},
-      {"exists_config_define"          , lua_ap_exists_config_define},
-      {"state_query"                   , lua_ap_state_query},
-      {"stat"                          , lua_ap_stat},
-      {"regex"                         , lua_ap_regex},
-      {"sleep"                         , lua_ap_sleep},
-      {"get_server_name_for_url"       , lua_ap_get_server_name_for_url},
-      {NULL, NULL}  /* sentinel */
+static const struct luaL_Reg httpd_functions[] = {
+    {"base64_encode", lua_apr_b64encode},
+    {"base64_decode", lua_apr_b64decode},
+    {"md5", lua_apr_md5},
+    {"sha1", lua_apr_sha1},
+    {"escape", lua_ap_escape},
+    {"unescape", lua_ap_unescape},
+    {"banner", lua_ap_banner},
+    {"port", lua_ap_port},
+    {"mpm_query", lua_ap_mpm_query},
+    {"expr", lua_ap_expr},
+    {"scoreboard_process", lua_ap_scoreboard_process},
+    {"scoreboard_worker", lua_ap_scoreboard_worker},
+    {"started", lua_ap_restarted},
+    {"clock", lua_ap_clock},
+    {"requestbody", lua_ap_requestbody},
+    {"add_input_filter", lua_ap_add_input_filter},
+    {"module_info", lua_ap_module_info},
+    {"loaded_modules", lua_ap_loaded_modules},
+    {"runtime_dir_relative", lua_ap_runtime_dir_relative},
+    {"server_info", lua_ap_server_info},
+    {"set_document_root", lua_ap_set_document_root},
+    {"add_version_component", lua_ap_add_version_component},
+    {"set_context_info", lua_ap_set_context_info},
+    {"os_escape_path", lua_ap_os_escape_path},
+    {"escape_logitem", lua_ap_escape_logitem},
+    {"strcmp_match", lua_ap_strcmp_match},
+    {"set_keepalive", lua_ap_set_keepalive},
+    {"make_etag", lua_ap_make_etag},
+    {"send_interim_response", lua_ap_send_interim_response},
+    {"custom_response", lua_ap_custom_response},
+    {"exists_config_define", lua_ap_exists_config_define},
+    {"state_query", lua_ap_state_query},
+    {"stat", lua_ap_stat},
+    {"regex", lua_ap_regex},
+    {"sleep", lua_ap_sleep},
+    {"get_server_name_for_url", lua_ap_get_server_name_for_url},
+    {NULL, NULL}                /* sentinel */
 };
 
-AP_LUA_DECLARE(int) ap_lua_load_httpd_functions(lua_State *L) 
+AP_LUA_DECLARE(int) ap_lua_load_httpd_functions(lua_State *L)
 {
     lua_getglobal(L, "apache2");
     luaL_register(L, NULL, httpd_functions);
