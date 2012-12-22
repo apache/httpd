@@ -500,6 +500,18 @@ Require group admin
     entire request, and subsequent <code class="directive">Require</code> directives
     are ignored.</p>
 
+    <div class="warning"><h3>Security Warning</h3>
+    <p>Exercise caution when setting authorization directives in
+    <code class="directive"><a href="../mod/core.html#location">Location</a></code> sections
+    that overlap with content served out of the filesystem.  
+    By default, these <a href="../sections.html#mergin">configuration sections</a> overwrite authorization configuration
+    in <code class="directive"><a href="../mod/core.html#directory">Directory</a></code>,  
+    and <code class="directive"><a href="../mod/core.html#files">Files</a></code> sections.</p>
+    <p>The <code class="directive"><a href="#authmerging">AuthMerging</a></code> directive 
+    can be used to control how authorization configuration sections are 
+    merged.</p>
+    </div>
+
 <h3>See also</h3>
 <ul>
 <li><a href="../howto/auth.html">Authentication, Authorization,
