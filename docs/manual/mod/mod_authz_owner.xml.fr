@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1330911:1421821 (outdated) -->
+<!-- English Revision : 1421821 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -31,8 +31,6 @@ fichiers</description>
 <status>Extension</status>
 <sourcefile>mod_authz_owner.c</sourcefile>
 <identifier>authz_owner_module</identifier>
-<compatibility>Disponible depuis les versions 2.1 et sup&eacute;rieures
-d'Apache</compatibility>
 
 <summary>
     <p>Ce module permet de contr&ocirc;ler l'acc&egrave;s aux fichiers en comparant
