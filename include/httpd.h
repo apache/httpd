@@ -2243,13 +2243,15 @@ AP_DECLARE(void *) ap_realloc(void *ptr, size_t size)
  * Get server load params
  * @param ld struct to populate: -1 in fields means error
  */
-AP_DECLARE(void) ap_get_sload(ap_sload_t *ld);
+AP_DECLARE(void) ap_get_sload(ap_sload_t *ld)
+                 AP_FN_ATTR_NONNULL_ALL;
 
 /**
  * Get server load averages (ala getloadavg)
  * @param ld struct to populate: -1 in fields means error
  */
-AP_DECLARE(void) ap_get_loadavg(ap_loadavg_t *ld);
+AP_DECLARE(void) ap_get_loadavg(ap_loadavg_t *ld)
+                 AP_FN_ATTR_NONNULL_ALL;
 
 /**
  * Convert binary data into a hex string
@@ -2258,7 +2260,8 @@ AP_DECLARE(void) ap_get_loadavg(ap_loadavg_t *ld);
  * @param dest pointer to buffer of length (2 * srclen + 1). The resulting
  *        string will be NUL-terminated.
  */
-AP_DECLARE(void) ap_bin2hex(const void *src, apr_size_t srclen, char *dest);
+AP_DECLARE(void) ap_bin2hex(const void *src, apr_size_t srclen, char *dest)
+                 AP_FN_ATTR_NONNULL_ALL;
 
 #define AP_NORESTART APR_OS_START_USEERR + 1
 
