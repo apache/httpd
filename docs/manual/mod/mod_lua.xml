@@ -70,10 +70,10 @@ This will cause <code>mod_lua</code> to handle requests for files
 ending in <code>.lua</code> by invoking that file's
 <code>handle</code> function.
 </p>
-
+<!--
 <p>For more flexibility, see <directive>LuaMapHandler</directive>.
 </p>
-
+-->
 </section>
 
 <section id="writinghandlers"><title>Writing Handlers</title>
