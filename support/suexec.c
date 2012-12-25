@@ -241,11 +241,15 @@ static void clean_env(void)
 
     if ((cleanenv = (char **) calloc(AP_ENVBUF, sizeof(char *))) == NULL) {
         log_err("failed to malloc memory for environment\n");
-        exit(120);
+        exit(123);
     }
 
     sprintf(pathbuf, "PATH=%s", AP_SAFE_PATH);
     cleanenv[cidx] = strdup(pathbuf);
+    if (cleanenv[cidx] == NULL) {
+        log_err("failed to malloc memory for environment\n");
+        exit(124);
+    }
     cidx++;
 
     for (ep = envp; *ep && cidx < AP_ENVBUF-1; ep++) {
@@ -422,7 +426,10 @@ int main(int argc, char *argv[])
         }
     }
     gid = gr->gr_gid;
-    actual_gname = strdup(gr->gr_name);
+    if ((actual_gname = strdup(gr->gr_name)) == NULL) {
+        log_err("failed to alloc memory\n");
+        exit(125);
+    }
 
 #ifdef _OSD_POSIX
     /*
@@ -457,6 +464,10 @@ int main(int argc, char *argv[])
     uid = pw->pw_uid;
     actual_uname = strdup(pw->pw_name);
     target_homedir = strdup(pw->pw_dir);
+    if (actual_uname == NULL || target_homedir == NULL) {
+        log_err("failed to alloc memory\n");
+        exit(126);
+    }
 
     /*
      * Log the transaction here to be sure we have an open log
