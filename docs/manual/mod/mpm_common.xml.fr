@@ -1,0 +1,874 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1421892 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mpm_common.xml.meta">
+
+<name>mpm_common</name>
+<description>Une s&eacute;rie de directives impl&eacute;ment&eacute;es par plusieurs
+modules multi-processus (MPM)</description>
+<status>MPM</status>
+
+<directivesynopsis>
+<name>CoreDumpDirectory</name>
+<description>Le r&eacute;pertoire dans lequel le serveur HTTP Apache va tenter de se
+positionner avant d'effectuer un vidage m&eacute;moire</description>
+<syntax>CoreDumpDirectory <var>r&eacute;pertoire</var></syntax>
+<default>Voir ci-dessous pour le r&eacute;pertoire par d&eacute;faut</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>event</module><module>prefork</module>
+<module>worker</module></modulelist>
+
+<usage>
+    <p>Cette directive permet de d&eacute;finir le r&eacute;pertoire dans lequel
+    Apache httpd va tenter de se positionner avant d'effectuer un vidage
+    m&eacute;moire sur disque.
+    Si votre syst&egrave;me d'exploitation est configur&eacute; pour cr&eacute;er des
+    fichiers de vidage m&eacute;moire dans le r&eacute;pertoire de travail des
+    processus qui se sont crash&eacute;s,
+    <directive>CoreDumpDirectory</directive> est n&eacute;cessaire pour
+    d&eacute;finir un r&eacute;pertoire de travail autre que le r&eacute;pertoire par d&eacute;faut
+    <directive module="core">ServerRoot</directive>, ce r&eacute;pertoire de
+    travail ne devant pas &ecirc;tre accessible en &eacute;criture par l'utilisateur sous
+    lequel le serveur s'ex&eacute;cute.</p>
+
+    <p>Si vous avez besoin d'un vidage m&eacute;moire pour le d&eacute;bogage, vous
+    pouvez utiliser cette directive pour le placer &agrave; un endroit
+    diff&eacute;rent. Cette directive n'a aucun effet si votre syst&egrave;me
+    d'exploitation n'est pas configur&eacute; pour cr&eacute;er des
+    fichiers de vidage m&eacute;moire dans le r&eacute;pertoire de travail des
+    processus qui se sont crash&eacute;s.</p>
+
+    <note><title>Vidages m&eacute;moire sous Linux</title>
+      <p>Si Apache httpd est d&eacute;marr&eacute; sous l'utilisateur root puis bascule vers
+      un autre utilisateur, le noyau Linux <em>d&eacute;sactive</em> les
+      vidages m&eacute;moire, m&ecirc;me si le r&eacute;pertoire est accessible en &eacute;criture au
+      processus. Apache httpd (versions 2.0.46 et sup&eacute;rieures) r&eacute;active les
+      vidages m&eacute;moire sous Linux 2.4 et au del&agrave;, mais seulement si vous
+      d&eacute;finissez une directive <directive>CoreDumpDirectory</directive>.</p>
+    </note>
+
+    <note>
+    <title>Vidages m&eacute;moire sous BSD</title>
+    <p>Pour activer le vidage m&eacute;moire des ex&eacute;cutables suid sur les
+    syst&egrave;mes de style BSD (comme FreeBSD), d&eacute;finissez
+    <code>kern.sugid_coredump</code> &agrave; 1.
+    </p>
+    </note>
+
+    <note><title>Signaux sp&eacute;cifiques</title>
+      <p><directive>CoreDumpDirectory</directive> n'est trait&eacute; qu'&agrave; la
+      reception d'un certain nombre de signaux , SIGFPE, SIGILL, SIGABORT,
+      SIGSEGV, et SIGBUS.</p>
+      <p>
+      Sur certains syst&egrave;mes d'exploitation, SIGQUIT provoque aussi un
+      vidage m&eacute;moire, mais n'est pas trait&eacute; par les directives
+      <directive>CoreDumpDirectory</directive> ou
+      <directive>EnableExceptionHook</directive>, si bien que la
+      d&eacute;finition du r&eacute;pertoire d'enregistrement du vidage m&eacute;moire est
+      enti&egrave;rement d&eacute;volue au syst&egrave;me d'exploitation.</p>
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>EnableExceptionHook</name>
+<description>Active un hook ("point d'accrochage logiciel") qui ex&eacute;cute des
+gestionnaires d'exception apr&egrave;s un crash</description>
+<syntax>EnableExceptionHook On|Off</syntax>
+<default>EnableExceptionHook Off</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist>
+<module>event</module><module>prefork</module>
+<module>worker</module></modulelist>
+
+<usage>
+    <p>Pour des raisons de s&eacute;curit&eacute;, cette directive n'est disponible
+    que si la compilation du serveur a &eacute;t&eacute; configur&eacute;e avec l'option
+    <code>--enable-exception-hook</code>. Elle permet d'activer un hook
+    ("point d'accrochage logiciel")
+    qui autorise certains modules externes &agrave; effectuer un branchement et
+    accomplir telle ou telle action apr&egrave;s le crash d'un processus
+    enfant.</p>
+
+    <p>Deux modules, <code>mod_whatkilledus</code> et
+    <code>mod_backtrace</code> utilisent ce hook. Veuillez vous
+    r&eacute;f&eacute;rer &agrave; la <a
+    href="http://people.apache.org/~trawick/exception_hook.html"
+    >page EnableExceptionHook</a> de Jeff Trawick pour plus
+    d'informations &agrave; leur sujet.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>GracefulShutdownTimeout</name>
+<description>Sp&eacute;cifie le d&eacute;lai maximum apr&egrave;s lequel le serveur va
+s'arr&ecirc;ter dans le cas d'un arr&ecirc;t "en douceur"</description>
+<syntax>GracefulShutDownTimeout <var>secondes</var></syntax>
+<default>GracefulShutDownTimeout 0</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>prefork</module><module>worker</module>
+<module>event</module></modulelist>
+<compatibility>Disponible dans les versions 2.2 et sup&eacute;rieures</compatibility>
+
+<usage>
+    <p>La directive <directive>GracefulShutdownTimeout</directive>
+    permet de sp&eacute;cifier le temps, en secondes, pendant lequel le serveur
+    va continuer &agrave; fonctionner apr&egrave;s avoir re&ccedil;u un signal
+    "graceful-stop" ("Arr&ecirc;t en douceur"), afin de terminer le traitement
+    des connexions en cours.</p>
+
+    <p>D&eacute;finir cette valeur &agrave; z&eacute;ro signifie au serveur d'attendre
+    jusqu'&agrave; ce que toutes les requ&ecirc;tes en cours aient &eacute;t&eacute; trait&eacute;es.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>PidFile</name>
+<description>Ficher dans lequel le serveur enregistre l'identificateur
+de processus du d&eacute;mon</description>
+<syntax>PidFile <var>nom fichier</var></syntax>
+<default>PidFile logs/httpd.pid</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>event</module><module>mpm_winnt</module>
+<module>mpmt_os2</module><module>prefork</module><module>worker</module>
+</modulelist>
+
+<usage>
+    <p>La directive <directive>PidFile</directive> permet de d&eacute;finir le
+    ficher dans lequel le serveur
+    enregistre l'identificateur de processus du d&eacute;mon. Si le chemin du
+    fichier n'est pas absolu, il est consid&eacute;r&eacute; comme relatif au chemin
+    d&eacute;fini par la directive <directive
+    module="core">ServerRoot</directive>.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+      PidFile /var/run/apache.pid
+      </highlight>
+    </example>
+
+    <p>Il est souvent utile de pouvoir envoyer un signal au
+    serveur afin qu'il ferme et ouvre &agrave; nouveau ses journaux
+    d'<directive module="core">erreur</directive> et de <directive
+    module="mod_log_config">transfert</directive>, et recharge son
+    fichier de configuration. Pour ce faire, on envoie un signal SIGHUP
+    (kill -1) &agrave; l'identificateur de processus enregistr&eacute; dans le fichier
+    d&eacute;fini par la directive <directive>PidFile</directive>.</p>
+
+    <p>La directive <directive>PidFile</directive> fait l'objet des
+    m&ecirc;mes avertissements que ceux concernant le chemin d'enregistrement
+    des fichiers journaux et la <a
+    href="../misc/security_tips.html#serverroot">s&eacute;curit&eacute;</a>.</p>
+
+    <note><title>Note</title>
+      <p>Depuis la version 2 du serveur HTTP Apache, nous recommandons de n'utiliser
+      que le script <program>apachectl</program>, ou le script de
+      d&eacute;marrage fourni avec votre syst&egrave;me d'exploitation pour (re)d&eacute;marrer ou
+      arr&ecirc;ter le serveur.</p>
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Listen</name>
+<description>Les adresses IP et ports sur lesquels le serveur &eacute;coute</description>
+<syntax>Listen [<var>adresse IP</var>:]<var>num&eacute;ro port</var>
+[<var>protocole</var>]</syntax>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>mpm_netware</module><module>mpm_winnt</module>
+<module>mpmt_os2</module>
+<module>prefork</module><module>worker</module>
+<module>event</module>
+</modulelist>
+<compatibility>L'argument <var>protocole</var> est support&eacute; depuis la version
+2.1.5</compatibility>
+
+<usage>
+    <p>La directive <directive>Listen</directive> permet de signifier &agrave;
+    Apache httpd de ne se mettre &agrave; l'&eacute;coute que sur les adresses IP et ports sp&eacute;cifi&eacute;s ; par
+    d&eacute;faut, le serveur r&eacute;pond aux requ&ecirc;tes en provenance de toutes les
+    interfaces r&eacute;seau. La directive <directive>Listen</directive> est
+    dor&eacute;navant requise, et si elle est absente du fichier de
+    configuration, le serveur refusera de d&eacute;marrer. Ceci constitue un
+    changement par rapport aux versions pr&eacute;c&eacute;dentes d'Apache httpd.</p>
+
+    <p>La directive <directive>Listen</directive> signifie au serveur de
+    n'accepter les requ&ecirc;tes entrantes que vers le port ou le couple
+    adresse-port sp&eacute;cifi&eacute;. Si seulement un port est sp&eacute;cifi&eacute;, le serveur
+    se met &agrave; l'&eacute;coute sur ce port sur toutes les interfaces r&eacute;seau. Si une adresse IP
+    et un port sont sp&eacute;cifi&eacute;s, le serveur va se mettre &agrave; l'&eacute;coute sur ce port sur
+    l'interface r&eacute;seau correspondant &agrave; l'adresse IP.</p>
+
+    <p>On peut utiliser autant de directives
+    <directive>Listen</directive> que n&eacute;cessaire pour sp&eacute;cifier
+    plusieurs adresses et/ou ports &agrave; &eacute;couter. Le serveur r&eacute;pondra aux
+    requ&ecirc;tes vers tous les adresses et ports sp&eacute;cifi&eacute;s.</p>
+
+    <p>Par exemple, pour que le serveur accepte les connexions sur les
+    ports 80 et 8000, utilisez :</p>
+
+    <highlight language="config">
+Listen 80
+Listen 8000
+    </highlight>
+
+    <p>Pour que la serveur accepte les connexions sur deux interfaces et
+    ports particuliers, sp&eacute;cifiez :</p>
+
+    <highlight language="config">
+Listen 192.170.2.1:80
+Listen 192.170.2.5:8000
+    </highlight>
+
+    <p>Les adressee IPv6 doivent &ecirc;tre entour&eacute;es de crochets, comme dans
+    l'exemple suivant :</p>
+
+    <highlight language="config">
+      Listen [2001:db8::a00:20ff:fea7:ccea]:80
+    </highlight>
+
+    <p>L'argument optionnel <var>protocole</var> n'est pas n&eacute;cessaire
+    dans la plupart des configurations. S'il est absent,
+    <code>https</code> est la valeur par d&eacute;faut pour le port 443 et
+    <code>http</code> l'est pour tous les autres ports. L'argument
+    protocole sert &agrave; d&eacute;terminer quel module doit traiter une requ&ecirc;te, et
+    &agrave; appliquer des optimisations sp&eacute;cifiques &agrave; certains protocoles &agrave;
+    l'aide de la directive <directive
+    module="core">AcceptFilter</directive>.</p>
+
+    <p>La sp&eacute;cification d'un protocole n'est n&eacute;cessaire que si vous
+    utilisez des ports non standards. Par exemple, pour configurer un
+    site en <code>https</code> sur le port 8443 :</p>
+
+    <highlight language="config">
+      Listen 192.170.2.1:8443 https
+    </highlight>
+
+    <note><title>Condition d'erreur</title>
+      Plusieurs directives <directive>Listen</directive> pour les m&ecirc;mes
+      adresse IP/port vont provoquer l'envoi d'un message d'erreur
+      <code>Address already in use</code>.
+    </note>
+
+</usage>
+<seealso><a href="../dns-caveats.html">Probl&egrave;mes avec DNS</a></seealso>
+<seealso><a href="../bind.html">D&eacute;finition des adresses et ports
+qu'utilise le serveur HTTP Apache</a></seealso>
+<seealso><a
+href="http://wiki.apache.org/httpd/CouldNotBindToAddress">Autre
+discussion &agrave; propos du message d'erreur <code>Address already in
+use</code>, citant d'autres causes possibles.</a></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ListenBackLog</name>
+<description>Longueur maximale de la liste d'attente des
+connexions</description>
+<syntax>ListenBacklog <var>backlog</var></syntax>
+<default>ListenBacklog 511</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist>
+<module>event</module>
+<module>mpm_netware</module><module>mpm_winnt</module>
+<module>mpmt_os2</module><module>prefork</module>
+<module>worker</module></modulelist>
+
+<usage>
+    <p>La longueur maximale de la liste d'attente des connexions. En
+    g&eacute;n&eacute;ral, aucune modification n'est n&eacute;cessaire, ni m&ecirc;me souhaitable ;
+    cependant, sur certains syst&egrave;mes, il peut &ecirc;tre n&eacute;cessaire
+    d'en augmenter la valeur en cas d'attaque TCP SYN flood (envoi en
+    masse de requ&ecirc;tes SYN pour saturer le serveur). Voir le param&egrave;tre
+    backlog de l'appel syst&egrave;me <code>listen(2)</code>.</p>
+
+    <p>En fait, l'argument backlog sera souvent limit&eacute; &agrave; une valeur
+    inf&eacute;rieure en fonction du syst&egrave;me d'exploitation. Notez aussi que de
+    nombreux syst&egrave;mes d'exploitation ne tiennent pas vraiment compte de
+    la valeur sp&eacute;cifi&eacute;e pour l'argument backlog, mais s'en inspirent
+    seulement (et choisissent en g&eacute;n&eacute;ral une valeur sup&eacute;rieure).</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MaxRequestWorkers</name>
+<description>Nombre maximum de connexions pouvant &ecirc;tre trait&eacute;es
+simultan&eacute;ment</description>
+<syntax>MaxRequestWorkers <var>nombre</var></syntax>
+<default>Voir ci-dessous pour plus de d&eacute;tails</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>event</module><module>prefork</module>
+<module>worker</module>
+</modulelist>
+
+<usage>
+    <p>La directive <directive>MaxRequestWorkers</directive> permet de fixer le
+    nombre maximum de requ&ecirc;tes pouvant &ecirc;tre trait&eacute;es simultan&eacute;ment.
+    Si la limite <directive>MaxRequestWorkers</directive> est atteinte, toute
+    tentative de connexion sera normalement mise dans une file
+    d'attente, et ceci jusqu'&agrave; un certain nombre d&eacute;pendant de la
+    directive <directive module="mpm_common">ListenBacklog</directive>.
+    Lorsqu'un processus enfant se lib&egrave;rera suite &agrave; la fin du traitement
+    d'une requ&ecirc;te, la connexion en attente pourra &ecirc;tre trait&eacute;e &agrave; son
+    tour.</p>
+
+    <p>Pour les serveurs non thread&eacute;s (<em>c'est &agrave; dire</em> utilisant
+    <module>prefork</module>), la directive
+    <directive>MaxRequestWorkers</directive> d&eacute;finit alors le nombre maximum de
+    processus enfants qui pourront &ecirc;tre lanc&eacute;s simultan&eacute;ment pour
+    traiter les requ&ecirc;tes. La valeur par d&eacute;faut est <code>256</code> ; si
+    vous l'augmentez, vous devez aussi augmenter la valeur de la
+    directive <directive
+    module="mpm_common">ServerLimit</directive>.</p>
+
+    <p>Pour les serveur thread&eacute;s et hybrides (utilisant <em>par
+    exemple</em> <module>event</module> ou <module>worker</module>),
+    <directive>MaxRequestWorkers</directive> d&eacute;finit alors le nombre total de
+    threads qui seront disponibles pour servir les clients. Dans le
+    cas des MPMs hybrides, la valeur par d&eacute;faut est <code>16</code>
+    (directive <directive
+    module="mpm_common">ServerLimit</directive>) multipli&eacute; par la valeur
+    <code>25</code> (directive <directive module="mpm_common"
+    >ThreadsPerChild</directive>). Par cons&eacute;quent, pour affecter &agrave; la
+    directive <directive>MaxRequestWorkers</directive> une valeur qui requiert
+    plus de 16 processus, vous devez aussi augmenter la valeur de la
+    directive <directive module="mpm_common"
+    >ServerLimit</directive>.</p>
+
+    <p>Le nom de la directive <directive>MaxRequestWorkers</directive>
+    &eacute;tait <directive>MaxClients</directive> avant la version 2.3.13. Cet
+    ancien nom est encore support&eacute;.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MaxMemFree</name>
+<description>Quantit&eacute; maximale de m&eacute;moire que l'allocateur principal est
+autoris&eacute; &agrave; conserver sans appeler <code>free()</code></description>
+<syntax>MaxMemFree <var>KOctets</var></syntax>
+<default>MaxMemFree 2048</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>event</module><module>mpm_netware</module>
+<module>prefork</module><module>worker</module><module>mpm_winnt</module>
+</modulelist>
+
+<usage>
+    <p>La directive <directive>MaxMemFree</directive> permet de d&eacute;finir
+    le nombre maximum de KOctets libres que tout allocateur est
+    autoris&eacute; &agrave; conserver sans appeler <code>free()</code>. Dans les MPMs
+    thread&eacute;s, chaque thread poss&egrave;de son propre allocateur. Si elle est
+    d&eacute;finie &agrave; 0, la quantit&eacute; de m&eacute;moire libre que peut conserver un
+    allocateur est illimit&eacute;e.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MaxConnectionsPerChild</name>
+<description>Limite le nombre de connexions qu'un processus enfant va
+traiter au cours de son fonctionnement</description>
+<syntax>MaxConnectionsPerChild <var>number</var></syntax>
+<default>MaxConnectionsPerChild 0</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>event</module><module>mpm_netware</module>
+<module>mpm_winnt</module><module>mpmt_os2</module>
+<module>prefork</module><module>worker</module></modulelist>
+<compatibility>Disponible depuis la version 2.3.9 du serveur HTTP
+Apache. L'ancien nom <code>MaxRequestsPerChild</code> est encore
+support&eacute;.</compatibility>
+
+<usage>
+    <p>La directive <directive>MaxConnectionsPerChild</directive> permet de
+    d&eacute;finir le nombre maximum de connexions qu'un processus enfant va
+    pouvoir traiter au cours de son fonctionnement. Lorsqu'il a trait&eacute;
+    <directive>MaxConnectionsPerChild</directive> connexions, le processus
+    enfant est arr&ecirc;t&eacute;. Si <directive>MaxConnectionsPerChild</directive> est
+    d&eacute;finie &agrave; <code>0</code>, il n'y a plus aucune limite sur le nombre
+    de connexions que le processus pourra traiter.</p>
+
+    <p>D&eacute;finir <directive>MaxConnectionsPerChild</directive> &agrave; une valeur
+    non nulle limite la quantit&eacute; de m&eacute;moire qu'un processus peut
+    consommer &agrave; cause de fuites (accidentelles) de m&eacute;moire.</p>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MaxSpareThreads</name>
+<description>Nombre maximum de threads inactifs</description>
+<syntax>MaxSpareThreads <var>nombre</var></syntax>
+<default>Voir ci-dessous pour plus de d&eacute;tails</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>event</module><module>mpm_netware</module>
+<module>mpmt_os2</module><module>worker</module></modulelist>
+
+<usage>
+    <p>C'est le nombre maximum de threads inactifs. Les MPMs utilisent
+    cette directive de diff&eacute;rentes mani&egrave;res.</p>
+
+    <p>Pour <module>worker</module>, la d&eacute;finition par d&eacute;faut est
+    <code>MaxSpareThreads 250</code>. Ce MPM g&egrave;re les threads inactifs
+    au niveau du serveur. Si le serveur poss&egrave;de trop de threads
+    inactifs, des processus enfants seront arr&ecirc;t&eacute;s jusqu'&agrave; ce que le
+    nombre de threads inactifs repasse en dessous de cette limite.</p>
+
+    <p>Pour <module>mpm_netware</module>, la d&eacute;finition par d&eacute;faut est
+    <code>MaxSpareThreads 100</code>. Comme ce MPM n'ex&eacute;cute qu'un seul
+    processus, le nombre de processus inactifs est surveill&eacute; au
+    niveau du serveur.</p>
+
+    <p><module>mpmt_os2</module> fonctionne de mani&egrave;re similaire &agrave;
+    <module>mpm_netware</module>. Pour <module>mpmt_os2</module>, la
+    valeur par d&eacute;faut est <code>10</code>.</p>
+
+    <note><title>Contraintes</title>
+      <p>La gamme de valeurs pour <directive>MaxSpareThreads</directive>
+      est limit&eacute;e. Apache httpd corrigera automatiquement cette valeur selon
+      les r&egrave;gles suivantes :</p>
+      <ul>
+        <li>Avec <module>mpm_netware</module>, <directive
+        >MaxSpareThreads</directive> doit &ecirc;tre sup&eacute;rieure &agrave; <directive
+	module="mpm_common">MinSpareThreads</directive>.</li>
+
+        <li>Avec
+	<module>worker</module>, <directive>MaxSpareThreads</directive>
+	doit &ecirc;tre sup&eacute;rieure ou &eacute;gale &agrave; la somme de <directive
+	module="mpm_common">MinSpareThreads</directive> et <directive
+	module="mpm_common">ThreadsPerChild</directive>.</li>
+      </ul>
+    </note>
+</usage>
+<seealso><directive module="mpm_common">MinSpareThreads</directive></seealso>
+<seealso><directive module="mpm_common">StartServers</directive></seealso>
+<seealso><directive module="prefork">MaxSpareServers</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MinSpareThreads</name>
+<description>Nombre minimum de threads inactifs qui seront disponibles
+pour pouvoir traiter les pics de requ&ecirc;tes</description>
+<syntax>MinSpareThreads <var>nombre</var></syntax>
+<default>Voir ci-dessous pour plus de d&eacute;tails</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>event</module><module>mpm_netware</module>
+<module>mpmt_os2</module><module>worker</module></modulelist>
+
+<usage>
+    <p>C'est le nombre minimum de threads inactifs pour &ecirc;tre en mesure
+    de traiter les pics de requ&ecirc;tes. Les MPMs utilisent cette directive
+    de diff&eacute;rentes mani&egrave;res.</p>
+
+    <p>Avec <module>worker</module>, la d&eacute;finition par d&eacute;faut est
+    <code>MinSpareThreads 75</code>, et le nombre de threads inactifs
+    est surveill&eacute; au niveau du serveur. Si le serveur ne poss&egrave;de pas
+    assez de threads inactifs, des processus enfants sont cr&eacute;&eacute;s jusqu'&agrave;
+    ce que le nombre de threads inactifs repasse au dessus de
+    <var>nombre</var>.</p>
+
+    <p>Avec <module>mpm_netware</module>, la d&eacute;finition par d&eacute;faut est
+    <code>MinSpareThreads 10</code> et, comme ce MPM n'ex&eacute;cute qu'un
+    seul processus, le nombre de threads est surveill&eacute; au niveau du
+    serveur.</p>
+
+    <p><module>mpmt_os2</module> fonctionne de mani&egrave;re similaire &agrave;
+    <module>mpm_netware</module>. Pour <module>mpmt_os2</module>, la
+    valeur par d&eacute;faut est <code>5</code>.</p>
+
+</usage>
+<seealso><directive module="mpm_common">MaxSpareThreads</directive></seealso>
+<seealso><directive module="mpm_common">StartServers</directive></seealso>
+<seealso><directive module="prefork">MinSpareServers</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ScoreBoardFile</name>
+<description>Chemin du fichier o&ugrave; sont stock&eacute;es les donn&eacute;es concernant
+la coordination des processus enfants</description>
+<syntax>ScoreBoardFile <var>chemin fichier</var></syntax>
+<default>ScoreBoardFile logs/apache_runtime_status</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>event</module><module>mpm_winnt</module>
+<module>prefork</module><module>worker</module></modulelist>
+
+<usage>
+    <p>Le serveur HTTP Apache utilise un tableau de bord pour la
+    communication entre le processus parent et les processus enfants.
+    Pour faciliter cette communication, certaines architectures
+    n&eacute;cessitent un fichier. En l'absence de cette directive, donc si
+    aucun nom de fichier n'est sp&eacute;cifi&eacute;, Apache httpd tentera tout
+    d'abord de cr&eacute;er un tableau uniquement en m&eacute;moire (en utilisant la
+    m&eacute;moire partag&eacute;e anonyme) ; et si il n'y parvient pas, il tentera de
+    cr&eacute;er un fichier sur disque (en utilisant la m&eacute;moire partag&eacute;e &agrave; base
+    de fichier). Si cette directive est utilis&eacute;e, Apache httpd cr&eacute;era
+    syst&eacute;matiquement un fichier sur disque.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+      ScoreBoardFile /var/run/apache_runtime_status
+      </highlight>
+    </example>
+
+    <p>Une m&eacute;moire partag&eacute;e sous forme de fichier est utile pour les
+    applications tierses qui n&eacute;cessitent un acc&egrave;s direct au tableau de
+    bord des processus.</p>
+
+    <p>Si vous utilisez un <directive>ScoreBoardFile</directive>, vous
+    pourrez constater une am&eacute;lioration des performances en le pla&ccedil;ant
+    sur un disque virtuel en RAM. Assurez-vous cependant de tenir compte
+    des m&ecirc;mes avertissements que ceux concernant le chemin du fichier
+    journal et la <a
+    href="../misc/security_tips.html">s&eacute;curit&eacute;</a>.</p>
+</usage>
+<seealso><a href="../stopping.html">Arr&ecirc;ter et red&eacute;marrer
+le serveur HTTP Apache</a></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ReceiveBufferSize</name>
+<description>Taille du tampon TCP en entr&eacute;e</description>
+<syntax>ReceiveBufferSize <var>octets</var></syntax>
+<default>ReceiveBufferSize 0</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>event</module><module>mpm_netware</module>
+<module>mpm_winnt</module><module>mpmt_os2</module><module>prefork</module>
+<module>worker</module></modulelist>
+
+<usage>
+    <p>Le serveur va fixer la taille du tampon TCP en entr&eacute;e au
+    nombre d'octets sp&eacute;cifi&eacute;.</p>
+
+    <p>Si la directive est d&eacute;finie &agrave; <code>0</code>, le serveur va
+    utiliser la valeur par d&eacute;faut adopt&eacute;e par le syst&egrave;me
+    d'exploitation.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SendBufferSize</name>
+<description>Taille du tampon TCP en sortie</description>
+<syntax>SendBufferSize <var>octets</var></syntax>
+<default>SendBufferSize 0</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>event</module><module>mpm_netware</module>
+<module>mpm_winnt</module><module>mpmt_os2</module><module>prefork</module>
+<module>worker</module></modulelist>
+
+<usage>
+    <p>D&eacute;finit la taille du tampon TCP en sortie avec le nombre
+    d'octets sp&eacute;cifi&eacute;. Ceci s'av&egrave;re souvent tr&egrave;s utile pour augmenter les
+    valeurs par d&eacute;faut standards du pass&eacute; des syst&egrave;mes d'exploitation
+    pour les transmissions &agrave; grande vitesse et haute densit&eacute; (<em>c'est
+    &agrave; dire</em> de l'ordre de 100ms comme sur les liaisons rapides
+    transcontinentales).</p>
+
+    <p>Si la directive est d&eacute;finie &agrave; <code>0</code>, le serveur va
+    utiliser la valeur par d&eacute;faut adopt&eacute;e par le syst&egrave;me
+    d'exploitation.</p>
+
+    <p>L'am&eacute;lioration des performances des connexions &agrave; grande vitesse
+    et &agrave; temps de latence &eacute;lev&eacute;, peut n&eacute;cessiter
+    une intervention au niveau de la configuration de votre syst&egrave;me
+    d'exploitation.</p>
+
+    <note><p>Sous certains syst&egrave;mes d'exploitation, la modification du
+    comportement TCP via une augmentation de la valeur de
+    <directive>SendBufferSize</directive> risque de ne pas &ecirc;tre
+    perceptible, si la directive <directive
+    module="core">EnableSendfile</directive> n'est pas d&eacute;finie &agrave; OFF.
+    Cette interaction ne s'applique qu'aux fichiers statiques.</p> </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ServerLimit</name>
+<description>Limite sup&eacute;rieure de la d&eacute;finition du nombre de
+processus</description>
+<syntax>ServerLimit <var>nombre</var></syntax>
+<default>Voir ci-dessous pour plus de d&eacute;tails</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>event</module><module>prefork</module>
+<module>worker</module></modulelist>
+
+<usage>
+    <p>Avec le MPM <module>prefork</module>, cette directive d&eacute;finit le
+    nombre maximum que l'on peut affecter &agrave; la directive <directive
+    module="mpm_common">MaxRequestWorkers</directive>, et ceci pour la
+    dur&eacute;e de vie du processus Apache httpd. Avec le
+    MPM <module>worker</module>, cette directive, en combinaison avec
+    <directive module="mpm_common">ThreadLimit</directive>, d&eacute;finit le
+    nombre maximum que l'on peut affecter &agrave; <directive
+    module="mpm_common">MaxRequestWorkers</directive>, et ceci pour la dur&eacute;e de
+    vie du processus Apache httpd. Au cours d'un red&eacute;marrage, vous pouvez
+    modifier la valeur de la directive <directive
+    module="mpm_common">MaxRequestWorkers</directive>, alors que toute
+    tentative de modification de la valeur de la directive <directive
+    module="mpm_common">ServerLimit</directive> sera ignor&eacute;e.</p>
+
+    <p>Cette directive doit &ecirc;tre utilis&eacute;e avec pr&eacute;caution. Si
+    <directive>ServerLimit</directive> est d&eacute;finie &agrave; une valeur beaucoup
+    plus grande que n&eacute;cessaire, de la m&eacute;moire partag&eacute;e suppl&eacute;mentaire
+    sera inutilement allou&eacute;e. Si &agrave; la fois
+    <directive>ServerLimit</directive> et <directive
+    module="mpm_common">MaxRequestWorkers</directive> poss&egrave;dent des valeurs
+    sup&eacute;rieures &agrave; ce que le syst&egrave;me peut supporter, ce dernier peut
+    devenir instable ou Apache httpd peut tout simplement refuser de d&eacute;marrer.</p>
+
+    <p>Avec le MPM <module>prefork</module>, n'utilisez cette directive
+    que si vous devez d&eacute;finir <directive
+    module="mpm_common">MaxRequestWorkers</directive> &agrave; une valeur sup&eacute;rieure &agrave;
+    256 (valeur par d&eacute;faut). N'affectez pas &agrave; la directive <directive
+    module="mpm_common">ServerLimit</directive> une valeur sup&eacute;rieure &agrave;
+    celle que vous avez pr&eacute;vu d'affecter &agrave; la directive <directive
+    module="mpm_common">MaxRequestWorkers</directive>.</p>
+
+    <p>Avec <module>worker</module>, n'utilisez cette directive que si
+    la d&eacute;finition de vos directives <directive
+    module="mpm_common">MaxRequestWorkers</directive> et <directive
+    module="mpm_common">ThreadsPerChild</directive> n&eacute;cessitent plus de
+    16 processus serveurs (valeur par d&eacute;faut). N'affectez pas &agrave; la
+    directive <directive module="mpm_common">ServerLimit</directive> une
+    valeur sup&eacute;rieure au nombre de processus requis pour la d&eacute;finition
+    des directives <directive module="mpm_common">MaxRequestWorkers
+    </directive> et <directive
+    module="mpm_common">ThreadsPerChild</directive>.</p>
+
+    <note><title>Note</title>
+      <p>Il existe une limite de <code>ServerLimit 20000</code> cod&eacute;e en
+      dur dans le serveur (200000 pour le MPM <module>prefork</module>).
+      Ceci est cens&eacute; &eacute;viter les effets d&eacute;sastreux que pourrait provoquer
+      une faute de frappe. Pour d&eacute;passer cette limite, vous devez
+      modifier la valeur de MAX_SERVER_LIMIT dans le fichier source du
+      mpm et recompiler le serveur.</p>
+    </note>
+</usage>
+<seealso><a href="../stopping.html">Arr&ecirc;ter et red&eacute;marrer
+le serveur HTTP Apache</a></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>StartServers</name>
+<description>Nombre de processus enfants du serveur cr&eacute;&eacute;s au
+d&eacute;marrage</description>
+<syntax>StartServers <var>nombre</var></syntax>
+<default>Voir ci-dessous pour plus de d&eacute;tails</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>event</module><module>mpmt_os2</module>
+<module>prefork</module><module>worker</module>
+</modulelist>
+
+<usage>
+    <p>La directive <directive>StartServers</directive> permet de
+    d&eacute;finir le nombre de processus enfants du serveur cr&eacute;&eacute;s au
+    d&eacute;marrage. Comme le nombre de processus est contr&ocirc;l&eacute; dynamiquement
+    en fonction de la charge (voir <directive
+    module="mpm_common">MinSpareThreads</directive>, <directive
+    module="mpm_common">MaxSpareThreads</directive>, <directive
+    module="prefork">MinSpareServers</directive>, <directive
+    module="prefork">MaxSpareServers</directive>), il n'est en g&eacute;n&eacute;ral
+    pas n&eacute;cessaire d'ajuster ce param&egrave;tre.</p>
+
+    <p>La valeur par d&eacute;faut diff&egrave;re d'un MPM &agrave; l'autre. Pour
+    <module>worker</module>, la d&eacute;finition par d&eacute;faut est
+    <code>StartServers 3</code> ; la valeur par d&eacute;faut est
+    <code>5</code> pour <module>prefork</module> et <code>2</code>
+    pour <module>mpmt_os2</module>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>StartThreads</name>
+<description>Nombre de threads cr&eacute;&eacute;s au d&eacute;marrage</description>
+<syntax>StartThreads <var>nombre</var></syntax>
+<default>Voir ci-dessous pour plus de d&eacute;tails</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>mpm_netware</module></modulelist>
+
+<usage>
+    <p>C'est le nombre de threads cr&eacute;&eacute;s au d&eacute;marrage du serveur. Comme
+    le nombre de threads est contr&ocirc;l&eacute; dynamiquement
+    en fonction de la charge (voir <directive
+    module="mpm_common">MinSpareThreads</directive>, <directive
+    module="mpm_common">MaxSpareThreads</directive>, <directive
+    module="prefork">MinSpareServers</directive>, <directive
+    module="prefork">MaxSpareServers</directive>), il n'est en g&eacute;n&eacute;ral
+    pas n&eacute;cessaire d'ajuster ce param&egrave;tre.</p>
+
+    <p>Pour <module>mpm_netware</module>, la d&eacute;finition par d&eacute;faut est
+    <code>StartThreads 50</code> et, comme il n'y a qu'un processus, il
+    s'agit du nombre total de threads cr&eacute;&eacute;s au d&eacute;marrage pour servir les
+    requ&ecirc;tes.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ThreadLimit</name>
+<description>Le nombre de threads maximum que l'on peut d&eacute;finir par
+processus enfant</description>
+<syntax>ThreadLimit <var>nombre</var></syntax>
+<default>Voir ci-dessous pour plus de d&eacute;tails</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>event</module><module>mpm_winnt</module>
+<module>worker</module></modulelist>
+
+<usage>
+    <p>Cette directive permet de d&eacute;finir le nombre maximum que l'on peut
+    affecter &agrave; la directive <directive
+    module="mpm_common">ThreadsPerChild</directive> pour la dur&eacute;e de vie
+    du processus Apache httpd. La directive  <directive
+    module="mpm_common">ThreadsPerChild</directive> peut &ecirc;tre modifi&eacute;e
+    au cours d'un red&eacute;marrage jusqu'&agrave; la valeur de la directive <directive
+    module="mpm_common">ThreadLimit</directive>, mais toute tentative
+    de modification de la directive <directive
+    module="mpm_common">ThreadLimit</directive> au cours d'un
+    red&eacute;marrage sera ignor&eacute;e.</p>
+
+    <p>L'utilisation de cette directive doit faire l'objet de
+    pr&eacute;cautions particuli&egrave;res. Si <directive>ThreadLimit</directive> est
+    d&eacute;finie &agrave; une valeur tr&egrave;s sup&eacute;rieure &agrave; la directive <directive
+    module="mpm_common">ThreadsPerChild</directive>, de la m&eacute;moire
+    partag&eacute;e suppl&eacute;mentaire sera inutilement allou&eacute;e. Si les directives
+    <directive>ThreadLimit</directive> et <directive
+    module="mpm_common">ThreadsPerChild</directive> sont d&eacute;finies &agrave; des
+    valeurs sup&eacute;rieures &agrave; ce que le syst&egrave;me peut supporter, ce dernier
+    peut devenir instable, ou Apache httpd peut tout simplement refuser de
+    d&eacute;marrer. Ne d&eacute;finissez pas cette directive &agrave; une valeur sup&eacute;rieure
+    &agrave; la valeur maximale que vous pensez affecter &agrave; la directive <directive
+    module="mpm_common">ThreadsPerChild</directive> pour le processus
+    Apache httpd en cours d'ex&eacute;cution.</p>
+
+    <p>La valeur par d&eacute;faut de la directive
+    <directive>ThreadLimit</directive> est <code>1920</code> avec
+    <module>mpm_winnt</module>, et <code>64</code> avec les autres
+    MPMs.</p>
+
+    <note><title>Note</title>
+      <p>Il existe une limite de <code>ThreadLimit 20000</code> (ou
+      <code>ThreadLimit 15000</code> avec <module>mpm_winnt</module>)
+      cod&eacute;e en dur dans le serveur. Ceci est cens&eacute; &eacute;viter les effets
+      d&eacute;sastreux que pourrait provoquer une faute de frappe. Pour
+      d&eacute;passer cette limite, vous devez modifier la valeur de
+      MAX_THREAD_LIMIT dans le fichier source du mpm et recompiler le
+      serveur.</p>
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ThreadsPerChild</name>
+<description>Nombre de threads cr&eacute;&eacute;s par chaque processus
+enfant</description>
+<syntax>ThreadsPerChild <var>nombre</var></syntax>
+<default>Voir ci-dessous pour plus de d&eacute;tails</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>event</module><module>mpm_winnt</module>
+<module>worker</module></modulelist>
+
+<usage>
+    <p>Cette directive permet de d&eacute;finir le nombre de threads que va
+    cr&eacute;er chaque processus enfant. Un processus enfant cr&eacute;e ces threads
+    au d&eacute;marrage et n'en cr&eacute;e plus d'autres par la suite. Si l'on
+    utilise un MPM comme <module>mpm_winnt</module> qui ne lance qu'un
+    processus enfant, ce nombre doit &ecirc;tre suffisamment grand pour
+    supporter la charge du serveur. Avec un MPM comme
+    <module>worker</module> qui lance plusieurs processus enfants, c'est
+    le nombre <em>total</em> de threads qui doit &ecirc;tre suffisamment grand
+    pour supporter la charge du serveur.</p>
+
+    <p>La valeur par d&eacute;faut de la directive
+    <directive>ThreadsPerChild</directive> est <code>64</code> avec
+    <module>mpm_winnt</module>, et <code>25</code> avec les autres
+    MPMs.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ThreadStackSize</name>
+<description>La taille en octets de la pile qu'utilisent les threads qui
+traitent les connexions clients</description>
+<syntax>ThreadStackSize <var>taille</var></syntax>
+<default>65536 sous NetWare; varie en fonction des autres syst&egrave;mes
+d'exploitation</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>event</module><module>mpm_netware</module>
+<module>mpmt_os2</module><module>mpm_winnt</module><module>worker</module>
+<module>event</module>
+</modulelist>
+<compatibility>Disponible dans les versions 2.1 et sup&eacute;rieures
+du serveur HTTP Apache</compatibility>
+
+<usage>
+    <p>La directive <directive>ThreadStackSize</directive> permet de
+    d&eacute;finir la taille de la pile (pour les donn&eacute;es propres) qu'utilisent
+    les threads qui traitent les connexions clients en faisant appel &agrave;
+    des modules. Dans la plupart des cas, la valeur par d&eacute;faut de la
+    taille de la pile du syst&egrave;me d'exploitation convient, mais il existe
+    certaines situations o&ugrave; il peut s'av&eacute;rer n&eacute;cessaire de l'ajuster
+    :</p>
+
+    <ul>
+      <li>Sur les plates-formes qui poss&egrave;dent une valeur par d&eacute;faut de
+      taille de la pile relativement petite (par exemple HP-UX), Apache
+      httpd peut se crasher si l'on utilise certains modules tiers qui
+      poss&egrave;dent un quantit&eacute; de donn&eacute;es propres stock&eacute;es relativement
+      importante. Il se peut que ces m&ecirc;mes modules fonctionnent
+      correctement sur d'autres plate-formes o&ugrave; la valeur par d&eacute;faut de
+      la taille de la pile est sup&eacute;rieure. Ce type de crash peut &ecirc;tre
+      evit&eacute; en d&eacute;finissant <directive>ThreadStackSize</directive> &agrave; une
+      valeur sup&eacute;rieure &agrave; la valeur par d&eacute;faut du syst&egrave;me
+      d'exploitation. Ce type d'ajustement n'est n&eacute;cessaire que si le
+      fournisseur du module tiers en fait mention, ou si le diagnostic
+      d'un crash d'Apache httpd indique que la taille de la pile &eacute;tait trop
+      petite.</li>
+
+      <li>Sur les plates-formes o&ugrave; la taille par d&eacute;faut de la pile des
+      threads est sensiblement sup&eacute;rieure &agrave; la taille n&eacute;cessaire pour la
+      configuration du serveur web, il est possible de disposer d'un
+      plus grand nombre de threads par processus enfant si la directive
+      <directive>ThreadStackSize</directive> est d&eacute;finie &agrave; une valeur
+      inf&eacute;rieure &agrave; la valeur par d&eacute;faut du syst&egrave;me d'exploitation.
+      Cependant, ce
+      type d'ajustement ne doit &ecirc;tre effectu&eacute; que dans un environnement
+      de test permettant de qualifier le serveur web au maximum de ses
+      possibilit&eacute;s, car il peut arriver, dans de rares cas, que des
+      requ&ecirc;tes n&eacute;cessitent une taille de pile sup&eacute;rieure pour pouvoir
+      &ecirc;tre trait&eacute;es. La taille minimale requise pour la pile d&eacute;pend
+      fortement des modules utilis&eacute;s, mais toute modification dans la
+      configuration du serveur web peut invalider la d&eacute;finition courante
+      de la directive <directive>ThreadStackSize</directive>.</li>
+
+      <li>Sous Linux, cette directive ne peut &ecirc;tre utilis&eacute;e que pour
+      augmenter la valeur par defaut de la taille de la pile, car
+      l'appel syst&egrave;me sous-jacent utilise cette valeur comme taille de pile
+      <em>minimale</em>. C'est la limite logicielle (souvent &eacute;lev&eacute;e)
+      pour <code>ulimit -s</code> (8Mo si aucune limite) qui est
+      utilis&eacute;e comme taille de pile par d&eacute;faut.</li>
+    </ul>
+
+    <note>Il est recommand&eacute; de ne pas r&eacute;duire
+    <directive>ThreadStackSize</directive>, &agrave; moins qu'un grand nombre
+    de threads par processus enfant ne soit n&eacute;cessaire. Sur certaines
+    plates-formes (y compris Linux), une valeur de 128000 est d&eacute;j&agrave; trop
+    basse et provoque des crashes avec certains modules courants.</note>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
