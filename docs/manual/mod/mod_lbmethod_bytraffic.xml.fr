@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1174747 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_lbmethod_bytraffic.xml.meta">
+
+<name>mod_lbmethod_bytraffic</name>
+<description>Algorithme de planification avec r&eacute;partition de charge en
+fonction d'un niveau de trafic pour le module
+<module>mod_proxy_balancer</module></description>
+<status>Extension</status>
+<sourcefile>mod_lbmethod_bytraffic.c</sourcefile>
+<identifier>lbmethod_bytraffic_module</identifier>
+<compatibility>Dissoci&eacute; de <module>mod_proxy_balancer</module> depuis la
+version 2.3</compatibility>
+
+<summary>
+<p>Ce module ne fournit pas lui-m&ecirc;me de directive de configuration. Il
+n&eacute;cessite les services de <module>mod_proxy_balancer</module>, et
+fournit la m&eacute;thode de r&eacute;partition de charge <code>bytraffic</code>.</p>
+</summary>
+<seealso><module>mod_proxy</module></seealso>
+<seealso><module>mod_proxy_balancer</module></seealso>
+
+<section id="traffic">
+    <title>Algorithme de r&eacute;partition en fonction d'un certain
+    trafic</title>
+    <p>Activ&eacute; via <code>lbmethod=bytraffic</code>, l'id&eacute;e directrice de
+    ce planificateur est similaire &agrave; celle de la m&eacute;thode reposant sur le
+    nombre de requ&ecirc;tes, avec les diff&eacute;rences suivantes :</p>
+
+    <p><dfn>lbfactor</dfn> repr&eacute;sente la <em>quantit&eacute; de trafic, en
+    octets, que nous voulons voir trait&eacute;e par le processus</em>. Il
+    s'agit l&agrave; aussi d'une valeur normalis&eacute;e repr&eacute;sentant la part de
+    travail &agrave; effectuer par le processus, mais au lieu de se baser sur
+    un nombre de requ&ecirc;tes, on prend en compte la quantit&eacute; de trafic que
+    ce processus a trait&eacute;.</p>
+
+    <p>Si un r&eacute;partiteur est configur&eacute; comme suit :</p>
+
+    <table style="data">
+    <tr><th>worker</th>
+        <th>a</th>
+        <th>b</th>
+        <th>c</th></tr>
+    <tr><th>lbfactor</th>
+        <td>1</td>
+        <td>2</td>
+        <td>1</td></tr>
+    </table>
+
+    <p>Cela signifie que nous souhaitons que <var>b</var> traite 2 fois
+    plus d'octets que <var>a</var> ou <var>c</var>. Cela n'entra&icirc;ne pas
+    n&eacute;cessairement que <var>b</var> va traiter deux fois plus de
+    requ&ecirc;tes, mais qu'il va traiter deux fois plus de trafic en termes
+    d'entr&eacute;es/sorties. A cet effet, les tailles de la requ&ecirc;te et de sa
+    r&eacute;ponse assocci&eacute;e sont prises en compte par l'algorithme de
+    s&eacute;lection et d'&eacute;valuation du trafic.</p>
+
+    <p>Note : les octets en entr&eacute;e sont &eacute;valu&eacute;s avec la m&ecirc;me pond&eacute;ration
+    que les octets en sortie.</p>
+
+</section>
+
+</modulesynopsis>
