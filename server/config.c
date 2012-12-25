@@ -603,7 +603,8 @@ AP_DECLARE(const char *) ap_add_module(module *m, apr_pool_t *p,
             len -= slen;
         }
 
-        ap_module_short_names[m->module_index] = strdup(sym_name);
+        ap_module_short_names[m->module_index] = ap_malloc(len + 1);
+        memcpy(ap_module_short_names[m->module_index], sym_name, len);
         ap_module_short_names[m->module_index][len] = '\0';
         merger_func_cache[m->module_index] = m->merge_dir_config;
     }
@@ -627,8 +628,9 @@ AP_DECLARE(const char *) ap_add_module(module *m, apr_pool_t *p,
 
     /* We cannot fix the string in-place, because it's const */
     if (m->name[strlen(m->name)-1] == ')') {
-        char *tmp = strdup(m->name); /* FIXME: memory leak, albeit a small one */
-        tmp[strlen(tmp)-1] = '\0';
+        char *tmp = ap_malloc(strlen(m->name)); /* FIXME: memory leak, albeit a small one */
+        memcpy(tmp, m->name, strlen(m->name)-1);
+        tmp[strlen(m->name)-1] = '\0';
         m->name = tmp;
     }
 #endif /*_OSD_POSIX*/
