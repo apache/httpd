@@ -106,7 +106,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1397687
      2.4.x patch: http://people.apache.org/~rjung/patches/configure-disable-feature.patch
                   If suexec-capabilities is backported first, then trunk patch works.
-     +1: rjung
+     +1: rjung, covener
 
    * configure --with-modules:
      - Fix shell errors when trying to AC_MSG_RESULT().
