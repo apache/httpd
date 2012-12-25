@@ -3338,6 +3338,9 @@ static const char *set_worker_factor(cmd_parms * cmd, void *dummy,
     if (*endptr)
         return "error parsing value";
 
+    if (val <= 0)
+        return "AsyncRequestWorkerFactor argument must be a positive number";
+
     worker_factor = val * WORKER_FACTOR_SCALE;
     if (worker_factor == 0)
         worker_factor = 1;

@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mpm_event: Check that AsyncRequestWorkerFactor is not negative. PR 54254.
+     [Jackie Zhang <jackie qq zhang gmail com>]
+
   *) httxt2dbm: Correct length computation for the 'value' stored in the DBM file
      PR 47650 [jon buckybox com]
 
