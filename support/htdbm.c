@@ -110,6 +110,7 @@ static apr_status_t htdbm_init(apr_pool_t **pool, htdbm_t **hdbm)
 #endif
 
     apr_pool_create( pool, NULL);
+    apr_pool_abort_set(abort_on_oom, *pool);
     apr_file_open_stderr(&errfile, *pool);
     apr_signal(SIGINT, (void (*)(int)) htdbm_interrupted);
 
