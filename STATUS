@@ -91,13 +91,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_imagemap: const fixes (didn't compile on old XLC)
-     trunk patch: http://svn.apache.org/viewvc?rev=1422234&view=rev
-                  http://svn.apache.org/viewvc?rev=1416889&view=rev
-                  http://svn.apache.org/viewvc?rev=1422253&view=rev
-     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-mod_imap-const.diff
-     +1 covener, fuankg, gsmith
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
