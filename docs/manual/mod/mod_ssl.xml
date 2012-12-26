@@ -1750,7 +1750,7 @@ SSLProxyCheckPeerExpire on
 
 <directivesynopsis>
 <name>SSLProxyCheckPeerCN</name>
-<description>Whether to check the remote server certificates CN field
+<description>Whether to check the remote server certificate's CN field
 </description>
 <syntax>SSLProxyCheckPeerCN on|off</syntax>
 <default>SSLProxyCheckPeerCN on</default>
@@ -1759,15 +1759,51 @@ SSLProxyCheckPeerExpire on
 
 <usage>
 <p>
-This directive sets whether the remote server certificates CN field is
+This directive sets whether the remote server certificate's CN field is
 compared against the hostname of the request URL. If both are not equal
 a 502 status code (Bad Gateway) is sent.
+</p>
+<p>
+SSLProxyCheckPeerCN has been superseded by
+<directive module="mod_ssl">SSLProxyCheckPeerName</directive>, and its
+setting is only taken into account when
+<code>SSLProxyCheckPeerName off</code> is specified at the same time.
 </p>
 <example><title>Example</title>
 <highlight language="config">
 SSLProxyCheckPeerCN on
 </highlight>
 </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLProxyCheckPeerName</name>
+<description>Configure host name checking for remote server certificates
+</description>
+<syntax>SSLProxyCheckPeerName on|off</syntax>
+<default>SSLProxyCheckPeerName on</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+<p>
+This directive configures host name checking for server certificates
+when mod_ssl is acting as an SSL client. The check will
+succeed if the host name from the request URI is found in
+either the subjectAltName extension or (one of) the CN attribute(s)
+in the certificate's subject. If the check fails, the SSL request
+is aborted and a 502 status code (Bad Gateway) is returned.
+The directive supersedes <directive module="mod_ssl">SSLProxyCheckPeerCN</directive>,
+which only checks for the expected host name in the first CN attribute.
+</p>
+<p>
+Wildcard matching is supported in one specific flavor: subjectAltName entries
+of type dNSName or CN attributes starting with <code>*.</code> will match
+for any DNS name with the same number of labels and the same suffix
+(i.e., <code>*.example.org</code> matches for <code>foo.example.org</code>,
+but not for <code>foo.bar.example.org</code>).
+</p>
 </usage>
 </directivesynopsis>
 

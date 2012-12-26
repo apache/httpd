@@ -209,9 +209,12 @@ static const command_rec ssl_config_cmds[] = {
                "of the client certificate "
                "(`/path/to/file' - PEM encoded certificates)")
     SSL_CMD_SRV(ProxyCheckPeerExpire, FLAG,
-                "SSL Proxy: check the peers certificate expiration date")
+                "SSL Proxy: check the peer certificate's expiration date")
     SSL_CMD_SRV(ProxyCheckPeerCN, FLAG,
-                "SSL Proxy: check the peers certificate CN")
+                "SSL Proxy: check the peer certificate's CN")
+    SSL_CMD_SRV(ProxyCheckPeerName, FLAG,
+                "SSL Proxy: check the peer certificate's name "
+                "(must be present in subjectAltName extension or CN")
 
     /*
      * Per-directory context configuration directives
