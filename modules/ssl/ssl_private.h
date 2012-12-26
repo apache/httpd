@@ -710,6 +710,7 @@ struct SSLSrvConfigRec {
     modssl_ctx_t    *proxy;
     ssl_enabled_t    proxy_ssl_check_peer_expire;
     ssl_enabled_t    proxy_ssl_check_peer_cn;
+    ssl_enabled_t    proxy_ssl_check_peer_name;
 #ifndef OPENSSL_NO_TLSEXT
     ssl_enabled_t    strict_sni_vhost_check;
 #endif
@@ -808,6 +809,7 @@ const char *ssl_cmd_SSLSessionTicketKeyFile(cmd_parms *cmd, void *dcfg, const ch
 #endif
 const char  *ssl_cmd_SSLProxyCheckPeerExpire(cmd_parms *cmd, void *dcfg, int flag);
 const char  *ssl_cmd_SSLProxyCheckPeerCN(cmd_parms *cmd, void *dcfg, int flag);
+const char  *ssl_cmd_SSLProxyCheckPeerName(cmd_parms *cmd, void *dcfg, int flag);
 
 const char *ssl_cmd_SSLOCSPOverrideResponder(cmd_parms *cmd, void *dcfg, int flag);
 const char *ssl_cmd_SSLOCSPDefaultResponder(cmd_parms *cmd, void *dcfg, const char *arg);
