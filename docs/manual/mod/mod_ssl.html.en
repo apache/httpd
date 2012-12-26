@@ -77,6 +77,7 @@ to provide the cryptography engine.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxycarevocationpath">SSLProxyCARevocationPath</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxycheckpeercn">SSLProxyCheckPeerCN</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxycheckpeerexpire">SSLProxyCheckPeerExpire</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslproxycheckpeername">SSLProxyCheckPeerName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxyciphersuite">SSLProxyCipherSuite</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxyengine">SSLProxyEngine</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxymachinecertificatechainfile">SSLProxyMachineCertificateChainFile</a></li>
@@ -1418,7 +1419,7 @@ SSLProxyCARevocationPath /usr/local/apache2/conf/ssl.crl/
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLProxyCheckPeerCN" id="SSLProxyCheckPeerCN">SSLProxyCheckPeerCN</a> <a name="sslproxycheckpeercn" id="sslproxycheckpeercn">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Whether to check the remote server certificates CN field
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Whether to check the remote server certificate's CN field
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyCheckPeerCN on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLProxyCheckPeerCN on</code></td></tr>
@@ -1427,9 +1428,15 @@ SSLProxyCARevocationPath /usr/local/apache2/conf/ssl.crl/
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <p>
-This directive sets whether the remote server certificates CN field is
+This directive sets whether the remote server certificate's CN field is
 compared against the hostname of the request URL. If both are not equal
 a 502 status code (Bad Gateway) is sent.
+</p>
+<p>
+SSLProxyCheckPeerCN has been superseded by
+<code class="directive"><a href="#sslproxycheckpeername">SSLProxyCheckPeerName</a></code>, and its
+setting is only taken into account when
+<code>SSLProxyCheckPeerName off</code> is specified at the same time.
 </p>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLProxyCheckPeerCN on
@@ -1457,6 +1464,36 @@ sent.
 SSLProxyCheckPeerExpire on
 </pre>
 </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLProxyCheckPeerName" id="SSLProxyCheckPeerName">SSLProxyCheckPeerName</a> <a name="sslproxycheckpeername" id="sslproxycheckpeername">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure host name checking for remote server certificates
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyCheckPeerName on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLProxyCheckPeerName on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+</table>
+<p>
+This directive configures host name checking for server certificates
+when mod_ssl is acting as an SSL client. The check will
+succeed if the host name from the request URI is found in
+either the subjectAltName extension or (one of) the CN attribute(s)
+in the certificate's subject. If the check fails, the SSL request
+is aborted and a 502 status code (Bad Gateway) is returned.
+The directive supersedes <code class="directive"><a href="#sslproxycheckpeercn">SSLProxyCheckPeerCN</a></code>,
+which only checks for the expected host name in the first CN attribute.
+</p>
+<p>
+Wildcard matching is supported in one specific flavor: subjectAltName entries
+of type dNSName or CN attributes starting with <code>*.</code> will match
+for any DNS name with the same number of labels and the same suffix
+(i.e., <code>*.example.org</code> matches for <code>foo.example.org</code>,
+but not for <code>foo.bar.example.org</code>).
+</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
