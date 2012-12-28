@@ -297,10 +297,10 @@
 <h2><a name="programs" id="programs">Program Enhancements</a></h2>
     
     <dl>
-        <dt>fcgistarter</dt>
+        <dt><code class="program"><a href="./programs/fcgistarter.html">fcgistarter</a></code></dt>
         <dd>New FastCGI deamon starter utility</dd>
 
-        <dt>htcacheclean</dt>
+        <dt><code class="program"><a href="./programs/htcacheclean.html">htcacheclean</a></code></dt>
         <dd>Current cached URLs can now be listed, with optional metadata
         included.</dd>
         <dd>Allow explicit deletion of individual cached URLs from the
@@ -311,7 +311,7 @@
         of or in addition to being limited by the size of the files on
         disk.</dd>
 
-        <dt>rotatelogs</dt>
+        <dt><code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code></dt>
         <dd>May now create a link to the current log file.</dd>
         <dd>May now invoke a custom post-rotate script.</dd>
     </dl>
