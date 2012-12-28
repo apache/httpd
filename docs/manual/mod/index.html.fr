@@ -50,18 +50,19 @@
 <dl>
 <dt><a href="core.html">core</a></dt><dd>Fonctionnalités de base du serveur HTTP Apache toujours
 disponibles</dd>
-<dt><a href="mpm_common.html">mpm_common</a></dt><dd class="separate">A collection of directives that are implemented by
-more than one multi-processing module (MPM)</dd>
+<dt><a href="mpm_common.html">mpm_common</a></dt><dd class="separate">Une série de directives implémentées par plusieurs
+modules multi-processus (MPM)</dd>
 <dt><a href="event.html">event</a></dt><dd>Une variante du MPM <code class="module"><a href="../mod/worker.html">worker</a></code> conçue pour ne
 mobiliser des threads que pour les connexions en cours de traitement</dd>
 <dt><a href="mpm_netware.html">mpm_netware</a></dt><dd>Multi-Processing Module implementing an exclusively threaded web
     server optimized for Novell NetWare</dd>
 <dt><a href="mpmt_os2.html">mpmt_os2</a></dt><dd>Hybrid multi-process, multi-threaded MPM for OS/2</dd>
-<dt><a href="prefork.html">prefork</a></dt><dd>Implements a non-threaded, pre-forking web server</dd>
+<dt><a href="prefork.html">prefork</a></dt><dd>Implémente un serveur web avec démarrage anticipé de
+processus, sans thread</dd>
 <dt><a href="mpm_winnt.html">mpm_winnt</a></dt><dd>This Multi-Processing Module is optimized for Windows
 NT.</dd>
-<dt><a href="worker.html">worker</a></dt><dd>Multi-Processing Module implementing a hybrid
-    multi-threaded multi-process web server</dd>
+<dt><a href="worker.html">worker</a></dt><dd>Module multi-processus implémentant un serveur web hybride
+multi-processus multi-thread</dd>
 </dl></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section"><h2><a id="other" name="other">Autres Modules</a></h2>
@@ -117,7 +118,7 @@ cache HTTP.</dd>
 (<a href="http://www.webdav.org/">WebDAV</a>) functionality</dd>
 <dt><a href="mod_dav_fs.html">mod_dav_fs</a></dt><dd>filesystem provider for <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></dd>
 <dt><a href="mod_dav_lock.html">mod_dav_lock</a></dt><dd>generic locking module for <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></dd>
-<dt><a href="mod_dbd.html">mod_dbd</a></dt><dd>Manages SQL database connections</dd>
+<dt><a href="mod_dbd.html">mod_dbd</a></dt><dd>Gestion des connexions à une base de données SQL</dd>
 <dt><a href="mod_deflate.html">mod_deflate</a></dt><dd>Comprime le contenu avant de le servir au
 client</dd>
 <dt><a href="mod_dialup.html">mod_dialup</a></dt><dd>Send static content at a bandwidth rate limit, defined by the various old modem standards</dd>
@@ -149,10 +150,17 @@ HTTP</dd>
 <dt><a href="mod_info.html">mod_info</a></dt><dd>Affiche une présentation complète de la configuration du
 serveur</dd>
 <dt><a href="mod_isapi.html">mod_isapi</a></dt><dd>ISAPI Extensions within Apache for Windows</dd>
-<dt><a href="mod_lbmethod_bybusyness.html" id="L" name="L">mod_lbmethod_bybusyness</a></dt><dd>Pending Request Counting load balancer scheduler algorithm for <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></dd>
-<dt><a href="mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></dt><dd>Request Counting load balancer scheduler algorithm for <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></dd>
-<dt><a href="mod_lbmethod_bytraffic.html">mod_lbmethod_bytraffic</a></dt><dd>Weighted Traffic Counting load balancer scheduler algorithm for <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></dd>
-<dt><a href="mod_lbmethod_heartbeat.html">mod_lbmethod_heartbeat</a></dt><dd>Heartbeat Traffic Counting load balancer scheduler algorithm for <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></dd>
+<dt><a href="mod_lbmethod_bybusyness.html" id="L" name="L">mod_lbmethod_bybusyness</a></dt><dd>Algorithme de planification avec répartition de charge de
+l'attribution des requêtes en attente pour le module
+<code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></dd>
+<dt><a href="mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></dt><dd>Algorithme de planification avec répartition de charge du
+traitement des requêtes pour le module
+<code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></dd>
+<dt><a href="mod_lbmethod_bytraffic.html">mod_lbmethod_bytraffic</a></dt><dd>Algorithme de planification avec répartition de charge en
+fonction d'un niveau de trafic pour le module
+<code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></dd>
+<dt><a href="mod_lbmethod_heartbeat.html">mod_lbmethod_heartbeat</a></dt><dd>Algorithme d'ordonnancement de répartition de charge pour
+<code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> basé sur le comptage de trafic Heartbeat</dd>
 <dt><a href="mod_ldap.html">mod_ldap</a></dt><dd>Conservation des connexions LDAP et services de mise en
 cache du résultat à destination des autres modules LDAP</dd>
 <dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>Logging of the requests made to the server</dd>
@@ -170,13 +178,15 @@ traitement des requêtes httpd</dd>
     by looking at a few bytes of its contents</dd>
 <dt><a href="mod_negotiation.html" id="N" name="N">mod_negotiation</a></dt><dd>Effectue la <a href="../content-negotiation.html">négociation de
 contenu</a></dd>
-<dt><a href="mod_nw_ssl.html">mod_nw_ssl</a></dt><dd>Enable SSL encryption for NetWare</dd>
-<dt><a href="mod_privileges.html" id="P" name="P">mod_privileges</a></dt><dd>Support for Solaris privileges and for running virtual hosts
-under different user IDs.</dd>
+<dt><a href="mod_nw_ssl.html">mod_nw_ssl</a></dt><dd>Active le chiffrement SSL pour Netware</dd>
+<dt><a href="mod_privileges.html" id="P" name="P">mod_privileges</a></dt><dd>Support des privilèges de Solaris et de l'exécution des
+serveurs virtuels sous différents identifiants
+utilisateurs.</dd>
 <dt><a href="mod_proxy.html">mod_proxy</a></dt><dd>Serveur mandataire/passerelle multi-protocole</dd>
 <dt><a href="mod_proxy_ajp.html">mod_proxy_ajp</a></dt><dd>AJP support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
-<dt><a href="mod_proxy_balancer.html">mod_proxy_balancer</a></dt><dd><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> extension for load balancing </dd>
+<dt><a href="mod_proxy_balancer.html">mod_proxy_balancer</a></dt><dd>Extension de <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> pour le support de
+la répartition de charge</dd>
 <dt><a href="mod_proxy_connect.html">mod_proxy_connect</a></dt><dd><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> extension for
 <code>CONNECT</code> request handling</dd>
 <dt><a href="mod_proxy_express.html">mod_proxy_express</a></dt><dd>Dynamic mass reverse proxy extension for
@@ -193,7 +203,7 @@ mandataire.</dd>
 <dt><a href="mod_proxy_http.html">mod_proxy_http</a></dt><dd>Module fournissant le support HTTP à
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_scgi.html">mod_proxy_scgi</a></dt><dd>SCGI gateway module for <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
-<dt><a href="mod_ratelimit.html" id="R" name="R">mod_ratelimit</a></dt><dd>Bandwidth Rate Limiting for Clients</dd>
+<dt><a href="mod_ratelimit.html" id="R" name="R">mod_ratelimit</a></dt><dd>Limitation de la bande passante pour les clients</dd>
 <dt><a href="mod_reflector.html">mod_reflector</a></dt><dd>Reflect a request body as a response via the output filter stack.</dd>
 <dt><a href="mod_remoteip.html">mod_remoteip</a></dt><dd>Remplace l'adresse IP et le nom d'hôte apparents du client
 pour la requête par l'adresse IP présentée par un mandataire ou un
@@ -201,7 +211,8 @@ répartiteur de charge via les en-têtes de la requête.
 </dd>
 <dt><a href="mod_reqtimeout.html">mod_reqtimeout</a></dt><dd>Set timeout and minimum data rate for receiving requests
 </dd>
-<dt><a href="mod_request.html">mod_request</a></dt><dd>Filters to handle and make available HTTP request bodies</dd>
+<dt><a href="mod_request.html">mod_request</a></dt><dd>Filtres permettant de traiter et de mettre à disposition
+les corps de requêtes HTTP</dd>
 <dt><a href="mod_rewrite.html">mod_rewrite</a></dt><dd>Ce module fournit un moteur de réécriture à base de
 règles permettant de réécrire les URLs des requêtes
 à la volée</dd>
@@ -243,8 +254,8 @@ identifiant unique pour chaque requête</dd>
 hosting</dd>
 <dt><a href="mod_watchdog.html" id="W" name="W">mod_watchdog</a></dt><dd>provides infrastructure for other modules to periodically run 
     tasks</dd>
-<dt><a href="mod_xml2enc.html" id="X" name="X">mod_xml2enc</a></dt><dd>Enhanced charset/internationalisation support for libxml2-based
-filter modules</dd>
+<dt><a href="mod_xml2enc.html" id="X" name="X">mod_xml2enc</a></dt><dd>Support avancé de l'internationalisation et des jeux de
+caractères pour les modules de filtrage basés sur libxml2</dd>
 </dl></div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../de/mod/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |

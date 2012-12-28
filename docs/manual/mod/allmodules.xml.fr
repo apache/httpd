@@ -37,7 +37,7 @@
   <modulefile>mod_dav.xml</modulefile>
   <modulefile>mod_dav_fs.xml</modulefile>
   <modulefile>mod_dav_lock.xml</modulefile>
-  <modulefile>mod_dbd.xml</modulefile>
+  <modulefile>mod_dbd.xml.fr</modulefile>
   <modulefile>mod_deflate.xml.fr</modulefile>
   <modulefile>mod_dialup.xml</modulefile>
   <modulefile>mod_dir.xml.fr</modulefile>
@@ -57,10 +57,10 @@
   <modulefile>mod_include.xml</modulefile>
   <modulefile>mod_info.xml.fr</modulefile>
   <modulefile>mod_isapi.xml</modulefile>
-  <modulefile>mod_lbmethod_bybusyness.xml</modulefile>
-  <modulefile>mod_lbmethod_byrequests.xml</modulefile>
-  <modulefile>mod_lbmethod_bytraffic.xml</modulefile>
-  <modulefile>mod_lbmethod_heartbeat.xml</modulefile>
+  <modulefile>mod_lbmethod_bybusyness.xml.fr</modulefile>
+  <modulefile>mod_lbmethod_byrequests.xml.fr</modulefile>
+  <modulefile>mod_lbmethod_bytraffic.xml.fr</modulefile>
+  <modulefile>mod_lbmethod_heartbeat.xml.fr</modulefile>
   <modulefile>mod_ldap.xml.fr</modulefile>
   <modulefile>mod_log_config.xml</modulefile>
   <modulefile>mod_log_debug.xml</modulefile>
@@ -70,11 +70,11 @@
   <modulefile>mod_mime.xml</modulefile>
   <modulefile>mod_mime_magic.xml</modulefile>
   <modulefile>mod_negotiation.xml.fr</modulefile>
-  <modulefile>mod_nw_ssl.xml</modulefile>
-  <modulefile>mod_privileges.xml</modulefile>
+  <modulefile>mod_nw_ssl.xml.fr</modulefile>
+  <modulefile>mod_privileges.xml.fr</modulefile>
   <modulefile>mod_proxy.xml.fr</modulefile>
   <modulefile>mod_proxy_ajp.xml</modulefile>
-  <modulefile>mod_proxy_balancer.xml</modulefile>
+  <modulefile>mod_proxy_balancer.xml.fr</modulefile>
   <modulefile>mod_proxy_connect.xml</modulefile>
   <modulefile>mod_proxy_express.xml</modulefile>
   <modulefile>mod_proxy_fcgi.xml.fr</modulefile>
@@ -83,11 +83,11 @@
   <modulefile>mod_proxy_html.xml.fr</modulefile>
   <modulefile>mod_proxy_http.xml.fr</modulefile>
   <modulefile>mod_proxy_scgi.xml</modulefile>
-  <modulefile>mod_ratelimit.xml</modulefile>
+  <modulefile>mod_ratelimit.xml.fr</modulefile>
   <modulefile>mod_reflector.xml</modulefile>
   <modulefile>mod_remoteip.xml.fr</modulefile>
   <modulefile>mod_reqtimeout.xml</modulefile>
-  <modulefile>mod_request.xml</modulefile>
+  <modulefile>mod_request.xml.fr</modulefile>
   <modulefile>mod_rewrite.xml.fr</modulefile>
   <modulefile>mod_sed.xml.fr</modulefile>
   <modulefile>mod_session.xml.fr</modulefile>
@@ -114,12 +114,12 @@
   <modulefile>mod_version.xml</modulefile>
   <modulefile>mod_vhost_alias.xml</modulefile>
   <modulefile>mod_watchdog.xml</modulefile>
-  <modulefile>mod_xml2enc.xml</modulefile>
-  <modulefile>mpm_common.xml</modulefile>
+  <modulefile>mod_xml2enc.xml.fr</modulefile>
+  <modulefile>mpm_common.xml.fr</modulefile>
   <modulefile>event.xml.fr</modulefile>
   <modulefile>mpm_netware.xml</modulefile>
   <modulefile>mpmt_os2.xml</modulefile>
-  <modulefile>prefork.xml</modulefile>
+  <modulefile>prefork.xml.fr</modulefile>
   <modulefile>mpm_winnt.xml</modulefile>
-  <modulefile>worker.xml</modulefile>
+  <modulefile>worker.xml.fr</modulefile>
 </modulefilelist>
