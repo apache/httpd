@@ -1749,7 +1749,7 @@ static int example_handler(request_req* r)
     /*~~~~~~~~~~~~~~~~*/
 
     if(util_read(r, &amp;data, &amp;size) == OK) {
-        ap_rprintf("We read a request body that was %u bytes long", size);
+        ap_rprintf(r, "We read a request body that was %u bytes long", size);
     }
     return OK;
 }

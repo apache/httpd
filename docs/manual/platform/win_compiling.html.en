@@ -32,6 +32,7 @@
 
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#requirements">Requirements</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#unixsrcbuild">Building from Unix sources</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#commandbuild">Command-Line Build</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#workspacebuild">Developer Studio Workspace IDE Build</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#exportingmakfiles">Exporting command-line .mak files</a></li>
@@ -248,6 +249,36 @@
         various database driver SDKs.</p>
       </li>
     </ul>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="unixsrcbuild" id="unixsrcbuild">Building from Unix sources</a></h2>
+
+    
+
+    <p>The policy of the HTTPd Server project is to only release Unix sources.
+    Windows source packages made available for download have been supplied by 
+    volunteers and may not be available for every release. You can still build 
+    the server on Windows from the Unix source tarball with just a few additional
+    steps.</p>
+
+    <ol>
+    	<li>Download and unpack the Unix source tarball for the latest version.</li>
+    	<li>Download and unpack the Unix source tarball for latest version of
+        APR-Iconv, place this source in the httpd-2.x.x\srclib\apr-iconv</li>
+    	<li>Open a Command Prompt and CD to the httpd-2.x.x folder</li>
+    	<li>Run the line endings conversion utility at the prompt;</li>
+    </ol>
+
+    <div class="example"><p><code>
+      perl srclib\apr\build\lineends.pl
+    </code></p></div>
+
+    <p>You can now build the server with the Visual Studio development 
+    environment using the IDE. Command-Line builds of the server are not 
+    possible from Unix sources unless you export .mak files as explained 
+    below.
+    </p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
