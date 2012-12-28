@@ -1,0 +1,351 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1378507 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_dbd.xml.meta">
+
+<name>mod_dbd</name>
+<description>Gestion des connexions &agrave; une base de donn&eacute;es SQL</description>
+<status>Extension</status>
+<sourcefile>mod_dbd.c</sourcefile>
+<identifier>dbd_module</identifier>
+<compatibility>Versions 2.1 and sup&eacute;rieures</compatibility>
+
+<summary>
+    <p>Le module <module>mod_dbd</module> g&egrave;re les connexions
+    &agrave; une base de donn&eacute;es SQL via <glossary>APR</glossary>. Il permet
+    aux modules qui requi&egrave;rent des fonctions li&eacute;es aux bases de donn&eacute;es
+    SQL de se connecter &agrave; une base de donn&eacute;es &agrave; la demande, et s'efforce
+    de conf&eacute;rer aux bases de donn&eacute;es une efficacit&eacute; et une
+    &eacute;volutivit&eacute; optimales pour les MPMs thread&eacute;s ou non thread&eacute;s. Pour
+    plus de d&eacute;tails, voir le site web <a
+    href="http://apr.apache.org/">APR</a>,
+    ainsi que cette vue d'ensemble de l'<a
+    href="http://people.apache.org/~niq/dbd.html">environnement de
+    d&eacute;veloppement d'Apache DBD</a> par son d&eacute;veloppeur initial.
+</p>
+</summary>
+
+<seealso><a href="../misc/password_encryptions.html">Formats des mots de
+passe</a></seealso>
+
+<section id="pooling"><title>Regroupement des connexions</title>
+    <p>Ce module g&egrave;re de mani&egrave;re optimis&eacute;e en fonction de la plate-forme
+    les connexions aux bases de donn&eacute;es. Sur les plates-formes non
+    thread&eacute;es, il maintient une connexion persistente &agrave; la mani&egrave;re d'un
+    LAMP classique (Linux, Apache, Mysql, Perl/PHP/Python). Sur les
+    plates-formes thread&eacute;es, il maintient un <em>groupe de
+    connexions</em> &agrave; la fois plus &eacute;volutif et plus efficace, comme
+    d&eacute;crit dans <a href="http://www.apachetutor.org/dev/reslist">cet
+    article d'ApacheTutor</a>. Notez que <module>mod_dbd</module>
+    remplace les modules pr&eacute;sent&eacute;s dans cet article.</p>
+</section>
+
+<section id="API"><title>API DBD d'Apache</title>
+    <p><module>mod_dbd</module> exporte cinq fonctions que d'autres
+    modules pourront utiliser. L'API se pr&eacute;sente comme suit :</p>
+
+    <highlight language="c">
+typedef struct {
+    apr_dbd_t *handle;
+    apr_dbd_driver_t *driver;
+    apr_hash_t *prepared;
+} ap_dbd_t;
+
+/* Fonctions export&eacute;es pour acc&eacute;der &agrave; la base de donn&eacute;es */
+
+/* ouvre une connexion qui DOIT avoir &eacute;t&eacute; explicitement ferm&eacute;e.
+ * Renvoie NULL en cas d'erreur
+ */
+AP_DECLARE(ap_dbd_t*) ap_dbd_open(apr_pool_t*, server_rec*);
+
+/* ferme une connexion ouverte avec ap_dbd_open */
+AP_DECLARE(void) ap_dbd_close(server_rec*, ap_dbd_t*);
+
+/* acquiert une connexion qui aura la dur&eacute;e de vie de la requ&ecirc;te et qui
+ * NE DOIT PAS avoir &eacute;t&eacute; explicitement ferm&eacute;e. Renvoie NULL en cas
+ * d'erreur. C'est la fonction recommand&eacute;e pour la plupart des
+ * applications.
+ */
+AP_DECLARE(ap_dbd_t*) ap_dbd_acquire(request_rec*);
+
+/* acquiert une connexion qui aura la dur&eacute;e de vie d'une connexion et
+ * qui NE DOIT PAS avoir &eacute;t&eacute; explicitement ferm&eacute;e. Renvoie NULL en cas
+ * d'erreur.
+ */
+AP_DECLARE(ap_dbd_t*) ap_dbd_cacquire(conn_rec*);
+
+/* Pr&eacute;pare une requ&ecirc;te qu'un module client pourra utiliser */
+AP_DECLARE(void) ap_dbd_prepare(server_rec*, const char*, const char*);
+
+/* Exporte aussi ces fonctions &agrave; titre optionnel mour les modules qui
+ * p&eacute;f&egrave;reraient les utiliser */
+APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_open, (apr_pool_t*, server_rec*));
+APR_DECLARE_OPTIONAL_FN(void, ap_dbd_close, (server_rec*, ap_dbd_t*));
+APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_acquire, (request_rec*));
+APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_cacquire, (conn_rec*));
+APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const char*));
+</highlight>
+</section>
+
+<section id="prepared"><title>Requ&ecirc;tes SQL pr&eacute;par&eacute;es</title>
+    <p><module>mod_dbd</module> supporte les requ&ecirc;tes SQL pr&eacute;par&eacute;es &agrave;
+    destination des modules qui pourraient les utiliser. Chaque requ&ecirc;te
+    pr&eacute;par&eacute;e doit poss&eacute;der un nom (&eacute;tiquette), et est stock&eacute;e dans un
+    condens&eacute; (hash) : les condens&eacute;s sont du type
+    <code>apr_dbd_prepared_t</code> et s'utilisent dans toute requ&ecirc;te
+    SQL ou commande select pr&eacute;par&eacute;e par apr_dbd.</p>
+
+    <p>Il est du ressort des modules utilisateurs de dbd d'utiliser les
+    requ&ecirc;tes pr&eacute;par&eacute;es et de pr&eacute;ciser quelles requ&ecirc;tes doivent &ecirc;tre
+    sp&eacute;cifi&eacute;es dans httpd.conf, ou de fournir leurs propres directives
+    et d'utiliser <code>ap_dbd_prepare</code>.</p>
+
+    <note type="warning"><title>Avertissement</title>
+	Lorsqu'on utilise des requ&ecirc;tes pr&eacute;par&eacute;es avec des bases de
+	donn&eacute;es MySQL, il est pr&eacute;f&eacute;rable de d&eacute;finir
+	<code>reconnect</code> &agrave; 0 dans la cha&icirc;ne de connexion, afin
+	d'&eacute;viter des erreurs provoqu&eacute;es par un client MySQL qui se
+	reconnecterait sans r&eacute;initialiser correctement les requ&ecirc;tes
+	pr&eacute;par&eacute;es. Si <code>reconnect</code> est d&eacute;fini &agrave; 1, toute
+	connexion d&eacute;fectueuse sera sens&eacute;e &ecirc;tre r&eacute;par&eacute;e, mais comme
+	mod_dbd n'en est pas inform&eacute;, les requ&ecirc;tes pr&eacute;par&eacute;es seront
+	invalid&eacute;es.
+	</note>
+</section>
+
+<section id="security">
+<title>AVERTISSEMENT DE SECURITE</title>
+    <p>Toute application web impliquant une base de donn&eacute;es doit se
+    prot&eacute;ger elle-m&ecirc;me contre les attaques de type injection SQL. Dans
+    la plupart des cas Apache DBD est s&ucirc;r, car les applications
+    utilisent des requ&ecirc;tes pr&eacute;par&eacute;es, et les entr&eacute;es non sures ne seront
+    utilis&eacute;es qu'&agrave; titre de donn&eacute;es. Bien entendu, si vous l'utilisez
+    via un module tiers, vous devez &ecirc;tre au fait des pr&eacute;cautions &agrave;
+    prendre.</p>
+    <p>Cependant, le pilote <var>FreeTDS</var> est <strong>non
+    s&ucirc;r</strong> de par sa nature-m&ecirc;me. Comme la biblioth&egrave;que
+    sous-jacente ne supporte pas les requ&ecirc;tes pr&eacute;par&eacute;es, le pilote en
+    effectue une &eacute;mulation, et les entr&eacute;es non s&ucirc;res sont fusionn&eacute;es
+    avec la requ&ecirc;te SQL.</p>
+    <p>Il peut &ecirc;tre s&eacute;curis&eacute; en <em>d&eacute;contaminant</em> toutes les
+    entr&eacute;es : un processus inspir&eacute; de la recherche de contaminations
+    (<strong>taint mode</strong>) de
+    Perl. Chaque entr&eacute;e est compar&eacute;e &agrave; une expression rationnelle, et
+    seules les entr&eacute;es qui correspondent sont utilis&eacute;es, en accord avec
+    le langage Perl :</p>
+    <example>
+        <pre><code>  $untrusted =~ /([a-z]+)/;
+  $trusted = $1;</code></pre>
+    </example>
+    <p>Pour utiliser ceci, les expressions rationnelles de
+    d&eacute;contamination doivent &ecirc;tre incluses dans les requ&ecirc;tes pr&eacute;par&eacute;es.
+    L'expression rationnelle doit se situer imm&eacute;diatement apr&egrave;s le
+    caract&egrave;re % dans la requ&ecirc;te pr&eacute;par&eacute;e, et doit &ecirc;tre entour&eacute;e
+    d'accolades {}. Par exemple, si votre application attend une entr&eacute;e
+    alphanum&eacute;rique, vous pouvez utiliser :</p>
+    <example>
+       <code>"SELECT foo FROM bar WHERE input = %s"</code>
+    </example>
+    <p>avec d'autres pilotes, et ne risquer au pire qu'une requ&ecirc;te
+    &eacute;chou&eacute;e. Mais avec FreeTDS, vous devez utiliser :</p>
+    <example>
+       <code>"SELECT foo FROM bar WHERE input = %{([A-Za-z0-9]+)}s"</code>
+    </example>
+    <p>tout ce qui ne correspond pas &agrave; l'expression rationnelle est
+    alors rejet&eacute;, et la requ&ecirc;te est maintenant s&ucirc;re.</p>
+    <p>Alternativement, vous pouvez utiliser le pilote ODBC tiers, qui
+    offre la s&eacute;curit&eacute; des requ&ecirc;tes pr&eacute;par&eacute;es authentiques.</p>
+</section>
+<directivesynopsis>
+<name>DBDriver</name>
+<description>Sp&eacute;cifie un pilote SQL</description>
+<syntax>DBDriver <var>nom</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Cette directive permet de sp&eacute;cifier un pilote apr_dbd par son
+    nom. Le pilote doit &ecirc;tre install&eacute; sur votre syst&egrave;me (sur la plupart
+    des syst&egrave;mes, il s'agit d'un objet partag&eacute; ou d'une dll). Par
+    exemple, <code>DBDriver mysql</code> va s&eacute;lectionner le pilote MySQL
+    dans la biblioth&egrave;que apr_dbd_mysql.so.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DBDParams</name>
+<description>Param&egrave;tres de la connexion &agrave; la base de
+donn&eacute;es</description>
+<syntax>DBDParams
+<var>param1</var>=<var>valeur1</var>[,<var>param2</var>=<var>valeur2</var>]</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Cette directive permet de sp&eacute;cifier des param&egrave;tres selon les
+    besoins du pilote concern&eacute;. En g&eacute;n&eacute;ral, les param&egrave;tres &agrave; passer
+    concernent tout ce qui n'a pas de valeur par d&eacute;faut comme le nom
+    d'utilisateur, le mot de passe, le nom de la base de donn&eacute;es, le nom
+    d'h&ocirc;te et le num&eacute;ro de port de la connexion.</p>
+    <p>Les param&egrave;tres de la cha&icirc;ne de connexion en fonction des
+    diff&eacute;rents pilotes comprennent :</p>
+    <dl>
+    <dt>FreeTDS (pour MSSQL et SyBase)</dt>
+    <dd>username, password, appname, dbname, host, charset, lang, server</dd>
+    <dt>MySQL</dt>
+    <dd>host, port, user, pass, dbname, sock, flags, fldsz, group, reconnect</dd>
+    <dt>Oracle</dt>
+    <dd>user, pass, dbname, server</dd>
+    <dt>PostgreSQL</dt>
+    <dd>La cha&icirc;ne de connexion est pass&eacute;e directement &agrave; <code>PQconnectdb</code></dd>
+    <dt>SQLite2</dt>
+    <dd>La cha&icirc;ne de connexion est scind&eacute;e avec comme s&eacute;parateur le
+    caract&egrave;re ':', et <code>partie1:partie2</code> est utilis&eacute; dans
+    <code>sqlite_open(partie1, atoi(partie2), NULL)</code></dd>
+    <dt>SQLite3</dt>
+    <dd>La cha&icirc;ne de connexion est pass&eacute;e directement &agrave; <code>sqlite3_open</code></dd>
+    <dt>ODBC</dt>
+    <dd>datasource, user, password, connect, ctimeout, stimeout, access, txmode, bufsize</dd>
+    </dl>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DBDPersist</name>
+<description>Utiliser ou non des connexions persistentes</description>
+<syntax>DBDPersist On|Off</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Si cette directive est d&eacute;finie &agrave; Off, les connexions persistentes
+    et les connexions group&eacute;es sont d&eacute;sactiv&eacute;es. &Agrave; la demande d'un
+    client, une nouvelle connexion &agrave; la base de donn&eacute;es est ouverte, et
+    ferm&eacute;e imm&eacute;diatement &agrave; l'issue du traitement. Cette configuration ne
+    doit &ecirc;tre utilis&eacute;e qu'&agrave; des fins de d&eacute;bogage, ou sur des serveurs &agrave;
+    charge faible.</p>
+
+    <p>Par d&eacute;faut, les groupes de connexions persistentes sont activ&eacute;s
+    (ou une seule connexion persistente du style LAMP pour les serveurs
+    non thread&eacute;s), et c'est la configuration qui devrait &ecirc;tre utilis&eacute;e
+    dans la plupart des cas sur un serveur en production.</p>
+
+    <p>Avant la version 2.2.2, cette directive n'acceptait que les
+    valeurs <code>0</code> et <code>1</code> au lieu de <code>Off</code>
+    et <code>On</code>, respectivement.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DBDPrepareSQL</name>
+<description>D&eacute;finit une requ&ecirc;te SQL pr&eacute;par&eacute;e</description>
+<syntax>DBDPrepareSQL <var>"requ&ecirc;te SQL"</var> <var>&eacute;tiquette</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Pour les modules tels que les modules d'authentification, qui
+    utilisent de mani&egrave;re r&eacute;p&eacute;t&eacute;e la m&ecirc;me requ&ecirc;te SQL, on peut optimiser
+    les performances en pr&eacute;parant la requ&ecirc;te une fois pour toutes au
+    d&eacute;marrage, plut&ocirc;t qu'&agrave; chaque utilisation. Cette directive permet de
+    pr&eacute;parer une requ&ecirc;te SQL et de lui assigner une &eacute;tiquette.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DBDMin</name>
+<description>Nombre minimum de connexions</description>
+<syntax>DBDMin <var>nombre</var></syntax>
+<default>DBDMin 1</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Cette directive permet de d&eacute;finir le nombre minimum de connexions
+    par processus (plates-formes thread&eacute;es uniquement).</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DBDKeep</name>
+<description>Nombre maximum de connexions maintenues</description>
+<syntax>DBDKeep <var>nombre</var></syntax>
+<default>DBDKeep 2</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Cette directive permet de d&eacute;finir le nombre maximum de connexions
+    &agrave; maintenir par processus, en dehors de celles servant &agrave; g&eacute;rer les
+    pics de demandes (plates-formes thread&eacute;es uniquement).</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DBDMax</name>
+<description>Nombre maximum de connexions</description>
+<syntax>DBDMax <var>nombre</var></syntax>
+<default>DBDMax 10</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Cette directive permet de d&eacute;finir le nombre maximum effectif de
+    connexions par processus (plates-formes thread&eacute;es uniquement).</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DBDExptime</name>
+<description>Dur&eacute;e de vie des connexions inactives</description>
+<syntax>DBDExptime <var>dur&eacute;e en secondes</var></syntax>
+<default>DBDExptime 300</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Cette directive permet de d&eacute;finir la dur&eacute;e de vie des connexions
+    inactives lorsque le nombre de connexions sp&eacute;cifi&eacute; par la directive
+    DBDKeep a &eacute;t&eacute; d&eacute;pass&eacute; (plates-formes thread&eacute;es uniquement).</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DBDInitSQL</name>
+<description>Ex&eacute;cute une instruction SQL apr&egrave;s connexion &agrave; une base de
+donn&eacute;es</description>
+<syntax>DBDInitSQL <var>"instruction SQL"</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Les modules qui le souhaitent peuvent ex&eacute;cuter une ou plusieurs
+    instructions SQL apr&egrave;s connexion &agrave; une base de donn&eacute;es. Par exemple
+    initialiser certaines valeurs, ou ajouter une entr&eacute;e dans le journal
+    lors d'une nouvelle connexion &agrave; la base de donn&eacute;es.</p>
+</usage>
+</directivesynopsis>
+
+
+</modulesynopsis>
