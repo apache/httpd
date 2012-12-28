@@ -35,11 +35,13 @@
     <title>Core Enhancements</title>
     <dl>
       <dt>Loadable MPMs</dt>
-      <dd>Multiple MPMs can now be built as loadable modules at compile time.
+      <dd>Multiple MPMs can now be <a href="mpm.html#dynamic">built 
+      as loadable modules</a> at compile time.
       The MPM of choice can be configured at run time.</dd>
 
       <dt>Event MPM</dt>
-      <dd>The Event MPM is no longer experimental but is now fully supported.</dd>
+      <dd>The <a href="mod/event.html">Event MPM</a> is no longer experimental
+      but is now fully supported.</dd>
 
       <dt>Asynchronous support</dt>
       <dd>Better support for asynchronous read/write for supporting MPMs and
