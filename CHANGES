@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Correctly parse an IPv6 literal host specification in an absolute
+     URL in the request line. [Stefan Fritsch]
+
   *) mod_ssl: add support for subjectAltName-based host name checking
      in proxy mode. PR 54030. [Kaspar Brand]
 

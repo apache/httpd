@@ -675,6 +675,66 @@ static int vhost_check_config(apr_pool_t *p, apr_pool_t *plog,
  * run-time vhost matching functions
  */
 
+static apr_status_t fix_hostname_v6_literal(request_rec *r, char *host)
+{
+    char *dst;
+    int double_colon = 0;
+
+    for (dst = host; *dst; dst++) {
+        if (apr_isxdigit(*dst)) {
+            if (apr_isupper(*dst)) {
+                *dst = apr_tolower(*dst);
+            }
+        }
+        else if (*dst == ':') {
+            if (*(dst + 1) == ':') {
+                if (double_colon)
+                    return APR_EINVAL;
+                double_colon = 1;
+            }
+            else if (*(dst + 1) == '.') {
+                return APR_EINVAL;
+            }
+        }
+        else if (*dst == '.') {
+            /* For IPv4-mapped IPv6 addresses like ::FFFF:129.144.52.38 */
+            if (*(dst + 1) == ':' || *(dst + 1) == '.')
+                return APR_EINVAL;
+        }
+        else {
+            return APR_EINVAL;
+        }
+    }
+    return APR_SUCCESS;
+}
+
+static apr_status_t fix_hostname_non_v6(request_rec *r, char *host)
+{
+    char *dst;
+
+    for (dst = host; *dst; dst++) {
+        if (apr_islower(*dst)) {
+            /* leave char unchanged */
+        }
+        else if (*dst == '.') {
+            if (*(dst + 1) == '.') {
+                return APR_EINVAL;
+            }
+        }
+        else if (apr_isupper(*dst)) {
+            *dst = apr_tolower(*dst);
+        }
+        else if (*dst == '/' || *dst == '\\') {
+            return APR_EINVAL;
+        }
+    }
+    /* strip trailing gubbins */
+    if (dst > host && dst[-1] == '.') {
+        dst[-1] = '\0';
+    }
+    return APR_SUCCESS;
+}
+
 /* Lowercase and remove any trailing dot and/or :port from the hostname,
  * and check that it is sane.
  *
@@ -688,67 +748,65 @@ static int vhost_check_config(apr_pool_t *p, apr_pool_t *plog,
  * Instead we just check for filesystem metacharacters: directory
  * separators / and \ and sequences of more than one dot.
  */
-static void fix_hostname(request_rec *r)
+static void fix_hostname(request_rec *r, const char *host_header)
 {
+    const char *src;
     char *host, *scope_id;
-    char *dst;
     apr_port_t port;
     apr_status_t rv;
     const char *c;
 
-    /* According to RFC 2616, Host header field CAN be blank. */
-    if (!*r->hostname) {
+    src = host_header ? host_header : r->hostname;
+
+    /* According to RFC 2616, Host header field CAN be blank.
+     * XXX But only 'if the requested URI does not include an Internet host
+     * XXX name'. Can this happen?
+     */
+    if (!*src) {
         return;
     }
 
     /* apr_parse_addr_port will interpret a bare integer as a port
      * which is incorrect in this context.  So treat it separately.
      */
-    for (c = r->hostname; apr_isdigit(*c); ++c);
-    if (!*c) {  /* pure integer */
+    for (c = src; apr_isdigit(*c); ++c);
+    if (!*c) {
+        /* pure integer */
+        r->hostname = src;
         return;
     }
 
-    rv = apr_parse_addr_port(&host, &scope_id, &port, r->hostname, r->pool);
-    if (rv != APR_SUCCESS || scope_id) {
-        goto bad;
+    if (host_header) {
+        rv = apr_parse_addr_port(&host, &scope_id, &port, src, r->pool);
+        if (rv != APR_SUCCESS || scope_id)
+            goto bad;
+        if (port) {
+            /* Don't throw the Host: header's port number away:
+               save it in parsed_uri -- ap_get_server_port() needs it! */
+            /* @@@ XXX there should be a better way to pass the port.
+             *         Like r->hostname, there should be a r->portno
+             */
+            r->parsed_uri.port = port;
+            r->parsed_uri.port_str = apr_itoa(r->pool, (int)port);
+        }
+        if (host_header[0] == '[')
+            rv = fix_hostname_v6_literal(r, host);
+        else
+            rv = fix_hostname_non_v6(r, host);
     }
-
-    if (port) {
-        /* Don't throw the Host: header's port number away:
-           save it in parsed_uri -- ap_get_server_port() needs it! */
-        /* @@@ XXX there should be a better way to pass the port.
-         *         Like r->hostname, there should be a r->portno
+    else {
+        /*
+         * Already parsed, surrounding [ ] (if IPv6 literal) and :port have
+         * already been removed.
          */
-        r->parsed_uri.port = port;
-        r->parsed_uri.port_str = apr_itoa(r->pool, (int)port);
+        host = apr_pstrdup(r->pool, r->hostname);
+        if (ap_strchr(host, ':') != NULL)
+            rv = fix_hostname_v6_literal(r, host);
+        else
+            rv = fix_hostname_non_v6(r, host);
     }
-
-    /* if the hostname is an IPv6 numeric address string, it was validated
-     * already; otherwise, further validation is needed
-     */
-    if (r->hostname[0] != '[') {
-        for (dst = host; *dst; dst++) {
-            if (apr_islower(*dst)) {
-                /* leave char unchanged */
-            }
-            else if (*dst == '.') {
-                if (*(dst + 1) == '.') {
-                    goto bad;
-                }
-            }
-            else if (apr_isupper(*dst)) {
-                *dst = apr_tolower(*dst);
-            }
-            else if (*dst == '/' || *dst == '\\') {
-                goto bad;
-            }
-        }
-        /* strip trailing gubbins */
-        if (dst > host && dst[-1] == '.') {
-            dst[-1] = '\0';
-        }
-    }
+    if (rv != APR_SUCCESS)
+        goto bad;
     r->hostname = host;
     return;
 
@@ -973,12 +1031,20 @@ static void check_serverpath(request_rec *r)
 
 AP_DECLARE(void) ap_update_vhost_from_headers(request_rec *r)
 {
-    /* must set this for HTTP/1.1 support */
-    if (r->hostname || (r->hostname = apr_table_get(r->headers_in, "Host"))) {
-        fix_hostname(r);
-        if (r->status != HTTP_OK)
-            return;
+    const char *host_header;
+
+    if (r->hostname) {
+        /*
+         * If there was a host part in the Request-URI, ignore the 'Host'
+         * header.
+         */
+        fix_hostname(r, NULL);
     }
+    else if ((host_header = apr_table_get(r->headers_in, "Host")) != NULL ) {
+        fix_hostname(r, host_header);
+    }
+    if (r->status != HTTP_OK)
+        return;
     /* check if we tucked away a name_chain */
     if (r->connection->vhost_lookup_data) {
         if (r->hostname)
