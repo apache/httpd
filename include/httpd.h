@@ -813,7 +813,9 @@ struct request_rec {
     int proto_num;
     /** Protocol string, as given to us, or HTTP/0.9 */
     char *protocol;
-    /** Host, as set by full URI or Host: */
+    /** Host, as set by full URI or Host: header.
+     *  For literal IPv6 addresses, this does NOT include the surrounding [ ]
+     */
     const char *hostname;
 
     /** Time when the request started */
