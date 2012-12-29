@@ -360,7 +360,7 @@ BOOL SSL_X509_match_name(apr_pool_t *p, X509 *x509, const char *name,
      */
 
     if (SSL_X509_getIDs(p, x509, &ids)) {
-        char *cp;
+        const char *cp;
         int i;
         char **id = (char **)ids->elts;
         BOOL is_wildcard;
@@ -383,7 +383,7 @@ BOOL SSL_X509_match_name(apr_pool_t *p, X509 *x509, const char *name,
              * to match a dot. Otherwise, try a simple string compare.
              */
             if ((allow_wildcard == TRUE && is_wildcard == TRUE &&
-                 (cp = strchr(name, '.')) && !strcasecmp(id[i]+1, cp)) ||
+                 (cp = ap_strchr_c(name, '.')) && !strcasecmp(id[i]+1, cp)) ||
                 !strcasecmp(id[i], name)) {
                 matched = TRUE;
             }
