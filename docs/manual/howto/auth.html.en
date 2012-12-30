@@ -57,7 +57,7 @@ module from each group.</p>
 
 <ul>
   <li>Authentication type (see the
-      <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code> directive)
+      <code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code> directive)
     <ul>
       <li><code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code></li>
       <li><code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code></li>
@@ -76,7 +76,7 @@ module from each group.</p>
     </ul>
   </li>
   <li>Authorization (see the
-      <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directive)
+      <code class="directive"><a href="../mod/core.html#require">Require</a></code> directive)
     <ul>
       <li><code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></li>
       <li><code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code></li>
@@ -148,13 +148,6 @@ module from each group.</p>
     structure of your server, in order to know where some files are
     kept. This should not be terribly difficult, and I'll try to
     make this clear when we come to that point.</p>
-
-    <p>You will also need to make sure that the modules
-    <code class="module"><a href="../mod/mod_authn_core.html">mod_authn_core</a></code> and <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>
-    have either been built into the httpd binary or loaded by the
-    httpd.conf configuration file. Both of these modules provide core
-    directives and functionality that are critical to the configuration
-    and use of authentication and authorization in the web server.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="gettingitworking" id="gettingitworking">Getting it working</a></h2>
@@ -216,7 +209,7 @@ module from each group.</p>
       # (Following line optional)<br />
       AuthBasicProvider file<br />
       AuthUserFile /usr/local/apache/passwd/passwords<br />
-Require user rbowen
+      Require user rbowen
     </code></p></div>
 
     <p>Let's examine each of those directives individually. The <code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code> directive selects
@@ -230,7 +223,7 @@ Require user rbowen
     <code>AuthType Digest</code>. This method is implemented by <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> and is much more secure. Most recent
     browsers support Digest authentication.</p>
 
-    <p>The <code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code> directive sets
+    <p>The <code class="directive"><a href="../mod/core.html#authname">AuthName</a></code> directive sets
     the <dfn>Realm</dfn> to be used in the authentication. The realm serves
     two major functions. First, the client often presents this information to
     the user as part of the password dialog box. Second, it is used by the
@@ -265,7 +258,7 @@ Require user rbowen
     party modules in the <a href="http://modules.apache.org/">Apache Modules
     Database</a>.</p>
 
-    <p>Finally, the <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
+    <p>Finally, the <code class="directive"><a href="../mod/core.html#require">Require</a></code>
     directive provides the authorization part of the process by
     setting the user that is allowed to access this region of the
     server. In the next section, we discuss various ways to use the
@@ -347,7 +340,7 @@ person in</a></h2>
       AuthBasicProvider file<br />
       AuthUserFile /usr/local/apache/passwd/passwords<br />
       AuthGroupFile /usr/local/apache/passwd/groups<br />
-Require group GroupName
+      Require group GroupName
     </code></p></div>
 
     <p>Now, anyone that is listed in the group <code>GroupName</code>,
