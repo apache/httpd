@@ -780,7 +780,7 @@ static apr_status_t strict_hostname_check(request_rec *r, char *host,
     return APR_SUCCESS;
 
 bad:
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02415)
                   "[strict] Invalid host name '%s'%s%.6s",
                   host, *ch ? ", problem near: " : "", ch);
     if (logonly)
@@ -831,7 +831,7 @@ static int fix_hostname(request_rec *r, const char *host_header,
         /* pure integer */
         if (strict) {
             /* RFC 3986 7.4 */
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02416)
                          "[strict] purely numeric host names not allowed: %s",
                          src);
             if (!strict_logonly)
@@ -1166,7 +1166,7 @@ AP_DECLARE(void) ap_update_vhost_from_headers(request_rec *r)
                 apr_table_set(r->headers_in, "Host", r->hostname);
                 info = "Replacing";
             }
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02417)
                           "%s Host header '%s' with host from request uri: "
                           "'%s'", info, host_header, new);
         }
