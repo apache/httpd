@@ -1970,6 +1970,16 @@ AP_DECLARE(void) ap_bin2hex(const void *src, apr_size_t srclen, char *dest)
     *dest = '\0';
 }
 
+AP_DECLARE(int) ap_has_cntrl(const char *str)
+{
+    while (*str) {
+        if (apr_iscntrl(*str))
+            return 1;
+        str++;
+    }
+    return 0;
+}
+
 AP_DECLARE(int) ap_is_directory(apr_pool_t *p, const char *path)
 {
     apr_finfo_t finfo;

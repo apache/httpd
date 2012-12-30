@@ -2265,6 +2265,15 @@ AP_DECLARE(void) ap_get_loadavg(ap_loadavg_t *ld)
 AP_DECLARE(void) ap_bin2hex(const void *src, apr_size_t srclen, char *dest)
                  AP_FN_ATTR_NONNULL_ALL;
 
+/**
+ * Check if string contains a control character
+ * @param str the string to check
+ * @param srclen length of the data
+ * @return 1 if yes, 0 if no control characters
+ */
+AP_DECLARE(int) ap_has_cntrl(const char *str)
+                AP_FN_ATTR_NONNULL_ALL;
+
 #define AP_NORESTART APR_OS_START_USEERR + 1
 
 #ifdef __cplusplus

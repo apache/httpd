@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core, http: Extend HttpProtocol with an option to enforce stricter HTTP
+     conformance or to only log the found problems. [Stefan Fritsch]
+
   *) core: Correctly parse an IPv6 literal host specification in an absolute
      URL in the request line. [Stefan Fritsch]
 
