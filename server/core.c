@@ -510,6 +510,9 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
     if (virt->http09_enable != AP_HTTP09_UNSET)
         conf->http09_enable = virt->http09_enable;
 
+    if (virt->http_conformance != AP_HTTP_CONFORMANCE_UNSET)
+        conf->http_conformance = virt->http_conformance;
+
     /* no action for virt->accf_map, not allowed per-vhost */
 
     if (virt->protocol)
@@ -3712,10 +3715,27 @@ static const char *set_http_protocol(cmd_parms *cmd, void *dummy,
         else if (strcmp(arg, "1.0") == 0)
             conf->http09_enable = AP_HTTP09_DISABLE;
         else
-            return "HttpProtocol min must be one of '0.9' and '1.0'";
-	return NULL;
+            return "HttpProtocol 'min' must be one of '0.9' and '1.0'";
+        return NULL;
     }
-    return "HttpProtocol must be min=0.9|1.0";
+
+    if (strcmp(arg, "strict") == 0)
+        conf->http_conformance = AP_HTTP_CONFORMANCE_STRICT;
+    else if (strcmp(arg, "strict,log-only") == 0)
+        conf->http_conformance = AP_HTTP_CONFORMANCE_STRICT|
+                                 AP_HTTP_CONFORMANCE_LOGONLY;
+    else if (strcmp(arg, "liberal") == 0)
+        conf->http_conformance = AP_HTTP_CONFORMANCE_LIBERAL;
+    else
+        return "HttpProtocol accepts 'min=0.9', 'min=1.0', 'liberal', "
+               "'strict', 'strict,log-only'";
+
+    if ((conf->http_conformance & AP_HTTP_CONFORMANCE_STRICT) &&
+        (conf->http_conformance & AP_HTTP_CONFORMANCE_LIBERAL)) {
+        return "HttpProtocol 'strict' and 'liberal' are mutually exclusive";
+    }
+
+    return NULL;
 }
 
 static const char *set_http_method(cmd_parms *cmd, void *conf, const char *arg)
@@ -4230,8 +4250,9 @@ AP_INIT_TAKE1("EnableExceptionHook", ap_mpm_set_exception_hook, NULL, RSRC_CONF,
 #endif
 AP_INIT_TAKE1("TraceEnable", set_trace_enable, NULL, RSRC_CONF,
               "'on' (default), 'off' or 'extended' to trace request body content"),
-AP_INIT_TAKE1("HttpProtocol", set_http_protocol, NULL, RSRC_CONF,
-              "'min=0.9' (default) or 'min=1.0' to allow/deny HTTP/0.9"),
+AP_INIT_ITERATE("HttpProtocol", set_http_protocol, NULL, RSRC_CONF,
+              "'min=0.9' (default) or 'min=1.0' to allow/deny HTTP/0.9; "
+              "'liberal', 'strict', 'strict,log-only'"),
 AP_INIT_ITERATE("RegisterHttpMethod", set_http_method, NULL, RSRC_CONF,
                 "Registers non-standard HTTP methods"),
 { NULL }
