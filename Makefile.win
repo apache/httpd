@@ -636,6 +636,9 @@ _build:
 	devenv $(TLP).sln /useenv $(CTARGET) $(LONG) /project mod_proxy_html
 	devenv $(TLP).sln /useenv $(CTARGET) $(LONG) /project mod_xml2enc
 !ENDIF
+!IF EXIST("srclib\serf")
+	devenv $(TLP).sln /useenv $(CTARGET) $(LONG) /project mod_serf
+!ENDIF
 
 !ELSE
 
@@ -680,6 +683,10 @@ _build:
 		"mod_proxy_html - Win32 $(LONG)" /NORECURSE $(CTARGET)
 	@msdev $(TLP).dsw /USEENV /MAKE \
 		"mod_xml2enc - Win32 $(LONG)" /NORECURSE $(CTARGET)
+!ENDIF
+!IF EXIST("srclib\serf")
+	@msdev $(TLP).dsw /USEENV /MAKE \
+		"mod_serf - Win32 $(LONG)" /NORECURSE $(CTARGET)
 !ENDIF
 
 !ENDIF
