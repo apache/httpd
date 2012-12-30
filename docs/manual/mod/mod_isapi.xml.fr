@@ -34,7 +34,7 @@
 <summary>
     <p>Ce module impl&eacute;mente l'API des extensions <strong>Internet Server</strong>
     (l'application IIS de Microsoft). Il
-    permet &agrave; Apache pour Windows de servir les extensions <strong>Internet Serveur</strong>
+    permet &agrave; Apache pour Windows de servir les extensions <strong>Internet Server</strong>
     (par exemple les modules .dll ISAPI), compte tenu des
     restrictions sp&eacute;cifi&eacute;es.</p>
 
