@@ -815,10 +815,7 @@ static int fix_hostname(request_rec *r, const char *host_header,
 
     src = host_header ? host_header : r->hostname;
 
-    /* According to RFC 2616, Host header field CAN be blank.
-     * XXX But only 'if the requested URI does not include an Internet host
-     * XXX name'. Can this happen?
-     */
+    /* According to RFC 2616, Host header field CAN be blank */
     if (!*src) {
         return is_v6literal;
     }
