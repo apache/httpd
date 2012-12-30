@@ -682,7 +682,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
              */
             if (nmatch < 3 || (strcmp("HTTP", http) != 0)
                 || (minor >= HTTP_VERSION(1, 0)) ) { /* don't allow HTTP/0.1000 */
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02418)
                               "Invalid protocol: %s", r->protocol);
                 if (enforce_strict) {
                     r->status = HTTP_NOT_IMPLEMENTED;
@@ -693,7 +693,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
                 while (r->protocol[pos] == ' ')
                     pos++;
                 if (r->protocol[pos] != '\0') {
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02419)
                                   "Garbage after request line: ... %s",
                                   r->protocol);
                     if (enforce_strict) {
@@ -716,28 +716,28 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     if (strict) {
         int err = 0;
         if (ap_has_cntrl(r->the_request)) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02420)
                           "Request line must not contain control characters");
             err = HTTP_BAD_REQUEST;
         }
         if (r->parsed_uri.fragment) {
             /* RFC3986 3.5: no fragment */
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02421)
                           "URI must not contain a fragment");
             err = HTTP_BAD_REQUEST;
         }
         else if (r->parsed_uri.user || r->parsed_uri.password) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02422)
                           "URI must not contain a username/password");
             err = HTTP_BAD_REQUEST;
         }
         else if (r->method_number == M_INVALID) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02423)
                           "Invalid HTTP method string: %s", r->method);
             err = HTTP_NOT_IMPLEMENTED;
         }
         else if (r->assbackwards == 0 && r->proto_num < HTTP_VERSION(1, 0)) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02424)
                           "HTTP/0.x does not take a protocol");
             err = HTTP_BAD_REQUEST;
         }
@@ -944,19 +944,19 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
 
                     if (*last_field == '\0') {
                         err = HTTP_BAD_REQUEST;
-                        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO()
+                        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02425)
                                       "Empty request header field name not allowed");
                     }
                     else if (ap_has_cntrl(last_field)) {
                         err = HTTP_BAD_REQUEST;
-                        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO()
+                        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02426)
                                       "[HTTP strict] Request header field name contains "
                                       "control character: %.*s",
                                       (int)LOG_NAME_MAX_LEN, last_field);
                     }
                     else if (ap_has_cntrl(value)) {
                         err = HTTP_BAD_REQUEST;
-                        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO()
+                        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02427)
                                       "Request header field '%.*s' contains"
                                       "control character", (int)LOG_NAME_MAX_LEN,
                                       last_field);
