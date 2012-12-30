@@ -672,40 +672,17 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
         r->proto_num = HTTP_VERSION(pro[5] - '0', pro[7] - '0');
     }
     else {
-        int nmatch, pos;
-        nmatch = sscanf(r->protocol, "%4s/%u.%u%n", http, &major, &minor, &pos);
         if (strict) {
-            /*
-             * According to the GNU sscanf man page, there are implementations
-             * that increment the number of matches for %n. Therefore we check
-             * nmatch with "<" instead of "!=".
-             */
-            if (nmatch < 3 || (strcmp("HTTP", http) != 0)
-                || (minor >= HTTP_VERSION(1, 0)) ) { /* don't allow HTTP/0.1000 */
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02418)
-                              "Invalid protocol: %s", r->protocol);
-                if (enforce_strict) {
-                    r->status = HTTP_NOT_IMPLEMENTED;
-                    return 0;
-                }
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02418)
+                          "Invalid protocol '%s'", r->protocol);
+            if (enforce_strict) {
+                r->status = HTTP_BAD_REQUEST;
+                return 0;
             }
-            if (r->protocol[pos] != '\0') {
-                while (r->protocol[pos] == ' ')
-                    pos++;
-                if (r->protocol[pos] != '\0') {
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02419)
-                                  "Garbage after request line: ... %s",
-                                  r->protocol);
-                    if (enforce_strict) {
-                        r->status = HTTP_BAD_REQUEST;
-                        return 0;
-                    }
-                }
-            }
-            r->proto_num = HTTP_VERSION(major, minor);
         }
-        else if (nmatch >= 3 && (strcasecmp("http", http) == 0)
-                 && (minor < HTTP_VERSION(1, 0)) ) { /* don't allow HTTP/0.1000 */
+        if (3 == sscanf(r->protocol, "%4s/%u.%u", http, &major, &minor)
+            && (strcasecmp("http", http) == 0)
+            && (minor < HTTP_VERSION(1, 0)) ) { /* don't allow HTTP/0.1000 */
             r->proto_num = HTTP_VERSION(major, minor);
         }
         else {
