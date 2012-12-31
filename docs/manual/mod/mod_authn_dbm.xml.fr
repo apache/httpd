@@ -1,0 +1,143 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1420732 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_authn_dbm.xml.meta">
+
+<name>mod_authn_dbm</name>
+<description>Authentification utilisateur utilisant des fichiers
+DBM</description>
+<status>Extension</status>
+<sourcefile>mod_authn_dbm.c</sourcefile>
+<identifier>authn_dbm_module</identifier>
+<compatibility>Disponible depuis les versions 2.1 et sup&eacute;rieures
+d'Apache</compatibility>
+
+<summary>
+    <p>Ce module permet aux frontaux comme
+    <module>mod_auth_digest</module> et <module>mod_auth_basic</module>
+    d'authentifier les utilisateurs en les recherchant dans des fichiers
+    de mots de passe <dfn>dbm</dfn>. <module>mod_authn_file</module>
+    fournit une fonctionnalit&eacute; similaire.</p>
+
+    <p>Lorsqu'on utilise <module>mod_auth_basic</module> ou
+    <module>mod_auth_digest</module>, ce module est invoqu&eacute; en affectant
+    la valeur <code>dbm</code> &agrave; la directive <directive
+    module="mod_auth_basic">AuthBasicProvider</directive> ou <directive
+    module="mod_auth_digest">AuthDigestProvider</directive>.</p>
+</summary>
+
+<seealso><directive module="mod_authn_core">AuthName</directive></seealso>
+<seealso><directive module="mod_authn_core">AuthType</directive></seealso>
+<seealso>
+  <directive module="mod_auth_basic">AuthBasicProvider</directive>
+</seealso>
+<seealso>
+  <directive module="mod_auth_digest">AuthDigestProvider</directive>
+</seealso>
+<seealso><program>htpasswd</program></seealso>
+<seealso><program>htdbm</program></seealso>
+<seealso><a href="../misc/password_encryptions.html">Formats de mots de
+passe</a></seealso>
+
+<directivesynopsis>
+<name>AuthDBMUserFile</name>
+<description>D&eacute;finit le nom d'un fichier de base de donn&eacute;es pour
+l'authentification contenant la liste
+des utilisateurs et de leurs mots de passe</description>
+<syntax>AuthDBMUserFile <var>chemin-fichier</var></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>La directive <directive>AuthDBMUserFile</directive> permet de
+    d&eacute;finir le nom d'un fichier de base de donn&eacute;es pour
+    l'authentification contenant la liste des utilisateurs et de leurs
+    mots de passe. <var>chemin-fichier</var> doit &ecirc;tre un chemin absolu
+    vers le fichier de base de donn&eacute;es.</p>
+
+    <p>La cl&eacute; du fichier de base de donn&eacute;es est le nom de l'utilisateur.
+    La valeur associ&eacute;e est le mot de passe chiffr&eacute;, &eacute;ventuellement suivi
+    par un ':' et des donn&eacute;es arbitraires. Ce ':' ainsi que les donn&eacute;es
+    arbitraires qui suivent seront ignor&eacute;es par le serveur.</p>
+
+    <note type="warning"><title>S&eacute;curit&eacute; :</title>
+      <p>Faites en sorte que le fichier sp&eacute;cifi&eacute; par la directive
+      <directive>AuthDBMUserFile</directive> soit stock&eacute; en dehors de
+      l'arborescence des documents du serveur web ; en particulier, ne
+      l'enregistrez <em>pas</em> dans le r&eacute;pertoire qu'il prot&egrave;ge, faute
+      de quoi, les clients auraient la possibilit&eacute; de
+      t&eacute;l&eacute;charger le fichier des mots de passe.</p>
+    </note>
+
+    <p>Le format de mot de passe chiffr&eacute; d&eacute;pend du frontal
+    d'authentification utilis&eacute; (par exemple
+    <module>mod_authn_basic</module> ou
+    <module>mod_authn_digest</module>). Voir la documentation sur les <a
+    href="../misc/password_encryptions.html">Formats de mots de
+    passe</a> pour plus de d&eacute;tails.</p>
+
+    <p>Note importante concernant la compatibilit&eacute; : l'impl&eacute;mentation de
+    <code>dbmopen</code> dans les modules d'Apache lit la longueur de la
+    cha&icirc;ne correspondant aux donn&eacute;es chiffr&eacute;es dans la structure des
+    donn&eacute;es DBM, plut&ocirc;t que de calculer cette longueur en se basant sur
+    le caract&egrave;re nul final. Certaines applications par contre, comme le
+    serveur web Netscape, calculent cette longueur en se basant sur
+    le caract&egrave;re nul final ; par cons&eacute;quent, si vous rencontrez des
+    difficult&eacute;s en &eacute;changeant des fichiers DBM entre plusieurs
+    applications, le probl&egrave;me peut &eacute;ventuellement s'expliquer par cette
+    diff&eacute;rence d'impl&eacute;mentation.</p>
+
+    <p>Un script perl nomm&eacute; <program>dbmmanage</program> est fourni avec
+    Apache. On peut utiliser ce programme pour cr&eacute;er et mettre &agrave; jour
+    les fichiers de mots de passe au format DBM que ce module
+    utilise. Il existe &eacute;galement un autre outil pour g&eacute;rer les fichiers DBM,
+    inclus dans le programme <program>htdbm</program>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthDBMType</name>
+<description>D&eacute;finit le type de fichier de base de donn&eacute;es utilis&eacute; pour
+stocker les mots de passe</description>
+<syntax>AuthDBMType default|SDBM|GDBM|NDBM|DB</syntax>
+<default>AuthDBMType default</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Cette directive permet de d&eacute;finir le type de fichier de base de
+    donn&eacute;es utilis&eacute; pour stocker les mots de passe. Le type de base de
+    donn&eacute;es par d&eacute;faut est d&eacute;fini &agrave; la compilation. La liste des autres
+    types de bases de donn&eacute;es disponibles d&eacute;pend aussi de la <a
+    href="../install.html#dbm">configuration de la compilation</a>.</p>
+
+    <p>Il est imp&eacute;ratif que le programme que vous utilisez pour cr&eacute;er
+    vos fichiers de mots de passe soit configur&eacute; pour utiliser le m&ecirc;me
+    type de base de donn&eacute;es.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
