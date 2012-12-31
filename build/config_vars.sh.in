@@ -42,7 +42,7 @@ test -n "@APU_CONFIG@" && APU_INCLUDEDIR="`${APU_CONFIG} --includedir`"
 installbuilddir="@exp_installbuilddir@"
 
 exec sed "
-/^[A-Z_]*_LDADD/d
+/^[A-Z0-9_]*_LDADD/d
 /MPM_LIB/d
 /APACHECTL_ULIMIT/d
 /[a-z]*_LTFLAGS/d
