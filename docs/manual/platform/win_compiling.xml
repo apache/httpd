@@ -271,7 +271,7 @@
       perl srclib\apr\build\lineends.pl
     </example>
 
-    <p>You can now build the server with the Visual Studio development 
+    <p>You can now build the server with the Visual Studio 6.0 development 
     environment using the IDE. Command-Line builds of the server are not 
     possible from Unix sources unless you export .mak files as explained 
     below.
