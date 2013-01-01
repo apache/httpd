@@ -2274,6 +2274,24 @@ AP_DECLARE(void) ap_bin2hex(const void *src, apr_size_t srclen, char *dest)
 AP_DECLARE(int) ap_has_cntrl(const char *str)
                 AP_FN_ATTR_NONNULL_ALL;
 
+/**
+ * Wrapper for @a apr_password_validate() to cache expensive calculations
+ * @param r the current request
+ * @param username username of the user
+ * @param passwd password string
+ * @param hash hash string to be passwd to @a apr_password_validate()
+ * @return APR_SUCCESS if passwords match, APR_EMISMATCH or error otherwise
+ * @note Currently, ap_password_validate() only caches the result of the
+ *       most recent call with the same connection as @a r.
+ *       In the future, it may also do rate-limiting against brute-force
+ *       attacks.
+ */
+AP_DECLARE(apr_status_t) ap_password_validate(request_rec *r,
+                                              const char *username,
+                                              const char *passwd,
+                                              const char *hash);
+
+
 #define AP_NORESTART APR_OS_START_USEERR + 1
 
 #ifdef __cplusplus

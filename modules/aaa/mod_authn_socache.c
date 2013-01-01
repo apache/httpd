@@ -15,7 +15,6 @@
  */
 
 #include "apr_strings.h"
-#include "apr_md5.h"            /* for apr_password_validate */
 
 #include "ap_config.h"
 #include "ap_provider.h"
@@ -375,7 +374,7 @@ static authn_status check_password(request_rec *r, const char *user,
         return AUTH_USER_NOT_FOUND;
     }
 
-    rv = apr_password_validate(password, (char*) val);
+    rv = ap_password_validate(r, user, password, (char*) val);
     if (rv != APR_SUCCESS) {
         return AUTH_DENIED;
     }

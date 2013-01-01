@@ -27,7 +27,6 @@
 #include "apr_want.h"
 #include "apr_strings.h"
 #include "apr_dbm.h"
-#include "apr_md5.h"        /* for apr_password_validate */
 
 #include "ap_provider.h"
 #include "httpd.h"
@@ -144,7 +143,7 @@ static authn_status check_dbm_pw(request_rec *r, const char *user,
     }
     AUTHN_CACHE_STORE(r, user, NULL, dbm_password);
 
-    rv = apr_password_validate(password, dbm_password);
+    rv = ap_password_validate(r, user, password, dbm_password);
 
     if (rv != APR_SUCCESS) {
         return AUTH_DENIED;

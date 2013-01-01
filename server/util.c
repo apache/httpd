@@ -30,6 +30,7 @@
 #include "apr.h"
 #include "apr_strings.h"
 #include "apr_lib.h"
+#include "apr_md5.h"            /* for apr_password_validate */
 
 #define APR_WANT_STDIO
 #define APR_WANT_STRFUNC
@@ -2895,4 +2896,43 @@ AP_DECLARE(void) ap_get_loadavg(ap_loadavg_t *ld)
         }
     }
 #endif
+}
+
+static const char * const pw_cache_note_name = "conn_cache_note";
+struct pw_cache {
+    /* varbuf contains concatenated password and hash */
+    struct ap_varbuf vb;
+    apr_size_t pwlen;
+    apr_status_t result;
+};
+
+AP_DECLARE(apr_status_t) ap_password_validate(request_rec *r,
+                                              const char *username,
+                                              const char *passwd,
+                                              const char *hash)
+{
+    struct pw_cache *cache;
+    apr_size_t hashlen;
+
+    cache = (struct pw_cache *)apr_table_get(r->connection->notes, pw_cache_note_name);
+    if (cache != NULL) {
+        if (strncmp(passwd, cache->vb.buf, cache->pwlen) == 0
+            && strcmp(hash, cache->vb.buf + cache->pwlen) == 0) {
+            return cache->result;
+        }
+        /* make ap_varbuf_grow below not copy the old data */
+        cache->vb.strlen = 0;
+    }
+    else {
+        cache = apr_palloc(r->connection->pool, sizeof(struct pw_cache));
+        ap_varbuf_init(r->connection->pool, &cache->vb, 0);
+        apr_table_setn(r->connection->notes, pw_cache_note_name, (void *)cache);
+    }
+    cache->pwlen = strlen(passwd);
+    hashlen = strlen(hash);
+    ap_varbuf_grow(&cache->vb, cache->pwlen + hashlen + 1);
+    memcpy(cache->vb.buf, passwd, cache->pwlen);
+    memcpy(cache->vb.buf + cache->pwlen, hash, hashlen + 1);
+    cache->result = apr_password_validate(passwd, hash);
+    return cache->result;
 }
