@@ -2,7 +2,7 @@
 
 Changes with Apache 2.4.4
 
-  *) Be more correct about rejecting directives that cannot work in <If>
+  *) core: Be more correct about rejecting directives that cannot work in <If>
      sections. [Stefan Fritsch]
 
   *) core: Fix directives like LogLevel that need to know if they are invoked
