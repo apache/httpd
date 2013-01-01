@@ -228,6 +228,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  (just context conflicts)
      +1: covener
 
+   * mod_ssl: PR 52162: log revoked certificates at level INFO instead of DEBUG
+     trunk/2.4.x: Changed as part of http://svn.apache.org/viewvc?rev=1165056&view=rev
+     2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=27913
+     +1: sf
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
