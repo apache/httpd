@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) http: Remove support for Request-Range header sent by Navigator 2-3 and
+     MSIE 3. [Stefan Fritsch]
+
   *) core, http: Extend HttpProtocol with an option to enforce stricter HTTP
      conformance or to only log the found problems. [Stefan Fritsch]
 

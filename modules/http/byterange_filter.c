@@ -102,21 +102,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
         return 0;
     }
 
-    /*
-     * Check for Range request-header (HTTP/1.1) or Request-Range for
-     * backwards-compatibility with second-draft Luotonen/Franks
-     * byte-ranges (e.g. Netscape Navigator 2-3).
-     *
-     * We support this form, with Request-Range, and (farther down) we
-     * send multipart/x-byteranges instead of multipart/byteranges for
-     * Request-Range based requests to work around a bug in Netscape
-     * Navigator 2-3 and MSIE 3.
-     */
-
-    if (!(range = apr_table_get(r->headers_in, "Range"))) {
-        range = apr_table_get(r->headers_in, "Request-Range");
-    }
-
+    range = apr_table_get(r->headers_in, "Range");
     if (!range || strncasecmp(range, "bytes=", 6) || r->status != HTTP_OK) {
         return 0;
     }
@@ -128,10 +114,9 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
 
     /* is content already a multiple range? */
     if ((ct = apr_table_get(r->headers_out, "Content-Type"))
-        && (!strncasecmp(ct, "multipart/byteranges", 20)
-            || !strncasecmp(ct, "multipart/x-byteranges", 22))) {
+        && strncasecmp(ct, "multipart/byteranges", 20) == 0) {
             return 0;
-        }
+    }
 
     /*
      * Check the If-Range header for Etag or Date.
@@ -310,21 +295,6 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
                   it, r->range, *overlaps, *reversals, clength);
 
     return num_ranges;
-}
-
-/*
- * Here we try to be compatible with clients that want multipart/x-byteranges
- * instead of multipart/byteranges (also see above), as per HTTP/1.1. We
- * look for the Request-Range header (e.g. Netscape 2 and 3) as an indication
- * that the browser supports an older protocol. We also check User-Agent
- * for Microsoft Internet Explorer 3, which needs this as well.
- */
-static int use_range_x(request_rec *r)
-{
-    const char *ua;
-    return (apr_table_get(r->headers_in, "Request-Range")
-            || ((ua = apr_table_get(r->headers_in, "User-Agent"))
-                && ap_strstr_c(ua, "MSIE 3")));
 }
 
 #define BYTERANGE_FMT "%" APR_OFF_T_FMT "-%" APR_OFF_T_FMT "/%" APR_OFF_T_FMT
@@ -519,9 +489,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
         /* Is ap_make_content_type required here? */
         const char *orig_ct = ap_make_content_type(r, r->content_type);
 
-        ap_set_content_type(r, apr_pstrcat(r->pool, "multipart",
-                                           use_range_x(r) ? "/x-" : "/",
-                                           "byteranges; boundary=",
+        ap_set_content_type(r, apr_pstrcat(r->pool,
+                                           "multipart/byteranges; boundary=",
                                            ap_multipart_boundary, NULL));
 
         if (orig_ct) {
