@@ -182,6 +182,9 @@ static void ssl_log_cert_error(const char *file, int line, int level,
 
             BIO_free(bio);
         }
+        else {
+            ap_abort_on_oom();
+        }
     }
     else {
         apr_snprintf(buf + msglen, sizeof buf - msglen,
