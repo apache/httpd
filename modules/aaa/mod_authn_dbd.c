@@ -179,7 +179,7 @@ static authn_status authn_dbd_password(request_rec *r, const char *user,
     }
     AUTHN_CACHE_STORE(r, user, NULL, dbd_password);
 
-    rv = apr_password_validate(password, dbd_password);
+    rv = ap_password_validate(r, user, password, dbd_password);
 
     if (rv != APR_SUCCESS) {
         return AUTH_DENIED;

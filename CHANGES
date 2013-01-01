@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_authn_file, mod_authn_dbd, mod_authn_dbm, mod_authn_socache:
+     Cache the result of the most recent password hash verification for every
+     keep-alive connection. This saves some expensive calculations.
+     [Stefan Fritsch]
+
   *) http: Remove support for Request-Range header sent by Navigator 2-3 and
      MSIE 3. [Stefan Fritsch]
 
