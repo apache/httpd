@@ -15,7 +15,6 @@
  */
 
 #include "apr_strings.h"
-#include "apr_md5.h"            /* for apr_password_validate */
 #include "apr_lib.h"            /* for apr_isspace */
 #include "apr_base64.h"         /* for apr_base64_decode et al */
 #define APR_WANT_STRFUNC        /* for strcasecmp */
