@@ -1,0 +1,651 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1371059 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_proxy_ajp.xml.meta">
+
+<name>mod_proxy_ajp</name>
+<description>Module de support AJP pour
+<module>mod_proxy</module></description>
+<status>Extension</status>
+<sourcefile>mod_proxy_ajp.c</sourcefile>
+<identifier>proxy_ajp_module</identifier>
+<compatibility>Disponible depuis la version 2.1 d'Apache</compatibility>
+
+<summary>
+    <p>Ce module n&eacute;cessite le chargement de <module
+    >mod_proxy</module>. Il fournit le support du <code>Protocole Apache
+    JServ version 1.3</code> (nomm&eacute; dans la suite de ce document
+    <em>AJP13</em>).</p>
+
+    <p>Pour &ecirc;tre en mesure d'exploiter le protocole <code>AJP13</code>,
+    il est donc n&eacute;cessaire de charger les modules
+    <module>mod_proxy</module> et <module>mod_proxy_ajp</module>.</p>
+
+    <note type="warning"><title>Avertissement</title>
+      <p>N'activez pas la fonctionnalit&eacute; de mandataire avant d'avoir <a
+      href="mod_proxy.html#access">s&eacute;curis&eacute; votre serveur</a>. Les
+      serveurs mandataires ouverts sont dangereux non seulement pour
+      votre r&eacute;seau, mais aussi pour l'Internet au sens large. </p>
+    </note>
+</summary>
+
+<seealso><module>mod_proxy</module></seealso>
+<seealso><a href="../env.html">Documentation sur les variables
+d'environnement</a></seealso>
+
+<section id="usage"><title>Utilisation</title>
+    <p>Ce module permet de mandater en inverse un serveur d'application
+    d'arri&egrave;re-plan (comme Apache Tomcat) qui utilise le protocole AJP13.
+    Son utilisation est similaire &agrave; celle d'un mandataire inverse HTTP,
+    mais s'appuie sur le prefixe <code>ajp://</code> :</p>
+
+    <example><title>Mandataire inverse simple</title>
+    <highlight language="config">
+    ProxyPass /app ajp://backend.example.com:8009/app
+    </highlight>
+    </example>
+
+    <p>On peut aussi configurer un r&eacute;partiteur de charge :</p>
+    <example><title>Mandataire inverse avec r&eacute;partiteur de charge</title>
+      <highlight language="config">
+&lt;Proxy balancer://cluster&gt;
+    BalancerMember ajp://app1.example.com:8009 loadfactor=1
+    BalancerMember ajp://app2.example.com:8009 loadfactor=2
+    ProxySet lbmethod=bytraffic
+&lt;/Proxy&gt;
+ProxyPass /app balancer://cluster/app
+      </highlight>
+    </example>
+
+    <p>Notez qu'en g&eacute;n&eacute;ral, la directive <directive
+    module="mod_proxy">ProxyPassReverse</directive> n'est pas
+    n&eacute;cessaire. La requ&ecirc;te AJP inclut l'en-t&ecirc;te host original fourni
+    au mandataire, et le serveur d'application est sens&eacute; g&eacute;n&eacute;rer des
+    en-t&ecirc;tes auto-r&eacute;f&eacute;ren&ccedil;ants relatifs &agrave; cet h&ocirc;te ; aucune r&eacute;&eacute;criture
+    n'est donc n&eacute;cessaire.</p>
+
+    <p>La situation la plus courante dans laquelle la directive <directive
+    module="mod_proxy">ProxyPassReverse</directive> est n&eacute;cessaire se
+    rencontre lorsque le chemin de l'URL au niveau du mandataire est
+    diff&eacute;rente de celle du serveur d'arri&egrave;re-plan. Dans ce cas, un
+    en-t&ecirc;te redirect peut &ecirc;tre r&eacute;&eacute;crit relativement &agrave; l'URL de l'h&ocirc;te
+    original (et non du serveur d'arri&egrave;re-plan <code>ajp://</code> URL)
+    ; par exemple :</p>
+    <example><title>R&eacute;&eacute;criture d'un chemin mandat&eacute;</title>
+      <highlight language="config">
+ProxyPass /apps/foo ajp://backend.example.com:8009/foo
+ProxyPassReverse /apps/foo http://www.example.com/foo
+    </highlight>
+    </example>
+    <p>Il est cependant pr&eacute;f&eacute;rable en g&eacute;n&eacute;ral de d&eacute;ployer l'application
+    sur le serveur d'arri&egrave;re-plan avec le m&ecirc;me chemin que sur le
+    mandataire.
+    </p>
+</section>
+
+<section id="env"><title>Variables d'environnement</title>
+    <p>Les variables d'environnement dont le nom poss&egrave;de le pr&eacute;fixe
+    <code>AJP_</code> sont transmises au serveur original en tant
+    qu'attributs de requ&ecirc;te AJP (le pr&eacute;fixe AJP_ &eacute;tant supprim&eacute; du nom
+    de la cl&eacute;).</p>
+</section>
+
+<section id="overviewprotocol"><title>Vue d'ensemble du protocole</title>
+    <p>Le protocole <code>AJP13</code> est orient&eacute; paquet. Le format
+    binaire a &eacute;t&eacute; pr&eacute;f&eacute;r&eacute;, probablement pour des raisons de
+    performances, au format texte pourtant plus lisible. Le serveur web
+    communique avec le conteneur de servlets sur une connexion TCP. Pour
+    diminuer la charge induite par le processus de cr&eacute;ation de socket,
+    le serveur web va tenter d'utiliser des connexions TCP persistantes
+    avec le conteneur de servlets, et de r&eacute;utiliser les connexions
+    pendant plusieurs cycles requ&ecirc;tes/r&eacute;ponse.</p>
+    <p>Lorsqu'une connexion a &eacute;t&eacute; assign&eacute;e &agrave; une requ&ecirc;te particuli&egrave;re,
+    elle ne sera utilis&eacute;e pour aucune autre jusqu'&agrave; ce que le cycle de
+    traitement de la requ&ecirc;te se soit termin&eacute;. En d'autres termes, il n'y
+    a pas de multiplexage des requ&ecirc;tes sur une connexion. Ceci se
+    traduit par un code beaucoup plus simple &agrave; chaque extr&eacute;mit&eacute; de la
+    connexion, un nombre plus important de connexions &eacute;tant cependant
+    ouvertes en m&ecirc;me temps.</p>
+    <p>Lorsque le serveur web a ouvert une connexion vers le conteneur
+    de servlets, celle-ci peut se trouver dans l'un des &eacute;tats suivants
+    :</p>
+    <ul>
+    <li> Idle <br/> Aucune requ&ecirc;te n'est trait&eacute;e sur cette
+    connexion. </li>
+    <li> Assigned <br/> La connexion fait l'objet d'un traitement de
+    requ&ecirc;te.</li>
+    </ul>
+    <p>Lorsqu'une connexion est assign&eacute;e au traitement d'une requ&ecirc;te
+    particuli&egrave;re, les informations de base de cette derni&egrave;re (comme les
+    en-t&ecirc;tes HTTP, etc...) sont envoy&eacute;es sur la connexion sous une forme
+    tr&egrave;s condens&eacute;e (par exemple les cha&icirc;nes courantes sont cod&eacute;es sous
+    forme d'entiers). Vous trouverez des d&eacute;tails sur ce format plus
+    loin dans la structure des paquets de requ&ecirc;te. Si la requ&ecirc;te poss&egrave;de
+    un corps <code>(content-length > 0)</code>, il est envoy&eacute; dans un
+    paquet s&eacute;par&eacute; imm&eacute;diatement apr&egrave;s.</p>
+    <p>A ce moment, le conteneur est probablement pr&ecirc;t &agrave; traiter la
+    requ&ecirc;te. Au cours de ce traitement, il peut renvoyer les messages
+    suivants au serveur web :</p>
+    <ul>
+    <li>SEND_HEADERS <br/>Renvoie un jeu d'en-t&ecirc;tes au navigateur.</li>
+    <li>SEND_BODY_CHUNK <br/>Renvoie un tron&ccedil;on de corps de requ&ecirc;te au
+    navigateur.
+    </li>
+    <li>GET_BODY_CHUNK <br/>Re&ccedil;oit un autre tron&ccedil;on de donn&eacute;es de la
+    requ&ecirc;te si elle n'a pas encore &eacute;t&eacute; transmise int&eacute;gralement. Ce type
+    de transmission est n&eacute;cessaire car les paquets poss&egrave;dent une taille
+    maximale fixe, et des quantit&eacute;s quelconques de donn&eacute;es peuvent &ecirc;tre
+    contenues dans le corps de la requ&ecirc;te (pour un chargement de
+    fichier, par exemple). Notez que cela n'a rien &agrave; voir avec le
+    transfert HTTP fractionn&eacute;.</li>
+    <li>END_RESPONSE <br/> Termine le cycle du traitement de la
+    requ&ecirc;te.</li>
+    </ul>
+    <p>Chaque message est associ&eacute; &agrave; un paquet de donn&eacute;es format&eacute;
+    diff&eacute;remment. Voir plus loin les structures des paquets de r&eacute;ponses
+    pour plus de d&eacute;tails.</p>
+</section>
+
+<section id="basppacketstruct"><title>Structure de base des paquets</title>
+    <p>Ce protocole h&eacute;rite en partie de XDR, mais il diff&egrave;re sur de
+    nombreux points (pas d'alignement sur 4 bits, par exemple).</p>
+    <p>Ordre des octets : je ne suis pas s&ucirc;r du type endian des octets
+    individuels. Je suppose qu'ils sont de type little-endian, car cela
+    correspond &agrave; la sp&eacute;cification XDR, et je suppose aussi que la
+    biblioth&egrave;que sys/socket fonctionne ainsi automatiquement (du point
+    de vue du langage C). Il serait souhaitable que quelqu'un poss&egrave;dant
+    une meilleure connaissance des appels socket puisse prendre le
+    relai.</p>
+    <p>Le protocole comporte quatre types de donn&eacute;es : octets, bool&eacute;ens,
+    entiers et cha&icirc;nes de caract&egrave;res.</p>
+    <dl>
+    <dt><strong>Octet</strong></dt><dd>Un seul octet.</dd>
+    <dt><strong>Bool&eacute;en</strong></dt>
+      <dd>Un seul octet, <code>1 = vrai</code>, <code>0 = faux</code>.
+      L'utilisation d'autres valeurs non nulles (dans le style C) peut
+      fonctionner dans certains cas, mais pas dans certains autres..</dd>
+    <dt><strong>Entier</strong></dt>
+      <dd>Un nombre compris entre <code>0 et 2^16 (32768)</code>, stock&eacute;
+      sur 2 octets en d&eacute;butant par l'octet de poids forts.</dd>
+    <dt><strong>Cha&icirc;ne</strong></dt>
+      <dd>Une cha&icirc;ne de taille variable (longueur limit&eacute;e &agrave; 2^16). Elle
+      est cod&eacute;e comme suit : les deux premiers octets repr&eacute;sentent la
+      longueur de la cha&icirc;ne, les octets suivants constituent la cha&icirc;ne
+      proprement dite (y compris le '\0' final). Notez que la longueur
+      encod&eacute;e dans les deux premiers octets ne prend pas en compte le
+      '\0' final, de la m&ecirc;me mani&egrave;re que <code>strlen</code>. Cela peut
+      pr&ecirc;ter &agrave; confusion du point de vue de Java qui est surcharg&eacute; de
+      d&eacute;clarations d'autoincr&eacute;mentation &eacute;tranges destin&eacute;es &agrave; traiter
+      ces terminateurs. Je suppose que le but dans lequel cela a
+      &eacute;t&eacute; con&ccedil;u ainsi &eacute;tait de permettre au code C d'&ecirc;tre plus efficace
+      lors de la lecture de cha&icirc;nes en provenance du conteneur de
+      servlets -- avec le caract&egrave;re \0 final, le code C peut transmettre
+      des r&eacute;f&eacute;rences dans un seul tampon, sans avoir &agrave; effectuer de
+      copie. En l'absence du caract&egrave;re \0 final, le code C doit
+      effectuer une copie afin de pouvoir tenir compte de sa notion de
+      cha&icirc;ne.</dd>
+    </dl>
+
+  <section><title>Taille du paquet</title>
+    <p>Selon la majorit&eacute; du code, la taille maximale du paquet est de
+    <code>8 * 1024 bytes (8K)</code>. La taille r&eacute;elle du paquet est
+    encod&eacute;e dans l'en-t&ecirc;te.</p>
+  </section>
+  <section><title>En-t&ecirc;tes de paquet</title>
+    <p>Les paquets envoy&eacute;s par le serveur vers le conteneur commencent
+    par <code>0x1234</code>. Les paquets envoy&eacute;s par le conteneur vers
+    le serveur commencent par <code>AB</code> (c'est &agrave; dire le code
+    ASCII de A suivi du code ASCII de B). Ensuite, vient un entier (cod&eacute;
+    comme ci-dessus) repr&eacute;sentant la longueur des donn&eacute;es transmises.
+    Bien que ceci puisse faire croire que la taille maximale des donn&eacute;es
+    est de 2^16, le code d&eacute;finit en fait ce maximum &agrave; 8K.</p>
+    <table>
+      <tr>
+        <td colspan="6"><em>Format du paquet (Serveur->Conteneur)</em></td>
+      </tr>
+      <tr>
+        <td>Octet</td>
+        <td>0</td>
+        <td>1</td>
+        <td>2</td>
+        <td>3</td>
+        <td>4...(n+3)</td>
+      </tr>
+      <tr>
+        <td>Contenu</td>
+        <td>0x12</td>
+        <td>0x34</td>
+        <td colspan="2">Taille des donn&eacute;es (n)</td>
+        <td>Data</td>
+      </tr>
+    </table>
+    <table>
+      <tr>
+        <td colspan="6"><em>Format du paquet (Conteneur->Serveur)</em></td>
+      </tr>
+      <tr>
+        <td>Octet</td>
+        <td>0</td>
+        <td>1</td>
+        <td>2</td>
+        <td>3</td>
+        <td>4...(n+3)</td>
+      </tr>
+      <tr>
+        <td>Contenu</td>
+        <td>A</td>
+        <td>B</td>
+        <td colspan="2">Taille des donn&eacute;es (n)</td>
+        <td>Data</td>
+      </tr>
+    </table>
+    <p>Pour la plupart des paquets, le premier octet de la charge utile
+    encode le type de message, &agrave; l'exception des paquets contenant un
+    corps de requ&ecirc;te envoy&eacute;s du serveur vers le conteneur -- ils
+    comportent un en-t&ecirc;te standard (<code>0x1234</code> suivi de la taille
+    du paquet), mais celui-ci n'est suivi d'aucun pr&eacute;fixe.</p>
+     <p>Le serveur web peut envoyer les messages suivants au conteneur
+     de servlets :</p>
+    <table>
+      <tr>
+        <td>Code</td>
+        <td>Type de paquet</td>
+        <td>Signification</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Fait suivre la requ&ecirc;te</td>
+        <td>D&eacute;bute le cycle de traitement de la requ&ecirc;te avec les donn&eacute;es
+	qui suivent.</td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td>Arr&ecirc;t</td>
+        <td>Le serveur web demande au conteneur de s'arr&ecirc;ter.</td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td>Ping</td>
+        <td>Le serveur web demande au conteneur de prendre le contr&ocirc;le
+	(phase de connexion s&eacute;curis&eacute;e).</td>
+      </tr>
+      <tr>
+        <td>10</td>
+        <td>CPing</td>
+        <td>Le serveur web demande au conteneur de r&eacute;pondre rapidement
+	avec un CPong.
+        </td>
+      </tr>
+      <tr>
+        <td>none</td>
+        <td>Donn&eacute;es</td>
+        <td>Taille (2 octets) et les donn&eacute;es correspondantes.</td>
+      </tr>
+    </table>
+    <p>&Agrave; des fins de s&eacute;curit&eacute;, le conteneur n'effectuera r&eacute;ellement son
+    <code>Arr&ecirc;t</code> que si la demande provient de la machine par
+    laquelle il est h&eacute;berg&eacute;.</p>
+    <p>Le premier paquet <code>Donn&eacute;es</code> est envoy&eacute; imm&eacute;diatement
+    apr&egrave;s le paquet <code>Faire suivre la requ&ecirc;te</code> par le serveur
+    web.</p>
+    <p>Le conteneur de servlets peut envoyer les types de messages
+    suivants au serveur web :</p>
+    <table>
+      <tr>
+        <td>Code</td>
+        <td>Type de paquet</td>
+        <td>Signification</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>Envoi d'un tron&ccedil;on de corps</td>
+        <td>Envoi d'un tron&ccedil;on de corps depuis le conteneur de servlets
+	vers le serveur web (et probablement vers le navigateur).</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>Envoie les en-t&ecirc;tes</td>
+        <td>Envoi des en-t&ecirc;tes de r&eacute;ponse depuis le conteneur de
+	servlets vers le serveur web (et probablement vers le
+	navigateur).</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>Fin de la r&eacute;ponse</td>
+        <td>Marque la fin de la r&eacute;ponse (et par cons&eacute;quent du cycle de
+	traitement de la requ&ecirc;te).
+        </td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td>R&eacute;ception du tron&ccedil;on de corps suivant</td>
+        <td>R&eacute;ception de la suite des donn&eacute;es de la requ&ecirc;te si elles
+	n'ont pas encore &eacute;t&eacute; enti&egrave;rement transmises.</td>
+      </tr>
+      <tr>
+        <td>9</td>
+        <td>R&eacute;ponse CPong</td>
+        <td>La r&eacute;ponse &agrave; une requ&ecirc;te CPing</td>
+      </tr>
+    </table>
+    <p>Chacun des messages ci-dessus poss&egrave;de une structure interne
+    diff&eacute;rente dont vous trouverez les d&eacute;tails ci-dessous.</p>
+  </section>
+</section>
+<section id="rpacetstruct"><title>Structure des paquets de
+requ&ecirc;te</title>
+    <p>Pour les messages de type <em>Faire suivre la requ&ecirc;te</em> depuis
+    le serveur vers le conteneur :</p>
+    <example><pre>
+AJP13_FORWARD_REQUEST :=
+    prefix_code      (byte) 0x02 = JK_AJP13_FORWARD_REQUEST
+    method           (byte)
+    protocol         (string)
+    req_uri          (string)
+    remote_addr      (string)
+    remote_host      (string)
+    server_name      (string)
+    server_port      (integer)
+    is_ssl           (boolean)
+    num_headers      (integer)
+    request_headers *(req_header_name req_header_value)
+    attributes      *(attribut_name attribute_value)
+    request_terminator (byte) OxFF
+    </pre></example>
+    <p>Les <code>request_headers</code> poss&egrave;dent la structure suivante
+    :
+    </p><example><pre>
+req_header_name :=
+    sc_req_header_name | (string)  [voir ci-dessous pour la mani&egrave;re dont
+    ceci est interpr&eacute;t&eacute;]
+
+sc_req_header_name := 0xA0xx (integer)
+
+req_header_value := (string)
+</pre></example>
+    <p>Les <code>attributes</code> sont optionnels et poss&egrave;dent la
+    structure suivante :</p>
+    <example><pre>
+attribute_name := sc_a_name | (sc_a_req_attribute string)
+
+attribute_value := (string)
+
+    </pre></example>
+    <p>Un des en-t&ecirc;tes les plus importants est
+    <code>content-length</code>, car il indique si le conteneur doit ou
+    non attendre un autre paquet imm&eacute;diatement.</p>
+  <section><title>Description d&eacute;taill&eacute;e de la requ&ecirc;te que le serveur
+  fait suivre vers le conteneur
+  </title></section>
+  <section><title>Pr&eacute;fixe de la requ&ecirc;te</title>
+    <p>Pour toutes les requ&ecirc;tes, ce pr&eacute;fixe est 2. Voir ci-dessus pour
+    les d&eacute;tails des autres codes de pr&eacute;fixes.</p>
+  </section>
+  <section><title>M&eacute;thode</title>
+    <p>La m&eacute;thode HTTP, encod&eacute;e sous la forme d'un seul octet :</p>
+    <table>
+      <tr><td>Nom commande</td><td>Code</td></tr>
+      <tr><td>OPTIONS</td><td>1</td></tr>
+      <tr><td>GET</td><td>2</td></tr>
+      <tr><td>HEAD</td><td>3</td></tr>
+      <tr><td>POST</td><td>4</td></tr>
+      <tr><td>PUT</td><td>5</td></tr>
+      <tr><td>DELETE</td><td>6</td></tr>
+      <tr><td>TRACE</td><td>7</td></tr>
+      <tr><td>PROPFIND</td><td>8</td></tr>
+      <tr><td>PROPPATCH</td><td>9</td></tr>
+      <tr><td>MKCOL</td><td>10</td></tr>
+      <tr><td>COPY</td><td>11</td></tr>
+      <tr><td>MOVE</td><td>12</td></tr>
+      <tr><td>LOCK</td><td>13</td></tr>
+      <tr><td>UNLOCK</td><td>14</td></tr>
+      <tr><td>ACL</td><td>15</td></tr>
+      <tr><td>REPORT</td><td>16</td></tr>
+      <tr><td>VERSION-CONTROL</td><td>17</td></tr>
+      <tr><td>CHECKIN</td><td>18</td></tr>
+      <tr><td>CHECKOUT</td><td>19</td></tr>
+      <tr><td>UNCHECKOUT</td><td>20</td></tr>
+      <tr><td>SEARCH</td><td>21</td></tr>
+      <tr><td>MKWORKSPACE</td><td>22</td></tr>
+      <tr><td>UPDATE</td><td>23</td></tr>
+      <tr><td>LABEL</td><td>24</td></tr>
+      <tr><td>MERGE</td><td>25</td></tr>
+      <tr><td>BASELINE_CONTROL</td><td>26</td></tr>
+      <tr><td>MKACTIVITY</td><td>27</td></tr>
+    </table>
+    <p>Les versions futures d'ajp13 pourront transmettre des m&eacute;thodes
+    suppl&eacute;mentaires, m&ecirc;me si elles ne font pas partie de cette
+    liste.</p>
+  </section>
+  <section><title>protocol, req_uri, remote_addr, remote_host, server_name,
+  server_port, is_ssl</title>
+    <p>Les significations de ces &eacute;l&eacute;ments sont triviales. Ils sont tous
+    obligatoires et seront envoy&eacute;s avec chaque requ&ecirc;te.</p>
+  </section>
+  <section><title>En-t&ecirc;tes</title>
+    <p>La structure de <code>request_headers</code> est la suivante
+    : tout d'abord, le nombre d'en-t&ecirc;tes <code>num_headers</code> est
+    encod&eacute;, suivi d'une liste de paires nom d'en-t&ecirc;te
+    <code>req_header_name</code> / valeur <code>req_header_value</code>.
+    Les noms d'en-t&ecirc;tes courants sont cod&eacute;s sous forme d'entiers afin de
+    gagner de la place. Si le nom d'en-t&ecirc;te ne fait partie de la liste
+    des en-t&ecirc;tes courants, il est encod&eacute; normalement (une cha&icirc;ne de
+    caract&egrave;res pr&eacute;fix&eacute;e par la taille). La liste des en-t&ecirc;tes courants
+    <code>sc_req_header_name</code> avec leurs codes se pr&eacute;sente comme
+    suit (il sont tous sensibles &agrave; la casse) :</p>
+    <table>
+      <tr><td>Nom</td><td>Valeur du code</td><td>Nom du code</td></tr>
+      <tr><td>accept</td><td>0xA001</td><td>SC_REQ_ACCEPT</td></tr>
+      <tr><td>accept-charset</td><td>0xA002</td><td>SC_REQ_ACCEPT_CHARSET
+      </td></tr>
+      <tr><td>accept-encoding</td><td>0xA003</td><td>SC_REQ_ACCEPT_ENCODING
+      </td></tr>
+      <tr><td>accept-language</td><td>0xA004</td><td>SC_REQ_ACCEPT_LANGUAGE
+      </td></tr>
+      <tr><td>authorization</td><td>0xA005</td><td>SC_REQ_AUTHORIZATION</td>
+      </tr>
+      <tr><td>connection</td><td>0xA006</td><td>SC_REQ_CONNECTION</td></tr>
+      <tr><td>content-type</td><td>0xA007</td><td>SC_REQ_CONTENT_TYPE</td>
+      </tr>
+      <tr><td>content-length</td><td>0xA008</td><td>SC_REQ_CONTENT_LENGTH</td>
+      </tr>
+      <tr><td>cookie</td><td>0xA009</td><td>SC_REQ_COOKIE</td></tr>
+      <tr><td>cookie2</td><td>0xA00A</td><td>SC_REQ_COOKIE2</td></tr>
+      <tr><td>host</td><td>0xA00B</td><td>SC_REQ_HOST</td></tr>
+      <tr><td>pragma</td><td>0xA00C</td><td>SC_REQ_PRAGMA</td></tr>
+      <tr><td>referer</td><td>0xA00D</td><td>SC_REQ_REFERER</td></tr>
+      <tr><td>user-agent</td><td>0xA00E</td><td>SC_REQ_USER_AGENT</td></tr>
+    </table>
+    <p>Le code Java qui lit ceci extrait l'entier repr&eacute;sent&eacute; par les
+    deux premiers octets, et si le premier octet est
+    <code>'0xA0'</code>, il utilise l'entier repr&eacute;sent&eacute; par le deuxi&egrave;me
+    octet comme index d'un tableau de noms d'en-t&ecirc;tes. Si le premier
+    octet n'est pas <code>0xA0</code>, l'entier repr&eacute;sent&eacute; par les deux
+    octets est consid&eacute;r&eacute; comme la longueur d'une cha&icirc;ne qui est alors
+    lue.</p>
+    <p>Ceci ne peut fonctionner que si aucun nom d'en-t&ecirc;te ne poss&egrave;de
+    une taille sup&eacute;rieure &agrave; <code>0x9999 (==0xA000 - 1)</code>, ce qui
+    est vraisemblable, bien qu'un peu arbitraire.</p>
+    <note><title>Note:</title>
+    L'en-t&ecirc;te <code>content-length</code> est extr&ecirc;mement important.
+    S'il est pr&eacute;sent et non nul, le conteneur consid&egrave;re que la requ&ecirc;te
+    poss&egrave;de un corps (une requ&ecirc;te POST, par exemple), et lit
+    imm&eacute;diatement le paquet suivant dans le flux d'entr&eacute;e pour extraire
+    ce corps.
+    </note>
+  </section>
+  <section><title>Attributs</title>
+    <p>Les attributs pr&eacute;fix&eacute;s par <code>?</code> (par exemple
+    <code>?context</code>) sont tous optionnels. Chacun d'eux est
+    repr&eacute;sent&eacute; par un octet correspondant au type de l'attribut et par
+    sa valeur (cha&icirc;ne ou entier). Ils peuvent &ecirc;tre envoy&eacute;s dans un ordre
+    quelconque (bien que le code C les envoie dans l'ordre ci-dessous).
+    Un code de terminaison sp&eacute;cial est envoy&eacute; pour signaler la fin de la
+    liste des attributs optionnels. La liste des codes est la suivante
+    :</p>
+    <table>
+      <tr><td>Information</td><td>Valeur code</td><td>Type de valeur</td><td>Note</td></tr>
+      <tr><td>?context</td><td>0x01</td><td>-</td><td>Non impl&eacute;ment&eacute;
+      actuellement
+      </td></tr>
+      <tr><td>?servlet_path</td><td>0x02</td><td>-</td><td>Non impl&eacute;ment&eacute;
+      actuellement
+      </td></tr>
+      <tr><td>?remote_user</td><td>0x03</td><td>String</td><td></td></tr>
+      <tr><td>?auth_type</td><td>0x04</td><td>String</td><td></td></tr>
+      <tr><td>?query_string</td><td>0x05</td><td>String</td><td></td></tr>
+      <tr><td>?jvm_route</td><td>0x06</td><td>String</td><td></td></tr>
+      <tr><td>?ssl_cert</td><td>0x07</td><td>String</td><td></td></tr>
+      <tr><td>?ssl_cipher</td><td>0x08</td><td>String</td><td></td></tr>
+      <tr><td>?ssl_session</td><td>0x09</td><td>String</td><td></td></tr>
+      <tr><td>?req_attribute</td><td>0x0A</td><td>String</td><td>Nom (le
+      nom de l'attribut vient ensuite)</td></tr>
+      <tr><td>?ssl_key_size</td><td>0x0B</td><td>Integer</td><td></td></tr>
+      <tr><td>are_done</td><td>0xFF</td><td>-</td><td>request_terminator</td></tr>
+    </table>
+    <p><code>context</code> et <code>servlet_path</code> ne sont pas
+    d&eacute;finis actuellement par le code C, et la majorit&eacute; du code Java
+    ignore compl&egrave;tement ce qui est envoy&eacute; par l'interm&eacute;diaire de ces
+    champs (il va m&ecirc;me parfois s'interrompre si une cha&icirc;ne est
+    envoy&eacute;e apr&egrave;s un de ces codes). Je ne sais pas si c'est une bogue ou
+    une fonctionnalit&eacute; non impl&eacute;ment&eacute;e, ou tout simplement du code
+    obsol&egrave;te, mais en tout cas, il n'est pris en charge par aucune des
+    deux extr&eacute;mit&eacute;s de la connexion.</p>
+    <p><code>remote_user</code> et <code>auth_type</code> concernent
+    probablement l'authentification au niveau HTTP, et contiennent le
+    nom de l'utilisateur distant ainsi que le type d'authentification
+    utilis&eacute;e pour &eacute;tablir son identit&eacute; (&agrave; savoir Basic, Digest).</p>
+    <p><code>query_string</code>, <code>ssl_cert</code>,
+    <code>ssl_cipher</code> et <code>ssl_session</code> contiennent les
+    &eacute;l&eacute;ments HTTP et HTTPS correspondants.</p>
+    <p><code>jvm_route</code> est utilis&eacute; dans le cadre des sessions
+    persistantes, en associant une session utilisateur &agrave; une instance
+    Tomcat particuli&egrave;re en pr&eacute;sence de plusieurs r&eacute;partiteurs de
+    charge.</p>
+    <p>Au del&agrave; de cette liste de base, tout autre attribut
+    suppl&eacute;mentaire peut &ecirc;tre envoy&eacute; via le code
+    <code>req_attribute</code> <code>0x0A</code>. Une paire de cha&icirc;nes
+    repr&eacute;sentant le nom et la valeur de l'attribut est envoy&eacute;e
+    imm&eacute;diatement apr&egrave;s chaque instance de ce code. Les variables
+    d'environnement sont transmises par cette m&eacute;thode.</p>
+    <p>Enfin, lorsque tous les attributs ont &eacute;t&eacute; transmis, le
+    terminateur d'attributs, <code>0xFF</code>, est envoy&eacute;. Ce dernier
+    indique &agrave; la fois la fin de la liste d'attributs et la fin du paquet
+    de la requ&ecirc;te</p>
+  </section>
+</section>
+
+<section id="resppacketstruct"><title>Structure du paquet de la
+r&eacute;ponse</title>
+    <p>Pour les messages que le conteneur peut renvoyer au
+    serveur.</p>
+    <example><pre>
+AJP13_SEND_BODY_CHUNK :=
+  prefix_code   3
+  chunk_length  (integer)
+  chunk        *(byte)
+  chunk_terminator (byte) Ox00
+
+
+AJP13_SEND_HEADERS :=
+  prefix_code       4
+  http_status_code  (integer)
+  http_status_msg   (string)
+  num_headers       (integer)
+  response_headers *(res_header_name header_value)
+
+res_header_name :=
+    sc_res_header_name | (string)   [voir ci-dessous pour la mani&egrave;re
+    dont ceci est interpr&eacute;t&eacute;]
+
+sc_res_header_name := 0xA0 (byte)
+
+header_value := (string)
+
+AJP13_END_RESPONSE :=
+  prefix_code       5
+  reuse             (boolean)
+
+
+AJP13_GET_BODY_CHUNK :=
+  prefix_code       6
+  requested_length  (integer)
+    </pre></example>
+  <section><title>D&eacute;tails:</title></section>
+  <section><title>Envoi d'un tron&ccedil;on de corps</title>
+    <p>Le tron&ccedil;on se compose essentiellement de donn&eacute;es binaires et est
+    renvoy&eacute; directement au navigateur.</p>
+  </section>
+  <section><title>Envoi des en-t&ecirc;tes</title>
+    <p>Les code et message d'&eacute;tat correspondent aux code et message HTTP
+    habituels (par exemple <code>200</code> et <code>OK</code>). Les
+    noms d'en-t&ecirc;tes de r&eacute;ponses sont cod&eacute;s de la m&ecirc;me fa&ccedil;on que les noms
+    d'en-t&ecirc;tes de requ&ecirc;tes. Voir ci-dessus le codage des en-t&ecirc;tes pour
+    plus de d&eacute;tails &agrave; propos de la mani&egrave;re dont les codes se distinguent
+    des cha&icirc;nes.<br />
+    Les codes des en-t&ecirc;tes courants sont ::</p>
+    <table>
+      <tr><td>Nom</td><td>Valeur code</td></tr>
+      <tr><td>Content-Type</td><td>0xA001</td></tr>
+      <tr><td>Content-Language</td><td>0xA002</td></tr>
+      <tr><td>Content-Length</td><td>0xA003</td></tr>
+      <tr><td>Date</td><td>0xA004</td></tr>
+      <tr><td>Last-Modified</td><td>0xA005</td></tr>
+      <tr><td>Location</td><td>0xA006</td></tr>
+      <tr><td>Set-Cookie</td><td>0xA007</td></tr>
+      <tr><td>Set-Cookie2</td><td>0xA008</td></tr>
+      <tr><td>Servlet-Engine</td><td>0xA009</td></tr>
+      <tr><td>Status</td><td>0xA00A</td></tr>
+      <tr><td>WWW-Authenticate</td><td>0xA00B</td></tr>
+    </table>
+    <p>La valeur de l'en-t&ecirc;te est cod&eacute;e imm&eacute;diatement apr&egrave;s le code ou
+    la cha&icirc;ne du nom d'en-t&ecirc;te.</p>
+  </section>
+  <section><title>Fin de la r&eacute;ponse</title>
+    <p>Signale la fin de ce cycle de traitement de requ&ecirc;te. Si le
+    drapeau <code>reuse</code> est &agrave; true <code>(==1)</code>, cette
+    connexion TCP peut &ecirc;tre r&eacute;utilis&eacute;e pour traiter de nouvelles
+    requ&ecirc;tes entrantes. Si <code>reuse</code> est &agrave; false (toute autre
+    valeur que 1 dans le v&eacute;ritable code C), la connexion sera
+    ferm&eacute;e.</p>
+  </section>
+  <section><title>R&eacute;ception d'un tron&ccedil;on de corps</title>
+    <p>Le conteneur r&eacute;clame la suite des donn&eacute;es de la requ&ecirc;te (dans le
+    cas o&ugrave; la taille du corps &eacute;tait trop importante pour pouvoir &ecirc;tre
+    contenue dans le premier paquet envoy&eacute;, o&ugrave; lorsque la requ&ecirc;te est
+    fractionn&eacute;e). Le serveur va alors envoyer un paquet contenant une
+    quantit&eacute; de donn&eacute;es correspondant au minimum de la
+    <code>request_length</code>, la taille maximale de corps envoy&eacute;e
+    <code>(8186 (8 Koctets - 6))</code>, et le nombre r&eacute;el d'octets
+    restants &agrave; envoyer pour ce corps de requ&ecirc;te.<br/>
+    S'il ne reste plus de donn&eacute;es &agrave; transmettre pour ce corps de requ&ecirc;te
+    (c'est &agrave; dire si le conteneur de servlets tente de lire au del&agrave; de
+    la fin du corps), le serveur va renvoyer un paquet <em>vide</em>
+    dont la charge utile est de longueur 0 et se pr&eacute;sentant sous la
+    forme <code>(0x12,0x34,0x00,0x00)</code>.</p>
+  </section>
+</section>
+
+
+</modulesynopsis>
