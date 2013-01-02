@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1174747 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_authz_groupfile.xml.meta">
+
+<name>mod_authz_groupfile</name>
+<description>Autorisation bas&eacute;e sur les groupes &agrave; l'aide de fichiers
+textes</description>
+<status>Base</status>
+<sourcefile>mod_authz_groupfile.c</sourcefile>
+<identifier>authz_groupfile_module</identifier>
+<compatibility>Disponible depuis les versions 2.1 et sup&eacute;rieures
+d'Apache</compatibility>
+
+<summary>
+    <p>Ce module permet d'autoriser ou d'interdire l'acc&egrave;s &agrave;
+certaines zones du site web aux utilisateurs authentifi&eacute;s en
+fonction de leur appartenance &agrave; un groupe sp&eacute;cifi&eacute;. Le module
+<module>mod_authz_dbm</module> fournit une fonctionnalit&eacute; similaire.</p>
+</summary>
+
+<seealso><directive module="mod_authz_core">Require</directive></seealso>
+
+<directivesynopsis>
+<name>AuthGroupFile</name>
+<description>D&eacute;finit le nom d'un fichier texte contenant la liste des
+groupes d'utilisateurs permettant de d&eacute;finir les autorisations des
+utilisateurs</description>
+<syntax>AuthGroupFile <var>chemin-fichier</var></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>La directive <directive>AuthGroupFile</directive> permet de d&eacute;finir
+le nom d'un fichier texte contenant la liste des groupes d'utilisateurs.
+L'appartenance d'un utilisateur &agrave; tel ou tel groupe pourra d&egrave;s lors &ecirc;tre utilis&eacute;e
+pour d&eacute;finir les permissions d'acc&egrave;s de l'utilisateur.
+<var>chemin-fichier</var> est le chemin du fichier de groupes. S'il n'est
+pas absolu, ce chemin est consid&eacute;r&eacute; comme relatif au r&eacute;pertoire d&eacute;fini par
+la directive <directive module="core">ServerRoot</directive>.</p>
+
+    <p>Chaque ligne du fichier de groupes contient un nom de groupe
+suivi du caract&egrave;re ':' et des noms des utilisateurs membres du groupe
+s&eacute;par&eacute;s par des espaces.</p>
+
+    <example><title>Exemple :</title>
+      mon-groupe : bob joe anne
+    </example>
+
+    <p>Notez que la recherche dans de grands fichiers textes est
+<em>tr&egrave;s</em> inefficace ; la directive <directive module="mod_authz_dbm"
+    >AuthDBMGroupFile</directive> fournit de bien meilleures
+    performances.</p>
+
+    <note type="warning"><title>S&eacute;curit&eacute;</title>
+      <p>Le fichier <directive>AuthGroupFile</directive> ne doit pas
+&ecirc;tre stock&eacute; dans l'arborescence des documents du site web ; ne le placez
+<em>surtout pas</em> dans le r&eacute;pertoire qu'il prot&egrave;ge, faute de quoi les
+clients pourraient le t&eacute;l&eacute;charger.</p>
+    </note>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

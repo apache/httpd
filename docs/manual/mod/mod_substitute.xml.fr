@@ -1,0 +1,151 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1334024 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_substitute.xml.meta">
+
+<name>mod_substitute</name>
+<description>Effectue des op&eacute;rations de recherche/remplacement sur les
+corps de r&eacute;ponses</description>
+<status>Extension</status>
+<sourcefile>mod_substitute.c</sourcefile>
+<identifier>substitute_module</identifier>
+<compatibility>Disponible depuis la version 2.2.7
+du serveur HTTP Apache</compatibility>
+
+<summary>
+    <p><module>mod_substitute</module> fournit un m&eacute;canisme permettant
+    d'effectuer des substitutions de cha&icirc;nes fixes ou d'expressions
+    rationnelles sur les corps de r&eacute;ponses.</p>
+</summary>
+
+<directivesynopsis>
+<name>Substitute</name>
+<description>Mod&egrave;le de substition dans le contenu de la
+r&eacute;ponse</description>
+<syntax>Substitute <var>s/mod&egrave;le/substitution/[infq]</var></syntax>
+<contextlist><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>La directive <directive>Substitute</directive> permet de
+    sp&eacute;cifier un mod&egrave;le de recherche/remplacement &agrave; appliquer au corps
+    de la r&eacute;ponse.</p>
+
+    <p>La signification du mod&egrave;le peut &ecirc;tre modifi&eacute;e via toute
+    combinaison de ces drapeaux :</p>
+
+    <dl>
+        <dt><code>i</code></dt>
+        <dd>Effectue une comparaison sans tenir compte de la casse.</dd>
+        <dt><code>n</code></dt>
+        <dd>Par d&eacute;faut, le mod&egrave;le est trait&eacute; en tant qu'expression
+	rationnelle. Le drapeau <code>n</code> force le traitement du
+	mod&egrave;le en tant que cha&icirc;ne fixe.</dd>
+        <dt><code>f</code></dt>
+	<!-- Paragraphe suivant &agrave; am&eacute;liorer par un connaisseur de ce
+	module -->
+        <dd>Avec le drapeau <code>f</code>, mod_substitute met &agrave; plat le
+	r&eacute;sultat d'une substitution (les conteneurs ou buckets ne sont
+	pas dissoci&eacute;s), ce qui permet &agrave; d'&eacute;ventuelles substitutions
+	ult&eacute;rieures de s'effectuer sur cette derni&egrave;re. C'est le
+	comportement par d&eacute;faut.</dd>
+        <dt><code>q</code></dt>
+	<!-- Paragraphe suivant &agrave; am&eacute;liorer par un connaisseur de ce
+	module -->
+        <dd>Avec le drapeau <code>q</code>, mod_substitute dissocie les
+	conteneurs (ou buckets) apr&egrave;s chaque substitution. Ceci peut
+	am&eacute;liorer la rapidit&eacute; de la r&eacute;ponse et diminuer la quantit&eacute; de
+	m&eacute;moire utilis&eacute;e, mais ne doit &ecirc;tre utilis&eacute; que s'il n'existe
+	aucune possibilit&eacute; pour que le r&eacute;sultat d'une substitution ne
+	corresponde au mod&egrave;le ou &agrave; l'expression rationnelle d'une
+	substitution ult&eacute;rieure.</dd>
+    </dl>
+
+    <example><title>Exemple</title>
+        <highlight language="config">
+&lt;Location /&gt;
+    AddOutputFilterByType SUBSTITUTE text/html
+    Substitute s/foo/bar/ni
+&lt;/Location&gt;
+        </highlight>
+    </example>
+
+    <p>Si le mod&egrave;le ou la cha&icirc;ne de substitution contient un caract&egrave;re
+    slash '/', il faut utiliser un autre d&eacute;limiteur :</p>
+
+    <example><title>Exemple d'utilisation d'un d&eacute;limiteur
+    alternatif</title>
+        <highlight language="config">
+&lt;Location /&gt;
+    AddOutputFilterByType SUBSTITUTE text/html
+    Substitute "s|&lt;BR */?&gt;|&lt;br /&gt;|i"
+&lt;/Location&gt;
+        </highlight>
+    </example>
+
+    <p>Lorsqu'on utilise des expressions rationnelles, on peut ins&eacute;rer
+    des r&eacute;f&eacute;rences arri&egrave;res dans les op&eacute;rations de comparaison et de
+    substitution, comme illustr&eacute; dans l'exemple suivant :</p>
+    <example><title>Exemple d'utilisation de r&eacute;f&eacute;rences arri&egrave;res et de captures</title>
+        <highlight language="config">
+&lt;Location /&gt;
+    AddOutputFilterByType SUBSTITUTE text/html
+    # "foo=k,bar=k" -> "foo/bar=k"
+    Substitute "s|foo=(\w+),bar=\1|foo/bar=$1"
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <p>Un sc&eacute;nario courant d'utilisation de <code>mod_substitute</code>
+    est la situation o&ugrave; un serveur frontal mandate des requ&ecirc;tes pour un
+    serveur d'arri&egrave;re-plan qui renvoie des documents HTML contenant des
+    URLs int&eacute;gr&eacute;es cod&eacute;es en dur qui font r&eacute;f&eacute;rence &agrave; ce serveur
+    d'arri&egrave;re-plan. Ces URLs ne fonctionnent pas pour l'utilisateur
+    final car le serveur d'arri&egrave;re-plan est hors d'atteinte.</p>
+
+    <p>On peut, dans ce cas, utiliser <code>mod_substutite</code> pour
+    r&eacute;&eacute;crire ces URLs afin qu'elles soit utilisables dans la partie
+    situ&eacute;e derri&egrave;re le mandataire :</p>
+
+    <example><title>R&eacute;&eacute;criture des URLs int&eacute;gr&eacute;es &agrave; un contenu mandat&eacute;</title>
+    <highlight language="config">
+ProxyPass /blog/ http://internal.blog.example.com
+ProxyPassReverse /blog/ http://internal.blog.example.com/
+
+Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"
+    </highlight>
+    </example>
+
+    <p>La directive <directive
+    module="mod_proxy">ProxyPassReverse</directive> modifie tout en-t&ecirc;te
+    <code>Location</code> (redirection) envoy&eacute; par le serveur
+    d'arri&egrave;re-plan et, dans cet exemple, la directive
+    <code>Substitute</code> se charge &agrave; son tour de la modification de
+    la r&eacute;ponse HTML.</p>
+
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
