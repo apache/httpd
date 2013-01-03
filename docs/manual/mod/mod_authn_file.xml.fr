@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1336869:1421821 (outdated) -->
+<!-- English Revision : 1421821 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -30,8 +30,6 @@ texte</description>
 <status>Base</status>
 <sourcefile>mod_authn_file.c</sourcefile>
 <identifier>authn_file_module</identifier>
-<compatibility>Disponible depuis les versions 2.1 et sup&eacute;rieures
-d'Apache</compatibility>
 
 <summary>
     <p>Ce module permet aux frontaux d'authentification comme
@@ -79,7 +77,7 @@ passe</description>
     <p>Chaque ligne du fichier des utilisateurs se compose du nom de
     l'utilisateur, du caract&egrave;re ':' et du mot de passe chiffr&eacute;. Si le
     m&ecirc;me identifiant utilisateur est r&eacute;f&eacute;renc&eacute; plusieurs fois,
-    <module>mod_authn_file</module> utilisera la premi&egrave;re occurrence pour
+    <module>mod_authn_file</module> utilisera la premi&egrave;re occurence pour
     v&eacute;rifier le mot de passe.</p>
 
      <p>Le format du mot de passe chiffr&eacute; d&eacute;pend du frontal

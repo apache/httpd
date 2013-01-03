@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1330911:1421821 (outdated) -->
+<!-- English Revision : 1421821 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -444,10 +444,6 @@ et l'authentification utilisateur</description>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
-<compatibility>Affect&eacute; par <directive module="core" type="section"
->Limit</directive> et <directive module="core"
-type="section">LimitExcept</directive> &agrave; partir de la version
-2.0.51</compatibility>
 <usage>
     <p>Politique d'acc&egrave;s dans le cas o&ugrave; on utilise &agrave; la fois <directive
     module="mod_access_compat">Allow</directive> et <directive
