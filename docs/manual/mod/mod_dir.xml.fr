@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1416585:1421892 (outdated) -->
+<!-- English Revision: 1421892 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -182,8 +182,6 @@ fin"</description>
 host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Indexes</override>
-<compatibility>Disponible depuis le version 2.0.51
-d'Apache</compatibility>
 
 <usage>
     <p>La directive <directive>DirectorySlash</directive> permet de
