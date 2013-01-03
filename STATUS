@@ -167,10 +167,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
    * mod_proxy_ftp: Fix APLOGNO() usage in r1422578
      trunk patch: http://svn.apache.org/viewvc?rev=1423353&view=rev
-     2.4.x patch: trunk patch works
-     +1: jorton,
-     +1: covener 
-         also valid if you opt to remove APLOGNO altogether
+                  http://svn.apache.org/viewvc?view=revision&revision=1428280
+     2.4.x patch: trunk patches works
+     +1: jorton, covener 
 
    * mod_ssl/ab: improve pkg-config usage in configure (addresses PR 54252)
      trunk patch: https://svn.apache.org/viewvc?view=revision&revision=r1428184
