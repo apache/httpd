@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1403486:1421892 (outdated) -->
+<!-- English Revision : 1421892 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -244,7 +244,18 @@ la version version 2.1</compatibility>
       de l'URI r&eacute;&eacute;crite, comme indiqu&eacute; dans les liens ci-dessus.</p>
       </note>
       </dd>
+      <dt><code>MergeBase</code></dt>
+      <dd>
 
+      <p>Avec cette option, la valeur de la directive <directive
+      module="mod_rewrite">RewriteBase</directive> est copi&eacute;e depuis le
+      r&eacute;pertoire o&ugrave; elle est explicitement d&eacute;finie dans tout
+      sous-r&eacute;pertoire qui ne d&eacute;finit pas sa propre directive <directive
+      module="mod_rewrite">RewriteBase</directive>. C'&eacute;tait le
+      comportement par d&eacute;faut de la version 2.4.0 &agrave; la version 2.4.3, et
+      cette option permet de le r&eacute;tablir &agrave; partir de la version 2.4.4 du
+      serveur HTTP Apache.</p>
+      </dd>
       </dl>
 </usage>
 
@@ -259,8 +270,6 @@ correspondance</em>:<em>source de la correspondance</em>
 </syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Il est possible de choisir entre plusieurs types de
-bases de donn&eacute;es depuis la version 2.0.41 du serveur HTTP Apache</compatibility>
 
 <usage>
       <p>La directive <directive>RewriteMap</directive> d&eacute;finit une
