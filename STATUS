@@ -91,6 +91,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_proxy_ftp: Fix APLOGNO() usage in r1422578
+     trunk patch: http://svn.apache.org/viewvc?rev=1423353&view=rev
+                  http://svn.apache.org/viewvc?view=revision&revision=1428280
+     2.4.x patch: trunk patches works
+     +1: jorton, covener, sf
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -165,16 +170,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           who enable those scripts with inserting the right shebang should be 100% aware
           of any risks (this should cover your last point).
 
-   * mod_proxy_ftp: Fix APLOGNO() usage in r1422578
-     trunk patch: http://svn.apache.org/viewvc?rev=1423353&view=rev
-                  http://svn.apache.org/viewvc?view=revision&revision=1428280
-     2.4.x patch: trunk patches works
-     +1: jorton, covener 
-
    * mod_ssl/ab: improve pkg-config usage in configure (addresses PR 54252)
      trunk patch: https://svn.apache.org/viewvc?view=revision&revision=r1428184
      2.4.x patch: trunk patch works
      +1: kbrand
+     sf notes: -0.5: Including libraries for static usage is a bad default for
+               Linux distributions, see
+               http://mail-archives.apache.org/mod_mbox/httpd-dev/201301.mbox/%3C20130103112044.GA19653%40redhat.com%3E
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
