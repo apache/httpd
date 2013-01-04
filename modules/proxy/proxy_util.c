@@ -1142,13 +1142,10 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
     memset(*balancer, 0, sizeof(proxy_balancer));
 
     /*
-     * NOTE: The default method is byrequests, which we assume
-     * exists!
+     * NOTE: The default method is byrequests - if it doesn't
+     * exist, that's OK at this time. We check when we share and sync
      */
     lbmethod = ap_lookup_provider(PROXY_LBMETHOD, "byrequests", "0");
-    if (!lbmethod) {
-        return "Can't find 'byrequests' lb method";
-    }
 
     (*balancer)->workers = apr_array_make(p, 5, sizeof(proxy_worker *));
     (*balancer)->gmutex = NULL;
@@ -1219,9 +1216,13 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_balancer(proxy_balancer *balancer,
     balancer->s->index = i;
     /* the below should always succeed */
     lbmethod = ap_lookup_provider(PROXY_LBMETHOD, balancer->s->lbpname, "0");
-    if (lbmethod)
+    if (lbmethod) {
         balancer->lbmethod = lbmethod;
-
+    } else {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, ap_server_conf, APLOGNO(02432)
+                     "Cannot find LB Method: %s", balancer->s->lbpname);
+        return APR_EINVAL;
+    }
     if (*balancer->s->nonce == PROXY_UNSET_NONCE) {
         char nonce[APR_UUID_FORMATTED_LENGTH + 1];
         apr_uuid_t uuid;
@@ -2717,7 +2718,12 @@ PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b, server_rec
     lbmethod = ap_lookup_provider(PROXY_LBMETHOD, b->s->lbpname, "0");
     if (lbmethod) {
         b->lbmethod = lbmethod;
+    } else {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s, APLOGNO(02433)
+                     "Cannot find LB Method: %s", b->s->lbpname);
+        return APR_EINVAL;
     }
+
     /* worker sync */
 
     /*
