@@ -153,7 +153,7 @@ static apr_status_t util_write(request_rec *r, apr_file_t *file, apr_off_t *size
 
             rc = apr_file_write_full(file, argsbuffer, (apr_size_t) rsize,
                                      &written);
-            if (written != rsize | rc != OK)
+            if (written != rsize || rc != OK)
                 return APR_ENOSPC;
             rpos += rsize;
         }
