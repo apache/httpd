@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1415549:1421821 (outdated) -->
+<!-- English Revision : 1421821 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -36,8 +36,7 @@ l'&eacute;coute d'un protocole</description>
 <syntax>AcceptFilter <var>protocole</var> <var>filtre
 d'acceptation</var></syntax>
 <contextlist><context>server config</context></contextlist>
-<compatibility>Disponible depuis la version 2.3.3 sous Windows et 2.1.5
-sur les autres plates-formes.</compatibility>
+<compatibility>Sous Windows, disponible depuis la version 2.3.3.</compatibility>
 
 <usage>
     <p>Cette directive permet d'effectuer une optimisation de la socket
@@ -134,8 +133,6 @@ nom de chemin en fin de requ&ecirc;te.</description>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Disponible dans Apache httpd version 2.0.30 et
-sup&eacute;rieures</compatibility>
 
 <usage>
 
@@ -297,8 +294,7 @@ autoris&eacute;s &agrave; transiter dans les URLs tels quels</description>
 <contextlist><context>server config</context><context>virtual
 host</context>
 </contextlist>
-<compatibility>Disponible dans Apache httpd version 2.0.46 et
-sup&eacute;rieures. L'option NoDecode est disponible depuis la version
+<compatibility>L'option NoDecode est disponible depuis la version
 2.3.12.</compatibility>
 
 <usage>
@@ -719,9 +715,8 @@ host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility>L'argument <code>none</code> est disponible dans les
-versions d'Apache httpd 2.2.7 et sup&eacute;rieures. Tous les autres choix sont
-DESACTIV&Eacute;S &agrave; partir des version 2.3.x.</compatibility>
+<compatibility>Tous les arguments, except&eacute; <code>none</code>, sont
+DESACTIV&Eacute;S &agrave; partir de la version 2.3.0.</compatibility>
 
 <usage>
     <p>Cette directive a &eacute;t&eacute; d&eacute;sactiv&eacute;e. Pour la compatibilit&eacute;
@@ -1180,8 +1175,7 @@ host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility>Disponible dans les versions 2.0.44 et
-sup&eacute;rieures. Par d&eacute;faut &agrave; Off depuis la version 2.3.9.</compatibility>
+<compatibility>Par d&eacute;faut &agrave; Off depuis la version 2.3.9.</compatibility>
 
 <usage>
     <p>Cette directive d&eacute;finit si le programme <program>httpd</program>
@@ -1927,8 +1921,6 @@ HTTP Content-Type pour les fichiers correspondants</description>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility>Int&eacute;gr&eacute; dans le coeur d'Apache httpd depuis la version
-2.0</compatibility>
 
 <usage>
     <p>Lorsqu'elle est plac&eacute;e dans un fichier <code>.htaccess</code> ou
@@ -2175,8 +2167,6 @@ host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
-<compatibility>Les identificateurs de modules sont disponibles dans les
-versions 2.1 et sup&eacute;rieures.</compatibility>
 
 <usage>
     <p>La section <code>&lt;IfModule
@@ -2232,9 +2222,8 @@ fichiers de configuration du serveur</description>
 host</context>
 <context>directory</context>
 </contextlist>
-<compatibility>Utilisation des caract&egrave;res g&eacute;n&eacute;riques dans la partie nom
-de fichier depuis la version 2.0.41, et dans la partie chemin depuis la
-version 2.3.6</compatibility>
+<compatibility>Utilisation des caract&egrave;res
+g&eacute;n&eacute;riques dans la partie chemin depuis la version 2.3.6</compatibility>
 
 <usage>
     <p>Cette directive permet l'inclusion d'autres fichiers de
@@ -2526,7 +2515,6 @@ sous-requ&ecirc;tes imbriqu&eacute;es</description>
 <contextlist><context>server config</context><context>virtual
 host</context>
 </contextlist>
-<compatibility>Disponible &agrave; partir de la version 2.0.47 d'Apache httpd</compatibility>
 
 <usage>
     <p>Une redirection interne survient, par exemple, quand on utilise
@@ -3173,10 +3161,71 @@ LogLevel info
         La configuration du niveau de journalisation par r&eacute;pertoire
 	n'affecte que les messages journalis&eacute;s apr&egrave;s l'interpr&eacute;tation de
 	la requ&ecirc;te et qui sont associ&eacute;s &agrave; cette derni&egrave;re. Les messages
-	de journalisation associ&eacute;s &agrave; la connexion ou au serveur ne sont
-	pas affect&eacute;s.
+	de journalisation associ&eacute;s au serveur ou &agrave; la connexion ne sont
+	pas affect&eacute;s. Il est cependant possible d'agir sur ces
+	derniers &agrave; l'aide de la directive <directive
+	module="core">LogLevelOverride</directive>.
     </note>
 </usage>
+<seealso><directive module="core">ErrorLog</directive></seealso>
+<seealso><directive module="core">ErrorLogFormat</directive></seealso>
+<seealso><directive module="core">LogLevelOverride</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LogLevelOverride</name>
+<description>Surcharge la verbosit&eacute; du journal des erreurs pour certains
+clients</description>
+<syntax>LogLevel <var>ipaddress</var>[/<var>prefixlen</var>]
+    [<var>module</var>:]<var>level</var> [<var>module</var>:<var>level</var>] ...
+</syntax>
+<default>non d&eacute;finie</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur HTTP
+Apache.</compatibility>
+
+<usage>
+    <p>La directive <directive>LogLevelOverride</directive> permet
+    d'affiner la d&eacute;finition de la directive <directive
+    module="core">LogLevel</directive> pour les requ&ecirc;tes en provenance
+    de certaines adresses IP. Il est ainsi possible d'activer une
+    journalisation d&eacute;taill&eacute;e seulement pour certains clients &agrave; des fins
+    de test. Les adresses IP sont v&eacute;rifi&eacute;es &agrave; un stade tr&egrave;s pr&eacute;coce du
+    processus de connexion. Ainsi, la directive
+    <directive>LogLevelOverride</directive> permet de modifier le niveau
+    de journalisation pour des processus comme la n&eacute;gociation SSL qui
+    intervient avant l'&eacute;valuation d'une &eacute;ventuelle directive <directive
+    module="core">LogLevel</directive> au sein d'un conteneur <directive
+    type="section" module="core">If</directive>.</p>
+
+    <p>La directive <directive>LogLevelOverride</directive> accepte soit
+    une adresse IP simple, soit une sp&eacute;cification de sous-r&eacute;seau CIDR de
+    la forme adresse-IP/masque. Pour la syntaxe de la sp&eacute;cification du
+    niveau de journalisation, voir la directive <directive
+    module="core">LogLevel</directive> directive.</p>
+
+    <p>Pour les requ&ecirc;tes concern&eacute;es par une directive
+    <directive>LogLevelOverride</directive>, les sp&eacute;cifications de
+    niveau r&eacute;pertoire de la directive <directive
+    module="core">LogLevel</directive> sont ignor&eacute;es.</p>
+
+    <p>Exemples:</p>
+
+    <highlight language="config">
+        LogLevelOverride 192.0.2.0/24 ssl:trace6
+        LogLevelOverride 192.0.2.7 ssl:trace8
+    </highlight>
+
+    <note>
+        La directive <directive
+	module="core">LogLevelOverride</directive> n'affecte que les
+	messages associ&eacute;s &agrave; la requ&ecirc;te ou &agrave; la connexion. Les messages
+	associ&eacute;s au serveur ne sont pas affect&eacute;s.
+    </note>
+
+</usage>
+<seealso><directive module="core">LogLevel</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -3777,8 +3826,8 @@ host</context>
 <description>Protocole pour une socket d'&eacute;coute</description>
 <syntax>Protocol <var>protocole</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
-<compatibility>Disponible depuis la version 2.1.5 d'Apache, mais
-seulement depuis la version 2.3.3 sous Windows.</compatibility>
+<compatibility>Sous Windows, disponible &agrave; partir de la version 2.3.3 du
+serveur HTTP Apache.</compatibility>
 
 <usage>
     <p>Cette directive permet de sp&eacute;cifier le protocole utilis&eacute; pour une
@@ -3935,9 +3984,7 @@ CGI</description>
 host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Win32 seulement ;
-l'option <code>Registry-Strict</code> est disponible dans les versions
-2.0 et sup&eacute;rieures du serveur HTTP Apache</compatibility>
+<compatibility>Win32 seulement</compatibility>
 
 <usage>
     <p>Cette directive permet de contr&ocirc;ler la m&eacute;thode qu'utilise Apache
@@ -4000,8 +4047,6 @@ elle-m&ecirc;me poss&egrave;de plus de 63 caract&egrave;res.</description>
 <syntax>SeeRequestTail On|Off</syntax>
 <default>SeeRequestTail Off</default>
 <contextlist><context>server config</context></contextlist>
-<compatibility>Disponible depuis la version 2.2.7
-d'Apache httpd.</compatibility>
 
 <usage>
     <p>Avec <code>ExtendedStatus On</code>, mod_status affiche la
@@ -4375,8 +4420,6 @@ host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility>Int&eacute;gr&eacute; dans le noyau d'Apache httpd depuis la version
-2.0</compatibility>
 
 <usage>
     <p>Lorsqu'elle se situe &agrave; l'int&eacute;rieur d'un fichier
@@ -4536,8 +4579,6 @@ host</context></contextlist>
 <syntax>TraceEnable <var>[on|off|extended]</var></syntax>
 <default>TraceEnable on</default>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
-<compatibility>Disponible dans les versions 1.3.34, 2.0.55 et
-sup&eacute;rieures du serveur HTTP Apache</compatibility>
 
 <usage>
     <p>Cette directive l'emporte sur le comportement de
@@ -4854,5 +4895,39 @@ doivent &ecirc;tre utilis&eacute;es dans un traitement externe, comme un script 
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>Warning</name>
+<description>Message d'avertissement personnalisable en provenance de
+l'interpr&eacute;tation du fichier de configuration</description>
+<syntax>Warning <var>message</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.5 du serveur HTTP
+Apache.</compatibility>
+
+<usage>
+    <p>Cette directive permet de signaler la d&eacute;tection d'un probl&egrave;me de
+    configuration en g&eacute;n&eacute;rant un message d'avertissement
+    personnalisable. L'interpr&eacute;tation du fichier de configuration n'est
+    pas interrompue. Un exemple typique d'utilisation est la
+    v&eacute;rification de la d&eacute;finition de certaines options d&eacute;finies par
+    l'utilisateur, et l'envoi d'un avertissement &eacute;ventuel.</p>
+
+    <highlight language="config">
+# Exemple
+# signale que ReverseProxy n'est pas d&eacute;fini
+&lt;IfDefine !ReverseProxy&gt;
+  Warning "le mandataire inverse n'a pas &eacute;t&eacute; sp&eacute;cifi&eacute;, veuillez corriger
+  si n&eacute;cessaire"
+&lt;/IfDefine&gt;
+
+&lt;IfDefine ReverseProxy&gt;
+  # d&eacute;finition de la configuration personnalis&eacute;e du mandataire
+&lt;/IfDefine&gt;
+    </highlight>
+
+</usage>
+</directivesynopsis>
 
 </modulesynopsis>
