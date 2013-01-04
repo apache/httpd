@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1415551:1421892 (outdated) -->
+<!-- English Revision : 1421892 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -134,8 +134,6 @@ nom de chemin en fin de requ&ecirc;te.</description>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Disponible dans Apache httpd version 2.0.30 et
-sup&eacute;rieures</compatibility>
 
 <usage>
 
@@ -297,8 +295,7 @@ autoris&eacute;s &agrave; transiter dans les URLs tels quels</description>
 <contextlist><context>server config</context><context>virtual
 host</context>
 </contextlist>
-<compatibility>Disponible dans Apache httpd version 2.0.46 et
-sup&eacute;rieures. L'option NoDecode est disponible depuis la version
+<compatibility>L'option NoDecode est disponible depuis la version
 2.3.12.</compatibility>
 
 <usage>
@@ -1172,8 +1169,7 @@ host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility>Disponible dans les versions 2.0.44 et
-sup&eacute;rieures. Par d&eacute;faut &agrave; Off depuis la version 2.3.9.</compatibility>
+<compatibility>Par d&eacute;faut &agrave; Off depuis la version 2.3.9.</compatibility>
 
 <usage>
     <p>Cette directive d&eacute;finit si le programme <program>httpd</program>
@@ -1919,8 +1915,6 @@ HTTP Content-Type pour les fichiers correspondants</description>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility>Int&eacute;gr&eacute; dans le coeur d'Apache httpd depuis la version
-2.0</compatibility>
 
 <usage>
     <p>Lorsqu'elle est plac&eacute;e dans un fichier <code>.htaccess</code> ou
@@ -2224,8 +2218,7 @@ fichiers de configuration du serveur</description>
 host</context>
 <context>directory</context>
 </contextlist>
-<compatibility>Utilisation des caract&egrave;res g&eacute;n&eacute;riques dans la partie nom
-de fichier depuis la version 2.0.41, et dans la partie chemin depuis la
+<compatibility>Utilisation des caract&egrave;res g&eacute;n&eacute;riques dans la partie chemin depuis la
 version 2.3.6</compatibility>
 
 <usage>
@@ -2518,7 +2511,6 @@ sous-requ&ecirc;tes imbriqu&eacute;es</description>
 <contextlist><context>server config</context><context>virtual
 host</context>
 </contextlist>
-<compatibility>Disponible &agrave; partir de la version 2.0.47 d'Apache httpd</compatibility>
 
 <usage>
     <p>Une redirection interne survient, par exemple, quand on utilise
@@ -3925,9 +3917,7 @@ CGI</description>
 host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Win32 seulement ;
-l'option <code>Registry-Strict</code> est disponible dans les versions
-2.0 et sup&eacute;rieures du serveur HTTP Apache</compatibility>
+<compatibility>Win32 seulement.</compatibility>
 
 <usage>
     <p>Cette directive permet de contr&ocirc;ler la m&eacute;thode qu'utilise Apache
@@ -4365,8 +4355,6 @@ host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility>Int&eacute;gr&eacute; dans le noyau d'Apache httpd depuis la version
-2.0</compatibility>
 
 <usage>
     <p>Lorsqu'elle se situe &agrave; l'int&eacute;rieur d'un fichier
@@ -4526,8 +4514,6 @@ host</context></contextlist>
 <syntax>TraceEnable <var>[on|off|extended]</var></syntax>
 <default>TraceEnable on</default>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
-<compatibility>Disponible dans les versions 1.3.34, 2.0.55 et
-sup&eacute;rieures du serveur HTTP Apache</compatibility>
 
 <usage>
     <p>Cette directive l'emporte sur le comportement de
