@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 635137:1421821 (outdated) -->
+<!-- English Revision : 1421821 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -29,8 +29,6 @@
 <status>Base</status>
 <sourcefile>mod_authz_user.c</sourcefile>
 <identifier>authz_user_module</identifier>
-<compatibility>Disponible depuis les versions 2.1 et sup&eacute;rieures
-d'Apache</compatibility>
 
 <summary>
     <p>Ce module permet d'accorder ou de refuser l'acc&egrave;s &agrave; certaines

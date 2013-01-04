@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1410681:1421821 (outdated) -->
+<!-- English Revision : 1421821 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -150,8 +150,6 @@ pour le moteur de r&eacute;&eacute;criture</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility><code>MaxRedirects</code> n'est plus disponible depuis
-la version version 2.1</compatibility>
 <usage>
 
       <p>La directive <directive>RewriteOptions</directive> d&eacute;finit
@@ -270,8 +268,6 @@ correspondance</em>:<em>source de la correspondance</em>
 </syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Il est possible de choisir entre plusieurs types de
-bases de donn&eacute;es depuis la version 2.0.41 du serveur HTTP Apache</compatibility>
 
 <usage>
       <p>La directive <directive>RewriteMap</directive> d&eacute;finit une
