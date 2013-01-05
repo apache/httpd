@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1174747:1420732 (outdated) -->
+<!-- English Revision : 1420732 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- Reviewed by : Vincent Deffontaines -->
+<!-- $LastChangedRevision: 2013010501 $ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -40,6 +40,9 @@ utilisateurs au format DBM</title>
     l'utilisation de fichiers textes, voir le programme
     <program>htpasswd</program>.</p>
 
+    <p>Le programme <program>htdbm</program> est aussi un utilitaire
+    permettant de maintenir une base de donn&eacute;es de mots de passe DBM.</p>
+
     <p>Cette page de manuel ne d&eacute;crit que les arguments de la ligne de
     commande. Pour plus de d&eacute;tails &agrave; propos des directives n&eacute;cessaires
     pour configurer l'authentification des utilisateurs dans
@@ -48,6 +51,7 @@ utilisateurs au format DBM</title>
     href="http://httpd.apache.org/">http://httpd.apache.org/</a>.</p>
 </summary>
 <seealso><program>httpd</program></seealso>
+<seealso><program>htdbm</program></seealso>
 <seealso><module>mod_authn_dbm</module></seealso>
 <seealso><module>mod_authz_dbm</module></seealso>
 
@@ -94,7 +98,7 @@ utilisateurs au format DBM</title>
 
     <dt><code><var>commentaire</var></code></dt>
     <dd>C'est l'endroit o&ugrave; vous pouvez enregistrer diverses informations
-    &agrave; propos de l'utilisateur telles que son nom r&eacute;el, son e-mail,
+    &agrave; propos de l'utilisateur telles que son nom r&eacute;el, sont e-mail,
     etc... Le serveur ignore ce champ.</dd>
     </dl>
 
