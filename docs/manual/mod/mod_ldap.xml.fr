@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1388313:1421821 (outdated) -->
+<!-- English Revision : 1421821 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -31,8 +31,6 @@ cache du r&eacute;sultat &agrave; destination des autres modules LDAP</descripti
 <status>Extension</status>
 <sourcefile>util_ldap.c</sourcefile>
 <identifier>ldap_module</identifier>
-<compatibility>Disponible &agrave; partir de la version 2.0.41
-d'Apache</compatibility>
 
 <summary>
     <p>Ce module a &eacute;t&eacute; con&ccedil;u dans le but d'am&eacute;liorer les performances
