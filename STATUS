@@ -171,12 +171,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           of any risks (this should cover your last point).
 
    * mod_ssl/ab: improve pkg-config usage in configure (addresses PR 54252)
-     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=r1428184
+     trunk patch: https://svn.apache.org/viewvc/httpd/httpd/trunk/acinclude.m4?r1=1396440&r2=1429228
      2.4.x patch: trunk patch works
      +1: kbrand
      sf notes: -0.5: Including libraries for static usage is a bad default for
                Linux distributions, see
                http://mail-archives.apache.org/mod_mbox/httpd-dev/201301.mbox/%3C20130103112044.GA19653%40redhat.com%3E
+        kbrand: configure option added in r1429228
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
