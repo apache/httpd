@@ -135,6 +135,17 @@ DBDExptime 300
 </highlight>
 </section>
 
+<section id="security">
+<title>Preventing SQL injections</title>
+  <p>Whether you need to care about SQL security depends on what DBD driver
+  and backend you use.  With most drivers you don't have to do anything :
+  the statement is prepared by the database at startup, and user input is
+  used only as data.  But you may need to untaint your input.  At the time
+  of writing, the only driver that requires you to take care is FreeTDS.</p>
+  <p>Please read <module>mod_dbd</module> documentation for more information
+  about security on this scope.</p>
+</section>
+
 <directivesynopsis>
 <name>AuthzDBDQuery</name>
 <description>Specify the SQL Query for the required operation</description>

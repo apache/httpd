@@ -141,11 +141,11 @@ configuration required in some web applications.
 <div class="section">
 <h2><a name="security" id="security">Preventing SQL injections</a></h2>
 
-  <p>It depends on what DBD driver and backend you use.  With most
-  drivers you don't have to do anything : the statement is prepared
-  by the database at startup, and user input is used only as data.
-  But you may need to untaint your input.  At the time of writing,
-  the only driver that requires you to take care is FreeTDS.</p>
+  <p>Whether you need to care about SQL security depends on what DBD driver
+  and backend you use.  With most drivers you don't have to do anything :
+  the statement is prepared by the database at startup, and user input is
+  used only as data.  But you may need to untaint your input.  At the time
+  of writing, the only driver that requires you to take care is FreeTDS.</p>
   <p>Please read <code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code> documentation for more information
   about security on this scope.</p>
 </div>
@@ -238,7 +238,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_authn_dbd.
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2012 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2013 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
