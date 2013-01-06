@@ -109,10 +109,11 @@ object cache to use the distcache shared caching mechanism.
 %package -n mod_ssl
 Group: System Environment/Daemons
 Summary: SSL/TLS module for the Apache HTTP server
+Epoch: 1
 BuildRequires: openssl-devel
 Requires(post): openssl, /bin/cat
 Requires(pre): httpd
-Requires: httpd = %{version}-%{release}, httpd-mmn = %{mmn}
+Requires: httpd = 0:%{version}-%{release}, httpd-mmn = %{mmn}
 
 %description -n mod_ssl
 The mod_ssl module provides strong cryptography for the Apache Web
