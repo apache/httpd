@@ -58,6 +58,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#login">Database Login</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#client">Client Login</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#example">Configuration example</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#security">Preventing SQL injections</a></li>
 </ul><h3>See also</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li>
@@ -151,6 +152,17 @@ DBDExptime 300
 &lt;/Directory&gt;
 </pre>
 
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="security" id="security">Preventing SQL injections</a></h2>
+
+  <p>Whether you need to care about SQL security depends on what DBD driver
+  and backend you use.  With most drivers you don't have to do anything :
+  the statement is prepared by the database at startup, and user input is
+  used only as data.  But you may need to untaint your input.  At the time
+  of writing, the only driver that requires you to take care is FreeTDS.</p>
+  <p>Please read <code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code> documentation for more information
+  about security on this scope.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthzDBDLoginToReferer" id="AuthzDBDLoginToReferer">AuthzDBDLoginToReferer</a> <a name="authzdbdlogintoreferer" id="authzdbdlogintoreferer">Directive</a></h2>
@@ -263,7 +275,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_authz_dbd.
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2012 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2013 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
