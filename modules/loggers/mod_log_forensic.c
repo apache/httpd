@@ -126,7 +126,7 @@ static char *log_escape(char *q, const char *e, const char *p)
         if (test_char_table[*(unsigned char *)p]&T_ESCAPE_FORENSIC) {
             ap_assert(q+2 < e);
             *q++ = '%';
-            sprintf(q, "%02x", *(unsigned char *)p);
+            ap_bin2hex(p, 1, q);
             q += 2;
         }
         else
