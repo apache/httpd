@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1421912:1422980 (outdated) -->
+<!-- English Revision: 1422980 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -745,7 +745,28 @@ serveur HTTP Apache</compatibility>
 	dues &agrave; un red&eacute;marrage.</p>
     </usage>
 </directivesynopsis>
-    
+
+<directivesynopsis>
+    <name>BalancerInherit</name>
+    <description>H&eacute;ritage des membres de groupes de r&eacute;partition de
+    charge d&eacute;finis via la directive ProxyPass au niveau du serveur principal</description>
+    <syntax>ProxyPassInherit On|Off</syntax>
+    <default>ProxyPassInherit On</default>
+    <contextlist><context>server config</context><context>virtual host</context></contextlist>
+    <compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur
+    HTTP Apache.</compatibility>
+    <usage>
+        <p>Cette directive permet d'attribuer au serveur virtuel courant
+	l'h&eacute;ritage  des membres de groupes de r&eacute;partition de charge
+	d&eacute;finis via la directive ProxyPass au niveau du serveur
+	principal. Elle ne doit pas &ecirc;tre activ&eacute;e si vous utilisez le
+	gestionnaire de r&eacute;partition de charge (Balancer Manager) pour
+	&eacute;viter des probl&egrave;mes et des comportements inattendus.</p>
+        <p>Les d&eacute;finitions au niveau du serveur principal constituent
+	les d&eacute;finitions par d&eacute;faut au niveau des serveurs virtuels.</p>
+    </usage>
+</directivesynopsis>
+
 <directivesynopsis>
 <name>BalancerMember</name>
 <description>Ajoute un membre &agrave; un groupe de r&eacute;partition de
@@ -770,10 +791,10 @@ charge</description>
     <var>balancer://</var>...&gt;</code>. Il correspond &agrave; l'URL d'un
     r&eacute;partiteur de charge d&eacute;fini par une directive <directive
     module="mod_proxy">ProxyPass</directive>.</p>
-    <p>La partie chemin de l'URL du membre du groupe de répartition de
+    <p>La partie chemin de l'URL du membre du groupe de r&eacute;partition de
     charge dans toute directive de conteneur <code>&lt;Proxy
-    <var>balancer://</var>...&gt;</code> est ignorée.</p>
-    <p>Les slashes de fin doivent normalement être supprimés de l'URL
+    <var>balancer://</var>...&gt;</code> est ignor&eacute;e.</p>
+    <p>Les slashes de fin doivent normalement &ecirc;tre supprim&eacute;s de l'URL
     d'un <code>BalancerMember</code>.</p>
 </usage>
 </directivesynopsis>
@@ -1357,27 +1378,6 @@ ProxyPass / balancer://hotcluster/
     <code>[P]</code>.</p>
 
 </usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>ProxyPassInherit</name>
-    <description>Héritage des membres du groupe de répartition de charge
-    du serveur principal via ProxyPass</description>
-    <syntax>ProxyPassInherit On|Off</syntax>
-    <default>ProxyPassInherit On</default>
-    <contextlist><context>server config</context><context>virtual host</context></contextlist>
-    <compatibility>ProxyPassInherit est disponible à partir de la
-    version 2.5.0 du serveur HTTP Apache.</compatibility>
-    <usage>
-        <p>Cette directive permet au serveur courant d'hériter des
-	membres du groupe de répartition de charge définis dans le
-	serveur principal via ProxyPass. Elle peut cependant causer des
-	problèmes et induire des comportements inappropriés si l'on
-	utilise le gestionnaire de répartition de chargeur, et doit donc
-	être désactivée dans ce cas.</p>
-        <p>Les réglages du serveur principal définissent le comportement
-	par défaut de tous les serveurs virtuels.</p>
-    </usage>
 </directivesynopsis>
 
 <directivesynopsis>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1410756:1422594 (outdated) -->
+<!-- English Revision : 1422594 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -604,6 +604,17 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     module="mod_ssl">SSLRequire</directive>. Vous pouvez consulter la
     liste de leur diff&eacute;rences dans la documentation de la directive
     <directive module="mod_ssl">SSLRequire</directive>.</p>
+</section>
+
+<section id="compatibility">
+    <title>Historique de version</title>
+    <p>La <a href="#functions">fonction</a> <code>req_novary</code> est
+    disponible &agrave; partir de la version 2.4.4 du serveur HTTP Apache.</p>
+    <p>Les <a href="#vars">variables</a>
+    <code>SERVER_PROTOCOL_VERSION</code>,
+    <code>SERVER_PROTOCOL_VERSION_MAJOR</code> et
+    <code>SERVER_PROTOCOL_VERSION_MINOR</code> sont disponibles &agrave; partir
+    de la version 2.5.0 du serveur HTTP Apache.</p>
 </section>
 
 </manualpage>
