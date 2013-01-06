@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1403493:1422598 (outdated) -->
+<!-- English Revision : 1422598 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -465,6 +465,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 	d'en-t&ecirc;te correspondants peuvent &ecirc;tre ajout&eacute;s
 	&agrave; l'en-t&ecirc;te Vary,
 	voir ci-dessous</td><td></td></tr>
+    <tr><td><code>req_novary</code></td>
+        <td>Identique &agrave; <code>req</code>, mais aucun nom d'en-t&ecirc;te n'est
+	ajout&eacute; &agrave; l'en-t&ecirc;te Vary</td><td></td></tr>
     <tr><td><code>resp</code></td>
         <td>Lit l'en-t&ecirc;te de r&eacute;ponse HTTP</td><td></td></tr>
     <tr><td><code>reqenv</code></td>
@@ -501,7 +504,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <p>Lorsque les fonctions <code>req</code> ou <code>http</code> sont
     utilis&eacute;es, le nom d'en-t&ecirc;te sera automatiquement ajout&eacute; &agrave; l'en-t&ecirc;te
     Vary de la r&eacute;ponse HTTP, sauf sp&eacute;cification contraire pour la
-    directive qui accepte l'expression comme param&egrave;tre.</p>
+    directive qui accepte l'expression comme param&egrave;tre. La
+    fonction <code>req_novary</code> permet d'emp&ecirc;cher l'ajout de noms
+    d'en-t&ecirc;tes &agrave; l'en-t&ecirc;te Vary.</p>
 
     <p>En plus des fonctions dont la valeur est une cha&icirc;ne, il existe
     aussi des fonctions dont la valeur est une liste, qui acceptent une
@@ -588,6 +593,12 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     module="mod_ssl">SSLRequire</directive>. Vous pouvez consulter la
     liste de leur diff&eacute;rences dans la documentation de la directive
     <directive module="mod_ssl">SSLRequire</directive>.</p>
+</section>
+
+<section id="compatibility">
+    <title>Historique de version</title>
+    <p>La <a href="#functions">fonction</a> <code>req_novary</code> est
+    disponible &agrave; partir de la version 2.4.4 du serveur HTTP Apache.</p>
 </section>
 
 </manualpage>
