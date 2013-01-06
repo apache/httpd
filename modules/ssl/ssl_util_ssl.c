@@ -555,14 +555,17 @@ int SSL_CTX_use_certificate_chain(
 char *SSL_SESSION_id2sz(unsigned char *id, int idlen,
                         char *str, int strsize)
 {
-    char *cp;
-    int n;
+    if (idlen > SSL_MAX_SSL_SESSION_ID_LENGTH)
+        idlen = SSL_MAX_SSL_SESSION_ID_LENGTH;
+        
+    /* We must ensure not to process more than what would fit in the
+     * destination buffer, including terminating NULL */
+    if (idlen > (strsize-1) / 2)
+        idlen = (strsize-1) / 2;
 
-    cp = str;
-    for (n = 0; n < idlen && n < SSL_MAX_SSL_SESSION_ID_LENGTH; n++) {
-        apr_snprintf(cp, strsize - (cp-str), "%02X", id[n]);
-        cp += 2;
-    }
-    *cp = NUL;
+    ap_bin2hex(id, idlen, str);
+    /* XXX: is this ap_str_toupper() necessary ? */
+    ap_str_toupper(str);
+
     return str;
 }
