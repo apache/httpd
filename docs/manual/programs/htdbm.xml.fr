@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 758944:1420732 (outdated) -->
+<!-- English Revision : 1420732 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- Reviewed by : Vincent Deffontaines -->
+<!-- $LastChangedRevision: 2013010601 $ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -43,33 +43,40 @@ passe</title>
 <section id="synopsis"><title>Syntaxe</title>
     <p><code><strong>htdbm</strong>
     [ -<strong>T</strong><var>DBTYPE</var> ]
+    [ -<strong>i</strong> ]
     [ -<strong>c</strong> ]
     [ -<strong>m</strong> |
+      -<strong>B</strong> |
       -<strong>d</strong> |
-      -<strong>p</strong> |
-      -<strong>s</strong> ]
+      -<strong>s</strong> |
+      -<strong>p</strong> ]
+    [ -<strong>C</strong> <var>cost</var> ]
     [ -<strong>t</strong> ]
     [ -<strong>v</strong> ]
-    [ -<strong>x</strong> ]
     <var>nom-fichier</var> <var>nom-utilisateur</var></code></p>
 
     <p><code><strong>htdbm</strong> -<strong>b</strong>
     [ -<strong>T</strong><var>DBTYPE</var> ]
     [ -<strong>c</strong> ]
     [ -<strong>m</strong> |
+      -<strong>B</strong> |
       -<strong>d</strong> |
-      -<strong>p</strong> |
-      -<strong>s</strong> ]
+    -<strong>s</strong> |
+      -<strong>p</strong> ]
+    [ -<strong>C</strong> <var>cost</var> ]
     [ -<strong>t</strong> ]
     [ -<strong>v</strong> ]
     <var>nom-fichier</var> <var>nom-utilisateur</var> <var>mot-de-passe</var></code></p>
 
     <p><code><strong>htdbm</strong> -<strong>n</strong>
+    [ -<strong>i</strong> ]
     [ -<strong>c</strong> ]
     [ -<strong>m</strong> |
+      -<strong>B</strong> |
       -<strong>d</strong> |
-      -<strong>p</strong> |
-      -<strong>s</strong> ]
+      -<strong>s</strong> |
+      -<strong>p</strong> ]
+    [ -<strong>C</strong> <var>cost</var> ]
     [ -<strong>t</strong> ]
     [ -<strong>v</strong> ]
     <var>nom-utilisateur</var></code></p>
@@ -77,20 +84,25 @@ passe</title>
     <p><code><strong>htdbm</strong> -<strong>nb</strong>
     [ -<strong>c</strong> ]
     [ -<strong>m</strong> |
+      -<strong>B</strong> |
       -<strong>d</strong> |
-      -<strong>p</strong> |
-      -<strong>s</strong> ]
+      -<strong>s</strong> |
+      -<strong>p</strong> ]
+    [ -<strong>C</strong> <var>cost</var> ]
     [ -<strong>t</strong> ]
     [ -<strong>v</strong> ]
     <var>nom-utilisateur</var> <var>mot-de-passe</var></code></p>
 
     <p><code><strong>htdbm</strong> -<strong>v</strong>
     [ -<strong>T</strong><var>DBTYPE</var> ]
+    [ -<strong>i</strong> ]
     [ -<strong>c</strong> ]
     [ -<strong>m</strong> |
+      -<strong>B</strong> |
       -<strong>d</strong> |
-      -<strong>p</strong> |
-      -<strong>s</strong> ]
+      -<strong>s</strong> |
+      -<strong>p</strong> ]
+    [ -<strong>C</strong> <var>cost</var> ]
     [ -<strong>t</strong> ]
     [ -<strong>v</strong> ]
     <var>nom-fichier</var> <var>nom-utilisateur</var></code></p>
@@ -99,19 +111,17 @@ passe</title>
     [ -<strong>T</strong><var>DBTYPE</var> ]
     [ -<strong>c</strong> ]
     [ -<strong>m</strong> |
+      -<strong>B</strong> |
       -<strong>d</strong> |
-      -<strong>p</strong> |
-      -<strong>s</strong> ]
+      -<strong>s</strong> |
+      -<strong>p</strong> ]
+    [ -<strong>C</strong> <var>cost</var> ]
     [ -<strong>t</strong> ]
     [ -<strong>v</strong> ]
     <var>nom-fichier</var> <var>nom-utilisateur</var> <var>mot-de-passe</var></code></p>
 
     <p><code><strong>htdbm</strong> -<strong>x</strong>
     [ -<strong>T</strong><var>DBTYPE</var> ]
-    [ -<strong>m</strong> |
-      -<strong>d</strong> |
-      -<strong>p</strong> |
-      -<strong>s</strong> ]
     <var>nom-fichier</var> <var>nom-utilisateur</var></code></p>
 
     <p><code><strong>htdbm</strong> -<strong>l</strong>
@@ -126,7 +136,12 @@ passe</title>
     extrait de la ligne de commande au lieu d'&ecirc;tre demand&eacute; &agrave;
     l'op&eacute;rateur. Cette option doit &ecirc;tre utilis&eacute;e avec la plus grande
     prudence, car <strong>le mot de passe est visible en clair</strong>
-    dans la ligne de commande.</dd>
+    dans la ligne de commande. Pour utiliser un script, voir l'option
+    <code>-i</code>.</dd>
+
+    <dt><code>-i</code></dt>
+    <dd>Lit le mot de passe depuis stdin sans v&eacute;rification (&agrave; utiliser
+    dans le cadre d'un script).</dd>
 
     <dt><code>-c</code></dt>
     <dd>Cr&eacute;e le <var>fichier-mots-de-passe</var>. Si
@@ -145,17 +160,34 @@ passe</title>
     <dd>Utilise un chiffrement MD5 pour les mots de passe. Sous Windows
     et Netware, c'est l'option par d&eacute;faut..</dd>
 
+    <dt><code>-B</code></dt>
+    <dd>Utilise l'algorythme de chiffrement bcrypt pour les mots de
+    passe. C'est un algorythme actuellement consid&eacute;r&eacute; comme s&ucirc;r.</dd>
+
+    <dt><code>-C</code></dt>
+    <dd>Ce drapeau n'est autoris&eacute; qu'en conjonction avec le drapeau
+    <code>-B</code> (chiffrement bcrypt). Il permet de d&eacute;finir la dur&eacute;e
+    de traitement pour l'algorythme de chiffrement bcrypt (plus elle est
+    longue, plus la s&eacute;curit&eacute; est &eacute;lev&eacute;e, mais la rapidit&eacute; est diminu&eacute;e
+    d'autant) ; la valeur par d&eacute;faut est 5, les valeurs valides vont de
+    4 &agrave; 31.</dd>
+
+
     <dt><code>-d</code></dt>
     <dd>Utilise un chiffrement <code>crypt()</code> pour les mots de
     passe. C'est l'option par d&eacute;faut sur toutes les plates-formes, sauf
     Windows et Netware. Bien que <code>htdbm</code> supporte ce
     chiffrement sur toutes les plates-formes, il n'est pas support&eacute; par
-    le serveur <program>httpd</program> sous Windows et Netware.</dd>
+    le serveur <program>httpd</program> sous Windows et Netware. Cet
+    algorythme est consid&eacute;r&eacute; comme <strong>non s&ucirc;r</strong> selon les
+    standards actuels.</dd>
 
     <dt><code>-s</code></dt>
     <dd>Utilise le chiffrement SHA pour les mots de passe. Facilite la
     migration vers/depuis les serveurs Netscape qui utilisent le format
-    LDAP Directory Interchange (ldif).</dd>
+    LDAP Directory Interchange (ldif). Cet
+    algorythme est consid&eacute;r&eacute; comme <strong>non s&ucirc;r</strong> selon les
+    standards actuels.</dd>
 
     <dt><code>-p</code></dt>
     <dd>Utilise des mots de passe au format texte en clair. Bien que
@@ -167,13 +199,6 @@ passe</title>
     <dd>Affiche chaque nom d'utilisateur de la base de donn&eacute;es
     accompagn&eacute; de son commentaire sur la sortie standard.</dd>
 
-    <dt><code>-t</code></dt>
-    <dd>Interpr&egrave;te le dernier param&egrave;tre en tant que commentaire. Avec
-    cette option, il est possible d'ajouter une cha&icirc;ne suppl&eacute;mentaire &agrave;
-    la fin de la ligne de commande ; le contenu de cette cha&icirc;ne sera
-    stock&eacute; dans la base de donn&eacute;es dans le champ "Comment" associ&eacute; au
-    nom d'utilisateur sp&eacute;cifi&eacute;.</dd>
-
     <dt><code>-v</code></dt>
     <dd>V&eacute;rifie une association nom d'utilisateur/mot de passe. Le
     programme affichera un message indiquant si le mot de passe fourni
@@ -183,6 +208,13 @@ passe</title>
     <dt><code>-x</code></dt>
     <dd>Supprime l'utilisateur. Si le nom d'utilisateur existe dans le
     fichier DBM sp&eacute;cifi&eacute;, il sera supprim&eacute;.</dd>
+
+    <dt><code>-t</code></dt>
+    <dd>Interpr&egrave;te le dernier param&egrave;tre en tant que commentaire. Avec
+    cette option, il est possible d'ajouter une cha&icirc;ne suppl&eacute;mentaire &agrave;
+    la fin de la ligne de commande ; le contenu de cette cha&icirc;ne sera
+    stock&eacute; dans la base de donn&eacute;es dans le champ "Comment" associ&eacute; au
+    nom d'utilisateur sp&eacute;cifi&eacute;.</dd>
 
     <dt><code><var>nom-fichier</var></code></dt>
     <dd>Le nom du fichier au format DBM en g&eacute;n&eacute;ral sans l'extension
@@ -205,7 +237,7 @@ passe</title>
     </dl>
 </section>
 
-<section id="bugs"><title>Bogues</title>
+<section id="bugs"><title>Bugs</title>
     <p>Vous devez garder &agrave; l'esprit qu'il existe de nombreux formats de
     fichiers DBM diff&eacute;rents, et que selon toute vraisemblance, des
     biblioth&egrave;ques pour plus d'un format sont pr&eacute;sentes sur votre
@@ -237,7 +269,7 @@ passe</title>
     interrompue, <code>5</code> si une valeur est trop longue (nom
     utilisateur, nom fichier, mot de passe, ou l'enregistrement apr&egrave;s
     son &eacute;laboration), <code>6</code> si le nom d'utilisateur contient
-    des caract&egrave;res interdits (voir la section <a
+    des caract&egrave;res ill&eacute;gaux (voir la section <a
     href="#restrictions">Restrictions</a>), et <code>7</code> si le
     fichier n'est pas un fichier de mots de passe DBM valide.</p>
 </section>
@@ -284,6 +316,22 @@ passe</title>
     <p>L'utilisation de l'option <code>-b</code> est d&eacute;conseill&eacute;e, car
     lorsqu'il est utilis&eacute;, le mot de passe appara&icirc;t en clair dans la
     ligne de commande.</p>
+
+    <p>Notez que lorsque vous utilisez l'algorythme
+    <code>crypt()</code>, seuls les 8 premiers caract&egrave;res du mot de
+    passe sont pris en compte. Si le mot de passe fourni est plus long,
+    les caract&egrave;res suppl&eacute;mentaires seront ignor&eacute;s sans avertissement.</p>
+
+    <p>L'algorythme SHA ne permet pas de sp&eacute;cifier une valeur
+    d'initialisation pour la g&eacute;n&eacute;ration de nombres al&eacute;atoires (salting)
+    : un mot de passe donn&eacute; ne poss&egrave;de ainsi qu'une r&eacute;pr&eacute;sentation
+    chiffr&eacute;e. Les algorythmes <code>crypt()</code> et MD5 permettent quant &agrave;
+    eux des repr&eacute;sentations chiffr&eacute;es multiples en acceptant comme
+    param&egrave;tre une cha&icirc;ne d'initialisation (salt), rendant les attaques &agrave;
+    base de dictionnaires contre les mots de passe plus difficiles.</p>
+
+    <p>Les algorythmes SHA et <code>crypt()</code> sont consid&eacute;r&eacute;s comme
+    non s&ucirc;rs selon les standards actuels.</p>
 </section>
 
 <section id="restrictions"><title>Restrictions</title>

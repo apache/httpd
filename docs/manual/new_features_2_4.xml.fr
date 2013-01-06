@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1291837:1426600 (outdated) -->
+<!-- English Revision : 1426600 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -39,12 +39,13 @@ serveur HTTP Apache</title>
     <title>Am&eacute;liorations du noyau</title>
     <dl>
       <dt>Modules multiprocessus (MPMs) chargeables &agrave; l'ex&eacute;cution</dt>
-      <dd>On peut maintenant compiler plusieurs MPMs en tant que modules
+      <dd>On peut maintenant <a href="mpm.html#dynamic">built as
+      loadable modules</a> plusieurs MPMs en tant que modules
       chargeables. Le choix du MPM &agrave; utiliser s'effectue &agrave;
       l'ex&eacute;cution.</dd>
 
       <dt>MPM Event</dt>
-      <dd>Le MPM Event est sorti du stade exp&eacute;rimental et est
+      <dd>Le <a href="mod/event.html">Event MPM</a> est sorti du stade exp&eacute;rimental et est
       maintenant pleinement support&eacute;.</dd>
 
       <dt>Support du mode asynchrone</dt>
@@ -107,7 +108,7 @@ serveur HTTP Apache</title>
 
   <section id="newmods">
     <title>Nouveau modules</title>
-    <dl>
+    <dl>      
 
       <dt><module>mod_proxy_fcgi</module></dt>
       <dd>Mise &agrave; disposition du protocole FastCGI pour
@@ -154,7 +155,7 @@ serveur HTTP Apache</title>
       <dt><module>mod_allowmethods</module></dt>
       <dd>Permet de restreindre l'utilisation de
       certaines m&eacute;thodes HTTP sans interf&eacute;rer avec l'authentification et
-      l'autorisation.</dd>
+      l'autorisation.</dd>      
 
       <dt><module>mod_lua</module></dt>
       <dd>Embarque le langage <a href="http://www.lua.org/">Lua</a> dans
@@ -182,7 +183,7 @@ serveur HTTP Apache</title>
       <dt><module>mod_reflector</module></dt>
       <dd>Permet de renvoyer comme r&eacute;ponse le corps de la requ&ecirc;te via la
       pile du filtre de sortie.</dd>
-
+      
       <dt><module>mod_slotmem_shm</module></dt>
       <dd>Met &agrave; disposition un fournisseur de m&eacute;moire partag&eacute;e &agrave; base de
       slots (du style tableau de bord).</dd>
@@ -301,7 +302,7 @@ serveur HTTP Apache</title>
       type="section">RequireAll</directive>, permettent de d&eacute;finir une
       logique d'autorisation avanc&eacute;e.</dd>
 
-
+      
 
       <dt><module>mod_rewrite</module></dt>
       <dd>La directive <directive
@@ -341,9 +342,9 @@ serveur HTTP Apache</title>
   <section id="programs">
     <title>Am&eacute;liorations des programmes</title>
     <dl>
-        <dt>fcgistarter</dt>
+        <dt><program>fcgistarter</program></dt>
         <dd>Nouvel utilitaire pour le d&eacute;marrage des d&eacute;mons FastCGI</dd>
-	<dt>htcacheclean</dt>
+	<dt><program>htcacheclean</program></dt>
         <dd>Les URLs pr&eacute;sentes dans le cache peuvent maintenant &ecirc;tre
 	affich&eacute;es, accompagn&eacute;es &eacute;ventuellement de leurs m&eacute;tadonn&eacute;es.</dd>
         <dd>Possibilit&eacute; de supprimer explicitement des URLs individuelles
@@ -355,7 +356,7 @@ serveur HTTP Apache</title>
 	nombre d'inodes, en plus de la possibilit&eacute; de limitation par la
 	taille des fichiers.</dd>
 
-	<dt>rotatelogs</dt>
+	<dt><program>rotatelogs</program></dt>
         <dd>Possibilit&eacute; de cr&eacute;er un lien vers le fichier journal
 	courant.</dd>
         <dd>Possibilit&eacute; d'invoquer un script personnalis&eacute; apr&egrave;s la
