@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1291834:1426599 (outdated) -->
+<!-- English Revision : 1426599 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -39,12 +39,13 @@ serveur HTTP Apache</title>
     <title>Am&eacute;liorations du noyau</title>
     <dl>
       <dt>Modules multiprocessus (MPMs) chargeables</dt>
-      <dd>On peut maintenant compiler plusieurs MPMs en tant que modules
+      <dd>On peut maintenant <a href="mpm.html#dynamic">built as
+      loadable modules</a> plusieurs MPMs en tant que modules
       chargeables. Le choix du MPM &agrave; utiliser s'effectue &agrave;
       l'ex&eacute;cution.</dd>
 
       <dt>MPM Event</dt>
-      <dd>Le MPM Event est sorti du stade exp&eacute;rimental et est
+      <dd>Le <a href="mod/event.html">Event MPM</a> est sorti du stade exp&eacute;rimental et est
       maintenant pleinement support&eacute;.</dd>
 
       <dt>Support du mode asynchrone</dt>
@@ -341,9 +342,9 @@ serveur HTTP Apache</title>
   <section id="programs">
     <title>Am&eacute;liorations des programmes</title>
     <dl>
-        <dt>fcgistarter</dt>
+        <dt><program>fcgistarter</program></dt>
         <dd>Nouvel utilitaire pour le d&eacute;marrage des d&eacute;mons FastCGI</dd>
-	<dt>htcacheclean</dt>
+	<dt><program>htcacheclean</program></dt>
         <dd>Les URLs pr&eacute;sentes dans le cache peuvent maintenant &ecirc;tre
 	affich&eacute;es, accompagn&eacute;es &eacute;ventuellement de leurs m&eacute;tadonn&eacute;es.</dd>
         <dd>Possibilit&eacute; de supprimer explicitement des URLs individuelles
@@ -355,7 +356,7 @@ serveur HTTP Apache</title>
 	nombre d'inodes, en plus de la possibilit&eacute; de limitation par la
 	taille des fichiers.</dd>
 
-	<dt>rotatelogs</dt>
+	<dt><program>rotatelogs</program></dt>
         <dd>Possibilit&eacute; de cr&eacute;er un lien vers le fichier journal
 	courant.</dd>
         <dd>Possibilit&eacute; d'invoquer un script personnalis&eacute; apr&egrave;s la
