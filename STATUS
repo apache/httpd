@@ -91,11 +91,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy_ftp: Fix APLOGNO() usage in r1422578
-     trunk patch: http://svn.apache.org/viewvc?rev=1423353&view=rev
-                  http://svn.apache.org/viewvc?view=revision&revision=1428280
-     2.4.x patch: trunk patches works
-     +1: jorton, covener, sf
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
