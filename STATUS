@@ -97,12 +97,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1422937
      2.4.x patch: trunk patch works + CHANGES to be added
      +1: jailletc36, jorton, humbedooh
-
-   * support/httxt2dbm: Correct length computation for the 'value' stored in the DBM file
-     PR 47650
-     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1422135
-     2.4.x patch: trunk patch works
-     +1: jailletc36, jorton, humbedooh
      
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:

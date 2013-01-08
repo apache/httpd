@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.4
 
+  *) httxt2dbm: Correct length computation for the 'value' stored in the DBM file
+     PR 47650 [jon buckybox com]
+
   *) core: Be more correct about rejecting directives that cannot work in <If>
      sections. [Stefan Fritsch]
 
