@@ -1403,9 +1403,10 @@ static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
     /* write out the request key */
 #ifdef NO_WRITEV
     nbytes = strlen(key);
-    apr_file_write(fpin, key, &nbytes);
+    /* XXX: error handling */
+    apr_file_write_full(fpin, key, nbytes, NULL);
     nbytes = 1;
-    apr_file_write(fpin, "\n", &nbytes);
+    apr_file_write_full(fpin, "\n", nbytes, NULL);
 #else
     iova[0].iov_base = key;
     iova[0].iov_len = strlen(key);
@@ -1413,7 +1414,8 @@ static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
     iova[1].iov_len = 1;
 
     niov = 2;
-    apr_file_writev(fpin, iova, niov, &nbytes);
+    /* XXX: error handling */
+    apr_file_writev_full(fpin, iova, niov, &nbytes);
 #endif
 
     buf = apr_palloc(r->pool, REWRITE_PRG_MAP_BUF + 1);
