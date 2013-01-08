@@ -90,6 +90,7 @@ trust, as it can be abused to change the internal workings of httpd.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#logging">Logging Functions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#apache2">apache2 Package</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#modifying_buckets">Modifying contents with Lua filters</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#databases">Database connectivity</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -875,6 +876,12 @@ r:custom_response(status_code, string) -- Construct and set a custom response fo
         r:sleep(number_of_seconds) -- Puts the script to sleep for a given number of seconds.
         </pre>
 
+
+        <pre class="prettyprint lang-lua">
+r:dbacquire(dbType[, dbParams]) -- Acquires a connection to a database and returns a database class.
+                                -- See '<a href="#databases">Database connectivity</a>' for details.
+        </pre>
+
         </dd>
     </dl>
 
@@ -960,6 +967,174 @@ function filter(r)
     coroutine.yield([optional footer to be appended to the content])
 end
     </pre>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="databases" id="databases">Database connectivity</a></h2>
+    
+    <p>
+    Mod_lua implements a simple database feature for querying and running commands
+    on the most popular database engines (mySQL, PostgreSQL, FreeTDS, ODBC, SQLite, Oracle)
+    as well as mod_dbd.
+    </p>
+    <p>Connecting and firing off queries is as easy as:</p>
+    <pre class="prettyprint lang-lua">
+function handler(r)
+    local database, err = r:dbacquire("mysql", "server=localhost&amp;user=root&amp;database=mydb")
+    if not err then
+        local results, err = database:select(r, "SELECT `name`, `age` FROM `people` WHERE 1")
+        if not err then
+            local rows = results(0) -- fetch all rows synchronously
+            for k, row in pairs(rows) do
+                r:puts( string.format("Name: %s, Age: %s&lt;br/&gt;", row[1], row[2]) )
+            end
+        else
+            r:puts("Database query error: " .. err)
+        end
+        database:close()
+    else
+        r:puts("Could not connect to the database: " .. err)
+    end
+end
+    </pre>
+
+    <p>
+    To utilize <code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code>, simply specify <code>mod_dbd</code>
+    as the database type, or leave the field blank:
+    </p>
+    <pre class="prettyprint lang-lua">
+    local database = r:dbacquire("mod_dbd")
+    </pre>
+
+    <h3><a name="database_object" id="database_object">Database object and contained functions</a></h3>
+        
+        <p>The database object returned by <code>dbacquire</code> has the following methods:</p>
+        <p><strong>Normal select and query from a database:</strong></p>
+    <pre class="prettyprint lang-lua">
+-- Run a statement and return the number of rows affected:
+local affected, errmsg = database:query(r, "DELETE FROM `tbl` WHERE 1")
+
+-- Run a statement and return a result set that can be used synchronously or async:
+local result, errmsg = database:select(r, "SELECT * FROM `people` WHERE 1")
+    </pre>
+
+        <p><strong>Using prepared statements (recommended):</strong></p>
+    <pre class="prettyprint lang-lua">
+-- Create and run a prepared statement:
+local statement, errmsg = database:prepare(r, "DELETE FROM `tbl` WHERE `age` &gt; %u")
+if not errmsg then
+    local result, errmsg = statement:query(20) -- run the statement with age &gt;20
+end
+
+-- Fetch a prepared statement from a DBDPrepareSQL directive:
+local statement, errmsg = database:prepared(r, "someTag")
+if not errmsg then
+    local result, errmsg = statement:select("John Doe", 123) -- inject the values "John Doe" and 123 into the statement
+end
+
+</pre>
+
+        <p><strong>Escaping values, closing databases etc:</strong></p>
+    <pre class="prettyprint lang-lua">
+-- Escape a value for use in a statement:
+local escaped = database:escape(r, [["'|blabla]])
+
+-- Close a database connection and free up handles:
+database:close()
+
+-- Check whether a database connection is up and running:
+local connected = database:active()
+    </pre>
+
+    
+    <h3><a name="result_sets" id="result_sets">Working with result sets</a></h3>
+    
+    <p>The result set returned by <code>db:query</code> or by the prepared statement functions 
+    created through <code>db:prepare</code> can be used to
+    fetch rows synchronously or asynchronously, depending on the row number specified:<br />
+    <code>result(0)</code> fetches all rows in a synchronous manner, returning a table of rows.<br />
+    <code>result(-1)</code> fetches the next available row in the set, asynchronously.<br />
+    <code>result(N)</code> fetches row number <code>N</code>, asynchronously:
+    </p>
+    <pre class="prettyprint lang-lua">
+-- fetch a result set using a regular query:
+local result, err = db:select(r, "SELECT * FROM `tbl` WHERE 1")
+
+local rows = result(0) -- Fetch ALL rows synchronously
+local row = result(-1) -- Fetch the next available row, asynchronously
+local row = result(1234) -- Fetch row number 1234, asynchronously
+    </pre>
+
+    <p>One can construct a function that returns an iterative function to iterate over all rows 
+    in a synchronous or asynchronous way, depending on the async argument:
+    </p>
+    <pre class="prettyprint lang-lua">
+function rows(resultset, async)
+    local a = 0
+    local function getnext()
+        a = a + 1
+        local row = resultset(-1)
+        return row and a or nil, row
+    end
+    if not async then
+        return pairs(resultset(0))
+    else
+        return getnext, self
+    end
+end
+
+local statement, err = db:prepare(r, "SELECT * FROM `tbl` WHERE `age` &gt; %u")
+if not err then
+     -- fetch rows asynchronously:
+    local result, err = statement:select(20)
+    if not err then
+        for index, row in rows(result, true) do
+            ....
+        end
+    end
+
+     -- fetch rows synchronously:
+    local result, err = statement:select(20)
+    if not err then
+        for index, row in rows(result, false) do
+            ....
+        end
+    end
+end
+    </pre>
+
+    
+    <h3><a name="closing_databases" id="closing_databases">Closing a database connection</a></h3>
+        
+
+    <p>Database handles should be closed using <code>database:close()</code> when they are no longer
+    needed. If you do not close them manually, they will eventually be garbage collected and 
+    closed by mod_lua, but you may end up having too many unused connections to the database 
+    if you leave the closing up to mod_lua. Essentially, the following two measures are
+    the same:
+    </p>
+    <pre class="prettyprint lang-lua">
+-- Method 1: Manually close a handle
+local database = r:dbacquire("mod_dbd")
+database:close() -- All done
+
+-- Method 2: Letting the garbage collector close it
+local database = r:dbacquire("mod_dbd")
+database = nil -- throw away the reference
+collectgarbage() -- close the handle via GC
+</pre>
+
+    
+    <h3><a name="database_caveat" id="database_caveat">Precautions when working with databases</a></h3>
+    
+    <p>Although the standard <code>query</code> and <code>run</code> functions are freely 
+    available, it is recommended that you use prepared statements whenever possible, to 
+    both optimize performance (if your db handle lives on for a long time) and to minimize 
+    the risk of SQL injection attacks. <code>run</code> and <code>query</code> should only
+    be used when there are no variables inserted into a statement (a static statement). 
+    When using dynamic statements, use <code>db:prepare</code> or <code>db:prepared</code>.
+    </p>
+    
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
