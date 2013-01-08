@@ -176,6 +176,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works + CHANGES to be added
      +1: jailletc36, jim
 
+   * mod_proxy: Allow balancers to be server-specific, as they should have
+     been. Inheritance causes too many behind-the-scene interactions
+     to be reliable in a dynamic environ. We maintain the old-default
+     of inheritance.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387603
+                  http://svn.apache.org/viewvc?view=revision&revision=1388029
+                  http://svn.apache.org/viewvc?view=revision&revision=1420124
+                  http://svn.apache.org/viewvc?view=revision&revision=1421288
+                  http://svn.apache.org/viewvc?view=revision&revision=1421912
+                  http://svn.apache.org/viewvc?view=revision&revision=1422943
+                  http://svn.apache.org/viewvc?view=revision&revision=1422980
+                  http://svn.apache.org/viewvc?view=revision&revision=1430575
+     2.4.x patch: http://people.apache.org/~jim/patches/proxypassinherit2.patch
+     +1: jim
 
 
 A list of further possible backports can be found at:
