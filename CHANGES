@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.4
 
+  *) various modules, rotatelogs: Replace use of apr_file_write() with
+     apr_file_write_full() to prevent incomplete writes. PR 53131.
+     [Nicolas Viennot <apache viennot biz>, Stefan Fritsch]
+
   *) ab: Support socket timeout (-s timeout).
      [Guido Serra <zeph fsfe org>]
   

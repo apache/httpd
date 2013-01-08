@@ -1155,7 +1155,7 @@ static int log_script(request_rec *r, cgid_server_conf * conf, int ret,
             apr_file_puts("%stdout\n", f);
             first = 0;
         }
-        apr_file_write(f, buf, &len);
+        apr_file_write_full(f, buf, len, NULL);
         apr_file_puts("\n", f);
     }
 
