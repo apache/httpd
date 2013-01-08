@@ -19,6 +19,7 @@
 #include "util_script.h"
 #include "lua_apr.h"
 #include "scoreboard.h"
+#include "lua_dbd.h"
 
 APLOG_USE_MODULE(lua);
 #define POST_MAX_VARS 500
@@ -964,6 +965,8 @@ AP_LUA_DECLARE(void) ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
                  makefun(&ap_auth_name, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "sendfile", APR_HASH_KEY_STRING,
                  makefun(&lua_ap_sendfile, APL_REQ_FUNTYPE_LUACFUN, p));
+    apr_hash_set(dispatch, "dbacquire", APR_HASH_KEY_STRING,
+                 makefun(&lua_db_acquire, APL_REQ_FUNTYPE_LUACFUN, p));
     
 
     lua_pushlightuserdata(L, dispatch);

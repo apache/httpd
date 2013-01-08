@@ -141,6 +141,14 @@ SOURCE=.\mod_lua.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\lua_dbd.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\lua_dbd.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\build\win32\httpd.rc
 # End Source File
 # End Target

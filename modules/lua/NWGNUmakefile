@@ -182,6 +182,7 @@ FILES_nlm_objs = \
 	$(OBJDIR)/lua_config.o \
 	$(OBJDIR)/lua_request.o \
 	$(OBJDIR)/lua_vmprep.o \
+	$(OBJDIR)/lua_dbd.o \
 	$(EOLIST)
 
 #
