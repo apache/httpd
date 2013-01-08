@@ -91,7 +91,19 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-     
+   * Replace use of apr_file_write() with apr_file_write_full() to prevent
+     incomplete writes.
+     Add comments in some places where error handling/logging is missing.
+     PR: 53131.
+     Submitted by: Nicolas Viennot <apache viennot biz>, Stefan Fritsch
+     Not critical for 2.4.4.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1331110
+     2.4.x patch: Trunk patch works except for modules/slotmem/mod_slotmem_shm.c
+                  which should be ommitted (already done in r1400951).
+     +1: rjung, jim
+     -1: jorton on mod_log_*.c parts per <20130108093848.GA7521@redhat.com>
+     +1: jorton on non-mod_log_*.c parts
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -134,19 +146,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1392150
      2.4.x patch: Trunk patch works.
      +1: rjung
-
-   * Replace use of apr_file_write() with apr_file_write_full() to prevent
-     incomplete writes.
-     Add comments in some places where error handling/logging is missing.
-     PR: 53131.
-     Submitted by: Nicolas Viennot <apache viennot biz>, Stefan Fritsch
-     Not critical for 2.4.4.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1331110
-     2.4.x patch: Trunk patch works except for modules/slotmem/mod_slotmem_shm.c
-                  which should be ommitted (already done in r1400951).
-     +1: rjung, jim
-     -1: jorton on mod_log_*.c parts per <20130108093848.GA7521@redhat.com>
-     +1: jorton on non-mod_log_*.c parts
 
    * Makefile.win: Added copying of .vbs / .wsf CGIs to Windows install target.
                    Moved fixing of shebang to separate target so that it is
