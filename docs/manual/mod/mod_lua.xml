@@ -892,11 +892,13 @@ end
     on the most popular database engines (mySQL, PostgreSQL, FreeTDS, ODBC, SQLite, Oracle)
     as well as mod_dbd.
     </p>
-    <p>Connecting and firing off queries is as easy as:</p>
+    <p>The example below shows how to acquire a database handle and return information from a table:</p>
     <highlight language="lua">
 function handler(r)
+    -- Acquire a database handle
     local database, err = r:dbacquire("mysql", "server=localhost&amp;user=root&amp;database=mydb")
     if not err then
+        -- Select some information from it
         local results, err = database:select(r, "SELECT `name`, `age` FROM `people` WHERE 1")
         if not err then
             local rows = results(0) -- fetch all rows synchronously
@@ -913,7 +915,7 @@ function handler(r)
 end
     </highlight>
     <p>
-    To utilize <module name="mod_dbd">mod_dbd</module>, simply specify <code>mod_dbd</code>
+    To utilize <module name="mod_dbd">mod_dbd</module>, specify <code>mod_dbd</code>
     as the database type, or leave the field blank:
     </p>
     <highlight language="lua">
