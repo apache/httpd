@@ -86,7 +86,7 @@ AP_LUA_DECLARE(int) lua_db_close(lua_State *L)
 
 /*
    =============================================================================
-     db:__gc(): Garbage collecing function.
+     db:__gc(): Garbage collecting function.
    =============================================================================
  */
 AP_LUA_DECLARE(int) lua_db_gc(lua_State *L)
