@@ -138,6 +138,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: Trunk patch works except for modules/slotmem/mod_slotmem_shm.c
                   which should be ommitted (already done in r1400951).
      +1: rjung, jim
+     -1: jorton on mod_log_*.c parts per <20130108093848.GA7521@redhat.com>
+     +1: jorton on non-mod_log_*.c parts
 
    * Makefile.win: Added copying of .vbs / .wsf CGIs to Windows install target.
                    Moved fixing of shebang to separate target so that it is
@@ -168,7 +170,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_ssl/ab: improve pkg-config usage in configure (addresses PR 54252)
      trunk patch: https://svn.apache.org/viewvc/httpd/httpd/trunk/acinclude.m4?r1=1396440&r2=1429228
      2.4.x patch: trunk patch works
-     +1: kbrand
+     +1: kbrand, jorton
      sf notes: -0.5: Including libraries for static usage is a bad default for
                Linux distributions, see
                http://mail-archives.apache.org/mod_mbox/httpd-dev/201301.mbox/%3C20130103112044.GA19653%40redhat.com%3E
@@ -184,13 +186,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      [Guido Serra <zeph fsfe org>]
      trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1422937
      2.4.x patch: trunk patch works + CHANGES to be added
-     +1: jailletc36
+     +1: jailletc36, jorton, 
 
    * support/httxt2dbm: Correct length computation for the 'value' stored in the DBM file
      PR 47650
      trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1422135
      2.4.x patch: trunk patch works
-     +1: jailletc36
+     +1: jailletc36, jorton, 
 
 
 A list of further possible backports can be found at:
