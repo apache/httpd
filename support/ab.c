@@ -1872,13 +1872,16 @@ static void usage(const char *progname)
  */
     fprintf(stderr, "Options are:\n");
     fprintf(stderr, "    -n requests     Number of requests to perform\n");
-    fprintf(stderr, "    -c concurrency  Number of multiple requests to make\n");
-    fprintf(stderr, "    -t timelimit    Seconds to max. wait for responses\n");
+    fprintf(stderr, "    -c concurrency  Number of multiple requests to make at a time\n");
+    fprintf(stderr, "    -t timelimit    Seconds to max. to spend on benchmarking\n");
+    fprintf(stderr, "                    This implies -n 50000\n");
+    fprintf(stderr, "    -s timeout      Seconds to max. wait for each response\n");
+    fprintf(stderr, "                    Default is 30 seconds\n");
     fprintf(stderr, "    -b windowsize   Size of TCP send/receive buffer, in bytes\n");
     fprintf(stderr, "    -B address      Address to bind to when making outgoing connections\n");
     fprintf(stderr, "    -p postfile     File containing data to POST. Remember also to set -T\n");
     fprintf(stderr, "    -u putfile      File containing data to PUT. Remember also to set -T\n");
-    fprintf(stderr, "    -T content-type Content-type header for POSTing, eg.\n");
+    fprintf(stderr, "    -T content-type Content-type header to use for POST/PUT data, eg.\n");
     fprintf(stderr, "                    'application/x-www-form-urlencoded'\n");
     fprintf(stderr, "                    Default is 'text/plain'\n");
     fprintf(stderr, "    -v verbosity    How much troubleshooting info to print\n");
@@ -1899,6 +1902,7 @@ static void usage(const char *progname)
     fprintf(stderr, "    -k              Use HTTP KeepAlive feature\n");
     fprintf(stderr, "    -d              Do not show percentiles served table.\n");
     fprintf(stderr, "    -S              Do not show confidence estimators and warnings.\n");
+    fprintf(stderr, "    -q              Do not show progress when doing more than 150 requests\n");
     fprintf(stderr, "    -g filename     Output collected data to gnuplot format file.\n");
     fprintf(stderr, "    -e filename     Output CSV file with percentages served\n");
     fprintf(stderr, "    -r              Don't exit on socket receive errors.\n");
@@ -2083,7 +2087,7 @@ int main(int argc, const char * const argv[])
     myhost = NULL; /* 0.0.0.0 or :: */
 
     apr_getopt_init(&opt, cntxt, argc, argv);
-    while ((status = apr_getopt(opt, "n:c:t:b:T:p:u:v:rkVhwix:y:z:C:H:P:A:g:X:de:SqB:"
+    while ((status = apr_getopt(opt, "n:c:t:s:b:T:p:u:v:rkVhwix:y:z:C:H:P:A:g:X:de:SqB:"
 #ifdef USE_SSL
             "Z:f:"
 #endif
@@ -2123,6 +2127,9 @@ int main(int argc, const char * const argv[])
                 break;
             case 'S':
                 confidence = 0;
+                break;
+            case 's':
+                aprtimeout = apr_time_from_sec(atoi(opt_arg)); /* timeout value */
                 break;
             case 'p':
                 if (method != NO_METH)
