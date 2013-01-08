@@ -91,12 +91,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-   * support/ab: add the possibility to define a socket timeout (-s timeout)
-     [Guido Serra <zeph fsfe org>]
-     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1422937
-     2.4.x patch: trunk patch works + CHANGES to be added
-     +1: jailletc36, jorton, humbedooh
      
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
