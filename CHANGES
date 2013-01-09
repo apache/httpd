@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.4
 
+  *) mod_dialup/mod_http: Prevent a crash in mod_dialup in case of internal
+     redirect. PR 52230.
+
   *) various modules, rotatelogs: Replace use of apr_file_write() with
      apr_file_write_full() to prevent incomplete writes. PR 53131.
      [Nicolas Viennot <apache viennot biz>, Stefan Fritsch]

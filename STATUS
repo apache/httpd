@@ -92,11 +92,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
-   * mod_dialup/mod_http: Prevent a crash in mod_dialup in case of internal redirect
-     PR: 52230
-     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1402924
-     2.4.x patch: trunk patch works + CHANGES to be added
-     +1: jailletc36, jim, humbedooh
      
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
