@@ -132,8 +132,7 @@ d'acceptation</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.3 sous Windows et 2.1.5
-sur les autres plates-formes.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Sous Windows, disponible depuis la version 2.3.3.</td></tr>
 </table>
     <p>Cette directive permet d'effectuer une optimisation de la socket
     d'écoute d'un type de protocole en fonction du système
@@ -227,8 +226,6 @@ nom de chemin en fin de requête.</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible dans Apache httpd version 2.0.30 et
-supérieures</td></tr>
 </table>
 
     <p>Cette directive permet de définir si les requêtes contenant des
@@ -390,8 +387,7 @@ autorisés à transiter dans les URLs tels quels</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible dans Apache httpd version 2.0.46 et
-supérieures. L'option NoDecode est disponible depuis la version
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>L'option NoDecode est disponible depuis la version
 2.3.12.</td></tr>
 </table>
     <p>La directive <code class="directive">AllowEncodedSlashes</code> permet
@@ -771,9 +767,8 @@ autre type de média n'avait été trouvé.
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>L'argument <code>none</code> est disponible dans les
-versions d'Apache httpd 2.2.7 et supérieures. Tous les autres choix sont
-DESACTIVÉS à partir des version 2.3.x.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Tous les arguments, excepté <code>none</code>, sont
+DESACTIVÉS à partir de la version 2.3.0.</td></tr>
 </table>
     <p>Cette directive a été désactivée. Pour la compatibilité
     ascendante avec les anciens fichiers de configuration, elle peut
@@ -1228,8 +1223,7 @@ fichiers aux clients</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible dans les versions 2.0.44 et
-supérieures. Par défaut à Off depuis la version 2.3.9.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Par défaut à Off depuis la version 2.3.9.</td></tr>
 </table>
     <p>Cette directive définit si le programme <code class="program"><a href="../programs/httpd.html">httpd</a></code>
     peut utiliser le support sendfile du noyau pour transmettre le
@@ -1939,8 +1933,6 @@ HTTP Content-Type pour les fichiers correspondants</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Intégré dans le coeur d'Apache httpd depuis la version
-2.0</td></tr>
 </table>
     <p>Lorsqu'elle est placée dans un fichier <code>.htaccess</code> ou
     une section <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="#location">&lt;Location&gt;</a></code>, ou <code class="directive"><a href="#files">&lt;Files&gt;</a></code>, cette directive force
@@ -2180,8 +2172,6 @@ module</var>&gt; ... &lt;/IfModule&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Les identificateurs de modules sont disponibles dans les
-versions 2.1 et supérieures.</td></tr>
 </table>
     <p>La section <code>&lt;IfModule
     <var>test</var>&gt;...&lt;/IfModule&gt;</code> permet de conférer à
@@ -2234,9 +2224,8 @@ fichiers de configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Utilisation des caractères génériques dans la partie nom
-de fichier depuis la version 2.0.41, et dans la partie chemin depuis la
-version 2.3.6</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Utilisation des caractères
+génériques dans la partie chemin depuis la version 2.3.6</td></tr>
 </table>
     <p>Cette directive permet l'inclusion d'autres fichiers de
     configuration dans un des fichiers de configuration du serveur.</p>
@@ -2523,7 +2512,6 @@ sous-requêtes imbriquées</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.0.47 d'Apache httpd</td></tr>
 </table>
     <p>Une redirection interne survient, par exemple, quand on utilise
     la directive <code class="directive"><a href="../mod/mod_actions.html#action">Action</a></code> qui
@@ -3169,26 +3157,68 @@ LogLevel info
         La configuration du niveau de journalisation par répertoire
 	n'affecte que les messages journalisés après l'interprétation de
 	la requête et qui sont associés à cette dernière. Les messages
-	de journalisation associés à la connexion ou au serveur ne sont
-	pas affectés.
+	de journalisation associés au serveur ou à la connexion ne sont
+	pas affectés. Il est cependant possible d'agir sur ces
+	derniers à l'aide de la directive <code class="directive"><a href="#logleveloverride">LogLevelOverride</a></code>.
     </div>
 
+<h3>Voir aussi</h3>
+<ul>
+<li><code class="directive"><a href="#errorlog">ErrorLog</a></code></li>
+<li><code class="directive"><a href="#errorlogformat">ErrorLogFormat</a></code></li>
+<li><code class="directive"><a href="#logleveloverride">LogLevelOverride</a></code></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LogLevelOverride" id="LogLevelOverride">LogLevelOverride</a> <a name="logleveloverride" id="logleveloverride">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Override the verbosity of the ErrorLog for certain clients</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Surcharge la verbosité du journal des erreurs pour certains
+clients</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LogLevel <var>ipaddress</var>[/<var>prefixlen</var>]
     [<var>module</var>:]<var>level</var> [<var>module</var>:<var>level</var>] ...
 </code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>unset</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>non définie</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in Apache HTTP Server 2.5.0 and later</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p><h3>Voir aussi</h3>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur HTTP
+Apache.</td></tr>
+</table>
+    <p>La directive <code class="directive">LogLevelOverride</code> permet
+    d'affiner la définition de la directive <code class="directive"><a href="#loglevel">LogLevel</a></code> pour les requêtes en provenance
+    de certaines adresses IP. Il est ainsi possible d'activer une
+    journalisation détaillée seulement pour certains clients à des fins
+    de test. Les adresses IP sont vérifiées à un stade très précoce du
+    processus de connexion. Ainsi, la directive
+    <code class="directive">LogLevelOverride</code> permet de modifier le niveau
+    de journalisation pour des processus comme la négociation SSL qui
+    intervient avant l'évaluation d'une éventuelle directive <code class="directive"><a href="#loglevel">LogLevel</a></code> au sein d'un conteneur <code class="directive"><a href="#if">&lt;If&gt;</a></code>.</p>
+
+    <p>La directive <code class="directive">LogLevelOverride</code> accepte soit
+    une adresse IP simple, soit une spécification de sous-réseau CIDR de
+    la forme adresse-IP/masque. Pour la syntaxe de la spécification du
+    niveau de journalisation, voir la directive <code class="directive"><a href="#loglevel">LogLevel</a></code> directive.</p>
+
+    <p>Pour les requêtes concernées par une directive
+    <code class="directive">LogLevelOverride</code>, les spécifications de
+    niveau répertoire de la directive <code class="directive"><a href="#loglevel">LogLevel</a></code> sont ignorées.</p>
+
+    <p>Exemples:</p>
+
+    <pre class="prettyprint lang-config">
+        LogLevelOverride 192.0.2.0/24 ssl:trace6
+        LogLevelOverride 192.0.2.7 ssl:trace8
+    </pre>
+
+
+    <div class="note">
+        La directive <code class="directive"><a href="#logleveloverride">LogLevelOverride</a></code> n'affecte que les
+	messages associés à la requête ou à la connexion. Les messages
+	associés au serveur ne sont pas affectés.
+    </div>
+
+
+<h3>Voir aussi</h3>
 <ul>
 <li><code class="directive"><a href="#loglevel">LogLevel</a></code></li>
 </ul>
@@ -3785,8 +3815,8 @@ particulier</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.1.5 d'Apache, mais
-seulement depuis la version 2.3.3 sous Windows.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Sous Windows, disponible à partir de la version 2.3.3 du
+serveur HTTP Apache.</td></tr>
 </table>
     <p>Cette directive permet de spécifier le protocole utilisé pour une
     socket d'écoute particulière. Le protocole sert à déterminer quel
@@ -3969,9 +3999,7 @@ CGI</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Win32 seulement ;
-l'option <code>Registry-Strict</code> est disponible dans les versions
-2.0 et supérieures du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Win32 seulement</td></tr>
 </table>
     <p>Cette directive permet de contrôler la méthode qu'utilise Apache
     httpd pour trouver l'interpréteur destiné à exécuter les scripts CGI. La
@@ -4036,8 +4064,6 @@ elle-même possède plus de 63 caractères.</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.2.7
-d'Apache httpd.</td></tr>
 </table>
     <p>Avec <code>ExtendedStatus On</code>, mod_status affiche la
     véritable requête en cours de traitement. Pour des raisons
@@ -4414,8 +4440,6 @@ gestionnaire particulier</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Intégré dans le noyau d'Apache httpd depuis la version
-2.0</td></tr>
 </table>
     <p>Lorsqu'elle se situe à l'intérieur d'un fichier
     <code>.htaccess</code>, ou d'une section <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> ou <code class="directive"><a href="#location">&lt;Location&gt;</a></code>, cette directive force le
@@ -4577,8 +4601,6 @@ du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible dans les versions 1.3.34, 2.0.55 et
-supérieures du serveur HTTP Apache</td></tr>
 </table>
     <p>Cette directive l'emporte sur le comportement de
     <code>TRACE</code> pour le noyau du serveur et
@@ -4882,15 +4904,38 @@ entre elles à la réception d'une requête</li>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Warning" id="Warning">Warning</a> <a name="warning" id="warning">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Warn from configuration parsing with a custom message</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Message d'avertissement personnalisable en provenance de
+l'interprétation du fichier de configuration</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Warning <var>message</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>2.5 and later</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5 du serveur HTTP
+Apache.</td></tr>
+</table>
+    <p>Cette directive permet de signaler la détection d'un problème de
+    configuration en générant un message d'avertissement
+    personnalisable. L'interprétation du fichier de configuration n'est
+    pas interrompue. Un exemple typique d'utilisation est la
+    vérification de la définition de certaines options définies par
+    l'utilisateur, et l'envoi d'un avertissement éventuel.</p>
+
+    <pre class="prettyprint lang-config">
+# Exemple
+# signale que ReverseProxy n'est pas défini
+&lt;IfDefine !ReverseProxy&gt;
+  Warning "le mandataire inverse n'a pas été spécifié, veuillez corriger
+  si nécessaire"
+&lt;/IfDefine&gt;
+
+&lt;IfDefine ReverseProxy&gt;
+  # définition de la configuration personnalisée du mandataire
+&lt;/IfDefine&gt;
+    </pre>
+
+
+
+</div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../de/mod/core.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
@@ -4917,7 +4962,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/core.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2012 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2013 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

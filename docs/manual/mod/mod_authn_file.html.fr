@@ -29,15 +29,11 @@
 <a href="../ja/mod/mod_authn_file.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authn_file.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Authentification utilisateur à l'aide de fichiers
 texte</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>authn_file_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_authn_file.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis les versions 2.1 et supérieures
-d'Apache</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_authn_file.c</td></tr></table>
 <h3>Sommaire</h3>
 
     <p>Ce module permet aux frontaux d'authentification comme
@@ -90,7 +86,7 @@ passe</td></tr>
     <p>Chaque ligne du fichier des utilisateurs se compose du nom de
     l'utilisateur, du caractère ':' et du mot de passe chiffré. Si le
     même identifiant utilisateur est référencé plusieurs fois,
-    <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> utilisera la première occurrence pour
+    <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> utilisera la première occurence pour
     vérifier le mot de passe.</p>
 
      <p>Le format du mot de passe chiffré dépend du frontal
@@ -164,7 +160,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_authn_file
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2012 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2013 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

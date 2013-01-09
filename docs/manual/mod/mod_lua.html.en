@@ -977,11 +977,13 @@ end
     on the most popular database engines (mySQL, PostgreSQL, FreeTDS, ODBC, SQLite, Oracle)
     as well as mod_dbd.
     </p>
-    <p>Connecting and firing off queries is as easy as:</p>
+    <p>The example below shows how to acquire a database handle and return information from a table:</p>
     <pre class="prettyprint lang-lua">
 function handler(r)
+    -- Acquire a database handle
     local database, err = r:dbacquire("mysql", "server=localhost&amp;user=root&amp;database=mydb")
     if not err then
+        -- Select some information from it
         local results, err = database:select(r, "SELECT `name`, `age` FROM `people` WHERE 1")
         if not err then
             local rows = results(0) -- fetch all rows synchronously
@@ -999,7 +1001,7 @@ end
     </pre>
 
     <p>
-    To utilize <code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code>, simply specify <code>mod_dbd</code>
+    To utilize <code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code>, specify <code>mod_dbd</code>
     as the database type, or leave the field blank:
     </p>
     <pre class="prettyprint lang-lua">
@@ -1049,7 +1051,7 @@ local connected = database:active()
     
     <h3><a name="result_sets" id="result_sets">Working with result sets</a></h3>
     
-    <p>The result set returned by <code>db:query</code> or by the prepared statement functions 
+    <p>The result set returned by <code>db:select</code> or by the prepared statement functions 
     created through <code>db:prepare</code> can be used to
     fetch rows synchronously or asynchronously, depending on the row number specified:<br />
     <code>result(0)</code> fetches all rows in a synchronous manner, returning a table of rows.<br />
@@ -1771,7 +1773,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_lua.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2012 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2013 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
