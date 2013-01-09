@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.4
 
+  *) configure: Fix processing of --disable-FEATURE for various features.
+     [Jeff Trawick]
+
   *) mod_dialup/mod_http: Prevent a crash in mod_dialup in case of internal
      redirect. PR 52230.
 
