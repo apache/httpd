@@ -99,6 +99,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mod_lua: Add bindings for mod_dbd/apr_dbd database access.
       trunk patch: http://svn.apache.org/r1430225
+                   http://svn.apache.org/r1430265
+                   http://svn.apache.org/r1430472
+                   http://svn.apache.org/r1430656
       2.4.x patch: http://www.humbedooh.com/apache/lua_dbd.patch
                    + CHANGES
       +1: humbedooh
