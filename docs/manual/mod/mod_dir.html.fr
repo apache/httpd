@@ -200,8 +200,6 @@ fin"</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dir</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis le version 2.0.51
-d'Apache</td></tr>
 </table>
     <p>La directive <code class="directive">DirectorySlash</code> permet de
     déterminer si <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> doit corriger ou non les URLs
@@ -339,7 +337,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_dir.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2012 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2013 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

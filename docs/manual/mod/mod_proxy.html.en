@@ -492,12 +492,12 @@ ProxyPass /examples http://backend.example.com/examples timeout=10
 <div class="directive-section"><h2><a name="BalancerInherit" id="BalancerInherit">BalancerInherit</a> <a name="balancerinherit" id="balancerinherit">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Inherit ProxyPassed Balancers/Workers from the main server</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyPassInherit On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProxyPassInherit On</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>BalancerInherit On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>BalancerInherit On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>ProxyPassInherit is only available in Apache HTTP Server 2.5.0
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>BalancerInherit is only available in Apache HTTP Server 2.5.0
         and later.</td></tr>
 </table>
         <p>This directive will cause the current server/vhost to "inherit" ProxyPass
@@ -1909,7 +1909,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_proxy.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2012 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2013 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

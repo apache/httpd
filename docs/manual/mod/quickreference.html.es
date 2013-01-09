@@ -258,7 +258,7 @@ alias</td></tr>
 authentication succeeds but authorization fails
 </td></tr>
 <tr><td><a href="mod_proxy.html#balancergrowth" id="B" name="B">BalancerGrowth <var>#</var></a></td><td> 5 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Number of additional Balancers that can be added Post-configuration</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#balancerinherit">ProxyPassInherit On|Off</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Inherit ProxyPassed Balancers/Workers from the main server</td></tr>
+<tr class="odd"><td><a href="mod_proxy.html#balancerinherit">BalancerInherit On|Off</a></td><td> On </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Inherit ProxyPassed Balancers/Workers from the main server</td></tr>
 <tr><td><a href="mod_proxy.html#balancermember">BalancerMember [<var>balancerurl</var>] <var>url</var> [<var>key=value [key=value ...]]</var></a></td><td></td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">Add a member to a load balancing group</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#balancerpersist">BalancerPersist On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Attempt to persist changes made by the Balancer Manager across restarts.</td></tr>
 <tr><td><a href="mod_setenvif.html#browsermatch">BrowserMatch <em>regex [!]env-variable</em>[=<em>value</em>]
@@ -1099,7 +1099,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/quickreference
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2012 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2013 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa de este sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

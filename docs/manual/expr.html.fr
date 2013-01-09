@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="./en/expr.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/expr.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Historiquement, il existe de nombreuses variantes dans la syntaxe
     des expressions permettant d'exprimer une condition dans les
@@ -49,6 +47,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#examples">Exemples d'expressions</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#other">Autres</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#sslrequire">Comparaison avec SSLRequire</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#compatibility">Historique de version</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><code class="directive"><a href="./mod/core.html#if">If</a></code></li><li><code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#elseif">&lt;ElseIf&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#else">&lt;Else&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewritecond">RewriteCond</a></code></li><li><code class="directive"><a href="./mod/mod_setenvif.html#setenvifexpr">SetEnvIfExpr</a></code></li><li><code class="directive"><a href="./mod/mod_headers.html#header">Header</a></code></li><li><code class="directive"><a href="./mod/mod_headers.html#requestheader">RequestHeader</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterprovider">FilterProvider</a></code></li><li><a href="mod/mod_authz_core.html#reqexpr">Require expr</a></li><li><code class="directive"><a href="./mod/mod_ssl.html#sslrequire">SSLRequire</a></code></li><li><code class="directive"><a href="./mod/mod_log_debug.html#logmessage">LogMessage</a></code></li><li><code class="module"><a href="./mod/mod_include.html">mod_include</a></code></li></ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -564,6 +563,17 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     surcouche de la syntaxe de la directive obsolète <code class="directive"><a href="./mod/mod_ssl.html#sslrequire">SSLRequire</a></code>. Vous pouvez consulter la
     liste de leur différences dans la documentation de la directive
     <code class="directive"><a href="./mod/mod_ssl.html#sslrequire">SSLRequire</a></code>.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="compatibility" id="compatibility">Historique de version</a></h2>
+    
+    <p>La <a href="#functions">fonction</a> <code>req_novary</code> est
+    disponible à partir de la version 2.4.4 du serveur HTTP Apache.</p>
+    <p>Les <a href="#vars">variables</a>
+    <code>SERVER_PROTOCOL_VERSION</code>,
+    <code>SERVER_PROTOCOL_VERSION_MAJOR</code> et
+    <code>SERVER_PROTOCOL_VERSION_MINOR</code> sont disponibles à partir
+    de la version 2.5.0 du serveur HTTP Apache.</p>
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="./en/expr.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -586,7 +596,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/expr.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2012 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2013 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

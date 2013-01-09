@@ -27,8 +27,6 @@ serveur HTTP Apache</h1>
 <a href="./fr/new_features_2_4.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./tr/new_features_2_4.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
   <p>Ce document décrit les modifications majeures apportées par
   la version 2.4 du serveur HTTP Apache. Pour les nouvelles fonctionnalités
@@ -49,12 +47,13 @@ serveur HTTP Apache</h1>
     
     <dl>
       <dt>Modules multiprocessus (MPMs) chargeables</dt>
-      <dd>On peut maintenant compiler plusieurs MPMs en tant que modules
+      <dd>On peut maintenant <a href="mpm.html#dynamic">built as
+      loadable modules</a> plusieurs MPMs en tant que modules
       chargeables. Le choix du MPM à utiliser s'effectue à
       l'exécution.</dd>
 
       <dt>MPM Event</dt>
-      <dd>Le MPM Event est sorti du stade expérimental et est
+      <dd>Le <a href="mod/event.html">Event MPM</a> est sorti du stade expérimental et est
       maintenant pleinement supporté.</dd>
 
       <dt>Support du mode asynchrone</dt>
@@ -334,9 +333,9 @@ serveur HTTP Apache</h1>
 <h2><a name="programs" id="programs">Améliorations des programmes</a></h2>
     
     <dl>
-        <dt>fcgistarter</dt>
+        <dt><code class="program"><a href="./programs/fcgistarter.html">fcgistarter</a></code></dt>
         <dd>Nouvel utilitaire pour le démarrage des démons FastCGI</dd>
-	<dt>htcacheclean</dt>
+	<dt><code class="program"><a href="./programs/htcacheclean.html">htcacheclean</a></code></dt>
         <dd>Les URLs présentes dans le cache peuvent maintenant être
 	affichées, accompagnées éventuellement de leurs métadonnées.</dd>
         <dd>Possibilité de supprimer explicitement des URLs individuelles
@@ -348,7 +347,7 @@ serveur HTTP Apache</h1>
 	nombre d'inodes, en plus de la possibilité de limitation par la
 	taille des fichiers.</dd>
 
-	<dt>rotatelogs</dt>
+	<dt><code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code></dt>
         <dd>Possibilité de créer un lien vers le fichier journal
 	courant.</dd>
         <dd>Possibilité d'invoquer un script personnalisé après la
@@ -461,7 +460,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/new_features_2_4.h
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2012 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2013 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
