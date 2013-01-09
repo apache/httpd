@@ -536,6 +536,10 @@ static request_rec *internal_internal_redirect(const char *new_uri,
      */
     new->used_path_info = AP_REQ_DEFAULT_PATH_INFO;
 
+#if APR_HAS_THREADS
+    new->invoke_mtx = r->invoke_mtx;
+#endif
+
     /*
      * XXX: hmm.  This is because mod_setenvif and mod_unique_id really need
      * to do their thing on internal redirects as well.  Perhaps this is a
