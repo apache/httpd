@@ -92,6 +92,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
+   * mod_dialup/mod_http: Prevent a crash in mod_dialup in case of internal redirect
+     PR: 52230
+     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1402924
+     2.4.x patch: trunk patch works + CHANGES to be added
+     +1: jailletc36, jim, humbedooh
+     
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -173,11 +179,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                http://mail-archives.apache.org/mod_mbox/httpd-dev/201301.mbox/%3C20130103112044.GA19653%40redhat.com%3E
         kbrand: configure option added in r1429228
 
-   * mod_dialup/mod_http: Prevent a crash in mod_dialup in case of internal redirect
-     PR: 52230
-     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1402924
-     2.4.x patch: trunk patch works + CHANGES to be added
-     +1: jailletc36, jim
 
    * mod_proxy: Allow balancers to be server-specific, as they should have
      been. Inheritance causes too many behind-the-scene interactions
