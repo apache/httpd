@@ -2899,6 +2899,7 @@ LogLevel info
 <seealso><directive module="core">ErrorLog</directive></seealso>
 <seealso><directive module="core">ErrorLogFormat</directive></seealso>
 <seealso><directive module="core">LogLevelOverride</directive></seealso>
+<seealso><a href="../logs.html">Apache HTTP Server Log Files</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
