@@ -2889,6 +2889,9 @@ LogLevel info
 	the server are not affected.
     </note>
 </usage>
+<seealso><directive module="core">ErrorLog</directive></seealso>
+<seealso><directive module="core">ErrorLogFormat</directive></seealso>
+<seealso><a href="../logs.html">Apache HTTP Server Log Files</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
