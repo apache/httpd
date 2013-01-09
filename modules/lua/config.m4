@@ -126,9 +126,12 @@ if test -z "${LUA_LIBS}"; then
     $2)
 else
   AC_MSG_NOTICE([using '${LUA_LIBS}' for Lua Library])
-  AC_ARG_ENABLE(luajit,
-    APACHE_HELP_STRING(--enable-luajit,Enable LuaJit Support),
-    APR_ADDTO(MOD_CPPFLAGS, ["-DAP_ENABLE_LUAJIT"]))
+  AC_ARG_ENABLE(luajit,APACHE_HELP_STRING(--enable-luajit,Enable LuaJit Support),
+  [
+    if test "$enableval" = "yes"; then
+      APR_ADDTO(MOD_CPPFLAGS, ["-DAP_ENABLE_LUAJIT"])
+    fi
+  ])
   ifelse([$1], , , $1) 
 fi 
 ])
