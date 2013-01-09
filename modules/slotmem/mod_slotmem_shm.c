@@ -296,6 +296,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
 {
 /*    void *slotmem = NULL; */
     int fbased = 1;
+    int restored = 0;
     char *ptr;
     sharedslotdesc_t desc;
     ap_slotmem_instance_t *res;
@@ -390,6 +391,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
          */
         if (type & AP_SLOTMEM_TYPE_PERSIST) {
             restore_slotmem(ptr, fname, dsize, pool);
+            restored = 1;
         }
     }
 
@@ -400,7 +402,9 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
     res->fbased = fbased;
     res->shm = shm;
     res->num_free = (unsigned int *)ptr;
-    *res->num_free = item_num;
+    if (!restored) {
+        *res->num_free = item_num;
+    }
     res->persist = (void *)ptr;
     ptr += AP_UNSIGNEDINT_OFFSET;
     res->base = (void *)ptr;
