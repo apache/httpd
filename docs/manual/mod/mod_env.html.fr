@@ -79,7 +79,7 @@ shell</td></tr>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
       PassEnv LD_LIBRARY_PATH
-      </pre>
+     </pre>
 </div>
 
 </div>
@@ -99,7 +99,7 @@ shell</td></tr>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
       SetEnv SPECIAL_PATH /foo/bin
-      </pre>
+     </pre>
 </div>
     <div class="note"><p>Les variables d'environnement internes définies par cette
     directive le sont <em>après</em> l'exécution de la plupart des
@@ -134,7 +134,7 @@ shell</td></tr>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
       UnsetEnv LD_LIBRARY_PATH
-      </pre>
+     </pre>
 </div>
 
 </div>
@@ -163,7 +163,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_env.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2012 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2013 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

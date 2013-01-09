@@ -172,7 +172,7 @@ lower level modules</td></tr>
 <tr class="odd"><td><a href="mod_auth_form.html#authformprovider">AuthFormProvider <var>provider-name</var>
 [<var>provider-name</var>] ...</a></td><td> file </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the authentication provider(s) for this location</td></tr>
 <tr><td><a href="mod_auth_form.html#authformsitepassphrase">AuthFormSitePassphrase <var>secret</var></a></td><td></td><td>d</td><td>B</td></tr><tr><td class="descr" colspan="4">Bypass authentication checks for high traffic sites</td></tr>
-<tr class="odd"><td><a href="mod_auth_form.html#authformsize">AuthFormBody <var>size</var></a></td><td></td><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">The largest size of the form in bytes that will be parsed for the login details</td></tr>
+<tr class="odd"><td><a href="mod_auth_form.html#authformsize">AuthFormSize <var>size</var></a></td><td></td><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">The largest size of the form in bytes that will be parsed for the login details</td></tr>
 <tr><td><a href="mod_auth_form.html#authformusername">AuthFormUsername <var>fieldname</var></a></td><td></td><td>d</td><td>B</td></tr><tr><td class="descr" colspan="4">The name of a form field carrying the login username</td></tr>
 <tr class="odd"><td><a href="mod_authz_groupfile.html#authgroupfile">AuthGroupFile <var>file-path</var></a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">인증에 사용할 사용자 그룹 목록을 저장하는 문자파일명을
 지정한다</td></tr>
@@ -995,7 +995,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/quickreference.h
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2012 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2013 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/directives.html">지시어들</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

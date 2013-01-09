@@ -74,28 +74,34 @@ type de média ou de la méthode de requête.</dd>
 <dt><a href="mod_alias.html">mod_alias</a></dt><dd>Permet d'atteindre différentes parties du système de
 fichiers depuis l'arborescence des documents du site web, ainsi que la
 redirection d'URL</dd>
-<dt><a href="mod_allowmethods.html">mod_allowmethods</a></dt><dd>Easily restrict what HTTP methods can be used on the server</dd>
+<dt><a href="mod_allowmethods.html">mod_allowmethods</a></dt><dd>Ce module permet de restreindre aisément les méthodes HTTP
+pouvant être utilisées sur le serveur</dd>
 <dt><a href="mod_asis.html">mod_asis</a></dt><dd>Envoie des fichiers contenant leurs propres en-têtes
 HTTP</dd>
 <dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>Authentification de base</dd>
 <dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>Authentification utilisateur utilisant les condensés
 MD5</dd>
-<dt><a href="mod_auth_form.html">mod_auth_form</a></dt><dd>Form authentication</dd>
-<dt><a href="mod_authn_anon.html">mod_authn_anon</a></dt><dd>Allows "anonymous" user access to authenticated
-    areas</dd>
+<dt><a href="mod_auth_form.html">mod_auth_form</a></dt><dd>Authentification à l'aide d'un formulaire</dd>
+<dt><a href="mod_authn_anon.html">mod_authn_anon</a></dt><dd>Permet un accès "anonyme" à des zones
+protégées</dd>
 <dt><a href="mod_authn_core.html">mod_authn_core</a></dt><dd>Le noyau de l'authentification</dd>
-<dt><a href="mod_authn_dbd.html">mod_authn_dbd</a></dt><dd>User authentication using an SQL database</dd>
-<dt><a href="mod_authn_dbm.html">mod_authn_dbm</a></dt><dd>User authentication using DBM files</dd>
+<dt><a href="mod_authn_dbd.html">mod_authn_dbd</a></dt><dd>Authentification utilisateur à l'aide d'une base de données
+SQL</dd>
+<dt><a href="mod_authn_dbm.html">mod_authn_dbm</a></dt><dd>Authentification utilisateur utilisant des fichiers
+DBM</dd>
 <dt><a href="mod_authn_file.html">mod_authn_file</a></dt><dd>Authentification utilisateur à l'aide de fichiers
 texte</dd>
-<dt><a href="mod_authn_socache.html">mod_authn_socache</a></dt><dd>Manages a cache of authentication credentials to relieve
-the load on backends</dd>
+<dt><a href="mod_authn_socache.html">mod_authn_socache</a></dt><dd>Gère un cache des données d'authentification pour diminuer
+la charge des serveurs d'arrière-plan</dd>
 <dt><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></dt><dd>Permet d'utiliser un annuaire LDAP pour l'authentification
 HTTP de base.</dd>
 <dt><a href="mod_authz_core.html">mod_authz_core</a></dt><dd>Core Authorization</dd>
-<dt><a href="mod_authz_dbd.html">mod_authz_dbd</a></dt><dd>Group Authorization and Login using SQL</dd>
-<dt><a href="mod_authz_dbm.html">mod_authz_dbm</a></dt><dd>Group authorization using DBM files</dd>
-<dt><a href="mod_authz_groupfile.html">mod_authz_groupfile</a></dt><dd>Group authorization using plaintext files</dd>
+<dt><a href="mod_authz_dbd.html">mod_authz_dbd</a></dt><dd>Autorisation en groupe et reconnaissance d'identité avec base
+SQL</dd>
+<dt><a href="mod_authz_dbm.html">mod_authz_dbm</a></dt><dd>Autorisation basée sur les groupes à l'aide de fichiers
+DBM</dd>
+<dt><a href="mod_authz_groupfile.html">mod_authz_groupfile</a></dt><dd>Autorisation basée sur les groupes à l'aide de fichiers
+textes</dd>
 <dt><a href="mod_authz_host.html">mod_authz_host</a></dt><dd>Autorisations de groupe basées sur l'hôte (nom ou adresse
 IP)</dd>
 <dt><a href="mod_authz_owner.html">mod_authz_owner</a></dt><dd>Autorisation basée sur l'appartenance des
@@ -121,7 +127,8 @@ cache HTTP.</dd>
 <dt><a href="mod_dbd.html">mod_dbd</a></dt><dd>Gestion des connexions à une base de données SQL</dd>
 <dt><a href="mod_deflate.html">mod_deflate</a></dt><dd>Comprime le contenu avant de le servir au
 client</dd>
-<dt><a href="mod_dialup.html">mod_dialup</a></dt><dd>Send static content at a bandwidth rate limit, defined by the various old modem standards</dd>
+<dt><a href="mod_dialup.html">mod_dialup</a></dt><dd>Envoie le contenu statique avec une bande passante limitée
+définie par les différents standards des anciens modems.</dd>
 <dt><a href="mod_dir.html">mod_dir</a></dt><dd>Permet la redirection des adresses se terminant par un
 répertoire sans slash de fin et la mise à disposition des fichiers index
 de répertoire</dd>
@@ -149,7 +156,7 @@ HTTP</dd>
 <dt><a href="mod_include.html">mod_include</a></dt><dd>Server-parsed html documents (Server Side Includes)</dd>
 <dt><a href="mod_info.html">mod_info</a></dt><dd>Affiche une présentation complète de la configuration du
 serveur</dd>
-<dt><a href="mod_isapi.html">mod_isapi</a></dt><dd>ISAPI Extensions within Apache for Windows</dd>
+<dt><a href="mod_isapi.html">mod_isapi</a></dt><dd>Extensions ISAPI au coeur d'Apache pour Windows</dd>
 <dt><a href="mod_lbmethod_bybusyness.html" id="L" name="L">mod_lbmethod_bybusyness</a></dt><dd>Algorithme de planification avec répartition de charge de
 l'attribution des requêtes en attente pour le module
 <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></dd>
@@ -183,7 +190,7 @@ contenu</a></dd>
 serveurs virtuels sous différents identifiants
 utilisateurs.</dd>
 <dt><a href="mod_proxy.html">mod_proxy</a></dt><dd>Serveur mandataire/passerelle multi-protocole</dd>
-<dt><a href="mod_proxy_ajp.html">mod_proxy_ajp</a></dt><dd>AJP support module for
+<dt><a href="mod_proxy_ajp.html">mod_proxy_ajp</a></dt><dd>Module de support AJP pour
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_balancer.html">mod_proxy_balancer</a></dt><dd>Extension de <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> pour le support de
 la répartition de charge</dd>
@@ -239,7 +246,8 @@ misspellings.</dd>
 Layer (SSL) and Transport Layer Security (TLS) protocols</dd>
 <dt><a href="mod_status.html">mod_status</a></dt><dd>Fournit des informations sur les performances et l'activité
 du serveur</dd>
-<dt><a href="mod_substitute.html">mod_substitute</a></dt><dd>Perform search and replace operations on response bodies</dd>
+<dt><a href="mod_substitute.html">mod_substitute</a></dt><dd>Effectue des opérations de recherche/remplacement sur les
+corps de réponses</dd>
 <dt><a href="mod_suexec.html">mod_suexec</a></dt><dd>Allows CGI scripts to run as a specified user
 and Group</dd>
 <dt><a href="mod_unique_id.html" id="U" name="U">mod_unique_id</a></dt><dd>Fournit une variable d'environnement contenant un
@@ -267,7 +275,7 @@ caractères pour les modules de filtrage basés sur libxml2</dd>
 <a href="../tr/mod/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2012 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2013 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
