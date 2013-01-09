@@ -915,7 +915,7 @@ function handler(r)
 end
     </highlight>
     <p>
-    To utilize <module name="mod_dbd">mod_dbd</module>, specify <code>mod_dbd</code>
+    To utilize <module>mod_dbd</module>, specify <code>mod_dbd</code>
     as the database type, or leave the field blank:
     </p>
     <highlight language="lua">
