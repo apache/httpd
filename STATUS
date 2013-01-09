@@ -227,7 +227,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1417529
     2.4.x patch: trunk patch works
     +1: jim
-    
+
+  * mod_slotmem_shm: Fix mistaken reset of num_free for restored shm
+    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1430869
+    2.4.x patch: trunk patch works
+    +1: jim
+
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
