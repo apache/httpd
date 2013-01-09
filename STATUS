@@ -191,7 +191,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1422943
                   http://svn.apache.org/viewvc?view=revision&revision=1422980
                   http://svn.apache.org/viewvc?view=revision&revision=1430575
-     2.4.x patch: http://people.apache.org/~jim/patches/proxypassinherit2.patch
+     2.4.x patch: http://people.apache.org/~jim/patches/proxypassinherit.patch
      +1: jim
 
 
