@@ -549,12 +549,11 @@ Require group GroupName
 &lt;/RequireAll&gt;
         </highlight>
 
-        <p>The above example uses the <directive module="mod_authz_core"
-        type="section">RequireNone</directive> directive
-        to make sure that none of the
-        <directive module="mod_authz_core">Require</directive> directives
-        contained within it
-        match their parameters before granting access.</p>
+        <p>Using <directive module="mod_authz_core" type="section">RequireAll</directive>
+        with multiple <directive module="mod_authz_core"
+        type="section">Require</directive> directives, each negated with <code>not</code>,
+        will only allow access, if all of negated conditions are true. In other words,
+        access will be blocked, if any of the negated conditions fails.</p>
 
     </section>
 
