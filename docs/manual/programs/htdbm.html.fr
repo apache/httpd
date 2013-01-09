@@ -27,8 +27,6 @@ passe</h1>
 <a href="../fr/programs/htdbm.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../tr/programs/htdbm.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p><code>htdbm</code> permet de manipuler des fichiers au format DBM
     ou sont stockés des nom d'utilisateurs et mots de passe à des fins
@@ -39,7 +37,7 @@ passe</h1>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Syntaxe</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#bugs">Bogues</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#bugs">Bugs</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#exit">Valeur renvoyée</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">Exemples</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#security">Considérations à propos de sécurité</a></li>
@@ -50,33 +48,40 @@ passe</h1>
 <h2><a name="synopsis" id="synopsis">Syntaxe</a></h2>
     <p><code><strong>htdbm</strong>
     [ -<strong>T</strong><var>DBTYPE</var> ]
+    [ -<strong>i</strong> ]
     [ -<strong>c</strong> ]
     [ -<strong>m</strong> |
+      -<strong>B</strong> |
       -<strong>d</strong> |
-      -<strong>p</strong> |
-      -<strong>s</strong> ]
+      -<strong>s</strong> |
+      -<strong>p</strong> ]
+    [ -<strong>C</strong> <var>cost</var> ]
     [ -<strong>t</strong> ]
     [ -<strong>v</strong> ]
-    [ -<strong>x</strong> ]
     <var>nom-fichier</var> <var>nom-utilisateur</var></code></p>
 
     <p><code><strong>htdbm</strong> -<strong>b</strong>
     [ -<strong>T</strong><var>DBTYPE</var> ]
     [ -<strong>c</strong> ]
     [ -<strong>m</strong> |
+      -<strong>B</strong> |
       -<strong>d</strong> |
-      -<strong>p</strong> |
-      -<strong>s</strong> ]
+    -<strong>s</strong> |
+      -<strong>p</strong> ]
+    [ -<strong>C</strong> <var>cost</var> ]
     [ -<strong>t</strong> ]
     [ -<strong>v</strong> ]
     <var>nom-fichier</var> <var>nom-utilisateur</var> <var>mot-de-passe</var></code></p>
 
     <p><code><strong>htdbm</strong> -<strong>n</strong>
+    [ -<strong>i</strong> ]
     [ -<strong>c</strong> ]
     [ -<strong>m</strong> |
+      -<strong>B</strong> |
       -<strong>d</strong> |
-      -<strong>p</strong> |
-      -<strong>s</strong> ]
+      -<strong>s</strong> |
+      -<strong>p</strong> ]
+    [ -<strong>C</strong> <var>cost</var> ]
     [ -<strong>t</strong> ]
     [ -<strong>v</strong> ]
     <var>nom-utilisateur</var></code></p>
@@ -84,20 +89,25 @@ passe</h1>
     <p><code><strong>htdbm</strong> -<strong>nb</strong>
     [ -<strong>c</strong> ]
     [ -<strong>m</strong> |
+      -<strong>B</strong> |
       -<strong>d</strong> |
-      -<strong>p</strong> |
-      -<strong>s</strong> ]
+      -<strong>s</strong> |
+      -<strong>p</strong> ]
+    [ -<strong>C</strong> <var>cost</var> ]
     [ -<strong>t</strong> ]
     [ -<strong>v</strong> ]
     <var>nom-utilisateur</var> <var>mot-de-passe</var></code></p>
 
     <p><code><strong>htdbm</strong> -<strong>v</strong>
     [ -<strong>T</strong><var>DBTYPE</var> ]
+    [ -<strong>i</strong> ]
     [ -<strong>c</strong> ]
     [ -<strong>m</strong> |
+      -<strong>B</strong> |
       -<strong>d</strong> |
-      -<strong>p</strong> |
-      -<strong>s</strong> ]
+      -<strong>s</strong> |
+      -<strong>p</strong> ]
+    [ -<strong>C</strong> <var>cost</var> ]
     [ -<strong>t</strong> ]
     [ -<strong>v</strong> ]
     <var>nom-fichier</var> <var>nom-utilisateur</var></code></p>
@@ -106,19 +116,17 @@ passe</h1>
     [ -<strong>T</strong><var>DBTYPE</var> ]
     [ -<strong>c</strong> ]
     [ -<strong>m</strong> |
+      -<strong>B</strong> |
       -<strong>d</strong> |
-      -<strong>p</strong> |
-      -<strong>s</strong> ]
+      -<strong>s</strong> |
+      -<strong>p</strong> ]
+    [ -<strong>C</strong> <var>cost</var> ]
     [ -<strong>t</strong> ]
     [ -<strong>v</strong> ]
     <var>nom-fichier</var> <var>nom-utilisateur</var> <var>mot-de-passe</var></code></p>
 
     <p><code><strong>htdbm</strong> -<strong>x</strong>
     [ -<strong>T</strong><var>DBTYPE</var> ]
-    [ -<strong>m</strong> |
-      -<strong>d</strong> |
-      -<strong>p</strong> |
-      -<strong>s</strong> ]
     <var>nom-fichier</var> <var>nom-utilisateur</var></code></p>
 
     <p><code><strong>htdbm</strong> -<strong>l</strong>
@@ -133,7 +141,12 @@ passe</h1>
     extrait de la ligne de commande au lieu d'être demandé à
     l'opérateur. Cette option doit être utilisée avec la plus grande
     prudence, car <strong>le mot de passe est visible en clair</strong>
-    dans la ligne de commande.</dd>
+    dans la ligne de commande. Pour utiliser un script, voir l'option
+    <code>-i</code>.</dd>
+
+    <dt><code>-i</code></dt>
+    <dd>Lit le mot de passe depuis stdin sans vérification (à utiliser
+    dans le cadre d'un script).</dd>
 
     <dt><code>-c</code></dt>
     <dd>Crée le <var>fichier-mots-de-passe</var>. Si
@@ -152,17 +165,34 @@ passe</h1>
     <dd>Utilise un chiffrement MD5 pour les mots de passe. Sous Windows
     et Netware, c'est l'option par défaut..</dd>
 
+    <dt><code>-B</code></dt>
+    <dd>Utilise l'algorythme de chiffrement bcrypt pour les mots de
+    passe. C'est un algorythme actuellement considéré comme sûr.</dd>
+
+    <dt><code>-C</code></dt>
+    <dd>Ce drapeau n'est autorisé qu'en conjonction avec le drapeau
+    <code>-B</code> (chiffrement bcrypt). Il permet de définir la durée
+    de traitement pour l'algorythme de chiffrement bcrypt (plus elle est
+    longue, plus la sécurité est élevée, mais la rapidité est diminuée
+    d'autant) ; la valeur par défaut est 5, les valeurs valides vont de
+    4 à 31.</dd>
+
+
     <dt><code>-d</code></dt>
     <dd>Utilise un chiffrement <code>crypt()</code> pour les mots de
     passe. C'est l'option par défaut sur toutes les plates-formes, sauf
     Windows et Netware. Bien que <code>htdbm</code> supporte ce
     chiffrement sur toutes les plates-formes, il n'est pas supporté par
-    le serveur <code class="program"><a href="../programs/httpd.html">httpd</a></code> sous Windows et Netware.</dd>
+    le serveur <code class="program"><a href="../programs/httpd.html">httpd</a></code> sous Windows et Netware. Cet
+    algorythme est considéré comme <strong>non sûr</strong> selon les
+    standards actuels.</dd>
 
     <dt><code>-s</code></dt>
     <dd>Utilise le chiffrement SHA pour les mots de passe. Facilite la
     migration vers/depuis les serveurs Netscape qui utilisent le format
-    LDAP Directory Interchange (ldif).</dd>
+    LDAP Directory Interchange (ldif). Cet
+    algorythme est considéré comme <strong>non sûr</strong> selon les
+    standards actuels.</dd>
 
     <dt><code>-p</code></dt>
     <dd>Utilise des mots de passe au format texte en clair. Bien que
@@ -174,13 +204,6 @@ passe</h1>
     <dd>Affiche chaque nom d'utilisateur de la base de données
     accompagné de son commentaire sur la sortie standard.</dd>
 
-    <dt><code>-t</code></dt>
-    <dd>Interprète le dernier paramètre en tant que commentaire. Avec
-    cette option, il est possible d'ajouter une chaîne supplémentaire à
-    la fin de la ligne de commande ; le contenu de cette chaîne sera
-    stocké dans la base de données dans le champ "Comment" associé au
-    nom d'utilisateur spécifié.</dd>
-
     <dt><code>-v</code></dt>
     <dd>Vérifie une association nom d'utilisateur/mot de passe. Le
     programme affichera un message indiquant si le mot de passe fourni
@@ -190,6 +213,13 @@ passe</h1>
     <dt><code>-x</code></dt>
     <dd>Supprime l'utilisateur. Si le nom d'utilisateur existe dans le
     fichier DBM spécifié, il sera supprimé.</dd>
+
+    <dt><code>-t</code></dt>
+    <dd>Interprète le dernier paramètre en tant que commentaire. Avec
+    cette option, il est possible d'ajouter une chaîne supplémentaire à
+    la fin de la ligne de commande ; le contenu de cette chaîne sera
+    stocké dans la base de données dans le champ "Comment" associé au
+    nom d'utilisateur spécifié.</dd>
 
     <dt><code><var>nom-fichier</var></code></dt>
     <dd>Le nom du fichier au format DBM en général sans l'extension
@@ -212,7 +242,7 @@ passe</h1>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="bugs" id="bugs">Bogues</a></h2>
+<h2><a name="bugs" id="bugs">Bugs</a></h2>
     <p>Vous devez garder à l'esprit qu'il existe de nombreux formats de
     fichiers DBM différents, et que selon toute vraisemblance, des
     bibliothèques pour plus d'un format sont présentes sur votre
@@ -244,7 +274,7 @@ passe</h1>
     interrompue, <code>5</code> si une valeur est trop longue (nom
     utilisateur, nom fichier, mot de passe, ou l'enregistrement après
     son élaboration), <code>6</code> si le nom d'utilisateur contient
-    des caractères interdits (voir la section <a href="#restrictions">Restrictions</a>), et <code>7</code> si le
+    des caractères illégaux (voir la section <a href="#restrictions">Restrictions</a>), et <code>7</code> si le
     fichier n'est pas un fichier de mots de passe DBM valide.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -290,6 +320,22 @@ passe</h1>
     <p>L'utilisation de l'option <code>-b</code> est déconseillée, car
     lorsqu'il est utilisé, le mot de passe apparaît en clair dans la
     ligne de commande.</p>
+
+    <p>Notez que lorsque vous utilisez l'algorythme
+    <code>crypt()</code>, seuls les 8 premiers caractères du mot de
+    passe sont pris en compte. Si le mot de passe fourni est plus long,
+    les caractères supplémentaires seront ignorés sans avertissement.</p>
+
+    <p>L'algorythme SHA ne permet pas de spécifier une valeur
+    d'initialisation pour la génération de nombres aléatoires (salting)
+    : un mot de passe donné ne possède ainsi qu'une réprésentation
+    chiffrée. Les algorythmes <code>crypt()</code> et MD5 permettent quant à
+    eux des représentations chiffrées multiples en acceptant comme
+    paramètre une chaîne d'initialisation (salt), rendant les attaques à
+    base de dictionnaires contre les mots de passe plus difficiles.</p>
+
+    <p>Les algorythmes SHA et <code>crypt()</code> sont considérés comme
+    non sûrs selon les standards actuels.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="restrictions" id="restrictions">Restrictions</a></h2>
@@ -327,7 +373,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/programs/htdbm.html'
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2012 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2013 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
