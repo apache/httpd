@@ -24,9 +24,6 @@ Changes with Apache 2.5.0
   *) mpm_event: Check that AsyncRequestWorkerFactor is not negative. PR 54254.
      [Jackie Zhang <jackie qq zhang gmail com>]
 
-  *) httxt2dbm: Correct length computation for the 'value' stored in the DBM file
-     PR 47650 [jon buckybox com]
-
   *) mod_ssl: Add support for OpenSSL configuration commands [Stephen Henson]
 
   *) EventOpt MPM
@@ -133,10 +130,6 @@ Changes with Apache 2.5.0
 
   *) mod_ssl: Add support for TLS Next Protocol Negotiation.  PR 52210.
      [Matthew Steele <mdsteele google.com>]
-
-  *) various modules, rotatelogs: Replace use of apr_file_write() with
-     apr_file_write_full() to prevent incomplete writes. PR 53131.
-     [Nicolas Viennot <apache viennot biz>, Stefan Fritsch]
 
   *) cross-compile: allow to provide CC_FOR_BUILD so that gen_test_char will
      be compiled by the build compiler instead of the host compiler.
