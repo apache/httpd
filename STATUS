@@ -191,12 +191,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR 52478.
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1419796
     2.4.x patch: trunk patch works + CHANGES to be added
-    +1: jim, humbedooh
+    +1: jim, humbedooh, jailletc36
 
   * mod_proxy, mod_autoindex: Use ap_rputs instead of ap_rvputs where applicable.
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1418524
     2.4.x patch: trunk patch works
-    +1: jim, humbedooh
+    +1: jim, humbedooh, jailletc36
 
   * mod_proxy: non-existance of byrequests is not an immediate error
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1428916
