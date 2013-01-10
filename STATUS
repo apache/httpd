@@ -106,6 +106,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    + CHANGES
       +1: humbedooh
       -1: fuankg - we 1st need some workarounds for stupid CodeWarrior compiler.
+          humbedooh: patch applied to trunk, please check whether this solves it.
       
    * configure --with-modules:
      - Fix shell errors when trying to AC_MSG_RESULT().
