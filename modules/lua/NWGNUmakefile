@@ -27,6 +27,7 @@ XINCDIRS	+= \
 			$(APR)/include \
 			$(APRUTIL)/include \
 			$(SRC)/include \
+			$(STDMOD)/database \
 			$(STDMOD)/http \
 			$(STDMOD)/ssl \
 			$(NWOS) \
