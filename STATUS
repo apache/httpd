@@ -102,11 +102,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/r1430472
                    http://svn.apache.org/r1430656
                    http://svn.apache.org/r1431236 (CodeWarrior workaround)
+                   http://svn.apache.org/r1431322
       2.4.x patch: http://www.humbedooh.com/apache/lua_dbd.patch
                    + CHANGES
       +1: humbedooh
-      -1: fuankg - we 1st need some workarounds for stupid CodeWarrior compiler.
-          humbedooh: patch applied to trunk, please check whether this solves it.
+      +1: fuankg (compiles/links fine now for NetWare; no functional tests yet)
       
    * configure --with-modules:
      - Fix shell errors when trying to AC_MSG_RESULT().
