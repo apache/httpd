@@ -91,10 +91,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_proxy, mod_autoindex: Use ap_rputs instead of ap_rvputs where applicable.
-    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1418524
-    2.4.x patch: trunk patch works
-    +1: jim, humbedooh, jailletc36
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
