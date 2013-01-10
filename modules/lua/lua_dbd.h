@@ -61,16 +61,5 @@ AP_LUA_DECLARE(int) lua_db_prepare(lua_State* L);
 AP_LUA_DECLARE(int) lua_db_prepared(lua_State* L);
 AP_LUA_DECLARE(int) lua_db_acquire(lua_State* L);
 
-static const luaL_reg           lua_db_methods[] =
-{
-    { "escape", lua_db_escape },
-    { "close", lua_db_close },
-    { "select", lua_db_select },
-    { "query", lua_db_query },
-    { "active", lua_db_active },
-    { "prepare", lua_db_prepare },
-    { "prepared", lua_db_prepared },
-    { 0, 0 }
-};
 
 #endif /* !_LUA_DBD_H_ */
