@@ -56,7 +56,7 @@ static lua_db_result_set *lua_get_result_set(lua_State *L)
     db:close(): Closes an open database connection.
    =============================================================================
  */
-AP_LUA_DECLARE(int) lua_db_close(lua_State *L)
+static int lua_db_close(lua_State *L)
 {
     /*~~~~~~~~~~~~~~~~~~~~*/
     lua_db_handle   *db;
@@ -91,7 +91,7 @@ AP_LUA_DECLARE(int) lua_db_close(lua_State *L)
      db:__gc(): Garbage collecting function.
    =============================================================================
  */
-AP_LUA_DECLARE(int) lua_db_gc(lua_State *L)
+static int lua_db_gc(lua_State *L)
 {
     /*~~~~~~~~~~~~~~~~*/
     lua_db_handle    *db;
@@ -122,7 +122,7 @@ AP_LUA_DECLARE(int) lua_db_gc(lua_State *L)
     db:active(): Returns true if the connection to the db is still active.
    =============================================================================
  */
-AP_LUA_DECLARE(int) lua_db_active(lua_State *L)
+static int lua_db_active(lua_State *L)
 {
     /*~~~~~~~~~~~~~~~~~~~~*/
     lua_db_handle   *db = 0;
@@ -149,7 +149,7 @@ AP_LUA_DECLARE(int) lua_db_active(lua_State *L)
     first parameter and the error message as the second.
    =============================================================================
  */
-AP_LUA_DECLARE(int) lua_db_query(lua_State *L)
+static int lua_db_query(lua_State *L)
 {
     /*~~~~~~~~~~~~~~~~~~~~~~~*/
     lua_db_handle   *db = 0;
@@ -190,7 +190,7 @@ AP_LUA_DECLARE(int) lua_db_query(lua_State *L)
     db:escape(string): Escapes a string for safe use in the given database type.
    =============================================================================
  */
-AP_LUA_DECLARE(int) lua_db_escape(lua_State *L)
+static int lua_db_escape(lua_State *L)
 {
     /*~~~~~~~~~~~~~~~~~~~~~*/
     lua_db_handle    *db = 0;
@@ -287,7 +287,7 @@ static int lua_db_get_row(lua_State *L)
     returns nil as the first parameter and the error message as the second.
    =============================================================================
  */
-AP_LUA_DECLARE(int) lua_db_select(lua_State *L)
+static int lua_db_select(lua_State *L)
 {
     /*~~~~~~~~~~~~~~~~~~~~~~~*/
     lua_db_handle   *db = 0;
@@ -522,7 +522,7 @@ static int lua_db_prepared_query(lua_State *L)
     Returns a table with a :query and :select function, same as the db funcs.
    =============================================================================
  */
-AP_LUA_DECLARE(int) lua_db_prepare(lua_State* L) 
+static int lua_db_prepare(lua_State* L) 
 {
     /*~~~~~~~~~~~~~~~~~~~~~~~~~~*/
     lua_db_handle   *db = 0;
@@ -595,7 +595,7 @@ AP_LUA_DECLARE(int) lua_db_prepare(lua_State* L)
     DBDPrepareSQL.
    =============================================================================
  */
-AP_LUA_DECLARE(int) lua_db_prepared(lua_State* L) 
+static int lua_db_prepared(lua_State* L) 
 {
     /*~~~~~~~~~~~~~~~~~~~~~~~~~~*/
     lua_db_handle   *db = 0;
