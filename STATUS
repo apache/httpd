@@ -106,7 +106,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/r1431930 (Windows patch)
       2.4.x patch: http://www.humbedooh.com/apache/lua_dbd.patch
                    + CHANGES
-      +0: humbedooh (Let's wait for Gregg to tell whether the new patch makes
+      +0.99: humbedooh (Let's wait for Gregg to tell whether the new patch makes
                      it work on Windows as well)
       +1: fuankg (compiles/links fine now for NetWare; no functional tests yet)
       
@@ -206,7 +206,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_slotmem_shm: Fix mistaken reset of num_free for restored shm
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1430869
     2.4.x patch: trunk patch works
-    +1: jim
+    +1: jim, humbedooh
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
