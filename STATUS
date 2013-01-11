@@ -103,9 +103,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/r1430656
                    http://svn.apache.org/r1431236 (CodeWarrior workaround)
                    http://svn.apache.org/r1431322
+                   http://svn.apache.org/r1431930 (Windows patch)
       2.4.x patch: http://www.humbedooh.com/apache/lua_dbd.patch
                    + CHANGES
-      +1: humbedooh
+      +0: humbedooh (Let's wait for Gregg to tell whether the new patch makes
+                     it work on Windows as well)
       +1: fuankg (compiles/links fine now for NetWare; no functional tests yet)
       
    * configure --with-modules:
