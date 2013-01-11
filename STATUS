@@ -212,6 +212,13 @@ A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
 
+  * mod_ssl: mod_ssl: Allow the SSLUserName to be used to control the
+    username passed by the FakeBasicAuth option. PR52616.
+    trunk patch: http://svn.apache.org/viewvc?rev=1432322&view=rev
+    2.4.x patch: trunk patch works (minus docs/log-message-tags)
+    +1: minfrin
+
+
 OTHER PROPOSALS
 
    * opinion on more complete DefaultRuntimeDir use in 2.4.x?
