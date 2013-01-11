@@ -30,7 +30,7 @@ look into docs/log-message-tags/next-number to determine the next tag to be
 used, fill in all empty APLOGNO() tags, and update
 docs/log-message-tags/next-number accordingly.
 
-The toplevel Makefile has a target update-log-msg-tags to run run the script
+The toplevel Makefile has a target update-log-msg-tags to run the script
 over all *.c files in the source tree.
 
 The script also puts a list of all messages in docs/log-message-tags/list.
