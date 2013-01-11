@@ -957,7 +957,7 @@ int ssl_hook_UserCheck(request_rec *r)
     SSLConnRec *sslconn = myConnConfig(r->connection);
     SSLSrvConfigRec *sc = mySrvConfig(r->server);
     SSLDirConfigRec *dc = myDirConfig(r);
-    char *clientdn;
+    char *user;
     const char *auth_line, *username, *password;
 
     /*
@@ -1023,7 +1023,19 @@ int ssl_hook_UserCheck(request_rec *r)
         OPENSSL_free(cp);
     }
 
-    clientdn = (char *)sslconn->client_dn;
+    /* use SSLUserName if defined, otherwise use the full client DN */
+    if (dc->szUserName) {
+        user = ssl_var_lookup(r->pool, r->server, r->connection,
+                                   r, (char *)dc->szUserName);
+        if (!user || !user[0]) {
+            ap_log_rerror(
+                    APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(02434) "Failed to set FakeBasicAuth username to '%s', did not exist in certificate", dc->szUserName);
+            return DECLINED;
+        }
+    }
+    else {
+        user = (char *)sslconn->client_dn;
+    }
 
     /*
      * Fake a password - which one would be immaterial, as, it seems, an empty
@@ -1038,7 +1050,7 @@ int ssl_hook_UserCheck(request_rec *r)
      */
     auth_line = apr_pstrcat(r->pool, "Basic ",
                             ap_pbase64encode(r->pool,
-                                             apr_pstrcat(r->pool, clientdn,
+                                             apr_pstrcat(r->pool, user,
                                                          ":password", NULL)),
                             NULL);
     apr_table_setn(r->headers_in, "Authorization", auth_line);
