@@ -91,6 +91,16 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * mod_proxy: non-existance of byrequests is not an immediate error
+    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1428916
+    2.4.x patch: trunk patch works
+    +1: jim, humbedooh, minfrin
+
+  * mod_slotmem_shm: Fix mistaken reset of num_free for restored shm
+    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1430869
+    2.4.x patch: trunk patch works
+    +1: jim, humbedooh, minfrin
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -193,21 +203,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: http://people.apache.org/~jim/patches/proxy-persist.diff
     +1: jim
 
-  * mod_proxy: non-existance of byrequests is not an immediate error
-    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1428916
-    2.4.x patch: trunk patch works
-    +1: jim, humbedooh, minfrin
-
   * mod_status: Add useful mod_status info... try to determine last time
     a specific vhost was accessed/used.
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1417529
     2.4.x patch: trunk patch works
     +1: jim
-
-  * mod_slotmem_shm: Fix mistaken reset of num_free for restored shm
-    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1430869
-    2.4.x patch: trunk patch works
-    +1: jim, humbedooh, minfrin
 
   * mod_ssl: mod_ssl: Allow the SSLUserName to be used to control the
     username passed by the FakeBasicAuth option. PR52616.
