@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1375925:1425749 (outdated) -->
+<!-- English Revision : 1425749 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -76,10 +76,11 @@ Ceci aura pour effet de faire traiter les requ&ecirc;tes pour les fichiers
 dont l'extension est <code>.lua</code> par <code>mod_lua</code> en
 invoquant cette fonction de <code>gestion</code> de fichier.
 </p>
-
+<!--
 <p>Pour plus de d&eacute;tails, voir la directive
 <directive>LuaMapHandler</directive>.
  </p>
+-->
 </section>
 
 <section id="writinghandlers"><title>Ecrire des gestionnaires</title>
