@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1420377:1430656 (outdated) -->
+<!-- English Revision : 1430656 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -707,182 +707,189 @@ end
         </highlight>
 
 	<highlight language="lua">
-        r:base64_encode(string) -- Encode une chaîne à l'aide du
+        r:base64_encode(string) -- Encode une cha&icirc;ne &agrave; l'aide du
 	standard de codage Base64.
         </highlight>
 
         <highlight language="lua">
-        r:base64_decode(string) -- Décode une chaîne codée en Base64.
+        r:base64_decode(string) -- D&eacute;code une cha&icirc;ne cod&eacute;e en Base64.
         </highlight>
 
         <highlight language="lua">
-        r:md5(string) -- Calcule et renvoie le condensé MD5 d'une chaîne
+        r:md5(string) -- Calcule et renvoie le condens&eacute; MD5 d'une cha&icirc;ne
 	en mode binaire (binary safe).
         </highlight>
 
         <highlight language="lua">
-        r:sha1(string) -- Calcule et renvoie le condensé SHA1 d'une chaîne
+        r:sha1(string) -- Calcule et renvoie le condens&eacute; SHA1 d'une cha&icirc;ne
 	en mode binaire (binary safe).
         </highlight>
 
         <highlight language="lua">
-        r:escape(string) -- Echappe une chaîne de type URL.
+        r:escape(string) -- Echappe une cha&icirc;ne de type URL.
         </highlight>
 
         <highlight language="lua">
-        r:unescape(string) -- Déséchappe une chaîne de type URL.
+        r:unescape(string) -- D&eacute;s&eacute;chappe une cha&icirc;ne de type URL.
         </highlight>
 
         <highlight language="lua">
-        r:banner() -- Renvoie la bannière du serveur courant.
+        r:banner() -- Renvoie la banni&egrave;re du serveur courant.
         </highlight>
 
         <highlight language="lua">
-        r:port() -- Renvoie le port du serveur courant utilisé pour la
-	requête.
+        r:port() -- Renvoie le port du serveur courant utilis&eacute; pour la
+	requ&ecirc;te.
         </highlight>
 
         <highlight language="lua">
-        r:mpm_query(number) -- Interroge le serveur à propos de son
-	module MPM via la requête ap_mpm_query.
+        r:mpm_query(number) -- Interroge le serveur &agrave; propos de son
+	module MPM via la requ&ecirc;te ap_mpm_query.
         </highlight>
 
         <highlight language="lua">
-        r:expr(string) -- Evalue une chaîne de type <a
+        r:expr(string) -- Evalue une cha&icirc;ne de type <a
 	href="../expr.html">expr</a>.
         </highlight>
 
         <highlight language="lua">
-        r:scoreboard_process(a) -- Interroge le serveur à propos du
-	processus à la position <code>a</code>.
+        r:scoreboard_process(a) -- Interroge le serveur &agrave; propos du
+	processus &agrave; la position <code>a</code>.
         </highlight>
 
         <highlight language="lua">
-        r:scoreboard_worker(a, b) -- Interroge le serveur à propos du
+        r:scoreboard_worker(a, b) -- Interroge le serveur &agrave; propos du
 	thread <code>b</code>, dans le processus <code>a</code>.
         </highlight>
 
         <highlight language="lua">
-        r:started() -- Renvoie l'heure du dernier (re)démarrage du
+        r:started() -- Renvoie l'heure du dernier (re)d&eacute;marrage du
 	serveur.
         </highlight>
 
         <highlight language="lua">
-        r:clock() -- Renvoie l'heure courante avec une précision d'une
+        r:clock() -- Renvoie l'heure courante avec une pr&eacute;cision d'une
 	microseconde.
         </highlight>
 
         <highlight language="lua">
-r:requestbody(filename) -- Lit et renvoie le corps d'une requête. Si
-'filename' est spécifié, le corps de requête n'est pas renvoyé, mais
-sauvegardé dans le fichier correspondant.
+r:requestbody(filename) -- Lit et renvoie le corps d'une requ&ecirc;te. Si
+'filename' est sp&eacute;cifi&eacute;, le corps de requ&ecirc;te n'est pas renvoy&eacute;, mais
+sauvegard&eacute; dans le fichier correspondant.
         </highlight>
 
         <highlight language="lua">
-        r:add_input_filter(filter_name) -- Ajoute le filtre en entrée
+        r:add_input_filter(filter_name) -- Ajoute le filtre en entr&eacute;e
 	'filter_name'.
         </highlight>
 
         <highlight language="lua">
-        r:module_info(module_name) -- Interroge le serveur à propos d'un
+        r:module_info(module_name) -- Interroge le serveur &agrave; propos d'un
 	module.
         </highlight>
 
         <highlight language="lua">
-        r:loaded_modules() -- Renvoie une liste des modules chargés par
+        r:loaded_modules() -- Renvoie une liste des modules charg&eacute;s par
 	httpd.
         </highlight>
 
         <highlight language="lua">
-r:runtime_dir_relative(filename) -- Génère le nom d'un fichier run-time
-(par exemple la mémoire partagée "file") relativement au répertoire de
+r:runtime_dir_relative(filename) -- G&eacute;n&egrave;re le nom d'un fichier run-time
+(par exemple la m&eacute;moire partag&eacute;e "file") relativement au r&eacute;pertoire de
 run-time. 
         </highlight>
 
         <highlight language="lua">
         r:server_info() -- Renvoie une table contenant des informations
-	à propos du serveur, comme le nom de l'exécutable httpd, le
-	module mpm utilisé, etc...
+	&agrave; propos du serveur, comme le nom de l'ex&eacute;cutable httpd, le
+	module mpm utilis&eacute;, etc...
         </highlight>
 
         <highlight language="lua">
-        r:set_document_root(file_path) -- Définit la racine des
-	documents pour la requête à file_path.
+        r:set_document_root(file_path) -- D&eacute;finit la racine des
+	documents pour la requ&ecirc;te &agrave; file_path.
         </highlight>
 
         <highlight language="lua">
-        r:add_version_component(component_string) -- Ajoute un élément à
-	la bannière du serveur.
+        r:add_version_component(component_string) -- Ajoute un &eacute;l&eacute;ment &agrave;
+	la banni&egrave;re du serveur.
         </highlight>
 
         <highlight language="lua">
-        r:set_context_info(prefix, docroot) -- Définit le préfixe et la
-	racine des documents du contexte pour une requête.
+        r:set_context_info(prefix, docroot) -- D&eacute;finit le pr&eacute;fixe et la
+	racine des documents du contexte pour une requ&ecirc;te.
         </highlight>
 
         <highlight language="lua">
-        r:os_escape_path(file_path) -- Convertit un chemin du système de
-	fichiers en URL indépendamment du système d'exploitation.
+        r:os_escape_path(file_path) -- Convertit un chemin du syst&egrave;me de
+	fichiers en URL ind&eacute;pendamment du syst&egrave;me d'exploitation.
         </highlight>
 
         <highlight language="lua">
-        r:escape_logitem(string) -- Echappe une chaîne pour
+        r:escape_logitem(string) -- Echappe une cha&icirc;ne pour
 	journalisation.
         </highlight>
 
         <highlight language="lua">
-r:strcmp_match(string, pattern) -- Vérifie si 'string' correspond à
+r:strcmp_match(string, pattern) -- V&eacute;rifie si 'string' correspond &agrave;
 'pattern' via la fonction strcmp_match (GLOBs). Par exemple, est-ce que
-'www.example.com' correspond à '*.example.com' ?
+'www.example.com' correspond &agrave; '*.example.com' ?
         </highlight>
 
         <highlight language="lua">
-        r:set_keepalive() -- Définit l'état de persistance d'une
-	requête. Renvoie true dans la mesure du possible, false dans le
+        r:set_keepalive() -- D&eacute;finit l'&eacute;tat de persistance d'une
+	requ&ecirc;te. Renvoie true dans la mesure du possible, false dans le
 	cas contraire.
         </highlight>
 
         <highlight language="lua">
-        r:make_etag() -- Génère et renvoie le etag pour la requête
+        r:make_etag() -- G&eacute;n&egrave;re et renvoie le etag pour la requ&ecirc;te
 	courante.
         </highlight>
 
         <highlight language="lua">
-r:send_interim_response(clear) -- Renvoie une réponse d'intérim (1xx) au
-client. Si 'clear' est vrai, les en-têtes disponibles seront envoyés et
-effacés.
+r:send_interim_response(clear) -- Renvoie une r&eacute;ponse d'int&eacute;rim (1xx) au
+client. Si 'clear' est vrai, les en-t&ecirc;tes disponibles seront envoy&eacute;s et
+effac&eacute;s.
         </highlight>
 
         <highlight language="lua">
-r:custom_response(status_code, string) -- Génère et définit une réponse
-personnalisée pour un code d'état particulier. Le fonctionnement est
-très proche de celui de la directive ErrorDocument.
+r:custom_response(status_code, string) -- G&eacute;n&egrave;re et d&eacute;finit une r&eacute;ponse
+personnalis&eacute;e pour un code d'&eacute;tat particulier. Le fonctionnement est
+tr&egrave;s proche de celui de la directive ErrorDocument.
         </highlight>
 
         <highlight language="lua">
-        r:exists_config_define(string) -- Vérifie si une définition de
+        r:exists_config_define(string) -- V&eacute;rifie si une d&eacute;finition de
 	configuration existe.
         </highlight>
 
         <highlight language="lua">
-        r:state_query(string) -- Interroge le serveur à propos de son
-	état.
+        r:state_query(string) -- Interroge le serveur &agrave; propos de son
+	&eacute;tat.
         </highlight>
 
         <highlight language="lua">
-        r:stat(filename) -- Exécute stat() sur un fichier, et renvoie
-	une table contenant des informations à propos de ce fichier.
+        r:stat(filename) -- Ex&eacute;cute stat() sur un fichier, et renvoie
+	une table contenant des informations &agrave; propos de ce fichier.
         </highlight>
 
         <highlight language="lua">
-        r:regex(string, pattern) -- Exécute une recherche à base
-	d'expression rationnelle sur une chaîne, et renvoie les
-	éventuelles correspondances trouvées.
+        r:regex(string, pattern) -- Ex&eacute;cute une recherche &agrave; base
+	d'expression rationnelle sur une cha&icirc;ne, et renvoie les
+	&eacute;ventuelles correspondances trouv&eacute;es.
         </highlight>
 
         <highlight language="lua">
-        r:sleep(secondes) -- Interrompt l'exécution du script pendant le
-	nombre de secondes spécifié.
+        r:sleep(secondes) -- Interrompt l'ex&eacute;cution du script pendant le
+	nombre de secondes sp&eacute;cifi&eacute;.
+        </highlight>
+
+	<highlight language="lua">
+	r:dbacquire(dbType[, dbParams]) -- Acquiert une connexion &agrave; une
+base de donn&eacute;es et renvoie une classe database. Voir '<a
+href="#databases">Connectivit&eacute; aux bases de donn&eacute;es</a>' pour plus de
+d&eacute;tails.
         </highlight>
         </dd>
     </dl>
@@ -936,47 +943,226 @@ contenu suivant :</p>
 <section id="modifying_buckets">
     <title>Modification de contenu avec les filtres lua</title>
     <p>
-    Les fonctions de filtrage implémentées via les directives <directive
+    Les fonctions de filtrage impl&eacute;ment&eacute;es via les directives <directive
     module="mod_lua">LuaInputFilter</directive> ou <directive
-    module="mod_lua">LuaOutputFilter</directive> sont conçues comme des
-    fonctions de 3ème phase non blocantes utilisant des sous-routines
-    pour suspendre et reprendre l'exécution d'une fonction lorsque des
-    paquets de données sont envoyés à la chaîne de filtrage. La
+    module="mod_lua">LuaOutputFilter</directive> sont con&ccedil;ues comme des
+    fonctions de 3&egrave;me phase non blocantes utilisant des sous-routines
+    pour suspendre et reprendre l'ex&eacute;cution d'une fonction lorsque des
+    paquets de donn&eacute;es sont envoy&eacute;s &agrave; la cha&icirc;ne de filtrage. La
     structure de base d'une telle fonction est :
     </p>
     <highlight language="lua">
 function filter(r)
-    -- Nous indiquons tout d'abord que nous sommes prêts à recevoir des
-    -- blocs de données.
-    -- Avant ceci, nous pouvons définir notre environnement, tester
-    -- certaines conditions, et, si nous le jugeons nécessaire, refuser le
-    -- filtrage d'une requête :
+    -- Nous indiquons tout d'abord que nous sommes pr&ecirc;ts &agrave; recevoir des
+    -- blocs de donn&eacute;es.
+    -- Avant ceci, nous pouvons d&eacute;finir notre environnement, tester
+    -- certaines conditions, et, si nous le jugeons n&eacute;cessaire, refuser le
+    -- filtrage d'une requ&ecirc;te :
     if something_bad then
-        return -- Le filtrage est sauté
+        return -- Le filtrage est saut&eacute;
     end
-    -- Sans se préoccuper des données que nous devons éventuellement ajouter, un arrêt est réalisé ici.
-    -- Noter que les filtres de sortie sont les seuls capables d'ajouter des éléments au début des données.
-    -- Les filtres en entrée peuvent ajouter des éléments à la fin des données au stade final.
+    -- Sans se pr&eacute;occuper des donn&eacute;es que nous devons &eacute;ventuellement ajouter, un arr&ecirc;t est r&eacute;alis&eacute; ici.
+    -- Noter que les filtres de sortie sont les seuls capables d'ajouter des &eacute;l&eacute;ments au d&eacute;but des donn&eacute;es.
+    -- Les filtres en entr&eacute;e peuvent ajouter des &eacute;l&eacute;ments &agrave; la fin des donn&eacute;es au stade final.
 
     coroutine.yield([optional header to be prepended to the content])
 
-    -- Après cet arrêt, nous allons recevoir d'autres blocs de données, un par un ;
-    -- nous pouvons les traiter comme il nous plaît et procéder à la réponse.
-    -- Ces blocs sont conservés dans la variable globale 'bucket', nous réalisons donc
-    -- une boucle pour vérifier que 'bucket' n'est pas vide :
+    -- Apr&egrave;s cet arr&ecirc;t, nous allons recevoir d'autres blocs de donn&eacute;es, un par un ;
+    -- nous pouvons les traiter comme il nous pla&icirc;t et proc&eacute;der &agrave; la r&eacute;ponse.
+    -- Ces blocs sont conserv&eacute;s dans la variable globale 'bucket', nous r&eacute;alisons donc
+    -- une boucle pour v&eacute;rifier que 'bucket' n'est pas vide :
     while bucket ~= nil do
         local output = mangle(bucket) -- Do some stuff to the content
         coroutine.yield(output) -- Return our new content to the filter chain
     end
 
-    -- Une fois les blocs de données épuisés, 'bucket' est positionné à une valeur vide ('nil'),
-    -- ce qui va nous faire sortir de cette boucle et nous amener à l'étape suivante.
-    -- On peut ajouter ce qu'on veut à la fin des données à cette étape, qui constitue le dernier
-    -- arrêt. Les filtres d'entrée comme de sortie peuvent servir à ajouter des éléments à la fin
-    --  des données à cette étape.
+    -- Une fois les blocs de donn&eacute;es &eacute;puis&eacute;s, 'bucket' est positionn&eacute; &agrave; une valeur vide ('nil'),
+    -- ce qui va nous faire sortir de cette boucle et nous amener &agrave; l'&eacute;tape suivante.
+    -- On peut ajouter ce qu'on veut &agrave; la fin des donn&eacute;es &agrave; cette &eacute;tape, qui constitue le dernier
+    -- arr&ecirc;t. Les filtres d'entr&eacute;e comme de sortie peuvent servir &agrave; ajouter des &eacute;l&eacute;ments &agrave; la fin
+    --  des donn&eacute;es &agrave; cette &eacute;tape.
     coroutine.yield([optional footer to be appended to the content])
 end
     </highlight>
+</section>
+<section id="databases">
+    <title>Connectivit&eacute; aux bases de donn&eacute;es</title>
+    <p>Mod_lua impl&eacute;mente une fonctionnalit&eacute; basique de connexion aux
+bases de donn&eacute;es permettant d'envoyer des requ&ecirc;tes ou d'ex&eacute;cuter des
+commandes aupr&egrave;s des moteurs de base de donn&eacute;es les plus courants
+(mySQL, PostgreSQL, FreeTDS, ODBC, SQLite, Oracle), ainsi que mod_dbd.
+    </p>
+    <p>L'exemple suivant montre comment se connecter &agrave; une base de
+donn&eacute;es et extraire des informations d'une table :</p>
+    <highlight language="lua">
+function handler(r)
+    -- connexion &agrave; la base de donn&eacute;es
+    local database, err = r:dbacquire("mysql", "server=localhost&amp;user=root&amp;database=mydb")
+    if not err then
+        -- S&eacute;lection de certaines informations
+        local results, err = database:select(r, "SELECT `name`, `age` FROM `people` WHERE 1")
+        if not err then
+            local rows = results(0) -- extrait tous les enregistrements en mode synchrone
+            for k, row in pairs(rows) do
+                r:puts( string.format("Name: %s, Age: %s&lt;br/&gt;", row[1], row[2]) )
+            end
+        else
+            r:puts("Database query error: " .. err)
+        end
+        database:close()
+    else
+        r:puts("Connexion &agrave; la base de donn&eacute;es impossible : " .. err)
+    end
+end
+    </highlight>
+    <p>
+    Pour utiliser <module>mod_dbd</module>, sp&eacute;cifiez
+<code>mod_dbd</code> comme type de base de donn&eacute;es, ou laissez le champ
+vide :
+    </p>
+    <highlight language="lua">
+    local database = r:dbacquire("mod_dbd")
+    </highlight>
+    <section id="database_object">
+        <title>L'objet database et ses m&eacute;thodes</title>
+        <p>L'objet database renvoy&eacute; par <code>dbacquire</code> poss&egrave;de
+les m&eacute;thodes suivantes :</p>
+        <p><strong>S&eacute;lection normale et requ&ecirc;te vers une base de donn&eacute;es
+:</strong></p>
+    <highlight language="lua">
+-- Ex&eacute;cution d'une requ&ecirc;te et renvoie du nombre d'enregistrements
+affect&eacute;s :
+local affected, errmsg = database:query(r, "DELETE FROM `tbl` WHERE 1")
+
+-- Ex&eacute;cution d'une requ&ecirc;te et renvoie du r&eacute;sultat qui peut &ecirc;tre utilis&eacute;
+en mode synchrone ou asynchrone :
+local result, errmsg = database:select(r, "SELECT * FROM `people` WHERE 1")
+    </highlight>
+        <p><strong>Utilisation de requ&ecirc;tes pr&eacute;par&eacute;es (recommand&eacute;) :</strong></p>
+    <highlight language="lua">
+-- Cr&eacute;ation et ex&eacute;cution d'une requ&ecirc;te pr&eacute;par&eacute;e :
+local statement, errmsg = database:prepare(r, "DELETE FROM `tbl` WHERE `age` > %u")
+if not errmsg then
+    local result, errmsg = statement:query(20) -- ex&eacute;cute la requ&ecirc;te pour age > 20
+end
+
+-- Extrait une requ&ecirc;te pr&eacute;par&eacute;e depuis une directive DBDPrepareSQL :
+local statement, errmsg = database:prepared(r, "someTag")
+if not errmsg then
+    local result, errmsg = statement:select("John Doe", 123) -- injecte les valeurs "John Doe" et 123 dans la requ&ecirc;te
+end
+
+</highlight>
+        <p><strong>Echappement de valeurs, fermeture de la base donn&eacute;es,
+etc...</strong></p>
+    <highlight language="lua">
+-- Echappe une valeur pour pouvoir l'utiliser dans une requ&ecirc;te :
+local escaped = database:escape(r, [["'|blabla]])
+
+-- Ferme une base de donn&eacute;es et lib&egrave;re les liens vers cette derni&egrave;re :
+database:close()
+
+-- V&eacute;rifie si une connexion &agrave; une base de donn&eacute;es est en service et
+op&eacute;rationnelle :
+local connected = database:active()
+    </highlight>
+    </section>
+    <section id="result_sets">
+    <title>Travail avec les jeux d'enregistrements renvoy&eacute;s par les requ&ecirc;tes</title>
+    <p>Les jeux d'enregistrements renvoy&eacute;s par <code>db:select</code> ou par des
+requ&ecirc;tes pr&eacute;par&eacute;es cr&eacute;&eacute;es par <code>db:prepare</code> permettent de
+s&eacute;lectionner des enregistrements en mode synchrone ou
+asynchrone, selon le nombre d'enregistrements sp&eacute;cifi&eacute; :<br/>
+    <code>result(0)</code> s&eacute;lectionne tous les enregistrements en mode
+synchrone en renvoyant une table d'enregistrements.<br/>
+    <code>result(-1)</code> s&eacute;lectionne le prochain enregistrement disponible en
+mode asynchrone.<br/>
+    <code>result(N)</code> s&eacute;lectionne l'enregistrement num&eacute;ro
+<code>N</code> en mode asynchrone.
+    </p>
+    <highlight language="lua">
+-- extrait un jeu d'enregistrements via une requ&ecirc;te r&eacute;guli&egrave;re :
+local result, err = db:select(r, "SELECT * FROM `tbl` WHERE 1")
+
+local rows = result(0) -- s&eacute;lectionne tous les enregistrements en mode synchrone
+local row = result(-1) -- s&eacute;lectionne le prochain enregistrement disponible en mode asynchrone
+local row = result(1234) -- s&eacute;lectionne l'enregistrement 1234 en mode asynchrone
+    </highlight>
+    <p>Il est possible de construire une fonction qui renvoie une
+fonction it&eacute;rative permettant de traiter tous les enregistrement en mode
+synchrone ou asynchrone selon la valeur de l'argument async :
+    </p>
+    <highlight language="lua">
+function rows(resultset, async)
+    local a = 0
+    local function getnext()
+        a = a + 1
+        local row = resultset(-1)
+        return row and a or nil, row
+    end
+    if not async then
+        return pairs(resultset(0))
+    else
+        return getnext, self
+    end
+end
+
+local statement, err = db:prepare(r, "SELECT * FROM `tbl` WHERE `age` > %u")
+if not err then
+     -- s&eacute;lectionne des enregistrements en mode asynchrone :
+    local result, err = statement:select(20)
+    if not err then
+        for index, row in rows(result, true) do
+            ....
+        end
+    end
+
+     -- s&eacute;lectionne des enregistrements en mode synchrone :
+    local result, err = statement:select(20)
+    if not err then
+        for index, row in rows(result, false) do
+            ....
+        end
+    end
+end
+    </highlight>
+    </section>
+    <section id="closing_databases">
+        <title>Fermeture d'une connexion &agrave; une base de donn&eacute;es</title>
+
+    <p>Lorsqu'elles ne sont plus utilis&eacute;es, les connexions aux bases de
+donn&eacute;es doivent &ecirc;tre ferm&eacute;es avec <code>database:close()</code>. Si vous
+ne les fermez pas manuellement, mod_lua les fermera peut-&ecirc;tre en tant
+que r&eacute;sidus collect&eacute;s, mais si ce n'est pas le cas, vous pouvez finir
+pas avoir trop de connexions vers la base de donn&eacute;es inutilis&eacute;es. Les
+deux mesures suivantes sont pratiquement identiques :
+    </p>
+    <highlight language="lua">
+-- M&eacute;thode 1 : fermeture manuelle de la connexion
+local database = r:dbacquire("mod_dbd")
+database:close() -- c'est tout
+
+-- M&eacute;thode 2 : on laisse le collecteur de r&eacute;sidus la fermer
+local database = r:dbacquire("mod_dbd")
+database = nil -- on coupe le lien
+collectgarbage() -- fermeture de la connexion par le collecteur de r&eacute;sidus
+</highlight>
+    </section>
+    <section id="database_caveat">
+    <title>Pr&eacute;cautions &agrave; prendre lorsque l'on travaille avec les bases
+de donn&eacute;es</title>
+    <p>Bien que les fonctions <code>query</code> et <code>run</code>
+soient toujours disponibles, il est recommand&eacute; d'utiliser des requ&ecirc;tes
+pr&eacute;par&eacute;es chaque fois que possible, afin d'une part d'optimiser les
+performances (si votre connexion reste longtemps en vie), et d'autre part
+minimiser le risque d'attaques par injection SQL. Les fonctions
+<code>run</code> et <code>query</code> ne doivent &ecirc;tre utilis&eacute;es que
+lorsque la requ&ecirc;te ne contient pas de variables (requ&ecirc;te statique). Dans
+le cas des requ&ecirc;tes dynamiques, utilisez <code>db:prepare</code> ou
+<code>db:prepared</code>.
+    </p>
+    </section>
+
 </section>
 
 <directivesynopsis>
