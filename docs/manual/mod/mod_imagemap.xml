@@ -278,6 +278,7 @@
 <description>Action if no coordinates are given when calling
 an imagemap</description>
 <syntax>ImapMenu none|formatted|semiformatted|unformatted</syntax>
+<default>ImapMenu formatted</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Indexes</override>
