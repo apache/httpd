@@ -109,6 +109,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       +0.99: humbedooh (Let's wait for Gregg to tell whether the new patch makes
                      it work on Windows as well)
       +1: fuankg (compiles/links fine now for NetWare; no functional tests yet)
+      gsmith notes: compiles/links on Windows now.
       
    * configure --with-modules:
      - Fix shell errors when trying to AC_MSG_RESULT().
