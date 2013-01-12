@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1420149 -->
+<!-- English Revision : 1430814 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviwed by : Vincent Deffontaines -->
 
@@ -599,13 +599,14 @@ autorisation</title>
 &lt;/RequireAll&gt;
         </highlight>
 
-        <p>Dans l'exemple ci-dessus, on utilise la directive du
-	conteneur <directive module="mod_authz_core"
-        type="section">RequireNone</directive> afin de s'assurer
-	qu'aucune des directives <directive
-	module="mod_authz_core">Require</directive> qu'il contient ne
-	fasse correspondre ses param&egrave;tres avant d'accorder
-	l'autorisation.</p>
+        <p>L'utilisation de la directive <directive
+	module="mod_authz_core" type="section">RequireAll</directive>
+	avec de multiples directives <directive module="mod_authz_core"
+	type="section">Require</directive>, toutes avec la n&eacute;gation
+	<code>not</code>, n'accordera l'acc&egrave;s que si toutes les
+	conditions n&eacute;gatives sont v&eacute;rifi&eacute;es. En d'autres termes, l'acc&egrave;s
+	sera refus&eacute; si au moins une des conditions n&eacute;gatives n'est pas
+	v&eacute;rifi&eacute;e.</p>
 
     </section>
 

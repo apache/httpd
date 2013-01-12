@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1422980:1430575 (outdated) -->
+<!-- English Revision: 1430575 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -750,8 +750,8 @@ serveur HTTP Apache</compatibility>
     <name>BalancerInherit</name>
     <description>H&eacute;ritage des membres de groupes de r&eacute;partition de
     charge d&eacute;finis via la directive ProxyPass au niveau du serveur principal</description>
-    <syntax>ProxyPassInherit On|Off</syntax>
-    <default>ProxyPassInherit On</default>
+    <syntax>BalancerInherit On|Off</syntax>
+    <default>BalancerInherit On</default>
     <contextlist><context>server config</context><context>virtual host</context></contextlist>
     <compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur
     HTTP Apache.</compatibility>
