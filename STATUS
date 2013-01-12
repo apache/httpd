@@ -106,8 +106,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/r1431930 (Windows patch)
       2.4.x patch: http://www.humbedooh.com/apache/lua_dbd.patch
                    + CHANGES
-      +0.99: humbedooh (Let's wait for Gregg to tell whether the new patch makes
-                     it work on Windows as well)
+      +1: humbedooh
       +1: fuankg (compiles/links fine now for NetWare; no functional tests yet)
       gsmith notes: compiles/links on Windows now.
       
