@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1410688 -->
+<!-- English Revision : 1426995 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -47,7 +47,7 @@ module de chaque groupe.</p>
 
 <ul>
   <li>Type d'authentification (voir la directive <directive
-  module="mod_authn_core">AuthType</directive>)
+  module="core">AuthType</directive>)
     <ul>
       <li><module>mod_auth_basic</module></li>
       <li><module>mod_auth_digest</module></li>
@@ -65,7 +65,7 @@ module de chaque groupe.</p>
     </ul>
   </li>
   <li>Autorisation (voir la directive <directive
-  module="mod_authz_core">Require</directive>)
+  module="core">Require</directive>)
     <ul>
       <li><module>mod_authnz_ldap</module></li>
       <li><module>mod_authz_dbm</module></li>
@@ -144,14 +144,6 @@ module de chaque groupe.</p>
     trouvent certains fichiers. Cela ne devrait pas pr&eacute;senter de grandes
     difficult&eacute;s, et j'essaierai de clarifier tout &ccedil;a lorsque le besoin
     s'en fera sentir.</p>
-
-    <p>Vous devrez aussi vous assurer que les modules
-    <module>mod_authn_core</module> et <module>mod_authz_core</module>
-    ont été soit compilés avec le binaire httpd, soit chargés par le
-    fichier de configuration httpd.conf. Ces deux modules fournissent
-    des directives et fonctionnalités essentielles pour la configuration
-    et la mise en oeuvre de l'authentification et de l'autorisation au
-    sein du serveur web.</p>
 
 </section>
 
@@ -233,7 +225,7 @@ module de chaque groupe.</p>
     >mod_auth_digest</module> et est beaucoup plus s&eacute;curis&eacute;e. La plupart
     des navigateurs r&eacute;cents supportent l'authentification Digest.</p>
 
-    <p>La directive <directive module="mod_authn_core">AuthName</directive> d&eacute;finit
+    <p>La directive <directive module="core">AuthName</directive> d&eacute;finit
     l'<dfn>Identificateur</dfn> (Realm) &agrave; utiliser avec
     l'authentification. L'identificateur poss&egrave;de deux fonctions. Tout
     d'abord, le client pr&eacute;sente en g&eacute;n&eacute;ral cette information &agrave;
@@ -276,7 +268,7 @@ module de chaque groupe.</p>
     href="http://modules.apache.org/">Base de donn&eacute;es des modules
     d'Apache</a>.</p>
 
-    <p>Enfin, la directive <directive module="mod_authz_core">Require</directive>
+    <p>Enfin, la directive <directive module="core">Require</directive>
     impl&eacute;mente la partie
     autorisation du processus en d&eacute;finissant l'utilisateur autoris&eacute; &agrave;
     acc&eacute;der &agrave; cette zone du serveur. Dans la section suivante, nous
