@@ -56,7 +56,7 @@ static lua_db_result_set *lua_get_result_set(lua_State *L)
     db:close(): Closes an open database connection.
    =============================================================================
  */
-static int lua_db_close(lua_State *L)
+int lua_db_close(lua_State *L)
 {
     /*~~~~~~~~~~~~~~~~~~~~*/
     lua_db_handle   *db;
@@ -84,14 +84,14 @@ static int lua_db_close(lua_State *L)
     lua_settop(L, 0);
     lua_pushnumber(L, rc);
     return 1;
-}
+} 
 
 /*
    =============================================================================
      db:__gc(): Garbage collecting function.
    =============================================================================
  */
-static int lua_db_gc(lua_State *L)
+int lua_db_gc(lua_State *L)
 {
     /*~~~~~~~~~~~~~~~~*/
     lua_db_handle    *db;
@@ -122,7 +122,7 @@ static int lua_db_gc(lua_State *L)
     db:active(): Returns true if the connection to the db is still active.
    =============================================================================
  */
-static int lua_db_active(lua_State *L)
+int lua_db_active(lua_State *L)
 {
     /*~~~~~~~~~~~~~~~~~~~~*/
     lua_db_handle   *db = 0;
@@ -149,7 +149,7 @@ static int lua_db_active(lua_State *L)
     first parameter and the error message as the second.
    =============================================================================
  */
-static int lua_db_query(lua_State *L)
+int lua_db_query(lua_State *L)
 {
     /*~~~~~~~~~~~~~~~~~~~~~~~*/
     lua_db_handle   *db = 0;
@@ -190,7 +190,7 @@ static int lua_db_query(lua_State *L)
     db:escape(string): Escapes a string for safe use in the given database type.
    =============================================================================
  */
-static int lua_db_escape(lua_State *L)
+int lua_db_escape(lua_State *L)
 {
     /*~~~~~~~~~~~~~~~~~~~~~*/
     lua_db_handle    *db = 0;
@@ -227,7 +227,7 @@ static int lua_db_escape(lua_State *L)
      resultset(N): Fetches one or more rows from a result set.
    =============================================================================
  */
-static int lua_db_get_row(lua_State *L) 
+int lua_db_get_row(lua_State *L) 
 {
     int row_no,x;
     const char      *entry;
@@ -287,7 +287,7 @@ static int lua_db_get_row(lua_State *L)
     returns nil as the first parameter and the error message as the second.
    =============================================================================
  */
-static int lua_db_select(lua_State *L)
+int lua_db_select(lua_State *L)
 {
     /*~~~~~~~~~~~~~~~~~~~~~~~*/
     lua_db_handle   *db = 0;
@@ -361,7 +361,7 @@ static int lua_db_select(lua_State *L)
     statement and returns the number of rows matching the query.
    =============================================================================
  */
-static int lua_db_prepared_select(lua_State *L)
+int lua_db_prepared_select(lua_State *L)
 {
     /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
     lua_db_prepared_statement  *st = 0;
@@ -452,7 +452,7 @@ static int lua_db_prepared_select(lua_State *L)
     statement and returns the number of rows affected.
    =============================================================================
  */
-static int lua_db_prepared_query(lua_State *L)
+int lua_db_prepared_query(lua_State *L)
 {
     /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
     lua_db_prepared_statement  *st = 0;
@@ -522,7 +522,7 @@ static int lua_db_prepared_query(lua_State *L)
     Returns a table with a :query and :select function, same as the db funcs.
    =============================================================================
  */
-static int lua_db_prepare(lua_State* L) 
+int lua_db_prepare(lua_State* L) 
 {
     /*~~~~~~~~~~~~~~~~~~~~~~~~~~*/
     lua_db_handle   *db = 0;
@@ -595,7 +595,7 @@ static int lua_db_prepare(lua_State* L)
     DBDPrepareSQL.
    =============================================================================
  */
-static int lua_db_prepared(lua_State* L) 
+int lua_db_prepared(lua_State* L) 
 {
     /*~~~~~~~~~~~~~~~~~~~~~~~~~~*/
     lua_db_handle   *db = 0;
