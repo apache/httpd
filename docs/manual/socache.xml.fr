@@ -2,7 +2,7 @@
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 
-<!-- English Revision: 1334033:1425008 (outdated) -->
+<!-- English Revision : 1425008 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -46,7 +46,6 @@
     fournisseur de cache &agrave; utiliser. Ceci est de la responsabilit&eacute; des
     modules qui utilisent le cache, et pour cela, ils activent la
     s&eacute;lection via des directives telles que <directive
-    module="mod_cache_socache">CacheSocache</directive>, <directive
     module="mod_authn_socache">AuthnCacheSOCache</directive>, <directive
     module="mod_ssl">SSLSessionCache</directive>, et <directive
     module="mod_ssl">SSLStaplingCache</directive>.</p>

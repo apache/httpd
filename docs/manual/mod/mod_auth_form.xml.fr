@@ -638,13 +638,16 @@ authentification est requise</description>
 <default>none</default>
 <contextlist><context>directory</context>
 </contextlist>
-<compatibility>Disponible depuis la version 2.3.0 du serveur HTTP Apache</compatibility>
+<compatibility>Disponible depuis la version 2.3.0 du serveur HTTP
+Apache. L'interpr&eacute;teur d'expressions a &eacute;t&eacute; ajout&eacute; &agrave; partir de la version
+2.4.4.</compatibility>
 
 <usage>
     <p>La directive <directive
     module="mod_auth_form">AuthFormLoginRequiredLocation</directive>
     permet de sp&eacute;cifier l'URL vers laquelle l'utilisateur devra &ecirc;tre
-    redirig&eacute; s'il n'est pas autoris&eacute; &agrave; acc&eacute;der &agrave; une page. L'argument pass&eacute; &agrave; cette directive
+    redirig&eacute; s'il n'est pas autoris&eacute; &agrave;
+    acc&eacute;der &agrave; une page. L'argument pass&eacute; &agrave; cette directive
     est lu au moyen de l'analyseur lexical <a href="../expr.html">ap_expr</a> avant d'&ecirc;tre
     envoy&eacute; au client. Par d&eacute;faut,
     si un utilisateur n'est pas autoris&eacute; &agrave; acc&eacute;der &agrave; une page, le code
@@ -668,7 +671,9 @@ de connexion r&eacute;ussie</description>
 <default>none</default>
 <contextlist><context>directory</context>
 </contextlist>
-<compatibility>Disponible depuis la version 2.3.0 du serveur HTTP Apache</compatibility>
+<compatibility>Disponible depuis la version 2.3.0 du serveur HTTP
+Apache. L'interpr&eacute;teur d'expressions a &eacute;t&eacute; ajout&eacute; &agrave; partir de la version
+2.4.4.</compatibility>
 
 <usage>
     <p>La directive <directive
@@ -718,7 +723,9 @@ apr&egrave;s s'&ecirc;tre d&eacute;connect&eacute;</description>
 <default>none</default>
 <contextlist><context>directory</context>
 </contextlist>
-<compatibility>Disponible depuis la version 2.3.0 du serveur HTTP Apache</compatibility>
+<compatibility>Disponible depuis la version 2.3.0 du serveur HTTP
+Apache. L'interpr&eacute;teur d'expressions a &eacute;t&eacute; ajout&eacute; &agrave; partir de la version
+2.4.4.</compatibility>
 
 <usage>
     <p>La directive <directive
