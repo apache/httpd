@@ -757,15 +757,16 @@ AP_LUA_DECLARE(int) lua_db_acquire(lua_State *L)
             }
             apr_pool_tag(pool, "lua_dbd_pool");
             apr_dbd_init(pool);
-            
-            rc = apr_dbd_get_driver(r->server->process->pool, type, &db->driver);
+            dbdhandle = apr_pcalloc(pool, sizeof(ap_dbd_t));
+            rc = apr_dbd_get_driver(pool, type, &dbdhandle->driver);
             if (rc == APR_SUCCESS) {
                 luaL_checktype(L, 3, LUA_TSTRING);
                 arguments = lua_tostring(L, 3);
                 lua_settop(L, 0);
+                
                 if (strlen(arguments)) {
-                    rc = apr_dbd_open_ex(db->driver, r->server->process->pool, 
-                            arguments, &db->handle, &error);
+                    rc = apr_dbd_open_ex(dbdhandle->driver, pool, 
+                            arguments, &dbdhandle->handle, &error);
                     if (rc == APR_SUCCESS) {
                         db = lua_push_db_handle(L, r, LUA_DBTYPE_APR_DBD, pool);
                         db->driver = dbdhandle->driver;
@@ -787,6 +788,7 @@ AP_LUA_DECLARE(int) lua_db_acquire(lua_State *L)
                 lua_pushnil(L);
                 lua_pushliteral(L,
                                 "No database connection string was specified.");
+                apr_pool_destroy(pool);
                 return (2);
             }
             else {
@@ -809,6 +811,7 @@ AP_LUA_DECLARE(int) lua_db_acquire(lua_State *L)
                                 "mod_lua not compatible with APR in get_driver");
                 }
                 lua_pushinteger(L, rc);
+                apr_pool_destroy(pool);
                 return 3;
             }
         }
