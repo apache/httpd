@@ -105,6 +105,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/r1431322
                    http://svn.apache.org/r1431930 (Windows patch)
                    http://svn.apache.org/r1432418 (Debian patch)
+                   http://svn.apache.org/r1432892 (fix for external drivers)
       2.4.x patch: http://www.humbedooh.com/apache/lua_dbd.patch
                    + CHANGES
       +1: humbedooh
