@@ -809,7 +809,7 @@ AP_LUA_DECLARE(int) lua_db_acquire(lua_State *L)
                                 "mod_lua not compatible with APR in get_driver");
                 }
                 lua_pushinteger(L, rc);
-                return 3;
+                return 2;
             }
         }
 
