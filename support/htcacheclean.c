@@ -421,7 +421,7 @@ static int list_urls(char *path, apr_pool_t *pool, apr_off_t round)
         return 1;
     }
 
-    while (apr_dir_read(&info, 0, dir) == APR_SUCCESS && !interrupted) {
+    while (apr_dir_read(&info, APR_FINFO_TYPE, dir) == APR_SUCCESS && !interrupted) {
 
         if (info.filetype == APR_DIR) {
             if (!strcmp(info.name, ".") || !strcmp(info.name, "..")) {
