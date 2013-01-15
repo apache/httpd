@@ -212,7 +212,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     One line fix.  The options are new in 2.4.
     trunk patch: http://svn.apache.org/r1433001
     2.4.x patch: trunk patch works (plus CHANGES)
-    +1: rjung, minfrin
+    +1: rjung, minfrin, humbedooh
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
