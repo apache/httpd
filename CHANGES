@@ -2,11 +2,14 @@
 
 Changes with Apache 2.4.4
 
-  * mod_slotmem_shm: Fix mistaken reset of num_free for restored shm.
-    [Jim Jagielski]
+  *) htcacheclean: Fix list options "-a" and "-A".
+     [Rainer Jung]
 
-  * mod_proxy: non-existance of byrequests is not an immediate error.
-    [Jim Jagielski]
+  *) mod_slotmem_shm: Fix mistaken reset of num_free for restored shm.
+     [Jim Jagielski]
+
+  *) mod_proxy: non-existance of byrequests is not an immediate error.
+     [Jim Jagielski]
 
   *) mod_proxy_balancer: Improve output of balancer-manager (re: Drn,
      Dis, Ign, Stby). PR 52478 [Danijel <dt-ng rbfh de>]
