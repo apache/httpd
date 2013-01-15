@@ -92,15 +92,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
-  * htcacheclean: Fix list options "-a" and "-A".
-    Without the fix output is empty because there's no filetype
-    without APR_FINFO_TYPE.
-    One line fix.  The options are new in 2.4.
-    trunk patch: http://svn.apache.org/r1433001
-    2.4.x patch: trunk patch works (plus CHANGES)
-    +1: rjung, minfrin, humbedooh
-    
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
