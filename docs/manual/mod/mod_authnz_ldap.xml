@@ -910,6 +910,21 @@ to perform a DN lookup</description>
     module="mod_authnz_ldap">AuthLDAPBindDN</directive> and <directive
     module="mod_authnz_ldap">AuthLDAPBindPassword</directive> if you
     absolutely need them to search the directory.</p>
+
+    <p>If the value begins with exec: the resulting command will be
+    executed and the first line returned to standard output by the
+    program will be used as the password.</p>
+<example><pre>
+#Password used as-is
+AuthLDAPBindPassword secret
+
+#Run /path/to/program to get my password
+AuthLDAPBindPassword exec:/path/to/program
+
+#Run /path/to/otherProgram and provide arguments
+AuthLDAPBindPassword "exec:/path/to/otherProgram argument1"
+</pre></example>
+
 </usage>
 </directivesynopsis>
 
