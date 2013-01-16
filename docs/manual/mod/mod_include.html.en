@@ -56,7 +56,7 @@
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#enabling">Enabling Server-Side Includes</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#pathinfo">PATH_INFO with Server Side Includes</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#elements">Basic Elements</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#elements">Available Elements</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#includevars">Include Variables</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#substitution">Variable Substitution</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flowctrl">Flow Control Elements</a></li>
@@ -118,7 +118,7 @@ AddOutputFilter INCLUDES .shtml
     configure the server to accept requests with <code>PATH_INFO</code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="elements" id="elements">Basic Elements</a></h2>
+<h2><a name="elements" id="elements">Available Elements</a></h2>
     <p>The document is parsed as an HTML document, with special
     commands embedded as SGML comments. A command has the syntax: </p>
 
@@ -168,26 +168,48 @@ AddOutputFilter INCLUDES .shtml
 
       <dl>
       <dt><code>echomsg</code> (<em>Apache 2.1 and later</em>)</dt>
-      <dd>The value is a message that is sent back to the
+      <dd><p>The value is a message that is sent back to the
       client if the <code><a href="#element.echo">echo</a></code> element
-      attempts to echo an undefined variable. This overrides any <code class="directive"><a href="#ssiundefinedecho">SSIUndefinedEcho</a></code> directives.</dd>
+      attempts to echo an undefined variable. This overrides any <code class="directive"><a href="#ssiundefinedecho">SSIUndefinedEcho</a></code> directives.</p>
+
+      <div class="example"><p><code>
+        &lt;!--#config errmsg="[Value Undefined]" --&gt;
+      </code></p></div>
+      </dd>
 
       <dt><code>errmsg</code></dt>
-      <dd>The value is a message that is sent back to the
+      <dd><p>The value is a message that is sent back to the
       client if an error occurs while parsing the
-      document. This overrides any <code class="directive"><a href="#ssierrormsg">SSIErrorMsg</a></code> directives.</dd>
+      document. This overrides any <code class="directive"><a href="#ssierrormsg">SSIErrorMsg</a></code> directives.</p>
+     
+      <div class="example"><p><code>
+       &lt;!--#config errmsg="[Oops, something broke.]" --&gt;
+      </code></p></div>
+      </dd>
 
       <dt><code>sizefmt</code></dt>
-      <dd>The value sets the format to be used when displaying
+      <dd><p>The value sets the format to be used when displaying
       the size of a file. Valid values are <code>bytes</code>
       for a count in bytes, or <code>abbrev</code> for a count
       in Kb or Mb as appropriate, for example a size of 1024 bytes
-      will be printed as "1K".</dd>
+      will be printed as "1K".</p>
+      
+      <div class="example"><p><code>
+      &lt;!--#config sizefmt="abbrev" --&gt;
+      </code></p></div>
+      
+      </dd>
 
       <dt><code>timefmt</code></dt>
-      <dd>The value is a string to be used by the
+      <dd><p>The value is a string to be used by the
       <code>strftime(3)</code> library routine when printing
-      dates.</dd>
+      dates.</p>
+      
+      <div class="example"><p><code>
+      &lt;!--#config timefmt=""%R, %B %d, %Y"" --&gt;
+      </code></p></div>
+      
+      </dd>
       </dl>
      
 

@@ -340,6 +340,7 @@ that are not explicitly mapped</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Action if no coordinates are given when calling
 an imagemap</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ImapMenu none|formatted|semiformatted|unformatted</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ImapMenu formatted</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
