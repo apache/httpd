@@ -28,8 +28,6 @@ Apache</h1>
 <a href="../ko/programs/ab.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/ab.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p><code>ab</code> est un utilitaire qui vous permet de tester les
     performances de votre serveur HTTP Apache. Il a été conçu pour vous
@@ -66,7 +64,7 @@ Apache</h1>
     <var>nom-utilisateur-mandataire</var>:<var>mot-de-passe</var> ]
     [ -<strong>q</strong> ]
     [ -<strong>r</strong> ]
-    [ -<strong>s</strong> ]
+    [ -<strong>s</strong> <var>timeout</var> ]
     [ -<strong>S</strong> ]
     [ -<strong>t</strong> <var>limite-de-durée</var> ]
     [ -<strong>T</strong> <var>type-de-contenu</var> ]
@@ -173,12 +171,9 @@ Apache</h1>
     <dt><code>-r</code></dt>
     <dd>Ne s'arrête pas en cas d'erreur de réception sur la connexion.</dd>
 
-   <dt><code>-s</code></dt>
-    <dd>Lorsqu'il a été compilé avec le serveur (<code>ab -h</code> vous
-    le dira), c'est le protocole <code>https</code> protégé par SSL qui
-    sera utilisé à la place du protocole <code>http</code>. Cette
-    fonctionnalité est expérimentale et <em>très</em> rudimentaire. En
-    général, il n'est pas nécessaire de l'activer.</dd>
+    <dt><code>-s <var>timeout</var></code></dt>
+    <dd>Temps d'attente maximal du socket. La valeur par dÃ©faut est de
+    30 secondes.</dd>
 
     <dt><code>-S</code></dt>
     <dd>N'affiche ni les valeurs de déviation standards et médianes, ni

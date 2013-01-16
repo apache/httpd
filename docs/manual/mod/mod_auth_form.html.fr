@@ -536,11 +536,14 @@ authentification est requise</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP
+Apache. L'interpréteur d'expressions a été ajouté à partir de la version
+2.4.4.</td></tr>
 </table>
     <p>La directive <code class="directive"><a href="#authformloginrequiredlocation">AuthFormLoginRequiredLocation</a></code>
     permet de spécifier l'URL vers laquelle l'utilisateur devra être
-    redirigé s'il n'est pas autorisé à accéder à une page. L'argument passé à cette directive
+    redirigé s'il n'est pas autorisé à
+    accéder à une page. L'argument passé à cette directive
     est lu au moyen de l'analyseur lexical <a href="../expr.html">ap_expr</a> avant d'être
     envoyé au client. Par défaut,
     si un utilisateur n'est pas autorisé à accéder à une page, le code
@@ -563,7 +566,9 @@ de connexion réussie</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP
+Apache. L'interpréteur d'expressions a été ajouté à partir de la version
+2.4.4.</td></tr>
 </table>
     <p>La directive <code class="directive"><a href="#authformloginsuccesslocation">AuthFormLoginSuccessLocation</a></code>
     permet de spécifier l'URL vers laquelle l'utilisateur doit être
@@ -589,7 +594,9 @@ après s'être déconnecté</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP
+Apache. L'interpréteur d'expressions a été ajouté à partir de la version
+2.4.4.</td></tr>
 </table>
     <p>La directive <code class="directive"><a href="#authformlogoutlocation">AuthFormLogoutLocation</a></code> permet de
     spécifier l'URL de la page du serveur vers laquelle l'utilisateur
