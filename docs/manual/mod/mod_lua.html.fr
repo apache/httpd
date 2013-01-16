@@ -98,6 +98,7 @@ fonctionnement interne de httpd.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#logging">Fonctions de journalisation</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#apache2">Paquet apache2</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#modifying_buckets">Modification de contenu avec les filtres lua</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#databases">Connectivité aux bases de données</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -962,6 +963,13 @@ très proche de celui de la directive ErrorDocument.
 	nombre de secondes spécifié.
         </pre>
 
+
+	<pre class="prettyprint lang-lua">
+	r:dbacquire(dbType[, dbParams]) -- Acquiert une connexion à une
+base de données et renvoie une classe database. Voir '<a href="#databases">Connectivité aux bases de données</a>' pour plus de
+détails.
+        </pre>
+
         </dd>
     </dl>
 
@@ -1053,6 +1061,194 @@ function filter(r)
     coroutine.yield([optional footer to be appended to the content])
 end
     </pre>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="databases" id="databases">Connectivité aux bases de données</a></h2>
+    
+    <p>Mod_lua implémente une fonctionnalité basique de connexion aux
+bases de données permettant d'envoyer des requêtes ou d'exécuter des
+commandes auprès des moteurs de base de données les plus courants
+(mySQL, PostgreSQL, FreeTDS, ODBC, SQLite, Oracle), ainsi que mod_dbd.
+    </p>
+    <p>L'exemple suivant montre comment se connecter à une base de
+données et extraire des informations d'une table :</p>
+    <pre class="prettyprint lang-lua">
+function handler(r)
+    -- connexion à la base de données
+    local database, err = r:dbacquire("mysql", "server=localhost&amp;user=root&amp;database=mydb")
+    if not err then
+        -- Sélection de certaines informations
+        local results, err = database:select(r, "SELECT `name`, `age` FROM `people` WHERE 1")
+        if not err then
+            local rows = results(0) -- extrait tous les enregistrements en mode synchrone
+            for k, row in pairs(rows) do
+                r:puts( string.format("Name: %s, Age: %s&lt;br/&gt;", row[1], row[2]) )
+            end
+        else
+            r:puts("Database query error: " .. err)
+        end
+        database:close()
+    else
+        r:puts("Connexion à la base de données impossible : " .. err)
+    end
+end
+    </pre>
+
+    <p>
+    Pour utiliser <code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code>, spécifiez
+<code>mod_dbd</code> comme type de base de données, ou laissez le champ
+vide :
+    </p>
+    <pre class="prettyprint lang-lua">
+    local database = r:dbacquire("mod_dbd")
+    </pre>
+
+    <h3><a name="database_object" id="database_object">L'objet database et ses méthodes</a></h3>
+        
+        <p>L'objet database renvoyé par <code>dbacquire</code> possède
+les méthodes suivantes :</p>
+        <p><strong>Sélection normale et requête vers une base de données
+:</strong></p>
+    <pre class="prettyprint lang-lua">
+-- Exécution d'une requête et renvoie du nombre d'enregistrements
+affectés :
+local affected, errmsg = database:query(r, "DELETE FROM `tbl` WHERE 1")
+
+-- Exécution d'une requête et renvoie du résultat qui peut être utilisé
+en mode synchrone ou asynchrone :
+local result, errmsg = database:select(r, "SELECT * FROM `people` WHERE 1")
+    </pre>
+
+        <p><strong>Utilisation de requêtes préparées (recommandé) :</strong></p>
+    <pre class="prettyprint lang-lua">
+-- Création et exécution d'une requête préparée :
+local statement, errmsg = database:prepare(r, "DELETE FROM `tbl` WHERE `age` &gt; %u")
+if not errmsg then
+    local result, errmsg = statement:query(20) -- exécute la requête pour age &gt; 20
+end
+
+-- Extrait une requête préparée depuis une directive DBDPrepareSQL :
+local statement, errmsg = database:prepared(r, "someTag")
+if not errmsg then
+    local result, errmsg = statement:select("John Doe", 123) -- injecte les valeurs "John Doe" et 123 dans la requête
+end
+
+</pre>
+
+        <p><strong>Echappement de valeurs, fermeture de la base données,
+etc...</strong></p>
+    <pre class="prettyprint lang-lua">
+-- Echappe une valeur pour pouvoir l'utiliser dans une requête :
+local escaped = database:escape(r, [["'|blabla]])
+
+-- Ferme une base de données et libère les liens vers cette dernière :
+database:close()
+
+-- Vérifie si une connexion à une base de données est en service et
+opérationnelle :
+local connected = database:active()
+    </pre>
+
+    
+    <h3><a name="result_sets" id="result_sets">Travail avec les jeux d'enregistrements renvoyés par les requêtes</a></h3>
+    
+    <p>Les jeux d'enregistrements renvoyés par <code>db:select</code> ou par des
+requêtes préparées créées par <code>db:prepare</code> permettent de
+sélectionner des enregistrements en mode synchrone ou
+asynchrone, selon le nombre d'enregistrements spécifié :<br />
+    <code>result(0)</code> sélectionne tous les enregistrements en mode
+synchrone en renvoyant une table d'enregistrements.<br />
+    <code>result(-1)</code> sélectionne le prochain enregistrement disponible en
+mode asynchrone.<br />
+    <code>result(N)</code> sélectionne l'enregistrement numéro
+<code>N</code> en mode asynchrone.
+    </p>
+    <pre class="prettyprint lang-lua">
+-- extrait un jeu d'enregistrements via une requête régulière :
+local result, err = db:select(r, "SELECT * FROM `tbl` WHERE 1")
+
+local rows = result(0) -- sélectionne tous les enregistrements en mode synchrone
+local row = result(-1) -- sélectionne le prochain enregistrement disponible en mode asynchrone
+local row = result(1234) -- sélectionne l'enregistrement 1234 en mode asynchrone
+    </pre>
+
+    <p>Il est possible de construire une fonction qui renvoie une
+fonction itérative permettant de traiter tous les enregistrement en mode
+synchrone ou asynchrone selon la valeur de l'argument async :
+    </p>
+    <pre class="prettyprint lang-lua">
+function rows(resultset, async)
+    local a = 0
+    local function getnext()
+        a = a + 1
+        local row = resultset(-1)
+        return row and a or nil, row
+    end
+    if not async then
+        return pairs(resultset(0))
+    else
+        return getnext, self
+    end
+end
+
+local statement, err = db:prepare(r, "SELECT * FROM `tbl` WHERE `age` &gt; %u")
+if not err then
+     -- sélectionne des enregistrements en mode asynchrone :
+    local result, err = statement:select(20)
+    if not err then
+        for index, row in rows(result, true) do
+            ....
+        end
+    end
+
+     -- sélectionne des enregistrements en mode synchrone :
+    local result, err = statement:select(20)
+    if not err then
+        for index, row in rows(result, false) do
+            ....
+        end
+    end
+end
+    </pre>
+
+    
+    <h3><a name="closing_databases" id="closing_databases">Fermeture d'une connexion à une base de données</a></h3>
+        
+
+    <p>Lorsqu'elles ne sont plus utilisées, les connexions aux bases de
+données doivent être fermées avec <code>database:close()</code>. Si vous
+ne les fermez pas manuellement, mod_lua les fermera peut-être en tant
+que résidus collectés, mais si ce n'est pas le cas, vous pouvez finir
+pas avoir trop de connexions vers la base de données inutilisées. Les
+deux mesures suivantes sont pratiquement identiques :
+    </p>
+    <pre class="prettyprint lang-lua">
+-- Méthode 1 : fermeture manuelle de la connexion
+local database = r:dbacquire("mod_dbd")
+database:close() -- c'est tout
+
+-- Méthode 2 : on laisse le collecteur de résidus la fermer
+local database = r:dbacquire("mod_dbd")
+database = nil -- on coupe le lien
+collectgarbage() -- fermeture de la connexion par le collecteur de résidus
+</pre>
+
+    
+    <h3><a name="database_caveat" id="database_caveat">Précautions à prendre lorsque l'on travaille avec les bases
+de données</a></h3>
+    
+    <p>Bien que les fonctions <code>query</code> et <code>run</code>
+soient toujours disponibles, il est recommandé d'utiliser des requêtes
+préparées chaque fois que possible, afin d'une part d'optimiser les
+performances (si votre connexion reste longtemps en vie), et d'autre part
+minimiser le risque d'attaques par injection SQL. Les fonctions
+<code>run</code> et <code>query</code> ne doivent être utilisées que
+lorsque la requête ne contient pas de variables (requête statique). Dans
+le cas des requêtes dynamiques, utilisez <code>db:prepare</code> ou
+<code>db:prepared</code>.
+    </p>
+    
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

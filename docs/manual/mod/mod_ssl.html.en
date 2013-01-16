@@ -1092,12 +1092,14 @@ The available <em>option</em>s are:</p>
     be used for access control. The user name is just the Subject of the
     Client's X509 Certificate (can be determined by running OpenSSL's
     <code>openssl x509</code> command: <code>openssl x509 -noout -subject -in
-    </code><em>certificate</em><code>.crt</code>). Note that no password is
-    obtained from the user. Every entry in the user file needs this password:
-    ``<code>xxj31ZMTZzkVA</code>'', which is the DES-encrypted version of the
-    word `<code>password</code>''. Those who live under MD5-based encryption
-    (for instance under FreeBSD or BSD/OS, etc.) should use the following MD5
-    hash of the same word: ``<code>$1$OXLyS...$Owx8s2/m9/gfkcRVXzgoE/</code>''.</p>
+    </code><em>certificate</em><code>.crt</code>). The optional <code class="directive"><a href="#sslusername">SSLUserName</a></code> directive can be used to
+    specify which part of the certificate Subject is embedded in the username.
+    Note that no password is obtained from the user. Every entry in the user
+    file needs this password: ``<code>xxj31ZMTZzkVA</code>'', which is the
+    DES-encrypted version of the word `<code>password</code>''. Those who
+    live under MD5-based encryption (for instance under FreeBSD or BSD/OS,
+    etc.) should use the following MD5 hash of the same word:
+     ``<code>$1$OXLyS...$Owx8s2/m9/gfkcRVXzgoE/</code>''.</p>
 </li>
 <li><code>StrictRequire</code>
     <p>
@@ -2383,8 +2385,9 @@ string. In particular, this may cause the environment variable
 <code>REMOTE_USER</code> to be set.  The <em>varname</em> can be
 any of the <a href="#envvars">SSL environment variables</a>.</p>
 
-<p>Note that this directive has no effect if the
-<code>FakeBasicAuth</code> option is used (see <a href="#ssloptions">SSLOptions</a>).</p>
+<p>When the <code>FakeBasicAuth</code> option is enabled, this directive
+instead controls the value of the username embedded within the basic
+authentication header (see <a href="#ssloptions">SSLOptions</a>).</p>
 
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
 SSLUserName SSL_CLIENT_S_DN_CN
