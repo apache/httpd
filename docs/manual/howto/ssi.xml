@@ -23,7 +23,7 @@
 <manualpage metafile="ssi.xml.meta">
 <parentdocument href="./">How-To / Tutorials</parentdocument>
 
-<title>Apache Tutorial: Introduction to Server Side Includes</title>
+<title>Apache httpd Tutorial: Introduction to Server Side Includes</title>
 
 <summary>
 <p>Server-side includes provide a means to add dynamic content to
