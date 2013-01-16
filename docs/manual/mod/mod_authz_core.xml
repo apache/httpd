@@ -347,7 +347,7 @@ Require group admin
 
     <p>When multiple <directive>Require</directive> directives are
     used in a single
-    <a href="../sections.html#mergin">configuration section</a>
+    <a href="../sections.html#merging">configuration section</a>
     and are not contained in another authorization directive like
     <directive module="mod_authz_core" type="section">RequireAll</directive>,
     they are implicitly contained within a
@@ -360,7 +360,7 @@ Require group admin
     <p>Exercise caution when setting authorization directives in
     <directive module="core">Location</directive> sections
     that overlap with content served out of the filesystem.  
-    By default, these <a href="../sections.html#mergin"
+    By default, these <a href="../sections.html#merging"
     >configuration sections</a> overwrite authorization configuration
     in <directive module="core">Directory</directive>,  
     and <directive module="core">Files</directive> sections.</p>
