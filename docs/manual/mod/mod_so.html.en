@@ -146,7 +146,7 @@ Windows</td></tr></table>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Link in the named object file or library</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LoadFile <em>filename</em> [<em>filename</em>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_so</td></tr>
 </table>
@@ -170,7 +170,7 @@ Windows</td></tr></table>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Links in the object file or library, and adds to the list
 of active modules</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LoadModule <em>module filename</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_so</td></tr>
 </table>

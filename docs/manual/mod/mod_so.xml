@@ -132,6 +132,7 @@ Windows</compatibility>
 <syntax>LoadFile <em>filename</em> [<em>filename</em>] ...</syntax>
 <contextlist>
 <context>server config</context>
+<context>virtual host</context>
 </contextlist>
 
 <usage>
@@ -156,6 +157,7 @@ of active modules</description>
 <syntax>LoadModule <em>module filename</em></syntax>
 <contextlist>
 <context>server config</context>
+<context>virtual host</context>
 </contextlist>
 
 <usage>
