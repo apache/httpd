@@ -599,11 +599,12 @@ autorisation</a></h2>
         </pre>
 
 
-        <p>Dans l'exemple ci-dessus, on utilise la directive du
-	conteneur <code class="directive"><a href="../mod/mod_authz_core.html#requirenone">&lt;RequireNone&gt;</a></code> afin de s'assurer
-	qu'aucune des directives <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> qu'il contient ne
-	fasse correspondre ses paramètres avant d'accorder
-	l'autorisation.</p>
+        <p>L'utilisation de la directive <code class="directive"><a href="../mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code>
+	avec de multiples directives <code class="directive"><a href="../mod/mod_authz_core.html#require">&lt;Require&gt;</a></code>, toutes avec la négation
+	<code>not</code>, n'accordera l'accès que si toutes les
+	conditions négatives sont vérifiées. En d'autres termes, l'accès
+	sera refusé si au moins une des conditions négatives n'est pas
+	vérifiée.</p>
 
     
 
