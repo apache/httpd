@@ -89,7 +89,7 @@ AddOutputFilter INCLUDES .shtml
     configure the server to accept requests with <code>PATH_INFO</code>.</p>
 </section> <!-- /pathinfo -->
 
-<section id="elements"><title>Basic Elements</title>
+<section id="elements"><title>Available Elements</title>
     <p>The document is parsed as an HTML document, with special
     commands embedded as SGML comments. A command has the syntax: </p>
 
