@@ -179,7 +179,7 @@ AddOutputFilter INCLUDES .shtml
       <code>strftime(3)</code> library routine when printing
       dates.</p>
       
-      <example
+      <example>
       &lt;!--#config timefmt=""%R, %B %d, %Y"" --&gt;
       </example>
       
