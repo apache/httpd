@@ -140,28 +140,50 @@ AddOutputFilter INCLUDES .shtml
 
       <dl>
       <dt><code>echomsg</code> (<em>Apache 2.1 and later</em>)</dt>
-      <dd>The value is a message that is sent back to the
+      <dd><p>The value is a message that is sent back to the
       client if the <code><a href="#element.echo">echo</a></code> element
       attempts to echo an undefined variable. This overrides any <directive
-      module="mod_include">SSIUndefinedEcho</directive> directives.</dd>
+      module="mod_include">SSIUndefinedEcho</directive> directives.</p>
+
+      <example>
+        &lt;!--#config errmsg="[Value Undefined]" --&gt;
+      </example>
+      </dd>
 
       <dt><code>errmsg</code></dt>
-      <dd>The value is a message that is sent back to the
+      <dd><p>The value is a message that is sent back to the
       client if an error occurs while parsing the
       document. This overrides any <directive
-      module="mod_include">SSIErrorMsg</directive> directives.</dd>
+      module="mod_include">SSIErrorMsg</directive> directives.</p>
+     
+      <example>
+       &lt;!--#config errmsg="[Oops, something broke.]" --&gt;
+      </example>
+      </dd>
 
       <dt><code>sizefmt</code></dt>
-      <dd>The value sets the format to be used when displaying
+      <dd><p>The value sets the format to be used when displaying
       the size of a file. Valid values are <code>bytes</code>
       for a count in bytes, or <code>abbrev</code> for a count
       in Kb or Mb as appropriate, for example a size of 1024 bytes
-      will be printed as "1K".</dd>
+      will be printed as "1K".</p>
+      
+      <example>
+      &lt;!--#config sizefmt="abbrev" --&gt;
+      </example>
+      
+      </dd>
 
       <dt><code>timefmt</code></dt>
-      <dd>The value is a string to be used by the
+      <dd><p>The value is a string to be used by the
       <code>strftime(3)</code> library routine when printing
-      dates.</dd>
+      dates.</p>
+      
+      <example
+      &lt;!--#config timefmt=""%R, %B %d, %Y"" --&gt;
+      </example>
+      
+      </dd>
       </dl>
     </section> <!-- /config -->
 
