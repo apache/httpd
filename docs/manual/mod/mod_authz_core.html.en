@@ -274,7 +274,7 @@ sections.</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_core</td></tr>
 </table>
     <p>When authorization is enabled, it is normally inherited by each
-    subsequent <a href="../sections.html#mergin">configuration section</a>,
+    subsequent <a href="../sections.html#merging">configuration section</a>,
     unless a different set of authorization directives are specified.
     This is the default action, which corresponds to an explicit setting
     of <code>AuthMerging Off</code>.</p>
@@ -491,7 +491,7 @@ Require group admin
 
     <p>When multiple <code class="directive">Require</code> directives are
     used in a single
-    <a href="../sections.html#mergin">configuration section</a>
+    <a href="../sections.html#merging">configuration section</a>
     and are not contained in another authorization directive like
     <code class="directive"><a href="#requireall">&lt;RequireAll&gt;</a></code>,
     they are implicitly contained within a
@@ -504,7 +504,7 @@ Require group admin
     <p>Exercise caution when setting authorization directives in
     <code class="directive"><a href="../mod/core.html#location">Location</a></code> sections
     that overlap with content served out of the filesystem.  
-    By default, these <a href="../sections.html#mergin">configuration sections</a> overwrite authorization configuration
+    By default, these <a href="../sections.html#merging">configuration sections</a> overwrite authorization configuration
     in <code class="directive"><a href="../mod/core.html#directory">Directory</a></code>,  
     and <code class="directive"><a href="../mod/core.html#files">Files</a></code> sections.</p>
     <p>The <code class="directive"><a href="#authmerging">AuthMerging</a></code> directive 
