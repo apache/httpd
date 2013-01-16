@@ -233,6 +233,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=27913
      +1: sf
 
+   * mod_authnz_ldap: Allow using exec: callouts like SSLPassphraseDialog
+     for AuthLDAPBindPassword.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1433478
+     2.4.x patch: http://people.apache.org/~druggeri/patches/AuthLDAPBindPasswordExec-2.4.patch
+     +1: druggeri
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
