@@ -501,7 +501,7 @@ sections.</description>
 
 <usage>
     <p>When authorization is enabled, it is normally inherited by each
-    subsequent <a href="../sections.html#mergin">configuration section</a>,
+    subsequent <a href="../sections.html#merging">configuration section</a>,
     unless a different set of authorization directives are specified.
     This is the default action, which corresponds to an explicit setting
     of <code>AuthMerging Off</code>.</p>
