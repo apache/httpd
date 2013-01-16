@@ -175,7 +175,7 @@ existing HTML documents.</p>
 
     <p>SSI directives have the following syntax:</p>
 <example>
-        &lt;!--#element attribute=value attribute=value ... --&gt;
+        &lt;!--#function attribute=value attribute=value ... --&gt;
 </example>
 
     <p>It is formatted like an HTML comment, so if you don't have
@@ -184,7 +184,7 @@ existing HTML documents.</p>
     configured, the directive will be replaced with its
     results.</p>
 
-    <p>The element can be one of a number of things, and we'll talk
+    <p>The function can be one of a number of things, and we'll talk
     some more about most of these in the next installment of this
     series. For now, here are some examples of what you can do with
     SSI</p>
@@ -195,14 +195,14 @@ existing HTML documents.</p>
         &lt;!--#echo var="DATE_LOCAL" --&gt;
 </example>
 
-    <p>The <code>echo</code> element just spits out the value of a
+    <p>The <code>echo</code> function just spits out the value of a
     variable. There are a number of standard variables, which
     include the whole set of environment variables that are
     available to CGI programs. Also, you can define your own
-    variables with the <code>set</code> element.</p>
+    variables with the <code>set</code> function.</p>
 
     <p>If you don't like the format in which the date gets printed,
-    you can use the <code>config</code> element, with a
+    you can use the <code>config</code> function, with a
     <code>timefmt</code> attribute, to modify that formatting.</p>
 
 <example>
@@ -217,7 +217,7 @@ existing HTML documents.</p>
         This document last modified &lt;!--#flastmod file="index.html" --&gt;
 </example>
 
-    <p>This element is also subject to <code>timefmt</code> format
+    <p>This function is also subject to <code>timefmt</code> format
     configurations.</p>
 </section>
 
@@ -282,7 +282,7 @@ modified?</title>
     reduce the burden of these updates. You just have to make one
     footer file, and then include it into each page with the
     <code>include</code> SSI command. The <code>include</code>
-    element can determine what file to include with either the
+    function can determine what file to include with either the
     <code>file</code> attribute, or the <code>virtual</code>
     attribute. The <code>file</code> attribute is a file path,
     <em>relative to the current directory</em>. That means that it
@@ -318,7 +318,7 @@ modified?</title>
 
     <p>If you want to change that message to something else, you
     can do so with the <code>errmsg</code> attribute to the
-    <code>config</code> element:</p>
+    <code>config</code> function:</p>
 <example>
         &lt;!--#config errmsg="[It appears that you don't know how to use SSI]" --&gt;
 </example>
@@ -340,7 +340,7 @@ modified?</title>
     <p>I expect that I'll have an article some time in the coming
     months about using SSI with small CGI programs. For now, here's
     something else that you can do with the <code>exec</code>
-    element. You can actually have SSI execute a command using the
+    function. You can actually have SSI execute a command using the
     shell (<code>/bin/sh</code>, to be precise - or the DOS shell,
     if you're on Win32). The following, for example, will give you
     a directory listing.</p>
