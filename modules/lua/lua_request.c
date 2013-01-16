@@ -920,13 +920,11 @@ static int lua_ap_regex(lua_State *L)
     }
 
     rv = ap_regexec(&regex, source, AP_MAX_REG_MATCH, matches, 0);
-    if (rv < 0) {
+    if (rv == AP_REG_NOMATCH) {
         lua_pushboolean(L, 0);
-        err = apr_palloc(r->pool, 256);
-        ap_regerror(rv, &regex, err, 256);
-        lua_pushstring(L, err);
-        return 2;
+        return 1;
     }
+    
     lua_newtable(L);
     for (i = 0; i < regex.re_nsub; i++) {
         lua_pushinteger(L, i);
