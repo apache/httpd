@@ -226,10 +226,10 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
     ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, r, "Into ajp_marshal_into_msgb");
 
     if ((method = sc_for_req_method_by_id(r)) == UNKNOWN_METHOD) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00967)
-               "ajp_marshal_into_msgb - No such method %s",
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, r, APLOGNO(02437)
+               "ajp_marshal_into_msgb - Sending unknown method %s as request attribute",
                r->method);
-        return AJP_EBAD_METHOD;
+        method = SC_M_JK_STORED;
     }
 
     is_ssl = (apr_byte_t) ap_proxy_conn_is_https(r->connection);
@@ -402,6 +402,17 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
                               "Error appending the SSL key size");
                 return APR_EGENERAL;
             }
+        }
+    }
+    /* If the method was unrecognized, encode it as an attribute */
+    if (method == SC_M_JK_STORED) {
+        if (ajp_msg_append_uint8(msg, SC_A_STORED_METHOD)
+            || ajp_msg_append_string(msg, r->method)) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02438)
+                          "ajp_marshal_into_msgb: "
+                          "Error appending the method '%s' as request attribute",
+                          r->method);
+            return AJP_EOVERFLOW;
         }
     }
     /* Forward the remote port information, which was forgotten
