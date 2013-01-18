@@ -108,7 +108,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/r1432892 (fix for external drivers)
       2.4.x patch: http://www.humbedooh.com/apache/lua_dbd.patch
                    + CHANGES
-      +1: humbedooh
+      +1: humbedooh, covener
       +1: fuankg (compiles/links fine now for NetWare; no functional tests yet)
       gsmith notes: compiles/links on Windows now.
       
@@ -218,6 +218,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1433478
     2.4.x patch: http://people.apache.org/~druggeri/patches/AuthLDAPBindPasswordExec-2.4.patch
     +1: druggeri
+    covener: minor MMM bump? 
 
   * mod_proxy_ajp: Support unknown HTTP methods. PR54416.
     Forward unknown methods as request attributes
@@ -228,7 +229,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Doesn't seem to be supported by Jetty though.
     trunk patch: http://svn.apache.org/r1435178
     2.4.x patch: trunk patch works (minus docs/log-message-tags)
-    +1: rjung
+    +1: rjung, covener
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
