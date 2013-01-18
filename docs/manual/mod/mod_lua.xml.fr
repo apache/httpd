@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1430656:1433346 (outdated) -->
+<!-- English Revision : 1433346 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -997,7 +997,7 @@ donn&eacute;es et extraire des informations d'une table :</p>
     <highlight language="lua">
 function handler(r)
     -- connexion &agrave; la base de donn&eacute;es
-    local database, err = r:dbacquire("mysql", "server=localhost&amp;user=root&amp;database=mydb")
+    local database, err = r:dbacquire("mysql", "server=localhost,user=root,dbname=mydb")
     if not err then
         -- S&eacute;lection de certaines informations
         local results, err = database:select(r, "SELECT `name`, `age` FROM `people` WHERE 1")

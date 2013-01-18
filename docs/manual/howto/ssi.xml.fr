@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1331486:1433780 (outdated) -->
+<!-- English Revision : 1433780 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -25,7 +25,7 @@
 <manualpage metafile="ssi.xml.meta">
 <parentdocument href="./">Recettes et tutoriels</parentdocument>
 
-<title>Tutoriel Apache : Introduction aux "Inclusions C&ocirc;t&eacute; Serveur"
+<title>Tutoriel Apache httpd : Introduction aux "Inclusions C&ocirc;t&eacute; Serveur"
 (Server Side Includes - SSI)</title>
 
 <summary>
@@ -71,11 +71,26 @@ HTML pr&eacute;existants.</p>
     page enti&egrave;re via un programme CGI, ou toute autre technologie de
     contenu dynamique.</p>
 
+    <p>Par exemple, vous pouvez ins&eacute;rer la directive suivante dans une
+    page HTML existante :</p>
+
+    <example>
+    <!--#echo var="DATE_LOCAL" -->
+    </example>
+
+    <p>Ainsi, lorsque la page sera servie, la directive sera &eacute;valu&eacute;e et
+    remplac&eacute;e par sa valeur :</p>
+
+    <example>
+    Tuesday, 15-Jan-2013 19:28:54 EST
+    </example>
+
     <p>Le choix entre l'utilisation des SSI et la g&eacute;n&eacute;ration enti&egrave;re de
     la page par un programme quelconque, est en g&eacute;n&eacute;ral dict&eacute; par la
     proportion de contenu statique et de contenu devant &ecirc;tre g&eacute;n&eacute;r&eacute;
     chaque fois que la page est servie. SSI est id&eacute;al pour ajouter de
-    petites quantit&eacute;s d'information, comme l'heure courante. Mais si la
+    petites quantit&eacute;s d'information, comme l'heure courante dans
+    l'exemple pr&eacute;c&eacute;dent. Mais si la
     plus grande partie de votre page est g&eacute;n&eacute;r&eacute;e au moment o&ugrave; elle est
     servie, vous devez vous tourner vers une autre solution.</p>
 </section>
@@ -173,7 +188,7 @@ HTML pr&eacute;existants.</p>
 
     <p>Les directives SSI adoptent la syntaxe suivante :</p>
 <example>
-        &lt;!--#&eacute;l&eacute;ment attribut=valeur attribut=valeur ... --&gt;
+        &lt;!--#fonction attribut=valeur attribut=valeur ... --&gt;
 </example>
 
     <p>Le format d'une directive SSI &eacute;tant similaire &agrave; celui d'un
@@ -182,7 +197,7 @@ HTML pr&eacute;existants.</p>
     HTML. Si SSI est correctement configur&eacute;, la directive sera remplac&eacute;e
     par ses r&eacute;sultats.</p>
 
-    <p>"&eacute;l&eacute;ment" peut prendre de nombreuses formes, et nous d&eacute;crirons
+    <p>"fonction" peut prendre de nombreuses formes, et nous d&eacute;crirons
     plus pr&eacute;cis&eacute;ment la plupart d'entre eux dans la prochaine version de
     ce document. Pour le moment, voici quelques exemples de ce que vous
     pouvez faire avec SSI.</p>
@@ -193,14 +208,14 @@ HTML pr&eacute;existants.</p>
         &lt;!--#echo var="DATE_LOCAL" --&gt;
 </example>
 
-    <p>L'&eacute;l&eacute;ment <code>echo</code> permet d'afficher la valeur d'une
+    <p>La fonction <code>echo</code> permet d'afficher la valeur d'une
     variable. Il existe un grand nombre de variables standards, y
     compris l'ensemble des variables d'environnement disponibles pour
     les programmes CGI. De plus, vous pouvez d&eacute;finir vos propres
-    variables &agrave; l'aide de l'&eacute;l&eacute;ment <code>set</code>.</p>
+    variables &agrave; l'aide de la fonction <code>set</code>.</p>
 
     <p>Si vous n'aimez pas le format sous lequel la date s'affiche, vous
-    pouvez utiliser l'&eacute;l&eacute;ment <code>config</code> avec un attribut
+    pouvez utiliser la fonction <code>config</code> avec un attribut
     <code>timefmt</code>, pour le modifier.</p>
 
 <example>
@@ -278,7 +293,7 @@ HTML pr&eacute;existants.</p>
     simplifier cette corv&eacute;e de mises &agrave; jour. Il vous suffit de
     confectionner un fichier de pied de page, et de l'inclure dans
     chaque page &agrave; l'aide de l'&eacute;l&eacute;ment SSI <code>include</code>. Pour
-    d&eacute;finir le fichier &agrave; inclure, l'&eacute;l&eacute;ment <code>include</code> peut
+    d&eacute;finir le fichier &agrave; inclure, la fonction <code>include</code> peut
     utiliser soit l'attribut <code>file</code>, soit l'attribut
     <code>virtual</code>. L'attribut <code>file</code> est un chemin de
     fichier <em>relatif au r&eacute;pertoire courant</em>. C'est &agrave; dire qu'il
@@ -313,7 +328,7 @@ HTML pr&eacute;existants.</p>
 </example>
 
     <p>Pour modifier ce message, vous pouvez utiliser l'attribut
-    <code>errmsg</code> avec l'&eacute;l&eacute;ment <code>config</code> :</p>
+    <code>errmsg</code> avec la fonction <code>config</code> :</p>
 <example>
         &lt;!--#config errmsg="[Il semblerait que vous ne sachiez pas
 	utiliser les SSI]" --&gt;
@@ -336,7 +351,7 @@ HTML pr&eacute;existants.</p>
 
     <p>J'ai pour projet, dans les prochains mois, d'&eacute;crire un article &agrave;
     propos de l'utilisation des SSI avec des petits programmes CGI. Pour
-    l'instant, voici ce que vous pouvez faire avec l'&eacute;l&eacute;ment
+    l'instant, voici ce que vous pouvez faire avec la fonction
     <code>exec</code>. Vous pouvez vraiment faire ex&eacute;cuter une commande
     par SSI en utilisant le shell (<code>/bin/sh</code>, pour &ecirc;tre plus
     pr&eacute;cis - ou le shell DOS, si vous &ecirc;tes sous Win32). Par exemple, ce
