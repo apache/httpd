@@ -1570,7 +1570,7 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
     unique id will be used as log ID for requests.</p>
 
     <pre class="prettyprint lang-config">
-#Example (default format)
+#Example (default format for threaded MPMs)
 ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\ %a] %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
     </pre>
 

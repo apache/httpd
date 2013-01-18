@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authnz_ldap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authnz_ldap.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet d'utiliser un annuaire LDAP pour l'authentification
 HTTP de base.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -953,6 +951,21 @@ connexion</td></tr>
     <code class="directive"><a href="#authldapbinddn">AuthLDAPBindDN</a></code> et <code class="directive"><a href="#authldapbindpassword">AuthLDAPBindPassword</a></code> que si
     vous en avez vraiment besoin pour effectuer une recherche dans
     l'annuaire.</p>
+
+    <p>Si la valeur commence par exec:, la commande résultante sera
+    exécutée, et la première ligne renvoyée sur la sortie standard sera
+    utilisée comme mot de passe.</p>
+<div class="example"><pre>
+#Mot de passe utilisé tel quel
+AuthLDAPBindPassword secret
+
+#Exécute /path/to/program pour obtenir le mot de passe
+AuthLDAPBindPassword exec:/path/to/program
+
+#Exécute /path/to/otherProgram avec un argument pour obtenir le mot de passe
+AuthLDAPBindPassword "exec:/path/to/otherProgram argument1"
+</pre></div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
