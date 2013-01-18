@@ -231,6 +231,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch works (minus docs/log-message-tags)
     +1: rjung, covener
 
+ * mod_proxy_http: Honour special value 0 (unlimited) of LimitRequestBody
+   PR 54435.
+   Trunk version of patch:
+      http://svn.apache.org/viewvc?rev=1433988&view=rev
+   Backport version for 2.4.x of patch:
+      Trunk version of patch works
+   +1: rpluem,
+
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
