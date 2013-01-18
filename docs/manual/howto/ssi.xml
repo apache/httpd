@@ -70,7 +70,7 @@ existing HTML documents.</p>
     page, such as:</p>
 
     <example>
-    <!--#echo var="DATE_LOCAL" -->
+    &lt;!--#echo var="DATE_LOCAL" --&gt;
     </example>
 
     <p>And, when the page is served, this fragment will be evaluated and replaced with its value:</p>
