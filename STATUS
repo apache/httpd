@@ -200,7 +200,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch works
     +1: jim
 
-  * mod_ssl: mod_ssl: Allow the SSLUserName to be used to control the
+  * mod_ssl: Allow the SSLUserName to be used to control the
     username passed by the FakeBasicAuth option. PR52616.
     trunk patch: http://svn.apache.org/viewvc?rev=1432322&view=rev
     2.4.x patch: trunk patch works (minus docs/log-message-tags)
@@ -219,6 +219,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: http://people.apache.org/~druggeri/patches/AuthLDAPBindPasswordExec-2.4.patch
     +1: druggeri
 
+  * mod_proxy_ajp: Support unknown HTTP methods. PR54416.
+    Forward unknown methods as request attributes
+    using method id SC_M_JK_STORED=0xFF and
+    request attribute id SC_A_STORED_METHOD=13.
+    Code ported from mod_jk (which got it from mod_jk2).
+    Supported by Tomcat at least since TC 4.1.
+    Doesn't seem to be supported by Jetty though.
+    trunk patch: http://svn.apache.org/r1435178
+    2.4.x patch: trunk patch works (minus docs/log-message-tags)
+    +1: rjung
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
