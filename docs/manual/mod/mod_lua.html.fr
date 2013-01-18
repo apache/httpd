@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_lua.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_lua.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournit des points d'entrée Lua dans différentes parties du
 traitement des requêtes httpd</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
@@ -1076,7 +1074,7 @@ données et extraire des informations d'une table :</p>
     <pre class="prettyprint lang-lua">
 function handler(r)
     -- connexion à la base de données
-    local database, err = r:dbacquire("mysql", "server=localhost&amp;user=root&amp;database=mydb")
+    local database, err = r:dbacquire("mysql", "server=localhost,user=root,dbname=mydb")
     if not err then
         -- Sélection de certaines informations
         local results, err = database:select(r, "SELECT `name`, `age` FROM `people` WHERE 1")
