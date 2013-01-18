@@ -67,7 +67,9 @@ existing HTML documents.</p>
     <p>For example, you might place a directive into an existing HTML
     page, such as:</p>
 
-    <div class="example" />
+    <div class="example"><p><code>
+    &lt;!--#echo var="DATE_LOCAL" --&gt;
+    </code></p></div>
 
     <p>And, when the page is served, this fragment will be evaluated and replaced with its value:</p>
 
