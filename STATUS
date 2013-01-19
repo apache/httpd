@@ -217,8 +217,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     for AuthLDAPBindPassword.
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1433478
     2.4.x patch: http://people.apache.org/~druggeri/patches/AuthLDAPBindPasswordExec-2.4.patch
+                 (20130119 - updated to include minor mmn bump)
     +1: druggeri
-    covener: minor MMM bump? 
+    covener: minor MMM bump?  (Thanks for reminder. This is done. -druggeri)
 
   * mod_proxy_ajp: Support unknown HTTP methods. PR54416.
     Forward unknown methods as request attributes
