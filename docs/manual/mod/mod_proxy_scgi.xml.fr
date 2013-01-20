@@ -1,0 +1,184 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1334022 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_proxy_scgi.xml.meta">
+
+<name>mod_proxy_scgi</name>
+<description>Module fournissant le support de la passerelle SCGI &agrave;
+<module>mod_proxy</module></description>
+<status>Extension</status>
+<sourcefile>mod_proxy_scgi.c</sourcefile>
+<identifier>proxy_scgi_module</identifier>
+<compatibility>Disponible depuis la version 2.2.14 d'Apache</compatibility>
+
+<summary>
+    <p>Pour pouvoir fonctionner, ce module <em>requiert</em> le
+    chargement de <module>mod_proxy</module>. Il fournit le support du
+    <a href="http://python.ca/scgi/protocol.txt">protocole SCGI, version
+    1</a>.</p>
+
+    <p>Ainsi, pour &ecirc;tre en mesure de traiter le protocole SCGI,
+    <module>mod_proxy</module> et <module>mod_proxy_scgi</module>
+    doivent &ecirc;tre charg&eacute;s dans le serveur.</p>
+
+    <note type="warning"><title>Avertissement</title>
+      <p>N'activez pas la fonctionnalit&eacute; de mandataire avant d'avoir <a
+      href="mod_proxy.html#access">s&eacute;curis&eacute; votre serveur</a>. Les
+      serveurs mandataires ouverts sont dangereux non seulement pour
+      votre r&eacute;seau, mais aussi pour l'Internet au sens large.</p>
+    </note>
+</summary>
+
+<seealso><module>mod_proxy</module></seealso>
+<seealso><module>mod_proxy_balancer</module></seealso>
+
+<section id="examples"><title>Exemples</title>
+    <p>Rappelez-vous, pour que les exemples suivants puissent
+    fonctionner, vous devez activer <module>mod_proxy</module> et
+    <module>mod_proxy_scgi</module>.</p>
+
+    <example><title>Passerelle simple</title>
+    <highlight language="config">
+      ProxyPass /scgi-bin/ scgi://localhost:4000/
+      </highlight>
+    </example>
+
+    <p>La passerelle &agrave; r&eacute;partition de charge n&eacute;cessite le chargement du
+    module <module>mod_proxy_balancer</module> et d'au moins un module
+    fournissant un algorithme de r&eacute;partition de charge, comme
+    <module>mod_lbmethod_byrequests</module> en plus des modules
+    d&eacute;j&agrave; cit&eacute;s. <module>mod_lbmethod_byrequests</module> est le module
+    par d&eacute;faut et sera utilis&eacute; dans cet exemple de configuration.</p>
+
+    <example><title>Passerelle &agrave; r&eacute;partition de charge</title>
+    <highlight language="config">
+ProxyPass /scgi-bin/ balancer://somecluster/
+&lt;Proxy balancer://somecluster/&gt;
+    BalancerMember scgi://localhost:4000/
+    BalancerMember scgi://localhost:4001/
+&lt;/Proxy&gt;
+    </highlight>
+    </example>
+</section>
+
+<section id="env"><title>Variables d'environnement</title>
+    <p>En plus des directives de configuration qui permettent de
+    contr&ocirc;ler le comportement de <module>mod_proxy</module>, de
+    nombreuses <dfn>variables d'environnement</dfn> permettent de
+    contr&ocirc;ler le fournisseur de protocole SCGI :</p>
+    <dl>
+        <dt>proxy-scgi-pathinfo</dt>
+        <dd>Par d&eacute;faut, <module>mod_proxy_scgi</module> ne cr&eacute;era ni
+	exportera jamais la variable d'environnement
+	<var>PATH_INFO</var>. Ceci permet au serveur SCGI d'arri&egrave;re-plan
+	de d&eacute;terminer correctement <var>SCRIPT_NAME</var> et
+	<var>Script-URI</var>, et de rester en conformit&eacute; avec la section
+	3.3 de la RFC 3875. Si au contraire vous souhaitez que
+	<module>mod_proxy_scgi</module> g&eacute;n&egrave;re une estimation la plus
+	pr&eacute;cise possible de <var>PATH_INFO</var>, d&eacute;finissez cette
+	variable d'environnement.</dd>
+    </dl>
+</section>
+
+<directivesynopsis>
+<name>ProxySCGISendfile</name>
+<description>Active l'&eacute;valuation du pseudo en-t&ecirc;te de r&eacute;ponse
+<var>X-Sendfile</var></description>
+<syntax>ProxySCGISendfile On|Off|<var>nom-en-t&ecirc;te</var></syntax>
+<default>ProxySCGISendfile Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+
+<usage>
+    <p>La directive <directive>ProxySCGISendfile</directive> permet au
+    serveur cible SCGI de faire servir les fichiers directement par la
+    passerelle. Ceci s'av&egrave;re b&eacute;n&eacute;fique en mati&egrave;re de performances --
+    httpd peut alors utiliser <code>sendfile</code> ou d'autres
+    optimisations, ce qui n'est pas possible si les fichiers passent par
+    la socket du serveur cible.</p>
+    <p>L'argument de la directive
+    <directive>ProxySCGISendfile</directive> d&eacute;termine le comportement
+    de la passerelle :</p>
+    <dl>
+    <dt><code>Off</code></dt>
+    <dd>Aucun traitement particulier n'est effectu&eacute;.</dd>
+
+    <dt><code>On</code></dt>
+    <dd>La passerelle recherche un en-t&ecirc;te dans la r&eacute;ponse du serveur
+    cible nomm&eacute; <code>X-Sendfile</code>, et interpr&egrave;te sa valeur comme
+    le nom du fichier &agrave; servir. L'en-t&ecirc;te est ensuite supprim&eacute; de la
+    r&eacute;ponse finale. Cet argument produit le m&ecirc;me effet que
+    <code>ProxySCGISendfile X-Sendfile</code>.</dd>
+
+    <dt>toute autre valeur</dt>
+    <dd>Identique &agrave; <code>On</code>, mais au lieu de rechercher le nom
+    d'en-t&ecirc;te cod&eacute; en dur, c'est la valeur de l'argument qui constitue
+    le nom de l'en-t&ecirc;te &agrave; rechercher.</dd>
+    </dl>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+    # Utilise le nom d'en-t&ecirc;te par d&eacute;faut (X-Sendfile)
+    ProxySCGISendfile On
+
+    # Utilise un nom d'en-t&ecirc;te diff&eacute;rent
+    ProxySCGISendfile X-Send-Static
+    </highlight>
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxySCGIInternalRedirect</name>
+<description>Active ou d&eacute;sactive les r&eacute;ponses de redirection interne en
+provenance du serveur cible.</description>
+<syntax>ProxySCGIInternalRedirect On|Off</syntax>
+<default>ProxySCGIInternalRedirect On</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+
+<usage>
+    <p>La directive <directive>ProxySCGIInternalRedirect</directive>
+    permet au serveur cible de rediriger en interne la passerelle vers
+    une URL diff&eacute;rente. Cette fonctionnalit&eacute; trouve son origine dans
+    <module>mod_cgi</module> qui redirige la r&eacute;ponse en interne si
+    l'&eacute;tat de la r&eacute;ponse est <code>OK</code> (<code>200</code>), et si
+    la r&eacute;ponse contient un en-t&ecirc;te <code>Location</code> dont la valeur
+    d&eacute;bute par un slash (<code>/</code>). Cette valeur est interpr&eacute;t&eacute;e
+    comme une nouvelle URL locale vers laquelle Apache effectue sa
+    redirection.</p>
+
+    <p>De ce point de vue, <module>mod_proxy_scgi</module> fait la m&ecirc;me
+    chose que <module>mod_cgi</module>, mais vous pouvez en plus
+    d&eacute;sactiver la fonctionnalit&eacute;.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+    ProxySCGIInternalRedirect Off
+    </highlight>
+    </example>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
