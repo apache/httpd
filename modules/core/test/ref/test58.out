@@ -1,0 +1,3 @@
+# testing with conf/test58.conf
+httpd: Syntax error on line 2 of ./conf/test58.conf: <Macro> directive missing closing '>'
+# exit: 1

@@ -1,0 +1,10 @@
+# testing with conf/test69.conf
+[macro:warn] non blank chars found after <Macro closing '>' on line 2 of ./conf/test69.conf:  this stuff is ignored...
+[macro:warn] non blank chars found after directive closing on line 4 of ./conf/test69.conf:  this stuff is ignored as well...
+[core:warn] Foo on line 1 of macro 'foo' (defined on line 2 of "./conf/test69.conf") used on line 5 of "./conf/test69.conf"
+[core:warn] Bla on line 1 of macro 'bla' (defined on line 6 of "./conf/test69.conf") used on line 9 of "./conf/test69.conf"
+[core:warn] Comments on line 1 of macro 'comments' (defined on line 10 of "./conf/test69.conf") used on line 13 of "./conf/test69.conf"
+[core:error] done on line 14. on line 14 of ./conf/test69.conf
+AH00526: Syntax error on line 14 of ./conf/test69.conf:
+Configuration processing stopped by Error directive
+# exit: 1

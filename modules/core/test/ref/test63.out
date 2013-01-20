@@ -1,0 +1,10 @@
+# testing with conf/test63.conf
+[core:warn] Foo macro at inc63_.conf:5 on line 1 of macro 'foo' (defined on line 2 of "./conf/inc63_1.conf") used on line 5 of "./conf/inc63_1.conf"
+[core:warn] Foo macro at test63.conf:3 on line 1 of macro 'foo' (defined on line 2 of "./conf/inc63_1.conf") used on line 3 of "./conf/test63.conf"
+[core:warn] Foo macro at inc63_2.conf:2 on line 1 of macro 'foo' (defined on line 2 of "./conf/inc63_1.conf") used on line 2 of "./conf/inc63_2.conf"
+[core:warn] Bla at inc63_2.conf:3 on line 1 of macro 'bla' (defined on line 4 of "./conf/test63.conf") used on line 3 of "./conf/inc63_2.conf"
+[core:warn] Bla at test63.conf:8 on line 1 of macro 'bla' (defined on line 4 of "./conf/test63.conf") used on line 8 of "./conf/test63.conf"
+[core:error] done at line 9. on line 9 of ./conf/test63.conf
+AH00526: Syntax error on line 9 of ./conf/test63.conf:
+Configuration processing stopped by Error directive
+# exit: 1

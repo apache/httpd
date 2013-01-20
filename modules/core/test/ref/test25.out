@@ -1,0 +1,9 @@
+# testing with conf/test25.conf
+[core:warn] restricted access policy 10.0.0.0/8 on line 1 of macro 'restrictedaccesspolicy' (defined on line 3 of "./conf/test25.conf") used on line 8 of "./conf/test25.conf"
+[core:warn] restricted access policy 192.54.172.0/24 192.54.148.0/24 10.0.0.0/8 on line 1 of macro 'restrictedaccesspolicy' (defined on line 3 of "./conf/test25.conf") used on line 16 of "./conf/test25.conf"
+[core:warn] restricted access policy 10.0.0.0/8 on line 1 of macro 'restrictedaccesspolicy' (defined on line 3 of "./conf/test25.conf") used on line 1 of "macro 'localaccessonly' (defined on line 11 of "./conf/test25.conf") used on line 20 of "./conf/test25.conf""
+[core:warn] restricted access policy 10.0.0.0/8 on line 1 of macro 'restrictedaccesspolicy' (defined on line 3 of "./conf/test25.conf") used on line 1 of "macro 'localaccessonly' (defined on line 11 of "./conf/test25.conf") used on line 24 of "./conf/test25.conf""
+[core:error] done line 27. on line 27 of ./conf/test25.conf
+AH00526: Syntax error on line 27 of ./conf/test25.conf:
+Configuration processing stopped by Error directive
+# exit: 1

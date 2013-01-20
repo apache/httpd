@@ -1,0 +1,203 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_macro.xml.meta">
+
+<name>mod_macro</name>
+<description>This module provides usage of macros within apache runtime configuration files</description>
+<status>Base</status>
+<sourcefile>mod_macro.c</sourcefile>
+<identifier>macro_module</identifier>
+
+<summary>
+
+    <p>This modules provides macros within apache runtime configuration files.
+    These macros have parameters.  They are expanded when used (parameters are
+    substituted by their values given as an argument), and the result is
+    processed normally.</p>
+</summary>
+
+<section id="features"><title>Features</title>
+
+    Definition of a macro:
+    <ul>
+    <li> macro definition within a &lt;Macro&gt; section, following
+         the apache style.</li>
+    <li> user defined names for the macro and its parameters.</li>
+    <li> macro names are case-insensitive, like apache directives.</li>
+    <li> macro parameter names are case sensitive.</li>
+    <li> macro parameters must have distinct names.</li>
+    <li> error on empty parameter names.</li>
+    <li> redefining a macro generates a warning.</li>
+    <li> macro definitions can be nested... (but what for?)</li>
+    <li> warn about unused macro parameters.</li>
+    <li> warn about macro parameter names which prefix one another.</li>
+    <li> warn if a parameter is not prefixed by any of '<code>$%@</code>'
+         (good practice).</li>
+    <li> the available prefixes help deal with interactions with other
+         directives such as <directive module="core">Define</directive>.</li>
+    <li> tip: it may be useful to define a macro parameter with surrounding
+         braces, say <code>${foo}</code> so that the name can appear with
+	 surrounding characters such as <code>bla${foo}bla</code>.</li>
+    <li> warn about empty macro contents.</li>
+    <li> warns if sections are not properly nested within a macro.
+         (if it is detected so).</li>
+    <li> the lexical scope of macro parameters is restricted to the macro text,
+         it is not forwarded to includes for instance.</li>
+    <li> arbitrary contents in macros.
+         <p>It means you can put perl sections or whatever you like in a macro.
+	 No assumption is made about the lexical structure (quotes, spaces or
+         whatever) within the macro contents but to expect a set of
+         backslash-continued independent lines.</p></li>
+    </ul>
+
+    Use of a macro:
+    <ul>
+    <li> number of arguments must match the definition.</li>
+    <li> all occurences of macro parameters are substituted by their values.</li>
+    <li> in case of conflicts, the longest parameter name is chosen.</li>
+    <li> macro expansion recursion is detected and stopped (error).</li>
+    <li> warn about empty arguments when used.</li>
+    <li> on errors, try to describe precisely where the error occured.</li>
+    <li> <code>$</code> and <code>%</code>-prefixed parameters are not
+          escaped.</li>
+    <li> <code>@</code>-prefixed parameters are escaped in quotes.</li>
+    </ul>
+
+   Removal of a macro definition:
+   <ul>
+   <li> the macro must be already defined.</li>
+   </ul>
+
+    <highlight language="config">
+&lt;Macro DirGroup $dir $group&gt;
+  &lt;Directory $dir&gt;
+    require group $group
+  &lt;/Directory&gt;
+&lt;/Macro&gt;
+
+Use DirGroup /www/apache/private private
+Use DirGroup /www/apache/server  admin
+
+UndefMacro DirGroup
+    </highlight>
+</section>
+
+<!-- Macro -->
+<directivesynopsis type="section">
+<name>Macro</name>
+<description>Define a configuration file macro</description>
+<syntax>
+&lt;Macro <var>name</var> [<var>par1</var> .. <var>parN</var>]&gt;
+... &lt;/Macro&gt;</syntax>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>Macro</directive> directive controls the definition of
+    a macro within the server runtime configuration files.
+    The first argument is the name of the macro.
+    Other arguments are parameters to the macro. It is good practice to prefix
+    parameter names with any of '<code>$%@</code>', and not macro names
+    with such characters.
+    </p>
+
+    <highlight language="config">
+&lt;Macro LocalAccessPolicy&gt;
+  order deny,allow
+  deny from all
+  allow from 10.2.16.0/24
+&lt;/Macro&gt;
+
+&lt;Macro RestrictedAccessPolicy $ipnumbers&gt;
+   order deny,allow
+   deny from all
+   allow from $ipnumbers
+&lt;/Macro&gt;
+    </highlight>
+</usage>
+</directivesynopsis>
+
+<!-- Use -->
+<directivesynopsis>
+<name>Use</name>
+<description>Use a macro</description>
+<syntax>Use <var>name</var> [<var>value1</var> ... <var>valueN</var>]
+</syntax>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+</contextlist>
+
+<usage>
+    <p> The <directive>Use</directive> directive controls the use of a macro.
+    The specified macro is expanded. It must be given the same number of
+    arguments than in the  macro definition. The provided values are
+    associated to their corresponding initial parameters and are substituted
+    before processing.</p>
+
+    <highlight language="config">
+Use LocalAccessPolicy
+...
+Use RestrictedAccessPolicy "192.54.172.0/24 192.54.148.0/24"
+    </highlight>
+
+    is equivalent, with the macros defined above, to:
+
+    <highlight language="config">
+order deny,allow
+deny from all
+allow from 10.2.16.0/24
+...
+order deny,allow
+deny from all
+allow from 192.54.172.0/24 192.54.148.0/24
+    </highlight>
+</usage>
+</directivesynopsis>
+
+<!-- UndefMacro -->
+<directivesynopsis>
+<name>undefMacro</name>
+<description>Undefine a macro</description>
+
+<syntax>UndefMacro <var>name</var></syntax>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>UndefMacro</directive> directive undefines a macro
+    which has been defined before hand.</p>
+
+    <highlight language="config">
+UndefMacro LocalAccessPolicy
+UndefMacro RestrictedAccessPolicy
+    </highlight>
+</usage>
+</directivesynopsis>
+</modulesynopsis>

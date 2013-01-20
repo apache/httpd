@@ -1,0 +1,3 @@
+# testing with conf/test51.conf
+httpd: Syntax error on line 9 of ./conf/test51.conf: macro 'foo' undefined
+# exit: 1

@@ -1,0 +1,205 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- French translation: Fabien Coelho -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_macro.xml.meta">
+
+<name>mod_macro</name>
+<description>Ce module permet d'utiliser des macros dans les fichiers
+de configuration Apache.</description>
+<status>Base</status>
+<sourcefile>mod_macro.c</sourcefile>
+<identifier>macro_module</identifier>
+
+<summary>
+
+    <p>Ce module permet de d&eacute;finir et d'utiliser des macros dans les fichiers
+    de configuration Apache. Ces macros peuvent avoir des param&egrave;tres qui sont
+    expans&eacute;s &agrave; l'utilisation (les param&egrave;tres sont remplac&eacute;s par la valeur
+    pass&eacute;e en argument), et le r&eacute;sultat de la substitution est trait&eacute;
+    normalement.</p>
+</summary>
+
+<section id="features"><title>Caract&eacute;ristiques</title>
+
+    D&eacute;finition d'une macro :
+    <ul>
+    <li> dans une section &lt;Macro&gt; au style homog&egrave;ne &agrave; la
+         syntaxe des fichiers de configuration Apache.</li>
+    <li> l'utilisateur choisit le nom de la macro et de ses param&egrave;tres.</li>
+    <li> les noms de macro sont insensibles &agrave; la casse, comme les directives Apache.</li>
+    <li> les noms de param&egrave;tres sont par contre sensibles &agrave; la casse.</li>
+    <li> les param&egrave;tres d'une macro doivent avoir des noms distincts.</li>
+    <li> il y a une erreur si un param&egrave;tre a un nom vide.</li>
+    <li> la red&eacute;finition d'une macro g&eacute;n&egrave;re un avertissement.</li>
+    <li> des d&eacute;finitions de macros peuvent &ecirc;tre nich&eacute;es les unes dans les autres...</li>
+    <li> les param&egrave;tres inutilis&eacute;s g&eacute;n&egrave;rent un avertissement.</li>
+    <li> les noms de param&egrave;tre en pr&eacute;fixe les uns des autres g&eacute;n&egrave;rent un avertissement.</li>
+    <li> les noms de param&egrave;tre non pr&eacute;fix&eacute;s par '<code>$%@</code>' g&eacute;n&egrave;rent un
+         avertissement pour encourager cette bonne pratique.</li>
+    <li> les diff&eacute;rents pr&eacute;fixes propos&eacute;s permettent de g&eacute;rer les interactions
+         avec d'autres directives comme <directive module="core">Define</directive>.</li>
+    <li> un conseil : il peut &ecirc;tre utile d'ajouter des accolades autour du nom d'un
+         param&egrave;tre, par exemple <code>${foo}</code>, de mani&egrave;re &agrave; ce que le
+         param&egrave;tre puisse &ecirc;tre utilis&eacute;e avec des caract&egrave;res coll&eacute;s autour,
+         par exemple <code>bla${foo}bla</code>.</li>
+    <li> g&eacute;n&egrave;re un avertissement si le contenu de la macro est vide.</li>
+    <li> g&eacute;n&egrave;re un avertissement si le syst&egrave;me d&eacute;tecte que les sections &agrave; l'int&eacute;rieur
+         d'une macro ne sont pas correctement nich&eacute;es.</li>
+    <li> la port&eacute;e lexicale des param&egrave;tres d'une macro est restreinte au texte
+         de la macro elle-m&ecirc;me... en particulier elle n'est pas propag&eacute;e aux inclusions.</li>
+    <li> il n'y a pas de contrainte sur le contenu d'une macro.
+         <p>Cela signifie que vous pouvez mettre une section perl ou n'importe
+         quoi d'autre dans une macro. Il n'y a pas d'autre hypoth&egrave;se sur la
+         structure lexicale et syntaxique de la macro (guillemets, espaces...)
+         que d'attendre une s&eacute;quence de ligne avec &eacute;ventuellement des
+         continuations.</p></li>
+    </ul>
+
+    Utilisation d'une macro:
+    <ul>
+    <li> le nombre d'argument doit &ecirc;tre coh&eacute;rent avec la d&eacute;finition.</li>
+    <li> toutes les occurences des param&egrave;tres sont substitu&eacute;s par leur valeur.</li>
+    <li> en cas de conflit, le nom le plus long est choisit.</li>
+    <li> une r&eacute;cursion dans l'expansion d'une macro est d&eacute;tect&eacute;e et arr&ecirc;t&eacute;e avec une erreur.</li>
+    <li> les arguments vides g&eacute;n&egrave;rent un avertissement si ils sont utilis&eacute;s.</li>
+    <li> le syst&egrave;me g&eacute;n&egrave;re une description tr&egrave;s pr&eacute;cise de la localisation des erreurs.</li>
+    <li> les valeurs des param&egrave;tres pr&eacute;fix&eacute;s par <code>$</code> et <code>%</code> ne sont pas prot&eacute;g&eacute;s.</li>
+    <li> les valeurs des param&egrave;tres pr&eacute;fix&eacute;s par <code>@</code> sont prot&eacute;g&eacute;s par des guillemets.</li>
+    </ul>
+
+    Effacement de la d&eacute;finition d'une macro :
+    <ul>
+    <li> la macro effac&eacute;e doit avoir &eacute;t&eacute; d&eacute;finie auparavant.</li>
+    </ul>
+
+    <highlight language="config">
+&lt;Macro DirGroup $dir $group&gt;
+  &lt;Directory $dir&gt;
+    require group $group
+  &lt;/Directory&gt;
+&lt;/Macro&gt;
+
+Use DirGroup /www/apache/private private
+Use DirGroup /www/apache/server  admin
+
+UndefMacro DirGroup
+    </highlight>
+</section>
+
+<!-- Macro -->
+<directivesynopsis type="section">
+<name>Macro</name>
+<description>D&eacute;finition d'une macro dans un fichier de configuration</description>
+<syntax>
+&lt;Macro <var>nom</var> [<var>par1</var> .. <var>parN</var>]&gt;
+... &lt;/Macro&gt;</syntax>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+</contextlist>
+
+<usage>
+    <p>La diretive <directive>Macro</directive> permet de d&eacute;finir une macro
+    dans un fichier de configuration Apache. Le premier argument est le nom
+    de la macro, et les arguments suivants sont les noms des param&egrave;tres. Il
+    est de bon aloi de pr&eacute;fixer les noms des param&egrave;tres d'une macro
+    avec un caract&egrave;re parmi '<code>$%@</code>'.
+    </p>
+
+    <highlight language="config">
+&lt;Macro LocalAccessPolicy&gt;
+  order deny,allow
+  deny from all
+  allow from 10.2.16.0/24
+&lt;/Macro&gt;
+
+&lt;Macro RestrictedAccessPolicy $ipnumbers&gt;
+   order deny,allow
+   deny from all
+   allow from $ipnumbers
+&lt;/Macro&gt;
+    </highlight>
+</usage>
+</directivesynopsis>
+
+<!-- Use -->
+<directivesynopsis>
+<name>Use</name>
+<description>Utilise une macro</description>
+<syntax>Use <var>nom</var> [<var>valeur1</var> ... <var>valeurN</var>]
+</syntax>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+</contextlist>
+
+<usage>
+    <p> La directive <directive>Use</directive> permet d'utiliser une macro.
+    La macro est expans&eacute;e. Elle doit avoir le m&ecirc;me nombre d'argument que le
+    nombre de param&egrave;tres pr&eacute;cis&eacute;s dans sa d&eacute;finition. Les valeurs pass&eacute;es en
+    argument sont substitu&eacute;es avant l'interpr&eacute;tation du texte de la macro.</p>
+
+    <highlight language="config">
+Use LocalAccessPolicy
+...
+Use RestrictedAccessPolicy "192.54.172.0/24 192.54.148.0/24"
+    </highlight>
+
+    est &eacute;quivalent, avec les macros d&eacute;finies au dessus, &agrave; :
+
+    <highlight language="config">
+order deny,allow
+deny from all
+allow from 10.2.16.0/24
+...
+order deny,allow
+deny from all
+allow from 192.54.172.0/24 192.54.148.0/24
+    </highlight>
+</usage>
+</directivesynopsis>
+
+<!-- UndefMacro -->
+<directivesynopsis>
+<name>undefMacro</name>
+<description>Efface une macro</description>
+
+<syntax>UndefMacro <var>nom</var></syntax>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>UndefMacro</directive> efface la d&eacute;finition
+    d'une macro, qui doit avoir &eacute;t&eacute; d&eacute;finie auparavant.</p>
+
+    <highlight language="config">
+UndefMacro LocalAccessPolicy
+UndefMacro RestrictedAccessPolicy
+    </highlight>
+</usage>
+</directivesynopsis>
+</modulesynopsis>

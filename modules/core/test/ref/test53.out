@@ -1,0 +1,3 @@
+# testing with conf/test53.conf
+httpd: Syntax error on line 2 of ./conf/test53.conf: no macro defined before Use
+# exit: 1
