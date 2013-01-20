@@ -1,0 +1,170 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1361949 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_proxy_express.xml.meta">
+
+<name>mod_proxy_express</name>
+<description>Extension &agrave; <module>mod_proxy</module> pour le fonctionnement en mandataire
+dynamique inverse de masse</description>
+<status>Extension</status>
+<sourcefile>mod_proxy_express.c</sourcefile>
+<identifier>proxy_express_module</identifier>
+
+<summary>
+    <p>Ce module cr&eacute;e dynamiquement en masse des mandataires inverses en
+    faisant correspondre l'en-t&ecirc;te Host: de la requ&ecirc;te HTTP &agrave; un nom de
+    serveur et une URL d'arri&egrave;re-plan stock&eacute;s dans un fichier DBM. Il
+    est ainsi plus ais&eacute; d'utiliser un grand nombre de
+    mandataires inverses sans avoir &agrave; modifier la configuration. Il est
+    loin de poss&eacute;der autant de fonctionnalit&eacute;s que
+    <module>mod_proxy_balancer</module>, qui propose aussi la croissance
+    dynamique, mais il est con&ccedil;u pour g&eacute;rer un nombre beaucoup plus important
+    de serveurs d'arri&egrave;re-plan. Il convient parfaitement pour cr&eacute;er un
+    commutateur HTTP frontal.</p>
+
+    <p>Pour pouvoir &ecirc;tre utilis&eacute;, ce module n&eacute;cessite le chargement de
+    <module>mod_proxy</module>.</p>
+
+    <note type="warning"><title>Avertissement</title>
+      <p>N'activez le mandatement que si vous avez <a
+      href="mod_proxy.html#access">s&eacute;curis&eacute; votre serveur</a>. Les
+      serveurs mandataires ouverts sont dangereux pour votre r&eacute;seau, et
+      dans une plus large mesure pour Internet.</p>
+    </note>
+
+<note><title>Limitations</title>
+  <ul>
+    <li>Ce module n'est pas con&ccedil;u pour remplacer les fonctionnalit&eacute;s
+    dynamiques de <module>mod_proxy_balancer</module>. Par contre, il
+    peut constituer une alternative l&eacute;g&egrave;re et rapide &agrave;
+    <module>mod_rewrite</module> lorsque ce dernier utilise la directive
+    <directive>RewriteMap</directive> et le drapeau <code>[P]</code>
+    pour le mandatement inverse &agrave; partir d'une table de correspondances.
+    </li>
+    <li>Il ne supporte pas les mises en correspondance bas&eacute;es sur les
+    expressions rationnelles ou les mod&egrave;les.
+    </li>
+    <li>Il &eacute;mule :
+      <example>
+        ProxyPass / backend.server:port<br />
+        ProxyPassReverse / backend.server:port<br />
+      </example>
+      En d'autres termes, l'URL dans son ensemble est ajout&eacute;e &agrave; l'URL
+      d'arri&egrave;re-plan correspondante, tout ceci dans le but de
+      proposer un commutateur mandataire inverse simple mais rapide.
+    </li>
+  </ul>
+</note>
+
+</summary>
+<seealso><module>mod_proxy</module></seealso>
+
+<directivesynopsis>
+<name>ProxyExpressEnable</name>
+<description>Active la fonctionnalit&eacute; du module.</description>
+<syntax>ProxyExpressEnable [on|off]</syntax>
+<default>off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+  </contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.3.13 d'Apache</compatibility>
+
+<usage>
+  <p>La directive <directive>ProxyExpressEnable</directive> permet
+  d'activer/d&eacute;sactiver le module.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyExpressDBMFile</name>
+<description>Chemin du fichier DBM.</description>
+<syntax>ProxyExpressDBMFile &lt;chemin&gt;</syntax>
+<default>None</default>
+<contextlist><context>server config</context><context>virtual host</context>
+  </contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.3.13 d'Apache</compatibility>
+
+<usage>
+  <p>La directive <directive>ProxyExpressDBMFile</directive> permet de
+  d&eacute;finir le chemin du fichier DBM de correspondance Express. Ce fichier
+  permet de faire correspondre le nom de serveur extrait de l'en-t&ecirc;te
+  Host: de la requ&ecirc;te entrante avec une URL d'arri&egrave;re-plan.</p>
+
+    <note><title>Note</title>
+      <p>Ce fichier est &eacute;labor&eacute; &agrave; partir d'un fichier texte &agrave; l'aide de
+      l'utilitaire <code><a
+      href="../programs/httxt2dbm.html">httxt2dbm</a></code>.</p>
+
+      <example><title>Fichier de correspondances ProxyExpress</title>
+        ##<br />
+        ##express-map.txt:<br />
+        ##<br />
+        <br />
+        www1.example.com    http://192.168.211.2:8080<br />
+        www2.example.com   http://192.168.211.12:8088<br />
+        www3.example.com   http://192.168.212.10<br />
+      </example>
+
+      <example><title>Cr&eacute;ation du fichier DBM</title>
+        httxt2dbm -i express-map.txt -o emap<br />
+        </example>
+
+      <example><title>Configuration</title>
+        ProxyExpressDBMFile emap<br />
+        </example>
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyExpressDBMType</name>
+<description>Type de fichier DBM.</description>
+<syntax>ProxyExpressDBMFile &lt;type&gt;</syntax>
+<default>"default"</default>
+<contextlist><context>server config</context><context>virtual host</context>
+  </contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.3.13 d'Apache</compatibility>
+
+<usage>
+  <p>La directive <directive>ProxyExpressDBMType</directive> permet de
+  d&eacute;finir le type de fichier DBM requis par le module. La valeur par
+  d&eacute;faut correspond au type DBM par d&eacute;faut du fichier cr&eacute;&eacute; par
+  l'utilitaire <code><a
+  href="../programs/httxt2dbm.html">httxt2dbm</a></code>.</p>
+  <p>Les valeurs possibles sont (mais toutes ne seront pas disponibles &agrave;
+  l'ex&eacute;cution) :</p>
+<table border="1" style="zebra">
+    <columnspec><column width=".3"/><column width=".7"/></columnspec>
+
+    <tr><th>Value</th><th>Description</th></tr>
+    <tr><td><code>db</code></td><td>Fichiers Berkeley DB</td></tr>
+    <tr><td><code>gdbm</code></td><td>Fichiers GDBM</td></tr>
+    <tr><td><code>ndbm</code></td><td>Fichiers NDBM</td></tr>
+    <tr><td><code>sdbm</code></td><td>Fichiers SDBM (toujours disponible)</td></tr>
+    <tr><td><code>default</code></td><td>type DBM par d&eacute;faut</td></tr>
+    </table>
+
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

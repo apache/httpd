@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 630289 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_logio.xml.meta">
+
+<name>mod_logio</name>
+<description>Journalisation des octets en entr&eacute;e et en sortie pour
+chaque requ&ecirc;te</description>
+<status>Extension</status>
+<sourcefile>mod_logio.c</sourcefile>
+<identifier>logio_module</identifier>
+
+<summary>
+
+    <p>Ce module permet d'enregistrer le nombre d'octets re&ccedil;us et
+    envoy&eacute;s pour chaque requ&ecirc;te. Ce nombre refl&egrave;te le nombre r&eacute;el
+    d'octets transmis sur le r&eacute;seau, et prend en compte les en-t&ecirc;tes et
+    corps des requ&ecirc;tes et des r&eacute;ponses. Le d&eacute;compte est effectu&eacute; avant
+    SSL/TLS en entr&eacute;e et apr&egrave;s SSL/TLS en sortie, si bien que le
+    r&eacute;sultat refl&egrave;tera toute modification introduite par le
+    chiffrement.</p>
+
+    <p>Pour fonctionner, ce module requiert le chargement du module
+    <module>mod_log_config</module>.</p>
+
+    <note>Lorsqu'on utilise les connexions persistantes avec SSL, le
+    suppl&eacute;ment de trafic induit par la n&eacute;gociation SSL est enregistr&eacute;
+    dans le d&eacute;compte des octets transmis dans le cadre de la premi&egrave;re
+    requ&ecirc;te de la connexion. Lors d'une ren&eacute;gociation SSL au niveau d'un
+    r&eacute;pertoire, le d&eacute;compte d'octets est associ&eacute; &agrave; la
+    requ&ecirc;te qui a d&eacute;clench&eacute; la ren&eacute;gociation.</note>
+
+</summary>
+
+<seealso><module>mod_log_config</module></seealso>
+<seealso><a href="../logs.html">Les fichiers journaux
+d'Apache</a></seealso>
+
+<section id="formats">
+<title>Formats de journaux personnalis&eacute;s</title>
+
+    <p>Ce module introduit deux nouvelles directives de journalisation.
+    Les caract&eacute;ristiques de la requ&ecirc;te en elle-m&ecirc;me sont journalis&eacute;es en
+    ins&eacute;rant des directives "<code>%</code>" dans la cha&icirc;ne de format,
+    qui seront remplac&eacute;es comme suit dans le fichier journal :</p>
+
+    <table border="1" style="zebra">
+    <tr><th>Cha&icirc;ne&nbsp;de&nbsp;Format</th>
+        <th>Description</th></tr>
+
+    <tr><td><code>%...I</code></td>
+        <td>Octets re&ccedil;us, en-t&ecirc;tes et corps de requ&ecirc;te inclus ; ne peut
+	pas &ecirc;tre nul.</td></tr>
+
+    <tr><td><code>%...O</code></td>
+        <td>Octets envoy&eacute;s, en-t&ecirc;tes inclus ; ne peut
+	pas &ecirc;tre nul.</td></tr>
+    </table>
+
+    <p>En g&eacute;n&eacute;ral, cette fonctionnalit&eacute; s'utilise comme suit :</p>
+
+    <dl>
+      <dt>Format de journal d'entr&eacute;es/sorties combin&eacute; :</dt>
+      <dd><code>"%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\"
+      \"%{User-agent}i\" %I %O"</code></dd>
+    </dl>
+</section>
+
+</modulesynopsis>
