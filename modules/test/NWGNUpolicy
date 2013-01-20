@@ -24,6 +24,10 @@ include $(AP_WORK)/build/NWGNUhead.inc
 # INCDIRS
 #
 XINCDIRS	+= \
+			$(APR)/include \
+			$(APRUTIL)/include \
+			$(SRC)/include \
+			$(NWOS) \
 			$(EOLIST)
 
 #
@@ -95,19 +99,19 @@ endif
 # This is used by the link 'name' directive to name the nlm.  If left blank
 # TARGET_nlm (see below) will be used.
 #
-NLM_NAME	=
+NLM_NAME	= policy
 
 #
 # This is used by the link '-desc ' directive.
 # If left blank, NLM_NAME will be used.
 #
-NLM_DESCRIPTION	=
+NLM_DESCRIPTION	= Apache $(VERSION_STR) Policy Module
 
 #
 # This is used by the '-threadname' directive.  If left blank,
 # NLM_NAME Thread will be used.
 #
-NLM_THREAD_NAME	=
+NLM_THREAD_NAME	= $(NLM_NAME) Module
 
 #
 # If this is specified, it will override VERSION value in
@@ -118,7 +122,7 @@ NLM_VERSION	=
 #
 # If this is specified, it will override the default of 64K
 #
-NLM_STACK_SIZE	=
+NLM_STACK_SIZE	= 8192
 
 
 #
@@ -151,21 +155,8 @@ XDCDATA		=
 #
 # If there is an NLM target, put it here
 #
-# If there is only one element to build it needs to be included twice
-# in the below target list.
-# Normally if there is only one element to be built within a
-# directory, the makefile for the single element would be called NWGNUmakefile.
-# But if there are multiples, the parent NWGNUmakefile must reference more
-# than one submakefile. Because the experimental directory might vary in the
-# number of submakefiles, but for the moment only contains one, we reference
-# it twice to allow it parent NWGNUmakefile to work properly.  If another
-# submakefile is added, the extra reference to the first NLM should be removed.
 TARGET_nlm = \
-	$(OBJDIR)/optfnexport.nlm \
-	$(OBJDIR)/optfnimport.nlm \
-	$(OBJDIR)/opthookexport.nlm \
-	$(OBJDIR)/opthookimport.nlm \
-	$(OBJDIR)/policy.nlm \
+	$(OBJDIR)/$(NLM_NAME).nlm \
 	$(EOLIST)
 
 #
@@ -179,6 +170,7 @@ TARGET_lib = \
 # Paths must all use the '/' character
 #
 FILES_nlm_objs = \
+	$(OBJDIR)/mod_policy.o \
 	$(EOLIST)
 
 #
@@ -186,6 +178,7 @@ FILES_nlm_objs = \
 # These will be added as a library command in the link.opt file.
 #
 FILES_nlm_libs = \
+	$(PRELUDE) \
 	$(EOLIST)
 
 #
@@ -193,6 +186,8 @@ FILES_nlm_libs = \
 # These will be added as a module command in the link.opt file.
 #
 FILES_nlm_modules = \
+	aprlib \
+	libc \
 	$(EOLIST)
 
 #
@@ -214,12 +209,16 @@ FILE_nlm_copyright =
 # Any additional imports go here
 #
 FILES_nlm_Ximports = \
+	@aprlib.imp \
+	@httpd.imp \
+	@libc.imp \
 	$(EOLIST)
 
 #
 # Any symbols exported to here
 #
 FILES_nlm_exports = \
+	policy_module \
 	$(EOLIST)
 
 #
@@ -242,7 +241,6 @@ nlms :: libs $(TARGET_nlm)
 # correct place.  (See $(AP_WORK)/build/NWGNUhead.inc for examples)
 #
 install :: nlms FORCE
-	$(call COPY,$(OBJDIR)/*.nlm, $(INSTALLBASE)/modules/)
 
 #
 # Any specialized rules here
