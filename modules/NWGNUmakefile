@@ -34,6 +34,7 @@ SUBDIRS = \
 	apreq \
 	cache \
 	cluster \
+	core \
 	dav/main \
 	dav/fs \
 	dav/lock \
