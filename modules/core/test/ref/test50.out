@@ -1,0 +1,3 @@
+# testing with conf/test50.conf
+httpd: Syntax error on line 5 of ./conf/test50.conf: cannot remove undefined macro 'bla'
+# exit: 1

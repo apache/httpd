@@ -1,0 +1,3 @@
+# testing with conf/test10.conf
+httpd: Syntax error on line 1 of macro 'bla' (defined on line 6 of "./conf/test10.conf") used on line 1 of "macro 'foo' (defined on line 2 of "./conf/test10.conf") used on line 10 of "./conf/test10.conf"": recursive use of macro 'foo' is invalid
+# exit: 1

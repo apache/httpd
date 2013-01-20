@@ -1,0 +1,20 @@
+# testing with conf/test36.conf
+[macro:warn] macro 'warnings' (defined on line 1 of "./conf/test36.conf"): argument name prefix conflict ($u #1 and $u1 #3), be careful about your macro definition!
+[macro:warn] macro 'warnings' (defined on line 1 of "./conf/test36.conf"): argument name prefix conflict ($u #1 and $u2 #5), be careful about your macro definition!
+[macro:warn] macro 'warnings' (defined on line 1 of "./conf/test36.conf"): argument name prefix conflict ($n #2 and $n1 #4), be careful about your macro definition!
+[macro:warn] macro 'warnings' (defined on line 1 of "./conf/test36.conf"): argument name prefix conflict ($n #2 and $n2 #6), be careful about your macro definition!
+[macro:warn] macro 'warnings' (defined on line 1 of "./conf/test36.conf"): argument '$n' (#2) never used
+[macro:warn] macro 'warnings' (defined on line 1 of "./conf/test36.conf"): argument '$n1' (#4) never used
+[macro:warn] macro 'warnings' (defined on line 1 of "./conf/test36.conf"): argument '$n2' (#6) never used
+[macro:warn] macro 'warnings' (defined on line 1 of "./conf/test36.conf") used on line 10 of "./conf/test36.conf": empty argument #1
+[macro:warn] macro 'warnings' (defined on line 1 of "./conf/test36.conf") used on line 10 of "./conf/test36.conf": empty argument #2
+[macro:warn] macro 'warnings' (defined on line 1 of "./conf/test36.conf") used on line 10 of "./conf/test36.conf": empty argument #3
+[macro:warn] macro 'warnings' (defined on line 1 of "./conf/test36.conf") used on line 10 of "./conf/test36.conf": empty argument #4
+[macro:warn] macro 'warnings' (defined on line 1 of "./conf/test36.conf") used on line 10 of "./conf/test36.conf": empty argument #5
+[macro:warn] macro 'warnings' (defined on line 1 of "./conf/test36.conf") used on line 10 of "./conf/test36.conf": empty argument #6
+[core:warn] many warnings! 1 3 5 on line 1 of macro 'warnings' (defined on line 1 of "./conf/test36.conf") used on line 7 of "./conf/test36.conf"
+[core:warn] many warnings!    on line 1 of macro 'warnings' (defined on line 1 of "./conf/test36.conf") used on line 10 of "./conf/test36.conf"
+[core:error] done! on line 12 of ./conf/test36.conf
+AH00526: Syntax error on line 12 of ./conf/test36.conf:
+Configuration processing stopped by Error directive
+# exit: 1

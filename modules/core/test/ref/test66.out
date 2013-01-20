@@ -1,0 +1,7 @@
+# testing with conf/test66.conf
+[core:warn] Foo: x=X y=Y on line 1 of macro 'foo' (defined on line 2 of "./conf/test66.conf") used on line 5 of "./conf/test66.conf"
+[core:warn] Foo: x=$y y=$x on line 1 of macro 'foo' (defined on line 2 of "./conf/test66.conf") used on line 6 of "./conf/test66.conf"
+[core:error] done on line 7. on line 7 of ./conf/test66.conf
+AH00526: Syntax error on line 7 of ./conf/test66.conf:
+Configuration processing stopped by Error directive
+# exit: 1
