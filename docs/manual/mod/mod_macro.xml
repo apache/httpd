@@ -37,9 +37,8 @@
 
 <section id="features"><title>Features</title>
 
-<p>
-    Definition of a macro:
-</p>
+<p>Definition of a macro:</p>
+
     <ul>
     <li> macro definition within a &lt;Macro&gt; section, following
          the apache style.</li>
@@ -71,9 +70,8 @@
          backslash-continued independent lines.</p></li>
     </ul>
 
-<p>
-    Use of a macro:
-</p>
+<p>Use of a macro:</p>
+
     <ul>
     <li> number of arguments must match the definition.</li>
     <li> all occurences of macro parameters are substituted by their values.</li>
@@ -86,14 +84,13 @@
     <li> <code>@</code>-prefixed parameters are escaped in quotes.</li>
     </ul>
 
-<p>
-   Removal of a macro definition:
-</p>
+<p>Removal of a macro definition:</p>
+
    <ul>
    <li> the macro must be already defined.</li>
    </ul>
 
-    <highlight language="config">
+<highlight language="config">
 &lt;Macro DirGroup $dir $group&gt;
   &lt;Directory $dir&gt;
     require group $group
@@ -104,7 +101,7 @@ Use DirGroup /www/apache/private private
 Use DirGroup /www/apache/server  admin
 
 UndefMacro DirGroup
-    </highlight>
+</highlight>
 
 </section>
 
@@ -159,7 +156,7 @@ UndefMacro DirGroup
 </contextlist>
 
 <usage>
-    <p> The <directive>Use</directive> directive controls the use of a macro.
+    <p>The <directive>Use</directive> directive controls the use of a macro.
     The specified macro is expanded. It must be given the same number of
     arguments than in the  macro definition. The provided values are
     associated to their corresponding initial parameters and are substituted
@@ -183,6 +180,7 @@ deny from all
 allow from 192.54.172.0/24 192.54.148.0/24
     </highlight>
 </usage>
+
 </directivesynopsis>
 
 <!-- UndefMacro -->
