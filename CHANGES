@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.4
 
+  *) mod_proxy_http: Honour special value 0 (unlimited) of LimitRequestBody
+     PR 54435.  [Pavel Mateja <pavel netsafe.cz>]
+
   *) mod_proxy_ajp: Support unknown HTTP methods. PR 54416.
      [Rainer Jung]
 
