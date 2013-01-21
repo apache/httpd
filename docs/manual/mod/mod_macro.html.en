@@ -55,7 +55,6 @@
 
 <p>Definition of a macro:</p>
 
-</p>
     <ul>
     <li> macro definition within a &lt;Macro&gt; section, following
          the apache style.</li>
@@ -89,7 +88,6 @@
 
 <p>Use of a macro:</p>
 
-</p>
     <ul>
     <li> number of arguments must match the definition.</li>
     <li> all occurences of macro parameters are substituted by their values.</li>
@@ -104,7 +102,6 @@
 
 <p>Removal of a macro definition:</p>
 
-</p>
    <ul>
    <li> the macro must be already defined.</li>
    </ul>
