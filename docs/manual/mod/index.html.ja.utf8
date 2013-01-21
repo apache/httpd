@@ -151,7 +151,8 @@ by other LDAP modules</dd>
 <dt><a href="mod_logio.html">mod_logio</a></dt><dd>リクエスト毎に入力バイト数と出力バイト数とをロギング</dd>
 <dt><a href="mod_lua.html">mod_lua</a></dt><dd>Provides Lua hooks into various portions of the httpd
 request processing</dd>
-<dt><a href="mod_mime.html" id="M" name="M">mod_mime</a></dt><dd>リクエストされたファイルの拡張子とファイルの振る舞い
+<dt><a href="mod_macro.html" id="M" name="M">mod_macro</a></dt><dd>This module provides usage of macros within apache runtime configuration files</dd>
+<dt><a href="mod_mime.html">mod_mime</a></dt><dd>リクエストされたファイルの拡張子とファイルの振る舞い
     (ハンドラとフィルタ)、内容 (MIME タイプ、言語、文字セット、エンコーディング)
     とを関連付ける</dd>
 <dt><a href="mod_mime_magic.html">mod_mime_magic</a></dt><dd>Determines the MIME type of a file

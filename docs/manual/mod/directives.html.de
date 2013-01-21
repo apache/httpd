@@ -369,7 +369,8 @@
 <li><a href="mod_lua.html#luaquickhandler">LuaQuickHandler</a></li>
 <li><a href="mod_lua.html#luaroot">LuaRoot</a></li>
 <li><a href="mod_lua.html#luascope">LuaScope</a></li>
-<li><a href="mpm_common.html#maxconnectionsperchild" id="M" name="M">MaxConnectionsPerChild</a></li>
+<li><a href="mod_macro.html#macro" id="M" name="M">&lt;Macro&gt;</a></li>
+<li><a href="mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></li>
 <li><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests</a></li>
 <li><a href="mpm_common.html#maxmemfree">MaxMemFree</a></li>
 <li><a href="core.html#maxrangeoverlaps">MaxRangeOverlaps</a></li>
@@ -638,7 +639,9 @@
 <li><a href="mod_log_config.html#transferlog">TransferLog</a></li>
 <li><a href="mod_mime.html#typesconfig">TypesConfig</a></li>
 <li><a href="core.html#undefine" id="U" name="U">UnDefine</a></li>
+<li><a href="mod_macro.html#undefmacro">undefMacro</a></li>
 <li><a href="mod_env.html#unsetenv">UnsetEnv</a></li>
+<li><a href="mod_macro.html#use">Use</a></li>
 <li><a href="core.html#usecanonicalname">UseCanonicalName</a></li>
 <li><a href="core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></li>
 <li><a href="mod_unixd.html#user">User</a></li>
