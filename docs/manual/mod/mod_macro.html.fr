@@ -46,7 +46,7 @@ de configuration Apache.</td></tr>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#macro">&lt;Macro&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#undefmacro">undefMacro</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#undefmacro">UndefMacro</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#use">Use</a></li>
 </ul>
 <h3>Sujets</h3>
@@ -157,24 +157,16 @@ UndefMacro DirGroup
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="undefMacro" id="undefMacro">undefMacro</a> <a name="undefmacro" id="undefmacro">Directive</a></h2>
+<div class="directive-section"><h2><a name="UndefMacro" id="UndefMacro">UndefMacro</a> <a name="undefmacro" id="undefmacro">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Efface une macro</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>UndefMacro <var>nom</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Undefine a macro</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>UndefMacro <var>name</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_macro</td></tr>
-</table>
-    <p>La directive <code class="directive">UndefMacro</code> efface la définition
-    d'une macro, qui doit avoir été définie auparavant.</p>
-
-    <pre class="prettyprint lang-config">
-UndefMacro LocalAccessPolicy
-UndefMacro RestrictedAccessPolicy
-    </pre>
-
-
-</div>
+</table><p>La documentation de cette directive
+	n'a pas encore t traduite. Veuillez vous reporter  la version
+	en langue anglaise.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Use" id="Use">Use</a> <a name="use" id="use">Directive</a></h2>
 <table class="directive">

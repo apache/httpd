@@ -42,12 +42,13 @@
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#macro">&lt;Macro&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#undefmacro">undefMacro</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#undefmacro">UndefMacro</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#use">Use</a></li>
 </ul>
 <h3>Topics</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#features">Features</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -120,6 +121,44 @@ UndefMacro DirGroup
 </pre>
 
 
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="examples" id="examples">Examples</a></h2>
+
+<p>A common usage of <code class="module"><a href="../mod/mod_macro.html">mod_macro</a></code> is for the creation of
+dynamically-generated virtual hosts.</p>
+
+<pre class="prettyprint lang-config">
+## Define a VHost Macro for repetitive configurations
+
+&lt;Macro VHost $host $port $dir&gt;
+  Listen $port
+  &lt;VirtualHost *:$port&gt;
+
+    ServerName $host
+    DocumentRoot $dir
+
+    &lt;Directory $dir&gt;
+      # do something here...
+    &lt;/Directory&gt;
+
+    # limit access to intranet subdir.
+    &lt;Directory $dir/intranet&gt;
+      order deny,allow
+      deny from all
+      allow from 10.0.0.0/8
+    &lt;/Directory&gt;
+  &lt;/VirtualHost&gt;
+&lt;/Macro&gt;
+
+## Use of VHost with different arguments.
+
+Use VHost www.apache.org 80 /vhosts/apache/htdocs
+Use VHost example.org 8080 /vhosts/example/htdocs
+Use VHost www.example.fr 1234 /vhosts/example.fr/htdocs
+</pre>
+
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Macro" id="Macro">&lt;Macro&gt;</a> <a name="macro" id="macro">Directive</a></h2>
@@ -153,7 +192,7 @@ UndefMacro DirGroup
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="undefMacro" id="undefMacro">undefMacro</a> <a name="undefmacro" id="undefmacro">Directive</a></h2>
+<div class="directive-section"><h2><a name="UndefMacro" id="UndefMacro">UndefMacro</a> <a name="undefmacro" id="undefmacro">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Undefine a macro</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>UndefMacro <var>name</var></code></td></tr>
