@@ -1,0 +1,19 @@
+#
+# Macros within runtime configuration files
+#
+# Required modules: mod_macro
+#
+
+# <Macro DynamicVirtualHost $server>
+#    <VirtualHost *:80>
+#        ServerName $server
+#        DocumentRoot @@ServerRoot@@/vhosts/$server/htdocs
+#
+#        AccessLog logs/${server}_access.log
+#        ErrorLog logs/${server}_error.log
+#    </VirtualHost>
+#</Macro>
+#
+#Use DynamicVirtualHost www.example.com
+#Use DynamicVirtualHost www.example2.com
+#Use DynamicVirtualHost www.example3.com
