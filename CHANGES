@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.4
 
+  *) mod_proxy_ajp: Support unknown HTTP methods. PR 54416.
+     [Rainer Jung]
+
   *) htcacheclean: Fix list options "-a" and "-A".
      [Rainer Jung]
 
