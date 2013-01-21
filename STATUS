@@ -91,6 +91,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * htcacheclean: fix segfault if -p is omitted and URLs are passed.
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1436401
+    2.4.x patch: trunk patch works
+    +1: jorton, rpluem, rjung
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -230,11 +235,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  (20130119 - updated to include minor mmn bump)
     +1: druggeri
     covener: minor MMM bump?  (Thanks for reminder. This is done. -druggeri)
-
-  * htcacheclean: fix segfault if -p is omitted and URLs are passed.
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1436401
-    2.4.x patch: trunk patch works
-    +1: jorton, rpluem
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
