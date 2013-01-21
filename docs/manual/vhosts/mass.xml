@@ -301,4 +301,12 @@ discussed in the <a href="../rewrite/vhosts.html">rewrite
 documentation</a>.</p>
 </section>
 
+<section id="macro"><title>Mass virtual hosts with mod_macro</title>
+
+<p>Another option for dynamically generated virtual hosts is
+<module>mod_macro</module>, with which you can create a virtualhost
+template, and invoke it for multiple hostnames.
+</p>
+</section>
+
 </manualpage>
