@@ -23,7 +23,7 @@
 <modulesynopsis metafile="mod_macro.xml.meta">
 
 <name>mod_macro</name>
-<description>This module provides usage of macros within apache httpd runtime configuration files</description>
+<description>Provides macros within apache httpd runtime configuration files</description>
 <status>Base</status>
 <sourcefile>mod_macro.c</sourcefile>
 <identifier>macro_module</identifier>
@@ -31,7 +31,7 @@
 <summary>
 
     <p>This modules provides macros within apache httpd runtime configuration files.
-    These macros have parameters.  They are expanded when used (parameters are
+    These macros may have parameters. They are expanded when used (parameters are
     substituted by their values given as an argument), and the result is
     processed normally.</p>
 </summary>
@@ -41,7 +41,7 @@
 <p>Definition of a macro:</p>
 
     <ul>
-    <li> macro definition within a &lt;Macro&gt; section, following
+    <li> macro definition within a <directive type="section">Macro</directive> section, following
          the httpd configuration style.</li>
     <li> user defined names for the macro and its parameters.</li>
     <li> macro names are case-insensitive, like httpd directives.</li>
@@ -160,17 +160,17 @@ UndefMacro DirGroup
     before processing.</p>
 
     <highlight language="config">
-    Use LocalAccessPolicy
-    ...
-    Use RestrictedAccessPolicy "192.54.172.0/24 192.54.148.0/24"
+Use LocalAccessPolicy
+...
+Use RestrictedAccessPolicy "192.54.172.0/24 192.54.148.0/24"
     </highlight>
 
     <p>is equivalent, with the macros defined above, to:</p>
 
     <highlight language="config">
-    Require ip 10.2.16.0/24
-    ...
-    Require ip 192.54.172.0/24 192.54.148.0/24
+Require ip 10.2.16.0/24
+...
+Require ip 192.54.172.0/24 192.54.148.0/24
     </highlight>
 </usage>
 
