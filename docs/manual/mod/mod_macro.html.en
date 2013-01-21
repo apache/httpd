@@ -53,8 +53,8 @@
 <div class="section">
 <h2><a name="features" id="features">Features</a></h2>
 
-<p>
-    Definition of a macro:
+<p>Definition of a macro:</p>
+
 </p>
     <ul>
     <li> macro definition within a &lt;Macro&gt; section, following
@@ -87,8 +87,8 @@
          backslash-continued independent lines.</p></li>
     </ul>
 
-<p>
-    Use of a macro:
+<p>Use of a macro:</p>
+
 </p>
     <ul>
     <li> number of arguments must match the definition.</li>
@@ -102,14 +102,14 @@
     <li> <code>@</code>-prefixed parameters are escaped in quotes.</li>
     </ul>
 
-<p>
-   Removal of a macro definition:
+<p>Removal of a macro definition:</p>
+
 </p>
    <ul>
    <li> the macro must be already defined.</li>
    </ul>
 
-    <pre class="prettyprint lang-config">
+<pre class="prettyprint lang-config">
 &lt;Macro DirGroup $dir $group&gt;
   &lt;Directory $dir&gt;
     require group $group
@@ -120,7 +120,7 @@ Use DirGroup /www/apache/private private
 Use DirGroup /www/apache/server  admin
 
 UndefMacro DirGroup
-    </pre>
+</pre>
 
 
 </div>
@@ -188,7 +188,7 @@ UndefMacro RestrictedAccessPolicy
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_macro</td></tr>
 </table>
-    <p> The <code class="directive">Use</code> directive controls the use of a macro.
+    <p>The <code class="directive">Use</code> directive controls the use of a macro.
     The specified macro is expanded. It must be given the same number of
     arguments than in the  macro definition. The provided values are
     associated to their corresponding initial parameters and are substituted
