@@ -106,6 +106,43 @@ UndefMacro DirGroup
 
 </section>
 
+<section id="examples"><title>Examples</title>
+
+<p>A common usage of <module>mod_macro</module> is for the creation of
+dynamically-generated virtual hosts.</p>
+
+<highlight language="config">
+## Define a VHost Macro for repetitive configurations
+
+&lt;Macro VHost $host $port $dir&gt;
+  Listen $port
+  &lt;VirtualHost *:$port&gt;
+
+    ServerName $host
+    DocumentRoot $dir
+
+    &lt;Directory $dir&gt;
+      # do something here...
+    &lt;/Directory&gt;
+
+    # limit access to intranet subdir.
+    &lt;Directory $dir/intranet&gt;
+      order deny,allow
+      deny from all
+      allow from 10.0.0.0/8
+    &lt;/Directory&gt;
+  &lt;/VirtualHost&gt;
+&lt;/Macro&gt;
+
+## Use of VHost with different arguments.
+
+Use VHost www.apache.org 80 /vhosts/apache/htdocs
+Use VHost example.org 8080 /vhosts/example/htdocs
+Use VHost www.example.fr 1234 /vhosts/example.fr/htdocs
+</highlight>
+
+</section>
+
 <!-- Macro -->
 <directivesynopsis type="section">
 <name>Macro</name>
@@ -178,7 +215,7 @@ Require ip 192.54.172.0/24 192.54.148.0/24
 
 <!-- UndefMacro -->
 <directivesynopsis>
-<name>undefMacro</name>
+<name>UndefMacro</name>
 <description>Undefine a macro</description>
 
 <syntax>UndefMacro <var>name</var></syntax>

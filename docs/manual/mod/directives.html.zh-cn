@@ -635,7 +635,7 @@
 <li><a href="mod_log_config.html#transferlog">TransferLog</a></li>
 <li><a href="mod_mime.html#typesconfig">TypesConfig</a></li>
 <li><a href="core.html#undefine" id="U" name="U">UnDefine</a></li>
-<li><a href="mod_macro.html#undefmacro">undefMacro</a></li>
+<li><a href="mod_macro.html#undefmacro">UndefMacro</a></li>
 <li><a href="mod_env.html#unsetenv">UnsetEnv</a></li>
 <li><a href="mod_macro.html#use">Use</a></li>
 <li><a href="core.html#usecanonicalname">UseCanonicalName</a></li>
