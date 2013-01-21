@@ -27,14 +27,14 @@
 <p><span>Available Languages: </span><a href="../en/mod/mod_macro.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_macro.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>This module provides usage of macros within apache runtime configuration files</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>This module provides usage of macros within apache httpd runtime configuration files</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>macro_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_macro.c</td></tr></table>
 <h3>Summary</h3>
 
 
-    <p>This modules provides macros within apache runtime configuration files.
+    <p>This modules provides macros within apache httpd runtime configuration files.
     These macros have parameters.  They are expanded when used (parameters are
     substituted by their values given as an argument), and the result is
     processed normally.</p>
@@ -57,9 +57,9 @@
 
     <ul>
     <li> macro definition within a &lt;Macro&gt; section, following
-         the apache style.</li>
+         the httpd configuration style.</li>
     <li> user defined names for the macro and its parameters.</li>
-    <li> macro names are case-insensitive, like apache directives.</li>
+    <li> macro names are case-insensitive, like httpd directives.</li>
     <li> macro parameter names are case sensitive.</li>
     <li> macro parameters must have distinct names.</li>
     <li> error on empty parameter names.</li>
@@ -142,15 +142,11 @@ UndefMacro DirGroup
 
     <pre class="prettyprint lang-config">
 &lt;Macro LocalAccessPolicy&gt;
-  order deny,allow
-  deny from all
-  allow from 10.2.16.0/24
+    Require ip 10.2.16.0/24
 &lt;/Macro&gt;
 
 &lt;Macro RestrictedAccessPolicy $ipnumbers&gt;
-   order deny,allow
-   deny from all
-   allow from $ipnumbers
+    Require ip $ipnumbers
 &lt;/Macro&gt;
     </pre>
 
@@ -192,22 +188,18 @@ UndefMacro RestrictedAccessPolicy
     before processing.</p>
 
     <pre class="prettyprint lang-config">
-Use LocalAccessPolicy
-...
-Use RestrictedAccessPolicy "192.54.172.0/24 192.54.148.0/24"
+    Use LocalAccessPolicy
+    ...
+    Use RestrictedAccessPolicy "192.54.172.0/24 192.54.148.0/24"
     </pre>
 
 
     <p>is equivalent, with the macros defined above, to:</p>
 
     <pre class="prettyprint lang-config">
-order deny,allow
-deny from all
-allow from 10.2.16.0/24
-...
-order deny,allow
-deny from all
-allow from 192.54.172.0/24 192.54.148.0/24
+    Require ip 10.2.16.0/24
+    ...
+    Require ip 192.54.172.0/24 192.54.148.0/24
     </pre>
 
 
