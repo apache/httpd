@@ -70,6 +70,7 @@
   <modulefile>mod_log_forensic.xml</modulefile>
   <modulefile>mod_logio.xml</modulefile>
   <modulefile>mod_lua.xml.fr</modulefile>
+  <modulefile>mod_macro.xml.fr</modulefile>
   <modulefile>mod_mime.xml</modulefile>
   <modulefile>mod_mime_magic.xml</modulefile>
   <modulefile>mod_negotiation.xml.fr</modulefile>
