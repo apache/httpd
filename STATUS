@@ -240,6 +240,22 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (20130119 - updated to include minor mmn bump)
      +1: druggeri
 
+   * mod_proxy_ajp: Support unknown HTTP methods. PR54416.
+     Forward unknown methods as request attributes
+     using method id SC_M_JK_STORED=0xFF and
+     request attribute id SC_A_STORED_METHOD=13.
+     Code ported from mod_jk (which got it from mod_jk2).
+     Supported by Tomcat at least since TC 4.1.
+     Doesn't seem to be supported by Jetty though.
+     trunk patch: http://svn.apache.org/r1435178
+     2.4.x patch: http://svn.apache.org/r1436400
+                  plus http://svn.apache.org/r1436436 (CHANGES)
+     2.2.x patch: http://people.apache.org/~rjung/patches/httpd-2_2_x-ajp-unknown_-methods.patch
+                  plus CHANGES
+                  Difference to 2.4.x only in logging.
+     +1: rjung
+
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
