@@ -121,3 +121,4 @@ mod_data.so                 0x6F710000    0x00010000
 mod_allowmethods.so         0x6F700000    0x00010000
 mod_cache_socache.so        0x6F6F0000    0x00010000
 mod_allowhandlers.so        0x6F6E0000    0x00010000
+mod_macro.so                0x6F6D0000    0x00010000
