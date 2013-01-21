@@ -144,9 +144,7 @@ dynamically-generated virtual hosts.</p>
 
     # limit access to intranet subdir.
     &lt;Directory $dir/intranet&gt;
-      order deny,allow
-      deny from all
-      allow from 10.0.0.0/8
+      Require ip 10.0.0.0/8
     &lt;/Directory&gt;
   &lt;/VirtualHost&gt;
 &lt;/Macro&gt;
