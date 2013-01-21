@@ -234,6 +234,7 @@
 <li><a href="mod/mod_log_forensic.html">Apache 模块 mod_log_forensic</a></li>
 <li><a href="mod/mod_logio.html">Apache 模块 mod_logio</a></li>
 <li><a href="mod/mod_lua.html">Apache 模块 mod_lua</a></li>
+<li><a href="mod/mod_macro.html">Apache 模块 mod_macro</a></li>
 <li><a href="mod/mod_mime.html">Apache 模块 mod_mime</a></li>
 <li><a href="mod/mod_mime_magic.html">Apache 模块 mod_mime_magic</a></li>
 <li><a href="mod/mod_negotiation.html">Apache 模块 mod_negotiation</a></li>

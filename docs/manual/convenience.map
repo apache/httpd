@@ -330,6 +330,7 @@ luapackagepath	mod/mod_lua.html#luapackagepath
 luaquickhandler	mod/mod_lua.html#luaquickhandler
 luaroot	mod/mod_lua.html#luaroot
 luascope	mod/mod_lua.html#luascope
+macro	mod/mod_macro.html#macro
 maxconnectionsperchild	mod/mpm_common.html#maxconnectionsperchild
 maxkeepaliverequests	mod/core.html#maxkeepaliverequests
 maxmemfree	mod/mpm_common.html#maxmemfree
@@ -599,7 +600,9 @@ traceenable	mod/core.html#traceenable
 transferlog	mod/mod_log_config.html#transferlog
 typesconfig	mod/mod_mime.html#typesconfig
 undefine	mod/core.html#undefine
+undefmacro	mod/mod_macro.html#undefmacro
 unsetenv	mod/mod_env.html#unsetenv
+use	mod/mod_macro.html#use
 usecanonicalname	mod/core.html#usecanonicalname
 usecanonicalphysicalport	mod/core.html#usecanonicalphysicalport
 user	mod/mod_unixd.html#user

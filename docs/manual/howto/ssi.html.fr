@@ -5,7 +5,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Tutoriel Apache : Introduction aux "Inclusions Côté Serveur"
+<title>Tutoriel Apache httpd : Introduction aux "Inclusions Côté Serveur"
 (Server Side Includes - SSI) - Serveur Apache HTTP</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
@@ -20,7 +20,7 @@
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Recettes et tutoriels</a></div><div id="page-content"><div id="preamble"><h1>Tutoriel Apache : Introduction aux "Inclusions Côté Serveur"
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Recettes et tutoriels</a></div><div id="page-content"><div id="preamble"><h1>Tutoriel Apache httpd : Introduction aux "Inclusions Côté Serveur"
 (Server Side Includes - SSI)</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/howto/ssi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -70,11 +70,24 @@ HTML préexistants.</p>
     page entière via un programme CGI, ou toute autre technologie de
     contenu dynamique.</p>
 
+    <p>Par exemple, vous pouvez insérer la directive suivante dans une
+    page HTML existante :</p>
+
+    <div class="example" />
+
+    <p>Ainsi, lorsque la page sera servie, la directive sera évaluée et
+    remplacée par sa valeur :</p>
+
+    <div class="example"><p><code>
+    Tuesday, 15-Jan-2013 19:28:54 EST
+    </code></p></div>
+
     <p>Le choix entre l'utilisation des SSI et la génération entière de
     la page par un programme quelconque, est en général dicté par la
     proportion de contenu statique et de contenu devant être généré
     chaque fois que la page est servie. SSI est idéal pour ajouter de
-    petites quantités d'information, comme l'heure courante. Mais si la
+    petites quantités d'information, comme l'heure courante dans
+    l'exemple précédent. Mais si la
     plus grande partie de votre page est générée au moment où elle est
     servie, vous devez vous tourner vers une autre solution.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -173,7 +186,7 @@ HTML préexistants.</p>
 
     <p>Les directives SSI adoptent la syntaxe suivante :</p>
 <div class="example"><p><code>
-        &lt;!--#élément attribut=valeur attribut=valeur ... --&gt;
+        &lt;!--#fonction attribut=valeur attribut=valeur ... --&gt;
 </code></p></div>
 
     <p>Le format d'une directive SSI étant similaire à celui d'un
@@ -182,7 +195,7 @@ HTML préexistants.</p>
     HTML. Si SSI est correctement configuré, la directive sera remplacée
     par ses résultats.</p>
 
-    <p>"élément" peut prendre de nombreuses formes, et nous décrirons
+    <p>"fonction" peut prendre de nombreuses formes, et nous décrirons
     plus précisément la plupart d'entre eux dans la prochaine version de
     ce document. Pour le moment, voici quelques exemples de ce que vous
     pouvez faire avec SSI.</p>
@@ -193,14 +206,14 @@ HTML préexistants.</p>
         &lt;!--#echo var="DATE_LOCAL" --&gt;
 </code></p></div>
 
-    <p>L'élément <code>echo</code> permet d'afficher la valeur d'une
+    <p>La fonction <code>echo</code> permet d'afficher la valeur d'une
     variable. Il existe un grand nombre de variables standards, y
     compris l'ensemble des variables d'environnement disponibles pour
     les programmes CGI. De plus, vous pouvez définir vos propres
-    variables à l'aide de l'élément <code>set</code>.</p>
+    variables à l'aide de la fonction <code>set</code>.</p>
 
     <p>Si vous n'aimez pas le format sous lequel la date s'affiche, vous
-    pouvez utiliser l'élément <code>config</code> avec un attribut
+    pouvez utiliser la fonction <code>config</code> avec un attribut
     <code>timefmt</code>, pour le modifier.</p>
 
 <div class="example"><p><code>
@@ -278,7 +291,7 @@ HTML préexistants.</p>
     simplifier cette corvée de mises à jour. Il vous suffit de
     confectionner un fichier de pied de page, et de l'inclure dans
     chaque page à l'aide de l'élément SSI <code>include</code>. Pour
-    définir le fichier à inclure, l'élément <code>include</code> peut
+    définir le fichier à inclure, la fonction <code>include</code> peut
     utiliser soit l'attribut <code>file</code>, soit l'attribut
     <code>virtual</code>. L'attribut <code>file</code> est un chemin de
     fichier <em>relatif au répertoire courant</em>. C'est à dire qu'il
@@ -313,7 +326,7 @@ HTML préexistants.</p>
 </code></p></div>
 
     <p>Pour modifier ce message, vous pouvez utiliser l'attribut
-    <code>errmsg</code> avec l'élément <code>config</code> :</p>
+    <code>errmsg</code> avec la fonction <code>config</code> :</p>
 <div class="example"><p><code>
         &lt;!--#config errmsg="[Il semblerait que vous ne sachiez pas
 	utiliser les SSI]" --&gt;
@@ -336,7 +349,7 @@ HTML préexistants.</p>
 
     <p>J'ai pour projet, dans les prochains mois, d'écrire un article à
     propos de l'utilisation des SSI avec des petits programmes CGI. Pour
-    l'instant, voici ce que vous pouvez faire avec l'élément
+    l'instant, voici ce que vous pouvez faire avec la fonction
     <code>exec</code>. Vous pouvez vraiment faire exécuter une commande
     par SSI en utilisant le shell (<code>/bin/sh</code>, pour être plus
     précis - ou le shell DOS, si vous êtes sous Win32). Par exemple, ce
