@@ -1085,8 +1085,8 @@ ldap2.example.com/dc=..."</code></p></div>
     processus d'autorisation, que des prérequis LDAP spécifiques soient
     présents ou non. Pour ignorer les échecs de mise en correspondance
     d'un nom d'utilisateur avec un DN au cours du processus
-    d'autorisation, définissez <code class="directive"><a href="#&#10;    authzldapautoritative">
-    AuthzLDAPAutoritative</a></code> à "off".</p>
+    d'autorisation, définissez <code class="directive"><a href="#&#10;    authzldapauthoritative">
+    AuthzLDAPAuthoritative</a></code> à "off".</p>
 
 
 </div>
@@ -1136,7 +1136,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.2/mod/mod_authnz_ldap.
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2012 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2013 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

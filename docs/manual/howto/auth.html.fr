@@ -58,7 +58,7 @@ d'authentification et d'autorisation. Vous devrez utiliser au moins un
 module de chaque groupe.</p>
 
 <ul>
-  <li>Type d'authentification (voir la directive <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code>)
+  <li>Type d'authentification (voir la directive <code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code>)
     <ul>
       <li><code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code></li>
       <li><code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code></li>
@@ -73,7 +73,7 @@ module de chaque groupe.</p>
       <li><code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></li>
     </ul>
   </li>
-  <li>Autorisation (voir la directive <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>)
+  <li>Autorisation (voir la directive <code class="directive"><a href="../mod/core.html#require">Require</a></code>)
     <ul>
       <li><code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></li>
       <li><code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code></li>
@@ -149,14 +149,6 @@ module de chaque groupe.</p>
     trouvent certains fichiers. Cela ne devrait pas présenter de grandes
     difficultés, et j'essaierai de clarifier tout ça lorsque le besoin
     s'en fera sentir.</p>
-
-    <p>Vous devrez aussi vous assurer que les modules
-    <code class="module"><a href="../mod/mod_authn_core.html">mod_authn_core</a></code> et <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>
-    ont Ã©tÃ© soit compilÃ©s avec le binaire httpd, soit chargÃ©s par le
-    fichier de configuration httpd.conf. Ces deux modules fournissent
-    des directives et fonctionnalitÃ©s essentielles pour la configuration
-    et la mise en oeuvre de l'authentification et de l'autorisation au
-    sein du serveur web.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -236,7 +228,7 @@ module de chaque groupe.</p>
     Digest</code>. Cette méthode est implémentée par le module <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> et est beaucoup plus sécurisée. La plupart
     des navigateurs récents supportent l'authentification Digest.</p>
 
-    <p>La directive <code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code> définit
+    <p>La directive <code class="directive"><a href="../mod/core.html#authname">AuthName</a></code> définit
     l'<dfn>Identificateur</dfn> (Realm) à utiliser avec
     l'authentification. L'identificateur possède deux fonctions. Tout
     d'abord, le client présente en général cette information à
@@ -274,7 +266,7 @@ module de chaque groupe.</p>
     fournies par des modules tiers dans la <a href="http://modules.apache.org/">Base de données des modules
     d'Apache</a>.</p>
 
-    <p>Enfin, la directive <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
+    <p>Enfin, la directive <code class="directive"><a href="../mod/core.html#require">Require</a></code>
     implémente la partie
     autorisation du processus en définissant l'utilisateur autorisé à
     accéder à cette zone du serveur. Dans la section suivante, nous
@@ -478,7 +470,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.2/howto/auth.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2012 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2013 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
