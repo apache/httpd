@@ -1,9 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_proxy_http: Honour special value 0 (unlimited) of LimitRequestBody
-     PR 54435.  [Pavel Mateja <pavel netsafe.cz>]
-
   *) mod_lua: Add bindings for apr_dbd/mod_dbd database access
      [Daniel Gruno]
 
