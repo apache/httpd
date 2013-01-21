@@ -186,15 +186,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1422980
                   http://svn.apache.org/viewvc?view=revision&revision=1430575
      2.4.x patch: http://people.apache.org/~jim/patches/proxypassinherit.patch
-     +1: jim
+     +1: jim, druggeri
      druggeri: (Discussion started on dev@ list)
-               * This can not be fully verified until bug 52402 is fixed
-                  jim: 52402 is fixed and is part of the backport for persist below
                * This doesn't seem to do anything for ProxyPass at server level
                  but doc seems to imply it does.
                * Can you elaborate more in docs about issues and inconsistences?
                * Doc for 2.4 patch notes version 2.5.0
                  jim: are we OK with changing the 2.4.x docs async?
+                 druggeri: sure - just noting that as-applied it would be incorrect
 
   * mod_proxy: Persist balancer and worker data across restarts and stop/start.
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387110
@@ -207,6 +206,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: http://people.apache.org/~jim/patches/proxy-persist.diff
     +1: jim, druggeri
     druggeri: Doc for 2.4 patch says version 2.5.0
+              Worth noting in CHANGES that fix for 52402 is in here?
 
   * mod_status: Add useful mod_status info... try to determine last time
     a specific vhost was accessed/used.
