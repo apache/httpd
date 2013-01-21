@@ -37,6 +37,7 @@
 
 <section id="features"><title>Features</title>
 
+<p>
     Definition of a macro:
     <ul>
     <li> macro definition within a &lt;Macro&gt; section, following
@@ -68,7 +69,9 @@
          whatever) within the macro contents but to expect a set of
          backslash-continued independent lines.</p></li>
     </ul>
+</p>
 
+<p>
     Use of a macro:
     <ul>
     <li> number of arguments must match the definition.</li>
@@ -81,11 +84,14 @@
           escaped.</li>
     <li> <code>@</code>-prefixed parameters are escaped in quotes.</li>
     </ul>
+    </p>
 
+<p>
    Removal of a macro definition:
    <ul>
    <li> the macro must be already defined.</li>
    </ul>
+</p>
 
     <highlight language="config">
 &lt;Macro DirGroup $dir $group&gt;
@@ -99,6 +105,7 @@ Use DirGroup /www/apache/server  admin
 
 UndefMacro DirGroup
     </highlight>
+
 </section>
 
 <!-- Macro -->
