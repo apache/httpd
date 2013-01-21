@@ -40,7 +40,7 @@ de configuration Apache.</description>
 
 <section id="features"><title>Caract&eacute;ristiques</title>
 
-    D&eacute;finition d'une macro :
+    <p>D&eacute;finition d'une macro :</p>
     <ul>
     <li> dans une section &lt;Macro&gt; au style homog&egrave;ne &agrave; la
          syntaxe des fichiers de configuration Apache.</li>
@@ -74,7 +74,7 @@ de configuration Apache.</description>
          continuations.</p></li>
     </ul>
 
-    Utilisation d'une macro:
+    <p>Utilisation d'une macro:</p>
     <ul>
     <li> le nombre d'argument doit &ecirc;tre coh&eacute;rent avec la d&eacute;finition.</li>
     <li> toutes les occurences des param&egrave;tres sont substitu&eacute;s par leur valeur.</li>
@@ -86,7 +86,7 @@ de configuration Apache.</description>
     <li> les valeurs des param&egrave;tres pr&eacute;fix&eacute;s par <code>@</code> sont prot&eacute;g&eacute;s par des guillemets.</li>
     </ul>
 
-    Effacement de la d&eacute;finition d'une macro :
+    <p>Effacement de la d&eacute;finition d'une macro :</p>
     <ul>
     <li> la macro effac&eacute;e doit avoir &eacute;t&eacute; d&eacute;finie auparavant.</li>
     </ul>
@@ -166,7 +166,7 @@ Use LocalAccessPolicy
 Use RestrictedAccessPolicy "192.54.172.0/24 192.54.148.0/24"
     </highlight>
 
-    est &eacute;quivalent, avec les macros d&eacute;finies au dessus, &agrave; :
+    <p>est &eacute;quivalent, avec les macros d&eacute;finies au dessus, &agrave; :</p>
 
     <highlight language="config">
 order deny,allow
