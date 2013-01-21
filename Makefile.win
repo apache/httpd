@@ -446,6 +446,7 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_socache_shmcb.mak CFG="mod_socache_shmcb - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\core
+	 $(MAKE) $(MAKEOPT) -f mod_macro.mak    CFG="mod_macro - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_watchdog.mak    CFG="mod_watchdog - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\cluster
@@ -741,6 +742,7 @@ _copybin:
 #	copy modules\cache\$(LONG)\mod_socache_dc.$(src_so)	"$(inst_so)" <.y
 	copy modules\cache\$(LONG)\mod_socache_memcache.$(src_so) "$(inst_so)" <.y
 	copy modules\cache\$(LONG)\mod_socache_shmcb.$(src_so)	"$(inst_so)" <.y
+	copy modules\core\$(LONG)\mod_macro.$(src_so) 	"$(inst_so)" <.y
 	copy modules\core\$(LONG)\mod_watchdog.$(src_so) 	"$(inst_so)" <.y
 	copy modules\cluster\$(LONG)\mod_heartbeat.$(src_so)	"$(inst_so)" <.y
 	copy modules\cluster\$(LONG)\mod_heartmonitor.$(src_so)	"$(inst_so)" <.y
