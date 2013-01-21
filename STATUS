@@ -184,10 +184,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jim
      druggeri: (Discussion started on dev@ list)
                * This can not be fully verified until bug 52402 is fixed
+                  jim: 52402 is fixed and is part of the backport for persist below
                * This doesn't seem to do anything for ProxyPass at server level
                  but doc seems to imply it does.
                * Can you elaborate more in docs about issues and inconsistences?
                * Doc for 2.4 patch notes version 2.5.0
+                 jim: are we OK with changing the 2.4.x docs async?
 
   * mod_proxy: Persist balancer and worker data across restarts and stop/start.
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387110
@@ -237,7 +239,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Doesn't seem to be supported by Jetty though.
     trunk patch: http://svn.apache.org/r1435178
     2.4.x patch: trunk patch works (minus docs/log-message-tags)
-    +1: rjung, covener
+    +1: rjung, covener, jim
 
  * mod_proxy_http: Honour special value 0 (unlimited) of LimitRequestBody
    PR 54435.
@@ -245,7 +247,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=1433988&view=rev
    Backport version for 2.4.x of patch:
       Trunk version of patch works
-   +1: rpluem,
+   +1: rpluem, jim
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
