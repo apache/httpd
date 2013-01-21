@@ -234,7 +234,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * htcacheclean: fix segfault if -p is omitted and URLs are passed.
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1436401
     2.4.x patch: trunk patch works
-    +1: jorton, 
+    +1: jorton, rpluem
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
