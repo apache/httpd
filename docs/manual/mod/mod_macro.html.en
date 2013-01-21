@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_macro - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<script src="../style/scripts/prettify.js" type="text/javascript">
+</script>
+
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.5</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_macro</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_macro.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_macro.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>This module provides usage of macros within apache runtime configuration files</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>macro_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_macro.c</td></tr></table>
+<h3>Summary</h3>
+
+
+    <p>This modules provides macros within apache runtime configuration files.
+    These macros have parameters.  They are expanded when used (parameters are
+    substituted by their values given as an argument), and the result is
+    processed normally.</p>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#macro">&lt;Macro&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#undefmacro">undefMacro</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#use">Use</a></li>
+</ul>
+<h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#features">Features</a></li>
+</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="features" id="features">Features</a></h2>
+
+<p>
+    Definition of a macro:
+    <ul>
+    <li> macro definition within a &lt;Macro&gt; section, following
+         the apache style.</li>
+    <li> user defined names for the macro and its parameters.</li>
+    <li> macro names are case-insensitive, like apache directives.</li>
+    <li> macro parameter names are case sensitive.</li>
+    <li> macro parameters must have distinct names.</li>
+    <li> error on empty parameter names.</li>
+    <li> redefining a macro generates a warning.</li>
+    <li> macro definitions can be nested... (but what for?)</li>
+    <li> warn about unused macro parameters.</li>
+    <li> warn about macro parameter names which prefix one another.</li>
+    <li> warn if a parameter is not prefixed by any of '<code>$%@</code>'
+         (good practice).</li>
+    <li> the available prefixes help deal with interactions with other
+         directives such as <code class="directive"><a href="../mod/core.html#define">Define</a></code>.</li>
+    <li> tip: it may be useful to define a macro parameter with surrounding
+         braces, say <code>${foo}</code> so that the name can appear with
+	 surrounding characters such as <code>bla${foo}bla</code>.</li>
+    <li> warn about empty macro contents.</li>
+    <li> warns if sections are not properly nested within a macro.
+         (if it is detected so).</li>
+    <li> the lexical scope of macro parameters is restricted to the macro text,
+         it is not forwarded to includes for instance.</li>
+    <li> arbitrary contents in macros.
+         <p>It means you can put perl sections or whatever you like in a macro.
+	 No assumption is made about the lexical structure (quotes, spaces or
+         whatever) within the macro contents but to expect a set of
+         backslash-continued independent lines.</p></li>
+    </ul>
+</p>
+
+<p>
+    Use of a macro:
+    <ul>
+    <li> number of arguments must match the definition.</li>
+    <li> all occurences of macro parameters are substituted by their values.</li>
+    <li> in case of conflicts, the longest parameter name is chosen.</li>
+    <li> macro expansion recursion is detected and stopped (error).</li>
+    <li> warn about empty arguments when used.</li>
+    <li> on errors, try to describe precisely where the error occured.</li>
+    <li> <code>$</code> and <code>%</code>-prefixed parameters are not
+          escaped.</li>
+    <li> <code>@</code>-prefixed parameters are escaped in quotes.</li>
+    </ul>
+    </p>
+
+<p>
+   Removal of a macro definition:
+   <ul>
+   <li> the macro must be already defined.</li>
+   </ul>
+</p>
+
+    <pre class="prettyprint lang-config">
+&lt;Macro DirGroup $dir $group&gt;
+  &lt;Directory $dir&gt;
+    require group $group
+  &lt;/Directory&gt;
+&lt;/Macro&gt;
+
+Use DirGroup /www/apache/private private
+Use DirGroup /www/apache/server  admin
+
+UndefMacro DirGroup
+    </pre>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Macro" id="Macro">&lt;Macro&gt;</a> <a name="macro" id="macro">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define a configuration file macro</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>
+&lt;Macro <var>name</var> [<var>par1</var> .. <var>parN</var>]&gt;
+... &lt;/Macro&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_macro</td></tr>
+</table>
+    <p>The <code class="directive">Macro</code> directive controls the definition of
+    a macro within the server runtime configuration files.
+    The first argument is the name of the macro.
+    Other arguments are parameters to the macro. It is good practice to prefix
+    parameter names with any of '<code>$%@</code>', and not macro names
+    with such characters.
+    </p>
+
+    <pre class="prettyprint lang-config">
+&lt;Macro LocalAccessPolicy&gt;
+  order deny,allow
+  deny from all
+  allow from 10.2.16.0/24
+&lt;/Macro&gt;
+
+&lt;Macro RestrictedAccessPolicy $ipnumbers&gt;
+   order deny,allow
+   deny from all
+   allow from $ipnumbers
+&lt;/Macro&gt;
+    </pre>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="undefMacro" id="undefMacro">undefMacro</a> <a name="undefmacro" id="undefmacro">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Undefine a macro</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>UndefMacro <var>name</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_macro</td></tr>
+</table>
+    <p>The <code class="directive">UndefMacro</code> directive undefines a macro
+    which has been defined before hand.</p>
+
+    <pre class="prettyprint lang-config">
+UndefMacro LocalAccessPolicy
+UndefMacro RestrictedAccessPolicy
+    </pre>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Use" id="Use">Use</a> <a name="use" id="use">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Use a macro</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Use <var>name</var> [<var>value1</var> ... <var>valueN</var>]
+</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_macro</td></tr>
+</table>
+    <p> The <code class="directive">Use</code> directive controls the use of a macro.
+    The specified macro is expanded. It must be given the same number of
+    arguments than in the  macro definition. The provided values are
+    associated to their corresponding initial parameters and are substituted
+    before processing.</p>
+
+    <pre class="prettyprint lang-config">
+Use LocalAccessPolicy
+...
+Use RestrictedAccessPolicy "192.54.172.0/24 192.54.148.0/24"
+    </pre>
+
+
+    is equivalent, with the macros defined above, to:
+
+    <pre class="prettyprint lang-config">
+order deny,allow
+deny from all
+allow from 10.2.16.0/24
+...
+order deny,allow
+deny from all
+allow from 192.54.172.0/24 192.54.148.0/24
+    </pre>
+
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_macro.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_macro.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+var comments_shortname = 'httpd';
+var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_macro.html';
+(function(w, d) {
+    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
+        d.write('<div id="comments_thread"><\/div>');
+        var s = d.createElement('script');
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
+        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
+    }
+    else {
+        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
+    }
+})(window, document);
+//--><!]]></script></div><div id="footer">
+<p class="apache">Copyright 2013 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+//--><!]]></script>
+</body></html>
