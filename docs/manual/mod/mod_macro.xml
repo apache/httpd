@@ -130,15 +130,11 @@ UndefMacro DirGroup
 
     <highlight language="config">
 &lt;Macro LocalAccessPolicy&gt;
-  order deny,allow
-  deny from all
-  allow from 10.2.16.0/24
+    Require ip 10.2.16.0/24
 &lt;/Macro&gt;
 
 &lt;Macro RestrictedAccessPolicy $ipnumbers&gt;
-   order deny,allow
-   deny from all
-   allow from $ipnumbers
+    Require ip $ipnumbers
 &lt;/Macro&gt;
     </highlight>
 </usage>
@@ -164,21 +160,17 @@ UndefMacro DirGroup
     before processing.</p>
 
     <highlight language="config">
-Use LocalAccessPolicy
-...
-Use RestrictedAccessPolicy "192.54.172.0/24 192.54.148.0/24"
+    Use LocalAccessPolicy
+    ...
+    Use RestrictedAccessPolicy "192.54.172.0/24 192.54.148.0/24"
     </highlight>
 
     <p>is equivalent, with the macros defined above, to:</p>
 
     <highlight language="config">
-order deny,allow
-deny from all
-allow from 10.2.16.0/24
-...
-order deny,allow
-deny from all
-allow from 192.54.172.0/24 192.54.148.0/24
+    Require ip 10.2.16.0/24
+    ...
+    Require ip 192.54.172.0/24 192.54.148.0/24
     </highlight>
 </usage>
 
