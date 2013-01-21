@@ -56,7 +56,8 @@ modules multi-processus (MPM)</dd>
 mobiliser des threads que pour les connexions en cours de traitement</dd>
 <dt><a href="mpm_netware.html">mpm_netware</a></dt><dd>Multi-Processing Module implementing an exclusively threaded web
     server optimized for Novell NetWare</dd>
-<dt><a href="mpmt_os2.html">mpmt_os2</a></dt><dd>Hybrid multi-process, multi-threaded MPM for OS/2</dd>
+<dt><a href="mpmt_os2.html">mpmt_os2</a></dt><dd>MPM hybride multi-processus, multi-thread pour
+OS/2</dd>
 <dt><a href="prefork.html">prefork</a></dt><dd>Implémente un serveur web avec démarrage anticipé de
 processus, sans thread</dd>
 <dt><a href="mpm_winnt.html">mpm_winnt</a></dt><dd>This Multi-Processing Module is optimized for Windows
@@ -95,7 +96,7 @@ texte</dd>
 la charge des serveurs d'arrière-plan</dd>
 <dt><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></dt><dd>Permet d'utiliser un annuaire LDAP pour l'authentification
 HTTP de base.</dd>
-<dt><a href="mod_authz_core.html">mod_authz_core</a></dt><dd>Core Authorization</dd>
+<dt><a href="mod_authz_core.html">mod_authz_core</a></dt><dd>Autorisation basique</dd>
 <dt><a href="mod_authz_dbd.html">mod_authz_dbd</a></dt><dd>Autorisation en groupe et reconnaissance d'identité avec base
 SQL</dd>
 <dt><a href="mod_authz_dbm.html">mod_authz_dbm</a></dt><dd>Autorisation basée sur les groupes à l'aide de fichiers
@@ -114,16 +115,19 @@ shell Win32 <code>dir</code></dd>
 <dt><a href="mod_cache.html" id="C" name="C">mod_cache</a></dt><dd>Filtre de mise en cache HTTP conforme à la RFC 2616</dd>
 <dt><a href="mod_cache_disk.html">mod_cache_disk</a></dt><dd>Module de stockage sur disque pour le filtre de mise en
 cache HTTP.</dd>
-<dt><a href="mod_cern_meta.html">mod_cern_meta</a></dt><dd>CERN httpd metafile semantics</dd>
+<dt><a href="mod_cern_meta.html">mod_cern_meta</a></dt><dd>La sémantique des métafichiers du serveur httpd du
+CERN</dd>
 <dt><a href="mod_cgi.html">mod_cgi</a></dt><dd>Execution of CGI scripts</dd>
 <dt><a href="mod_cgid.html">mod_cgid</a></dt><dd>Execution of CGI scripts using an
     external CGI daemon</dd>
 <dt><a href="mod_charset_lite.html">mod_charset_lite</a></dt><dd>Specify character set translation or recoding</dd>
 <dt><a href="mod_data.html" id="D" name="D">mod_data</a></dt><dd>Convert response body into an RFC2397 data URL</dd>
-<dt><a href="mod_dav.html">mod_dav</a></dt><dd>Distributed Authoring and Versioning
-(<a href="http://www.webdav.org/">WebDAV</a>) functionality</dd>
-<dt><a href="mod_dav_fs.html">mod_dav_fs</a></dt><dd>filesystem provider for <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></dd>
-<dt><a href="mod_dav_lock.html">mod_dav_lock</a></dt><dd>generic locking module for <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></dd>
+<dt><a href="mod_dav.html">mod_dav</a></dt><dd>Fonctionnalité de création et gestion de versions de
+documents via le web (<a href="http://www.webdav.org/">WebDAV</a>)</dd>
+<dt><a href="mod_dav_fs.html">mod_dav_fs</a></dt><dd>Implémente le fournisseur filesystem pour
+<code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></dd>
+<dt><a href="mod_dav_lock.html">mod_dav_lock</a></dt><dd>Module de verrouillage générique pour
+<code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></dd>
 <dt><a href="mod_dbd.html">mod_dbd</a></dt><dd>Gestion des connexions à une base de données SQL</dd>
 <dt><a href="mod_deflate.html">mod_deflate</a></dt><dd>Comprime le contenu avant de le servir au
 client</dd>
@@ -138,14 +142,15 @@ erreurs de la manière souhaitée.</dd>
 protocole</dd>
 <dt><a href="mod_env.html">mod_env</a></dt><dd>Modifie l'environnement transmis aux scripts CGI et aux
 pages SSI</dd>
-<dt><a href="mod_example.html">mod_example</a></dt><dd>Illustrates the Apache module API</dd>
+<dt><a href="mod_example.html">mod_example</a></dt><dd>Illustration de l'API des modules Apache</dd>
 <dt><a href="mod_expires.html">mod_expires</a></dt><dd>Génération des en-têtes HTTP <code>Expires</code> et
 <code>Cache-Control</code> en fonction de critères spécifiés par
 l'utilisateur</dd>
 <dt><a href="mod_ext_filter.html">mod_ext_filter</a></dt><dd>Pass the response body through an external program before
 delivery to the client</dd>
 <dt><a href="mod_file_cache.html" id="F" name="F">mod_file_cache</a></dt><dd>Caches a static list of files in memory</dd>
-<dt><a href="mod_filter.html">mod_filter</a></dt><dd>Context-sensitive smart filter configuration module</dd>
+<dt><a href="mod_filter.html">mod_filter</a></dt><dd>Module de configuration de filtre intelligent sensible au
+contexte</dd>
 <dt><a href="mod_headers.html" id="H" name="H">mod_headers</a></dt><dd>Personnalisation des en-têtes de requêtes et de réponses
 HTTP</dd>
 <dt><a href="mod_heartbeat.html">mod_heartbeat</a></dt><dd>sends messages with server status to frontend proxy</dd>
@@ -174,7 +179,8 @@ cache du résultat à destination des autres modules LDAP</dd>
 <dt><a href="mod_log_debug.html">mod_log_debug</a></dt><dd>Additional configurable debug logging</dd>
 <dt><a href="mod_log_forensic.html">mod_log_forensic</a></dt><dd>Journalisation légale des requêtes envoyées au
 serveur</dd>
-<dt><a href="mod_logio.html">mod_logio</a></dt><dd>Logging of input and output bytes per request</dd>
+<dt><a href="mod_logio.html">mod_logio</a></dt><dd>Journalisation des octets en entrée et en sortie pour
+chaque requête</dd>
 <dt><a href="mod_lua.html">mod_lua</a></dt><dd>Fournit des points d'entrée Lua dans différentes parties du
 traitement des requêtes httpd</dd>
 <dt><a href="mod_mime.html" id="M" name="M">mod_mime</a></dt><dd>Associates the requested filename's extensions
@@ -194,24 +200,26 @@ utilisateurs.</dd>
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_balancer.html">mod_proxy_balancer</a></dt><dd>Extension de <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> pour le support de
 la répartition de charge</dd>
-<dt><a href="mod_proxy_connect.html">mod_proxy_connect</a></dt><dd><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> extension for
-<code>CONNECT</code> request handling</dd>
-<dt><a href="mod_proxy_express.html">mod_proxy_express</a></dt><dd>Dynamic mass reverse proxy extension for
-<code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
+<dt><a href="mod_proxy_connect.html">mod_proxy_connect</a></dt><dd>Extension de <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> pour le traitement
+des requêtes <code>CONNECT</code></dd>
+<dt><a href="mod_proxy_express.html">mod_proxy_express</a></dt><dd>Extension à <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> pour le fonctionnement en mandataire
+dynamique inverse de masse</dd>
 <dt><a href="mod_proxy_fcgi.html">mod_proxy_fcgi</a></dt><dd>Module fournissant le support de FastCGI à
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
-<dt><a href="mod_proxy_fdpass.html">mod_proxy_fdpass</a></dt><dd>fdpass external process support module for
-<code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
-<dt><a href="mod_proxy_ftp.html">mod_proxy_ftp</a></dt><dd>FTP support module for
+<dt><a href="mod_proxy_fdpass.html">mod_proxy_fdpass</a></dt><dd>Module fournissant le support des processus externes fdpass
+à <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
+<dt><a href="mod_proxy_ftp.html">mod_proxy_ftp</a></dt><dd>Module fournissant le support FTP à
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_html.html">mod_proxy_html</a></dt><dd>Réécrit les liens HTML afin de s'assurer qu'ils soient bien
 adressables depuis les réseaux des clients dans un contexte de
 mandataire.</dd>
 <dt><a href="mod_proxy_http.html">mod_proxy_http</a></dt><dd>Module fournissant le support HTTP à
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
-<dt><a href="mod_proxy_scgi.html">mod_proxy_scgi</a></dt><dd>SCGI gateway module for <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
+<dt><a href="mod_proxy_scgi.html">mod_proxy_scgi</a></dt><dd>Module fournissant le support de la passerelle SCGI à
+<code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_ratelimit.html" id="R" name="R">mod_ratelimit</a></dt><dd>Limitation de la bande passante pour les clients</dd>
-<dt><a href="mod_reflector.html">mod_reflector</a></dt><dd>Reflect a request body as a response via the output filter stack.</dd>
+<dt><a href="mod_reflector.html">mod_reflector</a></dt><dd>Réfléchit un corps de requête comme réponse via la pile de
+filtres en sortie.</dd>
 <dt><a href="mod_remoteip.html">mod_remoteip</a></dt><dd>Remplace l'adresse IP et le nom d'hôte apparents du client
 pour la requête par l'adresse IP présentée par un mandataire ou un
 répartiteur de charge via les en-têtes de la requête.
@@ -239,9 +247,8 @@ démarrage ou du redémarrage du serveur</dd>
 <dt><a href="mod_socache_dc.html">mod_socache_dc</a></dt><dd>Distcache based shared object cache provider.</dd>
 <dt><a href="mod_socache_memcache.html">mod_socache_memcache</a></dt><dd>Memcache based shared object cache provider.</dd>
 <dt><a href="mod_socache_shmcb.html">mod_socache_shmcb</a></dt><dd>shmcb based shared object cache provider.</dd>
-<dt><a href="mod_speling.html">mod_speling</a></dt><dd>Attempts to correct mistaken URLs by ignoring
-capitalization, or attempting to correct various minor
-misspellings.</dd>
+<dt><a href="mod_speling.html">mod_speling</a></dt><dd>Tente de corriger les erreurs de casse dans les URLs ou les
+fautes de frappe mineures.</dd>
 <dt><a href="mod_ssl.html">mod_ssl</a></dt><dd>Strong cryptography using the Secure Sockets
 Layer (SSL) and Transport Layer Security (TLS) protocols</dd>
 <dt><a href="mod_status.html">mod_status</a></dt><dd>Fournit des informations sur les performances et l'activité

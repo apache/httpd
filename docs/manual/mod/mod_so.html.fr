@@ -159,7 +159,7 @@ Windows</a></h2>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Liaison du fichier objet ou de la bibliothèque
 spécifié</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LoadFile <em>nom-fichier</em> [<em>nom-fichier</em>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_so</td></tr>
 </table>
@@ -185,7 +185,7 @@ spécifié</td></tr>
 bibliothèque spécifié, et ajout de ce dernier à la liste des modules
 actifs</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LoadModule <em>module nom-fichier</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_so</td></tr>
 </table>
