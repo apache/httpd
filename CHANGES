@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.4
 
+  *) --with-module: Fix failure to integrate them into some existing
+     module directories.  PR 40097.  [Jeff Trawick]
+
   *) htcacheclean: Fix potential segfault if "-p" is omitted.  [Joe Orton]
 
   *) mod_proxy_http: Honour special value 0 (unlimited) of LimitRequestBody
