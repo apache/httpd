@@ -1620,6 +1620,10 @@ int main(int argc, const char * const argv[])
         usage(NULL);
     }
 
+    if (!proxypath) {
+         usage("Option -p must be specified");
+    }
+
     if (o->ind < argc) {
         int deleted = 0;
         int error = 0;
@@ -1669,10 +1673,6 @@ int main(int argc, const char * const argv[])
 
     if (!isdaemon && intelligent) {
          usage("Option -i cannot be used without -d");
-    }
-
-    if (!proxypath) {
-         usage("Option -p must be specified");
     }
 
     if (!listurls && max <= 0 && inodes <= 0) {
