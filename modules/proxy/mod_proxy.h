@@ -178,6 +178,7 @@ typedef struct {
     unsigned int proxy_status_set:1;
     unsigned int source_address_set:1;
     unsigned int bgrowth_set:1;
+    unsigned int bal_persist:1;
 } proxy_server_conf;
 
 
@@ -701,6 +702,32 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_balancer(proxy_balancer *balancer,
 PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balancer,
                                                          server_rec *s,
                                                          apr_pool_t *p);
+
+/**
+ * Find the shm of the worker as needed
+ * @param storage slotmem provider
+ * @param slot    slotmem instance
+ * @param worker  worker to find
+ * @param index   pointer to index within slotmem of worker
+ * @return        pointer to shm of worker, or NULL
+ */
+PROXY_DECLARE(proxy_worker_shared *) ap_proxy_find_workershm(ap_slotmem_provider_t *storage,
+                                                             ap_slotmem_instance_t *slot,
+                                                             proxy_worker *worker,
+                                                             unsigned int *index);
+
+/**
+ * Find the shm of the balancer as needed
+ * @param storage slotmem provider
+ * @param slot    slotmem instance
+ * @param worker  worker to find
+ * @param index   pointer to index within slotmem of balancer
+ * @return        pointer to shm of balancer, or NULL
+ */
+PROXY_DECLARE(proxy_balancer_shared *) ap_proxy_find_balancershm(ap_slotmem_provider_t *storage,
+                                                                 ap_slotmem_instance_t *slot,
+                                                                 proxy_balancer *balancer,
+                                                                 unsigned int *index);
 
 /**
  * Get the most suitable worker and/or balancer for the request

@@ -703,7 +703,6 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                          apr_pool_t *ptemp, server_rec *s)
 {
     apr_status_t rv;
-    void *sconf = s->module_config;
     proxy_server_conf *conf;
     ap_slotmem_instance_t *new = NULL;
     apr_time_t tstamp;
@@ -744,15 +743,35 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
      */
     while (s) {
         int i,j;
+        char *id;
         proxy_balancer *balancer;
-        sconf = s->module_config;
+        ap_slotmem_type_t type;
+        void *sconf = s->module_config;
         conf = (proxy_server_conf *)ap_get_module_config(sconf, &proxy_module);
-
+        /*
+         * During create_proxy_config() we created a dummy id. Now that
+         * we have identifying info, we can create the real id
+         */
+        id = apr_psprintf(pconf, "%s.%s.%d.%s.%s.%u.%s",
+                          (s->server_scheme ? s->server_scheme : "????"),
+                          (s->server_hostname ? s->server_hostname : "???"),
+                          (int)s->port,
+                          (s->server_admin ? s->server_admin : "??"),
+                          (s->defn_name ? s->defn_name : "?"),
+                          s->defn_line_number,
+                          (s->error_fname ? s->error_fname : DEFAULT_ERRORLOG));
+        conf->id = apr_psprintf(pconf, "p%x",
+                                ap_proxy_hashfunc(id, PROXY_HASHFUNC_DEFAULT));
         if (conf->bslot) {
             /* Shared memory already created for this proxy_server_conf.
              */
             s = s->next;
             continue;
+        }
+        if (conf->bal_persist) {
+            type = AP_SLOTMEM_TYPE_PREGRAB | AP_SLOTMEM_TYPE_PERSIST;
+        } else {
+            type = AP_SLOTMEM_TYPE_PREGRAB;
         }
         if (conf->balancers->nelts) {
             conf->max_balancers = conf->balancers->nelts + conf->bgrowth;
@@ -762,7 +781,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
 
             rv = storage->create(&new, conf->id,
                                  ALIGNED_PROXY_BALANCER_SHARED_SIZE,
-                                 conf->max_balancers, AP_SLOTMEM_TYPE_PREGRAB, pconf);
+                                 conf->max_balancers, type, pconf);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01179) "balancer slotmem_create failed");
                 return !OK;
@@ -777,7 +796,14 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
             proxy_worker **workers;
             proxy_worker *worker;
             proxy_balancer_shared *bshm;
+            const char *sname;
             unsigned int index;
+
+            /* now that we have the right id, we need to redo the sname field */
+            ap_pstr2_alnum(pconf, balancer->s->name + sizeof(BALANCER_PREFIX) - 1,
+                           &sname);
+            sname = apr_pstrcat(pconf, conf->id, "_", sname, NULL);
+            PROXY_STRNCPY(balancer->s->sname, sname); /* We know this will succeed */
 
             balancer->max_workers = balancer->workers->nelts + balancer->growth;
 
@@ -795,14 +821,22 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                                       apr_pool_cleanup_null);
 
             /* setup shm for balancers */
-            if ((rv = storage->grab(conf->bslot, &index)) != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01181) "balancer slotmem_grab failed");
-                return !OK;
-
+            bshm = ap_proxy_find_balancershm(storage, conf->bslot, balancer, &index);
+            if (bshm) {
+                if ((rv = storage->fgrab(conf->bslot, index)) != APR_SUCCESS) {
+                    ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(02408) "balancer slotmem_fgrab failed");
+                    return !OK;
+                }
             }
-            if ((rv = storage->dptr(conf->bslot, index, (void *)&bshm)) != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01182) "balancer slotmem_dptr failed");
-                return !OK;
+            else {
+                if ((rv = storage->grab(conf->bslot, &index)) != APR_SUCCESS) {
+                    ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01181) "balancer slotmem_grab failed");
+                    return !OK;
+                }
+                if ((rv = storage->dptr(conf->bslot, index, (void *)&bshm)) != APR_SUCCESS) {
+                    ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01182) "balancer slotmem_dptr failed");
+                    return !OK;
+                }
             }
             if ((rv = ap_proxy_share_balancer(balancer, bshm, index)) != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01183) "Cannot share balancer");
@@ -810,14 +844,14 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
             }
 
             /* create slotmem slots for workers */
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01184) "Doing workers create: %s (%s), %d, %d",
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01184) "Doing workers create: %s (%s), %d, %d [%u]",
                          balancer->s->name, balancer->s->sname,
                          (int)ALIGNED_PROXY_WORKER_SHARED_SIZE,
-                         (int)balancer->max_workers);
+                         (int)balancer->max_workers, i);
 
             rv = storage->create(&new, balancer->s->sname,
                                  ALIGNED_PROXY_WORKER_SHARED_SIZE,
-                                 balancer->max_workers, AP_SLOTMEM_TYPE_PREGRAB, pconf);
+                                 balancer->max_workers, type, pconf);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01185) "worker slotmem_create failed");
                 return !OK;
@@ -834,20 +868,35 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                 proxy_worker_shared *shm;
 
                 worker = *workers;
-                if ((rv = storage->grab(balancer->wslot, &index)) != APR_SUCCESS) {
-                    ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01186) "worker slotmem_grab failed");
-                    return !OK;
 
+                shm = ap_proxy_find_workershm(storage, balancer->wslot, worker, &index);
+                if (shm) {
+                    if ((rv = storage->fgrab(balancer->wslot, index)) != APR_SUCCESS) {
+                        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(02409) "worker slotmem_fgrab failed");
+                        return !OK;
+                    }
                 }
-                if ((rv = storage->dptr(balancer->wslot, index, (void *)&shm)) != APR_SUCCESS) {
-                    ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01187) "worker slotmem_dptr failed");
-                    return !OK;
+                else {
+                    if ((rv = storage->grab(balancer->wslot, &index)) != APR_SUCCESS) {
+                        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01186) "worker slotmem_grab failed");
+                        return !OK;
+
+                    }
+                    if ((rv = storage->dptr(balancer->wslot, index, (void *)&shm)) != APR_SUCCESS) {
+                        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01187) "worker slotmem_dptr failed");
+                        return !OK;
+                    }
                 }
                 if ((rv = ap_proxy_share_worker(worker, shm, index)) != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01188) "Cannot share worker");
                     return !OK;
                 }
                 worker->s->updated = tstamp;
+            }
+            if (conf->bal_persist) {
+                /* We could have just read-in a persisted config. Force a sync. */
+                balancer->wupdated--;
+                ap_proxy_sync_balancer(balancer, s, conf);
             }
         }
         s = s->next;
@@ -1412,7 +1461,7 @@ static int balancer_handler(request_rec *r)
                       balancer->s->name + sizeof(BALANCER_PREFIX) - 1,
                       "&nonce=", balancer->s->nonce,
                       "\">", NULL);
-            ap_rvputs(r, balancer->s->name, "</a></h3>\n", NULL);
+            ap_rvputs(r, balancer->s->name, "</a> [",balancer->s->sname, "]</h3>\n", NULL);
             ap_rputs("\n\n<table><tr>"
                 "<th>MaxMembers</th><th>StickySession</th><th>DisableFailover</th><th>Timeout</th><th>FailoverAttempts</th><th>Method</th>"
                 "<th>Path</th><th>Active</th></tr>\n<tr>", r);
