@@ -2,6 +2,13 @@
 
 Changes with Apache 2.4.4
 
+  *) mod_proxy: Allow for persistence of local changes made via the
+     balancer-manager between graceful/normal restarts and power
+     cycles. [Jim Jagielski]
+
+  *) mod_proxy: Fix startup crash with mis-defined balancers.
+     PR 52402. [Jim Jagielski]
+
   *) --with-module: Fix failure to integrate them into some existing
      module directories.  PR 40097.  [Jeff Trawick]
 

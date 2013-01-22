@@ -100,19 +100,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                http://mail-archives.apache.org/mod_mbox/httpd-dev/201301.mbox/%3C20130103112044.GA19653%40redhat.com%3E
         kbrand: configure option added in r1429228
 
-  * mod_proxy: Persist balancer and worker data across restarts and stop/start.
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387110
-                 http://svn.apache.org/viewvc?view=revision&revision=1387444
-                 http://svn.apache.org/viewvc?view=revision&revision=1387979
-                 http://svn.apache.org/viewvc?view=revision&revision=1387607
-                 http://svn.apache.org/viewvc?view=revision&revision=1387693
-                 http://svn.apache.org/viewvc?view=revision&revision=1407085
-                 http://svn.apache.org/viewvc?view=revision&revision=1421953
-    2.4.x patch: http://people.apache.org/~jim/patches/proxy-persist.diff
-    +1: jim, druggeri, jerenkrantz
-    druggeri: Doc for 2.4 patch says version 2.5.0
-              Worth noting in CHANGES that fix for 52402 is in here?
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

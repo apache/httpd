@@ -1171,6 +1171,10 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
     if (PROXY_STRNCPY(bshared->name, uri) != APR_SUCCESS) {
         return apr_psprintf(p, "balancer name (%s) too long", uri);
     }
+    /*
+     * We do the below for verification. The real sname will be
+     * done post_config
+     */
     ap_pstr2_alnum(p, bshared->name + sizeof(BALANCER_PREFIX) - 1,
                    &sname);
     sname = apr_pstrcat(p, conf->id, "_", sname, NULL);
@@ -1200,12 +1204,21 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_balancer(proxy_balancer *balancer,
 {
     apr_status_t rv = APR_SUCCESS;
     proxy_balancer_method *lbmethod;
+    char *action = "copying";
     if (!shm || !balancer->s)
         return APR_EINVAL;
 
-    memcpy(shm, balancer->s, sizeof(proxy_balancer_shared));
-    if (balancer->s->was_malloced)
-        free(balancer->s);
+    if ((balancer->s->hash.def != shm->hash.def) ||
+        (balancer->s->hash.fnv != shm->hash.fnv)) {
+        memcpy(shm, balancer->s, sizeof(proxy_balancer_shared));
+        if (balancer->s->was_malloced)
+            free(balancer->s);
+    } else {
+        action = "re-using";
+    }
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02337)
+                 "%s shm[%d] (0x%pp) for %s", action, i, (void *)shm,
+                 balancer->s->name);
     balancer->s = shm;
     balancer->s->index = i;
     /* the below should always succeed */
@@ -1643,12 +1656,22 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
 PROXY_DECLARE(apr_status_t) ap_proxy_share_worker(proxy_worker *worker, proxy_worker_shared *shm,
                                                   int i)
 {
+    char *action = "copying";
     if (!shm || !worker->s)
         return APR_EINVAL;
 
-    memcpy(shm, worker->s, sizeof(proxy_worker_shared));
-    if (worker->s->was_malloced)
-        free(worker->s); /* was malloced in ap_proxy_define_worker */
+    if ((worker->s->hash.def != shm->hash.def) ||
+        (worker->s->hash.fnv != shm->hash.fnv)) {
+        memcpy(shm, worker->s, sizeof(proxy_worker_shared));
+        if (worker->s->was_malloced)
+            free(worker->s); /* was malloced in ap_proxy_define_worker */
+    } else {
+        action = "re-using";
+    }
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02338)
+                 "%s shm[%d] (0x%pp) for worker: %s", action, i, (void *)shm,
+                 worker->s->name);
+
     worker->s = shm;
     worker->s->index = i;
     return APR_SUCCESS;
@@ -2735,6 +2758,9 @@ PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b, server_rec
             proxy_worker *worker = *workers;
             if (worker->hash.def == shm->hash.def && worker->hash.fnv == shm->hash.fnv) {
                 found = 1;
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02402)
+                             "re-grabbing shm[%d] (0x%pp) for worker: %s", i, (void *)shm,
+                             worker->s->name);
                 break;
             }
         }
@@ -2752,6 +2778,9 @@ PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b, server_rec
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(00966) "Cannot init worker");
                 return rv;
             }
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02403)
+                         "grabbing shm[%d] (0x%pp) for worker: %s", i, (void *)shm,
+                         (*runtime)->s->name);
         }
     }
     if (b->s->need_reset) {
@@ -2761,6 +2790,48 @@ PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b, server_rec
     }
     b->wupdated = b->s->wupdated;
     return APR_SUCCESS;
+}
+
+PROXY_DECLARE(proxy_worker_shared *) ap_proxy_find_workershm(ap_slotmem_provider_t *storage,
+                                                               ap_slotmem_instance_t *slot,
+                                                               proxy_worker *worker,
+                                                               unsigned int *index)
+{
+    proxy_worker_shared *shm;
+    unsigned int i, limit;
+    limit = storage->num_slots(slot);
+    for (i = 0; i < limit; i++) {
+        if (storage->dptr(slot, i, (void *)&shm) != APR_SUCCESS) {
+            return NULL;
+        }
+        if ((worker->s->hash.def == shm->hash.def) &&
+            (worker->s->hash.fnv == shm->hash.fnv)) {
+            *index = i;
+            return shm;
+        }
+    }
+    return NULL;
+}
+
+PROXY_DECLARE(proxy_balancer_shared *) ap_proxy_find_balancershm(ap_slotmem_provider_t *storage,
+                                                                 ap_slotmem_instance_t *slot,
+                                                                 proxy_balancer *balancer,
+                                                                 unsigned int *index)
+{
+    proxy_balancer_shared *shm;
+    unsigned int i, limit;
+    limit = storage->num_slots(slot);
+    for (i = 0; i < limit; i++) {
+        if (storage->dptr(slot, i, (void *)&shm) != APR_SUCCESS) {
+            return NULL;
+        }
+        if ((balancer->s->hash.def == shm->hash.def) &&
+            (balancer->s->hash.fnv == shm->hash.fnv)) {
+            *index = i;
+            return shm;
+        }
+    }
+    return NULL;
 }
 
 void proxy_util_register_hooks(apr_pool_t *p)
