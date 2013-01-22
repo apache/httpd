@@ -91,11 +91,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * htcacheclean: fix segfault if -p is omitted and URLs are passed.
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1436401
-    2.4.x patch: trunk patch works
-    +1: jorton, rpluem, rjung
-
    * mod_ssl/ab: improve pkg-config usage in configure (addresses PR 54252)
      trunk patch: https://svn.apache.org/viewvc/httpd/httpd/trunk/acinclude.m4?r1=1396440&r2=1429228
      2.4.x patch: trunk patch works
