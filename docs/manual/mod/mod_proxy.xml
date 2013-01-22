@@ -670,7 +670,7 @@ expressions</description>
     <syntax>BalancerInherit On|Off</syntax>
     <default>BalancerInherit On</default>
     <contextlist><context>server config</context><context>virtual host</context></contextlist>
-    <compatibility>BalancerInherit is only available in Apache HTTP Server 2.5.0
+    <compatibility>BalancerInherit is only available in Apache HTTP Server 2.4.4 and later.
         and later.</compatibility>
     <usage>
         <p>This directive will cause the current server/vhost to "inherit" ProxyPass
