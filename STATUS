@@ -100,26 +100,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                http://mail-archives.apache.org/mod_mbox/httpd-dev/201301.mbox/%3C20130103112044.GA19653%40redhat.com%3E
         kbrand: configure option added in r1429228
 
-   * configure --with-modules:
-     - Fix shell errors when trying to AC_MSG_RESULT().
-       (The change to IFS hosed any AC_MSG_foo() invocations.)
-       It is easy enough to reorder the reset of IFS and the AC_MSG_RESULT()
-       invocation, but there's a big stretch of shell code where AC_MSG_foo()
-       might be useful someday, so get rid of the commas at the start and
-       leave IFS alone and AC_MSG_foo() at will.
-     - Fix failure to integrate them into some existing module directories.
-       modules/config?.m4 needs to run after the modules/*/config?.m4.
-       Otherwise, modules.mk as created for --with-module gets wiped
-       out first.
-       This is r1392150, a rename of modules/config5.m4 to modules/config7.m4.
-       PR: 40097
-     Not critical for 2.4.4.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1392120
-                  http://svn.apache.org/viewvc?view=revision&revision=1392122
-                  http://svn.apache.org/viewvc?view=revision&revision=1392150
-     2.4.x patch: Trunk patch works.
-     +1: rjung, kbrand, jerenkrantz
-
   * mod_proxy: Persist balancer and worker data across restarts and stop/start.
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387110
                  http://svn.apache.org/viewvc?view=revision&revision=1387444
