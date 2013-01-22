@@ -28,9 +28,6 @@ Changes with Apache 2.5.0
 
   *) EventOpt MPM
 
-  *) mod_proxy_balancer: Improve output
-     PR 52478 [Danijel <dt-ng rbfh de>]
-  
   *) core: Add LogLevelOverride directive that allows to override the
      loglevel for clients from certain IPs. This also works for things
      like the SSL handshake where <If> LogLevel ... </If> is evaluated
@@ -61,19 +58,12 @@ Changes with Apache 2.5.0
   *) mod_systemd: New module, for integration with systemd on Linux.
      [Jan Kaluza <jkaluza redhat.com>]
 
-  *) --with-module: Fix failure to integrate them into some existing
-     module directories.  PR 40097.  [Jeff Trawick]
-
   *) mod_cache_socache: New cache implementation backed by mod_socache
      that replaces mod_mem_cache removed from httpd v2.2. [Graham
      Leggett]
 
   *) core: Add dirwalk_stat and pre_htaccess hooks, allowing mpm-itk
      to be used without patches to httpd core.  [Jeff Trawick]
-
-  *) mod_proxy: Allow for persistence of local changes (via the
-     balancer-manager) between graceful and normal restarts.
-     [Jim Jagielski]
 
   *) mod_lua: Add LuaInputFilter/LuaOutputFilter for creating content
      filters in Lua [Daniel Gruno]
