@@ -96,6 +96,48 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch works
     +1: jorton, rpluem, rjung
 
+   * mod_ssl/ab: improve pkg-config usage in configure (addresses PR 54252)
+     trunk patch: https://svn.apache.org/viewvc/httpd/httpd/trunk/acinclude.m4?r1=1396440&r2=1429228
+     2.4.x patch: trunk patch works
+     +1: kbrand, jorton, jerenkrantz
+     sf notes: -0.5: Including libraries for static usage is a bad default for
+               Linux distributions, see
+               http://mail-archives.apache.org/mod_mbox/httpd-dev/201301.mbox/%3C20130103112044.GA19653%40redhat.com%3E
+        kbrand: configure option added in r1429228
+
+   * configure --with-modules:
+     - Fix shell errors when trying to AC_MSG_RESULT().
+       (The change to IFS hosed any AC_MSG_foo() invocations.)
+       It is easy enough to reorder the reset of IFS and the AC_MSG_RESULT()
+       invocation, but there's a big stretch of shell code where AC_MSG_foo()
+       might be useful someday, so get rid of the commas at the start and
+       leave IFS alone and AC_MSG_foo() at will.
+     - Fix failure to integrate them into some existing module directories.
+       modules/config?.m4 needs to run after the modules/*/config?.m4.
+       Otherwise, modules.mk as created for --with-module gets wiped
+       out first.
+       This is r1392150, a rename of modules/config5.m4 to modules/config7.m4.
+       PR: 40097
+     Not critical for 2.4.4.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1392120
+                  http://svn.apache.org/viewvc?view=revision&revision=1392122
+                  http://svn.apache.org/viewvc?view=revision&revision=1392150
+     2.4.x patch: Trunk patch works.
+     +1: rjung, kbrand, jerenkrantz
+
+  * mod_proxy: Persist balancer and worker data across restarts and stop/start.
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387110
+                 http://svn.apache.org/viewvc?view=revision&revision=1387444
+                 http://svn.apache.org/viewvc?view=revision&revision=1387979
+                 http://svn.apache.org/viewvc?view=revision&revision=1387607
+                 http://svn.apache.org/viewvc?view=revision&revision=1387693
+                 http://svn.apache.org/viewvc?view=revision&revision=1407085
+                 http://svn.apache.org/viewvc?view=revision&revision=1421953
+    2.4.x patch: http://people.apache.org/~jim/patches/proxy-persist.diff
+    +1: jim, druggeri, jerenkrantz
+    druggeri: Doc for 2.4 patch says version 2.5.0
+              Worth noting in CHANGES that fix for 52402 is in here?
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -117,26 +159,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       +1: fuankg (compiles/links fine now for NetWare; no functional tests yet)
       gsmith notes: compiles/links on Windows now.
       
-   * configure --with-modules:
-     - Fix shell errors when trying to AC_MSG_RESULT().
-       (The change to IFS hosed any AC_MSG_foo() invocations.)
-       It is easy enough to reorder the reset of IFS and the AC_MSG_RESULT()
-       invocation, but there's a big stretch of shell code where AC_MSG_foo()
-       might be useful someday, so get rid of the commas at the start and
-       leave IFS alone and AC_MSG_foo() at will.
-     - Fix failure to integrate them into some existing module directories.
-       modules/config?.m4 needs to run after the modules/*/config?.m4.
-       Otherwise, modules.mk as created for --with-module gets wiped
-       out first.
-       This is r1392150, a rename of modules/config5.m4 to modules/config7.m4.
-       PR: 40097
-     Not critical for 2.4.4.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1392120
-                  http://svn.apache.org/viewvc?view=revision&revision=1392122
-                  http://svn.apache.org/viewvc?view=revision&revision=1392150
-     2.4.x patch: Trunk patch works.
-     +1: rjung, kbrand
-
    * Makefile.win: Added copying of .vbs / .wsf CGIs to Windows install target.
                    Moved fixing of shebang to separate target so that it is
                    no longer executed by default and all CGIs remain inactive.
@@ -163,15 +185,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           who enable those scripts with inserting the right shebang should be 100% aware
           of any risks (this should cover your last point).
 
-   * mod_ssl/ab: improve pkg-config usage in configure (addresses PR 54252)
-     trunk patch: https://svn.apache.org/viewvc/httpd/httpd/trunk/acinclude.m4?r1=1396440&r2=1429228
-     2.4.x patch: trunk patch works
-     +1: kbrand, jorton
-     sf notes: -0.5: Including libraries for static usage is a bad default for
-               Linux distributions, see
-               http://mail-archives.apache.org/mod_mbox/httpd-dev/201301.mbox/%3C20130103112044.GA19653%40redhat.com%3E
-        kbrand: configure option added in r1429228
-
 
    * mod_proxy: Allow balancers to be server-specific, as they should have
      been. Inheritance causes too many behind-the-scene interactions
@@ -195,24 +208,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  jim: are we OK with changing the 2.4.x docs async?
                  druggeri: sure - just noting that as-applied it would be incorrect
 
-  * mod_proxy: Persist balancer and worker data across restarts and stop/start.
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387110
-                 http://svn.apache.org/viewvc?view=revision&revision=1387444
-                 http://svn.apache.org/viewvc?view=revision&revision=1387979
-                 http://svn.apache.org/viewvc?view=revision&revision=1387607
-                 http://svn.apache.org/viewvc?view=revision&revision=1387693
-                 http://svn.apache.org/viewvc?view=revision&revision=1407085
-                 http://svn.apache.org/viewvc?view=revision&revision=1421953
-    2.4.x patch: http://people.apache.org/~jim/patches/proxy-persist.diff
-    +1: jim, druggeri
-    druggeri: Doc for 2.4 patch says version 2.5.0
-              Worth noting in CHANGES that fix for 52402 is in here?
-
   * mod_status: Add useful mod_status info... try to determine last time
     a specific vhost was accessed/used.
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1417529
     2.4.x patch: trunk patch works
-    +1: jim
+    +1: jim, jerenkrantz
 
   * mod_ssl: Allow the SSLUserName to be used to control the
     username passed by the FakeBasicAuth option. PR52616.
