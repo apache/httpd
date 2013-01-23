@@ -416,6 +416,7 @@ install :: nlms instscripts FORCE
 	$(call MKCNF,docs/conf/extra/httpd-default.conf.in,            $(INSTALLBASE)/conf/extra/httpd-default.conf)
 	$(call MKCNF,docs/conf/extra/httpd-info.conf.in,               $(INSTALLBASE)/conf/extra/httpd-info.conf)
 	$(call MKCNF,docs/conf/extra/httpd-languages.conf.in,          $(INSTALLBASE)/conf/extra/httpd-languages.conf)
+	$(call MKCNF,docs/conf/extra/httpd-macro.conf.in,              $(INSTALLBASE)/conf/extra/httpd-macro.conf)
 	$(call MKCNF,docs/conf/extra/httpd-manual.conf.in,             $(INSTALLBASE)/conf/extra/httpd-manual.conf)
 	$(call MKCNF,docs/conf/extra/httpd-mpm.conf.in,                $(INSTALLBASE)/conf/extra/httpd-mpm.conf)
 	$(call MKCNF,docs/conf/extra/httpd-multilang-errordoc.conf.in, $(INSTALLBASE)/conf/extra/httpd-multilang-errordoc.conf)
