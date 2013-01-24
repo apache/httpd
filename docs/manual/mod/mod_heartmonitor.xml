@@ -23,7 +23,7 @@
 <modulesynopsis metafile="mod_heartmonitor.xml.meta">
 
 <name>mod_heartmonitor</name>
-<description>centralized monitor for mod_heartbeat origin servers</description>
+<description>Centralized monitor for mod_heartbeat origin servers</description>
 <status>Experimental</status>
 <sourcefile>mod_heartmonitor.c</sourcefile>
 <identifier>heartmonitor_module</identifier>

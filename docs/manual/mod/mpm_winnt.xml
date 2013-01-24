@@ -23,8 +23,7 @@
 <modulesynopsis metafile="mpm_winnt.xml.meta">
 
 <name>mpm_winnt</name>
-<description>This Multi-Processing Module is optimized for Windows
-NT.</description>
+<description>Multi-Processing Module optimized for Windows NT.</description>
 <status>MPM</status>
 <sourcefile>mpm_winnt.c</sourcefile>
 <identifier>mpm_winnt_module</identifier>
