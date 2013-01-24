@@ -27,7 +27,7 @@
 <p><span>Available Languages: </span><a href="../en/mod/mod_dav_lock.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_dav_lock.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>generic locking module for <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Generic locking module for <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>dav_lock_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_dav_lock.c</td></tr></table>

@@ -26,7 +26,7 @@
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_heartmonitor.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>centralized monitor for mod_heartbeat origin servers</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Centralized monitor for mod_heartbeat origin servers</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>heartmonitor_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_heartmonitor.c</td></tr>
