@@ -29,7 +29,7 @@
 <a href="../ja/mod/mod_auth_basic.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_auth_basic.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Basic authentication</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Basic HTTP authentication</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>auth_basic_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_auth_basic.c</td></tr></table>

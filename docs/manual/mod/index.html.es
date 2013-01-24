@@ -66,8 +66,7 @@ of consuming threads only for connections with active processing</dd>
     server optimized for Novell NetWare</dd>
 <dt><a href="mpmt_os2.html">mpmt_os2</a></dt><dd>Hybrid multi-process, multi-threaded MPM for OS/2</dd>
 <dt><a href="prefork.html">prefork</a></dt><dd>Implements a non-threaded, pre-forking web server</dd>
-<dt><a href="mpm_winnt.html">mpm_winnt</a></dt><dd>This Multi-Processing Module is optimized for Windows
-NT.</dd>
+<dt><a href="mpm_winnt.html">mpm_winnt</a></dt><dd>Multi-Processing Module optimized for Windows NT.</dd>
 <dt><a href="worker.html">worker</a></dt><dd>Multi-Processing Module implementing a hybrid
     multi-threaded multi-process web server</dd>
 </dl></div>
@@ -76,15 +75,14 @@ NT.</dd>
 <p class="letters"><a href="#A">&nbsp;A&nbsp;</a> | <a href="#B">&nbsp;B&nbsp;</a> | <a href="#C">&nbsp;C&nbsp;</a> | <a href="#D">&nbsp;D&nbsp;</a> | <a href="#E">&nbsp;E&nbsp;</a> | <a href="#F">&nbsp;F&nbsp;</a> | <a href="#H">&nbsp;H&nbsp;</a> | <a href="#I">&nbsp;I&nbsp;</a> | <a href="#L">&nbsp;L&nbsp;</a> | <a href="#M">&nbsp;M&nbsp;</a> | <a href="#N">&nbsp;N&nbsp;</a> | <a href="#P">&nbsp;P&nbsp;</a> | <a href="#R">&nbsp;R&nbsp;</a> | <a href="#S">&nbsp;S&nbsp;</a> | <a href="#U">&nbsp;U&nbsp;</a> | <a href="#V">&nbsp;V&nbsp;</a> | <a href="#W">&nbsp;W&nbsp;</a> | <a href="#X">&nbsp;X&nbsp;</a></p>
 <dl><dt><a href="mod_access_compat.html" id="A" name="A">mod_access_compat</a></dt><dd>Group authorizations based on host (name or IP
 address)</dd>
-<dt><a href="mod_actions.html">mod_actions</a></dt><dd>This module provides for executing CGI scripts based on
-media type or request method.</dd>
+<dt><a href="mod_actions.html">mod_actions</a></dt><dd>Execute CGI scripts based on media type or request method.</dd>
 <dt><a href="mod_alias.html">mod_alias</a></dt><dd>Provides for mapping different parts of the host
     filesystem in the document tree and for URL redirection</dd>
 <dt><a href="mod_allowhandlers.html">mod_allowhandlers</a></dt><dd>Easily restrict what HTTP handlers can be used on the server</dd>
 <dt><a href="mod_allowmethods.html">mod_allowmethods</a></dt><dd>Easily restrict what HTTP methods can be used on the server</dd>
 <dt><a href="mod_asis.html">mod_asis</a></dt><dd>Sends files that contain their own
 HTTP headers</dd>
-<dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>Basic authentication</dd>
+<dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>Basic HTTP authentication</dd>
 <dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>User authentication using MD5
     Digest Authentication</dd>
 <dt><a href="mod_auth_form.html">mod_auth_form</a></dt><dd>Form authentication</dd>
@@ -122,8 +120,8 @@ HTTP caching filter.</dd>
 <dt><a href="mod_data.html" id="D" name="D">mod_data</a></dt><dd>Convert response body into an RFC2397 data URL</dd>
 <dt><a href="mod_dav.html">mod_dav</a></dt><dd>Distributed Authoring and Versioning
 (<a href="http://www.webdav.org/">WebDAV</a>) functionality</dd>
-<dt><a href="mod_dav_fs.html">mod_dav_fs</a></dt><dd>filesystem provider for <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></dd>
-<dt><a href="mod_dav_lock.html">mod_dav_lock</a></dt><dd>generic locking module for <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></dd>
+<dt><a href="mod_dav_fs.html">mod_dav_fs</a></dt><dd>Filesystem provider for <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></dd>
+<dt><a href="mod_dav_lock.html">mod_dav_lock</a></dt><dd>Generic locking module for <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></dd>
 <dt><a href="mod_dbd.html">mod_dbd</a></dt><dd>Manages SQL database connections</dd>
 <dt><a href="mod_deflate.html">mod_deflate</a></dt><dd>Compress content before it is delivered to the
 client</dd>
@@ -146,8 +144,8 @@ delivery to the client</dd>
 <dt><a href="mod_firehose.html">mod_firehose</a></dt><dd>Multiplexes all I/O to a given file or pipe.</dd>
 <dt><a href="mod_headers.html" id="H" name="H">mod_headers</a></dt><dd>Customization of HTTP request and response
 headers</dd>
-<dt><a href="mod_heartbeat.html">mod_heartbeat</a></dt><dd>sends messages with server status to frontend proxy</dd>
-<dt><a href="mod_heartmonitor.html">mod_heartmonitor</a></dt><dd>centralized monitor for mod_heartbeat origin servers</dd>
+<dt><a href="mod_heartbeat.html">mod_heartbeat</a></dt><dd>Sends messages with server status to frontend proxy</dd>
+<dt><a href="mod_heartmonitor.html">mod_heartmonitor</a></dt><dd>Centralized monitor for mod_heartbeat origin servers</dd>
 <dt><a href="mod_ident.html" id="I" name="I">mod_ident</a></dt><dd>RFC 1413 ident lookups</dd>
 <dt><a href="mod_imagemap.html">mod_imagemap</a></dt><dd>Server-side imagemap processing</dd>
 <dt><a href="mod_include.html">mod_include</a></dt><dd>Server-parsed html documents (Server Side Includes)</dd>

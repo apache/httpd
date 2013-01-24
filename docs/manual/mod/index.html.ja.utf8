@@ -132,8 +132,8 @@ HTTP caching filter.</dd>
 <dt><a href="mod_filter.html">mod_filter</a></dt><dd>Context-sensitive smart filter configuration module</dd>
 <dt><a href="mod_firehose.html">mod_firehose</a></dt><dd>Multiplexes all I/O to a given file or pipe.</dd>
 <dt><a href="mod_headers.html" id="H" name="H">mod_headers</a></dt><dd>HTTP リクエストのヘッダと応答のヘッダのカスタマイズ</dd>
-<dt><a href="mod_heartbeat.html">mod_heartbeat</a></dt><dd>sends messages with server status to frontend proxy</dd>
-<dt><a href="mod_heartmonitor.html">mod_heartmonitor</a></dt><dd>centralized monitor for mod_heartbeat origin servers</dd>
+<dt><a href="mod_heartbeat.html">mod_heartbeat</a></dt><dd>Sends messages with server status to frontend proxy</dd>
+<dt><a href="mod_heartmonitor.html">mod_heartmonitor</a></dt><dd>Centralized monitor for mod_heartbeat origin servers</dd>
 <dt><a href="mod_ident.html" id="I" name="I">mod_ident</a></dt><dd>RFC 1413 ident lookups</dd>
 <dt><a href="mod_imagemap.html">mod_imagemap</a></dt><dd>Server-side imagemap processing</dd>
 <dt><a href="mod_include.html">mod_include</a></dt><dd>サーバがパースする html ドキュメント (Server Side Includes)</dd>

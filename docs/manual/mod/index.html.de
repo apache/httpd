@@ -81,7 +81,7 @@ address)</dd>
 <dt><a href="mod_allowmethods.html">mod_allowmethods</a></dt><dd>Easily restrict what HTTP methods can be used on the server</dd>
 <dt><a href="mod_asis.html">mod_asis</a></dt><dd>Sends files that contain their own
 HTTP headers</dd>
-<dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>Basic authentication</dd>
+<dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>Basic HTTP authentication</dd>
 <dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>User authentication using MD5
     Digest Authentication</dd>
 <dt><a href="mod_auth_form.html">mod_auth_form</a></dt><dd>Form authentication</dd>
@@ -119,8 +119,8 @@ HTTP caching filter.</dd>
 <dt><a href="mod_data.html" id="D" name="D">mod_data</a></dt><dd>Convert response body into an RFC2397 data URL</dd>
 <dt><a href="mod_dav.html">mod_dav</a></dt><dd>Distributed Authoring and Versioning
 (<a href="http://www.webdav.org/">WebDAV</a>) functionality</dd>
-<dt><a href="mod_dav_fs.html">mod_dav_fs</a></dt><dd>filesystem provider for <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></dd>
-<dt><a href="mod_dav_lock.html">mod_dav_lock</a></dt><dd>generic locking module for <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></dd>
+<dt><a href="mod_dav_fs.html">mod_dav_fs</a></dt><dd>Filesystem provider for <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></dd>
+<dt><a href="mod_dav_lock.html">mod_dav_lock</a></dt><dd>Generic locking module for <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></dd>
 <dt><a href="mod_dbd.html">mod_dbd</a></dt><dd>Manages SQL database connections</dd>
 <dt><a href="mod_deflate.html">mod_deflate</a></dt><dd>Compress content before it is delivered to the
 client</dd>
@@ -143,8 +143,8 @@ delivery to the client</dd>
 <dt><a href="mod_firehose.html">mod_firehose</a></dt><dd>Multiplexes all I/O to a given file or pipe.</dd>
 <dt><a href="mod_headers.html" id="H" name="H">mod_headers</a></dt><dd>Customization of HTTP request and response
 headers</dd>
-<dt><a href="mod_heartbeat.html">mod_heartbeat</a></dt><dd>sends messages with server status to frontend proxy</dd>
-<dt><a href="mod_heartmonitor.html">mod_heartmonitor</a></dt><dd>centralized monitor for mod_heartbeat origin servers</dd>
+<dt><a href="mod_heartbeat.html">mod_heartbeat</a></dt><dd>Sends messages with server status to frontend proxy</dd>
+<dt><a href="mod_heartmonitor.html">mod_heartmonitor</a></dt><dd>Centralized monitor for mod_heartbeat origin servers</dd>
 <dt><a href="mod_ident.html" id="I" name="I">mod_ident</a></dt><dd>RFC 1413 ident lookups</dd>
 <dt><a href="mod_imagemap.html">mod_imagemap</a></dt><dd>Server-side imagemap processing</dd>
 <dt><a href="mod_include.html">mod_include</a></dt><dd>Server-parsed html documents (Server Side Includes)</dd>
