@@ -270,6 +270,10 @@ AddOutputFilter INCLUDES .shtml
         In order to avoid cross-site scripting issues, you should
         <em>always</em> encode user supplied data.
       </div>
+
+      <div class="example"><h3>Example</h3><p><code>
+        &lt;!--#echo encoding="entity" var="QUERY_STRING" --&gt;
+      </code></p></div>
       </dd>
       </dl>
      
