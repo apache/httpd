@@ -23,7 +23,7 @@
 <modulesynopsis metafile="mod_auth_basic.xml.meta">
 
 <name>mod_auth_basic</name>
-<description>Basic authentication</description>
+<description>Basic HTTP authentication</description>
 <status>Base</status>
 <sourcefile>mod_auth_basic.c</sourcefile>
 <identifier>auth_basic_module</identifier>
