@@ -355,7 +355,18 @@ AddOutputFilter INCLUDES .shtml
       <dl>
       <dt><code>file</code></dt>
       <dd>The value is a path relative to the directory
-      containing the current document being parsed.</dd>
+      containing the current document being parsed.
+
+    <div class="example"><p><code>
+        This file is &lt;!--#fsize file="mod_include.html" --&gt; bytes.
+    </code></p></div>
+
+    The value of <code>file</code> cannot start with a slash
+    (<code>/</code>), nor can it contain <code>../</code> so as to 
+    refer to a file above the current directory or outside of the
+    document root. Attempting to so will result in the error message:
+    <code>The given path was above the root path</code>.
+      </dd>
 
       <dt><code>virtual</code></dt>
       <dd>The value is a (%-encoded) URL-path. If it does not begin with
@@ -363,6 +374,14 @@ AddOutputFilter INCLUDES .shtml
       Note, that this does <em>not</em> print the size of any CGI output,
       but the size of the CGI script itself.</dd>
       </dl>
+
+    <div class="example"><p><code>
+        This file is &lt;!--#fsize virtual="/docs/mod/mod_include.html" --&gt; bytes.
+    </code></p></div>
+
+      <p>Note that in many cases these two are exactly the same thing.
+      However, the <code>file</code> attribute doesn't respect URL-space
+      aliases.</p>
      
 
     <h3><a name="element.flastmod" id="element.flastmod">The flastmod Element</a></h3>
@@ -452,12 +471,14 @@ AddOutputFilter INCLUDES .shtml
      
 
     <h3><a name="element.printenv" id="element.printenv">The printenv Element</a></h3>
-      <p>This prints out a listing of all existing variables and
+      <p>This prints out a plain text listing of all existing variables and
       their values. Special characters are entity encoded (see the <code><a href="#element.echo">echo</a></code> element for details)
       before being output. There are no attributes.</p>
 
       <div class="example"><h3>Example</h3><p><code>
-        &lt;!--#printenv --&gt;
+        &lt;pre&gt;
+          &lt;!--#printenv --&gt;
+        &lt;/pre&gt;
       </code></p></div>
      
 
