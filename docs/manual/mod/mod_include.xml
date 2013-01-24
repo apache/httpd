@@ -338,10 +338,11 @@ AddOutputFilter INCLUDES .shtml
         This file is &lt;!--#fsize file="mod_include.html" --&gt; bytes.
     </example>
 
-    The value of <code>file</code> cannot start with a slash, nor can it
-    refer to a file above the current directory. Attempting to so will
-    result in the error message: <code>The given path was above the root
-    path</code>.
+    The value of <code>file</code> cannot start with a slash
+    (<code>/</code>), nor can it contain <code>../</code> so as to 
+    refer to a file above the current directory or outside of the
+    document root. Attempting to so will result in the error message:
+    <code>The given path was above the root path</code>.
       </dd>
 
       <dt><code>virtual</code></dt>
