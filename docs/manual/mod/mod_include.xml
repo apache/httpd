@@ -449,13 +449,15 @@ AddOutputFilter INCLUDES .shtml
     </section> <!-- /include -->
 
     <section id="element.printenv"><title>The printenv Element</title>
-      <p>This prints out a listing of all existing variables and
+      <p>This prints out a plain text listing of all existing variables and
       their values. Special characters are entity encoded (see the <code><a
       href="#element.echo">echo</a></code> element for details)
       before being output. There are no attributes.</p>
 
       <example><title>Example</title>
-        &lt;!--#printenv --&gt;
+        &lt;pre&gt;
+          &lt;!--#printenv --&gt;
+        &lt;/pre&gt;
       </example>
     </section> <!-- /printenv -->
 
