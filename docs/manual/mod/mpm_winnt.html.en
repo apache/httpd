@@ -28,8 +28,7 @@
 <a href="../en/mod/mpm_winnt.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mpm_winnt.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>This Multi-Processing Module is optimized for Windows
-NT.</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Multi-Processing Module optimized for Windows NT.</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>MPM</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>mpm_winnt_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mpm_winnt.c</td></tr></table>
