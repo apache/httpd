@@ -24,8 +24,7 @@
 
 <name>mod_actions</name>
 
-<description>This module provides for executing CGI scripts based on
-media type or request method.</description>
+<description>Execute CGI scripts based on media type or request method.</description>
 
 <status>Base</status>
 <sourcefile>mod_actions.c</sourcefile>
