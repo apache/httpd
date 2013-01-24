@@ -60,8 +60,7 @@ mobiliser des threads que pour les connexions en cours de traitement</dd>
 OS/2</dd>
 <dt><a href="prefork.html">prefork</a></dt><dd>Implémente un serveur web avec démarrage anticipé de
 processus, sans thread</dd>
-<dt><a href="mpm_winnt.html">mpm_winnt</a></dt><dd>This Multi-Processing Module is optimized for Windows
-NT.</dd>
+<dt><a href="mpm_winnt.html">mpm_winnt</a></dt><dd>Multi-Processing Module optimized for Windows NT.</dd>
 <dt><a href="worker.html">worker</a></dt><dd>Module multi-processus implémentant un serveur web hybride
 multi-processus multi-thread</dd>
 </dl></div>
@@ -153,8 +152,8 @@ delivery to the client</dd>
 contexte</dd>
 <dt><a href="mod_headers.html" id="H" name="H">mod_headers</a></dt><dd>Personnalisation des en-têtes de requêtes et de réponses
 HTTP</dd>
-<dt><a href="mod_heartbeat.html">mod_heartbeat</a></dt><dd>sends messages with server status to frontend proxy</dd>
-<dt><a href="mod_heartmonitor.html">mod_heartmonitor</a></dt><dd>centralized monitor for mod_heartbeat origin servers</dd>
+<dt><a href="mod_heartbeat.html">mod_heartbeat</a></dt><dd>Sends messages with server status to frontend proxy</dd>
+<dt><a href="mod_heartmonitor.html">mod_heartmonitor</a></dt><dd>Centralized monitor for mod_heartbeat origin servers</dd>
 <dt><a href="mod_ident.html" id="I" name="I">mod_ident</a></dt><dd>Recherche d'identité conformément à la RFC
 1413</dd>
 <dt><a href="mod_imagemap.html">mod_imagemap</a></dt><dd>Server-side imagemap processing</dd>
