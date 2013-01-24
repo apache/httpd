@@ -387,7 +387,7 @@
       l'utilisateur root. Avec cette option, le binaire
       <code>suexec</code> sera install&eacute; avec seulement les bits
       setuid/setgid "capability" d&eacute;finis, ce qui constitue un
-      sous-ensemble des provil&egrave;ges de root pour les op&eacute;rations de
+      sous-ensemble des privil&egrave;ges de root pour les op&eacute;rations de
       suexec. Notez que dans ce mode, le binaire <code>suexec</code> ne
       sera pas en mesure d'&eacute;crire dans un fichier journal ; il est donc
       recommand&eacute; dans ce mode d'utiliser les options
