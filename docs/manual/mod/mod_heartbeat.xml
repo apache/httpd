@@ -23,7 +23,7 @@
 <modulesynopsis metafile="mod_heartbeat.xml.meta">
 
 <name>mod_heartbeat</name>
-<description>sends messages with server status to frontend proxy</description>
+<description>Sends messages with server status to frontend proxy</description>
 <status>Experimental</status>
 <sourcefile>mod_heartbeat</sourcefile>
 <identifier>heartbeat_module</identifier>
