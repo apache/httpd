@@ -395,7 +395,7 @@ LogLevel warn
 # Policy enforcement
 #Include @rel_sysconfdir@/extra/httpd-policy.conf
 
-# Configuratio nmacros
+# Configuration macros
 #Included @rel_sysconfdir@/extra/httpd-macro.conf
 
 # Configure mod_proxy_html to understand HTML4/XHTML1
