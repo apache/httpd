@@ -223,7 +223,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/viewvc?view=revision&revision=1422712
     2.4.x patch: trunk patches works (modulo an offset for httpd.h and minor MMN dump)
     +1: jailletc36
-  
+
+  * Speed-up 'ap_fputs'. This change is just the inline version of what is remaining
+    in apr_brigade_puts() after http://svn.apache.org/viewvc?view=revision&revision=1402870
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1409437
+    2.4.x patch: trunk patches works
+    +1: jailletc36
+
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
