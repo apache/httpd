@@ -528,7 +528,7 @@ la coordination des processus enfants</description>
     </example>
 
     <p>Une m&eacute;moire partag&eacute;e sous forme de fichier est utile pour les
-    applications tierses qui n&eacute;cessitent un acc&egrave;s direct au tableau de
+    applications tierces qui n&eacute;cessitent un acc&egrave;s direct au tableau de
     bord des processus.</p>
 
     <p>Si vous utilisez un <directive>ScoreBoardFile</directive>, vous
