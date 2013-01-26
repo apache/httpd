@@ -1188,7 +1188,7 @@ in case of an error</description>
 
       <li>output a customized message</li>
 
-      <li>redirect to a local <var>URL-path</var> to handle the
+      <li>internally redirect to a local <var>URL-path</var> to handle the
       problem/error</li>
 
       <li>redirect to an external <var>URL</var> to handle the
