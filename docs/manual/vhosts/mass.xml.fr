@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1330878:1436578 (outdated) -->
+<!-- English Revision : 1436578 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -315,6 +315,14 @@ directives <directive module="mod_rewrite">RewriteMap</directive>. Ces
 techniques sont d&eacute;crites dans la <a
 href="../rewrite/vhosts.html">documentation sur la r&eacute;&eacute;criture</a>.</p>
 
+</section>
+
+<section id="macro"><title>H&eacute;bergement virtuel en masse avec mod_macro</title>
+
+<p>Une autre option pour g&eacute;n&eacute;rer dynamiquement des serveurs virtuels :
+mod_macro ; ce module permet de cr&eacute;er un mod&egrave;le de serveur virtuel que
+vous pourrez invoquer pour des noms d'h&ocirc;tes multiples.
+</p>
 </section>
 
 </manualpage>

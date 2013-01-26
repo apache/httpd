@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1430575:1436920 (outdated) -->
+<!-- English Revision: 1436920 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -753,7 +753,7 @@ serveur HTTP Apache</compatibility>
     <syntax>BalancerInherit On|Off</syntax>
     <default>BalancerInherit On</default>
     <contextlist><context>server config</context><context>virtual host</context></contextlist>
-    <compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur
+    <compatibility>Disponible &agrave; partir de la version 2.4.4 du serveur
     HTTP Apache.</compatibility>
     <usage>
         <p>Cette directive permet d'attribuer au serveur virtuel courant

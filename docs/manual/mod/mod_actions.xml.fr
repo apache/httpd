@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1421821:1437836 (outdated) -->
+<!-- English Revision : 1437836 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -26,7 +26,7 @@
 
 <name>mod_actions</name>
 
-<description>Ce module permet l'ex&eacute;cution des scripts CGI en fonction du
+<description>Ex&eacute;cution des scripts CGI en fonction du
 type de m&eacute;dia ou de la m&eacute;thode de requ&ecirc;te.</description>
 
 <status>Base</status>
