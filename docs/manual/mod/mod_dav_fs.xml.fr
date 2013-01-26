@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1334011:1437838 (outdated) -->
+<!-- English Revision : 1437838 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- Reviewed by : Vincent Deffontaines -->
+<!-- $LastChangedRevision: 2013012601 $ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -25,19 +25,19 @@
 <modulesynopsis metafile="mod_dav_fs.xml.meta">
 
 <name>mod_dav_fs</name>
-<description>Impl&eacute;mente le fournisseur filesystem pour
+<description>Implémente le fournisseur filesystem pour
 <module>mod_dav</module></description>
 <status>Extension</status>
 <sourcefile>mod_dav_fs.c</sourcefile>
 <identifier>dav_fs_module</identifier>
 
 <summary>
-    <p>L'activation de ce module <em>n&eacute;cessite</em> l'utilisation de
+    <p>L'activation de ce module <em>nécessite</em> l'utilisation de
     <module>mod_dav</module>. C'est un module de support pour <module
-    >mod_dav</module> et &agrave; ce titre, il permet l'acc&egrave;s &agrave; des ressources
-    situ&eacute;es dans le syst&egrave;me de fichiers du serveur. Le nom formel de ce
+    >mod_dav</module> et à ce titre, il permet l'accès à des ressources
+    situées dans le système de fichiers du serveur. Le nom formel de ce
     fournisseur est <code>filesystem</code>. Les fournisseurs supports
-    de <module>mod_dav</module> sont invoqu&eacute;s via la directive
+    de <module>mod_dav</module> sont invoqués via la directive
     <directive module="mod_dav">Dav</directive> :</p>
 
     <example><title>Exemple</title>
@@ -46,7 +46,7 @@
       </highlight>
     </example>
 
-    <p>Comme <code>filesystem</code> est le fournisseur par d&eacute;faut de
+    <p>Comme <code>filesystem</code> est le fournisseur par défaut de
     <module>mod_dav</module>, vous pouvez vous contenter d'utiliser la
     valeur <code>On</code> comme argument de Dav.</p>
 </summary>
@@ -54,19 +54,19 @@
 
 <directivesynopsis>
 <name>DavLockDB</name>
-<description>Chemin de la base de donn&eacute;es des verrous DAV</description>
+<description>Chemin de la base de données des verrous DAV</description>
 <syntax>DavLockDB <var>chemin fichier</var></syntax>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>configuration du serveur</context><context>serveur
+virtuel</context>
 </contextlist>
 
 <usage>
-    <p>La directive <directive>DavLockDB</directive> permet de sp&eacute;cifier
-    le chemin complet de la base de donn&eacute;es des verrous, sans extension.
-    Si le chemin n'est pas absolu, il sera consid&eacute;r&eacute; comme relatif au
-    r&eacute;pertoire d&eacute;fini par la directive <directive
-    module="core">ServerRoot</directive>. L'impl&eacute;mentation de
-    <module>mod_dav_fs</module> utilise une base de donn&eacute;es SDBM pour
+    <p>La directive <directive>DavLockDB</directive> permet de spécifier
+    le chemin complet de la base de données des verrous, sans extension.
+    Si le chemin n'est pas absolu, il sera considéré comme relatif au
+    répertoire défini par la directive <directive
+    module="core">ServerRoot</directive>. L'implémentation de
+    <module>mod_dav_fs</module> utilise une base de données SDBM pour
     surveiller les verrous utilisateurs.</p>
 
     <!-- XXX: someone should add that tool to the support directory...
@@ -79,16 +79,16 @@ host</context>
       </highlight>
     </example>
 
-    <p>Les utilisateur et groupe sous lesquels Apache s'ex&eacute;cute et qui
-    sont respectivement d&eacute;finis par les directives <directive
+    <p>Les utilisateur et groupe sous lesquels Apache s'exécute et qui
+    sont respectivement définis par les directives <directive
     module="mod_unixd">User</directive> et <directive
-    module="mod_unixd">Group</directive> doivent pouvoir &eacute;crire dans le
-    r&eacute;pertoire qui contient le fichier de la base de donn&eacute;es des
-    verrous. Pour des raisons de s&eacute;curit&eacute;, il est recommand&eacute; de cr&eacute;er un
-    r&eacute;pertoire d&eacute;di&eacute; &agrave; la base de donn&eacute;es des verrous, plut&ocirc;t que de
-    modifier les permissions d'un r&eacute;pertoire existant. Dans l'exemple
-    ci-dessus, Apache va cr&eacute;er des fichiers dans le r&eacute;pertoire
-    <code>var/</code>, lui-m&ecirc;me sous-r&eacute;pertoire du r&eacute;pertoire d&eacute;fini par
+    module="mod_unixd">Group</directive> doivent pouvoir écrire dans le
+    répertoire qui contient le fichier de la base de données des
+    verrous. Pour des raisons de sécurité, il est recommandé de créer un
+    répertoire dédié à la base de données des verrous, plutôt que de
+    modifier les permissions d'un répertoire existant. Dans l'exemple
+    ci-dessus, Apache va créer des fichiers dans le répertoire
+    <code>var/</code>, lui-même sous-répertoire du répertoire défini par
     la directive <directive
     module="core">ServerRoot</directive>, avec le nom de base
     <code>DavLock</code> suivi d'une extension choisie par le
