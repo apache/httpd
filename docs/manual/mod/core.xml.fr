@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1430665:1435365 (outdated) -->
+<!-- English Revision : 1438839 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1291,7 +1291,7 @@ host</context>
 
       <li>afficher un message personnalis&eacute;</li>
 
-      <li>rediriger vers un <var>chemin d'URL</var> local pour traiter
+      <li>rediriger en interne vers un <var>chemin d'URL</var> local pour traiter
       le probl&egrave;me ou l'erreur</li>
 
       <li>rediriger vers une <var>URL</var> externe pour traiter
@@ -1646,7 +1646,7 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
     journal pour les requ&ecirc;tes.</p>
 
     <highlight language="config">
-# Exemple (format par d&eacute;faut)
+# Exemple (format par d&eacute;faut pour les MPMs thread&eacute;s)
 ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\ %a] %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
     </highlight>
 
