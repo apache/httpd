@@ -550,7 +550,7 @@ la coordination des processus enfants</td></tr>
 </div>
 
     <p>Une mémoire partagée sous forme de fichier est utile pour les
-    applications tierses qui nécessitent un accès direct au tableau de
+    applications tierces qui nécessitent un accès direct au tableau de
     bord des processus.</p>
 
     <p>Si vous utilisez un <code class="directive">ScoreBoardFile</code>, vous
