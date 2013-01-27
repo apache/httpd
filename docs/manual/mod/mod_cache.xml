@@ -377,23 +377,25 @@ manager</description>
     caching should be enabled for.</p>
 
     <highlight language="config">
-# Cache content
+# Cache content (normal handler only)
+CacheQuickHandler off
 &lt;Location /foo&gt;
     CacheEnable disk
 &lt;/Location&gt;
 
-# Cache regex
+# Cache regex (normal handler only)
+CacheQuickHandler off
 &lt;LocationMatch foo$&gt;
     CacheEnable disk
 &lt;/LocationMatch&gt;
 
-# Cache proxied url's
+# Cache proxied url's (normal or quick handler)
 CacheEnable  disk  /
 
-# Cache FTP-proxied url's
+# Cache FTP-proxied url's (normal or quick handler)
 CacheEnable  disk  ftp://
 
-# Cache content from www.example.org
+# Cache content from www.example.org (normal or quick handler)
 CacheEnable  disk  http://www.example.org/
     </highlight>
 
