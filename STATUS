@@ -133,6 +133,32 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patches works (modulo an offset for httpd.h and minor MMN dump)
      +1: jailletc36, rjung, humbedooh
 
+  * various small things to keep 2.4.x in line with trunk
+        1384913: Add a few AP_DEBUG_ASSERT()s for the benefit of clang
+        1399687: style tweak
+        1419719: No need to clear memory that is fully initialized just the line after.
+        1419755: Avoid unnecessary %s substitution
+        1416278: Avoid processing some files twice if APR_INCLUDEDIR and 
+                 APU_INCLUDEDIR containin the same path but differing in
+                 doubled slashes.
+        1330189: Fixed position of the NEED_ENHANCED_ESCAPES define.
+    trunk patches:
+        http://svn.apache.org/viewvc?view=revision&revision=1384913
+        http://svn.apache.org/viewvc?view=revision&revision=1399687
+        http://svn.apache.org/viewvc?view=revision&revision=1419719
+        http://svn.apache.org/viewvc?view=revision&revision=1419755
+        http://svn.apache.org/viewvc?view=revision&revision=1416278
+        http://svn.apache.org/viewvc?view=revision&revision=1330189  
+    2.4.x patch: http://people.apache.org/~jailletc36/backport4.patch
+    +1: jailletc36, rjung, covener
+
+
+  * Speed-up 'ap_fputs'. This change is just the inline version of what is remaining
+    in apr_brigade_puts() after http://svn.apache.org/viewvc?view=revision&revision=1402870
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1409437
+    2.4.x patch: trunk patches works
+    +1: jailletc36, rjung, covener
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -209,38 +235,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: druggeri
     covener: minor MMM bump?  (Thanks for reminder. This is done. -druggeri)
 
-  * various small things to keep 2.4.x in line with trunk
-        1384913: Add a few AP_DEBUG_ASSERT()s for the benefit of clang
-        1399687: style tweak
-        1419719: No need to clear memory that is fully initialized just the line after.
-        1419755: Avoid unnecessary %s substitution
-        1416278: Avoid processing some files twice if APR_INCLUDEDIR and 
-                 APU_INCLUDEDIR containin the same path but differing in
-                 doubled slashes.
-        1330189: Fixed position of the NEED_ENHANCED_ESCAPES define.
-    trunk patches:
-        http://svn.apache.org/viewvc?view=revision&revision=1384913
-        http://svn.apache.org/viewvc?view=revision&revision=1399687
-        http://svn.apache.org/viewvc?view=revision&revision=1419719
-        http://svn.apache.org/viewvc?view=revision&revision=1419755
-        http://svn.apache.org/viewvc?view=revision&revision=1416278
-        http://svn.apache.org/viewvc?view=revision&revision=1330189  
-    2.4.x patch: http://people.apache.org/~jailletc36/backport4.patch
-    +1: jailletc36, rjung, covener
-
-
-  * Speed-up 'ap_fputs'. This change is just the inline version of what is remaining
-    in apr_brigade_puts() after http://svn.apache.org/viewvc?view=revision&revision=1402870
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1409437
-    2.4.x patch: trunk patches works
-    +1: jailletc36, rjung, covener
 
   * mod_cache: Cache does no longer send Content-Type header for fresh content.
     Followup to r1361153+r1373447 (PR 53539, wrong Content-Type for stale content).
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1439083
     2.4.x patch: trunk patches works
     +1: rjung, covener
-
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
