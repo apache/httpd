@@ -125,6 +125,13 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
             not like the time stamp of last use in the ws_record). Maybe "status_unchanged"?
      rjung: The value is shown as "Seconds since last used". Actually it is more like
             "Seconds since last slot status change", but that would be to ugly as a name.
+            
+   * add new ap_bin2hex() utility function.
+     This is needed to incorporate other changes that make use of this new function.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1422549
+                 http://svn.apache.org/viewvc?view=revision&revision=1422712
+     2.4.x patch: trunk patches works (modulo an offset for httpd.h and minor MMN dump)
+     +1: jailletc36, rjung, humbedooh
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -221,12 +228,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: http://people.apache.org/~jailletc36/backport4.patch
     +1: jailletc36, rjung
 
-  * add new ap_bin2hex() utility function.
-    This is needed to incorporate other changes that make use of this new function.
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1422549
-                 http://svn.apache.org/viewvc?view=revision&revision=1422712
-    2.4.x patch: trunk patches works (modulo an offset for httpd.h and minor MMN dump)
-    +1: jailletc36, rjung
 
   * Speed-up 'ap_fputs'. This change is just the inline version of what is remaining
     in apr_brigade_puts() after http://svn.apache.org/viewvc?view=revision&revision=1402870
