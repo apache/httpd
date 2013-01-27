@@ -100,7 +100,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                http://mail-archives.apache.org/mod_mbox/httpd-dev/201301.mbox/%3C20130103112044.GA19653%40redhat.com%3E
         kbrand: configure option added in r1429228
 
-
    * mod_status: Add useful mod_status info... try to determine last time
      a specific vhost was accessed/used.
      trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1417529
@@ -137,18 +136,11 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4.x patch: http://people.apache.org/~jailletc36/backport4.patch
     +1: jailletc36, rjung, covener
 
-
   * Speed-up 'ap_fputs'. This change is just the inline version of what is remaining
     in apr_brigade_puts() after http://svn.apache.org/viewvc?view=revision&revision=1402870
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1409437
     2.4.x patch: trunk patches works
     +1: jailletc36, rjung, covener
-
-  * mod_cache: Cache does no longer send Content-Type header for fresh content.
-    Followup to r1361153+r1373447 (PR 53539, wrong Content-Type for stale content).
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1439083
-    2.4.x patch: trunk patches works
-    +1: rjung, covener, minfrin
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
