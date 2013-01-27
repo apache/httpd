@@ -100,11 +100,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                http://mail-archives.apache.org/mod_mbox/httpd-dev/201301.mbox/%3C20130103112044.GA19653%40redhat.com%3E
         kbrand: configure option added in r1429228
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
-
     * mod_lua: Add bindings for mod_dbd/apr_dbd database access.
       trunk patch: http://svn.apache.org/r1430225
                    http://svn.apache.org/r1430265
@@ -121,6 +116,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       +1: fuankg (compiles/links fine now for NetWare; no functional tests yet)
       gsmith notes: compiles/links on Windows now.
       
+   * mod_status: Add useful mod_status info... try to determine last time
+     a specific vhost was accessed/used.
+     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1417529
+     2.4.x patch: trunk patch works
+     +1: jim, jerenkrantz, rjung
+     rjung: local variable "last_used" somehow misnamed (it is seconds since last used,
+            not like the time stamp of last use in the ws_record). Maybe "status_unchanged"?
+     rjung: The value is shown as "Seconds since last used". Actually it is more like
+            "Seconds since last slot status change", but that would be to ugly as a name.
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+
    * Makefile.win: Added copying of .vbs / .wsf CGIs to Windows install target.
                    Moved fixing of shebang to separate target so that it is
                    no longer executed by default and all CGIs remain inactive.
@@ -170,12 +180,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  jim: are we OK with changing the 2.4.x docs async?
                  druggeri: sure - just noting that as-applied it would be incorrect
 
-  * mod_status: Add useful mod_status info... try to determine last time
-    a specific vhost was accessed/used.
-    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1417529
-    2.4.x patch: trunk patch works
-    +1: jim, jerenkrantz
-
   * mod_ssl: Allow the SSLUserName to be used to control the
     username passed by the FakeBasicAuth option. PR52616.
     trunk patch: http://svn.apache.org/viewvc?rev=1432322&view=rev
@@ -215,20 +219,26 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=revision&revision=1416278
         http://svn.apache.org/viewvc?view=revision&revision=1330189  
     2.4.x patch: http://people.apache.org/~jailletc36/backport4.patch
-    +1: jailletc36
+    +1: jailletc36, rjung
 
   * add new ap_bin2hex() utility function.
     This is needed to incorporate other changes that make use of this new function.
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1422549
                  http://svn.apache.org/viewvc?view=revision&revision=1422712
     2.4.x patch: trunk patches works (modulo an offset for httpd.h and minor MMN dump)
-    +1: jailletc36
+    +1: jailletc36, rjung
 
   * Speed-up 'ap_fputs'. This change is just the inline version of what is remaining
     in apr_brigade_puts() after http://svn.apache.org/viewvc?view=revision&revision=1402870
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1409437
     2.4.x patch: trunk patches works
-    +1: jailletc36
+    +1: jailletc36, rjung
+
+  * mod_cache: Cache does no longer send Content-Type header for fresh content.
+    Followup to r1361153+r1373447 (PR 53539, wrong Content-Type for stale content).
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1439083
+    2.4.x patch: trunk patches works
+    +1: rjung
 
 
 A list of further possible backports can be found at:
