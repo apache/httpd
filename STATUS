@@ -144,6 +144,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patches works
     +1: jailletc36, rjung, covener
 
+  * mod_cache: Cache does no longer send Content-Type header for fresh content.
+    Followup to r1361153+r1373447 (PR 53539, wrong Content-Type for stale content).
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1439083
+    2.4.x patch: trunk patches works
+    +1: rjung, covener, minfrin
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -220,12 +226,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: druggeri
     covener: minor MMM bump?  (Thanks for reminder. This is done. -druggeri)
 
-
-  * mod_cache: Cache does no longer send Content-Type header for fresh content.
-    Followup to r1361153+r1373447 (PR 53539, wrong Content-Type for stale content).
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1439083
-    2.4.x patch: trunk patches works
-    +1: rjung, covener
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
