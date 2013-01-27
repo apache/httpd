@@ -226,20 +226,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=revision&revision=1416278
         http://svn.apache.org/viewvc?view=revision&revision=1330189  
     2.4.x patch: http://people.apache.org/~jailletc36/backport4.patch
-    +1: jailletc36, rjung
+    +1: jailletc36, rjung, covener
 
 
   * Speed-up 'ap_fputs'. This change is just the inline version of what is remaining
     in apr_brigade_puts() after http://svn.apache.org/viewvc?view=revision&revision=1402870
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1409437
     2.4.x patch: trunk patches works
-    +1: jailletc36, rjung
+    +1: jailletc36, rjung, covener
 
   * mod_cache: Cache does no longer send Content-Type header for fresh content.
     Followup to r1361153+r1373447 (PR 53539, wrong Content-Type for stale content).
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1439083
     2.4.x patch: trunk patches works
-    +1: rjung
+    +1: rjung, covener
 
 
 A list of further possible backports can be found at:
