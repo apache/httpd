@@ -95,10 +95,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/viewvc/httpd/httpd/trunk/acinclude.m4?r1=1396440&r2=1429228
      2.4.x patch: trunk patch works
      +1: kbrand, jorton, jerenkrantz
-     sf notes: -0.5: Including libraries for static usage is a bad default for
-               Linux distributions, see
-               http://mail-archives.apache.org/mod_mbox/httpd-dev/201301.mbox/%3C20130103112044.GA19653%40redhat.com%3E
-        kbrand: configure option added in r1429228
 
    * mod_status: Add useful mod_status info... try to determine last time
      a specific vhost was accessed/used.
