@@ -18,6 +18,7 @@
 #include "mod_lua.h"
 #include "util_script.h"
 #include "lua_apr.h"
+#include "lua_dbd.h"
 
 APLOG_USE_MODULE(lua);
 
@@ -751,6 +752,8 @@ AP_LUA_DECLARE(void) ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
                  makefun(&req_notes, APL_REQ_FUNTYPE_TABLE, p));
     apr_hash_set(dispatch, "subprocess_env", APR_HASH_KEY_STRING,
                  makefun(&req_subprocess_env, APL_REQ_FUNTYPE_TABLE, p));
+    apr_hash_set(dispatch, "dbacquire", APR_HASH_KEY_STRING,
+                 makefun(&lua_db_acquire, APL_REQ_FUNTYPE_LUACFUN, p));
 
 
     lua_pushlightuserdata(L, dispatch);

@@ -100,22 +100,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                http://mail-archives.apache.org/mod_mbox/httpd-dev/201301.mbox/%3C20130103112044.GA19653%40redhat.com%3E
         kbrand: configure option added in r1429228
 
-    * mod_lua: Add bindings for mod_dbd/apr_dbd database access.
-      trunk patch: http://svn.apache.org/r1430225
-                   http://svn.apache.org/r1430265
-                   http://svn.apache.org/r1430472
-                   http://svn.apache.org/r1430656
-                   http://svn.apache.org/r1431236 (CodeWarrior workaround)
-                   http://svn.apache.org/r1431322
-                   http://svn.apache.org/r1431930 (Windows patch)
-                   http://svn.apache.org/r1432418 (Debian patch)
-                   http://svn.apache.org/r1432892 (fix for external drivers)
-      2.4.x patch: http://www.humbedooh.com/apache/lua_dbd.patch
-                   + CHANGES
-      +1: humbedooh, covener
-      +1: fuankg (compiles/links fine now for NetWare; no functional tests yet)
-      gsmith notes: compiles/links on Windows now.
-      
+
    * mod_status: Add useful mod_status info... try to determine last time
      a specific vhost was accessed/used.
      trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1417529
