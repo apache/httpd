@@ -371,6 +371,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/httpd/modules/mod_log_debug.so
 %{_libdir}/httpd/modules/mod_log_forensic.so
 %{_libdir}/httpd/modules/mod_logio.so
+%{_libdir}/httpd/modules/mod_macro.so
 %{_libdir}/httpd/modules/mod_mime_magic.so
 %{_libdir}/httpd/modules/mod_mime.so
 %{_libdir}/httpd/modules/mod_mpm_event.so
