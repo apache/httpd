@@ -137,6 +137,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1409437
     2.4.x patch: trunk patches works
     +1: jailletc36, rjung, covener
+    
+  * mod_lua: fix handle releasing function (mod dbd and apr dbd got mixed up)
+    This bug causes mod dbd to lose its connections, which is not intended.
+    trunk patch:  http://svn.apache.org/r1439208
+    2.4.x patch:  trunk patch works.
+    +1: humbedooh
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
