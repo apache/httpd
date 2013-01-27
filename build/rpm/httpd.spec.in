@@ -87,8 +87,9 @@ extended with scripts written in the Lua programming language.
 %package -n mod_proxy_html
 Group: System Environment/Daemons
 Summary: Proxy HTML filter modules for the Apache HTTP server
+Epoch: 1
 BuildRequires: libxml2-devel
-Requires: httpd = %{version}-%{release}, httpd-mmn = %{mmn}
+Requires: httpd = 0:%{version}-%{release}, httpd-mmn = %{mmn}
 
 %description -n mod_proxy_html
 The mod_proxy_html module for the Apache HTTP server provides
