@@ -65,14 +65,14 @@ int lua_db_close(lua_State *L)
     
     db = lua_get_db_handle(L);
     if (db && db->alive) {
-        if (db->type == LUA_DBTYPE_MOD_DBD) {
+        if (db->type == LUA_DBTYPE_APR_DBD) {
             rc = apr_dbd_close(db->driver, db->handle);
+            if (db->pool) apr_pool_destroy(db->pool);
         }
         else {
             lua_ap_dbd_close = APR_RETRIEVE_OPTIONAL_FN(ap_dbd_close);
             if (lua_ap_dbd_close != NULL)
                 if (db->dbdhandle) lua_ap_dbd_close(db->server, db->dbdhandle);
-            if (db->pool) apr_pool_destroy(db->pool);
         }
 
         db->driver = NULL;
