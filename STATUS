@@ -96,32 +96,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: kbrand, jorton, jerenkrantz
 
-   * add new ap_bin2hex() utility function.
-     This is needed to incorporate other changes that make use of this new function.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1422549
-                 http://svn.apache.org/viewvc?view=revision&revision=1422712
-     2.4.x patch: trunk patches works (modulo an offset for httpd.h and minor MMN dump)
-     +1: jailletc36, rjung, humbedooh
-
-  * various small things to keep 2.4.x in line with trunk
-        1384913: Add a few AP_DEBUG_ASSERT()s for the benefit of clang
-        1399687: style tweak
-        1419719: No need to clear memory that is fully initialized just the line after.
-        1419755: Avoid unnecessary %s substitution
-        1416278: Avoid processing some files twice if APR_INCLUDEDIR and 
-                 APU_INCLUDEDIR containin the same path but differing in
-                 doubled slashes.
-        1330189: Fixed position of the NEED_ENHANCED_ESCAPES define.
-    trunk patches:
-        http://svn.apache.org/viewvc?view=revision&revision=1384913
-        http://svn.apache.org/viewvc?view=revision&revision=1399687
-        http://svn.apache.org/viewvc?view=revision&revision=1419719
-        http://svn.apache.org/viewvc?view=revision&revision=1419755
-        http://svn.apache.org/viewvc?view=revision&revision=1416278
-        http://svn.apache.org/viewvc?view=revision&revision=1330189  
-    2.4.x patch: http://people.apache.org/~jailletc36/backport4.patch
-    +1: jailletc36, rjung, covener
-
   * Speed-up 'ap_fputs'. This change is just the inline version of what is remaining
     in apr_brigade_puts() after http://svn.apache.org/viewvc?view=revision&revision=1402870
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1409437
