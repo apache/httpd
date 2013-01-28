@@ -95,12 +95,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/viewvc/httpd/httpd/trunk/acinclude.m4?r1=1396440&r2=1429228
      2.4.x patch: trunk patch works
      +1: kbrand, jorton, jerenkrantz
-
-  * Speed-up 'ap_fputs'. This change is just the inline version of what is remaining
-    in apr_brigade_puts() after http://svn.apache.org/viewvc?view=revision&revision=1402870
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1409437
-    2.4.x patch: trunk patches works
-    +1: jailletc36, rjung, covener
     
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
