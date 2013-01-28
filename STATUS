@@ -95,6 +95,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/viewvc/httpd/httpd/trunk/acinclude.m4?r1=1396440&r2=1429228
      2.4.x patch: trunk patch works
      +1: kbrand, jorton, jerenkrantz
+     -1: jim: patch doesn't apply (2 out of 2 hunks FAILED -- saving rejects to file acinclude.m4.rej)
     
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -148,6 +149,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                * Doc for 2.4 patch notes version 2.5.0
                  jim: are we OK with changing the 2.4.x docs async?
                  druggeri: sure - just noting that as-applied it would be incorrect
+
+  * mod_proxy: Allow ProxyPass to also be server-specific.
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1439404
+    2.4.x patch: trunk patch works modulo ap_mmn and docs ("2.5.0")
+                 Assumes BalancerInherit patch above.
+    +1: 
 
   * mod_ssl: Allow the SSLUserName to be used to control the
     username passed by the FakeBasicAuth option. PR52616.
