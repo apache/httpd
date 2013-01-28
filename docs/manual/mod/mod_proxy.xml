@@ -665,19 +665,39 @@ expressions</description>
 </directivesynopsis>
 
 <directivesynopsis>
+    <name>ProxyPassInherit</name>
+    <description>Inherit ProxyPass directives defined from the main server</description>
+    <syntax>ProxyPassInherit On|Off</syntax>
+    <default>ProxyPassInherit On</default>
+    <contextlist><context>server config</context><context>virtual host</context></contextlist>
+    <compatibility>ProxyPassInherit is only available in Apache HTTP Server 2.5.0 and later.
+        and later.</compatibility>
+    <usage>
+        <p>This directive will cause the current server/vhost to "inherit"
+            <directive module="mod_proxy">ProxyPass</directive>
+            directives defined in the main server. This can cause issues and
+            inconsistent behavior if using the Balancer Manager for dynamic changes
+            and so should be disabled if using that feature.</p>
+        <p>The setting in the global server defines the default for all vhosts.</p>
+        <p>Disabling ProxyPassInherit also disables <directive module="mod_proxy">BalancerInherit</directive>.</p>
+    </usage>
+</directivesynopsis>
+
+<directivesynopsis>
     <name>BalancerInherit</name>
-    <description>Inherit ProxyPassed Balancers/Workers from the main server</description>
+    <description>Inherit proxy Balancers/Workers defined from the main server</description>
     <syntax>BalancerInherit On|Off</syntax>
     <default>BalancerInherit On</default>
     <contextlist><context>server config</context><context>virtual host</context></contextlist>
     <compatibility>BalancerInherit is only available in Apache HTTP Server 2.4.4 and later.
         and later.</compatibility>
     <usage>
-        <p>This directive will cause the current server/vhost to "inherit" ProxyPass
+        <p>This directive will cause the current server/vhost to "inherit"
             Balancers and Workers defined in the main server. This can cause issues and
-            inconsistent behavior if using the Balancer Manager and so should be disabled
-            if using that feature.</p>
+            inconsistent behavior if using the Balancer Manager for dynamic changes
+            and so should be disabled if using that feature.</p>
         <p>The setting in the global server defines the default for all vhosts.</p>
+        <p>Disabling <directive module="mod_proxy">ProxyPassInherit</directive> also disables BalancerInherit.</p>
     </usage>
 </directivesynopsis>
 
