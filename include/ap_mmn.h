@@ -400,6 +400,7 @@
  * 20120211.8 (2.4.3-dev)  Add sticky_separator to proxy_balancer_shared struct.
  * 20120211.9 (2.4.4-dev)  Add fgrab() to ap_slotmem_provider_t.
  * 20120211.10 (2.4.4-dev) Add in bal_persist field to proxy_server_conf
+ * 20120211.11 (2.4.4-dev)  Add ap_bin2hex()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -407,7 +408,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 10                   /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 11                   /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
