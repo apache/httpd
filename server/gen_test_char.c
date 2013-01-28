@@ -29,10 +29,10 @@
 #include "apr.h"
 #include "apr_lib.h"
 
-#if defined(WIN32) || defined(OS2)
-#define NEED_ENHANCED_ESCAPES
 #endif
 
+#if defined(WIN32) || defined(OS2)
+#define NEED_ENHANCED_ESCAPES
 #endif
 
 #if APR_HAVE_STDIO_H
