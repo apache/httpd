@@ -96,16 +96,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: kbrand, jorton, jerenkrantz
 
-   * mod_status: Add useful mod_status info... try to determine last time
-     a specific vhost was accessed/used.
-     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1417529
-     2.4.x patch: trunk patch works
-     +1: jim, jerenkrantz, rjung
-     rjung: local variable "last_used" somehow misnamed (it is seconds since last used,
-            not like the time stamp of last use in the ws_record). Maybe "status_unchanged"?
-     rjung: The value is shown as "Seconds since last used". Actually it is more like
-            "Seconds since last slot status change", but that would be to ugly as a name.
-            
    * add new ap_bin2hex() utility function.
      This is needed to incorporate other changes that make use of this new function.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1422549
