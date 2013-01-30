@@ -517,14 +517,22 @@ AC_DEFUN(APACHE_CHECK_OPENSSL,[
         PKG_CONFIG_PATH="${ap_openssl_base}/lib/pkgconfig${PKG_CONFIG_PATH+:}${PKG_CONFIG_PATH}"
         export PKG_CONFIG_PATH
       fi
-      ap_openssl_libs="`$PKGCONFIG --libs-only-l openssl 2>&1`"
+      AC_ARG_ENABLE(ssl-staticlib-deps,APACHE_HELP_STRING(--enable-ssl-staticlib-deps,[link mod_ssl with dependencies of OpenSSL's static libraries (as indicated by "pkg-config --static"). Must be specified in addition to --enable-ssl.]), [
+        if test "$enableval" = "yes"; then
+          PKGCONFIG_LIBOPTS="--static"
+        fi
+      ])
+      ap_openssl_libs="`$PKGCONFIG $PKGCONFIG_LIBOPTS --libs-only-l --silence-errors openssl`"
       if test $? -eq 0; then
         ap_openssl_found="yes"
         pkglookup="`$PKGCONFIG --cflags-only-I openssl`"
         APR_ADDTO(CPPFLAGS, [$pkglookup])
         APR_ADDTO(MOD_CFLAGS, [$pkglookup])
         APR_ADDTO(ab_CFLAGS, [$pkglookup])
-        pkglookup="`$PKGCONFIG --libs-only-L --libs-only-other openssl`"
+        pkglookup="`$PKGCONFIG $PKGCONFIG_LIBOPTS --libs-only-L openssl`"
+        APR_ADDTO(LDFLAGS, [$pkglookup])
+        APR_ADDTO(MOD_LDFLAGS, [$pkglookup])
+        pkglookup="`$PKGCONFIG $PKGCONFIG_LIBOPTS --libs-only-other openssl`"
         APR_ADDTO(LDFLAGS, [$pkglookup])
         APR_ADDTO(MOD_LDFLAGS, [$pkglookup])
       fi
@@ -557,7 +565,7 @@ AC_DEFUN(APACHE_CHECK_OPENSSL,[
       [AC_MSG_RESULT(FAILED)])
 
     if test "x$ac_cv_openssl" = "xyes"; then
-      ap_openssl_libs="-lssl -lcrypto `$apr_config --libs`"
+      ap_openssl_libs="${ap_openssl_libs:--lssl -lcrypto} `$apr_config --libs`"
       APR_ADDTO(MOD_LDFLAGS, [$ap_openssl_libs])
       APR_ADDTO(LIBS, [$ap_openssl_libs])
       APR_SETVAR(ab_LDFLAGS, [$MOD_LDFLAGS])
