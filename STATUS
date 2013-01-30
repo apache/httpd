@@ -185,6 +185,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: kbrand, jorton, jerenkrantz
      -1: jim: patch doesn't apply (2 out of 2 hunks FAILED -- saving rejects to file acinclude.m4.rej)
+         kbrand: applying svn diff -r 1396440:1429228 https://svn.apache.org/repos/asf/httpd/httpd/trunk/acinclude.m4
+                 works for me - what patch did you apply? (note that it's the
+                 combination of two commits, namely r1428184 and r1429228)
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
