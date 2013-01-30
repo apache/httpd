@@ -122,7 +122,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           who enable those scripts with inserting the right shebang should be 100% aware
           of any risks (this should cover your last point).
      jim: trawick, does the above address your concerns?
-
+     trawick: to some extent (somebody reading the script gets an idea)
+          Why isn't the configuration requirement documented instead
+          of described indirectly in a sample?
+          Why are these new samples added to the install without three
+          votes?  (I didn't veto it; put your name next to the two
+          existing ones and I'll be satisified that enough people
+          considered this addition as an appropriate solution for a
+          real httpd usability problem.)
 
    * mod_proxy: Allow balancers to be server-specific, as they should have
      been. Inheritance causes too many behind-the-scene interactions
