@@ -121,6 +121,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           make absolutely clear that these CGIs are for testing purpose only - so those
           who enable those scripts with inserting the right shebang should be 100% aware
           of any risks (this should cover your last point).
+     jim: trawick, does the above address your concerns?
 
 
    * mod_proxy: Allow balancers to be server-specific, as they should have
