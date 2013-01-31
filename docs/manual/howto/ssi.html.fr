@@ -73,7 +73,9 @@ HTML préexistants.</p>
     <p>Par exemple, vous pouvez insérer la directive suivante dans une
     page HTML existante :</p>
 
-    <div class="example" />
+    <div class="example"><p><code>
+    &lt;!--#echo var="DATE_LOCAL" --&gt;
+    </code></p></div>
 
     <p>Ainsi, lorsque la page sera servie, la directive sera évaluée et
     remplacée par sa valeur :</p>

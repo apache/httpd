@@ -467,11 +467,6 @@ modified?</a></h3>
         &lt;!--#endif --&gt;
 </code></p></div>
 
-    <p>Not that I have anything against IE on Macs - I just
-    struggled for a few hours last week trying to get some
-    JavaScript working on IE on a Mac, when it was working
-    everywhere else. The above was the interim workaround.</p>
-
     <p>Any other variable (either ones that you define, or normal
     environment variables) can be used in conditional statements.
     With Apache's ability to set environment variables with the
