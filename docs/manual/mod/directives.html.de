@@ -451,6 +451,7 @@
 <li><a href="mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></li>
 <li><a href="mod_proxy.html#proxymaxforwards">ProxyMaxForwards</a></li>
 <li><a href="mod_proxy.html#proxypass">ProxyPass</a></li>
+<li><a href="mod_proxy.html#proxypassinherit">ProxyPassInherit</a></li>
 <li><a href="mod_proxy.html#proxypassinterpolateenv">ProxyPassInterpolateEnv</a></li>
 <li><a href="mod_proxy.html#proxypassmatch">ProxyPassMatch</a></li>
 <li><a href="mod_proxy.html#proxypassreverse">ProxyPassReverse</a></li>
