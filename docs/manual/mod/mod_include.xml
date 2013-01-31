@@ -608,7 +608,7 @@ AddOutputFilter INCLUDES .shtml
     <p>The <code>endif</code> element ends the <code>if</code> element
     and is required.</p>
 
-    <p><var>test_condition</var> is a boolean expression tha follows the
+    <p><var>test_condition</var> is a boolean expression which follows the
     <a href="../expr.html">ap_expr</a> syntax. The syntax can be changed
     to be compatible with Apache HTTPD 2.2.x using <directive
     module="mod_include">SSILegacyExprParser</directive>.</p>
