@@ -26,8 +26,6 @@
 <a href="../ko/vhosts/mass.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/mass.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Ce document propose une méthode performante pour servir un nombre
@@ -49,6 +47,7 @@ d'hébergement virtuel sur le même serveur</a></li>
 efficace</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rewrite">Hébergement virtuel de masse avec
 mod_rewrite</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#macro">Hébergement virtuel en masse avec mod_macro</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -329,6 +328,14 @@ des serveurs virtuels, ces dernières étant accessibles via des
 directives <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>. Ces
 techniques sont décrites dans la <a href="../rewrite/vhosts.html">documentation sur la réécriture</a>.</p>
 
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="macro" id="macro">Hébergement virtuel en masse avec mod_macro</a></h2>
+
+<p>Une autre option pour générer dynamiquement des serveurs virtuels :
+mod_macro ; ce module permet de créer un modèle de serveur virtuel que
+vous pourrez invoquer pour des noms d'hôtes multiples.
+</p>
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/vhosts/mass.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_macro.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_macro.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ce module permet d'utiliser des macros dans les fichiers
 de configuration Apache.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -52,6 +50,7 @@ de configuration Apache.</td></tr>
 <h3>Sujets</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#features">Caractéristiques</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#examples">Exemples</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -59,7 +58,7 @@ de configuration Apache.</td></tr>
 
     <p>Définition d'une macro :</p>
     <ul>
-    <li> dans une section &lt;Macro&gt; au style homogène à la
+    <li> dans une section &lt;Macro&gt; au style conforme à la
          syntaxe des fichiers de configuration Apache.</li>
     <li> l'utilisateur choisit le nom de la macro et de ses paramètres.</li>
     <li> les noms de macro sont insensibles à la casse, comme les directives Apache.</li>
@@ -67,25 +66,25 @@ de configuration Apache.</td></tr>
     <li> les paramètres d'une macro doivent avoir des noms distincts.</li>
     <li> il y a une erreur si un paramètre a un nom vide.</li>
     <li> la redéfinition d'une macro génère un avertissement.</li>
-    <li> des définitions de macros peuvent être nichées les unes dans les autres...</li>
+    <li> des définitions de macros peuvent être imbriquées les unes dans les autres... (mais dans quel but ?)</li>
     <li> les paramètres inutilisés génèrent un avertissement.</li>
     <li> les noms de paramètre en préfixe les uns des autres génèrent un avertissement.</li>
-    <li> les noms de paramètre non préfixés par '<code>$%@</code>' génèrent un
+    <li> les noms de paramètre non préfixés par un des caractères '<code>$%@</code>' génèrent un
          avertissement pour encourager cette bonne pratique.</li>
     <li> les différents préfixes proposés permettent de gérer les interactions
          avec d'autres directives comme <code class="directive"><a href="../mod/core.html#define">Define</a></code>.</li>
     <li> un conseil : il peut être utile d'ajouter des accolades autour du nom d'un
          paramètre, par exemple <code>${foo}</code>, de manière à ce que le
-         paramètre puisse être utilisée avec des caractères collés autour,
+         paramètre puisse être utilisé entouré de caractères,
          par exemple <code>bla${foo}bla</code>.</li>
     <li> génère un avertissement si le contenu de la macro est vide.</li>
     <li> génère un avertissement si le système détecte que les sections à l'intérieur
-         d'une macro ne sont pas correctement nichées.</li>
+         d'une macro ne sont pas correctement imbriquées.</li>
     <li> la portée lexicale des paramètres d'une macro est restreinte au texte
          de la macro elle-même... en particulier elle n'est pas propagée aux inclusions.</li>
     <li> il n'y a pas de contrainte sur le contenu d'une macro.
          <p>Cela signifie que vous pouvez mettre une section perl ou n'importe
-         quoi d'autre dans une macro. Il n'y a pas d'autre hypothèse sur la
+         quoi d'autre dans une macro. Il n'y a pas d'autre contrainte sur la
          structure lexicale et syntaxique de la macro (guillemets, espaces...)
          que d'attendre une séquence de ligne avec éventuellement des
          continuations.</p></li>
@@ -93,19 +92,19 @@ de configuration Apache.</td></tr>
 
     <p>Utilisation d'une macro:</p>
     <ul>
-    <li> le nombre d'argument doit être cohérent avec la définition.</li>
-    <li> toutes les occurences des paramètres sont substitués par leur valeur.</li>
-    <li> en cas de conflit, le nom le plus long est choisit.</li>
-    <li> une récursion dans l'expansion d'une macro est détectée et arrêtée avec une erreur.</li>
-    <li> les arguments vides génèrent un avertissement si ils sont utilisés.</li>
-    <li> le système génère une description très précise de la localisation des erreurs.</li>
-    <li> les valeurs des paramètres préfixés par <code>$</code> et <code>%</code> ne sont pas protégés.</li>
-    <li> les valeurs des paramètres préfixés par <code>@</code> sont protégés par des guillemets.</li>
+    <li> le nombre d'arguments doit être cohérent avec la définition.</li>
+    <li> toutes les occurences des paramètres sont substituées par leur valeur.</li>
+    <li> en cas de conflit, le nom le plus long est choisi.</li>
+    <li> une récursion dans l'expansion d'une macro est détectée et interrompue avec envoi d'un message d'erreur.</li>
+    <li> si un argument vide est détecté, un avertissement est généré.</li>
+    <li> le système s'efforce de générer une description précise de la localisation des erreurs.</li>
+    <li> les valeurs des paramètres préfixées par <code>$</code> et <code>%</code> ne sont pas échappées.</li>
+    <li> les valeurs des paramètres préfixées par <code>@</code> sont échappées par des guillemets.</li>
     </ul>
 
-    <p>Effacement de la définition d'une macro :</p>
+    <p>Suppression de la définition d'une macro :</p>
     <ul>
-    <li> la macro effacée doit avoir été définie auparavant.</li>
+    <li> la macro supprimée doit avoir été définie auparavant.</li>
     </ul>
 
     <pre class="prettyprint lang-config">
@@ -121,6 +120,42 @@ Use DirGroup /www/apache/server  admin
 UndefMacro DirGroup
     </pre>
 
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="examples" id="examples">Exemples</a></h2>
+
+<p>Un exemple typique d'utilisation de <code class="module"><a href="../mod/mod_macro.html">mod_macro</a></code> est la
+création dynamique de serveurs virtuels.</p>
+
+<pre class="prettyprint lang-config">
+## Définition d'une macro VHost pour les configurations répétitives
+
+&lt;Macro VHost $host $port $dir&gt;
+  Listen $port
+  &lt;VirtualHost *:$port&gt;
+
+    ServerName $host
+    DocumentRoot $dir
+
+    &lt;Directory $dir&gt;
+      # directives propres au répertoire $dir ...
+    &lt;/Directory&gt;
+
+    # restriction d'accès au sous-répertoire intranet.
+    &lt;Directory $dir/intranet&gt;
+      Require ip 10.0.0.0/8
+    &lt;/Directory&gt;
+  &lt;/VirtualHost&gt;
+&lt;/Macro&gt;
+
+## Utilisation de la macro VHost avec différents arguments.
+
+Use VHost www.apache.org 80 /vhosts/apache/htdocs
+Use VHost example.org 8080 /vhosts/example/htdocs
+Use VHost www.example.fr 1234 /vhosts/example.fr/htdocs
+</pre>
+
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Macro" id="Macro">&lt;Macro&gt;</a> <a name="macro" id="macro">Directive</a></h2>
@@ -133,24 +168,21 @@ UndefMacro DirGroup
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_macro</td></tr>
 </table>
-    <p>La diretive <code class="directive">Macro</code> permet de définir une macro
+    <p>La directive <code class="directive">Macro</code> permet de définir une macro
     dans un fichier de configuration Apache. Le premier argument est le nom
-    de la macro, et les arguments suivants sont les noms des paramètres. Il
+    de la macro, et les arguments suivants sont les paramètres. Il
     est de bon aloi de préfixer les noms des paramètres d'une macro
-    avec un caractère parmi '<code>$%@</code>'.
+    avec un caractère parmi '<code>$%@</code>', et d'éviter d'en faire
+    de même avec les noms de macros.
     </p>
 
     <pre class="prettyprint lang-config">
 &lt;Macro LocalAccessPolicy&gt;
-  order deny,allow
-  deny from all
-  allow from 10.2.16.0/24
+  Require ip 10.2.16.0/24
 &lt;/Macro&gt;
 
 &lt;Macro RestrictedAccessPolicy $ipnumbers&gt;
-   order deny,allow
-   deny from all
-   allow from $ipnumbers
+   Require ip $ipnumbers
 &lt;/Macro&gt;
     </pre>
 
@@ -170,7 +202,7 @@ UndefMacro DirGroup
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Use" id="Use">Use</a> <a name="use" id="use">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Utilise une macro</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Utilisation d'une macro</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Use <var>nom</var> [<var>valeur1</var> ... <var>valeurN</var>]
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
@@ -178,9 +210,10 @@ UndefMacro DirGroup
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_macro</td></tr>
 </table>
     <p> La directive <code class="directive">Use</code> permet d'utiliser une macro.
-    La macro est expansée. Elle doit avoir le même nombre d'argument que le
+    La macro considérée est expansée. Son nombre d'arguments doit être égal au
     nombre de paramètres précisés dans sa définition. Les valeurs passées en
-    argument sont substituées avant l'interprétation du texte de la macro.</p>
+    argument sont attribuées aux paramètres correspondants et
+    substituées avant l'interprétation du texte de la macro.</p>
 
     <pre class="prettyprint lang-config">
 Use LocalAccessPolicy
@@ -189,16 +222,12 @@ Use RestrictedAccessPolicy "192.54.172.0/24 192.54.148.0/24"
     </pre>
 
 
-    <p>est équivalent, avec les macros définies au dessus, à :</p>
+    <p>est équivalent, avec les macros définies ci-dessus à :</p>
 
     <pre class="prettyprint lang-config">
-order deny,allow
-deny from all
-allow from 10.2.16.0/24
+Require ip 10.2.16.0/24
 ...
-order deny,allow
-deny from all
-allow from 192.54.172.0/24 192.54.148.0/24
+Require ip 192.54.172.0/24 192.54.148.0/24
     </pre>
 
 

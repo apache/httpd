@@ -31,8 +31,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fonctionnalités de base du serveur HTTP Apache toujours
 disponibles</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Core</td></tr></table>
@@ -1341,7 +1339,7 @@ d'erreur</td></tr>
 
       <li>afficher un message personnalisé</li>
 
-      <li>rediriger vers un <var>chemin d'URL</var> local pour traiter
+      <li>rediriger en interne vers un <var>chemin d'URL</var> local pour traiter
       le problème ou l'erreur</li>
 
       <li>rediriger vers une <var>URL</var> externe pour traiter
@@ -1663,7 +1661,7 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
     journal pour les requêtes.</p>
 
     <pre class="prettyprint lang-config">
-# Exemple (format par défaut)
+# Exemple (format par défaut pour les MPMs threadés)
 ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\ %a] %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
     </pre>
 
@@ -3167,6 +3165,7 @@ LogLevel info
 <li><code class="directive"><a href="#errorlog">ErrorLog</a></code></li>
 <li><code class="directive"><a href="#errorlogformat">ErrorLogFormat</a></code></li>
 <li><code class="directive"><a href="#logleveloverride">LogLevelOverride</a></code></li>
+<li><a href="../logs.html">Journaux du serveur HTTP Apache</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
