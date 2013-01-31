@@ -69,7 +69,7 @@ multi-processus multi-thread</dd>
 <p class="letters"><a href="#A">&nbsp;A&nbsp;</a> | <a href="#B">&nbsp;B&nbsp;</a> | <a href="#C">&nbsp;C&nbsp;</a> | <a href="#D">&nbsp;D&nbsp;</a> | <a href="#E">&nbsp;E&nbsp;</a> | <a href="#F">&nbsp;F&nbsp;</a> | <a href="#H">&nbsp;H&nbsp;</a> | <a href="#I">&nbsp;I&nbsp;</a> | <a href="#L">&nbsp;L&nbsp;</a> | <a href="#M">&nbsp;M&nbsp;</a> | <a href="#N">&nbsp;N&nbsp;</a> | <a href="#P">&nbsp;P&nbsp;</a> | <a href="#R">&nbsp;R&nbsp;</a> | <a href="#S">&nbsp;S&nbsp;</a> | <a href="#U">&nbsp;U&nbsp;</a> | <a href="#V">&nbsp;V&nbsp;</a> | <a href="#W">&nbsp;W&nbsp;</a> | <a href="#X">&nbsp;X&nbsp;</a></p>
 <dl><dt><a href="mod_access_compat.html" id="A" name="A">mod_access_compat</a></dt><dd>Autorisations de groupe à base de nom d'hôte (nom ou
 adresse IP)</dd>
-<dt><a href="mod_actions.html">mod_actions</a></dt><dd>Ce module permet l'exécution des scripts CGI en fonction du
+<dt><a href="mod_actions.html">mod_actions</a></dt><dd>Exécution des scripts CGI en fonction du
 type de média ou de la méthode de requête.</dd>
 <dt><a href="mod_alias.html">mod_alias</a></dt><dd>Permet d'atteindre différentes parties du système de
 fichiers depuis l'arborescence des documents du site web, ainsi que la
@@ -78,7 +78,7 @@ redirection d'URL</dd>
 pouvant être utilisées sur le serveur</dd>
 <dt><a href="mod_asis.html">mod_asis</a></dt><dd>Envoie des fichiers contenant leurs propres en-têtes
 HTTP</dd>
-<dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>Authentification de base</dd>
+<dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>Authentification HTTP de base</dd>
 <dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>Authentification utilisateur utilisant les condensés
 MD5</dd>
 <dt><a href="mod_auth_form.html">mod_auth_form</a></dt><dd>Authentification à l'aide d'un formulaire</dd>
@@ -116,11 +116,12 @@ shell Win32 <code>dir</code></dd>
 cache HTTP.</dd>
 <dt><a href="mod_cern_meta.html">mod_cern_meta</a></dt><dd>La sémantique des métafichiers du serveur httpd du
 CERN</dd>
-<dt><a href="mod_cgi.html">mod_cgi</a></dt><dd>Execution of CGI scripts</dd>
-<dt><a href="mod_cgid.html">mod_cgid</a></dt><dd>Execution of CGI scripts using an
-    external CGI daemon</dd>
-<dt><a href="mod_charset_lite.html">mod_charset_lite</a></dt><dd>Specify character set translation or recoding</dd>
-<dt><a href="mod_data.html" id="D" name="D">mod_data</a></dt><dd>Convert response body into an RFC2397 data URL</dd>
+<dt><a href="mod_cgi.html">mod_cgi</a></dt><dd>Exécution des scripts CGI</dd>
+<dt><a href="mod_cgid.html">mod_cgid</a></dt><dd>Exécution des scripts CGI par l'intermédiaire d'un démon
+CGI externe</dd>
+<dt><a href="mod_charset_lite.html">mod_charset_lite</a></dt><dd>Spécifie dans quel jeu de caractère doivent s'effectuer les
+traductions ou les réencodages</dd>
+<dt><a href="mod_data.html" id="D" name="D">mod_data</a></dt><dd>Convertit un corps de réponse en URL de type données RFC2397</dd>
 <dt><a href="mod_dav.html">mod_dav</a></dt><dd>Fonctionnalité de création et gestion de versions de
 documents via le web (<a href="http://www.webdav.org/">WebDAV</a>)</dd>
 <dt><a href="mod_dav_fs.html">mod_dav_fs</a></dt><dd>Implémente le fournisseur filesystem pour
@@ -145,9 +146,10 @@ pages SSI</dd>
 <dt><a href="mod_expires.html">mod_expires</a></dt><dd>Génération des en-têtes HTTP <code>Expires</code> et
 <code>Cache-Control</code> en fonction de critères spécifiés par
 l'utilisateur</dd>
-<dt><a href="mod_ext_filter.html">mod_ext_filter</a></dt><dd>Pass the response body through an external program before
-delivery to the client</dd>
-<dt><a href="mod_file_cache.html" id="F" name="F">mod_file_cache</a></dt><dd>Caches a static list of files in memory</dd>
+<dt><a href="mod_ext_filter.html">mod_ext_filter</a></dt><dd>Fait traiter le corps de la réponse par un programme
+externe avant de l'envoyer au client</dd>
+<dt><a href="mod_file_cache.html" id="F" name="F">mod_file_cache</a></dt><dd>Mise en cache mémoire d'une liste statique de
+fichiers</dd>
 <dt><a href="mod_filter.html">mod_filter</a></dt><dd>Module de configuration de filtre intelligent sensible au
 contexte</dd>
 <dt><a href="mod_headers.html" id="H" name="H">mod_headers</a></dt><dd>Personnalisation des en-têtes de requêtes et de réponses
