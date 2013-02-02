@@ -205,7 +205,8 @@ RewriteRule (.*) ${lowercase:$1} [R,L]
     <p>If you need to specify the name of the service you want to
     install, use the following command. You have to do this if you
     have several different service installations of Apache on your
-    computer.</p>
+    computer. If you specify a name during the install, you have to
+    also specify it during any other -k operation.</p>
 
     <example>
       httpd.exe -k install -n "MyServiceName"
@@ -250,27 +251,27 @@ RewriteRule (.*) ${lowercase:$1} [R,L]
     too. To start an installed Apache service you'll use this:</p>
 
     <example>
-      httpd.exe -k start
+      httpd.exe -k start -n "MyServiceName"
     </example>
 
     <p>To stop an Apache service via the command line switches, use
     this:</p>
 
     <example>
-      httpd.exe -k stop
+      httpd.exe -k stop -n "MyServiceName"
     </example>
 
     <p>or</p>
 
     <example>
-      httpd.exe -k shutdown
+      httpd.exe -k shutdown -n "MyServiceName"
     </example>
 
     <p>You can also restart a running service and force it to reread
     its configuration file by using:</p>
 
     <example>
-      httpd.exe -k restart
+      httpd.exe -k restart -n "MyServiceName"
     </example>
 
     <p>By default, all Apache services are registered to run as the
