@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1436920:1439404 (outdated) -->
+<!-- English Revision: 1439404 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -747,9 +747,32 @@ serveur HTTP Apache</compatibility>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>ProxyPassInherit</name>
+    <description>H&eacute;ritage des directives ProxyPass d&eacute;finies au niveau du
+serveur principal</description>
+    <syntax>ProxyPassInherit On|Off</syntax>
+    <default>ProxyPassInherit On</default>
+    <contextlist><context>server config</context><context>virtual host</context></contextlist>
+    <compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur
+HTTP Apache.</compatibility>
+    <usage>
+        <p>Cette directive permet &agrave; un serveur virtuel d'h&eacute;riter des
+	directives <directive module="mod_proxy">ProxyPass</directive> d&eacute;finies
+	au niveau du serveur principal. Si vous utilisez la fonctionnalit&eacute; de
+	modifications dynamiques du Balancer Manager, cette directive peut
+	causer des probl&egrave;mes et des comportements inattendus et doit donc
+	&ecirc;tre d&eacute;sactiv&eacute;e.</p>
+        <p>Les valeurs d&eacute;finies au niveau du serveur principal
+	constituent les valeurs par d&eacute;faut pour tous les serveurs virtuels.</p>
+        <p>La d&eacute;sactivation de ProxyPassInherit d&eacute;sactive aussi la
+	directive <directive module="mod_proxy">BalancerInherit</directive>.</p>
+    </usage>
+</directivesynopsis>
+
+<directivesynopsis>
     <name>BalancerInherit</name>
-    <description>H&eacute;ritage des membres de groupes de r&eacute;partition de
-    charge d&eacute;finis via la directive ProxyPass au niveau du serveur principal</description>
+    <description>H&eacute;ritage des membres du groupes de r&eacute;partition de
+    charge du mandataire d&eacute;finis au niveau du serveur principal</description>
     <syntax>BalancerInherit On|Off</syntax>
     <default>BalancerInherit On</default>
     <contextlist><context>server config</context><context>virtual host</context></contextlist>
@@ -757,13 +780,16 @@ serveur HTTP Apache</compatibility>
     HTTP Apache.</compatibility>
     <usage>
         <p>Cette directive permet d'attribuer au serveur virtuel courant
-	l'h&eacute;ritage  des membres de groupes de r&eacute;partition de charge
-	d&eacute;finis via la directive ProxyPass au niveau du serveur
-	principal. Elle ne doit pas &ecirc;tre activ&eacute;e si vous utilisez le
+	l'h&eacute;ritage des membres de groupes de r&eacute;partition de charge
+	d&eacute;finis au niveau du serveur
+	principal. Elle ne doit pas &ecirc;tre activ&eacute;e si vous
+	utilisez la fonctionnalit&eacute; de modifications dynamiques du
 	gestionnaire de r&eacute;partition de charge (Balancer Manager) pour
 	&eacute;viter des probl&egrave;mes et des comportements inattendus.</p>
         <p>Les d&eacute;finitions au niveau du serveur principal constituent
 	les d&eacute;finitions par d&eacute;faut au niveau des serveurs virtuels.</p>
+	<p>La d&eacute;sactivation de ProxyPassInherit d&eacute;sactive aussi la
+	directive <directive module="mod_proxy">BalancerInherit</directive>.</p>
     </usage>
 </directivesynopsis>
 

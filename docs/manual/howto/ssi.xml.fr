@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1435327:1440751 (outdated) -->
+<!-- English Revision : 1440751 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -480,12 +480,6 @@ HTML pr&eacute;existants.</p>
         Ici se trouve du code JavaScipt sympa<br />
         &lt;!--#endif --&gt;
 </example>
-
-    <p>Notez que je n'ai rien contre IE sur Macintosh - J'ai juste
-    phosphor&eacute; quelques heures la semaine derni&egrave;re pour faire fonctionner
-    du JavaScript sous IE sur Macintosh, alors qu'il fonctionnait sous
-    tout autre environnement. Ce qui pr&eacute;c&egrave;de a constitu&eacute; un
-    contournement provisoire.</p>
 
     <p>Toute autre variable (que vous avez d&eacute;finie, ou une variable
     d'environnement normale) peut &ecirc;tre utilis&eacute;e dans les expressions

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1422594:1440055 (outdated) -->
+<!-- English Revision : 1440055 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -483,7 +483,8 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>resp</code></td>
         <td>Lit l'en-t&ecirc;te de r&eacute;ponse HTTP</td><td></td></tr>
     <tr><td><code>reqenv</code></td>
-        <td>Recherche une variable d'environnement de requ&ecirc;te</td><td></td></tr>
+        <td>Recherche une variable d'environnement de requ&ecirc;te (on
+	peut aussi utiliser le raccourci <code>v</code>).</td><td></td></tr>
     <tr><td><code>osenv</code></td>
         <td>Recherche une variable d'environnement du syst&egrave;me
 	d'exploitation</td><td></td></tr>
