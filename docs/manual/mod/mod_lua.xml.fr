@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1425749:1439099 (outdated) -->
+<!-- English Revision : 1439099 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -447,6 +447,13 @@ end
         r:write("une simple cha&icirc;ne") -- affichage dans le
 	corps de la r&eacute;ponse
         </highlight>
+
+	<highlight language="lua">
+	r:dbacquire(dbType[, dbParams]) -- Acquiert une connexion &agrave; une
+base de donn&eacute;es et renvoie une classe database. Voir '<a
+href="#databases">Connectivit&eacute; aux bases de donn&eacute;es</a>' pour plus de
+d&eacute;tails.
+        </highlight>
         </dd>
     </dl>
 
@@ -492,7 +499,185 @@ contenu suivant :</p>
 <p>Les autres codes d'&eacute;tat HTTP ne sont pas encore impl&eacute;ment&eacute;s.</p>
 </section>
 
+<section id="databases">
+    <title>Connectivit&eacute; aux bases de donn&eacute;es</title>
+    <p>Mod_lua impl&eacute;mente une fonctionnalit&eacute; basique de connexion aux
+bases de donn&eacute;es permettant d'envoyer des requ&ecirc;tes ou d'ex&eacute;cuter des
+commandes aupr&egrave;s des moteurs de base de donn&eacute;es les plus courants
+(mySQL, PostgreSQL, FreeTDS, ODBC, SQLite, Oracle), ainsi que mod_dbd.
+    </p>
+    <p>L'exemple suivant montre comment se connecter &agrave; une base de
+donn&eacute;es et extraire des informations d'une table :</p>
+    <highlight language="lua">
+function handler(r)
+    -- connexion &agrave; la base de donn&eacute;es
+    local database, err = r:dbacquire("mysql", "server=localhost,user=root,dbname=mydb")
+    if not err then
+        -- S&eacute;lection de certaines informations
+        local results, err = database:select(r, "SELECT `name`, `age` FROM `people` WHERE 1")
+        if not err then
+            local rows = results(0) -- extrait tous les enregistrements en mode synchrone
+            for k, row in pairs(rows) do
+                r:puts( string.format("Name: %s, Age: %s&lt;br/&gt;", row[1], row[2]) )
+            end
+        else
+            r:puts("Database query error: " .. err)
+        end
+        database:close()
+    else
+        r:puts("Connexion &agrave; la base de donn&eacute;es impossible : " .. err)
+    end
+end
+    </highlight>
+    <p>
+    Pour utiliser <module>mod_dbd</module>, sp&eacute;cifiez
+<code>mod_dbd</code> comme type de base de donn&eacute;es, ou laissez le champ
+vide :
+    </p>
+    <highlight language="lua">
+    local database = r:dbacquire("mod_dbd")
+    </highlight>
+    <section id="database_object">
+        <title>L'objet database et ses m&eacute;thodes</title>
+        <p>L'objet database renvoy&eacute; par <code>dbacquire</code> poss&egrave;de
+les m&eacute;thodes suivantes :</p>
+        <p><strong>S&eacute;lection normale et requ&ecirc;te vers une base de donn&eacute;es
+:</strong></p>
+    <highlight language="lua">
+-- Ex&eacute;cution d'une requ&ecirc;te et renvoie du nombre d'enregistrements
+affect&eacute;s :
+local affected, errmsg = database:query(r, "DELETE FROM `tbl` WHERE 1")
 
+-- Ex&eacute;cution d'une requ&ecirc;te et renvoie du r&eacute;sultat qui peut &ecirc;tre utilis&eacute;
+en mode synchrone ou asynchrone :
+local result, errmsg = database:select(r, "SELECT * FROM `people` WHERE 1")
+    </highlight>
+        <p><strong>Utilisation de requ&ecirc;tes pr&eacute;par&eacute;es (recommand&eacute;) :</strong></p>
+    <highlight language="lua">
+-- Cr&eacute;ation et ex&eacute;cution d'une requ&ecirc;te pr&eacute;par&eacute;e :
+local statement, errmsg = database:prepare(r, "DELETE FROM `tbl` WHERE `age` > %u")
+if not errmsg then
+    local result, errmsg = statement:query(20) -- ex&eacute;cute la requ&ecirc;te pour age > 20
+end
+
+-- Extrait une requ&ecirc;te pr&eacute;par&eacute;e depuis une directive DBDPrepareSQL :
+local statement, errmsg = database:prepared(r, "someTag")
+if not errmsg then
+    local result, errmsg = statement:select("John Doe", 123) -- injecte les valeurs "John Doe" et 123 dans la requ&ecirc;te
+end
+
+</highlight>
+        <p><strong>Echappement de valeurs, fermeture de la base donn&eacute;es,
+etc...</strong></p>
+    <highlight language="lua">
+-- Echappe une valeur pour pouvoir l'utiliser dans une requ&ecirc;te :
+local escaped = database:escape(r, [["'|blabla]])
+
+-- Ferme une base de donn&eacute;es et lib&egrave;re les liens vers cette derni&egrave;re :
+database:close()
+
+-- V&eacute;rifie si une connexion &agrave; une base de donn&eacute;es est en service et
+op&eacute;rationnelle :
+local connected = database:active()
+    </highlight>
+    </section>
+    <section id="result_sets">
+    <title>Travail avec les jeux d'enregistrements renvoy&eacute;s par les requ&ecirc;tes</title>
+    <p>Les jeux d'enregistrements renvoy&eacute;s par <code>db:select</code> ou par des
+requ&ecirc;tes pr&eacute;par&eacute;es cr&eacute;&eacute;es par <code>db:prepare</code> permettent de
+s&eacute;lectionner des enregistrements en mode synchrone ou
+asynchrone, selon le nombre d'enregistrements sp&eacute;cifi&eacute; :<br/>
+    <code>result(0)</code> s&eacute;lectionne tous les enregistrements en mode
+synchrone en renvoyant une table d'enregistrements.<br/>
+    <code>result(-1)</code> s&eacute;lectionne le prochain enregistrement disponible en
+mode asynchrone.<br/>
+    <code>result(N)</code> s&eacute;lectionne l'enregistrement num&eacute;ro
+<code>N</code> en mode asynchrone.
+    </p>
+    <highlight language="lua">
+-- extrait un jeu d'enregistrements via une requ&ecirc;te r&eacute;guli&egrave;re :
+local result, err = db:select(r, "SELECT * FROM `tbl` WHERE 1")
+
+local rows = result(0) -- s&eacute;lectionne tous les enregistrements en mode synchrone
+local row = result(-1) -- s&eacute;lectionne le prochain enregistrement disponible en mode asynchrone
+local row = result(1234) -- s&eacute;lectionne l'enregistrement 1234 en mode asynchrone
+    </highlight>
+    <p>Il est possible de construire une fonction qui renvoie une
+fonction it&eacute;rative permettant de traiter tous les enregistrement en mode
+synchrone ou asynchrone selon la valeur de l'argument async :
+    </p>
+    <highlight language="lua">
+function rows(resultset, async)
+    local a = 0
+    local function getnext()
+        a = a + 1
+        local row = resultset(-1)
+        return row and a or nil, row
+    end
+    if not async then
+        return pairs(resultset(0))
+    else
+        return getnext, self
+    end
+end
+
+local statement, err = db:prepare(r, "SELECT * FROM `tbl` WHERE `age` > %u")
+if not err then
+     -- s&eacute;lectionne des enregistrements en mode asynchrone :
+    local result, err = statement:select(20)
+    if not err then
+        for index, row in rows(result, true) do
+            ....
+        end
+    end
+
+     -- s&eacute;lectionne des enregistrements en mode synchrone :
+    local result, err = statement:select(20)
+    if not err then
+        for index, row in rows(result, false) do
+            ....
+        end
+    end
+end
+    </highlight>
+    </section>
+    <section id="closing_databases">
+        <title>Fermeture d'une connexion &agrave; une base de donn&eacute;es</title>
+
+    <p>Lorsqu'elles ne sont plus utilis&eacute;es, les connexions aux bases de
+donn&eacute;es doivent &ecirc;tre ferm&eacute;es avec <code>database:close()</code>. Si vous
+ne les fermez pas manuellement, mod_lua les fermera peut-&ecirc;tre en tant
+que r&eacute;sidus collect&eacute;s, mais si ce n'est pas le cas, vous pouvez finir
+pas avoir trop de connexions vers la base de donn&eacute;es inutilis&eacute;es. Les
+deux mesures suivantes sont pratiquement identiques :
+    </p>
+    <highlight language="lua">
+-- M&eacute;thode 1 : fermeture manuelle de la connexion
+local database = r:dbacquire("mod_dbd")
+database:close() -- c'est tout
+
+-- M&eacute;thode 2 : on laisse le collecteur de r&eacute;sidus la fermer
+local database = r:dbacquire("mod_dbd")
+database = nil -- on coupe le lien
+collectgarbage() -- fermeture de la connexion par le collecteur de r&eacute;sidus
+</highlight>
+    </section>
+    <section id="database_caveat">
+    <title>Pr&eacute;cautions &agrave; prendre lorsque l'on travaille avec les bases
+de donn&eacute;es</title>
+    <p>Bien que les fonctions <code>query</code> et <code>run</code>
+soient toujours disponibles, il est recommand&eacute; d'utiliser des requ&ecirc;tes
+pr&eacute;par&eacute;es chaque fois que possible, afin d'une part d'optimiser les
+performances (si votre connexion reste longtemps en vie), et d'autre part
+minimiser le risque d'attaques par injection SQL. Les fonctions
+<code>run</code> et <code>query</code> ne doivent &ecirc;tre utilis&eacute;es que
+lorsque la requ&ecirc;te ne contient pas de variables (requ&ecirc;te statique). Dans
+le cas des requ&ecirc;tes dynamiques, utilisez <code>db:prepare</code> ou
+<code>db:prepared</code>.
+    </p>
+    </section>
+
+</section>
 
 <directivesynopsis>
 <name>LuaRoot</name>
