@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1421821:1439106 (outdated) -->
+<!-- English Revision : 1439106 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -432,23 +432,25 @@ URL</var>]</syntax>
     &ecirc;tre activ&eacute;e.</p>
 
     <highlight language="config">
-# Mise en cache de contenu
+# Mise en cache de contenu (gestionnaire normal seulement)
+CacheQuickHandler off
 &lt;Location /foo&gt;
     CacheEnable disk
 &lt;/Location&gt;
 
-# Mise en cache via une expression rationnelle
+# Mise en cache via une expression rationnelle (gestionnaire normal seulement)
+CacheQuickHandler off
 &lt;LocationMatch foo$&gt;
     CacheEnable disk
 &lt;/LocationMatch&gt;
 
-# Mise en cache des URLs mandat&eacute;es
+# Mise en cache des URLs mandat&eacute;es (gestionnaire normal ou rapide)
 CacheEnable  disk  /
 
-# Mise en cache des URLs FTP mandat&eacute;es
+# Mise en cache des URLs FTP mandat&eacute;es (gestionnaire normal ou rapide)
 CacheEnable  disk  ftp://
 
-# Mise en cache des contenus situ&eacute;s dans www.example.org
+# Mise en cache des contenus situ&eacute;s dans www.example.org (gestionnaire normal ou rapide)
 CacheEnable  disk  http://www.example.org/
     </highlight>
 
