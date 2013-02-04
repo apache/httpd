@@ -91,7 +91,7 @@ static apr_status_t unixd_set_shm_perms(const char *fname)
 {
 #ifdef AP_NEED_SET_MUTEX_PERMS
 #if APR_USE_SHMEM_SHMGET || APR_USE_SHMEM_SHMGET_ANON
-    struct shmid_ds shmbuf;
+    struct shmid_ds shmbuf = { { 0 } };
     key_t shmkey;
     int shmid;
 
