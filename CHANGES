@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_connect: Don't keepalive the connection to the client if the
+     backend closes the connection. PR 54474. [Pavel Mateja <pavel netsafe cz>]
+
   *) core: Add option to add valgrind suport. Use it to reduce false positive
      warnings in mod_ssl. [Stefan Fritsch]
 
