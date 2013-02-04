@@ -126,6 +126,7 @@ static const char *const fpi_xhtml =
         "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n";
 static const char *const fpi_xhtml_legacy =
         "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+static const char *const fpi_html5 = "<!DOCTYPE html>\n";
 static const char *const html_etag = ">";
 static const char *const xhtml_etag = " />";
 /*#define DEFAULT_DOCTYPE fpi_html */
@@ -309,6 +310,7 @@ static void pcomment(void *ctxt, const xmlChar *uchars)
         ap_fputs(ctx->f->next, ctx->bb, "<!--");
         AP_fwrite(ctx, chars, strlen(chars), 1);
         ap_fputs(ctx->f->next, ctx->bb, "-->");
+        dump_content(ctx);
     }
 }
 static void pendElement(void *ctxt, const xmlChar *uname)
@@ -323,8 +325,8 @@ static void pendElement(void *ctxt, const xmlChar *uname)
             return;
     
     }
-    else if ((ctx->cfg->doctype == fpi_html)
-             || (ctx->cfg->doctype == fpi_xhtml)) {
+    else if ((ctx->cfg->doctype == fpi_html_legacy)
+             || (ctx->cfg->doctype == fpi_xhtml_legacy)) {
         /* enforce html legacy */
         if (!desc)
             return;
@@ -1127,6 +1129,10 @@ static const char *set_doctype(cmd_parms *cmd, void *CFG,
             cfg->doctype = fpi_html_legacy;
         else
             cfg->doctype = fpi_html;
+    }
+    else if (!strcasecmp(t, "html5")) {
+        cfg->etag = html_etag;
+        cfg->doctype = fpi_html5;
     }
     else {
         cfg->doctype = apr_pstrdup(cmd->pool, t);

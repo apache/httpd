@@ -1,6 +1,15 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_html: process parsed comments immediately. 
+     Fixes bug (seen in the wild when used with IBM's HTTPD bundle)
+     where parsed comments may be lost. [Nick Kew]
+
+  *) mod_proxy_html: introduce doctype for HTML 5 [Nick Kew]
+
+  *) mod_proxy_html: fix typo-bug processing "strict" vs "transitional"
+     HTML/XHTML [Nick Kew]
+
   *) core: Fix valgrind warning about uninitialized memory in argument to
      semctl. PR 53690. [Mikhail T. <mi+apache aldan algebra com>]
 
