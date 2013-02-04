@@ -659,6 +659,22 @@ fi
 APACHE_SUBST(PICFLAGS)
 APACHE_SUBST(PILDFLAGS)
 
+AC_ARG_WITH(valgrind,
+  [  --with-valgrind[[=DIR]]   Enable code to reduce valgrind false positives
+                          (optionally: set path to valgrind headers) ],
+  [ if test "$withval" != no; then
+      if test "$withval" = yes; then
+        withval=/usr/include/valgrind
+      fi
+      APR_ADDTO(CPPFLAGS, -I$withval)
+      AC_CHECK_HEADERS(valgrind.h memcheck.h)
+      APR_IFALLYES(header:valgrind.h header:memcheck.h,
+        [AC_DEFINE(HAVE_VALGRIND, 1, [Compile in valgrind support]) ],
+        [AC_MSG_ERROR(valgrind headers not found) ]
+      )
+    fi ]
+)
+
 prefix="$orig_prefix"
 APACHE_ENABLE_MODULES
 

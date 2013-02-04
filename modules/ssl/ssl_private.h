@@ -1024,6 +1024,10 @@ OCSP_RESPONSE *modssl_dispatch_ocsp_request(const apr_uri_t *uri,
                                             conn_rec *c, apr_pool_t *p);
 #endif
 
+#if HAVE_VALGRIND
+extern int ssl_running_on_valgrind;
+#endif
+
 #endif /* SSL_PRIVATE_H */
 /** @} */
 
