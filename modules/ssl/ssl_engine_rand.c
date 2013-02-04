@@ -29,6 +29,11 @@
 
 #include "ssl_private.h"
 
+#if HAVE_VALGRIND
+#include <valgrind.h>
+#include <memcheck.h>
+#endif
+
 /*  _________________________________________________________________
 **
 **  Support for better seeding of SSL library's RNG
@@ -113,6 +118,11 @@ int ssl_rand_seed(server_rec *s, apr_pool_t *p, ssl_rsctx_t nCtx, char *prefix)
                 /*
                  * seed in some current state of the run-time stack (128 bytes)
                  */
+#if HAVE_VALGRIND
+                if (ssl_running_on_valgrind) {
+                    VALGRIND_MAKE_MEM_DEFINED(stackdata, sizeof(stackdata));
+                }
+#endif
                 n = ssl_rand_choosenum(0, sizeof(stackdata)-128-1);
                 RAND_seed(stackdata+n, 128);
                 nDone += 128;

@@ -32,6 +32,11 @@
 
 #include <assert.h>
 
+#if HAVE_VALGRIND
+#include <valgrind.h>
+int ssl_running_on_valgrind = 0;
+#endif
+
 /*
  *  the table of configuration directives we provide
  */
@@ -347,6 +352,11 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
                                apr_pool_t *plog,
                                apr_pool_t *ptemp)
 {
+
+#if HAVE_VALGRIND
+     ssl_running_on_valgrind = RUNNING_ON_VALGRIND;
+#endif
+
     /* We must register the library in full, to ensure our configuration
      * code can successfully test the SSL environment.
      */

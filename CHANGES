@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Add option to add valgrind suport. Use it to reduce false positive
+     warnings in mod_ssl. [Stefan Fritsch]
+
   *) mod_lua: Add bindings for apr_dbd/mod_dbd database access
      [Daniel Gruno]
 
