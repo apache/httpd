@@ -181,6 +181,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: druggeri, jim
     covener: minor MMM bump?  (Thanks for reminder. This is done. -druggeri)
 
+  * mod_proxy_connect: Don't keep open connection to client after backend
+    closes connection
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1442320
+    2.4.x patch: trunk patch works modulo CHANGES
+    +1: sf
+
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
