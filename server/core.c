@@ -4407,7 +4407,8 @@ static int default_handler(request_rec *r)
     if (r->method_number == M_GET || r->method_number == M_POST) {
         if (r->finfo.filetype == APR_NOFILE) {
             ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00128)
-                          "File does not exist: %s", r->filename);
+                          "File does not exist: %s",
+                          apr_pstrcat(r->pool, r->filename, r->path_info, NULL));
             return HTTP_NOT_FOUND;
         }
 
