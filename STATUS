@@ -185,7 +185,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     closes connection
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1442320
     2.4.x patch: trunk patch works modulo CHANGES
-    +1: sf
+    +1: sf, jim
 
   * Fix incomplete filename in ErrorLog when trying to access files in non existing
     directories (PR 39944)
