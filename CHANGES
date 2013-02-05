@@ -2,8 +2,7 @@
 Changes with Apache 2.5.0
 
   *) mod_proxy_html: process parsed comments immediately. 
-     Fixes bug (seen in the wild when used with IBM's HTTPD bundle)
-     where parsed comments may be lost. [Nick Kew]
+     Fixes bug where parsed comments may be lost. [Nick Kew]
 
   *) mod_proxy_html: introduce doctype for HTML 5 [Nick Kew]
 
