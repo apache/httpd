@@ -753,7 +753,7 @@ AP_DECLARE(char *) ap_getword_nulls(apr_pool_t *atrans, const char **line,
 static char *substring_conf(apr_pool_t *p, const char *start, int len,
                             char quote)
 {
-    char *result = apr_palloc(p, len + 2);
+    char *result = apr_palloc(p, len + 1);
     char *resp = result;
     int i;
 
