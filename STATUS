@@ -91,11 +91,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * Fix incomplete filename in ErrorLog when trying to access files in non existing
-    directories (PR 39944)
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1442412
-    2.4.x patch: trunk patch works with offset (modulo CHANGES)
-    +1: jailletc36, jim, rjung
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
