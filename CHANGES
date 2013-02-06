@@ -51,9 +51,6 @@ Changes with Apache 2.5.0
      file. Both Warning and Error now generate a timestamped log message.
      [Fabien Coelho] 
 
-  *) mod_status: Print out list of times since a Vhost was last used.
-     [Jim Jagielski]
-
   *) ap_expr: Add SERVER_PROTOCOL_VERSION, ..._MAJOR, and ..._MINOR
      variables. [Stefan Fritsch]
 
