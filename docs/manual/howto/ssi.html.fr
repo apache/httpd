@@ -28,8 +28,6 @@
 <a href="../ja/howto/ssi.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/ssi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Les SSI permettent d'ajouter du contenu dynamique à des documents
 HTML préexistants.</p>
@@ -480,12 +478,6 @@ HTML préexistants.</p>
         Ici se trouve du code JavaScipt sympa<br />
         &lt;!--#endif --&gt;
 </code></p></div>
-
-    <p>Notez que je n'ai rien contre IE sur Macintosh - J'ai juste
-    phosphoré quelques heures la semaine dernière pour faire fonctionner
-    du JavaScript sous IE sur Macintosh, alors qu'il fonctionnait sous
-    tout autre environnement. Ce qui précède a constitué un
-    contournement provisoire.</p>
 
     <p>Toute autre variable (que vous avez définie, ou une variable
     d'environnement normale) peut être utilisée dans les expressions
