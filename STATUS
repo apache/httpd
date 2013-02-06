@@ -97,6 +97,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch works modulo CHANGES
     +1: sf, jim, trawick, rjung
 
+  * Fix incomplete filename in ErrorLog when trying to access files in non existing
+    directories (PR 39944)
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1442412
+    2.4.x patch: trunk patch works with offset (modulo CHANGES)
+    +1: jailletc36, jim, rjung
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -178,12 +184,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  (20130119 - updated to include minor mmn bump)
     +1: druggeri, jim
     covener: minor MMM bump?  (Thanks for reminder. This is done. -druggeri)
-
-  * Fix incomplete filename in ErrorLog when trying to access files in non existing
-    directories (PR 39944)
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1442412
-    2.4.x patch: trunk patch works with offset (modulo CHANGES)
-    +1: jailletc36, jim, rjung
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
