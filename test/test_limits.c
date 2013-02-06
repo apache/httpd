@@ -124,8 +124,8 @@ main(int argc, char *argv[])
         perror("gethostbyname");
         exit(1);
     }
-    bzero(&sin, sizeof(sin));
-    bcopy(he->h_addr, (char *)&sin.sin_addr, he->h_length);
+    memset(&sin, sizeof(sin));
+    memcpy((char *)&sin.sin_addr, he->h_addr, he->h_length);
     sin.sin_family = he->h_addrtype;
     sin.sin_port = htons(port);
 
