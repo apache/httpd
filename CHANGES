@@ -12,6 +12,9 @@ Changes with Apache 2.4.4
      balancer-manager between graceful/normal restarts and power
      cycles. [Jim Jagielski]
 
+  *) mod_status: Print out list of times since a Vhost was last used.
+     [Jim Jagielski]
+
   *) mod_proxy: Fix startup crash with mis-defined balancers.
      PR 52402. [Jim Jagielski]
 
