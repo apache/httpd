@@ -487,6 +487,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
         ap_lingering_close(backconn);
 
     c->aborted = 1;
+    c->keepalive = AP_CONN_CLOSE;
 
     return OK;
 }

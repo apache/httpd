@@ -91,12 +91,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_proxy_connect: Don't keep open connection to client after backend
-    closes connection
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1442320
-    2.4.x patch: trunk patch works modulo CHANGES
-    +1: sf, jim, trawick, rjung
-
   * Fix incomplete filename in ErrorLog when trying to access files in non existing
     directories (PR 39944)
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1442412
