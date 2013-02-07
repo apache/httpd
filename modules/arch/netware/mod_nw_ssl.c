@@ -1165,6 +1165,14 @@ static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
      */
     ap_remove_output_filter(f);
 
+    if (!r) {
+        /*
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server, APLOGNO(02131)
+                     "Unable to get upgradeable socket handle");
+        */
+        return ap_pass_brigade(f->next, bb);
+    }
+
     /* No need to ensure that this is a server with optional SSL, the filter
      * is only inserted if that is true.
      */
@@ -1178,15 +1186,8 @@ static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
 
     apr_table_unset(r->headers_out, "Upgrade");
 
-    if (r) {
-        csd_data = (secsocket_data*)ap_get_module_config(r->connection->conn_config, &nwssl_module);
-        csd = csd_data->csd;
-    }
-    else {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server, APLOGNO(02131)
-                     "Unable to get upgradeable socket handle");
-        return ap_pass_brigade(f->next, bb);
-    }
+    csd_data = (secsocket_data*)ap_get_module_config(r->connection->conn_config, &nwssl_module);
+    csd = csd_data->csd;
 
     /* Send the interim 101 response. */
     upgradebb = apr_brigade_create(r->pool, f->c->bucket_alloc);
