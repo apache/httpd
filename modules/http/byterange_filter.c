@@ -506,7 +506,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
                  *   return as a single range: 0-
                  */
                 if (start == 0) {
-                    apr_array_clear(*indexes);
+                    (*indexes)->nelts = 0;
                     idx = (indexes_t *)apr_array_push(*indexes);
                     idx->start = start;
                     idx->end = end;
