@@ -120,16 +120,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
              https://issues.apache.org/bugzilla/show_bug.cgi?id=53134#c10
              by the patch author)
 
-   * server/mpm_unix.c (dummy_connection): Use a TLS 1.0 close_notify
-     alert if the chosen listener is configured for https; not perfect
-     but better than sending an HTTP request.  Adjust comments.
-     Based on a patch from: Michael Weiser <michael weiser.dinsnail.net>
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1327036 and
-                  http://svn.apache.org/viewvc?view=revision&revision=1327080
-     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1356884
-     2.2.x patch: http://people.apache.org/~rjung/patches/dummy_connection-https-tls-2_2.patch
-     +1: rjung, covener, wrowe
-
    * ab: add TLS1.1/TLS1.2 options to -f switch, and adapt output
      to more accurately report the negotiated protocol. PR 53916.
      trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1395225
