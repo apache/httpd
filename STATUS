@@ -106,10 +106,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
              https://issues.apache.org/bugzilla/show_bug.cgi?id=53134#c10
              by the patch author)
 
-   * mod_ssl: fix UID env var regression introduced in 2.2.15. PR54510.
-     2.2.x patch: https://people.apache.org/~kbrand/ssl_vars_uid_PR54510.patch
-     +1: kbrand, druggeri, wrowe
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 

@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.24
 
+  *) mod_ssl: fix a regression with the string rendering of the "UID" RDN
+     introduced in 2.2.15. PR 54510. [Kaspar Brand]
+     
   *) ab: add TLS1.1/TLS1.2 options to -f switch, and adapt output
      to more accurately report the negotiated protocol. PR 53916.
      [Nicolás Pernas Maradei <nico emutex com>, Kaspar Brand]
