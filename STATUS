@@ -94,12 +94,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * byterange filter: Remove apr 1.3 dependency by dropping apr_array_clear
-     trunk patch: n/a
-     2.4.x patch: n/a
-     2.2.x patch: http://people.apache.org/~covener/patches/2.2.x-byterange-table_clear.diff
-     +1: covener, rjung, trawick
-
   * mod_cache: Allow providers to decide whether to cache responses with code
     206.
     Trunk version of patch:
