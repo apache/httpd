@@ -130,6 +130,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           existing ones and I'll be satisified that enough people
           considered this addition as an appropriate solution for a
           real httpd usability problem.)
+     wrowe: I'd agree with trawick, and suggest that these scripts can begin
+            their life somewhere in the manual/ tree.  This really seems like
+            the place where /usr/share/httpd/examples/ would be useful, but
+            there isn't an ordinary directory for that.  Since we want none
+            of the scripts to function 'out of the box', what about a new
+            cgi-examples/ dir alongside cgi-bin/? Otherwise manual/cgi/examples
+            might work?
 
    * mod_proxy: Allow balancers to be server-specific, as they should have
      been. Inheritance causes too many behind-the-scene interactions
