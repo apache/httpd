@@ -1,6 +1,13 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.24
 
+  *) mod_cache: Explicitly allow cache implementations to cache a 206 Partial
+     Response if they so choose to do so. Previously an attempt to cache a 206
+     was arbitrarily allowed if the response contained an Expires or
+     Cache-Control header, and arbitrarily denied if both headers were missing.
+     Currently the disk and memory cache providers do not cache 206 Partial
+     Responses. [Graham Leggett]
+
   *) core: Remove unintentional APR 1.3 dependency introduced with
      Apache 2.2.22. [Eric Covener]
 
