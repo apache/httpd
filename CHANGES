@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.24
 
+  *) mod_ldap: Fix regression in handling "server unavailable" errors on
+     Windows.  PR 54140.  [Eric Covener]
+
   *) mod_ssl: fix a regression with the string rendering of the "UID" RDN
      introduced in 2.2.15. PR 54510. [Kaspar Brand]
      

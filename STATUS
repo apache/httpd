@@ -101,13 +101,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.2.x documentation patch : http://apache-doc-fr.gryzor.com/fallbackresource_disabled_2.2_doc.patch
      +1: gryzor, wrowe, rjung
 
-   * mod_ldap: restore LDAP_UNAVAILABLE for windows SDK (PR 54140)
-     trunk patch: http://svn.apache.org/viewvc?rev=1408402&view=rev
-     2.4.x patch: http://svn.apache.org/viewvc?rev=1409773&view=rev
-     2.2.x patch: http://people.apache.org/~covener/patches/httpd-2.2.x-ldap_unavailable.diff 
-                 (just context conflicts)
-     +1: covener, wrowe, rjung
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
