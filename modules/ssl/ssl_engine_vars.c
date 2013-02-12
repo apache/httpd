@@ -431,7 +431,7 @@ static const struct {
     { "S",     NID_surname,                1 },
     { "D",     NID_description,            1 },
 #ifdef NID_userId
-    { "UID",   NID_x500UniqueIdentifier,   1 },
+    { "UID",   NID_userId,                 1 },
 #endif
     { "Email", NID_pkcs9_emailAddress,     1 },
     { NULL,    0,                          0 }
