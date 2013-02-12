@@ -43,7 +43,7 @@
     </ul>
     <p>The two functions are separated so that you can completely
     remove (or replace) automatic index generation should you want
-    to.</p> 
+    to.</p>
 
     <p>A "trailing slash" redirect is issued when the server
     receives a request for a URL
@@ -95,8 +95,8 @@ a directory</description>
     executed if neither <code>index.html</code> or <code>index.txt</code>
     existed in a directory.</p>
 
-    <p><strong>Note:</strong> Multiple <directive>DirectoryIndex</directive> 
-    directives within the <a href="../sections.html"><em>same context</em></a> will add 
+    <p><strong>Note:</strong> Multiple <directive>DirectoryIndex</directive>
+    directives within the <a href="../sections.html"><em>same context</em></a> will add
     to the list of resources to look for rather than replace:
     </p>
 
@@ -173,12 +173,13 @@ a directory</description>
 <directivesynopsis>
 <name>FallbackResource</name>
 <description>Define a default URL for requests that don't map to a file</description>
-<syntax>FallbackResource <var>local-url</var></syntax>
+<syntax>FallbackResource disabled | <var>local-url</var></syntax>
 <default>None - httpd will return 404 (Not Found)</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Indexes</override>
-<compatibility>Apache HTTP Server 2.2.16 and later</compatibility>
+<compatibility>Apache HTTP Server 2.2.16 and later - The <code>disabled</code> argument
+is supported since 2.2.24</compatibility>
 <usage>
     <p>Use this to set a handler for any URL that doesn't map to anything
     in your filesystem, and would otherwise return HTTP 404 (Not Found).
@@ -202,6 +203,8 @@ a directory</description>
     </example>
     <p>Existing files, such as images, css files, and so on, will be
     served normally.</p>
+    <p>Use the <code>disabled</code> argument to disable that feature
+    if inheritance from a parent directory is not desired.</p>
     <p>In a sub-URI, such as <em>http://example.com/blog/</em> this
     <em>sub-URI</em> has to be supplied as <var>local-url</var>:</p>
     <example>
@@ -209,6 +212,11 @@ a directory</description>
              &lt;Directory /web/example.com/htdocs/blog&gt;<br />
 	     <indent>
                   FallbackResource /blog/index.php<br />
+             </indent>
+             &lt;/Directory&gt;
+             &lt;Directory /web/example.com/htdocs/blog/images&gt;<br />
+	     <indent>
+                  FallbackResource disabled<br />
              </indent>
              &lt;/Directory&gt;
          </code>
