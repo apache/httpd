@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.24
 
+  *) ab: add TLS1.1/TLS1.2 options to -f switch, and adapt output
+     to more accurately report the negotiated protocol. PR 53916.
+     [Nicolás Pernas Maradei <nico emutex com>, Kaspar Brand]
+
   *) mod_cache: Explicitly allow cache implementations to cache a 206 Partial
      Response if they so choose to do so. Previously an attempt to cache a 206
      was arbitrarily allowed if the response contained an Expires or

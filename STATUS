@@ -106,12 +106,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
              https://issues.apache.org/bugzilla/show_bug.cgi?id=53134#c10
              by the patch author)
 
-   * ab: add TLS1.1/TLS1.2 options to -f switch, and adapt output
-     to more accurately report the negotiated protocol. PR 53916.
-     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1395225
-     2.2.x patch: https://people.apache.org/~kbrand/ab-tlsv1_x-2.2.x.patch
-     +1: kbrand, covener, wrowe
-
    * modules/ldap/util_ldap.c: Correct erroneous messages
      PR: 53402
      trunk and 2.4.x: Erroneous message about LDAPSharedCacheSize
