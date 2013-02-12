@@ -106,7 +106,7 @@ static int fixup_dflt(request_rec *r)
     int error_notfound = 0;
 
     name_ptr = d->dflt;
-    if (name_ptr == NULL) {
+    if ((name_ptr == NULL) || !(strcasecmp(name_ptr,"disabled"))) {
         return DECLINED;
     }
     /* XXX: if DefaultHandler points to something that doesn't exist,
