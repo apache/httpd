@@ -901,7 +901,7 @@ static int lua_ap_regex(lua_State *L)
     *source;
     char           *err;
     ap_regex_t regex;
-    ap_regmatch_t matches[AP_MAX_REG_MATCH];
+    ap_regmatch_t matches[AP_MAX_REG_MATCH+1];
 
     luaL_checktype(L, 1, LUA_TUSERDATA);
     luaL_checktype(L, 2, LUA_TSTRING);
@@ -926,7 +926,7 @@ static int lua_ap_regex(lua_State *L)
     }
     
     lua_newtable(L);
-    for (i = 0; i < regex.re_nsub; i++) {
+    for (i = 0; i <= regex.re_nsub; i++) {
         lua_pushinteger(L, i);
         if (matches[i].rm_so >= 0 && matches[i].rm_eo >= 0)
             lua_pushstring(L,
