@@ -62,14 +62,12 @@ by commas.</p>
 <pre class="prettyprint lang-config">RewriteRule pattern target [Flag1,Flag2,Flag3]</pre>
 
 
-<p>The flags all have a short form, such as <code>CO</code>, as well as
-a longer form, such as <code>cookie</code>. Some flags take one or more
-arguments. Flags are not case sensitive.</p>
-
-<p>Each flag (with a few exceptions)
-has a long and short form. While it is most common to use
+<p>Each flag (with a few exceptions) has a short form, such as
+<code>CO</code>, as well as a longer form, such as <code>cookie</code>. 
+While it is most common to use
 the short form, it is recommended that you familiarize yourself with the
-long form, so that you remember what each flag is supposed to do.</p>
+long form, so that you remember what each flag is supposed to do.
+Some flags take one or more arguments. Flags are not case sensitive.</p>
 
 <p>Flags that alter metadata associated with the request (T=, H=, E=)
 have no affect in per-directory and htaccess context, when a substitution
