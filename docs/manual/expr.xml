@@ -56,9 +56,9 @@
       <p><a href="http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form">Backus-Naur Form</a> (BNF) is a notation
       technique for context-free grammars, often used to describe the syntax of languages used in computing.
       In most cases, expressions are used to express boolean values.
-      For these, the starting boint in the BNF is <code>expr</code>. However, a few directives
+      For these, the starting point in the BNF is <code>expr</code>. However, a few directives
       like <directive module="mod_log_debug">LogMessage</directive> accept expressions
-      that evaluate to a string value. For those, the starting boint in the BNF is <code>string</code>.
+      that evaluate to a string value. For those, the starting point in the BNF is <code>string</code>.
       </p>
 <blockquote>
 <pre>
