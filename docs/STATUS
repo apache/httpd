@@ -167,4 +167,8 @@ To Do List
 - The "MSIE on Mac" example in the SSI Howto is silly, and needs to be
   replaced by something actually useful and relevant in this century.
 
+- Add example of using -p flag to rotatelogs to do something useful.
+
+- Clean up this file, because some of this stuff has already been done.
+  (ApacheCon?)
 
