@@ -147,10 +147,12 @@ To Do List
     Request exceeded the limit of 10 internal redirects due to probable
     configuration error. Use 'LimitInternalRecursion' to increase the limit
     if necessary. Use 'LogLevel debug' to get a backtrace.
-  This error message is often returned when a RewriteRUle loops, in
+  This error message is often returned when a RewriteRule loops, in
   which case setting LimitInternalRecursion won't do anything towards
   fixing the problem. However, the error message is already very long.
   Thoughts?
+
+- Examples in Rewrite Flags doc for QSD, Redirect, Chain, DPI, END, NS
 
 - Error codes
     Decide how and where to document the error codes (AH****), and then
