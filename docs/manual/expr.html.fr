@@ -448,7 +448,8 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 <tr><td><code>resp</code></td>
         <td>Lit l'en-tête de réponse HTTP</td><td /></tr>
 <tr class="odd"><td><code>reqenv</code></td>
-        <td>Recherche une variable d'environnement de requête</td><td /></tr>
+        <td>Recherche une variable d'environnement de requête (on
+	peut aussi utiliser le raccourci <code>v</code>).</td><td /></tr>
 <tr><td><code>osenv</code></td>
         <td>Recherche une variable d'environnement du système
 	d'exploitation</td><td /></tr>

@@ -485,7 +485,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 	<pre class="prettyprint lang-config">
 # Compare the host name to example.com and redirect to www.example.com if it matches
 &lt;If "%{HTTP_HOST} == 'example.com'"&gt;
-    Redirect permanent / http://www.example.com
+    Redirect permanent / http://www.example.com/
 &lt;/If&gt;
 
 # Force text/plain if requesting a file with the query string contains 'forcetext'
