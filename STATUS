@@ -202,6 +202,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1425750
      2.2.x patch: http://people.apache.org/~rjung/patches/host-and-uri-escaping-2_2.patch
      +1: rjung
+     rpluem says: Now t/security/CVE-2005-3352.t fails. Not sure if this is a real
+     regression or if just the test is wrong, but this should be investigated.
 
 PATCHES/ISSUES THAT ARE STALLED
 
