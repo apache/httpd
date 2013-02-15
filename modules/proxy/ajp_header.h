@@ -41,6 +41,7 @@
 #define SC_A_REQ_ATTRIBUTE      (unsigned char)10
 #define SC_A_SSL_KEY_SIZE       (unsigned char)11       /* only in if JkOptions +ForwardKeySize */
 #define SC_A_SECRET             (unsigned char)12
+#define SC_A_STORED_METHOD      (unsigned char)13
 #define SC_A_ARE_DONE           (unsigned char)0xFF
 
 /*
@@ -111,6 +112,7 @@
 #define SC_M_MERGE              (unsigned char)25
 #define SC_M_BASELINE_CONTROL   (unsigned char)26
 #define SC_M_MKACTIVITY         (unsigned char)27
+#define SC_M_JK_STORED          (unsigned char)0xFF
 
 
 /*
