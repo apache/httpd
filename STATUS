@@ -204,6 +204,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: rjung
      rpluem says: Now t/security/CVE-2005-3352.t fails. Not sure if this is a real
      regression or if just the test is wrong, but this should be investigated.
+     rjung: The test sends a Referer '">http://fish/'.
+            The original code returns '<a href="http://IP/&quot;&gt;http://fish/">'
+            The patched code returns  '<a href="http://IP/%22%3ehttp://fish/">'
+            This seems to be even better IMHO. 2.4 also returns the percent encoded
+            variant, so the test should fail there as well.
 
 PATCHES/ISSUES THAT ARE STALLED
 
