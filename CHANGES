@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.24
 
+  *) mod_ssl: Send the error message for speaking http to an https port using
+     HTTP/1.0 instead of HTTP/0.9, and omit the link that may be wrong when
+     using SNI. PR 50823. [Stefan Fritsch]
+
   *) mod_ssl: log revoked certificates at level INFO
      instead of DEBUG. PR 52162. [Stefan Fritsch]
 

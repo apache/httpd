@@ -853,12 +853,12 @@ static apr_status_t ssl_filter_write(ap_filter_t *f,
 /* Just use a simple request.  Any request will work for this, because
  * we use a flag in the conn_rec->conn_vector now.  The fake request just
  * gets the request back to the Apache core so that a response can be sent.
- *
- * To avoid calling back for more data from the socket, use an HTTP/0.9
- * request, and tack on an EOS bucket.
+ * Since we use an HTTP/1.x request, we also have to inject the empty line
+ * that terminates the headers, or the core will read more data from the
+ * socket.
  */
 #define HTTP_ON_HTTPS_PORT \
-    "GET /" CRLF
+    "GET / HTTP/1.0" CRLF
 
 #define HTTP_ON_HTTPS_PORT_BUCKET(alloc) \
     apr_bucket_immortal_create(HTTP_ON_HTTPS_PORT, \
@@ -880,6 +880,7 @@ static apr_status_t ssl_io_filter_error(ap_filter_t *f,
 {
     SSLConnRec *sslconn = myConnConfig(f->c);
     apr_bucket *bucket;
+    int send_eos = 1;
 
     switch (status) {
       case HTTP_BAD_REQUEST:
@@ -889,11 +890,12 @@ static apr_status_t ssl_io_filter_error(ap_filter_t *f,
                          "trying to send HTML error page");
             ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, sslconn->server);
 
-            sslconn->non_ssl_request = 1;
+            sslconn->non_ssl_request = NON_SSL_SEND_HDR_SEP;
             ssl_io_filter_disable(sslconn, f);
 
             /* fake the request line */
             bucket = HTTP_ON_HTTPS_PORT_BUCKET(f->c->bucket_alloc);
+            send_eos = 0;
             break;
 
       default:
@@ -901,9 +903,10 @@ static apr_status_t ssl_io_filter_error(ap_filter_t *f,
     }
 
     APR_BRIGADE_INSERT_TAIL(bb, bucket);
-    bucket = apr_bucket_eos_create(f->c->bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(bb, bucket);
-
+    if (send_eos) {
+        bucket = apr_bucket_eos_create(f->c->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(bb, bucket);
+    }
     return APR_SUCCESS;
 }
 
@@ -1345,6 +1348,13 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
     }
 
     if (!inctx->ssl) {
+        SSLConnRec *sslconn = myConnConfig(f->c);
+        if (sslconn->non_ssl_request == NON_SSL_SEND_HDR_SEP) {
+            apr_bucket *bucket = apr_bucket_immortal_create(CRLF, 2, f->c->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(bb, bucket);
+            sslconn->non_ssl_request = NON_SSL_SET_ERROR_MSG;
+            return APR_SUCCESS;
+        }
         return ap_get_brigade(f->next, bb, mode, block, readbytes);
     }
 
