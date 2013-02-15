@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.24
 
+  *) mod_proxy_ajp: Support unknown HTTP methods. PR 54416.
+     [Rainer Jung]
+
   *) mod_dir: Add support for the value 'disabled' in FallbackResource.
      [Vincent Deffontaines]
 
