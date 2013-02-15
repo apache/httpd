@@ -204,7 +204,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk and 2.4.x: Erroneous order for the parameters
        http://svn.apache.org/viewvc?view=revision&sortby=date&revision=627637
      2.2.x patch: attached in PR 53402 (https://issues.apache.org/bugzilla/attachment.cgi?id=29502)
-     +1: jailletc36, covener, wrowe
+     +1: jailletc36, wrowe
      -1: rjung
      rjung: the proposed 2.2 patch also changes LDAPTrustedClientCert to OR_AUTHCFG.
             This change seems to come from PR46541 which needs a bigger backport (r915660)
@@ -212,6 +212,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             really be made usable in 2.2.".
      rjung: I don't understand what was voted on, the backport of both revisions
             or only the PR attachment. The latter is only about r627637.
+     covener: withdrawing my vote, I reviewed the attachment but missed the OR_AUTHCFG change.
 
    * mod_authnz_ldap: Allow using exec: callouts like SSLPassphraseDialog
      for AuthLDAPBindPassword.
