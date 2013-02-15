@@ -94,6 +94,38 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_proxy_ajp: Support unknown HTTP methods. PR54416.
+     Forward unknown methods as request attributes
+     using method id SC_M_JK_STORED=0xFF and
+     request attribute id SC_A_STORED_METHOD=13.
+     Code ported from mod_jk (which got it from mod_jk2).
+     Supported by Tomcat at least since TC 4.1.
+     Doesn't seem to be supported by Jetty though.
+     trunk patch: http://svn.apache.org/r1435178
+     2.4.x patch: http://svn.apache.org/r1436400
+                  plus http://svn.apache.org/r1436436 (CHANGES)
+     2.2.x patch: http://people.apache.org/~rjung/patches/httpd-2_2_x-ajp-unknown_-methods.patch
+                  plus CHANGES
+                  Difference to 2.4.x only in logging.
+     +1: rjung, wrowe, rpluem
+
+   * mod_ssl: PR 52162: log revoked certificates at level INFO instead of DEBUG
+     trunk/2.4.x: Changed as part of http://svn.apache.org/viewvc?rev=1165056&view=rev
+     2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=27913
+     +1: sf, wrowe, rpluem
+
+   * mod_ssl: When receiving http on https, send the error response with http 1.0
+     It is important that we send a proper error status, or search engines
+     may index the error message.
+     Remove the link in the speaking-http-on-https error message.
+     With SNI, the link will usually be wrong. So better send no link at all.
+     PR: 50823
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1328325 and
+                  http://svn.apache.org/viewvc?view=revision&revision=1328326
+     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1334346
+     2.2.x patch: http://people.apache.org/~rjung/patches/improve-speaking-http-on-https-message-2_2.patch
+     +1: rjung, wrowe, rpluem
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -151,18 +183,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           any version. Also, if you read my note to dev@ you will see
           why it is not premature.
 
-   * mod_ssl: When receiving http on https, send the error response with http 1.0
-     It is important that we send a proper error status, or search engines
-     may index the error message.
-     Remove the link in the speaking-http-on-https error message.
-     With SNI, the link will usually be wrong. So better send no link at all.
-     PR: 50823
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1328325 and
-                  http://svn.apache.org/viewvc?view=revision&revision=1328326
-     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1334346
-     2.2.x patch: http://people.apache.org/~rjung/patches/improve-speaking-http-on-https-message-2_2.patch
-     +1: rjung, wrowe
-
    * mod_proxy_http: Use the same hostname for SNI as for the HTTP request when
      forwarding to SSL backends.
      PR: 53134
@@ -193,11 +213,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      rjung: I don't understand what was voted on, the backport of both revisions
             or only the PR attachment. The latter is only about r627637.
 
-   * mod_ssl: PR 52162: log revoked certificates at level INFO instead of DEBUG
-     trunk/2.4.x: Changed as part of http://svn.apache.org/viewvc?rev=1165056&view=rev
-     2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=27913
-     +1: sf, wrowe
-
    * mod_authnz_ldap: Allow using exec: callouts like SSLPassphraseDialog
      for AuthLDAPBindPassword.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1433478
@@ -206,21 +221,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: druggeri
      -1: wrowe (switch to +1 once ap_get_exec_line is made thread-safe)
                kudos for using apr_tokenize_to_argv to allow spaces in args.
-
-   * mod_proxy_ajp: Support unknown HTTP methods. PR54416.
-     Forward unknown methods as request attributes
-     using method id SC_M_JK_STORED=0xFF and
-     request attribute id SC_A_STORED_METHOD=13.
-     Code ported from mod_jk (which got it from mod_jk2).
-     Supported by Tomcat at least since TC 4.1.
-     Doesn't seem to be supported by Jetty though.
-     trunk patch: http://svn.apache.org/r1435178
-     2.4.x patch: http://svn.apache.org/r1436400
-                  plus http://svn.apache.org/r1436436 (CHANGES)
-     2.2.x patch: http://people.apache.org/~rjung/patches/httpd-2_2_x-ajp-unknown_-methods.patch
-                  plus CHANGES
-                  Difference to 2.4.x only in logging.
-     +1: rjung, wrowe
 
 PATCHES/ISSUES THAT ARE STALLED
 
