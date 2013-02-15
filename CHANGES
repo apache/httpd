@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.24
 
+  *) mod_ssl: log revoked certificates at level INFO
+     instead of DEBUG. PR 52162. [Stefan Fritsch]
+
   *) mod_proxy_ajp: Support unknown HTTP methods. PR 54416.
      [Rainer Jung]
 

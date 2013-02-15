@@ -94,11 +94,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_ssl: PR 52162: log revoked certificates at level INFO instead of DEBUG
-     trunk/2.4.x: Changed as part of http://svn.apache.org/viewvc?rev=1165056&view=rev
-     2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=27913
-     +1: sf, wrowe, rpluem
-
    * mod_ssl: When receiving http on https, send the error response with http 1.0
      It is important that we send a proper error status, or search engines
      may index the error message.
