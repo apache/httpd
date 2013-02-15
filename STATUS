@@ -94,18 +94,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_ssl: When receiving http on https, send the error response with http 1.0
-     It is important that we send a proper error status, or search engines
-     may index the error message.
-     Remove the link in the speaking-http-on-https error message.
-     With SNI, the link will usually be wrong. So better send no link at all.
-     PR: 50823
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1328325 and
-                  http://svn.apache.org/viewvc?view=revision&revision=1328326
-     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1334346
-     2.2.x patch: http://people.apache.org/~rjung/patches/improve-speaking-http-on-https-message-2_2.patch
-     +1: rjung, wrowe, rpluem
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
