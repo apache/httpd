@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1440055:1446027 (outdated) -->
+<!-- English Revision : 1446028 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -547,7 +547,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 # Comparer le nom d'h&ocirc;te avec example.com et rediriger vers
 # www.example.com si le nom d'h&ocirc;te correspond
 &lt;If "%{HTTP_HOST} == 'example.com'"&gt;
-    Redirect permanent / http://www.example.com
+    Redirect permanent / http://www.example.com/
 &lt;/If&gt;
 
 # Forcer le type text/plain si un fichier fait l'objet d'une
