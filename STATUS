@@ -209,6 +209,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             The patched code returns  '<a href="http://IP/%22%3ehttp://fish/">'
             This seems to be even better IMHO. 2.4 also returns the percent encoded
             variant, so the test should fail there as well.
+     rpluem replies: So I guess the test should be fixed.
 
 PATCHES/ISSUES THAT ARE STALLED
 
