@@ -201,15 +201,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1418941
                   http://svn.apache.org/viewvc?view=revision&revision=1425750
      2.2.x patch: http://people.apache.org/~rjung/patches/host-and-uri-escaping-2_2.patch
-     +1: rjung
-     rpluem says: Now t/security/CVE-2005-3352.t fails. Not sure if this is a real
-     regression or if just the test is wrong, but this should be investigated.
-     rjung: The test sends a Referer '">http://fish/'.
-            The original code returns '<a href="http://IP/&quot;&gt;http://fish/">'
-            The patched code returns  '<a href="http://IP/%22%3ehttp://fish/">'
-            This seems to be even better IMHO. 2.4 also returns the percent encoded
-            variant, so the test should fail there as well.
-     rpluem replies: So I guess the test should be fixed.
+     +1: rjung, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
