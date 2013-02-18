@@ -250,8 +250,8 @@ démarrage ou du redémarrage du serveur</dd>
 <dt><a href="mod_socache_shmcb.html">mod_socache_shmcb</a></dt><dd>shmcb based shared object cache provider.</dd>
 <dt><a href="mod_speling.html">mod_speling</a></dt><dd>Tente de corriger les erreurs de casse dans les URLs ou les
 fautes de frappe mineures.</dd>
-<dt><a href="mod_ssl.html">mod_ssl</a></dt><dd>Strong cryptography using the Secure Sockets
-Layer (SSL) and Transport Layer Security (TLS) protocols</dd>
+<dt><a href="mod_ssl.html">mod_ssl</a></dt><dd>Chiffrement de haut niveau basé sur les protocoles Secure
+Sockets Layer (SSL) et Transport Layer Security (TLS)</dd>
 <dt><a href="mod_status.html">mod_status</a></dt><dd>Fournit des informations sur les performances et l'activité
 du serveur</dd>
 <dt><a href="mod_substitute.html">mod_substitute</a></dt><dd>Effectue des opérations de recherche/remplacement sur les

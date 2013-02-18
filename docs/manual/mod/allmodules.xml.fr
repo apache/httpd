@@ -103,7 +103,7 @@
   <modulefile>mod_socache_memcache.xml</modulefile>
   <modulefile>mod_socache_shmcb.xml</modulefile>
   <modulefile>mod_speling.xml.fr</modulefile>
-  <modulefile>mod_ssl.xml</modulefile>
+  <modulefile>mod_ssl.xml.fr</modulefile>
   <modulefile>mod_status.xml.fr</modulefile>
   <modulefile>mod_substitute.xml.fr</modulefile>
   <modulefile>mod_suexec.xml</modulefile>
