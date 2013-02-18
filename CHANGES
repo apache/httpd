@@ -10,6 +10,11 @@ Changes with Apache 2.2.24
      XSS in mod_proxy_balancer manager interface. [Jim Jagielski,
      Niels Heinen <heinenn google com>]
 
+  *) mod_rewrite: Stop mergeing RewriteBase down to subdirectories
+     unless new option 'RewriteOptions MergeBase' is configured.
+     Merging RewriteBase was unconditionally turned on in 2.2.23.
+     PR 53963. [Eric Covener]
+
   *) mod_ssl: Send the error message for speaking http to an https port using
      HTTP/1.0 instead of HTTP/0.9, and omit the link that may be wrong when
      using SNI. PR 50823. [Stefan Fritsch]
