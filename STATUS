@@ -172,7 +172,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk and 2.4.x: Erroneous order for the parameters
        http://svn.apache.org/viewvc?view=revision&sortby=date&revision=627637
      2.2.x patch: attached in PR 53402 (https://issues.apache.org/bugzilla/attachment.cgi?id=29502)
-     +1: jailletc36, wrowe
+     +1: jailletc36
      -1: rjung
      rjung: the proposed 2.2 patch also changes LDAPTrustedClientCert to OR_AUTHCFG.
             This change seems to come from PR46541 which needs a bigger backport (r915660)
@@ -201,7 +201,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1418941
                   http://svn.apache.org/viewvc?view=revision&revision=1425750
      2.2.x patch: http://people.apache.org/~rjung/patches/host-and-uri-escaping-2_2.patch
-     +1: rjung, rpluem
+     +1: rjung, rpluem, wrowe
 
 PATCHES/ISSUES THAT ARE STALLED
 
