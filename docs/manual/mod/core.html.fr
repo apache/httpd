@@ -1134,7 +1134,7 @@ différente dans Apache 2.0</td></tr>
 
       <li>afficher un message personnalisé</li>
 
-      <li>rediriger vers un <var>chemin d'URL</var> local pour traiter
+      <li>rediriger en interne vers un <var>chemin d'URL</var> local pour traiter
       le problème ou l'erreur</li>
 
       <li>rediriger vers une <var>URL</var> externe pour traiter
