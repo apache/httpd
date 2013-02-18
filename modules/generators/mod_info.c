@@ -371,7 +371,8 @@ static int show_server_settings(request_rec * r)
                MODULE_MAGIC_NUMBER_MINOR);
     ap_rprintf(r,
                "<dt><strong>Hostname/port:</strong> "
-               "<tt>%s:%u</tt></dt>\n", ap_get_server_name(r),
+               "<tt>%s:%u</tt></dt>\n",
+               ap_escape_html(r->pool, ap_get_server_name(r)),
                ap_get_server_port(r));
     ap_rprintf(r,
                "<dt><strong>Timeouts:</strong> "

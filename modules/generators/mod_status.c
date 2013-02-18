@@ -409,7 +409,8 @@ static int status_handler(request_rec *r)
                  "<html><head>\n<title>Apache Status</title>\n</head><body>\n",
                  r);
         ap_rputs("<h1>Apache Server Status for ", r);
-        ap_rvputs(r, ap_get_server_name(r), "</h1>\n\n", NULL);
+        ap_rvputs(r, ap_escape_html(r->pool, ap_get_server_name(r)),
+                  "</h1>\n\n", NULL);
         ap_rvputs(r, "<dl><dt>Server Version: ",
                   ap_get_server_description(), "</dt>\n", NULL);
         ap_rvputs(r, "<dt>Server Built: ",

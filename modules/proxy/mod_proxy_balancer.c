@@ -829,7 +829,8 @@ static int balancer_handler(request_rec *r)
         ap_rputs(DOCTYPE_HTML_3_2
                  "<html><head><title>Balancer Manager</title></head>\n", r);
         ap_rputs("<body><h1>Load Balancer Manager for ", r);
-        ap_rvputs(r, ap_get_server_name(r), "</h1>\n\n", NULL);
+        ap_rvputs(r, ap_escape_html(r->pool, ap_get_server_name(r)),
+                  "</h1>\n\n", NULL);
         ap_rvputs(r, "<dl><dt>Server Version: ",
                   ap_get_server_description(), "</dt>\n", NULL);
         ap_rvputs(r, "<dt>Server Built: ",
@@ -864,7 +865,8 @@ static int balancer_handler(request_rec *r)
             worker = (proxy_worker *)balancer->workers->elts;
             for (n = 0; n < balancer->workers->nelts; n++) {
                 char fbuf[50];
-                ap_rvputs(r, "<tr>\n<td><a href=\"", r->uri, "?b=",
+                ap_rvputs(r, "<tr>\n<td><a href=\"",
+                          ap_escape_uri(r->pool, r->uri), "?b=",
                           balancer->name + sizeof("balancer://") - 1, "&w=",
                           ap_escape_uri(r->pool, worker->name),
                           "&nonce=", balancer_nonce, 
@@ -905,7 +907,7 @@ static int balancer_handler(request_rec *r)
             ap_rputs("<h3>Edit worker settings for ", r);
             ap_rvputs(r, wsel->name, "</h3>\n", NULL);
             ap_rvputs(r, "<form method=\"GET\" action=\"", NULL);
-            ap_rvputs(r, r->uri, "\">\n<dl>", NULL);
+            ap_rvputs(r, ap_escape_uri(r->pool, r->uri), "\">\n<dl>", NULL);
             ap_rputs("<table><tr><td>Load factor:</td><td><input name=\"lf\" type=text ", r);
             ap_rprintf(r, "value=\"%d\"></td></tr>\n", wsel->s->lbfactor);
             ap_rputs("<tr><td>LB Set:</td><td><input name=\"ls\" type=text ", r);
