@@ -10,7 +10,7 @@ Changes with Apache 2.2.24
      XSS in mod_proxy_balancer manager interface. [Jim Jagielski,
      Niels Heinen <heinenn google com>]
 
-  *) mod_rewrite: Stop mergeing RewriteBase down to subdirectories
+  *) mod_rewrite: Stop merging RewriteBase down to subdirectories
      unless new option 'RewriteOptions MergeBase' is configured.
      Merging RewriteBase was unconditionally turned on in 2.2.23.
      PR 53963. [Eric Covener]
