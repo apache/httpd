@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_rewrite: fix recent regression that caused RewriteBase to be ignored.
+    [Evgeny Barsukov <charlie.barkin gmail.com>]
+
   *) core: ap_rgetline_core now pulls from r->proto_input_filters.
 
   *) mod_proxy_html: process parsed comments immediately. 
