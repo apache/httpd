@@ -1,9 +1,14 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.24
 
-  *) mod_status, mod_info, mod_proxy_ftp, mod_proxy_balancer, mod_imagemap,
-     mod_ldap: Improve escaping of hostname and URIs HTML output.
-     [Jim Jagielski, Stefan Fritsch]
+  *) SECURITY: CVE-2012-3499 (cve.mitre.org)
+     Various XSS flaws due to unescaped hostnames and URIs HTML output in
+     mod_info, mod_status, mod_imagemap, mod_ldap, and mod_proxy_ftp.
+     [Jim Jagielski, Stefan Fritsch, Niels Heinen <heinenn google com>]
+
+  *) SECURITY: CVE-2012-4558 (cve.mitre.org)
+     XSS in mod_proxy_balancer manager interface. [Jim Jagielski,
+     Niels Heinen <heinenn google com>]
 
   *) mod_ssl: Send the error message for speaking http to an https port using
      HTTP/1.0 instead of HTTP/0.9, and omit the link that may be wrong when
