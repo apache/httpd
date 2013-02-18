@@ -94,6 +94,18 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * various mods: host and URI escaping. Includes needed constification
+     fix for mod_imagemap.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1413732
+                  http://svn.apache.org/viewvc?view=revision&revision=1418752
+                  http://svn.apache.org/viewvc?view=revision&revision=1416889
+                  http://svn.apache.org/viewvc?view=revision&revision=1422234
+                  http://svn.apache.org/viewvc?view=revision&revision=1422253
+     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1418941
+                  http://svn.apache.org/viewvc?view=revision&revision=1425750
+     2.2.x patch: http://people.apache.org/~rjung/patches/host-and-uri-escaping-2_2.patch
+     +1: rjung, rpluem, wrowe
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -190,18 +202,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: druggeri
      -1: wrowe (switch to +1 once ap_get_exec_line is made thread-safe)
                kudos for using apr_tokenize_to_argv to allow spaces in args.
-
-   * various mods: host and URI escaping. Includes needed constification
-     fix for mod_imagemap.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1413732
-                  http://svn.apache.org/viewvc?view=revision&revision=1418752
-                  http://svn.apache.org/viewvc?view=revision&revision=1416889
-                  http://svn.apache.org/viewvc?view=revision&revision=1422234
-                  http://svn.apache.org/viewvc?view=revision&revision=1422253
-     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1418941
-                  http://svn.apache.org/viewvc?view=revision&revision=1425750
-     2.2.x patch: http://people.apache.org/~rjung/patches/host-and-uri-escaping-2_2.patch
-     +1: rjung, rpluem, wrowe
 
 PATCHES/ISSUES THAT ARE STALLED
 
