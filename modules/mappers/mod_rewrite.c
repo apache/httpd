@@ -2829,6 +2829,9 @@ static void *config_perdir_merge(apr_pool_t *p, void *basev, void *overridesv)
         a->baseurl = (overrides->baseurl_set == 0) ? base->baseurl : overrides->baseurl;
         a->baseurl_set = overrides->baseurl_set || base->baseurl_set;
     }
+    else { 
+        a->baseurl = overrides->baseurl;
+    }
 
     a->directory  = overrides->directory;
 
