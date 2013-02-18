@@ -365,7 +365,9 @@ static apr_status_t proxy_send_dir_filter(ap_filter_t *f,
                 " </head>\n"
                 " <body>\n  <h2>Directory of "
                 "<a href=\"/\">%s</a>/%s",
-                site, basedir, escpath, site, basedir, escpath, site, str);
+                ap_escape_html(p, site), basedir, escpath,
+                ap_escape_uri(p, site), basedir, escpath,
+                ap_escape_uri(p, site), str);
 
         APR_BRIGADE_INSERT_TAIL(out, apr_bucket_pool_create(str, strlen(str),
                                                           p, c->bucket_alloc));

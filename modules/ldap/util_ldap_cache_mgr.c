@@ -541,7 +541,7 @@ char *util_ald_cache_display_stats(request_rec *r, util_ald_cache_t *cache, char
     if (id) {
         buf2 = apr_psprintf(p,
                  "<a href=\"%s?%s\">%s</a>",
-             r->uri,
+             ap_escape_html(r->pool, ap_escape_uri(r->pool, r->uri)),
              id,
              name);
     }
