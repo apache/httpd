@@ -198,7 +198,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1410681
                   http://svn.apache.org/viewvc?view=revision&revision=1447426
      2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1418954
-                  plus backport of r1447426 (2.4.x STATUS)
+                  http://svn.apache.org/viewvc?view=revision&revision=1447448
      2.2.x patch: http://people.apache.org/~rjung/patches/rewriteoption-mergebase-2_2.patch
      +1: rjung, 
      +1: covener (docs need tweak to note 2.2.23 instead of 2.4.0-2.4.3)
