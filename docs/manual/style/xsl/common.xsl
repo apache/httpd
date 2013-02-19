@@ -559,7 +559,7 @@ if (typeof(prettyPrint) !== 'undefined') {
 
     <xsl:text> | </xsl:text>
 
-    <a href="{$path}/mod/directives.html">
+    <a href="{$path}/mod/quickreference.html">
         <xsl:value-of select="$message[@id='directives']" />
     </a>
 
