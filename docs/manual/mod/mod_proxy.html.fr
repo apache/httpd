@@ -15,7 +15,7 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
 <p class="apache">Serveur Apache HTTP Version 2.5</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
@@ -28,8 +28,6 @@
 <a href="../fr/mod/mod_proxy.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle multi-protocole</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_module</td></tr>
@@ -548,8 +546,8 @@ serveur HTTP Apache</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="BalancerInherit" id="BalancerInherit">BalancerInherit</a> <a name="balancerinherit" id="balancerinherit">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Héritage des membres de groupes de répartition de
-    charge définis via la directive ProxyPass au niveau du serveur principal</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Héritage des membres du groupes de répartition de
+    charge du mandataire définis au niveau du serveur principal</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>BalancerInherit On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>BalancerInherit On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
@@ -559,13 +557,16 @@ serveur HTTP Apache</td></tr>
     HTTP Apache.</td></tr>
 </table>
         <p>Cette directive permet d'attribuer au serveur virtuel courant
-	l'héritage  des membres de groupes de répartition de charge
-	définis via la directive ProxyPass au niveau du serveur
-	principal. Elle ne doit pas être activée si vous utilisez le
+	l'héritage des membres de groupes de répartition de charge
+	définis au niveau du serveur
+	principal. Elle ne doit pas être activée si vous
+	utilisez la fonctionnalité de modifications dynamiques du
 	gestionnaire de répartition de charge (Balancer Manager) pour
 	éviter des problèmes et des comportements inattendus.</p>
         <p>Les définitions au niveau du serveur principal constituent
 	les définitions par défaut au niveau des serveurs virtuels.</p>
+	<p>La désactivation de ProxyPassInherit désactive aussi la
+	directive <code class="directive"><a href="#balancerinherit">BalancerInherit</a></code>.</p>
     
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1581,17 +1582,28 @@ ProxyPass / balancer://hotcluster/
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ProxyPassInherit" id="ProxyPassInherit">ProxyPassInherit</a> <a name="proxypassinherit" id="proxypassinherit">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Inherit ProxyPass directives defined from the main server</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Héritage des directives ProxyPass définies au niveau du
+serveur principal</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyPassInherit On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyPassInherit On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>ProxyPassInherit is only available in Apache HTTP Server 2.5.0 and later.
-        and later.</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur
+HTTP Apache.</td></tr>
+</table>
+        <p>Cette directive permet à un serveur virtuel d'hériter des
+	directives <code class="directive"><a href="#proxypass">ProxyPass</a></code> définies
+	au niveau du serveur principal. Si vous utilisez la fonctionnalité de
+	modifications dynamiques du Balancer Manager, cette directive peut
+	causer des problèmes et des comportements inattendus et doit donc
+	être désactivée.</p>
+        <p>Les valeurs définies au niveau du serveur principal
+	constituent les valeurs par défaut pour tous les serveurs virtuels.</p>
+        <p>La désactivation de ProxyPassInherit désactive aussi la
+	directive <code class="directive"><a href="#balancerinherit">BalancerInherit</a></code>.</p>
+    
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ProxyPassInterpolateEnv" id="ProxyPassInterpolateEnv">ProxyPassInterpolateEnv</a> <a name="proxypassinterpolateenv" id="proxypassinterpolateenv">Directive</a></h2>
 <table class="directive">
@@ -2160,7 +2172,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_proxy.html
 })(window, document);
 //--><!]]></script></div><div id="footer">
 <p class="apache">Copyright 2013 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -15,7 +15,7 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
 <p class="apache">Serveur Apache HTTP Version 2.5</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
@@ -29,8 +29,6 @@
 <a href="../ja/mod/mod_cache.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Filtre de mise en cache HTTP conforme à la RFC 2616</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>cache_module</td></tr>
@@ -551,23 +549,25 @@ URL</var>]</code></td></tr>
     être activée.</p>
 
     <pre class="prettyprint lang-config">
-# Mise en cache de contenu
+# Mise en cache de contenu (gestionnaire normal seulement)
+CacheQuickHandler off
 &lt;Location /foo&gt;
     CacheEnable disk
 &lt;/Location&gt;
 
-# Mise en cache via une expression rationnelle
+# Mise en cache via une expression rationnelle (gestionnaire normal seulement)
+CacheQuickHandler off
 &lt;LocationMatch foo$&gt;
     CacheEnable disk
 &lt;/LocationMatch&gt;
 
-# Mise en cache des URLs mandatées
+# Mise en cache des URLs mandatées (gestionnaire normal ou rapide)
 CacheEnable  disk  /
 
-# Mise en cache des URLs FTP mandatées
+# Mise en cache des URLs FTP mandatées (gestionnaire normal ou rapide)
 CacheEnable  disk  ftp://
 
-# Mise en cache des contenus situés dans www.example.org
+# Mise en cache des contenus situés dans www.example.org (gestionnaire normal ou rapide)
 CacheEnable  disk  http://www.example.org/
     </pre>
 
@@ -1248,7 +1248,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_cache.html
 })(window, document);
 //--><!]]></script></div><div id="footer">
 <p class="apache">Copyright 2013 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }
