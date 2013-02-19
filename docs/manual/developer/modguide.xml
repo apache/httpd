@@ -303,11 +303,11 @@ looks like
 <section id="request_rec"><title>The request_rec structure</title> 
 <p>The most essential part of any request is the <em>request record
 </em>. In a call to a handler function, this is represented by the <code>
-request_req* </code> structure passed along with every call that is made. 
+request_rec* </code> structure passed along with every call that is made. 
 This struct, typically just refered to as <code>r</code> in modules, 
 contains all the information you need for your module to fully process any 
 HTTP request and respond accordingly.</p> <p>Some key elements of the <code>
-request_req </code> structure are:
+request_rec </code> structure are:
 </p>
 <ul>
 <li><code>r-&gt;handler (char*):</code> Contains the name of the handler the server is currently asking to do the handling of this request</li>
@@ -322,7 +322,7 @@ request_req </code> structure are:
 &quot;<a href="#memory">Memory management</a>&quot; chapter.</li>
 </ul>
 <p>
-A complete list of all the values contained with in the <code>request_req</code> structure can be found in 
+A complete list of all the values contained with in the <code>request_rec</code> structure can be found in 
 the <a href="http://svn.apache.org/repos/asf/httpd/httpd/trunk/include/httpd.h"><code>httpd.h</code></a> header 
 file or at <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/structrequest__rec.html">http://ci.apache.org/projects/httpd/trunk/doxygen/structrequest__rec.html</a>.
 </p>
@@ -415,7 +415,7 @@ the next, without informing other handlers.
 
 <ul>
 <li>
-    <code>ap_rputs(const char *string, request_req *r)</code>: <br/>
+    <code>ap_rputs(const char *string, request_rec *r)</code>: <br/>
     Sends a string of text to the client. This is a shorthand version of <a 
     href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__PROTO.html#gac827cd0537d2b6213a7c06d7c26cc36e">
     ap_rwrite</a>.
@@ -440,7 +440,7 @@ the next, without informing other handlers.
 </li>
 <li>
     <code>
-    <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__PROTO.html#gaa2f8412c400197338ec509f4a45e4579">ap_set_content_type</a>(request_req *r, const char *type)</code>: <br/>
+    <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__PROTO.html#gaa2f8412c400197338ec509f4a45e4579">ap_set_content_type</a>(request_rec *r, const char *type)</code>: <br/>
     Sets the content type of the output you are sending.
     
 
@@ -1586,7 +1586,7 @@ typedef struct {
     const char* value;
 } keyValuePair;
 
-keyValuePair* readPost(request_req* r) {
+keyValuePair* readPost(request_rec* r) {
     apr_array_header_t *pairs = NULL;
     apr_off_t len;
     apr_size_t size;
@@ -1612,7 +1612,7 @@ keyValuePair* readPost(request_req* r) {
     return kvp;    
 }
 
-static int example_handler(request_req *r) 
+static int example_handler(request_rec *r) 
 {
     /*~~~~~~~~~~~~~~~~~~~~~~*/
     
@@ -1639,7 +1639,7 @@ static int example_handler(request_req *r)
 
 <!-- BEGIN EXAMPLE CODE -->
 <highlight language="c">
-static int example_handler(request_req *r) 
+static int example_handler(request_rec *r) 
 {
     /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
     const apr_array_header_t    *fields;
@@ -1700,7 +1700,7 @@ static int util_read(request_rec *r, const char **rbuf, apr_off_t *size)
     return(rc);
 }
 
-static int example_handler(request_req* r) 
+static int example_handler(request_rec* r) 
 {
     /*~~~~~~~~~~~~~~~~*/
     apr_off_t   size;
