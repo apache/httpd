@@ -14,7 +14,7 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
 <p class="apache">Serveur Apache HTTP Version 2.5</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/flags.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/flags.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Ce document décrit les drapeaux disponibles dans la directive
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>, en fournissant
@@ -64,15 +62,14 @@ de crochets, et séparés le cas échéant par des virgules.</p>
 <pre class="prettyprint lang-config">RewriteRule pattern target [Flag1,Flag2,Flag3]</pre>
 
 
-<p>Les drapeaux ont tous une forme courte, comme <code>CO</code>, ainsi
-qu'une forme longue, comme <code>cookie</code>. Certains drapeaux
-peuvent avoir un ou plusieurs arguments. Les drapeaux sont insensibles à
-la casse.</p>
-
-<p>Chaque drapeau (à quelques exceptions près) possède une forme longue et une forme courte. Bien que
+<p>Chaque drapeau (à quelques exceptions près)
+possède une forme courte, comme <code>CO</code>, ainsi qu'une forme longue,
+comme <code>cookie</code>. Bien que
 la forme courte soit la plus couramment utilisée, nous vous recommandons
 de vous familiariser avec les drapeaux sous leur forme longue, afin de
-bien mémoriser ce que chaque drapeau est supposé faire.</p>
+bien mémoriser ce que chaque drapeau est supposé faire.
+Certains drapeaux acceptent un ou plusieurs arguments. Les drapeaux ne
+sont pas sensibles Ã&nbsp; la casse.</p>
 
 <p>Les drapeaux qui modifient les métadonnées associées à la requête
 (T=, H=, E=) n'ont aucun effet dans un contexte de répertoire ou de
@@ -801,7 +798,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/rewrite/flags.html
 })(window, document);
 //--><!]]></script></div><div id="footer">
 <p class="apache">Copyright 2013 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }
