@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: Quiet FIPS mode weak keys disabled and FIPS not selected emits
+     in the error log to debug level.  [William Rowe]
+
   *) core: ap_rgetline_core now pulls from r->proto_input_filters.
 
   *) mod_proxy_html: process parsed comments immediately. 
