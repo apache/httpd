@@ -405,6 +405,8 @@ static int status_handler(request_rec *r)
                   ")</h1>\n\n", NULL);
         ap_rvputs(r, "<dl><dt>Server Version: ",
                   ap_get_server_description(), "</dt>\n", NULL);
+        ap_rvputs(r, "<dt>Server MPM: ",
+                  ap_show_mpm(), "</dt>\n", NULL);
         ap_rvputs(r, "<dt>Server Built: ",
                   ap_get_server_built(), "\n</dt></dl><hr /><dl>\n", NULL);
         ap_rvputs(r, "<dt>Current Time: ",
@@ -981,4 +983,3 @@ AP_DECLARE_MODULE(status) =
     NULL,                       /* command table */
     register_hooks              /* register_hooks */
 };
-
