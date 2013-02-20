@@ -91,7 +91,7 @@ static int ssl_tmp_key_init_rsa(server_rec *s,
 
     if (FIPS_mode() && bits < 1024) {
         mc->pTmpKeys[idx] = NULL;
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01877)
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01877)
                      "Init: Skipping generating temporary "
                      "%d bit RSA private key in FIPS mode", bits);
         return OK;
@@ -140,7 +140,7 @@ static int ssl_tmp_key_init_dh(server_rec *s,
 
     if (FIPS_mode() && bits < 1024) {
         mc->pTmpKeys[idx] = NULL;
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01880)
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01880)
                      "Init: Skipping generating temporary "
                      "%d bit DH parameters in FIPS mode", bits);
         return OK;
@@ -354,7 +354,7 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
         }
     }
     else {
-        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, APLOGNO(01886)
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01886)
                      "SSL FIPS mode disabled");
     }
 #endif
