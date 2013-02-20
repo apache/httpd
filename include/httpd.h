@@ -1390,7 +1390,7 @@ AP_DECLARE(char *) ap_ht_time(apr_pool_t *p, apr_time_t t, const char *fmt, int 
    char **) */
 
 /**
- * Get the characters until the first occurance of a specified character
+ * Get the characters until the first occurrence of a specified character
  * @param p The pool to allocate memory from
  * @param line The string to get the characters from
  * @param stop The character to stop at
@@ -1399,7 +1399,7 @@ AP_DECLARE(char *) ap_ht_time(apr_pool_t *p, apr_time_t t, const char *fmt, int 
 AP_DECLARE(char *) ap_getword(apr_pool_t *p, const char **line, char stop);
 
 /**
- * Get the characters until the first occurance of a specified character
+ * Get the characters until the first occurrence of a specified character
  * @param p The pool to allocate memory from
  * @param line The string to get the characters from
  * @param stop The character to stop at
@@ -1428,22 +1428,22 @@ AP_DECLARE(char *) ap_getword_white(apr_pool_t *p, const char **line);
 AP_DECLARE(char *) ap_getword_white_nc(apr_pool_t *p, char **line);
 
 /**
- * Get all characters from the first occurance of @a stop to the first "\0"
+ * Get all characters from the first occurrence of @a stop to the first "\0"
  * @param p The pool to allocate memory from
  * @param line The line to traverse
  * @param stop The character to start at
- * @return A copy of all caracters after the first occurance of the specified
+ * @return A copy of all characters after the first occurrence of the specified
  *         character
  */
 AP_DECLARE(char *) ap_getword_nulls(apr_pool_t *p, const char **line,
                                     char stop);
 
 /**
- * Get all characters from the first occurance of @a stop to the first "\0"
+ * Get all characters from the first occurrence of @a stop to the first "\0"
  * @param p The pool to allocate memory from
  * @param line The line to traverse
  * @param stop The character to start at
- * @return A copy of all caracters after the first occurance of the specified
+ * @return A copy of all characters after the first occurrence of the specified
  *         character
  * @note The same as ap_getword_nulls(), except it doesn't use const char **.
  */
