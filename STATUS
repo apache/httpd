@@ -192,6 +192,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      -1: wrowe (switch to +1 once ap_get_exec_line is made thread-safe)
                kudos for using apr_tokenize_to_argv to allow spaces in args.
 
+  * mod_ssl: Quiet FIPS mode weak keys disabled and FIPS not selected emits
+    in the error log to debug level.  [William Rowe]
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1447993
+    2.4.x patch: trunk patch applies.
+    2.2.x patch: http://people.apache.org/~wrowe/httpd-2.2-quiet-fips.patch
+    +1: wrowe
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
