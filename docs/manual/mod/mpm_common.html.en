@@ -675,6 +675,7 @@ per child process</td></tr>
 
     <div class="note"><h3>Note</h3>
       <p>There is a hard limit of <code>ThreadLimit 20000</code> (or
+      <code>ThreadLimit 100000</code> with <code class="module"><a href="../mod/event.html">event</a></code>,
       <code>ThreadLimit 15000</code> with <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>)
       compiled into the server. This is intended to avoid nasty effects
       caused by typos. To increase it even further past this limit, you
