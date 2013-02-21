@@ -137,10 +137,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             cgi-examples/ dir alongside cgi-bin/? Otherwise manual/cgi/examples
             might work?
 
-   * mod_proxy: Allow balancers to be server-specific, as they should have
-     been. Inheritance causes too many behind-the-scene interactions
-     to be reliable in a dynamic environ. We maintain the old-default
-     of inheritance.
+   * mod_proxy: Allow balancers and ProxyPass to be server-specific, as
+     they should have been. Inheritance causes too many behind-the-scene
+     interactions to be reliable in a dynamic environ. We maintain the
+     old-default of inheritance.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387603
                   http://svn.apache.org/viewvc?view=revision&revision=1388029
                   http://svn.apache.org/viewvc?view=revision&revision=1420124
@@ -149,24 +149,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1422943
                   http://svn.apache.org/viewvc?view=revision&revision=1422980
                   http://svn.apache.org/viewvc?view=revision&revision=1430575
-     2.4.x patch: http://people.apache.org/~jim/patches/proxypassinherit.patch
+                  http://svn.apache.org/viewvc?view=revision&revision=1439404
+     2.4.x patch: http://people.apache.org/~jim/patches/proxypassinherit-v2.patch
      +1: jim, druggeri
-     druggeri: (Discussion started on dev@ list)
-               * This doesn't seem to do anything for ProxyPass at server level
-                 but doc seems to imply it does.
-               * Can you elaborate more in docs about issues and inconsistences?
-               * Doc for 2.4 patch notes version 2.5.0
-                 jim: are we OK with changing the 2.4.x docs async?
-                 druggeri: sure - just noting that as-applied it would be incorrect
      rjung: directive help text describes "on" and then says: "(Not recommended if
             using the Balancer Manager)". Since "on" is the default, should we probably
             say "(Setting to Off recommended if using the Balancer Manager)"?
-
-  * mod_proxy: Allow ProxyPass to also be server-specific.
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1439404
-    2.4.x patch: trunk patch works modulo ap_mmn and docs ("2.5.0")
-                 Assumes BalancerInherit patch above.
-    +1: jim
 
   * mod_ssl: add support for subjectAltName-based host name checking
     in proxy mode (PR 54030)
