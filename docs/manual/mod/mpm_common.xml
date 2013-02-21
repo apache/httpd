@@ -684,6 +684,7 @@ per child process</description>
 
     <note><title>Note</title>
       <p>There is a hard limit of <code>ThreadLimit 20000</code> (or
+      <code>ThreadLimit 100000</code> with <module>event</module>,
       <code>ThreadLimit 15000</code> with <module>mpm_winnt</module>)
       compiled into the server. This is intended to avoid nasty effects
       caused by typos. To increase it even further past this limit, you
