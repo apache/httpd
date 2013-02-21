@@ -1195,7 +1195,7 @@ cannot use <code>$N</code> in the substitution string!
         <td>Stop the rewriting process immediately and don't apply any
         more rules. Especially note caveats for per-directory and
         .htaccess context (see also the END flag). <em><a
-        href="../rewrite/flags.html#flag_l">details ...</a></em></td>
+        href="../rewrite/flags.html#flag_end">details ...</a></em></td>
     </tr>
     <tr>
         <td>next|N</td>
