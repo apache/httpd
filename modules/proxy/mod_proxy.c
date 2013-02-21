@@ -1206,7 +1206,7 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->aliases = apr_array_append(p, base->aliases, overrides->aliases);
     ps->noproxies = apr_array_append(p, base->noproxies, overrides->noproxies);
     ps->dirconn = apr_array_append(p, base->dirconn, overrides->dirconn);
-    if (ps->inherit && ps->ppinherit) {
+    if (ps->inherit || ps->ppinherit) {
         ps->workers = apr_array_append(p, base->workers, overrides->workers);
         ps->balancers = apr_array_append(p, base->balancers, overrides->balancers);
     }
