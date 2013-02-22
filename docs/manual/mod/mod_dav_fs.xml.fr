@@ -56,8 +56,8 @@
 <name>DavLockDB</name>
 <description>Chemin de la base de données des verrous DAV</description>
 <syntax>DavLockDB <var>chemin fichier</var></syntax>
-<contextlist><context>configuration du serveur</context><context>serveur
-virtuel</context>
+<contextlist><context>server config</context><context>virtual
+host</context>
 </contextlist>
 
 <usage>
