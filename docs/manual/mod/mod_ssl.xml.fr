@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1421892:1448600 (outdated) -->
+<!-- English Revision : 1448600 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -149,6 +149,8 @@ The serial of the server certificate</td></tr>
 <td>nom d'utilisateur SRP</td></tr>
 <tr><td><code>SSL_SRP_USERINFO</code></td>              <td>cha&icirc;ne</td>
 <td>informations sur l'utilisateur SRP</td></tr>
+<tr><td><code>SSL_TLS_SNI</code></td>                   <td>string</td>
+<td>Contenu de l'extension SNI TLS (si support&eacute; par ClientHello)</td></tr>
 </table>
 
 <p><em>x509</em> sp&eacute;cifie un &eacute;l&eacute;ment de DN X.509 parmi
