@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1421821:1448507 (outdated) -->
+<!-- English Revision : 1448507 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1323,7 +1323,7 @@ substitution !
 	plus aucune r&egrave;gle. Pr&ecirc;tez une attention particuli&egrave;re aux mises
 	en garde concernant les contextes de niveau r&eacute;pertoire et
 	.htaccess (voir aussi le drapeau END). <em><a
-        href="../rewrite/flags.html#flag_l">d&eacute;tails ...</a></em></td>
+        href="../rewrite/flags.html#flag_end">d&eacute;tails ...</a></em></td>
     </tr>
     <tr>
         <td>next|N</td>
