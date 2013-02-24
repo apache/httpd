@@ -184,10 +184,9 @@ serveur</dd>
 chaque requête</dd>
 <dt><a href="mod_lua.html">mod_lua</a></dt><dd>Fournit des points d'entrée Lua dans différentes parties du
 traitement des requêtes httpd</dd>
-<dt><a href="mod_mime.html" id="M" name="M">mod_mime</a></dt><dd>Associates the requested filename's extensions
-    with the file's behavior (handlers and filters)
-    and content (mime-type, language, character set and
-    encoding)</dd>
+<dt><a href="mod_mime.html" id="M" name="M">mod_mime</a></dt><dd>Associe les extensions des fichiers demandés avec l'action
+déclenchée par ces fichiers et avec leur contenu (type MIME, langue,
+jeu de caractère et codage)</dd>
 <dt><a href="mod_mime_magic.html">mod_mime_magic</a></dt><dd>Determines the MIME type of a file
     by looking at a few bytes of its contents</dd>
 <dt><a href="mod_negotiation.html" id="N" name="N">mod_negotiation</a></dt><dd>Effectue la <a href="../content-negotiation.html">négociation de
@@ -235,19 +234,19 @@ règles permettant de réécrire les URLs des requêtes
 <dt><a href="mod_sed.html" id="S" name="S">mod_sed</a></dt><dd>Filtre les contenus en entrée (requêtes) et en sortie
 (réponses) en utilisant la syntaxe de <code>sed</code></dd>
 <dt><a href="mod_session.html">mod_session</a></dt><dd>Support des sessions</dd>
-<dt><a href="mod_session_cookie.html">mod_session_cookie</a></dt><dd>Cookie based session support</dd>
-<dt><a href="mod_session_crypto.html">mod_session_crypto</a></dt><dd>Session encryption support</dd>
-<dt><a href="mod_session_dbd.html">mod_session_dbd</a></dt><dd>DBD/SQL based session support</dd>
+<dt><a href="mod_session_cookie.html">mod_session_cookie</a></dt><dd>Support des sessions basé sur les cookies</dd>
+<dt><a href="mod_session_crypto.html">mod_session_crypto</a></dt><dd>Support du chiffrement des sessions</dd>
+<dt><a href="mod_session_dbd.html">mod_session_dbd</a></dt><dd>Support des session basé sur DBD/SQL</dd>
 <dt><a href="mod_setenvif.html">mod_setenvif</a></dt><dd>Permet de définir des variables d'environnement en fonction
 de caractéristiques de la requête</dd>
 <dt><a href="mod_slotmem_plain.html">mod_slotmem_plain</a></dt><dd>Slot-based shared memory provider.</dd>
 <dt><a href="mod_slotmem_shm.html">mod_slotmem_shm</a></dt><dd>Slot-based shared memory provider.</dd>
 <dt><a href="mod_so.html">mod_so</a></dt><dd>Chargement de modules ou de code exécutable au cours du
 démarrage ou du redémarrage du serveur</dd>
-<dt><a href="mod_socache_dbm.html">mod_socache_dbm</a></dt><dd>DBM based shared object cache provider.</dd>
-<dt><a href="mod_socache_dc.html">mod_socache_dc</a></dt><dd>Distcache based shared object cache provider.</dd>
-<dt><a href="mod_socache_memcache.html">mod_socache_memcache</a></dt><dd>Memcache based shared object cache provider.</dd>
-<dt><a href="mod_socache_shmcb.html">mod_socache_shmcb</a></dt><dd>shmcb based shared object cache provider.</dd>
+<dt><a href="mod_socache_dbm.html">mod_socache_dbm</a></dt><dd>Fournisseur de cache d'objets partagés basé sur DBM.</dd>
+<dt><a href="mod_socache_dc.html">mod_socache_dc</a></dt><dd>Fournisseur de cache d'objets partagés basé sur dc.</dd>
+<dt><a href="mod_socache_memcache.html">mod_socache_memcache</a></dt><dd>Fournisseur de cache d'objets partagés basé sur Memcache.</dd>
+<dt><a href="mod_socache_shmcb.html">mod_socache_shmcb</a></dt><dd>Fournisseur de cache d'objets partagés basé sur shmcb.</dd>
 <dt><a href="mod_speling.html">mod_speling</a></dt><dd>Tente de corriger les erreurs de casse dans les URLs ou les
 fautes de frappe mineures.</dd>
 <dt><a href="mod_ssl.html">mod_ssl</a></dt><dd>Chiffrement de haut niveau basé sur les protocoles Secure
@@ -256,14 +255,15 @@ Sockets Layer (SSL) et Transport Layer Security (TLS)</dd>
 du serveur</dd>
 <dt><a href="mod_substitute.html">mod_substitute</a></dt><dd>Effectue des opérations de recherche/remplacement sur les
 corps de réponses</dd>
-<dt><a href="mod_suexec.html">mod_suexec</a></dt><dd>Allows CGI scripts to run as a specified user
-and Group</dd>
+<dt><a href="mod_suexec.html">mod_suexec</a></dt><dd>Permet l'exécution des scripts CGI sous l'utilisateur et
+le groupe spécifiés</dd>
 <dt><a href="mod_unique_id.html" id="U" name="U">mod_unique_id</a></dt><dd>Fournit une variable d'environnement contenant un
 identifiant unique pour chaque requête</dd>
 <dt><a href="mod_unixd.html">mod_unixd</a></dt><dd>Basic (required) security for Unix-family platforms.</dd>
-<dt><a href="mod_userdir.html">mod_userdir</a></dt><dd>User-specific directories</dd>
+<dt><a href="mod_userdir.html">mod_userdir</a></dt><dd>Répertoires propres à un utilisateur</dd>
 <dt><a href="mod_usertrack.html">mod_usertrack</a></dt><dd>
-<em>Clickstream</em> logging of user activity on a site
+Journalisation <em>Clickstream</em> des liens parcourus par un
+utilisateur sur un site
 </dd>
 <dt><a href="mod_version.html" id="V" name="V">mod_version</a></dt><dd>Version dependent configuration</dd>
 <dt><a href="mod_vhost_alias.html">mod_vhost_alias</a></dt><dd>Provides for dynamically configured mass virtual

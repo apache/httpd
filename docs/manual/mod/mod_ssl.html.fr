@@ -225,6 +225,8 @@ The serial of the server certificate</td></tr>
 <td>nom d'utilisateur SRP</td></tr>
 <tr><td><code>SSL_SRP_USERINFO</code></td>              <td>chaîne</td>
 <td>informations sur l'utilisateur SRP</td></tr>
+<tr><td><code>SSL_TLS_SNI</code></td>                   <td>string</td>
+<td>Contenu de l'extension SNI TLS (si supporté par ClientHello)</td></tr>
 </table>
 
 <p><em>x509</em> spécifie un élément de DN X.509 parmi

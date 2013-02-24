@@ -550,7 +550,7 @@ la coordination des processus enfants</td></tr>
 </div>
 
     <p>Une mémoire partagée sous forme de fichier est utile pour les
-    applications tierces qui nécessitent un accès direct au tableau de
+    applications tierses qui nécessitent un accès direct au tableau de
     bord des processus.</p>
 
     <p>Si vous utilisez un <code class="directive">ScoreBoardFile</code>, vous
@@ -736,6 +736,7 @@ processus enfant</td></tr>
 
     <div class="note"><h3>Note</h3>
       <p>Il existe une limite de <code>ThreadLimit 20000</code> (ou
+      <code>ThreadLimit 100000</code> avec <code class="module"><a href="../mod/event.html">event</a></code>,
       <code>ThreadLimit 15000</code> avec <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>)
       codée en dur dans le serveur. Ceci est censé éviter les effets
       désastreux que pourrait provoquer une faute de frappe. Pour
