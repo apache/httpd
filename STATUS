@@ -95,7 +95,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
 
-
    * mod_proxy: Allow balancers and ProxyPass to be server-specific, as
      they should have been. Inheritance causes too many behind-the-scene
      interactions to be reliable in a dynamic environ. We maintain the
@@ -134,11 +133,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     in the error log to debug level.  [William Rowe]
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1447993
     2.4.x patch: trunk patch applies.
-    +1: wrowe
+    +1: wrowe, covener
 
   * mod_include: Use new ap_expr for 'elif', like 'if', if legacy parser is not specified.  [PR 54548]
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1449479
-    +1: tdonovan
+    +1: tdonovan, 
+    +1: covener (please add w/ CHANGES in 2.4)
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
