@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_rewrite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_rewrite.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ce module fournit un moteur de réécriture à base de
 règles permettant de réécrire les URLs des requêtes
 à la volée</td></tr>
@@ -1181,7 +1179,18 @@ la version version 2.1</td></tr>
       l'URI transformé, comme indiqué dans les CVE ci-dessus.</p>
       </div>
       </dd>
+	
+	<dt><code>MergeBase</code></dt>
+      <dd>
 
+      <p>Avec cette option, la valeur de <code class="directive"><a href="#rewritebase">RewriteBase</a></code> est copiée depuis une
+      origine explicitement définie dans tout sous-répertoire qui ne
+      définit pas sa propre <code class="directive"><a href="#rewritebase">RewriteBase</a></code>. Par défaut, jusqu'à
+      la version 2.2.22, cette valeur n'était pas copiée, alors qu'elle
+      l'était avec la version 2.2.23 du serveur HTTP Apache. Le drapeau
+      permettant de contrôler explicitement ce comportement est
+      disponible depuis la version 2.2.24.</p>
+      </dd>
      </dl>
 
 
