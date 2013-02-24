@@ -608,8 +608,8 @@ authentication</td></tr>
 
 <h3>See also</h3>
 <ul>
-<li><a href="../howto/auth.html">Authentication, Authorization,
-    and Access Control</a></li>
+<li><a href="../howto/auth.html">Authentication and Authorization</a></li>
+<li><a href="../howto/access.html">Access Control</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2734,8 +2734,8 @@ a resource</td></tr>
 
 <h3>See also</h3>
 <ul>
-<li><a href="../howto/auth.html">Authentication, Authorization,
-    and Access Control</a></li>
+<li><a href="../howto/auth.html">Authentication and Authorization</a></li>
+<li><a href="../howto/access.html">Access Control</a></li>
 <li><code class="directive"><a href="#satisfy">Satisfy</a></code></li>
 <li><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></li>
 </ul>
