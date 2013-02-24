@@ -370,8 +370,7 @@ Require group admin
     </note>
 </usage>
 
-<seealso><a href="../howto/auth.html">Authentication, Authorization,
-    and Access Control</a></seealso>
+<seealso><a href="../howto/access.html">Access Control howto</a></seealso>
 <seealso><a href="#logic">Authorization Containers</a></seealso>
 <seealso><module>mod_authn_core</module></seealso>
 <seealso><module>mod_authz_host</module></seealso>
