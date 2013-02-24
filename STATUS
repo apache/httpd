@@ -95,47 +95,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
 
-   * Makefile.win: Added copying of .vbs / .wsf CGIs to Windows install target.
-                   Moved fixing of shebang to separate target so that it is
-                   no longer executed by default and all CGIs remain inactive.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387984
-                  http://svn.apache.org/viewvc?view=revision&revision=1421203
-                  http://svn.apache.org/viewvc?view=revision&revision=1421591
-     2.4.x patch: http://people.apache.org/~fuankg/diffs/httpd-2.4.x-Makefile.win.diff
-     +1 fuankg, gsmith
-     -.8: trawick
-          This commit is essentially deciding that an httpd install on
-          Windows now has printenv/testcgi written in 2 more languages.
-          To the extent that the usefulness is that it shows how to make scripts
-          of these types executable by httpd, I believe that the documentation
-          is the proper place to solve that.  To the extent that the usefullness
-          is to show how to implement a CGI in these particular languages, I believe
-          that the httpd distribution and documentation in general is not the
-          place for that.  Historically these types of scripts have caused problems
-          for downstream vendorsas well as newbies (and sometimes the intersection
-          of those two groups) who don't understand that these are information leaks
-          once they are enabled, and the subtlety of the way they are disabled ("Apache
-          messed up the first line; let me fix that") contributes to that.
-     fuankg notes: I've just added a big warning to all CGI scripts which should now
-          make absolutely clear that these CGIs are for testing purpose only - so those
-          who enable those scripts with inserting the right shebang should be 100% aware
-          of any risks (this should cover your last point).
-     jim: trawick, does the above address your concerns?
-     trawick: to some extent (somebody reading the script gets an idea)
-          Why isn't the configuration requirement documented instead
-          of described indirectly in a sample?
-          Why are these new samples added to the install without three
-          votes?  (I didn't veto it; put your name next to the two
-          existing ones and I'll be satisified that enough people
-          considered this addition as an appropriate solution for a
-          real httpd usability problem.)
-     wrowe: I'd agree with trawick, and suggest that these scripts can begin
-            their life somewhere in the manual/ tree.  This really seems like
-            the place where /usr/share/httpd/examples/ would be useful, but
-            there isn't an ordinary directory for that.  Since we want none
-            of the scripts to function 'out of the box', what about a new
-            cgi-examples/ dir alongside cgi-bin/? Otherwise manual/cgi/examples
-            might work?
 
    * mod_proxy: Allow balancers and ProxyPass to be server-specific, as
      they should have been. Inheritance causes too many behind-the-scene
@@ -291,4 +250,46 @@ PATCHES/ISSUES THAT ARE STALLED
           any version. Also, if you read my note to dev@ you will see
           why it is not premature.
      minfrin: once this gets docs, +1.
+
+   * Makefile.win: Added copying of .vbs / .wsf CGIs to Windows install target.
+                   Moved fixing of shebang to separate target so that it is
+                   no longer executed by default and all CGIs remain inactive.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387984
+                  http://svn.apache.org/viewvc?view=revision&revision=1421203
+                  http://svn.apache.org/viewvc?view=revision&revision=1421591
+     2.4.x patch: http://people.apache.org/~fuankg/diffs/httpd-2.4.x-Makefile.win.diff
+     +1 fuankg, gsmith
+     -.8: trawick
+          This commit is essentially deciding that an httpd install on
+          Windows now has printenv/testcgi written in 2 more languages.
+          To the extent that the usefulness is that it shows how to make scripts
+          of these types executable by httpd, I believe that the documentation
+          is the proper place to solve that.  To the extent that the usefullness
+          is to show how to implement a CGI in these particular languages, I believe
+          that the httpd distribution and documentation in general is not the
+          place for that.  Historically these types of scripts have caused problems
+          for downstream vendorsas well as newbies (and sometimes the intersection
+          of those two groups) who don't understand that these are information leaks
+          once they are enabled, and the subtlety of the way they are disabled ("Apache
+          messed up the first line; let me fix that") contributes to that.
+     fuankg notes: I've just added a big warning to all CGI scripts which should now
+          make absolutely clear that these CGIs are for testing purpose only - so those
+          who enable those scripts with inserting the right shebang should be 100% aware
+          of any risks (this should cover your last point).
+     jim: trawick, does the above address your concerns?
+     trawick: to some extent (somebody reading the script gets an idea)
+          Why isn't the configuration requirement documented instead
+          of described indirectly in a sample?
+          Why are these new samples added to the install without three
+          votes?  (I didn't veto it; put your name next to the two
+          existing ones and I'll be satisified that enough people
+          considered this addition as an appropriate solution for a
+          real httpd usability problem.)
+     wrowe: I'd agree with trawick, and suggest that these scripts can begin
+            their life somewhere in the manual/ tree.  This really seems like
+            the place where /usr/share/httpd/examples/ would be useful, but
+            there isn't an ordinary directory for that.  Since we want none
+            of the scripts to function 'out of the box', what about a new
+            cgi-examples/ dir alongside cgi-bin/? Otherwise manual/cgi/examples
+            might work?
 
