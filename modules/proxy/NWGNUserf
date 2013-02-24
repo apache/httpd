@@ -223,6 +223,11 @@ FILES_nlm_objs += \
 	$(OBJDIR)/outgoing.o \
 	$(OBJDIR)/ssltunnel.o \
 	$(EOLIST)
+ifeq "$(wildcard $(SERFSRC)/buckets/response_body_buckets.c)" "$(SERFSRC)/buckets/response_body_buckets.c"
+FILES_nlm_objs += \
+	$(OBJDIR)/response_body_buckets.o \
+	$(EOLIST)
+endif
 else
 $(error This libserf version is broken for NetWare platform!)
 endif
