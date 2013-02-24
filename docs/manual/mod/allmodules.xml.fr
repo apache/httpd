@@ -67,7 +67,7 @@
   <modulefile>mod_log_forensic.xml.fr</modulefile>
   <modulefile>mod_logio.xml.fr</modulefile>
   <modulefile>mod_lua.xml.fr</modulefile>
-  <modulefile>mod_mime.xml</modulefile>
+  <modulefile>mod_mime.xml.fr</modulefile>
   <modulefile>mod_mime_magic.xml</modulefile>
   <modulefile>mod_negotiation.xml.fr</modulefile>
   <modulefile>mod_nw_ssl.xml.fr</modulefile>
@@ -91,26 +91,26 @@
   <modulefile>mod_rewrite.xml.fr</modulefile>
   <modulefile>mod_sed.xml.fr</modulefile>
   <modulefile>mod_session.xml.fr</modulefile>
-  <modulefile>mod_session_cookie.xml</modulefile>
-  <modulefile>mod_session_crypto.xml</modulefile>
-  <modulefile>mod_session_dbd.xml</modulefile>
+  <modulefile>mod_session_cookie.xml.fr</modulefile>
+  <modulefile>mod_session_crypto.xml.fr</modulefile>
+  <modulefile>mod_session_dbd.xml.fr</modulefile>
   <modulefile>mod_setenvif.xml.fr</modulefile>
   <modulefile>mod_slotmem_plain.xml</modulefile>
   <modulefile>mod_slotmem_shm.xml</modulefile>
   <modulefile>mod_so.xml.fr</modulefile>
-  <modulefile>mod_socache_dbm.xml</modulefile>
-  <modulefile>mod_socache_dc.xml</modulefile>
-  <modulefile>mod_socache_memcache.xml</modulefile>
-  <modulefile>mod_socache_shmcb.xml</modulefile>
+  <modulefile>mod_socache_dbm.xml.fr</modulefile>
+  <modulefile>mod_socache_dc.xml.fr</modulefile>
+  <modulefile>mod_socache_memcache.xml.fr</modulefile>
+  <modulefile>mod_socache_shmcb.xml.fr</modulefile>
   <modulefile>mod_speling.xml.fr</modulefile>
   <modulefile>mod_ssl.xml.fr</modulefile>
   <modulefile>mod_status.xml.fr</modulefile>
   <modulefile>mod_substitute.xml.fr</modulefile>
-  <modulefile>mod_suexec.xml</modulefile>
+  <modulefile>mod_suexec.xml.fr</modulefile>
   <modulefile>mod_unique_id.xml.fr</modulefile>
   <modulefile>mod_unixd.xml</modulefile>
-  <modulefile>mod_userdir.xml</modulefile>
-  <modulefile>mod_usertrack.xml</modulefile>
+  <modulefile>mod_userdir.xml.fr</modulefile>
+  <modulefile>mod_usertrack.xml.fr</modulefile>
   <modulefile>mod_version.xml</modulefile>
   <modulefile>mod_vhost_alias.xml</modulefile>
   <modulefile>mod_watchdog.xml</modulefile>
