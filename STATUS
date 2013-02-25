@@ -172,7 +172,6 @@ OTHER PROPOSALS
           mod_socache_XXX    r1370225, r1407385
           mod_ldap           r1371684
           mod_cache          r1407381
-          mod_auth_digest    r1371387
           mod_slotmem_plain  r1370763
        Independently, backport any doc tweaks to 2.4 API migration page.
 
