@@ -14,7 +14,6 @@ To Do List
 
 - Update the http://httpd.apache.org/docs-project/docsformat.html
   document to be useful. In particular:
-    - Document the various macros that can be used in documents.
     - Document the translation process.
     - Generally update it to make it reflect the current reality of how
       we work.
@@ -28,8 +27,7 @@ To Do List
   Need something a little more advanced, which either discusses
   application-level security, or links to something that does. I'm not
   even sure what to say needs done. Can we get someone to elaborate on
-  what, exactly, needs written? Ivan Ristic has said maybe he would be
-  willing to contribute.
+  what, exactly, needs written? 
   - More content and better organisation
   - mod_dav resources are owned by the httpd. Perhaps write up the
     two-httpd dav setup covered in Rich Bowen's DAV Apachecon
