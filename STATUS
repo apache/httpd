@@ -140,6 +140,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: tdonovan, 
     +1: covener (please add w/ CHANGES in 2.4), sf
 
+  * mod_heartmonitor/mod_lbmethod_heartbeat: Respect DefaultRuntimeDir for 
+    storage path (module doesn't have its own directive for that)
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1364695
+    2.4.x patch: trunk patch applies (minus CHANGES)
+    +1: trawick
+
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
@@ -160,7 +166,6 @@ OTHER PROPOSALS
        +1: trawick, jim, rjung
        rjung: applicable trunk revisions WITHOUT the compatibility tweaks
               described above:
-          heartbeat          r1364695
           scoreboard         r1369477
           core/pid file      r1369808
           core/mutex         r1370288
