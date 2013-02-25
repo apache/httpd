@@ -138,7 +138,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_include: Use new ap_expr for 'elif', like 'if', if legacy parser is not specified.  [PR 54548]
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1449479
     +1: tdonovan, 
-    +1: covener (please add w/ CHANGES in 2.4)
+    +1: covener (please add w/ CHANGES in 2.4), sf
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
