@@ -141,11 +141,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: covener (please add w/ CHANGES in 2.4), sf
 
   * mod_heartmonitor/mod_lbmethod_heartbeat: Respect DefaultRuntimeDir for 
-    storage path (module doesn't have its own directive for that)
+    storage path; these have a directive to configure this location
+    and THIS CHANGE WILL BREAK PRACTICALLY ALL EXISTING 2.4 CONFIGURATIONS
+    THAT USE THOSE DIRECTIVES WITH A RELATIVE PATH; I don't think it is
+    worth consideration because of expected zero impact in the user community
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1364695
     2.4.x patch: trunk patch applies (minus CHANGES)
     +1: trawick
-    -1: trawick - put together a better patch, you idiot
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
