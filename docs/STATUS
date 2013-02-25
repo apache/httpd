@@ -10,7 +10,6 @@ To Do List
 =======================
 
 - The following directives of modules included in 2.4.x are not documented:
-  ProxyHTMLMeta (mod_proxy_html)
   SSLPKCS7CertificateFile (mod_ssl)
 
 - Update the http://httpd.apache.org/docs-project/docsformat.html
