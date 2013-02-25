@@ -171,13 +171,6 @@ OTHER PROPOSALS
 
 PATCHES/ISSUES THAT ARE STALLED
 
-  * mod_ssl: Allow the SSLUserName to be used to control the
-    username passed by the FakeBasicAuth option. PR52616.
-    trunk patch: http://svn.apache.org/viewvc?rev=1432322&view=rev
-    2.4.x patch: trunk patch works (minus docs/log-message-tags)
-    +1: minfrin
-    -1: jorton, changes existing semantics per kbrand msgid <50F65606.9050607@velox.ch>
-
   * cross-compile: allow to provide CC_FOR_BUILD so that gen_test_char will be
     compiled by the build compiler instead of the host compiler.
     Also set CC_FOR_BUILD to 'cc' when cross-compilation is detected.
