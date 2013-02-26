@@ -524,7 +524,7 @@ lower level modules</description>
 <directivesynopsis>
 <name>AuthFormSize</name>
 <description>The largest size of the form in bytes that will be parsed for the login details</description>
-<syntax>AuthFormBody <var>size</var></syntax>
+<syntax>AuthFormSize <var>size</var></syntax>
 <default>8192</default>
 <contextlist><context>directory</context>
 </contextlist>
