@@ -661,7 +661,7 @@ lower level modules</description>
     <p>The <directive module="mod_auth_form">AuthFormDisableNoStore</directive> flag
     disables the sending of a <code>Cache-Control no-store</code> header with the
     error 401 page returned when the user is not yet logged in. The purpose of the header
-    is to make it difficult for an ecmascript application to attempt to resubmit the
+    is to make it difficult for an <code>ecmascript</code> application to attempt to resubmit the
     login form, and reveal the username and password to the backend application. Disable
     at your own risk.</p>
 
