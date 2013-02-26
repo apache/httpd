@@ -51,7 +51,7 @@ http://www.example.com/index.html.sum</code>.
 <p>
 In the second part of this document, which deals with configuration 
 directive and context awareness, we will be looking at a module that simply 
-write out its own configuration to the client.
+writes out its own configuration to the client.
 </p>
 </section>
 
@@ -322,7 +322,7 @@ request_rec </code> structure are:
 &quot;<a href="#memory">Memory management</a>&quot; chapter.</li>
 </ul>
 <p>
-A complete list of all the values contained with in the <code>request_rec</code> structure can be found in 
+A complete list of all the values contained within the <code>request_rec</code> structure can be found in 
 the <a href="http://svn.apache.org/repos/asf/httpd/httpd/trunk/include/httpd.h"><code>httpd.h</code></a> header 
 file or at <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/structrequest__rec.html">http://ci.apache.org/projects/httpd/trunk/doxygen/structrequest__rec.html</a>.
 </p>
@@ -1244,7 +1244,7 @@ void* example_create_dir_conf(apr_pool_t* pool, char* context) {
 <section id="context_merge"><title>Merging configurations</title>
 <p>
 Our next step in creating a context aware configuration is merging 
-configurations. This part of the process particularly apply to scenarios 
+configurations. This part of the process particularly applies to scenarios 
 where you have a parent configuration and a child, such as the following: 
 </p>
 <highlight language="config">
@@ -1259,8 +1259,8 @@ where you have a parent configuration and a child, such as the following:
 </highlight>
 <p>
 In this example, it is natural to assume that the directory <code>
-/var/www/subdir</code> should inherit the value set for the <code>/var/www
-</code> directory, as we did not specify a <code>ExampleEnable</code> nor 
+/var/www/subdir</code> should inherit the values set for the <code>/var/www
+</code> directory, as we did not specify an <code>ExampleEnable</code> nor 
 an <code>ExamplePath</code> for this directory. The server does not presume to 
 know if this is true, but cleverly does the following:
 </p>
