@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1174747:1330988 (outdated) -->
+<!-- English Revision: 1330988 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -62,7 +62,9 @@ shell</description>
     shell qui a invoqu&eacute; le processus <program>httpd</program>.</p>
 
     <example><title>Exemple</title>
+     <highlight language="config">
       PassEnv LD_LIBRARY_PATH
+     </highlight>
     </example>
 </usage>
 </directivesynopsis>
@@ -81,7 +83,9 @@ shell</description>
     transmise aux scripts CGI et aux pages SSI.</p>
 
     <example><title>Exemple</title>
+     <highlight language="config">
       SetEnv SPECIAL_PATH /foo/bin
+     </highlight>
     </example>
     <note><p>Les variables d'environnement internes d&eacute;finies par cette
     directive le sont <em>apr&egrave;s</em> l'ex&eacute;cution de la plupart des
@@ -113,7 +117,9 @@ shell</description>
     qui sont transmises aux scripts CGI et aux pages SSI.</p>
 
     <example><title>Exemple</title>
+     <highlight language="config">
       UnsetEnv LD_LIBRARY_PATH
+     </highlight>
     </example>
 </usage>
 </directivesynopsis>
