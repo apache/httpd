@@ -2411,7 +2411,10 @@ static apr_status_t handle_elif(include_ctx_t *ctx, ap_filter_t *f,
         return APR_SUCCESS;
     }
 
-    expr_ret = parse_expr(ctx, expr, &was_error);
+    if (ctx->intern->legacy_expr)
+        expr_ret = parse_expr(ctx, expr, &was_error);
+    else
+        expr_ret = parse_ap_expr(ctx, expr, &was_error);
 
     if (was_error) {
         SSI_CREATE_ERROR_BUCKET(ctx, f, bb);

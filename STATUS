@@ -135,11 +135,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch applies.
     +1: wrowe, covener
 
-  * mod_include: Use new ap_expr for 'elif', like 'if', if legacy parser is not specified.  [PR 54548]
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1449479
-    +1: tdonovan, 
-    +1: covener (please add w/ CHANGES in 2.4), sf
-
   * mod_heartmonitor/mod_lbmethod_heartbeat: Respect DefaultRuntimeDir for 
     storage path; these have a directive to configure this location
     and THIS CHANGE WILL BREAK PRACTICALLY ALL EXISTING 2.4 CONFIGURATIONS
