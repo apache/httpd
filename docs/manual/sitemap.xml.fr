@@ -88,7 +88,7 @@ descripteurs de fichiers</page>
 
 <category id="rewrite">
 <title>Guide de r&eacute;&eacute;criture d'URLs</title>
-<page separate="yes" href="rewrite/">Survol</page>
+<page separate="yes" href="rewrite/">Aper&ccedil;u</page>
 <page href="mod/mod_rewrite.html">Documentation de r&eacute;f&eacute;rence de mod_rewrite</page>
 <page href="rewrite/intro.html">Introduction</page>
 <page href="rewrite/flags.html">Drapeaux</page>
