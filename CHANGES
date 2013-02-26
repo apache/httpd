@@ -2,6 +2,8 @@
 
 Changes with Apache 2.4.5
 
+  * mod_include: Use new ap_expr for 'elif', like 'if', 
+    if legacy parser is not specified.  PR 54548 [Tom Donovan]
 
 Changes with Apache 2.4.4
 
