@@ -5,7 +5,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Kimlik Doğrulama, Yetkilendirme ve Erişim Denetimi - Apache HTTP Sunucusu</title>
+<title>Kimlik Doğrulama ve Yetkilendirme - Apache HTTP Sunucusu</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -19,7 +19,7 @@
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.2</a> &gt; <a href="./">Nasıllar ve Öğreticiler</a></div><div id="page-content"><div id="preamble"><h1>Kimlik Doğrulama, Yetkilendirme ve Erişim Denetimi</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.2</a> &gt; <a href="./">Nasıllar ve Öğreticiler</a></div><div id="page-content"><div id="preamble"><h1>Kimlik Doğrulama ve Yetkilendirme</h1>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../en/howto/auth.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/howto/auth.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
@@ -27,14 +27,13 @@
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/auth.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Kimlik Doğrulama istediğiniz kişileri teyid etme işlemidir.
     Yetkilendirme ise kişilerin nereye gireceklerine ve hangi bilgiye
     ulaşacaklarına müsaade edilmesi işlemidir.</p>
 
-    <p>Genel erişim denetimi için, <a href="access.html">Erişim Denetimi
-      Nasıl</a> belgesine bakınız.</p>
+    <p>Genel erişim denetimi için, <a href="access.html">Erişim Denetimi</a>
+    belgesine bakınız.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">İlgili modüller ve Yönergeler</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#introduction">Giriş</a></li>
@@ -54,7 +53,8 @@
     vardır. Genellikle her bir gruptan en az bir modül seçeceksiniz.</p>
 
     <ul>
-      <li>Kimlik Doğrulama türü (bkz. <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code> yönergesi)
+      <li>Kimlik Doğrulama türü (bkz.
+         <code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code> yönergesi)
         <ul>
           <li><code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code></li>
           <li><code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code></li>
@@ -74,7 +74,7 @@
         </ul>
       </li>
       <li>Yetkilendirme (bkz.
-          <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> yönergesi)
+          <code class="directive"><a href="../mod/core.html#require">Require</a></code> yönergesi)
         <ul>
           <li><code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></li>
           <li><code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code></li>
@@ -145,13 +145,6 @@
     yapısı hakkında biraz bilgi sahibi olmanız gerekmektedir. Bu çok da
     zor olmamakla birlikte bu noktaya gelindiğinde konuyu
     netleştireceğiz.</p>
-
-    <p>Ayrıca, <code class="module"><a href="../mod/mod_authn_core.html">mod_authn_core</a></code> ve
-    <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code> modüllerinin ya httpd çalıştırılabilirinin
-    içinde derlenmiş ya da httpd.conf dosyası tarafından yüklenmiş olduğundan
-    emin olmalısınız. Bu modüllerin her ikisi de HTTP sunucusunda yetkilendirme
-    ve kimlik denetiminin kullanımı ile yapılandırmada kritik öneme sahip
-    işlevselliği ve temel yönergeleri sağlar.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="gettingitworking" id="gettingitworking">Çalışmaya Başlama</a></h2>
@@ -230,7 +223,7 @@
     (<code>Digest</code>) kimlik doğrulama yöntemini
     desteklemektedir.</p>
 
-    <p><code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code> yönergesi
+    <p><code class="directive"><a href="../mod/core.html#authname">AuthName</a></code> yönergesi
     ile kimlik doğrulamada kullanılacak <dfn>Saha</dfn> da
     belirtilebilir. Saha kullanımının, başlıca iki işlevi vardır.
     Birincisi, istemci sıklıkla bu bilgiyi kullanıcıya parola diyalog
@@ -268,10 +261,10 @@
     Veritabanı</a> içindeki üçüncü parti modüllerinde çok sayıda
     başka kimlik doğrulama türü de vardır.</p>
 
-    <p>Son olarak <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
+    <p>Son olarak <code class="directive"><a href="../mod/core.html#require">Require</a></code>
     yönergesi, sunucunun bu bölgesine erişimine izin verilen
     kullanıcıları ayarlama işleminin kimlik doğrulamasıyla ilgili
-    kısmını sağlar. Bir sonraki bölümde <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> yönergesini kullanmanın
+    kısmını sağlar. Bir sonraki bölümde <code class="directive"><a href="../mod/core.html#require">Require</a></code> yönergesini kullanmanın
     çeşitli yoları üzerinde duracağız.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
