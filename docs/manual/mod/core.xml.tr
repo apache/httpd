@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1415085:1449541 (outdated) -->
+<!-- English Revision: 1449541 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -572,7 +572,8 @@ kullanımı önerilmemektedir.</compatibility>
       yetkilendirme modülüne ihtiyacı vardır.</p>
 </usage>
 
-<seealso><a href="../howto/auth.html">Kimlik Doğrulama, Yetkilendirme ve Erişim Denetimi</a></seealso>
+<seealso><a href="../howto/auth.html">Kimlik Doğrulama ve Yetkilendirme</a></seealso>
+<seealso><a href="../howto/access.html">Erişim Denetimi</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -1033,8 +1034,8 @@ kullanımı önerilmemektedir.</compatibility>
 
       <li>Özel bir ileti çıktılanır.</li>
 
-      <li>Sorunu/hatayı işleyecek yerel bir <var>URL-yoluna</var> yönlendirme
-        yapılır.</li>
+      <li>Sorunu/hatayı işleyecek yerel bir <var>URL-yoluna</var> dahili
+        bir yönlendirme yapılır.</li>
 
       <li>Sorunu/hatayı işleyecek harici bir <var>URL-yoluna</var>
         yönlendirme yapılır.</li>
@@ -2662,7 +2663,8 @@ uygulanır.</description>
 
 </usage>
 
-<seealso><a href="../howto/auth.html"> Kimlik Doğrulama, Yetkilendirme ve Erişim Denetimi</a></seealso>
+<seealso><a href="../howto/auth.html"> Kimlik Doğrulama ve Yetkilendirme</a></seealso>
+<seealso><a href="../howto/access.html">Erişim Denetimi</a></seealso>
 <seealso><directive module="core">Satisfy</directive></seealso>
 <seealso><module>mod_authz_host</module></seealso>
 </directivesynopsis>

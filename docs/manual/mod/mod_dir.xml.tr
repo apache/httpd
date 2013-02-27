@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1353522:1445133 (outdated) -->
+<!-- English Revision: 1445133 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -91,7 +91,7 @@
       DirectoryIndex index.html index.txt  /cgi-bin/index.pl
     </example>
 
-    <p>Bu örnekte ise dizin içinde ne <code>index.html</code> ne de
+    <p>Bu örnekte ise dizin içinde <code>index.html</code> ne de
       <code>index.txt</code> mevcut olduğunda <code>/cgi-bin/index.pl</code>
       CGI betiği çalıştırılacaktır.</p>
 
@@ -179,12 +179,13 @@
 <name>FallbackResource</name>
 <description>Bir dosyayla eşleşmeyen istekler için öntanımlı bir URL tanımlar
 </description>
-<syntax>FallbackResource <var>yerel-url</var></syntax>
+<syntax>FallbackResource disabled | <var>yerel-url</var></syntax>
 <default>None - httpd 404 döndürür (Bulunamadı)</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Indexes</override>
-<compatibility>Apache HTTP Server 2.2.16 ve sonrası</compatibility>
+<compatibility>Apache HTTP Server 2.2.16 ve sonrası - <code>disabled</code>
+değiştirgesi 2.2.24'ten itibaren desteklenmektedir.</compatibility>
 <usage>
     <p>Dosya sisteminizdeki hiçbir şey ile eşleşmeyen URL'ler için bir
       eylemci atamak isterseniz bunı kullanın. Kullanmadığınız takdirde
@@ -208,6 +209,8 @@
     </example>
     <p>Resimler, css dosyaları gibi mevcut dosyalar normal olarak sunulmaya
       devam edecektir.</p>
+    <p>Üst dizinden miras alınmasının istenmemesi özelliğini iptal etmek için
+      <code>disabled</code> değiştirgesini kullanın.</p>
     <p><em>http://example.com/blog/</em> gibi bir alt-URI isteğinde bu alt-URI
       bir <var>yerel-url</var> olarak sunulabilir:</p>
     <example>
@@ -215,6 +218,11 @@
              &lt;Directory /web/example.com/htdocs/blog&gt;<br />
             <indent>
                   FallbackResource /blog/index.php<br />
+             </indent>
+             &lt;/Directory&gt;
+             &lt;Directory /web/example.com/htdocs/blog/images&gt;<br />
+            <indent>
+                  FallbackResource disabled<br />
              </indent>
              &lt;/Directory&gt;
          </code>
