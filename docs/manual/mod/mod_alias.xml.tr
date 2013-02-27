@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1406262:1422377 (outdated) -->
+<!-- English Revision: 1422377 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -165,6 +165,9 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</description>
         </indent>
         &lt;/Directory&gt;
     </example>
+
+    <p><var>URL-yolu</var> değiştirgesindeki bölü çizgilerinin tamamı
+    istekteki URL-yolunun içinde bulunan bölü çizgileri ile eşleşir.</p>
   </usage>
 </directivesynopsis>
 
@@ -243,7 +246,11 @@ eşler.</description>
       AliasMatch ^/image/(.*)\.jpg$ /files/jpg.images/$1.jpg<br/>
       AliasMatch ^/image/(.*)\.gif$ /files/gif.images/$1.gif
     </example>
-  </usage>
+
+    <p>Bu modüldeki yönergeler istekteki URL-yolu ile karşılaştırılmadan önce
+      istenen URL'nin başlangıcındaki bölü çizgilerini sunucu temizler.
+    </p>
+</usage>
 </directivesynopsis>
 
 <directivesynopsis>
