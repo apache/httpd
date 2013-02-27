@@ -143,6 +143,37 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1364695
     2.4.x patch: trunk patch applies (minus CHANGES)
     +1: trawick
+    
+  * mod_rate_limit: Fix error because of negative rate-limit
+    PR 52964 [ianyin Xu <tixu cs ucsd edu>]
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1439623
+    2.4.x patch: trunk patch applies.
+    +1: jailletc36
+
+  * Set of easy patches to keep 2.4.x in line with trunk
+       1442865: Change bzero/bcopy into memset/memcpy (PR 54346)
+       1442759: Can't figure out why we allocate len+2 bytes here. Len+1 should be enough.
+       1442326: Fix valgrind warning about uninitialized memory in argument to semctl (PR 53690)
+       1442309: fix valgrind warnings about uninitialized memory in syscall arguments
+       1448171: This is useful info for mod_status ;)
+       1418556: Add some __attribute__ for automatic format checking.
+       1448453: Correct some spelling.
+       1425771: Replace strdup by ap_malloc to ensure a proper error message if out-of-memory. (PR 54345)
+       1425772: Exit with error message if out of mem (PR 54345)
+       1425775: htdbm, htpasswd: print error message if out of memory (PR 54345)
+    trunk patches: 
+       http://svn.apache.org/viewvc?view=revision&revision=1442865
+       http://svn.apache.org/viewvc?view=revision&revision=1442759
+       http://svn.apache.org/viewvc?view=revision&revision=1442326
+       http://svn.apache.org/viewvc?view=revision&revision=1442309
+       http://svn.apache.org/viewvc?view=revision&revision=1448171
+       http://svn.apache.org/viewvc?view=revision&revision=1418556
+       http://svn.apache.org/viewvc?view=revision&revision=1448453
+       http://svn.apache.org/viewvc?view=revision&revision=1425771
+       http://svn.apache.org/viewvc?view=revision&revision=1425772
+       http://svn.apache.org/viewvc?view=revision&revision=1425775
+    2.4.x patch: trunk patches apply (minus CHANGES for 1448171)
+    2.4.x cumulative patch: http://people.apache.org/~jailletc36/backport5.patch (minus CHANGES for 1448171)
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
