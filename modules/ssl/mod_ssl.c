@@ -101,13 +101,13 @@ static const command_rec ssl_config_cmds[] = {
                 " certificates ('/path/to/file' - PEM encoded)")
     SSL_CMD_ALL(RSAAuthzFile, TAKE1,
                 "RFC 5878 Authz Extension file for RSA certificate "
-		"(`/path/to/file')")
+                "(`/path/to/file')")
     SSL_CMD_ALL(DSAAuthzFile, TAKE1,
                 "RFC 5878 Authz Extension file for DSA certificate "
-		"(`/path/to/file')")
+                "(`/path/to/file')")
     SSL_CMD_ALL(ECAuthzFile, TAKE1,
                 "RFC 5878 Authz Extension file for EC certificate "
-		"(`/path/to/file')")
+                "(`/path/to/file')")
 #ifdef HAVE_TLS_SESSION_TICKETS
     SSL_CMD_SRV(SessionTicketKeyFile, TAKE1,
                 "TLS session ticket encryption/decryption key file (RFC 5077) "
@@ -282,7 +282,7 @@ static const command_rec ssl_config_cmds[] = {
 
 #ifdef HAVE_SSL_CONF_CMD
     SSL_CMD_SRV(OpenSSLConfCmd, TAKE2,
-		"OpenSSL configuration command")
+                "OpenSSL configuration command")
 #endif
 
     /* Deprecated directives. */
