@@ -564,8 +564,6 @@ char *SSL_SESSION_id2sz(unsigned char *id, int idlen,
         idlen = (strsize-1) / 2;
 
     ap_bin2hex(id, idlen, str);
-    /* XXX: is this ap_str_toupper() necessary ? */
-    ap_str_toupper(str);
 
     return str;
 }
