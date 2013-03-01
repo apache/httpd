@@ -63,7 +63,7 @@ void ap_skiplist_free(ap_skiplist *sl, void *mem);
 apr_status_t ap_skiplist_init(ap_skiplist **sl, apr_pool_t *p);
 
 void ap_skiplist_set_compare(ap_skiplist *sl, ap_skiplist_compare,
-                          ap_skiplist_compare);
+                             ap_skiplist_compare);
 
 void ap_skiplist_add_index(ap_skiplist *sl, ap_skiplist_compare,
                         ap_skiplist_compare);
@@ -71,9 +71,9 @@ void ap_skiplist_add_index(ap_skiplist *sl, ap_skiplist_compare,
 ap_skiplistnode *ap_skiplist_getlist(ap_skiplist *sl);
 
 void *ap_skiplist_find_compare(ap_skiplist *sl,
-                            void *data,
-                            ap_skiplistnode **iter,
-                            ap_skiplist_compare func);
+                               void *data,
+                               ap_skiplistnode **iter,
+                               ap_skiplist_compare func);
 
 void *ap_skiplist_find(ap_skiplist *sl, void *data, ap_skiplistnode **iter);
 
@@ -83,12 +83,12 @@ void *ap_skiplist_previous(ap_skiplist *sl, ap_skiplistnode **iter);
 
 
 ap_skiplistnode *ap_skiplist_insert_compare(ap_skiplist *sl,
-                                       void *data, ap_skiplist_compare comp);
+                                          void *data, ap_skiplist_compare comp);
 
 ap_skiplistnode *ap_skiplist_insert(ap_skiplist* sl, void *data);
 
 int ap_skiplist_remove_compare(ap_skiplist *sl, void *data,
-                            ap_skiplist_freefunc myfree, ap_skiplist_compare comp);
+                               ap_skiplist_freefunc myfree, ap_skiplist_compare comp);
 
 int ap_skiplist_remove(ap_skiplist *sl, void *data, ap_skiplist_freefunc myfree);
 
