@@ -229,7 +229,7 @@ void *ap_skiplist_find_compare(ap_skiplist *sli, void *data,
         sl = (ap_skiplist *) m->data;
     }
     skiplisti_find_compare(sl, data, iter, sl->comparek);
-    return (*iter) ? ((*iter)->data) : (*iter);
+    return (iter && *iter) ? ((*iter)->data) : NULL;
 }
 
 
@@ -262,7 +262,7 @@ ap_skiplistnode *ap_skiplist_insert(ap_skiplist *sl, void *data)
 ap_skiplistnode *ap_skiplist_insert_compare(ap_skiplist *sl, void *data,
                                       ap_skiplist_compare comp)
 {
-    ap_skiplistnode *m, *p, *tmp, *ret, **stack;
+    ap_skiplistnode *m, *p, *tmp, *ret = NULL, **stack;
     int nh = 1, ch, stacki;
     if (!sl->top) {
         sl->height = 1;
@@ -381,6 +381,7 @@ ap_skiplistnode *ap_skiplist_insert_compare(ap_skiplist *sl, void *data,
     else {
         /* sl->size++; */
     }
+    sl->size++;
     return ret;
 }
 
@@ -489,7 +490,7 @@ void ap_skiplist_remove_all(ap_skiplist *sl, ap_skiplist_freefunc myfree)
     m = sl->bottom;
     while (m) {
         p = m->next;
-        if (myfree && p->data)
+        if (p && myfree && p->data)
             myfree(p->data);
         while (m) {
             u = m->up;
