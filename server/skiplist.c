@@ -23,7 +23,7 @@
  *  can removed if/when needed.
  */
 
-#include "skiplist.h"
+#include "ap_skiplist.h"
 
 #ifndef MIN
 #define MIN(a,b) ((a<b)?(a):(b))

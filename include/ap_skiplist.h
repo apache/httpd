@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef _SKIPLIST_P_H
-#define _SKIPLIST_P_H
+#ifndef _AP_SKIPLIST_P_H
+#define _AP_SKIPLIST_P_H
 
 #include "apr.h"
 #include "apr_portable.h"
