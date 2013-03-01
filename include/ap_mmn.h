@@ -414,6 +414,7 @@
  *                         add ap_has_cntrl()
  * 20121222.2 (2.5.0-dev)  Add ap_password_validate()
  * 20121222.3 (2.5.0-dev)  Add ppinherit to proxy_server_conf
+ * 20121222.4 (2.5.0-dev)  Add uds_path to proxy_conn_rec
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
