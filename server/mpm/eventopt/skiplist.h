@@ -24,100 +24,82 @@
 
 /* This is the function type that must be implemented per object type
    that is used in a skiplist for comparisons to maintain order */
-typedef int (*SkiplistComparator) (void *, void *);
-typedef void (*FreeFunc) (void *);
+typedef int (*ap_skiplist_compare) (void *, void *);
+typedef void (*ap_skiplist_freefunc) (void *);
 
-typedef struct skiplistnode skiplistnode;
-typedef struct Skiplist Skiplist;
+typedef struct ap_skiplistnode ap_skiplistnode;
+typedef struct ap_skiplist ap_skiplist;
 
-struct Skiplist {
-    SkiplistComparator compare;
-    SkiplistComparator comparek;
+struct ap_skiplist {
+    ap_skiplist_compare compare;
+    ap_skiplist_compare comparek;
     int height;
     int preheight;
     int size;
-    skiplistnode *top;
-    skiplistnode *bottom;
+    ap_skiplistnode *top;
+    ap_skiplistnode *bottom;
     /* These two are needed for appending */
-    skiplistnode *topend;
-    skiplistnode *bottomend;
-    Skiplist *index;
+    ap_skiplistnode *topend;
+    ap_skiplistnode *bottomend;
+    ap_skiplist *index;
     apr_pool_t *pool;
 };
 
-struct skiplistnode {
+struct ap_skiplistnode {
     void *data;
-    skiplistnode *next;
-    skiplistnode *prev;
-    skiplistnode *down;
-    skiplistnode *up;
-    skiplistnode *previndex;
-    skiplistnode *nextindex;
-    Skiplist *sl;
+    ap_skiplistnode *next;
+    ap_skiplistnode *prev;
+    ap_skiplistnode *down;
+    ap_skiplistnode *up;
+    ap_skiplistnode *previndex;
+    ap_skiplistnode *nextindex;
+    ap_skiplist *sl;
 };
 
-void *skiplist_alloc(Skiplist *sl, size_t size);
+void *ap_skiplist_alloc(ap_skiplist *sl, size_t size);
 
-void skiplist_free(Skiplist *sl, void *mem);
+void ap_skiplist_free(ap_skiplist *sl, void *mem);
 
-apr_status_t skiplist_init(Skiplist **sl, apr_pool_t *p);
+apr_status_t ap_skiplist_init(ap_skiplist **sl, apr_pool_t *p);
 
-void skiplist_set_compare(Skiplist *sl, SkiplistComparator,
-                          SkiplistComparator);
+void ap_skiplist_set_compare(ap_skiplist *sl, ap_skiplist_compare,
+                          ap_skiplist_compare);
 
-void skiplist_add_index(Skiplist *sl, SkiplistComparator,
-                        SkiplistComparator);
+void ap_skiplist_add_index(ap_skiplist *sl, ap_skiplist_compare,
+                        ap_skiplist_compare);
 
-skiplistnode *skiplist_getlist(Skiplist *sl);
+ap_skiplistnode *ap_skiplist_getlist(ap_skiplist *sl);
 
-void *skiplist_find_compare(Skiplist *sl,
+void *ap_skiplist_find_compare(ap_skiplist *sl,
                             void *data,
-                            skiplistnode **iter,
-                            SkiplistComparator func);
+                            ap_skiplistnode **iter,
+                            ap_skiplist_compare func);
 
-void *skiplist_find(Skiplist *sl, void *data, skiplistnode **iter);
+void *ap_skiplist_find(ap_skiplist *sl, void *data, ap_skiplistnode **iter);
 
-void *skiplist_next(Skiplist *sl, skiplistnode **iter);
+void *ap_skiplist_next(ap_skiplist *sl, ap_skiplistnode **iter);
 
-void *skiplist_previous(Skiplist *sl, skiplistnode **iter);
+void *ap_skiplist_previous(ap_skiplist *sl, ap_skiplistnode **iter);
 
 
-skiplistnode *skiplist_insert_compare(Skiplist *sl,
-                                       void *data, SkiplistComparator comp);
+ap_skiplistnode *ap_skiplist_insert_compare(ap_skiplist *sl,
+                                       void *data, ap_skiplist_compare comp);
 
-skiplistnode *skiplist_insert(Skiplist* sl, void *data);
+ap_skiplistnode *ap_skiplist_insert(ap_skiplist* sl, void *data);
 
-int skiplist_remove_compare(Skiplist *sl, void *data,
-                            FreeFunc myfree, SkiplistComparator comp);
+int ap_skiplist_remove_compare(ap_skiplist *sl, void *data,
+                            ap_skiplist_freefunc myfree, ap_skiplist_compare comp);
 
-int skiplist_remove(Skiplist *sl, void *data, FreeFunc myfree);
+int ap_skiplist_remove(ap_skiplist *sl, void *data, ap_skiplist_freefunc myfree);
 
-#if 0
-int skiplisti_remove(Skiplist *sl, skiplistnode *m, FreeFunc myfree);
-#endif
+void ap_skiplist_remove_all(ap_skiplist *sl, ap_skiplist_freefunc myfree);
 
-void skiplist_remove_all(Skiplist *sl, FreeFunc myfree);
+void ap_skiplist_destroy(ap_skiplist *sl, ap_skiplist_freefunc myfree);
 
-void skiplist_destroy(Skiplist *sl, FreeFunc myfree);
+void *ap_skiplist_pop(ap_skiplist *a, ap_skiplist_freefunc myfree);
 
-#if 0
-int skiplisti_find_compare(Skiplist *sl,
-                           void *data,
-                           skiplistnode **ret,
-                           SkiplistComparator comp);
+void *ap_skiplist_peek(ap_skiplist *a);
 
-#endif
-
-void *skiplist_pop(Skiplist *a, FreeFunc myfree);
-
-void *skiplist_peek(Skiplist *a);
-
-/* Below 2 are buggy */
-#if 0
-Skiplist *skiplist_concat(Skiplist *sl1, Skiplist *sl2);
-skiplistnode *skiplist_append(Skiplist *sl, void *data);
-#endif
-
-Skiplist *skiplist_merge(Skiplist *sl1, Skiplist *sl2);
+ap_skiplist *ap_skiplist_merge(ap_skiplist *sl1, ap_skiplist *sl2);
 
 #endif
