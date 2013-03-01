@@ -236,6 +236,7 @@ typedef struct {
                                 * that is used over the backend connection. */
     proxy_worker *worker;      /* Connection pool this connection belongs to */
     apr_pool_t   *pool;        /* Subpool for hostname and addr data */
+    const char   *uds_path;    /* Unix domain socket path */
     const char   *hostname;
     apr_sockaddr_t *addr;      /* Preparsed remote address info */
     apr_pool_t   *scpool;      /* Subpool used for socket and connection data */
