@@ -2227,10 +2227,8 @@ static void force_set_tz(apr_pool_t *p) {
      *   <http://www.gnu.org/s/hello/manual/libc/TZ-Variable.html>
      */
     char *v = NULL;
-    apr_status_t rv;
 
-    rv = apr_env_get(&v, "TZ", p);
-    if (v == NULL || rv == APR_ENOENT) {
+    if (apr_env_get(&v, "TZ", p) != APR_SUCCESS) {
         apr_env_set("TZ", "UTC+0", p);
     }
 }
