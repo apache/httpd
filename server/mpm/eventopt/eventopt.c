@@ -97,7 +97,7 @@
 
 
 #include "equeue.h"
-#include "skiplist.h"
+#include "ap_skiplist.h"
 
 #if HAVE_SERF
 #include "mod_serf.h"
