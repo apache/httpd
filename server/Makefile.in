@@ -18,7 +18,7 @@ LTLIBRARY_SOURCES = \
 	apreq_cookie.c apreq_error.c apreq_module.c \
 	apreq_module_cgi.c apreq_module_custom.c apreq_param.c \
 	apreq_parser.c apreq_parser_header.c apreq_parser_multipart.c \
-	apreq_parser_urlencoded.c apreq_util.c
+	apreq_parser_urlencoded.c apreq_util.c skiplist.c
 
 LTLIBRARY_DEPENDENCIES = test_char.h
 
