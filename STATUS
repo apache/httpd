@@ -183,6 +183,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch applies.
     +1: jailletc36
 
+  * mod_charset_lite: clean up and speed up special case of logging function by x13 using ap_bin2hex intoduced in 2.4.4
+    It will be in lowercase instead of uppercase, but it is only for logging. I don't think this is a real issue.
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1429582
+    2.4.x patch: trunk patch applies.
+    +1: jailletc36
+    
+  * mod_log_forensic: Speed up logging of characters that need to be escaped. PR 50919
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1429564
+    2.4.x patch: trunk patch applies.
+    +1: jailletc36
+
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
