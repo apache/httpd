@@ -199,6 +199,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://people.apache.org/~wrowe/httpd-2.2-quiet-fips.patch
     +1: wrowe
 
+  * installwinconf.awk: install.log output tweaks; reduced path convertion
+    2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=r1390511
+    2.2.x patch: http://people.apache.org/~fuankg/diffs/httpd-2.2.x_installwinconf.diff
+    +1: fuankg
+  
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
