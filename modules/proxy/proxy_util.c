@@ -2452,7 +2452,9 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
         }
     }
     while ((backend_addr || conn->uds_path) && !connected) {
-        if (conn->uds_path) {
+#if APR_HAVE_SYS_UN_H
+        if (conn->uds_path)
+        {
             struct sockaddr_un sa;
 
             rv = apr_socket_create(&newsock, AF_UNIX, SOCK_STREAM, 0,
@@ -2483,7 +2485,9 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                 break;
             }
         }
-        else {
+        else
+#endif
+        {
             if ((rv = apr_socket_create(&newsock, backend_addr->family,
                                         SOCK_STREAM, APR_PROTO_TCP,
                                         conn->scpool)) != APR_SUCCESS) {
