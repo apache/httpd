@@ -14,8 +14,7 @@
 # limitations under the License.
 
 BEGIN {
-    
-    A["ServerRoot"] = "SYS:/"BDIR
+    A["ServerRoot"] = "\${SRVROOT}"
     A["Port"] = PORT
     A["SSLPort"] = SSLPORT
     A["cgidir"] = "cgi-bin"
@@ -39,6 +38,10 @@ BEGIN {
     B["runtimedir"] = A["runtimedir"]
 }
 
+/^ServerRoot / {
+    print "Define SRVROOT \"SYS:/" BDIR "\""
+    print ""
+}
 /@@LoadModule@@/ {
     print "#LoadModule access_compat_module modules/accesscompat.nlm"
     print "#LoadModule actions_module modules/actions.nlm"
@@ -143,7 +146,7 @@ match ($0,/^<IfModule cgid_module>$/) {
 }
 
 END {
-    if ((ARGV[1] ~ /httpd.conf.in/) && !BSDSKT) { 
+    if ((ARGV[1] ~ /httpd.conf.in/) && !BSDSKT) {
        print ""
        print "#"
        print "# SecureListen: Allows you to securely bind Apache to specific IP addresses "
