@@ -249,6 +249,36 @@
 
   </section>
 
+  <section id="unixsrcbuild">
+
+    <title>Building from Unix sources</title>
+
+    <p>The policy of the HTTPd Server project is to only release Unix sources.
+    Windows source packages made available for download have been supplied by 
+    volunteers and may not be available for every release. You can still build 
+    the server on Windows from the Unix source tarball with just a few additional
+    steps.</p>
+
+    <ol>
+    	<li>Download and unpack the Unix source tarball for the latest version.</li>
+    	<li>Download and unpack the Unix source tarball for latest version of
+        APR-Iconv, place this source in the httpd-2.x.x\srclib\apr-iconv</li>
+    	<li>Open a Command Prompt and CD to the httpd-2.x.x folder</li>
+    	<li>Run the line endings conversion utility at the prompt;</li>
+    </ol>
+
+    <example>
+      perl srclib\apr\build\lineends.pl
+    </example>
+
+    <p>You can now build the server with the Visual Studio development 
+    environment using the IDE. Command-Line builds of the server are not 
+    possible from Unix sources unless you export .mak files as explained 
+    below.
+    </p>
+
+  </section>
+
   <section id="commandbuild">
 
     <title>Command-Line Build</title>
