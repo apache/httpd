@@ -2383,6 +2383,7 @@ static apr_status_t send_http_connect(proxy_conn_rec *backend,
 }
 
 
+#if APR_HAVE_SYS_UN_H
 /* lifted from mod_proxy_fdpass.c; tweaked addrlen in connect() call */
 static apr_status_t socket_connect_un(apr_socket_t *sock,
                                       struct sockaddr_un *sa)
@@ -2426,6 +2427,7 @@ static apr_status_t socket_connect_un(apr_socket_t *sock,
 
     return APR_SUCCESS;
 }
+#endif
 
 PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                                             proxy_conn_rec *conn,
