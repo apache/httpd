@@ -815,9 +815,9 @@ static void output_results(int sig)
                (double) totalread / 1024 / timetaken);
         if (send_body) {
             printf("                        %.2f kb/s sent\n",
-               (double) totalposted / timetaken / 1024);
+               (double) totalposted / 1024 / timetaken);
             printf("                        %.2f kb/s total\n",
-               (double) (totalread + totalposted) / timetaken / 1024);
+               (double) (totalread + totalposted) / 1024 / timetaken);
         }
     }
 
@@ -1100,16 +1100,16 @@ static void output_html_results(void)
            trstring, tdstring, tdstring, (double) done / timetaken);
         printf("<tr %s><th colspan=2 %s>Transfer rate:</th>"
            "<td colspan=2 %s>%.2f kb/s received</td></tr>\n",
-           trstring, tdstring, tdstring, (double) totalread / timetaken);
+           trstring, tdstring, tdstring, (double) totalread / 1024 / timetaken);
         if (send_body) {
             printf("<tr %s><td colspan=2 %s>&nbsp;</td>"
                "<td colspan=2 %s>%.2f kb/s sent</td></tr>\n",
                trstring, tdstring, tdstring,
-               (double) totalposted / timetaken);
+               (double) totalposted / 1024 / timetaken);
             printf("<tr %s><td colspan=2 %s>&nbsp;</td>"
                "<td colspan=2 %s>%.2f kb/s total</td></tr>\n",
                trstring, tdstring, tdstring,
-               (double) (totalread + totalposted) / timetaken);
+               (double) (totalread + totalposted) / 1024 / timetaken);
         }
     }
     {
@@ -1703,7 +1703,7 @@ static void test(void)
         exit(1);
     }
 #endif              /* NOT_ASCII */
-    
+
     if (myhost) {
         /* This only needs to be done once */
         if ((rv = apr_sockaddr_info_get(&mysa, myhost, APR_UNSPEC, 0, 0, cntxt)) != APR_SUCCESS) {
@@ -1715,7 +1715,7 @@ static void test(void)
     }
 
     /* This too */
-    if ((rv = apr_sockaddr_info_get(&destsa, connecthost, 
+    if ((rv = apr_sockaddr_info_get(&destsa, connecthost,
                                     myhost ? mysa->family : APR_UNSPEC,
                                     connectport, 0, cntxt))
        != APR_SUCCESS) {
@@ -1922,7 +1922,7 @@ static void usage(const char *progname)
 #endif
 
     fprintf(stderr, "    -Z ciphersuite  Specify SSL/TLS cipher suite (See openssl ciphers)\n");
-    fprintf(stderr, "    -f protocol     Specify SSL/TLS protocol\n"); 
+    fprintf(stderr, "    -f protocol     Specify SSL/TLS protocol\n");
     fprintf(stderr, "                    (" SSL2_HELP_MSG "SSL3, TLS1" TLS1_X_HELP_MSG " or ALL)\n");
 #endif
     exit(EINVAL);
