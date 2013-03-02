@@ -47,12 +47,12 @@ BEGIN {
     }
 
     print "Installing Apache HTTP Server 2.x with" >tstfl;
-    print " DomainName =    " domainname >tstfl;
-    print " ServerName =    " servername >tstfl;
-    print " ServerAdmin =   " serveradmin >tstfl;
-    print " ServerPort =    " serverport >tstfl;
+    print " DomainName    = " domainname >tstfl;
+    print " ServerName    = " servername >tstfl;
+    print " ServerAdmin   = " serveradmin >tstfl;
+    print " ServerPort    = " serverport >tstfl;
     print " ServerSslPort = " serversslport >tstfl;
-    print " ServerRoot =    " serverroot >tstfl;
+    print " ServerRoot    = " serverroot >tstfl;
 
     filelist["httpd.conf"] = "httpd.conf.in";
     filelist["httpd-autoindex.conf"] = "httpd-autoindex.conf.in";
