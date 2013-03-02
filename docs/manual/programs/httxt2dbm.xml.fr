@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1229232 -->
+<!-- English Revision : 1450091 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -34,6 +34,10 @@ RewriteMap</title>
     <directive module="mod_rewrite">RewriteMap</directive> avec le type
     de table <code>dbm</code>.
     </p>
+
+    <p>Si le fichier de sortie existe d&eacute;j&agrave;, il ne sera pas tronqu&eacute;. Les
+    nouvelles cl&eacute;s seront ajout&eacute;es et les cl&eacute;s pr&eacute;existantes mises &agrave;
+    jour.</p>
 </summary>
 <seealso><program>httpd</program></seealso>
 <seealso><module>mod_rewrite</module></seealso>
