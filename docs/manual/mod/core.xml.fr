@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1438840:1449541 (outdated) -->
+<!-- English Revision : 1449541 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -615,8 +615,8 @@ l'authentification HTTP</description>
     <module>mod_authz_user</module>.</p>
 </usage>
 
-<seealso><a href="../howto/auth.html">Authentification, Autorisation, et
-    contr&ocirc;le d'acc&egrave;s</a></seealso>
+<seealso><a href="../howto/auth.html">Authentification et autorisation</a></seealso>
+<seealso><a href="../howto/access.html">Tutoriel du contr&ocirc;le d'acc&egrave;s</a></seealso>    
 </directivesynopsis>
 
 <directivesynopsis>
@@ -2943,8 +2943,8 @@ particulier</description>
 
 </usage>
 
-<seealso><a href="../howto/auth.html">Authentification, autorisation,
-    et contr&ocirc;le d'acc&egrave;s</a></seealso>
+<seealso><a href="../howto/auth.html">Authentification et autorisation</a></seealso>
+<seealso><a href="../howto/access.html">Tutoriel du contr&ocirc;le d'acc&egrave;s</a></seealso>
 <seealso><directive module="core">Satisfy</directive></seealso>
 <seealso><module>mod_authz_host</module></seealso>
 </directivesynopsis>

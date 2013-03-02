@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1044382:1449511 (outdated) -->
+<!-- English revision : 1449511 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -69,7 +69,8 @@
 </category>
 
 <category id="howto"><title>Recettes / Tutoriels</title>
-    <page href="howto/auth.html">Authentification, autorisation, et contr&ocirc;le d'acc&egrave;s</page>
+    <page href="howto/auth.html">Authentification et autorisation</page>
+    <page href="howto/access.html">Tutoriel du contr&ocirc;le d'acc&egrave;s</page>
     <page href="howto/cgi.html">CGI: Contenu dynamique</page>
     <page href="howto/htaccess.html">Fichiers .htaccess</page>
     <page href="howto/ssi.html">Server Side Includes (SSI)</page>
