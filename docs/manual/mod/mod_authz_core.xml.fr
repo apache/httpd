@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1434107:1449516 (outdated) -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
+<!-- English Revision : 1449516 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -54,40 +54,40 @@ d'autorisation</title>
     la m&ecirc;me mani&egrave;re qu'on le ferait pour des fournisseurs d'autorisation
     de base. En plus de la possibilit&eacute; de cr&eacute;er et d'aliaser un
     fournisseur &eacute;tendu, le m&ecirc;me fournisseur d'autorisation &eacute;tendu peut
-    &ecirc;tre utilis&eacute; pour contr&ocirc;ler l'acc&egrave;s &agrave; plusieurs localisations.
+    &ecirc;tre r&eacute;f&eacute;renc&eacute; par plusieurs localisations.
     </p>
 
     <section id="example"><title>Exemple</title>
         <p>Dans l'exemple suivant, on cr&eacute;e deux alias de fournisseur
 	d'autorisation ldap diff&eacute;rents bas&eacute;s sur le fournisseur
 	d'autorisation ldap-group. Il est ainsi possible pour un seul
-	r&eacute;pertoire de v&eacute;rifier l'appartenance &agrave; un groupe au niveau de
-        plusieurs serveurs ldap :
+	r&eacute;pertoire de v&eacute;rifier l'appartenance &agrave; un groupe dans plusieurs
+	serveurs ldap :
         </p>
 
         <highlight language="config">
 &lt;AuthzProviderAlias ldap-group ldap-group-alias1 cn=my-group,o=ctx&gt;
-    AuthLDAPBindDN cn=monutilisateur,o=ctx
-    AuthLDAPBindPassword monmotdepasse
-    AuthLDAPURL ldap://serveur.ldap/o=ctx
+    AuthLDAPBindDN cn=youruser,o=ctx
+    AuthLDAPBindPassword yourpassword
+    AuthLDAPURL ldap://ldap.host/o=ctx
 &lt;/AuthzProviderAlias&gt;
 
 &lt;AuthzProviderAlias ldap-group ldap-group-alias2 cn=my-other-group,o=dev&gt;
-    AuthLDAPBindDN cn=monautreutilisateur,o=dev
-    AuthLDAPBindPassword monsecondmotdepasse
-    AuthLDAPURL ldap://autre.serveur.ldap/o=dev?cn
+    AuthLDAPBindDN cn=yourotheruser,o=dev
+    AuthLDAPBindPassword yourotherpassword
+    AuthLDAPURL ldap://other.ldap.host/o=dev?cn
 &lt;/AuthzProviderAlias&gt;
 
 Alias /secure /webpages/secure
 &lt;Directory /webpages/secure&gt;
     Require all granted
-
+    
     AuthBasicProvider file
-
+    
     AuthType Basic
     AuthName LDAP_Protected_Place
-
-    #Implicitement, c'est l'un OU l'autre
+    
+    #implied OR operation
     Require ldap-group-alias1
     Require ldap-group-alias2
 &lt;/Directory&gt;
@@ -104,7 +104,7 @@ Alias /secure /webpages/secure
     type="section">RequireAny</directive> et <directive
     module="mod_authz_core" type="section">RequireNone</directive>
     peuvent &ecirc;tre combin&eacute;es entre elles et avec la directive <directive
-    module="mod_authz_core">Require</directive> pour &eacute;laborer une
+    module="mod_authz_core">Require</directive> pour confectionner une
     logique d'autorisation complexe.</p>
 
     <p>L'exemple ci-dessous illustre la logique d'autorisation suivante.
@@ -115,7 +115,7 @@ Alias /secure /webpages/secure
     <code>ventes</code> comme valeur de l'attribut LDAP
     <code>dept</code>. De plus, pour pouvoir acc&eacute;der &agrave; la ressource,
     l'utilisateur ne doit appartenir ni au groupe <code>temps</code>, ni
-    au groupe LDAP <code>Employes temporaires</code>.</p>
+    au groupe LDAP <code>Employ&eacute;s temporaires</code>.</p>
 
     <highlight language="config">
 &lt;Directory /www/mydocs&gt;
@@ -126,14 +126,14 @@ Alias /secure /webpages/secure
             Require group admins
             Require ldap-group cn=Administrators,o=Airius
                 &lt;RequireAny&gt;
-                Require group ventes
-                Require ldap-attribute dept="ventes"
+                Require group sales
+                Require ldap-attribute dept="sales"
                 &lt;/RequireAny&gt;
             &lt;/RequireAll&gt;
         &lt;/RequireAny&gt;
         &lt;RequireNone&gt;
             Require group temps
-            Require ldap-group cn=Employes Temporaires,o=Airius
+            Require ldap-group cn=Temporary Employees,o=Airius
         &lt;/RequireNone&gt;
     &lt;/RequireAll&gt;
 &lt;/Directory&gt;
@@ -334,7 +334,7 @@ Require group admin
     </highlight>
 
     <p>Les contr&ocirc;les d'acc&egrave;s appliqu&eacute;s de cette mani&egrave;re sont effectifs
-    pour <strong>toutes</strong> les m&eacute;thodes. <strong>C'est en effet
+    pour <strong>toutes</strong> les m&eacute;thodes. <strong>C'est d'ailleurs
     ce que l'on souhaite en g&eacute;n&eacute;ral.</strong> Si vous voulez n'appliquer
     les contr&ocirc;les d'acc&egrave;s qu'&agrave; certaines m&eacute;thodes, tout en laissant les
     autres m&eacute;thodes sans protection, placez la directive
@@ -375,7 +375,7 @@ Require group admin
     <directive>Require</directive> suivantes sont ignor&eacute;es.</p>
 
     <note type="warning"><title>Avertissement &agrave; propos de la s&eacute;curit&eacute;</title>
-    <p>Pr&ecirc;tez une attention particuli&egrave;re aux directives d'autorisation
+    <p>Prettez une attention particuli&egrave;re aux directives d'autorisation
     d&eacute;finies
     au sein des sections <directive module="core">Location</directive>
     qui se chevauchent avec des contenus servis depuis le syst&egrave;me de
@@ -383,7 +383,7 @@ Require group admin
     href="../sections.html#merging">sections</a> l'emportent sur les
     configurations d'autorisations d&eacute;finies au sein des sections
     <directive module="core">Directory</directive> et <directive
-    module="core">Files</directive>.</p>
+    module="core">Files</directive> sections.</p>
     <p>La directive <directive
     module="mod_authz_core">AuthMerging</directive> permet de contr&ocirc;ler
     la mani&egrave;re selon laquelle les configurations d'autorisations sont
@@ -392,8 +392,7 @@ Require group admin
 </usage>
 
 
-<seealso><a href="../howto/auth.html">Authentification, autorisation et
-contr&ocirc;le d'acc&egrave;s</a></seealso>
+<seealso><a href="../howto/access.html">Tutoriel du contr&ocirc;le d'acc&egrave;s</a></seealso>
 <seealso><a href="#logic">Conteneurs d'autorisation</a></seealso>
 <seealso><module>mod_authn_core</module></seealso>
 <seealso><module>mod_authz_host</module></seealso>
