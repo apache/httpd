@@ -670,7 +670,7 @@ static meta *metafix(request_rec *r, const char *buf)
             if (p != NULL) {
                 while (*p) {
                     p += 7;
-                    while (*p && apr_isspace(*p))
+                    while (apr_isspace(*p))
                         ++p;
                     if (*p != '=')
                         continue;
