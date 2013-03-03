@@ -2940,7 +2940,7 @@ static int event_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
         apr_atomic_dec32(&foo);
         i = apr_atomic_dec32(&foo);
         if (i >= 0) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(02405)
+            ap_log_error(APLOG_MARK, APLOG_CRIT, 0, NULL, APLOGNO(02405)
                          "atomics not working as expected");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
