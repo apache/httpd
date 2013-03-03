@@ -237,7 +237,7 @@ static int scan_meta_file(request_rec *r, apr_file_t *f)
         }
 
         *l++ = '\0';
-        while (*l && apr_isspace(*l))
+        while (apr_isspace(*l))
             ++l;
 
         if (!strcasecmp(w, "Content-type")) {
