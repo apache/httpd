@@ -156,10 +156,12 @@ static void uldap_connection_close(util_ldap_connection_t *ldc)
       */
      if (!ldc->keep) {
          uldap_connection_unbind(ldc);
+         ldc->r = NULL;
      }
      else {
          /* mark our connection as available for reuse */
          ldc->freed = apr_time_now();
+         ldc->r = NULL;
 #if APR_HAS_THREADS
          apr_thread_mutex_unlock(ldc->lock);
 #endif
@@ -178,6 +180,9 @@ static apr_status_t uldap_connection_unbind(void *param)
 
     if (ldc) {
         if (ldc->ldap) {
+            if (ldc->r) { 
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, ldc->r, "LDC %pp unbind", ldc); 
+            }
             ldap_unbind_s(ldc->ldap);
             ldc->ldap = NULL;
         }
@@ -317,6 +322,8 @@ static int uldap_connection_init(request_rec *r,
         }
         return(result->rc);
     }
+
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "LDC %pp init", ldc);
 
     if (ldc->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) {
         /* Now that we have an ldap struct, add it to the referral list for rebinds. */
@@ -513,6 +520,9 @@ static int uldap_simple_bind(util_ldap_connection_t *ldc, char *binddn,
         ldc->reason = "LDAP: ldap_simple_bind() parse result failed";
         return uldap_ld_errno(ldc);
     }
+    else { 
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, ldc->r, "LDC %pp bind", ldc);
+    }
     return rc;
 }
 
@@ -537,7 +547,7 @@ static int uldap_connection_open(request_rec *r,
 
     /* If the connection is already bound, return
     */
-    if (ldc->bound)
+    if (ldc->bound && !ldc->must_rebind)
     {
         ldc->reason = "LDAP: connection open successful (already bound)";
         return LDAP_SUCCESS;
@@ -618,6 +628,7 @@ static int uldap_connection_open(request_rec *r,
     }
     else {
         ldc->bound = 1;
+        ldc->must_rebind = 0;
         ldc->reason = "LDAP: connection open successful";
     }
 
@@ -719,9 +730,13 @@ static util_ldap_connection_t *
                     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
                                   "Removing LDAP connection last used %" APR_TIME_T_FMT " seconds ago",
                                   (now - l->freed) / APR_USEC_PER_SEC);
+                    l->r = r;
                     uldap_connection_unbind(l);
                     /* Go ahead (by falling through) and use it, so we don't create more just to unbind some other old ones */
                 }
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, 
+                              "Reuse %s LDC %pp", 
+                              l->bound ? "bound" : "unbound", l);
             }
             break;
         }
@@ -748,12 +763,25 @@ static util_ldap_connection_t *
                 (l->deref == deref) && (l->secure == secureflag) &&
                 !compare_client_certs(dc->client_certs, l->client_certs))
             {
-                /* the bind credentials have changed */
-                /* no check for connection_pool_ttl, since we are unbinding any way */
-                uldap_connection_unbind(l);
+                if (st->connection_pool_ttl > 0) {
+                    if (l->bound && (now - l->freed) > st->connection_pool_ttl) {
+                        ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
+                                "Removing LDAP connection last used %" APR_TIME_T_FMT " seconds ago",
+                                (now - l->freed) / APR_USEC_PER_SEC);
+                        l->r = r;
+                        uldap_connection_unbind(l);
+                        /* Go ahead (by falling through) and use it, so we don't create more just to unbind some other old ones */
+                    }
+                    ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, 
+                                  "Reuse %s LDC %pp (will rebind)", 
+                                   l->bound ? "bound" : "unbound", l);
+                }
 
+                /* the bind credentials have changed */
+                l->must_rebind = 1;
                 util_ldap_strdup((char**)&(l->binddn), binddn);
                 util_ldap_strdup((char**)&(l->bindpw), bindpw);
+
                 break;
             }
 #if APR_HAS_THREADS
@@ -843,6 +871,7 @@ static util_ldap_connection_t *
 #if APR_HAS_THREADS
     apr_thread_mutex_unlock(st->mutex);
 #endif
+    l->r = r;
     return l;
 }
 
@@ -1768,10 +1797,10 @@ start_over:
         /*
          * We have just bound the connection to a different user and password
          * combination, which might be reused unintentionally next time this
-         * connection is used from the connection pool. To ensure no confusion,
-         * we mark the connection as unbound.
+         * connection is used from the connection pool.
          */
-        ldc->bound = 0;
+        ldc->must_rebind = 0;
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "LDC %pp used for authn, must be rebound", ldc);
     }
 
     /*
