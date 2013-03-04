@@ -263,7 +263,7 @@ int cache_select(cache_request_rec *cache, request_rec *r)
                 /* isolate header name */
                 while (*vary && !apr_isspace(*vary) && (*vary != ','))
                     ++vary;
-                while (*vary && (apr_isspace(*vary) || (*vary == ','))) {
+                while (apr_isspace(*vary) || (*vary == ',')) {
                     *vary = '\0';
                     ++vary;
                 }
@@ -283,8 +283,9 @@ int cache_select(cache_request_rec *cache, request_rec *r)
                 else {
                     /* headers do not match, so Vary failed */
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
-                            r, APLOGNO(00694) "cache_select_url(): Vary header mismatch.");
+                            r, APLOGNO(00694) "cache_select(): Vary header mismatch.");
                     mismatch = 1;
+                    break;
                 }
             }
 
