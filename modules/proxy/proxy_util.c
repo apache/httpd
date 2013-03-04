@@ -34,7 +34,9 @@
 #if APR_HAVE_SYS_UN_H
 #include <sys/un.h>
 #endif
+#if (APR_MAJOR_VERSION < 2)
 #include "apr_support.h"        /* for apr_wait_for_io_or_timeout() */
+#endif
 
 APLOG_USE_MODULE(proxy);
 
