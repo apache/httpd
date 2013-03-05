@@ -123,7 +123,7 @@ static int proxy_websocket_transfer(request_rec *r, conn_rec *c_i, conn_rec *c_o
                               "error on %s - ap_pass_brigade",
                               name);
             }
-        } else if (!APR_STATUS_IS_EAGAIN(rv)) {
+        } else if (!APR_STATUS_IS_EAGAIN(rv) && !APR_STATUS_IS_EOF(rv)) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO()
                           "error on %s - ap_get_brigade",
                           name);
@@ -168,6 +168,11 @@ static int ap_proxy_websocket_request(apr_pool_t *p, request_rec *r,
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
+    apr_socket_opt_set(sock, APR_SO_NONBLOCK, 1);
+    apr_socket_opt_set(sock, APR_SO_KEEPALIVE, 1);
+    apr_socket_opt_set(client_socket, APR_SO_NONBLOCK, 1);
+    apr_socket_opt_set(client_socket, APR_SO_KEEPALIVE, 1);
+
     pollfd.p = p;
     pollfd.desc_type = APR_POLL_SOCKET;
     pollfd.reqevents = APR_POLLIN;
@@ -193,10 +198,8 @@ static int ap_proxy_websocket_request(apr_pool_t *p, request_rec *r,
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO() "error apr_poll()");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
-#ifdef DEBUGGING
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
                       "woke from poll(), i=%d", pollcnt);
-#endif
 
         for (pi = 0; pi < pollcnt; pi++) {
             const apr_pollfd_t *cur = &signalled[pi];
@@ -204,10 +207,8 @@ static int ap_proxy_websocket_request(apr_pool_t *p, request_rec *r,
             if (cur->desc.s == sock) {
                 pollevent = cur->rtnevents;
                 if (pollevent & APR_POLLIN) {
-#ifdef DEBUGGING
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
                                   "sock was readable");
-#endif
                     rv = proxy_websocket_transfer(r, backconn, c, bb, "sock");
                     }
                 else if ((pollevent & APR_POLLERR)
@@ -222,10 +223,8 @@ static int ap_proxy_websocket_request(apr_pool_t *p, request_rec *r,
             else if (cur->desc.s == client_socket) {
                 pollevent = cur->rtnevents;
                 if (pollevent & APR_POLLIN) {
-#ifdef DEBUGGING
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
                                   "client was readable");
-#endif
                     rv = proxy_websocket_transfer(r, c, backconn, bb, "client");
                 }
             }
@@ -350,4 +349,3 @@ AP_DECLARE_MODULE(proxy_websocket) = {
     NULL,                       /* command apr_table_t */
     ap_proxy_http_register_hook /* register hooks */
 };
-
