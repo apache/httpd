@@ -424,7 +424,7 @@ lower level modules</td></tr>
     <p>The <code class="directive"><a href="#authformdisablenostore">AuthFormDisableNoStore</a></code> flag
     disables the sending of a <code>Cache-Control no-store</code> header with the
     error 401 page returned when the user is not yet logged in. The purpose of the header
-    is to make it difficult for an ecmascript application to attempt to resubmit the
+    is to make it difficult for an <code>ecmascript</code> application to attempt to resubmit the
     login form, and reveal the username and password to the backend application. Disable
     at your own risk.</p>
 
@@ -680,7 +680,7 @@ lower level modules</td></tr>
 <div class="directive-section"><h2><a name="AuthFormSize" id="AuthFormSize">AuthFormSize</a> <a name="authformsize" id="authformsize">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The largest size of the form in bytes that will be parsed for the login details</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthFormBody <var>size</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthFormSize <var>size</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>8192</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
