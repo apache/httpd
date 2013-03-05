@@ -487,6 +487,11 @@ LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
     connection pool.  The default value of -1, and any other negative value,
      allows connections of any age to be reused.</p>
 
+    <p>The timemout is based on when the LDAP connection is returned to the 
+    pool, not based on the last time I/O has been performed over the backend
+    connection.  If the information is cached, the apparent idle time can exceed
+    the <code class="directive">LDAPConnectionPoolTTL</code>. </p> 
+
     <div class="note"><p>This timeout defaults to units of seconds, but accepts
     suffixes for milliseconds (ms), minutes (min), and hours (h).
     </p></div>
