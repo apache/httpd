@@ -35,12 +35,12 @@ static int proxy_websocket_canon(request_rec *r, char *url)
     /* ap_port_of_scheme() */
     if (strncasecmp(url, "ws:", 3) == 0) {
         url += 3;
-        scheme = "ws";
+        scheme = "ws:";
         def_port = apr_uri_port_of_scheme("http");
     }
     else if (strncasecmp(url, "wss:", 4) == 0) {
         url += 4;
-        scheme = "wss";
+        scheme = "wss:";
         def_port = apr_uri_port_of_scheme("https");
     }
     else {
