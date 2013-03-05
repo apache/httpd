@@ -611,8 +611,12 @@ end
           <td>The IP of the user agent making the request</td>
         </tr>
         </table>
+           </dd>
+    </dl>
+</section>
+<section id="functions"><title>Built in functions</title>
 
-        <p>The request_rec has (at least) the following methods:</p>
+        <p>The request_rec object has (at least) the following methods:</p>
 
         <highlight language="lua">
         r:flush() -- flushes the output buffer
@@ -792,15 +796,15 @@ r:custom_response(status_code, string) -- Construct and set a custom response fo
         </highlight>
 
         <highlight language="lua">
-        r:sleep(number_of_seconds) -- Puts the script to sleep for a given number of seconds.
+r:sleep(number_of_seconds) -- Puts the script to sleep for a given number of seconds.
+                           -- This can be a floating point number like 1.25 for extra accuracy.
         </highlight>
 
         <highlight language="lua">
 r:dbacquire(dbType[, dbParams]) -- Acquires a connection to a database and returns a database class.
                                 -- See '<a href="#databases">Database connectivity</a>' for details.
         </highlight>
-        </dd>
-    </dl>
+
 
 </section>
 
