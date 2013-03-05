@@ -263,6 +263,7 @@ static int proxy_websocket_handler(request_rec *r, proxy_worker *worker,
     proxy_conn_rec *backend = NULL;
     char *scheme;
     int retry;
+    conn_rec *c = r->connection;
     proxy_dir_conf *dconf = ap_get_module_config(r->per_dir_config,
                                                  &proxy_module);
     apr_pool_t *p = r->pool;
@@ -316,6 +317,12 @@ static int proxy_websocket_handler(request_rec *r, proxy_worker *worker,
             status = HTTP_SERVICE_UNAVAILABLE;
             break;
         }
+        /* Step Three: Create conn_rec */
+        if (!backend->connection) {
+            if ((status = ap_proxy_connection_create(scheme, backend,
+                                                     c, r->server)) != OK)
+                break;
+         }
 
         /* Step Three: Process the Request */
         status = ap_proxy_websocket_request(p, r, backend, origin, dconf, uri, locurl,
