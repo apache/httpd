@@ -95,8 +95,8 @@ APR_HOOK_STRUCT(
         <pre class="prettyprint lang-c">
 void ap_run_do_something(request_rec *r, int n)
 {
-...
-do_something(r, n);
+    ...
+    do_something(r, n);
 }
         </pre>
 

@@ -191,7 +191,7 @@ lower level modules</td></tr>
 <tr><td><a href="mod_auth_form.html#authformprovider">AuthFormProvider <var>provider-name</var>
 [<var>provider-name</var>] ...</a></td><td> file </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets the authentication provider(s) for this location</td></tr>
 <tr class="odd"><td><a href="mod_auth_form.html#authformsitepassphrase">AuthFormSitePassphrase <var>secret</var></a></td><td></td><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Bypass authentication checks for high traffic sites</td></tr>
-<tr><td><a href="mod_auth_form.html#authformsize">AuthFormBody <var>size</var></a></td><td></td><td>d</td><td>B</td></tr><tr><td class="descr" colspan="4">The largest size of the form in bytes that will be parsed for the login details</td></tr>
+<tr><td><a href="mod_auth_form.html#authformsize">AuthFormSize <var>size</var></a></td><td></td><td>d</td><td>B</td></tr><tr><td class="descr" colspan="4">The largest size of the form in bytes that will be parsed for the login details</td></tr>
 <tr class="odd"><td><a href="mod_auth_form.html#authformusername">AuthFormUsername <var>fieldname</var></a></td><td></td><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">The name of a form field carrying the login username</td></tr>
 <tr><td><a href="mod_authz_groupfile.html#authgroupfile">AuthGroupFile <var>file-path</var></a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets the name of a text file containing the list
 of user groups for authorization</td></tr>
