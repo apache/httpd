@@ -41,7 +41,7 @@ static int get_b_rand(void)
     return ((randseq & (1 << (ph - 1))) >> (ph - 1));
 }
 
-void *ap_skiplist_alloc(ap_skiplist *sl, size_t size)
+AP_DECLARE(void *) ap_skiplist_alloc(ap_skiplist *sl, size_t size)
 {
     if (sl->pool) {
         return apr_pcalloc(sl->pool, size);
@@ -51,7 +51,7 @@ void *ap_skiplist_alloc(ap_skiplist *sl, size_t size)
     }
 }
 
-void ap_skiplist_free(ap_skiplist *sl, void *mem)
+AP_DECLARE(void) ap_skiplist_free(ap_skiplist *sl, void *mem)
 {
     if (!sl->pool) {
         free(mem);
@@ -98,7 +98,7 @@ static int indexing_compk(void *ac, void *b)
     return ((ac < bc) ? -1 : ((ac > bc) ? 1 : 0));
 }
 
-apr_status_t ap_skiplist_init(ap_skiplist **s, apr_pool_t *p)
+AP_DECLARE(apr_status_t) ap_skiplist_init(ap_skiplist **s, apr_pool_t *p)
 {
     ap_skiplist *sl;
     skiplisti_init(s, p);
@@ -108,7 +108,7 @@ apr_status_t ap_skiplist_init(ap_skiplist **s, apr_pool_t *p)
     return APR_SUCCESS;
 }
 
-void ap_skiplist_set_compare(ap_skiplist *sl,
+AP_DECLARE(void) ap_skiplist_set_compare(ap_skiplist *sl,
                           ap_skiplist_compare comp,
                           ap_skiplist_compare compk)
 {
@@ -121,7 +121,7 @@ void ap_skiplist_set_compare(ap_skiplist *sl,
     }
 }
 
-void ap_skiplist_add_index(ap_skiplist *sl,
+AP_DECLARE(void) ap_skiplist_add_index(ap_skiplist *sl,
                         ap_skiplist_compare comp,
                         ap_skiplist_compare compk)
 {
@@ -159,7 +159,7 @@ void ap_skiplist_add_index(ap_skiplist *sl,
     }
 }
 
-ap_skiplistnode *ap_skiplist_getlist(ap_skiplist *sl)
+AP_DECLARE(ap_skiplistnode *) ap_skiplist_getlist(ap_skiplist *sl)
 {
     if (!sl->bottom) {
         return NULL;
@@ -167,7 +167,7 @@ ap_skiplistnode *ap_skiplist_getlist(ap_skiplist *sl)
     return sl->bottom->next;
 }
 
-void *ap_skiplist_find(ap_skiplist *sl, void *data, ap_skiplistnode **iter)
+AP_DECLARE(void *) ap_skiplist_find(ap_skiplist *sl, void *data, ap_skiplistnode **iter)
 {
     void *ret;
     ap_skiplistnode *aiter;
@@ -214,7 +214,7 @@ static int skiplisti_find_compare(ap_skiplist *sl, void *data,
     return count;
 }
 
-void *ap_skiplist_find_compare(ap_skiplist *sli, void *data,
+AP_DECLARE(void *) ap_skiplist_find_compare(ap_skiplist *sli, void *data,
                                ap_skiplistnode **iter,
                                ap_skiplist_compare comp)
 {
@@ -233,7 +233,7 @@ void *ap_skiplist_find_compare(ap_skiplist *sli, void *data,
 }
 
 
-void *ap_skiplist_next(ap_skiplist *sl, ap_skiplistnode **iter)
+AP_DECLARE(void *) ap_skiplist_next(ap_skiplist *sl, ap_skiplistnode **iter)
 {
     if (!*iter) {
         return NULL;
@@ -242,7 +242,7 @@ void *ap_skiplist_next(ap_skiplist *sl, ap_skiplistnode **iter)
     return (*iter) ? ((*iter)->data) : NULL;
 }
 
-void *ap_skiplist_previous(ap_skiplist *sl, ap_skiplistnode **iter)
+AP_DECLARE(void *) ap_skiplist_previous(ap_skiplist *sl, ap_skiplistnode **iter)
 {
     if (!*iter) {
         return NULL;
@@ -251,7 +251,7 @@ void *ap_skiplist_previous(ap_skiplist *sl, ap_skiplistnode **iter)
     return (*iter) ? ((*iter)->data) : NULL;
 }
 
-ap_skiplistnode *ap_skiplist_insert(ap_skiplist *sl, void *data)
+AP_DECLARE(ap_skiplistnode *) ap_skiplist_insert(ap_skiplist *sl, void *data)
 {
     if (!sl->compare) {
         return 0;
@@ -259,7 +259,7 @@ ap_skiplistnode *ap_skiplist_insert(ap_skiplist *sl, void *data)
     return ap_skiplist_insert_compare(sl, data, sl->compare);
 }
 
-ap_skiplistnode *ap_skiplist_insert_compare(ap_skiplist *sl, void *data,
+AP_DECLARE(ap_skiplistnode *) ap_skiplist_insert_compare(ap_skiplist *sl, void *data,
                                       ap_skiplist_compare comp)
 {
     ap_skiplistnode *m, *p, *tmp, *ret = NULL, **stack;
@@ -385,7 +385,7 @@ ap_skiplistnode *ap_skiplist_insert_compare(ap_skiplist *sl, void *data,
     return ret;
 }
 
-int ap_skiplist_remove(ap_skiplist *sl, void *data, ap_skiplist_freefunc myfree)
+AP_DECLARE(int) ap_skiplist_remove(ap_skiplist *sl, void *data, ap_skiplist_freefunc myfree)
 {
     if (!sl->compare) {
         return 0;
@@ -455,7 +455,7 @@ static int skiplisti_remove(ap_skiplist *sl, ap_skiplistnode *m, ap_skiplist_fre
     return sl->height;  /* return 1; ?? */
 }
 
-int ap_skiplist_remove_compare(ap_skiplist *sli,
+AP_DECLARE(int) ap_skiplist_remove_compare(ap_skiplist *sli,
                             void *data,
                             ap_skiplist_freefunc myfree, ap_skiplist_compare comp)
 {
@@ -479,7 +479,7 @@ int ap_skiplist_remove_compare(ap_skiplist *sli,
     return skiplisti_remove(sl, m, myfree);
 }
 
-void ap_skiplist_remove_all(ap_skiplist *sl, ap_skiplist_freefunc myfree)
+AP_DECLARE(void) ap_skiplist_remove_all(ap_skiplist *sl, ap_skiplist_freefunc myfree)
 {
     /*
      * This must remove even the place holder nodes (bottom though top)
@@ -504,7 +504,7 @@ void ap_skiplist_remove_all(ap_skiplist *sl, ap_skiplist_freefunc myfree)
     sl->size = 0;
 }
 
-void *ap_skiplist_pop(ap_skiplist *a, ap_skiplist_freefunc myfree)
+AP_DECLARE(void *) ap_skiplist_pop(ap_skiplist *a, ap_skiplist_freefunc myfree)
 {
     ap_skiplistnode *sln;
     void *data = NULL;
@@ -516,7 +516,7 @@ void *ap_skiplist_pop(ap_skiplist *a, ap_skiplist_freefunc myfree)
     return data;
 }
 
-void *ap_skiplist_peek(ap_skiplist *a)
+AP_DECLARE(void *) ap_skiplist_peek(ap_skiplist *a)
 {
     ap_skiplistnode *sln;
     sln = ap_skiplist_getlist(a);
@@ -532,14 +532,14 @@ static void skiplisti_destroy(void *vsl)
     ap_skiplist_free((ap_skiplist *) vsl, vsl);
 }
 
-void ap_skiplist_destroy(ap_skiplist *sl, ap_skiplist_freefunc myfree)
+AP_DECLARE(void) ap_skiplist_destroy(ap_skiplist *sl, ap_skiplist_freefunc myfree)
 {
     while (ap_skiplist_pop(sl->index, skiplisti_destroy) != NULL)
         ;
     ap_skiplist_remove_all(sl, myfree);
 }
 
-ap_skiplist *ap_skiplist_merge(ap_skiplist *sl1, ap_skiplist *sl2)
+AP_DECLARE(ap_skiplist *) ap_skiplist_merge(ap_skiplist *sl1, ap_skiplist *sl2)
 {
     /* Check integrity! */
     ap_skiplist temp;
