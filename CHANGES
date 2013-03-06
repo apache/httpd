@@ -1,5 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
+ 
+  *) mod_cache_disk: CacheMinFileSize and CacheMaxFileSize were always
+     using compiled in defaults of 1000000/1 respectively. [Eric Covener]
+
+  *) mod_ldap: LDAP connections used for authentication were not respecting
+     LDAPConnectionPoolTimeout.  PR 54587
 
   *) mod_ssl: Quiet FIPS mode weak keys disabled and FIPS not selected emits
      in the error log to debug level.  [William Rowe]
