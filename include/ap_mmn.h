@@ -416,6 +416,8 @@
  * 20121222.3 (2.5.0-dev)  Add ppinherit to proxy_server_conf
  * 20121222.4 (2.5.0-dev)  Add uds_path to proxy_conn_rec
  * 20121222.5 (2.5.0-dev)  Add "r" and "must_rebind" to util_ldap_connection_t
+ * 20121222.6 (2.5.0-dev)  Add ap_proxy_create_hdrbrgd() and
+ *                         ap_proxy_pass_brigade()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
