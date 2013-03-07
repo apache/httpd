@@ -2465,7 +2465,7 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                                    conn->scpool);
             if (rv != APR_SUCCESS) {
                 loglevel = APLOG_ERR;
-                ap_log_error(APLOG_MARK, loglevel, rv, s, APLOGNO()
+                ap_log_error(APLOG_MARK, loglevel, rv, s, APLOGNO(02453)
                              "%s: error creating Unix domain socket for "
                              "target %s",
                              proxy_function,
@@ -2480,7 +2480,7 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
             rv = socket_connect_un(newsock, &sa);
             if (rv != APR_SUCCESS) {
                 apr_socket_close(newsock);
-                ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO()
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(02454)
                              "%s: attempt to connect to Unix domain socket "
                              "%s (%s) failed",
                              proxy_function,
