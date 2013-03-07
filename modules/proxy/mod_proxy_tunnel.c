@@ -56,7 +56,7 @@ static int proxy_tunnel_canon(request_rec *r, char *url)
      */
     err = ap_proxy_canon_netloc(r->pool, &url, NULL, NULL, &host, &port);
     if (err) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO() "error parsing URL %s: %s",
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02439) "error parsing URL %s: %s",
                       url, err);
         return HTTP_BAD_REQUEST;
     }
@@ -110,7 +110,7 @@ static int proxy_tunnel_transfer(request_rec *r, conn_rec *c_i, conn_rec *c_o,
 #ifdef DEBUGGING
             len = -1;
             apr_brigade_length(bb, 0, &len);
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02440)
                           "read %" APR_OFF_T_FMT
                           " bytes from %s", len, name);
 #endif
@@ -119,12 +119,12 @@ static int proxy_tunnel_transfer(request_rec *r, conn_rec *c_i, conn_rec *c_o,
                 ap_fflush(c_o->output_filters, bb);
             }
             else {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO()
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(02441)
                               "error on %s - ap_pass_brigade",
                               name);
             }
         } else if (!APR_STATUS_IS_EAGAIN(rv) && !APR_STATUS_IS_EOF(rv)) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO(02442)
                           "error on %s - ap_get_brigade",
                           name);
         }
@@ -188,7 +188,7 @@ static int ap_proxy_tunnel_request(apr_pool_t *p, request_rec *r,
     ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, "setting up poll()");
 
     if ((rv = apr_pollset_create(&pollset, 2, p, 0)) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO()
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(02443)
                       "error apr_pollset_create()");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -222,10 +222,10 @@ static int ap_proxy_tunnel_request(apr_pool_t *p, request_rec *r,
             if (APR_STATUS_IS_EINTR(rv)) {
                 continue;
             }
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO() "error apr_poll()");
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(02444) "error apr_poll()");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02445)
                       "woke from poll(), i=%d", pollcnt);
 
         for (pi = 0; pi < pollcnt; pi++) {
@@ -234,14 +234,14 @@ static int ap_proxy_tunnel_request(apr_pool_t *p, request_rec *r,
             if (cur->desc.s == sock) {
                 pollevent = cur->rtnevents;
                 if (pollevent & APR_POLLIN) {
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02446)
                                   "sock was readable");
                     rv = proxy_tunnel_transfer(r, backconn, c, bb, "sock");
                     }
                 else if ((pollevent & APR_POLLERR)
                          || (pollevent & APR_POLLHUP)) {
                          rv = APR_EPIPE;
-                         ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO()
+                         ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO(02447)
                                        "err/hup on backconn");
                 }
                 if (rv != APR_SUCCESS)
@@ -250,14 +250,14 @@ static int ap_proxy_tunnel_request(apr_pool_t *p, request_rec *r,
             else if (cur->desc.s == client_socket) {
                 pollevent = cur->rtnevents;
                 if (pollevent & APR_POLLIN) {
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02448)
                                   "client was readable");
                     rv = proxy_tunnel_transfer(r, c, backconn, bb, "client");
                 }
             }
             else {
                 rv = APR_EBADF;
-                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO()
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02449)
                               "unknown socket in pollset");
             }
 
@@ -299,12 +299,12 @@ static int proxy_tunnel_handler(request_rec *r, proxy_worker *worker,
         scheme = "TUN";
     }
     else {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO() "declining URL %s", url);
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02450) "declining URL %s", url);
         return DECLINED;
     }
 
     uri = apr_palloc(p, sizeof(*uri));
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO() "serving URL %s", url);
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02451) "serving URL %s", url);
 
     /* create space for state information */
     status = ap_proxy_acquire_connection(scheme, &backend, worker,
@@ -334,7 +334,7 @@ static int proxy_tunnel_handler(request_rec *r, proxy_worker *worker,
 
         /* Step Two: Make the Connection */
         if (ap_proxy_connect_backend(scheme, backend, worker, r->server)) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02452)
                           "failed to make connection to backend: %s",
                           backend->hostname);
             status = HTTP_SERVICE_UNAVAILABLE;
