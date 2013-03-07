@@ -312,7 +312,7 @@ les informations &agrave; propos des clients</description>
     &agrave; <code>0</code> et consulter le message d'erreur que renverra le
     serveur lorsqu'on essaiera de le d&eacute;marrer.</p>
 
-    <p>L'argument <var>size</var> s'exprime par d&eacute;faut en octets, mais
+    <p>L'argument <var>taille</var> s'exprime par d&eacute;faut en octets, mais
     vous pouvez suffixer le nombre par un <code>K</code> ou un
     <code>M</code> pour sp&eacute;cifier respectivement des KiloOctets ou des
     M&eacute;gaOctets. Par exemple, les directives qui suivent sont toutes
