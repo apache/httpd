@@ -136,73 +136,13 @@ static int proxy_websocket_transfer(request_rec *r, conn_rec *c_i, conn_rec *c_o
     return rv;
 }
 
-static int sendall(proxy_conn_rec *conn, const char *buf, apr_size_t length,
-                   request_rec *r)
-{
-    apr_status_t rv;
-    apr_size_t written;
-
-    while (length > 0) {
-        written = length;
-        if ((rv = apr_socket_send(conn->sock, buf, &written)) != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO()
-                          "sending data to %s:%u failed",
-                          conn->hostname, conn->port);
-            return HTTP_SERVICE_UNAVAILABLE;
-        }
-
-        /* count for stats */
-        conn->worker->s->transferred += written;
-        buf += written;
-        length -= written;
-    }
-
-    return OK;
-}
-
-/* Clear all connection-based headers from the incoming headers table */
-typedef struct header_dptr {
-    apr_pool_t *pool;
-    apr_table_t *table;
-    apr_time_t time;
-} header_dptr;
-
-static int clear_conn_headers(void *data, const char *key, const char *val)
-{
-    apr_table_t *headers = ((header_dptr*)data)->table;
-    apr_pool_t *pool = ((header_dptr*)data)->pool;
-    const char *name;
-    char *next = apr_pstrdup(pool, val);
-    while (*next) {
-        name = next;
-        while (*next && !apr_isspace(*next) && (*next != ',')) {
-            ++next;
-        }
-        while (*next && (apr_isspace(*next) || (*next == ','))) {
-            *next++ = '\0';
-        }
-        apr_table_unset(headers, name);
-    }
-    return 1;
-}
-
-static void ap_proxy_clear_connection(apr_pool_t *p, apr_table_t *headers)
-{
-    header_dptr x;
-    x.pool = p;
-    x.table = headers;
-    apr_table_unset(headers, "Proxy-Connection");
-    apr_table_do(clear_conn_headers, &x, headers, "Connection", NULL);
-    apr_table_unset(headers, "Connection");
-}
-
 /*
  * process the request and write the response.
  */
 static int ap_proxy_websocket_request(apr_pool_t *p, request_rec *r,
                                 proxy_conn_rec *conn,
-                                conn_rec *origin,
-                                proxy_dir_conf *conf,
+                                proxy_worker *worker,
+                                proxy_server_conf *conf,
                                 apr_uri_t *uri,
                                 char *url, char *server_portstr)
 {
@@ -216,225 +156,33 @@ static int ap_proxy_websocket_request(apr_pool_t *p, request_rec *r,
     apr_socket_t *sock = conn->sock;
     conn_rec *backconn = conn->connection;
     int client_error = 0;
-    int force10;
-    int counter;
     char *buf;
-    void *sconf = r->server->module_config;
-    proxy_server_conf *psc;
-    const apr_array_header_t *headers_in_array;
-    const apr_table_entry_t *headers_in;
-    apr_table_t *headers_in_copy;
-    const char *old_cl_val = NULL;
-    const char *old_te_val = NULL;
     apr_size_t blen;
+    apr_bucket_brigade *header_brigade;
+    apr_bucket *e;
+    char *old_cl_val = NULL;
+    char *old_te_val = NULL;
     apr_bucket_brigade *bb = apr_brigade_create(p, c->bucket_alloc);
     apr_socket_t *client_socket = ap_get_conn_socket(c);
 
-    psc = (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
+    header_brigade = apr_brigade_create(p, backconn->bucket_alloc);
+
     ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, "sending request");
 
-    /*
-     * pulled from mod_proxy_http... (maybe pull out to ap_get_header_brigade()?)
-     */
-    if (apr_table_get(r->subprocess_env, "force-proxy-request-1.0")) {
-        /*
-         * According to RFC 2616 8.2.3 we are not allowed to forward an
-         * Expect: 100-continue to an HTTP/1.0 server. Instead we MUST return
-         * a HTTP_EXPECTATION_FAILED
-         */
-        if (r->expecting_100) {
-            return HTTP_EXPECTATION_FAILED;
-        }
-        buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.0" CRLF, NULL);
-        force10 = 1;
-        conn->close = 1;
-    } else {
-        buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.1" CRLF, NULL);
-        force10 = 0;
-    }
-    if (apr_table_get(r->subprocess_env, "proxy-nokeepalive")) {
-        origin->keepalive = AP_CONN_CLOSE;
-        conn->close = 1;
-    }
-    blen = strlen(buf);
-    ap_xlate_proto_to_ascii(buf, blen);
-    if ((rv = sendall(conn, buf, blen, r)) != OK)
+    rv = ap_proxy_create_hdrbrgd(p, header_brigade, r, conn,
+                                 worker, conf, uri, url, server_portstr,
+                                 &old_cl_val, &old_te_val);
+    if (rv != OK) {
         return rv;
-    if (conf->preserve_host == 0) {
-        if (ap_strchr_c(uri->hostname, ':')) { /* if literal IPv6 address */
-            if (uri->port_str && uri->port != DEFAULT_HTTP_PORT) {
-                buf = apr_pstrcat(p, "Host: [", uri->hostname, "]:",
-                                  uri->port_str, CRLF, NULL);
-            } else {
-                buf = apr_pstrcat(p, "Host: [", uri->hostname, "]", CRLF, NULL);
-            }
-        } else {
-            if (uri->port_str && uri->port != DEFAULT_HTTP_PORT) {
-                buf = apr_pstrcat(p, "Host: ", uri->hostname, ":",
-                                  uri->port_str, CRLF, NULL);
-            } else {
-                buf = apr_pstrcat(p, "Host: ", uri->hostname, CRLF, NULL);
-            }
-        }
     }
-    else {
-        /* don't want to use r->hostname, as the incoming header might have a
-         * port attached
-         */
-        const char* hostname = apr_table_get(r->headers_in,"Host");
-        if (!hostname) {
-            hostname =  r->server->server_hostname;
-            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO()
-                          "no HTTP 0.9 request (with no host line) "
-                          "on incoming request and preserve host set "
-                          "forcing hostname to be %s for uri %s",
-                          hostname, r->uri);
-        }
-        buf = apr_pstrcat(p, "Host: ", hostname, CRLF, NULL);
-    }
-    blen = strlen(buf);
-    ap_xlate_proto_to_ascii(buf, blen);
-    if ((rv = sendall(conn, buf, blen, r)) != OK)
-        return rv;
-
-    /* handle Via */
-    if (psc->viaopt == via_block) {
-        /* Block all outgoing Via: headers */
-        apr_table_unset(r->headers_in, "Via");
-    } else if (psc->viaopt != via_off) {
-        const char *server_name = ap_get_server_name(r);
-        /* If USE_CANONICAL_NAME_OFF was configured for the proxy virtual host,
-         * then the server name returned by ap_get_server_name() is the
-         * origin server name (which does make too much sense with Via: headers)
-         * so we use the proxy vhost's name instead.
-         */
-        if (server_name == r->hostname)
-            server_name = r->server->server_hostname;
-        /* Create a "Via:" request header entry and merge it */
-        /* Generate outgoing Via: header with/without server comment: */
-        apr_table_mergen(r->headers_in, "Via",
-                         (psc->viaopt == via_full)
-                         ? apr_psprintf(p, "%d.%d %s%s (%s)",
-                                        HTTP_VERSION_MAJOR(r->proto_num),
-                                        HTTP_VERSION_MINOR(r->proto_num),
-                                        server_name, server_portstr,
-                                        AP_SERVER_BASEVERSION)
-                         : apr_psprintf(p, "%d.%d %s%s",
-                                        HTTP_VERSION_MAJOR(r->proto_num),
-                                        HTTP_VERSION_MINOR(r->proto_num),
-                                        server_name, server_portstr)
-                         );
-    }
-
-    if (conf->add_forwarded_headers) {
-        if (PROXYREQ_REVERSE == r->proxyreq) {
-            const char *buf;
-
-            /* Add X-Forwarded-For: so that the upstream has a chance to
-             * determine, where the original request came from.
-             */
-            apr_table_mergen(r->headers_in, "X-Forwarded-For",
-                             r->useragent_ip);
-
-            /* Add X-Forwarded-Host: so that upstream knows what the
-             * original request hostname was.
-             */
-            if ((buf = apr_table_get(r->headers_in, "Host"))) {
-                apr_table_mergen(r->headers_in, "X-Forwarded-Host", buf);
-            }
-
-            /* Add X-Forwarded-Server: so that upstream knows what the
-             * name of this proxy server is (if there are more than one)
-             * XXX: This duplicates Via: - do we strictly need it?
-             */
-            apr_table_mergen(r->headers_in, "X-Forwarded-Server",
-                             r->server->server_hostname);
-        }
-    }
-
-    proxy_run_fixups(r);
-    /*
-     * Make a copy of the headers_in table before clearing the connection
-     * headers as we need the connection headers later in the http output
-     * filter to prepare the correct response headers.
-     *
-     * Note: We need to take r->pool for apr_table_copy as the key / value
-     * pairs in r->headers_in have been created out of r->pool and
-     * p might be (and actually is) a longer living pool.
-     * This would trigger the bad pool ancestry abort in apr_table_copy if
-     * apr is compiled with APR_POOL_DEBUG.
-     */
-    headers_in_copy = apr_table_copy(r->pool, r->headers_in);
-    ap_proxy_clear_connection(p, headers_in_copy);
-    /* send request headers */
-    headers_in_array = apr_table_elts(headers_in_copy);
-    headers_in = (const apr_table_entry_t *) headers_in_array->elts;
-    for (counter = 0; counter < headers_in_array->nelts; counter++) {
-        if (headers_in[counter].key == NULL
-            || headers_in[counter].val == NULL
-
-            /* Already sent */
-            || !strcasecmp(headers_in[counter].key, "Host")
-
-            /* Clear out hop-by-hop request headers not to send
-             * RFC2616 13.5.1 says we should strip these headers
-             */
-            || !strcasecmp(headers_in[counter].key, "Keep-Alive")
-            || !strcasecmp(headers_in[counter].key, "TE")
-            || !strcasecmp(headers_in[counter].key, "Trailer")
-            || !strcasecmp(headers_in[counter].key, "Upgrade")
-
-            ) {
-            continue;
-        }
-        /* Do we want to strip Proxy-Authorization ?
-         * If we haven't used it, then NO
-         * If we have used it then MAYBE: RFC2616 says we MAY propagate it.
-         * So let's make it configurable by env.
-         */
-        if (!strcasecmp(headers_in[counter].key,"Proxy-Authorization")) {
-            if (r->user != NULL) { /* we've authenticated */
-                if (!apr_table_get(r->subprocess_env, "Proxy-Chain-Auth")) {
-                    continue;
-                }
-            }
-        }
-
-        /* Skip Transfer-Encoding and Content-Length for now.
-         */
-        if (!strcasecmp(headers_in[counter].key, "Transfer-Encoding")) {
-            old_te_val = headers_in[counter].val;
-            continue;
-        }
-        if (!strcasecmp(headers_in[counter].key, "Content-Length")) {
-            old_cl_val = headers_in[counter].val;
-            continue;
-        }
-
-        /* for sub-requests, ignore freshness/expiry headers */
-        if (r->main) {
-            if (    !strcasecmp(headers_in[counter].key, "If-Match")
-                || !strcasecmp(headers_in[counter].key, "If-Modified-Since")
-                || !strcasecmp(headers_in[counter].key, "If-Range")
-                || !strcasecmp(headers_in[counter].key, "If-Unmodified-Since")
-                || !strcasecmp(headers_in[counter].key, "If-None-Match")) {
-                continue;
-            }
-        }
-
-        buf = apr_pstrcat(p, headers_in[counter].key, ": ",
-                          headers_in[counter].val, CRLF,
-                          NULL);
-        blen = strlen(buf);
-        ap_xlate_proto_to_ascii(buf, blen);
-        if ((rv = sendall(conn, buf, blen, r)) != OK)
-            return rv;
-    }
-
     buf = CRLF;
     blen = strlen(buf);
-    ap_xlate_proto_to_ascii(buf, blen);
-    if ((rv = sendall(conn, buf, blen, r)) != OK)
+    ap_xlate_proto_to_ascii(buf, strlen(buf));
+    e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(header_brigade, e);
+
+    if ((rv = ap_proxy_pass_brigade(c->bucket_alloc, r, conn, backconn,
+                                    header_brigade, 1)) != OK)
         return rv;
 
     ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, "setting up poll()");
@@ -445,10 +193,12 @@ static int ap_proxy_websocket_request(apr_pool_t *p, request_rec *r,
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
+#if 0
     apr_socket_opt_set(sock, APR_SO_NONBLOCK, 1);
     apr_socket_opt_set(sock, APR_SO_KEEPALIVE, 1);
     apr_socket_opt_set(client_socket, APR_SO_NONBLOCK, 1);
     apr_socket_opt_set(client_socket, APR_SO_KEEPALIVE, 1);
+#endif
 
     pollfd.p = p;
     pollfd.desc_type = APR_POLL_SOCKET;
@@ -535,13 +285,10 @@ static int proxy_websocket_handler(request_rec *r, proxy_worker *worker,
 {
     int status;
     char server_portstr[32];
-    conn_rec *origin = NULL;
     proxy_conn_rec *backend = NULL;
     char *scheme;
     int retry;
     conn_rec *c = r->connection;
-    proxy_dir_conf *dconf = ap_get_module_config(r->per_dir_config,
-                                                 &proxy_module);
     apr_pool_t *p = r->pool;
     apr_uri_t *uri;
 
@@ -601,7 +348,7 @@ static int proxy_websocket_handler(request_rec *r, proxy_worker *worker,
          }
 
         /* Step Three: Process the Request */
-        status = ap_proxy_websocket_request(p, r, backend, origin, dconf, uri, locurl,
+        status = ap_proxy_websocket_request(p, r, backend, worker, conf, uri, locurl,
                                       server_portstr);
         break;
     }
