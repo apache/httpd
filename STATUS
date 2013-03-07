@@ -200,6 +200,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/viewvc?view=revision&revision=1451484
     2.4.x patch: trunk patch applies with offset.
     +1: jailletc36
+    
+  * mod_cache_disk: fix merge of min/max file size by setting corresponding _set
+    trunk patch: http://svn.apache.org/r1453604
+    2.4.x patch: trunk patch works
+    +1: humbedooh
 
 A list of further possible backports can be found at:
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
