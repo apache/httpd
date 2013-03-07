@@ -306,7 +306,7 @@ Package=<4>
     Project_Dep_Name mod_proxy_scgi
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name mod_proxy_websocket
+    Project_Dep_Name mod_proxy_tunnel
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_ratelimit
@@ -2792,7 +2792,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_proxy_websocket"=.\modules\proxy\mod_proxy_websocket.dsp - Package Owner=<4>
+Project: "mod_proxy_tunnel"=.\modules\proxy\mod_proxy_tunnel.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
