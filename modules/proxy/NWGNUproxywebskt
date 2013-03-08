@@ -161,7 +161,7 @@ TARGET_lib =
 # Paths must all use the '/' character
 #
 FILES_nlm_objs = \
-	$(OBJDIR)/mod_proxy_websocket.o \
+	$(OBJDIR)/mod_proxy_wstunnel.o \
 	$(EOLIST)
 
 #
@@ -211,7 +211,7 @@ FILES_nlm_Ximports = \
 # Any symbols exported to here
 #
 FILES_nlm_exports = \
-	proxy_websocket_module \
+	proxy_wstunnel_module \
 	$(EOLIST)
 
 #
