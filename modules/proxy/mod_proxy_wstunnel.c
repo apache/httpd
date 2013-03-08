@@ -16,7 +16,7 @@
 
 #include "mod_proxy.h"
 
-module AP_MODULE_DECLARE_DATA proxy_tunnel_module;
+module AP_MODULE_DECLARE_DATA proxy_wstunnel_module;
 
 /*
  * Canonicalise http-like URLs.
@@ -24,7 +24,7 @@ module AP_MODULE_DECLARE_DATA proxy_tunnel_module;
  * url is the URL starting with the first '/'
  * def_port is the default port for this scheme.
  */
-static int proxy_tunnel_canon(request_rec *r, char *url)
+static int proxy_wstunnel_canon(request_rec *r, char *url)
 {
     char *host, *path, sport[7];
     char *search = NULL;
@@ -33,14 +33,14 @@ static int proxy_tunnel_canon(request_rec *r, char *url)
     apr_port_t port, def_port;
 
     /* ap_port_of_scheme() */
-    if (strncasecmp(url, "tun:", 4) == 0) {
-        url += 4;
-        scheme = "tun:";
+    if (strncasecmp(url, "ws:", 3) == 0) {
+        url += 3;
+        scheme = "ws:";
         def_port = apr_uri_port_of_scheme("http");
     }
-    else if (strncasecmp(url, "tuns:", 5) == 0) {
-        url += 5;
-        scheme = "tuns:";
+    else if (strncasecmp(url, "wss:", 4) == 0) {
+        url += 4;
+        scheme = "wss:";
         def_port = apr_uri_port_of_scheme("https");
     }
     else {
@@ -90,7 +90,7 @@ static int proxy_tunnel_canon(request_rec *r, char *url)
 }
 
 
-static int proxy_tunnel_transfer(request_rec *r, conn_rec *c_i, conn_rec *c_o,
+static int proxy_wstunnel_transfer(request_rec *r, conn_rec *c_i, conn_rec *c_o,
                                      apr_bucket_brigade *bb, char *name)
 {
     int rv;
@@ -139,7 +139,7 @@ static int proxy_tunnel_transfer(request_rec *r, conn_rec *c_i, conn_rec *c_o,
 /*
  * process the request and write the response.
  */
-static int ap_proxy_tunnel_request(apr_pool_t *p, request_rec *r,
+static int ap_proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
                                 proxy_conn_rec *conn,
                                 proxy_worker *worker,
                                 proxy_server_conf *conf,
@@ -236,7 +236,7 @@ static int ap_proxy_tunnel_request(apr_pool_t *p, request_rec *r,
                 if (pollevent & APR_POLLIN) {
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02446)
                                   "sock was readable");
-                    rv = proxy_tunnel_transfer(r, backconn, c, bb, "sock");
+                    rv = proxy_wstunnel_transfer(r, backconn, c, bb, "sock");
                     }
                 else if ((pollevent & APR_POLLERR)
                          || (pollevent & APR_POLLHUP)) {
@@ -252,7 +252,7 @@ static int ap_proxy_tunnel_request(apr_pool_t *p, request_rec *r,
                 if (pollevent & APR_POLLIN) {
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02448)
                                   "client was readable");
-                    rv = proxy_tunnel_transfer(r, c, backconn, bb, "client");
+                    rv = proxy_wstunnel_transfer(r, c, backconn, bb, "client");
                 }
             }
             else {
@@ -278,7 +278,7 @@ static int ap_proxy_tunnel_request(apr_pool_t *p, request_rec *r,
 
 /*
  */
-static int proxy_tunnel_handler(request_rec *r, proxy_worker *worker,
+static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
                              proxy_server_conf *conf,
                              char *url, const char *proxyname,
                              apr_port_t proxyport)
@@ -292,11 +292,11 @@ static int proxy_tunnel_handler(request_rec *r, proxy_worker *worker,
     apr_pool_t *p = r->pool;
     apr_uri_t *uri;
 
-    if (strncasecmp(url, "tuns:", 5) == 0) {
-        scheme = "TUNS";
+    if (strncasecmp(url, "wss:", 4) == 0) {
+        scheme = "WSS";
     }
-    else if (strncasecmp(url, "tun:", 4) == 0) {
-        scheme = "TUN";
+    else if (strncasecmp(url, "ws:", 3) == 0) {
+        scheme = "WS";
     }
     else {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02450) "declining URL %s", url);
@@ -348,7 +348,7 @@ static int proxy_tunnel_handler(request_rec *r, proxy_worker *worker,
          }
 
         /* Step Three: Process the Request */
-        status = ap_proxy_tunnel_request(p, r, backend, worker, conf, uri, locurl,
+        status = ap_proxy_wstunnel_request(p, r, backend, worker, conf, uri, locurl,
                                       server_portstr);
         break;
     }
@@ -360,11 +360,11 @@ static int proxy_tunnel_handler(request_rec *r, proxy_worker *worker,
 
 static void ap_proxy_http_register_hook(apr_pool_t *p)
 {
-    proxy_hook_scheme_handler(proxy_tunnel_handler, NULL, NULL, APR_HOOK_FIRST);
-    proxy_hook_canon_handler(proxy_tunnel_canon, NULL, NULL, APR_HOOK_FIRST);
+    proxy_hook_scheme_handler(proxy_wstunnel_handler, NULL, NULL, APR_HOOK_FIRST);
+    proxy_hook_canon_handler(proxy_wstunnel_canon, NULL, NULL, APR_HOOK_FIRST);
 }
 
-AP_DECLARE_MODULE(proxy_tunnel) = {
+AP_DECLARE_MODULE(proxy_wstunnel) = {
     STANDARD20_MODULE_STUFF,
     NULL,                       /* create per-directory config structure */
     NULL,                       /* merge per-directory config structures */
