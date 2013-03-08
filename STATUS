@@ -205,8 +205,42 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: http://svn.apache.org/r1453604
     2.4.x patch: trunk patch works
     +1: humbedooh
+    
+  * mod_lua: Sync 2.4 branch with trunk. This includes (but is not limited to) 
+             Server pools, new apr functions for the request_rec table, input/
+             output filters, LuaCodeCache, LuaMapHandler and multipart form data
+             handling. This is long overdue, and has become too spaghetti-ish to 
+             propose in chunks :|
+    trunk patch: http://svn.apache.org/r1366890
+                 http://svn.apache.org/r1367025
+                 http://svn.apache.org/r1367040
+                 http://svn.apache.org/r1367048
+                 http://svn.apache.org/r1383024
+                 http://svn.apache.org/r1383028
+                 http://svn.apache.org/r1383037
+                 http://svn.apache.org/r1367725
+                 http://svn.apache.org/r1367875
+                 http://svn.apache.org/r1368109
+                 http://svn.apache.org/r1369656
+                 http://svn.apache.org/r1369793
+                 http://svn.apache.org/r1369800
+                 http://svn.apache.org/r1370158
+                 http://svn.apache.org/r1433967
+                 http://svn.apache.org/r1429169
+                 http://svn.apache.org/r1425450
+                 http://svn.apache.org/r1425243
+                 http://svn.apache.org/r1422552
+                 http://svn.apache.org/r1422548                                                                        
+                 http://svn.apache.org/r1422531
+                 http://svn.apache.org/r1422373
+                 http://svn.apache.org/r1422072
+                 http://svn.apache.org/r1421784
+                 http://svn.apache.org/r1421780
+                 (the list goes on...)
+    2.4.x patch: http://www.humbedooh.com/mod_lua_sync.patch (+CHANGES)
+    +1: humbedooh
 
-A list of further possible backports can be found at:
+A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
 
@@ -245,33 +279,6 @@ PATCHES/ISSUES THAT ARE STALLED
                    http://svn.apache.org/viewvc?view=revision&revision=1328714
     2.4 patch: http://people.apache.org/~fuankg/diffs/httpd-2.4.x-cross_compile.diff
     fuankg: on hold until we agree for a better and more simple solution ...
-
-   * mod_lua: Add a new directive, LuaCodeCache, for controlling the in-memory
-              caching of scripts
-     trunk patch: http://svn.apache.org/r1366890
-                  http://svn.apache.org/r1367025
-                  http://svn.apache.org/r1367040
-                  http://svn.apache.org/r1367048
-                  http://svn.apache.org/r1383024
-                  http://svn.apache.org/r1383028
-                  http://svn.apache.org/r1383037
-                  http://svn.apache.org/r1367042 (CHANGES)
-     2.4.x patch: Trunk patch works
-     +1: humbedooh, rjung
-     rjung: docs missing?
-     humbedooh: It's in the 2.4 docs already, but commented out, as with a lot
-                of other functions that were never actually made. It's a mess ;)
-     -1: sf
-     sf: * If you copy'n'paste code, you need to assign new APLOGNOs.
-           See r1383013 and docs/log-message-tags/README.
-         * The code did not compile without warning, see r1383022.
-         * If you have a request_rec, use ap_log_rerror to get the most
-           specific log config. ap_log_perror always uses the global server
-           log config.
-         * Now that you have the request pool, don't you want to use it for
-           the apr_stat() call instead of lifecycle_pool?
-         * Try to not introduce new coding style issues. See r1383024,
-           r1383028, r1383037.
 
    * mod_ssl: Add support for Next Protocol Negotiation.
      Trunk patch:
