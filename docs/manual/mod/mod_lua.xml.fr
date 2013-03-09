@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1433346:1452834 (outdated) -->
+<!-- English Revision : 1452834 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -661,8 +661,12 @@ end
 	  <td>L'adresse IP de l'agent qui a envoy&eacute; la requ&ecirc;te</td>
         </tr>
         </table>
+	</dd>
+    </dl>
+</section>
+<section id="functions"><title>M&eacute;thodes de l'objet request_rec</title>
 
-        <p>La structure request_rec poss&egrave;de (au minimum) les m&eacute;thodes
+        <p>L'objet request_rec poss&egrave;de (au minimum) les m&eacute;thodes
 	suivantes :</p>
 
         <highlight language="lua">
@@ -881,8 +885,8 @@ tr&egrave;s proche de celui de la directive ErrorDocument.
         </highlight>
 
         <highlight language="lua">
-        r:sleep(secondes) -- Interrompt l'ex&eacute;cution du script pendant le
-	nombre de secondes sp&eacute;cifi&eacute;.
+r:sleep(secondes) -- Interrompt l'ex&eacute;cution du script pendant le	nombre de secondes sp&eacute;cifi&eacute;.
+                  -- La valeur peut &ecirc;tre sp&eacute;cifi&eacute;e sous la forme d'un nombre d&eacute;cimal comme 1.25 pour plus de pr&eacute;cision.
         </highlight>
 
 	<highlight language="lua">
@@ -891,8 +895,7 @@ base de donn&eacute;es et renvoie une classe database. Voir '<a
 href="#databases">Connectivit&eacute; aux bases de donn&eacute;es</a>' pour plus de
 d&eacute;tails.
         </highlight>
-        </dd>
-    </dl>
+        
 
 </section>
 

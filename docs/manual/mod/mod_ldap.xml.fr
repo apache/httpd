@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1421821 -->
+<!-- English Revision : 1452865 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -824,6 +824,13 @@ Apache</compatibility>
     sauvegard&eacute;es dans le jeu de connexions d'arri&egrave;re-plan. Avec la
     valeur par d&eacute;faut -1, ou toute autre valeur n&eacute;gative, les connexions
     peuvent &ecirc;tre r&eacute;utilis&eacute;es sans limite de dur&eacute;e.</p>
+
+    <p>La dur&eacute;e de vie est bas&eacute;e sur le moment o&ugrave; la connexion LDAP est
+    remise en attente dans le jeu de connexions , et non sur la derni&egrave;re
+    entr&eacute;e/sortie effectu&eacute;e sur le serveur d'arri&egrave;re-plan. Si
+    l'information est mise en cache, la dur&eacute;e d'inactivit&eacute; apparente
+    peut exc&eacute;der la valeur de la directive
+    <directive>LDAPConnectionPoolTTL</directive>.</p>
 
     <note><p>Cette dur&eacute;e de vie s'exprime par d&eacute;faut en secondes, mais
     il est possible d'utiliser d'autres unit&eacute;s en ajoutant un suffixe :
