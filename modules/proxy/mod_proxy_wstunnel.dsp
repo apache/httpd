@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="mod_proxy_tunnel" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="mod_proxy_wstunnel" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
-CFG=mod_proxy_tunnel - Win32 Release
+CFG=mod_proxy_wstunnel - Win32 Release
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "mod_proxy_tunnel.mak".
+!MESSAGE NMAKE /f "mod_proxy_wstunnel.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "mod_proxy_tunnel.mak" CFG="mod_proxy_tunnel - Win32 Release"
+!MESSAGE NMAKE /f "mod_proxy_wstunnel.mak" CFG="mod_proxy_wstunnel - Win32 Release"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "mod_proxy_tunnel - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "mod_proxy_tunnel - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "mod_proxy_wstunnel - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "mod_proxy_wstunnel - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -29,7 +29,7 @@ CPP=cl.exe
 MTL=midl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "mod_proxy_tunnel - Win32 Release"
+!IF  "$(CFG)" == "mod_proxy_wstunnel - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -43,25 +43,25 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MD /W3 /O2 /Oy- /Zi /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Release\mod_proxy_tunnel_src" /FD /c
+# ADD CPP /nologo /MD /W3 /O2 /Oy- /Zi /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Release\mod_proxy_wstunnel_src" /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
-# ADD RSC /l 0x409 /fo"Release/mod_proxy_tunnel.res" /i "../../include" /i "../../srclib/apr/include" /d "NDEBUG" /d BIN_NAME="mod_proxy_tunnel.so" /d LONG_NAME="proxy_tunnel_module for Apache"
+# ADD RSC /l 0x409 /fo"Release/mod_proxy_wstunnel.res" /i "../../include" /i "../../srclib/apr/include" /d "NDEBUG" /d BIN_NAME="mod_proxy_wstunnel.so" /d LONG_NAME="proxy_wstunnel_module for Apache"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /out:".\Release\mod_proxy_tunnel.so" /base:@..\..\os\win32\BaseAddr.ref,mod_proxy_tunnel.so
-# ADD LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Release\mod_proxy_tunnel.so" /base:@..\..\os\win32\BaseAddr.ref,mod_proxy_tunnel.so /opt:ref
+# ADD BASE LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /out:".\Release\mod_proxy_wstunnel.so" /base:@..\..\os\win32\BaseAddr.ref,mod_proxy_wstunnel.so
+# ADD LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Release\mod_proxy_wstunnel.so" /base:@..\..\os\win32\BaseAddr.ref,mod_proxy_wstunnel.so /opt:ref
 # Begin Special Build Tool
-TargetPath=.\Release\mod_proxy_tunnel.so
+TargetPath=.\Release\mod_proxy_wstunnel.so
 SOURCE="$(InputPath)"
 PostBuild_Desc=Embed .manifest
 PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);2
 # End Special Build Tool
 
-!ELSEIF  "$(CFG)" == "mod_proxy_tunnel - Win32 Debug"
+!ELSEIF  "$(CFG)" == "mod_proxy_wstunnel - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -75,19 +75,19 @@ PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).ma
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /EHsc /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MDd /W3 /EHsc /Zi /Od /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Debug\mod_proxy_tunnel_src" /FD /c
+# ADD CPP /nologo /MDd /W3 /EHsc /Zi /Od /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Debug\mod_proxy_wstunnel_src" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
-# ADD RSC /l 0x409 /fo"Debug/mod_proxy_tunnel.res" /i "../../include" /i "../../srclib/apr/include" /d "_DEBUG" /d BIN_NAME="mod_proxy_tunnel.so" /d LONG_NAME="proxy_tunnel_module for Apache"
+# ADD RSC /l 0x409 /fo"Debug/mod_proxy_wstunnel.res" /i "../../include" /i "../../srclib/apr/include" /d "_DEBUG" /d BIN_NAME="mod_proxy_wstunnel.so" /d LONG_NAME="proxy_wstunnel_module for Apache"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Debug\mod_proxy_tunnel.so" /base:@..\..\os\win32\BaseAddr.ref,mod_proxy_tunnel.so
-# ADD LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Debug\mod_proxy_tunnel.so" /base:@..\..\os\win32\BaseAddr.ref,mod_proxy_tunnel.so
+# ADD BASE LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Debug\mod_proxy_wstunnel.so" /base:@..\..\os\win32\BaseAddr.ref,mod_proxy_wstunnel.so
+# ADD LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Debug\mod_proxy_wstunnel.so" /base:@..\..\os\win32\BaseAddr.ref,mod_proxy_wstunnel.so
 # Begin Special Build Tool
-TargetPath=.\Debug\mod_proxy_tunnel.so
+TargetPath=.\Debug\mod_proxy_wstunnel.so
 SOURCE="$(InputPath)"
 PostBuild_Desc=Embed .manifest
 PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);2
@@ -97,14 +97,14 @@ PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).ma
 
 # Begin Target
 
-# Name "mod_proxy_tunnel - Win32 Release"
-# Name "mod_proxy_tunnel - Win32 Debug"
+# Name "mod_proxy_wstunnel - Win32 Release"
+# Name "mod_proxy_wstunnel - Win32 Debug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 # Begin Source File
 
-SOURCE=.\mod_proxy_tunnel.c
+SOURCE=.\mod_proxy_wstunnel.c
 # End Source File
 # End Group
 # Begin Group "Header Files"
