@@ -142,13 +142,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     worth consideration because of expected zero impact in the user community
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1364695
     2.4.x patch: trunk patch applies (minus CHANGES)
-    +1: trawick
+    +1: trawick, fuankg
     
   * mod_rate_limit: Fix error because of negative rate-limit
     PR 52964 [ianyin Xu <tixu cs ucsd edu>]
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1439623
     2.4.x patch: trunk patch applies.
-    +1: jailletc36
+    +1: jailletc36, fuankg
 
   * Set of easy patches to keep 2.4.x in line with trunk
        1442865: Change bzero/bcopy into memset/memcpy (PR 54346)
@@ -243,7 +243,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_macro: backport/copy mod_macro to 2.4.x.
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1435811
     2.4.x patch: trunk patch works
-    +1: jim
+    +1: jim, fuankg
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
