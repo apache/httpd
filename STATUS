@@ -186,25 +186,25 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     this is a real issue.
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1429561
     2.4.x patch: trunk patch applies.
-    +1: jailletc36
+    +1: jailletc36, humbedooh
 
   * mod_charset_lite: clean up and speed up special case of logging function by x13 using ap_bin2hex intoduced in 2.4.4
     It will be in lowercase instead of uppercase, but it is only for logging. I don't think this is a real issue.
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1429582
     2.4.x patch: trunk patch applies.
-    +1: jailletc36
+    +1: jailletc36, humbedooh
     
   * mod_log_forensic: Speed up logging of characters that need to be escaped. PR 50919
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1429564
     2.4.x patch: trunk patch applies.
-    +1: jailletc36
+    +1: jailletc36, humbedooh
 
   * ssl_util_ssl: Speed up logging function by x4 using ap_bin2hex intoduced in 2.4.4
     It will be in lowercase instead of uppercase, but it is only for logging. I don't think this is a real issue.
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1429559
                  http://svn.apache.org/viewvc?view=revision&revision=1451484
     2.4.x patch: trunk patch applies with offset.
-    +1: jailletc36
+    +1: jailletc36, humbedooh
     
   * mod_cache_disk: fix merge of min/max file size by setting corresponding _set
     trunk patch: http://svn.apache.org/r1453604
