@@ -391,6 +391,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/httpd/modules/mod_proxy_ftp.so
 %{_libdir}/httpd/modules/mod_proxy_http.so
 %{_libdir}/httpd/modules/mod_proxy_scgi.so
+%{_libdir}/httpd/modules/mod_proxy_wstunnel.so
 %{_libdir}/httpd/modules/mod_proxy.so
 %{_libdir}/httpd/modules/mod_ratelimit.so
 %{_libdir}/httpd/modules/mod_reflector.so
