@@ -332,8 +332,8 @@ AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *filter,
 AP_DECLARE(apr_status_t) ap_pass_brigade_fchk(request_rec *r,
                                               apr_bucket_brigade *bucket,
                                               const char *fmt,
-                                              ...);
-
+                                              ...)
+                                              __attribute__((format(printf,3,4)));
 
 /**
  * This function is used to register an input filter with the system.

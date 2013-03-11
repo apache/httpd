@@ -69,7 +69,8 @@ typedef struct _sed_comp_args {
 
 extern char *sed_compile(sed_commands_t *commands, sed_comp_args *compargs,
                          char *ep, char *endbuf, int seof);
-extern void command_errf(sed_commands_t *commands, const char *fmt, ...);
+extern void command_errf(sed_commands_t *commands, const char *fmt, ...)
+                         __attribute__((format(printf,2,3)));
 
 #define SEDERR_CGMES "command garbled: %s"
 #define SEDERR_SMMES "Space missing before filename: %s"

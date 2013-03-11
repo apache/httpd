@@ -84,6 +84,12 @@ struct passwd_ctx {
     } passwd_src;
 };
 
+
+/*
+ * To be used as apr_pool_abort_fn
+ */
+int abort_on_oom(int rc);
+
 /*
  * Write a line to the file. On error, print a message and exit
  */

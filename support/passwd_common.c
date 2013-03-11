@@ -46,6 +46,24 @@
 
 apr_file_t *errfile;
 
+int abort_on_oom(int rc)
+{
+    const char *buf = "Error: out of memory\n";
+    int written, count = strlen(buf);
+    do {
+        written = write(STDERR_FILENO, buf, count);
+        if (written == count)
+            break;
+        if (written > 0) {
+            buf += written;
+            count -= written;
+        }
+    } while (written >= 0 || errno == EINTR);
+    abort();
+    /* NOTREACHED */
+    return 0;
+}
+
 static int generate_salt(char *s, size_t size, const char **errstr,
                          apr_pool_t *pool)
 {
@@ -207,6 +225,8 @@ int mkhash(struct passwd_ctx *ctx)
         apr_cpystrn(ctx->out, cbuf, ctx->out_len - 1);
         if (strlen(pw) > 8) {
             char *truncpw = strdup(pw);
+            if (truncpw == NULL)
+                abort_on_oom(0);
             truncpw[8] = '\0';
             if (!strcmp(ctx->out, crypt(truncpw, salt))) {
                 apr_file_printf(errfile, "Warning: Password truncated to 8 "
