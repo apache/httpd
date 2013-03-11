@@ -1,0 +1,20 @@
+# testing with conf/test48.conf
+[core:warn] 1 on line 1 of macro 'm' (defined on line 3 of "./conf/test48.conf") used on line 7 of "./conf/test48.conf"
+[core:warn] 12 on line 1 of macro 'm' (defined on line 3 of "./conf/test48.conf") used on line 8 of "./conf/test48.conf"
+[core:warn] 123 on line 1 of macro 'm' (defined on line 3 of "./conf/test48.conf") used on line 9 of "./conf/test48.conf"
+[core:warn] 1234 on line 1 of macro 'm' (defined on line 3 of "./conf/test48.conf") used on line 10 of "./conf/test48.conf"
+[core:warn] 12345 on line 1 of macro 'm' (defined on line 3 of "./conf/test48.conf") used on line 11 of "./conf/test48.conf"
+[core:warn] 123456 on line 1 of macro 'm' (defined on line 3 of "./conf/test48.conf") used on line 12 of "./conf/test48.conf"
+[core:warn] 1234567 on line 1 of macro 'm' (defined on line 3 of "./conf/test48.conf") used on line 13 of "./conf/test48.conf"
+[core:warn] 12345678 on line 1 of macro 'm' (defined on line 3 of "./conf/test48.conf") used on line 14 of "./conf/test48.conf"
+[core:warn] 123456789 on line 1 of macro 'm' (defined on line 3 of "./conf/test48.conf") used on line 15 of "./conf/test48.conf"
+[core:warn] 1234567890 on line 1 of macro 'm' (defined on line 3 of "./conf/test48.conf") used on line 16 of "./conf/test48.conf"
+[core:warn] 1234567890a on line 1 of macro 'm' (defined on line 3 of "./conf/test48.conf") used on line 17 of "./conf/test48.conf"
+[core:warn] 1234567890ab on line 1 of macro 'm' (defined on line 3 of "./conf/test48.conf") used on line 18 of "./conf/test48.conf"
+[core:warn] 1234567890abc on line 1 of macro 'm' (defined on line 3 of "./conf/test48.conf") used on line 19 of "./conf/test48.conf"
+[core:warn] 1234567890abcd on line 1 of macro 'm' (defined on line 3 of "./conf/test48.conf") used on line 20 of "./conf/test48.conf"
+[core:warn] 1234567890abcde on line 1 of macro 'm' (defined on line 3 of "./conf/test48.conf") used on line 21 of "./conf/test48.conf"
+[core:error] done line 23. on line 23 of ./conf/test48.conf
+AH00526: Syntax error on line 23 of ./conf/test48.conf:
+Configuration processing stopped by Error directive
+# exit: 1

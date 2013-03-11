@@ -90,10 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_macro: backport/copy mod_macro to 2.4.x.
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1435811
-    2.4.x patch: trunk patch works
-    +1: jim, fuankg, humbedooh, igalic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:

@@ -1,0 +1,6 @@
+# testing with conf/test68.conf
+[core:warn] line 2-3 on line 3 of ./conf/test68.conf
+[core:error] done on line 4-5. on line 5 of ./conf/test68.conf
+AH00526: Syntax error on line 5 of ./conf/test68.conf:
+Configuration processing stopped by Error directive
+# exit: 1

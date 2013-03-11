@@ -1,0 +1,6 @@
+# testing with conf/test38.conf
+[core:warn] it is really a good idea to have mod_macro.c installed. on line 4 of ./conf/test38.conf
+[core:error] it seems you do not have mod perl installed. on line 8 of ./conf/test38.conf
+AH00526: Syntax error on line 8 of ./conf/test38.conf:
+Configuration processing stopped by Error directive
+# exit: 1
