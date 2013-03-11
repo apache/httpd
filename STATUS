@@ -93,7 +93,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   * mod_macro: backport/copy mod_macro to 2.4.x.
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1435811
     2.4.x patch: trunk patch works
-    +1: jim, fuankg, humbedooh
+    +1: jim, fuankg, humbedooh, igalic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -179,7 +179,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=revision&revision=1425775
     2.4.x patch: trunk patches apply (minus CHANGES for 1448171)
     2.4.x cumulative patch: http://people.apache.org/~jailletc36/backport5.patch (minus CHANGES for 1448171)
-    +1: jailletc36
+    +1: jailletc36, igalic
 
   * mod_socache_memcache: speed up key generation by x6 using ap_bin2hex intoduced in 2.4.4
     Generated keys will be in lowercase instead of uppercase, so it will trash the cache. I don't think
@@ -273,6 +273,7 @@ OTHER PROPOSALS
           mod_ldap           r1371684
           mod_cache          r1407381
           mod_slotmem_plain  r1370763
+        igalic: We have three votes, what's the status here?
        Independently, backport any doc tweaks to 2.4 API migration page.
 
 PATCHES/ISSUES THAT ARE STALLED
