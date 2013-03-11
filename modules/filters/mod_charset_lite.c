@@ -474,7 +474,7 @@ static void log_xlate_error(ap_filter_t *f, apr_status_t rv)
     charset_filter_ctx_t *ctx = f->ctx;
     const char *msg;
     char msgbuf[100];
-    int cur;
+    int len;
 
     switch(ctx->ees) {
     case EES_LIMIT:
@@ -492,12 +492,14 @@ static void log_xlate_error(ap_filter_t *f, apr_status_t rv)
     case EES_INCOMPLETE_CHAR:
         rv = 0;
         strcpy(msgbuf, APLOGNO(02196) "xlate filter - incomplete char at end of input - ");
-        cur = 0;
-        while ((apr_size_t)cur < ctx->saved) {
-            apr_snprintf(msgbuf + strlen(msgbuf), sizeof(msgbuf) - strlen(msgbuf),
-                         "%02X", (unsigned)ctx->buf[cur]);
-            ++cur;
-        }
+        len = ctx->saved;
+
+        /* We must ensure not to process more than what would fit in the
+         * remaining of the destination buffer, including terminating NULL */
+        if (len > (sizeof(msgbuf) - strlen(msgbuf) - 1) / 2)
+            len = (sizeof(msgbuf) - strlen(msgbuf) - 1) / 2;
+
+        ap_bin2hex(ctx->buf, len, msgbuf + strlen(msgbuf));
         msg = msgbuf;
         break;
     case EES_DOWNSTREAM:
