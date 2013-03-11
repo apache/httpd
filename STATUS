@@ -117,13 +117,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4.x cumulative patch: http://people.apache.org/~jailletc36/backport5.patch (minus CHANGES for 1448171)
     +1: jailletc36, igalic, jim
 
-  * mod_socache_memcache: speed up key generation by x6 using ap_bin2hex intoduced in 2.4.4
-    Generated keys will be in lowercase instead of uppercase, so it will trash the cache. I don't think
-    this is a real issue.
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1429561
-    2.4.x patch: trunk patch applies.
-    +1: jailletc36, humbedooh, jim
-
   * mod_charset_lite: clean up and speed up special case of logging function by x13 using ap_bin2hex intoduced in 2.4.4
     It will be in lowercase instead of uppercase, but it is only for logging. I don't think this is a real issue.
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1429582
