@@ -90,14 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_heartmonitor/mod_lbmethod_heartbeat: Respect DefaultRuntimeDir for 
-    storage path; these have a directive to configure this location
-    and THIS CHANGE WILL BREAK PRACTICALLY ALL EXISTING 2.4 CONFIGURATIONS
-    THAT USE THOSE DIRECTIVES WITH A RELATIVE PATH; I don't think it is
-    worth consideration because of expected zero impact in the user community
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1364695
-    2.4.x patch: trunk patch applies (minus CHANGES)
-    +1: trawick, fuankg, jim
     
   * mod_rate_limit: Fix error because of negative rate-limit
     PR 52964 [ianyin Xu <tixu cs ucsd edu>]
@@ -156,8 +148,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch applies with offset.
     +1: jailletc36, humbedooh, jim
     
-
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
