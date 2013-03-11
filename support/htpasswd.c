@@ -274,6 +274,7 @@ int main(int argc, const char * const argv[])
     apr_app_initialize(&argc, &argv, NULL);
     atexit(terminate);
     apr_pool_create(&pool, NULL);
+    apr_pool_abort_set(abort_on_oom, pool);
     apr_file_open_stderr(&errfile, pool);
     ctx.pool = pool;
     ctx.alg = ALG_APMD5;
