@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.5
 
+  *) mod_lbmethod_heartbeat, mod_heartmonitor: Respect DefaultRuntimeDir/
+     DEFAULT_REL_RUNTIMEDIR for the heartbeat storage file.  [Jeff Trawick]
+
   * mod_include: Use new ap_expr for 'elif', like 'if', 
     if legacy parser is not specified.  PR 54548 [Tom Donovan]
 

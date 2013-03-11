@@ -47,6 +47,11 @@ typedef struct hm_slot_server_t
     int id;
 } hm_slot_server_t;
 
+/* default name of heartbeat data file, created in the configured
+ * runtime directory when mod_slotmem_shm is not available
+ */
+#define DEFAULT_HEARTBEAT_STORAGE "hb.dat"
+
 #ifdef __cplusplus
 }
 #endif
