@@ -985,7 +985,7 @@ end
     </p>
     <p>The example below shows how to acquire a database handle and return information from a table:</p>
     <pre class="prettyprint lang-lua">
-function handler(r)
+function handle(r)
     -- Acquire a database handle
     local database, err = r:dbacquire("mysql", "server=localhost,user=root,dbname=mydb")
     if not err then
