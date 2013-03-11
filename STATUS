@@ -116,6 +116,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patches apply (minus CHANGES for 1448171)
     2.4.x cumulative patch: http://people.apache.org/~jailletc36/backport5.patch (minus CHANGES for 1448171)
     +1: jailletc36, igalic, jim
+
+  * mod_cache_disk: fix merge of min/max file size by setting corresponding _set
+    trunk patch: http://svn.apache.org/r1453604
+    2.4.x patch: trunk patch works
+    +1: humbedooh, jim, covener
+    
     
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -161,11 +167,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch applies.
     +1: wrowe, covener
 
-  * mod_cache_disk: fix merge of min/max file size by setting corresponding _set
-    trunk patch: http://svn.apache.org/r1453604
-    2.4.x patch: trunk patch works
-    +1: humbedooh, jim
-    
   * mod_lua: Sync 2.4 branch with trunk. This includes (but is not limited to) 
              Server pools, new apr functions for the request_rec table, input/
              output filters, LuaCodeCache, LuaMapHandler and multipart form data
