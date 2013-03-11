@@ -143,13 +143,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     worth consideration because of expected zero impact in the user community
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1364695
     2.4.x patch: trunk patch applies (minus CHANGES)
-    +1: trawick, fuankg
+    +1: trawick, fuankg, jim
     
   * mod_rate_limit: Fix error because of negative rate-limit
     PR 52964 [ianyin Xu <tixu cs ucsd edu>]
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1439623
     2.4.x patch: trunk patch applies.
-    +1: jailletc36, fuankg
+    +1: jailletc36, fuankg, jim
 
   * Set of easy patches to keep 2.4.x in line with trunk
        1442865: Change bzero/bcopy into memset/memcpy (PR 54346)
@@ -175,37 +175,37 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=revision&revision=1425775
     2.4.x patch: trunk patches apply (minus CHANGES for 1448171)
     2.4.x cumulative patch: http://people.apache.org/~jailletc36/backport5.patch (minus CHANGES for 1448171)
-    +1: jailletc36, igalic
+    +1: jailletc36, igalic, jim
 
   * mod_socache_memcache: speed up key generation by x6 using ap_bin2hex intoduced in 2.4.4
     Generated keys will be in lowercase instead of uppercase, so it will trash the cache. I don't think
     this is a real issue.
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1429561
     2.4.x patch: trunk patch applies.
-    +1: jailletc36, humbedooh
+    +1: jailletc36, humbedooh, jim
 
   * mod_charset_lite: clean up and speed up special case of logging function by x13 using ap_bin2hex intoduced in 2.4.4
     It will be in lowercase instead of uppercase, but it is only for logging. I don't think this is a real issue.
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1429582
     2.4.x patch: trunk patch applies.
-    +1: jailletc36, humbedooh
+    +1: jailletc36, humbedooh, jim
     
   * mod_log_forensic: Speed up logging of characters that need to be escaped. PR 50919
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1429564
     2.4.x patch: trunk patch applies.
-    +1: jailletc36, humbedooh
+    +1: jailletc36, humbedooh, jim
 
   * ssl_util_ssl: Speed up logging function by x4 using ap_bin2hex intoduced in 2.4.4
     It will be in lowercase instead of uppercase, but it is only for logging. I don't think this is a real issue.
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1429559
                  http://svn.apache.org/viewvc?view=revision&revision=1451484
     2.4.x patch: trunk patch applies with offset.
-    +1: jailletc36, humbedooh
+    +1: jailletc36, humbedooh, jim
     
   * mod_cache_disk: fix merge of min/max file size by setting corresponding _set
     trunk patch: http://svn.apache.org/r1453604
     2.4.x patch: trunk patch works
-    +1: humbedooh
+    +1: humbedooh, jim
     
   * mod_lua: Sync 2.4 branch with trunk. This includes (but is not limited to) 
              Server pools, new apr functions for the request_rec table, input/
@@ -239,7 +239,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/r1421780
                  (the list goes on...)
     2.4.x patch: http://www.humbedooh.com/mod_lua_sync.patch (+CHANGES)
-    +1: humbedooh
+    +1: humbedooh, jim
 
 
 A list of further possible backports can be found at:                                                                                                                                   
