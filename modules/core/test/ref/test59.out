@@ -1,0 +1,3 @@
+# testing with conf/test59.conf
+httpd: Syntax error on line 2 of ./conf/test59.conf: <Macro macro definition: name not found
+# exit: 1

@@ -53,6 +53,8 @@ APACHE_MODULE(watchdog, Watchdog module, , , , [
     fi
 ])
 
+APACHE_MODULE(macro, Define and use macros in configuration files, , , most)
+
 APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
 
 APACHE_MODPATH_FINISH

@@ -1,0 +1,8 @@
+# testing with conf/test27.conf
+[core:warn] foo.one /unexpected/1 on line 2 of macro 'foo.one' (defined on line 1 of "macro 'foo' (defined on line 3 of "./conf/test27.conf") used on line 11 of "./conf/test27.conf"") used on line 14 of "./conf/test27.conf"
+[core:warn] foo.two /unexpected/2 on line 2 of macro 'foo.two' (defined on line 1 of "macro 'foo' (defined on line 3 of "./conf/test27.conf") used on line 12 of "./conf/test27.conf"") used on line 15 of "./conf/test27.conf"
+[core:warn] foo.one /unexpected/1 on line 2 of macro 'foo.one' (defined on line 1 of "macro 'foo' (defined on line 3 of "./conf/test27.conf") used on line 11 of "./conf/test27.conf"") used on line 16 of "./conf/test27.conf"
+[core:error] done! on line 22 of ./conf/test27.conf
+AH00526: Syntax error on line 22 of ./conf/test27.conf:
+Configuration processing stopped by Error directive
+# exit: 1

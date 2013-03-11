@@ -1,0 +1,3 @@
+# testing with conf/test49.conf
+httpd: Syntax error on line 2 of ./conf/test49.conf: no macro defined before UndefMacro
+# exit: 1

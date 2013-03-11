@@ -1,0 +1,4 @@
+# testing with conf/test29.conf
+[macro:warn] macro 'toobigaline' (defined on line 3 of "./conf/test29.conf") argument name 'a' (#1) without expected prefix, better prefix argument names with one of '$%@'.
+httpd: Syntax error on line 8 of ./conf/test29.conf: macro 'toobigaline' (defined on line 3 of "./conf/test29.conf") used on line 8 of "./conf/test29.conf" error while substituting: while processing line 1 of macro 'toobigaline' (defined on line 3 of "./conf/test29.conf") cannot substitute, buffer size too small
+# exit: 1

@@ -1,0 +1,23 @@
+# testing with conf/test31.conf
+[macro:warn] macro 'bla' (defined on line 3 of "./conf/test31.conf"): argument name prefix conflict ($dir #1 and $di #2), be careful about your macro definition!
+[macro:warn] macro 'bla' (defined on line 3 of "./conf/test31.conf"): argument name prefix conflict ($dir #1 and $d #4), be careful about your macro definition!
+[macro:warn] macro 'bla' (defined on line 3 of "./conf/test31.conf"): argument name prefix conflict ($di #2 and $d #4), be careful about your macro definition!
+[macro:warn] macro 'bla' (defined on line 3 of "./conf/test31.conf"): argument name prefix conflict ($dd #3 and $d #4), be careful about your macro definition!
+[macro:warn] macro 'bla' (defined on line 3 of "./conf/test31.conf") used on line 8 of "./conf/test31.conf": empty argument #1
+[macro:warn] macro 'bla' (defined on line 3 of "./conf/test31.conf") used on line 8 of "./conf/test31.conf": empty argument #2
+[macro:warn] macro 'foo' (defined on line 10 of "./conf/test31.conf"): argument name prefix conflict ($d #1 and $di #2), be careful about your macro definition!
+[macro:warn] macro 'foo' (defined on line 10 of "./conf/test31.conf"): argument name prefix conflict ($d #1 and $dir #3), be careful about your macro definition!
+[macro:warn] macro 'foo' (defined on line 10 of "./conf/test31.conf"): argument name prefix conflict ($d #1 and $dd #4), be careful about your macro definition!
+[macro:warn] macro 'foo' (defined on line 10 of "./conf/test31.conf"): argument name prefix conflict ($di #2 and $dir #3), be careful about your macro definition!
+[macro:warn] macro 'foo' (defined on line 10 of "./conf/test31.conf"): argument '$d' (#1) never used
+[macro:warn] macro 'foo' (defined on line 10 of "./conf/test31.conf"): argument '$di' (#2) never used
+[macro:warn] macro 'foo' (defined on line 10 of "./conf/test31.conf"): argument '$dir' (#3) never used
+[macro:warn] macro 'foo' (defined on line 10 of "./conf/test31.conf"): argument '$dd' (#4) never used
+[macro:warn] macro 'foo' (defined on line 10 of "./conf/test31.conf") used on line 14 of "./conf/test31.conf": empty argument #1
+[macro:warn] macro 'foo' (defined on line 10 of "./conf/test31.conf") used on line 14 of "./conf/test31.conf": empty argument #2
+[core:warn] argument name conflicts on line 1 of macro 'bla' (defined on line 3 of "./conf/test31.conf") used on line 8 of "./conf/test31.conf"
+[core:warn] conflicts, but arguments are not used on line 1 of macro 'foo' (defined on line 10 of "./conf/test31.conf") used on line 14 of "./conf/test31.conf"
+[core:error] done on line 16. on line 16 of ./conf/test31.conf
+AH00526: Syntax error on line 16 of ./conf/test31.conf:
+Configuration processing stopped by Error directive
+# exit: 1
