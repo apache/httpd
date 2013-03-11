@@ -90,52 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
-
-   * mod_proxy: Allow balancers and ProxyPass to be server-specific, as
-     they should have been. Inheritance causes too many behind-the-scene
-     interactions to be reliable in a dynamic environ. We maintain the
-     old-default of inheritance.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387603
-                  http://svn.apache.org/viewvc?view=revision&revision=1388029
-                  http://svn.apache.org/viewvc?view=revision&revision=1420124
-                  http://svn.apache.org/viewvc?view=revision&revision=1421288
-                  http://svn.apache.org/viewvc?view=revision&revision=1421912
-                  http://svn.apache.org/viewvc?view=revision&revision=1422943
-                  http://svn.apache.org/viewvc?view=revision&revision=1422980
-                  http://svn.apache.org/viewvc?view=revision&revision=1430575
-                  http://svn.apache.org/viewvc?view=revision&revision=1439404
-     2.4.x patch: http://people.apache.org/~jim/patches/proxypassinherit-v2.patch
-     +1: jim, druggeri
-     rjung: directive help text describes "on" and then says: "(Not recommended if
-            using the Balancer Manager)". Since "on" is the default, should we probably
-            say "(Setting to Off recommended if using the Balancer Manager)"?
-
-  * mod_ssl: add support for subjectAltName-based host name checking
-    in proxy mode (PR 54030)
-    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=r1425874
-                 https://svn.apache.org/viewvc?view=revision&revision=r1426850
-    2.4.x patch: trunk patch works (modulo CHANGES and next-number)
-    +1: kbrand
-
-  * mod_authnz_ldap: Allow using exec: callouts like SSLPassphraseDialog
-    for AuthLDAPBindPassword.
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1433478
-    2.4.x patch: http://people.apache.org/~druggeri/patches/AuthLDAPBindPasswordExec-2.4.patch
-                 (20130119 - updated to include minor mmn bump)
-    +1: druggeri, jim
-    covener: minor MMM bump?  (Thanks for reminder. This is done. -druggeri)
-
-  * mod_ssl: Quiet FIPS mode weak keys disabled and FIPS not selected emits
-    in the error log to debug level.  [William Rowe]
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1447993
-    2.4.x patch: trunk patch applies.
-    +1: wrowe, covener
-
   * mod_heartmonitor/mod_lbmethod_heartbeat: Respect DefaultRuntimeDir for 
     storage path; these have a directive to configure this location
     and THIS CHANGE WILL BREAK PRACTICALLY ALL EXISTING 2.4 CONFIGURATIONS
@@ -202,6 +156,52 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch applies with offset.
     +1: jailletc36, humbedooh, jim
     
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+
+   * mod_proxy: Allow balancers and ProxyPass to be server-specific, as
+     they should have been. Inheritance causes too many behind-the-scene
+     interactions to be reliable in a dynamic environ. We maintain the
+     old-default of inheritance.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387603
+                  http://svn.apache.org/viewvc?view=revision&revision=1388029
+                  http://svn.apache.org/viewvc?view=revision&revision=1420124
+                  http://svn.apache.org/viewvc?view=revision&revision=1421288
+                  http://svn.apache.org/viewvc?view=revision&revision=1421912
+                  http://svn.apache.org/viewvc?view=revision&revision=1422943
+                  http://svn.apache.org/viewvc?view=revision&revision=1422980
+                  http://svn.apache.org/viewvc?view=revision&revision=1430575
+                  http://svn.apache.org/viewvc?view=revision&revision=1439404
+     2.4.x patch: http://people.apache.org/~jim/patches/proxypassinherit-v2.patch
+     +1: jim, druggeri
+     rjung: directive help text describes "on" and then says: "(Not recommended if
+            using the Balancer Manager)". Since "on" is the default, should we probably
+            say "(Setting to Off recommended if using the Balancer Manager)"?
+
+  * mod_ssl: add support for subjectAltName-based host name checking
+    in proxy mode (PR 54030)
+    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=r1425874
+                 https://svn.apache.org/viewvc?view=revision&revision=r1426850
+    2.4.x patch: trunk patch works (modulo CHANGES and next-number)
+    +1: kbrand
+
+  * mod_authnz_ldap: Allow using exec: callouts like SSLPassphraseDialog
+    for AuthLDAPBindPassword.
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1433478
+    2.4.x patch: http://people.apache.org/~druggeri/patches/AuthLDAPBindPasswordExec-2.4.patch
+                 (20130119 - updated to include minor mmn bump)
+    +1: druggeri, jim
+    covener: minor MMM bump?  (Thanks for reminder. This is done. -druggeri)
+
+  * mod_ssl: Quiet FIPS mode weak keys disabled and FIPS not selected emits
+    in the error log to debug level.  [William Rowe]
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1447993
+    2.4.x patch: trunk patch applies.
+    +1: wrowe, covener
+
   * mod_cache_disk: fix merge of min/max file size by setting corresponding _set
     trunk patch: http://svn.apache.org/r1453604
     2.4.x patch: trunk patch works
