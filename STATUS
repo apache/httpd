@@ -91,12 +91,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
     
-  * mod_rate_limit: Fix error because of negative rate-limit
-    PR 52964 [ianyin Xu <tixu cs ucsd edu>]
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1439623
-    2.4.x patch: trunk patch applies.
-    +1: jailletc36, fuankg, jim
-
   * Set of easy patches to keep 2.4.x in line with trunk
        1442865: Change bzero/bcopy into memset/memcpy (PR 54346)
        1442759: Can't figure out why we allocate len+2 bytes here. Len+1 should be enough.

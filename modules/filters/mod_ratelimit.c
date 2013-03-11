@@ -74,6 +74,7 @@ rate_limit_filter(ap_filter_t *f, apr_bucket_brigade *input_bb)
     if (ctx == NULL) {
 
         const char *rl = NULL;
+        int ratelimit;
 
         /* no subrequests. */
         if (f->r->main != NULL) {
@@ -87,21 +88,20 @@ rate_limit_filter(ap_filter_t *f, apr_bucket_brigade *input_bb)
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
-
-        /* first run, init stuff */
-        ctx = apr_palloc(f->r->pool, sizeof(rl_ctx_t));
-        f->ctx = ctx;
-        ctx->speed = 0;
-        ctx->state = RATE_LIMIT;
-
+        
         /* rl is in kilo bytes / second  */
-        ctx->speed = atoi(rl) * 1024;
-
-        if (ctx->speed == 0) {
+        ratelimit = atoi(rl) * 1024;
+        if (ratelimit <= 0) {
             /* remove ourselves */
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
+
+        /* first run, init stuff */
+        ctx = apr_palloc(f->r->pool, sizeof(rl_ctx_t));
+        f->ctx = ctx;
+        ctx->state = RATE_LIMIT;
+        ctx->speed = ratelimit;
 
         /* calculate how many bytes / interval we want to send */
         /* speed is bytes / second, so, how many  (speed / 1000 % interval) */
