@@ -520,6 +520,13 @@ Apache</td></tr>
     valeur par défaut -1, ou toute autre valeur négative, les connexions
     peuvent être réutilisées sans limite de durée.</p>
 
+    <p>La durée de vie est basée sur le moment où la connexion LDAP est
+    remise en attente dans le jeu de connexions , et non sur la dernière
+    entrée/sortie effectuée sur le serveur d'arrière-plan. Si
+    l'information est mise en cache, la durée d'inactivité apparente
+    peut excéder la valeur de la directive
+    <code class="directive">LDAPConnectionPoolTTL</code>.</p>
+
     <div class="note"><p>Cette durée de vie s'exprime par défaut en secondes, mais
     il est possible d'utiliser d'autres unités en ajoutant un suffixe :
     millisecondes (ms), minutes (min), ou heures (h).

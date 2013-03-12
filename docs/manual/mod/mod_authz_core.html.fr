@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authz_core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authz_core.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Autorisation basique</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>authz_core_module</td></tr>
@@ -76,40 +74,40 @@ d'autorisation</a></h2>
     la même manière qu'on le ferait pour des fournisseurs d'autorisation
     de base. En plus de la possibilité de créer et d'aliaser un
     fournisseur étendu, le même fournisseur d'autorisation étendu peut
-    être utilisé pour contrôler l'accès à plusieurs localisations.
+    être référencé par plusieurs localisations.
     </p>
 
     <h3><a name="example" id="example">Exemple</a></h3>
         <p>Dans l'exemple suivant, on crée deux alias de fournisseur
 	d'autorisation ldap différents basés sur le fournisseur
 	d'autorisation ldap-group. Il est ainsi possible pour un seul
-	répertoire de vérifier l'appartenance à un groupe au niveau de
-        plusieurs serveurs ldap :
+	répertoire de vérifier l'appartenance à un groupe dans plusieurs
+	serveurs ldap :
         </p>
 
         <pre class="prettyprint lang-config">
 &lt;AuthzProviderAlias ldap-group ldap-group-alias1 cn=my-group,o=ctx&gt;
-    AuthLDAPBindDN cn=monutilisateur,o=ctx
-    AuthLDAPBindPassword monmotdepasse
-    AuthLDAPURL ldap://serveur.ldap/o=ctx
+    AuthLDAPBindDN cn=youruser,o=ctx
+    AuthLDAPBindPassword yourpassword
+    AuthLDAPURL ldap://ldap.host/o=ctx
 &lt;/AuthzProviderAlias&gt;
 
 &lt;AuthzProviderAlias ldap-group ldap-group-alias2 cn=my-other-group,o=dev&gt;
-    AuthLDAPBindDN cn=monautreutilisateur,o=dev
-    AuthLDAPBindPassword monsecondmotdepasse
-    AuthLDAPURL ldap://autre.serveur.ldap/o=dev?cn
+    AuthLDAPBindDN cn=yourotheruser,o=dev
+    AuthLDAPBindPassword yourotherpassword
+    AuthLDAPURL ldap://other.ldap.host/o=dev?cn
 &lt;/AuthzProviderAlias&gt;
 
 Alias /secure /webpages/secure
 &lt;Directory /webpages/secure&gt;
     Require all granted
-
+    
     AuthBasicProvider file
-
+    
     AuthType Basic
     AuthName LDAP_Protected_Place
-
-    #Implicitement, c'est l'un OU l'autre
+    
+    #implied OR operation
     Require ldap-group-alias1
     Require ldap-group-alias2
 &lt;/Directory&gt;
@@ -123,7 +121,7 @@ Alias /secure /webpages/secure
 
     <p>Les directives de conteneur d'autorisation <code class="directive"><a href="#requireall">&lt;RequireAll&gt;</a></code>,
     <code class="directive"><a href="#requireany">&lt;RequireAny&gt;</a></code> et <code class="directive"><a href="#requirenone">&lt;RequireNone&gt;</a></code>
-    peuvent être combinées entre elles et avec la directive <code class="directive"><a href="#require">Require</a></code> pour élaborer une
+    peuvent être combinées entre elles et avec la directive <code class="directive"><a href="#require">Require</a></code> pour confectionner une
     logique d'autorisation complexe.</p>
 
     <p>L'exemple ci-dessous illustre la logique d'autorisation suivante.
@@ -134,7 +132,7 @@ Alias /secure /webpages/secure
     <code>ventes</code> comme valeur de l'attribut LDAP
     <code>dept</code>. De plus, pour pouvoir accéder à la ressource,
     l'utilisateur ne doit appartenir ni au groupe <code>temps</code>, ni
-    au groupe LDAP <code>Employes temporaires</code>.</p>
+    au groupe LDAP <code>Employés temporaires</code>.</p>
 
     <pre class="prettyprint lang-config">
 &lt;Directory /www/mydocs&gt;
@@ -145,14 +143,14 @@ Alias /secure /webpages/secure
             Require group admins
             Require ldap-group cn=Administrators,o=Airius
                 &lt;RequireAny&gt;
-                Require group ventes
-                Require ldap-attribute dept="ventes"
+                Require group sales
+                Require ldap-attribute dept="sales"
                 &lt;/RequireAny&gt;
             &lt;/RequireAll&gt;
         &lt;/RequireAny&gt;
         &lt;RequireNone&gt;
             Require group temps
-            Require ldap-group cn=Employes Temporaires,o=Airius
+            Require ldap-group cn=Temporary Employees,o=Airius
         &lt;/RequireNone&gt;
     &lt;/RequireAll&gt;
 &lt;/Directory&gt;
@@ -473,7 +471,7 @@ Require group admin
 
 
     <p>Les contrôles d'accès appliqués de cette manière sont effectifs
-    pour <strong>toutes</strong> les méthodes. <strong>C'est en effet
+    pour <strong>toutes</strong> les méthodes. <strong>C'est d'ailleurs
     ce que l'on souhaite en général.</strong> Si vous voulez n'appliquer
     les contrôles d'accès qu'à certaines méthodes, tout en laissant les
     autres méthodes sans protection, placez la directive
@@ -511,13 +509,13 @@ Require group admin
     <code class="directive">Require</code> suivantes sont ignorées.</p>
 
     <div class="warning"><h3>Avertissement à propos de la sécurité</h3>
-    <p>Prêtez une attention particulière aux directives d'autorisation
+    <p>Prettez une attention particulière aux directives d'autorisation
     définies
     au sein des sections <code class="directive"><a href="../mod/core.html#location">Location</a></code>
     qui se chevauchent avec des contenus servis depuis le système de
     fichiers. Par défaut, les configurations définies dans ces <a href="../sections.html#merging">sections</a> l'emportent sur les
     configurations d'autorisations définies au sein des sections
-    <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> et <code class="directive"><a href="../mod/core.html#files">Files</a></code>.</p>
+    <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> et <code class="directive"><a href="../mod/core.html#files">Files</a></code> sections.</p>
     <p>La directive <code class="directive"><a href="#authmerging">AuthMerging</a></code> permet de contrôler
     la manière selon laquelle les configurations d'autorisations sont
     fusionnées au sein des sections précitées.</p>
@@ -525,8 +523,7 @@ Require group admin
 
 <h3>Voir aussi</h3>
 <ul>
-<li><a href="../howto/auth.html">Authentification, autorisation et
-contrôle d'accès</a></li>
+<li><a href="../howto/access.html">Tutoriel du contrôle d'accès</a></li>
 <li><a href="#logic">Conteneurs d'autorisation</a></li>
 <li><code class="module"><a href="../mod/mod_authn_core.html">mod_authn_core</a></code></li>
 <li><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></li>

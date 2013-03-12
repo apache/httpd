@@ -154,12 +154,14 @@ fichiers</dd>
 contexte</dd>
 <dt><a href="mod_headers.html" id="H" name="H">mod_headers</a></dt><dd>Personnalisation des en-têtes de requêtes et de réponses
 HTTP</dd>
-<dt><a href="mod_heartbeat.html">mod_heartbeat</a></dt><dd>Sends messages with server status to frontend proxy</dd>
-<dt><a href="mod_heartmonitor.html">mod_heartmonitor</a></dt><dd>Centralized monitor for mod_heartbeat origin servers</dd>
+<dt><a href="mod_heartbeat.html">mod_heartbeat</a></dt><dd>Envoie des messages d'état au mandataire frontal</dd>
+<dt><a href="mod_heartmonitor.html">mod_heartmonitor</a></dt><dd>Moniteur centralisé pour les serveurs d'origine mod_heartbeat</dd>
 <dt><a href="mod_ident.html" id="I" name="I">mod_ident</a></dt><dd>Recherche d'identité conformément à la RFC
 1413</dd>
-<dt><a href="mod_imagemap.html">mod_imagemap</a></dt><dd>Server-side imagemap processing</dd>
-<dt><a href="mod_include.html">mod_include</a></dt><dd>Server-parsed html documents (Server Side Includes)</dd>
+<dt><a href="mod_imagemap.html">mod_imagemap</a></dt><dd>Traitement des cartes des zones interactives d'une image
+(imagemaps) au niveau du serveur</dd>
+<dt><a href="mod_include.html">mod_include</a></dt><dd>Documents html interprétés par le serveur (Server Side
+Includes ou SSI)</dd>
 <dt><a href="mod_info.html">mod_info</a></dt><dd>Affiche une présentation complète de la configuration du
 serveur</dd>
 <dt><a href="mod_isapi.html">mod_isapi</a></dt><dd>Extensions ISAPI au coeur d'Apache pour Windows</dd>
@@ -184,11 +186,13 @@ serveur</dd>
 chaque requête</dd>
 <dt><a href="mod_lua.html">mod_lua</a></dt><dd>Fournit des points d'entrée Lua dans différentes parties du
 traitement des requêtes httpd</dd>
-<dt><a href="mod_mime.html" id="M" name="M">mod_mime</a></dt><dd>Associe les extensions des fichiers demandés avec l'action
+<dt><a href="mod_macro.html" id="M" name="M">mod_macro</a></dt><dd>Ce module permet d'utiliser des macros dans les fichiers
+de configuration Apache.</dd>
+<dt><a href="mod_mime.html">mod_mime</a></dt><dd>Associe les extensions des fichiers demandés avec l'action
 déclenchée par ces fichiers et avec leur contenu (type MIME, langue,
 jeu de caractère et codage)</dd>
-<dt><a href="mod_mime_magic.html">mod_mime_magic</a></dt><dd>Determines the MIME type of a file
-    by looking at a few bytes of its contents</dd>
+<dt><a href="mod_mime_magic.html">mod_mime_magic</a></dt><dd>Détermine le type MIME d'un fichier à partir de quelques
+octets de son contenu</dd>
 <dt><a href="mod_negotiation.html" id="N" name="N">mod_negotiation</a></dt><dd>Effectue la <a href="../content-negotiation.html">négociation de
 contenu</a></dd>
 <dt><a href="mod_nw_ssl.html">mod_nw_ssl</a></dt><dd>Active le chiffrement SSL pour Netware</dd>
@@ -224,7 +228,8 @@ filtres en sortie.</dd>
 pour la requête par l'adresse IP présentée par un mandataire ou un
 répartiteur de charge via les en-têtes de la requête.
 </dd>
-<dt><a href="mod_reqtimeout.html">mod_reqtimeout</a></dt><dd>Set timeout and minimum data rate for receiving requests
+<dt><a href="mod_reqtimeout.html">mod_reqtimeout</a></dt><dd>Définit le délai maximum et le taux minimum de transfert des
+données pour la réception des requêtes
 </dd>
 <dt><a href="mod_request.html">mod_request</a></dt><dd>Filtres permettant de traiter et de mettre à disposition
 les corps de requêtes HTTP</dd>
@@ -239,8 +244,10 @@ règles permettant de réécrire les URLs des requêtes
 <dt><a href="mod_session_dbd.html">mod_session_dbd</a></dt><dd>Support des session basé sur DBD/SQL</dd>
 <dt><a href="mod_setenvif.html">mod_setenvif</a></dt><dd>Permet de définir des variables d'environnement en fonction
 de caractéristiques de la requête</dd>
-<dt><a href="mod_slotmem_plain.html">mod_slotmem_plain</a></dt><dd>Slot-based shared memory provider.</dd>
-<dt><a href="mod_slotmem_shm.html">mod_slotmem_shm</a></dt><dd>Slot-based shared memory provider.</dd>
+<dt><a href="mod_slotmem_plain.html">mod_slotmem_plain</a></dt><dd>Fournisseur de mémoire partagée à base de
+slots.</dd>
+<dt><a href="mod_slotmem_shm.html">mod_slotmem_shm</a></dt><dd>Fournisseur de mémoire partagée basée sur les
+slots.</dd>
 <dt><a href="mod_so.html">mod_so</a></dt><dd>Chargement de modules ou de code exécutable au cours du
 démarrage ou du redémarrage du serveur</dd>
 <dt><a href="mod_socache_dbm.html">mod_socache_dbm</a></dt><dd>Fournisseur de cache d'objets partagés basé sur DBM.</dd>
@@ -266,8 +273,8 @@ Journalisation <em>Clickstream</em> des liens parcourus par un
 utilisateur sur un site
 </dd>
 <dt><a href="mod_version.html" id="V" name="V">mod_version</a></dt><dd>Version dependent configuration</dd>
-<dt><a href="mod_vhost_alias.html">mod_vhost_alias</a></dt><dd>Provides for dynamically configured mass virtual
-hosting</dd>
+<dt><a href="mod_vhost_alias.html">mod_vhost_alias</a></dt><dd>Permet de configurer dynamiquement l'hébergement virtuel de
+masse</dd>
 <dt><a href="mod_watchdog.html" id="W" name="W">mod_watchdog</a></dt><dd>provides infrastructure for other modules to periodically run 
     tasks</dd>
 <dt><a href="mod_xml2enc.html" id="X" name="X">mod_xml2enc</a></dt><dd>Support avancé de l'internationalisation et des jeux de
