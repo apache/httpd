@@ -726,8 +726,8 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
       all. It does not even update the <code>SCRIPT_URx</code>
       environment variables.</p>
 
-      <p>Use this directive to disable the module instead of
-      commenting out all the <code class="directive"><a href="#rewriterule">RewriteRule</a></code> directives!</p>
+      <p>Use this directive to disable rules in a particular contact,
+      rather than commenting out all the <code class="directive"><a href="#rewriterule">RewriteRule</a></code> directives.</p>
 
       <p>Note that rewrite configurations are not
       inherited by virtual hosts. This means that you need to have a

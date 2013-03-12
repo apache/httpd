@@ -50,11 +50,11 @@
   <modulefile>mod_file_cache.xml.fr</modulefile>
   <modulefile>mod_filter.xml.fr</modulefile>
   <modulefile>mod_headers.xml.fr</modulefile>
-  <modulefile>mod_heartbeat.xml</modulefile>
-  <modulefile>mod_heartmonitor.xml</modulefile>
+  <modulefile>mod_heartbeat.xml.fr</modulefile>
+  <modulefile>mod_heartmonitor.xml.fr</modulefile>
   <modulefile>mod_ident.xml.fr</modulefile>
-  <modulefile>mod_imagemap.xml</modulefile>
-  <modulefile>mod_include.xml</modulefile>
+  <modulefile>mod_imagemap.xml.fr</modulefile>
+  <modulefile>mod_include.xml.fr</modulefile>
   <modulefile>mod_info.xml.fr</modulefile>
   <modulefile>mod_isapi.xml.fr</modulefile>
   <modulefile>mod_lbmethod_bybusyness.xml.fr</modulefile>
@@ -67,8 +67,9 @@
   <modulefile>mod_log_forensic.xml.fr</modulefile>
   <modulefile>mod_logio.xml.fr</modulefile>
   <modulefile>mod_lua.xml.fr</modulefile>
+  <modulefile>mod_macro.xml.fr</modulefile>
   <modulefile>mod_mime.xml.fr</modulefile>
-  <modulefile>mod_mime_magic.xml</modulefile>
+  <modulefile>mod_mime_magic.xml.fr</modulefile>
   <modulefile>mod_negotiation.xml.fr</modulefile>
   <modulefile>mod_nw_ssl.xml.fr</modulefile>
   <modulefile>mod_privileges.xml.fr</modulefile>
@@ -86,7 +87,7 @@
   <modulefile>mod_ratelimit.xml.fr</modulefile>
   <modulefile>mod_reflector.xml.fr</modulefile>
   <modulefile>mod_remoteip.xml.fr</modulefile>
-  <modulefile>mod_reqtimeout.xml</modulefile>
+  <modulefile>mod_reqtimeout.xml.fr</modulefile>
   <modulefile>mod_request.xml.fr</modulefile>
   <modulefile>mod_rewrite.xml.fr</modulefile>
   <modulefile>mod_sed.xml.fr</modulefile>
@@ -95,8 +96,8 @@
   <modulefile>mod_session_crypto.xml.fr</modulefile>
   <modulefile>mod_session_dbd.xml.fr</modulefile>
   <modulefile>mod_setenvif.xml.fr</modulefile>
-  <modulefile>mod_slotmem_plain.xml</modulefile>
-  <modulefile>mod_slotmem_shm.xml</modulefile>
+  <modulefile>mod_slotmem_plain.xml.fr</modulefile>
+  <modulefile>mod_slotmem_shm.xml.fr</modulefile>
   <modulefile>mod_so.xml.fr</modulefile>
   <modulefile>mod_socache_dbm.xml.fr</modulefile>
   <modulefile>mod_socache_dc.xml.fr</modulefile>
@@ -112,7 +113,7 @@
   <modulefile>mod_userdir.xml.fr</modulefile>
   <modulefile>mod_usertrack.xml.fr</modulefile>
   <modulefile>mod_version.xml</modulefile>
-  <modulefile>mod_vhost_alias.xml</modulefile>
+  <modulefile>mod_vhost_alias.xml.fr</modulefile>
   <modulefile>mod_watchdog.xml</modulefile>
   <modulefile>mod_xml2enc.xml.fr</modulefile>
   <modulefile>mpm_common.xml.fr</modulefile>
