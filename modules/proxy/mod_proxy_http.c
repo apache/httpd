@@ -722,10 +722,7 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     apr_off_t bytes_read = 0;
     apr_off_t bytes;
     int force10, rv;
-    proxy_dir_conf *dconf;
     conn_rec *origin = p_conn->connection;
-
-    dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
 
     if (apr_table_get(r->subprocess_env, "force-proxy-request-1.0")) {
         if (r->expecting_100) {
