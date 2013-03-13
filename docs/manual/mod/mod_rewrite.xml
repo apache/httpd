@@ -552,10 +552,10 @@ Alias /myapp /opt/myapp-1.2.3
                   been determined by the server at the time
                   <code>REQUEST_FILENAME</code> is referenced. Otherwise,
                   such as when used in virtual host context, the same
-                  value as <code>REQUEST_URI</code>.  Depending on the vaue of 
+                  value as <code>REQUEST_URI</code>.  Depending on the value of 
                   <directive module="core">AcceptPathInfo</directive>, the
                   server may have only used some leading components of the 
-                  <code>REQUEST_URI</code> to map the requet to a file.
+                  <code>REQUEST_URI</code> to map the request to a file.
                   </dd>
 
                   <dt><code>HTTPS</code></dt>
