@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1452834:1455272 (outdated) -->
+<!-- English Revision : 1455272 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -998,7 +998,7 @@ commandes aupr&egrave;s des moteurs de base de donn&eacute;es les plus courants
     <p>L'exemple suivant montre comment se connecter &agrave; une base de
 donn&eacute;es et extraire des informations d'une table :</p>
     <highlight language="lua">
-function handler(r)
+function handle(r)
     -- connexion &agrave; la base de donn&eacute;es
     local database, err = r:dbacquire("mysql", "server=localhost,user=root,dbname=mydb")
     if not err then
