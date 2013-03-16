@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1448507:1455377 (outdated) -->
+<!-- English Revision : 1456072 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -122,9 +122,10 @@ moteur de r&eacute;&eacute;criture</description>
       mettra pas &agrave; jour les variables d'environnement
       <code>SCRIPT_URx</code>.</p>
 
-      <p>Pour d&eacute;sactiver le module, il vaut mieux utiliser cette
-      directive que commenter toutes les directives <directive
-      module="mod_rewrite">RewriteRule</directive> !</p>
+      <p>Plut&ocirc;t que de commenter toutes les directives <directive
+      module="mod_rewrite">RewriteRule</directive>, il est pr&eacute;f&eacute;rable
+      d'utiliser cette directive si l'on souhaite d&eacute;sactiver les
+      r&egrave;gles de r&eacute;&eacute;criture dans un contexte particulier.</p>
 
       <p>Notez que les  h&ocirc;tes virtuels n'h&eacute;ritent pas des
       configurations de r&eacute;&eacute;criture. Ceci implique que vous devez
@@ -603,7 +604,12 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 		  au moment o&ugrave; on y fait r&eacute;f&eacute;rence. Dans le cas
 		  contraire, et en particulier dans le cas d'un serveur
 		  virtuel, <code>REQUEST_FILENAME</code> contient la
-		  valeur de <code>REQUEST_URI</code>.</dd>
+		  valeur de <code>REQUEST_URI</code>. En fonction de la
+		  valeur de la directive <directive
+		  module="core">AcceptPathInfo</directive>, le serveur
+		  peut n'utiliser que certains &eacute;l&eacute;ments de t&ecirc;te du
+		  <code>REQUEST_URI</code> pour d&eacute;terminer &agrave; quel
+		  fichier correspond la requ&ecirc;te.</dd>
 
                   <dt><code>HTTPS</code></dt>
 
