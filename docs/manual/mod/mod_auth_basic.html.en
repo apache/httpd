@@ -46,6 +46,7 @@
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#authbasicauthoritative">AuthBasicAuthoritative</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authbasicfake">AuthBasicFake</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authbasicprovider">AuthBasicProvider</a></li>
 </ul>
 <h3>See also</h3>
@@ -80,6 +81,62 @@ lower level modules</td></tr>
     that are not configured with the <code class="directive"><a href="#authbasicprovider">AuthBasicProvider</a></code>
     directive.  When using such modules, the order of processing
     is determined in the modules' source code and is not configurable.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthBasicFake" id="AuthBasicFake">AuthBasicFake</a> <a name="authbasicfake" id="authbasicfake">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fake basic authentication using the given expressions for
+username and password</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthBasicFake username password</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_basic</td></tr>
+</table>
+    <p>The username and password specified are combined into an
+    Authorization header, which is passed to the server or service
+    behind the webserver. Both the username and password fields are
+    interpreted using the <a href="../expr.html">expression parser</a>,
+    which allows both the username and password to be set based on
+    request parameters.</p>
+
+    <p>In this example, we pass a fixed username and password to a
+    backend server.</p>
+
+    <div class="example"><h3>Fixed Example</h3><pre class="prettyprint lang-config">
+&lt;Location /demo&gt;
+    AuthBasicFake demo demopass
+&lt;/Location&gt;
+    </pre>
+</div>
+
+    <p>In this example, we pass the email address extracted from a client
+    certificate, extending the functionality of the FakeBasicAuth option
+    within the <code class="directive"><a href="../mod/mod_ssl.html#ssloptions">SSLOptions</a></code>
+    directive. Like the FakeBasicAuth option, the password is set to the
+    fixed string "password".</p>
+
+    <div class="example"><h3>Certificate Example</h3><pre class="prettyprint lang-config">
+&lt;Location /secure&gt;
+    AuthBasicFake %{SSL_CLIENT_S_DN_Email} password
+&lt;/Location&gt;
+    </pre>
+</div>
+
+    <p>Extending the above example, we generate a password by hashing the
+    email address with a fixed passphrase, and passing the hash to the
+    backend server. This can be used to gate into legacy systems that do
+    not support client certificates.</p>
+
+    <div class="example"><h3>Password Example</h3><pre class="prettyprint lang-config">
+&lt;Location /secure&gt;
+    AuthBasicFake %{SSL_CLIENT_S_DN_Email} %{sha1:passphrase-%{SSL_CLIENT_S_DN_Email}}
+&lt;/Location&gt;
+    </pre>
+</div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
