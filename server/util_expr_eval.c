@@ -1019,6 +1019,18 @@ static const char *escape_func(ap_expr_eval_ctx_t *ctx, const void *data,
     return ap_escape_uri(ctx->p, arg);
 }
 
+static const char *base64_func(ap_expr_eval_ctx_t *ctx, const void *data,
+                               const char *arg)
+{
+    return ap_pbase64encode(ctx->p, (char *)arg);
+}
+
+static const char *unbase64_func(ap_expr_eval_ctx_t *ctx, const void *data,
+                               const char *arg)
+{
+    return ap_pbase64decode(ctx->p, arg);
+}
+
 #define MAX_FILE_SIZE 10*1024*1024
 static const char *file_func(ap_expr_eval_ctx_t *ctx, const void *data,
                              char *arg)
@@ -1598,6 +1610,8 @@ static const struct expr_provider_single string_func_providers[] = {
     { unescape_func,        "unescape",       NULL, 0 },
     { file_func,            "file",           NULL, 1 },
     { filesize_func,        "filesize",       NULL, 1 },
+    { base64_func,          "base64",         NULL, 0 },
+    { unbase64_func,        "unbase64",       NULL, 0 },
     { NULL, NULL, NULL}
 };
 /* XXX: base64 encode/decode ? */
