@@ -94,6 +94,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     trunk patch: http://svn.apache.org/r1453604
     2.4.x patch: trunk patch works
     +1: humbedooh, jim, covener
+
+  * mod_ssl: Quiet FIPS mode weak keys disabled and FIPS not selected emits
+    in the error log to debug level.  [William Rowe]
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1447993
+    2.4.x patch: trunk patch applies.
+    +1: wrowe, covener, minfrin
     
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -132,12 +138,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  (20130119 - updated to include minor mmn bump)
     +1: druggeri, jim
     covener: minor MMM bump?  (Thanks for reminder. This is done. -druggeri)
-
-  * mod_ssl: Quiet FIPS mode weak keys disabled and FIPS not selected emits
-    in the error log to debug level.  [William Rowe]
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1447993
-    2.4.x patch: trunk patch applies.
-    +1: wrowe, covener
 
   * mod_lua: Sync 2.4 branch with trunk. This includes (but is not limited to) 
              Server pools, new apr functions for the request_rec table, input/
