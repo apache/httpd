@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE quickreference SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1070904 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<quickreference metafile="quickreference.xml.meta">
+  <title>Document de r&eacute;f&eacute;rence rapide des directives</title>
+  <summary>
+    <p>Le document de r&eacute;f&eacute;rence rapide des directives montre l'usage,
+    les valeurs par d&eacute;faut, le statut,
+    et le contexte de chaque directive de configuration d'Apache.  Pour plus
+    d'informations sur chacun de ces termes, voir le <a
+    href="directive-dict.html">Dictionnaire des directives</a>.</p>
+
+    <p>La premi&egrave;re colonne donne le nom de la directive et son usage.
+    Si la directive poss&egrave;de une valeur par d&eacute;faut, elle est indiqu&eacute;e dans la
+    deuxi&egrave;me colonne.
+    Si la valeur par d&eacute;faut est trop grande pour pouvoir &ecirc;tre affich&eacute;e,
+    elle sera tronqu&eacute;e et suivie d'un "+".</p>
+
+    <p>Les troisi&egrave;me et quatri&egrave;me colonnes &eacute;num&egrave;rent les contextes dans
+    lesquels la directive est applicable ainsi que son statut en accord avec le
+    tableau des l&eacute;gendes ci-dessous.</p>
+  </summary>
+</quickreference>
