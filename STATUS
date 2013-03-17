@@ -185,6 +185,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: http://svn.apache.org/r1457450
     2.4.x patch: trunk patch applies.
     +1: minfrin
+    sf asks: Why base64? Isn't hex encoding more common? Is this supposed to
+             be compatible to some ldap server?
+             Maybe the function name should be sha1b64 or aprsha1 to make it
+             clear that this is not what sha1sum produces?
+             BTW, why not use apr_sha1_base64()?
 
   * mod_auth_basic: Add a generic mechanism to fake basic authentication
     using the ap_expr parser. This allows the administrator to construct
