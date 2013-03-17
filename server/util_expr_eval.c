@@ -28,6 +28,8 @@
 
 #include "apr_lib.h"
 #include "apr_fnmatch.h"
+#include "apr_base64.h"
+#include "apr_sha1.h"
 
 #include <limits.h>     /* for INT_MAX */
 
@@ -1031,6 +1033,25 @@ static const char *unbase64_func(ap_expr_eval_ctx_t *ctx, const void *data,
     return ap_pbase64decode(ctx->p, arg);
 }
 
+static const char *sha1_func(ap_expr_eval_ctx_t *ctx, const void *data,
+                               const char *arg)
+{
+    int l;
+    apr_sha1_ctx_t context;
+    apr_byte_t digest[APR_SHA1_DIGESTSIZE];
+    char *out = apr_palloc(ctx->p, 28);
+
+    apr_sha1_init(&context);
+    apr_sha1_update(&context, arg, strlen(arg));
+    apr_sha1_final(digest, &context);
+
+    /* SHA1 hash is always 20 chars */
+    l = apr_base64_encode_binary(out, digest, sizeof(digest));
+    out[l] = '\0';
+
+    return out;
+}
+
 #define MAX_FILE_SIZE 10*1024*1024
 static const char *file_func(ap_expr_eval_ctx_t *ctx, const void *data,
                              char *arg)
@@ -1612,6 +1633,7 @@ static const struct expr_provider_single string_func_providers[] = {
     { filesize_func,        "filesize",       NULL, 1 },
     { base64_func,          "base64",         NULL, 0 },
     { unbase64_func,        "unbase64",       NULL, 0 },
+    { sha1_func,            "sha1",           NULL, 0 },
     { NULL, NULL, NULL}
 };
 /* XXX: base64 encode/decode ? */
