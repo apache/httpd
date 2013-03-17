@@ -472,6 +472,11 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>unescape</code></td>
         <td>Unescape %hex encoded string, leaving encoded slashes alone;
             return empty string if %00 is found</td><td></td></tr>
+    <tr><td><code>base64</code></td>
+        <td>Encode the string using base64 encoding</td><td></td></tr>
+    <tr><td><code>unbase64</code></td>
+        <td>Decode base64 encoded string, return truncated string if 0x00 is
+            found</td><td></td></tr>
     <tr><td><code>file</code></td>
         <td>Read contents from a file</td><td>yes</td></tr>
     <tr><td><code>filesize</code></td>
