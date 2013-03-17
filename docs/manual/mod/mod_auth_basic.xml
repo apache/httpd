@@ -109,4 +109,63 @@ lower level modules</description>
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>AuthBasicFake</name>
+<description>Fake basic authentication using the given expressions for
+username and password</description>
+<syntax>AuthBasicFake username password</syntax>
+<default>none</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>The username and password specified are combined into an
+    Authorization header, which is passed to the server or service
+    behind the webserver. Both the username and password fields are
+    interpreted using the <a href="../expr.html">expression parser</a>,
+    which allows both the username and password to be set based on
+    request parameters.</p>
+
+    <p>In this example, we pass a fixed username and password to a
+    backend server.</p>
+
+    <example><title>Fixed Example</title>
+    <highlight language="config">
+&lt;Location /demo&gt;
+    AuthBasicFake demo demopass
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <p>In this example, we pass the email address extracted from a client
+    certificate, extending the functionality of the FakeBasicAuth option
+    within the <directive module="mod_ssl">SSLOptions</directive>
+    directive. Like the FakeBasicAuth option, the password is set to the
+    fixed string "password".</p>
+
+    <example><title>Certificate Example</title>
+    <highlight language="config">
+&lt;Location /secure&gt;
+    AuthBasicFake %{SSL_CLIENT_S_DN_Email} password
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <p>Extending the above example, we generate a password by hashing the
+    email address with a fixed passphrase, and passing the hash to the
+    backend server. This can be used to gate into legacy systems that do
+    not support client certificates.</p>
+
+    <example><title>Password Example</title>
+    <highlight language="config">
+&lt;Location /secure&gt;
+    AuthBasicFake %{SSL_CLIENT_S_DN_Email} %{sha1:passphrase-%{SSL_CLIENT_S_DN_Email}}
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>

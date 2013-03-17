@@ -1292,6 +1292,11 @@ The available <em>option</em>s are:</p>
     live under MD5-based encryption (for instance under FreeBSD or BSD/OS,
     etc.) should use the following MD5 hash of the same word:
      ``<code>$1$OXLyS...$Owx8s2/m9/gfkcRVXzgoE/</code>''.</p>
+
+    <p>Note that the <directive module="mod_auth_basic">AuthBasicFake</directive>
+    directive within <module>mod_auth_basic</module> can be used as a more
+    general mechanism for faking basic authentication, giving control over the
+    structure of both the username and password.</p>
 </li>
 <li><code>StrictRequire</code>
     <p>
