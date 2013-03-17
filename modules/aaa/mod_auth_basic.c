@@ -376,6 +376,9 @@ static int authenticate_basic_fake(request_rec *r)
     if (!user || !*user) {
         ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02458)
                       "AuthBasicFake: empty username expression for URI '%s', ignoring", r->uri);
+
+        apr_table_unset(r->headers_in, "Authorization");
+
         return DECLINED;
     }
 
@@ -388,6 +391,9 @@ static int authenticate_basic_fake(request_rec *r)
     if (!pass || !*pass) {
         ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02459)
                       "AuthBasicFake: empty password expression for URI '%s', ignoring", r->uri);
+
+        apr_table_unset(r->headers_in, "Authorization");
+
         return DECLINED;
     }
 
