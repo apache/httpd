@@ -1577,6 +1577,7 @@ static const struct expr_provider_single string_func_providers[] = {
     { filesize_func,        "filesize",       NULL, 1 },
     { NULL, NULL, NULL}
 };
+/* XXX: base64 encode/decode ? */
 
 static const struct expr_provider_single unary_op_providers[] = {
     { op_nz,        "n", NULL,             0 },
