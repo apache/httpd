@@ -78,6 +78,7 @@
 <li><a href="mod_authn_anon.html#anonymous_verifyemail">Anonymous_VerifyEmail</a></li>
 <li><a href="event.html#asyncrequestworkerfactor">AsyncRequestWorkerFactor</a></li>
 <li><a href="mod_auth_basic.html#authbasicauthoritative">AuthBasicAuthoritative</a></li>
+<li><a href="mod_auth_basic.html#authbasicfake">AuthBasicFake</a></li>
 <li><a href="mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></li>
 <li><a href="mod_authn_dbd.html#authdbduserpwquery">AuthDBDUserPWQuery</a></li>
 <li><a href="mod_authn_dbd.html#authdbduserrealmquery">AuthDBDUserRealmQuery</a></li>

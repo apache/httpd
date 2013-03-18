@@ -452,12 +452,15 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 <tr><td><code>unbase64</code></td>
         <td>Decode base64 encoded string, return truncated string if 0x00 is
             found</td><td /></tr>
-<tr class="odd"><td><code>sha1</code></td>
-        <td>Hash the string using SHA1, then encode the hash with base64
+<tr class="odd"><td><code>md5</code></td>
+        <td>Hash the string using MD5, then encode the hash with hexadecimal
             encoding</td><td /></tr>
-<tr><td><code>file</code></td>
+<tr><td><code>sha1</code></td>
+        <td>Hash the string using SHA1, then encode the hash with hexadecimal
+            encoding</td><td /></tr>
+<tr class="odd"><td><code>file</code></td>
         <td>Read contents from a file</td><td>yes</td></tr>
-<tr class="odd"><td><code>filesize</code></td>
+<tr><td><code>filesize</code></td>
         <td>Return size of a file (or 0 if file does not exist or is not
             regular file)</td><td>yes</td></tr>
 </table>
