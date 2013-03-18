@@ -481,6 +481,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>unbase64</code></td>
         <td>Decode base64 encoded string, return truncated string if 0x00 is
             found</td><td></td></tr>
+    <tr><td><code>md5</code></td>
+        <td>Hash the string using MD5, then encode the hash with hexadecimal
+            encoding</td><td></td></tr>
     <tr><td><code>sha1</code></td>
         <td>Hash the string using SHA1, then encode the hash with hexadecimal
             encoding</td><td></td></tr>
