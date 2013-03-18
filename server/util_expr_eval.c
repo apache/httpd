@@ -1036,18 +1036,23 @@ static const char *unbase64_func(ap_expr_eval_ctx_t *ctx, const void *data,
 static const char *sha1_func(ap_expr_eval_ctx_t *ctx, const void *data,
                                const char *arg)
 {
-    int l;
     apr_sha1_ctx_t context;
-    apr_byte_t digest[APR_SHA1_DIGESTSIZE];
-    char *out = apr_palloc(ctx->p, 28);
+    apr_byte_t sha1[APR_SHA1_DIGESTSIZE];
+    char *hash, *out;
+    const char *hex = "0123456789abcdef";
+    int idx;
+
+    hash = out = apr_palloc(ctx->p, APR_SHA1_DIGESTSIZE*2+1);
 
     apr_sha1_init(&context);
     apr_sha1_update(&context, arg, strlen(arg));
-    apr_sha1_final(digest, &context);
+    apr_sha1_final(sha1, &context);
 
-    /* SHA1 hash is always 20 chars */
-    l = apr_base64_encode_binary(out, digest, sizeof(digest));
-    out[l] = '\0';
+    for (idx = 0; idx < APR_SHA1_DIGESTSIZE; idx++) {
+        *hash++ = hex[sha1[idx] >> 4];
+        *hash++ = hex[sha1[idx] & 0xF];
+    }
+    *hash++ = '\0';
 
     return out;
 }
