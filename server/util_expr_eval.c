@@ -25,6 +25,7 @@
 #include "http_request.h"
 #include "ap_provider.h"
 #include "util_expr_private.h"
+#include "util_md5.h"
 
 #include "apr_lib.h"
 #include "apr_fnmatch.h"
@@ -1051,6 +1052,13 @@ static const char *sha1_func(ap_expr_eval_ctx_t *ctx, const void *data,
     return out;
 }
 
+static const char *md5_func(ap_expr_eval_ctx_t *ctx, const void *data,
+                               const char *arg)
+{
+	return ap_md5(ctx->p, (const unsigned char *)arg);
+}
+
+
 #define MAX_FILE_SIZE 10*1024*1024
 static const char *file_func(ap_expr_eval_ctx_t *ctx, const void *data,
                              char *arg)
@@ -1633,6 +1641,7 @@ static const struct expr_provider_single string_func_providers[] = {
     { base64_func,          "base64",         NULL, 0 },
     { unbase64_func,        "unbase64",       NULL, 0 },
     { sha1_func,            "sha1",           NULL, 0 },
+    { md5_func,             "md5",            NULL, 0 },
     { NULL, NULL, NULL}
 };
 
