@@ -1038,21 +1038,15 @@ static const char *sha1_func(ap_expr_eval_ctx_t *ctx, const void *data,
 {
     apr_sha1_ctx_t context;
     apr_byte_t sha1[APR_SHA1_DIGESTSIZE];
-    char *hash, *out;
-    const char *hex = "0123456789abcdef";
-    int idx;
+    char *out;
 
-    hash = out = apr_palloc(ctx->p, APR_SHA1_DIGESTSIZE*2+1);
+    out = apr_palloc(ctx->p, APR_SHA1_DIGESTSIZE*2+1);
 
     apr_sha1_init(&context);
     apr_sha1_update(&context, arg, strlen(arg));
     apr_sha1_final(sha1, &context);
 
-    for (idx = 0; idx < APR_SHA1_DIGESTSIZE; idx++) {
-        *hash++ = hex[sha1[idx] >> 4];
-        *hash++ = hex[sha1[idx] & 0xF];
-    }
-    *hash++ = '\0';
+    ap_bin2hex(sha1, APR_SHA1_DIGESTSIZE, out);
 
     return out;
 }
