@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_lua.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_lua.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournit des points d'entrée Lua dans différentes parties du
 traitement des requêtes httpd</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
@@ -1079,7 +1077,7 @@ commandes auprès des moteurs de base de données les plus courants
     <p>L'exemple suivant montre comment se connecter à une base de
 données et extraire des informations d'une table :</p>
     <pre class="prettyprint lang-lua">
-function handler(r)
+function handle(r)
     -- connexion à la base de données
     local database, err = r:dbacquire("mysql", "server=localhost,user=root,dbname=mydb")
     if not err then
