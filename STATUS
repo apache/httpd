@@ -184,6 +184,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     strings within the parser.
     trunk patch: http://svn.apache.org/r1457450
                  http://svn.apache.org/r1457610
+                 http://svn.apache.org/r1457995
     2.4.x patch: trunk patch applies.
     +1: minfrin
 
