@@ -183,18 +183,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * ap_expr: Expression parser: Add the ability to apply a SHA1 hash to
     strings within the parser.
     trunk patch: http://svn.apache.org/r1457450
+                 http://svn.apache.org/r1457610
     2.4.x patch: trunk patch applies.
     +1: minfrin
-    sf asks: Why base64? Isn't hex encoding more common? Is this supposed to
-             be compatible to some ldap server?
-             Maybe the function name should be sha1b64 or aprsha1 to make it
-             clear that this is not what sha1sum produces?
-             BTW, why not use apr_sha1_base64()?
-    minfrin replies: apr_sha1_base64() prepends "{SHA}" to the output, and
-                     it should be up to the admin if they want that or not
-                     and add it themselves. As to hex encoding, that would be
-                     preferable, we don't currently have a convenience
-                     function to do that, or do we?
 
   * mod_auth_basic: Add a generic mechanism to fake basic authentication
     using the ap_expr parser. This allows the administrator to construct
