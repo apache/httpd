@@ -159,7 +159,7 @@ which means that the cookie is inaccessible to JavaScript code on
 browsers that support this feature.</dd>
 </dl>
 
-<p>Several examples are offered here:</p>
+<p>Consider this example:</p>
 
 <highlight language="config">
 RewriteEngine On
