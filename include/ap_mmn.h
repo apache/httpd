@@ -418,6 +418,7 @@
  * 20121222.5 (2.5.0-dev)  Add "r" and "must_rebind" to util_ldap_connection_t
  * 20121222.6 (2.5.0-dev)  Add ap_proxy_create_hdrbrgd() and
  *                         ap_proxy_pass_brigade()
+ * 20121222.7 (2.5.0-dev)  Add ap_remove_input|output_filter_byhandle()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
