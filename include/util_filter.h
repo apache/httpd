@@ -486,6 +486,25 @@ AP_DECLARE(void) ap_remove_input_filter(ap_filter_t *f);
 
 AP_DECLARE(void) ap_remove_output_filter(ap_filter_t *f);
 
+/**
+ * Remove an input filter from either the request or connection stack
+ * it is associated with.
+ * @param next   The filter stack to search
+ * @param handle The filter handle (name) to remove
+ * @return APR_SUCCESS on removal or error
+ */
+AP_DECLARE(apr_status_t) ap_remove_input_filter_byhandle(ap_filter_t *next,
+                                                         const char *handle);
+/**
+ * Remove an output filter from either the request or connection stack
+ * it is associated with.
+ * @param next   The filter stack to search
+ * @param handle The filter handle (name) to remove
+ * @return APR_SUCCESS on removal or error
+ */
+AP_DECLARE(apr_status_t) ap_remove_output_filter_byhandle(ap_filter_t *next,
+                                                          const char *handle);
+
 /* The next two filters are for abstraction purposes only.  They could be
  * done away with, but that would require that we break modules if we ever
  * want to change our filter registration method.  The basic idea, is that

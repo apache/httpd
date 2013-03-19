@@ -479,6 +479,63 @@ AP_DECLARE(void) ap_remove_output_filter(ap_filter_t *f)
                       &f->c->output_filters);
 }
 
+AP_DECLARE(apr_status_t) ap_remove_input_filter_byhandle(ap_filter_t *next,
+                                                         const char *handle)
+{
+    ap_filter_t *found = NULL;
+    ap_filter_rec_t *filter;
+
+    if (!handle) {
+        return APR_EINVAL;
+    }
+    filter = ap_get_input_filter_handle(handle);
+    if (!filter) {
+        return APR_NOTFOUND;
+    }
+
+    while (next) {
+        if (next->frec == filter) {
+            found = next;
+            break;
+        }
+        next = next->next;
+    }
+    if (found) {
+        ap_remove_input_filter(found);
+        return APR_SUCCESS;
+    }
+    return APR_NOTFOUND;
+}
+
+AP_DECLARE(apr_status_t) ap_remove_output_filter_byhandle(ap_filter_t *next,
+                                                          const char *handle)
+{
+    ap_filter_t *found = NULL;
+    ap_filter_rec_t *filter;
+
+    if (!handle) {
+        return APR_EINVAL;
+    }
+    filter = ap_get_output_filter_handle(handle);
+    if (!filter) {
+        return APR_NOTFOUND;
+    }
+
+    while (next) {
+        if (next->frec == filter) {
+            found = next;
+            break;
+        }
+        next = next->next;
+    }
+    if (found) {
+        ap_remove_output_filter(found);
+        return APR_SUCCESS;
+    }
+    return APR_NOTFOUND;
+}
+
+
 /*
  * Read data from the next filter in the filter stack.  Data should be
  * modified in the bucket brigade that is passed in.  The core allocates the
