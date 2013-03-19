@@ -177,6 +177,12 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
     apr_interval_time_t saved_sock_timeout = UNSET;
     reqtimeout_con_cfg *ccfg = f->ctx;
 
+    /* connections can remove the filter even if configured */
+    if (apr_table_get(f->c->notes, "remove-reqtimeout")) {
+        ap_remove_input_filter(f);
+        return ap_get_brigade(f->next, bb, mode, block, readbytes);
+    }
+
     /* connections can bypass the filter even if configured */
     if (apr_table_get(f->c->notes, "bypass-reqtimeout")) {
         return ap_get_brigade(f->next, bb, mode, block, readbytes);
