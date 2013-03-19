@@ -179,7 +179,7 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
 
     /* connections can bypass the filter even if configured */
     if (apr_table_get(f->c->notes, "bypass-reqtimeout")) {
-        return APR_SUCCESS;
+        return ap_get_brigade(f->next, bb, mode, block, readbytes);
     }
 
     if (ccfg->in_keep_alive) {
