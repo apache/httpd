@@ -177,6 +177,11 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
     apr_interval_time_t saved_sock_timeout = UNSET;
     reqtimeout_con_cfg *ccfg = f->ctx;
 
+    /* connections can bypass the filter even if configured */
+    if (apr_table_get(f->c->notes, "bypass-reqtimeout")) {
+        return APR_SUCCESS;
+    }
+
     if (ccfg->in_keep_alive) {
         /* For this read, the normal keep-alive timeout must be used */
         ccfg->in_keep_alive = 0;
