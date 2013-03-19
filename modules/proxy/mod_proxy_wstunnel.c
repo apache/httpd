@@ -166,6 +166,8 @@ static int ap_proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
 
     header_brigade = apr_brigade_create(p, backconn->bucket_alloc);
 
+    apr_table_setn(c->notes, "bypass-reqtimeout", "1");
+
     ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, "sending request");
 
     rv = ap_proxy_create_hdrbrgd(p, header_brigade, r, conn,
