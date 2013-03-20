@@ -84,7 +84,7 @@ characters before applying the transformation.
 </p>
 
 <p><code>mod_rewrite</code> has to unescape URLs before mapping them,
-so backreferences will be unescaped at the time they are applied.
+so backreferences are unescaped at the time they are applied.
 Using the B flag, non-alphanumeric characters in backreferences
 will be escaped. For example, consider the rule:</p>
 
@@ -114,7 +114,7 @@ when the backend may break if presented with an unescaped URL.</p>
 <p>The [C] or [chain] flag indicates that the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> is chained to the next
 rule. That is, if the rule matches, then it is processed as usual and
 control moves on to the next rule. However, if it does not match, then
-the next rule, and any other rules that are chained together, will be
+the next rule, and any other rules that are chained together, are
 skipped.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -167,11 +167,11 @@ connections.</dd>
 <dt>httponly</dt>
 <dd>If set to <code>HttpOnly</code>, <code>true</code>, or
 <code>1</code>, the cookie will have the <code>HttpOnly</code> flag set,
-which means that the cookie will be inaccessible to JavaScript code on
+which means that the cookie is inaccessible to JavaScript code on
 browsers that support this feature.</dd>
 </dl>
 
-<p>Several examples are offered here:</p>
+<p>Consider this example:</p>
 
 <pre class="prettyprint lang-config">
 RewriteEngine On
@@ -183,8 +183,8 @@ RewriteRule ^/index\.html - [CO=frontdoor:yes:.example.com:1440:/]
 The "-" rewrite target tells mod_rewrite to pass the request
 through unchanged. Instead, it sets a cookie
 called 'frontdoor' to a value of 'yes'. The cookie is valid for any host
-in the <code>.example.com</code> domain. It will be set to expire in 1440
-minutes (24 hours) and will be returned for all URIs.</p>
+in the <code>.example.com</code> domain. It is set to expire in 1440
+minutes (24 hours) and is returned for all URIs.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -233,7 +233,7 @@ variables work.</p>
 </code></p></div>
 
 <p><code>VAL</code> may contain backreferences (<code>$N</code> or
-<code>%N</code>) which will be expanded.</p>
+<code>%N</code>) which are expanded.</p>
 
 <p>Using the short form</p>
 
