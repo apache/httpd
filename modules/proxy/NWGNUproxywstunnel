@@ -93,13 +93,13 @@ endif
 # This is used by the link 'name' directive to name the nlm.  If left blank
 # TARGET_nlm (see below) will be used.
 #
-NLM_NAME	= proxywebskt
+NLM_NAME	= proxywstunnel
 
 #
 # This is used by the link '-desc ' directive.
 # If left blank, NLM_NAME will be used.
 #
-NLM_DESCRIPTION	= Apache $(VERSION_STR) Proxy Web Socket Module
+NLM_DESCRIPTION	= Apache $(VERSION_STR) Proxy Web Socket Tunnel Module
 
 #
 # This is used by the '-threadname' directive.  If left blank,
