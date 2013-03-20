@@ -121,7 +121,7 @@ static void register_hooks(void)
 
       <p>In the <code>mod_mmap_static</code> case I didn't care about the
       <code>post_config</code> stage, but the <code>mmap_static_xlat</code>
-      <strong>must</strong> be called after the core module had done it's name
+      <strong>must</strong> be called after the core module had done its name
       translation, hence the use of the aszPre to define a modifier to the
       position <code>HOOK_LAST</code>.</p>
     
