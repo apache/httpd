@@ -88,7 +88,7 @@ Negotiation</a></li>
     <p>httpd supports 'server driven' content negotiation, as
     defined in the HTTP/1.1 specification. It fully supports the
     <code>Accept</code>, <code>Accept-Language</code>,
-    <code>Accept-Charset</code> and<code>Accept-Encoding</code>
+    <code>Accept-Charset</code> and <code>Accept-Encoding</code>
     request headers. httpd also supports 'transparent'
     content negotiation, which is an experimental negotiation
     protocol defined in RFC 2295 and RFC 2296. It does not offer
