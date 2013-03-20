@@ -260,7 +260,7 @@ ProxyPass /test balancer://mycluster stickysession=JSESSIONID|jsessionid scolonp
 
 <section id="stickyness_troubleshooting">
     <title>Troubleshooting load balancer stickyness</title>
-    <p>If you experience stickyness errors, e.g. users loose their
+    <p>If you experience stickyness errors, e.g. users lose their
     application sessions and need to login again, you first want to
     check whether this is because the back-ends are sometimes unavailable
     or whether your configuration is wrong. To find out about possible
