@@ -165,7 +165,7 @@ TARGET_nlm = \
 	$(OBJDIR)/proxylbm_hb.nlm \
 	$(OBJDIR)/proxylbm_req.nlm \
 	$(OBJDIR)/proxylbm_traf.nlm \
-	$(OBJDIR)/proxywebskt.nlm \
+	$(OBJDIR)/proxywstunnel.nlm \
 	$(EOLIST)
 
 # If WITH_SERF and SERFSRC have been defined then build the mod_serf module
