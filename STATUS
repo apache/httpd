@@ -75,6 +75,7 @@ OLD ISSUES THAT WERE THOUGHT TO BE SHOWSTOPPERS FOR 2.4 BUT OBVIOUSLY WEREN'T:
 
   * the edge connection filter cannot be removed 
     http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=105366252619530&w=2
+    http://mail-archives.apache.org/mod_mbox/httpd-dev/200501.mbox/%3C41E30B42.4060202@stason.org%3E
 
     jerenkrantz asks: Why should this block a release?
 
