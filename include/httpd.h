@@ -2153,7 +2153,7 @@ AP_DECLARE(void *) ap_pcalloc_debug(apr_pool_t *p, apr_size_t size);
 #undef strstr
 # define strstr(s, c)  ap_strstr(s,c)
 
-#ifndef AP_DEBUG_NO_ALLOC_POISON
+#if !defined(AP_DEBUG_NO_ALLOC_POISON) && !APR_POOL_DEBUG
 /*
  * ap_palloc_debug initializes allocated memory to non-zero
  */
