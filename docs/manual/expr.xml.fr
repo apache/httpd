@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1446028:1458004 (outdated) -->
+<!-- English Revision : 1458004 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -47,6 +47,10 @@
 <seealso><directive module="core" type="section">If</directive></seealso>
 <seealso><directive module="core" type="section">ElseIf</directive></seealso>
 <seealso><directive module="core" type="section">Else</directive></seealso>
+<seealso><directive module="mod_auth_basic">AuthBasicFake</directive></seealso>
+<seealso><directive module="mod_auth_form">AuthFormLoginRequiredLocation</directive></seealso>
+<seealso><directive module="mod_auth_form">AuthFormLoginSuccessLocation</directive></seealso>
+<seealso><directive module="mod_auth_form">AuthFormLogoutLocation</directive></seealso>
 <seealso><directive module="mod_rewrite">RewriteCond</directive></seealso>
 <seealso><directive module="mod_setenvif">SetEnvIfExpr</directive></seealso>
 <seealso><directive module="mod_headers">Header</directive></seealso>
@@ -503,6 +507,17 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td>"D&eacute;s&eacute;chappe" les cha&icirc;nes cod&eacute;es
 	en hexad&eacute;cimal, en ne gardant encod&eacute;s que les slashes; renvoie la cha&icirc;ne vide
 	si la s&eacute;quence %00 est rencontr&eacute;e</td><td></td></tr>
+    <tr><td><code>base64</code></td>
+        <td>Encode la cha&icirc;ne en utilisant le codage base64</td><td></td></tr>
+    <tr><td><code>unbase64</code></td>
+        <td>D&eacute;code une cha&icirc;ne cod&eacute;e en base64, renvoie une cha&icirc;ne
+	tronqu&eacute;e si le caract&egrave;re 0x00 est rencontr&eacute;</td><td></td></tr>
+    <tr><td><code>md5</code></td>
+        <td>Effectue un hashage MD5 de la cha&icirc;ne, puis encode le hash
+	avec un codage hexad&eacute;cimal</td><td></td></tr>
+    <tr><td><code>sha1</code></td>
+        <td>Effectue un hashage SHA1 de la cha&icirc;ne, puis encode le hash
+	avec un codage hexad&eacute;cimal</td><td></td></tr>   
     <tr><td><code>file</code></td>
         <td>Lit le contenu d'un fichier</td><td>oui</td></tr>
     <tr><td><code>filesize</code></td>
