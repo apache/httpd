@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1437836:1457471 (outdated) -->
+<!-- English Revision : 1457471 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -120,6 +120,70 @@ niveau</description>
     utilise de tels modules, l'ordre dans lequel s'effectue le
     traitement est d&eacute;fini dans le code source des modules et n'est pas
     configurable.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthBasicFake</name>
+<description>Authentification de base simul&eacute;e &agrave; l'aide des nom
+d'utilisateur et mot de passe fournis</description>
+<syntax>AuthBasicFake username password</syntax>
+<default>none</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Les nom d'utilisateur et mot de passe sp&eacute;cifi&eacute;s sont rassembl&eacute;s
+    dans un en-t&ecirc;te d'autorisation qui est transmis au serveur ou au
+    service sous-jacent au serveur. Ces nom d'utilisateur et mot de
+    passe sont interpr&eacute;t&eacute;s par l'<a href="../expr.html">interpr&eacute;teur
+    d'expression</a>, ce qui permet de les d&eacute;finir en fonction de
+    param&egrave;tres de la requ&ecirc;te.</p>
+
+    <p>Dans l'exemple suivant, un nom d'utilisateur et un mot de passe
+    pr&eacute;d&eacute;finis sont transmis &agrave; un serveur d'arri&egrave;re-plan :</p>
+
+    <example><title>Exemple de transmission d'un nom d'utilisateur et
+    d'un mot de passe pr&eacute;d&eacute;finis</title>
+    <highlight language="config">
+&lt;Location /demo&gt;
+    AuthBasicFake demo demopass
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <p>Dans l'exemple suivant, l'adresse email extraite d'un certificat
+    client est transmise au serveur, &eacute;tendant par l&agrave;-m&ecirc;me la
+    fonctionnalit&eacute; de l'option FakeBasicAuth de la directive <directive
+    module="mod_ssl">SSLOptions</directive>. Comme avec l'option
+    FakeBasicAuth, le mot de passe se voit attribu&eacute; le contenu fixe de
+    la cha&icirc;ne "password".</p>
+
+    <example><title>Exemple d'utilisation avec un certificat</title>
+    <highlight language="config">
+&lt;Location /secure&gt;
+    AuthBasicFake %{SSL_CLIENT_S_DN_Email} password
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <p>Pour compl&eacute;ter l'exemple pr&eacute;c&eacute;dent, il est possible de g&eacute;n&eacute;rer la
+    valeur du mot de passe en proc&eacute;dant &agrave; un hashage de l'adresse email
+    &agrave; partir d'un mot d'une passphrase initial fix&eacute;e, puis de transmettre le
+    r&eacute;sultat obtenu au serveur d'arri&egrave;re-plan. Ceci peut s'av&eacute;rer utile
+    pour donner acc&egrave;s &agrave; des serveurs anciens qui ne supportent pas les
+    certificats clients.</p>
+
+    <example><title>Exemple de g&eacute;n&eacute;ration de mot de passe par hashage de
+    l'adresse email</title>
+    <highlight language="config">
+&lt;Location /secure&gt;
+    AuthBasicFake %{SSL_CLIENT_S_DN_Email} %{sha1:passphrase-%{SSL_CLIENT_S_DN_Email}}
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
 </usage>
 </directivesynopsis>
 
