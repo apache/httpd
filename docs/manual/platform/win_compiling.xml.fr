@@ -476,7 +476,7 @@ l'arborescence de d&eacute;veloppement</title>
 
 
 
-  </section>
+  
 	<note>Notez que seuls les fichiers <code>.dsp</code> sont
 	maintenus d'une distribution <code>release</code> &agrave; l'autre. Les
 	fichiers <code>.mak</code> ne sont PAS r&eacute;g&eacute;n&eacute;r&eacute;s, suite &agrave;
@@ -487,4 +487,5 @@ l'arborescence de d&eacute;veloppement</title>
 	fichiers <code>.mak</code> du projet. Ceci n'est pas n&eacute;cessaire
 	si vous effectuez la compilation depuis l'environnement
 	Microsoft Developer Studio.</note>
+</section>	
 </manualpage>
