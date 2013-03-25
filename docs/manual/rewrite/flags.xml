@@ -362,7 +362,7 @@ rules, as shown below.</p>
 
 <p> An alternative flag, [END], can be used to terminate not only the
 current round of rewrite processing but prevent any subsequent
-rewrite processing from occuring in per-directory (htaccess)
+rewrite processing from occurring in per-directory (htaccess)
 context. This does not apply to new requests resulting from external
 redirects.</p>
 
