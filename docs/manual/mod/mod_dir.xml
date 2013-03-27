@@ -213,7 +213,7 @@ is supported since 2.2.24</compatibility>
 	     <indent>
                   FallbackResource /blog/index.php<br />
              </indent>
-             &lt;/Directory&gt;
+             &lt;/Directory&gt;<br />
              &lt;Directory /web/example.com/htdocs/blog/images&gt;<br />
 	     <indent>
                   FallbackResource disabled<br />

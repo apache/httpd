@@ -226,7 +226,7 @@ is supported since 2.2.24</td></tr>
 	     <span class="indent">
                   FallbackResource /blog/index.php<br />
              </span>
-             &lt;/Directory&gt;
+             &lt;/Directory&gt;<br />
              &lt;Directory /web/example.com/htdocs/blog/images&gt;<br />
 	     <span class="indent">
                   FallbackResource disabled<br />
