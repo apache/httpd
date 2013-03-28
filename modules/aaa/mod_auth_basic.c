@@ -70,6 +70,8 @@ static void *merge_auth_basic_dir_config(apr_pool_t *p, void *basev, void *overr
             overrides->fake_set ? overrides->fakepass : base->fakepass;
     newconf->fake_set = overrides->fake_set || base->fake_set;
 
+    newconf->providers = overrides->providers ? overrides->providers : base->providers;
+
     return newconf;
 }
 
