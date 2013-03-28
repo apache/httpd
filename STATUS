@@ -196,6 +196,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/r1457504
     2.4.x patch: trunk patch applies (minus log-message-tags/next-number)
     +1: minfrin
+    -1: rpluem: Unless r1462266 http://svn.apache.org/r1462266 is added.
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
