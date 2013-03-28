@@ -2156,10 +2156,21 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
             conn->uds_path = uds_path;
         }
         else {
-            err = apr_sockaddr_info_get(&(conn->addr),
-                                        conn->hostname, APR_UNSPEC,
-                                        conn->port, 0,
-                                        conn->pool);
+            if (worker->s->is_address_reusable && !worker->s->disablereuse
+                && worker->cp->addr) {
+                /*
+                 * We got here because only conn->hostname was null.
+                 * If we have a worker->cp->addr we are allowed to reuse it
+                 * and hence save a DNS lookup.
+                 */
+                conn->addr = worker->cp->addr;
+            }
+            else {
+                err = apr_sockaddr_info_get(&(conn->addr),
+                                            conn->hostname, APR_UNSPEC,
+                                            conn->port, 0,
+                                            conn->pool);
+            }
         }
     }
     else if (!worker->cp->addr) {
