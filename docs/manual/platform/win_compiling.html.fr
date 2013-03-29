@@ -26,6 +26,8 @@
 <a href="../fr/platform/win_compiling.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/platform/win_compiling.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
 
     <p>Il y a de nombreux points importants à connaître avant de
@@ -474,7 +476,18 @@ l'arborescence de développement</a></h2>
 
 
 
-  </div></div>
+  
+	<div class="note">Notez que seuls les fichiers <code>.dsp</code> sont
+	maintenus d'une distribution <code>release</code> à l'autre. Les
+	fichiers <code>.mak</code> ne sont PAS régénérés, suite à
+	l'énorme perte de temps des relecteurs. Vous ne
+	pouvez donc pas utiliser les commandes <code>NMAKE</code>
+	ci-dessus pour compiler des fichiers de projet <code>.dsp</code>
+	révisés si vous n'exportez pas ensuite vous-même tous les
+	fichiers <code>.mak</code> du projet. Ceci n'est pas nécessaire
+	si vous effectuez la compilation depuis l'environnement
+	Microsoft Developer Studio.</div>
+</div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/platform/win_compiling.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/platform/win_compiling.html" title="Français">&nbsp;fr&nbsp;</a> |

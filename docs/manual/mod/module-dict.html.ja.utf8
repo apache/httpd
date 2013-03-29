@@ -22,6 +22,7 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.4</a></div><div id="page-content"><div id="preamble"><h1>Apache モジュールの解説で使用する用語</h1>
 <div class="toplang">
 <p><span>翻訳済み言語: </span><a href="../en/mod/module-dict.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/module-dict.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/module-dict.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/module-dict.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/module-dict.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
@@ -115,6 +116,7 @@
 </div></div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../en/mod/module-dict.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/module-dict.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/module-dict.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/module-dict.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/module-dict.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>

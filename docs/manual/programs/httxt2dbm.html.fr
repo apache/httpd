@@ -33,6 +33,10 @@ RewriteMap</h1>
     <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> avec le type
     de table <code>dbm</code>.
     </p>
+
+    <p>Si le fichier de sortie existe déjà, il ne sera pas tronqué. Les
+    nouvelles clés seront ajoutées et les clés préexistantes mises à
+    jour.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Syntaxe</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
