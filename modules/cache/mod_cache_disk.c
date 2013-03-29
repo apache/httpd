@@ -80,7 +80,7 @@ static char *header_file(apr_pool_t *p, disk_cache_conf *conf,
     }
 
     if (dobj->prefix) {
-        return apr_pstrcat(p, dobj->prefix, CACHE_VDIR_SUFFIX, "/",
+        return apr_pstrcat(p, dobj->prefix, CACHE_VDIR_SUFFIX "/",
                            dobj->hashfile, CACHE_HEADER_SUFFIX, NULL);
      }
      else {
@@ -98,7 +98,7 @@ static char *data_file(apr_pool_t *p, disk_cache_conf *conf,
     }
 
     if (dobj->prefix) {
-        return apr_pstrcat(p, dobj->prefix, CACHE_VDIR_SUFFIX, "/",
+        return apr_pstrcat(p, dobj->prefix, CACHE_VDIR_SUFFIX "/",
                            dobj->hashfile, CACHE_DATA_SUFFIX, NULL);
      }
      else {
@@ -385,6 +385,7 @@ static int create_entity(cache_handle_t *h, request_rec *r, const char *key, apr
     dobj->root_len = conf->cache_root_len;
 
     apr_pool_create(&pool, r->pool);
+    apr_pool_tag(pool, "mod_cache (create_entity)");
 
     file_cache_create(conf, &dobj->hdrs, pool);
     file_cache_create(conf, &dobj->vary, pool);
@@ -511,6 +512,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
     dobj->name = key;
 
     apr_pool_create(&pool, r->pool);
+    apr_pool_tag(pool, "mod_cache (open_entity)");
 
     file_cache_create(conf, &dobj->hdrs, pool);
     file_cache_create(conf, &dobj->vary, pool);
