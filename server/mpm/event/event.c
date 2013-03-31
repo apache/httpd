@@ -1037,8 +1037,6 @@ read_request:
             return;
     }
     else if (cs->pub.state == CONN_STATE_CHECK_REQUEST_LINE_READABLE) {
-        apr_status_t rc;
-
         /* It greatly simplifies the logic to use a single timeout value here
          * because the new element can just be added to the end of the list and
          * it will stay sorted in expiration time sequence.  If brand new
