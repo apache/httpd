@@ -556,9 +556,8 @@ static const char *set_crypto_passphrase_file(cmd_parms *cmd, void *config,
     filename = ap_server_root_relative(cmd->temp_pool, filename);
     rv = ap_pcfg_openfile(&file, cmd->temp_pool, filename);
     if (rv != APR_SUCCESS) {
-        return apr_psprintf(cmd->pool, "%s: Could not open file %s: %s",
-                            cmd->cmd->name, filename,
-                            apr_strerror(rv, buffer, sizeof(buffer)));
+        return apr_psprintf(cmd->pool, "%s: Could not open file %s: %pm",
+                            cmd->cmd->name, filename, &rv);
     }
 
     while (!(ap_cfg_getline(buffer, sizeof(buffer), file))) {
