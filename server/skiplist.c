@@ -368,7 +368,7 @@ AP_DECLARE(ap_skiplistnode *) ap_skiplist_insert_compare(ap_skiplist *sl, void *
          * this is a external insertion, we must insert into each index as
          * well
          */
-        ap_skiplistnode *p, *ni, *li;
+        ap_skiplistnode *ni, *li;
         li = ret;
         for (p = ap_skiplist_getlist(sl->index); p; ap_skiplist_next(sl->index, &p)) {
             ni = ap_skiplist_insert((ap_skiplist *) p->data, ret->data);
