@@ -62,7 +62,7 @@
 <h2><a name="down" id="down">Downloading Apache for Windows</a></h2>
     
 
-    <p>The Apache HTTP Server Project itself does not provide binary releases of 
+    <p>The Apache HTTP Server Project itself does not provide binary releases of
     software, only source code. If you cannot compile the Apache HTTP Server
     yourself, you can obtain a binary package from numerous binary distributions
     available on the Internet.</p>
@@ -150,7 +150,7 @@ RewriteRule (.*) ${lowercase:$1} [R,L]
       runtime, without recompiling the server. If Apache is compiled
       normally, it will install a number of optional modules in the
       <code>\Apache2.4\modules</code> directory. To activate these or
-      other modules, the new <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>
+      other modules, the <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>
       directive must be used. For example, to activate the status
       module, use the following (in addition to the status-activating
       directives in <code>access.conf</code>):</p>
@@ -427,8 +427,8 @@ RewriteRule (.*) ${lowercase:$1} [R,L]
     Programs. Change to the folder to which you installed Apache, type
     the command <code>httpd.exe</code>, and read the error message. Then
     change to the logs folder, and review the <code>error.log</code>
-    file for configuration mistakes. Assuming httpd was installed into 
-    <code>C:\Program Files\Apache Software Foundation\Apache2.4\</code>, 
+    file for configuration mistakes. Assuming httpd was installed into
+    <code>C:\Program Files\Apache Software Foundation\Apache2.4\</code>,
     you can do the following:</p>
 
     <div class="example"><p><code>
