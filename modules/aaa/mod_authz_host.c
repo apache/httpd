@@ -131,10 +131,8 @@ static const char *ip_parse_config(cmd_parms *cmd,
             return apr_psprintf(p, "ip address '%s' appears to be invalid", w);
         }
         else if (rv != APR_SUCCESS) {
-            char msgbuf[120];
-            apr_strerror(rv, msgbuf, sizeof msgbuf);
-            return apr_psprintf(p, "ip address '%s' appears to be invalid: %s",
-                                w, msgbuf);
+            return apr_psprintf(p, "ip address '%s' appears to be invalid: %pm",
+                                w, &rv);
         }
 
         if (parsed_subnets)
