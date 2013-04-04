@@ -181,7 +181,7 @@ LoadModule cache_module modules/mod_cache.so
     &lt;/IfModule&gt;
     
     # Lorsqu'on sert de mandataire, on ne met pas en cache la liste
-# des mises &agrave; jour de s&eacute;curit&eacute;
+    # des mises &agrave; jour de s&eacute;curit&eacute;
     CacheDisable http://security.update.server/update-list/
 &lt;/IfModule&gt;
       </highlight>
