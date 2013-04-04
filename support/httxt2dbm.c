@@ -39,7 +39,6 @@ static const char *output;
 static const char *format;
 static const char *shortname;
 static apr_file_t *errfile;
-static char errbuf[120];
 static int verbose;
 
 /* From mod_rewrite.c */
@@ -85,11 +84,11 @@ static void usage(void)
     "Usage: %s [-v] [-f format] -i SOURCE_TXT -o OUTPUT_DBM" NL
     NL
     "Options: " NL
-    " -v    More verbose output"NL
+    " -v    More verbose output" NL
     NL
-    " -i    Source Text File. If '-', use stdin."NL
+    " -i    Source Text File. If '-', use stdin." NL
     NL
-    " -o    Output DBM."NL
+    " -o    Output DBM." NL
     NL
     " -f    DBM Format.  If not specified, will use the APR Default." NL
     "           GDBM for GDBM files (%s)" NL
@@ -157,7 +156,7 @@ static apr_status_t to_dbm(apr_dbm_t *dbm, apr_file_t *fp, apr_pool_t *pool)
         dbmval.dsize = (c - value);
 
         if (verbose) {
-            apr_file_printf(errfile, "    '%s' -> '%s'"NL,
+            apr_file_printf(errfile, "    '%s' -> '%s'" NL,
                             dbmkey.dptr, dbmval.dptr);
         }
 
@@ -204,7 +203,7 @@ int main(int argc, const char *const argv[])
     rv = apr_getopt_init(&opt, pool, argc, argv);
 
     if (rv != APR_SUCCESS) {
-        apr_file_printf(errfile, "Error: apr_getopt_init failed."NL NL);
+        apr_file_printf(errfile, "Error: apr_getopt_init failed." NL NL);
         return 1;
     }
 
@@ -273,7 +272,7 @@ int main(int argc, const char *const argv[])
     }
 
     if (verbose) {
-        apr_file_printf(errfile, "DBM Format: %s"NL, format);
+        apr_file_printf(errfile, "DBM Format: %s" NL, format);
     }
 
     if (!strcmp(input, "-")) {
@@ -286,13 +285,13 @@ int main(int argc, const char *const argv[])
 
     if (rv != APR_SUCCESS) {
         apr_file_printf(errfile,
-                        "Error: Cannot open input file '%s': (%d) %s" NL NL,
-                         input, rv, apr_strerror(rv, errbuf, sizeof(errbuf)));
+                        "Error: Cannot open input file '%s': (%d) %pm" NL NL,
+                         input, rv, &rv);
         return 1;
     }
 
     if (verbose) {
-        apr_file_printf(errfile, "Input File: %s"NL, input);
+        apr_file_printf(errfile, "Input File: %s" NL, input);
     }
 
     rv = apr_dbm_open_ex(&outdbm, format, output, APR_DBM_RWCREATE,
@@ -307,21 +306,21 @@ int main(int argc, const char *const argv[])
 
     if (rv != APR_SUCCESS) {
         apr_file_printf(errfile,
-                        "Error: Cannot open output DBM '%s': (%d) %s" NL NL,
-                         output, rv, apr_strerror(rv, errbuf, sizeof(errbuf)));
+                        "Error: Cannot open output DBM '%s': (%d) %pm" NL NL,
+                         output, rv, &rv);
         return 1;
     }
 
     if (verbose) {
-        apr_file_printf(errfile, "DBM File: %s"NL, output);
+        apr_file_printf(errfile, "DBM File: %s" NL, output);
     }
 
     rv = to_dbm(outdbm, infile, pool);
 
     if (rv != APR_SUCCESS) {
         apr_file_printf(errfile,
-                        "Error: Converting to DBM: (%d) %s" NL NL,
-                         rv, apr_strerror(rv, errbuf, sizeof(errbuf)));
+                        "Error: Converting to DBM: (%d) %pm" NL NL,
+                         rv, &rv);
         return 1;
     }
 
