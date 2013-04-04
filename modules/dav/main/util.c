@@ -77,6 +77,30 @@ DAV_DECLARE(dav_error*) dav_push_error(apr_pool_t *p, int status,
     return err;
 }
 
+DAV_DECLARE(dav_error*) dav_join_error(dav_error *dest, dav_error *src)
+{
+    dav_error *curr = dest;
+
+    /* src error doesn't exist so nothing to join just return dest */
+    if (src == NULL) {
+        return dest;
+    }
+
+    /* dest error doesn't exist so nothing to join just return src */
+    if (curr == NULL) {
+        return src;
+    }
+
+    /* find last error in dest stack */
+    while (curr->prev != NULL) {
+        curr = curr->prev;
+    }
+
+    /* add the src error onto end of dest stack and return it */
+    curr->prev = src;
+    return dest;
+}
+
 DAV_DECLARE(void) dav_check_bufsize(apr_pool_t * p, dav_buffer *pbuf,
                                     apr_size_t extra_needed)
 {

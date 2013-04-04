@@ -419,6 +419,7 @@
  * 20121222.6 (2.5.0-dev)  Add ap_proxy_create_hdrbrgd() and
  *                         ap_proxy_pass_brigade()
  * 20121222.7 (2.5.0-dev)  Add ap_remove_input|output_filter_byhandle()
+ * 20121222.8 (2.5.0-dev)  Add dav_join_error()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -426,7 +427,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20121222
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 7                   /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 8                   /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
