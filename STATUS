@@ -120,6 +120,7 @@ RELEASE SHOWSTOPPERS:
      rjung: mod_proxy_ajp and mod_reqtimeout don't apply for 2.0.x
             I checked proxy_http and could not find a buggy code path.
             More eyes welcome.
+     covener: +1 to rjung
      jim: not a showstopper, imo
 
   *) SECURITY: CVE-2011-4317 (cve.mitre.org)
