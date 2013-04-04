@@ -2095,7 +2095,7 @@ static const char *add_cache_disable(cmd_parms *parms, void *dummy,
                                                   &cache_module);
 
     if (parms->path) {
-        if (!strcmp(url, "on")) {
+        if (!strcasecmp(url, "on")) {
             dconf->disable = 1;
             dconf->disable_set = 1;
             return NULL;
