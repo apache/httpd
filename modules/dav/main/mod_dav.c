@@ -995,8 +995,8 @@ static int dav_method_put(request_rec *r)
                 else {
                     /* XXX: should this actually be HTTP_BAD_REQUEST? */
                     http_err = HTTP_INTERNAL_SERVER_ERROR;
-                    msg = apr_psprintf(r->pool, "Could not get next bucket "
-                                       "brigade (URI: %s)", msg);
+                    msg = apr_psprintf(r->pool, "An error occurred while reading"
+                                       " the request body (URI: %s)", msg);
                 }
                 err = dav_new_error(r->pool, http_err, 0, rc, msg);
                 break;
@@ -1018,18 +1018,19 @@ static int dav_method_put(request_rec *r)
                     continue;
                 }
 
-                rc = apr_bucket_read(b, &data, &len, APR_BLOCK_READ);
-                if (rc != APR_SUCCESS) {
-                    err = dav_new_error(r->pool, HTTP_BAD_REQUEST, 0, rc,
-                                        apr_psprintf(r->pool,
-                                                    "An error occurred while reading"
-                                                    " the request body (URI: %s)",
-                                                    ap_escape_html(r->pool, r->uri)));
-                    break;
-                }
-
                 if (err == NULL) {
                     /* write whatever we read, until we see an error */
+                    rc = apr_bucket_read(b, &data, &len, APR_BLOCK_READ);
+                    if (rc != APR_SUCCESS) {
+                       err = dav_new_error(r->pool, HTTP_BAD_REQUEST, 0, rc,
+                                           apr_psprintf(r->pool,
+                                                        "An error occurred while"
+                                                        " reading the request body"
+                                                        " from the bucket (URI: %s)",
+                                                        ap_escape_html(r->pool, r->uri)));
+                        break;
+                    }
+
                     err = (*resource->hooks->write_stream)(stream, data, len);
                 }
             }
@@ -1041,10 +1042,7 @@ static int dav_method_put(request_rec *r)
 
         err2 = (*resource->hooks->close_stream)(stream,
                                                 err == NULL /* commit */);
-        if (err2 != NULL && err == NULL) {
-            /* no error during the write, but we hit one at close. use it. */
-            err = err2;
-        }
+        err = dav_join_error(err, err2);
     }
 
     /*
@@ -1062,6 +1060,7 @@ static int dav_method_put(request_rec *r)
 
     /* check for errors now */
     if (err != NULL) {
+        err = dav_join_error(err, err2); /* don't forget err2 */
         return dav_handle_err(r, err, NULL);
     }
 
