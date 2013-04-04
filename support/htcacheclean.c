@@ -1087,9 +1087,8 @@ static apr_status_t remove_directory(apr_pool_t *pool, const char *dir)
         return rv;
     }
     if (rv != APR_SUCCESS) {
-        char errmsg[120];
-        apr_file_printf(errfile, "Could not open directory %s: %s" APR_EOL_STR,
-                dir, apr_strerror(rv, errmsg, sizeof errmsg));
+        apr_file_printf(errfile, "Could not open directory %s: %pm" APR_EOL_STR,
+                dir, &rv);
         return rv;
     }
 
@@ -1110,10 +1109,9 @@ static apr_status_t remove_directory(apr_pool_t *pool, const char *dir)
             const char *file = apr_pstrcat(pool, dir, "/", dirent.name, NULL);
             rv = apr_file_remove(file, pool);
             if (APR_SUCCESS != rv) {
-                char errmsg[120];
                 apr_file_printf(errfile,
-                        "Could not remove file '%s': %s" APR_EOL_STR, file,
-                        apr_strerror(rv, errmsg, sizeof errmsg));
+                        "Could not remove file '%s': %pm" APR_EOL_STR, file,
+                        &rv);
                 break;
             }
         }
@@ -1127,9 +1125,8 @@ static apr_status_t remove_directory(apr_pool_t *pool, const char *dir)
             rv = APR_SUCCESS;
         }
         if (rv != APR_SUCCESS) {
-            char errmsg[120];
-            apr_file_printf(errfile, "Could not remove directory %s: %s" APR_EOL_STR,
-                    dir, apr_strerror(rv, errmsg, sizeof errmsg));
+            apr_file_printf(errfile, "Could not remove directory %s: %pm" APR_EOL_STR,
+                    dir, &rv);
         }
     }
 
@@ -1151,9 +1148,8 @@ static apr_status_t find_directory(apr_pool_t *pool, const char *base,
 
     rv = apr_dir_open(&dirp, base, pool);
     if (rv != APR_SUCCESS) {
-        char errmsg[120];
-        apr_file_printf(errfile, "Could not open directory %s: %s" APR_EOL_STR,
-                base, apr_strerror(rv, errmsg, sizeof errmsg));
+        apr_file_printf(errfile, "Could not open directory %s: %pm" APR_EOL_STR,
+                base, &rv);
         return rv;
     }
 
@@ -1194,18 +1190,16 @@ static apr_status_t find_directory(apr_pool_t *pool, const char *base,
             remove = apr_pstrcat(pool, base, "/", header, NULL);
             status = apr_file_remove(remove, pool);
             if (status != APR_SUCCESS && !APR_STATUS_IS_ENOENT(status)) {
-                char errmsg[120];
-                apr_file_printf(errfile, "Could not remove file %s: %s" APR_EOL_STR,
-                        remove, apr_strerror(status, errmsg, sizeof errmsg));
+                apr_file_printf(errfile, "Could not remove file %s: %pm" APR_EOL_STR,
+                        remove, &status);
                 rv = status;
             }
 
             remove = apr_pstrcat(pool, base, "/", data, NULL);
             status = apr_file_remove(remove, pool);
             if (status != APR_SUCCESS && !APR_STATUS_IS_ENOENT(status)) {
-                char errmsg[120];
-                apr_file_printf(errfile, "Could not remove file %s: %s" APR_EOL_STR,
-                        remove, apr_strerror(status, errmsg, sizeof errmsg));
+                apr_file_printf(errfile, "Could not remove file %s: %pm" APR_EOL_STR,
+                        remove, &status);
                 rv = status;
             }
 
@@ -1357,7 +1351,6 @@ static void usage_repeated_arg(apr_pool_t *pool, char option) {
 static void log_pid(apr_pool_t *pool, const char *pidfilename, apr_file_t **pidfile)
 {
     apr_status_t status;
-    char errmsg[120];
     pid_t mypid = getpid();
 
     if (APR_SUCCESS == (status = apr_file_open(pidfile, pidfilename,
@@ -1369,9 +1362,8 @@ static void log_pid(apr_pool_t *pool, const char *pidfilename, apr_file_t **pidf
     else {
         if (errfile) {
             apr_file_printf(errfile,
-                            "Could not write the pid file '%s': %s" APR_EOL_STR,
-                            pidfilename,
-                            apr_strerror(status, errmsg, sizeof errmsg));
+                            "Could not write the pid file '%s': %pm" APR_EOL_STR,
+                            pidfilename, &status);
         }
         exit(1);
     }
@@ -1579,8 +1571,8 @@ int main(int argc, const char * const argv[])
                 }
                 proxypath = apr_pstrdup(pool, arg);
                 if ((status = apr_filepath_set(proxypath, pool)) != APR_SUCCESS) {
-                    usage(apr_psprintf(pool, "Could not set filepath to '%s': %s",
-                                       proxypath, apr_strerror(status, errmsg, sizeof errmsg)));
+                    usage(apr_psprintf(pool, "Could not set filepath to '%s': %pm",
+                                       proxypath, &status));
                 }
                 break;
 
@@ -1680,8 +1672,7 @@ int main(int argc, const char * const argv[])
     }
 
     if (apr_filepath_get(&path, 0, pool) != APR_SUCCESS) {
-        usage(apr_psprintf(pool, "Could not get the filepath: %s",
-                           apr_strerror(status, errmsg, sizeof errmsg)));
+        usage(apr_psprintf(pool, "Could not get the filepath: %pm", &status));
     }
     baselen = strlen(path);
 

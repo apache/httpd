@@ -233,7 +233,6 @@ static apr_status_t finalise_body(file_rec *file, header_rec *header)
     apr_status_t status;
     char *nfrom, *nto, *from, *to;
     apr_pool_t *pool;
-    char errbuf[HUGE_STRING_LEN];
 
     apr_pool_create(&pool, file->pool);
 
@@ -251,31 +250,27 @@ static apr_status_t finalise_body(file_rec *file, header_rec *header)
                 if (APR_SUCCESS != (status = apr_file_rename(nfrom, nto, pool))) {
                     apr_file_printf(
                             file->file_err,
-                            "Could not rename file '%s' to '%s' for fragment write: %s\n",
-                            nfrom, nto,
-                            apr_strerror(status, errbuf, sizeof(errbuf)));
+                            "Could not rename file '%s' to '%s' for fragment write: %pm\n",
+                            nfrom, nto, &status);
                 }
             }
             else {
                 apr_file_printf(
                         file->file_err,
-                        "Could not set mtime on file '%s' to '%" APR_TIME_T_FMT "' for fragment write: %s\n",
-                        nfrom, file->end,
-                        apr_strerror(status, errbuf, sizeof(errbuf)));
+                        "Could not set mtime on file '%s' to '%" APR_TIME_T_FMT "' for fragment write: %pm\n",
+                        nfrom, file->end, &status);
             }
         }
         else {
             apr_file_printf(file->file_err,
-                    "Could not merge directory '%s' with file '%s': %s\n",
-                    file->directory, to, apr_strerror(status, errbuf,
-                            sizeof(errbuf)));
+                    "Could not merge directory '%s' with file '%s': %pm\n",
+                    file->directory, to, &status);
         }
     }
     else {
         apr_file_printf(file->file_err,
-                "Could not merge directory '%s' with file '%s': %s\n",
-                file->directory, from, apr_strerror(status, errbuf,
-                        sizeof(errbuf)));
+                "Could not merge directory '%s' with file '%s': %pm\n",
+                file->directory, from, &status);
     }
 
     apr_pool_destroy(pool);
@@ -328,7 +323,6 @@ static apr_status_t process_body(file_rec *file, header_rec *header,
     char *native, *name;
     apr_pool_t *pool;
     apr_file_t *handle;
-    char errbuf[HUGE_STRING_LEN];
 
     if (!file->start) {
         file->start = header->timestamp;
@@ -350,21 +344,20 @@ static apr_status_t process_body(file_rec *file, header_rec *header,
             if (APR_SUCCESS != (status = apr_file_write_full(handle, str, len,
                     &len))) {
                 apr_file_printf(file->file_err,
-                        "Could not write fragment body to file '%s': %s\n",
-                        native, apr_strerror(status, errbuf, sizeof(errbuf)));
+                        "Could not write fragment body to file '%s': %pm\n",
+                        native, &status);
             }
         }
         else {
             apr_file_printf(file->file_err,
-                    "Could not open file '%s' for fragment write: %s\n",
-                    native, apr_strerror(status, errbuf, sizeof(errbuf)));
+                    "Could not open file '%s' for fragment write: %pm\n",
+                    native, &status);
         }
     }
     else {
         apr_file_printf(file->file_err,
-                "Could not merge directory '%s' with file '%s': %s\n",
-                file->directory, name, apr_strerror(status, errbuf,
-                        sizeof(errbuf)));
+                "Could not merge directory '%s' with file '%s': %pm\n",
+                file->directory, name, &status);
     }
 
     apr_pool_destroy(pool);
@@ -506,7 +499,6 @@ static apr_status_t process_header(file_rec *file, header_rec *header,
  */
 static apr_status_t demux(file_rec *file)
 {
-    char errbuf[HUGE_STRING_LEN];
     apr_size_t len = 0;
     apr_status_t status = APR_SUCCESS;
     apr_bucket *b, *e;
@@ -598,8 +590,7 @@ static apr_status_t demux(file_rec *file)
                                 header.len, &e))) {
                             apr_file_printf(
                                     file->file_err,
-                                    "Could not read fragment body from input file: %s\n",
-                                    apr_strerror(status, errbuf, sizeof(errbuf)));
+                                    "Could not read fragment body from input file: %pm\n", &status);
                             break;
                         }
                         while ((b = APR_BRIGADE_FIRST(bb)) && e != b) {
@@ -644,8 +635,7 @@ static apr_status_t demux(file_rec *file)
         }
         else {
             apr_file_printf(file->file_err,
-                    "Could not read fragment header from input file: %s\n",
-                    apr_strerror(status, errbuf, sizeof(errbuf)));
+                    "Could not read fragment header from input file: %pm\n", &status);
             break;
         }
 
@@ -704,8 +694,7 @@ int main(int argc, const char * const argv[])
                     APR_OS_DEFAULT, pool);
             if (status != APR_SUCCESS) {
                 apr_file_printf(file->file_err,
-                        "Could not open file '%s' for read: %s\n", optarg,
-                        apr_strerror(status, errmsg, sizeof errmsg));
+                        "Could not open file '%s' for read: %pm\n", optarg, &status);
                 return 1;
             }
             break;
@@ -715,8 +704,7 @@ int main(int argc, const char * const argv[])
             status = apr_stat(&finfo, optarg, APR_FINFO_TYPE, pool);
             if (status != APR_SUCCESS) {
                 apr_file_printf(file->file_err,
-                        "Directory '%s' could not be found: %s\n", optarg,
-                        apr_strerror(status, errmsg, sizeof errmsg));
+                        "Directory '%s' could not be found: %pm\n", optarg, &status);
                 return 1;
             }
             if (finfo.filetype != APR_DIR) {
