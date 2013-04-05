@@ -103,6 +103,8 @@ static int generate_salt(char *s, size_t size, const char **errstr,
 void putline(apr_file_t *f, const char *l)
 {
     apr_status_t rv;
+    if (f == NULL)
+        return;
     rv = apr_file_puts(l, f);
     if (rv != APR_SUCCESS) {
         apr_file_printf(errfile, "Error writing temp file: %pm", &rv);
@@ -133,6 +135,12 @@ int get_password(struct passwd_ctx *ctx)
                 buf[nread-2] = '\0';
         }
         apr_file_close(file_stdin);
+        ctx->passwd = apr_pstrdup(ctx->pool, buf);
+    }
+    else if (ctx->passwd_src == PW_PROMPT_VERIFY) {
+        apr_size_t bufsize = sizeof(buf);
+        if (apr_password_get("Enter password: ", buf, &bufsize) != 0)
+            goto err_too_long;
         ctx->passwd = apr_pstrdup(ctx->pool, buf);
     }
     else {
