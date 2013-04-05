@@ -1385,7 +1385,6 @@ int main(int argc, const char * const argv[])
     char opt;
     const char *arg;
     char *proxypath, *path, *pidfilename;
-    char errmsg[1024];
 
     interrupted = 0;
     repeat = 0;
