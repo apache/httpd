@@ -253,7 +253,6 @@ static void check_args(int argc, const char *const argv[],
 int main(int argc, const char * const argv[])
 {
     apr_file_t *fpw = NULL;
-    const char *errstr = NULL;
     char line[MAX_STRING_LEN];
     char *pwfilename = NULL;
     char *user = NULL;
@@ -345,7 +344,7 @@ int main(int argc, const char * const argv[])
     if (!(mask & APHTP_DELUSER)) {
         i = mkrecord(&ctx, user);
         if (i != 0) {
-            apr_file_printf(errfile, "%s: %s" NL, argv[0], errstr);
+            apr_file_printf(errfile, "%s: %s" NL, argv[0], ctx.errstr);
             exit(i);
         }
         if (mask & APHTP_NOFILE) {

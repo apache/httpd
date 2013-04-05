@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) htpasswd, htdbm: Fix password generation. PR 54735. [Stefan Fritsch]
+
   *) mod_dav: Improve error handling in dav_method_put(), add new
      dav_join_error() function.  PR 54145.  [Ben Reser <ben reser.org>]
 
