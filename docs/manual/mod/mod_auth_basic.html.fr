@@ -29,8 +29,6 @@
 <a href="../ja/mod/mod_auth_basic.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_auth_basic.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Authentification HTTP de base</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>auth_basic_module</td></tr>
@@ -94,17 +92,63 @@ niveau</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthBasicFake" id="AuthBasicFake">AuthBasicFake</a> <a name="authbasicfake" id="authbasicfake">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fake basic authentication using the given expressions for
-username and password</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Authentification de base simulée à l'aide des nom
+d'utilisateur et mot de passe fournis</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthBasicFake username password</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_basic</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p></div>
+</table>
+    <p>Les nom d'utilisateur et mot de passe spécifiés sont rassemblés
+    dans un en-tête d'autorisation qui est transmis au serveur ou au
+    service sous-jacent au serveur. Ces nom d'utilisateur et mot de
+    passe sont interprétés par l'<a href="../expr.html">interpréteur
+    d'expression</a>, ce qui permet de les définir en fonction de
+    paramètres de la requête.</p>
+
+    <p>Dans l'exemple suivant, un nom d'utilisateur et un mot de passe
+    prédéfinis sont transmis à un serveur d'arrière-plan :</p>
+
+    <div class="example"><h3>Exemple de transmission d'un nom d'utilisateur et
+    d'un mot de passe prédéfinis</h3><pre class="prettyprint lang-config">
+&lt;Location /demo&gt;
+    AuthBasicFake demo demopass
+&lt;/Location&gt;
+    </pre>
+</div>
+
+    <p>Dans l'exemple suivant, l'adresse email extraite d'un certificat
+    client est transmise au serveur, étendant par là-même la
+    fonctionnalité de l'option FakeBasicAuth de la directive <code class="directive"><a href="../mod/mod_ssl.html#ssloptions">SSLOptions</a></code>. Comme avec l'option
+    FakeBasicAuth, le mot de passe se voit attribué le contenu fixe de
+    la chaîne "password".</p>
+
+    <div class="example"><h3>Exemple d'utilisation avec un certificat</h3><pre class="prettyprint lang-config">
+&lt;Location /secure&gt;
+    AuthBasicFake %{SSL_CLIENT_S_DN_Email} password
+&lt;/Location&gt;
+    </pre>
+</div>
+
+    <p>Pour compléter l'exemple précédent, il est possible de générer la
+    valeur du mot de passe en procédant à un hashage de l'adresse email
+    à partir d'un mot d'une passphrase initial fixée, puis de transmettre le
+    résultat obtenu au serveur d'arrière-plan. Ceci peut s'avérer utile
+    pour donner accès à des serveurs anciens qui ne supportent pas les
+    certificats clients.</p>
+
+    <div class="example"><h3>Exemple de génération de mot de passe par hashage de
+    l'adresse email</h3><pre class="prettyprint lang-config">
+&lt;Location /secure&gt;
+    AuthBasicFake %{SSL_CLIENT_S_DN_Email} %{sha1:passphrase-%{SSL_CLIENT_S_DN_Email}}
+&lt;/Location&gt;
+    </pre>
+</div>
+
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthBasicProvider" id="AuthBasicProvider">AuthBasicProvider</a> <a name="authbasicprovider" id="authbasicprovider">Directive</a></h2>
 <table class="directive">
