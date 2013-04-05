@@ -651,7 +651,6 @@ int main(int argc, const char * const argv[])
 {
     apr_status_t status;
     apr_pool_t *pool;
-    char errmsg[1024];
     apr_getopt_t *opt;
     int optch;
     const char *optarg;
