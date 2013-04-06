@@ -1548,7 +1548,7 @@ static const char *set_error_document(cmd_parms *cmd, void *conf_,
                             RESPONSE_CODES);
         }
 
-        if (strcmp(msg, "default") == 0) {
+        if (strcasecmp(msg, "default") == 0) {
             /* special case: ErrorDocument 404 default restores the
              * canned server error response
              */
