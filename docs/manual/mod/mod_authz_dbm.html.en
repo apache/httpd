@@ -43,11 +43,32 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#authdbmgroupfile">AuthDBMGroupFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authzdbmtype">AuthzDBMType</a></li>
 </ul>
-<h3>See also</h3>
+<h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#examples">Example usage</a></li>
+</ul><h3>See also</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="examples" id="examples">Example usage</a></h2>
 
+<p><em>Note that using mod_authz_dbm requires you to require <code>dbm-group</code> 
+instead of <code>group</code>:</em>
+</p>
+<pre class="prettyprint lang-config">
+&lt;Directory "/foo/bar"&gt;
+  AuthType Basic 
+  AuthName "Secure Area"
+  AuthBasicProvider dbm 
+  AuthDBMUserFile site/data/users 
+  AuthDBMGroupFile site/data/users 
+  Require dbm-group admin 
+&lt;/Directory&gt;
+</pre>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthDBMGroupFile" id="AuthDBMGroupFile">AuthDBMGroupFile</a> <a name="authdbmgroupfile" id="authdbmgroupfile">Directive</a></h2>
 <table class="directive">
