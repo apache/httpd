@@ -37,6 +37,23 @@
 
 <seealso><directive module="mod_authz_core">Require</directive></seealso>
 
+<section id="examples">
+<title>Example usage</title>
+<p><em>Note that using mod_authz_dbm requires you to require <code>dbm-group</code> 
+instead of <code>group</code>:</em>
+</p>
+<highlight language="config">
+&lt;Directory "/foo/bar"&gt;
+  AuthType Basic 
+  AuthName "Secure Area"
+  AuthBasicProvider dbm 
+  AuthDBMUserFile site/data/users 
+  AuthDBMGroupFile site/data/users 
+  Require dbm-group admin 
+&lt;/Directory&gt;
+</highlight>
+</section>
+
 <directivesynopsis>
 <name>AuthDBMGroupFile</name>
 <description>Sets the name of the database file containing the list
@@ -118,3 +135,4 @@ store list of user groups</description>
 </directivesynopsis>
 
 </modulesynopsis>
+
