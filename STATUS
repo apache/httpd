@@ -217,6 +217,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: jailletc36
 
+   * mod_proxy_balancer: Add failontimeout parameter. Timeout will put worker
+     in error state if an IO timeout is detected.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1465839
+     2.4.x patch: http://people.apache.org/~druggeri/patches/httpd-2.4.x-failontimeout.patch
+     2.2.x patch: http://people.apache.org/~druggeri/patches/httpd-2.2.x-failontimeout.patch
+     +1: druggeri
+
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
