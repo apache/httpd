@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
-
+ 
 Changes with Apache 2.4.5
+
+  *) mod_cache_disk: CacheMinFileSize and CacheMaxFileSize were always
+     using compiled in defaults of 1000000/1 respectively. [Eric Covener]
 
   *) mod_lbmethod_heartbeat, mod_heartmonitor: Respect DefaultRuntimeDir/
      DEFAULT_REL_RUNTIMEDIR for the heartbeat storage file.  [Jeff Trawick]

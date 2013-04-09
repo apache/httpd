@@ -90,11 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_cache_disk: fix merge of min/max file size by setting corresponding _set
-    trunk patch: http://svn.apache.org/r1453604
-    2.4.x patch: trunk patch works
-    +1: humbedooh, jim, covener
-
   * mod_ssl: Quiet FIPS mode weak keys disabled and FIPS not selected emits
     in the error log to debug level.  [William Rowe]
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1447993
