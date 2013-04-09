@@ -118,6 +118,10 @@
     <code class="directive"><a href="./mod/mod_authz_core.html#requirenone">RequireNone</a></code>, and
     <code class="directive"><a href="./mod/mod_authz_core.html#requireall">RequireAll</a></code>.</p>
 
+    <p>If you use <code class="module"><a href="./mod/mod_authz_dbm.html">mod_authz_dbm</a></code>, you must port your 
+    configuration to use <code>Require dbm-group ...</code> in place
+    of <code>Require group ...</code>.</p>
+
     <h4><a name="access" id="access">Access control</a></h4>
       
 
