@@ -2,6 +2,9 @@
  
 Changes with Apache 2.4.5
 
+  *) mod_ssl: Quiet FIPS mode weak keys disabled and FIPS not selected emits
+     in the error log to debug level.  [William Rowe]
+
   *) mod_cache_disk: CacheMinFileSize and CacheMaxFileSize were always
      using compiled in defaults of 1000000/1 respectively. [Eric Covener]
 
