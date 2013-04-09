@@ -616,194 +616,277 @@ end
 </section>
 <section id="functions"><title>Built in functions</title>
 
-        <p>The request_rec object has (at least) the following methods:</p>
+<p>The request_rec object has (at least) the following methods:</p>
 
-        <highlight language="lua">
-        r:flush() -- flushes the output buffer
-        </highlight>
+<highlight language="lua">
+r:flush() -- flushes the output buffer:
 
-        <highlight language="lua">
-        r:addoutputfilter(name|function) -- add an output filter
-        </highlight>
+while we_have_stuff_to_send do
+    r:puts("Bla bla bla\n") -- print something to client
+    r:flush() -- flush the buffer (send to client)
+    r:sleep(0.5) -- fake processing time and repeat
+end
+</highlight>
 
-        <highlight language="lua">
-        r:sendfile(filename) -- sends an entire file to the client, using sendfile if supported by the current platform
-        </highlight>
+<highlight language="lua">
+r:addoutputfilter(name|function) -- add an output filter:
 
-        <highlight language="lua">
-        r:parseargs() -- returns a Lua table containing the request's query string arguments
-        </highlight>
+r:addoutputfilter("fooFilter") -- add the fooFilter to the output stream
+</highlight>
 
-        <highlight language="lua">
-        r:parsebody([sizeLimit]) -- parse the request body as a POST and return a lua table.
-                         -- An optional number may be passed to specify the maximum number 
-                         -- of bytes to parse. Default is 8192 bytes.
-        </highlight>
+<highlight language="lua">
+r:sendfile(filename) -- sends an entire file to the client, using sendfile if supported by the current platform:
 
-        <highlight language="lua">
-        r:puts("hello", " world", "!") -- print to response body
-        </highlight>
+if use_sendfile_thing then
+    r:sendfile("/var/www/large_file.img")
+end
+</highlight>
 
-        <highlight language="lua">
-        r:write("a single string") -- print to response body
-        </highlight>
+<highlight language="lua">
+r:parseargs() -- returns a Lua table containing the request's query string arguments:
 
-        <highlight language="lua">
-        r:escape_html("&lt;html&gt;test&lt;/html&gt;") -- Escapes HTML code and returns the escaped result
-        </highlight>
+local GET = r:parseargs()
+r:puts("Your name is: " .. GET['name'] or "Unknown")
+</highlight>
 
-        <highlight language="lua">
-        r:base64_encode(string) -- Encodes a string using the Base64 encoding standard
-        </highlight>
+<highlight language="lua">
+r:parsebody([sizeLimit]) -- parse the request body as a POST and return a lua table.
+                 -- An optional number may be passed to specify the maximum number 
+                 -- of bytes to parse. Default is 8192 bytes:
+                 
+local POST = r:parsebody(1024*1024)
+r:puts("Your name is: " .. POST['name'] or "Unknown")
+</highlight>
 
-        <highlight language="lua">
-        r:base64_decode(string) -- Decodes a Base64-encoded string
-        </highlight>
+<highlight language="lua">
+r:puts("hello", " world", "!") -- print to response body, self explanatory
+</highlight>
 
-        <highlight language="lua">
-        r:md5(string) -- Calculates and returns the MD5 digest of a string (binary safe)
-        </highlight>
+<highlight language="lua">
+r:write("a single string") -- print to response body, self explanatory
+</highlight>
 
-        <highlight language="lua">
-        r:sha1(string) -- Calculates and returns the SHA1 digest of a string (binary safe)
-        </highlight>
+<highlight language="lua">
+r:escape_html("&lt;html&gt;test&lt;/html&gt;") -- Escapes HTML code and returns the escaped result
+</highlight>
 
-        <highlight language="lua">
-        r:escape(string) -- URL-Escapes a string
-        </highlight>
+<highlight language="lua">
+r:base64_encode(string) -- Encodes a string using the Base64 encoding standard:
 
-        <highlight language="lua">
-        r:unescape(string) -- Unescapes an URL-escaped string
-        </highlight>
+local encoded = r:base64_encode("This is a test") -- returns VGhpcyBpcyBhIHRlc3Q=
+</highlight>
 
-        <highlight language="lua">
-        r:banner() -- Returns the current server banner
-        </highlight>
+<highlight language="lua">
+r:base64_decode(string) -- Decodes a Base64-encoded string:
 
-        <highlight language="lua">
-        r:port() -- Returns the current server port used for the request
-        </highlight>
+local decoded = r:base64_decode("VGhpcyBpcyBhIHRlc3Q=") -- returns 'This is a test'
+</highlight>
 
-        <highlight language="lua">
-        r:mpm_query(number) -- Queries the server for MPM information using ap_mpm_query
-        </highlight>
+<highlight language="lua">
+r:md5(string) -- Calculates and returns the MD5 digest of a string (binary safe):
 
-        <highlight language="lua">
-        r:expr(string) -- Evaluates an <a href="../expr.html">expr</a> string.
-        </highlight>
+local hash = r:md5("This is a test") -- returns ce114e4501d2f4e2dcea3e17b546f339
+</highlight>
 
-        <highlight language="lua">
-        r:scoreboard_process(a) -- Queries the server for information about the process at position <code>a</code>
-        </highlight>
+<highlight language="lua">
+r:sha1(string) -- Calculates and returns the SHA1 digest of a string (binary safe):
 
-        <highlight language="lua">
-        r:scoreboard_worker(a, b) -- Queries for information about the worker thread, <code>b</code>, in process <code>a</code>
-        </highlight>
+local hash = r:sha1("This is a test") -- returns a54d88e06612d820bc3be72877c74f257b561b19
+</highlight>
 
-        <highlight language="lua">
-        r:started() -- Returns the time of the last server (re)start
-        </highlight>
+<highlight language="lua">
+r:escape(string) -- URL-Escapes a string:
 
-        <highlight language="lua">
-        r:clock() -- Returns the current time with microsecond precision
-        </highlight>
+local url = "http://foo.bar/1 2 3 &amp; 4 + 5"
+local escaped = r:escape(url) -- returns 'http%3a%2f%2ffoo.bar%2f1+2+3+%26+4+%2b+5'
+</highlight>
 
-        <highlight language="lua">
+<highlight language="lua">
+r:unescape(string) -- Unescapes an URL-escaped string:
+
+local url = "http%3a%2f%2ffoo.bar%2f1+2+3+%26+4+%2b+5"
+local unescaped = r:escape(url) -- returns 'http://foo.bar/1 2 3 &amp; 4 + 5'
+</highlight>
+
+<highlight language="lua">
+r:banner() -- Returns the current server banner, self explanatory
+</highlight>
+
+<highlight language="lua">
+r:port() -- Returns the current server port used for the request, self explanatory
+</highlight>
+
+<highlight language="lua">
+r:mpm_query(number) -- Queries the server for MPM information using ap_mpm_query:
+
+local mpm = r.mpm_query(14)
+if mpm == 1 then
+    r:puts("This server uses the Event MPM")
+end
+</highlight>
+
+<highlight language="lua">
+r:expr(string) -- Evaluates an <a href="../expr.html">expr</a> string.
+
+if r:expr("%{HTTP_HOST} =~ /^www/") then
+    r:puts("This host name starts with www")
+end
+</highlight>
+
+<highlight language="lua">
+r:scoreboard_process(a) -- Queries the server for information about the process at position <code>a</code>:
+
+local process = r:scoreboard_process(1)
+r:puts("Server 1 has PID " .. process.pid)
+</highlight>
+
+<highlight language="lua">
+r:scoreboard_worker(a, b) -- Queries for information about the worker thread, <code>b</code>, in process <code>a</code>:
+
+local thread = r:scoreboard_worker(1, 1)
+r:puts("Server 1's thread 1 has thread ID " .. thread.tid .. " and is in " .. thread.status .. " status")
+</highlight>
+
+<highlight language="lua">
+r:started() -- Returns the time of the last server (re)start
+</highlight>
+
+<highlight language="lua">
+r:clock() -- Returns the current time with microsecond precision
+</highlight>
+
+<highlight language="lua">
 r:requestbody(filename) -- Reads and returns the request body of a request.
-                        -- If 'filename' is specified, it instead saves the
-                        -- contents to that file.
-        </highlight>
+                -- If 'filename' is specified, it instead saves the
+                -- contents to that file:
+                
+local input = r:requestbody()
+r:puts("You sent the following request body to me:\n")
+r:puts(input)
+</highlight>
 
-        <highlight language="lua">
-        r:add_input_filter(filter_name) -- Adds 'filter_name' as an input filter
-        </highlight>
+<highlight language="lua">
+r:add_input_filter(filter_name) -- Adds 'filter_name' as an input filter
+</highlight>
 
-        <highlight language="lua">
-        r:module_info(module_name) -- Queries the server for information about a module
-        </highlight>
+<highlight language="lua">
+r.module_info(module_name) -- Queries the server for information about a module
 
-        <highlight language="lua">
-        r:loaded_modules() -- Returns a list of modules loaded by httpd
-        </highlight>
+local mod = r.module_info("mod_lua.c")
+if mod then
+    for k, v in pairs(mod.commands) do
+       r:puts( ("%s: %s\n"):format(k,v)) -- print out all directives accepted by this module
+    end
+end
+</highlight>
 
-        <highlight language="lua">
+<highlight language="lua">
+r:loaded_modules() -- Returns a list of modules loaded by httpd:
+
+for k, module in pairs(r:loaded_modules()) do
+    r:puts("I have loaded module " .. module .. "\n")
+end
+</highlight>
+
+<highlight language="lua">
 r:runtime_dir_relative(filename) -- Compute the name of a run-time file (e.g., shared memory "file") 
-                                 -- relative to the appropriate run-time directory. 
-        </highlight>
+                         -- relative to the appropriate run-time directory. 
+</highlight>
 
-        <highlight language="lua">
-        r:server_info() -- Returns a table containing server information, such as 
-                        -- the name of the httpd executable file, mpm used etc.
-        </highlight>
+<highlight language="lua">
+r:server_info() -- Returns a table containing server information, such as 
+                -- the name of the httpd executable file, mpm used etc.
+</highlight>
 
-        <highlight language="lua">
-        r:set_document_root(file_path) -- Sets the document root for the request to file_path
-        </highlight>
+<highlight language="lua">
+r:set_document_root(file_path) -- Sets the document root for the request to file_path
+</highlight>
 
-        <highlight language="lua">
-        r:add_version_component(component_string) -- Adds a component to the server banner.
-        </highlight>
+<highlight language="lua">
+r:add_version_component(component_string) -- Adds a component to the server banner.
+</highlight>
 
-        <highlight language="lua">
-        r:set_context_info(prefix, docroot) -- Sets the context prefix and context document root for a request
-        </highlight>
+<highlight language="lua">
+r:set_context_info(prefix, docroot) -- Sets the context prefix and context document root for a request
+</highlight>
 
-        <highlight language="lua">
-        r:os_escape_path(file_path) -- Converts an OS path to a URL in an OS dependant way
-        </highlight>
+<highlight language="lua">
+r:os_escape_path(file_path) -- Converts an OS path to a URL in an OS dependant way
+</highlight>
 
-        <highlight language="lua">
-        r:escape_logitem(string) -- Escapes a string for logging
-        </highlight>
+<highlight language="lua">
+r:escape_logitem(string) -- Escapes a string for logging
+</highlight>
 
-        <highlight language="lua">
-r:strcmp_match(string, pattern) -- Checks if 'string' matches 'pattern' using strcmp_match (GLOBs).
-                                -- fx. whether 'www.example.com' matches '*.example.com'
-        </highlight>
+<highlight language="lua">
+r:strcmp_match(string, pattern) -- Checks if 'string' matches 'pattern' using strcmp_match (globs).
+                        -- fx. whether 'www.example.com' matches '*.example.com':
+                        
+local match = r:strcmp_match("foobar.com", "foo*.com")
+if match then 
+    r:puts("foobar.com matches foo*.com")
+end
+</highlight>
 
-        <highlight language="lua">
-        r:set_keepalive() -- Sets the keepalive status for a request. Returns true if possible, false otherwise.
-        </highlight>
+<highlight language="lua">
+r:set_keepalive() -- Sets the keepalive status for a request. Returns true if possible, false otherwise.
+</highlight>
 
-        <highlight language="lua">
-        r:make_etag() -- Constructs and returns the etag for the current request.
-        </highlight>
+<highlight language="lua">
+r:make_etag() -- Constructs and returns the etag for the current request.
+</highlight>
 
-        <highlight language="lua">
+<highlight language="lua">
 r:send_interim_response(clear) -- Sends an interim (1xx) response to the client.
-                               -- if 'clear' is true, available headers will be sent and cleared.
-        </highlight>
+                       -- if 'clear' is true, available headers will be sent and cleared.
+</highlight>
 
-        <highlight language="lua">
+<highlight language="lua">
 r:custom_response(status_code, string) -- Construct and set a custom response for a given status code.
-                                       -- This works much like the ErrorDocument directive.
-        </highlight>
+                               -- This works much like the ErrorDocument directive:
+                               
+r:custom_response(404, "Baleted!")
+</highlight>
 
-        <highlight language="lua">
-        r:exists_config_define(string) -- Checks whether a configuration definition exists or not.
-        </highlight>
+<highlight language="lua">
+r:exists_config_define(string) -- Checks whether a configuration definition exists or not:
 
-        <highlight language="lua">
-        r:state_query(string) -- Queries the server for state information
-        </highlight>
+if r:exists_config_define("FOO") then
+    r:puts("httpd was probably run with -DFOO, or it was defined in the configuration")
+end
+</highlight>
 
-        <highlight language="lua">
-        r:stat(filename) -- Runs stat() on a file, and returns a table with file information
-        </highlight>
+<highlight language="lua">
+r:state_query(string) -- Queries the server for state information
+</highlight>
 
-        <highlight language="lua">
-        r:regex(string, pattern) -- Runs a regular expression match on a string, returning captures if matched.
-        </highlight>
+<highlight language="lua">
+r:stat(filename) -- Runs stat() on a file, and returns a table with file information:
 
-        <highlight language="lua">
+local info = r:stat("/var/www/foo.txt")
+if info then
+    r:puts("This file exists and was last modified at: " .. info.modified)
+end
+</highlight>
+
+<highlight language="lua">
+r:regex(string, pattern) -- Runs a regular expression match on a string, returning captures if matched:
+
+local matches = r:regex("foo bar baz", "foo (%w+) (%S*)")
+if matches then
+    r:puts("The regex matched, and the last word captured ($2) was: " .. matches[2])
+end
+</highlight>
+
+<highlight language="lua">
 r:sleep(number_of_seconds) -- Puts the script to sleep for a given number of seconds.
-                           -- This can be a floating point number like 1.25 for extra accuracy.
-        </highlight>
+                   -- This can be a floating point number like 1.25 for extra accuracy.
+</highlight>
 
-        <highlight language="lua">
+<highlight language="lua">
 r:dbacquire(dbType[, dbParams]) -- Acquires a connection to a database and returns a database class.
-                                -- See '<a href="#databases">Database connectivity</a>' for details.
-        </highlight>
+                        -- See '<a href="#databases">Database connectivity</a>' for details.
+</highlight>
 
 
 </section>
