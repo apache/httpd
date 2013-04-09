@@ -1138,6 +1138,12 @@ ProxyPass /mirror/foo http://backend.example.com
         force the worker into error state when the backend returns any status code
         in the list. Worker recovery behaves the same as other worker errors.
     </td></tr>
+    <tr><td>failontimeout</td>
+        <td>Off</td>
+        <td>If set, an IO read timeout after a request is sent to the backend will
+        force the worker into error state. Worker recovery behaves the same as other
+        worker errors.
+    </td></tr>
     <tr><td>nonce</td>
         <td>&lt;auto&gt;</td>
         <td>The protective nonce used in the <code>balancer-manager</code> application page.
