@@ -127,7 +127,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: http://people.apache.org/~druggeri/patches/AuthLDAPBindPasswordExec-2.4.patch
                  (20130119 - updated to include minor mmn bump)
     +1: druggeri, jim
-    covener: minor MMM bump?  (Thanks for reminder. This is done. -druggeri)
+    covener: wrowe mentioned a thread-safety issue in 2.2 status, what up with that?
+
 
   * mod_lua: Sync 2.4 branch with trunk. This includes (but is not limited to) 
              Server pools, new apr functions for the request_rec table, input/
