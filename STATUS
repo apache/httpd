@@ -198,6 +198,28 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: minfrin
     -1: rpluem: Unless r1462266 http://svn.apache.org/r1462266 is added.
 
+  * mod_proxy_wstunnel: Backport (copy) websocket tunnel proxy submodule
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1452911
+                 http://svn.apache.org/viewvc?view=revision&revision=1452949
+                 http://svn.apache.org/viewvc?view=revision&revision=1452954
+                 http://svn.apache.org/viewvc?view=revision&revision=1453022
+                 http://svn.apache.org/viewvc?view=revision&revision=1453574
+                 http://svn.apache.org/viewvc?view=revision&revision=1453875
+                 http://svn.apache.org/viewvc?view=revision&revision=1453876
+                 http://svn.apache.org/viewvc?view=revision&revision=1453963
+                 http://svn.apache.org/viewvc?view=revision&revision=1454386
+                 http://svn.apache.org/viewvc?view=revision&revision=1454414
+                 http://svn.apache.org/viewvc?view=revision&revision=1454415
+                 http://svn.apache.org/viewvc?view=revision&revision=1458285
+                 http://svn.apache.org/viewvc?view=revision&revision=1458447
+    2.4.x patch: http://people.apache.org/~jim/patches/wstunnel.patch
+    +1: jim
+
+   * util_filter: Add in ap_remove_input|output_filter_byhandle()
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1458456
+     2.4.x patch: trunk patch works modulo ap_mmn.h
+     +1: jim
+
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
