@@ -128,6 +128,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  (20130119 - updated to include minor mmn bump)
     +1: druggeri, jim
     covener: wrowe mentioned a thread-safety issue in 2.2 status, what up with that?
+             druggeri: *shrug* brought up on dev list. More eyes welcome!
 
 
   * mod_lua: Sync 2.4 branch with trunk. This includes (but is not limited to) 
@@ -169,7 +170,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: http://svn.apache.org/r1457437
                  http://svn.apache.org/r1457520
     2.4.x patch: trunk patch applies.
-    +1: minfrin
+    +1: minfrin, druggeri
 
   * ap_expr: Expression parser: Add the ability to apply a SHA1 hash to
     strings within the parser.
@@ -177,7 +178,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/r1457610
                  http://svn.apache.org/r1457995
     2.4.x patch: trunk patch applies.
-    +1: minfrin
+    +1: minfrin, druggeri
 
   * mod_auth_basic: Add a generic mechanism to fake basic authentication
     using the ap_expr parser. This allows the administrator to construct
