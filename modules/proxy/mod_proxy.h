@@ -451,6 +451,7 @@ struct proxy_balancer {
     proxy_server_conf *sconf;
     void            *context;    /* general purpose storage */
     proxy_balancer_shared *s;    /* Shared data */
+    int failontimeout;           /* Whether to mark a member in Err if IO timeout occurs */
 };
 
 struct proxy_balancer_method {
