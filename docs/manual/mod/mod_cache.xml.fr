@@ -314,7 +314,7 @@ AddOutputFilterByType CACHE;DEFLATE text/plain
 
   <highlight language="config">
 # Mise en cache du contenu avant l'intervention de mod_include et
-   # mod_deflate
+# mod_deflate
 CacheQuickHandler off
 AddOutputFilterByType CACHE;INCLUDES;DEFLATE text/html
   </highlight>
@@ -326,7 +326,7 @@ AddOutputFilterByType CACHE;INCLUDES;DEFLATE text/html
 
   <highlight language="config">
 # Mise en cache du contenu entre les interventions de mod_include et
-   # mod_deflate
+# mod_deflate
 CacheQuickHandler off
 AddOutputFilterByType INCLUDES;CACHE;DEFLATE text/html
   </highlight>
