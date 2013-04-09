@@ -1447,6 +1447,7 @@ static const char
     {
         return "CacheMinFileSize argument must be a non-negative integer representing the min size of a file to cache in bytes.";
     }
+    dconf->minfs_set = 1;
     return NULL;
 }
 
@@ -1460,6 +1461,7 @@ static const char
     {
         return "CacheMaxFileSize argument must be a non-negative integer representing the max size of a file to cache in bytes.";
     }
+    dconf->maxfs_set = 1;
     return NULL;
 }
 
