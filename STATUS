@@ -226,6 +226,25 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~druggeri/patches/httpd-2.2.x-failontimeout.patch
      +1: druggeri
 
+   * remove useless tests ==> (*x && apr_isspace(*x))
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1452128
+     2.4.x patch: trunk patch works (with some offset)
+     +1: jailletc36
+
+   * tune ap_escape_logitem to avoid waste of memory
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1461869
+     2.4.x patch: trunk patch works (with some offset)
+     +1: jailletc36
+
+   * use %pm instead of explicit call to apr_strerror (more to be backported but they don't
+     apply out of the box for now)
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1463750
+                  http://svn.apache.org/viewvc?view=revision&revision=1463754
+                  http://svn.apache.org/viewvc?view=revision&revision=1464675
+     2.4.x patch: trunk patchs work
+     +1: jailletc36
+
+
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
