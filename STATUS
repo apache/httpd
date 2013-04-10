@@ -95,6 +95,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * installwinconf.awk: install.log output tweaks; reduced path convertion
+    2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=r1390511
+    2.2.x patch: http://people.apache.org/~fuankg/diffs/httpd-2.2.x_installwinconf.diff
+    +1: fuankg, druggeri, gsmith
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -198,11 +203,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch applies.
     2.2.x patch: http://people.apache.org/~wrowe/httpd-2.2-quiet-fips.patch
     +1: wrowe, druggeri
-
-  * installwinconf.awk: install.log output tweaks; reduced path convertion
-    2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=r1390511
-    2.2.x patch: http://people.apache.org/~fuankg/diffs/httpd-2.2.x_installwinconf.diff
-    +1: fuankg, druggeri
 
   * mod_proxy_balancer: Add failontimeout parameter. Timeout will put worker
     in error state if an IO timeout is detected.
