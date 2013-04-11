@@ -46,12 +46,12 @@ BEGIN {
         usertree = "C:/Documents and Settings";
     }
 
-    print "Installing Apache HTTP 2.0 server with" >tstfl;
+    print "Installing Apache HTTP Server 2.x with" >tstfl;
     print " DomainName =    " domainname >tstfl;
     print " ServerName =    " servername >tstfl;
     print " ServerAdmin =   " serveradmin >tstfl;
     print " ServerPort =    " serverport >tstfl;
-    print " ServerSslPort = " serverport >tstfl;
+    print " ServerSslPort = " serversslport >tstfl;
     print " ServerRoot =    " serverroot >tstfl;
 
     filelist["httpd.conf"] = "httpd.conf.in";
@@ -191,9 +191,9 @@ BEGIN {
 
       if ( close(dstfl) >= 0 ) {
         print "Rewrote " srcfl "\n to " dstfl > tstfl;
-        gsub(/\//, "\\", srcfl);
         if ( sourceroot != "docs/conf/" ) {
-          if (system("del \"" srcfl "\"")) {
+          gsub(/\//, "\\", srcfl);
+          if (system("del 2>NUL \"" srcfl "\"")) {
             print "Failed to remove " srcfl > tstfl;
           } else {
             print "Successfully removed " srcfl > tstfl;
@@ -228,7 +228,7 @@ BEGIN {
     if ( sourceroot != "docs/conf/" ) {
       srcfl = confdefault "installwinconf.awk";
       gsub(/\//, "\\", srcfl);
-      if (system("del \"" srcfl "\"")) {
+      if (system("del 2>NUL \"" srcfl "\"")) {
         print "Failed to remove " srcfl > tstfl;
       } else {
         print "Successfully removed " srcfl > tstfl;
