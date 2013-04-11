@@ -95,11 +95,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * installwinconf.awk: install.log output tweaks; reduced path convertion
-    2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=r1390511
-    2.2.x patch: http://people.apache.org/~fuankg/diffs/httpd-2.2.x_installwinconf.diff
-    +1: fuankg, druggeri, gsmith
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
