@@ -129,7 +129,7 @@ NLM_VERSION	=
 #
 # If this is specified, it will override the default of 64K
 #
-NLM_STACK_SIZE	= 8192
+NLM_STACK_SIZE	= 131072
 
 
 #
