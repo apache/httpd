@@ -1210,23 +1210,23 @@ static int lua_ap_stat(lua_State *L)
         lua_newtable(L);
 
         lua_pushstring(L, "mtime");
-        lua_pushinteger(L, (ptrdiff_t)(file_info.mtime / 1000000));
+        lua_pushnumber(L, file_info.mtime);
         lua_settable(L, -3);
 
         lua_pushstring(L, "atime");
-        lua_pushinteger(L, (ptrdiff_t)(file_info.atime / 1000000));
+        lua_pushnumber(L, file_info.atime);
         lua_settable(L, -3);
 
         lua_pushstring(L, "ctime");
-        lua_pushinteger(L, (ptrdiff_t)(file_info.ctime / 1000000));
+        lua_pushnumber(L, file_info.ctime);
         lua_settable(L, -3);
 
         lua_pushstring(L, "size");
-        lua_pushinteger(L, (ptrdiff_t)file_info.size);
+        lua_pushnumber(L, file_info.size);
         lua_settable(L, -3);
 
         lua_pushstring(L, "filetype");
-        lua_pushinteger(L, (ptrdiff_t)file_info.filetype);
+        lua_pushinteger(L, file_info.filetype);
         lua_settable(L, -3);
 
         return 1;
