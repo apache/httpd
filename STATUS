@@ -189,7 +189,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~druggeri/patches/AuthLDAPBindPasswordExec-2.2.patch
                   (20130119 - updated to include minor mmn bump)
      +1: druggeri
-     -1: wrowe (switch to +1 once ap_get_exec_line is made thread-safe)
+     -1: wrowe (switch to +1 once ap_get_exec_line is made thread-safe, right
+               now it uses a static which is verboten in reentrant code.)
                kudos for using apr_tokenize_to_argv to allow spaces in args.
 
   * mod_ssl: Quiet FIPS mode weak keys disabled and FIPS not selected emits
