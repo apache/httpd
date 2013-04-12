@@ -889,14 +889,15 @@ static int lua_ap_expr(lua_State *L)
 
 
 /*
- * lua_ap_regex; r:regex(string, pattern) - Evaluates a regex and returns
- * captures if matched
+ * lua_ap_regex; r:regex(string, pattern [, flags])
+ * - Evaluates a regex and returns captures if matched
  */
 static int lua_ap_regex(lua_State *L)
 {
     request_rec    *r;
     int i,
         rv;
+        flags;
     const char     *pattern,
     *source;
     char           *err;
@@ -909,8 +910,9 @@ static int lua_ap_regex(lua_State *L)
     r = ap_lua_check_request_rec(L, 1);
     pattern = lua_tostring(L, 2);
     source = lua_tostring(L, 3);
+    flags = luaL_optinteger(L, 4, 0);
 
-    rv = ap_regcomp(&regex, pattern, 0);
+    rv = ap_regcomp(&regex, pattern, flags);
     if (rv) {
         lua_pushboolean(L, 0);
         err = apr_palloc(r->pool, 256);
