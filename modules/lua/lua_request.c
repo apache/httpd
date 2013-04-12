@@ -896,7 +896,7 @@ static int lua_ap_regex(lua_State *L)
 {
     request_rec    *r;
     int i,
-        rv;
+        rv,
         flags;
     const char     *pattern,
     *source;
