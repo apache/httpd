@@ -1742,6 +1742,19 @@ static const struct luaL_Reg connection_methods[] = {
     {NULL, NULL}
 };
 
+static const char* lua_ap_auth_name(request_rec* r)
+{
+    const char *name;
+    name = ap_auth_name(r);
+    return name ? name : "";
+}
+
+static const char* lua_ap_get_server_name(request_rec* r)
+{
+    const char *name;
+    name = ap_get_server_name(r);
+    return name ? name : "Apache";
+}
 
 static const struct luaL_Reg server_methods[] = {
     {NULL, NULL}
@@ -1896,9 +1909,9 @@ AP_LUA_DECLARE(void) ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
     apr_hash_set(dispatch, "some_auth_required", APR_HASH_KEY_STRING,
                  makefun(&lua_ap_some_auth_required, APL_REQ_FUNTYPE_BOOLEAN, p));
     apr_hash_set(dispatch, "server_name", APR_HASH_KEY_STRING,
-                 makefun(&ap_get_server_name, APL_REQ_FUNTYPE_STRING, p));
+                 makefun(&lua_ap_get_server_name, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "auth_name", APR_HASH_KEY_STRING,
-                 makefun(&ap_auth_name, APL_REQ_FUNTYPE_STRING, p));
+                 makefun(&lua_ap_auth_name, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "sendfile", APR_HASH_KEY_STRING,
                  makefun(&lua_ap_sendfile, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "dbacquire", APR_HASH_KEY_STRING,
