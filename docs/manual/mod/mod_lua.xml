@@ -1018,7 +1018,7 @@ local result, errmsg = database:select(r, "SELECT * FROM `people` WHERE 1")
 -- Create and run a prepared statement:
 local statement, errmsg = database:prepare(r, "DELETE FROM `tbl` WHERE `age` > %u")
 if not errmsg then
-    local result, errmsg = statement:query(20) -- run the statement with age >20
+    local result, errmsg = statement:query(20) -- run the statement with age &gt; 20
 end
 
 -- Fetch a prepared statement from a DBDPrepareSQL directive:
