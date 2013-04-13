@@ -199,7 +199,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1447993
     2.4.x patch: trunk patch applies.
     2.2.x patch: http://people.apache.org/~wrowe/httpd-2.2-quiet-fips.patch
-    +1: wrowe, druggeri
+    +1: wrowe, druggeri, kbrand
 
   * mod_proxy_balancer: Add failontimeout parameter. Timeout will put worker
     in error state if an IO timeout is detected.
@@ -213,6 +213,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Backport of r1386576, r1386578 attached to 51982 
       https://issues.apache.org/bugzilla/attachment.cgi?id=30179&action=diff
     +1: wrowe, druggeri
+
+  * mod_ssl: Catch missing, mismatched or encrypted client cert/key pairs
+    with SSLProxyMachineCertificateFile/Path directives. PR 52212, PR 54698.
+    (check at startup, to prevent segfaults at proxy request time)
+    trunk patches: https://svn.apache.org/r1374214
+                   https://svn.apache.org/r1374216
+                   https://svn.apache.org/r1375445
+                   https://svn.apache.org/r1467593
+    2.4.x patch: https://people.apache.org/~kbrand/PR52212_54698_2.4.x.patch
+    2.2.x patch: https://people.apache.org/~kbrand/PR52212_54698_2.2.x.patch
+    +1: kbrand,
 
 PATCHES/ISSUES THAT ARE STALLED
 
