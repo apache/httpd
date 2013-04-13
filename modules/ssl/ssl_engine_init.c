@@ -1356,7 +1356,8 @@ static void ssl_init_proxy_certs(server_rec *s,
     for (n = 0; n < ncerts; n++) {
         X509_INFO *inf = sk_X509_INFO_value(sk, n);
 
-        if (!inf->x509 || !inf->x_pkey || !inf->x_pkey->dec_pkey) {
+        if (!inf->x509 || !inf->x_pkey || !inf->x_pkey->dec_pkey ||
+            inf->enc_data) {
             sk_X509_INFO_free(sk);
             ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, s, APLOGNO(02252)
                          "incomplete client cert configured for SSL proxy "
