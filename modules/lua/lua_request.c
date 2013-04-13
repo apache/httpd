@@ -613,10 +613,6 @@ static int lua_ap_rflush (lua_State *L) {
     return 1;
 }
 
-static int lua_ap_port(request_rec* r) 
-{
-    return (int) ap_get_server_port(r);
-}
 
 static const char* lua_ap_options(request_rec* r) 
 {
@@ -1878,7 +1874,7 @@ AP_LUA_DECLARE(void) ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
     apr_hash_set(dispatch, "flush", APR_HASH_KEY_STRING,
                  makefun(&lua_ap_rflush, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "port", APR_HASH_KEY_STRING,
-                 makefun(&lua_ap_port, APL_REQ_FUNTYPE_INT, p));
+                 makefun(&ap_get_server_port, APL_REQ_FUNTYPE_INT, p));
     apr_hash_set(dispatch, "banner", APR_HASH_KEY_STRING,
                  makefun(&ap_get_server_banner, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "options", APR_HASH_KEY_STRING,
@@ -1925,10 +1921,6 @@ AP_LUA_DECLARE(void) ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
                  makefun(&lua_ap_escape, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "unescape", APR_HASH_KEY_STRING,
                  makefun(&lua_ap_unescape, APL_REQ_FUNTYPE_LUACFUN, p));
-    apr_hash_set(dispatch, "banner", APR_HASH_KEY_STRING,
-                 makefun(&lua_ap_banner, APL_REQ_FUNTYPE_LUACFUN, p));
-    apr_hash_set(dispatch, "port", APR_HASH_KEY_STRING,
-                 makefun(&lua_ap_port, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "mpm_query", APR_HASH_KEY_STRING,
                  makefun(&lua_ap_mpm_query, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "expr", APR_HASH_KEY_STRING,
