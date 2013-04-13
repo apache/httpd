@@ -2955,7 +2955,7 @@ AP_DECLARE(char *) ap_get_exec_line(apr_pool_t *p,
                                     const char *cmd,
                                     const char * const * argv)
 {
-    static char buf[MAX_STRING_LEN];
+    char buf[MAX_STRING_LEN];
     apr_procattr_t *procattr;
     apr_proc_t *proc;
     apr_file_t *fp;
