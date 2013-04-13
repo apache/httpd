@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1334008:1465605 (outdated) -->
+<!-- English Revision: 1465605 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -42,6 +42,24 @@ d'Apache</compatibility>
 </summary>
 
 <seealso><directive module="mod_authz_core">Require</directive></seealso>
+
+<section id="examples">
+<title>Exemple d'utilisation</title>
+<p><em>Notez que si vous utilisez mod_authz_dbm, le mot-cl&eacute; pour les
+groupes d'authentification qui &eacute;tait auparavant <code>group</code> est
+maintenant <code>dbm-group</code> :</em>
+</p>
+<highlight language="config">
+&lt;Directory "/foo/bar"&gt;
+  AuthType Basic 
+  AuthName "Secure Area"
+  AuthBasicProvider dbm 
+  AuthDBMUserFile site/data/users 
+  AuthDBMGroupFile site/data/users 
+  Require dbm-group admin 
+&lt;/Directory&gt;
+</highlight>
+</section>
 
 <directivesynopsis>
 <name>AuthDBMGroupFile</name>
