@@ -238,6 +238,7 @@ Server on HPUX</a></li>
 <li><a href="mod/mod_log_debug.html">Apache Module mod_log_debug</a></li>
 <li><a href="mod/mod_log_forensic.html">Apache Module mod_log_forensic</a></li>
 <li><a href="mod/mod_logio.html">Apache Module mod_logio</a></li>
+<li><a href="mod/mod_lua.html">Apache Module mod_lua</a></li>
 <li><a href="mod/mod_macro.html">Apache Module mod_macro</a></li>
 <li><a href="mod/mod_mime.html">Apache Module mod_mime</a></li>
 <li><a href="mod/mod_mime_magic.html">Apache Module mod_mime_magic</a></li>

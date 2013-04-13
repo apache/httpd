@@ -764,16 +764,6 @@ local unescaped = r:escape(url) -- returns 'http://foo.bar/1 2 3 &amp; 4 + 5'
 
 
 <pre class="prettyprint lang-lua">
-r:banner() -- Returns the current server banner, self explanatory
-</pre>
-
-
-<pre class="prettyprint lang-lua">
-r:port() -- Returns the current server port used for the request, self explanatory
-</pre>
-
-
-<pre class="prettyprint lang-lua">
 r:mpm_query(number) -- Queries the server for MPM information using ap_mpm_query:
 
 local mpm = r.mpm_query(14)
@@ -872,9 +862,6 @@ r:set_document_root(file_path) -- Sets the document root for the request to file
 </pre>
 
 
-<pre class="prettyprint lang-lua">
-r:add_version_component(component_string) -- Adds a component to the server banner.
-</pre>
 
 
 <pre class="prettyprint lang-lua">
@@ -954,7 +941,7 @@ end
 <pre class="prettyprint lang-lua">
 r:regex(string, pattern) -- Runs a regular expression match on a string, returning captures if matched:
 
-local matches = r:regex("foo bar baz", "foo (%w+) (%S*)")
+local matches = r:regex("foo bar baz", "foo (\w+) (\S*)")
 if matches then
     r:puts("The regex matched, and the last word captured ($2) was: " .. matches[2])
 end
