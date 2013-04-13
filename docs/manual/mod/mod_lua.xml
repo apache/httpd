@@ -874,7 +874,7 @@ end
 <highlight language="lua">
 r:regex(string, pattern) -- Runs a regular expression match on a string, returning captures if matched:
 
-local matches = r:regex("foo bar baz", "foo (%w+) (%S*)")
+local matches = r:regex("foo bar baz", "foo (\w+) (\S*)")
 if matches then
     r:puts("The regex matched, and the last word captured ($2) was: " .. matches[2])
 end
