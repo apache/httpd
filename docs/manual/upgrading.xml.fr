@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1403041:1465828 (outdated) -->
+<!-- English Revision : 1465828 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -126,6 +126,11 @@ n&eacute;cessiter une mise &agrave; jour des fichiers de configuration de la ver
     module="mod_authz_core">RequireAny</directive>, <directive
     module="mod_authz_core">RequireNone</directive>, et <directive
     module="mod_authz_core">RequireAll</directive>.</p>
+
+    <p>Si vous utilisez <module>mod_authz_dbm</module>, vous devez
+    mettre &agrave; jour votre configuration en rempla&ccedil;ant les directives du
+    style <code>Require group ...</code> par des directives du style
+    <code>Require dbm-group ...</code>.</p>
 
     <section id="access">
       <title>Contr&ocirc;le d'acc&egrave;s</title>

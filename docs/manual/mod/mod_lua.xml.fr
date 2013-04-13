@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1455272:1467562 (outdated) -->
+<!-- English Revision : 1467562 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -666,235 +666,311 @@ end
 </section>
 <section id="functions"><title>M&eacute;thodes de l'objet request_rec</title>
 
-        <p>L'objet request_rec poss&egrave;de (au minimum) les m&eacute;thodes
-	suivantes :</p>
+<p>L'objet request_rec poss&egrave;de (au minimum) les m&eacute;thodes suivantes :</p>
 
-        <highlight language="lua">
-	r:flush() -- vide le tampon de sortie
-        </highlight>
+<highlight language="lua">
+r:flush() -- vide le tampon de sortie
 
-        <highlight language="lua">
-        r:addoutputfilter(name|function) -- ajoute un filtre en sortie
-        </highlight>
+while nous_avons_des_donn&eacute;es_&agrave;_envoyer do
+    r:puts("Bla bla bla\n") -- envoi des donn&eacute;es &agrave; envoyer vers le tampon
+    r:flush() -- vidage du tampon (envoi au client)
+    r:sleep(0.5) -- mise en attente et bouclage
++end
+</highlight>
 
-        <highlight language="lua">
-	r:sendfile(filename) -- envoie un fichier entier au client en
-	utilisant sendfile s'il est support&eacute; par la plateforme
-        </highlight>
+<highlight language="lua">
+r:addoutputfilter(name|function) -- ajoute un filtre en sortie
 
-        <highlight language="lua">
-        r:parseargs() -- renvoie une table Lua contenant la cha&icirc;ne
-	d'arguments de la requ&ecirc;te
-        </highlight>
+r:addoutputfilter("fooFilter") -- ins&egrave;re le filtre fooFilter dans le flux de sortie
+</highlight>
+
+<highlight language="lua">
+r:sendfile(filename) -- envoie un fichier entier au client en
+utilisant sendfile s'il est support&eacute; par la plateforme :
+
+if use_sendfile_thing then
+    r:sendfile("/var/www/large_file.img")
+end
+</highlight>
+
+<highlight language="lua">
+r:parseargs() -- renvoie une table Lua contenant la cha&icirc;ne
+d'arguments de la requ&ecirc;te
+
+local GET = r:parseargs()
++r:puts("Votre nom est : " .. GET['name'] or "Unknown")
+</highlight>
 
 
-        <highlight language="lua">
-        r:parsebody()([sizeLimit]) -- interpr&egrave;te le corps de la requ&ecirc;te
-	en tant que POST et renvoie une table lua. Un nombre optionnel
-	peut &ecirc;tre fourni pour sp&eacute;cifier le nombre maximal d'octets &agrave;
-	interpr&eacute;ter. La valeur par d&eacute;faut est 8192.
-        </highlight>
+<highlight language="lua">
+r:parsebody()([sizeLimit]) -- interpr&egrave;te le corps de la requ&ecirc;te
+en tant que POST et renvoie une table lua. Un nombre optionnel
+peut &ecirc;tre fourni pour sp&eacute;cifier le nombre maximal d'octets &agrave;
+interpr&eacute;ter. La valeur par d&eacute;faut est 8192.
+
+local POST = r:parsebody(1024*1024)
++r:puts("Votre nom est : " .. POST['name'] or "Unknown")
+</highlight>
 
 
-        <highlight language="lua">
-        r:puts("bonjour", " le monde", "!") -- affichage dans le corps de la r&eacute;ponse
-        </highlight>
+<highlight language="lua">
+r:puts("bonjour", " le monde", "!") -- affichage dans le corps de la r&eacute;ponse
+</highlight>
 
-	<highlight language="lua">
-        r:write("une simple cha&icirc;ne") -- affichage dans le
-	corps de la r&eacute;ponse
-        </highlight>
+<highlight language="lua">
+r:write("une simple cha&icirc;ne") -- affichage dans le
+corps de la r&eacute;ponse
+</highlight>
 
-	<highlight language="lua">
-        r:escape_html("&lt;html&gt;test&lt;/html&gt;") -- Echappe le
-	code HTML et renvoie le r&eacute;sultat
-        </highlight>
+<highlight language="lua">
+r:escape_html("&lt;html&gt;test&lt;/html&gt;") -- Echappe le
+code HTML et renvoie le r&eacute;sultat
+</highlight>
 
-	<highlight language="lua">
-        r:base64_encode(string) -- Encode une cha&icirc;ne &agrave; l'aide du
-	standard de codage Base64.
-        </highlight>
+<highlight language="lua">
+r:base64_encode(string) -- Encode une cha&icirc;ne &agrave; l'aide du
+standard de codage Base64.
 
-        <highlight language="lua">
-        r:base64_decode(string) -- D&eacute;code une cha&icirc;ne cod&eacute;e en Base64.
-        </highlight>
+local encoded = r:base64_encode("This is a test") -- returns VGhpcyBpcyBhIHRlc3Q=
+</highlight>
 
-        <highlight language="lua">
-        r:md5(string) -- Calcule et renvoie le condens&eacute; MD5 d'une cha&icirc;ne
-	en mode binaire (binary safe).
-        </highlight>
+<highlight language="lua">
+r:base64_decode(string) -- D&eacute;code une cha&icirc;ne cod&eacute;e en Base64.
 
-        <highlight language="lua">
-        r:sha1(string) -- Calcule et renvoie le condens&eacute; SHA1 d'une cha&icirc;ne
-	en mode binaire (binary safe).
-        </highlight>
+local decoded = r:base64_decode("VGhpcyBpcyBhIHRlc3Q=") -- returns 'This is a test'
+</highlight>
 
-        <highlight language="lua">
-        r:escape(string) -- Echappe une cha&icirc;ne de type URL.
-        </highlight>
+<highlight language="lua">
+r:md5(string) -- Calcule et renvoie le condens&eacute; MD5 d'une cha&icirc;ne
+en mode binaire (binary safe).
 
-        <highlight language="lua">
-        r:unescape(string) -- D&eacute;s&eacute;chappe une cha&icirc;ne de type URL.
-        </highlight>
+local hash = r:md5("This is a test") -- returns ce114e4501d2f4e2dcea3e17b546f339
+</highlight>
 
-        <highlight language="lua">
-        r:banner() -- Renvoie la banni&egrave;re du serveur courant.
-        </highlight>
+<highlight language="lua">
+r:sha1(string) -- Calcule et renvoie le condens&eacute; SHA1 d'une cha&icirc;ne
+en mode binaire (binary safe).
 
-        <highlight language="lua">
-        r:port() -- Renvoie le port du serveur courant utilis&eacute; pour la
-	requ&ecirc;te.
-        </highlight>
+local hash = r:sha1("This is a test") -- returns a54d88e06612d820bc3be72877c74f257b561b19
+</highlight>
 
-        <highlight language="lua">
-        r:mpm_query(number) -- Interroge le serveur &agrave; propos de son
-	module MPM via la requ&ecirc;te ap_mpm_query.
-        </highlight>
+<highlight language="lua">
+r:escape(string) -- Echappe une cha&icirc;ne de type URL.
 
-        <highlight language="lua">
-        r:expr(string) -- Evalue une cha&icirc;ne de type <a
-	href="../expr.html">expr</a>.
-        </highlight>
+local url = "http://foo.bar/1 2 3 &amp; 4 + 5"
+local escaped = r:escape(url) -- returns 'http%3a%2f%2ffoo.bar%2f1+2+3+%26+4+%2b+5'
+</highlight>
 
-        <highlight language="lua">
-        r:scoreboard_process(a) -- Interroge le serveur &agrave; propos du
-	processus &agrave; la position <code>a</code>.
-        </highlight>
+<highlight language="lua">
+r:unescape(string) -- D&eacute;s&eacute;chappe une cha&icirc;ne de type URL.
 
-        <highlight language="lua">
-        r:scoreboard_worker(a, b) -- Interroge le serveur &agrave; propos du
-	thread <code>b</code>, dans le processus <code>a</code>.
-        </highlight>
+local url = "http%3a%2f%2ffoo.bar%2f1+2+3+%26+4+%2b+5"
+local unescaped = r:escape(url) -- returns 'http://foo.bar/1 2 3 &amp; 4 + 5'
+</highlight>
 
-        <highlight language="lua">
-        r:started() -- Renvoie l'heure du dernier (re)d&eacute;marrage du
-	serveur.
-        </highlight>
+<highlight language="lua">
+r:mpm_query(number) -- Interroge le serveur &agrave; propos de son
+module MPM via la requ&ecirc;te ap_mpm_query.
 
-        <highlight language="lua">
-        r:clock() -- Renvoie l'heure courante avec une pr&eacute;cision d'une
-	microseconde.
-        </highlight>
+local mpm = r.mpm_query(14)
+if mpm == 1 then
+    r:puts("Ce serveur utilise le MPM Event")
+end
+</highlight>
 
-        <highlight language="lua">
+<highlight language="lua">
+r:expr(string) -- Evalue une cha&icirc;ne de type <a
+href="../expr.html">expr</a>.
+
+if r:expr("%{HTTP_HOST} =~ /^www/") then
+    r:puts("Ce nom d'h&ocirc;te commence par www")
+end
+</highlight>
+
+<highlight language="lua">
+r:scoreboard_process(a) -- Interroge le serveur &agrave; propos du
+processus &agrave; la position <code>a</code>.
+
+local process = r:scoreboard_process(1)
+r:puts("Le serveur 1 a comme PID " .. process.pid)
+</highlight>
+
+<highlight language="lua">
+r:scoreboard_worker(a, b) -- Interroge le serveur &agrave; propos du
+thread <code>b</code>, dans le processus <code>a</code>.
+
+local thread = r:scoreboard_worker(1, 1)
+r:puts("L'ID du thread 1 du serveur 1 est " .. thread.tid .. " et son
+&eacute;tat est " .. thread.status)
+</highlight>
+
+<highlight language="lua">
+r:started() -- Renvoie l'heure du dernier (re)d&eacute;marrage du
+serveur.
+</highlight>
+
+<highlight language="lua">
+r:clock() -- Renvoie l'heure courante avec une pr&eacute;cision d'une
+microseconde.
+</highlight>
+
+<highlight language="lua">
 r:requestbody(filename) -- Lit et renvoie le corps d'une requ&ecirc;te. Si
 'filename' est sp&eacute;cifi&eacute;, le corps de requ&ecirc;te n'est pas renvoy&eacute;, mais
 sauvegard&eacute; dans le fichier correspondant.
-        </highlight>
 
-        <highlight language="lua">
-        r:add_input_filter(filter_name) -- Ajoute le filtre en entr&eacute;e
-	'filter_name'.
-        </highlight>
+local input = r:requestbody()
+r:puts("Vous m'avez envoy&eacute; le corps de requ&ecirc;te suivant :\n")
+r:puts(input)
+</highlight>
 
-        <highlight language="lua">
-        r:module_info(module_name) -- Interroge le serveur &agrave; propos d'un
-	module.
-        </highlight>
+<highlight language="lua">
+r:add_input_filter(filter_name) -- Ajoute le filtre en entr&eacute;e
+'filter_name'.
+</highlight>
 
-        <highlight language="lua">
-        r:loaded_modules() -- Renvoie une liste des modules charg&eacute;s par
-	httpd.
-        </highlight>
+<highlight language="lua">
+r:module_info(module_name) -- Interroge le serveur &agrave; propos d'un
+module.
 
-        <highlight language="lua">
+local mod = r.module_info("mod_lua.c")
+if mod then
+    for k, v in pairs(mod.commands) do
+       r:puts( ("%s: %s\n"):format(k,v)) -- affiche toutes les directives impl&eacute;ment&eacute;es par ce module
+    end
+end
+</highlight>
+
+<highlight language="lua">
+r:loaded_modules() -- Renvoie une liste des modules charg&eacute;s par
+httpd.
+
+for k, module in pairs(r:loaded_modules()) do
+    r:puts("J'ai charg&eacute; le module " .. module .. "\n")
+end
+</highlight>
+
+<highlight language="lua">
 r:runtime_dir_relative(filename) -- G&eacute;n&egrave;re le nom d'un fichier run-time
 (par exemple la m&eacute;moire partag&eacute;e "file") relativement au r&eacute;pertoire de
 run-time. 
-        </highlight>
+</highlight>
 
-        <highlight language="lua">
-        r:server_info() -- Renvoie une table contenant des informations
-	&agrave; propos du serveur, comme le nom de l'ex&eacute;cutable httpd, le
-	module mpm utilis&eacute;, etc...
-        </highlight>
+<highlight language="lua">
+r:server_info() -- Renvoie une table contenant des informations
+&agrave; propos du serveur, comme le nom de l'ex&eacute;cutable httpd, le
+module mpm utilis&eacute;, etc...
+</highlight>
 
-        <highlight language="lua">
-        r:set_document_root(file_path) -- D&eacute;finit la racine des
-	documents pour la requ&ecirc;te &agrave; file_path.
-        </highlight>
+<highlight language="lua">
+r:set_document_root(file_path) -- D&eacute;finit la racine des
+documents pour la requ&ecirc;te &agrave; file_path.
+</highlight>
 
-        <highlight language="lua">
-        r:add_version_component(component_string) -- Ajoute un &eacute;l&eacute;ment &agrave;
-	la banni&egrave;re du serveur.
-        </highlight>
+<highlight language="lua">
+r:add_version_component(component_string) -- Ajoute un &eacute;l&eacute;ment &agrave;
+la banni&egrave;re du serveur.
+</highlight>
 
-        <highlight language="lua">
-        r:set_context_info(prefix, docroot) -- D&eacute;finit le pr&eacute;fixe et la
-	racine des documents du contexte pour une requ&ecirc;te.
-        </highlight>
+<highlight language="lua">
+r:set_context_info(prefix, docroot) -- D&eacute;finit le pr&eacute;fixe et la
+racine des documents du contexte pour une requ&ecirc;te.
+</highlight>
 
-        <highlight language="lua">
-        r:os_escape_path(file_path) -- Convertit un chemin du syst&egrave;me de
-	fichiers en URL ind&eacute;pendamment du syst&egrave;me d'exploitation.
-        </highlight>
+<highlight language="lua">
+r:os_escape_path(file_path) -- Convertit un chemin du syst&egrave;me de
+fichiers en URL ind&eacute;pendamment du syst&egrave;me d'exploitation.
+</highlight>
 
-        <highlight language="lua">
-        r:escape_logitem(string) -- Echappe une cha&icirc;ne pour
-	journalisation.
-        </highlight>
+<highlight language="lua">
+r:escape_logitem(string) -- Echappe une cha&icirc;ne pour
+journalisation.
+</highlight>
 
-        <highlight language="lua">
+<highlight language="lua">
 r:strcmp_match(string, pattern) -- V&eacute;rifie si 'string' correspond &agrave;
 'pattern' via la fonction strcmp_match (GLOBs). Par exemple, est-ce que
 'www.example.com' correspond &agrave; '*.example.com' ?
-        </highlight>
 
-        <highlight language="lua">
-        r:set_keepalive() -- D&eacute;finit l'&eacute;tat de persistance d'une
-	requ&ecirc;te. Renvoie true dans la mesure du possible, false dans le
-	cas contraire.
-        </highlight>
+local match = r:strcmp_match("foobar.com", "foo*.com")
+if match then 
+    r:puts("foobar.com matches foo*.com")
+end
+</highlight>
 
-        <highlight language="lua">
-        r:make_etag() -- G&eacute;n&egrave;re et renvoie le etag pour la requ&ecirc;te
-	courante.
-        </highlight>
+<highlight language="lua">
+r:set_keepalive() -- D&eacute;finit l'&eacute;tat de persistance d'une
+requ&ecirc;te. Renvoie true dans la mesure du possible, false dans le
+cas contraire.
+</highlight>
 
-        <highlight language="lua">
+<highlight language="lua">
+r:make_etag() -- G&eacute;n&egrave;re et renvoie le etag pour la requ&ecirc;te
+courante.
+</highlight>
+
+<highlight language="lua">
 r:send_interim_response(clear) -- Renvoie une r&eacute;ponse d'int&eacute;rim (1xx) au
 client. Si 'clear' est vrai, les en-t&ecirc;tes disponibles seront envoy&eacute;s et
 effac&eacute;s.
-        </highlight>
+</highlight>
 
-        <highlight language="lua">
+<highlight language="lua">
 r:custom_response(status_code, string) -- G&eacute;n&egrave;re et d&eacute;finit une r&eacute;ponse
 personnalis&eacute;e pour un code d'&eacute;tat particulier. Le fonctionnement est
 tr&egrave;s proche de celui de la directive ErrorDocument.
-        </highlight>
 
-        <highlight language="lua">
-        r:exists_config_define(string) -- V&eacute;rifie si une d&eacute;finition de
-	configuration existe.
-        </highlight>
+r:custom_response(404, "Baleted!")
+</highlight>
 
-        <highlight language="lua">
-        r:state_query(string) -- Interroge le serveur &agrave; propos de son
-	&eacute;tat.
-        </highlight>
+<highlight language="lua">
+r:exists_config_define(string) -- V&eacute;rifie si une d&eacute;finition de
+configuration existe.
 
-        <highlight language="lua">
-        r:stat(filename) -- Ex&eacute;cute stat() sur un fichier, et renvoie
-	une table contenant des informations &agrave; propos de ce fichier.
-        </highlight>
+if r:exists_config_define("FOO") then
+    r:puts("httpd a probablement &eacute;t&eacute; lanc&eacute; avec l'option -DFOO, ou FOO a
+    &eacute;t&eacute; d&eacute;fini dans la configuration")
+end
+</highlight>
 
-        <highlight language="lua">
-        r:regex(string, pattern) -- Ex&eacute;cute une recherche &agrave; base
-	d'expression rationnelle sur une cha&icirc;ne, et renvoie les
-	&eacute;ventuelles correspondances trouv&eacute;es.
-        </highlight>
+<highlight language="lua">
+r:state_query(string) -- Interroge le serveur &agrave; propos de son
+&eacute;tat.
+</highlight>
 
-        <highlight language="lua">
+<highlight language="lua">
+r:stat(filename) -- Ex&eacute;cute stat() sur un fichier, et renvoie
+une table contenant des informations &agrave; propos de ce fichier.
+
+local info = r:stat("/var/www/foo.txt")
+if info then
+    r:puts("Ce fichier existe et a &eacute;t&eacute; modifi&eacute; pour la derni&egrave;re fois &agrave; : " .. info.modified)
+end
+</highlight>
+
+<highlight language="lua">
+r:regex(string, pattern) -- Ex&eacute;cute une recherche &agrave; base
+d'expression rationnelle sur une cha&icirc;ne, et renvoie les
+&eacute;ventuelles correspondances trouv&eacute;es.
+
+local matches = r:regex("foo bar baz", "foo (\w+) (\S*)")
+if matches then
+    r:puts("L'expression rationnelle correspond et le dernier mot
+    captur&eacute; ($2) est : " .. matches[2])
+end
+</highlight>
+
+<highlight language="lua">
 r:sleep(secondes) -- Interrompt l'ex&eacute;cution du script pendant le	nombre de secondes sp&eacute;cifi&eacute;.
                   -- La valeur peut &ecirc;tre sp&eacute;cifi&eacute;e sous la forme d'un nombre d&eacute;cimal comme 1.25 pour plus de pr&eacute;cision.
-        </highlight>
+</highlight>
 
-	<highlight language="lua">
-	r:dbacquire(dbType[, dbParams]) -- Acquiert une connexion &agrave; une
+<highlight language="lua">
+r:dbacquire(dbType[, dbParams]) -- Acquiert une connexion &agrave; une
 base de donn&eacute;es et renvoie une classe database. Voir '<a
 href="#databases">Connectivit&eacute; aux bases de donn&eacute;es</a>' pour plus de
 d&eacute;tails.
-        </highlight>
+</highlight>
         
 
 </section>
@@ -1046,7 +1122,7 @@ local result, errmsg = database:select(r, "SELECT * FROM `people` WHERE 1")
 -- Cr&eacute;ation et ex&eacute;cution d'une requ&ecirc;te pr&eacute;par&eacute;e :
 local statement, errmsg = database:prepare(r, "DELETE FROM `tbl` WHERE `age` > %u")
 if not errmsg then
-    local result, errmsg = statement:query(20) -- ex&eacute;cute la requ&ecirc;te pour age > 20
+    local result, errmsg = statement:query(20) -- ex&eacute;cute la requ&ecirc;te pour age &gt; 20
 end
 
 -- Extrait une requ&ecirc;te pr&eacute;par&eacute;e depuis une directive DBDPrepareSQL :
