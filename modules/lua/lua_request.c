@@ -908,8 +908,8 @@ static int lua_ap_regex(lua_State *L)
     luaL_checktype(L, 2, LUA_TSTRING);
     luaL_checktype(L, 3, LUA_TSTRING);
     r = ap_lua_check_request_rec(L, 1);
-    pattern = lua_tostring(L, 2);
-    source = lua_tostring(L, 3);
+    source = lua_tostring(L, 2);
+    pattern = lua_tostring(L, 3);
     flags = luaL_optinteger(L, 4, 0);
 
     rv = ap_regcomp(&regex, pattern, flags);
@@ -928,7 +928,7 @@ static int lua_ap_regex(lua_State *L)
     }
     
     lua_newtable(L);
-    for (i = 0; i <= regex.re_nsub; i++) {
+    for (i = 0; i <= regex.re_nsub && i <= AP_MAX_REG_MATCH; i++) {
         lua_pushinteger(L, i);
         if (matches[i].rm_so >= 0 && matches[i].rm_eo >= 0)
             lua_pushstring(L,
