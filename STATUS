@@ -212,7 +212,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR: 51489 51982
     Backport of r1386576, r1386578 attached to 51982 
       https://issues.apache.org/bugzilla/attachment.cgi?id=30179&action=diff
-    +1: wrowe
+    +1: wrowe, druggeri
 
 PATCHES/ISSUES THAT ARE STALLED
 
