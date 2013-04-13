@@ -796,7 +796,7 @@ r:set_document_root(file_path) -- Sets the document root for the request to file
 
 <!--
 <highlight language="lua">
-r:add_version_component(component_string) -- Adds a component to the server banner.
+r:add_version_component(component_string) - - Adds a component to the server banner.
 </highlight>
 -->
 
