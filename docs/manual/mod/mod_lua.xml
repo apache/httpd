@@ -709,14 +709,6 @@ local unescaped = r:escape(url) -- returns 'http://foo.bar/1 2 3 &amp; 4 + 5'
 </highlight>
 
 <highlight language="lua">
-r:banner() -- Returns the current server banner, self explanatory
-</highlight>
-
-<highlight language="lua">
-r:port() -- Returns the current server port used for the request, self explanatory
-</highlight>
-
-<highlight language="lua">
 r:mpm_query(number) -- Queries the server for MPM information using ap_mpm_query:
 
 local mpm = r.mpm_query(14)
