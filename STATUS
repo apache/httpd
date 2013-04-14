@@ -90,6 +90,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * ap_expr: Expression parser: Add the ability to base64 encode and base64
+    decode strings within the parser.
+    trunk patch: http://svn.apache.org/r1457437
+                 http://svn.apache.org/r1457520
+    2.4.x patch: trunk patch applies.
+    +1: minfrin, druggeri, rjung
+
     
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -170,13 +177,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  for testing on Windows too, and if there same issues I will
                  asap post them to list (or turn my -1 to +1) ... 
 
-  * ap_expr: Expression parser: Add the ability to base64 encode and base64
-    decode strings within the parser.
-    trunk patch: http://svn.apache.org/r1457437
-                 http://svn.apache.org/r1457520
-    2.4.x patch: trunk patch applies.
-    +1: minfrin, druggeri
-
   * ap_expr: Expression parser: Add the ability to apply a SHA1 hash to
     strings within the parser.
     trunk patch: http://svn.apache.org/r1457450
@@ -185,6 +185,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch applies.
     +1: minfrin, druggeri
     jailletc36: r1458003 should also be applied 
+    rjung: +1 if r1458003 gets also be applied 
 
   * mod_auth_basic: Add a generic mechanism to fake basic authentication
     using the ap_expr parser. This allows the administrator to construct
@@ -216,13 +217,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * util_filter: Add in ap_remove_input|output_filter_byhandle()
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1458456
      2.4.x patch: trunk patch works modulo ap_mmn.h
-     +1: jim
+     +1: jim, rjung
 
    * cache_storage: remove useless test + update function name in debug log +
      skip as soon as we know headers do not match
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1452281
      2.4.x patch: trunk patch works
-     +1: jailletc36
+     +1: jailletc36, rjung
 
    * mod_proxy_balancer: Add failontimeout parameter. Timeout will put worker
      in error state if an IO timeout is detected.
@@ -234,7 +235,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * remove useless tests ==> (*x && apr_isspace(*x))
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1452128
      2.4.x patch: trunk patch works (with some offset)
-     +1: jailletc36
+     +1: jailletc36, rjung
 
    * tune ap_escape_logitem to avoid waste of memory
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1461869
@@ -247,7 +248,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1463754
                   http://svn.apache.org/viewvc?view=revision&revision=1464675
      2.4.x patch: trunk patchs work
-     +1: jailletc36
+     +1: jailletc36, rjung
 
   * mod_ssl: Catch missing, mismatched or encrypted client cert/key pairs
     with SSLProxyMachineCertificateFile/Path directives. PR 52212, PR 54698.
@@ -259,6 +260,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: https://people.apache.org/~kbrand/PR52212_54698_2.4.x.patch
     2.2.x patch: https://people.apache.org/~kbrand/PR52212_54698_2.2.x.patch
     +1: kbrand,
+
+   * mod_log_config: Fix crash when logging request end time for a failed request.
+     PR 54828
+     trunk patch: http://svn.apache.org/r1467765
+     2.4.x patch: trunk patchs applies
+     +1: rjung
+
+   * ap_expr: Expression parser: Add the ability to apply a md5 hash to
+     strings within the parser.
+     trunk patch: http://svn.apache.org/r1457450
+     2.4.x patch: trunk patch applies if previous proposals for ap_expr get applied.
+     +1: rjung
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
