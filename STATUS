@@ -186,6 +186,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_authnz_ldap: Allow using exec: callouts like SSLPassphraseDialog
      for AuthLDAPBindPassword.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1433478
+                  http://svn.apache.org/viewvc?view=revision&revision=1467523
+                  http://svn.apache.org/viewvc?view=revision&revision=1467792
      2.2.x patch: http://people.apache.org/~druggeri/patches/AuthLDAPBindPasswordExec-2.2.patch
                   (20130119 - updated to include minor mmn bump)
                   (20130412 - updated to not use static var - thx, wrowe)
