@@ -2990,5 +2990,5 @@ AP_DECLARE(char *) ap_get_exec_line(apr_pool_t *p,
     buf[k] = '\0'; 
     apr_file_close(fp);
 
-    return buf;
+    return apr_pstrndup(p, buf, k);
 }
