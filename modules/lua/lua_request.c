@@ -25,6 +25,10 @@
 APLOG_USE_MODULE(lua);
 #define POST_MAX_VARS 500
 
+#ifndef MODLUA_MAX_REG_MATCH
+#define MODLUA_MAX_REG_MATCH 25
+#endif
+
 typedef char *(*req_field_string_f) (request_rec * r);
 typedef int (*req_field_int_f) (request_rec * r);
 typedef apr_table_t *(*req_field_apr_table_f) (request_rec * r);
@@ -898,7 +902,7 @@ static int lua_ap_regex(lua_State *L)
     *source;
     char           *err;
     ap_regex_t regex;
-    ap_regmatch_t matches[AP_MAX_REG_MATCH+1];
+    ap_regmatch_t matches[MODLUA_MAX_REG_MATCH+1];
 
     luaL_checktype(L, 1, LUA_TUSERDATA);
     luaL_checktype(L, 2, LUA_TSTRING);
@@ -917,7 +921,7 @@ static int lua_ap_regex(lua_State *L)
         return 2;
     }
 
-    rv = ap_regexec(&regex, source, AP_MAX_REG_MATCH, matches, 0);
+    rv = ap_regexec(&regex, source, MODLUA_MAX_REG_MATCH, matches, 0);
     if (rv == AP_REG_NOMATCH) {
         lua_pushboolean(L, 0);
         return 1;
