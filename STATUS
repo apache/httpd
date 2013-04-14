@@ -97,7 +97,25 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch applies.
     +1: minfrin, druggeri, rjung
 
-    
+   * util_filter: Add in ap_remove_input|output_filter_byhandle()
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1458456
+    2.4.x patch: trunk patch works modulo ap_mmn.h
+    +1: jim, rjung, covener
+
+  * cache_storage: remove useless test + update function name in debug log +
+    skip as soon as we know headers do not match
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1452281
+    2.4.x patch: trunk patch works
+    +1: jailletc36, rjung, covener
+
+  * use %pm instead of explicit call to apr_strerror (more to be backported but they don't
+    apply out of the box for now)
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1463750
+                 http://svn.apache.org/viewvc?view=revision&revision=1463754
+                 http://svn.apache.org/viewvc?view=revision&revision=1464675
+    2.4.x patch: trunk patchs work
+    +1: jailletc36, rjung, covener
+   
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -137,8 +155,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  (20130119 - updated to include minor mmn bump)
                  (20130412 - updated to not use static var - thx, wrowe)
     +1: druggeri, jim
-    covener: wrowe mentioned a thread-safety issue in 2.2 status, what up with that?
-             druggeri: *shrug* brought up on dev list. More eyes welcome!
 
 
   * mod_lua: Sync 2.4 branch with trunk. This includes (but is not limited to) 
@@ -215,17 +231,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: http://people.apache.org/~jim/patches/wstunnel.patch
     +1: jim
 
-   * util_filter: Add in ap_remove_input|output_filter_byhandle()
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1458456
-     2.4.x patch: trunk patch works modulo ap_mmn.h
-     +1: jim, rjung
-
-   * cache_storage: remove useless test + update function name in debug log +
-     skip as soon as we know headers do not match
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1452281
-     2.4.x patch: trunk patch works
-     +1: jailletc36, rjung
-
    * mod_proxy_balancer: Add failontimeout parameter. Timeout will put worker
      in error state if an IO timeout is detected.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1465839
@@ -236,22 +241,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * remove useless tests ==> (*x && apr_isspace(*x))
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1452128
      2.4.x patch: trunk patch works (with some offset)
-     +1: jailletc36, rjung
+     +1: jailletc36, rjung, covener
 
    * tune ap_escape_logitem to avoid waste of memory
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1461869
      2.4.x patch: trunk patch works (with some offset)
      +1: jailletc36
 
-   * use %pm instead of explicit call to apr_strerror (more to be backported but they don't
-     apply out of the box for now)
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1463750
-                  http://svn.apache.org/viewvc?view=revision&revision=1463754
-                  http://svn.apache.org/viewvc?view=revision&revision=1464675
-     2.4.x patch: trunk patchs work
-     +1: jailletc36, rjung
-
-  * mod_ssl: Catch missing, mismatched or encrypted client cert/key pairs
+   * mod_ssl: Catch missing, mismatched or encrypted client cert/key pairs
     with SSLProxyMachineCertificateFile/Path directives. PR 52212, PR 54698.
     (check at startup, to prevent segfaults at proxy request time)
     trunk patches: https://svn.apache.org/r1374214
@@ -266,7 +263,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR 54828
      trunk patch: http://svn.apache.org/r1467765
      2.4.x patch: trunk patchs applies
-     +1: rjung
+     +1: rjung, covener
 
    * ap_expr: Expression parser: Add the ability to apply a md5 hash to
      strings within the parser.
