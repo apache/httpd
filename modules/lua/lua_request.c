@@ -921,6 +921,16 @@ static int lua_ap_regex(lua_State *L)
         return 2;
     }
 
+    if (regex.re_nsub > MODLUA_MAX_REG_MATCH) {
+        lua_pushboolean(L, 0);
+        err = apr_palloc(r->pool, 64);
+        apr_snprintf(err, 64,
+                     "regcomp found %d matches; only %d allowed.",
+                     regex.re_nsub, MODLUA_MAX_REG_MATCH);
+        lua_pushstring(L, err);
+        return 2;
+    }
+
     rv = ap_regexec(&regex, source, MODLUA_MAX_REG_MATCH, matches, 0);
     if (rv == AP_REG_NOMATCH) {
         lua_pushboolean(L, 0);
@@ -928,7 +938,7 @@ static int lua_ap_regex(lua_State *L)
     }
     
     lua_newtable(L);
-    for (i = 0; i <= regex.re_nsub && i <= MODLUA_MAX_REG_MATCH; i++) {
+    for (i = 0; i <= regex.re_nsub; i++) {
         lua_pushinteger(L, i);
         if (matches[i].rm_so >= 0 && matches[i].rm_eo >= 0)
             lua_pushstring(L,
