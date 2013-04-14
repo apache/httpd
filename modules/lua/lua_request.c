@@ -670,7 +670,7 @@ static int lua_ap_sendfile(lua_State *L)
     luaL_checktype(L, 2, LUA_TSTRING);
     r = ap_lua_check_request_rec(L, 1);
     filename = lua_tostring(L, 2);
-    apr_stat(&file_info, filename, APR_FINFO_NORM, r->pool);
+    apr_stat(&file_info, filename, APR_FINFO_MIN, r->pool);
     if (file_info.filetype == APR_NOFILE || file_info.filetype == APR_DIR) {
         lua_pushboolean(L, 0);
     }
@@ -1216,7 +1216,7 @@ static int lua_ap_stat(lua_State *L)
     luaL_checktype(L, 2, LUA_TSTRING);
     r = ap_lua_check_request_rec(L, 1);
     filename = lua_tostring(L, 2);
-    if (apr_stat(&file_info, filename, APR_FINFO_NORM, r->pool) == OK) {
+    if (apr_stat(&file_info, filename, APR_FINFO_MIN, r->pool) == OK) {
         lua_newtable(L);
 
         lua_pushstring(L, "mtime");
