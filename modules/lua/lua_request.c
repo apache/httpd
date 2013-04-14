@@ -928,7 +928,7 @@ static int lua_ap_regex(lua_State *L)
     }
     
     lua_newtable(L);
-    for (i = 0; i <= regex.re_nsub && i <= AP_MAX_REG_MATCH; i++) {
+    for (i = 0; i <= regex.re_nsub && i <= MODLUA_MAX_REG_MATCH; i++) {
         lua_pushinteger(L, i);
         if (matches[i].rm_so >= 0 && matches[i].rm_eo >= 0)
             lua_pushstring(L,
