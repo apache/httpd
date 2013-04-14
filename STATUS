@@ -182,10 +182,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: http://svn.apache.org/r1457450
                  http://svn.apache.org/r1457610
                  http://svn.apache.org/r1457995
+                 http://svn.apache.org/r1458003
     2.4.x patch: trunk patch applies.
-    +1: minfrin, druggeri
-    jailletc36: r1458003 should also be applied 
-    rjung: +1 if r1458003 gets also be applied 
+    +1: minfrin, rjung
 
   * mod_auth_basic: Add a generic mechanism to fake basic authentication
     using the ap_expr parser. This allows the administrator to construct
