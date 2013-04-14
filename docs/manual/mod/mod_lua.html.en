@@ -939,12 +939,19 @@ end
 
 
 <pre class="prettyprint lang-lua">
-r:regex(string, pattern) -- Runs a regular expression match on a string, returning captures if matched:
+r:regex(string, pattern, [flags]) -- Runs a regular expression match on a string, returning captures if matched:
 
-local matches = r:regex("foo bar baz", "foo (\w+) (\S*)")
+local matches = r:regex("foo bar baz", [[foo (\w+) (\S*)]])
 if matches then
     r:puts("The regex matched, and the last word captured ($2) was: " .. matches[2])
 end
+
+-- Example ignoring case sensitivity:
+local matches = r:regex("FOO bar BAz", [[(foo) bar]], 1)
+
+-- Flags can be a bitwise combination of:
+-- 0x01: Ignore case
+-- 0x02: Multiline search
 </pre>
 
 
