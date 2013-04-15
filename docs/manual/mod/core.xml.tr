@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1305164:1450091 (outdated) -->
+<!-- English Revision: 1450091 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -41,7 +41,7 @@
 httpd 2.1.5 ve sonrasında mevcuttur.</compatibility>
 
 <usage>
-    <p>Bu yönerge <directive>Protocol</directive> yönergesinde belirtilen
+    <p>Bu yönerge <directive module="core">Protocol</directive> yönergesinde belirtilen
       protokol türüne göre bir dinleme soketinin işletim
       sistemine özgü en iyilemelerini etkin kılar. İşletim sistemi çekirdeği
       için temel önerme veri alınıncaya kadar veya HTTP isteğinin tamamı
@@ -57,7 +57,9 @@ httpd 2.1.5 ve sonrasında mevcuttur.</compatibility>
       gibi sunucunun baştan bir veri göndermesinin gerekli olduğu
       protokoller için kullanışlıdır. Örnek:</p>
 
-    <example>AcceptFilter nntp none</example>
+    <highlight language="config">
+    AcceptFilter nntp none
+    </highlight>
 
     <p>Öntanımlı protokol isimleri port 443 için <code>https</code> ve tüm
       diğer portlar için <code>http</code>'dir. Dinlenmesi için başka bir port
@@ -66,10 +68,10 @@ httpd 2.1.5 ve sonrasında mevcuttur.</compatibility>
       argümanını ekleyin.</p>
 
     <p>FreeBSD için öntanımlı değerler:</p>
-    <example>
-        AcceptFilter http httpready <br/>
-        AcceptFilter https dataready
-    </example>
+    <highlight language="config">
+AcceptFilter http httpready
+AcceptFilter https dataready
+    </highlight>
 
     <p><code>httpready</code> kabul süzgeci HTTP isteklerinin tamamını
       işletim sistemi çekirdeği seviyesinde tamponlar. Çekirdek isteğin
@@ -81,10 +83,10 @@ httpd 2.1.5 ve sonrasında mevcuttur.</compatibility>
       >accf_data(9)</a> süzgeci kullanılır.</p>
 
     <p>Linux’taki öntanımlı değerler:</p>
-    <example>
-        AcceptFilter http data <br/>
-        AcceptFilter https data
-    </example>
+    <highlight language="config">
+AcceptFilter http data
+AcceptFilter https data
+    </highlight>
 
     <p>Linux’un <code>TCP_DEFER_ACCEPT</code> soket seçeneği HTTP isteklerinin
       tamponlanmasını desteklemez.  <code>none</code> dahil her değer
@@ -95,10 +97,10 @@ httpd 2.1.5 ve sonrasında mevcuttur.</compatibility>
 
     <p>Windows’taki öntanımlı değerler::</p>
 
-    <example>
-      AcceptFilter http data <br/>
-      AcceptFilter https data
-    </example>
+    <highlight language="config">
+AcceptFilter http data
+AcceptFilter https data
+    </highlight>
 
     <p>Windows'un <code>mpm_winnt</code> modülü <code>AcceptEx()</code>
       arayüzünü açıp kapamak için <code>AcceptFilter</code>'i yorumlar ve
@@ -118,7 +120,7 @@ httpd 2.1.5 ve sonrasında mevcuttur.</compatibility>
       vpn sürücüleri gibi bazı sanal ağ sağlayıcılar veya spam, virus veya
       casus yazılım süzgeçleri için kullanışlıdır.</p>
 </usage>
-<seealso><directive>Protocol</directive></seealso>
+<seealso><directive module="core">Protocol</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -131,7 +133,6 @@ httpd 2.1.5 ve sonrasında mevcuttur.</compatibility>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Apache httpd 2.0.30 ve sonrasında mevcuttur.</compatibility>
 
 <usage>
     <p>Bu yönerge, istekte dosya isminden sonra (dizinde belirtilen dosya
@@ -181,15 +182,13 @@ httpd 2.1.5 ve sonrasında mevcuttur.</compatibility>
       normal olarak isteği reddederdi, böyle bir durumda bir betiği etkin
       kılmak için aşağıdaki gibi bir yapılandırma kullanabilirsiniz:</p>
 
-    <example>
-      &lt;Files "mypaths.shtml"&gt;<br />
-      <indent>
-        Options +Includes<br />
-        SetOutputFilter INCLUDES<br />
-        AcceptPathInfo On<br />
-      </indent>
-      &lt;/Files&gt;
-    </example>
+    <highlight language="config">
+&lt;Files "mypaths.shtml"&gt;
+  Options +Includes
+  SetOutputFilter INCLUDES
+  AcceptPathInfo On
+&lt;/Files&gt;
+    </highlight>
 
 </usage>
 </directivesynopsis>
@@ -208,20 +207,16 @@ httpd 2.1.5 ve sonrasında mevcuttur.</compatibility>
       işlerken önce bu dizinlerde bu yönergede belirtilmiş yapılandırma
       dosyasını arar. Örnek:</p>
 
-    <example>
-      AccessFileName .acl
-    </example>
+    <highlight language="config">AccessFileName .acl</highlight>
 
     <p>Sunucu, <code>/usr/local/web/index.html</code> belgesini döndürmeden
       önce,</p>
 
-    <example>
-      &lt;Directory /&gt;<br />
-      <indent>
-        AllowOverride None<br />
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory /&gt;
+    AllowOverride None
+&lt;/Directory&gt;
+    </highlight>
 
     <p>şeklinde bir yapılandırma ile iptal edilmiş olmadıkça yönergeler için
       <code>/.acl</code>, <code>/usr/.acl</code>,
@@ -260,9 +255,7 @@ httpd 2.1.5 ve sonrasında mevcuttur.</compatibility>
       href="http://www.iana.org/assignments/character-sets">IANA’da kayıtlı
       karakter kümesi değerleri</a>nden biri olmalıdır. Örnek:</p>
 
-    <example>
-      AddDefaultCharset utf-8
-    </example>
+    <highlight language="config">AddDefaultCharset utf-8</highlight>
 
     <p><directive>AddDefaultCharset</directive> yönergesi sadece, metin
       kaynaklarının hepsinin aynı karakter kümesine sahip olduğu bilindiği
@@ -288,8 +281,8 @@ httpd 2.1.5 ve sonrasında mevcuttur.</compatibility>
 <default>AllowEncodedSlashes Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Apache httpd 2.0.46 ve sonrasında mevcuttur. NoDecode seçeneği
-  Apache httpd 2.3.12 ve sonrasında mevcuttur.</compatibility>
+<compatibility>NoDecode seçeneği Apache httpd 2.3.12 ve sonrasında
+  mevcuttur.</compatibility>
 
 <usage>
     <p><directive>AllowEncodedSlashes</directive> yönergesi kodlanmış dosya
@@ -399,6 +392,11 @@ httpd 2.1.5 ve sonrasında mevcuttur.</compatibility>
         <directive module="mod_rewrite">RewriteBase</directive>,
         <directive module="mod_rewrite">RewriteCond</directive>,
         <directive module="mod_rewrite">RewriteRule</directive>
+        yönergelerinin, <module>mod_alias</module> modülündeki
+        <directive module="mod_alias">Redirect</directive>,
+        <directive module="mod_alias">RedirectTemp</directive>,
+        <directive module="mod_alias">RedirectPermanent</directive>,
+        <directive module="mod_alias">RedirectMatch</directive>)
         yönergelerinin ve <module>mod_actions</module> modülündeki
         <directive module="mod_actions">Action</directive>
         yönergesinin kullanımına izin verilir.
@@ -476,14 +474,16 @@ httpd 2.1.5 ve sonrasında mevcuttur.</compatibility>
         mekanizma diğerlerinin değerlerini korumasına izin verirken belli bir
         seçeneği değerini korumaya zorlayamaz.
       </p></note>
+
+      <example>
+      AllowOverride Options=Indexes,MultiViews
+      </example>
       </dd>
     </dl>
 
     <p>Örnek:</p>
 
-    <example>
-      AllowOverride AuthConfig Indexes
-    </example>
+    <highlight language="config">AllowOverride AuthConfig Indexes</highlight>
 
     <p>Bu örnekte <code>AuthConfig</code> ve <code>Indexes</code> grubundaki
       yönergeler bir dahili sunucu hatasına yol açmayacaktır.</p>
@@ -532,10 +532,10 @@ httpd 2.1.5 ve sonrasında mevcuttur.</compatibility>
 
     <p>Örnek:</p>
 
-    <example>
-      AllowOverride None<br />
-      AllowOverrideList Redirect RedirectMatch
-    </example>
+    <highlight language="config">
+AllowOverride None
+AllowOverrideList Redirect RedirectMatch
+    </highlight>
 
     <p>Yukarıdaki örnekte sadece <code>Redirect</code> ve
       <code>RedirectMatch</code> yönergelerine izin verilmektedir. Tüm
@@ -543,10 +543,10 @@ httpd 2.1.5 ve sonrasında mevcuttur.</compatibility>
 
     <p>Örnek:</p>
 
-    <example>
-      AllowOverride AuthConfig<br />
-      AllowOverrideList CookieTracking CookieName
-    </example>
+    <highlight language="config">
+AllowOverride AuthConfig
+AllowOverrideList CookieTracking CookieName
+    </highlight>
 
     <p>Yukarıdaki örnekte <directive module="core">AllowOverride
       </directive> yönergesi <code>AuthConfig</code> yönerge grubuna izin
@@ -637,9 +637,10 @@ httpd 2.1.5 ve sonrasında mevcuttur.</compatibility>
       tam yol <directive>ServerRoot</directive> yönergesinde belirtilene
       göreli olacaktır.</p>
 
-    <example><title>Example</title>
-      DefaultRuntimeDir scratch/
-    </example>
+    <p><strong>Örnek</strong></p>
+   <highlight language="config">
+DefaultRuntimeDir scratch/
+    </highlight>
 
     <p><directive>DefaultRuntimeDir</directive> için öntanımlı yer derleme
       sırasında <code>DEFAULT_REL_RUNTIMEDIR</code> #define satırı ile
@@ -675,9 +676,7 @@ için iptal edilmiştir.</compatibility>
     uyumluluğunu sağlamak için, öntanımlı bir ortam türünün olmadığını
     belirten <code>none</code> değeriyle belirtilebilir. Örnek:</p>
 
-    <example>
-      DefaultType none
-    </example>
+    <highlight language="config">DefaultType None</highlight>
 
     <p><code>DefaultType None</code> sadece httpd-2.2.7 ve sonrasında
       mevcuttur.</p>
@@ -709,15 +708,16 @@ için iptal edilmiştir.</compatibility>
       ile kullanılabilir. Değişken daima küresel olarak tanımlı olup
       yapılandırma bölümünü sarmalayan etki alanı ile sınırlanmaz.</p>
 
-    <example>
-      &lt;IfDefine TEST&gt;<br/>
-      &nbsp;&nbsp;Define servername test.example.com<br/>
-      &lt;/IfDefine&gt;<br/>
-      &lt;IfDefine !TEST&gt;<br/>
-      &nbsp;&nbsp;Define servername www.example.com<br/>
-      &nbsp;&nbsp;Define SSL<br/>
-      &lt;/IfDefine&gt;<br/>
-    </example>
+    <highlight language="config">
+&lt;IfDefine TEST&gt;
+  Define servername test.example.com
+&lt;/IfDefine&gt;
+&lt;IfDefine !TEST&gt;
+  Define servername www.example.com
+  Define SSL
+&lt;/IfDefine&gt;
+DocumentRoot /var/www/${servername}/htdocs
+    </highlight>
 
     <p><directive module="mod_rewrite">RewriteMap</directive> sözdizimi ile
       karışmalardan kaçınmak için değişken isimleri ikinokta ":" karakterleri
@@ -751,13 +751,11 @@ için iptal edilmiştir.</compatibility>
       değil, ama <code>&lt;Directory /home/*/public_html&gt;</code>
       eşleşecektir. Örnek:</p>
 
-    <example>
-      &lt;Directory /usr/local/httpd/htdocs&gt;<br />
-      <indent>
-        Options Indexes FollowSymLinks<br />
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory "/usr/local/httpd/htdocs"&gt;
+  Options Indexes FollowSymLinks
+&lt;/Directory&gt;
+    </highlight>
 
     <note>
       <p><var>dizin-yolu</var> argümanlarını belirtirken dikkatli
@@ -771,9 +769,11 @@ için iptal edilmiştir.</compatibility>
     <p><code>~</code> karakterine ek olarak <glossary ref="regex">düzenli
       ifadeler</glossary> de kullanılabilir. Örnek:</p>
 
-    <example>
-      &lt;Directory ~ "^/www/.*/[0-9]{3}"&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory ~ "^/www/[0-9]{3}"&gt;
+
+&lt;/Directory&gt;
+</highlight>
 
     <p>yönergesi <code>/www/</code> içindeki üç rakamdan oluşan dizinlerle
       eşleşecektir.</p>
@@ -785,19 +785,15 @@ için iptal edilmiştir.</compatibility>
       href="#accessfilename">.htaccess</a> dosyalarındaki yönergelere kadar
       genişletilir. Örneğin,</p>
 
-    <example>
-      &lt;Directory /&gt;<br />
-      <indent>
-        AllowOverride None<br />
-      </indent>
-      &lt;/Directory&gt;<br />
-      <br />
-      &lt;Directory /home&gt;<br />
-      <indent>
-        AllowOverride FileInfo<br />
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory /&gt;
+  AllowOverride None
+&lt;/Directory&gt;
+
+&lt;Directory "/home"&gt;
+  AllowOverride FileInfo
+&lt;/Directory&gt;
+    </highlight>
 
     <p>bölümleri ile <code>/home/web/dir/doc.html</code> belgesine erişirken
       şu aşamalardan geçilir:</p>
@@ -819,13 +815,11 @@ için iptal edilmiştir.</compatibility>
       değerlendirilmez. Düzenli ifadelerin tamamı yapılandırma dosyasında
       görüldükleri sıraya göre sınanırlar. Örneğin,</p>
 
-    <example>
-      &lt;Directory ~ abc$&gt;<br />
-      <indent>
-        # ... yönergeler burada ...<br />
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory ~ "abc$"&gt;
+  # ... yönergeler burada ...
+&lt;/Directory&gt;
+    </highlight>
 
     <p>düzenli ifadeli bölümü, tüm normal <directive
       type="section">Directory</directive> bölümleri ve
@@ -839,14 +833,11 @@ için iptal edilmiştir.</compatibility>
      erişime izin vermek oluşuna dikkat ediniz. Bunu şöyle bir blokla
      değiştirmeniz,</strong></p>
 
-    <example>
-      &lt;Directory /&gt;<br />
-      <indent>
-        Order Deny,Allow<br />
-        Deny from All<br />
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory /&gt;
+  Require all denied
+&lt;/Directory&gt;
+    </highlight>
 
     <p><strong>ve erişilebilir olmasını istediğiniz dizinleri ayrıca
       belirtmeniz önerilir. Daha ayrıntılı bilgi edinmek için <a
@@ -881,9 +872,11 @@ için iptal edilmiştir.</compatibility>
       bir yönerge grubunu sarmalamakta kullanılır. Tek farkla argüman olarak
       bir <glossary ref="regex">düzenli ifade</glossary> alır. Örnek:</p>
 
-    <example>
-      &lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}"&gt;
-    </example>
+    <highlight language="config">
+&lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}"&gt;
+    # ...
+&lt;/DirectoryMatch&gt;
+</highlight>
 
     <p>yönergesi <code>/www/</code> içindeki üç rakamdan oluşan dizinlerle
       eşleşecektir.</p>
@@ -925,9 +918,7 @@ için iptal edilmiştir.</compatibility>
       benzeri bir yönerge ile eşleşmedikçe, sunucu istenen URL’deki yolu,
       belge yolu haline getirmek için belge kök dizinine ekler. Örnek:</p>
 
-    <example>
-      DocumentRoot /usr/web
-    </example>
+    <highlight language="config">DocumentRoot "/usr/web"</highlight>
 
     <p>yapılandırması ile <code>http://my.example.com/index.html</code>
       isteği <code>/usr/web/index.html</code> ile eşleştirilir.
@@ -957,14 +948,14 @@ için iptal edilmiştir.</compatibility>
       <directive type="section">ElseIf</directive> bölümü uygulanmamışsa
       kapsadığı yönergeleri uygular. Örneğin:</p>
 
-    <example>
-        &lt;If "-z req('Host')"&gt;<br/>
-        ...<br/>
-        &lt;/If&gt;<br/>
-        &lt;Else&gt;<br/>
-        ...<br/>
-        &lt;/Else&gt;<br/>
-    </example>
+    <highlight language="config">
+&lt;If "-z req('Host')"&gt;
+  # ...
+&lt;/If&gt;
+&lt;Else&gt;
+  # ...
+&lt;/Else&gt;
+    </highlight>
 
     <p>Burada, <directive type="section">If</directive> yönergesi
       <var>Host:</var> başlıksız HTTP/1.0 istekleriyle eşleşirken  <directive
@@ -1000,17 +991,17 @@ için iptal edilmiştir.</compatibility>
       <directive type="section">ElseIf</directive> yönergesinin uygulanmadığı
       takdirde uygular. Örnek:</p>
 
-    <example>
-        &lt;If "-R '10.1.0.0/16'"&gt;<br/>
-        ...<br/>
-        &lt;/If&gt;<br/>
-        &lt;ElseIf "-R '10.0.0.0/8'"&gt;<br/>
-        ...<br/>
-        &lt;/ElseIf&gt;<br/>
-        &lt;Else&gt;<br/>
-        ...<br/>
-        &lt;/Else&gt;<br/>
-    </example>
+    <highlight language="config">
+&lt;If "-R '10.1.0.0/16'"&gt;
+  #...
+&lt;/If&gt;
+&lt;ElseIf "-R '10.0.0.0/8'"&gt;
+  #...
+&lt;/ElseIf&gt;
+&lt;Else&gt;
+  #...
+&lt;/Else&gt;
+    </highlight>
 
     <p><directive type="section">ElseIf</directive> bir isteğin uzak adresi
       10.0.0.0/8 ağına aitse ama 10.1.0.0/16 ağına ait değilse içerdiği
@@ -1066,20 +1057,16 @@ için iptal edilmiştir.</compatibility>
       yapılandırmalarında dosya teslimatında bellek eşlemlerinin kullanımını
       şu şekilde iptal etmeniz gerekir:</p>
 
-    <example>
-      EnableMMAP Off
-    </example>
+    <highlight language="config">EnableMMAP Off</highlight>
 
     <p>Bu özellik, sadece NFS dosya sistemi üzerinde sunulan dosyaları
       kapsamak üzere şu şekilde kolayca kapatılabilir:</p>
 
-    <example>
-      &lt;Directory "/nfs-dosya-yolu"&gt;
-      <indent>
-        EnableMMAP Off
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory "/nfs-dosyaları-yolu"&gt;
+  EnableMMAP Off
+&lt;/Directory&gt;
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -1093,7 +1080,7 @@ için iptal edilmiştir.</compatibility>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility>2.0.44 ve sonrasında mevcuttur. Öntanımlı değer 2.3.9 sürümünde Off olarak değişti.</compatibility>
+<compatibility>Öntanımlı değer 2.3.9 sürümünde Off olarak değişti.</compatibility>
 
 <usage>
     <p>Bu yönerge, dosya içeriğinin istemciye teslimi için
@@ -1128,21 +1115,18 @@ için iptal edilmiştir.</compatibility>
     <p>Bu sorunlardan muzdarip sunucu yapılandırmaları için bu özelliği şöyle
       etkin kılabilirsiniz:</p>
 
-    <example>
-      EnableSendfile On
-    </example>
+    <highlight language="config">EnableSendfile On</highlight>
 
     <p>Bu özellik, sadece bir ağ dosya sistemi üzerinde sunulan
       dosyaları kapsamak üzere şu şekilde kolayca kapatılabilir:</p>
 
-    <example>
-      &lt;Directory "/path-to-nfs-files"&gt;
-      <indent>
-        EnableSendfile Off
-      </indent>
-      &lt;/Directory&gt;
-    </example>
-    <p><directive>EnableSendfile</directive> yönergesinin .htaccess ve
+    <highlight language="config">
+&lt;Directory "/nfs-dosyaları-yolu"&gt;
+  EnableSendfile Off
+&lt;/Directory&gt;
+    </highlight>
+
+<p><directive>EnableSendfile</directive> yönergesinin .htaccess ve
       diziniçi yapılandırmalarının <module>mod_cache_disk</module> tarafından
       desteklenmediğini lütfen aklınızdan çıkarmayın.
       <directive>EnableSendfile</directive> yönergesinin sadece küresel
@@ -1165,24 +1149,25 @@ için iptal edilmiştir.</compatibility>
       üretilmesi için kullanılabilir. Genelde kullanıldığı durum, gerekli
       modüllerin yapılandırmada bulunmadığının raporlanmasıdır.</p>
 
-    <example><title>Örnek</title>
-      # mod_include yüklü değilse bilelim<br />
-      &lt;IfModule !include_module&gt;<br />
-      Hata: mod_include mod_foo için gerekiyor. LoadModule ile yükleyin.<br />
-      &lt;/IfModule&gt;<br />
-      <br />
-      # SSL veya NOSSL tanımlı mı bilelim<br />
-      &lt;IfDefine SSL&gt;<br />
-      &lt;IfDefine NOSSL&gt;<br />
-      Hata: Ne SSL ne de NOSSL tanımlı. Sadece biri tanımlı olsa yeter.<br />
-      &lt;/IfDefine&gt;<br />
-      &lt;/IfDefine&gt;<br />
-      &lt;IfDefine !SSL&gt;<br />
-      &lt;IfDefine !NOSSL&gt;<br />
-      Hata: Ya SSL ya da NOSSL tanımlı olmalı.<br />
-      &lt;/IfDefine&gt;<br />
-      &lt;/IfDefine&gt;<br />
-    </example>
+    <highlight language="config">
+# Örnek
+# mod_include yüklü değilse bilelim
+&lt;IfModule !include_module&gt;
+  Error "Hata: mod_include mod_foo için gerekiyor. LoadModule ile yükleyin."
+&lt;/IfModule&gt;
+
+# SSL veya NOSSL tanımlı mı bilelim
+&lt;IfDefine SSL&gt;
+&lt;IfDefine NOSSL&gt;
+  Error "Ne SSL ne de NOSSL tanımlı. Sadece biri tanımlı olsa yeter."
+&lt;/IfDefine&gt;
+&lt;/IfDefine&gt;
+&lt;IfDefine !SSL&gt;
+&lt;IfDefine !NOSSL&gt;
+  Error "Ya SSL ya da NOSSL tanımlı olmalı."
+&lt;/IfDefine&gt;
+&lt;/IfDefine&gt;
+    </highlight>
 
 </usage>
 </directivesynopsis>
@@ -1206,8 +1191,8 @@ için iptal edilmiştir.</compatibility>
 
       <li>Özel bir ileti çıktılanır.</li>
 
-      <li>Sorunu/hatayı işleyecek yerel bir <var>URL-yoluna</var> yönlendirme
-        yapılır.</li>
+      <li>Sorunu/hatayı işleyecek yerel bir <var>URL-yoluna</var> dahili bir
+        yönlendirme yapılır.</li>
 
       <li>Sorunu/hatayı işleyecek harici bir <var>URL-yoluna</var>
         yönlendirme yapılır.</li>
@@ -1224,13 +1209,12 @@ için iptal edilmiştir.</compatibility>
       şeklinde de belirtilebilir. Bunlar yerine, tarayıcıda gösterilmek üzere
       bir ileti de belirtilebilir. Örnekler:</p>
 
-    <example>
-      ErrorDocument 500 http://hata.example.com/cgi-bin/dnmci<br />
-      ErrorDocument 404 /cgi-bin/bad_urls.pl<br />
-      ErrorDocument 401 /subscription_info.html<br />
-      ErrorDocument 403 "Kusura bakmayın, bugün hizmet veremiyoruz."
-      ErrorDocument 403  Yasak!
-    </example>
+    <highlight language="config">
+ErrorDocument 500 http://foo.example.com/cgi-bin/tester
+ErrorDocument 404 /cgi-bin/bad_urls.pl
+ErrorDocument 401 /subscription_info.html
+ErrorDocument 403 "Kusura bakmayın, bugün hizmet veremiyoruz."
+    </highlight>
 
     <p>Bunlardan başka, Apache httpd’nin kendi hata iletilerinin kullanılacağı
       özel <code>default</code> değeri ile belirtilebilir. Normal şartlar
@@ -1240,14 +1224,13 @@ için iptal edilmiştir.</compatibility>
       <code>default</code> değeri açıkça belirtilerek örnekteki gibi
       zorlanabilir:</p>
 
-    <example>
-      ErrorDocument 404 /cgi-bin/bad_urls.pl<br /><br />
-      &lt;Directory /web/docs&gt;<br />
-      <indent>
-        ErrorDocument 404 default<br />
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+ErrorDocument 404 /cgi-bin/bad_urls.pl
+
+&lt;Directory /web/docs&gt;
+  ErrorDocument 404 default
+&lt;/Directory&gt;
+    </highlight>
 
     <p><directive>ErrorDocument</directive> yönergesinde bir uzak URL (önünde
       <code>http</code> bulunan bir yol) belirtildiğinde, belge aynı sunucuda
@@ -1307,17 +1290,13 @@ için iptal edilmiştir.</compatibility>
       dizininin <directive  module="core">ServerRoot</directive> ile
       belirtilen sunucu kök dizinine göre belirtildiği varsayılır.</p>
 
-    <example><title>Örnek</title>
-    ErrorLog /var/log/httpd/error_log
-    </example>
+    <highlight language="config">ErrorLog "/var/log/httpd/error_log"</highlight>
 
     <p><var>dosya-yolu</var> bir boru imi "<code>|</code>" ile başlatıldığı
       takdirde hata iletilerinin hata günlüğünü işleme sokacak komuta
       borulanacağı varsayılır.</p>
 
-    <example><title>Örnek</title>
-    ErrorLog "|/usr/local/bin/httpd_errors"
-    </example>
+    <highlight language="config">ErrorLog "|/usr/local/bin/httpd_errors"</highlight>
 
     <p>Daha fazla bilgi için <a href="../logs.html#piped">borulu
        günlüklere</a> bakınız.</p>
@@ -1332,9 +1311,7 @@ için iptal edilmiştir.</compatibility>
       değiştirilmişse, belirtilen en son oluşum tüm sunucuyu
       etkileyecektir.</p>
 
-    <example><title>Örnek</title>
-    ErrorLog syslog:user
-    </example>
+    <highlight language="config">ErrorLog syslog:user</highlight>
 
     <p>GÜVENLİK: Günlük dosyalarının saklandığı dizin, sunucuyu başlatan
       kullanıcı dışındakiler tarafından yazılabilir olduğu takdirde
@@ -1367,9 +1344,10 @@ için iptal edilmiştir.</compatibility>
       hata iletisine ek olarak günlüklenecek ek bilgiyi belirtmek için
       kullanılabilir.</p>
 
-    <example><title>Basit örnek</title>
-        ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
-    </example>
+    <highlight language="config">
+#Basit örnek
+ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
+    </highlight>
 
     <p>İlk değiştirge olarak <code>connection</code> veya <code>request</code>
       belirtilmesi ek biçemlerin belirtilebilmesini sağlar. Böylece, belli bir
@@ -1531,14 +1509,14 @@ için iptal edilmiştir.</compatibility>
       durumunda günlük satırlarının ait olduğu bağlantı veya isteği
       bağdaştırmak için kullanılabilir. <code>%L</code> biçem dizgesi ayrıca
       <module>mod_log_config</module> modülünde erişim günlüğü iletilerini
-      hata günlüğü iletileriyle ilşklendirmek için de kullanılabilmektedir.
+      hata günlüğü iletileriyle ilişklendirmek için de kullanılabilmektedir.
       <module>mod_unique_id</module> modülü yüklüyse onun eşsiz kimliği
       istekler için günlük kimliği olarak kullanılacaktır.</p>
 
-    <example><title>Example (default format)</title>
-        ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\ %a]
-        %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
-    </example>
+    <highlight language="config">
+#Örnek (Evreli MPM'ler için öntanımlı biçim)
+ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\ %a] %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
+    </highlight>
 
     <p>Bunun hata iletilerindeki sonuçları şöyle olabilir:</p>
 
@@ -1549,18 +1527,19 @@ için iptal edilmiştir.</compatibility>
     <p>Dikkat edin, yukarıda açıklandığı gibi, bazı alanlar
       tanımlanmadıklarından tamamen yoksayılır.</p>
 
-    <example><title>Örnek (2.2.x biçemine benzer)</title>
-        ErrorLogFormat "[%t] [%l] %7F: %E: [client\ %a]
-        %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
-    </example>
+    <highlight language="config">
+#Örnek (2.2.x biçimine benzer)
+ErrorLogFormat "[%t] [%l] %7F: %E: [client\ %a] %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
+    </highlight>
 
-    <example><title>İstek/bağlantı günlük kimlikli gelişkin bir örnek</title>
-        ErrorLogFormat "[%{uc}t] [%-m:%-l] [R:%L] [C:%{C}L] %7F: %E: %M"<br/>
-        ErrorLogFormat request "[%{uc}t] [R:%L] Request %k on C:%{c}L pid:%P tid:%T"<br/>
-        ErrorLogFormat request "[%{uc}t] [R:%L] UA:'%+{User-Agent}i'"<br/>
-        ErrorLogFormat request "[%{uc}t] [R:%L] Referer:'%+{Referer}i'"<br/>
-        ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"<br/>
-    </example>
+    <highlight language="config">
+#İstek/bağlantı günlük kimlikli gelişkin bir örnek
+ErrorLogFormat "[%{uc}t] [%-m:%-l] [R:%L] [C:%{C}L] %7F: %E: %M"
+ErrorLogFormat request "[%{uc}t] [R:%L] Request %k on C:%{c}L pid:%P tid:%T"
+ErrorLogFormat request "[%{uc}t] [R:%L] UA:'%+{User-Agent}i'"
+ErrorLogFormat request "[%{uc}t] [R:%L] Referer:'%+{Referer}i'"
+ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"
+    </highlight>
 
 </usage>
 <seealso><directive module="core">ErrorLog</directive></seealso>
@@ -1630,7 +1609,7 @@ için iptal edilmiştir.</compatibility>
      <dd>Dosyanın bayt cinsinden uzunluğu dahil edilir.</dd>
      <dt><strong>All</strong></dt>
      <dd>Olası tüm alanlar kullanılır. Bu şuna eşdeğerdir:
-         <example>FileETag INode MTime Size</example></dd>
+         <highlight language="config">FileETag INode MTime Size</highlight></dd>
      <dt><strong>None</strong></dt>
      <dd>Bir belge dosyasıyla sunulsa bile yanıta hiçbir <code>ETag</code>
       alanı dahil edilmez.</dd>
@@ -1699,12 +1678,26 @@ için iptal edilmiştir.</compatibility>
     <p><var>dosya-adı</var> argümanının bir dosya ismi veya bir dosya ismi
       kalıbı içermesi gerekir. Bir dosya ismi kalıbındaki her <code>?</code>
       imi bir karakterle eşleştirilirken <code>*</code> imi karakter dizileri
-      ile eşleştirilir. <code>~</code> imine ek olarak <glossary
+      ile eşleştirilir.</p>
+
+    <highlight language="config">
+&lt;Files "zat.html"&gt;
+    # zat.html dosyasına uygulanacakları buraya koy
+&lt;/Files&gt;
+
+&lt;Files "?at.*"&gt;
+    # Buradakiler hat.html, kat.html, tat.html ve benzerlerine uygulanır.
+&lt;/Files&gt;
+</highlight>
+
+    <p><code>~</code> imine ek olarak <glossary
       ref="regex">düzenli ifadeler</glossary> de kullanılabilir. Örneğin</p>
 
-    <example>
-      &lt;Files ~ "\.(gif|jpe?g|png)$"&gt;
-    </example>
+    <highlight language="config">
+&lt;Files ~ "\.(gif|jpe?g|png)$"&gt;
+    #...
+&lt;/Files&gt;
+</highlight>
 
     <p>satırı en bilinen resim dosyası biçimleriyle eşleşecektir. Bunun
       yerine <directive module="core" type="section">FilesMatch</directive>
@@ -1741,9 +1734,11 @@ için iptal edilmiştir.</compatibility>
       isimlerine göre sınırlandırır. Ancak, argüman olarak bir <glossary
       ref="regex">düzenli ifade</glossary> kabul eder. Örneğin</p>
 
-    <example>
-      &lt;FilesMatch "\.(gif|jpe?g|png)$"&gt;
-    </example>
+<highlight language="config">
+&lt;FilesMatch "\.(gif|jpe?g|png)$"&gt;
+    # ...
+&lt;/FilesMatch&gt;
+</highlight>
 
     <p>satırı en bilinen resim dosyası biçimleriyle eşleşecektir.</p>
 </usage>
@@ -1775,9 +1770,7 @@ için iptal edilmiştir.</compatibility>
       <code>.gif</code> uzantısı belirtmek istemiyorsanız şu yapılandırmayı
       kullanabilirsiniz:</p>
 
-    <example>
-      ForceType image/gif
-    </example>
+    <highlight language="config">ForceType image/gif</highlight>
 
     <p>Bu yönerge, <directive module="mod_mime">AddType</directive> yönergesi
       üzerinden ve <code>mime.types</code> dosyasında örtük olarak
@@ -1786,21 +1779,18 @@ için iptal edilmiştir.</compatibility>
     <p>Ayrıca, daha genel <directive>ForceType</directive> ayarlarını da
       <code>None</code> değeriyle geçersiz kılabilirsiniz:</p>
 
-    <example>
-      # tüm dosyaların image/gif olarak sunulması için:<br />
-      &lt;Location /images&gt;<br />
-        <indent>
-          ForceType image/gif<br />
-        </indent>
-      &lt;/Location&gt;<br />
-      <br />
-      # normal MIME-türüne geri dönmek için:<br />
-      &lt;Location /images/mixed&gt;<br />
-      <indent>
-        ForceType None<br />
-      </indent>
-      &lt;/Location&gt;
-    </example>
+    <highlight language="config">
+# tüm dosyaların image/gif olarak sunulması için:
+&lt;Location /images&gt;
+  ForceType image/gif
+&lt;/Location&gt;
+
+# normal MIME-türüne geri dönmek için:
+&lt;Location /images/mixed&gt;
+  ForceType None
+&lt;/Location&gt;
+    </highlight>
+
     <p>Bu yönerge, öncelikle dosya sisteminden sunulan duruk dosyalar için
       üretilen içerik türlerini geçersiz kılar. Duruk dosyaların haricindeki
       özkaynaklar için yanıt üretecinin genelde bir <code>Content-Type</code>
@@ -1888,9 +1878,7 @@ takdirde uygulanacak yönergeleri barındırır.</description>
       anında değerlendirir ve ifadenin sonucu doğru olduğu takdirde içerdiği
       yönergeleri uygular. Örnek:</p>
 
-    <example>
-        &lt;If "-z req('Host')"&gt;
-    </example>
+    <highlight language="config">&lt;If "-z req('Host')"&gt;</highlight>
 
     <p>Bir <var>Host:</var> başlığı içermeyen HTTP/1.0 istekleriyle
       eşleşir. İfadeler, dizge karşılaştırması (<code>=</code>,
@@ -1899,9 +1887,7 @@ takdirde uygulanacak yönergeleri barındırır.</description>
       <code>-z</code>, <code>-f</code>, ...) için kabuktakilere benzer çeşitli
       işleçler içerebilir. Ayrıca, düzenli ifadeleri,</p>
 
-    <example>
-        &lt;If "%{QUERY_STRING} =~ /(delete|commit)=.*?elem/"&gt;
-    </example>
+    <highlight language="config">&lt;If "%{QUERY_STRING} =~ /(delete|commit)=.*?elem/"&gt;</highlight>
 
     <p>kabuk tarzı kalıp eşleştirme ve birçok başka işlemi kullanmak da
       mümkündür. Bu işlemler istek başlıklarında (<code>req</code>), ortam
@@ -1967,32 +1953,22 @@ sokulacak yönergeleri sarmalar.</description>
       olabilir, dolayısıyla çok parametreli basit sınamalar gerçeklenebilir.
       Örnek:</p>
 
-    <example>
-      httpd -DReverseProxy -DUseCache -DMemCache ...<br />
-      <br />
-      # httpd.conf<br />
-      &lt;IfDefine ReverseProxy&gt;<br />
-      <indent>
-        LoadModule proxy_module   modules/mod_proxy.so<br />
-        LoadModule proxy_http_module   modules/mod_proxy_http.so<br />
-        &lt;IfDefine UseCache&gt;<br />
-        <indent>
-          LoadModule cache_module   modules/mod_cache.so<br />
-          &lt;IfDefine MemCache&gt;<br />
-          <indent>
-            LoadModule mem_cache_module   modules/mod_mem_cache.so<br />
-          </indent>
-          &lt;/IfDefine&gt;<br />
-          &lt;IfDefine !MemCache&gt;<br />
-          <indent>
-            LoadModule cache_disk_module   modules/mod_cache_disk.so<br />
-          </indent>
-          &lt;/IfDefine&gt;
-        </indent>
-        &lt;/IfDefine&gt;
-      </indent>
-      &lt;/IfDefine&gt;
-    </example>
+    <example>httpd -DReverseProxy -DUseCache -DMemCache ...</example>
+    <highlight language="config">
+&lt;IfDefine ReverseProxy&gt;
+  LoadModule proxy_module   modules/mod_proxy.so
+  LoadModule proxy_http_module   modules/mod_proxy_http.so
+  &lt;IfDefine UseCache&gt;
+    LoadModule cache_module   modules/mod_cache.so
+    &lt;IfDefine MemCache&gt;
+      LoadModule mem_cache_module   modules/mod_mem_cache.so
+    &lt;/IfDefine&gt;
+    &lt;IfDefine !MemCache&gt;
+      LoadModule cache_disk_module   modules/mod_cache_disk.so
+    &lt;/IfDefine&gt;
+  &lt;/IfDefine&gt;
+&lt;/IfDefine&gt;
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -2057,8 +2033,7 @@ yönergeleri sarmalar.</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
-<compatibility>Dosya kalıbıyla eşleşme 2.0.41 ve sonrasında, dizin kalıbıyla
-  eşleşme ise 2.3.6 ve sonrasında mevcuttur.</compatibility>
+<compatibility>Dizin kalıbıyla eşleşme ise 2.3.6 ve sonrasında mevcuttur.</compatibility>
 
 <usage>
     <p>Bu yönerge sunucu yapılandırma dosyalarının başka dosyaları içermesini
@@ -2087,34 +2062,30 @@ yönergeleri sarmalar.</description>
 
     <p>Örnekler:</p>
 
-    <example>
-      Include /usr/local/apache2/conf/ssl.conf<br />
-      Include /usr/local/apache2/conf/vhosts/*.conf
-    </example>
+    <highlight language="config">
+Include /usr/local/apache2/conf/ssl.conf
+Include /usr/local/apache2/conf/vhosts/*.conf
+    </highlight>
 
     <p>Veya dizinler <directive module="core">ServerRoot</directive> dizinine
       göre belirtilebilir:</p>
 
-    <example>
-      Include conf/ssl.conf<br />
-      Include conf/vhosts/*.conf
-    </example>
+    <highlight language="config">
+Include conf/ssl.conf
+Include conf/vhosts/*.conf
+    </highlight>
 
      <p>Dosya kalıbı karakterleri yolun dizin ve dosya parçalarına
        yerleştirilebilir. <code>conf/vhosts</code> altında en azından bir
        <code>*.conf</code> içeren hiçbir alt dizin yoksa bu örnek başarısız
        olacaktır:</p>
 
-    <example>
-      Include conf/vhosts/*/*.conf
-    </example>
+    <highlight language="config">Include conf/vhosts/*/*.conf</highlight>
 
     <p>Bunun yerine, dizin ve dosyaların eksikliği durumunda aşağıdaki komut
       sadece yoksayılır:</p>
 
-    <example>
-      IncludeOptional conf/vhosts/*/*.conf
-    </example>
+    <highlight language="config">IncludeOptional conf/vhosts/*/*.conf</highlight>
 
 </usage>
 <seealso><directive module="core">IncludeOptional</directive></seealso>
@@ -2232,13 +2203,11 @@ sarmalar.</description>
       <code>POST</code>, <code>PUT</code> ve <code>DELETE</code> yöntemleri
       için uygulanmakta, diğer tüm yöntemler korumasız bırakılmaktadır:</p>
 
-    <example>
-      &lt;Limit POST PUT DELETE&gt;<br />
-      <indent>
-        Require valid-user<br />
-      </indent>
-      &lt;/Limit&gt;
-    </example>
+    <highlight language="config">
+&lt;Limit POST PUT DELETE&gt;
+  Require valid-user
+&lt;/Limit&gt;
+    </highlight>
 
     <p>Birden fazla bölümde kullanılabilecek yöntem isimleri: <code>GET</code>,
       <code>POST</code>, <code>PUT</code>, <code>DELETE</code>,
@@ -2277,18 +2246,14 @@ sarmalar.</description>
     <code>POST</code> istekleri için yetkilendirilecek ve tüm durumlarda
     <code>Require group editors</code> yönergesi yoksayılacaktır:</p>
 
-    <example>
-      &lt;LimitExcept GET&gt;
-      <indent>
-        Require valid-user
-      </indent>
-      &lt;/LimitExcept&gt;<br />
-      &lt;Limit POST&gt;
-      <indent>
-        Require group editors
-      </indent>
-      &lt;/Limit&gt;
-    </example>
+    <highlight language="config">
+&lt;LimitExcept GET&gt;
+  Require valid-user
+&lt;/LimitExcept&gt;
+&lt;Limit POST&gt;
+  Require group editors
+&lt;/Limit&gt;
+    </highlight>
 
 </usage>
 </directivesynopsis>
@@ -2315,13 +2280,11 @@ kullanılacak erişim sınırlayıcıları sarmalar.</description>
 
     <p>Örnek:</p>
 
-    <example>
-      &lt;LimitExcept POST GET&gt;<br />
-      <indent>
-        Require valid-user<br />
-      </indent>
-      &lt;/LimitExcept&gt;
-    </example>
+    <highlight language="config">
+&lt;LimitExcept POST GET&gt;
+  Require valid-user
+&lt;/LimitExcept&gt;
+    </highlight>
 
 </usage>
 </directivesynopsis>
@@ -2334,7 +2297,6 @@ belirler.</description>
 <default>LimitInternalRecursion 10</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Apache httpd 2.0.47 ve sonrasında mevcuttur.</compatibility>
 
 <usage>
     <p>Örneğin, özgün istekleri dahili olarak bir CGI betiğine yönlendiren
@@ -2358,9 +2320,7 @@ belirler.</description>
       <var>sayı</var> belirtilirse iki sınırlama için de aynı değer
       kullanılır.</p>
 
-    <example><title>Örnek</title>
-      LimitInternalRecursion 5
-    </example>
+    <highlight language="config">LimitInternalRecursion 5</highlight>
 </usage>
 </directivesynopsis>
 
@@ -2401,9 +2361,7 @@ uzunluğunu sınırlar.</description>
       yüklenebilecek dosya boyutunu 100 kB ile sınırlamak isterseniz yönergeyi
       şöyle kullanabilirsiniz:</p>
 
-    <example>
-      LimitRequestBody 102400
-    </example>
+    <highlight language="config">LimitRequestBody 102400</highlight>
 
     <note><p>Bu yönergenin vekil istekleri tarafından nasıl yorumlandığı
       <module>mod_proxy</module> belgesinde ayrıntılı olarak
@@ -2445,9 +2403,7 @@ sınırlar.</description>
 
     <p>Örnek:</p>
 
-    <example>
-      LimitRequestFields 50
-    </example>
+    <highlight language="config">LimitRequestFields 50</highlight>
 
      <note type="warning"><title>Uyarı</title>
      <p>İsme dayalı sanal konaklar kullanıldığında, bu yönergenin değeri,
@@ -2484,9 +2440,7 @@ sınırlar.</description>
 
     <p>Örnek:</p>
 
-    <example>
-      LimitRequestFieldSize 4094
-    </example>
+    <highlight language="config">LimitRequestFieldSize 4094</highlight>
 
     <note>Normal şartlar altında öntanımlı değer değiştirilmemelidir. Ayrıca,
       kaynak kodu değiştirip yeniden derlemeden bu değeri 8190'dan büyük
@@ -2527,9 +2481,7 @@ sınırlar.</description>
 
     <p>Örnek:</p>
 
-    <example>
-      LimitRequestLine 4094
-    </example>
+    <highlight language="config">LimitRequestLine 4094</highlight>
 
     <note>Normal şartlar altında öntanımlı değer değiştirilmemelidir. Ayrıca,
       kaynak kodu değiştirip yeniden derlemeden bu değeri 8190'dan büyük
@@ -2559,9 +2511,7 @@ sınırlar.</description>
 
     <p>Örnek:</p>
 
-    <example>
-      LimitXMLRequestBody 0
-    </example>
+    <highlight language="config">LimitXMLRequestBody 0</highlight>
 
 </usage>
 </directivesynopsis>
@@ -2615,18 +2565,23 @@ sınırlar.</description>
       <code>/private1/file.txt</code> istekleri için sarmalanan yönergeler
       uygulanacaktır, fakat <code>/private1other</code> isteğine
       uygulanmayacaktır.</p>
-    <example>
-      &lt;Location /private1&gt;
-          ...
-    </example>
+
+    <highlight language="config">
+&lt;Location /private1&gt;
+    #  ...
+&lt;/Location&gt;
+    </highlight>
+
     <p>Aşağıdaki örnekte yer belirtimi bir bölü çizgisi ile bitirilmiştir.
       <code>/private2/</code> ve <code>/private2/file.txt</code> istekleri
       için sarmalanan yönergeler uygulanacaktır, fakat <code>/private2</code>
       ve <code>/private2other</code> isteklerine uygulanmayacaktır.</p>
-    <example>
-      &lt;Location /private2<em>/</em>&gt;
-          ...
-    </example>
+
+    <highlight language="config">
+&lt;Location /private2<em>/</em>&gt;
+    # ...
+&lt;/Location&gt;
+    </highlight>
 
     <note><title><directive type="section">Location</directive> ne zaman
       kullanılmalı</title>
@@ -2656,9 +2611,11 @@ sınırlar.</description>
       <glossary ref="regex">düzenli ifadeler</glossary> de kullanılabilir.
       Örneğin,</p>
 
-    <example>
-      &lt;Location ~ "/(ek|hususi)/veri"&gt;
-    </example>
+    <highlight language="config">
+&lt;Location ~ "/(ek|hususi)/veri"&gt;
+    #...
+&lt;/Location&gt;
+</highlight>
 
     <p>yönergesi <code>/ek/veri</code> ve <code>/hususi/veri</code> alt
       dizgeleriyle eşleşecektir. <directive type="section"
@@ -2673,14 +2630,12 @@ sınırlar.</description>
       <code>example.com</code>’dan gelen isteklere izin vermek için şöyle bir
       uygulama yapabilirsiniz:</p>
 
-    <example>
-      &lt;Location /status&gt;<br />
-      <indent>
-        SetHandler server-status<br />
-        Require host example.com<br />
-      </indent>
-      &lt;/Location&gt;
-    </example>
+    <highlight language="config">
+&lt;Location /status&gt;
+  SetHandler server-status
+  Require host example.com
+&lt;/Location&gt;
+    </highlight>
 
     <note><title>/ (bölü çizgisi) hakkında</title>
       <p>Bölü çizgisinin URL içinde bulunduğu yere bağlı olarak özel anlamları
@@ -2726,9 +2681,11 @@ uygulanır.</description>
       sınırlar. Ancak argüman olarak basit bir dizge değil bir <glossary
       ref="regex">düzenli ifade</glossary> alır. Örneğin,</p>
 
-    <example>
-      &lt;LocationMatch "/(ek|hususi)/veri"&gt;
-    </example>
+    <highlight language="config">
+&lt;LocationMatch "/(ek|hususi)/veri"&gt;
+    # ...
+&lt;/LocationMatch&gt;
+</highlight>
 
     <p>yönergesi <code>/ek/veri</code> ve <code>/hususi/veri</code> alt
       dizgeleriyle eşleşecektir.</p>
@@ -2885,9 +2842,8 @@ uygulanır.</description>
 
     <p>Örnek:</p>
 
-    <example>
-      LogLevel notice
-    </example>
+    <highlight language="config">LogLevel notice</highlight>
+
 
     <note><title>Ek Bilgi</title>
       <p>Günlük iletileri normal bir dosyaya yazılırken <code>notice</code>
@@ -2903,26 +2859,29 @@ uygulanır.</description>
       <code>_module</code> sonekli modül ismi belirtmek mümkündür.
       Yani, aşağıdaki üç belirtim eşdeğerdedir:</p>
 
-    <example>
-      LogLevel info ssl:warn<br />
-      LogLevel info mod_ssl.c:warn<br />
-      LogLevel info ssl_module:warn<br />
-    </example>
+    <highlight language="config">
+LogLevel info ssl:warn
+LogLevel info mod_ssl.c:warn
+LogLevel info ssl_module:warn
+    </highlight>
 
     <p>Ayrıca seviyeyi dizin bağlamında değiştirmek de mümkündür:</p>
 
-    <example>
-        LogLevel info<br />
-        &lt;Directory /usr/local/apache/htdocs/app&gt;<br />
-        &nbsp; LogLevel debug<br />
-        &lt;/Files&gt;
-    </example>
+    <highlight language="config">
+LogLevel info
+&lt;Directory "/usr/local/apache/htdocs/app"&gt;
+  LogLevel debug
+&lt;/Directory&gt;
+    </highlight>
 
     <note>Dizin bağlamında günük seviyesi yapılandırması sadece istek
       çözümlendikten ve istek dizinle ilişkilendirildikten sonra günlüklenen
-      iletileri etkiler. Bağlantı veya sunucu ile ilişklendirilmemiş günlük
+      iletileri etkiler. Bağlantı veya sunucu ile ilişkilendirilmemiş günlük
       iletileri etkilenmez.</note>
 </usage>
+<seealso><directive module="core">ErrorLog</directive></seealso>
+<seealso><directive module="core">ErrorLogFormat</directive></seealso>
+<seealso><a href="../logs.html">Apache HTTP Server Log Files</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -2942,9 +2901,7 @@ uygulanır.</description>
 
     <p>Örnek:</p>
 
-    <example>
-      MaxKeepAliveRequests 500
-    </example>
+    <highlight language="config">MaxKeepAliveRequests 500</highlight>
 </usage>
 </directivesynopsis>
 
@@ -3273,10 +3230,10 @@ uygulanır.</description>
       öntanımlı mekanizması ise <code>sysvsem</code> ile
       değiştirilmektedir.</p>
 
-    <example>
-    Mutex sysvsem default<br />
-    Mutex fcntl:/var/httpd/locks mpm-accept
-    </example>
+    <highlight language="config">
+Mutex sysvsem default
+Mutex fcntl:/var/httpd/locks mpm-accept
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -3329,9 +3286,11 @@ uygulanır.</description>
       <p>Sembolik bağlar izlense bile <directive type="section"
         module="core">Directory</directive> bölümleriyle eşleşen dosya yolları
         değiştirilmez.</p>
-      <p>Ayrıca, bu seçenek bir <directive type="section" module="core"
-        >Location</directive> bölümü içinde belirtildiği takdirde <strong>yok
-        sayılır</strong>.</p>
+      <p><code>FollowSymLinks</code> ve
+      <code>SymLinksIfOwnerMatch</code> <directive
+      module="core">Options</directive> sadece <directive
+      type="section" module="core">Directory</directive> bölümlerinde veya
+      <code>.htaccess</code> dosyaları içinde çalışır.</p>
       <p>Sembolik bağ sınamaları, atlatılabilir yarış koşullarına konu
         olduğundan bu seçeneğin yokluğu bir güvenlik sınırlaması olarak
         değerlendirilmemelidir.</p>
@@ -3368,12 +3327,15 @@ uygulanır.</description>
       <dd>Sunucu sembolik bağları sadece sembolik bağın hedefi ile bulunduğu
         dizinin sahibinin aynı kullanıcı olması halinde izleyecektir.
 
-      <note><title>Ek Bilgi</title> <p>Bu seçenek bir <directive module="core"
-        type="section">Location</directive> bölümü içinde belirtildiğinde yok
-        sayılır.</p>
+      <p><code>FollowSymLinks</code> ve
+      <code>SymLinksIfOwnerMatch</code> <directive
+      module="core">Options</directive> sadece <directive
+      type="section" module="core">Directory</directive> bölümlerinde veya
+      <code>.htaccess</code> dosyaları içinde çalışır.</p>
+
       <p>Sembolik bağ sınamaları, atlatılabilir yarış koşullarına konu
         olduğundan bu seçenek bir güvenlik sınırlaması olarak
-        değerlendirilmemelidir.</p></note>
+        değerlendirilmemelidir.</p>
       </dd>
     </dl>
 
@@ -3394,38 +3356,30 @@ uygulanır.</description>
 
     <p>Örneğin, <code>+</code> ve <code>-</code> imleri olmaksızın,</p>
 
-    <example>
-      &lt;Directory /web/docs&gt;<br />
-      <indent>
-        Options Indexes FollowSymLinks<br />
-      </indent>
-      &lt;/Directory&gt;<br />
-      <br />
-      &lt;Directory /web/docs/spec&gt;<br />
-      <indent>
-        Options Includes<br />
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory "/web/docs"&gt;
+  Options Indexes FollowSymLinks
+&lt;/Directory&gt;
+
+&lt;Directory "/web/docs/spec"&gt;
+  Options Includes
+&lt;/Directory&gt;
+    </highlight>
 
     <p>yapılandırmasıyla <code>/web/docs/spec</code> dizininde sadece
       <code>Includes</code> seçeneği etkin olacaktır. Bununla birlikte, ikinci
       <directive>Options</directive> yönergesinde <code>+</code> ve
       <code>-</code> imleri kullanılırsa,</p>
 
-    <example>
-      &lt;Directory /web/docs&gt;<br />
-      <indent>
-        Options Indexes FollowSymLinks<br />
-      </indent>
-      &lt;/Directory&gt;<br />
-      <br />
-      &lt;Directory /web/docs/spec&gt;<br />
-      <indent>
-        Options +Includes -Indexes<br />
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory "/web/docs"&gt;
+  Options Indexes FollowSymLinks
+&lt;/Directory&gt;
+
+&lt;Directory "/web/docs/spec"&gt;
+  Options +Includes -Indexes
+&lt;/Directory&gt;
+    </highlight>
 
     <p>yapılandırmasıyla <code>/web/docs/spec</code> dizininde
       <code>FollowSymLinks</code> ve <code>Includes</code> seçenekleri etkin
@@ -3466,14 +3420,13 @@ uygulanır.</description>
     <p>Örneğin, <code>https</code>'i standartdışı bir portta çalıştırmak
       isterseniz protokolü şöyle belirtebilirsiniz:</p>
 
-    <example>
-      Protocol https
-    </example>
+    <highlight language="config">Protocol https</highlight>
 
     <p>Protokolü <directive module="mpm_common">Listen</directive> yönergesini
       kullanarak da belirtebilirsiniz.</p>
 </usage>
 <seealso><directive>AcceptFilter</directive></seealso>
+<seealso><directive module="core">AcceptFilter</directive></seealso>
 <seealso><directive module="mpm_common">Listen</directive></seealso>
 </directivesynopsis>
 
@@ -3591,8 +3544,7 @@ uygulanır.</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Sadece Win32 için; <code>Registry-Strict</code> seçeneği Apache
-HTTP Sunucusunun 2.0 ve sonraki sürümleri için geçerlidir.</compatibility>
+<compatibility>Sadece Win32 için.</compatibility>
 
 <usage>
     <p>Bu yönerge Apache httpd’nin CGI betiklerini çalıştıracak yorumlayıcıyı
@@ -3602,16 +3554,12 @@ HTTP Sunucusunun 2.0 ve sonraki sürümleri için geçerlidir.</compatibility>
       kullanacağını belirtir. Win32 sistemlerinde bu satır genellikle
       şöyledir:</p>
 
-    <example>
-      #!C:/Perl/bin/perl.exe
-    </example>
+    <highlight language="perl">#!C:/Perl/bin/perl.exe</highlight>
 
     <p><code>perl</code> yorumlayıcının yeri <code>PATH</code> değişkeninde
       kayıtlı ise şöyle de olabilir:</p>
 
-    <example>
-      #!perl
-    </example>
+    <highlight language="perl">#!perl</highlight>
 
     <p><code>ScriptInterpreterSource Registry</code> değeri ise betik dosyası
       uzantısının (<code>.pl</code> gibi) Windows Sicili içindeki
@@ -3706,9 +3654,7 @@ HTTP Sunucusunun 2.0 ve sonraki sürümleri için geçerlidir.</compatibility>
       burada belirtilecek adresin sırf bu işe adanmış bir adres olması daha
       iyidir. Örnek:</p>
 
-    <example>
-      ServerAdmin www-admin@example.com
-    </example>
+    <highlight language="config">ServerAdmin www-admin@foo.example.com</highlight>
 </usage>
 </directivesynopsis>
 
@@ -3727,17 +3673,15 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
       belirtebilmeyi sağlar. <directive>ServerAlias</directive> dosya adı kalıp
       karakterleri içerebilir.</p>
 
-    <example>
-      &lt;VirtualHost *:80&gt;<br />
-      <indent>
-        ServerName server.example.com<br />
-        ServerAlias server server2.example.com server2<br />
-        ServerAlias *.example.com<br />
-        UseCanonicalName Off<br />
-        # ...<br />
-      </indent>
-      &lt;/VirtualHost&gt;
-    </example>
+    <highlight language="config">
+&lt;VirtualHost *:80&gt;
+  ServerName server.example.com
+  ServerAlias server server2.example.com server2
+  ServerAlias *.example.com
+  UseCanonicalName Off
+  # ...
+&lt;/VirtualHost&gt;
+    </highlight>
 
     <p>İsme dayalı sanal konaklardan en iyi eşleşme kümesinde olanlar
       yapılandırmada göründükleri sıraya göre işleme sokulur. Joker
@@ -3745,6 +3689,10 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
       >ServerName</directive> veya <directive module="core"
       >ServerAlias</directive> yönergesi eşleşen ilk sanal konak
       kullanılır.</p>
+
+    <p><directive>VirtualHost</directive> bölümü içindeki isimlerin sırası
+      (jokersiz) <directive>ServerAlias</directive> yönergesindeki gibi ele
+      alınır.</p>
 
 </usage>
 <seealso><directive module="core">UseCanonicalName</directive></seealso>
@@ -3775,9 +3723,7 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
       DNS rumuzu varsa ve HTTP sunucunuzun bu rumuzla kendini
       özdeşleştirmesini isterseniz bunu şöyle belirtebilirsiniz:</p>
 
-    <example>
-      ServerName www.example.com
-    </example>
+    <highlight language="config">ServerName www.example.com</highlight>
 
     <p><directive>ServerName</directive> yönergesi sunucu tanımının içinde
       herhangi bir yerde görünebilirse de her göründüğü yerde bir öncekini
@@ -3865,9 +3811,7 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
       module="mod_so">LoadModule</directive> gibi diğer yapılandırma
       yönergelerindeki göreli yollar bu dizine göre ele alınır.</p>
 
-    <example><title>Örnek</title>
-      ServerRoot /home/httpd
-    </example>
+    <highlight language="config">ServerRoot "/home/httpd"</highlight>
 
     <p><directive>ServerRoot</directive> için öntanımlı yer <a
       href="../programs/configure.html"><code>configure</code></a> betiğinin
@@ -3930,7 +3874,7 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
 
     <dl>
       <dt><code>ServerTokens Full</code> (veya belirtilmezse)</dt>
-      <dd>Sunucu şunu gönderir (<em>örnek</em>): <code>Server: Apache/2.4.1
+      <dd>Sunucu şunu gönderir (<em>örnek</em>): <code>Server: Apache/2.4.2
         (Unix) PHP/4.2.2 MyMod/1.2</code></dd>
 
       <dt><code>ServerTokens Prod[uctOnly]</code></dt>
@@ -3947,10 +3891,10 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
 
       <dt><code>ServerTokens Min[imal]</code></dt>
       <dd>Sunucu şunu gönderir (<em>örnek</em>): <code>Server:
-      Apache/2.4.1</code></dd>
+      Apache/2.4.2</code></dd>
 
       <dt><code>ServerTokens OS</code></dt>
-      <dd>Sunucu şunu gönderir (<em>örnek</em>): <code>Server: Apache/2.4.1
+      <dd>Sunucu şunu gönderir (<em>örnek</em>): <code>Server: Apache/2.4.2
       (Unix)</code></dd>
 
     </dl>
@@ -3995,23 +3939,28 @@ sebep olur.</description>
       içindeki bir <code>.htaccess</code> dosyasına şöyle bir satır
       koyabilirsiniz:</p>
 
-    <example>
-      SetHandler imap-file
-    </example>
+    <highlight language="config">SetHandler imap-file</highlight>
 
     <p>Başka bir örnek: <code>http://localhost/status</code> gibi bir istek
       yapıldığında sunucunun bir durum bilgisi göstermesi için
       <code>httpd.conf</code> dosyasına şöyle bir satır koyabilirsiniz:</p>
 
-    <example>
-      &lt;Location /status&gt;<br />
-      <indent>
-        SetHandler server-status<br />
-      </indent>
-      &lt;/Location&gt;
-    </example>
+    <highlight language="config">
+&lt;Location "/status"&gt;
+  SetHandler server-status
+&lt;/Location&gt;
+    </highlight>
 
-    <p>Evvelce tanımlanmış bir <directive>SetHandler</directive> yönergesini
+    <p>Bu yönergeyi ayrıca, belli bir dosya uzantısına sahip dosyalara uygun
+      bir eylemci atamak için de kullanabilirsiniz. örnek:</p>
+
+    <highlight language="config">
+&lt;FilesMatch \.php$&gt;
+    SetHandler application/x-httpd-php
+&lt;/FilesMatch&gt;
+    </highlight>
+
+     <p>Evvelce tanımlanmış bir <directive>SetHandler</directive> yönergesini
       <code>None</code> değeriyle geçersiz hale getirebilirsiniz.</p>
 
     <note><title>Bilgi</title>
@@ -4068,13 +4017,11 @@ belirler.</description>
     <p>Örneğin, aşağıdaki yapılandırma ile <code>/www/data/</code> dizinindeki
      bütün dosyalar sunucu taraflı içerik kapsamında ele alınacaktır.</p>
 
-    <example>
-      &lt;Directory /www/data/&gt;<br />
-      <indent>
-        SetOutputFilter INCLUDES<br />
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory "/www/data/"&gt;
+  SetOutputFilter INCLUDES
+&lt;/Directory&gt;
+    </highlight>
 
     <p>Birden fazla süzgeç belirtilmek istenirse birbirlerinden noktalı
      virgüllerle ayrılmalı ve çıktıyı işleyecekleri sıraya uygun olarak
@@ -4125,8 +4072,6 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
 <default>TraceEnable on</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Apache HTTP Sunucusunun 1.3.34, 2.0.55 ve sonraki sürümlerinde
-    kuallanılabilir.</compatibility>
 
 <usage>
     <p>Bu yönerge çekirdek ve vekil (<module>mod_proxy</module>) sunucuların
@@ -4207,8 +4152,8 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
       <code>http://www.example.com/splat/</code> adresine yönlendirecektir.
       Eğer kimlik doğrulama da etkinse bu kullanıcının iki defa kimlik
       doğrulamasına sokulmasına sebep olacaktır (bir kere <code>www</code>
-      için bir kere de <code>www.example.com</code> için; daha fazla bilgi için
-      <a href="http://httpd.apache.org/docs/misc/FAQ.html#prompted-twice"
+      için bir kere de <code>www.example.com</code> için; daha fazla bilgi için <a
+      href="http://wiki.apache.org/httpd/FAQ#Why_does_Apache_ask_for_my_password_twice_before_serving_a_file.3F"
       >SSS</a>’ye bakınız). Fakat <directive>UseCanonicalName Off</directive>
       olsaydı Apache httpd isteği <code>http://www/splat/</code> adresine
       yönlendirecekti.</p>
@@ -4320,34 +4265,30 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
         dizgesi.</li>
     </ul>
 
-    <example><title>Örnek</title>
-      &lt;VirtualHost 10.1.2.3:80&gt;<br />
-      <indent>
-        ServerAdmin webmaster@host.example.com<br />
-        DocumentRoot /www/docs/host.example.com<br />
-        ServerName host.example.com<br />
-        ErrorLog logs/host.example.com-error_log<br />
-        TransferLog logs/host.example.com-access_log<br />
-      </indent>
-      &lt;/VirtualHost&gt;
-    </example>
+    <highlight language="config">
+&lt;VirtualHost 10.1.2.3:80&gt;
+  ServerAdmin webmaster@host.example.com
+  DocumentRoot /www/docs/host.example.com
+  ServerName host.example.com
+  ErrorLog logs/host.example.com-error_log
+  TransferLog logs/host.example.com-access_log
+&lt;/VirtualHost&gt;
+    </highlight>
 
 
     <p>İsteğe bağlı port numarasını belirtmeyi mümkün kılmak için IPv6
       adresleri köşeli ayraç içine alınır. IPv6 adresi kullanılan bir
       örnek:</p>
 
-    <example>
-      &lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]&gt;<br />
-      <indent>
-        ServerAdmin webmaster@host.example.com<br />
-        DocumentRoot /www/docs/host.example.com<br />
-        ServerName host.example.com<br />
-        ErrorLog logs/host.example.com-error_log<br />
-        TransferLog logs/host.example.com-access_log<br />
-      </indent>
-      &lt;/VirtualHost&gt;
-    </example>
+    <highlight language="config">
+&lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]:80&gt;
+  ServerAdmin webmaster@host.example.com
+  DocumentRoot /www/docs/host.example.com
+  ServerName host.example.com
+  ErrorLog logs/host.example.com-error_log
+  TransferLog logs/host.example.com-access_log
+&lt;/VirtualHost&gt;
+    </highlight>
 
     <p>Her sanal konağın ya farklı bir IP adresi ve port ile ya da farklı bir
       konak ismiyle eşleşmesi gerekir. Birinci durumda sunucu makinesinin çok
