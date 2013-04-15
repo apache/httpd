@@ -90,12 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_log_config: Fix crash when logging request end time for a failed request.
-     PR 54828
-     trunk patch: http://svn.apache.org/r1467765
-     2.4.x patch: trunk patchs applies
-     +1: rjung, covener, jim
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
