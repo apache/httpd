@@ -90,14 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * use %pm instead of explicit call to apr_strerror (more to be backported but they don't
-    apply out of the box for now)
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1463750
-                 http://svn.apache.org/viewvc?view=revision&revision=1463754
-                 http://svn.apache.org/viewvc?view=revision&revision=1464675
-    2.4.x patch: trunk patchs work
-    +1: jailletc36, rjung, covener
-
   * ap_expr: Expression parser: Add the ability to apply a SHA1 hash to
     strings within the parser.
     trunk patch: http://svn.apache.org/r1457450
