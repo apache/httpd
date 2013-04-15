@@ -247,6 +247,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1461869
      2.4.x patch: trunk patch works (with some offset)
      +1: jailletc36
+     -0: jorton: nitpick, using (signed) int to count string length doesn't look good!
 
    * mod_ssl: Catch missing, mismatched or encrypted client cert/key pairs
     with SSLProxyMachineCertificateFile/Path directives. PR 52212, PR 54698.
@@ -257,7 +258,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    https://svn.apache.org/r1467593
     2.4.x patch: https://people.apache.org/~kbrand/PR52212_54698_2.4.x.patch
     2.2.x patch: https://people.apache.org/~kbrand/PR52212_54698_2.2.x.patch
-    +1: kbrand,
+    +1: kbrand, jorton, 
 
    * mod_log_config: Fix crash when logging request end time for a failed request.
      PR 54828
