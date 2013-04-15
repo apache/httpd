@@ -783,7 +783,7 @@ AP_DECLARE(char *) ap_getword_conf(apr_pool_t *p, const char **line)
     char *res;
     char quote;
 
-    while (*str && apr_isspace(*str))
+    while (apr_isspace(*str))
         ++str;
 
     if (!*str) {
@@ -815,7 +815,7 @@ AP_DECLARE(char *) ap_getword_conf(apr_pool_t *p, const char **line)
         res = substring_conf(p, str, strend - str, 0);
     }
 
-    while (*strend && apr_isspace(*strend))
+    while (apr_isspace(*strend))
         ++strend;
     *line = strend;
     return res;
@@ -1405,7 +1405,7 @@ AP_DECLARE(char *) ap_get_token(apr_pool_t *p, const char **accept_line,
 
     /* Find first non-white byte */
 
-    while (*ptr && apr_isspace(*ptr))
+    while (apr_isspace(*ptr))
         ++ptr;
 
     tok_start = ptr;
@@ -1427,7 +1427,7 @@ AP_DECLARE(char *) ap_get_token(apr_pool_t *p, const char **accept_line,
 
     /* Advance accept_line pointer to the next non-white byte */
 
-    while (*ptr && apr_isspace(*ptr))
+    while (apr_isspace(*ptr))
         ++ptr;
 
     *accept_line = ptr;

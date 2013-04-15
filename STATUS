@@ -90,11 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * remove useless tests ==> (*x && apr_isspace(*x))
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1452128
-     2.4.x patch: trunk patch works (with some offset)
-     +1: jailletc36, rjung, covener
-
    * mod_log_config: Fix crash when logging request end time for a failed request.
      PR 54828
      trunk patch: http://svn.apache.org/r1467765

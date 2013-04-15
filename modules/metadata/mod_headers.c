@@ -722,7 +722,7 @@ static int do_headers_fixup(request_rec *r, apr_table_t *headers,
                 while (*val) {
                     const char *tok_start;
 
-                    while (*val && apr_isspace(*val))
+                    while (apr_isspace(*val))
                         ++val;
 
                     tok_start = val;
