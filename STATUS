@@ -90,11 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * util_filter: Add in ap_remove_input|output_filter_byhandle()
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1458456
-    2.4.x patch: trunk patch works modulo ap_mmn.h
-    +1: jim, rjung, covener
-
   * cache_storage: remove useless test + update function name in debug log +
     skip as soon as we know headers do not match
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1452281
