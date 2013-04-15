@@ -202,7 +202,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/r1457995
                  http://svn.apache.org/r1458003
     2.4.x patch: trunk patch applies.
-    +1: minfrin, rjung
+    +1: minfrin, rjung, jim
 
   * mod_auth_basic: Add a generic mechanism to fake basic authentication
     using the ap_expr parser. This allows the administrator to construct
@@ -264,7 +264,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR 54828
      trunk patch: http://svn.apache.org/r1467765
      2.4.x patch: trunk patchs applies
-     +1: rjung, covener
+     +1: rjung, covener, jim
 
    * ap_expr: Expression parser: Add the ability to apply a md5 hash to
      strings within the parser.
