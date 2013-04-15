@@ -90,12 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * cache_storage: remove useless test + update function name in debug log +
-    skip as soon as we know headers do not match
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1452281
-    2.4.x patch: trunk patch works
-    +1: jailletc36, rjung, covener
-
   * use %pm instead of explicit call to apr_strerror (more to be backported but they don't
     apply out of the box for now)
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1463750
