@@ -26,7 +26,6 @@
 <a href="../ko/misc/perf-tuning.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/misc/perf-tuning.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
 
     <p>Apache 2.x, esneklik, taşınabilirlik ve başarım arasında bir denge
@@ -143,14 +142,13 @@
         <code>.cgi</code> dosyalarına yapılan istekler hariç DNS sorguları
         iptal edilmektedir:</p>
 
-      <div class="example"><p><code>
-        HostnameLookups off<br />
-        &lt;Files ~ "\.(html|cgi)$"&gt;<br />
-        <span class="indent">
-          HostnameLookups on<br />
-        </span>
-        &lt;/Files&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+HostnameLookups off
+&lt;Files ~ "\.(html|cgi)$"&gt;
+  HostnameLookups on
+&lt;/Files&gt;
+      </pre>
+
 
       <p>Yine de bazı CGI’lerin DNS isimlerine ihtiyacı olursa bu CGI’lerin
         bu ihtiyaçlarına yönelik olarak <code>gethostbyname</code> çağrıları
@@ -169,14 +167,13 @@
         bağın üzerinde bazı sınamalar yapmak için ek bir sistem çağrısından
         başka istenen her dosya için de ayrı bir çağrı yapacaktır.</p>
 
-      <div class="example"><h3>Örnek:</h3><p><code>
-        DocumentRoot /siteler/htdocs<br />
-        &lt;Directory /&gt;<br />
-        <span class="indent">
-          Options SymLinksIfOwnerMatch<br />
-        </span>
-        &lt;/Directory&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+DocumentRoot /siteler/htdocs
+&lt;Directory /&gt;
+  Options SymLinksIfOwnerMatch
+&lt;/Directory&gt;
+      </pre>
+
 
       <p>Bu durumda <code>/index.html</code> için bir istek yapıldığında
         Apache, <code>/siteler</code>, <code>/siteler/htdocs</code> ve<br />
@@ -186,20 +183,17 @@
         yinelenecektir. Amacınız gerçekten sembolik bağları güvenlik
         açısından sınamaksa bunu şöyle yapabilirsiniz:</p>
 
-      <div class="example"><p><code>
-        DocumentRoot /siteler/htdocs<br />
-        &lt;Directory /&gt;<br />
-        <span class="indent">
-          Options FollowSymLinks<br />
-        </span>
-        &lt;/Directory&gt;<br />
-        <br />
-        &lt;Directory /sitem/htdocs&gt;<br />
-        <span class="indent">
-          Options -FollowSymLinks +SymLinksIfOwnerMatch<br />
-        </span>
-        &lt;/Directory&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+DocumentRoot /siteler/htdocs
+&lt;Directory /&gt;
+  Options FollowSymLinks
+&lt;/Directory&gt;
+
+&lt;Directory /siteler/htdocs&gt;
+  Options -FollowSymLinks +SymLinksIfOwnerMatch
+&lt;/Directory&gt;
+      </pre>
+
 
       <p>Böylece <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> altındaki
         dosyalar için fazladan bir çağrı yapılmasını engellemiş olursunuz.
@@ -222,14 +216,13 @@
         her dosya bileşeni için bu <code>.htaccess</code> dosyalarını açmaya
         çalışacaktır.</p>
 
-      <div class="example"><h3>Örnek:</h3><p><code>
-        DocumentRoot /siteler/htdocs<br />
-        &lt;Directory /&gt;<br />
-        <span class="indent">
-          AllowOverride all<br />
-        </span>
-        &lt;/Directory&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+DocumentRoot /siteler/htdocs
+&lt;Directory /&gt;
+  AllowOverride all
+&lt;/Directory&gt;
+      </pre>
+
 
       <p>Bu durumda <code>/index.html</code> sayfasına yapılan bir istek için
         Apache, <code>/.htaccess</code>, <code>/siteler/.htaccess</code> ve
@@ -249,16 +242,16 @@
         isterken büyük başarım kayıplarına uğrayabilirsiniz. Böyle bir
         durumda sunucunun başarımını arttırmanın tek bir yolu vardır. </p>
 
-      <div class="example"><p><code>
-        DirectoryIndex index
-      </code></p></div>
+      <pre class="prettyprint lang-config">DirectoryIndex index</pre>
+
 
       <p>Yukarıdaki gibi bir dosya ismi kalıbı kullanmak yerine, aşağıdaki
         gibi seçenekleri tam bir liste halinde belirtin:</p>
 
-      <div class="example"><p><code>
-        DirectoryIndex index.cgi index.pl index.shtml index.html
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+DirectoryIndex index.cgi index.pl index.shtml index.html
+      </pre>
+
 
       <p>Buradaki sıralama öncelik sırasını belirler; yani,
         öncelikli olmasını istediğiniz seçeneği listenin başına
@@ -440,6 +433,12 @@
           vermesi nedeniyle yüksek trafiğe sahip sunucularda
           <code class="module"><a href="../mod/prefork.html">prefork</a></code> modülüne göre daha iyi bir seçimdir.</li>
 
+        <li><code class="module"><a href="../mod/event.html">event</a></code> modülü <code class="module"><a href="../mod/worker.html">worker</a></code> modülü gibi
+          çok evreli bir modüldür, fakat aunı anda dahafazla isteğe yanıt
+          verecek şekilde tasarlanmıştır. Bunu, evreleri destekleyen bazı
+          işlemleri yapmamak suretiyle yeni isteklerle çalışacak ana evreleri
+          serbestleştirerek sağlar.</li>
+
         <li><code class="module"><a href="../mod/prefork.html">prefork</a></code> modülü her biri tek bir evreye sahip
           çok sayıda çocuk süreç kullanımını destekler. Her süreç aynı anda
           tek bir bağlantıya hizmet sunar. Çoğu sistemde daha hızlı olması
@@ -579,39 +578,30 @@
       bağlantılar denenebilir. Gerçekte çalışan kod bu olmasa da meramımızı
       anlatmak için kodun şöyle bir şey olduğunu varsayabiliriz:</p>
 
-      <div class="example"><p><code>
-        for (;;) {<br />
-        <span class="indent">
-          for (;;) {<br />
-          <span class="indent">
-            fd_set accept_fds;<br />
-            <br />
-            FD_ZERO (&amp;accept_fds);<br />
-            for (i = first_socket; i &lt;= last_socket; ++i) {<br />
-            <span class="indent">
-              FD_SET (i, &amp;accept_fds);<br />
-            </span>
-            }<br />
-            rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);<br />
-            if (rc &lt; 1) continue;<br />
-            new_connection = -1;<br />
-            for (i = first_socket; i &lt;= last_socket; ++i) {<br />
-            <span class="indent">
-              if (FD_ISSET (i, &amp;accept_fds)) {<br />
-              <span class="indent">
-                new_connection = accept (i, NULL, NULL);<br />
-                if (new_connection != -1) break;<br />
-              </span>
-              }<br />
-            </span>
-            }<br />
-            if (new_connection != -1) break;<br />
-          </span>
-          }<br />
-          process the new_connection;<br />
-        </span>
+      <pre class="prettyprint lang-c">
+        for (;;) {
+          for (;;) {
+            fd_set accept_fds;
+
+            FD_ZERO (&amp;accept_fds);
+            for (i = first_socket; i &lt;= last_socket; ++i) {
+              FD_SET (i, &amp;accept_fds);
+            }
+            rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);
+            if (rc &lt; 1) continue;
+            new_connection = -1;
+            for (i = first_socket; i &lt;= last_socket; ++i) {
+              if (FD_ISSET (i, &amp;accept_fds)) {
+                new_connection = accept (i, NULL, NULL);
+                if (new_connection != -1) break;
+              }
+            }
+            if (new_connection != -1) break;
+          }
+          process_the(new_connection);
         }
-      </code></p></div>
+      </pre>
+
 
       <p>Bu özet gerçeklenim bir takım açlık sorunlarına sebep olur. Bu
       döngünün çalışması sırasında aynı anda çok sayıda çocuk süreç yeniden
@@ -648,41 +638,32 @@
       bir iç döngüde sıraya sokmaktır. Döngü aşağıda örneklenmiştir (farklar
       vurgulanmıştır):</p>
 
-      <div class="example"><p><code>
-        for (;;) {<br />
-        <span class="indent">
-          <strong>accept_mutex_on ();</strong><br />
-          for (;;) {<br />
-          <span class="indent">
-            fd_set accept_fds;<br />
-            <br />
-            FD_ZERO (&amp;accept_fds);<br />
-            for (i = first_socket; i &lt;= last_socket; ++i) {<br />
-            <span class="indent">
-              FD_SET (i, &amp;accept_fds);<br />
-            </span>
-            }<br />
-            rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);<br />
-            if (rc &lt; 1) continue;<br />
-            new_connection = -1;<br />
-            for (i = first_socket; i &lt;= last_socket; ++i) {<br />
-            <span class="indent">
-              if (FD_ISSET (i, &amp;accept_fds)) {<br />
-              <span class="indent">
-                new_connection = accept (i, NULL, NULL);<br />
-                if (new_connection != -1) break;<br />
-              </span>
-              }<br />
-            </span>
-            }<br />
-            if (new_connection != -1) break;<br />
-          </span>
-          }<br />
-          <strong>accept_mutex_off ();</strong><br />
-          process the new_connection;<br />
-        </span>
+      <pre class="prettyprint lang-c">
+        for (;;) {
+          <strong>accept_mutex_on ();</strong>
+          for (;;) {
+            fd_set accept_fds;
+
+            FD_ZERO (&amp;accept_fds);
+            for (i = first_socket; i &lt;= last_socket; ++i) {
+              FD_SET (i, &amp;accept_fds);
+            }
+            rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);
+            if (rc &lt; 1) continue;
+            new_connection = -1;
+            for (i = first_socket; i &lt;= last_socket; ++i) {
+              if (FD_ISSET (i, &amp;accept_fds)) {
+                new_connection = accept (i, NULL, NULL);
+                if (new_connection != -1) break;
+              }
+            }
+            if (new_connection != -1) break;
+          }
+          <strong>accept_mutex_off ();</strong>
+          process the new_connection;
         }
-      </code></p></div>
+      </pre>
+
 
       <p><code>accept_mutex_on</code> ve <code>accept_mutex_off</code> <a id="serialize" name="serialize">işlevleri</a> bir karşılıklı red
       semoforu oluştururlar. Mutekse aynı anda sadece bir çocuk sahip
@@ -782,42 +763,32 @@
       <code>lingering_close</code> adında bir işlevle gerçekler. Bu işlev
       kabaca şöyle görünür:</p>
 
-      <div class="example"><p><code>
-        void lingering_close (int s)<br />
-        {<br />
-        <span class="indent">
-          char junk_buffer[2048];<br />
-          <br />
-          /* gönderen tarafı kapat */<br />
-          shutdown (s, 1);<br />
-          <br />
-          signal (SIGALRM, lingering_death);<br />
-          alarm (30);<br />
-          <br />
-          for (;;) {<br />
-          <span class="indent">
-            /* s'i okumak için, 2 saniyelik zaman aşımı ile seç */<br />
-            select (s for reading, 2 second timeout);<br />
-            /* Hata oluşmuşsa döngüden çık */<br />
-            if (error) break;<br />
-            /* s okumak için hazırsa */<br />
-            if (s is ready for reading) {<br />
-            <span class="indent">
-              if (read (s, junk_buffer, sizeof (junk_buffer)) &lt;= 0) {<br />
-              <span class="indent">
-                break;<br />
-              </span>
-              }<br />
-              /* geri kalan herşey burada */<br />
-            </span>
-            }<br />
-          </span>
-          }<br />
-          <br />
-          close (s);<br />
-        </span>
+      <pre class="prettyprint lang-c">
+        void lingering_close (int s)
+        {
+          char junk_buffer[2048];
+
+          /* shutdown the sending side */
+          shutdown (s, 1);
+
+          signal (SIGALRM, lingering_death);
+          alarm (30);
+
+          for (;;) {
+            select (s for reading, 2 second timeout);
+            if (error) break;
+            if (s is ready for reading) {
+              if (read (s, junk_buffer, sizeof (junk_buffer)) &lt;= 0) {
+                break;
+              }
+              /* just toss away whatever is here */
+            }
+          }
+
+          close (s);
         }
-      </code></p></div>
+      </pre>
+
 
       <p>Bağlantı sonunda bu doğal olarak biraz daha masrafa yol açar, fakat
       güvenilir bir gerçeklenim için bu gereklidir. HTTP/1.1'in daha yaygın

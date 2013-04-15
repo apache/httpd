@@ -27,7 +27,6 @@
 <a href="../ko/howto/public_html.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/public_html.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
   <p>Çok kullanıcılı sistemlerde, <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> yönergesi ile her kullanıcının kendi ev dizininde
     bir sitesi olması sağlanabilir.
@@ -74,9 +73,8 @@
      kullanıcının ev dizinine göreli bir dizin belirtildiği varsayılır.
      Yapılandırmada şöyle bir satır varsa:</p>
 
-    <div class="example"><p><code>
-      UserDir public_html
-    </code></p></div>
+    <pre class="prettyprint lang-config">UserDir public_html</pre>
+
 
     <p><code>http://example.com/~orhan/dosya.html</code> adresine karşılık
       gelen dosya yolu <code>/home/orhan/public_html/dosya.html</code> olarak
@@ -87,9 +85,8 @@
       dizinlerde bulunacağı varsayılır. Yapılandırmada şöyle bir satır
       varsa:</p>
 
-    <div class="example"><p><code>
-      UserDir /var/html
-    </code></p></div>
+    <pre class="prettyprint lang-config">UserDir /var/html</pre>
+
 
     <p><code>http://example.com/~orhan/dosya.html</code> adresine karşılık
       gelen dosya yolu <code>/var/html/orhan/dosya.html</code> olarak
@@ -99,19 +96,17 @@
       yerine kullanıcı ismi yerleştirilerek elde edilen dosya yolu
       kullanılır. Yapılandırmada şöyle bir satır varsa:</p>
 
-    <div class="example"><p><code>
-      UserDir /var/siteler/*/sayfam
-    </code></p></div>
+    <pre class="prettyprint lang-config">UserDir /var/html/*/sayfam</pre>
+
 
     <p><code>http://example.com/~orhan/dosya.html</code> adresine karşılık
-      gelen dosya yolu <code>/var/siteler/orhan/sayfam/dosya.html</code>
+      gelen dosya yolu <code>/var/html/orhan/sayfam/dosya.html</code>
       olarak çözümlenir.</p>
 
     <p>Çok sayıda dizin veya dizin yolu belirtmek de mümkündür.</p>
 
-    <div class="example"><p><code>
-      UserDir public_html /var/siteler
-    </code></p></div>
+    <pre class="prettyprint lang-config">UserDir public_html /var/html</pre>
+
 
     <p><code>http://example.com/~orhan/dosya.html</code> adresini Apache önce
       <code>/home/orhan/public_html/dosya.html</code> olarak arayacak,
@@ -126,9 +121,8 @@
       kullanıcı dizini isteklerini harici adreslere yönlendirmek için de
       kullanılabilir.</p>
 
-    <div class="example"><p><code>
-      UserDir http://example.org/users/*/
-    </code></p></div>
+    <pre class="prettyprint lang-config">UserDir http://example.org/users/*/</pre>
+
 
     <p>Bu yapılandırmaya göre <code>http://example.com/~bob/abc.html</code>
     için yapılan bir istek <code>http://example.org/users/bob/abc.html</code>
@@ -142,9 +136,8 @@
       açıklamasında belirtilen sözdizimini kullanarak bu işlevselliği bazı
       kullanıcılara yasaklayabilirsiniz:</p>
 
-    <div class="example"><p><code>
-      UserDir disabled root ahmet mustafa
-    </code></p></div>
+    <pre class="prettyprint lang-config">UserDir disabled root ahmet veli</pre>
+
 
     <p>Bu yapılandırma ile <code>disabled</code> deyiminin bulunduğu
       satırdaki kullanıcılar dışında kalan bütün kullanıcılar için bu özellik
@@ -152,10 +145,11 @@
       işlevselliğin belli kullanıcılar dışında kullanılmamasını da
       sağlayabilirsiniz:</p>
 
-    <div class="example"><p><code>
+    <pre class="prettyprint lang-config">
       UserDir disabled<br />
       UserDir enabled orhan yasar
-    </code></p></div>
+    </pre>
+
 
     <p>Daha fazla örnek için <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> yönergesinin açıklamasına bakabilirsiniz.</p>
 
@@ -169,12 +163,13 @@
     ile kullanıcının ev dizinindeki belli bir dizini CGI-etkin duruma
     getirebilirsiniz.</p>
 
-    <div class="example"><p><code>
-      &lt;Directory /home/*/public_html/cgi-bin/&gt;<br />
-       Options ExecCGI<br />
-       SetHandler cgi-script<br />
-       &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Directory /home/*/public_html/cgi-bin/&gt;
+    Options ExecCGI
+    SetHandler cgi-script
+&lt;/Directory&gt;
+    </pre>
+
 
     <p> <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> yönergesinde
       <code>public_html</code> belirtildiği varsayımıyla
