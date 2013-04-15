@@ -90,15 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * ap_expr: Expression parser: Add the ability to apply a SHA1 hash to
-    strings within the parser.
-    trunk patch: http://svn.apache.org/r1457450
-                 http://svn.apache.org/r1457610
-                 http://svn.apache.org/r1457995
-                 http://svn.apache.org/r1458003
-    2.4.x patch: trunk patch applies.
-    +1: minfrin, rjung, jim
-
    * remove useless tests ==> (*x && apr_isspace(*x))
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1452128
      2.4.x patch: trunk patch works (with some offset)
