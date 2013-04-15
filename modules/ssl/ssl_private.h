@@ -678,11 +678,6 @@ typedef struct {
     SRP_VBASE  *srp_vbase;
 #endif
 
-    /** RFC 5878 */
-    const char  *rsa_authz_file;
-    const char  *dsa_authz_file;
-    const char  *ec_authz_file;
-
     modssl_auth_ctx_t auth;
 
     BOOL ocsp_enabled; /* true if OCSP verification enabled */
@@ -762,9 +757,6 @@ const char  *ssl_cmd_SSLCryptoDevice(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLRandomSeed(cmd_parms *, void *, const char *, const char *, const char *);
 const char  *ssl_cmd_SSLEngine(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCipherSuite(cmd_parms *, void *, const char *);
-const char  *ssl_cmd_SSLRSAAuthzFile(cmd_parms *, void *, const char *);
-const char  *ssl_cmd_SSLDSAAuthzFile(cmd_parms *, void *, const char *);
-const char  *ssl_cmd_SSLECAuthzFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCertificateFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCertificateKeyFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCertificateChainFile(cmd_parms *, void *, const char *);

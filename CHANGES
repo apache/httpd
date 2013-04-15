@@ -134,8 +134,6 @@ Changes with Apache 2.5.0
      - mod_socache_shmcb, mod_socache_dbm: shared memory or dbm for cache
      [Jeff Trawick]
 
-  *) mod_ssl: Add RFC 5878 support. [Ben Laurie]
-
   *) suexec: Add --enable-suexec-capabilites support on Linux, to use
      setuid/setgid capability bits rather than a setuid root binary.
      [Joe Orton]

@@ -1022,8 +1022,7 @@ static void ssl_init_ctx(server_rec *s,
 static int ssl_server_import_cert(server_rec *s,
                                   modssl_ctx_t *mctx,
                                   const char *id,
-                                  int idx,
-				  const char *authz_file)
+                                  int idx)
 {
     SSLModConfigRec *mc = myModConfig(s);
     ssl_asn1_t *asn1;
@@ -1061,24 +1060,6 @@ static int ssl_server_import_cert(server_rec *s,
         }
     }
 #endif
-
-    if (authz_file) {
-#if !defined(OPENSSL_NO_TLSEXT) && OPENSSL_VERSION_NUMBER >= 0x10002000L
-	if (!SSL_CTX_use_authz_file(mctx->ssl_ctx, authz_file)) {
-	    ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-			 "Unable to initialize TLS authz extension");
-	    ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
-	    ssl_die(s);
-	}
-	ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, "Set %s authz_file to %s",
-		     type, authz_file);
-#else
-	ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-		     "Unable to initialize TLS authz extension: "
-		     "OpenSSL version too low");
-	ssl_die(s);
-#endif
-    }
 
     mctx->pks->certs[idx] = cert;
 
@@ -1217,13 +1198,10 @@ static void ssl_init_server_certs(server_rec *s,
     ecc_id = ssl_asn1_table_keyfmt(ptemp, vhost_id, SSL_AIDX_ECC);
 #endif
 
-    have_rsa = ssl_server_import_cert(s, mctx, rsa_id, SSL_AIDX_RSA,
-				      mctx->rsa_authz_file);
-    have_dsa = ssl_server_import_cert(s, mctx, dsa_id, SSL_AIDX_DSA,
-				      mctx->dsa_authz_file);
+    have_rsa = ssl_server_import_cert(s, mctx, rsa_id, SSL_AIDX_RSA);
+    have_dsa = ssl_server_import_cert(s, mctx, dsa_id, SSL_AIDX_DSA);
 #ifndef OPENSSL_NO_EC
-    have_ecc = ssl_server_import_cert(s, mctx, ecc_id, SSL_AIDX_ECC,
-				      mctx->ec_authz_file);
+    have_ecc = ssl_server_import_cert(s, mctx, ecc_id, SSL_AIDX_ECC);
 #endif
 
     if (!(have_rsa || have_dsa
