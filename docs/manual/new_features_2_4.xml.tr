@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
-<!-- English Revision: 1291837:1426600 (outdated) -->
+<!-- English Revision: 1426600 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -39,11 +39,13 @@
     <title>Çekirdekteki Gelişmeler</title>
     <dl>
       <dt>Çalışma anında yüklenebilen MPM'ler</dt>
-      <dd>Çok sayıda MPM artık yüklenebilir modül olarak derlenebilmektedir.
+      <dd>Çok sayıda MPM artık <a href="mpm.html#dynamic">yüklenebilir
+        modül</a> olarak derlenebilmektedir.
         Kullanılacak MPM'in seçimi çalışma anında yapılabilmektedir.</dd>
 
       <dt>Event MPM</dt>
-      <dd>Event MPM artık deneysel değil, ancak tam olarak desteklenmiyor.</dd>
+      <dd><a href="mod/event.html">Event MPM</a> artık deneysel değil, ancak
+        tam olarak desteklenmiyor.</dd>
 
       <dt>Eşzamansıza destek</dt>
       <dd>MPM'leri ve platformları desteklemek için eşzamansız okuma/yazmaya
@@ -306,10 +308,10 @@
   <section id="programs">
     <title>Programlardaki Gelişmeler</title>
     <dl>
-        <dt>fcgistarter</dt>
+        <dt><program>fcgistarter</program></dt>
         <dd>Yeni FastCGI artalan sunucusu başlatma aracı</dd>
 
-        <dt>htcacheclean</dt>
+        <dt><program>htcacheclean</program></dt>
         <dd>Arabellekli URL'ler, istenirse metadata'yı da dahil ederek
           listelenebilmektedir.</dd>
         <dd>Bazı URL'ler arabellekten tek tek silinebilmektedir.</dd>
@@ -320,7 +322,7 @@
           sınıra ek olarak veya bunun yerine dosya düğümü sayısı ile
           sınırlanabilmektedir.</dd>
 
-        <dt>rotatelogs</dt>
+        <dt><program>rotatelogs</program></dt>
         <dd>Artık geçerli günlük dosyasına bir bağ oluşturulabiliyor.</dd>
         <dd>Artık özel bir döndürme sonrası betiği çalıştırılabiliyor.</dd>
     </dl>

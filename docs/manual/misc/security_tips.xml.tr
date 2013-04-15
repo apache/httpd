@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1300926:1333991 (outdated) -->
+<!-- English Revision: 1333991 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -329,13 +329,11 @@
 
     <p>Sunucu yapılandırma dosyanıza şunu yerleştirin:</p>
 
-    <example>
-      &lt;Directory /&gt;
-      <indent>
-        AllowOverride None
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory /&gt;
+    AllowOverride None
+&lt;/Directory&gt;
+    </highlight>
 
     <p>Böylece, belli dizinlerde özellikle etkinleştirilmedikçe bütün
       dizinlerde <code>.htaccess</code> dosyalarının kullanımını engellemiş
@@ -363,34 +361,28 @@
       olursunuz. Bu işlemin sonuçlarının önünü almak için sunucu yapılandırma
       dosyanıza şunları yazın:</p>
 
-    <example>
-      &lt;Directory /&gt;
-      <indent>
-        Order Deny,Allow <br />
-        Deny from all
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory /&gt;
+    Order Deny,Allow
+    Deny from all
+&lt;/Directory&gt;
+    </highlight>
 
     <p>Bu suretle, dosya sisteminize öntanımlı erişimi yasaklamış olursunuz.
       Erişime izin vermek istediğiniz dizinler için uygun <directive
       module="core">Directory</directive> bölümleri eklemeniz yeterli
       olacaktır. Örnek:</p>
 
-    <example>
-      &lt;Directory /usr/users/*/public_html&gt;
-      <indent>
-        Order Deny,Allow <br />
-        Allow from all
-      </indent>
-      &lt;/Directory&gt; <br />
-      &lt;Directory /usr/local/httpd&gt;
-      <indent>
-        Order Deny,Allow <br />
-        Allow from all
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory /usr/users/*/public_html&gt;
+    Order Deny,Allow
+    Allow from all
+&lt;/Directory&gt;
+&lt;Directory /usr/local/httpd&gt;
+    Order Deny,Allow
+    Allow from all
+&lt;/Directory&gt;
+    </highlight>
 
     <p><directive module="core">Location</directive> ve <directive
       module="core">Directory</directive> yönergelerinin etkileşimine de
@@ -404,9 +396,7 @@
       durumla karşılaşırız. Sunucu yapılandırma dosyanızda aşağıdaki satırın
       mutlaka bulunmasını öneririz:</p>
 
-    <example>
-      UserDir disabled root
-    </example>
+    <highlight language="config">UserDir disabled root</highlight>
 
   </section>
 
@@ -448,14 +438,13 @@
     <p>Bu, sunucu yapılandırma dosyanızda aşağıdaki yapılandırmayı iptal
       ettiğiniz anlamına gelir:</p>
 
-    <example>
-      &lt;Files ".ht*"&gt;
-      <indent>
-        Order allow,deny <br />
-        Deny from all
-      </indent>
-      &lt;/Files&gt;
-    </example>
+    <highlight language="config">
+&lt;Files ".ht*"&gt;
+    Order allow,deny
+    Deny from all
+&lt;/Files&gt;
+    </highlight>
+
   </section>
 
   <section id="merging">

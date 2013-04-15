@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1174747:1379929 (outdated) -->
+<!-- English Revision: 1379929 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -159,14 +159,12 @@
         <code>.cgi</code> dosyalarına yapılan istekler hariç DNS sorguları
         iptal edilmektedir:</p>
 
-      <example>
-        HostnameLookups off<br />
-        &lt;Files ~ "\.(html|cgi)$"&gt;<br />
-        <indent>
-          HostnameLookups on<br />
-        </indent>
-        &lt;/Files&gt;
-      </example>
+      <highlight language="config">
+HostnameLookups off
+&lt;Files ~ "\.(html|cgi)$"&gt;
+  HostnameLookups on
+&lt;/Files&gt;
+      </highlight>
 
       <p>Yine de bazı CGI’lerin DNS isimlerine ihtiyacı olursa bu CGI’lerin
         bu ihtiyaçlarına yönelik olarak <code>gethostbyname</code> çağrıları
@@ -185,14 +183,12 @@
         bağın üzerinde bazı sınamalar yapmak için ek bir sistem çağrısından
         başka istenen her dosya için de ayrı bir çağrı yapacaktır.</p>
 
-      <example><title>Örnek:</title>
-        DocumentRoot /siteler/htdocs<br />
-        &lt;Directory /&gt;<br />
-        <indent>
-          Options SymLinksIfOwnerMatch<br />
-        </indent>
-        &lt;/Directory&gt;
-      </example>
+      <highlight language="config">
+DocumentRoot /siteler/htdocs
+&lt;Directory /&gt;
+  Options SymLinksIfOwnerMatch
+&lt;/Directory&gt;
+      </highlight>
 
       <p>Bu durumda <code>/index.html</code> için bir istek yapıldığında
         Apache, <code>/siteler</code>, <code>/siteler/htdocs</code> ve<br />
@@ -202,20 +198,16 @@
         yinelenecektir. Amacınız gerçekten sembolik bağları güvenlik
         açısından sınamaksa bunu şöyle yapabilirsiniz:</p>
 
-      <example>
-        DocumentRoot /siteler/htdocs<br />
-        &lt;Directory /&gt;<br />
-        <indent>
-          Options FollowSymLinks<br />
-        </indent>
-        &lt;/Directory&gt;<br />
-        <br />
-        &lt;Directory /sitem/htdocs&gt;<br />
-        <indent>
-          Options -FollowSymLinks +SymLinksIfOwnerMatch<br />
-        </indent>
-        &lt;/Directory&gt;
-      </example>
+      <highlight language="config">
+DocumentRoot /siteler/htdocs
+&lt;Directory /&gt;
+  Options FollowSymLinks
+&lt;/Directory&gt;
+
+&lt;Directory /siteler/htdocs&gt;
+  Options -FollowSymLinks +SymLinksIfOwnerMatch
+&lt;/Directory&gt;
+      </highlight>
 
       <p>Böylece <directive module="core">DocumentRoot</directive> altındaki
         dosyalar için fazladan bir çağrı yapılmasını engellemiş olursunuz.
@@ -240,14 +232,12 @@
         her dosya bileşeni için bu <code>.htaccess</code> dosyalarını açmaya
         çalışacaktır.</p>
 
-      <example><title>Örnek:</title>
-        DocumentRoot /siteler/htdocs<br />
-        &lt;Directory /&gt;<br />
-        <indent>
-          AllowOverride all<br />
-        </indent>
-        &lt;/Directory&gt;
-      </example>
+      <highlight language="config">
+DocumentRoot /siteler/htdocs
+&lt;Directory /&gt;
+  AllowOverride all
+&lt;/Directory&gt;
+      </highlight>
 
       <p>Bu durumda <code>/index.html</code> sayfasına yapılan bir istek için
         Apache, <code>/.htaccess</code>, <code>/siteler/.htaccess</code> ve
@@ -267,16 +257,14 @@
         isterken büyük başarım kayıplarına uğrayabilirsiniz. Böyle bir
         durumda sunucunun başarımını arttırmanın tek bir yolu vardır. </p>
 
-      <example>
-        DirectoryIndex index
-      </example>
+      <highlight language="config">DirectoryIndex index</highlight>
 
       <p>Yukarıdaki gibi bir dosya ismi kalıbı kullanmak yerine, aşağıdaki
         gibi seçenekleri tam bir liste halinde belirtin:</p>
 
-      <example>
-        DirectoryIndex index.cgi index.pl index.shtml index.html
-      </example>
+      <highlight language="config">
+DirectoryIndex index.cgi index.pl index.shtml index.html
+      </highlight>
 
       <p>Buradaki sıralama öncelik sırasını belirler; yani,
         öncelikli olmasını istediğiniz seçeneği listenin başına
@@ -466,6 +454,12 @@
           vermesi nedeniyle yüksek trafiğe sahip sunucularda
           <module>prefork</module> modülüne göre daha iyi bir seçimdir.</li>
 
+        <li><module>event</module> modülü <module>worker</module> modülü gibi
+          çok evreli bir modüldür, fakat aunı anda dahafazla isteğe yanıt
+          verecek şekilde tasarlanmıştır. Bunu, evreleri destekleyen bazı
+          işlemleri yapmamak suretiyle yeni isteklerle çalışacak ana evreleri
+          serbestleştirerek sağlar.</li>
+
         <li><module>prefork</module> modülü her biri tek bir evreye sahip
           çok sayıda çocuk süreç kullanımını destekler. Her süreç aynı anda
           tek bir bağlantıya hizmet sunar. Çoğu sistemde daha hızlı olması
@@ -608,39 +602,29 @@
       bağlantılar denenebilir. Gerçekte çalışan kod bu olmasa da meramımızı
       anlatmak için kodun şöyle bir şey olduğunu varsayabiliriz:</p>
 
-      <example>
-        for (;;) {<br />
-        <indent>
-          for (;;) {<br />
-          <indent>
-            fd_set accept_fds;<br />
-            <br />
-            FD_ZERO (&amp;accept_fds);<br />
-            for (i = first_socket; i &lt;= last_socket; ++i) {<br />
-            <indent>
-              FD_SET (i, &amp;accept_fds);<br />
-            </indent>
-            }<br />
-            rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);<br />
-            if (rc &lt; 1) continue;<br />
-            new_connection = -1;<br />
-            for (i = first_socket; i &lt;= last_socket; ++i) {<br />
-            <indent>
-              if (FD_ISSET (i, &amp;accept_fds)) {<br />
-              <indent>
-                new_connection = accept (i, NULL, NULL);<br />
-                if (new_connection != -1) break;<br />
-              </indent>
-              }<br />
-            </indent>
-            }<br />
-            if (new_connection != -1) break;<br />
-          </indent>
-          }<br />
-          process the new_connection;<br />
-        </indent>
+      <highlight language="c">
+        for (;;) {
+          for (;;) {
+            fd_set accept_fds;
+
+            FD_ZERO (&amp;accept_fds);
+            for (i = first_socket; i &lt;= last_socket; ++i) {
+              FD_SET (i, &amp;accept_fds);
+            }
+            rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);
+            if (rc &lt; 1) continue;
+            new_connection = -1;
+            for (i = first_socket; i &lt;= last_socket; ++i) {
+              if (FD_ISSET (i, &amp;accept_fds)) {
+                new_connection = accept (i, NULL, NULL);
+                if (new_connection != -1) break;
+              }
+            }
+            if (new_connection != -1) break;
+          }
+          process_the(new_connection);
         }
-      </example>
+      </highlight>
 
       <p>Bu özet gerçeklenim bir takım açlık sorunlarına sebep olur. Bu
       döngünün çalışması sırasında aynı anda çok sayıda çocuk süreç yeniden
@@ -678,41 +662,31 @@
       bir iç döngüde sıraya sokmaktır. Döngü aşağıda örneklenmiştir (farklar
       vurgulanmıştır):</p>
 
-      <example>
-        for (;;) {<br />
-        <indent>
-          <strong>accept_mutex_on ();</strong><br />
-          for (;;) {<br />
-          <indent>
-            fd_set accept_fds;<br />
-            <br />
-            FD_ZERO (&amp;accept_fds);<br />
-            for (i = first_socket; i &lt;= last_socket; ++i) {<br />
-            <indent>
-              FD_SET (i, &amp;accept_fds);<br />
-            </indent>
-            }<br />
-            rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);<br />
-            if (rc &lt; 1) continue;<br />
-            new_connection = -1;<br />
-            for (i = first_socket; i &lt;= last_socket; ++i) {<br />
-            <indent>
-              if (FD_ISSET (i, &amp;accept_fds)) {<br />
-              <indent>
-                new_connection = accept (i, NULL, NULL);<br />
-                if (new_connection != -1) break;<br />
-              </indent>
-              }<br />
-            </indent>
-            }<br />
-            if (new_connection != -1) break;<br />
-          </indent>
-          }<br />
-          <strong>accept_mutex_off ();</strong><br />
-          process the new_connection;<br />
-        </indent>
+      <highlight language="c">
+        for (;;) {
+          <strong>accept_mutex_on ();</strong>
+          for (;;) {
+            fd_set accept_fds;
+
+            FD_ZERO (&amp;accept_fds);
+            for (i = first_socket; i &lt;= last_socket; ++i) {
+              FD_SET (i, &amp;accept_fds);
+            }
+            rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);
+            if (rc &lt; 1) continue;
+            new_connection = -1;
+            for (i = first_socket; i &lt;= last_socket; ++i) {
+              if (FD_ISSET (i, &amp;accept_fds)) {
+                new_connection = accept (i, NULL, NULL);
+                if (new_connection != -1) break;
+              }
+            }
+            if (new_connection != -1) break;
+          }
+          <strong>accept_mutex_off ();</strong>
+          process the new_connection;
         }
-      </example>
+      </highlight>
 
       <p><code>accept_mutex_on</code> ve <code>accept_mutex_off</code> <a
       id="serialize" name="serialize">işlevleri</a> bir karşılıklı red
@@ -816,42 +790,31 @@
       <code>lingering_close</code> adında bir işlevle gerçekler. Bu işlev
       kabaca şöyle görünür:</p>
 
-      <example>
-        void lingering_close (int s)<br />
-        {<br />
-        <indent>
-          char junk_buffer[2048];<br />
-          <br />
-          /* gönderen tarafı kapat */<br />
-          shutdown (s, 1);<br />
-          <br />
-          signal (SIGALRM, lingering_death);<br />
-          alarm (30);<br />
-          <br />
-          for (;;) {<br />
-          <indent>
-            /* s'i okumak için, 2 saniyelik zaman aşımı ile seç */<br />
-            select (s for reading, 2 second timeout);<br />
-            /* Hata oluşmuşsa döngüden çık */<br />
-            if (error) break;<br />
-            /* s okumak için hazırsa */<br />
-            if (s is ready for reading) {<br />
-            <indent>
-              if (read (s, junk_buffer, sizeof (junk_buffer)) &lt;= 0) {<br />
-              <indent>
-                break;<br />
-              </indent>
-              }<br />
-              /* geri kalan herşey burada */<br />
-            </indent>
-            }<br />
-          </indent>
-          }<br />
-          <br />
-          close (s);<br />
-        </indent>
+      <highlight language="c">
+        void lingering_close (int s)
+        {
+          char junk_buffer[2048];
+
+          /* shutdown the sending side */
+          shutdown (s, 1);
+
+          signal (SIGALRM, lingering_death);
+          alarm (30);
+
+          for (;;) {
+            select (s for reading, 2 second timeout);
+            if (error) break;
+            if (s is ready for reading) {
+              if (read (s, junk_buffer, sizeof (junk_buffer)) &lt;= 0) {
+                break;
+              }
+              /* just toss away whatever is here */
+            }
+          }
+
+          close (s);
         }
-      </example>
+      </highlight>
 
       <p>Bağlantı sonunda bu doğal olarak biraz daha masrafa yol açar, fakat
       güvenilir bir gerçeklenim için bu gereklidir. HTTP/1.1'in daha yaygın
