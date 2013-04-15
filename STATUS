@@ -223,11 +223,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
    * ap_expr: Expression parser: Add the ability to apply a md5 hash to
      strings within the parser.
-     trunk patch: http://svn.apache.org/r1457450
+     trunk patch: http://svn.apache.org/r1458004
      2.4.x patch: trunk patch applies if previous proposals for ap_expr get applied.
      +1: rjung
      minfrin: The above patch is to do with sha1 rather than md5, can you
               confirm?
+     rjung: Sorry I had picked the wrong revision.
+            Fixed now. Thanks for double checking.
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
