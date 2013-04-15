@@ -1850,7 +1850,7 @@ AP_DECLARE(char *) ap_escape_logitem(apr_pool_t *p, const char *str)
     char *ret;
     unsigned char *d;
     const unsigned char *s;
-    int length = 0;
+    apr_size_t length = 0;
 
     if (!str) {
         return NULL;
