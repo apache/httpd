@@ -5,7 +5,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Kimlik Doğrulama, Yetkilendirme ve Erişim Denetimi - Apache HTTP Sunucusu</title>
+<title>Kimlik Doğrulama ve Yetkilendirme - Apache HTTP Sunucusu</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -19,7 +19,7 @@
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.4</a> &gt; <a href="./">Nasıllar ve Öğreticiler</a></div><div id="page-content"><div id="preamble"><h1>Kimlik Doğrulama, Yetkilendirme ve Erişim Denetimi</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.4</a> &gt; <a href="./">Nasıllar ve Öğreticiler</a></div><div id="page-content"><div id="preamble"><h1>Kimlik Doğrulama ve Yetkilendirme</h1>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../en/howto/auth.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/howto/auth.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
@@ -27,7 +27,6 @@
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/auth.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Kimlik Doğrulama istediğiniz kişileri teyid etme işlemidir.
       Yetkilendirme ise kişilerin nereye gireceklerine ve hangi bilgiye
@@ -140,9 +139,8 @@
     <p>Kimlik doğrulamadan sözettiğimize göre, aşağıda gösterilen
     şekilde bir <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> yönergesine ihtiyacınız olacaktır:</p>
 
-    <div class="example"><p><code>
-      AllowOverride AuthConfig
-    </code></p></div>
+    <pre class="prettyprint lang-config">AllowOverride AuthConfig</pre>
+
 
     <p>Yönergeleri doğrudan ana sunucunun yapılandırma dosyasına
     koyacaksanız bu dosyaya yazma izniniz olmalıdır.</p>
@@ -214,14 +212,15 @@
     veya <code>httpd.conf</code> içindeki &lt;Directory
     /usr/local/apache/htdocs/secret&gt; bölümüne koyabilirsiniz.</p>
 
-    <div class="example"><p><code>
-      AuthType Basic<br />
-      AuthName "Gizli Dosyalar"<br />
-      # (Aşağıdaki satırın kullanımı isteğe bağlıdır)<br />
-      AuthBasicProvider file<br />
-      AuthUserFile /usr/local/apache/passwd/passwords<br />
-      Require user umut
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+AuthType Basic
+AuthName "Gizli Dosyalar"
+# (Aşağıdaki satırın kullanımı isteğe bağlıdır)
+AuthBasicProvider file
+AuthUserFile /usr/local/apache/passwd/passwords
+Require user umut
+    </pre>
+
 
     <p>Bu yönergeleri tek tek inceleyelim.
     <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code> yönergesi
@@ -271,8 +270,9 @@
     dosyasında depolama özelliğine de sahiptir. Bu amaçla,
     <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> modülünün
     <code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code>
-    yönergesi kullanılabilir. Bu dosyalar <code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code>
-    programı ile oluşturulabilir ve değiştirilebilir.  <a href="http://modules.apache.org/">Apache modülleri
+    yönergesi kullanılabilir. Bu dosyalar <code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code> ve
+    <code class="program"><a href="../programs/htdbm.html">htdbm</a></code> programı ile oluşturulabilir ve değiştirilebilir.
+    <a href="http://modules.apache.org/">Apache modülleri
     Veritabanı</a> içindeki üçüncü parti modüllerinde çok sayıda
     başka kimlik doğrulama türü de vardır.</p>
 
@@ -315,18 +315,20 @@
     (Yeni bir parola dosyası oluşturmak için <code>-c</code> seçeneği
     kullanılır).</p>
 
-    <p>Şimdi, <code>.htaccess</code> dosyanızı aşağıda görüldüğü şekilde
-    değiştirebilirsiniz:</p>
+    <p>Şimdi, <code>.htaccess</code> dosyanızı veya
+    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> bölümünüzü
+    aşağıda görüldüğü şekilde değiştirebilirsiniz:</p>
 
-    <div class="example"><p><code>
-      AuthType Basic<br />
-      AuthName "Davete Binaen"<br />
-      # Satır isteğe bağlıdır:<br />
-      AuthBasicProvider file<br />
-      AuthUserFile /usr/local/apache/passwd/passwords<br />
-      AuthGroupFile /usr/local/apache/passwd/groups<br />
-      Require group Grupismi
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+AuthType Basic
+AuthName "Davete Binaen"
+# Satır isteğe bağlıdır:
+AuthBasicProvider file
+AuthUserFile /usr/local/apache/passwd/passwords
+AuthGroupFile /usr/local/apache/passwd/groups
+Require group Grupismi
+    </pre>
+
 
     <p>Artık, <code>Grupismi</code> gurubunda listelenmiş ve
     <code>password</code> dosyasında kaydı olan kişiye, parolayı doğru
@@ -336,19 +338,13 @@
     yol daha mevcuttur. Bir gurup dosyası oluşturmaktansa, şu yönergeyi
     kullanabilirsiniz:</p>
 
-    <div class="example"><p><code>
-      Require valid-user
-    </code></p></div>
+    <pre class="prettyprint lang-config">Require valid-user</pre>
+
 
     <p><code>Require user umut</code> satırı ile parola dosyasında
     listelenmiş ve parolayı doğru olarak giren herhangi bir kişiye izin
     vermektense, her grup için ayrı bir parola dosyası tutarak grup
-    davranışını taklit edebilirsiniz. Bu yaklaşımın getirisi:
-    Apache iki dosya yerine sadece bir dosyaya bakar.
-    Götürüsü ise parola dosyalarından oluşan bir dosya demeti sağlamak
-    ve <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>
-    yönergesinde doğru dosyayı belirtmeyi unutmamak zorunda
-    kalmanızdır.</p>
+    davranışını taklit edebilirsiniz.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -382,19 +378,18 @@
     <code><code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> file</code> yerine, <code>dbm</code>
     veya <code>dbd</code> kullanabilirsiniz.</p>
 
-    <p>Bir metin dosyası yerine bir dbd dosyası kullanım örneği:</p>
+    <p>Bir metin dosyası yerine bir dbm dosyası kullanım örneği:</p>
 
-    <div class="example"><p><code>
-    &lt;Directory /www/docs/private&gt;<br />
-    <span class="indent">
-    AuthName "Private"<br />
-    AuthType Basic<br />
-    AuthBasicProvider dbm<br />
-    AuthDBMUserFile /www/passwords/passwd.dbm<br />
-    Require valid-user<br />
-  </span>
-    &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Directory /www/docs/private&gt;
+    AuthName "Private"
+    AuthType Basic
+    AuthBasicProvider dbm
+    AuthDBMUserFile /www/passwords/passwd.dbm
+    Require valid-user
+&lt;/Directory&gt;
+    </pre>
+
 
     <p>Başka seçenekler de mümkündür. Ayrınılar için
     <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> belgesine başvurun.</p>
@@ -410,18 +405,17 @@
     örnekte dosya ve LDAP tabanlı kimlik doğrulama tedarikçileri bir
     arada kullanılmıştır.</p>
 
-    <div class="example"><p><code>
-    &lt;Directory /www/docs/private&gt;<br />
-    <span class="indent">
-    AuthName "Private"<br />
-    AuthType Basic<br />
-    AuthBasicProvider file ldap<br />
-    AuthUserFile /usr/local/apache/passwd/passwords<br />
-    AuthLDAPURL ldap://ldaphost/o=yourorg<br />
-    Require valid-user<br />
-    </span>
-    &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Directory /www/docs/private&gt;
+    AuthName "Private"
+    AuthType Basic
+    AuthBasicProvider file ldap
+    AuthUserFile /usr/local/apache/passwd/passwords
+    AuthLDAPURL ldap://ldaphost/o=yourorg
+    Require valid-user
+&lt;/Directory&gt;
+    </pre>
+
 
     <p>Bu örnekte dosya tedarikçisi, ilk olarak kullanıcının kimliğini
     doğrulamaya teşebbüs edecektir. Kullanıcının kimliği
@@ -436,20 +430,19 @@
     dosya için hem dosyalı hem de LDAP grup kimlik doğrulaması
     kullanılmıştır.</p>
 
-    <div class="example"><p><code>
-    &lt;Directory /www/docs/private&gt;<br />
-    <span class="indent">
-    AuthName "Private"<br />
-    AuthType Basic<br />
-    AuthBasicProvider file<br />
-    AuthUserFile /usr/local/apache/passwd/passwords<br />
+    <pre class="prettyprint lang-config">
+&lt;Directory /www/docs/private&gt;
+    AuthName "Private"
+    AuthType Basic
+    AuthBasicProvider file
+    AuthUserFile /usr/local/apache/passwd/passwords
     AuthLDAPURL ldap://ldaphost/o=yourorg
-    AuthGroupFile /usr/local/apache/passwd/groups<br />
-    Require group GroupName<br />
-    Require ldap-group cn=mygroup,o=yourorg<br />
-    </span>
-    &lt;/Directory&gt;
-    </code></p></div>
+    AuthGroupFile /usr/local/apache/passwd/groups
+    Require group GroupName
+    Require ldap-group cn=mygroup,o=yourorg
+&lt;/Directory&gt;
+    </pre>
+
 
     <p>Kimlik doğrulama konusunu biraz daha genişletirsek, <code class="directive"><a href="../mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code> ve
     <code class="directive"><a href="../mod/mod_authz_core.html#requireany">&lt;RequireAny&gt;</a></code> gibi yetkilendirme taşıyıcısı
@@ -515,16 +508,14 @@
       çağırılacak yetkilendirme tedarikçilerini kayda geçirir. Örneğin:
       </p>
 
-      <div class="example"><p><code>
-        Require ip <var>adres</var>
-      </code></p></div>
+      <pre class="prettyprint lang-config">Require ip <var>adres</var></pre>
+
 
       <p>Burada, <var>adres</var> bir IP adresidir (veya kısmi bir IP
         addresidir)</p>
 
-      <div class="example"><p><code>
-        Require host <var>alan_adı</var>
-      </code></p></div>
+      <pre class="prettyprint lang-config">Require host <var>alan_adı</var></pre>
+
 
       <p>Burada, <var>alan_adı</var> bir tam nitelikli alan adıdır
       (ya da kısmi alan adıdır); gerekirse çok sayıda alan adı veya IP
@@ -534,51 +525,45 @@
       tutmak istediğinizi varsayalım. Bu kişiyi uzak tutmak için şunları
       yapabilirsiniz:</p>
 
-      <div class="example"><p><code>
-        &lt;RequireAll&gt;
-        <span class="indent">
-          Require all granted<br />
-          Require not ip 10.252.46.165
-        </span>
-        &lt;/RequireAll&gt;
-      </code></p></div>
+        <pre class="prettyprint lang-config">
+&lt;RequireAll&gt;
+    Require all granted
+    Require not ip 10.252.46.165
+&lt;/RequireAll&gt;
+        </pre>
+
 
       <p>Bu adresden gelen ziyaretçiler bu yönergedeki içeriği
       göremeyeceklerdir. Bunun yerine, elinizde IP adresi değil de
       makine adı varsa şunu kullanabilirsiniz:</p>
 
-      <div class="example"><p><code>
-        &lt;RequireAll&gt;
-        <span class="indent">
-          Require all granted<br />
-          Require not host <var>host.example.com</var>
-        </span>
-        &lt;/RequireAll&gt;
-      </code></p></div>
+        <pre class="prettyprint lang-config">
+&lt;RequireAll&gt;
+    Require all granted
+    Require not host host.example.com
+&lt;/RequireAll&gt;
+        </pre>
+
 
       <p>Eğer alan adının tamanıdan gelecek olan bütün erişimleri
       engellemek isterseniz adresin ya da alan adının bir parçasını
       belirtin:</p>
 
-      <div class="example"><p><code>
-        &lt;RequireAll&gt;
-        <span class="indent">
-          Require all granted<br />
-          &lt;RequireNone&gt;
-          <span class="indent">
-            Require ip 192.168.205<br />
-            Require host phishers.example.com moreidiots.example<br />
-            Require host ke
-          </span>
-          &lt;/RequireNone&gt;
-        </span>
-        &lt;/RequireAll&gt;
-      </code></p></div>
+        <pre class="prettyprint lang-config">
+&lt;RequireAll&gt;
+    Require all granted
+    Require not ip 192.168.205
+    Require not host phishers.example.com moreidiots.example
+    Require not host ke
+&lt;/RequireAll&gt;
+        </pre>
 
-      <p>Yukarıdaki örnekte, <code class="directive"><a href="../mod/mod_authz_core.html#requirenone">&lt;RequireNone&gt;</a></code> yönergesi içindeki
-      <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
-      yönergelerinin değiştirgeleriyle hiçbir bir eşleşme olmaması
-      durumunda erişime izin verilir.</p>
+
+        <p><code class="directive"><a href="../mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code> yönergesini çok sayıda
+        <code class="directive"><a href="../mod/mod_authz_core.html#require">&lt;Require&gt;</a></code> yönergesi ile birlikte kullanarak,
+        sadece <code>not</code> ile olumsuzlanan tüm koşulları gerçekleyen
+        bağlantılara erişim verilir. Başka bir deyişle, olumsuzlanan koşulları
+        gerçeklemeyen bağlantıların erişimi engellenir.</p>
 
     
 
