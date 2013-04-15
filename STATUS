@@ -90,13 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * ap_expr: Expression parser: Add the ability to base64 encode and base64
-    decode strings within the parser.
-    trunk patch: http://svn.apache.org/r1457437
-                 http://svn.apache.org/r1457520
-    2.4.x patch: trunk patch applies.
-    +1: minfrin, druggeri, rjung
-
    * util_filter: Add in ap_remove_input|output_filter_byhandle()
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1458456
     2.4.x patch: trunk patch works modulo ap_mmn.h
