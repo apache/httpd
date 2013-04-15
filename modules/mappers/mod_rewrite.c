@@ -1255,7 +1255,7 @@ static char *lookup_map_txtfile(request_rec *r, const char *file, char *key)
         }
 
         /* jump to the value */
-        while (*p && apr_isspace(*p)) {
+        while (apr_isspace(*p)) {
             ++p;
         }
 

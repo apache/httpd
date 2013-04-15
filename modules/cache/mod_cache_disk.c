@@ -841,7 +841,7 @@ static apr_status_t read_table(cache_handle_t *handle, request_rec *r,
         }
 
         *l++ = '\0';
-        while (*l && apr_isspace(*l)) {
+        while (apr_isspace(*l)) {
             ++l;
         }
 
