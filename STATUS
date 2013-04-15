@@ -290,19 +290,19 @@ PATCHES/ISSUES THAT ARE STALLED
      -1: kbrand
      druggeri note: Needs docs for new directive
      kbrand: depends on an unreleased OpenSSL version (1.0.2), and
-             RFC 5878 is of "Category: Experimental". Seems premature
-             to me to consider for backporting to 2.4/2.2 at this point.
+             RFC 5878 is of "Category: Experimental".
              The API in the OpenSSL implementation from May 2012
              (http://cvs.openssl.org/chngview?cn=22601) only covers the
              privately-defined TLSEXT_AUTHZDATAFORMAT_audit_proof, there's
              no support for x509_attr_cert (section 3.3.1 in RFC 5878) or
              saml_assertion (3.3.2). SSL_CTX_use_authz_file doesn't have
              any docs in OpenSSL, either, and there's no "openssl foo ..."
-             command or similar to create/manage such files. Trunk is
-             the right place where it can grow.
-             Finally, httpd-2.4-rfc5878.patch includes a build-system change
-             which is unrelated to this feature (see separate proposal from
-             rjung below, ssl-support-uninstalled-openssl-2_4.patch).
+             command or similar to create/manage such files.
+             Additionally, httpd-2.4-rfc5878.patch includes a build-system
+             change which is unrelated to this feature.
+             Note: as of 2013-04-15, r1352596 has been reverted in trunk
+             (with r1468131), for the reasons explained in the message with id
+             <515FED7C.5010009@velox.ch> sent to the dev list on 2013-04-06.
      ben: not correct that it depends on OpenSSL 1.0.2, it builds with
           any version. Also, if you read my note to dev@ you will see
           why it is not premature.
