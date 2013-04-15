@@ -2,6 +2,12 @@
  
 Changes with Apache 2.4.5
 
+  *) ap_expr: Add the ability to base64 encode and base64 decode
+     strings and to generate their SHA1 hash.  [Graham Leggett]
+
+  *) mod_log_config: Fix crash when logging request end time for a failed
+     request.  PR 54828 [Rainer Jung]
+
   *) mod_ssl: Quiet FIPS mode weak keys disabled and FIPS not selected emits
      in the error log to debug level.  [William Rowe]
 
