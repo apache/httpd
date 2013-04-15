@@ -37,7 +37,7 @@
 
 <section id="features"><title>Features</title>
 
-    Definition of a macro:
+ <p>Definition of a macro:</p>
     <ul>
     <li> macro definition within a &lt;Macro&gt; section, following
          the apache style.</li>
@@ -69,7 +69,7 @@
          backslash-continued independent lines.</p></li>
     </ul>
 
-    Use of a macro:
+    <p>Use of a macro:</p>
     <ul>
     <li> number of arguments must match the definition.</li>
     <li> all occurences of macro parameters are substituted by their values.</li>
@@ -82,10 +82,10 @@
     <li> <code>@</code>-prefixed parameters are escaped in quotes.</li>
     </ul>
 
-   Removal of a macro definition:
+   <p>Removal of a macro definition:</p>
    <ul>
    <li> the macro must be already defined.</li>
-   </ul>
+ </ul>
 
     <highlight language="config">
 &lt;Macro DirGroup $dir $group&gt;
@@ -164,7 +164,7 @@ Use LocalAccessPolicy
 Use RestrictedAccessPolicy "192.54.172.0/24 192.54.148.0/24"
     </highlight>
 
-    is equivalent, with the macros defined above, to:
+    <p>is equivalent, with the macros defined above, to:</p>
 
     <highlight language="config">
 order deny,allow
