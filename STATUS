@@ -206,9 +206,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
    * tune ap_escape_logitem to avoid waste of memory
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1461869
+                  http://svn.apache.org/viewvc?view=revision&revision=1468089
      2.4.x patch: trunk patch works (with some offset)
      +1: jailletc36
      -0: jorton: nitpick, using (signed) int to count string length doesn't look good!
+     jailletc36: done in 1468089
 
    * mod_ssl: Catch missing, mismatched or encrypted client cert/key pairs
     with SSLProxyMachineCertificateFile/Path directives. PR 52212, PR 54698.
