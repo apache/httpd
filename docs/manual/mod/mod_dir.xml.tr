@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1326759:1421892 (outdated) -->
+<!-- English Revision: 1421892 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -76,9 +76,9 @@
       dönecektir. Eğer özkaynakların hiçbiri yoksa ve <code>Indexes</code>
       seçeneği atanmışsa sunucu dizin içeriğinden bir liste üretecektir.</p>
 
-    <example><title>Örnek:</title>
-      DirectoryIndex index.html
-    </example>
+    <highlight language="config">
+DirectoryIndex index.html
+    </highlight>
 
     <p>Bu yapılandırmadan sonra yapılan bir
       <code>http://sunucum/belgeler/</code> isteğine karşılık, sunucu,
@@ -87,9 +87,9 @@
 
     <p>Belgelerin dizine göreli olmasının gerekmediğine dikkat ediniz.</p>
 
-    <example>
-      DirectoryIndex index.html index.txt  /cgi-bin/index.pl
-    </example>
+    <highlight language="config">
+DirectoryIndex index.html index.txt  /cgi-bin/index.pl
+    </highlight>
 
     <p>Bu örnekte ise dizin içinde ne <code>index.html</code> ne de
       <code>index.txt</code> mevcut olduğunda <code>/cgi-bin/index.pl</code>
@@ -97,9 +97,34 @@
 
     <p><code>disabled</code> değeri tek başına <module>mod_dir</module>’in bir
       dizin listesi aramasını engeller. <code>disabled</code> değiştirgesi
-      öncesinde ve sonrasında başka bir değiştirge hatta bir <code>disabled</code>
-      daha olsa bile tek başına <code>disabled</code> verilmiş gibi
-      yorumlanır.</p>
+      öncesinde ve sonrasında başka bir değiştirge hatta bir
+      <code>disabled</code> daha olsa bile sadece bir <code>disabled</code>
+      verilmiş gibi yorumlanır.</p>
+    <p><strong>Bilginize:</strong> <a href="../sections.html"><em>Aynı
+      bağlamdaki</em></a> çok sayıda <directive>DirectoryIndex</directive>
+      yönergesi bir öncekini değiştirmek yerine onun bulunduğu listeye
+      eklenir:</p>
+    <highlight language="config">
+# 1. örnek: İçerik dosyası olarak index.html atayıp sonraki satırda buna
+# index.php'yi ekleyebilirsiniz.
+&lt;Directory /foo&gt;
+    DirectoryIndex index.html
+    DirectoryIndex index.php
+&lt;/Directory&gt;
+
+# 2. Örnek: Atamaların tet bir satırda yapıldığı bu örnek 1. örneğe denktir.
+&lt;Directory /foo&gt;
+    DirectoryIndex index.html index.php
+&lt;/Directory&gt;
+
+# 3. Örnek: Listeyi tamamen değiştirmek için, listeyi önce sıfırlamalısınız:
+# Bu örnekte içerik dosyası olarak listede sadece index.php kalır.
+&lt;Directory /foo&gt;
+    DirectoryIndex index.html
+    DirectoryIndex disabled
+    DirectoryIndex index.php
+&lt;/Directory&gt;
+    </highlight>
 
 </usage>
 </directivesynopsis>
@@ -124,9 +149,9 @@
       <directive>DirectoryIndexRedirect</directive> ise harici bir
       yönlendirmeye sebep olur.</p>
 
-    <example><title>Örnek</title>
-      DirectoryIndexRedirect on
-    </example>
+    <highlight language="config">
+DirectoryIndexRedirect on
+    </highlight>
 
     <p><code>http://example.com/docs/</code> için yapılan bir istek, <code
       >http://example.com/docs/index.html</code> (mevcutsa) adresine geçici bir
@@ -143,7 +168,6 @@
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Indexes</override>
-<compatibility>Apache 2.0.51 ve sonrasında mevcuttur.</compatibility>
 
 <usage>
     <p><directive>DirectorySlash</directive> yönergesi, bir dizin isteğinde
@@ -170,15 +194,13 @@
       yaparken dikkatli olun, bununla ilgili bazı güvenlik sorunları olasılığı
       vardır.</p>
 
-    <example>
-        # Aşağıdaki güvenlik uyarısına bakınız!<br />
-        &lt;Location /bir/yol&gt;<br />
-        <indent>
-            DirectorySlash Off<br />
-            SetHandler bir-eylemci<br />
-        </indent>
-        &lt;/Location&gt;
-    </example>
+    <highlight language="config">
+# Aşağıdaki güvenlik uyarısına bakınız!<br />
+&lt;Location /bir/yol&gt;<br />
+  DirectorySlash Off<br />
+  SetHandler bir-eylemci<br />
+&lt;/Location&gt;
+    </highlight>
 
     <note type="warning"><title>Güvenlik Uyarı</title>
     <p>Bölü çizgisi ile biten yönlendirmelerin kapatılması bir bilginin
@@ -200,19 +222,20 @@
 <name>FallbackResource</name>
 <description>Bir dosya ile eşleşmeyen istekler için öntanımlı URL tanımlar
 </description>
-<syntax>FallbackResource <var>yerel-url</var></syntax>
+<syntax>FallbackResource disabled | <var>yerel-url</var></syntax>
 <default>None - httpd 404 döndürecektir (Yok)</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Indexes</override>
+<compatibility><code>disabled</code> değiştirgesi 2.4.4 sürümü ve sonrasında kullanılabilmektedir.</compatibility>
 <usage>
     <p>Dosya sisteminde bulunmayan bir dosya için istek yapıldığında HTTP'nin
       404 (Yok) hatasını döndürmemesi için sunulacak dosyanın yolunu tanımlar.
       Örnek:</p>
 
-    <example>
-        <code>FallbackResource /not-404.php</code>
-    </example>
+    <highlight language="config">
+FallbackResource /not-404.php
+    </highlight>
 
     <p>Bu satırla, (mevcut dosyaları etkilemeden) mevcut olmayan dosyaların
       yerine <code>not-404.php</code> dosyası sunulacaktır.</p>
@@ -226,23 +249,24 @@
       <code>-d</code> kullanımı gerekirdi. Bunun için şimdi tek satırlık bir
       yapılandırma yeterli olmaktadır.</p>
 
-    <example>
-        <code>FallbackResource /index.php</code>
-    </example>
+    <highlight language="config">
+FallbackResource /index.php
+    </highlight>
 
     <p>Resim, CSS dosyaları gibi mevcut dosyalar normal olarak sunulur.</p>
 
+    <p>Üst dizinden hiçbir şeyin miras alınmaması isteniyorsa bu özelliği
+        kapatmak için <code>disabled</code> değiştirgesini kullanın.</p>
+
     <p><em>http://example.com/blog/</em> gibi bir alt URI <var>yerel-url</var>
       olarak sağlanır:</p>
-    <example>
-         <code>
-             &lt;Directory /web/example.com/htdocs/blog&gt;<br />
-            <indent>
-                  FallbackResource /blog/index.php<br />
-             </indent>
-             &lt;/Directory&gt;
-         </code>
-    </example>
+
+    <highlight language="config">
+&lt;Directory /web/example.com/htdocs/blog&gt;
+  FallbackResource /blog/index.php
+&lt;/Directory&gt;
+    </highlight>
+
 </usage>
 </directivesynopsis>
 </modulesynopsis>

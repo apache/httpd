@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1174747:1334016 (outdated) -->
+<!-- English Revision: 1334016 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -79,9 +79,9 @@ etmek için kullanılır.</description>
       modüllerinde kullanılmak üzere bir dahili ortam değişkeni tanımlanmasını
       sağlar.</p>
 
-    <example><title>Örnek</title>
-      SetEnv SPECIAL_PATH /foo/bin
-    </example>
+    <highlight language="config">
+SetEnv SPECIAL_PATH /foo/bin
+    </highlight>
 
     <note><p>Bu yönerge tarafından atanan dahili ortam değişkenleri, en başta
       işleme sokulan, ereşem denetimi, URI-dosya ismi eşleştirmesi gibi istek
@@ -108,9 +108,9 @@ etmek için kullanılır.</description>
     <p>CGI betiklerine ve SSI sayfalarına bir daha aktarılmamak üzere bir
       dahili ortam değişkenini siler.</p>
 
-    <example><title>Örnek</title>
-      UnsetEnv LD_LIBRARY_PATH
-    </example>
+    <highlight language="config">
+UnsetEnv LD_LIBRARY_PATH
+    </highlight>
 </usage>
 </directivesynopsis>
 

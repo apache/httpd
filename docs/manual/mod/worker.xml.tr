@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1174747:1414098 (outdated) -->
+<!-- English Revision: 1414098 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -114,14 +114,14 @@ süreçlilik modülü.</description>
     <p><module>worker</module> modülünün öntanımlı süreç-evre yapılandırması
       genelde şöyledir:</p>
 
-    <example>
-      ServerLimit         16<br />
-      StartServers         2<br />
-      MaxRequestWorkers  150<br />
-      MinSpareThreads     25<br />
-      MaxSpareThreads     75<br />
-      ThreadsPerChild     25
-    </example>
+    <highlight language="config">
+ServerLimit         16
+StartServers         2
+MaxRequestWorkers  150
+MinSpareThreads     25
+MaxSpareThreads     75
+ThreadsPerChild     25
+    </highlight>
 
     <p>Unix altında 80. portu dinleyebilmek için ana sürecin root tarafından
       çalıştırılmış olması gerekirse de çocuk süreçler ve evreler Apache

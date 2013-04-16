@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1174747:1334024 (outdated) -->
+<!-- English Revision: 1334024 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -79,15 +79,12 @@
       etkin kılınmak istenirse <code>httpd.conf</code> dosyasına şu satırlar
       eklenebilir:</p>
 
-    <example>
-      &lt;Location /server-status&gt;<br />
-      <indent>
-        SetHandler server-status<br />
-        <br />
-        Require host example.com<br />
-      </indent>
-      &lt;/Location&gt;
-    </example>
+<highlight language="config">
+&lt;Location /server-status&gt;
+    SetHandler server-status
+    Require host example.com
+&lt;/Location&gt;
+</highlight>
 
     <p>Sunucu istatistiklerine tarayıcınızla erişmek isterseniz,
       <code>http://sunucunuzun.ismi.buraya/server-status</code>

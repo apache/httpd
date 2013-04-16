@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1326699:1349158 (outdated) -->
+<!-- English Revision: 1349158 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -47,10 +47,10 @@
         her durumda <code>/cgi-bin/script.pl</code> betiğini <code>
         /usr/local/apache2/cgi-bin/script.pl</code> betiğine eşleyecektir:</p>
 
-      <example>
-        ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/<br />
-        VirtualScriptAlias /nerede/bilinmiyor/%0/cgi-bin/
-      </example>
+      <highlight language="config">
+ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/
+VirtualScriptAlias /nerede/bilinmiyor/%0/cgi-bin/
+      </highlight>
     </note>
 </summary>
 
@@ -127,10 +127,10 @@ Sanal Barındırma</a></seealso>
     <p>Sunucu yapılandırma dosyanızda isme dayalı sanal konaklar için
       aşağıdaki yönergeler kullanılıyor olsun:</p>
 
-    <example>
-      UseCanonicalName    Off<br />
-      VirtualDocumentRoot /usr/local/apache/sankonlar/%0
-    </example>
+    <highlight language="config">
+UseCanonicalName    Off
+VirtualDocumentRoot /usr/local/apache/sankonlar/%0
+    </highlight>
 
     <p><code>http://example.com/dizin/dosya.html</code> için yapılan bir istek
       <code>/usr/local/apache/sankonlar/example.com/dizin/dosya.html</code>
@@ -140,10 +140,10 @@ Sanal Barındırma</a></seealso>
       boyutlarını küçük tutmak amacıyla dosyalar düzenlenebilir. Bunu
       yapılandırma dosyanızda şöyle yapabilirsiniz:</p>
 
-    <example>
-      UseCanonicalName    Off<br />
-      VirtualDocumentRoot /usr/local/apache/sankonlar/%3+/%2.1/%2.2/%2.3/%2
-    </example>
+    <highlight language="config">
+UseCanonicalName    Off
+VirtualDocumentRoot /usr/local/apache/sankonlar/%3+/%2.1/%2.2/%2.3/%2
+    </highlight>
 
     <p><code>http://falan.filan.example.com/dizin/dosya.html</code> için
       yapılan bir istek
@@ -152,9 +152,9 @@ Sanal Barındırma</a></seealso>
 
     <p>Bu sefer de parçaları ismin sonundan toplayalım: </p>
 
-<example>
-    VirtualDocumentRoot /usr/local/apache/sankonlar/%3+/%2.-1/%2.-2/%2.-3/%2
-</example>
+    <highlight language="config">
+VirtualDocumentRoot /usr/local/apache/sankonlar/%3+/%2.-1/%2.-2/%2.-3/%2
+    </highlight>
 
     <p>Bu durumda istek
     <code>/usr/local/apache/sankonlar/example.com/n/a/l/filan/dizin/dosya.html
@@ -162,23 +162,43 @@ Sanal Barındırma</a></seealso>
 
     <p>Şöyle bir şey de yapabilirsiniz:</p>
 
-<example>
-    VirtualDocumentRoot /usr/local/apache/sankonlar/%3+/%2.1/%2.2/%2.3/%2.4+
-</example>
+    <highlight language="config">
+VirtualDocumentRoot /usr/local/apache/sankonlar/%3+/%2.1/%2.2/%2.3/%2.4+
+    </highlight>
 
     <p>Bu örnek için istek
       <code>/usr/local/apache/sankonlar/example.com/f/i/l/an/dizin/dosya.html
       </code> dosyasından karşılanırdı.</p>
 
+    <p>Kullanıcıların çoğunun ortak isteği, istenen konak adının uzunluğu veya
+      sayısı için endişelenmeksizin çok sayıda belge köküne çok sayıda alan
+      adından erişilebilmesidir. Eğer istenen konak adı
+      <code>www.domain.example.com</code> değil de
+      <code>sub.www.domain.example.com</code> ise %3+ kullanımı, belge kök
+      dizininin düşünüldüğü gibi <code>example.com</code> değil
+      <code>/usr/local/apache/vhosts/domain.example.com/...</code> olmasını
+      sağlar. Böyle durumlarda, daima alan adı ve tld ile sonuçlanan
+      <code>%-2.0.%-1.0</code> birleşiminin kullanımı daha yararlı olabilir.
+      Böylece, tüm ilk, ikinci ve üçüncü seviye alt alan adlarını aynı dizine
+      yönlendirecek bir yapılandırma yapılabilir:</p>
+
+    <highlight language="config">
+VirtualDocumentRoot "/usr/local/apache/vhosts/%-2.0.%-1.0"
+    </highlight>
+
+    <p>Yukarıdaki örnekte, <code>example.com</code>,
+      <code>www.example.com</code> ve hatta <code>www.sub.example.com</code>
+      bile <code>/usr/local/apache/vhosts/example.com</code> dizinine
+      yönlendirilecektir.</p>
+
     <p>IP’ye dayalı sanal konaklar için yapılandırma dosyanızda şu satırlar
       olabilirdi:</p>
 
-    <example>
-      UseCanonicalName DNS<br />
-      VirtualDocumentRootIP
-      /usr/local/apache/sankonlar/%1/%2/%3/%4/belgeler<br />
-      VirtualScriptAliasIP  /usr/local/apache/sankonlar/%1/%2/%3/%4/cgi-bin
-    </example>
+    <highlight language="config">
+UseCanonicalName DNS
+VirtualDocumentRootIP /usr/local/apache/sankonlar/%1/%2/%3/%4/belgeler
+VirtualScriptAliasIP  /usr/local/apache/sankonlar/%1/%2/%3/%4/cgi-bin
+    </highlight>
 
     <p><code>http://falan.filan.example.com/dizin/dosya.html</code> için
       yapılan bir istek eğer <code>falan.filan.example.com</code>’un IP adresi
@@ -194,9 +214,9 @@ Sanal Barındırma</a></seealso>
       karakterini içermesini isterseniz, bir biçem belirteci ile karışıklığa
       sebep olmaksızın bunu şöyle sağlayabilirsiniz:</p>
 
-<example>
-    VirtualDocumentRoot /usr/local/apache/sankonlar/%2.0.%3.0
-</example>
+    <highlight language="config">
+VirtualDocumentRoot /usr/local/apache/sankonlar/%2.0.%3.0
+    </highlight>
 
     <p>Bu durumda <code>http://falan.filan.example.com/dizin/dosya.html</code>
       için yapılan bir istek
@@ -233,6 +253,16 @@ Sanal Barındırma</a></seealso>
       >VirtualDocumentRootIP</directive> yönergesinin kullanıldığı bağlamda
       yer alamaz.</p>
 
+    <note type="warning"><title>Bilginize</title>
+      <directive>VirtualDocumentRoot</directive> yönergesi aynı bağlamda veya
+      alt bağlamlarda da kullanılabilen <directive
+      module="core">DocumentRoot</directive> yönergelerini geçersiz kılar.
+      Genel sunucu etki alanına bir <directive>VirtualDocumentRoot</directive>
+      konulması, daha sonra yer alan her sanal konak tanımı içinde
+      <directive>VirtualDocumentRoot</directive> yönergesine <code>None</code>
+      atamadıkça bu sanal konaklarda yapılmış <directive
+      module="core">DocumentRoot</directive> atamalarını geçersiz kılacaktır.
+    </note>
 </usage>
 </directivesynopsis>
 
