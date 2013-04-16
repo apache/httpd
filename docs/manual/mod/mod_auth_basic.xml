@@ -113,7 +113,7 @@ lower level modules</description>
 <name>AuthBasicFake</name>
 <description>Fake basic authentication using the given expressions for
 username and password</description>
-<syntax>AuthBasicFake username password</syntax>
+<syntax>AuthBasicFake off|username [password]</syntax>
 <default>none</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -126,6 +126,10 @@ username and password</description>
     interpreted using the <a href="../expr.html">expression parser</a>,
     which allows both the username and password to be set based on
     request parameters.</p>
+
+    <p>If the password is not specified, the default value "password"
+    will be used. To disable fake basic authentication for an URL
+    space, specify "AuthBasicFake off".</p>
 
     <p>In this example, we pass a fixed username and password to a
     backend server.</p>
@@ -147,7 +151,7 @@ username and password</description>
     <example><title>Certificate Example</title>
     <highlight language="config">
 &lt;Location /secure&gt;
-    AuthBasicFake %{SSL_CLIENT_S_DN_Email} password
+    AuthBasicFake %{SSL_CLIENT_S_DN_Email}
 &lt;/Location&gt;
     </highlight>
     </example>
@@ -161,6 +165,14 @@ username and password</description>
     <highlight language="config">
 &lt;Location /secure&gt;
     AuthBasicFake %{SSL_CLIENT_S_DN_Email} %{sha1:passphrase-%{SSL_CLIENT_S_DN_Email}}
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <example><title>Exclusion Example</title>
+    <highlight language="config">
+&lt;Location /public&gt;
+    AuthBasicFake off
 &lt;/Location&gt;
     </highlight>
     </example>
