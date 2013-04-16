@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1303776:1334008 (outdated) -->
+<!-- English Revision: 1334008 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -194,10 +194,10 @@ yaptığı gibi dizin içeriğini listeler.</description>
       bulunamadığı veya istemci resim gösteremediği takdirde ya da kullanıcı
       resim yüklememeyi tercih etmişse gösterilir.</p>
 
-    <example><title>Örnekler</title>
-      AddAlt "PDF dosya" *.pdf<br />
-      AddAlt Sıkıştırılmış *.gz *.zip *.Z
-    </example>
+    <highlight language="config">
+AddAlt "PDF file" *.pdf
+AddAlt Compressed *.gz *.zip *.Z
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -224,9 +224,9 @@ gösterilecek metni belirler.</description>
       gösteremediği takdirde ya da kullanıcı resim yüklememeyi tercih etmişse
       gösterilir.</p>
 
-    <example><title>Örnek</title>
-      AddAltByEncoding gzip x-gzip
-    </example>
+    <highlight language="config">
+AddAltByEncoding gzip x-gzip
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -252,9 +252,9 @@ metni belirler.</description>
       simge bulunamadığı veya istemci resim gösteremediği takdirde ya da
       kullanıcı resim yüklememeyi tercih etmişse gösterilir.</p>
 
-    <example><title>Örnek</title>
-      AddAltByType 'salt metin' text/plain
-    </example>
+    <highlight language="config">
+AddAltByType 'salt metin' text/plain
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -277,10 +277,10 @@ metni belirler.</description>
       <code><em>metin</em></code> boşluk karakterleri içeriyorsa çift tırnak
       (<code>"</code>) içine alınmalıdır.</p>
 
-    <example><title>Örnek</title>
-      AddDescription "Mars Gezegeni" mars.gif <br/>
-      AddDescription "Dostum Marshall" dostlar/mars.gif
-    </example>
+    <highlight language="config">
+AddDescription "Mars Gezegeni" mars.gif <br/>
+AddDescription "Dostum Marshall" dostlar/mars.gif
+    </highlight>
 
     <p>Normalde öntanımlı açıklama alanının genişliği 23 bayttır. <code><a
       href="#indexoptions.suppressicon" >IndexOptions SuppressIcon</a></code>
@@ -356,11 +356,12 @@ metni belirler.</description>
       dolayısıyla <code>IndexOptions HTMLTable</code> kullanıyorsanız
       gereksizdir.</p>
 
-    <example><title>Örnekler</title>
-      AddIcon (IMG,/icons/image.png) .gif .jpg .png<br />
-      AddIcon /icons/dir.png ^^DIRECTORY^^<br />
-      AddIcon /icons/backup.png *~
-    </example>
+    <highlight language="config">
+#Examples
+AddIcon (IMG,/icons/image.png) .gif .jpg .png
+AddIcon /icons/dir.png ^^DIRECTORY^^
+AddIcon /icons/backup.png *~
+    </highlight>
 
     <p>Mümkünse <directive>AddIcon</directive> yerine <directive
       module="mod_autoindex">AddIconByType</directive> yönergesi tercih
@@ -391,9 +392,9 @@ göre belirler.</description>
     <p><code><em>MIME-kodlaması</em></code> olarak <code>x-compress</code>
       gibi geçerli bir içerik kodlaması belirtilmelidir.</p>
 
-    <example><title>Örnek</title>
-      AddIconByEncoding /icons/compress.png x-compress
-    </example>
+    <highlight language="config">
+AddIconByEncoding /icons/compress.png x-compress
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -421,9 +422,9 @@ belirler.</description>
     <p><var>MIME-türü</var> MIME türleri ile eşleşen bir dosya kalıbı ifadesi
       olabilir.</p>
 
-    <example><title>Örnek</title>
-      AddIconByType (IMG,/icons/image.xbm) image/*
-    </example>
+    <highlight language="config">
+AddIconByType (IMG,/icons/image.png) image/*
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -445,9 +446,9 @@ belirler.</description>
       bir göreli URL (% öncelemeli) veya tam nitelenmiş uzak bir URL
       belirtir.</p>
 
-    <example><title>Örnek</title>
-      DefaultIcon /icon/unknown.png
-    </example>
+    <highlight language="config">
+DefaultIcon /icon/unknown.png
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -466,9 +467,9 @@ belirler.</description>
       yerleştirilecek dosyanın ismini belirler. Dosyanın ismi
       <code><em>dosya-ismi</em></code> ile belirtilir.</p>
 
-    <example><title>Örnek</title>
-      HeaderName HEADER.html
-    </example>
+    <highlight language="config">
+HeaderName HEADER.html
+    </highlight>
 
     <note>
       <p><code>HeaderName</code> and <directive module="mod_autoindex"
@@ -479,9 +480,9 @@ belirler.</description>
         başlıyorsa <directive module="core">DocumentRoot</directive>
         yönergesinde belirtilen dizine göre belirtildiği varsayılır.</p>
 
-      <example><title>Örnek</title>
-        HeaderName /include/HEADER.html
-      </example>
+      <highlight language="config">
+HeaderName /include/HEADER.html
+      </highlight>
 
       <p><code><em>dosya-ismi</em></code>,  içerik türü <code>text/*</code>
         (<code>text/html</code>, <code>text/plain</code> gibi) olan bir belge
@@ -490,9 +491,9 @@ belirler.</description>
         <code><em>dosya-ismi</em></code> bir CGI betiğinin ismi bile
         olabilir:</p>
 
-      <example>
-        AddType text/html .cgi
-      </example>
+      <highlight language="config">
+AddType text/html .cgi
+      </highlight>
 
       <p><directive module="core">Options</directive> ile
         <code>MultiViews</code> etkin kılınmışsa dosyaya <a
@@ -534,9 +535,9 @@ belirler.</description>
       <directive>IndexIgnore</directive> ataması yapabilirsiniz. Liste
       öntanımlı olarak içinde bulunulan dizini (<code>./</code>) içerir.</p>
 
-    <example>
-      IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
-    </example>
+    <highlight language="config">
+IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
+    </highlight>
 
     <note><title>Düzenli İfadeler</title>
       <p>Bu yönerge, <directive module="core" type="section"
@@ -562,15 +563,15 @@ belirler.</description>
       ve <directive>IndexIgnore</directive> tarafından yoksayılan dosyaları
       kaldırır. </p>
 
-    <example>
-      &lt;Directory /var/www&gt;
-      IndexIgnore *.bak .??* *~ *# HEADER* README* RCS CVS *,v *,t
-      &lt;/Directory&gt;
-      &lt;Directory /var/www/backups&gt;
-      IndexIgnoreReset ON
-      IndexIgnore .??* *# HEADER* README* RCS CVS *,v *,t
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory /var/www&gt;
+    IndexIgnore *.bak .??* *~ *# HEADER* README* RCS CVS *,v *,t
+&lt;/Directory&gt;
+&lt;Directory /var/www/backups&gt;
+    IndexIgnoreReset ON
+    IndexIgnore .??* *# HEADER* README* RCS CVS *,v *,t
+&lt;/Directory&gt;
+    </highlight>
 
     <note type="warning"><p>Bu yönergeyi kullandıktan sonra, açıkça yoksaymak
       istediğiniz kalıpların bir listesi için öntanımlı yapılandırmayı gözden
@@ -620,9 +621,9 @@ belirler.</description>
         dosya sisteminin Unicode dosya isimleri kullanıp kullanmamasına
         bağlıdır).
 
-      <example><title>Örnek</title>
-        IndexOptions Charset=UTF-8
-      </example>
+      <highlight language="config">
+IndexOptions Charset=UTF-8
+      </highlight>
       </dd>
 
       <dt><a name="indexoptions.descriptionwidth"
@@ -861,9 +862,9 @@ belirler.</description>
       <dd><code>Type</code> anahtar sözcüğü üretilen sayfanın MIME içerik
         türünün belirtilebilmesini sağlar. <var>text/html</var> öntanımlıdır.
 
-      <example><title>Örnek:</title>
-        IndexOptions Type=text/plain
-      </example>
+      <highlight language="config">
+IndexOptions Type=text/plain
+      </highlight>
       </dd>
       <dt><a name="indexoptions.versionsort"
                id="indexoptions.versionsort"><code>VersionSort</code></a>
@@ -915,21 +916,19 @@ belirler.</description>
         yönergesi belirtilmişse bunlar ayrı ayrı değil birlikte ele alınır.
         Yani,
 
-      <example>
-        &lt;Directory /foo&gt;
-        <indent>
-          IndexOptions HTMLTable<br />
-          IndexOptions SuppressColumnsorting
-        </indent>
-        &lt;/Directory&gt;
-      </example>
+     <highlight language="config">
+&lt;Directory /foo&gt;
+    IndexOptions HTMLTable
+    IndexOptions SuppressColumnsorting
+&lt;/Directory&gt;
+     </highlight>
 
       <p>yapılandırmasındaki <directive>IndexOptions</directive>
         yönergeleri</p>
 
-      <example>
-        IndexOptions HTMLTable SuppressColumnsorting
-      </example>
+     <highlight language="config">
+IndexOptions HTMLTable SuppressColumnsorting
+     </highlight>
 
       <p>yönergesine eşdeğerdir.</p>
       </li>
@@ -945,10 +944,10 @@ belirler.</description>
         miras alınmış bu tür seçenekler iptal edilir. Şu örneği ele
         alalım:</p>
 
-      <example>
-        IndexOptions +ScanHTMLTitles -IconsAreLinks FancyIndexing<br />
-        IndexOptions +SuppressSize
-      </example>
+     <highlight language="config">
+IndexOptions +ScanHTMLTitles -IconsAreLinks FancyIndexing
+IndexOptions +SuppressSize
+     </highlight>
 
       <p>Bunun net etkisi
         <code>IndexOptions FancyIndexing +SuppressSize</code>
@@ -1019,9 +1018,9 @@ Name|Date|Size|Description</syntax>
     <p><directive>IndexStyleSheet</directive> yönergesi dizin listelemesi için
       kullanılacak biçembent dosyasının ismini belirtmek için kullanılır.</p>
 
-    <example><title>Örnek</title>
-      IndexStyleSheet "/css/style.css"
-    </example>
+    <highlight language="config">
+IndexStyleSheet "/css/style.css"
+    </highlight>
 
     <p>Bu yönergenin <code>IndexOptions HTMLTable</code> ile birlikte
       kullanılması sonuçlanan HTML dosyasına bir miktar CSS sınıfı ekler.
@@ -1064,10 +1063,9 @@ Name|Date|Size|Description</syntax>
     <p><directive>IndexHeadInsert</directive> yönergesi, dizin listesi için
     üretilen HTML’nin <var>&lt;head&gt;</var> bölümüne yerleştirilecek bir
     dizge tanımlar.</p>
-    <example>
-      <title>Example</title>
-      IndexHeadInsert "&lt;link rel=\"sitemap\" href=\"/sitemap.html\"&gt;"
-    </example>
+    <highlight language="config">
+IndexHeadInsert "&lt;link rel=\"sitemap\" href=\"/sitemap.html\"&gt;"
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -1089,13 +1087,15 @@ belirler.</description>
       başlıyorsa <directive module="core">DocumentRoot</directive>’a göreli
       belirtildiği varsayılır.</p>
 
-    <example><title>1. Örnek</title>
-      ReadmeName FOOTER.html
-    </example>
+    <highlight language="config">
+# 1. Örnek
+ReadmeName FOOTER.html
+    </highlight>
 
-    <example><title>2. Örnek</title>
-      ReadmeName /include/FOOTER.html
-    </example>
+    <highlight language="config">
+# 2. Örnek
+ReadmeName /include/FOOTER.html
+    </highlight>
 
     <p>Ayrıca bu davranışın daha ayrıntılı ele alındığı <directive
       module="mod_autoindex" >HeaderName</directive> yönergesine de

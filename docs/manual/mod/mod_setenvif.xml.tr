@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1180828:1334024 (outdated) -->
+<!-- English Revision: 1334024 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -47,10 +47,10 @@
       tarayıcı Mozilla ise <code>netscape</code> ortam değişkeni atanmakta,
       MSIE ise atanmamaktadır.</p>
 
-    <example>
-      BrowserMatch ^Mozilla netscape<br />
-      BrowserMatch MSIE !netscape<br />
-    </example>
+    <highlight language="config">
+BrowserMatch ^Mozilla netscape
+BrowserMatch MSIE !netscape
+    </highlight>
 </summary>
 
 <seealso><a href="../env.html">Apache HTTP Sunucusundaki Ortam Değişkenleri</a></seealso>
@@ -72,18 +72,18 @@
     ve ortam değişkenlerine <code>User-Agent</code> HTTP istek başlığının
     değerine göre atama yapar. Aşağıdaki iki satır aynı etkiye sahiptir:</p>
 
-  <example>
-    BrowserMatchNoCase Robot is_a_robot<br />
-    SetEnvIfNoCase User-Agent Robot is_a_robot<br />
-  </example>
+  <highlight language="config">
+BrowserMatchNoCase Robot is_a_robot
+SetEnvIfNoCase User-Agent Robot is_a_robot
+  </highlight>
 
   <p>Başka örnekler:</p>
 
-  <example>
-      BrowserMatch ^Mozilla forms jpeg=yes browser=netscape<br />
-      BrowserMatch "^Mozilla/[2-3]" tables agif frames javascript<br />
-      BrowserMatch MSIE !javascript<br />
-  </example>
+  <highlight language="config">
+BrowserMatch ^Mozilla forms jpeg=yes browser=netscape
+BrowserMatch "^Mozilla/[2-3]" tables agif frames javascript
+BrowserMatch MSIE !javascript
+  </highlight>
 </usage>
 </directivesynopsis>
 
@@ -105,10 +105,10 @@ duyarsız eşleşmelerine bağlı olarak belirler.</description>
       module="mod_setenvif">BrowserMatch</directive> yönergesinin eşdeğeridir.
       Ancak, eşleşmelerde harf büyüklüğüne duyarsızdır. Örnek:</p>
 
-    <example>
-        BrowserMatchNoCase mac platform=macintosh<br />
-        BrowserMatchNoCase win platform=windows<br />
-    </example>
+    <highlight language="config">
+BrowserMatchNoCase mac platform=macintosh
+BrowserMatchNoCase win platform=windows
+    </highlight>
 
     <p><directive>BrowserMatch</directive> ve
       <directive>BrowserMatchNoCase</directive> yönergeleri <directive
@@ -116,10 +116,10 @@ duyarsız eşleşmelerine bağlı olarak belirler.</description>
       module="mod_setenvif">SetEnvIfNoCase</directive> yönergelerinin özel
       halleridir. Bu bakımda aşağıdaki iki satır aynı etkiye sahiptir:</p>
 
-    <example>
-      BrowserMatchNoCase Robot is_a_robot<br />
-      SetEnvIfNoCase User-Agent Robot is_a_robot<br />
-    </example>
+    <highlight language="config">
+BrowserMatchNoCase Robot is_a_robot
+SetEnvIfNoCase User-Agent Robot is_a_robot
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -208,17 +208,17 @@ duyarsız eşleşmelerine bağlı olarak belirler.</description>
       üzere <code><em>value</em></code> içinde <code>$1</code>..<code>$9</code>
       gösterimleri tanınmaktadır.</p>
 
-    <example><title>Örnek:</title>
-      SetEnvIf Request_URI "\.gif$" nesne_bir_resim=gif<br />
-      SetEnvIf Request_URI "\.jpg$" nesne_bir_resim=jpg<br />
-      SetEnvIf Request_URI "\.xbm$" nesne_bir_resim=xbm<br />
-            :<br />
-      SetEnvIf Referer belgeler\.alanismi\.example\.com dahili_site_istendi<br />
-            :<br />
-      SetEnvIf object_is_image xbm XBIT_PROCESSING=1<br />
-            :<br />
-      SetEnvIf ^TS  ^[a-z]  TS_VAR<br />
-    </example>
+    <highlight language="config">
+SetEnvIf Request_URI "\.gif$" nesne_bir_resim=gif
+SetEnvIf Request_URI "\.jpg$" nesne_bir_resim=jpg
+SetEnvIf Request_URI "\.xbm$" nesne_bir_resim=xbm
+
+SetEnvIf Referer belgeler\.alanismi\.example\.com dahili_site_istendi
+
+SetEnvIf object_is_image xbm XBIT_PROCESSING=1
+
+SetEnvIf ^TS  ^[a-z]  TS_VAR
+    </highlight>
 
     <p>İlk üçünde istek bir resim dosyası için yapılmışsa
       <code>nesne_bir_resim</code> ortam değişkeni atanmakta, dördüncüsünde
@@ -253,9 +253,9 @@ belgesinde daha fazla örnek bulunabilir.</seealso>
       değerlendirilirerek <directive>SetEnvIf</directive> yönergesindeki gibi
       <em>ort-değişkeni</em>ne uygulanır.</p>
 
-<example>
-    SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered
-</example>
+    <highlight language="config">
+SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered
+    </highlight>
 
     <p>Burada uygulamamızın her <code>X-Sendfile</code> göndermeye çalışmasında
       ortam değişkenine <code>iso_delivered</code> değeri atanmaktadır.</p>
@@ -263,9 +263,9 @@ belgesinde daha fazla örnek bulunabilir.</seealso>
     <p>Uzak IP adresi RFC 1918'e göre özel bir adres ise rfc1918 değişkenine 1
       atanması daha kullanışlı bir örnek olurdu:</p>
 
-<example>
-    SetEnvIfExpr "-R '10.0.0.0/8' || -R '172.16.0.0/12' || -R '192.168.0.0/16'" rfc1918
-</example>
+    <highlight language="config">
+SetEnvIfExpr "-R '10.0.0.0/8' || -R '172.16.0.0/12' || -R '192.168.0.0/16'" rfc1918
+    </highlight>
 </usage>
 
 <seealso><a href="../expr.html">Expressions in Apache HTTP Server</a>,
@@ -293,9 +293,9 @@ bağlı olmaksızın yapılmış tanımlara göre atar.</description>
       yönergesinin eşdeğeridir. Ancak, eşleşmelerde harf büyüklüğüne
       duyarsızdır. Örnek:</p>
 
-    <example>
-      SetEnvIfNoCase Host Example\.Org site=example
-    </example>
+    <highlight language="config">
+SetEnvIfNoCase Host Example\.Org site=example
+    </highlight>
 
     <p>Burada, <code>Host:</code> HTTP istek başlığında
       <code>Example.Org</code>, <code>example.org</code> veya harf büyüklüğünce

@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1326765:1448589 (outdated) -->
+<!-- English Revision: 1448589 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -98,7 +98,6 @@
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>event</module><module>prefork</module>
 <module>worker</module></modulelist>
-<compatibility>Sürüm 2.0.49 ve sonrasında mevcuttur</compatibility>
 
 <usage>
     <p>Güvenlik sebebiyle bu yönerge sadece Apache
@@ -110,7 +109,7 @@
     <p>Bu kancayı kullanan iki modül (<code>mod_whatkilledus</code> ve
     <code>mod_backtrace</code>) zaten vardır. bunlar hakkında daha fazla bilgi
       edinmek için Jeff Trawick'in <a
-      href="http://www.apache.org/~trawick/exception_hook.html"
+      href="http://people.apache.org/~trawick/exception_hook.html"
       >EnableExceptionHook site</a>sine bakabilirsiniz.</p>
 </usage>
 </directivesynopsis>
@@ -154,9 +153,9 @@
       module="core">ServerRoot</directive> dizinine göre belirtildiği kabul
       edilir.</p>
 
-    <example><title>Örnek</title>
-      PidFile /var/run/apache.pid
-    </example>
+    <highlight language="config">
+PidFile /var/run/apache.pid
+    </highlight>
 
     <p>Sunucuya sinyal gönderebilmek çoğunlukla işe yarar. Böylece <directive
       module="core">ErrorLog</directive> ve <directive
@@ -187,8 +186,7 @@
 <module>mpmt_os2</module><module>perchild</module>
 <module>prefork</module><module>worker</module><module>event</module>
 </modulelist>
-<compatibility>Apache HTTP Sunucusu 2.0’dan beri gerekli yönergelerden
-    biridir.<br/><var>protokol</var> değiştirgesi 2.1.5 sürümünde
+<compatibility><var>protokol</var> değiştirgesi 2.1.5 sürümünde
     eklenmiştir.</compatibility>
 
 <usage>
@@ -214,25 +212,25 @@
     <p>Örneğin sunucunun hem port 80 hem de port 8000’den istek kabul etmesini
       istiyorsanız bunu şöyle belirtebilirsiniz:</p>
 
-    <example>
-      Listen 80<br />
-      Listen 8000
-    </example>
+    <highlight language="config">
+Listen 80
+Listen 8000
+    </highlight>
 
     <p>Sunucunun belirtilen iki ağ arabiriminden ve port numarasından gelen
       bağlantıları kabul etmesi için şu yapılandırmayı kullanabilirsiniz:</p>
 
-    <example>
-      Listen 192.170.2.1:80<br />
-      Listen 192.170.2.5:8000
-    </example>
+    <highlight language="config">
+Listen 192.170.2.1:80
+Listen 192.170.2.5:8000
+    </highlight>
 
     <p>IPv6 adresleri belirtilirken örnekteki gibi köşeli ayraçlar arasına
       alınmalıdır:</p>
 
-    <example>
-      Listen [2001:db8::a00:20ff:fea7:ccea]:80
-    </example>
+    <highlight language="config">
+Listen [2001:db8::a00:20ff:fea7:ccea]:80
+    </highlight>
 
     <p>İsteğe bağlı <var>protocol</var> argümanı çoğu yapılandırmada gerekli
       değildir. Belirtilmediği takdirde. port 443 için <code>https</code> ve
@@ -246,9 +244,9 @@
       <code>https</code> sitesi çalıştırmak istiyorsanız bunu şöyle
       belirtebilirsiniz:</p>
 
-    <example>
-      Listen 192.170.2.1:8443 https
-    </example>
+    <highlight language="config">
+Listen 192.170.2.1:8443 https
+    </highlight>
 
     <note><title>Hata durumu</title>
       Aynı IP adresi ve portun çok sayıda <directive>Listen</directive>
@@ -467,7 +465,7 @@ açıklaması</a></seealso>
 <description>Çocuk süreçler için eşgüdüm verisini saklamakta kullanılan
   dosyanın yerini belirler.</description>
 <syntax>ScoreBoardFile <var>dosya-yolu</var></syntax>
-<default>ScoreBoardFile logs/apache_status</default>
+<default>ScoreBoardFile logs/apache_runtime_status</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>event</module><module>mpm_winnt</module>
 <module>prefork</module><module>worker</module></modulelist>
@@ -482,9 +480,9 @@ açıklaması</a></seealso>
       eşlemli dosya kullanarak). Bu yönergenin belirtilmesi Apache httpd'nin
       dosyayı daima diskte oluşturmasına sebep olur.</p>
 
-    <example><title>Örnek</title>
-      ScoreBoardFile /var/run/apache_status
-    </example>
+    <highlight language="config">
+ScoreBoardFile /var/run/apache_status
+    </highlight>
 
     <p>Paylaşımlı belleğe eşlemli dosya, çeteleye doğrudan erişmesi gereken
       üçüncü parti uygulamalar için yararlıdır.</p>
@@ -673,8 +671,6 @@ açıklaması</a></seealso>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>event</module><module>mpm_winnt</module>
 <module>worker</module></modulelist>
-<compatibility><module>mpm_winnt</module> için Apache HTTP Sunucusu 2.0.41 ve
-    sonrasında kullanılabilmektedir.</compatibility>
 
 <usage>
     <p>Bu yönerge, Apache httpd sürecinin ömrü boyunca <directive
@@ -702,7 +698,8 @@ açıklaması</a></seealso>
     <note><title>Ek Bilgi</title>
       <p>Sunucu içinde derlenmiş olarak <code>ThreadLimit 20000</code>
         şeklinde bir zorlayıcı sınır vardır (<module>mpm_winnt</module> için
-        15000’dir). Bu önlem, yazım hatalarının istenmeyen sonuçlara yol
+        15000, <module>event</module> için <code>ThreadLimit 100000</code>).
+        Bu önlem, yazım hatalarının istenmeyen sonuçlara yol
         açmasını engellemek için düşünülmüştür. Bu sınırı daha da arttırmak
         için mpm kaynak dosyasındaki MAX_SERVER_LIMIT değerini değiştirip
         sunucuyu yeniden derlemeniz gerekir.</p>

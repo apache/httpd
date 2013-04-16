@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1326770:1422376 (outdated) -->
+<!-- English Revision: 1422376 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -88,10 +88,10 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</description>
       olabilmesi için en uzun yolu sıralamada en öne almalısınız. Örneğin
       aşağıdaki yapılandırma beklendiği gibi çalışacaktır:</p>
 
-    <example>
-    Alias /foo/bar /baz<br />
-    Alias /foo /gaz
-    </example>
+    <highlight language="config">
+Alias /foo/bar /baz
+Alias /foo /gaq
+    </highlight>
 
     <p>Ama yukarıdaki iki satır ters sırada yerleştirilmiş olsaydı,
       <code>/foo</code> rumuzu  daima <code>/foo/bar</code> rumuzundan önce
@@ -117,9 +117,9 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</description>
       harf büyüklüğüne duyarsız sistemlerde bile harf büyüklüğüne
       duyarlıdır.</p>
 
-    <example><title>Örnek:</title>
-      Alias /image /ftp/pub/image
-    </example>
+    <highlight language="config">
+Alias /image /ftp/pub/image
+    </highlight>
 
     <p><code>http://example.com/image/foo.gif</code> şeklinde bir istek,
       sunucunun <code>/ftp/pub/image/foo.gif</code> dosyasıyla yanıt vermesine
@@ -155,14 +155,15 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</description>
       bir dizine bir <directive>Alias</directive> oluşturuyorsanız hedef
       dizine doğrudan erişim izni vermeniz gerekebilir.</p>
 
-    <example><title>Örnek:</title>
-        Alias /image /ftp/pub/image<br />
-        &lt;Directory /ftp/pub/image&gt;<br />
-        <indent>
-            Require all granted<br />
-        </indent>
-        &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+Alias /image /ftp/pub/image
+&lt;Directory /ftp/pub/image&gt;
+    Require all granted
+&lt;/Directory&gt;
+    </highlight>
+
+    <p><var>URL-yolu</var> değiştirgesindeki bölü çizgilerinin sayısı istek
+      URL-yolundakiler kadardır.</p>
   </usage>
 </directivesynopsis>
 
@@ -184,18 +185,18 @@ eşler.</description>
       elde eder. Örneğin, <code>/icons</code> dizinini etkinleştirmek için şu
       yazılabilir:</p>
 
-    <example>
-      AliasMatch ^/icons(.*) /usr/local/apache/icons$1
-    </example>
+    <highlight language="config">
+AliasMatch ^/icons(.*) /usr/local/apache/icons$1
+    </highlight>
 
     <p><glossary ref="regex">Düzenli ifadeler</glossary>in tamamı
       kullanılabilmektedir. Örneğin, <code><em>URL-yolu</em></code> ile harf
       büyüklüğüne duyarsız eşleşmeler sağlayacak takma adlar
       kullanılabilir:</p>
 
-    <example>
-      AliasMatch (?i)^/image(.*) /ftp/pub/image$1
-    </example>
+    <highlight language="config">
+AliasMatch (?i)^/image(.*) /ftp/pub/image$1
+    </highlight>
 
     <p><directive module="mod_alias">Alias</directive>
       ve <directive module="mod_alias">AliasMatch</directive> yönergeleri
@@ -215,22 +216,22 @@ eşler.</description>
 
     <p>Örneğin aşağıdakini AliasMatch ile değiştirmek isteyelim:</p>
 
-    <example>
-      Alias /image/ /ftp/pub/image/
-    </example>
+    <highlight language="config">
+Alias /image/ /ftp/pub/image/
+    </highlight>
 
     <p>Bu eşdeğer DEĞİLdir - bunu yapmayın!  Bu herhangi bir yerinde /image/
       dizgesi bulunan tüm istekleri /ftp/pub/image/ altına gönderecektir:</p>
 
-    <example>
-      AliasMatch /image/ /ftp/pub/image/
-    </example>
+    <highlight language="config">
+AliasMatch /image/ /ftp/pub/image/
+    </highlight>
 
     <p>Aynı etkiyi elde etmek için bu gerekiyor:</p>
 
-    <example>
-      AliasMatch ^/image/(.*)$ /ftp/pub/image/$1
-    </example>
+    <highlight language="config">
+AliasMatch ^/image/(.*)$ /ftp/pub/image/$1
+    </highlight>
 
     <p>Şüphesiz, <directive module="mod_alias">Alias</directive> yönergesini
       çalıştığı yerde <directive module="mod_alias">AliasMatch</directive>
@@ -238,10 +239,15 @@ eşler.</description>
       >AliasMatch</directive> daha karmaşık şeyler yapmamızı sağlar. Örneğin
       farklı dosya çeşitlerini farklı dizinlerden sunmak isteyelim:</p>
 
-    <example>
-      AliasMatch ^/image/(.*)\.jpg$ /files/jpg.images/$1.jpg<br/>
-      AliasMatch ^/image/(.*)\.gif$ /files/gif.images/$1.gif
-    </example>
+    <highlight language="config">
+AliasMatch ^/image/(.*)\.jpg$ /files/jpg.images/$1.jpg<br/>
+AliasMatch ^/image/(.*)\.gif$ /files/gif.images/$1.gif
+    </highlight>
+
+    <p>İstek URL'sinin başındaki bölü çizgileri, bu modüldeki yönergeler istek
+      URL-yolu ile eşleştirilmeye çalışılmadan önce sunucu tarafından
+      yokedilir.
+    </p>
 
   </usage>
 </directivesynopsis>
@@ -274,13 +280,13 @@ yönlendirir.</description>
       dönecektir. <code><em>URL-yolu</em></code>’nun devamı niteliğindeki ek
       yol hedef URL’ye eklenir.</p>
 
-    <example><title>Örnek:</title>
-      # Farklı bir konaktaki bir URL'ye yönlendirme<br />
-      Redirect /hizmet http://iki.example.com/hizmet<br />
-      <br />
-      # Aynı konak üzerinde yönlendirme<br />
-      Redirect /bir /iki
-    </example>
+    <highlight language="config">
+# Farklı bir konaktaki bir URL'ye yönlendirme
+Redirect /hizmet http://iki.example.com/hizmet
+
+# Aynı konak üzerinde yönlendirme
+Redirect /bir /iki
+    </highlight>
 
     <p>İstemcinin yaptığı <code>http://example.com/hizmet/fesmekan.txt</code>
       isteğine karşılık istemciye isteği
@@ -335,10 +341,10 @@ yönlendirir.</description>
       bilmelidir (<code>http_protocol.c</code> dosyasında bulunan
       <code>send_error_response</code> işlevine bakınız).</p>
 
-    <example><title>Örnek:</title>
-      Redirect permanent /bir http://example.com/iki<br />
-      Redirect 303 /yedi http://example.com/baskabisey
-    </example>
+    <highlight language="config">
+Redirect permanent /bir http://example.com/iki
+Redirect 303 /yedi http://example.com/baskabisey
+    </highlight>
   </usage>
 </directivesynopsis>
 
@@ -362,9 +368,9 @@ yönlendirme gönderir.</description>
       sunucudaki aynı isimli JPEG dosyalarına yönlendirmek için şu
       yazılabilir:</p>
 
-    <example>
-      RedirectMatch (.*)\.gif$ http://baska.example.com$1.jpg
-    </example>
+    <highlight language="config">
+RedirectMatch (.*)\.gif$ http://baska.example.com$1.jpg
+    </highlight>
 
     <p><directive module="mod_alias">Alias</directive> ve
       <directive module="mod_alias">AliasMatch</directive> arasındaki farklarla
@@ -423,30 +429,28 @@ URL’ye yönlendirir.</description>
       sonra), dosya sistemindeki bir tam yol olarak belirtilmiş
       <code><em>dizin-yolu</em></code> ile başlayan betiklerle eşlenir.</p>
 
-    <example><title>Örnek:</title>
-      ScriptAlias /cgi-bin/ /siteler/cgi-bin/
-    </example>
+    <highlight language="config">
+ScriptAlias /cgi-bin/ /siteler/cgi-bin/
+    </highlight>
 
     <p><code>http://example.com/cgi-bin/foo</code> şeklindeki bir istek
       sunucunun <code>/siteler/cgi-bin/foo</code> betiğini çalıştırmasına sebep
       olur. Bu yapılandırma aslında şuna eşdeğerdir:</p>
 
-    <example>
-      Alias /cgi-bin/ /siteler/cgi-bin/<br />
-      &lt;Location /cgi-bin &gt;<br />
-      <indent>
-      SetHandler cgi-script<br />
-      Options +ExecCGI<br />
-      </indent>
-      &lt;/Location&gt;
-    </example>
+    <highlight language="config">
+Alias /cgi-bin/ /siteler/cgi-bin/
+&lt;Location /cgi-bin &gt;
+    SetHandler cgi-script
+    Options +ExecCGI
+&lt;/Location&gt;
+    </highlight>
 
     <p><directive>ScriptAlias</directive> yönergesini bir betik veya eylemci
       ile birlikte de kullanabilirsiniz. Örnek:</p>
 
-    <example>
-         ScriptAlias /cgi-bin/ /siteler/cgi-handler.pl
-    </example>
+       <highlight language="config">
+ScriptAlias /cgi-bin/ /siteler/cgi-handler.pl
+    </highlight>
 
     <p>Bu senaryoda <code>/cgi-bin/</code>’den istenen tüm dosyalar sizin
       belirttiğiniz dosya tarafından işleme sokulacaktır. Bu yöntemle kendi
@@ -465,14 +469,12 @@ URL’ye yönlendirir.</description>
       <directive module="core">SetHandler</directive> ve <directive
       module="core">Options</directive> yönergelerini örnekteki gibi kullanın:
 
-    <example>
-      &lt;Directory /usr/local/apache2/htdocs/cgi-bin &gt;<br />
-      <indent>
-      SetHandler cgi-script<br />
-      Options ExecCGI<br />
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory /usr/local/apache2/htdocs/cgi-bin &gt;
+    SetHandler cgi-script
+    Options ExecCGI
+&lt;/Directory&gt;
+    </highlight>
 
      Aynı dosya sistemi konumu ile çok sayıda <code><em>URL-yolu</em></code>
      eşleşebileceğinden, bir <directive module="core">Directory</directive>
@@ -503,18 +505,18 @@ eşler ve hedefi bir CGI betiği olarak çalıştırır.</description>
       dosya yolunu elde eder. Örneğin, standart <code>/cgi-bin</code> dizinini
       etkin kılmak için şu yazılabilir:</p>
 
-    <example>
-      ScriptAliasMatch ^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
-    </example>
+    <highlight language="config">
+ScriptAliasMatch ^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
+    </highlight>
 
     <p>AliasMatch yönergesindeki gibi, <glossary ref="rexex">düzenli
       ifadeler</glossary>in tamamı tüm güçleriyle kullanılabilmektedir.
       Örneğin, <code><em>URL-yolu</em></code> için harf büyüklüğüne duyarsız
       eşleşmeli bir takma ad oluşturmak mümkünür:</p>
 
-    <example>
-      ScriptAliasMatch (?i)^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
-    </example>
+    <highlight language="config">
+ScriptAliasMatch (?i)^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
+    </highlight>
 
     <p><directive module="mod_alias">Alias</directive> ve
       <directive module="mod_alias">AliasMatch</directive> arasındaki farklarla

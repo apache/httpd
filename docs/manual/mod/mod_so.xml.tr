@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1174747:1433863 (outdated) -->
+<!-- English Revision: 1433863 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -135,6 +135,7 @@ yeniden başlatılması sırasında yüklenmesini sağlar.</description>
 <syntax>LoadFile <em>dosya-ismi</em> [<em>dosya-ismi</em>] ...</syntax>
 <contextlist>
 <context>server config</context>
+<context>virtual host</context>
 </contextlist>
 
 <usage>
@@ -149,7 +150,7 @@ yeniden başlatılması sırasında yüklenmesini sağlar.</description>
 
     <p>Örnek:</p>
 
-    <example>LoadFile libexec/libxmlparse.so</example>
+    <highlight language="config">LoadFile libexec/libxmlparse.so</highlight>
 
 </usage>
 </directivesynopsis>
@@ -161,6 +162,7 @@ ve etkin modül listesine ekler.</description>
 <syntax>LoadModule <em>modül dosya-ismi</em></syntax>
 <contextlist>
 <context>server config</context>
+<context>virtual host</context>
 </contextlist>
 
 <usage>
@@ -173,9 +175,9 @@ ve etkin modül listesine ekler.</description>
       href="module-dict.html#ModuleIdentifier" >Modül Betimleyici</a> olarak
       geçer. Örneğin,</p>
 
-    <example>
-      LoadModule status_module modules/mod_status.so
-    </example>
+    <highlight language="config">
+LoadModule status_module modules/mod_status.so
+    </highlight>
 
     <p>satırı ile ismi belirtilen dosya <directive
       module="core">ServerRoot</directive> dizini altındaki
