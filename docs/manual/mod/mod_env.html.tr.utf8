@@ -30,7 +30,6 @@
 <a href="../ko/mod/mod_env.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_env.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>CGI betiklerine ve SSI sayfalarına aktarılan değişkenlere müdahale
 etmek için kullanılır.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
@@ -94,9 +93,10 @@ etmek için kullanılır.</td></tr>
       modüllerinde kullanılmak üzere bir dahili ortam değişkeni tanımlanmasını
       sağlar.</p>
 
-    <div class="example"><h3>Örnek</h3><p><code>
-      SetEnv SPECIAL_PATH /foo/bin
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+SetEnv SPECIAL_PATH /foo/bin
+    </pre>
+
 
     <div class="note"><p>Bu yönerge tarafından atanan dahili ortam değişkenleri, en başta
       işleme sokulan, ereşem denetimi, URI-dosya ismi eşleştirmesi gibi istek
@@ -126,9 +126,10 @@ etmek için kullanılır.</td></tr>
     <p>CGI betiklerine ve SSI sayfalarına bir daha aktarılmamak üzere bir
       dahili ortam değişkenini siler.</p>
 
-    <div class="example"><h3>Örnek</h3><p><code>
-      UnsetEnv LD_LIBRARY_PATH
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+UnsetEnv LD_LIBRARY_PATH
+    </pre>
+
 
 </div>
 </div>

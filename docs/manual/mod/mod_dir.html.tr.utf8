@@ -30,7 +30,6 @@
 <a href="../ko/mod/mod_dir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_dir.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Bölü çizgisiyle biten yönlendirmeleri yapar ve dizin içeriği dosyalarını sunar.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>dir_module</td></tr>
@@ -89,9 +88,10 @@
       dönecektir. Eğer özkaynakların hiçbiri yoksa ve <code>Indexes</code>
       seçeneği atanmışsa sunucu dizin içeriğinden bir liste üretecektir.</p>
 
-    <div class="example"><h3>Örnek:</h3><p><code>
-      DirectoryIndex index.html
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+DirectoryIndex index.html
+    </pre>
+
 
     <p>Bu yapılandırmadan sonra yapılan bir
       <code>http://sunucum/belgeler/</code> isteğine karşılık, sunucu,
@@ -100,9 +100,10 @@
 
     <p>Belgelerin dizine göreli olmasının gerekmediğine dikkat ediniz.</p>
 
-    <div class="example"><p><code>
-      DirectoryIndex index.html index.txt  /cgi-bin/index.pl
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+DirectoryIndex index.html index.txt  /cgi-bin/index.pl
+    </pre>
+
 
     <p>Bu örnekte ise dizin içinde ne <code>index.html</code> ne de
       <code>index.txt</code> mevcut olduğunda <code>/cgi-bin/index.pl</code>
@@ -110,9 +111,35 @@
 
     <p><code>disabled</code> değeri tek başına <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code>’in bir
       dizin listesi aramasını engeller. <code>disabled</code> değiştirgesi
-      öncesinde ve sonrasında başka bir değiştirge hatta bir <code>disabled</code>
-      daha olsa bile tek başına <code>disabled</code> verilmiş gibi
-      yorumlanır.</p>
+      öncesinde ve sonrasında başka bir değiştirge hatta bir
+      <code>disabled</code> daha olsa bile sadece bir <code>disabled</code>
+      verilmiş gibi yorumlanır.</p>
+    <p><strong>Bilginize:</strong> <a href="../sections.html"><em>Aynı
+      bağlamdaki</em></a> çok sayıda <code class="directive">DirectoryIndex</code>
+      yönergesi bir öncekini değiştirmek yerine onun bulunduğu listeye
+      eklenir:</p>
+    <pre class="prettyprint lang-config">
+# 1. örnek: İçerik dosyası olarak index.html atayıp sonraki satırda buna
+# index.php'yi ekleyebilirsiniz.
+&lt;Directory /foo&gt;
+    DirectoryIndex index.html
+    DirectoryIndex index.php
+&lt;/Directory&gt;
+
+# 2. Örnek: Atamaların tet bir satırda yapıldığı bu örnek 1. örneğe denktir.
+&lt;Directory /foo&gt;
+    DirectoryIndex index.html index.php
+&lt;/Directory&gt;
+
+# 3. Örnek: Listeyi tamamen değiştirmek için, listeyi önce sıfırlamalısınız:
+# Bu örnekte içerik dosyası olarak listede sadece index.php kalır.
+&lt;Directory /foo&gt;
+    DirectoryIndex index.html
+    DirectoryIndex disabled
+    DirectoryIndex index.php
+&lt;/Directory&gt;
+    </pre>
+
 
 
 </div>
@@ -137,9 +164,10 @@
       <code class="directive">DirectoryIndexRedirect</code> ise harici bir
       yönlendirmeye sebep olur.</p>
 
-    <div class="example"><h3>Örnek</h3><p><code>
-      DirectoryIndexRedirect on
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+DirectoryIndexRedirect on
+    </pre>
+
 
     <p><code>http://example.com/docs/</code> için yapılan bir istek, <code>http://example.com/docs/index.html</code> (mevcutsa) adresine geçici bir
       yönlendirme döndürür.</p>
@@ -156,7 +184,6 @@
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_dir</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache 2.0.51 ve sonrasında mevcuttur.</td></tr>
 </table>
     <p><code class="directive">DirectorySlash</code> yönergesi, bir dizin isteğinde
       bulunan URL’lerin sonuna <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> modülü tarafından bir
@@ -182,15 +209,14 @@
       yaparken dikkatli olun, bununla ilgili bazı güvenlik sorunları olasılığı
       vardır.</p>
 
-    <div class="example"><p><code>
-        # Aşağıdaki güvenlik uyarısına bakınız!<br />
-        &lt;Location /bir/yol&gt;<br />
-        <span class="indent">
-            DirectorySlash Off<br />
-            SetHandler bir-eylemci<br />
-        </span>
-        &lt;/Location&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+# Aşağıdaki güvenlik uyarısına bakınız!<br />
+&lt;Location /bir/yol&gt;<br />
+  DirectorySlash Off<br />
+  SetHandler bir-eylemci<br />
+&lt;/Location&gt;
+    </pre>
+
 
     <div class="warning"><h3>Güvenlik Uyarı</h3>
     <p>Bölü çizgisi ile biten yönlendirmelerin kapatılması bir bilginin
@@ -212,20 +238,22 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir dosya ile eşleşmeyen istekler için öntanımlı URL tanımlar
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>FallbackResource <var>yerel-url</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>FallbackResource disabled | <var>yerel-url</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>None - httpd 404 döndürecektir (Yok)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_dir</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td><code>disabled</code> değiştirgesi 2.4.4 sürümü ve sonrasında kullanılabilmektedir.</td></tr>
 </table>
     <p>Dosya sisteminde bulunmayan bir dosya için istek yapıldığında HTTP'nin
       404 (Yok) hatasını döndürmemesi için sunulacak dosyanın yolunu tanımlar.
       Örnek:</p>
 
-    <div class="example"><p><code>
-        <code>FallbackResource /not-404.php</code>
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+FallbackResource /not-404.php
+    </pre>
+
 
     <p>Bu satırla, (mevcut dosyaları etkilemeden) mevcut olmayan dosyaların
       yerine <code>not-404.php</code> dosyası sunulacaktır.</p>
@@ -239,23 +267,26 @@
       <code>-d</code> kullanımı gerekirdi. Bunun için şimdi tek satırlık bir
       yapılandırma yeterli olmaktadır.</p>
 
-    <div class="example"><p><code>
-        <code>FallbackResource /index.php</code>
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+FallbackResource /index.php
+    </pre>
+
 
     <p>Resim, CSS dosyaları gibi mevcut dosyalar normal olarak sunulur.</p>
 
+    <p>Üst dizinden hiçbir şeyin miras alınmaması isteniyorsa bu özelliği
+        kapatmak için <code>disabled</code> değiştirgesini kullanın.</p>
+
     <p><em>http://example.com/blog/</em> gibi bir alt URI <var>yerel-url</var>
       olarak sağlanır:</p>
-    <div class="example"><p><code>
-         <code>
-             &lt;Directory /web/example.com/htdocs/blog&gt;<br />
-            <span class="indent">
-                  FallbackResource /blog/index.php<br />
-             </span>
-             &lt;/Directory&gt;
-         </code>
-    </code></p></div>
+
+    <pre class="prettyprint lang-config">
+&lt;Directory /web/example.com/htdocs/blog&gt;
+  FallbackResource /blog/index.php
+&lt;/Directory&gt;
+    </pre>
+
+
 
 </div>
 </div>

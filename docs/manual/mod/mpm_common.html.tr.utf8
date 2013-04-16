@@ -30,7 +30,6 @@
 <a href="../ja/mod/mpm_common.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/mpm_common.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Birden fazla Çok Süreçlilik Modülü (MPM) tarafından gerçeklenmiş
   yönergeler bütünü.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>MPM</td></tr></table>
@@ -127,7 +126,6 @@
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Sürüm 2.0.49 ve sonrasında mevcuttur</td></tr>
 </table>
     <p>Güvenlik sebebiyle bu yönerge sadece Apache
       <code>--enable-exception-hook</code> seçeneği ile yapılandırılmışsa
@@ -137,7 +135,7 @@
 
     <p>Bu kancayı kullanan iki modül (<code>mod_whatkilledus</code> ve
     <code>mod_backtrace</code>) zaten vardır. bunlar hakkında daha fazla bilgi
-      edinmek için Jeff Trawick'in <a href="http://www.apache.org/~trawick/exception_hook.html">EnableExceptionHook site</a>sine bakabilirsiniz.</p>
+      edinmek için Jeff Trawick'in <a href="http://people.apache.org/~trawick/exception_hook.html">EnableExceptionHook site</a>sine bakabilirsiniz.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -170,8 +168,7 @@
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/event.html">event</a></code></td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache HTTP Sunucusu 2.0’dan beri gerekli yönergelerden
-    biridir.<br /><var>protokol</var> değiştirgesi 2.1.5 sürümünde
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td><var>protokol</var> değiştirgesi 2.1.5 sürümünde
     eklenmiştir.</td></tr>
 </table>
     <p><code class="directive">Listen</code> yönergesi Apache httpd’yi sadece belli IP
@@ -196,25 +193,28 @@
     <p>Örneğin sunucunun hem port 80 hem de port 8000’den istek kabul etmesini
       istiyorsanız bunu şöyle belirtebilirsiniz:</p>
 
-    <div class="example"><p><code>
-      Listen 80<br />
-      Listen 8000
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Listen 80
+Listen 8000
+    </pre>
+
 
     <p>Sunucunun belirtilen iki ağ arabiriminden ve port numarasından gelen
       bağlantıları kabul etmesi için şu yapılandırmayı kullanabilirsiniz:</p>
 
-    <div class="example"><p><code>
-      Listen 192.170.2.1:80<br />
-      Listen 192.170.2.5:8000
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Listen 192.170.2.1:80
+Listen 192.170.2.5:8000
+    </pre>
+
 
     <p>IPv6 adresleri belirtilirken örnekteki gibi köşeli ayraçlar arasına
       alınmalıdır:</p>
 
-    <div class="example"><p><code>
-      Listen [2001:db8::a00:20ff:fea7:ccea]:80
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Listen [2001:db8::a00:20ff:fea7:ccea]:80
+    </pre>
+
 
     <p>İsteğe bağlı <var>protocol</var> argümanı çoğu yapılandırmada gerekli
       değildir. Belirtilmediği takdirde. port 443 için <code>https</code> ve
@@ -227,9 +227,10 @@
       <code>https</code> sitesi çalıştırmak istiyorsanız bunu şöyle
       belirtebilirsiniz:</p>
 
-    <div class="example"><p><code>
-      Listen 192.170.2.1:8443 https
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Listen 192.170.2.1:8443 https
+    </pre>
+
 
     <div class="note"><h3>Hata durumu</h3>
       Aynı IP adresi ve portun çok sayıda <code class="directive">Listen</code>
@@ -448,9 +449,10 @@ açıklaması</a></li>
       yoluyla belirtilmemişse dosya yolunun <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> dizinine göre belirtildiği kabul
       edilir.</p>
 
-    <div class="example"><h3>Örnek</h3><p><code>
-      PidFile /var/run/apache.pid
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+PidFile /var/run/apache.pid
+    </pre>
+
 
     <p>Sunucuya sinyal gönderebilmek çoğunlukla işe yarar. Böylece <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code> ve <code class="directive"><a href="../mod/mod_log_config.html#transferlog">TransferLog</a></code> dosyaları kapatılıp
       yeniden açılır ve yapılandırma dosyaları yeniden okunur. Bu,
@@ -491,7 +493,7 @@ açıklaması</a></li>
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Çocuk süreçler için eşgüdüm verisini saklamakta kullanılan
   dosyanın yerini belirler.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ScoreBoardFile <var>dosya-yolu</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>ScoreBoardFile logs/apache_status</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>ScoreBoardFile logs/apache_runtime_status</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
@@ -505,9 +507,10 @@ açıklaması</a></li>
       eşlemli dosya kullanarak). Bu yönergenin belirtilmesi Apache httpd'nin
       dosyayı daima diskte oluşturmasına sebep olur.</p>
 
-    <div class="example"><h3>Örnek</h3><p><code>
-      ScoreBoardFile /var/run/apache_status
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+ScoreBoardFile /var/run/apache_status
+    </pre>
+
 
     <p>Paylaşımlı belleğe eşlemli dosya, çeteleye doğrudan erişmesi gereken
       üçüncü parti uygulamalar için yararlıdır.</p>
@@ -669,8 +672,6 @@ açıklaması</a></li>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td><code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code> için Apache HTTP Sunucusu 2.0.41 ve
-    sonrasında kullanılabilmektedir.</td></tr>
 </table>
     <p>Bu yönerge, Apache httpd sürecinin ömrü boyunca <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code> yönergesine
       atanabilecek azami değeri belirler. Bu yönergeyi bir yeniden başlatma
@@ -693,7 +694,8 @@ açıklaması</a></li>
     <div class="note"><h3>Ek Bilgi</h3>
       <p>Sunucu içinde derlenmiş olarak <code>ThreadLimit 20000</code>
         şeklinde bir zorlayıcı sınır vardır (<code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code> için
-        15000’dir). Bu önlem, yazım hatalarının istenmeyen sonuçlara yol
+        15000, <code class="module"><a href="../mod/event.html">event</a></code> için <code>ThreadLimit 100000</code>).
+        Bu önlem, yazım hatalarının istenmeyen sonuçlara yol
         açmasını engellemek için düşünülmüştür. Bu sınırı daha da arttırmak
         için mpm kaynak dosyasındaki MAX_SERVER_LIMIT değerini değiştirip
         sunucuyu yeniden derlemeniz gerekir.</p>

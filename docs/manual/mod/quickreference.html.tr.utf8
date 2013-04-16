@@ -406,7 +406,7 @@ by MIME type</td></tr>
 <tr class="odd"><td><a href="core.html#extendedstatus">ExtendedStatus On|Off</a></td><td> Off[*] </td><td>s</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Her istekte ek durum bilgisinin izini sürer</td></tr>
 <tr><td><a href="mod_ext_filter.html#extfilterdefine">ExtFilterDefine <var>filtername</var> <var>parameters</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Define an external filter</td></tr>
 <tr class="odd"><td><a href="mod_ext_filter.html#extfilteroptions">ExtFilterOptions <var>option</var> [<var>option</var>] ...</a></td><td> NoLogStderr </td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> options</td></tr>
-<tr><td><a href="mod_dir.html#fallbackresource" id="F" name="F">FallbackResource <var>yerel-url</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Bir dosya ile eşleşmeyen istekler için öntanımlı URL tanımlar
+<tr><td><a href="mod_dir.html#fallbackresource" id="F" name="F">FallbackResource disabled | <var>yerel-url</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Bir dosya ile eşleşmeyen istekler için öntanımlı URL tanımlar
 </td></tr>
 <tr class="odd"><td><a href="core.html#fileetag">FileETag <var>bileşen</var> ...</a></td><td> MTime Size </td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Duruk dosyalar için <code>ETag</code> HTTP yanıt başlığını oluşturmakta kullanılacak dosya özniteliklerini belirler.</td></tr>
 <tr><td><a href="core.html#files">&lt;Files <var>dosya-adı</var>&gt; ... &lt;/Files&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Dosya isimleriyle eşleşme halinde uygulanacak yönergeleri
@@ -542,9 +542,9 @@ sınırlar.</td></tr>
   [<var>protokol</var>]</a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucunun dinleyeceği IP adresini ve portu belirler.</td></tr>
 <tr><td><a href="mpm_common.html#listenbacklog">ListenBacklog <var>kuyruk-uzunluğu</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Bekleyen bağlantılar kuyruğunun azami uzunluğunu
   belirler</td></tr>
-<tr class="odd"><td><a href="mod_so.html#loadfile">LoadFile <em>dosya-ismi</em> [<em>dosya-ismi</em>] ...</a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler.
+<tr class="odd"><td><a href="mod_so.html#loadfile">LoadFile <em>dosya-ismi</em> [<em>dosya-ismi</em>] ...</a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler.
 </td></tr>
-<tr><td><a href="mod_so.html#loadmodule">LoadModule <em>modül dosya-ismi</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler
+<tr><td><a href="mod_so.html#loadmodule">LoadModule <em>modül dosya-ismi</em></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler
 ve etkin modül listesine ekler.</td></tr>
 <tr class="odd"><td><a href="core.html#location">&lt;Location <var>URL-yolu</var>|<var>URL</var>&gt; ...
 &lt;/Location&gt;</a></td><td></td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">İçerdiği yönergeler sadece eşleşen URL’lere uygulanır.
@@ -784,7 +784,7 @@ must succeed for the enclosing directive to not fail.</td></tr>
   sayısına sınırlama getirir.</td></tr>
 <tr class="odd"><td><a href="mod_access_compat.html#satisfy" id="S" name="S">Satisfy Any|All</a></td><td> All </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Interaction between host-level access control and
 user authentication</td></tr>
-<tr><td><a href="mpm_common.html#scoreboardfile">ScoreBoardFile <var>dosya-yolu</var></a></td><td> logs/apache_status </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Çocuk süreçler için eşgüdüm verisini saklamakta kullanılan
+<tr><td><a href="mpm_common.html#scoreboardfile">ScoreBoardFile <var>dosya-yolu</var></a></td><td> logs/apache_runtime +</td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Çocuk süreçler için eşgüdüm verisini saklamakta kullanılan
   dosyanın yerini belirler.</td></tr>
 <tr class="odd"><td><a href="mod_actions.html#script">Script <var>method</var> <var>cgi-script</var></a></td><td></td><td>skd</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Activates a CGI script for a particular request
 method.</td></tr>

@@ -30,13 +30,11 @@
 <a href="../ko/mod/mod_suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_suexec.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>CGI betiklerinin belli bir kullanıcı ve grubun aidiyetinde
 çalışmasını mümkün kılar.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Eklenti</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>suexec_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Kaynak Dosyası:</a></th><td>mod_suexec.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache 2.0 ve sonrasında mevcuttur.</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">Kaynak Dosyası:</a></th><td>mod_suexec.c</td></tr></table>
 <h3>Özet</h3>
 
     <p>Bu modül <code class="program"><a href="../programs/suexec.html">suexec</a></code> programı ile birlikte CGI
@@ -61,17 +59,16 @@
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Eklenti</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_suexec</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache 2.0 ve sonrasında mevcuttur.</td></tr>
 </table>
     <p><code class="directive">SuexecUserGroup</code> yönergesi CGI programlarını
       çalıştıracak kullanıcı ve grubu belirtmeye yarar. CGI harici istekler
       hala <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> yönergesinde
       belirtilen kullanıcı tarafından yerine getirilir.</p>
 
-    <div class="example"><h3>Örnek</h3><p><code>
-    
-    SuexecUserGroup nobody nogroup
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+SuexecUserGroup nobody nogroup
+    </pre>
+
 
     <p>Apache HTTP Sunucusunun 2.3.9 ve sonraki sürümlerinde, bu yönerge
       belirtildiği halde <code class="directive"><a href="../mod/mod_unixd.html#suexec">Suexec</a></code>
