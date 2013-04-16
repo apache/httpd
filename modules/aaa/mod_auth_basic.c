@@ -130,26 +130,47 @@ static const char *set_authoritative(cmd_parms * cmd, void *config, int flag)
     return NULL;
 }
 
-static const char *add_basic_fake(cmd_parms * cmd, void *config, const char *user, const char *pass)
+static const char *add_basic_fake(cmd_parms * cmd, void *config,
+        const char *user, const char *pass)
 {
     auth_basic_config_rec *conf = (auth_basic_config_rec *) config;
     const char *err;
 
-    conf->fakeuser = ap_expr_parse_cmd(cmd, user, AP_EXPR_FLAG_STRING_RESULT,
-                                        &err, NULL);
-    if (err) {
-        return apr_psprintf(cmd->pool,
-                            "Could not parse fake username expression '%s': %s",
-                            user, err);
+    if (!strcasecmp(user, "off")) {
+
+        conf->fakeuser = NULL;
+        conf->fakepass = NULL;
+        conf->fake_set = 1;
+
     }
-    conf->fakepass = ap_expr_parse_cmd(cmd, pass, AP_EXPR_FLAG_STRING_RESULT,
-                                        &err, NULL);
-    if (err) {
-        return apr_psprintf(cmd->pool,
-                            "Could not parse fake password expression '%s': %s",
-                            user, err);
+    else {
+
+        /* if password is unspecified, set it to the fixed string "password" to
+         * be compatible with the behaviour of mod_ssl.
+         */
+        if (!pass) {
+            pass = "password";
+        }
+
+        conf->fakeuser =
+                ap_expr_parse_cmd(cmd, user, AP_EXPR_FLAG_STRING_RESULT,
+                        &err, NULL);
+        if (err) {
+            return apr_psprintf(cmd->pool,
+                    "Could not parse fake username expression '%s': %s", user,
+                    err);
+        }
+        conf->fakepass =
+                ap_expr_parse_cmd(cmd, pass, AP_EXPR_FLAG_STRING_RESULT,
+                        &err, NULL);
+        if (err) {
+            return apr_psprintf(cmd->pool,
+                    "Could not parse fake password expression '%s': %s", user,
+                    err);
+        }
+        conf->fake_set = 1;
+
     }
-    conf->fake_set = 1;
 
     return NULL;
 }
@@ -161,9 +182,10 @@ static const command_rec auth_basic_cmds[] =
     AP_INIT_FLAG("AuthBasicAuthoritative", set_authoritative, NULL, OR_AUTHCFG,
                  "Set to 'Off' to allow access control to be passed along to "
                  "lower modules if the UserID is not known to this module"),
-    AP_INIT_TAKE2("AuthBasicFake", add_basic_fake, NULL, OR_AUTHCFG,
+    AP_INIT_TAKE12("AuthBasicFake", add_basic_fake, NULL, OR_AUTHCFG,
                   "Fake basic authentication using the given expressions for "
-                  "username and password"),
+                  "username and password, 'off' to disable. Password defaults "
+                  "to 'password' if missing."),
     {NULL}
 };
 
@@ -365,7 +387,7 @@ static int authenticate_basic_fake(request_rec *r)
     auth_basic_config_rec *conf = ap_get_module_config(r->per_dir_config,
                                                        &auth_basic_module);
 
-    if (!conf->fake_set) {
+    if (!conf->fakeuser) {
         return DECLINED;
     }
 
