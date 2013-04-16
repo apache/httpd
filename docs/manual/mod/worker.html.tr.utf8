@@ -30,7 +30,6 @@
 <a href="../ja/mod/worker.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/worker.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Çok evreli ve çok süreçli melez bir HTTP sunucusu oluşturan çok
 süreçlilik modülü.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>MPM</td></tr>
@@ -135,14 +134,15 @@ süreçlilik modülü.</td></tr>
     <p><code class="module"><a href="../mod/worker.html">worker</a></code> modülünün öntanımlı süreç-evre yapılandırması
       genelde şöyledir:</p>
 
-    <div class="example"><p><code>
-      ServerLimit         16<br />
-      StartServers         2<br />
-      MaxRequestWorkers  150<br />
-      MinSpareThreads     25<br />
-      MaxSpareThreads     75<br />
-      ThreadsPerChild     25
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+ServerLimit         16
+StartServers         2
+MaxRequestWorkers  150
+MinSpareThreads     25
+MaxSpareThreads     75
+ThreadsPerChild     25
+    </pre>
+
 
     <p>Unix altında 80. portu dinleyebilmek için ana sürecin root tarafından
       çalıştırılmış olması gerekirse de çocuk süreçler ve evreler Apache

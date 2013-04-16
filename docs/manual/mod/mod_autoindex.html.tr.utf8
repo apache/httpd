@@ -30,7 +30,6 @@
 <a href="../ko/mod/mod_autoindex.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_autoindex.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Unix <code>ls</code> veya Win32 <code>dir</code> kabuk komutunun
 yaptığı gibi dizin içeriğini listeler.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
@@ -210,10 +209,11 @@ yaptığı gibi dizin içeriğini listeler.</td></tr>
       bulunamadığı veya istemci resim gösteremediği takdirde ya da kullanıcı
       resim yüklememeyi tercih etmişse gösterilir.</p>
 
-    <div class="example"><h3>Örnekler</h3><p><code>
-      AddAlt "PDF dosya" *.pdf<br />
-      AddAlt Sıkıştırılmış *.gz *.zip *.Z
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+AddAlt "PDF file" *.pdf
+AddAlt Compressed *.gz *.zip *.Z
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -238,9 +238,10 @@ gösterilecek metni belirler.</td></tr>
       gösteremediği takdirde ya da kullanıcı resim yüklememeyi tercih etmişse
       gösterilir.</p>
 
-    <div class="example"><h3>Örnek</h3><p><code>
-      AddAltByEncoding gzip x-gzip
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+AddAltByEncoding gzip x-gzip
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -264,9 +265,10 @@ metni belirler.</td></tr>
       simge bulunamadığı veya istemci resim gösteremediği takdirde ya da
       kullanıcı resim yüklememeyi tercih etmişse gösterilir.</p>
 
-    <div class="example"><h3>Örnek</h3><p><code>
-      AddAltByType 'salt metin' text/plain
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+AddAltByType 'salt metin' text/plain
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -287,10 +289,11 @@ metni belirler.</td></tr>
       <code><em>metin</em></code> boşluk karakterleri içeriyorsa çift tırnak
       (<code>"</code>) içine alınmalıdır.</p>
 
-    <div class="example"><h3>Örnek</h3><p><code>
-      AddDescription "Mars Gezegeni" mars.gif <br />
-      AddDescription "Dostum Marshall" dostlar/mars.gif
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+AddDescription "Mars Gezegeni" mars.gif <br />
+AddDescription "Dostum Marshall" dostlar/mars.gif
+    </pre>
+
 
     <p>Normalde öntanımlı açıklama alanının genişliği 23 bayttır. <code><a href="#indexoptions.suppressicon">IndexOptions SuppressIcon</a></code>
       seçeneği buna 6 bayt daha ekler; <code><a href="#indexoptions.suppresssize">IndexOptions SuppressSize</a></code>
@@ -359,11 +362,13 @@ metni belirler.</td></tr>
       dolayısıyla <code>IndexOptions HTMLTable</code> kullanıyorsanız
       gereksizdir.</p>
 
-    <div class="example"><h3>Örnekler</h3><p><code>
-      AddIcon (IMG,/icons/image.png) .gif .jpg .png<br />
-      AddIcon /icons/dir.png ^^DIRECTORY^^<br />
-      AddIcon /icons/backup.png *~
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+#Examples
+AddIcon (IMG,/icons/image.png) .gif .jpg .png
+AddIcon /icons/dir.png ^^DIRECTORY^^
+AddIcon /icons/backup.png *~
+    </pre>
+
 
     <p>Mümkünse <code class="directive">AddIcon</code> yerine <code class="directive"><a href="#addiconbytype">AddIconByType</a></code> yönergesi tercih
       edilmelidir.</p>
@@ -391,9 +396,10 @@ göre belirler.</td></tr>
     <p><code><em>MIME-kodlaması</em></code> olarak <code>x-compress</code>
       gibi geçerli bir içerik kodlaması belirtilmelidir.</p>
 
-    <div class="example"><h3>Örnek</h3><p><code>
-      AddIconByEncoding /icons/compress.png x-compress
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+AddIconByEncoding /icons/compress.png x-compress
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -419,9 +425,10 @@ belirler.</td></tr>
     <p><var>MIME-türü</var> MIME türleri ile eşleşen bir dosya kalıbı ifadesi
       olabilir.</p>
 
-    <div class="example"><h3>Örnek</h3><p><code>
-      AddIconByType (IMG,/icons/image.xbm) image/*
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+AddIconByType (IMG,/icons/image.png) image/*
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -441,9 +448,10 @@ belirler.</td></tr>
       bir göreli URL (% öncelemeli) veya tam nitelenmiş uzak bir URL
       belirtir.</p>
 
-    <div class="example"><h3>Örnek</h3><p><code>
-      DefaultIcon /icon/unknown.png
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+DefaultIcon /icon/unknown.png
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -461,9 +469,10 @@ belirler.</td></tr>
       yerleştirilecek dosyanın ismini belirler. Dosyanın ismi
       <code><em>dosya-ismi</em></code> ile belirtilir.</p>
 
-    <div class="example"><h3>Örnek</h3><p><code>
-      HeaderName HEADER.html
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+HeaderName HEADER.html
+    </pre>
+
 
     <div class="note">
       <p><code>HeaderName</code> and <code class="directive"><a href="#readmename">ReadmeName</a></code> yönergelerinde
@@ -473,9 +482,10 @@ belirler.</td></tr>
         başlıyorsa <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>
         yönergesinde belirtilen dizine göre belirtildiği varsayılır.</p>
 
-      <div class="example"><h3>Örnek</h3><p><code>
-        HeaderName /include/HEADER.html
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+HeaderName /include/HEADER.html
+      </pre>
+
 
       <p><code><em>dosya-ismi</em></code>,  içerik türü <code>text/*</code>
         (<code>text/html</code>, <code>text/plain</code> gibi) olan bir belge
@@ -484,9 +494,10 @@ belirler.</td></tr>
         <code><em>dosya-ismi</em></code> bir CGI betiğinin ismi bile
         olabilir:</p>
 
-      <div class="example"><p><code>
-        AddType text/html .cgi
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+AddType text/html .cgi
+      </pre>
+
 
       <p><code class="directive"><a href="../mod/core.html#options">Options</a></code> ile
         <code>MultiViews</code> etkin kılınmışsa dosyaya <a href="../content-negotiation.html">içerik dili uzlaşımı</a> da
@@ -521,10 +532,10 @@ belirler.</td></tr>
     <p><code class="directive">IndexHeadInsert</code> yönergesi, dizin listesi için
     üretilen HTML’nin <var>&lt;head&gt;</var> bölümüne yerleştirilecek bir
     dizge tanımlar.</p>
-    <div class="example"><h3>Example</h3><p><code>
-      
-      IndexHeadInsert "&lt;link rel=\"sitemap\" href=\"/sitemap.html\"&gt;"
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+IndexHeadInsert "&lt;link rel=\"sitemap\" href=\"/sitemap.html\"&gt;"
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -547,9 +558,10 @@ belirler.</td></tr>
       <code class="directive">IndexIgnore</code> ataması yapabilirsiniz. Liste
       öntanımlı olarak içinde bulunulan dizini (<code>./</code>) içerir.</p>
 
-    <div class="example"><p><code>
-      IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
+    </pre>
+
 
     <div class="note"><h3>Düzenli İfadeler</h3>
       <p>Bu yönerge, <code class="directive"><a href="../mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code> gibidüzenli ifadeler içeren yapılandırma
@@ -573,15 +585,16 @@ belirler.</td></tr>
       ve <code class="directive">IndexIgnore</code> tarafından yoksayılan dosyaları
       kaldırır. </p>
 
-    <div class="example"><p><code>
-      &lt;Directory /var/www&gt;
-      IndexIgnore *.bak .??* *~ *# HEADER* README* RCS CVS *,v *,t
-      &lt;/Directory&gt;
-      &lt;Directory /var/www/backups&gt;
-      IndexIgnoreReset ON
-      IndexIgnore .??* *# HEADER* README* RCS CVS *,v *,t
-      &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;Directory /var/www&gt;
+    IndexIgnore *.bak .??* *~ *# HEADER* README* RCS CVS *,v *,t
+&lt;/Directory&gt;
+&lt;Directory /var/www/backups&gt;
+    IndexIgnoreReset ON
+    IndexIgnore .??* *# HEADER* README* RCS CVS *,v *,t
+&lt;/Directory&gt;
+    </pre>
+
 
     <div class="warning"><p>Bu yönergeyi kullandıktan sonra, açıkça yoksaymak
       istediğiniz kalıpların bir listesi için öntanımlı yapılandırmayı gözden
@@ -628,9 +641,10 @@ belirler.</td></tr>
         dosya sisteminin Unicode dosya isimleri kullanıp kullanmamasına
         bağlıdır).
 
-      <div class="example"><h3>Örnek</h3><p><code>
-        IndexOptions Charset=UTF-8
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+IndexOptions Charset=UTF-8
+      </pre>
+
       </dd>
 
       <dt><a name="indexoptions.descriptionwidth" id="indexoptions.descriptionwidth"><code>DescriptionWidth=[<em>n</em> | *]</code></a></dt>
@@ -829,9 +843,10 @@ belirler.</td></tr>
       <dd><code>Type</code> anahtar sözcüğü üretilen sayfanın MIME içerik
         türünün belirtilebilmesini sağlar. <var>text/html</var> öntanımlıdır.
 
-      <div class="example"><h3>Örnek:</h3><p><code>
-        IndexOptions Type=text/plain
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+IndexOptions Type=text/plain
+      </pre>
+
       </dd>
       <dt><a name="indexoptions.versionsort" id="indexoptions.versionsort"><code>VersionSort</code></a>
       </dt>
@@ -878,21 +893,21 @@ belirler.</td></tr>
         yönergesi belirtilmişse bunlar ayrı ayrı değil birlikte ele alınır.
         Yani,
 
-      <div class="example"><p><code>
-        &lt;Directory /foo&gt;
-        <span class="indent">
-          IndexOptions HTMLTable<br />
-          IndexOptions SuppressColumnsorting
-        </span>
-        &lt;/Directory&gt;
-      </code></p></div>
+     <pre class="prettyprint lang-config">
+&lt;Directory /foo&gt;
+    IndexOptions HTMLTable
+    IndexOptions SuppressColumnsorting
+&lt;/Directory&gt;
+     </pre>
+
 
       <p>yapılandırmasındaki <code class="directive">IndexOptions</code>
         yönergeleri</p>
 
-      <div class="example"><p><code>
-        IndexOptions HTMLTable SuppressColumnsorting
-      </code></p></div>
+     <pre class="prettyprint lang-config">
+IndexOptions HTMLTable SuppressColumnsorting
+     </pre>
+
 
       <p>yönergesine eşdeğerdir.</p>
       </li>
@@ -908,10 +923,11 @@ belirler.</td></tr>
         miras alınmış bu tür seçenekler iptal edilir. Şu örneği ele
         alalım:</p>
 
-      <div class="example"><p><code>
-        IndexOptions +ScanHTMLTitles -IconsAreLinks FancyIndexing<br />
-        IndexOptions +SuppressSize
-      </code></p></div>
+     <pre class="prettyprint lang-config">
+IndexOptions +ScanHTMLTitles -IconsAreLinks FancyIndexing
+IndexOptions +SuppressSize
+     </pre>
+
 
       <p>Bunun net etkisi
         <code>IndexOptions FancyIndexing +SuppressSize</code>
@@ -978,9 +994,10 @@ Name|Date|Size|Description</code></td></tr>
     <p><code class="directive">IndexStyleSheet</code> yönergesi dizin listelemesi için
       kullanılacak biçembent dosyasının ismini belirtmek için kullanılır.</p>
 
-    <div class="example"><h3>Örnek</h3><p><code>
-      IndexStyleSheet "/css/style.css"
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+IndexStyleSheet "/css/style.css"
+    </pre>
+
 
     <p>Bu yönergenin <code>IndexOptions HTMLTable</code> ile birlikte
       kullanılması sonuçlanan HTML dosyasına bir miktar CSS sınıfı ekler.
@@ -1026,13 +1043,17 @@ belirler.</td></tr>
       başlıyorsa <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>’a göreli
       belirtildiği varsayılır.</p>
 
-    <div class="example"><h3>1. Örnek</h3><p><code>
-      ReadmeName FOOTER.html
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+# 1. Örnek
+ReadmeName FOOTER.html
+    </pre>
 
-    <div class="example"><h3>2. Örnek</h3><p><code>
-      ReadmeName /include/FOOTER.html
-    </code></p></div>
+
+    <pre class="prettyprint lang-config">
+# 2. Örnek
+ReadmeName /include/FOOTER.html
+    </pre>
+
 
     <p>Ayrıca bu davranışın daha ayrıntılı ele alındığı <code class="directive"><a href="#headername">HeaderName</a></code> yönergesine de
       bakınız.</p>

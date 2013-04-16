@@ -30,7 +30,6 @@
 <a href="../ko/mod/mod_so.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_so.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Modüllerin ve çalıştırılabilir kodun sunucunun başlatılması veya
 yeniden başlatılması sırasında yüklenmesini sağlar.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Eklenti</td></tr>
@@ -146,7 +145,7 @@ yeniden başlatılması sırasında yüklenmesini sağlar.</td></tr>
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler.
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LoadFile <em>dosya-ismi</em> [<em>dosya-ismi</em>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Eklenti</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_so</td></tr>
 </table>
@@ -161,7 +160,8 @@ yeniden başlatılması sırasında yüklenmesini sağlar.</td></tr>
 
     <p>Örnek:</p>
 
-    <div class="example"><p><code>LoadFile libexec/libxmlparse.so</code></p></div>
+    <pre class="prettyprint lang-config">LoadFile libexec/libxmlparse.so</pre>
+
 
 
 </div>
@@ -171,7 +171,7 @@ yeniden başlatılması sırasında yüklenmesini sağlar.</td></tr>
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler
 ve etkin modül listesine ekler.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LoadModule <em>modül dosya-ismi</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Eklenti</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_so</td></tr>
 </table>
@@ -183,9 +183,10 @@ ve etkin modül listesine ekler.</td></tr>
       değişkenin ismi olup modül belgelerinde <a href="module-dict.html#ModuleIdentifier">Modül Betimleyici</a> olarak
       geçer. Örneğin,</p>
 
-    <div class="example"><p><code>
-      LoadModule status_module modules/mod_status.so
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+LoadModule status_module modules/mod_status.so
+    </pre>
+
 
     <p>satırı ile ismi belirtilen dosya <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> dizini altındaki
       <code>modules</code> alt dizininden yüklenir.</p>

@@ -28,9 +28,10 @@
 <a href="../fr/mod/mod_unixd.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../tr/mod/mod_unixd.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Unix ailesi platformlar için temel (gerekli) güvenlik.</td></tr>
-<tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr></table>
+<tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>unixd_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Kaynak Dosyası:</a></th><td>mod_unixd.c</td></tr></table>
 </div>
 <div id="quickview"><h3 class="directives">Yönergeler</h3>
 <ul id="toc">
@@ -76,7 +77,6 @@
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_unixd</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache 2.0’dan itibaren sadece sunucu geneli için geçerlidir.</td></tr>
 </table>
     <p><code class="directive">Group</code> yönergesi, sunucunun hangi grup altında
       isteklere yanıt vereceğini belirler. Bu yönergenin uygulanabilmesi için
@@ -93,9 +93,8 @@
       <dd>Gruba numarası ile başvurulur.</dd>
     </dl>
 
-    <div class="example"><h3>Örnek</h3><p><code>
-      Group www-group
-    </code></p></div>
+    <pre class="prettyprint lang-config">Group www-group</pre>
+
 
     <p>Çalışan sunucu için özellikle yeni bir grup atamanız önerilir. Bazı
       sistem yöneticileri <code>nobody</code> grubunu kullanırlar fakat
@@ -143,8 +142,6 @@
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_unixd</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache 2.0’dan itibaren sadece sunucu geneli için
-  geçerlidir.</td></tr>
 </table>
     <p><code class="directive">User</code> yönergesi, sunucunun hangi kullanıcı olarak
       isteklere yanıt vereceğini belirler. Bu yönergenin uygulanabilmesi için

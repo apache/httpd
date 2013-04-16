@@ -30,7 +30,6 @@
 <a href="../ko/mod/mod_setenvif.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_setenvif.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Ortam değişkenlerinin isteğin özelliklerine uygun olarak atanmasını sağlar</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>setenvif_module</td></tr>
@@ -50,10 +49,11 @@
       tarayıcı Mozilla ise <code>netscape</code> ortam değişkeni atanmakta,
       MSIE ise atanmamaktadır.</p>
 
-    <div class="example"><p><code>
-      BrowserMatch ^Mozilla netscape<br />
-      BrowserMatch MSIE !netscape<br />
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+BrowserMatch ^Mozilla netscape
+BrowserMatch MSIE !netscape
+    </pre>
+
 </div>
 <div id="quickview"><h3 class="directives">Yönergeler</h3>
 <ul id="toc">
@@ -84,18 +84,20 @@
     ve ortam değişkenlerine <code>User-Agent</code> HTTP istek başlığının
     değerine göre atama yapar. Aşağıdaki iki satır aynı etkiye sahiptir:</p>
 
-  <div class="example"><p><code>
-    BrowserMatchNoCase Robot is_a_robot<br />
-    SetEnvIfNoCase User-Agent Robot is_a_robot<br />
-  </code></p></div>
+  <pre class="prettyprint lang-config">
+BrowserMatchNoCase Robot is_a_robot
+SetEnvIfNoCase User-Agent Robot is_a_robot
+  </pre>
+
 
   <p>Başka örnekler:</p>
 
-  <div class="example"><p><code>
-      BrowserMatch ^Mozilla forms jpeg=yes browser=netscape<br />
-      BrowserMatch "^Mozilla/[2-3]" tables agif frames javascript<br />
-      BrowserMatch MSIE !javascript<br />
-  </code></p></div>
+  <pre class="prettyprint lang-config">
+BrowserMatch ^Mozilla forms jpeg=yes browser=netscape
+BrowserMatch "^Mozilla/[2-3]" tables agif frames javascript
+BrowserMatch MSIE !javascript
+  </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -115,19 +117,21 @@ duyarsız eşleşmelerine bağlı olarak belirler.</td></tr>
       anlamsal olarak <code class="directive"><a href="#browsermatch">BrowserMatch</a></code> yönergesinin eşdeğeridir.
       Ancak, eşleşmelerde harf büyüklüğüne duyarsızdır. Örnek:</p>
 
-    <div class="example"><p><code>
-        BrowserMatchNoCase mac platform=macintosh<br />
-        BrowserMatchNoCase win platform=windows<br />
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+BrowserMatchNoCase mac platform=macintosh
+BrowserMatchNoCase win platform=windows
+    </pre>
+
 
     <p><code class="directive">BrowserMatch</code> ve
       <code class="directive">BrowserMatchNoCase</code> yönergeleri <code class="directive"><a href="#setenvif">SetEnvIf</a></code> ve <code class="directive"><a href="#setenvifnocase">SetEnvIfNoCase</a></code> yönergelerinin özel
       halleridir. Bu bakımda aşağıdaki iki satır aynı etkiye sahiptir:</p>
 
-    <div class="example"><p><code>
-      BrowserMatchNoCase Robot is_a_robot<br />
-      SetEnvIfNoCase User-Agent Robot is_a_robot<br />
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+BrowserMatchNoCase Robot is_a_robot
+SetEnvIfNoCase User-Agent Robot is_a_robot
+    </pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -213,17 +217,18 @@ duyarsız eşleşmelerine bağlı olarak belirler.</td></tr>
       üzere <code><em>value</em></code> içinde <code>$1</code>..<code>$9</code>
       gösterimleri tanınmaktadır.</p>
 
-    <div class="example"><h3>Örnek:</h3><p><code>
-      SetEnvIf Request_URI "\.gif$" nesne_bir_resim=gif<br />
-      SetEnvIf Request_URI "\.jpg$" nesne_bir_resim=jpg<br />
-      SetEnvIf Request_URI "\.xbm$" nesne_bir_resim=xbm<br />
-            :<br />
-      SetEnvIf Referer belgeler\.alanismi\.example\.com dahili_site_istendi<br />
-            :<br />
-      SetEnvIf object_is_image xbm XBIT_PROCESSING=1<br />
-            :<br />
-      SetEnvIf ^TS  ^[a-z]  TS_VAR<br />
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+SetEnvIf Request_URI "\.gif$" nesne_bir_resim=gif
+SetEnvIf Request_URI "\.jpg$" nesne_bir_resim=jpg
+SetEnvIf Request_URI "\.xbm$" nesne_bir_resim=xbm
+
+SetEnvIf Referer belgeler\.alanismi\.example\.com dahili_site_istendi
+
+SetEnvIf object_is_image xbm XBIT_PROCESSING=1
+
+SetEnvIf ^TS  ^[a-z]  TS_VAR
+    </pre>
+
 
     <p>İlk üçünde istek bir resim dosyası için yapılmışsa
       <code>nesne_bir_resim</code> ortam değişkeni atanmakta, dördüncüsünde
@@ -259,9 +264,10 @@ belgesinde daha fazla örnek bulunabilir.</li>
       değerlendirilirerek <code class="directive">SetEnvIf</code> yönergesindeki gibi
       <em>ort-değişkeni</em>ne uygulanır.</p>
 
-<div class="example"><p><code>
-    SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered
-</code></p></div>
+    <pre class="prettyprint lang-config">
+SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered
+    </pre>
+
 
     <p>Burada uygulamamızın her <code>X-Sendfile</code> göndermeye çalışmasında
       ortam değişkenine <code>iso_delivered</code> değeri atanmaktadır.</p>
@@ -269,9 +275,10 @@ belgesinde daha fazla örnek bulunabilir.</li>
     <p>Uzak IP adresi RFC 1918'e göre özel bir adres ise rfc1918 değişkenine 1
       atanması daha kullanışlı bir örnek olurdu:</p>
 
-<div class="example"><p><code>
-    SetEnvIfExpr "-R '10.0.0.0/8' || -R '172.16.0.0/12' || -R '192.168.0.0/16'" rfc1918
-</code></p></div>
+    <pre class="prettyprint lang-config">
+SetEnvIfExpr "-R '10.0.0.0/8' || -R '172.16.0.0/12' || -R '192.168.0.0/16'" rfc1918
+    </pre>
+
 
 <h3>Ayrıca bakınız:</h3>
 <ul>
@@ -300,9 +307,10 @@ bağlı olmaksızın yapılmış tanımlara göre atar.</td></tr>
       yönergesinin eşdeğeridir. Ancak, eşleşmelerde harf büyüklüğüne
       duyarsızdır. Örnek:</p>
 
-    <div class="example"><p><code>
-      SetEnvIfNoCase Host Example\.Org site=example
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+SetEnvIfNoCase Host Example\.Org site=example
+    </pre>
+
 
     <p>Burada, <code>Host:</code> HTTP istek başlığında
       <code>Example.Org</code>, <code>example.org</code> veya harf büyüklüğünce
