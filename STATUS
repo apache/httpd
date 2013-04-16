@@ -177,7 +177,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: http://svn.apache.org/r1457471
                  http://svn.apache.org/r1457504
                  http://svn.apache.org/r1462266
-    2.4.x patch: trunk patch applies (minus log-message-tags/next-number)
+                 http://svn.apache.org/r1468581
+    2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_auth_basic-fake4.patch
     +1: minfrin
 
   * mod_proxy_wstunnel: Backport (copy) websocket tunnel proxy submodule
