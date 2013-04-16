@@ -209,7 +209,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1461869
                   http://svn.apache.org/viewvc?view=revision&revision=1468089
      2.4.x patch: trunk patch works (with some offset)
-     +1: jailletc36
+     +1: jailletc36, minfrin
      -0: jorton: nitpick, using (signed) int to count string length doesn't look good!
      jailletc36: done in 1468089
 
@@ -234,12 +234,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       instead of calling apr_strerror() explicitly
       trunk patches: https://svn.apache.org/r1463052
       2.4.x patch: trunk patch works
-      +1: jailletc36
+      +1: jailletc36, minfrin
 
     * various: Use %pm available since apr 1.3 instead of an extra call to apr_strerror
       trunk patches: https://svn.apache.org/r1463056
       2.4.x patch: trunk patch works (with offset)
-      +1: jailletc36
+      +1: jailletc36, minfrin
 
     * mod_auth_digest: 3 easy votes to keep in line with trunk
         simplification with ap_bin2hex()
@@ -249,7 +249,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                      https://svn.apache.org/r1463044
                      https://svn.apache.org/r1463045
       2.4.x patch: trunk patch works
-      +1: jailletc36
+      +1: jailletc36, minfrin
 
 
 A list of further possible backports can be found at:                                                                                                                                   
