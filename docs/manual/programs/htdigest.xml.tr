@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 487904:1363282 (outdated) -->
+<!-- English Revision: 1363282 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -64,7 +64,9 @@
     değilse oluşturulur, dosya mevcutsa silinip yeniden oluşturulur.</dd>
 
     <dt><code><var>bölge</var></code></dt>
-    <dd>Kullanıcının mensup olduğu bölge ismi.</dd>
+    <dd>Kullanıcının mensup olduğu bölge ismi. Daha fazla bilgi için:
+    <a href="http://tools.ietf.org/html/rfc2617#section-3.2.1">
+    http://tools.ietf.org/html/rfc2617#section-3.2.1</a></dd>
 
     <dt><code><var>kullanıcı</var></code></dt>
     <dd><code><var>parola-dosyası</var></code>'nda oluşturulacak veya

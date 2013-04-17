@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1174747:1420732 (outdated) -->
+<!-- English Revision: 1420732 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -41,6 +41,9 @@
     yarar. Düz metin bir veritabanı kullanmak isterseniz
     <strong><program>htpasswd</program></strong> sayfasına bakınız.</p>
 
+    <p>DBM parola veritabanı sağlayan diğer bir araç da
+      <strong><program>htdbm</program></strong>'dir.</p>
+
     <p>Bu kılavuz sayfası sadece komut satırı değiştirgelerini listeler.
     Kullanıcı kimlik doğrulamasını
     <strong><program>httpd</program></strong>'de yapılandırmak için gerekli
@@ -49,6 +52,7 @@
     adresinde de bulunan Apache HTTP Sunucusu Belgelerine bakınız.</p>
 </summary>
 <seealso><program>httpd</program></seealso>
+<seealso><program>htdbm</program></seealso>
 <seealso><module>mod_authn_dbm</module></seealso>
 <seealso><module>mod_authz_dbm</module></seealso>
 
