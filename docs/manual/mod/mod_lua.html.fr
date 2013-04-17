@@ -27,6 +27,8 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_lua.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_lua.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournit des points d'entrée Lua dans différentes parties du
 traitement des requêtes httpd</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
@@ -703,276 +705,350 @@ end
 <div class="section">
 <h2><a name="functions" id="functions">Méthodes de l'objet request_rec</a></h2>
 
-        <p>L'objet request_rec possède (au minimum) les méthodes
-	suivantes :</p>
+<p>L'objet request_rec possède (au minimum) les méthodes suivantes :</p>
 
-        <pre class="prettyprint lang-lua">
-	r:flush() -- vide le tampon de sortie
-        </pre>
+<pre class="prettyprint lang-lua">
+r:flush() -- vide le tampon de sortie
 
-
-        <pre class="prettyprint lang-lua">
-        r:addoutputfilter(name|function) -- ajoute un filtre en sortie
-        </pre>
-
-
-        <pre class="prettyprint lang-lua">
-	r:sendfile(filename) -- envoie un fichier entier au client en
-	utilisant sendfile s'il est supporté par la plateforme
-        </pre>
+while nous_avons_des_données_à_envoyer do
+    r:puts("Bla bla bla\n") -- envoi des données à envoyer vers le tampon
+    r:flush() -- vidage du tampon (envoi au client)
+    r:sleep(0.5) -- mise en attente et bouclage
++end
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
-        r:parseargs() -- renvoie une table Lua contenant la chaîne
-	d'arguments de la requête
-        </pre>
+<pre class="prettyprint lang-lua">
+r:addoutputfilter(name|function) -- ajoute un filtre en sortie
+
+r:addoutputfilter("fooFilter") -- insère le filtre fooFilter dans le flux de sortie
+</pre>
+
+
+<pre class="prettyprint lang-lua">
+r:sendfile(filename) -- envoie un fichier entier au client en
+utilisant sendfile s'il est supporté par la plateforme :
+
+if use_sendfile_thing then
+    r:sendfile("/var/www/large_file.img")
+end
+</pre>
+
+
+<pre class="prettyprint lang-lua">
+r:parseargs() -- renvoie une table Lua contenant la chaîne
+d'arguments de la requête
+
+local GET = r:parseargs()
++r:puts("Votre nom est : " .. GET['name'] or "Unknown")
+</pre>
 
 
 
-        <pre class="prettyprint lang-lua">
-        r:parsebody()([sizeLimit]) -- interprète le corps de la requête
-	en tant que POST et renvoie une table lua. Un nombre optionnel
-	peut être fourni pour spécifier le nombre maximal d'octets à
-	interpréter. La valeur par défaut est 8192.
-        </pre>
+<pre class="prettyprint lang-lua">
+r:parsebody()([sizeLimit]) -- interprète le corps de la requête
+en tant que POST et renvoie une table lua. Un nombre optionnel
+peut être fourni pour spécifier le nombre maximal d'octets à
+interpréter. La valeur par défaut est 8192.
+
+local POST = r:parsebody(1024*1024)
++r:puts("Votre nom est : " .. POST['name'] or "Unknown")
+</pre>
 
 
 
-        <pre class="prettyprint lang-lua">
-        r:puts("bonjour", " le monde", "!") -- affichage dans le corps de la réponse
-        </pre>
+<pre class="prettyprint lang-lua">
+r:puts("bonjour", " le monde", "!") -- affichage dans le corps de la réponse
+</pre>
 
 
-	<pre class="prettyprint lang-lua">
-        r:write("une simple chaîne") -- affichage dans le
-	corps de la réponse
-        </pre>
+<pre class="prettyprint lang-lua">
+r:write("une simple chaîne") -- affichage dans le
+corps de la réponse
+</pre>
 
 
-	<pre class="prettyprint lang-lua">
-        r:escape_html("&lt;html&gt;test&lt;/html&gt;") -- Echappe le
-	code HTML et renvoie le résultat
-        </pre>
+<pre class="prettyprint lang-lua">
+r:escape_html("&lt;html&gt;test&lt;/html&gt;") -- Echappe le
+code HTML et renvoie le résultat
+</pre>
 
 
-	<pre class="prettyprint lang-lua">
-        r:base64_encode(string) -- Encode une chaîne à l'aide du
-	standard de codage Base64.
-        </pre>
+<pre class="prettyprint lang-lua">
+r:base64_encode(string) -- Encode une chaîne à l'aide du
+standard de codage Base64.
+
+local encoded = r:base64_encode("This is a test") -- returns VGhpcyBpcyBhIHRlc3Q=
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
-        r:base64_decode(string) -- Décode une chaîne codée en Base64.
-        </pre>
+<pre class="prettyprint lang-lua">
+r:base64_decode(string) -- Décode une chaîne codée en Base64.
+
+local decoded = r:base64_decode("VGhpcyBpcyBhIHRlc3Q=") -- returns 'This is a test'
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
-        r:md5(string) -- Calcule et renvoie le condensé MD5 d'une chaîne
-	en mode binaire (binary safe).
-        </pre>
+<pre class="prettyprint lang-lua">
+r:md5(string) -- Calcule et renvoie le condensé MD5 d'une chaîne
+en mode binaire (binary safe).
+
+local hash = r:md5("This is a test") -- returns ce114e4501d2f4e2dcea3e17b546f339
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
-        r:sha1(string) -- Calcule et renvoie le condensé SHA1 d'une chaîne
-	en mode binaire (binary safe).
-        </pre>
+<pre class="prettyprint lang-lua">
+r:sha1(string) -- Calcule et renvoie le condensé SHA1 d'une chaîne
+en mode binaire (binary safe).
+
+local hash = r:sha1("This is a test") -- returns a54d88e06612d820bc3be72877c74f257b561b19
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
-        r:escape(string) -- Echappe une chaîne de type URL.
-        </pre>
+<pre class="prettyprint lang-lua">
+r:escape(string) -- Echappe une chaîne de type URL.
+
+local url = "http://foo.bar/1 2 3 &amp; 4 + 5"
+local escaped = r:escape(url) -- returns 'http%3a%2f%2ffoo.bar%2f1+2+3+%26+4+%2b+5'
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
-        r:unescape(string) -- Déséchappe une chaîne de type URL.
-        </pre>
+<pre class="prettyprint lang-lua">
+r:unescape(string) -- Déséchappe une chaîne de type URL.
+
+local url = "http%3a%2f%2ffoo.bar%2f1+2+3+%26+4+%2b+5"
+local unescaped = r:escape(url) -- returns 'http://foo.bar/1 2 3 &amp; 4 + 5'
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
-        r:banner() -- Renvoie la bannière du serveur courant.
-        </pre>
+<pre class="prettyprint lang-lua">
+r:mpm_query(number) -- Interroge le serveur à propos de son
+module MPM via la requête ap_mpm_query.
+
+local mpm = r.mpm_query(14)
+if mpm == 1 then
+    r:puts("Ce serveur utilise le MPM Event")
+end
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
-        r:port() -- Renvoie le port du serveur courant utilisé pour la
-	requête.
-        </pre>
+<pre class="prettyprint lang-lua">
+r:expr(string) -- Evalue une chaîne de type <a href="../expr.html">expr</a>.
+
+if r:expr("%{HTTP_HOST} =~ /^www/") then
+    r:puts("Ce nom d'hôte commence par www")
+end
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
-        r:mpm_query(number) -- Interroge le serveur à propos de son
-	module MPM via la requête ap_mpm_query.
-        </pre>
+<pre class="prettyprint lang-lua">
+r:scoreboard_process(a) -- Interroge le serveur à propos du
+processus à la position <code>a</code>.
+
+local process = r:scoreboard_process(1)
+r:puts("Le serveur 1 a comme PID " .. process.pid)
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
-        r:expr(string) -- Evalue une chaîne de type <a href="../expr.html">expr</a>.
-        </pre>
+<pre class="prettyprint lang-lua">
+r:scoreboard_worker(a, b) -- Interroge le serveur à propos du
+thread <code>b</code>, dans le processus <code>a</code>.
+
+local thread = r:scoreboard_worker(1, 1)
+r:puts("L'ID du thread 1 du serveur 1 est " .. thread.tid .. " et son
+état est " .. thread.status)
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
-        r:scoreboard_process(a) -- Interroge le serveur à propos du
-	processus à la position <code>a</code>.
-        </pre>
+<pre class="prettyprint lang-lua">
+r:started() -- Renvoie l'heure du dernier (re)démarrage du
+serveur.
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
-        r:scoreboard_worker(a, b) -- Interroge le serveur à propos du
-	thread <code>b</code>, dans le processus <code>a</code>.
-        </pre>
+<pre class="prettyprint lang-lua">
+r:clock() -- Renvoie l'heure courante avec une précision d'une
+microseconde.
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
-        r:started() -- Renvoie l'heure du dernier (re)démarrage du
-	serveur.
-        </pre>
-
-
-        <pre class="prettyprint lang-lua">
-        r:clock() -- Renvoie l'heure courante avec une précision d'une
-	microseconde.
-        </pre>
-
-
-        <pre class="prettyprint lang-lua">
+<pre class="prettyprint lang-lua">
 r:requestbody(filename) -- Lit et renvoie le corps d'une requête. Si
 'filename' est spécifié, le corps de requête n'est pas renvoyé, mais
 sauvegardé dans le fichier correspondant.
-        </pre>
+
+local input = r:requestbody()
+r:puts("Vous m'avez envoyé le corps de requête suivant :\n")
+r:puts(input)
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
-        r:add_input_filter(filter_name) -- Ajoute le filtre en entrée
-	'filter_name'.
-        </pre>
+<pre class="prettyprint lang-lua">
+r:add_input_filter(filter_name) -- Ajoute le filtre en entrée
+'filter_name'.
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
-        r:module_info(module_name) -- Interroge le serveur à propos d'un
-	module.
-        </pre>
+<pre class="prettyprint lang-lua">
+r:module_info(module_name) -- Interroge le serveur à propos d'un
+module.
+
+local mod = r.module_info("mod_lua.c")
+if mod then
+    for k, v in pairs(mod.commands) do
+       r:puts( ("%s: %s\n"):format(k,v)) -- affiche toutes les directives implémentées par ce module
+    end
+end
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
-        r:loaded_modules() -- Renvoie une liste des modules chargés par
-	httpd.
-        </pre>
+<pre class="prettyprint lang-lua">
+r:loaded_modules() -- Renvoie une liste des modules chargés par
+httpd.
+
+for k, module in pairs(r:loaded_modules()) do
+    r:puts("J'ai chargé le module " .. module .. "\n")
+end
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
+<pre class="prettyprint lang-lua">
 r:runtime_dir_relative(filename) -- Génère le nom d'un fichier run-time
 (par exemple la mémoire partagée "file") relativement au répertoire de
 run-time. 
-        </pre>
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
-        r:server_info() -- Renvoie une table contenant des informations
-	à propos du serveur, comme le nom de l'exécutable httpd, le
-	module mpm utilisé, etc...
-        </pre>
+<pre class="prettyprint lang-lua">
+r:server_info() -- Renvoie une table contenant des informations
+à propos du serveur, comme le nom de l'exécutable httpd, le
+module mpm utilisé, etc...
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
-        r:set_document_root(file_path) -- Définit la racine des
-	documents pour la requête à file_path.
-        </pre>
+<pre class="prettyprint lang-lua">
+r:set_document_root(file_path) -- Définit la racine des
+documents pour la requête à file_path.
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
-        r:add_version_component(component_string) -- Ajoute un élément à
-	la bannière du serveur.
-        </pre>
+<pre class="prettyprint lang-lua">
+r:add_version_component(component_string) -- Ajoute un élément à
+la bannière du serveur.
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
-        r:set_context_info(prefix, docroot) -- Définit le préfixe et la
-	racine des documents du contexte pour une requête.
-        </pre>
+<pre class="prettyprint lang-lua">
+r:set_context_info(prefix, docroot) -- Définit le préfixe et la
+racine des documents du contexte pour une requête.
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
-        r:os_escape_path(file_path) -- Convertit un chemin du système de
-	fichiers en URL indépendamment du système d'exploitation.
-        </pre>
+<pre class="prettyprint lang-lua">
+r:os_escape_path(file_path) -- Convertit un chemin du système de
+fichiers en URL indépendamment du système d'exploitation.
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
-        r:escape_logitem(string) -- Echappe une chaîne pour
-	journalisation.
-        </pre>
+<pre class="prettyprint lang-lua">
+r:escape_logitem(string) -- Echappe une chaîne pour
+journalisation.
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
+<pre class="prettyprint lang-lua">
 r:strcmp_match(string, pattern) -- Vérifie si 'string' correspond à
 'pattern' via la fonction strcmp_match (GLOBs). Par exemple, est-ce que
 'www.example.com' correspond à '*.example.com' ?
-        </pre>
+
+local match = r:strcmp_match("foobar.com", "foo*.com")
+if match then 
+    r:puts("foobar.com matches foo*.com")
+end
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
-        r:set_keepalive() -- Définit l'état de persistance d'une
-	requête. Renvoie true dans la mesure du possible, false dans le
-	cas contraire.
-        </pre>
+<pre class="prettyprint lang-lua">
+r:set_keepalive() -- Définit l'état de persistance d'une
+requête. Renvoie true dans la mesure du possible, false dans le
+cas contraire.
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
-        r:make_etag() -- Génère et renvoie le etag pour la requête
-	courante.
-        </pre>
+<pre class="prettyprint lang-lua">
+r:make_etag() -- Génère et renvoie le etag pour la requête
+courante.
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
+<pre class="prettyprint lang-lua">
 r:send_interim_response(clear) -- Renvoie une réponse d'intérim (1xx) au
 client. Si 'clear' est vrai, les en-têtes disponibles seront envoyés et
 effacés.
-        </pre>
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
+<pre class="prettyprint lang-lua">
 r:custom_response(status_code, string) -- Génère et définit une réponse
 personnalisée pour un code d'état particulier. Le fonctionnement est
 très proche de celui de la directive ErrorDocument.
-        </pre>
+
+r:custom_response(404, "Baleted!")
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
-        r:exists_config_define(string) -- Vérifie si une définition de
-	configuration existe.
-        </pre>
+<pre class="prettyprint lang-lua">
+r:exists_config_define(string) -- Vérifie si une définition de
+configuration existe.
+
+if r:exists_config_define("FOO") then
+    r:puts("httpd a probablement été lancé avec l'option -DFOO, ou FOO a
+    été défini dans la configuration")
+end
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
-        r:state_query(string) -- Interroge le serveur à propos de son
-	état.
-        </pre>
+<pre class="prettyprint lang-lua">
+r:state_query(string) -- Interroge le serveur à propos de son
+état.
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
-        r:stat(filename) -- Exécute stat() sur un fichier, et renvoie
-	une table contenant des informations à propos de ce fichier.
-        </pre>
+<pre class="prettyprint lang-lua">
+r:stat(filename) -- Exécute stat() sur un fichier, et renvoie
+une table contenant des informations à propos de ce fichier.
+
+local info = r:stat("/var/www/foo.txt")
+if info then
+    r:puts("Ce fichier existe et a été modifié pour la dernière fois à : " .. info.modified)
+end
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
-        r:regex(string, pattern) -- Exécute une recherche à base
-	d'expression rationnelle sur une chaîne, et renvoie les
-	éventuelles correspondances trouvées.
-        </pre>
+<pre class="prettyprint lang-lua">
+r:regex(string, pattern) -- Exécute une recherche à base
+d'expression rationnelle sur une chaîne, et renvoie les
+éventuelles correspondances trouvées.
+
+local matches = r:regex("foo bar baz", "foo (\w+) (\S*)")
+if matches then
+    r:puts("L'expression rationnelle correspond et le dernier mot
+    capturé ($2) est : " .. matches[2])
+end
+</pre>
 
 
-        <pre class="prettyprint lang-lua">
+<pre class="prettyprint lang-lua">
 r:sleep(secondes) -- Interrompt l'exécution du script pendant le	nombre de secondes spécifié.
                   -- La valeur peut être spécifiée sous la forme d'un nombre décimal comme 1.25 pour plus de précision.
-        </pre>
+</pre>
 
 
-	<pre class="prettyprint lang-lua">
-	r:dbacquire(dbType[, dbParams]) -- Acquiert une connexion à une
+<pre class="prettyprint lang-lua">
+r:dbacquire(dbType[, dbParams]) -- Acquiert une connexion à une
 base de données et renvoie une classe database. Voir '<a href="#databases">Connectivité aux bases de données</a>' pour plus de
 détails.
-        </pre>
+</pre>
 
         
 

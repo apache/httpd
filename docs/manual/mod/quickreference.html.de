@@ -151,7 +151,7 @@ formatted email address</td></tr>
 <tr class="odd"><td><a href="event.html#asyncrequestworkerfactor">AsyncRequestWorkerFactor <var>factor</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Limit concurrent connections per process</td></tr>
 <tr><td><a href="mod_auth_basic.html#authbasicauthoritative">AuthBasicAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets whether authorization and authentication are passed to
 lower level modules</td></tr>
-<tr class="odd"><td><a href="mod_auth_basic.html#authbasicfake">AuthBasicFake username password</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Fake basic authentication using the given expressions for
+<tr class="odd"><td><a href="mod_auth_basic.html#authbasicfake">AuthBasicFake off|username [password]</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Fake basic authentication using the given expressions for
 username and password</td></tr>
 <tr><td><a href="mod_auth_basic.html#authbasicprovider">AuthBasicProvider <var>provider-name</var>
 [<var>provider-name</var>] ...</a></td><td> file </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets the authentication provider(s) for this location</td></tr>

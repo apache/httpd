@@ -98,7 +98,7 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Fake basic authentication using the given expressions for
 username and password</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AuthBasicFake username password</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AuthBasicFake off|username [password]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>AuthConfig</td></tr>

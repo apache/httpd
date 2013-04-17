@@ -1476,6 +1476,15 @@ ProxyPass /mirror/foo http://backend.example.com
 	le cas des autres erreurs de worker.
     </td></tr>
 
+    <tr><td>failontimeout</td>
+        <td>Off</td>
+        <td>Si ce paramètre est défini à "On", un délai d'attente
+	dépassé en entrée/sortie après envoi d'une requête au serveur
+	d'arrière-plan va mettre le processus en état d'erreur. La
+	sortie de cet état d'erreur se passe de la même façon que pour
+	les autres erreurs.
+    </td></tr>
+
     <tr><td>nonce</td>
         <td>&lt;auto&gt;</td>
         <td>Le nombre à usage unique de protection utilisé dans la page

@@ -138,7 +138,7 @@ be passed through</td></tr>
 여부</td></tr>
 <tr class="odd"><td><a href="event.html#asyncrequestworkerfactor">AsyncRequestWorkerFactor <var>factor</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Limit concurrent connections per process</td></tr>
 <tr><td><a href="mod_auth_basic.html#authbasicauthoritative">AuthBasicAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">인증과 권한부여를 저수준 모듈에 넘겨줄지 결정한다</td></tr>
-<tr class="odd"><td><a href="mod_auth_basic.html#authbasicfake">AuthBasicFake username password</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Fake basic authentication using the given expressions for
+<tr class="odd"><td><a href="mod_auth_basic.html#authbasicfake">AuthBasicFake off|username [password]</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Fake basic authentication using the given expressions for
 username and password</td></tr>
 <tr><td><a href="mod_auth_basic.html#authbasicprovider">AuthBasicProvider On|Off|<var>provider-name</var>
 [<var>provider-name</var>] ...</a></td><td> On </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">이 위치에 대한 인증제공자를 지정한다</td></tr>
