@@ -26,7 +26,6 @@
 <a href="../ko/programs/ab.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/ab.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p><code><strong>ab</strong></code> Apache Hiper Metin Aktarım Protokolü
       (HTTP) sunucunuzun başarımını ölçmek amacıyla kullanabileceğiniz bir
@@ -62,7 +61,7 @@
     [ -<strong>P</strong> <var>vekil-yetkilisi:parola</var> ]
     [ -<strong>q</strong> ]
     [ -<strong>r</strong> ]
-    [ -<strong>s</strong> ]
+    [ -<strong>s</strong> <var>zamanasimi</var> ]
     [ -<strong>S</strong> ]
     [ -<strong>t</strong> <var>saniye</var> ]
     [ -<strong>T</strong> <var>içerik-türü</var> ]
@@ -169,12 +168,9 @@
     <dt><code><strong>-r</strong></code></dt>
     <dd>Soket hata alsa bile program çıkmaz.</dd>
 
-    <dt><code><strong>-s</strong></code></dt>
-    <dd>Derlendiği takdirde (<code><strong>ab -h</strong></code> bunu
-      gösterir) <code>http</code> protokolü yerine SSL korumalı
-      <code>https</code> protokolü kullanılır. Bu özellik henüz
-      <em>emekleme</em> aşamasında olup geliştirilmeye devam edilmektedir. Bu
-      bakımdan kullanımı önerilmez.</dd>
+    <dt><code><strong>-s</strong> <var>zamanasimi</var></code></dt>
+    <dd>Soket zaman aşımına uğramadan önce beklenecek azami saniye sayısı.
+      30 saniye öntanımlı süredir.</dd>
 
     <dt><code><strong>-S</strong></code></dt>
     <dd>Ortalama ve ortanca değerler arasında bir veya iki standart sapmadan
