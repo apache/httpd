@@ -109,6 +109,51 @@ once created, in your <code>RewriteRule</code> and
 may be used, and give examples of each.</p>
   </section>
 
+  <section id="int">
+    <title>int: Internal Function</title>
+
+    <p>When a MapType of <code>int</code> is used, the MapSource is one
+    of the available internal RewriteMap functions.  Module authors can provide
+    additional internal functions by registering them with the
+    <code>ap_register_rewrite_mapfunc</code> API.
+    The functions that are provided by default are:
+    </p>
+
+    <ul>
+      <li><strong>toupper</strong>:<br/>
+             Converts the key to all upper case.</li>
+      <li><strong>tolower</strong>:<br/>
+             Converts the key to all lower case.</li>
+      <li><strong>escape</strong>:<br/>
+             Translates special characters in the key to
+            hex-encodings.</li>
+      <li><strong>unescape</strong>:<br/>
+             Translates hex-encodings in the key back to
+            special characters.</li>
+    </ul>
+
+    <p>
+    To use one of these functions, create a <code>RewriteMap</code> referencing
+    the int function, and then use that in your <code>RewriteRule</code>:
+    </p>
+
+   <p> <strong>Redirect a URI to an all-lowercase version of itself</strong></p>
+    <highlight language="config">
+
+RewriteMap lc int:tolower
+RewriteRule (.*?[A-Z]+.*) ${lc:$1} [R]
+    </highlight>
+
+    <note>
+    <p>Please note that the example offered here is for
+    illustration purposes only, and is not a recommendation. If you want
+    to make URLs case-insensitive, consider using
+    <module>mod_speling</module> instead.
+    </p>
+    </note>
+
+  </section>
+
   <section id="txt">
     <title>txt: Plain text maps</title>
 
@@ -281,51 +326,6 @@ restarted. This ensures better performance on maps that are called
 by many requests.
 </p>
 </note>
-
-  </section>
-
-  <section id="int">
-    <title>int: Internal Function</title>
-
-    <p>When a MapType of <code>int</code> is used, the MapSource is one
-    of the available internal RewriteMap functions.  Module authors can provide
-    additional internal functions by registering them with the
-    <code>ap_register_rewrite_mapfunc</code> API.
-    The functions that are provided by default are:
-    </p>
-
-    <ul>
-      <li><strong>toupper</strong>:<br/>
-             Converts the key to all upper case.</li>
-      <li><strong>tolower</strong>:<br/>
-             Converts the key to all lower case.</li>
-      <li><strong>escape</strong>:<br/>
-             Translates special characters in the key to
-            hex-encodings.</li>
-      <li><strong>unescape</strong>:<br/>
-             Translates hex-encodings in the key back to
-            special characters.</li>
-    </ul>
-
-    <p>
-    To use one of these functions, create a <code>RewriteMap</code> referencing
-    the int function, and then use that in your <code>RewriteRule</code>:
-    </p>
-
-   <p> <strong>Redirect a URI to an all-lowercase version of itself</strong></p>
-    <highlight language="config">
-
-RewriteMap lc int:tolower
-RewriteRule (.*?[A-Z]+.*) ${lc:$1} [R]
-    </highlight>
-
-    <note>
-    <p>Please note that the example offered here is for
-    illustration purposes only, and is not a recommendation. If you want
-    to make URLs case-insensitive, consider using
-    <module>mod_speling</module> instead.
-    </p>
-    </note>
 
   </section>
 
