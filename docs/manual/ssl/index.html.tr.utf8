@@ -27,13 +27,11 @@
 <a href="../tr/ssl/" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/ssl/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
   <p>Apache HTTP Sunucusunun <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> modülü, Güvenli Soketler
     Katmanı (SSL) ve Aktarım Katmanı Güvenliği (TLS) protokollerinin
     kullanıldığı Sağlam Şifreleme desteğini sağlayan <a href="http://www.openssl.org/">OpenSSL</a> kütüphanesine bir arayüz
-    içerir. Bu modül ve belgeler Ralf S. Engelschall’ın mod_ssl projesine
-    dayanmaktadır.</p>
+    içerir.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#documentation">Belgeler</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mod-ssl"><code>mod_ssl</code> Modülü</a></li>

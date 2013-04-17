@@ -27,7 +27,6 @@
 <a href="../ko/vhosts/ip-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/ip-based.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#explanation">IP'ye dayalı sanal konak desteği nedir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#requirements">Sistem gereksinimleri</a></li>
@@ -116,9 +115,10 @@
       (veya sanal konak) için <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>
       yönergesi kullanılır. Örnek:</p>
 
-    <div class="example"><p><code>
-    Listen 192.0.2.100:80
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+Listen 192.0.2.100:80
+    </pre>
+
 
     <p>Burada konak ismi yerine IP adresi kullanmanız önerilir (ayrıntılar için
       <a href="../dns-caveats.html">DNS ile ilgili konular</a> belgesine
@@ -135,27 +135,24 @@
       içeren ayrı birer <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code> bölümü
       oluşturulur. Örnek:</p>
 
-    <div class="example"><p><code>
-    &lt;VirtualHost 192.168.1.10:80&gt;
-    <span class="indent">
-      ServerAdmin bilgi@posta.birkobi.dom<br />
-      DocumentRoot /gruplar/birkobi/belgeler<br />
-      ServerName www.birkobi.dom<br />
-      ErrorLog /gruplar/birkobi/günlükler/hatalar.log<br />
-      CustomLog /gruplar/birkobi/günlükler/erisim.log combined
-    </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 192.168.1.20:80&gt;
-    <span class="indent">
-      ServerAdmin bilgi@posta.digerkobi.dom<br />
-      DocumentRoot /gruplar/digerkobi/belgeler<br />
-      ServerName www.digerkobi.dom<br />
-      ErrorLog /gruplar/digerkobi/günlükler/hatalar.log<br />
-      CustomLog /gruplar/digerkobi/günlükler/erisim.log combined
-    </span>
-    &lt;/VirtualHost&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;VirtualHost 192.168.1.10:80&gt;
+    ServerAdmin bilgi@example.com
+    DocumentRoot /siteler/belgeler/ecom
+    ServerName example.com
+    ErrorLog /siteler/gunlukler/ecom/hatalar.log
+    CustomLog /siteler/gunlukler/ecom/erisim.log combined
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 192.168.1.20:80&gt;
+    ServerAdmin bilgi@example.org
+    DocumentRoot /siteler/belgeler/eorg
+    ServerName example.org
+    ErrorLog /siteler/gunlukler/eorg/hatalar.log
+    CustomLog /siteler/gunlukler/eorg/erisim.log combined
+&lt;/VirtualHost&gt;
+    </pre>
+
 
     <p>&lt;VirtualHost&gt; yönergesinde konak ismi yerine
        IP adresi kullanmanız önerilir (ayrıntılar için
