@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1301400:1344676 (outdated) -->
+<!-- English Revision: 1344676 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -141,23 +141,19 @@ Barındırma</a></seealso>
       varsayalım. Bunun için <code>httpd.conf</code> dosyanıza basitçe şu
       satırları ekleyebilirsiniz:</p>
 
-    <example>
-        &lt;VirtualHost *:80&gt;<br />
-        <indent>
-            #İlk sanal konak aynı zamanda *:80 için de öntanımlıdır.
-            ServerName site1.example.com<br />
-            ServerAlias example.com<br />
-            DocumentRoot /siteler/site1<br />
-        </indent>
-        &lt;/VirtualHost&gt;<br />
-        <br />
-        &lt;VirtualHost *:80&gt;<br />
-        <indent>
-            ServerName site2.example.com<br />
-            DocumentRoot /siteler/site2<br />
-        </indent>
-        &lt;/VirtualHost&gt;<br />
-    </example>
+    <highlight language="config">
+&lt;VirtualHost *:80&gt;
+    #İlk sanal konak aynı zamanda *:80 için de öntanımlıdır.
+    ServerName site1.example.com
+    ServerAlias example.com
+    DocumentRoot /siteler/site1
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost *:80&gt;
+    ServerName site2.example.com
+    DocumentRoot /siteler/site2
+&lt;/VirtualHost&gt;
+    </highlight>
 
     <p>İsterseniz, <directive type="section" module="core"
       >VirtualHost</directive> yönergesinde argüman olarak <code>*</code>
@@ -173,9 +169,9 @@ Barındırma</a></seealso>
       kullanıcıların aynı siteye farklı isimlerle erişmelerini mümkün kılmak
       için bölüm içine şu satırı ekleyebilirsiniz:</p>
 
-    <example>
-        ServerAlias example.com *.example.com
-    </example>
+    <highlight language="config">
+ServerAlias example.com *.example.com
+    </highlight>
 
     <p>Böylece <code>example.com</code> alanındaki tüm konaklar için gelen
       isteklere <code>www.example.com</code> sanal konağından hizmet sunulmuş
@@ -193,6 +189,10 @@ Barındırma</a></seealso>
       >ServerName</directive> veya <directive module="core"
       >ServerAlias</directive> yönergesi eşleşen ilk sanal konak
       kullanılır.</p>
+
+    <p><code>VirtualHost</code> içindeki isimlerin sırası (jokersiz) bir
+      <code>ServerAlias</code> gibi ele alınır (fakat hiçbir
+      <code>ServerAlias</code> yönergesi ile geçersiz kılınmaz).</p>
 
     <p>Son olarak, sanal konak yapılandırmanıza, <directive type="section"
       module="core">VirtualHost</directive> bölümlerinin içine başka yönergeler

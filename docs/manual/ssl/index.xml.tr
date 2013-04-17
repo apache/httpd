@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1070915:1333999 (outdated) -->
+<!-- English Revision: 1333999 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -34,8 +34,7 @@
     Katmanı (SSL) ve Aktarım Katmanı Güvenliği (TLS) protokollerinin
     kullanıldığı Sağlam Şifreleme desteğini sağlayan <a
     href="http://www.openssl.org/" >OpenSSL</a> kütüphanesine bir arayüz
-    içerir. Bu modül ve belgeler Ralf S. Engelschall’ın mod_ssl projesine
-    dayanmaktadır.</p>
+    içerir.</p>
 </summary>
 
 <section id="documentation"><title>Belgeler</title>
