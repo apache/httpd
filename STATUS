@@ -243,6 +243,23 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk patch works
       +1: jailletc36, minfrin
 
+    * skiplist: Add skiplist functionality
+      trunk patches: https://svn.apache.org/r1411190
+                     https://svn.apache.org/r1411274
+                     https://svn.apache.org/r1411279
+                     https://svn.apache.org/r1411415
+                     https://svn.apache.org/r1411424
+                     https://svn.apache.org/r1411715
+                     https://svn.apache.org/r1415753
+                     https://svn.apache.org/r1451616
+                     https://svn.apache.org/r1451617
+                     https://svn.apache.org/r1451618
+                     https://svn.apache.org/r1451620
+                     https://svn.apache.org/r1451705
+                     https://svn.apache.org/r1452774
+                     https://svn.apache.org/r1463046
+      2.4.x patch: trunk patches work
+      +1: jim
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
