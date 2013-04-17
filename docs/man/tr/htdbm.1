@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "HTDBM" 1 "2012-04-02" "Apache HTTP Sunucusu" "htdbm"
+.TH "HTDBM" 1 "2013-04-17" "Apache HTTP Sunucusu" "htdbm"
 .nh
 .SH İSİM
 htdbm \- DBM parola veritabanlarını yönetir
@@ -27,25 +27,25 @@ htdbm \- DBM parola veritabanlarını yönetir
 .SH "KULLANIM"
  
 .PP
-\fBhtdbm\fR [ -\fBT\fR\fIVTtürü\fR ] [ -\fBc\fR ] [ -\fBm\fR | -\fBd\fR | -\fBp\fR | -\fBs\fR ] [ -\fBt\fR ] [ -\fBv\fR ] [ -\fBx\fR ] \fIparola-dosyası\fR \fIkullanıcı\fR
+\fBhtdbm\fR [ -\fBT\fR\fIVTtürü\fR ] [ -\fBi\fR ] [ -\fBc\fR ] [ -\fBm\fR | -\fBB\fR | -\fBd\fR | -\fBs\fR | -\fBp\fR ] [ -\fBC\fR \fIbedel\fR ] [ -\fBt\fR ] [ -\fBv\fR ] \fIparola-dosyası\fR \fIkullanıcı\fR
  
 .PP
-\fBhtdbm\fR -\fBb\fR [ -\fBT\fR\fIVTtürü\fR ] [ -\fBc\fR ] [ -\fBm\fR | -\fBd\fR | -\fBp\fR | -\fBs\fR ] [ -\fBt\fR ] [ -\fBv\fR ] \fIparola-dosyası\fR \fIkullanıcı\fR \fIparola\fR
+\fBhtdbm\fR -\fBb\fR [ -\fBT\fR\fIVTtürü\fR ] [ -\fBc\fR ] [ -\fBm\fR | -\fBB\fR | -\fBd\fR | -\fBs\fR | -\fBp\fR ] [ -\fBC\fR \fIbedel\fR ] [ -\fBt\fR ] [ -\fBv\fR ] \fIparola-dosyası\fR \fIkullanıcı\fR \fIparola\fR
  
 .PP
-\fBhtdbm\fR -\fBn\fR [ -\fBc\fR ] [ -\fBm\fR | -\fBd\fR | -\fBp\fR | -\fBs\fR ] [ -\fBt\fR ] [ -\fBv\fR ] \fIkullanıcı\fR
+\fBhtdbm\fR -\fBn\fR [ -\fBi\fR ] [ -\fBc\fR ] [ -\fBm\fR | -\fBB\fR | -\fBd\fR | -\fBs\fR | -\fBp\fR ] [ -\fBC\fR \fIbedel\fR ] [ -\fBt\fR ] [ -\fBv\fR ] \fIkullanıcı\fR
  
 .PP
-\fBhtdbm\fR -\fBnb\fR [ -\fBc\fR ] [ -\fBm\fR | -\fBd\fR | -\fBp\fR | -\fBs\fR ] [ -\fBt\fR ] [ -\fBv\fR ] \fIkullanıcı\fR \fIparola\fR
+\fBhtdbm\fR -\fBnb\fR [ -\fBc\fR ] [ -\fBm\fR | -\fBB\fR | -\fBd\fR | -\fBs\fR | -\fBp\fR ] [ -\fBC\fR \fIbedel\fR ] [ -\fBt\fR ] [ -\fBv\fR ] \fIkullanıcı\fR \fIparola\fR
  
 .PP
-\fBhtdbm\fR -\fBv\fR [ -\fBT\fR\fIVTtürü\fR ] [ -\fBc\fR ] [ -\fBm\fR | -\fBd\fR | -\fBp\fR | -\fBs\fR ] [ -\fBt\fR ] [ -\fBv\fR ] \fIparola-dosyası\fR \fIkullanıcı\fR
+\fBhtdbm\fR -\fBv\fR [ -\fBT\fR\fIVTtürü\fR ] [ -\fBi\fR ] [ -\fBc\fR ] [ -\fBm\fR | -\fBB\fR | -\fBd\fR | -\fBs\fR | -\fBp\fR ] [ -\fBC\fR \fIbedel\fR ] [ -\fBt\fR ] [ -\fBv\fR ] \fIparola-dosyası\fR \fIkullanıcı\fR
  
 .PP
-\fBhtdbm\fR -\fBvb\fR [ -\fBT\fR\fIVTtürü\fR ] [ -\fBc\fR ] [ -\fBm\fR | -\fBd\fR | -\fBp\fR | -\fBs\fR ] [ -\fBt\fR ] [ -\fBv\fR ] \fIparola-dosyası\fR \fIkullanıcı\fR \fIparola\fR
+\fBhtdbm\fR -\fBvb\fR [ -\fBT\fR\fIVTtürü\fR ] [ -\fBc\fR ] [ -\fBm\fR | -\fBB\fR -\fBd\fR | -\fBs\fR | -\fBp\fR ] [ -\fBC\fR \fIbedel\fR ] [ -\fBt\fR ] [ -\fBv\fR ] \fIparola-dosyası\fR \fIkullanıcı\fR \fIparola\fR
  
 .PP
-\fBhtdbm\fR -\fBx\fR [ -\fBT\fR\fIVTtürü\fR ] [ -\fBm\fR | -\fBd\fR | -\fBp\fR | -\fBs\fR ] \fIparola-dosyası\fR \fIkullanıcı\fR
+\fBhtdbm\fR -\fBx\fR [ -\fBT\fR\fIVTtürü\fR ] \fIparola-dosyası\fR \fIkullanıcı\fR
  
 .PP
 \fBhtdbm\fR -\fBl\fR [ -\fBT\fR\fIVTtürü\fR ]
@@ -62,7 +62,10 @@ htdbm \- DBM parola veritabanlarını yönetir
  
 .TP
 \fB-b\fR
-Betik kipi; parola için istek yapmak yerine parola komut satırından verilir\&. \fBParola komut satırında görünür\fR olacağından çok dikkatli kullanmak gerekir\&.  
+Betik kipi; parola için istek yapmak yerine parola komut satırından verilir\&. \fBParola komut satırında görünür\fR olacağından çok dikkatli kullanmak gerekir\&. Betik kullanımı için \fB-i\fR seçeneğine bakınız\&.  
+.TP
+\fB-i\fR
+Parolayı doğrulamaksızın standart girdiden okur (betik kullanımı için)\&.  
 .TP
 \fB-c\fR
 \fIparola-dosyası\fR oluşturur\&. Dosya mevcutsa, dosya silinip yeniden yazılır\&. Bu seçenek \fB-n\fR seçeneği ile birlikte kullanılamaz\&.  
@@ -73,11 +76,17 @@ Sonuçları veritabanında güncellemek yerine standart çıktıya gönderir\&. 
 \fB-m\fR
 Parolalar için MD5 şifrelemesi kullanılır\&. Windows ve Netware için bu öntanımlıdır\&.  
 .TP
+\fB-B\fR
+Parolalar için bcrypt şifrelemesi kullanılır\&. Şu an için çok güvenli kabul edilmektedir\&.  
+.TP
+\fB-C\fR \fIbedel\fR
+Bu seçenek sadece \fB-B\fR (bcrypt şifrelemesi) seçeneği ile birlikte kullanılabilir\&. Bcrypt algoritmasına hesaplama süresini belirtir (daha yüksek değerler daha güvenlidir, öntanımlı 5, geçerli değerler: 4 - 31)\&.  
+.TP
 \fB-d\fR
-Parolaları şifrelemek için crypt() kullanılır\&. Windows, ve Netware dışında öntanımlıdır\&. \fBhtdbm\fR tarafından tüm platformlarda destekleniyor olsa da Windows ve Netware üzerinde httpd sunucusu tarafından desteklenmez\&.  
+Parolaları şifrelemek için crypt() kullanılır\&. Windows, ve Netware dışında öntanımlıdır\&. \fBhtdbm\fR tarafından tüm platformlarda destekleniyor olsa da Windows ve Netware üzerinde httpd sunucusu tarafından desteklenmez\&. Bu algoritma günümüz standartlarında \fBgüvenilmez\fR kabul edilmektedir\&.  
 .TP
 \fB-s\fR
-Parolalar için SHA şifrelemesi kullanılır\&. LDAP Dizin değişim biçemini (ldif) kullanarak Netscape sunucularına/sunucularından göçü kolaylaştırır\&.  
+Parolalar için SHA şifrelemesi kullanılır\&. LDAP Dizin değişim biçemini (ldif) kullanarak Netscape sunucularına/sunucularından göçü kolaylaştırır\&. Bu algoritma günümüz standartlarında \fBgüvenilmez\fR kabul edilmektedir\&.  
 .TP
 \fB-p\fR
 Düz metin parolalar kullanılır\&. \fBhtdbm\fR tarafından tüm platformlarda destekleniyor olsa da Windows, Netware ve TPF üzerinde httpd sunucusu tarafından sadece düz metin parolalar kabul edilir\&.  
@@ -85,14 +94,14 @@ Düz metin parolalar kullanılır\&. \fBhtdbm\fR tarafından tüm platformlarda 
 \fB-l\fR
 Veritabanındaki kullanıcıları açıklamalarıyla birlikte standart çıktıya gönderir\&.  
 .TP
-\fB-t\fR
-Son değiştirgenin bir açıklama olarak yorumlanmasını sağlar\&. Bu seçenek kullanıldığında komut satırının sonuna fazladan bir dizge eklenebilir\&. Bu dizge, veritabanında belirtilen kullanıcının "Comment" alanında saklanır\&.  
-.TP
 \fB-v\fR
 Kullanıcı adını ve parolasını doğrular\&. Program belirtilen parolanın geçerli olup olmadığını belirten bir ileti basar\&. Eğer parola geçersizse program hata kodu 3 ile çıkar\&.  
 .TP
 \fB-x\fR
 Kullanıcıyı siler\&. Kullanıcı belirtilen DBM dosyasında mevcutsa silinir\&.  
+.TP
+\fB-t\fR
+Son değiştirgenin bir açıklama olarak yorumlanmasını sağlar\&. Bu seçenek kullanıldığında komut satırının sonuna fazladan bir dizge eklenebilir\&. Bu dizge, veritabanında belirtilen kullanıcının "Comment" alanında saklanır\&.  
 .TP
 \fIparola-dosyası\fR
 DBM dosyasının ismi\&. Genellikle, \&.db, \&.pag veya \&.dir eklentisi olmaksızın belirtilir\&. \fB-c\fR seçeneği ile birlikte verilmişse ve DBM dosyası mevcut değilse dosya oluşturulur, mevcutsa dosya güncellenir\&.  
@@ -155,6 +164,15 @@ Komut satırından verilen parolayı (Pwd4Steve) MD5 algoritmasıyla şifreler v
  
 .PP
 Komut satırında parolanın şifrelenmemiş olarak görünmesi sebebiyle \fB-b\fR seçeneğinin kullanımından kaçınılmasını öneriyoruz\&.
+ 
+.PP
+crypt() algoritması kullanılırken, parolayı şekillendirmek için parolanın ilk 8 baytının kullanılacağına dikkat ediniz\&. Eğer parola 8 bayttan uzunsa kalanlar bir uyarı verilmeksizin iptal edilir\&.
+ 
+.PP
+SHA şifreleme biçeminde tuz kullanılmaz; yani, bir parolanın sadece bir şifreli gösterimi olabilir\&. crypt() ve MD5 biçemleri parolanın önüne rasgele üretilmiş bir tuz dizgesi eklediklerinden sözlük saldırılarına karşı daha dayanıklıdır\&.
+ 
+.PP
+SHA ve crypt() biçimleri günümüz standartlarında \fBgüvenilmez\fR kabul edilmektedir\&.
  
 .SH "KISITLAMALAR"
  

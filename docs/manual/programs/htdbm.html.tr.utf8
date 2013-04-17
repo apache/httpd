@@ -25,7 +25,6 @@
 <a href="../fr/programs/htdbm.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../tr/programs/htdbm.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p><code><strong>htdbm</strong></code>,
     <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> üzerinden HTTP kullanıcılarının temel
@@ -47,33 +46,40 @@
 <h2><a name="synopsis" id="synopsis">Kullanım</a></h2>
     <p><code><strong>htdbm</strong>
     [ -<strong>T</strong><var>VTtürü</var> ]
+    [ -<strong>i</strong> ]
     [ -<strong>c</strong> ]
     [ -<strong>m</strong> |
+      -<strong>B</strong> |
       -<strong>d</strong> |
-      -<strong>p</strong> |
-      -<strong>s</strong> ]
+      -<strong>s</strong> |
+      -<strong>p</strong> ]
+    [ -<strong>C</strong> <var>bedel</var> ]
     [ -<strong>t</strong> ]
     [ -<strong>v</strong> ]
-    [ -<strong>x</strong> ]
     <var>parola-dosyası</var> <var>kullanıcı</var></code></p>
 
     <p><code><strong>htdbm</strong> -<strong>b</strong>
     [ -<strong>T</strong><var>VTtürü</var> ]
     [ -<strong>c</strong> ]
     [ -<strong>m</strong> |
+      -<strong>B</strong> |
       -<strong>d</strong> |
-      -<strong>p</strong> |
-      -<strong>s</strong> ]
+      -<strong>s</strong> |
+      -<strong>p</strong> ]
+    [ -<strong>C</strong> <var>bedel</var> ]
     [ -<strong>t</strong> ]
     [ -<strong>v</strong> ]
     <var>parola-dosyası</var> <var>kullanıcı</var> <var>parola</var></code></p>
 
     <p><code><strong>htdbm</strong> -<strong>n</strong>
+    [ -<strong>i</strong> ]
     [ -<strong>c</strong> ]
     [ -<strong>m</strong> |
+      -<strong>B</strong> |
       -<strong>d</strong> |
-      -<strong>p</strong> |
-      -<strong>s</strong> ]
+      -<strong>s</strong> |
+      -<strong>p</strong> ]
+    [ -<strong>C</strong> <var>bedel</var> ]
     [ -<strong>t</strong> ]
     [ -<strong>v</strong> ]
     <var>kullanıcı</var></code></p>
@@ -81,20 +87,25 @@
     <p><code><strong>htdbm</strong> -<strong>nb</strong>
     [ -<strong>c</strong> ]
     [ -<strong>m</strong> |
+      -<strong>B</strong> |
       -<strong>d</strong> |
-      -<strong>p</strong> |
-      -<strong>s</strong> ]
+      -<strong>s</strong> |
+      -<strong>p</strong> ]
+    [ -<strong>C</strong> <var>bedel</var> ]
     [ -<strong>t</strong> ]
     [ -<strong>v</strong> ]
     <var>kullanıcı</var> <var>parola</var></code></p>
 
     <p><code><strong>htdbm</strong> -<strong>v</strong>
     [ -<strong>T</strong><var>VTtürü</var> ]
+    [ -<strong>i</strong> ]
     [ -<strong>c</strong> ]
     [ -<strong>m</strong> |
+      -<strong>B</strong> |
       -<strong>d</strong> |
-      -<strong>p</strong> |
-      -<strong>s</strong> ]
+      -<strong>s</strong> |
+      -<strong>p</strong> ]
+    [ -<strong>C</strong> <var>bedel</var> ]
     [ -<strong>t</strong> ]
     [ -<strong>v</strong> ]
     <var>parola-dosyası</var> <var>kullanıcı</var></code></p>
@@ -103,19 +114,17 @@
     [ -<strong>T</strong><var>VTtürü</var> ]
     [ -<strong>c</strong> ]
     [ -<strong>m</strong> |
+      -<strong>B</strong>
       -<strong>d</strong> |
-      -<strong>p</strong> |
-      -<strong>s</strong> ]
+      -<strong>s</strong> |
+      -<strong>p</strong> ]
+    [ -<strong>C</strong> <var>bedel</var> ]
     [ -<strong>t</strong> ]
     [ -<strong>v</strong> ]
     <var>parola-dosyası</var> <var>kullanıcı</var> <var>parola</var></code></p>
 
     <p><code><strong>htdbm</strong> -<strong>x</strong>
     [ -<strong>T</strong><var>VTtürü</var> ]
-    [ -<strong>m</strong> |
-      -<strong>d</strong> |
-      -<strong>p</strong> |
-      -<strong>s</strong> ]
     <var>parola-dosyası</var> <var>kullanıcı</var></code></p>
 
     <p><code><strong>htdbm</strong> -<strong>l</strong>
@@ -128,7 +137,12 @@
     <dt><code><strong>-b</strong></code></dt>
     <dd>Betik kipi; parola için istek yapmak yerine parola komut satırından
     verilir. <strong>Parola komut satırında görünür</strong> olacağından çok
-    dikkatli kullanmak gerekir.</dd>
+    dikkatli kullanmak gerekir. Betik kullanımı için
+    <code><strong>-i</strong></code> seçeneğine bakınız.</dd>
+
+    <dt><code><strong>-i</strong></code></dt>
+    <dd>Parolayı doğrulamaksızın standart girdiden okur (betik kullanımı
+    için).</dd>
 
     <dt><code><strong>-c</strong></code></dt>
     <dd><code><var>parola-dosyası</var></code> oluşturur. Dosya mevcutsa,
@@ -145,17 +159,30 @@
     <dd>Parolalar için MD5 şifrelemesi kullanılır. Windows ve Netware
     için bu öntanımlıdır.</dd>
 
+    <dt><code><strong>-B</strong></code></dt>
+    <dd>Parolalar için bcrypt şifrelemesi kullanılır. Şu an için çok güvenli
+    kabul edilmektedir.</dd>
+
+    <dt><code><strong>-C</strong>  <var>bedel</var></code></dt>
+    <dd>Bu seçenek sadece <code><strong>-B</strong></code> (bcrypt şifrelemesi)
+    seçeneği ile birlikte kullanılabilir. Bcrypt algoritmasına hesaplama
+    süresini belirtir (daha yüksek değerler daha güvenlidir, öntanımlı 5,
+    geçerli değerler: 4 - 31).</dd>
+
     <dt><code><strong>-d</strong></code></dt>
     <dd>Parolaları şifrelemek için <code>crypt()</code> kullanılır. Windows,
     ve Netware dışında öntanımlıdır.
     <code><strong>htdbm</strong></code> tarafından tüm platformlarda
     destekleniyor olsa da Windows ve Netware üzerinde
-    <code class="program"><a href="../programs/httpd.html">httpd</a></code> sunucusu tarafından desteklenmez.</dd>
+    <code class="program"><a href="../programs/httpd.html">httpd</a></code> sunucusu tarafından desteklenmez. Bu algoritma
+    günümüz standartlarında <strong>güvenilmez</strong> kabul
+    edilmektedir.</dd>
 
     <dt><code><strong>-s</strong></code></dt>
     <dd>Parolalar için SHA şifrelemesi kullanılır. LDAP Dizin değişim
     biçemini (ldif) kullanarak Netscape sunucularına/sunucularından göçü
-    kolaylaştırır.</dd>
+    kolaylaştırır. Bu algoritma günümüz standartlarında
+    <strong>güvenilmez</strong> kabul edilmektedir.</dd>
 
     <dt><code><strong>-p</strong></code></dt>
     <dd>Düz metin parolalar kullanılır. <code><strong>htdbm</strong></code>
@@ -167,12 +194,6 @@
     <dd>Veritabanındaki kullanıcıları açıklamalarıyla birlikte standart
     çıktıya gönderir.</dd>
 
-    <dt><code><strong>-t</strong></code></dt>
-    <dd>Son değiştirgenin bir açıklama olarak yorumlanmasını sağlar. Bu
-    seçenek kullanıldığında komut satırının sonuna fazladan bir dizge
-    eklenebilir. Bu dizge, veritabanında belirtilen kullanıcının "Comment"
-    alanında saklanır.</dd>
-
     <dt><code><strong>-v</strong></code></dt>
     <dd>Kullanıcı adını ve parolasını doğrular. Program belirtilen parolanın
     geçerli olup olmadığını belirten bir ileti basar. Eğer parola geçersizse
@@ -181,6 +202,12 @@
     <dt><code><strong>-x</strong></code></dt>
     <dd>Kullanıcıyı siler. Kullanıcı belirtilen DBM dosyasında mevcutsa
     silinir.</dd>
+
+    <dt><code><strong>-t</strong></code></dt>
+    <dd>Son değiştirgenin bir açıklama olarak yorumlanmasını sağlar. Bu
+    seçenek kullanıldığında komut satırının sonuna fazladan bir dizge
+    eklenebilir. Bu dizge, veritabanında belirtilen kullanıcının "Comment"
+    alanında saklanır.</dd>
 
     <dt><code><var>parola-dosyası</var></code></dt>
     <dd>DBM dosyasının ismi. Genellikle, <code>.db</code>, <code>.pag</code>
@@ -272,6 +299,19 @@
     <p>Komut satırında parolanın şifrelenmemiş olarak görünmesi sebebiyle
     <code><strong>-b</strong></code> seçeneğinin kullanımından kaçınılmasını
     öneriyoruz.</p>
+
+    <p><code>crypt()</code> algoritması kullanılırken, parolayı
+    şekillendirmek için parolanın ilk 8 baytının kullanılacağına dikkat
+    ediniz. Eğer parola 8 bayttan uzunsa kalanlar bir uyarı verilmeksizin
+    iptal edilir.</p>
+
+    <p>SHA şifreleme biçeminde tuz kullanılmaz; yani, bir parolanın
+    sadece bir şifreli gösterimi olabilir. <code>crypt()</code> ve
+    MD5 biçemleri parolanın önüne rasgele üretilmiş bir tuz dizgesi
+    eklediklerinden sözlük saldırılarına karşı daha dayanıklıdır.</p>
+
+    <p>SHA ve <code>crypt()</code> biçimleri günümüz standartlarında
+    <strong>güvenilmez</strong> kabul edilmektedir.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="restrictions" id="restrictions">Kısıtlamalar</a></h2>
