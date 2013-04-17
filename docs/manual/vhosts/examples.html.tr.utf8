@@ -27,7 +27,6 @@
 <a href="../ko/vhosts/examples.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/examples.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
 
     <p>Bu belgede <a href="index.html">sanal konaklarla</a> ile ilgili olarak
@@ -58,7 +57,7 @@
     
 
     <p>Bu örnekte, makinenizin tek bir IP adresine sahip olduğunu ve bu
-      makineye <code>mesela.dom</code> ve <code>faraza.dom</code> şeklinde
+      makineye <code>example.com</code> ve <code>example.org</code> şeklinde
       (DNS A kayıtları sayesinde) farklı isimlerle erişilebildiğini
       varsayalım.</p>
 
@@ -74,36 +73,29 @@
       gelecek ziyaretçileriniz için DNS kayıtlarınızın olması şarttır.</p>
     </div>
 
-    <div class="example"><h3>Sunucu yapılandırması</h3><p><code>
+    <pre class="prettyprint lang-config">
+# Apache’nin 80. portu dinlediğinden emin olalım
+Listen 80
+&lt;VirtualHost *:80&gt;
+  DocumentRoot /siteler/ecom
+  ServerName example.com
 
-    # Apache’nin 80. portu dinlediğinden emin olalım<br />
-    Listen 80<br />
-    <br />
-    &lt;VirtualHost *:80&gt;<br />
-    <span class="indent">
-      DocumentRoot /siteler/mesela<br />
-      ServerName mesela.dom<br />
-      <br />
-      # Diğer yönergeler, burada ...<br />
-      <br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost *:80&gt;<br />
-    <span class="indent">
-      DocumentRoot /siteler/faraza<br />
-      ServerName faraza.dom<br />
-      <br />
-      # Diğer yönergeler, burada ...<br />
-      <br />
-    </span>
-    &lt;/VirtualHost&gt;
-    </code></p></div>
+  # Diğer yönergeler, burada ...
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost *:80&gt;
+  DocumentRoot /siteler/eorg
+  ServerName example.org
+
+  # Diğer yönergeler, burada ...
+&lt;/VirtualHost&gt;
+    </pre>
+
 
     <p>Yıldız imleri tüm adreslerle eşleşmeyi sağladığından ana sunucu
       (yapılandırma dosyası genelindeki yapılandırma - sunucu geneli)
       erişilebilir olmayacaktır. Yapılandırma
-      dosyasındaki <code>ServerName mesela.dom</code> yönergeli konak, ilk
+      dosyasındaki <code>ServerName example.com</code> yönergeli konak, ilk
       sanal konak olduğundan en yüksek önceliğe sahiptir ve
       <cite>öntanımlı</cite> veya <cite>baskın</cite> site olarak davranır.
       Yani, hiçbir <code>ServerName</code> yönergesi ile eşleşmeyen bir istek
@@ -114,12 +106,14 @@
       <p>IP adresi ve porta dayalı ayrımı umursamıyorsanız, <code>*</code>
         yerine kendi IP adresinizi yazabilirsiniz.</p>
 
-      <div class="example"><p><code>
-      NameVirtualHost 192.168.1.22<br />
-      <br />
-      &lt;VirtualHost 192.168.1.22&gt;<br />
-        # vs. ...
-      </code></p></div>
+      <pre class="prettyprint lang-config">
+NameVirtualHost 192.168.1.22
+
+&lt;VirtualHost 192.168.1.22&gt;
+  # vs. ...
+&lt;/VirtualHost&gt;
+      </pre>
+
 
       <p>Bununla birlikte, IP adresinin önceden kestirilebilir olmadığı
         sistemlerde, örneğin, hizmet sağlayıcınıza çevirmeli ağ ile bağlanıyor
@@ -146,43 +140,37 @@
     </div>
 
     <p>Sunucunun iki IP adresi olsun. Birinden "ana sunucu"
-      (<code>192.168.1.2</code>) diğerinden <code>mesela.dom</code>
+      (<code>192.168.1.2</code>) diğerinden <code>example.com</code>
       <code>192.168.2.2</code> hizmet versin. Bu arada başka sanal konakları
       da sunabilelim istiyoruz.</p>
 
-    <div class="example"><h3>Sunucu yapılandırması</h3><p><code>
+    <pre class="prettyprint lang-config">
+Listen 80
 
-    Listen 80<br />
-    <br />
-    # Bu, 192.168.1.2 adresindeki "ana sunucu" olsun<br />
-    ServerName sunucu.faraza.dom<br />
-    DocumentRoot /siteler/anasunucu<br />
-    <br />
-    &lt;VirtualHost 192.168.2.2&gt;<br />
-    <span class="indent">
-        DocumentRoot /siteler/mesela<br />
-        ServerName mesela.dom<br />
-        <br />
-        # Diğer yönergeler, burada ...<br />
-        <br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 192.168.2.2&gt;<br />
-    <span class="indent">
-        DocumentRoot /siteler/falanca<br />
-        ServerName falanca.dom<br />
-        <br />
-        # Diğer yönergeler, burada ...<br />
-        <br />
-    </span>
-    &lt;/VirtualHost&gt;
-    </code></p></div>
+# Bu, 192.168.1.2 adresindeki "ana sunucu" olsun
+ServerName sunucu.example.com
+DocumentRoot /siteler/anasunucu
 
-    <p><code>192.168.2.2</code> adresinden gelmeyen tüm isteklere ana sunucu
-      (<code>sunucu.faraza.dom</code>), <code>192.168.2.2</code> adresinden
+&lt;VirtualHost 192.168.1.20&gt;
+    DocumentRoot /siteler/ecom
+    ServerName example.com
+
+    # Diğer yönergeler, burada ...
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 192.168.1.20&gt;
+    DocumentRoot /siteler/eorg
+    ServerName example.org
+
+    # Diğer yönergeler, burada ...
+&lt;/VirtualHost&gt;
+    </pre>
+
+
+    <p><code>192.168.1.20</code> adresinden gelmeyen tüm isteklere ana sunucu
+      (<code>sunucu.example.com</code>), <code>192.168.1.20</code> adresinden
       gelen sunucu ismi belirtmeyenler ile <code>Host:</code> başlığı
-      belirtmeyenlere ise  <code>mesela.dom</code> hizmet verecektir.</p>
+      belirtmeyenlere ise  <code>example.com</code> hizmet verecektir.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -191,30 +179,28 @@
 
     <p>Sunucu makine iki IP adresine sahip olsun. Biri iç ağa
       (<code>192.168.1.1</code>) diğeri dış ağa (<code>172.20.30.40</code>)
-      bakıyor olsun. <code>sunucu.mesela.dom</code> ismi dış ağda dış ağa
+      bakıyor olsun. <code>sunucu.example.com</code> ismi dış ağda dış ağa
       bakan IP’ye, iç ağda ise iç ağa bakan IP’ye çözümleniyor olsun.</p>
 
     <p>Bu durumda, sunucu hem iç hem de dış ağdan gelen isteklere aynı içerik,
       dolayısıyla aynı <code>VirtualHost</code> bölümü ile hizmet
       verebilir.</p>
 
-    <div class="example"><h3>Sunucu yapılandırması</h3><p><code>
-    <br />
-    &lt;VirtualHost 192.168.1.1 172.20.30.40&gt;<br />
-    <span class="indent">
-        DocumentRoot /siteler/sunucu<br />
-        ServerName sunucu.mesela.dom<br />
-        ServerAlias sunucu<br />
-    </span>
-    &lt;/VirtualHost&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;VirtualHost 192.168.1.1 172.20.30.40&gt;
+    DocumentRoot /siteler/sunucu
+    ServerName sunucu.example.com
+    ServerAlias sunucu
+&lt;/VirtualHost&gt;
+    </pre>
+
 
     <p>Artık, hem iç hem de dış ağdan gelen isteklere aynı
       <code>VirtualHost</code> bölümünden hizmet sunulacaktır.</p>
 
     <div class="note"><h3>Bilginize:</h3>
       <p>İç ağdan istek yapan biri, tam nitelenmiş konak ismi
-        <code>sunucu.mesela.dom</code> yerine makine ismini
+        <code>sunucu.example.com</code> yerine makine ismini
         (<code>sunucu</code>) kullanabilir (<code>ServerAlias sunucu</code>
         satırına dikkat).</p>
 
@@ -232,66 +218,54 @@
       varsayalım. Aşağıdaki örnekte, isim eşleşmesinin, en iyi eşleşen IP
       adresi ve port çifti saptandıktan sonra yer alması gösterilmiştir. </p>
 
-    <div class="example"><h3>Sunucu yapılandırması</h3><p><code>
+    <pre class="prettyprint lang-config">
+Listen 80
+Listen 8080
 
-    Listen 80<br />
-    Listen 8080<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40:80&gt;<br />
-    <span class="indent">
-        ServerName mesela.dom<br />
-        DocumentRoot /siteler/mesela-80<br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40:8080&gt;<br />
-    <span class="indent">
-        ServerName mesela.dom<br />
-        DocumentRoot /siteler/mesela-8080<br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40:80&gt;<br />
-    <span class="indent">
-        ServerName faraza.dom<br />
-        DocumentRoot /siteler/faraza-80<br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40:8080&gt;<br />
-    <span class="indent">
-        ServerName faraza.dom<br />
-        DocumentRoot /siteler/faraza-8080<br />
-    </span>
-    &lt;/VirtualHost&gt;
-    </code></p></div>
+&lt;VirtualHost 172.20.30.40:80&gt;
+    ServerName example.com
+    DocumentRoot /siteler/ecom-80
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.40:8080&gt;
+    ServerName example.com
+    DocumentRoot /siteler/ecom-8080
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.40:80&gt;
+    ServerName example.org
+    DocumentRoot /siteler/eorg-80
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.40:8080&gt;
+    ServerName example.org
+    DocumentRoot /siteler/eorg-8080
+&lt;/VirtualHost&gt;
+    </pre>
+
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="ip" id="ip">IP’ye dayalı sanal konaklar</a></h2>
 
-    <p>Sunucu makinenin, biri <code>mesela.dom</code> adından çözümlenen
-      <code>172.20.30.40</code>, diğeri <code>faraza.dom</code> adından
+    <p>Sunucu makinenin, biri <code>example.com</code> adından çözümlenen
+      <code>172.20.30.40</code>, diğeri <code>example.org</code> adından
       çözümlenen <code>172.20.30.50</code> diye iki IP adresi olsun.</p>
 
-    <div class="example"><h3>Sunucu yapılandırması</h3><p><code>
+    <pre class="prettyprint lang-config">
+Listen 80
 
-    Listen 80<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40&gt;<br />
-    <span class="indent">
-        DocumentRoot /siteler/mesela<br />
-        ServerName mesela.dom<br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.50&gt;<br />
-    <span class="indent">
-        DocumentRoot /siteler/faraza<br />
-        ServerName faraza.dom<br />
-    </span>
-    &lt;/VirtualHost&gt;
-    </code></p></div>
+&lt;VirtualHost 172.20.30.40&gt;
+    DocumentRoot /siteler/ecom
+    ServerName example.com
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.50&gt;
+    DocumentRoot /siteler/eorg
+    ServerName example.org
+&lt;/VirtualHost&gt;
+    </pre>
+
 
     <p><code>&lt;VirtualHost&gt;</code> yönergelerinde belirtilmeyen
       adreslerle yapılan isteklere (örneğin, <code>localhost</code>) sunucu
@@ -301,46 +275,38 @@
 <h2><a name="ipport" id="ipport">Hem IP’ye hem de porta dayalı sanal konaklar</a></h2>
     
 
-    <p>Sunucu makinenin, biri <code>mesela.dom</code> adından çözümlenen
-      <code>172.20.30.40</code>, diğeri <code>faraza.dom</code> adından
+    <p>Sunucu makinenin, biri <code>example.com</code> adından çözümlenen
+      <code>172.20.30.40</code>, diğeri <code>example.org</code> adından
       çözümlenen <code>172.20.30.50</code> diye iki IP adresi olsun ve iki
       konak da hem 80 hem de 8080 portlarında çalışsınlar istiyoruz.</p>
 
-    <div class="example"><h3>Sunucu yapılandırması</h3><p><code>
+    <pre class="prettyprint lang-config">
+Listen 172.20.30.40:80
+Listen 172.20.30.40:8080
+Listen 172.20.30.50:80
+Listen 172.20.30.50:8080
 
-    Listen 172.20.30.40:80<br />
-    Listen 172.20.30.40:8080<br />
-    Listen 172.20.30.50:80<br />
-    Listen 172.20.30.50:8080<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40:80&gt;<br />
-    <span class="indent">
-        DocumentRoot /siteler/mesela-80<br />
-        ServerName mesela.dom<br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40:8080&gt;<br />
-    <span class="indent">
-        DocumentRoot /siteler/mesela-8080<br />
-        ServerName mesela.dom<br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.50:80&gt;<br />
-    <span class="indent">
-        DocumentRoot /siteler/faraza-80<br />
-        ServerName faraza.dom<br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.50:8080&gt;<br />
-    <span class="indent">
-        DocumentRoot /siteler/faraza-8080<br />
-        ServerName faraza.dom<br />
-    </span>
-    &lt;/VirtualHost&gt;
-    </code></p></div>
+&lt;VirtualHost 172.20.30.40:80&gt;
+    DocumentRoot /siteler/ecom-80
+    ServerName example.com
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.40:8080&gt;
+    DocumentRoot /siteler/ecom-8080
+    ServerName example.com
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.50:80&gt;
+    DocumentRoot /siteler/eorg-80
+    ServerName example.org
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.50:8080&gt;
+    DocumentRoot /siteler/eorg-8080
+    ServerName example.org
+&lt;/VirtualHost&gt;
+    </pre>
+
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -351,46 +317,36 @@
       bir sanal konakta görünmüyorsa bu sankon kesinlikle IP'ye dayalı bir
       sanal konaktır.</p>
 
-    <div class="example"><h3>Sunucu yapılandırması</h3><p><code>
+    <pre class="prettyprint lang-config">
+Listen 80
 
-    Listen 80<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40&gt;<br />
-    <span class="indent">
-        DocumentRoot /siteler/mesela<br />
-        ServerName mesela.dom<br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40&gt;<br />
-    <span class="indent">
-        DocumentRoot /siteler/faraza<br />
-        ServerName faraza.dom<br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40&gt;<br />
-    <span class="indent">
-        DocumentRoot /siteler/falanca<br />
-        ServerName falanca.dom<br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    # IP-based<br />
-    &lt;VirtualHost 172.20.30.50&gt;<br />
-    <span class="indent">
-        DocumentRoot /siteler/filanca<br />
-        ServerName filanca.dom<br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.60&gt;<br />
-    <span class="indent">
-        DocumentRoot /siteler/fesmekan<br />
-        ServerName fesmekan.dom<br />
-    </span>
-    &lt;/VirtualHost&gt;
-    </code></p></div>
+&lt;VirtualHost 172.20.30.40&gt;
+    DocumentRoot /siteler/ecom
+    ServerName example.com
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.40&gt;
+    DocumentRoot /siteler/eorg
+    ServerName example.org
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.40&gt;
+    DocumentRoot /siteler/enet
+    ServerName example.net
+&lt;/VirtualHost&gt;
+
+# IP'ye dayalı
+&lt;VirtualHost 172.20.30.50&gt;
+    DocumentRoot /siteler/eedu
+    ServerName example.edu
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.60&gt;
+    DocumentRoot /siteler/egov
+    ServerName example.gov
+&lt;/VirtualHost&gt;
+    </pre>
+
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -405,16 +361,15 @@
       ve konak isminin de aktarılmasını arzuladığımızdan <code class="directive"><a href="../mod/mod_proxy.html#proxypreservehost on">ProxyPreserveHost On</a></code> yönergesini
       kullandık.</p>
 
-    <div class="example"><p><code>
-    &lt;VirtualHost *:*&gt;<br />
-    <span class="indent">
-        ProxyPreserveHost On<br />
-        ProxyPass / http://192.168.111.2/<br />
-        ProxyPassReverse / http://192.168.111.2/<br />
-        ServerName konak.mesela.dom<br />
-    </span>
-    &lt;/VirtualHost&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;VirtualHost *:*&gt;
+    ProxyPreserveHost On
+    ProxyPass / http://192.168.111.2/
+    ProxyPassReverse / http://192.168.111.2/
+    ServerName konak.example.com
+&lt;/VirtualHost&gt;
+    </pre>
+
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -426,15 +381,12 @@
     <p>Bir IP adresi ve port belirtilmeyen veya hiçbir sanal konağın hiçbir
       adresi/portu ile eşleşmeyen istekleri yakalamak istersek...</p>
 
-    <div class="example"><h3>Sunucu yapılandırması</h3><p><code>
-    
+    <pre class="prettyprint lang-config">
+&lt;VirtualHost _default_:*&gt;
+    DocumentRoot /siteler/default
+&lt;/VirtualHost&gt;
+    </pre>
 
-    &lt;VirtualHost _default_:*&gt;<br />
-    <span class="indent">
-        DocumentRoot /siteler/default<br />
-    </span>
-    &lt;/VirtualHost&gt;
-    </code></p></div>
 
     <p>Bütün portlarla eşleşen böyle bir öntanımlı sanal konağın kullanımı
       hiçbir isteğin ana sunucuya gitmemesi sonucunu doğurur.</p>
@@ -457,23 +409,18 @@
     <p>Önceki yapılandırmaya ek olarak 80. portta ayrı bir
       <code>_default_</code> sanal konağı kullanmak istersek...</p>
 
-    <div class="example"><h3>Sunucu yapılandırması</h3><p><code>
-    
+    <pre class="prettyprint lang-config">
+&lt;VirtualHost _default_:80&gt;
+    DocumentRoot /siteler/default80
+    # ...
+&lt;/VirtualHost&gt;
 
-    &lt;VirtualHost _default_:80&gt;<br />
-    <span class="indent">
-        DocumentRoot /siteler/default80<br />
-        # ...<br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost _default_:*&gt;<br />
-    <span class="indent">
-        DocumentRoot /siteler/default<br />
-        # ...<br />
-    </span>
-    &lt;/VirtualHost&gt;
-    </code></p></div>
+&lt;VirtualHost _default_:*&gt;
+    DocumentRoot /siteler/default
+    # ...
+&lt;/VirtualHost&gt;
+    </pre>
+
 
     <p>80. porttan hizmet sunan <code>_default_</code> sanal konağı IP adresi
       belirtilmeyen tüm istekleri yakalar, bunu yapabilmesi için yapılandırma
@@ -487,14 +434,13 @@
     <p><code>_default_</code> sanal konağının sadece 80. porttan hizmet
       sunmasını istersek...</p>
 
-    <div class="example"><h3>Sunucu yapılandırması</h3><p><code>
-    
+    <pre class="prettyprint lang-config">
+&lt;VirtualHost _default_:80&gt;
+    DocumentRoot /siteler/default
+    ...
+&lt;/VirtualHost&gt;
+    </pre>
 
-    &lt;VirtualHost _default_:80&gt;<br />
-    DocumentRoot /siteler/default<br />
-    ...<br />
-    &lt;/VirtualHost&gt;
-    </code></p></div>
 
     <p>80. porttan gelen IP adresi belirtilmemiş isteklere
       <code>_default_</code> sanal konağı, diğer portlardan gelen adres
@@ -510,42 +456,35 @@
     sanal konakla yansılamak</a></h2>
 
     <p>İsme dayalı sanal konak örneklerinin <a href="#twoips">2. sinde</a> adı
-      geçen <code>falanca.dom</code> bu örnekte kendi IP adresinden hizmet
+      geçen <code>example.org</code> bu örnekte kendi IP adresinden hizmet
       veriyor olsun. İsme dayalı sanal konağı eski IP adresiyle kaydetmiş
       vekiller ve isim sunucularından kaynaklanacak olası sorunlardan kaçınmak
       için yansılama sırasında sanal konağı hem eski hem de yeni IP adresiyle
       sunmamız lazım.</p>
 
     <p>Çözüm kolay, çünkü yapacağımız sadece <code>VirtualHost</code>
-      yönergesine yeni IP adresini (<code>192.168.2.2</code>) eklemek
+      yönergesine yeni IP adresini (<code>192.168.1.2</code>) eklemek
       olacak.</p>
 
-    <div class="example"><h3>Sunucu yapılandırması</h3><p><code>
-    
+    <pre class="prettyprint lang-config">
+Listen 80
+ServerName example.com
+DocumentRoot /siteler/ecom
 
-    Listen 80<br />
-    ServerName mesela.dom<br />
-    DocumentRoot /siteler/mesela<br />
-    <br />
-    &lt;VirtualHost 192.168.1.2&gt;<br />
-    <br />
-    &lt;VirtualHost 192.168.1.2 192.168.2.2&gt;<br />
-    <span class="indent">
-        DocumentRoot /siteler/falanca<br />
-        ServerName falanca.dom<br />
-        # ...<br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 192.168.1.2&gt;<br />
-    <span class="indent">
-        DocumentRoot /siteler/faraza<br />
-        ServerName faraza.dom<br />
-        ServerAlias *.faraza.dom<br />
-        # ...<br />
-    </span>
-    &lt;/VirtualHost&gt;
-    </code></p></div>
+&lt;VirtualHost 192.168.1.20 192.168.1.2&gt;
+    DocumentRoot /siteler/eorg
+    ServerName example.org
+    # ...
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 192.168.1.20&gt;
+    DocumentRoot /siteler/enet
+    ServerName example.enet
+    ServerAlias *.example.enet
+    # ...
+&lt;/VirtualHost&gt;
+    </pre>
+
 
     <p>Böylece sanal konağa hem yeni (bir IP’ye dayalı sanal konak olarak)
       hem de eski adresinden (bir isme dayalı sanal konak olarak)
@@ -565,41 +504,34 @@
       bağlantısı içeren bir bilgilendirme sayfası sunmak üzere yeni bir sanal
       konak oluşturabiliriz.</p>
 
-    <div class="example"><h3>Sunucu yapılandırması</h3><p><code>
-    
+    <pre class="prettyprint lang-config">
+&lt;VirtualHost 172.20.30.40&gt;
+    # ilk sanal konak
+    DocumentRoot /siteler/baska
+    RewriteEngine On
+    RewriteRule . /siteler/baska/index.html
+    # ...
+&lt;/VirtualHost&gt;
 
-    &lt;VirtualHost 172.20.30.40&gt;<br />
-    <span class="indent">
-        # ilk sanal konak<br />
-        DocumentRoot /siteler/baska<br />
-        RewriteEngine On<br />
-        RewriteRule . /siteler/baska/index.html<br />
-        # ...<br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40&gt;<br />
-    DocumentRoot /siteler/baska/bir<br />
-    <span class="indent">
-        ServerName bir.baska.tld<br />
-        ServerPath /bir/<br />
-        RewriteEngine On<br />
-        RewriteRule ^(/bir/.*) /siteler/baska$1<br />
-        # ...<br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40&gt;<br />
-    <span class="indent">
-        DocumentRoot /siteler/baska/iki<br />
-        ServerName iki.baska.tld<br />
-        ServerPath /iki/<br />
-        RewriteEngine On<br />
-        RewriteRule ^(/iki/.*) /siteler/baska$1<br />
-        # ...<br />
-    </span>
-    &lt;/VirtualHost&gt;
-    </code></p></div>
+&lt;VirtualHost 172.20.30.40&gt;
+DocumentRoot /siteler/baska/bir
+    ServerName bir.baska.tld
+    ServerPath /bir/
+    RewriteEngine On
+    RewriteRule ^(/bir/.*) /siteler/baska$1
+    # ...
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 172.20.30.40&gt;
+    DocumentRoot /siteler/baska/iki
+    ServerName iki.baska.tld
+    ServerPath /iki/
+    RewriteEngine On
+    RewriteRule ^(/iki/.*) /siteler/baska$1
+    # ...
+&lt;/VirtualHost&gt;
+    </pre>
+
 
     <p><code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code> yönergesinden dolayı
       <code>http://bir.baska.tld/bir/</code> şeklinde yapılan isteklere

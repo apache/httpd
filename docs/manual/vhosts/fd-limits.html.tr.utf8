@@ -27,7 +27,6 @@
 <a href="../ko/vhosts/fd-limits.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/fd-limits.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
 
     <p>Çok büyük sayıda sanal konak kullanıyorsanız ve bunların her biri için
@@ -90,10 +89,11 @@
       <code>%v</code> biçem değişkeni ile yapılabilir. Günlük girdisi biçem
       dizgesinin başına bunu ekleyiniz:</p>
 
-    <div class="example"><p><code>
-    LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost<br />
-    CustomLog logs/multiple_vhost_log vhost
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost
+CustomLog logs/multiple_vhost_log vhost
+    </pre>
+
 
     <p>Bu yapılandırma ile her günlük kaydının başında sanal konağın
       <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> yönergesine belirtilen

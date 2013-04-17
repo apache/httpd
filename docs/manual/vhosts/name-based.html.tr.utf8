@@ -28,7 +28,6 @@
 <a href="../ko/vhosts/name-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/name-based.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Bu belgede isme dayalı sanal konakların ne zaman, nasıl kullanılacakları
       açıklanmıştır.</p>
@@ -126,23 +125,20 @@ Barındırma</a></li><li><a href="examples.html">Çok kullanılan sanal konak ya
       varsayalım. Bunun için <code>httpd.conf</code> dosyanıza basitçe şu
       satırları ekleyebilirsiniz:</p>
 
-    <div class="example"><p><code>
-        &lt;VirtualHost *:80&gt;<br />
-        <span class="indent">
-            #İlk sanal konak aynı zamanda *:80 için de öntanımlıdır.
-            ServerName site1.example.com<br />
-            ServerAlias example.com<br />
-            DocumentRoot /siteler/site1<br />
-        </span>
-        &lt;/VirtualHost&gt;<br />
-        <br />
-        &lt;VirtualHost *:80&gt;<br />
-        <span class="indent">
-            ServerName site2.example.com<br />
-            DocumentRoot /siteler/site2<br />
-        </span>
-        &lt;/VirtualHost&gt;<br />
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+&lt;VirtualHost *:80&gt;
+    #İlk sanal konak aynı zamanda *:80 için de öntanımlıdır.
+    ServerName site1.example.com
+    ServerAlias example.com
+    DocumentRoot /siteler/site1
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost *:80&gt;
+    ServerName site2.example.com
+    DocumentRoot /siteler/site2
+&lt;/VirtualHost&gt;
+    </pre>
+
 
     <p>İsterseniz, <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> yönergesinde argüman olarak <code>*</code>
       yerine doğrudan bir IP adresi belirtebilirsiniz. Hatta, daha sonra, isme
@@ -157,9 +153,10 @@ Barındırma</a></li><li><a href="examples.html">Çok kullanılan sanal konak ya
       kullanıcıların aynı siteye farklı isimlerle erişmelerini mümkün kılmak
       için bölüm içine şu satırı ekleyebilirsiniz:</p>
 
-    <div class="example"><p><code>
-        ServerAlias example.com *.example.com
-    </code></p></div>
+    <pre class="prettyprint lang-config">
+ServerAlias example.com *.example.com
+    </pre>
+
 
     <p>Böylece <code>example.com</code> alanındaki tüm konaklar için gelen
       isteklere <code>www.example.com</code> sanal konağından hizmet sunulmuş
@@ -175,6 +172,10 @@ Barındırma</a></li><li><a href="examples.html">Çok kullanılan sanal konak ya
       yapılandırmada göründükleri sıraya göre işleme sokulur. Joker
       kullanımları arasında fark gözetilmeksizin <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> veya <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code> yönergesi eşleşen ilk sanal konak
       kullanılır.</p>
+
+    <p><code>VirtualHost</code> içindeki isimlerin sırası (jokersiz) bir
+      <code>ServerAlias</code> gibi ele alınır (fakat hiçbir
+      <code>ServerAlias</code> yönergesi ile geçersiz kılınmaz).</p>
 
     <p>Son olarak, sanal konak yapılandırmanıza, <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> bölümlerinin içine başka yönergeler
       yerleştirerek ince ayar çekebilirsiniz. Çoğu yönerge bu bölümlere
