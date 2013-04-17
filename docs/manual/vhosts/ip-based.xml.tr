@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1300911:1334000 (outdated) -->
+<!-- English Revision: 1334000 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -109,9 +109,9 @@
       (veya sanal konak) için <directive module="mpm_common">Listen</directive>
       yönergesi kullanılır. Örnek:</p>
 
-    <example>
-    Listen 192.0.2.100:80
-    </example>
+    <highlight language="config">
+Listen 192.0.2.100:80
+    </highlight>
 
     <p>Burada konak ismi yerine IP adresi kullanmanız önerilir (ayrıntılar için
       <a href="../dns-caveats.html">DNS ile ilgili konular</a> belgesine
@@ -133,27 +133,23 @@
       içeren ayrı birer <directive module="core">VirtualHost</directive> bölümü
       oluşturulur. Örnek:</p>
 
-    <example>
-    &lt;VirtualHost 192.168.1.10:80&gt;
-    <indent>
-      ServerAdmin bilgi@posta.birkobi.dom<br />
-      DocumentRoot /gruplar/birkobi/belgeler<br />
-      ServerName www.birkobi.dom<br />
-      ErrorLog /gruplar/birkobi/günlükler/hatalar.log<br />
-      CustomLog /gruplar/birkobi/günlükler/erisim.log combined
-    </indent>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 192.168.1.20:80&gt;
-    <indent>
-      ServerAdmin bilgi@posta.digerkobi.dom<br />
-      DocumentRoot /gruplar/digerkobi/belgeler<br />
-      ServerName www.digerkobi.dom<br />
-      ErrorLog /gruplar/digerkobi/günlükler/hatalar.log<br />
-      CustomLog /gruplar/digerkobi/günlükler/erisim.log combined
-    </indent>
-    &lt;/VirtualHost&gt;
-    </example>
+    <highlight language="config">
+&lt;VirtualHost 192.168.1.10:80&gt;
+    ServerAdmin bilgi@example.com
+    DocumentRoot /siteler/belgeler/ecom
+    ServerName example.com
+    ErrorLog /siteler/gunlukler/ecom/hatalar.log
+    CustomLog /siteler/gunlukler/ecom/erisim.log combined
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 192.168.1.20:80&gt;
+    ServerAdmin bilgi@example.org
+    DocumentRoot /siteler/belgeler/eorg
+    ServerName example.org
+    ErrorLog /siteler/gunlukler/eorg/hatalar.log
+    CustomLog /siteler/gunlukler/eorg/erisim.log combined
+&lt;/VirtualHost&gt;
+    </highlight>
 
     <p>&lt;VirtualHost&gt; yönergesinde konak ismi yerine
        IP adresi kullanmanız önerilir (ayrıntılar için

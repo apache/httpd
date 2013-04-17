@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1174747:1334000 (outdated) -->
+<!-- English Revision: 1334000 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -91,10 +91,10 @@
       <code>%v</code> biçem değişkeni ile yapılabilir. Günlük girdisi biçem
       dizgesinin başına bunu ekleyiniz:</p>
 
-    <example>
-    LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost<br />
-    CustomLog logs/multiple_vhost_log vhost
-    </example>
+    <highlight language="config">
+LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost
+CustomLog logs/multiple_vhost_log vhost
+    </highlight>
 
     <p>Bu yapılandırma ile her günlük kaydının başında sanal konağın
       <directive module="core">ServerName</directive> yönergesine belirtilen

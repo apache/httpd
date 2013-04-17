@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1301736:1344668 (outdated) -->
+<!-- English Revision: 1344668 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -99,6 +99,10 @@
       ref="servernameindication">Sunucu İsmi Belirtimi</glossary>ni
       desteklemediği durumlarda tüm SSL bağlantıları için bu sankon
       kullanılır.</p>
+
+    <p><code>VirtualHost</code> içindeki isimlerin sırası (jokersiz) bir
+      <code>ServerAlias</code> gibi ele alınır (fakat hiçbir
+      <code>ServerAlias</code> yönergesi ile geçersiz kılınmaz).</p>
 
     <p>Her sankon için bazı değerler öntanımlı olarak atanır. Bunların
       başlıcaları:</p>
