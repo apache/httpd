@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1229232:1450091 (outdated) -->
+<!-- English Revision: 1450091 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -33,6 +33,9 @@
     <p><code><strong>httxt2dbm</strong></code>, <directive
     module="mod_rewrite">RewriteMap</directive> ile kullanmak için düz metin
     dosyalardan DBM dosyaları üretir.</p>
+
+    <p>Çıktı dosyası mevcutsa dosya kırpılmaz. Yeni anahtarlar eklenir,
+    mevcutlar da güncellenir.</p>
 </summary>
 <seealso><program>httpd</program></seealso>
 <seealso><module>mod_rewrite</module></seealso>

@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1174747:1332681 (outdated) -->
+<!-- English Revision: 1332681 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -30,45 +30,11 @@
 <title>Diğer Programlar</title>
 
 <summary>
-    <p>Aşağıdaki programlar Apache HTTP Sunucusu ile gelen basit destek
-    programları olup kendilerine ait kılavuz sayfaları yoktur. Bunlar
-    özdevinimli olarak kurulmazlar. Derleme işleminden sonra bunları
-    <code>support/</code> dizininde bulabilirsiniz.</p>
+    <p>Bu sayfada daha önce belgelenen programlar şimdi kendi belgelerine
+    sahiptir. Bu sayfaya verilmiş bağlantıları lütfen güncelleyin.</p>
+
+    <p><program>log_server_status</program></p>
+    <p><program>split-logfile</program></p>
 </summary>
-
-<section id="log_server_status"><title>log_server_status</title>
-    <p>Bu perl betiği cron gibi bir şeyleri belli aralıklarla çalıştırmak için
-    tasarlanmıştır. Sunucuya bağlanıp durum bilgisini indirdikten sonra bunları
-    tek bir satır haline getirip bir günlük dosyasına kaydeder. Sonuçların
-    kaydedileceği günlük dosyasını betiğin başlangıcındaki değişkenlerde
-    değişiklik yaparak belirtebilirsiniz.</p>
-</section>
-
-<section id="split-logfile"><title>split-logfile</title>
-    <p>Bu perl betiği sanal konaklı bir birleşik günlük dosyasını girdi olarak
-    alır ve içeriğini ayrı dosyalara böler. Günlük dosyasındaki her kaydın ilk
-    bileşeninin, <directive module="mod_log_config">LogFormat</directive>
-    yönergesinde "<code>%v</code>" belirteci ile ifade edilen sanal konak adı
-    olduğu varsayılır.
-    </p>
-
-    <example>
-        LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""
-             combined_plus_vhost<br />
-        CustomLog logs/access_log combined_plus_vhost
-    </example>
-
-    <p>Birleşik günlük dosyasında görünen her sanal konak için betiğin
-    çalıştırıldığı dizinde ayrı birer günlük dosyası açılır. Bu günlük
-    dosyalarının isimleri, <code>.log</code> uzantılı sanal konak
-    isimleridir.</p>
-
-    <p>Birleşik günlük dosyası standart girdiden okunur. Kayıtlar okundukça
-    her biri kendi günlük dosyasına kaydedilir.</p>
-
-    <example>split-logfile &lt; access_log</example>
-
-
-</section>
 
 </manualpage>
