@@ -92,6 +92,12 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+  * mod_rewrite: fix CVE-2013-1862, escape log file output
+     (not needed for trunk/2.4)
+    2.2.x patch:
+      http://people.apache.org/~jorton/mod_rewrite-CVE-2013-1862.patch
+   +1: jorton, 
+
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
