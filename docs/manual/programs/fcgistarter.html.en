@@ -52,10 +52,10 @@
     <dd>FastCGI program</dd>
 
     <dt><code>-p <var>port</var></code></dt>
-    <dd>Port which the program will listens on</dd>
+    <dd>Port which the program will listen on</dd>
 
     <dt><code>-i <var>interface</var></code></dt>
-    <dd>Interface which the program will listens on</dd>
+    <dd>Interface which the program will listen on</dd>
 
     <dt><code>-N <var>num</var></code></dt>
     <dd>Number of instances of the program</dd>
