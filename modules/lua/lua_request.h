@@ -37,5 +37,11 @@ typedef struct
     int type;
 } req_fun_t;
 
+typedef struct {
+    int type;
+    size_t size;
+    void* string;
+    lua_Number number;
+} lua_ivm_object;
 
 #endif /* !_LUA_REQUEST_H_ */
