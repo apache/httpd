@@ -28,6 +28,9 @@ Changes with Apache 2.0.65
      is enabled, could allow local users to gain privileges via a .htaccess
      file. [Stefan Fritsch, Greg Ames]
 
+  *) mod_include: Prevent a case of SSI timefmt-smashing with filter chains
+     including multiple INCLUDES filters. PR 39369 [Joe Orton]
+
   *) mod_rewrite: When evaluating a proxy rule in directory context, do
      escape the filename by default. PR 46428 [Joe Orton]
 
