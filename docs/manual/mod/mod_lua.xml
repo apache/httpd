@@ -843,9 +843,9 @@ r:custom_response(404, "Baleted!")
 </highlight>
 
 <highlight language="lua">
-r:exists_config_define(string) -- Checks whether a configuration definition exists or not:
+r.exists_config_define(string) -- Checks whether a configuration definition exists or not:
 
-if r:exists_config_define("FOO") then
+if r.exists_config_define("FOO") then
     r:puts("httpd was probably run with -DFOO, or it was defined in the configuration")
 end
 </highlight>
