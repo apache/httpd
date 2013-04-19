@@ -1670,7 +1670,6 @@ static int lua_ivm_get(lua_State *L) {
     apr_pool_userdata_get((void **)&object, raw_key, r->server->process->pool);
     if (object) {
         if (object->type == LUA_TBOOLEAN) lua_pushboolean(L, object->number);
-        else if (object->type == LUA_TBOOLEAN) lua_pushboolean(L, object->number);
         else if (object->type == LUA_TNUMBER) lua_pushnumber(L, object->number);
         else if (object->type == LUA_TSTRING) lua_pushlstring(L, object->string, object->size);
         return 1;
