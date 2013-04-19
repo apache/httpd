@@ -190,14 +190,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * pcre: update config.guess and config.sub for better platform support.
-    Trunk version of patch:
-      Does not apply.
-    Patch in 2.2.x branch:
-      Does not apply.
-    Use recent files from http://git.savannah.gnu.org/cgit/config.git.
-    +1: rjung, wrowe, humbedooh
-
   * mod_rewrite: PR 46428 - whitespace/encoding for proxied URL
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=757427
     2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=773351
