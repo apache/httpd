@@ -15,6 +15,11 @@
  * limitations under the License.
  */
 
+#include <lua.h>
+
+
+#include <apr_pools.h>
+
 #include "mod_lua.h"
 #include "util_script.h"
 #include "lua_apr.h"
@@ -32,6 +37,7 @@ APLOG_USE_MODULE(lua);
 typedef char *(*req_field_string_f) (request_rec * r);
 typedef int (*req_field_int_f) (request_rec * r);
 typedef apr_table_t *(*req_field_apr_table_f) (request_rec * r);
+
 
 void ap_lua_rstack_dump(lua_State *L, request_rec *r, const char *msg)
 {
@@ -822,16 +828,6 @@ static int lua_apr_sha1(lua_State *L)
     return 1;
 }
 
-
-
-/*
- * lua_ap_banner; r:banner() - Returns the current server banner
- */
-static int lua_ap_banner(lua_State *L)
-{
-    lua_pushstring(L, ap_get_server_banner());
-    return 1;
-}
 
 /*
  * lua_ap_mpm_query; r:mpm_query(info) - Queries for MPM info
@@ -1665,6 +1661,49 @@ static int req_debug(lua_State *L)
     return req_log_at(L, APLOG_DEBUG);
 }
 
+static int lua_ivm_get(lua_State *L) {
+    const char *key, *raw_key;
+    lua_ivm_object *object = NULL;
+    request_rec *r = ap_lua_check_request_rec(L, 1);
+    key = luaL_checkstring(L, 2);
+    raw_key = apr_pstrcat(r->pool, "lua_ivm_", key, NULL);
+    apr_pool_userdata_get((void **)&object, raw_key, r->server->process->pool);
+    if (object) {
+        if (object->type == LUA_TBOOLEAN) lua_pushboolean(L, object->number);
+        else if (object->type == LUA_TBOOLEAN) lua_pushboolean(L, object->number);
+        else if (object->type == LUA_TNUMBER) lua_pushnumber(L, object->number);
+        else if (object->type == LUA_TSTRING) lua_pushlstring(L, object->string, object->size);
+        return 1;
+    }
+    else {
+        return 0;
+    }
+}
+
+
+static int lua_ivm_set(lua_State *L) {
+    const char *key, *raw_key;
+    const char *value = NULL;
+    lua_ivm_object *object = NULL;
+    request_rec *r = ap_lua_check_request_rec(L, 1);
+    key = luaL_checkstring(L, 2);
+    luaL_checkany(L, 3);
+    raw_key = apr_pstrcat(r->pool, "lua_ivm_", key, NULL);
+    
+    /* This will require MaxConnectionsPerChild to be > 0, since it's 
+     * essentially leaking memory as values are being overridden */
+    object = apr_pcalloc(r->server->process->pool, sizeof(lua_ivm_object));
+    object->type = lua_type(L, 3);
+    if (object->type == LUA_TNUMBER) object->number = lua_tonumber(L, 3);
+    else if (object->type == LUA_TBOOLEAN) object->number = lua_tonumber(L, 3);
+    else if (object->type == LUA_TSTRING) {
+        value = lua_tolstring(L, 3, &object->size);
+        object->string = apr_pstrmemdup(r->server->process->pool, value, object->size);
+    }
+    apr_pool_userdata_set(object, raw_key, NULL, r->server->process->pool);
+    return 0;
+}
+
 #define APLUA_REQ_TRACE(lev) static int req_trace##lev(lua_State *L)  \
 {                                                               \
     return req_log_at(L, APLOG_TRACE##lev);                     \
@@ -1769,6 +1808,8 @@ static const char* lua_ap_get_server_name(request_rec* r)
     name = ap_get_server_name(r);
     return name ? name : "localhost";
 }
+
+
 
 static const struct luaL_Reg server_methods[] = {
     {NULL, NULL}
@@ -1996,6 +2037,10 @@ AP_LUA_DECLARE(void) ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
                  makefun(&lua_ap_state_query, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "get_server_name_for_url", APR_HASH_KEY_STRING,
                  makefun(&lua_ap_get_server_name_for_url, APL_REQ_FUNTYPE_LUACFUN, p));
+    apr_hash_set(dispatch, "ivm_get", APR_HASH_KEY_STRING,
+                 makefun(&lua_ivm_get, APL_REQ_FUNTYPE_LUACFUN, p));
+    apr_hash_set(dispatch, "ivm_set", APR_HASH_KEY_STRING,
+                 makefun(&lua_ivm_set, APL_REQ_FUNTYPE_LUACFUN, p));
     
     lua_pushlightuserdata(L, dispatch);
     lua_setfield(L, LUA_REGISTRYINDEX, "Apache2.Request.dispatch");
