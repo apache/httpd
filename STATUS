@@ -100,6 +100,15 @@ RELEASE SHOWSTOPPERS:
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
+  
+  
+  * mod_ssl: Quiet FIPS mode weak keys disabled and FIPS not selected emits
+    in the error log to debug level.  [William Rowe]
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1447993
+    2.4.x patch: trunk patch applies.
+    2.2.x patch: http://people.apache.org/~wrowe/httpd-2.2-quiet-fips.patch
+    +1: wrowe, druggeri, kbrand
+    
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -179,12 +188,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                now it uses a static which is verboten in reentrant code.)
                kudos for using apr_tokenize_to_argv to allow spaces in args.
 
-  * mod_ssl: Quiet FIPS mode weak keys disabled and FIPS not selected emits
-    in the error log to debug level.  [William Rowe]
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1447993
-    2.4.x patch: trunk patch applies.
-    2.2.x patch: http://people.apache.org/~wrowe/httpd-2.2-quiet-fips.patch
-    +1: wrowe, druggeri, kbrand
 
   * mod_proxy_balancer: Add failontimeout parameter. Timeout will put worker
     in error state if an IO timeout is detected.
@@ -197,7 +200,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR: 51489 51982
     Backport of r1386576, r1386578 attached to 51982 
       https://issues.apache.org/bugzilla/attachment.cgi?id=30179&action=diff
-    +1: wrowe, druggeri
+    +1: wrowe, druggeri, humbedooh
 
   * mod_ssl: Catch missing, mismatched or encrypted client cert/key pairs
     with SSLProxyMachineCertificateFile/Path directives. PR 52212, PR 54698.
