@@ -190,6 +190,28 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * pcre: update config.guess and config.sub for better platform support.
+    Trunk version of patch:
+      Does not apply.
+    Patch in 2.2.x branch:
+      Does not apply.
+    Use recent files from http://git.savannah.gnu.org/cgit/config.git.
+    +1: rjung, wrowe, humbedooh
+
+  * mod_rewrite: PR 46428 - whitespace/encoding for proxied URL
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=757427
+    2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=773351
+    Backport: http://people.apache.org/~rjung/patches/pr-46428-2_0.patch
+    Revert r1002110 and r1002161 in test framework, once this is fixed.
+    +1: rjung, wrowe, humbedooh
+
+  * mod_include: PR 39369 - timefmt config not working in SSI when using
+    INCLUDES output filter and XBitHack On
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=757376
+    2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=773352
+    Backport: http://people.apache.org/~rjung/patches/pr-39369-2_0.patch
+    Revert r1002174 in test framework, once this is fixed.
+    +1: rjung, wrowe, humbedooh
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -206,28 +228,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           do we need to make people opt-in for this behavior to
           backport it to 2.0.x? What mechanism?
 
-  * pcre: update config.guess and config.sub for better platform support.
-    Trunk version of patch:
-      Does not apply.
-    Patch in 2.2.x branch:
-      Does not apply.
-    Use recent files from http://git.savannah.gnu.org/cgit/config.git.
-    +1: rjung, wrowe
-
-  * mod_rewrite: PR 46428 - whitespace/encoding for proxied URL
-    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=757427
-    2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=773351
-    Backport: http://people.apache.org/~rjung/patches/pr-46428-2_0.patch
-    Revert r1002110 and r1002161 in test framework, once this is fixed.
-    +1: rjung, wrowe
-
-  * mod_include: PR 39369 - timefmt config not working in SSI when using
-    INCLUDES output filter and XBitHack On
-    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=757376
-    2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=773352
-    Backport: http://people.apache.org/~rjung/patches/pr-39369-2_0.patch
-    Revert r1002174 in test framework, once this is fixed.
-    +1: rjung, wrowe
 
   * byterange: Backport MaxRanges configuration directive and
     ap_set_accept_ranges() utility function.
@@ -249,7 +249,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/viewvc?view=revision&revision=103837
                  http://svn.apache.org/viewvc?view=revision&revision=966160
     Backport: http://people.apache.org/~rjung/patches/sslhonorcipher-2.0.patch
-    +1: rjung
+    +1: rjung, humbedooh
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
@@ -608,7 +608,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       strong warnings!) will give authors a chance to vet their code.
 
     * There is increasing demand from module writers for an API
-      that will allow them to control the server à la apachectl.
+      that will allow them to control the server Ã  la apachectl.
       Reasons include sole-function servers that need to die if
       an external dependency (e.g., a database) fails, et cetera.
       Perhaps something in the (ever more abused) scoreboard?
