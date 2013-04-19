@@ -190,13 +190,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_rewrite: PR 46428 - whitespace/encoding for proxied URL
-    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=757427
-    2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=773351
-    Backport: http://people.apache.org/~rjung/patches/pr-46428-2_0.patch
-    Revert r1002110 and r1002161 in test framework, once this is fixed.
-    +1: rjung, wrowe, humbedooh
-
   * mod_include: PR 39369 - timefmt config not working in SSI when using
     INCLUDES output filter and XBitHack On
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=757376

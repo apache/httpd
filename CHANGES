@@ -28,6 +28,9 @@ Changes with Apache 2.0.65
      is enabled, could allow local users to gain privileges via a .htaccess
      file. [Stefan Fritsch, Greg Ames]
 
+  *) mod_rewrite: When evaluating a proxy rule in directory context, do
+     escape the filename by default. PR 46428 [Joe Orton]
+
   *) Improve platform detection for bundled PCRE by updating config.guess
      and config.sub.  [Rainer Jung]
 

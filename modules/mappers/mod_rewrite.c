@@ -2203,6 +2203,20 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      *  ourself).
      */
     if (p->flags & RULEFLAG_PROXY) {
+        /* For rules evaluated in server context, the mod_proxy fixup
+         * hook can be relied upon to escape the URI as and when
+         * necessary, since it occurs later.  If in directory context,
+         * the ordering of the fixup hooks is forced such that
+         * mod_proxy comes first, so the URI must be escaped here
+         * instead.  See PR 39746, 46428, and other headaches. */
+        if (perdir && (p->flags & RULEFLAG_NOESCAPE) == 0) {
+            char *old_filename = r->filename;
+
+            r->filename = ap_escape_uri(r->pool, r->filename);
+            rewritelog(r, 2, "[per-dir %s] escaped URI in per-dir context "
+                        "for proxy, %s -> %s", perdir, old_filename, r->filename);
+        }
+
         fully_qualify_uri(r);
         if (perdir == NULL) {
             rewritelog(r, 2, "forcing proxy-throughput with %s", r->filename);
