@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Add workaround for gcc bug on sparc/64bit. PR 52900.
+     [Stefan Fritsch]
+
   *) htpasswd: Add -v option to verify a password. [Stefan Fritsch]
 
   *) htpasswd, htdbm: Fix password generation. PR 54735. [Stefan Fritsch]
