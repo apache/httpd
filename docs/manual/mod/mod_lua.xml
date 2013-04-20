@@ -813,10 +813,10 @@ r:escape_logitem(string) -- Escapes a string for logging
 </highlight>
 
 <highlight language="lua">
-r:strcmp_match(string, pattern) -- Checks if 'string' matches 'pattern' using strcmp_match (globs).
+r.strcmp_match(string, pattern) -- Checks if 'string' matches 'pattern' using strcmp_match (globs).
                         -- fx. whether 'www.example.com' matches '*.example.com':
                         
-local match = r:strcmp_match("foobar.com", "foo*.com")
+local match = r.strcmp_match("foobar.com", "foo*.com")
 if match then 
     r:puts("foobar.com matches foo*.com")
 end
