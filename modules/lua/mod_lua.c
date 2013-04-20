@@ -19,6 +19,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <apr_thread_mutex.h>
 
 #include "lua_apr.h"
 #include "lua_config.h"
@@ -63,6 +64,7 @@ typedef struct
     int broken;
 } lua_filter_ctx;
 
+apr_thread_mutex_t* lua_ivm_mutex = NULL;
 
 /**
  * error reporting if lua has an error.
@@ -1970,6 +1972,9 @@ static void lua_register_hooks(apr_pool_t *p)
 #endif
     /* providers */
     lua_authz_providers = apr_hash_make(p);
+    
+    /* ivm mutex */
+    apr_thread_mutex_create(&lua_ivm_mutex, APR_THREAD_MUTEX_DEFAULT, p);
 }
 
 AP_DECLARE_MODULE(lua) = {
