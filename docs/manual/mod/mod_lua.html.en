@@ -798,10 +798,6 @@ r:puts("Server 1's thread 1 has thread ID " .. thread.tid .. " and is in " .. th
 </pre>
 
 
-<pre class="prettyprint lang-lua">
-r:started() -- Returns the time of the last server (re)start
-</pre>
-
 
 <pre class="prettyprint lang-lua">
 r:clock() -- Returns the current time with microsecond precision
