@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1467562:1470119 (outdated) -->
+<!-- English Revision : 1470158 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -293,7 +293,7 @@ argument (sauf LuaAuthzProvider qui re&ccedil;oit aussi des arguments en
 provenance de la directive Require). Elles peuvent renvoyer une valeur,
 selon la fonction, mais il s'agit en g&eacute;n&eacute;ral d'un
 code d'&eacute;tat HTTP ou des valeurs OK, DONE, ou DECLINED,
-que vous pouvez &eacute;crire dans lua sous la forme <code>apache2.OK</code>,
+que vous pouvez &eacute;crire dans Lua sous la forme <code>apache2.OK</code>,
 <code>apache2.DONE</code>, ou <code>apache2.DECLINED</code>.</p>
 
 
@@ -669,7 +669,9 @@ end
 <p>L'objet request_rec poss&egrave;de (au minimum) les m&eacute;thodes suivantes :</p>
 
 <highlight language="lua">
-r:flush() -- vide le tampon de sortie
+r:flush()   -- vide le tampon de sortie
+            -- Renvoie true si le vidage a &eacute;t&eacute; effectu&eacute; avec succ&egrave;s,
+	    false dans le cas contraire.
 
 while nous_avons_des_donn&eacute;es_&agrave;_envoyer do
     r:puts("Bla bla bla\n") -- envoi des donn&eacute;es &agrave; envoyer vers le tampon
@@ -805,11 +807,6 @@ r:puts("L'ID du thread 1 du serveur 1 est " .. thread.tid .. " et son
 </highlight>
 
 <highlight language="lua">
-r:started() -- Renvoie l'heure du dernier (re)d&eacute;marrage du
-serveur.
-</highlight>
-
-<highlight language="lua">
 r:clock() -- Renvoie l'heure courante avec une pr&eacute;cision d'une
 microseconde.
 </highlight>
@@ -888,11 +885,11 @@ journalisation.
 </highlight>
 
 <highlight language="lua">
-r:strcmp_match(string, pattern) -- V&eacute;rifie si 'string' correspond &agrave;
+r.strcmp_match(string, pattern) -- V&eacute;rifie si 'string' correspond &agrave;
 'pattern' via la fonction strcmp_match (GLOBs). Par exemple, est-ce que
 'www.example.com' correspond &agrave; '*.example.com' ?
 
-local match = r:strcmp_match("foobar.com", "foo*.com")
+local match = r.strcmp_match("foobar.com", "foo*.com")
 if match then 
     r:puts("foobar.com matches foo*.com")
 end
@@ -924,10 +921,10 @@ r:custom_response(404, "Baleted!")
 </highlight>
 
 <highlight language="lua">
-r:exists_config_define(string) -- V&eacute;rifie si une d&eacute;finition de
+r.exists_config_define(string) -- V&eacute;rifie si une d&eacute;finition de
 configuration existe.
 
-if r:exists_config_define("FOO") then
+if r.exists_config_define("FOO") then
     r:puts("httpd a probablement &eacute;t&eacute; lanc&eacute; avec l'option -DFOO, ou FOO a
     &eacute;t&eacute; d&eacute;fini dans la configuration")
 end
@@ -949,15 +946,22 @@ end
 </highlight>
 
 <highlight language="lua">
-r:regex(string, pattern) -- Ex&eacute;cute une recherche &agrave; base
+r:regex(string, pattern, [drapeaux]) -- Ex&eacute;cute une recherche &agrave; base
 d'expression rationnelle sur une cha&icirc;ne, et renvoie les
 &eacute;ventuelles correspondances trouv&eacute;es.
 
-local matches = r:regex("foo bar baz", "foo (\w+) (\S*)")
+local matches = r:regex("foo bar baz", [[foo (\w+) (\S*)]])
 if matches then
     r:puts("L'expression rationnelle correspond et le dernier mot
     captur&eacute; ($2) est : " .. matches[2])
 end
+
+-- Exemple avec insensibilit&eacute; &agrave; la casse :
+local matches = r:regex("FOO bar BAz", [[(foo) bar]], 1)
+
+-- les drapeaux peuvent &ecirc;tre une combibaison bit &agrave; bit de :
+-- 0x01: insensibilit&eacute; &agrave; la casse
+-- 0x02: recherche multiligne
 </highlight>
 
 <highlight language="lua">
@@ -971,7 +975,19 @@ base de donn&eacute;es et renvoie une classe database. Voir '<a
 href="#databases">Connectivit&eacute; aux bases de donn&eacute;es</a>' pour plus de
 d&eacute;tails.
 </highlight>
-        
+
+<highlight language="lua">
+r:ivm_set("key", value) -- D&eacute;fini une variable Inter-VM avec une valeur sp&eacute;cifique.
+                        -- Ces valeurs sont conserv&eacute;es m&ecirc;me si la VM est
+			-- arr&ecirc;t&eacute;e ou non utilis&eacute;e, et ne doivent donc &ecirc;tre
+			-- utilis&eacute;es que si MaxConnectionsPerChild > 0.
+			-- Les valeurs peuvent &ecirc;tre de type number, string
+			-- ou boolean.
+                        
+r:ivm_get("key")        -- Lit le contenu d'une variable d&eacute;finie via ivm_set. Renvoie
+			-- le contenu de la variable si elle existe, ou nil
+			-- dans le cas contraire.
+</highlight>
 
 </section>
 

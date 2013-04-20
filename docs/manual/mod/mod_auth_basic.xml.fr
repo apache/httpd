@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1457471:1468581 (outdated) -->
+<!-- English Revision : 1468581 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -127,7 +127,7 @@ niveau</description>
 <name>AuthBasicFake</name>
 <description>Authentification de base simul&eacute;e &agrave; l'aide des nom
 d'utilisateur et mot de passe fournis</description>
-<syntax>AuthBasicFake username password</syntax>
+<syntax>AuthBasicFake off|nom-utilisateur [mot-de-passe]</syntax>
 <default>none</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -140,6 +140,10 @@ d'utilisateur et mot de passe fournis</description>
     passe sont interpr&eacute;t&eacute;s par l'<a href="../expr.html">interpr&eacute;teur
     d'expression</a>, ce qui permet de les d&eacute;finir en fonction de
     param&egrave;tres de la requ&ecirc;te.</p>
+
+    <p>Si aucun mot de passe n'est sp&eacute;cifi&eacute;, la valeur par d&eacute;faut
+    "password" sera utilis&eacute;e. Pour d&eacute;sactiver l'authentification de base
+    simul&eacute;e pour un espace d'URL, d&eacute;finissez AuthBasicFake &agrave; "off".</p>
 
     <p>Dans l'exemple suivant, un nom d'utilisateur et un mot de passe
     pr&eacute;d&eacute;finis sont transmis &agrave; un serveur d'arri&egrave;re-plan :</p>
@@ -163,7 +167,7 @@ d'utilisateur et mot de passe fournis</description>
     <example><title>Exemple d'utilisation avec un certificat</title>
     <highlight language="config">
 &lt;Location /secure&gt;
-    AuthBasicFake %{SSL_CLIENT_S_DN_Email} password
+    AuthBasicFake %{SSL_CLIENT_S_DN_Email}
 &lt;/Location&gt;
     </highlight>
     </example>
@@ -180,6 +184,14 @@ d'utilisateur et mot de passe fournis</description>
     <highlight language="config">
 &lt;Location /secure&gt;
     AuthBasicFake %{SSL_CLIENT_S_DN_Email} %{sha1:passphrase-%{SSL_CLIENT_S_DN_Email}}
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <example><title>D&eacute;sactivation de l'authentification simul&eacute;e</title>
+    <highlight language="config">
+&lt;Location /public&gt;
+    AuthBasicFake off
 &lt;/Location&gt;
     </highlight>
     </example>
