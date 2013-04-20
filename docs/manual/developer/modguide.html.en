@@ -315,7 +315,7 @@ looks like
 <p>The most essential part of any request is the <em>request record
 </em>. In a call to a handler function, this is represented by the <code>
 request_rec* </code> structure passed along with every call that is made. 
-This struct, typically just refered to as <code>r</code> in modules, 
+This struct, typically just referred to as <code>r</code> in modules, 
 contains all the information you need for your module to fully process any 
 HTTP request and respond accordingly.</p> <p>Some key elements of the <code>
 request_rec </code> structure are:
@@ -728,7 +728,7 @@ static int example_handler(request_rec *r)
 
 
 <p>
-This version in its entirity can be found here: 
+This version in its entirety can be found here: 
 <a href="http://people.apache.org/~humbedooh/mods/examples/mod_example_2.c">mod_example_2.c</a>.
 </p>
 
@@ -917,7 +917,7 @@ set them.</em>)
 
 <h3><a name="directive_handler" id="directive_handler">The directive handler function</a></h3>
 <p>
-Now that we've told the server to expect some directives for our module, it's 
+Now that we have told the server to expect some directives for our module, it's 
 time to make a few functions for handling these. What the server reads in the 
 configuration file(s) is text, and so naturally, what it passes along to 
 our directive handler is one or more strings, that we ourselves need to 
