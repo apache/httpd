@@ -880,10 +880,10 @@ r:escape_logitem(string) -- Escapes a string for logging
 
 
 <pre class="prettyprint lang-lua">
-r:strcmp_match(string, pattern) -- Checks if 'string' matches 'pattern' using strcmp_match (globs).
+r.strcmp_match(string, pattern) -- Checks if 'string' matches 'pattern' using strcmp_match (globs).
                         -- fx. whether 'www.example.com' matches '*.example.com':
                         
-local match = r:strcmp_match("foobar.com", "foo*.com")
+local match = r.strcmp_match("foobar.com", "foo*.com")
 if match then 
     r:puts("foobar.com matches foo*.com")
 end
@@ -915,9 +915,9 @@ r:custom_response(404, "Baleted!")
 
 
 <pre class="prettyprint lang-lua">
-r:exists_config_define(string) -- Checks whether a configuration definition exists or not:
+r.exists_config_define(string) -- Checks whether a configuration definition exists or not:
 
-if r:exists_config_define("FOO") then
+if r.exists_config_define("FOO") then
     r:puts("httpd was probably run with -DFOO, or it was defined in the configuration")
 end
 </pre>
@@ -966,6 +966,16 @@ r:dbacquire(dbType[, dbParams]) -- Acquires a connection to a database and retur
                         -- See '<a href="#databases">Database connectivity</a>' for details.
 </pre>
 
+
+<pre class="prettyprint lang-lua">
+r:ivm_set("key", value) -- Set an Inter-VM variable to hold a specific value.
+                        -- These values persist even though the VM is gone or not being used,
+                        -- and so should only be used if MaxConnectionsPerChild is &gt; 0
+                        -- Values can be numbers, strings and booleans.
+                        
+r:ivm_get("key")        -- Fetches a variable set by ivm_set. Returns the contents of the variable
+                        -- if it exists or nil if no such variable exists.
+</pre>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

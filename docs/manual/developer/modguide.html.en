@@ -1658,7 +1658,7 @@ static int example_handler(request_rec *r)
     keyValuePair* formData;
     /*~~~~~~~~~~~~~~~~~~~~~~*/
 
-    formData = readPost();
+    formData = readPost(r);
     if (formData) {
         int i;
         for (i = 0; formData[i]; i++) {
