@@ -16,7 +16,7 @@
  */
 
 #include "mod_lua.h"
-
+#include "util_varbuf.h"
 #ifndef _LUA_REQUEST_H_
 #define _LUA_REQUEST_H_
 
@@ -40,8 +40,8 @@ typedef struct
 typedef struct {
     int type;
     size_t size;
-    void* string;
     lua_Number number;
+    struct ap_varbuf vb;
 } lua_ivm_object;
 
 #endif /* !_LUA_REQUEST_H_ */

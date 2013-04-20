@@ -26,6 +26,7 @@
 #include "scoreboard.h"
 #include "lua_dbd.h"
 #include "util_md5.h"
+#include "util_varbuf.h"
 
 APLOG_USE_MODULE(lua);
 #define POST_MAX_VARS 500
@@ -1661,7 +1662,7 @@ static int lua_ivm_get(lua_State *L) {
     if (object) {
         if (object->type == LUA_TBOOLEAN) lua_pushboolean(L, object->number);
         else if (object->type == LUA_TNUMBER) lua_pushnumber(L, object->number);
-        else if (object->type == LUA_TSTRING) lua_pushlstring(L, object->string, object->size);
+        else if (object->type == LUA_TSTRING) lua_pushlstring(L, object->vb.buf, object->size);
         return 1;
     }
     else {
@@ -1674,22 +1675,27 @@ static int lua_ivm_set(lua_State *L) {
     const char *key, *raw_key;
     const char *value = NULL;
     lua_ivm_object *object = NULL;
+    lua_ivm_object *old_object = NULL;
+    
     request_rec *r = ap_lua_check_request_rec(L, 1);
     key = luaL_checkstring(L, 2);
     luaL_checkany(L, 3);
     raw_key = apr_pstrcat(r->pool, "lua_ivm_", key, NULL);
     
-    /* This will require MaxConnectionsPerChild to be > 0, since it's 
-     * essentially leaking memory as values are being overridden */
+    apr_pool_userdata_get((void **)&old_object, raw_key, r->server->process->pool);
     object = apr_pcalloc(r->server->process->pool, sizeof(lua_ivm_object));
     object->type = lua_type(L, 3);
     if (object->type == LUA_TNUMBER) object->number = lua_tonumber(L, 3);
     else if (object->type == LUA_TBOOLEAN) object->number = lua_tonumber(L, 3);
     else if (object->type == LUA_TSTRING) {
         value = lua_tolstring(L, 3, &object->size);
-        object->string = apr_pstrmemdup(r->server->process->pool, value, object->size);
+        ap_varbuf_init(r->server->process->pool, &object->vb, object->size);
+        ap_varbuf_strmemcat(&object->vb, value, object->size);
     }
     apr_pool_userdata_set(object, raw_key, NULL, r->server->process->pool);
+    if (old_object && old_object->type == LUA_TSTRING) {
+        ap_varbuf_free(&old_object->vb);
+    }
     return 0;
 }
 
