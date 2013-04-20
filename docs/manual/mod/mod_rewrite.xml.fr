@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1456072:1469957 (outdated) -->
+<!-- English Revision : 1469957 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -705,7 +705,7 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 	</li>
 
         <li>A des fins de r&eacute;f&eacute;rence avant, on peut utiliser,
-	<code>%{LA-U:variable}</code>, qui
+	<a id="LA-U" name="LA-U"><code>%{LA-U:variable}</code></a>, qui
 	permet d'effectuer une sous-requ&ecirc;te interne &agrave; base d'URL, afin
 	de d&eacute;terminer la valeur finale de <em>variable</em>. Ceci permet
 	d'acc&eacute;der &agrave; la valeur d'une variable pour la r&eacute;&eacute;criture inconnue
