@@ -40,6 +40,7 @@ typedef struct
 typedef struct {
     int type;
     size_t size;
+    size_t vb_size;
     lua_Number number;
     struct ap_varbuf vb;
 } lua_ivm_object;
