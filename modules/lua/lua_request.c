@@ -1093,16 +1093,6 @@ static int lua_ap_scoreboard_worker(lua_State *L)
 }
 
 /*
- * lua_ap_restarted; r:started() - Returns the timestamp of last server
- * (re)start
- */
-static int lua_ap_restarted(lua_State *L)
-{
-    lua_pushnumber(L, ap_scoreboard_image->global->restart_time);
-    return 1;
-}
-
-/*
  * lua_ap_clock; r:clock() - Returns timestamp with microsecond precision
  */
 static int lua_ap_clock(lua_State *L)
@@ -1996,8 +1986,6 @@ AP_LUA_DECLARE(void) ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
                  makefun(&lua_ap_scoreboard_process, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "scoreboard_worker", APR_HASH_KEY_STRING,
                  makefun(&lua_ap_scoreboard_worker, APL_REQ_FUNTYPE_LUACFUN, p));
-    apr_hash_set(dispatch, "started", APR_HASH_KEY_STRING,
-                 makefun(&lua_ap_restarted, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "clock", APR_HASH_KEY_STRING,
                  makefun(&lua_ap_clock, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "requestbody", APR_HASH_KEY_STRING,
