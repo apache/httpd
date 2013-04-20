@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1446026:1467979 (outdated) -->
+<!-- English Revision : 1467979 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -491,6 +491,14 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td>"D&eacute;s&eacute;chappe" les cha&icirc;nes cod&eacute;es
 	en hexad&eacute;cimal, en ne gardant encod&eacute;s que les slashes; renvoie la cha&icirc;ne vide
 	si la s&eacute;quence %00 est rencontr&eacute;e</td><td></td></tr>
+    <tr><td><code>base64</code></td>
+        <td>Encode la cha&icirc;ne en base64</td><td></td></tr>
+    <tr><td><code>unbase64</code></td>
+        <td>D&eacute;code les cha&icirc;nes cod&eacute;es en base64, renvoie une cha&icirc;ne
+	tronqu&eacute;e si le caract&egrave;re 0x00 est rencontr&eacute;</td><td></td></tr>
+    <tr><td><code>sha1</code></td>
+        <td>G&eacute;n&egrave;re un hash de la cha&icirc;ne en utilisant SHA1, puis encode
+	le hash obtenu en hexad&eacute;cimal</td><td></td></tr>
     <tr><td><code>file</code></td>
         <td>Lit le contenu d'un fichier</td><td>oui</td></tr>
     <tr><td><code>filesize</code></td>

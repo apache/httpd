@@ -91,7 +91,7 @@ de configuration Apache.</description>
     <p>Suppression de la d&eacute;finition d'une macro :</p>
     <ul>
     <li> la macro supprim&eacute;e doit avoir &eacute;t&eacute; d&eacute;finie auparavant.</li>
-    </ul>
+  </ul>
 
     <highlight language="config">
 &lt;Macro DirGroup $dir $group&gt;
@@ -104,7 +104,7 @@ Use DirGroup /www/apache/private private
 Use DirGroup /www/apache/server  admin
 
 UndefMacro DirGroup
-
+    
 </highlight>
 
 </section>
