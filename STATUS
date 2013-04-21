@@ -90,6 +90,33 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * ap_expr: Expression parser: Add the ability to apply a md5 hash to
+     strings within the parser.
+     trunk patch: http://svn.apache.org/r1458004
+     2.4.x patch: trunk patch applies if previous proposals for ap_expr get applied.
+     +1: rjung, minfrin, sf
+
+    * log: use ap_log_error's facility to print the apr error string
+      instead of calling apr_strerror() explicitly
+      trunk patches: https://svn.apache.org/r1463052
+      2.4.x patch: trunk patch works
+      +1: jailletc36, minfrin, sf
+
+    * various: Use %pm available since apr 1.3 instead of an extra call to apr_strerror
+      trunk patches: https://svn.apache.org/r1463056
+      2.4.x patch: trunk patch works (with offset)
+      +1: jailletc36, minfrin, sf
+
+    * mod_auth_digest: 3 easy votes to keep in line with trunk
+        simplification with ap_bin2hex()
+      + use apr_array for an array
+      + ap_log_error already logs the error string, no need to log it twice
+      trunk patches: https://svn.apache.org/r1458020
+                     https://svn.apache.org/r1463044
+                     https://svn.apache.org/r1463045
+      2.4.x patch: trunk patch works
+      +1: jailletc36, minfrin, sf
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -215,33 +242,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: https://people.apache.org/~kbrand/PR52212_54698_2.4.x.patch
     2.2.x patch: https://people.apache.org/~kbrand/PR52212_54698_2.2.x.patch
     +1: kbrand, jorton, 
-
-   * ap_expr: Expression parser: Add the ability to apply a md5 hash to
-     strings within the parser.
-     trunk patch: http://svn.apache.org/r1458004
-     2.4.x patch: trunk patch applies if previous proposals for ap_expr get applied.
-     +1: rjung, minfrin
-
-    * log: use ap_log_error's facility to print the apr error string
-      instead of calling apr_strerror() explicitly
-      trunk patches: https://svn.apache.org/r1463052
-      2.4.x patch: trunk patch works
-      +1: jailletc36, minfrin
-
-    * various: Use %pm available since apr 1.3 instead of an extra call to apr_strerror
-      trunk patches: https://svn.apache.org/r1463056
-      2.4.x patch: trunk patch works (with offset)
-      +1: jailletc36, minfrin
-
-    * mod_auth_digest: 3 easy votes to keep in line with trunk
-        simplification with ap_bin2hex()
-      + use apr_array for an array
-      + ap_log_error already logs the error string, no need to log it twice
-      trunk patches: https://svn.apache.org/r1458020
-                     https://svn.apache.org/r1463044
-                     https://svn.apache.org/r1463045
-      2.4.x patch: trunk patch works
-      +1: jailletc36, minfrin
 
     * skiplist: Add skiplist functionality
       trunk patches: https://svn.apache.org/r1411190
