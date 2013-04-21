@@ -891,10 +891,22 @@ r:dbacquire(dbType[, dbParams]) -- Acquires a connection to a database and retur
 r:ivm_set("key", value) -- Set an Inter-VM variable to hold a specific value.
                         -- These values persist even though the VM is gone or not being used,
                         -- and so should only be used if MaxConnectionsPerChild is > 0
-                        -- Values can be numbers, strings and booleans.
+                        -- Values can be numbers, strings and booleans, and are stored on a 
+                        -- per process basis (so they won't do much good with a prefork mpm)
                         
 r:ivm_get("key")        -- Fetches a variable set by ivm_set. Returns the contents of the variable
                         -- if it exists or nil if no such variable exists.
+                        
+-- An example getter/setter that saves a global variable outside the VM:
+function handle(r)
+    -- First VM to call this will get no value, and will have to create it
+    local foo = r:ivm_get("cached_data")
+    if not foo then
+        foo = do_some_calcs() -- fake some return value
+        r:ivm_set("cached_data", foo) -- set it globally
+    end
+    r:puts("Cached data is: ", foo)
+end
 </highlight>
 
 </section>
