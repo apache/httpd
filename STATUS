@@ -261,6 +261,26 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk patches work
       +1: jim
 
+    * htpasswd/htdbm: Fix hash generation bug. PR 54735
+      trunk patches: https://svn.apache.org/r1465115
+      2.4.x patch: trunk patches work
+      +1: sf
+
+    * htpasswd: Add -v option
+      trunk patches: https://svn.apache.org/r1465116
+      2.4.x patch: trunk patches work
+      +1: sf
+
+    * core: Add workaround for gcc bug on sparc/64bit
+      trunk patches: https://svn.apache.org/r1470183
+      2.4.x patch: trunk patches work
+      +1: sf
+
+    * mod_auth_digest: avoid crash if shm init fails.
+      trunk patches: https://svn.apache.org/r1463047
+      2.4.x patch: trunk patches work
+      +1: sf
+
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
