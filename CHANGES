@@ -27,9 +27,6 @@ Changes with Apache 2.5.0
   *) mod_proxy_html: fix typo-bug processing "strict" vs "transitional"
      HTML/XHTML [Nick Kew]
 
-  *) core: Fix valgrind warning about uninitialized memory in argument to
-     semctl. PR 53690. [Mikhail T. <mi+apache aldan algebra com>]
-
   *) core: Add option to add valgrind support. Use it to reduce false positive
      warnings in mod_ssl. [Stefan Fritsch]
 
