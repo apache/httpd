@@ -206,7 +206,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/r1462266
                  http://svn.apache.org/r1468581
     2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_auth_basic-fake4.patch
-    +1: minfrin
+    +1: minfrin, jim
 
   * mod_proxy_wstunnel: Backport (copy) websocket tunnel proxy submodule
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1452911
@@ -230,7 +230,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1465839
      2.4.x patch: http://people.apache.org/~druggeri/patches/httpd-2.4.x-failontimeout.patch
      2.2.x patch: http://people.apache.org/~druggeri/patches/httpd-2.2.x-failontimeout.patch
-     +1: druggeri
+     +1: druggeri, jim
 
    * mod_ssl: Catch missing, mismatched or encrypted client cert/key pairs
     with SSLProxyMachineCertificateFile/Path directives. PR 52212, PR 54698.
