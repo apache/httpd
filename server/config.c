@@ -1798,9 +1798,8 @@ AP_DECLARE(const char *) ap_process_resource_config(server_rec *s,
 
     rv = ap_pcfg_openfile(&cfp, p, fname);
     if (rv != APR_SUCCESS) {
-        char errmsg[120];
-        return apr_psprintf(p, "Could not open configuration file %s: %s",
-                            fname, apr_strerror(rv, errmsg, sizeof errmsg));
+        return apr_psprintf(p, "Could not open configuration file %s: %pm",
+                            fname, &rv);
     }
 
     parms.config_file = cfp;
@@ -1852,9 +1851,8 @@ static const char *process_resource_config_nofnmatch(server_rec *s,
          */
         rv = apr_dir_open(&dirp, path, ptemp);
         if (rv != APR_SUCCESS) {
-            char errmsg[120];
-            return apr_psprintf(p, "Could not open config directory %s: %s",
-                                path, apr_strerror(rv, errmsg, sizeof errmsg));
+            return apr_psprintf(p, "Could not open config directory %s: %pm",
+                                path, &rv);
         }
 
         candidates = apr_array_make(ptemp, 1, sizeof(fnames));
@@ -1939,9 +1937,8 @@ static const char *process_resource_config_fnmatch(server_rec *s,
      */
     rv = apr_dir_open(&dirp, path, ptemp);
     if (rv != APR_SUCCESS) {
-        char errmsg[120];
-        return apr_psprintf(p, "Could not open config directory %s: %s",
-                            path, apr_strerror(rv, errmsg, sizeof errmsg));
+        return apr_psprintf(p, "Could not open config directory %s: %pm",
+                            path, &rv);
     }
 
     candidates = apr_array_make(ptemp, 1, sizeof(fnames));
