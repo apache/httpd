@@ -91,7 +91,7 @@ typedef struct digest_config_struct {
     const char  *dir_name;
     authn_provider_list *providers;
     const char  *realm;
-    char **qop_list;
+    apr_array_header_t *qop_list;
     apr_sha1_ctx_t  nonce_ctx;
     apr_time_t    nonce_lifetime;
     const char  *nonce_format;
@@ -240,10 +240,8 @@ static apr_status_t initialize_secret(server_rec *s)
 #endif
 
     if (status != APR_SUCCESS) {
-        char buf[120];
         ap_log_error(APLOG_MARK, APLOG_CRIT, status, s, APLOGNO(01758)
-                     "error generating secret: %s",
-                     apr_strerror(status, buf, sizeof(buf)));
+                     "error generating secret");
         return status;
     }
 
@@ -451,8 +449,7 @@ static void *create_digest_dir_config(apr_pool_t *p, char *dir)
 
     conf = (digest_config_rec *) apr_pcalloc(p, sizeof(digest_config_rec));
     if (conf) {
-        conf->qop_list       = apr_palloc(p, sizeof(char*));
-        conf->qop_list[0]    = NULL;
+        conf->qop_list       = apr_array_make(p, 2, sizeof(char *));
         conf->nonce_lifetime = DFLT_NONCE_LIFE;
         conf->dir_name       = apr_pstrdup(p, dir);
         conf->algorithm      = DFLT_ALGORITHM;
@@ -532,15 +529,10 @@ static const char *add_authn_provider(cmd_parms *cmd, void *config,
 static const char *set_qop(cmd_parms *cmd, void *config, const char *op)
 {
     digest_config_rec *conf = (digest_config_rec *) config;
-    char **tmp;
-    int cnt;
 
     if (!strcasecmp(op, "none")) {
-        if (conf->qop_list[0] == NULL) {
-            conf->qop_list = apr_palloc(cmd->pool, 2 * sizeof(char*));
-            conf->qop_list[1] = NULL;
-        }
-        conf->qop_list[0] = "none";
+        apr_array_clear(conf->qop_list);
+        *(const char **)apr_array_push(conf->qop_list) = "none";
         return NULL;
     }
 
@@ -551,14 +543,7 @@ static const char *set_qop(cmd_parms *cmd, void *config, const char *op)
         return apr_pstrcat(cmd->pool, "Unrecognized qop: ", op, NULL);
     }
 
-    for (cnt = 0; conf->qop_list[cnt] != NULL; cnt++)
-        ;
-
-    tmp = apr_palloc(cmd->pool, (cnt + 2) * sizeof(char*));
-    memcpy(tmp, conf->qop_list, cnt*sizeof(char*));
-    tmp[cnt]   = apr_pstrdup(cmd->pool, op);
-    tmp[cnt+1] = NULL;
-    conf->qop_list = tmp;
+    *(const char **)apr_array_push(conf->qop_list) = op;
 
     return NULL;
 }
@@ -1056,10 +1041,8 @@ static void gen_nonce_hash(char *hash, const char *timestr, const char *opaque,
                            const server_rec *server,
                            const digest_config_rec *conf)
 {
-    const char *hex = "0123456789abcdef";
     unsigned char sha1[APR_SHA1_DIGESTSIZE];
     apr_sha1_ctx_t ctx;
-    int idx;
 
     memcpy(&ctx, &conf->nonce_ctx, sizeof(ctx));
     /*
@@ -1075,12 +1058,7 @@ static void gen_nonce_hash(char *hash, const char *timestr, const char *opaque,
     }
     apr_sha1_final(sha1, &ctx);
 
-    for (idx=0; idx<APR_SHA1_DIGESTSIZE; idx++) {
-        *hash++ = hex[sha1[idx] >> 4];
-        *hash++ = hex[sha1[idx] & 0xF];
-    }
-
-    *hash++ = '\0';
+    ap_bin2hex(sha1, APR_SHA1_DIGESTSIZE, hash);
 }
 
 
@@ -1251,19 +1229,17 @@ static void note_digest_auth_failure(request_rec *r,
     const char   *qop, *opaque, *opaque_param, *domain, *nonce;
 
     /* Setup qop */
-    if (conf->qop_list[0] == NULL) {
+    if (apr_is_empty_array(conf->qop_list)) {
         qop = ", qop=\"auth\"";
     }
-    else if (!strcasecmp(conf->qop_list[0], "none")) {
+    else if (!strcasecmp(*(const char **)(conf->qop_list->elts), "none")) {
         qop = "";
     }
     else {
-        int cnt;
-        qop = apr_pstrcat(r->pool, ", qop=\"", conf->qop_list[0], NULL);
-        for (cnt = 1; conf->qop_list[cnt] != NULL; cnt++) {
-            qop = apr_pstrcat(r->pool, qop, ",", conf->qop_list[cnt], NULL);
-        }
-        qop = apr_pstrcat(r->pool, qop, "\"", NULL);
+        qop = apr_pstrcat(r->pool, ", qop=\"",
+                                   apr_array_pstrcat(r->pool, conf->qop_list, ','),
+                                   "\"",
+                                   NULL);
     }
 
     /* Setup opaque */
@@ -1464,9 +1440,8 @@ static int check_nc(const request_rec *r, const digest_header_rec *resp,
         return OK;
     }
 
-    if ((conf->qop_list != NULL)
-        &&(conf->qop_list[0] != NULL)
-        &&!strcasecmp(conf->qop_list[0], "none")) {
+    if (!apr_is_empty_array(conf->qop_list) &&
+        !strcasecmp(*(const char **)(conf->qop_list->elts), "none")) {
         /* qop is none, client must not send a nonce count */
         if (snc != NULL) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01772)
@@ -1893,15 +1868,17 @@ static int authenticate_digest_user(request_rec *r)
     else {
         const char *exp_digest;
         int match = 0, idx;
-        for (idx = 0; conf->qop_list[idx] != NULL; idx++) {
-            if (!strcasecmp(conf->qop_list[idx], resp->message_qop)) {
+        const char **tmp = (const char **)(conf->qop_list->elts);
+        for (idx = 0; idx < conf->qop_list->nelts; idx++) {
+            if (!strcasecmp(*tmp, resp->message_qop)) {
                 match = 1;
                 break;
             }
+            ++tmp;
         }
 
         if (!match
-            && !(conf->qop_list[0] == NULL
+            && !(apr_is_empty_array(conf->qop_list)
                  && !strcasecmp(resp->message_qop, "auth"))) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01793)
                           "invalid qop `%s' received: %s",
@@ -1983,7 +1960,8 @@ static int add_auth_info(request_rec *r)
 
     /* do rfc-2069 digest
      */
-    if (conf->qop_list[0] && !strcasecmp(conf->qop_list[0], "none")
+    if (!apr_is_empty_array(conf->qop_list) &&
+        !strcasecmp(*(const char **)(conf->qop_list->elts), "none")
         && resp->message_qop == NULL) {
         /* use only RFC-2069 format */
         ai = nextnonce;

@@ -90,15 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_auth_digest: 3 easy votes to keep in line with trunk
-        simplification with ap_bin2hex()
-      + use apr_array for an array
-      + ap_log_error already logs the error string, no need to log it twice
-      trunk patches: https://svn.apache.org/r1458020
-                     https://svn.apache.org/r1463044
-                     https://svn.apache.org/r1463045
-      2.4.x patch: trunk patch works
-      +1: jailletc36, minfrin, sf
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
