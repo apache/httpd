@@ -25,6 +25,8 @@
 <a href="../fr/programs/fcgistarter.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../tr/programs/fcgistarter.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
     <p />
 </div>
