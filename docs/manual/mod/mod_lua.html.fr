@@ -335,7 +335,7 @@ argument (sauf LuaAuthzProvider qui reçoit aussi des arguments en
 provenance de la directive Require). Elles peuvent renvoyer une valeur,
 selon la fonction, mais il s'agit en général d'un
 code d'état HTTP ou des valeurs OK, DONE, ou DECLINED,
-que vous pouvez écrire dans lua sous la forme <code>apache2.OK</code>,
+que vous pouvez écrire dans Lua sous la forme <code>apache2.OK</code>,
 <code>apache2.DONE</code>, ou <code>apache2.DECLINED</code>.</p>
 
 
@@ -708,7 +708,9 @@ end
 <p>L'objet request_rec possède (au minimum) les méthodes suivantes :</p>
 
 <pre class="prettyprint lang-lua">
-r:flush() -- vide le tampon de sortie
+r:flush()   -- vide le tampon de sortie
+            -- Renvoie true si le vidage a été effectué avec succès,
+	    false dans le cas contraire.
 
 while nous_avons_des_données_à_envoyer do
     r:puts("Bla bla bla\n") -- envoi des données à envoyer vers le tampon
@@ -861,12 +863,6 @@ r:puts("L'ID du thread 1 du serveur 1 est " .. thread.tid .. " et son
 
 
 <pre class="prettyprint lang-lua">
-r:started() -- Renvoie l'heure du dernier (re)démarrage du
-serveur.
-</pre>
-
-
-<pre class="prettyprint lang-lua">
 r:clock() -- Renvoie l'heure courante avec une précision d'une
 microseconde.
 </pre>
@@ -957,11 +953,11 @@ journalisation.
 
 
 <pre class="prettyprint lang-lua">
-r:strcmp_match(string, pattern) -- Vérifie si 'string' correspond à
+r.strcmp_match(string, pattern) -- Vérifie si 'string' correspond à
 'pattern' via la fonction strcmp_match (GLOBs). Par exemple, est-ce que
 'www.example.com' correspond à '*.example.com' ?
 
-local match = r:strcmp_match("foobar.com", "foo*.com")
+local match = r.strcmp_match("foobar.com", "foo*.com")
 if match then 
     r:puts("foobar.com matches foo*.com")
 end
@@ -998,10 +994,10 @@ r:custom_response(404, "Baleted!")
 
 
 <pre class="prettyprint lang-lua">
-r:exists_config_define(string) -- Vérifie si une définition de
+r.exists_config_define(string) -- Vérifie si une définition de
 configuration existe.
 
-if r:exists_config_define("FOO") then
+if r.exists_config_define("FOO") then
     r:puts("httpd a probablement été lancé avec l'option -DFOO, ou FOO a
     été défini dans la configuration")
 end
@@ -1026,15 +1022,22 @@ end
 
 
 <pre class="prettyprint lang-lua">
-r:regex(string, pattern) -- Exécute une recherche à base
+r:regex(string, pattern, [drapeaux]) -- Exécute une recherche à base
 d'expression rationnelle sur une chaîne, et renvoie les
 éventuelles correspondances trouvées.
 
-local matches = r:regex("foo bar baz", "foo (\w+) (\S*)")
+local matches = r:regex("foo bar baz", [[foo (\w+) (\S*)]])
 if matches then
     r:puts("L'expression rationnelle correspond et le dernier mot
     capturé ($2) est : " .. matches[2])
 end
+
+-- Exemple avec insensibilité à la casse :
+local matches = r:regex("FOO bar BAz", [[(foo) bar]], 1)
+
+-- les drapeaux peuvent être une combibaison bit à bit de :
+-- 0x01: insensibilité à la casse
+-- 0x02: recherche multiligne
 </pre>
 
 
@@ -1050,7 +1053,20 @@ base de données et renvoie une classe database. Voir '<a href="#databases">Conne
 détails.
 </pre>
 
-        
+
+<pre class="prettyprint lang-lua">
+r:ivm_set("key", value) -- Défini une variable Inter-VM avec une valeur spécifique.
+                        -- Ces valeurs sont conservées même si la VM est
+			-- arrêtée ou non utilisée, et ne doivent donc être
+			-- utilisées que si MaxConnectionsPerChild &gt; 0.
+			-- Les valeurs peuvent être de type number, string
+			-- ou boolean.
+                        
+r:ivm_get("key")        -- Lit le contenu d'une variable définie via ivm_set. Renvoie
+			-- le contenu de la variable si elle existe, ou nil
+			-- dans le cas contraire.
+</pre>
+
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
