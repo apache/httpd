@@ -1118,7 +1118,12 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
                     }
                 }
                 else if (l1 >= l2 && strncasecmp(worker->name, url, l2) == 0) {
-                    u = apr_pstrcat(r->pool, ent[i].fake, &url[l2], NULL);
+                    /* edge case where fake is just "/"... avoid double slash */
+                    if ((ent[i].fake[0] == '/') && (ent[i].fake[1] == 0) && (url[l2] == '/')) {
+                        u = apr_pstrdup(r->pool, &url[l2]);
+                    } else {
+                        u = apr_pstrcat(r->pool, ent[i].fake, &url[l2], NULL);
+                    }
                     return ap_construct_url(r->pool, u, r);
                 }
                 worker++;
