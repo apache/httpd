@@ -51,9 +51,11 @@ static apr_status_t simple_io_process(simple_conn_t * scon)
     conn_rec *c;
 
     if (scon->c->clogging_input_filters && !scon->c->aborted) {
-        /* Since we have an input filter which 'cloggs' the input stream,
-         * like mod_ssl, lets just do the normal read from input filters,
-         * like the Worker MPM does.
+        /* Since we have an input filter which 'clogs' the input stream,
+         * like mod_ssl used to, lets just do the normal read from input
+         * filters, like the Worker MPM does. Filters that need to write
+         * where they would otherwise read, or read where they would
+         * otherwise write, should set the sense appropriately.
          */
         ap_run_process_connection(scon->c);
         if (scon->cs.state != CONN_STATE_SUSPENDED) {
@@ -117,7 +119,10 @@ static apr_status_t simple_io_process(simple_conn_t * scon)
                                       timeout : ap_server_conf->timeout,
                                       scon->pool);
 
-                scon->pfd.reqevents = APR_POLLOUT | APR_POLLHUP | APR_POLLERR;
+                scon->pfd.reqevents = (
+                        scon->cs.sense == CONN_SENSE_WANT_READ ? APR_POLLIN :
+                                APR_POLLOUT) | APR_POLLHUP | APR_POLLERR;
+                scon->cs.sense = CONN_SENSE_DEFAULT;
 
                 rv = apr_pollcb_add(sc->pollcb, &scon->pfd);
 
@@ -155,7 +160,10 @@ static apr_status_t simple_io_process(simple_conn_t * scon)
                                   timeout : ap_server_conf->timeout,
                                   scon->pool);
 
-            scon->pfd.reqevents = APR_POLLIN;
+            scon->pfd.reqevents = (
+                    scon->cs.sense == CONN_SENSE_WANT_WRITE ? APR_POLLOUT :
+                            APR_POLLIN);
+            scon->cs.sense = CONN_SENSE_DEFAULT;
 
             rv = apr_pollcb_add(sc->pollcb, &scon->pfd);
 
@@ -233,6 +241,7 @@ static void *simple_io_setup_conn(apr_thread_t * thread, void *baton)
     }
 
     scon->cs.state = CONN_STATE_READ_REQUEST_LINE;
+    scon->cs.sense = CONN_SENSE_DEFAULT;
 
     rv = simple_io_process(scon);
 
