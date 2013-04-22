@@ -125,6 +125,11 @@ nécessiter une mise à jour des fichiers de configuration de la version
     AuthzUserAuthoritative et AuthzOwnerAuthoritative. Ces directives
     ont été remplacées par les directives plus explicites <code class="directive"><a href="./mod/mod_authz_core.html#requireany">RequireAny</a></code>, <code class="directive"><a href="./mod/mod_authz_core.html#requirenone">RequireNone</a></code>, et <code class="directive"><a href="./mod/mod_authz_core.html#requireall">RequireAll</a></code>.</p>
 
+    <p>Si vous utilisez <code class="module"><a href="./mod/mod_authz_dbm.html">mod_authz_dbm</a></code>, vous devez
+    mettre à jour votre configuration en remplaçant les directives du
+    style <code>Require group ...</code> par des directives du style
+    <code>Require dbm-group ...</code>.</p>
+
     <h4><a name="access" id="access">Contrôle d'accès</a></h4>
       
 
