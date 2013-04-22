@@ -90,12 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * ap_expr: Expression parser: Add the ability to apply a md5 hash to
-     strings within the parser.
-     trunk patch: http://svn.apache.org/r1458004
-     2.4.x patch: trunk patch applies if previous proposals for ap_expr get applied.
-     +1: rjung, minfrin, sf
-
     * various: Use %pm available since apr 1.3 instead of an extra call to apr_strerror
       trunk patches: https://svn.apache.org/r1463056
       2.4.x patch: trunk patch works (with offset)
