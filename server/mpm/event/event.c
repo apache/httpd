@@ -810,7 +810,10 @@ static int start_lingering_close_common(event_conn_state_t *cs)
     apr_atomic_inc32(&lingering_count);
     apr_thread_mutex_lock(timeout_mutex);
     TO_QUEUE_APPEND(*q, cs);
-    cs->pfd.reqevents = APR_POLLIN | APR_POLLHUP | APR_POLLERR;
+    cs->pfd.reqevents = (
+            cs->pub.sense == CONN_SENSE_WANT_WRITE ? APR_POLLOUT :
+                    APR_POLLIN) | APR_POLLHUP | APR_POLLERR;
+    cs->pub.sense = CONN_SENSE_DEFAULT;
     rv = apr_pollset_add(event_pollset, &cs->pfd);
     apr_thread_mutex_unlock(timeout_mutex);
     if (rv != APR_SUCCESS && !APR_STATUS_IS_EEXIST(rv)) {
@@ -958,6 +961,7 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
          */
         cs->pub.state = CONN_STATE_READ_REQUEST_LINE;
 
+        cs->pub.sense = CONN_SENSE_DEFAULT;
     }
     else {
         c = cs->c;
@@ -966,9 +970,11 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
     }
 
     if (c->clogging_input_filters && !c->aborted) {
-        /* Since we have an input filter which 'cloggs' the input stream,
-         * like mod_ssl, lets just do the normal read from input filters,
-         * like the Worker MPM does.
+        /* Since we have an input filter which 'clogs' the input stream,
+         * like mod_ssl used to, lets just do the normal read from input
+         * filters, like the Worker MPM does. Filters that need to write
+         * where they would otherwise read, or read where they would
+         * otherwise write, should set the sense appropriately.
          */
         apr_atomic_inc32(&clogged_count);
         ap_run_process_connection(c);
@@ -1014,7 +1020,10 @@ read_request:
             cs->expiration_time = ap_server_conf->timeout + apr_time_now();
             apr_thread_mutex_lock(timeout_mutex);
             TO_QUEUE_APPEND(write_completion_q, cs);
-            cs->pfd.reqevents = APR_POLLOUT | APR_POLLHUP | APR_POLLERR;
+            cs->pfd.reqevents = (
+                    cs->pub.sense == CONN_SENSE_WANT_READ ? APR_POLLIN :
+                            APR_POLLOUT) | APR_POLLHUP | APR_POLLERR;
+            cs->pub.sense = CONN_SENSE_DEFAULT;
             rc = apr_pollset_add(event_pollset, &cs->pfd);
             apr_thread_mutex_unlock(timeout_mutex);
             return;
