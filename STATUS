@@ -90,11 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * various: Use %pm available since apr 1.3 instead of an extra call to apr_strerror
-      trunk patches: https://svn.apache.org/r1463056
-      2.4.x patch: trunk patch works (with offset)
-      +1: jailletc36, minfrin, sf
-
     * mod_auth_digest: 3 easy votes to keep in line with trunk
         simplification with ap_bin2hex()
       + use apr_array for an array
