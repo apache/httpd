@@ -96,12 +96,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch applies if previous proposals for ap_expr get applied.
      +1: rjung, minfrin, sf
 
-    * log: use ap_log_error's facility to print the apr error string
-      instead of calling apr_strerror() explicitly
-      trunk patches: https://svn.apache.org/r1463052
-      2.4.x patch: trunk patch works
-      +1: jailletc36, minfrin, sf
-
     * various: Use %pm available since apr 1.3 instead of an extra call to apr_strerror
       trunk patches: https://svn.apache.org/r1463056
       2.4.x patch: trunk patch works (with offset)
