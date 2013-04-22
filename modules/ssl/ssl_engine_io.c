@@ -777,6 +777,18 @@ static apr_status_t ssl_filter_write(ap_filter_t *f,
              */
             outctx->rc = APR_EAGAIN;
         }
+        else if (ssl_err == SSL_ERROR_WANT_READ) {
+            /*
+             * If OpenSSL wants to read during write, and we were
+             * nonblocking, set the sense explicitly to read and
+             * report as an EAGAIN.
+             *
+             * (This is usually the case when the client forces an SSL
+             * renegotiation which is handled implicitly by OpenSSL.)
+             */
+            outctx->c->cs->sense = CONN_SENSE_WANT_READ;
+            outctx->rc = APR_EAGAIN;
+        }
         else if (ssl_err == SSL_ERROR_SYSCALL) {
             ap_log_cerror(APLOG_MARK, APLOG_INFO, outctx->rc, c, APLOGNO(01993)
                           "SSL output filter write failed.");
@@ -1927,8 +1939,10 @@ void ssl_io_filter_init(conn_rec *c, request_rec *r, SSL *ssl)
     filter_ctx->pbioWrite       = BIO_new(&bio_filter_out_method);
     filter_ctx->pbioWrite->ptr  = (void *)bio_filter_out_ctx_new(filter_ctx, c);
 
-    /* We insert a clogging input filter. Let the core know. */
-    c->clogging_input_filters = 1;
+    /* write is non blocking for the benefit of async mpm */
+    if (c->cs) {
+        BIO_set_nbio(filter_ctx->pbioWrite, 1);
+    }
 
     ssl_io_input_add_filter(filter_ctx, c, r, ssl);
 

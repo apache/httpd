@@ -1177,12 +1177,20 @@ typedef enum  {
     CONN_STATE_LINGER_SHORT     /* MPM has started lingering close with short timeout */
 } conn_state_e;
 
+typedef enum  {
+    CONN_SENSE_DEFAULT,
+    CONN_SENSE_WANT_READ,       /* next event must be read */
+    CONN_SENSE_WANT_WRITE       /* next event must be write */
+} conn_sense_e;
+
 /**
  * @brief A structure to contain connection state information
  */
 struct conn_state_t {
     /** Current state of the connection */
     conn_state_e state;
+    /** Whether to read instead of write, or write instead of read */
+    conn_sense_e sense;
 };
 
 /* Per-vhost config... */

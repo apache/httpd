@@ -875,7 +875,10 @@ static int start_lingering_close(event_conn_state_t *cs, ap_equeue_t *eq)
         cs->pub.state = CONN_STATE_LINGER_NORMAL;
     }
     apr_atomic_inc32(&lingering_count);
-    cs->pfd.reqevents = APR_POLLIN | APR_POLLHUP | APR_POLLERR;
+    cs->pfd.reqevents = (
+            cs->pub.sense == CONN_SENSE_WANT_WRITE ? APR_POLLOUT :
+                    APR_POLLIN) | APR_POLLHUP | APR_POLLERR;
+    cs->pub.sense = CONN_SENSE_DEFAULT;
     v->cs = cs;
     if (eq != NULL) {
         ap_equeue_writer_onward(eq);
@@ -1019,6 +1022,7 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
          */
         cs->pub.state = CONN_STATE_READ_REQUEST_LINE;
 
+        cs->pub.sense = CONN_SENSE_DEFAULT;
     }
     else {
         c = cs->c;
@@ -1027,9 +1031,11 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
     }
 
     if (c->clogging_input_filters && !c->aborted) {
-        /* Since we have an input filter which 'cloggs' the input stream,
-         * like mod_ssl, lets just do the normal read from input filters,
-         * like the Worker MPM does.
+        /* Since we have an input filter which 'clogs' the input stream,
+         * like mod_ssl used to, lets just do the normal read from input
+         * filters, like the Worker MPM does. Filters that need to write
+         * where they would otherwise read, or read where they would
+         * otherwise write, should set the sense appropriately.
          */
         apr_atomic_inc32(&clogged_count);
         ap_run_process_connection(c);
@@ -1075,7 +1081,10 @@ read_request:
             pollset_op_t *v = ap_equeue_writer_value(eq);
 
             cs->expiration_time = ap_server_conf->timeout + apr_time_now();
-            cs->pfd.reqevents = APR_POLLOUT | APR_POLLHUP | APR_POLLERR;
+            cs->pfd.reqevents = (
+                    cs->pub.sense == CONN_SENSE_WANT_READ ? APR_POLLIN :
+                            APR_POLLOUT) | APR_POLLHUP | APR_POLLERR;
+            cs->pub.sense = CONN_SENSE_DEFAULT;
 
             v->cs = cs;
             v->timeout_type = TIMEOUT_WRITE_COMPLETION;
