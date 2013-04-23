@@ -663,6 +663,13 @@ static dav_error * dav_process_if_header(request_rec *r, dav_if_header **p_ih)
             if (uri_len > 1 && parsed_uri.path[uri_len - 1] == '/')
                 parsed_uri.path[--uri_len] = '\0';
 
+            /* the resources we will compare to have unencoded paths */
+            if (ap_unescape_url(parsed_uri.path) != OK) {
+                return dav_new_error(r->pool, HTTP_BAD_REQUEST,
+                        DAV_ERR_IF_TAGGED, rv,
+                        "Invalid percent encoded URI in tagged If-header.");
+            }
+
             uri = parsed_uri.path;
             list_type = tagged;
             break;
