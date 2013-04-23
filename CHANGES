@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_dav: Make sure that when we prepare an If URL for Etag comparison,
+     we compare unencoded paths. PR 53910 [Timothy Wood <tjw omnigroup.com>]
+
   *) core, mod_ssl: Lift the restriction that prevents mod_ssl taking
      full advantage of the event MPM. Enable the ability for a module
      to reverse the sense of a poll event from a read to a write or vice
