@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_setenvif: Fix crash in case SetEnvif and SetEnvIfExpr are used
+     together. PR 54881. [Ruediger Pluem]
+
   *) mod_dav: Make sure that when we prepare an If URL for Etag comparison,
      we compare unencoded paths. PR 53910 [Timothy Wood <tjw omnigroup.com>]
 
