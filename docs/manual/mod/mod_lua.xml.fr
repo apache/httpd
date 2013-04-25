@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1470158:1470271 (outdated) -->
+<!-- English Revision : 1470271 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -982,11 +982,26 @@ r:ivm_set("key", value) -- D&eacute;fini une variable Inter-VM avec une valeur s
 			-- arr&ecirc;t&eacute;e ou non utilis&eacute;e, et ne doivent donc &ecirc;tre
 			-- utilis&eacute;es que si MaxConnectionsPerChild > 0.
 			-- Les valeurs peuvent &ecirc;tre de type number, string
-			-- ou boolean.
+			-- ou boolean et sont stock&eacute;es s&eacute;par&eacute;ment pour
+			-- chaque processus (elles ne seront donc pas d'une
+			-- grande utilit&eacute; si l'on utilise le mpm prefork).
                         
 r:ivm_get("key")        -- Lit le contenu d'une variable d&eacute;finie via ivm_set. Renvoie
 			-- le contenu de la variable si elle existe, ou nil
 			-- dans le cas contraire.
+                        
+-- Voici un exemple de lecture/&eacute;criture qui sauvegarde une variable
+-- globale en dehors de la VM :
+function handle(r)
+    -- La premi&egrave;re VM qui effectue l'appel suivant n'obtiendra aucune
+    -- valeur, et devra la cr&eacute;er
+    local foo = r:ivm_get("cached_data")
+    if not foo then
+        foo = do_some_calcs() -- simulation de valeurs de retour
+        r:ivm_set("cached_data", foo) -- d&eacute;finition globale de la variable
+    end
+    r:puts("La donn&eacute;e en cache est : ", foo)
+end			
 </highlight>
 
 </section>
