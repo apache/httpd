@@ -55,7 +55,7 @@ de configuration Apache.</td></tr>
 <div class="section">
 <h2><a name="features" id="features">Caractéristiques</a></h2>
 
-    Définition d'une macro :
+    <p>Définition d'une macro :</p>
     <ul>
     <li> dans une section &lt;Macro&gt; au style conforme à la
          syntaxe des fichiers de configuration Apache.</li>
@@ -89,7 +89,7 @@ de configuration Apache.</td></tr>
          continuations.</p></li>
     </ul>
 
-    Utilisation d'une macro:
+    <p>Utilisation d'une macro:</p>
     <ul>
     <li> le nombre d'arguments doit être cohérent avec la définition.</li>
     <li> toutes les occurences des paramètres sont substituées par leur valeur.</li>
@@ -101,10 +101,10 @@ de configuration Apache.</td></tr>
     <li> les valeurs des paramètres préfixées par <code>@</code> sont échappées par des guillemets.</li>
     </ul>
 
-    Suppression de la définition d'une macro :
+    <p>Suppression de la définition d'une macro :</p>
     <ul>
     <li> la macro supprimée doit avoir été définie auparavant.</li>
-    </ul>
+  </ul>
 
     <pre class="prettyprint lang-config">
 &lt;Macro DirGroup $dir $group&gt;
@@ -191,7 +191,7 @@ Use RestrictedAccessPolicy "192.54.172.0/24 192.54.148.0/24"
     </pre>
 
 
-    est équivalent, avec les macros définies ci-dessus à :
+    <p>est équivalent, avec les macros définies ci-dessus à :</p>
 
     <pre class="prettyprint lang-config">
 order deny,allow

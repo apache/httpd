@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_rewrite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_rewrite.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ce module fournit un moteur de réécriture à base de
 règles permettant de réécrire les URLs des requêtes
 à la volée</td></tr>
@@ -451,7 +449,7 @@ la réécriture soit effectuée
 	</li>
 
         <li>A des fins de référence avant, on peut utiliser,
-	<code>%{LA-U:variable}</code>, qui
+	<a id="LA-U" name="LA-U"><code>%{LA-U:variable}</code></a>, qui
 	permet d'effectuer une sous-requête interne à base d'URL, afin
 	de déterminer la valeur finale de <em>variable</em>. Ceci permet
 	d'accéder à la valeur d'une variable pour la réécriture inconnue
