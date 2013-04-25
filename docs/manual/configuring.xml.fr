@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1243935:1470510 (outdated) -->
+<!-- English Revision : 1470510 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -75,6 +75,10 @@ le Serveur HTTP Apache.</p>
     pour indiquer que la directive continue &agrave; la ligne suivante.
     Il ne doit y avoir aucun caract&egrave;re ni espace entre l'anti-slash et
     la fin de la ligne.</p>
+
+    <p>Les arguments des directives sont s&eacute;par&eacute;s les uns des autres par
+    des espaces. Si un argument contient des espaces, il doit &ecirc;tre
+    entour&eacute; de guillemets.</p>
 
     <p>Les directives dans les fichiers de configuration ne sont pas
     sensibles &agrave; la casse, mais leurs arguments le sont souvent. Les lignes

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1465839:1475703 (outdated) -->
+<!-- English Revision: 1475703 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -900,6 +900,9 @@ l'espace d'URLs du serveur local</description>
     chemin virtuel local ; <var>url</var> est une URL partielle pour le
     serveur distant et ne doit pas contenir de cha&icirc;ne d'arguments.</p>
 
+    <note><strong>Note : </strong>Cette directive ne peut pas &ecirc;tre
+    utilis&eacute;e dans un contexte de niveau r&eacute;pertoire.</note>
+
     <note type="warning">En g&eacute;n&eacute;ral, la directive <directive
     module="mod_proxy">ProxyRequests</directive> doit &ecirc;tre d&eacute;finie &agrave;
     <strong>off</strong> lorsqu'on utilise la directive
@@ -1434,6 +1437,9 @@ du serveur local en utilisant des expressions rationnelles</description>
     l'<var>url</var>, et si elle correspond, le serveur va substituer
     toute correspondance entre parenth&egrave;ses dans la cha&icirc;ne donn&eacute;e et
     l'utiliser comme nouvelle <var>url</var>.</p>
+
+    <note><strong>Note : </strong>Cette directive ne peut pas &ecirc;tre
+    utilis&eacute;e dans un contexte de niveau r&eacute;pertoire.</note>
 
     <p>Supposons que le serveur local a pour adresse
     <code>http://example.com/</code> ; alors</p>
