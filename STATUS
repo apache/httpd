@@ -207,6 +207,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: https://people.apache.org/~kbrand/PR52212_54698_2.2.x.patch
     +1: kbrand,
 
+  * htdigest: Fix buffer overflow when reading digest
+    password file with very long lines. PR 54893.
+    trunk patches: https://svn.apache.org/r1475878
+    2.2.x patch: trunk patches work
+    +1: rjung
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
