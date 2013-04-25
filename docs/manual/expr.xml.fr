@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1467979:1470524 (outdated) -->
+<!-- English Revision : 1470524 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -496,6 +496,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>unbase64</code></td>
         <td>D&eacute;code les cha&icirc;nes cod&eacute;es en base64, renvoie une cha&icirc;ne
 	tronqu&eacute;e si le caract&egrave;re 0x00 est rencontr&eacute;</td><td></td></tr>
+    <tr><td><code>md5</code></td>
+        <td>G&eacute;n&egrave;re un hash de la cha&icirc;ne en utilisant MD5, puis code le
+	hash obtenu en hexad&eacute;cimal</td><td></td></tr>
     <tr><td><code>sha1</code></td>
         <td>G&eacute;n&egrave;re un hash de la cha&icirc;ne en utilisant SHA1, puis encode
 	le hash obtenu en hexad&eacute;cimal</td><td></td></tr>
