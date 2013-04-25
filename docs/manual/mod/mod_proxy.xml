@@ -796,6 +796,9 @@ expressions</description>
     proxy</dfn> or <dfn>gateway</dfn>. The <var>path</var> is the name of
     a local virtual path; <var>url</var> is a partial URL for the
     remote server and cannot include a query string.</p>
+    
+    <note><strong>Note: </strong>This directive cannot be used within a 
+    <code>&lt;Directory&gt;</code> context.</note>
 
     <note type="warning">The <directive
     module="mod_proxy">ProxyRequests</directive> directive should
@@ -1254,6 +1257,9 @@ ProxyPass / balancer://hotcluster/
        matches, the server will substitute any parenthesized matches into the given
        string and use it as a new <var>url</var>.</p>
 
+    <note><strong>Note: </strong>This directive cannot be used within a 
+    <code>&lt;Directory&gt;</code> context.</note>
+    
     <p>Suppose the local server has address <code>http://example.com/</code>;
     then</p>
 
