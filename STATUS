@@ -253,13 +253,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * mod_auth_digest: avoid crash if shm init fails.
       trunk patches: https://svn.apache.org/r1463047
       2.4.x patch: trunk patches work
-      +1: sf
+      +1: sf, humbedooh
 
     * htdigest: Fix buffer overflow when reading digest
       password file with very long lines. PR 54893.
       trunk patches: https://svn.apache.org/r1475878
       2.4.x patch: trunk patches work
-      +1: rjung
+      +1: rjung, humbedooh
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
