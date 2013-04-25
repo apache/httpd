@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) htdigest: Fix buffer overflow when reading digest password file
+     with very long lines. PR 54893. [Rainer Jung]
+
   *) mod_setenvif: Fix crash in case SetEnvif and SetEnvIfExpr are used
      together. PR 54881. [Ruediger Pluem]
 
