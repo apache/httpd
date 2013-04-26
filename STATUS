@@ -226,6 +226,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Backport: http://people.apache.org/~rjung/patches/sslhonorcipher-2.0.patch
     +1: rjung, humbedooh
 
+  * htdigest: Fix buffer overflow when reading digest
+    password file with very long lines. PR 54893.
+    trunk patch: https://svn.apache.org/r1475878
+    2.4.x patch: https://svn.apache.org/11476089
+    2.2.x patch: https://svn.apache.org/r1476242
+    2.0.x patch: http://people.apache.org/~rjung/patches/htdigest-buffer_overflow_2_0.patch
+    +1: rjung
+    -1: 
+
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
