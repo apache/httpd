@@ -102,7 +102,7 @@
 
     <p>If neither of these files existed, the next step would be to
     attempt to provide a directory index, if
-    <module>mod_autoindex<module> were loaded and configured to permit
+    <module>mod_autoindex</module> were loaded and configured to permit
     that.</p>
 
     <p>httpd is also capable of <a href="vhosts/">Virtual
