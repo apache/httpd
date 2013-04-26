@@ -36,6 +36,7 @@
 <modulelist>
 <module>mod_actions</module>
 <module>mod_alias</module>
+<module>mod_autoindex</module>
 <module>mod_dir</module>
 <module>mod_imagemap</module>
 <module>mod_negotiation</module>
@@ -49,6 +50,7 @@
 <directive module="mod_alias">Alias</directive>
 <directive module="mod_alias">AliasMatch</directive>
 <directive module="mod_speling">CheckSpelling</directive>
+<directive module="core">DirectoryIndex</directive>
 <directive module="core">DocumentRoot</directive>
 <directive module="core">ErrorDocument</directive>
 <directive module="core">Options</directive>
@@ -83,6 +85,25 @@
     <code>http://www.example.com/fish/guppies.html</code> would result
     in the file <code>/var/www/html/fish/guppies.html</code> being
     served to the requesting client.</p>
+
+    <p>If a directory is requested (i.e. a path ending with
+    <code>/</code>), the file served from that directory is defined by
+    the <directive module="core">DirectoryIndex</directive> directive.
+    For example, if <code>DocumentRoot</code> were set as above, and 
+    you were to set:</p>
+
+    <example>DirectoryIndex index.html index.php</example>
+
+    <p>Then a request for <code>http://www.example.com/fish/</code> will
+    cause httpd to attempt to serve the file
+    <code>/var/www/html/fish/index.html</code>. In the event that
+    that file didn't exist, it will next attempt to serve file file
+    <code>/var/www/html/fish/index.php</code>.</p>
+
+    <p>If neither of these files existed, the next step would be to
+    attempt to provide a directory index, if
+    <module>mod_autoindex<module> were loaded and configured to permit
+    that.</p>
 
     <p>httpd is also capable of <a href="vhosts/">Virtual
     Hosting</a>, where the server receives requests for more than one
