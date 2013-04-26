@@ -254,6 +254,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk patches work
       +1: sf, covener
 
+    * mod_setenvif: Fix null pointer dereference in case SetEnvif and
+      SetEnvIfExpr are used together.  PR: 54881
+      Trunk version of patch:
+         http://svn.apache.org/r1471449
+      Backport version for 2.4.x of patch:
+         Trunk version of patch works
+      +1: rpluem,
+
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
