@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.25
 
+  *) htdigest: Fix buffer overflow when reading digest password file
+     with very long lines. PR 54893. [Rainer Jung]
 
 
 Changes with Apache 2.2.24
