@@ -28,8 +28,6 @@
 <a href="./ko/configuring.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/configuring.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Ce document décrit les fichiers utilisés pour configurer
 le Serveur HTTP Apache.</p>
@@ -75,6 +73,10 @@ le Serveur HTTP Apache.</p>
     pour indiquer que la directive continue à la ligne suivante.
     Il ne doit y avoir aucun caractère ni espace entre l'anti-slash et
     la fin de la ligne.</p>
+
+    <p>Les arguments des directives sont séparés les uns des autres par
+    des espaces. Si un argument contient des espaces, il doit être
+    entouré de guillemets.</p>
 
     <p>Les directives dans les fichiers de configuration ne sont pas
     sensibles à la casse, mais leurs arguments le sont souvent. Les lignes
