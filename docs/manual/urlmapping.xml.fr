@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1451399:1476017 (outdated) -->
+<!-- English Revision: 1476017 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -38,6 +38,7 @@
 <modulelist>
 <module>mod_actions</module>
 <module>mod_alias</module>
+<module>mod_autoindex</module>
 <module>mod_dir</module>
 <module>mod_imagemap</module>
 <module>mod_negotiation</module>
@@ -51,6 +52,7 @@
 <directive module="mod_alias">Alias</directive>
 <directive module="mod_alias">AliasMatch</directive>
 <directive module="mod_speling">CheckSpelling</directive>
+<directive module="core">DirectoryIndex</directive>
 <directive module="core">DocumentRoot</directive>
 <directive module="core">ErrorDocument</directive>
 <directive module="core">Options</directive>
@@ -87,6 +89,27 @@
     <code>/var/www/html</code>, une requ&ecirc;te pour
     <code>http://www.example.com/fish/guppies.html</code> retournera le
     fichier <code>/var/www/html/fish/guppies.html</code> au client.</p>
+
+    <p>Si la requ&ecirc;te concerne un r&eacute;pertoire (autrement dit un chemin se
+    terminant par un slash <code>/</code>), le nom du fichier qui sera
+    recherch&eacute; et servi depuis ce r&eacute;pertoire est d&eacute;fini via la directive
+    <directive module="core">DirectoryIndex</directive>. Par exemple,
+    supposons que <code>DocumentRoot</code> ait &eacute;t&eacute; d&eacute;finie comme
+    pr&eacute;c&eacute;demment, et que vous ayez d&eacute;fini <code>DirectoryIndex</code>
+    comme suit :</p>
+
+    <example>DirectoryIndex index.html index.php</example>
+
+    <p>Si httpd re&ccedil;oit alors une requ&ecirc;te pour
+    <code>http://www.example.com/fish/</code>, il tentera de servir le
+    fichier <code>/var/www/html/fish/index.html</code>. Si ce fichier
+    n'existe pas, il tentera de servir le fichier
+    <code>/var/www/html/fish/index.php</code>.</p>
+
+    <p>Si aucun de ces fichiers existe, httpd tentera de g&eacute;n&eacute;rer et
+    d'afficher un index du r&eacute;pertoire, &agrave; condition que
+    <module>mod_autoindex</module> ait &eacute;t&eacute; charg&eacute; et configur&eacute; pour le
+    permettre.</p>
 
     <p>httpd supporte aussi les <a href="vhosts/">H&ocirc;tes virtuels</a>,
     ce qui lui permet de traiter des requ&ecirc;tes pour plusieurs h&ocirc;tes.
