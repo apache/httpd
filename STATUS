@@ -95,6 +95,10 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk patches work
       +1: sf, humbedooh, covener
 
+    * core: Add workaround for gcc bug on sparc/64bit
+      trunk patches: https://svn.apache.org/r1470183
+      2.4.x patch: trunk patches work
+      +1: sf, covener, rpluem
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -248,11 +252,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patches: https://svn.apache.org/r1465116
       2.4.x patch: trunk patches work
       +1: sf
-
-    * core: Add workaround for gcc bug on sparc/64bit
-      trunk patches: https://svn.apache.org/r1470183
-      2.4.x patch: trunk patches work
-      +1: sf, covener
 
     * mod_setenvif: Fix null pointer dereference in case SetEnvif and
       SetEnvIfExpr are used together.  PR: 54881
