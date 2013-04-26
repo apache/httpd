@@ -1,9 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_setenvif: Fix crash in case SetEnvif and SetEnvIfExpr are used
-     together. PR 54881. [Ruediger Pluem]
-
   *) mod_dav: Make sure that when we prepare an If URL for Etag comparison,
      we compare unencoded paths. PR 53910 [Timothy Wood <tjw omnigroup.com>]
 
@@ -11,9 +8,6 @@ Changes with Apache 2.5.0
      full advantage of the event MPM. Enable the ability for a module
      to reverse the sense of a poll event from a read to a write or vice
      versa. [Graham Leggett]
-
-  *) core: Add workaround for gcc bug on sparc/64bit. PR 52900.
-     [Stefan Fritsch]
 
   *) htpasswd: Add -v option to verify a password. [Stefan Fritsch]
 
