@@ -99,14 +99,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       trunk patches: https://svn.apache.org/r1470183
       2.4.x patch: trunk patches work
       +1: sf, covener, rpluem
-      
-    * mod_setenvif: Fix null pointer dereference in case SetEnvif and
-      SetEnvIfExpr are used together.  PR: 54881
-      Trunk version of patch:
-         http://svn.apache.org/r1471449
-      Backport version for 2.4.x of patch:
-         Trunk version of patch works
-      +1: rpluem, covener, humbedooh
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

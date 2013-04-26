@@ -314,7 +314,7 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
      */
     for (i = 0; i < sconf->conditionals->nelts; ++i) {
         new = &entries[i];
-        if (!strcasecmp(new->name, fname)) {
+        if (new->name && !strcasecmp(new->name, fname)) {
             fname = new->name;
             break;
         }
