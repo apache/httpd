@@ -2,6 +2,9 @@
  
 Changes with Apache 2.4.5
 
+  *) htdigest: Fix buffer overflow when reading digest password file
+     with very long lines. PR 54893. [Rainer Jung]
+
   *) ap_expr: Add the ability to base64 encode and base64 decode
      strings and to generate their SHA1 hash.  [Graham Leggett]
 
