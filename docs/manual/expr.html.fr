@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="./en/expr.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/expr.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Historiquement, il existe de nombreuses variantes dans la syntaxe
     des expressions permettant d'exprimer une condition dans les
@@ -461,12 +459,15 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 <tr><td><code>unbase64</code></td>
         <td>Décode les chaînes codées en base64, renvoie une chaîne
 	tronquée si le caractère 0x00 est rencontré</td><td /></tr>
-<tr class="odd"><td><code>sha1</code></td>
+<tr class="odd"><td><code>md5</code></td>
+        <td>Génère un hash de la chaîne en utilisant MD5, puis code le
+	hash obtenu en hexadécimal</td><td /></tr>
+<tr><td><code>sha1</code></td>
         <td>Génère un hash de la chaîne en utilisant SHA1, puis encode
 	le hash obtenu en hexadécimal</td><td /></tr>
-<tr><td><code>file</code></td>
+<tr class="odd"><td><code>file</code></td>
         <td>Lit le contenu d'un fichier</td><td>oui</td></tr>
-<tr class="odd"><td><code>filesize</code></td>
+<tr><td><code>filesize</code></td>
         <td>Renvoie la taille d'un fichier (ou 0 si le fichier n'existe
 	pas ou ne correspond pas à un fichier régulier)</td><td>oui</td></tr>
 </table>
