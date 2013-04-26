@@ -90,6 +90,16 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+    * mod_auth_digest: avoid crash if shm init fails.
+      trunk patches: https://svn.apache.org/r1463047
+      2.4.x patch: trunk patches work
+      +1: sf, humbedooh, covener
+
+    * htdigest: Fix buffer overflow when reading digest
+      password file with very long lines. PR 54893.
+      trunk patches: https://svn.apache.org/r1475878
+      2.4.x patch: trunk patches work
+      +1: rjung, humbedooh, covener
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -238,7 +248,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * htpasswd/htdbm: Fix hash generation bug. PR 54735
       trunk patches: https://svn.apache.org/r1465115
       2.4.x patch: trunk patches work
-      +1: sf
+      +1: sf, covener
 
     * htpasswd: Add -v option
       trunk patches: https://svn.apache.org/r1465116
@@ -248,18 +258,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * core: Add workaround for gcc bug on sparc/64bit
       trunk patches: https://svn.apache.org/r1470183
       2.4.x patch: trunk patches work
-      +1: sf
+      +1: sf, covener
 
-    * mod_auth_digest: avoid crash if shm init fails.
-      trunk patches: https://svn.apache.org/r1463047
-      2.4.x patch: trunk patches work
-      +1: sf, humbedooh
-
-    * htdigest: Fix buffer overflow when reading digest
-      password file with very long lines. PR 54893.
-      trunk patches: https://svn.apache.org/r1475878
-      2.4.x patch: trunk patches work
-      +1: rjung, humbedooh
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
