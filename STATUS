@@ -108,7 +108,13 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch applies.
     2.2.x patch: http://people.apache.org/~wrowe/httpd-2.2-quiet-fips.patch
     +1: wrowe, druggeri, kbrand
-    
+
+  * htdigest: Fix buffer overflow when reading digest
+    password file with very long lines. PR 54893.
+    trunk patch: https://svn.apache.org/r1475878
+    2.4.x patch: https://svn.apache.org/r1476089.
+    2.2.x patch: trunk and 2.4.x patch work
+    +1: rjung, humbedooh, rpluem
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -206,13 +212,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: https://people.apache.org/~kbrand/PR52212_54698_2.4.x.patch
     2.2.x patch: https://people.apache.org/~kbrand/PR52212_54698_2.2.x.patch
     +1: kbrand,
-
-  * htdigest: Fix buffer overflow when reading digest
-    password file with very long lines. PR 54893.
-    trunk patch: https://svn.apache.org/r1475878
-    2.4.x patch: https://svn.apache.org/r1476089.
-    2.2.x patch: trunk and 2.4.x patch work
-    +1: rjung, humbedooh
 
 PATCHES/ISSUES THAT ARE STALLED
 
