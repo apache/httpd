@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_lua.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_lua.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournit des points d'entrée Lua dans différentes parties du
 traitement des requêtes httpd</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
@@ -1060,11 +1058,26 @@ r:ivm_set("key", value) -- Défini une variable Inter-VM avec une valeur spécifiq
 			-- arrêtée ou non utilisée, et ne doivent donc être
 			-- utilisées que si MaxConnectionsPerChild &gt; 0.
 			-- Les valeurs peuvent être de type number, string
-			-- ou boolean.
+			-- ou boolean et sont stockées séparément pour
+			-- chaque processus (elles ne seront donc pas d'une
+			-- grande utilité si l'on utilise le mpm prefork).
                         
 r:ivm_get("key")        -- Lit le contenu d'une variable définie via ivm_set. Renvoie
 			-- le contenu de la variable si elle existe, ou nil
 			-- dans le cas contraire.
+                        
+-- Voici un exemple de lecture/écriture qui sauvegarde une variable
+-- globale en dehors de la VM :
+function handle(r)
+    -- La première VM qui effectue l'appel suivant n'obtiendra aucune
+    -- valeur, et devra la créer
+    local foo = r:ivm_get("cached_data")
+    if not foo then
+        foo = do_some_calcs() -- simulation de valeurs de retour
+        r:ivm_set("cached_data", foo) -- définition globale de la variable
+    end
+    r:puts("La donnée en cache est : ", foo)
+end			
 </pre>
 
 
