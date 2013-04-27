@@ -198,7 +198,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/viewvc?view=revision&revision=1458285
                  http://svn.apache.org/viewvc?view=revision&revision=1458447
     2.4.x patch: http://people.apache.org/~jim/patches/wstunnel.patch
-    +1: jim
+    +1: jim, minfrin (with fix to mmn bump)
 
    * mod_proxy_balancer: Add failontimeout parameter. Timeout will put worker
      in error state if an IO timeout is detected.
