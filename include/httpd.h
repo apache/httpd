@@ -2218,6 +2218,18 @@ AP_DECLARE(void) ap_get_loadavg(ap_loadavg_t *ld);
  */
 AP_DECLARE(void) ap_bin2hex(const void *src, apr_size_t srclen, char *dest);
 
+/**
+ * Short function to execute a command and return the first line of
+ * output minus \r \n. Useful for "obscuring" passwords via exec calls
+ * @param p the pool to allocate from
+ * @param cmd the command to execute
+ * @param argv the arguments to pass to the cmd
+ * @return ptr to characters or NULL on any error
+ */
+AP_DECLARE(char *) ap_get_exec_line(apr_pool_t *p,
+                                    const char *cmd,
+                                    const char * const *argv);
+
 #define AP_NORESTART APR_OS_START_USEERR + 1
 
 #ifdef __cplusplus

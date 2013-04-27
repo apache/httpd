@@ -2886,3 +2886,45 @@ AP_DECLARE(void) ap_get_loadavg(ap_loadavg_t *ld)
     }
 #endif
 }
+
+AP_DECLARE(char *) ap_get_exec_line(apr_pool_t *p,
+                                    const char *cmd,
+                                    const char * const * argv)
+{
+    char buf[MAX_STRING_LEN];
+    apr_procattr_t *procattr;
+    apr_proc_t *proc;
+    apr_file_t *fp;
+    apr_size_t nbytes = 1;
+    char c;
+    int k;
+
+    if (apr_procattr_create(&procattr, p) != APR_SUCCESS)
+        return NULL;
+    if (apr_procattr_io_set(procattr, APR_FULL_BLOCK, APR_FULL_BLOCK,
+                            APR_FULL_BLOCK) != APR_SUCCESS)
+        return NULL;
+    if (apr_procattr_dir_set(procattr,
+                             ap_make_dirstr_parent(p, cmd)) != APR_SUCCESS)
+        return NULL;
+    if (apr_procattr_cmdtype_set(procattr, APR_PROGRAM) != APR_SUCCESS)
+        return NULL;
+    proc = apr_pcalloc(p, sizeof(apr_proc_t));
+    if (apr_proc_create(proc, cmd, argv, NULL, procattr, p) != APR_SUCCESS)
+        return NULL;
+    fp = proc->out;
+
+    if (fp == NULL)
+        return NULL;
+    /* XXX: we are reading 1 byte at a time here */
+    for (k = 0; apr_file_read(fp, &c, &nbytes) == APR_SUCCESS
+                && nbytes == 1 && (k < MAX_STRING_LEN-1)     ; ) {
+        if (c == '\n' || c == '\r')
+            break;
+        buf[k++] = c;
+    }
+    buf[k] = '\0'; 
+    apr_file_close(fp);
+
+    return apr_pstrndup(p, buf, k);
+}

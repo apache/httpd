@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.5
 
+  *) mod_authnz_ldap: Allow using exec: calls to obtain LDAP bind
+     password.  [Daniel Ruggeri]
+
   *) Added balancer parameter failontimeout to allow server admin
      to configure an IO timeout as an error in the balancer.
      [Daniel Ruggeri]
