@@ -238,7 +238,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * htpasswd: Add -v option
       trunk patches: https://svn.apache.org/r1465116
       2.4.x patch: trunk patches work
-      +1: sf
+      +1: sf, minfrin
 
     * mod_dav: Make sure that when we prepare an If URL for Etag comparison,     
       we compare unencoded paths. PR 53910
