@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_dav: Sending a If or If-Match header with an invalid ETag doesn't
+     result in a 412 Precondition Failed. PR54610 [Timothy Wood
+     <tjw omnigroup.com>]
+
   *) mod_dav: Make sure that when we prepare an If URL for Etag comparison,
      we compare unencoded paths. PR 53910 [Timothy Wood <tjw omnigroup.com>]
 
