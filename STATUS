@@ -205,7 +205,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    https://svn.apache.org/r1467593
     2.4.x patch: https://people.apache.org/~kbrand/PR52212_54698_2.4.x.patch
     2.2.x patch: https://people.apache.org/~kbrand/PR52212_54698_2.2.x.patch
-    +1: kbrand,
+    +1: kbrand, minfrin
 
 PATCHES/ISSUES THAT ARE STALLED
 
