@@ -2,6 +2,8 @@
 
 Changes with Apache 2.4.5
 
+  *) htpasswd, htdbm: Fix password generation. PR 54735. [Stefan Fritsch]
+
   *) core: Add workaround for gcc bug on sparc/64bit. PR 52900.
      [Stefan Fritsch]
 

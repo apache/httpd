@@ -95,11 +95,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk patches work
       +1: sf, humbedooh, covener
 
-    * htpasswd/htdbm: Fix hash generation bug. PR 54735
-      trunk patches: https://svn.apache.org/r1465115
-      2.4.x patch: trunk patches work
-      +1: sf, covener, minfrin
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
