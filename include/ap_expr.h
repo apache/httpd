@@ -107,7 +107,7 @@ typedef struct {
     request_rec *r;
     /** the current connection */
     conn_rec *c;
-    /** the current connection */
+    /** the current virtual host */
     server_rec *s;
     /** the pool to use */
     apr_pool_t *p;
