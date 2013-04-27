@@ -90,6 +90,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * mod_authnz_ldap: Allow using exec: callouts like SSLPassphraseDialog
+    for AuthLDAPBindPassword.
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1433478
+                 http://svn.apache.org/viewvc?view=revision&revision=1467523
+                 http://svn.apache.org/viewvc?view=revision&revision=1467792
+    2.4.x patch: http://people.apache.org/~druggeri/patches/AuthLDAPBindPasswordExec-2.4.patch
+                 (20130119 - updated to include minor mmn bump)
+                 (20130412 - updated to not use static var - thx, wrowe)
+    +1: druggeri, jim, minfrin
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -122,17 +131,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  https://svn.apache.org/viewvc?view=revision&revision=r1426850
     2.4.x patch: trunk patch works (modulo CHANGES and next-number)
     +1: kbrand, minfrin
-
-  * mod_authnz_ldap: Allow using exec: callouts like SSLPassphraseDialog
-    for AuthLDAPBindPassword.
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1433478
-                 http://svn.apache.org/viewvc?view=revision&revision=1467523
-                 http://svn.apache.org/viewvc?view=revision&revision=1467792
-    2.4.x patch: http://people.apache.org/~druggeri/patches/AuthLDAPBindPasswordExec-2.4.patch
-                 (20130119 - updated to include minor mmn bump)
-                 (20130412 - updated to not use static var - thx, wrowe)
-    +1: druggeri, jim
-
 
   * mod_lua: Sync 2.4 branch with trunk. This includes (but is not limited to) 
              Server pools, new apr functions for the request_rec table, input/
