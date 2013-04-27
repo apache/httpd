@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_dav: Do not segfault on PROPFIND with a zero length DBM.
+     PR 52559 [Diego Santa Cruz <diego.santaCruz spinetix.com>]
+
   *) mod_dav: Do not fail PROPPATCH when prop namespace is not known.
      PR 52559 [Diego Santa Cruz <diego.santaCruz spinetix.com>]
 
