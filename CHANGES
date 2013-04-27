@@ -22,6 +22,10 @@ Changes with Apache 2.4.5
   *) mod_log_config: Fix crash when logging request end time for a failed
      request.  PR 54828 [Rainer Jung]
 
+  *) mod_ssl: Catch missing, mismatched or encrypted client cert/key pairs
+     with SSLProxyMachineCertificateFile/Path directives. PR 52212, PR 54698.
+     [Keith Burdis <keith burdis.org>, Joe Orton, Kaspar Brand]
+
   *) mod_ssl: Quiet FIPS mode weak keys disabled and FIPS not selected emits
      in the error log to debug level.  [William Rowe]
 
