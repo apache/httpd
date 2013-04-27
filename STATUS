@@ -301,7 +301,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                      http://svn.apache.org/r1406760
                      http://svn.apache.org/r1418648
       2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache_socache-rollup.patch
-      +1: minfrin
+      +1: minfrin, gsmith
 
 
 A list of further possible backports can be found at:                                                                                                                                   
