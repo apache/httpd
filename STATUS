@@ -90,6 +90,16 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_ssl: Catch missing, mismatched or encrypted client cert/key pairs
+    with SSLProxyMachineCertificateFile/Path directives. PR 52212, PR 54698.
+    (check at startup, to prevent segfaults at proxy request time)
+    trunk patches: https://svn.apache.org/r1374214
+                   https://svn.apache.org/r1374216
+                   https://svn.apache.org/r1375445
+                   https://svn.apache.org/r1467593
+    2.4.x patch: https://people.apache.org/~kbrand/PR52212_54698_2.4.x.patch
+    2.2.x patch: https://people.apache.org/~kbrand/PR52212_54698_2.2.x.patch
+    +1: kbrand, jorton, minfrin
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -206,17 +216,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~druggeri/patches/httpd-2.4.x-failontimeout.patch
      2.2.x patch: http://people.apache.org/~druggeri/patches/httpd-2.2.x-failontimeout.patch
      +1: druggeri, jim
-
-   * mod_ssl: Catch missing, mismatched or encrypted client cert/key pairs
-    with SSLProxyMachineCertificateFile/Path directives. PR 52212, PR 54698.
-    (check at startup, to prevent segfaults at proxy request time)
-    trunk patches: https://svn.apache.org/r1374214
-                   https://svn.apache.org/r1374216
-                   https://svn.apache.org/r1375445
-                   https://svn.apache.org/r1467593
-    2.4.x patch: https://people.apache.org/~kbrand/PR52212_54698_2.4.x.patch
-    2.2.x patch: https://people.apache.org/~kbrand/PR52212_54698_2.2.x.patch
-    +1: kbrand, jorton, 
 
     * skiplist: Add skiplist functionality
       trunk patches: https://svn.apache.org/r1411190
