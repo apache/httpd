@@ -121,7 +121,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=r1425874
                  https://svn.apache.org/viewvc?view=revision&revision=r1426850
     2.4.x patch: trunk patch works (modulo CHANGES and next-number)
-    +1: kbrand
+    +1: kbrand, minfrin
 
   * mod_authnz_ldap: Allow using exec: callouts like SSLPassphraseDialog
     for AuthLDAPBindPassword.
