@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_dav: Do not fail PROPPATCH when prop namespace is not known.
+     PR 52559 [Diego Santa Cruz <diego.santaCruz spinetix.com>]
+
   *) mod_dav: When a PROPPATCH attempts to remove a non-existent dead
      property on a resource for which there is no dead property in the same
      namespace httpd segfaults. PR 52559 [Diego Santa Cruz
