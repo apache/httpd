@@ -288,6 +288,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk patch works (minus CHANGES)
       +1: minfrin
 
+    * mod_cache_socache: New cache implementation backed by mod_socache
+      that replaces mod_mem_cache removed from httpd v2.2.
+      trunk patches: http://svn.apache.org/r1305167
+                     http://svn.apache.org/r1330964
+                     http://svn.apache.org/r1388660
+                     http://svn.apache.org/r1388899
+                     http://svn.apache.org/r1391396
+                     http://svn.apache.org/r1391398
+                     http://svn.apache.org/r1392214
+                     http://svn.apache.org/r1406760
+                     http://svn.apache.org/r1418648
+      2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache_socache-rollup.patch
+      +1: minfrin
+
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
