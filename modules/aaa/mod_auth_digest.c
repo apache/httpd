@@ -223,6 +223,8 @@ static apr_status_t cleanup_tables(void *not_used)
         opaque_lock = NULL;
     }
 
+    client_list = NULL;
+
     return APR_SUCCESS;
 }
 

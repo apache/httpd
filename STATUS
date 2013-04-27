@@ -90,10 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_auth_digest: avoid crash if shm init fails.
-      trunk patches: https://svn.apache.org/r1463047
-      2.4.x patch: trunk patches work
-      +1: sf, humbedooh, covener
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
