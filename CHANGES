@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_dav: PROPPATCH delete (svn propdel) silently discards errors.
+     PR 53525 [Arwin Arni <arwin collab.net>]
+
   *) mod_dav: Ensure URI is correctly uriencoded on return. PR 54611
      [Timothy Wood <tjw omnigroup.com>]
 
