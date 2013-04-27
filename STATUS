@@ -114,6 +114,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      rjung: directive help text describes "on" and then says: "(Not recommended if
             using the Balancer Manager)". Since "on" is the default, should we probably
             say "(Setting to Off recommended if using the Balancer Manager)"?
+     minfrin: +1 (including http://svn.apache.org/r1476680 as per rjung)
 
   * mod_ssl: add support for subjectAltName-based host name checking
     in proxy mode (PR 54030)
