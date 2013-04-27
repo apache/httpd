@@ -1374,7 +1374,11 @@ connections</description>
 <usage>
     <p>The <directive>ProxyIOBufferSize</directive> directive adjusts the size
     of the internal buffer, which is used as a scratchpad for the data between
-    input and output. The size must be less or equal <code>8192</code>.</p>
+    input and output. The size must be at least <code>8192</code>.</p>
+
+    <p>When the <module>mod_proxy_ajp</module> module is used, this value is
+    aligned to a 1024 byte boundary, and values larger than 65536 are set to
+    65536 in accordance with the AJP protocol.</p>
 
     <p>In almost every case there's no reason to change that value.</p>
 </usage>
