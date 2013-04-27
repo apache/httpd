@@ -90,12 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy_balancer: Add failontimeout parameter. Timeout will put worker
-     in error state if an IO timeout is detected.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1465839
-     2.4.x patch: http://people.apache.org/~druggeri/patches/httpd-2.4.x-failontimeout.patch
-     2.2.x patch: http://people.apache.org/~druggeri/patches/httpd-2.2.x-failontimeout.patch
-     +1: druggeri, jim, minfrin
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
