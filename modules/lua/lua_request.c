@@ -692,7 +692,7 @@ static int lua_ap_sendfile(lua_State *L)
         rc = apr_file_open(&file, filename, APR_READ, APR_OS_DEFAULT,
                             r->pool);
         if (rc == APR_SUCCESS) {
-            ap_send_fd(file, r, 0, file_info.size, &sent);
+            ap_send_fd(file, r, 0, (apr_size_t)file_info.size, &sent);
             apr_file_close(file);
             lua_pushinteger(L, sent);
         }
@@ -841,9 +841,9 @@ static int lua_ap_mpm_query(lua_State *L)
     int x,
         y;
 
-    x = lua_tonumber(L, 1);
+    x = lua_tointeger(L, 1);
     ap_mpm_query(x, &y);
-    lua_pushnumber(L, y);
+    lua_pushinteger(L, y);
     return 1;
 }
 
@@ -965,7 +965,7 @@ static int lua_ap_scoreboard_process(lua_State *L)
 
     luaL_checktype(L, 1, LUA_TUSERDATA);
     luaL_checktype(L, 2, LUA_TNUMBER);
-    i = lua_tonumber(L, 2);
+    i = lua_tointeger(L, 2);
     ps_record = ap_get_scoreboard_process(i);
     if (ps_record) {
         lua_newtable(L);
@@ -1020,8 +1020,8 @@ static int lua_ap_scoreboard_worker(lua_State *L)
     luaL_checktype(L, 1, LUA_TUSERDATA);
     luaL_checktype(L, 2, LUA_TNUMBER);
     luaL_checktype(L, 3, LUA_TNUMBER);
-    i = lua_tonumber(L, 2);
-    j = lua_tonumber(L, 3);
+    i = lua_tointeger(L, 2);
+    j = lua_tointeger(L, 3);
     ws_record = ap_get_scoreboard_worker_from_indexes(i, j);
     if (ws_record) {
         lua_newtable(L);
@@ -1031,7 +1031,7 @@ static int lua_ap_scoreboard_worker(lua_State *L)
         lua_settable(L, -3);
 
         lua_pushstring(L, "bytes_served");
-        lua_pushnumber(L, ws_record->bytes_served);
+        lua_pushnumber(L, (lua_Number) ws_record->bytes_served);
         lua_settable(L, -3);
 
         lua_pushstring(L, "client");
@@ -1039,7 +1039,7 @@ static int lua_ap_scoreboard_worker(lua_State *L)
         lua_settable(L, -3);
 
         lua_pushstring(L, "conn_bytes");
-        lua_pushnumber(L, ws_record->conn_bytes);
+        lua_pushnumber(L, (lua_Number) ws_record->conn_bytes);
         lua_settable(L, -3);
 
         lua_pushstring(L, "conn_count");
@@ -1051,7 +1051,7 @@ static int lua_ap_scoreboard_worker(lua_State *L)
         lua_settable(L, -3);
 
         lua_pushstring(L, "last_used");
-        lua_pushnumber(L, ws_record->last_used);
+        lua_pushnumber(L, (lua_Number) ws_record->last_used);
         lua_settable(L, -3);
 
         lua_pushstring(L, "pid");
@@ -1063,7 +1063,7 @@ static int lua_ap_scoreboard_worker(lua_State *L)
         lua_settable(L, -3);
 
         lua_pushstring(L, "start_time");
-        lua_pushnumber(L, ws_record->start_time);
+        lua_pushnumber(L, (lua_Number) ws_record->start_time);
         lua_settable(L, -3);
 
         lua_pushstring(L, "status");
@@ -1071,7 +1071,7 @@ static int lua_ap_scoreboard_worker(lua_State *L)
         lua_settable(L, -3);
 
         lua_pushstring(L, "stop_time");
-        lua_pushnumber(L, ws_record->stop_time);
+        lua_pushnumber(L, (lua_Number) ws_record->stop_time);
         lua_settable(L, -3);
 
         lua_pushstring(L, "tid");
@@ -1103,7 +1103,7 @@ static int lua_ap_clock(lua_State *L)
 {
     apr_time_t now;
     now = apr_time_now();
-    lua_pushnumber(L, now);
+    lua_pushnumber(L, (lua_Number) now);
     return 1;
 }
 
@@ -1210,19 +1210,19 @@ static int lua_ap_stat(lua_State *L)
         lua_newtable(L);
 
         lua_pushstring(L, "mtime");
-        lua_pushnumber(L, file_info.mtime);
+        lua_pushnumber(L, (lua_Number) file_info.mtime);
         lua_settable(L, -3);
 
         lua_pushstring(L, "atime");
-        lua_pushnumber(L, file_info.atime);
+        lua_pushnumber(L, (lua_Number) file_info.atime);
         lua_settable(L, -3);
 
         lua_pushstring(L, "ctime");
-        lua_pushnumber(L, file_info.ctime);
+        lua_pushnumber(L, (lua_Number) file_info.ctime);
         lua_settable(L, -3);
 
         lua_pushstring(L, "size");
-        lua_pushnumber(L, file_info.size);
+        lua_pushnumber(L, (lua_Number) file_info.size);
         lua_settable(L, -3);
 
         lua_pushstring(L, "filetype");
@@ -1528,9 +1528,9 @@ static int lua_ap_state_query(lua_State *L)
 static int lua_ap_sleep(lua_State *L)
 {
 
-    int msec;
+    apr_interval_time_t msec;
     luaL_checktype(L, 1, LUA_TNUMBER);
-    msec = (lua_tonumber(L, 1) * 1000000);
+    msec = (lua_tointeger(L, 1) * 1000000);
     apr_sleep(msec);
     return 0;
 }
@@ -1665,7 +1665,7 @@ static int lua_ivm_get(lua_State *L)
     apr_thread_mutex_lock(lua_ivm_mutex);
     apr_pool_userdata_get((void **)&object, raw_key, r->server->process->pool);
     if (object) {
-        if (object->type == LUA_TBOOLEAN) lua_pushboolean(L, object->number);
+        if (object->type == LUA_TBOOLEAN) lua_pushboolean(L, (int) object->number);
         else if (object->type == LUA_TNUMBER) lua_pushnumber(L, object->number);
         else if (object->type == LUA_TSTRING) lua_pushlstring(L, object->vb.buf, object->size);
         apr_thread_mutex_unlock(lua_ivm_mutex);
