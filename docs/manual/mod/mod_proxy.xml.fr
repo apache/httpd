@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1475706 -->
+<!-- English Revision: 1476689 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1222,13 +1222,13 @@ ProxyPass /mirror/foo http://backend.example.com
     </td></tr>
     <tr><td>stickysessionsep</td>
         <td>"."</td>
-        <td>Définit le caractère de séparation dans le cookie de
-	session. Certains serveurs d'application d'arrière-plan
-	n'utilisent pas le caractère '.' comme séparateur. Par exemple
-	le serveur Oracle Weblogic utilise le caractère '!'. Cette
-	option permet d'attribuer au caractère de séparation la valeur
-	appropriée. Si elle est définie à 'Off', aucun caractère de
-	séparation n'est utilisé.
+        <td>D&eacute;finit le caract&egrave;re de s&eacute;paration dans le cookie de
+	session. Certains serveurs d'application d'arri&egrave;re-plan
+	n'utilisent pas le caract&egrave;re '.' comme s&eacute;parateur. Par exemple
+	le serveur Oracle Weblogic utilise le caract&egrave;re '!'. Cette
+	option permet d'attribuer au caract&egrave;re de s&eacute;paration la valeur
+	appropri&eacute;e. Si elle est d&eacute;finie &agrave; 'Off', aucun caract&egrave;re de
+	s&eacute;paration n'est utilis&eacute;.
     </td></tr>
     <tr><td>scolonpathdelim</td>
         <td>Off</td>
@@ -1253,7 +1253,15 @@ ProxyPass /mirror/foo http://backend.example.com
 	dans la liste. La r&eacute;cup&eacute;ration du worker s'effectue comme dans
 	le cas des autres erreurs de worker.
     </td></tr>
-
+    <tr><td>failontimeout</td>
+        <td>Off</td>
+        <td>Si ce param&egrave;tre est d&eacute;fini &agrave; "On", un d&eacute;lai d'attente
+	d&eacute;pass&eacute; en entr&eacute;e/sortie apr&egrave;s envoi d'une requ&ecirc;te au serveur
+	d'arri&egrave;re-plan va mettre le processus en &eacute;tat d'erreur. La
+	sortie de cet &eacute;tat d'erreur se passe de la m&ecirc;me fa&ccedil;on que pour
+	les autres erreurs.
+	Disponible &agrave; partir de la version 2.4.5 du serveur HTTP Apache.
+    </td></tr>
     <tr><td>nonce</td>
         <td>&lt;auto&gt;</td>
         <td>Le nombre &agrave; usage unique de protection utilis&eacute; dans la page
@@ -1665,8 +1673,11 @@ donn&eacute;es</description>
 
     <p>Dans la plupart des cas, il n'y a aucune raison de modifier cette
     valeur.</p>
+
     <p>Si elle est utilis&eacute;e avec AJP, cette directive permet de d&eacute;finir
-    la taille maximale du paquet AJP en octets. Si vous ne conservez pas
+    la taille maximale du paquet AJP en octets. Si la valeur sp&eacute;cifi&eacute;e
+    est sup&eacute;rieure &agrave; 65536, elle est corrig&eacute;e et prend la valeur 65536.
+    Si vous ne conservez pas
     la valeur par d&eacute;faut, vous devez aussi modifier l'attribut
     <code>packetSize</code> de votre connecteur AJP du c&ocirc;t&eacute; de Tomcat !
     L'attribut <code>packetSize</code> n'est disponible que dans Tomcat
