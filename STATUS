@@ -187,6 +187,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      -1: wrowe (switch to +1 once ap_get_exec_line is made thread-safe, right
                now it uses a static which is verboten in reentrant code.)
                kudos for using apr_tokenize_to_argv to allow spaces in args.
+               druggeri: This was updated in trunk 1467523/1467792. The 2.2. patch now reflects
+                         the same.
 
 
   * mod_proxy_balancer: Add failontimeout parameter. Timeout will put worker
