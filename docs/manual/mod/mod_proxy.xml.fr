@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1354431:1373320 (outdated) -->
+<!-- English Revision : 1476655 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1544,7 +1544,12 @@ donn&eacute;es</description>
     <p>La directive <directive>ProxyIOBufferSize</directive> permet
     d'ajuster la taille du tampon interne utilis&eacute; comme bloc-note pour
     les transferts de donn&eacute;es entre entr&eacute;e et sortie. La taille doit
-    &ecirc;tre inf&eacute;rieure ou &eacute;gale &agrave; <code>8192</code> octets.</p>
+    &ecirc;tre au minimum &eacute;gale &agrave; <code>8192</code> octets.</p>
+
+    <p>Lorsqu'on utilise <module>mod_proxy_ajp</module>, la valeur
+    minimale est align&eacute;e sur la limite de 1024 octets, et les valeurs
+    sup&eacute;rieures &agrave; 65536 octets sont ramen&eacute;es &agrave; 65536 octets, comme pr&eacute;conis&eacute;
+    par le protocole AJP.</p>
 
     <p>Dans la plupart des cas, il n'y a aucune raison de modifier cette
     valeur.</p>
