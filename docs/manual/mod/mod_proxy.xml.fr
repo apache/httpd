@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1475703 -->
+<!-- English Revision: 1476652 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1742,8 +1742,11 @@ donn&eacute;es</description>
 
     <p>Dans la plupart des cas, il n'y a aucune raison de modifier cette
     valeur.</p>
+
     <p>Si elle est utilis&eacute;e avec AJP, cette directive permet de d&eacute;finir
-    la taille maximale du paquet AJP en octets. Si vous ne conservez pas
+    la taille maximale du paquet AJP en octets. Si la valeur sp&eacute;cifi&eacute;e
+    est sup&eacute;rieure &agrave; 65536, elle est corrig&eacute;e et prend la valeur 65536.    
+    Si vous ne conservez pas
     la valeur par d&eacute;faut, vous devez aussi modifier l'attribut
     <code>packetSize</code> de votre connecteur AJP du c&ocirc;t&eacute; de Tomcat !
     L'attribut <code>packetSize</code> n'est disponible que dans Tomcat
