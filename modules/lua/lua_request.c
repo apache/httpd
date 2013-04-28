@@ -719,10 +719,12 @@ static int lua_apr_b64encode(lua_State *L)
     r = ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TSTRING);
     plain = lua_tolstring(L, 2, &plain_len);
-    encoded_len = apr_base64_encode_len(plain_len) + 1;
+    encoded_len = apr_base64_encode_len(plain_len);
     if (encoded_len) {
         encoded = apr_palloc(r->pool, encoded_len);
-        apr_base64_encode(encoded, plain, plain_len);
+        encoded_len = apr_base64_encode(encoded, plain, plain_len);
+        if (encoded_len > 0 && encoded[encoded_len - 1] == '\0')
+            encoded_len--; 
         lua_pushlstring(L, encoded, encoded_len);
         return 1;
     }
@@ -738,13 +740,16 @@ static int lua_apr_b64decode(lua_State *L)
     char           *plain;
     size_t          encoded_len, decoded_len;
     request_rec    *r;
+
     r = ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TSTRING);
     encoded = lua_tolstring(L, 2, &encoded_len);
-    decoded_len = apr_base64_decode_len(encoded) + 1;
+    decoded_len = apr_base64_decode_len(encoded);
     if (decoded_len) {
         plain = apr_palloc(r->pool, decoded_len);
-        apr_base64_decode(plain, encoded);
+        decoded_len = apr_base64_decode(plain, encoded);
+        if (decoded_len > 0 && plain[decoded_len - 1] == '\0')
+            decoded_len--; 
         lua_pushlstring(L, plain, decoded_len);
         return 1;
     }
