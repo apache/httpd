@@ -265,6 +265,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache_socache-rollup.patch
       +1: minfrin, gsmith
 
+    * core, mod_ssl: Lift the restriction that prevents mod_ssl taking
+      full advantage of the event MPM. Enable the ability for a module
+      to reverse the sense of a poll event from a read to a write or vice
+      versa.
+      trunk patches: http://svn.apache.org/r1470679
+                     http://svn.apache.org/r1477094
+      2.4.x patch: http://people.apache.org/~minfrin/httpd-event-ssl.patch
+      +1: minfrin
+
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
