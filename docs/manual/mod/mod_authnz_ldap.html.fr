@@ -954,6 +954,21 @@ connexion</td></tr>
     vous en avez vraiment besoin pour effectuer une recherche dans
     l'annuaire.</p>
 
+    <p>Si la valeur spécifiée débute par "exec:", la commande qui suit sera
+    exécutée, et la première ligne renvoyée par la commande sur la
+    sortie standard sera utilisée comme mot de passe.</p>
+<div class="example"><pre>
+# Mot de passe spécifié directement
+AuthLDAPBindPassword secret
+
+# Exécution de /path/to/program pour obtenir le mot de passe
+AuthLDAPBindPassword exec:/path/to/program
+
+# Exécution de /path/to/otherProgram avec un argument pour obtenir le mot de passe
+AuthLDAPBindPassword "exec:/path/to/otherProgram argument1"
+</pre></div>
+
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthLDAPCharsetConfig" id="AuthLDAPCharsetConfig">AuthLDAPCharsetConfig</a> <a name="authldapcharsetconfig" id="authldapcharsetconfig">Directive</a></h2>
