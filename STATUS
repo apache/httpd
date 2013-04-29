@@ -189,7 +189,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                kudos for using apr_tokenize_to_argv to allow spaces in args.
                druggeri: This was updated in trunk 1467523/1467792. The 2.2. patch now reflects
                          the same.
-
+     +1: minfrin (including fix for wrowe's issue above)
 
   * mod_proxy_balancer: Add failontimeout parameter. Timeout will put worker
     in error state if an IO timeout is detected.
@@ -208,6 +208,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: https://people.apache.org/~kbrand/PR52212_54698_2.4.x.patch
     2.2.x patch: https://people.apache.org/~kbrand/PR52212_54698_2.2.x.patch
     +1: kbrand, minfrin
+
+   * mod_authnz_ldap: Allow using exec: callouts like SSLPassphraseDialog
+     for AuthLDAPBindPassword.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1433478
+     2.4.x patch: http://people.apache.org/~druggeri/patches/AuthLDAPBindPasswordExec-2.4.patch
+     +1: druggeri
 
 PATCHES/ISSUES THAT ARE STALLED
 
