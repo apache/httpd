@@ -993,8 +993,11 @@ données</td></tr>
 
     <p>Dans la plupart des cas, il n'y a aucune raison de modifier cette
     valeur.</p>
+
     <p>Si elle est utilisée avec AJP, cette directive permet de définir
-    la taille maximale du paquet AJP en octets. Si vous ne conservez pas
+    la taille maximale du paquet AJP en octets. Si la valeur spécifiée
+    est supérieure à 65536, elle est corrigée et prend la valeur 65536.    
+    Si vous ne conservez pas
     la valeur par défaut, vous devez aussi modifier l'attribut
     <code>packetSize</code> de votre connecteur AJP du côté de Tomcat !
     L'attribut <code>packetSize</code> n'est disponible que dans Tomcat

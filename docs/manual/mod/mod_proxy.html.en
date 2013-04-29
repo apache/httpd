@@ -890,11 +890,14 @@ response</td></tr>
     input and output. The size must be at least <code>512</code>.</p>
 
     <p>In almost every case there's no reason to change that value.</p>
+
     <p>If used with AJP this directive sets the maximum AJP packet size in
-    bytes. If you change it from the default, you must also change the
-    <code>packetSize</code> attribute of your AJP connector on the
-    Tomcat side! The attribute <code>packetSize</code> is only available
-    in Tomcat <code>5.5.20+</code> and <code>6.0.2+</code></p>
+    bytes. Values larger than 65536 are set to 65536. If you change it from
+    the default, you must also change the <code>packetSize</code> attribute of
+    your AJP connector on the Tomcat side! The attribute
+    <code>packetSize</code> is only available in Tomcat <code>5.5.20+</code>
+    and <code>6.0.2+</code></p>
+
     <p>Normally it is not necessary to change the maximum packet size.
     Problems with the default value have been reported when sending
     certificates or certificate chains.</p>
