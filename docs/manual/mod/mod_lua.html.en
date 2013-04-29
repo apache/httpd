@@ -688,19 +688,21 @@ end
 
 
 <pre class="prettyprint lang-lua">
-r:parseargs() -- returns a Lua table containing the request's query string arguments:
+r:parseargs() -- returns two tables; one standard key/value table for regular GET data, 
+              -- and one for multi-value data (fx. foo=1&amp;foo=2&amp;foo=3):
 
-local GET = r:parseargs()
+local GET, GETMULTI = r:parseargs()
 r:puts("Your name is: " .. GET['name'] or "Unknown")
 </pre>
 
 
 <pre class="prettyprint lang-lua">
-r:parsebody([sizeLimit]) -- parse the request body as a POST and return a lua table.
-                 -- An optional number may be passed to specify the maximum number 
-                 -- of bytes to parse. Default is 8192 bytes:
+r:parsebody([sizeLimit]) -- parse the request body as a POST and return two lua tables,
+                         -- just like r:parseargs().
+                         -- An optional number may be passed to specify the maximum number 
+                         -- of bytes to parse. Default is 8192 bytes:
                  
-local POST = r:parsebody(1024*1024)
+local POST, POSTMULTI = r:parsebody(1024*1024)
 r:puts("Your name is: " .. POST['name'] or "Unknown")
 </pre>
 
