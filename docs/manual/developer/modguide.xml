@@ -1184,8 +1184,19 @@ AP_INIT_TAKE1("exampleEnabled", example_set_enabled, NULL, RSRC_CONF, "Enable or
 this directive in a global server context, but since we are now trying out 
 a context aware version of our module, we should set this to something 
 more lenient, namely the value <code>ACCESS_CONF</code>, which lets us use 
-the directive inside &lt;Directory&gt; and &lt;Location&gt; blocks.
+the directive inside &lt;Directory&gt; and &lt;Location&gt; blocks. For more 
+control over the placement of your directives, you can combine the following 
+restrictions together to form a specific rule:
 </p>
+<ul>
+<li><code>RSRC_CONF</code>: Allow in .conf files (not .htaccess) outside &lt;Directory&gt; or &lt;Location&gt;</li>
+<li><code>ACCESS_CONF</code>: Allow in .conf files (not .htaccess) inside &lt;Directory&gt; or &lt;Location&gt;</li>
+<li><code>OR_OPTIONS</code>: Allow in .conf files and .htaccess when <code>AllowOverride Options</code> is set</li>
+<li><code>OR_FILEINFO</code>: Allow in .conf files and .htaccess when <code>AllowOverride FileInfo</code> is set</li>
+<li><code>OR_AUTHCFG</code>: Allow in .conf files and .htaccess when <code>AllowOverride AuthConfig</code> is set</li>
+<li><code>OR_INDEXES</code>: Allow in .conf files and .htaccess when <code>AllowOverride Indexes</code> is set</li>
+<li><code>OR_ALL</code>: Allow anywhere in .conf files and .htaccess</li>
+</ul>
 </section>
 
 <section id="context_pool"><title>Using the server to allocate configuration slots</title>
