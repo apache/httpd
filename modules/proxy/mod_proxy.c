@@ -2330,10 +2330,10 @@ static const command_rec proxy_cmds[] =
      "on if the balancer should persist changes on reboot/restart made via the Balancer Manager"),
     AP_INIT_FLAG("BalancerInherit", set_inherit, NULL, RSRC_CONF,
      "on if this server should inherit Balancers and Workers defined in the main server "
-     "(Not recommended if using the Balancer Manager for dynamic changes)"),
+     "(Setting to off recommended if using the Balancer Manager)"),
     AP_INIT_FLAG("ProxyPassInherit", set_ppinherit, NULL, RSRC_CONF,
      "on if this server should inherit all ProxyPass directives defined in the main server "
-     "(Not recommended if using the Balancer Manager for dynamic changes)"),
+     "(Setting to off recommended if using the Balancer Manager)"),
     AP_INIT_TAKE1("ProxyStatus", set_status_opt, NULL, RSRC_CONF,
      "Configure Status: proxy status to one of: on | off | full"),
     AP_INIT_RAW_ARGS("ProxySet", set_proxy_param, NULL, RSRC_CONF|ACCESS_CONF,

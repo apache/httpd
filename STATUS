@@ -90,26 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy: Allow balancers and ProxyPass to be server-specific, as
-     they should have been. Inheritance causes too many behind-the-scene
-     interactions to be reliable in a dynamic environ. We maintain the
-     old-default of inheritance.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387603
-                  http://svn.apache.org/viewvc?view=revision&revision=1388029
-                  http://svn.apache.org/viewvc?view=revision&revision=1420124
-                  http://svn.apache.org/viewvc?view=revision&revision=1421288
-                  http://svn.apache.org/viewvc?view=revision&revision=1421912
-                  http://svn.apache.org/viewvc?view=revision&revision=1422943
-                  http://svn.apache.org/viewvc?view=revision&revision=1422980
-                  http://svn.apache.org/viewvc?view=revision&revision=1430575
-                  http://svn.apache.org/viewvc?view=revision&revision=1439404
-     2.4.x patch: http://people.apache.org/~jim/patches/proxypassinherit-v2.patch
-     +1: jim, druggeri
-     rjung: directive help text describes "on" and then says: "(Not recommended if
-            using the Balancer Manager)". Since "on" is the default, should we probably
-            say "(Setting to Off recommended if using the Balancer Manager)"?
-     minfrin: +1 (including http://svn.apache.org/r1476680 as per rjung)
-
     * htpasswd: Add -v option
       trunk patches: https://svn.apache.org/r1465116
       2.4.x patch: trunk patches work
