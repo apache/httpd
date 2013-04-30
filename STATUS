@@ -209,7 +209,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * htpasswd: Add -v option
       trunk patches: https://svn.apache.org/r1465116
       2.4.x patch: trunk patches work
-      +1: sf, minfrin
+      +1: sf, minfrin, jim
 
     * mod_dav: Make sure that when we prepare an If URL for Etag comparison,     
       we compare unencoded paths. PR 53910
@@ -264,7 +264,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                      http://svn.apache.org/r1406760
                      http://svn.apache.org/r1418648
       2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache_socache-rollup.patch
-      +1: minfrin, gsmith
+      +1: minfrin, gsmith, jim
 
     * core, mod_ssl: Lift the restriction that prevents mod_ssl taking
       full advantage of the event MPM. Enable the ability for a module
@@ -273,13 +273,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patches: http://svn.apache.org/r1470679
                      http://svn.apache.org/r1477094
       2.4.x patch: http://people.apache.org/~minfrin/httpd-event-ssl.patch
-      +1: minfrin
+      +1: minfrin, jim
 
     * core: Improve error message where client's request-line exceeds LimitRequestLine
       PR 54384
       trunk patch: http://svn.apache.org/r1433613
       2.4.x patch: trunk patch applies
-      +1: minfrin
+      +1: minfrin, jim
 
 
 A list of further possible backports can be found at:                                                                                                                                   
