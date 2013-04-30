@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_dav: mod_dav overrides dav_fs response on PUT failure. PR 35981
+     [Basant Kumar Kukreja <basant.kukreja sun.com>, Alejandro Alvarez
+     <alejandro.alvarez.ayllon cern.ch>]
+
   *) mod_dav: Do not segfault on PROPFIND with a zero length DBM.
      PR 52559 [Diego Santa Cruz <diego.santaCruz spinetix.com>]
 
