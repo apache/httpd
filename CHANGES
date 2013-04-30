@@ -2,6 +2,8 @@
 
 Changes with Apache 2.4.5
 
+  *) htpasswd: Add -v option to verify a password. [Stefan Fritsch]
+
   *) mod_proxy: Add BalancerInherit and ProxyPassInherit to control
      whether Proxy Balancers and Workers are inherited by vhosts
      (default is On). [Jim Jagielski]

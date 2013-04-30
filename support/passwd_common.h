@@ -80,7 +80,8 @@ struct passwd_ctx {
     enum {
         PW_PROMPT = 0,
         PW_ARG,
-        PW_STDIN
+        PW_STDIN,
+        PW_PROMPT_VERIFY,
     } passwd_src;
 };
 
