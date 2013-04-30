@@ -275,6 +275,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: http://people.apache.org/~minfrin/httpd-event-ssl.patch
       +1: minfrin
 
+    * core: Improve error message where client's request-line exceeds LimitRequestLine
+      PR 54384
+      trunk patch: http://svn.apache.org/r1433613
+      2.4.x patch: trunk patch applies
+      +1: minfrin
+
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
