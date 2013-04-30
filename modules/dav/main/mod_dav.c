@@ -960,12 +960,17 @@ static int dav_method_put(request_rec *r)
     /* Create the new file in the repository */
     if ((err = (*resource->hooks->open_stream)(resource, mode,
                                                &stream)) != NULL) {
-        /* ### assuming FORBIDDEN is probably not quite right... */
-        err = dav_push_error(r->pool, HTTP_FORBIDDEN, 0,
-                             apr_psprintf(r->pool,
-                                          "Unable to PUT new contents for %s.",
-                                          ap_escape_html(r->pool, r->uri)),
-                             err);
+        int status = err->status ? err->status : HTTP_FORBIDDEN;
+        if (status > 299) {
+            err = dav_push_error(r->pool, status, 0,
+                                 apr_psprintf(r->pool,
+                                              "Unable to PUT new contents for %s.",
+                                              ap_escape_html(r->pool, r->uri)),
+                                 err);
+        }
+        else {
+            err = NULL;
+        }
     }
 
     if (err == NULL && has_range) {
