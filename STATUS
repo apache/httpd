@@ -232,7 +232,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: https://svn.apache.org/11476089
     2.2.x patch: https://svn.apache.org/r1476242
     2.0.x patch: http://people.apache.org/~rjung/patches/htdigest-buffer_overflow_2_0.patch
-    +1: rjung
+    +1: rjung, minfrin
     -1: 
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
