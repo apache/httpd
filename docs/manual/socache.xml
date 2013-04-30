@@ -40,6 +40,7 @@
     <p>The only configuration required is to select which cache provider
     to use.  This is the responsibility of modules using the cache, and
     they enable selection using directives such as
+    <directive module="mod_cache_socache">CacheSocache</directive>,
     <directive module="mod_authn_socache">AuthnCacheSOCache</directive>,
     <directive module="mod_ssl">SSLSessionCache</directive>, and
     <directive module="mod_ssl">SSLStaplingCache</directive>.</p>
