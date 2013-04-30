@@ -403,6 +403,7 @@
  * 20120211.11 (2.4.4-dev) Add ap_bin2hex()
  * 20120211.12 (2.4.5-dev)  Add ap_remove_input|output_filter_byhandle()
  * 20120211.13 (2.4.5-dev)  Add ap_get_exec_line
+ * 20120211.14 (2.4.5-dev)  Add ppinherit and inherit to proxy_server_conf
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -410,7 +411,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 13                   /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 14                   /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
