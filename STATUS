@@ -90,11 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * htpasswd: Add -v option
-      trunk patches: https://svn.apache.org/r1465116
-      2.4.x patch: trunk patches work
-      +1: sf, minfrin, jim
-
     * mod_cache_socache: New cache implementation backed by mod_socache
       that replaces mod_mem_cache removed from httpd v2.2.
       trunk patches: http://svn.apache.org/r1305167
