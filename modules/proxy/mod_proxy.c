@@ -1168,6 +1168,10 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->req = 0;
     ps->max_balancers = 0;
     ps->bal_persist = 0;
+    ps->inherit = 1;
+    ps->inherit_set = 0;
+    ps->ppinherit = 1;
+    ps->ppinherit_set = 0;
     ps->bgrowth = 5;
     ps->bgrowth_set = 0;
     ps->req_set = 0;
@@ -1194,13 +1198,30 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     proxy_server_conf *base = (proxy_server_conf *) basev;
     proxy_server_conf *overrides = (proxy_server_conf *) overridesv;
 
-    ps->proxies = apr_array_append(p, base->proxies, overrides->proxies);
+    ps->inherit = (overrides->inherit_set == 0) ? base->inherit : overrides->inherit;
+    ps->inherit_set = overrides->inherit_set || base->inherit_set;
+
+    ps->ppinherit = (overrides->ppinherit_set == 0) ? base->ppinherit : overrides->ppinherit;
+    ps->ppinherit_set = overrides->ppinherit_set || base->ppinherit_set;
+
+    if (ps->ppinherit) {
+        ps->proxies = apr_array_append(p, base->proxies, overrides->proxies);
+    }
+    else {
+        ps->proxies = overrides->proxies;
+    }
     ps->sec_proxy = apr_array_append(p, base->sec_proxy, overrides->sec_proxy);
     ps->aliases = apr_array_append(p, base->aliases, overrides->aliases);
     ps->noproxies = apr_array_append(p, base->noproxies, overrides->noproxies);
     ps->dirconn = apr_array_append(p, base->dirconn, overrides->dirconn);
-    ps->workers = apr_array_append(p, base->workers, overrides->workers);
-    ps->balancers = apr_array_append(p, base->balancers, overrides->balancers);
+    if (ps->inherit || ps->ppinherit) {
+        ps->workers = apr_array_append(p, base->workers, overrides->workers);
+        ps->balancers = apr_array_append(p, base->balancers, overrides->balancers);
+    }
+    else {
+        ps->workers = overrides->workers;
+        ps->balancers = overrides->balancers;
+    }
     ps->forward = overrides->forward ? overrides->forward : base->forward;
     ps->reverse = overrides->reverse ? overrides->reverse : base->reverse;
 
@@ -1898,6 +1919,26 @@ static const char *set_persist(cmd_parms *parms, void *dummy, int flag)
     return NULL;
 }
 
+static const char *set_inherit(cmd_parms *parms, void *dummy, int flag)
+{
+    proxy_server_conf *psf =
+    ap_get_module_config(parms->server->module_config, &proxy_module);
+
+    psf->inherit = flag;
+    psf->inherit_set = 1;
+    return NULL;
+}
+
+static const char *set_ppinherit(cmd_parms *parms, void *dummy, int flag)
+{
+    proxy_server_conf *psf =
+    ap_get_module_config(parms->server->module_config, &proxy_module);
+
+    psf->ppinherit = flag;
+    psf->ppinherit_set = 1;
+    return NULL;
+}
+
 static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
 {
     server_rec *s = cmd->server;
@@ -2287,6 +2328,12 @@ static const command_rec proxy_cmds[] =
      "Number of additional Balancers that can be added post-config"),
     AP_INIT_FLAG("BalancerPersist", set_persist, NULL, RSRC_CONF,
      "on if the balancer should persist changes on reboot/restart made via the Balancer Manager"),
+    AP_INIT_FLAG("BalancerInherit", set_inherit, NULL, RSRC_CONF,
+     "on if this server should inherit Balancers and Workers defined in the main server "
+     "(Not recommended if using the Balancer Manager for dynamic changes)"),
+    AP_INIT_FLAG("ProxyPassInherit", set_ppinherit, NULL, RSRC_CONF,
+     "on if this server should inherit all ProxyPass directives defined in the main server "
+     "(Not recommended if using the Balancer Manager for dynamic changes)"),
     AP_INIT_TAKE1("ProxyStatus", set_status_opt, NULL, RSRC_CONF,
      "Configure Status: proxy status to one of: on | off | full"),
     AP_INIT_RAW_ARGS("ProxySet", set_proxy_param, NULL, RSRC_CONF|ACCESS_CONF,
