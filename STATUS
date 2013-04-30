@@ -90,11 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
-
    * mod_proxy: Allow balancers and ProxyPass to be server-specific, as
      they should have been. Inheritance causes too many behind-the-scene
      interactions to be reliable in a dynamic environ. We maintain the
@@ -114,6 +109,30 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             using the Balancer Manager)". Since "on" is the default, should we probably
             say "(Setting to Off recommended if using the Balancer Manager)"?
      minfrin: +1 (including http://svn.apache.org/r1476680 as per rjung)
+
+    * htpasswd: Add -v option
+      trunk patches: https://svn.apache.org/r1465116
+      2.4.x patch: trunk patches work
+      +1: sf, minfrin, jim
+
+    * mod_cache_socache: New cache implementation backed by mod_socache
+      that replaces mod_mem_cache removed from httpd v2.2.
+      trunk patches: http://svn.apache.org/r1305167
+                     http://svn.apache.org/r1330964
+                     http://svn.apache.org/r1388660
+                     http://svn.apache.org/r1388899
+                     http://svn.apache.org/r1391396
+                     http://svn.apache.org/r1391398
+                     http://svn.apache.org/r1392214
+                     http://svn.apache.org/r1406760
+                     http://svn.apache.org/r1418648
+      2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache_socache-rollup.patch
+      +1: minfrin, gsmith, jim
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
 
   * mod_ssl: add support for subjectAltName-based host name checking
     in proxy mode (PR 54030)
@@ -206,11 +225,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk patches work
       +1: jim
 
-    * htpasswd: Add -v option
-      trunk patches: https://svn.apache.org/r1465116
-      2.4.x patch: trunk patches work
-      +1: sf, minfrin, jim
-
     * mod_dav: Make sure that when we prepare an If URL for Etag comparison,     
       we compare unencoded paths. PR 53910
       trunk patch: http://svn.apache.org/r1470940
@@ -251,20 +265,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/r1476645
       2.4.x patch: trunk patch works (minus CHANGES)
       +1: minfrin
-
-    * mod_cache_socache: New cache implementation backed by mod_socache
-      that replaces mod_mem_cache removed from httpd v2.2.
-      trunk patches: http://svn.apache.org/r1305167
-                     http://svn.apache.org/r1330964
-                     http://svn.apache.org/r1388660
-                     http://svn.apache.org/r1388899
-                     http://svn.apache.org/r1391396
-                     http://svn.apache.org/r1391398
-                     http://svn.apache.org/r1392214
-                     http://svn.apache.org/r1406760
-                     http://svn.apache.org/r1418648
-      2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache_socache-rollup.patch
-      +1: minfrin, gsmith, jim
 
     * core, mod_ssl: Lift the restriction that prevents mod_ssl taking
       full advantage of the event MPM. Enable the ability for a module
