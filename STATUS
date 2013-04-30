@@ -249,6 +249,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_dav-errorhandling.patch
       +1: minfrin
 
+    * event MPM: Provide error handling for ThreadStackSize. PR 54311
+      trunk patch: http://svn.apache.org/r1433682
+      2.4.x patch: http://people.apache.org/~minfrin/httpd-event-ThreadStackSize-error.patch
+      +1: minfrin
+
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
