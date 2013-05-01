@@ -254,6 +254,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: http://people.apache.org/~minfrin/httpd-event-ThreadStackSize-error.patch
       +1: minfrin
 
+    * mod_cache: Invalidate cached entities in response to RFC2616 Section
+      13.10 Invalidation After Updates or Deletions. PR 15868
+      trunk patch: http://svn.apache.org/r1070179
+                   http://svn.apache.org/r1478140
+                   http://svn.apache.org/r1478173
+      2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-invalidate.patch
+      +1: minfrin
+
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
