@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1470271:1477000 (outdated) -->
+<!-- English Revision : 1477000 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -677,7 +677,7 @@ while nous_avons_des_donn&eacute;es_&agrave;_envoyer do
     r:puts("Bla bla bla\n") -- envoi des donn&eacute;es &agrave; envoyer vers le tampon
     r:flush() -- vidage du tampon (envoi au client)
     r:sleep(0.5) -- mise en attente et bouclage
-+end
+end
 </highlight>
 
 <highlight language="lua">
@@ -696,22 +696,23 @@ end
 </highlight>
 
 <highlight language="lua">
-r:parseargs() -- renvoie une table Lua contenant la cha&icirc;ne
-d'arguments de la requ&ecirc;te
+r:parseargs() -- renvoie deux tables : une table standard de couples
+cl&eacute;/valeur pour les donn&eacute;es GET simples, et une autre pour les donn&eacute;es
+multivalu&eacute;es (par exemple foo=1&amp;foo=2&amp;foo=3) :
 
-local GET = r:parseargs()
-+r:puts("Votre nom est : " .. GET['name'] or "Unknown")
+local GET, GETMULTI = r:parseargs()
+r:puts("Votre nom est : " .. GET['name'] or "Unknown")
 </highlight>
 
 
 <highlight language="lua">
 r:parsebody()([sizeLimit]) -- interpr&egrave;te le corps de la requ&ecirc;te
-en tant que POST et renvoie une table lua. Un nombre optionnel
+en tant que POST et renvoie deux tables lua, comme r:parseargs(). Un nombre optionnel
 peut &ecirc;tre fourni pour sp&eacute;cifier le nombre maximal d'octets &agrave;
 interpr&eacute;ter. La valeur par d&eacute;faut est 8192.
 
-local POST = r:parsebody(1024*1024)
-+r:puts("Votre nom est : " .. POST['name'] or "Unknown")
+local POST, POSTMULTI = r:parsebody(1024*1024)
+r:puts("Votre nom est : " .. POST['name'] or "Unknown")
 </highlight>
 
 
