@@ -1344,7 +1344,17 @@ static apr_status_t commit_entity(cache_handle_t *h, request_rec *r)
 
 static apr_status_t invalidate_entity(cache_handle_t *h, request_rec *r)
 {
-    return APR_ENOTIMPL;
+    apr_status_t rv;
+
+    rv = recall_headers(h, r);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+
+    /* mark the entity as invalidated */
+    h->cache_obj->info.control.invalidated = 1;
+
+    return commit_entity(h, r);
 }
 
 static void *create_dir_config(apr_pool_t *p, char *dummy)

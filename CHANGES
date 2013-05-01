@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_cache: Invalidate cached entities in response to RFC2616 Section
+     13.10 Invalidation After Updates or Deletions. PR 15868 [Graham
+     Leggett]
+
   *) mod_dav: mod_dav overrides dav_fs response on PUT failure. PR 35981
      [Basant Kumar Kukreja <basant.kukreja sun.com>, Alejandro Alvarez
      <alejandro.alvarez.ayllon cern.ch>]

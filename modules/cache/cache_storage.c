@@ -390,61 +390,15 @@ int cache_select(cache_request_rec *cache, request_rec *r)
     return DECLINED;
 }
 
-/*
- * invalidate a specific URL entity in all caches
- *
- * All cached entities for this URL are removed, usually in
- * response to a POST/PUT or DELETE.
- *
- * This function returns OK if at least one entity was found and
- * removed, and DECLINED if no cached entities were removed.
- */
-int cache_invalidate(cache_request_rec *cache, request_rec *r)
-{
-    cache_provider_list *list;
-    apr_status_t rv, status = DECLINED;
-    cache_handle_t *h;
-
-    if (!cache) {
-        /* This should never happen */
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_EGENERAL, r, APLOGNO(00697)
-                "cache: No cache request information available for key"
-                " generation");
-        return DECLINED;
-    }
-
-    if (!cache->key) {
-        rv = cache_generate_key(r, r->pool, &cache->key);
-        if (rv != APR_SUCCESS) {
-            return DECLINED;
-        }
-    }
-
-    /* go through the cache types */
-    h = apr_palloc(r->pool, sizeof(cache_handle_t));
-
-    list = cache->providers;
-
-    while (list) {
-        rv = list->provider->open_entity(h, r, cache->key);
-        if (OK == rv) {
-            list->provider->remove_url(h, r);
-            status = OK;
-        }
-        list = list->next;
-    }
-
-    return status;
-}
-
-apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
-        const char **key)
+apr_status_t cache_canonicalise_key(request_rec *r, apr_pool_t* p,
+        const char *uri, apr_uri_t *parsed_uri, const char **key)
 {
     cache_server_conf *conf;
     char *port_str, *hn, *lcs;
     const char *hostname, *scheme;
     int i;
-    char *path, *querystring;
+    const char *path;
+    char *querystring;
 
     if (*key) {
         /*
@@ -458,7 +412,7 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
      * option below.
      */
     conf = (cache_server_conf *) ap_get_module_config(r->server->module_config,
-                                                      &cache_module);
+            &cache_module);
 
     /*
      * Use the canonical name to improve cache hit rate, but only if this is
@@ -484,15 +438,15 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
         }
         else {
             /* Use _default_ as the hostname if none present, as in mod_vhost */
-            hostname =  ap_get_server_name(r);
+            hostname = ap_get_server_name(r);
             if (!hostname) {
                 hostname = "_default_";
             }
         }
     }
-    else if(r->parsed_uri.hostname) {
+    else if (parsed_uri->hostname) {
         /* Copy the parsed uri hostname */
-        hn = apr_pstrdup(p, r->parsed_uri.hostname);
+        hn = apr_pstrdup(p, parsed_uri->hostname);
         ap_str_tolower(hn);
         /* const work-around */
         hostname = hn;
@@ -511,9 +465,9 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
      * "no proxy request" and "reverse proxy request" are handled in the same
      * manner (see above why this is needed).
      */
-    if (r->proxyreq && r->parsed_uri.scheme) {
+    if (r->proxyreq && parsed_uri->scheme) {
         /* Copy the scheme and lower-case it */
-        lcs = apr_pstrdup(p, r->parsed_uri.scheme);
+        lcs = apr_pstrdup(p, parsed_uri->scheme);
         ap_str_tolower(lcs);
         /* const work-around */
         scheme = lcs;
@@ -536,11 +490,11 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
      * server.
      */
     if (r->proxyreq && (r->proxyreq != PROXYREQ_REVERSE)) {
-        if (r->parsed_uri.port_str) {
-            port_str = apr_pcalloc(p, strlen(r->parsed_uri.port_str) + 2);
+        if (parsed_uri->port_str) {
+            port_str = apr_pcalloc(p, strlen(parsed_uri->port_str) + 2);
             port_str[0] = ':';
-            for (i = 0; r->parsed_uri.port_str[i]; i++) {
-                port_str[i + 1] = apr_tolower(r->parsed_uri.port_str[i]);
+            for (i = 0; parsed_uri->port_str[i]; i++) {
+                port_str[i + 1] = apr_tolower(parsed_uri->port_str[i]);
             }
         }
         else if (apr_uri_port_of_scheme(scheme)) {
@@ -572,13 +526,13 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
      * Check if we need to ignore session identifiers in the URL and do so
      * if needed.
      */
-    path = r->uri;
-    querystring = r->parsed_uri.query;
+    path = uri;
+    querystring = parsed_uri->query;
     if (conf->ignore_session_id->nelts) {
         int i;
         char **identifier;
 
-        identifier = (char **)conf->ignore_session_id->elts;
+        identifier = (char **) conf->ignore_session_id->elts;
         for (i = 0; i < conf->ignore_session_id->nelts; i++, identifier++) {
             int len;
             char *param;
@@ -589,9 +543,9 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
              * of the path and that the parameter matches our identifier
              */
             if ((param = strrchr(path, ';'))
-                && !strncmp(param + 1, *identifier, len)
-                && (*(param + len + 1) == '=')
-                && !strchr(param + len + 2, '/')) {
+                    && !strncmp(param + 1, *identifier, len)
+                    && (*(param + len + 1) == '=')
+                    && !strchr(param + len + 2, '/')) {
                 path = apr_pstrndup(p, path, param - path);
                 continue;
             }
@@ -604,7 +558,7 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
                  * querystring and followed by a '='
                  */
                 if (!strncmp(querystring, *identifier, len)
-                    && (*(querystring + len) == '=')) {
+                        && (*(querystring + len) == '=')) {
                     param = querystring;
                 }
                 else {
@@ -626,14 +580,15 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
 
                     if (querystring != param) {
                         querystring = apr_pstrndup(p, querystring,
-                                               param - querystring);
+                                param - querystring);
                     }
                     else {
                         querystring = "";
                     }
 
                     if ((amp = strchr(param + len + 1, '&'))) {
-                        querystring = apr_pstrcat(p, querystring, amp + 1, NULL);
+                        querystring = apr_pstrcat(p, querystring, amp + 1,
+                                NULL);
                     }
                     else {
                         /*
@@ -653,12 +608,12 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
 
     /* Key format is a URI, optionally without the query-string */
     if (conf->ignorequerystring) {
-        *key = apr_pstrcat(p, scheme, "://", hostname, port_str,
-                           path, "?", NULL);
+        *key = apr_pstrcat(p, scheme, "://", hostname, port_str, path, "?",
+                NULL);
     }
     else {
-        *key = apr_pstrcat(p, scheme, "://", hostname, port_str,
-                           path, "?", querystring, NULL);
+        *key = apr_pstrcat(p, scheme, "://", hostname, port_str, path, "?",
+                querystring, NULL);
     }
 
     /*
@@ -669,9 +624,118 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
      * resource in the cache under a key where it is never found by the quick
      * handler during following requests.
      */
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO(00698)
-            "cache: Key for entity %s?%s is %s", r->uri,
-            r->parsed_uri.query, *key);
+    ap_log_rerror(
+            APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO(00698) "cache: Key for entity %s?%s is %s", uri, parsed_uri->query, *key);
 
     return APR_SUCCESS;
+}
+
+apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
+        const char **key)
+{
+    return cache_canonicalise_key(r, p, r->uri, &r->parsed_uri, key);
+}
+
+/*
+ * Invalidate a specific URL entity in all caches
+ *
+ * All cached entities for this URL are removed, usually in
+ * response to a POST/PUT or DELETE.
+ *
+ * This function returns OK if at least one entity was found and
+ * removed, and DECLINED if no cached entities were removed.
+ */
+int cache_invalidate(cache_request_rec *cache, request_rec *r)
+{
+    cache_provider_list *list;
+    apr_status_t rv, status = DECLINED;
+    cache_handle_t *h;
+    apr_uri_t location_uri;
+    apr_uri_t content_location_uri;
+
+    const char *location, *location_key = NULL;
+    const char *content_location, *content_location_key = NULL;
+
+    if (!cache) {
+        /* This should never happen */
+        ap_log_rerror(
+                APLOG_MARK, APLOG_ERR, APR_EGENERAL, r, APLOGNO(00697) "cache: No cache request information available for key"
+                " generation");
+        return DECLINED;
+    }
+
+    if (!cache->key) {
+        rv = cache_generate_key(r, r->pool, &cache->key);
+        if (rv != APR_SUCCESS) {
+            return DECLINED;
+        }
+    }
+
+    location = apr_table_get(r->headers_out, "Location");
+    if (location) {
+        if (APR_SUCCESS != apr_uri_parse(r->pool, location, &location_uri)
+                || APR_SUCCESS
+                        != cache_canonicalise_key(r, r->pool, location,
+                                &location_uri, &location_key)
+                || strcmp(r->parsed_uri.hostname, location_uri.hostname)) {
+            location_key = NULL;
+        }
+    }
+
+    content_location = apr_table_get(r->headers_out, "Content-Location");
+    if (content_location) {
+        if (APR_SUCCESS
+                != apr_uri_parse(r->pool, content_location,
+                        &content_location_uri)
+                || APR_SUCCESS
+                        != cache_canonicalise_key(r, r->pool, content_location,
+                                &content_location_uri, &content_location_key)
+                || strcmp(r->parsed_uri.hostname,
+                        content_location_uri.hostname)) {
+            content_location_key = NULL;
+        }
+    }
+
+    /* go through the cache types */
+    h = apr_palloc(r->pool, sizeof(cache_handle_t));
+
+    list = cache->providers;
+
+    while (list) {
+
+        /* invalidate the request uri */
+        rv = list->provider->open_entity(h, r, cache->key);
+        if (OK == rv) {
+            rv = list->provider->invalidate_entity(h, r);
+            status = OK;
+        }
+        ap_log_rerror(
+                APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO() "cache: Attempted to invalidate cached entity with key: %s", cache->key);
+
+        /* invalidate the Location */
+        if (location_key) {
+            rv = list->provider->open_entity(h, r, location_key);
+            if (OK == rv) {
+                rv = list->provider->invalidate_entity(h, r);
+                status = OK;
+            }
+            ap_log_rerror(
+                    APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO() "cache: Attempted to invalidate cached entity with key: %s", location_key);
+        }
+
+        /* invalidate the Content-Location */
+        if (content_location_key) {
+            rv = list->provider->open_entity(h, r, content_location_key);
+            if (OK == rv) {
+                rv = list->provider->invalidate_entity(h, r);
+                status = OK;
+            }
+            ap_log_rerror(
+                    APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO() "cache: Attempted to invalidate cached entity with key: %s", content_location_key);
+        }
+
+        list = list->next;
+    }
+
+    return status;
 }

@@ -421,6 +421,7 @@
  * 20121222.7 (2.5.0-dev)  Add ap_remove_input|output_filter_byhandle()
  * 20121222.8 (2.5.0-dev)  Add dav_join_error()
  * 20121222.9 (2.5.0-dev)  Add conn_sense_e
+ * 20121222.10 (2.5.0-dev) Add cache_control_t.invalidated
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
