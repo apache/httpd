@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1361778 -->
+<!-- English Revision : 1477094 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -68,10 +68,12 @@ mobiliser des threads que pour les connexions en cours de traitement</descriptio
     <module>mod_status</module> montre les connexions qui se trouvent
     dans les situations mentionn&eacute;es.</p>
 
-    <p>Le gestionnaire de connexion am&eacute;lior&eacute; ne fonctionne pas encore
-    pour certains filtres de connexion, et en particulier SSL. Pour les
-    connexions SSL, ce MPM r&eacute;adopte le comportement du MPM
-    <module>worker</module> et r&eacute;serve un thread par connexion.</p>
+    <p>Le gestionnaire de connexion am&eacute;lior&eacute; peut ne pas
+    fonctionner pour les filtres de connexion qui se d&eacute;clarent eux-m&ecirc;mes
+    comme incompatibles avec le MPM event. Dans ce cas, le MPM event
+    adopte le comportement du MPM <module>worker</module> et
+    r&eacute;serve un thread par connexion. Tous les modules fournis
+    avec le serveur sont compatibles avec le MPM event.</p>
 
     <p>Le MPM pr&eacute;suppose que l'impl&eacute;mentation <code>apr_pollset</code>
     sous-jacente est raisonnablement s&ucirc;re du point de vue des threads.
@@ -165,8 +167,8 @@ mobiliser des threads que pour les connexions en cours de traitement</descriptio
 <usage>
     <p>Le MPM event g&egrave;re certaines connexions de mani&egrave;re asynchrone ;
     dans ce cas, les threads traitant la requ&ecirc;te sont allou&eacute;s selon les
-    besoins et pour de courtes p&eacute;riodes. Dans les autres cas (la plupart
-    du temps pour les connexions SSL), un thread est r&eacute;serv&eacute; par
+    besoins et pour de courtes p&eacute;riodes. Dans les autres cas, un
+    thread est r&eacute;serv&eacute; par
     connexion. Ceci peut conduire &agrave; des situations o&ugrave; tous les threads
     sont satur&eacute;s et o&ugrave; aucun thread n'est capable d'effectuer de
     nouvelles t&acirc;ches pour les connexions asynchrones &eacute;tablies.</p>
@@ -183,7 +185,7 @@ mobiliser des threads que pour les connexions en cours de traitement</descriptio
     <p>Cette directive permet de personnaliser finement la limite du
     nombre de connexions par thread. Un processus n'acceptera de
     nouvelles connexions que si le nombre actuel de connexions (sans
-    compter les connexions à l'&eacute;tat "closing") est
+    compter les connexions &agrave; l'&eacute;tat "closing") est
     inf&eacute;rieur &agrave; :</p>
 
     <p class="indent"><strong>
