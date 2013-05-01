@@ -710,7 +710,7 @@ int cache_invalidate(cache_request_rec *cache, request_rec *r)
             status = OK;
         }
         ap_log_rerror(
-                APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO() "cache: Attempted to invalidate cached entity with key: %s", cache->key);
+                APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO(02468) "cache: Attempted to invalidate cached entity with key: %s", cache->key);
 
         /* invalidate the Location */
         if (location_key) {
@@ -720,7 +720,7 @@ int cache_invalidate(cache_request_rec *cache, request_rec *r)
                 status = OK;
             }
             ap_log_rerror(
-                    APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO() "cache: Attempted to invalidate cached entity with key: %s", location_key);
+                    APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO(02469) "cache: Attempted to invalidate cached entity with key: %s", location_key);
         }
 
         /* invalidate the Content-Location */
@@ -731,7 +731,7 @@ int cache_invalidate(cache_request_rec *cache, request_rec *r)
                 status = OK;
             }
             ap_log_rerror(
-                    APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO() "cache: Attempted to invalidate cached entity with key: %s", content_location_key);
+                    APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO(02470) "cache: Attempted to invalidate cached entity with key: %s", content_location_key);
         }
 
         list = list->next;

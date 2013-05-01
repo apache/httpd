@@ -121,7 +121,7 @@ static int cache_quick_handler(request_rec *r, int lookup)
     case M_DELETE:
     {
 
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO()
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO(02461)
                 "PUT/POST/DELETE: Adding CACHE_INVALIDATE filter for %s",
                 r->uri);
 
@@ -141,7 +141,7 @@ static int cache_quick_handler(request_rec *r, int lookup)
     default : {
 
         ap_log_rerror(
-                APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO() "cache: Method '%s' not cacheable by mod_cache, ignoring: %s", r->method, r->uri);
+                APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO(02462) "cache: Method '%s' not cacheable by mod_cache, ignoring: %s", r->method, r->uri);
 
         return DECLINED;
     }
@@ -409,7 +409,7 @@ static int cache_handler(request_rec *r)
     case M_DELETE:
     {
 
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO()
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO(02463)
                 "PUT/POST/DELETE: Adding CACHE_INVALIDATE filter for %s",
                 r->uri);
 
@@ -429,7 +429,7 @@ static int cache_handler(request_rec *r)
     default : {
 
         ap_log_rerror(
-                APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO() "cache: Method '%s' not cacheable by mod_cache, ignoring: %s", r->method, r->uri);
+                APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO(02464) "cache: Method '%s' not cacheable by mod_cache, ignoring: %s", r->method, r->uri);
 
         return DECLINED;
     }
@@ -1574,20 +1574,20 @@ static apr_status_t cache_invalidate_filter(ap_filter_t *f,
          * 1. Remove ourselves
          * 2. Do nothing and bail out
          */
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02465)
                 "cache: CACHE_INVALIDATE enabled unexpectedly: %s", r->uri);
     }
     else {
 
         if (r->status > 299) {
 
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02466)
                     "cache: response status to '%s' method is %d (>299), not invalidating cached entity: %s", r->method, r->status, r->uri);
 
         }
         else {
 
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO(02467)
                     "cache: Invalidating all cached entities in response to '%s' request for %s",
                     r->method, r->uri);
 
