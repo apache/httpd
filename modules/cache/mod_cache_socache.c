@@ -1182,7 +1182,10 @@ fail:
 
 static apr_status_t invalidate_entity(cache_handle_t *h, request_rec *r)
 {
-    return APR_ENOTIMPL;
+    /* mark the entity as invalidated */
+    h->cache_obj->info.control.invalidated = 1;
+
+    return commit_entity(h, r);
 }
 
 static void *create_dir_config(apr_pool_t *p, char *dummy)
