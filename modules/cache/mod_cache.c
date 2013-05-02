@@ -918,12 +918,12 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     if (etag == NULL) {
         etag = apr_table_get(r->headers_out, "Etag");
     }
-    cc_out = apr_table_get(r->err_headers_out, "Cache-Control");
-    pragma = apr_table_get(r->err_headers_out, "Pragma");
+    cc_out = cache_table_getm(r->pool, r->err_headers_out, "Cache-Control");
+    pragma = cache_table_getm(r->pool, r->err_headers_out, "Pragma");
     headers = r->err_headers_out;
     if (!cc_out && !pragma) {
-        cc_out = apr_table_get(r->headers_out, "Cache-Control");
-        pragma = apr_table_get(r->headers_out, "Pragma");
+        cc_out = cache_table_getm(r->pool, r->headers_out, "Cache-Control");
+        pragma = cache_table_getm(r->pool, r->headers_out, "Pragma");
         headers = r->headers_out;
     }
 
@@ -932,8 +932,10 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
      */
     if (r->status == HTTP_NOT_MODIFIED && cache->stale_handle && !cc_out
             && !pragma) {
-        cc_out = apr_table_get(cache->stale_handle->resp_hdrs, "Cache-Control");
-        pragma = apr_table_get(cache->stale_handle->resp_hdrs, "Pragma");
+        cc_out = cache_table_getm(r->pool, cache->stale_handle->resp_hdrs,
+                "Cache-Control");
+        pragma = cache_table_getm(r->pool, cache->stale_handle->resp_hdrs,
+                "Pragma");
     }
 
     /* Parse the cache control header */
