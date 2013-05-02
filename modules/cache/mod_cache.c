@@ -1110,7 +1110,9 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
             r->headers_out = ap_cache_cacheable_headers_out(r);
 
             /* Merge in our cached headers.  However, keep any updated values. */
-            cache_accept_headers(cache->handle, r, 1);
+            /* take output, overlay on top of cached */
+            cache_accept_headers(cache->handle, r, r->headers_out,
+                    cache->handle->resp_hdrs);
 
             cache->provider->recall_body(cache->handle, r->pool, bb);
 
@@ -1382,7 +1384,9 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         r->headers_out = ap_cache_cacheable_headers_out(r);
 
         /* Merge in our cached headers.  However, keep any updated values. */
-        cache_accept_headers(cache->handle, r, 1);
+        /* take output, overlay on top of cached */
+        cache_accept_headers(cache->handle, r, r->headers_out,
+                cache->handle->resp_hdrs);
     }
 
     /* Write away header information to cache. It is possible that we are

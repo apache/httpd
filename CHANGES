@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_cache: When serving from cache, only the last header of a multivalued
+     header was taken into account. Fixed. [Graham Leggett]
+
   *) mod_cache: Ignore response headers specified by no-cache=header and
      private=header as specified by RFC2616 14.9.1 What is Cacheable. Ensure
      that these headers are still processed when multiple Cache-Control

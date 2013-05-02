@@ -113,26 +113,43 @@ int cache_create_entity(cache_request_rec *cache, request_rec *r,
     return DECLINED;
 }
 
-static int set_cookie_doo_doo(void *v, const char *key, const char *val)
+static int remove_header_do(void *v, const char *key, const char *val)
+{
+    apr_table_unset(v, key);
+    return 1;
+}
+static int add_header_do(void *v, const char *key, const char *val)
 {
     apr_table_addn(v, key, val);
     return 1;
 }
 
 /**
- * Take headers from the cache, and overlap them over the existing response
- * headers.
+ * Take two sets of headers, sandwich them together, and apply the result to
+ * r->headers_out.
+ *
+ * To complicate this, a header may be duplicated in either table. Should a
+ * header exist in the top table, all matching headers will be removed from
+ * the bottom table before the headers are combined.
+ *
+ * The Content-Type and Last-Modified headers are then re-parsed and inserted
+ * into the request.
  */
-void cache_accept_headers(cache_handle_t *h, request_rec *r,
-        int preserve_orig)
+void cache_accept_headers(cache_handle_t *h, request_rec *r, apr_table_t *top,
+        apr_table_t *bottom)
 {
-    apr_table_t *cookie_table, *hdr_copy;
     const char *v;
 
-    v = apr_table_get(h->resp_hdrs, "Content-Type");
+    if (r->headers_out != bottom) {
+        r->headers_out = apr_table_copy(r->pool, bottom);
+    }
+
+    apr_table_do(remove_header_do, r->headers_out, top, NULL);
+    apr_table_do(add_header_do, r->headers_out, top, NULL);
+
+    v = apr_table_get(r->headers_out, "Content-Type");
     if (v) {
         ap_set_content_type(r, v);
-        apr_table_unset(h->resp_hdrs, "Content-Type");
         /*
          * Also unset possible Content-Type headers in r->headers_out and
          * r->err_headers_out as they may be different to what we have received
@@ -149,39 +166,12 @@ void cache_accept_headers(cache_handle_t *h, request_rec *r,
     /* If the cache gave us a Last-Modified header, we can't just
      * pass it on blindly because of restrictions on future values.
      */
-    v = apr_table_get(h->resp_hdrs, "Last-Modified");
+    v = apr_table_get(r->headers_out, "Last-Modified");
     if (v) {
         ap_update_mtime(r, apr_date_parse_http(v));
         ap_set_last_modified(r);
-        apr_table_unset(h->resp_hdrs, "Last-Modified");
     }
 
-    /* The HTTP specification says that it is legal to merge duplicate
-     * headers into one.  Some browsers that support Cookies don't like
-     * merged headers and prefer that each Set-Cookie header is sent
-     * separately.  Lets humour those browsers by not merging.
-     * Oh what a pain it is.
-     */
-    cookie_table = apr_table_make(r->pool, 2);
-    apr_table_do(set_cookie_doo_doo, cookie_table, r->err_headers_out,
-                 "Set-Cookie", NULL);
-    apr_table_do(set_cookie_doo_doo, cookie_table, h->resp_hdrs,
-                 "Set-Cookie", NULL);
-    apr_table_unset(r->err_headers_out, "Set-Cookie");
-    apr_table_unset(h->resp_hdrs, "Set-Cookie");
-
-    if (preserve_orig) {
-        hdr_copy = apr_table_copy(r->pool, h->resp_hdrs);
-        apr_table_overlap(hdr_copy, r->headers_out, APR_OVERLAP_TABLES_SET);
-        r->headers_out = hdr_copy;
-    }
-    else {
-        apr_table_overlap(r->headers_out, h->resp_hdrs, APR_OVERLAP_TABLES_SET);
-    }
-    if (!apr_is_empty_table(cookie_table)) {
-        r->err_headers_out = apr_table_overlay(r->pool, r->err_headers_out,
-                                               cookie_table);
-    }
 }
 
 /*
@@ -362,7 +352,7 @@ int cache_select(cache_request_rec *cache, request_rec *r)
             }
 
             /* Okay, this response looks okay.  Merge in our stuff and go. */
-            cache_accept_headers(h, r, 0);
+            cache_accept_headers(h, r, h->resp_hdrs, r->headers_out);
 
             cache->handle = h;
             return OK;
