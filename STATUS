@@ -270,6 +270,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-nocacheheader2.4.patch
       +1: minfrin
 
+    * mod_cache: When serving from cache, only the last header of a multivalued
+      header was taken into account. Fixed.
+      trunk patch: http://svn.apache.org/r1478441
+      2.4.x patch: trunk patch works (minus CHANGES)
+      +1: minfrin
+
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
