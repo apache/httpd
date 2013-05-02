@@ -61,11 +61,11 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
  * Merge in cached headers into the response
  * @param h cache_handle_t
  * @param r request_rec
- * @param preserve_orig If 1, the values in r->headers_out are preserved.
- *        Otherwise, they are overwritten by the cached value.
+ * @param top headers to be applied
+ * @param bottom headers to be overwritten
  */
-void cache_accept_headers(cache_handle_t *h, request_rec *r,
-        int preserve_orig);
+void cache_accept_headers(cache_handle_t *h, request_rec *r, apr_table_t *top,
+        apr_table_t *bottom);
 
 #ifdef __cplusplus
 }
