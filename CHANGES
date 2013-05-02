@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_cache: Ignore response headers specified by no-cache=header and
+     private=header as specified by RFC2616 14.9.1 What is Cacheable. Ensure
+     that these headers are still processed when multiple Cache-Control
+     headers are present in the response. PR 54706 [Graham Leggett,
+     Yann Ylavic <ylavic.dev gmail.com>]
+
   *) mod_cache: Invalidate cached entities in response to RFC2616 Section
      13.10 Invalidation After Updates or Deletions. PR 15868 [Graham
      Leggett]
