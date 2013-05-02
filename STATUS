@@ -262,6 +262,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-invalidate.patch
       +1: minfrin
 
+    * mod_cache: Ignore response headers specified by no-cache=header and
+      private=header as specified by RFC2616 14.9.1 What is Cacheable. Ensure
+      that these headers are still processed when multiple Cache-Control
+      headers are present in the response. PR 54706
+      trunk patch: http://svn.apache.org/r1478382
+      2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-nocacheheader2.4.patch
+      +1: minfrin
+
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
