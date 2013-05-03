@@ -376,7 +376,7 @@ int cache_select(cache_request_rec *cache, request_rec *r)
     return DECLINED;
 }
 
-apr_status_t cache_canonicalise_key(request_rec *r, apr_pool_t* p,
+static apr_status_t cache_canonicalise_key(request_rec *r, apr_pool_t* p,
         const char *uri, apr_uri_t *parsed_uri, const char **key)
 {
     cache_server_conf *conf;
