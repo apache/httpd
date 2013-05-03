@@ -276,6 +276,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk patch works (minus CHANGES)
       +1: minfrin
 
+    * mod_cache: Make sure Vary processing handles multivalued Vary headers and
+      multivalued headers referred to via Vary.
+      trunk patch: http://svn.apache.org/r1478748
+      2.4.x patch: trunk patch works (minus CHANGES, on condition above backports are
+      done first)
+      +1: minfrin
+
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
