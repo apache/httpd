@@ -99,6 +99,7 @@ extern "C" {
 #define CACHE_LOCKNAME_KEY "mod_cache-lockname"
 #define CACHE_LOCKFILE_KEY "mod_cache-lockfile"
 #define CACHE_CTX_KEY "mod_cache-ctx"
+#define CACHE_SEPARATOR ",   "
 
 /**
  * cache_util.c
@@ -304,6 +305,12 @@ cache_provider_list *cache_get_providers(request_rec *r,
  */
 const char *cache_table_getm(apr_pool_t *p, const apr_table_t *t,
         const char *key);
+
+/**
+ * String tokenizer that ignores separator characters within quoted strings
+ * and escaped characters, as per RFC2616 section 2.2.
+ */
+char *cache_strqtok(char *str, const char *sep, char **last);
 
 #ifdef __cplusplus
 }

@@ -27,8 +27,6 @@ extern APR_OPTIONAL_FN_TYPE(ap_cache_generate_key) *cache_generate_key;
 
 extern module AP_MODULE_DECLARE_DATA cache_module;
 
-#define CACHE_SEPARATOR ",   "
-
 /* Determine if "url" matches the hostname, scheme and port and path
  * in "filter". All but the path comparisons are case-insensitive.
  */
@@ -862,13 +860,17 @@ CACHE_DECLARE(char *)ap_cache_generate_name(apr_pool_t *p, int dirlevels,
  * String tokenizer that ignores separator characters within quoted strings
  * and escaped characters, as per RFC2616 section 2.2.
  */
-static char *cache_strqtok(char *str, const char *sep, char **last)
+char *cache_strqtok(char *str, const char *sep, char **last)
 {
     char *token;
     int quoted = 0;
 
     if (!str) {         /* subsequent call */
         str = *last;    /* start where we left off */
+    }
+
+    if (!str) {         /* no more tokens */
+        return NULL;
     }
 
     /* skip characters in sep (will terminate at '\0') */
