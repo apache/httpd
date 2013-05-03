@@ -220,6 +220,7 @@ int cache_select(cache_request_rec *cache, request_rec *r)
         case OK: {
             char *vary = NULL;
             int fresh, mismatch = 0;
+            char *last = NULL;
 
             if (list->provider->recall_headers(h, r) != APR_SUCCESS) {
                 /* try again with next cache type */
@@ -245,25 +246,19 @@ int cache_select(cache_request_rec *cache, request_rec *r)
              *
              * RFC2616 13.6 and 14.44 describe the Vary mechanism.
              */
-            vary = apr_pstrdup(r->pool, apr_table_get(h->resp_hdrs, "Vary"));
-            while (vary && *vary) {
-                char *name = vary;
+            vary = cache_strqtok(
+                    apr_pstrdup(r->pool,
+                            cache_table_getm(r->pool, h->resp_hdrs, "Vary")),
+                    CACHE_SEPARATOR, &last);
+            while (vary) {
                 const char *h1, *h2;
-
-                /* isolate header name */
-                while (*vary && !apr_isspace(*vary) && (*vary != ','))
-                    ++vary;
-                while (apr_isspace(*vary) || (*vary == ',')) {
-                    *vary = '\0';
-                    ++vary;
-                }
 
                 /*
                  * is this header in the request and the header in the cached
                  * request identical? If not, we give up and do a straight get
                  */
-                h1 = apr_table_get(r->headers_in, name);
-                h2 = apr_table_get(h->req_hdrs, name);
+                h1 = cache_table_getm(r->pool, r->headers_in, vary);
+                h2 = cache_table_getm(r->pool, h->req_hdrs, vary);
                 if (h1 == h2) {
                     /* both headers NULL, so a match - do nothing */
                 }
@@ -277,6 +272,7 @@ int cache_select(cache_request_rec *cache, request_rec *r)
                     mismatch = 1;
                     break;
                 }
+                vary = cache_strqtok(NULL, CACHE_SEPARATOR, &last);
             }
 
             /* no vary match, try next provider */
