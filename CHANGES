@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_cache: Make sure that contradictory entity headers present in a 304
+     Not Modified response are caught and cause the entity to be removed.
+     [Graham Leggett]
+
   *) mod_cache: Make sure Vary processing handles multivalued Vary headers and
      multivalued headers referred to via Vary. [Graham Leggett]
 
