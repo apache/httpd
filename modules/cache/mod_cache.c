@@ -1828,7 +1828,8 @@ static void cache_insert_error_filter(request_rec *r)
 
         if (cache->stale_handle && cache->save_filter
                 && !cache->stale_handle->cache_obj->info.control.must_revalidate
-                && !cache->stale_handle->cache_obj->info.control.proxy_revalidate) {
+                && !cache->stale_handle->cache_obj->info.control.proxy_revalidate
+                && !cache->stale_handle->cache_obj->info.control.s_maxage) {
             const char *warn_head;
             cache_server_conf
                     *conf =
