@@ -91,6 +91,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
+    * core: Improve error message where client's request-line exceeds LimitRequestLine
+      PR 54384
+      trunk patch: http://svn.apache.org/r1433613
+      2.4.x patch: trunk patch applies
+      +1: minfrin, jim, jailletc36
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -237,12 +243,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: http://people.apache.org/~minfrin/httpd-event-ssl.patch
       +1: minfrin, jim
 
-    * core: Improve error message where client's request-line exceeds LimitRequestLine
-      PR 54384
-      trunk patch: http://svn.apache.org/r1433613
-      2.4.x patch: trunk patch applies
-      +1: minfrin, jim
-
     * mod_dav: Improve error handling in dav_method_put(), add new
       dav_join_error() function.  PR 54145.
       trunk patch: http://svn.apache.org/r1464241
@@ -252,7 +252,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * event MPM: Provide error handling for ThreadStackSize. PR 54311
       trunk patch: http://svn.apache.org/r1433682
       2.4.x patch: http://people.apache.org/~minfrin/httpd-event-ThreadStackSize-error.patch
-      +1: minfrin
+      +1: minfrin, jailletc36
+      note jailletc36: see Graham's comment in:
+      http://mail-archives.apache.org/mod_mbox/httpd-dev/201301.mbox/%3C8FBE7DC2-E5E0-4CA7-AF28-D69E9137DCE1@sharp.fm%3E
 
     * mod_cache: Invalidate cached entities in response to RFC2616 Section
       13.10 Invalidation After Updates or Deletions. PR 15868
