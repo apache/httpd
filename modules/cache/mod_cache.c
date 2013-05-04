@@ -743,6 +743,22 @@ static int cache_save_store(ap_filter_t *f, apr_bucket_brigade *in,
     return rv;
 }
 
+/**
+ * Sanity check for 304 Not Modified responses, as per RFC2616 Section 10.3.5.
+ */
+static const char *cache_header_cmp(apr_pool_t *pool, apr_table_t *left,
+        apr_table_t *right, const char *key)
+{
+    const char *h1, *h2;
+
+    if ((h1 = cache_table_getm(pool, left, key))
+            && (h2 = cache_table_getm(pool, right, key)) && (strcmp(h1, h2))) {
+        return apr_pstrcat(pool, "contradiction: 304 Not Modified, but ", key,
+                " modified", NULL);
+    }
+    return NULL;
+}
+
 /*
  * CACHE_SAVE filter
  * ---------------
@@ -776,7 +792,7 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     apr_time_t exp, date, lastmod, now;
     apr_off_t size = -1;
     cache_info *info = NULL;
-    char *reason;
+    const char *reason;
     apr_pool_t *p;
     apr_bucket *e;
     apr_table_t *headers;
@@ -1063,6 +1079,56 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         /* or we've been asked not to cache it above */
         reason = "r->no_cache present";
     }
+    else if (r->status == HTTP_NOT_MODIFIED && cache->stale_handle) {
+        apr_table_t *left = cache->stale_handle->resp_hdrs;
+        apr_table_t *right = r->headers_out;
+
+        /* and lastly, contradiction checks for revalidated responses
+         * as per RFC2616 Section 10.3.5
+         */
+        if (((reason = cache_header_cmp(r->pool, left, right, "Allow")))
+                || ((reason = cache_header_cmp(r->pool, left, right,
+                        "Content-Encoding")))
+                || ((reason = cache_header_cmp(r->pool, left, right,
+                        "Content-Language")))
+                || ((reason = cache_header_cmp(r->pool, left, right,
+                        "Content-Length")))
+                || ((reason = cache_header_cmp(r->pool, left, right,
+                        "Content-Location")))
+                || ((reason = cache_header_cmp(r->pool, left, right,
+                        "Content-MD5")))
+                || ((reason = cache_header_cmp(r->pool, left, right,
+                        "Content-Range")))
+                || ((reason = cache_header_cmp(r->pool, left, right,
+                        "Content-Type")))
+                || ((reason = cache_header_cmp(r->pool, left, right, "Expires")))
+                || ((reason = cache_header_cmp(r->pool, left, right, "ETag")))
+                || ((reason = cache_header_cmp(r->pool, left, right,
+                        "Last-Modified")))) {
+            /* contradiction: 304 Not Modified, but entity header modified */
+        }
+    }
+
+    /**
+     * Enforce RFC2616 Section 10.3.5, just in case. We caught any
+     * inconsistencies above.
+     *
+     * If the conditional GET used a strong cache validator (see section
+     * 13.3.3), the response SHOULD NOT include other entity-headers.
+     * Otherwise (i.e., the conditional GET used a weak validator), the
+     * response MUST NOT include other entity-headers; this prevents
+     * inconsistencies between cached entity-bodies and updated headers.
+     */
+    if (r->status == HTTP_NOT_MODIFIED) {
+        apr_table_unset(r->headers_out, "Allow");
+        apr_table_unset(r->headers_out, "Content-Encoding");
+        apr_table_unset(r->headers_out, "Content-Language");
+        apr_table_unset(r->headers_out, "Content-Length");
+        apr_table_unset(r->headers_out, "Content-MD5");
+        apr_table_unset(r->headers_out, "Content-Range");
+        apr_table_unset(r->headers_out, "Content-Type");
+        apr_table_unset(r->headers_out, "Last-Modified");
+    }
 
     /* Hold the phone. Some servers might allow us to cache a 2xx, but
      * then make their 304 responses non cacheable. This leaves us in a
@@ -1090,6 +1156,13 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
 
         r->headers_in = cache->stale_headers;
+        r->headers_out = ap_cache_cacheable_headers_out(r);
+
+        /* Merge in our cached headers.  However, keep any updated values. */
+        /* take output, overlay on top of cached */
+        cache_accept_headers(cache->handle, r, r->headers_out,
+                cache->handle->resp_hdrs);
+
         status = ap_meets_conditions(r);
         if (status != OK) {
             r->status = status;
@@ -1098,22 +1171,6 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
             APR_BRIGADE_INSERT_TAIL(bb, bkt);
         }
         else {
-            /* RFC 2616 10.3.5 states that entity headers are not supposed
-             * to be in the 304 response.  Therefore, we need to combine the
-             * response headers with the cached headers *before* we update
-             * the cached headers.
-             *
-             * However, before doing that, we need to first merge in
-             * err_headers_out and we also need to strip any hop-by-hop
-             * headers that might have snuck in.
-             */
-            r->headers_out = ap_cache_cacheable_headers_out(r);
-
-            /* Merge in our cached headers.  However, keep any updated values. */
-            /* take output, overlay on top of cached */
-            cache_accept_headers(cache->handle, r, r->headers_out,
-                    cache->handle->resp_hdrs);
-
             cache->provider->recall_body(cache->handle, r->pool, bb);
 
             bkt = apr_bucket_eos_create(bb->bucket_alloc);
