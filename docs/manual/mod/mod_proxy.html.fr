@@ -28,8 +28,6 @@
 <a href="../fr/mod/mod_proxy.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle HTTP/1.1</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_module</td></tr>
@@ -881,7 +879,12 @@ données</td></tr>
     <p>La directive <code class="directive">ProxyIOBufferSize</code> permet
     d'ajuster la taille du tampon interne utilisé comme bloc-note pour
     les transferts de données entre entrée et sortie. La taille doit
-    être inférieure ou égale à <code>8192</code> octets.</p>
+    être au minimum égale à <code>8192</code> octets.</p>
+
+    <p>Lorsqu'on utilise <code class="module"><a href="../mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code>, la valeur
+    minimale est alignée sur la limite de 1024 octets, et les valeurs
+    supérieures à 65536 octets sont ramenées à 65536 octets, comme préconisé
+    par le protocole AJP.</p>
 
     <p>Dans la plupart des cas, il n'y a aucune raison de modifier cette
     valeur.</p>
