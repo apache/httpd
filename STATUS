@@ -298,6 +298,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk patch works (minus CHANGES)
       +1: minfrin
 
+    * mod_cache: Honour Cache-Control: no-store in a request.
+      trunk patch: http://svn.apache.org/r1479222
+      2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-nostore2.4.patch
+      +1: minfrin
+
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
