@@ -43,7 +43,7 @@
     <p>Le seul élément de configuration consiste à définir le
     fournisseur de cache à utiliser. Ceci est de la responsabilité des
     modules qui utilisent le cache, et pour cela, ils activent la
-    sélection via des directives telles que <code class="directive"><a href="./mod/mod_authn_socache.html#authncachesocache">AuthnCacheSOCache</a></code>, <code class="directive"><a href="./mod/mod_ssl.html#sslsessioncache">SSLSessionCache</a></code>, et <code class="directive"><a href="./mod/mod_ssl.html#sslstaplingcache">SSLStaplingCache</a></code>.</p>
+    sélection via des directives telles que <code class="directive"><a href="./mod/mod_cache_socache.html#cachesocache">CacheSocache</a></code>, <code class="directive"><a href="./mod/mod_authn_socache.html#authncachesocache">AuthnCacheSOCache</a></code>, <code class="directive"><a href="./mod/mod_ssl.html#sslsessioncache">SSLSessionCache</a></code>, et <code class="directive"><a href="./mod/mod_ssl.html#sslstaplingcache">SSLStaplingCache</a></code>.</p>
     <p>Les fournisseurs actuellement disponibles sont :</p>
     <dl>
     <dt>"dbm" (<code class="module"><a href="./mod/mod_socache_dbm.html">mod_socache_dbm</a></code>)</dt>
