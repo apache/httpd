@@ -199,15 +199,18 @@ int cache_select(cache_request_rec *cache, request_rec *r)
         return DECLINED;
     }
 
+    /* if no-cache, we can't serve from the cache, but we may store to the
+     * cache.
+     */
+    if (!ap_cache_check_no_cache(cache, r)) {
+        return DECLINED;
+    }
+
     if (!cache->key) {
         rv = cache_generate_key(r, r->pool, &cache->key);
         if (rv != APR_SUCCESS) {
             return DECLINED;
         }
-    }
-
-    if (!ap_cache_check_allowed(cache, r)) {
-        return DECLINED;
     }
 
     /* go through the cache types till we get a match */

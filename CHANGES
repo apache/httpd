@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_cache: Honour Cache-Control: no-store in a request. [Graham Leggett]
+
   *) mod_cache: RFC2616 14.9.3 The s-maxage directive also implies the
      semantics of the proxy-revalidate directive. [Graham Leggett]
 
