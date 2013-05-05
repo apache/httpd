@@ -277,7 +277,7 @@ for additional examples.
 
 <seealso><a href="../expr.html">Expressions in Apache HTTP Server</a>,
 for a complete reference and more examples.</seealso>
-<seealso><directive type="section">If</directive> can be used to achive similar
+<seealso><directive type="section">If</directive> can be used to achieve similar
 results.</seealso>
 <seealso><module>mod_filter</module></seealso>
 </directivesynopsis>
