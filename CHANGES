@@ -3,7 +3,7 @@
 Changes with Apache 2.4.5
 
   *) mod_cache_socache: New cache implementation backed by mod_socache
-     that replaces mod_mem_cache removed from httpd v2.2. [Graham
+     that replaces mod_mem_cache known from httpd 2.2. [Graham
      Leggett]
 
   *) htpasswd: Add -v option to verify a password. [Stefan Fritsch]
@@ -34,7 +34,8 @@ Changes with Apache 2.4.5
      with very long lines. PR 54893. [Rainer Jung]
 
   *) ap_expr: Add the ability to base64 encode and base64 decode
-     strings and to generate their SHA1 hash.  [Graham Leggett]
+     strings and to generate their SHA1 and MD5 hash.
+     [Graham Leggett, Stefan Fritsch]
 
   *) mod_log_config: Fix crash when logging request end time for a failed
      request.  PR 54828 [Rainer Jung]
