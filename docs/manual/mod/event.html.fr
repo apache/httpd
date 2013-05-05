@@ -101,10 +101,12 @@ mobiliser des threads que pour les connexions en cours de traitement</td></tr>
     <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> montre les connexions qui se trouvent
     dans les situations mentionnées.</p>
 
-    <p>Le gestionnaire de connexion amélioré ne fonctionne pas encore
-    pour certains filtres de connexion, et en particulier SSL. Pour les
-    connexions SSL, ce MPM réadopte le comportement du MPM
-    <code class="module"><a href="../mod/worker.html">worker</a></code> et réserve un thread par connexion.</p>
+    <p>Le gestionnaire de connexion amélioré peut ne pas
+    fonctionner pour les filtres de connexion qui se déclarent eux-mêmes
+    comme incompatibles avec le MPM event. Dans ce cas, le MPM event
+    adopte le comportement du MPM <code class="module"><a href="../mod/worker.html">worker</a></code> et
+    réserve un thread par connexion. Tous les modules fournis
+    avec le serveur sont compatibles avec le MPM event.</p>
 
     <p>Le MPM présuppose que l'implémentation <code>apr_pollset</code>
     sous-jacente est raisonnablement sûre du point de vue des threads.
@@ -161,8 +163,8 @@ mobiliser des threads que pour les connexions en cours de traitement</td></tr>
 </table>
     <p>Le MPM event gère certaines connexions de manière asynchrone ;
     dans ce cas, les threads traitant la requête sont alloués selon les
-    besoins et pour de courtes périodes. Dans les autres cas (la plupart
-    du temps pour les connexions SSL), un thread est réservé par
+    besoins et pour de courtes périodes. Dans les autres cas, un
+    thread est réservé par
     connexion. Ceci peut conduire à des situations où tous les threads
     sont saturés et où aucun thread n'est capable d'effectuer de
     nouvelles tâches pour les connexions asynchrones établies.</p>
