@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_cache: Ensure that updated responses to HEAD requests don't get
+     mistakenly paired with a previously cached body. Ensure that any existing
+     body is removed when a HEAD request is cached. [Graham Leggett,
+     Co-Advisor <coad measurement-factory.com>]
+
   *) mod_cache: Honour Cache-Control: no-store in a request. [Graham Leggett]
 
   *) mod_cache: RFC2616 14.9.3 The s-maxage directive also implies the
