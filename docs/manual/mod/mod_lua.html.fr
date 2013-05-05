@@ -463,17 +463,24 @@ end
 
 
         <pre class="prettyprint lang-lua">
-        r:parseargs() -- renvoie une table lua contenant la chaîne
-	d'arguments de la requête
-        </pre>
+        r:parseargs() -- renvoie deux tables : une table standard de couples
+	clé/valeur pour les données GET simples, et une autre pour les données
+	multivaluées (par exemple foo=1&amp;foo=2&amp;foo=3) :
+
+	local GET, GETMULTI = r:parseargs()
+	r:puts("Votre nom est : " .. GET['name'] or "Unknown")
+	</pre>
 
 
-        <pre class="prettyprint lang-lua">
-        r:parsebody()([sizeLimit]) -- interprète le corps de la requête
-	en tant que POST et renvoie une table lua. Un nombre optionnel
+	<pre class="prettyprint lang-lua">
+	r:parsebody([sizeLimit]) -- interprète le corps de la requête
+	en tant que POST et renvoie deux tables lua, comme r:parseargs(). Un nombre optionnel
 	peut être fourni pour spécifier le nombre maximal d'octets à
-	interpréter. La valeur par défaut est 8192.
-        </pre>
+	interpréter. La valeur par défaut est 8192 :
+
+        local POST, POSTMULTI = r:parsebody(1024*1024)
+	r:puts("Votre nom est : " .. POST['name'] or "Unknown")
+	</pre>
 
 
         <pre class="prettyprint lang-lua">
