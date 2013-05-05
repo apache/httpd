@@ -410,9 +410,9 @@ apr_status_t cache_remove_lock(cache_server_conf *conf,
     return apr_file_remove(lockname, r->pool);
 }
 
-CACHE_DECLARE(int) ap_cache_check_allowed(cache_request_rec *cache, request_rec *r) {
-    const char *cc_req;
-    const char *pragma;
+int ap_cache_check_no_cache(cache_request_rec *cache, request_rec *r)
+{
+
     cache_server_conf *conf =
       (cache_server_conf *)ap_get_module_config(r->server->module_config,
                                                 &cache_module);
@@ -427,16 +427,15 @@ CACHE_DECLARE(int) ap_cache_check_allowed(cache_request_rec *cache, request_rec 
      * - RFC2616 14.9.4 End to end reload, Cache-Control: no-cache, or Pragma:
      * no-cache. The server MUST NOT use a cached copy when responding to such
      * a request.
-     *
-     * - RFC2616 14.9.2 What May be Stored by Caches. If Cache-Control:
-     * no-store arrives, do not serve from the cache.
      */
 
     /* This value comes from the client's initial request. */
-    cc_req = apr_table_get(r->headers_in, "Cache-Control");
-    pragma = apr_table_get(r->headers_in, "Pragma");
-
-    ap_cache_control(r, &cache->control_in, cc_req, pragma, r->headers_in);
+    if (!cache->control_in.parsed) {
+        const char *cc_req = cache_table_getm(r->pool, r->headers_in,
+                "Cache-Control");
+        const char *pragma = cache_table_getm(r->pool, r->headers_in, "Pragma");
+        ap_cache_control(r, &cache->control_in, cc_req, pragma, r->headers_in);
+    }
 
     if (cache->control_in.no_cache) {
 
@@ -449,6 +448,32 @@ CACHE_DECLARE(int) ap_cache_check_allowed(cache_request_rec *cache, request_rec 
                     "%s, but we have been configured to ignore it and serve "
                     "cached content anyway", r->unparsed_uri);
         }
+    }
+
+    return 1;
+}
+
+int ap_cache_check_no_store(cache_request_rec *cache, request_rec *r)
+{
+
+    cache_server_conf *conf =
+      (cache_server_conf *)ap_get_module_config(r->server->module_config,
+                                                &cache_module);
+
+    /*
+     * At this point, we may have data cached, but the request may have
+     * specified that cached data may not be used in a response.
+     *
+     * - RFC2616 14.9.2 What May be Stored by Caches. If Cache-Control:
+     * no-store arrives, do not serve from or store to the cache.
+     */
+
+    /* This value comes from the client's initial request. */
+    if (!cache->control_in.parsed) {
+        const char *cc_req = cache_table_getm(r->pool, r->headers_in,
+                "Cache-Control");
+        const char *pragma = cache_table_getm(r->pool, r->headers_in, "Pragma");
+        ap_cache_control(r, &cache->control_in, cc_req, pragma, r->headers_in);
     }
 
     if (cache->control_in.no_store) {
@@ -467,7 +492,6 @@ CACHE_DECLARE(int) ap_cache_check_allowed(cache_request_rec *cache, request_rec 
 
     return 1;
 }
-
 
 int cache_check_freshness(cache_handle_t *h, cache_request_rec *cache,
         request_rec *r)
