@@ -51,7 +51,7 @@ SSI pages</description>
 <usage>
     <p>Specifies one or more native system environment variables to make available
     as internal environment variables, which are available to Apache HTTP Server modules
-    as well as propogated to CGI scripts and SSI pages. Values come from the
+    as well as propagated to CGI scripts and SSI pages. Values come from the
     native OS environment of the shell which invoked the
     <program>httpd</program> process.</p>
 
