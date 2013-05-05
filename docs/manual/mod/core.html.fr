@@ -30,8 +30,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fonctionnalités de base du serveur HTTP Apache disponibles
 en toutes circonstances</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Core</td></tr></table>
@@ -645,8 +643,8 @@ l'authentification HTTP</td></tr>
 
 <h3>Voir aussi</h3>
 <ul>
-<li><a href="../howto/auth.html">Authentification, Autorisation, et
-    contrôle d'accès</a></li>
+<li><a href="../howto/auth.html">Authentification et autorisation</a></li>
+<li><a href="../howto/access.html">Tutoriel du contrôle d'accès</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2953,8 +2951,8 @@ uniquement depuis la version 2.3.3 sous Windows.</td></tr>
 
 <h3>Voir aussi</h3>
 <ul>
-<li><a href="../howto/auth.html">Authentification, autorisation,
-    et contrôle d'accès</a></li>
+<li><a href="../howto/auth.html">Authentification et autorisation</a></li>
+<li><a href="../howto/access.html">Tutoriel du contrôle d'accès</a></li>
 <li><code class="directive"><a href="#satisfy">Satisfy</a></code></li>
 <li><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></li>
 </ul>
