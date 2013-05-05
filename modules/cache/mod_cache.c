@@ -1435,9 +1435,6 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
     /* We found a stale entry which wasn't really stale. */
     if (cache->stale_handle) {
-        /* Load in the saved status and clear the status line. */
-        r->status = info->status;
-        r->status_line = NULL;
 
         /* RFC 2616 10.3.5 states that entity headers are not supposed
          * to be in the 304 response.  Therefore, we need to combine the
@@ -1475,6 +1472,10 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         apr_bucket_brigade *bb;
         apr_bucket *bkt;
         int status;
+
+        /* Load in the saved status and clear the status line. */
+        r->status = info->status;
+        r->status_line = NULL;
 
         /* We're just saving response headers, so we are done. Commit
          * the response at this point, unless there was a previous error.

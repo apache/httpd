@@ -879,7 +879,13 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r,
     socache_info->request_time = obj->info.request_time;
     socache_info->response_time = obj->info.response_time;
     socache_info->status = obj->info.status;
-    socache_info->header_only = r->header_only;
+
+    if (r->header_only && r->status != HTTP_NOT_MODIFIED) {
+        socache_info->header_only = 1;
+    }
+    else {
+        socache_info->header_only = sobj->socache_info.header_only;
+    }
 
     socache_info->name_len = strlen(sobj->name);
 

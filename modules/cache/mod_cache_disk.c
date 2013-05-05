@@ -942,6 +942,10 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
         dobj->headers_in = ap_cache_cacheable_headers_in(r);
     }
 
+    if (r->header_only && r->status != HTTP_NOT_MODIFIED) {
+        dobj->disk_info.header_only = 1;
+    }
+
     return APR_SUCCESS;
 }
 
@@ -1190,49 +1194,51 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
             continue;
         }
 
-        /* Attempt to create the data file at the last possible moment, if
-         * the body is empty, we don't write a file at all, and save an inode.
-         */
-        if (!dobj->data.tempfd) {
-            apr_finfo_t finfo;
-            rv = apr_file_mktemp(&dobj->data.tempfd, dobj->data.tempfile,
-                                 APR_CREATE | APR_WRITE | APR_BINARY |
-                                 APR_BUFFERED | APR_EXCL, dobj->data.pool);
-            if (rv != APR_SUCCESS) {
-                apr_pool_destroy(dobj->data.pool);
-                return rv;
-            }
-            dobj->file_size = 0;
-            rv = apr_file_info_get(&finfo, APR_FINFO_IDENT,
-                    dobj->data.tempfd);
-            if (rv != APR_SUCCESS) {
-                apr_pool_destroy(dobj->data.pool);
-                return rv;
-            }
-            dobj->disk_info.device = finfo.device;
-            dobj->disk_info.inode = finfo.inode;
-            dobj->disk_info.has_body = 1;
-        }
+        if (!dobj->disk_info.header_only) {
 
-        /* write to the cache, leave if we fail */
-        rv = apr_file_write_full(dobj->data.tempfd, str, length, &written);
-        if (rv != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00731)
-                    "Error when writing cache file for URL %s",
-                    h->cache_obj->key);
-            /* Remove the intermediate cache file and return non-APR_SUCCESS */
-            apr_pool_destroy(dobj->data.pool);
-            return rv;
-        }
-        dobj->file_size += written;
-        if (dobj->file_size > dconf->maxfs) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00732)
-                    "URL %s failed the size check "
-                    "(%" APR_OFF_T_FMT ">%" APR_OFF_T_FMT ")",
-                    h->cache_obj->key, dobj->file_size, dconf->maxfs);
-            /* Remove the intermediate cache file and return non-APR_SUCCESS */
-            apr_pool_destroy(dobj->data.pool);
-            return APR_EGENERAL;
+            /* Attempt to create the data file at the last possible moment, if
+             * the body is empty, we don't write a file at all, and save an inode.
+             */
+            if (!dobj->data.tempfd) {
+                apr_finfo_t finfo;
+                rv = apr_file_mktemp(&dobj->data.tempfd, dobj->data.tempfile,
+                        APR_CREATE | APR_WRITE | APR_BINARY | APR_BUFFERED
+                                | APR_EXCL, dobj->data.pool);
+                if (rv != APR_SUCCESS) {
+                    apr_pool_destroy(dobj->data.pool);
+                    return rv;
+                }
+                dobj->file_size = 0;
+                rv = apr_file_info_get(&finfo, APR_FINFO_IDENT,
+                        dobj->data.tempfd);
+                if (rv != APR_SUCCESS) {
+                    apr_pool_destroy(dobj->data.pool);
+                    return rv;
+                }
+                dobj->disk_info.device = finfo.device;
+                dobj->disk_info.inode = finfo.inode;
+                dobj->disk_info.has_body = 1;
+            }
+
+            /* write to the cache, leave if we fail */
+            rv = apr_file_write_full(dobj->data.tempfd, str, length, &written);
+            if (rv != APR_SUCCESS) {
+                ap_log_rerror(
+                        APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00731) "Error when writing cache file for URL %s", h->cache_obj->key);
+                /* Remove the intermediate cache file and return non-APR_SUCCESS */
+                apr_pool_destroy(dobj->data.pool);
+                return rv;
+            }
+            dobj->file_size += written;
+            if (dobj->file_size > dconf->maxfs) {
+                ap_log_rerror(
+                        APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00732) "URL %s failed the size check "
+                        "(%" APR_OFF_T_FMT ">%" APR_OFF_T_FMT ")", h->cache_obj->key, dobj->file_size, dconf->maxfs);
+                /* Remove the intermediate cache file and return non-APR_SUCCESS */
+                apr_pool_destroy(dobj->data.pool);
+                return APR_EGENERAL;
+            }
+
         }
 
         /* have we reached the limit of how much we're prepared to write in one
@@ -1258,43 +1264,44 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
     if (seen_eos) {
         const char *cl_header = apr_table_get(r->headers_out, "Content-Length");
 
-        if (dobj->data.tempfd) {
-            rv = apr_file_close(dobj->data.tempfd);
-            if (rv != APR_SUCCESS) {
-                /* Buffered write failed, abandon attempt to write */
-                apr_pool_destroy(dobj->data.pool);
-                return rv;
-            }
-        }
+        if (!dobj->disk_info.header_only) {
 
-        if (r->connection->aborted || r->no_cache) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00733)
-                    "Discarding body for URL %s "
-                    "because connection has been aborted.",
-                    h->cache_obj->key);
-            /* Remove the intermediate cache file and return non-APR_SUCCESS */
-            apr_pool_destroy(dobj->data.pool);
-            return APR_EGENERAL;
-        }
-        if (dobj->file_size < dconf->minfs) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00734)
-                    "URL %s failed the size check "
-                    "(%" APR_OFF_T_FMT "<%" APR_OFF_T_FMT ")",
-                    h->cache_obj->key, dobj->file_size, dconf->minfs);
-            /* Remove the intermediate cache file and return non-APR_SUCCESS */
-            apr_pool_destroy(dobj->data.pool);
-            return APR_EGENERAL;
-        }
-        if (cl_header) {
-            apr_int64_t cl = apr_atoi64(cl_header);
-            if ((errno == 0) && (dobj->file_size != cl)) {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00735)
-                        "URL %s didn't receive complete response, not caching",
-                        h->cache_obj->key);
+            if (dobj->data.tempfd) {
+                rv = apr_file_close(dobj->data.tempfd);
+                if (rv != APR_SUCCESS) {
+                    /* Buffered write failed, abandon attempt to write */
+                    apr_pool_destroy(dobj->data.pool);
+                    return rv;
+                }
+            }
+
+            if (r->connection->aborted || r->no_cache) {
+                ap_log_rerror(
+                        APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00733) "Discarding body for URL %s "
+                        "because connection has been aborted.", h->cache_obj->key);
                 /* Remove the intermediate cache file and return non-APR_SUCCESS */
                 apr_pool_destroy(dobj->data.pool);
                 return APR_EGENERAL;
             }
+            if (dobj->file_size < dconf->minfs) {
+                ap_log_rerror(
+                        APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00734) "URL %s failed the size check "
+                        "(%" APR_OFF_T_FMT "<%" APR_OFF_T_FMT ")", h->cache_obj->key, dobj->file_size, dconf->minfs);
+                /* Remove the intermediate cache file and return non-APR_SUCCESS */
+                apr_pool_destroy(dobj->data.pool);
+                return APR_EGENERAL;
+            }
+            if (cl_header) {
+                apr_int64_t cl = apr_atoi64(cl_header);
+                if ((errno == 0) && (dobj->file_size != cl)) {
+                    ap_log_rerror(
+                            APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00735) "URL %s didn't receive complete response, not caching", h->cache_obj->key);
+                    /* Remove the intermediate cache file and return non-APR_SUCCESS */
+                    apr_pool_destroy(dobj->data.pool);
+                    return APR_EGENERAL;
+                }
+            }
+
         }
 
         /* All checks were fine, we're good to go when the commit comes */
@@ -1321,7 +1328,12 @@ static apr_status_t commit_entity(cache_handle_t *h, request_rec *r)
         rv = file_cache_el_final(conf, &dobj->vary, r);
     }
     if (APR_SUCCESS == rv) {
-        rv = file_cache_el_final(conf, &dobj->data, r);
+        if (!dobj->disk_info.header_only) {
+            rv = file_cache_el_final(conf, &dobj->data, r);
+        }
+        else if (dobj->data.file){
+            rv = apr_file_remove(dobj->data.file, dobj->data.pool);
+        }
     }
 
     /* remove the cached items completely on any failure */
