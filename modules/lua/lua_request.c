@@ -15,9 +15,6 @@
  * limitations under the License.
  */
 
-#include <lua.h>
-
-
 #include <apr_pools.h>
 #include <apr_thread_mutex.h>
 
@@ -28,6 +25,8 @@
 #include "lua_dbd.h"
 #include "util_md5.h"
 #include "util_varbuf.h"
+
+#include <lua.h>
 
 extern apr_thread_mutex_t* lua_ivm_mutex;
 
