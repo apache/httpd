@@ -312,6 +312,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk patch works (minus CHANGES)
       +1: minfrin
 
+    * core: Add the ability to do explicit matching on weak and strong ETags
+      as per RFC2616 Section 13.3.3.
+      trunk patch: http://svn.apache.org/r1479528
+      2.4.x patch: trunk patch works (minus CHANGES, mmn bump)
+      +1: minfrin
+
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
