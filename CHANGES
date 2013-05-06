@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Add the ability to do explicit matching on weak and strong ETags
+     as per RFC2616 Section 13.3.3. [Graham Leggett, Co-Advisor
+     <coad measurement-factory.com>]
+
   *) mod_cache: Ensure that updated responses to HEAD requests don't get
      mistakenly paired with a previously cached body. Ensure that any existing
      body is removed when a HEAD request is cached. [Graham Leggett,

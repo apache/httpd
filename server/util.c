@@ -1287,27 +1287,58 @@ AP_DECLARE(char *) ap_get_list_item(apr_pool_t *p, const char **field)
     return token;
 }
 
+typedef enum ap_etag_e {
+    AP_ETAG_NONE,
+    AP_ETAG_WEAK,
+    AP_ETAG_STRONG
+} ap_etag_e;
+
 /* Find an item in canonical form (lowercase, no extra spaces) within
  * an HTTP field value list.  Returns 1 if found, 0 if not found.
  * This would be much more efficient if we stored header fields as
  * an array of list items as they are received instead of a plain string.
  */
-AP_DECLARE(int) ap_find_list_item(apr_pool_t *p, const char *line,
-                                  const char *tok)
+static int find_list_item(apr_pool_t *p, const char *line,
+                                  const char *tok, ap_etag_e type)
 {
     const unsigned char *pos;
     const unsigned char *ptr = (const unsigned char *)line;
     int good = 0, addspace = 0, in_qpair = 0, in_qstr = 0, in_com = 0;
 
-    if (!line || !tok)
+    if (!line || !tok) {
         return 0;
+    }
+    if (type == AP_ETAG_STRONG && *tok != '\"') {
+        return 0;
+    }
+    if (type == AP_ETAG_WEAK) {
+        if (*tok == 'W' && (*(tok+1)) == '/' && (*(tok+2)) == '\"') {
+            tok += 2;
+        }
+        else if (*tok != '\"') {
+            return 0;
+        }
+    }
 
     do {  /* loop for each item in line's list */
 
         /* Find first non-comma, non-whitespace byte */
-
-        while (*ptr == ',' || apr_isspace(*ptr))
+        while (*ptr == ',' || apr_isspace(*ptr)) {
             ++ptr;
+        }
+
+        /* Account for strong or weak Etags, depending on our search */
+        if (type == AP_ETAG_STRONG && *ptr != '\"') {
+            break;
+        }
+        if (type == AP_ETAG_WEAK) {
+            if (*ptr == 'W' && (*(ptr+1)) == '/' && (*(ptr+2)) == '\"') {
+                ptr += 2;
+            }
+            else if (*ptr != '\"') {
+                break;
+            }
+        }
 
         if (*ptr)
             good = 1;  /* until proven otherwise for this item */
@@ -1375,7 +1406,8 @@ AP_DECLARE(int) ap_find_list_item(apr_pool_t *p, const char *line,
                                if (in_com || in_qstr)
                                    good = good && (*pos++ == *ptr);
                                else
-                                   good = good && (*pos++ == apr_tolower(*ptr));
+                                   good = good
+                                       && (apr_tolower(*pos++) == apr_tolower(*ptr));
                                addspace = 0;
                                break;
                 }
@@ -1389,6 +1421,34 @@ AP_DECLARE(int) ap_find_list_item(apr_pool_t *p, const char *line,
     return good;
 }
 
+/* Find an item in canonical form (lowercase, no extra spaces) within
+ * an HTTP field value list.  Returns 1 if found, 0 if not found.
+ * This would be much more efficient if we stored header fields as
+ * an array of list items as they are received instead of a plain string.
+ */
+AP_DECLARE(int) ap_find_list_item(apr_pool_t *p, const char *line,
+                                  const char *tok)
+{
+    return find_list_item(p, line, tok, AP_ETAG_NONE);
+}
+
+/* Find a strong Etag in canonical form (lowercase, no extra spaces) within
+ * an HTTP field value list.  Returns 1 if found, 0 if not found.
+ */
+AP_DECLARE(int) ap_find_etag_strong(apr_pool_t *p, const char *line,
+                                    const char *tok)
+{
+    return find_list_item(p, line, tok, AP_ETAG_STRONG);
+}
+
+/* Find a weak ETag in canonical form (lowercase, no extra spaces) within
+ * an HTTP field value list.  Returns 1 if found, 0 if not found.
+ */
+AP_DECLARE(int) ap_find_etag_weak(apr_pool_t *p, const char *line,
+                                  const char *tok)
+{
+    return find_list_item(p, line, tok, AP_ETAG_WEAK);
+}
 
 /* Retrieve a token, spacing over it and returning a pointer to
  * the first non-white byte afterwards.  Note that these tokens

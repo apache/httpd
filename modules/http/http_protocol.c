@@ -345,8 +345,8 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
      */
     if ((if_match = apr_table_get(r->headers_in, "If-Match")) != NULL) {
         if (if_match[0] != '*'
-            && (etag == NULL || etag[0] == 'W'
-                || !ap_find_list_item(r->pool, if_match, etag))) {
+                && (etag == NULL
+                        || !ap_find_etag_strong(r->pool, if_match, etag))) {
             return HTTP_PRECONDITION_FAILED;
         }
     }
@@ -386,19 +386,18 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
             }
             else if (etag != NULL) {
                 if (apr_table_get(r->headers_in, "Range")) {
-                    not_modified = etag[0] != 'W'
-                                   && ap_find_list_item(r->pool,
-                                                        if_nonematch, etag);
+                    not_modified = ap_find_etag_strong(r->pool, if_nonematch,
+                            etag);
                 }
                 else {
-                    not_modified = ap_find_list_item(r->pool,
-                                                     if_nonematch, etag);
+                    not_modified = ap_find_etag_weak(r->pool, if_nonematch,
+                            etag);
                 }
             }
         }
         else if (if_nonematch[0] == '*'
-                 || (etag != NULL
-                     && ap_find_list_item(r->pool, if_nonematch, etag))) {
+                || (etag != NULL
+                        && ap_find_etag_strong(r->pool, if_nonematch, etag))) {
             return HTTP_PRECONDITION_FAILED;
         }
     }
