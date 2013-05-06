@@ -30,7 +30,8 @@
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>This module provides usage of macros within apache runtime configuration files</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>macro_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_macro.c</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_macro.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTPD 2.4.5 and later</td></tr></table>
 <h3>Summary</h3>
 
 
