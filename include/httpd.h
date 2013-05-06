@@ -1520,6 +1520,24 @@ AP_DECLARE(char *) ap_get_list_item(apr_pool_t *p, const char **field);
 AP_DECLARE(int) ap_find_list_item(apr_pool_t *p, const char *line, const char *tok);
 
 /**
+ * Do a weak ETag comparison within an HTTP field value list.
+ * @param p The pool to allocate from
+ * @param line The field value list to search
+ * @param tok The token to search for
+ * @return 1 if found, 0 if not found.
+ */
+AP_DECLARE(int) ap_find_etag_weak(apr_pool_t *p, const char *line, const char *tok);
+
+/**
+ * Do a strong ETag comparison within an HTTP field value list.
+ * @param p The pool to allocate from
+ * @param line The field value list to search
+ * @param tok The token to search for
+ * @return 1 if found, 0 if not found.
+ */
+AP_DECLARE(int) ap_find_etag_strong(apr_pool_t *p, const char *line, const char *tok);
+
+/**
  * Retrieve a token, spacing over it and adjusting the pointer to
  * the first non-white byte afterwards.  Note that these tokens
  * are delimited by semis and commas and can also be delimited
