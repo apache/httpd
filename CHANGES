@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.5
 
+  *) mod_macro: New module that provides macros within configuration files.
+     [Fabien Coelho]
+
   *) mod_cache_socache: New cache implementation backed by mod_socache
      that replaces mod_mem_cache known from httpd 2.2. [Graham
      Leggett]
