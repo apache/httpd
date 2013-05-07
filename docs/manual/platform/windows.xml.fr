@@ -1,0 +1,681 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1463186 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="windows.xml.meta">
+  <parentdocument href="./">Notes sp&eacute;cifiques &agrave; un
+  syst&egrave;me</parentdocument>
+
+  <title>Utilisation du serveur HTTP Apache sous Microsoft Windows</title>
+
+  <summary>
+
+    <p>Ce document d&eacute;crit l'installation, la configuration et
+    l'ex&eacute;cution d'Apache 2.&httpd.minor; sous Microsoft Windows. Si vous avez des
+    questions apr&egrave;s avoir lu la documentation, ou si vous avez rencontr&eacute;
+    des &eacute;v&egrave;nements particuliers ou des rapports d'erreur, vous pouvez
+    consultez la <a href="http://httpd.apache.org/userslist.html">liste
+    de diffusion de la communaut&eacute; des utilisateurs</a>.</p>
+
+    <p>Dans ce document, nous supposons que vous installez une
+    distribution binaire d'Apache. Si vous voulez compiler Apache
+    vous-m&ecirc;me (par exemple pour aider au d&eacute;veloppement ou pour
+    rechercher des bogues), r&eacute;f&eacute;rez-vous au document <a
+    href="win_compiling.html">Compilation d'Apache pour Microsoft
+    Windows</a>.</p>
+
+  </summary>
+
+  <section id="req">
+    <title>Pr&eacute;requis du syst&egrave;me d'exploitation</title>
+
+    <p>La plate-forme Windows de base pour l'ex&eacute;cution d'Apache 2.&httpd.minor; est
+    Windows 2000 ou sup&eacute;rieur. Veillez &agrave; toujours vous procurer et installer le
+    dernier service pack afin d'&eacute;viter les bogues du syst&egrave;me
+    d'exploitation.</p>
+
+    <note>Les versions du serveur HTTP Apache sup&eacute;rieures &agrave; 2.2 ne
+    fonctionneront sous aucun syst&egrave;me d'exploitation d'une version
+    ant&eacute;rieure &agrave; Windows 2000.</note>
+
+  </section>
+
+  <section id="down">
+    <title>T&eacute;l&eacute;chargement d'Apache pour Windows</title>
+
+    <p>Le projet du serveur HTTP Apache proprement dit ne fournit pas de
+    distribution binaire mais seulement le code source. Si vous n'&ecirc;tes
+    pas en mesure de compiler le serveur HTTP Apache vous-m&ecirc;me, vous
+    pouvez vous procurer un paquet binaire aupr&egrave;s des nombreuses
+    distributions disponibles sur Internet.</p>
+  </section>
+
+  <section id="cust">
+    <title>Personnaliser Apache pour Windows</title>
+
+    <p>La configuration d'Apache est enregistr&eacute;e dans les fichiers du
+    sous-r&eacute;pertoire <code>conf</code>. Ce sont les m&ecirc;me fichiers que
+    ceux utilis&eacute;s pour configurer la version Unix, mais il y a quelques
+    directives sp&eacute;cifiques &agrave; Apache pour Windows. Voir l'<a
+    href="../mod/directives.html">index des directives</a> pour la liste
+    des directives disponibles.</p>
+
+    <p>Les principales sp&eacute;cificit&eacute;s d'Apache pour Windows sont :</p>
+    <ul>
+      <li><p>Comme Apache pour Windows est un programme multithread, il
+      ne lance pas de processus s&eacute;par&eacute; pour chaque requ&ecirc;te, comme Apache
+      peut le faire sous Unix. En fait, il n'y a en g&eacute;n&eacute;ral que deux
+      processus Apache en ex&eacute;cution : un processus parent, et un
+      processus enfant qui traite les requ&ecirc;tes. Chaque requ&ecirc;te est
+      trait&eacute;e par un thread s&eacute;par&eacute; au sein du processus enfant.</p>
+
+      <p>Les directives de gestion de processus diff&egrave;rent &eacute;galement :</p>
+
+      <p><directive module="mpm_common">MaxConnectionsPerChild</directive>
+      : comme dans la version Unix, cette directive contr&ocirc;le le nombre
+      de connexions qu'un
+      processus enfant particulier va traiter avant de s'arr&ecirc;ter.
+      Cependant, &agrave; la diff&eacute;rence d'Unix, un processus de remplacement
+      n'est pas instantan&eacute;ment disponible. Utilisez la d&eacute;finition par
+      d&eacute;faut <code>MaxConnectionsPerChild 0</code>, sauf si vous
+      risquez de manquer de m&eacute;moire dans des modules tiers ou dans des
+      applications in-process.</p>
+
+      <note type="warning"><strong>Attention : le fichier de
+      configuration du serveur est recharg&eacute; lorsqu'un nouveau processus
+      enfant est d&eacute;marr&eacute;. En cons&eacute;quence, si vous avez modifi&eacute;
+      <code>httpd.conf</code>, le nouveau processus enfant peut ne pas
+      d&eacute;marrer, ou vous pouvez obtenir des r&eacute;sultats
+      inattendus.</strong></note>
+
+      <p><directive module="mpm_common">ThreadsPerChild</directive> : il
+      s'agit d'une nouvelle directive. Elle indique au serveur le nombre
+      de threads qu'il doit utiliser. Elle d&eacute;finit le nombre maximum de
+      connexions simultan&eacute;es que le serveur peut g&eacute;rer ; vous devez
+      donc vous assurer que ce nombre soit suffisamment grand pour les
+      besoins de votre site. La valeur par d&eacute;faut <code>ThreadsPerChild
+      150</code> est recommand&eacute;e, mais doit &ecirc;tre ajust&eacute;e &agrave; la valeur
+      maximale estim&eacute;e de connexions simultan&eacute;es &agrave; accepter.</p></li>
+
+      <li><p>Les directives qui acceptent des noms de fichiers comme
+      arguments doivent utiliser des noms de fichiers Windows et non
+      Unix. Cependant, comme Apache peut interpr&eacute;ter les anti-slashes
+      comme des s&eacute;quences d'&eacute;chappement de caract&egrave;res, vous devez
+      absolument utiliser des slashes dans les noms de chemins &agrave; la
+      place des anti-slashes.</p></li>
+
+      <li><p>Alors que les noms de fichiers sont en g&eacute;n&eacute;ral insensibles
+      &agrave; la casse sous Windows, les URLs sont encore sensibles &agrave; la casse
+      en interne avant d'&ecirc;tre mises en correspondance avec le syst&egrave;me de
+      fichiers. Par exemple, les directives <directive module="core"
+      type="section">Location</directive>, <directive
+      module="mod_alias">Alias</directive>, et <directive
+      module="mod_proxy">ProxyPass</directive> utilisent toutes des
+      arguments sensibles &agrave; la casse. Pour cette raison, il est
+      particuli&egrave;rement recommand&eacute; d'utiliser la directive <directive
+      module="core" type="section">Directory</directive> lorsqu'on
+      d&eacute;sire limiter l'acc&egrave;s &agrave; certains contenus du syst&egrave;me de fichiers,
+      car cette directive s'applique &agrave; tout contenu d'un r&eacute;pertoire,
+      sans tenir compte de la mani&egrave;re dont on y acc&egrave;de. Pour vous
+      assurer que seules des minuscules sont utilis&eacute;es dans les URLs,
+      vous pouvez utiliser ceci :</p>
+
+      <highlight language="config">
+RewriteEngine On
+RewriteMap lowercase int:tolower
+RewriteCond %{REQUEST_URI} [A-Z]
+RewriteRule (.*) ${lowercase:$1} [R,L]
+      </highlight></li>
+
+      <li><p>Lors de son ex&eacute;cution, Apache n'a besoin d'un acc&egrave;s en
+      &eacute;criture qu'au r&eacute;pertoire des journaux et &agrave; toute arborescence de
+      r&eacute;pertoires de cache configur&eacute;e. Suite au probl&egrave;me d'insensibilit&eacute;
+      &agrave; la casse et au format de noms courts 8.3, Apache doit valider
+      tous les noms de chemins fournis. Cela signifie que chaque
+      r&eacute;pertoire qu'Apache &eacute;value doit avoir les droits en lecture,
+      listage et parcours, et ceci depuis la racine jusqu'aux feuilles.
+      Si Apache2.&httpd.minor; est install&eacute; dans C:\Program Files, le r&eacute;pertoire
+      racine, Program Files et Apache2.&httpd.minor; doivent tous &ecirc;tre visibles pour
+      Apache</p></li>
+
+      <li><p>Apache peut charger divers modules sans qu'il soit n&eacute;cessaire
+      de recompiler le serveur. Si Apache est compil&eacute;
+      normalement, il va installer de nombreux modules optionnels dans
+      le r&eacute;pertoire <code>\Apache2.&httpd.minor;\modules</code>. Pour activer ces
+      modules ou d'autres modules, on doit utiliser la
+      directive <directive module="mod_so">LoadModule</directive>. Par
+      exemple, pour activer le module status, ajoutez la ligne suivante
+      (en plus des directives d'activation de status dans
+      <code>access.conf</code>) :</p>
+
+      <highlight language="config">
+        LoadModule status_module modules/mod_status.so
+      </highlight>
+
+      <p>Des informations sont aussi &agrave; votre disposition pour <a
+      href="../mod/mod_so.html#creating">cr&eacute;er des modules
+      chargeables</a></p></li>
+
+      <li><p>Apache peut aussi charger des extensions ISAPI (Internet
+      Server Application Programming Interface), comme celles qu'utilise
+      Microsoft IIS et d'autres serveurs Windows. <a
+      href="../mod/mod_isapi.html">Voir ici pour plus
+      d'informations</a>. Notez qu'Apache ne peut <strong>pas</strong>
+      charger de filtres ISAPI, et que les gestionnaires ISAPI contenant
+      des extensions de fonctionnalit&eacute;s Microsoft ne fonctionneront
+      pas.</p></li>
+
+      <li><p>Pour les scripts CGI, la m&eacute;thode qu'utilise Apache pour
+      d&eacute;terminer l'interpr&eacute;teur du script est configurable gr&acirc;ce &agrave; la
+      directive <directive
+      module="core">ScriptInterpreterSource</directive></p></li>
+
+      <li><p>Comme il est souvent difficile de g&eacute;rer des fichiers avec
+      des noms du style <code>.htaccess</code> sous Windows, vous avez
+      tout int&eacute;r&ecirc;t &agrave; changer le nom de ce fichier de configuration par
+      r&eacute;pertoire &agrave; l'aide de la directive <directive
+      module="core">AccessFilename</directive>.</p></li>
+
+      <li><p>Toute erreur survenant au cours du processus de d&eacute;marrage
+      d'Apache est enregistr&eacute;e dans le journal des &eacute;v&egrave;nements de
+      Windows si l'on est sous Windows NT. Ce m&eacute;canisme fonctionne comme
+      une sauvegarde pour les situations o&ugrave; Apache n'est pas encore pr&ecirc;t
+      &agrave; utiliser le fichier <code>error.log</code>. Vous pouvez
+      consulter le journal des &eacute;v&egrave;nements applicatifs Windows en
+      utilisant l'observateur d'&eacute;v&egrave;nements : D&eacute;marrage - Param&egrave;tres -
+      Panneau de configuration - Outils d'administration - Observateur
+      d'&eacute;v&egrave;nements.</p></li>
+    </ul>
+
+  </section>
+
+  <section id="winsvc">
+    <title>Ex&eacute;cuter Apache en tant que service</title>
+
+    <p>Apache fournit un utilitaire nomm&eacute; Apache Service Monitor
+    (Moniteur du service Apache). Gr&acirc;ce &agrave; lui, vous pouvez voir et g&eacute;rer
+    l'&eacute;tat de tous les services Apache install&eacute;s sur toutes les machines
+    du r&eacute;seau. Pour pouvoir g&eacute;rer un service Apache avec le moniteur,
+    vous devez d'abord installer le service (soit automatiquement au
+    cours de l'installation, soit manuellement).</p>
+
+    <p>Vous pouvez installer Apache en tant que service Windows NT &agrave;
+    partir de la ligne de commandes et depuis le sous-r&eacute;pertoire Apache
+    <code>bin</code> comme suit :</p>
+
+    <example>
+      httpd.exe -k install
+    </example>
+
+    <p>Si vous avez install&eacute; plusieurs services Apache sur votre
+    ordinateur, vous devrez sp&eacute;cifier le nom du service que vous voulez
+    installer en utilisant la commande suivante (notez que si vous
+    sp&eacute;cifiez un nom durant l'installation, vous devrez aussi le
+    sp&eacute;cifier pour toute op&eacute;ration comportant l'option -k) :</p>
+
+    <example>
+      httpd.exe -k install -n "Nom-service"
+    </example>
+
+    <p>Si un service doit utiliser un fichier de configuration
+    sp&eacute;cifique, utilisez ceci :</p>
+
+    <example>
+      httpd.exe -k install -n "Nom-service" -f "c:\fichiers\Nom-service.conf"
+    </example>
+
+    <p>Si vous utilisez la premi&egrave;re commande sans param&egrave;tre particulier,
+    except&eacute; <code>-k install</code>, le service aura pour nom
+    <code>Apache2.&httpd.minor;</code> et le fichier de configuration sera cens&eacute;
+    &ecirc;tre <code>conf\httpd.conf</code>.</p>
+
+    <p>Supprimer un service Apache est tr&egrave;s simple. Utilisez
+    simplement :</p>
+
+    <example>
+      httpd.exe -k uninstall
+    </example>
+
+    <p>On peut sp&eacute;cifier un service Apache particulier en utilisant
+    :</p>
+
+    <example>
+      httpd.exe -k uninstall -n "Nom service"
+    </example>
+
+    <p>Normalement, le d&eacute;marrage, le red&eacute;marrage et l'arr&ecirc;t d'un
+    service Apache s'effectuent via le Moniteur de Service Apache, ou en
+    utilisant des commandes telles que <code>NET START Apache2.&httpd.minor;</code> et
+    <code>NET STOP Apache2.&httpd.minor;</code>, ou encore via le gestionnaire de
+    services standard de Windows. Avant de d&eacute;marrer Apache en tant que
+    service dans quelque but que ce soit, vous devez tester le fichier
+    de configuration du service en utilisant :</p>
+
+    <example>
+      httpd.exe -n "Nom-service" -t
+    </example>
+
+    <p>Vous pouvez aussi contr&ocirc;ler un service Apache &agrave; l'aide de ses
+    options de ligne de commande. Avec cette m&eacute;thode, pour d&eacute;marrer un
+    service Apache install&eacute;, vous utiliserez :</p>
+
+    <example>
+      httpd.exe -k start -n "Nom-Service"
+    </example>
+
+    <p>Pour arr&ecirc;ter un service Apache via les options de lignes de
+    commande, utilisez ceci :</p>
+
+    <example>
+      httpd.exe -k stop -n "Nom-Service"
+    </example>
+
+    <p>ou</p>
+
+    <example>
+      httpd.exe -k shutdown -n "Nom-Service"
+    </example>
+
+    <p>Vous pouvez aussi red&eacute;marrer un service en ex&eacute;cution et le forcer
+    &agrave; relire son fichier de configuration en utilisant :</p>
+
+    <example>
+      httpd.exe -k restart -n "Nom-Service"
+    </example>
+
+    <p>Par d&eacute;faut, tous les services Apache sont configur&eacute;s pour
+    s'ex&eacute;cuter sous l'utilisateur system (le compte
+    <code>LocalSystem</code>). Le compte <code>LocalSystem</code> n'a
+    pas de privil&egrave;ges sur votre r&eacute;seau, que ce soit via un m&eacute;canisme
+    s&eacute;curis&eacute; de Windows, y compris le syst&egrave;me de fichiers, des tubes
+    nomm&eacute;s, DCOM ou des RPC s&eacute;curis&eacute;s. Il a cependant des privil&egrave;ges
+    &eacute;lev&eacute;s en local.</p>
+
+    <note type="warning"><strong>N'accordez jamais de privil&egrave;ges r&eacute;seau
+    au compte <code>LocalSystem</code> ! Si Apache doit pouvoir acc&eacute;der
+    &agrave; des ressources r&eacute;seau, cr&eacute;ez un compte s&eacute;par&eacute; pour Apache comme
+    indiqu&eacute; ci-dessous.</strong></note>
+
+    <p>Il est fortement fortement conseill&eacute; aux utilisateurs de cr&eacute;er un
+    compte s&eacute;par&eacute; pour ex&eacute;cuter le(s) service(s) Apache, et m&ecirc;me
+    obligatoire si vous devez acc&eacute;der &agrave; des ressources r&eacute;seau via
+    Apache.</p>
+
+    <ol>
+      <li>Cr&eacute;ez un compte d'utilisateur du domaine normal, et
+      assurez-vous de retenir son mot de passe.</li>
+
+      <li>Accordez &agrave; l'utilisateur nouvellement cr&eacute;&eacute; les privil&egrave;ges
+      <code>Log on as a service</code> et <code>Act as part of the
+      operating system</code>. Sous Windows NT 4.0, ces privil&egrave;ges sont
+      accord&eacute;s via le Gestionnaire des utilisateurs du Domaine, mais
+      sous Windows 2000 et XP, vous aurez plut&ocirc;t int&eacute;r&ecirc;t &agrave; utiliser une
+      GPO pour propager ces configurations. Vous pouvez aussi effectuer
+      ces r&eacute;glages via la Politique de S&eacute;curit&eacute; Locale int&eacute;gr&eacute;e &agrave; la
+      MMC.</li>
+
+      <li>V&eacute;rifiez que le compte nouvellement cr&eacute;&eacute; est membre du groupe
+      Utilisateurs</li>
+
+      <li>Accordez &agrave; ce compte les droits Lecture et Ex&eacute;cution (RX) sur
+      tous les documents et r&eacute;pertoires de scripts (<code>htdocs</code>
+      et <code>cgi-bin</code> par exemple), et aussi sur l'ex&eacute;cutable
+      binaire <code>httpd.exe</code>.</li>
+
+      <li>Accordez aussi &agrave; ce compte les droits de modification sur le
+      r&eacute;pertoire <code>logs</code>.</li>
+
+    </ol>
+
+    <note>Il est en g&eacute;n&eacute;ral de bonne pratique d'accorder &agrave; l'utilisateur
+    sous lequel le service Apache s'ex&eacute;cute les droits en lecture et
+    ex&eacute;cution (RX) sur l'ensemble du r&eacute;pertoire Apache2.&httpd.minor;, sauf pour le
+    sous-r&eacute;pertoire <code>logs</code>, sur lequel l'utilisateur doit
+    avoir au moins les droits de modification (RWXD).</note>
+
+    <p>Si vous permettez &agrave; ce compte de se connecter en tant
+    qu'utilisateur et service, vous pouvez ouvrir une session sous ce
+    compte et v&eacute;rifier s'il a bien le droit d'ex&eacute;cuter les scripts, de
+    lire les pages web, et si vous pouvez d&eacute;marrer Apache &agrave; partir d'une
+    console Windows. Si tout fonctionne, et si vous avez suivi les
+    &eacute;tapes ci-dessus, Apache devrait s'ex&eacute;cuter en tant que service sans
+    probl&egrave;me.</p>
+
+    <note><strong>Le code d'erreur 2186</strong> indique probablement
+    qu'Apache ne peut pas acc&eacute;der &agrave; une ressource r&eacute;seau n&eacute;cessaire, et
+    que vous devez revoir la configuration "Log On As" (Se connecter en
+    tant que ...) du service.</note>
+
+    <p>Lorsqu'Apache d&eacute;marre en tant que service, il se peut que vous
+    obteniez un message d'erreur du Gestionnaire de Services Windows.
+    Par exemple, si vous essayez de d&eacute;marrer Apache en utilisant
+    l'applet Services du Panneau de configuration de Windows, vous
+    pouvez obtenir le message suivant :</p>
+
+    <example>
+      Could not start the Apache2.&httpd.minor; service on \\COMPUTER <br />
+      Error 1067; The process terminated unexpectedly.
+    </example>
+
+    <p>Vous obtiendrez cette erreur &agrave; caract&egrave;re g&eacute;n&eacute;ral pour tout
+    probl&egrave;me survenant au cours du d&eacute;marrage du service Apache. Afin de
+    d&eacute;terminer exactement la cause du probl&egrave;me, vous devez suivre les
+    instructions permettant d'ex&eacute;cuter Apache pour Windows depuis la
+    ligne de commande.</p>
+
+    <p>Si vous rencontrez des probl&egrave;mes avec le service, il est
+    conseill&eacute; de suivre les instructions ci-dessous afin d'essayer de
+    d&eacute;marrer httpd.exe depuis une console, et d'analyser les erreurs
+    plut&ocirc;t que vous d&eacute;mener &agrave; essayer de d&eacute;marrer le service.</p>
+
+  </section>
+
+  <section id="wincons">
+    <title>Ex&eacute;cuter Apache depuis la console</title>
+
+    <p>Il est en g&eacute;n&eacute;ral recommand&eacute; d'ex&eacute;cuter Apache en tant que
+    service, mais il est parfois plus simple d'utiliser la ligne de
+    commande, en particulier au cours de la configuration initiale et
+    les tests.</p>
+
+    <p>Pour ex&eacute;cuter Apache depuis la ligne de commande et en tant
+    qu'application de console, utilisez la commande suivante :</p>
+
+    <example>
+      httpd.exe
+    </example>
+
+    <p>Apache va d&eacute;marrer, et continuera son ex&eacute;cution jusqu'&agrave; ce qu'on
+    l'arr&ecirc;te en tapant Ctrl-C.</p>
+
+    <p>Vous pouvez &eacute;galement d&eacute;marrer Apache via le raccourci "D&eacute;marrer
+    Apache dans une console" plac&eacute; dans <code>D&eacute;marrer --&gt;
+    Programmes --&gt; Apache HTTP Server 2.&httpd.minor;.xx --&gt; Control Apache
+    Server</code> au cours de l'installation. Ceci va
+    ouvrir une console Windows, et y d&eacute;marrer Apache.
+    Si vous n'avez pas install&eacute; Apache en tant que service, la
+    fen&ecirc;tre Windows restera ouverte jusqu'&agrave; ce que vous arr&ecirc;tiez Apache
+    en tapant Ctrl-C dans cette fen&ecirc;tre. Le serveur va alors s'arr&ecirc;ter
+    au bout de quelques secondes. Cependant, si vous avez install&eacute;
+    Apache en tant que service, c'est ce dernier que le raccourci
+    ci-dessus va lancer. Si le service Apache est d&eacute;j&agrave; en cours
+    d'ex&eacute;cution, le raccourci va rester sans effet.</p>
+
+    <p>Si Apache s'ex&eacute;cute en tant que service, vous pouvez l'arr&ecirc;ter en
+    ouvrant une autre console et en entrant :</p>
+
+    <example>
+      httpd.exe -k shutdown
+    </example>
+
+    <p>Plut&ocirc;t que de lancer Apache &agrave; partir d'une console, il est
+    pr&eacute;f&eacute;rable de l'ex&eacute;cuter en tant que service car dans ce cas, il
+    termine proprement les op&eacute;rations en cours avant de s'&eacute;teindre.</p>
+
+    <p>Si le serveur a &eacute;t&eacute; lanc&eacute; depuis une console, vous ne pouvez
+    l'arr&ecirc;ter qu'en pressant la combinaison de touches Ctrl-C dans la
+    m&ecirc;me fen&ecirc;tre.</p>
+
+    <p>Vous pouvez aussi red&eacute;marrer Apache. Ceci le force &agrave; recharger
+    son fichier de configuration. Toute op&eacute;ration en cours peut &ecirc;tre
+    achev&eacute;e sans interruption. Pour red&eacute;marrer Apache, vous pouvez soit
+    taper Control-Break dans la fen&ecirc;tre de console que vous avez
+    utilis&eacute;e pour le d&eacute;marrer, soit entrer :</p>
+
+    <example>
+      httpd.exe -k restart
+    </example>
+
+    <p>si le serveur s'ex&eacute;cute en tant que service.</p>
+
+    <note>Note pour les utilisateurs familiers de la version Unix
+    d'Apache : les commandes ci-dessus repr&eacute;sentent pour Windows
+    l'&eacute;quivalent des commandes <code>kill -TERM <em>pid</em></code> et
+    <code>kill -USR1 <em>pid</em></code>. L'option de ligne de commande
+    <code>-k</code> a &eacute;t&eacute; choisie &agrave; titre de rapprochement avec la
+    commande <code>kill</code> utilis&eacute;e sous Unix.</note>
+
+    <p>Si la fen&ecirc;tre de la console Apache se ferme imm&eacute;diatement ou
+    inopin&eacute;ment apr&egrave;s le d&eacute;marrage d'Apache, ouvrez une console Windows
+    depuis le menu D&eacute;marrer --&gt; Programmes. Placez-vous dans le
+    r&eacute;pertoire d'installation d'Apache, tapez la commande
+    <code>httpd.exe</code>, et observez le message d'erreur. Allez
+    ensuite dans le r&eacute;pertoire des journaux, et visualisez le fichier
+    <code>error.log</code> pour d&eacute;tecter d'&eacute;ventuelles erreurs de
+    configuration. Si Apache a &eacute;t&eacute; install&eacute; dans <code>C:\Program
+    Files\Apache Software Foundation\Apache2.&httpd.minor;\</code>, vous
+    pouvez entrer ce qui suit :</p>
+
+    <example>
+      c: <br />
+      cd "\Program Files\Apache Software Foundation\Apache2.&httpd.minor;\bin" <br />
+      httpd.exe
+    </example>
+
+    <p>Attendez ensuite qu'Apache s'arr&ecirc;te ou tapez Ctrl-C. Entrez alors
+    la commande suivante :</p>
+
+    <example>
+      cd ..\logs <br />
+      more &lt; error.log
+    </example>
+
+    <p>Lorsqu'on travaille avec Apache, il est important de comprendre
+    comment ce dernier trouve son fichier de configuration. Vous pouvez
+    sp&eacute;cifier un fichier de configuration &agrave; partir de la ligne de
+    commande de deux fa&ccedil;ons :</p>
+
+    <ul>
+      <li><p>L'option <code>-f</code> permet de sp&eacute;cifier un chemin
+      absolu ou relatif vers un fichier de configuration particulier
+      :</p>(sous Windows 9x, il est recommand&eacute; d'utiliser la ligne de
+    commande &agrave; cause du manque de fiabilit&eacute; du support des services
+    fourni par ce syst&egrave;me).
+
+      <example>
+        httpd.exe -f "c:\fichiers-de-mon-serveur\autre-config.conf"
+      </example>
+
+      <p>ou</p>
+
+      <example>
+        httpd.exe -f fichiers-de-mon-serveur\autre-config.conf
+      </example></li>
+
+      <li><p>L'option <code>-n</code> permet de sp&eacute;cifier le service
+      Apache install&eacute; dont le fichier de configuration doit &ecirc;tre utilis&eacute;
+      :</p>
+
+      <example>
+        httpd.exe -n "Nom-service"
+      </example>
+      </li>
+    </ul>
+
+    <p>Dans les deux cas, la directive <directive
+    module="core">ServerRoot</directive> doit &ecirc;tre correctement d&eacute;finie
+    dans le fichier de configuration.</p>
+
+    <p>Si vous ne sp&eacute;cifiez aucun fichier de configuration &agrave; l'aide des
+    options <code>-f</code> ou <code>-n</code>, Apache utilisera le nom
+    du fichier de configuration compil&eacute; dans le serveur, en g&eacute;n&eacute;ral
+    <code>conf\httpd.conf</code>. Ce chemin cod&eacute; en dur est relatif au
+    r&eacute;pertoire d'installation. Vous pouvez v&eacute;rifier ce chemin &agrave; partir
+    de la valeur de l'&eacute;tiquette <code>SERVER_CONFIG_FILE</code> en
+    invoquant Apache avec l'option <code>-V</code>, comme ceci :</p>
+
+    <example>
+      httpd.exe -V
+    </example>
+
+    <p>Apache va ensuite essayer de d&eacute;terminer la valeur de son
+    <directive module="core">ServerRoot</directive> en effectuant les
+    recherches suivantes, dans cet ordre :</p>
+
+    <ol>
+      <li>Une directive <directive module="core">ServerRoot</directive>
+      via l'option de ligne de commande <code>-C</code>.</li>
+
+      <li>L'option de ligne de commande <code>-d</code>.</li>
+
+      <li>Le r&eacute;pertoire de travail courant.</li>
+
+      <li>Une entr&eacute;e de la base de registre cr&eacute;&eacute;e dans le cas d'une
+      installation binaire.</li>
+
+      <li>La racine des documents (<code>DocumentRoot</code>) cod&eacute;e en dur
+      dans le serveur. Elle
+      correspond par d&eacute;faut &agrave; <code>/apache</code>, et vous pouvez le
+      v&eacute;rifier en tapant <code>httpd.exe -V</code> et en recherchant
+      l'&eacute;tiquette <code>HTTPD_ROOT</code>.</li>
+    </ol>
+
+    <p>Si vous n'avez pas effectu&eacute; d'installation binaire, dans certains
+    sc&eacute;narios, Apache va signaler l'absence de cette cl&eacute; de registre.
+    On peut passer outre cet avertissement si le serveur a &eacute;t&eacute; en mesure
+    de trouver son fichier de configuration d'une autre mani&egrave;re.</p>
+
+    <p>La valeur de cette cl&eacute; correspond au r&eacute;pertoire <directive
+    module="core">ServerRoot</directive> qui contient lui-m&ecirc;me le
+    sous-r&eacute;pertoire <code>conf</code>. Lors de son d&eacute;marrage, Apache lit
+    le fichier <code>httpd.conf</code> &agrave; partir de ce r&eacute;pertoire. Si ce
+    fichier contient une directive <directive
+    module="core">ServerRoot</directive> qui sp&eacute;cifie un r&eacute;pertoire
+    diff&eacute;rent de celui que contient la cl&eacute; de registre ci-dessus, Apache
+    oubliera la cl&eacute; de registre, et utilisera le r&eacute;pertoire sp&eacute;cifi&eacute; par
+    le fichier de configuration. Si vous d&eacute;placez le r&eacute;pertoire Apache
+    ou ses fichiers de configuration, il est vital de mettre &agrave; jour la
+    directive <directive module="core">ServerRoot</directive> dans
+    <code>httpd.conf</code> afin de refl&eacute;ter la nouvelle
+    localisation.</p>
+
+  </section>
+
+  <section id="test">
+    <title>V&eacute;rification de l'installation</title>
+
+    <p>Une fois Apache d&eacute;marr&eacute; (soit &agrave; partir d'une console Windows,
+    soit en tant que service), ce dernier va se mettre &agrave; l'&eacute;coute sur
+    le port 80 (&agrave; moins que vous ayiez modifi&eacute; la directive <directive
+    module="mpm_common">Listen</directive> dans les fichiers de
+    configuration ou que vous ayiez install&eacute; Apache pour l'utilisateur
+    courant seulement). Pour vous connecter au serveur et acc&eacute;der &agrave; la
+    page par d&eacute;faut, lancez un navigateur et entrez cette URL :</p>
+
+    <example>
+      http://localhost/
+    </example>
+
+    <p>Apache devrait renvoyer une page de bienvenue et vous devriez
+    voir s'afficher "It Works!". Si rien ne se passe ou si vous obtenez
+    une erreur, consultez le fichier <code>error.log</code> dans le
+    sous-r&eacute;pertoire <code>logs</code>. Si votre serveur n'est pas
+    connect&eacute; au r&eacute;seau, ou si vous avez de s&eacute;rieux probl&egrave;mes avec la
+    configuration de votre DNS (Domain Name Service), vous devez
+    utiliser cette URL :</p>
+
+    <example>
+      http://127.0.0.1/
+    </example>
+
+    <p>Si Apache &eacute;coute un port non standard, vous devez le pr&eacute;ciser
+    explicitement dans l'URL :</p>
+
+    <example>
+      http://127.0.0.1:8080/
+    </example>
+
+    <p>Apr&egrave;s que votre installation de base fonctionne, vous devez la
+    configurer correctement en &eacute;ditant les fichiers du sous-r&eacute;pertoire
+    <code>conf</code>. Encore une fois, si vous modifiez la
+    configuration du service Apache sous Windows NT, essayez d'abord de
+    red&eacute;marrer le service depuis la ligne de commande afin de vous
+    assurer de l'absence d'erreur.</p>
+
+    <p>Comme Apache <strong>ne peut pas</strong> partager le m&ecirc;me port
+    avec d'autres applications TCP/IP, il se peut que vous soyez amen&eacute; &agrave;
+    arr&ecirc;ter, d&eacute;sinstaller ou reconfigurer certains services avant de
+    d&eacute;marrer Apache. Ces services entrant en conflit avec Apache
+    comprennent les autres serveurs WWW, certaines impl&eacute;mentations de
+    pare-feu, et m&ecirc;me certaines applications client (comme Skype) qui
+    utilisent le port 80 afin de contourner les pare-feu.</p>
+
+  </section>
+
+  <section id="windrivemap">
+    <title>Configuration de l'acc&egrave;s aux ressources r&eacute;seau</title>
+
+  <p>L'acc&egrave;s &agrave; des fichiers par le r&eacute;seau peut &ecirc;tre sp&eacute;cifi&eacute; via deux
+  m&eacute;canismes fournis par Windows :</p>
+
+  <dl>
+    <dt>Association de lettres de lecteur</dt>
+    <dd>Par exemple, <code>Alias /images/ Z:/</code></dd>
+
+    <dt>chemins UNC</dt>
+    <dd>Par exemple, <code>Alias /images/ //imagehost/www/images/</code></dd>
+  </dl>
+
+  <p>L'association de lettres de lecteur permet &agrave; l'administrateur de
+  maintenir une correspondance avec une certaine machine et un certain
+  chemin en dehors de la configuration d'Apache httpd. Cependant, ces
+  associations ne sont possibles que dans le cadre des sessions
+  interactives, et ne sont pas directement disponibles pour Apache httpd
+  lorsqu'il est d&eacute;marr&eacute; en tant que service. <strong>N'utilisez par
+  cons&eacute;quent que des
+  chemins UNC pour les ressources r&eacute;seau dans httpd.conf,</strong> de
+  fa&ccedil;on &agrave; ce que les ressources soient accessibles quelle que soit la
+  mani&egrave;re dont Apache httpd a &eacute;t&eacute; d&eacute;marr&eacute; (des proc&eacute;dures exotiques et
+  probablement sujettes aux erreurs peuvent permettre de contourner la
+  restriction due aux associations de lettres de lecteur, mais leur
+  utilisation est d&eacute;conseill&eacute;e).</p>
+
+  <example><title>Exemple de DocumentRoot avec chemin UNC</title>
+  <highlight language="config">
+  DocumentRoot //dochost/www/html/
+  </highlight>
+  </example>
+
+  <example><title>Exemple de DocumentRoot avec adresse IP dans le chemin UNC</title>
+  <highlight language="config">
+  DocumentRoot //192.168.1.50/docs/
+  </highlight>
+  </example>
+
+  <example><title>Exemple d'Alias et r&eacute;pertoire correspondant avec
+  chemin UNC</title>
+  <highlight language="config">
+Alias /images/ //imagehost/www/images/
+
+&lt;Directory //imagehost/www/images/&gt;
+#...
+&lt;Directory&gt;
+  </highlight>
+  </example>
+
+  <p>Lorsqu'Apache s'ex&eacute;cute en tant que service, vous devez cr&eacute;er un
+  compte sp&eacute;cifique afin de pouvoir acc&eacute;der aux ressources r&eacute;seau, comme
+  d&eacute;crit ci-dessus.</p>
+  </section>
+
+</manualpage>
