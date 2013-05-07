@@ -371,8 +371,7 @@
 
     <highlight language="config">
 &lt;Directory /&gt;
-    Order Deny,Allow
-    Deny from all
+    Require all denied
 &lt;/Directory&gt;
     </highlight>
 
@@ -383,12 +382,10 @@
 
     <highlight language="config">
 &lt;Directory /usr/users/*/public_html&gt;
-    Order Deny,Allow
-    Allow from all
+    Require all granted
 &lt;/Directory&gt;
 &lt;Directory /usr/local/httpd&gt;
-    Order Deny,Allow
-    Allow from all
+    Require all granted
 &lt;/Directory&gt;
     </highlight>
 
@@ -453,8 +450,7 @@
 
     <highlight language="config">
 &lt;Files ".ht*"&gt;
-    Order allow,deny
-    Deny from all
+    Require all denied
 &lt;/Files&gt;
     </highlight>
 
