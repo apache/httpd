@@ -146,7 +146,7 @@ with mod_rewrite</a>, it is seldom the right way. Creating individual
 event that you have an enormous number of virtual hosts, consider using
 <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> to create these hosts automatically.</p>
 
-<p>Third-party modules such as <a href="http://www.cri.ensmp.fr/~coelho/mod_macro/">mod_macro</a> are
+<p>Modules such as <code class="module"><a href="../mod/mod_macro.html">mod_macro</a></code> are
 also useful for creating a large number of virtual hosts dynamically.</p>
 
 <p>Using <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> for vitualhost creation may be

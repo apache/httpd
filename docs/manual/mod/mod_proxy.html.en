@@ -1302,7 +1302,7 @@ ProxyPass /mirror/foo http://backend.example.com
     <tr><td>scolonpathdelim</td>
         <td>Off</td>
         <td>If set to <code>On</code> the semi-colon character ';' will be
-        used as an additional sticky session path deliminator/separator. This
+        used as an additional sticky session path delimiter/separator. This
         is mainly used to emulate mod_jk's behavior when dealing with paths such
         as <code>JSESSIONID=6736bcf34;foo=aabfa</code>
     </td></tr>

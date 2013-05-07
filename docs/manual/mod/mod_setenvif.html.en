@@ -294,7 +294,7 @@ for additional examples.
 <ul>
 <li><a href="../expr.html">Expressions in Apache HTTP Server</a>,
 for a complete reference and more examples.</li>
-<li><code class="directive">&lt;If&gt;</code> can be used to achive similar
+<li><code class="directive">&lt;If&gt;</code> can be used to achieve similar
 results.</li>
 <li><code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code></li>
 </ul>
