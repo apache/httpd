@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy: Ensure network errors detected by the proxy are returned as
+     504 Gateway Timout as opposed to 502 Bad Gateway, in order to be
+     compliant with RFC2616 14.9.4 Cache Revalidation and Reload Controls.
+     [Graham Leggett, Co-Advisor <coad measurement-factory.com>]
+
   *) mod_cache: Ensure that we don't attempt to replace a cached response
      with an older response as per RFC2616 13.12. [Graham Leggett, Co-Advisor
      <coad measurement-factory.com>]
