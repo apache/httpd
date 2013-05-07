@@ -265,7 +265,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
             /* test lenp, because it gives another case we can handle */
             else if (!lenp) {
                 /* Something that isn't in HTTP, unless some future
-                 * edition defines new transfer ecodings, is unsupported.
+                 * edition defines new transfer encodings, is unsupported.
                  */
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, f->r, APLOGNO(01585)
                               "Unknown Transfer-Encoding: %s", tenc);
