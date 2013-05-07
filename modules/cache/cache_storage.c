@@ -222,7 +222,7 @@ int cache_select(cache_request_rec *cache, request_rec *r)
         switch ((rv = list->provider->open_entity(h, r, cache->key))) {
         case OK: {
             char *vary = NULL;
-            int fresh, mismatch = 0;
+            int mismatch = 0;
             char *last = NULL;
 
             if (list->provider->recall_headers(h, r) != APR_SUCCESS) {
@@ -288,9 +288,27 @@ int cache_select(cache_request_rec *cache, request_rec *r)
             cache->provider = list->provider;
             cache->provider_name = list->provider_name;
 
+            /*
+             * RFC2616 13.3.4 Rules for When to Use Entity Tags and Last-Modified
+             * Dates: An HTTP/1.1 caching proxy, upon receiving a conditional request
+             * that includes both a Last-Modified date and one or more entity tags as
+             * cache validators, MUST NOT return a locally cached response to the
+             * client unless that cached response is consistent with all of the
+             * conditional header fields in the request.
+             */
+            if (ap_condition_if_match(r, h->resp_hdrs) == AP_CONDITION_NOMATCH
+                    || ap_condition_if_unmodified_since(r, h->resp_hdrs)
+                            == AP_CONDITION_NOMATCH
+                    || ap_condition_if_none_match(r, h->resp_hdrs)
+                            == AP_CONDITION_NOMATCH
+                    || ap_condition_if_modified_since(r, h->resp_hdrs)
+                            == AP_CONDITION_NOMATCH
+                    || ap_condition_if_range(r, h->resp_hdrs) == AP_CONDITION_NOMATCH) {
+                mismatch = 1;
+            }
+
             /* Is our cached response fresh enough? */
-            fresh = cache_check_freshness(h, cache, r);
-            if (!fresh) {
+            if (mismatch || !cache_check_freshness(h, cache, r)) {
                 const char *etag, *lastmod;
 
                 /* Cache-Control: only-if-cached and revalidation required, try
@@ -307,42 +325,45 @@ int cache_select(cache_request_rec *cache, request_rec *r)
                         r->headers_in);
                 cache->stale_handle = h;
 
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO(00695)
-                        "Cached response for %s isn't fresh.  Adding/replacing "
-                        "conditional request headers.", r->uri);
+                /* if no existing conditionals, use conditionals of our own */
+                if (!mismatch) {
 
-                /* We can only revalidate with our own conditionals: remove the
-                 * conditions from the original request.
-                 */
-                apr_table_unset(r->headers_in, "If-Match");
-                apr_table_unset(r->headers_in, "If-Modified-Since");
-                apr_table_unset(r->headers_in, "If-None-Match");
-                apr_table_unset(r->headers_in, "If-Range");
-                apr_table_unset(r->headers_in, "If-Unmodified-Since");
+                    ap_log_rerror(
+                            APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO(00695) "Cached response for %s isn't fresh. Adding "
+                            "conditional request headers.", r->uri);
 
-                etag = apr_table_get(h->resp_hdrs, "ETag");
-                lastmod = apr_table_get(h->resp_hdrs, "Last-Modified");
+                    /* Remove existing conditionals that might conflict with ours */
+                    apr_table_unset(r->headers_in, "If-Match");
+                    apr_table_unset(r->headers_in, "If-Modified-Since");
+                    apr_table_unset(r->headers_in, "If-None-Match");
+                    apr_table_unset(r->headers_in, "If-Range");
+                    apr_table_unset(r->headers_in, "If-Unmodified-Since");
 
-                if (etag || lastmod) {
-                    /* If we have a cached etag and/or Last-Modified add in
-                     * our own conditionals.
-                     */
+                    etag = apr_table_get(h->resp_hdrs, "ETag");
+                    lastmod = apr_table_get(h->resp_hdrs, "Last-Modified");
 
-                    if (etag) {
-                        apr_table_set(r->headers_in, "If-None-Match", etag);
+                    if (etag || lastmod) {
+                        /* If we have a cached etag and/or Last-Modified add in
+                         * our own conditionals.
+                         */
+
+                        if (etag) {
+                            apr_table_set(r->headers_in, "If-None-Match", etag);
+                        }
+
+                        if (lastmod) {
+                            apr_table_set(r->headers_in, "If-Modified-Since",
+                                    lastmod);
+                        }
+
+                        /*
+                         * Do not do Range requests with our own conditionals: If
+                         * we get 304 the Range does not matter and otherwise the
+                         * entity changed and we want to have the complete entity
+                         */
+                        apr_table_unset(r->headers_in, "Range");
+
                     }
-
-                    if (lastmod) {
-                        apr_table_set(r->headers_in, "If-Modified-Since",
-                                lastmod);
-                    }
-
-                    /*
-                     * Do not do Range requests with our own conditionals: If
-                     * we get 304 the Range does not matter and otherwise the
-                     * entity changed and we want to have the complete entity
-                     */
-                    apr_table_unset(r->headers_in, "Range");
 
                 }
 

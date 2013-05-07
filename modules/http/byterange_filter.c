@@ -82,8 +82,6 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
                             int *overlaps, int *reversals)
 {
     const char *range;
-    const char *if_range;
-    const char *match;
     const char *ct;
     char *cur;
     apr_array_header_t *merged;
@@ -120,20 +118,9 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
 
     /*
      * Check the If-Range header for Etag or Date.
-     * Note that this check will return false (as required) if either
-     * of the two etags are weak.
      */
-    if ((if_range = apr_table_get(r->headers_in, "If-Range"))) {
-        if (if_range[0] == '"') {
-            if (!(match = apr_table_get(r->headers_out, "Etag"))
-                || (strcmp(if_range, match) != 0)) {
-                return 0;
-            }
-        }
-        else if (!(match = apr_table_get(r->headers_out, "Last-Modified"))
-                 || (strcmp(if_range, match) != 0)) {
-            return 0;
-        }
+    if (AP_CONDITION_NOMATCH == ap_condition_if_range(r, r->headers_out)) {
+        return 0;
     }
 
     range += 6;
