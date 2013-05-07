@@ -318,6 +318,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk patch works (minus CHANGES, mmn bump)
       +1: minfrin
 
+    * core, mod_cache: Ensure RFC2616 compliance in ap_meets_conditions()
+      with weak validation combined with If-Range and Range headers. Break
+      out explicit conditional header checks to be useable elsewhere in the
+      server. Ensure weak validation RFC compliance in the byteranges filter.
+      Ensure RFC validation compliance when serving cached entities. PR 16142
+      trunk patch: http://svn.apache.org/r1479905
+      2.4.x patch: http://people.apache.org/~minfrin/httpd-if-range-fix2.4.patch
+                   (depends on r1479528 above)
+      +1: minfrin
+
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
