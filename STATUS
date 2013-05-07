@@ -328,6 +328,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    (depends on r1479528 above)
       +1: minfrin
 
+    * mod_cache: Ensure that we don't attempt to replace a cached response
+      with an older response as per RFC2616 13.12.
+      trunk patch: http://svn.apache.org/r1479966
+      http://people.apache.org/~minfrin/httpd-mod_cache-olderdate2.4.patch
+      +1: minfrin
+
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
