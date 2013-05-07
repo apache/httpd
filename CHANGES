@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_cache: Ensure that we don't attempt to replace a cached response
+     with an older response as per RFC2616 13.12. [Graham Leggett, Co-Advisor
+     <coad measurement-factory.com>]
+
   *) core, mod_cache: Ensure RFC2616 compliance in ap_meets_conditions()
      with weak validation combined with If-Range and Range headers. Break
      out explicit conditional header checks to be useable elsewhere in the
