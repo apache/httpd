@@ -1,6 +1,13 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core, mod_cache: Ensure RFC2616 compliance in ap_meets_conditions()
+     with weak validation combined with If-Range and Range headers. Break
+     out explicit conditional header checks to be useable elsewhere in the
+     server. Ensure weak validation RFC compliance in the byteranges filter.
+     Ensure RFC validation compliance when serving cached entities. PR 16142
+     [Graham Leggett, Co-Advisor <coad measurement-factory.com>]
+
   *) core: Add the ability to do explicit matching on weak and strong ETags
      as per RFC2616 Section 13.3.3. [Graham Leggett, Co-Advisor
      <coad measurement-factory.com>]

@@ -1318,7 +1318,7 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     if (rv != OK) {
         /* we've got a cache miss! tell anyone who cares */
         cache_run_cache_status(cache->handle, r, r->headers_out, AP_CACHE_MISS,
-                "cache miss: create_entity failed");
+                "cache miss: cache unwilling to store response");
 
         /* Caching layer declined the opportunity to cache the response */
         ap_remove_output_filter(f);

@@ -306,13 +306,229 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
     return 0;
 }
 
+AP_DECLARE(ap_condition_e) ap_condition_if_match(request_rec *r,
+        apr_table_t *headers)
+{
+    const char *if_match, *etag;
+
+    /* A server MUST use the strong comparison function (see section 13.3.3)
+     * to compare the entity tags in If-Match.
+     */
+    if ((if_match = apr_table_get(r->headers_in, "If-Match")) != NULL) {
+        if (if_match[0] == '*'
+                || ((etag = apr_table_get(headers, "ETag")) == NULL
+                        && !ap_find_etag_strong(r->pool, if_match, etag))) {
+            return AP_CONDITION_STRONG;
+        }
+        else {
+            return AP_CONDITION_NOMATCH;
+        }
+    }
+
+    return AP_CONDITION_NONE;
+}
+
+AP_DECLARE(ap_condition_e) ap_condition_if_unmodified_since(request_rec *r,
+        apr_table_t *headers)
+{
+    const char *if_unmodified;
+
+    if_unmodified = apr_table_get(r->headers_in, "If-Unmodified-Since");
+    if (if_unmodified) {
+        apr_int64_t mtime, reqtime;
+
+        apr_time_t ius = apr_time_sec(apr_date_parse_http(if_unmodified));
+
+        /* All of our comparisons must be in seconds, because that's the
+         * highest time resolution the HTTP specification allows.
+         */
+        mtime = apr_time_sec(apr_date_parse_http(
+                        apr_table_get(headers, "Last-Modified")));
+        if (mtime == APR_DATE_BAD) {
+            mtime = apr_time_sec(r->mtime ? r->mtime : apr_time_now());
+        }
+
+        reqtime = apr_time_sec(apr_date_parse_http(
+                        apr_table_get(headers, "Date")));
+        if (!reqtime) {
+            reqtime = apr_time_sec(r->request_time);
+        }
+
+        if ((ius != APR_DATE_BAD) && (mtime > ius)) {
+            if (reqtime < mtime + 60) {
+                if (apr_table_get(r->headers_in, "Range")) {
+                    /* weak matches not allowed with Range requests */
+                    return AP_CONDITION_NOMATCH;
+                }
+                else {
+                    return AP_CONDITION_WEAK;
+                }
+            }
+            else {
+                return AP_CONDITION_STRONG;
+            }
+        }
+        else {
+            return AP_CONDITION_NOMATCH;
+        }
+    }
+
+    return AP_CONDITION_NONE;
+}
+
+AP_DECLARE(ap_condition_e) ap_condition_if_none_match(request_rec *r,
+        apr_table_t *headers)
+{
+    const char *if_nonematch, *etag;
+
+    if_nonematch = apr_table_get(r->headers_in, "If-None-Match");
+    if (if_nonematch != NULL) {
+
+        if (if_nonematch[0] == '*') {
+            return AP_CONDITION_STRONG;
+        }
+
+        /* See section 13.3.3 for rules on how to determine if two entities tags
+         * match. The weak comparison function can only be used with GET or HEAD
+         * requests.
+         */
+        if (r->method_number == M_GET) {
+            if ((etag = apr_table_get(headers, "ETag")) != NULL) {
+                if (apr_table_get(r->headers_in, "Range")) {
+                    if (ap_find_etag_strong(r->pool, if_nonematch, etag)) {
+                        return AP_CONDITION_STRONG;
+                    }
+                }
+                else {
+                    if (ap_find_etag_weak(r->pool, if_nonematch, etag)) {
+                        return AP_CONDITION_WEAK;
+                    }
+                }
+            }
+        }
+
+        else if ((etag = apr_table_get(headers, "ETag")) != NULL
+                && ap_find_etag_strong(r->pool, if_nonematch, etag)) {
+            return AP_CONDITION_STRONG;
+        }
+        return AP_CONDITION_NOMATCH;
+    }
+
+    return AP_CONDITION_NONE;
+}
+
+AP_DECLARE(ap_condition_e) ap_condition_if_modified_since(request_rec *r,
+        apr_table_t *headers)
+{
+    const char *if_modified_since;
+
+    if ((if_modified_since = apr_table_get(r->headers_in, "If-Modified-Since"))
+            != NULL) {
+        apr_int64_t mtime;
+        apr_int64_t ims, reqtime;
+
+        /* All of our comparisons must be in seconds, because that's the
+         * highest time resolution the HTTP specification allows.
+         */
+
+        mtime = apr_time_sec(apr_date_parse_http(
+                        apr_table_get(headers, "Last-Modified")));
+        if (mtime == APR_DATE_BAD) {
+            mtime = apr_time_sec(r->mtime ? r->mtime : apr_time_now());
+        }
+
+        reqtime = apr_time_sec(apr_date_parse_http(
+                        apr_table_get(headers, "Date")));
+        if (!reqtime) {
+            reqtime = apr_time_sec(r->request_time);
+        }
+
+        ims = apr_time_sec(apr_date_parse_http(if_modified_since));
+
+        if (ims >= mtime && ims <= reqtime) {
+            if (reqtime < mtime + 60) {
+                if (apr_table_get(r->headers_in, "Range")) {
+                    /* weak matches not allowed with Range requests */
+                    return AP_CONDITION_NOMATCH;
+                }
+                else {
+                    return AP_CONDITION_WEAK;
+                }
+            }
+            else {
+                return AP_CONDITION_STRONG;
+            }
+        }
+        else {
+            return AP_CONDITION_NOMATCH;
+        }
+    }
+
+    return AP_CONDITION_NONE;
+}
+
+AP_DECLARE(ap_condition_e) ap_condition_if_range(request_rec *r,
+        apr_table_t *headers)
+{
+    const char *if_range, *etag;
+
+    if ((if_range = apr_table_get(r->headers_in, "If-Range"))
+            && apr_table_get(r->headers_in, "Range")) {
+        if (if_range[0] == '"') {
+
+            if ((etag = apr_table_get(headers, "ETag"))
+                    && !strcmp(if_range, etag)) {
+                return AP_CONDITION_STRONG;
+            }
+            else {
+                return AP_CONDITION_NOMATCH;
+            }
+
+        }
+        else {
+            apr_int64_t mtime;
+            apr_int64_t rtime, reqtime;
+
+            /* All of our comparisons must be in seconds, because that's the
+             * highest time resolution the HTTP specification allows.
+             */
+
+            mtime = apr_time_sec(apr_date_parse_http(
+                            apr_table_get(headers, "Last-Modified")));
+            if (mtime == APR_DATE_BAD) {
+                mtime = apr_time_sec(r->mtime ? r->mtime : apr_time_now());
+            }
+
+            reqtime = apr_time_sec(apr_date_parse_http(
+                            apr_table_get(headers, "Date")));
+            if (!reqtime) {
+                reqtime = apr_time_sec(r->request_time);
+            }
+
+            rtime = apr_time_sec(apr_date_parse_http(if_range));
+
+            if (rtime == mtime) {
+                if (reqtime < mtime + 60) {
+                    /* weak matches not allowed with Range requests */
+                    return AP_CONDITION_NOMATCH;
+                }
+                else {
+                    return AP_CONDITION_STRONG;
+                }
+            }
+            else {
+                return AP_CONDITION_NOMATCH;
+            }
+        }
+    }
+
+    return AP_CONDITION_NONE;
+}
+
 AP_DECLARE(int) ap_meets_conditions(request_rec *r)
 {
-    const char *etag;
-    const char *if_match, *if_modified_since, *if_unmodified, *if_nonematch;
-    apr_time_t tmp_time;
-    apr_int64_t mtime;
-    int not_modified = 0;
+    int not_modified = -1; /* unset by default */
+    ap_condition_e cond;
 
     /* Check for conditional requests --- note that we only want to do
      * this if we are successful so far and we are not processing a
@@ -329,41 +545,30 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
         return OK;
     }
 
-    etag = apr_table_get(r->headers_out, "ETag");
-
-    /* All of our comparisons must be in seconds, because that's the
-     * highest time resolution the HTTP specification allows.
-     */
-    /* XXX: we should define a "time unset" constant */
-    tmp_time = ((r->mtime != 0) ? r->mtime : apr_time_now());
-    mtime =  apr_time_sec(tmp_time);
-
     /* If an If-Match request-header field was given
      * AND the field value is not "*" (meaning match anything)
      * AND if our strong ETag does not match any entity tag in that field,
      *     respond with a status of 412 (Precondition Failed).
      */
-    if ((if_match = apr_table_get(r->headers_in, "If-Match")) != NULL) {
-        if (if_match[0] != '*'
-                && (etag == NULL
-                        || !ap_find_etag_strong(r->pool, if_match, etag))) {
-            return HTTP_PRECONDITION_FAILED;
-        }
+    cond = ap_condition_if_match(r, r->headers_out);
+    if (AP_CONDITION_NOMATCH == cond) {
+        not_modified = 0;
     }
-    else {
-        /* Else if a valid If-Unmodified-Since request-header field was given
-         * AND the requested resource has been modified since the time
-         * specified in this field, then the server MUST
-         *     respond with a status of 412 (Precondition Failed).
-         */
-        if_unmodified = apr_table_get(r->headers_in, "If-Unmodified-Since");
-        if (if_unmodified != NULL) {
-            apr_time_t ius = apr_date_parse_http(if_unmodified);
+    else if (cond >= AP_CONDITION_WEAK) {
+        return HTTP_PRECONDITION_FAILED;
+    }
 
-            if ((ius != APR_DATE_BAD) && (mtime > apr_time_sec(ius))) {
-                return HTTP_PRECONDITION_FAILED;
-            }
-        }
+    /* Else if a valid If-Unmodified-Since request-header field was given
+     * AND the requested resource has been modified since the time
+     * specified in this field, then the server MUST
+     *     respond with a status of 412 (Precondition Failed).
+     */
+    cond = ap_condition_if_unmodified_since(r, r->headers_out);
+    if (AP_CONDITION_NOMATCH == cond) {
+        not_modified = 0;
+    }
+    else if (cond >= AP_CONDITION_WEAK) {
+        return HTTP_PRECONDITION_FAILED;
     }
 
     /* If an If-None-Match request-header field was given
@@ -378,26 +583,17 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
      * GET or HEAD allow weak etag comparison, all other methods require
      * strong comparison.  We can only use weak if it's not a range request.
      */
-    if_nonematch = apr_table_get(r->headers_in, "If-None-Match");
-    if (if_nonematch != NULL) {
+    cond = ap_condition_if_none_match(r, r->headers_out);
+    if (AP_CONDITION_NOMATCH == cond) {
+        not_modified = 0;
+    }
+    else if (cond >= AP_CONDITION_WEAK) {
         if (r->method_number == M_GET) {
-            if (if_nonematch[0] == '*') {
+            if (not_modified) {
                 not_modified = 1;
             }
-            else if (etag != NULL) {
-                if (apr_table_get(r->headers_in, "Range")) {
-                    not_modified = ap_find_etag_strong(r->pool, if_nonematch,
-                            etag);
-                }
-                else {
-                    not_modified = ap_find_etag_weak(r->pool, if_nonematch,
-                            etag);
-                }
-            }
         }
-        else if (if_nonematch[0] == '*'
-                || (etag != NULL
-                        && ap_find_etag_strong(r->pool, if_nonematch, etag))) {
+        else {
             return HTTP_PRECONDITION_FAILED;
         }
     }
@@ -409,22 +605,27 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
      *    respond with a status of 304 (Not Modified).
      * A date later than the server's current request time is invalid.
      */
-    if (r->method_number == M_GET
-        && (not_modified || !if_nonematch)
-        && (if_modified_since =
-              apr_table_get(r->headers_in,
-                            "If-Modified-Since")) != NULL) {
-        apr_time_t ims_time;
-        apr_int64_t ims, reqtime;
-
-        ims_time = apr_date_parse_http(if_modified_since);
-        ims = apr_time_sec(ims_time);
-        reqtime = apr_time_sec(r->request_time);
-
-        not_modified = ims >= mtime && ims <= reqtime;
+    cond = ap_condition_if_modified_since(r, r->headers_out);
+    if (AP_CONDITION_NOMATCH == cond) {
+        not_modified = 0;
+    }
+    else if (cond >= AP_CONDITION_WEAK) {
+        if (r->method_number == M_GET) {
+            if (not_modified) {
+                not_modified = 1;
+            }
+        }
     }
 
-    if (not_modified) {
+    /* If an If-Range and an Range header is present, we must return
+     * 200 OK. The byterange filter will convert it to a range response.
+     */
+    cond = ap_condition_if_range(r, r->headers_out);
+    if (cond > AP_CONDITION_NONE) {
+        return OK;
+    }
+
+    if (not_modified == 1) {
         return HTTP_NOT_MODIFIED;
     }
 
