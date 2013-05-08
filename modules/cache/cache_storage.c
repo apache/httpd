@@ -113,9 +113,30 @@ int cache_create_entity(cache_request_rec *cache, request_rec *r,
     return DECLINED;
 }
 
+static int filter_header_do(void *v, const char *key, const char *val)
+{
+    if ((*key == 'W' || *key == 'w') && !strcasecmp(key, "Warning")
+            && *val == '1') {
+        /* any stored Warning headers with warn-code 1xx (see section
+         * 14.46) MUST be deleted from the cache entry and the forwarded
+         * response.
+         */
+    }
+    else {
+        apr_table_addn(v, key, val);
+    }
+    return 1;
+}
 static int remove_header_do(void *v, const char *key, const char *val)
 {
-    apr_table_unset(v, key);
+    if ((*key == 'W' || *key == 'w') && !strcasecmp(key, "Warning")) {
+        /* any stored Warning headers with warn-code 2xx MUST be retained
+         * in the cache entry and the forwarded response.
+         */
+    }
+    else {
+        apr_table_unset(v, key);
+    }
     return 1;
 }
 static int add_header_do(void *v, const char *key, const char *val)
@@ -130,20 +151,25 @@ static int add_header_do(void *v, const char *key, const char *val)
  *
  * To complicate this, a header may be duplicated in either table. Should a
  * header exist in the top table, all matching headers will be removed from
- * the bottom table before the headers are combined.
+ * the bottom table before the headers are combined. The Warning headers are
+ * handled specially. Warnings are added rather than being replaced, while
+ * in the case of revalidation 1xx Warnings are stripped.
  *
  * The Content-Type and Last-Modified headers are then re-parsed and inserted
  * into the request.
  */
 void cache_accept_headers(cache_handle_t *h, request_rec *r, apr_table_t *top,
-        apr_table_t *bottom)
+        apr_table_t *bottom, int revalidation)
 {
     const char *v;
 
-    if (r->headers_out != bottom) {
+    if (revalidation) {
+        r->headers_out = apr_table_make(r->pool, 10);
+        apr_table_do(filter_header_do, r->headers_out, bottom, NULL);
+    }
+    else if (r->headers_out != bottom) {
         r->headers_out = apr_table_copy(r->pool, bottom);
     }
-
     apr_table_do(remove_header_do, r->headers_out, top, NULL);
     apr_table_do(add_header_do, r->headers_out, top, NULL);
 
@@ -372,7 +398,7 @@ int cache_select(cache_request_rec *cache, request_rec *r)
             }
 
             /* Okay, this response looks okay.  Merge in our stuff and go. */
-            cache_accept_headers(h, r, h->resp_hdrs, r->headers_out);
+            cache_accept_headers(h, r, h->resp_hdrs, r->headers_out, 0);
 
             cache->handle = h;
             return OK;

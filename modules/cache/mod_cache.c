@@ -1190,7 +1190,7 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         /* Merge in our cached headers.  However, keep any updated values. */
         /* take output, overlay on top of cached */
         cache_accept_headers(cache->handle, r, r->headers_out,
-                cache->handle->resp_hdrs);
+                cache->handle->resp_hdrs, 1);
 
         status = ap_meets_conditions(r);
         if (status != OK) {
@@ -1469,7 +1469,7 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         /* Merge in our cached headers.  However, keep any updated values. */
         /* take output, overlay on top of cached */
         cache_accept_headers(cache->handle, r, r->headers_out,
-                cache->handle->resp_hdrs);
+                cache->handle->resp_hdrs, 1);
     }
 
     /* Write away header information to cache. It is possible that we are

@@ -63,9 +63,10 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
  * @param r request_rec
  * @param top headers to be applied
  * @param bottom headers to be overwritten
+ * @param revalidation true if revalidation is taking place
  */
 void cache_accept_headers(cache_handle_t *h, request_rec *r, apr_table_t *top,
-        apr_table_t *bottom);
+        apr_table_t *bottom, int revalidation);
 
 #ifdef __cplusplus
 }
