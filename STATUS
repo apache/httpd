@@ -276,9 +276,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       +1: minfrin
 
     * mod_cache: When serving from cache, only the last header of a multivalued
-      header was taken into account. Fixed.
+      header was taken into account. Fixed. Ensure that Warning headers are correctly
+      handled as per RFC2616.
       trunk patch: http://svn.apache.org/r1478441
-      2.4.x patch: trunk patch works (minus CHANGES)
+                   http://svn.apache.org/r1480283
+      2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-multipleheaders2.4.patch
       +1: minfrin
 
     * mod_cache: Make sure Vary processing handles multivalued Vary headers and
