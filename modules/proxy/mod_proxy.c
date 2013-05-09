@@ -1187,8 +1187,10 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->badopt_set = 0;
     ps->source_address = NULL;
     ps->source_address_set = 0;
-    ps->pool = p;
-
+    apr_pool_create_ex(&ps->pool, p, NULL, NULL);
+    apr_global_mutex_create(&ps->mutex,
+                            "mod_proxy_config_mutex",
+                            APR_LOCK_DEFAULT, p);
     return ps;
 }
 
@@ -1249,7 +1251,8 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->proxy_status_set = overrides->proxy_status_set || base->proxy_status_set;
     ps->source_address = (overrides->source_address_set == 0) ? base->source_address : overrides->source_address;
     ps->source_address_set = overrides->source_address_set || base->source_address_set;
-    ps->pool = p;
+    ps->pool = base->pool;
+    ps->mutex = base->mutex;
     return ps;
 }
 static const char *set_source_address(cmd_parms *parms, void *dummy,

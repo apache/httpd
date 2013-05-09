@@ -1681,6 +1681,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
 {
     apr_status_t rv = APR_SUCCESS;
     int mpm_threads;
+    proxy_server_conf *conf = (proxy_server_conf *)ap_get_module_config(s->module_config, &proxy_module);
 
     if (worker->s->status & PROXY_WORKER_INITIALIZED) {
         /* The worker is already initialized */
@@ -1730,12 +1731,14 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
     else {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00927)
                      "initializing worker %s local", worker->s->name);
+        apr_global_mutex_lock(conf->mutex);
         /* Now init local worker data */
         if (worker->tmutex == NULL) {
             rv = apr_thread_mutex_create(&(worker->tmutex), APR_THREAD_MUTEX_DEFAULT, p);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00928)
                              "can not create worker thread mutex");
+                apr_global_mutex_unlock(conf->mutex);
                 return rv;
             }
         }
@@ -1744,6 +1747,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
         if (worker->cp == NULL) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00929)
                          "can not create connection pool");
+            apr_global_mutex_unlock(conf->mutex);
             return APR_EGENERAL;
         }
 
@@ -1779,6 +1783,8 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
                  "initialized single connection worker in child %" APR_PID_T_FMT " for (%s)",
                  getpid(), worker->s->hostname);
         }
+        apr_global_mutex_unlock(conf->mutex);
+
     }
     if (rv == APR_SUCCESS) {
         worker->s->status |= (PROXY_WORKER_INITIALIZED);
@@ -2893,14 +2899,17 @@ PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b, server_rec
         if (!found) {
             proxy_worker **runtime;
             runtime = apr_array_push(b->workers);
+            apr_global_mutex_lock(conf->mutex);
             *runtime = apr_palloc(conf->pool, sizeof(proxy_worker));
+            apr_global_mutex_unlock(conf->mutex);
             (*runtime)->hash = shm->hash;
             (*runtime)->context = NULL;
             (*runtime)->cp = NULL;
             (*runtime)->balancer = b;
             (*runtime)->s = shm;
             (*runtime)->tmutex = NULL;
-            if ((rv = ap_proxy_initialize_worker(*runtime, s, conf->pool)) != APR_SUCCESS) {
+            rv = ap_proxy_initialize_worker(*runtime, s, conf->pool);
+            if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(00966) "Cannot init worker");
                 return rv;
             }
