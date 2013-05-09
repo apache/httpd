@@ -164,7 +164,7 @@ typedef struct {
         status_full
     } proxy_status;             /* Status display options */
     apr_sockaddr_t *source_address;
-    apr_global_mutex_t  *mutex; /* global lock (needed??) */
+    apr_global_mutex_t  *mutex; /* global lock, for pool, etc */
     ap_slotmem_instance_t *bslot;  /* balancers shm data - runtime */
     ap_slotmem_provider_t *storage;
 
