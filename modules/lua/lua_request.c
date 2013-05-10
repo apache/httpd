@@ -1574,7 +1574,7 @@ static int lua_ap_sleep(lua_State *L)
 
     apr_interval_time_t msec;
     luaL_checktype(L, 1, LUA_TNUMBER);
-    msec = (lua_tointeger(L, 1) * 1000000);
+    msec = (lua_tonumber(L, 1) * 1000000);
     apr_sleep(msec);
     return 0;
 }
