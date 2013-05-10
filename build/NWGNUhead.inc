@@ -82,8 +82,10 @@ clobber_prebuild ::
 
 $(SUBDIRS) : FORCE
 ifneq "$(MAKECMDGOALS)" "clean"
+ifneq "$(findstring clobber_,$(MAKECMDGOALS))" "clobber_"
 	@$(ECHONL)
 	@echo $(DL)Building $(CURDIR)/$@$(DL)
+endif
 endif
 	$(MAKE) -C $@ $(MAKECMDGOALS) -f NWGNUmakefile RELEASE=$(RELEASE) DEST="$(INSTALL)" LM_LICENSE_FILE="$(LM_LICENSE_FILE)"
 	@$(ECHONL)
