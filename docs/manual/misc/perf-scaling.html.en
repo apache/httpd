@@ -1306,8 +1306,7 @@ Listen *:8001
       &lt;Directory
       "/home/sctemme/inst/blog/httpd/htdocs"&gt;
           Options +Indexes
-          Order allow,deny
-          Allow from all
+          Require all granted
           RewriteEngine on
           RewriteCond %{REQUEST_FILENAME} !-f
           RewriteCond %{REQUEST_FILENAME} !-d
@@ -1321,8 +1320,7 @@ Listen *:8001
       ScriptAlias /cgi-bin/ /home/sctemme/inst/blog/bin/
       &lt;Directory "/home/sctemme/inst/blog/bin"&gt;
           Options +ExecCGI
-          Order allow,deny
-          Allow from all
+          Require all granted
       &lt;/Directory&gt;
   &lt;/VirtualHost&gt;
 </pre>
