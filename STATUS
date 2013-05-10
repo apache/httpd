@@ -336,6 +336,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://people.apache.org/~minfrin/httpd-mod_cache-olderdate2.4.patch
       +1: minfrin
 
+    * mod_cache: If a 304 response indicates an entity not currently cached, then
+      the cache MUST disregard the response and repeat the request without the 
+      conditional.
+      trunk patch: http://svn.apache.org/r1481197
+      http://people.apache.org/~minfrin/httpd-mod_cache-uncacheable304-2.4.patch
+      +1: minfrin
+
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
