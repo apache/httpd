@@ -473,7 +473,7 @@ CustomLog logs/access_log common-cache
 
 
       <p><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> will run before
-      <code class="module"><a href="./mod/mod_env.html">mod_env</a></code> and when successfull will deliver the
+      <code class="module"><a href="./mod/mod_env.html">mod_env</a></code> and, when successful, will deliver the
       content without it. In that case a cache hit will log
       <code>-</code>, while a cache miss will log <code>1</code>.</p>
 
