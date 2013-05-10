@@ -95,9 +95,9 @@ CPPOPT_DEPENDS	= $(CCOPT_DEPENDS)
 # Generic compiler rules
 #
 
-ifneq ($(MAKECMDGOALS),clean)
+ifneq "$(MAKECMDGOALS)" "clean"
+ifneq "$(findstring clobber_,$(MAKECMDGOALS))" "clobber_"
 $(APBUILD)/NWGNUversion.inc: $(APBUILD)/nw_ver.awk $(SRC)/include/ap_release.h
-#	@echo Generating $@
 	@echo $(DL)GEN  $@$(DL)
 	$(AWK) -f $^ > $@
 
@@ -109,6 +109,7 @@ else
 VERSION		= 2,3,0
 VERSION_STR	= 2.3.0
 VERSION_MAJMIN	= 23
+endif
 endif
 endif
 

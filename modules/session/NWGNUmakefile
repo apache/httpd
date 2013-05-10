@@ -18,8 +18,10 @@ include $(AP_WORK)/build/NWGNUhead.inc
 #
 # Make sure all needed macro's are defined
 #
-ifneq ($(MAKECMDGOALS),clean)
+ifneq "$(MAKECMDGOALS)" "clean"
+ifneq "$(findstring clobber_,$(MAKECMDGOALS))" "clobber_"
 APU_HAVE_CRYPTO = $(shell $(AWK) '/^\#define APU_HAVE_CRYPTO/{print $$3}' $(APRUTIL)/include/apu.h)
+endif
 endif
 
 #
