@@ -264,7 +264,7 @@ changes on a per-directory basis.</p>
 
     <p>As discussed in the documentation on <a href="../sections.html">Configuration Sections</a>,
     <code>.htaccess</code> files can override the <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> sections for
-    the corresponding directory, but will be overriden by other types
+    the corresponding directory, but will be overridden by other types
     of configuration sections from the main configuration files. This
     fact can be used to enforce certain configurations, even in the
     presence of a liberal <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> setting. For example, to
