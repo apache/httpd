@@ -106,9 +106,9 @@ $(APBUILD)/NWGNUversion.inc: $(APBUILD)/nw_ver.awk $(SRC)/include/ap_release.h
 ifneq "$(strip $(VERSION_STR))" ""
 VERSION_INC = $(APBUILD)/NWGNUversion.inc
 else
-VERSION		= 2,3,0
-VERSION_STR	= 2.3.0
-VERSION_MAJMIN	= 23
+VERSION		= 2,5,0
+VERSION_STR	= 2.5.0
+VERSION_MAJMIN	= 25
 endif
 endif
 endif
