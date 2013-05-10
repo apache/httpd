@@ -340,7 +340,7 @@
       Windows event log when running on Windows NT. This mechanism
       acts as a backup for those situations where Apache is not yet
       prepared to use the <code>error.log</code> file. You can
-      review the Windows Applicat Event Log by using the Event Viewer,
+      review the Windows Application Event Log by using the Event Viewer,
       e.g. Start - Settings - Control Panel - Administrative Tools
       - Event Viewer.</p></li>
     </ul>
