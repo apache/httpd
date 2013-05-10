@@ -97,7 +97,7 @@
     will not cause header names to be added to the Vary header. The
     messages are logged at loglevel info.</p>
 
-    <p>The hook specifies before which phase of request procesing the message
+    <p>The hook specifies before which phase of request processing the message
     will be logged. The following hooks are supported:</p>
 
     <table border="1" style="zebra">
