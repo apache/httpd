@@ -470,7 +470,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>tolower</code></td>
         <td>Convert string to lower case</td><td></td></tr>
     <tr><td><code>toupper</code></td>
-        <td>Convert string to uppser case</td><td></td></tr>
+        <td>Convert string to upper case</td><td></td></tr>
     <tr><td><code>escape</code></td>
         <td>Escape special characters in %hex encoding</td><td></td></tr>
     <tr><td><code>unescape</code></td>
