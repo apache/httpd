@@ -2018,7 +2018,7 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO()
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02471)
                  "start_threads: Using %s", apr_pollset_method_name(event_pollset));
     worker_sockets = apr_pcalloc(pchild, threads_per_child
                                  * sizeof(apr_socket_t *));

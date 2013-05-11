@@ -1104,7 +1104,7 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         reason = "updated entity is older than cached entity";
 
         /* while this response is not cacheable, the previous response still is */
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00770)
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02474)
                 "cache: Removing CACHE_REMOVE_URL filter.");
         ap_remove_output_filter(cache->remove_url_filter);
     }
@@ -1172,7 +1172,7 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     if (reason && r->status == HTTP_NOT_MODIFIED && cache->stale_handle) {
 
         ap_log_rerror(
-                APLOG_MARK, APLOG_INFO, 0, r, APLOGNO() "cache: %s responded with an uncacheable 304, retrying the request. Reason: %s", r->unparsed_uri, reason);
+                APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02473) "cache: %s responded with an uncacheable 304, retrying the request. Reason: %s", r->unparsed_uri, reason);
 
         /* we've got a cache conditional miss! tell anyone who cares */
         cache_run_cache_status(cache->handle, r, r->headers_out, AP_CACHE_MISS,
