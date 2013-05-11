@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: apachectl -S prints wildcard name-based virtual hosts twice. 
+     PR54948 [Eric Covener]
+
   *) mod_proxy: Reject invalid values for Max-Forwards. [Graham Leggett,
      Co-Advisor <coad measurement-factory.com>]
 
