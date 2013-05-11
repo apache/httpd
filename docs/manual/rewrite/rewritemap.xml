@@ -82,7 +82,7 @@ configuration.</note>
       substituted by <em>DefaultValue</em> or by the empty string
       if no <em>DefaultValue</em> was specified.</p>
 
-    <p>For example, you might define a
+    <p>For example, you can define a
       <directive>RewriteMap</directive> as:</p>
     <highlight language="config">RewriteMap examplemap txt:/path/to/file/map.txt</highlight>
     <p>You would then be able to use this map in a
@@ -162,20 +162,19 @@ RewriteRule (.*?[A-Z]+.*) ${lc:$1} [R]
     per line. Optionally, a line may be contain a comment, starting with
     a '#' character.</p>
 
-    <p>For example, the following might be valid entries in a map
-    file.</p>
+    <p>A valid text rewrite map file will have the following syntax:</p>
 
-    <p class="indent">
+    <example>
       # Comment line<br />
       <strong><em>MatchingKey</em> <em>SubstValue</em></strong><br />
       <strong><em>MatchingKey</em> <em>SubstValue</em></strong> # comment<br />
-    </p>
+    </example>
 
     <p>When the RewriteMap is invoked the argument is looked for in the
     first argument of a line, and, if found, the substitution value is
     returned.</p>
 
-    <p>For example, we might use a mapfile to translate product names to
+    <p>For example, we can use a mapfile to translate product names to
     product IDs for easier-to-remember URLs, using the following
     recipe:</p>
 <p><strong>Product to ID configuration</strong></p>
@@ -234,7 +233,7 @@ telephone  328
     One of these values will be chosen at random if the key is
     matched.</p>
 
-    <p>For example, you might use the following map
+    <p>For example, you can use the following map
     file and directives to provide a random load balancing between
     several back-end servers, via a reverse-proxy. Images are sent
     to one of the servers in the 'static' pool, while everything
