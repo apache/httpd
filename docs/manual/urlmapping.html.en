@@ -77,12 +77,12 @@
     <p>Then a request for <code>http://www.example.com/fish/</code> will
     cause httpd to attempt to serve the file
     <code>/var/www/html/fish/index.html</code>. In the event that
-    that file didn't exist, it will next attempt to serve file file
+    that file does not exist, it will next attempt to serve the file
     <code>/var/www/html/fish/index.php</code>.</p>
 
-    <p>If neither of these files existed, the next step would be to
+    <p>If neither of these files existed, the next step is to
     attempt to provide a directory index, if
-    <code class="module"><a href="./mod/mod_autoindex.html">mod_autoindex</a></code> were loaded and configured to permit
+    <code class="module"><a href="./mod/mod_autoindex.html">mod_autoindex</a></code> is loaded and configured to permit
     that.</p>
 
     <p>httpd is also capable of <a href="vhosts/">Virtual
