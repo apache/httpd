@@ -97,6 +97,24 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk patch applies
       +1: minfrin, jim, jailletc36
 
+    * mod_dav: Do not segfault on PROPFIND with a zero length DBM. PR 52559
+      trunk patch: http://svn.apache.org/r1476645
+      2.4.x patch: trunk patch works (minus CHANGES)
+      +1: minfrin, covener, sf
+
+    * event MPM: Provide error handling for ThreadStackSize. PR 54311
+      trunk patch: http://svn.apache.org/r1433682
+      2.4.x patch: http://people.apache.org/~minfrin/httpd-event-ThreadStackSize-error.patch
+      +1: minfrin, jailletc36, sf
+      note jailletc36: see Graham's comment in:
+      http://mail-archives.apache.org/mod_mbox/httpd-dev/201301.mbox/%3C8FBE7DC2-E5E0-4CA7-AF28-D69E9137DCE1@sharp.fm%3E
+      sf has no idea for a better wording
+
+    * mod_proxy: Reject invalid values for Max-Forwards.
+      trunk patch: http://svn.apache.org/r1481302
+      2.4.x patch: trunk patch works (minus CHANGES)
+      +1: minfrin, covener, sf
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -229,11 +247,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk patch works (minus CHANGES)
       +1: minfrin
 
-    * mod_dav: Do not segfault on PROPFIND with a zero length DBM. PR 52559
-      trunk patch: http://svn.apache.org/r1476645
-      2.4.x patch: trunk patch works (minus CHANGES)
-      +1: minfrin, covener
-
     * core, mod_ssl: Lift the restriction that prevents mod_ssl taking
       full advantage of the event MPM. Enable the ability for a module
       to reverse the sense of a poll event from a read to a write or vice
@@ -250,13 +263,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/r1464241
       2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_dav-errorhandling.patch
       +1: minfrin
-
-    * event MPM: Provide error handling for ThreadStackSize. PR 54311
-      trunk patch: http://svn.apache.org/r1433682
-      2.4.x patch: http://people.apache.org/~minfrin/httpd-event-ThreadStackSize-error.patch
-      +1: minfrin, jailletc36
-      note jailletc36: see Graham's comment in:
-      http://mail-archives.apache.org/mod_mbox/httpd-dev/201301.mbox/%3C8FBE7DC2-E5E0-4CA7-AF28-D69E9137DCE1@sharp.fm%3E
 
     * mod_cache: Invalidate cached entities in response to RFC2616 Section
       13.10 Invalidation After Updates or Deletions. PR 15868
@@ -342,11 +348,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/r1481197
       2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-uncacheable304-2.4.patch
       +1: minfrin
-
-    * mod_proxy: Reject invalid values for Max-Forwards.
-      trunk patch: http://svn.apache.org/r1481302
-      2.4.x patch: trunk patch works (minus CHANGES)
-      +1: minfrin, covener
 
     * core: PR54948 wildcard name-based virtual hosts printed twice in httpd -S
       trunk patch: http://svn.apache.org/r1481306.
