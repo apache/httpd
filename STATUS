@@ -346,10 +346,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mod_proxy: Reject invalid values for Max-Forwards.
       trunk patch: http://svn.apache.org/r1481302
+                   http://svn.apache.org/r1481397
       2.4.x patch: trunk patch works (minus CHANGES)
-      +1: minfrin, covener
-      sf: needs adjustment of format string: http://svn.apache.org/r1481397
-          with that, +1
+      +1: minfrin, sf
 
     * core: PR54948 wildcard name-based virtual hosts printed twice in httpd -S
       trunk patch: http://svn.apache.org/r1481306.
