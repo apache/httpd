@@ -348,6 +348,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk patch works (minus CHANGES)
       +1: minfrin
 
+    * core: PR54948 wildcard name-based virtual hosts printed twice in httpd -S
+      trunk patch: http://svn.apache.org/r1481306.
+      2.4.x patch: trunk works
+      +1 covener
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
