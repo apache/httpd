@@ -879,7 +879,7 @@ static int proxy_handler(request_rec *r)
     int i, rc, access_status;
     int direct_connect = 0;
     const char *str;
-    long maxfwd;
+    apr_int64_t maxfwd;
     proxy_balancer *balancer = NULL;
     proxy_worker *worker = NULL;
     int attempts = 0, max_attempts = 0;
@@ -891,8 +891,14 @@ static int proxy_handler(request_rec *r)
 
     /* handle max-forwards / OPTIONS / TRACE */
     if ((str = apr_table_get(r->headers_in, "Max-Forwards"))) {
-        maxfwd = strtol(str, NULL, 10);
-        if (maxfwd < 1) {
+        char *end;
+        maxfwd = apr_strtoi64(str, &end, 10);
+        if (maxfwd < 0 || maxfwd == APR_INT64_MAX || *end) {
+            return ap_proxyerror(r, HTTP_BAD_REQUEST,
+                    apr_psprintf(r->pool,
+                            "Max-Forwards value '%s' could not be parsed", str));
+        }
+        else if (maxfwd == 0) {
             switch (r->method_number) {
             case M_TRACE: {
                 int access_status;
@@ -913,7 +919,7 @@ static int proxy_handler(request_rec *r)
                 return OK;
             }
             default: {
-                return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+                return ap_proxyerror(r, HTTP_BAD_REQUEST,
                                      "Max-Forwards has reached zero - proxy loop?");
             }
             }
