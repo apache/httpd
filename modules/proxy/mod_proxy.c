@@ -932,7 +932,7 @@ static int proxy_handler(request_rec *r)
     }
     if (maxfwd >= 0) {
         apr_table_setn(r->headers_in, "Max-Forwards",
-                       apr_psprintf(r->pool, "%ld", maxfwd));
+                       apr_psprintf(r->pool, "%" APR_INT64_T_FMT, maxfwd));
     }
 
     if (r->method_number == M_TRACE) {
