@@ -506,7 +506,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 
 # Only allow access to this content during business hours
 &lt;Directory "/foo/bar/business"&gt;
-    Require expr %{TIME_HOUR} -gt 9 &amp;&amp; %{TIME_HOUR} -lt 17 
+    Require expr "%{TIME_HOUR} -gt 9 &amp;&amp; %{TIME_HOUR} -lt 17"
 &lt;/Directory&gt;	
 	</pre>
 
