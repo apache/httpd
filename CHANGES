@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.5
 
+  *) core: Improve error message where client's request-line exceeds
+     LimitRequestLine. PR 54384 [Christophe Jaillet]
+
   *) mod_macro: New module that provides macros within configuration files.
      [Fabien Coelho]
 
