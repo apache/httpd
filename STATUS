@@ -90,11 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_dav: Do not segfault on PROPFIND with a zero length DBM. PR 52559
-      trunk patch: http://svn.apache.org/r1476645
-      2.4.x patch: trunk patch works (minus CHANGES)
-      +1: minfrin, covener, sf
-
     * event MPM: Provide error handling for ThreadStackSize. PR 54311
       trunk patch: http://svn.apache.org/r1433682
       2.4.x patch: http://people.apache.org/~minfrin/httpd-event-ThreadStackSize-error.patch
