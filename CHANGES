@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.5
 
+  *) event MPM: Provide error handling for ThreadStackSize. PR 54311
+     [Tianyin Xu <tixu cs.ucsd.edu>, Christophe Jaillet]
+
   *) mod_dav: Do not segfault on PROPFIND with a zero length DBM.
      PR 52559 [Diego Santa Cruz <diego.santaCruz spinetix.com>]
 

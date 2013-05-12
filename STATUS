@@ -90,14 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * event MPM: Provide error handling for ThreadStackSize. PR 54311
-      trunk patch: http://svn.apache.org/r1433682
-      2.4.x patch: http://people.apache.org/~minfrin/httpd-event-ThreadStackSize-error.patch
-      +1: minfrin, jailletc36, sf
-      note jailletc36: see Graham's comment in:
-      http://mail-archives.apache.org/mod_mbox/httpd-dev/201301.mbox/%3C8FBE7DC2-E5E0-4CA7-AF28-D69E9137DCE1@sharp.fm%3E
-      sf has no idea for a better wording
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
