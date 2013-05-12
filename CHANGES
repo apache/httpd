@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.5
 
+  *) mod_dav: Do not segfault on PROPFIND with a zero length DBM.
+     PR 52559 [Diego Santa Cruz <diego.santaCruz spinetix.com>]
+
   *) core: Improve error message where client's request-line exceeds
      LimitRequestLine. PR 54384 [Christophe Jaillet]
 
