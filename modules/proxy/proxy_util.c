@@ -2969,45 +2969,71 @@ PROXY_DECLARE(proxy_balancer_shared *) ap_proxy_find_balancershm(ap_slotmem_prov
     return NULL;
 }
 
-void proxy_util_register_hooks(apr_pool_t *p)
-{
-    APR_REGISTER_OPTIONAL_FN(ap_proxy_retry_worker);
-}
-
-/* Clear all connection-based headers from the incoming headers table */
-typedef struct header_dptr {
+typedef struct header_connection {
     apr_pool_t *pool;
-    apr_table_t *table;
-    apr_time_t time;
-} header_dptr;
+    apr_array_header_t *array;
+    const char *first;
+    unsigned int closed:1;
+} header_connection;
 
-static int clear_conn_headers(void *data, const char *key, const char *val)
+static int find_conn_headers(void *data, const char *key, const char *val)
 {
-    apr_table_t *headers = ((header_dptr*)data)->table;
-    apr_pool_t *pool = ((header_dptr*)data)->pool;
+    header_connection *x = data;
     const char *name;
-    char *next = apr_pstrdup(pool, val);
-    while (*next) {
-        name = next;
-        while (*next && !apr_isspace(*next) && (*next != ',')) {
-            ++next;
+
+    name = ap_get_token(x->pool, &val, 0);
+    while (name && *name) {
+        if (!strcasecmp(name, "close")) {
+            x->closed = 1;
         }
-        while (*next && (apr_isspace(*next) || (*next == ','))) {
-            *next++ = '\0';
+        if (!x->first) {
+            x->first = name;
         }
-        apr_table_unset(headers, name);
+        else {
+            if (!x->array) {
+                x->array = apr_array_make(x->pool, 4, sizeof(char *));
+            }
+            const char **elt = apr_array_push(x->array);
+            *elt = name;
+        }
+        while (*val == ',') {
+            ++val;
+        }
+        name = ap_get_token(x->pool, &val, 0);
     }
     return 1;
 }
 
-static void proxy_clear_connection(request_rec *r, apr_table_t *headers)
+/**
+ * Remove all headers referred to by the Connection header.
+ */
+PROXY_DECLARE(int) ap_proxy_clear_connection(request_rec *r,
+        apr_table_t *headers)
 {
-    header_dptr x;
+    const char **name;
+    header_connection x;
+
     x.pool = r->pool;
-    x.table = headers;
+    x.array = NULL;
+    x.first = NULL;
+    x.closed = 0;
+
     apr_table_unset(headers, "Proxy-Connection");
-    apr_table_do(clear_conn_headers, &x, r->headers_in, "Connection", NULL);
-    apr_table_unset(headers, "Connection");
+
+    apr_table_do(find_conn_headers, &x, headers, "Connection", NULL);
+    if (x.first) {
+        /* fast path - no memory allocated for one header */
+        apr_table_unset(headers, "Connection");
+        apr_table_unset(headers, x.first);
+    }
+    if (x.array) {
+        /* two or more headers */
+        while ((name = apr_array_pop(x.array))) {
+            apr_table_unset(headers, *name);
+        }
+    }
+
+    return x.closed;
 }
 
 PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
@@ -3194,7 +3220,7 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
      * apr is compiled with APR_POOL_DEBUG.
      */
     headers_in_copy = apr_table_copy(r->pool, r->headers_in);
-    proxy_clear_connection(r, headers_in_copy);
+    ap_proxy_clear_connection(r, headers_in_copy);
     /* send request headers */
     headers_in_array = apr_table_elts(headers_in_copy);
     headers_in = (const apr_table_entry_t *) headers_in_array->elts;
@@ -3298,4 +3324,10 @@ PROXY_DECLARE(int) ap_proxy_pass_brigade(apr_bucket_alloc_t *bucket_alloc,
     }
     apr_brigade_cleanup(bb);
     return OK;
+}
+
+void proxy_util_register_hooks(apr_pool_t *p)
+{
+    APR_REGISTER_OPTIONAL_FN(ap_proxy_retry_worker);
+    APR_REGISTER_OPTIONAL_FN(ap_proxy_clear_connection);
 }

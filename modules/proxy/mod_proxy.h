@@ -961,6 +961,16 @@ PROXY_DECLARE(int) ap_proxy_pass_brigade(apr_bucket_alloc_t *bucket_alloc,
                                          conn_rec *origin, apr_bucket_brigade *bb,
                                          int flush);
 
+/**
+ * Clear the headers referenced by the Connection header from the given
+ * table, and remove the Connection header.
+ * @param r request
+ * @param headers table of headers to clear
+ * @return 1 if "close" was present, 0 otherwise.
+ */
+APR_DECLARE_OPTIONAL_FN(int, ap_proxy_clear_connection,
+        (request_rec *r, apr_table_t *headers));
+
 #define PROXY_LBMETHOD "proxylbmethod"
 
 /* The number of dynamic workers that can be added when reconfiguring.
