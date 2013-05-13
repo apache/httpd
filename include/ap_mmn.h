@@ -428,6 +428,7 @@
  *                         ap_condition_if_none_match(),
  *                         ap_condition_if_modified_since(),
  *                         ap_condition_if_range()
+ * 20121222.13 (2.5.0-dev) Add ap_proxy_clear_connection()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -435,7 +436,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20121222
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 12                  /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 13                  /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

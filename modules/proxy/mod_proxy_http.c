@@ -21,6 +21,9 @@
 
 module AP_MODULE_DECLARE_DATA proxy_http_module;
 
+static int (*ap_proxy_clear_connection_fn)(request_rec *r, apr_table_t *headers) =
+        NULL;
+
 static apr_status_t ap_proxy_http_cleanup(const char *scheme,
                                           request_rec *r,
                                           proxy_conn_rec *backend);
@@ -178,33 +181,7 @@ static apr_table_t *ap_proxy_clean_warnings(apr_pool_t *p, apr_table_t *headers)
         return headers;
    }
 }
-static int clear_conn_headers(void *data, const char *key, const char *val)
-{
-    apr_table_t *headers = ((header_dptr*)data)->table;
-    apr_pool_t *pool = ((header_dptr*)data)->pool;
-    const char *name;
-    char *next = apr_pstrdup(pool, val);
-    while (*next) {
-        name = next;
-        while (*next && !apr_isspace(*next) && (*next != ',')) {
-            ++next;
-        }
-        while (*next && (apr_isspace(*next) || (*next == ','))) {
-            *next++ = '\0';
-        }
-        apr_table_unset(headers, name);
-    }
-    return 1;
-}
-static void ap_proxy_clear_connection(apr_pool_t *p, apr_table_t *headers)
-{
-    header_dptr x;
-    x.pool = p;
-    x.table = headers;
-    apr_table_unset(headers, "Proxy-Connection");
-    apr_table_do(clear_conn_headers, &x, headers, "Connection", NULL);
-    apr_table_unset(headers, "Connection");
-}
+
 static void add_te_chunked(apr_pool_t *p,
                            apr_bucket_alloc_t *bucket_alloc,
                            apr_bucket_brigade *header_brigade)
@@ -1491,11 +1468,10 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              * ap_http_filter to know where to end.
              */
             te = apr_table_get(r->headers_out, "Transfer-Encoding");
+
             /* strip connection listed hop-by-hop headers from response */
-            if (ap_find_token(p, apr_table_get(r->headers_out, "Connection"),
-                              "close"))
-                backend->close = 1;
-            ap_proxy_clear_connection(p, r->headers_out);
+            backend->close = ap_proxy_clear_connection_fn(r, r->headers_out);
+
             if ((buf = apr_table_get(r->headers_out, "Content-Type"))) {
                 ap_set_content_type(r, apr_pstrdup(p, buf));
             }
@@ -1507,6 +1483,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             for (i=0; hop_by_hop_hdrs[i]; ++i) {
                 apr_table_unset(r->headers_out, hop_by_hop_hdrs[i]);
             }
+
             /* Delete warnings with wrong date */
             r->headers_out = ap_proxy_clean_warnings(p, r->headers_out);
 
@@ -2031,8 +2008,34 @@ cleanup:
     }
     return status;
 }
+
+/* post_config hook: */
+static int proxy_http_post_config(apr_pool_t *pconf, apr_pool_t *plog,
+        apr_pool_t *ptemp, server_rec *s)
+{
+
+    /* proxy_http_post_config() will be called twice during startup.  So, don't
+     * set up the static data the 1st time through. */
+    if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG) {
+        return OK;
+    }
+
+    if (!ap_proxy_clear_connection_fn) {
+        ap_proxy_clear_connection_fn =
+                APR_RETRIEVE_OPTIONAL_FN(ap_proxy_clear_connection);
+        if (!ap_proxy_clear_connection_fn) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+                         "mod_proxy must be loaded for mod_proxy_http");
+            return !OK;
+        }
+    }
+
+    return OK;
+}
+
 static void ap_proxy_http_register_hook(apr_pool_t *p)
 {
+    ap_hook_post_config(proxy_http_post_config, NULL, NULL, APR_HOOK_MIDDLE);
     proxy_hook_scheme_handler(proxy_http_handler, NULL, NULL, APR_HOOK_FIRST);
     proxy_hook_canon_handler(proxy_http_canon, NULL, NULL, APR_HOOK_FIRST);
     warn_rx = ap_pregcomp(p, "[0-9]{3}[ \t]+[^ \t]+[ \t]+\"[^\"]*\"([ \t]+\"([^\"]+)\")?", 0);
