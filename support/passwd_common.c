@@ -24,8 +24,10 @@
 
 #include "apr_md5.h"
 #include "apr_sha1.h"
-#include <time.h>
 
+#if APR_HAVE_TIME_H
+#include <time.h>
+#endif
 #if APR_HAVE_CRYPT_H
 #include <crypt.h>
 #endif
@@ -38,10 +40,8 @@
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-
-#ifdef WIN32
-#include <conio.h>
-#define unlink _unlink
+#if APR_HAVE_IO_H
+#include <io.h>
 #endif
 
 apr_file_t *errfile;
