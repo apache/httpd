@@ -3000,13 +3000,13 @@ static int clear_conn_headers(void *data, const char *key, const char *val)
     return 1;
 }
 
-static void proxy_clear_connection(apr_pool_t *p, apr_table_t *headers)
+static void proxy_clear_connection(request_rec *r, apr_table_t *headers)
 {
     header_dptr x;
-    x.pool = p;
+    x.pool = r->pool;
     x.table = headers;
     apr_table_unset(headers, "Proxy-Connection");
-    apr_table_do(clear_conn_headers, &x, headers, "Connection", NULL);
+    apr_table_do(clear_conn_headers, &x, r->headers_in, "Connection", NULL);
     apr_table_unset(headers, "Connection");
 }
 
@@ -3194,7 +3194,7 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
      * apr is compiled with APR_POOL_DEBUG.
      */
     headers_in_copy = apr_table_copy(r->pool, r->headers_in);
-    proxy_clear_connection(p, headers_in_copy);
+    proxy_clear_connection(r, headers_in_copy);
     /* send request headers */
     headers_in_array = apr_table_elts(headers_in_copy);
     headers_in = (const apr_table_entry_t *) headers_in_array->elts;

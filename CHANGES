@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy: Ensure we don't attempt to amend a table we are iterating
+     through, ensuring that all headers listed by Connection are removed.
+     [Graham Leggett, Co-Advisor <coad measurement-factory.com>]
+
   *) core: apachectl -S prints wildcard name-based virtual hosts twice. 
      PR54948 [Eric Covener]
 
