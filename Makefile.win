@@ -46,7 +46,7 @@
 # so the server root should be given in forward slashes (quoted),
 # preferably with the drive designation!
 
-!IF EXIST("httpd.vcproj") && ([devenv /help > NUL 2>&1] == 0) \
+!IF EXIST("Apache.sln") && ([devenv /help > NUL 2>&1] == 0) \
     && !defined(USEMAK) && !defined(USEDSW)
 USESLN=1
 USEMAK=0
