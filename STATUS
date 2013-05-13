@@ -340,6 +340,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-tmppath.patch
       +1: minfrin
 
+    * mod_proxy: Fix pool usage by protecting w/ a mutex
+      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1480627
+      2.4.x patch: trunk works, modulo CHANGES
+      +1: jim
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
