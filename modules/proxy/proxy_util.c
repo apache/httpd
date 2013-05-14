@@ -2990,10 +2990,11 @@ static int find_conn_headers(void *data, const char *key, const char *val)
             x->first = name;
         }
         else {
+            const char **elt;
             if (!x->array) {
                 x->array = apr_array_make(x->pool, 4, sizeof(char *));
             }
-            const char **elt = apr_array_push(x->array);
+            elt = apr_array_push(x->array);
             *elt = name;
         }
         while (*val == ',') {
@@ -3007,8 +3008,7 @@ static int find_conn_headers(void *data, const char *key, const char *val)
 /**
  * Remove all headers referred to by the Connection header.
  */
-PROXY_DECLARE(int) ap_proxy_clear_connection(request_rec *r,
-        apr_table_t *headers)
+static int ap_proxy_clear_connection(request_rec *r, apr_table_t *headers)
 {
     const char **name;
     header_connection x;
