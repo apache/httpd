@@ -345,6 +345,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk works, modulo CHANGES
       +1: jim
 
+    * ap_release.h: Make AP_SERVER_ADD_STRING define-able from CFLAGS.
+      trunk patch: http://svn.apache.org/r1481955
+      2.4.x patch: trunk works (with fuzz)
+      +1: fuankg
+
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
