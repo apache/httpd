@@ -1001,9 +1001,11 @@ static int dav_method_put(request_rec *r)
                 }
                 else {
                     /* XXX: should this actually be HTTP_BAD_REQUEST? */
-                    http_err = HTTP_INTERNAL_SERVER_ERROR;
-                    msg = apr_psprintf(r->pool, "An error occurred while reading"
-                                       " the request body (URI: %s)", msg);
+                    http_err = ap_map_http_request_error(rc,
+                            HTTP_INTERNAL_SERVER_ERROR);
+                    msg = apr_psprintf(r->pool,
+                            "An error occurred while reading"
+                                    " the request body (URI: %s)", msg);
                 }
                 err = dav_new_error(r->pool, http_err, 0, rc, msg);
                 break;

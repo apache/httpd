@@ -78,30 +78,6 @@ typedef struct http_filter_ctx {
     apr_bucket_brigade *bb;
 } http_ctx_t;
 
-/* bail out if some error in the HTTP input filter happens */
-static apr_status_t bail_out_on_error(http_ctx_t *ctx,
-                                      ap_filter_t *f,
-                                      int http_error)
-{
-    apr_bucket *e;
-    apr_bucket_brigade *bb = ctx->bb;
-
-    apr_brigade_cleanup(bb);
-    e = ap_bucket_error_create(http_error,
-                               NULL, f->r->pool,
-                               f->c->bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(bb, e);
-    e = apr_bucket_eos_create(f->c->bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(bb, e);
-    ctx->eos_sent = 1;
-    /* If chunked encoding / content-length are corrupt, we may treat parts
-     * of this request's body as the next one's headers.
-     * To be safe, disable keep-alive.
-     */
-    f->r->connection->keepalive = AP_CONN_CLOSE;
-    return ap_pass_brigade(f->r->output_filters, bb);
-}
-
 static apr_status_t get_remaining_chunk_line(http_ctx_t *ctx,
                                              apr_bucket_brigade *b,
                                              int linelimit)
@@ -269,7 +245,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                  */
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, f->r, APLOGNO(01585)
                               "Unknown Transfer-Encoding: %s", tenc);
-                return bail_out_on_error(ctx, f, HTTP_NOT_IMPLEMENTED);
+                return APR_ENOTIMPL;
             }
             else {
                 ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, f->r, APLOGNO(01586)
@@ -292,7 +268,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, f->r, APLOGNO(01587)
                               "Invalid Content-Length");
 
-                return bail_out_on_error(ctx, f, HTTP_REQUEST_ENTITY_TOO_LARGE);
+                return APR_ENOSPC;
             }
 
             /* If we have a limit in effect and we know the C-L ahead of
@@ -303,7 +279,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                           "Requested content-length of %" APR_OFF_T_FMT
                           " is larger than the configured limit"
                           " of %" APR_OFF_T_FMT, ctx->remaining, ctx->limit);
-                return bail_out_on_error(ctx, f, HTTP_REQUEST_ENTITY_TOO_LARGE);
+                return APR_ENOSPC;
             }
         }
 
@@ -396,10 +372,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                               (ctx->remaining < 0) ? "(overflow)" : "");
                 ctx->remaining = 0; /* Reset it in case we have to
                                      * come back here later */
-                if (APR_STATUS_IS_TIMEUP(rv)) {
-                    http_error = HTTP_REQUEST_TIME_OUT;
-                }
-                return bail_out_on_error(ctx, f, http_error);
+                return rv;
             }
 
             if (!ctx->remaining) {
@@ -502,10 +475,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                                   (ctx->remaining < 0) ? "(overflow)" : "");
                     ctx->remaining = 0; /* Reset it in case we have to
                                          * come back here later */
-                    if (APR_STATUS_IS_TIMEUP(rv)) {
-                        http_error = HTTP_REQUEST_TIME_OUT;
-                    }
-                    return bail_out_on_error(ctx, f, http_error);
+                    return rv;
                 }
 
                 if (!ctx->remaining) {
@@ -1422,6 +1392,39 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     return ap_pass_brigade(f->next, b);
 }
 
+/*
+ * Map specific APR codes returned by the filter stack to HTTP error
+ * codes, or the default status code provided. Use it as follows:
+ *
+ * return ap_map_http_response(rv, HTTP_BAD_REQUEST);
+ *
+ * If the filter has already handled the error, AP_FILTER_ERROR will
+ * be returned, which is cleanly passed through.
+ *
+ * These mappings imply that the filter stack is reading from the
+ * downstream client, the proxy will map these codes differently.
+ */
+AP_DECLARE(int) ap_map_http_request_error(apr_status_t rv, int status)
+{
+    switch (rv) {
+    case AP_FILTER_ERROR: {
+        return AP_FILTER_ERROR;
+    }
+    case APR_ENOSPC: {
+        return HTTP_REQUEST_ENTITY_TOO_LARGE;
+    }
+    case APR_ENOTIMPL: {
+        return HTTP_NOT_IMPLEMENTED;
+    }
+    case APR_ETIMEDOUT: {
+        return HTTP_REQUEST_TIME_OUT;
+    }
+    default: {
+        return status;
+    }
+    }
+}
+
 /* In HTTP/1.1, any method can have a body.  However, most GET handlers
  * wouldn't know what to do with a request body if they received one.
  * This helper routine tests for and reads any message body in the request,
@@ -1439,7 +1442,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
 AP_DECLARE(int) ap_discard_request_body(request_rec *r)
 {
     apr_bucket_brigade *bb;
-    int rv, seen_eos;
+    int seen_eos;
+    apr_status_t rv;
 
     /* Sometimes we'll get in a state where the input handling has
      * detected an error where we want to drop the connection, so if
@@ -1462,21 +1466,8 @@ AP_DECLARE(int) ap_discard_request_body(request_rec *r)
                             APR_BLOCK_READ, HUGE_STRING_LEN);
 
         if (rv != APR_SUCCESS) {
-            /* FIXME: If we ever have a mapping from filters (apr_status_t)
-             * to HTTP error codes, this would be a good place for them.
-             *
-             * If we received the special case AP_FILTER_ERROR, it means
-             * that the filters have already handled this error.
-             * Otherwise, we should assume we have a bad request.
-             */
-            if (rv == AP_FILTER_ERROR) {
-                apr_brigade_destroy(bb);
-                return rv;
-            }
-            else {
-                apr_brigade_destroy(bb);
-                return HTTP_BAD_REQUEST;
-            }
+            apr_brigade_destroy(bb);
+            return ap_map_http_request_error(rv, HTTP_BAD_REQUEST);
         }
 
         for (bucket = APR_BRIGADE_FIRST(bb);

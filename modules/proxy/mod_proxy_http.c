@@ -1207,11 +1207,10 @@ apr_status_t ap_proxygetline(apr_bucket_brigade *bb, char *s, int n, request_rec
 #endif
 
 static
-apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
-                                            proxy_conn_rec **backend_ptr,
-                                            proxy_worker *worker,
-                                            proxy_server_conf *conf,
-                                            char *server_portstr) {
+int ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
+        proxy_conn_rec **backend_ptr, proxy_worker *worker,
+        proxy_server_conf *conf, char *server_portstr)
+{
     conn_rec *c = r->connection;
     char buffer[HUGE_STRING_LEN];
     const char *buf;
@@ -1308,36 +1307,18 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              */
             if (r->proxyreq == PROXYREQ_REVERSE && c->keepalives &&
                 !APR_STATUS_IS_TIMEUP(rc)) {
-                apr_bucket *eos;
 
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01104)
                               "Closing connection to client because"
                               " reading from backend server %s:%d failed."
                               " Number of keepalives %i", backend->hostname,
                               backend->port, c->keepalives);
-                ap_proxy_backend_broke(r, bb);
-                /*
-                 * Add an EOC bucket to signal the ap_http_header_filter
-                 * that it should get out of our way, BUT ensure that the
-                 * EOC bucket is inserted BEFORE an EOS bucket in bb as
-                 * some resource filters like mod_deflate pass everything
-                 * up to the EOS down the chain immediately and sent the
-                 * remainder of the brigade later (or even never). But in
-                 * this case the ap_http_header_filter does not get out of
-                 * our way soon enough.
-                 */
+
+                e = ap_bucket_error_create(HTTP_GATEWAY_TIME_OUT, NULL,
+                        r->pool, c->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(bb, e);
                 e = ap_bucket_eoc_create(c->bucket_alloc);
-                eos = APR_BRIGADE_LAST(bb);
-                while ((APR_BRIGADE_SENTINEL(bb) != eos)
-                       && !APR_BUCKET_IS_EOS(eos)) {
-                    eos = APR_BUCKET_PREV(eos);
-                }
-                if (eos == APR_BRIGADE_SENTINEL(bb)) {
-                    APR_BRIGADE_INSERT_TAIL(bb, e);
-                }
-                else {
-                    APR_BUCKET_INSERT_BEFORE(eos, e);
-                }
+                APR_BRIGADE_INSERT_TAIL(bb, e);
                 ap_pass_brigade(r->output_filters, bb);
                 /* Mark the backend connection for closing */
                 backend->close = 1;
@@ -1698,14 +1679,31 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                         break;
                     }
                     else if (rv != APR_SUCCESS) {
+                        if (rv == APR_ENOSPC) {
+                            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(02475)
+                                          "Response chunk/line was too large to parse");
+                        }
+                        else if (rv == APR_ENOTIMPL) {
+                            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(02476)
+                                          "Response Transfer-Encoding was not recognised");
+                        }
+                        else {
+                            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01110)
+                                          "Network error reading response");
+                        }
+
                         /* In this case, we are in real trouble because
-                         * our backend bailed on us. Pass along a 504 error
-                         * error bucket
+                         * our backend bailed on us. Given we're half way
+                         * through a response, our only option is to
+                         * disconnect the client too.
                          */
-                        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01110)
-                                      "error reading response");
-                        ap_proxy_backend_broke(r, bb);
+                        e = ap_bucket_error_create(HTTP_GATEWAY_TIME_OUT, NULL,
+                                r->pool, c->bucket_alloc);
+                        APR_BRIGADE_INSERT_TAIL(bb, e);
+                        e = ap_bucket_eoc_create(c->bucket_alloc);
+                        APR_BRIGADE_INSERT_TAIL(bb, e);
                         ap_pass_brigade(r->output_filters, bb);
+
                         backend_broke = 1;
                         backend->close = 1;
                         break;
@@ -2024,7 +2022,7 @@ static int proxy_http_post_config(apr_pool_t *pconf, apr_pool_t *plog,
         ap_proxy_clear_connection_fn =
                 APR_RETRIEVE_OPTIONAL_FN(ap_proxy_clear_connection);
         if (!ap_proxy_clear_connection_fn) {
-            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02477)
                          "mod_proxy must be loaded for mod_proxy_http");
             return !OK;
         }

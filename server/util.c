@@ -2529,7 +2529,7 @@ AP_DECLARE(int) ap_parse_form_data(request_rec *r, ap_filter_t *f,
                                 APR_BLOCK_READ, HUGE_STRING_LEN);
         if (rv != APR_SUCCESS) {
             apr_brigade_destroy(bb);
-            return (rv == AP_FILTER_ERROR) ? rv : HTTP_BAD_REQUEST;
+            return ap_map_http_request_error(rv, HTTP_BAD_REQUEST);
         }
 
         for (bucket = APR_BRIGADE_FIRST(bb);

@@ -863,6 +863,7 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
  * status HTTP_BAD_GATEWAY and an EOS bucket up the filter chain.
  * @param r       current request record of client request
  * @param brigade The brigade that is sent through the output filter chain
+ * @deprecated To be removed in v2.6.
  */
 PROXY_DECLARE(void) ap_proxy_backend_broke(request_rec *r,
                                            apr_bucket_brigade *brigade);
