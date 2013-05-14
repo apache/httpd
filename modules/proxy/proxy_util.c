@@ -2982,8 +2982,11 @@ static int find_conn_headers(void *data, const char *key, const char *val)
     header_connection *x = data;
     const char *name;
 
-    name = ap_get_token(x->pool, &val, 0);
-    while (name && *name) {
+    do {
+        while (*val == ',') {
+            val++;
+        }
+        name = ap_get_token(x->pool, &val, 0);
         if (!strcasecmp(name, "close")) {
             x->closed = 1;
         }
@@ -2998,11 +3001,8 @@ static int find_conn_headers(void *data, const char *key, const char *val)
             elt = apr_array_push(x->array);
             *elt = name;
         }
-        while (*val == ',') {
-            ++val;
-        }
-        name = ap_get_token(x->pool, &val, 0);
-    }
+    } while (*val);
+
     return 1;
 }
 
