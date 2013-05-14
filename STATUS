@@ -338,7 +338,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * mod_cache: Fix uninitialized tmppath variable. PR 54949
       trunk patch: Variable removed from trunk in http://svn.apache.org/r1407381
       2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-tmppath.patch
-      +1: minfrin
+      +1: minfrin, jailletc36
 
     * mod_proxy: Fix pool usage by protecting w/ a mutex
       trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1480627
