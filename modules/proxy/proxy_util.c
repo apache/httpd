@@ -2754,6 +2754,7 @@ int ap_proxy_lb_workers(void)
     return lb_workers_limit;
 }
 
+/* deprecated - to be removed in v2.6 */
 PROXY_DECLARE(void) ap_proxy_backend_broke(request_rec *r,
                                            apr_bucket_brigade *brigade)
 {

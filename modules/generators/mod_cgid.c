@@ -1473,7 +1473,7 @@ static int cgid_handler(request_rec *r)
             }
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01270)
                           "Error reading request entity data");
-            return HTTP_INTERNAL_SERVER_ERROR;
+            return ap_map_http_request_error(rv, HTTP_INTERNAL_SERVER_ERROR);
         }
 
         for (bucket = APR_BRIGADE_FIRST(bb);
