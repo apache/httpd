@@ -112,8 +112,10 @@ VERSION_MAJMIN	= 25
 endif
 endif
 endif
+ifeq "$(USE_SVNREV)" "1"
 ifneq "$(strip $(SVN_REVISION))" ""
 CFLAGS	+= -DAP_SERVER_ADD_STRING=\"$(SVN_REVISION)\"
+endif
 endif
 
 
