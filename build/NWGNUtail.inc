@@ -97,7 +97,7 @@ CPPOPT_DEPENDS	= $(CCOPT_DEPENDS)
 
 ifneq "$(MAKECMDGOALS)" "clean"
 ifneq "$(findstring clobber_,$(MAKECMDGOALS))" "clobber_"
-$(APBUILD)/NWGNUversion.inc: $(APBUILD)/nw_ver.awk $(SRC)/include/ap_release.h
+$(APBUILD)/NWGNUversion.inc: $(APBUILD)/nw_ver.awk $(SRC)/include/ap_release.h $(SRC)/.svn/all-wcprops
 	@echo $(DL)GEN  $@$(DL)
 	$(AWK) -f $^ > $@
 
@@ -111,6 +111,9 @@ VERSION_STR	= 2.5.0
 VERSION_MAJMIN	= 25
 endif
 endif
+endif
+ifneq "$(strip $(SVN_REVISION))" ""
+CFLAGS	+= -DAP_SERVER_ADD_STRING=\"$(SVN_REVISION)\"
 endif
 
 
