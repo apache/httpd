@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.25
 
+  *) SECURITY: CVE-2013-1862 (cve.mitre.org)
+     mod_rewrite: Ensure that client data written to the RewriteLog is
+     escaped to prevent terminal escape sequences from entering the
+     log file.  [Joe Orton]
+
   *) htdigest: Fix buffer overflow when reading digest password file
      with very long lines. PR 54893. [Rainer Jung]
 

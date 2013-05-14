@@ -103,12 +103,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://people.apache.org/~wrowe/httpd-2.2-quiet-fips.patch
     +1: wrowe, druggeri, kbrand
 
-  * mod_rewrite: fix CVE-2013-1862, escape log file output
-     (not needed for trunk/2.4)
-    2.2.x patch:
-      http://people.apache.org/~jorton/mod_rewrite-CVE-2013-1862.patch
-   +1: jorton, covener, rpluem
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
