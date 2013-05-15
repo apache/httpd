@@ -355,7 +355,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * core: Use the proper macro for HTTP/1.1.
       trunk patch: http://svn.apache.org/r1482996
       2.4.x patch: trunk works
-      +1: minfrin
+      +1: minfrin, covener
 
 
 A list of further possible backports can be found at:                                                                                                                                   
