@@ -1830,7 +1830,7 @@ AP_DECLARE(void) ap_send_interim_response(request_rec *r, int send_headers)
     char *status_line = NULL;
     request_rec *rr;
 
-    if (r->proto_num < 1001) {
+    if (r->proto_num < HTTP_VERSION(1,1)) {
         /* don't send interim response to HTTP/1.0 Client */
         return;
     }
