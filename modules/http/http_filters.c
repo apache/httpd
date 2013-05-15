@@ -203,7 +203,6 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
     http_ctx_t *ctx = f->ctx;
     apr_status_t rv;
     apr_off_t totalread;
-    int http_error = HTTP_REQUEST_ENTITY_TOO_LARGE;
     apr_bucket_brigade *bb;
 
     /* just get out of the way of things we don't want. */
@@ -360,7 +359,6 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                     ctx->remaining = get_chunk_size(ctx->chunk_ln);
                     if (ctx->remaining == INVALID_CHAR) {
                         rv = APR_EGENERAL;
-                        http_error = HTTP_BAD_REQUEST;
                     }
                 }
             }
@@ -370,6 +368,9 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
             if (rv != APR_SUCCESS || ctx->remaining < 0) {
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, rv, f->r, APLOGNO(01589) "Error reading first chunk %s ",
                               (ctx->remaining < 0) ? "(overflow)" : "");
+                if (ctx->remaining < 0) {
+                    rv = APR_ENOSPC;
+                }
                 ctx->remaining = 0; /* Reset it in case we have to
                                      * come back here later */
                 return rv;
@@ -462,7 +463,6 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                             ctx->remaining = get_chunk_size(ctx->chunk_ln);
                             if (ctx->remaining == INVALID_CHAR) {
                                 rv = APR_EGENERAL;
-                                http_error = HTTP_BAD_REQUEST;
                             }
                         }
                     }
@@ -473,6 +473,9 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 if (rv != APR_SUCCESS || ctx->remaining < 0) {
                     ap_log_rerror(APLOG_MARK, APLOG_INFO, rv, f->r, APLOGNO(01590) "Error reading chunk %s ",
                                   (ctx->remaining < 0) ? "(overflow)" : "");
+                    if (ctx->remaining < 0) {
+                        rv = APR_ENOSPC;
+                    }
                     ctx->remaining = 0; /* Reset it in case we have to
                                          * come back here later */
                     return rv;
@@ -1410,6 +1413,9 @@ AP_DECLARE(int) ap_map_http_request_error(apr_status_t rv, int status)
     case AP_FILTER_ERROR: {
         return AP_FILTER_ERROR;
     }
+    case APR_EGENERAL: {
+        return HTTP_BAD_REQUEST;
+    }
     case APR_ENOSPC: {
         return HTTP_REQUEST_ENTITY_TOO_LARGE;
     }
@@ -1637,6 +1643,28 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer,
      * not be used.
      */
     if (rv != APR_SUCCESS) {
+        apr_bucket *e;
+
+        /* work around our silent swallowing of error messages by mapping
+         * error codes at this point, and sending an error bucket back
+         * upstream.
+         */
+        apr_brigade_cleanup(bb);
+
+        e = ap_bucket_error_create(
+                ap_map_http_request_error(rv, HTTP_BAD_REQUEST), NULL, r->pool,
+                r->connection->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(bb, e);
+
+        e = apr_bucket_eos_create(r->connection->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(bb, e);
+
+        rv = ap_pass_brigade(r->output_filters, bb);
+        if (APR_SUCCESS != rv) {
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, rv, r, APLOGNO()
+                          "Error while writing error response");
+        }
+
         /* if we actually fail here, we want to just return and
          * stop trying to read data from the client.
          */

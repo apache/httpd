@@ -1282,6 +1282,21 @@ AP_DECLARE(void) ap_set_sub_req_protocol(request_rec *rnew,
     rnew->main = (request_rec *) r;
 }
 
+static void error_output_stream(request_rec *r, int status)
+{
+    conn_rec *c = r->connection;
+    apr_bucket_brigade *bb;
+    apr_bucket *b;
+
+    bb = apr_brigade_create(r->pool, c->bucket_alloc);
+    b = ap_bucket_error_create(status, NULL, r->pool,
+            r->connection->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(bb, b);
+    b = apr_bucket_eos_create(c->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(bb, b);
+    ap_pass_brigade(r->output_filters, bb);
+}
+
 static void end_output_stream(request_rec *r)
 {
     conn_rec *c = r->connection;
@@ -1309,9 +1324,12 @@ AP_DECLARE(void) ap_finalize_sub_req_protocol(request_rec *sub)
  */
 AP_DECLARE(void) ap_finalize_request_protocol(request_rec *r)
 {
-    (void) ap_discard_request_body(r);
+    int status = ap_discard_request_body(r);
 
     /* tell the filter chain there is no more content coming */
+    if (status) {
+        error_output_stream(r, status);
+    }
     if (!r->eos_sent) {
         end_output_stream(r);
     }
