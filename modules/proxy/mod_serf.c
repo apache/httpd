@@ -539,6 +539,7 @@ static int drive_serf(request_rec *r, serf_config_t *conf)
 
         do {
             len = sizeof(buf);
+            /* FIXME: ap_get_client_block() returns long, not apr_status_t */
             rv = ap_get_client_block(baton->r, buf, len);
             if (rv > 0) {
                 rv = apr_file_write_full(fp, buf, rv, NULL);
