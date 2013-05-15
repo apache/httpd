@@ -377,7 +377,7 @@ int lua_db_prepared_select(lua_State *L)
     st = (lua_db_prepared_statement*) lua_topointer(L, -1);
     
     /* Check if we got enough variables passed on to us.
-     * This, of course, only works for prepped statements made through lua. */
+     * This, of course, only works for prepared statements made through lua. */
     have = lua_gettop(L) - 2;
     if (st->variables != -1 && have < st->variables ) {
         lua_pushboolean(L, 0);
@@ -468,7 +468,7 @@ int lua_db_prepared_query(lua_State *L)
     st = (lua_db_prepared_statement*) lua_topointer(L, -1);
     
     /* Check if we got enough variables passed on to us.
-     * This, of course, only works for prepped statements made through lua. */
+     * This, of course, only works for prepared statements made through lua. */
     have = lua_gettop(L) - 2;
     if (st->variables != -1 && have < st->variables ) {
         lua_pushboolean(L, 0);
