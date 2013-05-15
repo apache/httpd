@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_http: Make the proxy-interim-response environment variable
+     effective by formally overriding origin server behaviour. [Graham
+     Leggett, Co-Advisor <coad measurement-factory.com>]
+
   *) core: Stop the HTTP_IN filter from attempting to write error buckets
      to the output filters, which is bogus in the proxy case. Create a
      clean mapping from APR codes to HTTP status codes, and use it where
