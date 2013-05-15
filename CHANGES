@@ -2,6 +2,8 @@
 
 Changes with Apache 2.4.5
 
+  *) core: Use the proper macro for HTTP/1.1. [Graham Leggett]
+
   *) event MPM: Provide error handling for ThreadStackSize. PR 54311
      [Tianyin Xu <tixu cs.ucsd.edu>, Christophe Jaillet]
 
