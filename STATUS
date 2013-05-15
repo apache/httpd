@@ -357,6 +357,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk works (with fuzz)
       +1: fuankg
 
+    * core: Do not over allocate memory within 'ap_rgetline_core' for the common case.
+      trunk patch: http://svn.apache.org/r1483005
+      2.4.x patch: trunk works
+      +1: jailletc36
 
 
 A list of further possible backports can be found at:                                                                                                                                   
