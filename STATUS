@@ -344,6 +344,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1480627
       2.4.x patch: trunk works, modulo CHANGES
       +1: jim
+      -1: minfrin: causes segfaults, as the mutex is not reliably initialised.
+          Looking at a global mutex in the mean time to work around this.
 
     * ap_release.h: Make AP_SERVER_ADD_STRING define-able from CFLAGS.
       trunk patch: http://svn.apache.org/r1481955
