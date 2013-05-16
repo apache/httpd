@@ -342,7 +342,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mod_proxy: Fix pool usage by protecting w/ a mutex
       trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1480627
-      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1482859
+                   http://svn.apache.org/viewvc?view=revision&revision=1482859
+                   http://svn.apache.org/viewvc?view=revision&revision=1483190
       2.4.x patch: trunk works, modulo CHANGES
       +1: jim
 
