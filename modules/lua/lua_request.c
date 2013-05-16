@@ -614,6 +614,11 @@ static int req_ssl_is_https_field(request_rec *r)
     return ap_lua_ssl_is_https(r->connection);
 }
 
+static int req_ap_get_server_port(request_rec *r)
+{
+    return (int) ap_get_server_port(r);
+}
+
 static int lua_ap_rflush (lua_State *L) {
 
     int returnValue;
@@ -1997,7 +2002,7 @@ AP_LUA_DECLARE(void) ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
     apr_hash_set(dispatch, "flush", APR_HASH_KEY_STRING,
                  makefun(&lua_ap_rflush, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "port", APR_HASH_KEY_STRING,
-                 makefun(&ap_get_server_port, APL_REQ_FUNTYPE_INT, p));
+                 makefun(&req_ap_get_server_port, APL_REQ_FUNTYPE_INT, p));
     apr_hash_set(dispatch, "banner", APR_HASH_KEY_STRING,
                  makefun(&ap_get_server_banner, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "options", APR_HASH_KEY_STRING,
