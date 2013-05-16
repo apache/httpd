@@ -15,10 +15,11 @@
  * limitations under the License.
  */
 
-#include "mod_lua.h"
-#include "util_varbuf.h"
 #ifndef _LUA_REQUEST_H_
 #define _LUA_REQUEST_H_
+
+#include "mod_lua.h"
+#include "util_varbuf.h"
 
 AP_LUA_DECLARE(void) ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p);
 AP_LUA_DECLARE(void) ap_lua_push_connection(lua_State *L, conn_rec *r);
