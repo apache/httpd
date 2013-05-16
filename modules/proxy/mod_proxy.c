@@ -38,6 +38,7 @@ APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
 
 static const char * const proxy_id = "proxy";
 apr_global_mutex_t *proxy_mutex = NULL;
+apr_pool_t *proxy_subpool = NULL;
 
 /*
  * A Web proxy module. Stages:
@@ -1196,7 +1197,7 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->badopt_set = 0;
     ps->source_address = NULL;
     ps->source_address_set = 0;
-    apr_pool_create_ex(&ps->pool, p, NULL, NULL);
+    ps->pool = proxy_subpool;
 
     return ps;
 }
@@ -1258,7 +1259,7 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->proxy_status_set = overrides->proxy_status_set || base->proxy_status_set;
     ps->source_address = (overrides->source_address_set == 0) ? base->source_address : overrides->source_address;
     ps->source_address_set = overrides->source_address_set || base->source_address_set;
-    ps->pool = base->pool;
+    ps->pool = proxy_subpool;
     return ps;
 }
 static const char *set_source_address(cmd_parms *parms, void *dummy,
@@ -2584,6 +2585,8 @@ static int proxy_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
         return 500; /* An HTTP status would be a misnomer! */
     }
 
+    apr_pool_create(&proxy_subpool, pconf);
+    apr_pool_tag(proxy_subpool, "proxy_pconf_subpool");
     APR_OPTIONAL_HOOK(ap, status_hook, proxy_status_hook, NULL, NULL,
                       APR_HOOK_MIDDLE);
     /* Reset workers count on gracefull restart */
