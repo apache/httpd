@@ -139,7 +139,7 @@ typedef struct {
     proxy_worker       *reverse;    /* reverse "module-driven" proxy worker */
     const char *domain;     /* domain name to use in absence of a domain name in the request */
     const char *id;
-    apr_pool_t *pool;       /* Pool used for allocating this struct */
+    apr_pool_t *pool;       /* Pool used for allocating this struct's elements */
     int req;                /* true if proxy requests are enabled */
     int max_balancers;      /* maximum number of allowed balancers */
     int bgrowth;            /* number of post-config balancers can added */
@@ -164,7 +164,7 @@ typedef struct {
         status_full
     } proxy_status;             /* Status display options */
     apr_sockaddr_t *source_address;
-    apr_global_mutex_t  *mutex; /* global lock, for pool, etc */
+    apr_global_mutex_t  *mutex; /* global lock - not used */
     ap_slotmem_instance_t *bslot;  /* balancers shm data - runtime */
     ap_slotmem_provider_t *storage;
 
