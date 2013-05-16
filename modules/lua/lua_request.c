@@ -1629,7 +1629,7 @@ static int req_dispatch(lua_State *L)
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01489)
                               "request_rec->dispatching %s -> int", name);
                 rs = (*func) (r);
-                lua_pushnumber(L, rs);
+                lua_pushinteger(L, rs);
                 return 1;
             }
         case APL_REQ_FUNTYPE_BOOLEAN:{
