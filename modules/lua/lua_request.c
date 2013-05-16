@@ -15,16 +15,15 @@
  * limitations under the License.
  */
 
-#include <apr_pools.h>
-#include <apr_thread_mutex.h>
-
 #include "mod_lua.h"
-#include "util_script.h"
 #include "lua_apr.h"
-#include "scoreboard.h"
 #include "lua_dbd.h"
+#include "scoreboard.h"
 #include "util_md5.h"
+#include "util_script.h"
 #include "util_varbuf.h"
+#include "apr_pools.h"
+#include "apr_thread_mutex.h"
 
 #include <lua.h>
 
@@ -1574,7 +1573,7 @@ static int lua_ap_sleep(lua_State *L)
 
     apr_interval_time_t msec;
     luaL_checktype(L, 1, LUA_TNUMBER);
-    msec = (lua_tonumber(L, 1) * 1000000);
+    msec = (apr_interval_time_t)(lua_tonumber(L, 1) * 1000000);
     apr_sleep(msec);
     return 0;
 }
