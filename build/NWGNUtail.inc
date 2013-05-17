@@ -97,9 +97,9 @@ CPPOPT_DEPENDS	= $(CCOPT_DEPENDS)
 
 ifneq "$(MAKECMDGOALS)" "clean"
 ifneq "$(findstring clobber_,$(MAKECMDGOALS))" "clobber_"
-$(APBUILD)/NWGNUversion.inc: $(APBUILD)/nw_ver.awk $(SRC)/include/ap_release.h $(SRC)/.svn/all-wcprops
+$(APBUILD)/NWGNUversion.inc: $(APBUILD)/nw_ver.awk $(SRC)/include/ap_release.h
 	@echo $(DL)GEN  $@$(DL)
-	$(AWK) -f $^ > $@
+	$(AWK) -f $^ $(SRC)/.svn/all-wcprops > $@
 
 -include $(APBUILD)/NWGNUversion.inc
 
