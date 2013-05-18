@@ -35,6 +35,18 @@ BEGIN {
         ver_str_release = substr($3, 2, length($3) - 2);
     }
   }
+
+  if (ver_str_release) {
+    if (ARGV[2]) {
+      while ((getline < ARGV[2]) > 0) {
+        if (match ($0, /^\/repos\/asf\/!svn\/ver\/[0-9]+\/httpd\/httpd\/(trunk|branches\/[0-9]\.[0-9]\.x)$/)) {
+          gsub(/^\/repos\/asf\/!svn\/ver\/|\/httpd\/httpd\/(trunk|branches\/[0-9]\.[0-9]\.x)$/, "", $0)
+          ver_str_release = svn_rev = "-r" $0
+        }
+      }
+    }
+  }
+
   ver_nlm = ver_major "," ver_minor "," ver_patch;
   ver_str = ver_major "." ver_minor "." ver_patch ver_str_release;
 
@@ -42,6 +54,7 @@ BEGIN {
   print "VERSION_STR = " ver_str "";
   print "VERSION_MAJMIN = " ver_major ver_minor "";
   print "COPYRIGHT_STR = " copyright_str "";
+  print "SVN_REVISION = " svn_rev "";
 
 }
 

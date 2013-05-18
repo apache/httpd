@@ -101,9 +101,11 @@ endif
 # Generic compiler rules
 #
 
-$(AP_WORK)\build\NWGNUversion.inc : $(AP_WORK)\include\ap_release.h $(AP_WORK)\build\nw_ver.awk
-	@echo Generating $(subst /,\,$@)
-	awk -f $(AP_WORK)\build\nw_ver.awk $(AP_WORK)\include\ap_release.h > $(AP_WORK)\build\NWGNUversion.inc
+ifneq "$(MAKECMDGOALS)" "clean"
+ifneq "$(findstring clobber_,$(MAKECMDGOALS))" "clobber_"
+$(AP_WORK)\build\NWGNUversion.inc : $(AP_WORK)\build\nw_ver.awk $(AP_WORK)\include\ap_release.h
+	@echo $(DL)GEN  $@$(DL)
+	$(AWK) -f $^ $(SRC)/.svn/all-wcprops > $@
 
 -include $(AP_WORK)\build\NWGNUversion.inc
 
@@ -112,6 +114,13 @@ VERSION_INC = $(AP_WORK)\build\NWGNUversion.inc
 else
 VERSION		= 2,0,0
 VERSION_STR	= 2.0.0
+endif
+endif
+endif
+ifeq "$(USE_SVNREV)" "1"
+ifneq "$(strip $(SVN_REVISION))" ""
+CFLAGS	+= -DAP_SERVER_ADD_STRING=\"$(SVN_REVISION)\"
+endif
 endif
 
 
