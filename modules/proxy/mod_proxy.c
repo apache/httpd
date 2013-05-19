@@ -2408,7 +2408,7 @@ static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     apr_status_t rv = ap_global_mutex_create(&proxy_mutex, NULL,
             proxy_id, NULL, s, pconf, 0);
     if (rv != APR_SUCCESS) {
-        ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, plog, APLOGNO()
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, plog, APLOGNO(02478)
         "failed to create %s mutex", proxy_id);
         return rv;
     }
@@ -2518,7 +2518,7 @@ static void child_init(apr_pool_t *p, server_rec *s)
                                       apr_global_mutex_lockfile(proxy_mutex),
                                       p);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(02479)
                      "could not init proxy_mutex in child");
         exit(1); /* Ugly, but what else? */
     }
@@ -2588,7 +2588,7 @@ static int proxy_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     apr_status_t rv = ap_mutex_register(pconf, proxy_id, NULL,
             APR_LOCK_DEFAULT, 0);
     if (rv != APR_SUCCESS) {
-        ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, plog, APLOGNO()
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, plog, APLOGNO(02480)
                 "failed to register %s mutex", proxy_id);
         return 500; /* An HTTP status would be a misnomer! */
     }
