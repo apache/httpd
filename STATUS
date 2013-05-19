@@ -344,6 +344,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1480627
                    http://svn.apache.org/viewvc?view=revision&revision=1482859
                    http://svn.apache.org/viewvc?view=revision&revision=1483190
+                   http://svn.apache.org/viewvc?view=revision&revision=1484343
       2.4.x patch: trunk works, modulo CHANGES
       +1: jim
 
