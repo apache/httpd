@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1333985:1479866 (outdated) -->
+<!-- English Revision : 1479866 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -167,8 +167,7 @@ un grand nombre de serveurs virtuels, vous devez vous tourner vers
 <module>mod_vhost_alias</module> pour cr&eacute;er ces serveurs
 automatiquement.</p>
 
-<p>Il est aussi possible d'utiliser des modules tiers comme <a
-href="http://www.cri.ensmp.fr/~coelho/mod_macro/">mod_macro</a> pour
+<p>Il est aussi possible d'utiliser des modules comme <module>mod_macro</module> pour
 cr&eacute;er un grand nombre de serveurs virtuels dynamiquement.</p>
 
 <p>L'utilisation de <module>mod_rewrite</module> pour la cr&eacute;ation de
