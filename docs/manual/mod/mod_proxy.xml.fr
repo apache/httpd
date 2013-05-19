@@ -345,8 +345,8 @@ ProxyPass /examples http://backend.example.com/examples timeout=10
       tout en masquant sa v&eacute;ritable identit&eacute;. Ceci repr&eacute;sente un danger
       non seulement pour votre r&eacute;seau, mais aussi pour l'Internet au
       sens large. Dans le cas de la mise en oeuvre d'un mandataire
-      inverse (en d&eacute;finissant la directive <directive
-      module="mod_proxy">ProxyPass</directive> &agrave; "off"), le contr&ocirc;le
+      inverse (en utilisant la directive <directive
+      module="mod_proxy">ProxyPass</directive> avec <code>ProxyRequests Off</code>), le contr&ocirc;le
       d'acc&egrave;s est moins critique car les clients ne peuvent contacter
       que les serveurs que vous avez sp&eacute;cifi&eacute;s.</p>
 
