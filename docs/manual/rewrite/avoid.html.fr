@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/avoid.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/avoid.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
 <p>Ce document est un complément à la <a href="../mod/mod_rewrite.html">Documentation de référence</a> de
@@ -162,7 +160,7 @@ un grand nombre de serveurs virtuels, vous devez vous tourner vers
 <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> pour créer ces serveurs
 automatiquement.</p>
 
-<p>Il est aussi possible d'utiliser des modules tiers comme <a href="http://www.cri.ensmp.fr/~coelho/mod_macro/">mod_macro</a> pour
+<p>Il est aussi possible d'utiliser des modules comme <code class="module"><a href="../mod/mod_macro.html">mod_macro</a></code> pour
 créer un grand nombre de serveurs virtuels dynamiquement.</p>
 
 <p>L'utilisation de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> pour la création de

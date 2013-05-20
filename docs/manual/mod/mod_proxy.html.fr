@@ -28,8 +28,6 @@
 <a href="../fr/mod/mod_proxy.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle multi-protocole</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_module</td></tr>
@@ -391,7 +389,7 @@ ProxyPass /examples http://backend.example.com/examples timeout=10
       tout en masquant sa véritable identité. Ceci représente un danger
       non seulement pour votre réseau, mais aussi pour l'Internet au
       sens large. Dans le cas de la mise en oeuvre d'un mandataire
-      inverse (en définissant la directive <code class="directive"><a href="#proxypass">ProxyPass</a></code> à "off"), le contrôle
+      inverse (en utilisant la directive <code class="directive"><a href="#proxypass">ProxyPass</a></code> avec <code>ProxyRequests Off</code>), le contrôle
       d'accès est moins critique car les clients ne peuvent contacter
       que les serveurs que vous avez spécifiés.</p>
 
