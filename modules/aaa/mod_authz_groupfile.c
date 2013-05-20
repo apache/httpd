@@ -69,22 +69,12 @@ static void *create_authz_groupfile_dir_config(apr_pool_t *p, char *d)
     return conf;
 }
 
-static const char *set_authz_groupfile_slot(cmd_parms *cmd, void *offset, const char *f,
-                                 const char *t)
-{
-    if (t && strcmp(t, "standard")) {
-        return apr_pstrcat(cmd->pool, "Invalid auth file type: ", t, NULL);
-    }
-
-    return ap_set_file_slot(cmd, offset, f);
-}
-
 static const command_rec authz_groupfile_cmds[] =
 {
-    AP_INIT_TAKE12("AuthGroupFile", set_authz_groupfile_slot,
-                   (void *)APR_OFFSETOF(authz_groupfile_config_rec, groupfile),
-                   OR_AUTHCFG,
-                   "text file containing group names and member user IDs"),
+    AP_INIT_TAKE1("AuthGroupFile", ap_set_file_slot,
+                  (void *)APR_OFFSETOF(authz_groupfile_config_rec, groupfile),
+                  OR_AUTHCFG,
+                  "text file containing group names and member user IDs"),
     {NULL}
 };
 

@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) 'AuthGroupFile' and 'AuthUserFile' do not accept anymore the optional
+     'standard' keyword . It was unused and not documented.
+     PR54463 [Tianyin Xu <tixu cs.ucsd.edu> and Christophe Jaillet]
+
   *) mod_proxy_http: Make the proxy-interim-response environment variable
      effective by formally overriding origin server behaviour. [Graham
      Leggett, Co-Advisor <coad measurement-factory.com>]
