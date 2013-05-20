@@ -44,21 +44,11 @@ static void *create_authn_file_dir_config(apr_pool_t *p, char *d)
     return conf;
 }
 
-static const char *set_authn_file_slot(cmd_parms *cmd, void *offset,
-                                       const char *f, const char *t)
-{
-    if (t && strcmp(t, "standard")) {
-        return apr_pstrcat(cmd->pool, "Invalid auth file type: ", t, NULL);
-    }
-
-    return ap_set_file_slot(cmd, offset, f);
-}
-
 static const command_rec authn_file_cmds[] =
 {
-    AP_INIT_TAKE12("AuthUserFile", set_authn_file_slot,
-                   (void *)APR_OFFSETOF(authn_file_config_rec, pwfile),
-                   OR_AUTHCFG, "text file containing user IDs and passwords"),
+    AP_INIT_TAKE1("AuthUserFile", ap_set_file_slot,
+                  (void *)APR_OFFSETOF(authn_file_config_rec, pwfile),
+                  OR_AUTHCFG, "text file containing user IDs and passwords"),
     {NULL}
 };
 
