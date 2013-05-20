@@ -359,7 +359,7 @@
       tout en masquant sa véritable identité. Ceci représente un danger
       non seulement pour votre réseau, mais aussi pour l'Internet au
       sens large. Dans le cas de la mise en oeuvre d'un mandataire
-      inverse (en définissant la directive <code class="directive"><a href="#proxypass">ProxyPass</a></code> à "off"), le contrôle
+      inverse (en utilisant la directive <code class="directive"><a href="#proxypass">ProxyPass</a></code> avec <code>ProxyRequests Off</code>), le contrôle
       d'accès est moins critique car les clients ne peuvent contacter
       que les serveurs que vous avez spécifiés.</p>
 
