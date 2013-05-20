@@ -43,6 +43,7 @@ anonymous_nouserid	mod/mod_authn_anon.html#anonymous_nouserid
 anonymous_verifyemail	mod/mod_authn_anon.html#anonymous_verifyemail
 asyncrequestworkerfactor	mod/event.html#asyncrequestworkerfactor
 authbasicauthoritative	mod/mod_auth_basic.html#authbasicauthoritative
+authbasicfake	mod/mod_auth_basic.html#authbasicfake
 authbasicprovider	mod/mod_auth_basic.html#authbasicprovider
 authdbduserpwquery	mod/mod_authn_dbd.html#authdbduserpwquery
 authdbduserrealmquery	mod/mod_authn_dbd.html#authdbduserrealmquery
@@ -412,6 +413,7 @@ proxyiobuffersize	mod/mod_proxy.html#proxyiobuffersize
 proxymatch	mod/mod_proxy.html#proxymatch
 proxymaxforwards	mod/mod_proxy.html#proxymaxforwards
 proxypass	mod/mod_proxy.html#proxypass
+proxypassinherit	mod/mod_proxy.html#proxypassinherit
 proxypassinterpolateenv	mod/mod_proxy.html#proxypassinterpolateenv
 proxypassmatch	mod/mod_proxy.html#proxypassmatch
 proxypassreverse	mod/mod_proxy.html#proxypassreverse

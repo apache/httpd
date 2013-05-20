@@ -26,8 +26,6 @@
 <a href="../ko/misc/security_tips.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/misc/security_tips.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Ce document propose quelques conseils et astuces concernant les
     problèmes de sécurité liés

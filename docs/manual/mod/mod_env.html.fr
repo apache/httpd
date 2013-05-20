@@ -30,8 +30,6 @@
 <a href="../ko/mod/mod_env.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_env.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Modifie l'environnement transmis aux scripts CGI et aux
 pages SSI</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -81,7 +79,7 @@ shell</td></tr>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
       PassEnv LD_LIBRARY_PATH
-     </pre>
+      </pre>
 </div>
 
 </div>
@@ -101,7 +99,7 @@ shell</td></tr>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
       SetEnv SPECIAL_PATH /foo/bin
-     </pre>
+      </pre>
 </div>
     <div class="note"><p>Les variables d'environnement internes définies par cette
     directive le sont <em>après</em> l'exécution de la plupart des
@@ -136,7 +134,7 @@ shell</td></tr>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
       UnsetEnv LD_LIBRARY_PATH
-     </pre>
+      </pre>
 </div>
 
 </div>
