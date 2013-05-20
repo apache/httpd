@@ -364,6 +364,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk works
       +1: minfrin
 
+    * mod_authn_file, mod_authz_groupfile: remove an unused and undocumented
+      "standard" optional parameter for 'AuthGroupFile' and 'AuthUserFile'
+      trunk patch: http://svn.apache.org/r1484398
+      2.4.x patch: trunk works, modulo CHANGES
+      +1: jailletc36
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
