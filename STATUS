@@ -373,6 +373,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * mod_deflate: Remove assumptions as to when an EOS bucket might arrive.
       Gracefully step aside if the body size is zero.
       trunk patch: http://svn.apache.org/r1484832
+                   http://svn.apache.org/r1484914
       2.4.x patch: trunk works, modulo CHANGES
       +1: minfrin
 
