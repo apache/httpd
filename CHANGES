@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Remove apr_brigade_flatten(), buffering and duplicated code
+     from the HTTP_IN filter, parse chunks in a single pass with zero copy.
+     Reduce memory usage by 48 bytes per request. [Graham Leggett]
+
   *) mod_deflate: Remove assumptions as to when an EOS bucket might arrive.
      Gracefully step aside if the body size is zero. [Graham Leggett]
 
