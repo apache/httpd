@@ -279,7 +279,7 @@ d'Apache</a></seealso>
 	<module>mod_logio</module>.</td></tr>
 
     <tr><td><code>%O</code></td>
-        <td>Nombre d'octets envoy&eacute;s, y compris les en-t&ecirc;tes, ne peut
+        <td>Le nombre d'octets envoy&eacute;s, y compris les en-t&ecirc;tes, ne peut
 	&ecirc;tre nul. N&eacute;cessite l'activation de
 	<module>mod_logio</module>.</td></tr>
     </table>
