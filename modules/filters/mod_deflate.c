@@ -1143,7 +1143,6 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                 inflateEnd(&ctx->stream);
 
                 ctx->done = 1;
-                break;
             }
 
         }
