@@ -93,8 +93,8 @@
     <highlight language="config">
 ProxyPass /myapp/ balancer://myappcluster/
 &lt;Proxy balancer://myappcluster/&gt;
-    BalancerMember fcgi://localhost:4000/
-    BalancerMember fcgi://localhost:4001/
+    BalancerMember fcgi://localhost:4000
+    BalancerMember fcgi://localhost:4001
 &lt;/Proxy&gt;
     </highlight>
     </example>
