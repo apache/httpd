@@ -91,7 +91,7 @@ typedef struct http_filter_ctx
 static apr_status_t parse_chunk_size(http_ctx_t *ctx, const char *buffer,
         apr_size_t len, int linelimit)
 {
-    int i = 0;
+    apr_size_t i = 0;
 
     while (i < len) {
         char c = buffer[i];
