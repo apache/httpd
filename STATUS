@@ -377,6 +377,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk works, modulo CHANGES
       +1: minfrin
 
+    * core: speed up (for common cases) and reduce memory usage of ap_escape_logitem
+      This should save 70-100 bytes in the request pool for a default config.
+      trunk patch: http://svn.apache.org/r1485409
+      2.4.x patch: trunk works
+      +1: jailletc36
+
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
