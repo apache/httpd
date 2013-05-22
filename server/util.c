@@ -1910,26 +1910,12 @@ AP_DECLARE(char *) ap_escape_logitem(apr_pool_t *p, const char *str)
     char *ret;
     unsigned char *d;
     const unsigned char *s;
-    apr_size_t length = 0;
 
     if (!str) {
         return NULL;
     }
 
-    /* First, compute the space needed for the escaped string.
-     * This could be tweaked a bit for '\b', '\n'... These characters
-     * should not be common, so do not bother. */
-    s = (const unsigned char *)str;
-    for (; *s; ++s) {
-        if (TEST_CHAR(*s, T_ESCAPE_LOGITEM)) {
-            length += 4;        /* for '\\' + c2x() */
-        }
-        else {
-            length++;
-        }
-    }
-    
-    ret = apr_palloc(p, length + 1);
+    ret = apr_palloc(p, 4 * strlen(str) + 1); /* Be safe */
     d = (unsigned char *)ret;
     s = (const unsigned char *)str;
     for (; *s; ++s) {
