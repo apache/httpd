@@ -395,7 +395,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         case BODY_CHUNK_DATA: {
 
             /* Ensure that the caller can not go over our boundary point. */
-            if (ctx->remaining < readbytes) {
+            if (ctx->state != BODY_NONE && ctx->remaining < readbytes) {
                 readbytes = ctx->remaining;
             }
             if (readbytes > 0) {
