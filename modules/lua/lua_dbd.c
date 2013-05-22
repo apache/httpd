@@ -16,7 +16,6 @@
  */
 
 #include "mod_lua.h"
-#include "lua_apr.h"
 #include "lua_dbd.h"
 
 APLOG_USE_MODULE(lua);
