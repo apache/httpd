@@ -1910,16 +1910,33 @@ AP_DECLARE(char *) ap_escape_logitem(apr_pool_t *p, const char *str)
     char *ret;
     unsigned char *d;
     const unsigned char *s;
+    apr_size_t length, escapes = 0;
 
     if (!str) {
         return NULL;
     }
 
-    ret = apr_palloc(p, 4 * strlen(str) + 1); /* Be safe */
+    /* Compute how many characters need to be escaped */
+    s = (const unsigned char *)str;
+    for (; *s; ++s) {
+        if (TEST_CHAR(*s, T_ESCAPE_LOGITEM)) {
+            escapes++;
+        }
+    }
+    
+    /* Compute the length of the input string, including NULL */
+    length = s - (const unsigned char *)str + 1;
+    
+    /* Fast path: nothing to escape */
+    if (escapes == 0) {
+        return apr_pmemdup(p, str, length);
+    }
+    
+    /* Each escaped character needs up to 3 extra bytes (0 --> \x00) */
+    ret = apr_palloc(p, length + 3 * escapes);
     d = (unsigned char *)ret;
     s = (const unsigned char *)str;
     for (; *s; ++s) {
-
         if (TEST_CHAR(*s, T_ESCAPE_LOGITEM)) {
             *d++ = '\\';
             switch(*s) {
