@@ -90,17 +90,39 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
-
   * mod_ssl: add support for subjectAltName-based host name checking
     in proxy mode (PR 54030)
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=r1425874
                  https://svn.apache.org/viewvc?view=revision&revision=r1426850
     2.4.x patch: trunk patch works (modulo CHANGES and next-number)
     +1: kbrand, minfrin, jim
+
+  * mod_cache: RFC2616 14.9.3 The s-maxage directive also implies the
+    semantics of the proxy-revalidate directive.
+    trunk patch: http://svn.apache.org/r1479216
+    2.4.x patch: trunk patch works (minus CHANGES)
+    +1: minfrin, covener, jim
+
+    * mod_proxy: Reject invalid values for Max-Forwards.
+      trunk patch: http://svn.apache.org/r1481302
+                   http://svn.apache.org/r1481397
+      2.4.x patch: trunk patch works (minus CHANGES)
+      +1: minfrin, sf, jim
+
+    * core: PR54948 wildcard name-based virtual hosts printed twice in httpd -S
+      trunk patch: http://svn.apache.org/r1481306.
+      2.4.x patch: trunk works
+      +1 covener, minfrin, jim
+
+    * mod_cache: Fix uninitialized tmppath variable. PR 54949
+      trunk patch: Variable removed from trunk in http://svn.apache.org/r1407381
+      2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-tmppath.patch
+      +1: minfrin, jailletc36, jim
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
 
   * mod_lua: Sync 2.4 branch with trunk. This includes (but is not limited to) 
              Server pools, new apr functions for the request_rec table, input/
@@ -277,12 +299,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-304sanity.patch2.4.patch
       +1: minfrin, jim
 
-    * mod_cache: RFC2616 14.9.3 The s-maxage directive also implies the
-      semantics of the proxy-revalidate directive.
-      trunk patch: http://svn.apache.org/r1479216
-      2.4.x patch: trunk patch works (minus CHANGES)
-      +1: minfrin, covener, jim
-
     * mod_cache: Honour Cache-Control: no-store in a request.
       trunk patch: http://svn.apache.org/r1479222
       2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-nostore2.4.patch
@@ -323,22 +339,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/r1481197
       2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-uncacheable304-2.4.patch
       +1: minfrin
-
-    * mod_proxy: Reject invalid values for Max-Forwards.
-      trunk patch: http://svn.apache.org/r1481302
-                   http://svn.apache.org/r1481397
-      2.4.x patch: trunk patch works (minus CHANGES)
-      +1: minfrin, sf, jim
-
-    * core: PR54948 wildcard name-based virtual hosts printed twice in httpd -S
-      trunk patch: http://svn.apache.org/r1481306.
-      2.4.x patch: trunk works
-      +1 covener, minfrin, jim
-
-    * mod_cache: Fix uninitialized tmppath variable. PR 54949
-      trunk patch: Variable removed from trunk in http://svn.apache.org/r1407381
-      2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-tmppath.patch
-      +1: minfrin, jailletc36, jim
 
     * mod_proxy: Fix pool usage by protecting w/ a mutex
       trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1480627
