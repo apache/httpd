@@ -611,7 +611,9 @@ static int dav_created(request_rec *r, const char *locn, const char *what,
     const char *body;
 
     if (locn == NULL) {
-        locn = r->uri;
+        locn = r->unparsed_uri;
+    } else {
+        locn = ap_escape_uri(r->pool, locn);
     }
 
     /* did the target resource already exist? */

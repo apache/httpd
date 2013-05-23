@@ -90,11 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_dav: Ensure URI is correctly uriencoded on return. PR 54611
-      trunk patch: http://svn.apache.org/r1476621
-      2.4.x patch: trunk patch works (minus CHANGES)
-      +1: minfrin, jim, covener
-
     * core: speed up (for common cases) and reduce memory usage of ap_escape_logitem
       This should save 70-100 bytes in the request pool for a default config.
       trunk patch: http://svn.apache.org/r1485409
