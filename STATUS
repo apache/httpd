@@ -90,13 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_ssl: add support for subjectAltName-based host name checking
-    in proxy mode (PR 54030)
-    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=r1425874
-                 https://svn.apache.org/viewvc?view=revision&revision=r1426850
-    2.4.x patch: trunk patch works (modulo CHANGES and next-number)
-    +1: kbrand, minfrin, jim
-
   * mod_cache: RFC2616 14.9.3 The s-maxage directive also implies the
     semantics of the proxy-revalidate directive.
     trunk patch: http://svn.apache.org/r1479216
