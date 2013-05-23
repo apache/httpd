@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.5
 
+  *) mod_proxy: Reject invalid values for Max-Forwards. [Graham Leggett,
+     Co-Advisor <coad measurement-factory.com>]
+
   *) mod_cache: RFC2616 14.9.3 The s-maxage directive also implies the
      semantics of the proxy-revalidate directive. [Graham Leggett]
 
