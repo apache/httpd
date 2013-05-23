@@ -317,7 +317,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * ap_release.h: Make AP_SERVER_ADD_STRING define-able from CFLAGS.
       trunk patch: http://svn.apache.org/r1481955
       2.4.x patch: trunk works (with fuzz)
-      +1: fuankg
+      +1: fuankg, minfrin
 
     * mod_proxy_http: Make the proxy-interim-response environment variable
       effective by formally overriding origin server behaviour.
