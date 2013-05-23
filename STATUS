@@ -90,11 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_cache: Fix uninitialized tmppath variable. PR 54949
-      trunk patch: Variable removed from trunk in http://svn.apache.org/r1407381
-      2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-tmppath.patch
-      +1: minfrin, jailletc36, jim
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
