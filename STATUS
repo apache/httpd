@@ -100,7 +100,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=r1425874
                  https://svn.apache.org/viewvc?view=revision&revision=r1426850
     2.4.x patch: trunk patch works (modulo CHANGES and next-number)
-    +1: kbrand, minfrin
+    +1: kbrand, minfrin, jim
 
   * mod_lua: Sync 2.4 branch with trunk. This includes (but is not limited to) 
              Server pools, new apr functions for the request_rec table, input/
@@ -191,36 +191,36 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/r1470940
                    http://svn.apache.org/r1477530
       2.4.x patch: trunk patch works (minus CHANGES)
-      +1: minfrin
+      +1: minfrin, jim
 
     * mod_dav: Sending a If or If-Match header with an invalid ETag doesn't
       result in a 412 Precondition Failed. PR54610
       trunk patch: http://svn.apache.org/r1476604
       2.4.x patch: trunk patch works (minus CHANGES)
-      +1: minfrin
+      +1: minfrin, jim
 
     * mod_dav: Ensure URI is correctly uriencoded on return. PR 54611
       trunk patch: http://svn.apache.org/r1476621
       2.4.x patch: trunk patch works (minus CHANGES)
-      +1: minfrin
+      +1: minfrin, jim
 
     * mod_dav: PROPPATCH delete (svn propdel) silently discards errors.
       PR 53525
       trunk patch: http://svn.apache.org/r1476627
       2.4.x patch: trunk patch works (minus CHANGES)
-      +1: minfrin
+      +1: minfrin, jim
 
     * mod_dav: When a PROPPATCH attempts to remove a non-existent dead
       property on a resource for which there is no dead property in the same
       namespace httpd segfaults. PR 52559
       trunk patch: http://svn.apache.org/r1476642
       2.4.x patch: trunk patch works (minus CHANGES)
-      +1: minfrin
+      +1: minfrin, jim
 
     * mod_dav: Do not fail PROPPATCH when prop namespace is not known. PR 52559
       trunk patch: http://svn.apache.org/r1476644
       2.4.x patch: trunk patch works (minus CHANGES)
-      +1: minfrin
+      +1: minfrin, jim
 
     * core, mod_ssl: Lift the restriction that prevents mod_ssl taking
       full advantage of the event MPM. Enable the ability for a module
@@ -237,7 +237,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       dav_join_error() function.  PR 54145.
       trunk patch: http://svn.apache.org/r1464241
       2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_dav-errorhandling.patch
-      +1: minfrin
+      +1: minfrin, jim
 
     * mod_cache: Invalidate cached entities in response to RFC2616 Section
       13.10 Invalidation After Updates or Deletions. PR 15868
@@ -246,7 +246,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/r1478173
                    http://svn.apache.org/r1478798
       2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-invalidate7.patch
-      +1: minfrin
+      +1: minfrin, jim
 
     * mod_cache: Ignore response headers specified by no-cache=header and
       private=header as specified by RFC2616 14.9.1 What is Cacheable. Ensure
@@ -254,7 +254,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       headers are present in the response. PR 54706
       trunk patch: http://svn.apache.org/r1478382
       2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-nocacheheader2.4.patch
-      +1: minfrin
+      +1: minfrin, jim
 
     * mod_cache: When serving from cache, only the last header of a multivalued
       header was taken into account. Fixed. Ensure that Warning headers are correctly
@@ -262,44 +262,44 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/r1478441
                    http://svn.apache.org/r1480283
       2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-multipleheaders2.4.patch
-      +1: minfrin
+      +1: minfrin, jim
 
     * mod_cache: Make sure Vary processing handles multivalued Vary headers and
       multivalued headers referred to via Vary.
       trunk patch: http://svn.apache.org/r1478748
       2.4.x patch: trunk patch works (minus CHANGES, on condition above backports are
       done first)
-      +1: minfrin
+      +1: minfrin, jim
 
     * mod_cache: Make sure that contradictory entity headers present in a 304
       Not Modified response are caught and cause the entity to be removed.
       trunk patch: http://svn.apache.org/r1479117
       2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-304sanity.patch2.4.patch
-      +1: minfrin
+      +1: minfrin, jim
 
     * mod_cache: RFC2616 14.9.3 The s-maxage directive also implies the
       semantics of the proxy-revalidate directive.
       trunk patch: http://svn.apache.org/r1479216
       2.4.x patch: trunk patch works (minus CHANGES)
-      +1: minfrin, covener
+      +1: minfrin, covener, jim
 
     * mod_cache: Honour Cache-Control: no-store in a request.
       trunk patch: http://svn.apache.org/r1479222
       2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-nostore2.4.patch
-      +1: minfrin
+      +1: minfrin, jim
 
     * mod_cache: Ensure that updated responses to HEAD requests don't get
       mistakenly paired with a previously cached body. Ensure that any existing
       body is removed when a HEAD request is cached.
       trunk patch: http://svn.apache.org/r1479411
       2.4.x patch: trunk patch works (minus CHANGES)
-      +1: minfrin
+      +1: minfrin, jim
 
     * core: Add the ability to do explicit matching on weak and strong ETags
       as per RFC2616 Section 13.3.3.
       trunk patch: http://svn.apache.org/r1479528
       2.4.x patch: trunk patch works (minus CHANGES, mmn bump)
-      +1: minfrin
+      +1: minfrin, jim
 
     * core, mod_cache: Ensure RFC2616 compliance in ap_meets_conditions()
       with weak validation combined with If-Range and Range headers. Break
@@ -328,17 +328,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/r1481302
                    http://svn.apache.org/r1481397
       2.4.x patch: trunk patch works (minus CHANGES)
-      +1: minfrin, sf
+      +1: minfrin, sf, jim
 
     * core: PR54948 wildcard name-based virtual hosts printed twice in httpd -S
       trunk patch: http://svn.apache.org/r1481306.
       2.4.x patch: trunk works
-      +1 covener, minfrin
+      +1 covener, minfrin, jim
 
     * mod_cache: Fix uninitialized tmppath variable. PR 54949
       trunk patch: Variable removed from trunk in http://svn.apache.org/r1407381
       2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-tmppath.patch
-      +1: minfrin, jailletc36
+      +1: minfrin, jailletc36, jim
 
     * mod_proxy: Fix pool usage by protecting w/ a mutex
       trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1480627
@@ -356,13 +356,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * core: Do not over allocate memory within 'ap_rgetline_core' for the common case.
       trunk patch: http://svn.apache.org/r1483005
       2.4.x patch: trunk works
-      +1: jailletc36
+      +1: jailletc36, jim
 
     * mod_proxy_http: Make the proxy-interim-response environment variable
       effective by formally overriding origin server behaviour.
       trunk patch: http://svn.apache.org/r1483027
       2.4.x patch: trunk works
-      +1: minfrin
+      +1: minfrin, jim
 
     * mod_authn_file, mod_authz_groupfile: remove an unused and undocumented
       "standard" optional parameter for 'AuthGroupFile' and 'AuthUserFile'
@@ -381,7 +381,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       This should save 70-100 bytes in the request pool for a default config.
       trunk patch: http://svn.apache.org/r1485409
       2.4.x patch: trunk works
-      +1: jailletc36
+      +1: jailletc36, jim
 
 
 A list of further possible backports can be found at:                                                                                                                                   
