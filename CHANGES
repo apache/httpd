@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.5
 
+  *) mod_dav: Ensure URI is correctly uriencoded on return. PR 54611
+     [Timothy Wood <tjw omnigroup.com>]
+
   *) core: apachectl -S prints wildcard name-based virtual hosts twice. 
      PR54948 [Eric Covener]
 
