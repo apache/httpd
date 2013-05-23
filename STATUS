@@ -90,12 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_cache: RFC2616 14.9.3 The s-maxage directive also implies the
-    semantics of the proxy-revalidate directive.
-    trunk patch: http://svn.apache.org/r1479216
-    2.4.x patch: trunk patch works (minus CHANGES)
-    +1: minfrin, covener, jim
-
     * mod_proxy: Reject invalid values for Max-Forwards.
       trunk patch: http://svn.apache.org/r1481302
                    http://svn.apache.org/r1481397
