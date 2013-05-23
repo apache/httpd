@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_dav: Sending a MERGE request against a URI handled by mod_dav_svn with
+     the source href (sent as part of the request body as XML) pointing to a
+     URI that is not configured for DAV will trigger a segfault. [Ben Reser
+     <ben reser.org>]
+
   *) mod_logio: new format-specifier %C (combined) which is the sum of received
      and sent byte counts.
      PR54015 [Christophe Jaillet]

@@ -709,6 +709,12 @@ static dav_error *dav_get_resource(request_rec *r, int label_allowed,
 
     conf = ap_get_module_config(r->per_dir_config, &dav_module);
     /* assert: conf->provider != NULL */
+    if (conf->provider == NULL) {
+        return dav_new_error(r->pool, HTTP_METHOD_NOT_ALLOWED, 0, 0,
+                             apr_psprintf(r->pool,
+				          "DAV not enabled for %s",
+					  ap_escape_html(r->pool, r->uri)));
+    }
 
     /* resolve the resource */
     err = (*conf->provider->repos->get_resource)(r, conf->dir,
@@ -2689,11 +2695,6 @@ static int dav_method_copymove(request_rec *r, int is_move)
         /* ### how best to report this... */
         return dav_error_response(r, lookup.rnew->status,
                                   "Destination URI had an error.");
-    }
-
-    if (dav_get_provider(lookup.rnew) == NULL) {
-        return dav_error_response(r, HTTP_METHOD_NOT_ALLOWED,
-                                  "DAV not enabled for Destination URI.");
     }
 
     /* Resolve destination resource */
