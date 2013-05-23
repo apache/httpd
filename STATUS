@@ -359,6 +359,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk works
       +1: jailletc36, jim
 
+    * mod_dav: Sending a MERGE request against a URI handled by mod_dav_svn with
+      the source href (sent as part of the request body as XML) pointing to a
+      URI that is not configured for DAV will trigger a segfault.
+      trunk patch: http://svn.apache.org/r1485668
+      2.4.x patch: trunk works, modulo CHANGES
+      +1: minfrin
+
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
