@@ -312,7 +312,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/viewvc?view=revision&revision=1483190
                    http://svn.apache.org/viewvc?view=revision&revision=1484343
       2.4.x patch: trunk works, modulo CHANGES
-      +1: jim
+      +1: jim, minfrin
 
     * ap_release.h: Make AP_SERVER_ADD_STRING define-able from CFLAGS.
       trunk patch: http://svn.apache.org/r1481955
