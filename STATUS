@@ -96,13 +96,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
   
   
-  * mod_ssl: Quiet FIPS mode weak keys disabled and FIPS not selected emits
-    in the error log to debug level.  [William Rowe]
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1447993
-    2.4.x patch: trunk patch applies.
-    2.2.x patch: http://people.apache.org/~wrowe/httpd-2.2-quiet-fips.patch
-    +1: wrowe, druggeri, kbrand
-
    * mod_authnz_ldap: Allow using exec: callouts like SSLPassphraseDialog
      for AuthLDAPBindPassword.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1433478
