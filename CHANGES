@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.5
 
+  *) core: Do not over allocate memory within 'ap_rgetline_core' for
+     the common case. [Christophe Jaillet]
+
   *) core: speed up (for common cases) and reduce memory usage of
      ap_escape_logitem(). This should save 70-100 bytes in the request
      pool for a default config. [Christophe Jaillet]

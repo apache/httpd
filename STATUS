@@ -90,11 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * core: Do not over allocate memory within 'ap_rgetline_core' for the common case.
-      trunk patch: http://svn.apache.org/r1483005
-      2.4.x patch: trunk works
-      +1: jailletc36, jim, minfrin
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
