@@ -90,12 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_authn_file, mod_authz_groupfile: remove an unused and undocumented
-      "standard" optional parameter for 'AuthGroupFile' and 'AuthUserFile'
-      trunk patch: http://svn.apache.org/r1484398
-      2.4.x patch: trunk works, modulo CHANGES
-      +1: jailletc36, covener, minfrin
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
