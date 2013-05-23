@@ -246,6 +246,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: trunk works
     +1: minfrin
 
+  * mod_cache: Fix uninitialized tmppath variable. PR 54949
+    trunk patch: Variable removed from trunk in http://svn.apache.org/r1407381
+    2.2.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-tmppath.patch
+    +1: minfrin
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
