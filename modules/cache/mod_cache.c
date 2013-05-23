@@ -1774,7 +1774,7 @@ static void *merge_dir_config(apr_pool_t *p, void *basev, void *addv) {
 
 static void * create_cache_config(apr_pool_t *p, server_rec *s)
 {
-    const char *tmppath;
+    const char *tmppath = NULL;
     cache_server_conf *ps = apr_pcalloc(p, sizeof(cache_server_conf));
 
     /* array of URL prefixes for which caching is enabled */
