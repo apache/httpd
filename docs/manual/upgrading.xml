@@ -353,6 +353,13 @@ Allow from example.org
       has been moved into <module>mod_authn_core</module>.  
       </li>
 
+      <li>The RewriteLog and RewriteLogLevel directives have been removed.
+      This functionality is now provided by configuring the appropriate
+      level of logging for the <module>mod_rewrite</module> module using
+      the <directive module="core">LogLevel</directive> directive.
+      See also the <a href="mod/mod_rewrite.html#logging">mod_rewrite logging</a>
+      section.</li>
+
     </ul>
 
   </section>
