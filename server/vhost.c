@@ -577,14 +577,21 @@ AP_DECLARE(void) ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
      */
 
     for (s = main_s->next; s; s = s->next) {
+        server_addr_rec *sar_prev = NULL;
         has_default_vhost_addr = 0;
         for (sar = s->addrs; sar; sar = sar->next) {
             ipaddr_chain *ic;
             char inaddr_any[16] = {0}; /* big enough to handle IPv4 or IPv6 */
-
+            /* XXX: this treats 0.0.0.0 as a "default" server which matches no-exact-match for IPv6 */
             if (!memcmp(sar->host_addr->ipaddr_ptr, inaddr_any, sar->host_addr->ipaddr_len)) {
                 ic = find_default_server(sar->host_port);
-                if (!ic || sar->host_port != ic->sar->host_port) {
+
+                if (ic && sar->host_port == ic->sar->host_port) { /* we're a match for an existing "default server"  */
+                    if (!sar_prev || memcmp(sar_prev->host_addr->ipaddr_ptr, inaddr_any, sar_prev->host_addr->ipaddr_len)) { 
+                        add_name_vhost_config(p, main_s, s, sar, ic);
+                    }
+                }
+                else { 
                     /* No default server, or we found a default server but
                     ** exactly one of us is a wildcard port, which means we want
                     ** two ip-based vhosts not an NVH with two names
@@ -592,6 +599,7 @@ AP_DECLARE(void) ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
                     ic = new_ipaddr_chain(p, s, sar);
                     ic->next = default_list;
                     default_list = ic;
+                    add_name_vhost_config(p, main_s, s, sar, ic);
                 }
                 has_default_vhost_addr = 1;
             }
@@ -609,8 +617,9 @@ AP_DECLARE(void) ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
                     ic->next = *iphash_table_tail[bucket];
                     *iphash_table_tail[bucket] = ic;
                 }
+                add_name_vhost_config(p, main_s, s, sar, ic);
             }
-            add_name_vhost_config(p, main_s, s, sar, ic);
+            sar_prev = sar;
         }
 
         /* Ok now we want to set up a server_hostname if the user was
