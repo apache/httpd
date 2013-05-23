@@ -103,6 +103,24 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://people.apache.org/~wrowe/httpd-2.2-quiet-fips.patch
     +1: wrowe, druggeri, kbrand
 
+   * mod_authnz_ldap: Allow using exec: callouts like SSLPassphraseDialog
+     for AuthLDAPBindPassword.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1433478
+                  http://svn.apache.org/viewvc?view=revision&revision=1467523
+                  http://svn.apache.org/viewvc?view=revision&revision=1467792
+     2.2.x patch: http://people.apache.org/~druggeri/patches/AuthLDAPBindPasswordExec-2.2.patch
+                  (20130119 - updated to include minor mmn bump)
+                  (20130412 - updated to not use static var - thx, wrowe)
+     +1: druggeri
+     -1: wrowe (switch to +1 once ap_get_exec_line is made thread-safe, right
+               now it uses a static which is verboten in reentrant code.)
+               kudos for using apr_tokenize_to_argv to allow spaces in args.
+               druggeri: This was updated in trunk 1467523/1467792. The 2.2. patch now reflects
+                         the same.
+     +1: minfrin (including fix for wrowe's issue above)
+     minfrin: wrowe's -1 switches to +1 as above
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -167,22 +185,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      rjung: I don't understand what was voted on, the backport of both revisions
             or only the PR attachment. The latter is only about r627637.
      covener: withdrawing my vote, I reviewed the attachment but missed the OR_AUTHCFG change.
-
-   * mod_authnz_ldap: Allow using exec: callouts like SSLPassphraseDialog
-     for AuthLDAPBindPassword.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1433478
-                  http://svn.apache.org/viewvc?view=revision&revision=1467523
-                  http://svn.apache.org/viewvc?view=revision&revision=1467792
-     2.2.x patch: http://people.apache.org/~druggeri/patches/AuthLDAPBindPasswordExec-2.2.patch
-                  (20130119 - updated to include minor mmn bump)
-                  (20130412 - updated to not use static var - thx, wrowe)
-     +1: druggeri
-     -1: wrowe (switch to +1 once ap_get_exec_line is made thread-safe, right
-               now it uses a static which is verboten in reentrant code.)
-               kudos for using apr_tokenize_to_argv to allow spaces in args.
-               druggeri: This was updated in trunk 1467523/1467792. The 2.2. patch now reflects
-                         the same.
-     +1: minfrin (including fix for wrowe's issue above)
 
   * mod_proxy_balancer: Add failontimeout parameter. Timeout will put worker
     in error state if an IO timeout is detected.
