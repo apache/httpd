@@ -195,7 +195,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * mod_dav: Ensure URI is correctly uriencoded on return. PR 54611
       trunk patch: http://svn.apache.org/r1476621
       2.4.x patch: trunk patch works (minus CHANGES)
-      +1: minfrin, jim
+      +1: minfrin, jim, covener
 
     * mod_dav: PROPPATCH delete (svn propdel) silently discards errors.
       PR 53525
@@ -339,7 +339,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       "standard" optional parameter for 'AuthGroupFile' and 'AuthUserFile'
       trunk patch: http://svn.apache.org/r1484398
       2.4.x patch: trunk works, modulo CHANGES
-      +1: jailletc36
+      +1: jailletc36, covener
 
     * mod_deflate: Remove assumptions as to when an EOS bucket might arrive.
       Gracefully step aside if the body size is zero.
@@ -352,14 +352,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       This should save 70-100 bytes in the request pool for a default config.
       trunk patch: http://svn.apache.org/r1485409
       2.4.x patch: trunk works
-      +1: jailletc36, jim
+      +1: jailletc36, jim, covener
 
     * mod_dav: Sending a MERGE request against a URI handled by mod_dav_svn with
       the source href (sent as part of the request body as XML) pointing to a
       URI that is not configured for DAV will trigger a segfault.
       trunk patch: http://svn.apache.org/r1485668
       2.4.x patch: trunk works, modulo CHANGES
-      +1: minfrin
+      +1: minfrin, covener
 
 
 A list of further possible backports can be found at:                                                                                                                                   
