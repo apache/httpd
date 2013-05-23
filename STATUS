@@ -90,11 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * core: speed up (for common cases) and reduce memory usage of ap_escape_logitem
-      This should save 70-100 bytes in the request pool for a default config.
-      trunk patch: http://svn.apache.org/r1485409
-      2.4.x patch: trunk works
-      +1: jailletc36, jim, covener
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

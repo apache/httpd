@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.5
 
+  *) core: speed up (for common cases) and reduce memory usage of
+     ap_escape_logitem(). This should save 70-100 bytes in the request
+     pool for a default config. [Christophe Jaillet]
+
   *) mod_dav: Ensure URI is correctly uriencoded on return. PR 54611
      [Timothy Wood <tjw omnigroup.com>]
 
