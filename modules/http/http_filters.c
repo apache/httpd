@@ -331,9 +331,9 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         APR_BRIGADE_INSERT_TAIL(b, e);
         return APR_SUCCESS;
     }
-    apr_brigade_cleanup(b);
 
     do {
+        apr_brigade_cleanup(b);
         again = 0; /* until further notice */
 
         /* read and handle the brigade */
