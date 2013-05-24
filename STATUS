@@ -331,7 +331,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       URI that is not configured for DAV will trigger a segfault.
       trunk patch: http://svn.apache.org/r1485668
       2.4.x patch: trunk works, modulo CHANGES
-      +1: minfrin, covener
+      +1: minfrin, covener, jorton
 
 
 A list of further possible backports can be found at:                                                                                                                                   
