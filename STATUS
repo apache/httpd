@@ -215,12 +215,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: trunk patch works (minus CHANGES)
     +1: minfrin
 
-  * mod_dav: PROPPATCH delete (svn propdel) silently discards errors.
-    PR 53525
-    trunk patch: http://svn.apache.org/r1476627
-    2.2.x patch: trunk patch works (minus CHANGES)
-    +1: minfrin
-
   * mod_dav: When a PROPPATCH attempts to remove a non-existent dead
     property on a resource for which there is no dead property in the same
     namespace httpd segfaults. PR 52559
