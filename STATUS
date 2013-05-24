@@ -128,10 +128,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  (the list goes on...)
     2.4.x patch: http://www.humbedooh.com/mod_lua_sync.patch (+CHANGES)
     +1: humbedooh, jim
-    -1: fuankg - I think that I found some issues on NetWare which should be
-                 solved before the backport happens; I need a bit more time
-                 for testing on Windows too, and if there same issues I will
-                 asap post them to list (or turn my -1 to +1) ... 
+    +0.5: fuankg - all issues I found so far are meanwhile fixed either by
+                 humbedooh or by myself; I did spend a bunch of hours during
+                 last weeks to test as much as possible, and I believe its
+                 now good enough provided that we copy the whole current trunk
+                 code over; but nevertheless I feel that I have only tested
+                 half of all new stuff, and therefore the +0.5 - I would like
+                 to have someone else add a vote too.
 
   * mod_auth_basic: Add a generic mechanism to fake basic authentication
     using the ap_expr parser. This allows the administrator to construct
