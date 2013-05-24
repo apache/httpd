@@ -1044,6 +1044,10 @@ DAV_DECLARE_NONSTD(void) dav_prop_exec(dav_prop_ctx *ctx)
             /*
             ** Delete the property. Ignore errors -- the property is there, or
             ** we are deleting it for a second time.
+            **
+            ** http://tools.ietf.org/html/rfc4918#section-14.23 says
+            ** "Specifying the removal of a property that does not exist is
+            ** not an error"
             */
             /* ### but what about other errors? */
             (void) (*propdb->db_hooks->remove)(propdb->db, &name);
