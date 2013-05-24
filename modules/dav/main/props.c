@@ -1042,9 +1042,11 @@ DAV_DECLARE_NONSTD(void) dav_prop_exec(dav_prop_ctx *ctx)
         else if (ctx->operation == DAV_PROP_OP_DELETE) {
 
             /*
-            ** Delete the property.
+            ** Delete the property. Ignore errors -- the property is there, or
+            ** we are deleting it for a second time.
             */
-            err = (*propdb->db_hooks->remove)(propdb->db, &name);
+            /* ### but what about other errors? */
+            (void) (*propdb->db_hooks->remove)(propdb->db, &name);
         }
     }
 

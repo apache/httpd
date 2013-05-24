@@ -112,9 +112,6 @@ Changes with Apache 2.5.0
      namespace httpd segfaults. PR 52559 [Diego Santa Cruz
      <diego.santaCruz spinetix.com>]
 
-  *) mod_dav: PROPPATCH delete (svn propdel) silently discards errors.
-     PR 53525 [Arwin Arni <arwin collab.net>]
-
   *) mod_dav: Ensure URI is correctly uriencoded on return. PR 54611
      [Timothy Wood <tjw omnigroup.com>]
 
