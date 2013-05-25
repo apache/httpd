@@ -115,6 +115,10 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk patch works (minus CHANGES)
       +1: minfrin, jim, jorton
 
+    * ap_release.h: Make AP_SERVER_ADD_STRING define-able from CFLAGS.
+      trunk patch: http://svn.apache.org/r1481955
+      2.4.x patch: trunk works (with fuzz)
+      +1: fuankg, minfrin, humbedooh
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -311,11 +315,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/viewvc?view=revision&revision=1484343
       2.4.x patch: trunk works, modulo CHANGES
       +1: jim, minfrin
-
-    * ap_release.h: Make AP_SERVER_ADD_STRING define-able from CFLAGS.
-      trunk patch: http://svn.apache.org/r1481955
-      2.4.x patch: trunk works (with fuzz)
-      +1: fuankg, minfrin, humbedooh
 
     * mod_proxy_http: Make the proxy-interim-response environment variable
       effective by formally overriding origin server behaviour.
