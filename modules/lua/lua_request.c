@@ -1573,12 +1573,16 @@ static int lua_ap_state_query(lua_State *L)
     return 1;
 }
 
-static int lua_ap_sleep(lua_State *L)
+/*
+ * lua_ap_usleep; r:usleep(microseconds)
+ * - Sleep for the specified number of microseconds.
+ */
+static int lua_ap_usleep(lua_State *L)
 {
 
     apr_interval_time_t msec;
     luaL_checktype(L, 1, LUA_TNUMBER);
-    msec = (apr_interval_time_t)(lua_tonumber(L, 1) * 1000000);
+    msec = (apr_interval_time_t)lua_tonumber(L, 1);
     apr_sleep(msec);
     return 0;
 }
@@ -2037,8 +2041,8 @@ AP_LUA_DECLARE(void) ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
                  makefun(&lua_ap_getdir, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "regex", APR_HASH_KEY_STRING,
                  makefun(&lua_ap_regex, APL_REQ_FUNTYPE_LUACFUN, p));
-    apr_hash_set(dispatch, "sleep", APR_HASH_KEY_STRING,
-                 makefun(&lua_ap_sleep, APL_REQ_FUNTYPE_LUACFUN, p));
+    apr_hash_set(dispatch, "usleep", APR_HASH_KEY_STRING,
+                 makefun(&lua_ap_usleep, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "base64_encode", APR_HASH_KEY_STRING,
                  makefun(&lua_apr_b64encode, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "base64_decode", APR_HASH_KEY_STRING,
