@@ -1343,7 +1343,6 @@ static int lua_ap_server_info(lua_State *L)
  */
 static int lua_ap_set_context_info(lua_State *L)
 {
-
     request_rec    *r;
     const char     *prefix;
     const char     *document_root;
@@ -1369,7 +1368,6 @@ static int lua_ap_set_context_info(lua_State *L)
  */
 static int lua_ap_os_escape_path(lua_State *L)
 {
-
     char           *returnValue;
     request_rec    *r;
     const char     *path;
@@ -1395,7 +1393,6 @@ static int lua_ap_os_escape_path(lua_State *L)
  */
 static int lua_ap_escape_logitem(lua_State *L)
 {
-
     char           *returnValue;
     request_rec    *r;
     const char     *str;
@@ -1418,7 +1415,6 @@ static int lua_ap_escape_logitem(lua_State *L)
  */
 static int lua_ap_strcmp_match(lua_State *L)
 {
-
     int returnValue;
     const char     *str;
     const char     *expected;
@@ -1446,7 +1442,6 @@ static int lua_ap_strcmp_match(lua_State *L)
  */
 static int lua_ap_set_keepalive(lua_State *L)
 {
-
     int returnValue;
     request_rec    *r;
     luaL_checktype(L, 1, LUA_TUSERDATA);
@@ -1467,7 +1462,6 @@ static int lua_ap_set_keepalive(lua_State *L)
  */
 static int lua_ap_make_etag(lua_State *L)
 {
-
     char           *returnValue;
     request_rec    *r;
     int force_weak;
@@ -1490,7 +1484,6 @@ static int lua_ap_make_etag(lua_State *L)
  */
 static int lua_ap_send_interim_response(lua_State *L)
 {
-
     request_rec    *r;
     int send_headers = 0;
     luaL_checktype(L, 1, LUA_TUSERDATA);
@@ -1512,7 +1505,6 @@ static int lua_ap_send_interim_response(lua_State *L)
  */
 static int lua_ap_custom_response(lua_State *L)
 {
-
     request_rec    *r;
     int status;
     const char     *string;
@@ -1535,7 +1527,6 @@ static int lua_ap_custom_response(lua_State *L)
  */
 static int lua_ap_exists_config_define(lua_State *L)
 {
-
     int returnValue;
     const char     *name;
     luaL_checktype(L, 1, LUA_TSTRING);
@@ -1547,7 +1538,6 @@ static int lua_ap_exists_config_define(lua_State *L)
 
 static int lua_ap_get_server_name_for_url(lua_State *L)
 {
-
     const char     *servername;
     request_rec    *r;
     luaL_checktype(L, 1, LUA_TUSERDATA);
@@ -1557,10 +1547,7 @@ static int lua_ap_get_server_name_for_url(lua_State *L)
     return 1;
 }
 
-
-
-/**
- * ap_state_query (int query_code) item starts a new field  */
+/* ap_state_query (int query_code) item starts a new field  */
 static int lua_ap_state_query(lua_State *L)
 {
 
@@ -1579,7 +1566,6 @@ static int lua_ap_state_query(lua_State *L)
  */
 static int lua_ap_usleep(lua_State *L)
 {
-
     apr_interval_time_t msec;
     luaL_checktype(L, 1, LUA_TNUMBER);
     msec = (apr_interval_time_t)lua_tonumber(L, 1);
@@ -1588,7 +1574,6 @@ static int lua_ap_usleep(lua_State *L)
 }
 
 /* END dispatch methods for request_rec fields */
-
 static int req_dispatch(lua_State *L)
 {
     apr_hash_t *dispatch;
