@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1465829 -->
+<!-- English Revision : 1485752 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -380,6 +380,16 @@ Allow from example.org
       dans les pr&eacute;c&eacute;dentes versions (en fait la directive
       <directive module="mod_authn_core">AuthnProviderAlias</directive>)
       est maintenant fournie par <module>mod_authn_core</module>.  
+      </li>
+
+      <li>Les directives RewriteLog et RewriteLogLevel ont &eacute;t&eacute;
+      supprim&eacute;es. Pour utiliser les fonctionnalit&eacute;s qu'elles
+      fournissaient, il faut maintenant d&eacute;finir un niveau de
+      journalisation ad&eacute;quat pour le module
+      <module>mod_rewrite</module> via la directive <directive
+      module="core">LogLevel</directive>. Voir aussi la section <a
+      href="mod/mod_rewrite.html#logging">journalisation de
+      mod_rewrite</a>.
       </li>
     </ul>
 

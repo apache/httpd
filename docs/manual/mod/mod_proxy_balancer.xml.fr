@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1458798 -->
+<!-- English Revision : 1484766 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -107,12 +107,12 @@ la r&eacute;partition de charge</description>
     </p>
 
     <highlight language="config">
-&lt;Proxy balancer://mycluster/&gt;
-    BalancerMember http://192.168.1.50:80/
-    BalancerMember http://192.168.1.51:80/
+&lt;Proxy balancer://mycluster&gt;
+    BalancerMember http://192.168.1.50:80
+    BalancerMember http://192.168.1.51:80
 &lt;/Proxy&gt;
-ProxyPass /test balancer://mycluster/
-ProxyPassReverse /test balancer://mycluster/
+ProxyPass /test balancer://mycluster
+ProxyPassReverse /test balancer://mycluster
     </highlight>
 
 
@@ -124,13 +124,13 @@ ProxyPassReverse /test balancer://mycluster/
 
     <highlight language="config">
 Header add Set-Cookie "ROUTEID=.%{BALANCER_WORKER_ROUTE}e; path=/" env=BALANCER_ROUTE_CHANGED
-&lt;Proxy balancer://mycluster/&gt;
-    BalancerMember http://192.168.1.50:80/ route=1
-    BalancerMember http://192.168.1.51:80/ route=2
+&lt;Proxy balancer://mycluster&gt;
+    BalancerMember http://192.168.1.50:80 route=1
+    BalancerMember http://192.168.1.51:80 route=2
     ProxySet stickysession=ROUTEID
 &lt;/Proxy&gt;
-ProxyPass /test balancer://mycluster/
-ProxyPassReverse /test balancer://mycluster/
+ProxyPass /test balancer://mycluster
+ProxyPassReverse /test balancer://mycluster
     </highlight>
 
 </section>
@@ -288,10 +288,10 @@ ProxyPassReverse /test balancer://mycluster/
     s&eacute;par&eacute;s par une barre verticale (<code>|</code>) comme dans
     l'exemple suivant :</p>
     <highlight language="config">
-ProxyPass /test balancer://mycluster/ stickysession=JSESSIONID|jsessionid scolonpathdelim=On
+ProxyPass /test balancer://mycluster stickysession=JSESSIONID|jsessionid scolonpathdelim=On
 &lt;Proxy balancer://mycluster&gt;
-    BalancerMember http://192.168.1.50:80/ route=node1
-    BalancerMember http://192.168.1.51:80/ route=node2
+    BalancerMember http://192.168.1.50:80 route=node1
+    BalancerMember http://192.168.1.51:80 route=node2
 &lt;/Proxy&gt;
     </highlight>
     <p>Si le cookie et le param&egrave;tre de requ&ecirc;te fournissent tous deux une
