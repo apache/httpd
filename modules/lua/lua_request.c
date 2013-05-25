@@ -1574,6 +1574,7 @@ static int lua_ap_usleep(lua_State *L)
 }
 
 /* END dispatch methods for request_rec fields */
+
 static int req_dispatch(lua_State *L)
 {
     apr_hash_t *dispatch;
