@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1479262 -->
+<!-- English Revision: 1484766 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -817,6 +817,11 @@ charge</description>
     <var>balancer://</var>...&gt;</code>. Il correspond &agrave; l'URL d'un
     r&eacute;partiteur de charge d&eacute;fini par une directive <directive
     module="mod_proxy">ProxyPass</directive>.</p>
+    <p>La partie chemin de l'URL du r&eacute;partiteur dans toute directive de
+    conteneur <code>&lt;Proxy <var>balancer://</var>...&gt;</code> est
+    ignor&eacute;e.</p>
+    <p>En particulier, le slash de fin de l'URL d'un
+    <code>BalancerMember</code> doit &ecirc;tre supprim&eacute;.</p>
 </usage>
 </directivesynopsis>
 
@@ -846,8 +851,8 @@ du serveur HTTP Apache.</compatibility>
     <example>
       <highlight language="config">
 &lt;Proxy balancer://hotcluster&gt;
-    BalancerMember http://www2.example.com:8080/ loadfactor=1
-    BalancerMember http://www3.example.com:8080/ loadfactor=2
+    BalancerMember http://www2.example.com:8080 loadfactor=1
+    BalancerMember http://www3.example.com:8080 loadfactor=2
     ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;
       </highlight>
@@ -1217,7 +1222,7 @@ ProxyPass /mirror/foo http://backend.example.com
 
     <p>Si l'URL de la directive Proxy d&eacute;bute par
     <code>balancer://</code> (par exemple:
-    <code>balancer://cluster/</code>, toute information relative au
+    <code>balancer://cluster</code>, toute information relative au
     chemin est ignor&eacute;e), alors un serveur cible virtuel ne communiquant pas
     r&eacute;ellement avec le serveur d'arri&egrave;re-plan sera cr&eacute;&eacute;. Celui-ci sera
     en fait responsable de la gestion de plusieurs serveurs cibles "r&eacute;els". Dans
@@ -1345,10 +1350,10 @@ ProxyPass /mirror/foo http://backend.example.com
 ProxyPass /special-area http://special.example.com smax=5 max=10
 ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On
 &lt;Proxy balancer://mycluster&gt;
-    BalancerMember ajp://1.2.3.4:8009/
-    BalancerMember ajp://1.2.3.5:8009/ loadfactor=20
+    BalancerMember ajp://1.2.3.4:8009
+    BalancerMember ajp://1.2.3.5:8009 loadfactor=20
     # Less powerful server, don't send as many requests there,
-    BalancerMember ajp://1.2.3.6:8009/ loadfactor=5
+    BalancerMember ajp://1.2.3.6:8009 loadfactor=5
 &lt;/Proxy&gt;
     </highlight>
 
@@ -1357,10 +1362,10 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
     <highlight language="config">
 ProxyPass / balancer://hotcluster/ 
 &lt;Proxy balancer://hotcluster&gt;
-    BalancerMember ajp://1.2.3.4:8009/ loadfactor=1
-    BalancerMember ajp://1.2.3.5:8009/ loadfactor=2
+    BalancerMember ajp://1.2.3.4:8009 loadfactor=1
+    BalancerMember ajp://1.2.3.5:8009 loadfactor=2
     # The server below is on hot standby
-    BalancerMember ajp://1.2.3.6:8009/ status=+H
+    BalancerMember ajp://1.2.3.6:8009 status=+H
     ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;
     </highlight>
