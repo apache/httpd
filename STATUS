@@ -90,13 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
   
-    * mod_dav: Make sure that when we prepare an If URL for Etag comparison,     
-      we compare unencoded paths. PR 53910
-      trunk patch: http://svn.apache.org/r1470940
-                   http://svn.apache.org/r1477530
-      2.4.x patch: trunk patch works (minus CHANGES)
-      +1: minfrin, jim, jorton
-
     * mod_dav: Sending a If or If-Match header with an invalid ETag doesn't
       result in a 412 Precondition Failed. PR54610
       trunk patch: http://svn.apache.org/r1476604
