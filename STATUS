@@ -90,13 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
   
-    * mod_dav: When a PROPPATCH attempts to remove a non-existent dead
-      property on a resource for which there is no dead property in the same
-      namespace httpd segfaults. PR 52559
-      trunk patch: http://svn.apache.org/r1476642
-      2.4.x patch: trunk patch works (minus CHANGES)
-      +1: minfrin, jim, jorton
-
     * mod_dav: Do not fail PROPPATCH when prop namespace is not known. PR 52559
       trunk patch: http://svn.apache.org/r1476644
       2.4.x patch: trunk patch works (minus CHANGES)
