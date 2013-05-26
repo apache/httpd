@@ -169,6 +169,21 @@ DAV_DECLARE(dav_error*) dav_push_error(apr_pool_t *p, int status, int error_id,
                                        const char *desc, dav_error *prev);
 
 
+/*
+** Join two errors together.
+**
+** This function is used to add a new error stack onto an existing error so
+** that subsequent errors can be reported after the first error.  It returns
+** the correct error stack to use so that the caller can blindly call it
+** without checking that both dest and src are not NULL.
+** 
+** <dest> is the error stack that the error will be added to.
+**
+** <src> is the error stack that will be appended.
+*/
+DAV_DECLARE(dav_error*) dav_join_error(dav_error* dest, dav_error* src);
+
+
 /* error ID values... */
 
 /* IF: header errors */
