@@ -122,6 +122,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk works, modulo CHANGES
       +1: minfrin, covener, jorton
 
+    * mod_dav: Improve error handling in dav_method_put(), add new
+      dav_join_error() function.  PR 54145.
+      trunk patch: http://svn.apache.org/r1464241
+      2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_dav-errorhandling.patch
+      +1: minfrin, jim, jorton
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -225,12 +231,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       +1: minfrin, jim
       -0.5: sf: I would prefer if this sat in trunk for a few months first
                 to receive more testing.
-
-    * mod_dav: Improve error handling in dav_method_put(), add new
-      dav_join_error() function.  PR 54145.
-      trunk patch: http://svn.apache.org/r1464241
-      2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_dav-errorhandling.patch
-      +1: minfrin, jim, jorton
 
     * mod_cache: Invalidate cached entities in response to RFC2616 Section
       13.10 Invalidation After Updates or Deletions. PR 15868
