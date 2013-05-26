@@ -90,11 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
   
-    * mod_dav: Do not fail PROPPATCH when prop namespace is not known. PR 52559
-      trunk patch: http://svn.apache.org/r1476644
-      2.4.x patch: trunk patch works (minus CHANGES)
-      +1: minfrin, jim, jorton
-
     * mod_dav: Sending a MERGE request against a URI handled by mod_dav_svn with
       the source href (sent as part of the request body as XML) pointing to a
       URI that is not configured for DAV will trigger a segfault.
