@@ -107,7 +107,7 @@ typedef struct
 typedef struct {
     apr_size_t runs;
     apr_time_t modified;
-    apr_size_t size;
+    apr_off_t  size;
 } ap_lua_finfo;
 
 typedef struct {
