@@ -294,6 +294,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk works, modulo CHANGES
       +1: minfrin
 
+    * libhttpd.dsp: Fix Debug build mentioned by fuankg in
+      http://mail-archives.apache.org/mod_mbox/httpd-dev/201305.mbox/%3C519FC54E.901@apache.org%3E.
+      trunk patch: http://svn.apache.org/r1486490
+      2.4.x patch: trunk patch works
+      +1: gsmith
+
+    * makefile.win: Adjust makefile to properly detect the need to use devenv
+      on applicable MSVC versions.
+      trunk patch: http://svn.apache.org/r1482041
+      2.4.x patch: trunk patch works with offset
+      +1: gsmith
+
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
