@@ -90,12 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
  
-    * mod_cache: Ensure that we don't attempt to replace a cached response
-      with an older response as per RFC2616 13.12.
-      trunk patch: http://svn.apache.org/r1479966
-      2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-olderdate2.4.patch
-      +1: minfrin, jim, wrowe
-
     * mod_cache: If a 304 response indicates an entity not currently cached, then
       the cache MUST disregard the response and repeat the request without the 
       conditional.
