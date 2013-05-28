@@ -90,12 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
  
-    * mod_cache: Make sure that contradictory entity headers present in a 304
-      Not Modified response are caught and cause the entity to be removed.
-      trunk patch: http://svn.apache.org/r1479117
-      2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-304sanity.patch2.4.patch
-      +1: minfrin, jim, wrowe
-
     * mod_cache: Honour Cache-Control: no-store in a request.
       trunk patch: http://svn.apache.org/r1479222
       2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-nostore2.4.patch
