@@ -90,12 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
  
-    * makefile.win: Adjust makefile to properly detect the need to use devenv
-      on applicable MSVC versions.
-      trunk patch: http://svn.apache.org/r1482041
-      2.4.x patch: trunk patch works with offset
-      +1: gsmith, jim, minfrin
-
  
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
