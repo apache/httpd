@@ -90,12 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
  
-    * core: Add the ability to do explicit matching on weak and strong ETags
-      as per RFC2616 Section 13.3.3.
-      trunk patch: http://svn.apache.org/r1479528
-      2.4.x patch: trunk patch works (minus CHANGES, mmn bump)
-      +1: minfrin, jim, wrowe
-
     * core, mod_cache: Ensure RFC2616 compliance in ap_meets_conditions()
       with weak validation combined with If-Range and Range headers. Break
       out explicit conditional header checks to be useable elsewhere in the

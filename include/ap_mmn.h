@@ -406,6 +406,7 @@
  * 20120211.14 (2.4.5-dev) Add ppinherit and inherit to proxy_server_conf
  * 20120211.15 (2.4.5-dev) Add dav_join_error()
  * 20120211.16 (2.4.5-dev) Add cache_control_t.invalidated
+ * 20120211.17 (2.5.0-dev) Add ap_find_etag_weak(), ap_find_etag_strong()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -413,7 +414,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 16                   /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 17                   /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
