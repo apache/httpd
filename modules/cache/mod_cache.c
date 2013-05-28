@@ -34,6 +34,7 @@ static ap_filter_rec_t *cache_save_subreq_filter_handle;
 static ap_filter_rec_t *cache_out_filter_handle;
 static ap_filter_rec_t *cache_out_subreq_filter_handle;
 static ap_filter_rec_t *cache_remove_url_filter_handle;
+static ap_filter_rec_t *cache_invalidate_filter_handle;
 
 /*
  * CACHE handler
@@ -75,11 +76,6 @@ static int cache_quick_handler(request_rec *r, int lookup)
     ap_filter_rec_t *cache_out_handle;
     cache_server_conf *conf;
 
-    /* Delay initialization until we know we are handling a GET */
-    if (r->method_number != M_GET) {
-        return DECLINED;
-    }
-
     conf = (cache_server_conf *) ap_get_module_config(r->server->module_config,
                                                       &cache_module);
 
@@ -115,6 +111,40 @@ static int cache_quick_handler(request_rec *r, int lookup)
      */
     if (auth) {
         return DECLINED;
+    }
+
+    /* Are we PUT/POST/DELETE? If so, prepare to invalidate the cached entities.
+     */
+    switch (r->method_number) {
+    case M_PUT:
+    case M_POST:
+    case M_DELETE:
+    {
+
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO(02461)
+                "PUT/POST/DELETE: Adding CACHE_INVALIDATE filter for %s",
+                r->uri);
+
+        /* Add cache_invalidate filter to this request to force a
+         * cache entry to be invalidated if the response is
+         * ultimately successful (2xx).
+         */
+        ap_add_output_filter_handle(
+                cache_invalidate_filter_handle, cache, r,
+                r->connection);
+
+        return DECLINED;
+    }
+    case M_GET: {
+        break;
+    }
+    default : {
+
+        ap_log_rerror(
+                APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO(02462) "cache: Method '%s' not cacheable by mod_cache, ignoring: %s", r->method, r->uri);
+
+        return DECLINED;
+    }
     }
 
     /*
@@ -176,9 +206,10 @@ static int cache_quick_handler(request_rec *r, int lookup)
                      * is available later during running the filter may be
                      * different due to an internal redirect.
                      */
-                    cache->remove_url_filter =
-                        ap_add_output_filter_handle(cache_remove_url_filter_handle,
-                                cache, r, r->connection);
+                    cache->remove_url_filter = ap_add_output_filter_handle(
+                            cache_remove_url_filter_handle, cache, r,
+                            r->connection);
+
                 }
                 else {
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv,
@@ -347,11 +378,6 @@ static int cache_handler(request_rec *r)
     ap_filter_rec_t *cache_save_handle;
     cache_server_conf *conf;
 
-    /* Delay initialization until we know we are handling a GET */
-    if (r->method_number != M_GET) {
-        return DECLINED;
-    }
-
     conf = (cache_server_conf *) ap_get_module_config(r->server->module_config,
                                                       &cache_module);
 
@@ -374,6 +400,40 @@ static int cache_handler(request_rec *r)
 
     /* save away the possible providers */
     cache->providers = providers;
+
+    /* Are we PUT/POST/DELETE? If so, prepare to invalidate the cached entities.
+     */
+    switch (r->method_number) {
+    case M_PUT:
+    case M_POST:
+    case M_DELETE:
+    {
+
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO(02463)
+                "PUT/POST/DELETE: Adding CACHE_INVALIDATE filter for %s",
+                r->uri);
+
+        /* Add cache_invalidate filter to this request to force a
+         * cache entry to be invalidated if the response is
+         * ultimately successful (2xx).
+         */
+        ap_add_output_filter_handle(
+                cache_invalidate_filter_handle, cache, r,
+                r->connection);
+
+        return DECLINED;
+    }
+    case M_GET: {
+        break;
+    }
+    default : {
+
+        ap_log_rerror(
+                APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO(02464) "cache: Method '%s' not cacheable by mod_cache, ignoring: %s", r->method, r->uri);
+
+        return DECLINED;
+    }
+    }
 
     /*
      * Try to serve this request from the cache.
@@ -455,9 +515,10 @@ static int cache_handler(request_rec *r)
                  * is available later during running the filter may be
                  * different due to an internal redirect.
                  */
-                cache->remove_url_filter =
-                    ap_add_output_filter_handle(cache_remove_url_filter_handle,
-                            cache, r, r->connection);
+                cache->remove_url_filter
+                        = ap_add_output_filter_handle(
+                                cache_remove_url_filter_handle, cache, r,
+                                r->connection);
 
             }
             else {
@@ -1483,6 +1544,70 @@ static apr_status_t cache_remove_url_filter(ap_filter_t *f,
 }
 
 /*
+ * CACHE_INVALIDATE filter
+ * -----------------------
+ *
+ * This filter gets added in the quick handler should a PUT, POST or DELETE
+ * method be detected. If the response is successful, we must invalidate any
+ * cached entity as per RFC2616 section 13.10.
+ *
+ * CACHE_INVALIDATE has to be a protocol filter to ensure that is run even if
+ * the response is a canned error message, which removes the content filters
+ * from the chain.
+ *
+ * CACHE_INVALIDATE expects cache request rec within its context because the
+ * request this filter runs on can be different from the one whose cache entry
+ * should be removed, due to internal redirects.
+ */
+static apr_status_t cache_invalidate_filter(ap_filter_t *f,
+                                            apr_bucket_brigade *in)
+{
+    request_rec *r = f->r;
+    cache_request_rec *cache;
+
+    /* Setup cache_request_rec */
+    cache = (cache_request_rec *) f->ctx;
+
+    if (!cache) {
+        /* user likely configured CACHE_INVALIDATE manually; they should really
+         * use mod_cache configuration to do that. So:
+         * 1. Remove ourselves
+         * 2. Do nothing and bail out
+         */
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02465)
+                "cache: CACHE_INVALIDATE enabled unexpectedly: %s", r->uri);
+    }
+    else {
+
+        if (r->status > 299) {
+
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02466)
+                    "cache: response status to '%s' method is %d (>299), not invalidating cached entity: %s", r->method, r->status, r->uri);
+
+        }
+        else {
+
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO(02467)
+                    "cache: Invalidating all cached entities in response to '%s' request for %s",
+                    r->method, r->uri);
+
+            cache_invalidate(cache, r);
+
+            /* we've got a cache invalidate! tell everyone who cares */
+            cache_run_cache_status(cache->handle, r, r->headers_out,
+                    AP_CACHE_INVALIDATE, apr_psprintf(r->pool,
+                            "cache invalidated by %s", r->method));
+
+        }
+
+    }
+
+    /* remove ourselves */
+    ap_remove_output_filter(f);
+    return ap_pass_brigade(f->next, in);
+}
+
+/*
  * CACHE filter
  * ------------
  *
@@ -1579,11 +1704,11 @@ static int cache_status(cache_handle_t *h, request_rec *r,
         x_cache = conf->x_cache;
     }
     if (x_cache) {
-        apr_table_setn(headers, "X-Cache",
-                apr_psprintf(r->pool, "%s from %s",
-                        status == AP_CACHE_HIT ? "HIT" : status
-                                == AP_CACHE_REVALIDATE ? "REVALIDATE" : "MISS",
-                        r->server->server_hostname));
+        apr_table_setn(headers, "X-Cache", apr_psprintf(r->pool, "%s from %s",
+                status == AP_CACHE_HIT ? "HIT"
+                        : status == AP_CACHE_REVALIDATE ? "REVALIDATE" : status
+                                == AP_CACHE_INVALIDATE ? "INVALIDATE" : "MISS",
+                r->server->server_hostname));
     }
 
     if (dconf && dconf->x_cache_detail_set) {
@@ -2453,6 +2578,11 @@ static void register_hooks(apr_pool_t *p)
     cache_remove_url_filter_handle =
         ap_register_output_filter("CACHE_REMOVE_URL",
                                   cache_remove_url_filter,
+                                  NULL,
+                                  AP_FTYPE_PROTOCOL);
+    cache_invalidate_filter_handle =
+        ap_register_output_filter("CACHE_INVALIDATE",
+                                  cache_invalidate_filter,
                                   NULL,
                                   AP_FTYPE_PROTOCOL);
     ap_hook_post_config(cache_post_config, NULL, NULL, APR_HOOK_REALLY_FIRST);
