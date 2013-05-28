@@ -167,6 +167,72 @@ AP_DECLARE(void) ap_set_etag(request_rec *r);
  */
 AP_DECLARE(void) ap_set_last_modified(request_rec *r);
 
+typedef enum {
+    AP_CONDITION_NONE,
+    AP_CONDITION_NOMATCH,
+    AP_CONDITION_WEAK,
+    AP_CONDITION_STRONG
+} ap_condition_e;
+
+/**
+ * Tests conditional request rules for the If-Match header.
+ * @param r The current request
+ * @param headers The response headers to check against
+ * @return AP_CONDITION_NONE if the header is missing, AP_CONDITION_NOMATCH
+ *         if the header does not match, AP_CONDITION_STRONG for a strong
+ *         match. Weak matches are not permitted for the If-Match header.
+ */
+AP_DECLARE(ap_condition_e) ap_condition_if_match(request_rec *r,
+        apr_table_t *headers);
+
+/**
+ * Tests conditional request rules for the If-Unmodified-Since header.
+ * @param r The current request
+ * @param headers The response headers to check against
+ * @return AP_CONDITION_NONE if the header is missing, AP_CONDITION_NOMATCH
+ *         if the header does not match, AP_CONDITION_WEAK if a weak match
+ *         was present and allowed by RFC2616, AP_CONDITION_STRONG for a
+ *         strong match.
+ */
+AP_DECLARE(ap_condition_e) ap_condition_if_unmodified_since(request_rec *r,
+        apr_table_t *headers);
+
+/**
+ * Tests conditional request rules for the If-None-Match header.
+ * @param r The current request
+ * @param headers The response headers to check against
+ * @return AP_CONDITION_NONE if the header is missing, AP_CONDITION_NOMATCH
+ *         if the header does not match, AP_CONDITION_WEAK if a weak match
+ *         was present and allowed by RFC2616, AP_CONDITION_STRONG for a
+ *         strong match.
+ */
+AP_DECLARE(ap_condition_e) ap_condition_if_none_match(request_rec *r,
+        apr_table_t *headers);
+
+/**
+ * Tests conditional request rules for the If-Modified-Since header.
+ * @param r The current request
+ * @param headers The response headers to check against
+ * @return AP_CONDITION_NONE if the header is missing, AP_CONDITION_NOMATCH
+ *         if the header does not match, AP_CONDITION_WEAK if a weak match
+ *         was present and allowed by RFC2616, AP_CONDITION_STRONG for a
+ *         strong match.
+ */
+AP_DECLARE(ap_condition_e) ap_condition_if_modified_since(request_rec *r,
+        apr_table_t *headers);
+
+/**
+ * Tests conditional request rules for the If-Range header.
+ * @param r The current request
+ * @param headers The response headers to check against
+ * @return AP_CONDITION_NONE if either the If-Range or Range header is
+ *         missing, AP_CONDITION_NOMATCH if the header does not match,
+ *         AP_CONDITION_STRONG for a strong match. Weak matches are not
+ *         permitted for the If-Range header.
+ */
+AP_DECLARE(ap_condition_e) ap_condition_if_range(request_rec *r,
+        apr_table_t *headers);
+
 /**
  * Implements condition GET rules for HTTP/1.1 specification.  This function
  * inspects the client headers and determines if the response fulfills
