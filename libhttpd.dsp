@@ -19,6 +19,7 @@ CFG=libhttpd - Win32 Release
 !MESSAGE 
 !MESSAGE "libhttpd - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE "libhttpd - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "libhttpd - Win32 Lexical" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -138,6 +139,7 @@ PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).ma
 
 # Name "libhttpd - Win32 Release"
 # Name "libhttpd - Win32 Debug"
+# Name "libhttpd - Win32 Lexical"
 # Begin Group "headers"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
