@@ -90,13 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
  
-    * mod_cache: If a 304 response indicates an entity not currently cached, then
-      the cache MUST disregard the response and repeat the request without the 
-      conditional.
-      trunk patch: http://svn.apache.org/r1481197
-      2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-uncacheable304-2.4.patch
-      +1: minfrin, jim, wrowe
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
