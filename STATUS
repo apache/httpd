@@ -258,20 +258,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/r1479905
       2.4.x patch: http://people.apache.org/~minfrin/httpd-if-range-fix2.4.patch
                    (depends on r1479528 above)
-      +1: minfrin
+      +1: minfrin, jim
 
     * mod_cache: Ensure that we don't attempt to replace a cached response
       with an older response as per RFC2616 13.12.
       trunk patch: http://svn.apache.org/r1479966
       2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-olderdate2.4.patch
-      +1: minfrin
+      +1: minfrin, jim
 
     * mod_cache: If a 304 response indicates an entity not currently cached, then
       the cache MUST disregard the response and repeat the request without the 
       conditional.
       trunk patch: http://svn.apache.org/r1481197
       2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-uncacheable304-2.4.patch
-      +1: minfrin
+      +1: minfrin, jim
 
     * mod_proxy: Fix pool usage by protecting w/ a mutex
       trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1480627
@@ -292,19 +292,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/r1484832
                    http://svn.apache.org/r1484914
       2.4.x patch: trunk works, modulo CHANGES
-      +1: minfrin
+      +1: minfrin, jim
 
     * libhttpd.dsp: Fix Debug build mentioned by fuankg in
       http://mail-archives.apache.org/mod_mbox/httpd-dev/201305.mbox/%3C519FC54E.901@apache.org%3E.
       trunk patch: http://svn.apache.org/r1486490
       2.4.x patch: trunk patch works
-      +1: gsmith
+      +1: gsmith, jim
 
     * makefile.win: Adjust makefile to properly detect the need to use devenv
       on applicable MSVC versions.
       trunk patch: http://svn.apache.org/r1482041
       2.4.x patch: trunk patch works with offset
-      +1: gsmith
+      +1: gsmith, jim
 
 
 A list of further possible backports can be found at:                                                                                                                                   
