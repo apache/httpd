@@ -90,19 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
  
- 
-    * libhttpd.dsp: Fix Debug build mentioned by fuankg in
-      http://mail-archives.apache.org/mod_mbox/httpd-dev/201305.mbox/%3C519FC54E.901@apache.org%3E.
-      trunk patch: http://svn.apache.org/r1486490
-      2.4.x patch: trunk patch works
-      +1: gsmith, jim, wrowe
-
-    * makefile.win: Adjust makefile to properly detect the need to use devenv
-      on applicable MSVC versions.
-      trunk patch: http://svn.apache.org/r1482041
-      2.4.x patch: trunk patch works with offset
-      +1: gsmith, jim, wrowe
-
     * mod_cache: Invalidate cached entities in response to RFC2616 Section
       13.10 Invalidation After Updates or Deletions. PR 15868
       trunk patch: http://svn.apache.org/r1070179
