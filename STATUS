@@ -90,13 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
  
-    * mod_cache: Ensure that updated responses to HEAD requests don't get
-      mistakenly paired with a previously cached body. Ensure that any existing
-      body is removed when a HEAD request is cached.
-      trunk patch: http://svn.apache.org/r1479411
-      2.4.x patch: trunk patch works (minus CHANGES)
-      +1: minfrin, jim, wrowe
-
     * core: Add the ability to do explicit matching on weak and strong ETags
       as per RFC2616 Section 13.3.3.
       trunk patch: http://svn.apache.org/r1479528
