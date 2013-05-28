@@ -89,7 +89,20 @@ RELEASE SHOWSTOPPERS:
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
-  
+ 
+    * libhttpd.dsp: Fix Debug build mentioned by fuankg in
+      http://mail-archives.apache.org/mod_mbox/httpd-dev/201305.mbox/%3C519FC54E.901@apache.org%3E.
+      trunk patch: http://svn.apache.org/r1486490
+      2.4.x patch: trunk patch works
+      +1: gsmith, jim, minfrin
+
+    * makefile.win: Adjust makefile to properly detect the need to use devenv
+      on applicable MSVC versions.
+      trunk patch: http://svn.apache.org/r1482041
+      2.4.x patch: trunk patch works with offset
+      +1: gsmith, jim, minfrin
+
+ 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -293,18 +306,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/r1484914
       2.4.x patch: trunk works, modulo CHANGES
       +1: minfrin, jim
-
-    * libhttpd.dsp: Fix Debug build mentioned by fuankg in
-      http://mail-archives.apache.org/mod_mbox/httpd-dev/201305.mbox/%3C519FC54E.901@apache.org%3E.
-      trunk patch: http://svn.apache.org/r1486490
-      2.4.x patch: trunk patch works
-      +1: gsmith, jim, minfrin
-
-    * makefile.win: Adjust makefile to properly detect the need to use devenv
-      on applicable MSVC versions.
-      trunk patch: http://svn.apache.org/r1482041
-      2.4.x patch: trunk patch works with offset
-      +1: gsmith, jim, minfrin
 
     * core: Add post_perdir_config hook.
       trunk patch: http://svn.apache.org/r1368121
