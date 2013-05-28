@@ -90,13 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
  
-    * mod_cache: Make sure Vary processing handles multivalued Vary headers and
-      multivalued headers referred to via Vary.
-      trunk patch: http://svn.apache.org/r1478748
-      2.4.x patch: trunk patch works (minus CHANGES, on condition above backports are
-      done first)
-      +1: minfrin, jim, wrowe
-
     * mod_cache: Make sure that contradictory entity headers present in a 304
       Not Modified response are caught and cause the entity to be removed.
       trunk patch: http://svn.apache.org/r1479117
