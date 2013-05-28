@@ -544,11 +544,13 @@ int cache_check_freshness(cache_handle_t *h, cache_request_rec *cache,
     /* These come from the cached entity. */
     if (h->cache_obj->info.control.no_cache
             || h->cache_obj->info.control.no_cache_header
-            || h->cache_obj->info.control.private_header) {
+            || h->cache_obj->info.control.private_header
+            || h->cache_obj->info.control.invalidated) {
         /*
          * The cached entity contained Cache-Control: no-cache, or a
          * no-cache with a header present, or a private with a header
-         * present, so treat as stale causing revalidation.
+         * present, or the cached entity has been invalidated in the
+         * past, so treat as stale causing revalidation.
          */
         return 0;
     }

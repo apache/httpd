@@ -40,6 +40,20 @@ int cache_remove_url(cache_request_rec *cache, request_rec *r);
 int cache_create_entity(cache_request_rec *cache, request_rec *r,
                         apr_off_t size, apr_bucket_brigade *in);
 int cache_select(cache_request_rec *cache, request_rec *r);
+
+/**
+ * invalidate a specific URL entity in all caches
+ *
+ * All cached entities for this URL are removed, usually in
+ * response to a POST/PUT or DELETE.
+ *
+ * This function returns OK if at least one entity was found and
+ * removed, and DECLINED if no cached entities were removed.
+ * @param h cache_handle_t
+ * @param r request_rec
+ */
+int cache_invalidate(cache_request_rec *cache, request_rec *r);
+
 apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
         const char **key);
 

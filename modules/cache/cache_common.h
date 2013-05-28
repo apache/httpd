@@ -45,6 +45,7 @@ typedef struct cache_control {
     unsigned int must_revalidate:1;
     unsigned int proxy_revalidate:1;
     unsigned int s_maxage:1;
+    unsigned int invalidated:1; /* has this entity been invalidated? */
     apr_int64_t max_age_value; /* if positive, then set */
     apr_int64_t max_stale_value; /* if positive, then set */
     apr_int64_t min_fresh_value; /* if positive, then set */

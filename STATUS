@@ -90,15 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
  
-    * mod_cache: Invalidate cached entities in response to RFC2616 Section
-      13.10 Invalidation After Updates or Deletions. PR 15868
-      trunk patch: http://svn.apache.org/r1070179
-                   http://svn.apache.org/r1478140
-                   http://svn.apache.org/r1478173
-                   http://svn.apache.org/r1478798
-      2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-invalidate7.patch
-      +1: minfrin, jim, wrowe
-
     * mod_cache: Ignore response headers specified by no-cache=header and
       private=header as specified by RFC2616 14.9.1 What is Cacheable. Ensure
       that these headers are still processed when multiple Cache-Control
