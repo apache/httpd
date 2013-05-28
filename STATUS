@@ -91,6 +91,97 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
  
  
+    * libhttpd.dsp: Fix Debug build mentioned by fuankg in
+      http://mail-archives.apache.org/mod_mbox/httpd-dev/201305.mbox/%3C519FC54E.901@apache.org%3E.
+      trunk patch: http://svn.apache.org/r1486490
+      2.4.x patch: trunk patch works
+      +1: gsmith, jim, wrowe
+
+    * makefile.win: Adjust makefile to properly detect the need to use devenv
+      on applicable MSVC versions.
+      trunk patch: http://svn.apache.org/r1482041
+      2.4.x patch: trunk patch works with offset
+      +1: gsmith, jim, wrowe
+
+    * mod_cache: Invalidate cached entities in response to RFC2616 Section
+      13.10 Invalidation After Updates or Deletions. PR 15868
+      trunk patch: http://svn.apache.org/r1070179
+                   http://svn.apache.org/r1478140
+                   http://svn.apache.org/r1478173
+                   http://svn.apache.org/r1478798
+      2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-invalidate7.patch
+      +1: minfrin, jim, wrowe
+
+    * mod_cache: Ignore response headers specified by no-cache=header and
+      private=header as specified by RFC2616 14.9.1 What is Cacheable. Ensure
+      that these headers are still processed when multiple Cache-Control
+      headers are present in the response. PR 54706
+      trunk patch: http://svn.apache.org/r1478382
+      2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-nocacheheader2.4.patch
+      +1: minfrin, jim, wrowe
+
+    * mod_cache: When serving from cache, only the last header of a multivalued
+      header was taken into account. Fixed. Ensure that Warning headers are correctly
+      handled as per RFC2616.
+      trunk patch: http://svn.apache.org/r1478441
+                   http://svn.apache.org/r1480283
+      2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-multipleheaders2.4.patch
+      +1: minfrin, jim, wrowe
+
+    * mod_cache: Make sure Vary processing handles multivalued Vary headers and
+      multivalued headers referred to via Vary.
+      trunk patch: http://svn.apache.org/r1478748
+      2.4.x patch: trunk patch works (minus CHANGES, on condition above backports are
+      done first)
+      +1: minfrin, jim, wrowe
+
+    * mod_cache: Make sure that contradictory entity headers present in a 304
+      Not Modified response are caught and cause the entity to be removed.
+      trunk patch: http://svn.apache.org/r1479117
+      2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-304sanity.patch2.4.patch
+      +1: minfrin, jim, wrowe
+
+    * mod_cache: Honour Cache-Control: no-store in a request.
+      trunk patch: http://svn.apache.org/r1479222
+      2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-nostore2.4.patch
+      +1: minfrin, jim, wrowe
+
+    * mod_cache: Ensure that updated responses to HEAD requests don't get
+      mistakenly paired with a previously cached body. Ensure that any existing
+      body is removed when a HEAD request is cached.
+      trunk patch: http://svn.apache.org/r1479411
+      2.4.x patch: trunk patch works (minus CHANGES)
+      +1: minfrin, jim, wrowe
+
+    * core: Add the ability to do explicit matching on weak and strong ETags
+      as per RFC2616 Section 13.3.3.
+      trunk patch: http://svn.apache.org/r1479528
+      2.4.x patch: trunk patch works (minus CHANGES, mmn bump)
+      +1: minfrin, jim, wrowe
+
+    * core, mod_cache: Ensure RFC2616 compliance in ap_meets_conditions()
+      with weak validation combined with If-Range and Range headers. Break
+      out explicit conditional header checks to be useable elsewhere in the
+      server. Ensure weak validation RFC compliance in the byteranges filter.
+      Ensure RFC validation compliance when serving cached entities. PR 16142
+      trunk patch: http://svn.apache.org/r1479905
+      2.4.x patch: http://people.apache.org/~minfrin/httpd-if-range-fix2.4.patch
+                   (depends on r1479528 above)
+      +1: minfrin, jim, wrowe
+
+    * mod_cache: Ensure that we don't attempt to replace a cached response
+      with an older response as per RFC2616 13.12.
+      trunk patch: http://svn.apache.org/r1479966
+      2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-olderdate2.4.patch
+      +1: minfrin, jim, wrowe
+
+    * mod_cache: If a 304 response indicates an entity not currently cached, then
+      the cache MUST disregard the response and repeat the request without the 
+      conditional.
+      trunk patch: http://svn.apache.org/r1481197
+      2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-uncacheable304-2.4.patch
+      +1: minfrin, jim, wrowe
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -194,85 +285,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       +1: minfrin, jim
       -0.5: sf: I would prefer if this sat in trunk for a few months first
                 to receive more testing.
-
-    * mod_cache: Invalidate cached entities in response to RFC2616 Section
-      13.10 Invalidation After Updates or Deletions. PR 15868
-      trunk patch: http://svn.apache.org/r1070179
-                   http://svn.apache.org/r1478140
-                   http://svn.apache.org/r1478173
-                   http://svn.apache.org/r1478798
-      2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-invalidate7.patch
-      +1: minfrin, jim
-
-    * mod_cache: Ignore response headers specified by no-cache=header and
-      private=header as specified by RFC2616 14.9.1 What is Cacheable. Ensure
-      that these headers are still processed when multiple Cache-Control
-      headers are present in the response. PR 54706
-      trunk patch: http://svn.apache.org/r1478382
-      2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-nocacheheader2.4.patch
-      +1: minfrin, jim
-
-    * mod_cache: When serving from cache, only the last header of a multivalued
-      header was taken into account. Fixed. Ensure that Warning headers are correctly
-      handled as per RFC2616.
-      trunk patch: http://svn.apache.org/r1478441
-                   http://svn.apache.org/r1480283
-      2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-multipleheaders2.4.patch
-      +1: minfrin, jim
-
-    * mod_cache: Make sure Vary processing handles multivalued Vary headers and
-      multivalued headers referred to via Vary.
-      trunk patch: http://svn.apache.org/r1478748
-      2.4.x patch: trunk patch works (minus CHANGES, on condition above backports are
-      done first)
-      +1: minfrin, jim
-
-    * mod_cache: Make sure that contradictory entity headers present in a 304
-      Not Modified response are caught and cause the entity to be removed.
-      trunk patch: http://svn.apache.org/r1479117
-      2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-304sanity.patch2.4.patch
-      +1: minfrin, jim
-
-    * mod_cache: Honour Cache-Control: no-store in a request.
-      trunk patch: http://svn.apache.org/r1479222
-      2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-nostore2.4.patch
-      +1: minfrin, jim
-
-    * mod_cache: Ensure that updated responses to HEAD requests don't get
-      mistakenly paired with a previously cached body. Ensure that any existing
-      body is removed when a HEAD request is cached.
-      trunk patch: http://svn.apache.org/r1479411
-      2.4.x patch: trunk patch works (minus CHANGES)
-      +1: minfrin, jim
-
-    * core: Add the ability to do explicit matching on weak and strong ETags
-      as per RFC2616 Section 13.3.3.
-      trunk patch: http://svn.apache.org/r1479528
-      2.4.x patch: trunk patch works (minus CHANGES, mmn bump)
-      +1: minfrin, jim
-
-    * core, mod_cache: Ensure RFC2616 compliance in ap_meets_conditions()
-      with weak validation combined with If-Range and Range headers. Break
-      out explicit conditional header checks to be useable elsewhere in the
-      server. Ensure weak validation RFC compliance in the byteranges filter.
-      Ensure RFC validation compliance when serving cached entities. PR 16142
-      trunk patch: http://svn.apache.org/r1479905
-      2.4.x patch: http://people.apache.org/~minfrin/httpd-if-range-fix2.4.patch
-                   (depends on r1479528 above)
-      +1: minfrin, jim
-
-    * mod_cache: Ensure that we don't attempt to replace a cached response
-      with an older response as per RFC2616 13.12.
-      trunk patch: http://svn.apache.org/r1479966
-      2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-olderdate2.4.patch
-      +1: minfrin, jim
-
-    * mod_cache: If a 304 response indicates an entity not currently cached, then
-      the cache MUST disregard the response and repeat the request without the 
-      conditional.
-      trunk patch: http://svn.apache.org/r1481197
-      2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-uncacheable304-2.4.patch
-      +1: minfrin, jim
 
     * mod_proxy: Fix pool usage by protecting w/ a mutex
       trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1480627
