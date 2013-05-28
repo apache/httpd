@@ -543,8 +543,6 @@ int cache_check_freshness(cache_handle_t *h, cache_request_rec *cache,
 
     /* These come from the cached entity. */
     if (h->cache_obj->info.control.no_cache
-            || h->cache_obj->info.control.no_cache_header
-            || h->cache_obj->info.control.private_header
             || h->cache_obj->info.control.invalidated) {
         /*
          * The cached entity contained Cache-Control: no-cache, or a
@@ -860,95 +858,6 @@ CACHE_DECLARE(char *)ap_cache_generate_name(apr_pool_t *p, int dirlevels,
     return apr_pstrdup(p, hashfile);
 }
 
-/*
- * Create a new table consisting of those elements from an
- * headers table that are allowed to be stored in a cache.
- */
-CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers(apr_pool_t *pool,
-                                                        apr_table_t *t,
-                                                        server_rec *s)
-{
-    cache_server_conf *conf;
-    char **header;
-    int i;
-    apr_table_t *headers_out;
-
-    /* Short circuit the common case that there are not
-     * (yet) any headers populated.
-     */
-    if (t == NULL) {
-        return apr_table_make(pool, 10);
-    };
-
-    /* Make a copy of the headers, and remove from
-     * the copy any hop-by-hop headers, as defined in Section
-     * 13.5.1 of RFC 2616
-     */
-    headers_out = apr_table_copy(pool, t);
-
-    apr_table_unset(headers_out, "Connection");
-    apr_table_unset(headers_out, "Keep-Alive");
-    apr_table_unset(headers_out, "Proxy-Authenticate");
-    apr_table_unset(headers_out, "Proxy-Authorization");
-    apr_table_unset(headers_out, "TE");
-    apr_table_unset(headers_out, "Trailers");
-    apr_table_unset(headers_out, "Transfer-Encoding");
-    apr_table_unset(headers_out, "Upgrade");
-
-    conf = (cache_server_conf *)ap_get_module_config(s->module_config,
-                                                     &cache_module);
-
-    /* Remove the user defined headers set with CacheIgnoreHeaders.
-     * This may break RFC 2616 compliance on behalf of the administrator.
-     */
-    header = (char **)conf->ignore_headers->elts;
-    for (i = 0; i < conf->ignore_headers->nelts; i++) {
-        apr_table_unset(headers_out, header[i]);
-    }
-    return headers_out;
-}
-
-/*
- * Create a new table consisting of those elements from an input
- * headers table that are allowed to be stored in a cache.
- */
-CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers_in(request_rec *r)
-{
-    return ap_cache_cacheable_headers(r->pool, r->headers_in, r->server);
-}
-
-/*
- * Create a new table consisting of those elements from an output
- * headers table that are allowed to be stored in a cache;
- * ensure there is a content type and capture any errors.
- */
-CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers_out(request_rec *r)
-{
-    apr_table_t *headers_out;
-
-    headers_out = apr_table_overlay(r->pool, r->headers_out,
-                                        r->err_headers_out);
-
-    apr_table_clear(r->err_headers_out);
-
-    headers_out = ap_cache_cacheable_headers(r->pool, headers_out,
-                                                  r->server);
-
-    if (!apr_table_get(headers_out, "Content-Type")
-        && r->content_type) {
-        apr_table_setn(headers_out, "Content-Type",
-                       ap_make_content_type(r, r->content_type));
-    }
-
-    if (!apr_table_get(headers_out, "Content-Encoding")
-        && r->content_encoding) {
-        apr_table_setn(headers_out, "Content-Encoding",
-                       r->content_encoding);
-    }
-
-    return headers_out;
-}
-
 /**
  * String tokenizer that ignores separator characters within quoted strings
  * and escaped characters, as per RFC2616 section 2.2.
@@ -981,7 +890,7 @@ static char *cache_strqtok(char *str, const char *sep, char **last)
     *last = token;
     while (**last) {
         if (!quoted) {
-            if (**last == '\"') {
+            if (**last == '\"' && !ap_strchr_c(sep, '\"')) {
                 quoted = 1;
                 ++*last;
             }
@@ -1071,9 +980,7 @@ int ap_cache_control(request_rec *r, cache_control_t *cc,
                 /* ...then try slowest cases */
                 else if (!strncasecmp(token, "no-cache", 8)) {
                     if (token[8] == '=') {
-                        if (apr_table_get(headers, token + 9)) {
-                            cc->no_cache_header = 1;
-                        }
+                        cc->no_cache_header = 1;
                     }
                     else if (!token[8]) {
                         cc->no_cache = 1;
@@ -1148,9 +1055,7 @@ int ap_cache_control(request_rec *r, cache_control_t *cc,
                 }
                 else if (!strncasecmp(token, "private", 7)) {
                     if (token[7] == '=') {
-                        if (apr_table_get(headers, token + 8)) {
-                            cc->private_header = 1;
-                        }
+                        cc->private_header = 1;
                     }
                     else if (!token[7]) {
                         cc->private = 1;
@@ -1180,4 +1085,210 @@ int ap_cache_control(request_rec *r, cache_control_t *cc,
     }
 
     return (cc_header != NULL || pragma_header != NULL);
+}
+
+/**
+ * Parse the Cache-Control, identifying and removing headers that
+ * exist as tokens after the no-cache and private tokens.
+ */
+static int cache_control_remove(request_rec *r, const char *cc_header,
+        apr_table_t *headers)
+{
+    char *last, *slast;
+    int found = 0;
+
+    if (cc_header) {
+        char *header = apr_pstrdup(r->pool, cc_header);
+        char *token = cache_strqtok(header, CACHE_SEPARATOR, &last);
+        while (token) {
+            switch (token[0]) {
+            case 'n':
+            case 'N': {
+                if (!strncmp(token, "no-cache", 8)
+                        || !strncasecmp(token, "no-cache", 8)) {
+                    if (token[8] == '=') {
+                        const char *header = cache_strqtok(token + 9,
+                                CACHE_SEPARATOR "\"", &slast);
+                        while (header) {
+                            apr_table_unset(headers, header);
+                            header = cache_strqtok(NULL, CACHE_SEPARATOR "\"",
+                                    &slast);
+                        }
+                        found = 1;
+                    }
+                    break;
+                }
+                break;
+            }
+            case 'p':
+            case 'P': {
+                if (!strncmp(token, "private", 7)
+                        || !strncasecmp(token, "private", 7)) {
+                    if (token[7] == '=') {
+                        const char *header = cache_strqtok(token + 8,
+                                CACHE_SEPARATOR "\"", &slast);
+                        while (header) {
+                            apr_table_unset(headers, header);
+                            header = cache_strqtok(NULL, CACHE_SEPARATOR "\"",
+                                    &slast);
+                        }
+                        found = 1;
+                    }
+                }
+                break;
+            }
+            }
+            token = cache_strqtok(NULL, CACHE_SEPARATOR, &last);
+        }
+    }
+
+    return found;
+}
+
+/*
+ * Create a new table consisting of those elements from an
+ * headers table that are allowed to be stored in a cache.
+ */
+CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers(apr_pool_t *pool,
+                                                        apr_table_t *t,
+                                                        server_rec *s)
+{
+    cache_server_conf *conf;
+    char **header;
+    int i;
+    apr_table_t *headers_out;
+
+    /* Short circuit the common case that there are not
+     * (yet) any headers populated.
+     */
+    if (t == NULL) {
+        return apr_table_make(pool, 10);
+    };
+
+    /* Make a copy of the headers, and remove from
+     * the copy any hop-by-hop headers, as defined in Section
+     * 13.5.1 of RFC 2616
+     */
+    headers_out = apr_table_copy(pool, t);
+
+    apr_table_unset(headers_out, "Connection");
+    apr_table_unset(headers_out, "Keep-Alive");
+    apr_table_unset(headers_out, "Proxy-Authenticate");
+    apr_table_unset(headers_out, "Proxy-Authorization");
+    apr_table_unset(headers_out, "TE");
+    apr_table_unset(headers_out, "Trailers");
+    apr_table_unset(headers_out, "Transfer-Encoding");
+    apr_table_unset(headers_out, "Upgrade");
+
+    conf = (cache_server_conf *)ap_get_module_config(s->module_config,
+                                                     &cache_module);
+
+    /* Remove the user defined headers set with CacheIgnoreHeaders.
+     * This may break RFC 2616 compliance on behalf of the administrator.
+     */
+    header = (char **)conf->ignore_headers->elts;
+    for (i = 0; i < conf->ignore_headers->nelts; i++) {
+        apr_table_unset(headers_out, header[i]);
+    }
+    return headers_out;
+}
+
+/*
+ * Create a new table consisting of those elements from an input
+ * headers table that are allowed to be stored in a cache.
+ */
+CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers_in(request_rec *r)
+{
+    return ap_cache_cacheable_headers(r->pool, r->headers_in, r->server);
+}
+
+/*
+ * Create a new table consisting of those elements from an output
+ * headers table that are allowed to be stored in a cache;
+ * ensure there is a content type and capture any errors.
+ */
+CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers_out(request_rec *r)
+{
+    apr_table_t *headers_out;
+
+    headers_out = apr_table_overlay(r->pool, r->headers_out,
+                                        r->err_headers_out);
+
+    apr_table_clear(r->err_headers_out);
+
+    headers_out = ap_cache_cacheable_headers(r->pool, headers_out,
+                                                  r->server);
+
+    cache_control_remove(r,
+            cache_table_getm(r->pool, headers_out, "Cache-Control"),
+            headers_out);
+
+    if (!apr_table_get(headers_out, "Content-Type")
+        && r->content_type) {
+        apr_table_setn(headers_out, "Content-Type",
+                       ap_make_content_type(r, r->content_type));
+    }
+
+    if (!apr_table_get(headers_out, "Content-Encoding")
+        && r->content_encoding) {
+        apr_table_setn(headers_out, "Content-Encoding",
+                       r->content_encoding);
+    }
+
+    return headers_out;
+}
+
+typedef struct
+{
+    apr_pool_t *p;
+    const char *first;
+    apr_array_header_t *merged;
+} cache_table_getm_t;
+
+static int cache_table_getm_do(void *v, const char *key, const char *val)
+{
+    cache_table_getm_t *state = (cache_table_getm_t *) v;
+
+    if (!state->first) {
+        /**
+         * The most common case is a single header, and this is covered by
+         * a fast path that doesn't allocate any memory. On the second and
+         * subsequent header, an array is created and the array concatenated
+         * together to form the final value.
+         */
+        state->first = val;
+    }
+    else {
+        const char **elt;
+        if (!state->merged) {
+            state->merged = apr_array_make(state->p, 10, sizeof(const char *));
+            elt = apr_array_push(state->merged);
+            *elt = state->first;
+        }
+        elt = apr_array_push(state->merged);
+        *elt = val;
+    }
+    return 1;
+}
+
+const char *cache_table_getm(apr_pool_t *p, const apr_table_t *t,
+        const char *key)
+{
+    cache_table_getm_t state;
+
+    state.p = p;
+    state.first = NULL;
+    state.merged = NULL;
+
+    apr_table_do(cache_table_getm_do, &state, t, key, NULL);
+
+    if (!state.first) {
+        return NULL;
+    }
+    else if (!state.merged) {
+        return state.first;
+    }
+    else {
+        return apr_array_pstrcat(p, state.merged, ',');
+    }
 }

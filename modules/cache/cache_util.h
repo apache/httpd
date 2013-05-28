@@ -292,6 +292,19 @@ apr_status_t cache_remove_lock(cache_server_conf *conf,
 cache_provider_list *cache_get_providers(request_rec *r,
         cache_server_conf *conf, apr_uri_t uri);
 
+/**
+ * Get a value from a table, where the table may contain multiple
+ * values for a given key.
+ *
+ * When the table contains a single value, that value is returned
+ * unchanged.
+ *
+ * When the table contains two or more values for a key, all values
+ * for the key are returned, separated by commas.
+ */
+const char *cache_table_getm(apr_pool_t *p, const apr_table_t *t,
+        const char *key);
+
 #ifdef __cplusplus
 }
 #endif
