@@ -102,6 +102,9 @@ static int cache_quick_handler(request_rec *r, int lookup)
     /*
      * Are we allowed to serve cached info at all?
      */
+    if (!ap_cache_check_no_store(cache, r)) {
+        return DECLINED;
+    }
 
     /* find certain cache controlling headers */
     auth = apr_table_get(r->headers_in, "Authorization");
@@ -400,6 +403,13 @@ static int cache_handler(request_rec *r)
 
     /* save away the possible providers */
     cache->providers = providers;
+
+    /*
+     * Are we allowed to serve cached info at all?
+     */
+    if (!ap_cache_check_no_store(cache, r)) {
+        return DECLINED;
+    }
 
     /* Are we PUT/POST/DELETE? If so, prepare to invalidate the cached entities.
      */
