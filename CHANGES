@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.5
 
+  *) mod_cache: If a 304 response indicates an entity not currently cached, then
+     the cache MUST disregard the response and repeat the request without the
+     conditional. [Graham Leggett, Co-Advisor <coad measurement-factory.com>]
+
   *) mod_cache: Ensure that we don't attempt to replace a cached response
      with an older response as per RFC2616 13.12. [Graham Leggett, Co-Advisor
      <coad measurement-factory.com>]
