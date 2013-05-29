@@ -243,16 +243,16 @@ static void check_pipeline_flush(request_rec *r)
         }
     }
 
-        e = apr_bucket_flush_create(c->bucket_alloc);
+    e = apr_bucket_flush_create(c->bucket_alloc);
 
-        /* We just send directly to the connection based filters.  At
-         * this point, we know that we have seen all of the data
-         * (request finalization sent an EOS bucket, which empties all
-         * of the request filters). We just want to flush the buckets
-         * if something hasn't been sent to the network yet.
-         */
-        APR_BRIGADE_INSERT_HEAD(bb, e);
-        ap_pass_brigade(r->connection->output_filters, bb);
+    /* We just send directly to the connection based filters.  At
+     * this point, we know that we have seen all of the data
+     * (request finalization sent an EOS bucket, which empties all
+     * of the request filters). We just want to flush the buckets
+     * if something hasn't been sent to the network yet.
+     */
+    APR_BRIGADE_INSERT_HEAD(bb, e);
+    ap_pass_brigade(r->connection->output_filters, bb);
 }
 
 void ap_process_request(request_rec *r)

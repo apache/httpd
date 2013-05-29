@@ -922,7 +922,7 @@ static const char *x_http_scheme(const request_rec *r)
     /*
      * Log the call and exit.
      */
-    trace_add(r->server, NULL, cfg, "x_http_scheme()");
+    trace_add(r->server, r, cfg, "x_http_scheme()");
     return "example";
 }
 
@@ -941,7 +941,7 @@ static apr_port_t x_default_port(const request_rec *r)
     /*
      * Log the call and exit.
      */
-    trace_add(r->server, NULL, cfg, "x_default_port()");
+    trace_add(r->server, r, cfg, "x_default_port()");
     return 80;
 }
 #endif /*0*/
@@ -961,7 +961,7 @@ static void x_insert_filter(request_rec *r)
     /*
      * Log the call and exit.
      */
-    trace_add(r->server, NULL, cfg, "x_insert_filter()");
+    trace_add(r->server, r, cfg, "x_insert_filter()");
 }
 
 /*
@@ -979,7 +979,7 @@ static int x_quick_handler(request_rec *r, int lookup_uri)
     /*
      * Log the call and exit.
      */
-    trace_add(r->server, NULL, cfg, "x_quick_handler()");
+    trace_add(r->server, r, cfg, "x_quick_handler()");
     return DECLINED;
 }
 
