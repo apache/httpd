@@ -1670,7 +1670,8 @@ struct ap_vrprintf_data {
     char *buff;
 };
 
-static apr_status_t r_flush(apr_vformatter_buff_t *buff)
+/* Flush callback for apr_vformatter; returns -1 on error. */
+static int r_flush(apr_vformatter_buff_t *buff)
 {
     /* callback function passed to ap_vformatter to be called when
      * vformatter needs to write into buff and buff.curpos > buff.endpos */
@@ -1691,7 +1692,7 @@ static apr_status_t r_flush(apr_vformatter_buff_t *buff)
     vd->vbuff.curpos = vd->buff;
     vd->vbuff.endpos = vd->buff + AP_IOBUFSIZE;
 
-    return APR_SUCCESS;
+    return 0;
 }
 
 AP_DECLARE(int) ap_vrprintf(request_rec *r, const char *fmt, va_list va)
