@@ -626,10 +626,6 @@ int main(int argc, const char * const argv[])
      */
 
     ap_server_root = def_server_root;
-    if (ap_server_root_relative(ptemp, "foo") == NULL) {
-        fail();
-    }
-
     if (temp_error_log) {
         ap_replace_stderr_log(process->pool, temp_error_log);
     }
@@ -711,10 +707,6 @@ int main(int argc, const char * const argv[])
         apr_pool_create(&ptemp, pconf);
         apr_pool_tag(ptemp, "ptemp");
         ap_server_root = def_server_root;
-        if (ap_server_root_relative(ptemp, "foo") == NULL) {
-            fail();
-        }
-
         server_conf = ap_read_config(process, ptemp, confname, &ap_conftree);
         if (!server_conf) {
             destroy_and_exit_process(process, 1);
