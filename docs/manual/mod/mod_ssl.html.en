@@ -1535,7 +1535,7 @@ for additional information.</p>
 This directive toggles the usage of the SSL/TLS Protocol Engine for proxy. This
 is usually used inside a <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> section to enable SSL/TLS for proxy
 usage in a particular virtual host. By default the SSL/TLS Protocol Engine is
-disabled for proxy image both for the main server and all configured virtual hosts.</p>
+disabled for proxy both for the main server and all configured virtual hosts.</p>
 
 <p>Note that the SSLProxyEngine directive should not, in
 general, be included in a virtual host that will be acting as a
