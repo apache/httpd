@@ -187,7 +187,7 @@ rate_limit_filter(ap_filter_t *f, apr_bucket_brigade *input_bb)
                 rv = apr_brigade_partition(bb, ctx->chunk_size, &stop_point);
                 if (rv != APR_SUCCESS && rv != APR_INCOMPLETE) {
                     ctx->state = RATE_ERROR;
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r, APLOGNO(01456)
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r, APLOGNO(01456)
                                   "rl: partition failed.");
                     break;
                 }
