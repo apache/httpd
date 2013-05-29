@@ -74,11 +74,14 @@
 
     <table class="bordered"><tr class="header"><th>Format&nbsp;String</th>
         <th>Description</th></tr>
-<tr><td><code>%...I</code></td>
+<tr><td><code>%I</code></td>
         <td>Bytes received, including request and headers, cannot be
         zero.</td></tr>
-<tr class="odd"><td><code>%...O</code></td>
+<tr class="odd"><td><code>%O</code></td>
         <td>Bytes sent, including headers, cannot be zero.</td></tr>
+<tr><td><code>%C</code></td>
+        <td>Bytes transferred (received and sent), including request and headers,
+        cannot be zero. This is the combination of %I and %O.</td></tr>
 </table>
 
     <p>Usually, the functionality is used like this:</p>
