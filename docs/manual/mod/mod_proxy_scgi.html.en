@@ -81,9 +81,9 @@
 
     <div class="example"><h3>Balanced gateway</h3><pre class="prettyprint lang-config">
 ProxyPass /scgi-bin/ balancer://somecluster/
-&lt;Proxy balancer://somecluster/&gt;
-    BalancerMember scgi://localhost:4000/
-    BalancerMember scgi://localhost:4001/
+&lt;Proxy balancer://somecluster&gt;
+    BalancerMember scgi://localhost:4000
+    BalancerMember scgi://localhost:4001
 &lt;/Proxy&gt;
     </pre>
 </div>

@@ -252,7 +252,7 @@ d'Apache</a></li>
 	en-têtes, ne peut être nul. Nécessite l'activation de
 	<code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code>.</td></tr>
 <tr><td><code>%O</code></td>
-        <td>Nombre d'octets envoyés, y compris les en-têtes, ne peut
+        <td>Le nombre d'octets envoyés, y compris les en-têtes, ne peut
 	être nul. Nécessite l'activation de
 	<code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code>.</td></tr>
 </table>

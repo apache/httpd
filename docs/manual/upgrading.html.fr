@@ -346,6 +346,14 @@ Allow from example.org
       <code class="directive"><a href="./mod/mod_authn_core.html#authnprovideralias">AuthnProviderAlias</a></code>)
       est maintenant fournie par <code class="module"><a href="./mod/mod_authn_core.html">mod_authn_core</a></code>.  
       </li>
+
+      <li>Les directives RewriteLog et RewriteLogLevel ont été
+      supprimées. Pour utiliser les fonctionnalités qu'elles
+      fournissaient, il faut maintenant définir un niveau de
+      journalisation adéquat pour le module
+      <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code> via la directive <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code>. Voir aussi la section <a href="mod/mod_rewrite.html#logging">journalisation de
+      mod_rewrite</a>.
+      </li>
     </ul>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
