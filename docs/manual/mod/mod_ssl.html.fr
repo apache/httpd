@@ -27,6 +27,8 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_ssl.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_ssl.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Chiffrement de haut niveau basé sur les protocoles Secure
 Sockets Layer (SSL) et Transport Layer Security (TLS)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -77,6 +79,7 @@ pour fournir le moteur de chiffrement.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxycarevocationpath">SSLProxyCARevocationPath</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxycheckpeercn">SSLProxyCheckPeerCN</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxycheckpeerexpire">SSLProxyCheckPeerExpire</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslproxycheckpeername">SSLProxyCheckPeerName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxyciphersuite">SSLProxyCipherSuite</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxyengine">SSLProxyEngine</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxymachinecertificatechainfile">SSLProxyMachineCertificateChainFile</a></li>
@@ -1622,6 +1625,11 @@ du serveur distant doit être comparé au nom de serveur de l'URL de la
 requête. S'ils ne correspondent pas, un
 code d'état 502 (Bad Gateway) est envoyé.
 </p>
+<p>
+SSLProxyCheckPeerCN a été remplacé par <code class="directive"><a href="#sslproxycheckpeername">SSLProxyCheckPeerName</a></code>, et sa définition
+n'est prise en compte que si <code>SSLProxyCheckPeerName off</code> a
+été spécifié.
+</p>
 <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
 SSLProxyCheckPeerCN on
 </pre>
@@ -1649,6 +1657,39 @@ code d'état 502 (Bad Gateway) est envoyé.
 SSLProxyCheckPeerExpire on
 </pre>
 </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLProxyCheckPeerName" id="SSLProxyCheckPeerName">SSLProxyCheckPeerName</a> <a name="sslproxycheckpeername" id="sslproxycheckpeername">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure la vérification du nom d'hôte dans les
+certificats serveur distants
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyCheckPeerName on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLProxyCheckPeerName on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+</table>
+<p>
+Cette directive permet de configurer la vérification du nom d'hôte dans
+les certificats de serveur lorsque mod_ssl agit en tant que client SSL.
+La vérification est concluante si le nom d'hôte de l'URI de la requête
+correspond soit à l'extension subjectAltName, soit à l'un des attributs
+CN dans le sujet du certificat. Si la vérification échoue, la requête
+SSL est annulée et un code d'erreur 502 (Bad Gateway) est renvoyé. Cette
+directive remplace la directive <code class="directive"><a href="#sslproxycheckpeercn">SSLProxyCheckPeerCN</a></code> qui ne prenait en
+compte que le premier attribut CN pour la vérification du nom d'hôte.
+</p>
+<p>
+La vérification du nom d'hôte avec caractères générique est supportée de
+la manière suivante : les entrées subjectAltName de type dNSName ou les
+attributs CN commençant par <code>*.</code> correspondront à tout nom
+DNS comportant le même nombre d'éléments et le même suffixe (par
+exemple, <code>*.example.org</code> correspondra à
+<code>foo.example.org</code>, mais pas à
+<code>foo.bar.example.org</code>).
+</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
