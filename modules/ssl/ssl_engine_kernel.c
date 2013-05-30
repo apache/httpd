@@ -2186,6 +2186,7 @@ int ssl_callback_AdvertiseNextProtos(SSL *ssl, const unsigned char **data_out,
                                      unsigned int *size_out, void *arg)
 {
     conn_rec *c = (conn_rec*)SSL_get_app_data(ssl);
+    SSLConnRec *sslconn = myConnConfig(c);
     apr_array_header_t *protos;
     int num_protos;
     unsigned int size;
@@ -2196,16 +2197,22 @@ int ssl_callback_AdvertiseNextProtos(SSL *ssl, const unsigned char **data_out,
     *data_out = NULL;
     *size_out = 0;
 
-    /* If the connection object is not available, then there's nothing for us
-     * to do. */
-    if (c == NULL) {
+    /* If the connection object is not available, or there are no NPN
+     * hooks registered, then there's nothing for us to do. */
+    if (c == NULL || sslconn->npn_advertfns == NULL) {
         return SSL_TLSEXT_ERR_OK;
     }
 
     /* Invoke our npn_advertise_protos hook, giving other modules a chance to
      * add alternate protocol names to advertise. */
-    protos = apr_array_make(c->pool, 0, sizeof(char*));
-    modssl_run_npn_advertise_protos_hook(c, protos);
+    protos = apr_array_make(c->pool, 0, sizeof(char *));
+    for (i = 0; i < sslconn->npn_advertfns->nelts; i++) {
+        ssl_npn_advertise_protos fn = 
+            APR_ARRAY_IDX(sslconn->npn_advertfns, i, ssl_npn_advertise_protos);
+        
+        if (fn(c, protos) == DONE)
+            break;
+    }
     num_protos = protos->nelts;
 
     /* We now have a list of null-terminated strings; we need to concatenate

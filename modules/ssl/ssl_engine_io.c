@@ -1422,16 +1422,27 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
      * which protocol was decided upon and inform other modules by calling
      * npn_proto_negotiated_hook. */
     if (!inctx->npn_finished) {
+        SSLConnRec *sslconn = myConnConfig(f->c);
         const unsigned char *next_proto = NULL;
         unsigned next_proto_len = 0;
+        int n;
 
-        SSL_get0_next_proto_negotiated(
-            inctx->ssl, &next_proto, &next_proto_len);
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, f->c,
-                      APLOGNO(02306) "SSL NPN negotiated protocol: '%*s'",
-                      next_proto_len, (const char*)next_proto);
-        modssl_run_npn_proto_negotiated_hook(
-            f->c, (const char*)next_proto, next_proto_len);
+        if (sslconn->npn_negofns) {
+            SSL_get0_next_proto_negotiated(
+                inctx->ssl, &next_proto, &next_proto_len);
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, f->c,
+                          APLOGNO(02306) "SSL NPN negotiated protocol: '%*s'",
+                          next_proto_len, (const char*)next_proto);
+            
+            for (n = 0; n < sslconn->npn_negofns->nelts; n++) {
+                ssl_npn_proto_negotiated fn = 
+                    APR_ARRAY_IDX(sslconn->npn_negofns, n, ssl_npn_proto_negotiated);
+                
+                if (fn(f->c, (const char *)next_proto, next_proto_len) == DONE)
+                    break;
+            }
+        }
+            
         inctx->npn_finished = 1;
     }
 #endif
