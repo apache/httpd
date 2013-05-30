@@ -63,26 +63,40 @@ APR_DECLARE_OPTIONAL_FN(int, ssl_proxy_enable, (conn_rec *));
 
 APR_DECLARE_OPTIONAL_FN(int, ssl_engine_disable, (conn_rec *));
 
-/** The npn_advertise_protos optional hook allows other modules to add entries
- * to the list of protocol names advertised by the server during the Next
- * Protocol Negotiation (NPN) portion of the SSL handshake.  The hook callee is
- * given the connection and an APR array; it should push one or more char*'s
- * pointing to null-terminated strings (such as "http/1.1" or "spdy/2") onto
- * the array and return OK, or do nothing and return DECLINED. */
-APR_DECLARE_EXTERNAL_HOOK(modssl, AP, int, npn_advertise_protos_hook,
-                          (conn_rec *connection, apr_array_header_t *protos))
+/** The npn_advertise_protos callback allows another modules to add
+ * entries to the list of protocol names advertised by the server
+ * during the Next Protocol Negotiation (NPN) portion of the SSL
+ * handshake.  The callback is given the connection and an APR array;
+ * it should push one or more char*'s pointing to NUL-terminated
+ * strings (such as "http/1.1" or "spdy/2") onto the array and return
+ * OK.  To prevent further processing of (other modules') callbacks,
+ * return DONE. */
+typedef int (*ssl_npn_advertise_protos)(conn_rec *connection, 
+                                        apr_array_header_t *protos);
 
-/** The npn_proto_negotiated optional hook allows other modules to discover the
- * name of the protocol that was chosen during the Next Protocol Negotiation
- * (NPN) portion of the SSL handshake.  Note that this may be the empty string
- * (in which case modules should probably assume HTTP), or it may be a protocol
- * that was never even advertised by the server.  The hook callee is given the
- * connection, a non-null-terminated string containing the protocol name, and
- * the length of the string; it should do something appropriate (i.e. insert or
- * remove filters) and return OK, or do nothing and return DECLINED. */
-APR_DECLARE_EXTERNAL_HOOK(modssl, AP, int, npn_proto_negotiated_hook,
-                          (conn_rec *connection, const char *proto_name,
-                           apr_size_t proto_name_len))
+/** The npn_proto_negotiated callback allows other modules to discover
+ * the name of the protocol that was chosen during the Next Protocol
+ * Negotiation (NPN) portion of the SSL handshake.  Note that this may
+ * be the empty string (in which case modules should probably assume
+ * HTTP), or it may be a protocol that was never even advertised by
+ * the server.  The callback is given the connection, a
+ * non-NUL-terminated string containing the protocol name, and the
+ * length of the string; it should do something appropriate
+ * (i.e. insert or remove filters) and return OK.  To prevent further
+ * processing of (other modules') callbacks, return DONE. */
+typedef int (*ssl_npn_proto_negotiated)(conn_rec *connection, 
+                                        const char *proto_name,
+                                        apr_size_t proto_name_len);
+
+/* An optional function which can be used to register a pair of
+ * callbacks for NPN handling.  This optional function should be
+ * invoked from a pre_connection hook which runs *after* mod_ssl.c's
+ * pre_connection hook.  The function returns OK if the callbacks are
+ * register, or DECLINED otherwise (for example if mod_ssl does not
+l * support NPN).  */
+APR_DECLARE_OPTIONAL_FN(int, modssl_register_npn, (conn_rec *conn, 
+                                                   ssl_npn_advertise_protos advertisefn,
+                                                   ssl_npn_proto_negotiated negotiatedfn));
 
 #endif /* __MOD_SSL_H__ */
 /** @} */

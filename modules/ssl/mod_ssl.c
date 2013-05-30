@@ -285,18 +285,6 @@ static const command_rec ssl_config_cmds[] = {
     AP_END_CMD
 };
 
-/* Implement 'modssl_run_npn_advertise_protos_hook'. */
-APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(
-    modssl, AP, int, npn_advertise_protos_hook,
-    (conn_rec *connection, apr_array_header_t *protos),
-    (connection, protos), OK, DECLINED)
-
-/* Implement 'modssl_run_npn_proto_negotiated_hook'. */
-APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(
-    modssl, AP, int, npn_proto_negotiated_hook,
-    (conn_rec *connection, const char *proto_name, apr_size_t proto_name_len),
-    (connection, proto_name, proto_name_len), OK, DECLINED)
-
 /*
  *  the various processing hooks
  */
@@ -442,6 +430,37 @@ int ssl_engine_disable(conn_rec *c)
     sslconn->disabled = 1;
 
     return 1;
+}
+
+static int modssl_register_npn(conn_rec *c, 
+                               ssl_npn_advertise_protos advertisefn,
+                               ssl_npn_proto_negotiated negotiatedfn)
+{
+#ifdef HAVE_TLS_NPN
+    SSLConnRec *sslconn = myConnConfig(c);
+
+    if (!sslconn) {
+        return DECLINED;
+    }
+
+    if (!sslconn->npn_advertfns) {
+        sslconn->npn_advertfns = 
+            apr_array_make(c->pool, 5, sizeof(ssl_npn_advertise_protos));
+        sslconn->npn_negofns = 
+            apr_array_make(c->pool, 5, sizeof(ssl_npn_proto_negotiated));
+    }
+
+    if (advertisefn)
+        APR_ARRAY_PUSH(sslconn->npn_advertfns, ssl_npn_advertise_protos) =
+            advertisefn;
+    if (negotiatedfn)
+        APR_ARRAY_PUSH(sslconn->npn_negofns, ssl_npn_proto_negotiated) =
+            negotiatedfn;
+
+    return OK;
+#else
+    return DECLINED;
+#endif
 }
 
 int ssl_init_ssl_connection(conn_rec *c, request_rec *r)
@@ -615,6 +634,7 @@ static void ssl_register_hooks(apr_pool_t *p)
 
     APR_REGISTER_OPTIONAL_FN(ssl_proxy_enable);
     APR_REGISTER_OPTIONAL_FN(ssl_engine_disable);
+    APR_REGISTER_OPTIONAL_FN(modssl_register_npn);
 
     ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "ssl",
                               AUTHZ_PROVIDER_VERSION,

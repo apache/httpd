@@ -496,6 +496,12 @@ typedef struct {
                      * connection */
     } reneg_state;
 
+#ifdef HAVE_TLS_NPN
+    /* Poor man's inter-module optional hooks for NPN. */
+    apr_array_header_t *npn_advertfns; /* list of ssl_npn_advertise_protos callbacks */
+    apr_array_header_t *npn_negofns; /* list of ssl_npn_proto_negotiated callbacks. */
+#endif
+
     server_rec *server;
 } SSLConnRec;
 
