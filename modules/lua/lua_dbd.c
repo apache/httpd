@@ -703,7 +703,7 @@ static lua_db_handle* lua_push_db_handle(lua_State *L, request_rec* r, int type,
     supported.
    =============================================================================
  */
-AP_LUA_DECLARE(int) lua_db_acquire(lua_State *L)
+int lua_db_acquire(lua_State *L)
 {
     /*~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
     const char      *type;

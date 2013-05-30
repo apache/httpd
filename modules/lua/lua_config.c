@@ -51,7 +51,7 @@ static int apl_toscope(const char *name)
     return AP_LUA_SCOPE_ONCE;
 }
 
-AP_LUA_DECLARE(apr_status_t) ap_lua_map_handler(ap_lua_dir_cfg *cfg,
+apr_status_t ap_lua_map_handler(ap_lua_dir_cfg *cfg,
                                                  const char *file,
                                                  const char *function,
                                                  const char *pattern,
@@ -257,7 +257,7 @@ static const struct luaL_Reg cmd_methods[] = {
     {NULL, NULL}
 };
 
-AP_LUA_DECLARE(void) ap_lua_load_config_lmodule(lua_State *L)
+void ap_lua_load_config_lmodule(lua_State *L)
 {
     luaL_newmetatable(L, "Apache2.DirConfig");  /* [metatable] */
     lua_pushvalue(L, -1);

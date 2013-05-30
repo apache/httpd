@@ -1874,7 +1874,7 @@ static req_fun_t *makefun(const void *fun, int type, apr_pool_t *pool)
     return rft;
 }
 
-AP_LUA_DECLARE(void) ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
+void ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
 {
 
     apr_hash_t *dispatch = apr_hash_make(p);
@@ -2121,7 +2121,7 @@ AP_LUA_DECLARE(void) ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
 
 }
 
-AP_LUA_DECLARE(void) ap_lua_push_connection(lua_State *L, conn_rec *c)
+void ap_lua_push_connection(lua_State *L, conn_rec *c)
 {
     lua_boxpointer(L, c);
     luaL_getmetatable(L, "Apache2.Connection");
@@ -2138,7 +2138,7 @@ AP_LUA_DECLARE(void) ap_lua_push_connection(lua_State *L, conn_rec *c)
 }
 
 
-AP_LUA_DECLARE(void) ap_lua_push_server(lua_State *L, server_rec *s)
+void ap_lua_push_server(lua_State *L, server_rec *s)
 {
     lua_boxpointer(L, s);
     luaL_getmetatable(L, "Apache2.Server");
@@ -2151,7 +2151,7 @@ AP_LUA_DECLARE(void) ap_lua_push_server(lua_State *L, server_rec *s)
     lua_pop(L, 1);
 }
 
-AP_LUA_DECLARE(void) ap_lua_push_request(lua_State *L, request_rec *r)
+void ap_lua_push_request(lua_State *L, request_rec *r)
 {
     lua_boxpointer(L, r);
     luaL_getmetatable(L, "Apache2.Request");
