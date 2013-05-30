@@ -388,7 +388,7 @@ static SSLConnRec *ssl_init_connection_ctx(conn_rec *c)
     return sslconn;
 }
 
-int ssl_proxy_enable(conn_rec *c)
+static int ssl_proxy_enable(conn_rec *c)
 {
     SSLSrvConfigRec *sc;
 
@@ -409,7 +409,7 @@ int ssl_proxy_enable(conn_rec *c)
     return 1;
 }
 
-int ssl_engine_disable(conn_rec *c)
+static int ssl_engine_disable(conn_rec *c)
 {
     SSLSrvConfigRec *sc;
 
