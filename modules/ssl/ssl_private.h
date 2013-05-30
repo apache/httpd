@@ -880,10 +880,6 @@ SSL_SESSION *ssl_scache_retrieve(server_rec *, UCHAR *, int, apr_pool_t *);
 void         ssl_scache_remove(server_rec *, UCHAR *, int,
                                apr_pool_t *);
 
-/** Proxy Support */
-int ssl_proxy_enable(conn_rec *c);
-int ssl_engine_disable(conn_rec *c);
-
 /** OCSP Stapling Support */
 #ifdef HAVE_OCSP_STAPLING
 const char *ssl_cmd_SSLStaplingCache(cmd_parms *, void *, const char *);
