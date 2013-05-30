@@ -115,12 +115,6 @@ typedef struct {
     ap_lua_finfo* finfo;
 } ap_lua_server_spec;
 
-/* remove and make static once out of mod_wombat.c */
-AP_LUA_DECLARE(void) ap_lua_openlibs(lua_State *L);
-
-/* remove and make static once out of mod_wombat.c */
-AP_LUA_DECLARE(void) ap_lua_registerlib(lua_State *L, char *name, lua_CFunction f);
-
 /**
  * Fake out addition of the "apache2" module
  */
