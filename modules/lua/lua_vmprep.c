@@ -120,7 +120,7 @@ static void pstack_dump(lua_State *L, apr_pool_t *r, int level,
 
 #define makeintegerfield(L, n) lua_pushinteger(L, n); lua_setfield(L, -2, #n)
 
-AP_LUA_DECLARE(void) ap_lua_load_apache2_lmodule(lua_State *L)
+void ap_lua_load_apache2_lmodule(lua_State *L)
 {
     lua_getglobal(L, "package");
     lua_getfield(L, -1, "loaded");
@@ -405,7 +405,7 @@ static apr_status_t server_vm_construct(lua_State **resource, void *params, apr_
  * Function used to create a lua_State instance bound into the web
  * server in the appropriate scope.
  */
-AP_LUA_DECLARE(lua_State*)ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
+lua_State *ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
                                                ap_lua_vm_spec *spec, request_rec* r)
 {
     lua_State *L = NULL;

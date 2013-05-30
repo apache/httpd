@@ -18,7 +18,7 @@
 #include "mod_lua.h"
 #include "lua_apr.h"
 
-AP_LUA_DECLARE(apr_table_t *) ap_lua_check_apr_table(lua_State *L, int index)
+apr_table_t *ap_lua_check_apr_table(lua_State *L, int index)
 {
     apr_table_t *t;
     luaL_checkudata(L, index, "Apr.Table");
@@ -27,7 +27,7 @@ AP_LUA_DECLARE(apr_table_t *) ap_lua_check_apr_table(lua_State *L, int index)
 }
 
 
-AP_LUA_DECLARE(void) ap_lua_push_apr_table(lua_State *L, apr_table_t *t)
+void ap_lua_push_apr_table(lua_State *L, apr_table_t *t)
 {
     lua_boxpointer(L, t);
     luaL_getmetatable(L, "Apr.Table");
@@ -60,7 +60,7 @@ static const luaL_Reg lua_table_methods[] = {
 };
 
 
-AP_LUA_DECLARE(int) ap_lua_init(lua_State *L, apr_pool_t *p)
+int ap_lua_init(lua_State *L, apr_pool_t *p)
 {
     luaL_newmetatable(L, "Apr.Table");
     luaL_register(L, "apr_table", lua_table_methods);
