@@ -23,6 +23,18 @@
 
 APLOG_USE_MODULE(lua);
 
+#ifndef AP_LUA_MODULE_EXT
+#if defined(NETWARE) 
+#define AP_LUA_MODULE_EXT ".nlm"
+#elif defined(WIN32)
+#define AP_LUA_MODULE_EXT ".dll"
+#elif (defined(__hpux__) || defined(__hpux)) && !defined(__ia64)
+#define AP_LUA_MODULE_EXT ".sl"
+#else
+#define AP_LUA_MODULE_EXT ".so"
+#endif
+#endif
+
 #if APR_HAS_THREADS
     apr_thread_mutex_t *ap_lua_mutex;
     
@@ -314,8 +326,11 @@ static apr_status_t vm_construct(lua_State **vm, void *params, apr_pool_t *lifec
                    spec->file);
     }
     if (spec->package_cpaths) {
-        munge_path(L, "cpath", "?.so", "./?.so", lifecycle_pool,
-            spec->package_cpaths, spec->file);
+        munge_path(L,
+                   "cpath", "?" AP_LUA_MODULE_EXT, "./?" AP_LUA_MODULE_EXT,
+                   lifecycle_pool,
+                   spec->package_cpaths,
+                   spec->file);
     }
 
     if (spec->cb) {
