@@ -102,6 +102,7 @@ BEGIN {
           print "LoadModule asis_module modules/mod_asis.so" > dstfl;
           print "LoadModule auth_basic_module modules/mod_auth_basic.so" > dstfl;
           print "#LoadModule auth_digest_module modules/mod_auth_digest.so" > dstfl;
+          print "#LoadModule auth_form_module modules/mod_auth_form.so" > dstfl;
           print "#LoadModule authn_anon_module modules/mod_authn_anon.so" > dstfl;
           print "LoadModule authn_core_module modules/mod_authn_core.so" > dstfl;
           print "#LoadModule authn_dbd_module modules/mod_authn_dbd.so" > dstfl;
