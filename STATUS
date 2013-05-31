@@ -234,6 +234,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       sessions, and ensure the session ID is changed each time the session 
       changes.
       trunk patch: http://svn.apache.org/r1488158
+      trunk patch: http://svn.apache.org/r1488164
       2.4.x patch: trunk patch works modulo CHANGES
       +1: minfrin
 
