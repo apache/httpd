@@ -230,6 +230,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk patch works modulo CHANGES and mmn bump
       +1: minfrin
 
+    * mod_session_dbd: Make sure that dirty flag is respected when saving 
+      sessions, and ensure the session ID is changed each time the session 
+      changes.
+      trunk patch: http://svn.apache.org/r1488158
+      2.4.x patch: trunk patch works modulo CHANGES
+      +1: minfrin
+
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
