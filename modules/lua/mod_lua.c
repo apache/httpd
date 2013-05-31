@@ -1554,7 +1554,9 @@ static const char *register_lua_root(cmd_parms *cmd, void *_cfg,
     cfg->root_path = root;
     return NULL;
 }
-AP_LUA_DECLARE(const char *) ap_lua_ssl_val(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, const char *var)
+
+const char *ap_lua_ssl_val(apr_pool_t *p, server_rec *s, conn_rec *c,
+                           request_rec *r, const char *var)
 {
     if (lua_ssl_val) { 
         return (const char *)lua_ssl_val(p, s, c, r, (char *)var);
@@ -1562,7 +1564,7 @@ AP_LUA_DECLARE(const char *) ap_lua_ssl_val(apr_pool_t *p, server_rec *s, conn_r
     return NULL;
 }
 
-AP_LUA_DECLARE(int) ap_lua_ssl_is_https(conn_rec *c)
+int ap_lua_ssl_is_https(conn_rec *c)
 {
     return lua_ssl_is_https ? lua_ssl_is_https(c) : 0;
 }
