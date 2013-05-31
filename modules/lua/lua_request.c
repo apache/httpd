@@ -443,6 +443,7 @@ static int req_escape_html(lua_State *L)
     lua_pushstring(L, ap_escape_html(r->pool, s));
     return 1;
 }
+
 /* wrap optional ssl_var_lookup as  r:ssl_var_lookup(String) */
 static int req_ssl_var_lookup(lua_State *L)
 {
@@ -453,6 +454,7 @@ static int req_ssl_var_lookup(lua_State *L)
     lua_pushstring(L, res);
     return 1;
 }
+
 /* BEGIN dispatch mathods for request_rec fields */
 
 /* not really a field, but we treat it like one */
