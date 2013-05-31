@@ -236,7 +236,7 @@ static OCSP_RESPONSE *read_response(apr_socket_t *sd, BIO *bio, conn_rec *c,
         apr_bucket *e = APR_BRIGADE_FIRST(bb);
 
         rv = apr_bucket_read(e, &data, &len, APR_BLOCK_READ);
-        if (rv == APR_EOF || (rv == APR_SUCCESS && len == 0)) {
+        if (rv == APR_EOF) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(01984)
                           "OCSP response: got EOF");
             break;
@@ -245,6 +245,12 @@ static OCSP_RESPONSE *read_response(apr_socket_t *sd, BIO *bio, conn_rec *c,
             ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c, APLOGNO(01985)
                           "error reading response from OCSP server");
             return NULL;
+        }
+        if (len == 0) {
+            /* Ignore zero-length buckets (possible side-effect of
+             * line splitting). */
+            apr_bucket_delete(e);
+            continue;
         }
         count += len;
         if (count > MAX_CONTENT) {
