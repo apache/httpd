@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_session_dbd: Make sure that dirty flag is respected when saving
+     sessions, and ensure the session ID is changed each time the session
+     changes. [Takashi Sato <takashi tks.st>, Graham Leggett]
+
   *) mod_dav: Sending a MERGE request against a URI handled by mod_dav_svn with
      the source href (sent as part of the request body as XML) pointing to a
      URI that is not configured for DAV will trigger a segfault. [Ben Reser
