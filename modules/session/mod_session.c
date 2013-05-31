@@ -132,8 +132,6 @@ static apr_status_t ap_session_load(request_rec * r, session_rec ** z)
         zz = (session_rec *) apr_pcalloc(r->pool, sizeof(session_rec));
         zz->pool = r->pool;
         zz->entries = apr_table_make(zz->pool, 10);
-        zz->uuid = (apr_uuid_t *) apr_pcalloc(zz->pool, sizeof(apr_uuid_t));
-        apr_uuid_get(zz->uuid);
 
     }
     else {
@@ -446,6 +444,7 @@ static apr_status_t session_output_filter(ap_filter_t * f,
             }
             if (override) {
                 z->encoded = override;
+                z->dirty = 1;
                 session_identity_decode(r, z);
             }
         }
