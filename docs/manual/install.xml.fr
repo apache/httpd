@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1387657:1486445 (outdated) -->
+<!-- English Revision : 1486445 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -33,7 +33,9 @@
     sur les syst&egrave;mes Unix et similaires seulement. Pour la compilation et
     l'installation sous Windows, voir <a
     href="platform/windows.html">Utiliser le serveur HTTP Apache avec Microsoft
-    Windows</a>. Pour les autres plateformes, se r&eacute;f&eacute;rer &agrave; la documentation par
+    Windows</a> et <a href="platform/win_compiling.html">Compilation
+    d'Apache sous Microsoft Windows</a>. Pour les autres plateformes, se
+    r&eacute;f&eacute;rer &agrave; la documentation par
      <a href="platform/">plateforme</a>.</p>
 
     <p>Apache httpd utilise <code>libtool</code> et <code>autoconf</code>
