@@ -90,11 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
  
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
-
   * mod_lua: Sync 2.4 branch with trunk. This includes (but is not limited to) 
              Server pools, new apr functions for the request_rec table, input/
              output filters, LuaCodeCache, LuaMapHandler and multipart form data
@@ -127,7 +122,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/r1421780
                  (the list goes on...)
     2.4.x patch: http://www.humbedooh.com/mod_lua_sync.patch (+CHANGES)
-    +1: humbedooh, jim
+    +1: humbedooh, jim, covener
     +0.5: fuankg - all issues I found so far are meanwhile fixed either by
                  humbedooh or by myself; I did spend a bunch of hours during
                  last weeks to test as much as possible, and I believe its
@@ -135,6 +130,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  code over; but nevertheless I feel that I have only tested
                  half of all new stuff, and therefore the +0.5 - I would like
                  to have someone else add a vote too.
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+
 
   * mod_auth_basic: Add a generic mechanism to fake basic authentication
     using the ap_expr parser. This allows the administrator to construct
