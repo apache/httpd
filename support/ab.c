@@ -627,6 +627,10 @@ static void ssl_proceed_handshake(struct connection *c)
                     pk_bits = 0;  /* Anon DH */
 
                 ssl_info = malloc(128);
+                if (ssl_info == NULL) {
+                    fprintf(stderr, "ab: Could not allocate ssl_info data buffer\n");
+                    return;
+                }
                 apr_snprintf(ssl_info, 128, "%s,%s,%d,%d",
                              SSL_get_version(c->ssl),
                              SSL_CIPHER_get_name(ci),
