@@ -273,6 +273,7 @@ int requests = 1;       /* Number of requests to make */
 int heartbeatres = 100; /* How often do we say we're alive */
 int concurrency = 1;    /* Number of multiple requests to make */
 int percentile = 1;     /* Show percentile served */
+int nolength = 0;		/* Accept variable document length */
 int confidence = 1;     /* Show confidence estimator and warnings */
 int tlimit = 0;         /* time limit in secs */
 int keepalive = 0;      /* try and do keepalive connections */
@@ -787,7 +788,10 @@ static void output_results(int sig)
 #endif
     printf("\n");
     printf("Document Path:          %s\n", path);
-    printf("Document Length:        %" APR_SIZE_T_FMT " bytes\n", doclen);
+    if (nolength)
+        printf("Document Length:        Variable\n");
+    else
+        printf("Document Length:        %" APR_SIZE_T_FMT " bytes\n", doclen);
     printf("\n");
     printf("Concurrency Level:      %d\n", concurrency);
     printf("Time taken for tests:   %.3f seconds\n", timetaken);
@@ -1059,9 +1063,14 @@ static void output_html_results(void)
     printf("<tr %s><th colspan=2 %s>Document Path:</th>"
        "<td colspan=2 %s>%s</td></tr>\n",
        trstring, tdstring, tdstring, path);
-    printf("<tr %s><th colspan=2 %s>Document Length:</th>"
-       "<td colspan=2 %s>%" APR_SIZE_T_FMT " bytes</td></tr>\n",
-       trstring, tdstring, tdstring, doclen);
+    if (nolength)
+        printf("<tr %s><th colspan=2 %s>Document Length:</th>"
+            "<td colspan=2 %s>Variable</td></tr>\n",
+            trstring, tdstring, tdstring);
+    else
+        printf("<tr %s><th colspan=2 %s>Document Length:</th>"
+            "<td colspan=2 %s>%" APR_SIZE_T_FMT " bytes</td></tr>\n",
+            trstring, tdstring, tdstring, doclen);
     printf("<tr %s><th colspan=2 %s>Concurrency Level:</th>"
        "<td colspan=2 %s>%d</td></tr>\n",
        trstring, tdstring, tdstring, concurrency);
@@ -1299,7 +1308,7 @@ static void close_connection(struct connection * c)
             /* first time here */
             doclen = c->bread;
         }
-        else if (c->bread != doclen) {
+        else if ((c->bread != doclen) && !nolength) {
             bad++;
             err_length++;
         }
@@ -1543,7 +1552,7 @@ static void read_connection(struct connection * c)
             /* first time here */
             doclen = c->bread;
         }
-        else if (c->bread != doclen) {
+        else if ((c->bread != doclen) && !nolength) {
             bad++;
             err_length++;
         }
@@ -1907,6 +1916,7 @@ static void usage(const char *progname)
     fprintf(stderr, "    -d              Do not show percentiles served table.\n");
     fprintf(stderr, "    -S              Do not show confidence estimators and warnings.\n");
     fprintf(stderr, "    -q              Do not show progress when doing more than 150 requests\n");
+    fprintf(stderr, "    -l              Accept variable document length (use this for dynamic pages)\n");
     fprintf(stderr, "    -g filename     Output collected data to gnuplot format file.\n");
     fprintf(stderr, "    -e filename     Output CSV file with percentages served\n");
     fprintf(stderr, "    -r              Don't exit on socket receive errors.\n");
@@ -2091,7 +2101,7 @@ int main(int argc, const char * const argv[])
     myhost = NULL; /* 0.0.0.0 or :: */
 
     apr_getopt_init(&opt, cntxt, argc, argv);
-    while ((status = apr_getopt(opt, "n:c:t:s:b:T:p:u:v:rkVhwix:y:z:C:H:P:A:g:X:de:SqB:"
+    while ((status = apr_getopt(opt, "n:c:t:s:b:T:p:u:v:lrkVhwix:y:z:C:H:P:A:g:X:de:SqB:"
 #ifdef USE_SSL
             "Z:f:"
 #endif
@@ -2152,6 +2162,9 @@ int main(int argc, const char * const argv[])
                 }
                 method = PUT;
                 send_body = 1;
+                break;
+            case 'l':
+                nolength = 1;
                 break;
             case 'r':
                 recverrok = 1;

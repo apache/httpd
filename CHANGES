@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) ab: Add a new -l parameter in order not to check the length of the responses.
+     This can be usefull with dynamic pages.
+     PR9945, PR27888, PR42040 [<ccikrs1 cranbrook edu>]
+     
   *) mod_ssl: Fix possible truncation of OCSP responses when reading from the
      server.  [Joe Orton]
 
