@@ -18,6 +18,7 @@
 #include "mod_lua.h"
 #include "lua_apr.h"
 #include "lua_dbd.h"
+#include "lua_passwd.h"
 #include "scoreboard.h"
 #include "util_md5.h"
 #include "util_script.h"
@@ -842,6 +843,32 @@ static int lua_apr_sha1(lua_State *L)
     return 1;
 }
 
+/*
+ * lua_apr_htpassword; r:htpassword(string [, algorithm [, cost]]) - Creates
+ * a htpassword hash from a string
+ */
+static int lua_apr_htpassword(lua_State *L)
+{
+    passwd_ctx     ctx = { 0 };
+    request_rec    *r;
+
+    r = ap_lua_check_request_rec(L, 1);
+    luaL_checktype(L, 2, LUA_TSTRING);
+    ctx.passwd = apr_pstrdup(r->pool, lua_tostring(L, 2));
+    ctx.alg = luaL_optinteger(L, 3, ALG_APMD5);
+    ctx.cost = luaL_optinteger(L, 4, 0);
+    ctx.pool = r->pool;
+    ctx.out = apr_pcalloc(r->pool, MAX_PASSWD_LEN);
+    ctx.out_len = MAX_PASSWD_LEN;
+    if (mk_password_hash(&ctx)) {
+        lua_pushboolean(L, 0);
+        lua_pushstring(L, ctx.errstr);
+        return 2;
+    } else {
+        lua_pushstring(L, ctx.out);
+    }
+    return 1;
+}
 
 /*
  * lua_ap_mpm_query; r:mpm_query(info) - Queries for MPM info
@@ -2050,6 +2077,8 @@ void ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
                  makefun(&lua_apr_md5, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "sha1", APR_HASH_KEY_STRING,
                  makefun(&lua_apr_sha1, APL_REQ_FUNTYPE_LUACFUN, p));
+    apr_hash_set(dispatch, "htpassword", APR_HASH_KEY_STRING,
+                 makefun(&lua_apr_htpassword, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "escape", APR_HASH_KEY_STRING,
                  makefun(&lua_ap_escape, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "unescape", APR_HASH_KEY_STRING,
