@@ -181,6 +181,7 @@ FILES_nlm_objs = \
 	$(OBJDIR)/mod_lua.o \
 	$(OBJDIR)/lua_apr.o \
 	$(OBJDIR)/lua_config.o \
+	$(OBJDIR)/lua_passwd.o \
 	$(OBJDIR)/lua_request.o \
 	$(OBJDIR)/lua_vmprep.o \
 	$(OBJDIR)/lua_dbd.o \
