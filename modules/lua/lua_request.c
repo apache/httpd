@@ -871,6 +871,62 @@ static int lua_apr_htpassword(lua_State *L)
 }
 
 /*
+ * lua_apr_mkdir; r:mkdir(string [, permissions]) - Creates a directory
+ */
+static int lua_apr_mkdir(lua_State *L)
+{
+    request_rec     *r;
+    const char      *path;
+    apr_status_t    status;
+    apr_fileperms_t perms;
+
+    r = ap_lua_check_request_rec(L, 1);
+    luaL_checktype(L, 2, LUA_TSTRING);
+    path = lua_tostring(L, 2);
+    perms = luaL_optinteger(L, 3, APR_OS_DEFAULT);
+    status = apr_dir_make(path, perms, r->pool);
+    lua_pushboolean(L, (status == 0));
+    return 1;
+}
+
+/*
+ * lua_apr_mkrdir; r:mkrdir(string [, permissions]) - Creates directories
+ * recursive
+ */
+static int lua_apr_mkrdir(lua_State *L)
+{
+    request_rec     *r;
+    const char      *path;
+    apr_status_t    status;
+    apr_fileperms_t perms;
+
+    r = ap_lua_check_request_rec(L, 1);
+    luaL_checktype(L, 2, LUA_TSTRING);
+    path = lua_tostring(L, 2);
+    perms = luaL_optinteger(L, 3, APR_OS_DEFAULT);
+    status = apr_dir_make_recursive(path, perms, r->pool);
+    lua_pushboolean(L, (status == 0));
+    return 1;
+}
+
+/*
+ * lua_apr_rmdir; r:rmdir(string) - Removes a directory
+ */
+static int lua_apr_rmdir(lua_State *L)
+{
+    request_rec     *r;
+    const char      *path;
+    apr_status_t    status;
+
+    r = ap_lua_check_request_rec(L, 1);
+    luaL_checktype(L, 2, LUA_TSTRING);
+    path = lua_tostring(L, 2);
+    status = apr_dir_remove(path, r->pool);
+    lua_pushboolean(L, (status == 0));
+    return 1;
+}
+
+/*
  * lua_ap_mpm_query; r:mpm_query(info) - Queries for MPM info
  */
 static int lua_ap_mpm_query(lua_State *L)
@@ -2079,6 +2135,12 @@ void ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
                  makefun(&lua_apr_sha1, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "htpassword", APR_HASH_KEY_STRING,
                  makefun(&lua_apr_htpassword, APL_REQ_FUNTYPE_LUACFUN, p));
+    apr_hash_set(dispatch, "mkdir", APR_HASH_KEY_STRING,
+                 makefun(&lua_apr_mkdir, APL_REQ_FUNTYPE_LUACFUN, p));
+    apr_hash_set(dispatch, "mkrdir", APR_HASH_KEY_STRING,
+                 makefun(&lua_apr_mkrdir, APL_REQ_FUNTYPE_LUACFUN, p));
+    apr_hash_set(dispatch, "rmdir", APR_HASH_KEY_STRING,
+                 makefun(&lua_apr_rmdir, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "escape", APR_HASH_KEY_STRING,
                  makefun(&lua_ap_escape, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "unescape", APR_HASH_KEY_STRING,
