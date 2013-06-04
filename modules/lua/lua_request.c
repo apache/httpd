@@ -23,6 +23,7 @@
 #include "util_md5.h"
 #include "util_script.h"
 #include "util_varbuf.h"
+#include "apr_date.h"
 #include "apr_pools.h"
 #include "apr_thread_mutex.h"
 
@@ -923,6 +924,23 @@ static int lua_apr_rmdir(lua_State *L)
     path = lua_tostring(L, 2);
     status = apr_dir_remove(path, r->pool);
     lua_pushboolean(L, (status == 0));
+    return 1;
+}
+
+/*
+ * lua_apr_date_parse_rfc; r.date_parse_rfc(string) - Parses a DateTime string
+ */
+static int lua_apr_date_parse_rfc(lua_State *L)
+{
+    const char *input;
+    apr_time_t result;
+
+    luaL_checktype(L, 1, LUA_TSTRING);
+    input = lua_tostring(L, 1);
+    result = apr_date_parse_rfc(input);
+    if (result == 0)
+        return 0;
+    lua_pushnumber(L, (lua_Number)(result / APR_USEC_PER_SEC));
     return 1;
 }
 
@@ -2141,6 +2159,8 @@ void ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
                  makefun(&lua_apr_mkrdir, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "rmdir", APR_HASH_KEY_STRING,
                  makefun(&lua_apr_rmdir, APL_REQ_FUNTYPE_LUACFUN, p));
+    apr_hash_set(dispatch, "date_parse_rfc", APR_HASH_KEY_STRING,
+                 makefun(&lua_apr_date_parse_rfc, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "escape", APR_HASH_KEY_STRING,
                  makefun(&lua_ap_escape, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "unescape", APR_HASH_KEY_STRING,
