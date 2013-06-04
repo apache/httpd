@@ -136,7 +136,7 @@ else
 fi 
 ])
 
-lua_objects="lua_apr.lo lua_config.lo mod_lua.lo lua_request.lo lua_vmprep.lo lua_dbd.lo"
+lua_objects="lua_apr.lo lua_config.lo mod_lua.lo lua_request.lo lua_vmprep.lo lua_dbd.lo lua_passwd.lo"
 
 APACHE_MODULE(lua, Apache Lua Framework, $lua_objects, , , [
   CHECK_LUA()
