@@ -160,6 +160,10 @@ RELEASE SHOWSTOPPERS:
        rjung: I added the AllowAnyURI patch below. Version 2 of the patch
               integrates your 2.0-CVE-2011-4317-r1235443.patch.
 
+
+PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
+  [ start all new proposals below, under PATCHES PROPOSED. ]
+
    * Add AllowAnyURI, fix mod_rewrite configuration in Location.
      Patch must be applied on top of the CVE-2011-4317 patch above.
      Note that I added a minor MMN bump, since in 2.0 the structure definitions
@@ -179,14 +183,9 @@ RELEASE SHOWSTOPPERS:
      2.2.x patch: http://svn.apache.org/viewvc?rev=1375113&view=rev and
                   http://svn.apache.org/viewvc?rev=1447508&view=rev
      2.0.x patch: http://people.apache.org/~rjung/patches/2.0-AllowAnyURI-v2.patch
-     +1: rjung, wrowe
-     -1: covener needs to have the baseurl merge ripped out for 2.0.x, behavior change
-         already noted in PR53963
+     +1: rjung, wrowe, covener
      rjung: I backported the MergeBase option plus no merging as default form 2.2.
             2.0-AllowAnyURI-v2.patch contains that now.
-
-PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
-  [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
