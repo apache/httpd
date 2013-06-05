@@ -187,7 +187,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1132793
                   http://svn.apache.org/r1135234
                   http://svn.apache.org/r1203752
-                  http://svn.apache.org/viewvc
      2.2.x patch: http://svn.apache.org/r1227293
      2.0.x patch: http://people.apache.org/~rjung/patches/2.0-ssl-conf.patch
      +1: rjung
