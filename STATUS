@@ -23,7 +23,7 @@ Consult the trunk/ for all new development and documentation efforts:
 
 Release history:
 
-    2.0.65  : In maintainance. Jim proposes T&R Oct. 5.
+    2.0.65  : In maintainance.
     2.0.64  : Released October 19, 2010.
     2.0.63  : Released January 19, 2008.
     2.0.62  : Tagged January 4, 2008. Not released.
@@ -178,6 +178,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +0: covener, wrowe
           do we need to make people opt-in for this behavior to
           backport it to 2.0.x? What mechanism?
+
+   * mod_ssl: Update default config (Cipher suite, commented SSLHonorCipherOrder
+     example, better MSIE version match)
+     PR 51363 and 49484.
+     trunk patch: http://svn.apache.org/r966055
+                  http://svn.apache.org/r966160
+                  http://svn.apache.org/r1132793
+                  http://svn.apache.org/r1135234
+                  http://svn.apache.org/r1203752
+                  http://svn.apache.org/viewvc
+     2.2.x patch: http://svn.apache.org/r1227293
+     2.0.x patch: http://people.apache.org/~rjung/patches/2.0-ssl-conf.patch
+     +1: rjung
+     -1: 
 
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
