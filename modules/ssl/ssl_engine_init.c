@@ -415,6 +415,12 @@ static void ssl_init_ctx_protocol(server_rec *s,
         SSL_CTX_set_options(ctx, SSL_OP_NO_TLSv1);
     }
 
+#ifdef SSL_OP_CIPHER_SERVER_PREFERENCE
+    if (sc->cipher_server_pref == TRUE) {
+        SSL_CTX_set_options(ctx, SSL_OP_CIPHER_SERVER_PREFERENCE);
+    }
+#endif
+
 #ifdef SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION
     if (sc->insecure_reneg == TRUE) {
         SSL_CTX_set_options(ctx, SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION);

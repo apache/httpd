@@ -1512,6 +1512,24 @@ SSLUserName SSL_CLIENT_S_DN_CN
 </directivesynopsis>
 
 <directivesynopsis>
+<name>SSLHonorCipherOrder</name>
+<description>Option to prefer the server's cipher preference order</description>
+<syntax>SSLHonorCipherOrder <em>flag</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in Apache 2.0.65 and later, if using OpenSSL 0.9.7 or later</compatibility>
+
+<usage>
+<p>When choosing a cipher during an SSLv3 or TLSv1 handshake, normally
+the client's preference is used.  If this directive is enabled, the
+server's preference will be used instead.</p>
+<example><title>Example</title>
+SSLHonorCipherOrder on
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>SSLInsecureRenegotiation</name>
 <description>Option to enable support for insecure renegotiation</description>
 <syntax>SSLInsecureRenegotiation <em>flag</em></syntax>

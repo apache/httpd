@@ -188,13 +188,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_ssl: Backport SSLHonorCipher
-    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=103832
-                 http://svn.apache.org/viewvc?view=revision&revision=103837
-                 http://svn.apache.org/viewvc?view=revision&revision=966160
-    Backport: http://people.apache.org/~rjung/patches/sslhonorcipher-2.0.patch
-    +1: rjung, humbedooh, wrowe
-
   * htdigest: Fix buffer overflow when reading digest
     password file with very long lines. PR 54893.
     trunk patch: https://svn.apache.org/r1475878
