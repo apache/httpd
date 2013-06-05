@@ -28,6 +28,13 @@ Changes with Apache 2.0.65
      is enabled, could allow local users to gain privileges via a .htaccess
      file. [Stefan Fritsch, Greg Ames]
 
+  *) core: Add MaxRanges directive to control the number of ranges permitted
+     before returning the entire resource, with a default limit of 200.
+     [Eric Covener, Rainer Jung]
+
+  *) Set 'Accept-Ranges: none' in the case Ranges are being ignored with
+     MaxRanges none.  [Eric Covener, Rainer Jung]
+
   *) mod_rewrite: Allow merging RewriteBase down to subdirectories
      if new option 'RewriteOptions MergeBase' is configured.
      [Eric Covener]

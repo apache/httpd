@@ -524,6 +524,13 @@ typedef struct {
     unsigned int enable_sendfile : 2;  /* files in this dir can be mmap'ed */
     unsigned int allow_encoded_slashes : 1; /* URLs may contain %2f w/o being
                                              * pitched indiscriminately */
+#define AP_MAXRANGES_UNSET     -1
+#define AP_MAXRANGES_DEFAULT   -2
+#define AP_MAXRANGES_UNLIMITED -3
+#define AP_MAXRANGES_NORANGES   0
+    /** Number of Ranges before returning HTTP_OK. **/
+    int max_ranges;
+
 } core_dir_config;
 
 /* Per-server core configuration */

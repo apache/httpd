@@ -164,21 +164,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * byterange: Backport MaxRanges configuration directive and
-    ap_set_accept_ranges() utility function.
-    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1162584
-                 http://svn.apache.org/viewvc?view=revision&revision=1162584
-                 http://svn.apache.org/viewvc?view=revision&revision=1162587
-                 http://svn.apache.org/viewvc?view=revision&revision=1166282
-                 http://svn.apache.org/viewvc?view=revision&revision=1166663
-                 http://svn.apache.org/viewvc?view=revision&revision=1166667
-    2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=1164894
-                 http://svn.apache.org/viewvc?view=revision&revision=1164896
-                 http://svn.apache.org/viewvc?view=revision&revision=1166612
-                 http://svn.apache.org/viewvc?view=revision&revision=1166772
-    2.0.x patch: http://people.apache.org/~rjung/patches/max-ranges-2.0.patch
-    +1: rjung, wrowe, covener
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to

@@ -158,6 +158,8 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->enable_sendfile = ENABLE_SENDFILE_UNSET;
     conf->allow_encoded_slashes = 0;
 
+    conf->max_ranges = AP_MAXRANGES_UNSET;
+
     return (void *)conf;
 }
 
@@ -434,7 +436,9 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     }
 
     conf->allow_encoded_slashes = new->allow_encoded_slashes;
-    
+
+    conf->max_ranges = new->max_ranges != AP_MAXRANGES_UNSET ? new->max_ranges : base->max_ranges;
+
     return (void*)conf;
 }
 
@@ -2652,6 +2656,32 @@ static const char *set_limit_xml_req_body(cmd_parms *cmd, void *conf_,
     return NULL;
 }
 
+static const char *set_max_ranges(cmd_parms *cmd, void *conf_, const char *arg)
+{
+    core_dir_config *conf = conf_;
+    int val = 0;
+
+    if (!strcasecmp(arg, "none")) {
+        val = AP_MAXRANGES_NORANGES;
+    }
+    else if (!strcasecmp(arg, "default")) {
+        val = AP_MAXRANGES_DEFAULT;
+    }
+    else if (!strcasecmp(arg, "unlimited")) {
+        val = AP_MAXRANGES_UNLIMITED;
+    }
+    else {
+        val = atoi(arg);
+        if (val <= 0)
+            return "MaxRanges requires 'none', 'default', 'unlimited' or "
+                   "a positive integer";
+    }
+
+    conf->max_ranges = val;
+
+    return NULL;
+}
+
 AP_DECLARE(size_t) ap_get_limit_xml_body(const request_rec *r)
 {
     core_dir_config *conf;
@@ -3289,6 +3319,10 @@ AP_INIT_TAKE1("LimitXMLRequestBody", set_limit_xml_req_body, NULL, OR_ALL,
               "Limit (in bytes) on maximum size of an XML-based request "
               "body"),
 
+AP_INIT_TAKE1("MaxRanges", set_max_ranges, NULL, RSRC_CONF|ACCESS_CONF,
+              "Maximum number of Ranges in a request before returning the entire "
+              "resource, or 0 for unlimited"),
+
 /* System Resource Controls */
 #ifdef RLIMIT_CPU
 AP_INIT_TAKE12("RLimitCPU", set_limit_cpu,
@@ -3600,7 +3634,7 @@ static int default_handler(request_rec *r)
         ap_update_mtime(r, r->finfo.mtime);
         ap_set_last_modified(r);
         ap_set_etag(r);
-        apr_table_setn(r->headers_out, "Accept-Ranges", "bytes");
+        ap_set_accept_ranges(r);
         ap_set_content_length(r, r->finfo.size);
         if ((errstatus = ap_meets_conditions(r)) != OK) {
             apr_file_close(fd);
