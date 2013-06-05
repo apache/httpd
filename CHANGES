@@ -28,6 +28,9 @@ Changes with Apache 2.0.65
      is enabled, could allow local users to gain privileges via a .htaccess
      file. [Stefan Fritsch, Greg Ames]
 
+  *) htdigest: Fix buffer overflow when reading digest password file
+     with very long lines. PR 54893. [Rainer Jung]
+
   *) mod_ssl: Add "SSLHonorCipherOrder" directive to enable the
      OpenSSL 0.9.7 flag which uses the server's cipher order rather
      than the client's.  PR 28665.

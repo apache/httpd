@@ -188,15 +188,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * htdigest: Fix buffer overflow when reading digest
-    password file with very long lines. PR 54893.
-    trunk patch: https://svn.apache.org/r1475878
-    2.4.x patch: https://svn.apache.org/11476089
-    2.2.x patch: https://svn.apache.org/r1476242
-    2.0.x patch: http://people.apache.org/~rjung/patches/htdigest-buffer_overflow_2_0.patch
-    +1: rjung, minfrin, wrowe
-    -1: 
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
