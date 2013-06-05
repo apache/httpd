@@ -187,6 +187,21 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      rjung: I backported the MergeBase option plus no merging as default form 2.2.
             2.0-AllowAnyURI-v2.patch contains that now.
 
+  * byterange: Backport MaxRanges configuration directive and
+    ap_set_accept_ranges() utility function.
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1162584
+                 http://svn.apache.org/viewvc?view=revision&revision=1162584
+                 http://svn.apache.org/viewvc?view=revision&revision=1162587
+                 http://svn.apache.org/viewvc?view=revision&revision=1166282
+                 http://svn.apache.org/viewvc?view=revision&revision=1166663
+                 http://svn.apache.org/viewvc?view=revision&revision=1166667
+    2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=1164894
+                 http://svn.apache.org/viewvc?view=revision&revision=1164896
+                 http://svn.apache.org/viewvc?view=revision&revision=1166612
+                 http://svn.apache.org/viewvc?view=revision&revision=1166772
+    2.0.x patch: http://people.apache.org/~rjung/patches/max-ranges-2.0.patch
+    +1: rjung, wrowe, covener
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
@@ -201,22 +216,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +0: covener, wrowe
           do we need to make people opt-in for this behavior to
           backport it to 2.0.x? What mechanism?
-
-
-  * byterange: Backport MaxRanges configuration directive and
-    ap_set_accept_ranges() utility function.
-    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1162584
-                 http://svn.apache.org/viewvc?view=revision&revision=1162584
-                 http://svn.apache.org/viewvc?view=revision&revision=1162587
-                 http://svn.apache.org/viewvc?view=revision&revision=1166282
-                 http://svn.apache.org/viewvc?view=revision&revision=1166663
-                 http://svn.apache.org/viewvc?view=revision&revision=1166667
-    2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=1164894
-                 http://svn.apache.org/viewvc?view=revision&revision=1164896
-                 http://svn.apache.org/viewvc?view=revision&revision=1166612
-                 http://svn.apache.org/viewvc?view=revision&revision=1166772
-    2.0.x patch: http://people.apache.org/~rjung/patches/max-ranges-2.0.patch
-    +1: rjung, wrowe
 
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
