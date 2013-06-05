@@ -182,7 +182,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=revision&revision=1447448
      2.2.x patch: http://svn.apache.org/viewvc?rev=1375113&view=rev and
                   http://svn.apache.org/viewvc?rev=1447508&view=rev
-     2.0.x patch: http://people.apache.org/~rjung/patches/2.0-AllowAnyURI-v2.patch
+     2.0.x patch: http://people.apache.org/~rjung/patches/2.0-AllowAnyURI-v3.patch
      +1: rjung, wrowe, covener
      rjung: I backported the MergeBase option plus no merging as default form 2.2.
             2.0-AllowAnyURI-v2.patch contains that now.
