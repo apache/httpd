@@ -185,7 +185,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.0.x patch: http://people.apache.org/~rjung/patches/2.0-AllowAnyURI-v3.patch
      +1: rjung, wrowe, covener
      rjung: I backported the MergeBase option plus no merging as default form 2.2.
-            2.0-AllowAnyURI-v2.patch contains that now.
+            2.0-AllowAnyURI-v3.patch contains that now.
 
   * byterange: Backport MaxRanges configuration directive and
     ap_set_accept_ranges() utility function.
