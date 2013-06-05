@@ -138,6 +138,8 @@
 
 #define OPTION_NONE                 1<<0
 #define OPTION_INHERIT              1<<1
+#define OPTION_ANYURI               1<<4
+#define OPTION_MERGEBASE            1<<5
 
 #define CACHEMODE_TS                1<<0
 #define CACHEMODE_TTL               1<<1
@@ -231,6 +233,8 @@ typedef struct {
     apr_array_header_t *rewriterules;    /* the RewriteRule entries */
     server_rec   *server;          /* the corresponding server indicator */
     int          redirect_limit;   /* maximum number of internal redirects */
+    unsigned int state_set:1;
+    unsigned int options_set:1;
 } rewrite_server_conf;
 
 
@@ -245,6 +249,9 @@ typedef struct {
     char         *directory;       /* the directory where it applies */
     const char   *baseurl;         /* the base-URL  where it applies */
     int          redirect_limit;   /* maximum number of internal redirects */
+    unsigned int state_set:1;
+    unsigned int options_set:1;
+    unsigned int baseurl_set:1;
 } rewrite_perdir_conf;
 
 

@@ -28,6 +28,16 @@ Changes with Apache 2.0.65
      is enabled, could allow local users to gain privileges via a .htaccess
      file. [Stefan Fritsch, Greg Ames]
 
+  *) mod_rewrite: Allow merging RewriteBase down to subdirectories
+     if new option 'RewriteOptions MergeBase' is configured.
+     [Eric Covener]
+
+  *) mod_rewrite: Fix the RewriteEngine directive to work within a
+     location. Previously, once RewriteEngine was switched on globally,
+     it was impossible to switch off. [Graham Leggett]
+
+  *) mod_rewrite: Add "AllowAnyURI" option. PR 52774. [Joe Orton]
+
   *) htdigest: Fix buffer overflow when reading digest password file
      with very long lines. PR 54893. [Rainer Jung]
 
