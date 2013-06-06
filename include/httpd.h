@@ -1585,6 +1585,7 @@ AP_DECLARE(int) ap_unescape_all(char *url);
  * Unescape a URL
  * @param url The url to unescape
  * @return 0 on success, non-zero otherwise
+ * @deprecated Replaced by apr_unescape_url() in APR
  */
 AP_DECLARE(int) ap_unescape_url(char *url);
 
@@ -1593,6 +1594,7 @@ AP_DECLARE(int) ap_unescape_url(char *url);
  * @param url The url to unescape
  * @param decode_slashes Whether or not slashes should be decoded
  * @return 0 on success, non-zero otherwise
+ * @deprecated Replaced by apr_unescape_url() in APR
  */
 AP_DECLARE(int) ap_unescape_url_keep2f(char *url, int decode_slashes);
 
@@ -1600,6 +1602,7 @@ AP_DECLARE(int) ap_unescape_url_keep2f(char *url, int decode_slashes);
  * Unescape an application/x-www-form-urlencoded string
  * @param query The query to unescape
  * @return 0 on success, non-zero otherwise
+ * @deprecated Replaced by apr_unescape_url() in APR
  */
 AP_DECLARE(int) ap_unescape_urlencoded(char *query);
 
@@ -1623,6 +1626,7 @@ AP_DECLARE(void) ap_getparents(char *name)
  * @param p The pool to allocate from
  * @param s The path to convert
  * @return The converted URL
+ * @deprecated Replaced by apr_pescape_path_segment() in APR
  */
 AP_DECLARE(char *) ap_escape_path_segment(apr_pool_t *p, const char *s)
                    AP_FN_ATTR_NONNULL_ALL;
@@ -1632,6 +1636,7 @@ AP_DECLARE(char *) ap_escape_path_segment(apr_pool_t *p, const char *s)
  * @param c The preallocated buffer to write to
  * @param s The path to convert
  * @return The converted URL (c)
+ * @deprecated Replaced by apr_escape_path_segment() in APR
  */
 AP_DECLARE(char *) ap_escape_path_segment_buffer(char *c, const char *s)
                    AP_FN_ATTR_NONNULL_ALL;
@@ -1645,6 +1650,7 @@ AP_DECLARE(char *) ap_escape_path_segment_buffer(char *c, const char *s)
  *        If not set, there will be one byte of additional space after the
  *        NUL, to allow the caller to append a '/'.
  * @return The converted URL
+ * @deprecated Replaced by apr_pescape_path() in APR
  */
 AP_DECLARE(char *) ap_os_escape_path(apr_pool_t *p, const char *path, int partial)
                    AP_FN_ATTR_NONNULL_ALL;
@@ -1657,6 +1663,7 @@ AP_DECLARE(char *) ap_os_escape_path(apr_pool_t *p, const char *path, int partia
  * @param p The pool to allocate from
  * @param s The path to convert
  * @return The converted URL
+ * @deprecated Replaced by apr_pescape_url() in APR
  */
 AP_DECLARE(char *) ap_escape_urlencoded(apr_pool_t *p, const char *s)
                    AP_FN_ATTR_NONNULL_ALL;
@@ -1666,6 +1673,7 @@ AP_DECLARE(char *) ap_escape_urlencoded(apr_pool_t *p, const char *s)
  * @param c The preallocated buffer to write to
  * @param s The path to convert
  * @return The converted URL (c)
+ * @deprecated Replaced by apr_escape_url() in APR
  */
 AP_DECLARE(char *) ap_escape_urlencoded_buffer(char *c, const char *s)
                    AP_FN_ATTR_NONNULL_ALL;
@@ -1675,6 +1683,7 @@ AP_DECLARE(char *) ap_escape_urlencoded_buffer(char *c, const char *s)
  * @param p The pool to allocate from
  * @param s The html to escape
  * @return The escaped string
+ * @deprecated Replaced by apr_pescape_entity() in APR
  */
 #define ap_escape_html(p,s) ap_escape_html2(p,s,0)
 /**
@@ -1683,6 +1692,7 @@ AP_DECLARE(char *) ap_escape_urlencoded_buffer(char *c, const char *s)
  * @param s The html to escape
  * @param toasc Whether to escape all non-ASCII chars to \&\#nnn;
  * @return The escaped string
+ * @deprecated Replaced by apr_pescape_entity() in APR
  */
 AP_DECLARE(char *) ap_escape_html2(apr_pool_t *p, const char *s, int toasc)
                    AP_FN_ATTR_NONNULL_ALL;
@@ -1692,6 +1702,7 @@ AP_DECLARE(char *) ap_escape_html2(apr_pool_t *p, const char *s, int toasc)
  * @param p The pool to allocate from
  * @param str The string to escape
  * @return The escaped string
+ * @deprecated Replaced by apr_pescape_echo() in APR
  */
 AP_DECLARE(char *) ap_escape_logitem(apr_pool_t *p, const char *str)
                    AP_FN_ATTR_NONNULL((1));
@@ -1702,6 +1713,7 @@ AP_DECLARE(char *) ap_escape_logitem(apr_pool_t *p, const char *str)
  * @param source The string to escape
  * @param buflen The buffer size for the escaped string (including "\0")
  * @return The len of the escaped string (always < maxlen)
+ * @deprecated Replaced by apr_escape_echo() in APR
  */
 AP_DECLARE(apr_size_t) ap_escape_errorlog_item(char *dest, const char *source,
                                                apr_size_t buflen)
@@ -1724,6 +1736,7 @@ AP_DECLARE(char *) ap_construct_server(apr_pool_t *p, const char *hostname,
  * @param p The pool to allocate from
  * @param s The command to escape
  * @return The escaped shell command
+ * @deprecated Replaced with apr_escape_shell() in APR
  */
 AP_DECLARE(char *) ap_escape_shell_cmd(apr_pool_t *p, const char *s)
                    AP_FN_ATTR_NONNULL_ALL;
@@ -1841,6 +1854,7 @@ AP_DECLARE(const char *) ap_stripprefix(const char *bigstring,
  * @param p The pool to allocate from
  * @param bufcoded The encoded string
  * @return The decoded string
+ * @deprecated Replaced by apr_pbase64_decode() in APR.
  */
 AP_DECLARE(char *) ap_pbase64decode(apr_pool_t *p, const char *bufcoded);
 
@@ -1849,6 +1863,7 @@ AP_DECLARE(char *) ap_pbase64decode(apr_pool_t *p, const char *bufcoded);
  * @param p The pool to allocate from
  * @param string The plaintext string
  * @return The encoded string
+ * @deprecated Replaced by apr_pbase64_encode() in APR.
  */
 AP_DECLARE(char *) ap_pbase64encode(apr_pool_t *p, char *string);
 
@@ -1956,6 +1971,7 @@ AP_DECLARE(int) ap_rind(const char *str, char c);
  * @param p The pool to allocate memory from
  * @param instring The string to search for &quot;
  * @return A copy of the string with escaped quotes
+ * @deprecated Replaced by apr_pescape_echo() in APR
  */
 AP_DECLARE(char *) ap_escape_quotes(apr_pool_t *p, const char *instring);
 
@@ -2287,6 +2303,7 @@ AP_DECLARE(void) ap_get_loadavg(ap_loadavg_t *ld)
  * @param srclen length of the data
  * @param dest pointer to buffer of length (2 * srclen + 1). The resulting
  *        string will be NUL-terminated.
+ * @deprecated Replaced by apr_escape_hex() in APR
  */
 AP_DECLARE(void) ap_bin2hex(const void *src, apr_size_t srclen, char *dest)
                  AP_FN_ATTR_NONNULL_ALL;
