@@ -70,11 +70,10 @@
     <p>Popular options for deploying Apache httpd, and, optionally, PHP
     and MySQL, on Microsoft Windows, include:</p>
     <ul>
-    <li><a href="http://www.apachelounge.com/download/">Apache
-    Lounge</a></li>
-    <li><a href="http://www.apachefriends.org/en/xampp.html">XAMPP, from
-    ApacheFriends</a></li>
+    <li><a href="http://www.apachehaus.com/cgi-bin/download.plx">ApacheHaus</a></li>
+    <li><a href="http://www.apachelounge.com/download/">Apache Lounge</a></li>
     <li><a href="http://www.wampserver.com/">WampServer</a></li>
+    <li><a href="http://www.apachefriends.org/en/xampp.html">XAMPP</a></li>
     </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
