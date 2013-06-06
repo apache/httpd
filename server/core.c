@@ -1537,8 +1537,8 @@ static const char *set_error_document(cmd_parms *cmd, void *conf_,
 
     if (error_number == 401 && what == REMOTE_PATH) {
         ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, cmd->server, APLOGNO(00113)
-                     "cannot use a full URL in a 401 ErrorDocument "
-                     "directive --- ignoring!");
+                     "%s:%d cannot use a full URL in a 401 ErrorDocument "
+                     "directive --- ignoring!", cmd->directive->filename, cmd->directive->line_num);
     }
     else { /* Store it... */
         if (conf->response_code_strings == NULL) {
