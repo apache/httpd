@@ -750,11 +750,17 @@ static int lua_map_handler(request_rec *r)
             if (lua_isnumber(L, -1)) {
                 rc = lua_tointeger(L, -1);
             }
-            if (rc != DECLINED) {
-                ap_lua_release_state(L, spec, r);
-                return rc;
+            else { 
+                ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(02483)
+                              "lua: Lua handler %s in %s did not return a value, assuming apache2.OK",
+                              function_name,
+                              filename);
+                rc = OK;
             }
             ap_lua_release_state(L, spec, r);
+            if (rc != DECLINED) {
+                return rc;
+            }
         }
     }
     return DECLINED;

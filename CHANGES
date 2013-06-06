@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_lua: If a LuaMapHandler doesn't return any value, log a warning
+     and treat it as apache2.OK. [Eric Covener]
+
   *) ab: Add a new -l parameter in order not to check the length of the responses.
      This can be usefull with dynamic pages.
      PR9945, PR27888, PR42040 [<ccikrs1 cranbrook edu>]
