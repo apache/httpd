@@ -29,15 +29,15 @@
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/install.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Ce document couvre l'installation et la compilation du serveur
     HTTP Apache
     sur les systèmes Unix et similaires seulement. Pour la compilation et
     l'installation sous Windows, voir <a href="platform/windows.html">Utiliser le serveur HTTP Apache avec Microsoft
-    Windows</a>. Pour les autres plateformes, se référer à la documentation par
+    Windows</a> et <a href="platform/win_compiling.html">Compilation
+    d'Apache sous Microsoft Windows</a>. Pour les autres plateformes, se
+    référer à la documentation par
      <a href="platform/">plateforme</a>.</p>
 
     <p>Apache httpd utilise <code>libtool</code> et <code>autoconf</code>
