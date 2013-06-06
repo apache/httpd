@@ -500,6 +500,7 @@ static const char lazy_eval_sentinel = '\0';
 
 /* The following is a shrinking transformation, therefore safe. */
 
+/* Note: this function is deprecated in favour of apr_unescape_entity() in APR */
 static void decodehtml(char *s)
 {
     int val, i, j;
