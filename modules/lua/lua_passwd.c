@@ -138,7 +138,6 @@ int mk_password_hash(passwd_ctx *ctx)
                                            "characters by CRYPT algorithm.");
             }
             memset(truncpw, '\0', strlen(pw));
-            free(truncpw);
         }
         break;
 #endif /* CRYPT_ALGO_SUPPORTED */
