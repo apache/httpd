@@ -54,6 +54,7 @@
     [ -<strong>H</strong> <var>custom-header</var> ]
     [ -<strong>i</strong> ]
     [ -<strong>k</strong> ]
+    [ -<strong>l</strong> ]
     [ -<strong>n</strong> <var>requests</var> ]
     [ -<strong>p</strong> <var>POST-file</var> ]
     [ -<strong>P</strong> <var>proxy-auth-username</var>:<var>password</var> ]
@@ -131,6 +132,11 @@
     <dt><code>-k</code></dt>
     <dd>Enable the HTTP KeepAlive feature, <em>i.e.</em>, perform multiple
     requests within one HTTP session. Default is no KeepAlive.</dd>
+
+    <dt><code>-l</code></dt>
+    <dd>Do not report errors if the length of the responses is not constant. This 
+    can be usefull for dynamic pages.
+    </dd>
 
     <dt><code>-n <var>requests</var></code></dt>
     <dd>Number of requests to perform for the benchmarking session. The default

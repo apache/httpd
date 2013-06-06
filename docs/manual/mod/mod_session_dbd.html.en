@@ -100,7 +100,7 @@
 DBDriver pgsql
 DBDParams "dbname=apachesession user=apache password=xxxxx host=localhost"
 DBDPrepareSQL "delete from session where key = %s" deletesession
-DBDPrepareSQL "update session set value = %s, expiry = %lld where key = %s" updatesession
+DBDPrepareSQL "update session set value = %s, expiry = %lld, key = %s where key = %s" updatesession
 DBDPrepareSQL "insert into session (value, expiry, key) values (%s, %lld, %s)" insertsession
 DBDPrepareSQL "select value from session where key = %s and (expiry = 0 or expiry &gt; %lld)" selectsession
 DBDPrepareSQL "delete from session where expiry != 0 and expiry &lt; %lld" cleansession
