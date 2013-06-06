@@ -160,7 +160,9 @@ function handle(r)
         end
     else
         r:puts("Unsupported HTTP method " .. r.method)
+        return 501
     end
+    return apache2.OK
 end
 </pre>
 
