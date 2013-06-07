@@ -418,7 +418,7 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
         fprintf(stderr, "Opening file %s\n", newlog.name);
     }
     rv = apr_file_open(&newlog.fd, newlog.name, APR_WRITE | APR_CREATE | APR_APPEND
-                       | (config->truncate || (config->num_files > 0) ? APR_TRUNCATE : 0), 
+                       | (config->truncate || (config->num_files > 0 && status->current.fd) ? APR_TRUNCATE : 0), 
                        APR_OS_DEFAULT, newlog.pool);
     if (rv == APR_SUCCESS) {
         /* Handle post-rotate processing. */
