@@ -168,8 +168,8 @@ static apr_status_t store_array(apr_array_header_t *arr, unsigned char *buffer,
     elts = (const char **) arr->elts;
 
     for (i = 0; i < arr->nelts; i++) {
-        len = strlen(elts[i]);
-        if (len + 3 >= buffer_len - *slider) {
+        apr_size_t e_len = strlen(elts[i]);
+        if (e_len + 3 >= buffer_len - *slider) {
             return APR_EOF;
         }
         len = apr_snprintf(buffer ? (char *) buffer + *slider : NULL,
