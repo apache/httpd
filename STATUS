@@ -178,17 +178,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * core: Add post_perdir_config hook.
       trunk patch: http://svn.apache.org/r1368121
       2.4.x patch: trunk patch works modulo CHANGES and mmn bump
-      +1: minfrin
+      +1: minfrin, jim
 
     * core: Add dirwalk_stat hook.
       trunk patch: http://svn.apache.org/r1388447
       2.4.x patch: trunk patch works modulo CHANGES and mmn bump
-      +1: minfrin
+      +1: minfrin, jim
 
     * core: Add pre_htaccess hook.
       trunk patch: http://svn.apache.org/r1389339
       2.4.x patch: trunk patch works modulo CHANGES and mmn bump
-      +1: minfrin
+      +1: minfrin, jim
 
     * mod_session_dbd: Make sure that dirty flag is respected when saving 
       sessions, and ensure the session ID is changed each time the session 
@@ -202,12 +202,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             [client AH00113: cannot use a full URL in a 401 ErrorDocument directive...
       trunk patch: http://svn.apache.org/r1490446
       2.4.x patch: trunk works
-      +1 covener
+      +1 covener, jim
 
     * rotatelogs: support -n number-of-files for circular set of filenames
       trunk patch: http://svn.apache.org/r1490493
       2.4.x patch: trunk works + compat for manual
-      +1 covener
+      +1 covener, jim
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
