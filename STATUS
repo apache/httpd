@@ -202,7 +202,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             [client AH00113: cannot use a full URL in a 401 ErrorDocument directive...
       trunk patch: http://svn.apache.org/r1490446
       2.4.x patch: trunk works
-      +1 covener, jim
+      +1 covener, jim, fuankg
 
     * rotatelogs: support -n number-of-files for circular set of filenames
       trunk patch: http://svn.apache.org/r1490493
@@ -211,7 +211,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       
     * mod_lua: Fully sync 2.4.x with trunk (catch up to r1490700):
       2.4.x patch: http://www.humbedooh.com/mod_lua_2013_06_07.patch
-      +1: humbedooh
+      +1: humbedooh, fuankg
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
