@@ -244,6 +244,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk works
       +1 covener
 
+    * rotatelogs: support -n number-of-files for circular set of filenames
+      trunk patch: http://svn.apache.org/r1490493.
+      2.4.x patch: trunk works + compat for manual
+      +1 covener
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
