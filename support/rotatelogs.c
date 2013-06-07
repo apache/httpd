@@ -70,6 +70,7 @@ struct rotate_config {
 #if APR_FILES_AS_SOCKETS
     int create_empty;
 #endif
+    int num_files;
 };
 
 typedef struct rotate_status rotate_status_t;
@@ -89,6 +90,7 @@ struct rotate_status {
     int rotateReason;
     int tLogEnd;
     int nMessCount;
+    int fileNum;
 };
 
 static rotate_config_t config;
@@ -101,9 +103,9 @@ static void usage(const char *argv0, const char *reason)
     }
     fprintf(stderr,
 #if APR_FILES_AS_SOCKETS
-            "Usage: %s [-v] [-l] [-L linkname] [-p prog] [-f] [-t] [-e] [-c] <logfile> "
+            "Usage: %s [-v] [-l] [-L linkname] [-p prog] [-f] [-t] [-e] [-c] [-n number] <logfile> "
 #else
-            "Usage: %s [-v] [-l] [-L linkname] [-p prog] [-f] [-t] [-e] <logfile> "
+            "Usage: %s [-v] [-l] [-L linkname] [-p prog] [-f] [-t] [-e] [-n number] <logfile> "
 #endif
             "{<rotation time in seconds>|<rotation size>(B|K|M|G)} "
             "[offset minutes from UTC]\n\n",
@@ -362,6 +364,7 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
     int tLogStart;
     apr_status_t rv;
     struct logfile newlog;
+    int thisLogNum = -1;
 
     status->rotateReason = ROTATE_NONE;
 
@@ -395,6 +398,16 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
         if (config->truncate) {
             apr_snprintf(newlog.name, sizeof(newlog.name), "%s", config->szLogRoot);
         }
+        else if (config->num_files > 0) { 
+            if (status->fileNum == -1 || status->fileNum == (config->num_files - 1)) {
+                thisLogNum = 0;
+                apr_snprintf(newlog.name, sizeof(newlog.name), "%s", config->szLogRoot);
+            }
+            else { 
+                thisLogNum = status->fileNum + 1;
+                apr_snprintf(newlog.name, sizeof(newlog.name), "%s.%d", config->szLogRoot, thisLogNum);
+            }
+        }
         else {
             apr_snprintf(newlog.name, sizeof(newlog.name), "%s.%010d", config->szLogRoot,
                          tLogStart);
@@ -405,11 +418,13 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
         fprintf(stderr, "Opening file %s\n", newlog.name);
     }
     rv = apr_file_open(&newlog.fd, newlog.name, APR_WRITE | APR_CREATE | APR_APPEND
-                       | (config->truncate ? APR_TRUNCATE : 0), APR_OS_DEFAULT, newlog.pool);
+                       | (config->truncate || (config->num_files > 0) ? APR_TRUNCATE : 0), 
+                       APR_OS_DEFAULT, newlog.pool);
     if (rv == APR_SUCCESS) {
         /* Handle post-rotate processing. */
         post_rotate(newlog.pool, &newlog, config, status);
 
+        status->fileNum = thisLogNum;
         /* Close out old (previously 'current') logfile, if any. */
         if (status->current.fd) {
             close_logfile(config, &status->current);
@@ -529,9 +544,9 @@ int main (int argc, const char * const argv[])
     apr_pool_create(&status.pool, NULL);
     apr_getopt_init(&opt, status.pool, argc, argv);
 #if APR_FILES_AS_SOCKETS
-    while ((rv = apr_getopt(opt, "lL:p:ftvec", &c, &opt_arg)) == APR_SUCCESS) {
+    while ((rv = apr_getopt(opt, "lL:p:ftvecn:", &c, &opt_arg)) == APR_SUCCESS) {
 #else
-    while ((rv = apr_getopt(opt, "lL:p:ftve", &c, &opt_arg)) == APR_SUCCESS) {
+    while ((rv = apr_getopt(opt, "lL:p:ftven:", &c, &opt_arg)) == APR_SUCCESS) {
 #endif
         switch (c) {
         case 'l':
@@ -560,6 +575,10 @@ int main (int argc, const char * const argv[])
             config.create_empty = 1;
             break;
 #endif
+        case 'n':
+            config.num_files = atoi(opt_arg);
+            status.fileNum = -1;
+            break;
         }
     }
 
@@ -587,6 +606,16 @@ int main (int argc, const char * const argv[])
     }
 
     config.use_strftime = (strchr(config.szLogRoot, '%') != NULL);
+
+    if (config.use_strftime && config.num_files > 0) { 
+        fprintf(stderr, "Cannot use -n with %% in filename\n");
+        exit(1);
+    }
+
+    if (status.fileNum == -1 && config.num_files < 1) { 
+        fprintf(stderr, "Invalid -n argument\n");
+        exit(1);
+    }
 
     if (apr_file_open_stdin(&f_stdin, status.pool) != APR_SUCCESS) {
         fprintf(stderr, "Unable to open stdin\n");
