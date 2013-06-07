@@ -1260,7 +1260,7 @@ where you have a parent configuration and a child, such as the following:
 </p>
 <highlight language="config">
 &lt;Directory &quot;/var/www&quot;&gt;
-    ExampleEnable On
+    ExampleEnabled On
     ExamplePath /foo/bar
     ExampleAction file allow
 &lt;/Directory&gt;
@@ -1271,7 +1271,7 @@ where you have a parent configuration and a child, such as the following:
 <p>
 In this example, it is natural to assume that the directory <code>
 /var/www/subdir</code> should inherit the values set for the <code>/var/www
-</code> directory, as we did not specify an <code>ExampleEnable</code> nor 
+</code> directory, as we did not specify an <code>ExampleEnabled</code> nor 
 an <code>ExamplePath</code> for this directory. The server does not presume to 
 know if this is true, but cleverly does the following:
 </p>
