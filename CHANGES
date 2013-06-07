@@ -1,5 +1,7 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
+  *) rotatelogs: add -n number-of-files option to roate through a number
+     of fixed-name logfiles. [Eric Covener]
 
   *) mod_lua: If a LuaMapHandler doesn't return any value, log a warning
      and treat it as apache2.OK. [Eric Covener]
