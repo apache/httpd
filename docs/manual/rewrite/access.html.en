@@ -145,7 +145,7 @@ SetEnvIf Referer example\.com localreferer
 
         <p>The standard for robot exclusion defines a file,
         <code>/robots.txt</code> that specifies those portions of your
-        website where you which to exclude robots. However, some robots
+        website where you wish to exclude robots. However, some robots
         do not honor these files.
         </p>
 
