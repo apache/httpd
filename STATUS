@@ -131,10 +131,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                  half of all new stuff, and therefore the +0.5 - I would like
                  to have someone else add a vote too.
 
-    * support: Do not use free for memory allocated in a pool (regression introduced in r1476674)
-      trunk patch: http://svn.apache.org/r1490507
-      2.4.x patch: trunk works
-      +1 jailletc36, fuankg, minfrin
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
