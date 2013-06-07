@@ -238,7 +238,6 @@ int mkhash(struct passwd_ctx *ctx)
                                 "characters by CRYPT algorithm." NL);
             }
             memset(truncpw, '\0', strlen(pw));
-            free(truncpw);
         }
         break;
 #endif /* CRYPT_ALGO_SUPPORTED */
