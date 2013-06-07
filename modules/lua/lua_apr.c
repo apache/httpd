@@ -14,8 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "apr.h"
-#include "apr_tables.h"
 
 #include "mod_lua.h"
 #include "lua_apr.h"
@@ -30,11 +28,11 @@
 #endif
 
 
-AP_LUA_DECLARE(apr_table_t*) ap_lua_check_apr_table(lua_State *L, int index)
+AP_LUA_DECLARE(apr_table_t *) ap_lua_check_apr_table(lua_State *L, int index)
 {
     apr_table_t *t;
     luaL_checkudata(L, index, "Apr.Table");
-    t = (apr_table_t *) lua_unboxpointer(L, index);
+    t = lua_unboxpointer(L, index);
     return t;
 }
 
@@ -48,9 +46,9 @@ AP_LUA_DECLARE(void) ap_lua_push_apr_table(lua_State *L, apr_table_t *t)
 
 static int lua_table_set(lua_State *L)
 {
-    apr_table_t *t = ap_lua_check_apr_table(L, 1);
-    const char *key = luaL_checkstring(L, 2);
-    const char *val = luaL_checkstring(L, 3);
+    apr_table_t    *t = ap_lua_check_apr_table(L, 1);
+    const char     *key = luaL_checkstring(L, 2);
+    const char     *val = luaL_checkstring(L, 3);
 
     apr_table_set(t, key, val);
     return 0;
@@ -58,9 +56,9 @@ static int lua_table_set(lua_State *L)
 
 static int lua_table_get(lua_State *L)
 {
-    apr_table_t *t = ap_lua_check_apr_table(L, 1);
-    const char *key = luaL_checkstring(L, 2);
-    const char *val = apr_table_get(t, key);
+    apr_table_t    *t = ap_lua_check_apr_table(L, 1);
+    const char     *key = luaL_checkstring(L, 2);
+    const char     *val = apr_table_get(t, key);
     lua_pushstring(L, val);
     return 1;
 }
@@ -88,3 +86,6 @@ AP_LUA_DECLARE(int) ap_lua_init(lua_State *L, apr_pool_t *p)
 
     return 0;
 }
+
+
+
