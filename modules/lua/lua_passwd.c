@@ -167,8 +167,9 @@ int mk_password_hash(passwd_ctx *ctx)
 
     default:
         ctx->errstr = apr_psprintf(ctx->pool,
-                                  "mk_password_hash(): BUG: invalid algorithm %d",
+                                  "mk_password_hash(): unsupported algorithm %d",
                                   ctx->alg);
+        ret = ERR_GENERAL;
     }
     memset(pw, '\0', strlen(pw));
     return ret;
