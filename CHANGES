@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.5
 
+  *) mod_cache: Make option "CacheDisable" in mod_cache case insensitive PR
+     54462 [Tianyin Xu <tixu cs ucsd edu>]
+
   *) mod_cache: If a 304 response indicates an entity not currently cached, then
      the cache MUST disregard the response and repeat the request without the
      conditional. [Graham Leggett, Co-Advisor <coad measurement-factory.com>]
