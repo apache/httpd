@@ -90,6 +90,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
  
+  * core: add a file/line number to a NOTICE message
+          [client AH00113: cannot use a full URL in a 401 ErrorDocument directive...
+    trunk patch: http://svn.apache.org/r1490446
+    2.4.x patch: trunk works
+    +1 covener, jim, fuankg
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -197,12 +203,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/r1488164
       2.4.x patch: trunk patch works modulo CHANGES
       +1: minfrin
-
-    * core: add a file/line number to a NOTICE message
-            [client AH00113: cannot use a full URL in a 401 ErrorDocument directive...
-      trunk patch: http://svn.apache.org/r1490446
-      2.4.x patch: trunk works
-      +1 covener, jim, fuankg
 
     * rotatelogs: support -n number-of-files for circular set of filenames
       trunk patch: http://svn.apache.org/r1490493
