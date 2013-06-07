@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.5
 
+  *) core: make the "default" parameter of the "ErrorDocument" option case
+     insensitive. PR 54419 [Tianyin Xu <tixu cs ucsd edu>]
+
   *) mod_proxy_html: make the "ProxyHTMLFixups" options case insensitive.
      PR 54420 [Tianyin Xu <tixu cs ucsd edu>]
 
