@@ -902,7 +902,7 @@ has an additional parameter defined:</p>
 
 <!-- BEGIN EXAMPLE CODE -->
 <highlight language="c">
-/* Handler for the "exambleEnabled" directive */
+/* Handler for the "exampleEnabled" directive */
 const char *example_set_enabled(cmd_parms *cmd, void *cfg, const char *arg)
 {
     if(!strcasecmp(arg, "on")) config.enabled = 1;
@@ -972,7 +972,7 @@ static example_config config;
  Our directive handlers:
  ==============================================================================
  */
-/* Handler for the &quot;exambleEnabled&quot; directive */
+/* Handler for the &quot;exampleEnabled&quot; directive */
 const char *example_set_enabled(cmd_parms *cmd, void *cfg, const char *arg)
 {
     if(!strcasecmp(arg, &quot;on&quot;)) config.enabled = 1;
@@ -1451,7 +1451,7 @@ static int example_handler(request_rec *r)
 
 /*
  =======================================================================================================================
-    Handler for the &quot;exambleEnabled&quot; directive
+    Handler for the &quot;exampleEnabled&quot; directive
  =======================================================================================================================
  */
 const char *example_set_enabled(cmd_parms *cmd, void *cfg, const char *arg)
