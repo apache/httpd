@@ -39,6 +39,7 @@
 #include "apr_file_info.h"
 #include "apr_time.h"
 #include "apr_hooks.h"
+#include "apr_reslist.h"
 
 /* Allow for Lua 5.2 backwards compatibility */
 #define LUA_COMPAT_ALL
@@ -50,6 +51,7 @@
 #if LUA_VERSION_NUM > 501
 /* Load mode for lua_load() */
 #define lua_load(a,b,c,d) lua_load(a,b,c,d,NULL)
+#define lua_resume(a,b)   lua_resume(a, NULL, b)
 #endif
 
 /* Create a set of AP_LUA_DECLARE(type), AP_LUA_DECLARE_NONSTD(type) and
@@ -81,7 +83,7 @@ typedef enum {
     AP_LUA_INHERIT_UNSET        = -1,
     AP_LUA_INHERIT_NONE         =  0,
     AP_LUA_INHERIT_PARENT_FIRST =  1,
-    AP_LUA_INHERIT_PARENT_LAST  =  2,
+    AP_LUA_INHERIT_PARENT_LAST  =  2
 } ap_lua_inherit_t;
 
 /**
@@ -101,9 +103,10 @@ typedef struct
     apr_array_header_t *package_cpaths;
 
     /**
-     * mapped handlers
+     * mapped handlers/filters
      */
     apr_array_header_t *mapped_handlers;
+    apr_array_header_t *mapped_filters;
 
     apr_pool_t *pool;
 
@@ -111,6 +114,8 @@ typedef struct
      * AP_LUA_SCOPE_ONCE | AP_LUA_SCOPE_REQUEST | AP_LUA_SCOPE_CONN | AP_LUA_SCOPE_SERVER
      */
     unsigned int vm_scope;
+    unsigned int vm_min;
+    unsigned int vm_max;
 
     /* info for the hook harnesses */
     apr_hash_t *hooks;          /* <wombat_hook_info> */
@@ -120,6 +125,11 @@ typedef struct
   
     /* Whether Lua scripts in a sub-dir are run before parents */
     ap_lua_inherit_t inherit;
+    
+    /**
+     * AP_LUA_CACHE_NEVER | AP_LUA_CACHE_STAT | AP_LUA_CACHE_FOREVER
+     */
+    unsigned int codecache;
 
 } ap_lua_dir_cfg;
 

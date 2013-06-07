@@ -90,47 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
  
-  * mod_lua: Sync 2.4 branch with trunk. This includes (but is not limited to) 
-             Server pools, new apr functions for the request_rec table, input/
-             output filters, LuaCodeCache, LuaMapHandler and multipart form data
-             handling. This is long overdue, and has become too spaghetti-ish to 
-             propose in chunks :|
-    trunk patch: http://svn.apache.org/r1366890
-                 http://svn.apache.org/r1367025
-                 http://svn.apache.org/r1367040
-                 http://svn.apache.org/r1367048
-                 http://svn.apache.org/r1383024
-                 http://svn.apache.org/r1383028
-                 http://svn.apache.org/r1383037
-                 http://svn.apache.org/r1367725
-                 http://svn.apache.org/r1367875
-                 http://svn.apache.org/r1368109
-                 http://svn.apache.org/r1369656
-                 http://svn.apache.org/r1369793
-                 http://svn.apache.org/r1369800
-                 http://svn.apache.org/r1370158
-                 http://svn.apache.org/r1433967
-                 http://svn.apache.org/r1429169
-                 http://svn.apache.org/r1425450
-                 http://svn.apache.org/r1425243
-                 http://svn.apache.org/r1422552
-                 http://svn.apache.org/r1422548                                                                        
-                 http://svn.apache.org/r1422531
-                 http://svn.apache.org/r1422373
-                 http://svn.apache.org/r1422072
-                 http://svn.apache.org/r1421784
-                 http://svn.apache.org/r1421780
-                 (the list goes on...)
-    2.4.x patch: http://www.humbedooh.com/mod_lua_sync.patch (+CHANGES)
-    +1: humbedooh, jim, covener
-    +0.5: fuankg - all issues I found so far are meanwhile fixed either by
-                 humbedooh or by myself; I did spend a bunch of hours during
-                 last weeks to test as much as possible, and I believe its
-                 now good enough provided that we copy the whole current trunk
-                 code over; but nevertheless I feel that I have only tested
-                 half of all new stuff, and therefore the +0.5 - I would like
-                 to have someone else add a vote too.
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
