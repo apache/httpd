@@ -206,8 +206,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * rotatelogs: support -n number-of-files for circular set of filenames
       trunk patch: http://svn.apache.org/r1490493
+                   http://svn.apache.org/r1490761
       2.4.x patch: trunk works + compat for manual
-      +1 covener, jim
+      +1 covener
       
     * mod_lua: Fully sync 2.4.x with trunk (catch up to r1490700):
       2.4.x patch: http://www.humbedooh.com/mod_lua_2013_06_07.patch
