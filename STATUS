@@ -131,6 +131,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                  half of all new stuff, and therefore the +0.5 - I would like
                  to have someone else add a vote too.
 
+    * core: make the "default" parameter of the "ErrorDocument" option case insensitive
+      PR 54419 reported by Tianyin Xu [tixu cs ucsd edu]
+      trunk patch: http://svn.apache.org/r1465190
+      2.4.x patch: trunk works
+      +1 jailletc36, fuankg, minfrin
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -249,12 +255,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/r1490493
       2.4.x patch: trunk works + compat for manual
       +1 covener
-
-    * core: make the "default" parameter of the "ErrorDocument" option case insensitive
-      PR 54419 reported by Tianyin Xu [tixu cs ucsd edu]
-      trunk patch: http://svn.apache.org/r1465190
-      2.4.x patch: trunk works
-      +1 jailletc36, fuankg
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
