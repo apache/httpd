@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1477000:1490095 (outdated) -->
+<!-- English Revision : 1490095 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -116,19 +116,28 @@ require "string"
 --]]
 function handle(r)
     r.content_type = "text/plain"
-    r:puts("Hello Lua World!\n")
 
     if r.method == 'GET' then
+    	r:puts("Hello Lua World!\n")
         for k, v in pairs( r:parseargs() ) do
             r:puts( string.format("%s: %s\n", k, v) )
         end
     elseif r.method == 'POST' then
+    	r:puts("Hello Lua World!\n")
         for k, v in pairs( r:parsebody() ) do
             r:puts( string.format("%s: %s\n", k, v) )
         end
     else
+    elseif r.method == 'PUT' then
+-- message d'erreur personnalis&eacute;
         r:puts("Unsupported HTTP method " .. r.method)
+	r.status = 405
+        return apache2.ok
+    else
+-- message d'erreur ErrorDocument
+        return 501
     end
+    return apache2.OK
 end
 </highlight>
 
