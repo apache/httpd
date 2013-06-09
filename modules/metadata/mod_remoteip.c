@@ -203,6 +203,7 @@ static const char *proxylist_read(cmd_parms *cmd, void *cfg,
             }
             errmsg = proxies_set(cmd, cfg, arg);
             if (errmsg) {
+                ap_cfg_closefile(cfp);
                 errmsg = apr_psprintf(cmd->pool, "%s at line %d of %s",
                                       errmsg, cfp->line_number, filename);
                 return errmsg;
