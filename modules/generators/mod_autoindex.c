@@ -1840,7 +1840,7 @@ static void output_directories(struct ent **ar, int n,
             ap_rputs(" ", r);
             if (!(autoindex_opts & SUPPRESS_LAST_MOD)) {
                 if (ar[x]->lm != -1) {
-                    char time_str[MAX_STRING_LEN];
+                    char time_str[32];
                     apr_time_exp_t ts;
                     apr_time_exp_lt(&ts, ar[x]->lm);
                     apr_strftime(time_str, &rv, MAX_STRING_LEN,
