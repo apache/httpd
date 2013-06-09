@@ -96,6 +96,16 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk works
     +1 covener, jim, fuankg
 
+    * core: Add post_perdir_config hook.
+      trunk patch: http://svn.apache.org/r1368121
+      2.4.x patch: trunk patch works modulo CHANGES and mmn bump
+      +1: minfrin, jim, sf
+
+    * core: Add dirwalk_stat hook.
+      trunk patch: http://svn.apache.org/r1388447
+      2.4.x patch: trunk patch works modulo CHANGES and mmn bump
+      +1: minfrin, jim, sf
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -179,16 +189,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/r1484832
                    http://svn.apache.org/r1484914
       2.4.x patch: trunk works, modulo CHANGES
-      +1: minfrin, jim
-
-    * core: Add post_perdir_config hook.
-      trunk patch: http://svn.apache.org/r1368121
-      2.4.x patch: trunk patch works modulo CHANGES and mmn bump
-      +1: minfrin, jim
-
-    * core: Add dirwalk_stat hook.
-      trunk patch: http://svn.apache.org/r1388447
-      2.4.x patch: trunk patch works modulo CHANGES and mmn bump
       +1: minfrin, jim
 
     * core: Add pre_htaccess hook.
