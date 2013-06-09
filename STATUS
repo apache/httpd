@@ -219,6 +219,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk patch works
       +1: sf
 
+    * proxy_util: NULL terminate the right buffer in 'send_http_connect'
+      trunk patch: http://svn.apache.org/r1490994
+      2.4.x patch: trunk patch works
+      +1: jailletc36
+
+    * mod_autoindex: reduce stack usage in 'output_directories' by 8k
+      trunk patch: http://svn.apache.org/r1491221
+      2.4.x patch: trunk patch works
+      +1: jailletc36
+
+    * mod_remoteip: close file in error path
+      trunk patch: http://svn.apache.org/r1491234
+      2.4.x patch: trunk patch works
+      +1: jailletc36
+
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
