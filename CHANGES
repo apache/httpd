@@ -2,6 +2,8 @@
 
 Changes with Apache 2.4.5
 
+  *) core: Add dirwalk_stat hook.  [Jeff Trawick]
+
   *) core: Add post_perdir_config hook.
      [Steinar Gunderson <sgunderson bigfoot.com>]
 
