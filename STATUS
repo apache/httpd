@@ -100,6 +100,11 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk patch works modulo CHANGES and mmn bump
       +1: minfrin, jim, sf
 
+    * mod_remoteip: close file in error path
+      trunk patch: http://svn.apache.org/r1491234
+      2.4.x patch: trunk patch works
+      +1: jailletc36, covener, minfrin
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -222,11 +227,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mod_autoindex: reduce stack usage in 'output_directories' by 8k
       trunk patch: http://svn.apache.org/r1491221
-      2.4.x patch: trunk patch works
-      +1: jailletc36, covener
-
-    * mod_remoteip: close file in error path
-      trunk patch: http://svn.apache.org/r1491234
       2.4.x patch: trunk patch works
       +1: jailletc36, covener
 
