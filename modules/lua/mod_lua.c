@@ -19,6 +19,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <apr_thread_mutex.h>
 
 #include "lua_apr.h"
 #include "lua_config.h"
@@ -63,6 +64,7 @@ typedef struct
     int broken;
 } lua_filter_ctx;
 
+apr_thread_mutex_t* lua_ivm_mutex = NULL;
 
 /**
  * error reporting if lua has an error.
@@ -748,11 +750,17 @@ static int lua_map_handler(request_rec *r)
             if (lua_isnumber(L, -1)) {
                 rc = lua_tointeger(L, -1);
             }
-            if (rc != DECLINED) {
-                ap_lua_release_state(L, spec, r);
-                return rc;
+            else { 
+                ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(02483)
+                              "lua: Lua handler %s in %s did not return a value, assuming apache2.OK",
+                              function_name,
+                              filename);
+                rc = OK;
             }
             ap_lua_release_state(L, spec, r);
+            if (rc != DECLINED) {
+                return rc;
+            }
         }
     }
     return DECLINED;
@@ -1552,7 +1560,9 @@ static const char *register_lua_root(cmd_parms *cmd, void *_cfg,
     cfg->root_path = root;
     return NULL;
 }
-AP_LUA_DECLARE(const char *) ap_lua_ssl_val(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, const char *var)
+
+const char *ap_lua_ssl_val(apr_pool_t *p, server_rec *s, conn_rec *c,
+                           request_rec *r, const char *var)
 {
     if (lua_ssl_val) { 
         return (const char *)lua_ssl_val(p, s, c, r, (char *)var);
@@ -1560,7 +1570,7 @@ AP_LUA_DECLARE(const char *) ap_lua_ssl_val(apr_pool_t *p, server_rec *s, conn_r
     return NULL;
 }
 
-AP_LUA_DECLARE(int) ap_lua_ssl_is_https(conn_rec *c)
+int ap_lua_ssl_is_https(conn_rec *c)
 {
     return lua_ssl_is_https ? lua_ssl_is_https(c) : 0;
 }
@@ -1970,6 +1980,9 @@ static void lua_register_hooks(apr_pool_t *p)
 #endif
     /* providers */
     lua_authz_providers = apr_hash_make(p);
+    
+    /* ivm mutex */
+    apr_thread_mutex_create(&lua_ivm_mutex, APR_THREAD_MUTEX_DEFAULT, p);
 }
 
 AP_DECLARE_MODULE(lua) = {

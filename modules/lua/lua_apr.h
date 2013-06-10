@@ -29,9 +29,8 @@
 #include "apr_base64.h"
 
 
-AP_LUA_DECLARE(int) ap_lua_init(lua_State *L, apr_pool_t * p);
-AP_LUA_DECLARE(apr_table_t*) ap_lua_check_apr_table(lua_State *L, int index);
-AP_LUA_DECLARE(void) ap_lua_push_apr_table(lua_State *L, apr_table_t *t);
-AP_LUA_DECLARE(int) ap_lua_load_httpd_functions(lua_State *L);
+int ap_lua_init(lua_State *L, apr_pool_t * p);
+apr_table_t *ap_lua_check_apr_table(lua_State *L, int index);
+void ap_lua_push_apr_table(lua_State *L, apr_table_t *t);
 
 #endif /* !_LUA_APR_H_ */

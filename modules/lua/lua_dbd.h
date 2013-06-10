@@ -50,7 +50,7 @@ typedef struct {
     lua_db_handle           *db;
 } lua_db_prepared_statement;
 
-AP_LUA_DECLARE(int) lua_db_acquire(lua_State* L);
+int lua_db_acquire(lua_State* L);
 int lua_db_escape(lua_State* L);
 int lua_db_close(lua_State* L);
 int lua_db_prepare(lua_State* L);
