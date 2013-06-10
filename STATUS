@@ -159,6 +159,9 @@ RELEASE SHOWSTOPPERS:
        trawick: 2.2/2.4 now have a different solution (AllowAnyURI).
        rjung: I added the AllowAnyURI patch below. Version 2 of the patch
               integrates your 2.0-CVE-2011-4317-r1235443.patch.
+       covener: this is no longer needed after rjungs AllowAnyURI which is now 
+                backported, right?
+                http://svn.apache.org/viewvc?view=revision&revision=r1489910
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
