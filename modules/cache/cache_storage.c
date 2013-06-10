@@ -571,17 +571,17 @@ static apr_status_t cache_canonicalise_key(request_rec *r, apr_pool_t* p,
         identifier = (char **) conf->ignore_session_id->elts;
         for (i = 0; i < conf->ignore_session_id->nelts; i++, identifier++) {
             int len;
-            char *param;
+            const char *param;
 
             len = strlen(*identifier);
             /*
              * Check that we have a parameter separator in the last segment
              * of the path and that the parameter matches our identifier
              */
-            if ((param = strrchr(path, ';'))
+            if ((param = ap_strrchr_c(path, ';'))
                     && !strncmp(param + 1, *identifier, len)
                     && (*(param + len + 1) == '=')
-                    && !strchr(param + len + 2, '/')) {
+                    && !ap_strchr_c(param + len + 2, '/')) {
                 path = apr_pstrndup(p, path, param - path);
                 continue;
             }
@@ -612,7 +612,7 @@ static apr_status_t cache_canonicalise_key(request_rec *r, apr_pool_t* p,
                     }
                 }
                 if (param) {
-                    char *amp;
+                    const char *amp;
 
                     if (querystring != param) {
                         querystring = apr_pstrndup(p, querystring,
@@ -622,7 +622,7 @@ static apr_status_t cache_canonicalise_key(request_rec *r, apr_pool_t* p,
                         querystring = "";
                     }
 
-                    if ((amp = strchr(param + len + 1, '&'))) {
+                    if ((amp = ap_strchr_c(param + len + 1, '&'))) {
                         querystring = apr_pstrcat(p, querystring, amp + 1,
                                 NULL);
                     }
