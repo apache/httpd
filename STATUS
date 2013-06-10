@@ -211,7 +211,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * core: Allow strtoul
       trunk patch: http://svn.apache.org/r1491155
       2.4.x patch: trunk patch works
+      nd: why would you do that in a stable branch?
       +1: sf, covener
+      -1: nd
 
     * proxy_util: NULL terminate the right buffer in 'send_http_connect'
       trunk patch: http://svn.apache.org/r1490994
