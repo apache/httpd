@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.5
 
+  *) proxy_util: NULL terminate the right buffer in 'send_http_connect'.
+     [Christophe Jaillet]
+
   *) mod_remoteip: close file in error path. [Christophe Jaillet]
 
   *) mod_lua: Sync 2.4 branch with trunk. This includes (but is not limited to)
