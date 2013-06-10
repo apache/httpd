@@ -192,7 +192,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/r1490493
                    http://svn.apache.org/r1490761
       2.4.x patch: trunk works + compat for manual
-      +1 covener
+      +1 covener, minfrin
       
     * core: Allow strtoul
       trunk patch: http://svn.apache.org/r1491155
