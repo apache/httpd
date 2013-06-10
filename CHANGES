@@ -2,6 +2,8 @@
 
 Changes with Apache 2.4.5
 
+  *) mod_remoteip: close file in error path. [Christophe Jaillet]
+
   *) mod_lua: Sync 2.4 branch with trunk. This includes (but is not limited to)
      Server pools, new apr functions for the request_rec table, input/output
      filters, LuaCodeCache, LuaMapHandler and multipart form data handling.
