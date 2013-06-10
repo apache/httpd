@@ -1,5 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
+
+  *) mod_cache_socache: Use the name of the socache implementation when performing
+     a lookup rather than using the raw arguments. [Martin Ksellmann
+     <martin@ksellmann.de>]
+
   *) rotatelogs: add -n number-of-files option to roate through a number
      of fixed-name logfiles. [Eric Covener]
 
