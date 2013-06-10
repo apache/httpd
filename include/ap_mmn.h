@@ -413,6 +413,7 @@
  *                         ap_condition_if_modified_since(),
  *                         ap_condition_if_range()
  * 20120211.19 (2.4.5-dev) Add post_perdir_config hook.
+ * 20120211.20 (2.4.5-dev) Add dirwalk_stat hook.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -420,7 +421,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 19                   /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 20                   /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

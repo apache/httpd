@@ -90,11 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
  
-    * core: Add dirwalk_stat hook.
-      trunk patch: http://svn.apache.org/r1388447
-      2.4.x patch: trunk patch works modulo CHANGES and mmn bump
-      +1: minfrin, jim, sf
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
