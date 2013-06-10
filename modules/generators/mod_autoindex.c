@@ -1843,7 +1843,7 @@ static void output_directories(struct ent **ar, int n,
                     char time_str[32];
                     apr_time_exp_t ts;
                     apr_time_exp_lt(&ts, ar[x]->lm);
-                    apr_strftime(time_str, &rv, MAX_STRING_LEN,
+                    apr_strftime(time_str, &rv, sizeof(time_str),
                                 "%Y-%m-%d %H:%M  ", &ts);
                     ap_rputs(time_str, r);
                 }
