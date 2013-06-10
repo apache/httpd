@@ -69,6 +69,7 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(auth_checker)
     APR_HOOK_LINK(insert_filter)
     APR_HOOK_LINK(create_request)
+    APR_HOOK_LINK(post_perdir_config)
 )
 
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,translate_name,
@@ -89,6 +90,8 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(int,auth_checker,
                             (request_rec *r), (r), DECLINED)
 AP_IMPLEMENT_HOOK_VOID(insert_filter, (request_rec *r), (r))
 AP_IMPLEMENT_HOOK_RUN_ALL(int, create_request,
+                          (request_rec *r), (r), OK, DECLINED)
+AP_IMPLEMENT_HOOK_RUN_ALL(int, post_perdir_config,
                           (request_rec *r), (r), OK, DECLINED)
 
 static int auth_internal_per_conf = 0;
@@ -189,6 +192,10 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
     d = ap_get_core_module_config(r->per_dir_config);
     if (d->log) {
         r->log = d->log;
+    }
+
+    if ((access_status = ap_run_post_perdir_config(r))) {
+        return access_status;
     }
 
     /* Only on the main request! */

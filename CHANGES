@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.5
 
+  *) core: Add post_perdir_config hook.
+     [Steinar Gunderson <sgunderson bigfoot.com>]
+
   *) proxy_util: NULL terminate the right buffer in 'send_http_connect'.
      [Christophe Jaillet]
 
