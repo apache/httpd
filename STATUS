@@ -230,6 +230,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk patch works
       +1: jailletc36, covener
 
+    * mod_cache_socache: Use the name of the socache implementation when performing 
+      a lookup rather than using the raw arguments. PR 55062
+      trunk patch: http://svn.apache.org/r1491458
+      2.4.x patch: trunk patch works
+      +1: minfrin
+
+
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
