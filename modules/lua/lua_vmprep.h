@@ -107,7 +107,7 @@ typedef struct
 typedef struct {
     apr_size_t runs;
     apr_time_t modified;
-    apr_size_t size;
+    apr_off_t  size;
 } ap_lua_finfo;
 
 typedef struct {
@@ -115,16 +115,10 @@ typedef struct {
     ap_lua_finfo* finfo;
 } ap_lua_server_spec;
 
-/* remove and make static once out of mod_wombat.c */
-AP_LUA_DECLARE(void) ap_lua_openlibs(lua_State *L);
-
-/* remove and make static once out of mod_wombat.c */
-AP_LUA_DECLARE(void) ap_lua_registerlib(lua_State *L, char *name, lua_CFunction f);
-
 /**
  * Fake out addition of the "apache2" module
  */
-AP_LUA_DECLARE(void) ap_lua_load_apache2_lmodule(lua_State *L);
+void ap_lua_load_apache2_lmodule(lua_State *L);
 
 /*
  * alternate means of getting lua_State (preferred eventually)
@@ -138,7 +132,7 @@ AP_LUA_DECLARE(void) ap_lua_load_apache2_lmodule(lua_State *L);
  * @cb callback for vm initialization called *before* the file is opened
  * @ctx a baton passed to cb
  */
-AP_LUA_DECLARE(lua_State*) ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
+lua_State *ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
                                                 ap_lua_vm_spec *spec, request_rec* r);
 
 #if APR_HAS_THREADS || defined(DOXYGEN)

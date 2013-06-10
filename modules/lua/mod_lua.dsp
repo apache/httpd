@@ -117,6 +117,14 @@ SOURCE=.\lua_config.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\lua_passwd.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\lua_passwd.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\lua_request.c
 # End Source File
 # Begin Source File

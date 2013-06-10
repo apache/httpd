@@ -20,9 +20,9 @@
 #ifndef _APL_CONFIG_H_
 #define _APL_CONFIG_H_
 
-AP_LUA_DECLARE(void) ap_lua_load_config_lmodule(lua_State *L);
+void ap_lua_load_config_lmodule(lua_State *L);
 
-AP_LUA_DECLARE(apr_status_t) ap_lua_map_handler(ap_lua_dir_cfg *cfg,
+apr_status_t ap_lua_map_handler(ap_lua_dir_cfg *cfg,
                                                 const char *file,
                                                 const char *function,
                                                 const char *pattern,

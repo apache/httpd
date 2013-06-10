@@ -23,6 +23,18 @@
 
 APLOG_USE_MODULE(lua);
 
+#ifndef AP_LUA_MODULE_EXT
+#if defined(NETWARE) 
+#define AP_LUA_MODULE_EXT ".nlm"
+#elif defined(WIN32)
+#define AP_LUA_MODULE_EXT ".dll"
+#elif (defined(__hpux__) || defined(__hpux)) && !defined(__ia64)
+#define AP_LUA_MODULE_EXT ".sl"
+#else
+#define AP_LUA_MODULE_EXT ".so"
+#endif
+#endif
+
 #if APR_HAS_THREADS
     apr_thread_mutex_t *ap_lua_mutex;
     
@@ -108,7 +120,7 @@ static void pstack_dump(lua_State *L, apr_pool_t *r, int level,
 
 #define makeintegerfield(L, n) lua_pushinteger(L, n); lua_setfield(L, -2, #n)
 
-AP_LUA_DECLARE(void) ap_lua_load_apache2_lmodule(lua_State *L)
+void ap_lua_load_apache2_lmodule(lua_State *L)
 {
     lua_getglobal(L, "package");
     lua_getfield(L, -1, "loaded");
@@ -314,8 +326,11 @@ static apr_status_t vm_construct(lua_State **vm, void *params, apr_pool_t *lifec
                    spec->file);
     }
     if (spec->package_cpaths) {
-        munge_path(L, "cpath", "?.so", "./?.so", lifecycle_pool,
-            spec->package_cpaths, spec->file);
+        munge_path(L,
+                   "cpath", "?" AP_LUA_MODULE_EXT, "./?" AP_LUA_MODULE_EXT,
+                   lifecycle_pool,
+                   spec->package_cpaths,
+                   spec->file);
     }
 
     if (spec->cb) {
@@ -390,7 +405,7 @@ static apr_status_t server_vm_construct(lua_State **resource, void *params, apr_
  * Function used to create a lua_State instance bound into the web
  * server in the appropriate scope.
  */
-AP_LUA_DECLARE(lua_State*)ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
+lua_State *ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
                                                ap_lua_vm_spec *spec, request_rec* r)
 {
     lua_State *L = NULL;

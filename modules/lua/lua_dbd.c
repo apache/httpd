@@ -16,7 +16,6 @@
  */
 
 #include "mod_lua.h"
-#include "lua_apr.h"
 #include "lua_dbd.h"
 
 APLOG_USE_MODULE(lua);
@@ -377,7 +376,7 @@ int lua_db_prepared_select(lua_State *L)
     st = (lua_db_prepared_statement*) lua_topointer(L, -1);
     
     /* Check if we got enough variables passed on to us.
-     * This, of course, only works for prepped statements made through lua. */
+     * This, of course, only works for prepared statements made through lua. */
     have = lua_gettop(L) - 2;
     if (st->variables != -1 && have < st->variables ) {
         lua_pushboolean(L, 0);
@@ -468,7 +467,7 @@ int lua_db_prepared_query(lua_State *L)
     st = (lua_db_prepared_statement*) lua_topointer(L, -1);
     
     /* Check if we got enough variables passed on to us.
-     * This, of course, only works for prepped statements made through lua. */
+     * This, of course, only works for prepared statements made through lua. */
     have = lua_gettop(L) - 2;
     if (st->variables != -1 && have < st->variables ) {
         lua_pushboolean(L, 0);
@@ -704,7 +703,7 @@ static lua_db_handle* lua_push_db_handle(lua_State *L, request_rec* r, int type,
     supported.
    =============================================================================
  */
-AP_LUA_DECLARE(int) lua_db_acquire(lua_State *L)
+int lua_db_acquire(lua_State *L)
 {
     /*~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
     const char      *type;
