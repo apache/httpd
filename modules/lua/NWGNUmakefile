@@ -26,10 +26,10 @@ include $(AP_WORK)/build/NWGNUhead.inc
 XINCDIRS	+= \
 			$(APR)/include \
 			$(APRUTIL)/include \
-			$(AP_WORK)/include \
-			$(AP_WORK)/modules/database \
-			$(AP_WORK)/modules/http \
-			$(AP_WORK)/modules/ssl \
+			$(SRC)/include \
+			$(STDMOD)/database \
+			$(STDMOD)/http \
+			$(STDMOD)/ssl \
 			$(NWOS) \
 			$(LUASRC)/src \
 			$(EOLIST)
@@ -129,7 +129,7 @@ NLM_VERSION	=
 #
 # If this is specified, it will override the default of 64K
 #
-NLM_STACK_SIZE	= 8192
+NLM_STACK_SIZE	= 131072
 
 
 #
@@ -181,6 +181,7 @@ FILES_nlm_objs = \
 	$(OBJDIR)/mod_lua.o \
 	$(OBJDIR)/lua_apr.o \
 	$(OBJDIR)/lua_config.o \
+	$(OBJDIR)/lua_passwd.o \
 	$(OBJDIR)/lua_request.o \
 	$(OBJDIR)/lua_vmprep.o \
 	$(OBJDIR)/lua_dbd.o \
