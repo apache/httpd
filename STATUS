@@ -123,6 +123,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/viewvc?view=revision&revision=1458447
     2.4.x patch: http://people.apache.org/~jim/patches/wstunnel.patch
     +1: jim, minfrin (with fix to mmn bump)
+    gsmith: Windows will need these as well, then +1
+            http://people.apache.org/~gsmith/httpd/diffs/wstunnel_winbits.diff
 
     * skiplist: Add skiplist functionality
       trunk patches: https://svn.apache.org/r1411190
