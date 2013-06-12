@@ -95,13 +95,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
 
-    * mod_autoindex: reduce stack usage in 'output_directories' by 8k
-      trunk patch: http://svn.apache.org/r1491221
-                   http://svn.apache.org/r1491479
-                   http://svn.apache.org/r1491538
-      2.4.x patch: trunk patch works
-      +1: jailletc36, rjung, jim
-
     * mod_cache_socache: Use the name of the socache implementation when performing 
       a lookup rather than using the raw arguments. PR 55062
       trunk patch: http://svn.apache.org/r1491458
