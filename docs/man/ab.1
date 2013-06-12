@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "AB" 1 "2012-12-17" "Apache HTTP Server" "ab"
+.TH "AB" 1 "2013-06-12" "Apache HTTP Server" "ab"
 
 .SH NAME
 ab \- Apache HTTP server benchmarking tool
@@ -27,7 +27,7 @@ ab \- Apache HTTP server benchmarking tool
 .SH "SYNOPSIS"
  
 .PP
-\fBab\fR [ -\fBA\fR \fIauth-username\fR:\fIpassword\fR ] [ -\fBb\fR \fIwindowsize\fR ] [ -\fBB\fR \fIlocal-address\fR ] [ -\fBc\fR \fIconcurrency\fR ] [ -\fBC\fR \fIcookie-name\fR=\fIvalue\fR ] [ -\fBd\fR ] [ -\fBe\fR \fIcsv-file\fR ] [ -\fBf\fR \fIprotocol\fR ] [ -\fBg\fR \fIgnuplot-file\fR ] [ -\fBh\fR ] [ -\fBH\fR \fIcustom-header\fR ] [ -\fBi\fR ] [ -\fBk\fR ] [ -\fBn\fR \fIrequests\fR ] [ -\fBp\fR \fIPOST-file\fR ] [ -\fBP\fR \fIproxy-auth-username\fR:\fIpassword\fR ] [ -\fBq\fR ] [ -\fBr\fR ] [ -\fBs\fR \fItimeout\fR ] [ -\fBS\fR ] [ -\fBt\fR \fItimelimit\fR ] [ -\fBT\fR \fIcontent-type\fR ] [ -\fBu\fR \fIPUT-file\fR ] [ -\fBv\fR \fIverbosity\fR] [ -\fBV\fR ] [ -\fBw\fR ] [ -\fBx\fR \fI<table>-attributes\fR ] [ -\fBX\fR \fIproxy\fR[:\fIport\fR] ] [ -\fBy\fR \fI<tr>-attributes\fR ] [ -\fBz\fR \fI<td>-attributes\fR ] [ -\fBZ\fR \fIciphersuite\fR ] [http[s]://]\fIhostname\fR[:\fIport\fR]/\fIpath\fR
+\fBab\fR [ -\fBA\fR \fIauth-username\fR:\fIpassword\fR ] [ -\fBb\fR \fIwindowsize\fR ] [ -\fBB\fR \fIlocal-address\fR ] [ -\fBc\fR \fIconcurrency\fR ] [ -\fBC\fR \fIcookie-name\fR=\fIvalue\fR ] [ -\fBd\fR ] [ -\fBe\fR \fIcsv-file\fR ] [ -\fBf\fR \fIprotocol\fR ] [ -\fBg\fR \fIgnuplot-file\fR ] [ -\fBh\fR ] [ -\fBH\fR \fIcustom-header\fR ] [ -\fBi\fR ] [ -\fBk\fR ] [ -\fBl\fR ] [ -\fBn\fR \fIrequests\fR ] [ -\fBp\fR \fIPOST-file\fR ] [ -\fBP\fR \fIproxy-auth-username\fR:\fIpassword\fR ] [ -\fBq\fR ] [ -\fBr\fR ] [ -\fBs\fR \fItimeout\fR ] [ -\fBS\fR ] [ -\fBt\fR \fItimelimit\fR ] [ -\fBT\fR \fIcontent-type\fR ] [ -\fBu\fR \fIPUT-file\fR ] [ -\fBv\fR \fIverbosity\fR] [ -\fBV\fR ] [ -\fBw\fR ] [ -\fBx\fR \fI<table>-attributes\fR ] [ -\fBX\fR \fIproxy\fR[:\fIport\fR] ] [ -\fBy\fR \fI<tr>-attributes\fR ] [ -\fBz\fR \fI<td>-attributes\fR ] [ -\fBZ\fR \fIciphersuite\fR ] [http[s]://]\fIhostname\fR[:\fIport\fR]/\fIpath\fR
  
 
 .SH "SUMMARY"
@@ -78,6 +78,9 @@ Do HEAD requests instead of GET\&.
 .TP
 -k
 Enable the HTTP KeepAlive feature, \fIi\&.e\&.\fR, perform multiple requests within one HTTP session\&. Default is no KeepAlive\&.  
+.TP
+-l
+Do not report errors if the length of the responses is not constant\&. This can be usefull for dynamic pages\&.  
 .TP
 -n \fIrequests\fR
 Number of requests to perform for the benchmarking session\&. The default is to just perform a single request which usually leads to non-representative benchmarking results\&.  

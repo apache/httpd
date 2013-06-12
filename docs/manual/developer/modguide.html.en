@@ -927,7 +927,7 @@ has an additional parameter defined:</p>
 
 
 <pre class="prettyprint lang-c">
-/* Handler for the "exambleEnabled" directive */
+/* Handler for the "exampleEnabled" directive */
 const char *example_set_enabled(cmd_parms *cmd, void *cfg, const char *arg)
 {
     if(!strcasecmp(arg, "on")) config.enabled = 1;
@@ -998,7 +998,7 @@ static example_config config;
  Our directive handlers:
  ==============================================================================
  */
-/* Handler for the "exambleEnabled" directive */
+/* Handler for the "exampleEnabled" directive */
 const char *example_set_enabled(cmd_parms *cmd, void *cfg, const char *arg)
 {
     if(!strcasecmp(arg, "on")) config.enabled = 1;
@@ -1295,7 +1295,7 @@ where you have a parent configuration and a child, such as the following:
 </p>
 <pre class="prettyprint lang-config">
 &lt;Directory "/var/www"&gt;
-    ExampleEnable On
+    ExampleEnabled On
     ExamplePath /foo/bar
     ExampleAction file allow
 &lt;/Directory&gt;
@@ -1307,7 +1307,7 @@ where you have a parent configuration and a child, such as the following:
 <p>
 In this example, it is natural to assume that the directory <code>
 /var/www/subdir</code> should inherit the values set for the <code>/var/www
-</code> directory, as we did not specify an <code>ExampleEnable</code> nor 
+</code> directory, as we did not specify an <code>ExampleEnabled</code> nor 
 an <code>ExamplePath</code> for this directory. The server does not presume to 
 know if this is true, but cleverly does the following:
 </p>
@@ -1489,7 +1489,7 @@ static int example_handler(request_rec *r)
 
 /*
  =======================================================================================================================
-    Handler for the "exambleEnabled" directive
+    Handler for the "exampleEnabled" directive
  =======================================================================================================================
  */
 const char *example_set_enabled(cmd_parms *cmd, void *cfg, const char *arg)
