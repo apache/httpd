@@ -302,6 +302,7 @@ logformat	mod/mod_log_config.html#logformat
 loglevel	mod/core.html#loglevel
 logmessage	mod/mod_log_debug.html#logmessage
 luaauthzprovider	mod/mod_lua.html#luaauthzprovider
+luacodecache	mod/mod_lua.html#luacodecache
 luahookaccesschecker	mod/mod_lua.html#luahookaccesschecker
 luahookauthchecker	mod/mod_lua.html#luahookauthchecker
 luahookcheckuserid	mod/mod_lua.html#luahookcheckuserid
@@ -311,6 +312,9 @@ luahookmaptostorage	mod/mod_lua.html#luahookmaptostorage
 luahooktranslatename	mod/mod_lua.html#luahooktranslatename
 luahooktypechecker	mod/mod_lua.html#luahooktypechecker
 luainherit	mod/mod_lua.html#luainherit
+luainputfilter	mod/mod_lua.html#luainputfilter
+luamaphandler	mod/mod_lua.html#luamaphandler
+luaoutputfilter	mod/mod_lua.html#luaoutputfilter
 luapackagecpath	mod/mod_lua.html#luapackagecpath
 luapackagepath	mod/mod_lua.html#luapackagepath
 luaquickhandler	mod/mod_lua.html#luaquickhandler
@@ -521,6 +525,7 @@ sslproxycarevocationfile	mod/mod_ssl.html#sslproxycarevocationfile
 sslproxycarevocationpath	mod/mod_ssl.html#sslproxycarevocationpath
 sslproxycheckpeercn	mod/mod_ssl.html#sslproxycheckpeercn
 sslproxycheckpeerexpire	mod/mod_ssl.html#sslproxycheckpeerexpire
+sslproxycheckpeername	mod/mod_ssl.html#sslproxycheckpeername
 sslproxyciphersuite	mod/mod_ssl.html#sslproxyciphersuite
 sslproxyengine	mod/mod_ssl.html#sslproxyengine
 sslproxymachinecertificatechainfile	mod/mod_ssl.html#sslproxymachinecertificatechainfile

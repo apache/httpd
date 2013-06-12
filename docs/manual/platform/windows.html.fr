@@ -26,8 +26,6 @@
 <a href="../fr/platform/windows.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/platform/windows.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Ce document décrit l'installation, la configuration et
@@ -76,6 +74,15 @@
     pas en mesure de compiler le serveur HTTP Apache vous-même, vous
     pouvez vous procurer un paquet binaire auprès des nombreuses
     distributions disponibles sur Internet.</p>
+
+    <p>Quelques solutions populaires pour déployer Apache httpd, et
+    éventuellement PHP et MySQL sous Microsoft Windows :</p>
+    <ul>
+    <li><a href="http://www.apachehaus.com/cgi-bin/download.plx">ApacheHaus</a></li>
+    <li><a href="http://www.apachelounge.com/download/">Apache Lounge</a></li>
+    <li><a href="http://www.wampserver.com/">WampServer</a></li>
+    <li><a href="http://www.apachefriends.org/en/xampp.html">XAMPP</a></li>
+    </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="cust" id="cust">Personnaliser Apache pour Windows</a></h2>
