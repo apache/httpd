@@ -725,24 +725,28 @@ journal</td></tr>
 erreurs</td></tr>
 <tr class="odd"><td><a href="mod_lua.html#luaauthzprovider">LuaAuthzProvider provider_name /path/to/lua/script.lua function_name</a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Branche une fonction fournisseur d'autorisation dans <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>
 </td></tr>
-<tr><td><a href="mod_lua.html#luahookaccesschecker">LuaHookAccessChecker  /chemin/vers/lua/script.lua  hook_function_name [early|late]</a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Fournit un point d'entrée pour la phase access_checker du
+<tr><td><a href="mod_lua.html#luacodecache">LuaCodeCache stat|forever|never</a></td><td> stat </td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Configure the compiled code cache.</td></tr>
+<tr class="odd"><td><a href="mod_lua.html#luahookaccesschecker">LuaHookAccessChecker  /chemin/vers/lua/script.lua  hook_function_name [early|late]</a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Fournit un point d'entrée pour la phase access_checker du
 traitement de la requête</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luahookauthchecker">LuaHookAuthChecker  /chemin/vers/lua/script.lua hook_function_name [early|late]</a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Fournit un point d'entrée pour la phase auth_checker du
+<tr><td><a href="mod_lua.html#luahookauthchecker">LuaHookAuthChecker  /chemin/vers/lua/script.lua hook_function_name [early|late]</a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Fournit un point d'entrée pour la phase auth_checker du
 traitement de la requête</td></tr>
-<tr><td><a href="mod_lua.html#luahookcheckuserid">LuaHookCheckUserID  /chemin/vers/lua/script.lua hook_function_name [early|late]</a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Fournit un point d'entrée pour la phase check_user_id du
+<tr class="odd"><td><a href="mod_lua.html#luahookcheckuserid">LuaHookCheckUserID  /chemin/vers/lua/script.lua hook_function_name [early|late]</a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Fournit un point d'entrée pour la phase check_user_id du
 traitement de la requête</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luahookfixups">LuaHookFixups  /chemin/vers/lua/script.lua hook_function_name</a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Fournit un point d'entrée pour la phase de correction du
+<tr><td><a href="mod_lua.html#luahookfixups">LuaHookFixups  /chemin/vers/lua/script.lua hook_function_name</a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Fournit un point d'entrée pour la phase de correction du
 traitement de la requête</td></tr>
-<tr><td><a href="mod_lua.html#luahookinsertfilter">LuaHookInsertFilter  /chemin/vers/lua/script.lua hook_function_name</a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Fournit un point d'entrée pour la phase insert_filter du
+<tr class="odd"><td><a href="mod_lua.html#luahookinsertfilter">LuaHookInsertFilter  /chemin/vers/lua/script.lua hook_function_name</a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Fournit un point d'entrée pour la phase insert_filter du
 traitement de la requête</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luahookmaptostorage">LuaHookMapToStorage  /chemin/vers/lua/script.lua hook_function_name</a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Fournit un point d'entrée pour la phase map_to_storage du
+<tr><td><a href="mod_lua.html#luahookmaptostorage">LuaHookMapToStorage  /chemin/vers/lua/script.lua hook_function_name</a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Fournit un point d'entrée pour la phase map_to_storage du
 traitement de la requête</td></tr>
-<tr><td><a href="mod_lua.html#luahooktranslatename">LuaHookTranslateName  /chemin/vers/lua/script.lua  nom_fonction_hook [early|late]</a></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Fournit un point d'entrée à la phase du nom de
+<tr class="odd"><td><a href="mod_lua.html#luahooktranslatename">LuaHookTranslateName  /chemin/vers/lua/script.lua  nom_fonction_hook [early|late]</a></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Fournit un point d'entrée à la phase du nom de
 traduction du traitement de la requête</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luahooktypechecker">LuaHookTypeChecker  /chemin/vers/lua/script.lua hook_function_name</a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Fournit un point d'entrée pour la phase type_checker du
+<tr><td><a href="mod_lua.html#luahooktypechecker">LuaHookTypeChecker  /chemin/vers/lua/script.lua hook_function_name</a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Fournit un point d'entrée pour la phase type_checker du
 traitement de la requête</td></tr>
-<tr><td><a href="mod_lua.html#luainherit">LuaInherit none|parent-first|parent-last</a></td><td> parent-first </td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Contrôle la manière dont les sections de configuration
+<tr class="odd"><td><a href="mod_lua.html#luainherit">LuaInherit none|parent-first|parent-last</a></td><td> parent-first </td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Contrôle la manière dont les sections de configuration
 parentes sont fusionnées dans les enfants</td></tr>
+<tr><td><a href="mod_lua.html#luainputfilter">LuaInputFilter filter_name /path/to/lua/script.lua function_name</a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Provide a Lua function for content input filtering</td></tr>
+<tr class="odd"><td><a href="mod_lua.html#luamaphandler">LuaMapHandler uri-pattern /path/to/lua/script.lua [function-name]</a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Map a path to a lua handler</td></tr>
+<tr><td><a href="mod_lua.html#luaoutputfilter">LuaOutputFilter filter_name /path/to/lua/script.lua function_name</a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Provide a Lua function for content output filtering</td></tr>
 <tr class="odd"><td><a href="mod_lua.html#luapackagecpath">LuaPackageCPath /chemin/vers/include/?.soa</a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Ajoute un répertoire au package.cpath de lua</td></tr>
 <tr><td><a href="mod_lua.html#luapackagepath">LuaPackagePath /chemin/vers/include/?.lua</a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Ajoute un répertoire au package.path de lua</td></tr>
 <tr class="odd"><td><a href="mod_lua.html#luaquickhandler">LuaQuickHandler /path/to/script.lua hook_function_name</a></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Fournit un point d'entrée pour la gestion rapide du
