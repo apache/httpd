@@ -186,7 +186,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/r1488158
       trunk patch: http://svn.apache.org/r1488164
       2.4.x patch: trunk patch works modulo CHANGES
-      +1: minfrin
+      +1: minfrin, jim
 
     * rotatelogs: support -n number-of-files for circular set of filenames
       trunk patch: http://svn.apache.org/r1490493
@@ -208,13 +208,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/r1491479
                    http://svn.apache.org/r1491538
       2.4.x patch: trunk patch works
-      +1: jailletc36, rjung
+      +1: jailletc36, rjung, jim
 
     * mod_cache_socache: Use the name of the socache implementation when performing 
       a lookup rather than using the raw arguments. PR 55062
       trunk patch: http://svn.apache.org/r1491458
       2.4.x patch: trunk patch works
-      +1: minfrin, rjung
+      +1: minfrin, rjung, jim
 
 
 A list of further possible backports can be found at:                                                                                                                                   
