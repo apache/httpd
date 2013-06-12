@@ -95,13 +95,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
 
-    * mod_cache_socache: Use the name of the socache implementation when performing 
-      a lookup rather than using the raw arguments. PR 55062
-      trunk patch: http://svn.apache.org/r1491458
-      2.4.x patch: trunk patch works
-      +1: minfrin, rjung, jim
-
-
 
   * mod_auth_basic: Add a generic mechanism to fake basic authentication
     using the ap_expr parser. This allows the administrator to construct
