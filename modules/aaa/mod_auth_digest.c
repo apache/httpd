@@ -106,7 +106,8 @@ typedef struct digest_config_struct {
 #define NONCE_HASH_LEN  (2*APR_SHA1_DIGESTSIZE)
 #define NONCE_LEN       (int )(NONCE_TIME_LEN + NONCE_HASH_LEN)
 
-#define SECRET_LEN      20
+#define SECRET_LEN          20
+#define POOL_USERDATA_ID    "mod_auth_digest"
 
 
 /* client list definitions */
@@ -163,7 +164,7 @@ typedef union time_union {
     unsigned char arr[sizeof(apr_time_t)];
 } time_rec;
 
-static unsigned char secret[SECRET_LEN];
+static unsigned char *secret;
 
 /* client-list, opaque, and one-time-nonce stuff */
 
@@ -221,28 +222,43 @@ static apr_status_t cleanup_tables(void *not_used)
     return APR_SUCCESS;
 }
 
-static apr_status_t initialize_secret(server_rec *s)
+/*
+ * @param pool pool for userdata
+ * @param s server rec for logging, may be NULL
+ */
+static apr_status_t initialize_secret(apr_pool_t *pool, server_rec *s)
 {
     apr_status_t status;
+    void *userdata;
 
-    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, APLOGNO(01757)
-                 "generating secret for digest authentication ...");
+    apr_pool_userdata_get(&userdata, POOL_USERDATA_ID, pool);
+    if (userdata != NULL) {
+        secret = userdata;
+        return APR_SUCCESS;
+    }
+
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01757)
+                 "generating secret for digest authentication");
+
+    secret = apr_palloc(pool, SECRET_LEN);
 
 #if APR_HAS_RANDOM
-    status = apr_generate_random_bytes(secret, sizeof(secret));
+    status = apr_generate_random_bytes(secret, SECRET_LEN);
 #else
-#error APR random number support is missing; you probably need to install the truerand library.
+#error APR random number support is missing
 #endif
 
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, status, s, APLOGNO(01758)
                      "error generating secret");
+        secret = NULL;
         return status;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01759) "done");
+    apr_pool_userdata_set(secret, POOL_USERDATA_ID, apr_pool_cleanup_null,
+                          pool);
 
-    return APR_SUCCESS;
+    return status;
 }
 
 static void log_error_and_cleanup(char *msg, apr_status_t sts, server_rec *s)
@@ -369,9 +385,13 @@ static int initialize_module(apr_pool_t *p, apr_pool_t *plog,
     if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG)
         return OK;
 
-    if (initialize_secret(s) != APR_SUCCESS) {
+    /*
+     * If we haven't initialized the secret yet, we need to do it now in case
+     * the module is used in .htaccess.
+     */
+    if (secret == NULL
+        && initialize_secret(s->process->pool, s) != APR_SUCCESS)
         return !OK;
-    }
 
 #if APR_HAS_SHARED_MEMORY
     /* Note: this stuff is currently fixed for the lifetime of the server,
@@ -453,6 +473,21 @@ static void *create_digest_dir_config(apr_pool_t *p, char *dir)
 static const char *set_realm(cmd_parms *cmd, void *config, const char *realm)
 {
     digest_config_rec *conf = (digest_config_rec *) config;
+    int i;
+
+    /* pass NULL because cmd->server may not have a valid log config yet */
+    if (secret == NULL
+        && initialize_secret(cmd->server->process->pool, NULL) != APR_SUCCESS)
+        return "Could not get random numbers for secret";
+
+#ifdef AP_DEBUG
+    /* check that we got random numbers */
+    for (i = 0; i < SECRET_LEN; i++) {
+        if (secret[i] != 0)
+            break;
+    }
+    ap_assert(i < SECRET_LEN);
+#endif
 
     /* The core already handles the realm, but it's just too convenient to
      * grab it ourselves too and cache some setups. However, we need to
@@ -466,7 +501,7 @@ static const char *set_realm(cmd_parms *cmd, void *config, const char *realm)
      * and directives outside a virtual host section)
      */
     apr_sha1_init(&conf->nonce_ctx);
-    apr_sha1_update_binary(&conf->nonce_ctx, secret, sizeof(secret));
+    apr_sha1_update_binary(&conf->nonce_ctx, secret, SECRET_LEN);
     apr_sha1_update_binary(&conf->nonce_ctx, (const unsigned char *) realm,
                            strlen(realm));
 
