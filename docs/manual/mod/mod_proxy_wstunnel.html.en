@@ -26,7 +26,7 @@
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_proxy_wstunnel.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>wstunnel external process support module for
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Websockets support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>proxy_wstunnel_module</td></tr>
