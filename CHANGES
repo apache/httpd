@@ -1,4 +1,6 @@
                                                          -*- coding: utf-8 -*-
+  *) rotatelogs: add -n number-of-files option to roate through a number
+     of fixed-name logfiles. [Eric Covener]
 
 Changes with Apache 2.4.5
 

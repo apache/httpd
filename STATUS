@@ -90,11 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
  
-    * rotatelogs: support -n number-of-files for circular set of filenames
-      trunk patch: http://svn.apache.org/r1490493
-                   http://svn.apache.org/r1490761
-      2.4.x patch: trunk works + compat for manual
-      +1 covener, minfrin, jim
       
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
