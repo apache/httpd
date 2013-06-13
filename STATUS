@@ -90,25 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
  
-  * mod_proxy_wstunnel: Backport (copy) websocket tunnel proxy submodule
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1452911
-                 http://svn.apache.org/viewvc?view=revision&revision=1452949
-                 http://svn.apache.org/viewvc?view=revision&revision=1452954
-                 http://svn.apache.org/viewvc?view=revision&revision=1453022
-                 http://svn.apache.org/viewvc?view=revision&revision=1453574
-                 http://svn.apache.org/viewvc?view=revision&revision=1453875
-                 http://svn.apache.org/viewvc?view=revision&revision=1453876
-                 http://svn.apache.org/viewvc?view=revision&revision=1453963
-                 http://svn.apache.org/viewvc?view=revision&revision=1454386
-                 http://svn.apache.org/viewvc?view=revision&revision=1454414
-                 http://svn.apache.org/viewvc?view=revision&revision=1454415
-                 http://svn.apache.org/viewvc?view=revision&revision=1458285
-                 http://svn.apache.org/viewvc?view=revision&revision=1458447
-    2.4.x patch: http://people.apache.org/~jim/patches/wstunnel.patch
-    +1: jim, minfrin (with fix to mmn bump)
-    gsmith: Windows will need these as well, then +1
-            http://people.apache.org/~gsmith/httpd/diffs/wstunnel_winbits.diff
-
     * rotatelogs: support -n number-of-files for circular set of filenames
       trunk patch: http://svn.apache.org/r1490493
                    http://svn.apache.org/r1490761

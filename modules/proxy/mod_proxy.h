@@ -920,6 +920,46 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r,
                                         struct proxy_alias *ent,
                                         proxy_dir_conf *dconf);
 
+/**
+ * Create a HTTP request header brigade,  old_cl_val and old_te_val as required.
+ * @parama p              pool
+ * @param header_brigade  header brigade to use/fill
+ * @param r               request
+ * @param p_conn          proxy connection rec
+ * @param worker          selected worker
+ * @param conf            per-server proxy config
+ * @param uri             uri
+ * @param url             url
+ * @param server_portstr  port as string
+ * @param old_cl_val      stored old content-len val
+ * @param old_te_val      stored old TE val
+ * @return                OK or HTTP_EXPECTATION_FAILED
+ */
+PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
+                                           apr_bucket_brigade *header_brigade,
+                                           request_rec *r,
+                                           proxy_conn_rec *p_conn,
+                                           proxy_worker *worker,
+                                           proxy_server_conf *conf,
+                                           apr_uri_t *uri,
+                                           char *url, char *server_portstr,
+                                           char **old_cl_val,
+                                           char **old_te_val);
+
+/**
+ * @param bucket_alloc  bucket allocator
+ * @param r             request
+ * @param p_conn        proxy connection
+ * @param origin        connection rec of origin
+ * @param  bb           brigade to send to origin
+ * @param  flush        flush
+ * @return              status (OK)
+ */
+PROXY_DECLARE(int) ap_proxy_pass_brigade(apr_bucket_alloc_t *bucket_alloc,
+                                         request_rec *r, proxy_conn_rec *p_conn,
+                                         conn_rec *origin, apr_bucket_brigade *bb,
+                                         int flush);
+
 #define PROXY_LBMETHOD "proxylbmethod"
 
 /* The number of dynamic workers that can be added when reconfiguring.

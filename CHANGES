@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.5
 
+  *) mod_proxy: Support web-socket tunnels via mod_proxy_wstunnel.
+     [Jim Jagielski]
+
   *) mod_cache_socache: Use the name of the socache implementation when performing
      a lookup rather than using the raw arguments. [Martin Ksellmann
      <martin@ksellmann.de>]
