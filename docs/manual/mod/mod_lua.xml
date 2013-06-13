@@ -716,7 +716,13 @@ local escaped = r:escape(url) -- returns 'http%3a%2f%2ffoo.bar%2f1+2+3+%26+4+%2b
 r:unescape(string) -- Unescapes an URL-escaped string:
 
 local url = "http%3a%2f%2ffoo.bar%2f1+2+3+%26+4+%2b+5"
-local unescaped = r:escape(url) -- returns 'http://foo.bar/1 2 3 &amp; 4 + 5'
+local unescaped = r:unescape(url) -- returns 'http://foo.bar/1 2 3 &amp; 4 + 5'
+</highlight>
+
+<highlight language="lua">
+r:construct_url(string) -- Constructs an URL from an URI
+
+local url = r:construct_url(r.uri) 
 </highlight>
 
 <highlight language="lua">
@@ -863,7 +869,7 @@ r:state_query(string) -- Queries the server for state information
 </highlight>
 
 <highlight language="lua">
-r:stat(filename) -- Runs stat() on a file, and returns a table with file information:
+r:stat(filename [,wanted]) -- Runs stat() on a file, and returns a table with file information:
 
 local info = r:stat("/var/www/foo.txt")
 if info then
@@ -872,7 +878,7 @@ end
 </highlight>
 
 <highlight language="lua">
-r:regex(string, pattern, [flags]) -- Runs a regular expression match on a string, returning captures if matched:
+r:regex(string, pattern [,flags]) -- Runs a regular expression match on a string, returning captures if matched:
 
 local matches = r:regex("foo bar baz", [[foo (\w+) (\S*)]])
 if matches then
@@ -917,6 +923,45 @@ function handle(r)
     end
     r:puts("Cached data is: ", foo)
 end
+</highlight>
+
+<highlight language="lua">
+r:htpassword(string [,algorithm [,cost]]) -- Creates a password hash from a string.
+                                          -- algorithm: 0 = APMD5 (default), 1 = SHA, 2 = BCRYPT, 3 = CRYPT.
+                                          -- cost: only valid with BCRYPT algorithm (default = 5).
+</highlight>
+
+<highlight language="lua">
+r:mkdir(dir [,mode]) -- Creates a directory and sets mode to optional mode paramter.
+</highlight>
+
+<highlight language="lua">
+r:rmdir(dir) -- Removes a directory.
+</highlight>
+
+<highlight language="lua">
+r:get_direntries(dir) -- Returns a table with all directory entries.
+
+-- Return path splitted into components dir, file, ext
+function split_path(path)
+  return path:match("(.-)([^\\/]-%.?([^%.\\/]*))$")
+end
+
+function handle(r)
+  local cwd, _, _ = split_path(r.filename)
+  for _, f in ipairs(r:get_direntries(cwd)) do
+    local info = r:stat(cwd .. f)
+    if info then
+      local mtime = os.date(fmt, info.mtime / 1000000)
+      local ftype = (info.filetype == 2) and "[dir] " or "[file]"
+      r:puts( ("%s  %s %10i  %s\n"):format(ftype, mtime, info.size, f) )
+    end
+  end
+end
+</highlight>
+
+<highlight language="lua">
+r.date_parse_rfc(string) -- Parses a date/time string and returns seconds since epoche.
 </highlight>
 
 </section>
