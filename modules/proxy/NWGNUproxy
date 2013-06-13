@@ -251,7 +251,7 @@ install :: nlms FORCE
 
 vpath %.c ../arch/netware
 
-$(OBJDIR)/mod_proxy.imp:
+$(OBJDIR)/mod_proxy.imp: NWGNUproxy
 	@echo $(DL)GEN  $@$(DL)
 	@echo $(DL)# Exports of mod_proxy$(DL)> $@
 	@echo $(DL) (AP$(VERSION_MAJMIN))$(DL)>> $@
@@ -283,6 +283,7 @@ $(OBJDIR)/mod_proxy.imp:
 	@echo $(DL) ap_proxy_connect_to_backend,$(DL)>> $@
 	@echo $(DL) ap_proxy_connection_create,$(DL)>> $@
 	@echo $(DL) ap_proxy_cookie_reverse_map,$(DL)>> $@
+	@echo $(DL) ap_proxy_create_hdrbrgd,$(DL)>> $@
 	@echo $(DL) ap_proxy_define_balancer,$(DL)>> $@
 	@echo $(DL) ap_proxy_define_worker,$(DL)>> $@
 	@echo $(DL) ap_proxy_determine_connection,$(DL)>> $@
@@ -300,6 +301,7 @@ $(OBJDIR)/mod_proxy.imp:
 	@echo $(DL) ap_proxy_is_word,$(DL)>> $@
 	@echo $(DL) ap_proxy_location_reverse_map,$(DL)>> $@
 	@echo $(DL) ap_proxy_parse_wstatus,$(DL)>> $@
+	@echo $(DL) ap_proxy_pass_brigade,$(DL)>> $@
 	@echo $(DL) ap_proxy_post_request,$(DL)>> $@
 	@echo $(DL) ap_proxy_pre_http_request,$(DL)>> $@
 	@echo $(DL) ap_proxy_pre_request,$(DL)>> $@
