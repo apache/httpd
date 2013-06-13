@@ -85,6 +85,7 @@
   <modulefile>mod_proxy_html.xml.fr</modulefile>
   <modulefile>mod_proxy_http.xml.fr</modulefile>
   <modulefile>mod_proxy_scgi.xml.fr</modulefile>
+  <modulefile>mod_proxy_wstunnel.xml</modulefile>
   <modulefile>mod_ratelimit.xml.fr</modulefile>
   <modulefile>mod_reflector.xml.fr</modulefile>
   <modulefile>mod_remoteip.xml.fr</modulefile>
