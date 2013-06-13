@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_cache_socache: Make sure the CacheSocacheMaxSize directive is merged
+     correctly. [Jens Låås <jelaas gmail.com>]
+
   *) mod_auth_digest: Actually use the secret when generating nonces. This change
      may cause problems if used with round robin load balancers. PR 54637
      [Stefan Fritsch]
