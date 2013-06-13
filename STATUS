@@ -198,7 +198,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk patch works modulo CHANGES
       +1: jim
 
-    * mod_proxy: header clearing issues
+    * mod_proxy: Connection header clearing issues
       trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1481891
                    https://svn.apache.org/viewvc?view=revision&revision=1482075
                    https://svn.apache.org/viewvc?view=revision&revision=1482170
@@ -211,7 +211,29 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1482522
       2.4.x patch: trunk patch works modulo CHANGES and ap_mmn
       +1: 
-      
+
+    * mod_proxy: support Unix domain sockets
+      trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1451633
+                   https://svn.apache.org/viewvc?view=revision&revision=1451905
+                   https://svn.apache.org/viewvc?view=revision&revision=1451921
+                   https://svn.apache.org/viewvc?view=revision&revision=1452259
+                   https://svn.apache.org/viewvc?view=revision&revision=1453981
+      2.4.x patch: trunk patch works modulo CHANGES and ap_mmn
+      +1: 
+
+    * mod_proxy: Ensure network errors detected by the proxy are returned as
+      504 Gateway Timout as opposed to 502 Bad Gateway
+      trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1480058
+      2.4.x patch: trunk patch works modulo CHANGES
+      +1:
+
+    * mod_proxy: save DNS lookups
+      trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1462269
+                   https://svn.apache.org/viewvc?view=revision&revision=1463455
+      2.4.x patch: trunk patch works
+      +1:
+
+
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
