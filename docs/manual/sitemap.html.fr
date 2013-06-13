@@ -270,6 +270,7 @@ pour décrire les directives Apache</a></li>
 <li><a href="mod/mod_proxy_html.html">Module Apache mod_proxy_html</a></li>
 <li><a href="mod/mod_proxy_http.html">Module Apache mod_proxy_http</a></li>
 <li><a href="mod/mod_proxy_scgi.html">Module Apache mod_proxy_scgi</a></li>
+<li><a href="mod/mod_proxy_wstunnel.html">Module Apache mod_proxy_wstunnel</a></li>
 <li><a href="mod/mod_ratelimit.html">Module Apache mod_ratelimit</a></li>
 <li><a href="mod/mod_reflector.html">Module Apache mod_reflector</a></li>
 <li><a href="mod/mod_remoteip.html">Module Apache mod_remoteip</a></li>
