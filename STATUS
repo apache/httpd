@@ -192,7 +192,26 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk patch works modulo CHANGES
       +1: minfrin
 
+    * mod_proxy: protect pool usage w/ mutex.
+      trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1480627
+                   https://svn.apache.org/viewvc?view=revision&revision=1482859
+      2.4.x patch: trunk patch works modulo CHANGES
+      +1: jim
 
+    * mod_proxy: header clearing issues
+      trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1481891
+                   https://svn.apache.org/viewvc?view=revision&revision=1482075
+                   https://svn.apache.org/viewvc?view=revision&revision=1482170
+                   https://svn.apache.org/viewvc?view=revision&revision=1482555
+      2.4.x patch: trunk patch works modulo CHANGES and ap_mmn
+      +1: jim
+
+    * core: Stop the HTTP_IN filter from attempting to write error buckets
+      to the output filters
+      trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1482522
+      2.4.x patch: trunk patch works modulo CHANGES and ap_mmn
+      +1: 
+      
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
