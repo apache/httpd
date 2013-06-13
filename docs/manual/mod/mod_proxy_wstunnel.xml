@@ -23,7 +23,7 @@
 <modulesynopsis metafile="mod_proxy_wstunnel.xml.meta">
 
 <name>mod_proxy_wstunnel</name>
-<description>wstunnel external process support module for
+<description>Websockets support module for
 <module>mod_proxy</module></description>
 <status>Extension</status>
 <sourcefile>mod_proxy_wstunnel.c</sourcefile>
