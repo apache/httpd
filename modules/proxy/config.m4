@@ -20,6 +20,7 @@ proxy_fcgi_objs="mod_proxy_fcgi.lo"
 proxy_scgi_objs="mod_proxy_scgi.lo"
 proxy_fdpass_objs="mod_proxy_fdpass.lo"
 proxy_ajp_objs="mod_proxy_ajp.lo ajp_header.lo ajp_link.lo ajp_msg.lo ajp_utils.lo"
+proxy_wstunnel_objs="mod_proxy_wstunnel.lo"
 proxy_balancer_objs="mod_proxy_balancer.lo"
 
 case "$host" in
@@ -33,6 +34,7 @@ case "$host" in
     proxy_scgi_objs="$proxy_scgi_objs mod_proxy.la"
     proxy_fdpass_objs="$proxy_fdpass_objs mod_proxy.la"
     proxy_ajp_objs="$proxy_ajp_objs mod_proxy.la"
+    proxy_wstunnel_objs="$proxy_wstunnel_objs mod_proxy.la"
     proxy_balancer_objs="$proxy_balancer_objs mod_proxy.la"
     ;;
 esac
@@ -52,6 +54,7 @@ APACHE_MODULE(proxy_fdpass, Apache proxy to Unix Daemon Socket module.  Requires
     enable_proxy_fdpass=no
   fi
 ],proxy)
+APACHE_MODULE(proxy_wstunnel, Apache proxy Websocket Tunnel module.  Requires and is enabled by --enable-proxy., $proxy_wstunnel_objs, , $proxy_mods_enable,, proxy)
 APACHE_MODULE(proxy_ajp, Apache proxy AJP module.  Requires and is enabled by --enable-proxy., $proxy_ajp_objs, , $proxy_mods_enable,, proxy)
 APACHE_MODULE(proxy_balancer, Apache proxy BALANCER module.  Requires and is enabled by --enable-proxy., $proxy_balancer_objs, , $proxy_mods_enable,, proxy)
 
