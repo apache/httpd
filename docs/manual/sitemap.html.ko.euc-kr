@@ -251,6 +251,7 @@
 <li><a href="mod/mod_proxy_html.html">아파치 모듈 mod_proxy_html</a></li>
 <li><a href="mod/mod_proxy_http.html">아파치 모듈 mod_proxy_http</a></li>
 <li><a href="mod/mod_proxy_scgi.html">아파치 모듈 mod_proxy_scgi</a></li>
+<li><a href="mod/mod_proxy_wstunnel.html">아파치 모듈 mod_proxy_wstunnel</a></li>
 <li><a href="mod/mod_ratelimit.html">아파치 모듈 mod_ratelimit</a></li>
 <li><a href="mod/mod_reflector.html">아파치 모듈 mod_reflector</a></li>
 <li><a href="mod/mod_remoteip.html">아파치 모듈 mod_remoteip</a></li>

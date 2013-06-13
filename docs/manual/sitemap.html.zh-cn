@@ -252,6 +252,7 @@
 <li><a href="mod/mod_proxy_html.html">Apache 模块 mod_proxy_html</a></li>
 <li><a href="mod/mod_proxy_http.html">Apache 模块 mod_proxy_http</a></li>
 <li><a href="mod/mod_proxy_scgi.html">Apache 模块 mod_proxy_scgi</a></li>
+<li><a href="mod/mod_proxy_wstunnel.html">Apache 模块 mod_proxy_wstunnel</a></li>
 <li><a href="mod/mod_ratelimit.html">Apache 模块 mod_ratelimit</a></li>
 <li><a href="mod/mod_reflector.html">Apache 模块 mod_reflector</a></li>
 <li><a href="mod/mod_remoteip.html">Apache 模块 mod_remoteip</a></li>
