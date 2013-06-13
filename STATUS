@@ -90,23 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
  
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
-
-
-  * mod_auth_basic: Add a generic mechanism to fake basic authentication
-    using the ap_expr parser. This allows the administrator to construct
-    their own username and password for basic authentication based on their
-    needs. Alternative fix for PR52616.
-    trunk patch: http://svn.apache.org/r1457471
-                 http://svn.apache.org/r1457504
-                 http://svn.apache.org/r1462266
-                 http://svn.apache.org/r1468581
-    2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_auth_basic-fake4.patch
-    +1: minfrin, jim
-
   * mod_proxy_wstunnel: Backport (copy) websocket tunnel proxy submodule
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1452911
                  http://svn.apache.org/viewvc?view=revision&revision=1452949
@@ -125,6 +108,29 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: jim, minfrin (with fix to mmn bump)
     gsmith: Windows will need these as well, then +1
             http://people.apache.org/~gsmith/httpd/diffs/wstunnel_winbits.diff
+
+    * rotatelogs: support -n number-of-files for circular set of filenames
+      trunk patch: http://svn.apache.org/r1490493
+                   http://svn.apache.org/r1490761
+      2.4.x patch: trunk works + compat for manual
+      +1 covener, minfrin, jim
+      
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+
+
+  * mod_auth_basic: Add a generic mechanism to fake basic authentication
+    using the ap_expr parser. This allows the administrator to construct
+    their own username and password for basic authentication based on their
+    needs. Alternative fix for PR52616.
+    trunk patch: http://svn.apache.org/r1457471
+                 http://svn.apache.org/r1457504
+                 http://svn.apache.org/r1462266
+                 http://svn.apache.org/r1468581
+    2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_auth_basic-fake4.patch
+    +1: minfrin, jim
 
     * skiplist: Add skiplist functionality
       trunk patches: https://svn.apache.org/r1411190
@@ -190,12 +196,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk patch works modulo CHANGES
       +1: minfrin, jim
 
-    * rotatelogs: support -n number-of-files for circular set of filenames
-      trunk patch: http://svn.apache.org/r1490493
-                   http://svn.apache.org/r1490761
-      2.4.x patch: trunk works + compat for manual
-      +1 covener, minfrin
-      
     * core: Allow strtoul
       trunk patch: http://svn.apache.org/r1491155
       2.4.x patch: trunk patch works
