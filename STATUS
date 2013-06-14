@@ -179,7 +179,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       correctly.
       trunk patch: http://svn.apache.org/r1492663
       2.4.x patch: trunk patch works modulo CHANGES
-      +1: minfrin
+      +1: minfrin, covener
 
     * mod_proxy: protect pool usage w/ mutex.
       trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1480627
