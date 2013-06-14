@@ -179,7 +179,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       sf: Because it is only annoying and serves no purpose anymore. If you
           want, we can make it a minor MMN bump for adding a "new" API.
       +1: sf, covener
-      -1: nd, jim
+      -1: nd, jim (+1 iff we do a MMN bump)
 
     * mod_cache_socache: Make sure the CacheSocacheMaxSize directive is merged
       correctly.
