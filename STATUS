@@ -174,12 +174,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * core: Allow strtoul
       trunk patch: http://svn.apache.org/r1491155
-      2.4.x patch: trunk patch works
-      nd: why would you do that in a stable branch?
-      sf: Because it is only annoying and serves no purpose anymore. If you
-          want, we can make it a minor MMN bump for adding a "new" API.
-      +1: sf, covener
-      -1: nd, jim (+1 iff we do a MMN bump)
+      2.4.x patch: http://people.apache.org/~sf/PR55077.diff
+      +1: sf, jim
 
     * mod_cache_socache: Make sure the CacheSocacheMaxSize directive is merged
       correctly.
