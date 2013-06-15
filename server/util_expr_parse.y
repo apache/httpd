@@ -38,48 +38,48 @@
     int        num;
 }
 
-%token  T_TRUE
-%token  T_FALSE
+%token  T_TRUE                      "true"
+%token  T_FALSE                     "false"
 
-%token  T_EXPR_BOOL
-%token  T_EXPR_STRING
+%token  T_EXPR_BOOL                 "boolean expression"
+%token  T_EXPR_STRING               "string expression"
 
-%token  <cpVal> T_ERROR
+%token  <cpVal> T_ERROR             "error token"
 
-%token  <cpVal> T_DIGIT
-%token  <cpVal> T_ID
-%token  <cpVal> T_STRING
-%token  <cpVal> T_REGEX
-%token  <cpVal> T_REGEX_I
-%token  <num>   T_REGEX_BACKREF
-%token  <cpVal> T_OP_UNARY
-%token  <cpVal> T_OP_BINARY
+%token  <cpVal> T_DIGIT             "number"
+%token  <cpVal> T_ID                "identifier"
+%token  <cpVal> T_STRING            "cstring"
+%token  <cpVal> T_REGEX             "regex"
+%token  <cpVal> T_REGEX_I           "case-indendent regex"
+%token  <num>   T_REGEX_BACKREF     "regex back reference"
+%token  <cpVal> T_OP_UNARY          "unary operator"
+%token  <cpVal> T_OP_BINARY         "binary operator"
 
-%token  T_STR_BEGIN
-%token  T_STR_END
-%token  T_VAR_BEGIN
-%token  T_VAR_END
+%token  T_STR_BEGIN                 "start of string"
+%token  T_STR_END                   "end of string"
+%token  T_VAR_BEGIN                 "start of variable name"
+%token  T_VAR_END                   "end of variable name"
 
-%token  T_OP_EQ
-%token  T_OP_NE
-%token  T_OP_LT
-%token  T_OP_LE
-%token  T_OP_GT
-%token  T_OP_GE
-%token  T_OP_REG
-%token  T_OP_NRE
-%token  T_OP_IN
-%token  T_OP_STR_EQ
-%token  T_OP_STR_NE
-%token  T_OP_STR_LT
-%token  T_OP_STR_LE
-%token  T_OP_STR_GT
-%token  T_OP_STR_GE
-%token  T_OP_CONCAT
+%token  T_OP_EQ                     "integer equal"
+%token  T_OP_NE                     "integer not equal"
+%token  T_OP_LT                     "integer less than"
+%token  T_OP_LE                     "integer less or equal"
+%token  T_OP_GT                     "integer greater than"
+%token  T_OP_GE                     "integer greater or equal"
+%token  T_OP_REG                    "regex match"
+%token  T_OP_NRE                    "regex non-match"
+%token  T_OP_IN                     "contained in"
+%token  T_OP_STR_EQ                 "string equal"
+%token  T_OP_STR_NE                 "string not equal"
+%token  T_OP_STR_LT                 "string less than"
+%token  T_OP_STR_LE                 "string less or equal"
+%token  T_OP_STR_GT                 "string greater than"
+%token  T_OP_STR_GE                 "string greater or equal"
+%token  T_OP_CONCAT                 "string concatenation"
 
-%token  T_OP_OR
-%token  T_OP_AND
-%token  T_OP_NOT
+%token  T_OP_OR                     "logical or"
+%token  T_OP_AND                    "logical and"
+%token  T_OP_NOT                    "logical not"
 
 %right  T_OP_OR
 %right  T_OP_AND
@@ -88,16 +88,16 @@
 
 %type   <exVal>   expr
 %type   <exVal>   comparison
-%type   <exVal>   strfunccall
-%type   <exVal>   lstfunccall
+%type   <exVal>   strfunccall   "function"
+%type   <exVal>   lstfunccall   "listfunction"
 %type   <exVal>   regex
 %type   <exVal>   words
 %type   <exVal>   wordlist
 %type   <exVal>   word
 %type   <exVal>   string
-%type   <exVal>   strpart
-%type   <exVal>   var
-%type   <exVal>   backref
+%type   <exVal>   strpart       "stringpart"
+%type   <exVal>   var           "variable"
+%type   <exVal>   backref       "rebackref"
 
 %{
 #include "util_expr_private.h"
