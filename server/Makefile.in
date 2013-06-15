@@ -101,8 +101,10 @@ util_expr_scan.c util_expr_parse.c util_expr_parse.h: util_expr_scan.l util_expr
 	    -o $(builddir)/util_expr_parse.c $(srcdir)/util_expr_parse.y
 	flex -Pap_expr_yy -o $(builddir)/util_expr_scan.c $(srcdir)/util_expr_scan.l
 	set -e ; \
+	builddir_uc=$$(echo "$(builddir)"|tr a-z/.- A-Z___ ) ; \
 	for f in util_expr_scan.c util_expr_parse.c util_expr_parse.h ; do \
-		sed -e "s|\"$(builddir)/|\"|g" < $(builddir)/$$f > \
+		sed -e "s|\"$(builddir)/|\"|g" -e "s|$$builddir_uc||g" \
+			< $(builddir)/$$f > \
 			$(builddir)/$$f.$$$$ && \
 		mv $(builddir)/$$f.$$$$ $(builddir)/$$f ; \
 	done
