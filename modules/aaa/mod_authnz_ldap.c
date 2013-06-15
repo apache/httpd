@@ -1443,7 +1443,7 @@ static const char *mod_auth_ldap_set_deref(cmd_parms *cmd, void *config, const c
         sec->deref = always;
     }
     else {
-        return "Unrecognized value for AuthLDAPAliasDereference directive";
+        return "Unrecognized value for AuthLDAPDereferenceAliases directive";
     }
     return NULL;
 }
