@@ -30,8 +30,8 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef YY_AP_EXPR_YY_HOME_STF_APACHE_HTTPD_TRUNK_SERVER_UTIL_EXPR_PARSE_H_INCLUDED
-# define YY_AP_EXPR_YY_HOME_STF_APACHE_HTTPD_TRUNK_SERVER_UTIL_EXPR_PARSE_H_INCLUDED
+#ifndef YY_AP_EXPR_YY_UTIL_EXPR_PARSE_H_INCLUDED
+# define YY_AP_EXPR_YY_UTIL_EXPR_PARSE_H_INCLUDED
 /* Enabling traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -120,4 +120,4 @@ int ap_expr_yyparse ();
 #endif
 #endif /* ! YYPARSE_PARAM */
 
-#endif /* !YY_AP_EXPR_YY_HOME_STF_APACHE_HTTPD_TRUNK_SERVER_UTIL_EXPR_PARSE_H_INCLUDED  */
+#endif /* !YY_AP_EXPR_YY_UTIL_EXPR_PARSE_H_INCLUDED  */

@@ -95,8 +95,8 @@
 
 /* In a future release of Bison, this section will be replaced
    by #include "util_expr_parse.h".  */
-#ifndef YY_AP_EXPR_YY_HOME_STF_APACHE_HTTPD_TRUNK_SERVER_UTIL_EXPR_PARSE_H_INCLUDED
-# define YY_AP_EXPR_YY_HOME_STF_APACHE_HTTPD_TRUNK_SERVER_UTIL_EXPR_PARSE_H_INCLUDED
+#ifndef YY_AP_EXPR_YY_UTIL_EXPR_PARSE_H_INCLUDED
+# define YY_AP_EXPR_YY_UTIL_EXPR_PARSE_H_INCLUDED
 /* Enabling traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -185,7 +185,7 @@ int ap_expr_yyparse ();
 #endif
 #endif /* ! YYPARSE_PARAM */
 
-#endif /* !YY_AP_EXPR_YY_HOME_STF_APACHE_HTTPD_TRUNK_SERVER_UTIL_EXPR_PARSE_H_INCLUDED  */
+#endif /* !YY_AP_EXPR_YY_UTIL_EXPR_PARSE_H_INCLUDED  */
 
 /* Copy the second part of user declarations.  */
 /* Line 390 of yacc.c  */
