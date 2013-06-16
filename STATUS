@@ -128,6 +128,25 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                      https://svn.apache.org/r1463046
       2.4.x patch: trunk patches work
       +1: jim
+      sf comments (did not do a full review, though):
+      - The description of the proposal is misleading. The above commits add
+        the eventopt MPM. Do we really need another MPM in 2.4? Shouldn't we
+        merge the optimizations into event, instead?
+      - The skiplist API lacks documentation.
+      - ap_skiplist_alloc()/ap_skiplist_free() should at least have a free list
+        for sizeof(ap_skiplistnode) sized items. Otherwise it will leak lots of
+        memory.
+      - There does not seem to be any need for structs ap_skiplist and
+        ap_skiplistnode to be public. I would be in favor of making them
+        private to skiplist.c to allow changing implementation details later
+        without breaking compatibility.
+      - register_timed_callback is intended to be used from different threads.
+        The g_timer_skiplist_mtx mutex ensures that access to the skiplist
+        itself is serialized. However, the skiplist is created using pchild
+        and will allocate from that pool, but other use of pchild outside of
+        the skiplist is not protected by g_timer_skiplist_mtx. You must either
+        use a sub-pool or document why using pchild is save (I don't think it
+        is).
 
 
     * core, mod_ssl: Lift the restriction that prevents mod_ssl taking
