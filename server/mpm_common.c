@@ -70,6 +70,8 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(mpm)
     APR_HOOK_LINK(mpm_query)
     APR_HOOK_LINK(mpm_register_timed_callback)
+    APR_HOOK_LINK(mpm_register_socket_callback)
+    APR_HOOK_LINK(mpm_unregister_socket_callback)
     APR_HOOK_LINK(mpm_get_name)
     APR_HOOK_LINK(end_generation)
     APR_HOOK_LINK(child_status)
@@ -83,6 +85,8 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(mpm)
     APR_HOOK_LINK(mpm_query)
     APR_HOOK_LINK(mpm_register_timed_callback)
+    APR_HOOK_LINK(mpm_register_socket_callback)
+    APR_HOOK_LINK(mpm_unregister_socket_callback)
     APR_HOOK_LINK(mpm_get_name)
     APR_HOOK_LINK(end_generation)
     APR_HOOK_LINK(child_status)
@@ -102,6 +106,13 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(int, mpm_query,
 AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_register_timed_callback,
                             (apr_time_t t, ap_mpm_callback_fn_t *cbfn, void *baton),
                             (t, cbfn, baton), APR_ENOTIMPL)
+AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_register_socket_callback,
+                            (apr_socket_t **s, apr_pool_t *p, int for_read, ap_mpm_callback_fn_t *cbfn, void *baton),
+                            (s, p, for_read, cbfn, baton), APR_ENOTIMPL)
+AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_unregister_socket_callback,
+                            (apr_socket_t **s, apr_pool_t *p),
+                            (s, p), APR_ENOTIMPL)
+
 AP_IMPLEMENT_HOOK_VOID(end_generation,
                        (server_rec *s, ap_generation_t gen),
                        (s, gen))
@@ -531,6 +542,14 @@ void ap_core_child_status(server_rec *s, pid_t pid,
 AP_DECLARE(apr_status_t) ap_mpm_register_timed_callback(apr_time_t t, ap_mpm_callback_fn_t *cbfn, void *baton)
 {
     return ap_run_mpm_register_timed_callback(t, cbfn, baton);
+}
+AP_DECLARE(apr_status_t) ap_mpm_register_socket_callback(apr_socket_t **s, apr_pool_t *p, int for_read, ap_mpm_callback_fn_t *cbfn, void *baton)
+{
+    return ap_run_mpm_register_socket_callback(s, p, for_read, cbfn, baton);
+}
+AP_DECLARE(apr_status_t) ap_mpm_unregister_socket_callback(apr_socket_t **s, apr_pool_t *p)
+{
+    return ap_run_mpm_unregister_socket_callback(s, p);
 }
 
 AP_DECLARE(const char *)ap_show_mpm(void)

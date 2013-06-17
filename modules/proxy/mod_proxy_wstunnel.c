@@ -15,8 +15,126 @@
  */
 
 #include "mod_proxy.h"
+#include "ap_mpm.h"
 
 module AP_MODULE_DECLARE_DATA proxy_wstunnel_module;
+
+typedef struct ws_baton_t {
+    request_rec *r;
+    proxy_conn_rec *proxy_connrec;
+    apr_socket_t *server_soc;
+    apr_socket_t *client_soc;
+    apr_pollset_t *pollset;
+    apr_bucket_brigade *bb;
+    int is_client;
+    apr_pool_t *subpool;
+} ws_baton_t;
+
+static int proxy_wstunnel_transfer(request_rec *r, conn_rec *c_i, conn_rec *c_o,
+                                     apr_bucket_brigade *bb, char *name);
+
+static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout) {
+    int client_error = 0;
+    request_rec *r = baton->r;
+    conn_rec *c = r->connection;
+    proxy_conn_rec *conn = baton->proxy_connrec;
+    apr_socket_t *sock = conn->sock;
+    conn_rec *backconn = conn->connection;
+    const apr_pollfd_t *signalled;
+    apr_int32_t pollcnt, pi;
+    apr_int16_t pollevent;
+    apr_pollset_t *pollset = baton->pollset;
+    apr_socket_t *client_socket = baton->client_soc;
+    apr_status_t rv;
+    apr_bucket_brigade *bb = baton->bb;
+
+    while(1) { 
+        if ((rv = apr_pollset_poll(pollset, timeout, &pollcnt, &signalled))
+                != APR_SUCCESS) {
+            if (APR_STATUS_IS_EINTR(rv)) {
+                continue;
+            }
+            else if (APR_STATUS_IS_TIMEUP(rv)) { 
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "Attempting to go asynch");
+                return SUSPENDED;
+            }
+            else { 
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(02444) "error apr_poll()");
+                return HTTP_INTERNAL_SERVER_ERROR;
+            }
+        }
+
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02445)
+                "woke from poll(), i=%d", pollcnt);
+
+        for (pi = 0; pi < pollcnt; pi++) {
+            const apr_pollfd_t *cur = &signalled[pi];
+
+            if (cur->desc.s == sock) {
+                pollevent = cur->rtnevents;
+                if (pollevent & APR_POLLIN) {
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02446)
+                            "sock was readable");
+                    rv = proxy_wstunnel_transfer(r, backconn, c, bb, "sock");
+                }
+                else if ((pollevent & APR_POLLERR)
+                        || (pollevent & APR_POLLHUP)) {
+                    rv = APR_EPIPE;
+                    ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO(02447)
+                            "err/hup on backconn");
+                }
+                if (rv != APR_SUCCESS)
+                    client_error = 1;
+            }
+            else if (cur->desc.s == client_socket) {
+                pollevent = cur->rtnevents;
+                if (pollevent & APR_POLLIN) {
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02448)
+                            "client was readable");
+                    rv = proxy_wstunnel_transfer(r, c, backconn, bb, "client");
+                }
+            }
+            else {
+                rv = APR_EBADF;
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02449)
+                        "unknown socket in pollset");
+            }
+
+        }
+        if (rv != APR_SUCCESS) {
+            break;
+        }
+
+    }
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+            "finished with poll() - cleaning up");
+
+    if (client_error) {
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+    return OK;
+}
+
+static void proxy_wstunnel_callback(void *b) { 
+    int status;
+    ws_baton_t *baton = (ws_baton_t*)b;
+    apr_thread_mutex_lock(baton->r->invoke_mtx);
+    apr_pool_clear(baton->subpool);
+    status = proxy_wstunnel_pump(baton, apr_time_from_sec(5));
+    if (status == SUSPENDED) {
+        apr_socket_t *sockets[3] = {baton->client_soc,  baton->server_soc, NULL};
+        ap_mpm_register_socket_callback(sockets, baton->subpool, 1, proxy_wstunnel_callback, baton);
+    }
+    else {
+        apr_socket_t *sockets[3] = {baton->client_soc,  baton->server_soc, NULL};
+        ap_mpm_unregister_socket_callback(sockets, baton->subpool);
+        apr_thread_mutex_unlock(baton->r->invoke_mtx);
+        ap_finalize_request_protocol(baton->r);
+        ap_process_request_after_handler(baton->r);
+        return;
+    }
+    apr_thread_mutex_unlock(baton->r->invoke_mtx);
+}
 
 /*
  * Canonicalise http-like URLs.
@@ -172,13 +290,9 @@ static int ap_proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
     apr_status_t rv = APR_SUCCESS;
     apr_pollset_t *pollset;
     apr_pollfd_t pollfd;
-    const apr_pollfd_t *signalled;
-    apr_int32_t pollcnt, pi;
-    apr_int16_t pollevent;
     conn_rec *c = r->connection;
     apr_socket_t *sock = conn->sock;
     conn_rec *backconn = conn->connection;
-    int client_error = 0;
     char *buf;
     apr_bucket_brigade *header_brigade;
     apr_bucket *e;
@@ -186,6 +300,8 @@ static int ap_proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
     char *old_te_val = NULL;
     apr_bucket_brigade *bb = apr_brigade_create(p, c->bucket_alloc);
     apr_socket_t *client_socket = ap_get_conn_socket(c);
+    ws_baton_t *baton = apr_pcalloc(r->pool, sizeof(ws_baton_t));
+    int status;
 
     header_brigade = apr_brigade_create(p, backconn->bucket_alloc);
 
@@ -240,66 +356,35 @@ static int ap_proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
 
     remove_reqtimeout(r->input_filters);
 
-    while (1) { /* Infinite loop until error (one side closes the connection) */
-        if ((rv = apr_pollset_poll(pollset, -1, &pollcnt, &signalled))
-            != APR_SUCCESS) {
-            if (APR_STATUS_IS_EINTR(rv)) {
-                continue;
-            }
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(02444) "error apr_poll()");
+    baton->r = r;
+    baton->pollset = pollset;
+    baton->client_soc = client_socket;
+    baton->server_soc = sock;
+    baton->proxy_connrec = conn;
+    baton->bb = bb;
+    apr_pool_create(&baton->subpool, r->pool);
+
+    status = proxy_wstunnel_pump(baton, apr_time_from_sec(5)); 
+    if (status == SUSPENDED) {
+        apr_socket_t *sockets[3] = {baton->client_soc,  baton->server_soc, NULL};
+        status = ap_mpm_register_socket_callback(sockets, baton->subpool, 1, proxy_wstunnel_callback, baton);
+        if (status == APR_SUCCESS) { 
+            return SUSPENDED;
+        }
+        else if (status == APR_ENOTIMPL) { 
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "No asynch support");
+            status = proxy_wstunnel_pump(baton, -1);
+        }
+        else { 
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+                          "error creating websosckets tunnel");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02445)
-                      "woke from poll(), i=%d", pollcnt);
-
-        for (pi = 0; pi < pollcnt; pi++) {
-            const apr_pollfd_t *cur = &signalled[pi];
-
-            if (cur->desc.s == sock) {
-                pollevent = cur->rtnevents;
-                if (pollevent & APR_POLLIN) {
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02446)
-                                  "sock was readable");
-                    rv = proxy_wstunnel_transfer(r, backconn, c, bb, "sock");
-                    }
-                else if ((pollevent & APR_POLLERR)
-                         || (pollevent & APR_POLLHUP)) {
-                         rv = APR_EPIPE;
-                         ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO(02447)
-                                       "err/hup on backconn");
-                }
-                if (rv != APR_SUCCESS)
-                    client_error = 1;
-            }
-            else if (cur->desc.s == client_socket) {
-                pollevent = cur->rtnevents;
-                if (pollevent & APR_POLLIN) {
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02448)
-                                  "client was readable");
-                    rv = proxy_wstunnel_transfer(r, c, backconn, bb, "client");
-                }
-            }
-            else {
-                rv = APR_EBADF;
-                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02449)
-                              "unknown socket in pollset");
-            }
-
-        }
-        if (rv != APR_SUCCESS) {
-            break;
-        }
     }
 
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                  "finished with poll() - cleaning up");
-
-    if (client_error) {
-        return HTTP_INTERNAL_SERVER_ERROR;
-    }
-    return OK;
-}
-
+    return status;
+}    
+    
 /*
  */
 static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
@@ -378,7 +463,9 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
     }
 
     /* Do not close the socket */
-    ap_proxy_release_connection(scheme, backend, r->server);
+    if (status != SUSPENDED) { 
+        ap_proxy_release_connection(scheme, backend, r->server);
+    }
     return status;
 }
 
