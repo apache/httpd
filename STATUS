@@ -243,6 +243,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk patch works
       +1:
 
+    * mod_socache_shmcb.c: Remove arbitrary restriction on shared memory size
+      previously limited to 64MB.
+      trunk patch: http://svn.apache.org/r1493921
+                   http://svn.apache.org/r1493925
+      2.4.x patch: trunk patch works modulo CHANGES
+      +1: minfrin
+
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
