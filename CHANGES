@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_socache_shmcb.c: Remove arbitrary restriction on shared memory size
+     previously limited to 64MB. [Jens Låås <jelaas gmail.com>]
+
   *) mod_cache_socache: Make sure the CacheSocacheMaxSize directive is merged
      correctly. [Jens Låås <jelaas gmail.com>]
 
