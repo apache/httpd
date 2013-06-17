@@ -30,7 +30,7 @@
 
 #include "ap_socache.h"
 
-#define SHMCB_MAX_SIZE (64 * 1024 * 1024)
+#define SHMCB_MAX_SIZE APR_SIZE_MAX
 
 #define DEFAULT_SHMCB_PREFIX "socache-shmcb-"
 
