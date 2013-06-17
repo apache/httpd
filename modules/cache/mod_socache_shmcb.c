@@ -316,11 +316,9 @@ static const char *socache_shmcb_create(ap_socache_instance_t **context,
         }
 
         if (ctx->shm_size >= SHMCB_MAX_SIZE) {
-            return apr_psprintf(tmp,
-                                "Invalid argument: size has "
-                                "to be < %d bytes on this platform",
-                                SHMCB_MAX_SIZE);
-
+            return apr_psprintf(tmp, "Invalid argument: size has "
+                    "to be < %" APR_SIZE_T_FMT " bytes on this platform",
+                    SHMCB_MAX_SIZE);
         }
     }
     else if (cp2 >= path && *cp2 == ')') {
