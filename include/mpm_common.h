@@ -409,6 +409,13 @@ AP_DECLARE_HOOK(int, mpm_query, (int query_code, int *result, apr_status_t *rv))
 AP_DECLARE_HOOK(apr_status_t, mpm_register_timed_callback,
                 (apr_time_t t, ap_mpm_callback_fn_t *cbfn, void *baton))
 
+/* register the specified callback */
+AP_DECLARE_HOOK(apr_status_t, mpm_register_socket_callback,
+                (apr_socket_t **s, apr_pool_t *p, int for_read, ap_mpm_callback_fn_t *cbfn, void *baton))
+/* unregister the specified callback */
+AP_DECLARE_HOOK(apr_status_t, mpm_unregister_socket_callback,
+                (apr_socket_t **s, apr_pool_t *p))
+
 /* get MPM name (e.g., "prefork" or "event") */
 AP_DECLARE_HOOK(const char *,mpm_get_name,(void))
 

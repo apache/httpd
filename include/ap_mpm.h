@@ -167,6 +167,29 @@ AP_DECLARE(apr_status_t) ap_mpm_register_timed_callback(apr_time_t t,
                                                        ap_mpm_callback_fn_t *cbfn,
                                                        void *baton);
 
+/**
+ * Register a callback on the readability or writability on a group of sockets
+ * @param s Null-terminated list of sockets
+ * @param p pool for use between registration and callback
+ * @param for_read Whether the sockets are monitored for read or writability
+ * @param cbfn The callback function
+ * @param baton userdata for the callback function
+ * @return APR_SUCCESS if all sockets could be added to a pollset, 
+ * APR_ENOTIMPL if no asynch support, or an apr_pollset_add error.
+ * @remark When activity is found on any 1 socket in the list, all are removed 
+ * from the pollset and only 1 callback is issued.
+ * @fn apr_status_t (p_mpm_register_socket_callback(apr_socket_t **s, apr_pool_t *p, int for_read, ap_mpm_callback_fn_t *cbfn, void *baton)
+ */
+
+AP_DECLARE(apr_status_t) ap_mpm_register_socket_callback(apr_socket_t **s,
+                                                         apr_pool_t *p,
+                                                         int for_read, 
+                                                         ap_mpm_callback_fn_t *cbfn,
+                                                         void *baton);
+
+AP_DECLARE(apr_status_t) ap_mpm_unregister_socket_callback(apr_socket_t **s, 
+                                                           apr_pool_t *p);
+
 typedef enum mpm_child_status {
     MPM_CHILD_STARTED,
     MPM_CHILD_EXITED,
