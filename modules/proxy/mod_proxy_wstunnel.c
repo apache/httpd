@@ -118,15 +118,16 @@ static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout) {
 static void proxy_wstunnel_callback(void *b) { 
     int status;
     ws_baton_t *baton = (ws_baton_t*)b;
+    apr_socket_t *sockets[3] = {NULL, NULL, NULL};
     apr_thread_mutex_lock(baton->r->invoke_mtx);
     apr_pool_clear(baton->subpool);
     status = proxy_wstunnel_pump(baton, apr_time_from_sec(5));
+    sockets[0] = baton->client_soc;
+    sockets[1] = baton->server_soc;
     if (status == SUSPENDED) {
-        apr_socket_t *sockets[3] = {baton->client_soc,  baton->server_soc, NULL};
         ap_mpm_register_socket_callback(sockets, baton->subpool, 1, proxy_wstunnel_callback, baton);
     }
     else {
-        apr_socket_t *sockets[3] = {baton->client_soc,  baton->server_soc, NULL};
         ap_mpm_unregister_socket_callback(sockets, baton->subpool);
         apr_thread_mutex_unlock(baton->r->invoke_mtx);
         ap_finalize_request_protocol(baton->r);
@@ -301,6 +302,7 @@ static int ap_proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
     apr_bucket_brigade *bb = apr_brigade_create(p, c->bucket_alloc);
     apr_socket_t *client_socket = ap_get_conn_socket(c);
     ws_baton_t *baton = apr_pcalloc(r->pool, sizeof(ws_baton_t));
+    apr_socket_t *sockets[3] = {NULL, NULL, NULL};
     int status;
 
     header_brigade = apr_brigade_create(p, backconn->bucket_alloc);
@@ -366,7 +368,8 @@ static int ap_proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
 
     status = proxy_wstunnel_pump(baton, apr_time_from_sec(5)); 
     if (status == SUSPENDED) {
-        apr_socket_t *sockets[3] = {baton->client_soc,  baton->server_soc, NULL};
+        sockets[0] = baton->client_soc;
+        sockets[1] = baton->server_soc;
         status = ap_mpm_register_socket_callback(sockets, baton->subpool, 1, proxy_wstunnel_callback, baton);
         if (status == APR_SUCCESS) { 
             return SUSPENDED;
