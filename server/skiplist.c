@@ -25,6 +25,33 @@
 
 #include "ap_skiplist.h"
 
+struct ap_skiplist {
+    ap_skiplist_compare compare;
+    ap_skiplist_compare comparek;
+    int height;
+    int preheight;
+    int size;
+    ap_skiplistnode *top;
+    ap_skiplistnode *bottom;
+    /* These two are needed for appending */
+    ap_skiplistnode *topend;
+    ap_skiplistnode *bottomend;
+    ap_skiplist *index;
+    apr_pool_t *pool;
+};
+
+struct ap_skiplistnode {
+    void *data;
+    ap_skiplistnode *next;
+    ap_skiplistnode *prev;
+    ap_skiplistnode *down;
+    ap_skiplistnode *up;
+    ap_skiplistnode *previndex;
+    ap_skiplistnode *nextindex;
+    ap_skiplist *sl;
+};
+
+
 #ifndef MIN
 #define MIN(a,b) ((a<b)?(a):(b))
 #endif
