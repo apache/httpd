@@ -416,6 +416,7 @@
  * 20120211.20 (2.4.5-dev) Add dirwalk_stat hook.
  * 20120211.21 (2.4.5-dev) Add in ap_proxy_create_hdrbrgd() and
  *                         ap_proxy_pass_brigade()
+ * 20120211.22 (2.4.5-dev) No longer prevent usage of strtoul()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -423,7 +424,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 21                   /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 22                   /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

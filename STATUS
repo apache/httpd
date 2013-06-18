@@ -90,10 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
  
-    * core: Allow strtoul
-      trunk patch: http://svn.apache.org/r1491155
-      2.4.x patch: http://people.apache.org/~sf/PR55077.diff
-      +1: sf, jim, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
