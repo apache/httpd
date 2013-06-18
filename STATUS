@@ -207,6 +207,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/r1493925
       2.4.x patch: trunk patch works modulo CHANGES
       +1: minfrin, jim
+      sf notes: I think a number of variables need to be changed from int to
+                apr_size_t, including subcache_size, subcache_data_offset,
+                subcache_data_size, total, cache_total. 
+                AIUI, especially cache_total starts to go wrong if the cache
+                gets larger than 4GB (UINT_MAX). Maybe set the limit at
+                MIN(APR_SIZE_MAX,UINT_MAX) until this is fixed?
 
 
 A list of further possible backports can be found at:                                                                                                                                   
