@@ -199,14 +199,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1462269
                    https://svn.apache.org/viewvc?view=revision&revision=1463455
       2.4.x patch: trunk patch works
-      +1:
+      +1: jim
 
     * mod_socache_shmcb.c: Remove arbitrary restriction on shared memory size
       previously limited to 64MB.
       trunk patch: http://svn.apache.org/r1493921
                    http://svn.apache.org/r1493925
       2.4.x patch: trunk patch works modulo CHANGES
-      +1: minfrin
+      +1: minfrin, jim
 
 
 A list of further possible backports can be found at:                                                                                                                                   
