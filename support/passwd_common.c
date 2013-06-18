@@ -44,6 +44,10 @@
 #include <io.h>
 #endif
 
+#ifdef _MSC_VER
+#define write _write
+#endif
+
 apr_file_t *errfile;
 
 int abort_on_oom(int rc)
