@@ -2249,6 +2249,7 @@ static void child_main(int child_num_arg)
     thread_starter *ts;
     apr_threadattr_t *thread_attr;
     apr_thread_t *start_thread_id;
+    apr_pool_t *pskip;
 
     mpm_state = AP_MPMQ_STARTING;       /* for benefit of any hooks that run as this
                                          * child initializes
@@ -2266,7 +2267,8 @@ static void child_main(int child_num_arg)
 
     apr_thread_mutex_create(&g_timer_skiplist_mtx, APR_THREAD_MUTEX_DEFAULT, pchild);
     APR_RING_INIT(&timer_free_ring, timer_event_t, link);
-    ap_skiplist_init(&timer_skiplist, pchild);
+    apr_pool_create(&pskip, pchild);
+    ap_skiplist_init(&timer_skiplist, pskip);
     ap_skiplist_set_compare(timer_skiplist, indexing_comp, indexing_compk);
     ap_run_child_init(pchild, ap_server_conf);
 
