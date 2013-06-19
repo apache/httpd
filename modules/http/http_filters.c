@@ -1538,7 +1538,7 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer,
 
         rv = ap_pass_brigade(r->output_filters, bb);
         if (APR_SUCCESS != rv) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, rv, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, rv, r, APLOGNO(02484)
                           "Error while writing error response");
         }
 
