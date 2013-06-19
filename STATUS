@@ -212,6 +212,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 AIUI, especially cache_total starts to go wrong if the cache
                 gets larger than 4GB (UINT_MAX). Maybe set the limit at
                 MIN(APR_SIZE_MAX,UINT_MAX) until this is fixed?
+      minfrin: Surely we should just fix these unsigned ints? Not sure what value
+               there would be in trying to bake in an arbitrary limit in the mean
+               time when we can just fix the underlying problem instead.
 
 
 A list of further possible backports can be found at:                                                                                                                                   
