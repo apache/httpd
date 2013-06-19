@@ -1421,7 +1421,7 @@ static int socache_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                 &conf->provider->socache_instance, conf->provider->args, ptmp,
                 pconf);
         if (errmsg) {
-            ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, plog,
+            ap_log_perror(APLOG_MARK, APLOG_CRIT, 0, plog,
                     APLOGNO(02392) "%s", errmsg);
             return 500; /* An HTTP status would be a misnomer! */
         }
