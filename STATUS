@@ -95,7 +95,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
 
-
   * mod_auth_basic: Add a generic mechanism to fake basic authentication
     using the ap_expr parser. This allows the administrator to construct
     their own username and password for basic authentication based on their
@@ -220,6 +219,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/r1488496
       2.4.x patch: http://people.apache.org/~fuankg/diffs/2.4.x-passwd_common.diff
       +1: fuankg, gsmith
+
+    * mod_cache_socache: Fix warning "variable 'rv' may be used uninitialized
+      in this function" (which is correct here).
+      trunk patch: http://svn.apache.org/r1494536
+      2.4.x patch: trunk patch works
+      +1: rjung
 
 
 A list of further possible backports can be found at:                                                                                                                                   
