@@ -90,6 +90,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+    * mod_cache_socache: Fix warning "variable 'rv' may be used uninitialized
+      in this function" (which is correct here).
+      trunk patch: http://svn.apache.org/r1494536
+      2.4.x patch: trunk patch works
+      +1: rjung, minfrin, fuankg
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -212,12 +218,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 AIUI, especially cache_total starts to go wrong if the cache
                 gets larger than 4GB (UINT_MAX). Maybe set the limit at
                 MIN(APR_SIZE_MAX,UINT_MAX) until this is fixed?
-
-    * mod_cache_socache: Fix warning "variable 'rv' may be used uninitialized
-      in this function" (which is correct here).
-      trunk patch: http://svn.apache.org/r1494536
-      2.4.x patch: trunk patch works
-      +1: rjung, minfrin
 
 
 A list of further possible backports can be found at:                                                                                                                                   
