@@ -37,6 +37,7 @@ struct ap_skiplist {
     ap_skiplistnode *topend;
     ap_skiplistnode *bottomend;
     ap_skiplist *index;
+    apr_array_header_t *memlist;
     apr_pool_t *pool;
 };
 
@@ -50,7 +51,6 @@ struct ap_skiplistnode {
     ap_skiplistnode *nextindex;
     ap_skiplist *sl;
 };
-
 
 #ifndef MIN
 #define MIN(a,b) ((a<b)?(a):(b))
@@ -68,10 +68,56 @@ static int get_b_rand(void)
     return ((randseq & (1 << (ph - 1))) >> (ph - 1));
 }
 
+typedef struct {
+    size_t size;
+    apr_array_header_t *list;
+} memlist_t;
+
+typedef struct {
+    void *ptr;
+    char inuse;
+} chunk_t;
+
 AP_DECLARE(void *) ap_skiplist_alloc(ap_skiplist *sl, size_t size)
 {
     if (sl->pool) {
-        return apr_pcalloc(sl->pool, size);
+        void *ptr;
+        int found_size = 0;
+        chunk_t *newchunk;
+        memlist_t *memlist = (memlist_t *)sl->memlist->elts;
+        for (int i = 0; i < sl->memlist->nelts; i++) {
+            if (memlist->size == size) {
+                found_size = 1;
+                chunk_t *chunk = (chunk_t *)memlist->list->elts;
+                for (int j = 0; j < memlist->list->nelts; j++) {
+                    if (!chunk->inuse) {
+                        chunk->inuse = 1;
+                        return chunk->ptr;
+                    }
+                    chunk++;
+                }
+                break; /* no free of this size; punt */
+            }
+            memlist++;
+        }
+        /* no free chunks */
+        ptr = apr_pcalloc(sl->pool, size);
+        if (!ptr) {
+            return ptr;
+        }
+        /*
+         * is this a new sized chunk? If so, we need to create a new
+         * array of them. Otherwise, re-use what we already have.
+         */
+        if (!found_size) {
+            memlist = apr_array_push(sl->memlist);
+            memlist->size = size;
+            memlist->list = apr_array_make(sl->pool, 20, sizeof(chunk_t));
+        }
+        newchunk = apr_array_push(memlist->list);
+        newchunk->ptr = ptr;
+        newchunk->inuse = 1;
+        return ptr;
     }
     else {
         return ap_calloc(1, size);
@@ -83,6 +129,20 @@ AP_DECLARE(void) ap_skiplist_free(ap_skiplist *sl, void *mem)
     if (!sl->pool) {
         free(mem);
     }
+    else {
+        memlist_t *memlist = (memlist_t *)sl->memlist->elts;
+        for (int i = 0; i < sl->memlist->nelts; i++) {
+            chunk_t *chunk = (chunk_t *)memlist->list->elts;
+            for (int j = 0; j < memlist->list->nelts; j++) {
+                if (chunk->ptr == mem) {
+                    chunk->inuse = 0;
+                    return;
+                }
+                chunk++;
+            }
+            memlist++;
+        }
+    }
 }
 
 static apr_status_t skiplisti_init(ap_skiplist **s, apr_pool_t *p)
@@ -90,6 +150,7 @@ static apr_status_t skiplisti_init(ap_skiplist **s, apr_pool_t *p)
     ap_skiplist *sl;
     if (p) {
         sl = apr_pcalloc(p, sizeof(ap_skiplist));
+        sl->memlist = apr_array_make(p, 20, sizeof(memlist_t));
     }
     else {
         sl = ap_calloc(1, sizeof(ap_skiplist));
