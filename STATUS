@@ -224,7 +224,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       in this function" (which is correct here).
       trunk patch: http://svn.apache.org/r1494536
       2.4.x patch: trunk patch works
-      +1: rjung
+      +1: rjung, minfrin
 
 
 A list of further possible backports can be found at:                                                                                                                                   
