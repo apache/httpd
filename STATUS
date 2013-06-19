@@ -214,6 +214,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 gets larger than 4GB (UINT_MAX). Maybe set the limit at
                 MIN(APR_SIZE_MAX,UINT_MAX) until this is fixed?
 
+    * passwd_common.[c|h]: sync with trunk to silent compiler warnings.
+      trunk patch: http://svn.apache.org/r1481677
+                   http://svn.apache.org/r1494317
+                   http://svn.apache.org/r1488496
+      2.4.x patch: http://people.apache.org/~fuankg/diffs/2.4.x-passwd_common.diff
+      +1: fuankg
+
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
