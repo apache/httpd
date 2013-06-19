@@ -833,7 +833,6 @@ static int process_pollop(pollset_op_t *op)
  */
 static int start_lingering_close(event_conn_state_t *cs, ap_equeue_t *eq)
 {
-    apr_status_t rv;
     int ret = 1;
 
     apr_socket_t *csd = ap_get_conn_socket(cs->c);
@@ -849,7 +848,7 @@ static int start_lingering_close(event_conn_state_t *cs, ap_equeue_t *eq)
 
 #ifdef AP_DEBUG
     {
-        rv = apr_socket_timeout_set(csd, 0);
+        apr_status_t rv = apr_socket_timeout_set(csd, 0);
         AP_DEBUG_ASSERT(rv == APR_SUCCESS);
     }
 #else
