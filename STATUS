@@ -219,7 +219,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/r1494317
                    http://svn.apache.org/r1488496
       2.4.x patch: http://people.apache.org/~fuankg/diffs/2.4.x-passwd_common.diff
-      +1: fuankg
+      +1: fuankg, gsmith
 
 
 A list of further possible backports can be found at:                                                                                                                                   
