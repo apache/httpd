@@ -89,6 +89,13 @@ RELEASE SHOWSTOPPERS:
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
+
+    * passwd_common.[c|h]: sync with trunk to silent compiler warnings.
+      trunk patch: http://svn.apache.org/r1481677
+                   http://svn.apache.org/r1494317
+                   http://svn.apache.org/r1488496
+      2.4.x patch: http://people.apache.org/~fuankg/diffs/2.4.x-passwd_common.diff
+      +1: fuankg, gsmith, minfrin
  
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -212,13 +219,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 AIUI, especially cache_total starts to go wrong if the cache
                 gets larger than 4GB (UINT_MAX). Maybe set the limit at
                 MIN(APR_SIZE_MAX,UINT_MAX) until this is fixed?
-
-    * passwd_common.[c|h]: sync with trunk to silent compiler warnings.
-      trunk patch: http://svn.apache.org/r1481677
-                   http://svn.apache.org/r1494317
-                   http://svn.apache.org/r1488496
-      2.4.x patch: http://people.apache.org/~fuankg/diffs/2.4.x-passwd_common.diff
-      +1: fuankg, gsmith, minfrin
 
     * mod_cache_socache: Fix warning "variable 'rv' may be used uninitialized
       in this function" (which is correct here).
