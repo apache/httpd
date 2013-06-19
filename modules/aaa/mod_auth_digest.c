@@ -445,9 +445,9 @@ static void *create_digest_dir_config(apr_pool_t *p, char *dir)
 static const char *set_realm(cmd_parms *cmd, void *config, const char *realm)
 {
     digest_config_rec *conf = (digest_config_rec *) config;
+#ifdef AP_DEBUG
     int i;
 
-#ifdef AP_DEBUG
     /* check that we got random numbers */
     for (i = 0; i < SECRET_LEN; i++) {
         if (secret[i] != 0)
