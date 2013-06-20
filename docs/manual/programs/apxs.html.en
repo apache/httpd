@@ -213,6 +213,11 @@
       <dd>This option passes <var>linker-flags</var> as additional
       flags to the <code>libtool --mode=link</code> command. Use this
       to add local linker-specific options.</dd>
+
+      <dt><code>-p</code></dt>
+      <dd>This option causes apxs to link against the apr/apr-util libraries.
+      This is useful when compiling helper programs that use the apr/apr-util
+      libraries.</dd>
       </dl>
     
 
