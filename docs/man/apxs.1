@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "APXS" 1 "2012-01-09" "Apache HTTP Server" "apxs"
+.TH "APXS" 1 "2013-06-20" "Apache HTTP Server" "apxs"
 
 .SH NAME
 apxs \- APache eXtenSion tool
@@ -139,6 +139,9 @@ This option passes \fIcompiler-flags\fR as additional flags to the libtool --mod
 .TP
 -Wl,\fIlinker-flags\fR
 This option passes \fIlinker-flags\fR as additional flags to the libtool --mode=link command\&. Use this to add local linker-specific options\&.  
+.TP
+-p
+This option causes apxs to link against the apr/apr-util libraries\&. This is useful when compiling helper programs that use the apr/apr-util libraries\&.  
   
 .SS "DSO Installation and Configuration Options"
   
