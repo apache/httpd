@@ -26,6 +26,8 @@
 <a href="../ko/programs/apxs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/apxs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
     <p><code>apxs</code> est un utilitaire permettant de compiler et
     d'installer des modules en tant qu'extensions du serveur HTTP
