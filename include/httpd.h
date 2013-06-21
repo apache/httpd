@@ -1921,7 +1921,7 @@ AP_DECLARE(char *) ap_pregsub(apr_pool_t *p, const char *input,
  * @param nmatch the nmatch returned from ap_pregex
  * @param pmatch the pmatch array returned from ap_pregex
  * @param maxlen the maximum string length to return, 0 for unlimited
- * @return The substituted string, or NULL on error
+ * @return APR_SUCCESS if successful, APR_ENOMEM or other error code otherwise.
  */
 AP_DECLARE(apr_status_t) ap_pregsub_ex(apr_pool_t *p, char **result,
                                        const char *input, const char *source,
