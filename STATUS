@@ -106,6 +106,17 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                   (20130412 - updated to not use static var - thx, wrowe)
      +1: druggeri, minfrin. wrowe
 
+  * mod_ssl: Catch missing, mismatched or encrypted client cert/key pairs
+    with SSLProxyMachineCertificateFile/Path directives. PR 52212, PR 54698.
+    (check at startup, to prevent segfaults at proxy request time)
+    trunk patches: https://svn.apache.org/r1374214
+                   https://svn.apache.org/r1374216
+                   https://svn.apache.org/r1375445
+                   https://svn.apache.org/r1467593
+    2.4.x patch: https://people.apache.org/~kbrand/PR52212_54698_2.4.x.patch
+    2.2.x patch: https://people.apache.org/~kbrand/PR52212_54698_2.2.x.patch
+    +1: kbrand, minfrin, wrowe
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -177,18 +188,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1465839
     2.4.x patch: http://people.apache.org/~druggeri/patches/httpd-2.4.x-failontimeout.patch
     2.2.x patch: http://people.apache.org/~druggeri/patches/httpd-2.2.x-failontimeout.patch
-    +1: druggeri
-
-  * mod_ssl: Catch missing, mismatched or encrypted client cert/key pairs
-    with SSLProxyMachineCertificateFile/Path directives. PR 52212, PR 54698.
-    (check at startup, to prevent segfaults at proxy request time)
-    trunk patches: https://svn.apache.org/r1374214
-                   https://svn.apache.org/r1374216
-                   https://svn.apache.org/r1375445
-                   https://svn.apache.org/r1467593
-    2.4.x patch: https://people.apache.org/~kbrand/PR52212_54698_2.4.x.patch
-    2.2.x patch: https://people.apache.org/~kbrand/PR52212_54698_2.2.x.patch
-    +1: kbrand, minfrin
+    +1: druggeri, wrowe
 
   * mod_dav: Make sure that when we prepare an If URL for Etag comparison,     
     we compare unencoded paths. PR 53910
