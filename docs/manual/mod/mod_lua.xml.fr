@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1490095:1495665 (outdated) -->
+<!-- English Revision : 1495666 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -770,14 +770,20 @@ local hash = r:sha1("This is a test") -- returns a54d88e06612d820bc3be72877c74f2
 r:escape(string) -- Echappe une cha&icirc;ne de type URL.
 
 local url = "http://foo.bar/1 2 3 &amp; 4 + 5"
-local escaped = r:escape(url) -- returns 'http%3a%2f%2ffoo.bar%2f1+2+3+%26+4+%2b+5'
+local escaped = r:escape(url) -- renvoie 'http%3a%2f%2ffoo.bar%2f1+2+3+%26+4+%2b+5'
 </highlight>
 
 <highlight language="lua">
 r:unescape(string) -- D&eacute;s&eacute;chappe une cha&icirc;ne de type URL.
 
 local url = "http%3a%2f%2ffoo.bar%2f1+2+3+%26+4+%2b+5"
-local unescaped = r:escape(url) -- returns 'http://foo.bar/1 2 3 &amp; 4 + 5'
+local unescaped = r:unescape(url) -- renvoie 'http://foo.bar/1 2 3 &amp; 4 + 5'
+</highlight>
+
+<highlight language="lua">
+r:construct_url(string) -- Construit une URL &agrave; partir d'un URI
+
+local url = r:construct_url(r.uri)
 </highlight>
 
 <highlight language="lua">
@@ -946,7 +952,7 @@ r:state_query(string) -- Interroge le serveur &agrave; propos de son
 </highlight>
 
 <highlight language="lua">
-r:stat(filename) -- Ex&eacute;cute stat() sur un fichier, et renvoie
+r:stat(filename [,wanted]) -- Ex&eacute;cute stat() sur un fichier, et renvoie
 une table contenant des informations &agrave; propos de ce fichier.
 
 local info = r:stat("/var/www/foo.txt")
@@ -956,7 +962,7 @@ end
 </highlight>
 
 <highlight language="lua">
-r:regex(string, pattern, [drapeaux]) -- Ex&eacute;cute une recherche &agrave; base
+r:regex(string, pattern [,flags]) -- Ex&eacute;cute une recherche &agrave; base
 d'expression rationnelle sur une cha&icirc;ne, et renvoie les
 &eacute;ventuelles correspondances trouv&eacute;es.
 
@@ -1012,6 +1018,52 @@ function handle(r)
     end
     r:puts("La donn&eacute;e en cache est : ", foo)
 end			
+</highlight>
+<highlight language="lua">
+r:htpassword(string [,algorithm [,cost]]) -- G&eacute;n&egrave;re un hash de mot de passe &agrave; partir d'une cha&icirc;ne.
+                                          -- algorithm: 0 = APMD5 (d&eacute;faut), 1 = SHA, 2 = BCRYPT, 3 = CRYPT.
+                                          -- cost: ne s'utilise qu'avec l'algorythme BCRYPT (d&eacute;faut = 5).
+</highlight>
+
+<highlight language="lua">
+r:mkdir(dir [,mode]) -- Cr&eacute;e un r&eacute;pertoire et d&eacute;finit son mode via le param&egrave;tre optionnel mode.
+</highlight>
+
+<highlight language="lua">
+r:mkrdir(dir [,mode]) -- Cr&eacute;e des r&eacute;pertoires de mani&egrave;re r&eacute;cursive et d&eacute;finit leur mode via le param&egrave;tre optionnel mode.
+</highlight>
+
+<highlight language="lua">
+r:rmdir(dir) -- Supprime un r&eacute;pertoire.
+</highlight>
+
+<highlight language="lua">
+r:touch(file [,mtime]) -- D&eacute;finit la date de modification d'un fichier &agrave; la date courante ou &agrave; la valeur optionnelle mtime en msec.
+</highlight>
+
+<highlight language="lua">
+r:get_direntries(dir) -- Renvoie une table contenant toutes les entr&eacute;es de r&eacute;pertoires.
+
+-- Renvoie un chemin sous forme &eacute;clat&eacute;e en chemin, fichier, extension
+function split_path(path)
+  return path:match("(.-)([^\\/]-%.?([^%.\\/]*))$")
+end
+
+function handle(r)
+  local cwd, _, _ = split_path(r.filename)
+  for _, f in ipairs(r:get_direntries(cwd)) do
+    local info = r:stat(cwd .. f)
+    if info then
+      local mtime = os.date(fmt, info.mtime / 1000000)
+      local ftype = (info.filetype == 2) and "[dir] " or "[file]"
+      r:puts( ("%s  %s %10i  %s\n"):format(ftype, mtime, info.size, f) )
+    end
+  end
+end
+</highlight>
+
+<highlight language="lua">
+r.date_parse_rfc(string) -- Interpr&egrave;te une cha&icirc;ne date/heure et renvoie l'&eacute;quivalent en secondes depuis epoche.
 </highlight>
 
 </section>
