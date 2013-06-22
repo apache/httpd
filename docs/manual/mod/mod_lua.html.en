@@ -1027,7 +1027,7 @@ r:rmdir(dir) -- Removes a directory.
 
 
 <pre class="prettyprint lang-lua">
-r:touch([mtime]) -- Sets the file modification time to current time or to optional mtime msec value.
+r:touch(file [,mtime]) -- Sets the file modification time to current time or to optional mtime msec value.
 </pre>
 
 
