@@ -1017,7 +1017,17 @@ r:mkdir(dir [,mode]) -- Creates a directory and sets mode to optional mode param
 
 
 <pre class="prettyprint lang-lua">
+r:mkrdir(dir [,mode]) -- Creates directories recursive and sets mode to optional mode paramter.
+</pre>
+
+
+<pre class="prettyprint lang-lua">
 r:rmdir(dir) -- Removes a directory.
+</pre>
+
+
+<pre class="prettyprint lang-lua">
+r:touch([mtime]) -- Sets the file modification time to current time or to optional mtime msec value.
 </pre>
 
 
