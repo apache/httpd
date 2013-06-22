@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1174747:1494953 (outdated) -->
+<!-- English Revision : 1494953 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -237,6 +237,11 @@
       tant qu'options suppl&eacute;mentaires &agrave; la commande <code>libtool
       --mode=link</code>. Vous pouvez l'utiliser pour ajouter des
       options locales sp&eacute;cifiques &agrave; l'&eacute;diteur de liens.</dd>
+      
+      <dt><code>-p</code></dt>
+      <dd>Avec cette option, apxs effectue l'&eacute;dition de liens avec les
+      biblioth&egrave;ques apr/apr-util. Elle permet de compiler les programmes
+      helper qui utilisent les biblioth&egrave;ques apr/apr-util.</dd>
       </dl>
     </section>
 

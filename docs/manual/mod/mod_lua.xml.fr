@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1477001:1493935 (outdated) -->
+<!-- English Revision : 1493935 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -52,6 +52,15 @@ ce qu'il passe au stade stable, et ce m&ecirc;me entre deux versions stables
 2.4.x. N'oublez pas de consulter le fichier CHANGES avant toute mise &agrave;
 jour.</note>
 
+<note type="warning"><title>Avertissement</title>
+<p>Ce module poss&egrave;de une grande capacit&eacute; d'action sur le fonctrionnement
+de httpd, ce qui lui conf&egrave;re une grande puissance, mais peut aussi
+induire un risque de s&eacute;curit&eacute;. Il est d&eacute;conseill&eacute; d'utiliser ce module
+sur un serveur partag&eacute; avec des utilisateurs auxquels vous ne pouvez pas
+accorder une confiance absolue, car il peut permettre de modifier le
+fonctionnement interne de httpd.</p>
+</note>
+
 </summary>
 
 <section id="basicconf"><title>Configuration de base</title>
@@ -76,11 +85,10 @@ Ceci aura pour effet de faire traiter les requ&ecirc;tes pour les fichiers
 dont l'extension est <code>.lua</code> par <code>mod_lua</code> en
 invoquant cette fonction de <code>gestion</code> de fichier.
 </p>
-<!--
+
 <p>Pour plus de d&eacute;tails, voir la directive
 <directive>LuaMapHandler</directive>.
  </p>
--->
 </section>
 
 <section id="writinghandlers"><title>Ecrire des gestionnaires</title>
@@ -96,7 +104,7 @@ le style de CGI. Une fonction de gestionnaire se pr&eacute;sente comme suit :</p
 
 
 <highlight language="lua">
-<strong>example.lua</strong>
+<strong>example.lua</strong><br/>
 -- exemple de gestionnaire
 
 require "string"
@@ -108,20 +116,28 @@ require "string"
 --]]
 function handle(r)
     r.content_type = "text/plain"
-    r:puts("Hello Lua World!\n")
 
     if r.method == 'GET' then
+    	r:puts("Hello Lua World!\n")
         for k, v in pairs( r:parseargs() ) do
             r:puts( string.format("%s: %s\n", k, v) )
-         end
+        end
     elseif r.method == 'POST' then
+    	r:puts("Hello Lua World!\n")
         for k, v in pairs( r:parsebody() ) do
             r:puts( string.format("%s: %s\n", k, v) )
         end
-	
     else
+    elseif r.method == 'PUT' then
+-- message d'erreur personnalis&eacute;
         r:puts("Unsupported HTTP method " .. r.method)
+	r.status = 405
+        return apache2.ok
+    else
+-- message d'erreur ErrorDocument
+        return 501
     end
+    return apache2.OK
 end
 </highlight>
 
@@ -198,19 +214,100 @@ LuaAuthzProvider foo authz_provider.lua authz_check_foo
 les scripts Lua) participent au traitement des requ&ecirc;tes. Chaque type
 d'accroche propos&eacute; par le serveur a un r&ocirc;le sp&eacute;cifique, comme
 l'association de requ&ecirc;tes au syst&egrave;me de fichiers, le contr&ocirc;le d'acc&egrave;s,
-ou la d&eacute;finition de types MIME. Il existe aussi des accroches &agrave; usage
-g&eacute;n&eacute;ral qui s'ex&eacute;cutent simplement &agrave; des moments opportuns du cycle
-de vie de la requ&ecirc;te.</p>
+ou la d&eacute;finition de types MIME : </p>
 
-<p>Les fonctions d'accroche acceptent l'objet de la requ&ecirc;te comme seul
-et unique argument. Elles peuvent renvoyer une valeur, selon la
-fonction, mais il s'agit en g&eacute;n&eacute;ral d'un
+<table border="1" style="zebra">
+    <tr>
+        <th>Phase d'accroche</th>
+        <th>Directive mod_lua</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>Gestionnaire rapide</td>
+        <td><directive module="mod_lua">LuaQuickHandler</directive></td>
+        <td>Il s'agit de la premi&egrave;re accroche appel&eacute;e lorsqu'une requ&ecirc;te
+	a &eacute;t&eacute; associ&eacute;e &agrave; un serveur ou un serveur virtuel.</td>
+    </tr>
+    <tr>
+        <td>Phase de traduction</td>
+        <td><directive module="mod_lua">LuaHookTranslateName</directive></td>
+        <td>Cette phase traduit l'URI de la requ&ecirc;te en nom de fichier
+	sur le syst&egrave;me. Ce sont des modules comme
+	<module>mod_alias</module> et <module>mod_rewrite</module> qui
+	interviennent au cours de cette phase.</td>
+    </tr>
+    <tr>
+        <td>Choix du lieu de stockage de la ressource</td>
+        <td><directive module="mod_lua">LuaHookMapToStorage</directive></td>
+        <td>Cette phase d&eacute;finit le lieu de stockage de la ressource :
+	physique, en cache ou externe/mandat&eacute;. Elle est assur&eacute;e par les
+	modules de mandat ou de mise en cache.</td>
+    </tr>
+    <tr>
+        <td>Autorisation d'acc&egrave;s</td>
+        <td><directive module="mod_lua">LuaHookAccessChecker</directive></td>
+        <td>Cette phase v&eacute;rifie si un client a l'autorisation d'acc&egrave;s &agrave;
+	la ressource. Elle s'ex&eacute;cute avant l'authentification de
+	l'utisateur ; il faut donc &ecirc;tre prudent.
+        </td>
+    </tr>
+    <tr>
+        <td>V&eacute;rification de l'identifiant utilisateur</td>
+        <td><directive module="mod_lua">LuaHookCheckUserID</directive></td>
+        <td>Cette phase v&eacute;rifie l'identifiant de l'utilisateur ayant
+	fait l'objet d'une n&eacute;gociation.</td>
+    </tr>
+    <tr>
+        <td>V&eacute;rification de l'autorisation d'acc&egrave;s</td>
+        <td><directive module="mod_lua">LuaHookAuthChecker</directive>
+	ou
+            <directive module="mod_lua">LuaAuthzProvider</directive></td>
+        <td>Cette phase v&eacute;rifie l'autorisation d'acc&egrave;s d'un utilisateur
+	en fonction des ses param&egrave;tres de connexion, comme
+	l'identifiant, le certificat, etc...
+        </td>
+    </tr>
+    <tr>
+        <td>V&eacute;rification du type de la ressource</td>
+        <td><directive module="mod_lua">LuaHookTypeChecker</directive></td>
+        <td>Cette phase assigne un type de contenu et un gestionnaire &agrave;
+	la ressource.</td>
+    </tr>
+    <tr>
+        <td>Derniers r&eacute;glages</td>
+        <td><directive module="mod_lua">LuaHookFixups</directive></td>
+        <td>C'est la derni&egrave;re phase avant l'activation des gestionnaires
+	de contenu. Toute modification de derni&egrave;re minute &agrave; la requ&ecirc;te
+	doit &ecirc;tre effectu&eacute;e ici.</td>
+    </tr>
+    <tr>
+        <td>Gestionnaire de contenu</td>
+        <td>fichiers fx. <code>.lua</code> ou directive <directive module="mod_lua">LuaMapHandler</directive></td>
+        <td>C'est durant cette phase que le contenu est trait&eacute;. Les
+	fichiers sont lus, interpr&eacute;t&eacute;s, certains sont ex&eacute;cut&eacute;s, et le
+	r&eacute;sultat obtenu est envoy&eacute; au client.</td>
+    </tr>
+    <tr>
+        <td>Journalisation</td>
+        <td>aucune</td>
+        <td>Lorsqu'une requ&ecirc;te a &eacute;t&eacute; trait&eacute;e, plusieurs phases de
+	journalisation interviennent, et enregistrent leurs r&eacute;sultats
+	dans les fichiers d'erreur ou d'acc&egrave;s.</td>
+    </tr>
+
+</table>
+
+<p>Les fonctions d'accroche re&ccedil;oivent l'objet de la requ&ecirc;te comme seul
+argument (sauf LuaAuthzProvider qui re&ccedil;oit aussi des arguments en
+provenance de la directive Require). Elles peuvent renvoyer une valeur,
+selon la fonction, mais il s'agit en g&eacute;n&eacute;ral d'un
 code d'&eacute;tat HTTP ou des valeurs OK, DONE, ou DECLINED,
-que vous pouvez &eacute;crire dans lua sous la forme <code>apache2.OK</code>,
+que vous pouvez &eacute;crire dans Lua sous la forme <code>apache2.OK</code>,
 <code>apache2.DONE</code>, ou <code>apache2.DECLINED</code>.</p>
 
+
 <highlight language="lua">
-<strong>translate_name.lua</strong>
+<strong>translate_name.lua</strong><br/>
 -- exemple d'accroche qui r&eacute;&eacute;crit un URI en chemin du syst&egrave;me de
 fichiers.
 
@@ -226,15 +323,16 @@ function translate_name(r)
 end
 </highlight>
 
+
 <highlight language="lua">
-<strong>translate_name2.lua</strong>
+<strong>translate_name2.lua</strong><br/>
 --[[ exemple d'accroche qui r&eacute;&eacute;crit un URI vers un autre URI. Il renvoie
 	un apache2.DECLINED pour permettre &agrave; un autre interpr&eacute;teur d'URL de
 	travailler sur la substitution, y compris l'accroche translate_name
 	de base dont les tables de correspondances se basent sur DocumentRoot.
 
-     Note: actuellement, il est impossible de pr&eacute;voir si cette action
-     s'ex&eacute;cute avant ou apr&egrave;s mod_alias.
+     Note: utilisez le drapeau early/late de la directive pour
+     l'ex&eacute;cuter avant ou apr&egrave;s mod_alias.
 --]]
 
 require 'apache2'
@@ -257,212 +355,708 @@ end
         <p>request_rec est consid&eacute;r&eacute;e en tant que donn&eacute;e utilisateur.
 	Elle poss&egrave;de une m&eacute;tatable qui vous permet d'accomplir des
 	choses int&eacute;ressantes. Pour la plus grande partie, elle poss&egrave;de
-	les m&ecirc;mes champs que la structure request_rec (voir httpd.h en
-	attendant que cette documentation soit plus compl&egrave;te), la
+	les m&ecirc;mes champs que la structure request_rec, la
 	plupart d'entre eux &eacute;tant accessibles en lecture et &eacute;criture (le
 	contenu des champs de la table peut &ecirc;tre modifi&eacute;, mais les
 	champs eux-m&ecirc;mes ne peuvent pas &ecirc;tre &eacute;tablis en tant que tables
 	distinctes).</p>
 
-	<table border="1">
+	<table border="1" style="zebra">
 
         <tr>
           <th><strong>Nom</strong></th>
           <th><strong>Type Lua</strong></th>
           <th><strong>Modifiable</strong></th>
+	  <th><strong>Description</strong></th>
+        </tr>
+        <tr>
+          <td><code>allowoverrides</code></td>
+          <td>string</td>
+          <td>non</td>
+          <td>L'option AllowOverride s'applique &agrave; la requ&ecirc;te courante.</td>
         </tr>
         <tr>
           <td><code>ap_auth_type</code></td>
           <td>string</td>
           <td>non</td>
+	  <td>Ce champ contient le type d'authentification effectu&eacute;e
+	  (par exemple <code>basic</code>)</td>
         </tr>
         <tr>
           <td><code>args</code></td>
           <td>string</td>
           <td>oui</td>
+	  <td>La cha&icirc;ne de param&egrave;tres de la requ&ecirc;te (par exemple
+	  <code>foo=bar&amp;name=johnsmith</code>)</td>
         </tr>
         <tr>
           <td><code>assbackwards</code></td>
           <td>boolean</td>
           <td>non</td>
+	  <td>contient true s'il s'agit d'une requ&ecirc;te de style HTTP/0.9
+	  (par exemple <code>GET /foo</code> (sans champs d'en-t&ecirc;te) )</td>
         </tr>
-
+        <tr>
+          <td><code>auth_name</code></td>
+          <td>string</td>
+          <td>non</td>
+          <td>La cha&icirc;ne d'identification utilis&eacute;e pour la v&eacute;rification
+	  de l'autorisation d'acc&egrave;s (si elle est disponible).</td>
+        </tr>
+        <tr>
+          <td><code>banner</code></td>
+          <td>string</td>
+          <td>non</td>
+          <td>La banni&egrave;re du serveur, par exemple <code>Apache HTTP
+	  Server/2.4.3 openssl/0.9.8c</code></td>
+        </tr>
+        <tr>
+          <td><code>basic_auth_pw</code></td>
+          <td>string</td>
+          <td>non</td>
+          <td>Le mot de passe pour l'authentification de base envoy&eacute;
+	  avec la requ&ecirc;te, s'il existe</td>
+        </tr>
         <tr>
           <td><code>canonical_filename</code></td>
           <td>string</td>
           <td>non</td>
+	  <td>Le nom de fichier canonique de la requ&ecirc;te</td>
         </tr>
         <tr>
           <td><code>content_encoding</code></td>
           <td>string</td>
           <td>non</td>
+	  <td>Le type de codage du contenu de la requ&ecirc;te courante</td>
         </tr>
         <tr>
           <td><code>content_type</code></td>
           <td>string</td>
           <td>oui</td>
+	  <td>Le type de contenu de la requ&ecirc;te courante, tel qu'il a &eacute;t&eacute;
+	  d&eacute;termin&eacute; au cours de la phase type_check (par exemple
+	  <code>image/gif</code> ou <code>text/html</code>)</td>
         </tr>
+
 	<tr>
           <td><code>context_prefix</code></td>
           <td>string</td>
           <td>non</td>
+	  <td></td>
         </tr>
         <tr>
           <td><code>context_document_root</code></td>
           <td>string</td>
           <td>non</td>
+	  <td></td>
         </tr>
 
         <tr>
           <td><code>document_root</code></td>
           <td>string</td>
           <td>non</td>
+	  <td>La racine des documents du serveur</td>
         </tr>
         <tr>
           <td><code>err_headers_out</code></td>
           <td>table</td>
           <td>non</td>
+	  <td>L'en-t&ecirc;te MIME de l'environnement pour la r&eacute;ponse, &eacute;crit
+	  m&ecirc;me en cas d'erreur et conserv&eacute; pendant les redirections
+	  internes</td>
         </tr>
         <tr>
           <td><code>filename</code></td>
           <td>string</td>
           <td>oui</td>
+	  <td>Le nom de fichier correspondant &agrave; la requ&ecirc;te, par exemple
+	  /www/example.com/foo.txt. Il peut &ecirc;tre modifi&eacute; au cours des
+	  phases translate-name ou map-to-storage du traitement de la
+	  requ&ecirc;te pour permettre au gestionnaire par d&eacute;faut (ou aux
+	  gestionnaires de script) de servir une version du fichier
+	  autre que celle demand&eacute;e.</td>
         </tr>
         <tr>
           <td><code>handler</code></td>
           <td>string</td>
           <td>oui</td>
+	  <td>Le nom du <a href="../handler.html">gestionnaire</a> qui
+	  doit traiter la requ&ecirc;te, par exemple <code>lua-script</code>
+	  si elle doit &ecirc;tre trait&eacute;e par mod_lua. Cette valeur est en
+	  g&eacute;n&eacute;ral d&eacute;finie via les directives <directive
+	  module="mod_mime">AddHandler</directive> ou <directive
+	  module="core">SetHandler</directive>, mais peut aussi l'&ecirc;tre
+	  via mod_lua pour permettre &agrave; un autre gestionnaire de traiter
+	  une requ&ecirc;te sp&eacute;cifique qui ne serait pas trait&eacute;e par d&eacute;faut
+	  par ce dernier.
+            </td>
         </tr>
         <tr>
 	  <td><code>headers_in</code></td>
           <td>table</td>
           <td>oui</td>
+	  <td>Les en-t&ecirc;tes MIME de l'environnement de la requ&ecirc;te. Il
+	  s'agit des en-t&ecirc;tes comme <code>Host, User-Agent,
+	  Referer</code>, etc...</td>
         </tr>
         <tr>
           <td><code>headers_out</code></td>
           <td>table</td>
           <td>oui</td>
+	  <td>Les en-t&ecirc;tes MIME de l'environnement de la r&eacute;ponse.</td>
         </tr>
         <tr>
           <td><code>hostname</code></td>
           <td>string</td>
           <td>non</td>
+	  <td>Le nom d'h&ocirc;te, tel que d&eacute;fini par l'en-t&ecirc;te
+	  <code>Host:</code> ou par un URI complet.</td>
         </tr>
         <tr>
-          <td><code>log_id</code></td>
+          <td><code>is_https</code></td>
+          <td>boolean</td>
+          <td>non</td>
+          <td>Indique si la requ&ecirc;te &agrave; &eacute;t&eacute; faite via HTTPS</td>
+        </tr>
+        <tr>
+          <td><code>is_initial_req</code></td>
+          <td>boolean</td>
+          <td>non</td>
+          <td>Indique si la requ&ecirc;te courante est la requ&ecirc;te initiale ou
+	  une sous-requ&ecirc;te.</td>
+        </tr>
+        <tr>
+          <td><code>limit_req_body</code></td>
+          <td>number</td>
+          <td>non</td>
+          <td>La taille maximale du corps de la requ&ecirc;te, ou 0 si aucune
+	  limite.</td>
+        </tr>
+        <tr>
+	<td><code>log_id</code></td>
           <td>string</td>
           <td>non</td>
+	  <td>L'identifiant de la requ&ecirc;te dans les journaux d'acc&egrave;s ou
+	  d'erreur.</td>
         </tr>
         <tr>
           <td><code>method</code></td>
           <td>string</td>
           <td>non</td>
+	  <td>La m&eacute;thode de la requ&ecirc;te, par exemple <code>GET</code> ou
+	  <code>POST</code>.</td>
         </tr>
         <tr>
           <td><code>notes</code></td>
           <td>table</td>
           <td>oui</td>
+	  <td>Une liste de notes qui peuvent &ecirc;tre transmises d'un module
+	  &agrave; l'autre.</td>
+        </tr>
+        <tr>
+          <td><code>options</code></td>
+          <td>string</td>
+          <td>non</td>
+          <td>La valeur de la directive Options pour la requ&ecirc;te
+	  courante.</td>
         </tr>
         <tr>
           <td><code>path_info</code></td>
           <td>string</td>
           <td>non</td>
+	  <td>La valeur de PATH_INFO extraite de la requ&ecirc;te.</td>
+        </tr>
+        <tr>
+          <td><code>port</code></td>
+          <td>number</td>
+          <td>non</td>
+          <td>Le port du serveur utilis&eacute; par la requ&ecirc;te.</td>
         </tr>
         <tr>
           <td><code>protocol</code></td>
           <td>string</td>
           <td>non</td>
+	  <td>Le protocole utilis&eacute;, par exemple <code>HTTP/1.1</code></td>
         </tr>
         <tr>
           <td><code>proxyreq</code></td>
           <td>string</td>
           <td>oui</td>
+	  <td>Indique s'il s'agit d'une requ&ecirc;te mandat&eacute;e ou non. Cette
+	  valeur est en g&eacute;n&eacute;ral d&eacute;finie au cours de la phase
+	  post_read_request/translate_name du traitement de la requ&ecirc;te.</td>
         </tr>
         <tr>
 	  <td><code>range</code></td>
           <td>string</td>
           <td>non</td>
+	  <td>Le contenu de l'en-t&ecirc;te <code>Range:</code>.</td>
+        </tr>
+        <tr>
+          <td><code>remaining</code></td>
+          <td>number</td>
+          <td>non</td>
+          <td>Le nombre d'octets du corps de la requ&ecirc;te restant &agrave; lire.</td>
+        </tr>
+        <tr>
+          <td><code>server_built</code></td>
+          <td>string</td>
+          <td>non</td>
+          <td>La date de compilation du serveur.</td>
+        </tr>
+        <tr>
+          <td><code>server_name</code></td>
+          <td>string</td>
+          <td>non</td>
+          <td>Le nom du serveur pour cette requ&ecirc;te.</td>
+        </tr>
+        <tr>
+          <td><code>some_auth_required</code></td>
+          <td>boolean</td>
+          <td>non</td>
+          <td>Indique si une autorisation est/&eacute;tait requise pour cette
+	  requ&ecirc;te.</td>
         </tr>
         <tr>
           <td><code>subprocess_env</code></td>
           <td>table</td>
           <td>oui</td>
+	  <td>Le jeu de variables d'environnement pour cette requ&ecirc;te.</td>
+        </tr>
+        <tr>
+          <td><code>started</code></td>
+          <td>number</td>
+          <td>non</td>
+          <td>Le moment o&ugrave; le serveur a &eacute;t&eacute; (re)d&eacute;marr&eacute;, en secondes
+	  depuis epoch (1er janvier 1970)</td>
         </tr>
         <tr>
 	  <td><code>status</code></td>
           <td>number</td>
           <td>oui</td>
+	  <td>Le code de retour (courant) pour cette requ&ecirc;te, par
+	  exemple <code>200</code> ou <code>404</code>.</td>
         </tr>
         <tr>
           <td><code>the_request</code></td>
           <td>string</td>
           <td>non</td>
+	  <td>La cha&icirc;ne de la requ&ecirc;te telle qu'elle a &eacute;t&eacute; envoy&eacute;e par le
+	  client, par exemple <code>GET /foo/bar HTTP/1.1</code>.</td>
         </tr>
         <tr>
           <td><code>unparsed_uri</code></td>
           <td>string</td>
           <td>non</td>
+	  <td>La partie URI non interpr&eacute;t&eacute;e de la requ&ecirc;te</td>
         </tr>
         <tr>
           <td><code>uri</code></td>
           <td>string</td>
           <td>oui</td>
+	  <td>L'URI apr&egrave;s interpr&eacute;tation par httpd</td>
         </tr>
         <tr>
           <td><code>user</code></td>
           <td>string</td>
           <td>oui</td>
+	  <td>Si une authentification a &eacute;t&eacute; effectu&eacute;e, nom de
+	  l'utilisateur authentifi&eacute;.</td>
         </tr>
 	<tr>
           <td><code>useragent_ip</code></td>
           <td>string</td>
           <td>non</td>
+	  <td>L'adresse IP de l'agent qui a envoy&eacute; la requ&ecirc;te</td>
         </tr>
         </table>
+	</dd>
+    </dl>
+</section>
+<section id="functions"><title>M&eacute;thodes de l'objet request_rec</title>
 
-        <p>La structure request_rec poss&egrave;de (au minimum) les m&eacute;thodes
-	suivantes :</p>
+<p>L'objet request_rec poss&egrave;de (au minimum) les m&eacute;thodes suivantes :</p>
 
-        <highlight language="lua">
-        r:addoutputfilter(name|function) -- ajoute un filtre en sortie
-        </highlight>
+<highlight language="lua">
+r:flush()   -- vide le tampon de sortie
+            -- Renvoie true si le vidage a &eacute;t&eacute; effectu&eacute; avec succ&egrave;s,
+	    false dans le cas contraire.
 
-        <highlight language="lua">
-        r:parseargs() -- renvoie deux tables : une table standard de couples
-	cl&eacute;/valeur pour les donn&eacute;es GET simples, et une autre pour les donn&eacute;es
-	multivalu&eacute;es (par exemple foo=1&amp;foo=2&amp;foo=3) :
+while nous_avons_des_donn&eacute;es_&agrave;_envoyer do
+    r:puts("Bla bla bla\n") -- envoi des donn&eacute;es &agrave; envoyer vers le tampon
+    r:flush() -- vidage du tampon (envoi au client)
+    r:sleep(0.5) -- mise en attente et bouclage
+end
+</highlight>
 
-	local GET, GETMULTI = r:parseargs()
-	r:puts("Votre nom est : " .. GET['name'] or "Unknown")
-	</highlight>
+<highlight language="lua">
+r:addoutputfilter(name|function) -- ajoute un filtre en sortie
 
-	<highlight language="lua">
-	r:parsebody([sizeLimit]) -- interpr&egrave;te le corps de la requ&ecirc;te
-	en tant que POST et renvoie deux tables lua, comme r:parseargs(). Un nombre optionnel
-	peut &ecirc;tre fourni pour sp&eacute;cifier le nombre maximal d'octets &agrave;
-	interpr&eacute;ter. La valeur par d&eacute;faut est 8192 :
+r:addoutputfilter("fooFilter") -- ins&egrave;re le filtre fooFilter dans le flux de sortie
+</highlight>
 
-        local POST, POSTMULTI = r:parsebody(1024*1024)
-	r:puts("Votre nom est : " .. POST['name'] or "Unknown")
-	</highlight>
+<highlight language="lua">
+r:sendfile(filename) -- envoie un fichier entier au client en
+utilisant sendfile s'il est support&eacute; par la plateforme :
 
-        <highlight language="lua">
-        r:puts("bonjour", " le monde", "!") -- affichage dans le corps de la r&eacute;ponse
-        </highlight>
+if use_sendfile_thing then
+    r:sendfile("/var/www/large_file.img")
+end
+</highlight>
 
-	<highlight language="lua">
-        r:write("une simple cha&icirc;ne") -- affichage dans le
-	corps de la r&eacute;ponse
-        </highlight>
+<highlight language="lua">
+r:parseargs() -- renvoie deux tables : une table standard de couples
+cl&eacute;/valeur pour les donn&eacute;es GET simples, et une autre pour les donn&eacute;es
+multivalu&eacute;es (par exemple foo=1&amp;foo=2&amp;foo=3) :
 
-	<highlight language="lua">
-	r:dbacquire(dbType[, dbParams]) -- Acquiert une connexion &agrave; une
+local GET, GETMULTI = r:parseargs()
+r:puts("Votre nom est : " .. GET['name'] or "Unknown")
+</highlight>
+
+
+<highlight language="lua">
+r:parsebody()([sizeLimit]) -- interpr&egrave;te le corps de la requ&ecirc;te
+en tant que POST et renvoie deux tables lua, comme r:parseargs(). Un nombre optionnel
+peut &ecirc;tre fourni pour sp&eacute;cifier le nombre maximal d'octets &agrave;
+interpr&eacute;ter. La valeur par d&eacute;faut est 8192.
+
+local POST, POSTMULTI = r:parsebody(1024*1024)
+r:puts("Votre nom est : " .. POST['name'] or "Unknown")
+</highlight>
+
+
+<highlight language="lua">
+r:puts("bonjour", " le monde", "!") -- affichage dans le corps de la r&eacute;ponse
+</highlight>
+
+<highlight language="lua">
+r:write("une simple cha&icirc;ne") -- affichage dans le
+corps de la r&eacute;ponse
+</highlight>
+
+<highlight language="lua">
+r:escape_html("&lt;html&gt;test&lt;/html&gt;") -- Echappe le
+code HTML et renvoie le r&eacute;sultat
+</highlight>
+
+<highlight language="lua">
+r:base64_encode(string) -- Encode une cha&icirc;ne &agrave; l'aide du
+standard de codage Base64.
+
+local encoded = r:base64_encode("This is a test") -- returns VGhpcyBpcyBhIHRlc3Q=
+</highlight>
+
+<highlight language="lua">
+r:base64_decode(string) -- D&eacute;code une cha&icirc;ne cod&eacute;e en Base64.
+
+local decoded = r:base64_decode("VGhpcyBpcyBhIHRlc3Q=") -- returns 'This is a test'
+</highlight>
+
+<highlight language="lua">
+r:md5(string) -- Calcule et renvoie le condens&eacute; MD5 d'une cha&icirc;ne
+en mode binaire (binary safe).
+
+local hash = r:md5("This is a test") -- returns ce114e4501d2f4e2dcea3e17b546f339
+</highlight>
+
+<highlight language="lua">
+r:sha1(string) -- Calcule et renvoie le condens&eacute; SHA1 d'une cha&icirc;ne
+en mode binaire (binary safe).
+
+local hash = r:sha1("This is a test") -- returns a54d88e06612d820bc3be72877c74f257b561b19
+</highlight>
+
+<highlight language="lua">
+r:escape(string) -- Echappe une cha&icirc;ne de type URL.
+
+local url = "http://foo.bar/1 2 3 &amp; 4 + 5"
+local escaped = r:escape(url) -- renvoie 'http%3a%2f%2ffoo.bar%2f1+2+3+%26+4+%2b+5'
+</highlight>
+
+<highlight language="lua">
+r:unescape(string) -- D&eacute;s&eacute;chappe une cha&icirc;ne de type URL.
+
+local url = "http%3a%2f%2ffoo.bar%2f1+2+3+%26+4+%2b+5"
+local unescaped = r:unescape(url) -- renvoie 'http://foo.bar/1 2 3 &amp; 4 + 5'
+</highlight>
+
+<highlight language="lua">
+r:construct_url(string) -- Construit une URL &agrave; partir d'un URI
+
+local url = r:construct_url(r.uri)
+</highlight>
+
+<highlight language="lua">
+r:mpm_query(number) -- Interroge le serveur &agrave; propos de son
+module MPM via la requ&ecirc;te ap_mpm_query.
+
+local mpm = r.mpm_query(14)
+if mpm == 1 then
+    r:puts("Ce serveur utilise le MPM Event")
+end
+</highlight>
+
+<highlight language="lua">
+r:expr(string) -- Evalue une cha&icirc;ne de type <a
+href="../expr.html">expr</a>.
+
+if r:expr("%{HTTP_HOST} =~ /^www/") then
+    r:puts("Ce nom d'h&ocirc;te commence par www")
+end
+</highlight>
+
+<highlight language="lua">
+r:scoreboard_process(a) -- Interroge le serveur &agrave; propos du
+processus &agrave; la position <code>a</code>.
+
+local process = r:scoreboard_process(1)
+r:puts("Le serveur 1 a comme PID " .. process.pid)
+</highlight>
+
+<highlight language="lua">
+r:scoreboard_worker(a, b) -- Interroge le serveur &agrave; propos du
+thread <code>b</code>, dans le processus <code>a</code>.
+
+local thread = r:scoreboard_worker(1, 1)
+r:puts("L'ID du thread 1 du serveur 1 est " .. thread.tid .. " et son
+&eacute;tat est " .. thread.status)
+</highlight>
+
+<highlight language="lua">
+r:clock() -- Renvoie l'heure courante avec une pr&eacute;cision d'une
+microseconde.
+</highlight>
+
+<highlight language="lua">
+r:requestbody(filename) -- Lit et renvoie le corps d'une requ&ecirc;te. Si
+'filename' est sp&eacute;cifi&eacute;, le corps de requ&ecirc;te n'est pas renvoy&eacute;, mais
+sauvegard&eacute; dans le fichier correspondant.
+
+local input = r:requestbody()
+r:puts("Vous m'avez envoy&eacute; le corps de requ&ecirc;te suivant :\n")
+r:puts(input)
+</highlight>
+
+<highlight language="lua">
+r:add_input_filter(filter_name) -- Ajoute le filtre en entr&eacute;e
+'filter_name'.
+</highlight>
+
+<highlight language="lua">
+r:module_info(module_name) -- Interroge le serveur &agrave; propos d'un
+module.
+
+local mod = r.module_info("mod_lua.c")
+if mod then
+    for k, v in pairs(mod.commands) do
+       r:puts( ("%s: %s\n"):format(k,v)) -- affiche toutes les directives impl&eacute;ment&eacute;es par ce module
+    end
+end
+</highlight>
+
+<highlight language="lua">
+r:loaded_modules() -- Renvoie une liste des modules charg&eacute;s par
+httpd.
+
+for k, module in pairs(r:loaded_modules()) do
+    r:puts("J'ai charg&eacute; le module " .. module .. "\n")
+end
+</highlight>
+
+<highlight language="lua">
+r:runtime_dir_relative(filename) -- G&eacute;n&egrave;re le nom d'un fichier run-time
+(par exemple la m&eacute;moire partag&eacute;e "file") relativement au r&eacute;pertoire de
+run-time. 
+</highlight>
+
+<highlight language="lua">
+r:server_info() -- Renvoie une table contenant des informations
+&agrave; propos du serveur, comme le nom de l'ex&eacute;cutable httpd, le
+module mpm utilis&eacute;, etc...
+</highlight>
+
+<highlight language="lua">
+r:set_document_root(file_path) -- D&eacute;finit la racine des
+documents pour la requ&ecirc;te &agrave; file_path.
+</highlight>
+
+<highlight language="lua">
+r:add_version_component(component_string) -- Ajoute un &eacute;l&eacute;ment &agrave;
+la banni&egrave;re du serveur.
+</highlight>
+
+<highlight language="lua">
+r:set_context_info(prefix, docroot) -- D&eacute;finit le pr&eacute;fixe et la
+racine des documents du contexte pour une requ&ecirc;te.
+</highlight>
+
+<highlight language="lua">
+r:os_escape_path(file_path) -- Convertit un chemin du syst&egrave;me de
+fichiers en URL ind&eacute;pendamment du syst&egrave;me d'exploitation.
+</highlight>
+
+<highlight language="lua">
+r:escape_logitem(string) -- Echappe une cha&icirc;ne pour
+journalisation.
+</highlight>
+
+<highlight language="lua">
+r.strcmp_match(string, pattern) -- V&eacute;rifie si 'string' correspond &agrave;
+'pattern' via la fonction strcmp_match (GLOBs). Par exemple, est-ce que
+'www.example.com' correspond &agrave; '*.example.com' ?
+
+local match = r.strcmp_match("foobar.com", "foo*.com")
+if match then 
+    r:puts("foobar.com matches foo*.com")
+end
+</highlight>
+
+<highlight language="lua">
+r:set_keepalive() -- D&eacute;finit l'&eacute;tat de persistance d'une
+requ&ecirc;te. Renvoie true dans la mesure du possible, false dans le
+cas contraire.
+</highlight>
+
+<highlight language="lua">
+r:make_etag() -- G&eacute;n&egrave;re et renvoie le etag pour la requ&ecirc;te
+courante.
+</highlight>
+
+<highlight language="lua">
+r:send_interim_response(clear) -- Renvoie une r&eacute;ponse d'int&eacute;rim (1xx) au
+client. Si 'clear' est vrai, les en-t&ecirc;tes disponibles seront envoy&eacute;s et
+effac&eacute;s.
+</highlight>
+
+<highlight language="lua">
+r:custom_response(status_code, string) -- G&eacute;n&egrave;re et d&eacute;finit une r&eacute;ponse
+personnalis&eacute;e pour un code d'&eacute;tat particulier. Le fonctionnement est
+tr&egrave;s proche de celui de la directive ErrorDocument.
+
+r:custom_response(404, "Baleted!")
+</highlight>
+
+<highlight language="lua">
+r.exists_config_define(string) -- V&eacute;rifie si une d&eacute;finition de
+configuration existe.
+
+if r.exists_config_define("FOO") then
+    r:puts("httpd a probablement &eacute;t&eacute; lanc&eacute; avec l'option -DFOO, ou FOO a
+    &eacute;t&eacute; d&eacute;fini dans la configuration")
+end
+</highlight>
+
+<highlight language="lua">
+r:state_query(string) -- Interroge le serveur &agrave; propos de son
+&eacute;tat.
+</highlight>
+
+<highlight language="lua">
+r:stat(filename [,wanted]) -- Ex&eacute;cute stat() sur un fichier, et renvoie
+une table contenant des informations &agrave; propos de ce fichier.
+
+local info = r:stat("/var/www/foo.txt")
+if info then
+    r:puts("Ce fichier existe et a &eacute;t&eacute; modifi&eacute; pour la derni&egrave;re fois &agrave; : " .. info.modified)
+end
+</highlight>
+
+<highlight language="lua">
+r:regex(string, pattern [,flags]) -- Ex&eacute;cute une recherche &agrave; base
+d'expression rationnelle sur une cha&icirc;ne, et renvoie les
+&eacute;ventuelles correspondances trouv&eacute;es.
+
+local matches = r:regex("foo bar baz", [[foo (\w+) (\S*)]])
+if matches then
+    r:puts("L'expression rationnelle correspond et le dernier mot
+    captur&eacute; ($2) est : " .. matches[2])
+end
+
+-- Exemple avec insensibilit&eacute; &agrave; la casse :
+local matches = r:regex("FOO bar BAz", [[(foo) bar]], 1)
+
+-- les drapeaux peuvent &ecirc;tre une combibaison bit &agrave; bit de :
+-- 0x01: insensibilit&eacute; &agrave; la casse
+-- 0x02: recherche multiligne
+</highlight>
+
+<highlight language="lua">
+r:sleep(secondes) -- Interrompt l'ex&eacute;cution du script pendant le	nombre de secondes sp&eacute;cifi&eacute;.
+                  -- La valeur peut &ecirc;tre sp&eacute;cifi&eacute;e sous la forme d'un nombre d&eacute;cimal comme 1.25 pour plus de pr&eacute;cision.
+</highlight>
+
+<highlight language="lua">
+r:dbacquire(dbType[, dbParams]) -- Acquiert une connexion &agrave; une
 base de donn&eacute;es et renvoie une classe database. Voir '<a
 href="#databases">Connectivit&eacute; aux bases de donn&eacute;es</a>' pour plus de
 d&eacute;tails.
-        </highlight>
-        </dd>
-    </dl>
+</highlight>
+
+<highlight language="lua">
+r:ivm_set("key", value) -- D&eacute;fini une variable Inter-VM avec une valeur sp&eacute;cifique.
+                        -- Ces valeurs sont conserv&eacute;es m&ecirc;me si la VM est
+			-- arr&ecirc;t&eacute;e ou non utilis&eacute;e, et ne doivent donc &ecirc;tre
+			-- utilis&eacute;es que si MaxConnectionsPerChild > 0.
+			-- Les valeurs peuvent &ecirc;tre de type number, string
+			-- ou boolean et sont stock&eacute;es s&eacute;par&eacute;ment pour
+			-- chaque processus (elles ne seront donc pas d'une
+			-- grande utilit&eacute; si l'on utilise le mpm prefork).
+                        
+r:ivm_get("key")        -- Lit le contenu d'une variable d&eacute;finie via ivm_set. Renvoie
+			-- le contenu de la variable si elle existe, ou nil
+			-- dans le cas contraire.
+                        
+-- Voici un exemple de lecture/&eacute;criture qui sauvegarde une variable
+-- globale en dehors de la VM :
+function handle(r)
+    -- La premi&egrave;re VM qui effectue l'appel suivant n'obtiendra aucune
+    -- valeur, et devra la cr&eacute;er
+    local foo = r:ivm_get("cached_data")
+    if not foo then
+        foo = do_some_calcs() -- simulation de valeurs de retour
+        r:ivm_set("cached_data", foo) -- d&eacute;finition globale de la variable
+    end
+    r:puts("La donn&eacute;e en cache est : ", foo)
+end			
+</highlight>
+<highlight language="lua">
+r:htpassword(string [,algorithm [,cost]]) -- G&eacute;n&egrave;re un hash de mot de passe &agrave; partir d'une cha&icirc;ne.
+                                          -- algorithm: 0 = APMD5 (d&eacute;faut), 1 = SHA, 2 = BCRYPT, 3 = CRYPT.
+                                          -- cost: ne s'utilise qu'avec l'algorythme BCRYPT (d&eacute;faut = 5).
+</highlight>
+
+<highlight language="lua">
+r:mkdir(dir [,mode]) -- Cr&eacute;e un r&eacute;pertoire et d&eacute;finit son mode via le param&egrave;tre optionnel mode.
+</highlight>
+
+<highlight language="lua">
+r:rmdir(dir) -- Supprime un r&eacute;pertoire.
+</highlight>
+
+<highlight language="lua">
+r:get_direntries(dir) -- Renvoie une table contenant toutes les entr&eacute;es de r&eacute;pertoires.
+
+-- Renvoie un chemin sous forme &eacute;clat&eacute;e en chemin, fichier, extension
+function split_path(path)
+  return path:match("(.-)([^\\/]-%.?([^%.\\/]*))$")
+end
+
+function handle(r)
+  local cwd, _, _ = split_path(r.filename)
+  for _, f in ipairs(r:get_direntries(cwd)) do
+    local info = r:stat(cwd .. f)
+    if info then
+      local mtime = os.date(fmt, info.mtime / 1000000)
+      local ftype = (info.filetype == 2) and "[dir] " or "[file]"
+      r:puts( ("%s  %s %10i  %s\n"):format(ftype, mtime, info.size, f) )
+    end
+  end
+end
+</highlight>
+
+<highlight language="lua">
+r.date_parse_rfc(string) -- Interpr&egrave;te une cha&icirc;ne date/heure et renvoie l'&eacute;quivalent en secondes depuis epoche.
+</highlight>
 
 </section>
 
@@ -502,10 +1096,59 @@ contenu suivant :</p>
   <dd>Code d'&eacute;tat HTTP</dd>
   <dt>apache2.PROXYREQ_NONE, apache2.PROXYREQ_PROXY, apache2.PROXYREQ_REVERSE, apache2.PROXYREQ_RESPONSE</dt>
   <dd>Constantes internes utilis&eacute;es par <module>mod_proxy</module></dd>
+  <dt>apache2.AUTHZ_DENIED, apache2.AUTHZ_GRANTED, apache2.AUTHZ_NEUTRAL, apache2.AUTHZ_GENERAL_ERROR, apache2.AUTHZ_DENIED_NO_USER</dt>
+  <dd>constantes internes utilis&eacute;es par <module>mod_authz_core</module></dd>
+
 </dl>
 <p>Les autres codes d'&eacute;tat HTTP ne sont pas encore impl&eacute;ment&eacute;s.</p>
 </section>
 
+
+<section id="modifying_buckets">
+    <title>Modification de contenu avec les filtres lua</title>
+    <p>
+    Les fonctions de filtrage impl&eacute;ment&eacute;es via les directives <directive
+    module="mod_lua">LuaInputFilter</directive> ou <directive
+    module="mod_lua">LuaOutputFilter</directive> sont con&ccedil;ues comme des
+    fonctions de 3&egrave;me phase non blocantes utilisant des sous-routines
+    pour suspendre et reprendre l'ex&eacute;cution d'une fonction lorsque des
+    paquets de donn&eacute;es sont envoy&eacute;s &agrave; la cha&icirc;ne de filtrage. La
+    structure de base d'une telle fonction est :
+    </p>
+    <highlight language="lua">
+function filter(r)
+    -- Nous indiquons tout d'abord que nous sommes pr&ecirc;ts &agrave; recevoir des
+    -- blocs de donn&eacute;es.
+    -- Avant ceci, nous pouvons d&eacute;finir notre environnement, tester
+    -- certaines conditions, et, si nous le jugeons n&eacute;cessaire, refuser le
+    -- filtrage d'une requ&ecirc;te :
+    if something_bad then
+        return -- Le filtrage est saut&eacute;
+    end
+    -- Sans se pr&eacute;occuper des donn&eacute;es que nous devons &eacute;ventuellement ajouter, un arr&ecirc;t est r&eacute;alis&eacute; ici.
+    -- Noter que les filtres de sortie sont les seuls capables d'ajouter des &eacute;l&eacute;ments au d&eacute;but des donn&eacute;es.
+    -- Les filtres en entr&eacute;e peuvent ajouter des &eacute;l&eacute;ments &agrave; la fin des donn&eacute;es au stade final.
+
+    coroutine.yield([optional header to be prepended to the content])
+
+    -- Apr&egrave;s cet arr&ecirc;t, nous allons recevoir d'autres blocs de donn&eacute;es, un par un ;
+    -- nous pouvons les traiter comme il nous pla&icirc;t et proc&eacute;der &agrave; la r&eacute;ponse.
+    -- Ces blocs sont conserv&eacute;s dans la variable globale 'bucket', nous r&eacute;alisons donc
+    -- une boucle pour v&eacute;rifier que 'bucket' n'est pas vide :
+    while bucket ~= nil do
+        local output = mangle(bucket) -- Do some stuff to the content
+        coroutine.yield(output) -- Return our new content to the filter chain
+    end
+
+    -- Une fois les blocs de donn&eacute;es &eacute;puis&eacute;s, 'bucket' est positionn&eacute; &agrave; une valeur vide ('nil'),
+    -- ce qui va nous faire sortir de cette boucle et nous amener &agrave; l'&eacute;tape suivante.
+    -- On peut ajouter ce qu'on veut &agrave; la fin des donn&eacute;es &agrave; cette &eacute;tape, qui constitue le dernier
+    -- arr&ecirc;t. Les filtres d'entr&eacute;e comme de sortie peuvent servir &agrave; ajouter des &eacute;l&eacute;ments &agrave; la fin
+    --  des donn&eacute;es &agrave; cette &eacute;tape.
+    coroutine.yield([optional footer to be appended to the content])
+end
+    </highlight>
+</section>
 <section id="databases">
     <title>Connectivit&eacute; aux bases de donn&eacute;es</title>
     <p>Mod_lua impl&eacute;mente une fonctionnalit&eacute; basique de connexion aux
@@ -516,7 +1159,7 @@ commandes aupr&egrave;s des moteurs de base de donn&eacute;es les plus courants
     <p>L'exemple suivant montre comment se connecter &agrave; une base de
 donn&eacute;es et extraire des informations d'une table :</p>
     <highlight language="lua">
-function handler(r)
+function handle(r)
     -- connexion &agrave; la base de donn&eacute;es
     local database, err = r:dbacquire("mysql", "server=localhost,user=root,dbname=mydb")
     if not err then
@@ -564,7 +1207,7 @@ local result, errmsg = database:select(r, "SELECT * FROM `people` WHERE 1")
 -- Cr&eacute;ation et ex&eacute;cution d'une requ&ecirc;te pr&eacute;par&eacute;e :
 local statement, errmsg = database:prepare(r, "DELETE FROM `tbl` WHERE `age` > %u")
 if not errmsg then
-    local result, errmsg = statement:query(20) -- ex&eacute;cute la requ&ecirc;te pour age > 20
+    local result, errmsg = statement:query(20) -- ex&eacute;cute la requ&ecirc;te pour age &gt; 20
 end
 
 -- Extrait une requ&ecirc;te pr&eacute;par&eacute;e depuis une directive DBDPrepareSQL :
@@ -709,8 +1352,7 @@ relatifs dans les directives de mod_lua</description>
 <name>LuaScope</name>
 <description>Une valeur parmi once, request, conn, thread -- la valeur
 par d&eacute;faut est once</description>
-<syntax>LuaScope once|request|conn|thread -- la valeur par d&eacute;faur est
-once</syntax>
+<syntax>LuaScope once|request|conn|thread|server [min] [max]</syntax>
 <default>LuaScope once</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
@@ -730,23 +1372,36 @@ once</syntax>
     aussi dans la port&eacute;e de la requ&ecirc;te.</dd>
 
     <dt>conn:</dt> <dd>idem request, mais attach&eacute; &agrave; connection_rec</dd>
+
     <dt>thread:</dt> <dd>Utilise l'interpr&eacute;teur pendant toute la dur&eacute;e
     de vie du thread qui traite la requ&ecirc;te (disponible seulement avec
     les MPMs thread&eacute;s).</dd>
-<!-- not implemented
+
     <dt>server:</dt>  <dd>Le comportement est ici diff&eacute;rent, car la
     port&eacute;e du serveur pr&eacute;sente une dur&eacute;e de vie assez longue, et
     plusieurs threads vont partager le m&ecirc;me server_rec. Pour g&eacute;rer tout
-    ceci, les interpr&eacute;teurs sont stock&eacute;s dans une liste de ressources
-    apr. Les arguments min et max ont &eacute;t&eacute; pr&eacute;vus pour sp&eacute;cifier une
-    taille de jeu, mais sont inutilis&eacute;s pour le moment.</dd>
--->
+    ceci, les &eacute;tats lua du serveur sont stock&eacute;s dans une liste de ressources
+    apr. Les arguments <code>min</code> et <code>max</code> permettent
+    de sp&eacute;cifier les nombres minimaux et maximaux d'&eacute;tats lua &agrave; stocker
+    dans la liste.</dd>
    </dl>
+   <p>En g&eacute;n&eacute;ral, les port&eacute;es <code>thread</code> et <code>server</code>
+   sont 2 &agrave; 3 fois plus rapides que les autres, car elles n'ont pas besoin
+   de r&eacute;g&eacute;n&eacute;rer de nouveaux &eacute;tats Lua &agrave; chaque requ&ecirc;te (comme c'est le
+   cas avec le MPM event, o&ugrave; m&ecirc;me les connexions persistantes utilisent un
+   nouveau thread pour chaque requ&ecirc;te). Si vous pensez que vos scripts
+   n'auront pas de probl&egrave;me s'il r&eacute;utilisent un &eacute;tat, alors les port&eacute;es
+   <code>thread</code> ou <code>server</code> doivent &ecirc;tre utilis&eacute;es car
+   elles pr&eacute;senteront de meilleures performances. Alors que la port&eacute;e
+   <code>thread</code> fournira les r&eacute;ponses les plus rapides, la port&eacute;e
+   <code>server</code> utilisera moins de m&eacute;moire car les &eacute;tats sont
+   rassembl&eacute;s dans des jeux, permettant par exemple &agrave; 1000 threads de
+   partager 100 &eacute;tats Lua, ne n&eacute;cessitant ainsi que 10% de la m&eacute;moire
+   requise par la port&eacute;e <code>thread</code>.
+    </p>
 </usage>
 </directivesynopsis>
 
-<!--
-/* Not implemented in 2.4.x yet */
 <directivesynopsis>
 <name>LuaMapHandler</name>
 <description>Met en correspondance un chemin avec un gestionnaire lua</description>
@@ -782,7 +1437,6 @@ once</syntax>
 	sp&eacute;cifi&eacute;.</p>
 </usage>
 </directivesynopsis>
--->
 
 <directivesynopsis>
 <name>LuaPackagePath</name>
@@ -822,13 +1476,13 @@ LuaPackagePath /scripts/lib/?/init.lua
 </usage>
 </directivesynopsis>
 
-<!-- Not implemented yet
 <directivesynopsis>
 <name>LuaCodeCache</name>
 <description>Configure le cache de code compil&eacute;.</description>
 <syntax>LuaCodeCache stat|forever|never</syntax>
 <default>LuaCodeCache stat</default>
-<contextlist><context>server config</context><context>virtual host</context>
+<contextlist>
+<context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
@@ -857,7 +1511,6 @@ LuaCodeCache never
 
 </usage>
 </directivesynopsis>
--->
 
 <directivesynopsis>
 <name>LuaHookTranslateName</name>
@@ -942,7 +1595,48 @@ traitement de la requ&ecirc;te</description>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
-    <usage><p>...</p></usage>
+    <usage>
+    <p>Identique &agrave; la directive
+    <directive>LuaHookTranslateName</directive>, mais s'ex&eacute;cute &agrave; la
+    phase map-to-storage du traitement de la requ&ecirc;te. Les modules comme
+    mod_cache agissent pendant cette phase, ce qui permet de pr&eacute;senter
+    un exemple int&eacute;ressant de ce que l'on peut faire ici :</p>
+    <highlight language="config">
+    LuaHookMapToStorage /path/to/lua/script.lua check_cache
+    </highlight>
+    <highlight language="lua">
+require"apache2"
+cached_files = {}
+
+function read_file(filename)
+    local input = io.open(filename, "r")
+    if input then
+        local data = input:read("*a")
+        cached_files[filename] = data
+        file = cached_files[filename]
+        input:close()
+    end
+    return cached_files[filename]
+end
+
+function check_cache(r)
+    if r.filename:match("%.png$") then -- Only match PNG files
+        local file = cached_files[r.filename] -- Check cache entries
+        if not file then
+            file = read_file(r.filename)  -- Read file into cache
+        end
+        if file then -- If file exists, write it out
+            r.status = 200
+            r:write(file)
+            r:info(("Sent %s to client from cache"):format(r.filename))
+            return apache2.DONE -- skip default handler for PNG files
+        end
+    end
+    return apache2.DECLINED -- If we had nothing to do, let others serve this.
+end
+    </highlight>
+
+    </usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -1095,9 +1789,20 @@ parentes sont fusionn&eacute;es dans les enfants</description>
 traitement de la requ&ecirc;te</description>
 <syntax>LuaQuickHandler /path/to/script.lua hook_function_name</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
-<usage><p>...</p>
+<usage>
+    <p>Cette phase s'ex&eacute;cute juste apr&egrave;s l'attribution de la requ&ecirc;te &agrave;
+    un serveur virtuel, et permet d'effectuer certains traitements avant
+    le d&eacute;roulement des autres phases, ou de servir une requ&ecirc;te sans
+    avoir &agrave; la traduire, l'associer &agrave; un espace de stockage, etc...
+    Comme cette phase s'ex&eacute;cute avant toute autre, les directives telles
+    que <directive type="section" module="core">Location</directive> ou
+    <directive type="section" module="core">Directory</directive> ne
+    sont pas encore prises en compte, car Les URI n'ont pas encore &eacute;t&eacute;
+    enti&egrave;rement interpr&eacute;t&eacute;s.
+    </p>
    <note><title>Contexte</title><p>Cette directive ne peut &ecirc;tre
    utilis&eacute;e ni &agrave; l'int&eacute;rieur d'une section <directive type="section"
    module="core">Directory</directive> ou <directive type="section"
@@ -1119,18 +1824,24 @@ d'autorisation, elle peut &ecirc;tre appel&eacute;e via la directive <directive
 module="mod_authz_core">Require</directive> :</p>
 
 
-<example>
 <highlight language="config">
 LuaRoot /usr/local/apache2/lua
 LuaAuthzProvider foo authz.lua authz_check_foo
 &lt;Location /&gt;
-  Require foo bar
+  Require foo johndoe
 &lt;/Location&gt;
 </highlight>
-</example>
+<highlight language="lua">
+require "apache2"
+function authz_check_foo(r, who)
+    if r.user ~= who then return apache2.AUTHZ_DENIED
+    return apache2.AUTHZ_GRANTED
+end
+</highlight>
 
 </usage>
 </directivesynopsis>
+
 
 </modulesynopsis>
 
