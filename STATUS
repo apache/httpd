@@ -90,6 +90,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+    * mod_cache_socache: Make sure the CacheSocacheMaxSize directive is merged
+      correctly.
+      trunk patch: http://svn.apache.org/r1492663
+      2.4.x patch: trunk patch works modulo CHANGES
+      +1: minfrin, covener, jailletc36
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -150,12 +155,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/r1488164
       2.4.x patch: trunk patch works modulo CHANGES
       +1: minfrin, jim
-
-    * mod_cache_socache: Make sure the CacheSocacheMaxSize directive is merged
-      correctly.
-      trunk patch: http://svn.apache.org/r1492663
-      2.4.x patch: trunk patch works modulo CHANGES
-      +1: minfrin, covener
 
     * mod_proxy: protect pool usage w/ mutex.
       trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1480627
