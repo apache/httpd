@@ -944,7 +944,7 @@ r:rmdir(dir) -- Removes a directory.
 </highlight>
 
 <highlight language="lua">
-r:touch([mtime]) -- Sets the file modification time to current time or to optional mtime msec value.
+r:touch(file [,mtime]) -- Sets the file modification time to current time or to optional mtime msec value.
 </highlight>
 
 <highlight language="lua">
