@@ -1551,6 +1551,10 @@ static const command_rec deflate_filter_cmds[] = {
     {NULL}
 };
 
+/* zlib can be built with #define deflate z_deflate */
+#ifdef deflate
+#undef deflate
+#endif
 AP_DECLARE_MODULE(deflate) = {
     STANDARD20_MODULE_STUFF,
     NULL,                         /* dir config creater */
