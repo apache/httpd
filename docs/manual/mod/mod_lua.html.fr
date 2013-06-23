@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_lua.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_lua.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournit des points d'entrée Lua dans différentes parties du
 traitement des requêtes httpd</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
@@ -821,7 +819,7 @@ local hash = r:sha1("This is a test") -- returns a54d88e06612d820bc3be72877c74f2
 r:escape(string) -- Echappe une chaîne de type URL.
 
 local url = "http://foo.bar/1 2 3 &amp; 4 + 5"
-local escaped = r:escape(url) -- returns 'http%3a%2f%2ffoo.bar%2f1+2+3+%26+4+%2b+5'
+local escaped = r:escape(url) -- renvoie 'http%3a%2f%2ffoo.bar%2f1+2+3+%26+4+%2b+5'
 </pre>
 
 
@@ -829,7 +827,14 @@ local escaped = r:escape(url) -- returns 'http%3a%2f%2ffoo.bar%2f1+2+3+%26+4+%2b
 r:unescape(string) -- Déséchappe une chaîne de type URL.
 
 local url = "http%3a%2f%2ffoo.bar%2f1+2+3+%26+4+%2b+5"
-local unescaped = r:escape(url) -- returns 'http://foo.bar/1 2 3 &amp; 4 + 5'
+local unescaped = r:unescape(url) -- renvoie 'http://foo.bar/1 2 3 &amp; 4 + 5'
+</pre>
+
+
+<pre class="prettyprint lang-lua">
+r:construct_url(string) -- Construit une URL à partir d'un URI
+
+local url = r:construct_url(r.uri)
 </pre>
 
 
@@ -1021,7 +1026,7 @@ r:state_query(string) -- Interroge le serveur à propos de son
 
 
 <pre class="prettyprint lang-lua">
-r:stat(filename) -- Exécute stat() sur un fichier, et renvoie
+r:stat(filename [,wanted]) -- Exécute stat() sur un fichier, et renvoie
 une table contenant des informations à propos de ce fichier.
 
 local info = r:stat("/var/www/foo.txt")
@@ -1032,7 +1037,7 @@ end
 
 
 <pre class="prettyprint lang-lua">
-r:regex(string, pattern, [drapeaux]) -- Exécute une recherche à base
+r:regex(string, pattern [,flags]) -- Exécute une recherche à base
 d'expression rationnelle sur une chaîne, et renvoie les
 éventuelles correspondances trouvées.
 
@@ -1090,6 +1095,59 @@ function handle(r)
     end
     r:puts("La donnée en cache est : ", foo)
 end			
+</pre>
+
+<pre class="prettyprint lang-lua">
+r:htpassword(string [,algorithm [,cost]]) -- Génère un hash de mot de passe à partir d'une chaîne.
+                                          -- algorithm: 0 = APMD5 (défaut), 1 = SHA, 2 = BCRYPT, 3 = CRYPT.
+                                          -- cost: ne s'utilise qu'avec l'algorythme BCRYPT (défaut = 5).
+</pre>
+
+
+<pre class="prettyprint lang-lua">
+r:mkdir(dir [,mode]) -- Crée un répertoire et définit son mode via le paramètre optionnel mode.
+</pre>
+
+
+<pre class="prettyprint lang-lua">
+r:mkrdir(dir [,mode]) -- Crée des répertoires de manière récursive et définit leur mode via le paramètre optionnel mode.
+</pre>
+
+
+<pre class="prettyprint lang-lua">
+r:rmdir(dir) -- Supprime un répertoire.
+</pre>
+
+
+<pre class="prettyprint lang-lua">
+r:touch(file [,mtime]) -- Définit la date de modification d'un fichier à la date courante ou à la valeur optionnelle mtime en msec.
+</pre>
+
+
+<pre class="prettyprint lang-lua">
+r:get_direntries(dir) -- Renvoie une table contenant toutes les entrées de répertoires.
+
+-- Renvoie un chemin sous forme éclatée en chemin, fichier, extension
+function split_path(path)
+  return path:match("(.-)([^\\/]-%.?([^%.\\/]*))$")
+end
+
+function handle(r)
+  local cwd, _, _ = split_path(r.filename)
+  for _, f in ipairs(r:get_direntries(cwd)) do
+    local info = r:stat(cwd .. f)
+    if info then
+      local mtime = os.date(fmt, info.mtime / 1000000)
+      local ftype = (info.filetype == 2) and "[dir] " or "[file]"
+      r:puts( ("%s  %s %10i  %s\n"):format(ftype, mtime, info.size, f) )
+    end
+  end
+end
+</pre>
+
+
+<pre class="prettyprint lang-lua">
+r.date_parse_rfc(string) -- Interprète une chaîne date/heure et renvoie l'équivalent en secondes depuis epoche.
 </pre>
 
 
