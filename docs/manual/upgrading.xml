@@ -377,6 +377,10 @@ Allow from example.org
  - load module <module>mod_access_compat</module>, or update configuration to 2.4 authorization directives.</li>
       <li><code>Ignoring deprecated use of DefaultType in line NN of /path/to/httpd.conf</code> - remove <directive module="core">DefaultType</directive>
       and replace with other configuration settings.</li>
+      <li><code>Invalid command 'AddOutputFilterByType', perhaps misspelled 
+      or defined by a module not included in the server configuration
+      </code> - <directive module="mod_filter">AddOutputFilterByType</directive> 
+      has moved from the core to mod_filter, which must be loaded.</li>
     </ul></li>
     <li>Errors serving requests:
     <ul>
