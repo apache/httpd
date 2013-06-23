@@ -725,7 +725,7 @@ journal</td></tr>
 erreurs</td></tr>
 <tr class="odd"><td><a href="mod_lua.html#luaauthzprovider">LuaAuthzProvider provider_name /path/to/lua/script.lua function_name</a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Branche une fonction fournisseur d'autorisation dans <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>
 </td></tr>
-<tr><td><a href="mod_lua.html#luacodecache">LuaCodeCache stat|forever|never</a></td><td> stat </td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Configure the compiled code cache.</td></tr>
+<tr><td><a href="mod_lua.html#luacodecache">LuaCodeCache stat|forever|never</a></td><td> stat </td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Configure le cache de code compilé.</td></tr>
 <tr class="odd"><td><a href="mod_lua.html#luahookaccesschecker">LuaHookAccessChecker  /chemin/vers/lua/script.lua  hook_function_name [early|late]</a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Fournit un point d'entrée pour la phase access_checker du
 traitement de la requête</td></tr>
 <tr><td><a href="mod_lua.html#luahookauthchecker">LuaHookAuthChecker  /chemin/vers/lua/script.lua hook_function_name [early|late]</a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Fournit un point d'entrée pour la phase auth_checker du
@@ -745,16 +745,16 @@ traitement de la requête</td></tr>
 <tr class="odd"><td><a href="mod_lua.html#luainherit">LuaInherit none|parent-first|parent-last</a></td><td> parent-first </td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Contrôle la manière dont les sections de configuration
 parentes sont fusionnées dans les enfants</td></tr>
 <tr><td><a href="mod_lua.html#luainputfilter">LuaInputFilter filter_name /path/to/lua/script.lua function_name</a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Provide a Lua function for content input filtering</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luamaphandler">LuaMapHandler uri-pattern /path/to/lua/script.lua [function-name]</a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Map a path to a lua handler</td></tr>
+<tr class="odd"><td><a href="mod_lua.html#luamaphandler">LuaMapHandler modele-uri /chemin/vers/lua/script.lua
+[nom-fonction]</a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Met en correspondance un chemin avec un gestionnaire lua</td></tr>
 <tr><td><a href="mod_lua.html#luaoutputfilter">LuaOutputFilter filter_name /path/to/lua/script.lua function_name</a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Provide a Lua function for content output filtering</td></tr>
 <tr class="odd"><td><a href="mod_lua.html#luapackagecpath">LuaPackageCPath /chemin/vers/include/?.soa</a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Ajoute un répertoire au package.cpath de lua</td></tr>
 <tr><td><a href="mod_lua.html#luapackagepath">LuaPackagePath /chemin/vers/include/?.lua</a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Ajoute un répertoire au package.path de lua</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luaquickhandler">LuaQuickHandler /path/to/script.lua hook_function_name</a></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Fournit un point d'entrée pour la gestion rapide du
+<tr class="odd"><td><a href="mod_lua.html#luaquickhandler">LuaQuickHandler /path/to/script.lua hook_function_name</a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Fournit un point d'entrée pour la gestion rapide du
 traitement de la requête</td></tr>
 <tr><td><a href="mod_lua.html#luaroot">LuaRoot /chemin/vers/un/répertoire</a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Spécifie le chemin de base pour la résolution des chemins
 relatifs dans les directives de mod_lua</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luascope">LuaScope once|request|conn|thread -- la valeur par défaur est
-once</a></td><td> once </td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Une valeur parmi once, request, conn, thread -- la valeur
+<tr class="odd"><td><a href="mod_lua.html#luascope">LuaScope once|request|conn|thread|server [min] [max]</a></td><td> once </td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Une valeur parmi once, request, conn, thread -- la valeur
 par défaut est once</td></tr>
 <tr><td><a href="mod_macro.html#macro" id="M" name="M">
 &lt;Macro <var>nom</var> [<var>par1</var> .. <var>parN</var>]&gt;

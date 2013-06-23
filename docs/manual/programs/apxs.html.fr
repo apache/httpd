@@ -26,8 +26,6 @@
 <a href="../ko/programs/apxs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/apxs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p><code>apxs</code> est un utilitaire permettant de compiler et
     d'installer des modules en tant qu'extensions du serveur HTTP
@@ -241,6 +239,11 @@
       tant qu'options supplémentaires à la commande <code>libtool
       --mode=link</code>. Vous pouvez l'utiliser pour ajouter des
       options locales spécifiques à l'éditeur de liens.</dd>
+      
+      <dt><code>-p</code></dt>
+      <dd>Avec cette option, apxs effectue l'édition de liens avec les
+      bibliothèques apr/apr-util. Elle permet de compiler les programmes
+      helper qui utilisent les bibliothèques apr/apr-util.</dd>
       </dl>
     
 
