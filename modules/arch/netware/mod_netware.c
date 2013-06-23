@@ -128,7 +128,7 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
     for (ptr = cmd_only; *ptr && (*ptr != ' '); ptr++);
     *ptr = '\0';
 
-    /* Figure out what the extension is so that we can matche it. */
+    /* Figure out what the extension is so that we can match it. */
     ext = strrchr(apr_filepath_name_get(cmd_only), '.');
 
     /* If there isn't an extension then give it an empty string */
