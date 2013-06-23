@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_deflate: permit compilation of mod_deflate against a zlib that has
+     been configured with -D Z_PREFIX, which redefines the token "deflate".
+     [Eric Covener]
+
   *) mod_socache_shmcb.c: Remove arbitrary restriction on shared memory size
      previously limited to 64MB. [Jens Låås <jelaas gmail.com>]
 
