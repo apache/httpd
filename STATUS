@@ -202,10 +202,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      written to the RewriteLog is escaped to prevent terminal escape sequences
      from entering the log file. [Joe Orton]
      http://svn.apache.org/viewvc?view=revision&revision=1482349
-     2.0.x patch: http://people.apache.org/~wrowe/mod_rewrite-r1482349.patch
+     2.0.x: http://people.apache.org/~covener/patches/2.0.x-rewritelog.diff 
      +1: wrowe
-     -1: covener escape str2 instead of text? 
-         http://people.apache.org/~covener/patches/2.0.x-rewritelog.diff 
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
