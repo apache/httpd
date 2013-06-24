@@ -169,7 +169,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       to the output filters
       trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1482522
       2.4.x patch: trunk patch works modulo CHANGES and ap_mmn
-      +1: 
+      +1:  jim
 
     * mod_proxy: support Unix domain sockets
       trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1451633
@@ -178,7 +178,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    https://svn.apache.org/viewvc?view=revision&revision=1452259
                    https://svn.apache.org/viewvc?view=revision&revision=1453981
       2.4.x patch: trunk patch works modulo CHANGES and ap_mmn
-      +1: 
+      +1: jim
 
     * mod_proxy: Ensure network errors detected by the proxy are returned as
       504 Gateway Timout as opposed to 502 Bad Gateway
