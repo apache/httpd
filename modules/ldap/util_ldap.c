@@ -602,6 +602,7 @@ static int uldap_connection_open(request_rec *r,
                           "ldap_simple_bind() timed out on %s "
                           "connection, dropped by firewall?",
                           new_connection ? "new" : "reused");
+            if (new_connection) break;
         }
         else {
             /* Other errors not retryable */

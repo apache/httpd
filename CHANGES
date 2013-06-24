@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ldap: Don't keep retrying if a new LDAP connection times out.
+     [Eric Covener]
+
   *) mod_deflate: permit compilation of mod_deflate against a zlib that has
      been configured with -D Z_PREFIX, which redefines the token "deflate".
      [Eric Covener]
