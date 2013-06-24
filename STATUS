@@ -114,6 +114,9 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+  *) SECURITY:
+
+
   *) SECURITY: CVE-2011-4317 (cve.mitre.org)
      Resolve additional cases of URL rewriting with ProxyPassMatch or
      RewriteRule, where particular request-URIs could result in undesired
@@ -195,6 +198,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: rjung
      -1: 
 
+   * mod_rewrite: (CVE-2013-1862 (cve.mitre.org)) Ensure that client data
+     written to the RewriteLog is escaped to prevent terminal escape sequences
+     from entering the log file. [Joe Orton]
+     http://svn.apache.org/viewvc?view=revision&revision=1482349
+     2.0.x patch: http://people.apache.org/~wrowe/mod_rewrite-r1482349.patch
+     +1: wrowe
+     -1: 
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
