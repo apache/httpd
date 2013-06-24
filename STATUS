@@ -203,7 +203,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      from entering the log file. [Joe Orton]
      http://svn.apache.org/viewvc?view=revision&revision=1482349
      2.0.x: http://people.apache.org/~covener/patches/2.0.x-rewritelog.diff 
-     +1: wrowe
+     +1: wrowe, covener
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
