@@ -1113,7 +1113,11 @@ start_over:
     }
 
     if (LDAP_SUCCESS != (result = uldap_connection_open(r, ldc))) {
-        /* connect failed */
+        if (AP_LDAP_IS_SERVER_DOWN(result)) { 
+            failures++;
+            goto start_over;
+        }
+        /* something other than 'server down' */
         return result;
     }
 
@@ -1230,7 +1234,11 @@ start_over:
 
 
     if (LDAP_SUCCESS != (result = uldap_connection_open(r, ldc))) {
-        /* connect failed */
+        failures++;
+        if (AP_LDAP_IS_SERVER_DOWN(result)) { 
+            goto start_over;
+        }
+        /* something other than 'server down' */
         return res;
     }
 
