@@ -55,7 +55,7 @@ then
 fi
 
 case $SYS in
-    SunOS|HP-UX)
+    SunOS|HP-UX|AIX)
         INSTALL_CMD=cp
         ;;
     *)

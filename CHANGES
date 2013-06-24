@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) AIX: Install DSO's with "cp" instead of "install" in instdso.sh
+     [Eric Covener]
+
   *) mod_ldap: Retry transient LDAP connection errors when they occur 
      during the authorization stage. 
      [Eric Covener]
