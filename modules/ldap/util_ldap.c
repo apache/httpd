@@ -2669,14 +2669,6 @@ static const char *util_ldap_set_op_timeout(cmd_parms *cmd,
                  "ldap connection: Setting op timeout to %ld seconds.",
                  timeout);
 
-#ifndef LDAP_OPT_TIMEOUT
-
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, APLOGNO(01314)
-                 "LDAP: LDAP_OPT_TIMEOUT option not supported by the "
-                 "LDAP library in use. Using LDAPTimeout value as search "
-                 "timeout only." );
-#endif
-
     return NULL;
 }
 
