@@ -254,7 +254,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                in the code of interest
        mod_setenvif.c: http://svn.apache.org/viewvc?view=revision&revision=1198966
     2.2.x patch: http://people.apache.org/~trawick/ap_pregsub_ex_22x-2.txt
-    +1: trawick
+    +1: trawick, wrowe
 
 PATCHES/ISSUES THAT ARE STALLED
 
