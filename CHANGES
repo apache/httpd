@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ldap: Retry transient LDAP connection errors when they occur 
+     during the authorization stage. 
+     [Eric Covener]
+
   *) mod_ldap: Don't keep retrying if a new LDAP connection times out.
      [Eric Covener]
 
