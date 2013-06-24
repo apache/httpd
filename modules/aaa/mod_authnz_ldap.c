@@ -894,7 +894,7 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r, APLOGNO(01719)
                               "auth_ldap authorize: require group \"%s\": "
                               "didn't match with attr %s [%s][%d - %s]",
-                              t, ldc->reason, ent[i].name, result, 
+                              t, ent[i].name, ldc->reason, result, 
                               ldap_err2string(result));
         }
     }
