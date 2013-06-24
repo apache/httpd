@@ -373,7 +373,7 @@ static int uldap_connection_init(request_rec *r,
 
     if (ldc->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) {
         /* Set options for rebind and referrals. */
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, APLOGNO(01278)
+        ap_log_error(APLOG_MARK, APLOG_TRACE4, 0, r->server, APLOGNO(01278)
                 "LDAP: Setting referrals to %s.",
                 ((ldc->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) ? "On" : "Off"));
         apr_ldap_set_option(r->pool, ldc->ldap,
