@@ -206,7 +206,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_dav: Ensure URI is correctly uriencoded on return. PR 54611
     trunk patch: http://svn.apache.org/r1476621
     2.2.x patch: trunk patch works (minus CHANGES)
-    +1: minfrin
+    +1: minfrin, trawick
 
   * mod_dav: When a PROPPATCH attempts to remove a non-existent dead
     property on a resource for which there is no dead property in the same
@@ -225,7 +225,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     URI that is not configured for DAV will trigger a segfault.
     trunk patch: http://svn.apache.org/r1485668
     2.2.x patch: trunk works, modulo CHANGES
-    +1: minfrin
+    +1: minfrin, trawick
 
   * core: speed up (for common cases) and reduce memory usage of ap_escape_logitem
     This should save 70-100 bytes in the request pool for a default config.
@@ -236,7 +236,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_cache: Fix uninitialized tmppath variable. PR 54949
     trunk patch: Variable removed from trunk in http://svn.apache.org/r1407381
     2.2.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-tmppath.patch
-    +1: minfrin
+    +1: minfrin, trawick
 
   * core: Limit ap_pregsub() to 64MB, add ap_pregsub_ex() for longer strings.
     The default limit can be adjusted at compile time using AP_PREGSUB_MAXLEN.
