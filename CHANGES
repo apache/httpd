@@ -25,8 +25,8 @@ Changes with Apache 2.4.5
 
   *) mod_remoteip: close file in error path. [Christophe Jaillet]
 
-  *) mod_lua: Add some new functions: r:htpassword(), r:mkdir(), r:rmdir(),
-     r:get_direntries(), r.date_parse_rfc().
+  *) mod_lua: Add some new functions: r:htpassword(), r:mkdir(), r:mkrdir(),
+     r:rmdir(), r:touch(), r:get_direntries(), r.date_parse_rfc().
      [Guenter Knauf]
 
   *) mod_lua: Sync 2.4 branch with trunk. This includes (but is not limited to)
